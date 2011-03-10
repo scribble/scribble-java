@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scribble Protocol Projection
 Bundle-SymbolicName: org.scribble.protocol.projection;singleton:=true
-Bundle-Version: 2.0.0.20110303-M4
+Bundle-Version: 2.0.0-SNAPSHOT
 Bundle-Vendor: www.scribble.org
 Import-Package: org.osgi.framework;version="1.3.0",
  org.scribble.common.logging,

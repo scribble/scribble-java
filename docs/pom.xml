@@ -5,13 +5,13 @@
 	<groupId>org.scribble</groupId>
 	<artifactId>docs</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.0.20110303-M4</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<name>Scribble::Docs</name>
 
     <parent>
 	    <groupId>org</groupId>
 		<artifactId>scribble</artifactId>
-		<version>2.0.0.20110303-M4</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 
   	<profiles>
