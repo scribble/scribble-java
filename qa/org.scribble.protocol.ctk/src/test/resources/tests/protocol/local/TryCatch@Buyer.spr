@@ -1,0 +1,20 @@
+import Order;
+import OutOfStock;
+import OrderExpired, OrderCancelled;
+import Confirm;
+import Ack;
+import Finish;
+
+protocol TryCatch@Buyer {
+	role Seller;
+
+	try {
+		Order to Seller;
+		Confirm from Seller;
+	} catch (OutOfStock from Seller) {
+	} catch (expire(OrderExpired) to Seller | OrderCancelled to Seller) {
+		Ack from Seller;
+	}
+	
+	Finish to Seller;
+}

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+<chapter id="installation">
+	<title>Installation</title>
+	
+	<para>
+	This is the installation guide for the Scribble tools. Scribble is a notation for describing
+	interaction based protocols between multiple parties.
+	</para>
+	
+	<section>
+		<title>Pre-Requisites</title>
+
+		<para>
+		The pre-requisites for the Scribble design time tools are:
+		</para>
+		
+		<orderedlist>
+			<listitem>
+			Java
+			
+			<para>
+			The design time tools are Java based, so you will need a suitable JVM (Java Virtual
+			Machine) to run the tools. If you also intend to generate Java APIs, for use at
+			runtime, then you will need a JDK (Java Development Kit).
+			</para>
+			
+			<para>
+			Download the version 1.6 (or higher) from the
+			<ulink url="http://www.java.com">http://www.java.com</ulink>. Once
+			downloaded, follow the instructions to install the JVM or JDK on your system.
+			</para>
+			</listitem>
+			
+			<listitem>
+			Eclipse
+			
+			<para>
+			The Scribble protocol descriptions can be edited using a standard text editor, and
+			the Scribble tools can be invoked using command line tools (as described in the
+			following chapter).
+			</para>
+			
+			<para>
+			However it is also possible to use the Scribble tools from within the Eclipse
+			IDE environment, by installing the Scribble tools as plugins. If you wish to use
+			this approach, then you will need a version of Eclipse (3.6 or higher) which can
+			be downloaded from the Eclipse website:
+			<ulink url="http://www.eclipse.org">http://www.eclipse.org</ulink>.
+			</para>
+			</listitem>
+		</orderedlist>
+		
+	</section>
+	
+	<section>
+		<title>Installing the Command Line Version</title>
+		
+		<para>
+		To install the command line version of the Scribble tools:
+		</para>
+		
+		<orderedlist>
+			<listitem>
+			Download the Scribble tools distribution from:
+			<ulink url="http://www.jboss.org/scribble/downloads">http://www.jboss.org/scribble/downloads</ulink>.
+			</listitem>
+			<listitem>
+			Unpack the tool distribution in a suitable location
+			</listitem>
+			<listitem>
+			Setup environment
+			
+			<para>
+			The commands can be executed from the bin folder of the Scribble tools
+			distribution. Alternatively, the <filename>bin</filename> folder can be
+			added to the execution path, to enable the commands to be performed from
+			any folder. 
+			</para>
+			
+			<para>
+			For example, on Linux running bash, simply edit the <filename>.bash_profile</filename>
+			file within your home directory to add:
+			</para>
+			
+			<informalexample>
+				<programlisting>
+				PATH=$PATH:${path-to-scribble}/bin
+				</programlisting>
+			</informalexample>
+			</listitem>
+		</orderedlist>
+	</section>
+	
+	<section>
+		<title>Installing the Eclipse Version</title>
+		
+		<para>
+		The Eclipse plugins for the Scribble tools can be loaded from an update site
+		using the update manager.
+		</para>
+		
+		<para>
+		Select the <emphasis>Help->Install New Software...</emphasis> menu item, from
+		your Eclipse environment, and follow the instructions.
+		</para>
+		
+		<para>
+		If installing a stable or development milestone release of the tools, then
+		the plugins can be installed directly from the network. If installing a nightly
+		build of the plugins, to access the latest (but unstable) version of the tools,
+		then it will be necessary to download the update site as an archive, and point
+		the Eclipse update manager at the downloaded zip file.
+		</para>
+		
+		<para>
+		The location of the stable, development and nightly builds can be found on the
+		Scribble download page:
+		<ulink url="http://www.jboss.org/scribble/downloads">http://www.jboss.org/scribble/downloads</ulink>.
+		</para>
+		
+		<para>
+		Once the Eclipse environment has restarted, and if the distribution has been downloaded
+		and expanded, then the next step is to import the samples into the Eclipse
+		workspace.
+		</para>
+		
+		<para>
+		This can be done by selecting the <emphasis>Import->General->Existing Projects into Workspace</emphasis>
+		and locating the <filename>samples</filename> folder from the Scribble
+		distribution.
+		</para>
+		
+		<para>
+		This will display the set of projects within the <filename>samples</filename>
+		folder, which can either be individually selected, or all imported at once.
+		Once imported, the Scribble Protocol files can be opened by double clicking
+		the file, to open the protocol context sensitive editor.
+		</para>
+	</section>
+</chapter>

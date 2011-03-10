@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+<chapter id="examples">
+	<title>Examples</title>
+  
+	<para>
+	This chapter presents some examples using the <emphasis>protocol</emphasis> notation.
+	</para>
+	
+	<section>
+		<title>Buyer Seller Protocol</title>
+		
+		<para>
+		This example shows how a <emphasis>Buyer</emphasis> participant and
+		<emphasis>Seller</emphasis> participant may interact in an ordering
+		process.
+		</para>
+
+		<informalexample>
+  			<programlisting>
+<emphasis role="bold">protocol</emphasis> BuyerSeller {
+    <emphasis role="bold">role</emphasis> Buyer, Seller;
+    
+    Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller;
+    
+    <emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer; {
+        Invoice {
+        }
+        Rejected {
+        }
+	}
+}
+			</programlisting>
+		</informalexample>
+		
+	</section>
+
+	<section>
+		<title>Credit Check Protocol</title>
+		
+		<para>
+		This example shows how a <emphasis>Client</emphasis> role performs a credit check
+		against a <emphasis>CreditAgency</emphasis> role.
+		</para>
+		
+		<informalexample>
+  			<programlisting>
+<emphasis role="bold">protocol</emphasis> CreditCheck {
+    <emphasis role="bold">role</emphasis> Client, CreditAgency;
+    
+    CheckCredit <emphasis role="bold">from</emphasis> Client <emphasis role="bold">to</emphasis> CreditAgency;
+    
+    <emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> CreditAgency <emphasis role="bold">to</emphasis> Client {
+        CreditOk {
+        }
+        NoCredit {
+        }
+    }
+}
+			</programlisting>
+		</informalexample>
+		
+	</section>
+
+	<section>
+		<title>Purchasing Goods Conversation</title>
+		
+		<para>
+		This example shows how a protocol can be defined that 'implements' the
+		previous two protocol examples.
+		</para>
+		
+		<informalexample>
+  			<programlisting>
+<emphasis role="bold">protocol</emphasis> BuyerSellerCreditCheck {
+    <emphasis role="bold">role</emphasis> Buyer, Seller, CreditAgency;
+    
+    Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller;
+    
+    CheckCredit <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> CreditAgency;
+    
+    <emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> CreditAgency <emphasis role="bold">to</emphasis> Seller {
+        CreditOk {
+        	Invoice <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer;
+        }
+        NoCredit {
+        	Rejected <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer;
+        }
+    }
+}
+			</programlisting>
+		</informalexample>
+		
+	</section>
+
+</chapter>

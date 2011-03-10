@@ -1,0 +1,24 @@
+import Order;
+import Finish;
+import Rejected;
+import Accepted;
+import Another;
+
+protocol Recur@Seller {
+	role Buyer;
+
+	rec Transaction {
+		Order from Buyer;
+		
+		choice to Buyer {
+			tryAgain(Rejected):
+				Transaction;
+
+			exit(Accepted):
+		}
+		
+		Another from Buyer;
+	}
+	
+	Finish from Buyer;
+}

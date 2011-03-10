@@ -1,0 +1,17 @@
+import M1;
+import M2;
+import M3;
+import M4;
+
+protocol ChoiceMergeNested@C {
+	role A, B, D;
+
+	choice from B {
+		M4:
+			choice to D {
+			    M1:
+			    M2:
+			}
+		M3:
+	}
+}

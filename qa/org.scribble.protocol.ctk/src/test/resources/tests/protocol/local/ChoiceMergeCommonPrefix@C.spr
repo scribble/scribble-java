@@ -1,0 +1,12 @@
+import Int;
+import Boolean;
+
+protocol ChoiceMergeCommonPrefix@C {
+    role A, B;
+
+    Int from B;
+    choice from B {
+        ok():
+        quit():
+    }
+}

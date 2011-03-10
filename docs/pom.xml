@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.scribble</groupId>
+	<artifactId>docs</artifactId>
+	<packaging>pom</packaging>
+	<version>2.0.0.20110303-M4</version>
+	<name>Scribble::Docs</name>
+
+    <parent>
+	    <groupId>org</groupId>
+		<artifactId>scribble</artifactId>
+		<version>2.0.0.20110303-M4</version>
+	</parent>
+
+  	<profiles>
+		<profile>
+			<id>docs</id>
+			<modules>
+				<module>developerguide</module>
+				<module>protocolguide</module>
+				<module>userguide</module>
+			</modules>
+		</profile>
+	</profiles>
+
+	<pluginRepositories>
+		<pluginRepository>
+		<!--
+			<id>jboss</id>
+			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
+			-->
+	        <id>jboss-public-repository-group</id>
+	        <name>JBoss Public Maven Repository Group</name>
+			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
+			<releases>
+			  <enabled>true</enabled>
+			  <updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+			  <enabled>true</enabled>
+			  <updatePolicy>never</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>
+

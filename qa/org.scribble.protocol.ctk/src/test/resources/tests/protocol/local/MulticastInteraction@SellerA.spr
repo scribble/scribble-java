@@ -1,0 +1,7 @@
+import Order;
+
+protocol MulticastInteraction@SellerA {
+	role Buyer, SellerB;
+
+	Order from Buyer;
+}

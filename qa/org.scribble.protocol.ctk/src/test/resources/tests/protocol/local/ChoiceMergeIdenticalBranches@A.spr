@@ -1,0 +1,8 @@
+protocol ChoiceMergeIdenticalBranches@A {
+    role B, C;
+
+    choice to B {
+        l1():
+        l2():
+    }
+}

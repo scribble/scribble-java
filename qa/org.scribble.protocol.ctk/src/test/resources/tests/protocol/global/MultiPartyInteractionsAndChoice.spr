@@ -1,0 +1,30 @@
+import Order;
+import CreditCheck;
+import CreditOk;
+import Confirmation;
+import OutOfStock;
+import InsufficientCredit;
+
+protocol MultiPartyInteractionsAndChoice {
+	role Buyer, Broker, CreditAgency, Seller;
+
+	Order from Buyer to Broker;
+	
+	CreditCheck from Broker to CreditAgency;
+	
+	choice from CreditAgency to Broker {
+		CreditOk:
+			Order from Broker to Seller;
+		
+			choice from Seller to Broker {
+				Confirmation:
+					Confirmation from Broker to Buyer;
+
+				OutOfStock:
+					OutOfStock from Broker to Buyer;
+			}
+
+		InsufficientCredit:		
+			InsufficientCredit from Broker to Buyer;
+	}
+}

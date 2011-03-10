@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<description xmlns="http://www.scribble.org/monitor">
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="op1" nextIndex="1"/>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Scope" innerIndex="2" nextIndex="6"/>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveChoice" otherRole="p2">
+        <path nextIndex="3" id="op2_M2"/>
+        <path nextIndex="5" id="op4"/>
+    </node>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveMessage" otherRole="p2" operator="op2" nextIndex="4">
+        <messageType value="M2"/>
+    </node>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="op3"/>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Call" callIndex="1"/>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveMessage" otherRole="p2" operator="op6"/>
+</description>

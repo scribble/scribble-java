@@ -1,0 +1,11 @@
+import Order;
+import Confirm;
+import protocol Sub from "ReferencedExternalProtocol.spr";
+
+protocol RunSubProtocol@Buyer {
+	role Seller;
+
+	run Sub@SubBuyer(Seller);
+
+	Confirm from Seller;
+}

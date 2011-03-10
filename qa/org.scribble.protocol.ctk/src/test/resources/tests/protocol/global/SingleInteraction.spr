@@ -1,0 +1,7 @@
+import Order;
+
+protocol SingleInteraction {
+	role Buyer, Seller;
+
+	Order from Buyer to Seller;
+}

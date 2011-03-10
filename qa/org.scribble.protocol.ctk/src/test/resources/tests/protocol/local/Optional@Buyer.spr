@@ -1,0 +1,9 @@
+import Order;
+
+protocol Optional@Buyer {
+	role Seller;
+
+	optional {
+		Order to Seller;
+	}
+}

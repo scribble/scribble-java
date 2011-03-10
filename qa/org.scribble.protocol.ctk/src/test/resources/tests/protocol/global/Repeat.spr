@@ -1,0 +1,12 @@
+import Order;
+import Finish;
+
+protocol Repeat {
+	role Buyer, Seller;
+
+	repeat @ Buyer {
+		Order from Buyer to Seller;
+	}
+	
+	Finish from Buyer to Seller;
+}

@@ -1,0 +1,9 @@
+import Order;
+
+// The protocol definition
+protocol SingleInteraction {
+	role Buyer, Seller;
+
+	// Send the order from the buyer to the seller
+	Order from Buyer to Seller;
+}

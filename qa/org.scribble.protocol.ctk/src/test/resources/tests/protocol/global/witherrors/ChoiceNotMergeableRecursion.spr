@@ -1,0 +1,10 @@
+protocol ChoiceNotMergeableRecursion {
+    role A, B, C;
+
+    rec X {
+        choice from A to B {
+            l1(): l0() from B to C; X;
+            l2(): l0() from B to C;
+        }
+    }
+}

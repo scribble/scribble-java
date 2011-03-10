@@ -1,0 +1,22 @@
+import Order;
+import Confirmation;
+import OutOfStock;
+import InvalidProduct;
+
+protocol MultiPartyInteractionsAndChoice2@Buyer {
+	role Broker, Seller;
+
+	Order to Broker;
+	
+	choice from Broker {
+		validProduct():
+		
+			choice from Broker {
+				Confirmation:
+
+				OutOfStock:
+			}
+
+		invalidProduct(InvalidProduct):		
+	}
+}

@@ -1,0 +1,3 @@
+protocol Raise@Buyer {
+	role Seller;
+}

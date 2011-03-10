@@ -1,0 +1,12 @@
+[[ Annotation before import ]]
+import Order;
+
+[[ Annotation before top protocol ]]
+protocol SingleInteraction@Buyer {
+
+	[[ Annotation before role list ]]
+	role Seller;
+
+	[[ Annotation before interaction ]]
+	Order to Seller;
+}

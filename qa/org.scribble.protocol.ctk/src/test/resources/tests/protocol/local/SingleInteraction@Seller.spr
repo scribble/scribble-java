@@ -1,0 +1,7 @@
+import Order;
+
+protocol SingleInteraction@Seller {
+	role Buyer;
+
+	Order from Buyer;
+}

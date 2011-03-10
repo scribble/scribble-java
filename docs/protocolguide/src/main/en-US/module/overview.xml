@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+<chapter id="overview">
+	<title>Overview</title>
+	<para>
+	Scribble is a simple text based language for describing interactions between multiple
+	parties in the form of a <emphasis>Protocol</emphasis>.
+	</para>
+	  
+	<para>
+	The <emphasis>Protocol</emphasis> notation is intended to provide an abstract description
+	of the communication behaviour, with addtional optional layers being used to describe
+	assertions and other governance related information.
+	</para>
+	
+	<para>
+	In the world of programming languages, the measure of the simplicity of a language
+	is based on its representation of a simple 'hello world' example. The Scribble
+	Protocol representation of such an example would be: 
+	</para>
+	
+	<informalexample>
+  		<programlisting>
+			<emphasis role="bold">protocol</emphasis> HelloWorld {
+			    <emphasis role="bold">role</emphasis> You, World;
+			    Hello <emphasis role="bold">from</emphasis> You <emphasis role="bold">to</emphasis> World;
+			}
+  		</programlisting>
+  	</informalexample>
+
+	<para>
+	The notation will be explained in more detail in this guide, but basically the
+	protocol is named 'HelloWorld', and describes the communication behaviour between
+	two roles (or parties). A single interaction has been defined, sending a message
+	of type 'Hello' from role 'You' to role 'World'.
+	</para>
+	
+	<para>
+	In the following chapter we will explore the main constructs of the protocol
+	notation. Then we will explore a range of examples, before concluding with a
+	brief overview of some more advanced constructs that are still under development.
+	</para>
+	
+</chapter>

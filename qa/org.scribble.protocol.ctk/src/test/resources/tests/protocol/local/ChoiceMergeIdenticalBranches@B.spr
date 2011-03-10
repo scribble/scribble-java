@@ -1,0 +1,10 @@
+protocol ChoiceMergeIdenticalBranches@B {
+    role A, C;
+
+    choice from A {
+        l1():
+            Int to C;
+        l2():
+            Int to C;
+    }
+}

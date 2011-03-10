@@ -1,0 +1,8 @@
+import Order;
+import Customer;
+
+protocol SingleInteractionRPC {
+	role Buyer, Seller;
+
+	submit(Order,Customer) from Buyer to Seller;
+}

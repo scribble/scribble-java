@@ -1,0 +1,24 @@
+import Order;
+import Finish;
+import Rejected;
+import Accepted;
+import Another;
+
+protocol Recur {
+	role Buyer, Seller;
+
+	rec Transaction {
+		Order from Buyer to Seller;
+		
+		choice from Seller to Buyer {
+			tryAgain():
+				Transaction;
+
+			exit():
+		}
+		
+		Another from Buyer to Seller;
+	}
+	
+	Finish from Buyer to Seller;
+}

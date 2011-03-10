@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % RH-ENTITIES SYSTEM "Common_Config/rh-entities.ent">
+]>
+
+<book lang="en">
+  <bookinfo>
+    <title>Scribble 2.0</title>
+    <subtitle>User Guide</subtitle>
+  </bookinfo>
+  
+  <toc/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="module/installation.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="module/commands.xml"/>
+
+</book>

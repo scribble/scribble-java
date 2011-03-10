@@ -1,0 +1,15 @@
+import M1;
+import M2;
+import M3;
+
+protocol Parallel@Buyer {
+	role Seller;
+
+	par {
+		M1 to Seller;
+	} and {
+		M2 to Seller;
+	}
+	
+	M3 to Seller;
+}

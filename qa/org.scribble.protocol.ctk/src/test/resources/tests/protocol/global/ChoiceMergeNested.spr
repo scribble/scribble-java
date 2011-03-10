@@ -1,0 +1,26 @@
+import M1;
+import M2;
+import M3;
+import M4;
+
+protocol ChoiceMergeNested {
+	role A, B, C, D;
+
+	choice from A to B {
+		M1:
+		    M4 from B to C;
+			choice from C to D {
+			    M1:
+			        M1 from D to A;
+			        M3 from A to B;
+			    M2:
+			        M2 from D to A;
+			        M4 from A to B;
+			}
+
+		M2:
+		    M3 from B to A;
+		    M3 from B to C;
+		    M3 from B to D;
+	}
+}

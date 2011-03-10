@@ -1,0 +1,13 @@
+import xml "{http://www.acme.org/Purchasing}Order" as Order,
+				"{http://www.acme.org/Purchasing}Quote" as Quote 
+				from "../schema/MySchema.xsd";
+
+import java "Order" as Order,
+		"Quote" as Quote
+		from "org.scribble";
+
+protocol SingleInteraction@Seller {
+	role Buyer;
+
+	Order from Buyer;
+}

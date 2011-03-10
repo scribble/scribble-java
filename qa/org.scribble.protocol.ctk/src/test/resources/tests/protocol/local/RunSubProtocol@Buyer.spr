@@ -1,0 +1,14 @@
+import Order;
+import Confirm;
+
+protocol RunSubProtocol@Buyer {
+	role Seller;
+
+	run Sub@SubBuyer(Seller);
+
+	Confirm from Seller;
+
+	protocol Sub@SubBuyer(role SubSeller) {
+		Order to SubSeller;
+	}
+}

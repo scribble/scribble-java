@@ -1,0 +1,12 @@
+import Order;
+import Confirm;
+
+protocol RunInlineProtocol@Buyer {
+	role Seller;
+
+	run protocol @Buyer(Seller) {
+		Order to Seller;
+	}
+
+	Confirm from Seller;
+}

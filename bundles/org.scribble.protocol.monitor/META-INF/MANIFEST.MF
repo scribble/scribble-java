@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scribble Protocol Monitor
+Bundle-SymbolicName: org.scribble.protocol.monitor;singleton:=true
+Bundle-Version: 2.0.0.20110303-M4
+Bundle-Vendor: www.scribble.org
+Import-Package: javax.xml.bind,
+ javax.xml.namespace,
+ org.osgi.framework;version="1.3.0"
+Export-Package: org.scribble.protocol.monitor,
+ org.scribble.protocol.monitor.model,
+ org.scribble.protocol.monitor.util
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.scribble.protocol.monitor.osgi.Activator

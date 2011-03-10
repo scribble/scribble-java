@@ -1,0 +1,8 @@
+import Order;
+import protocol Sub from "ReferencedExternalProtocol.spr";
+
+protocol IncludeProtocol@Buyer {
+	role Seller;
+
+	include Sub@SubBuyer(Seller);
+}

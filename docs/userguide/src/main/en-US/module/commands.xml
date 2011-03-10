@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+<chapter id="commands">
+	<title>Command Line Tools</title>
+	
+	<para>
+	This section describes how to use the command line tools that are available in the
+	<filename>bin</filename> folder of the Scribble protocol tools distribution.
+	</para>
+	
+	<para>
+	Information on the Scribble protocol notation (or language) can be found in the
+	<emphasis>Scribble Protocol Guide</emphasis>.
+	</para>
+	
+	<section>
+		<title>Parsing a Protocol description</title>
+
+		<para>
+		The <emphasis>parse</emphasis> command takes a single parameter, which is the
+		path to the file containing the protocol description to be parsed.
+		</para>
+		
+		<para>
+		For example, if the user is in the top level folder of the Scribble tools distribution,
+		without the <filename>bin</filename> folder being added to the system path, then the
+		following command can be executed to parse one of the sample protocol descriptions:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+bin/parse.sh samples/models/parse_and_validate/OrderProcess.spr
+			</programlisting>
+		</informalexample>
+		
+		<para>
+		If the supplied file path is not valid, then the command will report an error.
+		</para>
+		
+		<para>
+		This command will read the protocol description, as shown below, and convert it
+		into an internal object model representation.
+		</para>
+		
+		<informalexample>
+			<programlisting>
+import MyOrder;
+
+protocol OrderProcess {
+	role Buyer, Seller;
+
+	MyOrder from Buyer to Seller;
+}
+			</programlisting>
+		</informalexample>
+
+		<para>
+		If any errors are detected in the syntax of the parsed protocol description, then
+		these will be reported to the command window. For example, if you edit the
+		supplied file, and change the keyword <emphasis>from</emphasis> to append
+		an 'X', then the following error would be produced:
+		</para>
+
+		<informalexample>
+			<programlisting>
+ERROR: [line 6] no viable alternative at input 'fromX'
+			</programlisting>
+		</informalexample>
+		
+	</section>
+	
+	<section>
+		<title>Validating a Protocol description</title>
+
+		<para>
+		The <emphasis>validate</emphasis> command takes a single parameter, which is the
+		path to the file containing the protocol description to be validated.
+		</para>
+		
+		<para>
+		For example, if the user is in the top level folder of the Scribble tools distribution,
+		without the <filename>bin</filename> folder being added to the system path, then the
+		following command can be executed to validate one of the sample protocol descriptions:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+bin/validate.sh samples/models/parse_and_validate/OrderProcess.spr
+			</programlisting>
+		</informalexample>
+		
+		<para>
+		When this command is performed initially, it will complete without any errors. However
+		if you edit the <filename>samples/models/parse_and_validate/OrderProcess.spr</filename> file, and change
+		the following line:
+		</para>
+				
+		<informalexample>
+			<programlisting>
+	MyOrder from Buyer to Seller;
+			</programlisting>
+		</informalexample>
+		
+		<para>
+		For example, change the <emphasis>Seller</emphasis> role to
+		<emphasis>Seller2</emphasis>, and then re-run the <emphasis>validate</emphasis>
+		command. This will result in the following error messages:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+ERROR: [line 6] Unknown role 'Seller2'
+			</programlisting>
+		</informalexample>
+		
+	</section>
+	
+	<section>
+		<title>Checking Conformance a Protocol description</title>
+
+		<note>
+		Conformance checking functionality has been temporarily removed from this
+		release, although an improved implementation should be provided in the near
+		future, and therefore the command infrastructure has remained for now.
+		</note>		
+		
+		<para>
+		The <emphasis>conforms</emphasis> command takes two parameters, which are
+		both paths to a file containing a protocol description. The first parameter
+		is the protocol description to be checked for conformance against the
+		second parameter's protocol description. So the second parameter is the
+		<emphasis>reference</emphasis> protocol description.
+		</para>
+		
+		<para>
+		For example, if the user is in the top level folder of the Scribble tools distribution,
+		without the <filename>bin</filename> folder being added to the system path, then the
+		following command can be executed to check one of the sample protocol descriptions
+		as being conformant with another reference protocol description:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+bin/conforms.sh samples/models/conformance_descriptions/OrderProcess.spr samples/models/conformance_descriptions/ReferenceOrderProcess.spr
+			</programlisting>
+		</informalexample>
+		
+		<para>
+		If you inspect the two process definitions, you will find one difference. The
+		first protocol definition has the following interaction:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+	MyOrder from Buyer to Seller;
+			</programlisting>
+		</informalexample>
+
+		<para>
+		The second, reference protocol description, has the following interaction:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+	Order from Buyer to Seller;
+			</programlisting>
+		</informalexample>
+		
+		<para>
+		This results in the following conformance error message:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+ERROR: Type mismatch with referenced description, was expecting Order
+			</programlisting>
+		</informalexample>
+	</section>
+
+	<section>
+		<title>Projecting a Protocol description</title>
+
+		<para>
+		The <emphasis>project</emphasis> command takes two parameters. The first parameter
+		is the protocol description to be projected and the second parameter is the
+		<emphasis>participant</emphasis>.
+		</para>
+		
+		<para>
+		For example, if the user is in the top level folder of the Scribble tools distribution,
+		without the <filename>bin</filename> folder being added to the system path, then the
+		following command can be executed to project one of the sample protocol descriptions:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+bin/project.sh samples/models/parse_and_validate/OrderProcess.spr Seller
+			</programlisting>
+		</informalexample>
+		
+		<para>
+		This results in the following located Protocol being displayed on the console:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+import MyOrder;
+protocol OrderProcess @ Seller {
+	role Buyer;
+	MyOrder from Buyer;
+}
+			</programlisting>
+		</informalexample>
+	</section>
+
+	<section>
+		<title>Simulating a Protocol description against an Event List</title>
+
+		<para>
+		The <emphasis>simulate</emphasis> command takes two parameters. The first parameter
+		is the located protocol description and the second parameter is the event list to
+		be simulated against the protocol.
+		</para>
+		
+		<para>
+		For example, if the user is in the top level folder of the Scribble tools distribution,
+		without the <filename>bin</filename> folder being added to the system path, then the
+		following command can be executed to simulate the protocol description:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+bin/simulate.sh samples/models/monitor/Purchasing@Buyer.spr samples/models/monitor/Purchasing@Buyer.events
+			</programlisting>
+		</informalexample>
+		
+		<para>
+		The event file is a <emphasis>comma separated value (csv)</emphasis> format, with the first
+		column representing the event type, and the second representing the value relevant for the
+		event type. The event types are listed below:
+		</para>
+		
+		<itemizedlist>
+		<listitem>
+		sendMessage
+		<para>
+		The value represents the message type.
+		</para>
+		</listitem>
+		<listitem>
+		receiveMessage
+		<para>
+		The value represents the message type.
+		</para>
+		</listitem>
+		<listitem>
+		sendChoice
+		<para>
+		The value represents the choice label.
+		</para>
+		</listitem>
+		<listitem>
+		receiveChoice
+		<para>
+		The value represents the choice label.
+		</para>
+		</listitem>
+		<listitem>
+		sendDecision
+		<para>
+		The value represents the decision boolean value (e.g. true or false). This can be
+		used in conjunction with an <emphasis>Optional</emphasis> or
+		<emphasis>Repeat</emphasis> protocol construct.
+		</para>
+		</listitem>
+		<listitem>
+		receiveDecision
+		<para>
+		The value represents the decision boolean value (e.g. true or false). This can be
+		used in conjunction with an <emphasis>Optional</emphasis> or
+		<emphasis>Repeat</emphasis> protocol construct.
+		</para>
+		</listitem>
+		</itemizedlist>
+				
+		<para>
+		The event file used in the sample command above is:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+sendMessage,Order,Broker
+receiveChoice,_Confirmation,Broker
+receiveMessage,Confirmation,Broker
+			</programlisting>
+		</informalexample>
+				
+		<para>
+		and the result of running the command is:
+		</para>
+		
+		<informalexample>
+			<programlisting>
+INFO: Validated SendMessage Order to Broker
+INFO: Validated ReceiveChoice _Confirmation from Broker
+INFO: Validated ReceiveMessage Confirmation from Broker
+			</programlisting>
+		</informalexample>
+	</section>
+</chapter>

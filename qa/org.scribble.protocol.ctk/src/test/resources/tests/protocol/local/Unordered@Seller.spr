@@ -1,0 +1,14 @@
+import Order;
+import Cancel;
+import Finish;
+
+protocol Unordered@Seller {
+	role Buyer;
+
+	unordered {
+		Order from Buyer;
+		Cancel from Buyer;
+	}
+	
+	Finish from Buyer;
+}

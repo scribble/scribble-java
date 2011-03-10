@@ -1,0 +1,20 @@
+import Order;
+import Cancel;
+import Invoice;
+import Cancelled;
+
+protocol ChoiceMerge {
+	role Buyer, Broker, Seller;
+
+	choice from Buyer to Broker {
+		Order:
+			Order from Broker to Seller;
+			Invoice from Seller to Broker;
+			Invoice from Broker to Buyer;
+
+		Cancel:
+			Cancel from Broker to Seller;
+			Cancelled from Seller to Broker;
+			Cancelled from Broker to Buyer;
+	}
+}

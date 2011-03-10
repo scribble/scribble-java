@@ -1,0 +1,14 @@
+import Order;
+import Confirm;
+
+protocol RunSubProtocol {
+	role Buyer, Seller;
+
+	run Sub(Buyer, Seller);
+
+	Confirm from Seller to Buyer;
+
+	protocol Sub(role SubBuyer, role SubSeller) {
+		Order from SubBuyer to SubSeller;
+	}
+}

@@ -1,0 +1,15 @@
+import Order;
+
+/*
+This is the block comment.
+*/
+
+protocol SingleInteraction {
+	role Buyer, Seller;
+
+	/*
+	Inner block comment.
+	*/
+	
+	Order from Buyer to Seller;
+}
