@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.common.resource.Content;
+import org.scribble.common.resource.ResourceContent;
 import org.scribble.common.resource.ResourceLocator;
 import org.scribble.protocol.model.ProtocolImport;
 import org.scribble.protocol.model.ProtocolModel;
@@ -78,22 +80,9 @@ public class DefaultProtocolContext implements ProtocolContext {
 			try {
 				java.net.URI uri=getResourceLocator().getResourceURI(pi.getLocation());
 				
-				java.io.InputStream is=uri.toURL().openStream();
-									
-				if (is != null) {
-					String sourceType=null;
-					int index=pi.getLocation().lastIndexOf('.');
-					if (index != -1) {
-						sourceType = pi.getLocation().substring(index+1);
-					
-						ret = m_parserManager.parse(sourceType, is, journal, this);
-					} else {
-						journal.error("Unable to determine source type for '"+
-									pi.getLocation()+"'", pi.getProperties());
-					}
-					
-					is.close();
-				}
+				Content content=new ResourceContent(uri);
+				
+				ret = m_parserManager.parse(content, journal, this);
 				
 			} catch(MalformedURLException mue) {
 				journal.error("Invalid URL '"+mue+"'", pi.getProperties());

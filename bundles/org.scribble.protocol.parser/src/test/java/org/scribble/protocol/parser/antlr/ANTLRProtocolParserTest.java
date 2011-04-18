@@ -22,6 +22,7 @@ import org.scribble.common.logging.CachedJournal.IssueDetails;
 import org.scribble.common.logging.CachedJournal.IssueType;
 import org.scribble.common.logging.Journal;
 import org.scribble.common.model.Annotation;
+import org.scribble.common.resource.ByteArrayContent;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.model.Visitor;
@@ -38,26 +39,20 @@ public class ANTLRProtocolParserTest {
 		//String fifth=";\r\n}\r\n";
 		String protocol=first+second+third+fourth;
 		
-		java.io.InputStream is=new java.io.ByteArrayInputStream(protocol.getBytes());
+		ByteArrayContent content=new ByteArrayContent(protocol.getBytes());
 		
 		ANTLRProtocolParser parser=new ANTLRProtocolParser();
 		
 		CachedJournal journal=new CachedJournal();
 		
 		try {
-			ProtocolModel pm=parser.parse(is, journal, null);
+			ProtocolModel pm=parser.parse(content, journal, null);
 			
 			if (pm != null) {
 				fail("Returned protocol model should be null due to error");
 			}
 		} catch(Exception e) {
 			fail("Failed to parse protocol");
-		}
-		
-		try {
-			is.close();
-		} catch(Exception e) {
-			fail("Failed to close input stream: "+e.getLocalizedMessage());
 		}
 		
 		if (journal.getIssues().size() != 1) {
@@ -125,7 +120,7 @@ public class ANTLRProtocolParserTest {
 		String sixth="}\r\n";
 		String protocol=first+comment1+second+comment2+third+comment3+fourth+fifth+sixth;
 		
-		java.io.InputStream is=new java.io.ByteArrayInputStream(protocol.getBytes());
+		ByteArrayContent content=new ByteArrayContent(protocol.getBytes());
 		
 		ANTLRProtocolParser parser=new ANTLRProtocolParser();
 		
@@ -135,19 +130,13 @@ public class ANTLRProtocolParserTest {
 		CachedJournal journal=new CachedJournal();
 		
 		try {
-			ProtocolModel pm=parser.parse(is, journal, null);
+			ProtocolModel pm=parser.parse(content, journal, null);
 			
 			if (pm == null) {
 				fail("Protocol Model should not be null");
 			}
 		} catch(Exception e) {
 			fail("Failed to parse protocol");
-		}
-		
-		try {
-			is.close();
-		} catch(Exception e) {
-			fail("Failed to close input stream: "+e.getLocalizedMessage());
 		}
 		
 		if (journal.getIssues().size() != 0) {
@@ -209,7 +198,7 @@ public class ANTLRProtocolParserTest {
 		String fourth="}\r\n";
 		String protocol=first+comment1+second+comment2+third+fourth;
 		
-		java.io.InputStream is=new java.io.ByteArrayInputStream(protocol.getBytes());
+		ByteArrayContent content=new ByteArrayContent(protocol.getBytes());
 		
 		ANTLRProtocolParser parser=new ANTLRProtocolParser();
 		
@@ -219,7 +208,7 @@ public class ANTLRProtocolParserTest {
 		CachedJournal journal=new CachedJournal();
 		
 		try {
-			ProtocolModel pm=parser.parse(is, journal, null);
+			ProtocolModel pm=parser.parse(content, journal, null);
 			
 			if (pm == null) {
 				fail("Protocol Model should not be null");
@@ -227,13 +216,7 @@ public class ANTLRProtocolParserTest {
 		} catch(Exception e) {
 			fail("Failed to parse protocol");
 		}
-		
-		try {
-			is.close();
-		} catch(Exception e) {
-			fail("Failed to close input stream: "+e.getLocalizedMessage());
-		}
-		
+
 		if (journal.getIssues().size() != 0) {
 			fail("No issues should have been reported: "+journal.getIssues().size());
 		}

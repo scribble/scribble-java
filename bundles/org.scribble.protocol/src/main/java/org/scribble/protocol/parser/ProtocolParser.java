@@ -16,6 +16,7 @@
 package org.scribble.protocol.parser;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.common.resource.Content;
 import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.*;
 
@@ -34,13 +35,12 @@ public interface ProtocolParser {
 	
 	/**
 	 * This method determines whether the parser supports the specified
-	 * source type. Typically the source type will be the extension used
-	 * when the source is stored in a file.
+	 * content.
 	 * 
-	 * @param sourceType The source type
-	 * @return Whether the parser supports the source type
+	 * @param content The content
+	 * @return Whether the parser supports the content
 	 */
-	public boolean isSupported(String sourceType);
+	public boolean isSupported(Content content);
 	
 	/**
 	 * This method parses the supplied input stream to create a protocol
@@ -54,7 +54,7 @@ public interface ProtocolParser {
 	 * @return The protocol model
 	 * @throws IOException Failed to retrieve content to be parsed
 	 */
-	public ProtocolModel parse(java.io.InputStream is, Journal journal, ProtocolContext context)
+	public ProtocolModel parse(Content content, Journal journal, ProtocolContext context)
 								throws java.io.IOException;
 
 }

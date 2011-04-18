@@ -20,7 +20,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.scribble.common.logging.*;
+import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
+import org.scribble.common.resource.FileContent;
 import org.scribble.protocol.DefaultProtocolContext;
 import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.parser.ProtocolParserManager;
@@ -80,17 +82,10 @@ public class SimulateCommand implements org.scribble.command.Command {
 			} else {
 				// TODO: Check if protocol
 				try {
-					java.io.InputStream is=new java.io.FileInputStream(f1);
-			
-					int index=f1.getName().lastIndexOf('.');
-					String sourceType=null;
+					Content content=new FileContent(f1);
 					
-					if (index != -1) {
-						sourceType = f1.getName().substring(index+1);
-					}
-			
 					org.scribble.protocol.model.ProtocolModel model=
-							m_protocolParserManager.parse(sourceType, is, m_journal,
+							m_protocolParserManager.parse(content, m_journal,
 									new DefaultProtocolContext(m_protocolParserManager,
 									new DefaultResourceLocator(f1.getParentFile())));
 			
@@ -108,8 +103,6 @@ public class SimulateCommand implements org.scribble.command.Command {
 					} else {
 						m_journal.error("Protocol model not retrieved", null);
 					}
-					
-					is.close();
 					
 				} catch(Exception e) {
 					m_journal.error("Failed to parse file '"+args[0]+"'", null);
