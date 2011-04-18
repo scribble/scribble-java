@@ -16,7 +16,9 @@
 package org.scribble.command.project;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
+import org.scribble.common.resource.FileContent;
 import org.scribble.protocol.DefaultProtocolContext;
 import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.export.ProtocolExporter;
@@ -68,20 +70,12 @@ public class ProjectCommand implements org.scribble.command.Command {
 				ProtocolModel model=null;
 				
 				try {
-					java.io.InputStream is=new java.io.FileInputStream(f);
+					Content content=new FileContent(f);
 					
-					int index=f.getName().lastIndexOf('.');
-					String sourceType=null;
-					
-					if (index != -1) {
-						sourceType = f.getName().substring(index+1);
-					}
-			
-					model = m_protocolParserManager.parse(sourceType, is, m_journal,
+					model = m_protocolParserManager.parse(content, m_journal,
 							new DefaultProtocolContext(m_protocolParserManager,
 									new DefaultResourceLocator(f.getParentFile())));
 			
-					is.close();
 				} catch(Exception e) {
 					m_journal.error("Failed to parse file '"+args[0]+"'", null);
 				}

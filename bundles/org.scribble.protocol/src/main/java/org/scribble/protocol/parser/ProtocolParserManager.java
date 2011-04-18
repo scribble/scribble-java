@@ -16,6 +16,7 @@
 package org.scribble.protocol.parser;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.common.resource.Content;
 import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.ProtocolModel;
 
@@ -42,19 +43,18 @@ public interface ProtocolParserManager {
 	public void removeParser(ProtocolParser parser);
 
 	/**
-	 * This method parses the supplied input stream to create a protocol
+	 * This method parses the supplied content to create a protocol
 	 * model. Any issues are reported to the supplied journal. The protocol
 	 * context is optionally used by the parser to locate additional artifacts
 	 * required to construct the protocol model.
 	 * 
-	 * @param sourceType The type of the content to be parsed
-	 * @param is The input stream containing the information to be parsed
+	 * @param content The content to be parsed
 	 * @param journal The journal for reporting issues
 	 * @param context The protocol context
 	 * @return The protocol model
 	 * @throws IOException Failed to retrieve content to be parsed
 	 */
-	public ProtocolModel parse(String sourceType, java.io.InputStream is, Journal journal,
+	public ProtocolModel parse(Content content, Journal journal,
 				ProtocolContext context) throws java.io.IOException;
 	
 	/**

@@ -17,6 +17,8 @@
 package org.scribble.command.parse;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.common.resource.Content;
+import org.scribble.common.resource.FileContent;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.parser.ProtocolParserManager;
 
@@ -54,23 +56,14 @@ public class ParseCommand implements org.scribble.command.Command {
 			} else {
 				// TODO: Check if protocol
 				try {
-					java.io.InputStream is=new java.io.FileInputStream(f);
-			
-					int index=f.getName().lastIndexOf('.');
-					String sourceType=null;
-					
-					if (index != -1) {
-						sourceType = f.getName().substring(index+1);
-					}
-			
-					ProtocolModel pm=m_protocolParserManager.parse(sourceType, is, m_journal, null);
+					Content content=new FileContent(f);
+
+					ProtocolModel pm=m_protocolParserManager.parse(content, m_journal, null);
 					
 					if (pm == null) {
 						m_journal.error("Protocol Model is null", null);	
 					}
 			
-					is.close();
-					
 					ret = true;
 				} catch(Exception e) {
 					m_journal.error("Failed to parse file '"+args[0]+"'", null);

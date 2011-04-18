@@ -17,7 +17,6 @@
 package org.scribble.protocol.parser.antlr;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -26,6 +25,7 @@ import org.scribble.protocol.model.*;
 import org.scribble.protocol.parser.AnnotationProcessor;
 import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.common.logging.Journal;
+import org.scribble.common.resource.Content;
 
 /**
  * This class provides the ANTLR implementation of the Protocol Parser
@@ -39,15 +39,17 @@ public class ANTLRProtocolParser implements ProtocolParser {
 	public ANTLRProtocolParser() {
 	}
 	
-	public boolean isSupported(String sourceType) {
-		return(org.scribble.protocol.ProtocolDefinitions.PROTOCOL_TYPE.equals(sourceType));
+	public boolean isSupported(Content content) {
+		return(content.hasExtension(org.scribble.protocol.ProtocolDefinitions.PROTOCOL_TYPE));
 	}
 
-	public ProtocolModel parse(InputStream is, Journal journal,
+	public ProtocolModel parse(Content content, Journal journal,
 							ProtocolContext context) throws IOException {
 		ProtocolModel ret=null;
 		
         try {
+        	java.io.InputStream is=content.getInputStream();
+        	
         	byte[] b=new byte[is.available()];
         	is.read(b);
         	

@@ -16,7 +16,9 @@
 package org.scribble.command.validate;
 
 import org.scribble.common.logging.*;
+import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
+import org.scribble.common.resource.FileContent;
 import org.scribble.protocol.DefaultProtocolContext;
 import org.scribble.protocol.parser.ProtocolParserManager;
 import org.scribble.protocol.validation.ProtocolValidationManager;
@@ -59,17 +61,10 @@ public class ValidateCommand implements org.scribble.command.Command {
 			} else {
 				// TODO: Check if protocol
 				try {
-					java.io.InputStream is=new java.io.FileInputStream(f);
-					
-					int index=f.getName().lastIndexOf('.');
-					String sourceType=null;
-					
-					if (index != -1) {
-						sourceType = f.getName().substring(index+1);
-					}
-			
+					Content content=new FileContent(f);
+
 					org.scribble.protocol.model.ProtocolModel model=
-						m_protocolParserManager.parse(sourceType, is, m_journal,
+						m_protocolParserManager.parse(content, m_journal,
 							new DefaultProtocolContext(m_protocolParserManager,
 									new DefaultResourceLocator(f.getParentFile())));
 			
@@ -82,8 +77,6 @@ public class ValidateCommand implements org.scribble.command.Command {
 					} else {
 						m_journal.error("Protocol model is null", null);
 					}
-					
-					is.close();
 					
 				} catch(Exception e) {
 					m_journal.error("Failed to parse file '"+args[0]+"'", null);

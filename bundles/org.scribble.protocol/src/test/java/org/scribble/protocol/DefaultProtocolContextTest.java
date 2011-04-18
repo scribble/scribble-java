@@ -23,6 +23,7 @@ import java.io.InputStream;
 
 import org.scribble.common.logging.CachedJournal;
 import org.scribble.common.logging.Journal;
+import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.protocol.model.ProtocolImport;
 import org.scribble.protocol.model.ProtocolImportList;
@@ -152,11 +153,14 @@ public class DefaultProtocolContextTest {
 	public class TestProtocolParserManager extends DefaultProtocolParserManager {
 
 		@Override
-		public ProtocolModel parse(String sourceType, InputStream is,
-				Journal journal, ProtocolContext context) throws IOException {
+		public ProtocolModel parse(Content content, Journal journal,
+							ProtocolContext context) throws IOException {
+			java.io.InputStream is=content.getInputStream();
 			byte[] b=new byte[is.available()];
 			
 			is.read(b);
+			
+			is.close();
 			
 			ProtocolModel ret=new ProtocolModel();
 			ret.getProperties().put(CONTENT_PROPERTY, new String(b));

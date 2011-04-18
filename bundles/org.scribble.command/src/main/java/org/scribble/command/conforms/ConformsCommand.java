@@ -17,7 +17,9 @@
 package org.scribble.command.conforms;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
+import org.scribble.common.resource.FileContent;
 import org.scribble.protocol.DefaultProtocolContext;
 import org.scribble.protocol.conformance.ProtocolConformer;
 import org.scribble.protocol.parser.ProtocolParserManager;
@@ -60,38 +62,20 @@ public class ConformsCommand implements org.scribble.command.Command {
 				m_journal.error("File not found '"+args[1]+"'", null);
 			} else {
 				try {
-					java.io.InputStream is=new java.io.FileInputStream(f1);
+					Content content1=new FileContent(f1);
 					
-					int index=f1.getName().lastIndexOf('.');
-					String sourceType=null;
-					
-					if (index != -1) {
-						sourceType = f1.getName().substring(index+1);
-					}
-			
 					org.scribble.protocol.model.ProtocolModel p1=
-						m_protocolParserManager.parse(sourceType, is, m_journal,
+						m_protocolParserManager.parse(content1, m_journal,
 							new DefaultProtocolContext(m_protocolParserManager,
 									new DefaultResourceLocator(f1.getParentFile())));
 			
-					is.close();
-					
-					is=new java.io.FileInputStream(f2);
-					
-					index=f2.getName().lastIndexOf('.');
-					sourceType=null;
-					
-					if (index != -1) {
-						sourceType = f2.getName().substring(index+1);
-					}
-			
+					Content content2=new FileContent(f2);
+								
 					org.scribble.protocol.model.ProtocolModel p2=
-						m_protocolParserManager.parse(sourceType, is, m_journal,
+						m_protocolParserManager.parse(content2, m_journal,
 							new DefaultProtocolContext(m_protocolParserManager,
 									new DefaultResourceLocator(f2.getParentFile())));	
 			
-					is.close();
-					
 					if (p1 != null && p2 != null) {
 						m_conformer.conforms(p1, p2, m_journal);
 						
