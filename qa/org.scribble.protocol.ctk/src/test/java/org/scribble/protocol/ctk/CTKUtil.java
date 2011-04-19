@@ -19,7 +19,9 @@ package org.scribble.protocol.ctk;
 import org.scribble.command.simulate.Event;
 import org.scribble.command.simulate.EventProcessor;
 import org.scribble.common.logging.Journal;
+import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
+import org.scribble.common.resource.ResourceContent;
 import org.scribble.protocol.DefaultProtocolContext;
 import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.*;
@@ -62,17 +64,19 @@ public class CTKUtil {
 	public static ProtocolModel getModel(String filename, TestJournal logger) {
 		ProtocolModel ret=null;
 		
-		java.io.InputStream is=
-				ClassLoader.getSystemResourceAsStream(filename);
+		java.net.URL url=
+				ClassLoader.getSystemResource(filename);
 
-		if (is == null) {
+		if (url == null) {
 			fail("Failed to load protocol '"+filename+"'");
 		}
 		
 		org.scribble.protocol.parser.ProtocolParser parser=getParser();
 		
 		try {
-			ret = parser.parse(is, logger, null);
+			Content content=new ResourceContent(url.toURI());
+			
+			ret = parser.parse(content, logger, null);
 		} catch(Exception e) {
 			fail("Failed to parse protocol: "+e);
 		}
@@ -300,10 +304,9 @@ public class CTKUtil {
 		ProtocolParserManager ppm=new DefaultProtocolParserManager() {
 
 			@Override
-			public ProtocolModel parse(String sourceType, InputStream is,
-					Journal journal, ProtocolContext context)
+			public ProtocolModel parse(Content content,	Journal journal, ProtocolContext context)
 					throws IOException {
-				return(parser.parse(is, journal, context));
+				return(parser.parse(content, journal, context));
 			}
 			
 		};
