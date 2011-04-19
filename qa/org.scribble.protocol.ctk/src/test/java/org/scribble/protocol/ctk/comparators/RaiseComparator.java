@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class RaiseComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Raise m=(Raise)arg0;
 		Raise e=(Raise)arg1;

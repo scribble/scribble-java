@@ -19,25 +19,6 @@ package org.scribble.protocol.export;
 public class DefaultProtocolExportManager implements ProtocolExportManager {
 	
 	/**
-	 * This method adds a new exporter to the manager.
-	 * 
-	 * @param exporter The exporter
-	 */
-	public void addExporter(ProtocolExporter exporter) {
-		m_exporters.put(exporter.getId(), exporter);
-	}
-
-	/**
-	 * This method removes an existing exporter from the manager.
-	 * 
-	 * @param exporter The exporter
-	 * @return Whether the exporter has been removed
-	 */
-	public boolean removeExporter(ProtocolExporter exporter) {
-		return(m_exporters.remove(exporter.getId()) != null);
-	}
-
-	/**
 	 * This method returns the protocol exporter associated with
 	 * the supplied id.
 	 * 
@@ -45,7 +26,15 @@ public class DefaultProtocolExportManager implements ProtocolExportManager {
 	 * @return The exporter, or null if not found
 	 */
 	public ProtocolExporter getExporter(String id) {
-		return(m_exporters.get(id));
+		if (m_exporters != null) {
+			for (ProtocolExporter pe : m_exporters) {
+				if (pe.getId().equals(id)) {
+					return(pe);
+				}
+			}
+		}
+		
+		return(null);
 	}
 	
 	/**
@@ -55,15 +44,22 @@ public class DefaultProtocolExportManager implements ProtocolExportManager {
 	 * @return The list of exporters
 	 */
 	public java.util.List<ProtocolExporter> getExporters() {
-		java.util.List<ProtocolExporter> ret=new java.util.Vector<ProtocolExporter>();
-		
-		for (ProtocolExporter pe : m_exporters.values()) {
-			ret.add(pe);
+		if (m_exporters == null) {
+			m_exporters = new java.util.ArrayList<ProtocolExporter>();
 		}
 		
-		return(ret);
+		return(m_exporters);
 	}
 	
-	private java.util.Map<String,ProtocolExporter> m_exporters=
-				new java.util.HashMap<String,ProtocolExporter>();
+	/**
+	 * This method sets the list of exporters registered
+	 * with the manager.
+	 * 
+	 * @param exporters The list of exporters
+	 */
+	public void setExporters(java.util.List<ProtocolExporter> exporters) {
+		m_exporters = exporters;
+	}
+	
+	private java.util.List<ProtocolExporter> m_exporters=null;
 }

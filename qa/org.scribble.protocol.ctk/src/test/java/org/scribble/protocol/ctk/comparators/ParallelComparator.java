@@ -20,7 +20,6 @@ import org.scribble.protocol.model.*;
 
 public class ParallelComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Parallel m=(Parallel)arg0;
 		Parallel e=(Parallel)arg1;

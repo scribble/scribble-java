@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class InteractionComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Interaction m=(Interaction)arg0;
 		Interaction e=(Interaction)arg1;

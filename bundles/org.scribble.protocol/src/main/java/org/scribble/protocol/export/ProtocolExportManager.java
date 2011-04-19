@@ -22,21 +22,6 @@ package org.scribble.protocol.export;
 public interface ProtocolExportManager {
 	
 	/**
-	 * This method adds a new exporter to the manager.
-	 * 
-	 * @param exporter The exporter
-	 */
-	public void addExporter(ProtocolExporter exporter);
-
-	/**
-	 * This method removes an existing exporter from the manager.
-	 * 
-	 * @param exporter The exporter
-	 * @return Whether the exporter has been removed
-	 */
-	public boolean removeExporter(ProtocolExporter exporter);
-
-	/**
 	 * This method returns the protocol exporter associated with
 	 * the supplied id.
 	 * 
@@ -52,5 +37,13 @@ public interface ProtocolExportManager {
 	 * @return The list of exporters
 	 */
 	public java.util.List<ProtocolExporter> getExporters();
+	
+	/**
+	 * This method sets the list of exporters registered
+	 * with the manager.
+	 * 
+	 * @param exporters The list of exporters
+	 */
+	public void setExporters(java.util.List<ProtocolExporter> exporters);
 	
 }

@@ -20,7 +20,6 @@ import org.scribble.protocol.model.*;
 
 public class ParameterDefinitionComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		ParameterDefinition m=(ParameterDefinition)arg0;
 		ParameterDefinition e=(ParameterDefinition)arg1;

@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class TypeImportComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		TypeImport m=(TypeImport)arg0;
 		TypeImport e=(TypeImport)arg1;
