@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class ProtocolReferenceComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		ProtocolReference m=(ProtocolReference)arg0;
 		ProtocolReference e=(ProtocolReference)arg1;

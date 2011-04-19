@@ -20,7 +20,6 @@ import org.scribble.protocol.model.*;
 
 public class DataTypeComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		DataType m=(DataType)arg0;
 		DataType e=(DataType)arg1;

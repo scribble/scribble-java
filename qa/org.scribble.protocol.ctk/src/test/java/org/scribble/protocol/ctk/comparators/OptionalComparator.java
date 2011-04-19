@@ -23,7 +23,6 @@ import org.scribble.protocol.model.*;
 
 public class OptionalComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Optional m=(Optional)arg0;
 		Optional e=(Optional)arg1;

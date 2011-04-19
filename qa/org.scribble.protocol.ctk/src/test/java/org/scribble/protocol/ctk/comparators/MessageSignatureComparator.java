@@ -23,7 +23,6 @@ import org.scribble.protocol.model.*;
 
 public class MessageSignatureComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		MessageSignature m=(MessageSignature)arg0;
 		MessageSignature e=(MessageSignature)arg1;

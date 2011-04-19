@@ -21,7 +21,6 @@ import org.scribble.protocol.model.*;
 
 public class RecursionComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Recursion m=(Recursion)arg0;
 		Recursion e=(Recursion)arg1;

@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class RunComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Run m=(Run)arg0;
 		Run e=(Run)arg1;

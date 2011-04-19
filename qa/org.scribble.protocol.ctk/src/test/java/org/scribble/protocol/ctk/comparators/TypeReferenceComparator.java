@@ -23,7 +23,6 @@ import org.scribble.protocol.model.TypeReference;
 
 public class TypeReferenceComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		TypeReference m=(TypeReference)arg0;
 		TypeReference e=(TypeReference)arg1;

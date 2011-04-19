@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class RoleListComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		RoleList m=(RoleList)arg0;
 		RoleList e=(RoleList)arg1;

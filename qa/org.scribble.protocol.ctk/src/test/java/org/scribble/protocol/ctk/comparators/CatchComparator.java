@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class CatchComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Catch m=(Catch)arg0;
 		Catch e=(Catch)arg1;

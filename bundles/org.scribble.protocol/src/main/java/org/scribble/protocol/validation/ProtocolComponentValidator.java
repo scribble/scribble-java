@@ -29,24 +29,21 @@ import org.scribble.protocol.validation.rules.*;
  */
 public class ProtocolComponentValidator implements ProtocolValidator {
 	
-	private java.util.List<ProtocolComponentValidatorRule> m_rules=
-					new java.util.Vector<ProtocolComponentValidatorRule>();
+	private java.util.List<ProtocolComponentValidatorRule> m_rules=null;
 
-	//private static Logger _log=Logger.getLogger(ProtocolComponentValidator.class.getName());
-	
 	public ProtocolComponentValidator() {
 	}
 	
-	protected void register(ProtocolComponentValidatorRule rule) {
-		m_rules.add(rule);
-	}
-
-	protected void unregister(ProtocolComponentValidatorRule rule) {
-		m_rules.remove(rule);
+	public java.util.List<ProtocolComponentValidatorRule> getRules() {
+		if (m_rules == null) {
+			m_rules = new java.util.ArrayList<ProtocolComponentValidatorRule>();
+		}
+		
+		return(m_rules);
 	}
 	
-	protected java.util.List<ProtocolComponentValidatorRule> getRules() {
-		return(m_rules);
+	public void setRules(java.util.List<ProtocolComponentValidatorRule> rules) {
+		m_rules = rules;
 	}
 	
 	public void validate(org.scribble.protocol.model.ProtocolModel model,
