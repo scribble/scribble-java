@@ -23,7 +23,6 @@ import org.scribble.protocol.model.*;
 
 public class RepeatComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Repeat m=(Repeat)arg0;
 		Repeat e=(Repeat)arg1;

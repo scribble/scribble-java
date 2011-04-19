@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class UnorderedComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Unordered m=(Unordered)arg0;
 		Unordered e=(Unordered)arg1;

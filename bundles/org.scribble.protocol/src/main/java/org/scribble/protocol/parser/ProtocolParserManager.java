@@ -29,20 +29,6 @@ import org.scribble.protocol.model.ProtocolModel;
 public interface ProtocolParserManager {
 	
 	/**
-	 * This method adds a protocol parser to the manager.
-	 * 
-	 * @param parser The protocol parser
-	 */
-	public void addParser(ProtocolParser parser);
-
-	/**
-	 * This method removes a protocol parser to the manager.
-	 * 
-	 * @param parser The protocol parser
-	 */
-	public void removeParser(ProtocolParser parser);
-
-	/**
 	 * This method parses the supplied content to create a protocol
 	 * model. Any issues are reported to the supplied journal. The protocol
 	 * context is optionally used by the parser to locate additional artifacts
@@ -63,5 +49,12 @@ public interface ProtocolParserManager {
 	 * @return The list of protocol parsers
 	 */
 	public java.util.List<ProtocolParser> getParsers();
+	
+	/**
+	 * This method sets the list of protocol parsers.
+	 * 
+	 * @param parsers The list of protocol parsers
+	 */
+	public void setParsers(java.util.List<ProtocolParser> parsers);
 	
 }

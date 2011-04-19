@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class ChoiceComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Choice m=(Choice)arg0;
 		Choice e=(Choice)arg1;

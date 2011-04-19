@@ -64,7 +64,7 @@ public class Activator implements BundleActivator {
 				
 				_log.fine("Parser has been added: "+ret);
 				
-				pm.addParser((ProtocolParser)ret);
+				pm.getParsers().add((ProtocolParser)ret);
 				
 				return(ret);
 			}
@@ -89,7 +89,7 @@ public class Activator implements BundleActivator {
 				
 				_log.fine("Validator has been added: "+ret);
 				
-				vm.addValidator((ProtocolValidator)ret);
+				vm.getValidators().add((ProtocolValidator)ret);
 				
 				return(ret);
 			}
@@ -114,7 +114,7 @@ public class Activator implements BundleActivator {
 				
 				_log.fine("Exporter has been added: "+ret);
 				
-				em.addExporter((ProtocolExporter)ret);
+				em.getExporters().add((ProtocolExporter)ret);
 				
 				return(ret);
 			}

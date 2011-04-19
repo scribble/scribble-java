@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class WhenComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		When m=(When)arg0;
 		When e=(When)arg1;

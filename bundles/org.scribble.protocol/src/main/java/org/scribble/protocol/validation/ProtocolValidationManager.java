@@ -24,20 +24,6 @@ package org.scribble.protocol.validation;
 public interface ProtocolValidationManager {
 	
 	/**
-	 * This method adds a protocol validator to the manager.
-	 * 
-	 * @param validator The protocol validator
-	 */
-	public void addValidator(ProtocolValidator validator);
-
-	/**
-	 * This method removes a protocol validator to the manager.
-	 * 
-	 * @param validator The protocol validator
-	 */
-	public void removeValidator(ProtocolValidator validator);
-
-	/**
 	 * This method invokes the validation of the supplied
 	 * model against the registered validators. Any issues
 	 * found during validation will be reported to the
@@ -48,5 +34,19 @@ public interface ProtocolValidationManager {
 	 */
 	public void validate(org.scribble.protocol.model.ProtocolModel model,
 				org.scribble.common.logging.Journal journal);
+	
+	/**
+	 * This method returns the list of protocol validators.
+	 * 
+	 * @return The list of validators
+	 */
+	public java.util.List<ProtocolValidator> getValidators();
+	
+	/**
+	 * This method sets the list of protocol validators.
+	 * 
+	 * @param validators The list of validators
+	 */
+	public void setValidators(java.util.List<ProtocolValidator> validators);
 	
 }

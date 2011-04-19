@@ -16,9 +16,6 @@
  */
 package org.scribble.protocol.validation;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * This class represents the default implementation of the ProtocolValidationManager
  * interface.
@@ -29,8 +26,6 @@ public class DefaultProtocolValidationManager implements ProtocolValidationManag
 	private java.util.List<ProtocolValidator> m_validators=
 							new java.util.Vector<ProtocolValidator>();
 	
-	private static final Logger logger=Logger.getLogger(DefaultProtocolValidationManager.class.getName());
-	
 	/**
 	 * This is the default constructor.
 	 */
@@ -38,29 +33,6 @@ public class DefaultProtocolValidationManager implements ProtocolValidationManag
 	}
 	
 	/**
-	 * This method adds a protocol validator to the manager.
-	 * 
-	 * @param validator The protocol validator
-	 */
-	public void addValidator(ProtocolValidator validator) {
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("Register validator: "+validator);
-		}
-		m_validators.add(validator);
-	}
-
-	/**
-	 * This method removes a protocol validator to the manager.
-	 * 
-	 * @param validator The protocol validator
-	 */
-	public void removeValidator(ProtocolValidator validator) {
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("Unregister validator: "+validator);
-		}
-		m_validators.remove(validator);
-	}
-
 	/**
 	 * This method invokes the validation of the supplied
 	 * model against the registered validators. Any issues
@@ -73,8 +45,33 @@ public class DefaultProtocolValidationManager implements ProtocolValidationManag
 	public void validate(org.scribble.protocol.model.ProtocolModel model,
 				org.scribble.common.logging.Journal logger) {
 	
-		for (ProtocolValidator v : m_validators) {
-			v.validate(model, logger);
+		if (m_validators != null) {
+			for (ProtocolValidator v : m_validators) {
+				v.validate(model, logger);
+			}
 		}
 	}
+	
+	/**
+	 * This method returns the list of protocol validators.
+	 * 
+	 * @return The list of validators
+	 */
+	public java.util.List<ProtocolValidator> getValidators() {
+		if (m_validators == null) {
+			m_validators = new java.util.ArrayList<ProtocolValidator>();
+		}
+		
+		return(m_validators);
+	}
+	
+	/**
+	 * This method sets the list of protocol validators.
+	 * 
+	 * @param validators The list of validators
+	 */
+	public void setValidators(java.util.List<ProtocolValidator> validators) {
+		m_validators = validators;
+	}
+
 }

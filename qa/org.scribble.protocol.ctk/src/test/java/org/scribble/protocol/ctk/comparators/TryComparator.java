@@ -21,7 +21,6 @@ import org.scribble.protocol.model.*;
 
 public class TryComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Try m=(Try)arg0;
 		Try e=(Try)arg1;

@@ -21,7 +21,6 @@ import org.scribble.protocol.model.*;
 
 public class BlockComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Block m=(Block)arg0;
 		Block e=(Block)arg1;

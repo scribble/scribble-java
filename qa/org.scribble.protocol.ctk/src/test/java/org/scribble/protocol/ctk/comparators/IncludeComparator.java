@@ -22,7 +22,6 @@ import org.scribble.protocol.model.*;
 
 public class IncludeComparator implements Comparator<ModelObject> {
 
-	@Override
 	public int compare(ModelObject arg0, ModelObject arg1) {
 		Include m=(Include)arg0;
 		Include e=(Include)arg1;
