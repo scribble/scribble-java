@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scribble Common
 Bundle-SymbolicName: org.scribble.common
-Bundle-Version: 2.0.0.20110505-M5
+Bundle-Version: 2.0.0.SNAPSHOT
 Bundle-Activator: org.scribble.common.osgi.Activator
 Bundle-Vendor: www.scribble.org
 Import-Package: org.osgi.framework
