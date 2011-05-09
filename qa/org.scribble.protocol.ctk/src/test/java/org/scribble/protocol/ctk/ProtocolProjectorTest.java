@@ -40,8 +40,6 @@ public class ProtocolProjectorTest {
     @Parameterized.Parameters
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
-                {"PurchaseGoods3.spr", "PurchaseGoods3@Store.spr"},
-
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0
             {"Annotation.spr", "Annotation@Seller.spr"}, // 1
             {"Choice.spr", "Choice@Buyer.spr"},          // 2

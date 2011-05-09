@@ -1,72 +1,26 @@
-[[ XSDElement ]]
 import xsd "{http://www.jboss.org/examples/store}AccountNotFound" as AccountNotFound, "{http://www.jboss.org/examples/store}BuyConfirmed" as BuyConfirmed, "{http://www.jboss.org/examples/store}BuyFailed" as BuyFailed, "{http://www.jboss.org/examples/store}BuyRequest" as BuyRequest from "http://www.jboss.org/examples/store";
-[[ XSDElement ]]
 import xsd "{http://www.jboss.org/examples/creditAgency}CreditCheckRequest" as CreditCheckRequest, "{http://www.jboss.org/examples/creditAgency}CreditRating" as CreditRating, "{http://www.jboss.org/examples/creditAgency}CustomerUnknown" as CustomerUnknown from "http://www.jboss.org/examples/creditAgency";
-[[ XSDElement ]]
 import xsd "{http://www.jboss.org/examples/logistics}DeliveryConfirmed" as DeliveryConfirmed, "{http://www.jboss.org/examples/logistics}DeliveryRequest" as DeliveryRequest from "http://www.jboss.org/examples/logistics";
-[[ XSDType ]]
 import xsd "{http://www.w3.org/2001/XMLSchema}string" as IDType, "{http://www.w3.org/2001/XMLSchema}anyURI" as URITokenType from "http://www.w3.org/2001/XMLSchema";
-[[ SourceComponent(id=//@choreographies.0) ]]
-[[ Namespace(name=http://www.jboss.org/savara/examples,role=Buyer) ]]
-[[ Namespace(name=http://www.jboss.org/examples/creditAgency,role=CreditAgency) ]]
-[[ Namespace(name=http://www.jboss.org/examples/logistics,role=Logistics) ]]
-[[ Namespace(name=http://www.jboss.org/examples/store,role=Store) ]]
-[[ Type(prefix=tns,namespace=http://www.jboss.org/savara/examples) ]]
-[[ Type(prefix=xsd,namespace=http://www.w3.org/2001/XMLSchema) ]]
-[[ Type(location=store.xsd,prefix=sto,namespace=http://www.jboss.org/examples/store) ]]
-[[ Type(location=creditAgency.xsd,prefix=ca,namespace=http://www.jboss.org/examples/creditAgency) ]]
-[[ Type(location=logistics.xsd,prefix=lg,namespace=http://www.jboss.org/examples/logistics) ]]
 protocol PurchaseGoodsProcess {
 	role Buyer, CreditAgency, Store;
-	[[ SourceComponent(id=//@choreographies.0/@activities.0/@exchangeDetails.0) ]]
-	[[ Interface(name={http://www.jboss.org/examples/store}StoreInterface) ]]
-	[[ Correlation(request=buy) ]]
 	buy(BuyRequest) from Buyer to Store;
-	[[ SourceComponent(id=//@choreographies.0/@activities.1/@exchangeDetails.0) ]]
-	[[ Interface(name={http://www.jboss.org/examples/creditAgency}CreditAgencyInterface) ]]
-	[[ Correlation(request=checkCredit) ]]
 	checkCredit(CreditCheckRequest) from Store to CreditAgency;
-	[[ SourceComponent(id=//@choreographies.0/@activities.2) ]]
 	choice from CreditAgency to Store {
-		[[ Correlation(replyTo=checkCredit) ]]
-		[[ SourceComponent(id=//@choreographies.0/@activities.2/@activities.0/@activities.0/@exchangeDetails.0) ]]
-		[[ Interface(name={http://www.jboss.org/examples/creditAgency}CreditAgencyInterface) ]]
 		checkCredit(CreditRating):
-			[[ SourceComponent(id=//@choreographies.0/@activities.2/@activities.0/@activities.1) ]]
 			choice {
 				label0():
 					role Logistics;
-					[[ SourceComponent(id=//@choreographies.0/@activities.2/@activities.0/@activities.1/@activities.0/@activities.0) ]]
-					[[ Interface(name={http://www.jboss.org/examples/logistics}LogisticsInterface) ]]
-					[[ Correlation(request=deliver) ]]
 					deliver(DeliveryRequest) from Store to Logistics;
-					[[ SourceComponent(id=//@choreographies.0/@activities.2/@activities.0/@activities.1/@activities.0/@activities.1/@exchangeDetails.0) ]]
-					[[ Interface(name={http://www.jboss.org/examples/logistics}LogisticsInterface) ]]
-					[[ Correlation(replyTo=deliver) ]]
 					deliver(DeliveryConfirmed) from Logistics to Store;
-					[[ SourceComponent(id=//@choreographies.0/@activities.2/@activities.0/@activities.1/@activities.0/@activities.2/@exchangeDetails.0) ]]
-					[[ Interface(name={http://www.jboss.org/examples/store}StoreInterface) ]]
-					[[ Correlation(replyTo=buy) ]]
 					buy(BuyConfirmed) from Store to Buyer;
 
 				label1():
-					[[ SourceComponent(id=//@choreographies.0/@activities.2/@activities.0/@activities.1/@activities.1/@activities.0/@exchangeDetails.0) ]]
-					[[ Fault(name=BuyFailed) ]]
-					[[ Interface(name={http://www.jboss.org/examples/store}StoreInterface) ]]
-					[[ Correlation(replyTo=buy) ]]
 					buy(BuyFailed) from Store to Buyer;
 
 			}
 
-		[[ Fault(name=CustomerUnknown) ]]
-		[[ Correlation(replyTo=checkCredit) ]]
-		[[ SourceComponent(id=//@choreographies.0/@activities.2/@activities.1/@activities.0/@exchangeDetails.0) ]]
-		[[ Interface(name={http://www.jboss.org/examples/creditAgency}CreditAgencyInterface) ]]
 		checkCredit(CustomerUnknown):
-			[[ SourceComponent(id=//@choreographies.0/@activities.2/@activities.1/@activities.1/@exchangeDetails.0) ]]
-			[[ Fault(name=AccountNotFound) ]]
-			[[ Interface(name={http://www.jboss.org/examples/store}StoreInterface) ]]
-			[[ Correlation(replyTo=buy) ]]
 			buy(AccountNotFound) from Store to Buyer;
 
 	}

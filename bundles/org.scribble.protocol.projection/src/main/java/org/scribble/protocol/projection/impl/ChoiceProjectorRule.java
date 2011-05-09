@@ -81,64 +81,93 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			
 			if (block != null) {
 				ret.getWhens().add(block);
-
-				// Check if block needs to be merged
-				if (f_merge) {
-					java.util.List<ModelObject> list=
-						org.scribble.protocol.util.InteractionUtil.getInitialInteractions(block);
+			}
+		}
+				
+		// Check if block needs to be merged
+		if (f_merge) {
+			Role destination=null;
+			
+			// Check if initial interactions have same destination
+			for (When block : ret.getWhens()) {
+				
+				java.util.List<ModelObject> list=
+					org.scribble.protocol.util.InteractionUtil.getInitialInteractions(block);
+				for (ModelObject act : list) {
+					Role r=InteractionUtil.getToRole(act);
 					
-					// Remove block
-					ret.getWhens().remove(block);
+					if (destination == null) {
+						destination = r;
+					} else if (destination.equals(r) == false) {
+						f_merge = false;
+						break;
+					}
+				}
+				
+				if (f_merge == false) {
+					 break;
+				}
+			}
+		}
+		
+		if (f_merge) {
+			java.util.List<When> tmp=new java.util.Vector<When>(ret.getWhens());
+			
+			for (When block : tmp) {
+				java.util.List<ModelObject> list=
+					org.scribble.protocol.util.InteractionUtil.getInitialInteractions(block);
+				
+				// Remove block
+				ret.getWhens().remove(block);
+				
+				for (ModelObject act : list) {
+					MessageSignature ms=InteractionUtil.getMessageSignature(act);
+					boolean f_add=true;
 					
-					for (ModelObject act : list) {
-						MessageSignature ms=InteractionUtil.getMessageSignature(act);
-						boolean f_add=true;
+					for (When wb : ret.getWhens()) {
+						MessageSignature wbms=InteractionUtil.getMessageSignature(wb);
 						
-						for (When wb : ret.getWhens()) {
-							MessageSignature wbms=InteractionUtil.getMessageSignature(wb);
+						if (ms.equals(wbms)) {
+							// TODO: Need to check paths for conformance.
+							// If conforms, then merge, if not, then error
+							l.error("MERGING NOT CURRENTLY SUPPORTED", null);
 							
-							if (ms.equals(wbms)) {
-								// TODO: Need to check paths for conformance.
-								// If conforms, then merge, if not, then error
-								l.error("MERGING NOT CURRENTLY SUPPORTED", null);
-								
-								f_add = false;
-							}
+							f_add = false;
+						}
+					}
+					
+					if (f_add) {
+						
+						// Check if roles should be set or matched
+						if (f_rolesSet == false) {
+							fromRole = InteractionUtil.getFromRole(act);
+							toRole = InteractionUtil.getToRole(act);
+							
+							f_rolesSet = true;
+						} else {
+							// TODO: Check that roles match
 						}
 						
-						if (f_add) {
+						// Add path
+						if (act instanceof When) {
+							ret.getWhens().add((When)act);
+						} else if (act instanceof Interaction) {
+							When newwb=new When();
 							
-							// Check if roles should be set or matched
-							if (f_rolesSet == false) {
-								fromRole = InteractionUtil.getFromRole(act);
-								toRole = InteractionUtil.getToRole(act);
-								
-								f_rolesSet = true;
-							} else {
-								// TODO: Check that roles match
-							}
+							newwb.derivedFrom(act);
 							
-							// Add path
-							if (act instanceof When) {
-								ret.getWhens().add((When)act);
-							} else if (act instanceof Interaction) {
-								When newwb=new When();
-								
-								newwb.derivedFrom(act);
-								
-								newwb.setMessageSignature(new MessageSignature(ms));
-								
-								// Copy contents of block except the interaction
-								Block b=(Block)act.getParent();
-								
-								for (Activity a : b.getContents()) {
-									if (a != act) {
-										newwb.getBlock().add(a);
-									}
+							newwb.setMessageSignature(new MessageSignature(ms));
+							
+							// Copy contents of block except the interaction
+							Block b=(Block)act.getParent();
+							
+							for (Activity a : b.getContents()) {
+								if (a != act) {
+									newwb.getBlock().add(a);
 								}
-								
-								ret.getWhens().add(newwb);
 							}
+							
+							ret.getWhens().add(newwb);
 						}
 					}
 				}
