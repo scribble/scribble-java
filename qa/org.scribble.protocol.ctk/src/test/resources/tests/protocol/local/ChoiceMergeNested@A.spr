@@ -4,7 +4,7 @@ import M3;
 import M4;
 
 protocol ChoiceMergeNested@A {
-	role B, C, D;
+	role B, D;
 
 	choice to B {
 	    M1:

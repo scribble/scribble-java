@@ -135,8 +135,14 @@ public class InteractionUtil {
 			// from and/or to role
 			Choice choice=(Choice)elem.getParent();
 			
-			if (m_record && (choice.getFromRole() == null ||
-							choice.getToRole() == null)) {
+			if (m_record && ((choice.getFromRole() != null && choice.getToRole() == null) ||
+					(choice.getFromRole() == null && choice.getToRole() != null)) &&
+					elem.getMessageSignature().getTypeReferences().size() > 0) {
+					
+					//(choice.getFromRole() == null ||
+							//choice.getToRole() == null)) { // &&
+							//(choice.getFromRole() != null && choice.getToRole() != null)) { // &&
+							//elem.getMessageSignature().getTypeReferences().size() > 0) {
 				m_interactions.add(elem);
 				
 				m_record = false;

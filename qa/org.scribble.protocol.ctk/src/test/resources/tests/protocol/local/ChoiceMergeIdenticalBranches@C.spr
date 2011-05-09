@@ -1,5 +1,5 @@
 protocol ChoiceMergeIdenticalBranches@C {
-    role A, B;
+    role B;
 
     Int from B;
 }

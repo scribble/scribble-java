@@ -6,7 +6,7 @@ import OutOfStock;
 import InsufficientCredit;
 
 protocol MultiPartyInteractionsAndChoice@Buyer {
-	role Broker, CreditAgency, Seller;
+	role Broker;
 
 	Order to Broker;
 	

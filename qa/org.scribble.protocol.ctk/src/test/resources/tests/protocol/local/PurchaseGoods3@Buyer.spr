@@ -1,0 +1,17 @@
+import xsd "{http://www.jboss.org/examples/store}AccountNotFound" as AccountNotFound, "{http://www.jboss.org/examples/store}BuyConfirmed" as BuyConfirmed, "{http://www.jboss.org/examples/store}BuyFailed" as BuyFailed, "{http://www.jboss.org/examples/store}BuyRequest" as BuyRequest from "http://www.jboss.org/examples/store";
+import xsd "{http://www.jboss.org/examples/creditAgency}CreditCheckRequest" as CreditCheckRequest, "{http://www.jboss.org/examples/creditAgency}CreditRating" as CreditRating, "{http://www.jboss.org/examples/creditAgency}CustomerUnknown" as CustomerUnknown from "http://www.jboss.org/examples/creditAgency";
+import xsd "{http://www.jboss.org/examples/logistics}DeliveryConfirmed" as DeliveryConfirmed, "{http://www.jboss.org/examples/logistics}DeliveryRequest" as DeliveryRequest from "http://www.jboss.org/examples/logistics";
+import xsd "{http://www.w3.org/2001/XMLSchema}string" as IDType, "{http://www.w3.org/2001/XMLSchema}anyURI" as URITokenType from "http://www.w3.org/2001/XMLSchema";
+protocol PurchaseGoodsProcess@Buyer {
+	role Store;
+	buy(BuyRequest) to Store;
+	
+	choice from Store{
+		buy(BuyConfirmed):
+
+		buy(BuyFailed):
+		
+		buy(AccountNotFound):
+		
+	}
+}

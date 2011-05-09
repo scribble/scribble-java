@@ -92,6 +92,9 @@ public class ProtocolProjectorRule implements ProjectorRule {
 				
 				context.popScope();
 				
+				// Clean up role lists, to ensure they don't include redundant roles
+				cleanUpRoles(prot);
+				
 				if (ret == null) {
 					ret = prot;
 				} else if (ret instanceof Block) {
@@ -106,6 +109,64 @@ public class ProtocolProjectorRule implements ProjectorRule {
 		}
 
 		return(ret);
+	}
+	
+	protected void cleanUpRoles(Protocol protocol) {
+		
+		// Visit protocol to locate role lists
+		protocol.visit(new DefaultVisitor() {
+			
+			public void accept(RoleList list) {
+				
+				// Identify parent block
+				Block parent=(Block)list.getParent();
+				
+				for (int i=list.getRoles().size()-1; i >= 0; i--) {
+					final Role role=(Role)list.getRoles().get(i);
+					final java.util.List<Activity> acts=new java.util.Vector<Activity>();
+					
+					// Find out if role is used in a relevant activity
+					parent.visit(new DefaultVisitor() {
+						
+						public void accept(Interaction interaction) {
+							if (role.equals(interaction.getFromRole()) ||
+									interaction.getToRoles().contains(role)) {
+								acts.add(interaction);
+							}
+						}
+						
+						public boolean start(Choice choice) {
+							if (role.equals(choice.getFromRole()) ||
+									role.equals(choice.getToRole())) {
+								acts.add(choice);
+							}
+							return(true);
+						}
+						
+						public boolean start(Run run) {
+							if (run.getParameter(role.getName()) != null) {
+								acts.add(run);
+							}
+							return(true);
+						}
+						
+						public void accept(Include elem) {
+							if (elem.getParameter(role.getName()) != null) {
+								acts.add(elem);
+							}
+						}
+					});
+				
+					if (acts.size() == 0) {
+						list.getRoles().remove(role);
+						
+						if (list.getRoles().size() == 0) {
+							parent.remove(list);
+						}
+					}
+				}
+			}
+		});
 	}
 	
 	//private static Logger logger = Logger.getLogger("org.scribble.protocol.projector");

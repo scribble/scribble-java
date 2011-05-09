@@ -4,7 +4,7 @@ import Invoice;
 import Cancelled;
 
 protocol ChoiceMerge@Seller {
-	role Buyer, Broker;
+	role Broker;
 
 	choice from Broker {
 		Order:

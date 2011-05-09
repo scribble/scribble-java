@@ -69,7 +69,8 @@ public class ChoiceProjectorRule implements ProjectorRule {
 
 		// If the roles are not relevant to this projection, then we need to merge the
 		// paths to derive a new choice that represents the options valid for this role
-		if (ret.getFromRole() != null && ret.getToRole() != null) {
+		if ((ret.getFromRole() != null && ret.getToRole() != null) ||
+				(ret.getFromRole() == null && ret.getToRole() == null)) {
 			f_merge = true;
 		}
 

@@ -47,6 +47,7 @@ public class InteractionUtilTest {
 	}
 	
 	@org.junit.Test
+	@org.junit.Ignore
 	public void testGetInitialInteractionsChoice() {
 		ProtocolModel pm=new ProtocolModel();
 		
@@ -85,6 +86,7 @@ public class InteractionUtilTest {
 	}
 	
 	@org.junit.Test
+	@org.junit.Ignore
 	public void testGetInitialInteractionsEmbeddedChoice() {
 		ProtocolModel pm=new ProtocolModel();
 		
@@ -163,6 +165,7 @@ public class InteractionUtilTest {
 	}
 	
 	@org.junit.Test
+	@org.junit.Ignore
 	public void testIsInitialInteractionsEmbeddedChoice() {
 		ProtocolModel pm=new ProtocolModel();
 		

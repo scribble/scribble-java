@@ -40,6 +40,8 @@ public class ProtocolProjectorTest {
     @Parameterized.Parameters
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
+                {"PurchaseGoods3.spr", "PurchaseGoods3@Store.spr"},
+
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0
             {"Annotation.spr", "Annotation@Seller.spr"}, // 1
             {"Choice.spr", "Choice@Buyer.spr"},          // 2
@@ -55,7 +57,11 @@ public class ProtocolProjectorTest {
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@A.spr"},         // 11
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@B.spr"},         // 12
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@C.spr"},         // 13
+        		
+        	/* SCRIBBLE-91
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
+            */
+            
             {"IncludeProtocol.spr", "IncludeProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")},         // 15
             {"IncludeProtocol.spr", "IncludeProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},        // 16
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"},
@@ -71,8 +77,12 @@ public class ProtocolProjectorTest {
             {"Optional.spr", "Optional@Seller.spr"},
             {"Parallel.spr", "Parallel@Buyer.spr"},
             {"Parallel.spr", "Parallel@Seller.spr"},
+                
+            /* SCRIBBLE-92 - remove raise activity
             {"Raise.spr", "Raise@Buyer.spr"},
             {"Raise.spr", "Raise@Seller.spr"},
+            */
+
             {"Recur.spr", "Recur@Buyer.spr"},
             {"Recur.spr", "Recur@Seller.spr"},
             {"Recur2.spr", "Recur2@Buyer.spr"},
@@ -92,7 +102,8 @@ public class ProtocolProjectorTest {
             {"TryCatch.spr", "TryCatch@Buyer.spr"},
             {"TryCatch.spr", "TryCatch@Seller.spr"},
             {"Unordered.spr", "Unordered@Buyer.spr"},
-            {"Unordered.spr", "Unordered@Seller.spr"}
+            {"Unordered.spr", "Unordered@Seller.spr"},
+            {"PurchaseGoods3.spr", "PurchaseGoods3@Buyer.spr"}
         };
         List<Object[]> result = new LinkedList<Object[]>();
         for (Object[] sub: array) {
