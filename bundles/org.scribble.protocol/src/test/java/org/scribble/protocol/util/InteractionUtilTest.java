@@ -47,7 +47,6 @@ public class InteractionUtilTest {
 	}
 	
 	@org.junit.Test
-	@org.junit.Ignore
 	public void testGetInitialInteractionsChoice() {
 		ProtocolModel pm=new ProtocolModel();
 		
@@ -59,12 +58,14 @@ public class InteractionUtilTest {
 		p.getBlock().add(choice);
 		
 		When wb1=new When();
+		wb1.setMessageSignature(new MessageSignature(new TypeReference()));
 		choice.getWhens().add(wb1);
 		
 		Interaction i1=new Interaction();
 		wb1.getBlock().add(i1);
 		
 		When wb2=new When();
+		wb2.setMessageSignature(new MessageSignature(new TypeReference()));
 		choice.getWhens().add(wb2);
 		
 		Interaction i2=new Interaction();
@@ -86,7 +87,6 @@ public class InteractionUtilTest {
 	}
 	
 	@org.junit.Test
-	@org.junit.Ignore
 	public void testGetInitialInteractionsEmbeddedChoice() {
 		ProtocolModel pm=new ProtocolModel();
 		
@@ -106,12 +106,14 @@ public class InteractionUtilTest {
 		wb1.getBlock().add(choice2);
 		
 		When wb1_1=new When();
+		wb1_1.setMessageSignature(new MessageSignature(new TypeReference()));
 		choice2.getWhens().add(wb1_1);
 		
 		Interaction i1=new Interaction();
 		wb1_1.getBlock().add(i1);
 		
 		When wb1_2=new When();
+		wb1_2.setMessageSignature(new MessageSignature(new TypeReference()));
 		choice2.getWhens().add(wb1_2);
 		
 		Interaction i2=new Interaction();
@@ -165,7 +167,6 @@ public class InteractionUtilTest {
 	}
 	
 	@org.junit.Test
-	@org.junit.Ignore
 	public void testIsInitialInteractionsEmbeddedChoice() {
 		ProtocolModel pm=new ProtocolModel();
 		
@@ -185,12 +186,14 @@ public class InteractionUtilTest {
 		wb1.getBlock().add(choice2);
 		
 		When wb1_1=new When();
+		wb1_1.setMessageSignature(new MessageSignature(new TypeReference()));
 		choice2.getWhens().add(wb1_1);
 		
 		Interaction i1=new Interaction();
 		wb1_1.getBlock().add(i1);
 		
 		When wb1_2=new When();
+		wb1_2.setMessageSignature(new MessageSignature(new TypeReference()));
 		choice2.getWhens().add(wb1_2);
 		
 		Interaction i2=new Interaction();
