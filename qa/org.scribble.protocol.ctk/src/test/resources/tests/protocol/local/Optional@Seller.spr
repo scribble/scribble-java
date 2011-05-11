@@ -3,6 +3,7 @@ import Order;
 protocol Optional@Seller {
 	role Buyer;
 
+	Order from Buyer;
 	optional @ Buyer {
 		Order from Buyer;
 	}

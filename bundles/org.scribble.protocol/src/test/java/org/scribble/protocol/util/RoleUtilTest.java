@@ -128,4 +128,174 @@ public class RoleUtilTest {
 			fail("Role "+part6+" not in list");
 		}
 	}
+	
+	@org.junit.Test
+	public void testGetEnclosingBlockSingleActivities() {
+		Protocol p=new Protocol();
+		
+		Role r0=new Role();
+		r0.setName("r0");
+		
+		Interaction i0=new Interaction();
+		i0.setFromRole(r0);
+		p.getBlock().add(i0);
+		
+		Role r1=new Role();
+		r1.setName("r1");
+		
+		Role r2=new Role();
+		r2.setName("r2");
+		
+		Parallel par=new Parallel();
+		p.getBlock().add(par);
+		
+		Block parb1=new Block();
+		par.getBlocks().add(parb1);
+		
+		Interaction i1=new Interaction();
+		i1.setFromRole(r1);
+		
+		parb1.add(i1);
+		
+		Block parb2=new Block();
+		par.getBlocks().add(parb2);
+		
+		Choice choice1=new Choice();
+		parb2.add(choice1);
+		
+		When w1=new When();
+		choice1.getWhens().add(w1);
+		
+		Block wb1=new Block();
+		w1.setBlock(wb1);
+		
+		Interaction i2=new Interaction();
+		i2.setFromRole(r2);
+		
+		wb1.add(i2);
+		
+		// Check results
+		Block b0=RoleUtil.getEnclosingBlock(p, r0);
+		
+		if (b0 == null) {
+			fail("b0 is null");
+		}
+		
+		if (b0 != p.getBlock()) {
+			fail("b0 not protocol block");
+		}
+		
+		Block b1=RoleUtil.getEnclosingBlock(p, r1);
+		
+		if (b1 == null) {
+			fail("b1 is null");
+		}
+		
+		if (b1 != parb1) {
+			fail("b1 not parallel block");
+		}
+		
+		Block b2=RoleUtil.getEnclosingBlock(p, r2);
+		
+		if (b2 == null) {
+			fail("b2 is null");
+		}
+		
+		if (b2 != wb1) {
+			fail("b2 not when block");
+		}
+	}
+	
+	@org.junit.Test
+	public void testGetEnclosingBlockMultiActivities() {
+		Protocol p=new Protocol();
+		
+		Role r0=new Role();
+		r0.setName("r0");
+		
+		Interaction i0=new Interaction();
+		i0.setFromRole(r0);
+		p.getBlock().add(i0);
+		
+		Role r1=new Role();
+		r1.setName("r1");
+		
+		Role r2=new Role();
+		r2.setName("r2");
+		
+		Parallel par=new Parallel();
+		p.getBlock().add(par);
+		
+		Block parb1=new Block();
+		par.getBlocks().add(parb1);
+		
+		Interaction i11=new Interaction();
+		i11.setFromRole(r1);
+		
+		parb1.add(i11);
+		
+		Block parb2=new Block();
+		par.getBlocks().add(parb2);
+		
+		Interaction i12=new Interaction();
+		i12.setFromRole(r1);
+		
+		parb2.add(i12);
+		
+		Choice choice1=new Choice();
+		parb2.add(choice1);
+		
+		When w1=new When();
+		choice1.getWhens().add(w1);
+		
+		Block wb1=new Block();
+		w1.setBlock(wb1);
+		
+		Interaction i21=new Interaction();
+		i21.setFromRole(r2);
+		
+		wb1.add(i21);
+		
+		When w2=new When();
+		choice1.getWhens().add(w2);
+		
+		Block wb2=new Block();
+		w2.setBlock(wb2);
+		
+		Interaction i22=new Interaction();
+		i22.setFromRole(r2);
+		
+		wb2.add(i22);
+		
+		// Check results
+		Block b0=RoleUtil.getEnclosingBlock(p, r0);
+		
+		if (b0 == null) {
+			fail("b0 is null");
+		}
+		
+		if (b0 != p.getBlock()) {
+			fail("b0 not protocol block");
+		}
+		
+		Block b1=RoleUtil.getEnclosingBlock(p, r1);
+		
+		if (b1 == null) {
+			fail("b1 is null");
+		}
+		
+		if (b1 != p.getBlock()) {
+			fail("b1 not parallel parent block (i.e. protocol block)");
+		}
+		
+		Block b2=RoleUtil.getEnclosingBlock(p, r2);
+		
+		if (b2 == null) {
+			fail("b2 is null");
+		}
+		
+		if (b2 != parb2) {
+			fail("b2 not parallel block containing choice");
+		}
+	}
 }

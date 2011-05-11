@@ -40,8 +40,6 @@ public class ProtocolProjectorTest {
     @Parameterized.Parameters
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
-                {"Repeat2.spr", "Repeat2@Buyer.spr"}, // 0
-                
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0
             {"Annotation.spr", "Annotation@Seller.spr"}, // 1
             {"Choice.spr", "Choice@Buyer.spr"},          // 2
@@ -58,25 +56,21 @@ public class ProtocolProjectorTest {
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@B.spr"},         // 12
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@C.spr"},         // 13
         		
-        	/* SCRIBBLE-91
-            {"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
-            */
-            
-            {"IncludeProtocol.spr", "IncludeProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")},         // 15
-            {"IncludeProtocol.spr", "IncludeProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},        // 16
-            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"},
-            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"},
-            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@CreditAgency.spr"},
-            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Seller.spr"},
-            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Broker.spr"},
-            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Buyer.spr"},
-            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Seller.spr"},
-            {"MulticastInteraction.spr", "MulticastInteraction@Buyer.spr"},
-            {"MulticastInteraction.spr", "MulticastInteraction@SellerA.spr"},
-            {"Optional.spr", "Optional@Buyer.spr"},
-            {"Optional.spr", "Optional@Seller.spr"},
-            {"Parallel.spr", "Parallel@Buyer.spr"},
-            {"Parallel.spr", "Parallel@Seller.spr"},
+            {"IncludeProtocol.spr", "IncludeProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
+            {"IncludeProtocol.spr", "IncludeProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
+            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
+            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
+            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@CreditAgency.spr"}, // 18
+            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Seller.spr"}, // 19
+            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Broker.spr"}, // 20
+            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Buyer.spr"}, // 21
+            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Seller.spr"}, // 22
+            {"MulticastInteraction.spr", "MulticastInteraction@Buyer.spr"}, // 23
+            {"MulticastInteraction.spr", "MulticastInteraction@SellerA.spr"}, // 24
+            {"Optional.spr", "Optional@Buyer.spr"}, // 25
+            {"Optional.spr", "Optional@Seller.spr"}, // 26
+            {"Parallel.spr", "Parallel@Buyer.spr"}, // 27
+            {"Parallel.spr", "Parallel@Seller.spr"}, // 28
                 
             /* SCRIBBLE-92 - remove raise activity
             {"Raise.spr", "Raise@Buyer.spr"},
@@ -89,6 +83,8 @@ public class ProtocolProjectorTest {
             {"Recur2.spr", "Recur2@Seller.spr"},
             {"Repeat.spr", "Repeat@Buyer.spr"},
             {"Repeat.spr", "Repeat@Seller.spr"},
+            {"Repeat2.spr", "Repeat2@CreditAgency.spr"},
+            {"Repeat2.spr", "Repeat2@Buyer.spr"},
             {"RunExternalProtocol.spr", "RunExternalProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
             {"RunExternalProtocol.spr", "RunExternalProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
             {"RunInlineProtocol.spr", "RunInlineProtocol@Buyer.spr"},
@@ -104,6 +100,11 @@ public class ProtocolProjectorTest {
             {"Unordered.spr", "Unordered@Buyer.spr"},
             {"Unordered.spr", "Unordered@Seller.spr"},
             {"PurchaseGoods3.spr", "PurchaseGoods3@Buyer.spr"}
+            
+        	/* SCRIBBLE-91
+            {"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
+            */
+            
         };
         List<Object[]> result = new LinkedList<Object[]>();
         for (Object[] sub: array) {

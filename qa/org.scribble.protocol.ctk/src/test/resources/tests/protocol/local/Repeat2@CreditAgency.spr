@@ -1,0 +1,6 @@
+protocol Repeat2@CreditAgency {
+	role Store;
+	
+	checkCredit(CreditCheckRequest) from Store;
+	checkCredit(CreditRating) to Store;
+}

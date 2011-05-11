@@ -1149,21 +1149,33 @@ public class ProtocolParserTest {
 		
 		protocol.getBlock().add(rl);
 		
+		Interaction interaction1=new Interaction();
+		
+		MessageSignature ms1=new MessageSignature();
+		TypeReference tref1=new TypeReference();
+		tref1.setName("Order");
+		ms1.getTypeReferences().add(tref1);
+		interaction1.setMessageSignature(ms1);
+		interaction1.setFromRole(buyer);
+		interaction1.getToRoles().add(seller);
+		
+		protocol.getBlock().add(interaction1);
+		
 		Optional optional=new Optional();
 		
 		optional.getRoles().add(buyer);
 		
-		Interaction interaction=new Interaction();
+		Interaction interaction2=new Interaction();
 		
-		MessageSignature ms=new MessageSignature();
-		TypeReference tref=new TypeReference();
-		tref.setName("Order");
-		ms.getTypeReferences().add(tref);
-		interaction.setMessageSignature(ms);
-		interaction.setFromRole(buyer);
-		interaction.getToRoles().add(seller);
+		MessageSignature ms2=new MessageSignature();
+		TypeReference tref2=new TypeReference();
+		tref2.setName("Order");
+		ms2.getTypeReferences().add(tref2);
+		interaction2.setMessageSignature(ms2);
+		interaction2.setFromRole(buyer);
+		interaction2.getToRoles().add(seller);
 		
-		optional.getBlock().add(interaction);
+		optional.getBlock().add(interaction2);
 		
 		protocol.getBlock().add(optional);
 		

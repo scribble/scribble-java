@@ -70,6 +70,112 @@ public class RoleUtil {
 		return(ret);
 	}
 	
+	/**
+	 * This method returns the innermost block that encloses all of the activities
+	 * associated with the supplied role.
+	 * 
+	 * @param protocol The protocol
+	 * @param role The role
+	 * @return The block
+	 */
+	public static Block getEnclosingBlock(final Protocol protocol, final Role role) {
+		Block ret=null;
+		final java.util.List<Block> blocks=new java.util.Vector<Block>();
+		
+		// Find all blocks enclosing an activity associated with the supplied role
+		protocol.visit(new DefaultVisitor() {
+			
+			public boolean start(Protocol elem) {
+				// Don't visit contained protocols
+				return(protocol == elem);
+			}
+			
+			public void accept(org.scribble.protocol.model.Interaction elem) {
+				if (role.equals(elem.getFromRole()) || elem.getToRoles().contains(role) ||
+						((elem.getFromRole() == null || elem.getToRoles().size() == 0) &&
+								role.equals(elem.enclosingProtocol().getRole()))) {
+					blocks.add((Block)elem.getParent());
+				}
+			}
+			
+			public boolean start(Choice elem) {
+				if (role.equals(elem.getFromRole()) || role.equals(elem.getToRole()) ||
+						((elem.getFromRole() == null || elem.getToRole() == null) &&
+								role.equals(elem.enclosingProtocol().getRole()))) {
+					blocks.add((Block)elem.getParent());
+				}
+				
+				return(true);
+			}
+		});
+		
+		if (blocks.size() == 0) {
+			// Fall through as no suitable activities found
+		} else if (blocks.size() == 1) {
+			ret = blocks.get(0);
+		} else {
+			// Find common parent block
+			java.util.List<java.util.List<Block>> listOfBlocks=
+						new java.util.Vector<java.util.List<Block>>();
+			
+			for (Block block : blocks) {
+				java.util.List<Block> lb=getBlockPath(block);
+				
+				if (lb != null && lb.size() > 0) {
+					listOfBlocks.add(lb);
+				}
+			}
+			
+			// Find common lowest level block
+			int pos=-1;
+			java.util.List<Block> refblocks=listOfBlocks.get(0);
+			
+			for (int j=0; j < refblocks.size(); j++) {
+				boolean f_same=true;
+				Block ref=refblocks.get(j);
+				
+				for (int i=1; f_same && i < listOfBlocks.size(); i++) {
+					java.util.List<Block> lb=listOfBlocks.get(i);
+					
+					if (lb.size() <= j || ref != lb.get(j)) {
+						f_same = false;
+					}
+				}
+				
+				if (f_same) {
+					pos = j;
+				}
+			}
+			
+			if (pos != -1) {
+				ret = refblocks.get(pos);
+			}
+		}
+		
+		return(ret);
+	}
+	
+	/**
+	 * This method returns the list of blocks from the root to the supplied block.
+	 * 
+	 * @param b The block
+	 * @return The path from the root block to the supplied block
+	 */
+	protected static java.util.List<Block> getBlockPath(Block b) {
+		java.util.List<Block> ret=new java.util.Vector<Block>();
+		ModelObject cur=b;
+		
+		while (cur instanceof Block) {
+			ret.add(0, (Block)cur);
+			
+			do {
+				cur = cur.getParent();				
+			} while (cur != null && (cur instanceof Block) == false);
+		}
+		
+		return(ret);
+	}
+
 	public static class RoleLocator implements org.scribble.protocol.model.Visitor {
 		
 		public RoleLocator(Protocol protocol, Activity activity, 

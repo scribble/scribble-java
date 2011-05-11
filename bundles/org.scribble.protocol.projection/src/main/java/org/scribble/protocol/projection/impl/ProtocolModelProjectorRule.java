@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.model.*;
+import org.scribble.protocol.util.RoleUtil;
 
 /**
  * This class provides the ProtocolModel implementation of the
@@ -92,6 +93,43 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
 			if (srcprotocol != null) {
 				protocol = (Protocol)context.project(srcprotocol,
 							role, l);
+				
+				// Check if block enclosing the role definition is the protocol's
+				// top level block
+				Block block=RoleUtil.getEnclosingBlock(protocol, roleDefn);
+				
+				if (block != null && protocol.getBlock() != block) {
+
+					// Save current list of declared roles
+					java.util.Set<Role> declaredRoles1=RoleUtil.getRoles(protocol.getBlock());
+					
+					// Replace the top level block
+					protocol.setBlock(block);
+					
+					// Get new list of declared roles
+					java.util.Set<Role> declaredRoles2=RoleUtil.getRoles(protocol.getBlock());
+					
+					// Find out which roles were declared outside the scope of the new block
+					declaredRoles1.removeAll(declaredRoles2);
+					
+					// Remaining list should be added, if still relevant to the new block
+					for (Role r : declaredRoles1) {
+						RoleList rl=null;
+						
+						if (RoleUtil.getEnclosingBlock(protocol, r) != null) {
+							if (block.get(0) instanceof RoleList) {
+								rl = (RoleList)block.get(0);
+							} else {
+								rl = new RoleList();
+								block.getContents().add(0, rl);
+							}
+							
+							// TODO: Might need to consolidate annotations???
+							
+							rl.getRoles().add(r);
+						}
+					}
+				}
 			}
 			
 			ret.setProtocol(protocol);
