@@ -16,6 +16,7 @@
 package org.scribble.protocol.projection.impl;
 
 import org.scribble.protocol.model.*;
+import org.scribble.protocol.util.ActivityUtil;
 import org.scribble.common.logging.Journal;
 
 /**
@@ -68,9 +69,17 @@ public abstract class AbstractBlockProjectorRule implements ProjectorRule {
 
 		context.popState();
 		
-		// Only return block if it contains atleast one activity
-		if (isFilterOutEmptyContent() && ret.getContents().size() == 0) {
-			ret = null;
+		// Only return block if it contains atleast one behavioural activity
+		if (isFilterOutEmptyContent()) {
+			int behaviourCount=0;
+			for (Activity act : ret.getContents()) {
+				if (ActivityUtil.isBehaviour(act)) {
+					behaviourCount++;
+				}
+			}
+			if (behaviourCount == 0) {
+				ret = null;
+			}
 		}
 		
 		return(ret);

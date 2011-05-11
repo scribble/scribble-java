@@ -1,0 +1,7 @@
+protocol Repeat2@Buyer{
+	role Store;
+
+	buy(BuyRequest) to Store;
+	
+	buy(BuyConfirmed) from Store;
+}

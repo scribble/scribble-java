@@ -1,0 +1,14 @@
+protocol Repeat2 {
+	role Buyer, Store;
+
+	buy(BuyRequest) from Buyer to Store;
+	
+	repeat {
+		role CreditAgency;
+		
+		checkCredit(CreditCheckRequest) from Store to CreditAgency;
+		checkCredit(CreditRating) from CreditAgency to Store;
+	}
+
+	buy(BuyConfirmed) from Store to Buyer;
+}
