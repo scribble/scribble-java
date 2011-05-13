@@ -166,8 +166,9 @@ public class Protocol extends Activity {
 	public Protocol getTopLevelProtocol() {
 		Protocol ret=this;
 		
-		if (getParent() instanceof Protocol) {
-			ret = ((Protocol)getParent()).getTopLevelProtocol();
+		if (getParent() instanceof Block &&
+				getParent().getParent() instanceof Protocol) {
+			ret = ((Protocol)getParent().getParent()).getTopLevelProtocol();
 		}
 		
 		return(ret);
