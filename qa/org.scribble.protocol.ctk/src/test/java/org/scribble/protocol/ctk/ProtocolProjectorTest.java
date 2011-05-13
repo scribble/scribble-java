@@ -40,6 +40,7 @@ public class ProtocolProjectorTest {
     @Parameterized.Parameters
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
+
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0
             {"Annotation.spr", "Annotation@Seller.spr"}, // 1
             {"Choice.spr", "Choice@Buyer.spr"},          // 2
@@ -89,6 +90,7 @@ public class ProtocolProjectorTest {
             {"RunExternalProtocol.spr", "RunExternalProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
             {"RunInlineProtocol.spr", "RunInlineProtocol@Buyer.spr"},
             {"RunInlineProtocol.spr", "RunInlineProtocol@Seller.spr"},
+            {"RunInlineProtocol2.spr", "RunInlineProtocol2@Buyer.spr"},
             {"RunSubProtocol.spr", "RunSubProtocol@Buyer.spr"},
             {"RunSubProtocol.spr", "RunSubProtocol@Seller.spr"},
             {"SingleInteraction.spr", "SingleInteraction@Buyer.spr"},

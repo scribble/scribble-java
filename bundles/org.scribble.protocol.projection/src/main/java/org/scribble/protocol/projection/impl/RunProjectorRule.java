@@ -146,6 +146,10 @@ public class RunProjectorRule implements ProjectorRule {
 			ret.setBlock((Block)context.project(source.getBlock(),
 					role, l));
 			ret.getBlock().setParent(ret);
+			
+			if (ret.getBlock().size() == 0 && ret.getProtocolReference() == null) {
+				ret = null;
+			}
 		}
 
 		return(ret);

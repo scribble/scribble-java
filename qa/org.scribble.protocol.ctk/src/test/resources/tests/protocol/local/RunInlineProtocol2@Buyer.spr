@@ -1,0 +1,12 @@
+import Order;
+import Confirm;
+import CreditCheck;
+import CreditRating;
+
+protocol RunInlineProtocol2@Buyer {
+	role Seller;
+
+	Order to Seller;
+	
+	Confirm from Seller;
+}
