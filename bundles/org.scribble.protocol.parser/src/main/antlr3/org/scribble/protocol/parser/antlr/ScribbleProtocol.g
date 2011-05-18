@@ -122,9 +122,7 @@ interactionSignatureDef: ( typeReferenceDef | ID '('! ( typeReferenceDef ( ','! 
 interactionDef: interactionSignatureDef ( 'from' roleName ( 'to' roleName ( ','! roleName )* )? |
 							'to' roleName ( ','! roleName )* ) ;
 
-choiceDef: 'choice'^ ( 'from' roleName )? ( 'to' roleName )? '{'! ( whenBlockDef )+ '}'! ;
-
-whenBlockDef: ( ANNOTATION )* interactionSignatureDef ':'! activityList ;
+choiceDef: 'choice'^ ( 'at' roleName )? blockDef ( 'or' blockDef )* ;
 
 activityList: ( ( ANNOTATION )* activityDef )* ;
 

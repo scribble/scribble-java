@@ -249,7 +249,10 @@ public class MonitorProtocolExporterTest {
 		
 		p.getBlock().add(c1);
 		
-		When wb1=new When();
+		Block wb1=new Block();
+		
+		Interaction iwb1=new Interaction();
+		
 		MessageSignature ms2=new MessageSignature();
 		ms2.setOperation("op2");
 		
@@ -257,7 +260,10 @@ public class MonitorProtocolExporterTest {
 		tr2.setName("M2");
 		ms2.getTypeReferences().add(tr2);
 		
-		wb1.setMessageSignature(ms2);
+		iwb1.setMessageSignature(ms2);
+		iwb1.setFromRole(p2);
+		
+		wb1.add(iwb1);
 		
 		Interaction i3=new Interaction();
 		MessageSignature ms3=new MessageSignature();
@@ -265,14 +271,20 @@ public class MonitorProtocolExporterTest {
 		i3.setMessageSignature(ms3);
 		i3.getToRoles().add(p2);
 		
-		wb1.getBlock().add(i3);
+		wb1.add(i3);
 		
-		c1.getWhens().add(wb1);
+		c1.getBlocks().add(wb1);
 		
-		When wb2=new When();
+		Block wb2=new Block();
+		
+		Interaction iwb2=new Interaction();
+		
 		MessageSignature ms4=new MessageSignature();
 		ms4.setOperation("op4");
-		wb2.setMessageSignature(ms4);
+		iwb2.setMessageSignature(ms4);
+		
+		iwb2.setFromRole(p2);
+		wb2.add(iwb2);
 		
 		Interaction i5=new Interaction();
 		MessageSignature ms5=new MessageSignature();
@@ -280,9 +292,9 @@ public class MonitorProtocolExporterTest {
 		i5.setMessageSignature(ms5);
 		i5.getToRoles().add(p2);
 		
-		wb2.getBlock().add(i5);
+		wb2.add(i5);
 
-		c1.getWhens().add(wb2);
+		c1.getBlocks().add(wb2);
 
 		Interaction i6=new Interaction();
 		MessageSignature ms6=new MessageSignature();
@@ -343,7 +355,14 @@ public class MonitorProtocolExporterTest {
 		
 		p.getBlock().add(c1);
 		
-		When wb1=new When();
+		Block wb1=new Block();
+		
+		Interaction iwb1=new Interaction();
+		
+		org.scribble.common.model.Annotation a0=
+			new org.scribble.common.model.DefaultAnnotation("a0", " My Annotation0 ");
+		iwb1.getAnnotations().add(a0);
+
 		MessageSignature ms2=new MessageSignature();
 		ms2.setOperation("op2");
 		
@@ -351,7 +370,9 @@ public class MonitorProtocolExporterTest {
 		tr2.setName("M2");
 		ms2.getTypeReferences().add(tr2);
 		
-		wb1.setMessageSignature(ms2);
+		iwb1.setMessageSignature(ms2);
+		iwb1.setFromRole(p2);
+		wb1.add(iwb1);
 		
 		Interaction i3=new Interaction();
 		MessageSignature ms3=new MessageSignature();
@@ -359,18 +380,24 @@ public class MonitorProtocolExporterTest {
 		i3.setMessageSignature(ms3);
 		i3.getToRoles().add(p2);
 		
-		wb1.getBlock().add(i3);
+		wb1.add(i3);
 		
 		org.scribble.common.model.Annotation a1=
 			new org.scribble.common.model.DefaultAnnotation("a1", " My Annotation ");
 		wb1.getAnnotations().add(a1);
 
-		c1.getWhens().add(wb1);
+		c1.getBlocks().add(wb1);
 		
-		When wb2=new When();
+		Block wb2=new Block();
+		
+		Interaction iwb2=new Interaction();
+		
 		MessageSignature ms4=new MessageSignature();
 		ms4.setOperation("op4");
-		wb2.setMessageSignature(ms4);
+		iwb2.setMessageSignature(ms4);
+		
+		iwb2.setFromRole(p2);
+		wb2.add(iwb2);
 		
 		Interaction i5=new Interaction();
 		MessageSignature ms5=new MessageSignature();
@@ -378,13 +405,13 @@ public class MonitorProtocolExporterTest {
 		i5.setMessageSignature(ms5);
 		i5.getToRoles().add(p2);
 		
-		wb2.getBlock().add(i5);
+		wb2.add(i5);
 
 		org.scribble.common.model.Annotation a2=
 			new org.scribble.common.model.DefaultAnnotation("a2", " My Annotation2 ");
 		wb2.getAnnotations().add(a2);
 
-		c1.getWhens().add(wb2);
+		c1.getBlocks().add(wb2);
 
 		Interaction i6=new Interaction();
 		MessageSignature ms6=new MessageSignature();
@@ -445,7 +472,10 @@ public class MonitorProtocolExporterTest {
 		
 		p.getBlock().add(c1);
 		
-		When wb1=new When();
+		Block wb1=new Block();
+		
+		Interaction iwb1=new Interaction();
+		
 		MessageSignature ms2=new MessageSignature();
 		ms2.setOperation("op2");
 		
@@ -453,7 +483,10 @@ public class MonitorProtocolExporterTest {
 		tr2.setName("M2");
 		ms2.getTypeReferences().add(tr2);
 		
-		wb1.setMessageSignature(ms2);
+		iwb1.setMessageSignature(ms2);
+		iwb1.setFromRole(p2);
+		
+		wb1.add(iwb1);
 		
 		Interaction i3=new Interaction();
 		MessageSignature ms3=new MessageSignature();
@@ -461,14 +494,20 @@ public class MonitorProtocolExporterTest {
 		i3.setMessageSignature(ms3);
 		i3.getToRoles().add(p2);
 		
-		wb1.getBlock().add(i3);
+		wb1.add(i3);
 		
-		c1.getWhens().add(wb1);
+		c1.getBlocks().add(wb1);
 		
-		When wb2=new When();
+		Block wb2=new Block();
+		
+		Interaction iwb2=new Interaction();
+		
 		MessageSignature ms4=new MessageSignature();
 		ms4.setOperation("op4");
-		wb2.setMessageSignature(ms4);
+		iwb2.setMessageSignature(ms4);
+		
+		iwb2.setFromRole(p2);
+		wb2.add(iwb2);
 		
 		Interaction i5=new Interaction();
 		MessageSignature ms5=new MessageSignature();
@@ -476,9 +515,9 @@ public class MonitorProtocolExporterTest {
 		i5.setMessageSignature(ms5);
 		i5.getToRoles().add(p2);
 		
-		wb2.getBlock().add(i5);
+		wb2.add(i5);
 
-		c1.getWhens().add(wb2);
+		c1.getBlocks().add(wb2);
 
 		MonitorProtocolExporter exporter=new MonitorProtocolExporter();
 		
@@ -531,7 +570,10 @@ public class MonitorProtocolExporterTest {
 		
 		p.getBlock().add(c1);
 		
-		When wb1=new When();
+		Block wb1=new Block();
+		
+		Interaction iwb1=new Interaction();
+		
 		MessageSignature ms2=new MessageSignature();
 		ms2.setOperation("op2");
 		
@@ -539,7 +581,9 @@ public class MonitorProtocolExporterTest {
 		tr2.setName("M2");
 		ms2.getTypeReferences().add(tr2);
 		
-		wb1.setMessageSignature(ms2);
+		iwb1.setMessageSignature(ms2);
+		iwb1.setFromRole(p2);
+		wb1.add(iwb1);
 		
 		Interaction i3=new Interaction();
 		MessageSignature ms3=new MessageSignature();
@@ -547,11 +591,16 @@ public class MonitorProtocolExporterTest {
 		i3.setMessageSignature(ms3);
 		i3.getToRoles().add(p2);
 		
-		wb1.getBlock().add(i3);
+		wb1.add(i3);
 		
-		c1.getWhens().add(wb1);
+		c1.getBlocks().add(wb1);
 		
-		When wb2=new When();
+		Block wb2=new Block();
+		
+		c1.getBlocks().add(wb2);
+		
+		Interaction iwb2=new Interaction();
+		
 		MessageSignature ms4=new MessageSignature();
 		ms4.setOperation("op4");
 		
@@ -559,9 +608,9 @@ public class MonitorProtocolExporterTest {
 		tr4.setName("M4");
 		ms4.getTypeReferences().add(tr4);
 		
-		wb2.setMessageSignature(ms4);
-		
-		c1.getWhens().add(wb2);
+		iwb2.setMessageSignature(ms4);
+		iwb2.setFromRole(p2);
+		p.getBlock().add(iwb2);
 
 		MonitorProtocolExporter exporter=new MonitorProtocolExporter();
 		
@@ -1136,7 +1185,10 @@ public class MonitorProtocolExporterTest {
 		
 		r1.getBlock().add(c1);
 		
-		When wb1=new When();
+		Block wb1=new Block();
+		
+		Interaction iwb1=new Interaction();
+		
 		MessageSignature ms2=new MessageSignature();
 		ms2.setOperation("op2");
 		
@@ -1144,7 +1196,9 @@ public class MonitorProtocolExporterTest {
 		tr2.setName("M2");
 		ms2.getTypeReferences().add(tr2);
 		
-		wb1.setMessageSignature(ms2);
+		iwb1.setMessageSignature(ms2);
+		iwb1.setFromRole(p2);
+		wb1.add(iwb1);
 		
 		Interaction i3=new Interaction();
 		MessageSignature ms3=new MessageSignature();
@@ -1152,21 +1206,27 @@ public class MonitorProtocolExporterTest {
 		i3.setMessageSignature(ms3);
 		i3.getToRoles().add(p2);
 		
-		wb1.getBlock().add(i3);
+		wb1.add(i3);
 		
-		c1.getWhens().add(wb1);
+		c1.getBlocks().add(wb1);
 		
-		When wb2=new When();
+		Block wb2=new Block();
+		
+		Interaction iwb2=new Interaction();
+		
 		MessageSignature ms4=new MessageSignature();
 		ms4.setOperation("op4");
-		wb2.setMessageSignature(ms4);
+		iwb2.setMessageSignature(ms4);
+		
+		iwb2.setFromRole(p2);
+		wb2.add(iwb2);
 
 		Recursion rec=new Recursion();
 		rec.setLabel("transaction");
 		
-		wb2.getBlock().add(rec);
+		wb2.add(rec);
 		
-		c1.getWhens().add(wb2);
+		c1.getBlocks().add(wb2);
 		
 		Interaction i6=new Interaction();
 		MessageSignature ms6=new MessageSignature();
@@ -1232,7 +1292,10 @@ public class MonitorProtocolExporterTest {
 		
 		r1.getBlock().add(c1);
 		
-		When wb1=new When();
+		Block wb1=new Block();
+		
+		Interaction iwb1=new Interaction();
+		
 		MessageSignature ms2=new MessageSignature();
 		ms2.setOperation("op2");
 		
@@ -1240,7 +1303,9 @@ public class MonitorProtocolExporterTest {
 		tr2.setName("M2");
 		ms2.getTypeReferences().add(tr2);
 		
-		wb1.setMessageSignature(ms2);
+		iwb1.setMessageSignature(ms2);
+		iwb1.setFromRole(p2);
+		wb1.add(iwb1);
 		
 		Interaction i3=new Interaction();
 		MessageSignature ms3=new MessageSignature();
@@ -1248,19 +1313,25 @@ public class MonitorProtocolExporterTest {
 		i3.setMessageSignature(ms3);
 		i3.getToRoles().add(p2);
 		
-		wb1.getBlock().add(i3);
+		wb1.add(i3);
 		
-		c1.getWhens().add(wb1);
+		c1.getBlocks().add(wb1);
 		
-		When wb2=new When();
+		Block wb2=new Block();
+		
+		Interaction iwb2=new Interaction();
+		
 		MessageSignature ms4=new MessageSignature();
 		ms4.setOperation("op4");
-		wb2.setMessageSignature(ms4);
+		iwb2.setMessageSignature(ms4);
+		iwb2.setFromRole(p2);
+		
+		wb2.add(iwb2);
 
 		Recursion rec=new Recursion();
 		rec.setLabel("transaction");
 		
-		wb2.getBlock().add(rec);
+		wb2.add(rec);
 		
 		Interaction i5=new Interaction();
 		MessageSignature ms5=new MessageSignature();
@@ -1268,9 +1339,9 @@ public class MonitorProtocolExporterTest {
 		i5.setMessageSignature(ms5);
 		i5.getToRoles().add(p2);
 
-		wb2.getBlock().add(i5);
+		wb2.add(i5);
 
-		c1.getWhens().add(wb2);
+		c1.getBlocks().add(wb2);
 		
 		Interaction i6=new Interaction();
 		MessageSignature ms6=new MessageSignature();

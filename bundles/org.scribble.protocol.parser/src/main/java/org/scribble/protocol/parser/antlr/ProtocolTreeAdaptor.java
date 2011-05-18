@@ -108,7 +108,6 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_parserGroupingRuleClass.put("inlineProtocolDef", Protocol.class);
 		m_parserGroupingRuleClass.put("declarationName", String.class);
 		m_parserGroupingRuleClass.put("labelName", String.class);
-		m_parserGroupingRuleClass.put("whenBlockDef", When.class);
 		m_parserGroupingRuleClass.put("dataTypeDef", DataType.class);
 		m_parserGroupingRuleClass.put("recursionDef", Recursion.class);
 		m_parserGroupingRuleClass.put("parameterDef", ParameterDefinition.class);
@@ -118,8 +117,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		// determine which property to set. This map provides the
 		// mapping between the property name and the token.
 		m_propertyToken.put("interactionDef:fromRole", "from");
-		m_propertyToken.put("choiceDef:fromRole", "from");
-		m_propertyToken.put("choiceDef:toRole", "to");
+		m_propertyToken.put("choiceDef:role", "at");
 		m_propertyToken.put("interactionDef:toRoles", "to");
 		m_propertyToken.put("parameter:boundName", "");
 		m_propertyToken.put("parameter:localName", ":=");
@@ -138,7 +136,6 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_listClass.put("protocolImports", ProtocolImport.class);
 		m_listClass.put("typeReferences", TypeReference.class);
 		m_listClass.put("blocks", Block.class);
-		m_listClass.put("whens", When.class);
 		m_listClass.put("catches", Catch.class);
 		m_listClass.put("parameters", Parameter.class);
 		m_listClass.put("interactions", Interaction.class);
@@ -310,6 +307,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 					}
 
 					if (nil.get(i) instanceof Token && ((Token)nil.get(i)).getType() == ScribbleProtocolParser.ANNOTATION) {
+						/*
 						if (parent instanceof When) {
 							String text=((Token)nil.get(i)).getText();
 							text = text.substring(2, text.length()-2);
@@ -326,8 +324,9 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 							
 							((When)parent).getAnnotations().add(annotation);
 						} else {
+						*/
 							annotations.add((Token)nil.get(i));
-						}
+						//}
 					} else {
 						addChild(parent, nil.get(i));
 						
