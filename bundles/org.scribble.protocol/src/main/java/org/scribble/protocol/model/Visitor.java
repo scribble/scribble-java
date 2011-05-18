@@ -194,23 +194,6 @@ public interface Visitor {
 	
 	/**
 	 * This method indicates the start of a
-	 * when block.
-	 * 
-	 * @param elem The when block
-	 * @return Whether to process the contents
-	 */
-	public boolean start(When elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * when block.
-	 * 
-	 * @param elem The when block
-	 */
-	public void end(When elem);
-
-	/**
-	 * This method indicates the start of a
 	 * run construct.
 	 * 
 	 * @param elem The run

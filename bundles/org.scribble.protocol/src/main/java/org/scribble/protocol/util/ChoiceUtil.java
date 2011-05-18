@@ -23,31 +23,6 @@ public class ChoiceUtil {
 	private static final String LABEL_SEPARATOR = "_";
 
 	/**
-	 * This method returns the list of choice labels associated with
-	 * the supplied protocol model.
-	 * 
-	 * @param model The model
-	 * @return The list of labels
-	 */
-	public static java.util.List<String> getLabels(ProtocolModel model) {
-		final java.util.List<String> ret=new java.util.Vector<String>();
-		
-		model.visit(new DefaultVisitor() {
-			public boolean start(When elem) {
-				String label=getLabel(elem.getMessageSignature());
-				
-				if (ret.contains(label) == false) {
-					ret.add(label);
-				}
-				
-				return(true);
-			}
-		});
-		
-		return(ret);
-	}
-	
-	/**
 	 * This method returns the label associated with the message signature.
 	 * 
 	 * @param sig The message signature

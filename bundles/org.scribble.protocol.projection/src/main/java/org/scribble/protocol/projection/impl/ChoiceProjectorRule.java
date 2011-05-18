@@ -57,9 +57,9 @@ public class ChoiceProjectorRule implements ProjectorRule {
 		
 		ret.derivedFrom(source);
 		
-		if (source.getFromRole() != null &&
-				source.getFromRole().getName().equals(role.getName()) == false) {
-			ret.setFromRole(new Role(source.getFromRole()));
+		if (source.getRole() != null &&
+				source.getRole().getName().equals(role.getName()) == false) {
+			ret.setRole(new Role(source.getRole()));
 		}
 		
 		if (source.getToRole() != null &&
@@ -69,8 +69,8 @@ public class ChoiceProjectorRule implements ProjectorRule {
 
 		// If the roles are not relevant to this projection, then we need to merge the
 		// paths to derive a new choice that represents the options valid for this role
-		if ((ret.getFromRole() != null && ret.getToRole() != null) ||
-				(ret.getFromRole() == null && ret.getToRole() == null)) {
+		if ((ret.getRole() != null && ret.getToRole() != null) ||
+				(ret.getRole() == null && ret.getToRole() == null)) {
 			f_merge = true;
 		}
 
@@ -175,7 +175,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
 		}
 		
 		if (f_merge) {
-			ret.setFromRole(fromRole);
+			ret.setRole(fromRole);
 			ret.setToRole(toRole);
 		}
 		
@@ -190,7 +190,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			interaction.derivedFrom(ret.getWhens().get(0));
 			
 			interaction.setMessageSignature(ret.getWhens().get(0).getMessageSignature());
-			interaction.setFromRole(ret.getFromRole());
+			interaction.setFromRole(ret.getRole());
 			
 			if (ret.getToRole() != null) {
 				interaction.getToRoles().add(ret.getToRole());

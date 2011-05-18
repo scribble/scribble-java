@@ -245,7 +245,7 @@ public class MonitorProtocolExporterTest {
 		p.getBlock().add(i1);
 		
 		Choice c1=new Choice();
-		c1.setFromRole(p2);
+		c1.setRole(p2);
 		
 		p.getBlock().add(c1);
 		
@@ -339,7 +339,7 @@ public class MonitorProtocolExporterTest {
 		p.getBlock().add(i1);
 		
 		Choice c1=new Choice();
-		c1.setFromRole(p2);
+		c1.setRole(p2);
 		
 		p.getBlock().add(c1);
 		
@@ -441,7 +441,7 @@ public class MonitorProtocolExporterTest {
 		p.getBlock().add(i1);
 		
 		Choice c1=new Choice();
-		c1.setFromRole(p2);
+		c1.setRole(p2);
 		
 		p.getBlock().add(c1);
 		
@@ -527,7 +527,7 @@ public class MonitorProtocolExporterTest {
 		p.getBlock().add(i1);
 		
 		Choice c1=new Choice();
-		c1.setFromRole(p2);
+		c1.setRole(p2);
 		
 		p.getBlock().add(c1);
 		
@@ -1132,7 +1132,7 @@ public class MonitorProtocolExporterTest {
 		p.getBlock().add(r1);
 		
 		Choice c1=new Choice();
-		c1.setFromRole(p2);
+		c1.setRole(p2);
 		
 		r1.getBlock().add(c1);
 		
@@ -1228,7 +1228,7 @@ public class MonitorProtocolExporterTest {
 		p.getBlock().add(r1);
 		
 		Choice c1=new Choice();
-		c1.setFromRole(p2);
+		c1.setRole(p2);
 		
 		r1.getBlock().add(c1);
 		

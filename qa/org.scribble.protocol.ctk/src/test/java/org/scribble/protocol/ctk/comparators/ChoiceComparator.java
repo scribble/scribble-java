@@ -29,7 +29,7 @@ public class ChoiceComparator implements Comparator<ModelObject> {
 		RoleComparator pcomp=(RoleComparator)
 					ComparatorUtil.getComparator(Role.class);
 
-		if (pcomp.compare(m.getFromRole(), e.getFromRole()) != 0) {
+		if (pcomp.compare(m.getRole(), e.getRole()) != 0) {
 			return(1);
 		}
 		

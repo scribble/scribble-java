@@ -32,7 +32,7 @@ public class Parallel extends Activity {
 	}
 	
 	/**
-	 * This method returns the list of mutually exclusive
+	 * This method returns the list of concurrent
 	 * activity blocks that comprise the multi-path construct.
 	 * 
 	 * @return The list of blocks

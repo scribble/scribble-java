@@ -400,7 +400,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			} else {
 				node = new ReceiveChoice();
 				
-				node.setOtherRole(elem.getFromRole().getName());
+				node.setOtherRole(elem.getRole().getName());
 			}
 			
 			m_nodes.add(node);
@@ -464,7 +464,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 					roles.add(choice.getToRole());
 				}
 				
-				createInteraction(choice, elem.getMessageSignature(), choice.getFromRole(), roles,
+				createInteraction(choice, elem.getMessageSignature(), choice.getRole(), roles,
 								elem.getAnnotations());
 			}
 			

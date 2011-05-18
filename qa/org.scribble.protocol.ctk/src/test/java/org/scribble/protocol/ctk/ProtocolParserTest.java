@@ -685,7 +685,7 @@ public class ProtocolParserTest {
 		
 		Choice choice=new Choice();
 		
-		choice.setFromRole(buyer);
+		choice.setRole(buyer);
 		choice.setToRole(seller);
 
 		When b1=new When();
@@ -1056,7 +1056,7 @@ public class ProtocolParserTest {
 		
 		Choice choice=new Choice();
 		
-		choice.setFromRole(seller);
+		choice.setRole(seller);
 		choice.setToRole(buyer);
 
 		When b1=new When();
