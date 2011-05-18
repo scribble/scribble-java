@@ -6,21 +6,22 @@ import M4;
 protocol ChoiceMergeNested {
 	role A, B, C, D;
 
-	choice from A to B {
-		M1:
-		    M4 from B to C;
-			choice from C to D {
-			    M1:
-			        M1 from D to A;
-			        M3 from A to B;
-			    M2:
-			        M2 from D to A;
-			        M4 from A to B;
-			}
-
-		M2:
-		    M3 from B to A;
-		    M3 from B to C;
-		    M3 from B to D;
+	choice at A {
+		M1 from A to B;
+	    M4 from B to C;
+		choice at C {
+		    M1 from C to D;
+	        M1 from D to A;
+	        M3 from A to B;
+		} or {
+		    M2 from C to D;
+	        M2 from D to A;
+	        M4 from A to B;
+		}
+	} or {
+		M2 from A to B;
+	    M3 from B to A;
+	    M3 from B to C;
+	    M3 from B to D;
 	}
 }

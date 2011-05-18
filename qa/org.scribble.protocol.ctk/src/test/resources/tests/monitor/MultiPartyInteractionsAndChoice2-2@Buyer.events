@@ -1,4 +1,3 @@
 sendMessage,Order
-receiveChoice,validProduct
 receiveMessage,Confirmation
 

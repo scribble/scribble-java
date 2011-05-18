@@ -259,15 +259,29 @@ public class ProtocolMonitorTest {
 	}
 
 	@org.junit.Test
+	@org.junit.Ignore
 	public void testRecur2_1AtBuyer() {
 		testMonitor("tests/protocol/local/Recur2@Buyer.spr",
 				"tests/monitor/Recur2-1@Buyer.events", false);
 	}
 	
 	@org.junit.Test
+	@org.junit.Ignore
 	public void testRecur2_1AtSeller() {
 		testMonitor("tests/protocol/local/Recur2@Seller.spr",
 				"tests/monitor/Recur2-1@Seller.events", false);
+	}
+	
+	@org.junit.Test
+	public void testRecur3_1AtBuyer() {
+		testMonitor("tests/protocol/local/Recur3@Buyer.spr",
+				"tests/monitor/Recur3-1@Buyer.events", false);
+	}
+	
+	@org.junit.Test
+	public void testRecur3_1AtSeller() {
+		testMonitor("tests/protocol/local/Recur3@Seller.spr",
+				"tests/monitor/Recur3-1@Seller.events", false);
 	}
 	
 	@org.junit.Test

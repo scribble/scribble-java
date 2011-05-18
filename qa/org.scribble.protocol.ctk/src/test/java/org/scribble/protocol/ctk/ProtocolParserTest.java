@@ -686,16 +686,21 @@ public class ProtocolParserTest {
 		Choice choice=new Choice();
 		
 		choice.setRole(buyer);
-		choice.setToRole(seller);
 
-		When b1=new When();
-		choice.getWhens().add(b1);
+		Block b1=new Block();
+		choice.getBlocks().add(b1);
+		
+		Interaction ib1=new Interaction();
 		
 		MessageSignature ms=new MessageSignature();
 		TypeReference tref=new TypeReference();
 		tref.setName("Order");
 		ms.getTypeReferences().add(tref);
-		b1.setMessageSignature(ms);
+		ib1.setMessageSignature(ms);
+		
+		ib1.setFromRole(buyer);
+		ib1.getToRoles().add(seller);
+		b1.add(ib1);
 		
 		Interaction i1=new Interaction();
 		i1.setFromRole(seller);
@@ -707,16 +712,22 @@ public class ProtocolParserTest {
 		ms2.getTypeReferences().add(tref2);
 		i1.setMessageSignature(ms2);
 		
-		b1.getBlock().add(i1);
+		b1.add(i1);
 		
-		When b2=new When();
-		choice.getWhens().add(b2);
+		Block b2=new Block();
+		choice.getBlocks().add(b2);
+		
+		Interaction ib2=new Interaction();
 		
 		ms=new MessageSignature();
 		tref=new TypeReference();
 		tref.setName("Cancel");
 		ms.getTypeReferences().add(tref);
-		b2.setMessageSignature(ms);
+		ib2.setMessageSignature(ms);
+		
+		ib2.setFromRole(buyer);
+		ib2.getToRoles().add(seller);
+		b2.add(ib2);
 		
 		protocol.getBlock().add(choice);
 		
@@ -1057,32 +1068,43 @@ public class ProtocolParserTest {
 		Choice choice=new Choice();
 		
 		choice.setRole(seller);
-		choice.setToRole(buyer);
 
-		When b1=new When();
-		choice.getWhens().add(b1);
+		Block b1=new Block();
+		choice.getBlocks().add(b1);
+		
+		Interaction ib1=new Interaction();
 		
 		ms=new MessageSignature();
 		tref=new TypeReference();
 		tref.setName("Rejected");
 		ms.getTypeReferences().add(tref);
 		ms.setOperation("tryAgain");
-		b1.setMessageSignature(ms);
+		ib1.setMessageSignature(ms);
 		
+		ib1.setFromRole(seller);
+		ib1.getToRoles().add(buyer);
+		b1.add(ib1);
+
 		Recursion recursion=new Recursion();
 		recursion.setLabel("Transaction");
 
-		b1.getBlock().add(recursion);
+		b1.add(recursion);
 		
-		When b2=new When();
-		choice.getWhens().add(b2);
+		Block b2=new Block();
+		choice.getBlocks().add(b2);
+		
+		Interaction ib2=new Interaction();
 		
 		ms=new MessageSignature();
 		tref=new TypeReference();
 		tref.setName("Accepted");
 		ms.getTypeReferences().add(tref);
 		ms.setOperation("exit");
-		b2.setMessageSignature(ms);
+		ib2.setMessageSignature(ms);
+
+		ib2.setFromRole(seller);
+		ib2.getToRoles().add(buyer);
+		b2.add(ib2);
 		
 		lb.getBlock().add(choice);
 		

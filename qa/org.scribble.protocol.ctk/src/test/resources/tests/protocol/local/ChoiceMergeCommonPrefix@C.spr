@@ -2,11 +2,12 @@ import Int;
 import Boolean;
 
 protocol ChoiceMergeCommonPrefix@C {
-    role A, B;
+    role B;
 
     Int from B;
-    choice from B {
-        ok():
-        quit():
+    choice {
+        ok() from B;
+    } or {
+        quit() from B;
     }
 }

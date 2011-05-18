@@ -8,18 +8,17 @@ protocol MultiPartyInteractionsAndChoice2@Broker {
 
 	Order from Buyer;
 	
-	choice to Buyer {
-		validProduct():
-			Order to Seller;
-		
-			choice from Seller {
-				Confirmation:
-					Confirmation to Buyer;
-
-				OutOfStock:
-					OutOfStock to Buyer;
-			}
-
-		invalidProduct(InvalidProduct):	
+	choice at Broker {
+		Order to Seller;
+	
+		choice {
+			Confirmation from Seller;
+			Confirmation to Buyer;
+		} or {
+			OutOfStock from Seller;
+			OutOfStock to Buyer;
+		}
+	} or {
+		invalidProduct(InvalidProduct) to Buyer;
 	}
 }

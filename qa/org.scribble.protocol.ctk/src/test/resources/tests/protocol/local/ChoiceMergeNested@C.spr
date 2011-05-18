@@ -6,12 +6,14 @@ import M4;
 protocol ChoiceMergeNested@C {
 	role B, D;
 
-	choice from B {
-		M4:
-			choice to D {
-			    M1:
-			    M2:
-			}
-		M3:
+	choice {
+		M4 from B;
+		choice at C {
+		    M1 to D;
+		} or {
+		    M2 to D;
+		}
+	} or {
+		M3 from B;
 	}
 }

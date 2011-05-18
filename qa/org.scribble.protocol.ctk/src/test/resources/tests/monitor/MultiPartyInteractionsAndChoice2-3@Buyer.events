@@ -1,4 +1,3 @@
 sendMessage,Order
-receiveChoice,_Confirmation
-receiveMessage,Confirmation
+receiveMessage,ConfirmationX
 

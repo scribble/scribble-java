@@ -8,18 +8,17 @@ protocol MultiPartyInteractionsAndChoice2 {
 
 	Order from Buyer to Broker;
 	
-	choice from Broker to Buyer {
-		validProduct():
-			Order from Broker to Seller;
-		
-			choice from Seller to Broker {
-				Confirmation:
-					Confirmation from Broker to Buyer;
-					
-				OutOfStock:
-					OutOfStock from Broker to Buyer;
-			}
-			
-		invalidProduct(InvalidProduct):
+	choice at Broker {
+		Order from Broker to Seller;
+	
+		choice at Seller {
+			Confirmation from Seller to Broker;
+			Confirmation from Broker to Buyer;
+		} or {	
+			OutOfStock from Seller to Broker;
+			OutOfStock from Broker to Buyer;
+		}
+	} or {
+		invalidProduct(InvalidProduct) from Broker to Buyer;
 	}
 }

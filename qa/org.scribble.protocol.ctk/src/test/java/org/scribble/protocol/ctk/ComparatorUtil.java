@@ -43,7 +43,6 @@ public class ComparatorUtil {
 		m_comparators.put(Raise.class, new RaiseComparator());
 		m_comparators.put(Try.class, new TryComparator());
 		m_comparators.put(Catch.class, new CatchComparator());
-		m_comparators.put(When.class, new WhenComparator());
 		m_comparators.put(Choice.class, new ChoiceComparator());
 		m_comparators.put(Parallel.class, new ParallelComparator());
 		m_comparators.put(Repeat.class, new RepeatComparator());

@@ -33,11 +33,7 @@ public class ChoiceComparator implements Comparator<ModelObject> {
 			return(1);
 		}
 		
-		if (pcomp.compare(m.getToRole(), e.getToRole()) != 0) {
-			return(1);
-		}
-		
-		if (m.getWhens().size() != e.getWhens().size()) {
+		if (m.getBlocks().size() != e.getBlocks().size()) {
 			return(1);
 		}
 		

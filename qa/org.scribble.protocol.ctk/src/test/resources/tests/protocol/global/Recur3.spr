@@ -11,8 +11,10 @@ protocol Recur {
 		Order from Buyer to Seller;
 		
 		choice at Seller {
+			tryAgain() from Seller to Buyer;
 			Transaction;
 		} or {
+			exit() from Seller to Buyer;
 		}
 		
 		Another from Buyer to Seller;

@@ -11,10 +11,10 @@ protocol Recur@Buyer {
 		Order to Seller;
 		
 		choice {
-			tryAgain(Rejected) from Seller;
+			tryAgain() from Seller;
 			Transaction;
 		} or {
-			exit(Accepted) from Seller;
+			exit() from Seller;
 		}
 		
 		Another to Seller;

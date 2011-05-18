@@ -136,8 +136,7 @@ public class ProtocolProjectorRule implements ProjectorRule {
 						}
 						
 						public boolean start(Choice choice) {
-							if (role.equals(choice.getRole()) ||
-									role.equals(choice.getToRole())) {
+							if (role.equals(choice.getRole())) {
 								acts.add(choice);
 							}
 							return(true);

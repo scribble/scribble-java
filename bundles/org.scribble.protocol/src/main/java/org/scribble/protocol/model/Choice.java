@@ -104,7 +104,12 @@ public class Choice extends Activity {
 	public String toString() {
 		String result =  "choice ";
 		if (m_role != null) result += "at " + m_role+" ";
-		for (Block b: m_blocks) result += b + "\n";
+		for (Block b: m_blocks) {
+			if (m_blocks.indexOf(b) > 0) {
+				result += "or ";
+			}
+			result += b + "\n";
+		}
 		return result;
 	}
 }

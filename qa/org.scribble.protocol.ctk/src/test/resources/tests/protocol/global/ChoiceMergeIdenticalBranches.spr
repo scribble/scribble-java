@@ -1,10 +1,11 @@
 protocol ChoiceMergeIdenticalBranches {
     role A, B, C;
 
-    choice from A to B {
-        l1():
-            Int from B to C;
-        l2():
-            Int from B to C;
+    choice at A {
+        l1() from A to B;
+        Int from B to C;
+    } or {
+        l2() from A to B;
+        Int from B to C;
     }
 }

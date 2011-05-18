@@ -8,23 +8,23 @@ import InsufficientCredit;
 protocol MultiPartyInteractionsAndChoice@Broker {
 	role Buyer, CreditAgency, Seller;
 
-	Order from Buyer ;
+	Order from Buyer;
 	
 	CreditCheck to CreditAgency;
 	
-	choice from CreditAgency {
-		CreditOk:
-			Order to Seller;
-		
-			choice from Seller {
-				Confirmation:
-					Confirmation to Buyer;
-
-				OutOfStock:
-					OutOfStock to Buyer;
-			}
-			
-		InsufficientCredit:
-			InsufficientCredit to Buyer;
+	choice {
+		CreditOk from CreditAgency;
+		Order to Seller;
+	
+		choice {
+			Confirmation from Seller;
+			Confirmation to Buyer;
+		} or {
+			OutOfStock from Seller;
+			OutOfStock to Buyer;
+		}
+	} or {	
+		InsufficientCredit from CreditAgency;
+		InsufficientCredit to Buyer;
 	}
 }

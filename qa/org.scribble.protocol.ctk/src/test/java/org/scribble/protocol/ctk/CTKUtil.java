@@ -32,7 +32,6 @@ import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.protocol.parser.ProtocolParserManager;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Comparator;
 
 import static org.junit.Assert.*;
@@ -187,12 +186,6 @@ public class CTKUtil {
 
 			@Override
 			public boolean start(Choice elem) {
-				ret.add(elem);
-				return true;
-			}
-
-			@Override
-			public boolean start(When elem) {
 				ret.add(elem);
 				return true;
 			}
