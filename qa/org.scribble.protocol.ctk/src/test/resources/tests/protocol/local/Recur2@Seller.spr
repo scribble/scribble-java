@@ -10,11 +10,9 @@ protocol Recur@Seller {
 	rec Transaction {
 		Order from Buyer;
 		
-		choice to Buyer {
-			tryAgain():
-				Transaction;
-				
-			exit():
+		choice at Seller {
+			Transaction;
+		} or {
 		}
 		
 		Another from Buyer;

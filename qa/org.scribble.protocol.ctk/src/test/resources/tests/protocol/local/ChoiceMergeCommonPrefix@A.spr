@@ -4,8 +4,9 @@ import Boolean;
 protocol ChoiceMergeCommonPrefix@A {
     role B;
 
-    choice to B {
-        ok():
-        quit():
+    choice at A {
+        ok() to B;
+    } or {
+        quit() to B;
     }
 }

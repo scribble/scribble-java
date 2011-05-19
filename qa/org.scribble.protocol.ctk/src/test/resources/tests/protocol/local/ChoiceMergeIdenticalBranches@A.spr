@@ -1,8 +1,9 @@
 protocol ChoiceMergeIdenticalBranches@A {
     role B;
 
-    choice to B {
-        l1():
-        l2():
+    choice at A {
+        l1() to B;
+    } or {
+        l2() to B;
     }
 }

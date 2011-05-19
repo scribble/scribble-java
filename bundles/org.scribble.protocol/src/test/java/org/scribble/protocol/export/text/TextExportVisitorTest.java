@@ -584,15 +584,18 @@ public class TextExportVisitorTest {
 		Role p1=new Role();
 		p1.setName("A");
 		
-		elem.setFromRole(p1);
+		elem.setRole(p1);
 		
 		Role p2=new Role();
 		p2.setName("B");
 		
-		elem.setToRole(p2);
+		Interaction i1=new Interaction();
+		i1.setFromRole(p1);
+		i1.getToRoles().add(p2);
 		
-		When when1=new When();
-		elem.getWhens().add(when1);
+		Block b1=new Block();
+		b1.add(i1);
+		elem.getBlocks().add(b1);
 		
 		TypeReference ref1=new TypeReference();
 		ref1.setName("Type1");
@@ -600,10 +603,16 @@ public class TextExportVisitorTest {
 		MessageSignature sig1=new MessageSignature();
 		sig1.getTypeReferences().add(ref1);
 		
-		when1.setMessageSignature(sig1);
+		i1.setMessageSignature(sig1);
 		
-		When when2=new When();
-		elem.getWhens().add(when2);
+		Interaction i2=new Interaction();
+		i2.setFromRole(p1);
+		i2.getToRoles().add(p2);
+		
+		Block b2=new Block();
+		b2.add(i2);
+		
+		elem.getBlocks().add(b2);
 		
 		TypeReference ref2=new TypeReference();
 		ref2.setName("Type2");
@@ -611,7 +620,7 @@ public class TextExportVisitorTest {
 		MessageSignature sig2=new MessageSignature();
 		sig2.getTypeReferences().add(ref2);
 		
-		when2.setMessageSignature(sig2);
+		i2.setMessageSignature(sig2);
 	
 		java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
 		
@@ -627,9 +636,10 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="choice from "+p1.getName()+" to "+p2.getName()+" {\r\n"+
-				"\t"+ref1.getName()+":\r\n\r\n"+
-				"\t"+ref2.getName()+":\r\n\r\n"+
+		String expected="choice at "+p1.getName()+" {\r\n"+
+				"\t"+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n"+
+				"} or {\r\n"+
+				"\t"+ref2.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n"+
 				"}\r\n";
 		
 		if (str.equals(expected) == false) {
@@ -645,15 +655,18 @@ public class TextExportVisitorTest {
 		Role p1=new Role();
 		p1.setName("A");
 		
-		elem.setFromRole(p1);
+		elem.setRole(p1);
 		
 		Role p2=new Role();
 		p2.setName("B");
 		
-		elem.setToRole(p2);
+		Interaction i1=new Interaction();
+		i1.setFromRole(p1);
+		i1.getToRoles().add(p2);
 		
-		When when1=new When();
-		elem.getWhens().add(when1);
+		Block b1=new Block();
+		b1.add(i1);
+		elem.getBlocks().add(b1);
 		
 		TypeReference ref1=new TypeReference();
 		ref1.setName("Type1");
@@ -661,10 +674,16 @@ public class TextExportVisitorTest {
 		MessageSignature sig1=new MessageSignature();
 		sig1.getTypeReferences().add(ref1);
 		
-		when1.setMessageSignature(sig1);
+		i1.setMessageSignature(sig1);
 		
-		When when2=new When();
-		elem.getWhens().add(when2);
+		Interaction i2=new Interaction();
+		i2.setFromRole(p1);
+		i2.getToRoles().add(p2);
+		
+		Block b2=new Block();
+		b2.add(i2);
+		
+		elem.getBlocks().add(b2);
 		
 		TypeReference ref2=new TypeReference();
 		ref2.setName("Type2");
@@ -672,7 +691,7 @@ public class TextExportVisitorTest {
 		MessageSignature sig2=new MessageSignature();
 		sig2.getTypeReferences().add(ref2);
 		
-		when2.setMessageSignature(sig2);
+		i2.setMessageSignature(sig2);
 	
 		DefaultAnnotation annotation1=new DefaultAnnotation("annotation1");
 		elem.getAnnotations().add(annotation1);
@@ -696,9 +715,10 @@ public class TextExportVisitorTest {
 		
 		String expected="[["+annotation1.toString()+"]]\r\n"+
 				"[["+annotation2.toString()+"]]\r\n"+
-				"choice from "+p1.getName()+" to "+p2.getName()+" {\r\n"+
-				"\t"+ref1.getName()+":\r\n\r\n"+
-				"\t"+ref2.getName()+":\r\n\r\n"+
+				"choice at "+p1.getName()+" {\r\n"+
+				"\t"+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n"+
+				"} or {\r\n"+
+				"\t"+ref2.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n"+
 				"}\r\n";
 		
 		if (str.equals(expected) == false) {
@@ -714,10 +734,14 @@ public class TextExportVisitorTest {
 		Role p1=new Role();
 		p1.setName("A");
 		
-		elem.setFromRole(p1);
+		elem.setRole(p1);
 		
-		When when1=new When();
-		elem.getWhens().add(when1);
+		Interaction i1=new Interaction();
+		i1.setFromRole(p1);
+		
+		Block b1=new Block();
+		b1.add(i1);
+		elem.getBlocks().add(b1);
 		
 		TypeReference ref1=new TypeReference();
 		ref1.setName("Type1");
@@ -725,10 +749,15 @@ public class TextExportVisitorTest {
 		MessageSignature sig1=new MessageSignature();
 		sig1.getTypeReferences().add(ref1);
 		
-		when1.setMessageSignature(sig1);
+		i1.setMessageSignature(sig1);
 		
-		When when2=new When();
-		elem.getWhens().add(when2);
+		Interaction i2=new Interaction();
+		i2.setFromRole(p1);
+		
+		Block b2=new Block();
+		b2.add(i2);
+		
+		elem.getBlocks().add(b2);
 		
 		TypeReference ref2=new TypeReference();
 		ref2.setName("Type2");
@@ -736,7 +765,7 @@ public class TextExportVisitorTest {
 		MessageSignature sig2=new MessageSignature();
 		sig2.getTypeReferences().add(ref2);
 		
-		when2.setMessageSignature(sig2);
+		i2.setMessageSignature(sig2);
 	
 		java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
 		
@@ -752,10 +781,11 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="choice from "+p1.getName()+" {\r\n"+
-				"\t"+ref1.getName()+":\r\n\r\n"+
-				"\t"+ref2.getName()+":\r\n\r\n"+
-				"}\r\n";
+		String expected="choice at "+p1.getName()+" {\r\n"+
+		"\t"+ref1.getName()+" from "+p1.getName()+";\r\n"+
+		"} or {\r\n"+
+		"\t"+ref2.getName()+" from "+p1.getName()+";\r\n"+
+		"}\r\n";
 		
 		if (str.equals(expected) == false) {
 			fail("Expected:\r\n"+expected+"\r\nGot:\r\n"+str);
@@ -770,10 +800,12 @@ public class TextExportVisitorTest {
 		Role p2=new Role();
 		p2.setName("B");
 		
-		elem.setToRole(p2);
+		Interaction i1=new Interaction();
+		i1.getToRoles().add(p2);
 		
-		When when1=new When();
-		elem.getWhens().add(when1);
+		Block b1=new Block();
+		b1.add(i1);
+		elem.getBlocks().add(b1);
 		
 		TypeReference ref1=new TypeReference();
 		ref1.setName("Type1");
@@ -781,10 +813,15 @@ public class TextExportVisitorTest {
 		MessageSignature sig1=new MessageSignature();
 		sig1.getTypeReferences().add(ref1);
 		
-		when1.setMessageSignature(sig1);
+		i1.setMessageSignature(sig1);
 		
-		When when2=new When();
-		elem.getWhens().add(when2);
+		Interaction i2=new Interaction();
+		i2.getToRoles().add(p2);
+		
+		Block b2=new Block();
+		b2.add(i2);
+		
+		elem.getBlocks().add(b2);
 		
 		TypeReference ref2=new TypeReference();
 		ref2.setName("Type2");
@@ -792,7 +829,7 @@ public class TextExportVisitorTest {
 		MessageSignature sig2=new MessageSignature();
 		sig2.getTypeReferences().add(ref2);
 		
-		when2.setMessageSignature(sig2);
+		i2.setMessageSignature(sig2);
 	
 		java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
 		
@@ -808,10 +845,11 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="choice to "+p2.getName()+" {\r\n"+
-				"\t"+ref1.getName()+":\r\n\r\n"+
-				"\t"+ref2.getName()+":\r\n\r\n"+
-				"}\r\n";
+		String expected="choice {\r\n"+
+		"\t"+ref1.getName()+" to "+p2.getName()+";\r\n"+
+		"} or {\r\n"+
+		"\t"+ref2.getName()+" to "+p2.getName()+";\r\n"+
+		"}\r\n";
 		
 		if (str.equals(expected) == false) {
 			fail("Expected:\r\n"+expected+"\r\nGot:\r\n"+str);

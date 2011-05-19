@@ -25,10 +25,6 @@ public class InteractionUtil {
 		
 		if (act instanceof Interaction) {
 			ret = ((Interaction)act).getFromRole();
-		} else if (act instanceof When && act.getParent() instanceof Choice) {
-			ret = ((Choice)act.getParent()).getFromRole();
-		} else if (act instanceof Choice) {
-			ret = ((Choice)act).getFromRole();
 		}
 		
 		return(ret);
@@ -42,10 +38,6 @@ public class InteractionUtil {
 			if (((Interaction)act).getToRoles().size() > 0) {
 				ret = ((Interaction)act).getToRoles().get(0);
 			}
-		} else if (act instanceof When && act.getParent() instanceof Choice) {
-			ret = ((Choice)act.getParent()).getToRole();
-		} else if (act instanceof Choice) {
-			ret = ((Choice)act).getToRole();
 		}
 		
 		return(ret);
@@ -56,8 +48,6 @@ public class InteractionUtil {
 		
 		if (act instanceof Interaction) {
 			ret = ((Interaction)act).getMessageSignature();
-		} else if (act instanceof When) {
-			ret = ((When)act).getMessageSignature();
 		}
 		
 		return(ret);
@@ -111,13 +101,6 @@ public class InteractionUtil {
 			return((elem.getParent() instanceof Protocol) == false);
 		}
 		
-		public boolean start(Block elem) {
-			return(true);
-		}
-		
-		public void end(Block elem) {
-		}
-
 		public boolean start(Choice elem) {
 			return(m_record);
 		}
@@ -128,31 +111,21 @@ public class InteractionUtil {
 			m_record = false;
 		}
 		
-		public boolean start(When elem) {
-			m_savedState.put(elem, m_record);
+		public boolean start(Block elem) {
 			
-			// Only record if whenblock associated with choice that has a
-			// from and/or to role
-			Choice choice=(Choice)elem.getParent();
-			
-			if (m_record && ((choice.getFromRole() != null && choice.getToRole() == null) ||
-					(choice.getFromRole() == null && choice.getToRole() != null)) &&
-					elem.getMessageSignature().getTypeReferences().size() > 0) {
-					
-					//(choice.getFromRole() == null ||
-							//choice.getToRole() == null)) { // &&
-							//(choice.getFromRole() != null && choice.getToRole() != null)) { // &&
-							//elem.getMessageSignature().getTypeReferences().size() > 0) {
-				m_interactions.add(elem);
-				
-				m_record = false;
+			// If choice block, then need to save state so that can detect
+			// first interactions across all paths
+			if (elem.getParent() instanceof Choice) {
+				m_savedState.put(elem, m_record);
 			}
 			
 			return(true);
 		}
 		
-		public void end(When elem) {
-			m_record = m_savedState.get(elem);
+		public void end(Block elem) {
+			if (elem.getParent() instanceof Choice) {
+				m_record = m_savedState.get(elem);
+			}
 			
 			// TODO: SCRIBBLE-61 Need to accumulate results from when paths
 			// to determine if subsequent interactions should still be counted
@@ -170,13 +143,16 @@ public class InteractionUtil {
 			}
 		}
 		
-		public void accept(Run elem) {
+		@Override
+		public boolean start(Run elem) {
 			Protocol protocol=RunUtil.getInnerProtocol(elem.enclosingProtocol(),
 							elem.getProtocolReference()); //elem.getProtocol();
 			
 			if (protocol != null) {
 				protocol.visit(this);
 			}
+			
+			return(true);
 		}
 
 		private java.util.List<ModelObject> m_interactions=null;

@@ -45,20 +45,19 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 */
 	public boolean start(Block elem) {
 		
-		if (elem.getParent() instanceof When) {
-			// Skip block
-		} else {
-			// Only add the 'and' keyword if the parent is a Parallel construct
-			// and the block being processed is not the first block
-			if (elem.getParent() instanceof Parallel &&
-					((Parallel)elem.getParent()).getBlocks().indexOf(elem) > 0) {
-				output(" and");
-			}
-			
-			output(" {\r\n");
-			
-			m_indent++;
+		// Only add the 'and' keyword if the parent is a Parallel construct
+		// and the block being processed is not the first block
+		if (elem.getParent() instanceof Parallel &&
+				((Parallel)elem.getParent()).getBlocks().indexOf(elem) > 0) {
+			output(" and");
+		} else if (elem.getParent() instanceof Choice &&
+				((Choice)elem.getParent()).getBlocks().indexOf(elem) > 0) {
+			output(" or");
 		}
+		
+		output(" {\r\n");
+		
+		m_indent++;
 		
 		return(true);
 	}
@@ -71,20 +70,16 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 */
 	public void end(Block elem) {
 		
-		if (elem.getParent() instanceof When) {
-			// Skip block
-		} else {
-			m_indent--;
-			
-			indent();
-			
-			output("}");
-			
-			// Place newline after close bracket, unless the parent element is a
-			// multipath construct AND the block is not the final block
-			if (isEndOfBlock(elem)) {
-				output("\r\n");
-			}
+		m_indent--;
+		
+		indent();
+		
+		output("}");
+		
+		// Place newline after close bracket, unless the parent element is a
+		// multipath construct AND the block is not the final block
+		if (isEndOfBlock(elem)) {
+			output("\r\n");
 		}
 	}
 	
@@ -94,6 +89,9 @@ public class TextProtocolExporterVisitor implements Visitor {
 		if (elem.getParent() instanceof Parallel) {
 			ret = ((Parallel)elem.getParent()).getBlocks().indexOf(elem) ==
 					((Parallel)elem.getParent()).getBlocks().size()-1;
+		} else if (elem.getParent() instanceof Choice) {
+			ret = ((Choice)elem.getParent()).getBlocks().indexOf(elem) ==
+				((Choice)elem.getParent()).getBlocks().size()-1;
 		} else if (elem.getParent() instanceof Catch) {
 			Catch c=(Catch)elem.getParent();
 			
@@ -324,17 +322,13 @@ public class TextProtocolExporterVisitor implements Visitor {
 		
 		output("choice");
 		
-		if (elem.getFromRole() != null) {
-			output(" from "+elem.getFromRole().getName());
+		if (elem.getRole() != null) {
+			output(" at "+elem.getRole().getName());
 		}
 		
-		if (elem.getToRole() != null) {
-			output(" to "+elem.getToRole().getName());
-		}
+		//output(" {\r\n");
 		
-		output(" {\r\n");
-		
-		m_indent++;
+		//m_indent++;
 		
 		return(true);
 	}
@@ -347,48 +341,11 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 */
 	public void end(Choice elem) {
 		
-		m_indent--;
+		//m_indent--;
 		
-		indent();
+		//indent();
 		
-		output("}\r\n");
-	}
-	
-	/**
-	 * This method indicates the start of a
-	 * when block.
-	 * 
-	 * @param elem The when block
-	 * @return Whether to process the contents
-	 */
-	public boolean start(When elem) {
-		for (Annotation annotation : elem.getAnnotations()) {
-			indent();
-			output("[["+annotation.toString()+"]]\r\n");
-		}
-		
-		indent();
-		
-		outputMessageSignature(elem.getMessageSignature());
-		
-		output(":\r\n");
-		
-		m_indent++;
-		
-		return(true);
-	}
-	
-	/**
-	 * This method indicates the end of a
-	 * block.
-	 * 
-	 * @param elem The when block
-	 */
-	public void end(When elem) {
-		
-		output("\r\n");
-		
-		m_indent--;
+		//output("}\r\n");
 	}
 	
 	/**

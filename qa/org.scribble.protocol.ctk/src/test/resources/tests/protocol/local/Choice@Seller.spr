@@ -5,10 +5,10 @@ import Invoice;
 protocol SingleInteraction@Seller {
 	role Buyer;
 
-	choice from Buyer {
-		Order:
-			Invoice to Buyer;
-			
-		Cancel:
+	choice {
+		Order from Buyer;
+		Invoice to Buyer;
+	} or {
+		Cancel from Buyer;
 	}
 }

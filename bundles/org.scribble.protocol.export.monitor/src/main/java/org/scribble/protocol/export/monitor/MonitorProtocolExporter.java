@@ -128,6 +128,59 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 				pathBuilderList.add(path);
 				
 				m_pendingNextIndex.add(path);
+			} else if (act instanceof Block && act.getParent() instanceof Choice) {
+				
+				// Create path node
+				Path path=new Path();
+				
+				// Define id associated with the choice label
+				//path.setId(ChoiceUtil.getLabel(elem.getMessageSignature()));
+				
+				ChoiceNode choiceBuilder=
+					(ChoiceNode)m_nodeMap.get(act.getParent());
+
+				java.util.List<Path> pathBuilderList=
+							m_choicePaths.get(choiceBuilder);
+				
+				if (pathBuilderList == null) {
+					pathBuilderList = new java.util.Vector<Path>();
+					m_choicePaths.put(choiceBuilder, pathBuilderList);
+				}
+				
+				pathBuilderList.add(path);
+				
+				m_pendingNextIndex.add(path);
+
+				// Only create an interaction (message) node inside path if there is
+				// expected message content
+				/* CHANGE TO NEW CHOICE NOTATION SCRIBBLE-94
+				if (elem.getMessageSignature().getTypeReferences().size() > 0) {
+					Choice choice=(Choice)elem.getParent();
+					
+					java.util.List<Role> roles=new java.util.Vector<Role>();
+					if (choice.getToRole() != null) {
+						roles.add(choice.getToRole());
+					}
+					
+					createInteraction(choice, elem.getMessageSignature(), choice.getRole(), roles,
+									elem.getAnnotations());
+				}
+				*/
+				
+				// Create annotations
+				for (org.scribble.common.model.Annotation pma : act.getAnnotations()) {
+					org.scribble.protocol.monitor.model.Annotation pmma=
+								new org.scribble.protocol.monitor.model.Annotation();
+					
+					if (pma.getId() != null) {
+						pmma.setId(pma.getId());
+					} else {
+						pmma.setId(UUID.randomUUID().toString());
+					}
+					pmma.setValue(pma.toString());
+					
+					path.getAnnotation().add(pmma);
+				}
 			}
 
 			// Ignore blocks when establishing the next index of preceding
@@ -140,9 +193,16 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		
 		protected void endActivity(Activity act) {
 			
+			if (act.getParent() instanceof Choice) {
+				java.util.List<Object> cache=getCache(act.getParent());
+				
+				cache.addAll(m_pendingNextIndex);
+			}
+			
 			// Check if block associated with a parallel or an activity in an
 			// unordered construct
-			if (act.getParent() instanceof Parallel || (act.getParent() instanceof Block &&
+			if (act.getParent() instanceof Choice ||
+					act.getParent() instanceof Parallel || (act.getParent() instanceof Block &&
 					act.getParent().getParent() instanceof Unordered)) {
 				
 				// Make sure pending 'nextIndex' nodes do not get
@@ -393,14 +453,15 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			ChoiceNode node=null;
 			
-			if (elem.getToRole() != null) {
+			// TODO: SCRIBBLE-96 - determine if send/receive choice is necessary
+			if (elem.getRole() != null && elem.getRole().equals(elem.enclosingProtocol().getRole())) {
 				node = new SendChoice();
 				
-				node.setOtherRole(elem.getToRole().getName());
+				//node.setOtherRole(elem.getToRole().getName());
 			} else {
 				node = new ReceiveChoice();
 				
-				node.setOtherRole(elem.getFromRole().getName());
+				//node.setOtherRole(elem.getRole().getName());
 			}
 			
 			m_nodes.add(node);
@@ -431,6 +492,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * 
 		 * @param elem The when
 		 */
+		/*
 		public boolean start(When elem) {
 			
 			// Create path node
@@ -464,7 +526,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 					roles.add(choice.getToRole());
 				}
 				
-				createInteraction(choice, elem.getMessageSignature(), choice.getFromRole(), roles,
+				createInteraction(choice, elem.getMessageSignature(), choice.getRole(), roles,
 								elem.getAnnotations());
 			}
 			
@@ -485,6 +547,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			return(true);
 		}
+		*/
 		
 		/**
 		 * This method indicates the end of a
@@ -492,6 +555,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * 
 		 * @param elem The when block
 		 */
+		/*
 		public void end(When elem) {
 
 			// Transfer outstanding nodes in 'pendingNextIndex' to the
@@ -502,6 +566,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			m_pendingNextIndex.clear();
 		}
+		*/
 
 		protected java.util.List<Object> getCache(ModelObject elem) {
 			java.util.List<Object> ret=m_nodeCache.get(elem);

@@ -6,15 +6,15 @@ import Cancelled;
 protocol ChoiceMerge@Broker {
 	role Buyer, Seller;
 
-	choice from Buyer {
-		Order:
-			Order to Seller;
-			Invoice from Seller;
-			Invoice to Buyer;
-
-		Cancel:
-			Cancel to Seller;
-			Cancelled from Seller;
-			Cancelled to Buyer;
+	choice {
+		Order from Buyer;
+		Order to Seller;
+		Invoice from Seller;
+		Invoice to Buyer;
+	} or {
+		Cancel from Buyer;
+		Cancel to Seller;
+		Cancelled from Seller;
+		Cancelled to Buyer;
 	}
 }

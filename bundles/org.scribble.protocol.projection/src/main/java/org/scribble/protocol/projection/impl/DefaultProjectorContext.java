@@ -62,7 +62,6 @@ public class DefaultProjectorContext implements ProjectorContext {
 		m_rules.add(new TryProjectorRule());
 		m_rules.add(new DataTypeProjectorRule());
 		m_rules.add(new TypeReferenceProjectorRule());
-		m_rules.add(new WhenProjectorRule());
 		m_rules.add(new UnorderedProjectorRule());
 	}
 

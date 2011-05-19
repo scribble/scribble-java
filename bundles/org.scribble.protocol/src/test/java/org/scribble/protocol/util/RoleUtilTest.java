@@ -75,11 +75,11 @@ public class RoleUtilTest {
 		Choice choice=new Choice();
 		prot1.getBlock().add(choice);
 		
-		When wb1=new When();
-		choice.getWhens().add(wb1);
+		Block wb1=new Block();
+		choice.getBlocks().add(wb1);
 		
 		RoleList plist2=new RoleList();
-		wb1.getBlock().add(plist2);
+		wb1.add(plist2);
 		
 		Role part3=new Role();
 		part3.setName("part3");
@@ -89,11 +89,11 @@ public class RoleUtilTest {
 		part4.setName("part4");
 		plist2.getRoles().add(part4);
 				
-		When wb2=new When();
-		choice.getWhens().add(wb2);
+		Block wb2=new Block();
+		choice.getBlocks().add(wb2);
 		
 		RoleList plist3=new RoleList();
-		wb2.getBlock().add(plist3);
+		wb2.add(plist3);
 		
 		Role part5=new Role();
 		part5.setName("part5");
@@ -104,7 +104,7 @@ public class RoleUtilTest {
 		plist3.getRoles().add(part6);
 		
 		Interaction i1=new Interaction();
-		wb2.getBlock().add(i1);
+		wb2.add(i1);
 		
 		java.util.Set<Role> result=RoleUtil.getRolesInScope(i1);
 		
@@ -163,11 +163,8 @@ public class RoleUtilTest {
 		Choice choice1=new Choice();
 		parb2.add(choice1);
 		
-		When w1=new When();
-		choice1.getWhens().add(w1);
-		
 		Block wb1=new Block();
-		w1.setBlock(wb1);
+		choice1.getBlocks().add(wb1);
 		
 		Interaction i2=new Interaction();
 		i2.setFromRole(r2);
@@ -245,22 +242,16 @@ public class RoleUtilTest {
 		Choice choice1=new Choice();
 		parb2.add(choice1);
 		
-		When w1=new When();
-		choice1.getWhens().add(w1);
-		
 		Block wb1=new Block();
-		w1.setBlock(wb1);
+		choice1.getBlocks().add(wb1);
 		
 		Interaction i21=new Interaction();
 		i21.setFromRole(r2);
 		
 		wb1.add(i21);
 		
-		When w2=new When();
-		choice1.getWhens().add(w2);
-		
 		Block wb2=new Block();
-		w2.setBlock(wb2);
+		choice1.getBlocks().add(wb2);
 		
 		Interaction i22=new Interaction();
 		i22.setFromRole(r2);

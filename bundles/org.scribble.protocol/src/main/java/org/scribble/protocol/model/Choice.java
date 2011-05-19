@@ -22,9 +22,8 @@ package org.scribble.protocol.model;
  */
 public class Choice extends Activity {
 
-	private java.util.List<When> m_whens=new ContainmentList<When>(this, When.class);
-	private Role m_fromRole=null;
-	private Role m_toRole=null;
+	private Role m_role=null;
+	private java.util.List<Block> m_blocks=new ContainmentList<Block>(this, Block.class);
 
 	/**
 	 * This is the default constructor.
@@ -34,39 +33,21 @@ public class Choice extends Activity {
 	}
 	
 	/**
-	 * This method returns the optional 'from' role.
+	 * This method returns the role.
 	 * 
-	 * @return The optional 'from' role
+	 * @return The role
 	 */
-	public Role getFromRole() {
-		return(m_fromRole);
+	public Role getRole() {
+		return(m_role);
 	}
 	
 	/**
-	 * This method sets the optional 'from' role.
+	 * This method sets the role.
 	 * 
-	 * @param part The optional 'from' role
+	 * @param part The role
 	 */
-	public void setFromRole(Role part) {
-		m_fromRole = part;
-	}
-	
-	/**
-	 * This method returns the optional 'to' role.
-	 * 
-	 * @return The optional 'to' role
-	 */
-	public Role getToRole() {
-		return(m_toRole);
-	}
-	
-	/**
-	 * This method sets the optional 'to' role.
-	 * 
-	 * @param part The optional 'to' role
-	 */
-	public void setToRole(Role part) {
-		m_toRole = part;
+	public void setRole(Role part) {
+		m_role = part;
 	}
 	
 	/**
@@ -75,8 +56,8 @@ public class Choice extends Activity {
 	 * 
 	 * @return The list of blocks
 	 */
-	public java.util.List<When> getWhens() {
-		return(m_whens);
+	public java.util.List<Block> getBlocks() {
+		return(m_blocks);
 	}
 	
 	/**
@@ -88,16 +69,12 @@ public class Choice extends Activity {
 	public void visit(Visitor visitor) {
 		visitor.start(this);
 		
-		if (getFromRole() != null) {
-			getFromRole().visit(visitor);
+		if (getRole() != null) {
+			getRole().visit(visitor);
 		}
 		
-		if (getToRole() != null) {
-			getToRole().visit(visitor);
-		}
-		
-		for (When w : getWhens()) {
-			w.visit(visitor);
+		for (Block b : getBlocks()) {
+			b.visit(visitor);
 		}
 		
 		visitor.end(this);
@@ -110,30 +87,29 @@ public class Choice extends Activity {
 
         Choice that = (Choice) o;
 
-        return !(m_fromRole != null
-                ? !m_fromRole.equals(that.m_fromRole)
-                : that.m_fromRole != null)
-            && !(m_toRole != null
-                ? !m_toRole.equals(that.m_toRole)
-                : that.m_toRole != null) 
-            && m_whens.equals(that.m_whens);
+        return !(m_role != null
+                ? !m_role.equals(that.m_role)
+                : that.m_role != null)
+             && m_blocks.equals(that.m_blocks);
     }
 
     @Override
     public int hashCode() {
-        int result = m_whens.hashCode();
-        result = 31 * result + (m_fromRole != null ? m_fromRole.hashCode() : 0);
-        result = 31 * result + (m_toRole != null ? m_toRole.hashCode() : 0);
+        int result = m_blocks.hashCode();
+        result = 31 * result + (m_role != null ? m_role.hashCode() : 0);
         return result;
     }
 
 	@Override
 	public String toString() {
 		String result =  "choice ";
-		if (m_fromRole != null) result += "from " + m_fromRole;
-		if (m_toRole != null) result += "to " + m_toRole;
-		result += "{\n";
-		for (When w: m_whens) result += w + "\n";
-		return result + "}";
+		if (m_role != null) result += "at " + m_role+" ";
+		for (Block b: m_blocks) {
+			if (m_blocks.indexOf(b) > 0) {
+				result += "or ";
+			}
+			result += b + "\n";
+		}
+		return result;
 	}
 }

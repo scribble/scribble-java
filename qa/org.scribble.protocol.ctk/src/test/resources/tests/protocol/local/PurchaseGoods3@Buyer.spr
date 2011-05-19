@@ -6,12 +6,12 @@ protocol PurchaseGoodsProcess@Buyer {
 	role Store;
 	buy(BuyRequest) to Store;
 	
-	choice from Store{
-		buy(BuyConfirmed):
-
-		buy(BuyFailed):
-		
-		buy(AccountNotFound):
+	choice {
+		buy(BuyConfirmed) from Store;
+	} or {
+		buy(BuyFailed) from Store;
+	} or {
+		buy(AccountNotFound) from Store;
 		
 	}
 }

@@ -4,12 +4,13 @@ import Boolean;
 protocol ChoiceMergeCommonPrefix@B {
     role A, C;
 
-    choice from A {
-        ok():
-            Int to C;
-            ok() to C;
-        quit():
-            Int to C;
-            quit() to C;
+    choice {
+        ok() from A;
+        Int to C;
+        ok() to C;
+    } or {
+        quit() from A;
+        Int to C;
+        quit() to C;
     }
 }

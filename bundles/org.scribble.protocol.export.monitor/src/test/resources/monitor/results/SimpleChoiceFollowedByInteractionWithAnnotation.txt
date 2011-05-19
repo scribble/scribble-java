@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <description xmlns="http://www.scribble.org/monitor">
     <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="op1" nextIndex="1"/>
-    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveChoice" otherRole="p2">
-        <path nextIndex="2" id="op2_M2">
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveChoice">
+        <path nextIndex="2">
             <annotation value=" My Annotation " id="a1"/>
         </path>
-        <path nextIndex="4" id="op4">
+        <path nextIndex="4">
             <annotation value=" My Annotation2 " id="a2"/>
         </path>
     </node>
     <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveMessage" otherRole="p2" operator="op2" nextIndex="3">
-        <annotation value=" My Annotation " id="a1"/>
+        <annotation value=" My Annotation0 " id="a0"/>
         <messageType value="M2"/>
     </node>
-    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="op3" nextIndex="5"/>
-    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="op5" nextIndex="5"/>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="op3" nextIndex="6"/>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveMessage" otherRole="p2" operator="op4" nextIndex="5"/>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="op5" nextIndex="6"/>
     <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveMessage" otherRole="p2" operator="op6"/>
 </description>

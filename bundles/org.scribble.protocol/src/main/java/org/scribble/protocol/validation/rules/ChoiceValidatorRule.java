@@ -54,79 +54,24 @@ public class ChoiceValidatorRule implements ProtocolComponentValidatorRule {
 		
 		// Identify definition and whether it has a located role
 		Role locatedRole=null;
-		boolean locatedRoleUsed=false;
 		
 		if (elem.enclosingProtocol() != null) {
 			locatedRole = elem.enclosingProtocol().getRole();
 		}
 
-		// Check there are 'to' and 'from' roles defined
-		if (elem.getFromRole() == null) {
+		if (elem.getRole() != null) {
 			
-			// Check if local model and 'to' is not the same as the
-			// located role
-			if (locatedRole == null || elem.getToRole() == null ||
-					locatedRole.equals(elem.getToRole())) {
-			
-				logger.error(MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-							"org.scribble.protocol.Messages").getString(
-							"_CHOICE_ROLE"), "from"), obj.getProperties());
-			}
-			
-			if (locatedRole != null) {
-				locatedRoleUsed = true;
-			}
-		} else {
 			// Check that the role has been defined in scope
 			java.util.Set<Role> roles=RoleUtil.getRolesInScope(elem);
 			
-			if (roles.contains(elem.getFromRole()) == false) {
+			if (roles.contains(elem.getRole()) == false) {
 				logger.error(MessageFormat.format(
 						java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.Messages").getString("_UNKNOWN_ROLE"),
-						elem.getFromRole().getName()), obj.getProperties());
-			}
-			
-			// Check if 'from' role was the located role
-			if (locatedRole != null && elem.getFromRole().equals(locatedRole)) {
-				locatedRoleUsed = true;
+						elem.getRole().getName()), obj.getProperties());
 			}
 		}
 
-		if (elem.getToRole() == null) {
-			
-			// Check if local model and 'from' is not the same as the
-			// located role
-			if (locatedRole == null || elem.getFromRole() == null ||
-					locatedRole.equals(elem.getFromRole())) {
-			
-				logger.error(MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-							"org.scribble.protocol.Messages").getString(
-							"_CHOICE_ROLE"), "to"), obj.getProperties());
-			}
-			
-			if (locatedRole != null) {
-				locatedRoleUsed = true;
-			}
-		} else {
-			// Check that the role has been defined in scope
-			java.util.Set<Role> roles=RoleUtil.getRolesInScope(elem);
-			
-			if (roles.contains(elem.getToRole()) == false) {
-				logger.error(MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-							"org.scribble.protocol.Messages").getString(
-							"_UNKNOWN_ROLE"), elem.getToRole().getName()), obj.getProperties());
-			}
-			
-			// Check if 'to' role was the located role
-			if (locatedRole != null && elem.getToRole().equals(locatedRole)) {
-				locatedRoleUsed = true;
-			}
-		}
-		
-		if (locatedRole != null && !locatedRoleUsed) {
+		if (locatedRole != null && elem.getRole() != null && !elem.getRole().equals(locatedRole)) {
 			logger.error(MessageFormat.format(
 					java.util.PropertyResourceBundle.getBundle(
 							"org.scribble.protocol.Messages").getString("_UNRELATED_TO_LOCATED_ROLE"),

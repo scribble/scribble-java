@@ -10,11 +10,11 @@ protocol MultiPartyInteractionsAndChoice@Buyer {
 
 	Order to Broker;
 	
-	choice from Broker {
-		Confirmation:
-
-		OutOfStock:
-
-		InsufficientCredit:		
+	choice {
+		Confirmation from Broker;
+	} or {
+		OutOfStock from Broker;
+	} or {
+		InsufficientCredit from Broker;	
 	}
 }

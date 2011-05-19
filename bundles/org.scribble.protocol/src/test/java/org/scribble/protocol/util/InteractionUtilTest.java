@@ -54,22 +54,30 @@ public class InteractionUtilTest {
 		pm.setProtocol(p);
 
 		Choice choice=new Choice();
-		choice.setFromRole(new Role());
+		choice.setRole(new Role());
 		p.getBlock().add(choice);
 		
-		When wb1=new When();
-		wb1.setMessageSignature(new MessageSignature(new TypeReference()));
-		choice.getWhens().add(wb1);
+		Block b1=new Block();
+		choice.getBlocks().add(b1);
+		
+		Interaction i0=new Interaction();
+		i0.setMessageSignature(new MessageSignature(new TypeReference()));
+		b1.add(i0);
 		
 		Interaction i1=new Interaction();
-		wb1.getBlock().add(i1);
+		i1.setMessageSignature(new MessageSignature(new TypeReference()));
+		b1.add(i1);
 		
-		When wb2=new When();
-		wb2.setMessageSignature(new MessageSignature(new TypeReference()));
-		choice.getWhens().add(wb2);
+		Block b2=new Block();
+		choice.getBlocks().add(b2);
+		
+		Interaction i3=new Interaction();
+		i3.setMessageSignature(new MessageSignature(new TypeReference()));
+		b2.add(i3);
 		
 		Interaction i2=new Interaction();
-		wb2.getBlock().add(i2);
+		i2.setMessageSignature(new MessageSignature(new TypeReference()));
+		b2.add(i2);
 		
 		java.util.List<ModelObject> results=InteractionUtil.getInitialInteractions(pm);
 		
@@ -77,11 +85,11 @@ public class InteractionUtilTest {
 			fail("Should be 2 results: "+results.size());
 		}
 		
-		if (results.get(0) != wb1) {
+		if (results.get(0) != i0) {
 			fail("Interaction 1 not as expected");
 		}
 		
-		if (results.get(1) != wb2) {
+		if (results.get(1) != i3) {
 			fail("Interaction 2 not as expected");
 		}
 	}
@@ -94,36 +102,39 @@ public class InteractionUtilTest {
 		pm.setProtocol(p);
 
 		Choice choice1=new Choice();
-		choice1.setToRole(new Role());
-		choice1.setFromRole(new Role());
+		choice1.setRole(new Role());
 		p.getBlock().add(choice1);
 		
-		When wb1=new When();
-		choice1.getWhens().add(wb1);
+		Block wb1=new Block();
+		choice1.getBlocks().add(wb1);
 		
 		Choice choice2=new Choice();
-		choice2.setFromRole(new Role());
-		wb1.getBlock().add(choice2);
+		choice2.setRole(new Role());
+		wb1.add(choice2);
 		
-		When wb1_1=new When();
-		wb1_1.setMessageSignature(new MessageSignature(new TypeReference()));
-		choice2.getWhens().add(wb1_1);
+		Block wb1_1=new Block();
+		Interaction i1_1=new Interaction();
+		i1_1.setMessageSignature(new MessageSignature(new TypeReference()));
+		wb1_1.add(i1_1);
+		choice2.getBlocks().add(wb1_1);
 		
 		Interaction i1=new Interaction();
-		wb1_1.getBlock().add(i1);
+		wb1_1.add(i1);
 		
-		When wb1_2=new When();
-		wb1_2.setMessageSignature(new MessageSignature(new TypeReference()));
-		choice2.getWhens().add(wb1_2);
+		Block wb1_2=new Block();
+		Interaction i1_2=new Interaction();
+		i1_2.setMessageSignature(new MessageSignature(new TypeReference()));
+		wb1_2.add(i1_2);
+		choice2.getBlocks().add(wb1_2);
 		
 		Interaction i2=new Interaction();
-		wb1_2.getBlock().add(i2);
+		wb1_2.add(i2);
 		
-		When wb2=new When();
-		choice1.getWhens().add(wb2);
+		Block wb2=new Block();
+		choice1.getBlocks().add(wb2);
 		
 		Interaction i3=new Interaction();
-		wb2.getBlock().add(i3);
+		wb2.add(i3);
 		
 		java.util.List<ModelObject> results=InteractionUtil.getInitialInteractions(pm);
 		
@@ -131,11 +142,11 @@ public class InteractionUtilTest {
 			fail("Should be 3 results: "+results.size());
 		}
 		
-		if (results.get(0) != wb1_1) {
+		if (results.get(0) != i1_1) {
 			fail("Interaction 1 not as expected");
 		}
 		
-		if (results.get(1) != wb1_2) {
+		if (results.get(1) != i1_2) {
 			fail("Interaction 2 not as expected");
 		}
 		
@@ -174,45 +185,48 @@ public class InteractionUtilTest {
 		pm.setProtocol(p);
 
 		Choice choice1=new Choice();
-		choice1.setToRole(new Role());
-		choice1.setFromRole(new Role());
+		choice1.setRole(new Role());
 		p.getBlock().add(choice1);
 		
-		When wb1=new When();
-		choice1.getWhens().add(wb1);
+		Block wb1=new Block();
+		choice1.getBlocks().add(wb1);
 		
 		Choice choice2=new Choice();
-		choice2.setFromRole(new Role());
-		wb1.getBlock().add(choice2);
+		choice2.setRole(new Role());
+		wb1.add(choice2);
 		
-		When wb1_1=new When();
-		wb1_1.setMessageSignature(new MessageSignature(new TypeReference()));
-		choice2.getWhens().add(wb1_1);
+		Block wb1_1=new Block();
+		Interaction i1_1=new Interaction();
+		i1_1.setMessageSignature(new MessageSignature(new TypeReference()));
+		wb1_1.add(i1_1);
+		choice2.getBlocks().add(wb1_1);
 		
 		Interaction i1=new Interaction();
-		wb1_1.getBlock().add(i1);
+		wb1_1.add(i1);
 		
-		When wb1_2=new When();
-		wb1_2.setMessageSignature(new MessageSignature(new TypeReference()));
-		choice2.getWhens().add(wb1_2);
+		Block wb1_2=new Block();
+		Interaction i1_2=new Interaction();
+		i1_2.setMessageSignature(new MessageSignature(new TypeReference()));
+		wb1_2.add(i1_2);
+		choice2.getBlocks().add(wb1_2);
 		
 		Interaction i2=new Interaction();
-		wb1_2.getBlock().add(i2);
+		wb1_2.add(i2);
 		
-		When wb2=new When();
-		choice1.getWhens().add(wb2);
+		Block wb2=new Block();
+		choice1.getBlocks().add(wb2);
 		
 		Interaction i3=new Interaction();
-		wb2.getBlock().add(i3);
+		wb2.add(i3);
 		
 		Interaction i4=new Interaction();
 		p.getBlock().add(i4);
 		
-		if (InteractionUtil.isInitialInteraction(pm, wb1_1) == false) {
+		if (InteractionUtil.isInitialInteraction(pm, i1_1) == false) {
 			fail("Interaction 1 not as expected");
 		}
 		
-		if (InteractionUtil.isInitialInteraction(pm, wb1_2) == false) {
+		if (InteractionUtil.isInitialInteraction(pm, i1_2) == false) {
 			fail("Interaction 2 not as expected");
 		}
 		

@@ -103,6 +103,20 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
 					// Save current list of declared roles
 					java.util.Set<Role> declaredRoles1=RoleUtil.getRoles(protocol.getBlock());
 					
+					for (ParameterDefinition pd : protocol.getParameterDefinitions()) {
+						if (pd.getType() == null) {
+							declaredRoles1.add(new Role(pd.getName()));
+						}
+					}
+					
+					// If no top level protocol, then use top level protocol name
+					if (srcprotocol != source.getProtocol()) {
+						protocol.setName(source.getProtocol().getName());
+						
+						// TODO: Clear the parameter definitions for now
+						protocol.getParameterDefinitions().clear();
+					}
+					
 					// Replace the top level block
 					protocol.setBlock(block);
 					

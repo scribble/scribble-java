@@ -8,9 +8,9 @@ protocol MultiPartyInteractionsAndChoice2@Seller {
 
 	Order from Broker;
 		
-	choice to Broker {
-		Confirmation:
-		
-		OutOfStock:
+	choice at Seller {
+		Confirmation to Broker;
+	} or {
+		OutOfStock to Broker;
 	}
 }

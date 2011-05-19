@@ -6,22 +6,18 @@ protocol PurchaseGoodsProcess {
 	role Buyer, CreditAgency, Store;
 	buy(BuyRequest) from Buyer to Store;
 	checkCredit(CreditCheckRequest) from Store to CreditAgency;
-	choice from CreditAgency to Store {
-		checkCredit(CreditRating):
-			choice {
-				label0():
-					role Logistics;
-					deliver(DeliveryRequest) from Store to Logistics;
-					deliver(DeliveryConfirmed) from Logistics to Store;
-					buy(BuyConfirmed) from Store to Buyer;
-
-				label1():
-					buy(BuyFailed) from Store to Buyer;
-
-			}
-
-		checkCredit(CustomerUnknown):
-			buy(AccountNotFound) from Store to Buyer;
-
+	choice at CreditAgency {
+		checkCredit(CreditRating) from CreditAgency to Store;
+		choice at Store {
+			role Logistics;
+			deliver(DeliveryRequest) from Store to Logistics;
+			deliver(DeliveryConfirmed) from Logistics to Store;
+			buy(BuyConfirmed) from Store to Buyer;
+		} or {
+			buy(BuyFailed) from Store to Buyer;
+		}
+	} or {
+		checkCredit(CustomerUnknown) from CreditAgency to Store;
+		buy(AccountNotFound) from Store to Buyer;
 	}
 }

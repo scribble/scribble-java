@@ -1,5 +1,7 @@
 receiveMessage,Order
+sendMessage,tryAgain()
 receiveMessage,Order
+sendMessage,exit()
 receiveMessage,Another
 receiveMessage,Another
 receiveMessage,Finish

@@ -1,5 +1,3 @@
 sendMessage,Order
-receiveChoice,validProduct
-receiveChoice,_Confirmation
 receiveMessage,Confirmation
 

@@ -111,11 +111,11 @@ public class ANTLRProtocolParserTest {
 	public void testExtensionChoice() {
 		String first="protocol Test {\r\n[[";
 		String comment1=" Comment 1 ";
-		String second="]]\r\n\tchoice from Buyer to Seller {\r\n[[";
+		String second="]]\r\n\tchoice at Buyer {\r\n[[";
 		String comment2=" Comment 2 ";
-		String third="]]\r\n\t\top1(M1):\r\n[[";
+		String third="]]\r\n\t\top1(M1) from Buyer to Seller;\r\n\t} or {\r\n[[";
 		String comment3=" Comment 3 ";
-		String fourth="]]\r\n\t\top2(M2):\r\n";
+		String fourth="]]\r\n\t\top2(M2) from Buyer to Seller;\r\n";
 		String fifth="\t}\r\n";
 		String sixth="}\r\n";
 		String protocol=first+comment1+second+comment2+third+comment3+fourth+fifth+sixth;

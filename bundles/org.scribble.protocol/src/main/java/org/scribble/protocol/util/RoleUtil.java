@@ -99,9 +99,8 @@ public class RoleUtil {
 			}
 			
 			public boolean start(Choice elem) {
-				if (role.equals(elem.getFromRole()) || role.equals(elem.getToRole()) ||
-						((elem.getFromRole() == null || elem.getToRole() == null) &&
-								role.equals(elem.enclosingProtocol().getRole()))) {
+				if (role.equals(elem.getRole()) /*|| (elem.getRole() == null &&
+								role.equals(elem.enclosingProtocol().getRole()))*/) {
 					blocks.add((Block)elem.getParent());
 				}
 				
@@ -240,13 +239,6 @@ public class RoleUtil {
 			return(m_recurse);
 		}
 
-		public boolean start(When elem) {
-			return(m_recurse);
-		}
-	
-		public void end(When elem) {
-		}
-		
 		public boolean start(Optional elem) {
 			checkActivity(elem);
 			return(m_recurse);

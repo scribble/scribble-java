@@ -22,7 +22,7 @@ import org.scribble.protocol.model.*;
 public class ChoiceValidatorRuleTest {
 
 	@org.junit.Test
-	public void testChoiceFromUnknownRole() {
+	public void testChoiceAtUnknownRole() {
 		
 		Protocol prot1=new Protocol();
 		
@@ -43,8 +43,7 @@ public class ChoiceValidatorRuleTest {
 		Role part3=new Role();
 		part3.setName("part3");
 		
-		i1.setFromRole(part3);
-		i1.setToRole(part2);
+		i1.setRole(part3);
 				
 		TestScribbleLogger logger=new TestScribbleLogger();
 
@@ -60,219 +59,7 @@ public class ChoiceValidatorRuleTest {
 	}
 
 	@org.junit.Test
-	public void testChoiceToUnknownRole() {
-		
-		Protocol prot1=new Protocol();
-		
-		RoleList plist1=new RoleList();
-		prot1.getBlock().add(plist1);
-		
-		Role part1=new Role();
-		part1.setName("part1");
-		plist1.getRoles().add(part1);
-		
-		Role part2=new Role();
-		part2.setName("part2");
-		plist1.getRoles().add(part2);
-		
-		Choice i1=new Choice();
-		prot1.getBlock().add(i1);
-		
-		Role part3=new Role();
-		part3.setName("part3");
-		
-		i1.setFromRole(part1);
-		i1.setToRole(part3);
-				
-		TestScribbleLogger logger=new TestScribbleLogger();
-
-		ChoiceValidatorRule rule=new ChoiceValidatorRule();
-		rule.validate(i1, logger);
-		
-		logger.verifyErrors(new String[]{
-				MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-						"org.scribble.protocol.Messages").getString("_UNKNOWN_ROLE"),
-							part3.getName())
-		});
-	}
-
-	@org.junit.Test
-	public void testChoiceToRequiredRole() {
-		
-		Protocol prot1=new Protocol();
-		
-		RoleList plist1=new RoleList();
-		prot1.getBlock().add(plist1);
-		
-		Role part1=new Role();
-		part1.setName("part1");
-		plist1.getRoles().add(part1);
-		
-		Role part2=new Role();
-		part2.setName("part2");
-		plist1.getRoles().add(part2);
-		
-		Choice i1=new Choice();
-		prot1.getBlock().add(i1);
-		
-		i1.setFromRole(part1);
-		//i1.setToParticipant(part2);
-				
-		TestScribbleLogger logger=new TestScribbleLogger();
-
-		ChoiceValidatorRule rule=new ChoiceValidatorRule();
-		rule.validate(i1, logger);
-		
-		logger.verifyErrors(new String[]{
-				MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-						"org.scribble.protocol.Messages").getString("_CHOICE_ROLE"),
-							"to")
-		});
-	}
-
-	@org.junit.Test
-	public void testChoiceRequiredFromRoleWithLocatedRole() {
-		
-		Protocol prot1=new Protocol();
-		
-		RoleList plist1=new RoleList();
-		prot1.getBlock().add(plist1);
-		
-		Role part1=new Role();
-		part1.setName("part1");
-		plist1.getRoles().add(part1);
-		
-		Role part2=new Role();
-		part2.setName("part2");
-		plist1.getRoles().add(part2);
-		
-		prot1.setRole(part2);
-		
-		Choice i1=new Choice();
-		prot1.getBlock().add(i1);
-		
-		i1.setToRole(part2);
-				
-		TestScribbleLogger logger=new TestScribbleLogger();
-
-		ChoiceValidatorRule rule=new ChoiceValidatorRule();
-		rule.validate(i1, logger);
-		
-		logger.verifyErrors(new String[]{
-				MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-						"org.scribble.protocol.Messages").getString("_CHOICE_ROLE"),
-							"from")
-		});
-	}
-
-	@org.junit.Test
-	public void testChoiceRequiredToRoleWithLocatedRole() {
-		
-		Protocol prot1=new Protocol();
-		
-		RoleList plist1=new RoleList();
-		prot1.getBlock().add(plist1);
-		
-		Role part1=new Role();
-		part1.setName("part1");
-		plist1.getRoles().add(part1);
-		
-		Role part2=new Role();
-		part2.setName("part2");
-		plist1.getRoles().add(part2);
-		
-		prot1.setRole(part2);
-		
-		Choice i1=new Choice();
-		prot1.getBlock().add(i1);
-		
-		i1.setFromRole(part2);
-				
-		TestScribbleLogger logger=new TestScribbleLogger();
-
-		ChoiceValidatorRule rule=new ChoiceValidatorRule();
-		rule.validate(i1, logger);
-		
-		logger.verifyErrors(new String[]{
-				MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-						"org.scribble.protocol.Messages").getString("_CHOICE_ROLE"),
-							"to")
-		});
-	}
-
-	@org.junit.Test
-	public void testChoiceFromRequiredRole() {
-		
-		Protocol prot1=new Protocol();
-		
-		RoleList plist1=new RoleList();
-		prot1.getBlock().add(plist1);
-		
-		Role part1=new Role();
-		part1.setName("part1");
-		plist1.getRoles().add(part1);
-		
-		Role part2=new Role();
-		part2.setName("part2");
-		plist1.getRoles().add(part2);
-		
-		Choice i1=new Choice();
-		prot1.getBlock().add(i1);
-		
-		//i1.setFromParticipant(part1);
-		i1.setToRole(part2);
-				
-		TestScribbleLogger logger=new TestScribbleLogger();
-
-		ChoiceValidatorRule rule=new ChoiceValidatorRule();
-		rule.validate(i1, logger);
-		
-		logger.verifyErrors(new String[]{
-				MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-						"org.scribble.protocol.Messages").getString("_CHOICE_ROLE"),
-							"from")
-		});
-	}
-	
-	@org.junit.Test
-	public void testChoiceToLocatedRole() {
-		
-		Protocol prot1=new Protocol();
-		
-		RoleList plist1=new RoleList();
-		prot1.getBlock().add(plist1);
-		
-		Role part1=new Role();
-		part1.setName("part1");
-		plist1.getRoles().add(part1);
-		
-		Role part2=new Role();
-		part2.setName("part2");
-		plist1.getRoles().add(part2);
-		
-		prot1.setRole(part2);
-
-		Choice i1=new Choice();
-		prot1.getBlock().add(i1);
-		
-		i1.setFromRole(part1);
-				
-		TestScribbleLogger logger=new TestScribbleLogger();
-
-		ChoiceValidatorRule rule=new ChoiceValidatorRule();
-		rule.validate(i1, logger);
-		
-		logger.verifyErrors(new String[]{
-		});
-	}
-
-	@org.junit.Test
-	public void testChoiceFromLocatedRole() {
+	public void testChoiceAtLocatedRole() {
 		
 		Protocol prot1=new Protocol();
 		
@@ -292,8 +79,6 @@ public class ChoiceValidatorRuleTest {
 		Choice i1=new Choice();
 		prot1.getBlock().add(i1);
 		
-		i1.setToRole(part2);
-				
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		ChoiceValidatorRule rule=new ChoiceValidatorRule();

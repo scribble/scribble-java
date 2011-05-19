@@ -6,11 +6,11 @@ import Cancelled;
 protocol ChoiceMerge@Seller {
 	role Broker;
 
-	choice from Broker {
-		Order:
-			Invoice to Broker;
-			
-		Cancel:
-			Cancelled to Broker;
+	choice {
+		Order from Broker;
+		Invoice to Broker;
+	} or {		
+		Cancel from Broker;
+		Cancelled to Broker;
 	}
 }
