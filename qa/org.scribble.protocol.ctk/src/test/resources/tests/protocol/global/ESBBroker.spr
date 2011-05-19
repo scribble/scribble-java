@@ -1,0 +1,42 @@
+import xsd "bookingReference" as BookingReference, "buy" as Buy, "cancel" as Cancel, "CreditCheckRequest" as CreditInformation, "CreditCheckInvalid" as CreditInvalid, "CreditCheckOk" as CreditValid, "enquiry" as Enquiry, "orderConfirmed" as OrderConfirmed, "orderRejected" as OrderRejected, "quote" as Quote, "quoteList" as QuoteList, "requestForQuote" as RequestForQuote;
+protocol ESBBrokerProcess {
+	role Broker, Buyer, CreditAgency, Supplier;
+
+	makeEnquiry(Enquiry) from Buyer to Broker;
+
+	repeat {
+		run RequestForQuote(Broker);
+	}
+
+	makeEnquiry(QuoteList) from Broker to Buyer;
+
+	choice at Buyer {
+		run CompleteTransaction(Buyer, Broker, CreditAgency);
+	} or {
+		cancel(Cancel) from Buyer to Broker;
+	}
+
+	protocol CompleteTransaction(role Buyer, role Broker, role CreditAgency) {
+		buy(Buy) from Buyer to Broker;
+		checkCredit(CreditInformation) from Broker to CreditAgency;
+
+		choice at CreditAgency {
+			role SupplierTxnProcessor;
+
+			checkCredit(CreditValid) from CreditAgency to Broker;
+			confirm(OrderConfirmed) from Broker to SupplierTxnProcessor;
+			confirm(BookingReference) from SupplierTxnProcessor to Broker;
+			buy(BookingReference) from Broker to Buyer;
+		} or {
+			checkCredit(CreditInvalid) from CreditAgency to Broker;
+			buy(OrderRejected) from Broker to Buyer;
+		}
+	}
+
+	protocol RequestForQuote(role Broker) {
+		role SupplierQuoteEngine;
+
+		getQuote(RequestForQuote) from Broker to SupplierQuoteEngine;
+		getQuote(Quote) from SupplierQuoteEngine to Broker;
+	}
+}

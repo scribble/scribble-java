@@ -40,7 +40,7 @@ public class ProtocolProjectorTest {
     @Parameterized.Parameters
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
-/*
+
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0
             {"Annotation.spr", "Annotation@Seller.spr"}, // 1
             {"Choice.spr", "Choice@Buyer.spr"},          // 2
@@ -61,44 +61,42 @@ public class ProtocolProjectorTest {
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@A.spr"},         // 11
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@B.spr"},         // 12
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@C.spr"},         // 13
- */       		
+       		
         	/* SCRIBBLE-91
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
             */
 
-   /*
             {"IncludeProtocol.spr", "IncludeProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
             {"IncludeProtocol.spr", "IncludeProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
-        		
-        	// TODO: Merging
-            //{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
+
+        	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
             
         	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@CreditAgency.spr"}, // 18            
-            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Seller.spr"}, // 19
             {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Broker.spr"}, // 20
+
+        	{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Buyer.spr"}, // 21
             
-            // TODO: Merging
-            //{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Buyer.spr"}, // 21
+            // TODO: Invalid merging
+            //{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Seller.spr"}, // 19
+            //{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Seller.spr"}, // 22
             
-            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Seller.spr"}, // 22
+            
             {"MulticastInteraction.spr", "MulticastInteraction@Buyer.spr"}, // 23
             {"MulticastInteraction.spr", "MulticastInteraction@SellerA.spr"}, // 24
             {"Optional.spr", "Optional@Buyer.spr"}, // 25
             {"Optional.spr", "Optional@Seller.spr"}, // 26
             {"Parallel.spr", "Parallel@Buyer.spr"}, // 27
             {"Parallel.spr", "Parallel@Seller.spr"}, // 28
- */
+
             /* SCRIBBLE-92 - remove raise activity
             {"Raise.spr", "Raise@Buyer.spr"},
             {"Raise.spr", "Raise@Seller.spr"},
             */
 
-            /*
             {"Recur.spr", "Recur@Buyer.spr"},
             {"Recur.spr", "Recur@Seller.spr"},
             
-            */
             {"Recur2.spr", "Recur2@Buyer.spr"},
             {"Recur2.spr", "Recur2@Seller.spr"},
             {"Repeat.spr", "Repeat@Buyer.spr"},
@@ -120,13 +118,12 @@ public class ProtocolProjectorTest {
             {"TryCatch.spr", "TryCatch@Seller.spr"},
             {"Unordered.spr", "Unordered@Buyer.spr"},
             {"Unordered.spr", "Unordered@Seller.spr"},
+            {"PurchaseGoods3.spr", "PurchaseGoods3@Buyer.spr"},             
+            {"PurchaseGoods3.spr", "PurchaseGoods3@Store.spr"},
+            {"ESBBroker.spr", "ESBBroker@SupplierTxnProcessor.spr"}
             
-            // TODO: Merging
-            //{"PurchaseGoods3.spr", "PurchaseGoods3@Buyer.spr"},  
-            
-            {"PurchaseGoods3.spr", "PurchaseGoods3@Store.spr"}   
-            
-        };
+ 
+         };
         List<Object[]> result = new LinkedList<Object[]>();
         for (Object[] sub: array) {
             result.add(new Object[] {

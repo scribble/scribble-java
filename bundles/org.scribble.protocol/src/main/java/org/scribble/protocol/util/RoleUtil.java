@@ -99,8 +99,8 @@ public class RoleUtil {
 			}
 			
 			public boolean start(Choice elem) {
-				if (role.equals(elem.getRole()) || (elem.getRole() == null &&
-								role.equals(elem.enclosingProtocol().getRole()))) {
+				if (role.equals(elem.getRole()) /*|| (elem.getRole() == null &&
+								role.equals(elem.enclosingProtocol().getRole()))*/) {
 					blocks.add((Block)elem.getParent());
 				}
 				

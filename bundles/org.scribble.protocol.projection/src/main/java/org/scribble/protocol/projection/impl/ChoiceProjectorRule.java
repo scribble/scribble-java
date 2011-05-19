@@ -54,6 +54,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
 		boolean f_rolesSet=false;
 		Role fromRole=null;
 		Role toRole=null;
+		boolean f_optional=false;
 		
 		ret.derivedFrom(source);
 		
@@ -78,7 +79,17 @@ public class ChoiceProjectorRule implements ProjectorRule {
 							l);
 			
 			if (block != null) {
-				ret.getBlocks().add(block);
+				
+				// TODO: Temporary fix to merge nested choice
+				if (block.getContents().size() == 1 &&
+						block.getContents().get(0) instanceof Choice &&
+						isSameRole(ret, (Choice)block.getContents().get(0))) {
+					ret.getBlocks().addAll(((Choice)block.getContents().get(0)).getBlocks());
+				} else {
+					ret.getBlocks().add(block);
+				}
+			} else {
+				f_optional = true;
 			}
 		}
 				
@@ -196,11 +207,19 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			}
 		} else*/ if (ret.getBlocks().size() == 0) {
 			ret = null;
-		} else if (ret.getBlocks().size() < source.getBlocks().size()) {
+		} else if (f_optional) {
 			// Add optional block
 			ret.getBlocks().add(new Block());
 		}
 
 		return(ret);
+	}
+	
+	protected boolean isSameRole(Choice c1, Choice c2) {
+		if (c1.getRole() == null && c2.getRole() == null) {
+			return(true);
+		} else {
+			return(c1.getRole().equals(c2.getRole()));
+		}
 	}
 }
