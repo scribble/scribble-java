@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scribble Protocol Export Monitor
 Bundle-SymbolicName: org.scribble.protocol.export.monitor
-Bundle-Version: 2.0.0.M5.SNAPSHOT
+Bundle-Version: 2.0.0.SNAPSHOT
 Bundle-Activator: org.scribble.protocol.export.monitor.osgi.Activator
 Bundle-Vendor: www.scribble.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
