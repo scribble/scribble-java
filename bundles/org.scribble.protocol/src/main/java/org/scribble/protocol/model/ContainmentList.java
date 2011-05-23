@@ -27,7 +27,9 @@ import java.util.Vector;
  */
 public class ContainmentList<E extends ModelObject> extends Vector<E> implements List<E> {
 
-    private ModelObject m_parent=null;
+	private static final long serialVersionUID = -1265091580286297521L;
+	
+	private ModelObject m_parent=null;
     private Class<E> m_type=null;
 
 	/**

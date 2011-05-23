@@ -93,8 +93,6 @@ public class InteractionProjectorRule implements ProjectorRule {
 					// Find role in state
 					Object state=context.getState(sr.getName());
 					
-					// TODO : Not sure why state was retrieved - it isn't used
-					// Is this a mistake? Should the setName use the state role?
 					if (state instanceof Role) {
 						Role r=new Role();
 						r.setName(sr.getName());
