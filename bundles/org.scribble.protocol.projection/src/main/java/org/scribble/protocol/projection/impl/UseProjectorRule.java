@@ -23,7 +23,7 @@ import org.scribble.protocol.util.ProtocolModelUtil;
  * This class provides the Include implementation of the
  * projector rule.
  */
-public class IncludeProjectorRule implements ProjectorRule {
+public class UseProjectorRule implements ProjectorRule {
 
 	/**
 	 * This method determines whether the projection rule is
@@ -34,7 +34,7 @@ public class IncludeProjectorRule implements ProjectorRule {
 	 * 				model object
 	 */
 	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == Include.class);
+		return(obj.getClass() == Use.class);
 	}
 	
 	/**
@@ -48,8 +48,8 @@ public class IncludeProjectorRule implements ProjectorRule {
 	 */
 	public ModelObject project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
-		Include ret=new Include();
-		Include source=(Include)model;
+		Use ret=new Use();
+		Use source=(Use)model;
 		
 		ret.derivedFrom(source);
 		

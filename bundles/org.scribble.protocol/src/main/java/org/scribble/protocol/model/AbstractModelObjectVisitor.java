@@ -80,15 +80,6 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 	}
 	
 	/**
-	 * This method visits a raise component.
-	 * 
-	 * @param elem The raise
-	 */
-	public void accept(Raise elem) {
-		process(elem);
-	}
-	
-	/**
 	 * This method indicates the start of a
 	 * run construct.
 	 * 
@@ -109,11 +100,11 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 	}
 	
 	/**
-	 * This method visits an include component.
+	 * This method visits an use component.
 	 * 
-	 * @param elem The include
+	 * @param elem The use component
 	 */
-	public void accept(Include elem) {
+	public void accept(Use elem) {
 		process(elem);
 	}
 	
@@ -233,26 +224,6 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 	 * @param elem The labelled block
 	 */
 	public void end(RecBlock elem) {
-	}
-	
-	/**
-	 * This method indicates the start of an
-	 * Optional construct.
-	 * 
-	 * @param elem The Optional construct
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Optional elem) {
-		return(process(elem));
-	}
-	
-	/**
-	 * This method indicates the end of an
-	 * Optional construct.
-	 * 
-	 * @param elem The Optional construct
-	 */
-	public void end(Optional elem) {
 	}
 	
 	/**

@@ -774,61 +774,6 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		}
 		
 		/**
-		 * This method indicates the start of an
-		 * Optional construct.
-		 * 
-		 * @param elem The Optional construct
-		 * @return Whether to process the contents
-		 */
-		public boolean start(Optional elem) {
-
-			startActivity(elem);
-
-			DecisionNode node=null;
-			
-			// Get located role
-			Role located=elem.enclosingProtocol().getRole();
-			
-			if (elem.getRoles().contains(located)) {
-				
-				// TODO: Do we have a way to find out the 'destination' of the decision
-				
-				node = new SendDecision();
-			} else {
-				
-				// TODO: Do we have a way to find out the 'source' of the decision
-				
-				node = new ReceiveDecision();
-			}
-			
-			m_nodes.add(node);
-						
-			// Cache the node associated with the choice
-			m_nodeMap.put(elem, node);
-
-			return(true);
-		}
-		
-		/**
-		 * This method indicates the end of an
-		 * Optional construct.
-		 * 
-		 * @param elem The Optional construct
-		 */
-		public void end(Optional elem) {
-			Node node=
-				(Node)m_nodeMap.get(elem);
-			
-			if (node instanceof DecisionNode) {
-				((DecisionNode)node).setInnerIndex(m_nodes.indexOf(node)+1);
-			}
-
-			m_pendingNextIndex.add(node);
-			
-			endActivity(elem);
-		}
-		
-		/**
 		 * This method visits a recursion component.
 		 * 
 		 * @param elem The recursion

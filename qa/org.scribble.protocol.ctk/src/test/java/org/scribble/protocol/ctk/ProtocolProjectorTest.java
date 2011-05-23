@@ -66,8 +66,8 @@ public class ProtocolProjectorTest {
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
             */
 
-            {"IncludeProtocol.spr", "IncludeProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
-            {"IncludeProtocol.spr", "IncludeProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
+            {"UseProtocol.spr", "UseProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
+            {"UseProtocol.spr", "UseProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
 
         	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
@@ -84,15 +84,8 @@ public class ProtocolProjectorTest {
             
             {"MulticastInteraction.spr", "MulticastInteraction@Buyer.spr"}, // 23
             {"MulticastInteraction.spr", "MulticastInteraction@SellerA.spr"}, // 24
-            {"Optional.spr", "Optional@Buyer.spr"}, // 25
-            {"Optional.spr", "Optional@Seller.spr"}, // 26
             {"Parallel.spr", "Parallel@Buyer.spr"}, // 27
             {"Parallel.spr", "Parallel@Seller.spr"}, // 28
-
-            /* SCRIBBLE-92 - remove raise activity
-            {"Raise.spr", "Raise@Buyer.spr"},
-            {"Raise.spr", "Raise@Seller.spr"},
-            */
 
             {"Recur.spr", "Recur@Buyer.spr"},
             {"Recur.spr", "Recur@Seller.spr"},

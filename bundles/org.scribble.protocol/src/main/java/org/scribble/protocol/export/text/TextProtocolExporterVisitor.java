@@ -595,47 +595,6 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 */
 	public void end(RecBlock elem) {
 	}
-
-	/**
-	 * This method indicates the start of an
-	 * Optional construct.
-	 * 
-	 * @param elem The Optional construct
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Optional elem) {
-		for (Annotation annotation : elem.getAnnotations()) {
-			indent();
-			output("[["+annotation.toString()+"]]\r\n");
-		}
-		
-		indent();
-		
-		output("optional");
-		
-		if (elem.getRoles().size() > 0) {
-			output(" @ ");
-			
-			for (int i=0; i < elem.getRoles().size(); i++) {
-				if (i > 0) {
-					output(",");
-				}
-				
-				output(elem.getRoles().get(i).getName());
-			}
-		}
-		
-		return(true);
-	}
-	
-	/**
-	 * This method indicates the end of an
-	 * Optional construct.
-	 * 
-	 * @param elem The Optional construct
-	 */
-	public void end(Optional elem) {
-	}
 	
 	protected void indent() {
 		for (int i=0; i < m_indent; i++) {
@@ -668,10 +627,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 	public void end(Run elem) {
 	}
 
-	public void accept(Raise elem) {
-	}
-
-	public void accept(Include elem) {
+	public void accept(Use elem) {
 	}
 
 	public void accept(TypeImport elem) {

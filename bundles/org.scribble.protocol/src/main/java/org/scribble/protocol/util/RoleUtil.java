@@ -242,9 +242,6 @@ public class RoleUtil {
 		public void end(Choice elem) {
 		}
 
-		public void end(Optional elem) {
-		}
-
 		public void end(Unordered elem) {
 		}
 
@@ -270,11 +267,6 @@ public class RoleUtil {
 		}
 
 		public boolean start(Choice elem) {
-			checkActivity(elem);
-			return(m_recurse);
-		}
-
-		public boolean start(Optional elem) {
 			checkActivity(elem);
 			return(m_recurse);
 		}
@@ -356,11 +348,7 @@ public class RoleUtil {
 			rlist.addAll(elem.getRoles());
 		}
 
-		public void accept(Raise elem) {
-			checkActivity(elem);
-		}
-
-		public void accept(Include elem) {
+		public void accept(Use elem) {
 			checkActivity(elem);
 		}
 		

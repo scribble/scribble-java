@@ -45,7 +45,6 @@ public class DefaultProjectorContext implements ProjectorContext {
 		m_rules.add(new TypeImportProjectorRule());
 		m_rules.add(new InteractionProjectorRule());
 		m_rules.add(new MessageSignatureProjectorRule());
-		m_rules.add(new OptionalProjectorRule());
 		m_rules.add(new ParallelProjectorRule());
 		m_rules.add(new RoleListProjectorRule());
 		m_rules.add(new RoleProjectorRule());
@@ -53,12 +52,11 @@ public class DefaultProjectorContext implements ProjectorContext {
 		m_rules.add(new ProtocolProjectorRule());
 		m_rules.add(new ParameterProjectorRule());
 		m_rules.add(new ProtocolReferenceProjectorRule());
-		m_rules.add(new RaiseProjectorRule());
 		m_rules.add(new RepeatProjectorRule());
 		m_rules.add(new RecBlockProjectorRule());
 		m_rules.add(new RecursionProjectorRule());
 		m_rules.add(new RunProjectorRule());
-		m_rules.add(new IncludeProjectorRule());
+		m_rules.add(new UseProjectorRule());
 		m_rules.add(new TryProjectorRule());
 		m_rules.add(new DataTypeProjectorRule());
 		m_rules.add(new TypeReferenceProjectorRule());

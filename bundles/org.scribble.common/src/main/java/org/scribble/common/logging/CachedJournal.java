@@ -16,7 +16,6 @@
  */
 package org.scribble.common.logging;
 
-import java.io.Serializable;
 import java.util.Map;
 
 public class CachedJournal implements Journal {

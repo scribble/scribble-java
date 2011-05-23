@@ -23,8 +23,6 @@ import org.scribble.protocol.monitor.model.*;
 
 public class RunTest {
 
-	private static final String OUT_OF_STOCK_MESSAGE_TYPE = "OutOfStock";
-	private static final String INSUFFICIENT_CREDIT_MESSAGE_TYPE = "InsufficientCredit";
 	private static final String CREDIT_OK_MESSAGE_TYPE = "CreditOk";
 	private static final String CREDIT_CHECK_MESSAGE_TYPE = "CreditCheck";
 	private static final String ORDER_MESSAGE_TYPE = "Order";

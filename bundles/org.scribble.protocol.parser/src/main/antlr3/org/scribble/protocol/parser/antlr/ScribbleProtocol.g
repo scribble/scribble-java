@@ -105,8 +105,8 @@ blockDef: '{'! activityListDef '}'! ;
 
 activityListDef: ( ( ANNOTATION )* activityDef )* ;
 
-activityDef: ( roleListDef | interactionDef | includeDef | runDef | raiseDef | recursionDef ) ';'! | 
-			runInlineDef | choiceDef | parallelDef | optionalDef | repeatDef | unorderedDef |
+activityDef: ( roleListDef | interactionDef | useDef | runDef | recursionDef ) ';'! | 
+			runInlineDef | choiceDef | parallelDef | repeatDef | unorderedDef |
 			recBlockDef | tryEscapeDef | protocolDef ;
 
 roleListDef: 'role'^ roleDef ( ','! roleDef )* ;
@@ -144,7 +144,7 @@ declarationName: ID ;
 
 parameter: declarationName ;
 
-includeDef: 'include'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? ;
+useDef: 'use'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? ;
 
 parallelDef: 'par'^ blockDef ( 'and' blockDef )* ;
 
@@ -153,16 +153,6 @@ tryEscapeDef: 'try'^ blockDef ( catchBlockDef )+ ;
 catchBlockDef: 'catch'^ '('! interactionDef ( '|'! interactionDef )*  ')'! blockDef ;
 
 unorderedDef: 'unordered'^ blockDef ;
-
-
-/*-----------------------------------------------
-CURRENTLY UNSUPPORTED: Parts of the language that are experimental and not
-formally part of the scribble specification.
--------------------------------------------------*/
-
-optionalDef: 'optional'^ ( '@' roleName ( ','! roleName )* )? blockDef ;
-
-raiseDef: 'raise'^ '@' roleName ( ','! roleName )* typeReferenceDef ;
 
 
 /*-----------------------------------------------

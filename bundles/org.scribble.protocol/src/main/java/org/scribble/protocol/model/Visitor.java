@@ -142,23 +142,6 @@ public interface Visitor {
 	public void end(Unordered elem);
 	
 	/**
-	 * This method indicates the start of an
-	 * optional construct.
-	 * 
-	 * @param elem The optional construct
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Optional elem);
-	
-	/**
-	 * This method indicates the end of an
-	 * optional.
-	 * 
-	 * @param elem The optional
-	 */
-	public void end(Optional elem);
-	
-	/**
 	 * This method indicates the start of a
 	 * try escape.
 	 * 
@@ -238,13 +221,6 @@ public interface Visitor {
 	public void accept(RoleList elem);
 	
 	/**
-	 * This method visits a raise component.
-	 * 
-	 * @param elem The raise
-	 */
-	public void accept(Raise elem);
-	
-	/**
 	 * This method visits a recursion component.
 	 * 
 	 * @param elem The recursion
@@ -256,7 +232,7 @@ public interface Visitor {
 	 * 
 	 * @param elem The include
 	 */
-	public void accept(Include elem);
+	public void accept(Use elem);
 	
 	/**
 	 * This method visits a type import component.

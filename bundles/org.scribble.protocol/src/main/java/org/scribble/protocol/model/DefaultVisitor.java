@@ -79,19 +79,11 @@ public class DefaultVisitor implements Visitor {
 	}
 	
 	/**
-	 * This method visits a raise component.
+	 * This method visits a use component.
 	 * 
-	 * @param elem The raise
+	 * @param elem The use component
 	 */
-	public void accept(Raise elem) {
-	}
-	
-	/**
-	 * This method visits an include component.
-	 * 
-	 * @param elem The include
-	 */
-	public void accept(Include elem) {
+	public void accept(Use elem) {
 	}
 	
 	/**
@@ -208,26 +200,6 @@ public class DefaultVisitor implements Visitor {
 	 * @param elem The labelled block
 	 */
 	public void end(RecBlock elem) {
-	}
-	
-	/**
-	 * This method indicates the start of an
-	 * Optional construct.
-	 * 
-	 * @param elem The Optional construct
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Optional elem) {
-		return(m_defaultGroupReturn);
-	}
-	
-	/**
-	 * This method indicates the end of an
-	 * Optional construct.
-	 * 
-	 * @param elem The Optional construct
-	 */
-	public void end(Optional elem) {
 	}
 	
 	/**
