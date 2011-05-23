@@ -32,7 +32,7 @@ public class RoleUtil {
 	 * @param block The parent scope
 	 * @return The set of roles
 	 */
-	public static java.util.Set<Role> getRoles(Block block) {
+	public static java.util.Set<Role> getDeclaredRoles(Block block) {
 		java.util.Set<Role> ret=new java.util.HashSet<Role>();
 		
 		for (int i=0; i < block.getContents().size(); i++) {
@@ -43,6 +43,41 @@ public class RoleUtil {
 		}
 		
 		return(ret);
+	}
+	
+	/**
+	 * This method returns the set of roles that are associated with
+	 * the supplied activity.
+	 * 
+	 * @param act The activity
+	 * @return The set of roles associated with the activity and its
+	 * 				sub components if a grouping construct
+	 */
+	public static java.util.Set<Role> getUsedRoles(Activity act) {
+		final java.util.Set<Role> roles=new java.util.HashSet<Role>();
+		
+		act.visit(new DefaultVisitor() {
+			
+			protected void addRole(Role r) {
+				if (r != null && !roles.contains(r)) {
+					roles.add(r);
+				}
+			}
+			
+			public void accept(Interaction elem) {
+				addRole(elem.getFromRole());
+				for (Role r : elem.getToRoles()) {
+					addRole(r);
+				}
+			}
+			
+			public boolean start(Choice elem) {
+				addRole(elem.getRole());
+				return(true);
+			}
+		});
+		
+		return(roles);
 	}
 	
 	/**

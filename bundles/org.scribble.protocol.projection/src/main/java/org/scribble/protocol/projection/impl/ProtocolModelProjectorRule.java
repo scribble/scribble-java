@@ -101,7 +101,7 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
 				if (block != null && protocol.getBlock() != block) {
 
 					// Save current list of declared roles
-					java.util.Set<Role> declaredRoles1=RoleUtil.getRoles(protocol.getBlock());
+					java.util.Set<Role> declaredRoles1=RoleUtil.getDeclaredRoles(protocol.getBlock());
 					
 					for (ParameterDefinition pd : protocol.getParameterDefinitions()) {
 						if (pd.getType() == null) {
@@ -121,7 +121,7 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
 					protocol.setBlock(block);
 					
 					// Get new list of declared roles
-					java.util.Set<Role> declaredRoles2=RoleUtil.getRoles(protocol.getBlock());
+					java.util.Set<Role> declaredRoles2=RoleUtil.getDeclaredRoles(protocol.getBlock());
 					
 					// Find out which roles were declared outside the scope of the new block
 					declaredRoles1.removeAll(declaredRoles2);
