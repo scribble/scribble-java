@@ -19,7 +19,7 @@ package org.scribble.protocol.model;
  * This class represents the Include construct.
  * 
  */
-public class Include extends Activity {
+public class Use extends Activity {
 
 	private ProtocolReference m_reference=null;
 	private java.util.List<Parameter> m_parameters=new java.util.Vector<Parameter>();
@@ -28,7 +28,7 @@ public class Include extends Activity {
 	 * This is the default constructor.
 	 * 
 	 */
-	public Include() {
+	public Use() {
 	}
 	
 	/**

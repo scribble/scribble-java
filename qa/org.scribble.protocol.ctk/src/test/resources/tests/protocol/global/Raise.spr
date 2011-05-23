@@ -1,5 +1,0 @@
-protocol Raise {
-	role Buyer, Seller;
-
-	raise @ Seller ExcType;
-}

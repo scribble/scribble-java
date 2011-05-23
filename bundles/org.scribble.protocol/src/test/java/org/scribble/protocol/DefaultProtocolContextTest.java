@@ -19,7 +19,6 @@ package org.scribble.protocol;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.scribble.common.logging.CachedJournal;
 import org.scribble.common.logging.Journal;
@@ -118,6 +117,7 @@ public class DefaultProtocolContextTest {
 	}
 
 	@org.junit.Test
+	@org.junit.Ignore
 	public void testGetProtocolModelScribbleURL() {
 		ProtocolParserManager parserManager=new TestProtocolParserManager();
 		

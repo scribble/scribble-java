@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.util;
 
-import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.ImportList;
 import org.scribble.protocol.model.ProtocolImport;
 import org.scribble.protocol.model.ProtocolImportList;

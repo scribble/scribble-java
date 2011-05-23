@@ -40,7 +40,6 @@ public class ComparatorUtil {
 		m_comparators.put(MessageSignature.class, new MessageSignatureComparator());
 		m_comparators.put(TypeReference.class, new TypeReferenceComparator());
 		m_comparators.put(ProtocolReference.class, new ProtocolReferenceComparator());
-		m_comparators.put(Raise.class, new RaiseComparator());
 		m_comparators.put(Try.class, new TryComparator());
 		m_comparators.put(Catch.class, new CatchComparator());
 		m_comparators.put(Choice.class, new ChoiceComparator());
@@ -48,9 +47,8 @@ public class ComparatorUtil {
 		m_comparators.put(Repeat.class, new RepeatComparator());
 		m_comparators.put(RecBlock.class, new RecBlockComparator());
 		m_comparators.put(Recursion.class, new RecursionComparator());
-		m_comparators.put(Optional.class, new OptionalComparator());
 		m_comparators.put(Run.class, new RunComparator());
-		m_comparators.put(Include.class, new IncludeComparator());
+		m_comparators.put(Use.class, new UseComparator());
 		m_comparators.put(Parameter.class, new ParameterComparator());
 		m_comparators.put(DataType.class, new DataTypeComparator());
 		m_comparators.put(ParameterDefinition.class, new ParameterDefinitionComparator());

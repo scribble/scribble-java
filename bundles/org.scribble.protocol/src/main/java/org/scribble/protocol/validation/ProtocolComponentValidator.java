@@ -17,7 +17,6 @@ package org.scribble.protocol.validation;
 
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.model.*;
-import org.scribble.protocol.validation.rules.*;
 
 //import java.util.logging.*;
 

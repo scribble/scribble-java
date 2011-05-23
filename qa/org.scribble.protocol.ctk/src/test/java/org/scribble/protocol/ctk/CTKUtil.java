@@ -215,12 +215,6 @@ public class CTKUtil {
 			}
 
 			@Override
-			public boolean start(Optional elem) {
-				ret.add(elem);
-				return true;
-			}
-
-			@Override
 			public boolean start(Try elem) {
 				ret.add(elem);
 				return true;
@@ -262,17 +256,12 @@ public class CTKUtil {
 			}
 
 			@Override
-			public void accept(Raise elem) {
-				ret.add(elem);
-			}
-
-			@Override
 			public void accept(Recursion elem) {
 				ret.add(elem);
 			}
 
 			@Override
-			public void accept(Include elem) {
+			public void accept(Use elem) {
 				ret.add(elem);
 			}
 

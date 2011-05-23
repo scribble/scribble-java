@@ -426,47 +426,6 @@ public class ProtocolParserTest {
 	}
 	
 	@org.junit.Test
-	public void testRaise() {
-		TestJournal logger=new TestJournal();
-		
-		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/Raise.spr", logger);
-		
-		assertNotNull(model);
-		
-		assertTrue(logger.getErrorCount() == 0);
-		
-		// Build expected model
-		ProtocolModel expected=new ProtocolModel();
-		
-		Protocol protocol=new Protocol();
-		expected.setProtocol(protocol);
-		
-		protocol.setName("Raise");
-		
-		RoleList rl=new RoleList();
-		Role buyer=new Role();
-		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
-		Role seller=new Role();
-		seller.setName("Seller");
-		rl.getRoles().add(seller);
-		
-		protocol.getBlock().add(rl);
-
-		Raise raise=new Raise();
-		
-		TypeReference tref=new TypeReference();
-		tref.setName("ExcType");
-		raise.setType(tref);
-		
-		raise.getRoles().add(seller);
-		
-		protocol.getBlock().add(raise);
-		
-		CTKUtil.verify(model, expected);
-	}
-
-	@org.junit.Test
 	public void testTryCatch() {
 		TestJournal logger=new TestJournal();
 		
@@ -1138,77 +1097,10 @@ public class ProtocolParserTest {
 	}
 	
 	@org.junit.Test
-	public void testOptional() {
+	public void testUseProtocol() {
 		TestJournal logger=new TestJournal();
 		
-		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/Optional.spr", logger);
-		
-		assertNotNull(model);
-		
-		assertTrue(logger.getErrorCount() == 0);
-		
-		// Build expected model
-		ProtocolModel expected=new ProtocolModel();
-		
-		TypeImportList imp=new TypeImportList();
-		TypeImport t=new TypeImport();
-		t.setName("Order");
-		imp.getTypeImports().add(t);
-		expected.getImports().add(imp);
-		
-		Protocol protocol=new Protocol();
-		expected.setProtocol(protocol);
-		
-		protocol.setName("Optional");
-		
-		RoleList rl=new RoleList();
-		Role buyer=new Role();
-		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
-		Role seller=new Role();
-		seller.setName("Seller");
-		rl.getRoles().add(seller);
-		
-		protocol.getBlock().add(rl);
-		
-		Interaction interaction1=new Interaction();
-		
-		MessageSignature ms1=new MessageSignature();
-		TypeReference tref1=new TypeReference();
-		tref1.setName("Order");
-		ms1.getTypeReferences().add(tref1);
-		interaction1.setMessageSignature(ms1);
-		interaction1.setFromRole(buyer);
-		interaction1.getToRoles().add(seller);
-		
-		protocol.getBlock().add(interaction1);
-		
-		Optional optional=new Optional();
-		
-		optional.getRoles().add(buyer);
-		
-		Interaction interaction2=new Interaction();
-		
-		MessageSignature ms2=new MessageSignature();
-		TypeReference tref2=new TypeReference();
-		tref2.setName("Order");
-		ms2.getTypeReferences().add(tref2);
-		interaction2.setMessageSignature(ms2);
-		interaction2.setFromRole(buyer);
-		interaction2.getToRoles().add(seller);
-		
-		optional.getBlock().add(interaction2);
-		
-		protocol.getBlock().add(optional);
-		
-		CTKUtil.verify(model, expected);
-	}
-	
-	@org.junit.Test
-	public void testIncludeProtocol() {
-		TestJournal logger=new TestJournal();
-		
-		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/IncludeProtocol.spr", logger);
+		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/UseProtocol.spr", logger);
 		
 		assertNotNull(model);
 		
@@ -1233,7 +1125,7 @@ public class ProtocolParserTest {
 		Protocol protocol=new Protocol();
 		expected.setProtocol(protocol);
 		
-		protocol.setName("IncludeProtocol");
+		protocol.setName("UseProtocol");
 		
 		RoleList rl=new RoleList();
 		Role buyer=new Role();
@@ -1246,7 +1138,7 @@ public class ProtocolParserTest {
 		protocol.getBlock().add(rl);
 		
 
-		Include inc=new Include();
+		Use inc=new Use();
 		
 		ProtocolReference ref=new ProtocolReference();
 		ref.setName("Sub");
