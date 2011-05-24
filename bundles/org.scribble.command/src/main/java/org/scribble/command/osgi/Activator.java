@@ -195,7 +195,11 @@ public class Activator implements BundleActivator {
         
         try {
             ServiceReference sref=context.getServiceReference(ProtocolValidationManager.class.getName());
-            ProtocolValidationManager pvm=(ProtocolValidationManager)context.getService(sref);
+            ProtocolValidationManager pvm=null;
+            
+            if (sref != null) {
+            	pvm = (ProtocolValidationManager)context.getService(sref);
+            }
 
     		if (pvm != null) {
     			commands.setProtocolValidationManager(pvm);
@@ -204,7 +208,11 @@ public class Activator implements BundleActivator {
     		}
             
     		sref=context.getServiceReference(Journal.class.getName());         
-    		Journal journal=(Journal)context.getService(sref);
+    		Journal journal=null;
+    		
+    		if (sref != null) {
+    			journal = (Journal)context.getService(sref);
+    		}
 
     		if (journal != null) {
     			commands.setJournal(journal);
