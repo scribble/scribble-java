@@ -38,7 +38,7 @@ public class TryCatchTest {
 		Description pd=new Description();
 		
 		// 0
-		TryNode tn=new TryNode();
+		Try tn=new Try();
 		pd.getNode().add(tn);
 		tn.setNextIndex(4);
 		tn.setInnerIndex(1);

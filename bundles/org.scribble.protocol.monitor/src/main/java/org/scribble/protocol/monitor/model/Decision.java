@@ -11,20 +11,18 @@ package org.scribble.protocol.monitor.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Scope complex type.
+ * <p>Java class for Decision complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Scope">
+ * &lt;complexType name="Decision">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.scribble.org/monitor}Node">
- *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="innerIndex" type="{http://www.w3.org/2001/XMLSchema}int" default="-1" />
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -34,42 +32,13 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Scope")
-@XmlSeeAlso({
-    Try.class
-})
-public class Scope
+@XmlType(name = "Decision")
+public class Decision
     extends Node
 {
 
     @XmlAttribute
-    protected String name;
-    @XmlAttribute
     protected Integer innerIndex;
-
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
 
     /**
      * Gets the value of the innerIndex property.

@@ -1,7 +1,7 @@
-receiveMessage,Order
-sendMessage,Rejected
-receiveMessage,Order
-sendMessage,Accepted
-receiveMessage,Another
-receiveMessage,Another
-receiveMessage,Finish
+receive,Order
+send,Rejected
+receive,Order
+send,Accepted
+receive,Another
+receive,Another
+receive,Finish

@@ -1,4 +1,4 @@
-receiveMessage,Order
-receiveMessage,OrderCancelled
-sendMessage,Ack
-receiveMessage,Finish
+receive,Order
+receive,OrderCancelled
+send,Ack
+receive,Finish

@@ -16,6 +16,12 @@
  */
 package org.scribble.protocol.monitor;
 
+/**
+ * This class provides a factory for creating protocol monitors.
+ * 
+ * @author gbrown
+ *
+ */
 public class ProtocolMonitorFactory {
 
 	public static ProtocolMonitor createProtocolMonitor() {

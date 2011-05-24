@@ -28,7 +28,7 @@ import org.scribble.protocol.monitor.util.MonitorModelUtil;
 public class MonitorProtocolExporter implements ProtocolExporter {
 
 	public static final String MONITOR_ID = "monitor";
-
+	
 	/**
 	 * This method returns the id of the exporter.
 	 * 
@@ -88,6 +88,33 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		
 		private Journal m_journal=null;
 		
+		// This list defines the nodes used to create the final representation of the
+		// state machine
+		private java.util.List<Node> m_nodes=
+			new java.util.Vector<Node>();
+		
+		private java.util.Map<org.scribble.protocol.monitor.model.Choice,java.util.List<Path>> m_choicePaths=
+			new java.util.HashMap<org.scribble.protocol.monitor.model.Choice,java.util.List<Path>>();
+		
+		private java.util.Map<org.scribble.protocol.monitor.model.Parallel,java.util.List<Path>> m_parallelPaths=
+			new java.util.HashMap<org.scribble.protocol.monitor.model.Parallel,java.util.List<Path>>();
+		
+		private java.util.Map<String,Integer> m_recurPosition=
+			new java.util.HashMap<String,Integer>();
+		
+		// This list represents a cache of nodes that are awaiting their 'nextIndex' field
+		// to be set
+		private java.util.List<Object> m_pendingNextIndex=
+			new java.util.Vector<Object>();
+		
+		// This map contains a reference from an activity, to other relevant information required
+		// later (e.g. nodes, etc).
+		private java.util.Map<Activity,Object> m_nodeMap=
+			new java.util.HashMap<Activity,Object>();
+		
+		private java.util.Map<ModelObject,java.util.List<Object>> m_nodeCache=
+			new java.util.HashMap<ModelObject,java.util.List<Object>>();
+		
 		public MonitorExportVisitor(Journal journal) {
 			m_journal = journal;
 		}
@@ -108,14 +135,14 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		protected void startActivity(Activity act) {
 			
 			// Check if activity is block and parent is parallel
-			if ((act instanceof Block && act.getParent() instanceof Parallel) ||
+			if ((act instanceof Block && act.getParent() instanceof org.scribble.protocol.model.Parallel) ||
 					(act.getParent() instanceof Block &&
 							act.getParent().getParent() instanceof Unordered)) {
 				
 				// Create path node
 				Path path=new Path();
 				
-				ParallelNode node=getParallelNode(act);
+				org.scribble.protocol.monitor.model.Parallel node=getParallelNode(act);
 
 				java.util.List<Path> pathBuilderList=
 							m_parallelPaths.get(node);
@@ -128,7 +155,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 				pathBuilderList.add(path);
 				
 				m_pendingNextIndex.add(path);
-			} else if (act instanceof Block && act.getParent() instanceof Choice) {
+			} else if (act instanceof Block && act.getParent() instanceof org.scribble.protocol.model.Choice) {
 				
 				// Create path node
 				Path path=new Path();
@@ -136,8 +163,8 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 				// Define id associated with the choice label
 				//path.setId(ChoiceUtil.getLabel(elem.getMessageSignature()));
 				
-				ChoiceNode choiceBuilder=
-					(ChoiceNode)m_nodeMap.get(act.getParent());
+				org.scribble.protocol.monitor.model.Choice choiceBuilder=
+					(org.scribble.protocol.monitor.model.Choice)m_nodeMap.get(act.getParent());
 
 				java.util.List<Path> pathBuilderList=
 							m_choicePaths.get(choiceBuilder);
@@ -193,7 +220,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		
 		protected void endActivity(Activity act) {
 			
-			if (act.getParent() instanceof Choice) {
+			if (act.getParent() instanceof  org.scribble.protocol.model.Choice) {
 				java.util.List<Object> cache=getCache(act.getParent());
 				
 				cache.addAll(m_pendingNextIndex);
@@ -201,8 +228,9 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			// Check if block associated with a parallel or an activity in an
 			// unordered construct
-			if (act.getParent() instanceof Choice ||
-					act.getParent() instanceof Parallel || (act.getParent() instanceof Block &&
+			if (act.getParent() instanceof  org.scribble.protocol.model.Choice ||
+					act.getParent() instanceof  org.scribble.protocol.model.Parallel ||
+					(act.getParent() instanceof Block &&
 					act.getParent().getParent() instanceof Unordered)) {
 				
 				// Make sure pending 'nextIndex' nodes do not get
@@ -214,14 +242,14 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			}
 		}
 		
-		protected ParallelNode getParallelNode(Activity act) {
-			ParallelNode ret=null;
+		protected org.scribble.protocol.monitor.model.Parallel getParallelNode(Activity act) {
+			org.scribble.protocol.monitor.model.Parallel ret=null;
 			
-			if (act instanceof Block && act.getParent() instanceof Parallel) {
-				ret = (ParallelNode)m_nodeMap.get(act.getParent());
+			if (act instanceof Block && act.getParent() instanceof org.scribble.protocol.model.Parallel) {
+				ret = (org.scribble.protocol.monitor.model.Parallel)m_nodeMap.get(act.getParent());
 			} else if (act.getParent() instanceof Block &&
 						act.getParent().getParent() instanceof Unordered) {
-				ret = (ParallelNode)m_nodeMap.get(act.getParent().getParent());
+				ret = (org.scribble.protocol.monitor.model.Parallel)m_nodeMap.get(act.getParent().getParent());
 			}
 		
 			return(ret);
@@ -431,8 +459,8 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 				java.util.List<Object> objs=m_nodeCache.get(elem);
 				
 				for (int i=0; objs != null && i < objs.size(); i++) {
-					if (objs.get(i) instanceof DecisionNode) {
-						((DecisionNode)objs.get(i)).setInnerIndex(pos.intValue());
+					if (objs.get(i) instanceof Decision) {
+						((Decision)objs.get(i)).setInnerIndex(pos.intValue());
 					} else if (objs.get(i) instanceof Scope) {
 						((Scope)objs.get(i)).setInnerIndex(pos.intValue());						
 					}
@@ -447,22 +475,12 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * @param elem The choice
 		 * @return Whether to process the contents
 		 */
-		public boolean start(Choice elem) {
+		public boolean start( org.scribble.protocol.model.Choice elem) {
 
 			startActivity(elem);
 			
-			ChoiceNode node=null;
-			
-			// TODO: SCRIBBLE-96 - determine if send/receive choice is necessary
-			if (elem.getRole() != null && elem.getRole().equals(elem.enclosingProtocol().getRole())) {
-				node = new SendChoice();
-				
-				//node.setOtherRole(elem.getToRole().getName());
-			} else {
-				node = new ReceiveChoice();
-				
-				//node.setOtherRole(elem.getRole().getName());
-			}
+			org.scribble.protocol.monitor.model.Choice node=
+					new org.scribble.protocol.monitor.model.Choice();
 			
 			m_nodes.add(node);
 						
@@ -478,7 +496,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * 
 		 * @param elem The choice
 		 */
-		public void end(Choice elem) {
+		public void end(org.scribble.protocol.model.Choice elem) {
 			
 			java.util.List<Object> cache=getCache(elem);
 
@@ -487,87 +505,6 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			endActivity(elem);
 		}
 		
-		/**
-		 * This method processes the when clause.
-		 * 
-		 * @param elem The when
-		 */
-		/*
-		public boolean start(When elem) {
-			
-			// Create path node
-			Path path=new Path();
-			
-			// Define id associated with the choice label
-			path.setId(ChoiceUtil.getLabel(elem.getMessageSignature()));
-			
-			ChoiceNode choiceBuilder=
-				(ChoiceNode)m_nodeMap.get(elem.getParent());
-
-			java.util.List<Path> pathBuilderList=
-						m_choicePaths.get(choiceBuilder);
-			
-			if (pathBuilderList == null) {
-				pathBuilderList = new java.util.Vector<Path>();
-				m_choicePaths.put(choiceBuilder, pathBuilderList);
-			}
-			
-			pathBuilderList.add(path);
-			
-			m_pendingNextIndex.add(path);
-
-			// Only create an interaction (message) node inside path if there is
-			// expected message content
-			if (elem.getMessageSignature().getTypeReferences().size() > 0) {
-				Choice choice=(Choice)elem.getParent();
-				
-				java.util.List<Role> roles=new java.util.Vector<Role>();
-				if (choice.getToRole() != null) {
-					roles.add(choice.getToRole());
-				}
-				
-				createInteraction(choice, elem.getMessageSignature(), choice.getRole(), roles,
-								elem.getAnnotations());
-			}
-			
-			// Create annotations
-			for (org.scribble.common.model.Annotation pma : elem.getAnnotations()) {
-				org.scribble.protocol.monitor.model.Annotation pmma=
-							new org.scribble.protocol.monitor.model.Annotation();
-				
-				if (pma.getId() != null) {
-					pmma.setId(pma.getId());
-				} else {
-					pmma.setId(UUID.randomUUID().toString());
-				}
-				pmma.setValue(pma.toString());
-				
-				path.getAnnotation().add(pmma);
-			}
-			
-			return(true);
-		}
-		*/
-		
-		/**
-		 * This method indicates the end of a
-		 * block.
-		 * 
-		 * @param elem The when block
-		 */
-		/*
-		public void end(When elem) {
-
-			// Transfer outstanding nodes in 'pendingNextIndex' to the
-			// cache associated with the choice
-			java.util.List<Object> cache=getCache(elem.getParent());
-			
-			cache.addAll(m_pendingNextIndex);
-			
-			m_pendingNextIndex.clear();
-		}
-		*/
-
 		protected java.util.List<Object> getCache(ModelObject elem) {
 			java.util.List<Object> ret=m_nodeCache.get(elem);
 			
@@ -651,11 +588,12 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * @param elem The parallel
 		 * @return Whether to process the contents
 		 */
-		public boolean start(Parallel elem) {
+		public boolean start(org.scribble.protocol.model.Parallel elem) {
 			
 			startActivity(elem);
 
-			ParallelNode node=new ParallelNode();
+			org.scribble.protocol.monitor.model.Parallel node=
+						new org.scribble.protocol.monitor.model.Parallel();
 			
 			m_nodes.add(node);
 						
@@ -671,7 +609,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * 
 		 * @param elem The parallel
 		 */
-		public void end(Parallel elem) {
+		public void end(org.scribble.protocol.model.Parallel elem) {
 			Node node=
 				(Node)m_nodeMap.get(elem);
 			
@@ -691,7 +629,8 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			startActivity(elem);
 
-			ParallelNode node=new ParallelNode();
+			org.scribble.protocol.monitor.model.Parallel node=
+						new org.scribble.protocol.monitor.model.Parallel();
 			
 			m_nodes.add(node);
 						
@@ -727,20 +666,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 
 			startActivity(elem);
 
-			DecisionNode node=null;
-			
-			// Get located role
-			Role located=elem.enclosingProtocol().getRole();
-			
-			if (elem.getRoles().contains(located)) {
-				node = new SendDecision();
-				
-				// TODO: Do we have a way to find out the 'destination' of the decision
-			} else {
-				node = new ReceiveDecision();
-				
-				// TODO: Do we have a way to find out the 'source' of the decision
-			}
+			Decision node=new Decision();
 			
 			m_nodes.add(node);
 						
@@ -764,8 +690,8 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			// repeat node
 			establishNextIndex(m_nodes.indexOf(node));
 			
-			if (node instanceof DecisionNode) {
-				((DecisionNode)node).setInnerIndex(m_nodes.indexOf(node)+1);
+			if (node instanceof Decision) {
+				((Decision)node).setInnerIndex(m_nodes.indexOf(node)+1);
 			}
 			
 			m_pendingNextIndex.add(node);
@@ -855,11 +781,12 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * @param elem The try escape
 		 * @return Whether to process the contents
 		 */
-		public boolean start(Try elem) {
+		public boolean start(org.scribble.protocol.model.Try elem) {
 			
 			startActivity(elem);
 
-			TryNode node=new TryNode();
+			org.scribble.protocol.monitor.model.Try node=
+					new org.scribble.protocol.monitor.model.Try();
 			
 			m_nodes.add(node);
 						
@@ -875,7 +802,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * 
 		 * @param elem The try escape
 		 */
-		public void end(Try elem) {
+		public void end(org.scribble.protocol.model.Try elem) {
 			Node node=
 				(Node)m_nodeMap.get(elem);
 			
@@ -898,7 +825,8 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * @return Whether to process the contents
 		 */
 		public boolean start(Catch elem) {
-			TryNode node=(TryNode)m_nodeMap.get(elem.getParent());
+			org.scribble.protocol.monitor.model.Try node=
+					(org.scribble.protocol.monitor.model.Try)m_nodeMap.get(elem.getParent());
 			
 			m_pendingNextIndex.clear();
 			
@@ -941,7 +869,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			// Initialise the choice paths. This is done here, rather than in the
 			// endWhen or endChoice, as the nextIndex on a when path may not be
 			// initialised until outside the choice.
-			for (ChoiceNode choice : m_choicePaths.keySet()) {
+			for (org.scribble.protocol.monitor.model.Choice choice : m_choicePaths.keySet()) {
 				java.util.List<Path> pathBuilders=m_choicePaths.get(choice);
 				
 				for (Path pathBuilder : pathBuilders) {
@@ -950,7 +878,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			}
 
 			// Same reason as for choice
-			for (ParallelNode parallel : m_parallelPaths.keySet()) {
+			for (org.scribble.protocol.monitor.model.Parallel parallel : m_parallelPaths.keySet()) {
 				java.util.List<Path> pathBuilders=m_parallelPaths.get(parallel);
 				
 				for (Path pathBuilder : pathBuilders) {
@@ -964,32 +892,5 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			return(ret);
 		}
-		
-		// This list defines the nodes used to create the final representation of the
-		// state machine
-		private java.util.List<Node> m_nodes=
-			new java.util.Vector<Node>();
-		
-		private java.util.Map<ChoiceNode,java.util.List<Path>> m_choicePaths=
-			new java.util.HashMap<ChoiceNode,java.util.List<Path>>();
-		
-		private java.util.Map<ParallelNode,java.util.List<Path>> m_parallelPaths=
-			new java.util.HashMap<ParallelNode,java.util.List<Path>>();
-		
-		private java.util.Map<String,Integer> m_recurPosition=
-			new java.util.HashMap<String,Integer>();
-		
-		// This list represents a cache of nodes that are awaiting their 'nextIndex' field
-		// to be set
-		private java.util.List<Object> m_pendingNextIndex=
-			new java.util.Vector<Object>();
-		
-		// This map contains a reference from an activity, to other relevant information required
-		// later (e.g. nodes, etc).
-		private java.util.Map<Activity,Object> m_nodeMap=
-			new java.util.HashMap<Activity,Object>();
-		
-		private java.util.Map<ModelObject,java.util.List<Object>> m_nodeCache=
-			new java.util.HashMap<ModelObject,java.util.List<Object>>();
 	}
 }

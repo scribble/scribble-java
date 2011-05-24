@@ -40,18 +40,10 @@ public class EventProcessor {
 				for (int j=0; j < cols.length; j++) {
 					
 					if (j == 0) {
-						if (cols[j].equals("sendMessage")) {
+						if (cols[j].equals("send")) {
 							evt = new SendMessage();
-						} else if (cols[j].equals("receiveMessage")) {
+						} else if (cols[j].equals("receive")) {
 							evt = new ReceiveMessage();
-						} else if (cols[j].equals("sendDecision")) {
-							evt = new SendDecision();
-						} else if (cols[j].equals("receiveDecision")) {
-							evt = new ReceiveDecision();
-						} else if (cols[j].equals("sendChoice")) {
-							evt = new SendChoice();
-						} else if (cols[j].equals("receiveChoice")) {
-							evt = new ReceiveChoice();
 						} else {
 							System.err.println("Unknown event type '"+cols[j]+"'");
 						}

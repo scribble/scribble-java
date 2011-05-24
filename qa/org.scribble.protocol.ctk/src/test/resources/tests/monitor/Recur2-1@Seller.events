@@ -1,5 +1,5 @@
-receiveMessage,Order
-receiveMessage,Order
-receiveMessage,Another
-receiveMessage,Another
-receiveMessage,Finish
+receive,Order
+receive,Order
+receive,Another
+receive,Another
+receive,Finish

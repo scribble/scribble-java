@@ -47,7 +47,7 @@ public class BuyerParticipantTest {
 		sendOrder.getMessageType().add(mt1);
 		pd.getNode().add(sendOrder);
 		
-		ReceiveChoice choice=new ReceiveChoice();
+		Choice choice=new Choice();
 		//choice.setNodeType(Protocol.Node.NodeType.ReceiveChoice);
 
 		Path c1=new Path();
@@ -113,10 +113,6 @@ public class BuyerParticipantTest {
 			fail("Order failed");
 		}
 		
-		if (monitor.receiveChoice(context, pd, conv, null, PurchasingLabel._Confirmation.name()).isValid() == false) {
-			fail("Choice confirmation failed");
-		}
-		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
 
@@ -179,15 +175,11 @@ public class BuyerParticipantTest {
 			fail("Order failed");
 		}
 		
-		if (monitor.receiveChoice(context, pd, conv, null, PurchasingLabel._InsufficientCredit.name()).isValid() == false) {
-			fail("Choice InsufficientCredit failed");
-		}
-		
 		message=new DefaultMessage();
-		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
+		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
 		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == true) {
-			fail("Confirmation should have failed");
+			fail("Second order should have failed");
 		}		
 		
 		if (conv.isFinished() == true) {

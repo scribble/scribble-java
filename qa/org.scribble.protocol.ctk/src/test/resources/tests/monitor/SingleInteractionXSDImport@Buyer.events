@@ -1,1 +1,1 @@
-sendMessage,{http://www.acme.org/Purchasing}Order
+send,{http://www.acme.org/Purchasing}Order

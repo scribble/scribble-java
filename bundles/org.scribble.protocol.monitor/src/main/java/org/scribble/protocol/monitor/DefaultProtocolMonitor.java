@@ -16,21 +16,15 @@
  */
 package org.scribble.protocol.monitor;
 
-import org.scribble.protocol.monitor.model.ChoiceNode;
-import org.scribble.protocol.monitor.model.DecisionNode;
 import org.scribble.protocol.monitor.model.Description;
 import org.scribble.protocol.monitor.model.MessageNode;
-import org.scribble.protocol.monitor.model.ParallelNode;
+import org.scribble.protocol.monitor.model.Parallel;
 import org.scribble.protocol.monitor.model.Scope;
 import org.scribble.protocol.monitor.model.SendMessage;
 import org.scribble.protocol.monitor.model.ReceiveMessage;
 import org.scribble.protocol.monitor.model.Node;
 import org.scribble.protocol.monitor.model.Path;
-import org.scribble.protocol.monitor.model.ReceiveChoice;
-import org.scribble.protocol.monitor.model.ReceiveDecision;
-import org.scribble.protocol.monitor.model.SendChoice;
-import org.scribble.protocol.monitor.model.SendDecision;
-import org.scribble.protocol.monitor.model.TryNode;
+import org.scribble.protocol.monitor.model.Try;
 
 // NOTES:
 // All top level event processes have the same structure:
@@ -118,12 +112,13 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 				}
 			}
 			
-		} else if (node instanceof SendChoice) {
+		} else if (node instanceof org.scribble.protocol.monitor.model.Choice) {
 			// Check if lookahead for the indexes associated with each
 			// choice path
-			for (int j=0; ret == Result.NOT_HANDLED && j < ((SendChoice)node).getPath().size(); j++) {
+			for (int j=0; ret == Result.NOT_HANDLED && j <
+					((org.scribble.protocol.monitor.model.Choice)node).getPath().size(); j++) {
 				
-				Path cn=((SendChoice)node).getPath().get(j);
+				Path cn=((org.scribble.protocol.monitor.model.Choice)node).getPath().get(j);
 				
 				if (cn.getNextIndex() != -1) {
 					ret = checkForSendMessage(context, protocol,
@@ -131,11 +126,11 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 				}
 			}
 			
-		} else if (node instanceof SendDecision) {
+		} else if (node instanceof org.scribble.protocol.monitor.model.Decision) {
 			
-			if (((SendDecision)node).getInnerIndex() != -1) {
+			if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
 				ret = checkForSendMessage(context, protocol,
-							pos, ((SendDecision)node).getInnerIndex(), conv, role, mesg);
+							pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(), conv, role, mesg);
 			}
 			
 			if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
@@ -207,12 +202,13 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 				}
 			}
 			
-		} else if (node instanceof ReceiveChoice) {
+		} else if (node instanceof org.scribble.protocol.monitor.model.Choice) {
 			// Check if lookahead for the indexes associated with each
 			// choice path
-			for (int j=0; ret == Result.NOT_HANDLED && j < ((ReceiveChoice)node).getPath().size(); j++) {
+			for (int j=0; ret == Result.NOT_HANDLED && j <
+					((org.scribble.protocol.monitor.model.Choice)node).getPath().size(); j++) {
 				
-				Path cn=((ReceiveChoice)node).getPath().get(j);
+				Path cn=((org.scribble.protocol.monitor.model.Choice)node).getPath().get(j);
 				
 				if (cn.getNextIndex() != -1) {
 					ret = checkForReceiveMessage(context, protocol, 
@@ -220,11 +216,11 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 				}
 			}
 			
-		} else if (node instanceof ReceiveDecision) {
+		} else if (node instanceof org.scribble.protocol.monitor.model.Decision) {
 			
-			if (((ReceiveDecision)node).getInnerIndex() != -1) {
+			if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
 				ret = checkForReceiveMessage(context, protocol, 
-							pos, ((ReceiveDecision)node).getInnerIndex(), conv, role, mesg);
+							pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(), conv, role, mesg);
 			}
 			
 			if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
@@ -251,112 +247,6 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 		return(ret);
 	}
 	
-	public Result sendChoice(MonitorContext context, Description protocol,
-					Session conv, String role, String label) {
-		return(checkChoice(context, protocol, conv, role, label, true));
-	}
-	
-	public Result receiveChoice(MonitorContext context, Description protocol,
-					Session conv, String role, String label) {
-		return(checkChoice(context, protocol, conv, role, label, false));
-	}
-	
-	protected Result checkChoice(MonitorContext context, Description protocol,
-					Session conv, String role, String label, boolean send) {
-		Result ret=Result.NOT_HANDLED;
-		
-		// Check if context has state that is waiting for an appropriate 'send or receive choice'
-		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
-			
-			Node node=protocol.getNode().get(conv.getNodeIndexAt(i));
-			
-			if ((node instanceof SendChoice && send) || (node instanceof ReceiveChoice && !send)) {
-				ChoiceNode choiceNode=(ChoiceNode)node;
-				
-				// Check if id is associated with a path
-				for (int j=0; ret == Result.NOT_HANDLED && j < choiceNode.getPath().size(); j++) {
-					
-					Path cn=choiceNode.getPath().get(j);
-					
-					if (cn.getId().equals(label)) {
-						ret = Result.VALID;
-						
-						// Remove processed node
-						conv.removeNodeIndexAt(i);
-						
-						// Add next node, if not end
-						if (cn.getNextIndex() != -1) {
-							addNodeToConversation(context, protocol, conv, cn.getNextIndex());
-						}
-					}
-				}
-			}
-		}
-		
-		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
-			Session nested=conv.getNestedConversations().get(i);
-			
-			ret = checkChoice(context, protocol, nested, role, label, send);
-			
-			// If matched, then check if nested conversation has finished
-			if (ret.isValid() && nested.isFinished()) {
-				nestedConversationFinished(context, protocol, conv, nested);
-			}
-		}
-		
-		return(ret);
-	}
-	
-	public Result sendDecision(MonitorContext context, Description protocol,
-					Session conv, String role, boolean bool) {
-		return(checkDecision(context, protocol, conv, role, bool, true));
-	}
-	
-	public Result receiveDecision(MonitorContext context, Description protocol,
-					Session conv, String role, boolean bool) {
-		return(checkDecision(context, protocol, conv, role, bool, false));
-	}
-	
-	protected Result checkDecision(MonitorContext context, Description protocol,
-					Session conv, String role, boolean bool, boolean send) {
-		Result ret=Result.NOT_HANDLED;
-		
-		// Check if context has state that is waiting for an appropriate 'send or receive decision'
-		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
-			Node node=protocol.getNode().get(conv.getNodeIndexAt(i));
-			
-			if ((node instanceof SendDecision && send) || (node instanceof ReceiveDecision && !send)) {
-				int index=node.getNextIndex();
-				
-				if (bool) {
-					index = ((DecisionNode)node).getInnerIndex();
-				}
-				
-				if (index != -1) {
-					addNodeToConversation(context, protocol, conv, index);
-				}
-				
-				// Remove processed node
-				conv.removeNodeIndexAt(i);
-				
-				ret = Result.VALID;
-			}
-		}
-		
-		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
-			Session nested=conv.getNestedConversations().get(i);
-			
-			ret = checkDecision(context, protocol, nested, role, bool, send);
-			
-			// If matched, then check if nested conversation has finished
-			if (ret.isValid() && nested.isFinished()) {
-				nestedConversationFinished(context, protocol, conv, nested);
-			}
-		}
-		
-		return(ret);
-	}
-	
 	protected void addNodeToConversation(MonitorContext context, Description protocol,
 					Session conv, int nodeIndex) {
 		
@@ -366,12 +256,12 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 		if (node.getClass() == Scope.class) {
 			initScope(context, protocol, conv, (Scope)node);
 			
-		} else if (node.getClass() == TryNode.class) {
-			Session nested=initScope(context, protocol, conv, (TryNode)node);
+		} else if (node.getClass() == Try.class) {
+			Session nested=initScope(context, protocol, conv, (Try)node);
 			
 			// TODO: Need to register catch blocks against the nested context in the
 			// parent context
-			for (int ci : ((TryNode)node).getCatchIndex()) {
+			for (int ci : ((Try)node).getCatchIndex()) {
 				
 				if (ci != -1) {
 					Session catchScope=conv.createCatchConversation(nested, node.getNextIndex());
@@ -392,12 +282,12 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 				addNodeToConversation(context, protocol, conv, node.getNextIndex());
 			}
 
-		} else if (node.getClass() == org.scribble.protocol.monitor.model.ParallelNode.class) {
+		} else if (node.getClass() == org.scribble.protocol.monitor.model.Parallel.class) {
 			
 			if (node.getNextIndex() != -1) {
 				Session nestedContext=conv.createNestedConversation(node.getNextIndex());
 				
-				ParallelNode pnode=(ParallelNode)node;
+				Parallel pnode=(Parallel)node;
 				
 				// TODO: Check what happens if no activities in the parallel paths?
 				

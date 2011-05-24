@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <description xmlns="http://www.scribble.org/monitor">
     <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="op1" nextIndex="1"/>
-    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ParallelNode" nextIndex="4">
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Parallel" nextIndex="4">
         <path nextIndex="2"/>
         <path nextIndex="3"/>
     </node>

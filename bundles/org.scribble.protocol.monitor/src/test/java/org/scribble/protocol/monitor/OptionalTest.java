@@ -49,7 +49,7 @@ public class OptionalTest {
 		pd.getNode().add(recvOrder);
 
 		// 1
-		SendDecision conditional=new SendDecision();
+		Decision conditional=new Decision();
 		//conditional.setNodeType(Protocol.Node.NodeType.SendDecision);
 		conditional.setNextIndex(4);
 		conditional.setInnerIndex(2);
@@ -101,7 +101,7 @@ public class OptionalTest {
 		pd.getNode().add(recvOrder);
 
 		// 1
-		ReceiveDecision conditional=new ReceiveDecision();
+		Decision conditional=new Decision();
 		//conditional.setNodeType(Protocol.Node.NodeType.ReceiveDecision);
 		conditional.setNextIndex(4);
 		conditional.setInnerIndex(2);
@@ -158,10 +158,6 @@ public class OptionalTest {
 			fail("Receive Order failed");
 		}
 		
-		if (monitor.sendDecision(context, pd, conv, null, true).isValid() == false) {
-			fail("Send decision fail");
-		}
-		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
@@ -205,10 +201,6 @@ public class OptionalTest {
 		
 		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
 			fail("Receive Order failed");
-		}
-		
-		if (monitor.sendDecision(context, pd, conv, null, false).isValid() == false) {
-			fail("Send decision failed");
 		}
 		
 		message=new DefaultMessage();
@@ -318,15 +310,11 @@ public class OptionalTest {
 			fail("Receive Order failed");
 		}
 		
-		if (monitor.sendDecision(context, pd, conv, null, false).isValid() == false) {
-			fail("Send decision failed");
-		}
-		
 		message=new DefaultMessage();
-		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
+		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
 		if (monitor.messageSent(context, pd, conv, null, message).isValid() == true) {
-			fail("Credit check should have failed");
+			fail("Second order should have failed");
 		}
 		
 		if (conv.isFinished() == true) {
@@ -351,10 +339,6 @@ public class OptionalTest {
 		
 		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
 			fail("Send Order failed");
-		}
-		
-		if (monitor.receiveDecision(context, pd, conv, null, true).isValid() == false) {
-			fail("Receive decision failed");
 		}
 		
 		message=new DefaultMessage();
@@ -400,10 +384,6 @@ public class OptionalTest {
 		
 		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
 			fail("Order failed");
-		}
-		
-		if (monitor.receiveDecision(context, pd, conv, null, false).isValid() == false) {
-			fail("Decision failed");
 		}
 		
 		message=new DefaultMessage();
@@ -513,15 +493,11 @@ public class OptionalTest {
 			fail("Send Order failed");
 		}
 		
-		if (monitor.receiveDecision(context, pd, conv, null, false).isValid() == false) {
-			fail("Receive decision failed");
-		}
-		
 		message=new DefaultMessage();
-		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
+		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
 		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == true) {
-			fail("Credit check should have failed");
+			fail("Second order should have failed");
 		}
 		
 		if (conv.isFinished() == true) {

@@ -1,4 +1,4 @@
-sendMessage,Order
-receiveMessage,Accepted
-sendMessage,Another
-sendMessage,Finish
+send,Order
+receive,Accepted
+send,Another
+send,Finish
