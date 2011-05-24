@@ -45,7 +45,7 @@ public class CreditAgencyParticipantTest {
 		recvCreditCheck.getMessageType().add(mt1);
 		pd.getNode().add(recvCreditCheck);
 		
-		SendChoice choice=new SendChoice();
+		Choice choice=new Choice();
 		//choice.setNodeType(Protocol.Node.NodeType.SendChoice);
 
 		Path c1=new Path();
@@ -96,10 +96,6 @@ public class CreditAgencyParticipantTest {
 		
 		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
 			fail("Credit check failed");
-		}
-		
-		if (monitor.sendChoice(context, pd, conv, null, PurchasingLabel._CreditOk.name()).isValid() == false) {
-			fail("Choice credit ok failed");
 		}
 		
 		message=new DefaultMessage();
@@ -164,15 +160,11 @@ public class CreditAgencyParticipantTest {
 			fail("CreditCheck failed");
 		}
 		
-		if (monitor.sendChoice(context, pd, conv, null, PurchasingLabel._InsufficientCredit.name()).isValid() == false) {
-			fail("Choice InsufficientCredit failed");
-		}
-		
 		message=new DefaultMessage();
-		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);
+		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
 		if (monitor.messageSent(context, pd, conv, null, message).isValid() == true) {
-			fail("CreditOk should have failed");
+			fail("Second Credit Check should have failed");
 		}		
 		
 		if (conv.isFinished() == true) {

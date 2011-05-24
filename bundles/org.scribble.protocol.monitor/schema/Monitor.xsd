@@ -39,30 +39,15 @@
     	</complexContent>
     </complexType>
 
-    <complexType name="DecisionNode">
+    <complexType name="Decision">
     	<complexContent>
     		<extension base="tns:Node">
-    			<attribute name="name" type="string"></attribute>
-    			<attribute name="type" type="string"></attribute>
-    			<attribute name="otherRole" type="string"></attribute>
     			<attribute name="innerIndex" type="int" default="-1"></attribute>
     		</extension>
     	</complexContent>
     </complexType>
     
-    <complexType name="SendDecision">
-    	<complexContent>
-    		<extension base="tns:DecisionNode"></extension>
-    	</complexContent>
-    </complexType>
-
-    <complexType name="ReceiveDecision">
-    	<complexContent>
-    		<extension base="tns:DecisionNode"></extension>
-    	</complexContent>
-    </complexType>
-
-    <complexType name="ChoiceNode">
+    <complexType name="Choice">
     	<complexContent>
     		<extension base="tns:Node">
     			<sequence>
@@ -70,23 +55,10 @@
     					maxOccurs="unbounded">
     				</element>
     			</sequence>
-    			<attribute name="otherRole" type="string"></attribute>
     		</extension>
     	</complexContent>
     </complexType>
     
-    <complexType name="SendChoice">
-    	<complexContent>
-    		<extension base="tns:ChoiceNode"></extension>
-    	</complexContent>
-    </complexType>
-
-    <complexType name="ReceiveChoice">
-    	<complexContent>
-    		<extension base="tns:ChoiceNode"></extension>
-    	</complexContent>
-    </complexType>
-
     <complexType name="Path">
     	<sequence>
     		<element name="annotation" type="tns:Annotation" maxOccurs="unbounded" minOccurs="0"></element>
@@ -95,7 +67,7 @@
     	<attribute name="nextIndex" type="int" default="-1"></attribute>
     </complexType>
  
-    <complexType name="ParallelNode">
+    <complexType name="Parallel">
     	<complexContent>
     		<extension base="tns:Node">
     			<sequence>
@@ -116,7 +88,7 @@
     	</complexContent>
     </complexType>
 
-    <complexType name="TryNode">
+    <complexType name="Try">
     	<complexContent>
     		<extension base="tns:Scope">
     			<sequence>

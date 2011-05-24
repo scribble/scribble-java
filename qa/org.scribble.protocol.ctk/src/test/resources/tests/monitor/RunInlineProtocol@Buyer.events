@@ -1,2 +1,2 @@
-sendMessage,Order
-receiveMessage,Confirm
+send,Order
+receive,Confirm

@@ -52,11 +52,11 @@ public class OptionalWithParticipantTest {
 		pd.getNode().add(recvOrder);
 
 		// 1
-		SendDecision conditional=new SendDecision();
+		Decision conditional=new Decision();
 		//conditional.setNodeType(Protocol.Node.NodeType.SendDecision);
 		conditional.setNextIndex(4);
 		conditional.setInnerIndex(2);
-		conditional.setOtherRole(OTHER_ROLE);
+		//conditional.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(conditional);
 		
 		// 2
@@ -109,11 +109,11 @@ public class OptionalWithParticipantTest {
 		pd.getNode().add(recvOrder);
 
 		// 1
-		ReceiveDecision conditional=new ReceiveDecision();
+		Decision conditional=new Decision();
 		//conditional.setNodeType(Protocol.Node.NodeType.ReceiveDecision);
 		conditional.setNextIndex(4);
 		conditional.setInnerIndex(2);
-		conditional.setOtherRole(OTHER_ROLE);
+		//conditional.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(conditional);
 		
 		// 2
@@ -170,10 +170,6 @@ public class OptionalWithParticipantTest {
 			fail("Receive Order failed");
 		}
 		
-		if (monitor.sendDecision(context, pd, conv, OTHER_ROLE, true).isValid() == false) {
-			fail("Send decision fail");
-		}
-		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
@@ -217,10 +213,6 @@ public class OptionalWithParticipantTest {
 		
 		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
 			fail("Receive Order failed");
-		}
-		
-		if (monitor.sendDecision(context, pd, conv, OTHER_ROLE, false).isValid() == false) {
-			fail("Send decision failed");
 		}
 		
 		message=new DefaultMessage();
@@ -330,15 +322,11 @@ public class OptionalWithParticipantTest {
 			fail("Receive Order failed");
 		}
 		
-		if (monitor.sendDecision(context, pd, conv, OTHER_ROLE, false).isValid() == false) {
-			fail("Send decision failed");
-		}
-		
 		message=new DefaultMessage();
-		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
+		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
 		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == true) {
-			fail("Credit check should have failed");
+			fail("Second order should have failed");
 		}
 		
 		if (conv.isFinished() == true) {
@@ -363,10 +351,6 @@ public class OptionalWithParticipantTest {
 		
 		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
 			fail("Receive Order failed");
-		}
-		
-		if (monitor.sendDecision(context, pd, conv, OTHER_ROLE, true).isValid() == false) {
-			fail("Send decision failed");
 		}
 		
 		message=new DefaultMessage();
@@ -398,10 +382,6 @@ public class OptionalWithParticipantTest {
 		
 		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
 			fail("Send Order failed");
-		}
-		
-		if (monitor.receiveDecision(context, pd, conv, OTHER_ROLE, true).isValid() == false) {
-			fail("Receive decision failed");
 		}
 		
 		message=new DefaultMessage();
@@ -447,10 +427,6 @@ public class OptionalWithParticipantTest {
 		
 		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
 			fail("Order failed");
-		}
-		
-		if (monitor.receiveDecision(context, pd, conv, OTHER_ROLE, false).isValid() == false) {
-			fail("Decision failed");
 		}
 		
 		message=new DefaultMessage();
@@ -560,15 +536,11 @@ public class OptionalWithParticipantTest {
 			fail("Send Order failed");
 		}
 		
-		if (monitor.receiveDecision(context, pd, conv, OTHER_ROLE, false).isValid() == false) {
-			fail("Receive decision failed");
-		}
-		
 		message=new DefaultMessage();
-		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
+		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
 		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == true) {
-			fail("Credit check should have failed");
+			fail("Second order should have failed");
 		}
 		
 		if (conv.isFinished() == true) {
@@ -593,10 +565,6 @@ public class OptionalWithParticipantTest {
 		
 		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
 			fail("Send Order failed");
-		}
-		
-		if (monitor.receiveDecision(context, pd, conv, OTHER_ROLE, true).isValid() == false) {
-			fail("Receive decision failed");
 		}
 		
 		message=new DefaultMessage();

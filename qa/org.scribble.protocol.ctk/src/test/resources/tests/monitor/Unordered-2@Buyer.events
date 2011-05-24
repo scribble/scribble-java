@@ -1,3 +1,3 @@
-sendMessage,Cancel
-sendMessage,Order
-sendMessage,Finish
+send,Cancel
+send,Order
+send,Finish

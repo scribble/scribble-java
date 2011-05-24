@@ -22,7 +22,7 @@ public class EventProcessorTest {
 
 	@org.junit.Test
 	public void testMonitorSendReceiveMessage() {
-		String str="sendMessage,Order\r\nreceiveMessage,Confirmation\r\n";
+		String str="send,Order\r\nreceive,Confirmation\r\n";
 		
 		java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(str.getBytes());
 		
@@ -80,7 +80,7 @@ public class EventProcessorTest {
 	
 	@org.junit.Test
 	public void testMonitorSendReceiveMessageWithOperator() {
-		String str="sendMessage,op1(Order)\r\nreceiveMessage,op2(Confirmation)\r\n";
+		String str="send,op1(Order)\r\nreceive,op2(Confirmation)\r\n";
 		
 		java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(str.getBytes());
 		
@@ -136,87 +136,4 @@ public class EventProcessorTest {
 		}		
 	}
 	
-	@org.junit.Test
-	public void testMonitorSendReceiveChoice() {
-		String str="sendChoice,Order\r\nreceiveChoice,Confirmation\r\n";
-		
-		java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(str.getBytes());
-		
-		EventProcessor ep=new EventProcessor();
-		
-		try {
-			ep.initialize(bais);
-			bais.close();
-		} catch(Exception e) {
-			fail("Failed to initialize event processor: "+e);
-		}
-		
-		java.util.List<Event> events=ep.getEvents();
-		
-		if (events.size() != 2) {
-			fail("Should only be 2 events");
-		}
-		
-		if ((events.get(0) instanceof SendChoice) == false) {
-			fail("First event should be send choice");
-		}
-		
-		SendChoice evt0=(SendChoice)events.get(0);
-		
-		if (evt0.getLabel().equals("Order") == false) {
-			fail("Label should be Order");
-		}
-		
-		if ((events.get(1) instanceof ReceiveChoice) == false) {
-			fail("Second event should be receive choice");
-		}
-		
-		ReceiveChoice evt1=(ReceiveChoice)events.get(1);
-		
-		if (evt1.getLabel().equals("Confirmation") == false) {
-			fail("Label should be Confirmation");
-		}		
-	}
-	
-	@org.junit.Test
-	public void testMonitorSendReceiveDecision() {
-		String str="sendDecision,false\r\nreceiveDecision,true\r\n";
-		
-		java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(str.getBytes());
-		
-		EventProcessor ep=new EventProcessor();
-		
-		try {
-			ep.initialize(bais);
-			bais.close();
-		} catch(Exception e) {
-			fail("Failed to initialize event processor: "+e);
-		}
-		
-		java.util.List<Event> events=ep.getEvents();
-		
-		if (events.size() != 2) {
-			fail("Should only be 2 events");
-		}
-		
-		if ((events.get(0) instanceof SendDecision) == false) {
-			fail("First event should be send decision");
-		}
-		
-		SendDecision evt0=(SendDecision)events.get(0);
-		
-		if (evt0.getDecision() == true) {
-			fail("Decision should be false");
-		}
-		
-		if ((events.get(1) instanceof ReceiveDecision) == false) {
-			fail("Second event should be receive decision");
-		}
-		
-		ReceiveDecision evt1=(ReceiveDecision)events.get(1);
-		
-		if (evt1.getDecision() == false) {
-			fail("Decision should be true");
-		}		
-	}
 }

@@ -45,7 +45,7 @@ public class ParallelTest {
 		recvOrder.getMessageType().add(mt1);
 		pd.getNode().add(recvOrder);
 		
-		ParallelNode parallel=new ParallelNode();
+		Parallel parallel=new Parallel();
 		parallel.setNextIndex(4);
 
 		Path c1=new Path();

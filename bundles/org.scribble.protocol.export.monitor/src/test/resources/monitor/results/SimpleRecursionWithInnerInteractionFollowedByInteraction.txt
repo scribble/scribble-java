@@ -2,7 +2,7 @@
 <description xmlns="http://www.scribble.org/monitor">
     <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="op1" nextIndex="1"/>
     <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Scope" innerIndex="2" nextIndex="8"/>
-    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveChoice">
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Choice">
         <path nextIndex="3"/>
         <path nextIndex="5"/>
     </node>

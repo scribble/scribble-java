@@ -1,7 +1,7 @@
-receiveMessage,Order
-sendMessage,tryAgain()
-receiveMessage,Order
-sendMessage,exit()
-receiveMessage,Another
-receiveMessage,Another
-receiveMessage,Finish
+receive,Order
+send,tryAgain()
+receive,Order
+send,exit()
+receive,Another
+receive,Another
+receive,Finish

@@ -45,7 +45,7 @@ public class SellerParticipantTest {
 		recvOrder.getMessageType().add(mt1);
 		pd.getNode().add(recvOrder);
 		
-		SendChoice choice=new SendChoice();
+		Choice choice=new Choice();
 		//choice.setNodeType(Protocol.Node.NodeType.SendChoice);
 
 		Path c1=new Path();
@@ -96,10 +96,6 @@ public class SellerParticipantTest {
 		
 		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
 			fail("Order failed");
-		}
-		
-		if (monitor.sendChoice(context, pd, conv, null, PurchasingLabel._Confirmation.name()).isValid() == false) {
-			fail("Choice confirmation failed");
 		}
 		
 		message=new DefaultMessage();
@@ -164,15 +160,11 @@ public class SellerParticipantTest {
 			fail("Order failed");
 		}
 		
-		if (monitor.sendChoice(context, pd, conv, null, PurchasingLabel._OutOfStock.name()).isValid() == false) {
-			fail("Choice OutOfStock failed");
-		}
-		
 		message=new DefaultMessage();
-		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
+		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
 		if (monitor.messageSent(context, pd, conv, null, message).isValid() == true) {
-			fail("Confirmation should have failed");
+			fail("Second order should have failed");
 		}		
 		
 		if (conv.isFinished() == true) {

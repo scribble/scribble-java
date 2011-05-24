@@ -64,7 +64,7 @@ public class BrokerParticipantTest {
 		pd.getNode().add(sendCreditCheck);
 		
 		// 2
-		ReceiveChoice choice1=new ReceiveChoice();
+		Choice choice1=new Choice();
 		//choice1.setNodeType(Protocol.Node.NodeType.ReceiveChoice);
 
 		Path c1=new Path();
@@ -100,7 +100,7 @@ public class BrokerParticipantTest {
 		pd.getNode().add(sendOrder);
 		
 		// 5
-		ReceiveChoice choice2=new ReceiveChoice();
+		Choice choice2=new Choice();
 		//choice2.setNodeType(Protocol.Node.NodeType.ReceiveChoice);
 
 		Path c3=new Path();
@@ -201,9 +201,9 @@ public class BrokerParticipantTest {
 		pd.getNode().add(sendCreditCheck);
 		
 		// 2
-		ReceiveChoice choice1=new ReceiveChoice();
+		Choice choice1=new Choice();
 		//choice1.setNodeType(Protocol.Node.NodeType.ReceiveChoice);
-		choice1.setOtherRole(CREDIT_AGENCY);
+		//choice1.setOtherRole(CREDIT_AGENCY);
 
 		Path c1=new Path();
 		c1.setId(PurchasingLabel._CreditOk.name());
@@ -240,9 +240,9 @@ public class BrokerParticipantTest {
 		pd.getNode().add(sendOrder);
 		
 		// 5
-		ReceiveChoice choice2=new ReceiveChoice();
+		Choice choice2=new Choice();
 		//choice2.setNodeType(Protocol.Node.NodeType.ReceiveChoice);
-		choice2.setOtherRole(SUPPLIER);
+		//choice2.setOtherRole(SUPPLIER);
 
 		Path c3=new Path();
 		c3.setId(PurchasingLabel._Confirmation.name());
@@ -348,10 +348,6 @@ public class BrokerParticipantTest {
 			fail("Credit check failed");
 		}
 		
-		if (monitor.receiveChoice(context, pd, conv, null, PurchasingLabel._CreditOk.name()).isValid() == false) {
-			fail("Choice credit ok failed");
-		}
-		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
@@ -364,10 +360,6 @@ public class BrokerParticipantTest {
 		
 		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
 			fail("Send Order failed");
-		}
-		
-		if (monitor.receiveChoice(context, pd, conv, null, PurchasingLabel._Confirmation.name()).isValid() == false) {
-			fail("Choice confirmation failed");
 		}
 		
 		message=new DefaultMessage();
@@ -474,15 +466,11 @@ public class BrokerParticipantTest {
 			fail("Credit check failed");
 		}
 		
-		if (monitor.receiveChoice(context, pd, conv, null, PurchasingLabel._CreditOk.name()).isValid() == false) {
-			fail("Choice credit ok failed");
-		}
-		
 		message=new DefaultMessage();
-		message.getTypes().add(INSUFFICIENT_CREDIT_MESSAGE_TYPE);		
+		message.getTypes().add(ORDER_MESSAGE_TYPE);		
 
 		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == true) {
-			fail("Insufficent Credit should have failed");
+			fail("Second order should have failed");
 		}		
 		
 		if (conv.isFinished() == true) {
@@ -516,10 +504,6 @@ public class BrokerParticipantTest {
 			fail("Credit check failed");
 		}
 		
-		if (monitor.receiveChoice(context, pd, conv, CREDIT_AGENCY, PurchasingLabel._CreditOk.name()).isValid() == false) {
-			fail("Choice credit ok failed");
-		}
-		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
@@ -532,10 +516,6 @@ public class BrokerParticipantTest {
 		
 		if (monitor.messageSent(context, pd, conv, SUPPLIER, message).isValid() == false) {
 			fail("Send Order failed");
-		}
-		
-		if (monitor.receiveChoice(context, pd, conv, SUPPLIER, PurchasingLabel._Confirmation.name()).isValid() == false) {
-			fail("Choice confirmation failed");
 		}
 		
 		message=new DefaultMessage();
@@ -642,10 +622,6 @@ public class BrokerParticipantTest {
 			fail("Credit check failed");
 		}
 		
-		if (monitor.receiveChoice(context, pd, conv, SUPPLIER, PurchasingLabel._CreditOk.name()).isValid() == false) {
-			fail("Choice credit ok failed");
-		}
-
 		if (conv.isFinished() == true) {
 			fail("Conversation should NOT be finished");
 		}

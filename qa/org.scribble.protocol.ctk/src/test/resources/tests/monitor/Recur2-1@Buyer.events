@@ -1,5 +1,5 @@
-sendMessage,Order
-sendMessage,Order
-sendMessage,Another
-sendMessage,Another
-sendMessage,Finish
+send,Order
+send,Order
+send,Another
+send,Another
+send,Finish

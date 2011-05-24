@@ -1,1 +1,1 @@
-receiveMessage,{http://www.acme.org/Purchasing}Order
+receive,{http://www.acme.org/Purchasing}Order

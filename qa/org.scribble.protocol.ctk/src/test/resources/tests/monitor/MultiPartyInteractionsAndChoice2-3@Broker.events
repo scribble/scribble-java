@@ -1,5 +1,5 @@
-receiveMessage,Order
-sendMessage,Order
-receiveMessage,Confirmation
-sendMessage,Confirmation
+receive,Order
+send,Order
+receive,Confirmation
+send,Confirmation
 
