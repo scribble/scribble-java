@@ -6,8 +6,6 @@ import java "Order" as Order,
 		"Quote" as Quote
 		from "org.scribble";
 
-protocol SingleInteraction@Seller {
-	role Buyer;
-
+protocol SingleInteraction@Seller (role Buyer) {
 	Order from Buyer;
 }

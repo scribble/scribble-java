@@ -1,6 +1,6 @@
 import xsd "bookingReference" as BookingReference, "buy" as Buy, "cancel" as Cancel, "CreditCheckRequest" as CreditInformation, "CreditCheckInvalid" as CreditInvalid, "CreditCheckOk" as CreditValid, "enquiry" as Enquiry, "orderConfirmed" as OrderConfirmed, "orderRejected" as OrderRejected, "quote" as Quote, "quoteList" as QuoteList, "requestForQuote" as RequestForQuote;
-protocol ESBBrokerProcess {
-	role Broker, Buyer, CreditAgency, Supplier;
+protocol ESBBrokerProcess(role Buyer) {
+	Buyer introduces Broker, CreditAgency, Supplier;
 
 	makeEnquiry(Enquiry) from Buyer to Broker;
 

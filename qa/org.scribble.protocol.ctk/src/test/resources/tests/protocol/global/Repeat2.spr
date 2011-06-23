@@ -1,10 +1,10 @@
-protocol Repeat2 {
-	role Buyer, Store;
+protocol Repeat2 (role Buyer) {
+	Buyer introduces Store;
 
 	buy(BuyRequest) from Buyer to Store;
 	
 	repeat {
-		role CreditAgency;
+		Store introduces CreditAgency;
 		
 		checkCredit(CreditCheckRequest) from Store to CreditAgency;
 		checkCredit(CreditRating) from CreditAgency to Store;

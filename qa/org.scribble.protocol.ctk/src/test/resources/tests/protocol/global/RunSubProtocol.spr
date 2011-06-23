@@ -1,8 +1,8 @@
 import Order;
 import Confirm;
 
-protocol RunSubProtocol {
-	role Buyer, Seller;
+protocol RunSubProtocol (role Buyer) {
+	Buyer introduces Seller;
 
 	run Sub(Buyer, Seller);
 

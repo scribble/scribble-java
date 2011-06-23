@@ -5,8 +5,8 @@ import Confirm;
 import Ack;
 import Finish;
 
-protocol TryCatch {
-	role Buyer, Seller;
+protocol TryCatch(role Buyer) {
+	Buyer introduces Seller;
 
 	try {
 		Order from Buyer to Seller;

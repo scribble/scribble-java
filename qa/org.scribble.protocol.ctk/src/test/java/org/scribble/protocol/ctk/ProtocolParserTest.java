@@ -46,15 +46,20 @@ public class ProtocolParserTest {
 		Protocol protocol=new Protocol();
 		expected.setProtocol(protocol);
 		
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
 		protocol.setName("SingleInteraction");
 		protocol.getAnnotations().add(new DefaultAnnotation(" Annotation before top protocol "));
 		
-		RoleList rl=new RoleList();
+		Introduces rl=new Introduces();
 		rl.getAnnotations().add(new DefaultAnnotation(" Annotation before role list "));
 		
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
+		
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -101,10 +106,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("SingleInteraction");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -150,10 +159,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("SingleInteraction");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -199,10 +212,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("SingleInteraction");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -282,10 +299,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("SingleInteraction");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -337,10 +358,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("SingleInteractionRPC");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -394,10 +419,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("MulticastInteraction");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		
 		Role sellerA=new Role();
 		sellerA.setName("SellerA");
@@ -482,10 +511,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("TryCatch");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -632,10 +665,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("SingleInteraction");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -729,10 +766,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("Parallel");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -818,10 +859,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("Repeat");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -897,10 +942,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("Unordered");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -998,10 +1047,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("Recur");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -1097,66 +1150,6 @@ public class ProtocolParserTest {
 	}
 	
 	@org.junit.Test
-	public void testUseProtocol() {
-		TestJournal logger=new TestJournal();
-		
-		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/UseProtocol.spr", logger);
-		
-		assertNotNull(model);
-		
-		assertTrue(logger.getErrorCount() == 0);
-		
-		// Build expected model
-		ProtocolModel expected=new ProtocolModel();
-		
-		TypeImportList imp=new TypeImportList();
-		TypeImport t=new TypeImport();
-		t.setName("Order");
-		imp.getTypeImports().add(t);
-		expected.getImports().add(imp);
-		
-		ProtocolImportList pimp=new ProtocolImportList();
-		ProtocolImport pi=new ProtocolImport();
-		pi.setName("Sub");
-		pi.setLocation("location");
-		pimp.getProtocolImports().add(pi);
-		expected.getImports().add(pimp);
-		
-		Protocol protocol=new Protocol();
-		expected.setProtocol(protocol);
-		
-		protocol.setName("UseProtocol");
-		
-		RoleList rl=new RoleList();
-		Role buyer=new Role();
-		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
-		Role seller=new Role();
-		seller.setName("Seller");
-		rl.getRoles().add(seller);
-		
-		protocol.getBlock().add(rl);
-		
-
-		Use inc=new Use();
-		
-		ProtocolReference ref=new ProtocolReference();
-		ref.setName("Sub");
-		
-		inc.setReference(ref);
-		
-		Parameter db1=new Parameter("Buyer");
-		inc.getParameters().add(db1);
-		
-		Parameter db2=new Parameter("Seller");
-		inc.getParameters().add(db2);
-		
-		protocol.getBlock().add(inc);
-		
-		CTKUtil.verify(model, expected);
-	}
-	
-	@org.junit.Test
 	public void testRunSubProtocol() {
 		TestJournal logger=new TestJournal();
 		
@@ -1186,10 +1179,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("RunSubProtocol");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -1233,18 +1230,6 @@ public class ProtocolParserTest {
 		Role subseller=new Role();
 		subseller.setName("SubSeller");
 
-		/*
-		RoleList subpl=new RoleList();
-		Role subbuyer=new Role();
-		subbuyer.setName("SubBuyer");
-		subpl.getRoles().add(subbuyer);
-		Role subseller=new Role();
-		subseller.setName("SubSeller");
-		subpl.getRoles().add(subseller);
-		
-		subprotocol.getBlock().add(subpl);
-		*/
-		
 		subprotocol.getParameterDefinitions().add(new ParameterDefinition("SubBuyer"));
 		subprotocol.getParameterDefinitions().add(new ParameterDefinition("SubSeller"));
 		
@@ -1295,10 +1280,14 @@ public class ProtocolParserTest {
 		
 		protocol.setName("RunInlineProtocol");
 		
-		RoleList rl=new RoleList();
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
 		Role buyer=new Role();
 		buyer.setName("Buyer");
-		rl.getRoles().add(buyer);
+		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
 		rl.getRoles().add(seller);
@@ -1317,18 +1306,6 @@ public class ProtocolParserTest {
 		protocol.getBlock().add(run);
 				
 		Block subprotocol=new Block();
-		
-		/*
-		RoleList subpl=new RoleList();
-		Role subbuyer=new Role();
-		subbuyer.setName("SubBuyer");
-		subpl.getRoles().add(subbuyer);
-		Role subseller=new Role();
-		subseller.setName("SubSeller");
-		subpl.getRoles().add(subseller);
-		
-		subprotocol.add(subpl);
-		*/
 		
 		Interaction interaction=new Interaction();
 		
@@ -1358,4 +1335,67 @@ public class ProtocolParserTest {
 
 		CTKUtil.verify(model, expected);
 	}
+
+	@org.junit.Test
+	public void testUseProtocol() {
+		TestJournal logger=new TestJournal();
+		
+		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/UseProtocol.spr", logger);
+		
+		assertNotNull(model);
+		
+		assertTrue(logger.getErrorCount() == 0);
+		
+		// Build expected model
+		ProtocolModel expected=new ProtocolModel();
+		
+		TypeImportList imp=new TypeImportList();
+		TypeImport t=new TypeImport();
+		t.setName("Order");
+		imp.getTypeImports().add(t);
+		expected.getImports().add(imp);
+		
+		ProtocolImportList pimp=new ProtocolImportList();
+		ProtocolImport pi=new ProtocolImport();
+		pi.setName("Sub");
+		pi.setLocation("ReferencedExternalProtocol.spr");
+		pimp.getProtocolImports().add(pi);
+		expected.getImports().add(pimp);
+		
+		Protocol protocol=new Protocol();
+		expected.setProtocol(protocol);
+		
+		protocol.setName("UseProtocol");
+		
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
+		Role buyer=new Role();
+		buyer.setName("Buyer");
+		rl.setIntroducer(buyer);
+		Role seller=new Role();
+		seller.setName("Seller");
+		rl.getRoles().add(seller);
+		
+		protocol.getBlock().add(rl);
+		
+		Use inc=new Use();
+		
+		ProtocolReference ref=new ProtocolReference();
+		ref.setName("Sub");
+		
+		inc.setReference(ref);
+		
+		Parameter db1=new Parameter("Buyer");
+		inc.getParameters().add(db1);
+		
+		Parameter db2=new Parameter("Seller");
+		inc.getParameters().add(db2);
+		
+		protocol.getBlock().add(inc);
+		
+		CTKUtil.verify(model, expected);
+	}	
 }

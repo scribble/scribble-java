@@ -218,7 +218,7 @@ public interface Visitor {
 	 * 
 	 * @param elem The role list
 	 */
-	public void accept(RoleList elem);
+	public void accept(Introduces elem);
 	
 	/**
 	 * This method visits a recursion component.

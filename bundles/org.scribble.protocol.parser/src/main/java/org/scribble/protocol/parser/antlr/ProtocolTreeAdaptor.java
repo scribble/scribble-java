@@ -62,7 +62,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		// with
 		//m_tokenClass.put("import", ImportList.class);
 		m_tokenClass.put("protocol", Protocol.class);
-		m_tokenClass.put("role", RoleList.class);
+		//m_tokenClass.put("role", RoleList.class);
 		m_tokenClass.put("choice", Choice.class);
 		m_tokenClass.put("rec", RecBlock.class);
 		m_tokenClass.put("par", Parallel.class);
@@ -79,6 +79,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_clearTokenListRules.add("dataTypeDef");
 		m_clearTokenListRules.add("importTypeStatement");
 		m_clearTokenListRules.add("importProtocolDef");
+		m_clearTokenListRules.add("introducesDef");
 		
 		// The list of tokens that should be ignored when processing
 		// the children of a parent node
@@ -108,7 +109,8 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_parserGroupingRuleClass.put("dataTypeDef", DataType.class);
 		m_parserGroupingRuleClass.put("recursionDef", Recursion.class);
 		m_parserGroupingRuleClass.put("parameterDef", ParameterDefinition.class);
-		
+		m_parserGroupingRuleClass.put("introducesDef", Introduces.class);
+				
 		// When a particular class has multiple properties of the
 		// same type, then a preceding token must be used to
 		// determine which property to set. This map provides the
@@ -120,8 +122,11 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_propertyToken.put("parameter:localName", ":=");
 		m_propertyToken.put("dataTypeDef:details", "<string literal>"); // Needed to make sure property not used by default
 		m_propertyToken.put("importTypeStatement:format", "");
+		m_propertyToken.put("importTypeStatement:location", "from");
 		m_propertyToken.put("importProtocolDef:name", "");
 		m_propertyToken.put("importProtocolDef:location", "from");
+		m_propertyToken.put("introducesDef:introducer", "");
+		m_propertyToken.put("introducesDef:roles", "introduces");
 		
 		// Defines the list element base type associated with a
 		// property name

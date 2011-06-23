@@ -16,23 +16,42 @@
 package org.scribble.protocol.model;
 
 /**
- * This class represents the list of roles declared within
- * a Scribble definition.
+ * This class represents the list of roles introduced by
+ * an existing role within a Scribble definition.
  */
-public class RoleList extends Activity {
+public class Introduces extends Activity {
 	
+	private Role m_introducer=null;
 	private java.util.List<Role> m_roles=
 			new ContainmentList<Role>(this, Role.class);
 
-	public RoleList() {
+	public Introduces() {
 	}
 	
-	public RoleList(RoleList rl) {
+	public Introduces(Introduces rl) {
 		super(rl);
 		
 		for (Role r : rl.getRoles()) {
 			getRoles().add(new Role(r));
 		}
+	}
+	
+	/**
+	 * This method returns the introducing role.
+	 * 
+	 * @return The introducer
+	 */
+	public Role getIntroducer() {
+		return(m_introducer);
+	}
+	
+	/**
+	 * This method sets the introducing role.
+	 * 
+	 * @param role The introducer
+	 */
+	public void setIntroducer(Role role) {
+		m_introducer = role;
 	}
 	
 	/**
@@ -51,7 +70,7 @@ public class RoleList extends Activity {
 	 * @param name The role name
 	 * @return The role, or null if not found
 	 */
-	public Role getRole(String name) {
+	public Role getIntroducedRole(String name) {
 		Role ret=null;
 		
 		for (int i=0; ret == null &&

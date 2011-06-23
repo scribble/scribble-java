@@ -1,8 +1,8 @@
 import Order;
 import protocol Sub from "ReferencedExternalProtocol.spr";
 
-protocol UseProtocol {
-	role Buyer, Seller;
+protocol UseProtocol(role Buyer) {
+	Buyer introduces Seller;
 
 	use Sub(Buyer, Seller);
 }

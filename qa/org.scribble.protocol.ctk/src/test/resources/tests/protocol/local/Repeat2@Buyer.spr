@@ -1,5 +1,5 @@
 protocol Repeat2@Buyer{
-	role Store;
+	Buyer introduces Store;
 
 	buy(BuyRequest) to Store;
 	

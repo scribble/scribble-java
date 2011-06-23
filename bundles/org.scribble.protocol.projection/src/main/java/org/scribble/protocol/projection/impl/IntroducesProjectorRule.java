@@ -19,10 +19,10 @@ import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
 
 /**
- * This class provides the RoleList implementation of the
+ * This class provides the Introduces implementation of the
  * projector rule.
  */
-public class RoleListProjectorRule implements ProjectorRule {
+public class IntroducesProjectorRule implements ProjectorRule {
 
 	/**
 	 * This method determines whether the projection rule is
@@ -33,7 +33,7 @@ public class RoleListProjectorRule implements ProjectorRule {
 	 * 				model object
 	 */
 	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == RoleList.class);
+		return(obj.getClass() == Introduces.class);
 	}
 	
 	/**
@@ -47,19 +47,27 @@ public class RoleListProjectorRule implements ProjectorRule {
 	 */
 	public ModelObject project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
-		RoleList ret=new RoleList();
-		RoleList source=(RoleList)model;
+		Introduces ret=new Introduces();
+		Introduces source=(Introduces)model;
 		
 		ret.derivedFrom(source);
 		
-		for (int i=0; i < source.getRoles().size(); i++) {
-			if (source.getRoles().get(i).equals(role) == false) {
+		if (source.getIntroducer().equals(role)) {
+			
+			// Project introducer
+			ret.setIntroducer((Role)context.project(source.getIntroducer(), role, l));			
+			
+			// Project as is
+			for (int i=0; i < source.getRoles().size(); i++) {
 				Role p=(Role)context.project(source.getRoles().get(i), role, l);
 
 				if (p != null) {
 					ret.getRoles().add(p);
 				}
 			}
+		} else {
+			// Don't project, as not relevant to introduced roles
+			ret = null;
 		}
 		
 		return(ret);

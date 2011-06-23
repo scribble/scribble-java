@@ -122,7 +122,7 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 	 * 
 	 * @param elem The role list
 	 */
-	public void accept(RoleList elem) {
+	public void accept(Introduces elem) {
 		process(elem);
 	}
 	

@@ -1,7 +1,5 @@
 import Order;
 
-protocol MulticastInteraction@SellerA {
-	role Buyer;
-
+protocol MulticastInteraction@SellerA (role Buyer) {
 	Order from Buyer;
 }

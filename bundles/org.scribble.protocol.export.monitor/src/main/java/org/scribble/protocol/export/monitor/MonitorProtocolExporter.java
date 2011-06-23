@@ -296,11 +296,11 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		}
 		
 		/**
-		 * This method visits the role list.
+		 * This method visits the introduces construct.
 		 * 
-		 * @param elem The role list
+		 * @param elem The introduces construct
 		 */
-		public void accept(RoleList elem) {
+		public void accept(Introduces elem) {
 		}
 		
 		/**

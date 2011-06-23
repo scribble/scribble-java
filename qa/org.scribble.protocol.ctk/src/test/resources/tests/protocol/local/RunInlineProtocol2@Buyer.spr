@@ -4,7 +4,7 @@ import CreditCheck;
 import CreditRating;
 
 protocol RunInlineProtocol2@Buyer {
-	role Seller;
+	Buyer introduces Seller;
 
 	Order to Seller;
 	

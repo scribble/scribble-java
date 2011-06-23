@@ -5,8 +5,9 @@ import Confirmation;
 import OutOfStock;
 import InsufficientCredit;
 
-protocol MultiPartyInteractionsAndChoice {
-	role Buyer, Broker, CreditAgency, Seller;
+protocol MultiPartyInteractionsAndChoice(role Buyer) {
+	Buyer introduces Broker;
+	Broker introduces CreditAgency, Seller;
 
 	Order from Buyer to Broker;
 	

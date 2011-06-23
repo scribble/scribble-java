@@ -105,11 +105,11 @@ blockDef: '{'! activityListDef '}'! ;
 
 activityListDef: ( ( ANNOTATION )* activityDef )* ;
 
-activityDef: ( roleListDef | interactionDef | useDef | runDef | recursionDef ) ';'! | 
+activityDef: ( introducesDef | interactionDef | useDef | runDef | recursionDef ) ';'! | 
 			runInlineDef | choiceDef | parallelDef | repeatDef | unorderedDef |
 			recBlockDef | tryEscapeDef | protocolDef ;
 
-roleListDef: 'role'^ roleDef ( ','! roleDef )* ;
+introducesDef: roleDef 'introduces' roleDef ( ','! roleDef )* ;
 
 roleDef: ID ;
 

@@ -5,7 +5,7 @@ import Order;
 protocol SingleInteraction@Buyer {
 
 	[[ Annotation before role list ]]
-	role Seller;
+	Buyer introduces Seller;
 
 	[[ Annotation before interaction ]]
 	Order to Seller;

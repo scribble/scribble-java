@@ -219,7 +219,7 @@ public class Protocol extends Activity {
 				return(Protocol.this == elem);
 			}
 			
-			public void accept(RoleList elem) {
+			public void accept(Introduces elem) {
 				ret.addAll(elem.getRoles());
 			}
 

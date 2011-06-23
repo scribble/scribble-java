@@ -1,8 +1,8 @@
 import Order;
 import Confirm;
 
-protocol RunInlineProtocol {
-	role Buyer, Seller;
+protocol RunInlineProtocol (role Buyer) {
+	Buyer introduces Seller;
 
 	run protocol (Buyer, Seller) {
 		Order from Buyer to Seller;

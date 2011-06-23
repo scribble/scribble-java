@@ -20,11 +20,11 @@ import java.util.Comparator;
 import org.scribble.protocol.ctk.ComparatorUtil;
 import org.scribble.protocol.model.*;
 
-public class RoleListComparator implements Comparator<ModelObject> {
+public class IntroducesComparator implements Comparator<ModelObject> {
 
 	public int compare(ModelObject arg0, ModelObject arg1) {
-		RoleList m=(RoleList)arg0;
-		RoleList e=(RoleList)arg1;
+		Introduces m=(Introduces)arg0;
+		Introduces e=(Introduces)arg1;
 		
 		if (m.getRoles().size() == e.getRoles().size()) {
 			RoleComparator pcomp=(RoleComparator)

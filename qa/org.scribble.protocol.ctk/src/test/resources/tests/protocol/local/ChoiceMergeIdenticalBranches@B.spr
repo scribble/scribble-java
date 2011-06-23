@@ -1,5 +1,5 @@
-protocol ChoiceMergeIdenticalBranches@B {
-    role A, C;
+protocol ChoiceMergeIdenticalBranches@B(role A) {
+    B introduces C;
 
     choice {
         l1() from A;

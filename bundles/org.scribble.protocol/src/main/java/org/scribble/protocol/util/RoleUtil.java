@@ -37,9 +37,22 @@ public class RoleUtil {
 		
 		for (int i=0; i < block.getContents().size(); i++) {
 			
-			if (block.getContents().get(i) instanceof RoleList) {
-				ret.addAll(((RoleList)block.getContents().get(i)).getRoles());
+			if (block.getContents().get(i) instanceof Introduces) {
+				ret.addAll(((Introduces)block.getContents().get(i)).getRoles());
 			}
+		}
+		
+		return(ret);
+	}
+	
+	public static Protocol getEnclosingProtocol(Role role) {
+		Protocol ret=null;
+		
+		if (role.getParent() instanceof Introduces) {
+			ret = ((Introduces)role.getParent()).enclosingProtocol();
+		} else if (role.getParent() instanceof ParameterDefinition &&
+				role.getParent().getParent() instanceof Protocol) {
+			ret = (Protocol)role.getParent().getParent();
 		}
 		
 		return(ret);
@@ -342,7 +355,7 @@ public class RoleUtil {
 			checkActivity(elem);
 		}
 
-		public void accept(RoleList elem) {
+		public void accept(Introduces elem) {
 			java.util.List<Role> rlist=m_roleStack.get(m_roleStack.size()-1);
 			
 			rlist.addAll(elem.getRoles());

@@ -1,7 +1,7 @@
 import Order;
 
 protocol MulticastInteraction@Buyer {
-	role SellerA, SellerB;
+	Buyer introduces SellerA, SellerB;
 
 	Order to SellerA,SellerB;
 }

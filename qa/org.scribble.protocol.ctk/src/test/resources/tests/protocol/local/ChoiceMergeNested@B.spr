@@ -3,8 +3,7 @@ import M2;
 import M3;
 import M4;
 
-protocol ChoiceMergeNested@B {
-	role A, C, D;
+protocol ChoiceMergeNested@B (role A){
 
 	choice {
 		M1 from A;

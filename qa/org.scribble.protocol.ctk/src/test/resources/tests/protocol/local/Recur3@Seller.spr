@@ -5,7 +5,7 @@ import Accepted;
 import Another;
 
 protocol Recur@Seller {
-	role Buyer;
+	Buyer introduces Seller;
 
 	rec Transaction {
 		Order from Buyer;

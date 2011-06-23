@@ -26,7 +26,7 @@ public class TryValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList rlist1=new RoleList();
+		Introduces rlist1=new Introduces();
 		prot1.getBlock().add(rlist1);
 		
 		Role r1=new Role();
@@ -73,7 +73,7 @@ public class TryValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList rlist1=new RoleList();
+		Introduces rlist1=new Introduces();
 		prot1.getBlock().add(rlist1);
 		
 		Role r1=new Role();
@@ -123,7 +123,7 @@ public class TryValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList rlist1=new RoleList();
+		Introduces rlist1=new Introduces();
 		prot1.getBlock().add(rlist1);
 		
 		Role r1=new Role();
@@ -176,7 +176,7 @@ public class TryValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList rlist1=new RoleList();
+		Introduces rlist1=new Introduces();
 		prot1.getBlock().add(rlist1);
 		
 		Role r1=new Role();
@@ -224,7 +224,7 @@ public class TryValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList rlist1=new RoleList();
+		Introduces rlist1=new Introduces();
 		prot1.getBlock().add(rlist1);
 		
 		Role r1=new Role();
@@ -272,7 +272,7 @@ public class TryValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList rlist1=new RoleList();
+		Introduces rlist1=new Introduces();
 		prot1.getBlock().add(rlist1);
 		
 		Role r1=new Role();
@@ -322,7 +322,7 @@ public class TryValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList rlist1=new RoleList();
+		Introduces rlist1=new Introduces();
 		prot1.getBlock().add(rlist1);
 		
 		Role r1=new Role();

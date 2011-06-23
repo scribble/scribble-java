@@ -179,7 +179,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 * 
 	 * @param elem The role list
 	 */
-	public void accept(RoleList elem) {
+	public void accept(Introduces elem) {
 		for (Annotation annotation : elem.getAnnotations()) {
 			indent();
 			output("[["+annotation.toString()+"]]\r\n");

@@ -2,8 +2,7 @@ import Order;
 import Cancel;
 import Finish;
 
-protocol Unordered@Seller {
-	role Buyer;
+protocol Unordered@Seller (role Buyer) {
 
 	unordered {
 		Order from Buyer;

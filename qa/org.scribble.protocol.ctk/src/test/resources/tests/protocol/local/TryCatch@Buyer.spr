@@ -6,7 +6,7 @@ import Ack;
 import Finish;
 
 protocol TryCatch@Buyer {
-	role Seller;
+	Buyer introduces Seller;
 
 	try {
 		Order to Seller;
