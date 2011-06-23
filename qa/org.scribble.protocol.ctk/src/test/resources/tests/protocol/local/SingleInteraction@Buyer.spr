@@ -1,7 +1,7 @@
 import Order;
 
 protocol SingleInteraction@Buyer {
-	role Seller;
+	Buyer introduces Seller;
 
 	Order to Seller;
 }

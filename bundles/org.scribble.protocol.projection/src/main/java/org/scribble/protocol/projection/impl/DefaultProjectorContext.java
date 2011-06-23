@@ -46,7 +46,7 @@ public class DefaultProjectorContext implements ProjectorContext {
 		m_rules.add(new InteractionProjectorRule());
 		m_rules.add(new MessageSignatureProjectorRule());
 		m_rules.add(new ParallelProjectorRule());
-		m_rules.add(new RoleListProjectorRule());
+		m_rules.add(new IntroducesProjectorRule());
 		m_rules.add(new RoleProjectorRule());
 		m_rules.add(new ProtocolModelProjectorRule());
 		m_rules.add(new ProtocolProjectorRule());

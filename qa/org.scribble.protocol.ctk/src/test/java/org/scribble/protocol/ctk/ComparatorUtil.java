@@ -34,7 +34,7 @@ public class ComparatorUtil {
 		m_comparators.put(ProtocolImport.class, new ProtocolImportComparator());
 		m_comparators.put(Protocol.class, new ProtocolComparator());
 		m_comparators.put(Block.class, new BlockComparator());
-		m_comparators.put(RoleList.class, new RoleListComparator());
+		m_comparators.put(Introduces.class, new IntroducesComparator());
 		m_comparators.put(Role.class, new RoleComparator());
 		m_comparators.put(Interaction.class, new InteractionComparator());
 		m_comparators.put(MessageSignature.class, new MessageSignatureComparator());

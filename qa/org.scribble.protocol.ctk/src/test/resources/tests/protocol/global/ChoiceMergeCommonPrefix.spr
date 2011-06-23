@@ -1,8 +1,9 @@
 import Int;
 import Boolean;
 
-protocol ChoiceMergeCommonPrefix {
-    role A, B, C;
+protocol ChoiceMergeCommonPrefix(role A) {
+    A introduces B;
+    B introduces C;
 
     choice at A {
         ok() from A to B;

@@ -4,8 +4,8 @@ import Order;
 This is the block comment.
 */
 
-protocol SingleInteraction {
-	role Buyer, Seller;
+protocol SingleInteraction(role Buyer) {
+	Buyer introduces Seller;
 
 	/*
 	Inner block comment.

@@ -17,7 +17,7 @@
 package org.scribble.protocol.util;
 
 import org.scribble.protocol.model.Activity;
-import org.scribble.protocol.model.RoleList;
+import org.scribble.protocol.model.Introduces;
 
 public class ActivityUtil {
 
@@ -31,7 +31,7 @@ public class ActivityUtil {
 	public static boolean isDeclaration(Activity act) {
 		boolean ret=false;
 		
-		if (act instanceof RoleList) {
+		if (act instanceof Introduces) {
 			ret = true;
 		}
 		

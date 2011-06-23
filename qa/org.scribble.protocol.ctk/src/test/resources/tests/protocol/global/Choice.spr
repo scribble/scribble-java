@@ -2,8 +2,8 @@ import Order;
 import Cancel;
 import Invoice;
 
-protocol SingleInteraction {
-	role Buyer, Seller;
+protocol SingleInteraction(role Buyer) {
+	Buyer introduces Seller;
 
 	choice at Buyer {
 		Order from Buyer to Seller;

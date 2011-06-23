@@ -251,7 +251,7 @@ public class CTKUtil {
 			}
 
 			@Override
-			public void accept(RoleList elem) {
+			public void accept(Introduces elem) {
 				ret.add(elem);
 			}
 

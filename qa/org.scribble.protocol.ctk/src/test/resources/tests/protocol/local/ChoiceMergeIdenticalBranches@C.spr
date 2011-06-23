@@ -1,5 +1,3 @@
-protocol ChoiceMergeIdenticalBranches@C {
-    role B;
-
+protocol ChoiceMergeIdenticalBranches@C(role A) {
     Int from B;
 }

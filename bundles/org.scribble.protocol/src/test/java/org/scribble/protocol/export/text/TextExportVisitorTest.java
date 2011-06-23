@@ -325,7 +325,7 @@ public class TextExportVisitorTest {
 	@org.junit.Test
 	public void testRoleList() {
 		
-		RoleList elem=new RoleList();
+		Introduces elem=new Introduces();
 		
 		Role p1=new Role();
 		p1.setName("P1");
@@ -361,7 +361,7 @@ public class TextExportVisitorTest {
 	@org.junit.Test
 	public void testRoleListWithAnnotation() {
 		
-		RoleList elem=new RoleList();
+		Introduces elem=new Introduces();
 		
 		Role p1=new Role();
 		p1.setName("P1");

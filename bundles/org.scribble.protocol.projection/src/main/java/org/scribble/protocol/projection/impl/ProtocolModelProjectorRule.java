@@ -88,7 +88,7 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
 		} else {
 		
 			// Get enclosing protocol for the supplied role
-			Protocol srcprotocol=((RoleList)roleDefn.getParent()).enclosingProtocol();
+			Protocol srcprotocol=RoleUtil.getEnclosingProtocol(roleDefn);
 		
 			if (srcprotocol != null) {
 				protocol = (Protocol)context.project(srcprotocol,
@@ -128,13 +128,13 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
 					
 					// Remaining list should be added, if still relevant to the new block
 					for (Role r : declaredRoles1) {
-						RoleList rl=null;
+						Introduces rl=null;
 						
 						if (RoleUtil.getEnclosingBlock(protocol, r) != null) {
-							if (block.get(0) instanceof RoleList) {
-								rl = (RoleList)block.get(0);
+							if (block.get(0) instanceof Introduces) {
+								rl = (Introduces)block.get(0);
 							} else {
-								rl = new RoleList();
+								rl = new Introduces();
 								block.getContents().add(0, rl);
 							}
 							

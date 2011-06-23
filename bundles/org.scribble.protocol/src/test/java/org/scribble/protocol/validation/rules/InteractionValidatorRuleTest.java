@@ -26,7 +26,7 @@ public class InteractionValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -64,7 +64,7 @@ public class InteractionValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -102,7 +102,7 @@ public class InteractionValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -137,7 +137,7 @@ public class InteractionValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -172,7 +172,7 @@ public class InteractionValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -204,7 +204,7 @@ public class InteractionValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -240,7 +240,7 @@ public class InteractionValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -276,7 +276,7 @@ public class InteractionValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -308,7 +308,7 @@ public class InteractionValidatorRuleTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList rlist1=new RoleList();
+		Introduces rlist1=new Introduces();
 		prot1.getBlock().add(rlist1);
 		
 		Role role1=new Role();

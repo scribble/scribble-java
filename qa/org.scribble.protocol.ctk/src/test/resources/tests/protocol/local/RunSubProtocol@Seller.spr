@@ -1,8 +1,7 @@
 import Order;
 import Confirm;
 
-protocol RunSubProtocol@Seller {
-	role Buyer;
+protocol RunSubProtocol@Seller (role Buyer) {
 
 	run Sub@SubSeller(Buyer);
 

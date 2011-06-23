@@ -1,8 +1,8 @@
 import Order;
 
 // The protocol definition
-protocol SingleInteraction {
-	role Buyer, Seller;
+protocol SingleInteraction(role Buyer) {
+	Buyer introduces Seller;
 
 	// Send the order from the buyer to the seller
 	Order from Buyer to Seller;

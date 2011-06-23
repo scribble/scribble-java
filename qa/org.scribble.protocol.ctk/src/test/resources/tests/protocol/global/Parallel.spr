@@ -2,8 +2,8 @@ import M1;
 import M2;
 import M3;
 
-protocol Parallel {
-	role Buyer, Seller;
+protocol Parallel(role Buyer) {
+	Buyer introduces Seller;
 
 	par {
 		M1 from Buyer to Seller;

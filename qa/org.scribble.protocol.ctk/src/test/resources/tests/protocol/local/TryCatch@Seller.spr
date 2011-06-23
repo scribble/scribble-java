@@ -5,8 +5,7 @@ import Confirm;
 import Ack;
 import Finish;
 
-protocol TryCatch@Seller {
-	role Buyer;
+protocol TryCatch@Seller (role Buyer) {
 
 	try {
 		Order from Buyer;

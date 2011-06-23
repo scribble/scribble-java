@@ -3,13 +3,13 @@ import Confirm;
 import CreditCheck;
 import CreditRating;
 
-protocol RunInlineProtocol2 {
-	role Buyer, Seller;
+protocol RunInlineProtocol2 (role Buyer) {
+	Buyer introduces Seller;
 
 	Order from Buyer to Seller;
 	
 	run protocol (Seller) {
-		role CreditAgency;
+		Seller introduces CreditAgency;
 		
 		CreditCheck from Seller to CreditAgency;
 		CreditRating from CreditAgency to Seller;

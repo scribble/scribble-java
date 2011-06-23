@@ -98,6 +98,7 @@ public class ParameterDefinition extends ModelObject {
 		
 		if (isRole() && getName() != null) {
 			ret = new Role(getName());
+			ret.setParent(this);
 		}
 		
 		return(ret);

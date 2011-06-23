@@ -63,10 +63,12 @@ public class ProtocolProjectorImpl implements ProtocolProjector {
 		
 		// Check that role is defined within a role list, and its parent
 		// link has not inadvertantly been reset
-		if ((role.getParent() instanceof RoleList) == false) {
+		/* GPB: TO INVESTIGATE
+		if ((role.getParent() instanceof Introduces) == false) {
 			throw new IllegalArgumentException("Role is not contained within a role list, " +
 					"and is therefore not the declared role");
 		}
+		*/
 		
 		DefaultProjectorContext projectorContext=new DefaultProjectorContext(context);
 		

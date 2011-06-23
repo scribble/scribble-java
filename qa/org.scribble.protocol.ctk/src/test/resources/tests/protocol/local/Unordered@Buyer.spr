@@ -3,7 +3,7 @@ import Cancel;
 import Finish;
 
 protocol Unordered@Buyer {
-	role Seller;
+	Buyer introduces Seller;
 
 	unordered {
 		Order to Seller;

@@ -27,7 +27,7 @@ public class RoleUtilTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -61,7 +61,7 @@ public class RoleUtilTest {
 		
 		Protocol prot1=new Protocol();
 		
-		RoleList plist1=new RoleList();
+		Introduces plist1=new Introduces();
 		prot1.getBlock().add(plist1);
 		
 		Role part1=new Role();
@@ -78,7 +78,7 @@ public class RoleUtilTest {
 		Block wb1=new Block();
 		choice.getBlocks().add(wb1);
 		
-		RoleList plist2=new RoleList();
+		Introduces plist2=new Introduces();
 		wb1.add(plist2);
 		
 		Role part3=new Role();
@@ -92,7 +92,7 @@ public class RoleUtilTest {
 		Block wb2=new Block();
 		choice.getBlocks().add(wb2);
 		
-		RoleList plist3=new RoleList();
+		Introduces plist3=new Introduces();
 		wb2.add(plist3);
 		
 		Role part5=new Role();

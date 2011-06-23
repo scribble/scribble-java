@@ -3,7 +3,7 @@ import M2;
 import M3;
 
 protocol Parallel@Buyer {
-	role Seller;
+	Buyer introduces Seller;
 
 	par {
 		M1 to Seller;

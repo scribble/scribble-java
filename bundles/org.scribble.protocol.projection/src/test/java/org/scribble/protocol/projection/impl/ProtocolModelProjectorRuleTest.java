@@ -25,7 +25,7 @@ import org.scribble.common.logging.CachedJournal.IssueDetails;
 import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.RoleList;
+import org.scribble.protocol.model.Introduces;
 
 public class ProtocolModelProjectorRuleTest {
 
@@ -35,7 +35,7 @@ public class ProtocolModelProjectorRuleTest {
 		
 		Protocol p=new Protocol();
 		
-		RoleList rl=new RoleList();
+		Introduces rl=new Introduces();
 		
 		Role r=new Role();
 		r.setName("role");
@@ -76,7 +76,7 @@ public class ProtocolModelProjectorRuleTest {
 		
 		Protocol p=new Protocol();
 		
-		RoleList rl=new RoleList();
+		Introduces rl=new Introduces();
 		
 		Role r=new Role();
 		r.setName("role");

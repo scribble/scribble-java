@@ -4,8 +4,8 @@ import Rejected;
 import Accepted;
 import Another;
 
-protocol Recur {
-	role Buyer, Seller;
+protocol Recur (role Buyer) {
+	Buyer introduces Seller;
 
 	rec Transaction {
 		Order from Buyer to Seller;

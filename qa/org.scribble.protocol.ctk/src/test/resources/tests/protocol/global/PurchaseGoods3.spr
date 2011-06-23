@@ -2,14 +2,16 @@ import xsd "{http://www.jboss.org/examples/store}AccountNotFound" as AccountNotF
 import xsd "{http://www.jboss.org/examples/creditAgency}CreditCheckRequest" as CreditCheckRequest, "{http://www.jboss.org/examples/creditAgency}CreditRating" as CreditRating, "{http://www.jboss.org/examples/creditAgency}CustomerUnknown" as CustomerUnknown from "http://www.jboss.org/examples/creditAgency";
 import xsd "{http://www.jboss.org/examples/logistics}DeliveryConfirmed" as DeliveryConfirmed, "{http://www.jboss.org/examples/logistics}DeliveryRequest" as DeliveryRequest from "http://www.jboss.org/examples/logistics";
 import xsd "{http://www.w3.org/2001/XMLSchema}string" as IDType, "{http://www.w3.org/2001/XMLSchema}anyURI" as URITokenType from "http://www.w3.org/2001/XMLSchema";
-protocol PurchaseGoodsProcess {
-	role Buyer, CreditAgency, Store;
+protocol PurchaseGoodsProcess (role Buyer) {
+	Buyer introduces Store;
+	Store introduces CreditAgency;
+
 	buy(BuyRequest) from Buyer to Store;
 	checkCredit(CreditCheckRequest) from Store to CreditAgency;
 	choice at CreditAgency {
 		checkCredit(CreditRating) from CreditAgency to Store;
 		choice at Store {
-			role Logistics;
+			Store introduces Logistics;
 			deliver(DeliveryRequest) from Store to Logistics;
 			deliver(DeliveryConfirmed) from Logistics to Store;
 			buy(BuyConfirmed) from Store to Buyer;

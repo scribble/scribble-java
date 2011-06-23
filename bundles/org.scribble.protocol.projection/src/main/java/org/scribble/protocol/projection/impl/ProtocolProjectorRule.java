@@ -116,7 +116,7 @@ public class ProtocolProjectorRule implements ProjectorRule {
 		// Visit protocol to locate role lists
 		protocol.visit(new DefaultVisitor() {
 			
-			public void accept(RoleList list) {
+			public void accept(Introduces list) {
 				
 				// Identify parent block
 				Block parent=(Block)list.getParent();

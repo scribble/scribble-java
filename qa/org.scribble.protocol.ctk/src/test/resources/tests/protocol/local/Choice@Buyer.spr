@@ -3,7 +3,7 @@ import Cancel;
 import Invoice;
 
 protocol SingleInteraction@Buyer {
-	role Seller;
+	Buyer introduces Seller;
 
 	choice at Buyer {
 		Order to Seller;
