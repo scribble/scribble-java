@@ -68,6 +68,17 @@ public class IntroducesProjectorRule implements ProjectorRule {
 		} else {
 			// Don't project, as not relevant to introduced roles
 			ret = null;
+			
+			if (source.getRoles().contains(role)) {
+				// If introducer not in context, then add
+				if (context.getState(source.getIntroducer().getName()) == null) {
+					
+					// Add to context
+					Role ir=(Role)context.project(source.getIntroducer(), role, l);
+					
+					context.setState(ir.getName(), ir);
+				}
+			}
 		}
 		
 		return(ret);

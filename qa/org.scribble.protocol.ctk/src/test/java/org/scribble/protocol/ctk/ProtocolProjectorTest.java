@@ -47,9 +47,10 @@ public class ProtocolProjectorTest {
             {"Choice.spr", "Choice@Buyer.spr"},          // 2
             {"Choice.spr", "Choice@Seller.spr"},         // 3
             {"ChoiceMerge.spr", "ChoiceMerge@Broker.spr"}, // 4
-            
+        		
             // SCRIBBLE-102 - broker needs to be parameter
-            // {"ChoiceMerge.spr", "ChoiceMerge@Seller.spr"}, // 5
+            {"ChoiceMerge.spr", "ChoiceMerge@Seller.spr"}, // 5
+            
             {"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@A.spr"}, // 6
             
             {"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@B.spr"}, // 7
@@ -78,7 +79,7 @@ public class ProtocolProjectorTest {
         	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
             
         	// SCRIBBLE-102 - needs Broker as parameter
-        	//{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@CreditAgency.spr"}, // 18            
+        	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@CreditAgency.spr"}, // 18            
         	{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Broker.spr"}, // 20
 
         	{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Buyer.spr"}, // 21
@@ -106,10 +107,11 @@ public class ProtocolProjectorTest {
             {"RunExternalProtocol.spr", "RunExternalProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
             {"RunExternalProtocol.spr", "RunExternalProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
             {"RunInlineProtocol.spr", "RunInlineProtocol@Buyer.spr"},
-            {"RunInlineProtocol.spr", "RunInlineProtocol@Seller.spr"},
+            {"RunInlineProtocol.spr", "RunInlineProtocol@Seller.spr"},            
             {"RunInlineProtocol2.spr", "RunInlineProtocol2@Buyer.spr"},
             {"RunSubProtocol.spr", "RunSubProtocol@Buyer.spr"},
             {"RunSubProtocol.spr", "RunSubProtocol@Seller.spr"},
+            
             {"SingleInteraction.spr", "SingleInteraction@Buyer.spr"},
             {"SingleInteraction.spr", "SingleInteraction@Seller.spr"},
             {"SingleInteractionXSDImport.spr", "SingleInteractionXSDImport@Buyer.spr"},
@@ -118,7 +120,7 @@ public class ProtocolProjectorTest {
             {"TryCatch.spr", "TryCatch@Seller.spr"},
             {"Unordered.spr", "Unordered@Buyer.spr"},
             {"Unordered.spr", "Unordered@Seller.spr"},
-            {"PurchaseGoods3.spr", "PurchaseGoods3@Buyer.spr"},             
+            {"PurchaseGoods3.spr", "PurchaseGoods3@Buyer.spr"},
             {"PurchaseGoods3.spr", "PurchaseGoods3@Store.spr"},
 
          	/*
