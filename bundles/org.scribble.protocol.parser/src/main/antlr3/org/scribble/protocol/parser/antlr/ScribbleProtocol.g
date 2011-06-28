@@ -146,7 +146,7 @@ parameter: declarationName ;
 
 useDef: 'use'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? ;
 
-parallelDef: 'par'^ blockDef ( 'and' blockDef )* ;
+parallelDef: 'parallel'^ blockDef ( 'and' blockDef )* ;
 
 tryEscapeDef: 'try'^ blockDef ( catchBlockDef )+ ;
 

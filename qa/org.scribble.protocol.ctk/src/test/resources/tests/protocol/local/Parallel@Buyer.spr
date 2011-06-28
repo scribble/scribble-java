@@ -5,7 +5,7 @@ import M3;
 protocol Parallel@Buyer {
 	Buyer introduces Seller;
 
-	par {
+	parallel {
 		M1 to Seller;
 	} and {
 		M2 to Seller;

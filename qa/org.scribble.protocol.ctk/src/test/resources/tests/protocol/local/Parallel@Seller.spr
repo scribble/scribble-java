@@ -4,7 +4,7 @@ import M3;
 
 protocol Parallel@Seller(role Buyer) {
 
-	par {
+	parallel {
 		M1 from Buyer;
 	} and {
 		M2 from Buyer;

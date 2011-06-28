@@ -327,6 +327,11 @@ public class TextExportVisitorTest {
 		
 		Introduces elem=new Introduces();
 		
+		Role i1=new Role();
+		i1.setName("I1");
+		
+		elem.setIntroducer(i1);
+		
 		Role p1=new Role();
 		p1.setName("P1");
 		
@@ -351,7 +356,7 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="role "+p1.getName()+", "+p2.getName()+";\r\n";
+		String expected=i1.getName()+" introduces "+p1.getName()+", "+p2.getName()+";\r\n";
 		
 		if (str.equals(expected) == false) {
 			fail("Expected:\r\n"+expected+"\r\nGot:\r\n"+str);
@@ -362,6 +367,11 @@ public class TextExportVisitorTest {
 	public void testRoleListWithAnnotation() {
 		
 		Introduces elem=new Introduces();
+		
+		Role i1=new Role();
+		i1.setName("I1");
+		
+		elem.setIntroducer(i1);
 		
 		Role p1=new Role();
 		p1.setName("P1");
@@ -395,7 +405,7 @@ public class TextExportVisitorTest {
 		
 		String expected="[["+annotation1.toString()+"]]\r\n"+
 					"[["+annotation2.toString()+"]]\r\n"+
-					"role "+p1.getName()+", "+p2.getName()+";\r\n";
+					i1.getName()+" introduces "+p1.getName()+", "+p2.getName()+";\r\n";
 		
 		if (str.equals(expected) == false) {
 			fail("Expected:\r\n"+expected+"\r\nGot:\r\n"+str);
@@ -1601,7 +1611,7 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="par {\r\n"+
+		String expected="parallel {\r\n"+
 				"\t"+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n} and {\r\n"+
 				"\t"+ref2.getName()+" from "+p1.getName()+" to "+p3.getName()+";\r\n}\r\n";
 		
@@ -1680,7 +1690,7 @@ public class TextExportVisitorTest {
 		
 		String expected="[["+annotation1.toString()+"]]\r\n"+
 				"[["+annotation2.toString()+"]]\r\n"+
-				"par {\r\n"+
+				"parallel {\r\n"+
 				"\t"+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n} and {\r\n"+
 				"\t"+ref2.getName()+" from "+p1.getName()+" to "+p3.getName()+";\r\n}\r\n";
 		
