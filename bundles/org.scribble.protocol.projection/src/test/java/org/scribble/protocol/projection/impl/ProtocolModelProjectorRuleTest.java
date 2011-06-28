@@ -78,6 +78,11 @@ public class ProtocolModelProjectorRuleTest {
 		
 		Introduces rl=new Introduces();
 		
+		Role introducer=new Role();
+		introducer.setName("introducer");
+		
+		rl.setIntroducer(introducer);
+		
 		Role r=new Role();
 		r.setName("role");
 		

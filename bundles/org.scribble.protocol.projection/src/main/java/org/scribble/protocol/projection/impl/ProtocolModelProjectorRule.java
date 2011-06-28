@@ -91,6 +91,7 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
 			Protocol srcprotocol=RoleUtil.getEnclosingProtocol(roleDefn);
 		
 			if (srcprotocol != null) {
+				
 				protocol = (Protocol)context.project(srcprotocol,
 							role, l);
 				
@@ -98,17 +99,8 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
 				// top level block
 				Block block=RoleUtil.getEnclosingBlock(protocol, roleDefn);
 				
-				if (block != null && protocol.getBlock() != block) {
+				if (block != null) {
 
-					// Save current list of declared roles
-					java.util.Set<Role> declaredRoles1=RoleUtil.getDeclaredRoles(protocol.getBlock());
-					
-					for (ParameterDefinition pd : protocol.getParameterDefinitions()) {
-						if (pd.getType() == null) {
-							declaredRoles1.add(new Role(pd.getName()));
-						}
-					}
-					
 					// If no top level protocol, then use top level protocol name
 					if (srcprotocol != source.getProtocol()) {
 						protocol.setName(source.getProtocol().getName());
@@ -121,26 +113,21 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
 					protocol.setBlock(block);
 					
 					// Get new list of declared roles
-					java.util.Set<Role> declaredRoles2=RoleUtil.getDeclaredRoles(protocol.getBlock());
+					java.util.Set<Role> declaredRoles=RoleUtil.getDeclaredRoles(protocol.getBlock());
 					
-					// Find out which roles were declared outside the scope of the new block
-					declaredRoles1.removeAll(declaredRoles2);
+					java.util.Set<Role> usedRoles=RoleUtil.getUsedRoles(protocol.getBlock());
+
+					usedRoles.removeAll(declaredRoles);
 					
-					// Remaining list should be added, if still relevant to the new block
-					for (Role r : declaredRoles1) {
-						Introduces rl=null;
+					// Check if parameter definitions need to be updated
+					protocol.getParameterDefinitions().clear();
+					
+					for (Role used : usedRoles) {
 						
-						if (RoleUtil.getEnclosingBlock(protocol, r) != null) {
-							if (block.get(0) instanceof Introduces) {
-								rl = (Introduces)block.get(0);
-							} else {
-								rl = new Introduces();
-								block.getContents().add(0, rl);
-							}
-							
-							// TODO: Might need to consolidate annotations???
-							
-							rl.getRoles().add(r);
+						if (used.equals(role) == false) {
+							ParameterDefinition pd=new ParameterDefinition();
+							pd.setName(used.getName());
+							protocol.getParameterDefinitions().add(pd);
 						}
 					}
 				}

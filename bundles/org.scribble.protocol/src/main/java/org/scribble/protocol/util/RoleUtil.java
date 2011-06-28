@@ -33,16 +33,28 @@ public class RoleUtil {
 	 * @return The set of roles
 	 */
 	public static java.util.Set<Role> getDeclaredRoles(Block block) {
-		java.util.Set<Role> ret=new java.util.HashSet<Role>();
+		final java.util.Set<Role> roles=new java.util.HashSet<Role>();
 		
-		for (int i=0; i < block.getContents().size(); i++) {
+		block.visit(new DefaultVisitor() {
 			
-			if (block.getContents().get(i) instanceof Introduces) {
-				ret.addAll(((Introduces)block.getContents().get(i)).getRoles());
+			protected void addRole(Role r) {
+				if (r != null && !roles.contains(r)) {
+					roles.add(r);
+				}
 			}
-		}
+			
+			public void accept(Introduces elem) {
+				for (Role r : elem.getRoles()) {
+					addRole(r);
+				}
+			}
+			
+			public boolean start(Protocol elem) {
+				return(false);
+			}
+		});
 		
-		return(ret);
+		return(roles);
 	}
 	
 	public static Protocol getEnclosingProtocol(Role role) {
@@ -66,7 +78,7 @@ public class RoleUtil {
 	 * @return The set of roles associated with the activity and its
 	 * 				sub components if a grouping construct
 	 */
-	public static java.util.Set<Role> getUsedRoles(Activity act) {
+	public static java.util.Set<Role> getUsedRoles(final Activity act) {
 		final java.util.Set<Role> roles=new java.util.HashSet<Role>();
 		
 		act.visit(new DefaultVisitor() {
@@ -87,6 +99,12 @@ public class RoleUtil {
 			public boolean start(Choice elem) {
 				addRole(elem.getRole());
 				return(true);
+			}
+			
+			public boolean start(Protocol elem) {
+				// If protocol was initial activity, then traverse, otherwise
+				// don't enter nested protocol
+				return(elem == act);
 			}
 		});
 		
