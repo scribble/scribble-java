@@ -187,7 +187,9 @@ public class TextProtocolExporterVisitor implements Visitor {
 		
 		indent();
 		
-		output("role ");
+		output(elem.getIntroducer().getName());
+		
+		output(" introduces ");
 		
 		for (int i=0; i < elem.getRoles().size(); i++) {
 			if (i > 0) {
@@ -452,7 +454,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 		
 		indent();
 		
-		output("par");
+		output("parallel");
 		
 		return(true);
 	}
