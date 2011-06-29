@@ -273,6 +273,12 @@ public class RoleUtil {
 		public void end(Choice elem) {
 		}
 
+		public void end(DirectedChoice elem) {
+		}
+
+		public void end(OnMessage elem) {
+		}
+
 		public void end(Unordered elem) {
 		}
 
@@ -299,6 +305,15 @@ public class RoleUtil {
 
 		public boolean start(Choice elem) {
 			checkActivity(elem);
+			return(m_recurse);
+		}
+
+		public boolean start(DirectedChoice elem) {
+			checkActivity(elem);
+			return(m_recurse);
+		}
+
+		public boolean start(OnMessage elem) {
 			return(m_recurse);
 		}
 

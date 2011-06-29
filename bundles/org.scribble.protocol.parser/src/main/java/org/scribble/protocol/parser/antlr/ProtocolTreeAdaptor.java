@@ -80,6 +80,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_clearTokenListRules.add("importTypeStatement");
 		m_clearTokenListRules.add("importProtocolDef");
 		m_clearTokenListRules.add("introducesDef");
+		m_clearTokenListRules.add("directedChoiceDef");
 		
 		// The list of tokens that should be ignored when processing
 		// the children of a parent node
@@ -110,14 +111,18 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_parserGroupingRuleClass.put("recursionDef", Recursion.class);
 		m_parserGroupingRuleClass.put("parameterDef", ParameterDefinition.class);
 		m_parserGroupingRuleClass.put("introducesDef", Introduces.class);
+		m_parserGroupingRuleClass.put("directedChoiceDef", DirectedChoice.class);
+		m_parserGroupingRuleClass.put("directedChoiceDef", OnMessage.class);
 				
 		// When a particular class has multiple properties of the
 		// same type, then a preceding token must be used to
 		// determine which property to set. This map provides the
 		// mapping between the property name and the token.
 		m_propertyToken.put("interactionDef:fromRole", "from");
+		m_propertyToken.put("directedChoiceDef:fromRole", "from");
 		m_propertyToken.put("choiceDef:role", "at");
 		m_propertyToken.put("interactionDef:toRoles", "to");
+		m_propertyToken.put("directedChoiceDef:toRoles", "to");
 		m_propertyToken.put("parameter:boundName", "");
 		m_propertyToken.put("parameter:localName", ":=");
 		m_propertyToken.put("dataTypeDef:details", "<string literal>"); // Needed to make sure property not used by default
@@ -138,6 +143,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_listClass.put("protocolImports", ProtocolImport.class);
 		m_listClass.put("typeReferences", TypeReference.class);
 		m_listClass.put("blocks", Block.class);
+		m_listClass.put("onMessages", OnMessage.class);
 		m_listClass.put("catches", Catch.class);
 		m_listClass.put("parameters", Parameter.class);
 		m_listClass.put("interactions", Interaction.class);
