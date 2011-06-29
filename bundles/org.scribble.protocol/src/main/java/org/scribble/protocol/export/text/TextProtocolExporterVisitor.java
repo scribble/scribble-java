@@ -55,7 +55,9 @@ public class TextProtocolExporterVisitor implements Visitor {
 			output(" or");
 		}
 		
-		output(" {\r\n");
+		if ((elem.getParent() instanceof OnMessage) == false) {
+			output(" {\r\n");
+		}
 		
 		m_indent++;
 		
@@ -74,7 +76,9 @@ public class TextProtocolExporterVisitor implements Visitor {
 		
 		indent();
 		
-		output("}");
+		if ((elem.getParent() instanceof OnMessage) == false) {
+			output("}");
+		}
 		
 		// Place newline after close bracket, unless the parent element is a
 		// multipath construct AND the block is not the final block
@@ -336,6 +340,68 @@ public class TextProtocolExporterVisitor implements Visitor {
 	}
 	
 	/**
+	 * This method indicates the start of a
+	 * directed choice.
+	 * 
+	 * @param elem The directed choice
+	 * @return Whether to process the contents
+	 */
+	public boolean start(DirectedChoice elem) {
+		for (Annotation annotation : elem.getAnnotations()) {
+			indent();
+			output("[["+annotation.toString()+"]]\r\n");
+		}
+		
+		indent();
+		
+		if (elem.getFromRole() != null) {
+			output("from "+elem.getFromRole().getName()+" ");
+		}
+		
+		if (elem.getToRoles().size() > 0) {
+			output("to ");
+			
+			for (int i=0; i < elem.getToRoles().size(); i++) {
+				if (i > 0) {
+					output(", ");
+				}
+				
+				output(elem.getToRoles().get(i).getName());
+			}
+		}
+		
+		output(" {\r\n");
+		
+		m_indent++;
+		
+		return(true);
+	}
+	
+	/**
+	 * This method indicates the start of a
+	 * directed choice.
+	 * 
+	 * @param elem The on-message
+	 * @return Whether to process the contents
+	 */
+	public boolean start(OnMessage elem) {
+		for (Annotation annotation : elem.getAnnotations()) {
+			indent();
+			output("[["+annotation.toString()+"]]\r\n");
+		}
+		
+		indent();
+		
+		outputMessageSignature(elem.getMessageSignature());
+
+		output(":\r\n");
+		
+		//m_indent++;
+		
+		return(true);
+	}
+	
+	/**
 	 * This method indicates the end of a
 	 * choice.
 	 * 
@@ -348,6 +414,30 @@ public class TextProtocolExporterVisitor implements Visitor {
 		//indent();
 		
 		//output("}\r\n");
+	}
+	
+	/**
+	 * This method indicates the end of a
+	 * choice.
+	 * 
+	 * @param elem The choice
+	 */
+	public void end(DirectedChoice elem) {
+		
+		m_indent--;
+		
+		indent();
+		
+		output("}\r\n");
+	}
+	
+	/**
+	 * This method indicates the end of a
+	 * on-message.
+	 * 
+	 * @param elem The on-message
+	 */
+	public void end(OnMessage elem) {
 	}
 	
 	/**

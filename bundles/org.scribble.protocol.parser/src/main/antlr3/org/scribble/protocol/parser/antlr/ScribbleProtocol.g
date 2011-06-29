@@ -106,7 +106,7 @@ blockDef: '{'! activityListDef '}'! ;
 activityListDef: ( ( ANNOTATION )* activityDef )* ;
 
 activityDef: ( introducesDef | interactionDef | useDef | runDef | recursionDef ) ';'! | 
-			runInlineDef | choiceDef | parallelDef | repeatDef | unorderedDef |
+			runInlineDef | choiceDef | directedChoiceDef | parallelDef | repeatDef | unorderedDef |
 			recBlockDef | tryEscapeDef | protocolDef ;
 
 introducesDef: roleDef 'introduces' roleDef ( ','! roleDef )* ;
@@ -123,6 +123,10 @@ interactionDef: interactionSignatureDef ( 'from' roleName ( 'to' roleName ( ','!
 							'to' roleName ( ','! roleName )* ) ;
 
 choiceDef: 'choice'^ ( 'at' roleName )? blockDef ( 'or' blockDef )* ;
+
+directedChoiceDef: ( 'from' roleName )? ( 'to' roleName ( ','! roleName )* )? '{' ( onMessageDef )+ '}' ;
+
+onMessageDef: interactionSignatureDef ':' activityList ; 
 
 activityList: ( ( ANNOTATION )* activityDef )* ;
 

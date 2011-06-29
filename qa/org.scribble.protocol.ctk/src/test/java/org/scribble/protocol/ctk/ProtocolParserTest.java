@@ -731,6 +731,99 @@ public class ProtocolParserTest {
 	}
 	
 	@org.junit.Test
+	public void testDirectedChoice() {
+		TestJournal logger=new TestJournal();
+		
+		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/DirectedChoice.spr", logger);
+		
+		assertNotNull(model);
+		
+		assertTrue(logger.getErrorCount() == 0);
+		
+		// Build expected model
+		ProtocolModel expected=new ProtocolModel();
+		
+		TypeImportList imp=new TypeImportList();
+		TypeImport t=new TypeImport();
+		t.setName("Order");
+		imp.getTypeImports().add(t);
+		expected.getImports().add(imp);
+		
+		imp=new TypeImportList();
+		t=new TypeImport();
+		t.setName("Cancel");
+		imp.getTypeImports().add(t);
+		expected.getImports().add(imp);
+		
+		imp=new TypeImportList();
+		t=new TypeImport();
+		t.setName("Invoice");
+		imp.getTypeImports().add(t);
+		expected.getImports().add(imp);
+		
+		Protocol protocol=new Protocol();
+		expected.setProtocol(protocol);
+		
+		protocol.setName("SingleInteraction");
+		
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
+		Role buyer=new Role();
+		buyer.setName("Buyer");
+		rl.setIntroducer(buyer);
+		Role seller=new Role();
+		seller.setName("Seller");
+		rl.getRoles().add(seller);
+		
+		protocol.getBlock().add(rl);
+		
+		DirectedChoice choice=new DirectedChoice();
+		
+		choice.setFromRole(buyer);
+		choice.getToRoles().add(seller);
+
+		OnMessage om1=new OnMessage();
+		
+		choice.getOnMessages().add(om1);
+		
+		MessageSignature ms=new MessageSignature();
+		TypeReference tref=new TypeReference();
+		tref.setName("Order");
+		ms.getTypeReferences().add(tref);
+		
+		om1.setMessageSignature(ms);
+		
+		Interaction i1=new Interaction();
+		i1.setFromRole(seller);
+		i1.getToRoles().add(buyer);
+		
+		MessageSignature ms2=new MessageSignature();
+		TypeReference tref2=new TypeReference();
+		tref2.setName("Invoice");
+		ms2.getTypeReferences().add(tref2);
+		i1.setMessageSignature(ms2);
+		
+		om1.getBlock().add(i1);
+		
+		OnMessage om2=new OnMessage();
+		choice.getOnMessages().add(om2);
+		
+		ms=new MessageSignature();
+		tref=new TypeReference();
+		tref.setName("Cancel");
+		ms.getTypeReferences().add(tref);
+		
+		om2.setMessageSignature(ms);
+		
+		protocol.getBlock().add(choice);
+		
+		CTKUtil.verify(model, expected);
+	}
+	
+	@org.junit.Test
 	public void testParallel() {
 		TestJournal logger=new TestJournal();
 		

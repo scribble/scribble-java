@@ -144,6 +144,46 @@ public class DefaultVisitor implements Visitor {
 	
 	/**
 	 * This method indicates the start of a
+	 * directed choice.
+	 * 
+	 * @param elem The directed choice
+	 * @return Whether to process the contents
+	 */
+	public boolean start(DirectedChoice elem) {
+		return(m_defaultGroupReturn);
+	}
+	
+	/**
+	 * This method indicates the end of a
+	 * directed choice.
+	 * 
+	 * @param elem The directed choice
+	 */
+	public void end(DirectedChoice elem) {
+	}
+	
+	/**
+	 * This method indicates the start of a
+	 * on-message.
+	 * 
+	 * @param elem The on-message element
+	 * @return Whether to process the contents
+	 */
+	public boolean start(OnMessage elem) {
+		return(m_defaultGroupReturn);
+	}
+	
+	/**
+	 * This method indicates the end of a
+	 * on-message.
+	 * 
+	 * @param elem The on-message element
+	 */
+	public void end(OnMessage elem) {
+	}
+	
+	/**
+	 * This method indicates the start of a
 	 * parallel.
 	 * 
 	 * @param elem The parallel
