@@ -266,7 +266,7 @@ public interface Visitor {
 	 * 
 	 * @param elem The include
 	 */
-	public void accept(Use elem);
+	public void accept(Include elem);
 	
 	/**
 	 * This method visits a type import component.

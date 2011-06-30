@@ -50,7 +50,7 @@ public class ComparatorUtil {
 		m_comparators.put(RecBlock.class, new RecBlockComparator());
 		m_comparators.put(Recursion.class, new RecursionComparator());
 		m_comparators.put(Run.class, new RunComparator());
-		m_comparators.put(Use.class, new UseComparator());
+		m_comparators.put(Include.class, new UseComparator());
 		m_comparators.put(Parameter.class, new ParameterComparator());
 		m_comparators.put(DataType.class, new DataTypeComparator());
 		m_comparators.put(ParameterDefinition.class, new ParameterDefinitionComparator());

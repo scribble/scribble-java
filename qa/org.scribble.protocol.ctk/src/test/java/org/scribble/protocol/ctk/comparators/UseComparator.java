@@ -23,8 +23,8 @@ import org.scribble.protocol.model.*;
 public class UseComparator implements Comparator<ModelObject> {
 
 	public int compare(ModelObject arg0, ModelObject arg1) {
-		Use m=(Use)arg0;
-		Use e=(Use)arg1;
+		Include m=(Include)arg0;
+		Include e=(Include)arg1;
 		
 		if (m.getReference() != null && e.getReference() != null) {
 			ProtocolReferenceComparator prcomp=(ProtocolReferenceComparator)

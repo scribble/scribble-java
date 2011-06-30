@@ -105,7 +105,7 @@ blockDef: '{'! activityListDef '}'! ;
 
 activityListDef: ( ( ANNOTATION )* activityDef )* ;
 
-activityDef: ( introducesDef | interactionDef | useDef | runDef | recursionDef ) ';'! | 
+activityDef: ( introducesDef | interactionDef | includeDef | runDef | recursionDef ) ';'! | 
 			runInlineDef | choiceDef | directedChoiceDef | parallelDef | repeatDef | unorderedDef |
 			recBlockDef | tryEscapeDef | protocolDef ;
 
@@ -148,7 +148,7 @@ declarationName: ID ;
 
 parameter: declarationName ;
 
-useDef: 'use'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? ;
+includeDef: 'include'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? ;
 
 parallelDef: 'parallel'^ blockDef ( 'and' blockDef )* ;
 

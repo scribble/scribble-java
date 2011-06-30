@@ -96,7 +96,7 @@ public class RoleUtil {
 				}
 			}
 			
-			public void accept(Use elem) {
+			public void accept(Include elem) {
 				java.util.Set<Role> inscope=getRolesInScope(elem);
 
 				for (Parameter p : elem.getParameters()) {
@@ -448,7 +448,7 @@ public class RoleUtil {
 			rlist.addAll(elem.getRoles());
 		}
 
-		public void accept(Use elem) {
+		public void accept(Include elem) {
 			checkActivity(elem);
 		}
 		
