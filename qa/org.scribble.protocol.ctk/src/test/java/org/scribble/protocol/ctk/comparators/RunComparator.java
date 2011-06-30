@@ -26,6 +26,12 @@ public class RunComparator implements Comparator<ModelObject> {
 		Run m=(Run)arg0;
 		Run e=(Run)arg1;
 		
+		RoleComparator rc=(RoleComparator)
+					ComparatorUtil.getComparator(Role.class);
+		if (rc.compare(m.getFromRole(), e.getFromRole()) != 0) {
+			return(1);
+		}
+		
 		if (m.getProtocolReference() != null && e.getProtocolReference() != null) {
 			ProtocolReferenceComparator prcomp=(ProtocolReferenceComparator)
 					ComparatorUtil.getComparator(ProtocolReference.class);

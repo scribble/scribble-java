@@ -144,15 +144,13 @@ public class InteractionUtil {
 		}
 		
 		@Override
-		public boolean start(Run elem) {
+		public void accept(Run elem) {
 			Protocol protocol=RunUtil.getInnerProtocol(elem.enclosingProtocol(),
 							elem.getProtocolReference()); //elem.getProtocol();
 			
 			if (protocol != null) {
 				protocol.visit(this);
 			}
-			
-			return(true);
 		}
 
 		private java.util.List<ModelObject> m_interactions=null;

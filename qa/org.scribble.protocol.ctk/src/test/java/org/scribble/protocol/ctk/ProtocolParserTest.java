@@ -1289,6 +1289,8 @@ public class ProtocolParserTest {
 
 		Run run=new Run();
 		
+		run.setFromRole(buyer);
+		
 		ProtocolReference ref=new ProtocolReference();
 		ref.setName("Sub");
 		
@@ -1342,93 +1344,6 @@ public class ProtocolParserTest {
 		
 		CTKUtil.verify(model, expected);
 	}
-
-	@org.junit.Test
-	public void testRunInlineProtocol() {
-		TestJournal logger=new TestJournal();
-		
-		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/RunInlineProtocol.spr", logger);
-		
-		assertNotNull(model);
-		
-		assertTrue(logger.getErrorCount() == 0);
-		
-		// Build expected model
-		ProtocolModel expected=new ProtocolModel();
-		
-		TypeImportList imp=new TypeImportList();
-		TypeImport t=new TypeImport();
-		t.setName("Order");
-		imp.getTypeImports().add(t);
-		expected.getImports().add(imp);
-		
-		imp=new TypeImportList();
-		t=new TypeImport();
-		t.setName("Confirm");
-		imp.getTypeImports().add(t);
-		expected.getImports().add(imp);
-		
-		Protocol protocol=new Protocol();
-		expected.setProtocol(protocol);
-		
-		protocol.setName("RunInlineProtocol");
-		
-		ParameterDefinition p=new ParameterDefinition();
-		p.setName("Buyer");
-		protocol.getParameterDefinitions().add(p);
-		
-		Introduces rl=new Introduces();
-		Role buyer=new Role();
-		buyer.setName("Buyer");
-		rl.setIntroducer(buyer);
-		Role seller=new Role();
-		seller.setName("Seller");
-		rl.getRoles().add(seller);
-		
-		protocol.getBlock().add(rl);
-		
-
-		Run run=new Run();
-		
-		Parameter db1=new Parameter("Buyer");
-		run.getParameters().add(db1);
-		
-		Parameter db2=new Parameter("Seller");
-		run.getParameters().add(db2);
-		
-		protocol.getBlock().add(run);
-				
-		Block subprotocol=new Block();
-		
-		Interaction interaction=new Interaction();
-		
-		MessageSignature ms=new MessageSignature();
-		TypeReference tref=new TypeReference();
-		tref.setName("Order");
-		ms.getTypeReferences().add(tref);
-		interaction.setMessageSignature(ms);
-		interaction.setFromRole(buyer); //subbuyer);
-		interaction.getToRoles().add(seller); //subseller);
-		
-		subprotocol.add(interaction);
-		
-		run.setBlock(subprotocol);
-		
-		interaction=new Interaction();
-		
-		ms=new MessageSignature();
-		tref=new TypeReference();
-		tref.setName("Confirm");
-		ms.getTypeReferences().add(tref);
-		interaction.setMessageSignature(ms);
-		interaction.setFromRole(seller);
-		interaction.getToRoles().add(buyer);
-		
-		protocol.getBlock().add(interaction);
-
-		CTKUtil.verify(model, expected);
-	}
-
 	@org.junit.Test
 	public void testIncludeProtocol() {
 		TestJournal logger=new TestJournal();

@@ -22,14 +22,32 @@ package org.scribble.protocol.model;
 public class Run extends Activity {
 
 	private ProtocolReference m_reference=null;
+	private Role m_fromRole=null;
 	private java.util.List<Parameter> m_parameters=new java.util.Vector<Parameter>();
-	private Block m_block=null;
 
 	/**
 	 * This is the default constructor.
 	 * 
 	 */
 	public Run() {
+	}
+	
+	/**
+	 * This method returns the optional 'from' role.
+	 * 
+	 * @return The optional 'from' role
+	 */
+	public Role getFromRole() {
+		return(m_fromRole);
+	}
+	
+	/**
+	 * This method sets the optional 'from' role.
+	 * 
+	 * @param part The optional 'from' role
+	 */
+	public void setFromRole(Role part) {
+		m_fromRole = part;
 	}
 	
 	/**
@@ -95,100 +113,12 @@ public class Run extends Activity {
 	}
 	
 	/**
-	 * This method returns the protocol, if available as an inner protocol within the
-	 * enclosing protocol.
-	 * 
-	 * @return The protocol, or null if not found
-	 */
-	/*
-	public Protocol getProtocol() {
-		Protocol ret=null;
-		
-		Protocol parent=enclosingProtocol();
-		
-		if (parent != null) {
-			for (int i=0; ret == null && i < parent.getBlock().getContents().size(); i++) {
-				
-				if (parent.getBlock().getContents().get(i) instanceof Protocol) {
-					Protocol inner=(Protocol)parent.getBlock().getContents().get(i);
-					
-					if (m_reference.getName().equals(inner.getName())) {
-						ret = inner;
-					}
-				}
-			}
-		}
-		
-		return(ret);
-	}
-	*/
-	
-	/**
-	 * This method returns the block of activities associated
-	 * with an inline definition.
-	 * 
-	 * @return The block of activities
-	 */
-	public Block getBlock() {
-		
-		if (m_block == null) {
-			m_block = new Block();
-			m_block.setParent(this);
-		}
-		
-		return(m_block);
-	}
-	
-	/**
-	 * This method sets the block of activities associated
-	 * with the definition.
-	 * 
-	 * @param block The block of activities
-	 */
-	public void setBlock(Block block) {
-		if (m_block != null) {
-			m_block.setParent(null);
-		}
-		
-		m_block = block;
-		
-		if (m_block != null) {
-			m_block.setParent(this);
-		}
-	}
-	
-	/**
-	 * This method determines whether the run construct is inline.
-	 * 
-	 * @return Whether inline
-	 */
-	public boolean isInline() {
-		return(m_reference == null || m_reference.getName() == null ||
-						m_reference.getName().trim().length() == 0);
-	}
-	
-	/**
 	 * This method visits the model object using the supplied
 	 * visitor.
 	 * 
 	 * @param visitor The visitor
 	 */
 	public void visit(Visitor visitor) {
-		visitor.start(this);
-		
-		if (m_reference != null) {
-			m_reference.visit(visitor);
-		}
-			
-		for (Parameter db : getParameters()) {
-			db.visit(visitor);
-		}
-		
-		// Only visit block if an inline definition
-		if (m_block != null && isInline()) {
-			m_block.visit(visitor);
-		}
-		
-		visitor.end(this);
+		visitor.accept(this);
 	}
 }

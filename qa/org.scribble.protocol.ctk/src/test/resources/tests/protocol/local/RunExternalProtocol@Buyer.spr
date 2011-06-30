@@ -5,7 +5,7 @@ import protocol Sub from "ReferencedExternalProtocol.spr";
 protocol RunSubProtocol@Buyer {
 	Buyer introduces Seller;
 
-	run Sub@SubBuyer(Seller);
+	run Sub@SubBuyer(Seller) from Buyer;
 
 	Confirm from Seller;
 }

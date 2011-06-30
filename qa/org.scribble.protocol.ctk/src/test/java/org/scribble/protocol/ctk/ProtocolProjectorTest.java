@@ -106,9 +106,6 @@ public class ProtocolProjectorTest {
             {"Repeat2.spr", "Repeat2@Buyer.spr"},
             {"RunExternalProtocol.spr", "RunExternalProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
             {"RunExternalProtocol.spr", "RunExternalProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
-            {"RunInlineProtocol.spr", "RunInlineProtocol@Buyer.spr"},
-            {"RunInlineProtocol.spr", "RunInlineProtocol@Seller.spr"},            
-            {"RunInlineProtocol2.spr", "RunInlineProtocol2@Buyer.spr"},
             {"RunSubProtocol.spr", "RunSubProtocol@Buyer.spr"},
             {"RunSubProtocol.spr", "RunSubProtocol@Seller.spr"},
             

@@ -496,7 +496,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 * @param elem The run
 	 * @return Whether to process the contents
 	 */
-	public boolean start(Run elem) {
+	public void accept(Run elem) {
 		for (Annotation annotation : elem.getAnnotations()) {
 			indent();
 			output("[["+annotation.toString()+"]]\r\n");
@@ -524,9 +524,11 @@ public class TextProtocolExporterVisitor implements Visitor {
 			output(")");
 		}
 		
-		output(";\r\n");
+		if (elem.getFromRole() != null) {
+			output(" from "+elem.getFromRole().getName());
+		}
 		
-		return(true);
+		output(";\r\n");
 	}
 	
 	/**
@@ -714,9 +716,6 @@ public class TextProtocolExporterVisitor implements Visitor {
 	}
 
 	public void end(Catch elem) {
-	}
-
-	public void end(Run elem) {
 	}
 
 	public void accept(Include elem) {

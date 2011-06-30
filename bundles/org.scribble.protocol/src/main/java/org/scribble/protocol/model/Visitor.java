@@ -210,21 +210,12 @@ public interface Visitor {
 	public void end(Catch elem);
 	
 	/**
-	 * This method indicates the start of a
-	 * run construct.
-	 * 
-	 * @param elem The run
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Run elem);
-	
-	/**
-	 * This method indicates the end of a
+	 * This method visits a
 	 * run construct.
 	 * 
 	 * @param elem The run
 	 */
-	public void end(Run elem);
+	public void accept(Run elem);
 	
 	/**
 	 * This method visits an import component.

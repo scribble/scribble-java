@@ -77,6 +77,10 @@ public class RunProjectorRule implements ProjectorRule {
 			}
 		}
 		
+		if (source.getFromRole() != null) {
+			ret.setFromRole((Role)context.project(source.getFromRole(), role, l));
+		}
+		
 		if (source.getProtocolReference() != null) {
 			boolean f_inner=false;
 			
@@ -135,19 +139,6 @@ public class RunProjectorRule implements ProjectorRule {
 								source.getProtocolReference(), mappedRole, l));
 				}
 			} else {
-				ret = null;
-			}
-		}
-
-		if (ret != null && source.getBlock() != null) {
-			
-			// Project the block - use the same role, as no parameter
-			// definitions available for inline definitions
-			ret.setBlock((Block)context.project(source.getBlock(),
-					role, l));
-			ret.getBlock().setParent(ret);
-			
-			if (ret.getBlock().size() == 0 && ret.getProtocolReference() == null) {
 				ret = null;
 			}
 		}

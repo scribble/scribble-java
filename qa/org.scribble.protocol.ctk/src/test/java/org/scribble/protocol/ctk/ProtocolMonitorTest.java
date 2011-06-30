@@ -285,18 +285,6 @@ public class ProtocolMonitorTest {
 	}
 	
 	@org.junit.Test
-	public void testRunInlineProtocolAtBuyer() {
-		testMonitor("tests/protocol/local/RunInlineProtocol@Buyer.spr",
-				"tests/monitor/RunInlineProtocol@Buyer.events", false);
-	}
-	
-	@org.junit.Test
-	public void testRunInlineProtocolAtSeller() {
-		testMonitor("tests/protocol/local/RunInlineProtocol@Seller.spr",
-				"tests/monitor/RunInlineProtocol@Seller.events", false);
-	}
-	
-	@org.junit.Test
 	public void testRunSubProtocolAtBuyer() {
 		testMonitor("tests/protocol/local/RunSubProtocol@Buyer.spr",
 				"tests/monitor/RunSubProtocol@Buyer.events", false);

@@ -111,7 +111,7 @@ public class RoleUtil {
 				}
 			}
 			
-			public boolean start(Run elem) {
+			public void accept(Run elem) {
 				java.util.Set<Role> inscope=getRolesInScope(elem);
 
 				for (Parameter p : elem.getParameters()) {
@@ -124,8 +124,6 @@ public class RoleUtil {
 						}
 					}
 				}
-				
-				return(false);
 			}
 			
 			public boolean start(Choice elem) {
@@ -354,9 +352,6 @@ public class RoleUtil {
 		public void end(Catch elem) {
 		}
 
-		public void end(Run elem) {
-		}
-
 		public boolean start(Choice elem) {
 			checkActivity(elem);
 			return(m_recurse);
@@ -427,9 +422,8 @@ public class RoleUtil {
 			return(m_recurse);
 		}
 
-		public boolean start(Run elem) {
+		public void accept(Run elem) {
 			checkActivity(elem);
-			return(m_recurse);
 		}
 
 		public void accept(TypeImportList elem) {
