@@ -242,9 +242,8 @@ public class CTKUtil {
 			}
 
 			@Override
-			public boolean start(Run elem) {
+			public void accept(Run elem) {
 				ret.add(elem);
-				return true;
 			}
 
 			@Override

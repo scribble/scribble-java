@@ -631,7 +631,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * 
 		 * @param elem The run
 		 */
-		public boolean start(org.scribble.protocol.model.Run elem) {
+		public void accept(org.scribble.protocol.model.Run elem) {
 			
 			startActivity(elem);
 
@@ -663,21 +663,11 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 				m_pendingNextIndex.add(node);
 			}
 			*/
-			
-			return(true);
-		}
-		
-		/**
-		 * This method indicates the end of a
-		 * run.
-		 * 
-		 * @param elem The run
-		 */
-		public void end(Run elem) {
-			
-			Node node=
-				(Node)m_nodeMap.get(elem);
-			
+
+			//Node node=
+			//		(Node)m_nodeMap.get(elem);
+				
+			/*
 			if (elem.isInline()) {
 				m_pendingNextIndex.clear();
 				
@@ -685,6 +675,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 					((Scope)node).setInnerIndex(m_nodes.indexOf(node)+1);
 				}
 			}
+			*/
 			
 			m_pendingNextIndex.add(node);
 			

@@ -3,7 +3,7 @@ import Confirm;
 import protocol Sub from "ReferencedExternalProtocol.spr";
 
 protocol RunSubProtocol@Seller (role Buyer) {
-	run Sub@SubSeller(Buyer);
+	run Sub@SubSeller(Buyer) from Buyer;
 
 	Confirm to Buyer;
 }

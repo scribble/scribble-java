@@ -86,17 +86,8 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 	 * @param elem The run
 	 * @return Whether to process the contents
 	 */
-	public boolean start(Run elem) {
-		return(process(elem));
-	}
-	
-	/**
-	 * This method indicates the end of a
-	 * run construct.
-	 * 
-	 * @param elem The run
-	 */
-	public void end(Run elem) {
+	public void accept(Run elem) {
+		process(elem);
 	}
 	
 	/**
