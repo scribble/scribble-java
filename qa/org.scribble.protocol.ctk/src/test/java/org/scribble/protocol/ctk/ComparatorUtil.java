@@ -43,6 +43,8 @@ public class ComparatorUtil {
 		m_comparators.put(Try.class, new TryComparator());
 		m_comparators.put(Catch.class, new CatchComparator());
 		m_comparators.put(Choice.class, new ChoiceComparator());
+		m_comparators.put(OnMessage.class, new OnMessageComparator());
+		m_comparators.put(DirectedChoice.class, new DirectedChoiceComparator());
 		m_comparators.put(Parallel.class, new ParallelComparator());
 		m_comparators.put(Repeat.class, new RepeatComparator());
 		m_comparators.put(RecBlock.class, new RecBlockComparator());

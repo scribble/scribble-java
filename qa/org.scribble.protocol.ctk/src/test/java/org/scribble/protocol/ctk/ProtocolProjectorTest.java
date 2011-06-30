@@ -74,8 +74,8 @@ public class ProtocolProjectorTest {
 
             {"UseProtocol.spr", "UseProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
             {"UseProtocol.spr", "UseProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
-            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
 
+            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
         	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
             
         	// SCRIBBLE-102 - needs Broker as parameter
@@ -122,8 +122,10 @@ public class ProtocolProjectorTest {
             {"Unordered.spr", "Unordered@Seller.spr"},
             {"PurchaseGoods3.spr", "PurchaseGoods3@Buyer.spr"},
             {"PurchaseGoods3.spr", "PurchaseGoods3@Store.spr"},
+            {"DirectedChoice.spr", "DirectedChoice@Buyer.spr"},
+            {"DirectedChoice.spr", "DirectedChoice@Seller.spr"},
 
-         	/*
+            /*
             {"ESBBroker.spr", "ESBBroker@SupplierTxnProcessor.spr"}
             /*
  */

@@ -92,6 +92,26 @@ public class Protocol extends Activity {
 	}
 	
 	/**
+	 * This method returns the parameter definition associated with the
+	 * supplied name.
+	 * 
+	 * @param name The name
+	 * @return The parameter definition, or null if not found
+	 */
+	public ParameterDefinition getParameterDefinition(String name) {
+		ParameterDefinition ret=null;
+		
+		for (ParameterDefinition pd : getParameterDefinitions()) {
+			if (pd.getName().equals(name)) {
+				ret = pd;
+				break;
+			}
+		}
+		
+		return(ret);
+	}
+	
+	/**
 	 * This method returns the block of activities associated
 	 * with the definition.
 	 * 

@@ -343,4 +343,28 @@ public class ProtocolMonitorTest {
 		testMonitor("tests/protocol/local/SingleInteractionXSDImport@Seller.spr",
 				"tests/monitor/SingleInteractionXSDImport@Seller.events", false);
 	}
+	
+	@org.junit.Test
+	public void testDirectedChoice_1AtBuyer() {
+		testMonitor("tests/protocol/local/DirectedChoice@Buyer.spr",
+				"tests/monitor/DirectedChoice-1@Buyer.events", false);
+	}
+	
+	@org.junit.Test
+	public void testDirectedChoice_1AtSeller() {
+		testMonitor("tests/protocol/local/DirectedChoice@Seller.spr",
+				"tests/monitor/DirectedChoice-1@Seller.events", false);
+	}
+	
+	@org.junit.Test
+	public void testDirectedChoice_2AtBuyer() {
+		testMonitor("tests/protocol/local/DirectedChoice@Buyer.spr",
+				"tests/monitor/DirectedChoice-2@Buyer.events", false);
+	}
+	
+	@org.junit.Test
+	public void testDirectedChoice_2AtSeller() {
+		testMonitor("tests/protocol/local/DirectedChoice@Seller.spr",
+				"tests/monitor/DirectedChoice-2@Seller.events", false);
+	}
 }

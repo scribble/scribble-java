@@ -1,0 +1,14 @@
+import Order;
+import Cancel;
+import Invoice;
+
+protocol SingleInteraction@Buyer {
+	Buyer introduces Seller;
+
+	to Seller {
+		Order:
+			Invoice from Seller;
+
+		Cancel:
+	}
+}

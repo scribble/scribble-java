@@ -112,7 +112,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_parserGroupingRuleClass.put("parameterDef", ParameterDefinition.class);
 		m_parserGroupingRuleClass.put("introducesDef", Introduces.class);
 		m_parserGroupingRuleClass.put("directedChoiceDef", DirectedChoice.class);
-		m_parserGroupingRuleClass.put("directedChoiceDef", OnMessage.class);
+		m_parserGroupingRuleClass.put("onMessageDef", OnMessage.class);
 				
 		// When a particular class has multiple properties of the
 		// same type, then a preceding token must be used to
