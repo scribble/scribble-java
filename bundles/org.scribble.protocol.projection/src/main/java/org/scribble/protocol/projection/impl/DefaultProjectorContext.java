@@ -39,6 +39,8 @@ public class DefaultProjectorContext implements ProjectorContext {
 		m_rules.add(new BlockProjectorRule());
 		m_rules.add(new CatchProjectorRule());
 		m_rules.add(new ChoiceProjectorRule());
+		m_rules.add(new DirectedChoiceProjectorRule());
+		m_rules.add(new OnMessageProjectorRule());
 		m_rules.add(new ProtocolImportListProjectorRule());
 		m_rules.add(new ProtocolImportProjectorRule());
 		m_rules.add(new TypeImportListProjectorRule());

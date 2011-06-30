@@ -309,16 +309,17 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * @param elem The interaction
 		 */
 		public void accept(Interaction elem) {
-			createInteraction(elem, elem.getMessageSignature(), elem.getFromRole(), elem.getToRoles(),
+			startActivity(elem);
+			
+			createInteraction(elem.getMessageSignature(), elem.getFromRole(), elem.getToRoles(),
 								elem.getAnnotations());
 			
 			endActivity(elem);
 		}
 
-		protected void createInteraction(Activity act, MessageSignature ms, Role fromRole,
+		protected void createInteraction(MessageSignature ms, Role fromRole,
 								java.util.List<Role> toRoles,
 								java.util.List<org.scribble.common.model.Annotation> annotations) {
-			startActivity(act);
 			
 			// TODO: Think about how best to set the next index. Can only do this
 			// if the next node is within the same scope. If (for example) the
@@ -475,7 +476,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * @param elem The choice
 		 * @return Whether to process the contents
 		 */
-		public boolean start( org.scribble.protocol.model.Choice elem) {
+		public boolean start(org.scribble.protocol.model.Choice elem) {
 
 			startActivity(elem);
 			
@@ -503,6 +504,115 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			m_pendingNextIndex.addAll(cache);
 			
 			endActivity(elem);
+		}
+		
+		/**
+		 * This method indicates the start of a
+		 * directed choice.
+		 * 
+		 * @param elem The choice
+		 * @return Whether to process the contents
+		 */
+		public boolean start(org.scribble.protocol.model.DirectedChoice elem) {
+
+			startActivity(elem);
+			
+			org.scribble.protocol.monitor.model.Choice node=
+					new org.scribble.protocol.monitor.model.Choice();
+			
+			m_nodes.add(node);
+						
+			// Cache the node associated with the choice
+			m_nodeMap.put(elem, node);
+
+			return(true);
+		}
+		
+		/**
+		 * This method indicates the end of a
+		 * directed choice.
+		 * 
+		 * @param elem The choice
+		 */
+		public void end(org.scribble.protocol.model.DirectedChoice elem) {
+			
+			java.util.List<Object> cache=getCache(elem);
+
+			m_pendingNextIndex.addAll(cache);
+			
+			endActivity(elem);
+		}
+		
+		/**
+		 * This method indicates the start of a
+		 * directed choice.
+		 * 
+		 * @param elem The choice
+		 * @return Whether to process the contents
+		 */
+		public boolean start(org.scribble.protocol.model.OnMessage elem) {
+
+			DirectedChoice dc=(DirectedChoice)elem.getParent();
+			
+			// Create path node
+			Path path=new Path();
+			
+			// Define id associated with the choice label
+			//path.setId(ChoiceUtil.getLabel(elem.getMessageSignature()));
+			
+			org.scribble.protocol.monitor.model.Choice choiceBuilder=
+				(org.scribble.protocol.monitor.model.Choice)m_nodeMap.get(elem.getParent());
+
+			java.util.List<Path> pathBuilderList=
+						m_choicePaths.get(choiceBuilder);
+			
+			if (pathBuilderList == null) {
+				pathBuilderList = new java.util.Vector<Path>();
+				m_choicePaths.put(choiceBuilder, pathBuilderList);
+			}
+			
+			pathBuilderList.add(path);
+			
+			m_pendingNextIndex.add(path);
+
+			// Create annotations
+			for (org.scribble.common.model.Annotation pma : elem.getAnnotations()) {
+				org.scribble.protocol.monitor.model.Annotation pmma=
+							new org.scribble.protocol.monitor.model.Annotation();
+				
+				if (pma.getId() != null) {
+					pmma.setId(pma.getId());
+				} else {
+					pmma.setId(UUID.randomUUID().toString());
+				}
+				pmma.setValue(pma.toString());
+				
+				path.getAnnotation().add(pmma);
+			}
+
+			establishNextIndex();
+
+			// Create interaction associated with message signature
+			createInteraction(elem.getMessageSignature(), dc.getFromRole(), dc.getToRoles(),
+					elem.getAnnotations());
+
+			return(true);
+		}
+		
+		/**
+		 * This method indicates the end of a
+		 * directed choice.
+		 * 
+		 * @param elem The choice
+		 */
+		public void end(org.scribble.protocol.model.OnMessage elem) {
+			// Transfer outstanding nodes in 'pendingNextIndex' to the
+			// cache associated with the choice
+			java.util.List<Object> cache=getCache(elem.getParent());
+
+			cache.addAll(m_pendingNextIndex);
+
+			m_pendingNextIndex.clear();
 		}
 		
 		protected java.util.List<Object> getCache(ModelObject elem) {

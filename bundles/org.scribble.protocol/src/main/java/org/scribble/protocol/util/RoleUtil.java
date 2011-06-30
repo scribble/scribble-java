@@ -96,8 +96,48 @@ public class RoleUtil {
 				}
 			}
 			
+			public void accept(Use elem) {
+				java.util.Set<Role> inscope=getRolesInScope(elem);
+
+				for (Parameter p : elem.getParameters()) {
+					
+					// Determine if the parameter is a role
+					for (Role r : inscope) {
+						if (r.getName().equals(p.getName())) {
+							addRole(r);
+							break;
+						}
+					}
+				}
+			}
+			
+			public boolean start(Run elem) {
+				java.util.Set<Role> inscope=getRolesInScope(elem);
+
+				for (Parameter p : elem.getParameters()) {
+					
+					// Determine if the parameter is a role
+					for (Role r : inscope) {
+						if (r.getName().equals(p.getName())) {
+							addRole(r);
+							break;
+						}
+					}
+				}
+				
+				return(false);
+			}
+			
 			public boolean start(Choice elem) {
 				addRole(elem.getRole());
+				return(true);
+			}
+			
+			public boolean start(DirectedChoice elem) {
+				addRole(elem.getFromRole());
+				for (Role r : elem.getToRoles()) {
+					addRole(r);
+				}
 				return(true);
 			}
 			
@@ -152,6 +192,12 @@ public class RoleUtil {
 		protocol.visit(new DefaultVisitor() {
 			
 			public boolean start(Protocol elem) {
+				
+				if (role.equals(protocol.getRole()) ||
+						protocol.getParameterDefinition(role.getName()) != null) {
+					blocks.add(elem.getBlock());
+				}
+				
 				// Don't visit contained protocols
 				return(protocol == elem);
 			}
@@ -167,6 +213,14 @@ public class RoleUtil {
 			public boolean start(Choice elem) {
 				if (role.equals(elem.getRole()) /*|| (elem.getRole() == null &&
 								role.equals(elem.enclosingProtocol().getRole()))*/) {
+					blocks.add((Block)elem.getParent());
+				}
+				
+				return(true);
+			}
+			
+			public boolean start(DirectedChoice elem) {
+				if (role.equals(elem.getFromRole()) || elem.getToRoles().contains(role)) {
 					blocks.add((Block)elem.getParent());
 				}
 				

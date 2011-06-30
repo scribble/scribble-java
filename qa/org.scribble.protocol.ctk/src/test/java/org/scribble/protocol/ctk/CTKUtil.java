@@ -191,6 +191,18 @@ public class CTKUtil {
 			}
 
 			@Override
+			public boolean start(DirectedChoice elem) {
+				ret.add(elem);
+				return true;
+			}
+
+			@Override
+			public boolean start(OnMessage elem) {
+				ret.add(elem);
+				return true;
+			}
+
+			@Override
 			public boolean start(Parallel elem) {
 				ret.add(elem);
 				return true;

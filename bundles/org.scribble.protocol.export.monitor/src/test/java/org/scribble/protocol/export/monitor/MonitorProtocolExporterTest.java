@@ -328,6 +328,102 @@ public class MonitorProtocolExporterTest {
 	}	
 
 	@org.junit.Test
+	public void testSimpleDirectedChoiceFollowedByInteraction() {
+		
+		ProtocolModel pm=new ProtocolModel();
+	
+		Role p1=new Role();
+		p1.setName("p1");
+		
+		Role p2=new Role();
+		p2.setName("p2");
+		
+		Protocol p=new Protocol();
+		p.setRole(p1);
+		pm.setProtocol(p);
+		
+		Interaction i1=new Interaction();
+		MessageSignature ms1=new MessageSignature();
+		ms1.setOperation("op1");
+		i1.setMessageSignature(ms1);
+		i1.getToRoles().add(p2);
+		
+		p.getBlock().add(i1);
+		
+		DirectedChoice c1=new DirectedChoice();
+		c1.setFromRole(p2);
+		
+		p.getBlock().add(c1);
+		
+		OnMessage wb1=new OnMessage();
+		
+		MessageSignature ms2=new MessageSignature();
+		ms2.setOperation("op2");
+		
+		TypeReference tr2=new TypeReference();
+		tr2.setName("M2");
+		ms2.getTypeReferences().add(tr2);
+		
+		wb1.setMessageSignature(ms2);
+		
+		Interaction i3=new Interaction();
+		MessageSignature ms3=new MessageSignature();
+		ms3.setOperation("op3");
+		i3.setMessageSignature(ms3);
+		i3.getToRoles().add(p2);
+		
+		wb1.getBlock().add(i3);
+		
+		c1.getOnMessages().add(wb1);
+		
+		OnMessage wb2=new OnMessage();
+		
+		MessageSignature ms4=new MessageSignature();
+		ms4.setOperation("op4");
+		wb2.setMessageSignature(ms4);
+		
+		Interaction i5=new Interaction();
+		MessageSignature ms5=new MessageSignature();
+		ms5.setOperation("op5");
+		i5.setMessageSignature(ms5);
+		i5.getToRoles().add(p2);
+		
+		wb2.getBlock().add(i5);
+
+		c1.getOnMessages().add(wb2);
+
+		Interaction i6=new Interaction();
+		MessageSignature ms6=new MessageSignature();
+		ms6.setOperation("op6");
+		i6.setMessageSignature(ms6);
+		i6.setFromRole(p2);
+		
+		p.getBlock().add(i6);
+				
+		MonitorProtocolExporter exporter=new MonitorProtocolExporter();
+		
+		CachedJournal journal=new CachedJournal();
+		ByteArrayOutputStream os=new ByteArrayOutputStream();
+		
+		exporter.export(pm, journal, os);
+		
+		if (journal.getIssues().size() > 0) {
+			fail("Export should not have raised any issues");
+		}
+		
+		org.scribble.protocol.monitor.model.Description pd=null;
+		
+		try {
+			pd = org.scribble.protocol.monitor.util.MonitorModelUtil.deserialize(new java.io.ByteArrayInputStream(os.toByteArray()));
+		} catch(Exception e) {
+			e.printStackTrace();
+			fail("Failed to parse protocol monitor description: "+e);
+		}
+	
+		validateMonitor(pd, "SimpleDirectedChoiceFollowedByInteraction");
+	}	
+
+	@org.junit.Test
 	public void testSimpleChoiceFollowedByInteractionWithAnnotation() {
 		
 		ProtocolModel pm=new ProtocolModel();
@@ -540,6 +636,94 @@ public class MonitorProtocolExporterTest {
 		}
 	
 		validateMonitor(pd, "SimpleChoiceFollowedByNoActivity");
+	}
+	
+	@org.junit.Test
+	public void testSimpleDirectedChoiceFollowedByNoActivity() {
+		
+		ProtocolModel pm=new ProtocolModel();
+	
+		Role p1=new Role();
+		p1.setName("p1");
+		
+		Role p2=new Role();
+		p2.setName("p2");
+		
+		Protocol p=new Protocol();
+		p.setRole(p1);
+		pm.setProtocol(p);
+		
+		Interaction i1=new Interaction();
+		MessageSignature ms1=new MessageSignature();
+		ms1.setOperation("op1");
+		i1.setMessageSignature(ms1);
+		i1.getToRoles().add(p2);
+		
+		p.getBlock().add(i1);
+		
+		DirectedChoice c1=new DirectedChoice();
+		c1.setFromRole(p2);
+		
+		p.getBlock().add(c1);
+		
+		OnMessage wb1=new OnMessage();
+		
+		MessageSignature ms2=new MessageSignature();
+		ms2.setOperation("op2");
+		
+		TypeReference tr2=new TypeReference();
+		tr2.setName("M2");
+		ms2.getTypeReferences().add(tr2);
+		
+		wb1.setMessageSignature(ms2);
+		
+		Interaction i3=new Interaction();
+		MessageSignature ms3=new MessageSignature();
+		ms3.setOperation("op3");
+		i3.setMessageSignature(ms3);
+		i3.getToRoles().add(p2);
+		
+		wb1.getBlock().add(i3);
+		
+		c1.getOnMessages().add(wb1);
+		
+		OnMessage wb2=new OnMessage();
+		
+		MessageSignature ms4=new MessageSignature();
+		ms4.setOperation("op4");
+		wb2.setMessageSignature(ms4);
+		
+		Interaction i5=new Interaction();
+		MessageSignature ms5=new MessageSignature();
+		ms5.setOperation("op5");
+		i5.setMessageSignature(ms5);
+		i5.getToRoles().add(p2);
+		
+		wb2.getBlock().add(i5);
+
+		c1.getOnMessages().add(wb2);
+
+		MonitorProtocolExporter exporter=new MonitorProtocolExporter();
+		
+		CachedJournal journal=new CachedJournal();
+		ByteArrayOutputStream os=new ByteArrayOutputStream();
+		
+		exporter.export(pm, journal, os);
+		
+		if (journal.getIssues().size() > 0) {
+			fail("Export should not have raised any issues");
+		}
+		
+		org.scribble.protocol.monitor.model.Description pd=null;
+		
+		try {
+			pd = org.scribble.protocol.monitor.util.MonitorModelUtil.deserialize(new java.io.ByteArrayInputStream(os.toByteArray()));
+		} catch(Exception e) {
+			e.printStackTrace();
+			fail("Failed to parse protocol monitor description: "+e);
+		}
+	
+		validateMonitor(pd, "SimpleDirectedChoiceFollowedByNoActivity");
 	}
 	
 	@org.junit.Test
