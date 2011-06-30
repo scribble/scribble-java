@@ -72,8 +72,8 @@ public class ProtocolProjectorTest {
         	// SCRIBBLE-91
             //{"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
 
-            {"UseProtocol.spr", "UseProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
-            {"UseProtocol.spr", "UseProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
+            {"IncludeProtocol.spr", "IncludeProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
+            {"IncludeProtocol.spr", "IncludeProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
 
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
         	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17

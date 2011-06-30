@@ -70,7 +70,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_tokenClass.put("try", Try.class);
 		m_tokenClass.put("catch", Catch.class);
 		m_tokenClass.put("run", Run.class);
-		m_tokenClass.put("use", Use.class);
+		m_tokenClass.put("include", Include.class);
 		m_tokenClass.put("unordered", Unordered.class);
 
 		// Clear token list - determines whether prior to processing

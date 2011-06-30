@@ -1430,10 +1430,10 @@ public class ProtocolParserTest {
 	}
 
 	@org.junit.Test
-	public void testUseProtocol() {
+	public void testIncludeProtocol() {
 		TestJournal logger=new TestJournal();
 		
-		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/UseProtocol.spr", logger);
+		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/IncludeProtocol.spr", logger);
 		
 		assertNotNull(model);
 		
@@ -1458,7 +1458,7 @@ public class ProtocolParserTest {
 		Protocol protocol=new Protocol();
 		expected.setProtocol(protocol);
 		
-		protocol.setName("UseProtocol");
+		protocol.setName("IncludeProtocol");
 		
 		ParameterDefinition p=new ParameterDefinition();
 		p.setName("Buyer");
@@ -1474,7 +1474,7 @@ public class ProtocolParserTest {
 		
 		protocol.getBlock().add(rl);
 		
-		Use inc=new Use();
+		Include inc=new Include();
 		
 		ProtocolReference ref=new ProtocolReference();
 		ref.setName("Sub");

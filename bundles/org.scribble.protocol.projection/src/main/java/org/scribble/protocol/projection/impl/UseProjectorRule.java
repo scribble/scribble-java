@@ -34,7 +34,7 @@ public class UseProjectorRule implements ProjectorRule {
 	 * 				model object
 	 */
 	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == Use.class);
+		return(obj.getClass() == Include.class);
 	}
 	
 	/**
@@ -48,8 +48,8 @@ public class UseProjectorRule implements ProjectorRule {
 	 */
 	public ModelObject project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
-		Use ret=new Use();
-		Use source=(Use)model;
+		Include ret=new Include();
+		Include source=(Include)model;
 		
 		ret.derivedFrom(source);
 		

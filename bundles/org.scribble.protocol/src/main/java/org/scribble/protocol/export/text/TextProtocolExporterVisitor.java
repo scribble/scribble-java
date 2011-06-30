@@ -719,7 +719,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 	public void end(Run elem) {
 	}
 
-	public void accept(Use elem) {
+	public void accept(Include elem) {
 	}
 
 	public void accept(TypeImport elem) {
