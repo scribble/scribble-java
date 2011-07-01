@@ -15,22 +15,16 @@
  */
 package org.scribble.protocol.model;
 
+
 /**
- * This class represents the Try/Escape construct.
+ * This class represents a group of activities within
+ * an interrupt block associated with a global escape.
  * 
  */
-public class Try extends Activity {
+public class Interrupt extends ModelObject {
 
-	private Block m_block=null;
-	private java.util.List<Catch> m_catches=new ContainmentList<Catch>(this, Catch.class);
+	private Block m_contents=null;
 
-	/**
-	 * This is the default constructor.
-	 * 
-	 */
-	public Try() {
-	}
-	
 	/**
 	 * This method returns the block of activities associated
 	 * with the definition.
@@ -39,12 +33,12 @@ public class Try extends Activity {
 	 */
 	public Block getBlock() {
 		
-		if (m_block == null) {
-			m_block = new Block();
-			m_block.setParent(this);
+		if (m_contents == null) {
+			m_contents = new Block();
+			m_contents.setParent(this);
 		}
 		
-		return(m_block);
+		return(m_contents);
 	}
 	
 	/**
@@ -54,25 +48,15 @@ public class Try extends Activity {
 	 * @param block The block of activities
 	 */
 	public void setBlock(Block block) {
-		if (m_block != null) {
-			m_block.setParent(null);
+		if (m_contents != null) {
+			m_contents.setParent(null);
 		}
 		
-		m_block = block;
+		m_contents = block;
 		
-		if (m_block != null) {
-			m_block.setParent(this);
+		if (m_contents != null) {
+			m_contents.setParent(this);
 		}
-	}
-	
-	/**
-	 * This method returns the list of catch statements associated
-	 * with the try.
-	 * 
-	 * @return The list of catch statements
-	 */
-	public java.util.List<Catch> getCatches() {
-		return(m_catches);
 	}
 	
 	/**
@@ -82,15 +66,12 @@ public class Try extends Activity {
 	 * @param visitor The visitor
 	 */
 	public void visit(Visitor visitor) {
+		
 		if (visitor.start(this)) {
 		
 			getBlock().visit(visitor);
-			
-			for (Catch path : getCatches()) {
-				path.visit(visitor);
-			}
 		}
-			
+		
 		visitor.end(this);
 	}
 

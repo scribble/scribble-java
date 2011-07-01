@@ -297,27 +297,27 @@ public class ProtocolMonitorTest {
 	}
 	
 	@org.junit.Test
-	public void testTryCatch_1AtBuyer() {
-		testMonitor("tests/protocol/local/TryCatch@Buyer.spr",
-				"tests/monitor/TryCatch-1@Buyer.events", false);
+	public void testDoInterrupt_1AtBuyer() {
+		testMonitor("tests/protocol/local/DoInterrupt@Buyer.spr",
+				"tests/monitor/DoInterrupt-1@Buyer.events", false);
 	}
 	
 	@org.junit.Test
-	public void testTryCatch_1AtSeller() {
-		testMonitor("tests/protocol/local/TryCatch@Seller.spr",
-				"tests/monitor/TryCatch-1@Seller.events", false);
+	public void testDoInterrupt_1AtSeller() {
+		testMonitor("tests/protocol/local/DoInterrupt@Seller.spr",
+				"tests/monitor/DoInterrupt-1@Seller.events", false);
 	}
 	
 	@org.junit.Test
-	public void testTryCatch_2AtBuyer() {
-		testMonitor("tests/protocol/local/TryCatch@Buyer.spr",
-				"tests/monitor/TryCatch-2@Buyer.events", false);
+	public void testDoInterrupt_2AtBuyer() {
+		testMonitor("tests/protocol/local/DoInterrupt@Buyer.spr",
+				"tests/monitor/DoInterrupt-2@Buyer.events", false);
 	}
 	
 	@org.junit.Test
-	public void testTryCatch_2AtSeller() {
-		testMonitor("tests/protocol/local/TryCatch@Seller.spr",
-				"tests/monitor/TryCatch-2@Seller.events", false);
+	public void testDoInterrupt_2AtSeller() {
+		testMonitor("tests/protocol/local/DoInterrupt@Seller.spr",
+				"tests/monitor/DoInterrupt-2@Seller.events", false);
 	}
 
 	@org.junit.Test

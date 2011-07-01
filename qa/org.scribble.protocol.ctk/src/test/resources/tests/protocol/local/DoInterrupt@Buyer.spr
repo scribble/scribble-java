@@ -5,14 +5,17 @@ import Confirm;
 import Ack;
 import Finish;
 
-protocol TryCatch@Buyer {
+protocol DoInterrupt@Buyer {
 	Buyer introduces Seller;
 
-	try {
+	do {
 		Order to Seller;
 		Confirm from Seller;
-	} catch (OutOfStock from Seller) {
-	} catch (expire(OrderExpired) to Seller | OrderCancelled to Seller) {
+	} interrupt {
+		OutOfStock from Seller;
+	} interrupt {
+		expire(OrderExpired) to Seller;
+		OrderCancelled to Seller;
 		Ack from Seller;
 	}
 	

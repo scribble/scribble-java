@@ -49,12 +49,12 @@ public class SellerParticipantTest {
 		//choice.setNodeType(Protocol.Node.NodeType.SendChoice);
 
 		Path c1=new Path();
-		c1.setId(PurchasingLabel._Confirmation.name());
+		//c1.setId(PurchasingLabel._Confirmation.name());
 		c1.setNextIndex(2);
 		choice.getPath().add(c1);
 		
 		Path c2=new Path();
-		c2.setId(PurchasingLabel._OutOfStock.name());
+		//c2.setId(PurchasingLabel._OutOfStock.name());
 		c2.setNextIndex(3);
 		choice.getPath().add(c2);
 						

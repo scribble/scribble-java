@@ -1,6 +1,5 @@
 /*
  * Copyright 2009-10 www.scribble.org
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,17 +16,16 @@
 package org.scribble.protocol.ctk.comparators;
 
 import java.util.Comparator;
+
 import org.scribble.protocol.model.*;
 
-public class TryComparator implements Comparator<ModelObject> {
+public class InterruptComparator implements Comparator<ModelObject> {
 
 	public int compare(ModelObject arg0, ModelObject arg1) {
-		Try m=(Try)arg0;
-		Try e=(Try)arg1;
-		
-		Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();	
-		
-		if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
+		Interrupt m=(Interrupt)arg0;
+		Interrupt e=(Interrupt)arg1;
+
+		if (m.getBlock().size() != e.getBlock().size()) {
 			return(1);
 		}
 		

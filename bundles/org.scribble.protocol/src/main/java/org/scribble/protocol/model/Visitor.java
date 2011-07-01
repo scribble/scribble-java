@@ -182,7 +182,7 @@ public interface Visitor {
 	 * @param elem The try escape
 	 * @return Whether to process the contents
 	 */
-	public boolean start(Try elem);
+	public boolean start(Do elem);
 	
 	/**
 	 * This method indicates the end of a
@@ -190,7 +190,7 @@ public interface Visitor {
 	 * 
 	 * @param elem The try escape
 	 */
-	public void end(Try elem);
+	public void end(Do elem);
 	
 	/**
 	 * This method indicates the start of a
@@ -199,7 +199,7 @@ public interface Visitor {
 	 * @param elem The catch block
 	 * @return Whether to process the contents
 	 */
-	public boolean start(Catch elem);
+	public boolean start(Interrupt elem);
 	
 	/**
 	 * This method indicates the end of a
@@ -207,7 +207,7 @@ public interface Visitor {
 	 * 
 	 * @param elem The catch block
 	 */
-	public void end(Catch elem);
+	public void end(Interrupt elem);
 	
 	/**
 	 * This method visits a

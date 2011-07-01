@@ -96,16 +96,16 @@ public class TextProtocolExporterVisitor implements Visitor {
 		} else if (elem.getParent() instanceof Choice) {
 			ret = ((Choice)elem.getParent()).getBlocks().indexOf(elem) ==
 				((Choice)elem.getParent()).getBlocks().size()-1;
-		} else if (elem.getParent() instanceof Catch) {
-			Catch c=(Catch)elem.getParent();
+		} else if (elem.getParent() instanceof Interrupt) {
+			Interrupt c=(Interrupt)elem.getParent();
 			
-			if (c.getParent() instanceof Try) {
-				Try te=(Try)c.getParent();
+			if (c.getParent() instanceof Do) {
+				Do te=(Do)c.getParent();
 				
-				ret = te.getCatches().indexOf(c) == te.getCatches().size()-1;
+				ret = te.getInterrupts().indexOf(c) == te.getInterrupts().size()-1;
 			}
-		} else if (elem.getParent() instanceof Try) {
-			ret = ((Try)elem.getParent()).getCatches().size() == 0;
+		} else if (elem.getParent() instanceof Do) {
+			ret = ((Do)elem.getParent()).getInterrupts().size() == 0;
 		}
 				
 		return(ret);
@@ -212,7 +212,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 */
 	public void accept(Interaction elem) {
 		
-		if ((elem.getParent() instanceof Catch) == false) {
+		if ((elem.getParent() instanceof Interrupt) == false) {
 			for (Annotation annotation : elem.getAnnotations()) {
 				indent();
 				output("[["+annotation.toString()+"]]\r\n");
@@ -445,27 +445,11 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 * 
 	 * @param elem The when
 	 */
-	public boolean start(Catch elem) {
+	public boolean start(Interrupt elem) {
 		
 		indent();
 		
-		output(" catch (");
-		
-		for (int i=0; i < elem.getInteractions().size(); i++) {
-			if (i > 0) {
-				output(" | ");
-			}
-		
-			// TODO: Work out export format when annotation(s) specified
-			for (Annotation annotation : elem.getAnnotations()) {
-				indent();
-				output("[["+annotation.toString()+"]]\r\n");
-			}
-
-			outputInteraction(elem.getInteractions().get(i));
-		}
-
-		output(")");
+		output(" interrupt");
 		
 		return(true);
 	}
@@ -567,7 +551,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 * @param elem The try escape
 	 * @return Whether to process the contents
 	 */
-	public boolean start(Try elem) {
+	public boolean start(Do elem) {
 		for (Annotation annotation : elem.getAnnotations()) {
 			indent();
 			output("[["+annotation.toString()+"]]\r\n");
@@ -575,7 +559,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 		
 		indent();
 		
-		output("try");
+		output("do");
 		
 		return(true);
 	}
@@ -586,7 +570,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 	 * 
 	 * @param elem The try escape
 	 */
-	public void end(Try elem) {
+	public void end(Do elem) {
 	}
 	
 	/**
@@ -715,7 +699,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 	public void end(Protocol elem) {
 	}
 
-	public void end(Catch elem) {
+	public void end(Interrupt elem) {
 	}
 
 	public void accept(Include elem) {

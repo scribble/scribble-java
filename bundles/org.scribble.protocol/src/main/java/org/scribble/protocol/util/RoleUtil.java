@@ -346,10 +346,10 @@ public class RoleUtil {
 		public void end(RecBlock elem) {
 		}
 
-		public void end(Try elem) {
+		public void end(Do elem) {
 		}
 
-		public void end(Catch elem) {
+		public void end(Interrupt elem) {
 		}
 
 		public boolean start(Choice elem) {
@@ -410,15 +410,12 @@ public class RoleUtil {
 			return(m_recurse);
 		}
 
-		public boolean start(Try elem) {
+		public boolean start(Do elem) {
 			checkActivity(elem);
 			return(m_recurse);
 		}
 
-		public boolean start(Catch elem) {
-			for (Interaction interaction : elem.getInteractions()) {
-				checkActivity(interaction);
-			}
+		public boolean start(Interrupt elem) {
 			return(m_recurse);
 		}
 

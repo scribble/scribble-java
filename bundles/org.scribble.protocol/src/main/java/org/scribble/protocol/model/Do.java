@@ -15,26 +15,20 @@
  */
 package org.scribble.protocol.model;
 
-
 /**
- * This class represents a group of activities within
- * a catch specific 'escape' block of a
- * try/escape construct.
+ * This class represents the Try/Escape construct.
  * 
  */
-public class Catch extends ModelObject {
+public class Do extends Activity {
 
-	private java.util.List<Interaction> m_interactions=
-		new ContainmentList<Interaction>(this, Interaction.class);
-	private Block m_contents=null;
+	private Block m_block=null;
+	private java.util.List<Interrupt> m_interrupts=new ContainmentList<Interrupt>(this, Interrupt.class);
 
 	/**
-	 * This method returns the list of interactions.
+	 * This is the default constructor.
 	 * 
-	 * @return The list of interactions
 	 */
-	public java.util.List<Interaction> getInteractions() {
-		return(m_interactions);
+	public Do() {
 	}
 	
 	/**
@@ -45,12 +39,12 @@ public class Catch extends ModelObject {
 	 */
 	public Block getBlock() {
 		
-		if (m_contents == null) {
-			m_contents = new Block();
-			m_contents.setParent(this);
+		if (m_block == null) {
+			m_block = new Block();
+			m_block.setParent(this);
 		}
 		
-		return(m_contents);
+		return(m_block);
 	}
 	
 	/**
@@ -60,15 +54,25 @@ public class Catch extends ModelObject {
 	 * @param block The block of activities
 	 */
 	public void setBlock(Block block) {
-		if (m_contents != null) {
-			m_contents.setParent(null);
+		if (m_block != null) {
+			m_block.setParent(null);
 		}
 		
-		m_contents = block;
+		m_block = block;
 		
-		if (m_contents != null) {
-			m_contents.setParent(this);
+		if (m_block != null) {
+			m_block.setParent(this);
 		}
+	}
+	
+	/**
+	 * This method returns the list of interrupt statements associated
+	 * with the global escape (do).
+	 * 
+	 * @return The list of interrupt statements
+	 */
+	public java.util.List<Interrupt> getInterrupts() {
+		return(m_interrupts);
 	}
 	
 	/**
@@ -78,20 +82,15 @@ public class Catch extends ModelObject {
 	 * @param visitor The visitor
 	 */
 	public void visit(Visitor visitor) {
-		
 		if (visitor.start(this)) {
 		
-			// The interaction visitor would need to check whether it was contained
-			// within a catch block, to understand its context.
-			/*
-			for (Interaction p : getInteractions()) {
-				p.visit(visitor);
-			}
-			*/
-	
 			getBlock().visit(visitor);
+			
+			for (Interrupt path : getInterrupts()) {
+				path.visit(visitor);
+			}
 		}
-		
+			
 		visitor.end(this);
 	}
 

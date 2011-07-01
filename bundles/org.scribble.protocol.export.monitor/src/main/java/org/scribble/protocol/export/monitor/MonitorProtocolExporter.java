@@ -155,6 +155,22 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 				pathBuilderList.add(path);
 				
 				m_pendingNextIndex.add(path);
+
+				// Create annotations
+				for (org.scribble.common.model.Annotation pma : act.getAnnotations()) {
+					org.scribble.protocol.monitor.model.Annotation pmma=
+								new org.scribble.protocol.monitor.model.Annotation();
+					
+					if (pma.getId() != null) {
+						pmma.setId(pma.getId());
+					} else {
+						pmma.setId(UUID.randomUUID().toString());
+					}
+					pmma.setValue(pma.toString());
+					
+					path.getAnnotation().add(pmma);
+				}
+
 			} else if (act instanceof Block && act.getParent() instanceof org.scribble.protocol.model.Choice) {
 				
 				// Create path node
@@ -178,22 +194,6 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 				
 				m_pendingNextIndex.add(path);
 
-				// Only create an interaction (message) node inside path if there is
-				// expected message content
-				/* CHANGE TO NEW CHOICE NOTATION SCRIBBLE-94
-				if (elem.getMessageSignature().getTypeReferences().size() > 0) {
-					Choice choice=(Choice)elem.getParent();
-					
-					java.util.List<Role> roles=new java.util.Vector<Role>();
-					if (choice.getToRole() != null) {
-						roles.add(choice.getToRole());
-					}
-					
-					createInteraction(choice, elem.getMessageSignature(), choice.getRole(), roles,
-									elem.getAnnotations());
-				}
-				*/
-				
 				// Create annotations
 				for (org.scribble.common.model.Annotation pma : act.getAnnotations()) {
 					org.scribble.protocol.monitor.model.Annotation pmma=
@@ -882,12 +882,12 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * @param elem The try escape
 		 * @return Whether to process the contents
 		 */
-		public boolean start(org.scribble.protocol.model.Try elem) {
+		public boolean start(org.scribble.protocol.model.Do elem) {
 			
 			startActivity(elem);
 
-			org.scribble.protocol.monitor.model.Try node=
-					new org.scribble.protocol.monitor.model.Try();
+			org.scribble.protocol.monitor.model.Do node=
+					new org.scribble.protocol.monitor.model.Do();
 			
 			m_nodes.add(node);
 						
@@ -903,7 +903,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * 
 		 * @param elem The try escape
 		 */
-		public void end(org.scribble.protocol.model.Try elem) {
+		public void end(org.scribble.protocol.model.Do elem) {
 			Node node=
 				(Node)m_nodeMap.get(elem);
 			
@@ -925,12 +925,13 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * @param elem The try escape
 		 * @return Whether to process the contents
 		 */
-		public boolean start(Catch elem) {
-			org.scribble.protocol.monitor.model.Try node=
-					(org.scribble.protocol.monitor.model.Try)m_nodeMap.get(elem.getParent());
+		public boolean start(Interrupt elem) {
+			org.scribble.protocol.monitor.model.Do node=
+					(org.scribble.protocol.monitor.model.Do)m_nodeMap.get(elem.getParent());
 			
 			m_pendingNextIndex.clear();
 			
+			/*
 			java.util.List<Object> store=new java.util.Vector<Object>();
 			
 			for (Interaction interaction : elem.getInteractions()) {
@@ -944,6 +945,27 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			}
 			
 			m_pendingNextIndex.addAll(store);
+			*/
+			
+			Path path=new Path();
+			path.setNextIndex(getCurrentIndex());
+			
+			node.getPath().add(path);
+			
+			// Create annotations
+			for (org.scribble.common.model.Annotation pma : elem.getAnnotations()) {
+				org.scribble.protocol.monitor.model.Annotation pmma=
+							new org.scribble.protocol.monitor.model.Annotation();
+				
+				if (pma.getId() != null) {
+					pmma.setId(pma.getId());
+				} else {
+					pmma.setId(UUID.randomUUID().toString());
+				}
+				pmma.setValue(pma.toString());
+				
+				path.getAnnotation().add(pmma);
+			}
 
 			return(true);
 		}
@@ -954,7 +976,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		 * 
 		 * @param elem The try escape
 		 */
-		public void end(Catch elem) {
+		public void end(Interrupt elem) {
 			// End of catch block scope, so clear the 'pending next index' nodes
 			m_pendingNextIndex.clear();
 		}

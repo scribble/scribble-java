@@ -67,8 +67,8 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_tokenClass.put("rec", RecBlock.class);
 		m_tokenClass.put("parallel", Parallel.class);
 		m_tokenClass.put("repeat", Repeat.class);
-		m_tokenClass.put("try", Try.class);
-		m_tokenClass.put("catch", Catch.class);
+		m_tokenClass.put("do", Do.class);
+		m_tokenClass.put("interrupt", Interrupt.class);
 		m_tokenClass.put("run", Run.class);
 		m_tokenClass.put("include", Include.class);
 		m_tokenClass.put("unordered", Unordered.class);
@@ -144,7 +144,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_listClass.put("typeReferences", TypeReference.class);
 		m_listClass.put("blocks", Block.class);
 		m_listClass.put("onMessages", OnMessage.class);
-		m_listClass.put("catches", Catch.class);
+		m_listClass.put("interrupts", Interrupt.class);
 		m_listClass.put("parameters", Parameter.class);
 		m_listClass.put("interactions", Interaction.class);
 		m_listClass.put("parameterDefinitions", ParameterDefinition.class);

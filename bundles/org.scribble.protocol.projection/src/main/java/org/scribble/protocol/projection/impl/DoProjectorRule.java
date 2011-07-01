@@ -15,14 +15,14 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.*;
 
 /**
- * This class provides the Catch implementation of the
+ * This class provides the Do implementation of the
  * projector rule.
  */
-public class CatchProjectorRule implements ProjectorRule {
+public class DoProjectorRule implements ProjectorRule {
 
 	/**
 	 * This method determines whether the projection rule is
@@ -33,7 +33,7 @@ public class CatchProjectorRule implements ProjectorRule {
 	 * 				model object
 	 */
 	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == Catch.class);
+		return(obj.getClass() == Do.class);
 	}
 	
 	/**
@@ -47,34 +47,25 @@ public class CatchProjectorRule implements ProjectorRule {
 	 */
 	public ModelObject project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
-		Catch ret=(Catch)new Catch();
-		Catch source=(Catch)model;
-		boolean f_roleInInteractionList=false;
-		
+		Do ret=new Do();
+		Do source=(Do)model;
+
 		ret.derivedFrom(source);
 		
-		if (source.getBlock() != null) {
+		ret.setBlock((Block)context.project(source.getBlock(), role, l));
+
+		for (int i=0; i < source.getInterrupts().size(); i++) {
+			Interrupt c=(Interrupt)
+					context.project(source.getInterrupts().get(i),
+							role, l);
 			
-			// Project the block
-			ret.setBlock((Block)context.project(source.getBlock(),
-					role, l));
-			ret.getBlock().setParent(ret);
-		}
-		
-		// Project the list of interactions
-		for (int i=0; i < source.getInteractions().size(); i++) {
-			ModelObject mo=context.project(source.getInteractions().get(i), role, l);
-			
-			if (mo instanceof Interaction) {
-				ret.getInteractions().add((Interaction)mo);
-				
-				f_roleInInteractionList = true;
+			if (c != null) {
+				ret.getInterrupts().add(c);
 			}
 		}
 		
-		if (ret.getBlock().getContents().size() == 0 && !f_roleInInteractionList) {
-			// Don't return catchblock, as the interaction list and block
-			// content is not relevant for the projected role
+		// Shouldn't project try/escape if main block has no activities
+		if (ret.getBlock().getContents().size() == 0) {
 			ret = null;
 		}
 		
