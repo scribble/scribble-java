@@ -68,12 +68,12 @@ public class BrokerParticipantTest {
 		//choice1.setNodeType(Protocol.Node.NodeType.ReceiveChoice);
 
 		Path c1=new Path();
-		c1.setId(PurchasingLabel._CreditOk.name());
+		//c1.setId(PurchasingLabel._CreditOk.name());
 		c1.setNextIndex(3);
 		choice1.getPath().add(c1);
 		
 		Path c2=new Path();
-		c2.setId(PurchasingLabel._InsufficientCredit.name());
+		//c2.setId(PurchasingLabel._InsufficientCredit.name());
 		c2.setNextIndex(10);
 		choice1.getPath().add(c2);
 						
@@ -104,12 +104,12 @@ public class BrokerParticipantTest {
 		//choice2.setNodeType(Protocol.Node.NodeType.ReceiveChoice);
 
 		Path c3=new Path();
-		c3.setId(PurchasingLabel._Confirmation.name());
+		//c3.setId(PurchasingLabel._Confirmation.name());
 		c3.setNextIndex(6);
 		choice2.getPath().add(c3);
 		
 		Path c4=new Path();
-		c4.setId(PurchasingLabel._OutOfStock.name());
+		//c4.setId(PurchasingLabel._OutOfStock.name());
 		c4.setNextIndex(8);
 		choice2.getPath().add(c4);
 						
@@ -206,12 +206,12 @@ public class BrokerParticipantTest {
 		//choice1.setOtherRole(CREDIT_AGENCY);
 
 		Path c1=new Path();
-		c1.setId(PurchasingLabel._CreditOk.name());
+		//c1.setId(PurchasingLabel._CreditOk.name());
 		c1.setNextIndex(3);
 		choice1.getPath().add(c1);
 		
 		Path c2=new Path();
-		c2.setId(PurchasingLabel._InsufficientCredit.name());
+		//c2.setId(PurchasingLabel._InsufficientCredit.name());
 		c2.setNextIndex(10);
 		choice1.getPath().add(c2);
 						
@@ -245,12 +245,12 @@ public class BrokerParticipantTest {
 		//choice2.setOtherRole(SUPPLIER);
 
 		Path c3=new Path();
-		c3.setId(PurchasingLabel._Confirmation.name());
+		//c3.setId(PurchasingLabel._Confirmation.name());
 		c3.setNextIndex(6);
 		choice2.getPath().add(c3);
 		
 		Path c4=new Path();
-		c4.setId(PurchasingLabel._OutOfStock.name());
+		//c4.setId(PurchasingLabel._OutOfStock.name());
 		c4.setNextIndex(8);
 		choice2.getPath().add(c4);
 						

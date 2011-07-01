@@ -284,7 +284,7 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 	 * @param elem The try escape
 	 * @return Whether to process the contents
 	 */
-	public boolean start(Try elem) {
+	public boolean start(Do elem) {
 		return(process(elem));
 	}
 	
@@ -294,7 +294,7 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 	 * 
 	 * @param elem The try escape
 	 */
-	public void end(Try elem) {
+	public void end(Do elem) {
 	}
 	
 	/**
@@ -304,12 +304,8 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 	 * @param elem The catch block
 	 * @return Whether to process the contents
 	 */
-	public boolean start(Catch elem) {
+	public boolean start(Interrupt elem) {
 		boolean ret=process(elem);
-		
-		for (Interaction interaction : elem.getInteractions()) {
-			process(interaction);
-		}
 		
 		return(ret);
 	}
@@ -320,7 +316,7 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 	 * 
 	 * @param elem The catch block
 	 */
-	public void end(Catch elem) {
+	public void end(Interrupt elem) {
 	}
 	
 	/**

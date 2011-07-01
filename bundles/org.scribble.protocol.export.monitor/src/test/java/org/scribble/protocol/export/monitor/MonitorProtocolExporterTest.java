@@ -1463,7 +1463,7 @@ public class MonitorProtocolExporterTest {
 	}	
 
 	@org.junit.Test
-	public void testSimpleTryCatchFollowedByInteraction() {
+	public void testSimpleDoInterruptFollowedByInteraction() {
 		
 		ProtocolModel pm=new ProtocolModel();
 	
@@ -1485,7 +1485,7 @@ public class MonitorProtocolExporterTest {
 		
 		p.getBlock().add(i1);
 		
-		Try t=new Try();
+		Do t=new Do();
 		
 		p.getBlock().add(t);
 				
@@ -1505,15 +1505,15 @@ public class MonitorProtocolExporterTest {
 		
 		t.getBlock().add(i3);
 		
-		Catch cb=new Catch();
-		t.getCatches().add(cb);
+		Interrupt cb=new Interrupt();
+		t.getInterrupts().add(cb);
 
 		Interaction i4=new Interaction();
 		MessageSignature ms4=new MessageSignature();
 		ms4.setOperation("cancel");
 		i4.setMessageSignature(ms4);
 		i4.getToRoles().add(p2);
-		cb.getInteractions().add(i4);
+		cb.getBlock().add(i4);
 		
 		Interaction i5=new Interaction();
 		MessageSignature ms5=new MessageSignature();
@@ -1543,11 +1543,11 @@ public class MonitorProtocolExporterTest {
 			fail("Failed to parse protocol monitor description: "+e);
 		}
 	
-		validateMonitor(pd, "SimpleTryCatchFollowedByInteraction");
+		validateMonitor(pd, "SimpleDoInterruptFollowedByInteraction");
 	}
 
 	@org.junit.Test
-	public void testSimpleTryCatchMultipleFollowedByInteraction() {
+	public void testSimpleDoInterruptMultipleFollowedByInteraction() {
 		
 		ProtocolModel pm=new ProtocolModel();
 	
@@ -1569,7 +1569,7 @@ public class MonitorProtocolExporterTest {
 		
 		p.getBlock().add(i1);
 		
-		Try t=new Try();
+		Do t=new Do();
 		
 		p.getBlock().add(t);
 				
@@ -1589,22 +1589,25 @@ public class MonitorProtocolExporterTest {
 		
 		t.getBlock().add(i3);
 		
-		Catch cb=new Catch();
-		t.getCatches().add(cb);
+		Interrupt cb1=new Interrupt();
+		t.getInterrupts().add(cb1);
 
 		Interaction i4=new Interaction();
 		MessageSignature ms4=new MessageSignature();
 		ms4.setOperation("cancel");
 		i4.setMessageSignature(ms4);
 		i4.getToRoles().add(p2);
-		cb.getInteractions().add(i4);
+		cb1.getBlock().add(i4);
 		
+		Interrupt cb2=new Interrupt();
+		t.getInterrupts().add(cb2);
+
 		Interaction i4x=new Interaction();
 		MessageSignature ms4x=new MessageSignature();
 		ms4x.setOperation("abort");
 		i4x.setMessageSignature(ms4x);
 		i4x.getToRoles().add(p2);
-		cb.getInteractions().add(i4x);
+		cb2.getBlock().add(i4x);
 		
 		Interaction i4y=new Interaction();
 		MessageSignature ms4y=new MessageSignature();
@@ -1612,7 +1615,7 @@ public class MonitorProtocolExporterTest {
 		i4y.setMessageSignature(ms4y);
 		i4y.setFromRole(p2);
 		
-		cb.getBlock().add(i4y);
+		cb2.getBlock().add(i4y);
 		
 		Interaction i5=new Interaction();
 		MessageSignature ms5=new MessageSignature();
@@ -1642,7 +1645,7 @@ public class MonitorProtocolExporterTest {
 			fail("Failed to parse protocol monitor description: "+e);
 		}
 	
-		validateMonitor(pd, "SimpleTryCatchMultipleFollowedByInteraction");
+		validateMonitor(pd, "SimpleDoInterruptMultipleFollowedByInteraction");
 	}
 
 	protected void validateMonitor(org.scribble.protocol.monitor.model.Description pd, String filename) {

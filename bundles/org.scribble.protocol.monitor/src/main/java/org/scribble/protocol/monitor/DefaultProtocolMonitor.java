@@ -24,7 +24,7 @@ import org.scribble.protocol.monitor.model.SendMessage;
 import org.scribble.protocol.monitor.model.ReceiveMessage;
 import org.scribble.protocol.monitor.model.Node;
 import org.scribble.protocol.monitor.model.Path;
-import org.scribble.protocol.monitor.model.Try;
+import org.scribble.protocol.monitor.model.Do;
 
 // NOTES:
 // All top level event processes have the same structure:
@@ -256,19 +256,15 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 		if (node.getClass() == Scope.class) {
 			initScope(context, protocol, conv, (Scope)node);
 			
-		} else if (node.getClass() == Try.class) {
-			Session nested=initScope(context, protocol, conv, (Try)node);
+		} else if (node.getClass() == Do.class) {
+			Session nested=initScope(context, protocol, conv, (Do)node);
 			
 			// TODO: Need to register catch blocks against the nested context in the
 			// parent context
-			for (int ci : ((Try)node).getCatchIndex()) {
+			for (Path path : ((Do)node).getPath()) {
 				
-				if (ci != -1) {
-					Session catchScope=conv.createCatchConversation(nested, node.getNextIndex());
-					catchScope.addNodeIndex(ci);
-					
-					//nested.getCatchConversations().add(catchScope);
-				}
+				Session catchScope=conv.createCatchConversation(nested, node.getNextIndex());
+				catchScope.addNodeIndex(path.getNextIndex());
 			}
 			
 		} else if (node.getClass() == org.scribble.protocol.monitor.model.Call.class) {

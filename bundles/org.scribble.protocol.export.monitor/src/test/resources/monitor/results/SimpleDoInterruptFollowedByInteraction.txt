@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <description xmlns="http://www.scribble.org/monitor">
     <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="start" nextIndex="1"/>
-    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Try" innerIndex="2" nextIndex="5">
-        <catchIndex>4</catchIndex>
+    <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Do" innerIndex="2" nextIndex="5">
+        <path nextIndex="4"/>
     </node>
     <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SendMessage" otherRole="p2" operator="order" nextIndex="3"/>
     <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ReceiveMessage" otherRole="p2" operator="confirm"/>

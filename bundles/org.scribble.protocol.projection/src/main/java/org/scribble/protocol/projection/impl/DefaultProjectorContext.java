@@ -37,7 +37,7 @@ public class DefaultProjectorContext implements ProjectorContext {
 
 	static {
 		m_rules.add(new BlockProjectorRule());
-		m_rules.add(new CatchProjectorRule());
+		m_rules.add(new InterruptProjectorRule());
 		m_rules.add(new ChoiceProjectorRule());
 		m_rules.add(new DirectedChoiceProjectorRule());
 		m_rules.add(new OnMessageProjectorRule());
@@ -59,7 +59,7 @@ public class DefaultProjectorContext implements ProjectorContext {
 		m_rules.add(new RecursionProjectorRule());
 		m_rules.add(new RunProjectorRule());
 		m_rules.add(new UseProjectorRule());
-		m_rules.add(new TryProjectorRule());
+		m_rules.add(new DoProjectorRule());
 		m_rules.add(new DataTypeProjectorRule());
 		m_rules.add(new TypeReferenceProjectorRule());
 		m_rules.add(new UnorderedProjectorRule());

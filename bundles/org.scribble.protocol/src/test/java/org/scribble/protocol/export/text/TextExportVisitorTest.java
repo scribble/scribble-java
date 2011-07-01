@@ -1700,23 +1700,23 @@ public class TextExportVisitorTest {
 	}	
 	
 	@org.junit.Test
-	public void testTryCatch() {
+	public void testDoInterrupt() {
 		
-		Try elem=new Try();
+		Do elem=new Do();
 		
-		Catch c1=new Catch();
+		Interrupt c1=new Interrupt();
 		
 		Block b1=new Block();
 		c1.setBlock(b1);
 		
-		elem.getCatches().add(c1);
+		elem.getInterrupts().add(c1);
 		
-		Catch c2=new Catch();
+		Interrupt c2=new Interrupt();
 		
 		Block b2=new Block();
 		c2.setBlock(b2);
 		
-		elem.getCatches().add(c2);
+		elem.getInterrupts().add(c2);
 
 		Role p1=new Role();
 		p1.setName("P1");
@@ -1751,7 +1751,7 @@ public class TextExportVisitorTest {
 		i1.setFromRole(p1);
 		i1.getToRoles().add(p2);
 		
-		c1.getInteractions().add(i1);
+		c1.getBlock().add(i1);
 			
 		Interaction i2=new Interaction();
 		
@@ -1759,7 +1759,7 @@ public class TextExportVisitorTest {
 		i2.setFromRole(p1);
 		i2.getToRoles().add(p3);
 		
-		c2.getInteractions().add(i2);
+		c2.getBlock().add(i2);
 			
 		Interaction i3=new Interaction();
 		
@@ -1767,7 +1767,7 @@ public class TextExportVisitorTest {
 		i3.setFromRole(p1);
 		i3.getToRoles().add(p3);
 		
-		c2.getInteractions().add(i3);
+		c2.getBlock().add(i3);
 			
 		java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
 		
@@ -1783,10 +1783,12 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="try {\r\n"+
-				"} catch ("+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+") {\r\n"+
-				"} catch ("+ref2.getName()+" from "+p1.getName()+" to "+p3.getName()+" | "+
-				ref3.getName()+" from "+p1.getName()+" to "+p3.getName()+") {\r\n"+
+		String expected="do {\r\n"+
+				"} interrupt {\r\n" +
+				"\t"+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n"+
+				"} interrupt {\r\n"+
+				"\t"+ref2.getName()+" from "+p1.getName()+" to "+p3.getName()+";\r\n"+
+				"\t"+ref3.getName()+" from "+p1.getName()+" to "+p3.getName()+";\r\n"+
 				"}\r\n";
 		
 		if (str.equals(expected) == false) {
@@ -1795,23 +1797,23 @@ public class TextExportVisitorTest {
 	}	
 
 	@org.junit.Test
-	public void testTryCatchWithAnnotation() {
+	public void testDoInterruptWithAnnotation() {
 		
-		Try elem=new Try();
+		Do elem=new Do();
 		
-		Catch c1=new Catch();
+		Interrupt c1=new Interrupt();
 		
 		Block b1=new Block();
 		c1.setBlock(b1);
 		
-		elem.getCatches().add(c1);
+		elem.getInterrupts().add(c1);
 		
-		Catch c2=new Catch();
+		Interrupt c2=new Interrupt();
 		
 		Block b2=new Block();
 		c2.setBlock(b2);
 		
-		elem.getCatches().add(c2);
+		elem.getInterrupts().add(c2);
 
 		Role p1=new Role();
 		p1.setName("P1");
@@ -1846,7 +1848,7 @@ public class TextExportVisitorTest {
 		i1.setFromRole(p1);
 		i1.getToRoles().add(p2);
 		
-		c1.getInteractions().add(i1);
+		c1.getBlock().add(i1);
 			
 		Interaction i2=new Interaction();
 		
@@ -1854,7 +1856,7 @@ public class TextExportVisitorTest {
 		i2.setFromRole(p1);
 		i2.getToRoles().add(p3);
 		
-		c2.getInteractions().add(i2);
+		c2.getBlock().add(i2);
 			
 		Interaction i3=new Interaction();
 		
@@ -1862,7 +1864,7 @@ public class TextExportVisitorTest {
 		i3.setFromRole(p1);
 		i3.getToRoles().add(p3);
 		
-		c2.getInteractions().add(i3);
+		c2.getBlock().add(i3);
 			
 		DefaultAnnotation annotation1=new DefaultAnnotation("annotation1");
 		elem.getAnnotations().add(annotation1);
@@ -1886,10 +1888,12 @@ public class TextExportVisitorTest {
 		
 		String expected="[["+annotation1.toString()+"]]\r\n"+
 				"[["+annotation2.toString()+"]]\r\n"+
-				"try {\r\n"+
-				"} catch ("+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+") {\r\n"+
-				"} catch ("+ref2.getName()+" from "+p1.getName()+" to "+p3.getName()+" | "+
-				ref3.getName()+" from "+p1.getName()+" to "+p3.getName()+") {\r\n"+
+				"do {\r\n"+
+				"} interrupt {\r\n"+
+				"\t"+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n"+
+				"} interrupt {\r\n"+
+				"\t"+ref2.getName()+" from "+p1.getName()+" to "+p3.getName()+";\r\n"+
+				"\t"+ref3.getName()+" from "+p1.getName()+" to "+p3.getName()+";\r\n"+
 				"}\r\n";
 		
 		if (str.equals(expected) == false) {

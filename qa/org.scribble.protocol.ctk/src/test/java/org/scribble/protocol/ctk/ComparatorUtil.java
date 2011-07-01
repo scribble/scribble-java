@@ -40,8 +40,8 @@ public class ComparatorUtil {
 		m_comparators.put(MessageSignature.class, new MessageSignatureComparator());
 		m_comparators.put(TypeReference.class, new TypeReferenceComparator());
 		m_comparators.put(ProtocolReference.class, new ProtocolReferenceComparator());
-		m_comparators.put(Try.class, new TryComparator());
-		m_comparators.put(Catch.class, new CatchComparator());
+		m_comparators.put(Do.class, new DoComparator());
+		m_comparators.put(Interrupt.class, new InterruptComparator());
 		m_comparators.put(Choice.class, new ChoiceComparator());
 		m_comparators.put(OnMessage.class, new OnMessageComparator());
 		m_comparators.put(DirectedChoice.class, new DirectedChoiceComparator());

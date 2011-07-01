@@ -269,7 +269,7 @@ public class DefaultVisitor implements Visitor {
 	 * @param elem The try escape
 	 * @return Whether to process the contents
 	 */
-	public boolean start(Try elem) {
+	public boolean start(Do elem) {
 		return(m_defaultGroupReturn);
 	}
 	
@@ -279,7 +279,7 @@ public class DefaultVisitor implements Visitor {
 	 * 
 	 * @param elem The try escape
 	 */
-	public void end(Try elem) {
+	public void end(Do elem) {
 	}
 	
 	/**
@@ -289,7 +289,7 @@ public class DefaultVisitor implements Visitor {
 	 * @param elem The catch block
 	 * @return Whether to process the contents
 	 */
-	public boolean start(Catch elem) {
+	public boolean start(Interrupt elem) {
 		return(m_defaultGroupReturn);
 	}
 	
@@ -299,7 +299,7 @@ public class DefaultVisitor implements Visitor {
 	 * 
 	 * @param elem The catch block
 	 */
-	public void end(Catch elem) {
+	public void end(Interrupt elem) {
 	}
 	
 	/**

@@ -51,17 +51,17 @@ public class BuyerParticipantTest {
 		//choice.setNodeType(Protocol.Node.NodeType.ReceiveChoice);
 
 		Path c1=new Path();
-		c1.setId(PurchasingLabel._Confirmation.name());
+		//c1.setId(PurchasingLabel._Confirmation.name());
 		c1.setNextIndex(2);
 		choice.getPath().add(c1);
 		
 		Path c2=new Path();
-		c2.setId(PurchasingLabel._OutOfStock.name());
+		//c2.setId(PurchasingLabel._OutOfStock.name());
 		c2.setNextIndex(3);
 		choice.getPath().add(c2);
 		
 		Path c3=new Path();
-		c3.setId(PurchasingLabel._InsufficientCredit.name());
+		//c3.setId(PurchasingLabel._InsufficientCredit.name());
 		c3.setNextIndex(4);
 		choice.getPath().add(c3);
 						

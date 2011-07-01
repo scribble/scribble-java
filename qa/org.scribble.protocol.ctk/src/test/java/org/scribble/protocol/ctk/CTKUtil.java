@@ -227,17 +227,14 @@ public class CTKUtil {
 			}
 
 			@Override
-			public boolean start(Try elem) {
+			public boolean start(Do elem) {
 				ret.add(elem);
 				return true;
 			}
 
 			@Override
-			public boolean start(Catch elem) {
+			public boolean start(Interrupt elem) {
 				ret.add(elem);
-				for (Interaction interaction : elem.getInteractions()) {
-					ret.add(interaction);
-				}
 				return true;
 			}
 

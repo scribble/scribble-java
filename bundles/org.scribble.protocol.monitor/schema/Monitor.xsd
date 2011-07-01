@@ -63,7 +63,6 @@
     	<sequence>
     		<element name="annotation" type="tns:Annotation" maxOccurs="unbounded" minOccurs="0"></element>
     	</sequence>
-    	<attribute name="id" type="string"></attribute>
     	<attribute name="nextIndex" type="int" default="-1"></attribute>
     </complexType>
  
@@ -88,11 +87,11 @@
     	</complexContent>
     </complexType>
 
-    <complexType name="Try">
+    <complexType name="Do">
     	<complexContent>
     		<extension base="tns:Scope">
     			<sequence>
-    				<element name="catchIndex" type="int" minOccurs="1"
+    				<element name="path" type="tns:Path" minOccurs="1"
     					maxOccurs="unbounded">
     				</element>
     			</sequence>

@@ -458,7 +458,7 @@ public class ProtocolParserTest {
 	public void testTryCatch() {
 		TestJournal logger=new TestJournal();
 		
-		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/TryCatch.spr", logger);
+		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/DoInterrupt.spr", logger);
 		
 		assertNotNull(model);
 		
@@ -509,7 +509,7 @@ public class ProtocolParserTest {
 		Protocol protocol=new Protocol();
 		expected.setProtocol(protocol);
 		
-		protocol.setName("TryCatch");
+		protocol.setName("DoInterrupt");
 		
 		ParameterDefinition p=new ParameterDefinition();
 		p.setName("Buyer");
@@ -525,7 +525,7 @@ public class ProtocolParserTest {
 		
 		protocol.getBlock().add(rl);
 
-		Try tryEscape=new Try();
+		Do tryEscape=new Do();
 		
 		Block b=new Block();
 		
@@ -555,7 +555,7 @@ public class ProtocolParserTest {
 
 		tryEscape.setBlock(b);
 
-		Catch catchBlock=new Catch();
+		Interrupt catchBlock=new Interrupt();
 		
 		interaction=new Interaction();
 		
@@ -567,11 +567,11 @@ public class ProtocolParserTest {
 		interaction.setFromRole(seller);
 		interaction.getToRoles().add(buyer);
 		
-		catchBlock.getInteractions().add(interaction);
+		catchBlock.getBlock().add(interaction);
 
-		tryEscape.getCatches().add(catchBlock);
+		tryEscape.getInterrupts().add(catchBlock);
 		
-		catchBlock = new Catch();
+		catchBlock = new Interrupt();
 		
 		interaction=new Interaction();
 		
@@ -584,7 +584,7 @@ public class ProtocolParserTest {
 		interaction.setFromRole(buyer);
 		interaction.getToRoles().add(seller);
 		
-		catchBlock.getInteractions().add(interaction);
+		catchBlock.getBlock().add(interaction);
 
 		interaction=new Interaction();
 		
@@ -596,7 +596,7 @@ public class ProtocolParserTest {
 		interaction.setFromRole(buyer);
 		interaction.getToRoles().add(seller);
 		
-		catchBlock.getInteractions().add(interaction);
+		catchBlock.getBlock().add(interaction);
 		
 		interaction = new Interaction();
 		
@@ -610,7 +610,7 @@ public class ProtocolParserTest {
 		
 		catchBlock.getBlock().add(interaction);
 
-		tryEscape.getCatches().add(catchBlock);
+		tryEscape.getInterrupts().add(catchBlock);
 		
 		protocol.getBlock().add(tryEscape);
 		

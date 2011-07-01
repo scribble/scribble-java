@@ -107,7 +107,7 @@ activityListDef: ( ( ANNOTATION )* activityDef )* ;
 
 activityDef: ( introducesDef | interactionDef | includeDef | runDef | recursionDef ) ';'! | 
 			choiceDef | directedChoiceDef | parallelDef | repeatDef | unorderedDef |
-			recBlockDef | tryEscapeDef | protocolDef ;
+			recBlockDef | globalEscapeDef | protocolDef ;
 
 introducesDef: roleDef 'introduces' roleDef ( ','! roleDef )* ;
 
@@ -150,9 +150,9 @@ includeDef: 'include'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! 
 
 parallelDef: 'parallel'^ blockDef ( 'and' blockDef )* ;
 
-tryEscapeDef: 'try'^ blockDef ( catchBlockDef )+ ;
+globalEscapeDef: 'do'^ blockDef ( interruptDef )+ ;
 
-catchBlockDef: 'catch'^ '('! interactionDef ( '|'! interactionDef )*  ')'! blockDef ;
+interruptDef: 'interrupt'^ blockDef ;
 
 unorderedDef: 'unordered'^ blockDef ;
 

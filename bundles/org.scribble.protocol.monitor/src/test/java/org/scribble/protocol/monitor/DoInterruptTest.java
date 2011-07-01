@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.scribble.protocol.monitor.model.*;
 
 
-public class TryCatchTest {
+public class DoInterruptTest {
 
 	private static final String CONFIRMATION_MESSAGE_TYPE = "Confirmation";
 	private static final String ORDER_MESSAGE_TYPE = "Order";
@@ -38,11 +38,15 @@ public class TryCatchTest {
 		Description pd=new Description();
 		
 		// 0
-		Try tn=new Try();
+		Do tn=new Do();
 		pd.getNode().add(tn);
 		tn.setNextIndex(4);
 		tn.setInnerIndex(1);
-		tn.getCatchIndex().add(3);
+		
+		Path p=new Path();
+		p.setNextIndex(3);
+		//tn.getCatchIndex().add(3);
+		tn.getPath().add(p);
 		
 		// 1
 		ReceiveMessage recvOrder=new ReceiveMessage();

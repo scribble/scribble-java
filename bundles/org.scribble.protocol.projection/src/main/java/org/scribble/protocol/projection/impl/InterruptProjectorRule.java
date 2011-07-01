@@ -15,14 +15,14 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.common.logging.Journal;
 import org.scribble.protocol.model.*;
+import org.scribble.common.logging.Journal;
 
 /**
- * This class provides the Tryimplementation of the
+ * This class provides the Catch implementation of the
  * projector rule.
  */
-public class TryProjectorRule implements ProjectorRule {
+public class InterruptProjectorRule implements ProjectorRule {
 
 	/**
 	 * This method determines whether the projection rule is
@@ -33,7 +33,7 @@ public class TryProjectorRule implements ProjectorRule {
 	 * 				model object
 	 */
 	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == Try.class);
+		return(obj.getClass() == Interrupt.class);
 	}
 	
 	/**
@@ -47,25 +47,22 @@ public class TryProjectorRule implements ProjectorRule {
 	 */
 	public ModelObject project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
-		Try ret=new Try();
-		Try source=(Try)model;
-
+		Interrupt ret=(Interrupt)new Interrupt();
+		Interrupt source=(Interrupt)model;
+		
 		ret.derivedFrom(source);
 		
-		ret.setBlock((Block)context.project(source.getBlock(), role, l));
-
-		for (int i=0; i < source.getCatches().size(); i++) {
-			Catch c=(Catch)
-					context.project(source.getCatches().get(i),
-							role, l);
+		if (source.getBlock() != null) {
 			
-			if (c != null) {
-				ret.getCatches().add(c);
-			}
+			// Project the block
+			ret.setBlock((Block)context.project(source.getBlock(),
+					role, l));
+			ret.getBlock().setParent(ret);
 		}
 		
-		// Shouldn't project try/escape if main block has no activities
 		if (ret.getBlock().getContents().size() == 0) {
+			// Don't return interrupt, as the block
+			// content is not relevant for the projected role
 			ret = null;
 		}
 		
