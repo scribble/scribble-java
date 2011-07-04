@@ -105,7 +105,7 @@ blockDef: '{'! activityListDef '}'! ;
 
 activityListDef: ( ( ANNOTATION )* activityDef )* ;
 
-activityDef: ( introducesDef | interactionDef | includeDef | runDef | recursionDef ) ';'! | 
+activityDef: ( introducesDef | interactionDef | includeDef | runDef | recursionDef | endDef ) ';'! | 
 			choiceDef | directedChoiceDef | parallelDef | repeatDef | unorderedDef |
 			recBlockDef | globalEscapeDef | protocolDef ;
 
@@ -137,6 +137,8 @@ recBlockDef: 'rec'^ labelName blockDef ;
 labelName: ID ;
 
 recursionDef: labelName ;
+
+endDef: 'end'^ ;
 
 runDef: 'run'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? 'from' roleName ;
 

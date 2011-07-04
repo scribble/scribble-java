@@ -630,6 +630,109 @@ public class ProtocolParserTest {
 	}
 	
 	@org.junit.Test
+	public void testEnd() {
+		TestJournal logger=new TestJournal();
+		
+		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/End.spr", logger);
+		
+		assertNotNull(model);
+		
+		assertTrue(logger.getErrorCount() == 0);
+		
+		// Build expected model
+		ProtocolModel expected=new ProtocolModel();
+		
+		TypeImportList imp=new TypeImportList();
+		TypeImport t=new TypeImport();
+		t.setName("Order");
+		imp.getTypeImports().add(t);
+		expected.getImports().add(imp);
+		
+		imp=new TypeImportList();
+		t=new TypeImport();
+		t.setName("Cancel");
+		imp.getTypeImports().add(t);
+		expected.getImports().add(imp);
+		
+		imp=new TypeImportList();
+		t=new TypeImport();
+		t.setName("Invoice");
+		imp.getTypeImports().add(t);
+		expected.getImports().add(imp);
+		
+		Protocol protocol=new Protocol();
+		expected.setProtocol(protocol);
+		
+		protocol.setName("EndExample");
+		
+		ParameterDefinition p=new ParameterDefinition();
+		p.setName("Buyer");
+		protocol.getParameterDefinitions().add(p);
+		
+		Introduces rl=new Introduces();
+		Role buyer=new Role();
+		buyer.setName("Buyer");
+		rl.setIntroducer(buyer);
+		Role seller=new Role();
+		seller.setName("Seller");
+		rl.getRoles().add(seller);
+		
+		protocol.getBlock().add(rl);
+		
+		Choice choice=new Choice();
+		
+		choice.setRole(buyer);
+
+		Block b1=new Block();
+		choice.getBlocks().add(b1);
+		
+		Interaction ib1=new Interaction();
+		
+		MessageSignature ms=new MessageSignature();
+		TypeReference tref=new TypeReference();
+		tref.setName("Order");
+		ms.getTypeReferences().add(tref);
+		ib1.setMessageSignature(ms);
+		
+		ib1.setFromRole(buyer);
+		ib1.getToRoles().add(seller);
+		b1.add(ib1);
+		
+		Block b2=new Block();
+		choice.getBlocks().add(b2);
+		
+		Interaction ib2=new Interaction();
+		
+		ms=new MessageSignature();
+		tref=new TypeReference();
+		tref.setName("Cancel");
+		ms.getTypeReferences().add(tref);
+		ib2.setMessageSignature(ms);
+		
+		ib2.setFromRole(buyer);
+		ib2.getToRoles().add(seller);
+		b2.add(ib2);
+		
+		b2.add(new End());
+		
+		protocol.getBlock().add(choice);
+		
+		Interaction i1=new Interaction();
+		i1.setFromRole(seller);
+		i1.getToRoles().add(buyer);
+		
+		MessageSignature ms2=new MessageSignature();
+		TypeReference tref2=new TypeReference();
+		tref2.setName("Invoice");
+		ms2.getTypeReferences().add(tref2);
+		i1.setMessageSignature(ms2);
+		
+		protocol.getBlock().add(i1);
+		
+		CTKUtil.verify(model, expected);
+	}
+	
+	@org.junit.Test
 	public void testChoice() {
 		TestJournal logger=new TestJournal();
 		

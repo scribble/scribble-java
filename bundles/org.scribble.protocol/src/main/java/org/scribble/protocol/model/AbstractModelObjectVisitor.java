@@ -337,4 +337,13 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
 		process(elem);
 	}
 
+	/**
+	 * This method visits an end statement.
+	 * 
+	 * @param elem The end statement
+	 */
+	public void accept(End elem) {
+		process(elem);
+	}
+	
 }

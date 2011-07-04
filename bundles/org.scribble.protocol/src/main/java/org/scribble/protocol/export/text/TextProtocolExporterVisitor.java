@@ -710,4 +710,21 @@ public class TextProtocolExporterVisitor implements Visitor {
 
 	public void accept(ProtocolImport elem) {
 	}
+	
+	/**
+	 * This method visits an end statement.
+	 * 
+	 * @param elem The end statement
+	 */
+	public void accept(End elem) {
+		for (Annotation annotation : elem.getAnnotations()) {
+			indent();
+			output("[["+annotation.toString()+"]]\r\n");
+		}
+		
+		indent();
+		
+		output("end;\r\n");
+	}
+	
 }

@@ -328,4 +328,12 @@ public class DefaultVisitor implements Visitor {
 	public void accept(ProtocolImport elem) {
 	}
 	
+	/**
+	 * This method visits an end statement.
+	 * 
+	 * @param elem The end statement
+	 */
+	public void accept(End elem) {
+	}
+	
 }
