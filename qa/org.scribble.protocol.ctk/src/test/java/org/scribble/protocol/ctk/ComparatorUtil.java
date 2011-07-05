@@ -55,6 +55,7 @@ public class ComparatorUtil {
 		m_comparators.put(DataType.class, new DataTypeComparator());
 		m_comparators.put(ParameterDefinition.class, new ParameterDefinitionComparator());
 		m_comparators.put(Unordered.class, new UnorderedComparator());
+		m_comparators.put(End.class, new EndComparator());
 	}
 
 	public static Comparator<ModelObject> getComparator(Class<? extends ModelObject> cls) {

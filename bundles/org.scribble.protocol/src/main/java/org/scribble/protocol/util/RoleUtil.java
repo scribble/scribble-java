@@ -453,6 +453,15 @@ public class RoleUtil {
 		public void accept(ProtocolImport elem) {
 		}
 		
+		/**
+		 * This method visits an end statement.
+		 * 
+		 * @param elem The end statement
+		 */
+		public void accept(End elem) {
+			checkActivity(elem);
+		}
+		
 		protected void checkActivity(Activity elem) {
 			
 			if (elem == m_activity) {

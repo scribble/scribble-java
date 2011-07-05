@@ -122,6 +122,9 @@ public class ProtocolProjectorTest {
             {"DirectedChoice.spr", "DirectedChoice@Buyer.spr"},
             {"DirectedChoice.spr", "DirectedChoice@Seller.spr"},
 
+            {"End.spr", "End@Buyer.spr"},
+            {"End.spr", "End@Seller.spr"},
+            
             /*
             {"ESBBroker.spr", "ESBBroker@SupplierTxnProcessor.spr"}
             /*

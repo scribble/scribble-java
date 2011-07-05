@@ -283,6 +283,11 @@ public class CTKUtil {
 				ret.add(elem);
 			}
 
+			@Override
+			public void accept(End elem) {
+				ret.add(elem);
+			}
+
 		});
 		
 		return(ret);

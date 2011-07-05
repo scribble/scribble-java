@@ -1,0 +1,16 @@
+import Order;
+import Cancel;
+import Invoice;
+
+protocol EndExample(role Buyer) {
+	Buyer introduces Seller;
+
+	choice at Buyer {
+		Order from Buyer to Seller;
+	} or {
+		Cancel from Buyer to Seller;
+		end;
+	}
+	
+	Invoice from Seller to Buyer;
+}
