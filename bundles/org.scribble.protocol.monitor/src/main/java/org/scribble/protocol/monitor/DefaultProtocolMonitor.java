@@ -76,7 +76,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 					if (conv.getNestedConversations().remove(main)) {
 						
 						// Terminate other catch blocks
-						for (Session cc : main.getCatchConversations()) {
+						for (Session cc : main.getInterruptConversations()) {
 							if (cc != nested) {
 								conv.getNestedConversations().remove(cc);
 							}
@@ -165,8 +165,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 					
 					if (conv.getNestedConversations().remove(main)) {
 						
-						// Terminate other catch blocks
-						for (Session cc : main.getCatchConversations()) {
+						// Terminate other interrupt blocks
+						for (Session cc : main.getInterruptConversations()) {
 							if (cc != nested) {
 								conv.getNestedConversations().remove(cc);
 							}
@@ -263,8 +263,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 			// parent context
 			for (Path path : ((Do)node).getPath()) {
 				
-				Session catchScope=conv.createCatchConversation(nested, node.getNextIndex());
-				catchScope.addNodeIndex(path.getNextIndex());
+				Session interruptScope=conv.createInterruptConversation(nested, node.getNextIndex());
+				interruptScope.addNodeIndex(path.getNextIndex());
 			}
 			
 		} else if (node.getClass() == org.scribble.protocol.monitor.model.Call.class) {
@@ -340,7 +340,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 		// we want to delay until subsequent activity, or explicit control message,
 		// then will need to change. Issue with subsequent activity is that it
 		// may not be within the containing context.
-		for (Session cc : nested.getCatchConversations()) {
+		for (Session cc : nested.getInterruptConversations()) {
 			conv.removeNestedConversation(cc);
 		}
 	}	

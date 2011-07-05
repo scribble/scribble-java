@@ -36,7 +36,7 @@ public interface Session {
 	
 	public Session createNestedConversation(int returnIndex);
 	
-	public Session createCatchConversation(Session main, int returnIndex);
+	public Session createInterruptConversation(Session main, int returnIndex);
 	
 	public int getReturnIndex();
 	
@@ -44,7 +44,7 @@ public interface Session {
 	
 	public Session getMainConversation();
 	
-	public java.util.List<Session> getCatchConversations();
+	public java.util.List<Session> getInterruptConversations();
 	
 	public void removeNestedConversation(Session context);
 	

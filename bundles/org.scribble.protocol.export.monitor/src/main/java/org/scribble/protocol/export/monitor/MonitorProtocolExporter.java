@@ -931,22 +931,6 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			m_pendingNextIndex.clear();
 			
-			/*
-			java.util.List<Object> store=new java.util.Vector<Object>();
-			
-			for (Interaction interaction : elem.getInteractions()) {
-				// Set the tryNode to establish a catch block 
-				node.getCatchIndex().add(getCurrentIndex());
-				
-				accept(interaction);
-				
-				store.addAll(m_pendingNextIndex);
-				m_pendingNextIndex.clear();
-			}
-			
-			m_pendingNextIndex.addAll(store);
-			*/
-			
 			Path path=new Path();
 			path.setNextIndex(getCurrentIndex());
 			

@@ -45,7 +45,6 @@ public class DoInterruptTest {
 		
 		Path p=new Path();
 		p.setNextIndex(3);
-		//tn.getCatchIndex().add(3);
 		tn.getPath().add(p);
 		
 		// 1

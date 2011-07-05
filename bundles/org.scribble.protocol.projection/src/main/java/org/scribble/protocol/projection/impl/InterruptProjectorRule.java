@@ -19,7 +19,7 @@ import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
 
 /**
- * This class provides the Catch implementation of the
+ * This class provides the Interrupt implementation of the
  * projector rule.
  */
 public class InterruptProjectorRule implements ProjectorRule {

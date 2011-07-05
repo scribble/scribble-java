@@ -455,7 +455,7 @@ public class ProtocolParserTest {
 	}
 	
 	@org.junit.Test
-	public void testTryCatch() {
+	public void testDoInterrupt() {
 		TestJournal logger=new TestJournal();
 		
 		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/DoInterrupt.spr", logger);

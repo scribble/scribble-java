@@ -75,11 +75,11 @@ public class DefaultSession implements Session, java.io.Externalizable {
 		return(ret);
 	}
 	
-	public Session createCatchConversation(Session main, int returnIndex) {
+	public Session createInterruptConversation(Session main, int returnIndex) {
 		DefaultSession ret=new DefaultSession(main, returnIndex);
 		
 		m_nestedConversations.add(ret);
-		main.getCatchConversations().add(ret);
+		main.getInterruptConversations().add(ret);
 		
 		return(ret);
 	}
@@ -104,7 +104,7 @@ public class DefaultSession implements Session, java.io.Externalizable {
 		return(m_mainConversation);
 	}
 	
-	public java.util.List<Session> getCatchConversations() {
+	public java.util.List<Session> getInterruptConversations() {
 		return(m_catchConversations);
 	}
 
