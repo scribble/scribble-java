@@ -70,7 +70,7 @@ public class ParseCommand implements org.scribble.command.Command {
 				}
 			}
 		} else {
-			m_journal.error("PARSE EXPECTING 1 PARAMETER", null);
+			m_journal.error("Parser expects 1 parameter", null);
 		}
 		
 		return(ret);

@@ -110,7 +110,7 @@ public class SimulateCommand implements org.scribble.command.Command {
 				}
 			}
 		} else {
-			System.err.println("SIMULATE EXPECTING 2 PARAMETERS");
+			System.err.println("Simulation expects 2 parameters");
 		}
 		
 		return(ret);

@@ -83,7 +83,7 @@ public class ValidateCommand implements org.scribble.command.Command {
 				}
 			}
 		} else {
-			System.err.println("VALIDATE EXPECTING 1 PARAMETER");
+			System.err.println("Validation expecting 1 parameter");
 		}
 		
 		return(ret);

@@ -109,7 +109,7 @@ public class ProjectCommand implements org.scribble.command.Command {
 				}
 			}
 		} else {
-			m_journal.error("PARSE EXPECTING 1 PARAMETER", null);
+			m_journal.error("Projection expects 2 parameters", null);
 		}
 		
 		return(ret);
