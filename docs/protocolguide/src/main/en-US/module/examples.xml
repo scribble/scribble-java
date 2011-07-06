@@ -19,74 +19,15 @@
 
 		<informalexample>
   			<programlisting>
-<emphasis role="bold">protocol</emphasis> BuyerSeller {
-    <emphasis role="bold">role</emphasis> Buyer, Seller;
+<emphasis role="bold">protocol</emphasis> BuyerSeller (<emphasis role="bold">role</emphasis> Buyer) {
+    Buyer <emphasis role="bold">introduces</emphasis> Seller;
     
     Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller;
     
-    <emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer; {
-        Invoice {
-        }
-        Rejected {
-        }
-	}
-}
-			</programlisting>
-		</informalexample>
-		
-	</section>
-
-	<section>
-		<title>Credit Check Protocol</title>
-		
-		<para>
-		This example shows how a <emphasis>Client</emphasis> role performs a credit check
-		against a <emphasis>CreditAgency</emphasis> role.
-		</para>
-		
-		<informalexample>
-  			<programlisting>
-<emphasis role="bold">protocol</emphasis> CreditCheck {
-    <emphasis role="bold">role</emphasis> Client, CreditAgency;
-    
-    CheckCredit <emphasis role="bold">from</emphasis> Client <emphasis role="bold">to</emphasis> CreditAgency;
-    
-    <emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> CreditAgency <emphasis role="bold">to</emphasis> Client {
-        CreditOk {
-        }
-        NoCredit {
-        }
-    }
-}
-			</programlisting>
-		</informalexample>
-		
-	</section>
-
-	<section>
-		<title>Purchasing Goods Conversation</title>
-		
-		<para>
-		This example shows how a protocol can be defined that 'implements' the
-		previous two protocol examples.
-		</para>
-		
-		<informalexample>
-  			<programlisting>
-<emphasis role="bold">protocol</emphasis> BuyerSellerCreditCheck {
-    <emphasis role="bold">role</emphasis> Buyer, Seller, CreditAgency;
-    
-    Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller;
-    
-    CheckCredit <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> CreditAgency;
-    
-    <emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> CreditAgency <emphasis role="bold">to</emphasis> Seller {
-        CreditOk {
-        	Invoice <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer;
-        }
-        NoCredit {
-        	Rejected <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer;
-        }
+    <emphasis role="bold">choice</emphasis> <emphasis role="bold">at</emphasis> Seller {
+        Invoice <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer;
+    } or {
+        Rejected <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer;
     }
 }
 			</programlisting>

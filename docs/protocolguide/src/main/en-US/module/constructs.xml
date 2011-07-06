@@ -110,8 +110,7 @@
 		"Quote" <emphasis role="bold">as</emphasis> Quote
 		<emphasis role="bold">from</emphasis> "org.scribble";
 
-<emphasis role="bold">protocol</emphasis> PurchaseGoods {
-    <emphasis role="bold">role</emphasis> Buyer, Seller;
+<emphasis role="bold">protocol</emphasis> PurchaseGoods (<emphasis role="bold">role</emphasis> Buyer, <emphasis role="bold">role</emphasis> Seller) {
     ....
 }
 			</programlisting>
@@ -153,8 +152,7 @@
 			
 		<informalexample>
   			<programlisting>
-<emphasis role="bold">protocol</emphasis> PurchaseGoods @ Buyer {
-    <emphasis role="bold">role</emphasis> Seller;
+<emphasis role="bold">protocol</emphasis> PurchaseGoods @ Buyer (<emphasis role="bold">role</emphasis> Seller) {
     ....
 }
 			</programlisting>
@@ -162,30 +160,11 @@
 		
 		<para>
 		This local representation of the protocol defines the behaviour from the <emphasis>Buyer</emphasis>
-		role's perspective. That is why the roles declared within the protocol unit only
+		role's perspective. That is why the roles declared within the protocol's parameter list only
 		include the <emphasis>Seller</emphasis>, as this is the role with which the
 		<emphasis>Buyer</emphasis> is going to communicate.
 		</para>
 
-		<para>
-		The protocol can also be defined with parameters, to allow other protocols to invoke them
-		with specific values. Below is a variation of the previous example, with the roles
-		passed into the protocol instead.
-		</para>
-		
-		<informalexample>
- 			<programlisting>
-<emphasis role="bold">protocol</emphasis> PurchaseGoods(<emphasis role="bold">role</emphasis> Buyer,
-									<emphasis role="bold">role</emphasis> Seller) {
-    ....
-}
-			</programlisting>
-		</informalexample>
-		
-		<para>
-		The way in which another protocol can be invoked will be presented in a subsequent
-		section.
-		</para>
 	</section>
 
 	<section>
@@ -225,7 +204,6 @@
 
 		<informalexample>
  			<programlisting>
-<emphasis role="bold">role</emphasis> Customer, Supplier;
 Order <emphasis role="bold">from</emphasis> Customer <emphasis role="bold">to</emphasis> Supplier;
 			</programlisting>
 		</informalexample>
@@ -259,6 +237,41 @@ placeOrder(Order) <emphasis role="bold">from</emphasis> Customer <emphasis role=
 			
 	</section>
 	
+	<section>
+		<title>Introduces</title>
+
+		<para>
+		In the above protocol definition example, the roles for use within the protocol are passed in as
+		parameters to the protocol. This means that the roles have previously been declared in a higher
+		level (or outer) protocol and are being made available (or bound to) the current protocol.
+		</para>
+
+		<para>
+		However if a protocol needs to establish communications with a new participant, playing a role
+		within the protocol, then we need a mechanism for 'introducing' them into the conversation. This
+		is achieved using the <emphasis role="bold">introduces</emphasis> construct:
+		</para>
+
+		<informalexample>
+  			<programlisting>
+&lt;Role&gt; [<emphasis role="bold">introduces</emphasis> &lt;Role&gt; ( "," &lt;Role&gt; )* )
+			</programlisting>
+		</informalexample>
+	
+		<para>
+		Using this construct, an existing role can invite new roles into the conversation, which can subsequently
+		be used for interactions between the introducing and introduced roles. For example,
+		</para>
+
+		<informalexample>
+ 			<programlisting>
+Customer <emphasis role="bold">introduces</emphasis> Supplier;
+Order <emphasis role="bold">from</emphasis> Customer <emphasis role="bold">to</emphasis> Supplier;
+			</programlisting>
+		</informalexample>
+
+	</section>
+
 	<section>
 		<title>Sequence</title>
 		
@@ -307,64 +320,61 @@ placeOrder(Order) <emphasis role="bold">from</emphasis> Customer <emphasis role=
 		roles will be the decision maker, initiating the interaction, and the other role
 		will be the recipient, reacting to the specific message received.
 		</para>
-		
+
 		<para>
-		The syntax for the <emphasis role="bold">choice</emphasis> construct is:
+		There are two variations of the choice construct.
 		</para>
+
+		<section>
+			<title>Directed Choice</title>
+
+			<para>
+			The first provides a 'directed' choice, where the choice construct defines the
+			source and destination roles, and therefore each path only needs to define the
+			message signature that triggers it.
+			</para>
 		
-		<informalexample>
- 			<programlisting>
-<emphasis role="bold">choice</emphasis> [<emphasis role="bold">from</emphasis> &lt;Role&gt;] [<emphasis role="bold">to</emphasis> &lt;Role&gt; ( "," &lt;Role&gt; )* ] "{"
+			<para>
+			The syntax for the directed choice is:
+			</para>
+		
+			<informalexample>
+ 				<programlisting>
+<emphasis role="bold">from</emphasis> &lt;Role&gt; <emphasis role="bold">to</emphasis> &lt;Role&gt; ( "," &lt;Role&gt; )* "{"
 	&lt;MessageSignature&gt; ":"
     	...
     	
 	&lt;MessageSignature&gt; ":"
     	...
 "}"
-     		</programlisting>
-		</informalexample>
+     				</programlisting>
+			</informalexample>
 	
-		<para>
-		For example,
-        </para>
+			<para>
+			For example,
+			</para>
 			
-		<informalexample>
-			<programlisting>
+			<informalexample>
+				<programlisting>
 CreditCheck <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> CreditAgency;
 
-<emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> CreditAgency <emphasis role="bold">to</emphasis> Seller {
+<emphasis role="bold">from</emphasis> CreditAgency <emphasis role="bold">to</emphasis> Seller {
     CreditRefused:
     
     CreditOk:
 }
-			</programlisting>
-		</informalexample>
-		
-		<para>
-		For example,
-        </para>
-			
-		<informalexample>
-			<programlisting>
-CreditCheck <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> CreditAgency;
+				</programlisting>
+			</informalexample>
 
-<emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> CreditAgency <emphasis role="bold">to</emphasis> Seller {
-    CreditRefused:
-    
-    CreditOk:
-}
-			</programlisting>
-		</informalexample>
-		
-		<para>
-		Another example is,
-        </para>
+			<para>
+			Another example is,
+	       		</para>
 			
-		<informalexample>
-			<programlisting>
+			<informalexample>
+				<programlisting>
 Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Broker;
 
-<emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> Broker <emphasis role="bold">to</emphasis> Buyer {
+<emphasis role="bold">from</emphasis> Broker <emphasis role="bold">to</emphasis> Buyer {
     validProduct():
         Order <emphasis role="bold">from</emphasis> Broker <emphasis role="bold">to</emphasis> Supplier;
         Confirmation <emphasis role="bold">from</emphasis> Supplier <emphasis role="bold">to</emphasis> Broker;
@@ -372,43 +382,103 @@ Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emph
 
     invalidProduct(UnknownProduct):
 }
-			</programlisting>
-		</informalexample>
+				</programlisting>
+			</informalexample>
 		
-		<para>
-		In this example, the first choice path defines a message signature with only a label (or
-		operation name). The significance of this is that, depending upon the message transport
-		being used, this label may not be carried from the <emphasis>Broker</emphasis> to
-		the <emphasis>Buyer</emphasis>. The possible scenarios are:
-		</para>
+			<para>
+			In this example, the first choice path defines a message signature with only a label (or
+			operation name). The significance of this is that, depending upon the message transport
+			being used, this label may not be carried from the <emphasis>Broker</emphasis> to
+			the <emphasis>Buyer</emphasis>. The possible scenarios are:
+			</para>
 		
-		<itemizedlist>
-			<listitem>
-			Label sent as a control message
+			<itemizedlist>
+				<listitem>
+				Label sent as a control message
+				<para>
+				If supported by the message transport, the label can be immediately issued as an
+				RPC operation with no message content.
+				</para>
+				</listitem>
+				<listitem>
+				Label piggy backed on next relevant message
+				<para>
+				If the transport is message based, as opposed to RPC based, then the next message
+				carried from the <emphasis>Broker</emphasis> to <emphasis>Buyer</emphasis> can
+				include some additional metadata to define the label.
+				</para>
+				</listitem>
+				<listitem>
+				Label is ignored
+				<para>
+				If the transport is message based, then it is possible to use the next message
+				between the <emphasis>Broker</emphasis> and <emphasis>Buyer</emphasis> to determine
+				which path has been taken. In the example above, the first path would be distinguished
+				based on observing the <emphasis>OrderDetails</emphasis> message, and the second path
+				the <emphasis>UnknownProduct</emphasis> message.
+				</para>
+				</listitem>
+			</itemizedlist>
+		</section>
+
+		<section>
+			<title>Located Choice</title>
+
 			<para>
-			If supported by the message transport, the label can be immediately issued as an
-			RPC operation with no message content.
+			The second choice variation provides a 'located' choice, where the choice construct defines just the
+			source (i.e. decision making) role. This construct is more liberal, allowing more flexible composition
+			as the interactions that trigger each path are derived from the contents of each path.
 			</para>
-			</listitem>
-			<listitem>
-			Label piggy backed on next relevant message
+		
 			<para>
-			If the transport is message based, as opposed to RPC based, then the next message
-			carried from the <emphasis>Broker</emphasis> to <emphasis>Buyer</emphasis> can
-			include some additional metadata to define the label.
+			The syntax for the located choice is:
 			</para>
-			</listitem>
-			<listitem>
-			Label is ignored
+		
+			<informalexample>
+ 				<programlisting>
+<emphasis role="bold">choice</emphasis> <emphasis role="bold">at</emphasis> &lt;Role&gt; "{"
+    	...
+( "}" <emphasis role="bold">or</emphasis> "{"
+    	... )+
+"}"
+     				</programlisting>
+			</informalexample>
+	
 			<para>
-			If the transport is message based, then it is possible to use the next message
-			between the <emphasis>Broker</emphasis> and <emphasis>Buyer</emphasis> to determine
-			which path has been taken. In the example above, the first path would be distinguished
-			based on observing the <emphasis>OrderDetails</emphasis> message, and the second path
-			the <emphasis>UnknownProduct</emphasis> message.
+			For example,
 			</para>
-			</listitem>
-		</itemizedlist>
+			
+			<informalexample>
+				<programlisting>
+CreditCheck <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> CreditAgency;
+
+<emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> CreditAgency {
+    CreditRefused <emphasis role="bold">from</emphasis> CreditAgency <emphasis role="bold">to</emphasis> Seller;
+} <emphasis role="bold">or</emphasis> {
+    CreditOk <emphasis role="bold">from</emphasis> CreditAgency <emphasis role="bold">to</emphasis> Seller;
+}
+				</programlisting>
+			</informalexample>
+
+			<para>
+			Another example is,
+	       		</para>
+			
+			<informalexample>
+				<programlisting>
+Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Broker;
+
+<emphasis role="bold">choice</emphasis> <emphasis role="bold">from</emphasis> Broker {
+    Order <emphasis role="bold">from</emphasis> Broker <emphasis role="bold">to</emphasis> Supplier;
+    Confirmation <emphasis role="bold">from</emphasis> Supplier <emphasis role="bold">to</emphasis> Broker;
+    OrderDetails <emphasis role="bold">from</emphasis> Broker <emphasis role="bold">to</emphasis> Buyer;
+} <emphasis role="bold">or</emphasis> {
+    invalidProduct(UnknownProduct) <emphasis role="bold">from</emphasis> Broker <emphasis role="bold">to</emphasis> Buyer;
+}
+				</programlisting>
+			</informalexample>
+		
+		</section>
 	</section>
 	
 	<section>
@@ -420,12 +490,12 @@ Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emph
 		</para>
 		
 		<para>
-		The syntax for the <emphasis role="bold">par</emphasis> construct is:
+		The syntax for the <emphasis role="bold">parallel</emphasis> construct is:
 		</para>
 		
 		<informalexample>
   			<programlisting>
-<emphasis role="bold">par</emphasis> "{"
+<emphasis role="bold">parallel</emphasis> "{"
     ...
 ( "}" <emphasis role="bold">and</emphasis> "{"
     ... )+
@@ -439,7 +509,7 @@ Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emph
 
 		<informalexample>
   			<programlisting>
-<emphasis role="bold">par</emphasis> {
+<emphasis role="bold">parallel</emphasis> {
     CheckStock <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Wholesaler;
     StockAvailability <emphasis role="bold">from</emphasis> Wholesaler <emphasis role="bold">to</emphasis> Seller;
 } <emphasis role="bold">and</emphasis> {
@@ -507,7 +577,7 @@ Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emph
 		
 		<informalexample>
   			<programlisting>
-<emphasis role="bold">repeat</emphasis> "@" &lt;Role&gt; { "," &lt;Role&gt; }* "{"
+<emphasis role="bold">repeat</emphasis> <emphasis role="bold">at</emphasis> &lt;Role&gt; { "," &lt;Role&gt; }* "{"
     ...
 "}"
      		</programlisting>
@@ -529,7 +599,7 @@ Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emph
 
 		<informalexample>
   			<programlisting>
-<emphasis role="bold">repeat</emphasis> @ Buyer {
+<emphasis role="bold">repeat</emphasis> <emphasis role="bold">at</emphasis> Buyer {
     Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller;
     Invoice <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer;
 }
@@ -553,7 +623,7 @@ Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emph
 		
 		<informalexample>
   			<programlisting>
-rec &lt;Label&gt; "{"
+<emphasis role="bold">rec</emphasis> &lt;Label&gt; "{"
     ...
     &lt;Label&gt; ";"
 "}"
@@ -568,7 +638,7 @@ rec &lt;Label&gt; "{"
 
 		<informalexample>
   			<programlisting>
-rec Transaction {
+<emphasis role="bold">rec</emphasis> Transaction {
     ...
 	Transaction;
 }
@@ -582,9 +652,7 @@ rec Transaction {
 		
 		<para>
 		The 'global escape' concept provides a means for breaking out of a particular
-		scope based on an interaction. It is similar to the structure of a try/catch
-		mechanism used in traditional programming languages for dealing with exceptions,
-		and therefore the same construct has been used.
+		scope based on an interaction.
 		</para>
 		
 		<para>
@@ -593,16 +661,16 @@ rec Transaction {
 		
 		<informalexample>
   			<programlisting>
-<emphasis role="bold">try</emphasis> "{"
+<emphasis role="bold">do</emphasis> "{"
 	...
-( "}" <emphasis role="bold">catch</emphasis> "(" &lt;MessageSignature&gt; <emphasis role="bold">from</emphasis> &lt;Role&gt; <emphasis role="bold">to</emphasis> &lt;Role&gt; ")" "{"
+( "}" <emphasis role="bold">interrupt</emphasis> "{"
 	... )+
 "}"
      		</programlisting>
 		</informalexample>
 	
 		<para>
-		In the following example, the body of the <emphasis>try</emphasis> block is enacted,
+		In the following example, the body of the <emphasis>do</emphasis> block is enacted,
 		involving an interaction between a <emphasis>Buyer</emphasis> and <emphasis>Seller</emphasis>,
 		followed by some other activities.
 		</para>
@@ -610,21 +678,28 @@ rec Transaction {
 		<para>
 		During this scoped set of activities, if the <emphasis>Seller</emphasis> returns an
 		<emphasis>OutOfStock</emphasis> message, then it will cause the flow of control to
-		move to the first catch block. However if the <emphasis>Buyer</emphasis> sends an
+		move to the first interrupt block. However if the <emphasis>Buyer</emphasis> sends an
 		<emphasis>OrderExpired</emphasis> or <emphasis>OrderCancelled</emphasis> message,
-		then the flow will move to the second catch block.
+		then the flow will move to the second interrupt block.
 		</para>
 
 		<informalexample>
   			<programlisting>
-<emphasis role="bold">try</emphasis> {
-	Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller;
-	...
-} <emphasis role="bold">catch</emphasis> (OutOfStock <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer) {
-	...
-} <emphasis role="bold">catch</emphasis> (expire(OrderExpired) <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller 
-				| OrderCancelled <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller) {
-	...
+<emphasis role="bold">do</emphasis> {
+    Order <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller;
+    ...
+
+} <emphasis role="bold">interrupt</emphasis> {
+    OutOfStock <emphasis role="bold">from</emphasis> Seller <emphasis role="bold">to</emphasis> Buyer;
+    ...
+
+} <emphasis role="bold">interrupt</emphasis> {
+    <emphasis role="bold">choice</emphasis> <emphasis role="bold">at</emphasis> Buyer {
+        expire(OrderExpired) <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller;
+    } <emphasis role="bold">or</emphasis> {
+        OrderCancelled <emphasis role="bold">from</emphasis> Buyer <emphasis role="bold">to</emphasis> Seller;
+    }
+    ...
 }
 			</programlisting>
 		</informalexample>
@@ -647,7 +722,7 @@ rec Transaction {
 		</para>
 		
 		<para>
-		There are three ways in which another protocol can be composed. These are:
+		There are two ways in which another protocol can be composed. These are:
 		</para>
 		
 		<itemizedlist>
@@ -664,12 +739,6 @@ rec Transaction {
 			The external variation defines the sub-protocol in a separate
 			protocol definition, which is then referenced within the
 			composing protocol.
-			</para>
-			</listitem>
-			<listitem>
-			Inline
-			<para>
-			The inline option defines an anonymous protocol.
 			</para>
 			</listitem>
 		</itemizedlist>
@@ -693,7 +762,7 @@ rec Transaction {
 
 		<informalexample>
   			<programlisting>
-<emphasis role="bold">role</emphasis> Client, Supplier;
+Client <emphasis role="bold">introduces</emphasis> Supplier;
 ....
 <emphasis role="bold">run</emphasis> PlaceOrder(Client, Supplier);
 ....
@@ -708,18 +777,6 @@ rec Transaction {
 		that the composed protocol definition (i.e. PlaceOrder in this case), would
 		be stored in a separate definition.
 		</para>
-		
-		<para>
-		The syntax for the inline <emphasis>run</emphasis> construct is:
-		</para>
-			
-		<informalexample>
-  			<programlisting>
-<emphasis role="bold">run</emphasis> <emphasis role="bold">protocol</emphasis> "{"
-    ...
-"}"
-     		</programlisting>
-		</informalexample>
 	
 	</section>
 
