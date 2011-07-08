@@ -41,6 +41,7 @@ public class ProtocolProjectorTest {
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
 
+        		/*
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0          
             {"Annotation.spr", "Annotation@Seller.spr"}, // 1
 
@@ -124,6 +125,11 @@ public class ProtocolProjectorTest {
 
             {"End.spr", "End@Buyer.spr"},
             {"End.spr", "End@Seller.spr"},
+
+            {"ESBBroker.spr", "ESBBroker@Broker.spr"},
+            */
+            
+            {"ESBBroker.spr", "ESBBroker@CreditAgency.spr"},
             
             /*
             {"ESBBroker.spr", "ESBBroker@SupplierTxnProcessor.spr"}

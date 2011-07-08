@@ -191,8 +191,7 @@ public class RoleUtil {
 			
 			public boolean start(Protocol elem) {
 				
-				if (role.equals(protocol.getRole()) ||
-						protocol.getParameterDefinition(role.getName()) != null) {
+				if (protocol.getParameterDefinition(role.getName()) != null) {
 					blocks.add(elem.getBlock());
 				}
 				
