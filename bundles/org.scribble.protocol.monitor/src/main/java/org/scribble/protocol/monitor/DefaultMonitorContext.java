@@ -25,11 +25,12 @@ public class DefaultMonitorContext implements MonitorContext {
 	 * This method determines whether the supplied message is valid
 	 * in respect of the supplied message node.
 	 * 
+	 * @param session The session
 	 * @param mesgNode The message node
 	 * @param mesg The message to be validated
 	 * @return Whether the message is valid
 	 */
-	public Result validate(MessageNode mesgNode, Message mesg) {
+	public Result validate(Session session, MessageNode mesgNode, Message mesg) {
 		// Do direct comparison for now, but could also check for derived
 		// types
 		Result ret=Result.NOT_HANDLED;

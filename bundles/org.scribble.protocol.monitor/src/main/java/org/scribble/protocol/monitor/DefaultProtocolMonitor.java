@@ -241,7 +241,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 					node.getOtherRole().equals(role)) && (sig.getOperator() == null ||
 							node.getOperator() == null ||
 							node.getOperator().equals(sig.getOperator()))) {
-			ret = context.validate(node, sig);
+			ret = context.validate(conv, node, sig);
 		}
 		
 		return(ret);

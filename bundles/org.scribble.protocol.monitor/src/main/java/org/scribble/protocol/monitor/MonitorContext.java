@@ -35,10 +35,11 @@ public interface MonitorContext {
 	 * the relevant information from the monitoring environment's
 	 * validation.
 	 * 
+	 * @param session The session
 	 * @param mesgNode The message node
 	 * @param mesg The message to be validated
 	 * @return The result
 	 */
-	public Result validate(MessageNode mesgNode, Message mesg);
+	public Result validate(Session session, MessageNode mesgNode, Message mesg);
 	
 }
