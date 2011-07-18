@@ -42,7 +42,7 @@ public interface Session {
 	
 	public java.util.List<Session> getNestedConversations();
 	
-	public Session getMainConversation();
+	public Session getParentConversation();
 	
 	public java.util.List<Session> getInterruptConversations();
 	

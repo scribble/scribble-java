@@ -70,8 +70,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 				// If nested conversation has a 'main' conversation, then check that it
 				// has been terminated
 				// TODO: Issue is efficiency of doing this check for each message?
-				if (nested.getMainConversation() != null) {
-					Session main=nested.getMainConversation();
+				if (nested.getParentConversation() != null) {
+					Session main=nested.getParentConversation();
 					
 					if (conv.getNestedConversations().remove(main)) {
 						
@@ -160,8 +160,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 				// If nested conversation has a 'main' conversation, then check that it
 				// has been terminated
 				// TODO: Issue is efficiency of doing this check for each message?
-				if (nested.getMainConversation() != null) {
-					Session main=nested.getMainConversation();
+				if (nested.getParentConversation() != null) {
+					Session main=nested.getParentConversation();
 					
 					if (conv.getNestedConversations().remove(main)) {
 						

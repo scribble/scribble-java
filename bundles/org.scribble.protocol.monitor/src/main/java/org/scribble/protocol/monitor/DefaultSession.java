@@ -27,11 +27,13 @@ import java.io.ObjectOutput;
  */
 public class DefaultSession implements Session, java.io.Externalizable {
 
+	private static final int VERSION=1;
+	
 	private java.util.List<Integer> m_nodeIndexes=new java.util.Vector<Integer>();
 	private int m_returnIndex=-1;
-	private Session m_mainConversation=null;
+	private Session m_parentConversation=null;
 	private java.util.List<Session> m_nestedConversations=new java.util.Vector<Session>();
-	private java.util.List<Session> m_catchConversations=new java.util.Vector<Session>();
+	private java.util.List<Session> m_interruptConversations=new java.util.Vector<Session>();
 
 	public DefaultSession() {
 	}
@@ -41,7 +43,7 @@ public class DefaultSession implements Session, java.io.Externalizable {
 	}
 	
 	protected DefaultSession(Session main, int returnIndex) {
-		m_mainConversation = main;
+		m_parentConversation = main;
 		m_returnIndex = returnIndex;
 	}
 	
@@ -100,22 +102,59 @@ public class DefaultSession implements Session, java.io.Externalizable {
 		m_nestedConversations.remove(context);
 	}
 	
-	public Session getMainConversation() {
-		return(m_mainConversation);
+	public Session getParentConversation() {
+		return(m_parentConversation);
 	}
 	
 	public java.util.List<Session> getInterruptConversations() {
-		return(m_catchConversations);
+		return(m_interruptConversations);
 	}
 
-	public void readExternal(ObjectInput arg0) throws IOException,
+	public void readExternal(ObjectInput ois) throws IOException,
 			ClassNotFoundException {
-		// TODO Auto-generated method stub
+		@SuppressWarnings("unused")
+		int version=ois.readInt();
 		
+		int nodeIndexes=ois.readInt();
+		for (int i=0; i < nodeIndexes; i++) {
+			m_nodeIndexes.add(ois.readInt());
+		}
+		
+		m_returnIndex = ois.readInt();
+		
+		m_parentConversation=(Session)ois.readObject();
+		
+		int nestedSize=ois.readInt();
+		for (int i=0; i < nestedSize; i++) {
+			m_nestedConversations.add((Session)ois.readObject());
+		}
+		
+		int interruptSize=ois.readInt();
+		for (int i=0; i < interruptSize; i++) {
+			m_interruptConversations.add((Session)ois.readObject());
+		}
 	}
 
-	public void writeExternal(ObjectOutput arg0) throws IOException {
-		// TODO Auto-generated method stub
+	public void writeExternal(ObjectOutput oos) throws IOException {
+		oos.writeInt(VERSION);
 		
+		oos.writeInt(m_nodeIndexes.size());
+		for (int index : m_nodeIndexes) {
+			oos.writeInt(index);
+		}
+		
+		oos.writeInt(m_returnIndex);
+		
+		oos.writeObject(m_parentConversation);
+		
+		oos.writeInt(m_nestedConversations.size());
+		for (Session session : m_nestedConversations) {
+			oos.writeObject(session);
+		}
+		
+		oos.writeInt(m_interruptConversations.size());
+		for (Session session : m_interruptConversations) {
+			oos.writeObject(session);
+		}
 	}
 }
