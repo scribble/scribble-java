@@ -114,20 +114,23 @@ public class ProtocolProjectorTest {
             {"SingleInteraction.spr", "SingleInteraction@Seller.spr"},
             {"SingleInteractionXSDImport.spr", "SingleInteractionXSDImport@Buyer.spr"},
             {"SingleInteractionXSDImport.spr", "SingleInteractionXSDImport@Seller.spr"},
+
             {"DoInterrupt.spr", "DoInterrupt@Buyer.spr"},
             {"DoInterrupt.spr", "DoInterrupt@Seller.spr"},
             {"Unordered.spr", "Unordered@Buyer.spr"},
             {"Unordered.spr", "Unordered@Seller.spr"},
             {"PurchaseGoods3.spr", "PurchaseGoods3@Buyer.spr"},
             {"PurchaseGoods3.spr", "PurchaseGoods3@Store.spr"},
+            {"PurchaseGoods3.spr", "PurchaseGoods3@Logistics.spr"},
+            */
             {"DirectedChoice.spr", "DirectedChoice@Buyer.spr"},
             {"DirectedChoice.spr", "DirectedChoice@Seller.spr"},
 
+            /*
             {"End.spr", "End@Buyer.spr"},
             {"End.spr", "End@Seller.spr"},
 
             {"ESBBroker.spr", "ESBBroker@Broker.spr"},
-            */
             
             {"ESBBroker.spr", "ESBBroker@CreditAgency.spr"},
             

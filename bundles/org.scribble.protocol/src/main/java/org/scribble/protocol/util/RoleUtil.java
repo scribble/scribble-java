@@ -217,7 +217,9 @@ public class RoleUtil {
 			}
 			
 			public boolean start(DirectedChoice elem) {
-				if (role.equals(elem.getFromRole()) || elem.getToRoles().contains(role)) {
+				if (role.equals(elem.getFromRole()) || elem.getToRoles().contains(role) ||
+						((elem.getFromRole() == null || elem.getToRoles().size() == 0) &&
+								role.equals(elem.enclosingProtocol().getRole()))) {
 					blocks.add((Block)elem.getParent());
 				}
 				
