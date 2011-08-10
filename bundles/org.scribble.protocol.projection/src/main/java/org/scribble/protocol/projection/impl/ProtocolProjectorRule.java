@@ -142,11 +142,10 @@ public class ProtocolProjectorRule implements ProjectorRule {
 							return(true);
 						}
 						
-						public boolean start(Run run) {
+						public void accept(Run run) {
 							if (run.getParameter(role.getName()) != null) {
 								acts.add(run);
 							}
-							return(true);
 						}
 						
 						public void accept(Include elem) {
