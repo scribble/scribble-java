@@ -2,7 +2,7 @@ import M1;
 import M2;
 import M3;
 
-protocol Parallel@Seller(role Buyer) {
+protocol Parallel at Seller(role Buyer) {
 
 	parallel {
 		M1 from Buyer;

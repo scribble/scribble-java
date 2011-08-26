@@ -1,5 +1,5 @@
 import xsd "bookingReference" as BookingReference, "buy" as Buy, "cancel" as Cancel, "CreditCheckRequest" as CreditInformation, "CreditCheckInvalid" as CreditInvalid, "CreditCheckOk" as CreditValid, "enquiry" as Enquiry, "orderConfirmed" as OrderConfirmed, "orderRejected" as OrderRejected, "quote" as Quote, "quoteList" as QuoteList, "requestForQuote" as RequestForQuote;
-protocol ESBBrokerProcess @ SupplierTxnProcessor {
+protocol ESBBrokerProcess at SupplierTxnProcessor {
 	Broker introduces SupplierTxnProcessor;
 
 	confirm(OrderConfirmed) from Broker;

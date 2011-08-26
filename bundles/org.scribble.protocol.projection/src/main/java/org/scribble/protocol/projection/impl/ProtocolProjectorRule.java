@@ -148,7 +148,7 @@ public class ProtocolProjectorRule implements ProjectorRule {
 							}
 						}
 						
-						public void accept(Include elem) {
+						public void accept(Inline elem) {
 							if (elem.getParameter(role.getName()) != null) {
 								acts.add(elem);
 							}

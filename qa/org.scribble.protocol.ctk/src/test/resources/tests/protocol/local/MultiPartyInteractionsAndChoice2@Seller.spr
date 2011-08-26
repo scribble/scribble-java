@@ -3,7 +3,7 @@ import Confirmation;
 import OutOfStock;
 import InvalidProduct;
 
-protocol MultiPartyInteractionsAndChoice2@Seller {
+protocol MultiPartyInteractionsAndChoice2 at Seller {
 	Broker introduces Seller;
 
 	Order from Broker;

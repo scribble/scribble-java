@@ -1,5 +1,5 @@
 import Order;
 
-protocol SingleInteraction@Seller (role Buyer) {
+protocol SingleInteraction at Seller (role Buyer) {
 	Order from Buyer;
 }

@@ -3,7 +3,7 @@ import Cancel;
 import Invoice;
 import Cancelled;
 
-protocol ChoiceMerge@Seller (role Broker) {
+protocol ChoiceMerge at Seller (role Broker) {
 
 	choice {
 		Order from Broker;

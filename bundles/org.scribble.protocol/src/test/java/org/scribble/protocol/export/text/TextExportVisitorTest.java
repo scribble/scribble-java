@@ -315,7 +315,7 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="protocol "+elem.getName()+" @ "+elem.getRole().getName()+" {\r\n}\r\n";
+		String expected="protocol "+elem.getName()+" at "+elem.getRole().getName()+" {\r\n}\r\n";
 		
 		if (str.equals(expected) == false) {
 			fail("Expected:\r\n"+expected+"\r\nGot:\r\n"+str);
@@ -909,7 +909,7 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="repeat @ "+p1.getName()+","+p2.getName()+" {\r\n"+
+		String expected="repeat at "+p1.getName()+","+p2.getName()+" {\r\n"+
 				"\t"+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n}\r\n";
 		
 		if (str.equals(expected) == false) {
@@ -968,7 +968,7 @@ public class TextExportVisitorTest {
 		
 		String expected="[["+annotation1.toString()+"]]\r\n"+
 				"[["+annotation2.toString()+"]]\r\n"+
-				"repeat @ "+p1.getName()+","+p2.getName()+" {\r\n"+
+				"repeat at "+p1.getName()+","+p2.getName()+" {\r\n"+
 				"\t"+ref1.getName()+" from "+p1.getName()+" to "+p2.getName()+";\r\n}\r\n";
 		
 		if (str.equals(expected) == false) {
@@ -1293,7 +1293,7 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="run "+pref.getName()+"@"+pref.getRole().getName()+";\r\n";
+		String expected="run "+pref.getName()+" at "+pref.getRole().getName()+";\r\n";
 		
 		if (str.equals(expected) == false) {
 			fail("Expected:\r\n"+expected+"\r\nGot:\r\n"+str);
@@ -1385,7 +1385,7 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="run "+pref.getName()+"@"+pref.getRole().getName()+
+		String expected="run "+pref.getName()+" at "+pref.getRole().getName()+
 						"("+db1.getName()+", "+db2.getName()+");\r\n";
 		
 		if (str.equals(expected) == false) {
@@ -1451,7 +1451,7 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="run "+pref.getName()+"@"+pref.getRole().getName()+";\r\n";
+		String expected="run "+pref.getName()+" at "+pref.getRole().getName()+";\r\n";
 		
 		if (str.equals(expected) == false) {
 			fail("Expected:\r\n"+expected+"\r\nGot:\r\n"+str);
@@ -1541,7 +1541,7 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="run "+pref.getName()+"@"+pref.getRole().getName()+
+		String expected="run "+pref.getName()+" at "+pref.getRole().getName()+
 						"("+db1.getName()+", "+db2.getName()+");\r\n";
 		
 		if (str.equals(expected) == false) {

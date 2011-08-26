@@ -1,4 +1,4 @@
-protocol Repeat2@Buyer{
+protocol Repeat2 at Buyer{
 	Buyer introduces Store;
 
 	buy(BuyRequest) to Store;

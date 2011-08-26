@@ -4,7 +4,7 @@ import Finish;
 protocol Repeat (role Buyer) {
 	Buyer introduces Seller;
 
-	repeat @ Buyer {
+	repeat at Buyer {
 		Order from Buyer to Seller;
 	}
 	

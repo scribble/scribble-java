@@ -1,6 +1,6 @@
 import Order;
 
-protocol SingleInteraction@Buyer {
+protocol SingleInteraction at Buyer {
 	Buyer introduces Seller;
 
 	Order to Seller;

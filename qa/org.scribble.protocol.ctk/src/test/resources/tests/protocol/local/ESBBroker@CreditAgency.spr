@@ -1,11 +1,11 @@
 import xsd "bookingReference" as BookingReference, "buy" as Buy, "cancel" as Cancel, "CreditCheckRequest" as CreditInformation, "CreditCheckInvalid" as CreditInvalid, "CreditCheckOk" as CreditValid, "enquiry" as Enquiry, "orderConfirmed" as OrderConfirmed, "orderRejected" as OrderRejected, "quote" as Quote, "quoteList" as QuoteList, "requestForQuote" as RequestForQuote;
-protocol ESBBrokerProcess@CreditAgency(role Buyer) {
+protocol ESBBrokerProcess at CreditAgency(role Buyer) {
 	choice {
-		run CompleteTransaction@CreditAgency(Buyer, Broker) from Buyer;
+		run CompleteTransaction at CreditAgency(Buyer, Broker) from Buyer;
 	} or {
 	}
 
-	protocol CompleteTransaction@CreditAgency(role Buyer, role Broker) {
+	protocol CompleteTransaction at CreditAgency(role Buyer, role Broker) {
 		checkCredit(CreditInformation) from Broker;
 
 		choice at CreditAgency {

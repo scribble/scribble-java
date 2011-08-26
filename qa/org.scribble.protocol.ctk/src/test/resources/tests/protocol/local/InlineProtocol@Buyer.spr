@@ -1,8 +1,8 @@
 import Order;
 import protocol Sub from "ReferencedExternalProtocol.spr";
 
-protocol IncludeProtocol@Buyer {
+protocol InlineProtocol at Buyer {
 	Buyer introduces Seller;
 
-	include Sub@SubBuyer(Seller);
+	inline Sub at SubBuyer(Seller);
 }

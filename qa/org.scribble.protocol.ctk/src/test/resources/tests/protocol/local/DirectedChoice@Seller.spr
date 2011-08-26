@@ -2,7 +2,7 @@ import Order;
 import Cancel;
 import Invoice;
 
-protocol SingleInteraction@Seller (role Buyer) {
+protocol SingleInteraction at Seller (role Buyer) {
 
 	from Buyer {
 		Order:

@@ -2,7 +2,7 @@
 import Order;
 
 [[ Annotation before top protocol ]]
-protocol SingleInteraction@Buyer {
+protocol SingleInteraction at Buyer {
 
 	[[ Annotation before role list ]]
 	Buyer introduces Seller;

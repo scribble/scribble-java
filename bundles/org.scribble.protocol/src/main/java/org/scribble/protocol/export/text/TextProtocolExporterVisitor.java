@@ -285,7 +285,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 		output("protocol "+elem.getName());
 		
 		if (elem.getRole() != null) {
-			output(" @ "+elem.getRole().getName());
+			output(" at "+elem.getRole().getName());
 		}
 		
 		if (elem.getParameterDefinitions().size() > 0) {
@@ -491,7 +491,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 		output("run "+elem.getProtocolReference().getName());
 		
 		if (elem.getProtocolReference().getRole() != null) {
-			output("@"+elem.getProtocolReference().getRole().getName());
+			output(" at "+elem.getProtocolReference().getRole().getName());
 		}
 		
 		if (elem.getParameters().size() > 0) {
@@ -591,7 +591,7 @@ public class TextProtocolExporterVisitor implements Visitor {
 		output("repeat");
 		
 		if (elem.getRoles().size() > 0) {
-			output(" @ ");
+			output(" at ");
 			
 			for (int i=0; i < elem.getRoles().size(); i++) {
 				if (i > 0) {
@@ -702,7 +702,35 @@ public class TextProtocolExporterVisitor implements Visitor {
 	public void end(Interrupt elem) {
 	}
 
-	public void accept(Include elem) {
+	public void accept(Inline elem) {
+		for (Annotation annotation : elem.getAnnotations()) {
+			indent();
+			output("[["+annotation.toString()+"]]\r\n");
+		}
+
+		indent();
+		
+		output("inline "+elem.getProtocolReference().getName());
+		
+		if (elem.getProtocolReference().getRole() != null) {
+			output(" at "+elem.getProtocolReference().getRole().getName());
+		}
+		
+		if (elem.getParameters().size() > 0) {
+			output("(");
+			
+			for (int i=0; i < elem.getParameters().size(); i++) {
+				if (i > 0) {
+					output(", ");
+				}
+				
+				output(elem.getParameters().get(i).getName());
+			}
+			
+			output(")");
+		}
+		
+		output(";\r\n");
 	}
 
 	public void accept(TypeImport elem) {

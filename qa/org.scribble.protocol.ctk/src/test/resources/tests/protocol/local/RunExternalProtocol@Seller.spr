@@ -2,8 +2,8 @@ import Order;
 import Confirm;
 import protocol Sub from "ReferencedExternalProtocol.spr";
 
-protocol RunSubProtocol@Seller (role Buyer) {
-	run Sub@SubSeller(Buyer) from Buyer;
+protocol RunSubProtocol at Seller (role Buyer) {
+	run Sub at SubSeller(Buyer) from Buyer;
 
 	Confirm to Buyer;
 }

@@ -23,17 +23,17 @@ import org.scribble.protocol.model.*;
 public class UseComparator implements Comparator<ModelObject> {
 
 	public int compare(ModelObject arg0, ModelObject arg1) {
-		Include m=(Include)arg0;
-		Include e=(Include)arg1;
+		Inline m=(Inline)arg0;
+		Inline e=(Inline)arg1;
 		
-		if (m.getReference() != null && e.getReference() != null) {
+		if (m.getProtocolReference() != null && e.getProtocolReference() != null) {
 			ProtocolReferenceComparator prcomp=(ProtocolReferenceComparator)
 					ComparatorUtil.getComparator(ProtocolReference.class);
 			
-			if (prcomp.compare(m.getReference(), e.getReference()) != 0) {
+			if (prcomp.compare(m.getProtocolReference(), e.getProtocolReference()) != 0) {
 				return(1);
 			}
-		} else if (m.getReference() != null || e.getReference() != null) {
+		} else if (m.getProtocolReference() != null || e.getProtocolReference() != null) {
 			return(1);
 		}
 

@@ -3,7 +3,7 @@ import Confirmation;
 import OutOfStock;
 import InvalidProduct;
 
-protocol MultiPartyInteractionsAndChoice2@Broker(role Buyer) {
+protocol MultiPartyInteractionsAndChoice2 at Broker(role Buyer) {
 	Broker introduces Seller;
 
 	Order from Buyer;

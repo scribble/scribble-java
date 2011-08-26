@@ -4,7 +4,7 @@ import Rejected;
 import Accepted;
 import Another;
 
-protocol Recur@Seller {
+protocol Recur at Seller {
 	Buyer introduces Seller;
 
 	rec Transaction {

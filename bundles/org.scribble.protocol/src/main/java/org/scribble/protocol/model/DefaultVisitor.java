@@ -83,7 +83,7 @@ public class DefaultVisitor implements Visitor {
 	 * 
 	 * @param elem The use component
 	 */
-	public void accept(Include elem) {
+	public void accept(Inline elem) {
 	}
 	
 	/**

@@ -2,7 +2,7 @@ import Order;
 import Cancel;
 import Invoice;
 
-protocol EndExample@Seller (role Buyer) {
+protocol EndExample at Seller (role Buyer) {
 
 	choice {
 		Order from Buyer;

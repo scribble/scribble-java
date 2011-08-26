@@ -1,14 +1,14 @@
 import Order;
 import Confirm;
 
-protocol RunSubProtocol@Buyer {
+protocol RunSubProtocol at Buyer {
 	Buyer introduces Seller;
 
-	run Sub@SubBuyer(Seller) from Buyer;
+	run Sub at SubBuyer(Seller) from Buyer;
 
 	Confirm from Seller;
 
-	protocol Sub@SubBuyer(role SubSeller) {
+	protocol Sub at SubBuyer(role SubSeller) {
 		Order to SubSeller;
 	}
 }

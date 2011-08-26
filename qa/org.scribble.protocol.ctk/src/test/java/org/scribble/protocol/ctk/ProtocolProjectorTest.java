@@ -41,7 +41,6 @@ public class ProtocolProjectorTest {
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
 
-        		/*
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0          
             {"Annotation.spr", "Annotation@Seller.spr"}, // 1
 
@@ -64,7 +63,6 @@ public class ProtocolProjectorTest {
             //{"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@C.spr"}, // 10
         		
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@A.spr"},         // 11
-
         	// SCRIBBLE-102
             //{"ChoiceMergeNested.spr", "ChoiceMergeNested@B.spr"},         // 12
         	// SCRIBBLE-102
@@ -73,8 +71,8 @@ public class ProtocolProjectorTest {
         	// SCRIBBLE-91
             //{"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
 
-            {"IncludeProtocol.spr", "IncludeProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
-            {"IncludeProtocol.spr", "IncludeProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
+            {"InlineProtocol.spr", "InlineProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
+            {"InlineProtocol.spr", "InlineProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
 
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
         	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
@@ -97,8 +95,7 @@ public class ProtocolProjectorTest {
 
             {"Recur.spr", "Recur@Buyer.spr"},
             {"Recur.spr", "Recur@Seller.spr"},
-            {"Recur2.spr", "Recur2@Buyer.spr"},
-            
+            {"Recur2.spr", "Recur2@Buyer.spr"},            
             {"Recur2.spr", "Recur2@Seller.spr"},
             {"Repeat.spr", "Repeat@Buyer.spr"},
             {"Repeat.spr", "Repeat@Seller.spr"},
@@ -122,11 +119,10 @@ public class ProtocolProjectorTest {
             {"PurchaseGoods3.spr", "PurchaseGoods3@Buyer.spr"},
             {"PurchaseGoods3.spr", "PurchaseGoods3@Store.spr"},
             {"PurchaseGoods3.spr", "PurchaseGoods3@Logistics.spr"},
-            */
+
             {"DirectedChoice.spr", "DirectedChoice@Buyer.spr"},
             {"DirectedChoice.spr", "DirectedChoice@Seller.spr"},
 
-            /*
             {"End.spr", "End@Buyer.spr"},
             {"End.spr", "End@Seller.spr"},
 

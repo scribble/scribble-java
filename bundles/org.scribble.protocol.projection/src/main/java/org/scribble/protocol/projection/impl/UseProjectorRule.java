@@ -34,7 +34,7 @@ public class UseProjectorRule implements ProjectorRule {
 	 * 				model object
 	 */
 	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == Include.class);
+		return(obj.getClass() == Inline.class);
 	}
 	
 	/**
@@ -48,8 +48,8 @@ public class UseProjectorRule implements ProjectorRule {
 	 */
 	public ModelObject project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
-		Include ret=new Include();
-		Include source=(Include)model;
+		Inline ret=new Inline();
+		Inline source=(Inline)model;
 		
 		ret.derivedFrom(source);
 		
@@ -76,15 +76,15 @@ public class UseProjectorRule implements ProjectorRule {
 			}
 		}
 		
-		if (source.getReference() != null) {
+		if (source.getProtocolReference() != null) {
 			Protocol defn=null;
 			
 			// Check if protocol import defined for protocol
 			ProtocolImport pi=ProtocolModelUtil.getProtocolImport(source.getModel(),
-							source.getReference());
+							source.getProtocolReference());
 			
 			if (pi == null) {
-				l.error("Referenced protocol '"+source.getReference().getName()+
+				l.error("Referenced protocol '"+source.getProtocolReference().getName()+
 							"' not found within model or in import statements", source.getProperties());
 			} else {
 				ProtocolModel pm=context.getProtocolContext().getProtocolModel(pi, l);
@@ -92,7 +92,7 @@ public class UseProjectorRule implements ProjectorRule {
 				if (pm != null) {
 					defn = pm.getProtocol();
 				} else {
-					l.error("Referenced protocol '"+source.getReference().getName()+
+					l.error("Referenced protocol '"+source.getProtocolReference().getName()+
 							"' could not be loaded from location '"+pi.getLocation()+"'",
 							source.getProperties());
 				}
@@ -115,8 +115,8 @@ public class UseProjectorRule implements ProjectorRule {
 				}
 				
 				if (mappedRole != null) {
-					ret.setReference((ProtocolReference)context.project(
-								source.getReference(), mappedRole, l));
+					ret.setProtocolReference((ProtocolReference)context.project(
+								source.getProtocolReference(), mappedRole, l));
 				}
 			} else {
 				ret = null;

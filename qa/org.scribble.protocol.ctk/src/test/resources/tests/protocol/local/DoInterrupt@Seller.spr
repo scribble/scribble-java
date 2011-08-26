@@ -5,7 +5,7 @@ import Confirm;
 import Ack;
 import Finish;
 
-protocol DoInterrupt@Seller (role Buyer) {
+protocol DoInterrupt at Seller (role Buyer) {
 
 	do {
 		Order from Buyer;

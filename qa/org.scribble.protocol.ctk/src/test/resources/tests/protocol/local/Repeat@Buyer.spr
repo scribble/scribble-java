@@ -1,10 +1,10 @@
 import Order;
 import Finish;
 
-protocol Repeat@Buyer {
+protocol Repeat at Buyer {
 	Buyer introduces Seller;
 
-	repeat @ Buyer {
+	repeat at Buyer {
 		Order to Seller;
 	}
 	

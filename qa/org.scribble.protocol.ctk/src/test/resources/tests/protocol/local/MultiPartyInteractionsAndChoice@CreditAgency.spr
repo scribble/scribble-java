@@ -5,7 +5,7 @@ import Confirmation;
 import OutOfStock;
 import InsufficientCredit;
 
-protocol MultiPartyInteractionsAndChoice@CreditAgency(role Broker) {
+protocol MultiPartyInteractionsAndChoice at CreditAgency(role Broker) {
 
 	CreditCheck from Broker;
 	

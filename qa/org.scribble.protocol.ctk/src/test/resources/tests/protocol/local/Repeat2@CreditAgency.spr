@@ -1,4 +1,4 @@
-protocol Repeat2@CreditAgency (role Store) {
+protocol Repeat2 at CreditAgency (role Store) {
 	Store introduces CreditAgency;
 	
 	checkCredit(CreditCheckRequest) from Store;

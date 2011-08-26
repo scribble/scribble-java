@@ -1,4 +1,4 @@
-protocol ChoiceMergeIdenticalBranches@A {
+protocol ChoiceMergeIdenticalBranches at A {
     A introduces B;
 
     choice at A {

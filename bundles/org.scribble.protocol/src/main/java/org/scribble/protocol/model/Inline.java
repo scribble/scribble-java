@@ -19,7 +19,7 @@ package org.scribble.protocol.model;
  * This class represents the Include construct.
  * 
  */
-public class Include extends Activity {
+public class Inline extends Activity {
 
 	private ProtocolReference m_reference=null;
 	private java.util.List<Parameter> m_parameters=new java.util.Vector<Parameter>();
@@ -28,7 +28,7 @@ public class Include extends Activity {
 	 * This is the default constructor.
 	 * 
 	 */
-	public Include() {
+	public Inline() {
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class Include extends Activity {
 	 * 
 	 * @return The protocol reference, or null if not defined
 	 */
-	public ProtocolReference getReference() {
+	public ProtocolReference getProtocolReference() {
 		return(m_reference);
 	}
 	
@@ -80,7 +80,7 @@ public class Include extends Activity {
 	 * 
 	 * @param ref The protocol reference
 	 */
-	public void setReference(ProtocolReference ref) {
+	public void setProtocolReference(ProtocolReference ref) {
 		
 		if (m_reference != null) {
 			m_reference.setParent(null);

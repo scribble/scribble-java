@@ -269,7 +269,7 @@ public class CTKUtil {
 			}
 
 			@Override
-			public void accept(Include elem) {
+			public void accept(Inline elem) {
 				ret.add(elem);
 			}
 

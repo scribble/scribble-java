@@ -1448,10 +1448,10 @@ public class ProtocolParserTest {
 		CTKUtil.verify(model, expected);
 	}
 	@org.junit.Test
-	public void testIncludeProtocol() {
+	public void testInlineProtocol() {
 		TestJournal logger=new TestJournal();
 		
-		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/IncludeProtocol.spr", logger);
+		ProtocolModel model=CTKUtil.getModel("tests/protocol/global/InlineProtocol.spr", logger);
 		
 		assertNotNull(model);
 		
@@ -1476,7 +1476,7 @@ public class ProtocolParserTest {
 		Protocol protocol=new Protocol();
 		expected.setProtocol(protocol);
 		
-		protocol.setName("IncludeProtocol");
+		protocol.setName("InlineProtocol");
 		
 		ParameterDefinition p=new ParameterDefinition();
 		p.setName("Buyer");
@@ -1492,12 +1492,12 @@ public class ProtocolParserTest {
 		
 		protocol.getBlock().add(rl);
 		
-		Include inc=new Include();
+		Inline inc=new Inline();
 		
 		ProtocolReference ref=new ProtocolReference();
 		ref.setName("Sub");
 		
-		inc.setReference(ref);
+		inc.setProtocolReference(ref);
 		
 		Parameter db1=new Parameter("Buyer");
 		inc.getParameters().add(db1);

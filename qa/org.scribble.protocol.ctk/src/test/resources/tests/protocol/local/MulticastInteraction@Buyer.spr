@@ -1,6 +1,6 @@
 import Order;
 
-protocol MulticastInteraction@Buyer {
+protocol MulticastInteraction at Buyer {
 	Buyer introduces SellerA, SellerB;
 
 	Order to SellerA,SellerB;

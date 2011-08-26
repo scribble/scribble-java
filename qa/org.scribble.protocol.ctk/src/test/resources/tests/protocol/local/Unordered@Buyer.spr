@@ -2,7 +2,7 @@ import Order;
 import Cancel;
 import Finish;
 
-protocol Unordered@Buyer {
+protocol Unordered at Buyer {
 	Buyer introduces Seller;
 
 	unordered {

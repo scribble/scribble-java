@@ -3,7 +3,7 @@ import M2;
 import M3;
 import M4;
 
-protocol ChoiceMergeNested@A {
+protocol ChoiceMergeNested at A {
 	A introduces B, D;
 
 	choice at A {

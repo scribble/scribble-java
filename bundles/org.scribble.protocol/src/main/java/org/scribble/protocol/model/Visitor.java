@@ -253,11 +253,11 @@ public interface Visitor {
 	public void accept(Recursion elem);
 	
 	/**
-	 * This method visits an include component.
+	 * This method visits an inline component.
 	 * 
-	 * @param elem The include
+	 * @param elem The inline
 	 */
-	public void accept(Include elem);
+	public void accept(Inline elem);
 	
 	/**
 	 * This method visits a type import component.

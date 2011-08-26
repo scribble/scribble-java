@@ -1,9 +1,9 @@
 import Order;
 import Finish;
 
-protocol Repeat@Seller (role Buyer) {
+protocol Repeat at Seller (role Buyer) {
 
-	repeat @ Buyer {
+	repeat at Buyer {
 		Order from Buyer;
 	}
 	

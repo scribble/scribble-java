@@ -93,7 +93,7 @@ dataTypeDef: StringLiteral ;
 
 simpleName: ID ;
 
-protocolDef: 'protocol'^ protocolName ( '@' roleName )? ( parameterDefs )? blockDef ;
+protocolDef: 'protocol'^ protocolName ( 'at' roleName )? ( parameterDefs )? blockDef ;
 
 protocolName: ID ;
 
@@ -105,7 +105,7 @@ blockDef: '{'! activityListDef '}'! ;
 
 activityListDef: ( ( ANNOTATION )* activityDef )* ;
 
-activityDef: ( introducesDef | interactionDef | includeDef | runDef | recursionDef | endDef ) ';'! | 
+activityDef: ( introducesDef | interactionDef | inlineDef | runDef | recursionDef | endDef ) ';'! | 
 			choiceDef | directedChoiceDef | parallelDef | repeatDef | unorderedDef |
 			recBlockDef | globalEscapeDef | protocolDef ;
 
@@ -130,7 +130,7 @@ onMessageDef: interactionSignatureDef ':' activityList ;
 
 activityList: ( ( ANNOTATION )* activityDef )* ;
 
-repeatDef: 'repeat'^ ( '@' roleName ( ','! roleName )* )? blockDef ;
+repeatDef: 'repeat'^ ( 'at' roleName ( ','! roleName )* )? blockDef ;
 
 recBlockDef: 'rec'^ labelName blockDef ;
 
@@ -142,13 +142,13 @@ endDef: 'end'^ ;
 
 runDef: 'run'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? 'from' roleName ;
 
-protocolRefDef: ID ( '@' roleName )? ;
+protocolRefDef: ID ( 'at' roleName )? ;
 
 declarationName: ID ;
 
 parameter: declarationName ;
 
-includeDef: 'include'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? ;
+inlineDef: 'inline'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? ;
 
 parallelDef: 'parallel'^ blockDef ( 'and' blockDef )* ;
 
