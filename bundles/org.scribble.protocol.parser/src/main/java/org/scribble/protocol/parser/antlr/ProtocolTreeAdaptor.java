@@ -94,6 +94,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_parserGroupingRuleClass.put("simpleName", String.class);
 		m_parserGroupingRuleClass.put("simpleName", String.class);
 		m_parserGroupingRuleClass.put("blockDef", Block.class);
+		m_parserGroupingRuleClass.put("protocolBlockDef", Block.class);
 		m_parserGroupingRuleClass.put("activityList", Block.class);
 		m_parserGroupingRuleClass.put("interactionDef", Interaction.class);
 		m_parserGroupingRuleClass.put("interactionSignatureDef", MessageSignature.class);
