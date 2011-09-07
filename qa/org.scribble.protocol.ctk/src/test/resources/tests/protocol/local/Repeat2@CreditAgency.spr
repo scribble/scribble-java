@@ -1,6 +1,4 @@
 protocol Repeat2 at CreditAgency (role Store) {
-	Store introduces CreditAgency;
-	
 	checkCredit(CreditCheckRequest) from Store;
 	checkCredit(CreditRating) to Store;
 }

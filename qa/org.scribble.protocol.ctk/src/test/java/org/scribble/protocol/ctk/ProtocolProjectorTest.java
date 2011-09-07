@@ -46,29 +46,26 @@ public class ProtocolProjectorTest {
 
             {"Choice.spr", "Choice@Buyer.spr"},          // 2
             {"Choice.spr", "Choice@Seller.spr"},         // 3
-            {"ChoiceMerge.spr", "ChoiceMerge@Broker.spr"}, // 4
-        		
-            // SCRIBBLE-102 - broker needs to be parameter
+            {"ChoiceMerge.spr", "ChoiceMerge@Broker.spr"}, // 4        		
             {"ChoiceMerge.spr", "ChoiceMerge@Seller.spr"}, // 5
             
-            {"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@A.spr"}, // 6
-            
+            {"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@A.spr"}, // 6            
             {"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@B.spr"}, // 7
 
-            //{"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@C.spr"}, not passing yet (SCRIBBLE-84)
+        	// TODO: EXTRACT OUT COMMON STATEMENTS, AND IF EMPTY PATHS REMAIN, THEN REMOVE CHOICE
+            // (SCRIBBLE-84)
+            //{"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@C.spr"},
+            //{"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@C.spr"}, // 10
+
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@A.spr"}, // 8
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@B.spr"}, // 9
            
-        	// TODO: Need to merge
-            //{"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@C.spr"}, // 10
         		
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@A.spr"},         // 11
-        	// SCRIBBLE-102
-            //{"ChoiceMergeNested.spr", "ChoiceMergeNested@B.spr"},         // 12
-        	// SCRIBBLE-102
-            //{"ChoiceMergeNested.spr", "ChoiceMergeNested@C.spr"},         // 13
 
-        	// SCRIBBLE-91
+            // TODO: POSSIBLE INVALID EXAMPLE, DUE TO CHAIN OF INTRODUCTION
+            //{"ChoiceMergeNested.spr", "ChoiceMergeNested@B.spr"},         // 12
+            //{"ChoiceMergeNested.spr", "ChoiceMergeNested@C.spr"},         // 13
             //{"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
 
             {"InlineProtocol.spr", "InlineProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
@@ -76,17 +73,11 @@ public class ProtocolProjectorTest {
 
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
         	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
-            
-        	// SCRIBBLE-102 - needs Broker as parameter
         	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@CreditAgency.spr"}, // 18            
+            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Seller.spr"}, // 19
         	{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Broker.spr"}, // 20
-
         	{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Buyer.spr"}, // 21
-           
-            // TODO: Invalid merging
-            //{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Seller.spr"}, // 19
-            //{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Seller.spr"}, // 22
-            
+            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Seller.spr"}, // 22
             
             {"MulticastInteraction.spr", "MulticastInteraction@Buyer.spr"}, // 23
             {"MulticastInteraction.spr", "MulticastInteraction@SellerA.spr"}, // 24
@@ -99,8 +90,7 @@ public class ProtocolProjectorTest {
             {"Recur2.spr", "Recur2@Seller.spr"},
             {"Repeat.spr", "Repeat@Buyer.spr"},
             {"Repeat.spr", "Repeat@Seller.spr"},
-        	// SCRIBBLE-102
-            //{"Repeat2.spr", "Repeat2@CreditAgency.spr"},
+            {"Repeat2.spr", "Repeat2@CreditAgency.spr"},
             {"Repeat2.spr", "Repeat2@Buyer.spr"},
             {"RunExternalProtocol.spr", "RunExternalProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
             {"RunExternalProtocol.spr", "RunExternalProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
