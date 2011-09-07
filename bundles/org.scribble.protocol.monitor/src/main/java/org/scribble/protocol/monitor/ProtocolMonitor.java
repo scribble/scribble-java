@@ -40,12 +40,11 @@ public interface ProtocolMonitor {
 	 * @param context The monitor context
 	 * @param protocol The protocol description
 	 * @param conv The conversation
-	 * @param role The destination role
 	 * @param mesg The 'sent' message
 	 * @return The result
 	 */
 	public Result messageSent(MonitorContext context, Description protocol,
-					Session conv, String role, Message mesg);
+					Session conv, Message mesg);
 	
 	/**
 	 * This method checks whether the conversation instance, managed by
@@ -54,11 +53,10 @@ public interface ProtocolMonitor {
 	 * @param context The monitor context
 	 * @param protocol The protocol description
 	 * @param conv The conversation
-	 * @param role The source role
 	 * @param mesg The 'received' message
 	 * @return The result
 	 */
 	public Result messageReceived(MonitorContext context, Description protocol,
-					Session conv, String role, Message mesg);
+					Session conv, Message mesg);
 	
 }

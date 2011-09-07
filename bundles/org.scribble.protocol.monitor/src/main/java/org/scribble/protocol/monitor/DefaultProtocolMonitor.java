@@ -53,19 +53,19 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 	}
 	
 	public Result messageSent(MonitorContext context, Description protocol,
-						Session conv, String role, Message mesg) {
+						Session conv, Message mesg) {
 		Result ret=Result.NOT_HANDLED;
 	
 		// Check if context has state that is waiting for a send message
 		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
 			ret = checkForSendMessage(context, protocol,
-						i, conv.getNodeIndexAt(i), conv, role, mesg);
+						i, conv.getNodeIndexAt(i), conv, mesg);
 		}
 		
 		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
 			Session nested=conv.getNestedConversations().get(i);
 			
-			if ((ret = messageSent(context, protocol, nested, role, mesg)).isValid()) {
+			if ((ret = messageSent(context, protocol, nested, mesg)).isValid()) {
 			
 				// If nested conversation has a 'main' conversation, then check that it
 				// has been terminated
@@ -95,14 +95,14 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 	}
 	
 	protected Result checkForSendMessage(MonitorContext context, Description protocol,
-			int pos, int nodeIndex, Session conv, String role, Message mesg) {
+			int pos, int nodeIndex, Session conv, Message mesg) {
 		Result ret=Result.NOT_HANDLED;
 		
 		Node node=protocol.getNode().get(nodeIndex);
 		
 		if (node instanceof SendMessage) {
 			
-			if ((ret = checkMessage(context, conv, (SendMessage)node, role, mesg)).isValid()) {
+			if ((ret = checkMessage(context, conv, (SendMessage)node, mesg)).isValid()) {
 				// Remove processed node
 				conv.removeNodeIndexAt(pos);
 				
@@ -122,7 +122,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 				
 				if (cn.getNextIndex() != -1) {
 					ret = checkForSendMessage(context, protocol,
-								pos, cn.getNextIndex(), conv, role, mesg);
+								pos, cn.getNextIndex(), conv, mesg);
 				}
 			}
 			
@@ -130,12 +130,13 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 			
 			if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
 				ret = checkForSendMessage(context, protocol,
-							pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(), conv, role, mesg);
+							pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(),
+							conv, mesg);
 			}
 			
 			if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
 				ret = checkForSendMessage(context, protocol,
-							pos, node.getNextIndex(), conv, role, mesg);				
+							pos, node.getNextIndex(), conv, mesg);				
 			}
 		}
 
@@ -143,19 +144,19 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 	}
 	
 	public Result messageReceived(MonitorContext context, Description protocol,
-					Session conv, String role, Message mesg) {
+					Session conv, Message mesg) {
 		Result ret=Result.NOT_HANDLED;
 		
 		// Check if context has state that is waiting for a send message
 		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
 			ret = checkForReceiveMessage(context, protocol,
-						i, conv.getNodeIndexAt(i), conv, role, mesg);
+						i, conv.getNodeIndexAt(i), conv, mesg);
 		}
 		
 		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
 			Session nested=conv.getNestedConversations().get(i);
 			
-			if ((ret = messageReceived(context, protocol, nested, role, mesg)).isValid()) {
+			if ((ret = messageReceived(context, protocol, nested, mesg)).isValid()) {
 				
 				// If nested conversation has a 'main' conversation, then check that it
 				// has been terminated
@@ -185,14 +186,14 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 	}
 	
 	protected Result checkForReceiveMessage(MonitorContext context, Description protocol,
-				int pos, int nodeIndex, Session conv, String role, Message mesg) {
+				int pos, int nodeIndex, Session conv, Message mesg) {
 		Result ret=Result.NOT_HANDLED;
 		
 		Node node=protocol.getNode().get(nodeIndex);
 		
 		if (node instanceof ReceiveMessage) {
 			
-			if ((ret = checkMessage(context, conv, (ReceiveMessage)node, role, mesg)).isValid()) {
+			if ((ret = checkMessage(context, conv, (ReceiveMessage)node, mesg)).isValid()) {
 				// Remove processed node
 				conv.removeNodeIndexAt(pos);
 				
@@ -212,7 +213,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 				
 				if (cn.getNextIndex() != -1) {
 					ret = checkForReceiveMessage(context, protocol, 
-								pos, cn.getNextIndex(), conv, role, mesg);
+								pos, cn.getNextIndex(), conv, mesg);
 				}
 			}
 			
@@ -220,12 +221,13 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 			
 			if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
 				ret = checkForReceiveMessage(context, protocol, 
-							pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(), conv, role, mesg);
+							pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(),
+								conv, mesg);
 			}
 			
 			if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
 				ret = checkForReceiveMessage(context, protocol, 
-						pos, node.getNextIndex(), conv, role, mesg);				
+						pos, node.getNextIndex(), conv, mesg);				
 			}
 		}
 
@@ -234,11 +236,10 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
 	
 	
 	protected Result checkMessage(MonitorContext context, Session conv, MessageNode node,
-								String role, Message sig) {
+								Message sig) {
 		Result ret=Result.NOT_HANDLED;
 		
-		if ((node.getOtherRole() == null || role == null ||
-					node.getOtherRole().equals(role)) && (sig.getOperator() == null ||
+		if ((sig.getOperator() == null ||
 							node.getOperator() == null ||
 							node.getOperator().equals(sig.getOperator()))) {
 			ret = context.validate(conv, node, sig);

@@ -23,8 +23,6 @@ import org.scribble.protocol.monitor.model.*;
 
 public class RepeatWithParticipantTest {
 
-	private static final String OTHER_ROLE = "OtherParticipant";
-	private static final String INVALID_ROLE = "InvalidParticipant";
 	private static final String CREDIT_OK_MESSAGE_TYPE = "CreditOk";
 	private static final String CREDIT_CHECK_MESSAGE_TYPE = "CreditCheck";
 	private static final String ORDER_MESSAGE_TYPE = "Order";
@@ -48,7 +46,6 @@ public class RepeatWithParticipantTest {
 		MessageType mt1=new MessageType();
 		mt1.setValue(ORDER_MESSAGE_TYPE);
 		recvOrder.getMessageType().add(mt1);
-		recvOrder.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(recvOrder);
 
 		// 1
@@ -67,7 +64,6 @@ public class RepeatWithParticipantTest {
 		MessageType mt2=new MessageType();
 		mt2.setValue(CREDIT_CHECK_MESSAGE_TYPE);
 		sendCreditCheck.getMessageType().add(mt2);
-		sendCreditCheck.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(sendCreditCheck);
 		
 		// 3
@@ -78,7 +74,6 @@ public class RepeatWithParticipantTest {
 		MessageType mt3=new MessageType();
 		mt3.setValue(CREDIT_OK_MESSAGE_TYPE);
 		recvCreditOk.getMessageType().add(mt3);
-		recvCreditOk.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(recvCreditOk);
 		
 		// 4
@@ -88,7 +83,6 @@ public class RepeatWithParticipantTest {
 		MessageType mt4=new MessageType();
 		mt4.setValue(CONFIRMATION_MESSAGE_TYPE);
 		sendOrder.getMessageType().add(mt4);
-		sendOrder.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(sendOrder);
 		
 		return(pd);
@@ -105,7 +99,6 @@ public class RepeatWithParticipantTest {
 		MessageType mt1=new MessageType();
 		mt1.setValue(ORDER_MESSAGE_TYPE);
 		recvOrder.getMessageType().add(mt1);
-		recvOrder.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(recvOrder);
 
 		// 1
@@ -124,7 +117,6 @@ public class RepeatWithParticipantTest {
 		MessageType mt2=new MessageType();
 		mt2.setValue(CREDIT_CHECK_MESSAGE_TYPE);
 		sendCreditCheck.getMessageType().add(mt2);
-		sendCreditCheck.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(sendCreditCheck);
 		
 		// 3
@@ -135,7 +127,6 @@ public class RepeatWithParticipantTest {
 		MessageType mt3=new MessageType();
 		mt3.setValue(CREDIT_OK_MESSAGE_TYPE);
 		recvCreditOk.getMessageType().add(mt3);
-		recvCreditOk.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(recvCreditOk);
 		
 		// 4
@@ -145,7 +136,6 @@ public class RepeatWithParticipantTest {
 		MessageType mt4=new MessageType();
 		mt4.setValue(CONFIRMATION_MESSAGE_TYPE);
 		sendOrder.getMessageType().add(mt4);
-		sendOrder.setOtherRole(OTHER_ROLE);
 		pd.getNode().add(sendOrder);
 		
 		return(pd);
@@ -166,42 +156,42 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Confirmation failed");
 		}
 		
@@ -225,14 +215,14 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Confirmation failed");
 		}
 		
@@ -256,42 +246,42 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 				
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Confirmation failed");
 		}
 		
@@ -315,14 +305,14 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Confirmation failed");
 		}
 		
@@ -346,46 +336,15 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == true) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == true) {
 			fail("Second order should have failed");
-		}
-		
-		if (conv.isFinished() == true) {
-			fail("Conversation should NOT be finished");
-		}
-	}
-
-	@Test
-	public void testRepeatSendInvalidOrderCreditCheckOkByParticipant() {
-		Description pd=getSendRepeatProtocol();
-		
-		// Create Protocol Monitor
-		ProtocolMonitor monitor=new DefaultProtocolMonitor();
-		
-		DefaultMonitorContext context=new DefaultMonitorContext();
-		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
-		
-		DefaultMessage message=new DefaultMessage();
-		message.getTypes().add(ORDER_MESSAGE_TYPE);
-		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
-			fail("Receive Order failed");
-		}
-		
-		message=new DefaultMessage();
-		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
-		
-		if (monitor.messageSent(context, pd, conv, INVALID_ROLE, message).isValid() == true) {
-			fail("Credit check should have failed");
 		}
 		
 		if (conv.isFinished() == true) {
@@ -408,42 +367,42 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Confirmation failed");
 		}
 		
@@ -467,14 +426,14 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Confirmation failed");
 		}
 		
@@ -498,42 +457,42 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Order failed");
 		}
 				
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Confirmation failed");
 		}
 		
@@ -557,14 +516,14 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Confirmation failed");
 		}
 		
@@ -588,46 +547,15 @@ public class RepeatWithParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, OTHER_ROLE, message).isValid() == true) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == true) {
 			fail("Second order should have failed");
-		}
-		
-		if (conv.isFinished() == true) {
-			fail("Conversation should NOT be finished");
-		}
-	}
-	
-	@Test
-	public void testRepeatReceiveInvalidOrderCreditCheckOkByParticipant() {
-		Description pd=getReceiveRepeatProtocol();
-		
-		// Create Protocol Monitor
-		ProtocolMonitor monitor=new DefaultProtocolMonitor();
-		
-		DefaultMonitorContext context=new DefaultMonitorContext();
-		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
-		
-		DefaultMessage message=new DefaultMessage();
-		message.getTypes().add(ORDER_MESSAGE_TYPE);
-		
-		if (monitor.messageSent(context, pd, conv, OTHER_ROLE, message).isValid() == false) {
-			fail("Send Order failed");
-		}
-		
-		message=new DefaultMessage();
-		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
-		
-		if (monitor.messageReceived(context, pd, conv, INVALID_ROLE, message).isValid() == true) {
-			fail("Credit check should have failed");
 		}
 		
 		if (conv.isFinished() == true) {

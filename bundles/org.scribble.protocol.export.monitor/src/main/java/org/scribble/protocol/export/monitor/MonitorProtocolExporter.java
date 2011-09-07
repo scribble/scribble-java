@@ -333,20 +333,8 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			if (toRoles.size() > 0) {
 				node = new SendMessage();
-				
-				String roles="";
-				for (int i=0; i < toRoles.size(); i++) {
-					if (i > 0) {
-						roles += ",";
-					}
-					roles += toRoles.get(i).getName();
-				}
-				
-				node.setOtherRole(roles);
 			} else {
 				node = new ReceiveMessage();
-				
-				node.setOtherRole(fromRole.getName());
 			}
 			
 			if (ms.getOperation() != null) {

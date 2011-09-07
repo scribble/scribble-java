@@ -98,21 +98,21 @@ public class DoInterruptTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Confirmation failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(FINISH_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Finish message failed");
 		}		
 		
@@ -136,21 +136,21 @@ public class DoInterruptTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CANCEL_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Cancel failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(FINISH_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Finish message failed");
 		}		
 		

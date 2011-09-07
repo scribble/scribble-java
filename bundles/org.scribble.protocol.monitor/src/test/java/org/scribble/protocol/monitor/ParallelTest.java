@@ -97,28 +97,28 @@ public class ParallelTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Confirmation failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(OUT_OF_STOCK_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Out Of Stock failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(FINISH_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Finish message failed");
 		}		
 		
@@ -142,21 +142,21 @@ public class ParallelTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Confirmation failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(FINISH_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == true) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == true) {
 			fail("Finish message should have failed, as parallel should not have completed");
 		}		
 		

@@ -94,14 +94,14 @@ public class CreditAgencyParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
@@ -125,14 +125,14 @@ public class CreditAgencyParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("CreditCheck failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("CreditOk failed");
 		}		
 		
@@ -156,14 +156,14 @@ public class CreditAgencyParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("CreditCheck failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == true) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == true) {
 			fail("Second Credit Check should have failed");
 		}		
 		

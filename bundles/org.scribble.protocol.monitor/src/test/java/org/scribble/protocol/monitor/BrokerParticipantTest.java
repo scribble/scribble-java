@@ -23,9 +23,6 @@ import org.scribble.protocol.monitor.model.*;
 
 public class BrokerParticipantTest {
 
-	private static final String SUPPLIER = "Supplier";
-	private static final String CREDIT_AGENCY = "CreditAgency";
-	private static final String BUYER = "Buyer";
 	private static final String OUT_OF_STOCK_MESSAGE_TYPE = "OutOfStock";
 	private static final String INSUFFICIENT_CREDIT_MESSAGE_TYPE = "InsufficientCredit";
 	private static final String CREDIT_OK_MESSAGE_TYPE = "CreditOk";
@@ -186,7 +183,6 @@ public class BrokerParticipantTest {
 		MessageType mt1=new MessageType();
 		mt1.setValue(ORDER_MESSAGE_TYPE);
 		recvOrder.getMessageType().add(mt1);
-		recvOrder.setOtherRole(BUYER);
 		pd.getNode().add(recvOrder);
 
 		// 1
@@ -197,7 +193,6 @@ public class BrokerParticipantTest {
 		MessageType mt2=new MessageType();
 		mt2.setValue(CREDIT_CHECK_MESSAGE_TYPE);
 		sendCreditCheck.getMessageType().add(mt2);
-		sendCreditCheck.setOtherRole(CREDIT_AGENCY);
 		pd.getNode().add(sendCreditCheck);
 		
 		// 2
@@ -225,7 +220,6 @@ public class BrokerParticipantTest {
 		mt3.setValue(CREDIT_OK_MESSAGE_TYPE);
 		recvCreditOk.getMessageType().add(mt3);
 		recvCreditOk.setNextIndex(4);
-		recvCreditOk.setOtherRole(CREDIT_AGENCY);
 		pd.getNode().add(recvCreditOk);
 		
 		// 4
@@ -236,7 +230,6 @@ public class BrokerParticipantTest {
 		MessageType mt4=new MessageType();
 		mt4.setValue(ORDER_MESSAGE_TYPE);
 		sendOrder.getMessageType().add(mt4);
-		sendOrder.setOtherRole(SUPPLIER);
 		pd.getNode().add(sendOrder);
 		
 		// 5
@@ -264,7 +257,6 @@ public class BrokerParticipantTest {
 		mt5.setValue(CONFIRMATION_MESSAGE_TYPE);
 		recvConfirmation.getMessageType().add(mt5);
 		recvConfirmation.setNextIndex(7);
-		recvConfirmation.setOtherRole(SUPPLIER);
 		pd.getNode().add(recvConfirmation);
 		
 		// 7
@@ -274,7 +266,6 @@ public class BrokerParticipantTest {
 		MessageType mt6=new MessageType();
 		mt6.setValue(CONFIRMATION_MESSAGE_TYPE);
 		sendConfirmation.getMessageType().add(mt6);
-		sendConfirmation.setOtherRole(BUYER);
 		pd.getNode().add(sendConfirmation);
 
 		// 8
@@ -285,7 +276,6 @@ public class BrokerParticipantTest {
 		mt7.setValue(OUT_OF_STOCK_MESSAGE_TYPE);
 		recvOutOfStock.getMessageType().add(mt7);
 		recvOutOfStock.setNextIndex(9);
-		recvOutOfStock.setOtherRole(SUPPLIER);
 		pd.getNode().add(recvOutOfStock);
 
 		// 9
@@ -295,7 +285,6 @@ public class BrokerParticipantTest {
 		MessageType mt8=new MessageType();
 		mt8.setValue(OUT_OF_STOCK_MESSAGE_TYPE);
 		sendOutOfStock.getMessageType().add(mt8);
-		sendOutOfStock.setOtherRole(BUYER);
 		pd.getNode().add(sendOutOfStock);
 
 		// 10
@@ -306,7 +295,6 @@ public class BrokerParticipantTest {
 		mt9.setValue(INSUFFICIENT_CREDIT_MESSAGE_TYPE);
 		recvInsufficientCredit.getMessageType().add(mt9);
 		recvInsufficientCredit.setNextIndex(11);
-		recvInsufficientCredit.setOtherRole(CREDIT_AGENCY);
 		pd.getNode().add(recvInsufficientCredit);
 		
 		// 11
@@ -316,7 +304,6 @@ public class BrokerParticipantTest {
 		MessageType mt10=new MessageType();
 		mt10.setValue(INSUFFICIENT_CREDIT_MESSAGE_TYPE);
 		sendInsufficientCredit.getMessageType().add(mt10);
-		sendInsufficientCredit.setOtherRole(BUYER);
 		pd.getNode().add(sendInsufficientCredit);
 		
 		return(pd);
@@ -337,42 +324,42 @@ public class BrokerParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Confirmation failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Confirmation failed");
 		}
 		
@@ -396,42 +383,42 @@ public class BrokerParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Confirmation failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Confirmation failed");
 		}
 		
@@ -455,21 +442,21 @@ public class BrokerParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, null, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, null, message).isValid() == true) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == true) {
 			fail("Second order should have failed");
 		}		
 		
@@ -493,42 +480,42 @@ public class BrokerParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, BUYER, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, CREDIT_AGENCY, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, CREDIT_AGENCY, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, SUPPLIER, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, SUPPLIER, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Confirmation failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, BUYER, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Confirmation failed");
 		}
 		
@@ -552,42 +539,42 @@ public class BrokerParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, BUYER, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, CREDIT_AGENCY, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_OK_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, CREDIT_AGENCY, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Credit ok failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, SUPPLIER, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
 
-		if (monitor.messageReceived(context, pd, conv, SUPPLIER, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Confirmation failed");
 		}		
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, BUYER, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Send Confirmation failed");
 		}
 		
@@ -611,14 +598,14 @@ public class BrokerParticipantTest {
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
 		
-		if (monitor.messageReceived(context, pd, conv, BUYER, message).isValid() == false) {
+		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
 			fail("Receive Order failed");
 		}
 		
 		message=new DefaultMessage();
 		message.getTypes().add(CREDIT_CHECK_MESSAGE_TYPE);
 		
-		if (monitor.messageSent(context, pd, conv, CREDIT_AGENCY, message).isValid() == false) {
+		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
 			fail("Credit check failed");
 		}
 		

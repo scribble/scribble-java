@@ -17,7 +17,6 @@
     				</element>
     			</sequence>
     			<attribute name="operator" type="string"></attribute>
-    			<attribute name="otherRole" type="string"></attribute>
     		</extension>
     	</complexContent>
     </complexType>

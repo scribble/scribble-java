@@ -20,6 +20,8 @@ import org.scribble.protocol.monitor.*;
 import org.scribble.protocol.monitor.model.Description;
 
 public class SendMessage extends Event {
+	
+	private DefaultMessage m_message=new DefaultMessage();
 
 	public SendMessage() {
 	}
@@ -27,7 +29,7 @@ public class SendMessage extends Event {
 	@Override
 	public Result validate(ProtocolMonitor monitor, MonitorContext context, Description protocol,
 						Session conv) {
-		return(monitor.messageSent(context, protocol, conv, m_role, m_message));
+		return(monitor.messageSent(context, protocol, conv, m_message));
 	}
 
 	@Override
@@ -49,8 +51,6 @@ public class SendMessage extends Event {
 
 				m_message.getTypes().add(mesgType);
 			}
-		} else if (col == 2) {
-			m_role = val;
 		}
 	}
 	
@@ -58,14 +58,7 @@ public class SendMessage extends Event {
 		return(m_message);
 	}
 	
-	public String getRole() {
-		return(m_role);
-	}
-	
 	public String toString() {
-		return("SendMessage "+m_message+" to "+m_role);
+		return("SendMessage "+m_message);
 	}
-	
-	private DefaultMessage m_message=new DefaultMessage();
-	private String m_role=null;
 }
