@@ -24,6 +24,7 @@ import org.scribble.protocol.model.*;
 import org.scribble.protocol.monitor.DefaultSession;
 import org.scribble.protocol.monitor.DefaultMonitorContext;
 import org.scribble.protocol.monitor.ProtocolMonitor;
+import org.scribble.protocol.monitor.Session;
 import org.scribble.protocol.monitor.model.Description;
 
 public class ProtocolMonitorTest {
@@ -54,8 +55,7 @@ public class ProtocolMonitorTest {
 
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, desc, conv);	
+		Session conv=monitor.createSession(context, desc, DefaultSession.class);
 		
 		boolean failed=false;
 		

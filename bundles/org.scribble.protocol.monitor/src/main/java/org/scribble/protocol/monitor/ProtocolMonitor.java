@@ -25,13 +25,16 @@ import org.scribble.protocol.monitor.model.Description;
 public interface ProtocolMonitor {
 	
 	/**
-	 * This method initializes the supplied conversation based on the supplied description.
+	 * This method creates a new session (conversation instance) and initializes
+	 * it based on the supplied description.
 	 * 
 	 * @param context The monitor context
 	 * @param protocol The protocol description
-	 * @param conv The conversation
+	 * @param sessionClass The session implenentation class to instantiate
+	 * @return The created and initialized session
 	 */
-	public void initialize(MonitorContext context, Description protocol, Session conv);
+	public Session createSession(MonitorContext context, Description protocol,
+							Class<? extends Session> sessionClass);
 	
 	/**
 	 * This method checks whether the conversation instance, managed by

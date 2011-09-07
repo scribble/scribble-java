@@ -16,6 +16,9 @@
  */
 package org.scribble.protocol.monitor;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.scribble.protocol.monitor.model.Description;
 import org.scribble.protocol.monitor.model.MessageNode;
 import org.scribble.protocol.monitor.model.Parallel;
@@ -36,20 +39,37 @@ import org.scribble.protocol.monitor.model.Do;
 
 public class DefaultProtocolMonitor implements ProtocolMonitor {
 	
+	private static final Logger logger=Logger.getLogger(DefaultProtocolMonitor.class.getName());
+	
 	public DefaultProtocolMonitor() {
 	}
 
 	/**
-	 * This method initializes the supplied context based on the supplied description
-	 * and role.
+	 * This method creates a new session (conversation instance) and initializes
+	 * it based on the supplied description.
 	 * 
+	 * @param context The monitor context
 	 * @param protocol The protocol description
-	 * @param conv The conversation
+	 * @param sessionClass The session implenentation class to instantiate
+	 * @return The created and initialized session
 	 */
-	public void initialize(MonitorContext context, Description protocol, Session conv) {
-		if (protocol.getNode().size() > 0) {
-			addNodeToConversation(context, protocol, conv, 0);
+	public Session createSession(MonitorContext context, Description protocol,
+							Class<? extends Session> sessionClass) {
+		Session ret=null;
+		
+		try {
+			ret = sessionClass.newInstance();
+			
+			// Initialize the session with the protocol descriptions
+			if (protocol.getNode().size() > 0) {
+				addNodeToConversation(context, protocol, ret, 0);
+			}
+		} catch(Exception e) {
+			logger.log(Level.SEVERE, "Failed to create and initialize session '"+
+								sessionClass+"'", e);
 		}
+		
+		return(ret);
 	}
 	
 	public Result messageSent(MonitorContext context, Description protocol,

@@ -150,8 +150,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 		
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
@@ -195,8 +194,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 		
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
@@ -226,8 +224,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 		
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
@@ -271,8 +268,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 		
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
@@ -302,8 +298,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 	
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
@@ -333,8 +328,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 		
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
@@ -378,8 +372,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 		
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
@@ -409,8 +402,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 		
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
@@ -454,8 +446,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 		
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);
@@ -485,8 +476,7 @@ public class OptionalWithParticipantTest {
 		
 		DefaultMonitorContext context=new DefaultMonitorContext();
 		
-		DefaultSession conv=new DefaultSession();
-		monitor.initialize(context, pd, conv);
+		Session conv=monitor.createSession(context, pd, DefaultSession.class);
 	
 		DefaultMessage message=new DefaultMessage();
 		message.getTypes().add(ORDER_MESSAGE_TYPE);

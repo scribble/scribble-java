@@ -29,6 +29,7 @@ import org.scribble.protocol.parser.ProtocolParserManager;
 import org.scribble.protocol.monitor.DefaultSession;
 import org.scribble.protocol.monitor.DefaultMonitorContext;
 import org.scribble.protocol.monitor.ProtocolMonitor;
+import org.scribble.protocol.monitor.Session;
 
 public class SimulateCommand implements org.scribble.command.Command {
 
@@ -140,8 +141,7 @@ public class SimulateCommand implements org.scribble.command.Command {
 				
 				DefaultMonitorContext context=new DefaultMonitorContext();
 				
-				DefaultSession conv=new DefaultSession();
-				m_protocolMonitor.initialize(context, protocol, conv);
+				Session conv=m_protocolMonitor.createSession(context, protocol, DefaultSession.class);
 				
 				java.io.InputStream is=new java.io.FileInputStream(eventFile);
 				
