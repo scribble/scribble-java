@@ -59,6 +59,6 @@ public class SendMessage extends Event {
 	}
 	
 	public String toString() {
-		return("SendMessage "+m_message);
+		return("Send "+m_message);
 	}
 }

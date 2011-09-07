@@ -59,6 +59,6 @@ public class ReceiveMessage extends Event {
 	}
 	
 	public String toString() {
-		return("ReceiveMessage "+m_message);
+		return("Receive "+m_message);
 	}
 }
