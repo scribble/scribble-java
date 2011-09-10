@@ -1,0 +1,13 @@
+protocol ChoiceNotMergeable (role A) {
+    A introduces B;
+    B introduces C;
+
+    choice from A to B {
+        l1():
+        	l1() from B to C;
+        	l1() from B to C;
+        	
+        l2():
+        	l2() from B to C;
+    }
+}

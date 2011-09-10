@@ -15,6 +15,8 @@
  */
 package org.scribble.protocol.projection.impl;
 
+import java.text.MessageFormat;
+
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.model.*;
 import org.scribble.protocol.util.InteractionUtil;
@@ -156,9 +158,40 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			projected.setRole(fromRole);
 		}
 		
+		ret = extractCommonBehaviour(context, projected, role, l);
+		
+		// Remove all empty paths
+		for (int i=projected.getBlocks().size()-1; i >= 0; i--) {
+			Block b=projected.getBlocks().get(i);
+			
+			if (b.size() == 0) {
+				projected.getBlocks().remove(i);
+				f_optional = true;
+			}
+		}
+		
+		if (projected.getBlocks().size() == 0) {
+			if (ret == projected) {
+				ret = null;
+			} else {
+				((Block)ret).remove(projected);
+			}
+			projected = null;
+		} else if (f_optional) {
+			// Add optional block
+			projected.getBlocks().add(new Block());
+		}
+
+		return(ret);
+	}
+	
+	protected static ModelObject extractCommonBehaviour(ProjectorContext context, Choice projected,
+							Role role, Journal l) {
+		ModelObject ret=projected;
+		
 		// Check to see whether common interaction sentences can be extracted
 		// out from each path to precede the choice
-		boolean checkPaths=false;
+		boolean checkPaths=true;
 		do {
 			boolean allSame=projected.getBlocks().size() > 1;
 			
@@ -190,32 +223,36 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			} else {
 				// Check if two or more paths have same first element, and
 				// therefore are invalid
+				boolean f_invalid=false;
+				
+				for (int i=0; !f_invalid && i < projected.getBlocks().size(); i++) {
+					
+					for (int j=0; !f_invalid && j < projected.getBlocks().size(); j++) {
+					
+						if (i != j) {
+							Block b1=projected.getBlocks().get(i);
+							Block b2=projected.getBlocks().get(j);
+							
+							if (b1.size() > 0 && b2.size() > 0 &&
+									b1.get(0).equals(b2.get(0))) {
+								f_invalid = true;
+							}
+						}
+					}
+				}
+				
+				if (f_invalid) {
+					l.error(MessageFormat.format(
+							java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.projection.Messages").
+								getString("_AMBIGUOUS_CHOICE"),
+								role.getName()), null);
+				}
+				
+				checkPaths = false;
 			}
 			
 		} while(checkPaths);
 		
-		// Remove all empty paths
-		for (int i=projected.getBlocks().size()-1; i >= 0; i--) {
-			Block b=projected.getBlocks().get(i);
-			
-			if (b.size() == 0) {
-				projected.getBlocks().remove(i);
-				f_optional = true;
-			}
-		}
-		
-		if (projected.getBlocks().size() == 0) {
-			if (ret == projected) {
-				ret = null;
-			} else {
-				((Block)ret).remove(projected);
-			}
-			projected = null;
-		} else if (f_optional) {
-			// Add optional block
-			projected.getBlocks().add(new Block());
-		}
-
 		return(ret);
 	}
 	

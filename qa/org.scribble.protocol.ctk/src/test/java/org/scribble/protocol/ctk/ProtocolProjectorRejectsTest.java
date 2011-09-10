@@ -16,7 +16,6 @@
  */
 package org.scribble.protocol.ctk;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -29,7 +28,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
@@ -37,29 +35,31 @@ public class ProtocolProjectorRejectsTest {
 
     private String globalModelFile;
     private ProtocolContext context;
+    private String projectedRole;
 
-    public ProtocolProjectorRejectsTest(String globalModelFile, ProtocolContext context) {
+    public ProtocolProjectorRejectsTest(String globalModelFile, ProtocolContext context, String projectedRole) {
         this.globalModelFile = globalModelFile;
         this.context = context;
+        this.projectedRole = projectedRole;
     }
 
     @Parameterized.Parameters
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
-            {"ChoiceNotMergeableSimple.spr"},
-            {"ChoiceNotMergeableRecursion.spr"}
+            {"ChoiceNotMergeableSimple.spr", null, "C"},
+            //{"ChoiceNotMergeableRecursion.spr"}
         };
         List<Object[]> result = new LinkedList<Object[]>();
         for (Object[] sub: array) {
             result.add(new Object[] {
                     "tests/protocol/global/witherrors/" + sub[0],
-                    (sub.length == 2 ? sub[1] : null)
+                    (sub.length >= 2 ? sub[1] : null),
+                    (sub.length >= 3 ? sub[2] : null)
             });
         }
         return result;
     }
 
-    @Ignore("fails, reported as SCRIBBLE-85")
     @Test
     public void doTest() {
         TestJournal logger=new TestJournal();
@@ -67,15 +67,16 @@ public class ProtocolProjectorRejectsTest {
         ProtocolModel model= CTKUtil.getModel(globalModelFile, logger);
 
         for (Role role: model.getRoles()) {
-            ProtocolModel projected= CTKUtil.project(model, role, logger, context);
-
-            if (projected != null) {
-                ByteArrayOutputStream arrayOs = new ByteArrayOutputStream();
-                new TextProtocolExporter().export(projected, logger, arrayOs);
-                fail("The protocol in file: " + globalModelFile + " should not be projectable. " +
-                     "Projection was successful for role: " + role + ", result:\n" + arrayOs.toString());
-            }
-            assertTrue(logger.getErrorCount() > 0);
+        	if (projectedRole == null || role.getName().equals(projectedRole)) {
+	            ProtocolModel projected= CTKUtil.project(model, role, logger, context);
+	
+	            if (logger.getErrorCount() == 0) {
+	                ByteArrayOutputStream arrayOs = new ByteArrayOutputStream();
+	                new TextProtocolExporter().export(projected, logger, arrayOs);
+	                fail("The protocol in file: " + globalModelFile + " should not be projectable. " +
+	                     "Projection was successful for role: " + role + ", result:\n" + arrayOs.toString());
+	            }
+        	}
         }
     }
 }
