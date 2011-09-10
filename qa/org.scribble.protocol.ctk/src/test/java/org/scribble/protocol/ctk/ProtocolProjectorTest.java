@@ -51,15 +51,11 @@ public class ProtocolProjectorTest {
             
             {"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@A.spr"}, // 6            
             {"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@B.spr"}, // 7
-
-        	// TODO: EXTRACT OUT COMMON STATEMENTS, AND IF EMPTY PATHS REMAIN, THEN REMOVE CHOICE
-            // (SCRIBBLE-84)
-            //{"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@C.spr"},
-            //{"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@C.spr"}, // 10
+            {"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@C.spr"},
 
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@A.spr"}, // 8
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@B.spr"}, // 9
-           
+            {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@C.spr"}, // 10           
         		
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@A.spr"},         // 11
 

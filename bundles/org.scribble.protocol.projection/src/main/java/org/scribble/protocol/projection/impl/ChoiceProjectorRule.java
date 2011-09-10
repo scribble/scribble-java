@@ -48,31 +48,22 @@ public class ChoiceProjectorRule implements ProjectorRule {
 	 */
 	public ModelObject project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
-		Choice ret=new Choice();
+		Choice projected=new Choice();
+		ModelObject ret=projected;
 		Choice source=(Choice)model;
 		boolean f_merge=false;
 		boolean f_rolesSet=false;
 		Role fromRole=null;
-		Role toRole=null;
 		boolean f_optional=false;
 		
-		ret.derivedFrom(source);
+		projected.derivedFrom(source);
 		
 		// Only project role if the same as the located role. Otherwise description
 		// should just indicate that the decision is being made at another role
 		if (source.getRole() != null && source.getRole().equals(role)) {
-			ret.setRole(new Role(source.getRole()));
+			projected.setRole(new Role(source.getRole()));
 		}
 		
-		// If the roles are not relevant to this projection, then we need to merge the
-		// paths to derive a new choice that represents the options valid for this role
-/* TODO: MERGING		
-		if ((ret.getRole() != null && ret.getToRole() != null) ||
-				(ret.getRole() == null && ret.getToRole() == null)) {
-			f_merge = true;
-		}
-*/
-
 		for (int i=0; i < source.getBlocks().size(); i++) {
 			Block block=(Block)
 					context.project(source.getBlocks().get(i), role,
@@ -83,10 +74,10 @@ public class ChoiceProjectorRule implements ProjectorRule {
 				// TODO: Temporary fix to merge nested choice
 				if (block.getContents().size() == 1 &&
 						block.getContents().get(0) instanceof Choice &&
-						isSameRole(ret, (Choice)block.getContents().get(0))) {
-					ret.getBlocks().addAll(((Choice)block.getContents().get(0)).getBlocks());
+						isSameRole(projected, (Choice)block.getContents().get(0))) {
+					projected.getBlocks().addAll(((Choice)block.getContents().get(0)).getBlocks());
 				} else {
-					ret.getBlocks().add(block);
+					projected.getBlocks().add(block);
 				}
 			} else {
 				f_optional = true;
@@ -98,7 +89,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			Role destination=null;
 			
 			// Check if initial interactions have same destination
-			for (Block block : ret.getBlocks()) {
+			for (Block block : projected.getBlocks()) {
 				
 				java.util.List<ModelObject> list=
 					org.scribble.protocol.util.InteractionUtil.getInitialInteractions(block);
@@ -120,20 +111,20 @@ public class ChoiceProjectorRule implements ProjectorRule {
 		}
 		
 		if (f_merge) {
-			java.util.List<Block> tmp=new java.util.Vector<Block>(ret.getBlocks());
+			java.util.List<Block> tmp=new java.util.Vector<Block>(projected.getBlocks());
 			
 			for (Block block : tmp) {
 				java.util.List<ModelObject> list=
 					org.scribble.protocol.util.InteractionUtil.getInitialInteractions(block);
 				
 				// Remove block
-				ret.getBlocks().remove(block);
+				projected.getBlocks().remove(block);
 				
 				for (ModelObject act : list) {
 					MessageSignature ms=InteractionUtil.getMessageSignature(act);
 					boolean f_add=true;
 					
-					for (Block wb : ret.getBlocks()) {
+					for (Block wb : projected.getBlocks()) {
 						MessageSignature wbms=InteractionUtil.getMessageSignature(wb);
 						
 						if (ms.equals(wbms)) {
@@ -150,66 +141,79 @@ public class ChoiceProjectorRule implements ProjectorRule {
 						// Check if roles should be set or matched
 						if (f_rolesSet == false) {
 							fromRole = InteractionUtil.getFromRole(act);
-							toRole = InteractionUtil.getToRole(act);
+							//toRole = InteractionUtil.getToRole(act);
 							
 							f_rolesSet = true;
 						} else {
 							// TODO: Check that roles match
 						}
-						
-/* TODO: MERGING						
-						// Add path
-						if (act instanceof When) {
-							ret.getWhens().add((When)act);
-						} else if (act instanceof Interaction) {
-							When newwb=new When();
-							
-							newwb.derivedFrom(act);
-							
-							newwb.setMessageSignature(new MessageSignature(ms));
-							
-							// Copy contents of block except the interaction
-							Block b=(Block)act.getParent();
-							
-							for (Activity a : b.getContents()) {
-								if (a != act) {
-									newwb.getBlock().add(a);
-								}
-							}
-							
-							ret.getWhens().add(newwb);
-						}
-*/
 					}
 				}
 			}
 		}
 		
 		if (f_merge) {
-			ret.setRole(fromRole);
+			projected.setRole(fromRole);
 		}
 		
-		// Check if 'choice' can be simplified to an interaction, if only one path
-		/*
-		if (ret.getBlocks().size() == 1) {
+		// Check to see whether common interaction sentences can be extracted
+		// out from each path to precede the choice
+		boolean checkPaths=false;
+		do {
+			boolean allSame=projected.getBlocks().size() > 1;
 			
-			// Check if projecting choice role
-			if (ret.getRole() != null) {
+			for (int i=1; allSame && i < projected.getBlocks().size(); i++) {
+				Block b1=projected.getBlocks().get(0);
+				Block b2=projected.getBlocks().get(i);
 				
-				// Check if should be optional - if some blocks have
-				// not been projected
-				if (ret.getBlocks().size() < source.getBlocks().size()) {
-					// Add optional block
-					ret.getBlocks().add(new Block());
+				if (b1.size() == 0 || b2.size() == 0) {
+					allSame = false;
+				} else if (b1.get(0).equals(b2.get(0)) == false) {
+					allSame = false;
+				}
+			}
+			
+			if (allSame) {
+				// Merge first elements from each path and place before the choice
+				if ((ret instanceof Block) == false) {
+					ret = new Block();
+					((Block)ret).add(projected);
+				}
+				
+				((Block)ret).getContents().add(((Block)ret).size()-1,
+						projected.getBlocks().get(0).getContents().get(0));
+				
+				for (int i=0; i < projected.getBlocks().size(); i++) {
+					// Remove first element
+					projected.getBlocks().get(i).getContents().remove(0);
 				}
 			} else {
-				return(ret.getBlocks().get(0));
+				// Check if two or more paths have same first element, and
+				// therefore are invalid
 			}
-		} else*/ if (ret.getBlocks().size() == 0) {
-			ret = null;
+			
+		} while(checkPaths);
+		
+		// Remove all empty paths
+		for (int i=projected.getBlocks().size()-1; i >= 0; i--) {
+			Block b=projected.getBlocks().get(i);
+			
+			if (b.size() == 0) {
+				projected.getBlocks().remove(i);
+				f_optional = true;
+			}
+		}
+		
+		if (projected.getBlocks().size() == 0) {
+			if (ret == projected) {
+				ret = null;
+			} else {
+				((Block)ret).remove(projected);
+			}
+			projected = null;
 		} else if (f_optional) {
 			// Add optional block
-			ret.getBlocks().add(new Block());
+			projected.getBlocks().add(new Block());
 		}
 
 		return(ret);
