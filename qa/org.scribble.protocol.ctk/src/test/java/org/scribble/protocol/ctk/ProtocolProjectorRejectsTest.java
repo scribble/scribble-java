@@ -47,7 +47,7 @@ public class ProtocolProjectorRejectsTest {
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
             {"ChoiceNotMergeableSimple.spr", null, "C"},
-            //{"ChoiceNotMergeableRecursion.spr"}
+            //{"ChoiceNotMergeableRecursion.spr", null, "C"}
         };
         List<Object[]> result = new LinkedList<Object[]>();
         for (Object[] sub: array) {

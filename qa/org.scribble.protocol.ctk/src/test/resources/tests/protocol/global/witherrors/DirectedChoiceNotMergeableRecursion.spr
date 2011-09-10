@@ -6,13 +6,13 @@ protocol ChoiceNotMergeableRecursion (role A) {
 	// to whether the received l0() message should trigger the recursion or not.
 	
     rec X {
-        choice at A {
-            l1() from A to B;
-            l0() from B to C;
-            X;
-        } or {
-            l2() from A to B;
-            l0() from B to C;
+        choice from A to B {
+            l1():
+            	l0() from B to C;
+            	X;
+            	
+            l2():
+            	l0() from B to C;
         }
     }
 }
