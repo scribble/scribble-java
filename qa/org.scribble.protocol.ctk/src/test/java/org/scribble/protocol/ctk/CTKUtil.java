@@ -341,7 +341,7 @@ public class CTKUtil {
 			fail("Failed to get Protocol projector: "+e);
 		}
 
-		ret = projector.project(model, role, logger, context);
+		ret = projector.project(context, model, role, logger);
 		
 		return(ret);
 	}

@@ -17,6 +17,7 @@ package org.scribble.protocol.validation.rules;
 
 import java.text.MessageFormat;
 
+import org.scribble.common.logging.CachedJournal;
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.ModelObject;
@@ -56,7 +57,12 @@ public class ProtocolModelValidatorRule implements ProtocolComponentValidatorRul
 		java.util.List<Role> unprojectable=new java.util.Vector<Role>();
 		
 		for (Role role : elem.getRoles()) {
+			CachedJournal l=new CachedJournal();
+			context.getProjector().project(context, elem, role, l);
 			
+			if (l.hasErrors()) {
+				unprojectable.add(role);
+			}
 		}
 		
 		if (unprojectable.size() > 0) {

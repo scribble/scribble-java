@@ -20,6 +20,7 @@ import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.FileContent;
 import org.scribble.protocol.DefaultProtocolContext;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.export.ProtocolExporter;
 import org.scribble.protocol.model.Role;
@@ -86,22 +87,24 @@ public class ProjectCommand implements org.scribble.command.Command {
 					Role role=new Role(args[1]);
 					
 					try {
-					ProtocolModel projection=m_protocolProjector.project(model, role, m_journal,
-							new DefaultProtocolContext(m_protocolParserManager,
-									new DefaultResourceLocator(f.getParentFile())));
-					
-					if (projection != null) {
-						// Get text exporter
-						ProtocolExporter exporter=m_protocolExportManager.getExporter("txt");
+						ProtocolContext context=new DefaultProtocolContext(m_protocolParserManager,
+								new DefaultResourceLocator(f.getParentFile()));
 						
-						if (exporter != null) {
-							exporter.export(projection, m_journal, System.out);
+						ProtocolModel projection=m_protocolProjector.project(context,
+										model, role, m_journal);
+					
+						if (projection != null) {
+							// Get text exporter
+							ProtocolExporter exporter=m_protocolExportManager.getExporter("txt");
 							
-							ret = true;
-						} else {
-							// TODO: Report not able to find exporter
+							if (exporter != null) {
+								exporter.export(projection, m_journal, System.out);
+								
+								ret = true;
+							} else {
+								// TODO: Report not able to find exporter
+							}
 						}
-					}
 					} catch(Exception e) {
 						e.printStackTrace();
 					}
