@@ -26,7 +26,7 @@ import org.scribble.protocol.model.Role;
 import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
 
 /**
- * This class provides the validation rule for the Choice
+ * This class provides the validation rule for the ProtocolModel
  * model component.
  *
  */

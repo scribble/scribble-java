@@ -33,6 +33,7 @@ public class DefaultProtocolComponentValidator extends ProtocolComponentValidato
 		getRules().add(new ChoiceValidatorRule());
 		getRules().add(new InteractionValidatorRule());
 		getRules().add(new ProtocolModelValidatorRule());
+		getRules().add(new ProtocolValidatorRule());
 		getRules().add(new RecursionValidatorRule());
 		getRules().add(new RepeatValidatorRule());
 	}
