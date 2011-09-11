@@ -18,6 +18,7 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.Interaction;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Role;
@@ -48,7 +49,7 @@ public class InteractionValidatorRule implements ProtocolComponentValidatorRule 
 	 * @param obj The model object being validated
 	 * @param logger The logger
 	 */
-	public void validate(ModelObject obj,
+	public void validate(ProtocolContext context, ModelObject obj,
 					Journal logger) {
 		Interaction elem=(Interaction)obj;
 		

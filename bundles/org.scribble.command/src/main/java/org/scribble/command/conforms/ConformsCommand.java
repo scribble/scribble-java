@@ -65,16 +65,16 @@ public class ConformsCommand implements org.scribble.command.Command {
 					Content content1=new FileContent(f1);
 					
 					org.scribble.protocol.model.ProtocolModel p1=
-						m_protocolParserManager.parse(content1, m_journal,
-							new DefaultProtocolContext(m_protocolParserManager,
-									new DefaultResourceLocator(f1.getParentFile())));
+						m_protocolParserManager.parse(new DefaultProtocolContext(m_protocolParserManager,
+								new DefaultResourceLocator(f1.getParentFile())),
+								content1, m_journal);
 			
 					Content content2=new FileContent(f2);
 								
 					org.scribble.protocol.model.ProtocolModel p2=
-						m_protocolParserManager.parse(content2, m_journal,
-							new DefaultProtocolContext(m_protocolParserManager,
-									new DefaultResourceLocator(f2.getParentFile())));	
+						m_protocolParserManager.parse(new DefaultProtocolContext(m_protocolParserManager,
+								new DefaultResourceLocator(f2.getParentFile())),
+								content2, m_journal);	
 			
 					if (p1 != null && p2 != null) {
 						m_conformer.conforms(p1, p2, m_journal);

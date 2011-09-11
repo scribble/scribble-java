@@ -18,8 +18,10 @@ package org.scribble.protocol;
 
 import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.ResourceLocator;
+import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.model.ProtocolImport;
 import org.scribble.protocol.model.ProtocolModel;
+import org.scribble.protocol.projection.ProtocolProjector;
 
 /**
  * This interface represents the context in which a protocol related
@@ -44,5 +46,19 @@ public interface ProtocolContext {
 	 * @return The protocol model, or null if not found
 	 */
 	public ProtocolModel getProtocolModel(ProtocolImport pi, Journal journal);
+	
+	/**
+	 * This method returns the protocol projector.
+	 * 
+	 * @return The projector
+	 */
+	public ProtocolProjector getProjector();
+	
+	/**
+	 * This method returns the protocol export manager.
+	 * 
+	 * @return The export manager
+	 */
+	public ProtocolExportManager getExportManager();
 	
 }

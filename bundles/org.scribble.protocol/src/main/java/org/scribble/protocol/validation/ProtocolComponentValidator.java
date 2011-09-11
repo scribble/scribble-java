@@ -16,6 +16,7 @@
 package org.scribble.protocol.validation;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.*;
 
 //import java.util.logging.*;
@@ -45,15 +46,19 @@ public class ProtocolComponentValidator implements ProtocolValidator {
 		m_rules = rules;
 	}
 	
-	public void validate(org.scribble.protocol.model.ProtocolModel model,
+	public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
 						Journal logger) {
 		
-		model.visit(new ValidatingVisitor(logger));
+		model.visit(new ValidatingVisitor(context, logger));
 	}
 
 	public class ValidatingVisitor extends org.scribble.protocol.model.AbstractModelObjectVisitor {
 		
-		public ValidatingVisitor(Journal logger) {
+		private ProtocolContext m_context=null;
+		private Journal m_logger=null;
+		
+		public ValidatingVisitor(ProtocolContext context, Journal logger) {
+			m_context = context;
 			m_logger = logger;
 		}
 		
@@ -73,13 +78,11 @@ public class ProtocolComponentValidator implements ProtocolValidator {
 				ProtocolComponentValidatorRule rule=iter.next();
 				
 				if (rule.isSupported(obj)) {
-					rule.validate(obj, m_logger);
+					rule.validate(m_context, obj, m_logger);
 				}
 			}
 			
 			return(true);
 		}
-		
-		private Journal m_logger=null;
 	}
 }

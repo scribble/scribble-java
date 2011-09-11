@@ -20,6 +20,7 @@ import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.FileContent;
 import org.scribble.protocol.DefaultProtocolContext;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.parser.ProtocolParserManager;
 import org.scribble.protocol.validation.ProtocolValidationManager;
 
@@ -63,15 +64,17 @@ public class ValidateCommand implements org.scribble.command.Command {
 				try {
 					Content content=new FileContent(f);
 
+					ProtocolContext context=new DefaultProtocolContext(m_protocolParserManager,
+							new DefaultResourceLocator(f.getParentFile()));
+					
 					org.scribble.protocol.model.ProtocolModel model=
-						m_protocolParserManager.parse(content, m_journal,
-							new DefaultProtocolContext(m_protocolParserManager,
-									new DefaultResourceLocator(f.getParentFile())));
+						m_protocolParserManager.parse(context,
+								content, m_journal);
 			
 					if (model != null) {
 						m_journal.info("VALIDATE "+args[0], null);
 						
-						m_validationManager.validate(model, m_journal);
+						m_validationManager.validate(context, model, m_journal);
 						
 						ret = true;						
 					} else {

@@ -43,20 +43,20 @@ public class DefaultProtocolParserManager implements ProtocolParserManager {
 	 * context is optionally used by the parser to locate additional artifacts
 	 * required to construct the protocol model.
 	 * 
+	 * @param context The protocol context
 	 * @param content The content to be parsed
 	 * @param journal The journal for reporting issues
-	 * @param context The protocol context
 	 * @return The protocol model
 	 * @throws IOException Failed to retrieve content to be parsed
 	 */
-	public ProtocolModel parse(Content content, Journal journal,
-				ProtocolContext context) throws java.io.IOException {
+	public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+								throws java.io.IOException {
 		ProtocolModel ret=null;
 		
 		if (m_parsers != null) {
 			for (ProtocolParser p : m_parsers) {
 				if (p.isSupported(content)) {
-					ret = p.parse(content, journal, context);
+					ret = p.parse(context, content, journal);
 					
 					if (ret != null) {
 						break;

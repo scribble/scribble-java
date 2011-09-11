@@ -49,7 +49,7 @@ public class InteractionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		InteractionValidatorRule rule=new InteractionValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(
@@ -87,7 +87,7 @@ public class InteractionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		InteractionValidatorRule rule=new InteractionValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(
@@ -122,7 +122,7 @@ public class InteractionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		InteractionValidatorRule rule=new InteractionValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(
@@ -157,7 +157,7 @@ public class InteractionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		InteractionValidatorRule rule=new InteractionValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(
@@ -193,7 +193,7 @@ public class InteractionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		InteractionValidatorRule rule=new InteractionValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 		});
@@ -225,7 +225,7 @@ public class InteractionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		InteractionValidatorRule rule=new InteractionValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(
@@ -261,7 +261,7 @@ public class InteractionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		InteractionValidatorRule rule=new InteractionValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(
@@ -297,7 +297,7 @@ public class InteractionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		InteractionValidatorRule rule=new InteractionValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 		});
@@ -332,7 +332,7 @@ public class InteractionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		InteractionValidatorRule rule=new InteractionValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(

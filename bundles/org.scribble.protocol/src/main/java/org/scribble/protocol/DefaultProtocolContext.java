@@ -24,9 +24,11 @@ import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
 import org.scribble.common.resource.ResourceContent;
 import org.scribble.common.resource.ResourceLocator;
+import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.model.ProtocolImport;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.parser.ProtocolParserManager;
+import org.scribble.protocol.projection.ProtocolProjector;
 
 /**
  * This interface represents the context in which a protocol related
@@ -37,8 +39,16 @@ public class DefaultProtocolContext implements ProtocolContext {
 
 	private ProtocolParserManager m_parserManager=null;
 	private ResourceLocator m_resourceLocator=null;
+	private ProtocolProjector m_projector=null;
+	private ProtocolExportManager m_exportManager=null;
 	
 	private static Logger logger=Logger.getLogger(DefaultProtocolContext.class.getName());
+	
+	/**
+	 * This is the default constructor.
+	 */
+	public DefaultProtocolContext() {
+	}
 	
 	/**
 	 * This is the constructor for the default protocol context
@@ -63,6 +73,24 @@ public class DefaultProtocolContext implements ProtocolContext {
 	}
 	
 	/**
+	 * This method sets the resource locator.
+	 * 
+	 * @param locator The resource locator
+	 */
+	public void setResourceLocator(ResourceLocator locator) {
+		m_resourceLocator = locator;
+	}
+	
+	/**
+	 * This method sets the protocol parser manager.
+	 * 
+	 * @param ppm The parser manager
+	 */
+	public void setProtocolParserManager(ProtocolParserManager ppm) {
+		m_parserManager = ppm;
+	}
+	
+	/**
 	 * This method retrieves a protocol model associated with a protocol
 	 * import statement.
 	 *  
@@ -82,7 +110,7 @@ public class DefaultProtocolContext implements ProtocolContext {
 				
 				Content content=new ResourceContent(uri);
 				
-				ret = m_parserManager.parse(content, journal, this);
+				ret = m_parserManager.parse(this, content, journal);
 				
 			} catch(MalformedURLException mue) {
 				journal.error("Invalid URL '"+mue+"'", pi.getProperties());
@@ -96,5 +124,40 @@ public class DefaultProtocolContext implements ProtocolContext {
 		
 		return(ret);
 	}
+
+	/**
+	 * This method returns the protocol projector.
+	 * 
+	 * @return The projector
+	 */
+	public ProtocolProjector getProjector() {
+		return(m_projector);
+	}
 	
+	/**
+	 * This method sets the projector.
+	 * 
+	 * @param pp The protocol projector
+	 */
+	public void setProjector(ProtocolProjector pp) {
+		m_projector = pp;
+	}
+	
+	/**
+	 * This method returns the protocol export manager.
+	 * 
+	 * @return The export manager
+	 */
+	public ProtocolExportManager getExportManager() {
+		return(m_exportManager);
+	}
+	
+	/**
+	 * This method sets the protocol export manager.
+	 * 
+	 * @param em The export manager
+	 */
+	public void setExportManager(ProtocolExportManager em) {
+		m_exportManager = em;
+	}
 }

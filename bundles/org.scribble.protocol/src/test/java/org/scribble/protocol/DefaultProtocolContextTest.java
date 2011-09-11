@@ -153,8 +153,8 @@ public class DefaultProtocolContextTest {
 	public class TestProtocolParserManager extends DefaultProtocolParserManager {
 
 		@Override
-		public ProtocolModel parse(Content content, Journal journal,
-							ProtocolContext context) throws IOException {
+		public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+							throws IOException {
 			java.io.InputStream is=content.getInputStream();
 			byte[] b=new byte[is.available()];
 			

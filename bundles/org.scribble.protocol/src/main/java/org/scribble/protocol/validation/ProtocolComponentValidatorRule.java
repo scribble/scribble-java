@@ -16,6 +16,7 @@
 package org.scribble.protocol.validation;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.ModelObject;
 
 /**
@@ -37,10 +38,11 @@ public interface ProtocolComponentValidatorRule {
 	/**
 	 * This method validates the supplied model object.
 	 * 
+	 * @param context The protocol context
 	 * @param obj The model object being validated
 	 * @param logger The logger
 	 */
-	public void validate(ModelObject obj,
+	public void validate(ProtocolContext context, ModelObject obj,
 					Journal logger);
 
 }

@@ -43,8 +43,8 @@ public class ANTLRProtocolParser implements ProtocolParser {
 		return(content.hasExtension(org.scribble.protocol.ProtocolDefinitions.PROTOCOL_TYPE));
 	}
 
-	public ProtocolModel parse(Content content, Journal journal,
-							ProtocolContext context) throws IOException {
+	public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+							throws IOException {
 		ProtocolModel ret=null;
 		
         try {

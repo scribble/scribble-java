@@ -75,7 +75,7 @@ public class CTKUtil {
 		try {
 			Content content=new ResourceContent(url.toURI());
 			
-			ret = parser.parse(content, logger, null);
+			ret = parser.parse(null, content, logger);
 		} catch(Exception e) {
 			fail("Failed to parse protocol: "+e);
 		}
@@ -299,9 +299,9 @@ public class CTKUtil {
 		ProtocolParserManager ppm=new DefaultProtocolParserManager() {
 
 			@Override
-			public ProtocolModel parse(Content content,	Journal journal, ProtocolContext context)
+			public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
 					throws IOException {
-				return(parser.parse(content, journal, context));
+				return(parser.parse(context, content, journal));
 			}
 			
 		};

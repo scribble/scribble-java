@@ -58,7 +58,8 @@ public class ParseCommand implements org.scribble.command.Command {
 				try {
 					Content content=new FileContent(f);
 
-					ProtocolModel pm=m_protocolParserManager.parse(content, m_journal, null);
+					ProtocolModel pm=m_protocolParserManager.parse(null,
+								content, m_journal);
 					
 					if (pm == null) {
 						m_journal.error("Protocol Model is null", null);	

@@ -86,9 +86,9 @@ public class SimulateCommand implements org.scribble.command.Command {
 					Content content=new FileContent(f1);
 					
 					org.scribble.protocol.model.ProtocolModel model=
-							m_protocolParserManager.parse(content, m_journal,
-									new DefaultProtocolContext(m_protocolParserManager,
-									new DefaultResourceLocator(f1.getParentFile())));
+							m_protocolParserManager.parse(new DefaultProtocolContext(m_protocolParserManager,
+									new DefaultResourceLocator(f1.getParentFile())),
+									content, m_journal);
 			
 					if (model != null) {
 						

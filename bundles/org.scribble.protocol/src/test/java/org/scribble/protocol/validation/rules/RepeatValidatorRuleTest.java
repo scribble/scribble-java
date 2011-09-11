@@ -48,7 +48,7 @@ public class RepeatValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		RepeatValidatorRule rule=new RepeatValidatorRule();
-		rule.validate(r1, logger);
+		rule.validate(null, r1, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(
@@ -85,7 +85,7 @@ public class RepeatValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		RepeatValidatorRule rule=new RepeatValidatorRule();
-		rule.validate(r1, logger);
+		rule.validate(null, r1, logger);
 		
 		logger.verifyErrors(new String[]{
 		});

@@ -46,7 +46,7 @@ public class ANTLRProtocolParserTest {
 		CachedJournal journal=new CachedJournal();
 		
 		try {
-			ProtocolModel pm=parser.parse(content, journal, null);
+			ProtocolModel pm=parser.parse(null, content, journal);
 			
 			if (pm != null) {
 				fail("Returned protocol model should be null due to error");
@@ -130,7 +130,7 @@ public class ANTLRProtocolParserTest {
 		CachedJournal journal=new CachedJournal();
 		
 		try {
-			ProtocolModel pm=parser.parse(content, journal, null);
+			ProtocolModel pm=parser.parse(null, content, journal);
 			
 			if (pm == null) {
 				fail("Protocol Model should not be null");
@@ -208,7 +208,7 @@ public class ANTLRProtocolParserTest {
 		CachedJournal journal=new CachedJournal();
 		
 		try {
-			ProtocolModel pm=parser.parse(content, journal, null);
+			ProtocolModel pm=parser.parse(null, content, journal);
 			
 			if (pm == null) {
 				fail("Protocol Model should not be null");

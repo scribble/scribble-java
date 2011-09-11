@@ -50,7 +50,7 @@ public class RecursionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		RecursionValidatorRule rule=new RecursionValidatorRule();
-		rule.validate(rec, logger);
+		rule.validate(null, rec, logger);
 		
 		logger.verifyErrors(new String[]{
 		});
@@ -85,7 +85,7 @@ public class RecursionValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		RecursionValidatorRule rule=new RecursionValidatorRule();
-		rule.validate(rec, logger);
+		rule.validate(null, rec, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(

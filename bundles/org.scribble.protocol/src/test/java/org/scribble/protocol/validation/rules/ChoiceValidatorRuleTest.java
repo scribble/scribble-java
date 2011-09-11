@@ -48,7 +48,7 @@ public class ChoiceValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		ChoiceValidatorRule rule=new ChoiceValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 				MessageFormat.format(
@@ -82,7 +82,7 @@ public class ChoiceValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 
 		ChoiceValidatorRule rule=new ChoiceValidatorRule();
-		rule.validate(i1, logger);
+		rule.validate(null, i1, logger);
 		
 		logger.verifyErrors(new String[]{
 		});

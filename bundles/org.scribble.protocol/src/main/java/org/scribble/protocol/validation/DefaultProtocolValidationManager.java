@@ -16,6 +16,8 @@
  */
 package org.scribble.protocol.validation;
 
+import org.scribble.protocol.ProtocolContext;
+
 /**
  * This class represents the default implementation of the ProtocolValidationManager
  * interface.
@@ -42,12 +44,12 @@ public class DefaultProtocolValidationManager implements ProtocolValidationManag
 	 * @param model The protocol model
 	 * @param journal The journal
 	 */
-	public void validate(org.scribble.protocol.model.ProtocolModel model,
+	public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
 				org.scribble.common.logging.Journal logger) {
 	
 		if (m_validators != null) {
 			for (ProtocolValidator v : m_validators) {
-				v.validate(model, logger);
+				v.validate(context, model, logger);
 			}
 		}
 	}

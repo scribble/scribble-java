@@ -19,10 +19,9 @@ import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.ProtocolContext;
-import org.scribble.protocol.model.Choice;
 import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.model.Role;
-import org.scribble.protocol.util.RoleUtil;
 import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
 
 /**
@@ -30,7 +29,7 @@ import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
  * model component.
  *
  */
-public class ChoiceValidatorRule implements ProtocolComponentValidatorRule {
+public class ProtocolModelValidatorRule implements ProtocolComponentValidatorRule {
 
 	/**
 	 * This method determines whether the rule is applicable
@@ -40,7 +39,9 @@ public class ChoiceValidatorRule implements ProtocolComponentValidatorRule {
 	 * 				supplied model object
 	 */
 	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == org.scribble.protocol.model.Choice.class);
+		// Check model object is ProtocolModel and is global
+		return(obj.getClass() == ProtocolModel.class &&
+				((ProtocolModel)obj).isLocated() == false);
 	}
 	
 	/**
@@ -51,32 +52,30 @@ public class ChoiceValidatorRule implements ProtocolComponentValidatorRule {
 	 */
 	public void validate(ProtocolContext context, ModelObject obj,
 					Journal logger) {
-		Choice elem=(Choice)obj;
+		ProtocolModel elem=(ProtocolModel)obj;
+		java.util.List<Role> unprojectable=new java.util.Vector<Role>();
 		
-		// Identify definition and whether it has a located role
-		Role locatedRole=null;
-		
-		if (elem.enclosingProtocol() != null) {
-			locatedRole = elem.enclosingProtocol().getRole();
+		for (Role role : elem.getRoles()) {
+			
 		}
-
-		if (elem.getRole() != null) {
-			
-			// Check that the role has been defined in scope
-			java.util.Set<Role> roles=RoleUtil.getRolesInScope(elem);
-			
-			if (roles.contains(elem.getRole()) == false) {
-				logger.error(MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.Messages").getString("_UNKNOWN_ROLE"),
-						elem.getRole().getName()), obj.getProperties());
+		
+		if (unprojectable.size() > 0) {
+			String roleNames="";
+			for (int i=0; i < unprojectable.size(); i++) {
+				if (i > 0) {
+					if (i == unprojectable.size()-1) {
+						roleNames += " & ";
+					} else {
+						roleNames += ", ";
+					}
+				}
+				roleNames += unprojectable.get(i).getName();
 			}
-		}
-
-		if (locatedRole != null && elem.getRole() != null && !elem.getRole().equals(locatedRole)) {
+			
 			logger.error(MessageFormat.format(
 					java.util.PropertyResourceBundle.getBundle(
-							"org.scribble.protocol.Messages").getString("_UNRELATED_TO_LOCATED_ROLE"),
-							locatedRole.getName()), obj.getProperties());
+							"org.scribble.protocol.Messages").getString("_UNPROJECTABLE_ROLES"),
+							roleNames), obj.getProperties());
 		}
 	}
 }

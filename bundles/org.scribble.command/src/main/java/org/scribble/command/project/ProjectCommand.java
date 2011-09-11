@@ -72,9 +72,8 @@ public class ProjectCommand implements org.scribble.command.Command {
 				try {
 					Content content=new FileContent(f);
 					
-					model = m_protocolParserManager.parse(content, m_journal,
-							new DefaultProtocolContext(m_protocolParserManager,
-									new DefaultResourceLocator(f.getParentFile())));
+					model = m_protocolParserManager.parse(new DefaultProtocolContext(m_protocolParserManager,
+							new DefaultResourceLocator(f.getParentFile())), content, m_journal);
 			
 				} catch(Exception e) {
 					m_journal.error("Failed to parse file '"+args[0]+"'", null);
