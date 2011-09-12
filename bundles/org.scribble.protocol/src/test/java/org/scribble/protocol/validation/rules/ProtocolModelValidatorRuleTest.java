@@ -43,7 +43,7 @@ public class ProtocolModelValidatorRuleTest {
 		TestScribbleLogger logger=new TestScribbleLogger();
 		
 		DefaultProtocolContext context=new DefaultProtocolContext();
-		context.setProjector(new TestErrorProjector());
+		context.setProtocolProjector(new TestErrorProjector());
 
 		ProtocolModelValidatorRule rule=new ProtocolModelValidatorRule();
 		rule.validate(context, pm, logger);

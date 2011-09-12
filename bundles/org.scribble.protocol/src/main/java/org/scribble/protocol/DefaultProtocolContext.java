@@ -139,7 +139,7 @@ public class DefaultProtocolContext implements ProtocolContext {
 	 * 
 	 * @param pp The protocol projector
 	 */
-	public void setProjector(ProtocolProjector pp) {
+	public void setProtocolProjector(ProtocolProjector pp) {
 		m_projector = pp;
 	}
 	
@@ -157,7 +157,7 @@ public class DefaultProtocolContext implements ProtocolContext {
 	 * 
 	 * @param em The export manager
 	 */
-	public void setExportManager(ProtocolExportManager em) {
+	public void setProtocolExportManager(ProtocolExportManager em) {
 		m_exportManager = em;
 	}
 }
