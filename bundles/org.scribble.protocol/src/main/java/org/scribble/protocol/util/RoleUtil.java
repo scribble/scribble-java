@@ -270,6 +270,34 @@ public class RoleUtil {
 			}
 		}
 		
+		// Check whether block is contained within another construct that
+		// must be preserved
+		ret = checkContainingConstructs(ret);
+		
+		return(ret);
+	}
+	
+	protected static Block checkContainingConstructs(Block block) {
+		Block ret=block;
+		ModelObject cur=ret;
+		
+		while (cur != null && cur.getParent() != null &&
+					(cur.getParent() instanceof Protocol) == false) {
+			if (cur.getParent().getClass() == RecBlock.class) {
+				RecBlock rb=new RecBlock();
+				
+				rb.derivedFrom(cur.getParent());
+				rb.setLabel(((RecBlock)cur.getParent()).getLabel());
+				
+				rb.setBlock(ret);
+				
+				ret = new Block();
+				ret.add(rb);
+			}
+			
+			cur = cur.getParent();
+		}
+		
 		return(ret);
 	}
 	
