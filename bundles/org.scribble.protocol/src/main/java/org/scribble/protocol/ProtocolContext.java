@@ -52,13 +52,13 @@ public interface ProtocolContext {
 	 * 
 	 * @return The projector
 	 */
-	public ProtocolProjector getProjector();
+	public ProtocolProjector getProtocolProjector();
 	
 	/**
 	 * This method returns the protocol export manager.
 	 * 
 	 * @return The export manager
 	 */
-	public ProtocolExportManager getExportManager();
+	public ProtocolExportManager getProtocolExportManager();
 	
 }

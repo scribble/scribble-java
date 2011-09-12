@@ -130,7 +130,7 @@ public class DefaultProtocolContext implements ProtocolContext {
 	 * 
 	 * @return The projector
 	 */
-	public ProtocolProjector getProjector() {
+	public ProtocolProjector getProtocolProjector() {
 		return(m_projector);
 	}
 	
@@ -148,7 +148,7 @@ public class DefaultProtocolContext implements ProtocolContext {
 	 * 
 	 * @return The export manager
 	 */
-	public ProtocolExportManager getExportManager() {
+	public ProtocolExportManager getProtocolExportManager() {
 		return(m_exportManager);
 	}
 	

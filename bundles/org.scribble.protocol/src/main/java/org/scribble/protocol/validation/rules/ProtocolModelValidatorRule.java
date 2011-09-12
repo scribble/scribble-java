@@ -58,7 +58,7 @@ public class ProtocolModelValidatorRule implements ProtocolComponentValidatorRul
 		
 		for (Role role : elem.getRoles()) {
 			CachedJournal l=new CachedJournal();
-			context.getProjector().project(context, elem, role, l);
+			context.getProtocolProjector().project(context, elem, role, l);
 			
 			if (l.hasErrors()) {
 				unprojectable.add(role);
