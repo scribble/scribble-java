@@ -986,7 +986,7 @@ public class MonitorProtocolExporterTest {
 		Protocol subp=new Protocol();
 		subp.setName(SUBPROTOCOL);
 		subp.setRole(p1);
-		p.getBlock().add(subp);
+		p.getNestedProtocols().add(subp);
 		
 		Interaction i3=new Interaction();
 		MessageSignature ms3=new MessageSignature();
@@ -1052,7 +1052,7 @@ public class MonitorProtocolExporterTest {
 		Protocol subp=new Protocol();
 		subp.setName(SUBPROTOCOL);
 		subp.setRole(p1);
-		p.getBlock().add(subp);
+		p.getNestedProtocols().add(subp);
 		
 		Interaction i3=new Interaction();
 		MessageSignature ms3=new MessageSignature();

@@ -17,7 +17,7 @@ package org.scribble.protocol.conformance.impl;
 
 import org.scribble.protocol.conformance.ConformanceHandler;
 import org.scribble.protocol.conformance.ProtocolConformer;
-import org.scribble.protocol.model.Activity;
+import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.ProtocolModel;
 
 public class ProtocolConformerImpl implements ProtocolConformer {
@@ -34,6 +34,6 @@ public class ProtocolConformerImpl implements ProtocolConformer {
 		compare(model.getProtocol(), ref.getProtocol(), handler);
 	}
 
-	protected void compare(Activity model, Activity ref, ConformanceHandler handler) {
+	protected void compare(ModelObject model, ModelObject ref, ConformanceHandler handler) {
 	}
 }

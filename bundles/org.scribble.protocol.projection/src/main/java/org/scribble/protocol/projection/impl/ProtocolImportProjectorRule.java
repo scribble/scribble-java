@@ -46,7 +46,7 @@ public class ProtocolImportProjectorRule implements ProjectorRule {
 	 * @param l The model listener
 	 * @return The projected model object
 	 */
-	public ModelObject project(ProjectorContext context, ModelObject model,
+	public Object project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
 		ProtocolImport ret=new ProtocolImport();
 		ProtocolImport source=(ProtocolImport)model;

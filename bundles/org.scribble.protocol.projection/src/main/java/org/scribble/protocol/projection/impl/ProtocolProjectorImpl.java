@@ -72,7 +72,7 @@ public class ProtocolProjectorImpl implements ProtocolProjector {
 		
 		DefaultProjectorContext projectorContext=new DefaultProjectorContext(context);
 		
-		ModelObject obj=projectorContext.project(model, role, journal);
+		Object obj=projectorContext.project(model, role, journal);
 		
 		if (obj != null) {
 			if (obj instanceof ProtocolModel) {

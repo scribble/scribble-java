@@ -28,7 +28,7 @@ public class ProtocolTest {
 		model.setProtocol(top);
 		
 		Protocol inner=new Protocol();
-		top.getBlock().add(inner);
+		top.getNestedProtocols().add(inner);
 		
 		if (inner.getTopLevelProtocol() != top) {
 			fail("Top level protocol is incorrect");

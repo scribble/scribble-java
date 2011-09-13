@@ -55,7 +55,7 @@ public class InteractionProjectorRule implements ProjectorRule {
 	 * @param l The model listener
 	 * @return The projected model object
 	 */
-	public ModelObject project(ProjectorContext context, ModelObject model,
+	public Object project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
 		Interaction ret=createInteraction();
 		Interaction source=(Interaction)model;

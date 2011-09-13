@@ -18,11 +18,13 @@ package org.scribble.protocol.model;
 /**
  * This class represents the protocol notation.
  */
-public class Protocol extends Activity {
+public class Protocol extends ModelObject {
 	
 	private String m_name=null;
 	private Role m_role=null;
 	private Block m_block=null;
+	private java.util.List<Protocol> m_nestedProtocols=
+			new ContainmentList<Protocol>(this, Protocol.class);
 	private java.util.List<ParameterDefinition> m_parameterDefs=
 		new ContainmentList<ParameterDefinition>(this, ParameterDefinition.class);
 
@@ -146,6 +148,15 @@ public class Protocol extends Activity {
 	}
 	
 	/**
+	 * This method returns the list of nested protocols.
+	 * 
+	 * @return The nested protocols
+	 */
+	public java.util.List<Protocol> getNestedProtocols() {
+		return(m_nestedProtocols);
+	}
+	
+	/**
 	 * This method returns the model in which this definition
 	 * is contained.
 	 * 
@@ -173,7 +184,6 @@ public class Protocol extends Activity {
 	 * 
 	 * @return The protocol, or null if not found
 	 */
-	@Override
 	public Protocol enclosingProtocol() {
 		return(this);
 	}
@@ -186,36 +196,30 @@ public class Protocol extends Activity {
 	public Protocol getTopLevelProtocol() {
 		Protocol ret=this;
 		
-		if (getParent() instanceof Block &&
-				getParent().getParent() instanceof Protocol) {
-			ret = ((Protocol)getParent().getParent()).getTopLevelProtocol();
+		if (getParent() instanceof Protocol) {
+			ret = ((Protocol)getParent()).getTopLevelProtocol();
 		}
 		
 		return(ret);
 	}
 	
 	/**
-	 * This method returns the sub-protocol associated
+	 * This method returns the nested-protocol associated
 	 * with the supplied name.
 	 * 
 	 * @param name The name
-	 * @return The sub-protocol for the supplied name,
+	 * @return The nested-protocol for the supplied name,
 	 * 				or null if not found
 	 */
-	public Protocol getSubProtocol(String name) {
-		Protocol ret=null;
+	public Protocol getNestedProtocol(String name) {
 	
-		for (int i=0; ret == null &&
-				i < getBlock().getContents().size(); i++) {
-			Activity act=getBlock().getContents().get(i);
-			
-			if (act instanceof Protocol &&
-					((Protocol)act).getName().equals(name)) {
-				ret = (Protocol)act;
+		for (Protocol protocol : m_nestedProtocols) {
+			if (protocol.getName().equals(name)) {
+				return(protocol);
 			}
 		}
 		
-		return(ret);
+		return(null);
 	}
 	
 	/**
@@ -273,6 +277,10 @@ public class Protocol extends Activity {
 			
 			if (getBlock() != null) {
 				getBlock().visit(visitor);
+			}
+			
+			for (Protocol p : getNestedProtocols()) {
+				p.visit(visitor);
 			}
 		}
 		

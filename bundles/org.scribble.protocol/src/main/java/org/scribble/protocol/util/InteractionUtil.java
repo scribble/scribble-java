@@ -96,7 +96,7 @@ public class InteractionUtil {
 		
 		public boolean start(Protocol elem) {
 			// If top level protocol, then continue, otherwise finish.
-			// Sub protocols should only be processed as part of a 
+			// Nested protocols should only be processed as part of a 
 			// 'run' activity.
 			return((elem.getParent() instanceof Protocol) == false);
 		}

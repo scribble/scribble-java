@@ -31,18 +31,14 @@ public class RunUtil {
 	public static Protocol getInnerProtocol(Protocol protocol, ProtocolReference protocolRef) {
 		Protocol ret=null;
 		
-		for (int i=0; ret == null && i < protocol.getBlock().size(); i++) {
-			Activity act=protocol.getBlock().get(i);
+		for (int i=0; ret == null && i < protocol.getNestedProtocols().size(); i++) {
+			Protocol nested=protocol.getNestedProtocols().get(i);
 			
-			if (act instanceof Protocol) {
-				Protocol sub=(Protocol)act;
-				
-				if (protocolRef.getName().equals(sub.getName()) &&
-						((protocolRef.getRole() == null && sub.getRole() == null) ||
-						(protocolRef.getRole() != null && sub.getRole() != null &&
-							protocolRef.getRole().equals(sub.getRole())))) {
-					ret = sub;		
-				}
+			if (protocolRef.getName().equals(nested.getName()) &&
+					((protocolRef.getRole() == null && nested.getRole() == null) ||
+					(protocolRef.getRole() != null && nested.getRole() != null &&
+						protocolRef.getRole().equals(nested.getRole())))) {
+				ret = nested;		
 			}
 		}
 		

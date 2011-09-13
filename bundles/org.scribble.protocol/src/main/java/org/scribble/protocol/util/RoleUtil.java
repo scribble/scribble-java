@@ -78,7 +78,7 @@ public class RoleUtil {
 	 * @return The set of roles associated with the activity and its
 	 * 				sub components if a grouping construct
 	 */
-	public static java.util.Set<Role> getUsedRoles(final Activity act) {
+	public static java.util.Set<Role> getUsedRoles(final ModelObject act) {
 		final java.util.Set<Role> roles=new java.util.HashSet<Role>();
 		
 		act.visit(new DefaultVisitor() {

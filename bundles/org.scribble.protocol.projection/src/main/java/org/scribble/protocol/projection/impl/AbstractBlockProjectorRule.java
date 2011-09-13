@@ -15,6 +15,8 @@
  */
 package org.scribble.protocol.projection.impl;
 
+import java.util.logging.Logger;
+
 import org.scribble.protocol.model.*;
 import org.scribble.protocol.util.ActivityUtil;
 import org.scribble.common.logging.Journal;
@@ -25,6 +27,8 @@ import org.scribble.common.logging.Journal;
  */
 public abstract class AbstractBlockProjectorRule implements ProjectorRule {
 
+	private static final Logger logger=Logger.getLogger(AbstractBlockProjectorRule.class.getName());
+	
 	/**
 	 * This method creates a new block of the appropriate
 	 * type.
@@ -52,17 +56,18 @@ public abstract class AbstractBlockProjectorRule implements ProjectorRule {
 		context.pushState();
 		
 		for (int i=0; i < source.getContents().size(); i++) {
-			Activity act=(Activity)
-					context.project(source.getContents().get(i), role,
-							l);
+			Object act=context.project(source.getContents().get(i), role, l);
 			
-			if (act != null) {
+			if (act instanceof Activity) {		
+				ret.getContents().add((Activity)act);
+			} else if (act instanceof java.util.List) {
 				
-				if (act instanceof Block) {
-					// Copy contents
-					ret.getContents().addAll(((Block)act).getContents());
-				} else {
-					ret.getContents().add(act);
+				for (Object a2 : (java.util.List<?>)act) {
+					if (a2 instanceof Activity) {
+						ret.getContents().add((Activity)a2);		
+					} else {
+						logger.severe("Unexpected element returns from block projection: "+a2);
+					}
 				}
 			}
 		}

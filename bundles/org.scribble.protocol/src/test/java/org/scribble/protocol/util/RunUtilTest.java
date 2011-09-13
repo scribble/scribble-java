@@ -41,7 +41,7 @@ public class RunUtilTest {
 		Protocol subp=new Protocol();
 		subp.setName(SUBPROTOCOL);
 		
-		p.getBlock().add(subp);
+		p.getNestedProtocols().add(subp);
 		
 		Protocol result=RunUtil.getInnerProtocol(p, pref);
 		
@@ -73,7 +73,7 @@ public class RunUtilTest {
 		subp.setName(SUBPROTOCOL);
 		subp.setRole(p1);
 		
-		p.getBlock().add(subp);
+		p.getNestedProtocols().add(subp);
 		
 		Protocol result=RunUtil.getInnerProtocol(p, pref);
 		

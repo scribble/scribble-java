@@ -17,6 +17,8 @@ package org.scribble.protocol.projection.impl;
 
 //import java.util.logging.Logger;
 
+import java.util.logging.Logger;
+
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.model.*;
 
@@ -26,6 +28,8 @@ import org.scribble.protocol.model.*;
  */
 public class ProtocolProjectorRule implements ProjectorRule {
 
+	private static final Logger logger=Logger.getLogger(ProtocolProjectorRule.class.getName());
+	
 	/**
 	 * This method determines whether the projection rule is
 	 * appropriate for the supplied model object.
@@ -47,9 +51,10 @@ public class ProtocolProjectorRule implements ProjectorRule {
 	 * @param l The model listener
 	 * @return The projected model object
 	 */
-	public ModelObject project(ProjectorContext context, ModelObject model,
+	@SuppressWarnings("unchecked")
+	public Object project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
-		Activity ret=null;
+		Object ret=null;
 		Protocol source=(Protocol)model;
 		java.util.List<Role> roles=null;
 		
@@ -90,6 +95,23 @@ public class ProtocolProjectorRule implements ProjectorRule {
 						role, l));
 				prot.getBlock().setParent(prot);
 				
+				// Project nested protocols
+				for (Protocol nested : source.getNestedProtocols()) {
+					Object pp=context.project(nested, role, l);
+					
+					if (pp instanceof Protocol) {
+						prot.getNestedProtocols().add((Protocol)pp);
+					} else if (pp instanceof java.util.List) {
+						for (Object obj : (java.util.List<?>)pp) {
+							if (obj instanceof Protocol) {
+								prot.getNestedProtocols().add((Protocol)obj);
+							} else {
+								logger.severe("Projection of nested protocol returned unexpected component: "+obj);
+							}
+						}
+					}
+				}
+				
 				context.popScope();
 				
 				// Clean up role lists, to ensure they don't include redundant roles
@@ -97,12 +119,12 @@ public class ProtocolProjectorRule implements ProjectorRule {
 				
 				if (ret == null) {
 					ret = prot;
-				} else if (ret instanceof Block) {
-					((Block)ret).getContents().add(prot);
+				} else if (ret instanceof java.util.List<?>) {
+					((java.util.List<ModelObject>)ret).add(prot);
 				} else {
-					Block b=new Block();
-					b.getContents().add(ret);
-					b.getContents().add(prot);
+					java.util.List<ModelObject> b=new java.util.Vector<ModelObject>();
+					b.add((ModelObject)ret);
+					b.add(prot);
 					ret = b;
 				}
 			}

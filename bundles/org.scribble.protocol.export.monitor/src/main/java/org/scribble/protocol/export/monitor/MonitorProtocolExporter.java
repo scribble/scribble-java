@@ -109,8 +109,8 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 		
 		// This map contains a reference from an activity, to other relevant information required
 		// later (e.g. nodes, etc).
-		private java.util.Map<Activity,Object> m_nodeMap=
-			new java.util.HashMap<Activity,Object>();
+		private java.util.Map<ModelObject,Object> m_nodeMap=
+			new java.util.HashMap<ModelObject,Object>();
 		
 		private java.util.Map<ModelObject,java.util.List<Object>> m_nodeCache=
 			new java.util.HashMap<ModelObject,java.util.List<Object>>();
@@ -323,7 +323,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			// TODO: Think about how best to set the next index. Can only do this
 			// if the next node is within the same scope. If (for example) the
-			// last node in a sub-protocol, which happens to be called from
+			// last node in a nested-protocol, which happens to be called from
 			// multiple locations, then we need to create a sub-conversation
 			// context with the positions - and when the trail ends, it should
 			// complete the sub-conversation context, causing the parent

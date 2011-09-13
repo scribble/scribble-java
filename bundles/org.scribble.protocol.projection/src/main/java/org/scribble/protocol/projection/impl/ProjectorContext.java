@@ -41,7 +41,7 @@ public interface ProjectorContext {
 	 * @param l The model listener
 	 * @return The projected model object
 	 */
-	public ModelObject project(ModelObject model, Role role,
+	public Object project(ModelObject model, Role role,
 						Journal	l);
 	
 	/**

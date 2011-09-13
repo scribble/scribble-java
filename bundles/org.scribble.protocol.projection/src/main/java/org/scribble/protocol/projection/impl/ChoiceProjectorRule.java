@@ -48,10 +48,10 @@ public class ChoiceProjectorRule implements ProjectorRule {
 	 * @param l The model listener
 	 * @return The projected model object
 	 */
-	public ModelObject project(ProjectorContext context, ModelObject model,
+	public Object project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
 		Choice projected=new Choice();
-		ModelObject ret=projected;
+		Object ret=projected;
 		Choice source=(Choice)model;
 		boolean f_merge=false;
 		boolean f_rolesSet=false;
@@ -174,7 +174,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			if (ret == projected) {
 				ret = null;
 			} else {
-				((Block)ret).remove(projected);
+				((java.util.List<?>)ret).remove(projected);
 			}
 			projected = null;
 		} else if (f_optional) {
@@ -185,9 +185,10 @@ public class ChoiceProjectorRule implements ProjectorRule {
 		return(ret);
 	}
 	
-	protected static ModelObject extractCommonBehaviour(ProjectorContext context, Choice projected,
+	@SuppressWarnings("unchecked")
+	protected static Object extractCommonBehaviour(ProjectorContext context, Choice projected,
 							Role role, Journal l) {
-		ModelObject ret=projected;
+		Object ret=projected;
 		
 		// Check to see whether common interaction sentences can be extracted
 		// out from each path to precede the choice
@@ -208,12 +209,12 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			
 			if (allSame) {
 				// Merge first elements from each path and place before the choice
-				if ((ret instanceof Block) == false) {
-					ret = new Block();
-					((Block)ret).add(projected);
+				if ((ret instanceof java.util.List<?>) == false) {
+					ret = new java.util.Vector<Object>();
+					((java.util.List<Object>)ret).add(projected);
 				}
 				
-				((Block)ret).getContents().add(((Block)ret).size()-1,
+				((java.util.List<Object>)ret).add(((java.util.List<Object>)ret).size()-1,
 						projected.getBlocks().get(0).getContents().get(0));
 				
 				for (int i=0; i < projected.getBlocks().size(); i++) {

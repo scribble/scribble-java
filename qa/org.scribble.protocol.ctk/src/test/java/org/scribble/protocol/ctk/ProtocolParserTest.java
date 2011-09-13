@@ -1443,7 +1443,7 @@ public class ProtocolParserTest {
 		
 		subprotocol.getBlock().add(interaction);
 		
-		protocol.getBlock().add(subprotocol);
+		protocol.getNestedProtocols().add(subprotocol);
 		
 		CTKUtil.verify(model, expected);
 	}

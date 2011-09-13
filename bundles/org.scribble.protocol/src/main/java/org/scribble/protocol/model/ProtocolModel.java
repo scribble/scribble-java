@@ -87,7 +87,7 @@ public class ProtocolModel extends ModelObject {
 	
 	/**
 	 * This method returns the distinct list of roles defined
-	 * in the protocol and its sub-protocols.
+	 * in the protocol and its nested-protocols.
 	 * 
 	 * @return The list of projectable roles
 	 */

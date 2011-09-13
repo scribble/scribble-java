@@ -145,6 +145,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_listClass.put("protocolImports", ProtocolImport.class);
 		m_listClass.put("typeReferences", TypeReference.class);
 		m_listClass.put("blocks", Block.class);
+		m_listClass.put("nestedProtocols", Protocol.class);
 		m_listClass.put("onMessages", OnMessage.class);
 		m_listClass.put("interrupts", Interrupt.class);
 		m_listClass.put("parameters", Parameter.class);

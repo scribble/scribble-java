@@ -58,7 +58,7 @@ public class DefaultProjectorContext implements ProjectorContext {
 		m_rules.add(new RecBlockProjectorRule());
 		m_rules.add(new RecursionProjectorRule());
 		m_rules.add(new RunProjectorRule());
-		m_rules.add(new UseProjectorRule());
+		m_rules.add(new InlineProjectorRule());
 		m_rules.add(new DoProjectorRule());
 		m_rules.add(new DataTypeProjectorRule());
 		m_rules.add(new TypeReferenceProjectorRule());
@@ -94,9 +94,9 @@ public class DefaultProjectorContext implements ProjectorContext {
 	 * @param l The model listener
 	 * @return The projected model object
 	 */
-	public ModelObject project(ModelObject model, Role role,
+	public Object project(ModelObject model, Role role,
 						Journal l) {
-		ModelObject ret=null;
+		Object ret=null;
 		
 		for (int i=0; model != null && ret == null && i < getRules().size(); i++) {
 			if (getRules().get(i).isSupported(model)) {

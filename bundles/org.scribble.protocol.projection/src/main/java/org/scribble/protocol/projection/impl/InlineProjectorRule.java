@@ -20,10 +20,10 @@ import org.scribble.protocol.model.*;
 import org.scribble.protocol.util.ProtocolModelUtil;
 
 /**
- * This class provides the Include implementation of the
+ * This class provides the Inline implementation of the
  * projector rule.
  */
-public class UseProjectorRule implements ProjectorRule {
+public class InlineProjectorRule implements ProjectorRule {
 
 	/**
 	 * This method determines whether the projection rule is
@@ -46,7 +46,7 @@ public class UseProjectorRule implements ProjectorRule {
 	 * @param l The model listener
 	 * @return The projected model object
 	 */
-	public ModelObject project(ProjectorContext context, ModelObject model,
+	public Object project(ProjectorContext context, ModelObject model,
 					Role role, Journal l) {
 		Inline ret=new Inline();
 		Inline source=(Inline)model;
