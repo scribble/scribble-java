@@ -133,18 +133,20 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 		m_propertyToken.put("importProtocolDef:name", "");
 		m_propertyToken.put("importProtocolDef:location", "from");
 		m_propertyToken.put("introducesDef:introducer", "");
-		m_propertyToken.put("introducesDef:roles", "introduces");
+		m_propertyToken.put("introducesDef:introducedRoles", "introduces");
 		
 		// Defines the list element base type associated with a
 		// property name
 		m_listClass.put("imports", ImportList.class);
 		m_listClass.put("contents", Activity.class);
 		m_listClass.put("roles", Role.class);
+		m_listClass.put("introducedRoles", Role.class);
 		m_listClass.put("toRoles", Role.class);
 		m_listClass.put("typeImports", TypeImport.class);
 		m_listClass.put("protocolImports", ProtocolImport.class);
 		m_listClass.put("typeReferences", TypeReference.class);
 		m_listClass.put("blocks", Block.class);
+		m_listClass.put("paths", Block.class);
 		m_listClass.put("nestedProtocols", Protocol.class);
 		m_listClass.put("onMessages", OnMessage.class);
 		m_listClass.put("interrupts", Interrupt.class);

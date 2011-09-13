@@ -33,7 +33,7 @@ public class ChoiceComparator implements Comparator<ModelObject> {
 			return(1);
 		}
 		
-		if (m.getBlocks().size() != e.getBlocks().size()) {
+		if (m.getPaths().size() != e.getPaths().size()) {
 			return(1);
 		}
 		

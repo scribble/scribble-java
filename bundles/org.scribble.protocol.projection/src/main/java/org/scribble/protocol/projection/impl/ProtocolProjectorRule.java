@@ -78,7 +78,7 @@ public class ProtocolProjectorRule implements ProjectorRule {
 			
 				Role located=(Role)context.project(role, role, l);
 
-				prot.setRole(located);
+				prot.setLocatedRole(located);
 				
 				context.pushScope();
 				
@@ -143,8 +143,8 @@ public class ProtocolProjectorRule implements ProjectorRule {
 				// Identify parent block
 				Block parent=(Block)list.getParent();
 				
-				for (int i=list.getRoles().size()-1; i >= 0; i--) {
-					final Role role=(Role)list.getRoles().get(i);
+				for (int i=list.getIntroducedRoles().size()-1; i >= 0; i--) {
+					final Role role=(Role)list.getIntroducedRoles().get(i);
 					final java.util.List<Activity> acts=new java.util.Vector<Activity>();
 					
 					// Find out if role is used in a relevant activity
@@ -178,9 +178,9 @@ public class ProtocolProjectorRule implements ProjectorRule {
 					});
 				
 					if (acts.size() == 0) {
-						list.getRoles().remove(role);
+						list.getIntroducedRoles().remove(role);
 						
-						if (list.getRoles().size() == 0) {
+						if (list.getIntroducedRoles().size() == 0) {
 							parent.remove(list);
 						}
 					}

@@ -31,11 +31,11 @@ public class ChoiceValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
 		Choice i1=new Choice();
 		prot1.getBlock().add(i1);
@@ -68,13 +68,13 @@ public class ChoiceValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
-		prot1.setRole(part1);
+		prot1.setLocatedRole(part1);
 		
 		Choice i1=new Choice();
 		prot1.getBlock().add(i1);

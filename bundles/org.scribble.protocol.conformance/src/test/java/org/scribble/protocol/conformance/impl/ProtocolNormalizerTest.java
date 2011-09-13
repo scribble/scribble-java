@@ -50,18 +50,18 @@ public class ProtocolNormalizerTest {
 		i2.setFromRole(roleB);
 		b2.add(i2);
 		
-		c.getBlocks().add(b2);
-		c.getBlocks().add(b1);
+		c.getPaths().add(b2);
+		c.getPaths().add(b1);
 		
 		ProtocolModel result=ProtocolNormalizer.normalize(pm);
 		
 		Choice c2=(Choice)result.getProtocol().getBlock().get(0);
 		
-		if (c2.getBlocks().get(0).equals(b1) == false) {
+		if (c2.getPaths().get(0).equals(b1) == false) {
 			fail("First block not expected");
 		}
 		
-		if (c2.getBlocks().get(1).equals(b2) == false) {
+		if (c2.getPaths().get(1).equals(b2) == false) {
 			fail("Second block not expected");
 		}
 	}

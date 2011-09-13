@@ -35,9 +35,9 @@ public class RunUtil {
 			Protocol nested=protocol.getNestedProtocols().get(i);
 			
 			if (protocolRef.getName().equals(nested.getName()) &&
-					((protocolRef.getRole() == null && nested.getRole() == null) ||
-					(protocolRef.getRole() != null && nested.getRole() != null &&
-						protocolRef.getRole().equals(nested.getRole())))) {
+					((protocolRef.getRole() == null && nested.getLocatedRole() == null) ||
+					(protocolRef.getRole() != null && nested.getLocatedRole() != null &&
+						protocolRef.getRole().equals(nested.getLocatedRole())))) {
 				ret = nested;		
 			}
 		}

@@ -85,7 +85,7 @@ public class RunProjectorRule implements ProjectorRule {
 			boolean f_inner=false;
 			
 			// Store protocol against mapped role
-			Protocol defn=RunUtil.getInnerProtocol(source.enclosingProtocol(), 
+			Protocol defn=RunUtil.getInnerProtocol(source.getEnclosingProtocol(), 
 						source.getProtocolReference()); //source.getProtocol();
 			
 			if (defn == null) {

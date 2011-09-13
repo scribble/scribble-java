@@ -80,8 +80,8 @@ public class ProtocolProjectorImpl implements ProtocolProjector {
 			} else {
 				String modelName=model.getProtocol().getName();
 				
-				if (model.getProtocol().getRole() != null) {
-					modelName += ","+model.getProtocol().getRole();
+				if (model.getProtocol().getLocatedRole() != null) {
+					modelName += ","+model.getProtocol().getLocatedRole();
 				}
 					
 				journal.error(MessageFormat.format(

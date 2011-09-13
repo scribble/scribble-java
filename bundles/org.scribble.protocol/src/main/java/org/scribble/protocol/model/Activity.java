@@ -34,7 +34,7 @@ public abstract class Activity extends ModelObject {
 	 * 
 	 * @return The protocol, or null if not found
 	 */
-	public Protocol enclosingProtocol() {
+	public Protocol getEnclosingProtocol() {
 		Protocol ret=null;
 		ModelObject cur=this;
 		

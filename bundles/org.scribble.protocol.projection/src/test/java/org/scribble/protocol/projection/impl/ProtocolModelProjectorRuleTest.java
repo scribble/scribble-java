@@ -40,7 +40,7 @@ public class ProtocolModelProjectorRuleTest {
 		Role r=new Role();
 		r.setName("role");
 		
-		rl.getRoles().add(r);
+		rl.getIntroducedRoles().add(r);
 		
 		p.getBlock().add(rl);
 		
@@ -86,7 +86,7 @@ public class ProtocolModelProjectorRuleTest {
 		Role r=new Role();
 		r.setName("role");
 		
-		rl.getRoles().add(r);
+		rl.getIntroducedRoles().add(r);
 		
 		p.getBlock().add(rl);
 		

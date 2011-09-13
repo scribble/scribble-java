@@ -57,8 +57,8 @@ public class InteractionValidatorRule implements ProtocolComponentValidatorRule 
 		Role locatedRole=null;
 		boolean locatedRoleUsed=false;
 		
-		if (elem.enclosingProtocol() != null) {
-			locatedRole = elem.enclosingProtocol().getRole();
+		if (elem.getEnclosingProtocol() != null) {
+			locatedRole = elem.getEnclosingProtocol().getLocatedRole();
 		}
 
 		// Check there are 'to' and 'from' roles defined

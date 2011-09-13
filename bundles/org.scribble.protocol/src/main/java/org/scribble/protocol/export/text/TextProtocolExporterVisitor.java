@@ -48,10 +48,10 @@ public class TextProtocolExporterVisitor implements Visitor {
 		// Only add the 'and' keyword if the parent is a Parallel construct
 		// and the block being processed is not the first block
 		if (elem.getParent() instanceof Parallel &&
-				((Parallel)elem.getParent()).getBlocks().indexOf(elem) > 0) {
+				((Parallel)elem.getParent()).getPaths().indexOf(elem) > 0) {
 			output(" and");
 		} else if (elem.getParent() instanceof Choice &&
-				((Choice)elem.getParent()).getBlocks().indexOf(elem) > 0) {
+				((Choice)elem.getParent()).getPaths().indexOf(elem) > 0) {
 			output(" or");
 		}
 		
@@ -91,11 +91,11 @@ public class TextProtocolExporterVisitor implements Visitor {
 		boolean ret=true;
 
 		if (elem.getParent() instanceof Parallel) {
-			ret = ((Parallel)elem.getParent()).getBlocks().indexOf(elem) ==
-					((Parallel)elem.getParent()).getBlocks().size()-1;
+			ret = ((Parallel)elem.getParent()).getPaths().indexOf(elem) ==
+					((Parallel)elem.getParent()).getPaths().size()-1;
 		} else if (elem.getParent() instanceof Choice) {
-			ret = ((Choice)elem.getParent()).getBlocks().indexOf(elem) ==
-				((Choice)elem.getParent()).getBlocks().size()-1;
+			ret = ((Choice)elem.getParent()).getPaths().indexOf(elem) ==
+				((Choice)elem.getParent()).getPaths().size()-1;
 		} else if (elem.getParent() instanceof Interrupt) {
 			Interrupt c=(Interrupt)elem.getParent();
 			
@@ -195,11 +195,11 @@ public class TextProtocolExporterVisitor implements Visitor {
 		
 		output(" introduces ");
 		
-		for (int i=0; i < elem.getRoles().size(); i++) {
+		for (int i=0; i < elem.getIntroducedRoles().size(); i++) {
 			if (i > 0) {
 				output(", ");
 			}
-			output(elem.getRoles().get(i).getName());
+			output(elem.getIntroducedRoles().get(i).getName());
 		}
 		
 		output(";\r\n");
@@ -284,8 +284,8 @@ public class TextProtocolExporterVisitor implements Visitor {
 		
 		output("protocol "+elem.getName());
 		
-		if (elem.getRole() != null) {
-			output(" at "+elem.getRole().getName());
+		if (elem.getLocatedRole() != null) {
+			output(" at "+elem.getLocatedRole().getName());
 		}
 		
 		if (elem.getParameterDefinitions().size() > 0) {

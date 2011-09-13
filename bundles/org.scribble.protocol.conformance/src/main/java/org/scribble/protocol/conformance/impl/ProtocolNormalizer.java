@@ -96,7 +96,7 @@ public class ProtocolNormalizer {
 		public boolean start(Choice elem) {
 			
 			// Sort paths based on textual description for now
-			Collections.sort(elem.getBlocks(), new Comparator<Block>() {
+			Collections.sort(elem.getPaths(), new Comparator<Block>() {
 				public int compare(Block arg0, Block arg1) {
 					return(arg0.toString().compareTo(
 								arg1.toString()));
@@ -122,7 +122,7 @@ public class ProtocolNormalizer {
 		@Override
 		public boolean start(Parallel elem) {
 			// Sort paths based on textual description for now
-			Collections.sort(elem.getBlocks(), new Comparator<Block>() {
+			Collections.sort(elem.getPaths(), new Comparator<Block>() {
 				public int compare(Block arg0, Block arg1) {
 					return(arg0.toString().compareTo(
 								arg1.toString()));
@@ -149,7 +149,7 @@ public class ProtocolNormalizer {
 				Block b=new Block();
 				b.add(act);
 				
-				p.getBlocks().add(0, b);
+				p.getPaths().add(0, b);
 			}
 			
 			start(p);

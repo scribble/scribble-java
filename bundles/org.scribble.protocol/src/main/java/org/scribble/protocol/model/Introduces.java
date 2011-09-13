@@ -31,8 +31,8 @@ public class Introduces extends Activity {
 	public Introduces(Introduces rl) {
 		super(rl);
 		
-		for (Role r : rl.getRoles()) {
-			getRoles().add(new Role(r));
+		for (Role r : rl.getIntroducedRoles()) {
+			getIntroducedRoles().add(new Role(r));
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class Introduces extends Activity {
 	 * 
 	 * @return The list of roles
 	 */
-	public java.util.List<Role> getRoles() {
+	public java.util.List<Role> getIntroducedRoles() {
 		return(m_roles);
 	}
 	

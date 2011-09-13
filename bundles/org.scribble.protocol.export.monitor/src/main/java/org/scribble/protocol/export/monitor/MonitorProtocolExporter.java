@@ -633,7 +633,7 @@ public class MonitorProtocolExporter implements ProtocolExporter {
 			
 			// Check if calling a local protocol
 			org.scribble.protocol.model.Protocol inner=
-					RunUtil.getInnerProtocol(elem.enclosingProtocol(), elem.getProtocolReference());
+					RunUtil.getInnerProtocol(elem.getEnclosingProtocol(), elem.getProtocolReference());
 			
 			if (inner != null) {
 				java.util.List<Object> cache=m_nodeCache.get(inner);

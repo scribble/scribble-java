@@ -66,9 +66,9 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			projected.setRole(new Role(source.getRole()));
 		}
 		
-		for (int i=0; i < source.getBlocks().size(); i++) {
+		for (int i=0; i < source.getPaths().size(); i++) {
 			Block block=(Block)
-					context.project(source.getBlocks().get(i), role,
+					context.project(source.getPaths().get(i), role,
 							l);
 			
 			if (block != null) {
@@ -77,9 +77,9 @@ public class ChoiceProjectorRule implements ProjectorRule {
 				if (block.getContents().size() == 1 &&
 						block.getContents().get(0) instanceof Choice &&
 						isSameRole(projected, (Choice)block.getContents().get(0))) {
-					projected.getBlocks().addAll(((Choice)block.getContents().get(0)).getBlocks());
+					projected.getPaths().addAll(((Choice)block.getContents().get(0)).getPaths());
 				} else {
-					projected.getBlocks().add(block);
+					projected.getPaths().add(block);
 				}
 			} else {
 				f_optional = true;
@@ -91,7 +91,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			Role destination=null;
 			
 			// Check if initial interactions have same destination
-			for (Block block : projected.getBlocks()) {
+			for (Block block : projected.getPaths()) {
 				
 				java.util.List<ModelObject> list=
 					org.scribble.protocol.util.InteractionUtil.getInitialInteractions(block);
@@ -113,20 +113,20 @@ public class ChoiceProjectorRule implements ProjectorRule {
 		}
 		
 		if (f_merge) {
-			java.util.List<Block> tmp=new java.util.Vector<Block>(projected.getBlocks());
+			java.util.List<Block> tmp=new java.util.Vector<Block>(projected.getPaths());
 			
 			for (Block block : tmp) {
 				java.util.List<ModelObject> list=
 					org.scribble.protocol.util.InteractionUtil.getInitialInteractions(block);
 				
 				// Remove block
-				projected.getBlocks().remove(block);
+				projected.getPaths().remove(block);
 				
 				for (ModelObject act : list) {
 					MessageSignature ms=InteractionUtil.getMessageSignature(act);
 					boolean f_add=true;
 					
-					for (Block wb : projected.getBlocks()) {
+					for (Block wb : projected.getPaths()) {
 						MessageSignature wbms=InteractionUtil.getMessageSignature(wb);
 						
 						if (ms.equals(wbms)) {
@@ -161,16 +161,16 @@ public class ChoiceProjectorRule implements ProjectorRule {
 		ret = extractCommonBehaviour(context, projected, role, l);
 		
 		// Remove all empty paths
-		for (int i=projected.getBlocks().size()-1; i >= 0; i--) {
-			Block b=projected.getBlocks().get(i);
+		for (int i=projected.getPaths().size()-1; i >= 0; i--) {
+			Block b=projected.getPaths().get(i);
 			
 			if (b.size() == 0) {
-				projected.getBlocks().remove(i);
+				projected.getPaths().remove(i);
 				f_optional = true;
 			}
 		}
 		
-		if (projected.getBlocks().size() == 0) {
+		if (projected.getPaths().size() == 0) {
 			if (ret == projected) {
 				ret = null;
 			} else {
@@ -179,7 +179,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
 			projected = null;
 		} else if (f_optional) {
 			// Add optional block
-			projected.getBlocks().add(new Block());
+			projected.getPaths().add(new Block());
 		}
 
 		return(ret);
@@ -194,11 +194,11 @@ public class ChoiceProjectorRule implements ProjectorRule {
 		// out from each path to precede the choice
 		boolean checkPaths=true;
 		do {
-			boolean allSame=projected.getBlocks().size() > 1;
+			boolean allSame=projected.getPaths().size() > 1;
 			
-			for (int i=1; allSame && i < projected.getBlocks().size(); i++) {
-				Block b1=projected.getBlocks().get(0);
-				Block b2=projected.getBlocks().get(i);
+			for (int i=1; allSame && i < projected.getPaths().size(); i++) {
+				Block b1=projected.getPaths().get(0);
+				Block b2=projected.getPaths().get(i);
 				
 				if (b1.size() == 0 || b2.size() == 0) {
 					allSame = false;
@@ -215,24 +215,24 @@ public class ChoiceProjectorRule implements ProjectorRule {
 				}
 				
 				((java.util.List<Object>)ret).add(((java.util.List<Object>)ret).size()-1,
-						projected.getBlocks().get(0).getContents().get(0));
+						projected.getPaths().get(0).getContents().get(0));
 				
-				for (int i=0; i < projected.getBlocks().size(); i++) {
+				for (int i=0; i < projected.getPaths().size(); i++) {
 					// Remove first element
-					projected.getBlocks().get(i).getContents().remove(0);
+					projected.getPaths().get(i).getContents().remove(0);
 				}
 			} else {
 				// Check if two or more paths have same first element, and
 				// therefore are invalid
 				boolean f_invalid=false;
 				
-				for (int i=0; !f_invalid && i < projected.getBlocks().size(); i++) {
+				for (int i=0; !f_invalid && i < projected.getPaths().size(); i++) {
 					
-					for (int j=0; !f_invalid && j < projected.getBlocks().size(); j++) {
+					for (int j=0; !f_invalid && j < projected.getPaths().size(); j++) {
 					
 						if (i != j) {
-							Block b1=projected.getBlocks().get(i);
-							Block b2=projected.getBlocks().get(j);
+							Block b1=projected.getPaths().get(i);
+							Block b2=projected.getPaths().get(j);
 							
 							if (b1.size() > 0 && b2.size() > 0 &&
 									b1.get(0).equals(b2.get(0))) {

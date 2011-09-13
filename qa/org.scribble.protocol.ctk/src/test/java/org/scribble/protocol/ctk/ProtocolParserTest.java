@@ -62,7 +62,7 @@ public class ProtocolParserTest {
 		
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -116,7 +116,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -169,7 +169,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -222,7 +222,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -309,7 +309,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -368,7 +368,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -430,11 +430,11 @@ public class ProtocolParserTest {
 		
 		Role sellerA=new Role();
 		sellerA.setName("SellerA");
-		rl.getRoles().add(sellerA);
+		rl.getIntroducedRoles().add(sellerA);
 		
 		Role sellerB=new Role();
 		sellerB.setName("SellerB");
-		rl.getRoles().add(sellerB);
+		rl.getIntroducedRoles().add(sellerB);
 		
 		protocol.getBlock().add(rl);
 		
@@ -521,7 +521,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 
@@ -675,7 +675,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -684,7 +684,7 @@ public class ProtocolParserTest {
 		choice.setRole(buyer);
 
 		Block b1=new Block();
-		choice.getBlocks().add(b1);
+		choice.getPaths().add(b1);
 		
 		Interaction ib1=new Interaction();
 		
@@ -699,7 +699,7 @@ public class ProtocolParserTest {
 		b1.add(ib1);
 		
 		Block b2=new Block();
-		choice.getBlocks().add(b2);
+		choice.getPaths().add(b2);
 		
 		Interaction ib2=new Interaction();
 		
@@ -778,7 +778,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -787,7 +787,7 @@ public class ProtocolParserTest {
 		choice.setRole(buyer);
 
 		Block b1=new Block();
-		choice.getBlocks().add(b1);
+		choice.getPaths().add(b1);
 		
 		Interaction ib1=new Interaction();
 		
@@ -814,7 +814,7 @@ public class ProtocolParserTest {
 		b1.add(i1);
 		
 		Block b2=new Block();
-		choice.getBlocks().add(b2);
+		choice.getPaths().add(b2);
 		
 		Interaction ib2=new Interaction();
 		
@@ -879,7 +879,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -972,14 +972,14 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
 		Parallel parallel=new Parallel();
 		
 		Block b1=new Block();
-		parallel.getBlocks().add(b1);
+		parallel.getPaths().add(b1);
 		
 		Interaction interaction=new Interaction();
 		
@@ -994,7 +994,7 @@ public class ProtocolParserTest {
 		b1.add(interaction);
 		
 		Block b2=new Block();
-		parallel.getBlocks().add(b2);
+		parallel.getPaths().add(b2);
 		
 		interaction=new Interaction();
 		
@@ -1065,7 +1065,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -1148,7 +1148,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -1253,7 +1253,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -1278,7 +1278,7 @@ public class ProtocolParserTest {
 		choice.setRole(seller);
 
 		Block b1=new Block();
-		choice.getBlocks().add(b1);
+		choice.getPaths().add(b1);
 		
 		Interaction ib1=new Interaction();
 		
@@ -1299,7 +1299,7 @@ public class ProtocolParserTest {
 		b1.add(recursion);
 		
 		Block b2=new Block();
-		choice.getBlocks().add(b2);
+		choice.getPaths().add(b2);
 		
 		Interaction ib2=new Interaction();
 		
@@ -1385,7 +1385,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		
@@ -1488,7 +1488,7 @@ public class ProtocolParserTest {
 		rl.setIntroducer(buyer);
 		Role seller=new Role();
 		seller.setName("Seller");
-		rl.getRoles().add(seller);
+		rl.getIntroducedRoles().add(seller);
 		
 		protocol.getBlock().add(rl);
 		

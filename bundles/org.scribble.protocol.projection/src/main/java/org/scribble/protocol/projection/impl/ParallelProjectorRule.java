@@ -53,24 +53,24 @@ public class ParallelProjectorRule implements ProjectorRule {
 		
 		parallel.derivedFrom(source);
 
-		for (int i=0; i < source.getBlocks().size(); i++) {
+		for (int i=0; i < source.getPaths().size(); i++) {
 			Block block=(Block)
-					context.project(source.getBlocks().get(i),
+					context.project(source.getPaths().get(i),
 							role, l);
 			
 			if (block != null) {
-				parallel.getBlocks().add(block);
+				parallel.getPaths().add(block);
 			}
 		}
 		
 		// Check if parallel has atleast one path
-		if (parallel.getBlocks().size() > 0) {
+		if (parallel.getPaths().size() > 0) {
 			ret = parallel;
 			
 			// If parallel only has one path, then
 			// return block
-			if (parallel.getBlocks().size() == 1) {
-				ret = parallel.getBlocks().get(0);
+			if (parallel.getPaths().size() == 1) {
+				ret = parallel.getPaths().get(0);
 			}
 		}
 		

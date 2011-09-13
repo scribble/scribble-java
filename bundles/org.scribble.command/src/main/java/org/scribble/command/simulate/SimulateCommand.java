@@ -92,7 +92,7 @@ public class SimulateCommand implements org.scribble.command.Command {
 			
 					if (model != null) {
 						
-						if (model.getProtocol().getRole() != null) {
+						if (model.getProtocol().getLocatedRole() != null) {
 							
 							simulate(model, f2);
 						

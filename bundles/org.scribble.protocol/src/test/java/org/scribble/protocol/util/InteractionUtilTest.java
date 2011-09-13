@@ -58,7 +58,7 @@ public class InteractionUtilTest {
 		p.getBlock().add(choice);
 		
 		Block b1=new Block();
-		choice.getBlocks().add(b1);
+		choice.getPaths().add(b1);
 		
 		Interaction i0=new Interaction();
 		i0.setMessageSignature(new MessageSignature(new TypeReference()));
@@ -69,7 +69,7 @@ public class InteractionUtilTest {
 		b1.add(i1);
 		
 		Block b2=new Block();
-		choice.getBlocks().add(b2);
+		choice.getPaths().add(b2);
 		
 		Interaction i3=new Interaction();
 		i3.setMessageSignature(new MessageSignature(new TypeReference()));
@@ -106,7 +106,7 @@ public class InteractionUtilTest {
 		p.getBlock().add(choice1);
 		
 		Block wb1=new Block();
-		choice1.getBlocks().add(wb1);
+		choice1.getPaths().add(wb1);
 		
 		Choice choice2=new Choice();
 		choice2.setRole(new Role());
@@ -116,7 +116,7 @@ public class InteractionUtilTest {
 		Interaction i1_1=new Interaction();
 		i1_1.setMessageSignature(new MessageSignature(new TypeReference()));
 		wb1_1.add(i1_1);
-		choice2.getBlocks().add(wb1_1);
+		choice2.getPaths().add(wb1_1);
 		
 		Interaction i1=new Interaction();
 		wb1_1.add(i1);
@@ -125,13 +125,13 @@ public class InteractionUtilTest {
 		Interaction i1_2=new Interaction();
 		i1_2.setMessageSignature(new MessageSignature(new TypeReference()));
 		wb1_2.add(i1_2);
-		choice2.getBlocks().add(wb1_2);
+		choice2.getPaths().add(wb1_2);
 		
 		Interaction i2=new Interaction();
 		wb1_2.add(i2);
 		
 		Block wb2=new Block();
-		choice1.getBlocks().add(wb2);
+		choice1.getPaths().add(wb2);
 		
 		Interaction i3=new Interaction();
 		wb2.add(i3);
@@ -189,7 +189,7 @@ public class InteractionUtilTest {
 		p.getBlock().add(choice1);
 		
 		Block wb1=new Block();
-		choice1.getBlocks().add(wb1);
+		choice1.getPaths().add(wb1);
 		
 		Choice choice2=new Choice();
 		choice2.setRole(new Role());
@@ -199,7 +199,7 @@ public class InteractionUtilTest {
 		Interaction i1_1=new Interaction();
 		i1_1.setMessageSignature(new MessageSignature(new TypeReference()));
 		wb1_1.add(i1_1);
-		choice2.getBlocks().add(wb1_1);
+		choice2.getPaths().add(wb1_1);
 		
 		Interaction i1=new Interaction();
 		wb1_1.add(i1);
@@ -208,13 +208,13 @@ public class InteractionUtilTest {
 		Interaction i1_2=new Interaction();
 		i1_2.setMessageSignature(new MessageSignature(new TypeReference()));
 		wb1_2.add(i1_2);
-		choice2.getBlocks().add(wb1_2);
+		choice2.getPaths().add(wb1_2);
 		
 		Interaction i2=new Interaction();
 		wb1_2.add(i2);
 		
 		Block wb2=new Block();
-		choice1.getBlocks().add(wb2);
+		choice1.getPaths().add(wb2);
 		
 		Interaction i3=new Interaction();
 		wb2.add(i3);

@@ -79,7 +79,7 @@ public class ProtocolModel extends ModelObject {
 		boolean ret=false;
 		
 		if (getProtocol() != null) {
-			ret = (getProtocol().getRole() != null);
+			ret = (getProtocol().getLocatedRole() != null);
 		}
 		
 		return(ret);

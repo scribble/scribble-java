@@ -299,7 +299,7 @@ public class TextExportVisitorTest {
 		Role p1=new Role();
 		p1.setName("p1");
 		
-		elem.setRole(p1);
+		elem.setLocatedRole(p1);
 		
 		java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
 		
@@ -315,7 +315,7 @@ public class TextExportVisitorTest {
 		
 		String str=baos.toString();
 		
-		String expected="protocol "+elem.getName()+" at "+elem.getRole().getName()+" {\r\n}\r\n";
+		String expected="protocol "+elem.getName()+" at "+elem.getLocatedRole().getName()+" {\r\n}\r\n";
 		
 		if (str.equals(expected) == false) {
 			fail("Expected:\r\n"+expected+"\r\nGot:\r\n"+str);
@@ -335,12 +335,12 @@ public class TextExportVisitorTest {
 		Role p1=new Role();
 		p1.setName("P1");
 		
-		elem.getRoles().add(p1);
+		elem.getIntroducedRoles().add(p1);
 		
 		Role p2=new Role();
 		p2.setName("P2");
 		
-		elem.getRoles().add(p2);
+		elem.getIntroducedRoles().add(p2);
 		
 		java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
 		
@@ -376,12 +376,12 @@ public class TextExportVisitorTest {
 		Role p1=new Role();
 		p1.setName("P1");
 		
-		elem.getRoles().add(p1);
+		elem.getIntroducedRoles().add(p1);
 		
 		Role p2=new Role();
 		p2.setName("P2");
 		
-		elem.getRoles().add(p2);
+		elem.getIntroducedRoles().add(p2);
 		
 		DefaultAnnotation annotation1=new DefaultAnnotation("annotation1");
 		elem.getAnnotations().add(annotation1);
@@ -605,7 +605,7 @@ public class TextExportVisitorTest {
 		
 		Block b1=new Block();
 		b1.add(i1);
-		elem.getBlocks().add(b1);
+		elem.getPaths().add(b1);
 		
 		TypeReference ref1=new TypeReference();
 		ref1.setName("Type1");
@@ -622,7 +622,7 @@ public class TextExportVisitorTest {
 		Block b2=new Block();
 		b2.add(i2);
 		
-		elem.getBlocks().add(b2);
+		elem.getPaths().add(b2);
 		
 		TypeReference ref2=new TypeReference();
 		ref2.setName("Type2");
@@ -676,7 +676,7 @@ public class TextExportVisitorTest {
 		
 		Block b1=new Block();
 		b1.add(i1);
-		elem.getBlocks().add(b1);
+		elem.getPaths().add(b1);
 		
 		TypeReference ref1=new TypeReference();
 		ref1.setName("Type1");
@@ -693,7 +693,7 @@ public class TextExportVisitorTest {
 		Block b2=new Block();
 		b2.add(i2);
 		
-		elem.getBlocks().add(b2);
+		elem.getPaths().add(b2);
 		
 		TypeReference ref2=new TypeReference();
 		ref2.setName("Type2");
@@ -751,7 +751,7 @@ public class TextExportVisitorTest {
 		
 		Block b1=new Block();
 		b1.add(i1);
-		elem.getBlocks().add(b1);
+		elem.getPaths().add(b1);
 		
 		TypeReference ref1=new TypeReference();
 		ref1.setName("Type1");
@@ -767,7 +767,7 @@ public class TextExportVisitorTest {
 		Block b2=new Block();
 		b2.add(i2);
 		
-		elem.getBlocks().add(b2);
+		elem.getPaths().add(b2);
 		
 		TypeReference ref2=new TypeReference();
 		ref2.setName("Type2");
@@ -815,7 +815,7 @@ public class TextExportVisitorTest {
 		
 		Block b1=new Block();
 		b1.add(i1);
-		elem.getBlocks().add(b1);
+		elem.getPaths().add(b1);
 		
 		TypeReference ref1=new TypeReference();
 		ref1.setName("Type1");
@@ -831,7 +831,7 @@ public class TextExportVisitorTest {
 		Block b2=new Block();
 		b2.add(i2);
 		
-		elem.getBlocks().add(b2);
+		elem.getPaths().add(b2);
 		
 		TypeReference ref2=new TypeReference();
 		ref2.setName("Type2");
@@ -1555,10 +1555,10 @@ public class TextExportVisitorTest {
 		Parallel elem=new Parallel();
 		
 		Block b1=new Block();
-		elem.getBlocks().add(b1);
+		elem.getPaths().add(b1);
 		
 		Block b2=new Block();
-		elem.getBlocks().add(b2);
+		elem.getPaths().add(b2);
 
 		Role p1=new Role();
 		p1.setName("P1");
@@ -1626,10 +1626,10 @@ public class TextExportVisitorTest {
 		Parallel elem=new Parallel();
 		
 		Block b1=new Block();
-		elem.getBlocks().add(b1);
+		elem.getPaths().add(b1);
 		
 		Block b2=new Block();
-		elem.getBlocks().add(b2);
+		elem.getPaths().add(b2);
 
 		Role p1=new Role();
 		p1.setName("P1");

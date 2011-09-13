@@ -48,7 +48,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -104,7 +104,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -158,7 +158,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -233,7 +233,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -273,7 +273,7 @@ public class MonitorProtocolExporterTest {
 		
 		wb1.add(i3);
 		
-		c1.getBlocks().add(wb1);
+		c1.getPaths().add(wb1);
 		
 		Block wb2=new Block();
 		
@@ -294,7 +294,7 @@ public class MonitorProtocolExporterTest {
 		
 		wb2.add(i5);
 
-		c1.getBlocks().add(wb2);
+		c1.getPaths().add(wb2);
 
 		Interaction i6=new Interaction();
 		MessageSignature ms6=new MessageSignature();
@@ -339,7 +339,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -435,7 +435,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -482,7 +482,7 @@ public class MonitorProtocolExporterTest {
 			new org.scribble.common.model.DefaultAnnotation("a1", " My Annotation ");
 		wb1.getAnnotations().add(a1);
 
-		c1.getBlocks().add(wb1);
+		c1.getPaths().add(wb1);
 		
 		Block wb2=new Block();
 		
@@ -507,7 +507,7 @@ public class MonitorProtocolExporterTest {
 			new org.scribble.common.model.DefaultAnnotation("a2", " My Annotation2 ");
 		wb2.getAnnotations().add(a2);
 
-		c1.getBlocks().add(wb2);
+		c1.getPaths().add(wb2);
 
 		Interaction i6=new Interaction();
 		MessageSignature ms6=new MessageSignature();
@@ -552,7 +552,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -592,7 +592,7 @@ public class MonitorProtocolExporterTest {
 		
 		wb1.add(i3);
 		
-		c1.getBlocks().add(wb1);
+		c1.getPaths().add(wb1);
 		
 		Block wb2=new Block();
 		
@@ -613,7 +613,7 @@ public class MonitorProtocolExporterTest {
 		
 		wb2.add(i5);
 
-		c1.getBlocks().add(wb2);
+		c1.getPaths().add(wb2);
 
 		MonitorProtocolExporter exporter=new MonitorProtocolExporter();
 		
@@ -650,7 +650,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -738,7 +738,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -777,11 +777,11 @@ public class MonitorProtocolExporterTest {
 		
 		wb1.add(i3);
 		
-		c1.getBlocks().add(wb1);
+		c1.getPaths().add(wb1);
 		
 		Block wb2=new Block();
 		
-		c1.getBlocks().add(wb2);
+		c1.getPaths().add(wb2);
 		
 		Interaction iwb2=new Interaction();
 		
@@ -831,7 +831,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -898,7 +898,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -956,7 +956,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -985,7 +985,7 @@ public class MonitorProtocolExporterTest {
 		
 		Protocol subp=new Protocol();
 		subp.setName(SUBPROTOCOL);
-		subp.setRole(p1);
+		subp.setLocatedRole(p1);
 		p.getNestedProtocols().add(subp);
 		
 		Interaction i3=new Interaction();
@@ -1030,7 +1030,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -1051,7 +1051,7 @@ public class MonitorProtocolExporterTest {
 		
 		Protocol subp=new Protocol();
 		subp.setName(SUBPROTOCOL);
-		subp.setRole(p1);
+		subp.setLocatedRole(p1);
 		p.getNestedProtocols().add(subp);
 		
 		Interaction i3=new Interaction();
@@ -1096,7 +1096,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -1140,7 +1140,7 @@ public class MonitorProtocolExporterTest {
 		
 		wb1.add(i3);
 		
-		c1.getBlocks().add(wb1);
+		c1.getPaths().add(wb1);
 		
 		Block wb2=new Block();
 		
@@ -1158,7 +1158,7 @@ public class MonitorProtocolExporterTest {
 		
 		wb2.add(rec);
 		
-		c1.getBlocks().add(wb2);
+		c1.getPaths().add(wb2);
 		
 		Interaction i6=new Interaction();
 		MessageSignature ms6=new MessageSignature();
@@ -1203,7 +1203,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -1247,7 +1247,7 @@ public class MonitorProtocolExporterTest {
 		
 		wb1.add(i3);
 		
-		c1.getBlocks().add(wb1);
+		c1.getPaths().add(wb1);
 		
 		Block wb2=new Block();
 		
@@ -1273,7 +1273,7 @@ public class MonitorProtocolExporterTest {
 
 		wb2.add(i5);
 
-		c1.getBlocks().add(wb2);
+		c1.getPaths().add(wb2);
 		
 		Interaction i6=new Interaction();
 		MessageSignature ms6=new MessageSignature();
@@ -1318,7 +1318,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -1334,7 +1334,7 @@ public class MonitorProtocolExporterTest {
 		p.getBlock().add(par1);
 		
 		Block b1=new Block();
-		par1.getBlocks().add(b1);
+		par1.getPaths().add(b1);
 		
 		Interaction i3=new Interaction();
 		MessageSignature ms3=new MessageSignature();
@@ -1345,7 +1345,7 @@ public class MonitorProtocolExporterTest {
 		b1.add(i3);
 		
 		Block b2=new Block();
-		par1.getBlocks().add(b2);
+		par1.getPaths().add(b2);
 		
 		Interaction i5=new Interaction();
 		MessageSignature ms5=new MessageSignature();
@@ -1399,7 +1399,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -1474,7 +1474,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();
@@ -1558,7 +1558,7 @@ public class MonitorProtocolExporterTest {
 		p2.setName("p2");
 		
 		Protocol p=new Protocol();
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		pm.setProtocol(p);
 		
 		Interaction i1=new Interaction();

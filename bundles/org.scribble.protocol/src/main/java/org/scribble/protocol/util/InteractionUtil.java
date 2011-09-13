@@ -145,7 +145,7 @@ public class InteractionUtil {
 		
 		@Override
 		public void accept(Run elem) {
-			Protocol protocol=RunUtil.getInnerProtocol(elem.enclosingProtocol(),
+			Protocol protocol=RunUtil.getInnerProtocol(elem.getEnclosingProtocol(),
 							elem.getProtocolReference()); //elem.getProtocol();
 			
 			if (protocol != null) {

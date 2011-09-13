@@ -54,9 +54,9 @@ public class Choice extends Activity {
 	 * This method returns the list of mutually exclusive
 	 * activity blocks that comprise the multi-path construct.
 	 * 
-	 * @return The list of blocks
+	 * @return The list of choice paths
 	 */
-	public java.util.List<Block> getBlocks() {
+	public java.util.List<Block> getPaths() {
 		return(m_blocks);
 	}
 	
@@ -73,7 +73,7 @@ public class Choice extends Activity {
 			getRole().visit(visitor);
 		}
 		
-		for (Block b : getBlocks()) {
+		for (Block b : getPaths()) {
 			b.visit(visitor);
 		}
 		

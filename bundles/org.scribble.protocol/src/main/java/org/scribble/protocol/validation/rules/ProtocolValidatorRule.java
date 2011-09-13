@@ -291,7 +291,7 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
 		public void accept(Introduces elem) {
 			validate(elem, elem.getIntroducer());
 			addRole(elem.getIntroducer());
-			for (Role r : elem.getRoles()) {
+			for (Role r : elem.getIntroducedRoles()) {
 				addRole(r);
 			}
 		}

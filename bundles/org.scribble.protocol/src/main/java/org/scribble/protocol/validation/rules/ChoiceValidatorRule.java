@@ -56,8 +56,8 @@ public class ChoiceValidatorRule implements ProtocolComponentValidatorRule {
 		// Identify definition and whether it has a located role
 		Role locatedRole=null;
 		
-		if (elem.enclosingProtocol() != null) {
-			locatedRole = elem.enclosingProtocol().getRole();
+		if (elem.getEnclosingProtocol() != null) {
+			locatedRole = elem.getEnclosingProtocol().getLocatedRole();
 		}
 
 		if (elem.getRole() != null) {

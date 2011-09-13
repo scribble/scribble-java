@@ -35,9 +35,9 @@ public class Parallel extends Activity {
 	 * This method returns the list of concurrent
 	 * activity blocks that comprise the multi-path construct.
 	 * 
-	 * @return The list of blocks
+	 * @return The list of concurrent paths
 	 */
-	public java.util.List<Block> getBlocks() {
+	public java.util.List<Block> getPaths() {
 		return(m_blocks);
 	}
 	
@@ -50,7 +50,7 @@ public class Parallel extends Activity {
 	public void visit(Visitor visitor) {
 		visitor.start(this);
 		
-		for (Block b : getBlocks()) {
+		for (Block b : getPaths()) {
 			b.visit(visitor);
 		}
 		

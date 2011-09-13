@@ -33,7 +33,7 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros=new Introduces();
 		intros.setIntroducer(roleB);
-		intros.getRoles().add(roleC);
+		intros.getIntroducedRoles().add(roleC);
 		p.getBlock().add(intros);
 		
 		TestScribbleLogger logger=new TestScribbleLogger();
@@ -63,7 +63,7 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros=new Introduces();
 		intros.setIntroducer(roleA);
-		intros.getRoles().add(roleB);
+		intros.getIntroducedRoles().add(roleB);
 		p.getBlock().add(intros);
 		
 		Interaction i1=new Interaction();
@@ -104,7 +104,7 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros=new Introduces();
 		intros.setIntroducer(roleA);
-		intros.getRoles().add(roleB);
+		intros.getIntroducedRoles().add(roleB);
 		p.getBlock().add(intros);
 		
 		Interaction i1=new Interaction();
@@ -143,7 +143,7 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros1=new Introduces();
 		intros1.setIntroducer(roleA);
-		intros1.getRoles().add(roleB);
+		intros1.getIntroducedRoles().add(roleB);
 		p.getBlock().add(intros1);
 		
 		Interaction i1=new Interaction();
@@ -156,10 +156,10 @@ public class ProtocolValidatorRuleTest {
 		p.getBlock().add(choice);
 		
 		Block b1=new Block();
-		choice.getBlocks().add(b1);
+		choice.getPaths().add(b1);
 		
 		Block b2=new Block();
-		choice.getBlocks().add(b2);
+		choice.getPaths().add(b2);
 		
 		TestScribbleLogger logger=new TestScribbleLogger();
 
@@ -187,12 +187,12 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros1=new Introduces();
 		intros1.setIntroducer(roleA);
-		intros1.getRoles().add(roleB);
+		intros1.getIntroducedRoles().add(roleB);
 		p.getBlock().add(intros1);
 		
 		Introduces intros2=new Introduces();
 		intros2.setIntroducer(roleB);
-		intros2.getRoles().add(roleC);
+		intros2.getIntroducedRoles().add(roleC);
 		p.getBlock().add(intros2);
 		
 		Interaction i1=new Interaction();
@@ -205,7 +205,7 @@ public class ProtocolValidatorRuleTest {
 		p.getBlock().add(choice);
 		
 		Block b1=new Block();
-		choice.getBlocks().add(b1);
+		choice.getPaths().add(b1);
 		
 		Interaction i2=new Interaction();
 		i2.setFromRole(roleB);
@@ -238,12 +238,12 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros1=new Introduces();
 		intros1.setIntroducer(roleA);
-		intros1.getRoles().add(roleB);
+		intros1.getIntroducedRoles().add(roleB);
 		p.getBlock().add(intros1);
 		
 		Introduces intros2=new Introduces();
 		intros2.setIntroducer(roleB);
-		intros2.getRoles().add(roleC);
+		intros2.getIntroducedRoles().add(roleC);
 		p.getBlock().add(intros2);
 		
 		Interaction i1=new Interaction();
@@ -257,7 +257,7 @@ public class ProtocolValidatorRuleTest {
 		p.getBlock().add(choice);
 		
 		Block b1=new Block();
-		choice.getBlocks().add(b1);
+		choice.getPaths().add(b1);
 		
 		Interaction i2=new Interaction();
 		i2.setFromRole(roleB);
@@ -286,7 +286,7 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros1=new Introduces();
 		intros1.setIntroducer(roleA);
-		intros1.getRoles().add(roleB);
+		intros1.getIntroducedRoles().add(roleB);
 		p.getBlock().add(intros1);
 		
 		Interaction i1=new Interaction();
@@ -324,12 +324,12 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros1=new Introduces();
 		intros1.setIntroducer(roleA);
-		intros1.getRoles().add(roleB);
+		intros1.getIntroducedRoles().add(roleB);
 		p.getBlock().add(intros1);
 		
 		Introduces intros2=new Introduces();
 		intros2.setIntroducer(roleB);
-		intros2.getRoles().add(roleC);
+		intros2.getIntroducedRoles().add(roleC);
 		p.getBlock().add(intros2);
 		
 		Interaction i1=new Interaction();
@@ -372,12 +372,12 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros1=new Introduces();
 		intros1.setIntroducer(roleA);
-		intros1.getRoles().add(roleB);
+		intros1.getIntroducedRoles().add(roleB);
 		p.getBlock().add(intros1);
 		
 		Introduces intros2=new Introduces();
 		intros2.setIntroducer(roleB);
-		intros2.getRoles().add(roleC);
+		intros2.getIntroducedRoles().add(roleC);
 		p.getBlock().add(intros2);
 		
 		Interaction i1=new Interaction();
@@ -418,7 +418,7 @@ public class ProtocolValidatorRuleTest {
 		
 		Introduces intros1=new Introduces();
 		intros1.setIntroducer(roleA);
-		intros1.getRoles().add(roleB);
+		intros1.getIntroducedRoles().add(roleB);
 		p.getBlock().add(intros1);
 		
 		Interaction i1=new Interaction();
@@ -430,10 +430,10 @@ public class ProtocolValidatorRuleTest {
 		p.getBlock().add(parallel);
 		
 		Block b1=new Block();
-		parallel.getBlocks().add(b1);
+		parallel.getPaths().add(b1);
 		
 		Block b2=new Block();
-		parallel.getBlocks().add(b2);
+		parallel.getPaths().add(b2);
 		
 		Interaction i2=new Interaction();
 		i2.setFromRole(roleB);

@@ -59,7 +59,7 @@ public class RunUtilTest {
 		
 		Role p1=new Role();
 		p1.setName("p1");
-		p.setRole(p1);
+		p.setLocatedRole(p1);
 		
 		Run act=new Run();
 		ProtocolReference pref=new ProtocolReference();
@@ -71,7 +71,7 @@ public class RunUtilTest {
 
 		Protocol subp=new Protocol();
 		subp.setName(SUBPROTOCOL);
-		subp.setRole(p1);
+		subp.setLocatedRole(p1);
 		
 		p.getNestedProtocols().add(subp);
 		

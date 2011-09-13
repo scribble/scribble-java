@@ -75,14 +75,8 @@
 			  <locale>en_US</locale>
 			  <subpackages>
 				   org.scribble.protocol
-				   org.scribble.protocol.model
-				   org.scribble.protocol.parser
-				   org.scribble.protocol.projection
-				   org.scribble.protocol.validation
-				   org.scribble.protocol.conformance
-				   org.scribble.protocol.export
-				   org.scribble.protocol.util
 			  </subpackages>
+			  <excludePackageNames>org.scribble.protocol.validation.*:*.osgi</excludePackageNames>
 			</configuration>
 		   </plugin>
 		</plugins>

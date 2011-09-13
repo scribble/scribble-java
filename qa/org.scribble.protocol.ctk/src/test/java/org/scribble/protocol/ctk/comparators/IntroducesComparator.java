@@ -26,12 +26,12 @@ public class IntroducesComparator implements Comparator<ModelObject> {
 		Introduces m=(Introduces)arg0;
 		Introduces e=(Introduces)arg1;
 		
-		if (m.getRoles().size() == e.getRoles().size()) {
+		if (m.getIntroducedRoles().size() == e.getIntroducedRoles().size()) {
 			RoleComparator pcomp=(RoleComparator)
 						ComparatorUtil.getComparator(Role.class);
 			
-			for (int i=0; i < m.getRoles().size(); i++) {
-				if (pcomp.compare(m.getRoles().get(i), e.getRoles().get(i)) != 0) {
+			for (int i=0; i < m.getIntroducedRoles().size(); i++) {
+				if (pcomp.compare(m.getIntroducedRoles().get(i), e.getIntroducedRoles().get(i)) != 0) {
 					return(1);
 				}
 			}

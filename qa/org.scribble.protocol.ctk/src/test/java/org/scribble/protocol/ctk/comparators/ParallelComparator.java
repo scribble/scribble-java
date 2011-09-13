@@ -24,7 +24,7 @@ public class ParallelComparator implements Comparator<ModelObject> {
 		Parallel m=(Parallel)arg0;
 		Parallel e=(Parallel)arg1;
 		
-		if (m.getBlocks().size() != e.getBlocks().size()) {
+		if (m.getPaths().size() != e.getPaths().size()) {
 			return(1);
 		}
 		

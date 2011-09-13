@@ -31,11 +31,11 @@ public class RecursionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
 		RecBlock r1=new RecBlock();
 		prot1.getBlock().add(r1);
@@ -66,11 +66,11 @@ public class RecursionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
 		RecBlock r1=new RecBlock();
 		prot1.getBlock().add(r1);

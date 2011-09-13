@@ -21,7 +21,7 @@ package org.scribble.protocol.model;
 public class Protocol extends ModelObject {
 	
 	private String m_name=null;
-	private Role m_role=null;
+	private Role m_locatedRole=null;
 	private Block m_block=null;
 	private java.util.List<Protocol> m_nestedProtocols=
 			new ContainmentList<Protocol>(this, Protocol.class);
@@ -59,8 +59,8 @@ public class Protocol extends ModelObject {
 	 * 
 	 * @return The located role
 	 */
-	public Role getRole() {
-		return(m_role);
+	public Role getLocatedRole() {
+		return(m_locatedRole);
 	}
 	
 	/**
@@ -70,16 +70,16 @@ public class Protocol extends ModelObject {
 	 * 
 	 * @param role The located role
 	 */
-	public void setRole(Role role) {
+	public void setLocatedRole(Role role) {
 		
-		if (m_role != null) {
-			m_role.setParent(null);
+		if (m_locatedRole != null) {
+			m_locatedRole.setParent(null);
 		}
 		
-		m_role = role;
+		m_locatedRole = role;
 		
-		if (m_role != null) {
-			m_role.setParent(this);
+		if (m_locatedRole != null) {
+			m_locatedRole.setParent(this);
 		}
 	}
 	
@@ -184,7 +184,7 @@ public class Protocol extends ModelObject {
 	 * 
 	 * @return The protocol, or null if not found
 	 */
-	public Protocol enclosingProtocol() {
+	public Protocol getEnclosingProtocol() {
 		return(this);
 	}
 	
@@ -244,7 +244,7 @@ public class Protocol extends ModelObject {
 			}
 			
 			public void accept(Introduces elem) {
-				ret.addAll(elem.getRoles());
+				ret.addAll(elem.getIntroducedRoles());
 			}
 
 		});
@@ -271,8 +271,8 @@ public class Protocol extends ModelObject {
 		
 		if (visitor.start(this)) {
 		
-			if (getRole() != null) {
-				getRole().visit(visitor);
+			if (getLocatedRole() != null) {
+				getLocatedRole().visit(visitor);
 			}
 			
 			if (getBlock() != null) {

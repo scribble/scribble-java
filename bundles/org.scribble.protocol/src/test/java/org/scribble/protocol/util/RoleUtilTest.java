@@ -32,11 +32,11 @@ public class RoleUtilTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);
@@ -66,42 +66,42 @@ public class RoleUtilTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
 		Choice choice=new Choice();
 		prot1.getBlock().add(choice);
 		
 		Block wb1=new Block();
-		choice.getBlocks().add(wb1);
+		choice.getPaths().add(wb1);
 		
 		Introduces plist2=new Introduces();
 		wb1.add(plist2);
 		
 		Role part3=new Role();
 		part3.setName("part3");
-		plist2.getRoles().add(part3);
+		plist2.getIntroducedRoles().add(part3);
 		
 		Role part4=new Role();
 		part4.setName("part4");
-		plist2.getRoles().add(part4);
+		plist2.getIntroducedRoles().add(part4);
 				
 		Block wb2=new Block();
-		choice.getBlocks().add(wb2);
+		choice.getPaths().add(wb2);
 		
 		Introduces plist3=new Introduces();
 		wb2.add(plist3);
 		
 		Role part5=new Role();
 		part5.setName("part5");
-		plist3.getRoles().add(part5);
+		plist3.getIntroducedRoles().add(part5);
 		
 		Role part6=new Role();
 		part6.setName("part6");
-		plist3.getRoles().add(part6);
+		plist3.getIntroducedRoles().add(part6);
 		
 		Interaction i1=new Interaction();
 		wb2.add(i1);
@@ -150,7 +150,7 @@ public class RoleUtilTest {
 		p.getBlock().add(par);
 		
 		Block parb1=new Block();
-		par.getBlocks().add(parb1);
+		par.getPaths().add(parb1);
 		
 		Interaction i1=new Interaction();
 		i1.setFromRole(r1);
@@ -158,13 +158,13 @@ public class RoleUtilTest {
 		parb1.add(i1);
 		
 		Block parb2=new Block();
-		par.getBlocks().add(parb2);
+		par.getPaths().add(parb2);
 		
 		Choice choice1=new Choice();
 		parb2.add(choice1);
 		
 		Block wb1=new Block();
-		choice1.getBlocks().add(wb1);
+		choice1.getPaths().add(wb1);
 		
 		Interaction i2=new Interaction();
 		i2.setFromRole(r2);
@@ -224,7 +224,7 @@ public class RoleUtilTest {
 		p.getBlock().add(par);
 		
 		Block parb1=new Block();
-		par.getBlocks().add(parb1);
+		par.getPaths().add(parb1);
 		
 		Interaction i11=new Interaction();
 		i11.setFromRole(r1);
@@ -232,7 +232,7 @@ public class RoleUtilTest {
 		parb1.add(i11);
 		
 		Block parb2=new Block();
-		par.getBlocks().add(parb2);
+		par.getPaths().add(parb2);
 		
 		Interaction i12=new Interaction();
 		i12.setFromRole(r1);
@@ -243,7 +243,7 @@ public class RoleUtilTest {
 		parb2.add(choice1);
 		
 		Block wb1=new Block();
-		choice1.getBlocks().add(wb1);
+		choice1.getPaths().add(wb1);
 		
 		Interaction i21=new Interaction();
 		i21.setFromRole(r2);
@@ -251,7 +251,7 @@ public class RoleUtilTest {
 		wb1.add(i21);
 		
 		Block wb2=new Block();
-		choice1.getBlocks().add(wb2);
+		choice1.getPaths().add(wb2);
 		
 		Interaction i22=new Interaction();
 		i22.setFromRole(r2);
@@ -302,7 +302,7 @@ public class RoleUtilTest {
 		b1.add(c1);
 		
 		Block b2=new Block();
-		c1.getBlocks().add(b2);
+		c1.getPaths().add(b2);
 		
 		if (RoleUtil.checkContainingConstructs(b2) != b2) {
 			fail("Block should be the same");
@@ -325,7 +325,7 @@ public class RoleUtilTest {
 		rb1.getBlock().add(c1);
 		
 		Block b2=new Block();
-		c1.getBlocks().add(b2);
+		c1.getPaths().add(b2);
 		
 		Block result=RoleUtil.checkContainingConstructs(b2);
 

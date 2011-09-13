@@ -31,11 +31,11 @@ public class InteractionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);
@@ -69,11 +69,11 @@ public class InteractionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);
@@ -107,11 +107,11 @@ public class InteractionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);
@@ -142,11 +142,11 @@ public class InteractionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);
@@ -177,13 +177,13 @@ public class InteractionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
-		prot1.setRole(part2);
+		prot1.setLocatedRole(part2);
 
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);
@@ -209,13 +209,13 @@ public class InteractionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
-		prot1.setRole(part2);
+		prot1.setLocatedRole(part2);
 
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);
@@ -245,13 +245,13 @@ public class InteractionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
-		prot1.setRole(part2);
+		prot1.setLocatedRole(part2);
 
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);
@@ -281,13 +281,13 @@ public class InteractionValidatorRuleTest {
 		
 		Role part1=new Role();
 		part1.setName("part1");
-		plist1.getRoles().add(part1);
+		plist1.getIntroducedRoles().add(part1);
 		
 		Role part2=new Role();
 		part2.setName("part2");
-		plist1.getRoles().add(part2);
+		plist1.getIntroducedRoles().add(part2);
 		
-		prot1.setRole(part1);
+		prot1.setLocatedRole(part1);
 		
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);
@@ -313,15 +313,15 @@ public class InteractionValidatorRuleTest {
 		
 		Role role1=new Role();
 		role1.setName("role1");
-		rlist1.getRoles().add(role1);
+		rlist1.getIntroducedRoles().add(role1);
 		
 		Role role2=new Role();
 		role2.setName("role2");
-		rlist1.getRoles().add(role2);
+		rlist1.getIntroducedRoles().add(role2);
 		
 		Role role3=new Role();
 		role3.setName("role3");
-		prot1.setRole(role3);
+		prot1.setLocatedRole(role3);
 		
 		Interaction i1=new Interaction();
 		prot1.getBlock().add(i1);

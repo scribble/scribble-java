@@ -44,7 +44,7 @@ public class RoleUtil {
 			}
 			
 			public void accept(Introduces elem) {
-				for (Role r : elem.getRoles()) {
+				for (Role r : elem.getIntroducedRoles()) {
 					addRole(r);
 				}
 			}
@@ -61,7 +61,7 @@ public class RoleUtil {
 		Protocol ret=null;
 		
 		if (role.getParent() instanceof Introduces) {
-			ret = ((Introduces)role.getParent()).enclosingProtocol();
+			ret = ((Introduces)role.getParent()).getEnclosingProtocol();
 		} else if (role.getParent() instanceof ParameterDefinition &&
 				role.getParent().getParent() instanceof Protocol) {
 			ret = (Protocol)role.getParent().getParent();
@@ -162,7 +162,7 @@ public class RoleUtil {
 		if (activity != null) {
 			
 			// Identify enclosing protocol definition
-			Protocol protocol=activity.enclosingProtocol();
+			Protocol protocol=activity.getEnclosingProtocol();
 			
 			if (protocol != null) {
 				RoleLocator visitor=new RoleLocator(protocol, activity, ret);
@@ -202,7 +202,7 @@ public class RoleUtil {
 			public void accept(org.scribble.protocol.model.Interaction elem) {
 				if (role.equals(elem.getFromRole()) || elem.getToRoles().contains(role) ||
 						((elem.getFromRole() == null || elem.getToRoles().size() == 0) &&
-								role.equals(elem.enclosingProtocol().getRole()))) {
+								role.equals(elem.getEnclosingProtocol().getLocatedRole()))) {
 					blocks.add((Block)elem.getParent());
 				}
 			}
@@ -219,7 +219,7 @@ public class RoleUtil {
 			public boolean start(DirectedChoice elem) {
 				if (role.equals(elem.getFromRole()) || elem.getToRoles().contains(role) ||
 						((elem.getFromRole() == null || elem.getToRoles().size() == 0) &&
-								role.equals(elem.enclosingProtocol().getRole()))) {
+								role.equals(elem.getEnclosingProtocol().getLocatedRole()))) {
 					blocks.add((Block)elem.getParent());
 				}
 				
@@ -414,8 +414,8 @@ public class RoleUtil {
 				java.util.List<Role> rlist=new java.util.Vector<Role>();
 				m_roleStack.add(rlist);
 				
-				if (elem.getRole() != null) {
-					rlist.add(elem.getRole());
+				if (elem.getLocatedRole() != null) {
+					rlist.add(elem.getLocatedRole());
 				}
 				
 				for (ParameterDefinition p : elem.getParameterDefinitions()) {
@@ -465,7 +465,7 @@ public class RoleUtil {
 		public void accept(Introduces elem) {
 			java.util.List<Role> rlist=m_roleStack.get(m_roleStack.size()-1);
 			
-			rlist.addAll(elem.getRoles());
+			rlist.addAll(elem.getIntroducedRoles());
 		}
 
 		public void accept(Inline elem) {
