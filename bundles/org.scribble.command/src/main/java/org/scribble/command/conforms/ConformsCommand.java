@@ -21,6 +21,7 @@ import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.FileContent;
 import org.scribble.protocol.DefaultProtocolContext;
+import org.scribble.protocol.conformance.LoggingConformanceHandler;
 import org.scribble.protocol.conformance.ProtocolConformer;
 import org.scribble.protocol.parser.ProtocolParserManager;
 
@@ -77,7 +78,7 @@ public class ConformsCommand implements org.scribble.command.Command {
 								content2, m_journal);	
 			
 					if (p1 != null && p2 != null) {
-						m_conformer.conforms(p1, p2, m_journal);
+						m_conformer.conforms(p1, p2, new LoggingConformanceHandler(m_journal));
 						
 						ret = true;
 					}

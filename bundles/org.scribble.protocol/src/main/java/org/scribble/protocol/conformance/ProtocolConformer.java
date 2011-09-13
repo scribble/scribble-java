@@ -16,12 +16,11 @@
  */
 package org.scribble.protocol.conformance;
 
-import org.scribble.common.logging.Journal;
-
 /**
  * This interface represents a conformance checking capability for the Protocol
  * description.
  *
+ * WARNING: This component is still in the EXPERIMENTAL stage, so its API could change.
  */
 public interface ProtocolConformer {
 
@@ -31,11 +30,11 @@ public interface ProtocolConformer {
 	 * 
 	 * @param model The model to be verified
 	 * @param ref The reference model
-	 * @param logger The logger
+	 * @param handler Handler for reporting conformance results
 	 * @return Whether the protocol models conform to each other
 	 */
-	public boolean conforms(org.scribble.protocol.model.ProtocolModel model,
-			org.scribble.protocol.model.ProtocolModel ref,
-				Journal logger);
+	public void conforms(org.scribble.protocol.model.ProtocolModel model,
+					org.scribble.protocol.model.ProtocolModel ref,
+								ConformanceHandler handler);
 	
 }
