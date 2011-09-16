@@ -21,14 +21,14 @@ import org.scribble.protocol.model.*;
 
 public class InterruptComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Interrupt m=(Interrupt)arg0;
-		Interrupt e=(Interrupt)arg1;
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Interrupt m=(Interrupt)arg0;
+        Interrupt e=(Interrupt)arg1;
 
-		if (m.getBlock().size() != e.getBlock().size()) {
-			return(1);
-		}
-		
-		return(0);
-	}
+        if (m.getBlock().size() != e.getBlock().size()) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

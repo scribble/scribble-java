@@ -17,23 +17,24 @@ package org.scribble.protocol.conformance.impl;
 
 import org.scribble.protocol.conformance.ConformanceHandler;
 import org.scribble.protocol.conformance.ProtocolConformer;
-import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.ProtocolModel;
 
+/**
+ * This class provides the implementation of the protocol conformer.
+ *
+ */
 public class ProtocolConformerImpl implements ProtocolConformer {
 
-	@Override
-	public void conforms(ProtocolModel model, ProtocolModel ref,
-			ConformanceHandler handler) {
-		
-		// Normalise the models
-		model = ProtocolNormalizer.normalize(model);
-		ref = ProtocolNormalizer.normalize(ref);
-		
-		// Compare the protocols
-		compare(model.getProtocol(), ref.getProtocol(), handler);
-	}
+    @Override
+    public void conforms(ProtocolModel model, ProtocolModel ref,
+            ConformanceHandler handler) {
+        
+        // Normalise the models
+        model = ProtocolNormalizer.normalize(model);
+        ref = ProtocolNormalizer.normalize(ref);
+        
+        // Compare the protocols
+        //compare(model.getProtocol(), ref.getProtocol(), handler);
+    }
 
-	protected void compare(ModelObject model, ModelObject ref, ConformanceHandler handler) {
-	}
 }

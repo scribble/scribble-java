@@ -27,34 +27,34 @@ import org.scribble.protocol.model.ProtocolModel;
  *
  */
 public interface ProtocolParserManager {
-	
-	/**
-	 * This method parses the supplied content to create a protocol
-	 * model. Any issues are reported to the supplied journal. The protocol
-	 * context is optionally used by the parser to locate additional artifacts
-	 * required to construct the protocol model.
-	 * 
-	 * @param context The protocol context
-	 * @param content The content to be parsed
-	 * @param journal The journal for reporting issues
-	 * @return The protocol model
-	 * @throws IOException Failed to retrieve content to be parsed
-	 */
-	public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
-						throws java.io.IOException;
-	
-	/**
-	 * This method returns the list of protocol parsers.
-	 * 
-	 * @return The list of protocol parsers
-	 */
-	public java.util.List<ProtocolParser> getParsers();
-	
-	/**
-	 * This method sets the list of protocol parsers.
-	 * 
-	 * @param parsers The list of protocol parsers
-	 */
-	public void setParsers(java.util.List<ProtocolParser> parsers);
-	
+    
+    /**
+     * This method parses the supplied content to create a protocol
+     * model. Any issues are reported to the supplied journal. The protocol
+     * context is optionally used by the parser to locate additional artifacts
+     * required to construct the protocol model.
+     * 
+     * @param context The protocol context
+     * @param content The content to be parsed
+     * @param journal The journal for reporting issues
+     * @return The protocol model
+     * @throws java.io.IOException Failed to retrieve content to be parsed
+     */
+    public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+                        throws java.io.IOException;
+    
+    /**
+     * This method returns the list of protocol parsers.
+     * 
+     * @return The list of protocol parsers
+     */
+    public java.util.List<ProtocolParser> getParsers();
+    
+    /**
+     * This method sets the list of protocol parsers.
+     * 
+     * @param parsers The list of protocol parsers
+     */
+    public void setParsers(java.util.List<ProtocolParser> parsers);
+    
 }

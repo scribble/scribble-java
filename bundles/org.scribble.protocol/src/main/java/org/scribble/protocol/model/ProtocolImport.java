@@ -22,70 +22,71 @@ package org.scribble.protocol.model;
  */
 public class ProtocolImport extends ModelObject {
 
-	private String m_location=null;	
-	private String m_name=null;
+    private String _location=null;    
+    private String _name=null;
 
-	/**
-	 * The default constructor.
-	 */
-	public ProtocolImport() {
-	}
-	
-	/**
-	 * This method returns the name of the
-	 * type being imported.
-	 * 
-	 * @return The name
-	 */
-	public String getName() {
-		return(m_name);
-	}
-	
-	/**
-	 * This method sets the name of the
-	 * type being imported.
-	 * 
-	 * @param name The name
-	 */
-	public void setName(String name) {
-		m_name = name;
-	}
-	
-	/**
-	 * This method returns the location of the schema.
-	 * 
-	 * @return
-	 */
-	public String getLocation() {
-		return(m_location);
-	}
-	
-	/**
-	 * This method sets the location of the schema.
-	 * 
-	 * @param location The location
-	 */
-	public void setLocation(String location) {
-		m_location = location;
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.accept(this);
-	}
-	
-	public String toString() {
-		String ret=getName();
-		
-		if (ret == null) {
-			ret = "<Unnamed Protocol>";
-		}
-		
-		return(ret);
-	}
+    /**
+     * The default constructor.
+     */
+    public ProtocolImport() {
+    }
+    
+    /**
+     * This method returns the name of the
+     * type being imported.
+     * 
+     * @return The name
+     */
+    public String getName() {
+        return (_name);
+    }
+    
+    /**
+     * This method sets the name of the
+     * type being imported.
+     * 
+     * @param name The name
+     */
+    public void setName(String name) {
+        _name = name;
+    }
+    
+    /**
+     * This method returns the location of the schema.
+     * 
+     * @return The location
+     */
+    public String getLocation() {
+        return (_location);
+    }
+    
+    /**
+     * This method sets the location of the schema.
+     * 
+     * @param location The location
+     */
+    public void setLocation(String location) {
+        _location = location;
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.accept(this);
+    }
+    
+    @Override
+    public String toString() {
+        String ret=getName();
+        
+        if (ret == null) {
+            ret = "<Unnamed Protocol>";
+        }
+        
+        return (ret);
+    }
 }

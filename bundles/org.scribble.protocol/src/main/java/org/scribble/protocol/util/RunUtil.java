@@ -16,32 +16,43 @@
  */
 package org.scribble.protocol.util;
 
-import org.scribble.protocol.model.*;
+import org.scribble.protocol.model.Protocol;
+import org.scribble.protocol.model.ProtocolReference;
 
-public class RunUtil {
+/**
+ * This class provides helper functions for the Run construct.
+ *
+ */
+public final class RunUtil {
 
-	/**
-	 * This method attempts to locate an inner protocol associated with the supplied
-	 * protocol reference.
-	 * 
-	 * @param protocol The parent protocol
-	 * @param protocolRef The protocol reference
-	 * @return The inner protocol, or null if not found
-	 */
-	public static Protocol getInnerProtocol(Protocol protocol, ProtocolReference protocolRef) {
-		Protocol ret=null;
-		
-		for (int i=0; ret == null && i < protocol.getNestedProtocols().size(); i++) {
-			Protocol nested=protocol.getNestedProtocols().get(i);
-			
-			if (protocolRef.getName().equals(nested.getName()) &&
-					((protocolRef.getRole() == null && nested.getLocatedRole() == null) ||
-					(protocolRef.getRole() != null && nested.getLocatedRole() != null &&
-						protocolRef.getRole().equals(nested.getLocatedRole())))) {
-				ret = nested;		
-			}
-		}
-		
-		return(ret);
-	}
+    /**
+     * Private constructor.
+     */
+    private RunUtil() {
+    }
+    
+    /**
+     * This method attempts to locate an inner protocol associated with the supplied
+     * protocol reference.
+     * 
+     * @param protocol The parent protocol
+     * @param protocolRef The protocol reference
+     * @return The inner protocol, or null if not found
+     */
+    public static Protocol getInnerProtocol(Protocol protocol, ProtocolReference protocolRef) {
+        Protocol ret=null;
+        
+        for (int i=0; ret == null && i < protocol.getNestedProtocols().size(); i++) {
+            Protocol nested=protocol.getNestedProtocols().get(i);
+            
+            if (protocolRef.getName().equals(nested.getName())
+                    && ((protocolRef.getRole() == null && nested.getLocatedRole() == null)
+                    || (protocolRef.getRole() != null && nested.getLocatedRole() != null
+                    && protocolRef.getRole().equals(nested.getLocatedRole())))) {
+                ret = nested;        
+            }
+        }
+        
+        return (ret);
+    }
 }

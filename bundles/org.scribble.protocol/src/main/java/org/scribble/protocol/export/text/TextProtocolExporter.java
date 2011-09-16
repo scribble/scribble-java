@@ -19,61 +19,68 @@ import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.export.ProtocolExporter;
-import org.scribble.protocol.model.*;
+import org.scribble.protocol.model.ProtocolModel;
 
+/**
+ * This class provides a text based exporter for the protocol.
+ *
+ */
 public class TextProtocolExporter implements ProtocolExporter {
 
-	public static final String TEXT_ID = "txt";
+    /**
+     * Export id for text.
+     */
+    public static final String TEXT_ID = "txt";
 
-	/**
-	 * This method returns the id of the exporter.
-	 * 
-	 * @return The exporter id
-	 */
-	public String getId() {
-		return(TEXT_ID);
-	}
-	
-	/**
-	 * This method returns the name of the exporter for use in
-	 * user based selectors.
-	 * 
-	 * @return The name of the exporter
-	 */
-	public String getName() {
-		return("Text");
-	}
-	
-	/**
-	 * This method exports the supplied protocol model, in the implementation
-	 * specific format, to the specified output stream. If any issues occur
-	 * during the export process, they will be reported to the journal.
-	 * 
-	 * @param model The protocol model to be exported
-	 * @param journal The journal
-	 * @param os The output stream
-	 */
-	public void export(ProtocolModel model, Journal journal, java.io.OutputStream os) {
-		TextProtocolExporterVisitor visitor=createVisitor(journal, os);
-		
-		model.visit(visitor);
-		
-		if (visitor.getException() != null) {
-			journal.error(MessageFormat.format(
-					java.util.PropertyResourceBundle.getBundle(
-							"org.scribble.protocol.Messages").getString("_EXPORT_FAILED"),
-								visitor.getException().getLocalizedMessage()), null);
-		}
-	}
-	
-	/**
-	 * This method creates the text protocol export visitor.
-	 * 
-	 * @param journal The journal
-	 * @param os The output stream
-	 * @return The visitor
-	 */
-	protected TextProtocolExporterVisitor createVisitor(Journal journal, java.io.OutputStream os) {
-		return(new TextProtocolExporterVisitor(journal, os));
-	}
+    /**
+     * This method returns the id of the exporter.
+     * 
+     * @return The exporter id
+     */
+    public String getId() {
+        return (TEXT_ID);
+    }
+    
+    /**
+     * This method returns the name of the exporter for use in
+     * user based selectors.
+     * 
+     * @return The name of the exporter
+     */
+    public String getName() {
+        return ("Text");
+    }
+    
+    /**
+     * This method exports the supplied protocol model, in the implementation
+     * specific format, to the specified output stream. If any issues occur
+     * during the export process, they will be reported to the journal.
+     * 
+     * @param model The protocol model to be exported
+     * @param journal The journal
+     * @param os The output stream
+     */
+    public void export(ProtocolModel model, Journal journal, java.io.OutputStream os) {
+        TextProtocolExporterVisitor visitor=createVisitor(journal, os);
+        
+        model.visit(visitor);
+        
+        if (visitor.getException() != null) {
+            journal.error(MessageFormat.format(
+                    java.util.PropertyResourceBundle.getBundle(
+                            "org.scribble.protocol.Messages").getString("_EXPORT_FAILED"),
+                                visitor.getException().getLocalizedMessage()), null);
+        }
+    }
+    
+    /**
+     * This method creates the text protocol export visitor.
+     * 
+     * @param journal The journal
+     * @param os The output stream
+     * @return The visitor
+     */
+    protected TextProtocolExporterVisitor createVisitor(Journal journal, java.io.OutputStream os) {
+        return (new TextProtocolExporterVisitor(journal, os));
+    }
 }

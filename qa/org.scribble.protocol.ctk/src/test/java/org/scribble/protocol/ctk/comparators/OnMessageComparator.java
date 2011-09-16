@@ -22,22 +22,22 @@ import org.scribble.protocol.model.*;
 
 public class OnMessageComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		OnMessage m=(OnMessage)arg0;
-		OnMessage e=(OnMessage)arg1;
-						
-		Comparator<ModelObject> mscomp=
-				ComparatorUtil.getComparator(MessageSignature.class);
-			
-		if (mscomp.compare(m.getMessageSignature(),
-				e.getMessageSignature()) != 0) {
-			return(1);
-		}
-	
-		if (m.getBlock().size() != e.getBlock().size()) {
-			return(1);
-		}
-		
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        OnMessage m=(OnMessage)arg0;
+        OnMessage e=(OnMessage)arg1;
+                        
+        Comparator<ModelObject> mscomp=
+                ComparatorUtil.getComparator(MessageSignature.class);
+            
+        if (mscomp.compare(m.getMessageSignature(),
+                e.getMessageSignature()) != 0) {
+            return (1);
+        }
+    
+        if (m.getBlock().size() != e.getBlock().size()) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

@@ -23,43 +23,43 @@ import org.scribble.protocol.monitor.model.Description;
  *
  */
 public interface ProtocolMonitor {
-	
-	/**
-	 * This method creates a new session (conversation instance) and initializes
-	 * it based on the supplied description.
-	 * 
-	 * @param context The monitor context
-	 * @param protocol The protocol description
-	 * @param sessionClass The session implenentation class to instantiate
-	 * @return The created and initialized session
-	 */
-	public Session createSession(MonitorContext context, Description protocol,
-							Class<? extends Session> sessionClass);
-	
-	/**
-	 * This method checks whether the conversation instance, managed by
-	 * the supplied context, can handle the supplied 'sent' message.
-	 * 
-	 * @param context The monitor context
-	 * @param protocol The protocol description
-	 * @param conv The conversation
-	 * @param mesg The 'sent' message
-	 * @return The result
-	 */
-	public Result messageSent(MonitorContext context, Description protocol,
-					Session conv, Message mesg);
-	
-	/**
-	 * This method checks whether the conversation instance, managed by
-	 * the supplied context, can handle the supplied 'received' message.
-	 * 
-	 * @param context The monitor context
-	 * @param protocol The protocol description
-	 * @param conv The conversation
-	 * @param mesg The 'received' message
-	 * @return The result
-	 */
-	public Result messageReceived(MonitorContext context, Description protocol,
-					Session conv, Message mesg);
-	
+    
+    /**
+     * This method creates a new session (conversation instance) and initializes
+     * it based on the supplied description.
+     * 
+     * @param context The monitor context
+     * @param protocol The protocol description
+     * @param sessionClass The session implenentation class to instantiate
+     * @return The created and initialized session
+     */
+    public Session createSession(MonitorContext context, Description protocol,
+                            Class<? extends Session> sessionClass);
+    
+    /**
+     * This method checks whether the conversation instance, managed by
+     * the supplied context, can handle the supplied 'sent' message.
+     * 
+     * @param context The monitor context
+     * @param protocol The protocol description
+     * @param conv The conversation
+     * @param mesg The 'sent' message
+     * @return The result
+     */
+    public Result messageSent(MonitorContext context, Description protocol,
+                    Session conv, Message mesg);
+    
+    /**
+     * This method checks whether the conversation instance, managed by
+     * the supplied context, can handle the supplied 'received' message.
+     * 
+     * @param context The monitor context
+     * @param protocol The protocol description
+     * @param conv The conversation
+     * @param mesg The 'received' message
+     * @return The result
+     */
+    public Result messageReceived(MonitorContext context, Description protocol,
+                    Session conv, Message mesg);
+    
 }

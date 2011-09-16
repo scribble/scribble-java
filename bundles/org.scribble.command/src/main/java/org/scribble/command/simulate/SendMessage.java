@@ -16,49 +16,67 @@
  */
 package org.scribble.command.simulate;
 
-import org.scribble.protocol.monitor.*;
+import org.scribble.protocol.monitor.DefaultMessage;
+import org.scribble.protocol.monitor.Message;
+import org.scribble.protocol.monitor.MonitorContext;
+import org.scribble.protocol.monitor.ProtocolMonitor;
+import org.scribble.protocol.monitor.Result;
+import org.scribble.protocol.monitor.Session;
 import org.scribble.protocol.monitor.model.Description;
 
+/**
+ * This class represents a send message.
+ *
+ */
 public class SendMessage extends Event {
-	
-	private DefaultMessage m_message=new DefaultMessage();
+    
+    private DefaultMessage _message=new DefaultMessage();
 
-	public SendMessage() {
-	}
+    /**
+     * Default constructor.
+     */
+    public SendMessage() {
+    }
 
-	@Override
-	public Result validate(ProtocolMonitor monitor, MonitorContext context, Description protocol,
-						Session conv) {
-		return(monitor.messageSent(context, protocol, conv, m_message));
-	}
+    @Override
+    public Result validate(ProtocolMonitor monitor, MonitorContext context, Description protocol,
+                        Session conv) {
+        return (monitor.messageSent(context, protocol, conv, _message));
+    }
 
-	@Override
-	public void setColumn(int col, String val) {
-		
-		if (col == 1) {
-			int pos=0;
-			
-			if ((pos=val.indexOf('(')) == -1) {
-				m_message.getTypes().add(val);
-			} else {
-				String op=val.substring(0, pos);
-				
-				m_message.setOperator(op);
-				
-				int end=val.indexOf(')', pos);
-				
-				String mesgType=val.substring(pos+1, end);
+    @Override
+    public void setColumn(int col, String val) {
+        
+        if (col == 1) {
+            int pos=val.indexOf('(');
+            
+            if (pos == -1) {
+                _message.getTypes().add(val);
+            } else {
+                String op=val.substring(0, pos);
+                
+                _message.setOperator(op);
+                
+                int end=val.indexOf(')', pos);
+                
+                String mesgType=val.substring(pos+1, end);
 
-				m_message.getTypes().add(mesgType);
-			}
-		}
-	}
-	
-	public Message getMessage() {
-		return(m_message);
-	}
-	
-	public String toString() {
-		return("Send "+m_message);
-	}
+                _message.getTypes().add(mesgType);
+            }
+        }
+    }
+    
+    /**
+     * This method returns the message.
+     * 
+     * @return The message
+     */
+    public Message getMessage() {
+        return (_message);
+    }
+
+    @Override
+    public String toString() {
+        return ("Send "+_message);
+    }
 }

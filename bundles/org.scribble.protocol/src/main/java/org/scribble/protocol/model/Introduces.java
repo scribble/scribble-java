@@ -20,76 +20,84 @@ package org.scribble.protocol.model;
  * an existing role within a Scribble definition.
  */
 public class Introduces extends Activity {
-	
-	private Role m_introducer=null;
-	private java.util.List<Role> m_roles=
-			new ContainmentList<Role>(this, Role.class);
+    
+    private Role _introducer=null;
+    private java.util.List<Role> _roles=
+            new ContainmentList<Role>(this, Role.class);
 
-	public Introduces() {
-	}
-	
-	public Introduces(Introduces rl) {
-		super(rl);
-		
-		for (Role r : rl.getIntroducedRoles()) {
-			getIntroducedRoles().add(new Role(r));
-		}
-	}
-	
-	/**
-	 * This method returns the introducing role.
-	 * 
-	 * @return The introducer
-	 */
-	public Role getIntroducer() {
-		return(m_introducer);
-	}
-	
-	/**
-	 * This method sets the introducing role.
-	 * 
-	 * @param role The introducer
-	 */
-	public void setIntroducer(Role role) {
-		m_introducer = role;
-	}
-	
-	/**
-	 * This method returns the list of roles.
-	 * 
-	 * @return The list of roles
-	 */
-	public java.util.List<Role> getIntroducedRoles() {
-		return(m_roles);
-	}
-	
-	/**
-	 * This method returns the role associated with
-	 * the supplied name.
-	 * 
-	 * @param name The role name
-	 * @return The role, or null if not found
-	 */
-	public Role getIntroducedRole(String name) {
-		Role ret=null;
-		
-		for (int i=0; ret == null &&
-					i < m_roles.size(); i++) {
-			if (m_roles.get(i).getName().equals(name)) {
-				ret = m_roles.get(i);
-			}
-		}
-		
-		return(ret);
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.accept(this);		
-	}
+    /**
+     * The default constructor.
+     */
+    public Introduces() {
+    }
+    
+    /**
+     * The copy constructor.
+     * 
+     * @param i The introduces construct to copy
+     */
+    public Introduces(Introduces i) {
+        super(i);
+        
+        for (Role r : i.getIntroducedRoles()) {
+            getIntroducedRoles().add(new Role(r));
+        }
+    }
+    
+    /**
+     * This method returns the introducing role.
+     * 
+     * @return The introducer
+     */
+    public Role getIntroducer() {
+        return (_introducer);
+    }
+    
+    /**
+     * This method sets the introducing role.
+     * 
+     * @param role The introducer
+     */
+    public void setIntroducer(Role role) {
+        _introducer = role;
+    }
+    
+    /**
+     * This method returns the list of roles.
+     * 
+     * @return The list of roles
+     */
+    public java.util.List<Role> getIntroducedRoles() {
+        return (_roles);
+    }
+    
+    /**
+     * This method returns the role associated with
+     * the supplied name.
+     * 
+     * @param name The role name
+     * @return The role, or null if not found
+     */
+    public Role getIntroducedRole(String name) {
+        Role ret=null;
+        
+        for (int i=0; ret == null
+                    && i < _roles.size(); i++) {
+            if (_roles.get(i).getName().equals(name)) {
+                ret = _roles.get(i);
+            }
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.accept(this);        
+    }
 }

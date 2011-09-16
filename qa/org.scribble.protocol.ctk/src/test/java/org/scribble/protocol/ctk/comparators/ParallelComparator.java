@@ -20,20 +20,20 @@ import org.scribble.protocol.model.*;
 
 public class ParallelComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Parallel m=(Parallel)arg0;
-		Parallel e=(Parallel)arg1;
-		
-		if (m.getPaths().size() != e.getPaths().size()) {
-			return(1);
-		}
-		
-		Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();	
-		
-		if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
-			return(1);
-		}
-		
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Parallel m=(Parallel)arg0;
+        Parallel e=(Parallel)arg1;
+        
+        if (m.getPaths().size() != e.getPaths().size()) {
+            return (1);
+        }
+        
+        Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();    
+        
+        if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

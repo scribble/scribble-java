@@ -18,99 +18,162 @@ package org.scribble.common.logging;
 
 import java.util.Map;
 
+/**
+ * This class provides an implementation of the journal that
+ * caches reported issues.
+ *
+ */
 public class CachedJournal implements Journal {
-	
-	private java.util.List<IssueDetails> m_issues=new java.util.Vector<IssueDetails>();
-	private boolean f_errors=false;
-	private boolean f_warnings=false;
+    
+    private java.util.List<IssueDetails> _issues=new java.util.Vector<IssueDetails>();
+    private boolean _errors=false;
+    private boolean _warnings=false;
 
-	public void error(String issue, Map<String, Object> props) {
-		m_issues.add(new IssueDetails(IssueType.Error, issue, props));
-		f_errors = true;
-	}
+    /**
+     * This method records an error issue.
+     * 
+     * @param issue The issue text
+     * @param props The optional properties associated with the issue
+     */
+    public void error(String issue, Map<String, Object> props) {
+        _issues.add(new IssueDetails(IssueType.Error, issue, props));
+        _errors = true;
+    }
 
-	public void info(String issue, Map<String, Object> props) {
-		m_issues.add(new IssueDetails(IssueType.Info, issue, props));
-	}
+    /**
+     * This method records an information issue.
+     * 
+     * @param issue The issue text
+     * @param props The optional properties associated with the issue
+     */
+    public void info(String issue, Map<String, Object> props) {
+        _issues.add(new IssueDetails(IssueType.Info, issue, props));
+    }
 
-	public void warning(String issue, Map<String, Object> props) {
-		m_issues.add(new IssueDetails(IssueType.Warning, issue, props));
-		f_warnings = true;
-	}
-	
-	/**
-	 * This method returns the list of issues that have been reported to this
-	 * journal.
-	 * 
-	 * @return The list of issues
-	 */
-	public java.util.List<IssueDetails> getIssues() {
-		return(m_issues);
-	}
-	
-	/**
-	 * This method determines whether any errors have been reported.
-	 * 
-	 * @return Whether errors have been reported
-	 */
-	public boolean hasErrors() {
-		return(f_errors);
-	}
-	
-	/**
-	 * This method determines whether any warnings have been reported.
-	 * 
-	 * @return Whether warnings have been reported
-	 */
-	public boolean hasWarnings() {
-		return(f_warnings);
-	}
-	
-	/**
-	 * This method applies any cached issues to the supplied logger.
-	 * 
-	 * @param logger The logger
-	 */
-	public void apply(Journal logger) {
-		for (IssueDetails id : m_issues) {
-			if (id.getIssueType() == IssueType.Error) {
-				logger.error(id.getMessage(), id.getProperties());
-			} else if (id.getIssueType() == IssueType.Info) {
-				logger.info(id.getMessage(), id.getProperties());
-			} else if (id.getIssueType() == IssueType.Warning) {
-				logger.warning(id.getMessage(), id.getProperties());
-			}
-		}
-	}
+    /**
+     * This method records a warning issue.
+     * 
+     * @param issue The issue text
+     * @param props The optional properties associated with the issue
+     */
+    public void warning(String issue, Map<String, Object> props) {
+        _issues.add(new IssueDetails(IssueType.Warning, issue, props));
+        _warnings = true;
+    }
+    
+    /**
+     * This method returns the list of issues that have been reported to this
+     * journal.
+     * 
+     * @return The list of issues
+     */
+    public java.util.List<IssueDetails> getIssues() {
+        return (_issues);
+    }
+    
+    /**
+     * This method determines whether any errors have been reported.
+     * 
+     * @return Whether errors have been reported
+     */
+    public boolean hasErrors() {
+        return (_errors);
+    }
+    
+    /**
+     * This method determines whether any warnings have been reported.
+     * 
+     * @return Whether warnings have been reported
+     */
+    public boolean hasWarnings() {
+        return (_warnings);
+    }
+    
+    /**
+     * This method applies any cached issues to the supplied logger.
+     * 
+     * @param logger The logger
+     */
+    public void apply(Journal logger) {
+        for (IssueDetails id : _issues) {
+            if (id.getIssueType() == IssueType.Error) {
+                logger.error(id.getMessage(), id.getProperties());
+            } else if (id.getIssueType() == IssueType.Info) {
+                logger.info(id.getMessage(), id.getProperties());
+            } else if (id.getIssueType() == IssueType.Warning) {
+                logger.warning(id.getMessage(), id.getProperties());
+            }
+        }
+    }
 
-	public enum IssueType {
-		Error,
-		Info,
-		Warning
-	}
+    /**
+     * This enum represents the type of issue.
+     *
+     */
+    public enum IssueType {
+        /**
+         * Error issue type.
+         */
+        Error,
+        /**
+         * Information issue type.
+         */
+        Info,
+        /**
+         * Warning issue type.
+         */
+        Warning
+    }
 
-	public class IssueDetails {
-		public IssueDetails(IssueType type, String mesg,
-						Map<String, Object> props) {
-			m_type = type;
-			m_message = mesg;
-			m_properties = props;
-		}
-		
-		public IssueType getIssueType() {
-			return(m_type);
-		}
-		
-		public String getMessage() {
-			return(m_message);
-		}
-		
-		public Map<String,Object> getProperties() {
-			return(m_properties);
-		}
-		
-		private IssueType m_type=IssueType.Info;
-		private String m_message=null;
-		private Map<String,Object> m_properties=null;
-	}
+    /**
+     * This class represents the issue details.
+     *
+     */
+    public class IssueDetails {
+        
+        private IssueType _type=IssueType.Info;
+        private String _message=null;
+        private Map<String,Object> _properties=null;
+
+        /**
+         * Constructor for the issue details.
+         * 
+         * @param type The issue type
+         * @param mesg The message
+         * @param props The properties
+         */
+        public IssueDetails(IssueType type, String mesg,
+                        Map<String, Object> props) {
+            _type = type;
+            _message = mesg;
+            _properties = props;
+        }
+        
+        /**
+         * This method returns the issue type.
+         * 
+         * @return The issue type
+         */
+        public IssueType getIssueType() {
+            return (_type);
+        }
+        
+        /**
+         * This method returns the message.
+         * 
+         * @return The message
+         */
+        public String getMessage() {
+            return (_message);
+        }
+        
+        /**
+         * This method returns the properties.
+         * 
+         * @return The properties
+         */
+        public Map<String,Object> getProperties() {
+            return (_properties);
+        }
+    }
 }

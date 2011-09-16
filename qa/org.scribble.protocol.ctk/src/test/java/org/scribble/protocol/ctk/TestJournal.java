@@ -24,43 +24,43 @@ import static org.junit.Assert.*;
 
 public class TestJournal implements Journal {
 
-	public void debug(String issue, Map<String, Object> props) {
-	}
+    public void debug(String issue, Map<String, Object> props) {
+    }
 
-	public void error(String issue, Map<String, Object> props) {
-		m_errors.add(issue);
-	}
-	
-	public int getErrorCount() {
-		return(m_errors.size());
-	}
-	
-	public void verifyErrors(String[] errors) {
-		java.util.List<String> logged=new java.util.Vector<String>(m_errors);
-		
-		for (int i=0; i < errors.length; i++) {
-			int ind=logged.indexOf(errors[i]);
-			
-			if (ind == -1) {
-				fail("Expected message '"+errors[i]+"' did not occur");
-			} else {
-				logged.remove(ind);
-			}
-		}
-		
-		if (logged.size() > 0) {
-			fail("Unexpected errors occurred: "+logged);
-		}
-	}
+    public void error(String issue, Map<String, Object> props) {
+        m_errors.add(issue);
+    }
+    
+    public int getErrorCount() {
+        return (m_errors.size());
+    }
+    
+    public void verifyErrors(String[] errors) {
+        java.util.List<String> logged=new java.util.Vector<String>(m_errors);
+        
+        for (int i=0; i < errors.length; i++) {
+            int ind=logged.indexOf(errors[i]);
+            
+            if (ind == -1) {
+                fail("Expected message '"+errors[i]+"' did not occur");
+            } else {
+                logged.remove(ind);
+            }
+        }
+        
+        if (logged.size() > 0) {
+            fail("Unexpected errors occurred: "+logged);
+        }
+    }
 
-	public void info(String issue, Map<String, Object> props) {
-	}
+    public void info(String issue, Map<String, Object> props) {
+    }
 
-	public void trace(String issue, Map<String, Object> props) {
-	}
+    public void trace(String issue, Map<String, Object> props) {
+    }
 
-	public void warning(String issue, Map<String, Object> props) {
-	}
+    public void warning(String issue, Map<String, Object> props) {
+    }
 
-	private java.util.List<String> m_errors=new java.util.Vector<String>();
+    private java.util.List<String> m_errors=new java.util.Vector<String>();
 }

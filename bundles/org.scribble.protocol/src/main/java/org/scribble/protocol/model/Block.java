@@ -20,109 +20,115 @@ package org.scribble.protocol.model;
  * 
  */
 public class Block extends Activity {
-	
-	private java.util.List<Activity> m_contents=
-		new ContainmentList<Activity>(this, Activity.class);
+    
+    private java.util.List<Activity> _contents=
+        new ContainmentList<Activity>(this, Activity.class);
 
-	/**
-	 * This method returns the contents associated with
-	 * the block.
-	 * 
-	 * @return The contents
-	 */
-	public java.util.List<Activity> getContents() {
-		return(m_contents);
-	}
-	
-	/**
-	 * This method adds an activity to the block.
-	 * 
-	 * @param act The activity
-	 * @return Whether the activity has been added
-	 */
-	public boolean add(Activity act) {
-		return(m_contents.add(act));
-	}
-	
-	/**
-	 * This method removes an activity from the block.
-	 * 
-	 * @param act The activity
-	 * @return Whether the activity has been removed
-	 */
-	public boolean remove(Activity act) {
-		return(m_contents.remove(act));
-	}
-	
-	/**
-	 * This method returns the number of activities
-	 * in the block.
-	 * 
-	 * @return The number of activities
-	 */
-	public int size() {
-		return(m_contents.size());
-	}
-	
-	/**
-	 * This method returns the activity at the specified
-	 * index.
-	 * 
-	 * @param index The index
-	 * @return The activity
-	 * @throws IndexOutOfBoundsException 
-	 */
-	public Activity get(int index) throws IndexOutOfBoundsException {
-		return(m_contents.get(index));
-	}
-	
-	/**
-	 * This method returns the index of the supplied activity.
-	 * 
-	 * @param act The activity
-	 * @return The index, or -1 if the activity is not found
-	 */
-	public int indexOf(Activity act) {
-		return(m_contents.indexOf(act));
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		
-		if (visitor.start(this)) {
-		
-			for (int i=0; i < getContents().size(); i++) {
-				getContents().get(i).visit(visitor);
-			}
-		}
-		
-		visitor.end(this);
-	}
+    /**
+     * This method returns the contents associated with
+     * the block.
+     * 
+     * @return The contents
+     */
+    public java.util.List<Activity> getContents() {
+        return (_contents);
+    }
+    
+    /**
+     * This method adds an activity to the block.
+     * 
+     * @param act The activity
+     * @return Whether the activity has been added
+     */
+    public boolean add(Activity act) {
+        return (_contents.add(act));
+    }
+    
+    /**
+     * This method removes an activity from the block.
+     * 
+     * @param act The activity
+     * @return Whether the activity has been removed
+     */
+    public boolean remove(Activity act) {
+        return (_contents.remove(act));
+    }
+    
+    /**
+     * This method returns the number of activities
+     * in the block.
+     * 
+     * @return The number of activities
+     */
+    public int size() {
+        return (_contents.size());
+    }
+    
+    /**
+     * This method returns the activity at the specified
+     * index.
+     * 
+     * @param index The index The index
+     * @return The activity The activity
+     * @throws IndexOutOfBoundsException Out of bounds 
+     */
+    public Activity get(int index) throws IndexOutOfBoundsException {
+        return (_contents.get(index));
+    }
+    
+    /**
+     * This method returns the index of the supplied activity.
+     * 
+     * @param act The activity
+     * @return The index, or -1 if the activity is not found
+     */
+    public int indexOf(Activity act) {
+        return (_contents.indexOf(act));
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        
+        if (visitor.start(this)) {
+        
+            for (int i=0; i < getContents().size(); i++) {
+                getContents().get(i).visit(visitor);
+            }
+        }
+        
+        visitor.end(this);
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Block that = (Block) o;
 
-        return m_contents.equals(that.m_contents);
+        return _contents.equals(that._contents);
     }
 
     @Override
     public int hashCode() {
-        return m_contents.hashCode();
+        return _contents.hashCode();
     }
 
-	@Override
-	public String toString() {
-		String result = "{\n";
-		for (Activity act: m_contents) result += act + "\n";
-		return result + "}";
-	}
+    @Override
+    public String toString() {
+        String result = "{\n";
+        for (Activity act : _contents) {
+            result += act + "\n";
+        }
+        return result + "}";
+    }
 }

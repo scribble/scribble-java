@@ -16,8 +16,21 @@
  */
 package org.scribble.protocol;
 
-public class ProtocolDefinitions {
+/**
+ * This class provides common protocol definitions.
+ *
+ */
+public final class ProtocolDefinitions {
+    
+    /**
+     * Default constructor.
+     */
+    private ProtocolDefinitions() {
+    }
 
-	public static final String PROTOCOL_TYPE = "spr";
+    /**
+     * The protocol type.
+     */
+    public static final String PROTOCOL_TYPE = "spr";
 
 }

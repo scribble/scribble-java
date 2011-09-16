@@ -20,23 +20,23 @@ import org.scribble.protocol.model.*;
 
 public class ParameterDefinitionComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		ParameterDefinition m=(ParameterDefinition)arg0;
-		ParameterDefinition e=(ParameterDefinition)arg1;
-		
-		if (m == null && e == null) {
-			return(0);
-		}
-		
-		if (m == null || e == null){
-			return(1);
-		}
-		
-		if (m.getName().equals(e.getName()) &&
-				(m.getType().equals(e.getType()))) {
-			return(0);
-		}
-		
-		return(1);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        ParameterDefinition m=(ParameterDefinition)arg0;
+        ParameterDefinition e=(ParameterDefinition)arg1;
+        
+        if (m == null && e == null) {
+            return (0);
+        }
+        
+        if (m == null || e == null){
+            return (1);
+        }
+        
+        if (m.getName().equals(e.getName()) &&
+                (m.getType().equals(e.getType()))) {
+            return (0);
+        }
+        
+        return (1);
+    }
 }

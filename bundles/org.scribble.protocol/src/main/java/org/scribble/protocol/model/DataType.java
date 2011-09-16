@@ -23,41 +23,46 @@ package org.scribble.protocol.model;
  */
 public class DataType extends ModelObject {
 
-	private String m_details=null;
-	
-	/**
-	 * Default constructor.
-	 */
-	public DataType() {
-	}
-	
-	/**
-	 * Constructor used to initialise the data type details.
-	 * 
-	 * @param details The details
-	 */
-	public DataType(String details) {
-		m_details = details;
-	}
-	
-	/**
-	 * This method returns the details.
-	 * 
-	 * @return The details
-	 */
-	public String getDetails() {
-		return(m_details);
-	}
-	
-	/**
-	 * This method sets the details.
-	 * 
-	 * @param details The details
-	 */
-	public void setDetails(String details) {
-		m_details = details;
-	}
+    private String _details=null;
+    
+    /**
+     * Default constructor.
+     */
+    public DataType() {
+    }
+    
+    /**
+     * Constructor used to initialise the data type details.
+     * 
+     * @param details The details
+     */
+    public DataType(String details) {
+        _details = details;
+    }
+    
+    /**
+     * This method returns the details.
+     * 
+     * @return The details
+     */
+    public String getDetails() {
+        return (_details);
+    }
+    
+    /**
+     * This method sets the details.
+     * 
+     * @param details The details
+     */
+    public void setDetails(String details) {
+        _details = details;
+    }
 
-	public void visit(Visitor visitor) {
-	}
+    /**
+     * This method visits the data type.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+    }
 }

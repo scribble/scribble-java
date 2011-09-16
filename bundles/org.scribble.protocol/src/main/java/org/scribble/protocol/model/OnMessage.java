@@ -23,83 +23,83 @@ package org.scribble.protocol.model;
  */
 public class OnMessage extends ModelObject {
 
-    private MessageSignature m_messageSignature=null;
-	private Block m_block=new Block();
+    private MessageSignature _messageSignature=null;
+    private Block _block=new Block();
 
-	/**
-	 * This is the default constructor.
-	 * 
-	 */
-	public OnMessage() {
-		m_block.setParent(this);
-	}
-	
-	/**
-	 * This method returns the message signature.
-	 * 
-	 * @return The message signature
-	 */
-	public MessageSignature getMessageSignature() {
-		return(m_messageSignature);
-	}
-	
-	/**
-	 * This method sets the message signature.
-	 * 
-	 * @param signature The message signature
-	 */
-	public void setMessageSignature(MessageSignature signature) {
-		
-		if (m_messageSignature != null) {
-			m_messageSignature.setParent(null);
-		}
-		
-		m_messageSignature = signature;
-		
-		if (m_messageSignature != null) {
-			m_messageSignature.setParent(this);
-		}
-	}
-	
-	/**
-	 * This method returns the activities.
-	 * 
-	 * @return The block of activities
-	 */
-	public Block getBlock() {
-		return(m_block);
-	}
-	
-	/**
-	 * This method sets the block.
-	 * 
-	 * @param block The block
-	 */
-	public void setBlock(Block block) {
-		if (m_block != null) {
-			m_block.setParent(null);
-		}
-		
-		m_block = block;
-		
-		if (m_block != null) {
-			m_block.setParent(this);
-		}
-	}
+    /**
+     * This is the default constructor.
+     * 
+     */
+    public OnMessage() {
+        _block.setParent(this);
+    }
+    
+    /**
+     * This method returns the message signature.
+     * 
+     * @return The message signature
+     */
+    public MessageSignature getMessageSignature() {
+        return (_messageSignature);
+    }
+    
+    /**
+     * This method sets the message signature.
+     * 
+     * @param signature The message signature
+     */
+    public void setMessageSignature(MessageSignature signature) {
+        
+        if (_messageSignature != null) {
+            _messageSignature.setParent(null);
+        }
+        
+        _messageSignature = signature;
+        
+        if (_messageSignature != null) {
+            _messageSignature.setParent(this);
+        }
+    }
+    
+    /**
+     * This method returns the activities.
+     * 
+     * @return The block of activities
+     */
+    public Block getBlock() {
+        return (_block);
+    }
+    
+    /**
+     * This method sets the block.
+     * 
+     * @param block The block
+     */
+    public void setBlock(Block block) {
+        if (_block != null) {
+            _block.setParent(null);
+        }
+        
+        _block = block;
+        
+        if (_block != null) {
+            _block.setParent(this);
+        }
+    }
 
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.start(this);
-		
-		if (getBlock() != null) {
-			getBlock().visit(visitor);
-		}
-		
-		visitor.end(this);
-	}	
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.start(this);
+        
+        if (getBlock() != null) {
+            getBlock().visit(visitor);
+        }
+        
+        visitor.end(this);
+    }    
 }

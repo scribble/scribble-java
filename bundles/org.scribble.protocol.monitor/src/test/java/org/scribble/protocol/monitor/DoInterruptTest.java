@@ -24,136 +24,136 @@ import org.scribble.protocol.monitor.model.*;
 
 public class DoInterruptTest {
 
-	private static final String CONFIRMATION_MESSAGE_TYPE = "Confirmation";
-	private static final String ORDER_MESSAGE_TYPE = "Order";
-	private static final String CANCEL_MESSAGE_TYPE = "Cancel";
-	private static final String FINISH_MESSAGE_TYPE = "Finish";
+    private static final String CONFIRMATION_MESSAGE_TYPE = "Confirmation";
+    private static final String ORDER_MESSAGE_TYPE = "Order";
+    private static final String CANCEL_MESSAGE_TYPE = "Cancel";
+    private static final String FINISH_MESSAGE_TYPE = "Finish";
 
-	public enum PurchasingLabel {
-		_Confirmation,
-		_OutOfStock
-	}
-	
-	public Description getSellerProtocol() {
-		Description pd=new Description();
-		
-		// 0
-		Do tn=new Do();
-		pd.getNode().add(tn);
-		tn.setNextIndex(4);
-		tn.setInnerIndex(1);
-		
-		Path p=new Path();
-		p.setNextIndex(3);
-		tn.getPath().add(p);
-		
-		// 1
-		ReceiveMessage recvOrder=new ReceiveMessage();
-		recvOrder.setNextIndex(2);
+    public enum PurchasingLabel {
+        _Confirmation,
+        _OutOfStock
+    }
+    
+    public Description getSellerProtocol() {
+        Description pd=new Description();
+        
+        // 0
+        Do tn=new Do();
+        pd.getNode().add(tn);
+        tn.setNextIndex(4);
+        tn.setInnerIndex(1);
+        
+        Path p=new Path();
+        p.setNextIndex(3);
+        tn.getPath().add(p);
+        
+        // 1
+        ReceiveMessage recvOrder=new ReceiveMessage();
+        recvOrder.setNextIndex(2);
 
-		MessageType mt1=new MessageType();
-		mt1.setValue(ORDER_MESSAGE_TYPE);
-		recvOrder.getMessageType().add(mt1);
-		pd.getNode().add(recvOrder);
-		
-		// 2
-		SendMessage sendConformation=new SendMessage();
+        MessageType mt1=new MessageType();
+        mt1.setValue(ORDER_MESSAGE_TYPE);
+        recvOrder.getMessageType().add(mt1);
+        pd.getNode().add(recvOrder);
+        
+        // 2
+        SendMessage sendConformation=new SendMessage();
 
-		MessageType mt2=new MessageType();
-		mt2.setValue(CONFIRMATION_MESSAGE_TYPE);
-		sendConformation.getMessageType().add(mt2);
-		pd.getNode().add(sendConformation);
-		
-		// 3
-		ReceiveMessage recvCancel=new ReceiveMessage();
+        MessageType mt2=new MessageType();
+        mt2.setValue(CONFIRMATION_MESSAGE_TYPE);
+        sendConformation.getMessageType().add(mt2);
+        pd.getNode().add(sendConformation);
+        
+        // 3
+        ReceiveMessage recvCancel=new ReceiveMessage();
 
-		MessageType mt3=new MessageType();
-		mt3.setValue(CANCEL_MESSAGE_TYPE);
-		recvCancel.getMessageType().add(mt3);
-		pd.getNode().add(recvCancel);
-		
-		// 4
-		ReceiveMessage recvFinish=new ReceiveMessage();
+        MessageType mt3=new MessageType();
+        mt3.setValue(CANCEL_MESSAGE_TYPE);
+        recvCancel.getMessageType().add(mt3);
+        pd.getNode().add(recvCancel);
+        
+        // 4
+        ReceiveMessage recvFinish=new ReceiveMessage();
 
-		MessageType mt4=new MessageType();
-		mt4.setValue(FINISH_MESSAGE_TYPE);
-		recvFinish.getMessageType().add(mt4);
-		pd.getNode().add(recvFinish);
-		
-		return(pd);
-	}	
-	
-	@Test
-	public void testNoCancel() {
-		Description pd=getSellerProtocol();
-		
-		// Create Protocol Monitor
-		ProtocolMonitor monitor=new DefaultProtocolMonitor();
-		
-		DefaultMonitorContext context=new DefaultMonitorContext();
-		
-		Session conv=monitor.createSession(context, pd, DefaultSession.class);
-		
-		DefaultMessage message=new DefaultMessage();
-		message.getTypes().add(ORDER_MESSAGE_TYPE);
-		
-		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
-			fail("Order failed");
-		}
-		
-		message=new DefaultMessage();
-		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
+        MessageType mt4=new MessageType();
+        mt4.setValue(FINISH_MESSAGE_TYPE);
+        recvFinish.getMessageType().add(mt4);
+        pd.getNode().add(recvFinish);
+        
+        return (pd);
+    }    
+    
+    @Test
+    public void testNoCancel() {
+        Description pd=getSellerProtocol();
+        
+        // Create Protocol Monitor
+        ProtocolMonitor monitor=new DefaultProtocolMonitor();
+        
+        DefaultMonitorContext context=new DefaultMonitorContext();
+        
+        Session conv=monitor.createSession(context, pd, DefaultSession.class);
+        
+        DefaultMessage message=new DefaultMessage();
+        message.getTypes().add(ORDER_MESSAGE_TYPE);
+        
+        if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
+            fail("Order failed");
+        }
+        
+        message=new DefaultMessage();
+        message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);        
 
-		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
-			fail("Confirmation failed");
-		}		
-		
-		message=new DefaultMessage();
-		message.getTypes().add(FINISH_MESSAGE_TYPE);		
+        if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
+            fail("Confirmation failed");
+        }        
+        
+        message=new DefaultMessage();
+        message.getTypes().add(FINISH_MESSAGE_TYPE);        
 
-		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
-			fail("Finish message failed");
-		}		
-		
-		if (conv.isFinished() == false) {
-			fail("Conversation should be finished");
-		}
-	}
-	
-	@Test
-	public void testCancel() {
-		Description pd=getSellerProtocol();
-		
-		// Create Protocol Monitor
-		ProtocolMonitor monitor=new DefaultProtocolMonitor();
-		
-		DefaultMonitorContext context=new DefaultMonitorContext();
-		
-		Session conv=monitor.createSession(context, pd, DefaultSession.class);
-		
-		DefaultMessage message=new DefaultMessage();
-		message.getTypes().add(ORDER_MESSAGE_TYPE);
-		
-		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
-			fail("Order failed");
-		}
-		
-		message=new DefaultMessage();
-		message.getTypes().add(CANCEL_MESSAGE_TYPE);		
+        if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
+            fail("Finish message failed");
+        }        
+        
+        if (conv.isFinished() == false) {
+            fail("Conversation should be finished");
+        }
+    }
+    
+    @Test
+    public void testCancel() {
+        Description pd=getSellerProtocol();
+        
+        // Create Protocol Monitor
+        ProtocolMonitor monitor=new DefaultProtocolMonitor();
+        
+        DefaultMonitorContext context=new DefaultMonitorContext();
+        
+        Session conv=monitor.createSession(context, pd, DefaultSession.class);
+        
+        DefaultMessage message=new DefaultMessage();
+        message.getTypes().add(ORDER_MESSAGE_TYPE);
+        
+        if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
+            fail("Order failed");
+        }
+        
+        message=new DefaultMessage();
+        message.getTypes().add(CANCEL_MESSAGE_TYPE);        
 
-		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
-			fail("Cancel failed");
-		}		
-		
-		message=new DefaultMessage();
-		message.getTypes().add(FINISH_MESSAGE_TYPE);		
+        if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
+            fail("Cancel failed");
+        }        
+        
+        message=new DefaultMessage();
+        message.getTypes().add(FINISH_MESSAGE_TYPE);        
 
-		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
-			fail("Finish message failed");
-		}		
-		
-		if (conv.isFinished() == false) {
-			fail("Conversation should be finished");
-		}
-	}
+        if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
+            fail("Finish message failed");
+        }        
+        
+        if (conv.isFinished() == false) {
+            fail("Conversation should be finished");
+        }
+    }
 }

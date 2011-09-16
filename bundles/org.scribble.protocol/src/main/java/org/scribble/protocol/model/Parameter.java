@@ -21,53 +21,57 @@ package org.scribble.protocol.model;
  */
 public class Parameter extends ModelObject {
 
-	private String m_localName=null;
+    private String _localName=null;
 
-	/**
-	 * The default constructor.
-	 */
-	public Parameter() {
-	}
-	
-	/**
-	 * This constructor initializes the declaration (local name) and bound
-	 * name.
-	 * 
-	 * @param localName The local name
-	 * @param boundName The bound name
-	 */
-	public Parameter(String localName) {
-		m_localName = localName;
-	}
-	
-	public Parameter(Parameter p) {
-		m_localName = p.m_localName;
-	}
-	
-	/**
-	 * This method sets the local name.
-	 * 
-	 * @param localName The local name
-	 */
-	public void setName(String localName) {
-		m_localName = localName;
-	}
-	
-	/**
-	 * This method returns the local name.
-	 * 
-	 * @return The local name
-	 */
-	public String getName() {
-		return(m_localName);
-	}
+    /**
+     * The default constructor.
+     */
+    public Parameter() {
+    }
+    
+    /**
+     * This constructor initializes the declaration (local name) and bound
+     * name.
+     * 
+     * @param localName The local name
+     */
+    public Parameter(String localName) {
+        _localName = localName;
+    }
+    
+    /**
+     * This is the copy constructor.
+     * 
+     * @param p The parameter to copy
+     */
+    public Parameter(Parameter p) {
+        _localName = p._localName;
+    }
+    
+    /**
+     * This method sets the local name.
+     * 
+     * @param localName The local name
+     */
+    public void setName(String localName) {
+        _localName = localName;
+    }
+    
+    /**
+     * This method returns the local name.
+     * 
+     * @return The local name
+     */
+    public String getName() {
+        return (_localName);
+    }
 
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-	}
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+    }
 }

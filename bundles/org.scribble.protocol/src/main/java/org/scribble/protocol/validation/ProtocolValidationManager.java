@@ -24,32 +24,32 @@ import org.scribble.protocol.ProtocolContext;
  *
  */
 public interface ProtocolValidationManager {
-	
-	/**
-	 * This method invokes the validation of the supplied
-	 * model against the registered validators. Any issues
-	 * found during validation will be reported to the
-	 * supplied journal.
-	 * 
-	 * @param context The protocol context
-	 * @param model The protocol model
-	 * @param journal The journal
-	 */
-	public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
-				org.scribble.common.logging.Journal journal);
-	
-	/**
-	 * This method returns the list of protocol validators.
-	 * 
-	 * @return The list of validators
-	 */
-	public java.util.List<ProtocolValidator> getValidators();
-	
-	/**
-	 * This method sets the list of protocol validators.
-	 * 
-	 * @param validators The list of validators
-	 */
-	public void setValidators(java.util.List<ProtocolValidator> validators);
-	
+    
+    /**
+     * This method invokes the validation of the supplied
+     * model against the registered validators. Any issues
+     * found during validation will be reported to the
+     * supplied journal.
+     * 
+     * @param context The protocol context
+     * @param model The protocol model
+     * @param journal The journal
+     */
+    public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
+                org.scribble.common.logging.Journal journal);
+    
+    /**
+     * This method returns the list of protocol validators.
+     * 
+     * @return The list of validators
+     */
+    public java.util.List<ProtocolValidator> getValidators();
+    
+    /**
+     * This method sets the list of protocol validators.
+     * 
+     * @param validators The list of validators
+     */
+    public void setValidators(java.util.List<ProtocolValidator> validators);
+    
 }

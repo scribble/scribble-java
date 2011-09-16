@@ -22,34 +22,34 @@ import org.scribble.protocol.model.*;
 
 public class UseComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Inline m=(Inline)arg0;
-		Inline e=(Inline)arg1;
-		
-		if (m.getProtocolReference() != null && e.getProtocolReference() != null) {
-			ProtocolReferenceComparator prcomp=(ProtocolReferenceComparator)
-					ComparatorUtil.getComparator(ProtocolReference.class);
-			
-			if (prcomp.compare(m.getProtocolReference(), e.getProtocolReference()) != 0) {
-				return(1);
-			}
-		} else if (m.getProtocolReference() != null || e.getProtocolReference() != null) {
-			return(1);
-		}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Inline m=(Inline)arg0;
+        Inline e=(Inline)arg1;
+        
+        if (m.getProtocolReference() != null && e.getProtocolReference() != null) {
+            ProtocolReferenceComparator prcomp=(ProtocolReferenceComparator)
+                    ComparatorUtil.getComparator(ProtocolReference.class);
+            
+            if (prcomp.compare(m.getProtocolReference(), e.getProtocolReference()) != 0) {
+                return (1);
+            }
+        } else if (m.getProtocolReference() != null || e.getProtocolReference() != null) {
+            return (1);
+        }
 
-		if (m.getParameters().size() != e.getParameters().size()) {
-			return(1);
-		}
-		
-		ParameterComparator dbc=(ParameterComparator)
-					ComparatorUtil.getComparator(Parameter.class);
-		
-		for (int i=0; i < m.getParameters().size(); i++) {
-			if (dbc.compare(m.getParameters().get(i), e.getParameters().get(i)) != 0) {
-				return(1);
-			}
-		}
-		
-		return(0);
-	}
+        if (m.getParameters().size() != e.getParameters().size()) {
+            return (1);
+        }
+        
+        ParameterComparator dbc=(ParameterComparator)
+                    ComparatorUtil.getComparator(Parameter.class);
+        
+        for (int i=0; i < m.getParameters().size(); i++) {
+            if (dbc.compare(m.getParameters().get(i), e.getParameters().get(i)) != 0) {
+                return (1);
+            }
+        }
+        
+        return (0);
+    }
 }

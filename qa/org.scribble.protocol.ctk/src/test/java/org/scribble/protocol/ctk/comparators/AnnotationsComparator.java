@@ -20,28 +20,28 @@ import org.scribble.common.model.Annotation;
 
 public class AnnotationsComparator implements Comparator<java.util.List<Annotation>> {
 
-	public int compare(java.util.List<Annotation> arg0, java.util.List<Annotation> arg1) {
-		java.util.List<Annotation> m=(java.util.List<Annotation>)arg0;
-		java.util.List<Annotation> e=(java.util.List<Annotation>)arg1;
-		
-		if (m == null && e == null) {
-			return(0);
-		}
-		
-		if (m == null || e == null){
-			return(1);
-		}
-		
-		if (m.size() != e.size()) {
-			return(2);
-		}
-		
-		for (int i=0; i < m.size(); i++) {
-			if (m.get(i).toString().equals(e.get(i).toString()) == false) {
-				return(1);
-			}
-		}
-		
-		return(0);
-	}
+    public int compare(java.util.List<Annotation> arg0, java.util.List<Annotation> arg1) {
+        java.util.List<Annotation> m=(java.util.List<Annotation>)arg0;
+        java.util.List<Annotation> e=(java.util.List<Annotation>)arg1;
+        
+        if (m == null && e == null) {
+            return (0);
+        }
+        
+        if (m == null || e == null){
+            return (1);
+        }
+        
+        if (m.size() != e.size()) {
+            return (2);
+        }
+        
+        for (int i=0; i < m.size(); i++) {
+            if (m.get(i).toString().equals(e.get(i).toString()) == false) {
+                return (1);
+            }
+        }
+        
+        return (0);
+    }
 }

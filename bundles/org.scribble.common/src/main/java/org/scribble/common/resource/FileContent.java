@@ -24,76 +24,76 @@ import javax.xml.namespace.QName;
  */
 public class FileContent implements Content {
 
-	private java.io.File m_file=null;
-	
-	/**
-	 * This construct is initialized with the file.
-	 * 
-	 * @param file The file
-	 */
-	public FileContent(java.io.File file) {
-		m_file = file;
-	}
-	
-	/**
-	 * This method returns the content name if available.
-	 * 
-	 * @return The optional content name
-	 */
-	public String getName() {
-		return(m_file.getName());
-	}
-	
-	/**
-	 * This method returns the input stream for accessing the content.
-	 * 
-	 * @return The input stream
-	 * @throws IOException Failed to get input stream
-	 */
-	public java.io.InputStream getInputStream() throws java.io.IOException {
-		return(new java.io.FileInputStream(m_file));
-	}
-	
-	/**
-	 * This method determines whether the content has an extension
-	 * of the specified type.
-	 * 
-	 * @param ext The extension
-	 * @return Whether the content has the specified extension
-	 */
-	public boolean hasExtension(String ext) {
-		int index=m_file.getName().lastIndexOf('.');
-		String sourceType=null;
-		
-		if (index != -1) {
-			sourceType = m_file.getName().substring(index+1);
-		}
+    private java.io.File _file=null;
+    
+    /**
+     * This construct is initialized with the file.
+     * 
+     * @param file The file
+     */
+    public FileContent(java.io.File file) {
+        _file = file;
+    }
+    
+    /**
+     * This method returns the content name if available.
+     * 
+     * @return The optional content name
+     */
+    public String getName() {
+        return (_file.getName());
+    }
+    
+    /**
+     * This method returns the input stream for accessing the content.
+     * 
+     * @return The input stream
+     * @throws java.io.IOException Failed to get input stream
+     */
+    public java.io.InputStream getInputStream() throws java.io.IOException {
+        return (new java.io.FileInputStream(_file));
+    }
+    
+    /**
+     * This method determines whether the content has an extension
+     * of the specified type.
+     * 
+     * @param ext The extension
+     * @return Whether the content has the specified extension
+     */
+    public boolean hasExtension(String ext) {
+        int index=_file.getName().lastIndexOf('.');
+        String sourceType=null;
+        
+        if (index != -1) {
+            sourceType = _file.getName().substring(index+1);
+        }
 
-		return(sourceType.equals(ext));
-	}
-	
-	/**
-	 * This method determines whether the content is an XSD type of
-	 * the value specified.
-	 * 
-	 * @param xsdType The XSD type name
-	 * @return Whether the content is an XSD type of the specified name
-	 */
-	public boolean isXSDType(QName xsdType) {
-		// TODO: Implement method
-		throw new UnsupportedOperationException();
-	}
+        return (sourceType.equals(ext));
+    }
+    
+    /**
+     * This method determines whether the content is an XSD type of
+     * the value specified.
+     * 
+     * @param xsdType The XSD type name
+     * @return Whether the content is an XSD type of the specified name
+     */
+    public boolean isXSDType(QName xsdType) {
+        // TODO: Implement method
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 * This method determines whether the content is an XSD element of
-	 * the value specified.
-	 * 
-	 * @param xsdElem The XSD element name
-	 * @return Whether the content is an XSD element of the specified name
-	 */
-	public boolean isXSDElement(QName xsdElem) {
-		// TODO: Implement method
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * This method determines whether the content is an XSD element of
+     * the value specified.
+     * 
+     * @param xsdElem The XSD element name
+     * @return Whether the content is an XSD element of the specified name
+     */
+    public boolean isXSDElement(QName xsdElem) {
+        // TODO: Implement method
+        throw new UnsupportedOperationException();
+    }
 
 }

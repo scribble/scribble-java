@@ -20,30 +20,30 @@ package org.scribble.protocol.export;
  *
  */
 public interface ProtocolExportManager {
-	
-	/**
-	 * This method returns the protocol exporter associated with
-	 * the supplied id.
-	 * 
-	 * @param id The id
-	 * @return The exporter, or null if not found
-	 */
-	public ProtocolExporter getExporter(String id);
-	
-	/**
-	 * This method returns the list of exporters registered
-	 * with the manager.
-	 * 
-	 * @return The list of exporters
-	 */
-	public java.util.List<ProtocolExporter> getExporters();
-	
-	/**
-	 * This method sets the list of exporters registered
-	 * with the manager.
-	 * 
-	 * @param exporters The list of exporters
-	 */
-	public void setExporters(java.util.List<ProtocolExporter> exporters);
-	
+    
+    /**
+     * This method returns the protocol exporter associated with
+     * the supplied id.
+     * 
+     * @param id The id
+     * @return The exporter, or null if not found
+     */
+    public ProtocolExporter getExporter(String id);
+    
+    /**
+     * This method returns the list of exporters registered
+     * with the manager.
+     * 
+     * @return The list of exporters
+     */
+    public java.util.List<ProtocolExporter> getExporters();
+    
+    /**
+     * This method sets the list of exporters registered
+     * with the manager.
+     * 
+     * @param exporters The list of exporters
+     */
+    public void setExporters(java.util.List<ProtocolExporter> exporters);
+    
 }

@@ -20,7 +20,7 @@ import org.scribble.protocol.model.*;
 
 public class ModelComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        return (0);
+    }
 }

@@ -17,7 +17,7 @@ package org.scribble.protocol.validation;
 
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.ProtocolContext;
-import org.scribble.protocol.model.*;
+import org.scribble.protocol.model.ModelObject;
 
 //import java.util.logging.*;
 
@@ -28,61 +28,95 @@ import org.scribble.protocol.model.*;
  * validating a protocol model.
  */
 public class ProtocolComponentValidator implements ProtocolValidator {
-	
-	private java.util.List<ProtocolComponentValidatorRule> m_rules=null;
+    
+    private java.util.List<ProtocolComponentValidatorRule> _rules=null;
 
-	public ProtocolComponentValidator() {
-	}
-	
-	public java.util.List<ProtocolComponentValidatorRule> getRules() {
-		if (m_rules == null) {
-			m_rules = new java.util.ArrayList<ProtocolComponentValidatorRule>();
-		}
-		
-		return(m_rules);
-	}
-	
-	public void setRules(java.util.List<ProtocolComponentValidatorRule> rules) {
-		m_rules = rules;
-	}
-	
-	public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
-						Journal logger) {
-		
-		model.visit(new ValidatingVisitor(context, logger));
-	}
+    /**
+     * The default constructor.
+     */
+    public ProtocolComponentValidator() {
+    }
+    
+    /**
+     * This method returns the validator rules.
+     * 
+     * @return The rules
+     */
+    public java.util.List<ProtocolComponentValidatorRule> getRules() {
+        if (_rules == null) {
+            _rules = new java.util.ArrayList<ProtocolComponentValidatorRule>();
+        }
+        
+        return (_rules);
+    }
+    
+    /**
+     * This method sets the validator rules.
+     * 
+     * @param rules The rules
+     */
+    public void setRules(java.util.List<ProtocolComponentValidatorRule> rules) {
+        _rules = rules;
+    }
+    
+    /**
+     * This method invokes the validation of the supplied
+     * model against the registered validators. Any issues
+     * found during validation will be reported to the
+     * supplied journal.
+     * 
+     * @param context The protocol context
+     * @param model The protocol model
+     * @param journal The journal
+     */
+    public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
+                        Journal journal) {
+        
+        model.visit(new ValidatingVisitor(context, journal));
+    }
 
-	public class ValidatingVisitor extends org.scribble.protocol.model.AbstractModelObjectVisitor {
-		
-		private ProtocolContext m_context=null;
-		private Journal m_logger=null;
-		
-		public ValidatingVisitor(ProtocolContext context, Journal logger) {
-			m_context = context;
-			m_logger = logger;
-		}
-		
-		/**
-		 * This method can be implemented to process all of the model
-		 * objects within a particular protocol model.
-		 * 
-		 * @param obj The model object
-		 */
-		public boolean process(ModelObject obj) {
-			
-			// Iterate through rules processing those that support the supplied
-			// model object
-			java.util.Iterator<ProtocolComponentValidatorRule> iter=getRules().iterator();
-			
-			while (iter.hasNext()) {
-				ProtocolComponentValidatorRule rule=iter.next();
-				
-				if (rule.isSupported(obj)) {
-					rule.validate(m_context, obj, m_logger);
-				}
-			}
-			
-			return(true);
-		}
-	}
+    /**
+     * This class traverses the protocol model to validate the individual constructs.
+     *
+     */
+    public class ValidatingVisitor extends org.scribble.protocol.model.AbstractModelObjectVisitor {
+        
+        private ProtocolContext _context=null;
+        private Journal _logger=null;
+        
+        /**
+         * This is the constructor for the vaidating visitor.
+         * 
+         * @param context The protocol context
+         * @param logger The journal
+         */
+        public ValidatingVisitor(ProtocolContext context, Journal logger) {
+            _context = context;
+            _logger = logger;
+        }
+        
+        /**
+         * This method can be implemented to process all of the model
+         * objects within a particular protocol model.
+         * 
+         * @param obj The model object
+         * @return Whether to process the contents
+         */
+        public boolean process(ModelObject obj) {
+            
+            // Iterate through rules processing those that support the supplied
+            // model object
+            java.util.Iterator<ProtocolComponentValidatorRule> iter=getRules().iterator();
+            
+            while (iter.hasNext()) {
+                ProtocolComponentValidatorRule rule=iter.next();
+                
+                if (rule.isSupported(obj)) {
+                    rule.validate(_context, obj, _logger);
+                }
+            }
+            
+            return (true);
+        }
+    }
 }

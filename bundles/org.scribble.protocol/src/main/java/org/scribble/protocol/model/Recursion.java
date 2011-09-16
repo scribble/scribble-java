@@ -21,62 +21,66 @@ package org.scribble.protocol.model;
  */
 public class Recursion extends Activity {
 
-    private String m_label=null;
+    private String _label=null;
 
-	/**
-	 * This is the default constructor.
-	 * 
-	 */
-	public Recursion() {
-	}
-	
-	/**
-	 * This method returns the label associated with the recursion construct.
-	 * 
-	 * @return The label
-	 */
-	public String getLabel() {
-		return(m_label);
-	}
-	
-	/**
-	 * This method sets the label associated with the recursion construct.
-	 * 
-	 * @param label The label
-	 */
-	public void setLabel(String label) {
-		m_label = label;
-	}
-		
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.accept(this);
-	}
+    /**
+     * This is the default constructor.
+     * 
+     */
+    public Recursion() {
+    }
+    
+    /**
+     * This method returns the label associated with the recursion construct.
+     * 
+     * @return The label
+     */
+    public String getLabel() {
+        return (_label);
+    }
+    
+    /**
+     * This method sets the label associated with the recursion construct.
+     * 
+     * @param label The label
+     */
+    public void setLabel(String label) {
+        _label = label;
+    }
+        
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.accept(this);
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Recursion that = (Recursion) o;
 
-        return !(m_label != null
-                ? !m_label.equals(that.m_label)
-                : that.m_label != null);
+        return !(_label != null
+                ? !_label.equals(that._label)
+                : that._label != null);
     }
 
     @Override
     public int hashCode() {
-        return m_label != null ? m_label.hashCode() : 0;
+        return _label != null ? _label.hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        return '#' + m_label;
+        return '#' + _label;
     }
 }

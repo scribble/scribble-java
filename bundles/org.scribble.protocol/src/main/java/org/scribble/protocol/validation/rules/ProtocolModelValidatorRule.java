@@ -32,56 +32,58 @@ import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
  */
 public class ProtocolModelValidatorRule implements ProtocolComponentValidatorRule {
 
-	/**
-	 * This method determines whether the rule is applicable
-	 * for the supplied model object.
-	 * 
-	 * @return Whether the rule can be used to validate the
-	 * 				supplied model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		// Check model object is ProtocolModel and is global
-		return(obj.getClass() == ProtocolModel.class &&
-				((ProtocolModel)obj).isLocated() == false);
-	}
-	
-	/**
-	 * This method validates the supplied model object.
-	 * 
-	 * @param obj The model object being validated
-	 * @param logger The logger
-	 */
-	public void validate(ProtocolContext context, ModelObject obj,
-					Journal logger) {
-		ProtocolModel elem=(ProtocolModel)obj;
-		java.util.List<Role> unprojectable=new java.util.Vector<Role>();
-		
-		for (Role role : elem.getRoles()) {
-			CachedJournal l=new CachedJournal();
-			context.getProtocolProjector().project(context, elem, role, l);
-			
-			if (l.hasErrors()) {
-				unprojectable.add(role);
-			}
-		}
-		
-		if (unprojectable.size() > 0) {
-			String roleNames="";
-			for (int i=0; i < unprojectable.size(); i++) {
-				if (i > 0) {
-					if (i == unprojectable.size()-1) {
-						roleNames += " & ";
-					} else {
-						roleNames += ", ";
-					}
-				}
-				roleNames += unprojectable.get(i).getName();
-			}
-			
-			logger.error(MessageFormat.format(
-					java.util.PropertyResourceBundle.getBundle(
-							"org.scribble.protocol.Messages").getString("_UNPROJECTABLE_ROLES"),
-							roleNames), obj.getProperties());
-		}
-	}
+    /**
+     * This method determines whether the rule is applicable
+     * for the supplied model object.
+     * 
+     * @param obj The object to check
+     * @return Whether the rule can be used to validate the
+     *                 supplied model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        // Check model object is ProtocolModel and is global
+        return (obj.getClass() == ProtocolModel.class
+                && !((ProtocolModel)obj).isLocated());
+    }
+    
+    /**
+     * This method validates the supplied model object.
+     * 
+     * @param context The protocol context
+     * @param obj The model object being validated
+     * @param logger The logger
+     */
+    public void validate(ProtocolContext context, ModelObject obj,
+                    Journal logger) {
+        ProtocolModel elem=(ProtocolModel)obj;
+        java.util.List<Role> unprojectable=new java.util.Vector<Role>();
+        
+        for (Role role : elem.getRoles()) {
+            CachedJournal l=new CachedJournal();
+            context.getProtocolProjector().project(context, elem, role, l);
+            
+            if (l.hasErrors()) {
+                unprojectable.add(role);
+            }
+        }
+        
+        if (unprojectable.size() > 0) {
+            String roleNames="";
+            for (int i=0; i < unprojectable.size(); i++) {
+                if (i > 0) {
+                    if (i == unprojectable.size()-1) {
+                        roleNames += " & ";
+                    } else {
+                        roleNames += ", ";
+                    }
+                }
+                roleNames += unprojectable.get(i).getName();
+            }
+            
+            logger.error(MessageFormat.format(
+                    java.util.PropertyResourceBundle.getBundle(
+                            "org.scribble.protocol.Messages").getString("_UNPROJECTABLE_ROLES"),
+                            roleNames), obj.getProperties());
+        }
+    }
 }

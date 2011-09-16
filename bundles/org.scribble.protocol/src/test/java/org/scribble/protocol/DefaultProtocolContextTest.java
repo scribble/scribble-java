@@ -30,143 +30,147 @@ import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.parser.DefaultProtocolParserManager;
 import org.scribble.protocol.parser.ProtocolParserManager;
 
+/**
+ * Test for DefaultProtocolContext.
+ *
+ */
 public class DefaultProtocolContextTest {
 
-	private static final String CONTENT_PROPERTY = "content";
+    private static final String CONTENT_PROPERTY = "content";
 
-	@org.junit.Test
-	public void testGetProtocolModelSameFolder() {
-		String refFile="Ref1.spr";
-		
-		java.net.URL url=ClassLoader.getSystemResource("context");
-		
-		if (url == null) {
-			fail("Couldn't find base directory");
-		}
-		
-		ProtocolParserManager parserManager=new TestProtocolParserManager();
-		
-		DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
-							new DefaultResourceLocator(new java.io.File(url.getFile())));
-		
-		ProtocolImportList imports=new ProtocolImportList();
-		
-		ProtocolImport pi=new ProtocolImport();
-		pi.setName("Ref1");
-		pi.setLocation(refFile);
-		
-		imports.getProtocolImports().add(pi);
-		
-		CachedJournal journal=new CachedJournal();
-		
-		ProtocolModel pm=context.getProtocolModel(pi, journal);
-		
-		if (journal.hasErrors()) {
-			fail("Journal has reported errors");
-		}
-		
-		if (pm == null) {
-			fail("Protocol model not returned");
-		}
-		
-		if (pm.getProperties().get(CONTENT_PROPERTY).equals(pi.getName()) == false) {
-			fail("Protocol model content property not as expected '"+pm.getProperties().get(CONTENT_PROPERTY)+
-					"', expecting: "+pi.getName());
-		}
-	}
-	
-	@org.junit.Test
-	public void testGetProtocolModelRelativeFolder() {
-		String refFile="../subref/Ref2.spr";
-		
-		java.net.URL url=ClassLoader.getSystemResource("context/submain");
-		
-		if (url == null) {
-			fail("Couldn't find base directory");
-		}
-		
-		ProtocolParserManager parserManager=new TestProtocolParserManager();
-		
-		DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
-							new DefaultResourceLocator(new java.io.File(url.getFile())));
-		
-		ProtocolImportList imports=new ProtocolImportList();
-		
-		ProtocolImport pi=new ProtocolImport();
-		pi.setName("Ref2");
-		pi.setLocation(refFile);
-		
-		imports.getProtocolImports().add(pi);
-		
-		CachedJournal journal=new CachedJournal();
-		
-		ProtocolModel pm=context.getProtocolModel(pi, journal);
-		
-		if (journal.hasErrors()) {
-			fail("Journal has reported errors");
-		}
-		
-		if (pm == null) {
-			fail("Protocol model not returned");
-		}
-		
-		if (pm.getProperties().get(CONTENT_PROPERTY).equals(pi.getName()) == false) {
-			fail("Protocol model content property not as expected '"+pm.getProperties().get(CONTENT_PROPERTY)+
-					"', expecting: "+pi.getName());
-		}
-	}
+    @org.junit.Test
+    public void testGetProtocolModelSameFolder() {
+        String refFile="Ref1.spr";
+        
+        java.net.URL url=ClassLoader.getSystemResource("context");
+        
+        if (url == null) {
+            fail("Couldn't find base directory");
+        }
+        
+        ProtocolParserManager parserManager=new TestProtocolParserManager();
+        
+        DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
+                            new DefaultResourceLocator(new java.io.File(url.getFile())));
+        
+        ProtocolImportList imports=new ProtocolImportList();
+        
+        ProtocolImport pi=new ProtocolImport();
+        pi.setName("Ref1");
+        pi.setLocation(refFile);
+        
+        imports.getProtocolImports().add(pi);
+        
+        CachedJournal journal=new CachedJournal();
+        
+        ProtocolModel pm=context.getProtocolModel(pi, journal);
+        
+        if (journal.hasErrors()) {
+            fail("Journal has reported errors");
+        }
+        
+        if (pm == null) {
+            fail("Protocol model not returned");
+        }
+        
+        if (pm.getProperties().get(CONTENT_PROPERTY).equals(pi.getName()) == false) {
+            fail("Protocol model content property not as expected '"+pm.getProperties().get(CONTENT_PROPERTY)+
+                    "', expecting: "+pi.getName());
+        }
+    }
+    
+    @org.junit.Test
+    public void testGetProtocolModelRelativeFolder() {
+        String refFile="../subref/Ref2.spr";
+        
+        java.net.URL url=ClassLoader.getSystemResource("context/submain");
+        
+        if (url == null) {
+            fail("Couldn't find base directory");
+        }
+        
+        ProtocolParserManager parserManager=new TestProtocolParserManager();
+        
+        DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
+                            new DefaultResourceLocator(new java.io.File(url.getFile())));
+        
+        ProtocolImportList imports=new ProtocolImportList();
+        
+        ProtocolImport pi=new ProtocolImport();
+        pi.setName("Ref2");
+        pi.setLocation(refFile);
+        
+        imports.getProtocolImports().add(pi);
+        
+        CachedJournal journal=new CachedJournal();
+        
+        ProtocolModel pm=context.getProtocolModel(pi, journal);
+        
+        if (journal.hasErrors()) {
+            fail("Journal has reported errors");
+        }
+        
+        if (pm == null) {
+            fail("Protocol model not returned");
+        }
+        
+        if (pm.getProperties().get(CONTENT_PROPERTY).equals(pi.getName()) == false) {
+            fail("Protocol model content property not as expected '"+pm.getProperties().get(CONTENT_PROPERTY)+
+                    "', expecting: "+pi.getName());
+        }
+    }
 
-	@org.junit.Test
-	@org.junit.Ignore
-	public void testGetProtocolModelScribbleURL() {
-		ProtocolParserManager parserManager=new TestProtocolParserManager();
-		
-		DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
-							new DefaultResourceLocator(null));
-		
-		ProtocolImportList imports=new ProtocolImportList();
-		
-		ProtocolImport pi=new ProtocolImport();
-		pi.setName("Ref1");
-		pi.setLocation("http://www.scribble.org");
-		
-		imports.getProtocolImports().add(pi);
-		
-		CachedJournal journal=new CachedJournal();
-		
-		ProtocolModel pm=context.getProtocolModel(pi, journal);
-		
-		if (journal.hasErrors()) {
-			fail("Journal has reported errors");
-		}
-		
-		if (pm == null) {
-			fail("Protocol model not returned");
-		}
-		
-		if (((String)pm.getProperties().get(CONTENT_PROPERTY)).
-						contains("Scribble - JBoss Community") == false) {
-			fail("Protocol model content property did not contain scribble home page");
-		}
-	}
-	
-	public class TestProtocolParserManager extends DefaultProtocolParserManager {
+    @org.junit.Test
+    @org.junit.Ignore
+    public void testGetProtocolModelScribbleURL() {
+        ProtocolParserManager parserManager=new TestProtocolParserManager();
+        
+        DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
+                            new DefaultResourceLocator(null));
+        
+        ProtocolImportList imports=new ProtocolImportList();
+        
+        ProtocolImport pi=new ProtocolImport();
+        pi.setName("Ref1");
+        pi.setLocation("http://www.scribble.org");
+        
+        imports.getProtocolImports().add(pi);
+        
+        CachedJournal journal=new CachedJournal();
+        
+        ProtocolModel pm=context.getProtocolModel(pi, journal);
+        
+        if (journal.hasErrors()) {
+            fail("Journal has reported errors");
+        }
+        
+        if (pm == null) {
+            fail("Protocol model not returned");
+        }
+        
+        if (((String)pm.getProperties().get(CONTENT_PROPERTY)).
+                        contains("Scribble - JBoss Community") == false) {
+            fail("Protocol model content property did not contain scribble home page");
+        }
+    }
+    
+    public class TestProtocolParserManager extends DefaultProtocolParserManager {
 
-		@Override
-		public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
-							throws IOException {
-			java.io.InputStream is=content.getInputStream();
-			byte[] b=new byte[is.available()];
-			
-			is.read(b);
-			
-			is.close();
-			
-			ProtocolModel ret=new ProtocolModel();
-			ret.getProperties().put(CONTENT_PROPERTY, new String(b));
-			
-			return(ret);
-		}
-		
-	}
+        @Override
+        public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+                            throws IOException {
+            java.io.InputStream is=content.getInputStream();
+            byte[] b=new byte[is.available()];
+            
+            is.read(b);
+            
+            is.close();
+            
+            ProtocolModel ret=new ProtocolModel();
+            ret.getProperties().put(CONTENT_PROPERTY, new String(b));
+            
+            return (ret);
+        }
+        
+    }
 }

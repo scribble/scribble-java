@@ -22,63 +22,63 @@ import org.scribble.protocol.model.*;
 
 public class RunUtilTest {
 
-	private static final String SUBPROTOCOL = "subprotocol";
+    private static final String SUBPROTOCOL = "subprotocol";
 
-	@org.junit.Test
-	public void testGetInnerProtocol() {
-		ProtocolModel pm=new ProtocolModel();
-		
-		Protocol p=new Protocol();
-		pm.setProtocol(p);
-		
-		Run act=new Run();
-		ProtocolReference pref=new ProtocolReference();
-		pref.setName(SUBPROTOCOL);
-		act.setProtocolReference(pref);
-		
-		p.getBlock().add(act);
+    @org.junit.Test
+    public void testGetInnerProtocol() {
+        ProtocolModel pm=new ProtocolModel();
+        
+        Protocol p=new Protocol();
+        pm.setProtocol(p);
+        
+        Run act=new Run();
+        ProtocolReference pref=new ProtocolReference();
+        pref.setName(SUBPROTOCOL);
+        act.setProtocolReference(pref);
+        
+        p.getBlock().add(act);
 
-		Protocol subp=new Protocol();
-		subp.setName(SUBPROTOCOL);
-		
-		p.getNestedProtocols().add(subp);
-		
-		Protocol result=RunUtil.getInnerProtocol(p, pref);
-		
-		if (result != subp) {
-			fail("Inner protocol not returned");
-		}
-	}
+        Protocol subp=new Protocol();
+        subp.setName(SUBPROTOCOL);
+        
+        p.getNestedProtocols().add(subp);
+        
+        Protocol result=RunUtil.getInnerProtocol(p, pref);
+        
+        if (result != subp) {
+            fail("Inner protocol not returned");
+        }
+    }
 
-	@org.junit.Test
-	public void testGetInnerProtocolLocated() {
-		ProtocolModel pm=new ProtocolModel();
-		
-		Protocol p=new Protocol();
-		pm.setProtocol(p);
-		
-		Role p1=new Role();
-		p1.setName("p1");
-		p.setLocatedRole(p1);
-		
-		Run act=new Run();
-		ProtocolReference pref=new ProtocolReference();
-		pref.setName(SUBPROTOCOL);
-		pref.setRole(p1);
-		act.setProtocolReference(pref);
-		
-		p.getBlock().add(act);
+    @org.junit.Test
+    public void testGetInnerProtocolLocated() {
+        ProtocolModel pm=new ProtocolModel();
+        
+        Protocol p=new Protocol();
+        pm.setProtocol(p);
+        
+        Role p1=new Role();
+        p1.setName("p1");
+        p.setLocatedRole(p1);
+        
+        Run act=new Run();
+        ProtocolReference pref=new ProtocolReference();
+        pref.setName(SUBPROTOCOL);
+        pref.setRole(p1);
+        act.setProtocolReference(pref);
+        
+        p.getBlock().add(act);
 
-		Protocol subp=new Protocol();
-		subp.setName(SUBPROTOCOL);
-		subp.setLocatedRole(p1);
-		
-		p.getNestedProtocols().add(subp);
-		
-		Protocol result=RunUtil.getInnerProtocol(p, pref);
-		
-		if (result != subp) {
-			fail("Inner protocol not returned");
-		}
-	}
+        Protocol subp=new Protocol();
+        subp.setName(SUBPROTOCOL);
+        subp.setLocatedRole(p1);
+        
+        p.getNestedProtocols().add(subp);
+        
+        Protocol result=RunUtil.getInnerProtocol(p, pref);
+        
+        if (result != subp) {
+            fail("Inner protocol not returned");
+        }
+    }
 }

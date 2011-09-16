@@ -21,20 +21,20 @@ import org.scribble.protocol.model.*;
 
 public class RecursionComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Recursion m=(Recursion)arg0;
-		Recursion e=(Recursion)arg1;
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Recursion m=(Recursion)arg0;
+        Recursion e=(Recursion)arg1;
 
-		if (m.getLabel().equals(e.getLabel()) == false) {
-			return(1);
-		}
-		
-		Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();	
-		
-		if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
-			return(1);
-		}
-		
-		return(0);
-	}
+        if (m.getLabel().equals(e.getLabel()) == false) {
+            return (1);
+        }
+        
+        Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();    
+        
+        if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

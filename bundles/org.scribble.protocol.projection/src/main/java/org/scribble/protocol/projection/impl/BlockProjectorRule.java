@@ -15,7 +15,8 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
+import org.scribble.protocol.model.Block;
+import org.scribble.protocol.model.ModelObject;
 
 /**
  * This class provides the Block implementation of the
@@ -23,25 +24,25 @@ import org.scribble.protocol.model.*;
  */
 public class BlockProjectorRule extends AbstractBlockProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == Block.class);
-	}
-	
-	/**
-	 * This method creates a new block of the appropriate
-	 * type.
-	 * 
-	 * @return The block
-	 */
-	protected Block createBlock() {
-		return(new Block());
-	}
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == Block.class);
+    }
+    
+    /**
+     * This method creates a new block of the appropriate
+     * type.
+     * 
+     * @return The block
+     */
+    protected Block createBlock() {
+        return (new Block());
+    }
 }

@@ -21,18 +21,18 @@ import org.scribble.protocol.model.*;
 
 public class ProtocolImportComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		ProtocolImport m=(ProtocolImport)arg0;
-		ProtocolImport e=(ProtocolImport)arg1;
-		
-		if (m.getName().equals(e.getName())) {
-			return(0);
-		}
-		
-		if (m.getLocation().equals(e.getLocation())) {
-			return(0);
-		}
-		
-		return(1);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        ProtocolImport m=(ProtocolImport)arg0;
+        ProtocolImport e=(ProtocolImport)arg1;
+        
+        if (m.getName().equals(e.getName())) {
+            return (0);
+        }
+        
+        if (m.getLocation().equals(e.getLocation())) {
+            return (0);
+        }
+        
+        return (1);
+    }
 }

@@ -32,36 +32,38 @@ import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
  */
 public class RepeatValidatorRule implements ProtocolComponentValidatorRule {
 
-	/**
-	 * This method determines whether the rule is applicable
-	 * for the supplied model object.
-	 * 
-	 * @return Whether the rule can be used to validate the
-	 * 				supplied model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == org.scribble.protocol.model.Repeat.class);
-	}
-	
-	/**
-	 * This method validates the supplied model object.
-	 * 
-	 * @param obj The model object being validated
-	 * @param logger The logger
-	 */
-	public void validate(ProtocolContext context, ModelObject obj,
-					Journal logger) {
-		Repeat elem=(Repeat)obj;
-		
-		// Check that the role has been defined in scope
-		java.util.Set<Role> roles=RoleUtil.getRolesInScope(elem);
-		
-		for (Role role : elem.getRoles()) {
-			if (roles.contains(role) == false) {
-				logger.error(MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.Messages").getString("_UNKNOWN_ROLE"),
-						role.getName()), obj.getProperties());
-			}
-		}
-	}
+    /**
+     * This method determines whether the rule is applicable
+     * for the supplied model object.
+     * 
+     * @param obj The object to check
+     * @return Whether the rule can be used to validate the
+     *                 supplied model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == org.scribble.protocol.model.Repeat.class);
+    }
+    
+    /**
+     * This method validates the supplied model object.
+     * 
+     * @param context The protocol context
+     * @param obj The model object being validated
+     * @param logger The logger
+     */
+    public void validate(ProtocolContext context, ModelObject obj,
+                    Journal logger) {
+        Repeat elem=(Repeat)obj;
+        
+        // Check that the role has been defined in scope
+        java.util.Set<Role> roles=RoleUtil.getRolesInScope(elem);
+        
+        for (Role role : elem.getRoles()) {
+            if (!roles.contains(role)) {
+                logger.error(MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.Messages").getString("_UNKNOWN_ROLE"),
+                        role.getName()), obj.getProperties());
+            }
+        }
+    }
 }

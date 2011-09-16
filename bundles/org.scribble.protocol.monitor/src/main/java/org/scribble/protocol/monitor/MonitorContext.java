@@ -25,21 +25,21 @@ import org.scribble.protocol.monitor.model.MessageNode;
  */
 public interface MonitorContext {
 
-	/**
-	 * This method determines whether the supplied message is valid
-	 * in respect of the supplied message node.
-	 * 
-	 * If the message is not relevant, then a Result.NOT_HANDLED
-	 * should be returned. Otherwise Result.VALID, Result.INVALID
-	 * or a specific instance of Result should be returned to provide
-	 * the relevant information from the monitoring environment's
-	 * validation.
-	 * 
-	 * @param session The session
-	 * @param mesgNode The message node
-	 * @param mesg The message to be validated
-	 * @return The result
-	 */
-	public Result validate(Session session, MessageNode mesgNode, Message mesg);
-	
+    /**
+     * This method determines whether the supplied message is valid
+     * in respect of the supplied message node.
+     * 
+     * If the message is not relevant, then a Result.NOT_HANDLED
+     * should be returned. Otherwise Result.VALID, Result.INVALID
+     * or a specific instance of Result should be returned to provide
+     * the relevant information from the monitoring environment's
+     * validation.
+     * 
+     * @param session The session
+     * @param mesgNode The message node
+     * @param mesg The message to be validated
+     * @return The result
+     */
+    public Result validate(Session session, MessageNode mesgNode, Message mesg);
+    
 }

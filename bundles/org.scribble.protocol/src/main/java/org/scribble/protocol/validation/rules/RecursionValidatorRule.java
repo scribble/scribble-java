@@ -32,46 +32,48 @@ import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
  */
 public class RecursionValidatorRule implements ProtocolComponentValidatorRule {
 
-	/**
-	 * This method determines whether the rule is applicable
-	 * for the supplied model object.
-	 * 
-	 * @return Whether the rule can be used to validate the
-	 * 				supplied model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == org.scribble.protocol.model.Recursion.class);
-	}
-	
-	/**
-	 * This method validates the supplied model object.
-	 * 
-	 * @param obj The model object being validated
-	 * @param logger The logger
-	 */
-	public void validate(ProtocolContext context, ModelObject obj,
-					Journal logger) {
-		Recursion elem=(Recursion)obj;
-		ModelObject act=elem.getParent();
-		
-		if (elem.getLabel() != null) {
-			boolean f_found=false;
-			
-			while (f_found == false && act != null && (act instanceof Protocol) == false) {
-				
-				if (act instanceof RecBlock && ((RecBlock)act).getLabel() != null &&
-						((RecBlock)act).getLabel().equals(elem.getLabel())) {
-					f_found = true;
-				}
-				
-				act = act.getParent();
-			}
-			
-			if (f_found == false) {
-				logger.error(MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.Messages").getString("_NO_ENCLOSING_RECUR"),
-						elem.getLabel()), obj.getProperties());				
-			}
-		}
-	}
+    /**
+     * This method determines whether the rule is applicable
+     * for the supplied model object.
+     * 
+     * @param obj The object to check
+     * @return Whether the rule can be used to validate the
+     *                 supplied model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == org.scribble.protocol.model.Recursion.class);
+    }
+    
+    /**
+     * This method validates the supplied model object.
+     * 
+     * @param context The protocol context
+     * @param obj The model object being validated
+     * @param logger The logger
+     */
+    public void validate(ProtocolContext context, ModelObject obj,
+                    Journal logger) {
+        Recursion elem=(Recursion)obj;
+        ModelObject act=elem.getParent();
+        
+        if (elem.getLabel() != null) {
+            boolean found=false;
+            
+            while (!found && act != null && !(act instanceof Protocol)) {
+                
+                if (act instanceof RecBlock && ((RecBlock)act).getLabel() != null
+                        && ((RecBlock)act).getLabel().equals(elem.getLabel())) {
+                    found = true;
+                }
+                
+                act = act.getParent();
+            }
+            
+            if (!found) {
+                logger.error(MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.Messages").getString("_NO_ENCLOSING_RECUR"),
+                        elem.getLabel()), obj.getProperties());                
+            }
+        }
+    }
 }

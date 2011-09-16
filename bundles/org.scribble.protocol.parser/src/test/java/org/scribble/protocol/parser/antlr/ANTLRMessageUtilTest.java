@@ -21,65 +21,65 @@ import org.scribble.common.logging.Journal;
 
 public class ANTLRMessageUtilTest {
 
-	@org.junit.Test
-	public void testGetMessageText() {
-		String message="Hello World";
-		String text="line 1:1 "+message;
-		
-		String result=ANTLRMessageUtil.getMessageText(text);
-		
-		if (result == null) {
-			fail("Result is null");
-		}
-		
-		if (result.equals(message) == false) {
-			fail("Message mismatch, '"+result+"' against expected '"+message+"'");
-		}
-	}
-	
-	@org.junit.Test
-	public void testGetProperties() {
-		String first="namespace x.y.z;\r\nimport a.b.c;\r\n\r\nprotocol Test {\r\n\t";
-		String second="roleX A, B;\r\n;\r\n";
-		String document=first+second;
-		
-		String message="Don't understand roleX";
-		String line="5";
-		String col="1";
-		String text="line "+line+":"+col+" "+message;
-		
-		java.util.Map<String,Object> result=ANTLRMessageUtil.getProperties(text, document);
-		
-		if (result == null) {
-			fail("Result is null");
-		}
+    @org.junit.Test
+    public void testGetMessageText() {
+        String message="Hello World";
+        String text="line 1:1 "+message;
+        
+        String result=ANTLRMessageUtil.getMessageText(text);
+        
+        if (result == null) {
+            fail("Result is null");
+        }
+        
+        if (result.equals(message) == false) {
+            fail("Message mismatch, '"+result+"' against expected '"+message+"'");
+        }
+    }
+    
+    @org.junit.Test
+    public void testGetProperties() {
+        String first="namespace x.y.z;\r\nimport a.b.c;\r\n\r\nprotocol Test {\r\n\t";
+        String second="roleX A, B;\r\n;\r\n";
+        String document=first+second;
+        
+        String message="Don't understand roleX";
+        String line="5";
+        String col="1";
+        String text="line "+line+":"+col+" "+message;
+        
+        java.util.Map<String,Object> result=ANTLRMessageUtil.getProperties(text, document);
+        
+        if (result == null) {
+            fail("Result is null");
+        }
 
-		Integer lineProp=(Integer)result.get(Journal.START_LINE);
-		Integer colProp=(Integer)result.get(Journal.START_COLUMN);
-		Integer posProp=(Integer)result.get(Journal.START_POSITION);
-		
-		if (lineProp == null) {
-			fail("Line not found");
-		}
-		
-		if (lineProp.intValue() != 5) {
-			fail("Line is not 5: "+lineProp);
-		}
-		
-		if (colProp == null) {
-			fail("Column not found");
-		}
-		
-		if (colProp.intValue() != 1) {
-			fail("Column is not 1: "+colProp);
-		}
-		
-		if (posProp == null) {
-			fail("Position not found");
-		}
-		
-		if (posProp.intValue() != first.length()) {
-			fail("Position is not "+first.length()+": "+posProp);
-		}
-	}	
+        Integer lineProp=(Integer)result.get(Journal.START_LINE);
+        Integer colProp=(Integer)result.get(Journal.START_COLUMN);
+        Integer posProp=(Integer)result.get(Journal.START_POSITION);
+        
+        if (lineProp == null) {
+            fail("Line not found");
+        }
+        
+        if (lineProp.intValue() != 5) {
+            fail("Line is not 5: "+lineProp);
+        }
+        
+        if (colProp == null) {
+            fail("Column not found");
+        }
+        
+        if (colProp.intValue() != 1) {
+            fail("Column is not 1: "+colProp);
+        }
+        
+        if (posProp == null) {
+            fail("Position not found");
+        }
+        
+        if (posProp.intValue() != first.length()) {
+            fail("Position is not "+first.length()+": "+posProp);
+        }
+    }    
 }

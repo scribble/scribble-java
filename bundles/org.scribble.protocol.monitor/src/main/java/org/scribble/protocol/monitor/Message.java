@@ -22,19 +22,19 @@ package org.scribble.protocol.monitor;
  */
 public interface Message {
 
-	/**
-	 * This method returns the optional operator name.
-	 * 
-	 * @return The operator, or null if not relevant
-	 */
-	public String getOperator();
-	
-	/**
-	 * This method returns the list of types associated with
-	 * with the message.
-	 * 
-	 * @return The types of the message parameters
-	 */
-	public java.util.List<String> getTypes();
-	
+    /**
+     * This method returns the optional operator name.
+     * 
+     * @return The operator, or null if not relevant
+     */
+    public String getOperator();
+    
+    /**
+     * This method returns the list of types associated with
+     * with the message.
+     * 
+     * @return The types of the message parameters
+     */
+    public java.util.List<String> getTypes();
+    
 }

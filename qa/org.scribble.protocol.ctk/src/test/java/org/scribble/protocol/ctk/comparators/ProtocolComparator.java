@@ -20,34 +20,34 @@ import org.scribble.protocol.model.*;
 
 public class ProtocolComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Protocol m=(Protocol)arg0;
-		Protocol e=(Protocol)arg1;
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Protocol m=(Protocol)arg0;
+        Protocol e=(Protocol)arg1;
 
-		if (m.getName() == null || e.getName() == null) {
-			return(1);
-		}
-		
-		if (m.getName().equals(e.getName()) == false) {
-			return(1);
-		}
-		
-		if (m.getParameterDefinitions().size() != e.getParameterDefinitions().size()) {
-			return(1);
-		}
-		
-		for (int i=0; i < m.getParameterDefinitions().size(); i++) {
-			if (m.getParameterDefinitions().get(i).equals(e.getParameterDefinitions().get(i)) == false) {
-				return(1);
-			}
-		}
+        if (m.getName() == null || e.getName() == null) {
+            return (1);
+        }
+        
+        if (m.getName().equals(e.getName()) == false) {
+            return (1);
+        }
+        
+        if (m.getParameterDefinitions().size() != e.getParameterDefinitions().size()) {
+            return (1);
+        }
+        
+        for (int i=0; i < m.getParameterDefinitions().size(); i++) {
+            if (m.getParameterDefinitions().get(i).equals(e.getParameterDefinitions().get(i)) == false) {
+                return (1);
+            }
+        }
 
-		Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();	
-		
-		if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
-			return(1);
-		}
-		
-		return(0);
-	}
+        Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();    
+        
+        if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

@@ -21,15 +21,15 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { BrokerParticipantTest.class,
-	BuyerParticipantTest.class,
-	CreditAgencyParticipantTest.class,
-	OptionalTest.class,
-	OptionalWithParticipantTest.class,
-	RepeatTest.class,
-	RepeatWithParticipantTest.class,
-	RunTest.class,
-	ParallelTest.class,
-	RunWithParticipantTest.class,
-	SellerParticipantTest.class})
+    BuyerParticipantTest.class,
+    CreditAgencyParticipantTest.class,
+    OptionalTest.class,
+    OptionalWithParticipantTest.class,
+    RepeatTest.class,
+    RepeatWithParticipantTest.class,
+    RunTest.class,
+    ParallelTest.class,
+    RunWithParticipantTest.class,
+    SellerParticipantTest.class})
 public class ProtocolMonitorAllTests {
 }

@@ -22,20 +22,20 @@ import org.scribble.protocol.model.*;
 
 public class UnorderedComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Unordered m=(Unordered)arg0;
-		Unordered e=(Unordered)arg1;
-		
-		if (m.getBlock().size() != e.getBlock().size()) {
-			return(1);
-		}
-		
-		Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();	
-		
-		if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
-			return(1);
-		}
-		
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Unordered m=(Unordered)arg0;
+        Unordered e=(Unordered)arg1;
+        
+        if (m.getBlock().size() != e.getBlock().size()) {
+            return (1);
+        }
+        
+        Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();    
+        
+        if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

@@ -37,332 +37,398 @@ import org.scribble.protocol.monitor.model.Do;
 // Outside scope of monitor, the environment should check that when a match is found, whether the associated
 // context is finished, to remove the top level conversation instance monitoring.
 
+/**
+ * This class provides a default implementation of the protocol monitor.
+ *
+ */
 public class DefaultProtocolMonitor implements ProtocolMonitor {
-	
-	private static final Logger logger=Logger.getLogger(DefaultProtocolMonitor.class.getName());
-	
-	public DefaultProtocolMonitor() {
-	}
+    
+    private static final Logger LOG=Logger.getLogger(DefaultProtocolMonitor.class.getName());
+    
+    /**
+     * Default constructor.
+     */
+    public DefaultProtocolMonitor() {
+    }
 
-	/**
-	 * This method creates a new session (conversation instance) and initializes
-	 * it based on the supplied description.
-	 * 
-	 * @param context The monitor context
-	 * @param protocol The protocol description
-	 * @param sessionClass The session implenentation class to instantiate
-	 * @return The created and initialized session
-	 */
-	public Session createSession(MonitorContext context, Description protocol,
-							Class<? extends Session> sessionClass) {
-		Session ret=null;
-		
-		try {
-			ret = sessionClass.newInstance();
-			
-			// Initialize the session with the protocol descriptions
-			if (protocol.getNode().size() > 0) {
-				addNodeToConversation(context, protocol, ret, 0);
-			}
-		} catch(Exception e) {
-			logger.log(Level.SEVERE, "Failed to create and initialize session '"+
-								sessionClass+"'", e);
-		}
-		
-		return(ret);
-	}
-	
-	public Result messageSent(MonitorContext context, Description protocol,
-						Session conv, Message mesg) {
-		Result ret=Result.NOT_HANDLED;
-	
-		// Check if context has state that is waiting for a send message
-		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
-			ret = checkForSendMessage(context, protocol,
-						i, conv.getNodeIndexAt(i), conv, mesg);
-		}
-		
-		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
-			Session nested=conv.getNestedConversations().get(i);
-			
-			if ((ret = messageSent(context, protocol, nested, mesg)).isValid()) {
-			
-				// If nested conversation has a 'main' conversation, then check that it
-				// has been terminated
-				// TODO: Issue is efficiency of doing this check for each message?
-				if (nested.getParentConversation() != null) {
-					Session main=nested.getParentConversation();
-					
-					if (conv.getNestedConversations().remove(main)) {
-						
-						// Terminate other catch blocks
-						for (Session cc : main.getInterruptConversations()) {
-							if (cc != nested) {
-								conv.getNestedConversations().remove(cc);
-							}
-						}
-					}
-				}
-				
-				// If matched, then check if nested conversation has finished
-				if (nested.isFinished()) {
-					nestedConversationFinished(context, protocol, conv, nested);
-				}
-			}
-		}
-		
-		return(ret);
-	}
-	
-	protected Result checkForSendMessage(MonitorContext context, Description protocol,
-			int pos, int nodeIndex, Session conv, Message mesg) {
-		Result ret=Result.NOT_HANDLED;
-		
-		Node node=protocol.getNode().get(nodeIndex);
-		
-		if (node instanceof SendMessage) {
-			
-			if ((ret = checkMessage(context, conv, (SendMessage)node, mesg)).isValid()) {
-				// Remove processed node
-				conv.removeNodeIndexAt(pos);
-				
-				// Add next node, if not end
-				if (node.getNextIndex() != -1) {
-					addNodeToConversation(context, protocol, conv, node.getNextIndex());
-				}
-			}
-			
-		} else if (node instanceof org.scribble.protocol.monitor.model.Choice) {
-			// Check if lookahead for the indexes associated with each
-			// choice path
-			for (int j=0; ret == Result.NOT_HANDLED && j <
-					((org.scribble.protocol.monitor.model.Choice)node).getPath().size(); j++) {
-				
-				Path cn=((org.scribble.protocol.monitor.model.Choice)node).getPath().get(j);
-				
-				if (cn.getNextIndex() != -1) {
-					ret = checkForSendMessage(context, protocol,
-								pos, cn.getNextIndex(), conv, mesg);
-				}
-			}
-			
-		} else if (node instanceof org.scribble.protocol.monitor.model.Decision) {
-			
-			if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
-				ret = checkForSendMessage(context, protocol,
-							pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(),
-							conv, mesg);
-			}
-			
-			if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
-				ret = checkForSendMessage(context, protocol,
-							pos, node.getNextIndex(), conv, mesg);				
-			}
-		}
+    /**
+     * This method creates a new session (conversation instance) and initializes
+     * it based on the supplied description.
+     * 
+     * @param context The monitor context
+     * @param protocol The protocol description
+     * @param sessionClass The session implenentation class to instantiate
+     * @return The created and initialized session
+     */
+    public Session createSession(MonitorContext context, Description protocol,
+                            Class<? extends Session> sessionClass) {
+        Session ret=null;
+        
+        try {
+            ret = sessionClass.newInstance();
+            
+            // Initialize the session with the protocol descriptions
+            if (protocol.getNode().size() > 0) {
+                addNodeToConversation(context, protocol, ret, 0);
+            }
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Failed to create and initialize session '"
+                        +sessionClass+"'", e);
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Result messageSent(MonitorContext context, Description protocol,
+                        Session conv, Message mesg) {
+        Result ret=Result.NOT_HANDLED;
+    
+        // Check if context has state that is waiting for a send message
+        for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
+            ret = checkForSendMessage(context, protocol,
+                        i, conv.getNodeIndexAt(i), conv, mesg);
+        }
+        
+        for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
+            Session nested=conv.getNestedConversations().get(i);
+            
+            ret = messageSent(context, protocol, nested, mesg);
+            
+            if (ret .isValid()) {
+            
+                // If nested conversation has a 'main' conversation, then check that it
+                // has been terminated
+                // TODO: Issue is efficiency of doing this check for each message?
+                if (nested.getParentConversation() != null) {
+                    Session main=nested.getParentConversation();
+                    
+                    if (conv.getNestedConversations().remove(main)) {
+                        
+                        // Terminate other catch blocks
+                        for (Session cc : main.getInterruptConversations()) {
+                            if (cc != nested) {
+                                conv.getNestedConversations().remove(cc);
+                            }
+                        }
+                    }
+                }
+                
+                // If matched, then check if nested conversation has finished
+                if (nested.isFinished()) {
+                    nestedConversationFinished(context, protocol, conv, nested);
+                }
+            }
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * This method checks whether the send message is valid.
+     * 
+     * @param context The monitor context
+     * @param protocol The protocol
+     * @param pos The position of the node in the conversation
+     * @param nodeIndex The nodex index in the protocol
+     * @param conv The conversation
+     * @param mesg The message
+     * @return The result
+     */
+    protected Result checkForSendMessage(MonitorContext context, Description protocol,
+            int pos, int nodeIndex, Session conv, Message mesg) {
+        Result ret=Result.NOT_HANDLED;
+        
+        Node node=protocol.getNode().get(nodeIndex);
+        
+        if (node instanceof SendMessage) {
+            ret = checkMessage(context, conv, (SendMessage)node, mesg);
+            
+            if (ret.isValid()) {
+                // Remove processed node
+                conv.removeNodeIndexAt(pos);
+                
+                // Add next node, if not end
+                if (node.getNextIndex() != -1) {
+                    addNodeToConversation(context, protocol, conv, node.getNextIndex());
+                }
+            }
+            
+        } else if (node instanceof org.scribble.protocol.monitor.model.Choice) {
+            // Check if lookahead for the indexes associated with each
+            // choice path
+            for (int j=0; ret == Result.NOT_HANDLED
+                    && j < ((org.scribble.protocol.monitor.model.Choice)node).getPath().size(); j++) {
+                
+                Path cn=((org.scribble.protocol.monitor.model.Choice)node).getPath().get(j);
+                
+                if (cn.getNextIndex() != -1) {
+                    ret = checkForSendMessage(context, protocol,
+                                pos, cn.getNextIndex(), conv, mesg);
+                }
+            }
+            
+        } else if (node instanceof org.scribble.protocol.monitor.model.Decision) {
+            
+            if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
+                ret = checkForSendMessage(context, protocol,
+                            pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(),
+                            conv, mesg);
+            }
+            
+            if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
+                ret = checkForSendMessage(context, protocol,
+                            pos, node.getNextIndex(), conv, mesg);                
+            }
+        }
 
-		return(ret);
-	}
-	
-	public Result messageReceived(MonitorContext context, Description protocol,
-					Session conv, Message mesg) {
-		Result ret=Result.NOT_HANDLED;
-		
-		// Check if context has state that is waiting for a send message
-		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
-			ret = checkForReceiveMessage(context, protocol,
-						i, conv.getNodeIndexAt(i), conv, mesg);
-		}
-		
-		for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
-			Session nested=conv.getNestedConversations().get(i);
-			
-			if ((ret = messageReceived(context, protocol, nested, mesg)).isValid()) {
-				
-				// If nested conversation has a 'main' conversation, then check that it
-				// has been terminated
-				// TODO: Issue is efficiency of doing this check for each message?
-				if (nested.getParentConversation() != null) {
-					Session main=nested.getParentConversation();
-					
-					if (conv.getNestedConversations().remove(main)) {
-						
-						// Terminate other interrupt blocks
-						for (Session cc : main.getInterruptConversations()) {
-							if (cc != nested) {
-								conv.getNestedConversations().remove(cc);
-							}
-						}
-					}
-				}
-				
-				// If matched, then check if nested conversation has finished
-				if (nested.isFinished()) {
-					nestedConversationFinished(context, protocol, conv, nested);
-				}				
-			}
-		}
-		
-		return(ret);
-	}
-	
-	protected Result checkForReceiveMessage(MonitorContext context, Description protocol,
-				int pos, int nodeIndex, Session conv, Message mesg) {
-		Result ret=Result.NOT_HANDLED;
-		
-		Node node=protocol.getNode().get(nodeIndex);
-		
-		if (node instanceof ReceiveMessage) {
-			
-			if ((ret = checkMessage(context, conv, (ReceiveMessage)node, mesg)).isValid()) {
-				// Remove processed node
-				conv.removeNodeIndexAt(pos);
-				
-				// Add next node, if not end
-				if (node.getNextIndex() != -1) {
-					addNodeToConversation(context, protocol, conv, node.getNextIndex());
-				}
-			}
-			
-		} else if (node instanceof org.scribble.protocol.monitor.model.Choice) {
-			// Check if lookahead for the indexes associated with each
-			// choice path
-			for (int j=0; ret == Result.NOT_HANDLED && j <
-					((org.scribble.protocol.monitor.model.Choice)node).getPath().size(); j++) {
-				
-				Path cn=((org.scribble.protocol.monitor.model.Choice)node).getPath().get(j);
-				
-				if (cn.getNextIndex() != -1) {
-					ret = checkForReceiveMessage(context, protocol, 
-								pos, cn.getNextIndex(), conv, mesg);
-				}
-			}
-			
-		} else if (node instanceof org.scribble.protocol.monitor.model.Decision) {
-			
-			if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
-				ret = checkForReceiveMessage(context, protocol, 
-							pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(),
-								conv, mesg);
-			}
-			
-			if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
-				ret = checkForReceiveMessage(context, protocol, 
-						pos, node.getNextIndex(), conv, mesg);				
-			}
-		}
+        return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Result messageReceived(MonitorContext context, Description protocol,
+                    Session conv, Message mesg) {
+        Result ret=Result.NOT_HANDLED;
+        
+        // Check if context has state that is waiting for a send message
+        for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
+            ret = checkForReceiveMessage(context, protocol,
+                        i, conv.getNodeIndexAt(i), conv, mesg);
+        }
+        
+        for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
+            Session nested=conv.getNestedConversations().get(i);
+            
+            ret = messageReceived(context, protocol, nested, mesg);
+            
+            if (ret.isValid()) {
+                
+                // If nested conversation has a 'main' conversation, then check that it
+                // has been terminated
+                // TODO: Issue is efficiency of doing this check for each message?
+                if (nested.getParentConversation() != null) {
+                    Session main=nested.getParentConversation();
+                    
+                    if (conv.getNestedConversations().remove(main)) {
+                        
+                        // Terminate other interrupt blocks
+                        for (Session cc : main.getInterruptConversations()) {
+                            if (cc != nested) {
+                                conv.getNestedConversations().remove(cc);
+                            }
+                        }
+                    }
+                }
+                
+                // If matched, then check if nested conversation has finished
+                if (nested.isFinished()) {
+                    nestedConversationFinished(context, protocol, conv, nested);
+                }                
+            }
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * This method checks whether the receive message is valid.
+     * 
+     * @param context The monitor context
+     * @param protocol The protocol
+     * @param pos The position of the node in the conversation
+     * @param nodeIndex The nodex index in the protocol
+     * @param conv The conversation
+     * @param mesg The message
+     * @return The result
+     */
+    protected Result checkForReceiveMessage(MonitorContext context, Description protocol,
+                int pos, int nodeIndex, Session conv, Message mesg) {
+        Result ret=Result.NOT_HANDLED;
+        
+        Node node=protocol.getNode().get(nodeIndex);
+        
+        if (node instanceof ReceiveMessage) {
+            ret = checkMessage(context, conv, (ReceiveMessage)node, mesg);
+            
+            if (ret.isValid()) {
+                // Remove processed node
+                conv.removeNodeIndexAt(pos);
+                
+                // Add next node, if not end
+                if (node.getNextIndex() != -1) {
+                    addNodeToConversation(context, protocol, conv, node.getNextIndex());
+                }
+            }
+            
+        } else if (node instanceof org.scribble.protocol.monitor.model.Choice) {
+            // Check if lookahead for the indexes associated with each
+            // choice path
+            for (int j=0; ret == Result.NOT_HANDLED 
+                    && j < ((org.scribble.protocol.monitor.model.Choice)node).getPath().size(); j++) {
+                
+                Path cn=((org.scribble.protocol.monitor.model.Choice)node).getPath().get(j);
+                
+                if (cn.getNextIndex() != -1) {
+                    ret = checkForReceiveMessage(context, protocol, 
+                                pos, cn.getNextIndex(), conv, mesg);
+                }
+            }
+            
+        } else if (node instanceof org.scribble.protocol.monitor.model.Decision) {
+            
+            if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
+                ret = checkForReceiveMessage(context, protocol, 
+                            pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(),
+                                conv, mesg);
+            }
+            
+            if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
+                ret = checkForReceiveMessage(context, protocol, 
+                        pos, node.getNextIndex(), conv, mesg);                
+            }
+        }
 
-		return(ret);
-	}
-	
-	
-	protected Result checkMessage(MonitorContext context, Session conv, MessageNode node,
-								Message sig) {
-		Result ret=Result.NOT_HANDLED;
-		
-		if ((sig.getOperator() == null ||
-							node.getOperator() == null ||
-							node.getOperator().equals(sig.getOperator()))) {
-			ret = context.validate(conv, node, sig);
-		}
-		
-		return(ret);
-	}
-	
-	protected void addNodeToConversation(MonitorContext context, Description protocol,
-					Session conv, int nodeIndex) {
-		
-		// Check if specified node is a 'Run' node type
-		Node node=protocol.getNode().get(nodeIndex);
+        return (ret);
+    }
+    
+    /**
+     * This method checks the message.
+     * 
+     * @param context Monitor context
+     * @param conv Conversation
+     * @param node The message node
+     * @param sig The message signature
+     * @return The result
+     */
+    protected Result checkMessage(MonitorContext context, Session conv, MessageNode node,
+                                Message sig) {
+        Result ret=Result.NOT_HANDLED;
+        
+        if ((sig.getOperator() == null
+                || node.getOperator() == null
+                || node.getOperator().equals(sig.getOperator()))) {
+            ret = context.validate(conv, node, sig);
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * This method adds a node to the conversation.
+     * 
+     * @param context The context
+     * @param protocol The protocol
+     * @param conv The conversation
+     * @param nodeIndex The node index
+     */
+    protected void addNodeToConversation(MonitorContext context, Description protocol,
+                    Session conv, int nodeIndex) {
+        
+        // Check if specified node is a 'Run' node type
+        Node node=protocol.getNode().get(nodeIndex);
 
-		if (node.getClass() == Scope.class) {
-			initScope(context, protocol, conv, (Scope)node);
-			
-		} else if (node.getClass() == Do.class) {
-			Session nested=initScope(context, protocol, conv, (Do)node);
-			
-			// TODO: Need to register catch blocks against the nested context in the
-			// parent context
-			for (Path path : ((Do)node).getPath()) {
-				
-				Session interruptScope=conv.createInterruptConversation(nested, node.getNextIndex());
-				interruptScope.addNodeIndex(path.getNextIndex());
-			}
-			
-		} else if (node.getClass() == org.scribble.protocol.monitor.model.Call.class) {
-			
-			if (((org.scribble.protocol.monitor.model.Call)node).getCallIndex() != -1) {
-				addNodeToConversation(context, protocol, conv,
-						((org.scribble.protocol.monitor.model.Call)node).getCallIndex());
-			}
-			
-			if (node.getNextIndex() != -1) {
-				addNodeToConversation(context, protocol, conv, node.getNextIndex());
-			}
+        if (node.getClass() == Scope.class) {
+            initScope(context, protocol, conv, (Scope)node);
+            
+        } else if (node.getClass() == Do.class) {
+            Session nested=initScope(context, protocol, conv, (Do)node);
+            
+            // TODO: Need to register catch blocks against the nested context in the
+            // parent context
+            for (Path path : ((Do)node).getPath()) {
+                
+                Session interruptScope=conv.createInterruptConversation(nested, node.getNextIndex());
+                interruptScope.addNodeIndex(path.getNextIndex());
+            }
+            
+        } else if (node.getClass() == org.scribble.protocol.monitor.model.Call.class) {
+            
+            if (((org.scribble.protocol.monitor.model.Call)node).getCallIndex() != -1) {
+                addNodeToConversation(context, protocol, conv,
+                        ((org.scribble.protocol.monitor.model.Call)node).getCallIndex());
+            }
+            
+            if (node.getNextIndex() != -1) {
+                addNodeToConversation(context, protocol, conv, node.getNextIndex());
+            }
 
-		} else if (node.getClass() == org.scribble.protocol.monitor.model.Parallel.class) {
-			
-			if (node.getNextIndex() != -1) {
-				Session nestedContext=conv.createNestedConversation(node.getNextIndex());
-				
-				Parallel pnode=(Parallel)node;
-				
-				// TODO: Check what happens if no activities in the parallel paths?
-				
-				for (Path path : pnode.getPath()) {
-					if (path.getNextIndex() != -1) {
-						addNodeToConversation(context, protocol, nestedContext, path.getNextIndex());
-					}
-				}
-			}
-		} else {
-			conv.addNodeIndex(nodeIndex);
-		}
-	}
+        } else if (node.getClass() == org.scribble.protocol.monitor.model.Parallel.class) {
+            
+            if (node.getNextIndex() != -1) {
+                Session nestedContext=conv.createNestedConversation(node.getNextIndex());
+                
+                Parallel pnode=(Parallel)node;
+                
+                // TODO: Check what happens if no activities in the parallel paths?
+                
+                for (Path path : pnode.getPath()) {
+                    if (path.getNextIndex() != -1) {
+                        addNodeToConversation(context, protocol, nestedContext, path.getNextIndex());
+                    }
+                }
+            }
+        } else {
+            conv.addNodeIndex(nodeIndex);
+        }
+    }
 
-	/**
-	 * This method initializes the supplied scope within the supplied context. This involves
-	 * creating a nested context, which is subsequently returned.
-	 * 
-	 * @param protocol The protocol description
-	 * @param conv The current context
-	 * @param scope The scope to be initialized
-	 * @return The new nested context, or null if failed
-	 */
-	protected Session initScope(MonitorContext context, Description protocol, Session conv, Scope scope) {
-		Session nestedContext=null;
-		
-		// Check if internal or external run
-		if (scope.getInnerIndex() != -1) {
-			// Internal
-			nestedContext = conv.createNestedConversation(scope.getNextIndex());
-			
-			addNodeToConversation(context, protocol, nestedContext, scope.getInnerIndex());
-			
-		} else {
-			// External - protocol name is in the 'name' field
-			System.err.println("EXTERNAL PROTOCOL MONITORING NOT CURRENTLY SUPPORTED");
-		}
-		
-		return(nestedContext);
-	}
-	
-	protected void nestedConversationFinished(MonitorContext context, Description protocol,
-					Session conv, Session nested) {
-		// Check if nested conversation has a return index
-		if (nested.getReturnIndex() != -1) {
-			addNodeToConversation(context, protocol, conv, nested.getReturnIndex());
-		}
-		
-		// Remove nested conversation from parent context
-		conv.removeNestedConversation(nested);		
-		
-		// Cancel dependent contexts
-		// TODO: Note this implies immediate cancellation of catch blocks. If
-		// we want to delay until subsequent activity, or explicit control message,
-		// then will need to change. Issue with subsequent activity is that it
-		// may not be within the containing context.
-		for (Session cc : nested.getInterruptConversations()) {
-			conv.removeNestedConversation(cc);
-		}
-	}	
+    /**
+     * This method initializes the supplied scope within the supplied context. This involves
+     * creating a nested context, which is subsequently returned.
+     * 
+     * @param context The context
+     * @param protocol The protocol description
+     * @param conv The current context
+     * @param scope The scope to be initialized
+     * @return The new nested context, or null if failed
+     */
+    protected Session initScope(MonitorContext context, Description protocol, Session conv, Scope scope) {
+        Session nestedContext=null;
+        
+        // Check if internal or external run
+        if (scope.getInnerIndex() != -1) {
+            // Internal
+            nestedContext = conv.createNestedConversation(scope.getNextIndex());
+            
+            addNodeToConversation(context, protocol, nestedContext, scope.getInnerIndex());
+            
+        } else {
+            // External - protocol name is in the 'name' field
+            System.err.println("EXTERNAL PROTOCOL MONITORING NOT CURRENTLY SUPPORTED");
+        }
+        
+        return (nestedContext);
+    }
+    
+    /**
+     * This method is called when a nested conversation finishes.
+     * 
+     * @param context The context
+     * @param protocol The protocol
+     * @param conv The conversation
+     * @param nested The nested conversation
+     */
+    protected void nestedConversationFinished(MonitorContext context, Description protocol,
+                    Session conv, Session nested) {
+        // Check if nested conversation has a return index
+        if (nested.getReturnIndex() != -1) {
+            addNodeToConversation(context, protocol, conv, nested.getReturnIndex());
+        }
+        
+        // Remove nested conversation from parent context
+        conv.removeNestedConversation(nested);        
+        
+        // Cancel dependent contexts
+        // TODO: Note this implies immediate cancellation of catch blocks. If
+        // we want to delay until subsequent activity, or explicit control message,
+        // then will need to change. Issue with subsequent activity is that it
+        // may not be within the containing context.
+        for (Session cc : nested.getInterruptConversations()) {
+            conv.removeNestedConversation(cc);
+        }
+    }    
 }

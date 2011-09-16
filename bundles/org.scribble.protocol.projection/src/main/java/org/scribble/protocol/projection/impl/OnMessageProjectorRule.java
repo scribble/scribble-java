@@ -15,8 +15,12 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.Block;
+import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.OnMessage;
+import org.scribble.protocol.model.Role;
 
 /**
  * This class provides the OnMessage implementation of the
@@ -24,47 +28,48 @@ import org.scribble.common.logging.Journal;
  */
 public class OnMessageProjectorRule implements ProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == OnMessage.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l) {
-		OnMessage ret=(OnMessage)new OnMessage();
-		OnMessage source=(OnMessage)model;
-		
-		ret.derivedFrom(source);
-		
-		ret.setMessageSignature((MessageSignature)context.project(source.getMessageSignature(),
-				role, l));
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == OnMessage.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l) {
+        OnMessage ret=(OnMessage)new OnMessage();
+        OnMessage source=(OnMessage)model;
+        
+        ret.derivedFrom(source);
+        
+        ret.setMessageSignature((MessageSignature)context.project(source.getMessageSignature(),
+                role, l));
 
-		if (source.getBlock() != null) {
-			
-			// Project the block
-			Block b=(Block)context.project(source.getBlock(),
-					role, l);
-			if (b != null) {
-				ret.setBlock(b);
-			}
-		}
-		
-		return(ret);
-	}
+        if (source.getBlock() != null) {
+            
+            // Project the block
+            Block b=(Block)context.project(source.getBlock(),
+                    role, l);
+            if (b != null) {
+                ret.setBlock(b);
+            }
+        }
+        
+        return (ret);
+    }
 }

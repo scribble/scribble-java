@@ -24,142 +24,142 @@ import org.scribble.protocol.monitor.model.*;
 
 public class ParallelTest {
 
-	private static final String OUT_OF_STOCK_MESSAGE_TYPE = "OutOfStock";
-	private static final String CONFIRMATION_MESSAGE_TYPE = "Confirmation";
-	private static final String ORDER_MESSAGE_TYPE = "Order";
-	private static final String FINISH_MESSAGE_TYPE = "Finish";
+    private static final String OUT_OF_STOCK_MESSAGE_TYPE = "OutOfStock";
+    private static final String CONFIRMATION_MESSAGE_TYPE = "Confirmation";
+    private static final String ORDER_MESSAGE_TYPE = "Order";
+    private static final String FINISH_MESSAGE_TYPE = "Finish";
 
-	public enum PurchasingLabel {
-		_Confirmation,
-		_OutOfStock
-	}
-	
-	public Description getSellerProtocol() {
-		Description pd=new Description();
-		
-		ReceiveMessage recvOrder=new ReceiveMessage();
-		recvOrder.setNextIndex(1);
+    public enum PurchasingLabel {
+        _Confirmation,
+        _OutOfStock
+    }
+    
+    public Description getSellerProtocol() {
+        Description pd=new Description();
+        
+        ReceiveMessage recvOrder=new ReceiveMessage();
+        recvOrder.setNextIndex(1);
 
-		MessageType mt1=new MessageType();
-		mt1.setValue(ORDER_MESSAGE_TYPE);
-		recvOrder.getMessageType().add(mt1);
-		pd.getNode().add(recvOrder);
-		
-		Parallel parallel=new Parallel();
-		parallel.setNextIndex(4);
+        MessageType mt1=new MessageType();
+        mt1.setValue(ORDER_MESSAGE_TYPE);
+        recvOrder.getMessageType().add(mt1);
+        pd.getNode().add(recvOrder);
+        
+        Parallel parallel=new Parallel();
+        parallel.setNextIndex(4);
 
-		Path c1=new Path();
-		c1.setNextIndex(2);
-		parallel.getPath().add(c1);
-		
-		Path c2=new Path();
-		c2.setNextIndex(3);
-		parallel.getPath().add(c2);
-						
-		pd.getNode().add(parallel);
-		
-		SendMessage sendConformation=new SendMessage();
+        Path c1=new Path();
+        c1.setNextIndex(2);
+        parallel.getPath().add(c1);
+        
+        Path c2=new Path();
+        c2.setNextIndex(3);
+        parallel.getPath().add(c2);
+                        
+        pd.getNode().add(parallel);
+        
+        SendMessage sendConformation=new SendMessage();
 
-		MessageType mt2=new MessageType();
-		mt2.setValue(CONFIRMATION_MESSAGE_TYPE);
-		sendConformation.getMessageType().add(mt2);
-		pd.getNode().add(sendConformation);
-		
-		SendMessage sendOutOfStock=new SendMessage();
+        MessageType mt2=new MessageType();
+        mt2.setValue(CONFIRMATION_MESSAGE_TYPE);
+        sendConformation.getMessageType().add(mt2);
+        pd.getNode().add(sendConformation);
+        
+        SendMessage sendOutOfStock=new SendMessage();
 
-		MessageType mt3=new MessageType();
-		mt3.setValue(OUT_OF_STOCK_MESSAGE_TYPE);
-		sendOutOfStock.getMessageType().add(mt3);
-		pd.getNode().add(sendOutOfStock);
-		
-		SendMessage sendFinish=new SendMessage();
+        MessageType mt3=new MessageType();
+        mt3.setValue(OUT_OF_STOCK_MESSAGE_TYPE);
+        sendOutOfStock.getMessageType().add(mt3);
+        pd.getNode().add(sendOutOfStock);
+        
+        SendMessage sendFinish=new SendMessage();
 
-		MessageType mt4=new MessageType();
-		mt4.setValue(FINISH_MESSAGE_TYPE);
-		sendFinish.getMessageType().add(mt4);
-		pd.getNode().add(sendFinish);
-		
-		return(pd);
-	}	
-	
-	@Test
-	public void testValidCompletion() {
-		Description pd=getSellerProtocol();
-		
-		// Create Protocol Monitor
-		ProtocolMonitor monitor=new DefaultProtocolMonitor();
-		
-		DefaultMonitorContext context=new DefaultMonitorContext();
-		
-		Session conv=monitor.createSession(context, pd, DefaultSession.class);
-		
-		DefaultMessage message=new DefaultMessage();
-		message.getTypes().add(ORDER_MESSAGE_TYPE);
-		
-		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
-			fail("Order failed");
-		}
-		
-		message=new DefaultMessage();
-		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
+        MessageType mt4=new MessageType();
+        mt4.setValue(FINISH_MESSAGE_TYPE);
+        sendFinish.getMessageType().add(mt4);
+        pd.getNode().add(sendFinish);
+        
+        return (pd);
+    }    
+    
+    @Test
+    public void testValidCompletion() {
+        Description pd=getSellerProtocol();
+        
+        // Create Protocol Monitor
+        ProtocolMonitor monitor=new DefaultProtocolMonitor();
+        
+        DefaultMonitorContext context=new DefaultMonitorContext();
+        
+        Session conv=monitor.createSession(context, pd, DefaultSession.class);
+        
+        DefaultMessage message=new DefaultMessage();
+        message.getTypes().add(ORDER_MESSAGE_TYPE);
+        
+        if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
+            fail("Order failed");
+        }
+        
+        message=new DefaultMessage();
+        message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);        
 
-		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
-			fail("Confirmation failed");
-		}		
-		
-		message=new DefaultMessage();
-		message.getTypes().add(OUT_OF_STOCK_MESSAGE_TYPE);		
+        if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
+            fail("Confirmation failed");
+        }        
+        
+        message=new DefaultMessage();
+        message.getTypes().add(OUT_OF_STOCK_MESSAGE_TYPE);        
 
-		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
-			fail("Out Of Stock failed");
-		}		
-		
-		message=new DefaultMessage();
-		message.getTypes().add(FINISH_MESSAGE_TYPE);		
+        if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
+            fail("Out Of Stock failed");
+        }        
+        
+        message=new DefaultMessage();
+        message.getTypes().add(FINISH_MESSAGE_TYPE);        
 
-		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
-			fail("Finish message failed");
-		}		
-		
-		if (conv.isFinished() == false) {
-			fail("Conversation should be finished");
-		}
-	}
-	
-	@Test
-	public void testMissingOutOfStock() {
-		Description pd=getSellerProtocol();
-		
-		// Create Protocol Monitor
-		ProtocolMonitor monitor=new DefaultProtocolMonitor();
-		
-		DefaultMonitorContext context=new DefaultMonitorContext();
-		
-		Session conv=monitor.createSession(context, pd, DefaultSession.class);
-		
-		DefaultMessage message=new DefaultMessage();
-		message.getTypes().add(ORDER_MESSAGE_TYPE);
-		
-		if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
-			fail("Order failed");
-		}
-		
-		message=new DefaultMessage();
-		message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);		
+        if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
+            fail("Finish message failed");
+        }        
+        
+        if (conv.isFinished() == false) {
+            fail("Conversation should be finished");
+        }
+    }
+    
+    @Test
+    public void testMissingOutOfStock() {
+        Description pd=getSellerProtocol();
+        
+        // Create Protocol Monitor
+        ProtocolMonitor monitor=new DefaultProtocolMonitor();
+        
+        DefaultMonitorContext context=new DefaultMonitorContext();
+        
+        Session conv=monitor.createSession(context, pd, DefaultSession.class);
+        
+        DefaultMessage message=new DefaultMessage();
+        message.getTypes().add(ORDER_MESSAGE_TYPE);
+        
+        if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
+            fail("Order failed");
+        }
+        
+        message=new DefaultMessage();
+        message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);        
 
-		if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
-			fail("Confirmation failed");
-		}		
-		
-		message=new DefaultMessage();
-		message.getTypes().add(FINISH_MESSAGE_TYPE);		
+        if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
+            fail("Confirmation failed");
+        }        
+        
+        message=new DefaultMessage();
+        message.getTypes().add(FINISH_MESSAGE_TYPE);        
 
-		if (monitor.messageSent(context, pd, conv, message).isValid() == true) {
-			fail("Finish message should have failed, as parallel should not have completed");
-		}		
-		
-		if (conv.isFinished() == true) {
-			fail("Conversation should NOT be finished");
-		}
-	}
+        if (monitor.messageSent(context, pd, conv, message).isValid() == true) {
+            fail("Finish message should have failed, as parallel should not have completed");
+        }        
+        
+        if (conv.isFinished() == true) {
+            fail("Conversation should NOT be finished");
+        }
+    }
 }

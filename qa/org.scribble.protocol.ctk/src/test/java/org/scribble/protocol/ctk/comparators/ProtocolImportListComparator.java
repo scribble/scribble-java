@@ -22,29 +22,29 @@ import org.scribble.protocol.model.*;
 
 public class ProtocolImportListComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		ProtocolImportList m=(ProtocolImportList)arg0;
-		ProtocolImportList e=(ProtocolImportList)arg1;
-		
-		if (m.getProtocolImports().size() == e.getProtocolImports().size()) {
-			Comparator<ModelObject> pcomp=(Comparator<ModelObject> )
-						ComparatorUtil.getComparator(ProtocolImport.class);
-			
-			for (int i=0; i < m.getProtocolImports().size(); i++) {
-				if (pcomp.compare(m.getProtocolImports().get(i), e.getProtocolImports().get(i)) != 0) {
-					return(1);
-				}
-			}
-		} else {
-			return(1);
-		}
-		
-		Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();	
-		
-		if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
-			return(1);
-		}
-		
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        ProtocolImportList m=(ProtocolImportList)arg0;
+        ProtocolImportList e=(ProtocolImportList)arg1;
+        
+        if (m.getProtocolImports().size() == e.getProtocolImports().size()) {
+            Comparator<ModelObject> pcomp=(Comparator<ModelObject> )
+                        ComparatorUtil.getComparator(ProtocolImport.class);
+            
+            for (int i=0; i < m.getProtocolImports().size(); i++) {
+                if (pcomp.compare(m.getProtocolImports().get(i), e.getProtocolImports().get(i)) != 0) {
+                    return (1);
+                }
+            }
+        } else {
+            return (1);
+        }
+        
+        Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();    
+        
+        if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

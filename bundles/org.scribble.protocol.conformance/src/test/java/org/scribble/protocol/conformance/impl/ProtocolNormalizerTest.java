@@ -22,48 +22,48 @@ import org.scribble.protocol.model.*;
 
 public class ProtocolNormalizerTest {
 
-	@Test
-	public void testReorderChoicePaths() {
-		
-		ProtocolModel pm=new ProtocolModel();
-		
-		Protocol p=new Protocol();
-		pm.setProtocol(p);
-		
-		Role roleA=new Role("A");
-		Role roleB=new Role("B");
-		
-		Choice c=new Choice();
-		p.getBlock().add(c);
-		
-		Block b1=new Block();
-		
-		Interaction i1=new Interaction();
-		i1.setMessageSignature(new MessageSignature(new TypeReference("M1")));
-		i1.setFromRole(roleA);
-		b1.add(i1);
-		
-		Block b2=new Block();
-		
-		Interaction i2=new Interaction();
-		i2.setMessageSignature(new MessageSignature(new TypeReference("M2")));
-		i2.setFromRole(roleB);
-		b2.add(i2);
-		
-		c.getPaths().add(b2);
-		c.getPaths().add(b1);
-		
-		ProtocolModel result=ProtocolNormalizer.normalize(pm);
-		
-		Choice c2=(Choice)result.getProtocol().getBlock().get(0);
-		
-		if (c2.getPaths().get(0).equals(b1) == false) {
-			fail("First block not expected");
-		}
-		
-		if (c2.getPaths().get(1).equals(b2) == false) {
-			fail("Second block not expected");
-		}
-	}
+    @Test
+    public void testReorderChoicePaths() {
+        
+        ProtocolModel pm=new ProtocolModel();
+        
+        Protocol p=new Protocol();
+        pm.setProtocol(p);
+        
+        Role roleA=new Role("A");
+        Role roleB=new Role("B");
+        
+        Choice c=new Choice();
+        p.getBlock().add(c);
+        
+        Block b1=new Block();
+        
+        Interaction i1=new Interaction();
+        i1.setMessageSignature(new MessageSignature(new TypeReference("M1")));
+        i1.setFromRole(roleA);
+        b1.add(i1);
+        
+        Block b2=new Block();
+        
+        Interaction i2=new Interaction();
+        i2.setMessageSignature(new MessageSignature(new TypeReference("M2")));
+        i2.setFromRole(roleB);
+        b2.add(i2);
+        
+        c.getPaths().add(b2);
+        c.getPaths().add(b1);
+        
+        ProtocolModel result=ProtocolNormalizer.normalize(pm);
+        
+        Choice c2=(Choice)result.getProtocol().getBlock().get(0);
+        
+        if (c2.getPaths().get(0).equals(b1) == false) {
+            fail("First block not expected");
+        }
+        
+        if (c2.getPaths().get(1).equals(b2) == false) {
+            fail("Second block not expected");
+        }
+    }
 
 }

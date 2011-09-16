@@ -15,8 +15,10 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.TypeReference;
 
 /**
  * This class provides the TypeReference implementation of the
@@ -24,42 +26,43 @@ import org.scribble.common.logging.Journal;
  */
 public class TypeReferenceProjectorRule implements ProjectorRule {
 
-	/**
-	 * This is the default constructor.
-	 */
-	public TypeReferenceProjectorRule() {
-	}
-	
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == TypeReference.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l) {
-		TypeReference source=(TypeReference)model;
-		TypeReference ret=new TypeReference();
-		
-		ret.derivedFrom(source);
+    /**
+     * This is the default constructor.
+     */
+    public TypeReferenceProjectorRule() {
+    }
+    
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == TypeReference.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l) {
+        TypeReference source=(TypeReference)model;
+        TypeReference ret=new TypeReference();
+        
+        ret.derivedFrom(source);
 
-		ret.setName(source.getName());
-				
-		return(ret);
-	}
+        ret.setName(source.getName());
+                
+        return (ret);
+    }
 }

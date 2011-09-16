@@ -20,34 +20,42 @@ package org.scribble.protocol.model;
  * components.
  */
 public abstract class Activity extends ModelObject {
-	
-	public Activity() {
-	}
-	
-	public Activity(Activity act) {
-		super(act);
-	}
-	
-	/**
-	 * This method returns the protocol in which this
-	 * activity is contained.
-	 * 
-	 * @return The protocol, or null if not found
-	 */
-	public Protocol getEnclosingProtocol() {
-		Protocol ret=null;
-		ModelObject cur=this;
-		
-		while (ret == null && cur != null) {
-			
-			if (cur instanceof Protocol) {
-				ret = (Protocol)cur;
-			} else{
-				cur = cur.getParent();
-			}
-		}
-		
-		return(ret);
-	}
-	
+    
+    /**
+     * The default constructor.
+     */
+    public Activity() {
+    }
+    
+    /**
+     * The copy constructor.
+     * 
+     * @param act The activity
+     */
+    public Activity(Activity act) {
+        super(act);
+    }
+    
+    /**
+     * This method returns the protocol in which this
+     * activity is contained.
+     * 
+     * @return The protocol, or null if not found
+     */
+    public Protocol getEnclosingProtocol() {
+        Protocol ret=null;
+        ModelObject cur=this;
+        
+        while (ret == null && cur != null) {
+            
+            if (cur instanceof Protocol) {
+                ret = (Protocol) cur;
+            } else {
+                cur = cur.getParent();
+            }
+        }
+        
+        return (ret);
+    }
+    
 }

@@ -16,64 +16,87 @@
  */
 package org.scribble.protocol.monitor;
 
+/**
+ * This class provides a default implementation of the message.
+ *
+ */
 public class DefaultMessage implements Message {
-	
-	private String m_operator=null;
-	private java.util.List<String> m_types=new java.util.Vector<String>();
+    
+    private String _operator=null;
+    private java.util.List<String> _types=new java.util.Vector<String>();
 
-	public DefaultMessage() {
-	}
-	
-	public String getOperator() {
-		return(m_operator);
-	}
-	
-	public void setOperator(String op) {
-		m_operator = op;
-	}
-	
-	public java.util.List<String> getTypes() {
-		return(m_types);
-	}
-	
-	public String toString() {
-		StringBuffer ret=new StringBuffer();
-		
-		if (m_operator != null && m_operator.trim().length() > 0) {
-			ret.append(m_operator);
-			ret.append('(');
-		}
-		
-		for (int i=0; i < getTypes().size(); i++) {
-			if (i > 0) {
-				ret.append(',');
-			}
-			ret.append(getTypes().get(i));
-		}
-		
-		if (m_operator != null && m_operator.trim().length() > 0) {
-			ret.append(')');
-		}
-		
-		return(ret.toString());
-	}
-	
-	public boolean equals(Object obj) {
-		boolean ret=false;
-		
-		if (obj instanceof DefaultMessage) {
-			DefaultMessage other=(DefaultMessage)obj;
-			
-			if ((m_operator == null && other.m_operator == null) ||
-					(m_operator != null && other.m_operator != null &&
-							m_operator.equals(other.m_operator))) {
-				
-				// TODO: Need to validate parameter types
-				// Could also have parameter types as Java types
-				ret = true;
-			}
-		}
-		
-		return(ret);
-	}
+    /**
+     * Default constructor.
+     */
+    public DefaultMessage() {
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getOperator() {
+        return (_operator);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setOperator(String op) {
+        _operator = op;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public java.util.List<String> getTypes() {
+        return (_types);
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer ret=new StringBuffer();
+        
+        if (_operator != null && _operator.trim().length() > 0) {
+            ret.append(_operator);
+            ret.append('(');
+        }
+        
+        for (int i=0; i < getTypes().size(); i++) {
+            if (i > 0) {
+                ret.append(',');
+            }
+            ret.append(getTypes().get(i));
+        }
+        
+        if (_operator != null && _operator.trim().length() > 0) {
+            ret.append(')');
+        }
+        
+        return (ret.toString());
+    }
+    
+    @Override
+    public int hashCode() {
+        return (toString().hashCode());
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret=false;
+        
+        if (obj instanceof DefaultMessage) {
+            DefaultMessage other=(DefaultMessage)obj;
+            
+            if ((_operator == null && other._operator == null)
+                    || (_operator != null && other._operator != null
+                    && _operator.equals(other._operator))) {
+                
+                // TODO: Need to validate parameter types
+                // Could also have parameter types as Java types
+                ret = true;
+            }
+        }
+        
+        return (ret);
+    }
 }

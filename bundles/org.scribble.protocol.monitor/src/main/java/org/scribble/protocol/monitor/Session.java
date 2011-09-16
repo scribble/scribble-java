@@ -24,28 +24,97 @@ package org.scribble.protocol.monitor;
  */
 public interface Session {
 
-	public void addNodeIndex(int index);
-	
-	public void removeNodeIndexAt(int pos);
-	
-	public int getNumberOfNodeIndexes();
-	
-	public int getNodeIndexAt(int pos);
-	
-	public boolean isFinished();
-	
-	public Session createNestedConversation(int returnIndex);
-	
-	public Session createInterruptConversation(Session main, int returnIndex);
-	
-	public int getReturnIndex();
-	
-	public java.util.List<Session> getNestedConversations();
-	
-	public Session getParentConversation();
-	
-	public java.util.List<Session> getInterruptConversations();
-	
-	public void removeNestedConversation(Session context);
-	
+    /**
+     * This method adds a node index to the session.
+     * 
+     * @param index The index
+     */
+    public void addNodeIndex(int index);
+    
+    /**
+     * This method removes a node index to the session.
+     * 
+     * @param index The index
+     */
+    public void removeNodeIndexAt(int index);
+    
+    /**
+     * This method returns the number of node indexes associated
+     * with the session.
+     * 
+     * @return The number of node indexes
+     */
+    public int getNumberOfNodeIndexes();
+    
+    /**
+     * This method returns the node index at the specified position.
+     * 
+     * @param pos The position
+     * @return The node index, or -1 if not found
+     */
+    public int getNodeIndexAt(int pos);
+    
+    /**
+     * This method indicates whether the session has finished.
+     * 
+     * @return Whether the session has finished
+     */
+    public boolean isFinished();
+    
+    /**
+     * This method creates a nested conversation that should return
+     * to the supplied index when it completes.
+     * 
+     * @param returnIndex The return index
+     * @return The nested session
+     */
+    public Session createNestedConversation(int returnIndex);
+    
+    /**
+     * This method creates a nested conversation, associated with an
+     * interrupt scope, that should return to the supplied index
+     * when it completes.
+     * 
+     * @param main The main session
+     * @param returnIndex The return index
+     * @return The session
+     */
+    public Session createInterruptConversation(Session main, int returnIndex);
+    
+    /**
+     * This method retrieves the 'return' index associated with a
+     * nested session.
+     * 
+     * @return The return index, or -1 if not set
+     */
+    public int getReturnIndex();
+    
+    /**
+     * This method returns the list of nested conversations.
+     * 
+     * @return The list of nested conversations
+     */
+    public java.util.List<Session> getNestedConversations();
+    
+    /**
+     * This method returns the parent conversation.
+     * 
+     * @return The parent conversation
+     */
+    public Session getParentConversation();
+    
+    /**
+     * This method returns the list of interrupt conversations.
+     * 
+     * @return The interrupt conversations
+     */
+    public java.util.List<Session> getInterruptConversations();
+    
+    /**
+     * This method removes the nested session.
+     * 
+     * @param session The session to be removed
+     */
+    public void removeNestedConversation(Session session);
+    
 }

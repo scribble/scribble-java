@@ -21,263 +21,263 @@ package org.scribble.protocol.model;
  * to traverse a model.
  */
 public interface Visitor {
-	
-	/**
-	 * This method indicates the start of a
-	 * block.
-	 * 
-	 * @param elem The block
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Block elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * block.
-	 * 
-	 * @param elem The block
-	 */
-	public void end(Block elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * choice.
-	 * 
-	 * @param elem The choice
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Choice elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * choice.
-	 * 
-	 * @param elem The choice
-	 */
-	public void end(Choice elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * directed choice.
-	 * 
-	 * @param elem The directed choice
-	 * @return Whether to process the contents
-	 */
-	public boolean start(DirectedChoice elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * directed choice.
-	 * 
-	 * @param elem The directed choice
-	 */
-	public void end(DirectedChoice elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * on-message.
-	 * 
-	 * @param elem The on-message element
-	 * @return Whether to process the contents
-	 */
-	public boolean start(OnMessage elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * on-message.
-	 * 
-	 * @param elem The on-message element
-	 */
-	public void end(OnMessage elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * parallel.
-	 * 
-	 * @param elem The parallel
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Parallel elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * parallel.
-	 * 
-	 * @param elem The parallel
-	 */
-	public void end(Parallel elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * protocol.
-	 * 
-	 * @param elem The protocol
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Protocol elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * protocol.
-	 * 
-	 * @param elem The protocol
-	 */
-	public void end(Protocol elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * repeat.
-	 * 
-	 * @param elem The repeat
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Repeat elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * repeat.
-	 * 
-	 * @param elem The repeat
-	 */
-	public void end(Repeat elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * labelled block.
-	 * 
-	 * @param elem The labelled block
-	 * @return Whether to process the contents
-	 */
-	public boolean start(RecBlock elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * labelled block.
-	 * 
-	 * @param elem The labelled block
-	 */
-	public void end(RecBlock elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * unordered block.
-	 * 
-	 * @param elem The unordered block
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Unordered elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * unordered block.
-	 * 
-	 * @param elem The unordered block
-	 */
-	public void end(Unordered elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * try escape.
-	 * 
-	 * @param elem The try escape
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Do elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * try escape.
-	 * 
-	 * @param elem The try escape
-	 */
-	public void end(Do elem);
-	
-	/**
-	 * This method indicates the start of a
-	 * catch block.
-	 * 
-	 * @param elem The catch block
-	 * @return Whether to process the contents
-	 */
-	public boolean start(Interrupt elem);
-	
-	/**
-	 * This method indicates the end of a
-	 * catch block.
-	 * 
-	 * @param elem The catch block
-	 */
-	public void end(Interrupt elem);
-	
-	/**
-	 * This method visits a
-	 * run construct.
-	 * 
-	 * @param elem The run
-	 */
-	public void accept(Run elem);
-	
-	/**
-	 * This method visits an import component.
-	 * 
-	 * @param elem The import
-	 */
-	public void accept(TypeImportList elem);
-	
-	/**
-	 * This method visits an import component.
-	 * 
-	 * @param elem The import
-	 */
-	public void accept(ProtocolImportList elem);
-	
-	/**
-	 * This method visits an interaction component.
-	 * 
-	 * @param elem The interaction
-	 */
-	public void accept(Interaction elem);
-	
-	/**
-	 * This method visits the role list.
-	 * 
-	 * @param elem The role list
-	 */
-	public void accept(Introduces elem);
-	
-	/**
-	 * This method visits a recursion component.
-	 * 
-	 * @param elem The recursion
-	 */
-	public void accept(Recursion elem);
-	
-	/**
-	 * This method visits an inline component.
-	 * 
-	 * @param elem The inline
-	 */
-	public void accept(Inline elem);
-	
-	/**
-	 * This method visits a type import component.
-	 * 
-	 * @param elem The type import
-	 */
-	public void accept(TypeImport elem);
-	
-	/**
-	 * This method visits a protocol import component.
-	 * 
-	 * @param elem The protocol import
-	 */
-	public void accept(ProtocolImport elem);
-	
-	/**
-	 * This method visits an end statement.
-	 * 
-	 * @param elem The end statement
-	 */
-	public void accept(End elem);
-	
+    
+    /**
+     * This method indicates the start of a
+     * block.
+     * 
+     * @param elem The block
+     * @return Whether to process the contents
+     */
+    public boolean start(Block elem);
+    
+    /**
+     * This method indicates the end of a
+     * block.
+     * 
+     * @param elem The block
+     */
+    public void end(Block elem);
+    
+    /**
+     * This method indicates the start of a
+     * choice.
+     * 
+     * @param elem The choice
+     * @return Whether to process the contents
+     */
+    public boolean start(Choice elem);
+    
+    /**
+     * This method indicates the end of a
+     * choice.
+     * 
+     * @param elem The choice
+     */
+    public void end(Choice elem);
+    
+    /**
+     * This method indicates the start of a
+     * directed choice.
+     * 
+     * @param elem The directed choice
+     * @return Whether to process the contents
+     */
+    public boolean start(DirectedChoice elem);
+    
+    /**
+     * This method indicates the end of a
+     * directed choice.
+     * 
+     * @param elem The directed choice
+     */
+    public void end(DirectedChoice elem);
+    
+    /**
+     * This method indicates the start of a
+     * on-message.
+     * 
+     * @param elem The on-message element
+     * @return Whether to process the contents
+     */
+    public boolean start(OnMessage elem);
+    
+    /**
+     * This method indicates the end of a
+     * on-message.
+     * 
+     * @param elem The on-message element
+     */
+    public void end(OnMessage elem);
+    
+    /**
+     * This method indicates the start of a
+     * parallel.
+     * 
+     * @param elem The parallel
+     * @return Whether to process the contents
+     */
+    public boolean start(Parallel elem);
+    
+    /**
+     * This method indicates the end of a
+     * parallel.
+     * 
+     * @param elem The parallel
+     */
+    public void end(Parallel elem);
+    
+    /**
+     * This method indicates the start of a
+     * protocol.
+     * 
+     * @param elem The protocol
+     * @return Whether to process the contents
+     */
+    public boolean start(Protocol elem);
+    
+    /**
+     * This method indicates the end of a
+     * protocol.
+     * 
+     * @param elem The protocol
+     */
+    public void end(Protocol elem);
+    
+    /**
+     * This method indicates the start of a
+     * repeat.
+     * 
+     * @param elem The repeat
+     * @return Whether to process the contents
+     */
+    public boolean start(Repeat elem);
+    
+    /**
+     * This method indicates the end of a
+     * repeat.
+     * 
+     * @param elem The repeat
+     */
+    public void end(Repeat elem);
+    
+    /**
+     * This method indicates the start of a
+     * labelled block.
+     * 
+     * @param elem The labelled block
+     * @return Whether to process the contents
+     */
+    public boolean start(RecBlock elem);
+    
+    /**
+     * This method indicates the end of a
+     * labelled block.
+     * 
+     * @param elem The labelled block
+     */
+    public void end(RecBlock elem);
+    
+    /**
+     * This method indicates the start of a
+     * unordered block.
+     * 
+     * @param elem The unordered block
+     * @return Whether to process the contents
+     */
+    public boolean start(Unordered elem);
+    
+    /**
+     * This method indicates the end of a
+     * unordered block.
+     * 
+     * @param elem The unordered block
+     */
+    public void end(Unordered elem);
+    
+    /**
+     * This method indicates the start of a
+     * try escape.
+     * 
+     * @param elem The try escape
+     * @return Whether to process the contents
+     */
+    public boolean start(Do elem);
+    
+    /**
+     * This method indicates the end of a
+     * try escape.
+     * 
+     * @param elem The try escape
+     */
+    public void end(Do elem);
+    
+    /**
+     * This method indicates the start of a
+     * catch block.
+     * 
+     * @param elem The catch block
+     * @return Whether to process the contents
+     */
+    public boolean start(Interrupt elem);
+    
+    /**
+     * This method indicates the end of a
+     * catch block.
+     * 
+     * @param elem The catch block
+     */
+    public void end(Interrupt elem);
+    
+    /**
+     * This method visits a
+     * run construct.
+     * 
+     * @param elem The run
+     */
+    public void accept(Run elem);
+    
+    /**
+     * This method visits an import component.
+     * 
+     * @param elem The import
+     */
+    public void accept(TypeImportList elem);
+    
+    /**
+     * This method visits an import component.
+     * 
+     * @param elem The import
+     */
+    public void accept(ProtocolImportList elem);
+    
+    /**
+     * This method visits an interaction component.
+     * 
+     * @param elem The interaction
+     */
+    public void accept(Interaction elem);
+    
+    /**
+     * This method visits the role list.
+     * 
+     * @param elem The role list
+     */
+    public void accept(Introduces elem);
+    
+    /**
+     * This method visits a recursion component.
+     * 
+     * @param elem The recursion
+     */
+    public void accept(Recursion elem);
+    
+    /**
+     * This method visits an inline component.
+     * 
+     * @param elem The inline
+     */
+    public void accept(Inline elem);
+    
+    /**
+     * This method visits a type import component.
+     * 
+     * @param elem The type import
+     */
+    public void accept(TypeImport elem);
+    
+    /**
+     * This method visits a protocol import component.
+     * 
+     * @param elem The protocol import
+     */
+    public void accept(ProtocolImport elem);
+    
+    /**
+     * This method visits an end statement.
+     * 
+     * @param elem The end statement
+     */
+    public void accept(End elem);
+    
 }

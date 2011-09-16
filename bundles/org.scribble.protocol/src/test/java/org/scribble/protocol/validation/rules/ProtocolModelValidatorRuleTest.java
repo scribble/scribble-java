@@ -25,45 +25,45 @@ import org.scribble.protocol.projection.ProtocolProjector;
 
 public class ProtocolModelValidatorRuleTest {
 
-	private static final String TEST_ROLE = "A";
+    private static final String TEST_ROLE = "A";
 
-	@org.junit.Test
-	public void testUnprojectableRole() {
-		ProtocolModel pm=new ProtocolModel();
-		
-		Protocol p=new Protocol();
-		
-		ParameterDefinition pd=new ParameterDefinition();
-		pd.setName(TEST_ROLE);
-		
-		p.getParameterDefinitions().add(pd);
-		
-		pm.setProtocol(p);
-				
-		TestScribbleLogger logger=new TestScribbleLogger();
-		
-		DefaultProtocolContext context=new DefaultProtocolContext();
-		context.setProtocolProjector(new TestErrorProjector());
+    @org.junit.Test
+    public void testUnprojectableRole() {
+        ProtocolModel pm=new ProtocolModel();
+        
+        Protocol p=new Protocol();
+        
+        ParameterDefinition pd=new ParameterDefinition();
+        pd.setName(TEST_ROLE);
+        
+        p.getParameterDefinitions().add(pd);
+        
+        pm.setProtocol(p);
+                
+        TestScribbleLogger logger=new TestScribbleLogger();
+        
+        DefaultProtocolContext context=new DefaultProtocolContext();
+        context.setProtocolProjector(new TestErrorProjector());
 
-		ProtocolModelValidatorRule rule=new ProtocolModelValidatorRule();
-		rule.validate(context, pm, logger);
-		
-		logger.verifyErrors(new String[]{
-				MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-						"org.scribble.protocol.Messages").getString("_UNPROJECTABLE_ROLES"),
-						TEST_ROLE)
-		});
-	}
-	
-	public class TestErrorProjector implements ProtocolProjector {
+        ProtocolModelValidatorRule rule=new ProtocolModelValidatorRule();
+        rule.validate(context, pm, logger);
+        
+        logger.verifyErrors(new String[]{
+                MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle(
+                        "org.scribble.protocol.Messages").getString("_UNPROJECTABLE_ROLES"),
+                        TEST_ROLE)
+        });
+    }
+    
+    public class TestErrorProjector implements ProtocolProjector {
 
-		public ProtocolModel project(ProtocolContext context,
-				ProtocolModel model, Role role, Journal journal) {
-			// Log error
-			journal.error("An error", null);
-			return null;
-		}
-		
-	}
+        public ProtocolModel project(ProtocolContext context,
+                ProtocolModel model, Role role, Journal journal) {
+            // Log error
+            journal.error("An error", null);
+            return null;
+        }
+        
+    }
 }

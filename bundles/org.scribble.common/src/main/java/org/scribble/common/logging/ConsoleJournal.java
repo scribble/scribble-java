@@ -15,29 +15,52 @@
  */
 package org.scribble.common.logging;
 
+/**
+ * This class provides an implementation of the journal that
+ * reports issues to the console.
+ *
+ */
 public class ConsoleJournal implements Journal {
+    
+    private static final String NO_DETAILS="";
 
-	public void error(String issue, java.util.Map<String,Object> props) {
-		System.out.println("ERROR: "+errorDetails(props)+issue);
-	}
-	
-	public void warning(String issue, java.util.Map<String,Object> props) {
-		System.out.println("WARN: "+errorDetails(props)+issue);
-	}
-	
-	public void info(String issue, java.util.Map<String,Object> props) {
-		System.out.println("INFO: "+errorDetails(props)+issue);
-	}
+    /**
+     * This method records an error issue.
+     * 
+     * @param issue The issue text
+     * @param props The optional properties associated with the issue
+     */
+    public void error(String issue, java.util.Map<String,Object> props) {
+        System.out.println("ERROR: "+errorDetails(props)+issue);
+    }
+    
+    /**
+     * This method records a warning issue.
+     * 
+     * @param issue The issue text
+     * @param props The optional properties associated with the issue
+     */
+    public void warning(String issue, java.util.Map<String,Object> props) {
+        System.out.println("WARN: "+errorDetails(props)+issue);
+    }
+    
+    /**
+     * This method records an information issue.
+     * 
+     * @param issue The issue text
+     * @param props The optional properties associated with the issue
+     */
+    public void info(String issue, java.util.Map<String,Object> props) {
+        System.out.println("INFO: "+errorDetails(props)+issue);
+    }
 
-	protected String errorDetails(java.util.Map<String,Object> props) {
-		String ret=NO_DETAILS;;
-		
-		if (props != null && props.containsKey(Journal.START_LINE)) {
-			ret = "[line "+props.get(Journal.START_LINE)+"] ";
-		}
-		
-		return(ret);
-	}
-	
-	private static final String NO_DETAILS="";
+    private String errorDetails(java.util.Map<String,Object> props) {
+        String ret=NO_DETAILS;
+        
+        if (props != null && props.containsKey(Journal.START_LINE)) {
+            ret = "[line "+props.get(Journal.START_LINE)+"] ";
+        }
+        
+        return (ret);
+    }
 }

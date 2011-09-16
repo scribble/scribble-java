@@ -15,8 +15,11 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.TypeReference;
 
 /**
  * This class provides the MessageSignature implementation of the
@@ -24,46 +27,47 @@ import org.scribble.common.logging.Journal;
  */
 public class MessageSignatureProjectorRule implements ProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == MessageSignature.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l) {
-		MessageSignature ret=new MessageSignature();
-		MessageSignature source=(MessageSignature)model;
-		
-		ret.derivedFrom(source);
-		
-		ret.setOperation(source.getOperation());
-		
-		for (int i=0; i < source.getTypeReferences().size(); i++) {
-			TypeReference ref=(TypeReference)
-					context.project(source.getTypeReferences().get(i),
-							role, l);
-			
-			if (ref != null) {
-				ret.getTypeReferences().add(ref);
-			}
-		}
-		
-		return(ret);
-	}
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == MessageSignature.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l) {
+        MessageSignature ret=new MessageSignature();
+        MessageSignature source=(MessageSignature)model;
+        
+        ret.derivedFrom(source);
+        
+        ret.setOperation(source.getOperation());
+        
+        for (int i=0; i < source.getTypeReferences().size(); i++) {
+            TypeReference ref=(TypeReference)
+                    context.project(source.getTypeReferences().get(i),
+                            role, l);
+            
+            if (ref != null) {
+                ret.getTypeReferences().add(ref);
+            }
+        }
+        
+        return (ret);
+    }
 }

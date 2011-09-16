@@ -23,17 +23,17 @@ import org.scribble.protocol.ProtocolContext;
  */
 public interface ProtocolValidator {
 
-	/**
-	 * This method invokes the validation of the supplied
-	 * model against the registered validators. Any issues
-	 * found during validation will be reported to the
-	 * supplied journal.
-	 * 
-	 * @param context The protocol context
-	 * @param model The protocol model
-	 * @param journal The journal
-	 */
-	public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
-			org.scribble.common.logging.Journal journal);
+    /**
+     * This method invokes the validation of the supplied
+     * model against the registered validators. Any issues
+     * found during validation will be reported to the
+     * supplied journal.
+     * 
+     * @param context The protocol context
+     * @param model The protocol model
+     * @param journal The journal
+     */
+    public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
+            org.scribble.common.logging.Journal journal);
 
 }

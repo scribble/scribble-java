@@ -23,16 +23,16 @@ import org.scribble.protocol.model.TypeReference;
 
 public class TypeReferenceComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		TypeReference m=(TypeReference)arg0;
-		TypeReference e=(TypeReference)arg1;
-		
-		if (m.getName() != null &&
-				e.getName() != null &&
-				m.getName().equals(e.getName())) {
-			return(0);
-		}
-		
-		return(1);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        TypeReference m=(TypeReference)arg0;
+        TypeReference e=(TypeReference)arg1;
+        
+        if (m.getName() != null &&
+                e.getName() != null &&
+                m.getName().equals(e.getName())) {
+            return (0);
+        }
+        
+        return (1);
+    }
 }

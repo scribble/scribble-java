@@ -22,37 +22,37 @@ import junit.framework.TestCase;
 
 public class CachedJournalTest extends TestCase {
 
-	private static final String ISSUE_VALUE1 = "IssueValue1";
-	private static final String ISSUE_KEY1 = "IssueKey1";
-	private static final String TEST_ISSUE = "TestIssue";
+    private static final String ISSUE_VALUE1 = "IssueValue1";
+    private static final String ISSUE_KEY1 = "IssueKey1";
+    private static final String TEST_ISSUE = "TestIssue";
 
-	//@org.junit.Test
-	public void testGetIssues() {
-		CachedJournal journal=new CachedJournal();
-		
-		java.util.Map<String, Object> props=new java.util.HashMap<String, Object>();
-		props.put(ISSUE_KEY1, ISSUE_VALUE1);
-		
-		journal.error(TEST_ISSUE, props);
-		
-		java.util.List<CachedJournal.IssueDetails> details=journal.getIssues();
-		
-		if (details.size() != 1) {
-			fail("Should be one entry");
-		}
-		
-		CachedJournal.IssueDetails d=details.get(0);
-		
-		if (d.getMessage().equals(TEST_ISSUE) == false) {
-			fail("Message not correct");
-		}
-		
-		if (d.getIssueType() != CachedJournal.IssueType.Error) {
-			fail("Issue type not an error");
-		}
-		
-		if (d.getProperties() != props) {
-			fail("Properties not the same");
-		}
-	}
+    //@org.junit.Test
+    public void testGetIssues() {
+        CachedJournal journal=new CachedJournal();
+        
+        java.util.Map<String, Object> props=new java.util.HashMap<String, Object>();
+        props.put(ISSUE_KEY1, ISSUE_VALUE1);
+        
+        journal.error(TEST_ISSUE, props);
+        
+        java.util.List<CachedJournal.IssueDetails> details=journal.getIssues();
+        
+        if (details.size() != 1) {
+            fail("Should be one entry");
+        }
+        
+        CachedJournal.IssueDetails d=details.get(0);
+        
+        if (d.getMessage().equals(TEST_ISSUE) == false) {
+            fail("Message not correct");
+        }
+        
+        if (d.getIssueType() != CachedJournal.IssueType.Error) {
+            fail("Issue type not an error");
+        }
+        
+        if (d.getProperties() != props) {
+            fail("Properties not the same");
+        }
+    }
 }

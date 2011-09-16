@@ -22,24 +22,24 @@ import org.scribble.protocol.model.*;
 
 public class TypeImportComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		TypeImport m=(TypeImport)arg0;
-		TypeImport e=(TypeImport)arg1;
-		
-		if (m.getName().equals(e.getName())) {
-			
-			if (m.getDataType() == null && e.getDataType() == null) {	
-				return(0);
-			}
-			
-			Comparator<ModelObject> dtc=ComparatorUtil.getComparator(DataType.class);
-			
-			if (m.getDataType() != null && e.getDataType() != null &&
-					dtc.compare(m.getDataType(), e.getDataType()) == 0) {
-				return(0);
-			}
-		}
-		
-		return(1);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        TypeImport m=(TypeImport)arg0;
+        TypeImport e=(TypeImport)arg1;
+        
+        if (m.getName().equals(e.getName())) {
+            
+            if (m.getDataType() == null && e.getDataType() == null) {    
+                return (0);
+            }
+            
+            Comparator<ModelObject> dtc=ComparatorUtil.getComparator(DataType.class);
+            
+            if (m.getDataType() != null && e.getDataType() != null &&
+                    dtc.compare(m.getDataType(), e.getDataType()) == 0) {
+                return (0);
+            }
+        }
+        
+        return (1);
+    }
 }

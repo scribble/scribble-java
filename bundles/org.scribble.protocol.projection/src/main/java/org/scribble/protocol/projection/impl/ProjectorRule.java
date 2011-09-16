@@ -15,8 +15,9 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.Role;
 
 /**
  * This interface represents the projection rule used to
@@ -24,25 +25,26 @@ import org.scribble.common.logging.Journal;
  */
 public interface ProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj);
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object, or list of model objects
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l);	
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj);
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object, or list of model objects
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l);    
 }

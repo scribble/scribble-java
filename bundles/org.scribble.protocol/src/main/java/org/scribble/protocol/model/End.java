@@ -21,20 +21,20 @@ package org.scribble.protocol.model;
  */
 public class End extends Activity {
 
-	/**
-	 * This is the default constructor.
-	 * 
-	 */
-	public End() {
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.accept(this);		
-	}
+    /**
+     * This is the default constructor.
+     * 
+     */
+    public End() {
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.accept(this);        
+    }
 }

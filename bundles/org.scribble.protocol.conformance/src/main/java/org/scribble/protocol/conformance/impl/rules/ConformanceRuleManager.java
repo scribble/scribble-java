@@ -19,29 +19,57 @@ import org.scribble.protocol.conformance.ConformanceHandler;
 import org.scribble.protocol.model.Interaction;
 import org.scribble.protocol.model.ModelObject;
 
-public class ConformanceRuleManager {
-	
-	private static java.util.Map<Class<? extends ModelObject>, ConformanceRule<? extends ModelObject>> m_rules=
-					new java.util.HashMap<Class<? extends ModelObject>, ConformanceRule<? extends ModelObject>>();
-	
-	static {
-		m_rules.put(Interaction.class, new InteractionConformanceRule());
-	}
+/**
+ * Manager for conformance rules.
+ *
+ */
+public final class ConformanceRuleManager {
+    
+    private final static java.util.Map<Class<? extends ModelObject>, ConformanceRule<? extends ModelObject>> RULES=
+                    new java.util.HashMap<Class<? extends ModelObject>, ConformanceRule<? extends ModelObject>>();
+    
+    static {
+        RULES.put(Interaction.class, new InteractionConformanceRule());
+    }
 
-	public static boolean hasRule(ModelObject modelObject) {
-		return(m_rules.containsKey(modelObject.getClass()));
-	}
-	
-	public static <T extends ModelObject> boolean conforms(T model, T ref, ConformanceHandler handler) {
-		boolean ret=false;
-		
-		@SuppressWarnings({ "unchecked" })
-		ConformanceRule<T> rule=(ConformanceRule<T>)m_rules.get(model.getClass());
-		
-		if (rule != null) {
-			ret = rule.conforms(model, ref, handler);
-		}
-		
-		return(ret);
-	}
+    /**
+     * Private constructor.
+     */
+    private ConformanceRuleManager() {
+    }
+    
+    /**
+     * This method determines whether a rule exists for the supplied
+     * model object.
+     * 
+     * @param modelObject The model object
+     * @return Whether a rule exists
+     */
+    public static boolean hasRule(ModelObject modelObject) {
+        return (RULES.containsKey(modelObject.getClass()));
+    }
+    
+    /**
+     * This method determines whether the supplied model and
+     * reference components conform.
+     * 
+     * @param model The model object
+     * @param ref The reference object
+     * @param handler Handler for reporting conformance issues
+     * @return Whether they conform
+     * 
+     * @param <T> Model component type
+     */
+    public static <T extends ModelObject> boolean conforms(T model, T ref, ConformanceHandler handler) {
+        boolean ret=false;
+        
+        @SuppressWarnings({ "unchecked" })
+        ConformanceRule<T> rule=(ConformanceRule<T>)RULES.get(model.getClass());
+        
+        if (rule != null) {
+            ret = rule.conforms(model, ref, handler);
+        }
+        
+        return (ret);
+    }
 }

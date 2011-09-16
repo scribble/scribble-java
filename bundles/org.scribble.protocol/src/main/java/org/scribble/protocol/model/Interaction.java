@@ -24,170 +24,208 @@ import java.util.Collection;
  */
 public class Interaction extends Activity {
 
-    private MessageSignature m_messageSignature=null;
-	private Role m_fromRole=null;
-	private java.util.List<Role> m_toRoles=
-				new ContainmentList<Role>(this, Role.class);
+    private MessageSignature _messageSignature=null;
+    private Role _fromRole=null;
+    private java.util.List<Role> _toRoles=
+                new ContainmentList<Role>(this, Role.class);
 
+    /**
+     * The default constructor.
+     */
     public Interaction() {
     }
 
+    /**
+     * The copy constructor.
+     * 
+     * @param i The interaction to copy
+     */
     public Interaction(Interaction i) {
-    	if (i.m_messageSignature != null) {
-    		m_messageSignature = new MessageSignature(i.m_messageSignature);
-    	}
-    	if (i.m_fromRole != null) {
-    		m_fromRole = new Role(i.m_fromRole);
-    	}
-    	for (Role r : i.m_toRoles) {
-    		m_toRoles.add(new Role(r));
-    	}
+        if (i._messageSignature != null) {
+            _messageSignature = new MessageSignature(i._messageSignature);
+        }
+        if (i._fromRole != null) {
+            _fromRole = new Role(i._fromRole);
+        }
+        for (Role r : i._toRoles) {
+            _toRoles.add(new Role(r));
+        }
     }
 
+    /**
+     * This constructor initializes the 'from' role and message
+     * signature.
+     * 
+     * @param fromRole The 'from' role
+     * @param sig The message signature
+     */
     public Interaction(Role fromRole, MessageSignature sig) {
-        m_fromRole = fromRole;
-        m_messageSignature = sig;
+        _fromRole = fromRole;
+        _messageSignature = sig;
     }
 
+    /**
+     * This method initializes the 'from' and 'to' roles, and
+     * message signature.
+     * 
+     * @param fromRole The 'from' role
+     * @param toRole The 'to' role
+     * @param sig The message signature
+     */
     public Interaction(Role fromRole, Role toRole, MessageSignature sig) {
         this(fromRole, sig);
-        if (toRole != null) m_toRoles.add(toRole);
+        if (toRole != null) {
+            _toRoles.add(toRole);
+        }
     }
 
+    /**
+     * This method initializes the 'from' and 'to' roles, and
+     * message signature.
+     * 
+     * @param fromRole The 'from' role
+     * @param toRoles The 'to' roles
+     * @param sig The message signature
+     */
     public Interaction(Role fromRole, Collection<Role> toRoles, MessageSignature sig) {
         this(fromRole, sig);
-        m_toRoles.addAll(toRoles);
+        _toRoles.addAll(toRoles);
     }
 
-	/**
-	 * This method returns the message signature.
-	 * 
-	 * @return The message signature
-	 */
-	public MessageSignature getMessageSignature() {
-		return(m_messageSignature);
-	}
-	
-	/**
-	 * This method sets the message signature.
-	 * 
-	 * @param signature The message signature
-	 */
-	public void setMessageSignature(MessageSignature signature) {
-		
-		if (m_messageSignature != null) {
-			m_messageSignature.setParent(null);
-		}
-		
-		m_messageSignature = signature;
-		
-		if (m_messageSignature != null) {
-			m_messageSignature.setParent(this);
-		}
-	}
-	
-	/**
-	 * This method returns the optional 'from' role.
-	 * 
-	 * @return The optional 'from' role
-	 */
-	public Role getFromRole() {
-		return(m_fromRole);
-	}
-	
-	/**
-	 * This method sets the optional 'from' role.
-	 * 
-	 * @param part The optional 'from' role
-	 */
-	public void setFromRole(Role part) {
-		m_fromRole = part;
-	}
-	
-	/**
-	 * This method returns the optional (one or many) 'to' roles.
-	 * 
-	 * @return The optional 'to' roles
-	 */
-	public java.util.List<Role> getToRoles() {
-		return(m_toRoles);
-	}
-	
-	public String toString() {
-		StringBuffer ret=new StringBuffer();
-		
-		if (getMessageSignature() != null) {
-			ret.append(getMessageSignature());
-			ret.append(" ");
-		}
-		
-		if (getFromRole() != null) {
-			ret.append(getFromRole());
-			ret.append("->");
-			
-			for (int i=0; i < getToRoles().size(); i++) {
-				if (i > 0) {
-					ret.append(",");
-				}
-				ret.append(getToRoles().get(i));
-			}
-		} else {
-			ret.append("->");
-			
-			for (int i=0; i < getToRoles().size(); i++) {
-				if (i > 0) {
-					ret.append(",");
-				}
-				ret.append(getToRoles().get(i));
-			}
-		}
-		
-		return(ret.toString());
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.accept(this);
-		
-		if (getMessageSignature() != null) {
-			getMessageSignature().visit(visitor);
-		}
-		
-		if (getFromRole() != null) {
-			getFromRole().visit(visitor);
-		}
-		
-		for (Role r : getToRoles()) {
-			r.visit(visitor);
-		}
-	}
+    /**
+     * This method returns the message signature.
+     * 
+     * @return The message signature
+     */
+    public MessageSignature getMessageSignature() {
+        return (_messageSignature);
+    }
+    
+    /**
+     * This method sets the message signature.
+     * 
+     * @param signature The message signature
+     */
+    public void setMessageSignature(MessageSignature signature) {
+        
+        if (_messageSignature != null) {
+            _messageSignature.setParent(null);
+        }
+        
+        _messageSignature = signature;
+        
+        if (_messageSignature != null) {
+            _messageSignature.setParent(this);
+        }
+    }
+    
+    /**
+     * This method returns the optional 'from' role.
+     * 
+     * @return The optional 'from' role
+     */
+    public Role getFromRole() {
+        return (_fromRole);
+    }
+    
+    /**
+     * This method sets the optional 'from' role.
+     * 
+     * @param part The optional 'from' role
+     */
+    public void setFromRole(Role part) {
+        _fromRole = part;
+    }
+    
+    /**
+     * This method returns the optional (one or many) 'to' roles.
+     * 
+     * @return The optional 'to' roles
+     */
+    public java.util.List<Role> getToRoles() {
+        return (_toRoles);
+    }
+    
+    @Override
+    public String toString() {
+        StringBuffer ret=new StringBuffer();
+        
+        if (getMessageSignature() != null) {
+            ret.append(getMessageSignature());
+            ret.append(" ");
+        }
+        
+        if (getFromRole() != null) {
+            ret.append(getFromRole());
+            ret.append("->");
+            
+            for (int i=0; i < getToRoles().size(); i++) {
+                if (i > 0) {
+                    ret.append(",");
+                }
+                ret.append(getToRoles().get(i));
+            }
+        } else {
+            ret.append("->");
+            
+            for (int i=0; i < getToRoles().size(); i++) {
+                if (i > 0) {
+                    ret.append(",");
+                }
+                ret.append(getToRoles().get(i));
+            }
+        }
+        
+        return (ret.toString());
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.accept(this);
+        
+        if (getMessageSignature() != null) {
+            getMessageSignature().visit(visitor);
+        }
+        
+        if (getFromRole() != null) {
+            getFromRole().visit(visitor);
+        }
+        
+        for (Role r : getToRoles()) {
+            r.visit(visitor);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Interaction that = (Interaction) o;
 
-        return !(m_fromRole != null
-                ? !m_fromRole.equals(that.m_fromRole)
-                : that.m_fromRole != null)
-            && !(m_messageSignature != null
-                ? !m_messageSignature.equals(that.m_messageSignature)
-                : that.m_messageSignature != null) 
-            && m_toRoles.equals(that.m_toRoles);
+        return !(_fromRole != null
+                ? !_fromRole.equals(that._fromRole)
+                : that._fromRole != null)
+            && !(_messageSignature != null
+                ? !_messageSignature.equals(that._messageSignature)
+                : that._messageSignature != null) 
+            && _toRoles.equals(that._toRoles);
     }
 
     @Override
     public int hashCode() {
-        int result = m_messageSignature != null ? m_messageSignature.hashCode() : 0;
-        result = 31 * result + (m_fromRole != null ? m_fromRole.hashCode() : 0);
-        result = 31 * result + (m_toRoles != null ? m_toRoles.hashCode() : 0);
+        int result = _messageSignature != null ? _messageSignature.hashCode() : 0;
+        result = 31 * result + (_fromRole != null ? _fromRole.hashCode() : 0);
+        result = 31 * result + (_toRoles != null ? _toRoles.hashCode() : 0);
         return result;
     }
 

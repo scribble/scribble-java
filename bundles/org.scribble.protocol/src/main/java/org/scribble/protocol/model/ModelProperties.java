@@ -22,7 +22,16 @@ package org.scribble.protocol.model;
  */
 public interface ModelProperties {
 
-	public static final String START_LOCATION="scribble.start.location";
-	
-	public static final String END_LOCATION="scribble.end.location";
+    /**
+     * This construct defines the start location in a textual description of
+     * a scribble construct.
+     */
+    public static final String START_LOCATION="scribble.start.location";
+    
+    /**
+     * This construct defines the end location in a textual description of
+     * a scribble construct.
+     */
+    public static final String END_LOCATION="scribble.end.location";
+
 }

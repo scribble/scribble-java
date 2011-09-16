@@ -24,80 +24,80 @@ import javax.xml.namespace.QName;
  */
 public class ResourceContent implements Content {
 
-	private java.net.URI m_uri=null;
-	
-	/**
-	 * This construct is initialized with the resource URI.
-	 * 
-	 * @param uri The uri
-	 */
-	public ResourceContent(java.net.URI uri) {
-		m_uri = uri;
-	}
-	
-	/**
-	 * This method returns the content name if available.
-	 * 
-	 * @return The optional content name
-	 */
-	public String getName() {
-		try {
-			return(m_uri.toURL().getFile());
-		} catch(Exception e) {
-			return(null);
-		}
-	}
-	
-	/**
-	 * This method returns the input stream for accessing the content.
-	 * 
-	 * @return The input stream
-	 * @throws IOException Failed to get input stream
-	 */
-	public java.io.InputStream getInputStream() throws java.io.IOException {
-		return(m_uri.toURL().openStream());
-	}
-	
-	/**
-	 * This method determines whether the content has an extension
-	 * of the specified type.
-	 * 
-	 * @param ext The extension
-	 * @return Whether the content has the specified extension
-	 */
-	public boolean hasExtension(String ext) {
-		int index=getName().lastIndexOf('.');
-		String sourceType=null;
-		
-		if (index != -1) {
-			sourceType = getName().substring(index+1);
-		}
+    private java.net.URI _uri=null;
+    
+    /**
+     * This construct is initialized with the resource URI.
+     * 
+     * @param uri The uri
+     */
+    public ResourceContent(java.net.URI uri) {
+        _uri = uri;
+    }
+    
+    /**
+     * This method returns the content name if available.
+     * 
+     * @return The optional content name
+     */
+    public String getName() {
+        try {
+            return (_uri.toURL().getFile());
+        } catch (Exception e) {
+            return (null);
+        }
+    }
+    
+    /**
+     * This method returns the input stream for accessing the content.
+     * 
+     * @return The input stream
+     * @throws java.io.IOException Failed to get input stream
+     */
+    public java.io.InputStream getInputStream() throws java.io.IOException {
+        return (_uri.toURL().openStream());
+    }
+    
+    /**
+     * This method determines whether the content has an extension
+     * of the specified type.
+     * 
+     * @param ext The extension
+     * @return Whether the content has the specified extension
+     */
+    public boolean hasExtension(String ext) {
+        int index=getName().lastIndexOf('.');
+        String sourceType=null;
+        
+        if (index != -1) {
+            sourceType = getName().substring(index+1);
+        }
 
-		return(sourceType.equals(ext));
-	}
-	
-	/**
-	 * This method determines whether the content is an XSD type of
-	 * the value specified.
-	 * 
-	 * @param xsdType The XSD type name
-	 * @return Whether the content is an XSD type of the specified name
-	 */
-	public boolean isXSDType(QName xsdType) {
-		// TODO: Implement method
-		throw new UnsupportedOperationException();
-	}
+        return (sourceType.equals(ext));
+    }
+    
+    /**
+     * This method determines whether the content is an XSD type of
+     * the value specified.
+     * 
+     * @param xsdType The XSD type name
+     * @return Whether the content is an XSD type of the specified name
+     */
+    public boolean isXSDType(QName xsdType) {
+        // TODO: Implement method
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 * This method determines whether the content is an XSD element of
-	 * the value specified.
-	 * 
-	 * @param xsdElem The XSD element name
-	 * @return Whether the content is an XSD element of the specified name
-	 */
-	public boolean isXSDElement(QName xsdElem) {
-		// TODO: Implement method
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * This method determines whether the content is an XSD element of
+     * the value specified.
+     * 
+     * @param xsdElem The XSD element name
+     * @return Whether the content is an XSD element of the specified name
+     */
+    public boolean isXSDElement(QName xsdElem) {
+        // TODO: Implement method
+        throw new UnsupportedOperationException();
+    }
 
 }

@@ -23,22 +23,22 @@ package org.scribble.common.model;
  */
 public interface Annotation {
 
-	/**
-	 * Optional id for the annotation. If specified, it must be
-	 * unique within the scope of the protocol model in which
-	 * it is defined.
-	 * 
-	 * @return The unique annotation id, or null if undefined
-	 */
-	public String getId();
-	
-	/**
-	 * This method generates a text based representation of annotation,
-	 * that would be exported between [[ and ]] delimitors in the
-	 * text based scribble representation.
-	 * 
-	 * @return The textual representation of the annotation
-	 */
-	public String toString();
-	
+    /**
+     * Optional id for the annotation. If specified, it must be
+     * unique within the scope of the protocol model in which
+     * it is defined.
+     * 
+     * @return The unique annotation id, or null if undefined
+     */
+    public String getId();
+    
+    /**
+     * This method generates a text based representation of annotation,
+     * that would be exported between [[ and ]] delimitors in the
+     * text based scribble representation.
+     * 
+     * @return The textual representation of the annotation
+     */
+    public String toString();
+    
 }

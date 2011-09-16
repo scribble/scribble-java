@@ -22,119 +22,125 @@ package org.scribble.protocol.model;
  */
 public class DirectedChoice extends Activity {
 
-	private Role m_fromRole=null;
-	private java.util.List<Role> m_toRoles=
-			new ContainmentList<Role>(this, Role.class);
-	private java.util.List<OnMessage> m_onMessages=new ContainmentList<OnMessage>(this, OnMessage.class);
+    private Role _fromRole=null;
+    private java.util.List<Role> _toRoles=
+            new ContainmentList<Role>(this, Role.class);
+    private java.util.List<OnMessage> _onMessages=new ContainmentList<OnMessage>(this, OnMessage.class);
 
-	/**
-	 * This is the default constructor.
-	 * 
-	 */
-	public DirectedChoice() {
-	}
-	
-	/**
-	 * This method returns the from role.
-	 * 
-	 * @return The from role
-	 */
-	public Role getFromRole() {
-		return(m_fromRole);
-	}
-	
-	/**
-	 * This method sets the from role.
-	 * 
-	 * @param part The from role
-	 */
-	public void setFromRole(Role part) {
-		m_fromRole = part;
-	}
-	
-	/**
-	 * This method returns the optional (one or many) 'to' roles.
-	 * 
-	 * @return The optional 'to' roles
-	 */
-	public java.util.List<Role> getToRoles() {
-		return(m_toRoles);
-	}
-	
-	/**
-	 * This method returns the list of on-message blocks
-	 * representing the different paths of the directed
-	 * choice.
-	 * 
-	 * @return The list of on-messages
-	 */
-	public java.util.List<OnMessage> getOnMessages() {
-		return(m_onMessages);
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.start(this);
-		
-		if (getFromRole() != null) {
-			getFromRole().visit(visitor);
-		}
-		
-		for (Role toRole : getToRoles()) {
-			toRole.visit(visitor);
-		}
-		
-		for (OnMessage om : getOnMessages()) {
-			om.visit(visitor);
-		}
-		
-		visitor.end(this);
-	}
-	
+    /**
+     * This is the default constructor.
+     * 
+     */
+    public DirectedChoice() {
+    }
+    
+    /**
+     * This method returns the from role.
+     * 
+     * @return The from role
+     */
+    public Role getFromRole() {
+        return (_fromRole);
+    }
+    
+    /**
+     * This method sets the from role.
+     * 
+     * @param part The from role
+     */
+    public void setFromRole(Role part) {
+        _fromRole = part;
+    }
+    
+    /**
+     * This method returns the optional (one or many) 'to' roles.
+     * 
+     * @return The optional 'to' roles
+     */
+    public java.util.List<Role> getToRoles() {
+        return (_toRoles);
+    }
+    
+    /**
+     * This method returns the list of on-message blocks
+     * representing the different paths of the directed
+     * choice.
+     * 
+     * @return The list of on-messages
+     */
+    public java.util.List<OnMessage> getOnMessages() {
+        return (_onMessages);
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.start(this);
+        
+        if (getFromRole() != null) {
+            getFromRole().visit(visitor);
+        }
+        
+        for (Role toRole : getToRoles()) {
+            toRole.visit(visitor);
+        }
+        
+        for (OnMessage om : getOnMessages()) {
+            om.visit(visitor);
+        }
+        
+        visitor.end(this);
+    }
+    
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DirectedChoice that = (DirectedChoice) o;
 
-        return !(m_fromRole != null
-                ? !m_fromRole.equals(that.m_fromRole)
-                : that.m_fromRole != null)
-             && m_onMessages.equals(that.m_onMessages);
+        return !(_fromRole != null
+                ? !_fromRole.equals(that._fromRole)
+                : that._fromRole != null)
+             && _onMessages.equals(that._onMessages);
     }
 
     @Override
     public int hashCode() {
-        int result = m_onMessages.hashCode();
-        result = 31 * result + (m_fromRole != null ? m_fromRole.hashCode() : 0);
+        int result = _onMessages.hashCode();
+        result = 31 * result + (_fromRole != null ? _fromRole.hashCode() : 0);
         return result;
     }
 
-	@Override
-	public String toString() {
-		String result =  "";
-		if (m_fromRole != null) result += "from " + m_fromRole+" ";
-		if (m_toRoles.size() > 0) {
-			result += "to ";
-			for (int i=0; i < m_toRoles.size(); i++) {
-				if (i > 0) {
-					result += ", ";
-				}
-				result += m_toRoles.get(i);
-			}
-		}
-		for (OnMessage b: m_onMessages) {
-			if (m_onMessages.indexOf(b) > 0) {
-				result += "or ";
-			}
-			result += b + "\n";
-		}
-		return result;
-	}
+    @Override
+    public String toString() {
+        String result =  "";
+        if (_fromRole != null) {
+            result += "from " + _fromRole+" ";
+        }
+        if (_toRoles.size() > 0) {
+            result += "to ";
+            for (int i=0; i < _toRoles.size(); i++) {
+                if (i > 0) {
+                    result += ", ";
+                }
+                result += _toRoles.get(i);
+            }
+        }
+        for (OnMessage b : _onMessages) {
+            if (_onMessages.indexOf(b) > 0) {
+                result += "or ";
+            }
+            result += b + "\n";
+        }
+        return result;
+    }
 }

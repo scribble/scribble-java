@@ -23,53 +23,69 @@ package org.scribble.protocol.monitor;
  */
 public class Result {
 
-	private boolean m_valid=false;
-	private String m_reason=null;
-	private java.util.Map<String,Object> m_properties=new java.util.HashMap<String, Object>();
-	
-	public static final Result VALID = new Result(true);
-	public static final Result NOT_HANDLED = new Result(false);
-	public static final Result INVALID = new Result(false);
-	
-	/**
-	 * Constructor specify whether result is valid.
-	 * 
-	 * @param valid Whether result is valid
-	 */
-	public Result(boolean valid) {
-		m_valid = valid;
-	}
-	
-	/**
-	 * Constructor to specify whether the result is valid, and a reason.
-	 * 
-	 * @param valid Whether the result is valid
-	 * @param reason The reason for the result
-	 */
-	public Result(boolean valid, String reason) {
-		this(valid);
-		m_reason = reason;
-	}
-	
-	/**
-	 * This method determines whether the result is valid.
-	 * 
-	 * @return Whether the result is valid
-	 */
-	public boolean isValid() {
-		return(m_valid);
-	}
-	
-	/**
-	 * This method returns the reason for the result.
-	 * 
-	 * @return The reason, or null if not specified
-	 */
-	public String getReason() {
-		return(m_reason);
-	}
-	
-	public java.util.Map<String,Object> getProperties() {
-		return(m_properties);
-	}
+    private boolean _valid=false;
+    private String _reason=null;
+    private java.util.Map<String,Object> _properties=new java.util.HashMap<String, Object>();
+    
+    /**
+     * Valid result.
+     */
+    public static final Result VALID = new Result(true);
+
+    /**
+     * Message was not handled.
+     */
+    public static final Result NOT_HANDLED = new Result(false);
+    
+    /**
+     * Invalid result.
+     */
+    public static final Result INVALID = new Result(false);
+    
+    /**
+     * Constructor specify whether result is valid.
+     * 
+     * @param valid Whether result is valid
+     */
+    public Result(boolean valid) {
+        _valid = valid;
+    }
+    
+    /**
+     * Constructor to specify whether the result is valid, and a reason.
+     * 
+     * @param valid Whether the result is valid
+     * @param reason The reason for the result
+     */
+    public Result(boolean valid, String reason) {
+        this(valid);
+        _reason = reason;
+    }
+    
+    /**
+     * This method determines whether the result is valid.
+     * 
+     * @return Whether the result is valid
+     */
+    public boolean isValid() {
+        return (_valid);
+    }
+    
+    /**
+     * This method returns the reason for the result.
+     * 
+     * @return The reason, or null if not specified
+     */
+    public String getReason() {
+        return (_reason);
+    }
+    
+    /**
+     * This method returns the properties.
+     * 
+     * @return The properties
+     */
+    public java.util.Map<String,Object> getProperties() {
+        return (_properties);
+    }
 }

@@ -16,50 +16,54 @@
  */
 package org.scribble.protocol.export;
 
+/**
+ * This is the default protocol export manager implementation.
+ *
+ */
 public class DefaultProtocolExportManager implements ProtocolExportManager {
-	
-	/**
-	 * This method returns the protocol exporter associated with
-	 * the supplied id.
-	 * 
-	 * @param id The id
-	 * @return The exporter, or null if not found
-	 */
-	public ProtocolExporter getExporter(String id) {
-		if (m_exporters != null) {
-			for (ProtocolExporter pe : m_exporters) {
-				if (pe.getId().equals(id)) {
-					return(pe);
-				}
-			}
-		}
-		
-		return(null);
-	}
-	
-	/**
-	 * This method returns the list of exporters registered
-	 * with the manager.
-	 * 
-	 * @return The list of exporters
-	 */
-	public java.util.List<ProtocolExporter> getExporters() {
-		if (m_exporters == null) {
-			m_exporters = new java.util.ArrayList<ProtocolExporter>();
-		}
-		
-		return(m_exporters);
-	}
-	
-	/**
-	 * This method sets the list of exporters registered
-	 * with the manager.
-	 * 
-	 * @param exporters The list of exporters
-	 */
-	public void setExporters(java.util.List<ProtocolExporter> exporters) {
-		m_exporters = exporters;
-	}
-	
-	private java.util.List<ProtocolExporter> m_exporters=null;
+    
+    private java.util.List<ProtocolExporter> _exporters=null;
+    
+    /**
+     * This method returns the protocol exporter associated with
+     * the supplied id.
+     * 
+     * @param id The id
+     * @return The exporter, or null if not found
+     */
+    public ProtocolExporter getExporter(String id) {
+        if (_exporters != null) {
+            for (ProtocolExporter pe : _exporters) {
+                if (pe.getId().equals(id)) {
+                    return (pe);
+                }
+            }
+        }
+        
+        return (null);
+    }
+    
+    /**
+     * This method returns the list of exporters registered
+     * with the manager.
+     * 
+     * @return The list of exporters
+     */
+    public java.util.List<ProtocolExporter> getExporters() {
+        if (_exporters == null) {
+            _exporters = new java.util.ArrayList<ProtocolExporter>();
+        }
+        
+        return (_exporters);
+    }
+    
+    /**
+     * This method sets the list of exporters registered
+     * with the manager.
+     * 
+     * @param exporters The list of exporters
+     */
+    public void setExporters(java.util.List<ProtocolExporter> exporters) {
+        _exporters = exporters;
+    }
 }

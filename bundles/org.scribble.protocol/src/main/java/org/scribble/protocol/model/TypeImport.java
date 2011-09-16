@@ -22,70 +22,71 @@ package org.scribble.protocol.model;
  */
 public class TypeImport extends ModelObject {
 
-	private String m_name=null;
-	private DataType m_dataType=null;
-	
-	/**
-	 * The default constructor.
-	 */
-	public TypeImport() {
-	}
-	
-	/**
-	 * This method returns the name of the
-	 * type being imported.
-	 * 
-	 * @return The name
-	 */
-	public String getName() {
-		return(m_name);
-	}
-	
-	/**
-	 * This method sets the name of the
-	 * type being imported.
-	 * 
-	 * @param name The name
-	 */
-	public void setName(String name) {
-		m_name = name;
-	}
-	
-	/**
-	 * This method returns the data type.
-	 * 
-	 * @return The data type
-	 */
-	public DataType getDataType(){
-		return(m_dataType);
-	}
-	
-	/**
-	 * This method sets the data type.
-	 * 
-	 * @param dataType The data type
-	 */
-	public void setDataType(DataType dataType) {
-		m_dataType = dataType;
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.accept(this);
-	}
-	
-	public String toString() {
-		String ret=getName();
-		
-		if (ret == null) {
-			ret = "<Unnamed Type>";
-		}
-		
-		return(ret);
-	}
+    private String _name=null;
+    private DataType _dataType=null;
+    
+    /**
+     * The default constructor.
+     */
+    public TypeImport() {
+    }
+    
+    /**
+     * This method returns the name of the
+     * type being imported.
+     * 
+     * @return The name
+     */
+    public String getName() {
+        return (_name);
+    }
+    
+    /**
+     * This method sets the name of the
+     * type being imported.
+     * 
+     * @param name The name
+     */
+    public void setName(String name) {
+        _name = name;
+    }
+    
+    /**
+     * This method returns the data type.
+     * 
+     * @return The data type
+     */
+    public DataType getDataType() {
+        return (_dataType);
+    }
+    
+    /**
+     * This method sets the data type.
+     * 
+     * @param dataType The data type
+     */
+    public void setDataType(DataType dataType) {
+        _dataType = dataType;
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.accept(this);
+    }
+    
+    @Override
+    public String toString() {
+        String ret=getName();
+        
+        if (ret == null) {
+            ret = "<Unnamed Type>";
+        }
+        
+        return (ret);
+    }
 }

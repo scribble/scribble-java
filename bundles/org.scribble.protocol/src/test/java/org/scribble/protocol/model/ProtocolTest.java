@@ -20,18 +20,18 @@ import static org.junit.Assert.*;
 
 public class ProtocolTest {
 
-	@org.junit.Test
-	public void testGetTopLevelProtocol() {
-		ProtocolModel model=new ProtocolModel();
-		
-		Protocol top=new Protocol();
-		model.setProtocol(top);
-		
-		Protocol inner=new Protocol();
-		top.getNestedProtocols().add(inner);
-		
-		if (inner.getTopLevelProtocol() != top) {
-			fail("Top level protocol is incorrect");
-		}
-	}
+    @org.junit.Test
+    public void testGetTopLevelProtocol() {
+        ProtocolModel model=new ProtocolModel();
+        
+        Protocol top=new Protocol();
+        model.setProtocol(top);
+        
+        Protocol inner=new Protocol();
+        top.getNestedProtocols().add(inner);
+        
+        if (inner.getTopLevelProtocol() != top) {
+            fail("Top level protocol is incorrect");
+        }
+    }
 }

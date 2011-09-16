@@ -22,10 +22,10 @@ package org.scribble.protocol.model;
  */
 public abstract class ImportList extends ModelObject {
 
-	/**
-	 * The default constructor.
-	 */
-	public ImportList() {
-	}
-	
+    /**
+     * The default constructor.
+     */
+    public ImportList() {
+    }
+    
 }

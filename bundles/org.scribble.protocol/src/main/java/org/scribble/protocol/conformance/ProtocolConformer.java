@@ -24,17 +24,16 @@ package org.scribble.protocol.conformance;
  */
 public interface ProtocolConformer {
 
-	/**
-	 * This method checks whether the supplied model conforms to
-	 * the reference model.
-	 * 
-	 * @param model The model to be verified
-	 * @param ref The reference model
-	 * @param handler Handler for reporting conformance results
-	 * @return Whether the protocol models conform to each other
-	 */
-	public void conforms(org.scribble.protocol.model.ProtocolModel model,
-					org.scribble.protocol.model.ProtocolModel ref,
-								ConformanceHandler handler);
-	
+    /**
+     * This method checks whether the supplied model conforms to
+     * the reference model.
+     * 
+     * @param model The model to be verified
+     * @param ref The reference model
+     * @param handler Handler for reporting conformance results
+     */
+    public void conforms(org.scribble.protocol.model.ProtocolModel model,
+                    org.scribble.protocol.model.ProtocolModel ref,
+                                ConformanceHandler handler);
+    
 }

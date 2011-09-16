@@ -6,9 +6,9 @@ import org.junit.Test;
 
 public class ChoiceProjectorRuleTest {
 
-	@Test
-	public void test() {
-		//ChoiceProjectorRule.extractCommonBehaviour(context, projected, role, l);
-	}
+    @Test
+    public void test() {
+        //ChoiceProjectorRule.extractCommonBehaviour(context, projected, role, l);
+    }
 
 }

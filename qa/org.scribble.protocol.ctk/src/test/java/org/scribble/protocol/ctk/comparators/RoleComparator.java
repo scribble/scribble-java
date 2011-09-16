@@ -20,22 +20,22 @@ import org.scribble.protocol.model.*;
 
 public class RoleComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Role m=(Role)arg0;
-		Role e=(Role)arg1;
-		
-		if (m == null && e == null) {
-			return(0);
-		}
-		
-		if (m == null || e == null){
-			return(1);
-		}
-		
-		if (m.getName().equals(e.getName())) {
-			return(0);
-		}
-		
-		return(1);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Role m=(Role)arg0;
+        Role e=(Role)arg1;
+        
+        if (m == null && e == null) {
+            return (0);
+        }
+        
+        if (m == null || e == null){
+            return (1);
+        }
+        
+        if (m.getName().equals(e.getName())) {
+            return (0);
+        }
+        
+        return (1);
+    }
 }

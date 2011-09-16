@@ -22,15 +22,15 @@ package org.scribble.common.resource;
  */
 public interface ResourceLocator {
 
-	/**
-	 * This method can be used to retrieve the URI of a resource which
-	 * is located at the specified URI, potentially relative to a resource
-	 * that is being processed.
-	 * 
-	 * @param uri The relative URI of the resource to load
-	 * @return The URI, or null if not found
-	 * @throws Exception Failed to obtain URI
-	 */
-	public java.net.URI getResourceURI(String uri) throws Exception;
+    /**
+     * This method can be used to retrieve the URI of a resource which
+     * is located at the specified URI, potentially relative to a resource
+     * that is being processed.
+     * 
+     * @param uri The relative URI of the resource to load
+     * @return The URI, or null if not found
+     * @throws Exception Failed to obtain URI
+     */
+    public java.net.URI getResourceURI(String uri) throws Exception;
 
 }

@@ -24,15 +24,15 @@ import org.scribble.protocol.conformance.ConformanceHandler;
  */
 public interface ConformanceRule<T> {
 
-	/**
-	 * This method checks the conformance of two model objects
-	 * of the same type.
-	 * 
-	 * @param model The model object
-	 * @param ref The reference object
-	 * @param handler Report conformance issues
-	 * @return Whether the model and reference objects conform
-	 */
-	public boolean conforms(T model, T ref, ConformanceHandler handler);
-	
+    /**
+     * This method checks the conformance of two model objects
+     * of the same type.
+     * 
+     * @param model The model object
+     * @param ref The reference object
+     * @param handler Report conformance issues
+     * @return Whether the model and reference objects conform
+     */
+    public boolean conforms(T model, T ref, ConformanceHandler handler);
+    
 }

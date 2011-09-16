@@ -26,32 +26,38 @@ import org.scribble.protocol.model.ProtocolReference;
  * This class provides utility functions related to the protocol model.
  *
  */
-public class ProtocolModelUtil {
+public final class ProtocolModelUtil {
 
-	/**
-	 * This method attempts to locate a protocol import statement associated
-	 * with the supplied protocol reference.
-	 * 
-	 * @param model The protocol model
-	 * @param ref The protocol reference
-	 * @return The protocol import statement, or null if not found
-	 */
-	public static ProtocolImport getProtocolImport(ProtocolModel model, ProtocolReference ref) {
-		ProtocolImport ret=null;
-		
-		for (ImportList il : model.getImports()) {
-			if (il instanceof ProtocolImportList) {
-				
-				for (ProtocolImport pi : ((ProtocolImportList)il).getProtocolImports()) {
-					if (pi.getName().equals(ref.getName())) {
-						ret = pi;
-						break;
-					}
-				}
-			}
-		}
-		
-		return(ret);
-	}
-	
+    /**
+     * Private constructor.
+     */
+    private ProtocolModelUtil() {
+    }
+    
+    /**
+     * This method attempts to locate a protocol import statement associated
+     * with the supplied protocol reference.
+     * 
+     * @param model The protocol model
+     * @param ref The protocol reference
+     * @return The protocol import statement, or null if not found
+     */
+    public static ProtocolImport getProtocolImport(ProtocolModel model, ProtocolReference ref) {
+        ProtocolImport ret=null;
+        
+        for (ImportList il : model.getImports()) {
+            if (il instanceof ProtocolImportList) {
+                
+                for (ProtocolImport pi : ((ProtocolImportList)il).getProtocolImports()) {
+                    if (pi.getName().equals(ref.getName())) {
+                        ret = pi;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return (ret);
+    }
+    
 }

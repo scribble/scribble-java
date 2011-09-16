@@ -25,44 +25,69 @@ import javax.xml.bind.Unmarshaller;
 
 import org.scribble.protocol.monitor.model.Description;
 
-public class MonitorModelUtil {
+/**
+ * Monitor model utility functions.
+ *
+ */
+public final class MonitorModelUtil {
 
-	public static Description deserialize(java.io.InputStream is) throws IOException {
-		Description ret=null;
-		
-		try {
-			JAXBContext context = JAXBContext.newInstance("org.scribble.protocol.monitor.model",
-					MonitorModelUtil.class.getClassLoader());
-			Unmarshaller unmarshaller = context.createUnmarshaller();
-			
-			//note: setting schema to null will turn validator off
-			//unmarshaller.setSchema(null);
-			Object xmlObject = unmarshaller.unmarshal(is);
-			
-			if (xmlObject instanceof JAXBElement) {
-				ret = (Description)((JAXBElement<?>)xmlObject).getValue();
-			}
-			
-		} catch(Exception e) {
-			throw new IOException("Failed to deserialize description", e);
-		}
-		
-		return(ret);
-	}
-	
-	public static void serialize(Description desc, java.io.OutputStream os) throws IOException {
-		
-		try {
-			org.scribble.protocol.monitor.model.ObjectFactory factory=
-						new org.scribble.protocol.monitor.model.ObjectFactory();
-			
-			JAXBContext context = JAXBContext.newInstance(Description.class);
-			Marshaller marshaller = context.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			
-			marshaller.marshal(factory.createDescription(desc), os);
-		} catch(Exception e) {
-			throw new IOException("Failed to serialize description", e);
-		}
-	}
+    /**
+     * Private constructor.
+     */
+    private MonitorModelUtil() {
+    }
+    
+    /**
+     * This method deserialises the model from the input stream.
+     * 
+     * @param is The input stream
+     * @return The monitor description
+     * @throws IOException Failed to deserialize
+     */
+    public static Description deserialize(java.io.InputStream is) throws IOException {
+        Description ret=null;
+        
+        try {
+            JAXBContext context = JAXBContext.newInstance("org.scribble.protocol.monitor.model",
+                    MonitorModelUtil.class.getClassLoader());
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            
+            //note: setting schema to null will turn validator off
+            //unmarshaller.setSchema(null);
+            Object xmlObject = unmarshaller.unmarshal(is);
+            
+            if (xmlObject instanceof JAXBElement) {
+                ret = (Description)((JAXBElement<?>)xmlObject).getValue();
+            }
+            
+        } catch (Exception e) {
+            throw new IOException("Failed to deserialize description", e);
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * This method serializes the supplied monitor description to the
+     * supplied output stream.
+     * 
+     * @param desc The monitoring description
+     * @param os The output stream
+      * @throws IOException Failed to serialize
+     */
+    public static void serialize(Description desc, java.io.OutputStream os) throws IOException {
+        
+        try {
+            org.scribble.protocol.monitor.model.ObjectFactory factory=
+                        new org.scribble.protocol.monitor.model.ObjectFactory();
+            
+            JAXBContext context = JAXBContext.newInstance(Description.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            
+            marshaller.marshal(factory.createDescription(desc), os);
+        } catch (Exception e) {
+            throw new IOException("Failed to serialize description", e);
+        }
+    }
 }

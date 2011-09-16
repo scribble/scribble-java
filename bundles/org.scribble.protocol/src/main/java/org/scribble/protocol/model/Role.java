@@ -20,91 +20,94 @@ package org.scribble.protocol.model;
  * 
  */
 public class Role extends ModelObject {
-	
-	private String m_name=null;	
+    
+    private String _name=null;    
 
-	/**
-	 * This is the default constructor.
-	 */
-	public Role() {
-	}
-	
-	/**
-	 * This is the copy constructor.
-	 * 
-	 * @param role The role
-	 */
-	public Role(Role role) {
-		m_name = role.getName();
-	}
-	
-	/**
-	 * This constructor initializes the role with a name.
-	 * 
-	 * @param roleName The role name
-	 */
-	public Role(String roleName) {
-		m_name = roleName;
-	}
-	
-	/**
-	 * This method returns the name of the role.
-	 * 
-	 * @return The name
-	 */
-	public String getName() {
-		return(m_name);
-	}
-	
-	/**
-	 * This method sets the name of the role.
-	 * 
-	 * @param name The name
-	 */
-	public void setName(String name) {
-		m_name = name;
-	}
-	
-	public boolean equals(Object obj) {
-		boolean ret=false;
-	
-		if (obj instanceof Role) {
-			Role other=(Role)obj;
-			
-			if (other.getName() != null && other.getName().equals(m_name)) {
-				ret = true;
-			}
-		}
-		
-		return(ret);
-	}
-	
-	public int hashCode() {
-		int ret=super.hashCode();
-		
-		if (m_name != null) {
-			ret = m_name.hashCode();
-		}
-		
-		return(ret);
-	}
-	
-	public String toString() {
-		String ret=getName();
-		
-		if (ret == null) {
-			ret = "<Unnamed Role>";
-		}
-		
-		return(ret);
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-	}
+    /**
+     * This is the default constructor.
+     */
+    public Role() {
+    }
+    
+    /**
+     * This is the copy constructor.
+     * 
+     * @param role The role
+     */
+    public Role(Role role) {
+        _name = role.getName();
+    }
+    
+    /**
+     * This constructor initializes the role with a name.
+     * 
+     * @param roleName The role name
+     */
+    public Role(String roleName) {
+        _name = roleName;
+    }
+    
+    /**
+     * This method returns the name of the role.
+     * 
+     * @return The name
+     */
+    public String getName() {
+        return (_name);
+    }
+    
+    /**
+     * This method sets the name of the role.
+     * 
+     * @param name The name
+     */
+    public void setName(String name) {
+        _name = name;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret=false;
+    
+        if (obj instanceof Role) {
+            Role other=(Role)obj;
+            
+            if (other.getName() != null && other.getName().equals(_name)) {
+                ret = true;
+            }
+        }
+        
+        return (ret);
+    }
+    
+    @Override
+    public int hashCode() {
+        int ret=super.hashCode();
+        
+        if (_name != null) {
+            ret = _name.hashCode();
+        }
+        
+        return (ret);
+    }
+    
+    @Override
+    public String toString() {
+        String ret=getName();
+        
+        if (ret == null) {
+            ret = "<Unnamed Role>";
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+    }
 }

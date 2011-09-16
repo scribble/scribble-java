@@ -25,32 +25,32 @@ import org.scribble.protocol.model.ProtocolModel;
  */
 public interface ProtocolExporter {
 
-	/**
-	 * This method returns the id of the exporter.
-	 * 
-	 * @return The exporter id
-	 */
-	public String getId();
-	
-	/**
-	 * This method returns the name of the exporter for use in
-	 * user based selectors.
-	 * 
-	 * @return The name of the exporter
-	 */
-	public String getName();
-	
-	/**
-	 * This method exports the supplied protocol model, in the implementation
-	 * specific format, to the specified output stream. If any issues occur
-	 * during the export process, they will be reported to the journal.
-	 * 
-	 * @param model The protocol model to be exported
-	 * @param journal The journal
-	 * @param os The output stream
-	 * @throws IOException Failed to export
-	 */
-	public void export(ProtocolModel model, Journal journal, java.io.OutputStream os)
-								throws java.io.IOException;
-	
+    /**
+     * This method returns the id of the exporter.
+     * 
+     * @return The exporter id
+     */
+    public String getId();
+    
+    /**
+     * This method returns the name of the exporter for use in
+     * user based selectors.
+     * 
+     * @return The name of the exporter
+     */
+    public String getName();
+    
+    /**
+     * This method exports the supplied protocol model, in the implementation
+     * specific format, to the specified output stream. If any issues occur
+     * during the export process, they will be reported to the journal.
+     * 
+     * @param model The protocol model to be exported
+     * @param journal The journal
+     * @param os The output stream
+     * @throws java.io.IOException Failed to export
+     */
+    public void export(ProtocolModel model, Journal journal, java.io.OutputStream os)
+                                throws java.io.IOException;
+    
 }

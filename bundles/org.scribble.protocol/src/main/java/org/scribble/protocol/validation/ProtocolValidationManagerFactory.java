@@ -21,17 +21,23 @@ package org.scribble.protocol.validation;
  * manager.
  *
  */
-public class ProtocolValidationManagerFactory {
+public final class ProtocolValidationManagerFactory {
+    
+    private final static ProtocolValidationManager INSTANCE=
+            new org.scribble.protocol.validation.DefaultProtocolValidationManager();
 
-	/**
-	 * This method returns the validation manager.
-	 * 
-	 * @return The validation manager
-	 */
-	public static ProtocolValidationManager getValidationManager() {
-		return(m_instance);
-	}
-	
-	private static ProtocolValidationManager m_instance=
-			new org.scribble.protocol.validation.DefaultProtocolValidationManager();
+    /**
+     * Private constructor.
+     */
+    private ProtocolValidationManagerFactory() {
+    }
+    
+    /**
+     * This method returns the validation manager.
+     * 
+     * @return The validation manager
+     */
+    public static ProtocolValidationManager getValidationManager() {
+        return (INSTANCE);
+    }
 }

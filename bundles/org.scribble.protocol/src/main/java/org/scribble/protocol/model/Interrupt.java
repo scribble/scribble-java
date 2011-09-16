@@ -23,56 +23,56 @@ package org.scribble.protocol.model;
  */
 public class Interrupt extends ModelObject {
 
-	private Block m_contents=null;
+    private Block _contents=null;
 
-	/**
-	 * This method returns the block of activities associated
-	 * with the definition.
-	 * 
-	 * @return The block of activities
-	 */
-	public Block getBlock() {
-		
-		if (m_contents == null) {
-			m_contents = new Block();
-			m_contents.setParent(this);
-		}
-		
-		return(m_contents);
-	}
-	
-	/**
-	 * This method sets the block of activities associated
-	 * with the definition.
-	 * 
-	 * @param block The block of activities
-	 */
-	public void setBlock(Block block) {
-		if (m_contents != null) {
-			m_contents.setParent(null);
-		}
-		
-		m_contents = block;
-		
-		if (m_contents != null) {
-			m_contents.setParent(this);
-		}
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		
-		if (visitor.start(this)) {
-		
-			getBlock().visit(visitor);
-		}
-		
-		visitor.end(this);
-	}
+    /**
+     * This method returns the block of activities associated
+     * with the definition.
+     * 
+     * @return The block of activities
+     */
+    public Block getBlock() {
+        
+        if (_contents == null) {
+            _contents = new Block();
+            _contents.setParent(this);
+        }
+        
+        return (_contents);
+    }
+    
+    /**
+     * This method sets the block of activities associated
+     * with the definition.
+     * 
+     * @param block The block of activities
+     */
+    public void setBlock(Block block) {
+        if (_contents != null) {
+            _contents.setParent(null);
+        }
+        
+        _contents = block;
+        
+        if (_contents != null) {
+            _contents.setParent(this);
+        }
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        
+        if (visitor.start(this)) {
+        
+            getBlock().visit(visitor);
+        }
+        
+        visitor.end(this);
+    }
 
 }

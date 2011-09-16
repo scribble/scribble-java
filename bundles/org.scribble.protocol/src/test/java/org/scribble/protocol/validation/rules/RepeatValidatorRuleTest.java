@@ -21,73 +21,73 @@ import org.scribble.protocol.model.*;
 
 public class RepeatValidatorRuleTest {
 
-	@org.junit.Test
-	public void testRepeatUnknownRole() {
-		
-		Protocol prot1=new Protocol();
-		
-		Introduces plist1=new Introduces();
-		prot1.getBlock().add(plist1);
-		
-		Role part1=new Role();
-		part1.setName("part1");
-		plist1.getIntroducedRoles().add(part1);
-		
-		Role part2=new Role();
-		part2.setName("part2");
-		plist1.getIntroducedRoles().add(part2);
-		
-		Repeat r1=new Repeat();
-		prot1.getBlock().add(r1);
-		
-		Role part3=new Role();
-		part3.setName("part3");
-		
-		r1.getRoles().add(part3);
-				
-		TestScribbleLogger logger=new TestScribbleLogger();
+    @org.junit.Test
+    public void testRepeatUnknownRole() {
+        
+        Protocol prot1=new Protocol();
+        
+        Introduces plist1=new Introduces();
+        prot1.getBlock().add(plist1);
+        
+        Role part1=new Role();
+        part1.setName("part1");
+        plist1.getIntroducedRoles().add(part1);
+        
+        Role part2=new Role();
+        part2.setName("part2");
+        plist1.getIntroducedRoles().add(part2);
+        
+        Repeat r1=new Repeat();
+        prot1.getBlock().add(r1);
+        
+        Role part3=new Role();
+        part3.setName("part3");
+        
+        r1.getRoles().add(part3);
+                
+        TestScribbleLogger logger=new TestScribbleLogger();
 
-		RepeatValidatorRule rule=new RepeatValidatorRule();
-		rule.validate(null, r1, logger);
-		
-		logger.verifyErrors(new String[]{
-				MessageFormat.format(
-						java.util.PropertyResourceBundle.getBundle(
-						"org.scribble.protocol.Messages").getString("_UNKNOWN_ROLE"),
-							part3.getName())
-		});
-	}
+        RepeatValidatorRule rule=new RepeatValidatorRule();
+        rule.validate(null, r1, logger);
+        
+        logger.verifyErrors(new String[]{
+                MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle(
+                        "org.scribble.protocol.Messages").getString("_UNKNOWN_ROLE"),
+                            part3.getName())
+        });
+    }
 
-	@org.junit.Test
-	public void testRepeatValidRole() {
-		
-		Protocol prot1=new Protocol();
-		
-		Introduces plist1=new Introduces();
-		prot1.getBlock().add(plist1);
-		
-		Role part1=new Role();
-		part1.setName("part1");
-		plist1.getIntroducedRoles().add(part1);
-		
-		Role part2=new Role();
-		part2.setName("part2");
-		plist1.getIntroducedRoles().add(part2);
-		
-		Repeat r1=new Repeat();
-		prot1.getBlock().add(r1);
-		
-		Role part3=new Role();
-		part3.setName("part2");
-		
-		r1.getRoles().add(part3);
-				
-		TestScribbleLogger logger=new TestScribbleLogger();
+    @org.junit.Test
+    public void testRepeatValidRole() {
+        
+        Protocol prot1=new Protocol();
+        
+        Introduces plist1=new Introduces();
+        prot1.getBlock().add(plist1);
+        
+        Role part1=new Role();
+        part1.setName("part1");
+        plist1.getIntroducedRoles().add(part1);
+        
+        Role part2=new Role();
+        part2.setName("part2");
+        plist1.getIntroducedRoles().add(part2);
+        
+        Repeat r1=new Repeat();
+        prot1.getBlock().add(r1);
+        
+        Role part3=new Role();
+        part3.setName("part2");
+        
+        r1.getRoles().add(part3);
+                
+        TestScribbleLogger logger=new TestScribbleLogger();
 
-		RepeatValidatorRule rule=new RepeatValidatorRule();
-		rule.validate(null, r1, logger);
-		
-		logger.verifyErrors(new String[]{
-		});
-	}
+        RepeatValidatorRule rule=new RepeatValidatorRule();
+        rule.validate(null, r1, logger);
+        
+        logger.verifyErrors(new String[]{
+        });
+    }
 }

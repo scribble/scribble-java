@@ -26,23 +26,24 @@ import org.scribble.protocol.model.ModelObject;
  */
 public interface ProtocolComponentValidatorRule {
 
-	/**
-	 * This method determines whether the rule is applicable
-	 * for the supplied model object.
-	 * 
-	 * @return Whether the rule can be used to validate the
-	 * 				supplied model object
-	 */
-	public boolean isSupported(ModelObject obj);
-	
-	/**
-	 * This method validates the supplied model object.
-	 * 
-	 * @param context The protocol context
-	 * @param obj The model object being validated
-	 * @param logger The logger
-	 */
-	public void validate(ProtocolContext context, ModelObject obj,
-					Journal logger);
+    /**
+     * This method determines whether the rule is applicable
+     * for the supplied model object.
+     * 
+     * @param obj The object to check
+     * @return Whether the rule can be used to validate the
+     *                 supplied model object
+     */
+    public boolean isSupported(ModelObject obj);
+    
+    /**
+     * This method validates the supplied model object.
+     * 
+     * @param context The protocol context
+     * @param obj The model object being validated
+     * @param logger The logger
+     */
+    public void validate(ProtocolContext context, ModelObject obj,
+                    Journal logger);
 
 }

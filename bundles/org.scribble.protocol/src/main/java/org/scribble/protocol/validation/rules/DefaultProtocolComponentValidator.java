@@ -26,15 +26,15 @@ import org.scribble.protocol.validation.ProtocolComponentValidator;
  */
 public class DefaultProtocolComponentValidator extends ProtocolComponentValidator {
 
-	/**
-	 * This is the default constructor.
-	 */
-	public DefaultProtocolComponentValidator() {
-		getRules().add(new ChoiceValidatorRule());
-		getRules().add(new InteractionValidatorRule());
-		getRules().add(new ProtocolModelValidatorRule());
-		getRules().add(new ProtocolValidatorRule());
-		getRules().add(new RecursionValidatorRule());
-		getRules().add(new RepeatValidatorRule());
-	}
+    /**
+     * This is the default constructor.
+     */
+    public DefaultProtocolComponentValidator() {
+        getRules().add(new ChoiceValidatorRule());
+        getRules().add(new InteractionValidatorRule());
+        getRules().add(new ProtocolModelValidatorRule());
+        getRules().add(new ProtocolValidatorRule());
+        getRules().add(new RecursionValidatorRule());
+        getRules().add(new RepeatValidatorRule());
+    }
 }

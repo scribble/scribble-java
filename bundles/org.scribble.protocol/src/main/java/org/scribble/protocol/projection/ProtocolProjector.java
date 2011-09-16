@@ -17,7 +17,8 @@ package org.scribble.protocol.projection;
 
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.ProtocolContext;
-import org.scribble.protocol.model.*;
+import org.scribble.protocol.model.ProtocolModel;
+import org.scribble.protocol.model.Role;
 
 /**
  * This interface provides a projection capability, from a 'global'
@@ -26,17 +27,17 @@ import org.scribble.protocol.model.*;
  */
 public interface ProtocolProjector {
 
-	/**
-	 * This method projects a 'global' protocol model to a specified
-	 * role's 'local' protocol model.
-	 * 
-	 * @param context The protocol context
-	 * @param model The 'global' protocol model
-	 * @param role The role to project
-	 * @param journal Journal for reporting issues
-	 * @return The 'local' protocol model
-	 */
-	public ProtocolModel project(ProtocolContext context, ProtocolModel model, Role role,
-							Journal journal);
-	
+    /**
+     * This method projects a 'global' protocol model to a specified
+     * role's 'local' protocol model.
+     * 
+     * @param context The protocol context
+     * @param model The 'global' protocol model
+     * @param role The role to project
+     * @param journal Journal for reporting issues
+     * @return The 'local' protocol model
+     */
+    public ProtocolModel project(ProtocolContext context, ProtocolModel model, Role role,
+                            Journal journal);
+    
 }

@@ -23,58 +23,58 @@ package org.scribble.common.model;
  */
 public class DefaultAnnotation implements Annotation {
 
-	private String m_annotation=null;
-	private String m_id=null;
-	
-	/**
-	 * This is the constructor, initialized with the
-	 * annotation text.
-	 * 
-	 * @param text The text
-	 */
-	public DefaultAnnotation(String text) {
-		m_annotation = text;
-	}
-	
-	/**
-	 * This is the constructor, initialized with the
-	 * optional id and annotation text.
-	 * 
-	 * @param id The optional id
-	 * @param text The text
-	 */
-	public DefaultAnnotation(String id, String text) {
-		m_id = id;
-		m_annotation = text;
-	}
-	
-	/**
-	 * Optional id for the annotation. If specified, it must be
-	 * unique within the scope of the protocol model in which
-	 * it is defined.
-	 * 
-	 * @return The unique annotation id, or null if undefined
-	 */
-	public String getId() {
-		return(m_id);
-	}
-	
-	/**
-	 * This method sets the annotation.
-	 * 
-	 * @param annotation The annotation
-	 */
-	public void setAnnotation(String annotation) {
-		m_annotation = annotation;
-	}
-	
-	/**
-	 * This method returns the textual representation
-	 * of the annotation.
-	 * 
-	 * @return The annotation text
-	 */
-	public String toString() {
-		return(m_annotation);
-	}
+    private String _annotation=null;
+    private String _id=null;
+    
+    /**
+     * This is the constructor, initialized with the
+     * annotation text.
+     * 
+     * @param text The text
+     */
+    public DefaultAnnotation(String text) {
+        _annotation = text;
+    }
+    
+    /**
+     * This is the constructor, initialized with the
+     * optional id and annotation text.
+     * 
+     * @param id The optional id
+     * @param text The text
+     */
+    public DefaultAnnotation(String id, String text) {
+        _id = id;
+        _annotation = text;
+    }
+    
+    /**
+     * Optional id for the annotation. If specified, it must be
+     * unique within the scope of the protocol model in which
+     * it is defined.
+     * 
+     * @return The unique annotation id, or null if undefined
+     */
+    public String getId() {
+        return (_id);
+    }
+    
+    /**
+     * This method sets the annotation.
+     * 
+     * @param annotation The annotation
+     */
+    public void setAnnotation(String annotation) {
+        _annotation = annotation;
+    }
+    
+    /**
+     * This method returns the textual representation
+     * of the annotation.
+     * 
+     * @return The annotation text
+     */
+    public String toString() {
+        return (_annotation);
+    }
 }

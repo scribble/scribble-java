@@ -20,82 +20,80 @@ package org.scribble.protocol.model;
  */
 public class ProtocolReference extends ModelObject {
 
-	public static final String LOCATED_REFERENCE_SEPARATOR="@";
+    private String _name=null;
+    private Role _role=null;
 
-	private String m_name=null;
-	private Role m_role=null;
-
-	/**
-	 * This is the default constructor for the protocol reference.
-	 */
-	public ProtocolReference() {
-	}
-	
-	/**
-	 * This is the constructor for the protocol reference.
-	 * 
-	 * @param name The name
-	 */
-	public ProtocolReference(String name) {
-		setName(name);
-	}
-	
-	/**
-	 * This is the copy constructor for the model reference.
-	 * 
-	 * @param ref The reference to copy
-	 */
-	public ProtocolReference(ProtocolReference ref) {
-		super(ref);
-		
-		m_name = ref.m_name;
-		m_role = ref.m_role;
-	}
-	
-	/**
-	 * This method returns the name associated with the
-	 * model reference.
-	 * 
-	 * @return The name
-	 */
-	public String getName() {
-		return(m_name);
-	}
-	
-	/**
-	 * This method sets the name associated with the
-	 * model reference.
-	 * 
-	 * @param name The name
-	 */
-	public void setName(String name) {
-		m_name = name;
-	}
-	
-	/**
-	 * This method sets the located role.
-	 * 
-	 * @param role The role
-	 */
-	public void setRole(Role role) {
-		m_role = role;
-	}
-	
-	/**
-	 * This method returns the located role.
-	 * 
-	 * @return The role
-	 */
-	public Role getRole() {
-		return(m_role);
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-	}
+    /**
+     * This is the default constructor for the protocol reference.
+     */
+    public ProtocolReference() {
+    }
+    
+    /**
+     * This is the constructor for the protocol reference.
+     * 
+     * @param name The name
+     */
+    public ProtocolReference(String name) {
+        setName(name);
+    }
+    
+    /**
+     * This is the copy constructor for the model reference.
+     * 
+     * @param ref The reference to copy
+     */
+    public ProtocolReference(ProtocolReference ref) {
+        super(ref);
+        
+        _name = ref._name;
+        _role = ref._role;
+    }
+    
+    /**
+     * This method returns the name associated with the
+     * model reference.
+     * 
+     * @return The name
+     */
+    public String getName() {
+        return (_name);
+    }
+    
+    /**
+     * This method sets the name associated with the
+     * model reference.
+     * 
+     * @param name The name
+     */
+    public void setName(String name) {
+        _name = name;
+    }
+    
+    /**
+     * This method sets the located role.
+     * 
+     * @param role The role
+     */
+    public void setRole(Role role) {
+        _role = role;
+    }
+    
+    /**
+     * This method returns the located role.
+     * 
+     * @return The role
+     */
+    public Role getRole() {
+        return (_role);
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+    }
 }

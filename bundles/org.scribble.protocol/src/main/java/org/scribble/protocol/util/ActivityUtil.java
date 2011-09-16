@@ -19,33 +19,43 @@ package org.scribble.protocol.util;
 import org.scribble.protocol.model.Activity;
 import org.scribble.protocol.model.Introduces;
 
-public class ActivityUtil {
+/**
+ * This class provides utility functions associated with activities.
+ *
+ */
+public final class ActivityUtil {
 
-	/**
-	 * This method determines whether the activity is
-	 * a declaration.
-	 * 
-	 * @param act The activity
-	 * @return Whether the activity is a declaration
-	 */
-	public static boolean isDeclaration(Activity act) {
-		boolean ret=false;
-		
-		if (act instanceof Introduces) {
-			ret = true;
-		}
-		
-		return(ret);
-	}
-	
-	/**
-	 * This method determines whether the activity is
-	 * a behavioural element.
-	 * 
-	 * @param act The activity
-	 * @return Whether the activity is a behavioural element
-	 */
-	public static boolean isBehaviour(Activity act) {
-		return(!isDeclaration(act));
-	}
+    /**
+     * Private constructor.
+     */
+    private ActivityUtil() {
+    }
+    
+    /**
+     * This method determines whether the activity is
+     * a declaration.
+     * 
+     * @param act The activity
+     * @return Whether the activity is a declaration
+     */
+    public static boolean isDeclaration(Activity act) {
+        boolean ret=false;
+        
+        if (act instanceof Introduces) {
+            ret = true;
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * This method determines whether the activity is
+     * a behavioural element.
+     * 
+     * @param act The activity
+     * @return Whether the activity is a behavioural element
+     */
+    public static boolean isBehaviour(Activity act) {
+        return (!isDeclaration(act));
+    }
 }

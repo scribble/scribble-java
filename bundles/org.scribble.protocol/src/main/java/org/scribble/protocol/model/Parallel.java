@@ -21,39 +21,39 @@ package org.scribble.protocol.model;
  * 
  */
 public class Parallel extends Activity {
-	
-	private java.util.List<Block> m_blocks=new ContainmentList<Block>(this, Block.class);
+    
+    private java.util.List<Block> _blocks=new ContainmentList<Block>(this, Block.class);
 
-	/**
-	 * This is the default constructor.
-	 * 
-	 */
-	public Parallel() {
-	}
-	
-	/**
-	 * This method returns the list of concurrent
-	 * activity blocks that comprise the multi-path construct.
-	 * 
-	 * @return The list of concurrent paths
-	 */
-	public java.util.List<Block> getPaths() {
-		return(m_blocks);
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.start(this);
-		
-		for (Block b : getPaths()) {
-			b.visit(visitor);
-		}
-		
-		visitor.end(this);
-	}
+    /**
+     * This is the default constructor.
+     * 
+     */
+    public Parallel() {
+    }
+    
+    /**
+     * This method returns the list of concurrent
+     * activity blocks that comprise the multi-path construct.
+     * 
+     * @return The list of concurrent paths
+     */
+    public java.util.List<Block> getPaths() {
+        return (_blocks);
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.start(this);
+        
+        for (Block b : getPaths()) {
+            b.visit(visitor);
+        }
+        
+        visitor.end(this);
+    }
 }

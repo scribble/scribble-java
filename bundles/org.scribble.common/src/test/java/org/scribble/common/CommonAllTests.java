@@ -23,12 +23,12 @@ import junit.framework.TestSuite;
 
 public class CommonAllTests {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.scribble.common");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(CachedJournalTest.class);
-		//$JUnit-END$
-		return suite;
-	}
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Test for org.scribble.common");
+        //$JUnit-BEGIN$
+        suite.addTestSuite(CachedJournalTest.class);
+        //$JUnit-END$
+        return suite;
+    }
 
 }

@@ -25,24 +25,70 @@ import org.scribble.protocol.model.ModelObject;
  */
 public class LoggingConformanceHandler implements ConformanceHandler {
 
-	private Journal m_logger=null;
-	
-	public static final String CONFORMANCE_MODEL_OBJECT="Conformance.Model.Object";
-	public static final String CONFORMANCE_REFERENCE_PARENT="Conformance.Reference.Parent";
-	public static final String CONFORMANCE_REFERENCE_INDEX="Conformance.Reference.Index";
-	public static final String CONFORMANCE_REFERENCE_OBJECT="Conformance.Reference.Object";
-	
-	public LoggingConformanceHandler(Journal logger) {
-		m_logger = logger;
-	}
+    //private Journal m_logger=null;
+    
+    /**
+     * Conformance model object.
+     */
+    public static final String CONFORMANCE_MODEL_OBJECT="Conformance.Model.Object";
 
-	public void added(ModelObject modelObject, ModelObject refParent, int index) {	
-	}
+    /**
+     * Conformance model object.
+     */
+    public static final String CONFORMANCE_REFERENCE_PARENT="Conformance.Reference.Parent";
+    
+    /**
+     * Conformance model object.
+     */
+    public static final String CONFORMANCE_REFERENCE_INDEX="Conformance.Reference.Index";
+    
+    /**
+     * Conformance model object.
+     */
+    public static final String CONFORMANCE_REFERENCE_OBJECT="Conformance.Reference.Object";
+    
+    /**
+     * This constructor initialises the conformance handler with the journal.
+     * 
+     * @param logger The journal
+     */
+    public LoggingConformanceHandler(Journal logger) {
+        //m_logger = logger;
+    }
 
-	public void updated(ModelObject modelObject, ModelObject refObject) {
-	}
+    /**
+     * This method indicates that a new model object has been detected in
+     * the model. The position of the new object, relative to the reference
+     * model, is provided by the parent model object in the reference model
+     * and optionally the index (where relevant).
+     * 
+     * @param modelObject The new model object, from the model being checked
+     * @param refParent The 'parent' model object, from the reference model,
+     *                         that would contain the new object
+     * @param index The child index, in the reference model, where the new
+     *                     model object would be positioned
+     */
+    public void added(ModelObject modelObject, ModelObject refParent, int index) {    
+    }
 
-	public void removed(ModelObject refObject) {
-	}
-	
+    /**
+     * This method indicates that a change has been detected between
+     * equivalent model objects found in the primary and reference models.
+     * 
+     * @param modelObject The model object, from the model being checked
+     * @param refObject The model object, from the reference model
+     */
+    public void updated(ModelObject modelObject, ModelObject refObject) {
+    }
+
+    /**
+     * This method indicates that a model object within the reference model
+     * does not exist in the model being conformance checked.
+     * 
+     * @param refObject The model object, not found in the primary model,
+     *                         as defined in the reference model
+     */
+    public void removed(ModelObject refObject) {
+    }
+    
 }

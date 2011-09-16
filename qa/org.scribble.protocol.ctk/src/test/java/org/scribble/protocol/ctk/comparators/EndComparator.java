@@ -21,10 +21,10 @@ import org.scribble.protocol.model.*;
 
 public class EndComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		if (arg0.getClass() != End.class || arg1.getClass() != End.class) {
-			return(1);
-		}
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        if (arg0.getClass() != End.class || arg1.getClass() != End.class) {
+            return (1);
+        }
+        return (0);
+    }
 }

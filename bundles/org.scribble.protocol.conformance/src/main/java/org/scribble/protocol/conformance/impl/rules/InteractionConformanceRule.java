@@ -20,27 +20,31 @@ import java.util.Collections;
 import org.scribble.protocol.conformance.ConformanceHandler;
 import org.scribble.protocol.model.Interaction;
 
+/**
+ * This class defines the interaction conformance rule.
+ *
+ */
 public class InteractionConformanceRule implements ConformanceRule<Interaction> {
 
-	@Override
-	public boolean conforms(Interaction model, Interaction ref, ConformanceHandler handler) {
-		boolean ret=false;
-		
-		if (model.getMessageSignature().equals(ref.getMessageSignature())) {
-			
-			// TODO: NEED TO HANDLE ROLE MAPPING!
-			
-			// Check roles
-			if ((model.getFromRole() == null || ref.getFromRole() == null ||
-					model.getFromRole().equals(ref.getFromRole()) &&
-					(model.getToRoles().size() == 0 ||
-					ref.getToRoles().size() == 0 ||
-					Collections.disjoint(model.getToRoles(), ref.getToRoles()) == false))) {
-				ret = true;
-			}
-		}
-		
-		return(ret);
-	}
+    @Override
+    public boolean conforms(Interaction model, Interaction ref, ConformanceHandler handler) {
+        boolean ret=false;
+        
+        if (model.getMessageSignature().equals(ref.getMessageSignature())) {
+            
+            // TODO: NEED TO HANDLE ROLE MAPPING!
+            
+            // Check roles
+            if ((model.getFromRole() == null || ref.getFromRole() == null
+                    || model.getFromRole().equals(ref.getFromRole())
+                    && (model.getToRoles().size() == 0
+                    || ref.getToRoles().size() == 0
+                    || !Collections.disjoint(model.getToRoles(), ref.getToRoles())))) {
+                ret = true;
+            }
+        }
+        
+        return (ret);
+    }
 
 }

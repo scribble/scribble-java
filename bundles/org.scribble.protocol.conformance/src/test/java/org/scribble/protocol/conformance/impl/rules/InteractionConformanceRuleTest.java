@@ -22,38 +22,38 @@ import org.scribble.protocol.model.*;
 
 public class InteractionConformanceRuleTest {
 
-	@Test
-	public void testValidInteraction() {
-		InteractionConformanceRule rule=new InteractionConformanceRule();
-		
-		Interaction model=new Interaction();
-		model.setMessageSignature(new MessageSignature(new TypeReference("A")));
-		model.setFromRole(new Role("A"));
-		
-		Interaction ref=new Interaction();
-		ref.setMessageSignature(new MessageSignature(new TypeReference("A")));
-		ref.setFromRole(new Role("A"));
-		
-		if (rule.conforms(model, ref, null) == false) {
-			fail("Should not fail");
-		}
-	}
+    @Test
+    public void testValidInteraction() {
+        InteractionConformanceRule rule=new InteractionConformanceRule();
+        
+        Interaction model=new Interaction();
+        model.setMessageSignature(new MessageSignature(new TypeReference("A")));
+        model.setFromRole(new Role("A"));
+        
+        Interaction ref=new Interaction();
+        ref.setMessageSignature(new MessageSignature(new TypeReference("A")));
+        ref.setFromRole(new Role("A"));
+        
+        if (rule.conforms(model, ref, null) == false) {
+            fail("Should not fail");
+        }
+    }
 
 
-	@Test
-	public void testInvalidInteraction() {
-		InteractionConformanceRule rule=new InteractionConformanceRule();
-		
-		Interaction model=new Interaction();
-		model.setMessageSignature(new MessageSignature(new TypeReference("A")));
-		model.setFromRole(new Role("A"));
-		
-		Interaction ref=new Interaction();
-		ref.setMessageSignature(new MessageSignature(new TypeReference("A")));
-		ref.setFromRole(new Role("B"));
-		
-		if (rule.conforms(model, ref, null) == true) {
-			fail("Should fail");
-		}
-	}
+    @Test
+    public void testInvalidInteraction() {
+        InteractionConformanceRule rule=new InteractionConformanceRule();
+        
+        Interaction model=new Interaction();
+        model.setMessageSignature(new MessageSignature(new TypeReference("A")));
+        model.setFromRole(new Role("A"));
+        
+        Interaction ref=new Interaction();
+        ref.setMessageSignature(new MessageSignature(new TypeReference("A")));
+        ref.setFromRole(new Role("B"));
+        
+        if (rule.conforms(model, ref, null) == true) {
+            fail("Should fail");
+        }
+    }
 }

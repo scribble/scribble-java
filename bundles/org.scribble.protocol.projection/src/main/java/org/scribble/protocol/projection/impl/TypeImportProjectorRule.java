@@ -16,8 +16,11 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.DataType;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.TypeImport;
 
 /**
  * This class provides the TypeImport implementation of the
@@ -25,40 +28,41 @@ import org.scribble.common.logging.Journal;
  */
 public class TypeImportProjectorRule implements ProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == TypeImport.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l) {
-		TypeImport ret=new TypeImport();
-		TypeImport source=(TypeImport)model;
-		
-		ret.derivedFrom(source);
-		
-		ret.setName(source.getName());
-		
-		if (source.getDataType() != null) {
-			ret.setDataType((DataType)context.project(source.getDataType(), role, l));
-		}
-		
-		return(ret);
-	}
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == TypeImport.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l) {
+        TypeImport ret=new TypeImport();
+        TypeImport source=(TypeImport)model;
+        
+        ret.derivedFrom(source);
+        
+        ret.setName(source.getName());
+        
+        if (source.getDataType() != null) {
+            ret.setDataType((DataType)context.project(source.getDataType(), role, l));
+        }
+        
+        return (ret);
+    }
 }

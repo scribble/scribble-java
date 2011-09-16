@@ -30,35 +30,35 @@ import org.scribble.protocol.projection.ProtocolProjector;
  */
 public interface ProtocolContext {
 
-	/**
-	 * This method returns the resource locator.
-	 * 
-	 * @return The resource locator
-	 */
-	public ResourceLocator getResourceLocator();
-	
-	/**
-	 * This method retrieves a protocol model associated with a protocol
-	 * import statement.
-	 *  
-	 * @param pi The protocol import
-	 * @param journal The journal for reporting issues
-	 * @return The protocol model, or null if not found
-	 */
-	public ProtocolModel getProtocolModel(ProtocolImport pi, Journal journal);
-	
-	/**
-	 * This method returns the protocol projector.
-	 * 
-	 * @return The projector
-	 */
-	public ProtocolProjector getProtocolProjector();
-	
-	/**
-	 * This method returns the protocol export manager.
-	 * 
-	 * @return The export manager
-	 */
-	public ProtocolExportManager getProtocolExportManager();
-	
+    /**
+     * This method returns the resource locator.
+     * 
+     * @return The resource locator
+     */
+    public ResourceLocator getResourceLocator();
+    
+    /**
+     * This method retrieves a protocol model associated with a protocol
+     * import statement.
+     *  
+     * @param pi The protocol import
+     * @param journal The journal for reporting issues
+     * @return The protocol model, or null if not found
+     */
+    public ProtocolModel getProtocolModel(ProtocolImport pi, Journal journal);
+    
+    /**
+     * This method returns the protocol projector.
+     * 
+     * @return The projector
+     */
+    public ProtocolProjector getProtocolProjector();
+    
+    /**
+     * This method returns the protocol export manager.
+     * 
+     * @return The export manager
+     */
+    public ProtocolExportManager getProtocolExportManager();
+    
 }

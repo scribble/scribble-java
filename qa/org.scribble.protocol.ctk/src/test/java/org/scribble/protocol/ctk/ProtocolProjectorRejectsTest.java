@@ -67,16 +67,16 @@ public class ProtocolProjectorRejectsTest {
         ProtocolModel model= CTKUtil.getModel(globalModelFile, logger);
 
         for (Role role: model.getRoles()) {
-        	if (projectedRole == null || role.getName().equals(projectedRole)) {
-	            ProtocolModel projected= CTKUtil.project(model, role, logger, context);
-	
-	            if (logger.getErrorCount() == 0) {
-	                ByteArrayOutputStream arrayOs = new ByteArrayOutputStream();
-	                new TextProtocolExporter().export(projected, logger, arrayOs);
-	                fail("The protocol in file: " + globalModelFile + " should not be projectable. " +
-	                     "Projection was successful for role: " + role + ", result:\n" + arrayOs.toString());
-	            }
-        	}
+            if (projectedRole == null || role.getName().equals(projectedRole)) {
+                ProtocolModel projected= CTKUtil.project(model, role, logger, context);
+    
+                if (logger.getErrorCount() == 0) {
+                    ByteArrayOutputStream arrayOs = new ByteArrayOutputStream();
+                    new TextProtocolExporter().export(projected, logger, arrayOs);
+                    fail("The protocol in file: " + globalModelFile + " should not be projectable. " +
+                         "Projection was successful for role: " + role + ", result:\n" + arrayOs.toString());
+                }
+            }
         }
     }
 }

@@ -16,7 +16,9 @@
 package org.scribble.protocol.projection.impl;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.model.*;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.ProtocolReference;
+import org.scribble.protocol.model.Role;
 
 /**
  * This class provides the ProtocolReference implementation of the
@@ -24,44 +26,45 @@ import org.scribble.protocol.model.*;
  */
 public class ProtocolReferenceProjectorRule implements ProjectorRule {
 
-	/**
-	 * This is the default constructor.
-	 */
-	public ProtocolReferenceProjectorRule() {
-	}
-	
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == ProtocolReference.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l) {
-		ProtocolReference src=(ProtocolReference)model;
-		ProtocolReference ret=new ProtocolReference();
-		
-		ret.derivedFrom(src);
-		
-		ret.setName(src.getName());
-		
-		ret.setRole((Role)context.project(role, role, l));
-		
-		return(ret);
-	}
+    /**
+     * This is the default constructor.
+     */
+    public ProtocolReferenceProjectorRule() {
+    }
+    
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == ProtocolReference.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l) {
+        ProtocolReference src=(ProtocolReference)model;
+        ProtocolReference ret=new ProtocolReference();
+        
+        ret.derivedFrom(src);
+        
+        ret.setName(src.getName());
+        
+        ret.setRole((Role)context.project(role, role, l));
+        
+        return (ret);
+    }
 }

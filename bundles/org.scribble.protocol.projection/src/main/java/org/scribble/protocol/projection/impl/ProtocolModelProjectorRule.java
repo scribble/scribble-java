@@ -19,7 +19,13 @@ package org.scribble.protocol.projection.impl;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.model.*;
+import org.scribble.protocol.model.Block;
+import org.scribble.protocol.model.ImportList;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.ParameterDefinition;
+import org.scribble.protocol.model.Protocol;
+import org.scribble.protocol.model.ProtocolModel;
+import org.scribble.protocol.model.Role;
 import org.scribble.protocol.util.RoleUtil;
 
 /**
@@ -27,115 +33,116 @@ import org.scribble.protocol.util.RoleUtil;
  * projector rule.
  */
 public class ProtocolModelProjectorRule implements ProjectorRule {
-		
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == ProtocolModel.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l) {
-		ProtocolModel ret=new ProtocolModel();
-		ProtocolModel source=(ProtocolModel)model;
-		
-		ret.derivedFrom(source);
-		
-		// Project import statements
-		for (int i=0; i < source.getImports().size(); i++) {
-			
-			ImportList newImport=(ImportList)
-					context.project(source.getImports().get(i),
-								role, l);
-			
-			if (newImport != null) {
-				ret.getImports().add(newImport);
-			}
-		}
-		
-		Protocol protocol=null;
-		
-		// Get enclosing protocol for the supplied role
-		Role roleDefn=null;
-		for (Role sr : source.getRoles()) {
-			if (sr.equals(role)) {
-				roleDefn = sr;
-				break;
-			}
-		}
-		
-		if (roleDefn == null) {
-			l.error(MessageFormat.format(
-					java.util.PropertyResourceBundle.getBundle(
-					"org.scribble.protocol.projection.Messages").getString("_UNKNOWN_ROLE"),
-						role.getName()), ret.getProperties());
-			ret = null;
-		} else {
-		
-			// Get enclosing protocol for the supplied role
-			Protocol srcprotocol=RoleUtil.getEnclosingProtocol(roleDefn);
-		
-			if (srcprotocol != null) {
-				
-				protocol = (Protocol)context.project(srcprotocol,
-							role, l);
-				
-				// Check if block enclosing the role definition is the protocol's
-				// top level block
-				Block block=RoleUtil.getEnclosingBlock(protocol, roleDefn);
-				
-				if (block != null) {
+        
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == ProtocolModel.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l) {
+        ProtocolModel ret=new ProtocolModel();
+        ProtocolModel source=(ProtocolModel)model;
+        
+        ret.derivedFrom(source);
+        
+        // Project import statements
+        for (int i=0; i < source.getImports().size(); i++) {
+            
+            ImportList newImport=(ImportList)
+                    context.project(source.getImports().get(i),
+                                role, l);
+            
+            if (newImport != null) {
+                ret.getImports().add(newImport);
+            }
+        }
+        
+        Protocol protocol=null;
+        
+        // Get enclosing protocol for the supplied role
+        Role roleDefn=null;
+        for (Role sr : source.getRoles()) {
+            if (sr.equals(role)) {
+                roleDefn = sr;
+                break;
+            }
+        }
+        
+        if (roleDefn == null) {
+            l.error(MessageFormat.format(
+                    java.util.PropertyResourceBundle.getBundle(
+                    "org.scribble.protocol.projection.Messages").getString("_UNKNOWN_ROLE"),
+                        role.getName()), ret.getProperties());
+            ret = null;
+        } else {
+        
+            // Get enclosing protocol for the supplied role
+            Protocol srcprotocol=RoleUtil.getEnclosingProtocol(roleDefn);
+        
+            if (srcprotocol != null) {
+                
+                protocol = (Protocol)context.project(srcprotocol,
+                            role, l);
+                
+                // Check if block enclosing the role definition is the protocol's
+                // top level block
+                Block block=RoleUtil.getEnclosingBlock(protocol, roleDefn);
+                
+                if (block != null) {
 
-					// If no top level protocol, then use top level protocol name
-					if (srcprotocol != source.getProtocol()) {
-						protocol.setName(source.getProtocol().getName());
-						
-						// TODO: Clear the parameter definitions for now
-						protocol.getParameterDefinitions().clear();
-					}
-					
-					// Replace the top level block
-					protocol.setBlock(block);
-					
-					// Get new list of declared roles
-					java.util.Set<Role> declaredRoles=RoleUtil.getDeclaredRoles(protocol.getBlock());
-					
-					java.util.Set<Role> usedRoles=RoleUtil.getUsedRoles(protocol.getBlock());
+                    // If no top level protocol, then use top level protocol name
+                    if (srcprotocol != source.getProtocol()) {
+                        protocol.setName(source.getProtocol().getName());
+                        
+                        // TODO: Clear the parameter definitions for now
+                        protocol.getParameterDefinitions().clear();
+                    }
+                    
+                    // Replace the top level block
+                    protocol.setBlock(block);
+                    
+                    // Get new list of declared roles
+                    java.util.Set<Role> declaredRoles=RoleUtil.getDeclaredRoles(protocol.getBlock());
+                    
+                    java.util.Set<Role> usedRoles=RoleUtil.getUsedRoles(protocol.getBlock());
 
-					usedRoles.removeAll(declaredRoles);
-					
-					// Check if parameter definitions need to be updated
-					protocol.getParameterDefinitions().clear();
-					
-					for (Role used : usedRoles) {
-						
-						if (used.equals(role) == false) {
-							ParameterDefinition pd=new ParameterDefinition();
-							pd.setName(used.getName());
-							protocol.getParameterDefinitions().add(pd);
-						}
-					}
-				}
-			}
-			
-			ret.setProtocol(protocol);
-		}
-		
-		return(ret);
-	}
+                    usedRoles.removeAll(declaredRoles);
+                    
+                    // Check if parameter definitions need to be updated
+                    protocol.getParameterDefinitions().clear();
+                    
+                    for (Role used : usedRoles) {
+                        
+                        if (!used.equals(role)) {
+                            ParameterDefinition pd=new ParameterDefinition();
+                            pd.setName(used.getName());
+                            protocol.getParameterDefinitions().add(pd);
+                        }
+                    }
+                }
+            }
+            
+            ret.setProtocol(protocol);
+        }
+        
+        return (ret);
+    }
 }

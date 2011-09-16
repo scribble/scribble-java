@@ -15,8 +15,9 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.Role;
 
 /**
  * This class provides the Role implementation of the
@@ -24,39 +25,40 @@ import org.scribble.common.logging.Journal;
  */
 public class RoleProjectorRule implements ProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == Role.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-				Role role, Journal l) {
-		Role ret=new Role();
-		Role source=(Role)model;
-		
-		ret.derivedFrom(source);
-				
-		ret.setName(source.getName());
-				
-		// Add to state
-		context.setState(ret.getName(), ret);
-		
-		return(ret);
-	}
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == Role.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                Role role, Journal l) {
+        Role ret=new Role();
+        Role source=(Role)model;
+        
+        ret.derivedFrom(source);
+                
+        ret.setName(source.getName());
+                
+        // Add to state
+        context.setState(ret.getName(), ret);
+        
+        return (ret);
+    }
 }

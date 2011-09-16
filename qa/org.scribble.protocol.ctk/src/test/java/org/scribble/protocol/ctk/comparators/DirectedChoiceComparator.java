@@ -22,37 +22,37 @@ import org.scribble.protocol.model.*;
 
 public class DirectedChoiceComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		DirectedChoice m=(DirectedChoice)arg0;
-		DirectedChoice e=(DirectedChoice)arg1;
-		
-		RoleComparator pcomp=(RoleComparator)
-					ComparatorUtil.getComparator(Role.class);
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        DirectedChoice m=(DirectedChoice)arg0;
+        DirectedChoice e=(DirectedChoice)arg1;
+        
+        RoleComparator pcomp=(RoleComparator)
+                    ComparatorUtil.getComparator(Role.class);
 
-		if (m.getFromRole() == null) {
-			if (e.getFromRole() != null) {
-				return(1);
-			}
-		} else if (pcomp.compare(m.getFromRole(),
-				e.getFromRole()) != 0) {
-			return(1);
-		}
-		
-		if (m.getToRoles().size() != e.getToRoles().size()) {
-			return(1);
-		} else {
-			for (int i=0; i < m.getToRoles().size(); i++) {
-				if (pcomp.compare(m.getToRoles().get(i),
-							e.getToRoles().get(i)) != 0) {
-					return(1);
-				}
-			}
-		}
+        if (m.getFromRole() == null) {
+            if (e.getFromRole() != null) {
+                return (1);
+            }
+        } else if (pcomp.compare(m.getFromRole(),
+                e.getFromRole()) != 0) {
+            return (1);
+        }
+        
+        if (m.getToRoles().size() != e.getToRoles().size()) {
+            return (1);
+        } else {
+            for (int i=0; i < m.getToRoles().size(); i++) {
+                if (pcomp.compare(m.getToRoles().get(i),
+                            e.getToRoles().get(i)) != 0) {
+                    return (1);
+                }
+            }
+        }
 
-		if (m.getOnMessages().size() != e.getOnMessages().size()) {
-			return(1);
-		}
-		
-		return(0);
-	}
+        if (m.getOnMessages().size() != e.getOnMessages().size()) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

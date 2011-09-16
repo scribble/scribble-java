@@ -22,109 +22,109 @@ package org.scribble.protocol.model;
  *
  */
 public class ProtocolModel extends ModelObject {
-	
-	private Protocol m_definition=null;
-	private java.util.List<ImportList> m_imports=
-				new ContainmentList<ImportList>(this, ImportList.class);
+    
+    private Protocol _definition=null;
+    private java.util.List<ImportList> _imports=
+                new ContainmentList<ImportList>(this, ImportList.class);
 
-	/**
-	 * The default constructor for the model.
-	 */
-	public ProtocolModel() {
-	}
-	
-	/**
-	 * This method returns the list of import definitions.
-	 * 
-	 * @return The import definitions
-	 */
-	public java.util.List<ImportList> getImports() {
-		return(m_imports);
-	}
-	
-	/**
-	 * This method returns the definition associated with
-	 * this model.
-	 * 
-	 * @return The definition
-	 */
-	public Protocol getProtocol() {
-		return(m_definition);
-	}
-	
-	/**
-	 * This method set the definition associated with the
-	 * model.
-	 * 
-	 * @param defn The definition
-	 */
-	public void setProtocol(Protocol defn) {
-		if (m_definition != null) {
-			m_definition.setParent(null);
-		}
-		
-		m_definition = defn;
-		
-		if (m_definition != null) {
-			m_definition.setParent(this);
-		}
-	}
-	
-	/**
-	 * This method determines whether the model is located.
-	 * 
-	 * @return Whether the model is located
-	 */
-	public boolean isLocated() {
-		boolean ret=false;
-		
-		if (getProtocol() != null) {
-			ret = (getProtocol().getLocatedRole() != null);
-		}
-		
-		return(ret);
-	}
-	
-	/**
-	 * This method returns the distinct list of roles defined
-	 * in the protocol and its nested-protocols.
-	 * 
-	 * @return The list of projectable roles
-	 */
-	public java.util.List<Role> getRoles() {
-		final java.util.List<Role> ret=new java.util.Vector<Role>();
-		
-		visit(new DefaultVisitor() {
-			
-			public boolean start(Protocol elem) {
-				
-				for (Role r : elem.getRoles()) {
-					if (ret.contains(r) == false) {
-						ret.add(r);
-					}
-				}
-				
-				return(true);
-			}
-		});
-		
-		return(ret);
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		
-		for (ImportList imp : getImports()) {
-			imp.visit(visitor);
-		}
-		
-		if (getProtocol() != null) {
-			getProtocol().visit(visitor);
-		}
-	}
+    /**
+     * The default constructor for the model.
+     */
+    public ProtocolModel() {
+    }
+    
+    /**
+     * This method returns the list of import definitions.
+     * 
+     * @return The import definitions
+     */
+    public java.util.List<ImportList> getImports() {
+        return (_imports);
+    }
+    
+    /**
+     * This method returns the definition associated with
+     * this model.
+     * 
+     * @return The definition
+     */
+    public Protocol getProtocol() {
+        return (_definition);
+    }
+    
+    /**
+     * This method set the definition associated with the
+     * model.
+     * 
+     * @param defn The definition
+     */
+    public void setProtocol(Protocol defn) {
+        if (_definition != null) {
+            _definition.setParent(null);
+        }
+        
+        _definition = defn;
+        
+        if (_definition != null) {
+            _definition.setParent(this);
+        }
+    }
+    
+    /**
+     * This method determines whether the model is located.
+     * 
+     * @return Whether the model is located
+     */
+    public boolean isLocated() {
+        boolean ret=false;
+        
+        if (getProtocol() != null) {
+            ret = (getProtocol().getLocatedRole() != null);
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * This method returns the distinct list of roles defined
+     * in the protocol and its nested-protocols.
+     * 
+     * @return The list of projectable roles
+     */
+    public java.util.List<Role> getRoles() {
+        final java.util.List<Role> ret=new java.util.Vector<Role>();
+        
+        visit(new DefaultVisitor() {
+            
+            public boolean start(Protocol elem) {
+                
+                for (Role r : elem.getRoles()) {
+                    if (!ret.contains(r)) {
+                        ret.add(r);
+                    }
+                }
+                
+                return (true);
+            }
+        });
+        
+        return (ret);
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        
+        for (ImportList imp : getImports()) {
+            imp.visit(visitor);
+        }
+        
+        if (getProtocol() != null) {
+            getProtocol().visit(visitor);
+        }
+    }
 }

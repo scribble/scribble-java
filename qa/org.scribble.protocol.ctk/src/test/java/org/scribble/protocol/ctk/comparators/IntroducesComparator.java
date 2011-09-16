@@ -22,29 +22,29 @@ import org.scribble.protocol.model.*;
 
 public class IntroducesComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Introduces m=(Introduces)arg0;
-		Introduces e=(Introduces)arg1;
-		
-		if (m.getIntroducedRoles().size() == e.getIntroducedRoles().size()) {
-			RoleComparator pcomp=(RoleComparator)
-						ComparatorUtil.getComparator(Role.class);
-			
-			for (int i=0; i < m.getIntroducedRoles().size(); i++) {
-				if (pcomp.compare(m.getIntroducedRoles().get(i), e.getIntroducedRoles().get(i)) != 0) {
-					return(1);
-				}
-			}
-		} else {
-			return(1);
-		}
-		
-		Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();	
-		
-		if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
-			return(1);
-		}
-		
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Introduces m=(Introduces)arg0;
+        Introduces e=(Introduces)arg1;
+        
+        if (m.getIntroducedRoles().size() == e.getIntroducedRoles().size()) {
+            RoleComparator pcomp=(RoleComparator)
+                        ComparatorUtil.getComparator(Role.class);
+            
+            for (int i=0; i < m.getIntroducedRoles().size(); i++) {
+                if (pcomp.compare(m.getIntroducedRoles().get(i), e.getIntroducedRoles().get(i)) != 0) {
+                    return (1);
+                }
+            }
+        } else {
+            return (1);
+        }
+        
+        Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();    
+        
+        if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

@@ -15,8 +15,11 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.Block;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.Repeat;
+import org.scribble.protocol.model.Role;
 
 /**
  * This class provides the Repeat implementation of the
@@ -24,57 +27,58 @@ import org.scribble.common.logging.Journal;
  */
 public class RepeatProjectorRule implements ProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == Repeat.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l) {
-		Repeat ret=new Repeat();
-		Repeat source=(Repeat)model;
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == Repeat.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l) {
+        Repeat ret=new Repeat();
+        Repeat source=(Repeat)model;
 
-		ret.derivedFrom(source);
-		
-		// Project the list of roles
-		for (int i=0; i < source.getRoles().size(); i++) {	
-			// Possibly don't project roles that are not relevant to the
-			// current projected role
-			
-			//if (source.getRoles().get(i).getName().equals(role.getName()) == false) {
-				ret.getRoles().add(new Role(source.getRoles().get(i)));
-			//}
-		}
-		
-		if (ret != null && source.getBlock() != null) {
-			
-			// Project the block
-			Block b=(Block)context.project(source.getBlock(), role, l);
-			
-			if (b != null) {
-				ret.setBlock(b);
-				ret.getBlock().setParent(ret);
-			} else {
-				ret = null;
-			}
-		}
-		
-		return(ret);
-	}
+        ret.derivedFrom(source);
+        
+        // Project the list of roles
+        for (int i=0; i < source.getRoles().size(); i++) {    
+            // Possibly don't project roles that are not relevant to the
+            // current projected role
+            
+            //if (source.getRoles().get(i).getName().equals(role.getName()) == false) {
+                ret.getRoles().add(new Role(source.getRoles().get(i)));
+            //}
+        }
+        
+        if (ret != null && source.getBlock() != null) {
+            
+            // Project the block
+            Block b=(Block)context.project(source.getBlock(), role, l);
+            
+            if (b != null) {
+                ret.setBlock(b);
+                ret.getBlock().setParent(ret);
+            } else {
+                ret = null;
+            }
+        }
+        
+        return (ret);
+    }
 }

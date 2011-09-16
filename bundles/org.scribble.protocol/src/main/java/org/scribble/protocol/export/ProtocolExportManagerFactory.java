@@ -19,17 +19,23 @@ package org.scribble.protocol.export;
  * This method returns an instance of the export manager.
  *
  */
-public class ProtocolExportManagerFactory {
+public final class ProtocolExportManagerFactory {
+    
+    private final static ProtocolExportManager INSTANCE=
+            new org.scribble.protocol.export.DefaultProtocolExportManager();
 
-	/**
-	 * This method returns the export manager.
-	 * 
-	 * @return The export manager
-	 */
-	public static ProtocolExportManager getExportManager() {
-		return(m_instance);
-	}
-	
-	private static ProtocolExportManager m_instance=
-			new org.scribble.protocol.export.DefaultProtocolExportManager();
+    /**
+     * Default private constructor.
+     */
+    private ProtocolExportManagerFactory() {
+    }
+    
+    /**
+     * This method returns the export manager.
+     * 
+     * @return The export manager
+     */
+    public static ProtocolExportManager getExportManager() {
+        return (INSTANCE);
+    }
 }

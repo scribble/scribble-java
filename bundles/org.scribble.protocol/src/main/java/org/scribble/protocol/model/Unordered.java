@@ -21,55 +21,55 @@ package org.scribble.protocol.model;
  */
 public class Unordered extends Activity {
 
-	private Block m_block=new Block();
+    private Block _block=new Block();
 
-	/**
-	 * This is the default constructor.
-	 * 
-	 */
-	public Unordered() {
-		m_block.setParent(this);
-	}
-		
-	/**
-	 * This method returns the activities.
-	 * 
-	 * @return The block of activities
-	 */
-	public Block getBlock() {
-		return(m_block);
-	}
-	
-	/**
-	 * This method sets the block.
-	 * 
-	 * @param block The block
-	 */
-	public void setBlock(Block block) {
-		if (m_block != null) {
-			m_block.setParent(null);
-		}
-		
-		m_block = block;
-		
-		if (m_block != null) {
-			m_block.setParent(this);
-		}
-	}
+    /**
+     * This is the default constructor.
+     * 
+     */
+    public Unordered() {
+        _block.setParent(this);
+    }
+        
+    /**
+     * This method returns the activities.
+     * 
+     * @return The block of activities
+     */
+    public Block getBlock() {
+        return (_block);
+    }
+    
+    /**
+     * This method sets the block.
+     * 
+     * @param block The block
+     */
+    public void setBlock(Block block) {
+        if (_block != null) {
+            _block.setParent(null);
+        }
+        
+        _block = block;
+        
+        if (_block != null) {
+            _block.setParent(this);
+        }
+    }
 
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-		visitor.start(this);
-		
-		if (getBlock() != null) {
-			getBlock().visit(visitor);
-		}
-		
-		visitor.end(this);
-	}
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+        visitor.start(this);
+        
+        if (getBlock() != null) {
+            getBlock().visit(visitor);
+        }
+        
+        visitor.end(this);
+    }
 }

@@ -15,8 +15,10 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.ParameterDefinition;
+import org.scribble.protocol.model.Role;
 
 /**
  * This class provides the Parameter implementation of the
@@ -24,52 +26,53 @@ import org.scribble.common.logging.Journal;
  */
 public class ParameterProjectorRule implements ProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == ParameterDefinition.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-				Role role, Journal l) {
-		ParameterDefinition ret=new ParameterDefinition();
-		ParameterDefinition source=(ParameterDefinition)model;
-		
-		ret.derivedFrom(source);
-				
-		ret.setName(source.getName());
-		ret.setType(source.getType());
-				
-		
-		if (ret.isRole() == false) {
-			// Add to state
-			context.setState(ret.getName(), ret);
-		} else {
-			Role r=ret.getRole();
-			
-			if (role.equals(r)) {
-				ret = null;
-			} else {
-				// Register role associated with the parameter
-				context.setState(r.getName(), r);
-			}
-		}
-		
-		return(ret);
-	}
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == ParameterDefinition.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                Role role, Journal l) {
+        ParameterDefinition ret=new ParameterDefinition();
+        ParameterDefinition source=(ParameterDefinition)model;
+        
+        ret.derivedFrom(source);
+                
+        ret.setName(source.getName());
+        ret.setType(source.getType());
+                
+        
+        if (!ret.isRole()) {
+            // Add to state
+            context.setState(ret.getName(), ret);
+        } else {
+            Role r=ret.getRole();
+            
+            if (role.equals(r)) {
+                ret = null;
+            } else {
+                // Register role associated with the parameter
+                context.setState(r.getName(), r);
+            }
+        }
+        
+        return (ret);
+    }
 }

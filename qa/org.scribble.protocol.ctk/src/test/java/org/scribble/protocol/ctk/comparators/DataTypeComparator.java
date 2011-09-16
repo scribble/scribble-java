@@ -20,26 +20,26 @@ import org.scribble.protocol.model.*;
 
 public class DataTypeComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		DataType m=(DataType)arg0;
-		DataType e=(DataType)arg1;
-		
-		if (m == null && e == null) {
-			return(0);
-		}
-		
-		if (m == null || e == null){
-			return(1);
-		}
-		
-		if (m.getDetails() != null && e.getDetails() != null) {
-			if (m.getDetails().equals(e.getDetails()) == false) {
-				return(1);
-			}
-		} else if (m.getDetails() != null || e.getDetails() != null) {
-			return(1);
-		}
-		
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        DataType m=(DataType)arg0;
+        DataType e=(DataType)arg1;
+        
+        if (m == null && e == null) {
+            return (0);
+        }
+        
+        if (m == null || e == null){
+            return (1);
+        }
+        
+        if (m.getDetails() != null && e.getDetails() != null) {
+            if (m.getDetails().equals(e.getDetails()) == false) {
+                return (1);
+            }
+        } else if (m.getDetails() != null || e.getDetails() != null) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

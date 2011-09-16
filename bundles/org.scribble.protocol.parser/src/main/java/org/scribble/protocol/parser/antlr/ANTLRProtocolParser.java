@@ -20,12 +20,12 @@ import java.io.IOException;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.scribble.protocol.ProtocolContext;
-import org.scribble.protocol.model.*;
-import org.scribble.protocol.parser.AnnotationProcessor;
-import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
+import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.model.ProtocolModel;
+import org.scribble.protocol.parser.AnnotationProcessor;
+import org.scribble.protocol.parser.ProtocolParser;
 
 /**
  * This class provides the ANTLR implementation of the Protocol Parser
@@ -34,61 +34,70 @@ import org.scribble.common.resource.Content;
  */
 public class ANTLRProtocolParser implements ProtocolParser {
 
-	private AnnotationProcessor m_annotationProcessor=null;
+    private AnnotationProcessor _annotationProcessor=null;
 
-	public ANTLRProtocolParser() {
-	}
-	
-	public boolean isSupported(Content content) {
-		return(content.hasExtension(org.scribble.protocol.ProtocolDefinitions.PROTOCOL_TYPE));
-	}
+    /**
+     * Default constructor.
+     */
+    public ANTLRProtocolParser() {
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSupported(Content content) {
+        return (content.hasExtension(org.scribble.protocol.ProtocolDefinitions.PROTOCOL_TYPE));
+    }
 
-	public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
-							throws IOException {
-		ProtocolModel ret=null;
-		
+    /**
+     * {@inheritDoc}
+     */
+    public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+                            throws IOException {
+        ProtocolModel ret=null;
+        
         try {
-        	java.io.InputStream is=content.getInputStream();
-        	
-        	byte[] b=new byte[is.available()];
-        	is.read(b);
-        	
-        	is.close();
-        	
-        	String document=new String(b);
-        	
+            java.io.InputStream is=content.getInputStream();
+            
+            byte[] b=new byte[is.available()];
+            is.read(b);
+            
+            is.close();
+            
+            String document=new String(b);
+            
             ScribbleProtocolLexer lex = new ScribbleProtocolLexer(new ANTLRStringStream(document));
-           	CommonTokenStream tokens = new CommonTokenStream(lex);
-           	
-    		ScribbleProtocolParser parser = new ScribbleProtocolParser(tokens);
+               CommonTokenStream tokens = new CommonTokenStream(lex);
+               
+            ScribbleProtocolParser parser = new ScribbleProtocolParser(tokens);
 
-    		ProtocolTreeAdaptor adaptor=new ProtocolTreeAdaptor(m_annotationProcessor, journal);
-    		adaptor.setParser(parser);
-    		
-    		parser.setDocument(document);
-    		parser.setTreeAdaptor(adaptor);
-    		
-    		parser.setJournal(journal);
+            ProtocolTreeAdaptor adaptor=new ProtocolTreeAdaptor(_annotationProcessor, journal);
+            adaptor.setParser(parser);
+            
+            parser.setDocument(document);
+            parser.setTreeAdaptor(adaptor);
+            
+            parser.setJournal(journal);
 
-    		parser.description();
-    		
-    		if (parser.isErrorOccurred() == false) {
-    			ret = adaptor.getProtocolModel();
-    		}
+            parser.description();
+            
+            if (!parser.isErrorOccurred()) {
+                ret = adaptor.getProtocolModel();
+            }
             
         } catch (Exception e)  {
             e.printStackTrace();
         }
-		
-		return(ret);
-	}
+        
+        return (ret);
+    }
 
-	/**
-	 * This method sets an annotation processor.
-	 * 
-	 * @param ap The annotation processor
-	 */
-	public void setAnnotationProcessor(AnnotationProcessor ap) {
-		m_annotationProcessor = ap;
-	}
+    /**
+     * This method sets an annotation processor.
+     * 
+     * @param ap The annotation processor
+     */
+    public void setAnnotationProcessor(AnnotationProcessor ap) {
+        _annotationProcessor = ap;
+    }
 }

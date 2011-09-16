@@ -46,7 +46,7 @@ public class ProtocolProjectorTest {
 
             {"Choice.spr", "Choice@Buyer.spr"},          // 2
             {"Choice.spr", "Choice@Seller.spr"},         // 3
-            {"ChoiceMerge.spr", "ChoiceMerge@Broker.spr"}, // 4        		
+            {"ChoiceMerge.spr", "ChoiceMerge@Broker.spr"}, // 4                
             {"ChoiceMerge.spr", "ChoiceMerge@Seller.spr"}, // 5
             
             {"ChoiceMergeCommonPrefix.spr", "ChoiceMergeCommonPrefix@A.spr"}, // 6            
@@ -56,7 +56,7 @@ public class ProtocolProjectorTest {
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@A.spr"}, // 8
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@B.spr"}, // 9
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@C.spr"}, // 10           
-        		
+                
             {"ChoiceMergeNested.spr", "ChoiceMergeNested@A.spr"},         // 11
 
             // TODO: POSSIBLE INVALID EXAMPLE, DUE TO CHAIN OF INTRODUCTION
@@ -68,17 +68,17 @@ public class ProtocolProjectorTest {
             {"InlineProtocol.spr", "InlineProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
 
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
-        	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
-        	{"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@CreditAgency.spr"}, // 18            
+            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
+            {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@CreditAgency.spr"}, // 18            
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Seller.spr"}, // 19
-        	{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Broker.spr"}, // 20
-        	{"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Buyer.spr"}, // 21
+            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Broker.spr"}, // 20
+            {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Buyer.spr"}, // 21
             {"MultiPartyInteractionsAndChoice2.spr", "MultiPartyInteractionsAndChoice2@Seller.spr"}, // 22
             
             {"MulticastInteraction.spr", "MulticastInteraction@Buyer.spr"}, // 23
             {"MulticastInteraction.spr", "MulticastInteraction@SellerA.spr"}, // 24
-        	{"Parallel.spr", "Parallel@Buyer.spr"}, // 27
-			{"Parallel.spr", "Parallel@Seller.spr"}, // 28
+            {"Parallel.spr", "Parallel@Buyer.spr"}, // 27
+            {"Parallel.spr", "Parallel@Seller.spr"}, // 28
 
             {"Recur.spr", "Recur@Buyer.spr"},
             {"Recur.spr", "Recur@Seller.spr"},

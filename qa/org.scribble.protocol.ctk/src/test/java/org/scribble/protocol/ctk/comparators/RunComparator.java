@@ -22,46 +22,46 @@ import org.scribble.protocol.model.*;
 
 public class RunComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Run m=(Run)arg0;
-		Run e=(Run)arg1;
-		
-		RoleComparator rc=(RoleComparator)
-					ComparatorUtil.getComparator(Role.class);
-		if (rc.compare(m.getFromRole(), e.getFromRole()) != 0) {
-			return(1);
-		}
-		
-		if (m.getProtocolReference() != null && e.getProtocolReference() != null) {
-			ProtocolReferenceComparator prcomp=(ProtocolReferenceComparator)
-					ComparatorUtil.getComparator(ProtocolReference.class);
-			
-			if (prcomp.compare(m.getProtocolReference(), e.getProtocolReference()) != 0) {
-				return(1);
-			}
-		} else if (m.getProtocolReference() != null || e.getProtocolReference() != null) {
-			return(1);
-		}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Run m=(Run)arg0;
+        Run e=(Run)arg1;
+        
+        RoleComparator rc=(RoleComparator)
+                    ComparatorUtil.getComparator(Role.class);
+        if (rc.compare(m.getFromRole(), e.getFromRole()) != 0) {
+            return (1);
+        }
+        
+        if (m.getProtocolReference() != null && e.getProtocolReference() != null) {
+            ProtocolReferenceComparator prcomp=(ProtocolReferenceComparator)
+                    ComparatorUtil.getComparator(ProtocolReference.class);
+            
+            if (prcomp.compare(m.getProtocolReference(), e.getProtocolReference()) != 0) {
+                return (1);
+            }
+        } else if (m.getProtocolReference() != null || e.getProtocolReference() != null) {
+            return (1);
+        }
 
-		if (m.getParameters().size() != e.getParameters().size()) {
-			return(1);
-		}
-		
-		ParameterComparator dbc=(ParameterComparator)
-					ComparatorUtil.getComparator(Parameter.class);
-		
-		for (int i=0; i < m.getParameters().size(); i++) {
-			if (dbc.compare(m.getParameters().get(i), e.getParameters().get(i)) != 0) {
-				return(1);
-			}
-		}
-		
-		Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();	
-		
-		if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
-			return(1);
-		}
-		
-		return(0);
-	}
+        if (m.getParameters().size() != e.getParameters().size()) {
+            return (1);
+        }
+        
+        ParameterComparator dbc=(ParameterComparator)
+                    ComparatorUtil.getComparator(Parameter.class);
+        
+        for (int i=0; i < m.getParameters().size(); i++) {
+            if (dbc.compare(m.getParameters().get(i), e.getParameters().get(i)) != 0) {
+                return (1);
+            }
+        }
+        
+        Comparator<java.util.List<org.scribble.common.model.Annotation>> ancomp=new AnnotationsComparator();    
+        
+        if (ancomp.compare(m.getAnnotations(), e.getAnnotations()) != 0) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

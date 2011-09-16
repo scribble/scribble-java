@@ -22,61 +22,87 @@ import org.scribble.common.resource.FileContent;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.parser.ProtocolParserManager;
 
+/**
+ * This class implements the parse command.
+ *
+ */
 public class ParseCommand implements org.scribble.command.Command {
 
-	public ParseCommand() {	
-	}
-	
-	public void setJournal(Journal journal) {
-		m_journal = journal;
-	}
-	
-	public void setProtocolParserManager(ProtocolParserManager parser) {
-		m_protocolParserManager = parser;
-	}
-	
-	public String getName() {
-		return("parse");
-	}
-	
-	public String getDescription() {
-		return("Parse a Scribble description");
-	}
-	
-	public boolean execute(String args[]) {
-		boolean ret=false;
-		
-		if (args.length == 1) {
-			m_journal.info("PARSE "+args[0], null);
-			
-			java.io.File f=new java.io.File(args[0]);
-			
-			if (f.exists() == false) {
-				m_journal.error("File not found '"+args[0]+"'", null);
-			} else {
-				// TODO: Check if protocol
-				try {
-					Content content=new FileContent(f);
+    private Journal _journal=null;
+    private ProtocolParserManager _protocolParserManager=null;
 
-					ProtocolModel pm=m_protocolParserManager.parse(null,
-								content, m_journal);
-					
-					if (pm == null) {
-						m_journal.error("Protocol Model is null", null);	
-					}
-			
-					ret = true;
-				} catch(Exception e) {
-					m_journal.error("Failed to parse file '"+args[0]+"'", null);
-				}
-			}
-		} else {
-			m_journal.error("Parser expects 1 parameter", null);
-		}
-		
-		return(ret);
-	}
+    /**
+     * Default constructor.
+     */
+    public ParseCommand() {    
+    }
+    
+    /**
+     * This method sets the journal.
+     * 
+     * @param journal The journal
+     */
+    public void setJournal(Journal journal) {
+        _journal = journal;
+    }
+    
+    /**
+     * This method sets the protocol parser manager.
+     * 
+     * @param parser The parser manager
+     */
+    public void setProtocolParserManager(ProtocolParserManager parser) {
+        _protocolParserManager = parser;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return ("parse");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription() {
+        return ("Parse a Scribble description");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean execute(String[] args) {
+        boolean ret=false;
+        
+        if (args.length == 1) {
+            _journal.info("PARSE "+args[0], null);
+            
+            java.io.File f=new java.io.File(args[0]);
+            
+            if (!f.exists()) {
+                _journal.error("File not found '"+args[0]+"'", null);
+            } else {
+                // TODO: Check if protocol
+                try {
+                    Content content=new FileContent(f);
 
-	private Journal m_journal=null;
-	private ProtocolParserManager m_protocolParserManager=null;
+                    ProtocolModel pm=_protocolParserManager.parse(null,
+                                content, _journal);
+                    
+                    if (pm == null) {
+                        _journal.error("Protocol Model is null", null);    
+                    }
+            
+                    ret = true;
+                } catch (Exception e) {
+                    _journal.error("Failed to parse file '"+args[0]+"'", null);
+                }
+            }
+        } else {
+            _journal.error("Parser expects 1 parameter", null);
+        }
+        
+        return (ret);
+    }
 }

@@ -21,17 +21,23 @@ package org.scribble.protocol.parser;
  * manager.
  *
  */
-public class ProtocolParserManagerFactory {
-	
-	private static ProtocolParserManager m_instance=
-			new org.scribble.protocol.parser.DefaultProtocolParserManager();
+public final class ProtocolParserManagerFactory {
+    
+    private final static ProtocolParserManager INSTANCE=
+            new org.scribble.protocol.parser.DefaultProtocolParserManager();
 
-	/**
-	 * This method returns the parser manager.
-	 * 
-	 * @return The parser manager
-	 */
-	public static ProtocolParserManager getParserManager() {
-		return(m_instance);
-	}
+    /**
+     * Private constructor.
+     */
+    private ProtocolParserManagerFactory() {
+    }
+    
+    /**
+     * This method returns the parser manager.
+     * 
+     * @return The parser manager
+     */
+    public static ProtocolParserManager getParserManager() {
+        return (INSTANCE);
+    }
 }

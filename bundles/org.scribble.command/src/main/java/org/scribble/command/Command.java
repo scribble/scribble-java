@@ -16,12 +16,33 @@
  */
 package org.scribble.command;
 
+/**
+ * This interface represents a command.
+ *
+ */
 public interface Command {
 
-	public String getName();
-	
-	public String getDescription();
-	
-	public boolean execute(String args[]);
-	
+    /**
+     * This method returns the name of the command.
+     * 
+     * @return The name
+     */
+    public String getName();
+    
+    /**
+     * This method returns the description.
+     * 
+     * @return The description
+     */
+    public String getDescription();
+    
+    /**
+     * This method executes the command with the
+     * given arguments.
+     * 
+     * @param args The arguments
+     * @return Whether the command executed
+     */
+    public boolean execute(String[] args);
+    
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-10 www.scribble.org
+ * Copyright 2009-11 www.scribble.org
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,8 +15,11 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.Block;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.Unordered;
 
 /**
  * This class provides the Unordered implementation of the
@@ -24,43 +27,44 @@ import org.scribble.common.logging.Journal;
  */
 public class UnorderedProjectorRule implements ProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == Unordered.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l) {
-		Unordered ret=new Unordered();
-		Unordered source=(Unordered)model;
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == Unordered.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l) {
+        Unordered ret=new Unordered();
+        Unordered source=(Unordered)model;
 
-		ret.derivedFrom(source);
-		
-		if (source.getBlock() != null) {
-			
-			// Project the block
-			ret.setBlock((Block)
-					context.project(source.getBlock(),
-								role, l));
-			ret.getBlock().setParent(ret);
-		}
-		
-		return(ret);
-	}
+        ret.derivedFrom(source);
+        
+        if (source.getBlock() != null) {
+            
+            // Project the block
+            ret.setBlock((Block)
+                    context.project(source.getBlock(),
+                                role, l));
+            ret.getBlock().setParent(ret);
+        }
+        
+        return (ret);
+    }
 }

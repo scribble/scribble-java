@@ -23,34 +23,34 @@ import org.scribble.protocol.model.*;
 
 public class MessageSignatureComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		MessageSignature m=(MessageSignature)arg0;
-		MessageSignature e=(MessageSignature)arg1;
-		
-		if (m.getOperation() == null &&
-				e.getOperation() == null) {
-			// Matches
-		} else if (m.getOperation() != null &&
-				e.getOperation() != null &&
-				m.getOperation().equals(e.getOperation())) {
-			// Matches
-		} else {
-			return(1);
-		}
-		
-		if (m.getTypeReferences().size() != e.getTypeReferences().size()) {
-			return(1);
-		}
-		
-		Comparator<ModelObject> trcomp=
-				ComparatorUtil.getComparator(TypeReference.class);
-		
-		for (int i=0; i < m.getTypeReferences().size(); i++) {
-			if (trcomp.compare(m.getTypeReferences().get(i), e.getTypeReferences().get(i)) != 0) {
-				return(1);
-			}
-		}
-		
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        MessageSignature m=(MessageSignature)arg0;
+        MessageSignature e=(MessageSignature)arg1;
+        
+        if (m.getOperation() == null &&
+                e.getOperation() == null) {
+            // Matches
+        } else if (m.getOperation() != null &&
+                e.getOperation() != null &&
+                m.getOperation().equals(e.getOperation())) {
+            // Matches
+        } else {
+            return (1);
+        }
+        
+        if (m.getTypeReferences().size() != e.getTypeReferences().size()) {
+            return (1);
+        }
+        
+        Comparator<ModelObject> trcomp=
+                ComparatorUtil.getComparator(TypeReference.class);
+        
+        for (int i=0; i < m.getTypeReferences().size(); i++) {
+            if (trcomp.compare(m.getTypeReferences().get(i), e.getTypeReferences().get(i)) != 0) {
+                return (1);
+            }
+        }
+        
+        return (0);
+    }
 }

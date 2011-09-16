@@ -25,38 +25,39 @@ import java.net.URI;
  */
 public class DefaultResourceLocator implements ResourceLocator {
 
-	private java.io.File m_baseDir=null;
+    private java.io.File _baseDir=null;
 
-	/**
-	 * This constructor initializes the default resource locator
-	 * with the location of the base directory from which the
-	 * relative file paths should be derived.
-	 * 
-	 * @param baseDir The base directory
-	 */
-	public DefaultResourceLocator(java.io.File baseDir) {
-		m_baseDir = baseDir;
-	}
-	
-	/**
-	 * This method can be used to retrieve the URI of a resource which
-	 * is located at the specified URI, potentially relative to a resource
-	 * that is being processed.
-	 * 
-	 * @param uri The relative URI of the resource to load
-	 * @return The URI, or null if not found
-	 */
-	public java.net.URI getResourceURI(String uri) throws Exception {
-		java.net.URI ret=null;
-		java.io.File file=new java.io.File(m_baseDir, uri);
+    /**
+     * This constructor initializes the default resource locator
+     * with the location of the base directory from which the
+     * relative file paths should be derived.
+     * 
+     * @param baseDir The base directory
+     */
+    public DefaultResourceLocator(java.io.File baseDir) {
+        _baseDir = baseDir;
+    }
+    
+    /**
+     * This method can be used to retrieve the URI of a resource which
+     * is located at the specified URI, potentially relative to a resource
+     * that is being processed.
+     * 
+     * @param uri The relative URI of the resource to load
+     * @return The URI, or null if not found
+     * @throws Exception Failed to get resource URI
+     */
+    public java.net.URI getResourceURI(String uri) throws Exception {
+        java.net.URI ret=null;
+        java.io.File file=new java.io.File(_baseDir, uri);
 
-		if (file.exists() == false) {
-			ret = new URI(uri);				
-		} else {
-			ret = file.toURI();
-		}
-		
-		return(ret);
-	}
+        if (!file.exists()) {
+            ret = new URI(uri);                
+        } else {
+            ret = file.toURI();
+        }
+        
+        return (ret);
+    }
 
 }

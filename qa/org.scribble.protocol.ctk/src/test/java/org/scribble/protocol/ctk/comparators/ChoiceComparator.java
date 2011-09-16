@@ -22,21 +22,21 @@ import org.scribble.protocol.model.*;
 
 public class ChoiceComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Choice m=(Choice)arg0;
-		Choice e=(Choice)arg1;
-		
-		RoleComparator pcomp=(RoleComparator)
-					ComparatorUtil.getComparator(Role.class);
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Choice m=(Choice)arg0;
+        Choice e=(Choice)arg1;
+        
+        RoleComparator pcomp=(RoleComparator)
+                    ComparatorUtil.getComparator(Role.class);
 
-		if (pcomp.compare(m.getRole(), e.getRole()) != 0) {
-			return(1);
-		}
-		
-		if (m.getPaths().size() != e.getPaths().size()) {
-			return(1);
-		}
-		
-		return(0);
-	}
+        if (pcomp.compare(m.getRole(), e.getRole()) != 0) {
+            return (1);
+        }
+        
+        if (m.getPaths().size() != e.getPaths().size()) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }

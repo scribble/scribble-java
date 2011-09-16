@@ -24,56 +24,57 @@ import org.scribble.protocol.ProtocolContext;
  *
  */
 public class DefaultProtocolValidationManager implements ProtocolValidationManager {
-	
-	private java.util.List<ProtocolValidator> m_validators=
-							new java.util.Vector<ProtocolValidator>();
-	
-	/**
-	 * This is the default constructor.
-	 */
-	public DefaultProtocolValidationManager() {
-	}
-	
-	/**
-	/**
-	 * This method invokes the validation of the supplied
-	 * model against the registered validators. Any issues
-	 * found during validation will be reported to the
-	 * supplied journal.
-	 * 
-	 * @param model The protocol model
-	 * @param journal The journal
-	 */
-	public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
-				org.scribble.common.logging.Journal logger) {
-	
-		if (m_validators != null) {
-			for (ProtocolValidator v : m_validators) {
-				v.validate(context, model, logger);
-			}
-		}
-	}
-	
-	/**
-	 * This method returns the list of protocol validators.
-	 * 
-	 * @return The list of validators
-	 */
-	public java.util.List<ProtocolValidator> getValidators() {
-		if (m_validators == null) {
-			m_validators = new java.util.ArrayList<ProtocolValidator>();
-		}
-		
-		return(m_validators);
-	}
-	
-	/**
-	 * This method sets the list of protocol validators.
-	 * 
-	 * @param validators The list of validators
-	 */
-	public void setValidators(java.util.List<ProtocolValidator> validators) {
-		m_validators = validators;
-	}
+    
+    private java.util.List<ProtocolValidator> _validators=
+                            new java.util.Vector<ProtocolValidator>();
+    
+    /**
+     * This is the default constructor.
+     */
+    public DefaultProtocolValidationManager() {
+    }
+    
+    /**
+    /**
+     * This method invokes the validation of the supplied
+     * model against the registered validators. Any issues
+     * found during validation will be reported to the
+     * supplied journal.
+     * 
+     * @param context The protocol context
+     * @param model The protocol model
+     * @param journal The journal
+     */
+    public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
+                org.scribble.common.logging.Journal journal) {
+    
+        if (_validators != null) {
+            for (ProtocolValidator v : _validators) {
+                v.validate(context, model, journal);
+            }
+        }
+    }
+    
+    /**
+     * This method returns the list of protocol validators.
+     * 
+     * @return The list of validators
+     */
+    public java.util.List<ProtocolValidator> getValidators() {
+        if (_validators == null) {
+            _validators = new java.util.ArrayList<ProtocolValidator>();
+        }
+        
+        return (_validators);
+    }
+    
+    /**
+     * This method sets the list of protocol validators.
+     * 
+     * @param validators The list of validators
+     */
+    public void setValidators(java.util.List<ProtocolValidator> validators) {
+        _validators = validators;
+    }
 
 }

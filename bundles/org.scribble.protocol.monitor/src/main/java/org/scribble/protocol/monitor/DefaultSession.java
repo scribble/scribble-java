@@ -27,134 +27,198 @@ import java.io.ObjectOutput;
  */
 public class DefaultSession implements Session, java.io.Externalizable {
 
-	private static final int VERSION=1;
-	
-	private java.util.List<Integer> m_nodeIndexes=new java.util.Vector<Integer>();
-	private int m_returnIndex=-1;
-	private Session m_parentConversation=null;
-	private java.util.List<Session> m_nestedConversations=new java.util.Vector<Session>();
-	private java.util.List<Session> m_interruptConversations=new java.util.Vector<Session>();
+    /**
+     * Serialization version.
+     */
+    private static final int VERSION=1;
+    
+    private java.util.List<Integer> _nodeIndexes=new java.util.Vector<Integer>();
+    private int _returnIndex=-1;
+    private Session _parentConversation=null;
+    private java.util.List<Session> _nestedConversations=new java.util.Vector<Session>();
+    private java.util.List<Session> _interruptConversations=new java.util.Vector<Session>();
 
-	public DefaultSession() {
-	}
+    /**
+     * Default constructor.
+     */
+    public DefaultSession() {
+    }
 
-	protected DefaultSession(int returnIndex) {
-		m_returnIndex = returnIndex;
-	}
-	
-	protected DefaultSession(Session main, int returnIndex) {
-		m_parentConversation = main;
-		m_returnIndex = returnIndex;
-	}
-	
-	public void addNodeIndex(int index) {
-		m_nodeIndexes.add(index);
-	}
-	
-	public void removeNodeIndexAt(int pos) {
-		m_nodeIndexes.remove(pos);
-	}
-	
-	public int getNumberOfNodeIndexes() {
-		return(m_nodeIndexes.size());
-	}
-	
-	public int getNodeIndexAt(int pos) {
-		return(m_nodeIndexes.get(pos));
-	}
-	
-	public boolean isFinished() {
-		return(m_nodeIndexes.size() == 0 && m_nestedConversations.size() == 0);
-	}
+    /**
+     * This constructor is initialized with the return index for use when the
+     * nested session completes.
+     * 
+     * @param returnIndex The return index
+     */
+    protected DefaultSession(int returnIndex) {
+        _returnIndex = returnIndex;
+    }
+    
+    /**
+     * This constructor is initialized with the return index for use when the
+     * nested session completes.
+     * 
+     * @param main The main session
+     * @param returnIndex The return index
+     */
+    protected DefaultSession(Session main, int returnIndex) {
+        _parentConversation = main;
+        _returnIndex = returnIndex;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void addNodeIndex(int index) {
+        _nodeIndexes.add(index);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void removeNodeIndexAt(int pos) {
+        _nodeIndexes.remove(pos);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumberOfNodeIndexes() {
+        return (_nodeIndexes.size());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public int getNodeIndexAt(int pos) {
+        return (_nodeIndexes.get(pos));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isFinished() {
+        return (_nodeIndexes.size() == 0 && _nestedConversations.size() == 0);
+    }
 
-	// Nested Conversation Management
-	
-	public Session createNestedConversation(int returnIndex) {
-		DefaultSession ret=new DefaultSession(returnIndex);
-		
-		m_nestedConversations.add(ret);
-		
-		return(ret);
-	}
-	
-	public Session createInterruptConversation(Session main, int returnIndex) {
-		DefaultSession ret=new DefaultSession(main, returnIndex);
-		
-		m_nestedConversations.add(ret);
-		main.getInterruptConversations().add(ret);
-		
-		return(ret);
-	}
-	
-	public int getReturnIndex() {
-		return(m_returnIndex);
-	}
-	
-	public void setReturnIndex(int returnIndex) {
-		m_returnIndex = returnIndex;
-	}
-	
-	public java.util.List<Session> getNestedConversations() {
-		return(m_nestedConversations);
-	}
-	
-	public void removeNestedConversation(Session context) {
-		m_nestedConversations.remove(context);
-	}
-	
-	public Session getParentConversation() {
-		return(m_parentConversation);
-	}
-	
-	public java.util.List<Session> getInterruptConversations() {
-		return(m_interruptConversations);
-	}
+    // Nested Conversation Management
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Session createNestedConversation(int returnIndex) {
+        DefaultSession ret=new DefaultSession(returnIndex);
+        
+        _nestedConversations.add(ret);
+        
+        return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Session createInterruptConversation(Session main, int returnIndex) {
+        DefaultSession ret=new DefaultSession(main, returnIndex);
+        
+        _nestedConversations.add(ret);
+        main.getInterruptConversations().add(ret);
+        
+        return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public int getReturnIndex() {
+        return (_returnIndex);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setReturnIndex(int returnIndex) {
+        _returnIndex = returnIndex;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public java.util.List<Session> getNestedConversations() {
+        return (_nestedConversations);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void removeNestedConversation(Session session) {
+        _nestedConversations.remove(session);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Session getParentConversation() {
+        return (_parentConversation);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public java.util.List<Session> getInterruptConversations() {
+        return (_interruptConversations);
+    }
 
-	public void readExternal(ObjectInput ois) throws IOException,
-			ClassNotFoundException {
-		@SuppressWarnings("unused")
-		int version=ois.readInt();
-		
-		int nodeIndexes=ois.readInt();
-		for (int i=0; i < nodeIndexes; i++) {
-			m_nodeIndexes.add(ois.readInt());
-		}
-		
-		m_returnIndex = ois.readInt();
-		
-		m_parentConversation=(Session)ois.readObject();
-		
-		int nestedSize=ois.readInt();
-		for (int i=0; i < nestedSize; i++) {
-			m_nestedConversations.add((Session)ois.readObject());
-		}
-		
-		int interruptSize=ois.readInt();
-		for (int i=0; i < interruptSize; i++) {
-			m_interruptConversations.add((Session)ois.readObject());
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void readExternal(ObjectInput ois) throws IOException,
+            ClassNotFoundException {
+        @SuppressWarnings("unused")
+        int version=ois.readInt();
+        
+        int nodeIndexes=ois.readInt();
+        for (int i=0; i < nodeIndexes; i++) {
+            _nodeIndexes.add(ois.readInt());
+        }
+        
+        _returnIndex = ois.readInt();
+        
+        _parentConversation=(Session)ois.readObject();
+        
+        int nestedSize=ois.readInt();
+        for (int i=0; i < nestedSize; i++) {
+            _nestedConversations.add((Session)ois.readObject());
+        }
+        
+        int interruptSize=ois.readInt();
+        for (int i=0; i < interruptSize; i++) {
+            _interruptConversations.add((Session)ois.readObject());
+        }
+    }
 
-	public void writeExternal(ObjectOutput oos) throws IOException {
-		oos.writeInt(VERSION);
-		
-		oos.writeInt(m_nodeIndexes.size());
-		for (int index : m_nodeIndexes) {
-			oos.writeInt(index);
-		}
-		
-		oos.writeInt(m_returnIndex);
-		
-		oos.writeObject(m_parentConversation);
-		
-		oos.writeInt(m_nestedConversations.size());
-		for (Session session : m_nestedConversations) {
-			oos.writeObject(session);
-		}
-		
-		oos.writeInt(m_interruptConversations.size());
-		for (Session session : m_interruptConversations) {
-			oos.writeObject(session);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void writeExternal(ObjectOutput oos) throws IOException {
+        oos.writeInt(VERSION);
+        
+        oos.writeInt(_nodeIndexes.size());
+        for (int index : _nodeIndexes) {
+            oos.writeInt(index);
+        }
+        
+        oos.writeInt(_returnIndex);
+        
+        oos.writeObject(_parentConversation);
+        
+        oos.writeInt(_nestedConversations.size());
+        for (Session session : _nestedConversations) {
+            oos.writeObject(session);
+        }
+        
+        oos.writeInt(_interruptConversations.size());
+        for (Session session : _interruptConversations) {
+            oos.writeObject(session);
+        }
+    }
 }

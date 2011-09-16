@@ -22,26 +22,26 @@ import org.scribble.protocol.model.*;
 
 public class ProtocolReferenceComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		ProtocolReference m=(ProtocolReference)arg0;
-		ProtocolReference e=(ProtocolReference)arg1;
-		
-		if (m.getName() != null &&
-				e.getName() != null &&
-				m.getName().equals(e.getName())) {
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        ProtocolReference m=(ProtocolReference)arg0;
+        ProtocolReference e=(ProtocolReference)arg1;
+        
+        if (m.getName() != null &&
+                e.getName() != null &&
+                m.getName().equals(e.getName())) {
 
-			if (m.getRole() == null &&
-					e.getRole() == null) {
-				return(0);
-			} else if (m.getRole() != null &&
-					e.getRole() != null) {
-				RoleComparator pcomp=(RoleComparator)
-					ComparatorUtil.getComparator(Role.class);
-			
-				return(pcomp.compare(m.getRole(), e.getRole()));
-			}
-		}
-		
-		return(1);
-	}
+            if (m.getRole() == null &&
+                    e.getRole() == null) {
+                return (0);
+            } else if (m.getRole() != null &&
+                    e.getRole() != null) {
+                RoleComparator pcomp=(RoleComparator)
+                    ComparatorUtil.getComparator(Role.class);
+            
+                return (pcomp.compare(m.getRole(), e.getRole()));
+            }
+        }
+        
+        return (1);
+    }
 }

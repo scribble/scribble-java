@@ -27,67 +27,67 @@ import org.scribble.protocol.model.ProtocolModel;
  *
  */
 public class DefaultProtocolParserManager implements ProtocolParserManager {
-	
-	private java.util.List<ProtocolParser> m_parsers=
-				new java.util.Vector<ProtocolParser>();
+    
+    private java.util.List<ProtocolParser> _parsers=
+                new java.util.Vector<ProtocolParser>();
 
-	/**
-	 * This is the default constructor.
-	 */
-	public DefaultProtocolParserManager() {
-	}
-	
-	/**
-	 * This method parses the supplied content to create a protocol
-	 * model. Any issues are reported to the supplied journal. The protocol
-	 * context is optionally used by the parser to locate additional artifacts
-	 * required to construct the protocol model.
-	 * 
-	 * @param context The protocol context
-	 * @param content The content to be parsed
-	 * @param journal The journal for reporting issues
-	 * @return The protocol model
-	 * @throws IOException Failed to retrieve content to be parsed
-	 */
-	public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
-								throws java.io.IOException {
-		ProtocolModel ret=null;
-		
-		if (m_parsers != null) {
-			for (ProtocolParser p : m_parsers) {
-				if (p.isSupported(content)) {
-					ret = p.parse(context, content, journal);
-					
-					if (ret != null) {
-						break;
-					}
-				}
-			}
-		}
-		
-		return(ret);
-	}
+    /**
+     * This is the default constructor.
+     */
+    public DefaultProtocolParserManager() {
+    }
+    
+    /**
+     * This method parses the supplied content to create a protocol
+     * model. Any issues are reported to the supplied journal. The protocol
+     * context is optionally used by the parser to locate additional artifacts
+     * required to construct the protocol model.
+     * 
+     * @param context The protocol context
+     * @param content The content to be parsed
+     * @param journal The journal for reporting issues
+     * @return The protocol model
+     * @throws java.io.IOException Failed to retrieve content to be parsed
+     */
+    public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+                                throws java.io.IOException {
+        ProtocolModel ret=null;
+        
+        if (_parsers != null) {
+            for (ProtocolParser p : _parsers) {
+                if (p.isSupported(content)) {
+                    ret = p.parse(context, content, journal);
+                    
+                    if (ret != null) {
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return (ret);
+    }
 
-	/**
-	 * This method returns the list of protocol parsers.
-	 * 
-	 * @return The list of protocol parsers
-	 */
-	public java.util.List<ProtocolParser> getParsers() {
-		if (m_parsers == null) {
-			m_parsers = new java.util.ArrayList<ProtocolParser>();
-		}
-		
-		return(m_parsers);
-	}
-	
-	/**
-	 * This method sets the list of protocol parsers.
-	 * 
-	 * @param parsers The list of protocol parsers
-	 */
-	public void setParsers(java.util.List<ProtocolParser> parsers) {
-		m_parsers = parsers;
-	}
-	
+    /**
+     * This method returns the list of protocol parsers.
+     * 
+     * @return The list of protocol parsers
+     */
+    public java.util.List<ProtocolParser> getParsers() {
+        if (_parsers == null) {
+            _parsers = new java.util.ArrayList<ProtocolParser>();
+        }
+        
+        return (_parsers);
+    }
+    
+    /**
+     * This method sets the list of protocol parsers.
+     * 
+     * @param parsers The list of protocol parsers
+     */
+    public void setParsers(java.util.List<ProtocolParser> parsers) {
+        _parsers = parsers;
+    }
+    
 }

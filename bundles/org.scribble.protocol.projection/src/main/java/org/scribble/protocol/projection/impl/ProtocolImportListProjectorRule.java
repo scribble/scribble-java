@@ -16,8 +16,11 @@
  */
 package org.scribble.protocol.projection.impl;
 
-import org.scribble.protocol.model.*;
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.ProtocolImport;
+import org.scribble.protocol.model.ProtocolImportList;
+import org.scribble.protocol.model.Role;
 
 /**
  * This class provides the ImportList implementation of the
@@ -25,42 +28,43 @@ import org.scribble.common.logging.Journal;
  */
 public class ProtocolImportListProjectorRule implements ProjectorRule {
 
-	/**
-	 * This method determines whether the projection rule is
-	 * appropriate for the supplied model object.
-	 * 
-	 * @param obj The model object to be projected
-	 * @return Whether the rule is relevant for the
-	 * 				model object
-	 */
-	public boolean isSupported(ModelObject obj) {
-		return(obj.getClass() == ProtocolImportList.class);
-	}
-	
-	/**
-	 * This method projects the supplied model object based on the
-	 * specified role.
-	 * 
-	 * @param model The model object
-	 * @param role The role
-	 * @param l The model listener
-	 * @return The projected model object
-	 */
-	public Object project(ProjectorContext context, ModelObject model,
-					Role role, Journal l) {
-		ProtocolImportList ret=new ProtocolImportList();
-		ProtocolImportList source=(ProtocolImportList)model;
-		
-		ret.derivedFrom(source);
-		
-		for (int i=0; i < source.getProtocolImports().size(); i++) {
-			ProtocolImport p=(ProtocolImport)context.project(source.getProtocolImports().get(i), role, l);
+    /**
+     * This method determines whether the projection rule is
+     * appropriate for the supplied model object.
+     * 
+     * @param obj The model object to be projected
+     * @return Whether the rule is relevant for the
+     *                 model object
+     */
+    public boolean isSupported(ModelObject obj) {
+        return (obj.getClass() == ProtocolImportList.class);
+    }
+    
+    /**
+     * This method projects the supplied model object based on the
+     * specified role.
+     * 
+     * @param context The context
+     * @param model The model object
+     * @param role The role
+     * @param l The model listener
+     * @return The projected model object
+     */
+    public Object project(ProjectorContext context, ModelObject model,
+                    Role role, Journal l) {
+        ProtocolImportList ret=new ProtocolImportList();
+        ProtocolImportList source=(ProtocolImportList)model;
+        
+        ret.derivedFrom(source);
+        
+        for (int i=0; i < source.getProtocolImports().size(); i++) {
+            ProtocolImport p=(ProtocolImport)context.project(source.getProtocolImports().get(i), role, l);
 
-			if (p != null) {
-				ret.getProtocolImports().add(p);
-			}
-		}
-		
-		return(ret);
-	}
+            if (p != null) {
+                ret.getProtocolImports().add(p);
+            }
+        }
+        
+        return (ret);
+    }
 }

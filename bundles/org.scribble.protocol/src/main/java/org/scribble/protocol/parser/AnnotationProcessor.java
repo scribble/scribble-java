@@ -26,15 +26,15 @@ import org.scribble.common.model.Annotation;
  */
 public interface AnnotationProcessor {
 
-	/**
-	 * This method is called when an annotation is found.
-	 * 
-	 * @param annotation The annotation text
-	 * @param properties The associated model object's properties
-	 * @param journal The journal
-	 * @return An implementation of the annotation, or null if cannot be processed
-	 */
-	public Annotation getAnnotation(String annotation, java.util.Map<String,Object> properties,
-								Journal journal);
-	
+    /**
+     * This method is called when an annotation is found.
+     * 
+     * @param annotation The annotation text
+     * @param properties The associated model object's properties
+     * @param journal The journal
+     * @return An implementation of the annotation, or null if cannot be processed
+     */
+    public Annotation getAnnotation(String annotation, java.util.Map<String,Object> properties,
+                                Journal journal);
+    
 }

@@ -21,137 +21,140 @@ package org.scribble.protocol.model;
  */
 public class ParameterDefinition extends ModelObject {
 
-	private String m_name=null;	
-	private TypeReference m_type=null;
+    private String _name=null;    
+    private TypeReference _type=null;
 
-	/**
-	 * This is the default constructor.
-	 */
-	public ParameterDefinition() {
-	}
-	
-	/**
-	 * This constructor initializes the parameter as representing
-	 * a role with the supplied name.
-	 * 
-	 * @param name The name
-	 */
-	public ParameterDefinition(String name) {
-		m_name = name;
-	}
-	
-	/**
-	 * This method returns the name of the parameter.
-	 * 
-	 * @return The name
-	 */
-	public String getName() {
-		return(m_name);
-	}
-	
-	/**
-	 * This method sets the name of the parameter.
-	 * 
-	 * @param name The name
-	 */
-	public void setName(String name) {
-		m_name = name;
-	}
-	
-	/**
-	 * This method returns the type of the parameter. If
-	 * the type is null, then it means the parameter
-	 * name represents a role.
-	 * 
-	 * @return The type
-	 */
-	public TypeReference getType() {
-		return(m_type);
-	}
-	
-	/**
-	 * This method sets the type of the parameter.
-	 * 
-	 * @param type The type
-	 */
-	public void setType(TypeReference type) {
-		m_type = type;
-	}
-	
-	/**
-	 * This method determines whether the parameter represents a role.
-	 * 
-	 * @return Whether the parameter represents a role
-	 */
-	public boolean isRole() {
-		return(m_type == null);
-	}
-	
-	/**
-	 * This method returns the role associated with the parameter,
-	 * if the parameter represents a role, otherwise null.
-	 * 
-	 * @return The role, or null if parameter does not represent a role
-	 */
-	public Role getRole() {
-		Role ret=null;
-		
-		if (isRole() && getName() != null) {
-			ret = new Role(getName());
-			ret.setParent(this);
-		}
-		
-		return(ret);
-	}
-	
-	public boolean equals(Object obj) {
-		boolean ret=false;
-	
-		if (obj instanceof ParameterDefinition) {
-			ParameterDefinition other=(ParameterDefinition)obj;
-			
-			ret = true;
-			
-			if (other.getName() == null || other.getName().equals(m_name) == false) {
-				ret = false;
-			} else if (other.getType() == null) {
-				if (getType() != null) {
-					ret = false;
-				}
-			} else if (getType() == null || other.getType().equals(getType()) == false) {
-				ret = false;
-			}
-		}
-		
-		return(ret);
-	}
-	
-	public int hashCode() {
-		int ret=super.hashCode();
-		
-		if (m_name != null) {
-			ret = m_name.hashCode();
-		}
-		
-		return(ret);
-	}
-	
-	public String toString() {
-		String ret=getName();
-		
-		if (ret == null) {
-			ret = "<Unnamed Role>";
-		}
-		
-		return(ret);
-	}
-	
-	/**
-	 * This method visits the model object using the supplied
-	 * visitor.
-	 * 
-	 * @param visitor The visitor
-	 */
-	public void visit(Visitor visitor) {
-	}
+    /**
+     * This is the default constructor.
+     */
+    public ParameterDefinition() {
+    }
+    
+    /**
+     * This constructor initializes the parameter as representing
+     * a role with the supplied name.
+     * 
+     * @param name The name
+     */
+    public ParameterDefinition(String name) {
+        _name = name;
+    }
+    
+    /**
+     * This method returns the name of the parameter.
+     * 
+     * @return The name
+     */
+    public String getName() {
+        return (_name);
+    }
+    
+    /**
+     * This method sets the name of the parameter.
+     * 
+     * @param name The name
+     */
+    public void setName(String name) {
+        _name = name;
+    }
+    
+    /**
+     * This method returns the type of the parameter. If
+     * the type is null, then it means the parameter
+     * name represents a role.
+     * 
+     * @return The type
+     */
+    public TypeReference getType() {
+        return (_type);
+    }
+    
+    /**
+     * This method sets the type of the parameter.
+     * 
+     * @param type The type
+     */
+    public void setType(TypeReference type) {
+        _type = type;
+    }
+    
+    /**
+     * This method determines whether the parameter represents a role.
+     * 
+     * @return Whether the parameter represents a role
+     */
+    public boolean isRole() {
+        return (_type == null);
+    }
+    
+    /**
+     * This method returns the role associated with the parameter,
+     * if the parameter represents a role, otherwise null.
+     * 
+     * @return The role, or null if parameter does not represent a role
+     */
+    public Role getRole() {
+        Role ret=null;
+        
+        if (isRole() && getName() != null) {
+            ret = new Role(getName());
+            ret.setParent(this);
+        }
+        
+        return (ret);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret=false;
+    
+        if (obj instanceof ParameterDefinition) {
+            ParameterDefinition other=(ParameterDefinition) obj;
+            
+            ret = true;
+            
+            if (other.getName() == null || !other.getName().equals(_name)) {
+                ret = false;
+            } else if (other.getType() == null) {
+                if (getType() != null) {
+                    ret = false;
+                }
+            } else if (getType() == null || !other.getType().equals(getType())) {
+                ret = false;
+            }
+        }
+        
+        return (ret);
+    }
+    
+    @Override
+    public int hashCode() {
+        int ret=super.hashCode();
+        
+        if (_name != null) {
+            ret = _name.hashCode();
+        }
+        
+        return (ret);
+    }
+    
+    @Override
+    public String toString() {
+        String ret=getName();
+        
+        if (ret == null) {
+            ret = "<Unnamed Role>";
+        }
+        
+        return (ret);
+    }
+    
+    /**
+     * This method visits the model object using the supplied
+     * visitor.
+     * 
+     * @param visitor The visitor
+     */
+    public void visit(Visitor visitor) {
+    }
 }

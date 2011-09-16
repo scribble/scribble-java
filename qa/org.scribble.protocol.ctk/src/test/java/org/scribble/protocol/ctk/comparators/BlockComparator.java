@@ -21,14 +21,14 @@ import org.scribble.protocol.model.*;
 
 public class BlockComparator implements Comparator<ModelObject> {
 
-	public int compare(ModelObject arg0, ModelObject arg1) {
-		Block m=(Block)arg0;
-		Block e=(Block)arg1;
-		
-		if (m.size() != e.size()) {
-			return(1);
-		}
-		
-		return(0);
-	}
+    public int compare(ModelObject arg0, ModelObject arg1) {
+        Block m=(Block)arg0;
+        Block e=(Block)arg1;
+        
+        if (m.size() != e.size()) {
+            return (1);
+        }
+        
+        return (0);
+    }
 }
