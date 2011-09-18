@@ -5,7 +5,6 @@ protocol ChoiceNotMergeable (role A) {
     choice at A {
         M1 from A to B;
         M4 from B to C;
-        M5 from C to B;
     } or {
         M2 from A to B;
         M4 from B to C;

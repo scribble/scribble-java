@@ -356,6 +356,10 @@ public class CTKUtil {
 
         Role role=new Role(projectAsRole);
         ProtocolModel projected=project(model, role, logger, context);
+        
+        if (logger.getErrorCount() > 0) {
+            fail("Projection to role '"+role+"' failed: "+logger.getErrors());
+        }
 
         verify(projected, expected);
     }

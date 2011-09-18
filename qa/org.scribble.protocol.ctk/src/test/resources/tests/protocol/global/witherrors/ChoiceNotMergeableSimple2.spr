@@ -1,0 +1,13 @@
+protocol ChoiceNotMergeable (role A) {
+    A introduces B;
+    B introduces C;
+
+	choice at A {
+	   M1 from A to B;
+	   M1 from B to C;
+	   M2 from B to C;
+	} or {
+	   M2 from A to B;
+	   M1 from B to C;
+	}
+}

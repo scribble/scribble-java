@@ -1,0 +1,12 @@
+protocol ChoiceNotMergeable at C (role B) {
+
+    choice {
+        M4 from B;
+        choice {
+        	M5 to B;
+    	} or {
+        }
+    } or {
+        M5 from B;
+    }
+}

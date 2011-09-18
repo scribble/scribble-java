@@ -16,12 +16,13 @@
 package org.scribble.protocol.projection.impl;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.Activity;
 import org.scribble.protocol.model.Block;
 import org.scribble.protocol.model.Choice;
-import org.scribble.protocol.model.MessageSignature;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.util.InteractionUtil;
@@ -32,6 +33,8 @@ import org.scribble.protocol.util.InteractionUtil;
  */
 public class ChoiceProjectorRule implements ProjectorRule {
 
+    public static final String ALLOW_OPTIONAL = "scribble.choice.allowOptional";
+    
     private static final Logger LOG=Logger.getLogger(ChoiceProjectorRule.class.getName());
     
     /**
@@ -59,11 +62,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
     public Object project(ProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         Choice projected=new Choice();
-        Object ret=projected;
         Choice source=(Choice)model;
-        boolean merge=false;
-        boolean rolesSet=false;
-        Role fromRole=null;
         boolean optional=false;
         
         projected.derivedFrom(source);
@@ -80,9 +79,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
                             l);
             
             if (block != null) {
-                
-                // TODO: Temporary fix to merge nested choice
-                if (block.getContents().size() == 1
+               if (block.getContents().size() == 1
                         && block.getContents().get(0) instanceof Choice
                         && isSameRole(projected, (Choice)block.getContents().get(0))) {
                     projected.getPaths().addAll(((Choice)block.getContents().get(0)).getPaths());
@@ -93,81 +90,33 @@ public class ChoiceProjectorRule implements ProjectorRule {
                 optional = true;
             }
         }
-                
-        // Check if block needs to be merged
-        if (merge) {
-            Role destination=null;
-            
-            // Check if initial interactions have same destination
-            for (Block block : projected.getPaths()) {
-                
-                java.util.List<ModelObject> list=
-                    org.scribble.protocol.util.InteractionUtil.getInitialInteractions(block);
-                for (ModelObject act : list) {
-                    Role r=InteractionUtil.getToRole(act);
-                    
-                    if (destination == null) {
-                        destination = r;
-                    } else if (!destination.equals(r)) {
-                        merge = false;
-                        break;
-                    }
-                }
-                
-                if (!merge) {
-                     break;
-                }
-            }
-        }
         
-        if (merge) {
-            java.util.List<Block> tmp=new java.util.Vector<Block>(projected.getPaths());
-            
-            for (Block block : tmp) {
-                java.util.List<ModelObject> list=
-                    org.scribble.protocol.util.InteractionUtil.getInitialInteractions(block);
-                
-                // Remove block
-                projected.getPaths().remove(block);
-                
-                for (ModelObject act : list) {
-                    MessageSignature ms=InteractionUtil.getMessageSignature(act);
-                    boolean add=true;
-                    
-                    for (Block wb : projected.getPaths()) {
-                        MessageSignature wbms=InteractionUtil.getMessageSignature(wb);
-                        
-                        if (ms.equals(wbms)) {
-                            // TODO: Need to check paths for conformance.
-                            // If conforms, then merge, if not, then error
-                            l.error("MERGING NOT CURRENTLY SUPPORTED", null);
-                            
-                            add = false;
-                        }
-                    }
-                    
-                    if (add) {
-                        
-                        // Check if roles should be set or matched
-                        if (!rolesSet) {
-                            fromRole = InteractionUtil.getFromRole(act);
-                            //toRole = InteractionUtil.getToRole(act);
-                            
-                            rolesSet = true;
-                        } else {
-                            // TODO: Check that roles match
-                            LOG.info("TODO: Check that roles match");
-                        }
-                    }
-                }
-            }
-        }
-        
-        if (merge) {
-            projected.setRole(fromRole);
-        }
+        return(processChoice(context, projected, role, l, optional));
+    }
+    
+    /**
+     * This method processes a choice construct.
+     * 
+     * @param context The context
+     * @param projected The projected choice
+     * @param role The projected role
+     * @param l The journal
+     * @param optional Whether the construct is optional
+     * @return The processed activities
+     */
+    protected static Object processChoice(ProjectorContext context, Choice projected, Role role,
+                            Journal l, boolean optional) {
+        Object ret=null;
         
         ret = extractCommonBehaviour(context, projected, role, l);
+        
+        
+        // If multiple paths have common initiator (but not common to all behaviours)
+        // then group in sub-choice
+        groupSubpathsWithCommonInitiator(context, projected, role, l);
+        
+        // Confirm each path has distinct initial interactions
+        checkForAmbiguity(context, projected, role, l);
         
         // Remove all empty paths
         for (int i=projected.getPaths().size()-1; i >= 0; i--) {
@@ -187,11 +136,101 @@ public class ChoiceProjectorRule implements ProjectorRule {
             }
             projected = null;
         } else if (optional) {
+            
+            // Check if optional permitted
+            if (System.getProperty(ALLOW_OPTIONAL, "false").
+                            equalsIgnoreCase(Boolean.FALSE.toString())){
+                l.error(MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.projection.Messages").
+                            getString("_CHOICE_EMPTY_PATH"),
+                            role.getName()), projected.getProperties());
+            }
+            
             // Add optional block
             projected.getPaths().add(new Block());
         }
 
         return (ret);
+    }
+
+    /**
+     * This method checks whether choice paths should be grouped into sub-paths
+     * with common initiating interaction sentences.
+     * 
+     * @param context The context
+     * @param projected The projected choice
+     * @param role The role
+     * @param l The journal
+     */
+    @SuppressWarnings("unchecked")
+    protected static void groupSubpathsWithCommonInitiator(ProjectorContext context, Choice projected,
+                            Role role, Journal l) {
+        java.util.Map<Activity, java.util.List<Block>> pathGroups=
+                            new java.util.HashMap<Activity, java.util.List<Block>>();
+        
+        for (Block path : projected.getPaths()) {
+            if (path.size() > 0) {
+                java.util.List<Block> plist=pathGroups.get(path.get(0));
+                if (plist == null) {
+                    plist = new java.util.Vector<Block>();
+                    pathGroups.put(path.get(0), plist);
+                }
+                plist.add(path);
+            }
+        }
+        
+        for (Activity act : pathGroups.keySet()) {
+            java.util.List<Block> plist=pathGroups.get(act);
+            
+            if (plist.size() >= 2) {
+                
+                // Create new choice construct
+                Choice sub=new Choice();
+                int pos=-1;
+                
+                // TODO: Do we need to determine/set the role associated with choice?
+                // If different then report error?
+                
+                for (Block b : plist) {
+                    if (pos == -1) {
+                        pos = projected.getPaths().indexOf(b);
+                    }
+                    projected.getPaths().remove(b);
+                    sub.getPaths().add(b);
+                }
+                
+                Block newPath=new Block();
+                
+                projected.getPaths().add(pos, newPath);
+                
+                Object processed=processChoice(context, sub, role, l, false);
+                
+                if (processed instanceof java.util.List<?>) {
+                    newPath.getContents().addAll((java.util.List<Activity>)processed);
+                } else {
+                    LOG.severe("Should have returned a list with extracted common activity(s) followed by choice");
+                }
+            }
+        }
+    }
+
+    protected static void checkForAmbiguity(ProjectorContext context, Choice projected,
+                            Role role, Journal l) {
+        // Confirm each path has distinct initial interactions
+        java.util.List<ModelObject> interactions=new java.util.Vector<ModelObject>();
+        
+        for (Block path : projected.getPaths()) {
+            java.util.List<ModelObject> initial=InteractionUtil.getInitialInteractions(path);
+            
+            if (!Collections.disjoint(interactions, initial)) {
+                l.error(MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.projection.Messages").
+                            getString("_AMBIGUOUS_CHOICE"),
+                            role.getName()), null);
+            } else {
+                interactions.addAll(initial);
+            }
+        }
     }
     
     /**
@@ -240,33 +279,6 @@ public class ChoiceProjectorRule implements ProjectorRule {
                     projected.getPaths().get(i).getContents().remove(0);
                 }
             } else {
-                // Check if two or more paths have same first element, and
-                // therefore are invalid
-                boolean invalid=false;
-                
-                for (int i=0; !invalid && i < projected.getPaths().size(); i++) {
-                    
-                    for (int j=0; !invalid && j < projected.getPaths().size(); j++) {
-                    
-                        if (i != j) {
-                            Block b1=projected.getPaths().get(i);
-                            Block b2=projected.getPaths().get(j);
-                            
-                            if (b1.size() > 0 && b2.size() > 0
-                                    && b1.get(0).equals(b2.get(0))) {
-                                invalid = true;
-                            }
-                        }
-                    }
-                }
-                
-                if (invalid) {
-                    l.error(MessageFormat.format(
-                            java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.projection.Messages").
-                                getString("_AMBIGUOUS_CHOICE"),
-                                role.getName()), null);
-                }
-                
                 checkPaths = false;
             }
             

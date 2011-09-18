@@ -7,7 +7,7 @@ import InsufficientCredit;
 
 protocol MultiPartyInteractionsAndChoice(role Buyer) {
 	Buyer introduces Broker;
-	Broker introduces CreditAgency, Seller;
+	Broker introduces CreditAgency;
 
 	Order from Buyer to Broker;
 	
@@ -15,6 +15,9 @@ protocol MultiPartyInteractionsAndChoice(role Buyer) {
 	
 	choice at CreditAgency {
 		CreditOk from CreditAgency to Broker;
+		
+		Broker introduces Seller;
+		
 		Order from Broker to Seller;
 	
 		choice at Seller {

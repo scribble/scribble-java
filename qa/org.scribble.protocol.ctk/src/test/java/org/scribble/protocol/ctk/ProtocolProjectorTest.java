@@ -40,7 +40,8 @@ public class ProtocolProjectorTest {
     @Parameterized.Parameters
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
-
+            {"ChoiceMergeableSimple.spr", "ChoiceMergeableSimple@C.spr"},
+            
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0          
             {"Annotation.spr", "Annotation@Seller.spr"}, // 1
 

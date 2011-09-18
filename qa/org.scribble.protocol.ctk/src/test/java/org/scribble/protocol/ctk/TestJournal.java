@@ -62,5 +62,9 @@ public class TestJournal implements Journal {
     public void warning(String issue, Map<String, Object> props) {
     }
 
+    public java.util.List<String> getErrors() {
+        return(m_errors);
+    }
+    
     private java.util.List<String> m_errors=new java.util.Vector<String>();
 }
