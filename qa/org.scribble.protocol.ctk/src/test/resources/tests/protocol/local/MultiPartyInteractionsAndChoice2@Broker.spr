@@ -4,11 +4,11 @@ import OutOfStock;
 import InvalidProduct;
 
 protocol MultiPartyInteractionsAndChoice2 at Broker(role Buyer) {
-	Broker introduces Seller;
-
 	Order from Buyer;
 	
 	choice at Broker {
+		Broker introduces Seller;
+
 		Order to Seller;
 	
 		choice {

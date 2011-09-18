@@ -40,6 +40,7 @@ public class ProtocolProjectorTest {
     @Parameterized.Parameters
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
+
             {"ChoiceMergeableSimple.spr", "ChoiceMergeableSimple@C.spr"},
             
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0          
@@ -57,10 +58,9 @@ public class ProtocolProjectorTest {
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@A.spr"}, // 8
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@B.spr"}, // 9
             {"ChoiceMergeIdenticalBranches.spr", "ChoiceMergeIdenticalBranches@C.spr"}, // 10           
-                
-            {"ChoiceMergeNested.spr", "ChoiceMergeNested@A.spr"},         // 11
 
             // TODO: POSSIBLE INVALID EXAMPLE, DUE TO CHAIN OF INTRODUCTION
+            //{"ChoiceMergeNested.spr", "ChoiceMergeNested@A.spr"},         // 11
             //{"ChoiceMergeNested.spr", "ChoiceMergeNested@B.spr"},         // 12
             //{"ChoiceMergeNested.spr", "ChoiceMergeNested@C.spr"},         // 13
             //{"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
@@ -83,16 +83,14 @@ public class ProtocolProjectorTest {
 
             {"Recur.spr", "Recur@Buyer.spr"},
             {"Recur.spr", "Recur@Seller.spr"},
-            {"Recur2.spr", "Recur2@Buyer.spr"},            
-            {"Recur2.spr", "Recur2@Seller.spr"},
             {"Repeat.spr", "Repeat@Buyer.spr"},
             {"Repeat.spr", "Repeat@Seller.spr"},
             {"Repeat2.spr", "Repeat2@CreditAgency.spr"},
             {"Repeat2.spr", "Repeat2@Buyer.spr"},
             {"RunExternalProtocol.spr", "RunExternalProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
             {"RunExternalProtocol.spr", "RunExternalProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
-            {"RunSubProtocol.spr", "RunSubProtocol@Buyer.spr"},
-            {"RunSubProtocol.spr", "RunSubProtocol@Seller.spr"},
+            //{"RunSubProtocol.spr", "RunSubProtocol@Buyer.spr"},
+            //{"RunSubProtocol.spr", "RunSubProtocol@Seller.spr"},
             
             {"SingleInteraction.spr", "SingleInteraction@Buyer.spr"},
             {"SingleInteraction.spr", "SingleInteraction@Seller.spr"},
@@ -113,9 +111,8 @@ public class ProtocolProjectorTest {
             {"End.spr", "End@Buyer.spr"},
             {"End.spr", "End@Seller.spr"},
 
-            {"ESBBroker.spr", "ESBBroker@Broker.spr"},
-            
-            {"ESBBroker.spr", "ESBBroker@CreditAgency.spr"},
+            //{"ESBBroker.spr", "ESBBroker@Broker.spr"},
+            //{"ESBBroker.spr", "ESBBroker@CreditAgency.spr"},
             
             /*
             {"ESBBroker.spr", "ESBBroker@SupplierTxnProcessor.spr"}

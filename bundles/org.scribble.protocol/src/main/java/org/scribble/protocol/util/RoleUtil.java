@@ -226,8 +226,10 @@ public final class RoleUtil {
             
             public boolean start(Protocol elem) {
                 
-                if (protocol.getParameterDefinition(role.getName()) != null) {
-                    blocks.add(elem.getBlock());
+                if (protocol == elem) {
+                    if (protocol.getParameterDefinition(role.getName()) != null) {
+                        blocks.add(elem.getBlock());
+                    }
                 }
                 
                 // Don't visit contained protocols
@@ -259,6 +261,12 @@ public final class RoleUtil {
                 }
                 
                 return (true);
+            }
+            
+            public void accept(Introduces elem) {
+                if (elem.getIntroducedRoles().contains(role)) {
+                    blocks.add((Block)elem.getParent());
+                }
             }
         });
         
@@ -302,41 +310,6 @@ public final class RoleUtil {
             if (pos != -1) {
                 ret = refblocks.get(pos);
             }
-        }
-        
-        // Check whether block is contained within another construct that
-        // must be preserved
-        ret = checkContainingConstructs(ret);
-        
-        return (ret);
-    }
-    
-    /**
-     * This method checks the containing constructs of the supplied
-     * block to determine whether they are relevant.
-     * 
-     * @param block The block
-     * @return The processed block
-     */
-    protected static Block checkContainingConstructs(Block block) {
-        Block ret=block;
-        ModelObject cur=ret;
-        
-        while (cur != null && cur.getParent() != null
-                    && !(cur.getParent() instanceof Protocol)) {
-            if (cur.getParent().getClass() == RecBlock.class) {
-                RecBlock rb=new RecBlock();
-                
-                rb.derivedFrom(cur.getParent());
-                rb.setLabel(((RecBlock)cur.getParent()).getLabel());
-                
-                rb.setBlock(ret);
-                
-                ret = new Block();
-                ret.add(rb);
-            }
-            
-            cur = cur.getParent();
         }
         
         return (ret);

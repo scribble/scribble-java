@@ -77,29 +77,11 @@ public class ProtocolProjectorRule implements ProjectorRule {
             }
             
             for (int j=0; j < roles.size(); j++) {
-                Protocol prot = new Protocol();
 
                 // Set current role
                 role = roles.get(j);
                             
-                prot.derivedFrom(source);
-                
-                prot.setName(source.getName());
-            
-                Role located=(Role)context.project(role, role, l);
-
-                prot.setLocatedRole(located);
-                
-                context.pushScope();
-                
-                // Project parameters
-                for (ParameterDefinition p : source.getParameterDefinitions()) {
-                    ParameterDefinition projp=(ParameterDefinition)context.project(p, role, l);
-                    
-                    if (projp != null) {
-                        prot.getParameterDefinitions().add(projp);
-                    }
-                }
+                Protocol prot = startProtocolProjection(context, source, role, l);
                 
                 prot.setBlock((Block)context.project(source.getBlock(),
                         role, l));
@@ -122,7 +104,7 @@ public class ProtocolProjectorRule implements ProjectorRule {
                     }
                 }
                 
-                context.popScope();
+                endProtocolProjection(context, source, prot, role, l);
                 
                 // Clean up role lists, to ensure they don't include redundant roles
                 cleanUpRoles(prot);
@@ -141,6 +123,55 @@ public class ProtocolProjectorRule implements ProjectorRule {
         }
 
         return (ret);
+    }
+    
+    /**
+     * This method is called to start the projection of a protocol.
+     * 
+     * @param context The projection context
+     * @param source The source protocol
+     * @param role The role
+     * @param l The journal
+     * @return The projected protocol
+     */
+    public static Protocol startProtocolProjection(ProjectorContext context, Protocol source,
+                            Role role, Journal l) {
+        Protocol prot = new Protocol();
+
+        prot.derivedFrom(source);
+        
+        prot.setName(source.getName());
+    
+        Role located=(Role)context.project(role, role, l);
+
+        prot.setLocatedRole(located);
+        
+        context.pushScope();
+        
+        // Project parameters
+        for (ParameterDefinition p : source.getParameterDefinitions()) {
+            ParameterDefinition projp=(ParameterDefinition)context.project(p, role, l);
+            
+            if (projp != null) {
+                prot.getParameterDefinitions().add(projp);
+            }
+        }
+
+        return(prot);
+    }
+    
+    /**
+     * This method closes the projection of the protocol.
+     * 
+     * @param context The projector context
+     * @param source The source protocol
+     * @param projected The projected protocol
+     * @param role The role
+     * @param l The journal
+     */
+    public static void endProtocolProjection(ProjectorContext context, Protocol source,
+                                Protocol projected, Role role, Journal l) {
+        context.popScope();
     }
     
     /**

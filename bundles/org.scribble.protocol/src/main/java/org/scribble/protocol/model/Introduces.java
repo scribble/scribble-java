@@ -100,4 +100,9 @@ public class Introduces extends Activity {
     public void visit(Visitor visitor) {
         visitor.accept(this);        
     }
+    
+    @Override
+    public String toString() {
+        return(getIntroducer()+" introduces "+getIntroducedRoles()+";");
+    }
 }

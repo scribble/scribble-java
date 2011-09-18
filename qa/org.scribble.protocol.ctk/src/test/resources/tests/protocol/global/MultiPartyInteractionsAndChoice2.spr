@@ -5,11 +5,12 @@ import InvalidProduct;
 
 protocol MultiPartyInteractionsAndChoice2(role Buyer) {
 	Buyer introduces Broker;
-	Broker introduces Seller;
 
 	Order from Buyer to Broker;
 	
 	choice at Broker {
+		Broker introduces Seller;
+	
 		Order from Broker to Seller;
 	
 		choice at Seller {

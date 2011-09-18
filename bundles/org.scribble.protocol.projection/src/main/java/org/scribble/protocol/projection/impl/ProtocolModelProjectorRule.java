@@ -25,6 +25,7 @@ import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.ParameterDefinition;
 import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.model.ProtocolModel;
+import org.scribble.protocol.model.RecBlock;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.util.RoleUtil;
 
@@ -99,12 +100,19 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
         
             if (srcprotocol != null) {
                 
-                protocol = (Protocol)context.project(srcprotocol,
-                            role, l);
+                //protocol = (Protocol)context.project(srcprotocol,
+                //            role, l);
+                protocol = ProtocolProjectorRule.startProtocolProjection(context,
+                                        srcprotocol, role, l);
                 
                 // Check if block enclosing the role definition is the protocol's
                 // top level block
-                Block block=RoleUtil.getEnclosingBlock(protocol, roleDefn);
+                Block srcblock=RoleUtil.getEnclosingBlock(srcprotocol, roleDefn);
+                
+                Block block=null;
+                if (srcblock != null) {
+                    block = (Block)context.project(srcblock, role, l);
+                }
                 
                 if (block != null) {
 
@@ -138,6 +146,9 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
                         }
                     }
                 }
+                
+                ProtocolProjectorRule.endProtocolProjection(context,
+                                    srcprotocol, protocol, role, l);
             }
             
             ret.setProtocol(protocol);
@@ -145,4 +156,36 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
         
         return (ret);
     }
+
+    /**
+     * This method checks the containing constructs of the supplied
+     * block to determine whether they are relevant.
+     * 
+     * @param block The block
+     * @return The processed block
+     */
+    protected static Block checkContainingConstructs(Block block) {
+        Block ret=block;
+        ModelObject cur=ret;
+        
+        while (cur != null && cur.getParent() != null
+                    && !(cur.getParent() instanceof Protocol)) {
+            if (cur.getParent().getClass() == RecBlock.class) {
+                RecBlock rb=new RecBlock();
+                
+                rb.derivedFrom(cur.getParent());
+                rb.setLabel(((RecBlock)cur.getParent()).getLabel());
+                
+                rb.setBlock(ret);
+                
+                ret = new Block();
+                ret.add(rb);
+            }
+            
+            cur = cur.getParent();
+        }
+        
+        return (ret);
+    }
+    
 }

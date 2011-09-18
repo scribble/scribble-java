@@ -41,6 +41,8 @@ public class ProtocolProjectorAllowOptionalTest {
     @Parameterized.Parameters
     public static List<Object[]> testcases() {
         Object[][] array = new Object[][]{
+            {"Recur2.spr", "Recur2@Buyer.spr"},            
+            {"Recur2.spr", "Recur2@Seller.spr"},
             {"ChoiceMergeableSimpleAllowOptional.spr", "ChoiceMergeableSimpleAllowOptional@C.spr"}
           };
         List<Object[]> result = new LinkedList<Object[]>();
