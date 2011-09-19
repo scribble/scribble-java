@@ -90,7 +90,7 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
         if (roleDefn == null) {
             l.error(MessageFormat.format(
                     java.util.PropertyResourceBundle.getBundle(
-                    "org.scribble.protocol.projection.Messages").getString("_UNKNOWN_ROLE"),
+                    "org.scribble.protocol.projection.impl.Messages").getString("_UNKNOWN_ROLE"),
                         role.getName()), ret.getProperties());
             ret = null;
         } else {

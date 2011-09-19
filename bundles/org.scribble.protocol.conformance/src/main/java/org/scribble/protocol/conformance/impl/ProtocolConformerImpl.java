@@ -25,7 +25,9 @@ import org.scribble.protocol.model.ProtocolModel;
  */
 public class ProtocolConformerImpl implements ProtocolConformer {
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void conforms(ProtocolModel model, ProtocolModel ref,
             ConformanceHandler handler) {
         

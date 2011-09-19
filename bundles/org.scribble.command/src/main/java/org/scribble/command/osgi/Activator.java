@@ -191,7 +191,7 @@ public class Activator implements BundleActivator {
             }
         };
 
-              
+        initCommands(context, commands, sl);  
     }
     
     /**
@@ -381,6 +381,7 @@ public class Activator implements BundleActivator {
          */
         public void setProtocolProjector(ProtocolProjector pp) {
             _projectCommand.setProtocolProjector(pp);
+            _validateCommand.setProtocolProjector(pp);
         }
 
         /**

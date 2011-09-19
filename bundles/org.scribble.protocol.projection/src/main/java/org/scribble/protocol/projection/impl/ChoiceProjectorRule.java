@@ -16,6 +16,7 @@
 package org.scribble.protocol.projection.impl;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.scribble.common.logging.Journal;
@@ -139,8 +140,9 @@ public class ChoiceProjectorRule implements ProjectorRule {
             // Check if optional permitted
             if (System.getProperty(ALLOW_OPTIONAL, "false").
                             equalsIgnoreCase(Boolean.FALSE.toString())) {
-                l.error(MessageFormat.format(
-                        java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.projection.Messages").
+                l.error(MessageFormat.format(                        
+                        java.util.PropertyResourceBundle.getBundle(
+                                "org.scribble.protocol.projection.impl.Messages").
                             getString("_CHOICE_EMPTY_PATH"),
                             role.getName()), projected.getProperties());
             }

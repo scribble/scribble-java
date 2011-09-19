@@ -26,7 +26,9 @@ import org.scribble.protocol.model.Interaction;
  */
 public class InteractionConformanceRule implements ConformanceRule<Interaction> {
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public boolean conforms(Interaction model, Interaction ref, ConformanceHandler handler) {
         boolean ret=false;
         

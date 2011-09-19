@@ -142,7 +142,7 @@ public class SimulateCommand implements org.scribble.command.Command {
                     }
                     
                 } catch (Exception e) {
-                    _journal.error("Failed to parse file '"+args[0]+"'", null);
+                    _journal.error("Failed to simulate file '"+args[0]+"'", null);
                     e.printStackTrace();
                 }
             }

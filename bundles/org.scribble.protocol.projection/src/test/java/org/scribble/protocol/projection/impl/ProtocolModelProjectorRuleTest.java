@@ -67,7 +67,7 @@ public class ProtocolModelProjectorRuleTest {
         
         if (id.getMessage().equals(MessageFormat.format(
                 java.util.PropertyResourceBundle.getBundle(
-                        "org.scribble.protocol.projection.Messages").getString("_UNKNOWN_ROLE"),
+                        "org.scribble.protocol.projection.impl.Messages").getString("_UNKNOWN_ROLE"),
                         unknown.getName())) == false) {
             fail("Unexpected error message: "+id.getMessage());
         }

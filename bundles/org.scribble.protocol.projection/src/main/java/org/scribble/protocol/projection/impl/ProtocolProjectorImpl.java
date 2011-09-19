@@ -86,7 +86,7 @@ public class ProtocolProjectorImpl implements ProtocolProjector {
                 }
                     
                 journal.error(MessageFormat.format(
-                        java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.projection.Messages").getString(
+                        java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.projection.impl.Messages").getString(
                         "_NOT_PROJECTED_MODEL"), modelName), null);
             }
         }

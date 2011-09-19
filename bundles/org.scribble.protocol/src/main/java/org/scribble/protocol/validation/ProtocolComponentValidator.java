@@ -71,8 +71,13 @@ public class ProtocolComponentValidator implements ProtocolValidator {
      */
     public void validate(ProtocolTools context, org.scribble.protocol.model.ProtocolModel model,
                         Journal journal) {
+        ValidatingVisitor vv=new ValidatingVisitor(context, journal);
         
-        model.visit(new ValidatingVisitor(context, journal));
+        model.visit(vv);
+        
+        // Validate the process model - this needs to be done separately as the
+        // model is not included in the visitor, only its contents
+        vv.process(model);
     }
 
     /**
