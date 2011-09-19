@@ -31,10 +31,10 @@ import org.scribble.protocol.parser.DefaultProtocolParserManager;
 import org.scribble.protocol.parser.ProtocolParserManager;
 
 /**
- * Test for DefaultProtocolContext.
+ * Test for DefaultProtocolTools.
  *
  */
-public class DefaultProtocolContextTest {
+public class DefaultProtocolToolsTest {
 
     private static final String CONTENT_PROPERTY = "content";
 
@@ -50,7 +50,7 @@ public class DefaultProtocolContextTest {
         
         ProtocolParserManager parserManager=new TestProtocolParserManager();
         
-        DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
+        DefaultProtocolTools context=new DefaultProtocolTools(parserManager,
                             new DefaultResourceLocator(new java.io.File(url.getFile())));
         
         ProtocolImportList imports=new ProtocolImportList();
@@ -91,7 +91,7 @@ public class DefaultProtocolContextTest {
         
         ProtocolParserManager parserManager=new TestProtocolParserManager();
         
-        DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
+        DefaultProtocolTools context=new DefaultProtocolTools(parserManager,
                             new DefaultResourceLocator(new java.io.File(url.getFile())));
         
         ProtocolImportList imports=new ProtocolImportList();
@@ -125,7 +125,7 @@ public class DefaultProtocolContextTest {
     public void testGetProtocolModelScribbleURL() {
         ProtocolParserManager parserManager=new TestProtocolParserManager();
         
-        DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
+        DefaultProtocolTools context=new DefaultProtocolTools(parserManager,
                             new DefaultResourceLocator(null));
         
         ProtocolImportList imports=new ProtocolImportList();
@@ -157,7 +157,7 @@ public class DefaultProtocolContextTest {
     public class TestProtocolParserManager extends DefaultProtocolParserManager {
 
         @Override
-        public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+        public ProtocolModel parse(ProtocolTools context, Content content, Journal journal)
                             throws IOException {
             java.io.InputStream is=content.getInputStream();
             byte[] b=new byte[is.available()];

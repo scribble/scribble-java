@@ -16,7 +16,7 @@
 package org.scribble.protocol.projection.impl;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.model.Role;
@@ -32,7 +32,7 @@ public interface ProjectorContext {
      * 
      * @return The protocol context
      */
-    public ProtocolContext getProtocolContext();
+    public ProtocolTools getProtocolTools();
     
     /**
      * This method projects the supplied model object based on the

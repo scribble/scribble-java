@@ -19,8 +19,8 @@ import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.FileContent;
-import org.scribble.protocol.DefaultProtocolContext;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.DefaultProtocolTools;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.parser.ProtocolParserManager;
 import org.scribble.protocol.validation.ProtocolValidationManager;
 
@@ -99,7 +99,7 @@ public class ValidateCommand implements org.scribble.command.Command {
                 try {
                     Content content=new FileContent(f);
 
-                    ProtocolContext context=new DefaultProtocolContext(_protocolParserManager,
+                    ProtocolTools context=new DefaultProtocolTools(_protocolParserManager,
                             new DefaultResourceLocator(f.getParentFile()));
                     
                     org.scribble.protocol.model.ProtocolModel model=

@@ -23,7 +23,7 @@ import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.FileContent;
-import org.scribble.protocol.DefaultProtocolContext;
+import org.scribble.protocol.DefaultProtocolTools;
 import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.monitor.DefaultMonitorContext;
 import org.scribble.protocol.monitor.DefaultSession;
@@ -122,7 +122,7 @@ public class SimulateCommand implements org.scribble.command.Command {
                     Content content=new FileContent(f1);
                     
                     org.scribble.protocol.model.ProtocolModel model=
-                            _protocolParserManager.parse(new DefaultProtocolContext(_protocolParserManager,
+                            _protocolParserManager.parse(new DefaultProtocolTools(_protocolParserManager,
                                     new DefaultResourceLocator(f1.getParentFile())),
                                     content, _journal);
             

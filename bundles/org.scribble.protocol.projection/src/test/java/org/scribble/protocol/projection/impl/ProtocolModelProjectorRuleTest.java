@@ -98,7 +98,7 @@ public class ProtocolModelProjectorRuleTest {
         ProtocolModelProjectorRule rule=new ProtocolModelProjectorRule();
         
         ProjectorContext context=new DefaultProjectorContext(null);
-        
+         
         CachedJournal l=new CachedJournal();
         
         Role known=new Role();

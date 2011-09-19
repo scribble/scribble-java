@@ -16,7 +16,6 @@
 package org.scribble.protocol.projection.impl;
 
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.scribble.common.logging.Journal;
@@ -25,7 +24,6 @@ import org.scribble.protocol.model.Block;
 import org.scribble.protocol.model.Choice;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Role;
-import org.scribble.protocol.util.InteractionUtil;
 
 /**
  * This class provides the Choice implementation of the
@@ -33,6 +31,10 @@ import org.scribble.protocol.util.InteractionUtil;
  */
 public class ChoiceProjectorRule implements ProjectorRule {
 
+    /**
+     * System property: should choice constructs be permitted to have empty paths
+     * and therefore be optional?
+     */
     public static final String ALLOW_OPTIONAL = "scribble.choice.allowOptional";
     
     private static final Logger LOG=Logger.getLogger(ChoiceProjectorRule.class.getName());
@@ -91,7 +93,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
             }
         }
         
-        return(processChoice(context, projected, role, l, optional));
+        return (processChoice(context, projected, role, l, optional));
     }
     
     /**
@@ -115,9 +117,6 @@ public class ChoiceProjectorRule implements ProjectorRule {
         // then group in sub-choice
         groupSubpathsWithCommonInitiator(context, projected, role, l);
         
-        // Confirm each path has distinct initial interactions
-        checkForAmbiguity(context, projected, role, l);
-        
         // Remove all empty paths
         for (int i=projected.getPaths().size()-1; i >= 0; i--) {
             Block b=projected.getPaths().get(i);
@@ -139,7 +138,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
             
             // Check if optional permitted
             if (System.getProperty(ALLOW_OPTIONAL, "false").
-                            equalsIgnoreCase(Boolean.FALSE.toString())){
+                            equalsIgnoreCase(Boolean.FALSE.toString())) {
                 l.error(MessageFormat.format(
                         java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.projection.Messages").
                             getString("_CHOICE_EMPTY_PATH"),
@@ -214,25 +213,6 @@ public class ChoiceProjectorRule implements ProjectorRule {
         }
     }
 
-    protected static void checkForAmbiguity(ProjectorContext context, Choice projected,
-                            Role role, Journal l) {
-        // Confirm each path has distinct initial interactions
-        java.util.List<ModelObject> interactions=new java.util.Vector<ModelObject>();
-        
-        for (Block path : projected.getPaths()) {
-            java.util.List<ModelObject> initial=InteractionUtil.getInitialInteractions(path);
-            
-            if (!Collections.disjoint(interactions, initial)) {
-                l.error(MessageFormat.format(
-                        java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.projection.Messages").
-                            getString("_AMBIGUOUS_CHOICE"),
-                            role.getName()), null);
-            } else {
-                interactions.addAll(initial);
-            }
-        }
-    }
-    
     /**
      * Extract common behaviour.
      * 

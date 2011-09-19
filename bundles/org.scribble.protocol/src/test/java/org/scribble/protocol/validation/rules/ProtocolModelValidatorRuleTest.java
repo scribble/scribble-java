@@ -18,8 +18,8 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.DefaultProtocolContext;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.DefaultProtocolTools;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.*;
 import org.scribble.protocol.projection.ProtocolProjector;
 
@@ -42,7 +42,7 @@ public class ProtocolModelValidatorRuleTest {
                 
         TestScribbleLogger logger=new TestScribbleLogger();
         
-        DefaultProtocolContext context=new DefaultProtocolContext();
+        DefaultProtocolTools context=new DefaultProtocolTools();
         context.setProtocolProjector(new TestErrorProjector());
 
         ProtocolModelValidatorRule rule=new ProtocolModelValidatorRule();
@@ -58,7 +58,7 @@ public class ProtocolModelValidatorRuleTest {
     
     public class TestErrorProjector implements ProtocolProjector {
 
-        public ProtocolModel project(ProtocolContext context,
+        public ProtocolModel project(ProtocolTools context,
                 ProtocolModel model, Role role, Journal journal) {
             // Log error
             journal.error("An error", null);

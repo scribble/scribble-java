@@ -20,7 +20,7 @@ import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.FileContent;
-import org.scribble.protocol.DefaultProtocolContext;
+import org.scribble.protocol.DefaultProtocolTools;
 import org.scribble.protocol.conformance.LoggingConformanceHandler;
 import org.scribble.protocol.conformance.ProtocolConformer;
 import org.scribble.protocol.parser.ProtocolParserManager;
@@ -101,14 +101,14 @@ public class ConformsCommand implements org.scribble.command.Command {
                     Content content1=new FileContent(f1);
                     
                     org.scribble.protocol.model.ProtocolModel p1=
-                        _protocolParserManager.parse(new DefaultProtocolContext(_protocolParserManager,
+                        _protocolParserManager.parse(new DefaultProtocolTools(_protocolParserManager,
                                 new DefaultResourceLocator(f1.getParentFile())),
                                 content1, _journal);
             
                     Content content2=new FileContent(f2);
                                 
                     org.scribble.protocol.model.ProtocolModel p2=
-                        _protocolParserManager.parse(new DefaultProtocolContext(_protocolParserManager,
+                        _protocolParserManager.parse(new DefaultProtocolTools(_protocolParserManager,
                                 new DefaultResourceLocator(f2.getParentFile())),
                                 content2, _journal);    
             

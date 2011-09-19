@@ -19,7 +19,7 @@ import java.text.MessageFormat;
 
 import org.scribble.common.logging.CachedJournal;
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.model.Role;
@@ -53,7 +53,7 @@ public class ProtocolModelValidatorRule implements ProtocolComponentValidatorRul
      * @param obj The model object being validated
      * @param logger The logger
      */
-    public void validate(ProtocolContext context, ModelObject obj,
+    public void validate(ProtocolTools context, ModelObject obj,
                     Journal logger) {
         ProtocolModel elem=(ProtocolModel)obj;
         java.util.List<Role> unprojectable=new java.util.Vector<Role>();

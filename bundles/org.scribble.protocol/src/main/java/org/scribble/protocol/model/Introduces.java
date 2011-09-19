@@ -103,6 +103,6 @@ public class Introduces extends Activity {
     
     @Override
     public String toString() {
-        return(getIntroducer()+" introduces "+getIntroducedRoles()+";");
+        return (getIntroducer()+" introduces "+getIntroducedRoles()+";");
     }
 }

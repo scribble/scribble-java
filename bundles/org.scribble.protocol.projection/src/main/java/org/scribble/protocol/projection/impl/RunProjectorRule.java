@@ -106,7 +106,7 @@ public class RunProjectorRule implements ProjectorRule {
                     l.error("Referenced protocol '"+source.getProtocolReference().getName()
                             +"' not found within model or in import statements", source.getProperties());
                 } else {
-                    ProtocolModel pm=context.getProtocolContext().getProtocolModel(pi, l);
+                    ProtocolModel pm=context.getProtocolTools().getProtocolModel(pi, l);
                     
                     if (pm != null) {
                         defn = pm.getProtocol();

@@ -15,7 +15,7 @@
  */
 package org.scribble.protocol.validation;
 
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 
 /**
  * This interface defines the protocol validation manager, responsible
@@ -35,7 +35,7 @@ public interface ProtocolValidationManager {
      * @param model The protocol model
      * @param journal The journal
      */
-    public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
+    public void validate(ProtocolTools context, org.scribble.protocol.model.ProtocolModel model,
                 org.scribble.common.logging.Journal journal);
     
     /**

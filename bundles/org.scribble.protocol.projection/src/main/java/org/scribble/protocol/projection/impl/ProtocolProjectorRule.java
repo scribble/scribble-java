@@ -87,23 +87,6 @@ public class ProtocolProjectorRule implements ProjectorRule {
                         role, l));
                 prot.getBlock().setParent(prot);
                 
-                // Project nested protocols
-                for (Protocol nested : source.getNestedProtocols()) {
-                    Object pp=context.project(nested, role, l);
-                    
-                    if (pp instanceof Protocol) {
-                        prot.getNestedProtocols().add((Protocol)pp);
-                    } else if (pp instanceof java.util.List) {
-                        for (Object obj : (java.util.List<?>)pp) {
-                            if (obj instanceof Protocol) {
-                                prot.getNestedProtocols().add((Protocol)obj);
-                            } else {
-                                LOG.severe("Projection of nested protocol returned unexpected component: "+obj);
-                            }
-                        }
-                    }
-                }
-                
                 endProtocolProjection(context, source, prot, role, l);
                 
                 // Clean up role lists, to ensure they don't include redundant roles
@@ -157,7 +140,7 @@ public class ProtocolProjectorRule implements ProjectorRule {
             }
         }
 
-        return(prot);
+        return (prot);
     }
     
     /**
@@ -171,6 +154,23 @@ public class ProtocolProjectorRule implements ProjectorRule {
      */
     public static void endProtocolProjection(ProjectorContext context, Protocol source,
                                 Protocol projected, Role role, Journal l) {
+        // Project nested protocols
+        for (Protocol nested : source.getNestedProtocols()) {
+            Object pp=context.project(nested, role, l);
+            
+            if (pp instanceof Protocol) {
+                projected.getNestedProtocols().add((Protocol)pp);
+            } else if (pp instanceof java.util.List) {
+                for (Object obj : (java.util.List<?>)pp) {
+                    if (obj instanceof Protocol) {
+                        projected.getNestedProtocols().add((Protocol)obj);
+                    } else {
+                        LOG.severe("Projection of nested protocol returned unexpected component: "+obj);
+                    }
+                }
+            }
+        }
+        
         context.popScope();
     }
     

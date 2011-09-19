@@ -154,6 +154,13 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
             ret.setProtocol(protocol);
         }
         
+        if (ret != null && context.getProtocolTools() != null
+                && context.getProtocolTools().getProtocolValidationManager() != null) {
+            // Validate the local protocol model
+            context.getProtocolTools().getProtocolValidationManager().validate(context.getProtocolTools(),
+                                    ret, l);
+        }
+        
         return (ret);
     }
 

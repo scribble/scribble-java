@@ -22,13 +22,14 @@ import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.model.ProtocolImport;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.projection.ProtocolProjector;
+import org.scribble.protocol.validation.ProtocolValidationManager;
 
 /**
- * This interface represents the context in which a protocol related
- * tool will operate.
+ * This interface provides access to a set of protocol related tools
+ * and capabilities.
  *
  */
-public interface ProtocolContext {
+public interface ProtocolTools {
 
     /**
      * This method returns the resource locator.
@@ -53,6 +54,13 @@ public interface ProtocolContext {
      * @return The projector
      */
     public ProtocolProjector getProtocolProjector();
+    
+    /**
+     * This method returns the protocol validation manager.
+     * 
+     * @return The protocol validation manager
+     */
+    public ProtocolValidationManager getProtocolValidationManager();
     
     /**
      * This method returns the protocol export manager.

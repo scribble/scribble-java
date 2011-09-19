@@ -29,25 +29,27 @@ import org.scribble.protocol.model.ProtocolImport;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.parser.ProtocolParserManager;
 import org.scribble.protocol.projection.ProtocolProjector;
+import org.scribble.protocol.validation.ProtocolValidationManager;
 
 /**
  * This interface represents the context in which a protocol related
  * tool will operate.
  *
  */
-public class DefaultProtocolContext implements ProtocolContext {
+public class DefaultProtocolTools implements ProtocolTools {
 
     private ProtocolParserManager _parserManager=null;
+    private ProtocolValidationManager _validationManager=null;
     private ResourceLocator _resourceLocator=null;
     private ProtocolProjector _projector=null;
     private ProtocolExportManager _exportManager=null;
     
-    private static Logger logger=Logger.getLogger(DefaultProtocolContext.class.getName());
+    private static Logger logger=Logger.getLogger(DefaultProtocolTools.class.getName());
     
     /**
      * This is the default constructor.
      */
-    public DefaultProtocolContext() {
+    public DefaultProtocolTools() {
     }
     
     /**
@@ -57,7 +59,7 @@ public class DefaultProtocolContext implements ProtocolContext {
      * @param parserManager The parser manager
      * @param locator The resource locator
      */
-    public DefaultProtocolContext(ProtocolParserManager parserManager,
+    public DefaultProtocolTools(ProtocolParserManager parserManager,
                         ResourceLocator locator) {
         _parserManager = parserManager;
         _resourceLocator = locator;
@@ -88,6 +90,24 @@ public class DefaultProtocolContext implements ProtocolContext {
      */
     public void setProtocolParserManager(ProtocolParserManager ppm) {
         _parserManager = ppm;
+    }
+    
+    /**
+     * This method returns the protocol validation manager.
+     * 
+     * @return The protocol validation manager
+     */
+    public ProtocolValidationManager getProtocolValidationManager() {
+        return (_validationManager);
+    }
+    
+    /**
+     * This method sets the protocol validation manager.
+     * 
+     * @param vm The validation manager
+     */
+    public void setProtocolValidationManager(ProtocolValidationManager vm) {
+        _validationManager = vm;
     }
     
     /**

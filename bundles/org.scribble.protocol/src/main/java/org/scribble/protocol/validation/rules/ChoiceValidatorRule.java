@@ -16,12 +16,15 @@
 package org.scribble.protocol.validation.rules;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.model.Block;
 import org.scribble.protocol.model.Choice;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Role;
+import org.scribble.protocol.util.InteractionUtil;
 import org.scribble.protocol.util.RoleUtil;
 import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
 
@@ -51,7 +54,7 @@ public class ChoiceValidatorRule implements ProtocolComponentValidatorRule {
      * @param obj The model object being validated
      * @param logger The logger
      */
-    public void validate(ProtocolContext context, ModelObject obj,
+    public void validate(ProtocolTools context, ModelObject obj,
                     Journal logger) {
         Choice elem=(Choice)obj;
         
@@ -79,6 +82,31 @@ public class ChoiceValidatorRule implements ProtocolComponentValidatorRule {
                     java.util.PropertyResourceBundle.getBundle(
                             "org.scribble.protocol.Messages").getString("_UNRELATED_TO_LOCATED_ROLE"),
                             locatedRole.getName()), obj.getProperties());
+        }
+        
+        checkForAmbiguity(elem, logger);
+    }
+    
+    /**
+     * This method checks for ambiguity in the choce paths.
+     * 
+     * @param choice The choice
+     * @param l The journal
+     */
+    protected static void checkForAmbiguity(Choice choice, Journal l) {
+        // Confirm each path has distinct initial interactions
+        java.util.List<ModelObject> interactions=new java.util.Vector<ModelObject>();
+        
+        for (Block path : choice.getPaths()) {
+            java.util.List<ModelObject> initial=InteractionUtil.getInitialInteractions(path);
+        
+            if (!Collections.disjoint(interactions, initial)) {
+                l.error(MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.Messages").
+                                getString("_AMBIGUOUS_CHOICE"), (Object[])null), null);
+            } else {
+                interactions.addAll(initial);
+            }
         }
     }
 }

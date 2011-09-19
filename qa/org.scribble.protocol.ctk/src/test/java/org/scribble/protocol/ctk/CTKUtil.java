@@ -22,14 +22,16 @@ import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.ResourceContent;
-import org.scribble.protocol.DefaultProtocolContext;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.DefaultProtocolTools;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.*;
 import org.scribble.protocol.monitor.ProtocolMonitor;
 import org.scribble.protocol.monitor.ProtocolMonitorFactory;
 import org.scribble.protocol.parser.DefaultProtocolParserManager;
 import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.protocol.parser.ProtocolParserManager;
+import org.scribble.protocol.validation.DefaultProtocolValidationManager;
+import org.scribble.protocol.validation.rules.DefaultProtocolComponentValidator;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -293,34 +295,41 @@ public class CTKUtil {
         return (ret);
     }
     
-    public static org.scribble.protocol.ProtocolContext getProtocolContext(String baseDir) {
+    public static org.scribble.protocol.ProtocolTools getProtocolTools(String baseDir) {
         final org.scribble.protocol.parser.ProtocolParser parser=getParser();
         
         ProtocolParserManager ppm=new DefaultProtocolParserManager() {
 
             @Override
-            public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+            public ProtocolModel parse(ProtocolTools context, Content content, Journal journal)
                     throws IOException {
                 return (parser.parse(context, content, journal));
             }
             
         };
         
-        java.net.URL url=ClassLoader.getSystemResource(baseDir);
+        DefaultResourceLocator locator=null;
         
-        if (url == null) {
-            fail("Failed to find base directory '"+baseDir+"'");
+        if (baseDir != null) {
+            java.net.URL url=ClassLoader.getSystemResource(baseDir);
+            
+            if (url == null) {
+                fail("Failed to find base directory '"+baseDir+"'");
+            }
+
+            locator=new DefaultResourceLocator(new java.io.File(url.getPath()));
         }
         
-        DefaultResourceLocator locator=new DefaultResourceLocator(new java.io.File(url.getPath()));
+        DefaultProtocolTools ret=new DefaultProtocolTools(ppm, locator);
         
-        DefaultProtocolContext ret=new DefaultProtocolContext(ppm, locator);
+        ret.setProtocolValidationManager(new DefaultProtocolValidationManager());
+        ret.getProtocolValidationManager().getValidators().add(new DefaultProtocolComponentValidator());
         
         return (ret);
     }
     
     public static ProtocolModel project(ProtocolModel model, Role role,
-                                    Journal logger, ProtocolContext context) {
+                                    Journal logger, ProtocolTools context) {
         ProtocolModel ret=null;
         
         org.scribble.protocol.projection.ProtocolProjector projector=null;
@@ -346,7 +355,7 @@ public class CTKUtil {
         return (ret);
     }
 
-    public static void checkProjectsSuccessfully(String globalModelFile, String localModelFile, ProtocolContext context) {
+    public static void checkProjectsSuccessfully(String globalModelFile, String localModelFile, ProtocolTools context) {
         String projectAsRole = getProjectAsRole(localModelFile);
 
         TestJournal logger=new TestJournal();

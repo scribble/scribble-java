@@ -18,7 +18,7 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.Activity;
 import org.scribble.protocol.model.Block;
 import org.scribble.protocol.model.Choice;
@@ -62,11 +62,14 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
      * @param obj The model object being validated
      * @param logger The logger
      */
-    public void validate(ProtocolContext context, ModelObject obj,
+    public void validate(ProtocolTools context, ModelObject obj,
                     Journal logger) {
         Protocol elem=(Protocol)obj;
         
-        elem.visit(new ConnectednessVisitor(elem, logger));
+        // If non-located protocol, then check for connectedness
+        if (elem.getLocatedRole() == null) {
+            elem.visit(new ConnectednessVisitor(elem, logger));
+        }
     }
     
     /**
@@ -120,7 +123,7 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
          * @param r The role
          */
         protected void validate(Activity act, Role r) {
-            if (!isRoleKnown(r)) {
+            if (r != null && !isRoleKnown(r)) {
                 _logger.error(MessageFormat.format(
                         java.util.PropertyResourceBundle.getBundle(
                         "org.scribble.protocol.Messages").getString("_UNCONNECTED_ROLE"),

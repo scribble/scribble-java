@@ -16,7 +16,7 @@
 package org.scribble.protocol.projection;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.model.Role;
 
@@ -37,7 +37,7 @@ public interface ProtocolProjector {
      * @param journal Journal for reporting issues
      * @return The 'local' protocol model
      */
-    public ProtocolModel project(ProtocolContext context, ProtocolModel model, Role role,
+    public ProtocolModel project(ProtocolTools context, ProtocolModel model, Role role,
                             Journal journal);
     
 }

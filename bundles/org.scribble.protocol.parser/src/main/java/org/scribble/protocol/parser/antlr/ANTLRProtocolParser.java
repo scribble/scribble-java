@@ -22,7 +22,7 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.parser.AnnotationProcessor;
 import org.scribble.protocol.parser.ProtocolParser;
@@ -52,7 +52,7 @@ public class ANTLRProtocolParser implements ProtocolParser {
     /**
      * {@inheritDoc}
      */
-    public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
+    public ProtocolModel parse(ProtocolTools context, Content content, Journal journal)
                             throws IOException {
         ProtocolModel ret=null;
         

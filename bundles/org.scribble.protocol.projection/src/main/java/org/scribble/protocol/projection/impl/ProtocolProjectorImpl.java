@@ -18,7 +18,7 @@ package org.scribble.protocol.projection.impl;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.projection.ProtocolProjector;
@@ -39,7 +39,7 @@ public class ProtocolProjectorImpl implements ProtocolProjector {
      * @param journal Journal for reporting issues
      * @return The 'local' protocol model
      */
-    public ProtocolModel project(ProtocolContext context, ProtocolModel model,
+    public ProtocolModel project(ProtocolTools context, ProtocolModel model,
                         Role role, Journal journal) {
         ProtocolModel ret=null;
         

@@ -19,7 +19,7 @@ package org.scribble.protocol.ctk;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,9 +29,9 @@ public class ProtocolProjectorTest {
 
     private String globalModelFile;
     private String expectedLocalModelFile;
-    private ProtocolContext context;
+    private ProtocolTools context;
 
-    public ProtocolProjectorTest(String globalModelFile, String expectedLocalModelFile, ProtocolContext context) {
+    public ProtocolProjectorTest(String globalModelFile, String expectedLocalModelFile, ProtocolTools context) {
         this.globalModelFile = globalModelFile;
         this.expectedLocalModelFile = expectedLocalModelFile;
         this.context = context;
@@ -65,8 +65,8 @@ public class ProtocolProjectorTest {
             //{"ChoiceMergeNested.spr", "ChoiceMergeNested@C.spr"},         // 13
             //{"ChoiceMergeNested.spr", "ChoiceMergeNested@D.spr"},         // 14
 
-            {"InlineProtocol.spr", "InlineProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")}, // 14
-            {"InlineProtocol.spr", "InlineProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},  // 15
+            {"InlineProtocol.spr", "InlineProtocol@Buyer.spr", CTKUtil.getProtocolTools("tests/protocol/global")}, // 14
+            {"InlineProtocol.spr", "InlineProtocol@Seller.spr", CTKUtil.getProtocolTools("tests/protocol/global")},  // 15
 
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Broker.spr"}, // 16
             {"MultiPartyInteractionsAndChoice.spr", "MultiPartyInteractionsAndChoice@Buyer.spr"}, // 17
@@ -87,10 +87,10 @@ public class ProtocolProjectorTest {
             {"Repeat.spr", "Repeat@Seller.spr"},
             {"Repeat2.spr", "Repeat2@CreditAgency.spr"},
             {"Repeat2.spr", "Repeat2@Buyer.spr"},
-            {"RunExternalProtocol.spr", "RunExternalProtocol@Buyer.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
-            {"RunExternalProtocol.spr", "RunExternalProtocol@Seller.spr", CTKUtil.getProtocolContext("tests/protocol/global")},
-            //{"RunSubProtocol.spr", "RunSubProtocol@Buyer.spr"},
-            //{"RunSubProtocol.spr", "RunSubProtocol@Seller.spr"},
+            {"RunExternalProtocol.spr", "RunExternalProtocol@Buyer.spr", CTKUtil.getProtocolTools("tests/protocol/global")},
+            {"RunExternalProtocol.spr", "RunExternalProtocol@Seller.spr", CTKUtil.getProtocolTools("tests/protocol/global")},
+            {"RunSubProtocol.spr", "RunSubProtocol@Buyer.spr"},
+            {"RunSubProtocol.spr", "RunSubProtocol@Seller.spr"},
             
             {"SingleInteraction.spr", "SingleInteraction@Buyer.spr"},
             {"SingleInteraction.spr", "SingleInteraction@Seller.spr"},
@@ -111,8 +111,8 @@ public class ProtocolProjectorTest {
             {"End.spr", "End@Buyer.spr"},
             {"End.spr", "End@Seller.spr"},
 
-            //{"ESBBroker.spr", "ESBBroker@Broker.spr"},
-            //{"ESBBroker.spr", "ESBBroker@CreditAgency.spr"},
+            {"ESBBroker.spr", "ESBBroker@Broker.spr"},
+            {"ESBBroker.spr", "ESBBroker@CreditAgency.spr"},
             
             /*
             {"ESBBroker.spr", "ESBBroker@SupplierTxnProcessor.spr"}
@@ -124,7 +124,7 @@ public class ProtocolProjectorTest {
             result.add(new Object[] {
                     "tests/protocol/global/" + sub[0],
                     "tests/protocol/local/" + sub[1],
-                    (sub.length == 3 ? sub[2] : null)
+                    (sub.length == 3 ? sub[2] :  CTKUtil.getProtocolTools(null))
             });
         }
         return result;

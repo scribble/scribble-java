@@ -18,7 +18,7 @@ package org.scribble.protocol.projection.impl;
 import java.util.logging.Logger;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.model.Role;
@@ -32,7 +32,7 @@ public class DefaultProjectorContext implements ProjectorContext {
 
     private final static java.util.List<ProjectorRule> RULES=new java.util.Vector<ProjectorRule>();
     
-    private ProtocolContext _context=null;
+    private ProtocolTools _context=null;
     private Scope _scope=new Scope();
     private java.util.List<Scope> _scopeStack=new java.util.Vector<Scope>();
     private java.util.Map<Protocol,java.util.List<Role>> _definitionRoleMap=
@@ -74,17 +74,16 @@ public class DefaultProjectorContext implements ProjectorContext {
      * 
      * @param context The protocol context
      */
-    public DefaultProjectorContext(ProtocolContext context) {
+    public DefaultProjectorContext(ProtocolTools context) {
         _context = context;
     }
     
     /**
-     * This method returns the context in which the protocol
-     * is being processed.
+     * This method returns the protocol tools.
      * 
-     * @return The protocol context
+     * @return The protocol tools
      */
-    public ProtocolContext getProtocolContext() {
+    public ProtocolTools getProtocolTools() {
         return (_context);
     }
     

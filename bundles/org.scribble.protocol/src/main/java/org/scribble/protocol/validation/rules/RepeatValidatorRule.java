@@ -18,7 +18,7 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Repeat;
 import org.scribble.protocol.model.Role;
@@ -51,7 +51,7 @@ public class RepeatValidatorRule implements ProtocolComponentValidatorRule {
      * @param obj The model object being validated
      * @param logger The logger
      */
-    public void validate(ProtocolContext context, ModelObject obj,
+    public void validate(ProtocolTools context, ModelObject obj,
                     Journal logger) {
         Repeat elem=(Repeat)obj;
         
