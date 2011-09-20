@@ -13,8 +13,18 @@
   </description>
 
   <scm>
-    <connection>scm:svn:https://svn.jboss.org/repos/scribble</connection>
+    <connection>https://github.com/scribble</connection>
+    <url>https://github.com/scribble</url>
   </scm>
+
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>Apache License V2</comments>
+    </license>
+  </licenses>
 
   <developers>
     <developer>
