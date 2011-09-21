@@ -18,10 +18,13 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.DefaultProtocolTools;
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.DefaultProtocolContext;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.*;
 import org.scribble.protocol.projection.ProtocolProjector;
+import org.scribble.protocol.validation.DefaultProtocolValidatorContext;
+import org.scribble.protocol.validation.ProtocolValidationManager;
+import org.scribble.protocol.validation.ProtocolValidatorContext;
 
 public class ProtocolModelValidatorRuleTest {
 
@@ -42,11 +45,12 @@ public class ProtocolModelValidatorRuleTest {
                 
         TestScribbleLogger logger=new TestScribbleLogger();
         
-        DefaultProtocolTools context=new DefaultProtocolTools();
-        context.setProtocolProjector(new TestErrorProjector());
+        DefaultProtocolContext pc=new DefaultProtocolContext();
+        
+        ProtocolValidatorContext pvc=new DefaultProtocolValidatorContext(pc, new TestErrorProjector());
 
         ProtocolModelValidatorRule rule=new ProtocolModelValidatorRule();
-        rule.validate(context, pm, logger);
+        rule.validate(pvc, pm, logger);
         
         logger.verifyErrors(new String[]{
                 MessageFormat.format(
@@ -58,11 +62,18 @@ public class ProtocolModelValidatorRuleTest {
     
     public class TestErrorProjector implements ProtocolProjector {
 
-        public ProtocolModel project(ProtocolTools context,
+        public ProtocolModel project(ProtocolContext context,
                 ProtocolModel model, Role role, Journal journal) {
             // Log error
             journal.error("An error", null);
             return null;
+        }
+
+        public void setProtocolValidationManager(ProtocolValidationManager pvm) {
+        }
+
+        public ProtocolValidationManager getProtocolValidationManager() {
+             return null;
         }
         
     }

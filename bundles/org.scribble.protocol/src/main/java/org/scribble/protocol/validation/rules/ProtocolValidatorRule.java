@@ -18,7 +18,6 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.Activity;
 import org.scribble.protocol.model.Block;
 import org.scribble.protocol.model.Choice;
@@ -35,6 +34,7 @@ import org.scribble.protocol.model.Run;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
+import org.scribble.protocol.validation.ProtocolValidatorContext;
 
 /**
  * This class provides the validation rule for the Protocol
@@ -56,13 +56,9 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
     }
     
     /**
-     * This method validates the supplied model object.
-     * 
-     * @param context The protocol context
-     * @param obj The model object being validated
-     * @param logger The logger
+     * {@inheritDoc}
      */
-    public void validate(ProtocolTools context, ModelObject obj,
+    public void validate(ProtocolValidatorContext pvc, ModelObject obj,
                     Journal logger) {
         Protocol elem=(Protocol)obj;
         

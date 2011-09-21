@@ -19,7 +19,7 @@ package org.scribble.protocol.ctk;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.projection.impl.ChoiceProjectorRule;
 
 import java.util.LinkedList;
@@ -30,9 +30,9 @@ public class ProtocolProjectorAllowOptionalTest {
 
     private String globalModelFile;
     private String expectedLocalModelFile;
-    private ProtocolTools context;
+    private ProtocolContext context;
 
-    public ProtocolProjectorAllowOptionalTest(String globalModelFile, String expectedLocalModelFile, ProtocolTools context) {
+    public ProtocolProjectorAllowOptionalTest(String globalModelFile, String expectedLocalModelFile, ProtocolContext context) {
         this.globalModelFile = globalModelFile;
         this.expectedLocalModelFile = expectedLocalModelFile;
         this.context = context;

@@ -50,7 +50,7 @@ public class DefaultProtocolToolsTest {
         
         ProtocolParserManager parserManager=new TestProtocolParserManager();
         
-        DefaultProtocolTools context=new DefaultProtocolTools(parserManager,
+        DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
                             new DefaultResourceLocator(new java.io.File(url.getFile())));
         
         ProtocolImportList imports=new ProtocolImportList();
@@ -91,7 +91,7 @@ public class DefaultProtocolToolsTest {
         
         ProtocolParserManager parserManager=new TestProtocolParserManager();
         
-        DefaultProtocolTools context=new DefaultProtocolTools(parserManager,
+        DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
                             new DefaultResourceLocator(new java.io.File(url.getFile())));
         
         ProtocolImportList imports=new ProtocolImportList();
@@ -125,7 +125,7 @@ public class DefaultProtocolToolsTest {
     public void testGetProtocolModelScribbleURL() {
         ProtocolParserManager parserManager=new TestProtocolParserManager();
         
-        DefaultProtocolTools context=new DefaultProtocolTools(parserManager,
+        DefaultProtocolContext context=new DefaultProtocolContext(parserManager,
                             new DefaultResourceLocator(null));
         
         ProtocolImportList imports=new ProtocolImportList();
@@ -157,7 +157,7 @@ public class DefaultProtocolToolsTest {
     public class TestProtocolParserManager extends DefaultProtocolParserManager {
 
         @Override
-        public ProtocolModel parse(ProtocolTools context, Content content, Journal journal)
+        public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
                             throws IOException {
             java.io.InputStream is=content.getInputStream();
             byte[] b=new byte[is.available()];

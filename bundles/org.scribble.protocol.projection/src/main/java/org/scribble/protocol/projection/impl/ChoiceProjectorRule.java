@@ -16,7 +16,6 @@
 package org.scribble.protocol.projection.impl;
 
 import java.text.MessageFormat;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.scribble.common.logging.Journal;
@@ -62,7 +61,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
      * @param l The model listener
      * @return The projected model object
      */
-    public Object project(ProjectorContext context, ModelObject model,
+    public Object project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         Choice projected=new Choice();
         Choice source=(Choice)model;
@@ -107,7 +106,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
      * @param optional Whether the construct is optional
      * @return The processed activities
      */
-    protected static Object processChoice(ProjectorContext context, Choice projected, Role role,
+    protected static Object processChoice(ProtocolProjectorContext context, Choice projected, Role role,
                             Journal l, boolean optional) {
         Object ret=null;
         
@@ -164,7 +163,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
      * @param l The journal
      */
     @SuppressWarnings("unchecked")
-    protected static void groupSubpathsWithCommonInitiator(ProjectorContext context, Choice projected,
+    protected static void groupSubpathsWithCommonInitiator(ProtocolProjectorContext context, Choice projected,
                             Role role, Journal l) {
         java.util.Map<Activity, java.util.List<Block>> pathGroups=
                             new java.util.HashMap<Activity, java.util.List<Block>>();
@@ -225,7 +224,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
      * @return Extracted common behaviour
      */
     @SuppressWarnings("unchecked")
-    protected static Object extractCommonBehaviour(ProjectorContext context, Choice projected,
+    protected static Object extractCommonBehaviour(ProtocolProjectorContext context, Choice projected,
                             Role role, Journal l) {
         Object ret=projected;
         

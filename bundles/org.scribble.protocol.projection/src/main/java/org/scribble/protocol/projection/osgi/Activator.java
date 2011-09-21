@@ -16,9 +16,12 @@
 package org.scribble.protocol.projection.osgi;
 
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 import org.scribble.protocol.projection.ProtocolProjector;
 import org.scribble.protocol.projection.impl.ProtocolProjectorImpl;
 
@@ -28,16 +31,39 @@ import org.scribble.protocol.projection.impl.ProtocolProjectorImpl;
  */
 public class Activator implements BundleActivator {
 
+    private static final Logger LOG=Logger.getLogger(Activator.class.getName());
+
+    private org.osgi.util.tracker.ServiceTracker _protocolValidationManagerTracker=null;
+
     /**
      * {@inheritDoc}
      */
     public void start(BundleContext context) throws Exception {
         Properties props = new Properties();
         
-        ProtocolProjector pp=new ProtocolProjectorImpl();
+        final ProtocolProjector pp=new ProtocolProjectorImpl();
         
         context.registerService(ProtocolProjector.class.getName(), 
                             pp, props);
+        
+        // Detect protocol validation manager
+        _protocolValidationManagerTracker = new ServiceTracker(context,
+                org.scribble.protocol.validation.ProtocolValidationManager.class.getName(),
+                        null) {
+            
+            public Object addingService(ServiceReference ref) {
+                Object ret=super.addingService(ref);
+                
+                LOG.fine("Validation manager has been added to projector: "+ret);
+                
+                pp.setProtocolValidationManager((org.scribble.protocol.validation.ProtocolValidationManager)ret);
+                
+                return (ret);
+            }
+        };
+        
+        _protocolValidationManagerTracker.open();
+
     }
 
     /**

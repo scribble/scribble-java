@@ -15,7 +15,8 @@
  */
 package org.scribble.protocol.validation;
 
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.projection.ProtocolProjector;
 
 /**
  * This interface defines the protocol validation manager, responsible
@@ -35,7 +36,7 @@ public interface ProtocolValidationManager {
      * @param model The protocol model
      * @param journal The journal
      */
-    public void validate(ProtocolTools context, org.scribble.protocol.model.ProtocolModel model,
+    public void validate(ProtocolContext context, org.scribble.protocol.model.ProtocolModel model,
                 org.scribble.common.logging.Journal journal);
     
     /**
@@ -52,4 +53,18 @@ public interface ProtocolValidationManager {
      */
     public void setValidators(java.util.List<ProtocolValidator> validators);
     
+    /**
+     * This method sets the protocol projector.
+     * 
+     * @param pp The protocol projector
+     */
+    public void setProtocolProjector(ProtocolProjector pp);
+    
+    /**
+     * This method gets the protocol projector.
+     * 
+     * @return The protocol projector
+     */
+    public ProtocolProjector getProtocolProjector();
+
 }

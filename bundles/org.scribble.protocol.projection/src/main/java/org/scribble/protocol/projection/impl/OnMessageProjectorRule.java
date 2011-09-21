@@ -50,7 +50,7 @@ public class OnMessageProjectorRule implements ProjectorRule {
      * @param l The model listener
      * @return The projected model object
      */
-    public Object project(ProjectorContext context, ModelObject model,
+    public Object project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         OnMessage ret=(OnMessage)new OnMessage();
         OnMessage source=(OnMessage)model;

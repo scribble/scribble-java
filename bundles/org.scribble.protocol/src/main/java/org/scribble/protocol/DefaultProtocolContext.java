@@ -24,32 +24,26 @@ import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
 import org.scribble.common.resource.ResourceContent;
 import org.scribble.common.resource.ResourceLocator;
-import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.model.ProtocolImport;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.parser.ProtocolParserManager;
-import org.scribble.protocol.projection.ProtocolProjector;
-import org.scribble.protocol.validation.ProtocolValidationManager;
 
 /**
- * This interface represents the context in which a protocol related
- * tool will operate.
+ * This interface represents the context in which a protocol
+ * will be processed.
  *
  */
-public class DefaultProtocolTools implements ProtocolTools {
+public class DefaultProtocolContext implements ProtocolContext {
 
     private ProtocolParserManager _parserManager=null;
-    private ProtocolValidationManager _validationManager=null;
     private ResourceLocator _resourceLocator=null;
-    private ProtocolProjector _projector=null;
-    private ProtocolExportManager _exportManager=null;
     
-    private static Logger logger=Logger.getLogger(DefaultProtocolTools.class.getName());
+    private static Logger logger=Logger.getLogger(DefaultProtocolContext.class.getName());
     
     /**
      * This is the default constructor.
      */
-    public DefaultProtocolTools() {
+    public DefaultProtocolContext() {
     }
     
     /**
@@ -59,7 +53,7 @@ public class DefaultProtocolTools implements ProtocolTools {
      * @param parserManager The parser manager
      * @param locator The resource locator
      */
-    public DefaultProtocolTools(ProtocolParserManager parserManager,
+    public DefaultProtocolContext(ProtocolParserManager parserManager,
                         ResourceLocator locator) {
         _parserManager = parserManager;
         _resourceLocator = locator;
@@ -90,24 +84,6 @@ public class DefaultProtocolTools implements ProtocolTools {
      */
     public void setProtocolParserManager(ProtocolParserManager ppm) {
         _parserManager = ppm;
-    }
-    
-    /**
-     * This method returns the protocol validation manager.
-     * 
-     * @return The protocol validation manager
-     */
-    public ProtocolValidationManager getProtocolValidationManager() {
-        return (_validationManager);
-    }
-    
-    /**
-     * This method sets the protocol validation manager.
-     * 
-     * @param vm The validation manager
-     */
-    public void setProtocolValidationManager(ProtocolValidationManager vm) {
-        _validationManager = vm;
     }
     
     /**
@@ -145,39 +121,4 @@ public class DefaultProtocolTools implements ProtocolTools {
         return (ret);
     }
 
-    /**
-     * This method returns the protocol projector.
-     * 
-     * @return The projector
-     */
-    public ProtocolProjector getProtocolProjector() {
-        return (_projector);
-    }
-    
-    /**
-     * This method sets the projector.
-     * 
-     * @param pp The protocol projector
-     */
-    public void setProtocolProjector(ProtocolProjector pp) {
-        _projector = pp;
-    }
-    
-    /**
-     * This method returns the protocol export manager.
-     * 
-     * @return The export manager
-     */
-    public ProtocolExportManager getProtocolExportManager() {
-        return (_exportManager);
-    }
-    
-    /**
-     * This method sets the protocol export manager.
-     * 
-     * @param em The export manager
-     */
-    public void setProtocolExportManager(ProtocolExportManager em) {
-        _exportManager = em;
-    }
 }

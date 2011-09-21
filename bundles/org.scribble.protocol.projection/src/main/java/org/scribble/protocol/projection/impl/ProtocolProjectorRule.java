@@ -62,7 +62,7 @@ public class ProtocolProjectorRule implements ProjectorRule {
      * @return The projected model object
      */
     @SuppressWarnings("unchecked")
-    public Object project(ProjectorContext context, ModelObject model,
+    public Object project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         Object ret=null;
         Protocol source=(Protocol)model;
@@ -117,7 +117,7 @@ public class ProtocolProjectorRule implements ProjectorRule {
      * @param l The journal
      * @return The projected protocol
      */
-    public static Protocol startProtocolProjection(ProjectorContext context, Protocol source,
+    public static Protocol startProtocolProjection(ProtocolProjectorContext context, Protocol source,
                             Role role, Journal l) {
         Protocol prot = new Protocol();
 
@@ -152,7 +152,7 @@ public class ProtocolProjectorRule implements ProjectorRule {
      * @param role The role
      * @param l The journal
      */
-    public static void endProtocolProjection(ProjectorContext context, Protocol source,
+    public static void endProtocolProjection(ProtocolProjectorContext context, Protocol source,
                                 Protocol projected, Role role, Journal l) {
         // Project nested protocols
         for (Protocol nested : source.getNestedProtocols()) {

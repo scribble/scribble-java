@@ -50,7 +50,7 @@ public abstract class AbstractBlockProjectorRule implements ProjectorRule {
      * @param l The model listener
      * @return The projected model object
      */
-    public ModelObject project(ProjectorContext context, ModelObject model,
+    public ModelObject project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         Block ret=createBlock();
         Block source=(Block)model;

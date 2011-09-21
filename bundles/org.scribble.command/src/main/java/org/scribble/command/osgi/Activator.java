@@ -381,7 +381,6 @@ public class Activator implements BundleActivator {
          */
         public void setProtocolProjector(ProtocolProjector pp) {
             _projectCommand.setProtocolProjector(pp);
-            _validateCommand.setProtocolProjector(pp);
         }
 
         /**
@@ -390,7 +389,7 @@ public class Activator implements BundleActivator {
          * @param em The export manager
          */
         public void setProtocolExportManager(ProtocolExportManager em) {
-               _projectCommand.setProtocolExportManager(em);
+            _projectCommand.setProtocolExportManager(em);
             _simulateCommand.setProtocolExportManager(em);
         }
         

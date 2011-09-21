@@ -18,18 +18,15 @@ package org.scribble.protocol;
 
 import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.ResourceLocator;
-import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.model.ProtocolImport;
 import org.scribble.protocol.model.ProtocolModel;
-import org.scribble.protocol.projection.ProtocolProjector;
-import org.scribble.protocol.validation.ProtocolValidationManager;
 
 /**
- * This interface provides access to a set of protocol related tools
- * and capabilities.
+ * This interface provides access to capabilities based on the
+ * protocol being processed.
  *
  */
-public interface ProtocolTools {
+public interface ProtocolContext {
 
     /**
      * This method returns the resource locator.
@@ -47,26 +44,5 @@ public interface ProtocolTools {
      * @return The protocol model, or null if not found
      */
     public ProtocolModel getProtocolModel(ProtocolImport pi, Journal journal);
-    
-    /**
-     * This method returns the protocol projector.
-     * 
-     * @return The projector
-     */
-    public ProtocolProjector getProtocolProjector();
-    
-    /**
-     * This method returns the protocol validation manager.
-     * 
-     * @return The protocol validation manager
-     */
-    public ProtocolValidationManager getProtocolValidationManager();
-    
-    /**
-     * This method returns the protocol export manager.
-     * 
-     * @return The export manager
-     */
-    public ProtocolExportManager getProtocolExportManager();
     
 }

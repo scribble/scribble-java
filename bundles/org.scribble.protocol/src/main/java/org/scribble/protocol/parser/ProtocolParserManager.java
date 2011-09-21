@@ -17,7 +17,7 @@ package org.scribble.protocol.parser;
 
 import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.ProtocolModel;
 
 /**
@@ -40,7 +40,7 @@ public interface ProtocolParserManager {
      * @return The protocol model
      * @throws java.io.IOException Failed to retrieve content to be parsed
      */
-    public ProtocolModel parse(ProtocolTools context, Content content, Journal journal)
+    public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
                         throws java.io.IOException;
     
     /**

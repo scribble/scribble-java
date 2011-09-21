@@ -49,7 +49,7 @@ public class DirectedChoiceProjectorRule implements ProjectorRule {
      * @param l The model listener
      * @return The projected model object
      */
-    public Object project(ProjectorContext context, ModelObject model,
+    public Object project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         DirectedChoice ret=new DirectedChoice();
         DirectedChoice source=(DirectedChoice)model;

@@ -45,6 +45,6 @@ public interface ProjectorRule {
      * @param l The model listener
      * @return The projected model object, or list of model objects
      */
-    public Object project(ProjectorContext context, ModelObject model,
+    public Object project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l);    
 }

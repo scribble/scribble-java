@@ -32,6 +32,7 @@ import org.scribble.protocol.export.text.TextProtocolExporter;
 import org.scribble.protocol.parser.DefaultProtocolParserManager;
 import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.protocol.parser.ProtocolParserManager;
+import org.scribble.protocol.projection.ProtocolProjector;
 import org.scribble.protocol.validation.DefaultProtocolValidationManager;
 import org.scribble.protocol.validation.ProtocolValidationManager;
 import org.scribble.protocol.validation.ProtocolValidator;
@@ -47,6 +48,7 @@ public class Activator implements BundleActivator {
 
     private org.osgi.util.tracker.ServiceTracker _protocolParserTracker=null;
     private org.osgi.util.tracker.ServiceTracker _protocolValidatorTracker=null;
+    private org.osgi.util.tracker.ServiceTracker _protocolProjectorTracker=null;
     private org.osgi.util.tracker.ServiceTracker _protocolExporterTracker=null;
 
     /**
@@ -109,6 +111,23 @@ public class Activator implements BundleActivator {
         };
         
         _protocolValidatorTracker.open();
+
+        _protocolProjectorTracker = new ServiceTracker(context,
+                org.scribble.protocol.projection.ProtocolProjector.class.getName(),
+                        null) {
+            
+            public Object addingService(ServiceReference ref) {
+                Object ret=super.addingService(ref);
+                
+                LOG.fine("Projector has been added to validator manager: "+ret);
+                
+                vm.setProtocolProjector((ProtocolProjector)ret);
+                
+                return (ret);
+            }
+        };
+        
+        _protocolProjectorTracker.open();
 
         // Register export manager
         final ProtocolExportManager em=new DefaultProtocolExportManager();

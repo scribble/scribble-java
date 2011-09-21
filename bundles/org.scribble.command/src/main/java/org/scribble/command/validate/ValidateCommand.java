@@ -19,9 +19,8 @@ import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.FileContent;
-import org.scribble.protocol.DefaultProtocolTools;
+import org.scribble.protocol.DefaultProtocolContext;
 import org.scribble.protocol.parser.ProtocolParserManager;
-import org.scribble.protocol.projection.ProtocolProjector;
 import org.scribble.protocol.validation.ProtocolValidationManager;
 
 /**
@@ -33,7 +32,6 @@ public class ValidateCommand implements org.scribble.command.Command {
     private ProtocolValidationManager _validationManager=null;
     private Journal _journal=null;
     private ProtocolParserManager _protocolParserManager=null;
-    private ProtocolProjector _protocolProjector=null;
 
     /**
      * Default constructor.
@@ -69,15 +67,6 @@ public class ValidateCommand implements org.scribble.command.Command {
     }
     
     /**
-     * This method sets the protocol projector.
-     * 
-     * @param projector The protocol projector
-     */
-    public void setProtocolProjector(ProtocolProjector projector) {
-        _protocolProjector = projector;
-    }
-    
-    /**
      * {@inheritDoc}
      */
     public String getName() {
@@ -109,10 +98,8 @@ public class ValidateCommand implements org.scribble.command.Command {
                 try {
                     Content content=new FileContent(f);
 
-                    DefaultProtocolTools context=new DefaultProtocolTools(_protocolParserManager,
+                    DefaultProtocolContext context=new DefaultProtocolContext(_protocolParserManager,
                             new DefaultResourceLocator(f.getParentFile()));
-                    context.setProtocolValidationManager(_validationManager);
-                    context.setProtocolProjector(_protocolProjector);
                     
                     org.scribble.protocol.model.ProtocolModel model=
                         _protocolParserManager.parse(context,

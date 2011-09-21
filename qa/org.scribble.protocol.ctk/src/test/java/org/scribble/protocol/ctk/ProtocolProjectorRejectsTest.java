@@ -19,7 +19,7 @@ package org.scribble.protocol.ctk;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.export.text.TextProtocolExporter;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.model.Role;
@@ -34,10 +34,10 @@ import static org.junit.Assert.fail;
 public class ProtocolProjectorRejectsTest {
 
     private String globalModelFile;
-    private ProtocolTools context;
+    private ProtocolContext context;
     private String projectedRole;
 
-    public ProtocolProjectorRejectsTest(String globalModelFile, ProtocolTools context, String projectedRole) {
+    public ProtocolProjectorRejectsTest(String globalModelFile, ProtocolContext context, String projectedRole) {
         this.globalModelFile = globalModelFile;
         this.context = context;
         this.projectedRole = projectedRole;

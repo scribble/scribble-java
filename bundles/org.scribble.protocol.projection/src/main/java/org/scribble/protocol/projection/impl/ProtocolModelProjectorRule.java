@@ -57,7 +57,7 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
      * @param l The model listener
      * @return The projected model object
      */
-    public Object project(ProjectorContext context, ModelObject model,
+    public Object project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         ProtocolModel ret=new ProtocolModel();
         ProtocolModel source=(ProtocolModel)model;
@@ -154,10 +154,9 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
             ret.setProtocol(protocol);
         }
         
-        if (ret != null && context.getProtocolTools() != null
-                && context.getProtocolTools().getProtocolValidationManager() != null) {
+        if (ret != null && context.getProtocolValidationManager() != null) {
             // Validate the local protocol model
-            context.getProtocolTools().getProtocolValidationManager().validate(context.getProtocolTools(),
+            context.getProtocolValidationManager().validate(context.getProtocolContext(),
                                     ret, l);
         }
         

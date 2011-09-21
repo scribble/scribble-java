@@ -19,8 +19,8 @@ import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.FileContent;
-import org.scribble.protocol.DefaultProtocolTools;
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.DefaultProtocolContext;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.export.ProtocolExporter;
 import org.scribble.protocol.model.Role;
@@ -114,7 +114,7 @@ public class ProjectCommand implements org.scribble.command.Command {
                 try {
                     Content content=new FileContent(f);
                     
-                    model = _protocolParserManager.parse(new DefaultProtocolTools(_protocolParserManager,
+                    model = _protocolParserManager.parse(new DefaultProtocolContext(_protocolParserManager,
                             new DefaultResourceLocator(f.getParentFile())), content, _journal);
             
                 } catch (Exception e) {
@@ -128,7 +128,7 @@ public class ProjectCommand implements org.scribble.command.Command {
                     Role role=new Role(args[1]);
                     
                     try {
-                        ProtocolTools context=new DefaultProtocolTools(_protocolParserManager,
+                        ProtocolContext context=new DefaultProtocolContext(_protocolParserManager,
                                 new DefaultResourceLocator(f.getParentFile()));
                         
                         ProtocolModel projection=_protocolProjector.project(context,

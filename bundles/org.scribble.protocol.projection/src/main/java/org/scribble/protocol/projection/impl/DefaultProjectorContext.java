@@ -18,21 +18,23 @@ package org.scribble.protocol.projection.impl;
 import java.util.logging.Logger;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.model.Role;
+import org.scribble.protocol.validation.ProtocolValidationManager;
 
 /**
  * This class represents the default projection context.
  */
-public class DefaultProjectorContext implements ProjectorContext {
+public class DefaultProjectorContext implements ProtocolProjectorContext {
     
     private static Logger logger = Logger.getLogger(DefaultProjectorContext.class.getName());
 
     private final static java.util.List<ProjectorRule> RULES=new java.util.Vector<ProjectorRule>();
     
-    private ProtocolTools _context=null;
+    private ProtocolContext _context=null;
+    private ProtocolValidationManager _pvm=null;
     private Scope _scope=new Scope();
     private java.util.List<Scope> _scopeStack=new java.util.Vector<Scope>();
     private java.util.Map<Protocol,java.util.List<Role>> _definitionRoleMap=
@@ -73,18 +75,29 @@ public class DefaultProjectorContext implements ProjectorContext {
      * This is the default constructor for the projection context.
      * 
      * @param context The protocol context
+     * @param pvm The protocol validation manager
      */
-    public DefaultProjectorContext(ProtocolTools context) {
+    public DefaultProjectorContext(ProtocolContext context, ProtocolValidationManager pvm) {
         _context = context;
+        _pvm = pvm;
     }
     
     /**
-     * This method returns the protocol tools.
+     * This method returns the protocol context.
      * 
-     * @return The protocol tools
+     * @return The protocol context
      */
-    public ProtocolTools getProtocolTools() {
+    public ProtocolContext getProtocolContext() {
         return (_context);
+    }
+    
+    /**
+     * This method returns the protocol validation manager.
+     * 
+     * @return The protocol validation manager
+     */
+    public ProtocolValidationManager getProtocolValidationManager() {
+        return (_pvm);
     }
     
     /**

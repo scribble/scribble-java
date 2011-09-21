@@ -19,11 +19,11 @@ import java.text.MessageFormat;
 
 import org.scribble.common.logging.CachedJournal;
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
+import org.scribble.protocol.validation.ProtocolValidatorContext;
 
 /**
  * This class provides the validation rule for the ProtocolModel
@@ -47,20 +47,16 @@ public class ProtocolModelValidatorRule implements ProtocolComponentValidatorRul
     }
     
     /**
-     * This method validates the supplied model object.
-     * 
-     * @param context The protocol context
-     * @param obj The model object being validated
-     * @param logger The logger
+     * {@inheritDoc}
      */
-    public void validate(ProtocolTools context, ModelObject obj,
+    public void validate(ProtocolValidatorContext pvc, ModelObject obj,
                     Journal logger) {
         ProtocolModel elem=(ProtocolModel)obj;
         java.util.List<Role> unprojectable=new java.util.Vector<Role>();
         
         for (Role role : elem.getRoles()) {
             CachedJournal l=new CachedJournal();
-            context.getProtocolProjector().project(context, elem, role, l);
+            pvc.getProtocolProjector().project(pvc.getProtocolContext(), elem, role, l);
             
             if (l.hasErrors()) {
                 unprojectable.add(role);

@@ -53,7 +53,7 @@ public class ProtocolModelProjectorRuleTest {
         
         ProtocolModelProjectorRule rule=new ProtocolModelProjectorRule();
         
-        ProjectorContext context=new DefaultProjectorContext(null);
+        ProtocolProjectorContext context=new DefaultProjectorContext(null, null);
         
         CachedJournal l=new CachedJournal();
         
@@ -97,7 +97,7 @@ public class ProtocolModelProjectorRuleTest {
         
         ProtocolModelProjectorRule rule=new ProtocolModelProjectorRule();
         
-        ProjectorContext context=new DefaultProjectorContext(null);
+        ProtocolProjectorContext context=new DefaultProjectorContext(null, null);
          
         CachedJournal l=new CachedJournal();
         

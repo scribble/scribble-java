@@ -18,12 +18,12 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.model.RecBlock;
 import org.scribble.protocol.model.Recursion;
 import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
+import org.scribble.protocol.validation.ProtocolValidatorContext;
 
 /**
  * This class provides the validation rule for the Recursion
@@ -45,13 +45,9 @@ public class RecursionValidatorRule implements ProtocolComponentValidatorRule {
     }
     
     /**
-     * This method validates the supplied model object.
-     * 
-     * @param context The protocol context
-     * @param obj The model object being validated
-     * @param logger The logger
+     * {@inheritDoc}
      */
-    public void validate(ProtocolTools context, ModelObject obj,
+    public void validate(ProtocolValidatorContext pvc, ModelObject obj,
                     Journal logger) {
         Recursion elem=(Recursion)obj;
         ModelObject act=elem.getParent();

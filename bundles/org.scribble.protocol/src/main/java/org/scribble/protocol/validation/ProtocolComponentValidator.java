@@ -16,7 +16,6 @@
 package org.scribble.protocol.validation;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolTools;
 import org.scribble.protocol.model.ModelObject;
 
 //import java.util.logging.*;
@@ -60,18 +59,11 @@ public class ProtocolComponentValidator implements ProtocolValidator {
     }
     
     /**
-     * This method invokes the validation of the supplied
-     * model against the registered validators. Any issues
-     * found during validation will be reported to the
-     * supplied journal.
-     * 
-     * @param context The protocol context
-     * @param model The protocol model
-     * @param journal The journal
+     * {@inheritDoc}
      */
-    public void validate(ProtocolTools context, org.scribble.protocol.model.ProtocolModel model,
-                        Journal journal) {
-        ValidatingVisitor vv=new ValidatingVisitor(context, journal);
+    public void validate(ProtocolValidatorContext pvc,
+            org.scribble.protocol.model.ProtocolModel model, Journal journal) {
+        ValidatingVisitor vv=new ValidatingVisitor(pvc, journal);
         
         model.visit(vv);
         
@@ -86,17 +78,17 @@ public class ProtocolComponentValidator implements ProtocolValidator {
      */
     public class ValidatingVisitor extends org.scribble.protocol.model.AbstractModelObjectVisitor {
         
-        private ProtocolTools _context=null;
+        private ProtocolValidatorContext _pvc=null;
         private Journal _logger=null;
         
         /**
          * This is the constructor for the vaidating visitor.
          * 
-         * @param context The protocol context
+         * @param pvc The protocol validator context
          * @param logger The journal
          */
-        public ValidatingVisitor(ProtocolTools context, Journal logger) {
-            _context = context;
+        public ValidatingVisitor(ProtocolValidatorContext pvc, Journal logger) {
+            _pvc = pvc;
             _logger = logger;
         }
         
@@ -117,7 +109,7 @@ public class ProtocolComponentValidator implements ProtocolValidator {
                 ProtocolComponentValidatorRule rule=iter.next();
                 
                 if (rule.isSupported(obj)) {
-                    rule.validate(_context, obj, _logger);
+                    rule.validate(_pvc, obj, _logger);
                 }
             }
             

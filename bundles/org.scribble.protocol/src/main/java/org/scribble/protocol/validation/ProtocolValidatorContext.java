@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 www.scribble.org
+ * Copyright 2009-11 www.scribble.org
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,24 +15,29 @@
  */
 package org.scribble.protocol.validation;
 
+import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.projection.ProtocolProjector;
+
 /**
- * This interface represents the Protocol Validator.
+ * This interface provides access to capabilities offered by the
+ * protocol validator.
  *
  */
-public interface ProtocolValidator {
+public interface ProtocolValidatorContext {
 
     /**
-     * This method invokes the validation of the supplied
-     * model against the registered validators. Any issues
-     * found during validation will be reported to the
-     * supplied journal.
+     * This method returns the context in which the protocol
+     * is being processed.
      * 
-     * @param pvc The protocol validator context
-     * @param model The protocol model
-     * @param journal The journal
+     * @return The protocol context
      */
-    public void validate(ProtocolValidatorContext pvc,
-            org.scribble.protocol.model.ProtocolModel model,
-            org.scribble.common.logging.Journal journal);
-
+    public ProtocolContext getProtocolContext();
+    
+    /**
+     * This method returns the protocol projector.
+     * 
+     * @return The protocol projector
+     */
+    public ProtocolProjector getProtocolProjector();
+    
 }

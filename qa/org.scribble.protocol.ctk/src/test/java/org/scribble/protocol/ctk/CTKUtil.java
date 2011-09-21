@@ -22,8 +22,8 @@ import org.scribble.common.logging.Journal;
 import org.scribble.common.resource.Content;
 import org.scribble.common.resource.DefaultResourceLocator;
 import org.scribble.common.resource.ResourceContent;
-import org.scribble.protocol.DefaultProtocolTools;
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.DefaultProtocolContext;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.*;
 import org.scribble.protocol.monitor.ProtocolMonitor;
 import org.scribble.protocol.monitor.ProtocolMonitorFactory;
@@ -295,13 +295,13 @@ public class CTKUtil {
         return (ret);
     }
     
-    public static org.scribble.protocol.ProtocolTools getProtocolTools(String baseDir) {
+    public static org.scribble.protocol.ProtocolContext getProtocolContext(String baseDir) {
         final org.scribble.protocol.parser.ProtocolParser parser=getParser();
         
         ProtocolParserManager ppm=new DefaultProtocolParserManager() {
 
             @Override
-            public ProtocolModel parse(ProtocolTools context, Content content, Journal journal)
+            public ProtocolModel parse(ProtocolContext context, Content content, Journal journal)
                     throws IOException {
                 return (parser.parse(context, content, journal));
             }
@@ -320,16 +320,16 @@ public class CTKUtil {
             locator=new DefaultResourceLocator(new java.io.File(url.getPath()));
         }
         
-        DefaultProtocolTools ret=new DefaultProtocolTools(ppm, locator);
+        DefaultProtocolContext ret=new DefaultProtocolContext(ppm, locator);
         
-        ret.setProtocolValidationManager(new DefaultProtocolValidationManager());
-        ret.getProtocolValidationManager().getValidators().add(new DefaultProtocolComponentValidator());
+        //ret.setProtocolValidationManager(new DefaultProtocolValidationManager());
+        //ret.getProtocolValidationManager().getValidators().add(new DefaultProtocolComponentValidator());
         
         return (ret);
     }
     
     public static ProtocolModel project(ProtocolModel model, Role role,
-                                    Journal logger, ProtocolTools context) {
+                                    Journal logger, ProtocolContext context) {
         ProtocolModel ret=null;
         
         org.scribble.protocol.projection.ProtocolProjector projector=null;
@@ -355,7 +355,7 @@ public class CTKUtil {
         return (ret);
     }
 
-    public static void checkProjectsSuccessfully(String globalModelFile, String localModelFile, ProtocolTools context) {
+    public static void checkProjectsSuccessfully(String globalModelFile, String localModelFile, ProtocolContext context) {
         String projectAsRole = getProjectAsRole(localModelFile);
 
         TestJournal logger=new TestJournal();

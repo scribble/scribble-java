@@ -49,7 +49,7 @@ public class UnorderedProjectorRule implements ProjectorRule {
      * @param l The model listener
      * @return The projected model object
      */
-    public Object project(ProjectorContext context, ModelObject model,
+    public Object project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         Unordered ret=new Unordered();
         Unordered source=(Unordered)model;

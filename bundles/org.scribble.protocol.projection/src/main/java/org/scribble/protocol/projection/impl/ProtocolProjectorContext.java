@@ -16,15 +16,16 @@
 package org.scribble.protocol.projection.impl;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.model.Role;
+import org.scribble.protocol.validation.ProtocolValidationManager;
 
 /**
  * This interface represents the comparator context.
  */
-public interface ProjectorContext {
+public interface ProtocolProjectorContext {
     
     /**
      * This method returns the context in which the protocol
@@ -32,8 +33,15 @@ public interface ProjectorContext {
      * 
      * @return The protocol context
      */
-    public ProtocolTools getProtocolTools();
+    public ProtocolContext getProtocolContext();
     
+    /**
+     * This method returns the protocol validation manager.
+     * 
+     * @return The protocol validation manager
+     */
+    public ProtocolValidationManager getProtocolValidationManager();
+
     /**
      * This method projects the supplied model object based on the
      * specified role.

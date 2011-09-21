@@ -49,7 +49,7 @@ public class RecursionProjectorRule implements ProjectorRule {
      * @param l The model listener
      * @return The projected model object
      */
-    public Object project(ProjectorContext context, ModelObject model,
+    public Object project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         Recursion ret=new Recursion();
         Recursion recursion=(Recursion)model;

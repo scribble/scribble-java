@@ -16,9 +16,10 @@
 package org.scribble.protocol.projection;
 
 import org.scribble.common.logging.Journal;
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.model.ProtocolModel;
 import org.scribble.protocol.model.Role;
+import org.scribble.protocol.validation.ProtocolValidationManager;
 
 /**
  * This interface provides a projection capability, from a 'global'
@@ -27,6 +28,20 @@ import org.scribble.protocol.model.Role;
  */
 public interface ProtocolProjector {
 
+    /**
+     * This method sets the protocol validation manager.
+     * 
+     * @param pvm The protocol validation manager
+     */
+    public void setProtocolValidationManager(ProtocolValidationManager pvm);
+    
+    /**
+     * This method returns the protocol validation manager.
+     * 
+     * @return The protocol validation manager
+     */
+    public ProtocolValidationManager getProtocolValidationManager();
+    
     /**
      * This method projects a 'global' protocol model to a specified
      * role's 'local' protocol model.
@@ -37,7 +52,7 @@ public interface ProtocolProjector {
      * @param journal Journal for reporting issues
      * @return The 'local' protocol model
      */
-    public ProtocolModel project(ProtocolTools context, ProtocolModel model, Role role,
+    public ProtocolModel project(ProtocolContext context, ProtocolModel model, Role role,
                             Journal journal);
     
 }

@@ -16,7 +16,8 @@
  */
 package org.scribble.protocol.validation;
 
-import org.scribble.protocol.ProtocolTools;
+import org.scribble.protocol.ProtocolContext;
+import org.scribble.protocol.projection.ProtocolProjector;
 
 /**
  * This class represents the default implementation of the ProtocolValidationManager
@@ -27,11 +28,30 @@ public class DefaultProtocolValidationManager implements ProtocolValidationManag
     
     private java.util.List<ProtocolValidator> _validators=
                             new java.util.Vector<ProtocolValidator>();
+    private ProtocolProjector _projector=null;
     
     /**
      * This is the default constructor.
      */
     public DefaultProtocolValidationManager() {
+    }
+    
+    /**
+     * This method sets the protocol projector.
+     * 
+     * @param pp The protocol projector
+     */
+    public void setProtocolProjector(ProtocolProjector pp) {
+        _projector = pp;
+    }
+    
+    /**
+     * This method gets the protocol projector.
+     * 
+     * @return The protocol projector
+     */
+    public ProtocolProjector getProtocolProjector() {
+        return (_projector);
     }
     
     /**
@@ -41,16 +61,18 @@ public class DefaultProtocolValidationManager implements ProtocolValidationManag
      * found during validation will be reported to the
      * supplied journal.
      * 
-     * @param context The protocol context
+     * @param pc The protocol context
      * @param model The protocol model
      * @param journal The journal
      */
-    public void validate(ProtocolTools context, org.scribble.protocol.model.ProtocolModel model,
+    public void validate(ProtocolContext pc, org.scribble.protocol.model.ProtocolModel model,
                 org.scribble.common.logging.Journal journal) {
     
         if (_validators != null) {
+            ProtocolValidatorContext pvc=new DefaultProtocolValidatorContext(pc, _projector);
+            
             for (ProtocolValidator v : _validators) {
-                v.validate(context, model, journal);
+                v.validate(pvc, model, journal);
             }
         }
     }
@@ -76,5 +98,4 @@ public class DefaultProtocolValidationManager implements ProtocolValidationManag
     public void setValidators(java.util.List<ProtocolValidator> validators) {
         _validators = validators;
     }
-
 }

@@ -56,7 +56,7 @@ public class RunProjectorRule implements ProjectorRule {
      * @param l The model listener
      * @return The projected model object
      */
-    public Object project(ProjectorContext context, ModelObject model,
+    public Object project(ProtocolProjectorContext context, ModelObject model,
                     Role role, Journal l) {
         Run ret=new Run();
         Run source=(Run)model;
@@ -106,7 +106,7 @@ public class RunProjectorRule implements ProjectorRule {
                     l.error("Referenced protocol '"+source.getProtocolReference().getName()
                             +"' not found within model or in import statements", source.getProperties());
                 } else {
-                    ProtocolModel pm=context.getProtocolTools().getProtocolModel(pi, l);
+                    ProtocolModel pm=context.getProtocolContext().getProtocolModel(pi, l);
                     
                     if (pm != null) {
                         defn = pm.getProtocol();
