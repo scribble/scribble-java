@@ -208,7 +208,11 @@ public final class InteractionUtil {
                             elem.getProtocolReference()); //elem.getProtocol();
             
             if (protocol != null) {
-                protocol.visit(this);
+                // TODO: Need to consider whether returned interactions need to have
+                // roles mapped? Only problem is that we can't update the interaction
+                // directly, so might need to have a mock copy some how?
+                
+                protocol.getBlock().visit(this);
             }
         }
     }

@@ -156,6 +156,69 @@ public class InteractionUtilTest {
     }
     
     @org.junit.Test
+    public void testGetInitialInteractionsChoiceNestedProtocol() {
+        ProtocolModel pm=new ProtocolModel();
+        
+        Protocol p=new Protocol();
+        pm.setProtocol(p);
+
+        Choice choice=new Choice();
+        choice.setRole(new Role());
+        p.getBlock().add(choice);
+        
+        Block b1=new Block();
+        choice.getPaths().add(b1);
+        
+        Run run=new Run();
+        b1.add(run);
+        
+        ProtocolReference pref=new ProtocolReference();
+        pref.setName("sub");
+        run.setProtocolReference(pref);
+        
+        Block b2=new Block();
+        choice.getPaths().add(b2);
+        
+        Interaction i3=new Interaction();
+        i3.setMessageSignature(new MessageSignature(new TypeReference()));
+        b2.add(i3);
+        
+        Interaction i2=new Interaction();
+        i2.setMessageSignature(new MessageSignature(new TypeReference()));
+        b2.add(i2);
+        
+        Protocol sub=new Protocol();
+        sub.setName("sub");
+        p.getNestedProtocols().add(sub);
+        
+        Block sb1=new Block();
+        sub.setBlock(sb1);
+        
+        Interaction i0=new Interaction();
+        i0.setMessageSignature(new MessageSignature(new TypeReference()));
+        sb1.add(i0);
+        
+        Interaction i1=new Interaction();
+        i1.setMessageSignature(new MessageSignature(new TypeReference()));
+        sb1.add(i1);
+
+        
+        java.util.List<ModelObject> results=InteractionUtil.getInitialInteractions(pm);
+        
+        if (results.size() != 2) {
+            fail("Should be 2 results: "+results.size());
+        }
+        
+        if (results.get(0) != i0) {
+            fail("Interaction 1 not as expected");
+        }
+        
+        if (results.get(1) != i3) {
+            fail("Interaction 2 not as expected");
+        }
+    }
+    
+    @org.junit.Test
     public void testIsInitialInteractionSimple() {
         ProtocolModel pm=new ProtocolModel();
         
