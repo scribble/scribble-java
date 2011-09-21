@@ -1508,5 +1508,19 @@ public class ProtocolParserTest {
         protocol.getBlock().add(inc);
         
         CTKUtil.verify(model, expected);
-    }    
+    }
+    
+    @org.junit.Test
+    public void testESBBroker() {
+        TestJournal logger=new TestJournal();
+        
+        CTKUtil.getModel("tests/protocol/global/ESBBroker.spr", logger);
+    }
+    
+    @org.junit.Test
+    public void testESBBrokerWithAnnotations() {
+        TestJournal logger=new TestJournal();
+        
+        CTKUtil.getModel("tests/protocol/global/ESBBrokerWithAnnotations.spr", logger);
+    }
 }

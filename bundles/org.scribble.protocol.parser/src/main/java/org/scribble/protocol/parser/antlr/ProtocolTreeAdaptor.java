@@ -339,7 +339,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
         LOG.fine("Add child: parent="+parent+" child="+child);
         
         // Associate annotations with the protocol model
-        if (parent instanceof ProtocolModel
+        if ((parent instanceof ProtocolModel || parent instanceof Protocol)
                 && child instanceof Token && ((Token)child).getType()
                         == ScribbleProtocolParser.ANNOTATION) {
             
@@ -347,11 +347,11 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             // with the model, until the real target model object is
             // identified
             java.util.List<String> annotations=(java.util.List<String>)
-                ((ProtocolModel)parent).getProperties().get(ANNOTATIONS);
+                ((ModelObject)parent).getProperties().get(ANNOTATIONS);
                         
             if (annotations == null) {
                 annotations = new java.util.Vector<String>();
-                ((ProtocolModel)parent).getProperties().put(ANNOTATIONS, annotations);
+                ((ModelObject)parent).getProperties().put(ANNOTATIONS, annotations);
             }
             
             String annotation=((Token)child).getText();
@@ -501,9 +501,10 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             LOG.finest("Determine if can be set by property descriptor");
             
             // Check if annotations should be associated with the protocol model child
-            if (parent instanceof ProtocolModel && child instanceof ModelObject) {
+            if ((parent instanceof ProtocolModel || parent instanceof Protocol)
+                            && child instanceof ModelObject) {
                 java.util.List<String> annotations=(java.util.List<String>)
-                            ((ProtocolModel)parent).getProperties().get(ANNOTATIONS);
+                            ((ModelObject)parent).getProperties().get(ANNOTATIONS);
                 
                 if (annotations != null) {
 
@@ -523,7 +524,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                 }
                 
                 // Clear existing properties
-                ((ProtocolModel)parent).getProperties().remove(ANNOTATIONS);
+                ((ModelObject)parent).getProperties().remove(ANNOTATIONS);
             }
             
             // Check if child is a string literal

@@ -252,6 +252,79 @@ public class ANTLRProtocolParserTest {
         */
     }
 
+
+    @org.junit.Test
+    public void testNestedProtocolAnnotation() {
+        String first="[[";
+        String comment1=" Comment 1 ";
+        String second="]]\r\nimport Order;\r\n[[";
+        String comment2=" Comment 2 ";
+        String third="]]\r\nprotocol Test {\r\n[[";
+        String comment3=" Comment 3 ";
+        String fourth="]]\r\n\tprotocol Nested {\r\n\t}\r\n}\r\n";
+        String protocol=first+comment1+second+comment2+third+comment3+fourth;
+        
+        ByteArrayContent content=new ByteArrayContent(protocol.getBytes());
+        
+        ANTLRProtocolParser parser=new ANTLRProtocolParser();
+        
+        TestAnnotationProcessor ext=new TestAnnotationProcessor();
+        parser.setAnnotationProcessor(ext);
+        
+        CachedJournal journal=new CachedJournal();
+        
+        try {
+            ProtocolModel pm=parser.parse(null, content, journal);
+            
+            if (pm == null) {
+                fail("Protocol Model should not be null");
+            }
+        } catch (Exception e) {
+            fail("Failed to parse protocol");
+        }
+
+        if (journal.getIssues().size() != 0) {
+            fail("No issues should have been reported: "+journal.getIssues().size());
+        }
+
+        if (ext.getAnnotations().size() != 3) {
+            fail("3 Annotations expected: got "+ext.getAnnotations().size());
+        }
+        
+        if (ext.getAnnotations().get(0).equals(comment1) == false) {
+            fail("Annotation 0 not expected");
+        }
+        
+        /*
+        if ((ext.getModelObjects().get(0) instanceof TypeImportList) == false) {
+            fail("ModelObject 0 not TypeImportList");
+        }
+        */
+        
+        // NOTE: Nested protocols processed before top level, so the comments
+        // associated with the protocols are reversed
+        
+        if (ext.getAnnotations().get(1).equals(comment3) == false) {
+            fail("Annotation 1 not expected");
+        }
+        
+        /*
+        if ((ext.getModelObjects().get(1) instanceof Protocol) == false) {
+            fail("ModelObject 1 not Protocol");
+        }
+        */
+        
+        if (ext.getAnnotations().get(2).equals(comment2) == false) {
+            fail("Annotation 2 not expected");
+        }
+        
+        /*
+        if ((ext.getModelObjects().get(2) instanceof Protocol) == false) {
+            fail("ModelObject 2 not Protocol");
+        }
+        */
+    }
+
     public class TestComment extends ModelObject {
         private String m_comment=null;
         

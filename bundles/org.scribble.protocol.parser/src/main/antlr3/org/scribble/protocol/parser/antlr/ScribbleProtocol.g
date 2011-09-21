@@ -93,7 +93,7 @@ dataTypeDef: StringLiteral ;
 
 simpleName: ID ;
 
-protocolDef: 'protocol'^ protocolName ( 'at' roleName )? ( parameterDefs )? '{'! protocolBlockDef ( protocolDef )* '}'! ;
+protocolDef: 'protocol'^ protocolName ( 'at' roleName )? ( parameterDefs )? '{'! protocolBlockDef ( ( ANNOTATION )* protocolDef )* '}'! ;
 
 protocolName: ID ;
 
