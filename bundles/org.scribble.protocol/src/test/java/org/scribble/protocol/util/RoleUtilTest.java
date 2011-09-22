@@ -172,7 +172,7 @@ public class RoleUtilTest {
         wb1.add(i2);
         
         // Check results
-        Block b0=RoleUtil.getEnclosingBlock(p, r0);
+        Block b0=RoleUtil.getEnclosingBlock(p, r0, false);
         
         if (b0 == null) {
             fail("b0 is null");
@@ -182,7 +182,7 @@ public class RoleUtilTest {
             fail("b0 not protocol block");
         }
         
-        Block b1=RoleUtil.getEnclosingBlock(p, r1);
+        Block b1=RoleUtil.getEnclosingBlock(p, r1, false);
         
         if (b1 == null) {
             fail("b1 is null");
@@ -192,7 +192,7 @@ public class RoleUtilTest {
             fail("b1 not parallel block");
         }
         
-        Block b2=RoleUtil.getEnclosingBlock(p, r2);
+        Block b2=RoleUtil.getEnclosingBlock(p, r2, false);
         
         if (b2 == null) {
             fail("b2 is null");
@@ -259,7 +259,7 @@ public class RoleUtilTest {
         wb2.add(i22);
         
         // Check results
-        Block b0=RoleUtil.getEnclosingBlock(p, r0);
+        Block b0=RoleUtil.getEnclosingBlock(p, r0, false);
         
         if (b0 == null) {
             fail("b0 is null");
@@ -269,7 +269,7 @@ public class RoleUtilTest {
             fail("b0 not protocol block");
         }
         
-        Block b1=RoleUtil.getEnclosingBlock(p, r1);
+        Block b1=RoleUtil.getEnclosingBlock(p, r1, false);
         
         if (b1 == null) {
             fail("b1 is null");
@@ -279,7 +279,7 @@ public class RoleUtilTest {
             fail("b1 not parallel parent block (i.e. protocol block)");
         }
         
-        Block b2=RoleUtil.getEnclosingBlock(p, r2);
+        Block b2=RoleUtil.getEnclosingBlock(p, r2, false);
         
         if (b2 == null) {
             fail("b2 is null");

@@ -215,9 +215,11 @@ public final class RoleUtil {
      * 
      * @param protocol The protocol
      * @param role The role
+     * @param includeDeclaration Whether the role's declaration should be taken into account
      * @return The block
      */
-    public static Block getEnclosingBlock(final Protocol protocol, final Role role) {
+    public static Block getEnclosingBlock(final Protocol protocol, final Role role,
+                                    final boolean includeDeclaration) {
         Block ret=null;
         final java.util.List<Block> blocks=new java.util.Vector<Block>();
         
@@ -264,7 +266,7 @@ public final class RoleUtil {
             }
             
             public void accept(Introduces elem) {
-                if (elem.getIntroducedRoles().contains(role)) {
+                if (includeDeclaration && elem.getIntroducedRoles().contains(role)) {
                     blocks.add((Block)elem.getParent());
                 }
             }

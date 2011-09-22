@@ -107,7 +107,7 @@ public class ProtocolModelProjectorRule implements ProjectorRule {
                 
                 // Check if block enclosing the role definition is the protocol's
                 // top level block
-                Block srcblock=RoleUtil.getEnclosingBlock(srcprotocol, roleDefn);
+                Block srcblock=RoleUtil.getEnclosingBlock(srcprotocol, roleDefn, true);
                 
                 Block block=null;
                 if (srcblock != null) {
