@@ -79,18 +79,10 @@ public class DirectedChoice extends Activity {
      * @param visitor The visitor
      */
     public void visit(Visitor visitor) {
-        visitor.start(this);
-        
-        if (getFromRole() != null) {
-            getFromRole().visit(visitor);
-        }
-        
-        for (Role toRole : getToRoles()) {
-            toRole.visit(visitor);
-        }
-        
-        for (OnMessage om : getOnMessages()) {
-            om.visit(visitor);
+        if (visitor.start(this)) {       
+            for (OnMessage om : getOnMessages()) {
+                om.visit(visitor);
+            }
         }
         
         visitor.end(this);

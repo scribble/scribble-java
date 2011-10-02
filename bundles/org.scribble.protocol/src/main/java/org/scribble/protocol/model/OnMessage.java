@@ -94,10 +94,11 @@ public class OnMessage extends ModelObject {
      * @param visitor The visitor
      */
     public void visit(Visitor visitor) {
-        visitor.start(this);
+        if (visitor.start(this)) {
         
-        if (getBlock() != null) {
-            getBlock().visit(visitor);
+            if (getBlock() != null) {
+                getBlock().visit(visitor);
+            }
         }
         
         visitor.end(this);

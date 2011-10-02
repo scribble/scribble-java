@@ -262,10 +262,6 @@ public class Protocol extends ModelObject {
         
         if (visitor.start(this)) {
         
-            if (getLocatedRole() != null) {
-                getLocatedRole().visit(visitor);
-            }
-            
             if (getBlock() != null) {
                 getBlock().visit(visitor);
             }

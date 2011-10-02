@@ -48,10 +48,11 @@ public class Parallel extends Activity {
      * @param visitor The visitor
      */
     public void visit(Visitor visitor) {
-        visitor.start(this);
+        if (visitor.start(this)) {
         
-        for (Block b : getPaths()) {
-            b.visit(visitor);
+            for (Block b : getPaths()) {
+                b.visit(visitor);
+            }
         }
         
         visitor.end(this);

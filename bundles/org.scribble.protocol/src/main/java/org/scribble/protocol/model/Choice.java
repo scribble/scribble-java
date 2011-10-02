@@ -67,14 +67,11 @@ public class Choice extends Activity {
      * @param visitor The visitor
      */
     public void visit(Visitor visitor) {
-        visitor.start(this);
+        if (visitor.start(this)) {
         
-        if (getRole() != null) {
-            getRole().visit(visitor);
-        }
-        
-        for (Block b : getPaths()) {
-            b.visit(visitor);
+            for (Block b : getPaths()) {
+                b.visit(visitor);
+            }
         }
         
         visitor.end(this);
