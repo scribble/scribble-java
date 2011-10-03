@@ -39,6 +39,8 @@ public class Introduces extends Activity {
     public Introduces(Introduces i) {
         super(i);
         
+        _introducer = new Role(i.getIntroducer());
+        
         for (Role r : i.getIntroducedRoles()) {
             getIntroducedRoles().add(new Role(r));
         }

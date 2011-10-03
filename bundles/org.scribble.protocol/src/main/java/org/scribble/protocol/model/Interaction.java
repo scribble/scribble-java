@@ -41,6 +41,8 @@ public class Interaction extends Activity {
      * @param i The interaction to copy
      */
     public Interaction(Interaction i) {
+        super(i);
+        
         if (i._messageSignature != null) {
             _messageSignature = new MessageSignature(i._messageSignature);
         }

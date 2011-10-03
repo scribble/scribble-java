@@ -35,6 +35,7 @@ public class TypeReference extends ModelObject {
      * @param ref The reference to copy
      */
     public TypeReference(TypeReference ref) {
+        super(ref);
         _name = ref._name;
     }
     

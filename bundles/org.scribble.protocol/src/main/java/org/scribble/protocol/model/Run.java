@@ -33,6 +33,24 @@ public class Run extends Activity {
     }
     
     /**
+     * This is the copy constructor.
+     * 
+     * @param copy The copy
+     */
+    public Run(Run copy) {
+        super(copy);
+        _reference = new ProtocolReference(copy.getProtocolReference());
+        
+        if (copy.getFromRole() != null) {
+            _fromRole = new Role(copy.getFromRole());
+        }
+        
+        for (Parameter p : copy.getParameters()) {
+            _parameters.add(new Parameter(p));
+        }
+    }
+    
+    /**
      * This method returns the optional 'from' role.
      * 
      * @return The optional 'from' role

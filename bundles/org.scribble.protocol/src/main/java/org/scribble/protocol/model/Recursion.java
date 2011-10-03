@@ -31,6 +31,16 @@ public class Recursion extends Activity {
     }
     
     /**
+     * This is the copy constructor.
+     * 
+     * @param copy The recursion to copy
+     */
+    public Recursion(Recursion copy) {
+        super(copy);
+        _label = copy.getLabel();
+    }
+    
+    /**
      * This method returns the label associated with the recursion construct.
      * 
      * @return The label

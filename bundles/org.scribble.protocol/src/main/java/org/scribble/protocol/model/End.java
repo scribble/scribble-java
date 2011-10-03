@@ -29,6 +29,15 @@ public class End extends Activity {
     }
     
     /**
+     * This is the copy constructor.
+     * 
+     * @param end The end activity to copy
+     */
+    public End(End end) {
+        super(end);
+    }
+    
+    /**
      * This method visits the model object using the supplied
      * visitor.
      * 

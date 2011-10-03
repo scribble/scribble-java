@@ -32,6 +32,20 @@ public class Inline extends Activity {
     }
     
     /**
+     * This is the copy constructor.
+     * 
+     */
+    public Inline(Inline copy) {
+        super(copy);
+        
+        _reference = new ProtocolReference(copy._reference);
+        
+        for (Parameter p : copy._parameters) {
+            _parameters.add(new Parameter(p));
+        }
+    }
+    
+    /**
      * This method returns the bindings for the
      * composition construct.
      * 

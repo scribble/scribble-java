@@ -45,6 +45,7 @@ public class Parameter extends ModelObject {
      * @param p The parameter to copy
      */
     public Parameter(Parameter p) {
+        super(p);
         _localName = p._localName;
     }
     

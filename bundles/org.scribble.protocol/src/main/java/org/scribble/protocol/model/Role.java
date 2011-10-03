@@ -35,6 +35,7 @@ public class Role extends ModelObject {
      * @param role The role
      */
     public Role(Role role) {
+        super(role);
         _name = role.getName();
     }
     
