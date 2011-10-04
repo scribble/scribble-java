@@ -32,6 +32,17 @@ public class ProtocolImport extends ModelObject {
     }
     
     /**
+     * The copy constructor.
+     * 
+     * @param copy The copy
+     */
+    public ProtocolImport(ProtocolImport copy) {
+        super(copy);
+        _location = copy.getLocation();
+        _name = copy.getName();
+    }
+    
+    /**
      * This method returns the name of the
      * type being imported.
      * 

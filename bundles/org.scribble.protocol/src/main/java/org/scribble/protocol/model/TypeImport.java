@@ -32,6 +32,17 @@ public class TypeImport extends ModelObject {
     }
     
     /**
+     * The copy constructor.
+     * 
+     * @param copy The copy
+     */
+    public TypeImport(TypeImport copy) {
+        super(copy);
+        _name = copy.getName();
+        _dataType = new DataType(copy.getDataType());
+    }
+    
+    /**
      * This method returns the name of the
      * type being imported.
      * 

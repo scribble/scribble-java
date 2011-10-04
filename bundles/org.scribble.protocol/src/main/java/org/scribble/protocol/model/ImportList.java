@@ -28,4 +28,13 @@ public abstract class ImportList extends ModelObject {
     public ImportList() {
     }
     
+    /**
+     * The copy constructor.
+     * 
+     * @param copy The copy
+     */
+    public ImportList(ImportList copy) {
+        super(copy);
+    }
+    
 }

@@ -34,6 +34,20 @@ public class TypeImportList extends ImportList {
     }
     
     /**
+     * The copy constructor.
+     * 
+     * @param copy The copy
+     */
+    public TypeImportList(TypeImportList copy) {
+        super(copy);
+        _format = copy.getFormat();
+        _location = copy.getLocation();
+        for (TypeImport ti : copy.getTypeImports()) {
+            _types.add(new TypeImport(ti));
+        }
+    }
+    
+    /**
      * This method returns the format.
      * 
      * @return The format

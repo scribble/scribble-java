@@ -32,6 +32,15 @@ public class DataType extends ModelObject {
     }
     
     /**
+     * Copy constructor.
+     * 
+     * @param copy The copy
+     */
+    public DataType(DataType copy) {
+        _details = copy.getDetails();
+    }
+    
+    /**
      * Constructor used to initialise the data type details.
      * 
      * @param details The details

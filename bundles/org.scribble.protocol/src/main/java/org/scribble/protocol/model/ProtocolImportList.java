@@ -32,6 +32,18 @@ public class ProtocolImportList extends ImportList {
     }
     
     /**
+     * The copy constructor.
+     * 
+     * @param copy The copy
+     */
+    public ProtocolImportList(ProtocolImportList copy) {
+        super(copy);
+        for (ProtocolImport pi : copy.getProtocolImports()) {
+            _protocolImports.add(new ProtocolImport(pi));
+        }
+    }
+    
+    /**
      * This method returns the list of imported protocols.
      * 
      * @return The list of imported protocols
