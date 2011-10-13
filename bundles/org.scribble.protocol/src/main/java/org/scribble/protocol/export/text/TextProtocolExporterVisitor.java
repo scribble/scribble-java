@@ -100,7 +100,13 @@ public class TextProtocolExporterVisitor implements Visitor {
      * @param elem The block
      */
     public void end(Block elem) {
+        // If parent is not a Protocol, then perform end of block functonality
+        if (!(elem.getParent() instanceof Protocol)) {
+            endOfBlock(elem);
+        }
+    }
         
+    protected void endOfBlock(Block elem) {
         _indent--;
         
         indent();
@@ -767,6 +773,10 @@ public class TextProtocolExporterVisitor implements Visitor {
      * @param elem The protocol
      */
     public void end(Protocol elem) {
+        
+        // Perform end of block - needed to be postponed to ensure
+        // nested protocols are exported within the outer protocol
+        endOfBlock(elem.getBlock());
     }
 
     /**

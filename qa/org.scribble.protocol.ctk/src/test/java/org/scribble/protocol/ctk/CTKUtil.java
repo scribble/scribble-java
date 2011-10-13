@@ -30,8 +30,6 @@ import org.scribble.protocol.monitor.ProtocolMonitorFactory;
 import org.scribble.protocol.parser.DefaultProtocolParserManager;
 import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.protocol.parser.ProtocolParserManager;
-import org.scribble.protocol.validation.DefaultProtocolValidationManager;
-import org.scribble.protocol.validation.rules.DefaultProtocolComponentValidator;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -85,6 +83,31 @@ public class CTKUtil {
         assertNotNull(ret);
         assertTrue(logger.getErrorCount() == 0);
 
+        return (ret);
+    }
+
+    public static String getModelText(String filename) {
+        String ret=null;
+        
+        java.io.InputStream is=
+                ClassLoader.getSystemResourceAsStream(filename);
+
+        if (is == null) {
+            fail("Failed to load protocol '"+filename+"'");
+        }
+        
+        try {
+            byte[] b=new byte[is.available()];
+            is.read(b);
+            
+            is.close();
+            
+            ret = new String(b);
+            
+        } catch (Exception e) {
+            fail("Failed to load protocol '"+filename+"': "+e);
+        }
+        
         return (ret);
     }
 
