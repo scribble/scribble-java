@@ -39,7 +39,9 @@ public class TypeImport extends ModelObject {
     public TypeImport(TypeImport copy) {
         super(copy);
         _name = copy.getName();
-        _dataType = new DataType(copy.getDataType());
+        if (copy.getDataType() != null) {
+            _dataType = new DataType(copy.getDataType());
+        }
     }
     
     /**
