@@ -16,6 +16,9 @@
  */
 package org.scribble.protocol.monitor;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.scribble.protocol.monitor.model.MessageNode;
 import org.scribble.protocol.monitor.model.MessageType;
 
@@ -25,6 +28,8 @@ import org.scribble.protocol.monitor.model.MessageType;
  */
 public class DefaultMonitorContext implements MonitorContext {
 
+	private static final Logger LOG=Logger.getLogger(DefaultMonitorContext.class.getName());
+	
     /**
      * This method determines whether the supplied message is valid
      * in respect of the supplied message node.
@@ -53,6 +58,9 @@ public class DefaultMonitorContext implements MonitorContext {
                         break;
                     }
                 }
+            } else if (LOG.isLoggable(Level.FINEST)) {
+            	LOG.finest("Number of message types different ("+mesgNode.getMessageType().size()+" : "+
+            					mesg.getTypes().size()+")");
             }
         } else {
             // If not message types, then the operator names must be specified
@@ -71,6 +79,11 @@ public class DefaultMonitorContext implements MonitorContext {
         // a particular operator, could then prevent the subsequent match against
         // another message node with the same operator name and correct message
         // type.
+        
+        if (LOG.isLoggable(Level.FINEST)) {
+        	LOG.finest("Session ("+session+") validate message '"+mesg+"' against node "+
+        					mesgNode+" ret = "+ret);
+        }
         
         return (ret);
     }

@@ -88,4 +88,10 @@ public class Result {
     public java.util.Map<String,Object> getProperties() {
         return (_properties);
     }
+    
+    public String toString() {
+    	return(this == VALID ? "VALID" : (this == NOT_HANDLED ? "NOT_HANDLED" :
+    		(this == INVALID ? "INVALID" : "RESULT["+isValid()+" reason="+getReason()+
+    				" props="+getProperties()+"]")));
+    }
 }
