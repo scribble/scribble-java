@@ -21,11 +21,14 @@ package org.scribble.protocol.monitor;
  * behavioural description.
  *
  */
-public class Result {
+public class Result implements java.io.Serializable {
 
-    private boolean _valid=false;
+	private static final long serialVersionUID = 8094872271195676976L;
+
+	private boolean _valid=false;
     private String _reason=null;
-    private java.util.Map<String,Object> _properties=new java.util.HashMap<String, Object>();
+    private java.util.Map<String,java.io.Serializable> _properties=
+    				new java.util.HashMap<String, java.io.Serializable>();
     
     /**
      * Valid result.
@@ -85,7 +88,7 @@ public class Result {
      * 
      * @return The properties
      */
-    public java.util.Map<String,Object> getProperties() {
+    public java.util.Map<String,java.io.Serializable> getProperties() {
         return (_properties);
     }
     
