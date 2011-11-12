@@ -436,4 +436,57 @@ public class InteractionValidatorRuleTest {
         logger.verifyErrors(new String[]{
         });
     }
+    
+    @org.junit.Test
+    public void testInteractionMessageTypeCannotBeReservedWord() {
+        String tiName="Choice";
+        
+        ProtocolModel pm=new ProtocolModel();
+        
+        TypeImport ti=new TypeImport();
+        ti.setName(tiName);
+        
+        TypeImportList til=new TypeImportList();
+        til.getTypeImports().add(ti);
+        
+        pm.getImports().add(til);
+        Protocol prot1=new Protocol();
+        pm.setProtocol(prot1);
+        
+        Introduces rlist1=new Introduces();
+        prot1.getBlock().add(rlist1);
+        
+        Role role1=new Role();
+        role1.setName("role1");
+        rlist1.getIntroducedRoles().add(role1);
+        
+        Role role2=new Role();
+        role2.setName("role2");
+        rlist1.getIntroducedRoles().add(role2);
+        
+        Interaction i1=new Interaction();
+        prot1.getBlock().add(i1);
+        
+        i1.setFromRole(role1);
+        i1.getToRoles().add(role2);
+        
+        MessageSignature msig=new MessageSignature();
+        i1.setMessageSignature(msig);
+        
+        TypeReference tref=new TypeReference();
+        tref.setName(tiName);
+        msig.getTypeReferences().add(tref);
+                
+        TestScribbleLogger logger=new TestScribbleLogger();
+
+        InteractionValidatorRule rule=new InteractionValidatorRule();
+        rule.validate(null, i1, logger);
+        
+        logger.verifyErrors(new String[]{
+                MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle(
+                        "org.scribble.protocol.Messages").getString("_CANNOT_USE_RESERVED_WORD"),
+                            tref.getName())
+        });
+    }
 }

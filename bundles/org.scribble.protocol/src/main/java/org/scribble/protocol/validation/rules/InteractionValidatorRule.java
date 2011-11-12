@@ -18,6 +18,7 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.ProtocolDefinitions;
 import org.scribble.protocol.model.Interaction;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Role;
@@ -156,8 +157,28 @@ public class InteractionValidatorRule implements ProtocolComponentValidatorRule 
                     logger.error(MessageFormat.format(
                             java.util.PropertyResourceBundle.getBundle(
                                     "org.scribble.protocol.Messages").getString("_NO_TYPE_IMPORT"),
-                                    tref.getName()), interaction.getProperties());                
+                                    tref.getName()), tref.getProperties());                
                 }
+                
+                // Make sure reserved word not used
+                String name=tref.getName().toLowerCase();
+                
+                boolean reservedWord=false;
+                
+                for (String reserved : ProtocolDefinitions.RESERVED_WORDS) {
+                    if (reserved.equals(name)) {
+                        reservedWord = true;
+                        break;
+                    }
+                }
+                
+                if (reservedWord) {
+                    logger.error(MessageFormat.format(
+                            java.util.PropertyResourceBundle.getBundle(
+                            "org.scribble.protocol.Messages").getString("_CANNOT_USE_RESERVED_WORD"),
+                            tref.getName()), tref.getProperties());
+               }
+                
             }
         }
     }
