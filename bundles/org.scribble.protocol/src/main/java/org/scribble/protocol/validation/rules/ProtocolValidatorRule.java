@@ -18,6 +18,7 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.ProtocolDefinitions;
 import org.scribble.protocol.model.Activity;
 import org.scribble.protocol.model.Block;
 import org.scribble.protocol.model.Choice;
@@ -65,6 +66,27 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
         // If non-located protocol, then check for connectedness
         if (elem.getLocatedRole() == null) {
             elem.visit(new ConnectednessVisitor(elem, logger));
+        }
+        
+        // Check protocol name
+        if (elem.getName() != null) {
+            String name=elem.getName().toLowerCase();
+            
+            boolean reservedWord=false;
+            
+            for (String reserved : ProtocolDefinitions.RESERVED_WORDS) {
+                if (reserved.equals(name)) {
+                    reservedWord = true;
+                    break;
+                }
+            }
+            
+            if (reservedWord) {
+                logger.error(MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle(
+                        "org.scribble.protocol.Messages").getString("_CANNOT_USE_RESERVED_WORD"),
+                        elem.getName()), elem.getProperties());
+           }
         }
     }
     

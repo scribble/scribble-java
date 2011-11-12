@@ -22,6 +22,24 @@ import org.scribble.protocol.model.*;
 public class ProtocolValidatorRuleTest {
 
     @org.junit.Test
+    public void testValidateCannotUseReservedWord() {
+        Protocol p=new Protocol();        
+        p.setName("Choice");
+        
+        TestScribbleLogger logger=new TestScribbleLogger();
+
+        ProtocolValidatorRule rule=new ProtocolValidatorRule();
+        rule.validate(null, p, logger);
+        
+        logger.verifyErrors(new String[]{
+                MessageFormat.format(
+                        java.util.PropertyResourceBundle.getBundle(
+                        "org.scribble.protocol.Messages").getString("_CANNOT_USE_RESERVED_WORD"),
+                        p.getName())
+        });
+    }
+
+    @org.junit.Test
     public void testUnconnectedIntroduces() {
         Protocol p=new Protocol();
         ParameterDefinition pd=new ParameterDefinition();

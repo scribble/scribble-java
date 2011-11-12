@@ -46,6 +46,8 @@ public class ProtocolProjectorTest {
             {"Annotation.spr", "Annotation@Buyer.spr"}, // 0          
             {"Annotation.spr", "Annotation@Seller.spr"}, // 1
 
+            {"ChoiceProjection.spr", "ChoiceProjection@C.spr"},          // 2
+            
             {"Choice.spr", "Choice@Buyer.spr"},          // 2
             {"Choice.spr", "Choice@Seller.spr"},         // 3
             {"ChoiceMerge.spr", "ChoiceMerge@Broker.spr"}, // 4                

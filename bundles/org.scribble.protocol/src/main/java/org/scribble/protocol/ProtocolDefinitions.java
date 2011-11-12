@@ -33,4 +33,24 @@ public final class ProtocolDefinitions {
      */
     public static final String PROTOCOL_TYPE = "spr";
 
+    public static final String[] RESERVED_WORDS={
+        "import",
+        "protocol",
+        "role",
+        "introduces",
+        "at",
+        "from",
+        "to",
+        "unordered",
+        "parallel",
+        "and",
+        "choice",
+        "or",
+        "repeat",
+        "run",
+        "inline",
+        "do",
+        "interrupt",
+        "end"
+    };
 }
