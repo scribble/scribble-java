@@ -1,0 +1,13 @@
+protocol ChoiceProjection at C (role B) {
+	choice {
+		M1 from B;
+		M12 to B;
+	} or {
+		M2 from B;
+		choice at C {
+			M21 to B;
+		} or {
+			M22 to B;
+		}
+	}
+}
