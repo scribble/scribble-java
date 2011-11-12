@@ -21,7 +21,10 @@ import org.scribble.common.logging.Journal;
 import org.scribble.protocol.model.Interaction;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.TypeImport;
+import org.scribble.protocol.model.TypeReference;
 import org.scribble.protocol.util.RoleUtil;
+import org.scribble.protocol.util.TypesUtil;
 import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
 import org.scribble.protocol.validation.ProtocolValidatorContext;
 
@@ -137,6 +140,25 @@ public class InteractionValidatorRule implements ProtocolComponentValidatorRule 
                     java.util.PropertyResourceBundle.getBundle(
                             "org.scribble.protocol.Messages").getString("_UNRELATED_TO_LOCATED_ROLE"),
                             locatedRole.getName()), elem.getProperties());
+        }
+        
+        checkMessageType(pvc, elem, logger);
+    }
+    
+    protected void checkMessageType(ProtocolValidatorContext pvc, Interaction interaction,
+                    Journal logger) {
+        if (interaction.getMessageSignature() != null) {
+            for (TypeReference tref : interaction.getMessageSignature().getTypeReferences()) {
+                // Check if Type Import exists
+                TypeImport ti=TypesUtil.getTypeImport(tref);
+                
+                if (ti == null) {
+                    logger.error(MessageFormat.format(
+                            java.util.PropertyResourceBundle.getBundle(
+                                    "org.scribble.protocol.Messages").getString("_NO_TYPE_IMPORT"),
+                                    tref.getName()), interaction.getProperties());                
+                }
+            }
         }
     }
 }
