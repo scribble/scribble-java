@@ -200,6 +200,14 @@ public final class RoleUtil {
             Protocol protocol=activity.getEnclosingProtocol();
             
             if (protocol != null) {
+                
+                // Add role parameters
+                for (ParameterDefinition pd : protocol.getParameterDefinitions()) {
+                    if (pd.isRole()) {
+                        ret.add(new Role(pd.getName()));
+                    }
+                }
+                
                 RoleLocator visitor=new RoleLocator(protocol, activity, ret);
                 
                 protocol.visit(visitor);
