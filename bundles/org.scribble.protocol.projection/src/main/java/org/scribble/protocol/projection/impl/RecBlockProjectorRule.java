@@ -64,7 +64,12 @@ public class RecBlockProjectorRule implements ProjectorRule {
             ret.setBlock((Block)
                     context.project(source.getBlock(),
                                 role, l));
-            ret.getBlock().setParent(ret);
+            
+            if (ret.getBlock() != null) {
+                ret.getBlock().setParent(ret);
+            } else {
+                ret = null;
+            }
         }
         
         return (ret);
