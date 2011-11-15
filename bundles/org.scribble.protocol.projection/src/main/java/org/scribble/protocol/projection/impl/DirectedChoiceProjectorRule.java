@@ -22,6 +22,7 @@ import org.scribble.protocol.model.DirectedChoice;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.OnMessage;
 import org.scribble.protocol.model.Role;
+import org.scribble.protocol.util.RoleUtil;
 
 /**
  * This class provides the DirectedChoice implementation of the
@@ -55,6 +56,8 @@ public class DirectedChoiceProjectorRule implements ProjectorRule {
                     Role role, Journal l) {
         DirectedChoice ret=new DirectedChoice();
         DirectedChoice source=(DirectedChoice)model;
+        boolean merge=false;
+        boolean allpaths=true;
         
         ret.derivedFrom(source);
         
@@ -64,6 +67,8 @@ public class DirectedChoiceProjectorRule implements ProjectorRule {
             }
         } else if (source.getFromRole() != null && source.getToRoles().contains(role)) {
             ret.setFromRole(new Role(source.getFromRole()));
+        } else {
+            merge = true;
         }
 
         if (ret != null) {
@@ -74,19 +79,35 @@ public class DirectedChoiceProjectorRule implements ProjectorRule {
                 
                 if (om != null) {                
                     ret.getOnMessages().add(om);
+                    
+                    if (merge) {
+                        // Check if role involved in path
+                        java.util.Set<Role> roles=RoleUtil.getUsedRoles(source.getOnMessages().get(i));
+                        
+                        if (roles == null || !roles.contains(role)) {
+                            allpaths = false;
+                            
+                            // Remove path
+                            ret.getOnMessages().remove(om);
+                        }
+                    }
+                } else {
+                    allpaths = false;
                 }
             }
             
-            if (ret.getOnMessages().size() == 0) {
-                // Not projected to this role
-                ret = null;
-                
-            } else if (source.getOnMessages().size() != ret.getOnMessages().size()) {
-                l.error(MessageFormat.format(                        
-                        java.util.PropertyResourceBundle.getBundle(
-                                "org.scribble.protocol.projection.impl.Messages").
-                            getString("_CHOICE_EMPTY_PATH"),
-                            role.getName()), source.getProperties());
+            if (merge) {
+                if (ret.getOnMessages().size() == 0) {
+                    // Not projected to this role
+                    ret = null;
+                    
+                } else if (!allpaths) {
+                    l.error(MessageFormat.format(                        
+                            java.util.PropertyResourceBundle.getBundle(
+                                    "org.scribble.protocol.projection.impl.Messages").
+                                getString("_CHOICE_EMPTY_PATH"),
+                                role.getName()), source.getProperties());
+                }
             }
         }
 
