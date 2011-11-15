@@ -67,6 +67,8 @@ public class OnMessageProjectorRule implements ProjectorRule {
                     role, l);
             if (b != null) {
                 ret.setBlock(b);
+            } else {
+                ret = null;
             }
         }
         

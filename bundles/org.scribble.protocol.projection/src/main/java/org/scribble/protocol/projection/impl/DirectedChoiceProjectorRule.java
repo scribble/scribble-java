@@ -15,6 +15,8 @@
  */
 package org.scribble.protocol.projection.impl;
 
+import java.text.MessageFormat;
+
 import org.scribble.common.logging.Journal;
 import org.scribble.protocol.model.DirectedChoice;
 import org.scribble.protocol.model.ModelObject;
@@ -62,9 +64,6 @@ public class DirectedChoiceProjectorRule implements ProjectorRule {
             }
         } else if (source.getFromRole() != null && source.getToRoles().contains(role)) {
             ret.setFromRole(new Role(source.getFromRole()));
-        } else {
-            // Don't project
-            ret = null;
         }
 
         if (ret != null) {
@@ -76,6 +75,18 @@ public class DirectedChoiceProjectorRule implements ProjectorRule {
                 if (om != null) {                
                     ret.getOnMessages().add(om);
                 }
+            }
+            
+            if (ret.getOnMessages().size() == 0) {
+                // Not projected to this role
+                ret = null;
+                
+            } else if (source.getOnMessages().size() != ret.getOnMessages().size()) {
+                l.error(MessageFormat.format(                        
+                        java.util.PropertyResourceBundle.getBundle(
+                                "org.scribble.protocol.projection.impl.Messages").
+                            getString("_CHOICE_EMPTY_PATH"),
+                            role.getName()), source.getProperties());
             }
         }
 
