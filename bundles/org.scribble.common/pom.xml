@@ -3,14 +3,14 @@
   	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble.bundles</groupId>
 	<artifactId>org.scribble.common</artifactId> 
-	<version>2.0.0.CR3</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Scribble::Bundles::Common</name>
 
 	<parent>
 		<groupId>org.scribble</groupId>
 		<artifactId>bundles</artifactId>
-		<version>2.0.0.CR3</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 
   <dependencies>
