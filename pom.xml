@@ -40,6 +40,8 @@
   </developers>
   
   <properties>
+	<project.organization.name>Scribble.org</project.organization.name>
+	<project.inceptionYear>2008</project.inceptionYear>
   	<scribble.version>2.0.0-SNAPSHOT</scribble.version>
   	<scribble.bundles.version>2.0.0-SNAPSHOT</scribble.bundles.version>
   	<felix.version>3.0.1</felix.version>
@@ -56,6 +58,7 @@
     <module>build</module>
     <module>bundles</module>
     <module>qa</module>
+    <module>apidocs</module>
   </modules>
   
   <dependencyManagement>
