@@ -88,6 +88,23 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
                         elem.getName()), elem.getProperties());
            }
         }
+        
+        if (pvc != null) {
+            for (ParameterDefinition pd : elem.getParameterDefinitions()) {
+                if (pvc.getState(pd.getName()) != null) {
+                    logger.error(MessageFormat.format(
+                            java.util.PropertyResourceBundle.getBundle(
+                            "org.scribble.protocol.Messages").getString("_NAME_ALREADY_DEFINED"),
+                            pd.getName()), pd.getProperties());
+                } else {
+                    if (pd.isRole()) {
+                        pvc.setState(pd.getName(), new Role(pd.getName()));
+                    } else {
+                        pvc.setState(pd.getName(), pd);
+                    }
+                }
+            }
+        }
     }
     
     /**

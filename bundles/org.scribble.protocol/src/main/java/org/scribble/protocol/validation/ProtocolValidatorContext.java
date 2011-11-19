@@ -40,4 +40,42 @@ public interface ProtocolValidatorContext {
      */
     public ProtocolProjector getProtocolProjector();
     
+    /**
+     * This method returns the named state from the current
+     * scope.
+     * 
+     * @param name The state name
+     * @return The state value, or null if not found
+     */
+    public Object getState(String name);
+    
+    /**
+     * This method sets the value associated with the supplied
+     * name in the current state.
+     * 
+     * @param name The state name
+     * @param value The state value
+     */
+    public void setState(String name, Object value);
+    
+    /**
+     * This method pushes the current state onto a stack.
+     */
+    public void pushState();
+    
+    /**
+     * This method pops the current state from the stack.
+     */
+    public void popState();
+    
+    /**
+     * This method pushes the current scope onto a stack.
+     */
+    public void pushScope();
+    
+    /**
+     * This method pops the current scope from the stack.
+     */
+    public void popScope();
+    
 }

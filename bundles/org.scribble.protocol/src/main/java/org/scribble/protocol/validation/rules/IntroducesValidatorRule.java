@@ -21,7 +21,6 @@ import org.scribble.common.logging.Journal;
 import org.scribble.protocol.model.Introduces;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.ModelObject;
-import org.scribble.protocol.util.RoleUtil;
 import org.scribble.protocol.validation.ProtocolComponentValidatorRule;
 import org.scribble.protocol.validation.ProtocolValidatorContext;
 
@@ -52,14 +51,14 @@ public class IntroducesValidatorRule implements ProtocolComponentValidatorRule {
         Introduces elem=(Introduces)obj;
         
         // Check whether introduced roles already exist
-        java.util.Set<Role> inScope=RoleUtil.getRolesInScope(elem);
-        
         for (Role r : elem.getIntroducedRoles()) {
-            if (inScope.contains(r)) {
+            if (pvc.getState(r.getName()) != null) {
                 logger.error(MessageFormat.format(
                         java.util.PropertyResourceBundle.getBundle(
-                        "org.scribble.protocol.Messages").getString("_ROLE_ALREADY_DEFINED"),
+                        "org.scribble.protocol.Messages").getString("_NAME_ALREADY_DEFINED"),
                         r.getName()), r.getProperties());
+            } else {
+                pvc.setState(r.getName(), r);
             }
         }
     }

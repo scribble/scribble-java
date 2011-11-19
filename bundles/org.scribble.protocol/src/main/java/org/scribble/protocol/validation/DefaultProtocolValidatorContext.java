@@ -15,6 +15,8 @@
  */
 package org.scribble.protocol.validation;
 
+import java.util.logging.Logger;
+
 import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.projection.ProtocolProjector;
 import org.scribble.protocol.validation.ProtocolValidatorContext;
@@ -26,8 +28,12 @@ import org.scribble.protocol.validation.ProtocolValidatorContext;
  */
 public class DefaultProtocolValidatorContext implements ProtocolValidatorContext {
 
+    private static final Logger LOG=Logger.getLogger(DefaultProtocolValidatorContext.class.getName());
+    
     private ProtocolContext _protocolContext=null;
     private ProtocolProjector _projector=null;
+    private Scope _scope=new Scope();
+    private java.util.List<Scope> _scopeStack=new java.util.Vector<Scope>();
     
     /**
      * This is the constructor.
@@ -52,6 +58,53 @@ public class DefaultProtocolValidatorContext implements ProtocolValidatorContext
      */
     public ProtocolProjector getProtocolProjector() {
         return(_projector);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Object getState(String name) {
+        return (_scope.getState(name));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setState(String name, Object value) {
+        _scope.setState(name, value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void pushState() {
+        _scope.pushState();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void popState() {
+        _scope.popState();
+    }
+        
+    /**
+     * {@inheritDoc}
+     */
+    public void pushScope() {
+        _scopeStack.add(0, _scope);
+        _scope = new Scope();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void popScope() {
+        if (_scopeStack.size() > 0) {
+            _scope = _scopeStack.remove(0);
+        } else {
+            LOG.severe("No state entry to pop from stack");
+        }
     }
     
 }

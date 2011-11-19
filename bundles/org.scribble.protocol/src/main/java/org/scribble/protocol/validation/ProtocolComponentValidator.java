@@ -16,7 +16,9 @@
 package org.scribble.protocol.validation;
 
 import org.scribble.common.logging.Journal;
+import org.scribble.protocol.model.Block;
 import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.Protocol;
 
 //import java.util.logging.*;
 
@@ -90,6 +92,42 @@ public class ProtocolComponentValidator implements ProtocolValidator {
         public ValidatingVisitor(ProtocolValidatorContext pvc, Journal logger) {
             _pvc = pvc;
             _logger = logger;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean start(Protocol elem) {
+            _pvc.pushScope();
+            return(super.start(elem));
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void end(Protocol elem) {
+            super.end(elem);
+            _pvc.popScope();
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean start(Block elem) {
+            _pvc.pushState();
+            return(super.start(elem));
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void end(Block elem) {
+            super.end(elem);
+            _pvc.popState();
         }
         
         /**

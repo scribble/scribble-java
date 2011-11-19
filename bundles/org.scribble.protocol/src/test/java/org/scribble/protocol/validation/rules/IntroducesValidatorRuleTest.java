@@ -18,11 +18,12 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.protocol.model.*;
+import org.scribble.protocol.validation.DefaultProtocolValidatorContext;
 
 public class IntroducesValidatorRuleTest {
 
     @org.junit.Test
-    public void testValidateRoleAlreadyDefined() {
+    public void testValidateNameAlreadyDefined() {
         
         Protocol prot1=new Protocol();
         
@@ -43,14 +44,21 @@ public class IntroducesValidatorRuleTest {
         prot1.getParameterDefinitions().add(pd);
         
         TestScribbleLogger logger=new TestScribbleLogger();
+        
+        DefaultProtocolValidatorContext pvc=new DefaultProtocolValidatorContext(null, null);
+        
+        // Initialize state associated with protocol validator context
+        ProtocolValidatorRule prule=new ProtocolValidatorRule();
+        prule.validate(pvc, prot1, logger);
 
+        // Validate the rule to be tested
         IntroducesValidatorRule rule=new IntroducesValidatorRule();
-        rule.validate(null, in1, logger);
+        rule.validate(pvc, in1, logger);
         
         logger.verifyErrors(new String[]{
                 MessageFormat.format(
                         java.util.PropertyResourceBundle.getBundle(
-                        "org.scribble.protocol.Messages").getString("_ROLE_ALREADY_DEFINED"),
+                        "org.scribble.protocol.Messages").getString("_NAME_ALREADY_DEFINED"),
                             part1.getName())
         });
     }
