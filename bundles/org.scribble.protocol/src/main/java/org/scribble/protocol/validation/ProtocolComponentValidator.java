@@ -100,7 +100,7 @@ public class ProtocolComponentValidator implements ProtocolValidator {
         @Override
         public boolean start(Protocol elem) {
             _pvc.pushScope();
-            return(super.start(elem));
+            return (super.start(elem));
         }
         
         /**
@@ -118,7 +118,7 @@ public class ProtocolComponentValidator implements ProtocolValidator {
         @Override
         public boolean start(Block elem) {
             _pvc.pushState();
-            return(super.start(elem));
+            return (super.start(elem));
         }
         
         /**

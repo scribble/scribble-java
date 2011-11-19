@@ -34,6 +34,7 @@ public class Inline extends Activity {
     /**
      * This is the copy constructor.
      * 
+     * @param copy The instance to copy
      */
     public Inline(Inline copy) {
         super(copy);

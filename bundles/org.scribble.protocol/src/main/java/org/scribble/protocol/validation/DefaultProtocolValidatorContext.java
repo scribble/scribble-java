@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 import org.scribble.protocol.ProtocolContext;
 import org.scribble.protocol.projection.ProtocolProjector;
-import org.scribble.protocol.validation.ProtocolValidatorContext;
 
 /**
  * This class provides access to capabilities offered by the
@@ -50,14 +49,14 @@ public class DefaultProtocolValidatorContext implements ProtocolValidatorContext
      * {@inheritDoc}
      */
     public ProtocolContext getProtocolContext() {
-        return(_protocolContext);
+        return (_protocolContext);
     }
     
     /**
      * {@inheritDoc}
      */
     public ProtocolProjector getProtocolProjector() {
-        return(_projector);
+        return (_projector);
     }
     
     /**

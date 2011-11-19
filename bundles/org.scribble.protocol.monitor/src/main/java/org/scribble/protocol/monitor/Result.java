@@ -23,12 +23,12 @@ package org.scribble.protocol.monitor;
  */
 public class Result implements java.io.Serializable {
 
-	private static final long serialVersionUID = 8094872271195676976L;
+    private static final long serialVersionUID = 8094872271195676976L;
 
-	private boolean _valid=false;
+    private boolean _valid=false;
     private String _reason=null;
     private java.util.Map<String,java.io.Serializable> _properties=
-    				new java.util.HashMap<String, java.io.Serializable>();
+                new java.util.HashMap<String, java.io.Serializable>();
     
     /**
      * Valid result.
@@ -92,9 +92,12 @@ public class Result implements java.io.Serializable {
         return (_properties);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
-    	return(this == VALID ? "VALID" : (this == NOT_HANDLED ? "NOT_HANDLED" :
-    		(this == INVALID ? "INVALID" : "RESULT["+isValid()+" reason="+getReason()+
-    				" props="+getProperties()+"]")));
+        return (this == VALID ? "VALID" : (this == NOT_HANDLED ? "NOT_HANDLED"
+                : (this == INVALID ? "INVALID" : "RESULT["+isValid()+" reason="+getReason()
+                    +" props="+getProperties()+"]")));
     }
 }

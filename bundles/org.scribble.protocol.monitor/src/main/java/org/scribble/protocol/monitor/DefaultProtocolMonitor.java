@@ -87,7 +87,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
         Result ret=Result.NOT_HANDLED;
     
         if (LOG.isLoggable(Level.FINE)) {
-        	LOG.fine("messageSent start: session="+conv+" mesg="+mesg);
+            LOG.fine("messageSent start: session="+conv+" mesg="+mesg);
         }
         
         // Check if context has state that is waiting for a send message
@@ -128,7 +128,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
         }
         
         if (LOG.isLoggable(Level.FINE)) {
-        	LOG.fine("messageSent end: session="+conv+" mesg="+mesg+" ret="+ret);
+            LOG.fine("messageSent end: session="+conv+" mesg="+mesg+" ret="+ret);
         }
         
         return (ret);
@@ -193,8 +193,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
         }
 
         if (LOG.isLoggable(Level.FINE)) {
-        	LOG.fine("checkForSendMessage: pos="+pos+" nodeIndex="+nodeIndex+
-        			" node="+node+" conv="+conv+" mesg="+mesg+" ret="+ret);
+            LOG.fine("checkForSendMessage: pos="+pos+" nodeIndex="+nodeIndex
+                    +" node="+node+" conv="+conv+" mesg="+mesg+" ret="+ret);
         }
         
         return (ret);
@@ -306,8 +306,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
         }
 
         if (LOG.isLoggable(Level.FINE)) {
-        	LOG.fine("checkForReceiveMessage: pos="+pos+" nodeIndex="+nodeIndex+
-        			" node="+node+" conv="+conv+" mesg="+mesg+" ret="+ret);
+            LOG.fine("checkForReceiveMessage: pos="+pos+" nodeIndex="+nodeIndex
+                    +" node="+node+" conv="+conv+" mesg="+mesg+" ret="+ret);
         }
         
         return (ret);

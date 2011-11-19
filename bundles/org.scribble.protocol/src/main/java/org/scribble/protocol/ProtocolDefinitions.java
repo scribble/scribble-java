@@ -33,6 +33,9 @@ public final class ProtocolDefinitions {
      */
     public static final String PROTOCOL_TYPE = "spr";
 
+    /**
+     * The list of reserved workds.
+     */
     public static final String[] RESERVED_WORDS={
         "import",
         "protocol",

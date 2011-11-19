@@ -139,7 +139,7 @@ public class ChoiceProjectorRule implements ProjectorRule {
             // Check if optional permitted
             if (System.getProperty(ALLOW_OPTIONAL, "false").
                             equalsIgnoreCase(Boolean.FALSE.toString())) {
-                l.error(MessageFormat.format(                        
+                l.error(MessageFormat.format(
                         java.util.PropertyResourceBundle.getBundle(
                                 "org.scribble.protocol.projection.impl.Messages").
                             getString("_CHOICE_EMPTY_PATH"),

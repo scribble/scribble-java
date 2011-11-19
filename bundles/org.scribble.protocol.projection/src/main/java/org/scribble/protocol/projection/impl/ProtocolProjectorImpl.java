@@ -47,7 +47,7 @@ public class ProtocolProjectorImpl implements ProtocolProjector {
      * @return The protocol validation manager
      */
     public ProtocolValidationManager getProtocolValidationManager() {
-        return(_protocolValidationManager);
+        return (_protocolValidationManager);
     }
     
     /**
