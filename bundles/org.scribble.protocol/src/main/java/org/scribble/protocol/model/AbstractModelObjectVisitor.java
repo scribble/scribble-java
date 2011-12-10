@@ -349,4 +349,13 @@ public abstract class AbstractModelObjectVisitor implements Visitor {
         process(elem);
     }
     
+    /**
+     * This method visits a custom activity.
+     * 
+     * @param elem The custom activity
+     */
+    public void accept(CustomActivity elem) {
+        process(elem);
+    }
+    
 }

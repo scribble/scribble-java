@@ -31,6 +31,9 @@ public class TextProtocolExporter implements ProtocolExporter {
      * Export id for text.
      */
     public static final String TEXT_ID = "txt";
+    
+    private java.util.List<TextProtocolExporterRule> _rules=
+                    new java.util.Vector<TextProtocolExporterRule>();
 
     /**
      * This method returns the id of the exporter.
@@ -61,7 +64,7 @@ public class TextProtocolExporter implements ProtocolExporter {
      * @param os The output stream
      */
     public void export(ProtocolModel model, Journal journal, java.io.OutputStream os) {
-        TextProtocolExporterVisitor visitor=createVisitor(journal, os);
+        TextProtocolExporterVisitor visitor=createVisitor(journal, os, _rules);
         
         model.visit(visitor);
         
@@ -82,5 +85,36 @@ public class TextProtocolExporter implements ProtocolExporter {
      */
     protected TextProtocolExporterVisitor createVisitor(Journal journal, java.io.OutputStream os) {
         return (new TextProtocolExporterVisitor(journal, os));
+    }
+    
+    /**
+     * This method creates the text protocol export visitor.
+     * 
+     * @param journal The journal
+     * @param os The output stream
+     * @param rules The additional set of rules
+     * @return The visitor
+     */
+    protected TextProtocolExporterVisitor createVisitor(Journal journal, java.io.OutputStream os,
+                            java.util.List<TextProtocolExporterRule> rules) {
+        return (new TextProtocolExporterVisitor(journal, os, rules));
+    }
+    
+    /**
+     * This method registers a text protocol exporter rule.
+     * 
+     * @param rule The rule
+     */
+    public void register(TextProtocolExporterRule rule) {
+        _rules.add(rule);
+    }
+    
+    /**
+     * This method unregisters a text protocol exporter rule.
+     * 
+     * @param rule The rule
+     */
+    public void unregister(TextProtocolExporterRule rule) {
+        _rules.remove(rule);
     }
 }

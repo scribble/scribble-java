@@ -18,6 +18,7 @@ package org.scribble.protocol.export.text;
 import org.scribble.common.logging.Journal;
 import org.scribble.common.model.Annotation;
 import org.scribble.protocol.model.Block;
+import org.scribble.protocol.model.CustomActivity;
 import org.scribble.protocol.model.Visitor;
 import org.scribble.protocol.model.Parallel;
 import org.scribble.protocol.model.Choice;
@@ -53,6 +54,7 @@ public class TextProtocolExporterVisitor implements Visitor {
     private Journal _journal=null;
     private int _indent=0;
     private Exception _exception=null;
+    private java.util.List<TextProtocolExporterRule> _rules=null;
         
     /**
      * This is the visitor for the text based protocol export.
@@ -63,6 +65,20 @@ public class TextProtocolExporterVisitor implements Visitor {
     public TextProtocolExporterVisitor(Journal journal, java.io.OutputStream os) {
         _journal = journal;
         _outputStream = os;
+    }
+    
+    /**
+     * This is the visitor for the text based protocol export.
+     * 
+     * @param journal The journal
+     * @param os The output stream
+     * @param rules The additional exporter rules
+     */
+    public TextProtocolExporterVisitor(Journal journal, java.io.OutputStream os,
+                        java.util.List<TextProtocolExporterRule> rules) {
+        _journal = journal;
+        _outputStream = os;
+        _rules = rules;
     }
     
     /**
@@ -853,6 +869,39 @@ public class TextProtocolExporterVisitor implements Visitor {
         indent();
         
         output("end;\r\n");
+    }
+    
+    /**
+     * This method visits an end statement.
+     * 
+     * @param elem The end statement
+     */
+    public void accept(CustomActivity elem) {
+        
+        // Check if element can be exported to text
+        if (_rules != null) {
+            
+            for (TextProtocolExporterRule rule : _rules) {
+                
+                if (rule.isSupported(elem)) {
+                    String exported=rule.getText(elem, _journal);
+                    
+                    if (exported != null) {
+                        for (Annotation annotation : elem.getAnnotations()) {
+                            indent();
+                            output("[["+annotation.toString()+"]]\r\n");
+                        }
+                        
+                        indent();
+                        
+                        output(exported+"\r\n");
+                        
+                        break;
+                    }
+                }
+            }
+        }
+        
     }
     
 }

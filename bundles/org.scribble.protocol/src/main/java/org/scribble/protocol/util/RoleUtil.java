@@ -228,7 +228,6 @@ public final class RoleUtil {
      */
     public static Block getEnclosingBlock(final Protocol protocol, final Role role,
                                     final boolean includeDeclaration) {
-        Block ret=null;
         final java.util.List<Block> blocks=new java.util.Vector<Block>();
         
         // Find all blocks enclosing an activity associated with the supplied role
@@ -280,72 +279,9 @@ public final class RoleUtil {
             }
         });
         
-        if (blocks.size() == 1) {
-            ret = blocks.get(0);
-            
-        } else if (blocks.size() > 1) {
-            // Find common parent block
-            java.util.List<java.util.List<Block>> listOfBlocks=
-                        new java.util.Vector<java.util.List<Block>>();
-            
-            for (Block block : blocks) {
-                java.util.List<Block> lb=getBlockPath(block);
-                
-                if (lb != null && lb.size() > 0) {
-                    listOfBlocks.add(lb);
-                }
-            }
-            
-            // Find common lowest level block
-            int pos=-1;
-            java.util.List<Block> refblocks=listOfBlocks.get(0);
-            
-            for (int j=0; j < refblocks.size(); j++) {
-                boolean same=true;
-                Block ref=refblocks.get(j);
-                
-                for (int i=1; same && i < listOfBlocks.size(); i++) {
-                    java.util.List<Block> lb=listOfBlocks.get(i);
-                    
-                    if (lb.size() <= j || ref != lb.get(j)) {
-                        same = false;
-                    }
-                }
-                
-                if (same) {
-                    pos = j;
-                }
-            }
-            
-            if (pos != -1) {
-                ret = refblocks.get(pos);
-            }
-        }
-        
-        return (ret);
+        return (ActivityUtil.getEnclosingBlock(blocks));
     }
     
-    /**
-     * This method returns the list of blocks from the root to the supplied block.
-     * 
-     * @param b The block
-     * @return The path from the root block to the supplied block
-     */
-    protected static java.util.List<Block> getBlockPath(Block b) {
-        java.util.List<Block> ret=new java.util.Vector<Block>();
-        ModelObject cur=b;
-        
-        while (cur instanceof Block) {
-            ret.add(0, (Block)cur);
-            
-            do {
-                cur = cur.getParent();                
-            } while (cur != null && !(cur instanceof Block));
-        }
-        
-        return (ret);
-    }
-
     /**
      * Visitor for locating roles.
      *

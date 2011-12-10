@@ -348,4 +348,13 @@ public class DefaultVisitor implements Visitor {
     public void accept(End elem) {
     }
     
+    /**
+     * This method visits any extensible activity that is not
+     * part of the base protocol model.
+     * 
+     * @param elem The custom activity
+     */
+    public void accept(CustomActivity elem) {
+    }
+    
 }
