@@ -273,4 +273,18 @@ public class Protocol extends ModelObject {
         
         visitor.end(this);
     }
+    
+    public String toString() {
+        String ret="protocol "+getName()+" ( ";
+        
+        for (ParameterDefinition pd : getParameterDefinitions()) {
+            ret += (pd.isRole() ? "role" : pd.getType())+" "+pd.getName()+" ";
+        }
+        
+        ret += ")\r\n";
+        
+        ret += getBlock();
+        
+        return(ret);
+    }
 }

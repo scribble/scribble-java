@@ -21,6 +21,8 @@ package org.scribble.protocol.model;
  */
 public class CustomActivity extends Activity {
 
+    private java.util.List<Role> _roles=new java.util.Vector<Role>();
+    
     /**
      * This is the default constructor.
      * 
@@ -35,6 +37,15 @@ public class CustomActivity extends Activity {
      */
     public CustomActivity(CustomActivity act) {
         super(act);
+    }
+    
+    /**
+     * This method returns the roles associated with the custom activity.
+     * 
+     * @return The roles
+     */
+    public java.util.List<Role> getRoles() {
+        return(_roles);
     }
     
     /**

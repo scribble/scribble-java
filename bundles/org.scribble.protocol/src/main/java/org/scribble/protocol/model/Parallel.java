@@ -57,4 +57,36 @@ public class Parallel extends Activity {
         
         visitor.end(this);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Parallel that = (Parallel) o;
+
+        return _blocks.equals(that._blocks);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = _blocks.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        String result =  "parallel ";
+        for (Block b : _blocks) {
+            if (_blocks.indexOf(b) > 0) {
+                result += "and ";
+            }
+            result += b + "\n";
+        }
+        return result;
+    }
 }
