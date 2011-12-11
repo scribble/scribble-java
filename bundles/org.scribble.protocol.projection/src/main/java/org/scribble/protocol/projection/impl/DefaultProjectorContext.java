@@ -33,6 +33,8 @@ public class DefaultProjectorContext implements ProtocolProjectorContext {
 
     private final static java.util.List<ProjectorRule> RULES=new java.util.Vector<ProjectorRule>();
     
+    private java.util.List<ProjectorRule> _customRules=null;
+    
     private ProtocolContext _context=null;
     private ProtocolValidationManager _pvm=null;
     private Scope _scope=new Scope();
@@ -83,6 +85,19 @@ public class DefaultProjectorContext implements ProtocolProjectorContext {
     }
     
     /**
+     * This is the default constructor for the projection context.
+     * 
+     * @param context The protocol context
+     * @param pvm The protocol validation manager
+     * @param customRules The optional list of custom rules
+     */
+    public DefaultProjectorContext(ProtocolContext context, ProtocolValidationManager pvm,
+                                java.util.List<ProjectorRule> customRules) {
+        this(context, pvm);
+        _customRules = customRules;
+    }
+    
+    /**
      * This method returns the protocol context.
      * 
      * @return The protocol context
@@ -119,6 +134,15 @@ public class DefaultProjectorContext implements ProtocolProjectorContext {
                                 l);
             }
         }
+        
+        if (ret == null && _customRules != null) {
+            for (int i=0; model != null && ret == null && i < getCustomRules().size(); i++) {
+                if (getCustomRules().get(i).isSupported(model)) {
+                    ret = getCustomRules().get(i).project(this, model, role,
+                                    l);
+                }
+            }
+        }
                 
         return (ret);
     }
@@ -130,6 +154,15 @@ public class DefaultProjectorContext implements ProtocolProjectorContext {
      */
     public java.util.List<ProjectorRule> getRules() {
         return (RULES);
+    }
+    
+    /**
+     * This method returns a list of custom projection rules.
+     * 
+     * @return The list of custom projection rules
+     */
+    public java.util.List<ProjectorRule> getCustomRules() {
+        return (_customRules);
     }
     
     /**

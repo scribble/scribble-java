@@ -31,6 +31,7 @@ import org.scribble.protocol.validation.ProtocolValidationManager;
 public class ProtocolProjectorImpl implements ProtocolProjector {
     
     private ProtocolValidationManager _protocolValidationManager=null;
+    private java.util.List<ProjectorRule> _customRules=new java.util.Vector<ProjectorRule>();
 
     /**
      * This method sets the protocol validation manager.
@@ -48,6 +49,15 @@ public class ProtocolProjectorImpl implements ProtocolProjector {
      */
     public ProtocolValidationManager getProtocolValidationManager() {
         return (_protocolValidationManager);
+    }
+    
+    /**
+     * This method returns the list of custom rules.
+     * 
+     * @return The custom rules
+     */
+    public java.util.List<ProjectorRule> getCustomRules() {
+        return(_customRules);
     }
     
     /**
@@ -93,7 +103,7 @@ public class ProtocolProjectorImpl implements ProtocolProjector {
         */
         
         DefaultProjectorContext projectorContext=new DefaultProjectorContext(context,
-                            _protocolValidationManager);
+                            _protocolValidationManager, _customRules);
         
         Object obj=projectorContext.project(model, role, journal);
         
