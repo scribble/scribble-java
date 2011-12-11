@@ -894,7 +894,7 @@ public class TextProtocolExporterVisitor implements Visitor {
                         
                         indent();
                         
-                        output(exported+"\r\n");
+                        output(exported+";\r\n");
                         
                         break;
                     }
