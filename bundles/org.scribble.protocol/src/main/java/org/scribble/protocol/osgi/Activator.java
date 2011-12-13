@@ -29,6 +29,7 @@ import org.scribble.protocol.export.DefaultProtocolExportManager;
 import org.scribble.protocol.export.ProtocolExportManager;
 import org.scribble.protocol.export.ProtocolExporter;
 import org.scribble.protocol.export.text.TextProtocolExporter;
+import org.scribble.protocol.export.text.TextProtocolExporterRule;
 import org.scribble.protocol.parser.DefaultProtocolParserManager;
 import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.protocol.parser.ProtocolParserManager;
@@ -50,6 +51,7 @@ public class Activator implements BundleActivator {
     private org.osgi.util.tracker.ServiceTracker _protocolValidatorTracker=null;
     private org.osgi.util.tracker.ServiceTracker _protocolProjectorTracker=null;
     private org.osgi.util.tracker.ServiceTracker _protocolExporterTracker=null;
+    private org.osgi.util.tracker.ServiceTracker _protocolTextExporterRuleTracker=null;
 
     /**
      * Start the bundle.
@@ -167,8 +169,29 @@ public class Activator implements BundleActivator {
         // Register text based exporter
         props = new Properties();
 
+        final TextProtocolExporter tpe=new TextProtocolExporter();
+        
         context.registerService(ProtocolExporter.class.getName(), 
                 new TextProtocolExporter(), props);        
+
+        LOG.fine("Registered Text Protocol Exporter");
+        
+        _protocolTextExporterRuleTracker = new ServiceTracker(context,
+                org.scribble.protocol.export.text.TextProtocolExporterRule.class.getName(),
+                        null) {
+            
+            public Object addingService(ServiceReference ref) {
+                Object ret=super.addingService(ref);
+                
+                LOG.fine("Text Exporter Rule has been added: "+ret);
+                
+                tpe.register((TextProtocolExporterRule)ret);
+                
+                return (ret);
+            }
+        };
+        
+        _protocolTextExporterRuleTracker.open();
 
     }
 

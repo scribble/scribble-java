@@ -23,6 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.scribble.protocol.projection.ProtocolProjector;
+import org.scribble.protocol.projection.impl.ProjectorRule;
 import org.scribble.protocol.projection.impl.ProtocolProjectorImpl;
 
 /**
@@ -34,6 +35,7 @@ public class Activator implements BundleActivator {
     private static final Logger LOG=Logger.getLogger(Activator.class.getName());
 
     private org.osgi.util.tracker.ServiceTracker _protocolValidationManagerTracker=null;
+    private org.osgi.util.tracker.ServiceTracker _protocolProjectorRuleTracker=null;
 
     /**
      * {@inheritDoc}
@@ -41,7 +43,7 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         Properties props = new Properties();
         
-        final ProtocolProjector pp=new ProtocolProjectorImpl();
+        final ProtocolProjectorImpl pp=new ProtocolProjectorImpl();
         
         context.registerService(ProtocolProjector.class.getName(), 
                             pp, props);
@@ -63,6 +65,24 @@ public class Activator implements BundleActivator {
         };
         
         _protocolValidationManagerTracker.open();
+
+        // Detect additional protocol projection rules
+        _protocolProjectorRuleTracker = new ServiceTracker(context,
+                org.scribble.protocol.projection.impl.ProjectorRule.class.getName(),
+                        null) {
+            
+            public Object addingService(ServiceReference ref) {
+                Object ret=super.addingService(ref);
+                
+                LOG.fine("Projection rule has been added: "+ret);
+                
+                pp.getCustomRules().add((ProjectorRule)ret);
+                
+                return (ret);
+            }
+        };
+        
+        _protocolProjectorRuleTracker.open();
 
     }
 
