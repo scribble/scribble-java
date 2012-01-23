@@ -28,6 +28,15 @@ import org.scribble.protocol.model.ProtocolModel;
  */
 public interface ProtocolParserManager {
     
+	/**
+	 * This method determines whether there is a parser available for the supplied
+	 * content.
+	 * 
+	 * @param content The content
+	 * @return Whether a parser is available for the supplied content
+	 */
+	public boolean isParserAvailable(Content content);
+	
     /**
      * This method parses the supplied content to create a protocol
      * model. Any issues are reported to the supplied journal. The protocol
