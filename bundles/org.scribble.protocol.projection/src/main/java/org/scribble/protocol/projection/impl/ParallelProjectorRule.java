@@ -74,7 +74,7 @@ public class ParallelProjectorRule implements ProjectorRule {
             // If parallel only has one path, then
             // return block
             if (parallel.getPaths().size() == 1) {
-                ret = parallel.getPaths().get(0);
+                ret = parallel.getPaths().get(0).getContents();
             }
         }
         
