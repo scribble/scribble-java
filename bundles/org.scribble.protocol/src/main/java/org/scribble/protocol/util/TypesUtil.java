@@ -72,6 +72,31 @@ public final class TypesUtil {
     }
     
     /**
+     * This method identifies the type import for the supplied
+     * protocol model and type name.
+     * 
+     * @param pm The protocol model
+     * @param typeName The type name
+     * @return The type import, or null if not found
+     */
+    public static TypeImport getTypeImport(ProtocolModel pm, String typeName) {
+        TypeImport ret=null;
+        
+        if (pm != null && typeName != null) {
+            
+            for (int i=0; ret == null && i < pm.getImports().size(); i++) {
+                ImportList imp=pm.getImports().get(i);
+                
+                if (imp instanceof TypeImportList) {
+                    ret = ((TypeImportList)imp).getTypeImport(typeName);
+                }
+            }
+        }
+        
+        return (ret);
+    }
+    
+    /**
      * This method determines whether the protocol model has concrete types
      * defined.
      * 
