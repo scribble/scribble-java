@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 public class ByteArrayContent implements Content {
 
     private byte[] _array=null;
+    private String _name=null;
     
     /**
      * This construct is initialized with the byte array.
@@ -36,12 +37,23 @@ public class ByteArrayContent implements Content {
     }
     
     /**
+     * This construct is initialized with the byte array.
+     * 
+     * @param name The name
+     * @param array The byte array
+     */
+    public ByteArrayContent(String name, byte[] array) {
+    	_name = name;
+        _array = array;
+    }
+    
+    /**
      * This method returns the content name if available.
      * 
      * @return The optional content name
      */
     public String getName() {
-        return (null);
+        return (_name);
     }
     
     /**
@@ -62,7 +74,11 @@ public class ByteArrayContent implements Content {
      * @return Whether the content has the specified extension
      */
     public boolean hasExtension(String ext) {
-        throw new UnsupportedOperationException();
+    	if (_name == null) {
+    		throw new UnsupportedOperationException();
+    	}
+    	
+    	return (_name.endsWith("."+ext));
     }
     
     /**
