@@ -148,4 +148,56 @@ public class ForkJoinTest {
         }
     }
     
+
+    @Test
+    public void testValidCompletionAfterOutOfOrderMessage() {
+        Description pd=getProtocol();
+        
+        // Create Protocol Monitor
+        ProtocolMonitor monitor=new DefaultProtocolMonitor();
+        
+        DefaultMonitorContext context=new DefaultMonitorContext();
+        
+        Session conv=monitor.createSession(context, pd, DefaultSession.class);
+        
+        DefaultMessage message=new DefaultMessage();
+        message.getTypes().add(ORDER_MESSAGE_TYPE);
+        
+        if (monitor.messageReceived(context, pd, conv, message).isValid() == false) {
+            fail("Order failed");
+        }
+        
+        message=new DefaultMessage();
+        message.getTypes().add(OUT_OF_STOCK_MESSAGE_TYPE);        
+
+        if (monitor.messageSent(context, pd, conv, message).isValid() == true) {
+            fail("Out Of Stock should initially fail");
+        }        
+        
+        message=new DefaultMessage();
+        message.getTypes().add(CONFIRMATION_MESSAGE_TYPE);        
+
+        if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
+            fail("Confirmation failed");
+        }        
+        
+        message=new DefaultMessage();
+        message.getTypes().add(OUT_OF_STOCK_MESSAGE_TYPE);        
+
+        if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
+            fail("Out Of Stock failed");
+        }        
+        
+        message=new DefaultMessage();
+        message.getTypes().add(FINISH_MESSAGE_TYPE);        
+
+        if (monitor.messageSent(context, pd, conv, message).isValid() == false) {
+            fail("Finish message failed");
+        }        
+        
+        if (conv.isFinished() == false) {
+            fail("Conversation should be finished");
+        }
+    }
+    
 }

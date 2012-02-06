@@ -99,8 +99,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
         
         // Check if context has state that is waiting for a send message
         for (int i=0; ret == Result.NOT_HANDLED && i < session.getNumberOfNodeIndexes(); i++) {
-            ret = checkForSendMessage(context, protocol,
-                        i, session.getNodeIndexAt(i), session, mesg);
+            ret = checkForMessage(context, protocol,
+                        i, session.getNodeIndexAt(i), session, mesg, true);
         }
         
         for (int i=0; ret == Result.NOT_HANDLED && i < session.getNestedConversations().size(); i++) {
@@ -142,95 +142,6 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
     }
     
     /**
-     * This method checks whether the send message is valid.
-     * 
-     * @param context The monitor context
-     * @param protocol The protocol
-     * @param pos The position of the node in the conversation
-     * @param nodeIndex The nodex index in the protocol
-     * @param conv The conversation
-     * @param mesg The message
-     * @return The result
-     */
-    protected Result checkForSendMessage(MonitorContext context, Description protocol,
-            int pos, int nodeIndex, Session conv, Message mesg) {
-        Result ret=Result.NOT_HANDLED;
-        
-        Node node=protocol.getNode().get(nodeIndex);
-        
-        if (node instanceof SendMessage) {
-            ret = checkMessage(context, conv, (SendMessage)node, mesg);
-            
-            if (ret.isValid()) {
-                // Remove processed node
-                conv.removeNodeIndexAt(pos);
-                
-                // Add next node, if not end
-                if (node.getNextIndex() != -1) {
-                    addNodeToConversation(context, protocol, conv, node.getNextIndex());
-                }
-            }
-            
-        } else if (node instanceof org.scribble.protocol.monitor.model.Choice) {
-            // Check if lookahead for the indexes associated with each
-            // choice path
-            for (int j=0; ret == Result.NOT_HANDLED
-                    && j < ((org.scribble.protocol.monitor.model.Choice)node).getPath().size(); j++) {
-                
-                Path cn=((org.scribble.protocol.monitor.model.Choice)node).getPath().get(j);
-                
-                if (cn.getNextIndex() != -1) {
-                    ret = checkForSendMessage(context, protocol,
-                                pos, cn.getNextIndex(), conv, mesg);
-                }
-            }
-            
-        } else if (node instanceof org.scribble.protocol.monitor.model.Decision) {
-            
-            if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
-                ret = checkForSendMessage(context, protocol,
-                            pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(),
-                            conv, mesg);
-            }
-            
-            if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
-                ret = checkForSendMessage(context, protocol,
-                            pos, node.getNextIndex(), conv, mesg);                
-            }
-        } else if (node instanceof Join) {
-        	Join join=(Join)node;
-        	
-        	Boolean result=context.evaluate(conv, join.getExpression());
-        	
-            if (result != null && result.booleanValue()) {
-
-                // Add next node, if not end
-                if (node.getNextIndex() != -1) {
-                    ret = checkForSendMessage(context, protocol,
-                            pos, node.getNextIndex(), conv, mesg);
-                    
-                    if (!ret.isValid()) {
-                    	// Remove node and add subsequent nodes - this makes sure
-                    	// the join is not processed again next time
-                        conv.removeNodeIndexAt(pos);
-                        addNodeToConversation(context, protocol, conv, node.getNextIndex());
-                    }
-                } else {
-                    // Remove processed node
-                    conv.removeNodeIndexAt(pos);
-                }
-            }
-        }
-
-        if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("checkForSendMessage: pos="+pos+" nodeIndex="+nodeIndex
-                    +" node="+node+" conv="+conv+" mesg="+mesg+" ret="+ret);
-        }
-        
-        return (ret);
-    }
-    
-    /**
      * {@inheritDoc}
      */
     public Result messageReceived(MonitorContext context, Description protocol,
@@ -243,8 +154,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
         
         // Check if context has state that is waiting for a send message
         for (int i=0; ret == Result.NOT_HANDLED && i < session.getNumberOfNodeIndexes(); i++) {
-            ret = checkForReceiveMessage(context, protocol,
-                        i, session.getNodeIndexAt(i), session, mesg);
+            ret = checkForMessage(context, protocol,
+                        i, session.getNodeIndexAt(i), session, mesg, false);
         }
         
         for (int i=0; ret == Result.NOT_HANDLED && i < session.getNestedConversations().size(); i++) {
@@ -282,7 +193,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
     }
     
     /**
-     * This method checks whether the receive message is valid.
+     * This method checks whether the send message is valid.
      * 
      * @param context The monitor context
      * @param protocol The protocol
@@ -290,16 +201,18 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
      * @param nodeIndex The nodex index in the protocol
      * @param conv The conversation
      * @param mesg The message
+     * @param send Whether this message is being sent
      * @return The result
      */
-    protected Result checkForReceiveMessage(MonitorContext context, Description protocol,
-                int pos, int nodeIndex, Session conv, Message mesg) {
+    protected Result checkForMessage(MonitorContext context, Description protocol,
+            int pos, int nodeIndex, Session conv, Message mesg, boolean send) {
         Result ret=Result.NOT_HANDLED;
         
         Node node=protocol.getNode().get(nodeIndex);
         
-        if (node instanceof ReceiveMessage) {
-            ret = checkMessage(context, conv, (ReceiveMessage)node, mesg);
+        if ((send && node instanceof SendMessage) ||
+        				(!send && node instanceof ReceiveMessage)) {
+            ret = validateMessage(context, conv, (MessageNode)node, mesg);
             
             if (ret.isValid()) {
                 // Remove processed node
@@ -314,41 +227,64 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
         } else if (node instanceof org.scribble.protocol.monitor.model.Choice) {
             // Check if lookahead for the indexes associated with each
             // choice path
-            for (int j=0; ret == Result.NOT_HANDLED 
+            for (int j=0; ret == Result.NOT_HANDLED
                     && j < ((org.scribble.protocol.monitor.model.Choice)node).getPath().size(); j++) {
                 
                 Path cn=((org.scribble.protocol.monitor.model.Choice)node).getPath().get(j);
                 
                 if (cn.getNextIndex() != -1) {
-                    ret = checkForReceiveMessage(context, protocol, 
-                                pos, cn.getNextIndex(), conv, mesg);
+                    ret = checkForMessage(context, protocol,
+                                pos, cn.getNextIndex(), conv, mesg, send);
                 }
             }
             
         } else if (node instanceof org.scribble.protocol.monitor.model.Decision) {
             
             if (((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex() != -1) {
-                ret = checkForReceiveMessage(context, protocol, 
+                ret = checkForMessage(context, protocol,
                             pos, ((org.scribble.protocol.monitor.model.Decision)node).getInnerIndex(),
-                                conv, mesg);
+                            conv, mesg, send);
             }
             
             if (ret == Result.NOT_HANDLED && node.getNextIndex() != -1) {
-                ret = checkForReceiveMessage(context, protocol, 
-                        pos, node.getNextIndex(), conv, mesg);                
+                ret = checkForMessage(context, protocol,
+                            pos, node.getNextIndex(), conv, mesg, send);                
+            }
+        } else if (node instanceof Join) {
+        	Join join=(Join)node;
+        	
+        	Boolean result=context.evaluate(conv, join.getExpression());
+        	
+            if (result != null && result.booleanValue()) {
+
+                // Add next node, if not end
+                if (node.getNextIndex() != -1) {
+                    ret = checkForMessage(context, protocol,
+                            pos, node.getNextIndex(), conv, mesg, send);
+                    
+                    if (!ret.isValid()) {
+                    	// Remove node and add subsequent nodes - this makes sure
+                    	// the join is not processed again next time
+                        conv.removeNodeIndexAt(pos);
+                        addNodeToConversation(context, protocol, conv, node.getNextIndex());
+                    }
+                } else {
+                    // Remove processed node
+                    conv.removeNodeIndexAt(pos);
+                }
             }
         }
 
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("checkForReceiveMessage: pos="+pos+" nodeIndex="+nodeIndex
-                    +" node="+node+" conv="+conv+" mesg="+mesg+" ret="+ret);
+            LOG.fine("checkForMessage: pos="+pos+" nodeIndex="+nodeIndex
+                    +" node="+node+" conv="+conv+" mesg="+mesg+" send="+send+" ret="+ret);
         }
         
         return (ret);
     }
     
     /**
-     * This method checks the message.
+     * This method validates the message against a message (send/receive) node.
      * 
      * @param context Monitor context
      * @param conv Conversation
@@ -356,7 +292,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
      * @param sig The message signature
      * @return The result
      */
-    protected Result checkMessage(MonitorContext context, Session conv, MessageNode node,
+    protected Result validateMessage(MonitorContext context, Session conv, MessageNode node,
                                 Message sig) {
         Result ret=Result.NOT_HANDLED;
         
