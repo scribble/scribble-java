@@ -83,21 +83,25 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
      * {@inheritDoc}
      */
     public Result messageSent(MonitorContext context, Description protocol,
-                        Session conv, Message mesg) {
+                        Session session, Message mesg) {
         Result ret=Result.NOT_HANDLED;
     
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("messageSent start: session="+conv+" mesg="+mesg);
+            LOG.fine("messageSent start: session="+session+" mesg="+mesg);
+        }
+        
+        if (session == null) {
+        	return(new Result(false, "Cannot monitor message due to no session instance"));
         }
         
         // Check if context has state that is waiting for a send message
-        for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
+        for (int i=0; ret == Result.NOT_HANDLED && i < session.getNumberOfNodeIndexes(); i++) {
             ret = checkForSendMessage(context, protocol,
-                        i, conv.getNodeIndexAt(i), conv, mesg);
+                        i, session.getNodeIndexAt(i), session, mesg);
         }
         
-        for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
-            Session nested=conv.getNestedConversations().get(i);
+        for (int i=0; ret == Result.NOT_HANDLED && i < session.getNestedConversations().size(); i++) {
+            Session nested=session.getNestedConversations().get(i);
             
             ret = messageSent(context, protocol, nested, mesg);
             
@@ -109,12 +113,12 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
                 if (nested.getParentConversation() != null) {
                     Session main=nested.getParentConversation();
                     
-                    if (conv.getNestedConversations().remove(main)) {
+                    if (session.getNestedConversations().remove(main)) {
                         
                         // Terminate other catch blocks
                         for (Session cc : main.getInterruptConversations()) {
                             if (cc != nested) {
-                                conv.getNestedConversations().remove(cc);
+                                session.getNestedConversations().remove(cc);
                             }
                         }
                     }
@@ -122,13 +126,13 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
                 
                 // If matched, then check if nested conversation has finished
                 if (nested.isFinished()) {
-                    nestedConversationFinished(context, protocol, conv, nested);
+                    nestedConversationFinished(context, protocol, session, nested);
                 }
             }
         }
         
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("messageSent end: session="+conv+" mesg="+mesg+" ret="+ret);
+            LOG.fine("messageSent end: session="+session+" mesg="+mesg+" ret="+ret);
         }
         
         return (ret);
@@ -204,17 +208,21 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
      * {@inheritDoc}
      */
     public Result messageReceived(MonitorContext context, Description protocol,
-                    Session conv, Message mesg) {
+                    Session session, Message mesg) {
         Result ret=Result.NOT_HANDLED;
         
-        // Check if context has state that is waiting for a send message
-        for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNumberOfNodeIndexes(); i++) {
-            ret = checkForReceiveMessage(context, protocol,
-                        i, conv.getNodeIndexAt(i), conv, mesg);
+        if (session == null) {
+        	return(new Result(false, "Cannot monitor message due to no session instance"));
         }
         
-        for (int i=0; ret == Result.NOT_HANDLED && i < conv.getNestedConversations().size(); i++) {
-            Session nested=conv.getNestedConversations().get(i);
+        // Check if context has state that is waiting for a send message
+        for (int i=0; ret == Result.NOT_HANDLED && i < session.getNumberOfNodeIndexes(); i++) {
+            ret = checkForReceiveMessage(context, protocol,
+                        i, session.getNodeIndexAt(i), session, mesg);
+        }
+        
+        for (int i=0; ret == Result.NOT_HANDLED && i < session.getNestedConversations().size(); i++) {
+            Session nested=session.getNestedConversations().get(i);
             
             ret = messageReceived(context, protocol, nested, mesg);
             
@@ -226,12 +234,12 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
                 if (nested.getParentConversation() != null) {
                     Session main=nested.getParentConversation();
                     
-                    if (conv.getNestedConversations().remove(main)) {
+                    if (session.getNestedConversations().remove(main)) {
                         
                         // Terminate other interrupt blocks
                         for (Session cc : main.getInterruptConversations()) {
                             if (cc != nested) {
-                                conv.getNestedConversations().remove(cc);
+                                session.getNestedConversations().remove(cc);
                             }
                         }
                     }
@@ -239,7 +247,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
                 
                 // If matched, then check if nested conversation has finished
                 if (nested.isFinished()) {
-                    nestedConversationFinished(context, protocol, conv, nested);
+                    nestedConversationFinished(context, protocol, session, nested);
                 }                
             }
         }

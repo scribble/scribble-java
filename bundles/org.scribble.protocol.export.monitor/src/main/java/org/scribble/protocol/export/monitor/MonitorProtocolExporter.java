@@ -17,6 +17,7 @@
 package org.scribble.protocol.export.monitor;
 
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.scribble.common.logging.Journal;
@@ -102,7 +103,8 @@ public class MonitorProtocolExporter implements ProtocolExporter {
         try {
             MonitorModelUtil.serialize(desc, os);
         } catch (Exception e) {
-            journal.error("Export failed", null);
+        	LOG.log(Level.SEVERE, "Failed to export protocol to monitor description", e);
+            journal.error("Export failed due to exception: "+e, null);
         }
     }
     
