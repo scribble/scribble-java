@@ -31,13 +31,7 @@ public class DefaultMonitorContext implements MonitorContext {
     private static final Logger LOG=Logger.getLogger(DefaultMonitorContext.class.getName());
 
     /**
-     * This method determines whether the supplied message is valid
-     * in respect of the supplied message node.
-     * 
-     * @param session The session
-     * @param mesgNode The message node
-     * @param mesg The message to be validated
-     * @return Whether the message is valid
+     * {@inheritDoc}
      */
     public Result validate(Session session, MessageNode mesgNode, Message mesg) {
         // Do direct comparison for now, but could also check for derived
@@ -87,4 +81,72 @@ public class DefaultMonitorContext implements MonitorContext {
         
         return (ret);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public Boolean evaluate(Session session, String expression) {
+		Boolean ret=null;
+		
+		ret = evalOR(session, expression);
+		
+		return (ret);
+	}
+	
+	protected Boolean evalOR(Session session, String expression) {
+		Boolean ret=Boolean.FALSE;
+		
+		String[] ors=expression.split("or");
+		
+		for (String or : ors) {
+			Boolean result=evalAND(session, or.trim());
+			
+			if (result == null) {
+				ret = null;
+			} else if (result != null && result.booleanValue()) {
+				ret = Boolean.TRUE;
+				break;
+			}
+		}
+		
+		return(ret);
+	}
+	
+	protected Boolean evalAND(Session session, String expression) {
+		Boolean ret=null;
+		
+		String[] ands=expression.split("and");
+		
+		if (ands.length > 0) {
+			ret = Boolean.TRUE;
+			
+			for (String and : ands) {
+				Object result=session.getState(and.trim());
+				
+				if (result == null) {
+					ret = null;
+					break;
+				} else if (!(result instanceof Boolean)) {
+					ret = Boolean.FALSE;
+					break;
+				} else if (!((Boolean)result).booleanValue()) {
+					ret = Boolean.FALSE;
+					break;
+				}
+			}
+		}
+		
+		return(ret);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean fork(Session session, String linkName, String condition) {
+		// TODO Implement use of condition
+		
+		session.setState(linkName, Boolean.TRUE);
+		
+		return true;
+	}
 }

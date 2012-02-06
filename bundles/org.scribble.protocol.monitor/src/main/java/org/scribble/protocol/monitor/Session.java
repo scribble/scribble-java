@@ -101,7 +101,7 @@ public interface Session {
      * 
      * @return The parent conversation
      */
-    public Session getParentConversation();
+    public Session getMainConversation();
     
     /**
      * This method returns the list of interrupt conversations.
@@ -116,5 +116,33 @@ public interface Session {
      * @param session The session to be removed
      */
     public void removeNestedConversation(Session session);
+  
+    /**
+     * This method declares a link that will be used for a 'join'
+     * within the current scope associated with this session.
+     * The status of the join link can be obtained as a boolean value
+     * associated with the state for the session.
+     * 
+     * @param linkName The link name
+     */
+    public void declareLink(String linkName);
+
+    /**
+     * This method returns the value associated with supplied name.
+     * If a value has not yet been assigned to the named state, then
+     * a null will be returned.
+     * 
+     * @param name The name
+     * @return The value, or null if not yet initialized
+     */
+    public Object getState(String name);
+    
+    /**
+     * This method sets the state value for the supplied name.
+     * 
+     * @param name The name
+     * @param value The value
+     */
+    public void setState(String name, Object value);
     
 }

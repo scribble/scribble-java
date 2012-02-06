@@ -15,15 +15,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Decision complex type.
+ * <p>Java class for Fork complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Decision">
+ * &lt;complexType name="Fork">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.scribble.org/monitor}Node">
- *       &lt;attribute name="innerIndex" type="{http://www.w3.org/2001/XMLSchema}int" default="-1" />
+ *       &lt;attribute name="condition" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="linkName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -32,40 +33,62 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Decision")
-public class Decision
+@XmlType(name = "Fork")
+public class Fork
     extends Node
 {
 
     @XmlAttribute
-    protected Integer innerIndex;
+    protected String condition;
+    @XmlAttribute
+    protected String linkName;
 
     /**
-     * Gets the value of the innerIndex property.
+     * Gets the value of the condition property.
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public int getInnerIndex() {
-        if (innerIndex == null) {
-            return -1;
-        } else {
-            return innerIndex;
-        }
+    public String getCondition() {
+        return condition;
     }
 
     /**
-     * Sets the value of the innerIndex property.
+     * Sets the value of the condition property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public void setInnerIndex(Integer value) {
-        this.innerIndex = value;
+    public void setCondition(String value) {
+        this.condition = value;
+    }
+
+    /**
+     * Gets the value of the linkName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getLinkName() {
+        return linkName;
+    }
+
+    /**
+     * Sets the value of the linkName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setLinkName(String value) {
+        this.linkName = value;
     }
 
 }

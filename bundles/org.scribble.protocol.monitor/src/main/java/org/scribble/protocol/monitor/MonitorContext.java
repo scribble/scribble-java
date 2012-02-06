@@ -41,5 +41,26 @@ public interface MonitorContext {
      * @return The result
      */
     public Result validate(Session session, MessageNode mesgNode, Message mesg);
+
+    /**
+     * This method evaluates the supplied expression against the session.
+     * 
+     * @param session The session
+     * @param expression The expression
+     * @return The result of the expression, or null if could not be evaluated
+     * 					at this time
+     */
+    public Boolean evaluate(Session session, String expression);
+    
+    /**
+     * This method determines whether the fork, identified by the linkName
+     * and optional condition, should occur.
+     * 
+     * @param session The session
+     * @param linkName The link name
+     * @param condition The optional condition
+     * @return Whether the fork has succeeded, or should block
+     */
+    public boolean fork(Session session, String linkName, String condition);
     
 }

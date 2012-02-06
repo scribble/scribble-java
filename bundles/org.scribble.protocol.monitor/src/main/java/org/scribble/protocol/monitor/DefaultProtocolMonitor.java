@@ -20,6 +20,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.scribble.protocol.monitor.model.Description;
+import org.scribble.protocol.monitor.model.Fork;
+import org.scribble.protocol.monitor.model.Join;
+import org.scribble.protocol.monitor.model.LinkDeclaration;
 import org.scribble.protocol.monitor.model.MessageNode;
 import org.scribble.protocol.monitor.model.Parallel;
 import org.scribble.protocol.monitor.model.Scope;
@@ -110,8 +113,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
                 // If nested conversation has a 'main' conversation, then check that it
                 // has been terminated
                 // TODO: Issue is efficiency of doing this check for each message?
-                if (nested.getParentConversation() != null) {
-                    Session main=nested.getParentConversation();
+                if (nested.getMainConversation() != null) {
+                    Session main=nested.getMainConversation();
                     
                     if (session.getNestedConversations().remove(main)) {
                         
@@ -194,6 +197,29 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
                 ret = checkForSendMessage(context, protocol,
                             pos, node.getNextIndex(), conv, mesg);                
             }
+        } else if (node instanceof Join) {
+        	Join join=(Join)node;
+        	
+        	Boolean result=context.evaluate(conv, join.getExpression());
+        	
+            if (result != null && result.booleanValue()) {
+
+                // Add next node, if not end
+                if (node.getNextIndex() != -1) {
+                    ret = checkForSendMessage(context, protocol,
+                            pos, node.getNextIndex(), conv, mesg);
+                    
+                    if (!ret.isValid()) {
+                    	// Remove node and add subsequent nodes - this makes sure
+                    	// the join is not processed again next time
+                        conv.removeNodeIndexAt(pos);
+                        addNodeToConversation(context, protocol, conv, node.getNextIndex());
+                    }
+                } else {
+                    // Remove processed node
+                    conv.removeNodeIndexAt(pos);
+                }
+            }
         }
 
         if (LOG.isLoggable(Level.FINE)) {
@@ -231,8 +257,8 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
                 // If nested conversation has a 'main' conversation, then check that it
                 // has been terminated
                 // TODO: Issue is efficiency of doing this check for each message?
-                if (nested.getParentConversation() != null) {
-                    Session main=nested.getParentConversation();
+                if (nested.getMainConversation() != null) {
+                    Session main=nested.getMainConversation();
                     
                     if (session.getNestedConversations().remove(main)) {
                         
@@ -348,44 +374,44 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
      * 
      * @param context The context
      * @param protocol The protocol
-     * @param conv The conversation
+     * @param session The conversation
      * @param nodeIndex The node index
      */
     protected void addNodeToConversation(MonitorContext context, Description protocol,
-                    Session conv, int nodeIndex) {
+                    Session session, int nodeIndex) {
         
         // Check if specified node is a 'Run' node type
         Node node=protocol.getNode().get(nodeIndex);
 
         if (node.getClass() == Scope.class) {
-            initScope(context, protocol, conv, (Scope)node);
+            initScope(context, protocol, session, (Scope)node);
             
         } else if (node.getClass() == Do.class) {
-            Session nested=initScope(context, protocol, conv, (Do)node);
+            Session nested=initScope(context, protocol, session, (Do)node);
             
             // TODO: Need to register catch blocks against the nested context in the
             // parent context
             for (Path path : ((Do)node).getPath()) {
                 
-                Session interruptScope=conv.createInterruptConversation(nested, node.getNextIndex());
+                Session interruptScope=session.createInterruptConversation(nested, node.getNextIndex());
                 interruptScope.addNodeIndex(path.getNextIndex());
             }
             
         } else if (node.getClass() == org.scribble.protocol.monitor.model.Call.class) {
             
             if (((org.scribble.protocol.monitor.model.Call)node).getCallIndex() != -1) {
-                addNodeToConversation(context, protocol, conv,
+                addNodeToConversation(context, protocol, session,
                         ((org.scribble.protocol.monitor.model.Call)node).getCallIndex());
             }
             
             if (node.getNextIndex() != -1) {
-                addNodeToConversation(context, protocol, conv, node.getNextIndex());
+                addNodeToConversation(context, protocol, session, node.getNextIndex());
             }
 
         } else if (node.getClass() == org.scribble.protocol.monitor.model.Parallel.class) {
             
             if (node.getNextIndex() != -1) {
-                Session nestedContext=conv.createNestedConversation(node.getNextIndex());
+                Session nestedContext=session.createNestedConversation(node.getNextIndex());
                 
                 Parallel pnode=(Parallel)node;
                 
@@ -397,8 +423,43 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
                     }
                 }
             }
+        } else if (node.getClass() == org.scribble.protocol.monitor.model.LinkDeclaration.class) {
+        	LinkDeclaration linkDecl=(LinkDeclaration)node;
+        	
+        	session.declareLink(linkDecl.getName());
+        	
+            if (node.getNextIndex() != -1) {
+                addNodeToConversation(context, protocol, session, node.getNextIndex());
+            }
+       	
+        } else if (node.getClass() == Fork.class) {
+        	Fork fork=(Fork)node;
+        	
+        	if (context.fork(session, fork.getLinkName(), fork.getCondition())) {
+            	
+                if (node.getNextIndex() != -1) {
+                    addNodeToConversation(context, protocol, session, node.getNextIndex());
+                }        		
+        	} else {
+        		// Block until the fork condition can be evaluated
+                session.addNodeIndex(nodeIndex);        		
+        	}
+          	
+        } else if (node.getClass() == Join.class) {
+        	Join join=(Join)node;
+        	
+        	Boolean result=context.evaluate(session, join.getExpression());
+        	
+            if (result == null) {
+        		// Block until the join expression can be evaluated
+                session.addNodeIndex(nodeIndex);
+                
+            } else if (result.booleanValue() && node.getNextIndex() != -1) {
+                addNodeToConversation(context, protocol, session, node.getNextIndex());
+            }        		
+           	
         } else {
-            conv.addNodeIndex(nodeIndex);
+            session.addNodeIndex(nodeIndex);
         }
     }
 

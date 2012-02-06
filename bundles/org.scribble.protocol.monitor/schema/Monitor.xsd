@@ -106,6 +106,31 @@
     	</complexContent>
     </complexType>
 
+    <complexType name="Fork">
+    	<complexContent>
+    		<extension base="tns:Node">
+    			<attribute name="condition" type="string"></attribute>
+    			<attribute name="linkName" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+    
+    <complexType name="Join">
+    	<complexContent>
+    		<extension base="tns:Node">
+    			<attribute name="expression" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+    
+    <complexType name="LinkDeclaration">
+    	<complexContent>
+    		<extension base="tns:Node">
+    			<attribute name="name" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+    
     <element name="description" type="tns:Description"></element>
 
     <complexType name="Description">

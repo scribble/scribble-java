@@ -15,15 +15,15 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Decision complex type.
+ * <p>Java class for Join complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Decision">
+ * &lt;complexType name="Join">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.scribble.org/monitor}Node">
- *       &lt;attribute name="innerIndex" type="{http://www.w3.org/2001/XMLSchema}int" default="-1" />
+ *       &lt;attribute name="expression" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -32,40 +32,36 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Decision")
-public class Decision
+@XmlType(name = "Join")
+public class Join
     extends Node
 {
 
     @XmlAttribute
-    protected Integer innerIndex;
+    protected String expression;
 
     /**
-     * Gets the value of the innerIndex property.
+     * Gets the value of the expression property.
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public int getInnerIndex() {
-        if (innerIndex == null) {
-            return -1;
-        } else {
-            return innerIndex;
-        }
+    public String getExpression() {
+        return expression;
     }
 
     /**
-     * Sets the value of the innerIndex property.
+     * Sets the value of the expression property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public void setInnerIndex(Integer value) {
-        this.innerIndex = value;
+    public void setExpression(String value) {
+        this.expression = value;
     }
 
 }
