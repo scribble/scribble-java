@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scribble Protocol Conformance
 Bundle-SymbolicName: org.scribble.protocol.conformance;singleton:=true
-Bundle-Version: 2.1.0.SNAPSHOT
+Bundle-Version: 2.1.0.20120208-M1
 Bundle-Vendor: www.scribble.org
 Import-Package: org.osgi.framework;version="1.3.0",
  org.scribble.common.logging,
