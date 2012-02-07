@@ -1028,6 +1028,7 @@ public class MonitorExportVisitor extends DefaultVisitor {
                 choice.getPath().add(pathBuilder);
             }
         }
+        _choicePaths.clear(); // Need to clear to make sure subsequent calls to getDescription() don't process again
 
         // Same reason as for choice
         for (org.scribble.protocol.monitor.model.Parallel parallel : _parallelPaths.keySet()) {
@@ -1037,6 +1038,7 @@ public class MonitorExportVisitor extends DefaultVisitor {
                 parallel.getPath().add(pathBuilder);
             }
         }
+        _parallelPaths.clear(); // Need to clear to make sure subsequent calls to getDescription() don't process again
 
         for (Node b : _nodes) {
             ret.getNode().add(b);
