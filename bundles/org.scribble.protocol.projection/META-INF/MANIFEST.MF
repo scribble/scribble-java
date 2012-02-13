@@ -12,7 +12,8 @@ Import-Package: org.osgi.framework,
  org.scribble.protocol.projection,
  org.scribble.protocol.validation,
  org.scribble.protocol.util
-Export-Package: org.scribble.protocol.projection.impl
+Export-Package: org.scribble.protocol.projection.impl,
+ org.scribble.protocol.projection.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.scribble.protocol.projection.osgi.Activator
