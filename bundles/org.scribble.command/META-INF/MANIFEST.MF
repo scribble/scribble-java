@@ -1,7 +1,7 @@
 Bundle-Name: Scribble Command Line
 Bundle-Description: A bundle provides command line access to Scribble functionality
 Bundle-Vendor: www.scribble.org
-Bundle-Version: 2.1.0.20120208-M1
+Bundle-Version: 2.1.0.SNAPSHOT
 Bundle-Activator: org.scribble.command.osgi.Activator
 Export-Package: org.scribble.command
 Import-Package: org.osgi.framework,
