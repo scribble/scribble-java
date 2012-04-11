@@ -34,4 +34,9 @@ public interface ModelProperties {
      */
     public static final String END_LOCATION="scribble.end.location";
 
+    /**
+     * This construct defines the URI for locating the source component.
+     */
+    public static final String URI="scribble.uri";
+
 }

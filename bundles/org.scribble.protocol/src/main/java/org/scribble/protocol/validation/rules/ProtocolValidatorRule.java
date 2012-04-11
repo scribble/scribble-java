@@ -309,9 +309,14 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
 
         @Override
         public void accept(Run elem) {
+        	
+        	/* SCRIBBLE-140 - run parameters should not be validated, but
+        	 * possibly the ran protocol's first activty should be validated
+        	 *
             for (Parameter p : elem.getParameters()) {
                 validate(elem, new Role(p.getName()));
             }
+            */
         }
 
         @Override
