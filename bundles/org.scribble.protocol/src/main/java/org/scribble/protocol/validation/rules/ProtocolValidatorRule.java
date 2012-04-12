@@ -284,7 +284,11 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
             for (Role r : elem.getRoles()) {
                 validate(elem, r);
             }
-            saveStack();
+            
+            if (elem.getRoles().size()>0) {
+                saveStack();            	
+            }
+            
             for (Role r : elem.getRoles()) {
                 addRole(r);
             }
@@ -292,8 +296,10 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
         }
 
         @Override
-        public void end(Repeat elem) {
-            restoreStack();
+        public void end(Repeat elem) {           
+            if (elem.getRoles().size()>0) {
+            	restoreStack();
+            }
         }
 
         @Override
