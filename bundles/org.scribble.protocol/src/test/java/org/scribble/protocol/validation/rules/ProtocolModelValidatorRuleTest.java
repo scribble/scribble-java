@@ -57,7 +57,7 @@ public class ProtocolModelValidatorRuleTest {
                         java.util.PropertyResourceBundle.getBundle(
                         "org.scribble.protocol.Messages").getString("_UNPROJECTABLE_ROLES"),
                         TEST_ROLE)
-        });
+        }, false);
     }
     
     public class TestErrorProjector implements ProtocolProjector {

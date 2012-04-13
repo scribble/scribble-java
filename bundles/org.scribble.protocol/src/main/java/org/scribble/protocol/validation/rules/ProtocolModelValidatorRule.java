@@ -60,6 +60,8 @@ public class ProtocolModelValidatorRule implements ProtocolComponentValidatorRul
             
             if (l.hasErrors()) {
                 unprojectable.add(role);
+                
+                l.apply(logger, "["+role.getName()+"] ");
             }
         }
         

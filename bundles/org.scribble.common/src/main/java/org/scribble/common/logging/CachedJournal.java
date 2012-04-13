@@ -95,13 +95,28 @@ public class CachedJournal implements Journal {
      * @param logger The logger
      */
     public void apply(Journal logger) {
+    	
+    }
+    
+    /**
+     * This method applies any cached issues to the supplied logger.
+     * 
+     * @param prefix The optional message prefix
+     * @param logger The logger
+     */
+    public void apply(Journal logger, String prefix) {
+    	
+    	if (prefix == null) {
+    		prefix = "";
+    	}
+    	
         for (IssueDetails id : _issues) {
             if (id.getIssueType() == IssueType.Error) {
-                logger.error(id.getMessage(), id.getProperties());
+                logger.error(prefix+id.getMessage(), id.getProperties());
             } else if (id.getIssueType() == IssueType.Info) {
-                logger.info(id.getMessage(), id.getProperties());
+                logger.info(prefix+id.getMessage(), id.getProperties());
             } else if (id.getIssueType() == IssueType.Warning) {
-                logger.warning(id.getMessage(), id.getProperties());
+                logger.warning(prefix+id.getMessage(), id.getProperties());
             }
         }
     }

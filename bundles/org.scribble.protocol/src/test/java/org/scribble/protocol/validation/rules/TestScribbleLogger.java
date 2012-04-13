@@ -32,7 +32,26 @@ public class TestScribbleLogger implements Journal {
         m_errors.add(issue);
     }
     
+    /**
+     * This method verifies the supplied list of errors,
+     * not expecting any other errors to have occurred.
+     * 
+     * @param errors The errors
+     */
     public void verifyErrors(String[] errors) {
+    	verifyErrors(errors, true);
+    }
+
+    /**
+     * This method verifies the supplied errors. If the 'completeList'
+     * flag is true, then the supplied list of errors is the complete
+     * list of expected errors, so any additional errors should be
+     * flagged as an error.
+     * 
+     * @param errors The list of errors
+     * @param completeList Whether this is a complete list
+     */
+    public void verifyErrors(String[] errors, boolean completeList) {
         java.util.List<String> logged=new java.util.Vector<String>(m_errors);
         
         for (int i=0; i < errors.length; i++) {
@@ -45,7 +64,7 @@ public class TestScribbleLogger implements Journal {
             }
         }
         
-        if (logged.size() > 0) {
+        if (completeList && logged.size() > 0) {
             fail("Unexpected errors occurred: "+logged);
         }
     }
