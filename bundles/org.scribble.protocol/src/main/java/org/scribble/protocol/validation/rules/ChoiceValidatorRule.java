@@ -99,7 +99,7 @@ public class ChoiceValidatorRule implements ProtocolComponentValidatorRule {
             if (!Collections.disjoint(interactions, initial)) {
                 l.error(MessageFormat.format(
                         java.util.PropertyResourceBundle.getBundle("org.scribble.protocol.Messages").
-                                getString("_AMBIGUOUS_CHOICE"), (Object[])null), choice.getProperties());
+                                getString("_AMBIGUOUS_CHOICE"), initial), choice.getProperties());
             } else {
                 interactions.addAll(initial);
             }
