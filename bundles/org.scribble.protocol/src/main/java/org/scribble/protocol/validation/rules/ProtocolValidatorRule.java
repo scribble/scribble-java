@@ -26,7 +26,6 @@ import org.scribble.protocol.model.DefaultVisitor;
 import org.scribble.protocol.model.DirectedChoice;
 import org.scribble.protocol.model.Interaction;
 import org.scribble.protocol.model.Introduces;
-import org.scribble.protocol.model.Parameter;
 import org.scribble.protocol.model.ParameterDefinition;
 import org.scribble.protocol.model.RecBlock;
 import org.scribble.protocol.model.Repeat;
@@ -323,6 +322,10 @@ public class ProtocolValidatorRule implements ProtocolComponentValidatorRule {
                 validate(elem, new Role(p.getName()));
             }
             */
+
+            if (elem.getFromRole() != null) {
+                validate(elem, elem.getFromRole());
+            }
         }
 
         @Override
