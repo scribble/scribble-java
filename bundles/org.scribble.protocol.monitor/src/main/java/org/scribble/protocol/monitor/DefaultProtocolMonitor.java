@@ -294,15 +294,7 @@ public class DefaultProtocolMonitor implements ProtocolMonitor {
      */
     protected Result validateMessage(MonitorContext context, Session conv, MessageNode node,
                                 Message sig) {
-        Result ret=Result.NOT_HANDLED;
-        
-        if ((sig.getOperator() == null
-                || node.getOperator() == null
-                || node.getOperator().equals(sig.getOperator()))) {
-            ret = context.validate(conv, node, sig);
-        }
-        
-        return (ret);
+        return (context.validate(conv, node, sig));
     }
     
     /**
