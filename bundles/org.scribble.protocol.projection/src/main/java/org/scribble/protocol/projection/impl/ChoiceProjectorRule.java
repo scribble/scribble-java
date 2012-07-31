@@ -101,6 +101,8 @@ public class ChoiceProjectorRule implements ProjectorRule {
     protected boolean isSameRole(Choice c1, Choice c2) {
         if (c1.getRole() == null && c2.getRole() == null) {
             return (true);
+        } else if (c1.getRole() == null || c2.getRole() == null) {
+            return (false);
         } else {
             return (c1.getRole().equals(c2.getRole()));
         }
