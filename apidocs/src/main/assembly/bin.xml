@@ -26,17 +26,17 @@
     <fileSets>
 
 	    <fileSet>
-	    	<directory>../bundles/org.scribble.common/target/javadoc</directory>
+	    	<directory>../modules/org.scribble.common/target/javadoc</directory>
 	    	<outputDirectory>/apidocs/common</outputDirectory>
 	    </fileSet>
 
 	    <fileSet>
-	    	<directory>../bundles/org.scribble.protocol/target/javadoc</directory>
+	    	<directory>../modules/org.scribble.protocol/target/javadoc</directory>
 	    	<outputDirectory>/apidocs/protocol</outputDirectory>
 	    </fileSet>
 
 	    <fileSet>
-	    	<directory>../bundles/org.scribble.protocol.monitor/target/javadoc</directory>
+	    	<directory>../modules/org.scribble.protocol.monitor/target/javadoc</directory>
 	    	<outputDirectory>/apidocs/monitor</outputDirectory>
 	    </fileSet>
 

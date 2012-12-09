@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  	<groupId>org.scribble.modules</groupId>
+  	<artifactId>org.scribble.protocol.monitor</artifactId>
+	<packaging>jar</packaging>
+  	<version>3.0.0-SNAPSHOT</version>
+  	<name>Scribble::Modules::ProtocolMonitor</name>
+
+	<parent>
+		<groupId>org.scribble</groupId>
+		<artifactId>modules</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+  
+	<build>
+		<plugins>
+		  <plugin>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<executions>
+			  <execution>
+			    <id>generate-javadoc</id>
+			    <phase>package</phase>
+			    <goals>
+			      <goal>jar</goal>
+			    </goals>
+			  </execution>
+			</executions>
+			<configuration>
+			  <doclet>org.jboss.apiviz.APIviz</doclet>
+			  <docletArtifact>
+			    <groupId>org.jboss.apiviz</groupId>
+			    <artifactId>apiviz</artifactId>
+			    <version>1.2.4.GA</version>
+			  </docletArtifact>
+			  <aggregate>true</aggregate>
+			  <attach>false</attach>
+			  <additionalparam>
+			    -d ${project.build.directory}/javadoc
+			    -charset UTF-8
+			    -docencoding UTF-8
+			    -version
+			    -author
+			    -breakiterator
+			    -windowtitle "${project.name} ${project.version} API Reference"
+			    -doctitle "${project.name} ${project.version} API Reference"
+			    -bottom "Copyright © ${project.inceptionYear}-Present ${project.organization.name}. All Rights Reserved."
+			    -link http://java.sun.com/javase/6/docs/api/
+			    -sourceclasspath ${project.build.outputDirectory}
+			  </additionalparam>
+			  <encoding>UTF-8</encoding>
+			  <locale>en_US</locale>
+			  <subpackages>
+				   org.scribble.protocol.monitor
+			  </subpackages>
+			  <excludePackageNames>
+			  		*.osgi
+			  </excludePackageNames>
+			</configuration>
+		   </plugin>
+		</plugins>
+	</build>
+</project>
