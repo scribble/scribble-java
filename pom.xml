@@ -50,18 +50,10 @@
 	<modules>
 		<module>build</module>
 		<module>modules</module>
+		<module>qa</module>
 		<module>apidocs</module>
+		<module>tools</module>
 	</modules>
-
-  	<profiles>
-		<profile>
-			<id>qa</id>
-			<modules>
-				<module>qa</module>
-			</modules>
-		</profile>
-	</profiles>
-
   
 	<dependencyManagement>
 		<dependencies> 

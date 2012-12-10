@@ -1,0 +1,60 @@
+<project
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.scribble.tools.eclipse</groupId>
+	<artifactId>features</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Scribble::Tools::Eclipse::Features</name>
+
+	<parent>
+		<groupId>org.scribble.tools</groupId>
+		<artifactId>eclipse</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
+
+	<modules>
+		<module>org.scribble.protocol.feature</module>
+	</modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.scribble.modules</groupId>
+      <artifactId>org.scribble.common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scribble.modules</groupId>
+      <artifactId>org.scribble.protocol</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scribble.modules</groupId>
+      <artifactId>org.scribble.protocol.parser</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scribble.modules</groupId>
+      <artifactId>org.scribble.protocol.monitor</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scribble.modules</groupId>
+      <artifactId>org.scribble.protocol.export.monitor</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scribble.modules</groupId>
+      <artifactId>org.scribble.protocol.projection</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scribble.modules</groupId>
+      <artifactId>org.scribble.command</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>
+	
+

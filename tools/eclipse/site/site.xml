@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Scribble Tools Update Site">
+      This is the update site for the Scribble tools.
+   </description>
+   <feature url="features/org.scribble.protocol.feature_0.0.0.jar" id="org.scribble.protocol.feature" version="0.0.0">
+      <category name="Scribble"/>
+   </feature>
+   <category-def name="Scribble" label="Scribble">
+      <description>
+         Scribble description
+      </description>
+   </category-def>
+</site>

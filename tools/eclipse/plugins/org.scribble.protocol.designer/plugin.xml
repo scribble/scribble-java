@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <extension
+    point = "org.eclipse.ui.newWizards">
+    <category
+      id = "org.scribble.wizard.category.ID"
+      name="Scribble">
+    </category>
+    <wizard
+      id = "org.scribble.protocol.designer.editor.NewProtocolWizardID"
+      name = "Scribble"
+      class = "org.scribble.protocol.designer.editor.NewProtocolWizard"
+      category = "org.scribble.wizard.category.ID"
+      icon = "icons/scribble.png">
+      <description>New Scribble Protocol Description</description>
+      <selection class = "org.eclipse.core.resources.IResource" />
+    </wizard>
+  </extension>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Scribble Protocol Editor"
+            icon="icons/scribble.png"
+            extensions="spr"
+            contributorClass="org.scribble.protocol.designer.editor.ScribbleActionContributor"
+            class="org.scribble.protocol.designer.editor.ProtocolEditor"
+            id="org.scribble.protocol.designer.editor.ProtocolEditor">
+      </editor>
+   </extension>
+
+   <extension
+         id="ExampleJavaDocumentSetupParticipant"
+         name="%documentSetupParticipantName"
+         point="org.eclipse.core.filebuffers.documentSetup">
+      <participant
+            extensions="spr"
+            class="org.scribble.protocol.designer.editor.ScribbleDocumentSetupParticipant">
+      </participant>
+   </extension>
+
+  <extension
+        id="org.scribble.ScribbleProblem"
+        name="Scribble Problem"
+        point="org.eclipse.core.resources.markers">
+     <super
+           type="org.eclipse.core.resources.problemmarker">
+     </super>
+     <persistent
+           value="true">
+     </persistent>
+  </extension>
+
+  <extension
+        point="org.eclipse.ui.preferencePages">
+     <page
+           class="org.scribble.protocol.designer.preferences.ScribblePreferencePage"
+           id="org.scribble.protocol.designer.preferences.ScribblePreferencePage"
+           name="Scribble">
+     </page>
+     <page
+           category="org.scribble.protocol.designer.preferences.ScribblePreferencePage"
+           class="org.scribble.protocol.designer.preferences.AnalysisPreferencePage"
+           id="org.scribble.protocol.designer.preferences.AnalysisPreferencePage"
+           name="Analysis">
+     </page>
+  </extension>
+  <extension
+        point="org.eclipse.core.runtime.preferences">
+     <initializer
+           class="org.scribble.protocol.designer.preferences.PreferenceInitializer">
+     </initializer>
+  </extension>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            id="org.scribble.protocol.designer.contribution1"
+            nameFilter="*.spr" >
+         <menu
+               label="Scribble"
+               path="additions"
+               id="org.scribble.protocol.tools.menu">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="Project"
+               class="org.scribble.protocol.designer.actions.ProjectionAction"
+               menubarPath="org.scribble.protocol.tools.menu/group1"
+               enablesFor="1"
+               id="org.scribble.protocol.designer.actions.ProjectionAction">
+         </action>
+         <action
+               label="Simulate"
+               class="org.scribble.protocol.designer.actions.SimulateAction"
+               menubarPath="org.scribble.protocol.tools.menu/group1"
+               enablesFor="1"
+               id="org.scribble.protocol.designer.actions.SimulateAction">
+         </action>
+      </objectContribution>
+   </extension>
+	
+</plugin>

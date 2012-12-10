@@ -1,6 +1,6 @@
 package org.scribble.protocol.projection.impl;
 
-import static org.junit.Assert.*;
+//import static org.junit.Assert.*;
 
 import org.junit.Test;
 
