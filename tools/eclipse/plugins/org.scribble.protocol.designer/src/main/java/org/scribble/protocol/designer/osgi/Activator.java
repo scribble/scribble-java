@@ -89,15 +89,18 @@ public class Activator extends AbstractUIPlugin {
         
         DesignerServices.setProtocolParserManager(ppm);
         
+        // Initialise the projector
+        org.scribble.protocol.projection.ProtocolProjector pp=
+        			new org.scribble.protocol.projection.impl.ProtocolProjectorImpl();
+        DesignerServices.setProtocolProjector(pp);
+        
         // Initialise the validator
         ProtocolValidationManager pvm=ProtocolValidationManagerFactory.getValidationManager();
-        pvm.getValidators().add(new org.scribble.protocol.validation.ProtocolComponentValidator());
+        pvm.getValidators().add(new org.scribble.protocol.validation.rules.DefaultProtocolComponentValidator());
+        pvm.setProtocolProjector(pp);
         
         DesignerServices.setProtocolValidationManager(pvm);
 
-        // Initialise the projector
-        DesignerServices.setProtocolProjector(new org.scribble.protocol.projection.impl.ProtocolProjectorImpl());
-        
         // Create the export manager
         ProtocolExportManager em=ProtocolExportManagerFactory.getExportManager();
         em.getExporters().add(new TextProtocolExporter());
