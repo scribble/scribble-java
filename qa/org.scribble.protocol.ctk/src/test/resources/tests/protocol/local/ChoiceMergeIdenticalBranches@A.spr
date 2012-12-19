@@ -1,9 +1,0 @@
-protocol ChoiceMergeIdenticalBranches at A {
-    A introduces B;
-
-    choice at A {
-        l1() to B;
-    } or {
-        l2() to B;
-    }
-}

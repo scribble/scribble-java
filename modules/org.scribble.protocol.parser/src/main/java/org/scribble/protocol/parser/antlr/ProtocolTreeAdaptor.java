@@ -21,42 +21,10 @@ import java.util.logging.Logger;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
-import org.scribble.common.logging.Journal;
-import org.scribble.common.model.Annotation;
-import org.scribble.common.model.DefaultAnnotation;
-import org.scribble.protocol.model.Activity;
-import org.scribble.protocol.model.Block;
-import org.scribble.protocol.model.Choice;
-import org.scribble.protocol.model.DataType;
-import org.scribble.protocol.model.DirectedChoice;
-import org.scribble.protocol.model.Do;
-import org.scribble.protocol.model.End;
-import org.scribble.protocol.model.ImportList;
-import org.scribble.protocol.model.Inline;
-import org.scribble.protocol.model.Interaction;
-import org.scribble.protocol.model.Interrupt;
-import org.scribble.protocol.model.Introduces;
-import org.scribble.protocol.model.MessageSignature;
 import org.scribble.protocol.model.ModelObject;
-import org.scribble.protocol.model.OnMessage;
-import org.scribble.protocol.model.Parallel;
-import org.scribble.protocol.model.Parameter;
-import org.scribble.protocol.model.ParameterDefinition;
 import org.scribble.protocol.model.Protocol;
-import org.scribble.protocol.model.ProtocolImport;
-import org.scribble.protocol.model.ProtocolImportList;
-import org.scribble.protocol.model.ProtocolModel;
-import org.scribble.protocol.model.ProtocolReference;
-import org.scribble.protocol.model.RecBlock;
-import org.scribble.protocol.model.Recursion;
-import org.scribble.protocol.model.Repeat;
-import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.Run;
-import org.scribble.protocol.model.TypeImport;
-import org.scribble.protocol.model.TypeImportList;
-import org.scribble.protocol.model.TypeReference;
-import org.scribble.protocol.model.Unordered;
-import org.scribble.protocol.parser.AnnotationProcessor;
+import org.scribble.protocol.model.Module;
+import org.scribble.protocol.parser.IssueLogger;
 
 /**
  * This class provides an implementation of the tree adapter.
@@ -66,151 +34,44 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 
     private static final String ANNOTATIONS = "_annotations";
     private static final String ACTIVITY_RULE_NAME = "activityDef";
-    private static final java.util.Map<String,String> PROPERTY_TOKENS=
-        new java.util.HashMap<String, String>();
-    private static final java.util.Map<String,Class<?>> TOKEN_CLASS=
-        new java.util.HashMap<String, Class<?>>();
-    private static final java.util.Map<String,Class<?>> LIST_CLASS=
-        new java.util.HashMap<String, Class<?>>();
-    private static final java.util.Map<String,Class<?>> PARSER_GROUPING_RULE_CLASS=
-        new java.util.HashMap<String, Class<?>>();
-    private static final java.util.List<String> CLEAR_TOKEN_LIST_RULES=
-        new java.util.Vector<String>();
     private static final java.util.List<String> TOKENS_TO_IGNORE=
-        new java.util.Vector<String>();
-    private static final java.util.List<String> STRING_LITERALS=
         new java.util.Vector<String>();
     
     private ScribbleProtocolParser _parser=null;
-    private AnnotationProcessor _annotationProcessor=null;
-    private Journal _journal=null;
+    
+    private ModelAdaptor _modelAdaptor=new BaseModelAdaptor();
+    
+    private IssueLogger _logger=null;
     private Token _currentToken=null;
     
-    private ProtocolModel _model=null;
+    private Module _model=null;
     
     private static final Logger LOG=Logger.getLogger(ProtocolTreeAdaptor.class.getName());
     
     static {
-        // The map of root tokens, that begin a grammer
-        // rule, and the model class they are associated
-        // with
-        //m_tokenClass.put("import", ImportList.class);
-        TOKEN_CLASS.put("protocol", Protocol.class);
-        //m_tokenClass.put("role", RoleList.class);
-        TOKEN_CLASS.put("choice", Choice.class);
-        TOKEN_CLASS.put("rec", RecBlock.class);
-        TOKEN_CLASS.put("parallel", Parallel.class);
-        TOKEN_CLASS.put("repeat", Repeat.class);
-        TOKEN_CLASS.put("do", Do.class);
-        TOKEN_CLASS.put("interrupt", Interrupt.class);
-        TOKEN_CLASS.put("run", Run.class);
-        TOKEN_CLASS.put("inline", Inline.class);
-        TOKEN_CLASS.put("unordered", Unordered.class);
-        TOKEN_CLASS.put("end", End.class);
 
-        // Clear token list - determines whether prior to processing
-        // a list of tokens, the 'current token' should be cleared
-        CLEAR_TOKEN_LIST_RULES.add("parameter");
-        CLEAR_TOKEN_LIST_RULES.add("dataTypeDef");
-        CLEAR_TOKEN_LIST_RULES.add("importTypeStatement");
-        CLEAR_TOKEN_LIST_RULES.add("importProtocolDef");
-        CLEAR_TOKEN_LIST_RULES.add("introducesDef");
-        CLEAR_TOKEN_LIST_RULES.add("directedChoiceDef");
-        
         // The list of tokens that should be ignored when processing
         // the children of a parent node
         TOKENS_TO_IGNORE.add("import");
-
-        // This may define the model object that should be
-        // created after processing the named grammer rule
-        PARSER_GROUPING_RULE_CLASS.put("importProtocolStatement", ProtocolImportList.class);
-        PARSER_GROUPING_RULE_CLASS.put("importTypeStatement", TypeImportList.class);
-        PARSER_GROUPING_RULE_CLASS.put("simpleName", String.class);
-        PARSER_GROUPING_RULE_CLASS.put("simpleName", String.class);
-        PARSER_GROUPING_RULE_CLASS.put("blockDef", Block.class);
-        PARSER_GROUPING_RULE_CLASS.put("protocolBlockDef", Block.class);
-        PARSER_GROUPING_RULE_CLASS.put("activityList", Block.class);
-        PARSER_GROUPING_RULE_CLASS.put("interactionDef", Interaction.class);
-        PARSER_GROUPING_RULE_CLASS.put("interactionSignatureDef", MessageSignature.class);
-        PARSER_GROUPING_RULE_CLASS.put("typeReferenceDef", TypeReference.class);
-        PARSER_GROUPING_RULE_CLASS.put("protocolName", String.class);
-        PARSER_GROUPING_RULE_CLASS.put("roleName", Role.class);
-        PARSER_GROUPING_RULE_CLASS.put("roleDef", Role.class);
-        PARSER_GROUPING_RULE_CLASS.put("importProtocolDef", ProtocolImport.class);
-        PARSER_GROUPING_RULE_CLASS.put("importTypeDef", TypeImport.class);
-        PARSER_GROUPING_RULE_CLASS.put("protocolRefDef", ProtocolReference.class);
-        PARSER_GROUPING_RULE_CLASS.put("parameter", Parameter.class);
-        PARSER_GROUPING_RULE_CLASS.put("inlineProtocolDef", Protocol.class);
-        PARSER_GROUPING_RULE_CLASS.put("declarationName", String.class);
-        PARSER_GROUPING_RULE_CLASS.put("labelName", String.class);
-        PARSER_GROUPING_RULE_CLASS.put("dataTypeDef", DataType.class);
-        PARSER_GROUPING_RULE_CLASS.put("recursionDef", Recursion.class);
-        PARSER_GROUPING_RULE_CLASS.put("parameterDef", ParameterDefinition.class);
-        PARSER_GROUPING_RULE_CLASS.put("introducesDef", Introduces.class);
-        PARSER_GROUPING_RULE_CLASS.put("directedChoiceDef", DirectedChoice.class);
-        PARSER_GROUPING_RULE_CLASS.put("onMessageDef", OnMessage.class);
-                
-        // When a particular class has multiple properties of the
-        // same type, then a preceding token must be used to
-        // determine which property to set. This map provides the
-        // mapping between the property name and the token.
-        PROPERTY_TOKENS.put("interactionDef:fromRole", "from");
-        PROPERTY_TOKENS.put("directedChoiceDef:fromRole", "from");
-        PROPERTY_TOKENS.put("choiceDef:role", "at");
-        PROPERTY_TOKENS.put("interactionDef:toRoles", "to");
-        PROPERTY_TOKENS.put("directedChoiceDef:toRoles", "to");
-        PROPERTY_TOKENS.put("parameter:boundName", "");
-        PROPERTY_TOKENS.put("parameter:localName", ":=");
-        PROPERTY_TOKENS.put("dataTypeDef:details", "<string literal>"); // Needed to make sure property not used by default
-        PROPERTY_TOKENS.put("importTypeStatement:format", "");
-        PROPERTY_TOKENS.put("importTypeStatement:location", "from");
-        PROPERTY_TOKENS.put("importProtocolDef:name", "");
-        PROPERTY_TOKENS.put("importProtocolDef:location", "from");
-        PROPERTY_TOKENS.put("introducesDef:introducer", "");
-        PROPERTY_TOKENS.put("introducesDef:introducedRoles", "introduces");
         
-        // Defines the list element base type associated with a
-        // property name
-        LIST_CLASS.put("imports", ImportList.class);
-        LIST_CLASS.put("contents", Activity.class);
-        LIST_CLASS.put("roles", Role.class);
-        LIST_CLASS.put("introducedRoles", Role.class);
-        LIST_CLASS.put("toRoles", Role.class);
-        LIST_CLASS.put("typeImports", TypeImport.class);
-        LIST_CLASS.put("protocolImports", ProtocolImport.class);
-        LIST_CLASS.put("typeReferences", TypeReference.class);
-        LIST_CLASS.put("blocks", Block.class);
-        LIST_CLASS.put("paths", Block.class);
-        LIST_CLASS.put("nestedProtocols", Protocol.class);
-        LIST_CLASS.put("onMessages", OnMessage.class);
-        LIST_CLASS.put("interrupts", Interrupt.class);
-        LIST_CLASS.put("parameters", Parameter.class);
-        LIST_CLASS.put("interactions", Interaction.class);
-        LIST_CLASS.put("parameterDefinitions", ParameterDefinition.class);
-        
-        STRING_LITERALS.add("dataTypeDef:details");
-        STRING_LITERALS.add("importTypeStatement:location");
-        STRING_LITERALS.add("importProtocolDef:location");
     }
     
     
     /**
      * This is the constructor for the protocol tree adapter.
      * 
-     * @param ap The annotation processor
-     * @param journal The journal
+     * @param logger The logger
      */
-    public ProtocolTreeAdaptor(AnnotationProcessor ap, Journal journal) {
-        _annotationProcessor = ap;
-        _journal = journal;
+    public ProtocolTreeAdaptor(IssueLogger logger) {
+        _logger = logger;
     }
     
     /**
-     * This method returns the protocol model.
+     * This method returns the protocol module.
      * 
-     * @return The protocol model
+     * @return The protocol module
      */
-    public ProtocolModel getProtocolModel() {
+    public Module getModule() {
         return (_model);
     }
     
@@ -229,20 +90,18 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
     public Object create(Token token) {
         Object ret=token;
         
-        Class<?> cls=TOKEN_CLASS.get(token.getText());
+        // Check whether model adaptor needs to be upgraded to global/local specific
+    	if (token.getText().equals("global")) {
+    		_modelAdaptor = new GlobalModelAdaptor();
+    	} else if (token.getText().equals("local")) {
+    		_modelAdaptor = new LocalModelAdaptor();
+    	}
         
-        LOG.fine("Token class for '"+token.getText()
-                +"' is: "+cls);
-
-        if (cls != null) {
-            try {
-                ret = cls.newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        Object modelObject=_modelAdaptor.create(token.getText());
         
-        if (ret == token && token.getType() != ScribbleProtocolParser.ID) {
+        if (modelObject != null) {
+        	ret = modelObject;
+        } else if (token.getType() != ScribbleProtocolParser.IDENTIFIER) {
             LOG.fine("Set current token="+token);
             _currentToken = token;
         }
@@ -339,7 +198,8 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
         LOG.fine("Add child: parent="+parent+" child="+child);
         
         // Associate annotations with the protocol model
-        if ((parent instanceof ProtocolModel || parent instanceof Protocol)
+        /*
+        if ((parent instanceof Module || parent instanceof Protocol)
                 && child instanceof Token && ((Token)child).getType()
                         == ScribbleProtocolParser.ANNOTATION) {
             
@@ -361,6 +221,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             
             return;
         }
+        */
         
         // Check if child is a list
         if (isNil(child)) {
@@ -376,7 +237,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                 // Before processing the sublist of tokens, clear
                 // the current token - needed for cases like the
                 // 'parameter' syntax rule
-                if (nil.size() > 0 && ruleName != null && CLEAR_TOKEN_LIST_RULES.contains(ruleName)) {
+                if (nil.size() > 0 && ruleName != null && _modelAdaptor.shouldClearToken(ruleName)) {
                     LOG.fine("Clear current token before processing sublist of tokens: rule="+ruleName);
                     _currentToken = null;
                 }
@@ -389,7 +250,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             for (int i=0; i < nil.size(); i++) {
                 
                 if (nil.get(i) instanceof Token
-                        && (((Token)nil.get(i)).getType() == ScribbleProtocolParser.ID
+                        && (((Token)nil.get(i)).getType() == ScribbleProtocolParser.IDENTIFIER
                             || ((Token)nil.get(i)).getType() == ScribbleProtocolParser.FULLSTOP)) {
                     buf.append(((Token)nil.get(i)).getText());
                 } else {
@@ -405,11 +266,14 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                         LOG.fine("Set current token: "+_currentToken);
                     }
 
+                    /*
                     if (nil.get(i) instanceof Token && ((Token)nil.get(i)).getType() == ScribbleProtocolParser.ANNOTATION) {
                         annotations.add((Token)nil.get(i));
                     } else {
+                    */
                         addChild(parent, nil.get(i));
-                        
+                       
+                        /*
                         if (nil.get(i) instanceof ModelObject) {
                             for (Token annotationToken : annotations) {
                                 String text=annotationToken.getText();
@@ -431,6 +295,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                             annotations.clear();
                         }
                     }
+                    */
                 }        
                 
                 adjustLocationInfo(parent, nil.get(i));
@@ -456,25 +321,25 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             ModelObject parmobj=(ModelObject)parent;
             ModelObject chmobj=(ModelObject)child;
             
-            if (parmobj.getProperties().containsKey(Journal.END_LINE)) {
-                parEndLine = (Integer)parmobj.getProperties().get(Journal.END_LINE);
+            if (parmobj.getProperties().containsKey(IssueLogger.END_LINE)) {
+                parEndLine = (Integer)parmobj.getProperties().get(IssueLogger.END_LINE);
             }
             
-            if (parmobj.getProperties().containsKey(Journal.END_LINE)) {
-                parEndCol = (Integer)parmobj.getProperties().get(Journal.END_COLUMN);
+            if (parmobj.getProperties().containsKey(IssueLogger.END_LINE)) {
+                parEndCol = (Integer)parmobj.getProperties().get(IssueLogger.END_COLUMN);
             }
             
-            if (chmobj.getProperties().containsKey(Journal.END_LINE)) {
-                chEndLine = (Integer)chmobj.getProperties().get(Journal.END_LINE);
+            if (chmobj.getProperties().containsKey(IssueLogger.END_LINE)) {
+                chEndLine = (Integer)chmobj.getProperties().get(IssueLogger.END_LINE);
             }
             
-            if (chmobj.getProperties().containsKey(Journal.END_COLUMN)) {
-                chEndCol = (Integer)chmobj.getProperties().get(Journal.END_COLUMN);
+            if (chmobj.getProperties().containsKey(IssueLogger.END_COLUMN)) {
+                chEndCol = (Integer)chmobj.getProperties().get(IssueLogger.END_COLUMN);
             }
             
             if (chEndLine > parEndLine || chEndCol > parEndCol) {
-                parmobj.getProperties().put(Journal.END_LINE, chEndLine);
-                parmobj.getProperties().put(Journal.END_COLUMN, chEndCol);
+                parmobj.getProperties().put(IssueLogger.END_LINE, chEndLine);
+                parmobj.getProperties().put(IssueLogger.END_COLUMN, chEndCol);
             }
         }
     }
@@ -501,7 +366,8 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             LOG.finest("Determine if can be set by property descriptor");
             
             // Check if annotations should be associated with the protocol model child
-            if ((parent instanceof ProtocolModel || parent instanceof Protocol)
+            /*
+            if ((parent instanceof Module || parent instanceof Protocol)
                             && child instanceof ModelObject) {
                 java.util.List<String> annotations=(java.util.List<String>)
                             ((ModelObject)parent).getProperties().get(ANNOTATIONS);
@@ -526,10 +392,12 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                 // Clear existing properties
                 ((ModelObject)parent).getProperties().remove(ANNOTATIONS);
             }
+            */
             
             // Check if child is a string literal
-            boolean stringLiteral=false;
+            //boolean stringLiteral=false;
 
+            /*
             if (child instanceof Token 
                     && ((Token)child).getType() == ScribbleProtocolParser.StringLiteral) {
                 String strlit = ((Token)child).getText();
@@ -542,8 +410,9 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                     child = strlit;
                 }
                 
-                stringLiteral = true;
+                //stringLiteral = true;
             }
+            */
             
             String ruleName="";
             
@@ -563,19 +432,19 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                 
                 for (int i=0; pd == null && i < pds.length; i++) {
                     
-                    String token=PROPERTY_TOKENS.get(ruleName+":"+pds[i].getName());
+                    String token=_modelAdaptor.getTokenForRuleAndProperty(ruleName, pds[i].getName());
                     
                     if (pds[i].getPropertyType().isAssignableFrom(child.getClass())
                             && !pds[i].getName().equals("parent")) {
                         
-                        String ruleprop=ruleName+":"+pds[i].getName();
+                    	/*String ruleprop=ruleName+":"+pds[i].getName();
                         
                         if (stringLiteral) {
                             if (STRING_LITERALS.contains(ruleprop)
                                     && pds[i].getWriteMethod() != null) {
                                 pd = pds[i];
                             }
-                        } else if ((token == null
+                        } else*/ if ((token == null
                                 || (token.length() == 0 && _currentToken == null)
                                 || (_currentToken != null
                                 && token.equals(_currentToken.getText())))
@@ -584,7 +453,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                         }
                     } else if (pds[i].getPropertyType() == java.util.List.class) {
                         
-                        Class<?> listElementCls=LIST_CLASS.get(pds[i].getName());
+                        Class<?> listElementCls=_modelAdaptor.getListElementClass(pds[i].getName());
                         
                         if ((token == null
                                 || (token.length() == 0 && _currentToken == null)
@@ -637,58 +506,58 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             if (child instanceof Token) {
                 Token token=(Token)child;
                 
-                if (!mobj.getProperties().containsKey(Journal.START_LINE)
-                        || token.getLine() < ((Integer)mobj.getProperties().get(Journal.START_LINE))) {
-                    mobj.getProperties().put(Journal.START_LINE, token.getLine());                    
-                    mobj.getProperties().put(Journal.START_COLUMN, token.getCharPositionInLine());
-                } else if (token.getLine() == ((Integer)mobj.getProperties().get(Journal.START_LINE))
-                        && token.getCharPositionInLine() < ((Integer)mobj.getProperties().get(Journal.START_COLUMN))) {    
-                    mobj.getProperties().put(Journal.START_COLUMN, token.getCharPositionInLine());
+                if (!mobj.getProperties().containsKey(IssueLogger.START_LINE)
+                        || token.getLine() < ((Integer)mobj.getProperties().get(IssueLogger.START_LINE))) {
+                    mobj.getProperties().put(IssueLogger.START_LINE, token.getLine());                    
+                    mobj.getProperties().put(IssueLogger.START_COLUMN, token.getCharPositionInLine());
+                } else if (token.getLine() == ((Integer)mobj.getProperties().get(IssueLogger.START_LINE))
+                        && token.getCharPositionInLine() < ((Integer)mobj.getProperties().get(IssueLogger.START_COLUMN))) {    
+                    mobj.getProperties().put(IssueLogger.START_COLUMN, token.getCharPositionInLine());
                 }
                 
-                if (!mobj.getProperties().containsKey(Journal.END_LINE)
-                        || token.getLine() > ((Integer)mobj.getProperties().get(Journal.END_LINE))) {
-                    mobj.getProperties().put(Journal.END_LINE, token.getLine());                    
-                    mobj.getProperties().put(Journal.END_COLUMN, token.getCharPositionInLine()
+                if (!mobj.getProperties().containsKey(IssueLogger.END_LINE)
+                        || token.getLine() > ((Integer)mobj.getProperties().get(IssueLogger.END_LINE))) {
+                    mobj.getProperties().put(IssueLogger.END_LINE, token.getLine());                    
+                    mobj.getProperties().put(IssueLogger.END_COLUMN, token.getCharPositionInLine()
                             +token.getText().length());
-                } else if (token.getLine() == ((Integer)mobj.getProperties().get(Journal.END_LINE))
+                } else if (token.getLine() == ((Integer)mobj.getProperties().get(IssueLogger.END_LINE))
                         && (token.getCharPositionInLine()+token.getText().length())
-                        < ((Integer)mobj.getProperties().get(Journal.END_COLUMN))) {    
-                    mobj.getProperties().put(Journal.END_COLUMN, token.getCharPositionInLine()
+                        < ((Integer)mobj.getProperties().get(IssueLogger.END_COLUMN))) {    
+                    mobj.getProperties().put(IssueLogger.END_COLUMN, token.getCharPositionInLine()
                             +token.getText().length());
                 }
             } else if (child instanceof ModelObject) {
                 ModelObject chobj=(ModelObject)child;
                 
-                if (chobj.getProperties().containsKey(Journal.START_LINE)
-                        && chobj.getProperties().containsKey(Journal.START_COLUMN)) {
+                if (chobj.getProperties().containsKey(IssueLogger.START_LINE)
+                        && chobj.getProperties().containsKey(IssueLogger.START_COLUMN)) {
                     
-                    if (!mobj.getProperties().containsKey(Journal.START_LINE)
-                            || ((Integer)chobj.getProperties().get(Journal.START_LINE))
-                            < ((Integer)mobj.getProperties().get(Journal.START_LINE))) {
-                        mobj.getProperties().put(Journal.START_LINE, chobj.getProperties().get(Journal.START_LINE));                    
-                        mobj.getProperties().put(Journal.START_COLUMN, chobj.getProperties().get(Journal.START_COLUMN));
-                    } else if (((Integer)chobj.getProperties().get(Journal.START_LINE))
-                            == ((Integer)mobj.getProperties().get(Journal.START_LINE))
-                            && ((Integer)chobj.getProperties().get(Journal.START_COLUMN))
-                            < ((Integer)mobj.getProperties().get(Journal.START_COLUMN))) {    
-                        mobj.getProperties().put(Journal.START_COLUMN, chobj.getProperties().get(Journal.START_COLUMN));
+                    if (!mobj.getProperties().containsKey(IssueLogger.START_LINE)
+                            || ((Integer)chobj.getProperties().get(IssueLogger.START_LINE))
+                            < ((Integer)mobj.getProperties().get(IssueLogger.START_LINE))) {
+                        mobj.getProperties().put(IssueLogger.START_LINE, chobj.getProperties().get(IssueLogger.START_LINE));                    
+                        mobj.getProperties().put(IssueLogger.START_COLUMN, chobj.getProperties().get(IssueLogger.START_COLUMN));
+                    } else if (((Integer)chobj.getProperties().get(IssueLogger.START_LINE))
+                            == ((Integer)mobj.getProperties().get(IssueLogger.START_LINE))
+                            && ((Integer)chobj.getProperties().get(IssueLogger.START_COLUMN))
+                            < ((Integer)mobj.getProperties().get(IssueLogger.START_COLUMN))) {    
+                        mobj.getProperties().put(IssueLogger.START_COLUMN, chobj.getProperties().get(IssueLogger.START_COLUMN));
                     }
                 }
             
-                if (chobj.getProperties().containsKey(Journal.END_LINE)
-                        && chobj.getProperties().containsKey(Journal.END_COLUMN)) {
+                if (chobj.getProperties().containsKey(IssueLogger.END_LINE)
+                        && chobj.getProperties().containsKey(IssueLogger.END_COLUMN)) {
                     
-                    if (!mobj.getProperties().containsKey(Journal.END_LINE)
-                            || ((Integer)chobj.getProperties().get(Journal.END_LINE))
-                            < ((Integer)mobj.getProperties().get(Journal.END_LINE))) {
-                        mobj.getProperties().put(Journal.END_LINE, chobj.getProperties().get(Journal.END_LINE));                    
-                        mobj.getProperties().put(Journal.END_COLUMN, chobj.getProperties().get(Journal.END_COLUMN));
-                    } else if (((Integer)chobj.getProperties().get(Journal.END_LINE))
-                                == ((Integer)mobj.getProperties().get(Journal.END_LINE))
-                                && ((Integer)chobj.getProperties().get(Journal.END_COLUMN))
-                                < ((Integer)mobj.getProperties().get(Journal.END_COLUMN))) {    
-                        mobj.getProperties().put(Journal.END_COLUMN, chobj.getProperties().get(Journal.END_COLUMN));
+                    if (!mobj.getProperties().containsKey(IssueLogger.END_LINE)
+                            || ((Integer)chobj.getProperties().get(IssueLogger.END_LINE))
+                            < ((Integer)mobj.getProperties().get(IssueLogger.END_LINE))) {
+                        mobj.getProperties().put(IssueLogger.END_LINE, chobj.getProperties().get(IssueLogger.END_LINE));                    
+                        mobj.getProperties().put(IssueLogger.END_COLUMN, chobj.getProperties().get(IssueLogger.END_COLUMN));
+                    } else if (((Integer)chobj.getProperties().get(IssueLogger.END_LINE))
+                                == ((Integer)mobj.getProperties().get(IssueLogger.END_LINE))
+                                && ((Integer)chobj.getProperties().get(IssueLogger.END_COLUMN))
+                                < ((Integer)mobj.getProperties().get(IssueLogger.END_COLUMN))) {    
+                        mobj.getProperties().put(IssueLogger.END_COLUMN, chobj.getProperties().get(IssueLogger.END_COLUMN));
                     }
                 }
             }
@@ -772,6 +641,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
     public Object errorNode(TokenStream arg0, Token arg1, Token arg2,
             RecognitionException arg3) {
         LOG.finest("ERRORNODE "+arg0+" "+arg1+" "+arg2+" "+arg3);
+        new Exception().printStackTrace();
         return null;
     }
     
@@ -829,7 +699,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
         Object ret=null;
         
         if (_model == null) {
-            _model = new ProtocolModel();
+            _model = new Module();
             ret = _model;
         } else {
             ret = new java.util.Vector<Object>();
@@ -852,12 +722,12 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             String ruleName=(String)_parser.getRuleInvocationStack().get(
                     _parser.getRuleInvocationStack().size()-1);
             
-            Class<?> cls = PARSER_GROUPING_RULE_CLASS.get(ruleName);
+            Class<?> cls = _modelAdaptor.getModelClassForRule(ruleName);
             
             LOG.finest("Parser grouping rule for name '"+ruleName+"' is class="+cls);
             
             // Check if rule invocation is associated with activity
-            if (ruleName.equals(ACTIVITY_RULE_NAME) || CLEAR_TOKEN_LIST_RULES.contains(ruleName)) {
+            if (ruleName.equals(ACTIVITY_RULE_NAME) || _modelAdaptor.shouldClearToken(ruleName)) {
                 LOG.fine("Reset current token");
                 _currentToken = null;
             }

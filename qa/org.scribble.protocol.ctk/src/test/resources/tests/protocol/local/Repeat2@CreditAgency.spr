@@ -1,4 +1,0 @@
-protocol Repeat2 at CreditAgency (role Store) {
-	checkCredit(CreditCheckRequest) from Store;
-	checkCredit(CreditRating) to Store;
-}

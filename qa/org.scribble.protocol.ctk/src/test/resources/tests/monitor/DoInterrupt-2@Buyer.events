@@ -1,5 +1,0 @@
-send,Order
-send,expire(OrderExpired)
-send,OrderCancelled
-receive,Ack
-send,Finish

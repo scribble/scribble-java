@@ -1,0 +1,10 @@
+package pack;
+
+global protocol GChoice(role Buyer, role Seller) {
+
+	choice at Buyer {
+		Order from Buyer to Seller;
+	} or {
+		QuoteRequest from Buyer to Seller;
+	}
+}

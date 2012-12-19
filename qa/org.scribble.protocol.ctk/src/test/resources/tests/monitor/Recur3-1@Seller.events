@@ -1,7 +1,0 @@
-receive,Order
-send,tryAgain()
-receive,Order
-send,exit()
-receive,Another
-receive,Another
-receive,Finish

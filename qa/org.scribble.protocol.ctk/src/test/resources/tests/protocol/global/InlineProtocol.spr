@@ -1,8 +1,0 @@
-import Order;
-import protocol Sub from "ReferencedExternalProtocol.spr";
-
-protocol InlineProtocol(role Buyer) {
-	Buyer introduces Seller;
-
-	inline Sub(Buyer, Seller);
-}

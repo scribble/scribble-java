@@ -50,9 +50,10 @@
 	<modules>
 		<module>build</module>
 		<module>modules</module>
-		<module>qa</module>
 		<module>apidocs</module>
+<!--
 		<module>tools</module>
+-->
 	</modules>
   
 	<dependencyManagement>

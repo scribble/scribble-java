@@ -1,9 +1,0 @@
-import Order;
-import Confirm;
-import protocol Sub from "ReferencedExternalProtocol.spr";
-
-protocol RunSubProtocol at Seller (role Buyer) {
-	run Sub at SubSeller(Buyer) from Buyer;
-
-	Confirm to Buyer;
-}

@@ -1,3 +1,0 @@
-receive,Order
-send,Confirm
-receive,Finish

@@ -1,7 +1,0 @@
-protocol Repeat2 at Buyer{
-	Buyer introduces Store;
-
-	buy(BuyRequest) to Store;
-	
-	buy(BuyConfirmed) from Store;
-}

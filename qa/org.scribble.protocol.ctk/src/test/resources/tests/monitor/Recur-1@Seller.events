@@ -1,7 +1,0 @@
-receive,Order
-send,Rejected
-receive,Order
-send,Accepted
-receive,Another
-receive,Another
-receive,Finish

@@ -1,3 +1,0 @@
-protocol ChoiceMergeIdenticalBranches at C(role B) {
-    Int from B;
-}

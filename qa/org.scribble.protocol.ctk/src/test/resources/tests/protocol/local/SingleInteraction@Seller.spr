@@ -1,5 +1,0 @@
-import Order;
-
-protocol SingleInteraction at Seller (role Buyer) {
-	Order from Buyer;
-}

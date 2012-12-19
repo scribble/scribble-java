@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<component name="protocol-conformance">
-	<implementation class="org.scribble.protocol.conformance.impl.ProtocolConformerImpl"/>
-	<service>
-		<provide interface="org.scribble.protocol.conformance.ProtocolConformer"/>
-	</service>
-</component>

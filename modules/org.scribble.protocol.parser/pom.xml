@@ -16,12 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol</artifactId>
+			<artifactId>org.scribble.protocol.model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -41,7 +36,7 @@
 			<plugin>
     				<groupId>org.antlr</groupId>
     				<artifactId>antlr3-maven-plugin</artifactId>
-    				<version>3.2</version>
+    				<version>${antlr.version}</version>
 		    		<executions>
 		        		<execution>
 		            			<goals>

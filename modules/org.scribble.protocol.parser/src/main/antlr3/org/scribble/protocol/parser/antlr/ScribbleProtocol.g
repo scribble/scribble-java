@@ -6,7 +6,6 @@ options {
 }
 
 tokens {
-	INTERACTION = 'interaction' ;
 	PLUS 	= '+' ;
 	MINUS	= '-' ;
 	MULT	= '*' ;
@@ -14,6 +13,10 @@ tokens {
 	FULLSTOP = '.' ;
 }
 
+/*------------------------------------------------------------------
+ * JAVA SPECIFIC DEFINITIONS
+ *------------------------------------------------------------------*/
+ 
 @header {
 package org.scribble.protocol.parser.antlr;
 }
@@ -23,9 +26,9 @@ package org.scribble.protocol.parser.antlr;
 }
    
 @members {
-	private org.scribble.common.logging.Journal m_journal=null;
-	private String m_document=null;
-	private boolean m_errorOccurred=false;
+	private org.scribble.protocol.parser.IssueLogger _logger=null;
+	private String _document=null;
+	private boolean _errorOccurred=false;
 	
 	public static void main(String[] args) throws Exception {
         ScribbleProtocolLexer lex = new ScribbleProtocolLexer(new ANTLRFileStream(args[0]));
@@ -33,13 +36,13 @@ package org.scribble.protocol.parser.antlr;
 
 		ScribbleProtocolParser parser = new ScribbleProtocolParser(tokens);
 
-		ProtocolTreeAdaptor adaptor=new ProtocolTreeAdaptor(null, null);
+		ProtocolTreeAdaptor adaptor=new ProtocolTreeAdaptor(null);
 		adaptor.setParser(parser);
 		
 		parser.setTreeAdaptor(adaptor);
 		
         try {
-            ScribbleProtocolParser.description_return r=parser.description();
+            ScribbleProtocolParser.module_return r=parser.module();
             
             //CommonTree t=(CommonTree)r.getTree();
             
@@ -52,141 +55,35 @@ package org.scribble.protocol.parser.antlr;
         }
     }
     
-    public void setJournal(org.scribble.common.logging.Journal journal) {
-    	m_journal = journal;
+    public void setIssueLogger(org.scribble.protocol.parser.IssueLogger logger) {
+    	_logger = logger;
     }
     
     public void setDocument(String doc) {
-    	m_document = doc;
+    	_document = doc;
     }
     
     public void emitErrorMessage(String mesg) {
-    	if (m_journal == null) {
+    	if (_logger == null) {
     		super.emitErrorMessage(mesg);
     	} else {
-    		m_journal.error(ANTLRMessageUtil.getMessageText(mesg),
-    					ANTLRMessageUtil.getProperties(mesg, m_document));
+    		_logger.error(org.scribble.protocol.parser.antlr.ANTLRMessageUtil.getMessageText(mesg),
+    					org.scribble.protocol.parser.antlr.ANTLRMessageUtil.getProperties(mesg, _document));
     	}
-    	m_errorOccurred = true;
+    	_errorOccurred = true;
     }
     
     public boolean isErrorOccurred() {
-    	return(m_errorOccurred);
+    	return(_errorOccurred);
     }
 }
-
-/*------------------------------------------------------------------
- * PARSER RULES
- *------------------------------------------------------------------*/
-
-description: ( ( ANNOTATION )* ( importProtocolStatement | importTypeStatement ) )* ( ANNOTATION )* protocolDef ;
-
-importProtocolStatement: 'import' 'protocol' importProtocolDef ( ','! importProtocolDef )* ';'! ;
-
-importProtocolDef: ID 'from'! StringLiteral;
-						
-importTypeStatement: 'import' ( simpleName )? importTypeDef ( ','! importTypeDef )* ( 'from'! StringLiteral )? ';'! ;
-
-importTypeDef: ( dataTypeDef 'as'! )? ID ;
-
-dataTypeDef: StringLiteral ;
-
-simpleName: ID ;
-
-protocolDef: 'protocol'^ protocolName ( 'at' roleName )? ( parameterDefs )? '{'! protocolBlockDef ( ( ANNOTATION )* protocolDef )* '}'! ;
-
-protocolName: ID ;
-
-parameterDefs: '('! parameterDef ( ','! parameterDef )* ')'! ;
-
-parameterDef: ( typeReferenceDef | 'role' ) simpleName ;
-
-protocolBlockDef: activityListDef ;
-
-blockDef: '{'! activityListDef '}'! ;
-
-activityListDef: ( ( ANNOTATION )* activityDef )* ;
-
-activityDef: ( introducesDef | interactionDef | inlineDef | runDef | recursionDef | endDef ) ';'! | 
-			choiceDef | directedChoiceDef | parallelDef | repeatDef | unorderedDef |
-			recBlockDef | globalEscapeDef ;
-
-introducesDef: roleDef 'introduces' roleDef ( ','! roleDef )* ;
-
-roleDef: ID ;
-
-roleName: ID ;
-
-typeReferenceDef: ID ;
-
-interactionSignatureDef: ( typeReferenceDef | ID '('! ( typeReferenceDef ( ','! typeReferenceDef )* )? ')'! ) ;
-
-interactionDef: interactionSignatureDef ( 'from' roleName ( 'to' roleName ( ','! roleName )* )? |
-							'to' roleName ( ','! roleName )* ) ;
-
-choiceDef: 'choice'^ ( 'at' roleName )? blockDef ( 'or' blockDef )* ;
-
-directedChoiceDef: ( 'from' roleName )? ( 'to' roleName ( ','! roleName )* )? '{' ( onMessageDef )+ '}' ;
-
-onMessageDef: interactionSignatureDef ':' activityList ; 
-
-activityList: ( ( ANNOTATION )* activityDef )* ;
-
-repeatDef: 'repeat'^ ( 'at' roleName ( ','! roleName )* )? blockDef ;
-
-recBlockDef: 'rec'^ labelName blockDef ;
-
-labelName: ID ;
-
-recursionDef: labelName ;
-
-endDef: 'end'^ ;
-
-runDef: 'run'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? 'from' roleName ;
-
-protocolRefDef: ID ( 'at' roleName )? ;
-
-declarationName: ID ;
-
-parameter: declarationName ;
-
-inlineDef: 'inline'^ protocolRefDef ( '('! parameter ( ','! parameter )* ')'! )? ;
-
-parallelDef: 'parallel'^ blockDef ( 'and' blockDef )* ;
-
-globalEscapeDef: 'do'^ blockDef ( interruptDef )+ ;
-
-interruptDef: 'interrupt'^ blockDef ;
-
-unorderedDef: 'unordered'^ blockDef ;
-
-
-/*-----------------------------------------------
-TO DO:
-Declaration (variables) possibly - but that may need
-lookahead to avoid conflict with interactions.
--------------------------------------------------*/
-
-expr	: term ( ( PLUS | MINUS )  term )* ;
-
-term	: factor ( ( MULT | DIV ) factor )* ;
-
-factor	: NUMBER ;
 
 
 /*------------------------------------------------------------------
  * LEXER RULES
  *------------------------------------------------------------------*/
-
-ID : ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
-
-NUMBER	: (DIGIT)+ ;
-
+ 
 WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ 	{ $channel = HIDDEN; } ;
-
-fragment DIGIT	: '0'..'9' ;
-
-ANNOTATION : '[[' (options {greedy=false;} : .)* ']]' ;
 
 ML_COMMENT
     :   '/*' (options {greedy=false;} : .)* '*/' {$channel=HIDDEN;}
@@ -194,4 +91,149 @@ ML_COMMENT
 
 LINE_COMMENT : '//' (options {greedy=false;} : .)* '\n' {$channel=HIDDEN;} ;
 
-StringLiteral: '"' ( ~('\\'|'"') )* '"' ;
+
+LETTER : ('a'..'z'|'A'..'Z') ;
+
+DIGIT : '0'..'9' ;
+
+SYMBOL : '{' | '}' | '[' | ']' | ':' | '/' | '\\' | '.' | '#' | '&' | '?' | '!' ;
+//SYMBOL : '{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '#' | '&' | '?' | '!' ;    // Issue is that causes problems with protocol name with '(' and no space
+
+IDENTIFIER : (LETTER | '_')(LETTER|DIGIT|'_')* ;
+
+EXTIDENTIFIER : (LETTER | '_' | SYMBOL)(LETTER | DIGIT | '_' | SYMBOL)* ;
+
+
+
+/*------------------------------------------------------------------
+ * PARSER RULES
+ *------------------------------------------------------------------*/
+ 
+ 
+module: packageDecl ( importDecl )* ( payloadTypeDecl )* ( protocolDecl )* ;
+
+packageName: IDENTIFIER ;  // ( '.' IDENTIFIER )* ;
+
+simpleName: IDENTIFIER ;
+
+packageDecl: 'package'^ packageName ';'! ;
+
+importDecl: 'import'^ packageName | 'from' packageName 'import' IDENTIFIER ( 'as' IDENTIFIER )? ';'! ;		// Added ;
+
+payloadTypeDecl: 'type'^ '<'! IDENTIFIER '>'! EXTIDENTIFIER 'from' EXTIDENTIFIER 'as' IDENTIFIER ';'! ;		// Added ;
+
+protocolDecl: globalProtocolDecl | localProtocolDecl ;
+
+
+
+messageOperator: ( LETTER  | DIGIT | '_' )* ; // Shouldn't this be IDENTIFIER?
+
+messageSignature: messageOperator '('! ( payloadType ( ','! payloadType )* )? ')'! | payloadType ;		// Changed, so could just be payloadType, instead of putting ID on message
+ 
+payloadType: ( IDENTIFIER ':' )? IDENTIFIER ; 
+
+
+
+globalProtocolDecl: 'global'^ 'protocol' simpleName roleDefs globalProtocolBody ;
+
+//globalProtocolDefinition: '('! ( 'role'^ roleName ( ','! 'role'^ roleName )*  )? ')'! globalProtocolBody ;		// Simplified as does not match local protocol definition
+
+//roleList: 'role' roleName ( ','! 'role' roleName )* ;
+
+roleDefs: '('! roleDef ( ','! roleDef )* ')'! ;
+
+roleDef: 'role'^ simpleName ;
+
+
+roleName: IDENTIFIER ;
+
+parameter: 'sig' IDENTIFIER  ;
+
+parameterList: parameter ( ','! parameter )* ;				// created parameter rule to make easier to parse
+
+argumentList: messageSignature ( ',' messageSignature )* ;
+
+
+globalProtocolBody: globalInteractionBlock ;
+
+globalInteractionBlock: '{'! globalInteractionSequence '}'! ;
+ 
+globalInteractionSequence: ( globalInteraction )* ;
+
+globalInteraction: message
+	| choice 
+	| parallel 
+	| recursion 
+	| continueDef
+	| interruptible 
+	| doDef
+	| spawn ;
+
+
+
+message: messageSignature 'from' roleName 'to' roleName ';'! ;		// Should include a ; at the end, and what about multicast?
+																	// should not have optional message sig - and not sure about identifier, so changed message sig
+
+choice: 'choice'^ 'at' roleName globalInteractionBlock ( 'or' globalInteractionBlock )* ;  // Should this not be + ?
+
+parallel: 'par'^ globalInteractionBlock ( 'and' globalInteractionBlock )* ;   // Should this not be + ?
+
+recursion: 'rec'^ IDENTIFIER globalInteractionBlock ;
+
+continueDef: 'continue'^ IDENTIFIER ;		// Rule name changed as caused java compilation error
+
+interruptible: 'interruptible'^ globalInteractionBlock 'with' '{'! ( interrupt )+ '}'! ;		// In the sending role, what determines at the point where the interrupting message can be sent?
+
+interrupt: messageSignature ( ','! messageSignature )* 'by' roleName ( ','! roleName )* ;
+
+doDef: 'do'^ IDENTIFIER ( '<'! argumentList '>'! )? '('! roleInstantiationList ')'! ';'! ;		// Rule name changed as caused java compilation error
+
+roleInstantiationList: roleName 'as' roleName ( ','! roleName 'as' roleName )* ;
+	
+spawn: roleName 'spawns' IDENTIFIER '<'! ( argumentList )? '>'! '('! roleInstantiationList ')'! ';'! ;
+
+
+
+localProtocolDecl: 'local'^ 'protocol' IDENTIFIER 'at' roleName roleDefs localProtocolBody ;
+
+
+localProtocolBody: localInteractionBlock ;
+
+localInteractionBlock: '{'! localInteractionSequence '}'! ;
+ 
+localInteractionSequence: ( localInteraction )* ;
+
+localInteraction: send 
+	| receive 
+	| localChoice 
+	| localParallel 
+	| localRecursion 
+	| localContinue 
+	| localLnterruptible
+	| create				// Not shown in spec
+	| enter ;				// Not shown in spec - also refers to 'calls' construct but assume means spawn?
+
+
+send: messageSignature 'to' roleName ';'! ;		// Does not say terminated by ; in spec
+
+receive: messageSignature 'from' roleName ';'! ;		// Does not say terminated by ; in spec
+
+localChoice: 'choice'^ 'at' roleName localInteractionBlock ( 'or' localInteractionBlock )* ;		// Should be + ?
+
+localParallel: 'par'^ localInteractionBlock ( 'and' localInteractionBlock )* ;		// Should be + ?
+
+localRecursion: 'rec'^ IDENTIFIER localInteractionBlock ;
+
+localContinue: 'continue'^ IDENTIFIER ';'! ;		// Does not say terminated by ; in spec
+	
+localLnterruptible: 'interruptible'^ localInteractionBlock ( throwDef )? ( catchDef )? ;		// interruptible in spec - have changed structure slightly
+
+throwDef: 'throw'^ messageSignature ( ','! messageSignature )* ;		// Have removed initial bracket and rule name changed as caused java compilation error
+
+catchDef: 'catch'^ messageSignature ( ','! messageSignature )* ;		// Have removed initial brakcet
+
+
+create: 'create'^ IDENTIFIER '<'! parameterList '>'! '('! ( roleInstantiationList )? ')'! ';'! ;		// Does not say terminated by ; in spec
+
+enter: 'enter'^ IDENTIFIER 'as' roleName ';'! ;		// Does not say terminated by ; in spec
+

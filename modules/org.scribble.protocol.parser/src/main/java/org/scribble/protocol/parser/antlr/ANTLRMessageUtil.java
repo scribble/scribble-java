@@ -16,7 +16,7 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import org.scribble.common.logging.Journal;
+import org.scribble.protocol.parser.IssueLogger;
 
 /**
  * ANTLR message utilities.
@@ -84,8 +84,8 @@ public final class ANTLRMessageUtil {
                     Integer line=Integer.parseInt(nums[0]);
                     Integer col=Integer.parseInt(nums[1]);
                     
-                    ret.put(Journal.START_LINE, line);
-                    ret.put(Journal.START_COLUMN, col);
+                    ret.put(IssueLogger.START_LINE, line);
+                    ret.put(IssueLogger.START_COLUMN, col);
                     
                     // Determine the position within the document
                     int pos=0;
@@ -101,7 +101,7 @@ public final class ANTLRMessageUtil {
                     if (pos != -1) {
                         pos += col.intValue();
                         
-                        ret.put(Journal.START_POSITION, new Integer(pos));
+                        ret.put(IssueLogger.START_POSITION, new Integer(pos));
                         
                         // Find next whitespace
                         int endpos=document.length();
@@ -118,7 +118,7 @@ public final class ANTLRMessageUtil {
                             nextpos = pos;
                         }
                         
-                        ret.put(Journal.END_POSITION, new Integer(nextpos));
+                        ret.put(IssueLogger.END_POSITION, new Integer(nextpos));
                     }
                 }
             }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Copyright 2009 www.scribble.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
--->
-<assembly>
-    <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
-    <id>bin</id>
-    <includeBaseDirectory>true</includeBaseDirectory>
-    <formats>
-        <format>zip</format>
-    </formats>
+ */
+package org.scribble.protocol.model;
 
-    <fileSets>
-
-	    <fileSet>
-	    	<directory>../modules/org.scribble.protocol.model/target/javadoc</directory>
-	    	<outputDirectory>/apidocs/protocol</outputDirectory>
-	    </fileSet>
-
-    </fileSets>
-
-</assembly>
+/**
+ * This interface represents a visitor which can be used
+ * to traverse a model.
+ */
+public interface Visitor {
+    
+    /**
+     * This method visits a type import component.
+     * 
+     * @param elem The type import
+     */
+    public void accept(PayloadTypeDecl elem);
+    
+    /**
+     * This method visits a protocol import component.
+     * 
+     * @param elem The protocol import
+     */
+    public void accept(ImportDecl elem);
+    
+}

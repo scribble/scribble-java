@@ -1,5 +1,0 @@
-receive,Order
-send,Order
-receive,Confirmation
-send,Confirmation
-

@@ -1,5 +1,0 @@
-import Order;
-
-protocol MulticastInteraction at SellerA (role Buyer) {
-	Order from Buyer;
-}

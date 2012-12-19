@@ -1,6 +1,0 @@
-import Order;
-import Confirm;
-
-protocol Sub(role SubBuyer, role SubSeller) {
-	Order from SubBuyer to SubSeller;
-}

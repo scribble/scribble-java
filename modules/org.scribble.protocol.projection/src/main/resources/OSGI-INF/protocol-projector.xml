@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<component name="protocol-projector">
-	<implementation class="org.scribble.protocol.projection.impl.ProtocolProjectorImpl"/>
-	<service>
-		<provide interface="org.scribble.protocol.projection.ProtocolProjector"/>
-	</service>
-</component>

@@ -1,7 +1,0 @@
-import Order;
-
-protocol SingleInteraction at Buyer {
-	Buyer introduces Seller;
-
-	Order to Seller;
-}
