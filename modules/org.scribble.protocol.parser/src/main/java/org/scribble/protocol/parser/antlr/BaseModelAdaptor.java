@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 import org.scribble.protocol.model.ImportDecl;
 import org.scribble.protocol.model.MessageSignature;
-import org.scribble.protocol.model.Module;
 import org.scribble.protocol.model.Parameter;
 import org.scribble.protocol.model.PayloadType;
 import org.scribble.protocol.model.PayloadTypeDecl;
@@ -46,6 +45,8 @@ public class BaseModelAdaptor implements ModelAdaptor {
     private static final java.util.Map<String,String> PROPERTY_TOKENS=
             new java.util.HashMap<String, String>();
     private static final java.util.List<String> CLEAR_TOKEN_LIST_RULES=
+            new java.util.Vector<String>();
+    private static final java.util.List<String> STRING_LITERALS=
             new java.util.Vector<String>();
 
     static {
@@ -96,6 +97,9 @@ public class BaseModelAdaptor implements ModelAdaptor {
         
         CLEAR_TOKEN_LIST_RULES.add("payloadType");
         CLEAR_TOKEN_LIST_RULES.add("roleInstantiation");
+        
+        STRING_LITERALS.add("payloadTypeDecl:schema");
+        STRING_LITERALS.add("payloadTypeDecl:type");
     }
     
     /**
@@ -140,6 +144,13 @@ public class BaseModelAdaptor implements ModelAdaptor {
 		return (CLEAR_TOKEN_LIST_RULES.contains(ruleName));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isStringLiteral(String ruleName, String propertyName) {
+		return (STRING_LITERALS.contains(ruleName+":"+propertyName));
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

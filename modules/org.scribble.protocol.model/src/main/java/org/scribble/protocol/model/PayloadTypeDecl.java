@@ -154,12 +154,16 @@ public class PayloadTypeDecl extends ModelObject {
 		}
 		
 		if (_type != null) {
+			buf.append("\"");
 			buf.append(_type);
+			buf.append("\"");
 		}
 		
 		if (_schema != null) {
 			buf.append(" from ");
+			buf.append("\"");
 			buf.append(_schema);
+			buf.append("\"");
 		}
 		
 		if (_alias != null) {

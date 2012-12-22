@@ -60,12 +60,22 @@ public interface ModelAdaptor {
 	public boolean shouldClearToken(String ruleName);
 	
 	/**
+	 * This method determines whether the rule name and property
+	 * for the current model object is a string literal.
+	 * 
+	 * @param ruleName The current parsing rule name
+	 * @param propertyName The property name on the current model object
+	 * @return Whether the property is associated with a string literal
+	 */
+	public boolean isStringLiteral(String ruleName, String propertyName);
+	
+	/**
 	 * This method identifies a protocol activity token associated with a parsing
 	 * rule name and property name on a model object currently being processed.
 	 * 
 	 * @param ruleName The current parsing rule name
 	 * @param propertyName The property name on the current model object
-	 * @return
+	 * @return The token name
 	 */
 	public String getTokenForRuleAndProperty(String ruleName, String propertyName);
 	

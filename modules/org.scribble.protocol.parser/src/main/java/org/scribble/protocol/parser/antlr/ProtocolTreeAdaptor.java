@@ -22,7 +22,6 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.scribble.protocol.model.ModelObject;
-import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.model.Module;
 import org.scribble.protocol.parser.IssueLogger;
 
@@ -32,10 +31,10 @@ import org.scribble.protocol.parser.IssueLogger;
  */
 public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 
-    private static final String ANNOTATIONS = "_annotations";
+    //private static final String ANNOTATIONS = "_annotations";
     private static final String ACTIVITY_RULE_NAME = "activityDef";
     private static final java.util.List<String> TOKENS_TO_IGNORE=
-        new java.util.Vector<String>();
+            new java.util.Vector<String>();
     
     private ScribbleProtocolParser _parser=null;
     
@@ -101,7 +100,8 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
         
         if (modelObject != null) {
         	ret = modelObject;
-        } else if (token.getType() != ScribbleProtocolParser.IDENTIFIER) {
+        } else if (token.getType() != ScribbleProtocolParser.IDENTIFIER &&
+        		token.getType() != ScribbleProtocolParser.StringLiteral) {
             LOG.fine("Set current token="+token);
             _currentToken = token;
         }
@@ -245,7 +245,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             
             // Check if ID token
             StringBuffer buf=new StringBuffer();
-            java.util.List<Token> annotations=new java.util.Vector<Token>();
+            //java.util.List<Token> annotations=new java.util.Vector<Token>();
             
             for (int i=0; i < nil.size(); i++) {
                 
@@ -395,9 +395,8 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             */
             
             // Check if child is a string literal
-            //boolean stringLiteral=false;
+            boolean stringLiteral=false;
 
-            /*
             if (child instanceof Token 
                     && ((Token)child).getType() == ScribbleProtocolParser.StringLiteral) {
                 String strlit = ((Token)child).getText();
@@ -410,9 +409,8 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                     child = strlit;
                 }
                 
-                //stringLiteral = true;
+                stringLiteral = true;
             }
-            */
             
             String ruleName="";
             
@@ -437,14 +435,16 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
                     if (pds[i].getPropertyType().isAssignableFrom(child.getClass())
                             && !pds[i].getName().equals("parent")) {
                         
-                    	/*String ruleprop=ruleName+":"+pds[i].getName();
-                        
                         if (stringLiteral) {
-                            if (STRING_LITERALS.contains(ruleprop)
+                            if (_modelAdaptor.isStringLiteral(ruleName, pds[i].getName())
+                            		&& (token == null
+                                            || (token.length() == 0 && _currentToken == null)
+                                            || (_currentToken != null
+                                            && token.equals(_currentToken.getText())))
                                     && pds[i].getWriteMethod() != null) {
                                 pd = pds[i];
                             }
-                        } else*/ if ((token == null
+                        } else if ((token == null
                                 || (token.length() == 0 && _currentToken == null)
                                 || (_currentToken != null
                                 && token.equals(_currentToken.getText())))

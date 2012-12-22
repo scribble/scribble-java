@@ -96,13 +96,14 @@ LINE_COMMENT : '//' (options {greedy=false;} : .)* '\n' {$channel=HIDDEN;} ;
 
 DIGIT : '0'..'9' ;
 
-SYMBOL : '{' | '}' | '[' | ']' | '/' | '\\' | '#' | '&' | '?' | '!' ;
+//SYMBOL : '{' | '}' | '[' | ']' | '/' | '\\' | '#' | '&' | '?' | '!' ;
 //SYMBOL : '{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '#' | '&' | '?' | '!' ;    // Issue is that causes problems with protocol name with '(' and no space and :
 
 IDENTIFIER : ('a'..'z' | 'A'..'Z' | '_')('a'..'z'| 'A'..'Z' |DIGIT|'_')* ;
 
-//EXTIDENTIFIER : (LETTER | '_' | SYMBOL)(LETTER | DIGIT | '_' | SYMBOL)* ;
+//EXTIDENTIFIER : ('a'..'z' | 'A'..'Z' | '_' | SYMBOL)('a'..'z' | 'A'..'Z' | DIGIT | '_' | SYMBOL)* ;
 
+StringLiteral: '"' ( ~('\\'|'"') )* '"' ;
 
 
 /*------------------------------------------------------------------
@@ -120,9 +121,10 @@ packageDecl: 'package' fullyQualifiedName ';'! ;
 
 importDecl: 'import'^ ( fullyQualifiedName | simpleName 'from' fullyQualifiedName ( 'as' simpleName )? ) ';'! ;
 
-extIdentifier: ('a'..'z' | 'A'..'Z' | '_' | SYMBOL)('a'..'z' | 'A'..'Z' | DIGIT | '_' | SYMBOL)* ;
+//extIdentifier: ('a'..'z' | 'A'..'Z' | '_' | SYMBOL)('a'..'z' | 'A'..'Z' | DIGIT | '_' | SYMBOL)* ;
+//extIdentifier: EXTIDENTIFIER ;
 
-payloadTypeDecl: 'type'^ '<' simpleName '>' simpleName 'from' simpleName 'as' simpleName ';'! ;		// Added ;
+payloadTypeDecl: 'type'^ '<' simpleName '>' StringLiteral 'from' StringLiteral 'as' simpleName ';'! ;		// Added ;
 
 protocolDecl: globalProtocolDecl | localProtocolDecl ;
 
