@@ -24,6 +24,11 @@ import org.scribble.protocol.model.Module;
 public class ProtocolParserTest {
 
     @org.junit.Test
+    public void testTypes() {
+    	testParser("Types");
+    }
+
+    @org.junit.Test
     public void testImports() {
     	testParser("Imports");
     }

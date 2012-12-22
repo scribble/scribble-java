@@ -118,13 +118,11 @@ simpleName: IDENTIFIER ;
 
 packageDecl: 'package' fullyQualifiedName ';'! ;
 
-importDecl: 'import'^ fullyQualifiedName ';'! ;
+importDecl: 'import'^ ( fullyQualifiedName | simpleName 'from' fullyQualifiedName ( 'as' simpleName )? ) ';'! ;
 
-// | ( 'from'^ moduleName 'import' simpleName ( 'as' simpleName )? ) ';'! ;		// Added ;
+extIdentifier: ('a'..'z' | 'A'..'Z' | '_' | SYMBOL)('a'..'z' | 'A'..'Z' | DIGIT | '_' | SYMBOL)* ;
 
-ExtIdentifier : ('a'..'z' | 'A'..'Z' | '_' | SYMBOL)('a'..'z' | 'A'..'Z' | DIGIT | '_' | SYMBOL)* ;
-
-payloadTypeDecl: 'type'^ '<' IDENTIFIER '>'! ExtIdentifier 'from' ExtIdentifier 'as' IDENTIFIER ';'! ;		// Added ;
+payloadTypeDecl: 'type'^ '<' simpleName '>' simpleName 'from' simpleName 'as' simpleName ';'! ;		// Added ;
 
 protocolDecl: globalProtocolDecl | localProtocolDecl ;
 

@@ -1,6 +1,8 @@
 package scribble.examples;
 
 import scribble.examples.GMessage;
+import Order from scribble.examples.GMessage;
+import Receipt from scribble.examples.GMessage as OrderReceipt;
 
 global protocol Imports(role Buyer,role Seller) {
 }

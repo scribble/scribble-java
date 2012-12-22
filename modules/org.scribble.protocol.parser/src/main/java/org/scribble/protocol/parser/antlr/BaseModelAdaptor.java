@@ -68,7 +68,7 @@ public class BaseModelAdaptor implements ModelAdaptor {
         PARSER_GROUPING_RULE_CLASS.put("roleName", Role.class);
         PARSER_GROUPING_RULE_CLASS.put("fullyQualifiedName", org.scribble.protocol.model.FullyQualifiedName.class);
         PARSER_GROUPING_RULE_CLASS.put("simpleName", String.class);
-        //PARSER_GROUPING_RULE_CLASS.put("from", org.scribble.protocol.model.ImportDecl.class);
+        PARSER_GROUPING_RULE_CLASS.put("extIdentifier", String.class);
 
         // Defines the list element base type associated with a
         // property name
@@ -85,13 +85,14 @@ public class BaseModelAdaptor implements ModelAdaptor {
         // determine which property to set. This map provides the
         // mapping between the property name and the token.
         PROPERTY_TOKENS.put("payloadTypeDecl:format", "<");
+        PROPERTY_TOKENS.put("payloadTypeDecl:type", ">");
+        PROPERTY_TOKENS.put("payloadTypeDecl:schema", "from");
+        PROPERTY_TOKENS.put("payloadTypeDecl:alias", "as");
         PROPERTY_TOKENS.put("payloadType:variable", ":");
         PROPERTY_TOKENS.put("payloadType:type", "");
         PROPERTY_TOKENS.put("roleInstantiation:role", "");
         PROPERTY_TOKENS.put("roleInstantiation:as", "as");
-        //PROPERTY_TOKENS.put("importDecl:moduleName", "from");
-        //PROPERTY_TOKENS.put("importDecl:memberName", "import");
-        //PROPERTY_TOKENS.put("importDecl:alias", "as");
+        PROPERTY_TOKENS.put("importDecl:alias", "as");
         
         CLEAR_TOKEN_LIST_RULES.add("payloadType");
         CLEAR_TOKEN_LIST_RULES.add("roleInstantiation");

@@ -1,0 +1,6 @@
+package scribble.examples;
+
+type <xsd> Trade from Tradexsd as Trade;
+
+global protocol Types(role Buyer,role Seller) {
+}
