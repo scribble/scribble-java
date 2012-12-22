@@ -1,0 +1,5 @@
+package scribble.examples;
+
+global protocol GDo(role Buyer,role Seller) {
+	do OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
+}

@@ -134,6 +134,8 @@ public class GRecursion extends GActivity {
     	
     	buf.append(_label);
     	
+    	buf.append(" ");
+    	
     	if (_block != null) {
     		_block.toText(buf, level);
     	}

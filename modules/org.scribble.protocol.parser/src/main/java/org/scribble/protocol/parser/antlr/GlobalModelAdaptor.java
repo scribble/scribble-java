@@ -56,7 +56,6 @@ public class GlobalModelAdaptor extends BaseModelAdaptor {
         TOKEN_CLASS.put("par", GParallel.class);
         TOKEN_CLASS.put("global", GProtocol.class);
         TOKEN_CLASS.put("rec", GRecursion.class);
-        TOKEN_CLASS.put("spawn", GSpawn.class);
 
         // Clear token list - determines whether prior to processing
         // a list of tokens, the 'current token' should be cleared
@@ -66,6 +65,7 @@ public class GlobalModelAdaptor extends BaseModelAdaptor {
         // created after processing the named grammer rule
         PARSER_GROUPING_RULE_CLASS.put("message", GMessage.class);
         PARSER_GROUPING_RULE_CLASS.put("globalInteractionBlock", GBlock.class);
+        PARSER_GROUPING_RULE_CLASS.put("spawn", GSpawn.class);
 
         
         LIST_CLASS.put("contents", GActivity.class);

@@ -1,0 +1,5 @@
+package scribble.examples;
+
+local protocol LCreate at Buyer(role Seller) {
+	create OtherProtocol<sig One,sig Two>(Buyer as OtherBuyer,Seller as OtherSeller);
+}

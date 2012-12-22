@@ -1,0 +1,8 @@
+package scribble.examples;
+
+local protocol LRecursion at Buyer(role Seller) {
+	rec MyLabel {
+		Order to Seller;
+		continue MyLabel;
+	}
+}

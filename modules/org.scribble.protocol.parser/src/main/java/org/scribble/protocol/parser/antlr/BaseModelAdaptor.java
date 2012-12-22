@@ -25,6 +25,7 @@ import org.scribble.protocol.model.Parameter;
 import org.scribble.protocol.model.PayloadType;
 import org.scribble.protocol.model.PayloadTypeDecl;
 import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.RoleInstantiation;
 
 /**
  * This is the base implementation for the Model Adaptor interface.
@@ -63,6 +64,7 @@ public class BaseModelAdaptor implements ModelAdaptor {
         // created after processing the named grammer rule
         PARSER_GROUPING_RULE_CLASS.put("payloadType", PayloadType.class);
         PARSER_GROUPING_RULE_CLASS.put("messageSignature", MessageSignature.class);
+        PARSER_GROUPING_RULE_CLASS.put("roleInstantiation", RoleInstantiation.class);
         PARSER_GROUPING_RULE_CLASS.put("roleName", Role.class);
         PARSER_GROUPING_RULE_CLASS.put("packageName", String.class);
         PARSER_GROUPING_RULE_CLASS.put("simpleName", String.class);
@@ -71,7 +73,8 @@ public class BaseModelAdaptor implements ModelAdaptor {
         // property name
         LIST_CLASS.put("roles", Role.class);
         LIST_CLASS.put("parameters", Parameter.class);
-        LIST_CLASS.put("roleInstantiations", MessageSignature.class);
+        LIST_CLASS.put("arguments", MessageSignature.class);
+        LIST_CLASS.put("roleInstantiations", RoleInstantiation.class);
         LIST_CLASS.put("typeDeclarations", PayloadTypeDecl.class);
         LIST_CLASS.put("types", PayloadType.class);
         LIST_CLASS.put("imports", ImportDecl.class);
@@ -83,8 +86,11 @@ public class BaseModelAdaptor implements ModelAdaptor {
         PROPERTY_TOKENS.put("payloadTypeDecl:format", "<");
         PROPERTY_TOKENS.put("payloadType:variable", ":");
         PROPERTY_TOKENS.put("payloadType:type", "");
+        PROPERTY_TOKENS.put("roleInstantiation:name", "");
+        PROPERTY_TOKENS.put("roleInstantiation:alias", "as");
         
         CLEAR_TOKEN_LIST_RULES.add("payloadType");
+        CLEAR_TOKEN_LIST_RULES.add("roleInstantiation");
     }
     
     /**

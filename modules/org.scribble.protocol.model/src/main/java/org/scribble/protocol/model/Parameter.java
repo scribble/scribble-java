@@ -109,6 +109,7 @@ public class Parameter extends ModelObject {
     public void toText(StringBuffer buf, int level) {
 
 		if (_name != null) {
+			buf.append("sig ");
 			buf.append(_name);
 		}
 	}

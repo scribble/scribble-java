@@ -116,7 +116,7 @@ public class LCreate extends LActivity {
 	    		if (i > 0) {
 	    			buf.append(",");
 	    		}
-	    		buf.append(_parameters.get(i));
+	    		_parameters.get(i).toText(buf, level);
 	    	}
 	    	buf.append(">");
     	}

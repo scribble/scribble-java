@@ -143,14 +143,14 @@ globalProtocolDecl: 'global'^ 'protocol' simpleName roleDefs globalProtocolBody 
 
 //roleList: 'role' roleName ( ','! 'role' roleName )* ;
 
-roleDefs: '(' roleDef ( ','! roleDef )* ')'! ;
+roleDefs: '('! roleDef ( ','! roleDef )* ')'! ;
 
 roleDef: 'role'^ simpleName ;
 
 
 roleName: IDENTIFIER ;
 
-parameter: 'sig' IDENTIFIER  ;
+parameter: 'sig'^ simpleName  ;
 
 parameterList: parameter ( ','! parameter )* ;				// created parameter rule to make easier to parse
 
@@ -181,19 +181,21 @@ choice: 'choice'^ 'at' roleName globalInteractionBlock ( 'or' globalInteractionB
 
 parallel: 'par'^ globalInteractionBlock ( 'and' globalInteractionBlock )* ;   // Should this not be + ?
 
-recursion: 'rec'^ IDENTIFIER globalInteractionBlock ;
+recursion: 'rec'^ simpleName globalInteractionBlock ;
 
-continueDef: 'continue'^ IDENTIFIER ;		// Rule name changed as caused java compilation error
+continueDef: 'continue'^ simpleName ';'! ;		// Rule name changed as caused java compilation error
 
 interruptible: 'interruptible'^ globalInteractionBlock 'with' '{'! ( interrupt )+ '}'! ;		// In the sending role, what determines at the point where the interrupting message can be sent?
 
 interrupt: messageSignature ( ','! messageSignature )* 'by' roleName ( ','! roleName )* ;
 
-doDef: 'do'^ IDENTIFIER ( '<'! argumentList '>'! )? '('! roleInstantiationList ')'! ';'! ;		// Rule name changed as caused java compilation error
+doDef: 'do'^ simpleName ( '<'! argumentList '>'! )? '('! roleInstantiationList ')'! ';'! ;		// Rule name changed as caused java compilation error
 
-roleInstantiationList: roleName 'as' roleName ( ','! roleName 'as' roleName )* ;
+roleInstantiation: simpleName 'as' simpleName ;
+
+roleInstantiationList: roleInstantiation ( ','! roleInstantiation )* ;
 	
-spawn: roleName 'spawns' IDENTIFIER '<'! ( argumentList )? '>'! '('! roleInstantiationList ')'! ';'! ;
+spawn: roleName 'spawns' simpleName '<'! ( argumentList )? '>'! '('! roleInstantiationList ')'! ';'! ;
 
 
 
@@ -225,9 +227,9 @@ localChoice: 'choice'^ 'at' roleName localInteractionBlock ( 'or' localInteracti
 
 localParallel: 'par'^ localInteractionBlock ( 'and' localInteractionBlock )* ;		// Should be + ?
 
-localRecursion: 'rec'^ IDENTIFIER localInteractionBlock ;
+localRecursion: 'rec'^ simpleName localInteractionBlock ;
 
-localContinue: 'continue'^ IDENTIFIER ';'! ;		// Does not say terminated by ; in spec
+localContinue: 'continue'^ simpleName ';'! ;		// Does not say terminated by ; in spec
 	
 localLnterruptible: 'interruptible'^ localInteractionBlock ( throwDef )? ( catchDef )? ;		// interruptible in spec - have changed structure slightly
 
@@ -236,7 +238,7 @@ throwDef: 'throw'^ messageSignature ( ','! messageSignature )* ;		// Have remove
 catchDef: 'catch'^ messageSignature ( ','! messageSignature )* ;		// Have removed initial brakcet
 
 
-create: 'create'^ IDENTIFIER '<'! parameterList '>'! '('! ( roleInstantiationList )? ')'! ';'! ;		// Does not say terminated by ; in spec
+create: 'create'^ simpleName '<'! parameterList '>'! '('! ( roleInstantiationList )? ')'! ';'! ;		// Does not say terminated by ; in spec
 
-enter: 'enter'^ IDENTIFIER 'as' roleName ';'! ;		// Does not say terminated by ; in spec
+enter: 'enter'^ simpleName 'as' roleName ';'! ;		// Does not say terminated by ; in spec
 

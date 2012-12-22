@@ -22,7 +22,22 @@ import java.util.Map;
 import org.scribble.protocol.model.Module;
 
 public class ProtocolParserTest {
-    
+
+    @org.junit.Test
+    public void testLCreate() {
+    	testParser("LCreate");
+    }
+
+    @org.junit.Test
+    public void testGSpawn() {
+    	testParser("GSpawn");
+    }
+
+    @org.junit.Test
+    public void testGDo() {
+    	testParser("GDo");
+    }
+
     @org.junit.Test
     public void testGMessage() {
     	testParser("GMessage");
@@ -56,6 +71,16 @@ public class ProtocolParserTest {
     @org.junit.Test
     public void testLParallel() {
     	testParser("LParallel");
+    }
+    
+    @org.junit.Test
+    public void testGRecursion() {
+    	testParser("GRecursion");
+    }
+    
+    @org.junit.Test
+    public void testLRecursion() {
+    	testParser("LRecursion");
     }
     
     protected void testParser(String name) {
