@@ -1,6 +1,6 @@
 package scribble.examples;
 
-type <xsd> "Trade" from "Trade.xsd" as Trade;
+type <xsd> "{http://www.acme.com/financial}Trade" from "http://www.acme.com/schemas/Trade.xsd" as Trade;
 
 global protocol Types(role Buyer,role Seller) {
 }
