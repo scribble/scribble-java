@@ -74,6 +74,6 @@ public class LCustomActivity extends LActivity {
     		buf.append(_roles.get(i));
     	}
     	
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

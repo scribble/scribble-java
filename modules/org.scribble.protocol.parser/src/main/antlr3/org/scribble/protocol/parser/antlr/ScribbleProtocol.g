@@ -92,16 +92,16 @@ ML_COMMENT
 LINE_COMMENT : '//' (options {greedy=false;} : .)* '\n' {$channel=HIDDEN;} ;
 
 
-LETTER : ('a'..'z'|'A'..'Z') ;
+//LETTER : ('a'..'z'|'A'..'Z') ;
 
 DIGIT : '0'..'9' ;
 
-SYMBOL : '{' | '}' | '[' | ']' | ':' | '/' | '\\' | '.' | '#' | '&' | '?' | '!' ;
-//SYMBOL : '{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '#' | '&' | '?' | '!' ;    // Issue is that causes problems with protocol name with '(' and no space
+SYMBOL : '{' | '}' | '[' | ']' | '/' | '\\' | '#' | '&' | '?' | '!' ;
+//SYMBOL : '{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '#' | '&' | '?' | '!' ;    // Issue is that causes problems with protocol name with '(' and no space and :
 
-IDENTIFIER : (LETTER | '_')(LETTER|DIGIT|'_')* ;
+IDENTIFIER : ('a'..'z' | 'A'..'Z' | '_')('a'..'z'| 'A'..'Z' |DIGIT|'_')* ;
 
-EXTIDENTIFIER : (LETTER | '_' | SYMBOL)(LETTER | DIGIT | '_' | SYMBOL)* ;
+//EXTIDENTIFIER : (LETTER | '_' | SYMBOL)(LETTER | DIGIT | '_' | SYMBOL)* ;
 
 
 
@@ -112,7 +112,7 @@ EXTIDENTIFIER : (LETTER | '_' | SYMBOL)(LETTER | DIGIT | '_' | SYMBOL)* ;
  
 module: packageDecl ( importDecl )* ( payloadTypeDecl )* ( protocolDecl )* ;
 
-packageName: IDENTIFIER ;  // ( '.' IDENTIFIER )* ;
+packageName: IDENTIFIER ( '.' IDENTIFIER )* ;
 
 simpleName: IDENTIFIER ;
 
@@ -120,17 +120,20 @@ packageDecl: 'package'^ packageName ';'! ;
 
 importDecl: 'import'^ packageName | 'from' packageName 'import' IDENTIFIER ( 'as' IDENTIFIER )? ';'! ;		// Added ;
 
-payloadTypeDecl: 'type'^ '<'! IDENTIFIER '>'! EXTIDENTIFIER 'from' EXTIDENTIFIER 'as' IDENTIFIER ';'! ;		// Added ;
+ExtIdentifier : ('a'..'z' | 'A'..'Z' | '_' | SYMBOL)('a'..'z' | 'A'..'Z' | DIGIT | '_' | SYMBOL)* ;
+
+payloadTypeDecl: 'type'^ '<' IDENTIFIER '>'! ExtIdentifier 'from' ExtIdentifier 'as' IDENTIFIER ';'! ;		// Added ;
 
 protocolDecl: globalProtocolDecl | localProtocolDecl ;
 
 
 
-messageOperator: ( LETTER  | DIGIT | '_' )* ; // Shouldn't this be IDENTIFIER?
+messageOperator: IDENTIFIER ;		// Changed to be IDENTIFIER
 
-messageSignature: messageOperator '('! ( payloadType ( ','! payloadType )* )? ')'! | payloadType ;		// Changed, so could just be payloadType, instead of putting ID on message
- 
-payloadType: ( IDENTIFIER ':' )? IDENTIFIER ; 
+payloadType:  IDENTIFIER ( ':' IDENTIFIER )? ; 
+
+messageSignature: ( payloadType | messageOperator '('! ( payloadType ( ','! payloadType )* )? ')'! ) ;		// Changed, so could just be payloadType, instead of putting ID on message
+
 
 
 
@@ -140,7 +143,7 @@ globalProtocolDecl: 'global'^ 'protocol' simpleName roleDefs globalProtocolBody 
 
 //roleList: 'role' roleName ( ','! 'role' roleName )* ;
 
-roleDefs: '('! roleDef ( ','! roleDef )* ')'! ;
+roleDefs: '(' roleDef ( ','! roleDef )* ')'! ;
 
 roleDef: 'role'^ simpleName ;
 
@@ -194,7 +197,7 @@ spawn: roleName 'spawns' IDENTIFIER '<'! ( argumentList )? '>'! '('! roleInstant
 
 
 
-localProtocolDecl: 'local'^ 'protocol' IDENTIFIER 'at' roleName roleDefs localProtocolBody ;
+localProtocolDecl: 'local'^ 'protocol' simpleName 'at' roleName roleDefs localProtocolBody ;
 
 
 localProtocolBody: localInteractionBlock ;

@@ -138,6 +138,6 @@ public class LRecursion extends LActivity {
     		_block.toText(buf, level);
     	}
     	
-		buf.append("\r\n");
+		buf.append("\n");
 	}
 }

@@ -91,7 +91,7 @@ public final class ANTLRMessageUtil {
                     int pos=0;
                     
                     for (int i=0; pos != -1 && i < line.intValue()-1; i++) {
-                        pos = document.indexOf("\r\n", pos);
+                        pos = document.indexOf("\n", pos);
                         
                         if (pos != -1) {
                             pos += 2;

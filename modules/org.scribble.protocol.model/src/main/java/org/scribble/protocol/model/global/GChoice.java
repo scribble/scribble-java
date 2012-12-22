@@ -16,6 +16,7 @@
 package org.scribble.protocol.model.global;
 
 import org.scribble.protocol.model.ContainmentList;
+import org.scribble.protocol.model.Role;
 
 /**
  * This class represents the Choice construct between
@@ -24,7 +25,7 @@ import org.scribble.protocol.model.ContainmentList;
  */
 public class GChoice extends GActivity {
 
-    private String _role=null;
+    private Role _role=null;
     private java.util.List<GBlock> _blocks=new ContainmentList<GBlock>(this, GBlock.class);
 
     /**
@@ -39,17 +40,17 @@ public class GChoice extends GActivity {
      * 
      * @return The role
      */
-    public String getRole() {
+    public Role getRole() {
         return (_role);
     }
     
     /**
      * This method sets the role.
      * 
-     * @param part The role
+     * @param role The role
      */
-    public void setRole(String part) {
-        _role = part;
+    public void setRole(Role role) {
+        _role = role;
     }
     
     /**
@@ -134,11 +135,11 @@ public class GChoice extends GActivity {
     	
     	for (int i=0; i < getPaths().size(); i++) {
     		if (i > 0) {
-    			buf.append(" or");
+    			buf.append(" or ");
     		}
     		getPaths().get(i).toText(buf, level);
     	}
     	
-		buf.append("\r\n");
+		buf.append("\n");
 	}
 }

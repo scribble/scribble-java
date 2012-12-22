@@ -139,7 +139,7 @@ public class GBlock extends GActivity {
 	 */
     public void toText(StringBuffer buf, int level) {
 		
-		buf.append(" {\r\n");
+		buf.append("{\n");
 		
 		for (GActivity act : _contents) {
 			act.toText(buf, level+1);

@@ -44,6 +44,8 @@ public class BaseModelAdaptor implements ModelAdaptor {
             new java.util.HashMap<String, Class<?>>();
     private static final java.util.Map<String,String> PROPERTY_TOKENS=
             new java.util.HashMap<String, String>();
+    private static final java.util.List<String> CLEAR_TOKEN_LIST_RULES=
+            new java.util.Vector<String>();
 
     static {
         // The map of root tokens, that begin a grammer
@@ -70,14 +72,19 @@ public class BaseModelAdaptor implements ModelAdaptor {
         LIST_CLASS.put("roles", Role.class);
         LIST_CLASS.put("parameters", Parameter.class);
         LIST_CLASS.put("roleInstantiations", MessageSignature.class);
-        LIST_CLASS.put("types", PayloadTypeDecl.class);
+        LIST_CLASS.put("typeDeclarations", PayloadTypeDecl.class);
+        LIST_CLASS.put("types", PayloadType.class);
         LIST_CLASS.put("imports", ImportDecl.class);
         
         // When a particular class has multiple properties of the
         // same type, then a preceding token must be used to
         // determine which property to set. This map provides the
         // mapping between the property name and the token.
-        PROPERTY_TOKENS.put("import:format", "<");
+        PROPERTY_TOKENS.put("payloadTypeDecl:format", "<");
+        PROPERTY_TOKENS.put("payloadType:variable", ":");
+        PROPERTY_TOKENS.put("payloadType:type", "");
+        
+        CLEAR_TOKEN_LIST_RULES.add("payloadType");
     }
     
     /**
@@ -119,7 +126,7 @@ public class BaseModelAdaptor implements ModelAdaptor {
 	 * {@inheritDoc}
 	 */
 	public boolean shouldClearToken(String ruleName) {
-		return (false);
+		return (CLEAR_TOKEN_LIST_RULES.contains(ruleName));
 	}
 
 	/**

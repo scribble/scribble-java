@@ -139,13 +139,13 @@ public class LBlock extends LActivity {
 	 */
     public void toText(StringBuffer buf, int level) {
 		
-		buf.append(" {\r\n");
+		buf.append("{\n");
 		
 		for (LActivity act : _contents) {
 			act.toText(buf, level+1);
 		}
 		
 		indent(buf, level);
-		buf.append("}\r\n");
+		buf.append("}");
 	}
 }

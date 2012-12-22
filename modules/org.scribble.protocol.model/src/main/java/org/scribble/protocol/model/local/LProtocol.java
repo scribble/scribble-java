@@ -24,7 +24,7 @@ import org.scribble.protocol.model.Visitor;
  */
 public class LProtocol extends Protocol {
     
-	private Role _role=null;
+	private Role _localRole=null;
     private LBlock _block=null;
 
     /**
@@ -34,25 +34,25 @@ public class LProtocol extends Protocol {
     }
     
     /**
-     * This method returns the located role. This
+     * This method returns the local role. This
      * field is set when the protocol represents a local
      * model.
      * 
-     * @return The located role
+     * @return The local role
      */
-    public Role getRole() {
-        return (_role);
+    public Role getLocalRole() {
+        return (_localRole);
     }
     
     /**
-     * This method sets the located role. This
+     * This method sets the local role. This
      * field is set when the protocol represents a local
      * model.
      * 
-     * @param role The located role
+     * @param role The local role
      */
-    public void setRole(Role role) {
-        _role = role;
+    public void setLocalRole(Role role) {
+        _localRole = role;
     }
     
     /**
@@ -116,7 +116,7 @@ public class LProtocol extends Protocol {
             ret += "role " + role.getName() + " ";
         }
         
-        ret += ")\r\n";
+        ret += ")\n";
         
         ret += getBlock();
         
@@ -136,8 +136,8 @@ public class LProtocol extends Protocol {
     	
     	buf.append(" at ");
     	
-    	if (_role != null) {
-    		_role.toText(buf, level);
+    	if (_localRole != null) {
+    		_localRole.toText(buf, level);
     	}
     	
     	buf.append("(");
@@ -149,13 +149,13 @@ public class LProtocol extends Protocol {
     		buf.append("role ");
     		getRoles().get(i).toText(buf, level);
     	}
-    	buf.append(")");
+    	buf.append(") ");
     	
     	
     	if (_block != null) {
     		_block.toText(buf, level);
     	}
     	
-		buf.append("\r\n");
+		buf.append("\n");
 	}    
 }

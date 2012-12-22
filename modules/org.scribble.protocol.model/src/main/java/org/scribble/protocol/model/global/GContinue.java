@@ -107,6 +107,6 @@ public class GContinue extends GActivity {
     		buf.append(_label);
     	}
     	
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

@@ -74,6 +74,6 @@ public class GCustomActivity extends GActivity {
     		buf.append(_roles.get(i));
     	}
     	
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

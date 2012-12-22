@@ -93,7 +93,7 @@ public class GProtocol extends Protocol {
             ret += ("role "+role.getName()+" ");
         }
         
-        ret += ")\r\n";
+        ret += ")\n";
         
         ret += getBlock();
         
@@ -120,13 +120,13 @@ public class GProtocol extends Protocol {
     		buf.append("role ");
     		getRoles().get(i).toText(buf, level);
     	}
-    	buf.append(")");
+    	buf.append(") ");
     	
     	
     	if (_block != null) {
     		_block.toText(buf, level);
     	}
     	
-		buf.append("\r\n");
+		buf.append("\n");
 	}    
 }

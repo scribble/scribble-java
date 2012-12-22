@@ -1,0 +1,9 @@
+package scribble.examples;
+
+local protocol LChoice at Buyer(role Seller) {
+	par {
+		Order to Seller;
+	} and {
+		QuoteRequest to Seller;
+	}
+}

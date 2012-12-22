@@ -1,7 +1,6 @@
-package pack;
+package scribble.examples;
 
-global protocol GChoice(role Buyer, role Seller) {
-
+global protocol GChoice(role Buyer,role Seller) {
 	choice at Buyer {
 		Order from Buyer to Seller;
 	} or {

@@ -24,18 +24,70 @@ import org.scribble.protocol.model.Module;
 public class ProtocolParserTest {
     
     @org.junit.Test
+    public void testGMessage() {
+    	testParser("GMessage");
+    }
+    
+    @org.junit.Test
+    public void testLSend() {
+    	testParser("LSend");
+    }
+    
+    @org.junit.Test
+    public void testLReceive() {
+    	testParser("LReceive");
+    }
+    
+    @org.junit.Test
     public void testGChoice() {
+    	testParser("GChoice");
+    }
+    
+    @org.junit.Test
+    public void testLChoice() {
+    	testParser("LChoice");
+    }
+    
+    @org.junit.Test
+    public void testGParallel() {
+    	testParser("GParallel");
+    }
+    
+    @org.junit.Test
+    public void testLParallel() {
+    	testParser("LParallel");
+    }
+    
+    protected void testParser(String name) {
     	
     	try {
-    		java.io.InputStream is=ClassLoader.getSystemResourceAsStream("org/scribble/protocol/parser/GChoice.spr");
+    		java.io.InputStream is=ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+".spr");
     		
     		ProtocolParser pp=new ProtocolParser();
     		
-    		IssueLogger logger=new ConsoleIssueLogger();
+    		TestIssueLogger logger=new TestIssueLogger();
     		
     		Module module=pp.parse(is, null, logger);
     		
-    		System.out.println("MODULE="+module);
+    		if (logger.isErrorsOrWarnings()) {
+    			fail("Unexpected errors and/or warnings in "+name+".spr");
+    		}
+    		
+    		is = ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+".spr");
+    		
+    		byte[] b=new byte[is.available()];
+    		is.read(b);
+    		
+    		is.close();
+    		
+    		String parsed=module.toString();
+    		String expecting=new String(b);
+    		
+    		if (!parsed.equals(expecting)) {
+    			System.err.println("Parsed protocol '"+name+
+    					"' mismatch\nExpecting:\n"+expecting+"\nParsed:\n"+parsed);
+    			fail("Parsed protocol '"+name+"' mismatch");
+    		}
     		
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -43,21 +95,23 @@ public class ProtocolParserTest {
     }
     
     protected class TestIssueLogger implements IssueLogger {
+    	
+    	private java.util.List<String> _errors=new java.util.ArrayList<String>();
+    	private java.util.List<String> _warnings=new java.util.ArrayList<String>();
 
 		public void error(String issue, Map<String, Object> props) {
-			// TODO Auto-generated method stub
-			
+			_errors.add(issue);
 		}
 
 		public void warning(String issue, Map<String, Object> props) {
-			// TODO Auto-generated method stub
-			
+			_warnings.add(issue);
 		}
 
 		public void info(String issue, Map<String, Object> props) {
-			// TODO Auto-generated method stub
-			
 		}
     	
+		public boolean isErrorsOrWarnings() {
+			return (_errors.size() > 0 || _warnings.size() > 0);
+		}
     }
 }

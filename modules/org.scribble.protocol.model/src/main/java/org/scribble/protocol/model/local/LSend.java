@@ -167,13 +167,13 @@ public class LSend extends LActivity {
 		
     	indent(buf, level);
     	
-    	buf.append(_messageSignature);
+    	_messageSignature.toText(buf, level);
     	
     	if (_toRole != null) {
     		buf.append(" to ");
     		_toRole.toText(buf, level);
     	}
     	
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

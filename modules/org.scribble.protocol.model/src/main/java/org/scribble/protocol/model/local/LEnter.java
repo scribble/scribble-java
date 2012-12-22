@@ -101,6 +101,6 @@ public class LEnter extends LActivity {
     	
     	buf.append(_protocol);
     	
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

@@ -107,6 +107,6 @@ public class LContinue extends LActivity {
     		buf.append(_label);
     	}
     	
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

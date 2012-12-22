@@ -167,6 +167,6 @@ public class PayloadTypeDecl extends ModelObject {
 			buf.append(_alias);
 		}
 		
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

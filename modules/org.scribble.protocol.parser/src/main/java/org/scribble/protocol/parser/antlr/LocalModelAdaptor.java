@@ -55,8 +55,8 @@ public class LocalModelAdaptor extends BaseModelAdaptor {
         TOKEN_CLASS.put("continue", LContinue.class);
         TOKEN_CLASS.put("create", LCreate.class);
         TOKEN_CLASS.put("enter", LEnter.class);
-        TOKEN_CLASS.put("parallel", LParallel.class);
-        TOKEN_CLASS.put("global", LProtocol.class);
+        TOKEN_CLASS.put("par", LParallel.class);
+        TOKEN_CLASS.put("local", LProtocol.class);
         TOKEN_CLASS.put("rec", LRecursion.class);
         
         // Clear token list - determines whether prior to processing
@@ -80,7 +80,11 @@ public class LocalModelAdaptor extends BaseModelAdaptor {
         // mapping between the property name and the token.
         PROPERTY_TOKENS.put("receive:fromRole", "from");
         PROPERTY_TOKENS.put("send:toRole", "to");        
-        PROPERTY_TOKENS.put("choice:role", "at");
+        PROPERTY_TOKENS.put("localChoice:role", "at");
+        PROPERTY_TOKENS.put("localProtocolDecl:name", "protocol");
+        PROPERTY_TOKENS.put("localProtocolDecl:localRole", "at");
+        
+        CLEAR_TOKEN_LIST_RULES.add("roleDefs");
     }
     
     /**

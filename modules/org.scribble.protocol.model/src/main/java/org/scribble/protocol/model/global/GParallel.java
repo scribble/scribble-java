@@ -103,11 +103,11 @@ public class GParallel extends GActivity {
     	
     	for (int i=0; i < getPaths().size(); i++) {
     		if (i > 0) {
-    			buf.append(" and");
+    			buf.append(" and ");
     		}
     		getPaths().get(i).toText(buf, level);
     	}
     	
-		buf.append("\r\n");
+		buf.append("\n");
 	}
 }

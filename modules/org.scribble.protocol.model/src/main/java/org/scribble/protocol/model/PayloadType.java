@@ -85,6 +85,10 @@ public class PayloadType extends ModelObject {
             ret = "<Unnamed Type>";
         }
         
+        if (_variable != null) {
+        	ret += ":"+_variable;
+        }
+        
         return (ret);
     }
 
@@ -100,10 +104,10 @@ public class PayloadType extends ModelObject {
 	 * {@inheritDoc}
 	 */
 	public void toText(StringBuffer buf, int level) {
-		if (_variable != null) {
-			buf.append(_variable);
-			buf.append(':');
-		}
 		buf.append(_type);
+		if (_variable != null) {
+			buf.append(':');
+			buf.append(_variable);
+		}
 	}
 }

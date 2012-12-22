@@ -122,6 +122,6 @@ public class Package extends ModelObject {
 		if (_name != null) {
 			buf.append(_name);
 		}
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

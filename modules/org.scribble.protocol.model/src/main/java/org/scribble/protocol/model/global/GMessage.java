@@ -198,7 +198,7 @@ public class GMessage extends GActivity {
 		
     	indent(buf, level);
     	
-    	buf.append(_messageSignature);
+    	_messageSignature.toText(buf, level);
     	
     	if (_fromRole != null) {
     		buf.append(" from ");
@@ -210,6 +210,6 @@ public class GMessage extends GActivity {
     		_toRole.toText(buf, level);
     	}
     	
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

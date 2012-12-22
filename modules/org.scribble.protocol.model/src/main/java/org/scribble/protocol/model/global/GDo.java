@@ -129,6 +129,6 @@ public class GDo extends GActivity {
     		_roleInstantiations.get(i).toText(buf, level);
     	}
     	
-		buf.append(");\r\n");
+		buf.append(");\n");
 	}
 }

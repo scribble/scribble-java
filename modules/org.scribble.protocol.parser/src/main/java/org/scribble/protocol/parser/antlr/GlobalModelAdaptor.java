@@ -53,7 +53,7 @@ public class GlobalModelAdaptor extends BaseModelAdaptor {
         TOKEN_CLASS.put("choice", GChoice.class);
         TOKEN_CLASS.put("continue", GContinue.class);
         TOKEN_CLASS.put("do", GDo.class);
-        TOKEN_CLASS.put("parallel", GParallel.class);
+        TOKEN_CLASS.put("par", GParallel.class);
         TOKEN_CLASS.put("global", GProtocol.class);
         TOKEN_CLASS.put("rec", GRecursion.class);
         TOKEN_CLASS.put("spawn", GSpawn.class);

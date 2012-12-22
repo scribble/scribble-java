@@ -166,13 +166,13 @@ public class LReceive extends LActivity {
 		
     	indent(buf, level);
     	
-    	buf.append(_messageSignature);
+    	_messageSignature.toText(buf, level);
     	
     	if (_fromRole != null) {
     		buf.append(" from ");
     		_fromRole.toText(buf, level);
     	}
     	
-		buf.append(";\r\n");
+		buf.append(";\n");
 	}
 }

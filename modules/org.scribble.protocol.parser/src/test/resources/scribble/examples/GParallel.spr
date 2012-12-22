@@ -1,0 +1,9 @@
+package scribble.examples;
+
+global protocol GChoice(role Buyer,role Seller) {
+	par {
+		Order from Buyer to Seller;
+	} and {
+		QuoteRequest from Buyer to Seller;
+	}
+}
