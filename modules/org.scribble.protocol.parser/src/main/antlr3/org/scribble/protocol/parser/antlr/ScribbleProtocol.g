@@ -112,13 +112,15 @@ IDENTIFIER : ('a'..'z' | 'A'..'Z' | '_')('a'..'z'| 'A'..'Z' |DIGIT|'_')* ;
  
 module: packageDecl ( importDecl )* ( payloadTypeDecl )* ( protocolDecl )* ;
 
-packageName: IDENTIFIER ( '.' IDENTIFIER )* ;
+fullyQualifiedName: IDENTIFIER ( '.' IDENTIFIER )* ;
 
 simpleName: IDENTIFIER ;
 
-packageDecl: 'package'^ packageName ';'! ;
+packageDecl: 'package' fullyQualifiedName ';'! ;
 
-importDecl: 'import'^ packageName | 'from' packageName 'import' IDENTIFIER ( 'as' IDENTIFIER )? ';'! ;		// Added ;
+importDecl: 'import'^ fullyQualifiedName ';'! ;
+
+// | ( 'from'^ moduleName 'import' simpleName ( 'as' simpleName )? ) ';'! ;		// Added ;
 
 ExtIdentifier : ('a'..'z' | 'A'..'Z' | '_' | SYMBOL)('a'..'z' | 'A'..'Z' | DIGIT | '_' | SYMBOL)* ;
 
@@ -191,7 +193,7 @@ interrupt: messageSignature ( ','! messageSignature )* 'by' roleName ( ','! role
 
 doDef: 'do'^ simpleName ( '<'! argumentList '>'! )? '('! roleInstantiationList ')'! ';'! ;		// Rule name changed as caused java compilation error
 
-roleInstantiation: simpleName 'as' simpleName ;
+roleInstantiation: roleName 'as' roleName ;
 
 roleInstantiationList: roleInstantiation ( ','! roleInstantiation )* ;
 	
@@ -240,5 +242,5 @@ catchDef: 'catch'^ messageSignature ( ','! messageSignature )* ;		// Have remove
 
 create: 'create'^ simpleName '<'! parameterList '>'! '('! ( roleInstantiationList )? ')'! ';'! ;		// Does not say terminated by ; in spec
 
-enter: 'enter'^ simpleName 'as' roleName ';'! ;		// Does not say terminated by ; in spec
+enter: 'enter'^ simpleName 'as'! roleName ';'! ;		// Does not say terminated by ; in spec
 

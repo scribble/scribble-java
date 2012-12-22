@@ -23,7 +23,7 @@ package org.scribble.protocol.model;
  */
 public class Module extends ModelObject {
     
-	private org.scribble.protocol.model.Package _package=null;
+	private org.scribble.protocol.model.FullyQualifiedName _package=null;
     private Protocol _protocol=null;
     private java.util.List<ImportDecl> _imports=
             new ContainmentList<ImportDecl>(this, ImportDecl.class);
@@ -41,7 +41,7 @@ public class Module extends ModelObject {
      * 
      * @return The package
      */
-    public org.scribble.protocol.model.Package getPackage() {
+    public org.scribble.protocol.model.FullyQualifiedName getPackage() {
     	return (_package);
     }
     
@@ -50,7 +50,7 @@ public class Module extends ModelObject {
      * 
      * @param pn The package
      */
-    public void setPackage(org.scribble.protocol.model.Package pn) {
+    public void setPackage(org.scribble.protocol.model.FullyQualifiedName pn) {
     	_package = pn;
     }
     
@@ -132,9 +132,13 @@ public class Module extends ModelObject {
      */
     public void toText(StringBuffer buf, int level) {
     	if (_package != null) {
+    		indent(buf, level);
+    		
+    		buf.append("package ");
+    		
     		_package.toText(buf, level);
     		
-    		buf.append("\n");
+    		buf.append(";\n\n");
     	}
     	
     	for (ImportDecl imp : getImports()) {

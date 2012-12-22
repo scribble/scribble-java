@@ -54,7 +54,7 @@ public class BaseModelAdaptor implements ModelAdaptor {
         // with
     	
     	// Common model
-        TOKEN_CLASS.put("package", org.scribble.protocol.model.Package.class);
+        //TOKEN_CLASS.put("package", org.scribble.protocol.model.FullyQualifiedName.class);
         TOKEN_CLASS.put("import", org.scribble.protocol.model.ImportDecl.class);
         TOKEN_CLASS.put("type", org.scribble.protocol.model.PayloadTypeDecl.class);
         TOKEN_CLASS.put("sig", org.scribble.protocol.model.Parameter.class);
@@ -66,8 +66,9 @@ public class BaseModelAdaptor implements ModelAdaptor {
         PARSER_GROUPING_RULE_CLASS.put("messageSignature", MessageSignature.class);
         PARSER_GROUPING_RULE_CLASS.put("roleInstantiation", RoleInstantiation.class);
         PARSER_GROUPING_RULE_CLASS.put("roleName", Role.class);
-        PARSER_GROUPING_RULE_CLASS.put("packageName", String.class);
+        PARSER_GROUPING_RULE_CLASS.put("fullyQualifiedName", org.scribble.protocol.model.FullyQualifiedName.class);
         PARSER_GROUPING_RULE_CLASS.put("simpleName", String.class);
+        //PARSER_GROUPING_RULE_CLASS.put("from", org.scribble.protocol.model.ImportDecl.class);
 
         // Defines the list element base type associated with a
         // property name
@@ -86,8 +87,11 @@ public class BaseModelAdaptor implements ModelAdaptor {
         PROPERTY_TOKENS.put("payloadTypeDecl:format", "<");
         PROPERTY_TOKENS.put("payloadType:variable", ":");
         PROPERTY_TOKENS.put("payloadType:type", "");
-        PROPERTY_TOKENS.put("roleInstantiation:name", "");
-        PROPERTY_TOKENS.put("roleInstantiation:alias", "as");
+        PROPERTY_TOKENS.put("roleInstantiation:role", "");
+        PROPERTY_TOKENS.put("roleInstantiation:as", "as");
+        //PROPERTY_TOKENS.put("importDecl:moduleName", "from");
+        //PROPERTY_TOKENS.put("importDecl:memberName", "import");
+        //PROPERTY_TOKENS.put("importDecl:alias", "as");
         
         CLEAR_TOKEN_LIST_RULES.add("payloadType");
         CLEAR_TOKEN_LIST_RULES.add("roleInstantiation");

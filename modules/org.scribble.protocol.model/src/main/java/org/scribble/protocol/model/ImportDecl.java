@@ -22,8 +22,8 @@ package org.scribble.protocol.model;
  */
 public class ImportDecl extends ModelObject {
 
-    private String _packageName=null;    
-    private String _moduleName=null;
+    private FullyQualifiedName _moduleName=null;
+    private String _memberName=null;    
     private String _alias=null;
 
     /**
@@ -39,29 +39,9 @@ public class ImportDecl extends ModelObject {
      */
     public ImportDecl(ImportDecl copy) {
         super(copy);
-        _packageName = copy.getPackageName();
         _moduleName = copy.getModuleName();
+        _memberName = copy.getMemberName();
         _alias = copy.getAlias();
-    }
-    
-    /**
-     * This method returns the name of the
-     * type being imported.
-     * 
-     * @return The name
-     */
-    public String getPackageName() {
-        return (_packageName);
-    }
-    
-    /**
-     * This method sets the name of the
-     * type being imported.
-     * 
-     * @param name The name
-     */
-    public void setPackageName(String name) {
-    	_packageName = name;
     }
     
     /**
@@ -69,7 +49,7 @@ public class ImportDecl extends ModelObject {
      * 
      * @return The optional module name
      */
-    public String getModuleName() {
+    public FullyQualifiedName getModuleName() {
         return (_moduleName);
     }
     
@@ -78,8 +58,28 @@ public class ImportDecl extends ModelObject {
      * 
      * @param module The optional module name
      */
-    public void setModuleName(String module) {
+    public void setModuleName(FullyQualifiedName module) {
     	_moduleName = module;
+    }
+    
+    /**
+     * This method returns the name of the
+     * member being imported.
+     * 
+     * @return The member name
+     */
+    public String getMemberName() {
+        return (_memberName);
+    }
+    
+    /**
+     * This method sets the name of the
+     * member being imported.
+     * 
+     * @param name The member name
+     */
+    public void setMemberName(String name) {
+    	_memberName = name;
     }
     
     /**
@@ -112,10 +112,10 @@ public class ImportDecl extends ModelObject {
     
     @Override
     public String toString() {
-        String ret=getPackageName();
+        String ret=getMemberName();
         
         if (ret == null) {
-            ret = "<Unnamed Package>";
+            ret = "<Module Not Set>";
         }
         
         return (ret);
@@ -127,18 +127,18 @@ public class ImportDecl extends ModelObject {
 	public void toText(StringBuffer buf, int level) {
 		indent(buf, level);
 		
-		if (_moduleName != null) {
+		if (_memberName != null) {
 			buf.append("from ");
 		} else {
 			buf.append("import ");
 		}
 		
-		buf.append(_packageName);
+		buf.append(_moduleName);
 		
-		if (_moduleName != null) {
+		if (_memberName != null) {
 			buf.append(" import ");
 			
-			buf.append(_moduleName);
+			buf.append(_memberName);
 			
 			if (_alias != null) {
 				buf.append(" as ");

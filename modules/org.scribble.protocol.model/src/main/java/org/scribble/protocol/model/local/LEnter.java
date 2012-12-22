@@ -101,6 +101,10 @@ public class LEnter extends LActivity {
     	
     	buf.append(_protocol);
     	
+    	buf.append(" as ");
+    	
+    	_role.toText(buf, level);
+    	
 		buf.append(";\n");
 	}
 }

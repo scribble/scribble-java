@@ -21,8 +21,8 @@ package org.scribble.protocol.model;
  */
 public class RoleInstantiation extends ModelObject {
     
-    private String _name=null;    
-    private String _alias=null;    
+    private Role _role=null;    
+    private Role _as=null;    
 
     /**
      * This is the default constructor.
@@ -37,26 +37,26 @@ public class RoleInstantiation extends ModelObject {
      */
     public RoleInstantiation(RoleInstantiation role) {
         super(role);
-        _name = role.getName();
-        _alias = role.getAlias();
+        _role = role.getRole();
+        _as = role.getAs();
     }
     
     /**
-     * This method sets the name of the role.
+     * This method sets the role.
      * 
-     * @param name The name
+     * @param role The role
      */
-    public void setName(String name) {
-        _name = name;
+    public void setRole(Role role) {
+        _role = role;
     }
     
     /**
-     * This method returns the name of the role.
+     * This method returns the role.
      * 
-     * @return The name
+     * @return The role
      */
-    public String getName() {
-        return (_name);
+    public Role getRole() {
+        return (_role);
     }
     
     /**
@@ -64,8 +64,8 @@ public class RoleInstantiation extends ModelObject {
      * 
      * @param as The 'as' role
      */
-    public void setAlias(String as) {
-        _alias = as;
+    public void setAs(Role as) {
+        _as = as;
     }
     
     /**
@@ -73,8 +73,8 @@ public class RoleInstantiation extends ModelObject {
      * 
      * @return The 'as' role
      */
-    public String getAlias() {
-        return (_alias);
+    public Role getAs() {
+        return (_as);
     }
     
     @Override
@@ -84,8 +84,8 @@ public class RoleInstantiation extends ModelObject {
         if (obj instanceof RoleInstantiation) {
             RoleInstantiation other=(RoleInstantiation)obj;
             
-            if (other.getName() != null && other.getName().equals(_name)
-            		&& other.getAlias() != null && other.getAlias().equals(_alias)) {
+            if (other.getRole() != null && other.getRole().equals(_role)
+            		&& other.getAs() != null && other.getAs().equals(_as)) {
                 ret = true;
             }
         }
@@ -97,8 +97,8 @@ public class RoleInstantiation extends ModelObject {
     public int hashCode() {
         int ret=super.hashCode();
         
-        if (_name != null) {
-            ret = _name.hashCode();
+        if (_role != null) {
+            ret = _role.hashCode();
         }
         
         return (ret);
@@ -106,7 +106,7 @@ public class RoleInstantiation extends ModelObject {
     
     @Override
     public String toString() {
-        String ret=getName();
+        String ret=getRole()==null?null:getRole().getName();
         
         if (ret == null) {
             ret = "<Unnamed Role>";
@@ -128,13 +128,13 @@ public class RoleInstantiation extends ModelObject {
 	 * {@inheritDoc}
 	 */
     public void toText(StringBuffer buf, int level) {
-		if (_name != null) {
-			buf.append(_name);
+		if (_role != null) {
+			_role.toText(buf, level);
 		}
 		
-		if (_alias != null) {
+		if (_as != null) {
 			buf.append(" as ");
-			buf.append(_alias);
+			_as.toText(buf, level);
 		}
 	}
 }

@@ -19,14 +19,14 @@ package org.scribble.protocol.model;
  * This class represents a package.
  * 
  */
-public class Package extends ModelObject {
+public class FullyQualifiedName extends ModelObject {
     
     private String _name=null;    
 
     /**
      * This is the default constructor.
      */
-    public Package() {
+    public FullyQualifiedName() {
     }
     
     /**
@@ -34,7 +34,7 @@ public class Package extends ModelObject {
      * 
      * @param p The package
      */
-    public Package(Package p) {
+    public FullyQualifiedName(FullyQualifiedName p) {
         super(p);
         _name = p.getName();
     }
@@ -44,7 +44,7 @@ public class Package extends ModelObject {
      * 
      * @param packageName The package
      */
-    public Package(String packageName) {
+    public FullyQualifiedName(String packageName) {
         _name = packageName;
     }
     
@@ -70,8 +70,8 @@ public class Package extends ModelObject {
     public boolean equals(Object obj) {
         boolean ret=false;
     
-        if (obj instanceof Package) {
-            Package other=(Package)obj;
+        if (obj instanceof FullyQualifiedName) {
+            FullyQualifiedName other=(FullyQualifiedName)obj;
             
             if (other.getName() != null && other.getName().equals(_name)) {
                 ret = true;
@@ -97,7 +97,7 @@ public class Package extends ModelObject {
         String ret=getName();
         
         if (ret == null) {
-            ret = "<Unnamed Package>";
+            ret = "<Fully Qualified Name not set>";
         }
         
         return (ret);
@@ -116,12 +116,8 @@ public class Package extends ModelObject {
 	 * {@inheritDoc}
 	 */
     public void toText(StringBuffer buf, int level) {
-		indent(buf, level);
-		
-		buf.append("package ");
 		if (_name != null) {
 			buf.append(_name);
 		}
-		buf.append(";\n");
 	}
 }
