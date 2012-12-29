@@ -16,19 +16,35 @@
  */
 package org.scribble.protocol.parser.antlr;
 
+import java.util.Stack;
+
+import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.local.LEnter;
+
 /**
- * This interface defines the model adapter for the parser rules.
+ * This class provides the model adapter for the 'enter' parser rule.
  *
  */
-public interface ModelAdaptor {
+public class EnterModelAdaptor implements ModelAdaptor {
 
 	/**
-	 * This method creates the model object(s) appropriate for the
-	 * supplied stack of components, and returns them.
-	 * 
-	 * @param components The stack of components
-	 * @return The created model object
+	 * {@inheritDoc}
 	 */
-	public Object createModelObject(java.util.Stack<Object> components);
-	
+	public Object createModelObject(Stack<Object> components) {		
+		LEnter ret=new LEnter();
+
+		ret.setRole((Role)components.pop());
+		
+		components.pop(); // as
+		
+		ret.setProtocol(((CommonToken)components.pop()).getText());
+		
+		components.pop(); // enter
+
+		components.push(ret);
+			
+		return ret;
+	}
+
 }

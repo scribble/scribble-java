@@ -2,8 +2,8 @@ package scribble.examples;
 
 local protocol LChoice at Buyer(role Seller) {
 	choice at Buyer {
-		Order to Seller;
+		buy(Order) to Seller;
 	} or {
-		QuoteRequest to Seller;
+		buy(QuoteRequest) to Seller;
 	}
 }

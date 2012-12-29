@@ -21,7 +21,7 @@ package org.scribble.protocol.model;
 public abstract class Protocol extends ModelObject {
     
     private String _name=null;
-    private java.util.List<Role> _roles=new java.util.ArrayList<Role>();
+    private java.util.List<RoleDefn> _roleDefns=new java.util.ArrayList<RoleDefn>();
 
     /**
      * The default constructor.
@@ -48,13 +48,13 @@ public abstract class Protocol extends ModelObject {
     }
     
     /**
-     * This method returns the parameters associated with
+     * This method returns the role definitions associated with
      * the protocol.
      * 
-     * @return The parameter definitions
+     * @return The role definitions
      */
-    public java.util.List<Role> getRoles() {
-        return (_roles);
+    public java.util.List<RoleDefn> getRoleDefinitions() {
+        return (_roleDefns);
     }
     
     /**

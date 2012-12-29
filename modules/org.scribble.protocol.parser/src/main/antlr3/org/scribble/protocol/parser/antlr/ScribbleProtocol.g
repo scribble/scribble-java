@@ -152,9 +152,7 @@ roleDef: 'role'^ simpleName ;
 
 roleName: IDENTIFIER ;
 
-parameter: 'sig'^ simpleName  ;
-
-parameterList: parameter ( ','! parameter )* ;				// created parameter rule to make easier to parse
+parameterList: 'sig'^ simpleName ( ',' 'sig'^ simpleName )* ;				// created parameter rule to make easier to parse
 
 argumentList: messageSignature ( ',' messageSignature )* ;
 
@@ -191,13 +189,11 @@ interruptible: 'interruptible'^ globalInteractionBlock 'with' '{'! ( interrupt )
 
 interrupt: messageSignature ( ','! messageSignature )* 'by' roleName ( ','! roleName )* ;
 
-doDef: 'do'^ simpleName ( '<'! argumentList '>'! )? '('! roleInstantiationList ')'! ';'! ;		// Rule name changed as caused java compilation error
+doDef: 'do'^ simpleName ( '<' argumentList '>' )? '(' roleInstantiationList ')' ';'! ;		// Rule name changed as caused java compilation error
 
-roleInstantiation: roleName 'as' roleName ;
-
-roleInstantiationList: roleInstantiation ( ','! roleInstantiation )* ;
+roleInstantiationList: roleName 'as' roleName ( ',' roleName 'as' roleName )* ;
 	
-spawn: roleName 'spawns' simpleName '<'! ( argumentList )? '>'! '('! roleInstantiationList ')'! ';'! ;
+spawn: roleName 'spawns' simpleName ( '<' argumentList '>' )? '(' roleInstantiationList ')' ';'! ;
 
 
 
@@ -240,7 +236,7 @@ throwDef: 'throw'^ messageSignature ( ','! messageSignature )* ;		// Have remove
 catchDef: 'catch'^ messageSignature ( ','! messageSignature )* ;		// Have removed initial brakcet
 
 
-create: 'create'^ simpleName '<'! parameterList '>'! '('! ( roleInstantiationList )? ')'! ';'! ;		// Does not say terminated by ; in spec
+create: 'create'^ simpleName ( '<' parameterList '>' )? '(' ( roleInstantiationList )? ')' ';'! ;		// Does not say terminated by ; in spec
 
-enter: 'enter'^ simpleName 'as'! roleName ';'! ;		// Does not say terminated by ; in spec
+enter: 'enter'^ simpleName 'as' roleName ';'! ;		// Does not say terminated by ; in spec
 

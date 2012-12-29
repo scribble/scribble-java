@@ -16,19 +16,30 @@
  */
 package org.scribble.protocol.parser.antlr;
 
+import java.util.Stack;
+
+import org.scribble.protocol.model.local.LActivity;
+import org.scribble.protocol.model.local.LBlock;
+
 /**
- * This interface defines the model adapter for the parser rules.
+ * This class provides the model adapter for the 'localInteractionBlock' parser rule.
  *
  */
-public interface ModelAdaptor {
+public class LocalInteractionBlockModelAdaptor implements ModelAdaptor {
 
 	/**
-	 * This method creates the model object(s) appropriate for the
-	 * supplied stack of components, and returns them.
-	 * 
-	 * @param components The stack of components
-	 * @return The created model object
+	 * {@inheritDoc}
 	 */
-	public Object createModelObject(java.util.Stack<Object> components);
-	
+	public Object createModelObject(Stack<Object> components) {
+		LBlock ret=new LBlock();
+		
+		while (components.peek() instanceof LActivity) {
+			ret.getContents().add(0, (LActivity)components.pop());
+		}
+		
+		components.push(ret);
+		
+		return ret;
+	}
+
 }

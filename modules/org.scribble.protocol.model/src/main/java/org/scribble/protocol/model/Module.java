@@ -24,11 +24,12 @@ package org.scribble.protocol.model;
 public class Module extends ModelObject {
     
 	private org.scribble.protocol.model.FullyQualifiedName _package=null;
-    private Protocol _protocol=null;
     private java.util.List<ImportDecl> _imports=
             new ContainmentList<ImportDecl>(this, ImportDecl.class);
     private java.util.List<PayloadTypeDecl> _payloadTypes=
             new ContainmentList<PayloadTypeDecl>(this, PayloadTypeDecl.class);
+    private java.util.List<Protocol> _protocols=
+            new ContainmentList<Protocol>(this, Protocol.class);
 
     /**
      * The default constructor for the model.
@@ -73,31 +74,12 @@ public class Module extends ModelObject {
     }
     
     /**
-     * This method returns the definition associated with
-     * this model.
+     * This method returns the list of protocols.
      * 
-     * @return The definition
+     * @return The protocols
      */
-    public Protocol getProtocol() {
-        return (_protocol);
-    }
-    
-    /**
-     * This method set the definition associated with the
-     * model.
-     * 
-     * @param defn The definition
-     */
-    public void setProtocol(Protocol defn) {
-        if (_protocol != null) {
-            _protocol.setParent(null);
-        }
-        
-        _protocol = defn;
-        
-        if (_protocol != null) {
-            _protocol.setParent(this);
-        }
+    public java.util.List<Protocol> getProtocols() {
+        return (_protocols);
     }
     
     /**
@@ -112,8 +94,12 @@ public class Module extends ModelObject {
             imp.visit(visitor);
         }
         
-        if (getProtocol() != null) {
-            getProtocol().visit(visitor);
+        for (PayloadTypeDecl ptd : getTypeDeclarations()) {
+        	ptd.visit(visitor);
+        }
+        
+        for (Protocol protocol : getProtocols()) {
+        	protocol.visit(visitor);
         }
     }
     
@@ -157,8 +143,8 @@ public class Module extends ModelObject {
     		buf.append("\n");
     	}
     	
-    	if (getProtocol() != null) {
-    		getProtocol().toText(buf, level);
+    	for (Protocol protocol : getProtocols()) {
+    		protocol.toText(buf, level);
     	}
     }
 

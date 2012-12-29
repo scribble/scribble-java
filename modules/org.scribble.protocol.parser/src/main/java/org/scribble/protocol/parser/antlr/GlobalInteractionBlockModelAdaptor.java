@@ -16,19 +16,30 @@
  */
 package org.scribble.protocol.parser.antlr;
 
+import java.util.Stack;
+
+import org.scribble.protocol.model.global.GActivity;
+import org.scribble.protocol.model.global.GBlock;
+
 /**
- * This interface defines the model adapter for the parser rules.
+ * This class provides the model adapter for the 'globalInterationBlock' parser rule.
  *
  */
-public interface ModelAdaptor {
+public class GlobalInteractionBlockModelAdaptor implements ModelAdaptor {
 
 	/**
-	 * This method creates the model object(s) appropriate for the
-	 * supplied stack of components, and returns them.
-	 * 
-	 * @param components The stack of components
-	 * @return The created model object
+	 * {@inheritDoc}
 	 */
-	public Object createModelObject(java.util.Stack<Object> components);
-	
+	public Object createModelObject(Stack<Object> components) {
+		GBlock ret=new GBlock();
+		
+		while (components.peek() instanceof GActivity) {
+			ret.getContents().add(0, (GActivity)components.pop());
+		}
+		
+		components.push(ret);
+		
+		return ret;
+	}
+
 }

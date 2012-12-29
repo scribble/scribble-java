@@ -17,6 +17,7 @@ package org.scribble.protocol.model.local;
 
 import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.RoleDefn;
 import org.scribble.protocol.model.Visitor;
 
 /**
@@ -112,7 +113,7 @@ public class LProtocol extends Protocol {
     public String toString() {
         String ret="local protocol "+getName()+" ( ";
         
-        for (Role role : getRoles()) {
+        for (RoleDefn role : getRoleDefinitions()) {
             ret += "role " + role.getName() + " ";
         }
         
@@ -142,12 +143,12 @@ public class LProtocol extends Protocol {
     	
     	buf.append("(");
     	
-    	for (int i=0; i < getRoles().size(); i++) {
+    	for (int i=0; i < getRoleDefinitions().size(); i++) {
     		if (i > 0) {
     			buf.append(",");
     		}
     		buf.append("role ");
-    		getRoles().get(i).toText(buf, level);
+    		getRoleDefinitions().get(i).toText(buf, level);
     	}
     	buf.append(") ");
     	

@@ -1,10 +1,8 @@
 package scribble.examples;
 
 global protocol GMessage(role Buyer,role Seller) {
-	Order from Buyer to Seller;
-	Order:o from Buyer to Seller;
 	buy(Order,Customer) from Buyer to Seller;
-	buy(Order:o,Customer:c) from Buyer to Seller;
+	buy(o:Order,c:Customer) from Buyer to Seller;
 	buy(Order) from Buyer to Seller;
-	buy(Order:o) from Buyer to Seller;
+	buy(ord:Order) from Buyer to Seller;
 }

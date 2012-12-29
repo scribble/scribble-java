@@ -16,19 +16,33 @@
  */
 package org.scribble.protocol.parser.antlr;
 
+import java.util.Stack;
+
+import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.global.GBlock;
+import org.scribble.protocol.model.global.GRecursion;
+
 /**
- * This interface defines the model adapter for the parser rules.
+ * This class provides the model adapter for the 'recursion' parser rule.
  *
  */
-public interface ModelAdaptor {
+public class RecursionModelAdaptor implements ModelAdaptor {
 
 	/**
-	 * This method creates the model object(s) appropriate for the
-	 * supplied stack of components, and returns them.
-	 * 
-	 * @param components The stack of components
-	 * @return The created model object
+	 * {@inheritDoc}
 	 */
-	public Object createModelObject(java.util.Stack<Object> components);
-	
+	public Object createModelObject(Stack<Object> components) {
+		GRecursion ret=new GRecursion();
+		
+		ret.setBlock((GBlock)components.pop());
+		
+		ret.setLabel(((CommonToken)components.pop()).getText());
+		
+		components.pop(); // rec
+		
+		components.push(ret);
+		
+		return ret;
+	}
+
 }

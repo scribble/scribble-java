@@ -2,7 +2,7 @@ package scribble.examples;
 
 local protocol LRecursion at Buyer(role Seller) {
 	rec MyLabel {
-		Order to Seller;
+		buy(Order) to Seller;
 		continue MyLabel;
 	}
 }

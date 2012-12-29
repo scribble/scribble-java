@@ -1,10 +1,8 @@
 package scribble.examples;
 
 local protocol LReceive at Seller(role Buyer) {
-	Order from Buyer;
-	Order:o from Buyer;
 	buy(Order,Customer) from Buyer;
-	buy(Order:o,Customer:c) from Buyer;
+	buy(o:Order,c:Customer) from Buyer;
 	buy(Order) from Buyer;
-	buy(Order:o) from Buyer;
+	buy(ord:Order) from Buyer;
 }

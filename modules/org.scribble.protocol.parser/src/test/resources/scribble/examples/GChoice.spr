@@ -2,8 +2,8 @@ package scribble.examples;
 
 global protocol GChoice(role Buyer,role Seller) {
 	choice at Buyer {
-		Order from Buyer to Seller;
+		buy(Order) from Buyer to Seller;
 	} or {
-		QuoteRequest from Buyer to Seller;
+		buy(QuoteRequest) from Buyer to Seller;
 	}
 }

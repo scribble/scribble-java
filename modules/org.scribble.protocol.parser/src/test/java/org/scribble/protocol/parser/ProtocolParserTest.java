@@ -131,6 +131,7 @@ public class ProtocolParserTest {
     		
     	} catch (Exception e) {
     		e.printStackTrace();
+    		fail("Failed to parse '"+name+".spr'");
     	}
     }
     

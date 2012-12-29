@@ -1,10 +1,8 @@
 package scribble.examples;
 
 local protocol LSend at Buyer(role Seller) {
-	Order to Seller;
-	Order:o to Seller;
 	buy(Order,Customer) to Seller;
-	buy(Order:o,Customer:c) to Seller;
+	buy(o:Order,c:Customer) to Seller;
 	buy(Order) to Seller;
-	buy(Order:o) to Seller;
+	buy(ord:Order) to Seller;
 }
