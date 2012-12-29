@@ -39,9 +39,17 @@ public class ProtocolParser {
      */
     public ProtocolParser() {
     }
-    
+
     /**
+     * This method parses the scribble protocol contained in the supplied
+     * input stream. The resource locator is used to access other resources,
+     * and the logger reports information, warnings and errors.
      * 
+     * @param is The input stream
+     * @param locator The resource locator
+     * @param logger The logger
+     * @return The module, or null if an error occurred
+     * @throws IOException Failed to retrieve protocol from input stream
      */
     public Module parse(java.io.InputStream is, ResourceLocator locator, IssueLogger logger)
                             throws IOException {
@@ -60,7 +68,7 @@ public class ProtocolParser {
                
             ScribbleProtocolParser parser = new ScribbleProtocolParser(tokens);
 
-            ProtocolTreeAdaptor adaptor=new ProtocolTreeAdaptor(logger);
+            ProtocolTreeAdaptor adaptor=new ProtocolTreeAdaptor();
             adaptor.setParser(parser);
             
             parser.setDocument(document);

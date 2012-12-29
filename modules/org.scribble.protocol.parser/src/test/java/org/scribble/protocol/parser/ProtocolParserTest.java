@@ -57,7 +57,7 @@ public class ProtocolParserTest {
     public void testGMessage() {
     	testParser("GMessage");
     }
-    
+
     @org.junit.Test
     public void testLSend() {
     	testParser("LSend");
@@ -135,20 +135,23 @@ public class ProtocolParserTest {
     	}
     }
     
-    protected class TestIssueLogger implements IssueLogger {
+    protected class TestIssueLogger extends ConsoleIssueLogger {
     	
     	private java.util.List<String> _errors=new java.util.ArrayList<String>();
     	private java.util.List<String> _warnings=new java.util.ArrayList<String>();
 
 		public void error(String issue, Map<String, Object> props) {
+			super.error(issue, props);
 			_errors.add(issue);
 		}
 
 		public void warning(String issue, Map<String, Object> props) {
+			super.warning(issue, props);
 			_warnings.add(issue);
 		}
 
 		public void info(String issue, Map<String, Object> props) {
+			super.info(issue, props);
 		}
     	
 		public boolean isErrorsOrWarnings() {

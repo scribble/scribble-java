@@ -30,31 +30,6 @@ package org.scribble.protocol.parser.antlr;
 	private String _document=null;
 	private boolean _errorOccurred=false;
 	
-	public static void main(String[] args) throws Exception {
-        ScribbleProtocolLexer lex = new ScribbleProtocolLexer(new ANTLRFileStream(args[0]));
-       	CommonTokenStream tokens = new CommonTokenStream(lex);
-
-		ScribbleProtocolParser parser = new ScribbleProtocolParser(tokens);
-
-		ProtocolTreeAdaptor adaptor=new ProtocolTreeAdaptor(null);
-		adaptor.setParser(parser);
-		
-		parser.setTreeAdaptor(adaptor);
-		
-        try {
-            ScribbleProtocolParser.module_return r=parser.module();
-            
-            //CommonTree t=(CommonTree)r.getTree();
-            
-            //Tree t=(Tree)r.getTree();
-            
-            //System.out.println(t.toStringTree());
-            
-        } catch (RecognitionException e)  {
-            e.printStackTrace();
-        }
-    }
-    
     public void setIssueLogger(org.scribble.protocol.parser.IssueLogger logger) {
     	_logger = logger;
     }

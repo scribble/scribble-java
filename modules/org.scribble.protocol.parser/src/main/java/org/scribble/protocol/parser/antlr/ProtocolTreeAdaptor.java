@@ -23,7 +23,6 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 
 import org.scribble.protocol.model.Module;
-import org.scribble.protocol.parser.IssueLogger;
 
 /**
  * This class provides the antlr tree adaptor.
@@ -33,14 +32,20 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 	
 	private static final Logger LOG=Logger.getLogger(ProtocolTreeAdaptor.class.getName());
 
-	private IssueLogger _logger=null;
 	private java.util.Stack<Object> _components=new java.util.Stack<Object>();
     private ScribbleProtocolParser _parser=null;
     
-	public ProtocolTreeAdaptor(IssueLogger logger) {
-		_logger = logger;
+    /**
+     * The constructor.
+     */
+	public ProtocolTreeAdaptor() {
 	}
 	
+	/**
+	 * This method returns the module.
+	 * 
+	 * @return The module, or null if an error occurred
+	 */
 	public Module getModule() {
 		return (_components.peek() instanceof Module ? (Module)_components.peek() : null);
 	}
@@ -54,128 +59,202 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
         _parser = parser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void addChild(Object arg0, Object arg1) {
-		// TODO Auto-generated method stub
 		
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object becomeRoot(Object arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object becomeRoot(Token arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object create(Token arg0) {
 		LOG.info("CREATE TOKEN="+arg0);
 		_components.push(arg0);
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object create(int arg0, Token arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object create(int arg0, String arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object create(int arg0, Token arg1, String arg2) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object deleteChild(Object arg0, int arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object dupNode(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object dupTree(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object errorNode(TokenStream arg0, Token arg1, Token arg2,
 			RecognitionException arg3) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object getChild(Object arg0, int arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public int getChildCount(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public int getChildIndex(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object getParent(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public String getText(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Token getToken(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public int getTokenStartIndex(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public int getTokenStopIndex(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public int getType(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public int getUniqueID(Object arg0) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public boolean isNil(Object arg0) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object nil() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public void replaceChildren(Object arg0, int arg1, int arg2, Object arg3) {
 		// TODO Auto-generated method stub
 		
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public Object rulePostProcessing(Object arg0) {
 		Object ret=arg0;
 		
@@ -186,41 +265,61 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             
     		LOG.info("RULE POST PROCESSING="+ruleName);
     		
-    		ModelAdaptor modelAdaptor=ModelAdaptorFactory.getModelAdaptor(ruleName);
-    		
-    		if (modelAdaptor != null) {
-    			ret = modelAdaptor.createModelObject(_components);
+    		if (!_parser.isErrorOccurred()) {
+	    		ModelAdaptor modelAdaptor=ModelAdaptorFactory.getModelAdaptor(ruleName);
+	    		
+	    		if (modelAdaptor != null) {
+	    			ret = modelAdaptor.createModelObject(_components);
+	    		}
     		}
         }
 
 		return ret;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public void setChild(Object arg0, int arg1, Object arg2) {
 		// TODO Auto-generated method stub
 		
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public void setChildIndex(Object arg0, int arg1) {
 		// TODO Auto-generated method stub
 		
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public void setParent(Object arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public void setText(Object arg0, String arg1) {
 		// TODO Auto-generated method stub
 		
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public void setTokenBoundaries(Object arg0, Token arg1, Token arg2) {
 		// TODO Auto-generated method stub
 		
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public void setType(Object arg0, int arg1) {
 		// TODO Auto-generated method stub
 		
