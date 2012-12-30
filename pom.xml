@@ -51,9 +51,7 @@
 		<module>build</module>
 		<module>modules</module>
 		<module>apidocs</module>
-<!--
 		<module>tools</module>
--->
 	</modules>
   
 	<dependencyManagement>

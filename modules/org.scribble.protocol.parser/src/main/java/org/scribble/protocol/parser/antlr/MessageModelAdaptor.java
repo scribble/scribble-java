@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.scribble.protocol.model.MessageSignature;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.global.GMessage;
@@ -31,20 +29,20 @@ public class MessageModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {		
+	public Object createModelObject(ParserContext context) {		
 		GMessage ret=new GMessage();
 
-		ret.setToRole((Role)components.pop());
+		ret.setToRole((Role)context.pop());
 		
-		components.pop(); // to
+		context.pop(); // to
 	
-		ret.setFromRole((Role)components.pop());
+		ret.setFromRole((Role)context.pop());
 		
-		components.pop(); // from
+		context.pop(); // from
 
-		ret.setMessageSignature((MessageSignature)components.pop());
+		ret.setMessageSignature((MessageSignature)context.pop());
 		
-		components.push(ret);
+		context.push(ret);
 			
 		return ret;
 	}

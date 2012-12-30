@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.global.GBlock;
 import org.scribble.protocol.model.global.GParallel;
@@ -31,21 +29,21 @@ public class ParallelModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		GParallel ret=new GParallel();
 		
-		while (components.peek() instanceof GBlock) {
-			ret.getPaths().add(0, (GBlock)components.pop());
+		while (context.peek() instanceof GBlock) {
+			ret.getPaths().add(0, (GBlock)context.pop());
 			
-			if (components.peek() instanceof CommonToken
-					&& ((CommonToken)components.peek()).getText().equals("and")) {
-				components.pop();
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals("and")) {
+				context.pop();
 			}
 		}
 		
-		components.pop(); // par
+		context.pop(); // par
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

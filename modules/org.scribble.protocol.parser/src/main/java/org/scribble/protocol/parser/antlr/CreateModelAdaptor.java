@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.Parameter;
 import org.scribble.protocol.model.RoleInstantiation;
@@ -29,29 +27,29 @@ public class CreateModelAdaptor implements ModelAdaptor {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Object createModelObject(Stack<Object> components) {		
+	public Object createModelObject(ParserContext context) {		
 		LCreate ret=new LCreate();
 
-		components.pop(); // )
+		context.pop(); // )
 		
-		ret.getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)components.pop());
+		ret.getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
 		
-		components.pop(); // (
+		context.pop(); // (
 		
-		if (components.peek() instanceof CommonToken
-				&& ((CommonToken)components.peek()).getText().equals(">")) {
-			components.pop(); // >
+		if (context.peek() instanceof CommonToken
+				&& ((CommonToken)context.peek()).getText().equals(">")) {
+			context.pop(); // >
 			
-			ret.getParameters().addAll((java.util.List<Parameter>)components.pop());
+			ret.getParameters().addAll((java.util.List<Parameter>)context.pop());
 
-			components.pop(); // <
+			context.pop(); // <
 		}
 		
-		ret.setProtocol(((CommonToken)components.pop()).getText());
+		ret.setProtocol(((CommonToken)context.pop()).getText());
 		
-		components.pop(); // create
+		context.pop(); // create
 
-		components.push(ret);
+		context.push(ret);
 			
 		return ret;
 	}

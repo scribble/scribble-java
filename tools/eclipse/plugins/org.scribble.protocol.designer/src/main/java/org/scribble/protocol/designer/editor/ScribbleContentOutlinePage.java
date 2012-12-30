@@ -43,8 +43,7 @@ public class ScribbleContentOutlinePage extends ContentOutlinePage {
     //private IDocumentProvider _fDocumentProvider;
     private ITextEditor _fTextEditor;
     
-    private org.scribble.protocol.model.ProtocolModel _model=null;
-    private org.scribble.protocol.model.ProtocolReference _reference=null;
+    private org.scribble.protocol.model.Module _model=null;
     private org.scribble.protocol.designer.editor.outliner.ModelOutliner _outliner=null;
 
     /**
@@ -60,7 +59,7 @@ public class ScribbleContentOutlinePage extends ContentOutlinePage {
             Image ret=null;
 
             if (_outliner != null) {
-                ret = _outliner.getImage(_reference, element);
+                ret = _outliner.getImage(element);
             }
 
             return (ret);
@@ -73,7 +72,7 @@ public class ScribbleContentOutlinePage extends ContentOutlinePage {
             String ret=null;
 
             if (_outliner != null) {
-                ret = _outliner.getLabel(_reference, element);
+                ret = _outliner.getLabel(element);
             }
 
             return (ret);
@@ -138,8 +137,7 @@ public class ScribbleContentOutlinePage extends ContentOutlinePage {
             Object[] ret=null;
             
             if (_outliner != null) {
-                java.util.List<Object> list=_outliner.getChildren(_reference,
-                                    element);
+                java.util.List<Object> list=_outliner.getChildren(element);
                 
                 if (list != null) {
                     ret = list.toArray();
@@ -158,7 +156,7 @@ public class ScribbleContentOutlinePage extends ContentOutlinePage {
             boolean ret=false;
             
             if (_outliner != null) {
-                ret = _outliner.hasChildren(_reference, element);
+                ret = _outliner.hasChildren(element);
             }
             
             return (ret);
@@ -264,7 +262,6 @@ public class ScribbleContentOutlinePage extends ContentOutlinePage {
         TreeViewer viewer= getTreeViewer();
 
         _outliner = null;
-        _reference = null;
         _model = null;
         
         if (_fInput instanceof org.eclipse.ui.IFileEditorInput) {

@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.PayloadTypeDecl;
 
@@ -30,17 +28,17 @@ public class PayloadTypeDeclModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		
-		String alias=((CommonToken)components.pop()).getText();
-		components.pop(); // as
-		String schema=((CommonToken)components.pop()).getText();
-		components.pop(); // from
-		String type=((CommonToken)components.pop()).getText();
-		components.pop(); // >
-		String format=((CommonToken)components.pop()).getText();
-		components.pop(); // <
-		components.pop(); // type
+		String alias=((CommonToken)context.pop()).getText();
+		context.pop(); // as
+		String schema=((CommonToken)context.pop()).getText();
+		context.pop(); // from
+		String type=((CommonToken)context.pop()).getText();
+		context.pop(); // >
+		String format=((CommonToken)context.pop()).getText();
+		context.pop(); // <
+		context.pop(); // type
 		
 		schema = schema.substring(1, schema.length()-1);
 		type = type.substring(1, type.length()-1);
@@ -51,7 +49,7 @@ public class PayloadTypeDeclModelAdaptor implements ModelAdaptor {
 		ret.setType(type);
 		ret.setFormat(format);
 		
-		components.push(ret);
+		context.push(ret);
 			
 		return ret;
 	}

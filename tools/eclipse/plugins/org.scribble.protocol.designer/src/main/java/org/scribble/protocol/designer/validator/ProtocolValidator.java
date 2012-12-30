@@ -21,12 +21,9 @@ import org.eclipse.core.resources.IResource;
 //import org.eclipse.core.runtime.IProgressMonitor;
 //import org.eclipse.wst.validation.ValidationResult;
 //import org.eclipse.wst.validation.ValidationState;
-import org.scribble.common.resource.FileContent;
-import org.scribble.protocol.DefaultProtocolContext;
 import org.scribble.protocol.designer.DesignerServices;
 import org.scribble.protocol.designer.logger.EclipseScribbleLogger;
 import org.scribble.protocol.designer.osgi.Activator;
-import org.scribble.protocol.model.ProtocolModel;
 
 /**
  * Protocol validator.
@@ -60,33 +57,26 @@ public class ProtocolValidator {
      * @param res The resource
      */
     public void validateResource(IResource res) {
+    	java.io.InputStream is=null;
+    	
+        EclipseScribbleLogger logger=
+                new EclipseScribbleLogger((IFile)res);
         
         try {
-            EclipseScribbleLogger logger=
-                    new EclipseScribbleLogger((IFile)res);
+            is = ((IFile)res).getContents();
             
-            FileContent content=new FileContent(((IFile)res).getRawLocation().toFile());
-            
-            DefaultProtocolContext context=new DefaultProtocolContext();
-            context.setProtocolParserManager(DesignerServices.getParserManager());
-            //context.setProtocolValidationManager(DesignerServices.getValidationManager());
-            //context.setProtocolProjector(DesignerServices.getProtocolProjector());
-            
-            ProtocolModel model=
-                DesignerServices.getParserManager().parse(null, content, logger);
-            
-            // TODO: Check if error occurred during parsing
-            // possibly by using a logger proxy that counts
-            // errors logged
-            if (model != null && !logger.hasErrorOccurred()) {
-                DesignerServices.getValidationManager().validate(context, model,
-                                logger);
-            }
-            
-            logger.finished();
+            DesignerServices.getProtocolParser().parse(is, null, logger);
             
         } catch (Exception e) {
             Activator.logError("Failed to record validation issue on resource '"+res+"'", e);
+        } finally {
+            logger.finished();
+
+            try {
+            	is.close();
+            } catch (Exception e) {
+            	Activator.logError("Failed to close input stream", e);
+            }
         }
     }
 }

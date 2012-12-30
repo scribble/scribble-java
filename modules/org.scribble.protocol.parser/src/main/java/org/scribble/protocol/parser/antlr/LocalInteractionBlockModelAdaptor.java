@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.scribble.protocol.model.local.LActivity;
 import org.scribble.protocol.model.local.LBlock;
 
@@ -30,14 +28,14 @@ public class LocalInteractionBlockModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		LBlock ret=new LBlock();
 		
-		while (components.peek() instanceof LActivity) {
-			ret.getContents().add(0, (LActivity)components.pop());
+		while (context.peek() instanceof LActivity) {
+			ret.getContents().add(0, (LActivity)context.pop());
 		}
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

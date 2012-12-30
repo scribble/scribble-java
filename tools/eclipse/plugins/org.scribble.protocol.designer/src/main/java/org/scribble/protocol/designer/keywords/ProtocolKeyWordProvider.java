@@ -15,18 +15,24 @@
  */
 package org.scribble.protocol.designer.keywords;
 
-import org.scribble.protocol.ProtocolDefinitions;
-
 /**
  * The protocol notation keyword provider.
  */
 public class ProtocolKeyWordProvider extends DefaultKeyWordProvider {
+	
+	private static final String[] RESERVED_WORDS={
+		"protocol",
+		"global",
+		"local",
+		"from",
+		"to"
+	};
     
     /**
      * The default constructor.
      */
     public ProtocolKeyWordProvider() {
-        super(ProtocolDefinitions.RESERVED_WORDS);
+        super(RESERVED_WORDS);
     }
     
 }

@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.MessageSignature;
 import org.scribble.protocol.model.PayloadType;
@@ -31,17 +29,17 @@ public class MessageSignatureModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		
 		MessageSignature ret=new MessageSignature();
 
-		while (components.peek() instanceof PayloadType) {
-			ret.getTypes().add(0, (PayloadType)components.pop());
+		while (context.peek() instanceof PayloadType) {
+			ret.getTypes().add(0, (PayloadType)context.pop());
 		}
 		
-		ret.setOperator(((CommonToken)components.pop()).getText());
+		ret.setOperator(((CommonToken)context.pop()).getText());
 		
-		components.push(ret);
+		context.push(ret);
 			
 		return ret;
 	}

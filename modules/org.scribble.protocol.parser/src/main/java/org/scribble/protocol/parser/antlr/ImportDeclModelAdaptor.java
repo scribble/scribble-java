@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.FullyQualifiedName;
 import org.scribble.protocol.model.ImportDecl;
@@ -31,34 +29,34 @@ public class ImportDeclModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		
 		ImportDecl ret=new ImportDecl();
 
-		String text=((CommonToken)components.pop()).getText();
+		String text=((CommonToken)context.pop()).getText();
 		
-		if (((CommonToken)components.peek()).getText().equals("as")) {
-			components.pop(); // as
+		if (((CommonToken)context.peek()).getText().equals("as")) {
+			context.pop(); // as
 			ret.setAlias(text);
 			
-			text=((CommonToken)components.pop()).getText();
+			text=((CommonToken)context.pop()).getText();
 		}
 		
-		while (((CommonToken)components.peek()).getText().equals(".")) {
-			text = ((CommonToken)components.pop()).getText()+text;
-			text = ((CommonToken)components.pop()).getText()+text;
+		while (((CommonToken)context.peek()).getText().equals(".")) {
+			text = ((CommonToken)context.pop()).getText()+text;
+			text = ((CommonToken)context.pop()).getText()+text;
 		}
 		
 		ret.setModuleName(new FullyQualifiedName(text));
 		
-		if (((CommonToken)components.peek()).getText().equals("from")) {
-			components.pop(); // from
-			ret.setMemberName(((CommonToken)components.pop()).getText());
+		if (((CommonToken)context.peek()).getText().equals("from")) {
+			context.pop(); // from
+			ret.setMemberName(((CommonToken)context.pop()).getText());
 		}
 
-		components.pop(); // import
+		context.pop(); // import
 		
-		components.push(ret);
+		context.push(ret);
 			
 		return ret;
 	}

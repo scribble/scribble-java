@@ -17,18 +17,36 @@
 package org.scribble.protocol.parser.antlr;
 
 /**
- * This interface defines the model adapter for the parser rules.
+ * This interface represents the context used by
+ * the parser.
  *
  */
-public interface ModelAdaptor {
-
-	/**
-	 * This method creates the model object(s) appropriate for the
-	 * supplied stack of context, and returns them.
-	 * 
-	 * @param context The parser context
-	 * @return The created model object
-	 */
-	public Object createModelObject(ParserContext context);
+public interface ParserContext {
 	
+	/**
+	 * This method removes a component from the context
+	 * and returns it to the caller.
+	 * 
+	 * @return The popped component
+	 */
+	public Object pop();
+	
+	/**
+	 * This method accesses the current component
+	 * from the context and returns it to the caller.
+	 * This operation does not remove the current
+	 * component from the context.
+	 * 
+	 * @return The current component
+	 */
+	public Object peek();
+	
+	/**
+	 * This method adds a component to the parser
+	 * context.
+	 * 
+	 * @param obj The new component
+	 */
+	public void push(Object obj);
+
 }

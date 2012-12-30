@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.FullyQualifiedName;
 
@@ -30,8 +28,8 @@ public class PackageDeclModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
-		Object component=components.pop();
+	public Object createModelObject(ParserContext context) {
+		Object component=context.pop();
 		String packageName="";
 		FullyQualifiedName ret=null;
 		
@@ -40,7 +38,7 @@ public class PackageDeclModelAdaptor implements ModelAdaptor {
 				packageName = ((CommonToken)component).getText()+packageName;
 			}
 			
-			component = components.pop();
+			component = context.pop();
 			
 		} while (!(component instanceof CommonToken && ((CommonToken)component).getText().equals("package")));
 
@@ -48,7 +46,7 @@ public class PackageDeclModelAdaptor implements ModelAdaptor {
 			ret = new FullyQualifiedName();
 			ret.setName(packageName);
 			
-			components.push(ret);
+			context.push(ret);
 		}
 		
 		return ret;

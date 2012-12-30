@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.MessageSignature;
 
@@ -30,23 +28,23 @@ public class ArgumentListModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		java.util.List<MessageSignature> ret=new java.util.ArrayList<MessageSignature>();
 		boolean f_iterate=false;
 		
 		do {
 			f_iterate = false;
 			
-			ret.add(0, (MessageSignature)components.pop());
+			ret.add(0, (MessageSignature)context.pop());
 			
-			if (components.peek() instanceof CommonToken
-					&& ((CommonToken)components.peek()).getText().equals(",")) {				
-				components.pop(); // ,
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals(",")) {				
+				context.pop(); // ,
 				f_iterate = true;
 			}
 		} while (f_iterate);
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

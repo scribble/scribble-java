@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.RoleDefn;
 import org.scribble.protocol.model.global.GBlock;
@@ -32,21 +30,21 @@ public class GlobalProtocolDeclModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		GProtocol ret=new GProtocol();
 		
-		ret.setBlock((GBlock)components.pop());
+		ret.setBlock((GBlock)context.pop());
 		
-		while (components.peek() instanceof RoleDefn) {
-			ret.getRoleDefinitions().add(0, (RoleDefn)components.pop());			
+		while (context.peek() instanceof RoleDefn) {
+			ret.getRoleDefinitions().add(0, (RoleDefn)context.pop());			
 		}
 		
-		ret.setName(((CommonToken)components.pop()).getText());
+		ret.setName(((CommonToken)context.pop()).getText());
 		
-		components.pop(); // protocol
-		components.pop(); // global
+		context.pop(); // protocol
+		context.pop(); // global
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

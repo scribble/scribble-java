@@ -16,11 +16,9 @@
  */
 package org.scribble.protocol.designer.editor.outliner;
 
-import org.scribble.protocol.model.ProtocolReference;
-
 /**
  * This interface represents the component responsible for providing
- * outline information related to model components.
+ * outline information related to model context.
  */
 public interface ModelOutliner {
 
@@ -28,40 +26,36 @@ public interface ModelOutliner {
      * This method returns the label to be displayed
      * for the supplied object.
      * 
-     * @param ref The model reference
      * @param obj The object
      * @return The label
      */
-    public String getLabel(ProtocolReference ref, Object obj);
+    public String getLabel(Object obj);
     
     /**
      * This method returns an optional image associated with
      * the supplied object.
      * 
-     * @param ref The model reference
      * @param obj The object
      * @return The image, or null if no image to display
      */
-    public org.eclipse.swt.graphics.Image getImage(ProtocolReference ref, Object obj);
+    public org.eclipse.swt.graphics.Image getImage(Object obj);
     
     /**
      * This method returns the list of children associated
      * with the supplied object.
      * 
-     * @param ref The model reference
      * @param obj The object
      * @return The list of child objects
      */
-    public java.util.List<Object> getChildren(ProtocolReference ref, Object obj);
+    public java.util.List<Object> getChildren(Object obj);
     
     /**
      * This method determines whether the supplied object has
      * children.
      * 
-     * @param ref The model reference
      * @param obj The object
      * @return Whether the object has children
      */
-    public boolean hasChildren(ProtocolReference ref, Object obj);
+    public boolean hasChildren(Object obj);
     
 }

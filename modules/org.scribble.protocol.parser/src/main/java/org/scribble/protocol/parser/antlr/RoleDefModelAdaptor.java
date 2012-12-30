@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.RoleDefn;
 
@@ -30,14 +28,14 @@ public class RoleDefModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		RoleDefn ret=new RoleDefn();
 		
-		ret.setName(((CommonToken)components.pop()).getText());
+		ret.setName(((CommonToken)context.pop()).getText());
 		
-		components.pop(); // role
+		context.pop(); // role
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

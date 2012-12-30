@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.MessageSignature;
 import org.scribble.protocol.model.RoleInstantiation;
@@ -33,29 +31,29 @@ public class DoDefModelAdaptor implements ModelAdaptor {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Object createModelObject(Stack<Object> components) {		
+	public Object createModelObject(ParserContext context) {		
 		GDo ret=new GDo();
 
-		components.pop(); // )
+		context.pop(); // )
 		
-		ret.getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)components.pop());
+		ret.getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
 		
-		components.pop(); // (
+		context.pop(); // (
 		
-		if (components.peek() instanceof CommonToken
-				&& ((CommonToken)components.peek()).getText().equals(">")) {
-			components.pop(); // >
+		if (context.peek() instanceof CommonToken
+				&& ((CommonToken)context.peek()).getText().equals(">")) {
+			context.pop(); // >
 			
-			ret.getArguments().addAll((java.util.List<MessageSignature>)components.pop());
+			ret.getArguments().addAll((java.util.List<MessageSignature>)context.pop());
 
-			components.pop(); // <
+			context.pop(); // <
 		}
 		
-		ret.setProtocol(((CommonToken)components.pop()).getText());
+		ret.setProtocol(((CommonToken)context.pop()).getText());
 		
-		components.pop(); // do
+		context.pop(); // do
 
-		components.push(ret);
+		context.push(ret);
 			
 		return ret;
 	}

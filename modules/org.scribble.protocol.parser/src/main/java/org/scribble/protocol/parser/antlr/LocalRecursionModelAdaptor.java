@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.local.LBlock;
 import org.scribble.protocol.model.local.LRecursion;
@@ -31,16 +29,16 @@ public class LocalRecursionModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		LRecursion ret=new LRecursion();
 		
-		ret.setBlock((LBlock)components.pop());
+		ret.setBlock((LBlock)context.pop());
 		
-		ret.setLabel(((CommonToken)components.pop()).getText());
+		ret.setLabel(((CommonToken)context.pop()).getText());
 		
-		components.pop(); // rec
+		context.pop(); // rec
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

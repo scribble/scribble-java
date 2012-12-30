@@ -35,14 +35,6 @@ import org.scribble.protocol.designer.editor.ScribblePartitionScanner;
 import org.scribble.protocol.designer.editor.lang.ScribbleCodeScanner;
 import org.scribble.protocol.designer.editor.util.ScribbleColorProvider;
 import org.scribble.protocol.designer.validator.ProtocolValidator;
-import org.scribble.protocol.export.ProtocolExportManager;
-import org.scribble.protocol.export.ProtocolExportManagerFactory;
-import org.scribble.protocol.export.monitor.MonitorProtocolExporter;
-import org.scribble.protocol.export.text.TextProtocolExporter;
-import org.scribble.protocol.parser.ProtocolParserManager;
-import org.scribble.protocol.parser.ProtocolParserManagerFactory;
-import org.scribble.protocol.validation.ProtocolValidationManager;
-import org.scribble.protocol.validation.ProtocolValidationManagerFactory;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -84,32 +76,7 @@ public class Activator extends AbstractUIPlugin {
         plugin = this;
 
         // Initialise the parser
-        ProtocolParserManager ppm=ProtocolParserManagerFactory.getParserManager();
-        ppm.getParsers().add(new org.scribble.protocol.parser.antlr.ANTLRProtocolParser());
-        
-        DesignerServices.setProtocolParserManager(ppm);
-        
-        // Initialise the projector
-        org.scribble.protocol.projection.ProtocolProjector pp=
-        			new org.scribble.protocol.projection.impl.ProtocolProjectorImpl();
-        DesignerServices.setProtocolProjector(pp);
-        
-        // Initialise the validator
-        ProtocolValidationManager pvm=ProtocolValidationManagerFactory.getValidationManager();
-        pvm.getValidators().add(new org.scribble.protocol.validation.rules.DefaultProtocolComponentValidator());
-        pvm.setProtocolProjector(pp);
-        
-        DesignerServices.setProtocolValidationManager(pvm);
-
-        // Create the export manager
-        ProtocolExportManager em=ProtocolExportManagerFactory.getExportManager();
-        em.getExporters().add(new TextProtocolExporter());
-        em.getExporters().add(new MonitorProtocolExporter());
-        
-        DesignerServices.setProtocolExportManager(em);
-   
-        // Register protocol monitor
-        DesignerServices.setProtocolMonitor(new org.scribble.protocol.monitor.DefaultProtocolMonitor());
+        DesignerServices.setProtocolParser(new org.scribble.protocol.parser.ProtocolParser());
         
         // Register resource change listener
         IResourceChangeListener rcl=new IResourceChangeListener() {

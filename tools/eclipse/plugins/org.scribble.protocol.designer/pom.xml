@@ -16,42 +16,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.command</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol.conformance</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol.export.monitor</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol.monitor</artifactId>
+			<artifactId>org.scribble.protocol.model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scribble.modules</groupId>
 			<artifactId>org.scribble.protocol.parser</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol.projection</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
@@ -74,42 +44,12 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.command</artifactId>
-									<version>${project.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.common</artifactId>
-									<version>${project.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.protocol</artifactId>
-									<version>${project.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.protocol.conformance</artifactId>
-									<version>${project.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.protocol.export.monitor</artifactId>
-									<version>${project.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.protocol.monitor</artifactId>
+									<artifactId>org.scribble.protocol.model</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.scribble.modules</groupId>
 									<artifactId>org.scribble.protocol.parser</artifactId>
-									<version>${project.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.protocol.projection</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>

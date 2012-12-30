@@ -20,7 +20,7 @@ import org.scribble.protocol.model.Visitor;
 
 /**
  * This class represents the base class for all Scribble definition
- * components.
+ * context.
  */
 public abstract class LActivity extends ModelObject {
     

@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.RoleInstantiation;
@@ -31,7 +29,7 @@ public class RoleInstantiationListModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		java.util.List<RoleInstantiation> ret=new java.util.ArrayList<RoleInstantiation>();
 		boolean f_iterate=false;
 		
@@ -40,22 +38,22 @@ public class RoleInstantiationListModelAdaptor implements ModelAdaptor {
 			
 			RoleInstantiation ri=new RoleInstantiation();
 			
-			ri.setAs((Role)components.pop());
+			ri.setAs((Role)context.pop());
 			
-			components.pop(); // as
+			context.pop(); // as
 			
-			ri.setRole((Role)components.pop());
+			ri.setRole((Role)context.pop());
 			
 			ret.add(0, ri);
 			
-			if (components.peek() instanceof CommonToken
-					&& ((CommonToken)components.peek()).getText().equals(",")) {
-				components.pop(); // ,
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals(",")) {
+				context.pop(); // ,
 				f_iterate = true;
 			}
 		} while (f_iterate);
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

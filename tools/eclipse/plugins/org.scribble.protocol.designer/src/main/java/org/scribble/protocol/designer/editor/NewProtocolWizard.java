@@ -40,7 +40,6 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.scribble.protocol.designer.DesignerServices;
-import org.scribble.protocol.model.ProtocolReference;
 
 /**
  * This class provides the wizard responsible for creating
@@ -84,21 +83,6 @@ public class NewProtocolWizard extends Wizard implements INewWizard {
                 new WorkspaceModifyOperation() {
                     protected void execute(IProgressMonitor progressMonitor) {
                         try {
-                            
-                            // Check that project has scribble nature
-                            /*
-                            IProject proj=modelFile.getProject();
-                            if (proj.hasNature("org.scribble.nature") == false) {
-                                IProjectDescription description = proj.getDescription();
-                                String[] natures = description.getNatureIds();
-                                String[] newNatures = new String[natures.length + 1];
-                                System.arraycopy(natures, 0, newNatures, 0, natures.length);
-                                newNatures[natures.length] = "org.scribble.nature";
-                                description.setNatureIds(newNatures);
-                                proj.setDescription(description, null);
-                            }
-                            */
-                            
                             byte[] b=new byte[0];
                             
                             // Identify the model reference from the resource
@@ -145,16 +129,6 @@ public class NewProtocolWizard extends Wizard implements INewWizard {
                             
                             if (located != null) {
                                 name += LOCATED_REFERENCE_SEPARATOR + located;
-                            }
-                            
-                            ProtocolReference ref=new ProtocolReference(name);
-                            
-                            String initDesc=getInitialDescription(ref);
-                            
-                            if (initDesc != null) {
-                                b = initDesc.getBytes();
-                            } else {
-                                b = "".getBytes();
                             }
                             
                             java.io.ByteArrayInputStream bis=new java.io.ByteArrayInputStream(b);
@@ -216,10 +190,9 @@ public class NewProtocolWizard extends Wizard implements INewWizard {
     /**
      * This method returns the initial description.
      * 
-     * @param ref The protocol reference
      * @return The initial description
      */
-    protected String getInitialDescription(ProtocolReference ref) {
+    protected String getInitialDescription() {
         String ret="";
         
         // TODO: Add default description

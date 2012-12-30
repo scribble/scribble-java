@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.scribble.protocol.model.global.GActivity;
 import org.scribble.protocol.model.global.GBlock;
 
@@ -30,14 +28,14 @@ public class GlobalInteractionBlockModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		GBlock ret=new GBlock();
 		
-		while (components.peek() instanceof GActivity) {
-			ret.getContents().add(0, (GActivity)components.pop());
+		while (context.peek() instanceof GActivity) {
+			ret.getContents().add(0, (GActivity)context.pop());
 		}
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

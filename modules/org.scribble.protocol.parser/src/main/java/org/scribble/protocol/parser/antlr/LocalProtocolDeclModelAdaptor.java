@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.RoleDefn;
@@ -33,25 +31,25 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		LProtocol ret=new LProtocol();
 		
-		ret.setBlock((LBlock)components.pop());
+		ret.setBlock((LBlock)context.pop());
 		
-		while (components.peek() instanceof RoleDefn) {
-			ret.getRoleDefinitions().add(0, (RoleDefn)components.pop());			
+		while (context.peek() instanceof RoleDefn) {
+			ret.getRoleDefinitions().add(0, (RoleDefn)context.pop());			
 		}
 		
-		ret.setLocalRole((Role)components.pop());
+		ret.setLocalRole((Role)context.pop());
 		
-		components.pop(); // at
+		context.pop(); // at
 
-		ret.setName(((CommonToken)components.pop()).getText());
+		ret.setName(((CommonToken)context.pop()).getText());
 		
-		components.pop(); // protocol
-		components.pop(); // local
+		context.pop(); // protocol
+		context.pop(); // local
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

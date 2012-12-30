@@ -19,13 +19,13 @@ import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.scribble.common.logging.Journal;
+import org.scribble.protocol.parser.IssueLogger;
 
 /**
  * The Eclipse implementation of the journal.
  *
  */
-public class EclipseScribbleLogger implements Journal {
+public class EclipseScribbleLogger implements IssueLogger {
     
     private static final Logger LOG=Logger.getLogger(EclipseScribbleLogger.class.getName());
 

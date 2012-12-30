@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.Role;
 
@@ -30,12 +28,12 @@ public class RoleNameModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		Role ret=new Role();
 		
-		ret.setName(((CommonToken)components.pop()).getText());
+		ret.setName(((CommonToken)context.pop()).getText());
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

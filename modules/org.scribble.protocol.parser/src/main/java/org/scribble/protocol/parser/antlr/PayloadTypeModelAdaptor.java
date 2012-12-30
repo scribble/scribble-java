@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.PayloadType;
 
@@ -30,23 +28,23 @@ public class PayloadTypeModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		
 		PayloadType ret=new PayloadType();
 
-		String text=((CommonToken)components.pop()).getText();
+		String text=((CommonToken)context.pop()).getText();
 		
-		if (components.peek() instanceof CommonToken
-				&& ((CommonToken)components.peek()).getText().equals(":")) {
-			components.pop(); // :
+		if (context.peek() instanceof CommonToken
+				&& ((CommonToken)context.peek()).getText().equals(":")) {
+			context.pop(); // :
 			ret.setVariable(text);
 			
-			text=((CommonToken)components.pop()).getText();
+			text=((CommonToken)context.pop()).getText();
 		}
 		
 		ret.setType(text);
 		
-		components.push(ret);
+		context.push(ret);
 			
 		return ret;
 	}

@@ -45,7 +45,7 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
-							<finalName>scribble-core-apidocs-${project.version}</finalName>
+							<finalName>scribble-java-apidocs-${project.version}</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 							<descriptors>
 								<descriptor>src/main/assembly/bin.xml</descriptor>

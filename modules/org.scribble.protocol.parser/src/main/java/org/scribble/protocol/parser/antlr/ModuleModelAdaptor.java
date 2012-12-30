@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.scribble.protocol.model.FullyQualifiedName;
 import org.scribble.protocol.model.ImportDecl;
 import org.scribble.protocol.model.Module;
@@ -33,26 +31,26 @@ public class ModuleModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		Module ret=new Module();
 		
-		while (components.peek() instanceof Protocol) {
-			ret.getProtocols().add(0, (Protocol)components.pop());
+		while (context.peek() instanceof Protocol) {
+			ret.getProtocols().add(0, (Protocol)context.pop());
 		}
 		
-		while (components.peek() instanceof PayloadTypeDecl) {
-			ret.getTypeDeclarations().add(0, (PayloadTypeDecl)components.pop());
+		while (context.peek() instanceof PayloadTypeDecl) {
+			ret.getTypeDeclarations().add(0, (PayloadTypeDecl)context.pop());
 		}
 
-		while (components.peek() instanceof ImportDecl) {
-			ret.getImports().add(0, (ImportDecl)components.pop());
+		while (context.peek() instanceof ImportDecl) {
+			ret.getImports().add(0, (ImportDecl)context.pop());
 		}
 
-		if (components.peek() instanceof FullyQualifiedName) {
-			ret.setPackage((FullyQualifiedName)components.pop());
+		if (context.peek() instanceof FullyQualifiedName) {
+			ret.setPackage((FullyQualifiedName)context.pop());
 		}
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

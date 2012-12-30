@@ -16,8 +16,6 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import java.util.Stack;
-
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.global.GBlock;
@@ -32,24 +30,24 @@ public class ChoiceModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(Stack<Object> components) {
+	public Object createModelObject(ParserContext context) {
 		GChoice ret=new GChoice();
 		
-		while (components.peek() instanceof GBlock) {
-			ret.getPaths().add(0, (GBlock)components.pop());
+		while (context.peek() instanceof GBlock) {
+			ret.getPaths().add(0, (GBlock)context.pop());
 			
-			if (components.peek() instanceof CommonToken
-					&& ((CommonToken)components.peek()).getText().equals("or")) {
-				components.pop();
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals("or")) {
+				context.pop();
 			}
 		}
 		
-		ret.setRole((Role)components.pop());
+		ret.setRole((Role)context.pop());
 		
-		components.pop(); // at
-		components.pop(); // choice
+		context.pop(); // at
+		context.pop(); // choice
 		
-		components.push(ret);
+		context.push(ret);
 		
 		return ret;
 	}

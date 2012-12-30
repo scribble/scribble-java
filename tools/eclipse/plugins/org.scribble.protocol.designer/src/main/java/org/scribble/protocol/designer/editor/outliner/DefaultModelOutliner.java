@@ -18,7 +18,6 @@ package org.scribble.protocol.designer.editor.outliner;
 
 import org.eclipse.swt.graphics.Image;
 import org.scribble.protocol.designer.editor.ScribbleImages;
-import org.scribble.protocol.model.ProtocolReference;
 
 /**
  * This is the abstract base implementation of the ModelOutliner
@@ -28,14 +27,9 @@ import org.scribble.protocol.model.ProtocolReference;
 public class DefaultModelOutliner implements ModelOutliner {
 
     /**
-     * This method returns the label to be displayed
-     * for the supplied object.
-     * 
-     * @param ref The model reference
-     * @param obj The object
-     * @return The label
+     * {@inheritDoc}
      */
-    public String getLabel(ProtocolReference ref, Object obj) {
+    public String getLabel(Object obj) {
         String ret=null;
       
         //if (ret == null) {
@@ -53,14 +47,9 @@ public class DefaultModelOutliner implements ModelOutliner {
     }
     
     /**
-     * This method returns an optional image associated with
-     * the supplied object.
-     * 
-     * @param ref The model reference
-     * @param obj The object
-     * @return The image, or null if no image to display
+     * {@inheritDoc}
      */
-    public org.eclipse.swt.graphics.Image getImage(ProtocolReference ref, Object obj) {
+    public org.eclipse.swt.graphics.Image getImage(Object obj) {
         Image ret=null;
 
         // TODO: Check derived language specific outliners
@@ -71,7 +60,8 @@ public class DefaultModelOutliner implements ModelOutliner {
              * TODO:
              * Find way to derive images from the relevant model types
              */
-            if (obj instanceof org.scribble.protocol.model.Activity) {
+            if (obj instanceof org.scribble.protocol.model.global.GActivity
+            		|| obj instanceof org.scribble.protocol.model.local.LActivity) {
                 ret = ScribbleImages.getImage("activity.png");
             }
         }
@@ -80,14 +70,9 @@ public class DefaultModelOutliner implements ModelOutliner {
     }
     
     /**
-     * This method returns the list of children associated
-     * with the supplied object.
-     * 
-     * @param ref The model reference
-     * @param obj The object
-     * @return The list of child objects
+     * {@inheritDoc}
      */
-    public java.util.List<Object> getChildren(ProtocolReference ref, Object obj) {
+    public java.util.List<Object> getChildren(Object obj) {
         java.util.List<Object> ret=null;
 
         // TODO: Check language specific outliners
@@ -100,17 +85,12 @@ public class DefaultModelOutliner implements ModelOutliner {
     }
     
     /**
-     * This method determines whether the supplied object has
-     * children.
-     * 
-     * @param ref The model reference
-     * @param obj The object
-     * @return Whether the object has children
+     * {@inheritDoc}
      */
-    public boolean hasChildren(ProtocolReference ref, Object obj) {
+    public boolean hasChildren(Object obj) {
         boolean ret=false;
         
-        ret = getChildren(ref, obj).size() > 0;
+        ret = getChildren(obj).size() > 0;
         
         return (ret);
     }
