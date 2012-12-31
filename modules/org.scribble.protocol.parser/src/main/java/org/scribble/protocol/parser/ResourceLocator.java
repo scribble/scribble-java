@@ -16,6 +16,19 @@
  */
 package org.scribble.protocol.parser;
 
+/**
+ * This interface provides the resource location capability.
+ *
+ */
 public interface ResourceLocator {
+
+	/**
+	 * This method obtains the input stream associated with the
+	 * module for the supplied name.
+	 * 
+	 * @param name The module name
+	 * @return The input stream, or null if not found
+	 */
+	public java.io.InputStream getModule(String name);
 
 }
