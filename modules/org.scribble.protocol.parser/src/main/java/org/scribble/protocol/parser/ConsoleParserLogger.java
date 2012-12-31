@@ -15,12 +15,14 @@
  */
 package org.scribble.protocol.parser;
 
+import org.scribble.protocol.model.ModelObject;
+
 /**
  * This class provides an implementation of the journal that
  * reports issues to the console.
  *
  */
-public class ConsoleIssueLogger implements IssueLogger {
+public class ConsoleParserLogger implements ParserLogger {
     
     private static final String NO_DETAILS="";
 
@@ -57,8 +59,8 @@ public class ConsoleIssueLogger implements IssueLogger {
     private String errorDetails(java.util.Map<String,Object> props) {
         String ret=NO_DETAILS;
         
-        if (props != null && props.containsKey(IssueLogger.START_LINE)) {
-            ret = "[line "+props.get(IssueLogger.START_LINE)+"] ";
+        if (props != null && props.containsKey(ModelObject.START_LINE)) {
+            ret = "[line "+props.get(ModelObject.START_LINE)+"] ";
         }
         
         return (ret);

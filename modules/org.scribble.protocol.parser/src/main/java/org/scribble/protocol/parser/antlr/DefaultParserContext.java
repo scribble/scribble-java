@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 
 import org.antlr.runtime.Token;
 import org.scribble.protocol.model.ModelObject;
-import org.scribble.protocol.parser.IssueLogger;
 
 /**
  * This interface represents the context used by
@@ -44,24 +43,24 @@ public class DefaultParserContext implements ParserContext {
         if (child instanceof Token) {
             Token token=(Token)child;
             
-            _properties.put(IssueLogger.START_LINE, token.getLine());                    
-            _properties.put(IssueLogger.START_COLUMN, token.getCharPositionInLine());
+            _properties.put(ModelObject.START_LINE, token.getLine());                    
+            _properties.put(ModelObject.START_COLUMN, token.getCharPositionInLine());
             
-            if (!_properties.containsKey(IssueLogger.END_LINE)) {
-                _properties.put(IssueLogger.END_LINE, token.getLine());                    
-                _properties.put(IssueLogger.END_COLUMN, token.getCharPositionInLine()
+            if (!_properties.containsKey(ModelObject.END_LINE)) {
+                _properties.put(ModelObject.END_LINE, token.getLine());                    
+                _properties.put(ModelObject.END_COLUMN, token.getCharPositionInLine()
                         +token.getText().length());
             }
         } else if (child instanceof ModelObject) {
             ModelObject chobj=(ModelObject)child;
             
-            _properties.put(IssueLogger.START_LINE, chobj.getProperties().get(IssueLogger.START_LINE));                    
-            _properties.put(IssueLogger.START_COLUMN, chobj.getProperties().get(IssueLogger.START_COLUMN));
+            _properties.put(ModelObject.START_LINE, chobj.getProperties().get(ModelObject.START_LINE));                    
+            _properties.put(ModelObject.START_COLUMN, chobj.getProperties().get(ModelObject.START_COLUMN));
         
-            if (!chobj.getProperties().containsKey(IssueLogger.END_LINE)) {
+            if (!chobj.getProperties().containsKey(ModelObject.END_LINE)) {
                 
-                _properties.put(IssueLogger.END_LINE, chobj.getProperties().get(IssueLogger.END_LINE));                    
-                _properties.put(IssueLogger.END_COLUMN, chobj.getProperties().get(IssueLogger.END_COLUMN));
+                _properties.put(ModelObject.END_LINE, chobj.getProperties().get(ModelObject.END_LINE));                    
+                _properties.put(ModelObject.END_COLUMN, chobj.getProperties().get(ModelObject.END_COLUMN));
             }
         }
 		

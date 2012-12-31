@@ -17,6 +17,7 @@
 	<modules>
 		<module>org.scribble.protocol.model</module>
 		<module>org.scribble.protocol.parser</module>
+		<module>org.scribble.protocol.validation</module>
 	</modules>
 
 </project>

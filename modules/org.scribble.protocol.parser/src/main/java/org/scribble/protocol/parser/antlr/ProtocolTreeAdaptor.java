@@ -22,9 +22,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 
-import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
-import org.scribble.protocol.parser.IssueLogger;
 
 /**
  * This class provides the antlr tree adaptor.
@@ -61,77 +59,6 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
         _parser = parser;
     }
 
-    /**
-     * This method adjusts the location information.
-     * 
-     * @param parent Parent
-     * @param child Child
-     */
-    protected void adjustLocationInfo(Object parent, Object child) {
-        if (parent instanceof ModelObject) {
-            ModelObject mobj=(ModelObject)parent;
-            
-            if (child instanceof Token) {
-                Token token=(Token)child;
-                
-                if (!mobj.getProperties().containsKey(IssueLogger.START_LINE)
-                        || token.getLine() < ((Integer)mobj.getProperties().get(IssueLogger.START_LINE))) {
-                    mobj.getProperties().put(IssueLogger.START_LINE, token.getLine());                    
-                    mobj.getProperties().put(IssueLogger.START_COLUMN, token.getCharPositionInLine());
-                } else if (token.getLine() == ((Integer)mobj.getProperties().get(IssueLogger.START_LINE))
-                        && token.getCharPositionInLine() < ((Integer)mobj.getProperties().get(IssueLogger.START_COLUMN))) {    
-                    mobj.getProperties().put(IssueLogger.START_COLUMN, token.getCharPositionInLine());
-                }
-                
-                if (!mobj.getProperties().containsKey(IssueLogger.END_LINE)
-                        || token.getLine() > ((Integer)mobj.getProperties().get(IssueLogger.END_LINE))) {
-                    mobj.getProperties().put(IssueLogger.END_LINE, token.getLine());                    
-                    mobj.getProperties().put(IssueLogger.END_COLUMN, token.getCharPositionInLine()
-                            +token.getText().length());
-                } else if (token.getLine() == ((Integer)mobj.getProperties().get(IssueLogger.END_LINE))
-                        && (token.getCharPositionInLine()+token.getText().length())
-                        < ((Integer)mobj.getProperties().get(IssueLogger.END_COLUMN))) {    
-                    mobj.getProperties().put(IssueLogger.END_COLUMN, token.getCharPositionInLine()
-                            +token.getText().length());
-                }
-            } else if (child instanceof ModelObject) {
-                ModelObject chobj=(ModelObject)child;
-                
-                if (chobj.getProperties().containsKey(IssueLogger.START_LINE)
-                        && chobj.getProperties().containsKey(IssueLogger.START_COLUMN)) {
-                    
-                    if (!mobj.getProperties().containsKey(IssueLogger.START_LINE)
-                            || ((Integer)chobj.getProperties().get(IssueLogger.START_LINE))
-                            < ((Integer)mobj.getProperties().get(IssueLogger.START_LINE))) {
-                        mobj.getProperties().put(IssueLogger.START_LINE, chobj.getProperties().get(IssueLogger.START_LINE));                    
-                        mobj.getProperties().put(IssueLogger.START_COLUMN, chobj.getProperties().get(IssueLogger.START_COLUMN));
-                    } else if (((Integer)chobj.getProperties().get(IssueLogger.START_LINE))
-                            == ((Integer)mobj.getProperties().get(IssueLogger.START_LINE))
-                            && ((Integer)chobj.getProperties().get(IssueLogger.START_COLUMN))
-                            < ((Integer)mobj.getProperties().get(IssueLogger.START_COLUMN))) {    
-                        mobj.getProperties().put(IssueLogger.START_COLUMN, chobj.getProperties().get(IssueLogger.START_COLUMN));
-                    }
-                }
-            
-                if (chobj.getProperties().containsKey(IssueLogger.END_LINE)
-                        && chobj.getProperties().containsKey(IssueLogger.END_COLUMN)) {
-                    
-                    if (!mobj.getProperties().containsKey(IssueLogger.END_LINE)
-                            || ((Integer)chobj.getProperties().get(IssueLogger.END_LINE))
-                            < ((Integer)mobj.getProperties().get(IssueLogger.END_LINE))) {
-                        mobj.getProperties().put(IssueLogger.END_LINE, chobj.getProperties().get(IssueLogger.END_LINE));                    
-                        mobj.getProperties().put(IssueLogger.END_COLUMN, chobj.getProperties().get(IssueLogger.END_COLUMN));
-                    } else if (((Integer)chobj.getProperties().get(IssueLogger.END_LINE))
-                                == ((Integer)mobj.getProperties().get(IssueLogger.END_LINE))
-                                && ((Integer)chobj.getProperties().get(IssueLogger.END_COLUMN))
-                                < ((Integer)mobj.getProperties().get(IssueLogger.END_COLUMN))) {    
-                        mobj.getProperties().put(IssueLogger.END_COLUMN, chobj.getProperties().get(IssueLogger.END_COLUMN));
-                    }
-                }
-            }
-        }
-    }
-    
     /**
      * {@inheritDoc}
      */

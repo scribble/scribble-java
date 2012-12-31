@@ -20,12 +20,15 @@ import java.io.IOException;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
+import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
-import org.scribble.protocol.parser.IssueLogger;
+import org.scribble.protocol.parser.ParserLogger;
 import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.protocol.parser.antlr.ProtocolTreeAdaptor;
 import org.scribble.protocol.parser.antlr.ScribbleProtocolLexer;
 import org.scribble.protocol.parser.antlr.ScribbleProtocolParser;
+import org.scribble.protocol.validation.ProtocolValidator;
+import org.scribble.protocol.validation.ValidationLogger;
 
 /**
  * This class provides the ANTLR implementation of the Protocol Parser
@@ -51,7 +54,7 @@ public class ProtocolParser {
      * @return The module, or null if an error occurred
      * @throws IOException Failed to retrieve protocol from input stream
      */
-    public Module parse(java.io.InputStream is, ResourceLocator locator, IssueLogger logger)
+    public Module parse(java.io.InputStream is, ResourceLocator locator, final ParserLogger logger)
                             throws IOException {
         Module ret=null;
         
@@ -74,12 +77,31 @@ public class ProtocolParser {
             parser.setDocument(document);
             parser.setTreeAdaptor(adaptor);
             
-            parser.setIssueLogger(logger);
+            parser.setParserLogger(logger);
 
             parser.module();
             
             if (!parser.isErrorOccurred()) {
                 ret = adaptor.getModule();
+            	
+            	// Validate
+                ProtocolValidator pv=new ProtocolValidator();
+                
+                pv.validate(ret, new ValidationLogger() {
+
+					public void error(String issue, ModelObject mobj) {
+						logger.error(issue, mobj.getProperties());
+					}
+
+					public void warning(String issue, ModelObject mobj) {
+						logger.warning(issue, mobj.getProperties());
+					}
+
+					public void info(String issue, ModelObject mobj) {
+						logger.info(issue, mobj.getProperties());
+					}
+                	
+                });
             }
             
         } catch (Exception e)  {

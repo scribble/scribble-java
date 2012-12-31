@@ -21,6 +21,41 @@ package org.scribble.protocol.model;
  */
 public abstract class ModelObject {
 
+    /**
+     * The start line in the document at which the issue has been detected.
+     */
+    public static final String START_LINE = "start.line";
+    
+    /**
+     * The start column in the document at which the issue has been detected.
+     */
+    public static final String START_COLUMN = "start.column";
+    
+    /**
+     * The end line in the document at which the issue has been detected.
+     */
+    public static final String END_LINE = "end.line";
+    
+    /**
+     * The end column in the document at which the issue has been detected.
+     */
+    public static final String END_COLUMN = "end.column";
+    
+    /**
+     * The start position in the document at which the issue has been detected.
+     */
+    public static final String START_POSITION = "position.start";
+    
+    /**
+     * The end position in the document at which the issue has been detected.
+     */
+    public static final String END_POSITION = "position.end";
+    
+    /**
+     * The optional resource URL associated with the issue.
+     */
+    public static final String RESOURCE_URL = "resource.url";
+    
     private ModelObject _parent=null;
     private java.util.Map<String, Object> _properties=
         new java.util.HashMap<String, Object>();

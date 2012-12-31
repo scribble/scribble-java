@@ -26,11 +26,11 @@ package org.scribble.protocol.parser.antlr;
 }
    
 @members {
-	private org.scribble.protocol.parser.IssueLogger _logger=null;
+	private org.scribble.protocol.parser.ParserLogger _logger=null;
 	private String _document=null;
 	private boolean _errorOccurred=false;
 	
-    public void setIssueLogger(org.scribble.protocol.parser.IssueLogger logger) {
+    public void setParserLogger(org.scribble.protocol.parser.ParserLogger logger) {
     	_logger = logger;
     }
     

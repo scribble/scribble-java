@@ -19,13 +19,14 @@ import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.scribble.protocol.parser.IssueLogger;
+import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.parser.ParserLogger;
 
 /**
  * The Eclipse implementation of the journal.
  *
  */
-public class EclipseScribbleLogger implements IssueLogger {
+public class EclipseScribbleLogger implements ParserLogger {
     
     private static final Logger LOG=Logger.getLogger(EclipseScribbleLogger.class.getName());
 
@@ -190,15 +191,15 @@ public class EclipseScribbleLogger implements IssueLogger {
             return;
         }
         
-        if (props.containsKey(START_POSITION)) {
-            marker.setAttribute(IMarker.CHAR_START, (Integer)props.get(START_POSITION));
+        if (props.containsKey(ModelObject.START_POSITION)) {
+            marker.setAttribute(IMarker.CHAR_START, (Integer)props.get(ModelObject.START_POSITION));
             
-            if (props.containsKey(END_POSITION)) {
-                marker.setAttribute(IMarker.CHAR_END, (Integer)props.get(END_POSITION));
+            if (props.containsKey(ModelObject.END_POSITION)) {
+                marker.setAttribute(IMarker.CHAR_END, (Integer)props.get(ModelObject.END_POSITION));
             } else {
-                endMarkerAfter = (Integer)props.get(START_POSITION);
+                endMarkerAfter = (Integer)props.get(ModelObject.START_POSITION);
             }
-        } else if (props.containsKey(START_LINE)) {
+        } else if (props.containsKey(ModelObject.START_LINE)) {
             int pos=-1;
             
             contents = getContents(file);
@@ -207,7 +208,7 @@ public class EclipseScribbleLogger implements IssueLogger {
                 pos = 0;
                 
                 int curline=1;
-                int line=(Integer)props.get(START_LINE);
+                int line=(Integer)props.get(ModelObject.START_LINE);
                 
                 while (curline < line) {
                     // Find next end of line
@@ -217,19 +218,19 @@ public class EclipseScribbleLogger implements IssueLogger {
                     pos = nextPos+1;
                 }
                 
-                if (props.containsKey(START_COLUMN)) {
-                    pos += (Integer)props.get(START_COLUMN);
+                if (props.containsKey(ModelObject.START_COLUMN)) {
+                    pos += (Integer)props.get(ModelObject.START_COLUMN);
                 }
             }
             
             marker.setAttribute(IMarker.CHAR_START, pos);
 
-            if (props.containsKey(END_LINE)) {
+            if (props.containsKey(ModelObject.END_LINE)) {
                 if (contents != null) {
                     pos = 0;
                     
                     int curline=1;
-                    int line=(Integer)props.get(END_LINE);
+                    int line=(Integer)props.get(ModelObject.END_LINE);
                     
                     while (curline < line) {
                         // Find next end of line
@@ -239,8 +240,8 @@ public class EclipseScribbleLogger implements IssueLogger {
                         pos = nextPos+1;
                     }
                     
-                    if (props.containsKey(END_COLUMN)) {
-                        pos += (Integer)props.get(END_COLUMN);
+                    if (props.containsKey(ModelObject.END_COLUMN)) {
+                        pos += (Integer)props.get(ModelObject.END_COLUMN);
                     }
                     
                     marker.setAttribute(IMarker.CHAR_END, pos);

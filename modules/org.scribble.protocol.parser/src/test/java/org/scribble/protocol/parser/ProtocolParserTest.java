@@ -135,7 +135,7 @@ public class ProtocolParserTest {
     	}
     }
     
-    protected class TestIssueLogger extends ConsoleIssueLogger {
+    protected class TestIssueLogger extends ConsoleParserLogger {
     	
     	private java.util.List<String> _errors=new java.util.ArrayList<String>();
     	private java.util.List<String> _warnings=new java.util.ArrayList<String>();
