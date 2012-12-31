@@ -20,6 +20,7 @@ import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
 import org.scribble.protocol.validation.ValidationContext;
 import org.scribble.protocol.validation.ValidationLogger;
+import org.scribble.protocol.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the GMessage
@@ -35,7 +36,7 @@ public class ModuleValidationRule implements ValidationRule {
 		Module elem=(Module)mobj;
 		
 		if (elem.getProtocols().size() == 0) {
-			logger.error("No protocols have been defined", mobj);
+			logger.error(ValidationMessages.getMessage("NO_PROTOCOLS"), mobj);
 		}
 	}
 
