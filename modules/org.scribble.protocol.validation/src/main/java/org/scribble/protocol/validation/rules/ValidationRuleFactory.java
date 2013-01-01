@@ -16,8 +16,10 @@
  */
 package org.scribble.protocol.validation.rules;
 
+import org.scribble.protocol.model.ImportDecl;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
+import org.scribble.protocol.model.global.GMessage;
 
 /**
  * This class provides the factory capability for validation rules.
@@ -29,6 +31,8 @@ public class ValidationRuleFactory {
 					new java.util.HashMap<Class<?>, ValidationRule>();
 	
 	static {
+		_rules.put(GMessage.class, new GMessageValidationRule());
+		_rules.put(ImportDecl.class, new ImportDeclValidationRule());
 		_rules.put(Module.class, new ModuleValidationRule());
 	}
 	

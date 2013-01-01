@@ -16,10 +16,19 @@
  */
 package org.scribble.protocol.validation;
 
+import org.scribble.protocol.model.Module;
+
 /**
  * This interface represents the validation context.
  *
  */
 public interface ValidationContext {
 
+	/**
+	 * This method returns the named module.
+	 * 
+	 * @return The module, or null if not found
+	 */
+	public Module getModule(String name);
+	
 }

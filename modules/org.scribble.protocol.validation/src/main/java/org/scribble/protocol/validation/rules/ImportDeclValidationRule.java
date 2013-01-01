@@ -16,57 +16,42 @@
  */
 package org.scribble.protocol.validation.rules;
 
+import java.text.MessageFormat;
+
 import org.scribble.protocol.model.ImportDecl;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
-import org.scribble.protocol.model.PayloadTypeDecl;
-import org.scribble.protocol.model.Protocol;
 import org.scribble.protocol.validation.ValidationContext;
 import org.scribble.protocol.validation.ValidationLogger;
 import org.scribble.protocol.validation.ValidationMessages;
 
 /**
- * This class implements the validation rule for the GMessage
+ * This class implements the validation rule for the ImportDecl
  * component.
  *
  */
-public class ModuleValidationRule implements ValidationRule {
+public class ImportDeclValidationRule implements ValidationRule {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
-		Module elem=(Module)mobj;
+		ImportDecl elem=(ImportDecl)mobj;
 		
-		if (elem.getPackage() == null) {
-			logger.error(ValidationMessages.getMessage("NO_PACKAGE"), mobj);
-		}
-		
-		for (ImportDecl imp : elem.getImports()) {
-			ValidationRule rule=ValidationRuleFactory.getValidationRule(imp);
+		if (elem.getModuleName() != null) {
 			
-			if (rule != null) {
-				rule.validate(context, imp, logger);
-			}
-		}
-		
-		for (PayloadTypeDecl ptd : elem.getTypeDeclarations()) {
-			ValidationRule rule=ValidationRuleFactory.getValidationRule(ptd);
+			// Load imported module
+			Module importedModule=context.getModule(elem.getModuleName().getName());
 			
-			if (rule != null) {
-				rule.validate(context, ptd, logger);
-			}
-		}
-
-		if (elem.getProtocols().size() == 0) {
-			logger.error(ValidationMessages.getMessage("NO_PROTOCOLS"), mobj);
-		}
-		
-		for (Protocol protocol : elem.getProtocols()) {
-			ValidationRule rule=ValidationRuleFactory.getValidationRule(protocol);
-			
-			if (rule != null) {
-				rule.validate(context, protocol, logger);
+			if (importedModule == null) {
+				logger.error(MessageFormat.format(ValidationMessages.getMessage("NOT_FOUND_MODULE"),
+						elem.getModuleName().getName()), elem);
+			} else {
+				
+				// Check if member within module has been specified
+				
+				// TODO: Need to find out how members are treated???
+				
 			}
 		}
 	}

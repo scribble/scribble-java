@@ -14,19 +14,21 @@
  * limitations under the License.
  *
  */
-package org.scribble.protocol.validation;
+package org.scribble.protocol.validation.rules;
 
 import static org.junit.Assert.*;
 
 import org.scribble.protocol.model.FullyQualifiedName;
 import org.scribble.protocol.model.Module;
 import org.scribble.protocol.model.global.GProtocol;
+import org.scribble.protocol.validation.TestValidationLogger;
+import org.scribble.protocol.validation.ValidationMessages;
 
-public class ProtocolValidatorTest {
+public class ModuleValidationRuleTest {
 
     @org.junit.Test
     public void testModuleValid() {
-    	ProtocolValidator pv=new ProtocolValidator();
+    	ModuleValidationRule rule=new ModuleValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
@@ -34,7 +36,7 @@ public class ProtocolValidatorTest {
     	
     	module.getProtocols().add(new GProtocol());
     	
-    	pv.validate(module, logger);
+    	rule.validate(null, module, logger);
     	
     	if (logger.isErrorsOrWarnings()) {
     		fail("Errors detected");
@@ -42,15 +44,15 @@ public class ProtocolValidatorTest {
     }
     
     @org.junit.Test
-    public void testModuleInvalid() {
-    	ProtocolValidator pv=new ProtocolValidator();
+    public void testModuleNoPackage() {
+    	ModuleValidationRule rule=new ModuleValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
     	
     	module.getProtocols().add(new GProtocol());
     	
-    	pv.validate(module, logger);
+    	rule.validate(null, module, logger);
     	
     	if (!logger.isErrorsOrWarnings()) {
     		fail("Errors not detected");
@@ -58,6 +60,25 @@ public class ProtocolValidatorTest {
     	
     	if (!logger.getErrors().contains(ValidationMessages.getMessage("NO_PACKAGE"))) {
     		fail("Error NO_PACKAGE not detected");
+    	}
+    }
+    
+    @org.junit.Test
+    public void testModuleNoProtocol() {
+    	ModuleValidationRule rule=new ModuleValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setPackage(new FullyQualifiedName("test"));
+    	
+    	rule.validate(null, module, logger);
+    	
+    	if (!logger.isErrorsOrWarnings()) {
+    		fail("Errors not detected");
+    	}
+    	
+    	if (!logger.getErrors().contains(ValidationMessages.getMessage("NO_PROTOCOLS"))) {
+    		fail("Error NO_PROTOCOLS not detected");
     	}
     }
     
