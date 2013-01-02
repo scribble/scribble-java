@@ -28,13 +28,14 @@ public class ProtocolValidatorTest {
     public void testModuleValid() {
     	ProtocolValidator pv=new ProtocolValidator();
     	TestValidationLogger logger=new TestValidationLogger();
+    	DefaultValidationContext context=new DefaultValidationContext();
     	
     	Module module=new Module();
     	module.setPackage(new FullyQualifiedName("test"));
     	
     	module.getProtocols().add(new GProtocol());
     	
-    	pv.validate(module, logger);
+    	pv.validate(context, module, logger);
     	
     	if (logger.isErrorsOrWarnings()) {
     		fail("Errors detected");
@@ -45,12 +46,13 @@ public class ProtocolValidatorTest {
     public void testModuleInvalid() {
     	ProtocolValidator pv=new ProtocolValidator();
     	TestValidationLogger logger=new TestValidationLogger();
+    	DefaultValidationContext context=new DefaultValidationContext();
     	
     	Module module=new Module();
     	
     	module.getProtocols().add(new GProtocol());
     	
-    	pv.validate(module, logger);
+    	pv.validate(context, module, logger);
     	
     	if (!logger.isErrorsOrWarnings()) {
     		fail("Errors not detected");

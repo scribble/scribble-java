@@ -41,18 +41,33 @@ public class ImportDeclValidationRule implements ValidationRule {
 		if (elem.getModuleName() != null) {
 			
 			// Load imported module
-			Module importedModule=context.getModule(elem.getModuleName().getName());
+			Module importedModule=context.importModule(elem.getModuleName().getName());
 			
 			if (importedModule == null) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("NOT_FOUND_MODULE"),
 						elem.getModuleName().getName()), elem);
-			} else {
+			} else if (elem.getMemberName() != null) {
 				
 				// Check if member within module has been specified
-				
-				// TODO: Need to find out how members are treated???
+				if (elem.getAlias() == null
+						&& context.getMember(elem.getModuleName().getName(),
+								elem.getMemberName()) == null) {					
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("NOT_FOUND_MEMBER"),
+							elem.getMemberName(), elem.getModuleName().getName()), elem);
+					
+				} else if (context.getAlias(elem.getAlias()) != null) {
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("EXISTS_ALIAS"),
+							elem.getAlias()), elem);
+					
+				} else if (context.registerAlias(elem.getModuleName().getName(),
+						elem.getMemberName(), elem.getAlias()) == null) {					
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("NOT_FOUND_MEMBER"),
+							elem.getMemberName(), elem.getModuleName().getName()), elem);
+				}
 				
 			}
+		} else {
+			logger.error(ValidationMessages.getMessage("NO_MODULE"), elem);
 		}
 	}
 

@@ -74,12 +74,46 @@ public class Module extends ModelObject {
     }
     
     /**
+     * This method returns the payload type associated
+     * with the supplied name.
+     * 
+     * @param name The name
+     * @return The payload type, or null if not found
+     */
+    public PayloadTypeDecl getTypeDeclaration(String name) {
+    	for (PayloadTypeDecl ptd : _payloadTypes) {
+    		if (ptd.getAlias() != null && ptd.getAlias().equals(name)) {
+    			return (ptd);
+    		}
+    	}
+    	
+    	return (null);
+    }
+    
+    /**
      * This method returns the list of protocols.
      * 
      * @return The protocols
      */
     public java.util.List<Protocol> getProtocols() {
         return (_protocols);
+    }
+    
+    /**
+     * This method returns the protocol associated
+     * with the supplied name.
+     * 
+     * @param name The name
+     * @return The protocol, or null if not found
+     */
+    public Protocol getProtocol(String name) {
+    	for (Protocol p : _protocols) {
+    		if (p.getName().equals(name)) {
+    			return (p);
+    		}
+    	}
+    	
+    	return (null);
     }
     
     /**

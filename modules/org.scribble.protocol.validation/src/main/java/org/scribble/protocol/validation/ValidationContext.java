@@ -16,6 +16,7 @@
  */
 package org.scribble.protocol.validation;
 
+import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
 
 /**
@@ -25,10 +26,51 @@ import org.scribble.protocol.model.Module;
 public interface ValidationContext {
 
 	/**
-	 * This method returns the named module.
+	 * This method imports and returns the named module.
 	 * 
+	 * @param module The module name
 	 * @return The module, or null if not found
 	 */
-	public Module getModule(String name);
+	public Module importModule(String module);
+
+	/**
+	 * This method returns member associated with a previously
+	 * imported module, defined by the supplied fully qualified
+	 * name.
+	 * 
+	 * @param fqn The fully qualified name, e.g. <module>.<member>
+	 * @return The member, or null if not found
+	 */
+	public ModelObject getFullyQualifiedMember(String fqn);
+	
+	/**
+	 * This method returns member associated with a previously
+	 * imported module, defined by the supplied module and member
+	 * names.
+	 * 
+	 * @param module The module name
+	 * @param member The member name
+	 * @return The member, or null if not found
+	 */
+	public ModelObject getMember(String module, String member);
+	
+	/**
+	 * This method returns the member associated with the alias.
+	 * 
+	 * @param alias The alias
+	 * @return The member, or null if not found
+	 */
+	public ModelObject getAlias(String alias);
+	
+	/**
+	 * This method registers the member, associated with the module,
+	 * against the specified alias.
+	 * 
+	 * @param module The module name
+	 * @param member The member name
+	 * @param alias The alias
+	 * @return The member, or null if not found
+	 */
+	public ModelObject registerAlias(String module, String member, String alias);
 	
 }

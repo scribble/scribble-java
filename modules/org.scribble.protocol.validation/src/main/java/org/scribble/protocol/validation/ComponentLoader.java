@@ -17,29 +17,19 @@
 package org.scribble.protocol.validation;
 
 import org.scribble.protocol.model.Module;
-import org.scribble.protocol.validation.rules.ValidationRule;
-import org.scribble.protocol.validation.rules.ValidationRuleFactory;
 
 /**
- * This class is responsible for validating a protocol module.
+ * This interface is responsible for loading components.
  *
  */
-public class ProtocolValidator {
+public interface ComponentLoader {
 
 	/**
-	 * This method validates the supplied module, reporting
-	 * any issues to the logger.
+	 * This method loads the module associated with the specified name.
 	 * 
-	 * @param context The validation context
-	 * @param module The module
-	 * @param logger The logger
+	 * @param module The module name
+	 * @return The module, or null if not found
 	 */
-	public void validate(ValidationContext context, Module module, ValidationLogger logger) {
-		
-		ValidationRule rule=ValidationRuleFactory.getValidationRule(module);
-		
-		if (rule != null) {
-			rule.validate(context, module, logger);
-		}
-	}
+	public Module loadModule(String module);
+	
 }

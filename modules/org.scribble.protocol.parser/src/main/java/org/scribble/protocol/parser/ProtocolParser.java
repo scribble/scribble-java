@@ -17,6 +17,8 @@
 package org.scribble.protocol.parser;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -27,6 +29,8 @@ import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.protocol.parser.antlr.ProtocolTreeAdaptor;
 import org.scribble.protocol.parser.antlr.ScribbleProtocolLexer;
 import org.scribble.protocol.parser.antlr.ScribbleProtocolParser;
+import org.scribble.protocol.validation.ComponentLoader;
+import org.scribble.protocol.validation.DefaultValidationContext;
 import org.scribble.protocol.validation.ProtocolValidator;
 import org.scribble.protocol.validation.ValidationLogger;
 
@@ -36,6 +40,8 @@ import org.scribble.protocol.validation.ValidationLogger;
  *
  */
 public class ProtocolParser {
+	
+	private static final Logger LOG=Logger.getLogger(ProtocolParser.class.getName());
 
     /**
      * Default constructor.
@@ -54,7 +60,7 @@ public class ProtocolParser {
      * @return The module, or null if an error occurred
      * @throws IOException Failed to retrieve protocol from input stream
      */
-    public Module parse(java.io.InputStream is, ResourceLocator locator, final ParserLogger logger)
+    public Module parse(java.io.InputStream is, final ResourceLocator locator, final ParserLogger logger)
                             throws IOException {
         Module ret=null;
         
@@ -87,7 +93,33 @@ public class ProtocolParser {
             	// Validate
                 ProtocolValidator pv=new ProtocolValidator();
                 
-                pv.validate(ret, new ValidationLogger() {
+                DefaultValidationContext context=new DefaultValidationContext(new ComponentLoader() {
+
+					public Module loadModule(String module) {
+						Module ret=null;
+						
+						java.io.InputStream is=locator.getModule(module);
+						
+						if (is != null) {
+							try {
+								ret = parse(is, locator, logger);
+							} catch (Exception e) {
+								LOG.log(Level.SEVERE, "Failed to parse imported module '"+module+"'", e);
+							} finally {
+								try {
+									is.close();
+								} catch (Exception e) {
+									LOG.log(Level.SEVERE, "Failed to close input stream", e);
+								}
+							}
+						}
+						
+						return (ret);
+					}
+                	
+                });
+                
+                pv.validate(context, ret, new ValidationLogger() {
 
 					public void error(String issue, ModelObject mobj) {
 						logger.error(issue, mobj.getProperties());
