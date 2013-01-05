@@ -32,11 +32,20 @@ public class MessageSignatureModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		
 		MessageSignature ret=new MessageSignature();
+		
+		context.pop(); // consume )
 
 		while (context.peek() instanceof PayloadType) {
 			ret.getTypes().add(0, (PayloadType)context.pop());
+			
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals(",")) {
+				context.pop(); // consume ,
+			}
 		}
 		
+		context.pop(); // consume (
+
 		ret.setOperator(((CommonToken)context.pop()).getText());
 		
 		context.push(ret);

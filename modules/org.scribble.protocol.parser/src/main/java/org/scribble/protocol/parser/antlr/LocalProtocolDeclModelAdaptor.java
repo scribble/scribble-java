@@ -31,14 +31,13 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object createModelObject(ParserContext context) {
 		LProtocol ret=new LProtocol();
 		
 		ret.setBlock((LBlock)context.pop());
 		
-		while (context.peek() instanceof RoleDefn) {
-			ret.getRoleDefinitions().add(0, (RoleDefn)context.pop());			
-		}
+		ret.getRoleDefinitions().addAll((java.util.List<RoleDefn>)context.pop());
 		
 		ret.setLocalRole((Role)context.pop());
 		

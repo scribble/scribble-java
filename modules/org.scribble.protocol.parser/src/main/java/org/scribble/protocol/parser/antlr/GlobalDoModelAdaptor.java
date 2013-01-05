@@ -17,6 +17,7 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.FullyQualifiedName;
 import org.scribble.protocol.model.MessageSignature;
 import org.scribble.protocol.model.RoleInstantiation;
 import org.scribble.protocol.model.global.GDo;
@@ -25,7 +26,7 @@ import org.scribble.protocol.model.global.GDo;
  * This class provides the model adapter for the 'doDef' parser rule.
  *
  */
-public class DoDefModelAdaptor implements ModelAdaptor {
+public class GlobalDoModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -50,6 +51,21 @@ public class DoDefModelAdaptor implements ModelAdaptor {
 		}
 		
 		ret.setProtocol(((CommonToken)context.pop()).getText());
+		
+		// Check for module and set as separate property
+		if (context.peek() instanceof CommonToken
+				&& ((CommonToken)context.peek()).getText().equals(".")) {
+			String fqname="";
+			
+			context.pop(); // consume '.'
+			
+			do {
+				fqname = ((CommonToken)context.pop()).getText() + fqname;
+			} while (!(context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals("do")));
+			
+			ret.setModuleName(new FullyQualifiedName(fqname));
+		}
 		
 		context.pop(); // do
 

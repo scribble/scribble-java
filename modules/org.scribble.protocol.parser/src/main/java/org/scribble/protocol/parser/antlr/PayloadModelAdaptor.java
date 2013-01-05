@@ -17,34 +17,35 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.global.GBlock;
-import org.scribble.protocol.model.global.GParallel;
+import org.scribble.protocol.model.PayloadType;
 
 /**
- * This class provides the model adapter for the 'parallel' parser rule.
+ * This class provides the model adapter for the 'payloadType' parser rule.
  *
  */
-public class ParallelModelAdaptor implements ModelAdaptor {
+public class PayloadModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
-		GParallel ret=new GParallel();
 		
-		while (context.peek() instanceof GBlock) {
-			ret.getPaths().add(0, (GBlock)context.pop());
+		PayloadType ret=new PayloadType();
+
+		String text=((CommonToken)context.pop()).getText();
+		
+		if (context.peek() instanceof CommonToken
+				&& ((CommonToken)context.peek()).getText().equals(":")) {
+			context.pop(); // :
+			ret.setVariable(text);
 			
-			if (context.peek() instanceof CommonToken
-					&& ((CommonToken)context.peek()).getText().equals("and")) {
-				context.pop();
-			}
+			text=((CommonToken)context.pop()).getText();
 		}
 		
-		context.pop(); // par
+		ret.setType(text);
 		
 		context.push(ret);
-		
+			
 		return ret;
 	}
 

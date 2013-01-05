@@ -16,24 +16,36 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import org.scribble.protocol.model.global.GActivity;
+import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.global.GBlock;
+import org.scribble.protocol.model.global.GChoice;
 
 /**
- * This class provides the model adapter for the 'globalInterationBlock' parser rule.
+ * This class provides the model adapter for the 'choice' parser rule.
  *
  */
-public class GlobalInteractionBlockModelAdaptor implements ModelAdaptor {
+public class GlobalChoiceModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
-		GBlock ret=new GBlock();
+		GChoice ret=new GChoice();
 		
-		while (context.peek() instanceof GActivity) {
-			ret.getContents().add(0, (GActivity)context.pop());
+		while (context.peek() instanceof GBlock) {
+			ret.getPaths().add(0, (GBlock)context.pop());
+			
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals("or")) {
+				context.pop();
+			}
 		}
+		
+		ret.setRole(new Role(((CommonToken)context.pop()).getText()));
+		
+		context.pop(); // at
+		context.pop(); // choice
 		
 		context.push(ret);
 		

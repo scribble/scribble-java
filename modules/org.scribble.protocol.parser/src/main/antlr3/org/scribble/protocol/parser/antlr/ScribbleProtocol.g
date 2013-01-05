@@ -1,16 +1,78 @@
 grammar ScribbleProtocol;
 
+// CHANGES:
+// Had to remove rewrite rules as was throwing exception on 'rule packagename'
+// Add ! to ';' so don't need to consume - but could explicitly consume
+// payloadlist rule had an empty cause with rewrite rule, as a optional path - so when removing rewrite, had to remove that path
+// EXTIDENTIFIER still not working, so changed it to be same as StringLiteral rule in previous version of grammer
+
 options {
 	output=AST;
 	backtrack=true;
 }
 
-tokens {
-	PLUS 	= '+' ;
-	MINUS	= '-' ;
-	MULT	= '*' ;
-	DIV	= '/' ;
-	FULLSTOP = '.' ;
+tokens
+{
+	EMPTY_MESSAGE_OP = '__empty_message_op';
+	EMPTY_ANNOTATION = '__empty_annotation';
+	EMPTY_ARGUMENT_LIST = '__empty_argument_list';
+	EMPTY_PACKAGE_NAME = '__empty_package_name';
+
+	PACKAGEKW = 'package';
+	IMPORTKW = 'import';
+	TYPEKW = 'type';
+	PROTOCOLKW = 'protocol';
+	GLOBALKW = 'global';
+	LOCALKW = 'local';
+	ROLEKW = 'role';
+	SIGKW = 'sig';
+	INSTANTIATESKW = 'instantiates';
+
+	FROMKW = 'from';
+	TOKW = 'to';
+	CHOICEKW = 'choice';
+	ATKW = 'at';
+	ORKW = 'or';
+	RECKW = 'rec';
+	CONTINUEKW = 'continue';
+	PARALLELKW = 'par';  // FIXME: should be PARKW
+	ANDKW = 'and';
+	INTERRUPTIBLEKW = 'interruptible';
+	WITHKW = 'with';
+	BYKW = 'by';  // from for interrupts is more expected, but from is not good for multiple roles (generally, the comma in interrupt message list and role list looks like "and" rather than "or")
+	DOKW = 'do';
+	ASKW = 'as';
+	SPAWNKW = 'spawn';
+
+	// The value of these token variables doesn't matter, only the token (i.e. variable) names themselves are used (for AST node root text field)
+	MODULE = 'module';
+	PACKAGEDECL = 'package-decl';
+	IMPORTDECL = 'import-decl';
+	PAYLOADTYPEDECL = 'payload-type-decl';  // FIXME: payload types, not message types
+	FROMIMPORTDECL = 'from-import-decl';
+	PARAMETERLIST = 'parameter-list';
+	MESSAGESIGNATURE = 'message-signature';
+	ROLELIST = 'role-list';
+	ARGUMENTLIST = 'argument-list';
+	PAYLOADLIST = 'payload-list';
+	PAYLOAD = 'payload';
+	ROLEINSTANTIATIONLIST = 'role-instantiation-list';
+
+	GLOBALPROTOCOLDECL = 'global-protocol-decl';
+	GLOBALPROTOCOLDEF = 'global-protocol-def';
+	GLOBALPROTOCOLINSTANCE = 'global-protocol-instance';
+	GLOBALPROTOCOLBODY = 'global-protocol-body';
+	GLOBALPROTOCOLBLOCK = 'global-protocol-block';
+	GLOBALINTERACTIONSEQUENCE = 'global-interaction-sequence';
+	GLOBALMESSAGETRANSFER = 'global-message-transfer';
+	GLOBALCHOICE = 'global-choice';
+	GLOBALRECURSION = 'global-recursion';
+	GLOBALCONTINUE = 'global-continue';
+	GLOBALPARALLEL = 'global-parallel';
+	GLOBALINTERRUPTIBLE = 'global-interruptible';
+	GLOBALINTERRUPT = 'global-interrupt';
+	GLOBALDO = 'global-do';
+	GLOBALSPAWN = 'global-spawn';
 }
 
 /*------------------------------------------------------------------
@@ -54,164 +116,238 @@ package org.scribble.protocol.parser.antlr;
 }
 
 
-/*------------------------------------------------------------------
- * LEXER RULES
- *------------------------------------------------------------------*/
- 
-WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ 	{ $channel = HIDDEN; } ;
-
-ML_COMMENT
-    :   '/*' (options {greedy=false;} : .)* '*/' {$channel=HIDDEN;}
-    ;
-
-LINE_COMMENT : '//' (options {greedy=false;} : .)* '\n' {$channel=HIDDEN;} ;
-
-
-//LETTER : ('a'..'z'|'A'..'Z') ;
-
-DIGIT : '0'..'9' ;
-
-//SYMBOL : '{' | '}' | '[' | ']' | '/' | '\\' | '#' | '&' | '?' | '!' ;
-//SYMBOL : '{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '#' | '&' | '?' | '!' ;    // Issue is that causes problems with protocol name with '(' and no space and :
-
-IDENTIFIER : ('a'..'z' | 'A'..'Z' | '_')('a'..'z'| 'A'..'Z' |DIGIT|'_')* ;
-
-//EXTIDENTIFIER : ('a'..'z' | 'A'..'Z' | '_' | SYMBOL)('a'..'z' | 'A'..'Z' | DIGIT | '_' | SYMBOL)* ;
-
-StringLiteral: '"' ( ~('\\'|'"') )* '"' ;
-
 
 /*------------------------------------------------------------------
  * PARSER RULES
  *------------------------------------------------------------------*/
- 
- 
-module: packageDecl ( importDecl )* ( payloadTypeDecl )* ( protocolDecl )* ;
 
-fullyQualifiedName: IDENTIFIER ( '.' IDENTIFIER )* ;
+module:
+	packagedecl (importdecl)* (payloadtypedecl)* (protocoldecl)*
+;
 
-simpleName: IDENTIFIER ;
+packagedecl:
+	PACKAGEKW packagename ';'!
+;
 
-packageDecl: 'package' fullyQualifiedName ';'! ;
+packagename:
+	IDENTIFIER ('.' IDENTIFIER)*
+;
 
-importDecl: 'import'^ ( fullyQualifiedName | simpleName 'from' fullyQualifiedName ( 'as' simpleName )? ) ';'! ;
+importdecl:
+	IMPORTKW IDENTIFIER ('.' IDENTIFIER)* ';'!
+|
+	FROMKW packagename '.' IDENTIFIER IMPORTKW IDENTIFIER ';'!
+|
+	FROMKW packagename '.' IDENTIFIER IMPORTKW IDENTIFIER ASKW IDENTIFIER ';'!
+;
 
-//extIdentifier: ('a'..'z' | 'A'..'Z' | '_' | SYMBOL)('a'..'z' | 'A'..'Z' | DIGIT | '_' | SYMBOL)* ;
-//extIdentifier: EXTIDENTIFIER ;
+payloadtypedecl:  // FIXME: payload types, not message types
+	TYPEKW '<' IDENTIFIER '>' EXTIDENTIFIER FROMKW EXTIDENTIFIER ASKW IDENTIFIER ';'!
+;  // Seems to go off "element order", no way to label the elements
 
-payloadTypeDecl: 'type'^ '<' simpleName '>' StringLiteral 'from' StringLiteral 'as' simpleName ';'! ;		// Added ;
+protocoldecl:
+	globalprotocoldecl
+|
+	localprotocoldecl
+;
 
-protocolDecl: globalProtocolDecl | localProtocolDecl ;
+globalprotocoldecl:
+	GLOBALKW PROTOCOLKW IDENTIFIER globalprotocoldefinition
+|
+	GLOBALKW PROTOCOLKW IDENTIFIER globalprotocolinstance
+;
+
+globalprotocoldefinition:
+	// seems working better to do optional elements as alternative rules rather than using "?", maybe due to the rule rewriting reference to the element
+	'(' rolelist ')' globalprotocolbody
+|
+	'<' parameterlist '>' '(' rolelist ')' globalprotocolbody
+;
+
+globalprotocolinstance:
+	'(' rolelist ')' INSTANTIATESKW IDENTIFIER ';'!
+|
+	'(' rolelist ')' INSTANTIATESKW IDENTIFIER '<' argumentlist '>' ';'!
+;
+
+parameterlist:
+	SIGKW IDENTIFIER (',' SIGKW IDENTIFIER)*
+;
+
+messagesignature:
+	'(' payloadlist ')'
+|
+	IDENTIFIER '(' payloadlist ')'
+;
+
+payloadlist:
+	payload (',' payload)*
+;
+
+payload:
+	IDENTIFIER
+|
+	IDENTIFIER ':' IDENTIFIER
+;
+
+rolelist:
+	ROLEKW IDENTIFIER (',' ROLEKW IDENTIFIER)*
+;
+
+argumentlist:
+	argument (',' argument)*
+;
+
+argument:
+	IDENTIFIER
+|
+	messagesignature
+;
+
+globalprotocolbody:
+	globalprotocolblock
+;
+
+globalprotocolblock:
+	'{' globalinteractionsequence '}'
+;
+
+globalinteractionsequence:
+	(globalinteraction)*
+;
+
+globalinteraction:
+	globalmessagetransfer
+|
+	globalchoice
+|
+	globalparallel
+|
+	globalrecursion
+|
+	globalcontinue
+|
+	globalinterruptible
+|
+	globaldo
+/*|
+	globalspawn*/
+;
+
+globalmessagetransfer:
+	messagesignature FROMKW IDENTIFIER TOKW IDENTIFIER ';'!
+|
+	IDENTIFIER FROMKW IDENTIFIER TOKW IDENTIFIER ';'!
+;
+
+globalchoice:
+	CHOICEKW ATKW IDENTIFIER globalprotocolblock (ORKW globalprotocolblock)*
+;
+
+globalrecursion:
+	RECKW IDENTIFIER globalprotocolblock
+;
+
+globalcontinue:
+	CONTINUEKW IDENTIFIER ';'!
+;
+
+globalparallel:
+	PARALLELKW globalprotocolblock (ANDKW globalprotocolblock)*
+;
+
+globalinterruptible:
+	INTERRUPTIBLEKW globalprotocolblock WITHKW '{' (globalinterrupt)+ '}'
+;
+
+// FIXME: parameterised interrupt
+globalinterrupt:
+	messagesignature (',' messagesignature)* BYKW IDENTIFIER (',' IDENTIFIER)* ';'!
+;
+
+globaldo:
+	DOKW packagename '.' IDENTIFIER '(' roleinstantiationlist ')' ';'!
+|
+	DOKW packagename '.' IDENTIFIER '<' argumentlist '>' '(' roleinstantiationlist ')' ';'!
+| // FIXME: factor better (generally, package/module/protocol names)
+	DOKW IDENTIFIER '(' roleinstantiationlist ')' ';'!
+|
+	DOKW IDENTIFIER '<' argumentlist '>' '(' roleinstantiationlist ')' ';'!
+;  // argumentlist and roleinstantiationlist not uniform ("as")
+
+/*globalspawn:
+	SPAWNKW IDENTIFIER '(' roleinstantiationlist ')' ';'!
+	->
+	^(GLOBALSPAWN IDENTIFIER roleinstantiationlist)
+|
+	SPAWNKW IDENTIFIER '<' argumentlist '>' '(' roleinstantiationlist ')' ';'!
+	->
+	^(GLOBALSPAWN IDENTIFIER argumentlist roleinstantiationlist)
+;*/
+
+roleinstantiationlist:
+	roleinstantiation (',' roleinstantiation)*
+;
+
+roleinstantiation:
+	IDENTIFIER ASKW IDENTIFIER
+;
+
+localprotocoldecl:
+	LOCALKW PROTOCOLKW
+;
 
 
+/*------------------------------------------------------------------
+ * LEXER RULES
+ *------------------------------------------------------------------*/
 
-messageOperator: IDENTIFIER ;		// Changed to be IDENTIFIER
+WHITESPACE:
+	( '\t' | ' ' | '\r' | '\n'| '\u000C' )+
+	{
+		$channel = HIDDEN;
+	}
+;
 
-payloadType:  IDENTIFIER ( ':' IDENTIFIER )? ; 
+COMMENT:
+	'/*' .* '*/'
+	{
+		$channel=HIDDEN;
+	}
+;
 
-messageSignature: ( payloadType | messageOperator '('! ( payloadType ( ','! payloadType )* )? ')'! ) ;		// Changed, so could just be payloadType, instead of putting ID on message
+LINE_COMMENT:
+	'//' ~('\n'|'\r')* '\r'? '\n'
+	{
+		$channel=HIDDEN;
+	}
+;
 
+IDENTIFIER:
+	(LETTER | UNDERSCORE) (LETTER | DIGIT | UNDERSCORE)*
+;
 
+/*MESSAGEOPERATOR:  // rule "subsumed" by identifier, lexer doesn't like it (also because it is a potentially empty token)
+	(LETTER | DIGIT | UNDERSCORE)*
+;*/
 
+EXTIDENTIFIER:
+	'"' ( ~('\\'|'"') )* '"'
+;
 
-globalProtocolDecl: 'global'^ 'protocol' simpleName roleDefs globalProtocolBody ;
+fragment SYMBOL:
+	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#' | '&' | '?' | '!'	| UNDERSCORE
+;
 
-//globalProtocolDefinition: '('! ( 'role'^ roleName ( ','! 'role'^ roleName )*  )? ')'! globalProtocolBody ;		// Simplified as does not match local protocol definition
+fragment LETTER:
+	'a'..'z' | 'A'..'Z'
+;
 
-//roleList: 'role' roleName ( ','! 'role' roleName )* ;
+fragment DIGIT:
+	'0'..'9'
+;
 
-roleDefs: '('! roleDef ( ','! roleDef )* ')'! ;
-
-roleDef: 'role'^ simpleName ;
-
-
-roleName: IDENTIFIER ;
-
-parameterList: 'sig'^ simpleName ( ',' 'sig'^ simpleName )* ;				// created parameter rule to make easier to parse
-
-argumentList: messageSignature ( ',' messageSignature )* ;
-
-
-globalProtocolBody: globalInteractionBlock ;
-
-globalInteractionBlock: '{'! globalInteractionSequence '}'! ;
- 
-globalInteractionSequence: ( globalInteraction )* ;
-
-globalInteraction: message
-	| choice 
-	| parallel 
-	| recursion 
-	| continueDef
-	| interruptible 
-	| doDef
-	| spawn ;
-
-
-
-message: messageSignature 'from' roleName 'to' roleName ';'! ;		// Should include a ; at the end, and what about multicast?
-																	// should not have optional message sig - and not sure about identifier, so changed message sig
-
-choice: 'choice'^ 'at' roleName globalInteractionBlock ( 'or' globalInteractionBlock )* ;  // Should this not be + ?
-
-parallel: 'par'^ globalInteractionBlock ( 'and' globalInteractionBlock )* ;   // Should this not be + ?
-
-recursion: 'rec'^ simpleName globalInteractionBlock ;
-
-continueDef: 'continue'^ simpleName ';'! ;		// Rule name changed as caused java compilation error
-
-interruptible: 'interruptible'^ globalInteractionBlock 'with' '{'! ( interrupt )+ '}'! ;		// In the sending role, what determines at the point where the interrupting message can be sent?
-
-interrupt: messageSignature ( ','! messageSignature )* 'by' roleName ( ','! roleName )* ;
-
-doDef: 'do'^ simpleName ( '<' argumentList '>' )? '(' roleInstantiationList ')' ';'! ;		// Rule name changed as caused java compilation error
-
-roleInstantiationList: roleName 'as' roleName ( ',' roleName 'as' roleName )* ;
-	
-spawn: roleName 'spawns' simpleName ( '<' argumentList '>' )? '(' roleInstantiationList ')' ';'! ;
-
-
-
-localProtocolDecl: 'local'^ 'protocol' simpleName 'at' roleName roleDefs localProtocolBody ;
-
-
-localProtocolBody: localInteractionBlock ;
-
-localInteractionBlock: '{'! localInteractionSequence '}'! ;
- 
-localInteractionSequence: ( localInteraction )* ;
-
-localInteraction: send 
-	| receive 
-	| localChoice 
-	| localParallel 
-	| localRecursion 
-	| localContinue 
-	| localLnterruptible
-	| create				// Not shown in spec
-	| enter ;				// Not shown in spec - also refers to 'calls' construct but assume means spawn?
-
-
-send: messageSignature 'to' roleName ';'! ;		// Does not say terminated by ; in spec
-
-receive: messageSignature 'from' roleName ';'! ;		// Does not say terminated by ; in spec
-
-localChoice: 'choice'^ 'at' roleName localInteractionBlock ( 'or' localInteractionBlock )* ;		// Should be + ?
-
-localParallel: 'par'^ localInteractionBlock ( 'and' localInteractionBlock )* ;		// Should be + ?
-
-localRecursion: 'rec'^ simpleName localInteractionBlock ;
-
-localContinue: 'continue'^ simpleName ';'! ;		// Does not say terminated by ; in spec
-	
-localLnterruptible: 'interruptible'^ localInteractionBlock ( throwDef )? ( catchDef )? ;		// interruptible in spec - have changed structure slightly
-
-throwDef: 'throw'^ messageSignature ( ','! messageSignature )* ;		// Have removed initial bracket and rule name changed as caused java compilation error
-
-catchDef: 'catch'^ messageSignature ( ','! messageSignature )* ;		// Have removed initial brakcet
-
-
-create: 'create'^ simpleName ( '<' parameterList '>' )? '(' ( roleInstantiationList )? ')' ';'! ;		// Does not say terminated by ; in spec
-
-enter: 'enter'^ simpleName 'as' roleName ';'! ;		// Does not say terminated by ; in spec
+fragment UNDERSCORE:
+	'_'
+;
 

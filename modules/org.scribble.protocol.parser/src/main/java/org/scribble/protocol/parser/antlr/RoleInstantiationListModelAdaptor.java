@@ -38,11 +38,11 @@ public class RoleInstantiationListModelAdaptor implements ModelAdaptor {
 			
 			RoleInstantiation ri=new RoleInstantiation();
 			
-			ri.setAs((Role)context.pop());
+			ri.setAs(new Role(((CommonToken)context.pop()).getText()));
 			
 			context.pop(); // as
 			
-			ri.setRole((Role)context.pop());
+			ri.setRole(new Role(((CommonToken)context.pop()).getText()));
 			
 			ret.add(0, ri);
 			

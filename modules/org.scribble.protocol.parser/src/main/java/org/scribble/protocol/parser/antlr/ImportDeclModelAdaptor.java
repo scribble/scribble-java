@@ -39,6 +39,37 @@ public class ImportDeclModelAdaptor implements ModelAdaptor {
 			context.pop(); // as
 			ret.setAlias(text);
 			
+			ret.setMemberName(((CommonToken)context.pop()).getText());
+			
+			context.pop(); // import
+			
+			text=((CommonToken)context.pop()).getText();
+		} else if (((CommonToken)context.peek()).getText().equals("import")) {
+			context.pop(); // import
+
+			ret.setMemberName(text);
+			
+			text=((CommonToken)context.pop()).getText();
+		}
+		
+		while (((CommonToken)context.peek()).getText().equals(".")) {
+			text = ((CommonToken)context.pop()).getText()+text;
+			text = ((CommonToken)context.pop()).getText()+text;
+		}
+		
+		ret.setModuleName(new FullyQualifiedName(text));
+		
+		context.pop(); // consume 'from' or 'import' depending on which path was taken
+
+		/* Import first approach....
+		 * 
+		 *
+		String text=((CommonToken)context.pop()).getText();
+		
+		if (((CommonToken)context.peek()).getText().equals("as")) {
+			context.pop(); // as
+			ret.setAlias(text);
+			
 			text=((CommonToken)context.pop()).getText();
 		}
 		
@@ -55,6 +86,7 @@ public class ImportDeclModelAdaptor implements ModelAdaptor {
 		}
 
 		context.pop(); // import
+		*/
 		
 		context.push(ret);
 			

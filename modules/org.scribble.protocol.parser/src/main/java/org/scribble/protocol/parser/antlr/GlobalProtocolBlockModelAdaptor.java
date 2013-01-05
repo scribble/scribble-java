@@ -16,23 +16,29 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.global.GActivity;
+import org.scribble.protocol.model.global.GBlock;
 
 /**
- * This class provides the model adapter for the 'roleName' parser rule.
+ * This class provides the model adapter for the 'globalInterationBlock' parser rule.
  *
  */
-public class RoleNameModelAdaptor implements ModelAdaptor {
+public class GlobalProtocolBlockModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
-		Role ret=new Role();
+		GBlock ret=new GBlock();
 		
-		ret.setName(((CommonToken)context.pop()).getText());
+		context.pop(); // consume }
 		
+		while (context.peek() instanceof GActivity) {
+			ret.getContents().add(0, (GActivity)context.pop());
+		}
+		
+		context.pop(); // consume {
+
 		context.push(ret);
 		
 		return ret;

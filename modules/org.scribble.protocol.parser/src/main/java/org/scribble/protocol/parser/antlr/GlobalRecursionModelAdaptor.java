@@ -17,35 +17,29 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.PayloadType;
+import org.scribble.protocol.model.global.GBlock;
+import org.scribble.protocol.model.global.GRecursion;
 
 /**
- * This class provides the model adapter for the 'payloadType' parser rule.
+ * This class provides the model adapter for the 'recursion' parser rule.
  *
  */
-public class PayloadTypeModelAdaptor implements ModelAdaptor {
+public class GlobalRecursionModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
+		GRecursion ret=new GRecursion();
 		
-		PayloadType ret=new PayloadType();
-
-		String text=((CommonToken)context.pop()).getText();
+		ret.setBlock((GBlock)context.pop());
 		
-		if (context.peek() instanceof CommonToken
-				&& ((CommonToken)context.peek()).getText().equals(":")) {
-			context.pop(); // :
-			ret.setVariable(text);
-			
-			text=((CommonToken)context.pop()).getText();
-		}
+		ret.setLabel(((CommonToken)context.pop()).getText());
 		
-		ret.setType(text);
+		context.pop(); // rec
 		
 		context.push(ret);
-			
+		
 		return ret;
 	}
 

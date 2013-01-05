@@ -17,38 +17,26 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.global.GBlock;
-import org.scribble.protocol.model.global.GChoice;
+import org.scribble.protocol.model.global.GContinue;
 
 /**
- * This class provides the model adapter for the 'choice' parser rule.
+ * This class provides the model adapter for the 'continue' parser rule.
  *
  */
-public class ChoiceModelAdaptor implements ModelAdaptor {
+public class GlobalContinueModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(ParserContext context) {
-		GChoice ret=new GChoice();
+	public Object createModelObject(ParserContext context) {		
+		GContinue ret=new GContinue();
+
+		ret.setLabel(((CommonToken)context.pop()).getText());
 		
-		while (context.peek() instanceof GBlock) {
-			ret.getPaths().add(0, (GBlock)context.pop());
-			
-			if (context.peek() instanceof CommonToken
-					&& ((CommonToken)context.peek()).getText().equals("or")) {
-				context.pop();
-			}
-		}
-		
-		ret.setRole((Role)context.pop());
-		
-		context.pop(); // at
-		context.pop(); // choice
+		context.pop(); // continue
 		
 		context.push(ret);
-		
+			
 		return ret;
 	}
 

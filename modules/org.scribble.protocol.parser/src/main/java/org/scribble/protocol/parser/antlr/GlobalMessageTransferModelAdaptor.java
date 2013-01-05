@@ -17,26 +17,34 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.RoleDefn;
+import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.global.GMessage;
 
 /**
- * This class provides the model adapter for the 'roleDef' parser rule.
+ * This class provides the model adapter for the 'message' parser rule.
  *
  */
-public class RoleDefModelAdaptor implements ModelAdaptor {
+public class GlobalMessageTransferModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(ParserContext context) {
-		RoleDefn ret=new RoleDefn();
+	public Object createModelObject(ParserContext context) {		
+		GMessage ret=new GMessage();
+
+		ret.setToRole(new Role(((CommonToken)context.pop()).getText()));
 		
-		ret.setName(((CommonToken)context.pop()).getText());
+		context.pop(); // to
+	
+		ret.setFromRole(new Role(((CommonToken)context.pop()).getText()));
 		
-		context.pop(); // role
+		context.pop(); // from
+
+		ret.setMessageSignature((MessageSignature)context.pop());
 		
 		context.push(ret);
-		
+			
 		return ret;
 	}
 

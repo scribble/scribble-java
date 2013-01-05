@@ -16,34 +16,35 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import org.scribble.protocol.model.MessageSignature;
-import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.global.GMessage;
+import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.global.GBlock;
+import org.scribble.protocol.model.global.GParallel;
 
 /**
- * This class provides the model adapter for the 'message' parser rule.
+ * This class provides the model adapter for the 'parallel' parser rule.
  *
  */
-public class MessageModelAdaptor implements ModelAdaptor {
+public class GlobalParallelModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(ParserContext context) {		
-		GMessage ret=new GMessage();
-
-		ret.setToRole((Role)context.pop());
+	public Object createModelObject(ParserContext context) {
+		GParallel ret=new GParallel();
 		
-		context.pop(); // to
-	
-		ret.setFromRole((Role)context.pop());
+		while (context.peek() instanceof GBlock) {
+			ret.getPaths().add(0, (GBlock)context.pop());
+			
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals("and")) {
+				context.pop();
+			}
+		}
 		
-		context.pop(); // from
-
-		ret.setMessageSignature((MessageSignature)context.pop());
+		context.pop(); // par
 		
 		context.push(ret);
-			
+		
 		return ret;
 	}
 

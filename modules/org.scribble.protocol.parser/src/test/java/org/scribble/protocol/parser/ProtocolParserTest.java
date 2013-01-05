@@ -34,21 +34,6 @@ public class ProtocolParserTest {
     }
 
     @org.junit.Test
-    public void testLCreate() {
-    	testParser("LCreate");
-    }
-
-    @org.junit.Test
-    public void testLEnter() {
-    	testParser("LEnter");
-    }
-
-    @org.junit.Test
-    public void testGSpawn() {
-    	testParser("GSpawn");
-    }
-
-    @org.junit.Test
     public void testGDo() {
     	testParser("GDo");
     }
@@ -56,6 +41,37 @@ public class ProtocolParserTest {
     @org.junit.Test
     public void testGMessage() {
     	testParser("GMessage");
+    }
+
+    @org.junit.Test
+    public void testGChoice() {
+    	testParser("GChoice");
+    }
+
+    @org.junit.Test
+    public void testGParallel() {
+    	testParser("GParallel");
+    }
+    
+    @org.junit.Test
+    public void testGRecursion() {
+    	testParser("GRecursion");
+    }
+    
+    /*
+    @org.junit.Test
+    public void testGSpawn() {
+    	testParser("GSpawn");
+    }
+
+    @org.junit.Test
+    public void testLCreate() {
+    	testParser("LCreate");
+    }
+
+    @org.junit.Test
+    public void testLEnter() {
+    	testParser("LEnter");
     }
 
     @org.junit.Test
@@ -67,36 +83,22 @@ public class ProtocolParserTest {
     public void testLReceive() {
     	testParser("LReceive");
     }
-    
-    @org.junit.Test
-    public void testGChoice() {
-    	testParser("GChoice");
-    }
-    
+
     @org.junit.Test
     public void testLChoice() {
     	testParser("LChoice");
     }
     
     @org.junit.Test
-    public void testGParallel() {
-    	testParser("GParallel");
-    }
-    
-    @org.junit.Test
     public void testLParallel() {
     	testParser("LParallel");
     }
-    
-    @org.junit.Test
-    public void testGRecursion() {
-    	testParser("GRecursion");
-    }
-    
+
     @org.junit.Test
     public void testLRecursion() {
     	testParser("LRecursion");
     }
+    */
     
     protected void testParser(String name) {
     	
@@ -108,6 +110,10 @@ public class ProtocolParserTest {
     		TestIssueLogger logger=new TestIssueLogger();
     		
     		Module module=pp.parse(is, null, logger);
+    		
+    		if (module == null) {
+    			fail("Module is null");
+    		}
     		
     		if (logger.isErrorsOrWarnings()) {
     			fail("Unexpected errors and/or warnings in "+name+".spr");

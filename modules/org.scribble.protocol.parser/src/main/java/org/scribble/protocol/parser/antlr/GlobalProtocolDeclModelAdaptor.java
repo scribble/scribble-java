@@ -30,15 +30,18 @@ public class GlobalProtocolDeclModelAdaptor implements ModelAdaptor {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object createModelObject(ParserContext context) {
 		GProtocol ret=new GProtocol();
 		
 		ret.setBlock((GBlock)context.pop());
 		
-		while (context.peek() instanceof RoleDefn) {
-			ret.getRoleDefinitions().add(0, (RoleDefn)context.pop());			
-		}
+		context.pop(); // consume )
 		
+		ret.getRoleDefinitions().addAll((java.util.List<RoleDefn>)context.pop());
+		
+		context.pop(); // consume (
+
 		ret.setName(((CommonToken)context.pop()).getText());
 		
 		context.pop(); // protocol

@@ -17,26 +17,37 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.global.GBlock;
-import org.scribble.protocol.model.global.GRecursion;
+import org.scribble.protocol.model.RoleDefn;
 
 /**
- * This class provides the model adapter for the 'recursion' parser rule.
+ * This class provides the model adapter for the 'roleDef' parser rule.
  *
  */
-public class RecursionModelAdaptor implements ModelAdaptor {
+public class RoleListModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
-		GRecursion ret=new GRecursion();
+		java.util.List<RoleDefn> ret=new java.util.ArrayList<RoleDefn>();
+		boolean f_iterate=false;
 		
-		ret.setBlock((GBlock)context.pop());
+		do {
+			f_iterate = false;
+			
+			RoleDefn rd=new RoleDefn();
+			rd.setName(((CommonToken)context.pop()).getText());
 		
-		ret.setLabel(((CommonToken)context.pop()).getText());
-		
-		context.pop(); // rec
+			context.pop(); // role
+			
+			ret.add(0, rd);
+			
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals(",")) {
+				context.pop(); // ,
+				f_iterate = true;
+			}
+		} while (f_iterate);
 		
 		context.push(ret);
 		

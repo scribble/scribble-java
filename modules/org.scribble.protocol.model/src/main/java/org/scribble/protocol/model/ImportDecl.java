@@ -127,6 +127,7 @@ public class ImportDecl extends ModelObject {
 	public void toText(StringBuffer buf, int level) {
 		indent(buf, level);
 		
+		/*
 		buf.append("import ");
 
 		if (_memberName != null) {
@@ -138,6 +139,26 @@ public class ImportDecl extends ModelObject {
 		buf.append(_moduleName);
 		
 		if (_memberName != null && _alias != null) {
+			buf.append(" as ");
+			
+			buf.append(_alias);
+		}
+		*/
+		
+		if (_memberName != null) {
+			buf.append("from ");
+		} else {
+			buf.append("import ");
+		}
+		
+		buf.append(_moduleName);
+
+		if (_memberName != null) {			
+			buf.append(" import ");
+			buf.append(_memberName);
+		}
+		
+		if (_alias != null) {
 			buf.append(" as ");
 			
 			buf.append(_alias);

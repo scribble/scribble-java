@@ -15,6 +15,7 @@
  */
 package org.scribble.protocol.model.global;
 
+import org.scribble.protocol.model.FullyQualifiedName;
 import org.scribble.protocol.model.MessageSignature;
 import org.scribble.protocol.model.RoleInstantiation;
 
@@ -25,6 +26,7 @@ import org.scribble.protocol.model.RoleInstantiation;
 public class GDo extends GActivity {
 
     private String _protocol=null;
+    private FullyQualifiedName _moduleName=null;
     private java.util.List<MessageSignature> _arguments=new java.util.Vector<MessageSignature>();
     private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.Vector<RoleInstantiation>();
 
@@ -72,6 +74,24 @@ public class GDo extends GActivity {
     }
     
     /**
+     * This method returns the optional module name.
+     * 
+     * @return The module name
+     */
+    public FullyQualifiedName getModuleName() {
+    	return (_moduleName);
+    }
+    
+    /**
+     * This method sets the optional module name.
+     * 
+     * @param module The module name
+     */
+    public void setModuleName(FullyQualifiedName module) {
+    	_moduleName = module;
+    }
+    
+    /**
      * This method returns the argument list.
      * 
      * @return The list of arguments
@@ -107,6 +127,11 @@ public class GDo extends GActivity {
     	indent(buf, level);
     	
     	buf.append("do ");
+    	
+    	if (_moduleName != null) {
+    		_moduleName.toText(buf, level);
+    		buf.append(".");
+    	}
     	
     	buf.append(_protocol);
     	
