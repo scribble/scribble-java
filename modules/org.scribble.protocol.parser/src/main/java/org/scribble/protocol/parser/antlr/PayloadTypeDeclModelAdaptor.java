@@ -30,6 +30,8 @@ public class PayloadTypeDeclModelAdaptor implements ModelAdaptor {
 	 */
 	public Object createModelObject(ParserContext context) {
 		
+		context.pop(); // Consume ';'
+		
 		String alias=((CommonToken)context.pop()).getText();
 		context.pop(); // as
 		String schema=((CommonToken)context.pop()).getText();

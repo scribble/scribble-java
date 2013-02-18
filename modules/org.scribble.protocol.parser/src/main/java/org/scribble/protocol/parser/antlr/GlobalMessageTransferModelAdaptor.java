@@ -32,6 +32,8 @@ public class GlobalMessageTransferModelAdaptor implements ModelAdaptor {
 	 */
 	public Object createModelObject(ParserContext context) {		
 		GMessage ret=new GMessage();
+		
+		context.pop(); // ';'
 
 		ret.setToRole(new Role(((CommonToken)context.pop()).getText()));
 		

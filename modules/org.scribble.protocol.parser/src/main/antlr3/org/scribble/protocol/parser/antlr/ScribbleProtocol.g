@@ -1,22 +1,33 @@
 grammar ScribbleProtocol;
 
 // CHANGES:
+// EXTIDENTIFIER still not working, so changed it to be same as StringLiteral rule in previous version of grammer
+// importdecl - didn't work with modulename, was having problem with ';' expecting '.'
+// messageoperator rule
+// globalinteraction rule, comment end misplaced
+// globaldo - used membername instead of packagename '.' IDENTIFIER, which caused problems, but is same
+
+
 // Had to remove rewrite rules as was throwing exception on 'rule packagename'
 // Add ! to ';' so don't need to consume - but could explicitly consume
 // payloadlist rule had an empty cause with rewrite rule, as a optional path - so when removing rewrite, had to remove that path
-// EXTIDENTIFIER still not working, so changed it to be same as StringLiteral rule in previous version of grammer
 
 options {
 	output=AST;
 	backtrack=true;
 }
 
+/* 2.4  Keywords
+ *
+ * These values are stored in the Tokens created by the Lexer. Can be used as
+ * (AST) Tree node "types".
+ */
 tokens
 {
-	EMPTY_MESSAGE_OP = '__empty_message_op';
+	/*EMPTY_MESSAGE_OP = '__empty_message_op';  // Implementation specific
 	EMPTY_ANNOTATION = '__empty_annotation';
 	EMPTY_ARGUMENT_LIST = '__empty_argument_list';
-	EMPTY_PACKAGE_NAME = '__empty_package_name';
+	EMPTY_PACKAGE_NAME = '__empty_package_name';*/
 
 	PACKAGEKW = 'package';
 	IMPORTKW = 'import';
@@ -35,44 +46,17 @@ tokens
 	ORKW = 'or';
 	RECKW = 'rec';
 	CONTINUEKW = 'continue';
-	PARALLELKW = 'par';  // FIXME: should be PARKW
+	PARKW = 'par';
 	ANDKW = 'and';
 	INTERRUPTIBLEKW = 'interruptible';
 	WITHKW = 'with';
-	BYKW = 'by';  // from for interrupts is more expected, but from is not good for multiple roles (generally, the comma in interrupt message list and role list looks like "and" rather than "or")
+	BYKW = 'by'; // from for interrupts is more expected, but from is not good
+	             // for multiple roles (generally, the comma in interrupt message
+	             // list and role
+	             // list looks like "and" rather than "or")
 	DOKW = 'do';
 	ASKW = 'as';
 	SPAWNKW = 'spawn';
-
-	// The value of these token variables doesn't matter, only the token (i.e. variable) names themselves are used (for AST node root text field)
-	MODULE = 'module';
-	PACKAGEDECL = 'package-decl';
-	IMPORTDECL = 'import-decl';
-	PAYLOADTYPEDECL = 'payload-type-decl';  // FIXME: payload types, not message types
-	FROMIMPORTDECL = 'from-import-decl';
-	PARAMETERLIST = 'parameter-list';
-	MESSAGESIGNATURE = 'message-signature';
-	ROLELIST = 'role-list';
-	ARGUMENTLIST = 'argument-list';
-	PAYLOADLIST = 'payload-list';
-	PAYLOAD = 'payload';
-	ROLEINSTANTIATIONLIST = 'role-instantiation-list';
-
-	GLOBALPROTOCOLDECL = 'global-protocol-decl';
-	GLOBALPROTOCOLDEF = 'global-protocol-def';
-	GLOBALPROTOCOLINSTANCE = 'global-protocol-instance';
-	GLOBALPROTOCOLBODY = 'global-protocol-body';
-	GLOBALPROTOCOLBLOCK = 'global-protocol-block';
-	GLOBALINTERACTIONSEQUENCE = 'global-interaction-sequence';
-	GLOBALMESSAGETRANSFER = 'global-message-transfer';
-	GLOBALCHOICE = 'global-choice';
-	GLOBALRECURSION = 'global-recursion';
-	GLOBALCONTINUE = 'global-continue';
-	GLOBALPARALLEL = 'global-parallel';
-	GLOBALINTERRUPTIBLE = 'global-interruptible';
-	GLOBALINTERRUPT = 'global-interrupt';
-	GLOBALDO = 'global-do';
-	GLOBALSPAWN = 'global-spawn';
 }
 
 /*------------------------------------------------------------------
@@ -116,34 +100,213 @@ package org.scribble.protocol.parser.antlr;
 }
 
 
+/*------------------------------------------------------------------
+ * LEXER RULES
+ *------------------------------------------------------------------*/
+
+
+/* 2.1  White Space
+ */
+WHITESPACE:  // Name not important: tokens are thrown away
+	( '\t' | ' ' | '\r' | '\n'| '\u000C' )+
+	{
+		$channel = HIDDEN;  // Throw away tokens
+	}
+;
+
+
+/* 2.2  Comments
+ */
+
+COMMENT:
+	'/*' .* '*/'
+	{
+		$channel=HIDDEN;
+	}
+;
+
+LINE_COMMENT:  // FIXME: underscores not used for other category names
+	'//' ~('\n'|'\r')* '\r'? '\n'
+	{
+		$channel=HIDDEN;
+	}
+;
+
+
+/* 2.3  Identifiers
+ */
+
+IDENTIFIER:
+	(LETTER | UNDERSCORE) (LETTER | DIGIT | UNDERSCORE)*
+;
+
+EXTIDENTIFIER:
+	'"' ( ~('\\'|'"') )* '"'
+	//'"' (LETTER | UNDERSCORE | SYMBOL) (LETTER | DIGIT | UNDERSCORE | SYMBOL) '"'
+;
+
+fragment LETTER:
+	'a'..'z' | 'A'..'Z'
+;
+
+fragment DIGIT:
+	'0'..'9'
+;
+
+fragment SYMBOL:
+	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.'
+|
+	'\#' | '&' | '?' | '!' | UNDERSCORE
+;
+
+fragment UNDERSCORE:
+	'_'
+;
+
+
+/* 3.4  Message Signatures
+ */
+
+/*
+MESSAGEOPERATOR: // rule "subsumed" by identifier, lexer doesn't like it (also because it is a potentially empty token)  // Parser rule instead?
+	(LETTER | DIGIT | UNDERSCORE)*
+	//IDENTIFIER  // Usage is not like this
+;
+*/
+messageoperator:
+	IDENTIFIER
+;
+
 
 /*------------------------------------------------------------------
  * PARSER RULES
  *------------------------------------------------------------------*/
 
+/* 3.1 Basic Names
+ */
+
+rolename:
+	IDENTIFIER
+;
+
+parametername:  // FIXME: in langref
+	IDENTIFIER
+;
+
+annotationname:  // Move ealier? (collect all names together? in a name (sub)section)
+	IDENTIFIER
+;
+
+recursionlabelname:
+	IDENTIFIER
+;
+
+
+/* 3.2.1  Names
+ */
+packagename:  // i.e. implicit fully qualified package name
+	//(IDENTIFIER '.')* simplepackagename
+	(IDENTIFIER '.')* IDENTIFIER
+;
+
+/*simplepackagename:
+	IDENTIFIER
+;*/
+
+modulename:  // Simple name not needed?
+	packagename '.' IDENTIFIER  // Needs backtrack
+	//(IDENTIFIER '.')* simplepackagename '.' IDENTIFIER
+	//(IDENTIFIER '.')* IDENTIFIER '.' IDENTIFIER
+;
+
+membername:  // Separate into protocol/type names?
+	simplemembername
+|
+	fullyqualifiedmembername
+;
+
+simplemembername:
+	IDENTIFIER
+;
+
+fullyqualifiedmembername:
+	modulename '.' simplemembername
+;
+
+/*payloadtypename:
+	simplemembername
+;
+
+protocolname:
+	simplemembername
+;*/
+
+
+/* 3.2.2  Modules
+ */
 module:
 	packagedecl (importdecl)* (payloadtypedecl)* (protocoldecl)*
 ;
 
+
+/* 3.2.3  Package Declarations
+ */
+
 packagedecl:
-	PACKAGEKW packagename ';'!
+	PACKAGEKW packagename ';'//!  // In principle ! is implementation specific(?)
 ;
 
-packagename:
-	IDENTIFIER ('.' IDENTIFIER)*
-;
+
+/* 3.2.4  Import Declarations
+ */
 
 importdecl:
-	IMPORTKW IDENTIFIER ('.' IDENTIFIER)* ';'!
+	IMPORTKW IDENTIFIER ('.' IDENTIFIER)* ';'//!
 |
-	FROMKW packagename '.' IDENTIFIER IMPORTKW IDENTIFIER ';'!
+	// Use a simple modulename?
+	IMPORTKW IDENTIFIER ('.' IDENTIFIER)* ASKW IDENTIFIER ';'//!
 |
-	FROMKW packagename '.' IDENTIFIER IMPORTKW IDENTIFIER ASKW IDENTIFIER ';'!
+	FROMKW modulename IMPORTKW simplemembername ';'//!
+|
+	FROMKW modulename IMPORTKW simplemembername ASKW simplemembername ';'//!
 ;
 
-payloadtypedecl:  // FIXME: payload types, not message types
-	TYPEKW '<' IDENTIFIER '>' EXTIDENTIFIER FROMKW EXTIDENTIFIER ASKW IDENTIFIER ';'!
-;  // Seems to go off "element order", no way to label the elements
+
+/* 3.3  Payload Type Declarations
+ */
+
+/*payloadtypename:  // simple name
+	simplemembername
+;*/
+
+payloadtypedecl:
+	TYPEKW '<' IDENTIFIER '>' EXTIDENTIFIER FROMKW EXTIDENTIFIER ASKW simplemembername ';'//!
+;
+
+
+/* 3.4  Message Signatures
+ */
+
+messagesignature:
+	'(' payloadlist ')'
+|
+	messageoperator '(' payloadlist ')'
+;
+
+payloadlist:
+	payload (',' payload)*
+;
+
+payload:  // FIXME: in langref, category name should be just payload, not type
+	membername
+	// payloadtypename
+|
+	annotationname ':' membername
+;
+
+
+/* 3.5  Protocol Declarations
+ */
 
 protocoldecl:
 	globalprotocoldecl
@@ -151,47 +314,53 @@ protocoldecl:
 	localprotocoldecl
 ;
 
+
+/* 3.6  Global Protocols
+ */
+
 globalprotocoldecl:
-	GLOBALKW PROTOCOLKW IDENTIFIER globalprotocoldefinition
+	GLOBALKW PROTOCOLKW simplemembername (globalprotocoldefinition | globalprotocolinstance)
+	/*GLOBALKW PROTOCOLKW simplemembername globalprotocoldefinition
 |
-	GLOBALKW PROTOCOLKW IDENTIFIER globalprotocolinstance
+	GLOBALKW PROTOCOLKW simplemembername globalprotocolinstance*/
 ;
 
 globalprotocoldefinition:
-	// seems working better to do optional elements as alternative rules rather than using "?", maybe due to the rule rewriting reference to the element
+// Seems better to do optional elements as alternative rules rather
+// than using "?", maybe due to the rule rewriting reference to the element
 	'(' rolelist ')' globalprotocolbody
 |
 	'<' parameterlist '>' '(' rolelist ')' globalprotocolbody
 ;
 
+globalprotocolbody:
+	globalprotocolblock
+;
+
 globalprotocolinstance:
-	'(' rolelist ')' INSTANTIATESKW IDENTIFIER ';'!
+	'(' rolelist ')' INSTANTIATESKW membername ';'//!
 |
-	'(' rolelist ')' INSTANTIATESKW IDENTIFIER '<' argumentlist '>' ';'!
-;
-
-parameterlist:
-	SIGKW IDENTIFIER (',' SIGKW IDENTIFIER)*
-;
-
-messagesignature:
-	'(' payloadlist ')'
-|
-	IDENTIFIER '(' payloadlist ')'
-;
-
-payloadlist:
-	payload (',' payload)*
-;
-
-payload:
-	IDENTIFIER
-|
-	IDENTIFIER ':' IDENTIFIER
+	'(' rolelist ')' INSTANTIATESKW membername '<' argumentlist '>' ';'//!
 ;
 
 rolelist:
-	ROLEKW IDENTIFIER (',' ROLEKW IDENTIFIER)*
+	roledecl (',' roledecl)*
+;
+
+roledecl:
+	ROLEKW rolename
+|
+	ROLEKW rolename ASKW rolename
+;
+
+parameterlist:
+	parameterdecl (',' parameterdecl)*
+;
+
+parameterdecl:
+	SIGKW parametername
+|
+	SIGKW parametername ASKW parametername
 ;
 
 argumentlist:
@@ -199,14 +368,20 @@ argumentlist:
 ;
 
 argument:
-	IDENTIFIER
+	argumentval
+|
+	argumentval ASKW parametername
+;
+
+argumentval:
+	parametername  // FIXME: in langref
 |
 	messagesignature
 ;
 
-globalprotocolbody:
-	globalprotocolblock
-;
+
+/* 3.6.1  Global Interaction Blocks and Sequences
+ */
 
 globalprotocolblock:
 	'{' globalinteractionsequence '}'
@@ -226,36 +401,51 @@ globalinteraction:
 	globalrecursion
 |
 	globalcontinue
-|
-	globalinterruptible
+/*|
+	globalinterruptible*/
 |
 	globaldo
 /*|
 	globalspawn*/
 ;
 
+
+/* 3.6.2  Point-to-point Message Transfer
+ */
 globalmessagetransfer:
-	messagesignature FROMKW IDENTIFIER TOKW IDENTIFIER ';'!
+	messagesignature FROMKW rolename TOKW rolename ';'//!
 |
-	IDENTIFIER FROMKW IDENTIFIER TOKW IDENTIFIER ';'!
+	parametername FROMKW rolename TOKW rolename ';'//!
 ;
 
+
+/* 3.6.3  Choice
+ */
 globalchoice:
-	CHOICEKW ATKW IDENTIFIER globalprotocolblock (ORKW globalprotocolblock)*
+	CHOICEKW ATKW rolename globalprotocolblock (ORKW globalprotocolblock)*
 ;
 
+
+/* 3.6.4  Recursion
+ */
 globalrecursion:
-	RECKW IDENTIFIER globalprotocolblock
+	RECKW recursionlabelname globalprotocolblock
 ;
 
 globalcontinue:
-	CONTINUEKW IDENTIFIER ';'!
+	CONTINUEKW recursionlabelname ';'//!
 ;
 
+
+/* 3.6.5  Parallel
+ */
 globalparallel:
-	PARALLELKW globalprotocolblock (ANDKW globalprotocolblock)*
+	PARKW globalprotocolblock (ANDKW globalprotocolblock)*
 ;
 
+
+/* 3.6.6  Interruptible
+ *
 globalinterruptible:
 	INTERRUPTIBLEKW globalprotocolblock WITHKW '{' (globalinterrupt)+ '}'
 ;
@@ -264,90 +454,166 @@ globalinterruptible:
 globalinterrupt:
 	messagesignature (',' messagesignature)* BYKW IDENTIFIER (',' IDENTIFIER)* ';'!
 ;
+*/
 
+
+/* 3.6.7  Do
+ */
 globaldo:
-	DOKW packagename '.' IDENTIFIER '(' roleinstantiationlist ')' ';'!
+	// packagename needs to be resolved later into full or simple name
+	DOKW membername '(' roleinstantiationlist ')' ';'//!
 |
-	DOKW packagename '.' IDENTIFIER '<' argumentlist '>' '(' roleinstantiationlist ')' ';'!
-| // FIXME: factor better (generally, package/module/protocol names)
-	DOKW IDENTIFIER '(' roleinstantiationlist ')' ';'!
-|
-	DOKW IDENTIFIER '<' argumentlist '>' '(' roleinstantiationlist ')' ';'!
-;  // argumentlist and roleinstantiationlist not uniform ("as")
-
-/*globalspawn:
-	SPAWNKW IDENTIFIER '(' roleinstantiationlist ')' ';'!
-	->
-	^(GLOBALSPAWN IDENTIFIER roleinstantiationlist)
-|
-	SPAWNKW IDENTIFIER '<' argumentlist '>' '(' roleinstantiationlist ')' ';'!
-	->
-	^(GLOBALSPAWN IDENTIFIER argumentlist roleinstantiationlist)
-;*/
+	DOKW membername '<' argumentlist '>' '(' roleinstantiationlist ')' ';'//!
+;
+// argumentlist and roleinstantiationlist not uniform ("as")
 
 roleinstantiationlist:
 	roleinstantiation (',' roleinstantiation)*
 ;
 
 roleinstantiation:
-	IDENTIFIER ASKW IDENTIFIER
+	rolename
+|
+	rolename ASKW rolename
 ;
 
+
+/* 3.5.8
+ *
+globalspawn:
+	SPAWNKW packagename '(' roleinstantiationlist ')' ';'!
+|
+	SPAWNKW packagename '<' argumentlist '>' '(' roleinstantiationlist ')' ';'!
+;
+*/
+
+
+/* 3.7  Local Protocols
+ */
+
+// How much of local protocol BNF should be factored out with global?
 localprotocoldecl:
-	LOCALKW PROTOCOLKW
+	LOCALKW PROTOCOLKW simplemembername ATKW rolename (localprotocoldefinition | localprotocolinstance)
+;
+
+localprotocoldefinition:
+	'(' rolelist ')' localprotocolbody  // Definition is the same global. But we want to give the AST nodes to be "typed" as "local"
+|
+	'<' parameterlist '>' '(' rolelist ')' localprotocolbody
+;
+
+localprotocolinstance:
+	'(' rolelist ')' INSTANTIATESKW membername ';'
+|
+	'(' rolelist ')' INSTANTIATESKW membername '<' argumentlist '>' ';'
+;
+
+localprotocolbody:
+	localprotocolblock
 ;
 
 
-/*------------------------------------------------------------------
- * LEXER RULES
- *------------------------------------------------------------------*/
-
-WHITESPACE:
-	( '\t' | ' ' | '\r' | '\n'| '\u000C' )+
-	{
-		$channel = HIDDEN;
-	}
+/* 3.7.1  Local Interaction Blocks and Sequences
+ */
+localprotocolblock:
+	'{' localinteractionsequence '}'
 ;
 
-COMMENT:
-	'/*' .* '*/'
-	{
-		$channel=HIDDEN;
-	}
+localinteractionsequence:
+	(localinteraction)*
 ;
 
-LINE_COMMENT:
-	'//' ~('\n'|'\r')* '\r'? '\n'
-	{
-		$channel=HIDDEN;
-	}
+localinteraction:
+	localsend
+|
+	localreceive
+|
+	localchoice
+|
+	localparallel
+|
+	localrecursion
+|
+	localcontinue
+/*|
+	localinterruptible
+|*/
+	localdo
+/*|
+	localspawn*/
 ;
 
-IDENTIFIER:
-	(LETTER | UNDERSCORE) (LETTER | DIGIT | UNDERSCORE)*
+
+/* 3.7.2  Point-to-Point Message Transfer
+ */
+localsend:
+	messagesignature TOKW rolename ';'
+|
+	parametername TOKW rolename ';'
 ;
 
-/*MESSAGEOPERATOR:  // rule "subsumed" by identifier, lexer doesn't like it (also because it is a potentially empty token)
-	(LETTER | DIGIT | UNDERSCORE)*
-;*/
-
-EXTIDENTIFIER:
-	'"' ( ~('\\'|'"') )* '"'
+localreceive:
+	messagesignature FROMKW rolename ';'
+|
+	parametername FROMKW rolename ';'
 ;
 
-fragment SYMBOL:
-	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#' | '&' | '?' | '!'	| UNDERSCORE
+
+/* 3.7.3  Choice
+ */
+localchoice:
+	// FIXME: keeping rolename here? whether subject or not?
+	CHOICEKW ATKW rolename localprotocolblock (ORKW localprotocolblock)*
 ;
 
-fragment LETTER:
-	'a'..'z' | 'A'..'Z'
+
+/* 3.7.4  Recursion
+ */
+localrecursion:
+	RECKW recursionlabelname localprotocolblock
 ;
 
-fragment DIGIT:
-	'0'..'9'
+localcontinue:
+	CONTINUEKW recursionlabelname ';'
 ;
 
-fragment UNDERSCORE:
-	'_'
+
+/* 3.7.5  Parallel
+ */
+localparallel:
+	PARKW localprotocolblock (ANDKW localprotocolblock)*
 ;
+
+
+/* 3.7.6  Interruptible
+ *
+localinterruptible:
+	INTERRUPTIBLEKW localprotocolblock WITHKW '{' localthrowandorcatch '}'
+;
+
+localthrowandorcatch:
+	localthrow localcatch
+|
+	localthrow
+|
+	localcatch
+;
+
+localthrow:
+	THROWSKW messagesignature (',' messagesignature)* ';'
+;
+
+localcatch:
+	CATCHESKW messagesignature FROMKW IDENTIFIER (',' messagesignature FROMKW IDENTIFIER)* ';'
+;
+*/
+
+
+/* 3.6.7  Do
+ */
+localdo:
+	DOKW membername '(' roleinstantiationlist ')' ';'
+|
+	DOKW membername '<' argumentlist '>' '(' roleinstantiationlist ')' ';'
+;  // argumentlist and roleinstantiationlist not uniform ("as")
 

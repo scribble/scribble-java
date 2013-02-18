@@ -33,6 +33,11 @@ public class PackageDeclModelAdaptor implements ModelAdaptor {
 		String packageName="";
 		FullyQualifiedName ret=null;
 		
+		if (component instanceof CommonToken
+				&& ((CommonToken)component).getText().equals(";")) {
+			component = context.pop(); // Replace ';'
+		}
+		
 		do {
 			if (component instanceof CommonToken) {
 				packageName = ((CommonToken)component).getText()+packageName;

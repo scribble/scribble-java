@@ -31,6 +31,8 @@ public class GlobalContinueModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {		
 		GContinue ret=new GContinue();
 
+		context.pop(); // ';'
+		
 		ret.setLabel(((CommonToken)context.pop()).getText());
 		
 		context.pop(); // continue

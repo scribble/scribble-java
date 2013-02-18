@@ -32,6 +32,8 @@ public class ImportDeclModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		
 		ImportDecl ret=new ImportDecl();
+		
+		context.pop(); // consume ';'
 
 		String text=((CommonToken)context.pop()).getText();
 		

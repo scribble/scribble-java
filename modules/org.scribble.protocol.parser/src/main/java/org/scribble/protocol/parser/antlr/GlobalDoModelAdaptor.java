@@ -35,6 +35,8 @@ public class GlobalDoModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {		
 		GDo ret=new GDo();
 
+		context.pop(); // ';'
+		
 		context.pop(); // )
 		
 		ret.getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
