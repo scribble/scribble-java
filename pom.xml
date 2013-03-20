@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.0.0.20130320-M1</version>
 	<packaging>pom</packaging>
 	<name>Scribble</name>
 	<url>http://www.scribble.org</url>
@@ -13,8 +13,8 @@
 	</description>
 
 	<scm>
-		<connection>https://github.com/scribble</connection>
-		<url>https://github.com/scribble</url>
+		<connection>https://github.com/scribble/scribble-java</connection>
+		<url>https://github.com/scribble/scribble-java</url>
 	</scm>
 
 	<licenses>
