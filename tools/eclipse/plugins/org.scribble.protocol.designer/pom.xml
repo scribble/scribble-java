@@ -24,6 +24,11 @@
 			<artifactId>org.scribble.protocol.parser</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.scribble.modules</groupId>
+			<artifactId>org.scribble.protocol.validation</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -50,6 +55,11 @@
 								<artifactItem>
 									<groupId>org.scribble.modules</groupId>
 									<artifactId>org.scribble.protocol.parser</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.scribble.modules</groupId>
+									<artifactId>org.scribble.protocol.validation</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>

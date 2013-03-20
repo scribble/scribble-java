@@ -74,6 +74,8 @@
      </initializer>
   </extension>
 
+<!-- Disable for now.
+
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -104,5 +106,6 @@
          </action>
       </objectContribution>
    </extension>
+-->
 	
 </plugin>

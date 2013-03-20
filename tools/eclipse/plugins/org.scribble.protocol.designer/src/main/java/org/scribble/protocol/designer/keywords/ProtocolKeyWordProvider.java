@@ -21,11 +21,32 @@ package org.scribble.protocol.designer.keywords;
 public class ProtocolKeyWordProvider extends DefaultKeyWordProvider {
 	
 	private static final String[] RESERVED_WORDS={
-		"protocol",
-		"global",
-		"local",
+		"and",
+		"as",
+		"at",
+		"by",
+		"catch",
+		"choice",
+		"continue",
+		"create",
+		"do",
+		"enter",
 		"from",
-		"to"
+		"global",
+		"import",
+		"instantiates",
+		"interruptible",
+		"local",
+		"or",
+		"par",
+		"protocol",
+		"rec",
+		"role",
+		"spawns",
+		"throw",
+		"to",
+		"with",
+		"package"
 	};
     
     /**

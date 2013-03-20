@@ -94,7 +94,7 @@ public final class ANTLRMessageUtil {
                         pos = document.indexOf("\n", pos);
                         
                         if (pos != -1) {
-                            pos += 2;
+                            pos += 1;
                         }
                     }
                     
@@ -109,8 +109,8 @@ public final class ANTLRMessageUtil {
                         
                         for (int j=pos+1; nextpos == -1 && j < endpos; j++) {
                             char ch=document.charAt(j);
-                            if (Character.isWhitespace(ch)) {
-                                nextpos = j-1;
+                            if (Character.isWhitespace(ch) || !Character.isLetterOrDigit(ch)) {
+                                nextpos = j;
                             }
                         }
                         
