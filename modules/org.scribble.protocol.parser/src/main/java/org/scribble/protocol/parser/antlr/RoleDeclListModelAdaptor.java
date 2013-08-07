@@ -17,7 +17,7 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.RoleDefn;
+import org.scribble.protocol.model.RoleDecl;
 
 /**
  * This class provides the model adapter for the 'roleDef' parser rule.
@@ -29,7 +29,7 @@ public class RoleDeclListModelAdaptor implements ModelAdaptor {
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
-		java.util.List<RoleDefn> ret=new java.util.ArrayList<RoleDefn>();
+		java.util.List<RoleDecl> ret=new java.util.ArrayList<RoleDecl>();
 		boolean f_iterate=false;
 		
 		// consume ')'
@@ -38,9 +38,18 @@ public class RoleDeclListModelAdaptor implements ModelAdaptor {
 		do {
 			f_iterate = false;
 			
-			RoleDefn rd=new RoleDefn();
+			RoleDecl rd=new RoleDecl();
 			rd.setName(((CommonToken)context.pop()).getText());
 		
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals("as")) {
+				context.pop(); // 'as'
+				
+				rd.setAlias(rd.getName());
+				
+				rd.setName(((CommonToken)context.pop()).getText());
+			}
+
 			context.pop(); // role
 			
 			ret.add(0, rd);

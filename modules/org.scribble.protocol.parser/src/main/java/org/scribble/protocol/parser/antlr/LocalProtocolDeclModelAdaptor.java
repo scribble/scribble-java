@@ -18,7 +18,7 @@ package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.RoleDefn;
+import org.scribble.protocol.model.RoleDecl;
 import org.scribble.protocol.model.local.LBlock;
 import org.scribble.protocol.model.local.LProtocol;
 
@@ -37,7 +37,7 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 		
 		ret.setBlock((LBlock)context.pop());
 		
-		ret.getRoleDefinitions().addAll((java.util.List<RoleDefn>)context.pop());
+		ret.getRoleDefinitions().addAll((java.util.List<RoleDecl>)context.pop());
 		
 		ret.setLocalRole((Role)context.pop());
 		

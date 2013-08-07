@@ -19,14 +19,15 @@ package org.scribble.protocol.model;
  * This class represents a role.
  * 
  */
-public class RoleDefn extends ModelObject {
+public class RoleDecl extends ModelObject {
     
-    private String _name=null;    
+    private String _name=null;
+    private String _alias=null;
 
     /**
      * This is the default constructor.
      */
-    public RoleDefn() {
+    public RoleDecl() {
     }
     
     /**
@@ -34,7 +35,7 @@ public class RoleDefn extends ModelObject {
      * 
      * @param role The role
      */
-    public RoleDefn(RoleDefn role) {
+    public RoleDecl(RoleDecl role) {
         super(role);
         _name = role.getName();
     }
@@ -44,7 +45,7 @@ public class RoleDefn extends ModelObject {
      * 
      * @param roleName The role name
      */
-    public RoleDefn(String roleName) {
+    public RoleDecl(String roleName) {
         _name = roleName;
     }
     
@@ -66,12 +67,30 @@ public class RoleDefn extends ModelObject {
         _name = name;
     }
     
+    /**
+     * This method returns the alias of the role.
+     * 
+     * @return The alias
+     */
+    public String getAlias() {
+        return (_alias);
+    }
+    
+    /**
+     * This method sets the alias of the role.
+     * 
+     * @param alias The alias
+     */
+    public void setAlias(String alias) {
+    	_alias = alias;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         boolean ret=false;
     
-        if (obj instanceof RoleDefn) {
-            RoleDefn other=(RoleDefn)obj;
+        if (obj instanceof RoleDecl) {
+            RoleDecl other=(RoleDecl)obj;
             
             if (other.getName() != null && other.getName().equals(_name)) {
                 ret = true;
@@ -118,6 +137,10 @@ public class RoleDefn extends ModelObject {
     public void toText(StringBuffer buf, int level) {
 		if (_name != null) {
 			buf.append(_name);
+		}
+		
+		if (_alias != null) {
+			buf.append(" as "+_alias);
 		}
 	}
 

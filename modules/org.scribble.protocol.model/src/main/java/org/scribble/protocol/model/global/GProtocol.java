@@ -16,7 +16,7 @@
 package org.scribble.protocol.model.global;
 
 import org.scribble.protocol.model.ProtocolDecl;
-import org.scribble.protocol.model.RoleDefn;
+import org.scribble.protocol.model.RoleDecl;
 import org.scribble.protocol.model.Visitor;
 
 /**
@@ -89,7 +89,7 @@ public class GProtocol extends ProtocolDecl {
     public String toString() {
         String ret="global protocol "+getName()+" ( ";
         
-        for (RoleDefn role : getRoleDefinitions()) {
+        for (RoleDecl role : getRoleDefinitions()) {
             ret += ("role "+role.getName()+" ");
         }
         
