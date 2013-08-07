@@ -23,13 +23,13 @@ package org.scribble.protocol.model;
  */
 public class Module extends ModelObject {
     
-	private org.scribble.protocol.model.FullyQualifiedName _package=null;
+	private org.scribble.protocol.model.FullyQualifiedName _fqn=null;
     private java.util.List<ImportDecl> _imports=
             new ContainmentList<ImportDecl>(this, ImportDecl.class);
     private java.util.List<PayloadTypeDecl> _payloadTypes=
             new ContainmentList<PayloadTypeDecl>(this, PayloadTypeDecl.class);
-    private java.util.List<Protocol> _protocols=
-            new ContainmentList<Protocol>(this, Protocol.class);
+    private java.util.List<ProtocolDecl> _protocols=
+            new ContainmentList<ProtocolDecl>(this, ProtocolDecl.class);
 
     /**
      * The default constructor for the model.
@@ -38,21 +38,21 @@ public class Module extends ModelObject {
     }
     
     /**
-     * This method returns the package.
+     * This method returns the fully qualified name.
      * 
-     * @return The package
+     * @return The fully qualified name
      */
-    public org.scribble.protocol.model.FullyQualifiedName getPackage() {
-    	return (_package);
+    public org.scribble.protocol.model.FullyQualifiedName getFullyQualifiedName() {
+    	return (_fqn);
     }
     
     /**
-     * This method sets the package.
+     * This method sets the fully qualified name.
      * 
-     * @param pn The package
+     * @param fqn The fully qualified name
      */
-    public void setPackage(org.scribble.protocol.model.FullyQualifiedName pn) {
-    	_package = pn;
+    public void setFullyQualifiedName(org.scribble.protocol.model.FullyQualifiedName fqn) {
+    	_fqn = fqn;
     }
     
     /**
@@ -95,7 +95,7 @@ public class Module extends ModelObject {
      * 
      * @return The protocols
      */
-    public java.util.List<Protocol> getProtocols() {
+    public java.util.List<ProtocolDecl> getProtocols() {
         return (_protocols);
     }
     
@@ -106,8 +106,8 @@ public class Module extends ModelObject {
      * @param name The name
      * @return The protocol, or null if not found
      */
-    public Protocol getProtocol(String name) {
-    	for (Protocol p : _protocols) {
+    public ProtocolDecl getProtocol(String name) {
+    	for (ProtocolDecl p : _protocols) {
     		if (p.getName().equals(name)) {
     			return (p);
     		}
@@ -132,7 +132,7 @@ public class Module extends ModelObject {
         	ptd.visit(visitor);
         }
         
-        for (Protocol protocol : getProtocols()) {
+        for (ProtocolDecl protocol : getProtocols()) {
         	protocol.visit(visitor);
         }
     }
@@ -151,12 +151,12 @@ public class Module extends ModelObject {
      * {@inheritDoc}
      */
     public void toText(StringBuffer buf, int level) {
-    	if (_package != null) {
+    	if (_fqn != null) {
     		indent(buf, level);
     		
-    		buf.append("package ");
+    		buf.append("module ");
     		
-    		_package.toText(buf, level);
+    		_fqn.toText(buf, level);
     		
     		buf.append(";\n\n");
     	}
@@ -177,7 +177,7 @@ public class Module extends ModelObject {
     		buf.append("\n");
     	}
     	
-    	for (Protocol protocol : getProtocols()) {
+    	for (ProtocolDecl protocol : getProtocols()) {
     		protocol.toText(buf, level);
     	}
     }

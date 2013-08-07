@@ -33,7 +33,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 	private static final Logger LOG=Logger.getLogger(ProtocolTreeAdaptor.class.getName());
 
 	private ParserContext _context=new DefaultParserContext();
-    private ScribbleProtocolParser _parser=null;
+    private ScribbleParser _parser=null;
     
     /**
      * The constructor.
@@ -55,7 +55,7 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
      * 
      * @param parser The parser
      */
-    public void setParser(ScribbleProtocolParser parser) {
+    public void setParser(ScribbleParser parser) {
         _parser = parser;
     }
 
@@ -270,6 +270,8 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
 	    		
 	    		if (modelAdaptor != null) {
 	    			ret = modelAdaptor.createModelObject(_context);
+	    		//} else {
+	    		//	LOG.severe("No ModelAdaptor for rule name: "+ruleName);
 	    		}
     		}
         }

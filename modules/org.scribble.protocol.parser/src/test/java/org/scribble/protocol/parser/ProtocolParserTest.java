@@ -28,6 +28,7 @@ public class ProtocolParserTest {
     	testParser("Types");
     }
 
+    /*
     @org.junit.Test
     public void testImports() {
     	testParser("Imports");
@@ -103,7 +104,7 @@ public class ProtocolParserTest {
     protected void testParser(String name) {
     	
     	try {
-    		java.io.InputStream is=ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+".spr");
+    		java.io.InputStream is=ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+".scr");
     		
     		ProtocolParser pp=new ProtocolParser();
     		
@@ -116,10 +117,10 @@ public class ProtocolParserTest {
     		}
     		
     		if (logger.isErrorsOrWarnings()) {
-    			fail("Unexpected errors and/or warnings in "+name+".spr");
+    			fail("Unexpected errors and/or warnings in "+name+".scr");
     		}
     		
-    		is = ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+".spr");
+    		is = ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+".scr");
     		
     		byte[] b=new byte[is.available()];
     		is.read(b);

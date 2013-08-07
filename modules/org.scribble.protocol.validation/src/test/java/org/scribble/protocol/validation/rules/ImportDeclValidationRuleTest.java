@@ -23,7 +23,7 @@ import java.text.MessageFormat;
 import org.scribble.protocol.model.FullyQualifiedName;
 import org.scribble.protocol.model.ImportDecl;
 import org.scribble.protocol.model.Module;
-import org.scribble.protocol.model.Protocol;
+import org.scribble.protocol.model.ProtocolDecl;
 import org.scribble.protocol.model.global.GProtocol;
 import org.scribble.protocol.validation.DefaultValidationContext;
 import org.scribble.protocol.validation.TestValidationLogger;
@@ -116,7 +116,7 @@ public class ImportDeclValidationRuleTest {
     	DefaultValidationContext context=new DefaultValidationContext();
     	
     	Module m=new Module();
-    	Protocol p=new GProtocol();
+    	ProtocolDecl p=new GProtocol();
     	p.setName("Init");
     	m.getProtocols().add(p);
     	context.registerModule("a.b.c", m);

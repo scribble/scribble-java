@@ -32,7 +32,7 @@ public class ModuleValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setPackage(new FullyQualifiedName("test"));
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
     	
     	module.getProtocols().add(new GProtocol());
     	
@@ -69,7 +69,7 @@ public class ModuleValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setPackage(new FullyQualifiedName("test"));
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
     	
     	rule.validate(null, module, logger);
     	

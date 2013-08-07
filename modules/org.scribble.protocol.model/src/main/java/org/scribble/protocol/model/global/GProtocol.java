@@ -15,14 +15,14 @@
  */
 package org.scribble.protocol.model.global;
 
-import org.scribble.protocol.model.Protocol;
+import org.scribble.protocol.model.ProtocolDecl;
 import org.scribble.protocol.model.RoleDefn;
 import org.scribble.protocol.model.Visitor;
 
 /**
  * This class represents the protocol notation.
  */
-public class GProtocol extends Protocol {
+public class GProtocol extends ProtocolDecl {
     
     private GBlock _block=null;
 

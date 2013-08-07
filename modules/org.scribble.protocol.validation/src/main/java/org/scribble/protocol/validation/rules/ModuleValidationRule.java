@@ -20,7 +20,7 @@ import org.scribble.protocol.model.ImportDecl;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
 import org.scribble.protocol.model.PayloadTypeDecl;
-import org.scribble.protocol.model.Protocol;
+import org.scribble.protocol.model.ProtocolDecl;
 import org.scribble.protocol.validation.ValidationContext;
 import org.scribble.protocol.validation.ValidationLogger;
 import org.scribble.protocol.validation.ValidationMessages;
@@ -38,8 +38,8 @@ public class ModuleValidationRule implements ValidationRule {
 	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
 		Module elem=(Module)mobj;
 		
-		if (elem.getPackage() == null) {
-			logger.error(ValidationMessages.getMessage("NO_PACKAGE"), mobj);
+		if (elem.getFullyQualifiedName() == null) {
+			logger.error(ValidationMessages.getMessage("NO_FULLY_QUALIFIED_NAME"), mobj);
 		}
 		
 		for (ImportDecl imp : elem.getImports()) {
@@ -62,7 +62,7 @@ public class ModuleValidationRule implements ValidationRule {
 			logger.error(ValidationMessages.getMessage("NO_PROTOCOLS"), mobj);
 		}
 		
-		for (Protocol protocol : elem.getProtocols()) {
+		for (ProtocolDecl protocol : elem.getProtocols()) {
 			ValidationRule rule=ValidationRuleFactory.getValidationRule(protocol);
 			
 			if (rule != null) {

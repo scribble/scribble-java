@@ -27,8 +27,8 @@ import org.scribble.protocol.model.Module;
 import org.scribble.protocol.parser.ParserLogger;
 import org.scribble.protocol.parser.ProtocolParser;
 import org.scribble.protocol.parser.antlr.ProtocolTreeAdaptor;
-import org.scribble.protocol.parser.antlr.ScribbleProtocolLexer;
-import org.scribble.protocol.parser.antlr.ScribbleProtocolParser;
+import org.scribble.protocol.parser.antlr.ScribbleLexer;
+import org.scribble.protocol.parser.antlr.ScribbleParser;
 import org.scribble.protocol.validation.ComponentLoader;
 import org.scribble.protocol.validation.DefaultValidationContext;
 import org.scribble.protocol.validation.ProtocolValidator;
@@ -72,10 +72,10 @@ public class ProtocolParser {
             
             String document=new String(b);
             
-            ScribbleProtocolLexer lex = new ScribbleProtocolLexer(new ANTLRStringStream(document));
+            ScribbleLexer lex = new ScribbleLexer(new ANTLRStringStream(document));
             CommonTokenStream tokens = new CommonTokenStream(lex);
                
-            ScribbleProtocolParser parser = new ScribbleProtocolParser(tokens);
+            ScribbleParser parser = new ScribbleParser(tokens);
 
             ProtocolTreeAdaptor adaptor=new ProtocolTreeAdaptor();
             adaptor.setParser(parser);

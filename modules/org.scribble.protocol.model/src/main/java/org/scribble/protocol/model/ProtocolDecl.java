@@ -18,7 +18,7 @@ package org.scribble.protocol.model;
 /**
  * This class represents the protocol notation.
  */
-public abstract class Protocol extends ModelObject {
+public abstract class ProtocolDecl extends ModelObject {
     
     private String _name=null;
     private java.util.List<RoleDefn> _roleDefns=new java.util.ArrayList<RoleDefn>();
@@ -26,7 +26,7 @@ public abstract class Protocol extends ModelObject {
     /**
      * The default constructor.
      */
-    public Protocol() {
+    public ProtocolDecl() {
     }
     
     /**

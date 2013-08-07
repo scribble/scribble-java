@@ -31,7 +31,7 @@ public class ProtocolValidatorTest {
     	DefaultValidationContext context=new DefaultValidationContext();
     	
     	Module module=new Module();
-    	module.setPackage(new FullyQualifiedName("test"));
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
     	
     	module.getProtocols().add(new GProtocol());
     	

@@ -15,7 +15,7 @@
  */
 package org.scribble.protocol.model.local;
 
-import org.scribble.protocol.model.Protocol;
+import org.scribble.protocol.model.ProtocolDecl;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.RoleDefn;
 import org.scribble.protocol.model.Visitor;
@@ -23,7 +23,7 @@ import org.scribble.protocol.model.Visitor;
 /**
  * This class represents the protocol notation.
  */
-public class LProtocol extends Protocol {
+public class LProtocol extends ProtocolDecl {
     
 	private Role _localRole=null;
     private LBlock _block=null;

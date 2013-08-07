@@ -17,42 +17,45 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.FullyQualifiedName;
+import org.scribble.protocol.model.RoleDefn;
 
 /**
- * This class provides the model adapter for the 'packageDecl' parser rule.
+ * This class provides the model adapter for the 'roleDef' parser rule.
  *
  */
-public class PackageDeclModelAdaptor implements ModelAdaptor {
+public class RoleDeclListModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
-		Object component=context.pop();
-		String packageName="";
-		FullyQualifiedName ret=null;
+		java.util.List<RoleDefn> ret=new java.util.ArrayList<RoleDefn>();
+		boolean f_iterate=false;
 		
-		if (component instanceof CommonToken
-				&& ((CommonToken)component).getText().equals(";")) {
-			component = context.pop(); // Replace ';'
-		}
+		// consume ')'
+		context.pop();
 		
 		do {
-			if (component instanceof CommonToken) {
-				packageName = ((CommonToken)component).getText()+packageName;
+			f_iterate = false;
+			
+			RoleDefn rd=new RoleDefn();
+			rd.setName(((CommonToken)context.pop()).getText());
+		
+			context.pop(); // role
+			
+			ret.add(0, rd);
+			
+			if (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals(",")) {
+				context.pop(); // ,
+				f_iterate = true;
 			}
-			
-			component = context.pop();
-			
-		} while (!(component instanceof CommonToken && ((CommonToken)component).getText().equals("package")));
-
-		if (packageName.length() > 0) {
-			ret = new FullyQualifiedName();
-			ret.setName(packageName);
-			
-			context.push(ret);
-		}
+		} while (f_iterate);
+		
+		// consume '('
+		context.pop();
+		
+		context.push(ret);
 		
 		return ret;
 	}

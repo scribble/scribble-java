@@ -20,7 +20,7 @@ import org.scribble.protocol.model.FullyQualifiedName;
 import org.scribble.protocol.model.ImportDecl;
 import org.scribble.protocol.model.Module;
 import org.scribble.protocol.model.PayloadTypeDecl;
-import org.scribble.protocol.model.Protocol;
+import org.scribble.protocol.model.ProtocolDecl;
 
 /**
  * This class provides the model adapter for the 'module' parser rule.
@@ -34,8 +34,8 @@ public class ModuleModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		Module ret=new Module();
 		
-		while (context.peek() instanceof Protocol) {
-			ret.getProtocols().add(0, (Protocol)context.pop());
+		while (context.peek() instanceof ProtocolDecl) {
+			ret.getProtocols().add(0, (ProtocolDecl)context.pop());
 		}
 		
 		while (context.peek() instanceof PayloadTypeDecl) {
@@ -47,7 +47,7 @@ public class ModuleModelAdaptor implements ModelAdaptor {
 		}
 
 		if (context.peek() instanceof FullyQualifiedName) {
-			ret.setPackage((FullyQualifiedName)context.pop());
+			ret.setFullyQualifiedName((FullyQualifiedName)context.pop());
 		}
 		
 		context.push(ret);

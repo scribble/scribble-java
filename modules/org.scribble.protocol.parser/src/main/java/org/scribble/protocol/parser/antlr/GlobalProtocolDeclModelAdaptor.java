@@ -36,12 +36,8 @@ public class GlobalProtocolDeclModelAdaptor implements ModelAdaptor {
 		
 		ret.setBlock((GBlock)context.pop());
 		
-		context.pop(); // consume )
-		
 		ret.getRoleDefinitions().addAll((java.util.List<RoleDefn>)context.pop());
 		
-		context.pop(); // consume (
-
 		ret.setName(((CommonToken)context.pop()).getText());
 		
 		context.pop(); // protocol
