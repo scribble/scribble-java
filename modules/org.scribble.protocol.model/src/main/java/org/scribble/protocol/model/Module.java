@@ -177,7 +177,11 @@ public class Module extends ModelObject {
     		buf.append("\n");
     	}
     	
-    	for (ProtocolDecl protocol : getProtocols()) {
+    	for (int i=0; i < getProtocols().size(); i++) {
+    		ProtocolDecl protocol=getProtocols().get(i);
+    		if (i > 0) {
+        		buf.append("\n");
+    		}
     		protocol.toText(buf, level);
     	}
     }

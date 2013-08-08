@@ -1,0 +1,15 @@
+module scribble.examples.GMessage;
+
+global protocol GMessageTest(role Buyer,role SellerA,role SellerB) {
+	buy(Order,Customer) from Buyer to SellerA;
+	buy(Order,Customer) from Buyer to SellerA,SellerB;
+	buy(o:Order,c:Customer) from Buyer to SellerA;
+	buy(Order) from Buyer to SellerA,SellerB;
+	buy(ord:Order) from Buyer to SellerA;
+}
+
+global protocol Order(role Buyer,role Seller) {
+}
+
+global protocol Receipt(role Buyer,role Seller) {
+}

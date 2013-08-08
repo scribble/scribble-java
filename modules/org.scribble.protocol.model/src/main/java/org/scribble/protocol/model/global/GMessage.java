@@ -28,7 +28,7 @@ public class GMessage extends GActivity {
 
     private MessageSignature _messageSignature=null;
     private Role _fromRole=null;
-    private Role _toRole=null;
+    private java.util.List<Role> _toRoles=new java.util.ArrayList<Role>();
 
     /**
      * The default constructor.
@@ -49,7 +49,10 @@ public class GMessage extends GActivity {
         }
         
         _fromRole = i._fromRole;
-        _toRole = i._toRole;
+        
+        for (Role r : i._toRoles) {
+        	_toRoles.add(new Role(r));
+        }
     }
 
     /**
@@ -58,12 +61,12 @@ public class GMessage extends GActivity {
      * 
      * @param sig The message signature
      * @param fromRole The 'from' role
-     * @param toRole The 'to' role
+     * @param toRoles The 'to' roles
      */
-    public GMessage(MessageSignature sig, Role fromRole, Role toRole) {
+    public GMessage(MessageSignature sig, Role fromRole, java.util.List<Role> toRoles) {
         _messageSignature = sig;
         _fromRole = fromRole;
-        _toRole = toRole;
+        _toRoles = toRoles;
     }
 
     /**
@@ -112,21 +115,21 @@ public class GMessage extends GActivity {
     }
     
     /**
-     * This method returns the 'to' role.
+     * This method returns the 'to' roles.
      * 
-     * @return The 'to' role
+     * @return The 'to' roles
      */
-    public Role getToRole() {
-        return (_toRole);
+    public java.util.List<Role> getToRoles() {
+        return (_toRoles);
     }
     
     /**
-     * This method sets the 'to' role.
+     * This method sets the 'to' roles.
      * 
-     * @param part The 'to' role
+     * @param part The 'to' roles
      */
-    public void setToRole(Role part) {
-    	_toRole = part;
+    public void setToRoles(java.util.List<Role> part) {
+    	_toRoles = part;
     }
     
     
@@ -141,7 +144,13 @@ public class GMessage extends GActivity {
         
         ret.append(getFromRole());
         ret.append("->");
-        ret.append(getToRole());
+        
+        for (int i=0; i < getToRoles().size(); i++) {
+        	if (i > 0) {
+        		ret.append(",");
+        	}
+        	ret.append(getToRoles().get(i));
+        }
         
         return (ret.toString());
     }
@@ -172,22 +181,32 @@ public class GMessage extends GActivity {
 
         GMessage that = (GMessage) o;
 
-        return !(_fromRole != null
+        boolean ret=!(_fromRole != null
                 ? !_fromRole.equals(that._fromRole)
                 : that._fromRole != null)
-            && (_toRole != null
-                    ? !_toRole.equals(that._toRole)
-                            : that._toRole != null)
             && !(_messageSignature != null
                 ? !_messageSignature.equals(that._messageSignature)
                 : that._messageSignature != null);
+        
+        if (ret) {
+        	if (_toRoles.size() != that.getToRoles().size()) {
+        		return false;
+        	}
+        	for (int i=0; i < _toRoles.size(); i++) {
+        		Role r=_toRoles.get(i);
+        		if (!r.equals(that.getToRoles().get(i))) {
+        			return false;
+        		}
+        	}
+        }
+        
+        return ret;
     }
 
     @Override
     public int hashCode() {
         int result = _messageSignature != null ? _messageSignature.hashCode() : 0;
         result = 31 * result + (_fromRole != null ? _fromRole.hashCode() : 0);
-        result = 31 * result + (_toRole != null ? _toRole.hashCode() : 0);
         return result;
     }
 
@@ -205,9 +224,15 @@ public class GMessage extends GActivity {
     		_fromRole.toText(buf, level);
     	}
     	
-    	if (_toRole != null) {
+    	if (_toRoles != null) {
     		buf.append(" to ");
-    		_toRole.toText(buf, level);
+            for (int i=0; i < getToRoles().size(); i++) {
+            	if (i > 0) {
+            		buf.append(",");
+            	}
+            	_toRoles.get(i).toText(buf, level);
+            }
+    		
     	}
     	
 		buf.append(";\n");

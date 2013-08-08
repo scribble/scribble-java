@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.scribble.protocol.model.Module;
 
 public class ProtocolParserTest {
@@ -28,20 +29,20 @@ public class ProtocolParserTest {
     	testParser("Types");
     }
 
-    /*
     @org.junit.Test
     public void testImports() {
     	testParser("Imports");
     }
 
     @org.junit.Test
-    public void testGDo() {
-    	testParser("GDo");
-    }
-
-    @org.junit.Test
     public void testGMessage() {
     	testParser("GMessage");
+    }
+
+    /*
+    @org.junit.Test
+    public void testGDo() {
+    	testParser("GDo");
     }
 
     @org.junit.Test
@@ -106,11 +107,16 @@ public class ProtocolParserTest {
     	try {
     		java.io.InputStream is=ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+".scr");
     		
+    		java.net.URL url=ClassLoader.getSystemResource("scribble");
+    		java.io.File f=new java.io.File(url.getFile());
+    		
     		ProtocolParser pp=new ProtocolParser();
     		
     		TestIssueLogger logger=new TestIssueLogger();
     		
-    		Module module=pp.parse(is, null, logger);
+    		DirectoryResourceLocator locator=new DirectoryResourceLocator(f.getParentFile().getAbsolutePath());
+    		
+    		Module module=pp.parse(is, locator, logger);
     		
     		if (module == null) {
     			fail("Module is null");
@@ -127,10 +133,27 @@ public class ProtocolParserTest {
     		
     		is.close();
     		
-    		String parsed=module.toString();
-    		String expecting=new String(b);
+    		String parsed=module.toString().trim();
+    		String expecting=new String(b).trim();
     		
     		if (!parsed.equals(expecting)) {
+    			int len=parsed.length();
+    			if (len > expecting.length()) {
+    				len = expecting.length();
+    			}
+    			for (int i=0; i < len; i++) {
+    				if (parsed.charAt(i) != expecting.charAt(i)) {
+    					System.out.println("DIFF AT POSITION: "+i);
+    					int showto=i+30;
+    					if (i+10 >= len) {
+    						showto = len;
+    					}    					
+    					System.out.println("PARSED: "+parsed.substring(i, showto));
+    					System.out.println("EXPECT: "+expecting.substring(i, showto));
+    					break;
+    				}
+    			}
+    			
     			System.err.println("Parsed protocol '"+name+
     					"' mismatch\nExpecting:\n"+expecting+"\nParsed:\n"+parsed);
     			fail("Parsed protocol '"+name+"' mismatch");

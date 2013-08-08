@@ -54,7 +54,7 @@ public class DirectoryResourceLocator implements ResourceLocator {
 				fullPath += java.io.File.separator;
 			}
 			
-			fullPath += name.replace('.', java.io.File.separatorChar)+".spr";
+			fullPath += name.replace('.', java.io.File.separatorChar)+".scr";
 			
 			java.io.File f=new java.io.File(fullPath);
 			

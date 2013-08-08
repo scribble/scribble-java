@@ -45,7 +45,7 @@ public class ModelAdaptorFactory {
 		_modelAdaptors.put("localrecursion", new LocalRecursionModelAdaptor());
 		_modelAdaptors.put("messagesignature", new MessageSignatureModelAdaptor());
 		_modelAdaptors.put("parameterlist", new ParameterListModelAdaptor());
-		_modelAdaptors.put("payload", new PayloadModelAdaptor());
+		_modelAdaptors.put("payloadelement", new PayloadModelAdaptor());
 		_modelAdaptors.put("payloadtypedecl", new PayloadTypeDeclModelAdaptor());
 		_modelAdaptors.put("module", new ModuleModelAdaptor());
 		_modelAdaptors.put("moduledecl", new ModuleDeclModelAdaptor());

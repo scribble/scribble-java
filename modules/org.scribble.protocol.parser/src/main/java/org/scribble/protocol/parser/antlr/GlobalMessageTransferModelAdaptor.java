@@ -35,7 +35,14 @@ public class GlobalMessageTransferModelAdaptor implements ModelAdaptor {
 		
 		context.pop(); // ';'
 
-		ret.setToRole(new Role(((CommonToken)context.pop()).getText()));
+		ret.getToRoles().add(new Role(((CommonToken)context.pop()).getText()));
+		
+		while (context.peek() instanceof CommonToken
+				&& ((CommonToken)context.peek()).getText().equals(",")) {
+			context.pop(); // ','
+
+			ret.getToRoles().add(0, new Role(((CommonToken)context.pop()).getText()));
+		}
 		
 		context.pop(); // to
 	
