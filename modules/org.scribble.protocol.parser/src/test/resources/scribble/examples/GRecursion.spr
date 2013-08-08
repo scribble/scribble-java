@@ -1,8 +1,0 @@
-package scribble.examples;
-
-global protocol GRecursion(role Buyer,role Seller) {
-	rec MyLabel {
-		buy(Order) from Buyer to Seller;
-		continue MyLabel;
-	}
-}

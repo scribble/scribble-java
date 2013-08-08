@@ -1,0 +1,8 @@
+module scribble.examples.GRecursion;
+
+global protocol GRecursionTest(role Buyer,role Seller) {
+	rec MyLabel {
+		buy(Order) from Buyer to Seller;
+		continue MyLabel;
+	}
+}

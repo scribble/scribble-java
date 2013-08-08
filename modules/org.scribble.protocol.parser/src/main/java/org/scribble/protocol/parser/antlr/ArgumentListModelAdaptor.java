@@ -32,6 +32,8 @@ public class ArgumentListModelAdaptor implements ModelAdaptor {
 		java.util.List<MessageSignature> ret=new java.util.ArrayList<MessageSignature>();
 		boolean f_iterate=false;
 		
+		context.pop(); // >
+
 		do {
 			f_iterate = false;
 			
@@ -44,6 +46,8 @@ public class ArgumentListModelAdaptor implements ModelAdaptor {
 			}
 		} while (f_iterate);
 		
+		context.pop(); // <
+
 		context.push(ret);
 		
 		return ret;

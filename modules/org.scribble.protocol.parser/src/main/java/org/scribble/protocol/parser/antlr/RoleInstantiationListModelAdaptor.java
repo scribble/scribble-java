@@ -33,6 +33,8 @@ public class RoleInstantiationListModelAdaptor implements ModelAdaptor {
 		java.util.List<RoleInstantiation> ret=new java.util.ArrayList<RoleInstantiation>();
 		boolean f_iterate=false;
 		
+		context.pop(); // )
+		
 		do {
 			f_iterate = false;
 			
@@ -52,6 +54,8 @@ public class RoleInstantiationListModelAdaptor implements ModelAdaptor {
 				f_iterate = true;
 			}
 		} while (f_iterate);
+		
+		context.pop(); // (
 		
 		context.push(ret);
 		

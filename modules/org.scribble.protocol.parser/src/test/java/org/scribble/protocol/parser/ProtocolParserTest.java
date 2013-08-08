@@ -25,41 +25,47 @@ import org.scribble.protocol.model.Module;
 public class ProtocolParserTest {
 
     @org.junit.Test
+    @Ignore
     public void testTypes() {
     	testParser("Types");
     }
 
     @org.junit.Test
+    @Ignore
     public void testImports() {
     	testParser("Imports");
     }
 
     @org.junit.Test
+    @Ignore
     public void testGMessage() {
     	testParser("GMessage");
     }
 
-    /*
     @org.junit.Test
-    public void testGDo() {
-    	testParser("GDo");
-    }
-
-    @org.junit.Test
+    @Ignore
     public void testGChoice() {
     	testParser("GChoice");
     }
 
     @org.junit.Test
+    @Ignore
+    public void testGRecursion() {
+    	testParser("GRecursion");
+    }
+    
+    @org.junit.Test
+    @Ignore
     public void testGParallel() {
     	testParser("GParallel");
     }
     
     @org.junit.Test
-    public void testGRecursion() {
-    	testParser("GRecursion");
+    public void testGDo() {
+    	testParser("GDo");
     }
-    
+
+    /*
     /*
     @org.junit.Test
     public void testGSpawn() {

@@ -1,6 +1,6 @@
-package scribble.examples;
+module scribble.examples.GParallel;
 
-global protocol GChoice(role Buyer,role Seller) {
+global protocol GParallelTest(role Buyer,role Seller) {
 	par {
 		buy(Order) from Buyer to Seller;
 	} and {

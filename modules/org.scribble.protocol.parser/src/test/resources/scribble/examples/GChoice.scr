@@ -1,6 +1,6 @@
-package scribble.examples;
+module scribble.examples.GChoice;
 
-global protocol GChoice(role Buyer,role Seller) {
+global protocol GChoiceTest(role Buyer,role Seller) {
 	choice at Buyer {
 		buy(Order) from Buyer to Seller;
 	} or {

@@ -37,19 +37,10 @@ public class GlobalDoModelAdaptor implements ModelAdaptor {
 
 		context.pop(); // ';'
 		
-		context.pop(); // )
-		
 		ret.getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
 		
-		context.pop(); // (
-		
-		if (context.peek() instanceof CommonToken
-				&& ((CommonToken)context.peek()).getText().equals(">")) {
-			context.pop(); // >
-			
+		if (context.peek() instanceof java.util.List) {
 			ret.getArguments().addAll((java.util.List<MessageSignature>)context.pop());
-
-			context.pop(); // <
 		}
 		
 		ret.setProtocol(((CommonToken)context.pop()).getText());
