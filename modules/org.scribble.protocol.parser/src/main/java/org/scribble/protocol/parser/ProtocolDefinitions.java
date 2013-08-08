@@ -31,29 +31,6 @@ public final class ProtocolDefinitions {
     /**
      * The protocol type.
      */
-    public static final String PROTOCOL_TYPE = "spr";
+    public static final String PROTOCOL_TYPE = "scr";
 
-    /**
-     * The list of reserved workds.
-     */
-    public static final String[] RESERVED_WORDS={
-        "import",
-        "protocol",
-        "role",
-        "introduces",
-        "at",
-        "from",
-        "to",
-        "unordered",
-        "parallel",
-        "and",
-        "choice",
-        "or",
-        "repeat",
-        "run",
-        "inline",
-        "do",
-        "interrupt",
-        "end"
-    };
 }

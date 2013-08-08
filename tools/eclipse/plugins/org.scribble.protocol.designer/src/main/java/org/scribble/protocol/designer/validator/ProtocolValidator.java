@@ -16,6 +16,8 @@
  */
 package org.scribble.protocol.designer.validator;
 
+import java.io.InputStream;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 //import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,6 +26,7 @@ import org.eclipse.core.resources.IResource;
 import org.scribble.protocol.designer.DesignerServices;
 import org.scribble.protocol.designer.logger.EclipseScribbleLogger;
 import org.scribble.protocol.designer.osgi.Activator;
+import org.scribble.protocol.parser.ResourceLocator;
 
 /**
  * Protocol validator.
@@ -56,7 +59,7 @@ public class ProtocolValidator {
      * 
      * @param res The resource
      */
-    public void validateResource(IResource res) {
+    public void validateResource(final IResource res) {
     	java.io.InputStream is=null;
     	
         EclipseScribbleLogger logger=
@@ -65,7 +68,27 @@ public class ProtocolValidator {
         try {
             is = ((IFile)res).getContents();
             
-            DesignerServices.getProtocolParser().parse(is, null, logger);
+            // Create a locator based on the Eclipse project root
+            ResourceLocator locator=new ResourceLocator() {
+
+				public InputStream getModule(String arg0) {
+					String filename=arg0.replace('.', '/')+".scr";
+					
+		            IFile file=res.getProject().getFile(filename);
+		            
+		            if (file != null) {
+		            	try {
+		            		return (file.getContents());
+		            	} catch (Exception e) {
+		            		e.printStackTrace();
+		            	}
+		            }
+		            
+					return null;
+				}
+            };
+            
+            DesignerServices.getProtocolParser().parse(is, locator, logger);
             
         } catch (Exception e) {
             Activator.logError("Failed to record validation issue on resource '"+res+"'", e);

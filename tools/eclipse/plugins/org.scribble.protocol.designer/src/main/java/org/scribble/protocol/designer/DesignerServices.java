@@ -27,7 +27,7 @@ public final class DesignerServices {
     /**
      * Protocol file extension.
      */
-    public static final String PROTOCOL_FILE_EXTENSION = "spr";
+    public static final String PROTOCOL_FILE_EXTENSION = "scr";
 
     private static ProtocolParser _parser=null;
 

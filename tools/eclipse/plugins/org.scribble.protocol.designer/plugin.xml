@@ -24,7 +24,7 @@
       <editor
             name="Scribble Protocol Editor"
             icon="icons/scribble.png"
-            extensions="spr"
+            extensions="scr"
             contributorClass="org.scribble.protocol.designer.editor.ScribbleActionContributor"
             class="org.scribble.protocol.designer.editor.ProtocolEditor"
             id="org.scribble.protocol.designer.editor.ProtocolEditor">
@@ -36,7 +36,7 @@
          name="%documentSetupParticipantName"
          point="org.eclipse.core.filebuffers.documentSetup">
       <participant
-            extensions="spr"
+            extensions="scr"
             class="org.scribble.protocol.designer.editor.ScribbleDocumentSetupParticipant">
       </participant>
    </extension>
@@ -81,7 +81,7 @@
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
             id="org.scribble.protocol.designer.contribution1"
-            nameFilter="*.spr" >
+            nameFilter="*.scr" >
          <menu
                label="Scribble"
                path="additions"

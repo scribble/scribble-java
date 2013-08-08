@@ -28,9 +28,7 @@ public class ProtocolKeyWordProvider extends DefaultKeyWordProvider {
 		"catch",
 		"choice",
 		"continue",
-		"create",
 		"do",
-		"enter",
 		"from",
 		"global",
 		"import",
@@ -42,11 +40,10 @@ public class ProtocolKeyWordProvider extends DefaultKeyWordProvider {
 		"protocol",
 		"rec",
 		"role",
-		"spawns",
 		"throw",
 		"to",
 		"with",
-		"package"
+		"module"
 	};
     
     /**
