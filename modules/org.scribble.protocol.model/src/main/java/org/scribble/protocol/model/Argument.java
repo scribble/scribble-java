@@ -21,18 +21,19 @@ package org.scribble.protocol.model;
  * a unique TypeReference, or an operation name with several
  * TypeReferences as arguments.
  */
-public class Message extends ModelObject {
+public class Argument extends ModelObject {
 
     private String _parameter=null;
     private MessageSignature _messageSignature=null;
+    private String _alias=null;
 
     /**
      * The default constructor.
      */
-    public Message() {
+    public Argument() {
     }
     
-    public Message(Message copy) {
+    public Argument(Argument copy) {
     	_parameter = copy._parameter;
     	
     	if (copy._messageSignature != null) {
@@ -79,6 +80,24 @@ public class Message extends ModelObject {
     	_messageSignature = sig;
     }
     
+    /**
+     * This method returns the alias.
+     * 
+     * @return The alias
+     */
+    public String getAlias() {
+        return (_alias);
+    }
+    
+    /**
+     * This method sets the alias.
+     * 
+     * @param alias The alias
+     */
+    public void setAlias(String alias) {
+        _alias = alias;
+    }
+    
     @Override
     public String toString() {
         String ret="";
@@ -115,6 +134,11 @@ public class Message extends ModelObject {
 			_messageSignature.toText(buf, level);
 		} else if (_parameter != null) {
 			buf.append(_parameter);
+		}
+		
+		if (_alias != null) {
+			buf.append(" as ");
+			buf.append(_alias);
 		}
 	}
 }

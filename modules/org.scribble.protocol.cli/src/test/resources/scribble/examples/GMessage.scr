@@ -1,6 +1,6 @@
-package scribble.examples;
+package scribble.examples.GMessage;
 
-global protocol GMessage(role Buyer,role Seller) {
+global protocol GMessageProtocol(role Buyer,role Seller) {
 	buy(Order,Customer) from Buyer to Seller;
 	buy(Order,Customer) from Buyer to Seller;
 	buy(o:Order,c:Customer) from Buyer to Seller;

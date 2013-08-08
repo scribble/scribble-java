@@ -25,6 +25,7 @@ public class ModelAdaptorFactory {
 	private static java.util.Map<String,ModelAdaptor> _modelAdaptors=new java.util.HashMap<String,ModelAdaptor>();
 	
 	static {
+		_modelAdaptors.put("argument", new ArgumentModelAdaptor());
 		_modelAdaptors.put("argumentlist", new ArgumentListModelAdaptor());
 		_modelAdaptors.put("globaldo", new GlobalDoModelAdaptor());
 		_modelAdaptors.put("globalchoice", new GlobalChoiceModelAdaptor());
@@ -37,16 +38,20 @@ public class ModelAdaptorFactory {
 		_modelAdaptors.put("globalprotocoldecl", new GlobalProtocolDeclModelAdaptor());
 		_modelAdaptors.put("globalrecursion", new GlobalRecursionModelAdaptor());
 		_modelAdaptors.put("importdecl", new ImportDeclModelAdaptor());
+		_modelAdaptors.put("localcatch", new LocalCatchModelAdaptor());
 		_modelAdaptors.put("localchoice", new LocalChoiceModelAdaptor());
 		_modelAdaptors.put("localcontinue", new LocalContinueModelAdaptor());
 		_modelAdaptors.put("localdo", new LocalDoModelAdaptor());
+		_modelAdaptors.put("localinterruptible", new LocalInterruptibleModelAdaptor());
 		_modelAdaptors.put("localprotocolblock", new LocalProtocolBlockModelAdaptor());
 		_modelAdaptors.put("localparallel", new LocalParallelModelAdaptor());
 		_modelAdaptors.put("localprotocoldecl", new LocalProtocolDeclModelAdaptor());
 		_modelAdaptors.put("localreceive", new LocalReceiveModelAdaptor());
 		_modelAdaptors.put("localrecursion", new LocalRecursionModelAdaptor());
 		_modelAdaptors.put("localsend", new LocalSendModelAdaptor());
+		_modelAdaptors.put("localthrow", new LocalThrowModelAdaptor());
 		_modelAdaptors.put("message", new MessageModelAdaptor());
+		_modelAdaptors.put("messagesignature", new MessageSignatureModelAdaptor());
 		_modelAdaptors.put("parameterlist", new ParameterListModelAdaptor());
 		_modelAdaptors.put("payloadelement", new PayloadModelAdaptor());
 		_modelAdaptors.put("payloadtypedecl", new PayloadTypeDeclModelAdaptor());

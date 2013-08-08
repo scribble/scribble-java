@@ -24,12 +24,7 @@ import org.scribble.protocol.model.Module;
 
 public class ProtocolParserTest {
 
-    @org.junit.Test
-    public void testGInterruptible() {
-    	testParser("GInterruptible");
-    }
-	/*
-    @org.junit.Test
+	@org.junit.Test
     public void testTypes() {
     	testParser("Types");
     }
@@ -65,6 +60,11 @@ public class ProtocolParserTest {
     }
 
     @org.junit.Test
+    public void testGInterruptible() {
+    	testParser("GInterruptible");
+    }
+
+    @org.junit.Test
     public void testLSend() {
     	testParser("LSend");
     }
@@ -93,7 +93,12 @@ public class ProtocolParserTest {
     public void testLDo() {
     	testParser("LDo");
     }
-    */
+
+    @org.junit.Test
+    @Ignore ("grammer commented out at the moment")
+    public void testLInterruptible() {
+   		testParser("LInterruptible");
+   	}
 
     protected void testParser(String name) {
     	

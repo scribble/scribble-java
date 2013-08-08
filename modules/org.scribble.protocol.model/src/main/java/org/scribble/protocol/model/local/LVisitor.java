@@ -110,6 +110,23 @@ public interface LVisitor extends Visitor {
     public void end(LRecursion elem);
     
     /**
+     * This method indicates the start of an
+     * interruptible block.
+     * 
+     * @param elem The interruptible
+     * @return Whether to process the contents
+     */
+    public boolean start(LInterruptible elem);
+    
+    /**
+     * This method indicates the end of an
+     * interruptible block.
+     * 
+     * @param elem The interruptible
+     */
+    public void end(LInterruptible elem);
+    
+    /**
      * This method visits a send component.
      * 
      * @param elem The send

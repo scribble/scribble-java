@@ -18,29 +18,44 @@ package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.Message;
-import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.local.LInterruptible;
 
 /**
- * This class provides the model adapter for the 'messageSignature' parser rule.
+ * This class provides the model adapter for the 'interruptible' parser rule.
  *
  */
-public class MessageModelAdaptor implements ModelAdaptor {
+public class LocalThrowModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
+		LInterruptible.Throw ret=new LInterruptible.Throw();
 		
-		Message ret=new Message();
+		context.pop(); // ';'
 		
-		if (context.peek() instanceof MessageSignature) {
-			ret.setMessageSignature((MessageSignature)context.pop());
-		} else {
-			ret.setParameter(((CommonToken)context.pop()).getText());
+		ret.getToRoles().add(new Role(((CommonToken)context.pop()).getText()));
+		
+		while (((CommonToken)context.peek()).getText().equals(",")) {
+			context.pop(); // ','
+
+			ret.getToRoles().add(new Role(((CommonToken)context.pop()).getText()));
 		}
 		
-		context.push(ret);
+		context.pop(); // 'from'
+		
+		ret.getMessages().add((Message)context.pop());
+		
+		while (context.peek() instanceof CommonToken &&
+				((CommonToken)context.peek()).getText().equals(",")) {
+			context.pop(); // ','
 			
+			ret.getMessages().add(0, (Message)context.pop());
+		}
+
+		context.push(ret);
+		
 		return ret;
 	}
 

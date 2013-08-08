@@ -17,26 +17,33 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.Message;
+import org.scribble.protocol.model.Argument;
 import org.scribble.protocol.model.MessageSignature;
 
 /**
  * This class provides the model adapter for the 'messageSignature' parser rule.
  *
  */
-public class MessageModelAdaptor implements ModelAdaptor {
+public class ArgumentModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
 		
-		Message ret=new Message();
+		Argument ret=new Argument();
 		
 		if (context.peek() instanceof MessageSignature) {
 			ret.setMessageSignature((MessageSignature)context.pop());
 		} else {
 			ret.setParameter(((CommonToken)context.pop()).getText());
+		}
+		
+		if (context.peek() instanceof CommonToken &&
+				((CommonToken)context.peek()).getText().equals("as")) {
+			context.pop(); // consume 'as'
+			
+			ret.setAlias(((CommonToken)context.pop()).getText());
 		}
 		
 		context.push(ret);

@@ -1,0 +1,6 @@
+package scribble.examples.Imports;
+
+import scribble.examples.GMessage;
+
+global protocol ImportsProtocol(role Buyer,role Seller) {
+}

@@ -25,7 +25,7 @@ public class ScribbleCLITest {
 	@Test
 	public void test() {
 		
-		java.net.URL url=ClassLoader.getSystemResource("scribble/examples/GMessage.spr");
+		java.net.URL url=ClassLoader.getSystemResource("scribble/examples/GMessage.scr");
 		
 		if (url == null) {
 			fail("Failed to find reference protocol");

@@ -17,30 +17,41 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.Message;
-import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.local.LBlock;
+import org.scribble.protocol.model.local.LInterruptible;
 
 /**
- * This class provides the model adapter for the 'messageSignature' parser rule.
+ * This class provides the model adapter for the 'interruptible' parser rule.
  *
  */
-public class MessageModelAdaptor implements ModelAdaptor {
+public class LocalInterruptibleModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
+		LInterruptible ret=new LInterruptible();
 		
-		Message ret=new Message();
-		
-		if (context.peek() instanceof MessageSignature) {
-			ret.setMessageSignature((MessageSignature)context.pop());
-		} else {
-			ret.setParameter(((CommonToken)context.pop()).getText());
+		while (context.peek() instanceof LInterruptible.Catch) {
+			ret.getCatches().add(0, (LInterruptible.Catch)context.pop());
 		}
 		
-		context.push(ret);
+		if (context.peek() instanceof LInterruptible.Throw) {
+			ret.setThrows((LInterruptible.Throw)context.pop());
+		}
+		
+		ret.setBlock((LBlock)context.pop());
+		
+		if (((CommonToken)context.peek()).getText().equals(":")) {
+			context.pop(); // ':'
 			
+			ret.setScope(((CommonToken)context.pop()).getText());
+		}
+		
+		context.pop(); // interruptible
+		
+		context.push(ret);
+		
 		return ret;
 	}
 

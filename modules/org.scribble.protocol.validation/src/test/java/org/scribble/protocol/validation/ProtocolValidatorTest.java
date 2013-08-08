@@ -58,8 +58,8 @@ public class ProtocolValidatorTest {
     		fail("Errors not detected");
     	}
     	
-    	if (!logger.getErrors().contains(ValidationMessages.getMessage("NO_PACKAGE"))) {
-    		fail("Error NO_PACKAGE not detected");
+    	if (!logger.getErrors().contains(ValidationMessages.getMessage("NO_FULLY_QUALIFIED_NAME"))) {
+    		fail("Error NO_FULLY_QUALIFIED_NAME not detected");
     	}
     }
     

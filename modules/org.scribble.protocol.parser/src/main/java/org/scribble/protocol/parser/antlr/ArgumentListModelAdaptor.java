@@ -17,7 +17,7 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.Message;
+import org.scribble.protocol.model.Argument;
 
 /**
  * This class provides the model adapter for the 'argumentList' parser rule.
@@ -29,7 +29,7 @@ public class ArgumentListModelAdaptor implements ModelAdaptor {
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
-		java.util.List<Message> ret=new java.util.ArrayList<Message>();
+		java.util.List<Argument> ret=new java.util.ArrayList<Argument>();
 		boolean f_iterate=false;
 		
 		context.pop(); // >
@@ -37,7 +37,7 @@ public class ArgumentListModelAdaptor implements ModelAdaptor {
 		do {
 			f_iterate = false;
 			
-			ret.add(0, (Message)context.pop());
+			ret.add(0, (Argument)context.pop());
 			
 			if (context.peek() instanceof CommonToken
 					&& ((CommonToken)context.peek()).getText().equals(",")) {				

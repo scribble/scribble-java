@@ -1,0 +1,9 @@
+module scribble.examples.LInterruptible;
+
+local protocol LInterruptibleTest at Buyer(role Seller) {
+	interruptible MyLabel: {
+		buy(Order) from Buyer to Seller;
+	}
+	throws sell(Order) to Seller;
+	catches cancel(Order) from Seller;
+}
