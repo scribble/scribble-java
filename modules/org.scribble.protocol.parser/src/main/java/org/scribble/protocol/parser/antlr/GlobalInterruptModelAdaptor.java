@@ -17,31 +17,39 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.local.LEnter;
+import org.scribble.protocol.model.global.GInterruptible;
 
 /**
- * This class provides the model adapter for the 'enter' parser rule.
+ * This class provides the model adapter for the 'interruptible' parser rule.
  *
  */
-public class EnterModelAdaptor implements ModelAdaptor {
+public class GlobalInterruptModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object createModelObject(ParserContext context) {		
-		LEnter ret=new LEnter();
-
-		ret.setRole((Role)context.pop());
+	public Object createModelObject(ParserContext context) {
+		GInterruptible.Interrupt ret=new GInterruptible.Interrupt();
 		
-		context.pop(); // as
+		context.pop(); // ';'
 		
-		ret.setProtocol(((CommonToken)context.pop()).getText());
+		ret.setRole(new Role(((CommonToken)context.pop()).getText()));
 		
-		context.pop(); // enter
+		context.pop(); // 'by'
+		
+		ret.getMessages().add((Message)context.pop());
+		
+		while (context.peek() instanceof CommonToken &&
+				((CommonToken)context.peek()).getText().equals(",")) {
+			context.pop(); // ','
+			
+			ret.getMessages().add(0, (Message)context.pop());
+		}
 
 		context.push(ret);
-			
+		
 		return ret;
 	}
 

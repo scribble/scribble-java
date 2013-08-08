@@ -15,24 +15,25 @@
  */
 package org.scribble.protocol.model.local;
 
-import org.scribble.protocol.model.Parameter;
+import org.scribble.protocol.model.FullyQualifiedName;
+import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.RoleInstantiation;
 
 /**
- * This class represents the Create construct.
+ * This class represents the Run construct.
  * 
  */
-public class LCreate extends LActivity {
-
+public class LDo extends LActivity {
     private String _protocol=null;
-    private java.util.List<Parameter> _parameters=new java.util.Vector<Parameter>();
+    private FullyQualifiedName _moduleName=null;
+    private java.util.List<Message> _arguments=new java.util.Vector<Message>();
     private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.Vector<RoleInstantiation>();
 
     /**
      * This is the default constructor.
      * 
      */
-    public LCreate() {
+    public LDo() {
     }
     
     /**
@@ -40,12 +41,12 @@ public class LCreate extends LActivity {
      * 
      * @param copy The copy
      */
-    public LCreate(LCreate copy) {
+    public LDo(LDo copy) {
         super(copy);
         _protocol = copy.getProtocol();
         
-        for (Parameter p : copy.getParameters()) {
-            _parameters.add(new Parameter(p));
+        for (Message arg : copy.getArguments()) {
+            _arguments.add(new Message(arg));
         }
         
         for (RoleInstantiation ri : copy.getRoleInstantiations()) {
@@ -72,12 +73,30 @@ public class LCreate extends LActivity {
     }
     
     /**
-     * This method returns the parameter list.
+     * This method returns the optional module name.
      * 
-     * @return The list of parameters
+     * @return The module name
      */
-    public java.util.List<Parameter> getParameters() {
-        return (_parameters);
+    public FullyQualifiedName getModuleName() {
+    	return (_moduleName);
+    }
+    
+    /**
+     * This method sets the optional module name.
+     * 
+     * @param module The module name
+     */
+    public void setModuleName(FullyQualifiedName module) {
+    	_moduleName = module;
+    }
+    
+    /**
+     * This method returns the argument list.
+     * 
+     * @return The list of arguments
+     */
+    public java.util.List<Message> getArguments() {
+        return (_arguments);
     }
     
     /**
@@ -106,17 +125,22 @@ public class LCreate extends LActivity {
 		
     	indent(buf, level);
     	
-    	buf.append("create ");
+    	buf.append("do ");
+    	
+    	if (_moduleName != null) {
+    		_moduleName.toText(buf, level);
+    		buf.append(".");
+    	}
     	
     	buf.append(_protocol);
     	
-    	if (_parameters.size() > 0) {
+    	if (_arguments.size() > 0) {
     		buf.append('<');
-	    	for (int i=0; i < _parameters.size(); i++) {
+	    	for (int i=0; i < _arguments.size(); i++) {
 	    		if (i > 0) {
 	    			buf.append(",");
 	    		}
-	    		_parameters.get(i).toText(buf, level);
+	    		buf.append(_arguments.get(i));
 	    	}
 	    	buf.append(">");
     	}

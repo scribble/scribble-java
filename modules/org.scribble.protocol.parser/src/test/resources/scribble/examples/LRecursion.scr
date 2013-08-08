@@ -1,0 +1,8 @@
+module scribble.examples.LRecursion;
+
+local protocol LRecursionTest at Buyer(role Seller) {
+	rec MyLabel {
+		buy(Order) to Seller;
+		continue MyLabel;
+	}
+}

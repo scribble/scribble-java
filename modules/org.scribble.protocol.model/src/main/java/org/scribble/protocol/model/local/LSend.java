@@ -15,7 +15,7 @@
  */
 package org.scribble.protocol.model.local;
 
-import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.Role;
 
 /**
@@ -25,8 +25,8 @@ import org.scribble.protocol.model.Role;
  */
 public class LSend extends LActivity {
 
-    private MessageSignature _messageSignature=null;
-    private Role _toRole=null;
+    private Message _messageSignature=null;
+    private java.util.List<Role> _toRoles=new java.util.ArrayList<Role>();
 
     /**
      * The default constructor.
@@ -43,9 +43,11 @@ public class LSend extends LActivity {
         super(i);
         
         if (i._messageSignature != null) {
-            _messageSignature = new MessageSignature(i._messageSignature);
+            _messageSignature = new Message(i._messageSignature);
         }
-        _toRole = i._toRole;
+        for (Role r : i._toRoles) {
+        	_toRoles.add(new Role(r));
+        }
     }
 
     /**
@@ -55,9 +57,9 @@ public class LSend extends LActivity {
      * @param sig The message signature
      * @param toRole The 'to' role
      */
-    public LSend(MessageSignature sig, Role toRole) {
+    public LSend(Message sig, Role toRole) {
         _messageSignature = sig;
-        _toRole = toRole;
+        _toRoles.add(toRole);
     }
 
     /**
@@ -65,7 +67,7 @@ public class LSend extends LActivity {
      * 
      * @return The message signature
      */
-    public MessageSignature getMessageSignature() {
+    public Message getMessageSignature() {
         return (_messageSignature);
     }
     
@@ -74,7 +76,7 @@ public class LSend extends LActivity {
      * 
      * @param signature The message signature
      */
-    public void setMessageSignature(MessageSignature signature) {
+    public void setMessageSignature(Message signature) {
         
         if (_messageSignature != null) {
             _messageSignature.setParent(null);
@@ -88,21 +90,21 @@ public class LSend extends LActivity {
     }
     
     /**
-     * This method returns the 'to' role.
+     * This method returns the 'to' roles.
      * 
-     * @return The 'to' role
+     * @return The 'to' roles
      */
-    public Role getToRole() {
-        return (_toRole);
+    public java.util.List<Role> getToRoles() {
+        return (_toRoles);
     }
     
     /**
-     * This method sets the 'to' role.
+     * This method sets the 'to' roles.
      * 
-     * @param part The 'to' role
+     * @param part The 'to' roles
      */
-    public void setToRole(Role part) {
-        _toRole = part;
+    public void setToRoles(java.util.List<Role> part) {
+    	_toRoles = part;
     }
     
     @Override
@@ -114,7 +116,13 @@ public class LSend extends LActivity {
         }
         
         ret.append(" to ");
-        ret.append(getToRole());
+        
+        for (int i=0; i < getToRoles().size(); i++) {
+        	if (i > 0) {
+        		ret.append(",");
+        	}
+        	ret.append(getToRoles().get(i));
+        }
         
         return (ret.toString());
     }
@@ -144,18 +152,29 @@ public class LSend extends LActivity {
 
         LSend that = (LSend) o;
 
-        return !(_toRole != null
-                ? !_toRole.equals(that._toRole)
-                : that._toRole != null)
-            && !(_messageSignature != null
+        boolean ret = !(_messageSignature != null
                 ? !_messageSignature.equals(that._messageSignature)
                 : that._messageSignature != null);
+        
+        if (ret) {
+        	if (_toRoles.size() != that.getToRoles().size()) {
+        		return false;
+        	}
+        	for (int i=0; i < _toRoles.size(); i++) {
+        		Role r=_toRoles.get(i);
+        		if (!r.equals(that.getToRoles().get(i))) {
+        			return false;
+        		}
+        	}
+        }
+        
+        return ret;
     }
 
     @Override
     public int hashCode() {
         int result = _messageSignature != null ? _messageSignature.hashCode() : 0;
-        result = 31 * result + (_toRole != null ? _toRole.hashCode() : 0);
+        result = 31 * result + (_toRoles.size()>0 ? _toRoles.get(0).hashCode() : 0);
         return result;
     }
 
@@ -169,9 +188,15 @@ public class LSend extends LActivity {
     	
     	_messageSignature.toText(buf, level);
     	
-    	if (_toRole != null) {
+    	if (_toRoles != null) {
     		buf.append(" to ");
-    		_toRole.toText(buf, level);
+            for (int i=0; i < getToRoles().size(); i++) {
+            	if (i > 0) {
+            		buf.append(",");
+            	}
+            	_toRoles.get(i).toText(buf, level);
+            }
+    		
     	}
     	
 		buf.append(";\n");

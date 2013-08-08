@@ -17,7 +17,7 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.global.GMessage;
 
@@ -50,7 +50,7 @@ public class GlobalMessageTransferModelAdaptor implements ModelAdaptor {
 		
 		context.pop(); // from
 
-		ret.setMessageSignature((MessageSignature)context.pop());
+		ret.setMessageSignature((Message)context.pop());
 		
 		context.push(ret);
 			

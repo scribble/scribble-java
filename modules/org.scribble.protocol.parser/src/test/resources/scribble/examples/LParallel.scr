@@ -1,0 +1,9 @@
+module scribble.examples.LParallel;
+
+local protocol LParallelTest at Buyer(role Seller) {
+	par {
+		buy(Order) to Seller;
+	} and {
+		buy(QuoteRequest) to Seller;
+	}
+}

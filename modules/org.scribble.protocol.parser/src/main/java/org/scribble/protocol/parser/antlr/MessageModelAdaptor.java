@@ -18,38 +18,42 @@ package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.Message;
+import org.scribble.protocol.model.PayloadType;
 
 /**
- * This class provides the model adapter for the 'argumentList' parser rule.
+ * This class provides the model adapter for the 'messageSignature' parser rule.
  *
  */
-public class ArgumentListModelAdaptor implements ModelAdaptor {
+public class MessageModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
-		java.util.List<Message> ret=new java.util.ArrayList<Message>();
-		boolean f_iterate=false;
 		
-		context.pop(); // >
-
-		do {
-			f_iterate = false;
-			
-			ret.add(0, (Message)context.pop());
-			
-			if (context.peek() instanceof CommonToken
-					&& ((CommonToken)context.peek()).getText().equals(",")) {				
-				context.pop(); // ,
-				f_iterate = true;
+		Message ret=new Message();
+		
+		if (((CommonToken)context.peek()).getText().equals(")")) {
+			context.pop(); // consume )
+	
+			while (context.peek() instanceof PayloadType) {
+				ret.getTypes().add(0, (PayloadType)context.pop());
+				
+				if (context.peek() instanceof CommonToken
+						&& ((CommonToken)context.peek()).getText().equals(",")) {
+					context.pop(); // consume ,
+				}
 			}
-		} while (f_iterate);
+			
+			context.pop(); // consume (
+	
+			ret.setOperator(((CommonToken)context.pop()).getText());
+		} else {
+			ret.setParameter(((CommonToken)context.pop()).getText());
+		}
 		
-		context.pop(); // <
-
 		context.push(ret);
-		
+			
 		return ret;
 	}
 

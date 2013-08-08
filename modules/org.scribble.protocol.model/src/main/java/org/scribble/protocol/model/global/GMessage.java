@@ -15,7 +15,7 @@
  */
 package org.scribble.protocol.model.global;
 
-import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.global.GActivity;
 
@@ -26,7 +26,7 @@ import org.scribble.protocol.model.global.GActivity;
  */
 public class GMessage extends GActivity {
 
-    private MessageSignature _messageSignature=null;
+    private Message _messageSignature=null;
     private Role _fromRole=null;
     private java.util.List<Role> _toRoles=new java.util.ArrayList<Role>();
 
@@ -45,7 +45,7 @@ public class GMessage extends GActivity {
         super(i);
         
         if (i._messageSignature != null) {
-            _messageSignature = new MessageSignature(i._messageSignature);
+            _messageSignature = new Message(i._messageSignature);
         }
         
         _fromRole = i._fromRole;
@@ -63,7 +63,7 @@ public class GMessage extends GActivity {
      * @param fromRole The 'from' role
      * @param toRoles The 'to' roles
      */
-    public GMessage(MessageSignature sig, Role fromRole, java.util.List<Role> toRoles) {
+    public GMessage(Message sig, Role fromRole, java.util.List<Role> toRoles) {
         _messageSignature = sig;
         _fromRole = fromRole;
         _toRoles = toRoles;
@@ -74,7 +74,7 @@ public class GMessage extends GActivity {
      * 
      * @return The message signature
      */
-    public MessageSignature getMessageSignature() {
+    public Message getMessageSignature() {
         return (_messageSignature);
     }
     
@@ -83,7 +83,7 @@ public class GMessage extends GActivity {
      * 
      * @param signature The message signature
      */
-    public void setMessageSignature(MessageSignature signature) {
+    public void setMessageSignature(Message signature) {
         
         if (_messageSignature != null) {
             _messageSignature.setParent(null);

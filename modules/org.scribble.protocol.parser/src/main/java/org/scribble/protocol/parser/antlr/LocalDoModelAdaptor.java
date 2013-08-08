@@ -17,45 +17,51 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.MessageSignature;
-import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.FullyQualifiedName;
+import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.RoleInstantiation;
-import org.scribble.protocol.model.global.GSpawn;
+import org.scribble.protocol.model.local.LDo;
 
 /**
- * This class provides the model adapter for the 'spawn' parser rule.
+ * This class provides the model adapter for the 'doDef' parser rule.
  *
  */
-public class SpawnModelAdaptor implements ModelAdaptor {
+public class LocalDoModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
 	public Object createModelObject(ParserContext context) {		
-		GSpawn ret=new GSpawn();
+		LDo ret=new LDo();
 
-		context.pop(); // )
+		context.pop(); // ';'
 		
 		ret.getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
 		
-		context.pop(); // (
-		
-		if (context.peek() instanceof CommonToken
-				&& ((CommonToken)context.peek()).getText().equals(">")) {
-			context.pop(); // >
-			
-			ret.getArguments().addAll((java.util.List<MessageSignature>)context.pop());
-
-			context.pop(); // <
+		if (context.peek() instanceof java.util.List) {
+			ret.getArguments().addAll((java.util.List<Message>)context.pop());
 		}
 		
 		ret.setProtocol(((CommonToken)context.pop()).getText());
 		
-		context.pop(); // spawn
-
-		ret.setRole((Role)context.pop());
+		// Check for module and set as separate property
+		if (context.peek() instanceof CommonToken
+				&& ((CommonToken)context.peek()).getText().equals(".")) {
+			String fqname="";
+			
+			context.pop(); // consume '.'
+			
+			do {
+				fqname = ((CommonToken)context.pop()).getText() + fqname;
+			} while (!(context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals("do")));
+			
+			ret.setModuleName(new FullyQualifiedName(fqname));
+		}
 		
+		context.pop(); // do
+
 		context.push(ret);
 			
 		return ret;

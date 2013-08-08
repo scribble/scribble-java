@@ -16,28 +16,38 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import org.scribble.protocol.model.MessageSignature;
+import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.local.LReceive;
+import org.scribble.protocol.model.local.LSend;
 
 /**
- * This class provides the model adapter for the 'receive' parser rule.
+ * This class provides the model adapter for the 'send' parser rule.
  *
  */
-public class ReceiveModelAdaptor implements ModelAdaptor {
+public class LocalSendModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
 		
-		LReceive ret=new LReceive();
+		LSend ret=new LSend();
 
-		ret.setFromRole((Role)context.pop());
+		context.pop(); // ';'
+
+		ret.getToRoles().add(new Role(((CommonToken)context.pop()).getText()));
 		
-		context.pop(); // from
+		while (context.peek() instanceof CommonToken
+				&& ((CommonToken)context.peek()).getText().equals(",")) {
+			context.pop(); // ','
+
+			ret.getToRoles().add(0, new Role(((CommonToken)context.pop()).getText()));
+		}
+		
+		context.pop(); // to
 	
-		ret.setMessageSignature((MessageSignature)context.pop());
+		ret.setMessageSignature((Message)context.pop());
 		
 		context.push(ret);
 			

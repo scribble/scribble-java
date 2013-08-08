@@ -131,21 +131,12 @@ public interface LVisitor extends Visitor {
     public void accept(LContinue elem);
     
     /**
-     * This method visits a
-     * run construct.
+     * This method visits a do component.
      * 
-     * @param elem The run
+     * @param elem The do
      */
-    public void accept(LCreate elem);
+    public void accept(LDo elem);
     
-    /**
-     * This method visits a
-     * run construct.
-     * 
-     * @param elem The run
-     */
-    public void accept(LEnter elem);
-   
     /**
      * This method visits a
      * custom activity construct.

@@ -16,27 +16,34 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import org.scribble.protocol.model.local.LActivity;
-import org.scribble.protocol.model.local.LBlock;
+import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.Message;
+import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.local.LReceive;
 
 /**
- * This class provides the model adapter for the 'localInteractionBlock' parser rule.
+ * This class provides the model adapter for the 'receive' parser rule.
  *
  */
-public class LocalInteractionBlockModelAdaptor implements ModelAdaptor {
+public class LocalReceiveModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
-		LBlock ret=new LBlock();
 		
-		while (context.peek() instanceof LActivity) {
-			ret.getContents().add(0, (LActivity)context.pop());
-		}
+		LReceive ret=new LReceive();
+
+		context.pop(); // ';'
+
+		ret.setFromRole(new Role(((CommonToken)context.pop()).getText()));
+		
+		context.pop(); // from
+	
+		ret.setMessageSignature((Message)context.pop());
 		
 		context.push(ret);
-		
+			
 		return ret;
 	}
 

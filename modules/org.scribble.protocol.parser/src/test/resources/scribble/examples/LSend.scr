@@ -1,6 +1,6 @@
-package scribble.examples;
+module scribble.examples.LSend;
 
-local protocol LSend at Buyer(role Seller) {
+local protocol LSendTest at Buyer(role Seller) {
 	buy(Order,Customer) to Seller;
 	buy(o:Order,c:Customer) to Seller;
 	buy(Order) to Seller;

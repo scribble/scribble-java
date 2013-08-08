@@ -16,40 +16,31 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import org.antlr.runtime.CommonToken;
-import org.scribble.protocol.model.MessageSignature;
-import org.scribble.protocol.model.PayloadType;
+import org.scribble.protocol.model.local.LActivity;
+import org.scribble.protocol.model.local.LBlock;
 
 /**
- * This class provides the model adapter for the 'messageSignature' parser rule.
+ * This class provides the model adapter for the 'localInteractionBlock' parser rule.
  *
  */
-public class MessageSignatureModelAdaptor implements ModelAdaptor {
+public class LocalProtocolBlockModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
+		LBlock ret=new LBlock();
 		
-		MessageSignature ret=new MessageSignature();
+		context.pop(); // consume }
 		
-		context.pop(); // consume )
-
-		while (context.peek() instanceof PayloadType) {
-			ret.getTypes().add(0, (PayloadType)context.pop());
-			
-			if (context.peek() instanceof CommonToken
-					&& ((CommonToken)context.peek()).getText().equals(",")) {
-				context.pop(); // consume ,
-			}
+		while (context.peek() instanceof LActivity) {
+			ret.getContents().add(0, (LActivity)context.pop());
 		}
 		
-		context.pop(); // consume (
+		context.pop(); // consume {
 
-		ret.setOperator(((CommonToken)context.pop()).getText());
-		
 		context.push(ret);
-			
+		
 		return ret;
 	}
 

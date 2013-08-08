@@ -1,5 +1,0 @@
-package scribble.examples;
-
-local protocol LEnter at Buyer(role Seller) {
-	enter OtherProtocol as OtherBuyer;
-}

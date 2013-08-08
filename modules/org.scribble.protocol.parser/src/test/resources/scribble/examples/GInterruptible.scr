@@ -1,0 +1,11 @@
+module scribble.examples.GInterruptible;
+
+global protocol GInterruptibleTest(role Buyer,role Seller) {
+	interruptible MyLabel: {
+		buy(Order) from Buyer to Seller;
+		continue MyLabel;
+	} with {
+		sell(Order),MesgParam by Seller;
+		cancel(Order) by Seller;
+	}
+}

@@ -1,5 +1,0 @@
-package scribble.examples;
-
-global protocol GSpawn(role Buyer,role Seller) {
-	Buyer spawns OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
-}

@@ -15,7 +15,7 @@
  */
 package org.scribble.protocol.model.local;
 
-import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.Role;
 
 /**
@@ -25,7 +25,7 @@ import org.scribble.protocol.model.Role;
  */
 public class LReceive extends LActivity {
 
-    private MessageSignature _messageSignature=null;
+    private Message _messageSignature=null;
     private Role _fromRole=null;
 
     /**
@@ -43,7 +43,7 @@ public class LReceive extends LActivity {
         super(i);
         
         if (i._messageSignature != null) {
-            _messageSignature = new MessageSignature(i._messageSignature);
+            _messageSignature = new Message(i._messageSignature);
         }
         _fromRole = i._fromRole;
     }
@@ -55,7 +55,7 @@ public class LReceive extends LActivity {
      * @param sig The message signature
      * @param fromRole The 'from' role
      */
-    public LReceive(MessageSignature sig, Role fromRole) {
+    public LReceive(Message sig, Role fromRole) {
         _messageSignature = sig;
         _fromRole = fromRole;
     }
@@ -65,7 +65,7 @@ public class LReceive extends LActivity {
      * 
      * @return The message signature
      */
-    public MessageSignature getMessageSignature() {
+    public Message getMessageSignature() {
         return (_messageSignature);
     }
     
@@ -74,7 +74,7 @@ public class LReceive extends LActivity {
      * 
      * @param signature The message signature
      */
-    public void setMessageSignature(MessageSignature signature) {
+    public void setMessageSignature(Message signature) {
         
         if (_messageSignature != null) {
             _messageSignature.setParent(null);

@@ -42,7 +42,7 @@ public class LocalChoiceModelAdaptor implements ModelAdaptor {
 			}
 		}
 		
-		ret.setRole((Role)context.pop());
+		ret.setRole(new Role(((CommonToken)context.pop()).getText()));
 		
 		context.pop(); // at
 		context.pop(); // choice

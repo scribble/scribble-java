@@ -31,6 +31,8 @@ public class LocalContinueModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {		
 		LContinue ret=new LContinue();
 
+		context.pop(); // ';'
+		
 		ret.setLabel(((CommonToken)context.pop()).getText());
 		
 		context.pop(); // continue

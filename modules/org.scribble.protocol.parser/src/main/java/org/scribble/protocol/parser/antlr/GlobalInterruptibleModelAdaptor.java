@@ -16,31 +16,44 @@
  */
 package org.scribble.protocol.parser.antlr;
 
-import org.scribble.protocol.model.MessageSignature;
-import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.local.LSend;
+import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.global.GBlock;
+import org.scribble.protocol.model.global.GInterruptible;
 
 /**
- * This class provides the model adapter for the 'send' parser rule.
+ * This class provides the model adapter for the 'interruptible' parser rule.
  *
  */
-public class SendModelAdaptor implements ModelAdaptor {
+public class GlobalInterruptibleModelAdaptor implements ModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
+		GInterruptible ret=new GInterruptible();
 		
-		LSend ret=new LSend();
+		context.pop(); // '}'
+		
+		while (context.peek() instanceof GInterruptible.Interrupt) {
+			ret.getInterrupts().add(0, (GInterruptible.Interrupt)context.pop());
+		}
+		
+		context.pop(); // '{'
+		
+		context.pop(); // 'with'
 
-		ret.setToRole((Role)context.pop());
+		ret.setBlock((GBlock)context.pop());
 		
-		context.pop(); // to
-	
-		ret.setMessageSignature((MessageSignature)context.pop());
+		if (((CommonToken)context.peek()).getText().equals(":")) {
+			context.pop(); // ':'
+			
+			ret.setScope(((CommonToken)context.pop()).getText());
+		}
+		
+		context.pop(); // interruptible
 		
 		context.push(ret);
-			
+		
 		return ret;
 	}
 

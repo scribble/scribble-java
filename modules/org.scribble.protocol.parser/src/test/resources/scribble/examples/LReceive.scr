@@ -1,6 +1,6 @@
-package scribble.examples;
+module scribble.examples.LReceive;
 
-local protocol LReceive at Seller(role Buyer) {
+local protocol LReceiveTest at Seller(role Buyer) {
 	buy(Order,Customer) from Buyer;
 	buy(o:Order,c:Customer) from Buyer;
 	buy(Order) from Buyer;

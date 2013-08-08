@@ -162,7 +162,7 @@ public abstract class ModelObject {
      * @param buf The buffer
      * @param level The indentation level
      */
-    protected void indent(StringBuffer buf, int level) {
+    protected static void indent(StringBuffer buf, int level) {
     	for (int i=0; i < level; i++) {
     		buf.append('\t');
     	}

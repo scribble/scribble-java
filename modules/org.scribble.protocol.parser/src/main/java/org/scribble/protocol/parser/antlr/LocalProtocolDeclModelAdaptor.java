@@ -39,7 +39,7 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 		
 		ret.getRoleDefinitions().addAll((java.util.List<RoleDecl>)context.pop());
 		
-		ret.setLocalRole((Role)context.pop());
+		ret.setLocalRole(new Role(((CommonToken)context.pop()).getText()));
 		
 		context.pop(); // at
 

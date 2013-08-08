@@ -26,11 +26,11 @@ public class ModelAdaptorFactory {
 	
 	static {
 		_modelAdaptors.put("argumentlist", new ArgumentListModelAdaptor());
-		_modelAdaptors.put("create", new CreateModelAdaptor());
-		_modelAdaptors.put("enter", new EnterModelAdaptor());
 		_modelAdaptors.put("globaldo", new GlobalDoModelAdaptor());
 		_modelAdaptors.put("globalchoice", new GlobalChoiceModelAdaptor());
 		_modelAdaptors.put("globalcontinue", new GlobalContinueModelAdaptor());
+		_modelAdaptors.put("globalinterrupt", new GlobalInterruptModelAdaptor());
+		_modelAdaptors.put("globalinterruptible", new GlobalInterruptibleModelAdaptor());
 		_modelAdaptors.put("globalmessagetransfer", new GlobalMessageTransferModelAdaptor());
 		_modelAdaptors.put("globalparallel", new GlobalParallelModelAdaptor());
 		_modelAdaptors.put("globalprotocolblock", new GlobalProtocolBlockModelAdaptor());
@@ -39,21 +39,21 @@ public class ModelAdaptorFactory {
 		_modelAdaptors.put("importdecl", new ImportDeclModelAdaptor());
 		_modelAdaptors.put("localchoice", new LocalChoiceModelAdaptor());
 		_modelAdaptors.put("localcontinue", new LocalContinueModelAdaptor());
-		_modelAdaptors.put("localinteractionblock", new LocalInteractionBlockModelAdaptor());
+		_modelAdaptors.put("localdo", new LocalDoModelAdaptor());
+		_modelAdaptors.put("localprotocolblock", new LocalProtocolBlockModelAdaptor());
 		_modelAdaptors.put("localparallel", new LocalParallelModelAdaptor());
 		_modelAdaptors.put("localprotocoldecl", new LocalProtocolDeclModelAdaptor());
+		_modelAdaptors.put("localreceive", new LocalReceiveModelAdaptor());
 		_modelAdaptors.put("localrecursion", new LocalRecursionModelAdaptor());
-		_modelAdaptors.put("messagesignature", new MessageSignatureModelAdaptor());
+		_modelAdaptors.put("localsend", new LocalSendModelAdaptor());
+		_modelAdaptors.put("message", new MessageModelAdaptor());
 		_modelAdaptors.put("parameterlist", new ParameterListModelAdaptor());
 		_modelAdaptors.put("payloadelement", new PayloadModelAdaptor());
 		_modelAdaptors.put("payloadtypedecl", new PayloadTypeDeclModelAdaptor());
 		_modelAdaptors.put("module", new ModuleModelAdaptor());
 		_modelAdaptors.put("moduledecl", new ModuleDeclModelAdaptor());
-		_modelAdaptors.put("receive", new ReceiveModelAdaptor());
 		_modelAdaptors.put("roledecllist", new RoleDeclListModelAdaptor());
 		_modelAdaptors.put("roleinstantiationlist", new RoleInstantiationListModelAdaptor());
-		_modelAdaptors.put("send", new SendModelAdaptor());
-		_modelAdaptors.put("spawn", new SpawnModelAdaptor());
 	}
 
 	/**

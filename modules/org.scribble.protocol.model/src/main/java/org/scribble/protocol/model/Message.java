@@ -21,15 +21,16 @@ package org.scribble.protocol.model;
  * a unique TypeReference, or an operation name with several
  * TypeReferences as arguments.
  */
-public class MessageSignature extends ModelObject {
+public class Message extends ModelObject {
 
+    private String _parameter=null;
     private String _operator=null;
     private java.util.List<PayloadType> _types=new java.util.ArrayList<PayloadType>();
 
     /**
      * The default constructor.
      */
-    public MessageSignature() {
+    public Message() {
     }
 
     /**
@@ -37,7 +38,7 @@ public class MessageSignature extends ModelObject {
      * @param operator The operation name.
      * @param types The arguments for the operation.
      */
-    public MessageSignature(String operator, java.util.List<PayloadType> types) {
+    public Message(String operator, java.util.List<PayloadType> types) {
         _operator = operator;
         _types.addAll(types);
     }
@@ -47,7 +48,7 @@ public class MessageSignature extends ModelObject {
      * 
      * @param msig The message signature
      */
-    public MessageSignature(MessageSignature msig) {
+    public Message(Message msig) {
         super(msig);
         
         _operator = msig.getOperator();
@@ -55,6 +56,27 @@ public class MessageSignature extends ModelObject {
         for (PayloadType tref : msig.getTypes()) {
             _types.add(new PayloadType(tref));
         }
+    }
+    
+    /**
+     * This method returns the optional parameter.
+     * 
+     * @return The optional parameter
+     */
+    public String getParameter() {
+        return (_parameter);
+    }
+    
+    /**
+     * This method sets the parameter. This property
+     * is mutually exclusive with the operator and
+     * types list, which represent the message
+     * signature.
+     * 
+     * @param parameter The parameter
+     */
+    public void setParameter(String parameter) {
+        _parameter = parameter;
     }
     
     /**
@@ -98,8 +120,8 @@ public class MessageSignature extends ModelObject {
     public boolean equals(Object obj) {
         boolean ret=false;
         
-        if (obj instanceof MessageSignature) {
-            MessageSignature other=(MessageSignature) obj;
+        if (obj instanceof Message) {
+            Message other=(Message) obj;
             
             if (other.getTypes().size() == getTypes().size()) {
                 if (other._operator != null && _operator != null) {
@@ -111,6 +133,8 @@ public class MessageSignature extends ModelObject {
                 for (int i=0; ret && i < getTypes().size(); i++) {
                     ret = getTypes().get(i).equals(other.getTypes().get(i));
                 }
+            } else if (_parameter != null && other.getParameter() != null) {
+            	ret = _parameter.equals(other.getParameter());
             }
         }
         
@@ -124,18 +148,18 @@ public class MessageSignature extends ModelObject {
         if (getOperator() != null
                 && getOperator().trim().length() > 0) {
             ret += getOperator() + "(";
-        }
+
+            for (int i=0; i < _types.size(); i++) {
+	            if (i > 0) {
+	                ret += ",";
+	            }
+	            ret += _types.get(i).getType();    
+	        }
         
-        for (int i=0; i < _types.size(); i++) {
-            if (i > 0) {
-                ret += ",";
-            }
-            ret += _types.get(i).getType();    
-        }
-        
-        if (getOperator() != null
-                && getOperator().trim().length() > 0) {
             ret += ")";
+        } else if (getParameter() != null &&
+        		getParameter().trim().length() > 0) {
+        	ret += getParameter();
         }
         
         if (ret.equals("")) {
@@ -162,17 +186,17 @@ public class MessageSignature extends ModelObject {
 		if (_operator != null) {
 			buf.append(_operator);
 			buf.append('(');
-		}
 		
-		for (int i=0; i < getTypes().size(); i++) {
-			if (i > 0) {
-				buf.append(',');
+			for (int i=0; i < getTypes().size(); i++) {
+				if (i > 0) {
+					buf.append(',');
+				}
+				getTypes().get(i).toText(buf, level);
 			}
-			getTypes().get(i).toText(buf, level);
-		}
 		
-		if (_operator != null) {
 			buf.append(')');
+		} else if (_parameter != null) {
+			buf.append(_parameter);
 		}
 	}
 }

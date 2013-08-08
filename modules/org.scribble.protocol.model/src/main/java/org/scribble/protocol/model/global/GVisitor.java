@@ -111,6 +111,23 @@ public interface GVisitor extends Visitor {
     public void end(GRecursion elem);
     
     /**
+     * This method indicates the start of an
+     * interruptible block.
+     * 
+     * @param elem The interruptible
+     * @return Whether to process the contents
+     */
+    public boolean start(GInterruptible elem);
+    
+    /**
+     * This method indicates the end of an
+     * interruptible block.
+     * 
+     * @param elem The interruptible
+     */
+    public void end(GInterruptible elem);
+    
+    /**
      * This method visits an interaction component.
      * 
      * @param elem The interaction
@@ -130,13 +147,6 @@ public interface GVisitor extends Visitor {
      * @param elem The do
      */
     public void accept(GDo elem);
-    
-    /**
-     * This method visits a spawn component.
-     * 
-     * @param elem The spawn
-     */
-    public void accept(GSpawn elem);
     
     /**
      * This method visits a custom activity.

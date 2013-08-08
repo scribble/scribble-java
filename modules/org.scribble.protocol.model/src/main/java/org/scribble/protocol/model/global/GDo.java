@@ -16,7 +16,7 @@
 package org.scribble.protocol.model.global;
 
 import org.scribble.protocol.model.FullyQualifiedName;
-import org.scribble.protocol.model.MessageSignature;
+import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.RoleInstantiation;
 
 /**
@@ -27,7 +27,7 @@ public class GDo extends GActivity {
 
     private String _protocol=null;
     private FullyQualifiedName _moduleName=null;
-    private java.util.List<MessageSignature> _arguments=new java.util.Vector<MessageSignature>();
+    private java.util.List<Message> _arguments=new java.util.Vector<Message>();
     private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.Vector<RoleInstantiation>();
 
     /**
@@ -46,8 +46,8 @@ public class GDo extends GActivity {
         super(copy);
         _protocol = copy.getProtocol();
         
-        for (MessageSignature arg : copy.getArguments()) {
-            _arguments.add(new MessageSignature(arg));
+        for (Message arg : copy.getArguments()) {
+            _arguments.add(new Message(arg));
         }
         
         for (RoleInstantiation ri : copy.getRoleInstantiations()) {
@@ -96,7 +96,7 @@ public class GDo extends GActivity {
      * 
      * @return The list of arguments
      */
-    public java.util.List<MessageSignature> getArguments() {
+    public java.util.List<Message> getArguments() {
         return (_arguments);
     }
     

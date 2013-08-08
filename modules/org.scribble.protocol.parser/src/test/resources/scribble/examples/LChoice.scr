@@ -1,6 +1,6 @@
-package scribble.examples;
+module scribble.examples.LChoice;
 
-local protocol LChoice at Buyer(role Seller) {
+local protocol LChoiceTest at Buyer(role Seller) {
 	choice at Buyer {
 		buy(Order) to Seller;
 	} or {

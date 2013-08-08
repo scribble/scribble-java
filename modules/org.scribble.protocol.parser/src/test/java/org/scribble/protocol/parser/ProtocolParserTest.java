@@ -25,37 +25,36 @@ import org.scribble.protocol.model.Module;
 public class ProtocolParserTest {
 
     @org.junit.Test
-    @Ignore
+    public void testGInterruptible() {
+    	testParser("GInterruptible");
+    }
+	/*
+    @org.junit.Test
     public void testTypes() {
     	testParser("Types");
     }
 
     @org.junit.Test
-    @Ignore
     public void testImports() {
     	testParser("Imports");
     }
 
     @org.junit.Test
-    @Ignore
     public void testGMessage() {
     	testParser("GMessage");
     }
 
     @org.junit.Test
-    @Ignore
     public void testGChoice() {
     	testParser("GChoice");
     }
 
     @org.junit.Test
-    @Ignore
     public void testGRecursion() {
     	testParser("GRecursion");
     }
     
     @org.junit.Test
-    @Ignore
     public void testGParallel() {
     	testParser("GParallel");
     }
@@ -63,23 +62,6 @@ public class ProtocolParserTest {
     @org.junit.Test
     public void testGDo() {
     	testParser("GDo");
-    }
-
-    /*
-    /*
-    @org.junit.Test
-    public void testGSpawn() {
-    	testParser("GSpawn");
-    }
-
-    @org.junit.Test
-    public void testLCreate() {
-    	testParser("LCreate");
-    }
-
-    @org.junit.Test
-    public void testLEnter() {
-    	testParser("LEnter");
     }
 
     @org.junit.Test
@@ -106,8 +88,13 @@ public class ProtocolParserTest {
     public void testLRecursion() {
     	testParser("LRecursion");
     }
-    */
     
+    @org.junit.Test
+    public void testLDo() {
+    	testParser("LDo");
+    }
+    */
+
     protected void testParser(String name) {
     	
     	try {
