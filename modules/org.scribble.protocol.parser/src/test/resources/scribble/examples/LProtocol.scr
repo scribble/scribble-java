@@ -1,0 +1,10 @@
+module scribble.examples.LProtocol;
+
+local protocol GMessageTest at Seller(role Buyer,role SellerA,role SellerB) {
+}
+
+local protocol Order at Seller<sig Fred as Joe,type Jack>(role Buyer,role Seller) {
+}
+
+local protocol Receipt at Seller(role Buyer as B,role Seller as S) {
+}

@@ -1,4 +1,4 @@
-module scribble.examples.GMessage;
+module scribble.examples.GProtocol;
 
 global protocol GMessageTest(role Buyer,role SellerA,role SellerB) {
 }

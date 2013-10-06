@@ -141,6 +141,18 @@ public class LProtocol extends ProtocolDecl {
     		_localRole.toText(buf, level);
     	}
     	
+    	if (getParameterDeclarations().size() > 0) {
+        	buf.append("<");
+        	
+        	for (int i=0; i < getParameterDeclarations().size(); i++) {
+        		if (i > 0) {
+        			buf.append(",");
+        		}
+        		getParameterDeclarations().get(i).toText(buf, level);
+        	}
+        	buf.append(">");
+    	}
+    	
     	buf.append("(");
     	
     	for (int i=0; i < getRoleDeclarations().size(); i++) {

@@ -70,6 +70,11 @@ public class ProtocolParserTest {
     }
 
     @org.junit.Test
+    public void testLProtocol() {
+    	testParser("LProtocol");
+    }
+
+    @org.junit.Test
     public void testLSend() {
     	testParser("LSend");
     }
