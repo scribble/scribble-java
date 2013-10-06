@@ -17,11 +17,15 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.Argument;
 import org.scribble.protocol.model.ParameterDecl;
+import org.scribble.protocol.model.ProtocolDecl;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.RoleDecl;
+import org.scribble.protocol.model.RoleInstantiation;
 import org.scribble.protocol.model.local.LBlock;
 import org.scribble.protocol.model.local.LProtocolDefinition;
+import org.scribble.protocol.model.local.LProtocolInstance;
 
 /**
  * This class provides the model adapter for the 'localProtocolDecl' parser rule.
@@ -34,9 +38,28 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 	 */
 	@SuppressWarnings("unchecked")
 	public Object createModelObject(ParserContext context) {
-		LProtocolDefinition ret=new LProtocolDefinition();
+		ProtocolDecl ret=null;
 		
-		ret.setBlock((LBlock)context.pop());
+		if (context.peek() instanceof LBlock) {
+			ret = new LProtocolDefinition();
+			
+			((LProtocolDefinition)ret).setBlock((LBlock)context.pop());
+		} else {
+			ret = new LProtocolInstance();
+
+			context.pop(); // consume ;
+
+			((LProtocolInstance)ret).getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
+			
+			if (context.peek() instanceof java.util.List<?>) {
+				((LProtocolInstance)ret).getArguments().addAll((java.util.List<Argument>)context.pop());
+			}
+			
+			((LProtocolInstance)ret).setMemberName(((CommonToken)context.pop()).getText());		
+
+			context.pop(); // instantiates
+
+		}
 		
 		ret.getRoleDeclarations().addAll((java.util.List<RoleDecl>)context.pop());
 		
@@ -44,7 +67,11 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 			ret.getParameterDeclarations().addAll((java.util.List<ParameterDecl>)context.pop());
 		}
 		
-		ret.setLocalRole(new Role(((CommonToken)context.pop()).getText()));
+		if (ret instanceof LProtocolDefinition) {
+			((LProtocolDefinition)ret).setLocalRole(new Role(((CommonToken)context.pop()).getText()));
+		} else if (ret instanceof LProtocolInstance) {
+			((LProtocolInstance)ret).setLocalRole(new Role(((CommonToken)context.pop()).getText()));
+		}
 		
 		context.pop(); // at
 

@@ -33,17 +33,24 @@ public class ArgumentModelAdaptor implements ModelAdaptor {
 		
 		Argument ret=new Argument();
 		
-		if (context.peek() instanceof MessageSignature) {
-			ret.setMessageSignature((MessageSignature)context.pop());
-		} else {
-			ret.setName(((CommonToken)context.pop()).getText());
-		}
-		
-		if (context.peek() instanceof CommonToken &&
-				((CommonToken)context.peek()).getText().equals("as")) {
-			context.pop(); // consume 'as'
-			
+		if (context.peek() instanceof CommonToken) {
 			ret.setAlias(((CommonToken)context.pop()).getText());
+
+			if (context.peek() instanceof CommonToken &&
+					((CommonToken)context.peek()).getText().equals("as")) {
+				context.pop(); // consume 'as'
+				
+				if (context.peek() instanceof MessageSignature) {
+					ret.setMessageSignature((MessageSignature)context.pop());
+				} else {
+					ret.setName(((CommonToken)context.pop()).getText());
+				}
+			} else {
+				ret.setName(ret.getAlias());
+				ret.setAlias(null);
+			}
+		} else if (context.peek() instanceof MessageSignature) {
+			ret.setMessageSignature((MessageSignature)context.pop());
 		}
 		
 		context.push(ret);

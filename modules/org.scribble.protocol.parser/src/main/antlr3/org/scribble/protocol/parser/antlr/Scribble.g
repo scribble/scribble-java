@@ -603,9 +603,9 @@ localprotocoldefinition:
  * Section 3.8.2 Local Protocol Instantiation
  */
 localprotocolinstance:
-	INSTANTIATESKW membername roledecllist ';'
+	INSTANTIATESKW membername roleinstantiationlist ';'
 |
-	INSTANTIATESKW membername argumentlist roledecllist ';'
+	INSTANTIATESKW membername argumentlist roleinstantiationlist ';'
 ;
 
 

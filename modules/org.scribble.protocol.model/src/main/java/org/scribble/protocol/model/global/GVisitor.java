@@ -128,6 +128,13 @@ public interface GVisitor extends Visitor {
     public void end(GInterruptible elem);
     
     /**
+     * This method visits a protocol instance.
+     * 
+     * @param elem The protocol instances
+     */
+    public void accept(GProtocolInstance elem);
+    
+    /**
      * This method visits an interaction component.
      * 
      * @param elem The interaction

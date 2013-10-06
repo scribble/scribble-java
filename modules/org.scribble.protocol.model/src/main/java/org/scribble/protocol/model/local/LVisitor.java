@@ -127,6 +127,13 @@ public interface LVisitor extends Visitor {
     public void end(LInterruptible elem);
     
     /**
+     * This method visits a protocol instance.
+     * 
+     * @param elem The protocol instances
+     */
+    public void accept(LProtocolInstance elem);
+    
+    /**
      * This method visits a send component.
      * 
      * @param elem The send

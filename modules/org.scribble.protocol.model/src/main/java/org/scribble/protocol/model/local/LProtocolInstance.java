@@ -13,11 +13,12 @@
  * limitations under the License.
  *
  */
-package org.scribble.protocol.model.global;
+package org.scribble.protocol.model.local;
 
 import org.scribble.protocol.model.Argument;
 import org.scribble.protocol.model.ParameterDecl;
 import org.scribble.protocol.model.ProtocolDecl;
+import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.RoleDecl;
 import org.scribble.protocol.model.RoleInstantiation;
 import org.scribble.protocol.model.Visitor;
@@ -25,8 +26,9 @@ import org.scribble.protocol.model.Visitor;
 /**
  * This class represents the protocol notation.
  */
-public class GProtocolInstance extends ProtocolDecl {
+public class LProtocolInstance extends ProtocolDecl {
     
+	private Role _localRole=null;
     private String _memberName=null;
     private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.ArrayList<RoleInstantiation>();
     private java.util.List<Argument> _arguments=new java.util.ArrayList<Argument>();
@@ -34,7 +36,29 @@ public class GProtocolInstance extends ProtocolDecl {
     /**
      * The default constructor.
      */
-    public GProtocolInstance() {
+    public LProtocolInstance() {
+    }
+    
+    /**
+     * This method returns the local role. This
+     * field is set when the protocol represents a local
+     * model.
+     * 
+     * @return The local role
+     */
+    public Role getLocalRole() {
+        return (_localRole);
+    }
+    
+    /**
+     * This method sets the local role. This
+     * field is set when the protocol represents a local
+     * model.
+     * 
+     * @param role The local role
+     */
+    public void setLocalRole(Role role) {
+        _localRole = role;
     }
     
     /**
@@ -82,13 +106,13 @@ public class GProtocolInstance extends ProtocolDecl {
      * @param visitor The visitor
      */
     public void visit(Visitor visitor) {
-    	if (visitor instanceof GVisitor) {
-	        ((GVisitor)visitor).accept(this);
+    	if (visitor instanceof LVisitor) {
+	        ((LVisitor)visitor).accept(this);
     	}
     }
     
     public String toString() {
-        String ret="global protocol "+getName();
+        String ret="local protocol "+getName();
         
         if (getParameterDeclarations().size() > 0) {
             ret += " <";
@@ -138,9 +162,15 @@ public class GProtocolInstance extends ProtocolDecl {
 		
     	indent(buf, level);
     	
-    	buf.append("global protocol ");
+    	buf.append("local protocol ");
     	
     	buf.append(getName());
+    	
+    	buf.append(" at ");
+    	
+    	if (_localRole != null) {
+    		_localRole.toText(buf, level);
+    	}
     	
     	if (getParameterDeclarations().size() > 0) {
         	buf.append("<");
