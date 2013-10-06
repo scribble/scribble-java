@@ -38,6 +38,7 @@ public class RoleDecl extends ModelObject {
     public RoleDecl(RoleDecl role) {
         super(role);
         _name = role.getName();
+        _alias = role.getAlias();
     }
     
     /**

@@ -23,7 +23,7 @@ package org.scribble.protocol.model;
  */
 public class Argument extends ModelObject {
 
-    private String _parameter=null;
+    private String _name=null;
     private MessageSignature _messageSignature=null;
     private String _alias=null;
 
@@ -34,7 +34,7 @@ public class Argument extends ModelObject {
     }
     
     public Argument(Argument copy) {
-    	_parameter = copy._parameter;
+    	_name = copy._name;
     	
     	if (copy._messageSignature != null) {
     		_messageSignature = new MessageSignature(copy._messageSignature);
@@ -42,24 +42,22 @@ public class Argument extends ModelObject {
     }
 
     /**
-     * This method returns the optional parameter.
+     * This method returns the optional parameter or payload type name.
      * 
-     * @return The optional parameter
+     * @return The optional name
      */
-    public String getParameter() {
-        return (_parameter);
+    public String getName() {
+        return (_name);
     }
     
     /**
-     * This method sets the parameter. This property
-     * is mutually exclusive with the operator and
-     * types list, which represent the message
-     * signature.
+     * This method sets the payload type or parameter name. This property
+     * is mutually exclusive with the message signature.
      * 
-     * @param parameter The parameter
+     * @param name The name
      */
-    public void setParameter(String parameter) {
-        _parameter = parameter;
+    public void setName(String name) {
+        _name = name;
     }
     
     /**
@@ -104,9 +102,9 @@ public class Argument extends ModelObject {
         
         if (getMessageSignature() != null) {
             ret += getMessageSignature();
-        } else if (getParameter() != null &&
-        		getParameter().trim().length() > 0) {
-        	ret += getParameter();
+        } else if (getName() != null &&
+        		getName().trim().length() > 0) {
+        	ret += getName();
         }
         
         if (ret.equals("")) {
@@ -132,8 +130,8 @@ public class Argument extends ModelObject {
 
 		if (_messageSignature != null) {
 			_messageSignature.toText(buf, level);
-		} else if (_parameter != null) {
-			buf.append(_parameter);
+		} else if (_name != null) {
+			buf.append(_name);
 		}
 		
 		if (_alias != null) {

@@ -15,58 +15,66 @@
  */
 package org.scribble.protocol.model.global;
 
+import org.scribble.protocol.model.Argument;
 import org.scribble.protocol.model.ParameterDecl;
 import org.scribble.protocol.model.ProtocolDecl;
 import org.scribble.protocol.model.RoleDecl;
+import org.scribble.protocol.model.RoleInstantiation;
 import org.scribble.protocol.model.Visitor;
 
 /**
  * This class represents the protocol notation.
  */
-public class GProtocol extends ProtocolDecl {
+public class GProtocolInstance extends ProtocolDecl {
     
-    private GBlock _block=null;
+    private String _memberName=null;
+    private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.ArrayList<RoleInstantiation>();
+    private java.util.List<Argument> _arguments=new java.util.ArrayList<Argument>();
 
     /**
      * The default constructor.
      */
-    public GProtocol() {
+    public GProtocolInstance() {
     }
     
     /**
-     * This method returns the block of activities associated
-     * with the definition.
+     * This method returns the member name.
      * 
-     * @return The block of activities
+     * @return The name
      */
-    public GBlock getBlock() {
-        
-        if (_block == null) {
-            _block = new GBlock();
-            _block.setParent(this);
-        }
-        
-        return (_block);
+    public String getMemberName() {
+        return (_memberName);
     }
     
     /**
-     * This method sets the block of activities associated
-     * with the definition.
+     * This method sets the member name.
      * 
-     * @param block The block of activities
+     * @param name The name
      */
-    public void setBlock(GBlock block) {
-        if (_block != null) {
-            _block.setParent(null);
-        }
-        
-        _block = block;
-        
-        if (_block != null) {
-            _block.setParent(this);
-        }
+    public void setMemberName(String name) {
+        _memberName = name;
     }
     
+    /**
+     * This method returns the role declarations associated with
+     * the protocol.
+     * 
+     * @return The role declarations
+     */
+    public java.util.List<RoleInstantiation> getRoleInstantiations() {
+        return (_roleInstantiations);
+    }
+    
+    /**
+     * This method returns the parameter declarations associated with
+     * the protocol.
+     * 
+     * @return The parameter declarations
+     */
+    public java.util.List<Argument> getArguments() {
+        return (_arguments);
+    }
+        
     /**
      * This method visits the model object using the supplied
      * visitor.
@@ -75,6 +83,7 @@ public class GProtocol extends ProtocolDecl {
      */
     public void visit(Visitor visitor) {
         
+    	/*
     	if (visitor instanceof GVisitor) {
 	        if (((GVisitor)visitor).start(this)) {
 	        
@@ -85,6 +94,7 @@ public class GProtocol extends ProtocolDecl {
 	        
 	        ((GVisitor)visitor).end(this);
     	}
+    	*/
     }
     
     public String toString() {
@@ -124,9 +134,9 @@ public class GProtocol extends ProtocolDecl {
             }
         }
         
-        ret += ")\n";
+        ret += ") instantiates ";
         
-        ret += getBlock();
+        ret += _memberName;
         
         return(ret);
     }
@@ -163,13 +173,31 @@ public class GProtocol extends ProtocolDecl {
     		buf.append("role ");
     		getRoleDeclarations().get(i).toText(buf, level);
     	}
-    	buf.append(") ");
+    	buf.append(") instantiates ");
     	
+    	buf.append(getMemberName());
     	
-    	if (_block != null) {
-    		_block.toText(buf, level);
+    	if (getArguments().size() > 0) {
+        	buf.append("<");
+        	
+        	for (int i=0; i < getArguments().size(); i++) {
+        		if (i > 0) {
+        			buf.append(",");
+        		}
+        		getArguments().get(i).toText(buf, level);
+        	}
+        	buf.append(">");
     	}
     	
-		buf.append("\n");
+    	buf.append("(");
+    	
+    	for (int i=0; i < getRoleInstantiations().size(); i++) {
+    		if (i > 0) {
+    			buf.append(",");
+    		}
+    		getRoleInstantiations().get(i).toText(buf, level);
+    	}
+
+    	buf.append(");\n");
 	}    
 }

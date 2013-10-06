@@ -21,7 +21,7 @@ import org.scribble.protocol.model.ParameterDecl;
 import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.RoleDecl;
 import org.scribble.protocol.model.local.LBlock;
-import org.scribble.protocol.model.local.LProtocol;
+import org.scribble.protocol.model.local.LProtocolDefinition;
 
 /**
  * This class provides the model adapter for the 'localProtocolDecl' parser rule.
@@ -34,7 +34,7 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 	 */
 	@SuppressWarnings("unchecked")
 	public Object createModelObject(ParserContext context) {
-		LProtocol ret=new LProtocol();
+		LProtocolDefinition ret=new LProtocolDefinition();
 		
 		ret.setBlock((LBlock)context.pop());
 		

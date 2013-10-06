@@ -82,7 +82,7 @@ public interface LVisitor extends Visitor {
      * @param elem The protocol
      * @return Whether to process the contents
      */
-    public boolean start(LProtocol elem);
+    public boolean start(LProtocolDefinition elem);
     
     /**
      * This method indicates the end of a
@@ -90,7 +90,7 @@ public interface LVisitor extends Visitor {
      * 
      * @param elem The protocol
      */
-    public void end(LProtocol elem);
+    public void end(LProtocolDefinition elem);
     
     /**
      * This method indicates the start of a

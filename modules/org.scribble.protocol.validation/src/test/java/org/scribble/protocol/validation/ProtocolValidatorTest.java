@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 
 import org.scribble.protocol.model.FullyQualifiedName;
 import org.scribble.protocol.model.Module;
-import org.scribble.protocol.model.global.GProtocol;
+import org.scribble.protocol.model.global.GProtocolDefinition;
 
 public class ProtocolValidatorTest {
 
@@ -33,7 +33,7 @@ public class ProtocolValidatorTest {
     	Module module=new Module();
     	module.setFullyQualifiedName(new FullyQualifiedName("test"));
     	
-    	module.getProtocols().add(new GProtocol());
+    	module.getProtocols().add(new GProtocolDefinition());
     	
     	pv.validate(context, module, logger);
     	
@@ -50,7 +50,7 @@ public class ProtocolValidatorTest {
     	
     	Module module=new Module();
     	
-    	module.getProtocols().add(new GProtocol());
+    	module.getProtocols().add(new GProtocolDefinition());
     	
     	pv.validate(context, module, logger);
     	

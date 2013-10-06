@@ -83,7 +83,7 @@ public interface GVisitor extends Visitor {
      * @param elem The protocol
      * @return Whether to process the contents
      */
-    public boolean start(GProtocol elem);
+    public boolean start(GProtocolDefinition elem);
     
     /**
      * This method indicates the end of a
@@ -91,7 +91,7 @@ public interface GVisitor extends Visitor {
      * 
      * @param elem The protocol
      */
-    public void end(GProtocol elem);
+    public void end(GProtocolDefinition elem);
     
     /**
      * This method indicates the start of a

@@ -36,7 +36,7 @@ public class ArgumentModelAdaptor implements ModelAdaptor {
 		if (context.peek() instanceof MessageSignature) {
 			ret.setMessageSignature((MessageSignature)context.pop());
 		} else {
-			ret.setParameter(((CommonToken)context.pop()).getText());
+			ret.setName(((CommonToken)context.pop()).getText());
 		}
 		
 		if (context.peek() instanceof CommonToken &&

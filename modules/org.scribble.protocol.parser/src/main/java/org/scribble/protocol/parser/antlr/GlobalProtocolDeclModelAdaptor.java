@@ -17,10 +17,14 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.Argument;
 import org.scribble.protocol.model.ParameterDecl;
+import org.scribble.protocol.model.ProtocolDecl;
 import org.scribble.protocol.model.RoleDecl;
+import org.scribble.protocol.model.RoleInstantiation;
 import org.scribble.protocol.model.global.GBlock;
-import org.scribble.protocol.model.global.GProtocol;
+import org.scribble.protocol.model.global.GProtocolDefinition;
+import org.scribble.protocol.model.global.GProtocolInstance;
 
 /**
  * This class provides the model adapter for the 'globalProtocolDecl' parser rule.
@@ -33,9 +37,27 @@ public class GlobalProtocolDeclModelAdaptor implements ModelAdaptor {
 	 */
 	@SuppressWarnings("unchecked")
 	public Object createModelObject(ParserContext context) {
-		GProtocol ret=new GProtocol();
+		ProtocolDecl ret=null;
 		
-		ret.setBlock((GBlock)context.pop());
+		if (context.peek() instanceof GBlock) {
+			ret = new GProtocolDefinition();
+			
+			((GProtocolDefinition)ret).setBlock((GBlock)context.pop());
+		} else {
+			ret = new GProtocolInstance();
+
+			context.pop(); // consume ;
+
+			((GProtocolInstance)ret).getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
+			
+			if (context.peek() instanceof java.util.List<?>) {
+				((GProtocolInstance)ret).getArguments().addAll((java.util.List<Argument>)context.pop());
+			}
+			
+			((GProtocolInstance)ret).setMemberName(((CommonToken)context.pop()).getText());		
+
+			context.pop(); // instantiates
+		}
 		
 		ret.getRoleDeclarations().addAll((java.util.List<RoleDecl>)context.pop());
 		

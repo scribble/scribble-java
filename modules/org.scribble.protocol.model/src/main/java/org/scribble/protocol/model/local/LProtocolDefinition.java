@@ -23,7 +23,7 @@ import org.scribble.protocol.model.Visitor;
 /**
  * This class represents the protocol notation.
  */
-public class LProtocol extends ProtocolDecl {
+public class LProtocolDefinition extends ProtocolDecl {
     
 	private Role _localRole=null;
     private LBlock _block=null;
@@ -31,7 +31,7 @@ public class LProtocol extends ProtocolDecl {
     /**
      * The default constructor.
      */
-    public LProtocol() {
+    public LProtocolDefinition() {
     }
     
     /**
