@@ -87,6 +87,21 @@ public abstract class ModelObject {
     }
     
     /**
+     * This method returns the parent with the specified type.
+     * 
+     * @param type The class of the required parent
+     * @return The appropriate parent, or null if not found
+     */
+    public <T extends ModelObject> T getParent(Class<T> type) {
+    	if (getClass() == type) {
+    		return (type.cast(this));
+    	} else if (_parent != null) {
+    		return (_parent.getParent(type));
+    	}
+    	return (null);
+    }
+    
+    /**
      * This method sets the parent model object.
      * 
      * @param parent The parent

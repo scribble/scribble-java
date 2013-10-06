@@ -16,11 +16,17 @@
  */
 package org.scribble.protocol.validation.rules;
 
+import java.text.MessageFormat;
+
 import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.ParameterDecl;
 import org.scribble.protocol.model.PayloadType;
+import org.scribble.protocol.model.PayloadTypeDecl;
 import org.scribble.protocol.model.global.GMessage;
+import org.scribble.protocol.model.global.GProtocolDefinition;
 import org.scribble.protocol.validation.ValidationContext;
 import org.scribble.protocol.validation.ValidationLogger;
+import org.scribble.protocol.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the GMessage
@@ -41,6 +47,33 @@ public class GMessageValidationRule implements ValidationRule {
 				
 				// Check if 'name' represents a payload type or parameter name
 				if (pt.getName() != null) {
+					boolean f_found=false;
+					
+					// QUESTION: what takes precedence, the payload type, or parameter name,
+					// if both are defined?
+					
+					GProtocolDefinition gd=elem.getParent(GProtocolDefinition.class);
+					
+					if (gd != null) {
+						for (ParameterDecl pd : gd.getParameterDeclarations()) {
+							if (pd.getName().equals(pt.getName()) ||
+									pd.getAlias() != null && pd.getAlias().equals(pt.getName())) {
+								f_found = true;
+								break;
+							}
+						}
+					}
+					
+					if (!f_found) {
+						PayloadTypeDecl ptype=elem.getModule().getTypeDeclaration(pt.getName());
+						
+						f_found = (ptype != null);
+					}
+					
+					if (!f_found) {
+						logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_PAYLOAD_ELEMENT"),
+								pt.getName()), elem);
+					}
 				}
 			}
 		}
