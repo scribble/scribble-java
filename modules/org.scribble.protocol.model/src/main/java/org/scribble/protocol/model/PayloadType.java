@@ -22,8 +22,8 @@ package org.scribble.protocol.model;
  */
 public class PayloadType extends ModelObject {
 
-	private String _variable=null;
-	private String _type=null;
+	private String _annotation=null;
+	private String _name=null;
     
     /**
      * The default constructor.
@@ -37,56 +37,58 @@ public class PayloadType extends ModelObject {
      * @param copy The copy
      */
     public PayloadType(PayloadType copy) {
-        _variable = copy.getVariable();
-        _type = copy.getType();
+        _annotation = copy.getAnnotation();
+        _name = copy.getName();
     }
     
     /**
-     * This method returns the optional variable.
+     * This method returns the optional annotation.
      * 
-     * @return The optional variable
+     * @return The optional annotation
      */
-    public String getVariable() {
-        return (_variable);
+    public String getAnnotation() {
+        return (_annotation);
     }
     
     /**
-     * This method sets the optional variable.
+     * This method sets the optional annotation.
      * 
-     * @param variable The variable
+     * @param annotation The annotation
      */
-    public void setVariable(String variable) {
-        _variable = variable;
+    public void setAnnotation(String annotation) {
+        _annotation = annotation;
     }
     
     /**
-     * This method returns the schema format.
+     * This method returns the payload type or
+     * parameter name.
      * 
      * @return The name
      */
-    public String getType() {
-        return (_type);
+    public String getName() {
+        return (_name);
     }
     
     /**
-     * This method sets the type.
+     * This method sets the payload type or
+     * parameter name.
      * 
-     * @param type The type
+     * @param name The name
      */
-    public void setType(String type) {
-        _type = type;
+    public void setName(String name) {
+        _name = name;
     }
     
     @Override
     public String toString() {
-        String ret=getType();
+        String ret=getName();
         
         if (ret == null) {
             ret = "<Unnamed Type>";
         }
         
-        if (_variable != null) {
-        	ret += ":"+_variable;
+        if (_annotation != null) {
+        	ret = _annotation+":"+ret;
         }
         
         return (ret);
@@ -104,10 +106,10 @@ public class PayloadType extends ModelObject {
 	 * {@inheritDoc}
 	 */
 	public void toText(StringBuffer buf, int level) {
-		buf.append(_type);
-		if (_variable != null) {
+		if (_annotation != null) {
+			buf.append(_annotation);
 			buf.append(':');
-			buf.append(_variable);
 		}
+		buf.append(_name);
 	}
 }

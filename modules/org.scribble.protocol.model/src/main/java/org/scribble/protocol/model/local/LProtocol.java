@@ -113,7 +113,7 @@ public class LProtocol extends ProtocolDecl {
     public String toString() {
         String ret="local protocol "+getName()+" ( ";
         
-        for (RoleDecl role : getRoleDefinitions()) {
+        for (RoleDecl role : getRoleDeclarations()) {
             ret += "role " + role.getName() + " ";
         }
         
@@ -143,12 +143,12 @@ public class LProtocol extends ProtocolDecl {
     	
     	buf.append("(");
     	
-    	for (int i=0; i < getRoleDefinitions().size(); i++) {
+    	for (int i=0; i < getRoleDeclarations().size(); i++) {
     		if (i > 0) {
     			buf.append(",");
     		}
     		buf.append("role ");
-    		getRoleDefinitions().get(i).toText(buf, level);
+    		getRoleDeclarations().get(i).toText(buf, level);
     	}
     	buf.append(") ");
     	

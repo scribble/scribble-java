@@ -1,0 +1,10 @@
+module scribble.examples.GMessage;
+
+global protocol GMessageTest(role Buyer,role SellerA,role SellerB) {
+}
+
+global protocol Order<sig Fred as Joe,type Jack>(role Buyer,role Seller) {
+}
+
+global protocol Receipt(role Buyer as B,role Seller as S) {
+}

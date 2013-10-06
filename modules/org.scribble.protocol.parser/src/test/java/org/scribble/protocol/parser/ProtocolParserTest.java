@@ -40,6 +40,11 @@ public class ProtocolParserTest {
     }
 
     @org.junit.Test
+    public void testGProtocol() {
+    	testParser("GProtocol");
+    }
+
+    @org.junit.Test
     public void testGChoice() {
     	testParser("GChoice");
     }

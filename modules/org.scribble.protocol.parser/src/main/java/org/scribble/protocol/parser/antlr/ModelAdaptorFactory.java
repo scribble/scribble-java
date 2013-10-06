@@ -52,6 +52,7 @@ public class ModelAdaptorFactory {
 		_modelAdaptors.put("localthrow", new LocalThrowModelAdaptor());
 		_modelAdaptors.put("message", new MessageModelAdaptor());
 		_modelAdaptors.put("messagesignature", new MessageSignatureModelAdaptor());
+		_modelAdaptors.put("parameterdecllist", new ParameterDeclListModelAdaptor());
 		_modelAdaptors.put("parameterlist", new ParameterListModelAdaptor());
 		_modelAdaptors.put("payloadelement", new PayloadModelAdaptor());
 		_modelAdaptors.put("payloadtypedecl", new PayloadTypeDeclModelAdaptor());

@@ -17,6 +17,7 @@
 package org.scribble.protocol.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
+import org.scribble.protocol.model.ParameterDecl;
 import org.scribble.protocol.model.RoleDecl;
 import org.scribble.protocol.model.global.GBlock;
 import org.scribble.protocol.model.global.GProtocol;
@@ -36,7 +37,11 @@ public class GlobalProtocolDeclModelAdaptor implements ModelAdaptor {
 		
 		ret.setBlock((GBlock)context.pop());
 		
-		ret.getRoleDefinitions().addAll((java.util.List<RoleDecl>)context.pop());
+		ret.getRoleDeclarations().addAll((java.util.List<RoleDecl>)context.pop());
+		
+		if (context.peek() instanceof java.util.List<?>) {
+			ret.getParameterDeclarations().addAll((java.util.List<ParameterDecl>)context.pop());
+		}
 		
 		ret.setName(((CommonToken)context.pop()).getText());
 		

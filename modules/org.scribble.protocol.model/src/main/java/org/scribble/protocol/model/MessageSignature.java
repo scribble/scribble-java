@@ -127,7 +127,7 @@ public class MessageSignature extends ModelObject {
             if (i > 0) {
                 ret += ",";
             }
-            ret += _types.get(i).getType();    
+            ret += _types.get(i).getName();    
         }
     
         ret += ")";

@@ -26,7 +26,7 @@ import org.scribble.protocol.model.global.GActivity;
  */
 public class GMessage extends GActivity {
 
-    private Message _messageSignature=null;
+    private Message _message=null;
     private Role _fromRole=null;
     private java.util.List<Role> _toRoles=new java.util.ArrayList<Role>();
 
@@ -44,8 +44,8 @@ public class GMessage extends GActivity {
     public GMessage(GMessage i) {
         super(i);
         
-        if (i._messageSignature != null) {
-            _messageSignature = new Message(i._messageSignature);
+        if (i._message != null) {
+            _message = new Message(i._message);
         }
         
         _fromRole = i._fromRole;
@@ -64,35 +64,35 @@ public class GMessage extends GActivity {
      * @param toRoles The 'to' roles
      */
     public GMessage(Message sig, Role fromRole, java.util.List<Role> toRoles) {
-        _messageSignature = sig;
+        _message = sig;
         _fromRole = fromRole;
         _toRoles = toRoles;
     }
 
     /**
-     * This method returns the message signature.
+     * This method returns the message.
      * 
-     * @return The message signature
+     * @return The message
      */
-    public Message getMessageSignature() {
-        return (_messageSignature);
+    public Message getMessage() {
+        return (_message);
     }
     
     /**
-     * This method sets the message signature.
+     * This method sets the message.
      * 
-     * @param signature The message signature
+     * @param message The message
      */
-    public void setMessageSignature(Message signature) {
+    public void setMessage(Message message) {
         
-        if (_messageSignature != null) {
-            _messageSignature.setParent(null);
+        if (_message != null) {
+            _message.setParent(null);
         }
         
-        _messageSignature = signature;
+        _message = message;
         
-        if (_messageSignature != null) {
-            _messageSignature.setParent(this);
+        if (_message != null) {
+            _message.setParent(this);
         }
     }
     
@@ -137,8 +137,8 @@ public class GMessage extends GActivity {
     public String toString() {
         StringBuffer ret=new StringBuffer();
         
-        if (getMessageSignature() != null) {
-            ret.append(getMessageSignature());
+        if (getMessage() != null) {
+            ret.append(getMessage());
             ret.append(" ");
         }
         
@@ -164,8 +164,8 @@ public class GMessage extends GActivity {
     public void visit(GVisitor visitor) {
     	visitor.accept(this);
         
-        if (getMessageSignature() != null) {
-            getMessageSignature().visit(visitor);
+        if (getMessage() != null) {
+            getMessage().visit(visitor);
         }
         
     }
@@ -184,9 +184,9 @@ public class GMessage extends GActivity {
         boolean ret=!(_fromRole != null
                 ? !_fromRole.equals(that._fromRole)
                 : that._fromRole != null)
-            && !(_messageSignature != null
-                ? !_messageSignature.equals(that._messageSignature)
-                : that._messageSignature != null);
+            && !(_message != null
+                ? !_message.equals(that._message)
+                : that._message != null);
         
         if (ret) {
         	if (_toRoles.size() != that.getToRoles().size()) {
@@ -205,7 +205,7 @@ public class GMessage extends GActivity {
 
     @Override
     public int hashCode() {
-        int result = _messageSignature != null ? _messageSignature.hashCode() : 0;
+        int result = _message != null ? _message.hashCode() : 0;
         result = 31 * result + (_fromRole != null ? _fromRole.hashCode() : 0);
         return result;
     }
@@ -217,7 +217,7 @@ public class GMessage extends GActivity {
 		
     	indent(buf, level);
     	
-    	_messageSignature.toText(buf, level);
+    	_message.toText(buf, level);
     	
     	if (_fromRole != null) {
     		buf.append(" from ");

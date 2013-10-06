@@ -17,6 +17,8 @@
 package org.scribble.protocol.validation.rules;
 
 import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.PayloadType;
+import org.scribble.protocol.model.global.GMessage;
 import org.scribble.protocol.validation.ValidationContext;
 import org.scribble.protocol.validation.ValidationLogger;
 
@@ -31,7 +33,17 @@ public class GMessageValidationRule implements ValidationRule {
 	 * {@inheritDoc}
 	 */
 	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
+		GMessage elem=(GMessage)mobj;
 		
+		if (elem.getMessage() != null && elem.getMessage().getMessageSignature() != null) {
+			
+			for (PayloadType pt : elem.getMessage().getMessageSignature().getTypes()) {
+				
+				// Check if 'name' represents a payload type or parameter name
+				if (pt.getName() != null) {
+				}
+			}
+		}
 	}
 
 }

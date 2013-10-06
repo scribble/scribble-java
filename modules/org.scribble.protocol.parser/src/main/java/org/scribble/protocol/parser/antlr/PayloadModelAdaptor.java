@@ -32,17 +32,13 @@ public class PayloadModelAdaptor implements ModelAdaptor {
 		
 		PayloadType ret=new PayloadType();
 
-		String text=((CommonToken)context.pop()).getText();
+		ret.setName(((CommonToken)context.pop()).getText());
 		
 		if (context.peek() instanceof CommonToken
 				&& ((CommonToken)context.peek()).getText().equals(":")) {
 			context.pop(); // :
-			ret.setVariable(text);
-			
-			text=((CommonToken)context.pop()).getText();
+			ret.setAnnotation(((CommonToken)context.pop()).getText());
 		}
-		
-		ret.setType(text);
 		
 		context.push(ret);
 			
