@@ -25,6 +25,7 @@ import org.scribble.protocol.model.Module;
  */
 public class DefaultValidationContext implements ValidationContext {
 	
+	private Module _thisModule=null;
 	private java.util.Map<String,Module> _modules=new java.util.HashMap<String,Module>();
 	private java.util.Map<String,ModelObject> _aliases=new java.util.HashMap<String,ModelObject>();
 	private ComponentLoader _loader=null;
@@ -41,7 +42,8 @@ public class DefaultValidationContext implements ValidationContext {
 	 * 
 	 * @param loader The loader
 	 */
-	public DefaultValidationContext(ComponentLoader loader) {
+	public DefaultValidationContext(Module thisModule, ComponentLoader loader) {
+		_thisModule = thisModule;
 		_loader = loader;
 	}
 	
@@ -80,18 +82,25 @@ public class DefaultValidationContext implements ValidationContext {
 		ModelObject ret=null;
 		int index=fqn.lastIndexOf('.');
 		
+		Module module=null;
+		String memberName=null;
+		
 		if (index != -1) {
 			String moduleName=fqn.substring(0, index-1);
-			String memberName=fqn.substring(index+1);
+			memberName = fqn.substring(index+1);
 			
-			Module module=_modules.get(moduleName);
+			module = _modules.get(moduleName);
+		} else {
+			// Local definition
+			memberName = fqn;
+			module = _thisModule;
+		}
+		
+		if (module != null) {
+			ret = module.getProtocol(memberName);
 			
-			if (module != null) {
-				ret = module.getProtocol(memberName);
-				
-				if (ret == null) {
-					ret = module.getTypeDeclaration(memberName);
-				}
+			if (ret == null) {
+				ret = module.getTypeDeclaration(memberName);
 			}
 		}
 		

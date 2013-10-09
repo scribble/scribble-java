@@ -93,7 +93,7 @@ public class ProtocolParser {
             	// Validate
                 ProtocolValidator pv=new ProtocolValidator();
                 
-                DefaultValidationContext context=new DefaultValidationContext(new ComponentLoader() {
+                DefaultValidationContext context=new DefaultValidationContext(ret, new ComponentLoader() {
 
 					public Module loadModule(String module) {
 						Module ret=null;
