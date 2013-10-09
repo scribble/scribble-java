@@ -20,10 +20,12 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
+import org.scribble.protocol.model.Argument;
 import org.scribble.protocol.model.FullyQualifiedName;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
 import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.RoleInstantiation;
 import org.scribble.protocol.model.global.GProtocolDefinition;
 import org.scribble.protocol.model.global.GProtocolInstance;
 import org.scribble.protocol.validation.DefaultValidationContext;
@@ -118,6 +120,68 @@ public class GProtocolInstanceValidationRuleTest {
     	
     	if (!logger.getErrors().contains(MessageFormat.format(ValidationMessages.getMessage("MEMBER_NOT_PROTOCOL_DEFINITION"), TEST_MEMBER_NAME))) {
     		fail("Error MEMBER_NOT_PROTOCOL_DEFINITION not detected");
+    	}
+    }
+
+	@org.junit.Test
+    public void testMismatchArguParamNum() {
+    	GProtocolInstanceValidationRule rule=new GProtocolInstanceValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolInstance gpi=new GProtocolInstance();
+    	gpi.setMemberName(TEST_MEMBER_NAME);
+    	gpi.getArguments().add(new Argument());
+    	module.getProtocols().add(gpi);
+    	
+    	ValidationContext context=new DefaultValidationContext() {
+
+			public ModelObject getFullyQualifiedMember(String fqn) {
+				return new GProtocolDefinition();
+			}
+    	};
+    	
+    	rule.validate(context, gpi, logger);
+    	
+    	if (!logger.isErrorsOrWarnings()) {
+    		fail("Errors not detected");
+    	}
+    	
+    	if (!logger.getErrors().contains(MessageFormat.format(ValidationMessages.getMessage("ARG_NUM_MISMATCH"), 1, 0))) {
+    		fail("Error ARG_NUM_MISMATCH not detected");
+    	}
+    }
+
+	@org.junit.Test
+    public void testMismatchRoleNum() {
+    	GProtocolInstanceValidationRule rule=new GProtocolInstanceValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolInstance gpi=new GProtocolInstance();
+    	gpi.setMemberName(TEST_MEMBER_NAME);
+    	gpi.getRoleInstantiations().add(new RoleInstantiation());
+    	module.getProtocols().add(gpi);
+    	
+    	ValidationContext context=new DefaultValidationContext() {
+
+			public ModelObject getFullyQualifiedMember(String fqn) {
+				return new GProtocolDefinition();
+			}
+    	};
+    	
+    	rule.validate(context, gpi, logger);
+    	
+    	if (!logger.isErrorsOrWarnings()) {
+    		fail("Errors not detected");
+    	}
+    	
+    	if (!logger.getErrors().contains(MessageFormat.format(ValidationMessages.getMessage("ROLE_NUM_MISMATCH"), 1, 0))) {
+    		fail("Error ROLE_NUM_MISMATCH not detected");
     	}
     }
 }

@@ -47,6 +47,20 @@ public class LProtocolInstanceValidationRule implements ValidationRule {
 			} else if (!(refd instanceof LProtocolDefinition)) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("MEMBER_NOT_PROTOCOL_DEFINITION"),
 						elem.getMemberName()), elem);
+			} else {
+				LProtocolDefinition pd=(LProtocolDefinition)refd;
+				
+				// Verify argument list
+				if (pd.getParameterDeclarations().size() != elem.getArguments().size()) {
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("ARG_NUM_MISMATCH"),
+							elem.getArguments().size(), pd.getParameterDeclarations().size()), elem);
+				}
+				
+				// Verify role list
+				if (pd.getRoleDeclarations().size() != elem.getRoleInstantiations().size()) {
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("ROLE_NUM_MISMATCH"),
+							elem.getRoleInstantiations().size(), pd.getRoleDeclarations().size()), elem);
+				}
 			}
 		}
 	}
