@@ -21,6 +21,7 @@ import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
 import org.scribble.protocol.model.global.GMessage;
 import org.scribble.protocol.model.global.GProtocolInstance;
+import org.scribble.protocol.model.local.LProtocolInstance;
 
 /**
  * This class provides the factory capability for validation rules.
@@ -35,6 +36,7 @@ public class ValidationRuleFactory {
 		_rules.put(GMessage.class, new GMessageValidationRule());
 		_rules.put(GProtocolInstance.class, new GProtocolInstanceValidationRule());
 		_rules.put(ImportDecl.class, new ImportDeclValidationRule());
+		_rules.put(LProtocolInstance.class, new LProtocolInstanceValidationRule());
 		_rules.put(Module.class, new ModuleValidationRule());
 	}
 	
