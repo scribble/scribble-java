@@ -2,7 +2,9 @@ module scribble.examples.GDo;
 
 global protocol GDoTest(role Buyer,role Seller) {
 	do OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
+	do myscope: OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
 	do a.b.c.OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
 	do OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
 	do a.b.c.OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
+	do myscope: a.b.c.OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
 }
