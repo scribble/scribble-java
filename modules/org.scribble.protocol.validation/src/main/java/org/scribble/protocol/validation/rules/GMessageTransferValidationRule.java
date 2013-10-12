@@ -53,6 +53,12 @@ public class GMessageTransferValidationRule implements ValidationRule {
 						if (pd.getName().equals(elem.getMessage().getParameter()) ||
 								pd.getAlias() != null && pd.getAlias().equals(elem.getMessage().getParameter())) {
 							f_found = true;
+							
+							// Check if parameter is a signature
+							if (pd.getType() != ParameterDecl.ParameterType.Sig) {
+								logger.error(MessageFormat.format(ValidationMessages.getMessage("PARAMETER_NOT_SIG"),
+										elem.getMessage().getParameter()), elem);
+							}
 							break;
 						}
 					}

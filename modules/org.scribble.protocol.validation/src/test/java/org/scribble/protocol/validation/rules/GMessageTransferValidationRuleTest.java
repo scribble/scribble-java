@@ -27,6 +27,7 @@ import org.scribble.protocol.model.Module;
 import org.scribble.protocol.model.ParameterDecl;
 import org.scribble.protocol.model.PayloadType;
 import org.scribble.protocol.model.PayloadTypeDecl;
+import org.scribble.protocol.model.ParameterDecl.ParameterType;
 import org.scribble.protocol.model.global.GBlock;
 import org.scribble.protocol.model.global.GMessageTransfer;
 import org.scribble.protocol.model.global.GProtocolDefinition;
@@ -232,6 +233,44 @@ public class GMessageTransferValidationRuleTest {
     }
 
 	@org.junit.Test
+    public void testParameterNotSig() {
+    	GMessageTransferValidationRule rule=new GMessageTransferValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolDefinition gpd=new GProtocolDefinition();
+    	module.getProtocols().add(gpd);
+    	
+    	ParameterDecl pd=new ParameterDecl();
+    	pd.setName(TEST_PARAMETER);
+    	pd.setType(ParameterType.Type);
+    	gpd.getParameterDeclarations().add(pd);
+    	
+    	GBlock block=new GBlock();
+    	gpd.setBlock(block);
+    	
+    	GMessageTransfer gm=new GMessageTransfer();
+    	block.add(gm);
+    	
+    	Message message=new Message();    	
+    	gm.setMessage(message);
+    	
+    	message.setParameter(TEST_PARAMETER);
+    	
+    	rule.validate(null, gm, logger);
+    	
+    	if (!logger.isErrorsOrWarnings()) {
+    		fail("Errors not detected");
+    	}
+    	
+    	if (!logger.getErrors().contains(MessageFormat.format(ValidationMessages.getMessage("PARAMETER_NOT_SIG"), TEST_PARAMETER))) {
+    		fail("Error PARAMETER_NOT_SIG not detected");
+    	}
+    }
+
+	@org.junit.Test
     public void testParameterFound() {
     	GMessageTransferValidationRule rule=new GMessageTransferValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
@@ -243,6 +282,7 @@ public class GMessageTransferValidationRuleTest {
     	
     	ParameterDecl pd=new ParameterDecl();
     	pd.setName(TEST_PARAMETER);
+    	pd.setType(ParameterType.Sig);
     	gpd.getParameterDeclarations().add(pd);
     	
     	module.getProtocols().add(gpd);
