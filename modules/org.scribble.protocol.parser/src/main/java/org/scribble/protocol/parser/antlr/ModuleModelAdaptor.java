@@ -39,7 +39,7 @@ public class ModuleModelAdaptor implements ModelAdaptor {
 		}
 		
 		while (context.peek() instanceof PayloadTypeDecl) {
-			ret.getTypeDeclarations().add(0, (PayloadTypeDecl)context.pop());
+			ret.getPayloadTypeDeclarations().add(0, (PayloadTypeDecl)context.pop());
 		}
 
 		while (context.peek() instanceof ImportDecl) {

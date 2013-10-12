@@ -50,7 +50,7 @@ public class ModuleValidationRule implements ValidationRule {
 			}
 		}
 		
-		for (PayloadTypeDecl ptd : elem.getTypeDeclarations()) {
+		for (PayloadTypeDecl ptd : elem.getPayloadTypeDeclarations()) {
 			ValidationRule rule=ValidationRuleFactory.getValidationRule(ptd);
 			
 			if (rule != null) {

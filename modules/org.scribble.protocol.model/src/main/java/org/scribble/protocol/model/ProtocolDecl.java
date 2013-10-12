@@ -59,6 +59,26 @@ public abstract class ProtocolDecl extends ModelObject {
     }
     
     /**
+     * This method returns the role declaration associated
+     * with the supplied name.
+     * 
+     * @param name The name
+     * @return The role declaration, or null if not found
+     */
+    public RoleDecl getRoleDeclaration(String name) {
+    	RoleDecl ret=null;
+    	
+    	for (RoleDecl rd : _roleDecls) {
+    		if (rd.getName().equals(name) || (rd.getAlias() != null && rd.getAlias().equals(name))) {
+    			ret = rd;
+    			break;
+    		}
+    	}
+    	
+    	return (ret);
+    }
+    
+   /**
      * This method returns the parameter declarations associated with
      * the protocol.
      * 
@@ -66,6 +86,26 @@ public abstract class ProtocolDecl extends ModelObject {
      */
     public java.util.List<ParameterDecl> getParameterDeclarations() {
         return (_parameterDecls);
+    }
+    
+    /**
+     * This method returns the parameter declaration associated
+     * with the supplied name.
+     * 
+     * @param name The name
+     * @return The parameter declaration, or null if not found
+     */
+    public ParameterDecl getParameterDeclaration(String name) {
+    	ParameterDecl ret=null;
+    	
+    	for (ParameterDecl pd : _parameterDecls) {
+    		if (pd.getName().equals(name) || (pd.getAlias() != null && pd.getAlias().equals(name))) {
+    			ret = pd;
+    			break;
+    		}
+    	}
+    	
+    	return (ret);
     }
     
     /**

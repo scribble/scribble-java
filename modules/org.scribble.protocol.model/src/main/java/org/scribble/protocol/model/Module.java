@@ -69,7 +69,7 @@ public class Module extends ModelObject {
      * 
      * @return The payload types
      */
-    public java.util.List<PayloadTypeDecl> getTypeDeclarations() {
+    public java.util.List<PayloadTypeDecl> getPayloadTypeDeclarations() {
         return (_payloadTypes);
     }
     
@@ -128,7 +128,7 @@ public class Module extends ModelObject {
             imp.visit(visitor);
         }
         
-        for (PayloadTypeDecl ptd : getTypeDeclarations()) {
+        for (PayloadTypeDecl ptd : getPayloadTypeDeclarations()) {
         	ptd.visit(visitor);
         }
         
@@ -169,11 +169,11 @@ public class Module extends ModelObject {
     		buf.append("\n");
     	}
     	
-    	for (PayloadTypeDecl ptd : getTypeDeclarations()) {
+    	for (PayloadTypeDecl ptd : getPayloadTypeDeclarations()) {
     		ptd.toText(buf, level);
     	}
     	
-    	if (getTypeDeclarations().size() > 0) {
+    	if (getPayloadTypeDeclarations().size() > 0) {
     		buf.append("\n");
     	}
     	

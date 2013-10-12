@@ -46,7 +46,7 @@ public class GMessageValidationRuleTest {
     	module.setFullyQualifiedName(new FullyQualifiedName("test"));
     	
     	PayloadTypeDecl pltd=new PayloadTypeDecl();
-    	module.getTypeDeclarations().add(pltd);
+    	module.getPayloadTypeDeclarations().add(pltd);
     	
     	pltd.setAlias(KNOWN_PAYLOAD_TYPE);
     	
