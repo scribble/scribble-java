@@ -11,4 +11,4 @@ local protocol Receipt at Seller(role Buyer as B,role Seller as S) {
 
 local protocol GMessageTest2 at Seller(role Buyer,role SellerA,role SellerB) instantiates GMessageTest(Buyer,SellerA,SellerB);
 
-local protocol Order2 at Seller<sig Fred as Joe,type Jack>(role Buyer,role Seller) instantiates Order<hello(World),Fred as Joe>(Buyer as B,Seller as S);
+local protocol Order2 at Seller<sig Fred as Joe,type Jack>(role Buyer2,role Seller2) instantiates Order<hello(World),Fred as Joe>(Buyer2 as Buyer,Seller2 as Seller);
