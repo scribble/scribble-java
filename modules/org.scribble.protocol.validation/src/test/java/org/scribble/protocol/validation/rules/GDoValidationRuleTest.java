@@ -58,7 +58,7 @@ public class GDoValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				return new GProtocolDefinition();
 			}
     	};
@@ -92,7 +92,7 @@ public class GDoValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				return null;
 			}
     	};

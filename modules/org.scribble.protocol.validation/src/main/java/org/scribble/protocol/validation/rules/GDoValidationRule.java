@@ -41,7 +41,7 @@ public class GDoValidationRule implements ValidationRule {
 		
 		// Check if protocol has been declared
 		if (elem.getProtocol() != null) {
-			ModelObject mo=context.getFullyQualifiedMember(elem.getProtocol().getName());
+			ModelObject mo=context.getMember(elem.getProtocol().getName());
 			
 			if (mo == null || ((mo instanceof GProtocolDefinition) == false &&
 					(mo instanceof GProtocolInstance) == false)) {

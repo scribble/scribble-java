@@ -57,7 +57,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				return new LProtocolDefinition();
 			}
     	};
@@ -83,7 +83,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				return null;
 			}
     	};
@@ -113,7 +113,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				return new Role();
 			}
     	};
@@ -144,7 +144,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				return new LProtocolDefinition();
 			}
     	};
@@ -175,7 +175,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				return new LProtocolDefinition();
 			}
     	};
@@ -214,7 +214,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
 				ret.getRoleDeclarations().add(new RoleDecl());
 				return ret;
@@ -247,7 +247,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
 				ret.getRoleDeclarations().add(new RoleDecl());
 				return ret;
@@ -289,7 +289,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
 				RoleDecl rd=new RoleDecl();
 				rd.setName(TEST_NAME2);
@@ -329,7 +329,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
 				RoleDecl rd=new RoleDecl();
 				rd.setName(TEST_NAME3);
@@ -372,7 +372,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
 				ret.getParameterDeclarations().add(new ParameterDecl());
 				return ret;
@@ -409,7 +409,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
 				ret.getParameterDeclarations().add(new ParameterDecl());
 				return ret;
@@ -442,7 +442,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
 				ret.getParameterDeclarations().add(new ParameterDecl());
 				return ret;
@@ -484,7 +484,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
 				ParameterDecl pd=new ParameterDecl();
 				pd.setName(TEST_NAME2);
@@ -524,7 +524,7 @@ public class LProtocolInstanceValidationRuleTest {
     	
     	ValidationContext context=new DefaultValidationContext() {
 
-			public ModelObject getFullyQualifiedMember(String fqn) {
+			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
 				ParameterDecl pd=new ParameterDecl();
 				pd.setName(TEST_NAME3);

@@ -41,18 +41,18 @@ public interface ValidationContext {
 	 * @param fqn The fully qualified name, e.g. <module>.<member>
 	 * @return The member, or null if not found
 	 */
-	public ModelObject getFullyQualifiedMember(String fqn);
+	public ModelObject getMember(String fqn);
 	
 	/**
 	 * This method returns member associated with a previously
-	 * imported module, defined by the supplied module and member
+	 * imported module, defined by the supplied module and local
 	 * names.
 	 * 
 	 * @param module The module name
-	 * @param member The member name
+	 * @param localName The local name
 	 * @return The member, or null if not found
 	 */
-	public ModelObject getMember(String module, String member);
+	public ModelObject getMember(String module, String localName);
 	
 	/**
 	 * This method returns the member associated with the alias.

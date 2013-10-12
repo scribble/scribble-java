@@ -43,7 +43,7 @@ public class GProtocolInstanceValidationRule implements ValidationRule {
 		GProtocolInstance elem=(GProtocolInstance)mobj;
 		
 		if (elem.getMemberName() != null) {
-			ModelObject refd=context.getFullyQualifiedMember(elem.getMemberName());
+			ModelObject refd=context.getMember(elem.getMemberName());
 			
 			if (refd == null) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_MEMBER_NAME"),

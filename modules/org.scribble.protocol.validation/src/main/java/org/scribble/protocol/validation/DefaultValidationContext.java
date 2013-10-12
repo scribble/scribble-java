@@ -78,7 +78,7 @@ public class DefaultValidationContext implements ValidationContext {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ModelObject getFullyQualifiedMember(String fqn) {
+	public ModelObject getMember(String fqn) {
 		ModelObject ret=null;
 		int index=fqn.lastIndexOf('.');
 		
