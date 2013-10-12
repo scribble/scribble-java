@@ -139,7 +139,7 @@ public interface GVisitor extends Visitor {
      * 
      * @param elem The interaction
      */
-    public void accept(GMessage elem);
+    public void accept(GMessageTransfer elem);
     
     /**
      * This method visits a recursion component.

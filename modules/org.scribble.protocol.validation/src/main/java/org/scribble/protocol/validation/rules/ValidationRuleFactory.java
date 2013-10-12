@@ -19,7 +19,7 @@ package org.scribble.protocol.validation.rules;
 import org.scribble.protocol.model.ImportDecl;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.Module;
-import org.scribble.protocol.model.global.GMessage;
+import org.scribble.protocol.model.global.GMessageTransfer;
 import org.scribble.protocol.model.global.GProtocolInstance;
 import org.scribble.protocol.model.local.LProtocolInstance;
 
@@ -33,7 +33,7 @@ public class ValidationRuleFactory {
 					new java.util.HashMap<Class<?>, ValidationRule>();
 	
 	static {
-		_rules.put(GMessage.class, new GMessageValidationRule());
+		_rules.put(GMessageTransfer.class, new GMessageTransferValidationRule());
 		_rules.put(GProtocolInstance.class, new GProtocolInstanceValidationRule());
 		_rules.put(ImportDecl.class, new ImportDeclValidationRule());
 		_rules.put(LProtocolInstance.class, new LProtocolInstanceValidationRule());

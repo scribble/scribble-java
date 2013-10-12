@@ -19,7 +19,7 @@ package org.scribble.protocol.parser.antlr;
 import org.antlr.runtime.CommonToken;
 import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.global.GMessage;
+import org.scribble.protocol.model.global.GMessageTransfer;
 
 /**
  * This class provides the model adapter for the 'message' parser rule.
@@ -31,7 +31,7 @@ public class GlobalMessageTransferModelAdaptor implements ModelAdaptor {
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {		
-		GMessage ret=new GMessage();
+		GMessageTransfer ret=new GMessageTransfer();
 		
 		context.pop(); // ';'
 
