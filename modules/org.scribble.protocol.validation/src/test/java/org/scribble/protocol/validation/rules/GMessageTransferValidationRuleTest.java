@@ -28,6 +28,8 @@ import org.scribble.protocol.model.ParameterDecl;
 import org.scribble.protocol.model.PayloadType;
 import org.scribble.protocol.model.PayloadTypeDecl;
 import org.scribble.protocol.model.ParameterDecl.ParameterType;
+import org.scribble.protocol.model.Role;
+import org.scribble.protocol.model.RoleDecl;
 import org.scribble.protocol.model.global.GBlock;
 import org.scribble.protocol.model.global.GMessageTransfer;
 import org.scribble.protocol.model.global.GProtocolDefinition;
@@ -36,6 +38,8 @@ import org.scribble.protocol.validation.ValidationMessages;
 
 public class GMessageTransferValidationRuleTest {
 
+    private static final String TEST_ROLE1 = "TestRole1";
+    private static final String TEST_ROLE2 = "TestRole2";
     private static final String TEST_PARAMETER = "TestParameter";
 	private static final String KNOWN_PAYLOAD_TYPE = "KnownPayloadType";
 
@@ -302,6 +306,146 @@ public class GMessageTransferValidationRuleTest {
     	
     	if (logger.isErrorsOrWarnings()) {
     		fail("Errors detected");
+    	}
+    }
+	
+	@org.junit.Test
+    public void testFromRoleFound() {
+    	GMessageTransferValidationRule rule=new GMessageTransferValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolDefinition gpd=new GProtocolDefinition();
+    	
+    	RoleDecl rd=new RoleDecl();
+    	rd.setName(TEST_ROLE1);
+    	gpd.getRoleDeclarations().add(rd);
+    	
+    	module.getProtocols().add(gpd);
+    	
+    	GBlock block=new GBlock();
+    	gpd.setBlock(block);
+    	
+    	GMessageTransfer gm=new GMessageTransfer();
+    	gm.setFromRole(new Role(TEST_ROLE1));
+    	block.add(gm);
+    	
+    	Message message=new Message();    	
+    	gm.setMessage(message);
+    	
+     	rule.validate(null, gm, logger);
+    	
+    	if (logger.isErrorsOrWarnings()) {
+    		fail("Errors detected");
+    	}
+    }
+	
+	@org.junit.Test
+    public void testFromRoleNotFound() {
+    	GMessageTransferValidationRule rule=new GMessageTransferValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolDefinition gpd=new GProtocolDefinition();
+    	
+    	RoleDecl rd=new RoleDecl();
+    	rd.setName(TEST_ROLE1);
+    	gpd.getRoleDeclarations().add(rd);
+    	
+    	module.getProtocols().add(gpd);
+    	
+    	GBlock block=new GBlock();
+    	gpd.setBlock(block);
+    	
+    	GMessageTransfer gm=new GMessageTransfer();
+    	gm.setFromRole(new Role(TEST_ROLE2));
+    	block.add(gm);
+    	
+    	Message message=new Message();    	
+    	gm.setMessage(message);
+    	
+     	rule.validate(null, gm, logger);
+   	
+    	if (!logger.isErrorsOrWarnings()) {
+    		fail("Errors not detected");
+    	}
+    	
+    	if (!logger.getErrors().contains(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"), TEST_ROLE2))) {
+    		fail("Error UNKNOWN_ROLE not detected");
+    	}
+    }
+
+	@org.junit.Test
+    public void testToRoleFound() {
+    	GMessageTransferValidationRule rule=new GMessageTransferValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolDefinition gpd=new GProtocolDefinition();
+    	
+    	RoleDecl rd=new RoleDecl();
+    	rd.setName(TEST_ROLE1);
+    	gpd.getRoleDeclarations().add(rd);
+    	
+    	module.getProtocols().add(gpd);
+    	
+    	GBlock block=new GBlock();
+    	gpd.setBlock(block);
+    	
+    	GMessageTransfer gm=new GMessageTransfer();
+    	gm.getToRoles().add(new Role(TEST_ROLE1));
+    	block.add(gm);
+    	
+    	Message message=new Message();    	
+    	gm.setMessage(message);
+    	
+     	rule.validate(null, gm, logger);
+    	
+    	if (logger.isErrorsOrWarnings()) {
+    		fail("Errors detected");
+    	}
+    }
+	
+	@org.junit.Test
+    public void testToRoleNotFound() {
+    	GMessageTransferValidationRule rule=new GMessageTransferValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolDefinition gpd=new GProtocolDefinition();
+    	
+    	RoleDecl rd=new RoleDecl();
+    	rd.setName(TEST_ROLE1);
+    	gpd.getRoleDeclarations().add(rd);
+    	
+    	module.getProtocols().add(gpd);
+    	
+    	GBlock block=new GBlock();
+    	gpd.setBlock(block);
+    	
+    	GMessageTransfer gm=new GMessageTransfer();
+    	gm.getToRoles().add(new Role(TEST_ROLE2));
+    	block.add(gm);
+    	
+    	Message message=new Message();    	
+    	gm.setMessage(message);
+    	
+     	rule.validate(null, gm, logger);
+   	
+    	if (!logger.isErrorsOrWarnings()) {
+    		fail("Errors not detected");
+    	}
+    	
+    	if (!logger.getErrors().contains(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"), TEST_ROLE2))) {
+    		fail("Error UNKNOWN_ROLE not detected");
     	}
     }
 }

@@ -22,6 +22,7 @@ import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.ParameterDecl;
 import org.scribble.protocol.model.PayloadType;
 import org.scribble.protocol.model.PayloadTypeDecl;
+import org.scribble.protocol.model.Role;
 import org.scribble.protocol.model.global.GMessageTransfer;
 import org.scribble.protocol.model.global.GProtocolDefinition;
 import org.scribble.protocol.validation.ValidationContext;
@@ -101,6 +102,23 @@ public class GMessageTransferValidationRule implements ValidationRule {
 									pt.getName()), elem);
 						}
 					}
+				}
+			}
+			
+			// Validate roles
+			if (elem.getFromRole() != null) {
+				
+				if (gpd.getRoleDeclaration(elem.getFromRole().getName()) == null) {
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),
+							elem.getFromRole().getName()), elem.getFromRole());				
+				}
+			}
+			
+			for (Role r : elem.getToRoles()) {
+				
+				if (gpd.getRoleDeclaration(r.getName()) == null) {
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),
+							r.getName()), r);				
 				}
 			}
 		}

@@ -44,7 +44,7 @@ public class GChoiceValidationRule implements ValidationRule {
 			
 			if (gpd.getRoleDeclaration(elem.getRole().getName()) == null) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),
-						elem.getRole().getName()), elem);				
+						elem.getRole().getName()), elem.getRole());				
 			}
 		} else {
 			logger.error(ValidationMessages.getMessage("UNDEFINED_ROLE"), elem);				
