@@ -24,8 +24,8 @@ import org.scribble.protocol.model.RoleInstantiation;
  * 
  */
 public class LDo extends LActivity {
-    private String _protocol=null;
-    private FullyQualifiedName _moduleName=null;
+    private FullyQualifiedName _protocol=null;
+    private String _scopeName=null;
     private java.util.List<Message> _arguments=new java.util.Vector<Message>();
     private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.Vector<RoleInstantiation>();
 
@@ -59,7 +59,7 @@ public class LDo extends LActivity {
      * 
      * @return The protocol
      */
-    public String getProtocol() {
+    public FullyQualifiedName getProtocol() {
         return (_protocol);
     }
     
@@ -68,26 +68,26 @@ public class LDo extends LActivity {
      * 
      * @param protocol The protocol
      */
-    public void setProtocol(String protocol) {
+    public void setProtocol(FullyQualifiedName protocol) {
     	_protocol = protocol;
     }
     
     /**
-     * This method returns the optional module name.
+     * This method returns the optional scope name.
      * 
-     * @return The module name
+     * @return The scope name
      */
-    public FullyQualifiedName getModuleName() {
-    	return (_moduleName);
+    public String getScopeName() {
+    	return (_scopeName);
     }
     
     /**
-     * This method sets the optional module name.
+     * This method sets the optional scope name.
      * 
-     * @param module The module name
+     * @param scope The scope name
      */
-    public void setModuleName(FullyQualifiedName module) {
-    	_moduleName = module;
+    public void setScopeName(String scope) {
+    	_scopeName = scope;
     }
     
     /**
@@ -127,12 +127,12 @@ public class LDo extends LActivity {
     	
     	buf.append("do ");
     	
-    	if (_moduleName != null) {
-    		_moduleName.toText(buf, level);
-    		buf.append(".");
+    	if (_scopeName != null) {
+    		buf.append(_scopeName);
+    		buf.append(": ");
     	}
     	
-    	buf.append(_protocol);
+    	_protocol.toText(buf, level);
     	
     	if (_arguments.size() > 0) {
     		buf.append('<');

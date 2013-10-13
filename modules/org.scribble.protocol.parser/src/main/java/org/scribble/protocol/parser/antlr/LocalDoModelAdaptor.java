@@ -43,21 +43,25 @@ public class LocalDoModelAdaptor implements ModelAdaptor {
 			ret.getArguments().addAll((java.util.List<Message>)context.pop());
 		}
 		
-		ret.setProtocol(((CommonToken)context.pop()).getText());
+		StringBuffer protocol=new StringBuffer(((CommonToken)context.pop()).getText());
 		
 		// Check for module and set as separate property
-		if (context.peek() instanceof CommonToken
+		while (context.peek() instanceof CommonToken
 				&& ((CommonToken)context.peek()).getText().equals(".")) {
-			String fqname="";
-			
 			context.pop(); // consume '.'
 			
-			do {
-				fqname = ((CommonToken)context.pop()).getText() + fqname;
-			} while (!(context.peek() instanceof CommonToken
-					&& ((CommonToken)context.peek()).getText().equals("do")));
+			protocol.insert(0, ".");
 			
-			ret.setModuleName(new FullyQualifiedName(fqname));
+			protocol.insert(0, ((CommonToken)context.pop()).getText());
+		}
+		
+		ret.setProtocol(new FullyQualifiedName(protocol.toString()));
+		
+		if (context.peek() instanceof CommonToken
+				&& ((CommonToken)context.peek()).getText().equals(":")) {
+			context.pop(); // consume ':'
+			
+			ret.setScopeName(((CommonToken)context.pop()).getText());
 		}
 		
 		context.pop(); // do
