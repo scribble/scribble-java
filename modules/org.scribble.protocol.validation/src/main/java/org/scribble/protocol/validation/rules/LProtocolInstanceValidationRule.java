@@ -42,6 +42,15 @@ public class LProtocolInstanceValidationRule implements ValidationRule {
 	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
 		LProtocolInstance elem=(LProtocolInstance)mobj;
 		
+		if (elem.getLocalRole() != null) {
+			// Check that local role is explicitly listed in the role declaration list
+			
+			if (elem.getRoleDeclaration(elem.getLocalRole().getName()) == null) {
+				logger.error(MessageFormat.format(ValidationMessages.getMessage("LOCAL_ROLE_NOT_DECLARED"),
+						elem.getLocalRole().getName()), elem);
+			}
+		}
+		
 		if (elem.getMemberName() != null) {
 			ModelObject refd=context.getMember(elem.getMemberName());
 			

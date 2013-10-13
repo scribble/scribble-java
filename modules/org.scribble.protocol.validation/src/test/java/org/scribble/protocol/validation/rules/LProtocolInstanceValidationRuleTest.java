@@ -543,4 +543,84 @@ public class LProtocolInstanceValidationRuleTest {
     		fail("Error ARG_ALIAS_NOT_DECLARED not detected");
     	}
     }
+	
+	@org.junit.Test
+    public void testLocalRoleDeclared() {
+    	LProtocolInstanceValidationRule rule=new LProtocolInstanceValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	LProtocolInstance gpi=new LProtocolInstance();
+    	gpi.setLocalRole(new Role(TEST_NAME1));
+    	gpi.setMemberName(TEST_MEMBER_NAME);
+    	
+    	RoleDecl rd=new RoleDecl();
+    	rd.setName(TEST_NAME1);
+    	gpi.getRoleDeclarations().add(rd);
+    	
+    	RoleInstantiation ri=new RoleInstantiation();
+    	ri.setName(TEST_NAME1);
+    	gpi.getRoleInstantiations().add(ri);
+    	
+    	module.getProtocols().add(gpi);
+    	
+    	ValidationContext context=new DefaultValidationContext() {
+
+			public ModelObject getMember(String fqn) {
+				LProtocolDefinition ret=new LProtocolDefinition();
+				ret.getRoleDeclarations().add(new RoleDecl());
+				return ret;
+			}
+    	};
+    	
+    	rule.validate(context, gpi, logger);
+    	
+    	if (logger.isErrorsOrWarnings()) {
+    		fail("Errors detected");
+    	}
+    }
+
+	@org.junit.Test
+    public void testLocalRoleNotDeclared() {
+    	LProtocolInstanceValidationRule rule=new LProtocolInstanceValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	LProtocolInstance gpi=new LProtocolInstance();
+    	gpi.setLocalRole(new Role(TEST_NAME2));
+    	gpi.setMemberName(TEST_MEMBER_NAME);
+    	
+    	RoleDecl rd=new RoleDecl();
+    	rd.setName(TEST_NAME1);
+    	gpi.getRoleDeclarations().add(rd);
+    	
+    	RoleInstantiation ri=new RoleInstantiation();
+    	ri.setName(TEST_NAME1);
+    	gpi.getRoleInstantiations().add(ri);
+    	
+    	module.getProtocols().add(gpi);
+    	
+    	ValidationContext context=new DefaultValidationContext() {
+
+			public ModelObject getMember(String fqn) {
+				LProtocolDefinition ret=new LProtocolDefinition();
+				ret.getRoleDeclarations().add(new RoleDecl());
+				return ret;
+			}
+    	};
+    	
+    	rule.validate(context, gpi, logger);
+    	
+    	if (!logger.isErrorsOrWarnings()) {
+    		fail("Errors not detected");
+    	}
+    	
+    	if (!logger.getErrors().contains(MessageFormat.format(ValidationMessages.getMessage("LOCAL_ROLE_NOT_DECLARED"), TEST_NAME2))) {
+    		fail("Error LOCAL_ROLE_NOT_DECLARED not detected");
+    	}
+    }
 }
