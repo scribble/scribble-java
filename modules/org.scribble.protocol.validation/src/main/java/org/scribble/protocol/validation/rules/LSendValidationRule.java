@@ -21,23 +21,23 @@ import java.text.MessageFormat;
 import org.scribble.protocol.model.ModelObject;
 import org.scribble.protocol.model.ProtocolDecl;
 import org.scribble.protocol.model.Role;
-import org.scribble.protocol.model.global.GMessageTransfer;
+import org.scribble.protocol.model.local.LSend;
 import org.scribble.protocol.validation.ValidationContext;
 import org.scribble.protocol.validation.ValidationLogger;
 import org.scribble.protocol.validation.ValidationMessages;
 
 /**
- * This class implements the validation rule for the GMessage
+ * This class implements the validation rule for the LSend
  * component.
  *
  */
-public class GMessageTransferValidationRule implements ValidationRule {
+public class LSendValidationRule implements ValidationRule {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
-		GMessageTransfer elem=(GMessageTransfer)mobj;
+		LSend elem=(LSend)mobj;
 		
 		// Validate message
 		if (elem.getMessage() != null) {
@@ -49,14 +49,6 @@ public class GMessageTransferValidationRule implements ValidationRule {
 		
 		if (pd != null) {
 			// Validate roles
-			if (elem.getFromRole() != null) {
-				
-				if (pd.getRoleDeclaration(elem.getFromRole().getName()) == null) {
-					logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),
-							elem.getFromRole().getName()), elem.getFromRole());				
-				}
-			}
-			
 			for (Role r : elem.getToRoles()) {
 				
 				if (pd.getRoleDeclaration(r.getName()) == null) {

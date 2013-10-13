@@ -93,7 +93,7 @@ public abstract class ModelObject {
      * @return The appropriate parent, or null if not found
      */
     public <T extends ModelObject> T getParent(Class<T> type) {
-    	if (getClass() == type) {
+    	if (type.isAssignableFrom(getClass())) {
     		return (type.cast(this));
     	} else if (_parent != null) {
     		return (_parent.getParent(type));

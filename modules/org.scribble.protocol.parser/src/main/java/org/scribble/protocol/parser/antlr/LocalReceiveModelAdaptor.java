@@ -40,7 +40,7 @@ public class LocalReceiveModelAdaptor implements ModelAdaptor {
 		
 		context.pop(); // from
 	
-		ret.setMessageSignature((Message)context.pop());
+		ret.setMessage((Message)context.pop());
 		
 		context.push(ret);
 			
