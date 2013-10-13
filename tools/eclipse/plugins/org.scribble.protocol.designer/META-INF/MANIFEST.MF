@@ -26,4 +26,4 @@ Bundle-ClassPath: .,
  lib/org.scribble.protocol.model.jar,
  lib/org.scribble.protocol.parser.jar,
  lib/org.scribble.protocol.validation.jar,
- lib/stringtemplate-3.2.jar
+ lib/stringtemplate.jar
