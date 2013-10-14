@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.scribble.protocol.feature"
-      label="Scribble Protocol Feature"
+      label="Scribble Feature"
       version="0.3.0.qualifier"
       provider-name="www.scribble.org">
 
@@ -214,7 +214,7 @@
    </license>
 
    <plugin
-         id="org.scribble.protocol.designer"
+         id="org.scribble.designer"
          download-size="0"
          install-size="0"
          version="0.0.0"

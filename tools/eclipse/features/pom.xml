@@ -19,23 +19,23 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 
   <dependencies>
     <dependency>
-      <groupId>org.scribble.modules</groupId>
-      <artifactId>org.scribble.protocol.parser</artifactId>
+      <groupId>org.scribble</groupId>
+      <artifactId>org.scribble.parser</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.scribble.modules</groupId>
-      <artifactId>org.scribble.protocol.model</artifactId>
+      <groupId>org.scribble</groupId>
+      <artifactId>org.scribble.model</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.scribble.modules</groupId>
-      <artifactId>org.scribble.protocol.validation</artifactId>
+      <groupId>org.scribble</groupId>
+      <artifactId>org.scribble.validation</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.scribble.modules</groupId>
-      <artifactId>org.scribble.protocol.cli</artifactId>
+      <groupId>org.scribble</groupId>
+      <artifactId>org.scribble.cli</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

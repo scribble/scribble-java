@@ -15,7 +15,7 @@
 	</parent>
 
 	<modules>
-		<module>org.scribble.protocol.designer</module>
+		<module>org.scribble.designer</module>
 	</modules>
 	
 </project>
