@@ -16,18 +16,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol.monitor</artifactId>
+			<groupId>org.scribble</groupId>
+			<artifactId>org.scribble.model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

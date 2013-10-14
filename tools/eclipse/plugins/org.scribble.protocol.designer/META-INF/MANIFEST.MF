@@ -23,7 +23,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  lib/antlr-runtime.jar,
  lib/antlr.jar,
- lib/org.scribble.protocol.model.jar,
- lib/org.scribble.protocol.parser.jar,
- lib/org.scribble.protocol.validation.jar,
+ lib/org.scribble.model.jar,
+ lib/org.scribble.parser.jar,
+ lib/org.scribble.validation.jar,
  lib/stringtemplate.jar

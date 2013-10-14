@@ -15,18 +15,18 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol.model</artifactId>
+			<groupId>org.scribble</groupId>
+			<artifactId>org.scribble.model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol.parser</artifactId>
+			<groupId>org.scribble</groupId>
+			<artifactId>org.scribble.parser</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.scribble.modules</groupId>
-			<artifactId>org.scribble.protocol.validation</artifactId>
+			<groupId>org.scribble</groupId>
+			<artifactId>org.scribble.validation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
@@ -48,18 +48,18 @@
 							<outputDirectory>lib</outputDirectory>
 							<artifactItems>
 								<artifactItem>
-									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.protocol.model</artifactId>
+									<groupId>org.scribble</groupId>
+									<artifactId>org.scribble.model</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>
-									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.protocol.parser</artifactId>
+									<groupId>org.scribble</groupId>
+									<artifactId>org.scribble.parser</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>
-									<groupId>org.scribble.modules</groupId>
-									<artifactId>org.scribble.protocol.validation</artifactId>
+									<groupId>org.scribble</groupId>
+									<artifactId>org.scribble.validation</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>

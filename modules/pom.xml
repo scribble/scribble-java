@@ -15,10 +15,10 @@
 	</parent>
 
 	<modules>
-		<module>org.scribble.protocol.model</module>
-		<module>org.scribble.protocol.parser</module>
-		<module>org.scribble.protocol.validation</module>
-		<module>org.scribble.protocol.cli</module>
+		<module>org.scribble.model</module>
+		<module>org.scribble.parser</module>
+		<module>org.scribble.validation</module>
+		<module>org.scribble.cli</module>
 	</modules>
 
 </project>
