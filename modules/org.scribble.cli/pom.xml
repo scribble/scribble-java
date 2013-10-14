@@ -9,7 +9,7 @@
 
 	<parent>
 		<groupId>org.scribble</groupId>
-		<artifactId>modules</artifactId>
+		<artifactId>scribble-modules</artifactId>
 		<version>0.3.0-SNAPSHOT</version>
 	</parent>
 
