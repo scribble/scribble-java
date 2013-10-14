@@ -16,48 +16,23 @@
  */
 package org.scribble.protocol.validation.rules;
 
-import java.text.MessageFormat;
-
-import org.scribble.protocol.model.Message;
 import org.scribble.protocol.model.ModelObject;
-import org.scribble.protocol.model.ProtocolDecl;
-import org.scribble.protocol.model.global.GInterruptible;
-import org.scribble.protocol.model.global.GInterruptible.Interrupt;
+import org.scribble.protocol.model.global.GRecursion;
 import org.scribble.protocol.validation.ValidationContext;
 import org.scribble.protocol.validation.ValidationLogger;
-import org.scribble.protocol.validation.ValidationMessages;
 
 /**
- * This class implements the validation rule for the GInterruptible
+ * This class implements the validation rule for the GRecursion
  * component.
  *
  */
-public class GInterruptibleValidationRule implements ValidationRule {
+public class GRecursionValidationRule implements ValidationRule {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
-		GInterruptible elem=(GInterruptible)mobj;
-		
-		ProtocolDecl pd=elem.getParent(ProtocolDecl.class);
-		
-		for (Interrupt in : elem.getInterrupts()) {
-			
-			// Validate messages
-			MessageValidationRule mvr=new MessageValidationRule();
-
-			for (Message m : in.getMessages()) {
-				mvr.validate(context, m, logger);
-			}
-			
-			// Validate role
-			if (pd != null && in.getRole() != null
-					&& pd.getRoleDeclaration(in.getRole().getName()) == null) {
-				logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),
-						in.getRole().getName()), in.getRole());				
-			}
-		}
+		GRecursion elem=(GRecursion)mobj;
 		
 		if (elem.getBlock() != null) {
 			ValidationRule rule=ValidationRuleFactory.getValidationRule(elem.getBlock());

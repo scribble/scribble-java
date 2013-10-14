@@ -77,6 +77,14 @@ public class LInterruptibleValidationRule implements ValidationRule {
 						cat.getRole().getName()), cat.getRole());				
 			}
 		}
+		
+		if (elem.getBlock() != null) {
+			ValidationRule rule=ValidationRuleFactory.getValidationRule(elem.getBlock());
+			
+			if (rule != null) {
+				rule.validate(context, elem.getBlock(), logger);
+			}
+		}
 	}
 
 }

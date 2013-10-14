@@ -19,6 +19,7 @@ package org.scribble.protocol.validation.rules;
 import java.text.MessageFormat;
 
 import org.scribble.protocol.model.ModelObject;
+import org.scribble.protocol.model.global.GBlock;
 import org.scribble.protocol.model.global.GChoice;
 import org.scribble.protocol.model.global.GProtocolDefinition;
 import org.scribble.protocol.validation.ValidationContext;
@@ -54,6 +55,14 @@ public class GChoiceValidationRule implements ValidationRule {
 		
 		// TODO: Need to check each path to ensure that the 'decision is communicated
 		// to each receiving role'
+		
+		for (GBlock subelem : elem.getPaths()) {
+			ValidationRule rule=ValidationRuleFactory.getValidationRule(subelem);
+			
+			if (rule != null) {
+				rule.validate(context, subelem, logger);
+			}
+		}
 	}
 
 }

@@ -16,41 +16,30 @@
  */
 package org.scribble.protocol.validation.rules;
 
-import java.text.MessageFormat;
-
 import org.scribble.protocol.model.ModelObject;
-import org.scribble.protocol.model.local.LProtocolDefinition;
+import org.scribble.protocol.model.global.GActivity;
+import org.scribble.protocol.model.global.GBlock;
 import org.scribble.protocol.validation.ValidationContext;
 import org.scribble.protocol.validation.ValidationLogger;
-import org.scribble.protocol.validation.ValidationMessages;
 
 /**
- * This class implements the validation rule for the LProtocolDefinition
+ * This class implements the validation rule for the GBlock
  * component.
  *
  */
-public class LProtocolDefinitionValidationRule implements ValidationRule {
+public class GBlockValidationRule implements ValidationRule {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
-		LProtocolDefinition elem=(LProtocolDefinition)mobj;
+		GBlock elem=(GBlock)mobj;
 		
-		if (elem.getLocalRole() != null) {
-			// Check that local role is explicitly listed in the role declaration list
-			
-			if (elem.getRoleDeclaration(elem.getLocalRole().getName()) == null) {
-				logger.error(MessageFormat.format(ValidationMessages.getMessage("LOCAL_ROLE_NOT_DECLARED"),
-						elem.getLocalRole().getName()), elem);
-			}
-		}
-		
-		if (elem.getBlock() != null) {
-			ValidationRule rule=ValidationRuleFactory.getValidationRule(elem.getBlock());
+		for (GActivity act : elem.getContents()) {
+			ValidationRule rule=ValidationRuleFactory.getValidationRule(act);
 			
 			if (rule != null) {
-				rule.validate(context, elem.getBlock(), logger);
+				rule.validate(context, act, logger);
 			}
 		}
 	}

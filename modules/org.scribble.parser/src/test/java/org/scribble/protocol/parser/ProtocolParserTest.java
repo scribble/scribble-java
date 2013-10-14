@@ -60,6 +60,7 @@ public class ProtocolParserTest {
     }
     
     @org.junit.Test
+    @Ignore
     public void testGDo() {
     	testParser("GDo");
     }
@@ -100,12 +101,13 @@ public class ProtocolParserTest {
     }
     
     @org.junit.Test
+    @Ignore
     public void testLDo() {
     	testParser("LDo");
     }
 
     @org.junit.Test
-    @Ignore ("grammer commented out at the moment")
+    @Ignore
     public void testLInterruptible() {
    		testParser("LInterruptible");
    	}

@@ -16,45 +16,24 @@
  */
 package org.scribble.protocol.validation.rules;
 
-import java.text.MessageFormat;
-
 import org.scribble.protocol.model.ModelObject;
-import org.scribble.protocol.model.ProtocolDecl;
 import org.scribble.protocol.model.local.LBlock;
-import org.scribble.protocol.model.local.LChoice;
+import org.scribble.protocol.model.local.LParallel;
 import org.scribble.protocol.validation.ValidationContext;
 import org.scribble.protocol.validation.ValidationLogger;
-import org.scribble.protocol.validation.ValidationMessages;
 
 /**
- * This class implements the validation rule for the LChoice
+ * This class implements the validation rule for the LParallel
  * component.
  *
  */
-public class LChoiceValidationRule implements ValidationRule {
+public class LParallelValidationRule implements ValidationRule {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
-		LChoice elem=(LChoice)mobj;
-		
-		// Check if decision role has been declared
-		if (elem.getRole() != null) {
-			ProtocolDecl pd=elem.getParent(ProtocolDecl.class);
-			
-			if (pd.getRoleDeclaration(elem.getRole().getName()) == null) {
-				logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),
-						elem.getRole().getName()), elem.getRole());				
-			}
-		} else {
-			logger.error(ValidationMessages.getMessage("UNDEFINED_ROLE"), elem);				
-		}
-		
-		// TODO: Should the number of choice paths be validated?
-		
-		// TODO: Need to check each path to ensure that the 'decision is communicated
-		// to each receiving role'
+		LParallel elem=(LParallel)mobj;
 		
 		for (LBlock subelem : elem.getPaths()) {
 			ValidationRule rule=ValidationRuleFactory.getValidationRule(subelem);
