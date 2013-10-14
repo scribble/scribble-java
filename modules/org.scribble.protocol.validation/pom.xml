@@ -4,13 +4,13 @@
   	<groupId>org.scribble.modules</groupId>
   	<artifactId>org.scribble.protocol.validation</artifactId>
 	<packaging>jar</packaging>
-  	<version>3.0.0-SNAPSHOT</version>
+  	<version>0.3.0-SNAPSHOT</version>
   	<name>Scribble::Modules::ProtocolValidation</name>
 
 	<parent>
 		<groupId>org.scribble</groupId>
 		<artifactId>modules</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>0.3.0-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
