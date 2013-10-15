@@ -59,7 +59,7 @@
 			  <encoding>UTF-8</encoding>
 			  <locale>en_US</locale>
 			  <subpackages>
-				   org.scribble.protocol.model
+				   org.scribble.model
 			  </subpackages>
 			</configuration>
 		   </plugin>

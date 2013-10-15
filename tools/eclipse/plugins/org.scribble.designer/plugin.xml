@@ -9,9 +9,9 @@
       name="Scribble">
     </category>
     <wizard
-      id = "org.scribble.protocol.designer.editor.NewProtocolWizardID"
+      id = "org.scribble.designer.editor.NewProtocolWizardID"
       name = "Scribble"
-      class = "org.scribble.protocol.designer.editor.NewProtocolWizard"
+      class = "org.scribble.designer.editor.NewProtocolWizard"
       category = "org.scribble.wizard.category.ID"
       icon = "icons/scribble.png">
       <description>New Scribble Protocol Description</description>
@@ -25,9 +25,9 @@
             name="Scribble Protocol Editor"
             icon="icons/scribble.png"
             extensions="scr"
-            contributorClass="org.scribble.protocol.designer.editor.ScribbleActionContributor"
-            class="org.scribble.protocol.designer.editor.ProtocolEditor"
-            id="org.scribble.protocol.designer.editor.ProtocolEditor">
+            contributorClass="org.scribble.designer.editor.ScribbleActionContributor"
+            class="org.scribble.designer.editor.ProtocolEditor"
+            id="org.scribble.designer.editor.ProtocolEditor">
       </editor>
    </extension>
 
@@ -37,7 +37,7 @@
          point="org.eclipse.core.filebuffers.documentSetup">
       <participant
             extensions="scr"
-            class="org.scribble.protocol.designer.editor.ScribbleDocumentSetupParticipant">
+            class="org.scribble.designer.editor.ScribbleDocumentSetupParticipant">
       </participant>
    </extension>
 
@@ -56,21 +56,21 @@
   <extension
         point="org.eclipse.ui.preferencePages">
      <page
-           class="org.scribble.protocol.designer.preferences.ScribblePreferencePage"
-           id="org.scribble.protocol.designer.preferences.ScribblePreferencePage"
+           class="org.scribble.designer.preferences.ScribblePreferencePage"
+           id="org.scribble.designer.preferences.ScribblePreferencePage"
            name="Scribble">
      </page>
      <page
-           category="org.scribble.protocol.designer.preferences.ScribblePreferencePage"
-           class="org.scribble.protocol.designer.preferences.AnalysisPreferencePage"
-           id="org.scribble.protocol.designer.preferences.AnalysisPreferencePage"
+           category="org.scribble.designer.preferences.ScribblePreferencePage"
+           class="org.scribble.designer.preferences.AnalysisPreferencePage"
+           id="org.scribble.designer.preferences.AnalysisPreferencePage"
            name="Analysis">
      </page>
   </extension>
   <extension
         point="org.eclipse.core.runtime.preferences">
      <initializer
-           class="org.scribble.protocol.designer.preferences.PreferenceInitializer">
+           class="org.scribble.designer.preferences.PreferenceInitializer">
      </initializer>
   </extension>
 
@@ -80,29 +80,29 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
-            id="org.scribble.protocol.designer.contribution1"
+            id="org.scribble.designer.contribution1"
             nameFilter="*.scr" >
          <menu
                label="Scribble"
                path="additions"
-               id="org.scribble.protocol.tools.menu">
+               id="org.scribble.tools.menu">
             <separator
                   name="group1">
             </separator>
          </menu>
          <action
                label="Project"
-               class="org.scribble.protocol.designer.actions.ProjectionAction"
-               menubarPath="org.scribble.protocol.tools.menu/group1"
+               class="org.scribble.designer.actions.ProjectionAction"
+               menubarPath="org.scribble.tools.menu/group1"
                enablesFor="1"
-               id="org.scribble.protocol.designer.actions.ProjectionAction">
+               id="org.scribble.designer.actions.ProjectionAction">
          </action>
          <action
                label="Simulate"
-               class="org.scribble.protocol.designer.actions.SimulateAction"
-               menubarPath="org.scribble.protocol.tools.menu/group1"
+               class="org.scribble.designer.actions.SimulateAction"
+               menubarPath="org.scribble.tools.menu/group1"
                enablesFor="1"
-               id="org.scribble.protocol.designer.actions.SimulateAction">
+               id="org.scribble.designer.actions.SimulateAction">
          </action>
       </objectContribution>
    </extension>
