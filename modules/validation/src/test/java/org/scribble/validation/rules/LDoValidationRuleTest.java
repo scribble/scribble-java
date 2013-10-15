@@ -20,15 +20,15 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.local.LBlock;
 import org.scribble.model.local.LDo;
 import org.scribble.model.local.LProtocolDefinition;
-import org.scribble.validation.DefaultValidationContext;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.LDoValidationRule;
 
@@ -57,7 +57,7 @@ public class LDoValidationRuleTest {
     	ldo.setProtocol(new FullyQualifiedName(PROTOCOL2));
     	block.add(ldo);
     	
-    	ValidationContext context=new DefaultValidationContext() {
+    	ModuleContext context=new DefaultModuleContext() {
 
 			public ModelObject getMember(String fqn) {
 				return new LProtocolDefinition();
@@ -91,7 +91,7 @@ public class LDoValidationRuleTest {
     	ldo.setProtocol(new FullyQualifiedName(PROTOCOL2));
     	block.add(ldo);
     	
-    	ValidationContext context=new DefaultValidationContext() {
+    	ModuleContext context=new DefaultModuleContext() {
 
 			public ModelObject getMember(String fqn) {
 				return null;

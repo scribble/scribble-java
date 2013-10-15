@@ -20,15 +20,15 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.Role;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.local.LProtocolDefinition;
-import org.scribble.validation.DefaultValidationContext;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.LProtocolDefinitionValidationRule;
 
@@ -56,7 +56,7 @@ public class LProtocolDefinitionValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ValidationContext context=new DefaultValidationContext() {
+    	ModuleContext context=new DefaultModuleContext() {
 
 			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
@@ -90,7 +90,7 @@ public class LProtocolDefinitionValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ValidationContext context=new DefaultValidationContext() {
+    	ModuleContext context=new DefaultModuleContext() {
 
 			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();

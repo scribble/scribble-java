@@ -16,12 +16,12 @@
  */
 package org.scribble.validation.rules;
 
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.ProtocolDecl;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationLogger;
 import org.scribble.validation.ValidationMessages;
 
@@ -35,7 +35,7 @@ public class ModuleValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
 		Module elem=(Module)mobj;
 		
 		if (elem.getFullyQualifiedName() == null) {

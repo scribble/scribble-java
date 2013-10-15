@@ -18,12 +18,12 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
+import org.scribble.context.ModuleContext;
 import org.scribble.model.Message;
 import org.scribble.model.ModelObject;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.model.global.GInterruptible;
 import org.scribble.model.global.GInterruptible.Interrupt;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationLogger;
 import org.scribble.validation.ValidationMessages;
 
@@ -37,7 +37,7 @@ public class GInterruptibleValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
 		GInterruptible elem=(GInterruptible)mobj;
 		
 		ProtocolDecl pd=elem.getParent(ProtocolDecl.class);

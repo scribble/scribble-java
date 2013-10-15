@@ -30,6 +30,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	    </dependency>
 	    <dependency>
 	      <groupId>org.scribble</groupId>
+	      <artifactId>scribble-context</artifactId>
+	      <version>${project.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.scribble</groupId>
 	      <artifactId>scribble-validation</artifactId>
 	      <version>${project.version}</version>
 	    </dependency>

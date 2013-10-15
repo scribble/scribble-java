@@ -16,9 +16,9 @@
  */
 package org.scribble.validation.rules;
 
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.global.GRecursion;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationLogger;
 
 /**
@@ -31,7 +31,7 @@ public class GRecursionValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
 		GRecursion elem=(GRecursion)mobj;
 		
 		if (elem.getBlock() != null) {

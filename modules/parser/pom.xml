@@ -21,6 +21,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.scribble</groupId>
+			<artifactId>scribble-context</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
 			<artifactId>scribble-validation</artifactId>
 			<version>${project.version}</version>
 		</dependency>

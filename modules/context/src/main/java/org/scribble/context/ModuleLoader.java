@@ -14,15 +14,15 @@
  * limitations under the License.
  *
  */
-package org.scribble.validation;
+package org.scribble.context;
 
 import org.scribble.model.Module;
 
 /**
- * This interface is responsible for loading components.
+ * This interface is responsible for loading modules.
  *
  */
-public interface ComponentLoader {
+public interface ModuleLoader {
 
 	/**
 	 * This method loads the module associated with the specified name.

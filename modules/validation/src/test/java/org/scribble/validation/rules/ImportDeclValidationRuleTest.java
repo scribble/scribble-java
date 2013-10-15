@@ -20,12 +20,12 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
+import org.scribble.context.DefaultModuleContext;
 import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.Module;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.model.global.GProtocolDefinition;
-import org.scribble.validation.DefaultValidationContext;
 import org.scribble.validation.TestValidationLogger;
 import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.ImportDeclValidationRule;
@@ -36,7 +36,7 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclValid() {
     	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultValidationContext context=new DefaultValidationContext();
+    	DefaultModuleContext context=new DefaultModuleContext();
     	context.registerModule("a.b.c", new Module());
     	
     	ImportDecl elem=new ImportDecl();
@@ -53,7 +53,7 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclNoModule() {
    	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultValidationContext context=new DefaultValidationContext();
+    	DefaultModuleContext context=new DefaultModuleContext();
     	
     	ImportDecl elem=new ImportDecl();
     	
@@ -72,7 +72,7 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclNotFoundModule() {
    	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultValidationContext context=new DefaultValidationContext();
+    	DefaultModuleContext context=new DefaultModuleContext();
     	
     	ImportDecl elem=new ImportDecl();
     	elem.setModuleName(new FullyQualifiedName("a.b.c"));
@@ -92,7 +92,7 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclNotFoundMember() {
    	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultValidationContext context=new DefaultValidationContext();
+    	DefaultModuleContext context=new DefaultModuleContext();
     	context.registerModule("a.b.c", new Module());
     	
     	ImportDecl elem=new ImportDecl();
@@ -114,7 +114,7 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclExistsAlias() {
    	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultValidationContext context=new DefaultValidationContext();
+    	DefaultModuleContext context=new DefaultModuleContext();
     	
     	Module m=new Module();
     	ProtocolDecl p=new GProtocolDefinition();

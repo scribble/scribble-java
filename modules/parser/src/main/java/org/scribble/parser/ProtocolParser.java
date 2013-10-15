@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
+import org.scribble.context.ModuleLoader;
+import org.scribble.context.DefaultModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.parser.ParserLogger;
@@ -29,8 +31,6 @@ import org.scribble.parser.ProtocolParser;
 import org.scribble.parser.antlr.ProtocolTreeAdaptor;
 import org.scribble.parser.antlr.ScribbleLexer;
 import org.scribble.parser.antlr.ScribbleParser;
-import org.scribble.validation.ComponentLoader;
-import org.scribble.validation.DefaultValidationContext;
 import org.scribble.validation.ProtocolValidator;
 import org.scribble.validation.ValidationLogger;
 
@@ -93,7 +93,7 @@ public class ProtocolParser {
             	// Validate
                 ProtocolValidator pv=new ProtocolValidator();
                 
-                DefaultValidationContext context=new DefaultValidationContext(ret, new ComponentLoader() {
+                DefaultModuleContext context=new DefaultModuleContext(ret, new ModuleLoader() {
 
 					public Module loadModule(String module) {
 						Module ret=null;

@@ -18,10 +18,10 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationLogger;
 import org.scribble.validation.ValidationMessages;
 
@@ -35,7 +35,7 @@ public class ImportDeclValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
 		ImportDecl elem=(ImportDecl)mobj;
 		
 		if (elem.getModuleName() != null) {

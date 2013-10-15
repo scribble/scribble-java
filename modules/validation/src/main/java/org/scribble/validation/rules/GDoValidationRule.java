@@ -18,11 +18,11 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.global.GDo;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.model.global.GProtocolInstance;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationLogger;
 import org.scribble.validation.ValidationMessages;
 
@@ -36,7 +36,7 @@ public class GDoValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
 		GDo elem=(GDo)mobj;
 		
 		// Check if protocol has been declared

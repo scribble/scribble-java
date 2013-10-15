@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.validation;
+package org.scribble.context;
 
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
@@ -23,17 +23,17 @@ import org.scribble.model.Module;
  * This class implements the validation context.
  *
  */
-public class DefaultValidationContext implements ValidationContext {
+public class DefaultModuleContext implements ModuleContext {
 	
 	private Module _thisModule=null;
 	private java.util.Map<String,Module> _modules=new java.util.HashMap<String,Module>();
 	private java.util.Map<String,ModelObject> _aliases=new java.util.HashMap<String,ModelObject>();
-	private ComponentLoader _loader=null;
+	private ModuleLoader _loader=null;
 
 	/**
 	 * This is the default constructor.
 	 */
-	public DefaultValidationContext() {
+	public DefaultModuleContext() {
 		
 	}
 	
@@ -42,7 +42,7 @@ public class DefaultValidationContext implements ValidationContext {
 	 * 
 	 * @param loader The loader
 	 */
-	public DefaultValidationContext(Module thisModule, ComponentLoader loader) {
+	public DefaultModuleContext(Module thisModule, ModuleLoader loader) {
 		_thisModule = thisModule;
 		_loader = loader;
 	}

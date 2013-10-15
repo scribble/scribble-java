@@ -20,15 +20,15 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.global.GBlock;
 import org.scribble.model.global.GDo;
 import org.scribble.model.global.GProtocolDefinition;
-import org.scribble.validation.DefaultValidationContext;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.GDoValidationRule;
 
@@ -57,7 +57,7 @@ public class GDoValidationRuleTest {
     	gdo.setProtocol(new FullyQualifiedName(PROTOCOL2));
     	block.add(gdo);
     	
-    	ValidationContext context=new DefaultValidationContext() {
+    	ModuleContext context=new DefaultModuleContext() {
 
 			public ModelObject getMember(String fqn) {
 				return new GProtocolDefinition();
@@ -91,7 +91,7 @@ public class GDoValidationRuleTest {
     	gdo.setProtocol(new FullyQualifiedName(PROTOCOL2));
     	block.add(gdo);
     	
-    	ValidationContext context=new DefaultValidationContext() {
+    	ModuleContext context=new DefaultModuleContext() {
 
 			public ModelObject getMember(String fqn) {
 				return null;

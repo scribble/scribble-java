@@ -16,10 +16,10 @@
  */
 package org.scribble.validation.rules;
 
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.local.LBlock;
 import org.scribble.model.local.LParallel;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationLogger;
 
 /**
@@ -32,7 +32,7 @@ public class LParallelValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
 		LParallel elem=(LParallel)mobj;
 		
 		for (LBlock subelem : elem.getPaths()) {

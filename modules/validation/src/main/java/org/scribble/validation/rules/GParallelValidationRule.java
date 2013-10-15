@@ -16,10 +16,10 @@
  */
 package org.scribble.validation.rules;
 
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.global.GBlock;
 import org.scribble.model.global.GParallel;
-import org.scribble.validation.ValidationContext;
 import org.scribble.validation.ValidationLogger;
 
 /**
@@ -32,7 +32,7 @@ public class GParallelValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ValidationContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
 		GParallel elem=(GParallel)mobj;
 		
 		for (GBlock subelem : elem.getPaths()) {

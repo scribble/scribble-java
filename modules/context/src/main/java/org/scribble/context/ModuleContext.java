@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.validation;
+package org.scribble.context;
 
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
@@ -23,7 +23,7 @@ import org.scribble.model.Module;
  * This interface represents the validation context.
  *
  */
-public interface ValidationContext {
+public interface ModuleContext {
 
 	/**
 	 * This method imports and returns the named module.
