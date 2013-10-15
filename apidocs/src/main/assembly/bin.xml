@@ -26,7 +26,7 @@
     <fileSets>
 
 	    <fileSet>
-	    	<directory>../modules/org.scribble.model/target/javadoc</directory>
+	    	<directory>../modules/model/target/javadoc</directory>
 	    	<outputDirectory>/apidocs/model</outputDirectory>
 	    </fileSet>
 

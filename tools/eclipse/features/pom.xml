@@ -17,28 +17,28 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<module>org.scribble.feature</module>
 	</modules>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.scribble</groupId>
-      <artifactId>org.scribble.parser</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.scribble</groupId>
-      <artifactId>org.scribble.model</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.scribble</groupId>
-      <artifactId>org.scribble.validation</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.scribble</groupId>
-      <artifactId>org.scribble.cli</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
+	<dependencies>
+	    <dependency>
+	      <groupId>org.scribble</groupId>
+	      <artifactId>scribble-parser</artifactId>
+	      <version>${project.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.scribble</groupId>
+	      <artifactId>scribble-model</artifactId>
+	      <version>${project.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.scribble</groupId>
+	      <artifactId>scribble-validation</artifactId>
+	      <version>${project.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.scribble</groupId>
+	      <artifactId>scribble-cli</artifactId>
+	      <version>${project.version}</version>
+	    </dependency>
+	</dependencies>
 
 </project>
 	

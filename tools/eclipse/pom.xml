@@ -130,7 +130,7 @@
 				<dependencies>
 					<dependency>
 						<groupId>org.scribble</groupId>
-						<artifactId>build</artifactId>
+						<artifactId>scribble-build</artifactId>
 						<version>${project.version}</version>
 					</dependency>
 				</dependencies>

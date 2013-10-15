@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   	<groupId>org.scribble</groupId>
-  	<artifactId>org.scribble.validation</artifactId>
+  	<artifactId>scribble-validation</artifactId>
 	<packaging>jar</packaging>
   	<version>0.3.0-SNAPSHOT</version>
   	<name>Scribble::Modules::Validation</name>
@@ -16,7 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.scribble</groupId>
-			<artifactId>org.scribble.model</artifactId>
+			<artifactId>scribble-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
