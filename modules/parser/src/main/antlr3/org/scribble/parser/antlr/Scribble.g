@@ -1,13 +1,12 @@
 /*
  * Raymond@HZHL2 ~/code/python/scribble-tools
- * $ java -cp lib/antlr-3.1.3.jar org.antlr.Tool -o bin src/scribble/ScribbleNew.g
+ * $ java -cp lib/antlr-3.1.3.jar org.antlr.Tool -o bin src/scribble/Scribble.g
 */
 
-// FIXME: use language actions to directly create lists etc.? but ties the grammar source to that language?
+// Use language actions to directly create lists etc.? but ties the grammar source to that language?
 
-// FIXME: garbage at the end of input file seems to just get ignored, no error raised. but also for e.g. two package declarations
+// Garbage at the end of input file seems to just get ignored, no error raised. but also for e.g. two package declarations -- check if this is still the case?
 
-// backtracking disabled by default?
 
 grammar Scribble;
 
@@ -40,14 +39,14 @@ tokens
 	ORKW = 'or';
 	RECKW = 'rec';
 	CONTINUEKW = 'continue';
-	PARKW = 'par';  // FIXME: should be PARKW
+	PARKW = 'par';
 	ANDKW = 'and';
 	INTERRUPTIBLEKW = 'interruptible';
 	WITHKW = 'with';
-	BYKW = 'by';  // from for interrupts is more expected, but from is
-	              // not good for multiple roles (generally, the comma
-								// in interrupt message list and role list looks like
-								// "and" rather than "or")
+	BYKW = 'by';  /* from for interrupts is more expected, but from is
+	                 not good for multiple roles (generally, the comma
+	                 in interrupt message list and role list looks like
+	                 "and" rather than "or") */
 	THROWSKW = 'throws';
 	CATCHESKW = 'catches';
 	DOKW = 'do';
@@ -60,7 +59,7 @@ tokens
 	 * The value of these token variables doesn't matter, only the token
 	 * (i.e. variable) names themselves are used (for AST node root text
 	 * field)
-   */
+     */
 	//MODULE = 'module';
 	MODULE = 'modul';
 	//PACKAGEDECL = 'package-decl';
@@ -77,9 +76,7 @@ tokens
 	ROLEDECL = 'role-decl';
 	ARGUMENTLIST = 'argument-list';
 	ARGUMENT = 'argument';
-	//PAYLOADLIST = 'payload-list';
 	PAYLOAD = 'payload';
-	//PAYLOAD = 'payload';
 	PAYLOADELEMENT = 'payloadelement';
 	ROLEINSTANTIATIONLIST = 'role-instantiation-list';
 	ROLEINSTANTIATION = 'role-instantiation';
@@ -120,8 +117,9 @@ tokens
 
 
 	/*
-	 * Some utility constants
-	 * (Some grammar rules use dummy placeholder values, but others do not)
+	 * Some utility constants; AST token values are the variable names (not
+	 * the variable values).
+	 * (N.B. Some grammar rules use dummy placeholder values, but others do not)
 	 */
 	EMPTY_MESSAGE_OP = '__empty_message_op';
 	EMPTY_ANNOTATION = '__empty_annotation';
@@ -129,6 +127,8 @@ tokens
 	EMPTY_ARGUMENT_LIST = '__empty_argument_list';
 	EMPTY_MODULE_NAME = '__empty_module_name';
 	EMPTY_SCOPE_NAME = '__empty_scope_name';
+	EMPTY_LOCAL_THROW = '__empty_local_throw';
+	EMPTY_LOCAL_CATCHES = '__empty_local_catch';
 
 	KIND_MESSAGE_SIGNATURE = 'KIND_MESSAGE_SIGNATURE';
 	KIND_PAYLOAD_TYPE = 'KIND_PAYLOAD_TYPE';
@@ -261,13 +261,14 @@ scopename: IDENTIFIER;
 /**
  * Section 3.2.1 Package, Module and Module Member Names
  */
-packagename:
-//modulename:
+/*packagename:
 	IDENTIFIER ('.' IDENTIFIER)*
-;
+;*/
+
 
 modulename:
-	packagename '.' IDENTIFIER
+	//packagename '.' IDENTIFIER  // Not working
+	IDENTIFIER ('.' IDENTIFIER)* '.' IDENTIFIER
 |
 	IDENTIFIER
 ;
@@ -347,13 +348,13 @@ messageoperator:
 ;
 
 messagesignature:
-	'(' payloadlist ')'
+	'(' payload ')'
 |
-	//messageoperator '(' payloadlist ')'  // Doesn't work (conflict with IDENTIFIER?)
-	IDENTIFIER '(' ( payloadlist )+ ')'
+	//messageoperator '(' payload ')'  // Doesn't work (conflict with IDENTIFIER?)
+	IDENTIFIER '(' ( payload )+ ')'
 ;
 
-payloadlist:
+payload:
 	payloadelement (',' payloadelement)*
 ;
 
@@ -388,7 +389,7 @@ globalprotocoldecl:
 	globalprotocolheader globalprotocolinstance
 ;
 
-globalprotocolheader:  // Did not make header an explicit category
+globalprotocolheader:  // Currently, header is not an explicit category
 	GLOBALKW PROTOCOLKW protocolname roledecllist
 |
 	GLOBALKW PROTOCOLKW protocolname parameterdecllist roledecllist
@@ -541,9 +542,9 @@ globalparallel:
  * Section 3.7.8 Global Interruptible
  */
 globalinterruptible:
-	INTERRUPTIBLEKW globalprotocolblock WITHKW '{' (globalinterrupt)+ '}'
+	INTERRUPTIBLEKW globalprotocolblock WITHKW '{' (globalinterrupt)* '}'
 |
-	INTERRUPTIBLEKW scopename ':' globalprotocolblock WITHKW '{' (globalinterrupt)+ '}'
+	INTERRUPTIBLEKW scopename ':' globalprotocolblock WITHKW '{' (globalinterrupt)* '}'
 ;
 
 globalinterrupt:
@@ -685,25 +686,25 @@ localparallel:
  * Section 3.8.8 Local Interruptible
  */
 localinterruptible:
-	INTERRUPTIBLEKW localprotocolblock localthrowandorcatch
+	/*INTERRUPTIBLEKW scopename ':' localprotocolblock WITHKW '{' localthrowandorcatch '}'
+|*/
+	INTERRUPTIBLEKW scopename ':' localprotocolblock WITHKW '{' (localcatch)* '}'
 |
-	INTERRUPTIBLEKW scopename ':' localprotocolblock localthrowandorcatch
+	INTERRUPTIBLEKW scopename ':' localprotocolblock WITHKW '{' localthrow (localcatch)* '}'
 ;
 
-localthrowandorcatch:
-	localthrow localcatch
+/*localthrowandorcatch:
+	localthrow (localcatch)*
 |
-	localthrow
-|
-	localcatch
-;
+	(localcatch)+
+;*/
 
 localthrow:
-	THROWSKW message (',' message)* ';'
+	THROWSKW message (',' message)* TOKW rolename (',' rolename)* ';'
 ;
 
 localcatch:
-	CATCHESKW message (',' message)* FROMKW IDENTIFIER ';'
+	CATCHESKW message (',' message)* FROMKW rolename ';'
 ;
 
 
