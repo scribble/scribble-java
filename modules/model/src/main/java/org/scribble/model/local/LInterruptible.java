@@ -15,8 +15,11 @@
  */
 package org.scribble.model.local;
 
+import org.scribble.model.ContainmentList;
 import org.scribble.model.Message;
+import org.scribble.model.ModelObject;
 import org.scribble.model.Role;
+import org.scribble.model.Visitor;
 
 /**
  * This class represents the interruptible construct.
@@ -27,7 +30,7 @@ public class LInterruptible extends LActivity {
     private String _scope=null;
     private LBlock _block=new LBlock();
     private Throw _throws=null;
-    private java.util.List<Catch> _catches=new java.util.ArrayList<Catch>();
+    private java.util.List<Catch> _catches=new ContainmentList<Catch>(this, Catch.class);
 
     /**
      * This is the default constructor.
@@ -105,7 +108,15 @@ public class LInterruptible extends LActivity {
 	 * @param t The throw
 	 */
 	public void setThrows(Throw t) {
+		if (_throws != null) {
+			_throws.setParent(null);
+		}
+		
 		_throws = t;
+		
+		if (_throws != null) {
+			_throws.setParent(this);
+		}
 	}
 
 	/**
@@ -182,25 +193,29 @@ public class LInterruptible extends LActivity {
     		_block.toText(buf, level);
     	}
     	
-    	buf.append("\n");
+    	buf.append(" with {\n");
     	
     	if (getThrows() != null) {
-    		getThrows().toText(buf, level);
+    		getThrows().toText(buf, level+1);
     	}
     	
     	for (Catch i : getCatches()) {
-    		i.toText(buf, level);
+    		i.toText(buf, level+1);
     	}
+    	
+    	indent(buf, level);
+    	
+    	buf.append("}\n");
 	}
     
     /**
      * This class represents the throw definition.
      * 
      */
-    public static class Throw {
+    public static class Throw extends ModelObject {
     	
-        private java.util.List<Role> _toRoles=new java.util.ArrayList<Role>();
-    	private java.util.List<Message> _messages=new java.util.ArrayList<Message>();
+        private java.util.List<Role> _toRoles=new ContainmentList<Role>(this, Role.class);
+    	private java.util.List<Message> _messages=new ContainmentList<Message>(this, Message.class);
     	
     	public Throw() {
     	}
@@ -266,16 +281,22 @@ public class LInterruptible extends LActivity {
         	
         	buf.append(";\n");
     	}
+
+		@Override
+		public void visit(Visitor visitor) {
+			// TODO Auto-generated method stub
+			
+		}
     }
     
     /**
      * This class represents the catch definition.
      * 
      */
-    public static class Catch {
+    public static class Catch extends ModelObject {
     	
     	private Role _role=null;
-    	private java.util.List<Message> _messages=new java.util.ArrayList<Message>();
+    	private java.util.List<Message> _messages=new ContainmentList<Message>(this, Message.class);
     	
     	public Catch() {
     	}
@@ -286,7 +307,15 @@ public class LInterruptible extends LActivity {
     	 * @param role The 'from' role
     	 */
     	public void setRole(Role role) {
+            if (_role != null) {
+            	_role.setParent(null);
+            }
+
     		_role = role;
+            
+            if (_role != null) {
+            	_role.setParent(this);
+            }
     	}
        	
     	/**
@@ -335,5 +364,11 @@ public class LInterruptible extends LActivity {
         	
         	buf.append(";\n");
     	}
+
+		@Override
+		public void visit(Visitor visitor) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 }

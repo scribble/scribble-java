@@ -110,7 +110,6 @@ public class ProtocolParserTest {
     }
 
     @org.junit.Test
-    @Ignore
     public void testLInterruptible() {
    		testParser("LInterruptible");
    	}

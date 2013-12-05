@@ -5,7 +5,8 @@ type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/sche
 local protocol LInterruptibleTest at Buyer(role Buyer,role Seller) {
 	interruptible MyLabel: {
 		buy(Order) from Buyer;
+	} with {
+		throws sell(Order) to Seller;
+		catches cancel(Order) from Seller;
 	}
-	throws sell(Order);
-	catches cancel(Order) from Seller;
 }

@@ -47,6 +47,8 @@ public class LocalCatchModelAdaptor implements ModelAdaptor {
 			
 			ret.getMessages().add(0, (Message)context.pop());
 		}
+		
+		context.pop(); // 'catches'
 
 		context.push(ret);
 		

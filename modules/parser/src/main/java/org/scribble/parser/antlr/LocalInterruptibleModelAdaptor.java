@@ -32,6 +32,8 @@ public class LocalInterruptibleModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		LInterruptible ret=new LInterruptible();
 		
+		context.pop(); // '}'
+
 		while (context.peek() instanceof LInterruptible.Catch) {
 			ret.getCatches().add(0, (LInterruptible.Catch)context.pop());
 		}
@@ -39,6 +41,10 @@ public class LocalInterruptibleModelAdaptor implements ModelAdaptor {
 		if (context.peek() instanceof LInterruptible.Throw) {
 			ret.setThrows((LInterruptible.Throw)context.pop());
 		}
+		
+		context.pop(); // '{'
+
+		context.pop(); // with
 		
 		ret.setBlock((LBlock)context.pop());
 		

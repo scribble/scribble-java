@@ -43,7 +43,7 @@ public class LocalThrowModelAdaptor implements ModelAdaptor {
 			ret.getToRoles().add(new Role(((CommonToken)context.pop()).getText()));
 		}
 		
-		context.pop(); // 'from'
+		context.pop(); // 'to'
 		
 		ret.getMessages().add((Message)context.pop());
 		
@@ -53,6 +53,8 @@ public class LocalThrowModelAdaptor implements ModelAdaptor {
 			
 			ret.getMessages().add(0, (Message)context.pop());
 		}
+		
+		context.pop();	// 'throws'
 
 		context.push(ret);
 		
