@@ -40,6 +40,20 @@ public class Role extends ModelObject {
     }
     
     /**
+     * This is the copy constructor.
+     * 
+     * @param rd The role declaration
+     */
+    public Role(RoleDecl rd) {
+        super(rd);
+        _name = rd.getAlias();
+        
+        if (_name == null || _name.trim().length() == 0) {
+        	_name = rd.getName();
+        }
+    }
+    
+    /**
      * This constructor initializes the role with a name.
      * 
      * @param roleName The role name

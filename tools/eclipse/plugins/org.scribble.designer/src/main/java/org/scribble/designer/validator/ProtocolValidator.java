@@ -26,7 +26,10 @@ import org.eclipse.core.resources.IResource;
 import org.scribble.designer.DesignerServices;
 import org.scribble.designer.logger.EclipseScribbleLogger;
 import org.scribble.designer.osgi.Activator;
-import org.scribble.parser.ResourceLocator;
+import org.scribble.parser.ProtocolModuleLoader;
+import org.scribble.common.resources.InputStreamResource;
+import org.scribble.common.resources.Resource;
+import org.scribble.common.resources.ResourceLocator;
 
 /**
  * Protocol validator.
@@ -66,19 +69,20 @@ public class ProtocolValidator {
                 new EclipseScribbleLogger((IFile)res);
         
         try {
-            is = ((IFile)res).getContents();
+            InputStreamResource isr = new InputStreamResource(null, res.getLocation().toOSString(),
+            					((IFile)res).getContents());
             
             // Create a locator based on the Eclipse project root
             ResourceLocator locator=new ResourceLocator() {
 
-				public InputStream getModule(String arg0) {
-					String filename=arg0.replace('.', '/')+".scr";
+				public Resource getResource(String name) {
+					String filename=name.replace('.', java.io.File.separatorChar)+".scr";
 					
 		            IFile file=res.getProject().getFile(filename);
 		            
 		            if (file != null) {
 		            	try {
-		            		return (file.getContents());
+		            		return (new InputStreamResource(name, filename, file.getContents()));
 		            	} catch (Exception e) {
 		            		e.printStackTrace();
 		            	}
@@ -88,7 +92,9 @@ public class ProtocolValidator {
 				}
             };
             
-            DesignerServices.getProtocolParser().parse(is, locator, logger);
+            ProtocolModuleLoader loader=new ProtocolModuleLoader(DesignerServices.getProtocolParser(), locator, logger);
+            
+            DesignerServices.getProtocolParser().parse(isr, loader, logger);
             
         } catch (Exception e) {
             Activator.logError("Failed to record validation issue on resource '"+res+"'", e);

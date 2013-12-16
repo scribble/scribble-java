@@ -17,6 +17,7 @@ package org.scribble.model.global;
 
 import org.scribble.model.Message;
 import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
 import org.scribble.model.global.GActivity;
 
 /**
@@ -67,6 +68,39 @@ public class GMessageTransfer extends GActivity {
         _message = sig;
         _fromRole = fromRole;
         _toRoles = toRoles;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoleInvolved(RoleDecl role) {
+    	boolean ret=false;
+    	
+    	if (_fromRole != null) {
+    		ret = role.isRole(_fromRole);
+    	}
+    	
+    	for (int i=0; !ret && i < _toRoles.size(); i++) {
+    		ret = role.isRole(_toRoles.get(i));
+    	}
+    	
+    	return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    	
+    	if (_fromRole != null && !roles.contains(_fromRole)) {
+    		roles.add(_fromRole);
+    	}
+    	
+    	for (Role r : _toRoles) {
+    		if (!roles.contains(r)) {
+    			roles.add(r);
+    		}
+    	}
     }
 
     /**

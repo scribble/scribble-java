@@ -15,46 +15,21 @@
  */
 package org.scribble.model.local;
 
-import org.scribble.model.ProtocolDecl;
-import org.scribble.model.Role;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.Visitor;
 
 /**
  * This class represents the protocol notation.
  */
-public class LProtocolDefinition extends ProtocolDecl {
+public class LProtocolDefinition extends LProtocolDecl {
     
-	private Role _localRole=null;
     private LBlock _block=null;
 
     /**
      * The default constructor.
      */
     public LProtocolDefinition() {
-    }
-    
-    /**
-     * This method returns the local role. This
-     * field is set when the protocol represents a local
-     * model.
-     * 
-     * @return The local role
-     */
-    public Role getLocalRole() {
-        return (_localRole);
-    }
-    
-    /**
-     * This method sets the local role. This
-     * field is set when the protocol represents a local
-     * model.
-     * 
-     * @param role The local role
-     */
-    public void setLocalRole(Role role) {
-        _localRole = role;
-    }
+    }    
     
     /**
      * This method returns the block of activities associated
@@ -137,8 +112,8 @@ public class LProtocolDefinition extends ProtocolDecl {
     	
     	buf.append(" at ");
     	
-    	if (_localRole != null) {
-    		_localRole.toText(buf, level);
+    	if (getLocalRole() != null) {
+    		getLocalRole().toText(buf, level);
     	}
     	
     	if (getParameterDeclarations().size() > 0) {

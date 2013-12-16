@@ -15,8 +15,10 @@
  */
 package org.scribble.model.global;
 
+import org.scribble.model.Argument;
 import org.scribble.model.FullyQualifiedName;
-import org.scribble.model.Message;
+import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
 import org.scribble.model.RoleInstantiation;
 
 /**
@@ -27,8 +29,8 @@ public class GDo extends GActivity {
 
     private FullyQualifiedName _protocol=null;
     private String _scopeName=null;
-    private java.util.List<Message> _arguments=new java.util.Vector<Message>();
-    private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.Vector<RoleInstantiation>();
+    private java.util.List<Argument> _arguments=new java.util.ArrayList<Argument>();
+    private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.ArrayList<RoleInstantiation>();
 
     /**
      * This is the default constructor.
@@ -46,8 +48,8 @@ public class GDo extends GActivity {
         super(copy);
         _protocol = copy.getProtocol();
         
-        for (Message arg : copy.getArguments()) {
-            _arguments.add(new Message(arg));
+        for (Argument arg : copy.getArguments()) {
+            _arguments.add(new Argument(arg));
         }
         
         for (RoleInstantiation ri : copy.getRoleInstantiations()) {
@@ -55,6 +57,37 @@ public class GDo extends GActivity {
         }
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoleInvolved(RoleDecl role) {
+    	boolean ret=false;
+    	
+    	for (int i=0; !ret && i < _roleInstantiations.size(); i++) {
+    		RoleInstantiation ri=_roleInstantiations.get(i);
+    		
+    		ret = role.isRole(new Role(ri.getName()));
+    	}
+    	
+    	return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    	
+    	for (int i=0; i < _roleInstantiations.size(); i++) {
+    		RoleInstantiation ri=_roleInstantiations.get(i);
+    		
+    		Role role=new Role(ri.getName());
+    		
+    		if (!roles.contains(role)) {
+    			roles.add(role);
+    		}
+    	}
+    }
+
     /**
      * This method returns the protocol.
      * 
@@ -96,7 +129,7 @@ public class GDo extends GActivity {
      * 
      * @return The list of arguments
      */
-    public java.util.List<Message> getArguments() {
+    public java.util.List<Argument> getArguments() {
         return (_arguments);
     }
     

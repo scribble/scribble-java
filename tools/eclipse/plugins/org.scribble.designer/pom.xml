@@ -21,7 +21,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.scribble</groupId>
-			<artifactId>scribble-context</artifactId>
+			<artifactId>scribble-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -59,7 +59,7 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.scribble</groupId>
-									<artifactId>scribble-context</artifactId>
+									<artifactId>scribble-common</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>

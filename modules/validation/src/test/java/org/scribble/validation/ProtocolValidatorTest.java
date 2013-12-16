@@ -18,7 +18,7 @@ package org.scribble.validation;
 
 import static org.junit.Assert.*;
 
-import org.scribble.context.DefaultModuleContext;
+import org.scribble.common.module.DefaultModuleContext;
 import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.Module;
 import org.scribble.model.global.GProtocolDefinition;
@@ -31,7 +31,7 @@ public class ProtocolValidatorTest {
     public void testModuleValid() {
     	ProtocolValidator pv=new ProtocolValidator();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultModuleContext context=new DefaultModuleContext();
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
     	
     	Module module=new Module();
     	module.setFullyQualifiedName(new FullyQualifiedName("test"));
@@ -49,7 +49,7 @@ public class ProtocolValidatorTest {
     public void testModuleInvalid() {
     	ProtocolValidator pv=new ProtocolValidator();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultModuleContext context=new DefaultModuleContext();
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
     	
     	Module module=new Module();
     	

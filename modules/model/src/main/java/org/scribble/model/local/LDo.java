@@ -15,8 +15,8 @@
  */
 package org.scribble.model.local;
 
+import org.scribble.model.Argument;
 import org.scribble.model.FullyQualifiedName;
-import org.scribble.model.Message;
 import org.scribble.model.RoleInstantiation;
 
 /**
@@ -26,8 +26,8 @@ import org.scribble.model.RoleInstantiation;
 public class LDo extends LActivity {
     private FullyQualifiedName _protocol=null;
     private String _scopeName=null;
-    private java.util.List<Message> _arguments=new java.util.Vector<Message>();
-    private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.Vector<RoleInstantiation>();
+    private java.util.List<Argument> _arguments=new java.util.ArrayList<Argument>();
+    private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.ArrayList<RoleInstantiation>();
 
     /**
      * This is the default constructor.
@@ -45,8 +45,8 @@ public class LDo extends LActivity {
         super(copy);
         _protocol = copy.getProtocol();
         
-        for (Message arg : copy.getArguments()) {
-            _arguments.add(new Message(arg));
+        for (Argument arg : copy.getArguments()) {
+            _arguments.add(new Argument(arg));
         }
         
         for (RoleInstantiation ri : copy.getRoleInstantiations()) {
@@ -95,7 +95,7 @@ public class LDo extends LActivity {
      * 
      * @return The list of arguments
      */
-    public java.util.List<Message> getArguments() {
+    public java.util.List<Argument> getArguments() {
         return (_arguments);
     }
     

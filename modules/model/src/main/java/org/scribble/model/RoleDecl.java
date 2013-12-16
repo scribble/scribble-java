@@ -86,6 +86,18 @@ public class RoleDecl extends ModelObject {
     	_alias = alias;
     }
     
+    /**
+     * Determines whether the role declaration is associated with the
+     * supplied role.
+     * 
+     * @param role The role
+     * @return Whether the role is equivalent to the declaration
+     */
+    public boolean isRole(Role role) {
+    	return ((_name != null && _name.equals(role.getName())) ||
+    			(_alias != null && _alias.equals(role.getName())));
+    }
+    
     @Override
     public boolean equals(Object obj) {
         boolean ret=false;

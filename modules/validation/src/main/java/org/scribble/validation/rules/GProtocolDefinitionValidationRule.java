@@ -16,10 +16,10 @@
  */
 package org.scribble.validation.rules;
 
-import org.scribble.context.ModuleContext;
+import org.scribble.common.logging.ScribbleLogger;
+import org.scribble.common.module.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.global.GProtocolDefinition;
-import org.scribble.validation.ValidationLogger;
 
 /**
  * This class implements the validation rule for the GProtocolDefinition
@@ -31,7 +31,7 @@ public class GProtocolDefinitionValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
 		GProtocolDefinition elem=(GProtocolDefinition)mobj;
 		
 		if (elem.getBlock() != null) {

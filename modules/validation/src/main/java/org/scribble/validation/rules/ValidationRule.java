@@ -16,9 +16,9 @@
  */
 package org.scribble.validation.rules;
 
-import org.scribble.context.ModuleContext;
+import org.scribble.common.logging.ScribbleLogger;
+import org.scribble.common.module.ModuleContext;
 import org.scribble.model.ModelObject;
-import org.scribble.validation.ValidationLogger;
 
 /**
  * This interface represents a validation rule.
@@ -34,6 +34,6 @@ public interface ValidationRule {
 	 * @param mobj The model object
 	 * @param logger The logger
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger);
+	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger);
 	
 }

@@ -18,12 +18,12 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.context.ModuleContext;
+import org.scribble.common.logging.ScribbleLogger;
+import org.scribble.common.module.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.local.LDo;
 import org.scribble.model.local.LProtocolDefinition;
 import org.scribble.model.local.LProtocolInstance;
-import org.scribble.validation.ValidationLogger;
 import org.scribble.validation.ValidationMessages;
 
 /**
@@ -36,7 +36,7 @@ public class LDoValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
 		LDo elem=(LDo)mobj;
 		
 		// Check if protocol has been declared

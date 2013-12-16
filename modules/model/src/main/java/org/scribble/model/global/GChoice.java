@@ -17,6 +17,7 @@ package org.scribble.model.global;
 
 import org.scribble.model.ContainmentList;
 import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
 
 /**
  * This class represents the Choice construct between
@@ -35,6 +36,37 @@ public class GChoice extends GActivity {
     public GChoice() {
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoleInvolved(RoleDecl role) {
+    	boolean ret=false;
+    	
+    	if (_role != null) {
+    		ret = role.isRole(_role);
+    	}
+    	
+    	for (int i=0; !ret && i < _blocks.size(); i++) {
+    		ret = _blocks.get(i).isRoleInvolved(role);
+    	}
+    	
+    	return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    	
+    	if (_role != null && !roles.contains(_role)) {
+    		roles.add(_role);
+    	}
+    	
+    	for (GBlock b : _blocks) {
+    		b.identifyInvolvedRoles(roles);
+    	}
+    }
+
     /**
      * This method returns the role.
      * 

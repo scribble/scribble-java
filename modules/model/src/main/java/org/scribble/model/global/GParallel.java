@@ -16,6 +16,8 @@
 package org.scribble.model.global;
 
 import org.scribble.model.ContainmentList;
+import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
 
 /**
  * This class represents the Parallel construct with
@@ -33,6 +35,29 @@ public class GParallel extends GActivity {
     public GParallel() {
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoleInvolved(RoleDecl role) {
+    	boolean ret=false;
+    	
+    	for (int i=0; !ret && i < _blocks.size(); i++) {
+    		ret = _blocks.get(i).isRoleInvolved(role);
+    	}
+    	
+    	return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    	
+    	for (GBlock b : _blocks) {
+    		b.identifyInvolvedRoles(roles);
+    	}
+    }
+
     /**
      * This method returns the list of concurrent
      * activity blocks that comprise the multi-path construct.

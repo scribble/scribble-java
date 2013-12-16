@@ -17,8 +17,6 @@ package org.scribble.model.local;
 
 import org.scribble.model.Argument;
 import org.scribble.model.ParameterDecl;
-import org.scribble.model.ProtocolDecl;
-import org.scribble.model.Role;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.RoleInstantiation;
 import org.scribble.model.Visitor;
@@ -26,9 +24,8 @@ import org.scribble.model.Visitor;
 /**
  * This class represents the protocol notation.
  */
-public class LProtocolInstance extends ProtocolDecl {
+public class LProtocolInstance extends LProtocolDecl {
     
-	private Role _localRole=null;
     private String _memberName=null;
     private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.ArrayList<RoleInstantiation>();
     private java.util.List<Argument> _arguments=new java.util.ArrayList<Argument>();
@@ -37,28 +34,6 @@ public class LProtocolInstance extends ProtocolDecl {
      * The default constructor.
      */
     public LProtocolInstance() {
-    }
-    
-    /**
-     * This method returns the local role. This
-     * field is set when the protocol represents a local
-     * model.
-     * 
-     * @return The local role
-     */
-    public Role getLocalRole() {
-        return (_localRole);
-    }
-    
-    /**
-     * This method sets the local role. This
-     * field is set when the protocol represents a local
-     * model.
-     * 
-     * @param role The local role
-     */
-    public void setLocalRole(Role role) {
-        _localRole = role;
     }
     
     /**
@@ -168,8 +143,8 @@ public class LProtocolInstance extends ProtocolDecl {
     	
     	buf.append(" at ");
     	
-    	if (_localRole != null) {
-    		_localRole.toText(buf, level);
+    	if (getLocalRole() != null) {
+    		getLocalRole().toText(buf, level);
     	}
     	
     	if (getParameterDeclarations().size() > 0) {

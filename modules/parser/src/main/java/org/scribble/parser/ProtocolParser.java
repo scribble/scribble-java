@@ -17,22 +17,20 @@
 package org.scribble.parser;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.scribble.context.ModuleLoader;
-import org.scribble.context.DefaultModuleContext;
-import org.scribble.model.ModelObject;
+import org.scribble.common.logging.ScribbleLogger;
+import org.scribble.common.module.ModuleCache;
+import org.scribble.common.module.ModuleLoader;
+import org.scribble.common.module.DefaultModuleContext;
+import org.scribble.common.resources.Resource;
 import org.scribble.model.Module;
-import org.scribble.parser.ParserLogger;
 import org.scribble.parser.ProtocolParser;
 import org.scribble.parser.antlr.ProtocolTreeAdaptor;
 import org.scribble.parser.antlr.ScribbleLexer;
 import org.scribble.parser.antlr.ScribbleParser;
 import org.scribble.validation.ProtocolValidator;
-import org.scribble.validation.ValidationLogger;
 
 /**
  * This class provides the ANTLR implementation of the Protocol Parser
@@ -41,8 +39,6 @@ import org.scribble.validation.ValidationLogger;
  */
 public class ProtocolParser {
 	
-	private static final Logger LOG=Logger.getLogger(ProtocolParser.class.getName());
-
     /**
      * Default constructor.
      */
@@ -51,20 +47,39 @@ public class ProtocolParser {
 
     /**
      * This method parses the scribble protocol contained in the supplied
-     * input stream. The resource locator is used to access other resources,
+     * resource. The resource locator is used to access other resources,
      * and the logger reports information, warnings and errors.
      * 
-     * @param is The input stream
-     * @param locator The resource locator
+     * @param resource The resource
+     * @param loader The module locator
      * @param logger The logger
      * @return The module, or null if an error occurred
      * @throws IOException Failed to retrieve protocol from input stream
      */
-    public Module parse(java.io.InputStream is, final ResourceLocator locator, final ParserLogger logger)
+    public Module parse(Resource resource, final ModuleLoader loader, final ScribbleLogger logger)
+                            throws IOException {
+    	return (parse(resource, loader, new ModuleCache(), logger));
+    }
+    
+    /**
+     * This method parses the scribble protocol contained in the supplied
+     * resource. The resource locator is used to access other resources,
+     * and the logger reports information, warnings and errors.
+     * 
+     * @param resource The resource
+     * @param loader The module locator
+     * @param cache The cache of parsed modules
+     * @param logger The logger
+     * @return The module, or null if an error occurred
+     * @throws IOException Failed to retrieve protocol from input stream
+     */
+    public Module parse(Resource resource, ModuleLoader loader, ModuleCache cache, ScribbleLogger logger)
                             throws IOException {
         Module ret=null;
         
         try {
+        	java.io.InputStream is=resource.getInputStream();
+        	
             byte[] b=new byte[is.available()];
             is.read(b);
             
@@ -83,57 +98,23 @@ public class ProtocolParser {
             parser.setDocument(document);
             parser.setTreeAdaptor(adaptor);
             
-            parser.setParserLogger(logger);
+            parser.setLogger(logger);
 
             parser.module();
             
             if (!parser.isErrorOccurred()) {
                 ret = adaptor.getModule();
+                
+                // Add the module to the cache, in case it directly or
+                // indirectly references itself, therefore avoiding reparsing
+                cache.register(ret);
             	
             	// Validate
                 ProtocolValidator pv=new ProtocolValidator();
                 
-                DefaultModuleContext context=new DefaultModuleContext(ret, new ModuleLoader() {
-
-					public Module loadModule(String module) {
-						Module ret=null;
-						
-						java.io.InputStream is=locator.getModule(module);
-						
-						if (is != null) {
-							try {
-								ret = parse(is, locator, logger);
-							} catch (Exception e) {
-								LOG.log(Level.SEVERE, "Failed to parse imported module '"+module+"'", e);
-							} finally {
-								try {
-									is.close();
-								} catch (Exception e) {
-									LOG.log(Level.SEVERE, "Failed to close input stream", e);
-								}
-							}
-						}
-						
-						return (ret);
-					}
-                	
-                });
+                DefaultModuleContext context=new DefaultModuleContext(resource, ret, loader, cache);
                 
-                pv.validate(context, ret, new ValidationLogger() {
-
-					public void error(String issue, ModelObject mobj) {
-						logger.error(issue, mobj.getProperties());
-					}
-
-					public void warning(String issue, ModelObject mobj) {
-						logger.warning(issue, mobj.getProperties());
-					}
-
-					public void info(String issue, ModelObject mobj) {
-						logger.info(issue, mobj.getProperties());
-					}
-                	
-                });
+                pv.validate(context, ret, logger);
             }
             
         } catch (Exception e)  {

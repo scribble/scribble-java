@@ -18,11 +18,11 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.context.ModuleContext;
+import org.scribble.common.logging.ScribbleLogger;
+import org.scribble.common.module.ModuleContext;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
-import org.scribble.validation.ValidationLogger;
 import org.scribble.validation.ValidationMessages;
 
 /**
@@ -35,7 +35,7 @@ public class ImportDeclValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
 		ImportDecl elem=(ImportDecl)mobj;
 		
 		if (elem.getModuleName() != null) {
@@ -55,11 +55,11 @@ public class ImportDeclValidationRule implements ValidationRule {
 					logger.error(MessageFormat.format(ValidationMessages.getMessage("NOT_FOUND_MEMBER"),
 							elem.getMemberName(), elem.getModuleName().getName()), elem);
 					
-				} else if (context.getAlias(elem.getAlias()) != null) {
+				} else if (context.getImportedMember(elem.getAlias()) != null) {
 					logger.error(MessageFormat.format(ValidationMessages.getMessage("EXISTS_ALIAS"),
 							elem.getAlias()), elem);
 					
-				} else if (context.registerAlias(elem.getModuleName().getName(),
+				} else if (context.registerImportedMember(elem.getModuleName().getName(),
 						elem.getMemberName(), elem.getAlias()) == null) {					
 					logger.error(MessageFormat.format(ValidationMessages.getMessage("NOT_FOUND_MEMBER"),
 							elem.getMemberName(), elem.getModuleName().getName()), elem);

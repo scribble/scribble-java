@@ -16,6 +16,8 @@
 package org.scribble.model.global;
 
 import org.scribble.model.ContainmentList;
+import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
 
 /**
  * This class represents a group of activities.
@@ -26,6 +28,28 @@ public class GBlock extends GActivity {
     private java.util.List<GActivity> _contents=
         new ContainmentList<GActivity>(this, GActivity.class);
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoleInvolved(RoleDecl role) {
+    	boolean ret=false;
+    	
+    	for (int i=0; !ret && i < _contents.size(); i++) {
+    		ret = _contents.get(i).isRoleInvolved(role);
+    	}
+    	
+    	return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    	for (GActivity act : _contents) {
+    		act.identifyInvolvedRoles(roles);
+    	}
+    }
+    
     /**
      * This method returns the contents associated with
      * the block.

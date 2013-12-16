@@ -21,9 +21,10 @@ import java.util.Map;
 
 import org.junit.Ignore;
 import org.scribble.model.Module;
-import org.scribble.parser.ConsoleParserLogger;
-import org.scribble.parser.DirectoryResourceLocator;
 import org.scribble.parser.ProtocolParser;
+import org.scribble.common.logging.ConsoleScribbleLogger;
+import org.scribble.common.resources.DirectoryResourceLocator;
+import org.scribble.common.resources.InputStreamResource;
 
 public class ProtocolParserTest {
 
@@ -117,7 +118,11 @@ public class ProtocolParserTest {
     protected void testParser(String name) {
     	
     	try {
-    		java.io.InputStream is=ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+".scr");
+    		String path="scribble/examples/"+name+".scr";
+    		
+    		java.net.URL scrurl=ClassLoader.getSystemResource(path);
+    		java.io.File scrFile=new java.io.File(scrurl.getFile());
+    		java.io.InputStream is=new java.io.FileInputStream(scrFile);
     		
     		java.net.URL url=ClassLoader.getSystemResource("scribble");
     		java.io.File f=new java.io.File(url.getFile());
@@ -128,7 +133,11 @@ public class ProtocolParserTest {
     		
     		DirectoryResourceLocator locator=new DirectoryResourceLocator(f.getParentFile().getAbsolutePath());
     		
-    		Module module=pp.parse(is, locator, logger);
+    		ProtocolModuleLoader loader=new ProtocolModuleLoader(pp, locator, logger);
+    		
+    		InputStreamResource isr=new InputStreamResource(path, scrFile.getAbsolutePath(), is);
+    		
+    		Module module=pp.parse(isr, loader, logger);
     		
     		if (module == null) {
     			fail("Module is null");
@@ -177,7 +186,7 @@ public class ProtocolParserTest {
     	}
     }
     
-    protected class TestIssueLogger extends ConsoleParserLogger {
+    protected class TestIssueLogger extends ConsoleScribbleLogger {
     	
     	private java.util.List<String> _errors=new java.util.ArrayList<String>();
     	private java.util.List<String> _warnings=new java.util.ArrayList<String>();

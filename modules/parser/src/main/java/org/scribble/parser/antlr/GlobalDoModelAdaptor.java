@@ -17,8 +17,8 @@
 package org.scribble.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
+import org.scribble.model.Argument;
 import org.scribble.model.FullyQualifiedName;
-import org.scribble.model.Message;
 import org.scribble.model.RoleInstantiation;
 import org.scribble.model.global.GDo;
 
@@ -40,7 +40,7 @@ public class GlobalDoModelAdaptor implements ModelAdaptor {
 		ret.getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
 		
 		if (context.peek() instanceof java.util.List) {
-			ret.getArguments().addAll((java.util.List<Message>)context.pop());
+			ret.getArguments().addAll((java.util.List<Argument>)context.pop());
 		}
 		
 		StringBuffer protocol=new StringBuffer(((CommonToken)context.pop()).getText());

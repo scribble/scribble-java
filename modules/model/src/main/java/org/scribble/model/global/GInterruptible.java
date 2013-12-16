@@ -15,8 +15,12 @@
  */
 package org.scribble.model.global;
 
+import org.scribble.model.ContainmentList;
 import org.scribble.model.Message;
+import org.scribble.model.ModelObject;
 import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
+import org.scribble.model.Visitor;
 
 /**
  * This class represents the interruptible construct.
@@ -26,7 +30,7 @@ public class GInterruptible extends GActivity {
 
     private String _scope=null;
     private GBlock _block=new GBlock();
-    private java.util.List<Interrupt> _interrupts=new java.util.ArrayList<Interrupt>();
+    private java.util.List<Interrupt> _interrupts=new ContainmentList<Interrupt>(this, Interrupt.class);
 
     /**
      * This is the default constructor.
@@ -36,6 +40,35 @@ public class GInterruptible extends GActivity {
         _block.setParent(this);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoleInvolved(RoleDecl role) {
+    	boolean ret=_block.isRoleInvolved(role);
+    	
+    	for (int i=0; !ret && i < _interrupts.size(); i++) {
+    		if (_interrupts.get(i).getRole() != null) {
+    			ret = role.isRole(_interrupts.get(i).getRole());
+    		}
+    	}
+    	
+    	return (ret);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    	_block.identifyInvolvedRoles(roles);
+
+    	for (int i=0; i < _interrupts.size(); i++) {
+    		if (_interrupts.get(i).getRole() != null &&
+    				!roles.contains(_interrupts.get(i).getRole())) {
+    			roles.add(_interrupts.get(i).getRole());
+    		}
+    	}
+    }
+
     /**
      * This method returns the scope name.
      * 
@@ -178,10 +211,10 @@ public class GInterruptible extends GActivity {
      * This class represents the interrupt definition.
      * 
      */
-    public static class Interrupt {
+    public static class Interrupt extends ModelObject {
     	
     	private Role _role=null;
-    	private java.util.List<Message> _messages=new java.util.ArrayList<Message>();
+    	private java.util.List<Message> _messages=new ContainmentList<Message>(this, Message.class);
     	
     	public Interrupt() {
     	}
@@ -221,6 +254,10 @@ public class GInterruptible extends GActivity {
     	public java.util.List<Message> getMessages() {
     		return (_messages);
     	}
+
+		@Override
+		public void visit(Visitor visitor) {
+		}
     	
         public void toText(StringBuffer buf, int level) {
         	

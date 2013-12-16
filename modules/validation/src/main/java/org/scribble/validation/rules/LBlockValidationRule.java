@@ -16,11 +16,11 @@
  */
 package org.scribble.validation.rules;
 
-import org.scribble.context.ModuleContext;
+import org.scribble.common.logging.ScribbleLogger;
+import org.scribble.common.module.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.local.LActivity;
 import org.scribble.model.local.LBlock;
-import org.scribble.validation.ValidationLogger;
 
 /**
  * This class implements the validation rule for the LBlock
@@ -32,7 +32,7 @@ public class LBlockValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
 		LBlock elem=(LBlock)mobj;
 		
 		for (LActivity act : elem.getContents()) {

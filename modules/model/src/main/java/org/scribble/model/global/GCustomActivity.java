@@ -15,6 +15,9 @@
  */
 package org.scribble.model.global;
 
+import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
+
 /**
  * This class represents a custom activity.
  * 
@@ -39,6 +42,19 @@ public class GCustomActivity extends GActivity {
         super(act);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoleInvolved(RoleDecl role) {
+    	return (false);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    }
+
     /**
      * This method returns the roles associated with the custom activity.
      * 

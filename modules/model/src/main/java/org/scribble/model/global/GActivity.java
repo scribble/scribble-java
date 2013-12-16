@@ -16,6 +16,8 @@
 package org.scribble.model.global;
 
 import org.scribble.model.ModelObject;
+import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
 import org.scribble.model.Visitor;
 
 /**
@@ -38,6 +40,23 @@ public abstract class GActivity extends ModelObject {
     public GActivity(GActivity act) {
         super(act);
     }
+    
+    /**
+     * This method determines whether the supplied role is 'involved'
+     * in this global activity.
+     * 
+     * @param r The role
+     * @return Whether the role is involved
+     */
+    public abstract boolean isRoleInvolved(RoleDecl role);
+    
+    /**
+     * This method builds up the list of roles involved in the global
+     * activity.
+     * 
+     * @param roles The list of involved roles
+     */
+    public abstract void identifyInvolvedRoles(java.util.List<Role> roles);
     
     /**
      * {@inheritDoc}

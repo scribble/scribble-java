@@ -20,13 +20,13 @@ import java.util.logging.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.scribble.model.ModelObject;
-import org.scribble.parser.ParserLogger;
+import org.scribble.common.logging.ScribbleLogger;
 
 /**
  * The Eclipse implementation of the journal.
  *
  */
-public class EclipseScribbleLogger implements ParserLogger {
+public class EclipseScribbleLogger implements ScribbleLogger {
     
     private static final Logger LOG=Logger.getLogger(EclipseScribbleLogger.class.getName());
 
@@ -54,6 +54,14 @@ public class EclipseScribbleLogger implements ParserLogger {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public void error(String issue, ModelObject mobj) {
+        reportIssue(issue, ReportEntry.ERROR_TYPE, mobj.getProperties());
+        _errorOccurred = true;
+    }
+
+    /**
      * Has an error occurred.
      * 
      * @return Whether an error has occurred
@@ -72,8 +80,22 @@ public class EclipseScribbleLogger implements ParserLogger {
     /**
      * {@inheritDoc}
      */
+    public void info(String issue, ModelObject mobj) {
+        reportIssue(issue, ReportEntry.INFORMATION_TYPE, mobj.getProperties());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void warning(String issue, java.util.Map<String,Object> props) {
         reportIssue(issue, ReportEntry.WARNING_TYPE, props);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void warning(String issue, ModelObject mobj) {
+        reportIssue(issue, ReportEntry.WARNING_TYPE, mobj.getProperties());
     }
     
     /**

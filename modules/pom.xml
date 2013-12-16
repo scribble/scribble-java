@@ -2,22 +2,22 @@
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.scribble</groupId>
-	<artifactId>scribble-modules</artifactId>
+	<artifactId>modules</artifactId>
 	<packaging>pom</packaging>
 	<version>0.3.0-SNAPSHOT</version>
 	<name>Scribble::Modules</name>
 
 	<parent>
 		<groupId>org.scribble</groupId>
-		<artifactId>scribble-parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.3.0-SNAPSHOT</version>
 	</parent>
 
 	<modules>
+		<module>common</module>
 		<module>model</module>
-		<module>context</module>
 		<module>parser</module>
+		<module>projection</module>
 		<module>validation</module>
 		<module>cli</module>
 	</modules>

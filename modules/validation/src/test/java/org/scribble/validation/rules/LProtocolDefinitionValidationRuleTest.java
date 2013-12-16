@@ -20,8 +20,8 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.context.DefaultModuleContext;
-import org.scribble.context.ModuleContext;
+import org.scribble.common.module.DefaultModuleContext;
+import org.scribble.common.module.ModuleContext;
 import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
@@ -56,7 +56,7 @@ public class LProtocolDefinitionValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext() {
+    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
@@ -90,7 +90,7 @@ public class LProtocolDefinitionValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext() {
+    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();

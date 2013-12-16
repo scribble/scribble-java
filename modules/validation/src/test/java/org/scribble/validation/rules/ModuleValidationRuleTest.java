@@ -64,23 +64,4 @@ public class ModuleValidationRuleTest {
     	}
     }
     
-    @org.junit.Test
-    public void testModuleNoProtocol() {
-    	ModuleValidationRule rule=new ModuleValidationRule();
-    	TestValidationLogger logger=new TestValidationLogger();
-    	
-    	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
-    	
-    	rule.validate(null, module, logger);
-    	
-    	if (!logger.isErrorsOrWarnings()) {
-    		fail("Errors not detected");
-    	}
-    	
-    	if (!logger.getErrors().contains(ValidationMessages.getMessage("NO_PROTOCOLS"))) {
-    		fail("Error NO_PROTOCOLS not detected");
-    	}
-    }
-    
 }

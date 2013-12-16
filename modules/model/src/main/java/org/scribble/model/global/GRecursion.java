@@ -15,6 +15,9 @@
  */
 package org.scribble.model.global;
 
+import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
+
 /**
  * This class represents the Recur construct.
  * 
@@ -32,6 +35,20 @@ public class GRecursion extends GActivity {
         _block.setParent(this);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoleInvolved(RoleDecl role) {
+    	return (_block.isRoleInvolved(role));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    	_block.identifyInvolvedRoles(roles);
+    }
+
     /**
      * This method returns the label associated with the labelled block construct.
      * 

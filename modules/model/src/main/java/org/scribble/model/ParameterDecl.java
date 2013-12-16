@@ -34,11 +34,13 @@ public class ParameterDecl extends ModelObject {
     /**
      * This is the copy constructor.
      * 
-     * @param role The role
+     * @param pd The role
      */
-    public ParameterDecl(ParameterDecl role) {
-        super(role);
-        _name = role.getName();
+    public ParameterDecl(ParameterDecl pd) {
+        super(pd);
+        _name = pd.getName();
+        _alias = pd.getAlias();
+        _parameterType = pd.getType();
     }
     
     /**

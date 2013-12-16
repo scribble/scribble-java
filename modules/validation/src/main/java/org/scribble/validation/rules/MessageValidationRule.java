@@ -18,14 +18,14 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.context.ModuleContext;
+import org.scribble.common.logging.ScribbleLogger;
+import org.scribble.common.module.ModuleContext;
 import org.scribble.model.Message;
 import org.scribble.model.ModelObject;
 import org.scribble.model.ParameterDecl;
 import org.scribble.model.PayloadType;
 import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.ProtocolDecl;
-import org.scribble.validation.ValidationLogger;
 import org.scribble.validation.ValidationMessages;
 
 /**
@@ -38,7 +38,7 @@ public class MessageValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ValidationLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
 		Message elem=(Message)mobj;
 		
 		ProtocolDecl gpd=elem.getParent(ProtocolDecl.class);
@@ -93,6 +93,14 @@ public class MessageValidationRule implements ValidationRule {
 						PayloadTypeDecl ptype=elem.getModule().getTypeDeclaration(pt.getName());
 						
 						f_found = (ptype != null);
+					}
+					
+					if (!f_found && context != null) {
+						ModelObject alias=context.getImportedMember(pt.getName());
+						
+						if (alias instanceof PayloadTypeDecl) {
+							f_found = true;
+						}
 					}
 					
 					if (!f_found) {

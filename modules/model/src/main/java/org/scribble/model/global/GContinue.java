@@ -15,6 +15,9 @@
  */
 package org.scribble.model.global;
 
+import org.scribble.model.Role;
+import org.scribble.model.RoleDecl;
+
 /**
  * This class represents the Raise construct.
  * 
@@ -40,6 +43,19 @@ public class GContinue extends GActivity {
         _label = copy.getLabel();
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoleInvolved(RoleDecl role) {
+    	return (false);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    }
+
     /**
      * This method returns the label associated with the recursion construct.
      * 

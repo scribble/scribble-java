@@ -16,7 +16,7 @@
 package org.scribble.model;
 
 /**
- * This class represents a package.
+ * This class represents a fully qualified name.
  * 
  */
 public class FullyQualifiedName extends ModelObject {
@@ -32,24 +32,24 @@ public class FullyQualifiedName extends ModelObject {
     /**
      * This is the copy constructor.
      * 
-     * @param p The package
+     * @param fqn The fully qualified name
      */
-    public FullyQualifiedName(FullyQualifiedName p) {
-        super(p);
-        _name = p.getName();
+    public FullyQualifiedName(FullyQualifiedName fqn) {
+        super(fqn);
+        _name = fqn.getName();
     }
     
     /**
-     * This constructor initializes the package with a name.
+     * This constructor initializes the fully qualified name with a name.
      * 
-     * @param packageName The package
+     * @param name The name
      */
-    public FullyQualifiedName(String packageName) {
-        _name = packageName;
+    public FullyQualifiedName(String name) {
+        _name = name;
     }
     
     /**
-     * This method returns the name of the package.
+     * This method returns the fully qualified name.
      * 
      * @return The name
      */
@@ -58,7 +58,7 @@ public class FullyQualifiedName extends ModelObject {
     }
     
     /**
-     * This method sets the name of the package.
+     * This method sets the fully qualified name.
      * 
      * @param name The name
      */

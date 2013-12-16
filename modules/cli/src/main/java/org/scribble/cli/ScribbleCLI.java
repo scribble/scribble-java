@@ -18,11 +18,14 @@ package org.scribble.cli;
 
 import java.io.IOException;
 
+import org.scribble.common.logging.ConsoleScribbleLogger;
+import org.scribble.common.logging.ScribbleLogger;
+import org.scribble.common.resources.DirectoryResourceLocator;
+import org.scribble.common.resources.Resource;
+import org.scribble.common.resources.ResourceLocator;
 import org.scribble.model.Module;
-import org.scribble.parser.ConsoleParserLogger;
-import org.scribble.parser.DirectoryResourceLocator;
+import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.parser.ProtocolParser;
-import org.scribble.parser.ResourceLocator;
 
 /**
  * This class provides the command line interface for the
@@ -104,13 +107,15 @@ public class ScribbleCLI {
 				if (validateModule(module)) {
 					ProtocolParser pp=new ProtocolParser();
 					
-					java.io.InputStream is=_locator.getModule(module);
+					Resource resource=_locator.getResource(module);
 
-					if (is != null) {
+					if (resource != null) {
 						try {
-							_module = pp.parse(is, _locator, new ConsoleParserLogger());
-						
-							is.close();
+							ScribbleLogger logger=new ConsoleScribbleLogger();
+							 
+							ProtocolModuleLoader loader=new ProtocolModuleLoader(pp, _locator, logger);
+							
+							_module = pp.parse(resource, loader, logger);
 	
 						} catch (IOException e) {
 							System.err.println("ERROR: Failed to parse '"+module+"': "+e+"\r\n");

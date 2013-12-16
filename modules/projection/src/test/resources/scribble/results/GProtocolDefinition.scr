@@ -1,0 +1,31 @@
+module scribble.examples.GProtocolDefinition;
+
+import scribble.examples.ImportDefinitions;
+from scribble.examples.ImportDefinitions import PlaceOrder;
+from scribble.examples.ImportDefinitions import Receipt as OrderReceipt;
+
+type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
+type <xsd> "{http://www.acme.com/financial}Customer" from "http://www.acme.com/schemas/Customer.xsd" as Customer;
+
+local protocol GProtocolDefinition at Buyer(role Buyer,role SellerA,role SellerB) {
+	buy(Order,Customer) to SellerA;
+	confirm(OrderReceipt) from SellerA;
+	buy(Order,Customer) to SellerA,SellerB;
+	buy(o:Order,c:Customer) to SellerA;
+	buy(Order) to SellerA,SellerB;
+	buy(ord:Order) to SellerA;
+}
+
+local protocol GProtocolDefinition at SellerA(role Buyer,role SellerA,role SellerB) {
+	buy(Order,Customer) from Buyer;
+	confirm(OrderReceipt) to Buyer;
+	buy(Order,Customer) from Buyer;
+	buy(o:Order,c:Customer) from Buyer;
+	buy(Order) from Buyer;
+	buy(ord:Order) from Buyer;
+}
+
+local protocol GProtocolDefinition at SellerB(role Buyer,role SellerA,role SellerB) {
+	buy(Order,Customer) from Buyer;
+	buy(Order) from Buyer;
+}
