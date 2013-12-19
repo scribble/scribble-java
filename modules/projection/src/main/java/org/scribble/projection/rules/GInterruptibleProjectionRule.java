@@ -59,7 +59,7 @@ public class GInterruptibleProjectionRule implements ProjectionRule {
 			}
 			
 			// Get list of roles involved in the interruptible
-			java.util.List<Role> roles=new java.util.ArrayList<Role>();			
+			java.util.Set<Role> roles=new java.util.HashSet<Role>();			
 			source.identifyInvolvedRoles(roles);
 			
 			// Project throws

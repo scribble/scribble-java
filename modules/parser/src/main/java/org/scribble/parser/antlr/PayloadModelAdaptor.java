@@ -17,7 +17,7 @@
 package org.scribble.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.model.PayloadType;
+import org.scribble.model.PayloadElement;
 
 /**
  * This class provides the model adapter for the 'payloadType' parser rule.
@@ -30,7 +30,7 @@ public class PayloadModelAdaptor implements ModelAdaptor {
 	 */
 	public Object createModelObject(ParserContext context) {
 		
-		PayloadType ret=new PayloadType();
+		PayloadElement ret=new PayloadElement();
 
 		ret.setName(((CommonToken)context.pop()).getText());
 		

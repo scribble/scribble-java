@@ -23,8 +23,6 @@ import org.scribble.common.module.ModuleContext;
 import org.scribble.model.Message;
 import org.scribble.model.ModelObject;
 import org.scribble.model.ParameterDecl;
-import org.scribble.model.PayloadType;
-import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.validation.ValidationMessages;
 
@@ -69,45 +67,11 @@ public class MessageValidationRule implements ValidationRule {
 			}
 		}
 		
-		if (elem.getMessageSignature() != null) {			
-			for (PayloadType pt : elem.getMessageSignature().getTypes()) {
-				
-				// Check if 'name' represents a payload type or parameter name
-				if (pt.getName() != null) {
-					boolean f_found=false;
-					
-					// QUESTION: what takes precedence, the payload type, or parameter name,
-					// if both are defined?
-					
-					if (gpd != null) {
-						for (ParameterDecl pd : gpd.getParameterDeclarations()) {
-							if (pd.getName().equals(pt.getName()) ||
-									pd.getAlias() != null && pd.getAlias().equals(pt.getName())) {
-								f_found = true;
-								break;
-							}
-						}
-					}
-					
-					if (!f_found) {
-						PayloadTypeDecl ptype=elem.getModule().getTypeDeclaration(pt.getName());
-						
-						f_found = (ptype != null);
-					}
-					
-					if (!f_found && context != null) {
-						ModelObject alias=context.getImportedMember(pt.getName());
-						
-						if (alias instanceof PayloadTypeDecl) {
-							f_found = true;
-						}
-					}
-					
-					if (!f_found) {
-						logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_PAYLOAD_ELEMENT"),
-								pt.getName()), elem);
-					}
-				}
+		if (elem.getMessageSignature() != null) {
+			ValidationRule rule=ValidationRuleFactory.getValidationRule(elem.getMessageSignature());
+			
+			if (rule != null) {
+				rule.validate(context, elem.getMessageSignature(), logger);
 			}
 		}
 	}

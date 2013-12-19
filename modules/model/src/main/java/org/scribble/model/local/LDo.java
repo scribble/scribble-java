@@ -25,7 +25,7 @@ import org.scribble.model.RoleInstantiation;
  */
 public class LDo extends LActivity {
     private FullyQualifiedName _protocol=null;
-    private String _scopeName=null;
+    private String _scope=null;
     private java.util.List<Argument> _arguments=new java.util.ArrayList<Argument>();
     private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.ArrayList<RoleInstantiation>();
 
@@ -77,8 +77,8 @@ public class LDo extends LActivity {
      * 
      * @return The scope name
      */
-    public String getScopeName() {
-    	return (_scopeName);
+    public String getScope() {
+    	return (_scope);
     }
     
     /**
@@ -86,8 +86,8 @@ public class LDo extends LActivity {
      * 
      * @param scope The scope name
      */
-    public void setScopeName(String scope) {
-    	_scopeName = scope;
+    public void setScope(String scope) {
+    	_scope = scope;
     }
     
     /**
@@ -127,8 +127,8 @@ public class LDo extends LActivity {
     	
     	buf.append("do ");
     	
-    	if (_scopeName != null) {
-    		buf.append(_scopeName);
+    	if (_scope != null) {
+    		buf.append(_scope);
     		buf.append(": ");
     	}
     	

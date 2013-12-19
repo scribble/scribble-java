@@ -57,8 +57,8 @@ public class GDoProjectionRule implements ProjectionRule {
 				projected.getArguments().add(new Argument(arg));
 			}
 			
-			if (source.getScopeName() != null) {
-				projected.setScopeName(source.getScopeName());
+			if (source.getScope() != null) {
+				projected.setScope(source.getScope());
 			} else {
 				// TODO: Default scoping name???
 			}

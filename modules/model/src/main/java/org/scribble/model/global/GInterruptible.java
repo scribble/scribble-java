@@ -26,7 +26,7 @@ import org.scribble.model.Visitor;
  * This class represents the interruptible construct.
  * 
  */
-public class GInterruptible extends GActivity {
+public class GInterruptible extends GSinglePathActivity {
 
     private String _scope=null;
     private GBlock _block=new GBlock();
@@ -58,12 +58,11 @@ public class GInterruptible extends GActivity {
     /**
      * {@inheritDoc}
      */
-    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    public void identifyInvolvedRoles(java.util.Set<Role> roles) {
     	_block.identifyInvolvedRoles(roles);
 
     	for (int i=0; i < _interrupts.size(); i++) {
-    		if (_interrupts.get(i).getRole() != null &&
-    				!roles.contains(_interrupts.get(i).getRole())) {
+    		if (_interrupts.get(i).getRole() != null) {
     			roles.add(_interrupts.get(i).getRole());
     		}
     	}

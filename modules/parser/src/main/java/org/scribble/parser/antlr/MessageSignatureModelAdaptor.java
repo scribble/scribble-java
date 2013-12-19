@@ -18,7 +18,7 @@ package org.scribble.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
 import org.scribble.model.MessageSignature;
-import org.scribble.model.PayloadType;
+import org.scribble.model.PayloadElement;
 
 /**
  * This class provides the model adapter for the 'messageSignature' parser rule.
@@ -35,8 +35,8 @@ public class MessageSignatureModelAdaptor implements ModelAdaptor {
 		
 		context.pop(); // consume )
 
-		while (context.peek() instanceof PayloadType) {
-			ret.getTypes().add(0, (PayloadType)context.pop());
+		while (context.peek() instanceof PayloadElement) {
+			ret.getPayloadElements().add(0, (PayloadElement)context.pop());
 			
 			if (context.peek() instanceof CommonToken
 					&& ((CommonToken)context.peek()).getText().equals(",")) {

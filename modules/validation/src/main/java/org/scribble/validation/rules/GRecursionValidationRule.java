@@ -16,10 +16,15 @@
  */
 package org.scribble.validation.rules;
 
+import java.text.MessageFormat;
+
 import org.scribble.common.logging.ScribbleLogger;
 import org.scribble.common.module.ModuleContext;
 import org.scribble.model.ModelObject;
+import org.scribble.model.global.DefaultGVisitor;
+import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.model.global.GRecursion;
+import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the GRecursion
@@ -31,8 +36,31 @@ public class GRecursionValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
-		GRecursion elem=(GRecursion)mobj;
+	public void validate(ModuleContext context, ModelObject mobj, final ScribbleLogger logger) {
+		final GRecursion elem=(GRecursion)mobj;
+		
+		// Check that bound label is unique
+		GProtocolDefinition gpd=elem.getParent(GProtocolDefinition.class);
+		
+		if (gpd != null && elem.getLabel() != null) {
+			final java.util.Set<String> labels=new java.util.HashSet<String>();
+			labels.add(elem.getLabel());
+			
+			gpd.visit(new DefaultGVisitor() {
+			    public boolean start(GRecursion rec) {
+			    	if (elem != rec) {
+			    		if (rec.getLabel() != null) {
+			    			if (labels.contains(rec.getLabel())) {
+			    				logger.error(MessageFormat.format(ValidationMessages.getMessage("LABEL_NOT_UNIQUE"),
+			    						rec.getLabel()), elem);				
+			    			}
+			    			labels.add(rec.getLabel());
+			    		}
+			    	}
+			    	return (true);
+			    }
+			});
+		}
 		
 		if (elem.getBlock() != null) {
 			ValidationRule rule=ValidationRuleFactory.getValidationRule(elem.getBlock());

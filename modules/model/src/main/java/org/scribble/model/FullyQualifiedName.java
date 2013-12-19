@@ -66,6 +66,23 @@ public class FullyQualifiedName extends ModelObject {
         _name = name;
     }
     
+    /**
+     * This method returns the last component of the fully
+     * qualified name.
+     * 
+     * @return The last part
+     */
+    public String getLastPart() {
+    	String ret=_name;
+    	
+    	int ind=_name.lastIndexOf('.');
+    	if (ind != -1) {
+    		ret = _name.substring(ind+1);
+    	}
+    	
+    	return (ret);
+    }
+    
     @Override
     public boolean equals(Object obj) {
         boolean ret=false;

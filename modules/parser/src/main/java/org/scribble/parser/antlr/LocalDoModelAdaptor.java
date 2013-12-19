@@ -61,7 +61,7 @@ public class LocalDoModelAdaptor implements ModelAdaptor {
 				&& ((CommonToken)context.peek()).getText().equals(":")) {
 			context.pop(); // consume ':'
 			
-			ret.setScopeName(((CommonToken)context.pop()).getText());
+			ret.setScope(((CommonToken)context.pop()).getText());
 		}
 		
 		context.pop(); // do

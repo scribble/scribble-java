@@ -43,12 +43,14 @@ public class ImportDeclValidationRule implements ValidationRule {
 			// Load imported module
 			Module importedModule=context.importModule(elem.getModuleName().getName());
 			
+			// Wellformedness - check module can be found
 			if (importedModule == null) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("NOT_FOUND_MODULE"),
 						elem.getModuleName().getName()), elem);
 			} else if (elem.getMemberName() != null) {
 				
 				// Check if member within module has been specified
+				// Wellformedness - check member is found in module
 				if (elem.getAlias() == null
 						&& context.getMember(elem.getModuleName().getName(),
 								elem.getMemberName()) == null) {					
@@ -63,8 +65,7 @@ public class ImportDeclValidationRule implements ValidationRule {
 						elem.getMemberName(), elem.getAlias()) == null) {					
 					logger.error(MessageFormat.format(ValidationMessages.getMessage("NOT_FOUND_MEMBER"),
 							elem.getMemberName(), elem.getModuleName().getName()), elem);
-				}
-				
+				}				
 			}
 		} else {
 			logger.error(ValidationMessages.getMessage("NO_MODULE"), elem);

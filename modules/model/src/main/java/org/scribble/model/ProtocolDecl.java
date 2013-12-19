@@ -69,7 +69,7 @@ public abstract class ProtocolDecl extends ModelObject {
     	RoleDecl ret=null;
     	
     	for (RoleDecl rd : _roleDecls) {
-    		if (rd.getName().equals(name) || (rd.getAlias() != null && rd.getAlias().equals(name))) {
+    		if (rd.getDeclarationName().equals(name)) {
     			ret = rd;
     			break;
     		}

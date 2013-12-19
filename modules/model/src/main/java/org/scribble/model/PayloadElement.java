@@ -17,10 +17,10 @@
 package org.scribble.model;
 
 /**
- * This class represents an imported type associated with a model.
+ * This class represents a payload element associated with a model.
  * 
  */
-public class PayloadType extends ModelObject {
+public class PayloadElement extends ModelObject {
 
 	private String _annotation=null;
 	private String _name=null;
@@ -28,7 +28,7 @@ public class PayloadType extends ModelObject {
     /**
      * The default constructor.
      */
-    public PayloadType() {
+    public PayloadElement() {
     }
     
     /**
@@ -36,7 +36,7 @@ public class PayloadType extends ModelObject {
      * 
      * @param copy The copy
      */
-    public PayloadType(PayloadType copy) {
+    public PayloadElement(PayloadElement copy) {
         _annotation = copy.getAnnotation();
         _name = copy.getName();
     }

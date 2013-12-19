@@ -16,6 +16,8 @@
  */
 package org.scribble.validation.rules;
 
+import java.text.MessageFormat;
+
 import org.scribble.common.logging.ScribbleLogger;
 import org.scribble.common.module.ModuleContext;
 import org.scribble.model.ImportDecl;
@@ -63,6 +65,70 @@ public class ModuleValidationRule implements ValidationRule {
 			
 			if (rule != null) {
 				rule.validate(context, protocol, logger);
+			}
+		}
+		
+		// Well formed ness checks
+		if (context.getResource() != null && context.getResource().getPath() != null) {
+			String fileName=elem.getFullyQualifiedName().getLastPart()+".scr";
+			String fileName2=java.io.File.separator+fileName;
+			
+			if (!context.getResource().getPath().equals(fileName) &&
+					!context.getResource().getPath().endsWith(fileName2)) {
+				logger.error(MessageFormat.format(ValidationMessages.getMessage("INCORRECT_FILENAME"),
+						elem.getFullyQualifiedName().getName(),
+						elem.getFullyQualifiedName().getLastPart()+".scr"), mobj);
+			}
+		}
+		
+		java.util.List<String> moduleNames=new java.util.ArrayList<String>();
+		if (elem.getFullyQualifiedName() != null) {
+			moduleNames.add(elem.getFullyQualifiedName().getLastPart());
+		}
+		
+		for (ImportDecl imp : elem.getImports()) {
+			if (imp.getMemberName() == null) {
+				String declName=imp.getDeclarationName();
+				
+				if (moduleNames.contains(declName)) {
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("MODULE_NAME_NOT_DISTINCT"),
+							declName), mobj);
+				} else {
+					moduleNames.add(declName);
+				}
+			}
+		}
+		
+		java.util.List<String> memberNames=new java.util.ArrayList<String>();
+		
+		for (ImportDecl imp : elem.getImports()) {
+			if (imp.getMemberName() != null) {
+				String declName=imp.getDeclarationName();
+				
+				if (memberNames.contains(declName)) {
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("MEMBER_NAME_NOT_DISTINCT"),
+							declName), mobj);
+				} else {
+					memberNames.add(declName);
+				}
+			}
+		}
+		
+		for (PayloadTypeDecl plt : elem.getPayloadTypeDeclarations()) {
+			if (memberNames.contains(plt.getAlias())) {
+				logger.error(MessageFormat.format(ValidationMessages.getMessage("MEMBER_NAME_NOT_DISTINCT"),
+						plt.getAlias()), mobj);
+			} else {
+				memberNames.add(plt.getAlias());
+			}
+		}
+		
+		for (ProtocolDecl pd : elem.getProtocols()) {
+			if (memberNames.contains(pd.getName())) {
+				logger.error(MessageFormat.format(ValidationMessages.getMessage("MEMBER_NAME_NOT_DISTINCT"),
+						pd.getName()), mobj);
+			} else {
+				memberNames.add(pd.getName());
 			}
 		}
 	}

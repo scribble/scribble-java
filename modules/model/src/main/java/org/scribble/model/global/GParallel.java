@@ -24,7 +24,7 @@ import org.scribble.model.RoleDecl;
  * two or more concurrent paths.
  * 
  */
-public class GParallel extends GActivity {
+public class GParallel extends GMultiPathActivity {
     
     private java.util.List<GBlock> _blocks=new ContainmentList<GBlock>(this, GBlock.class);
 
@@ -51,7 +51,7 @@ public class GParallel extends GActivity {
     /**
      * {@inheritDoc}
      */
-    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    public void identifyInvolvedRoles(java.util.Set<Role> roles) {
     	
     	for (GBlock b : _blocks) {
     		b.identifyInvolvedRoles(roles);

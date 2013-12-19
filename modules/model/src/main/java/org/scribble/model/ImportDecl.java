@@ -101,6 +101,25 @@ public class ImportDecl extends ModelObject {
     }
     
     /**
+     * This method returns the declaration name.
+     * 
+     * @return The declaration name
+     */
+    public String getDeclarationName() {
+    	String ret=null;
+    	
+    	if (getAlias() != null) {
+    		ret = getAlias();
+    	} else if (getMemberName() != null) {
+    		ret = getModuleName().toString()+"."+getMemberName();
+    	} else {
+    		ret = getModuleName().toString();
+    	}
+    	
+    	return (ret);
+    }
+    
+    /**
      * This method visits the model object using the supplied
      * visitor.
      * 

@@ -267,6 +267,51 @@ public class GProtocolInstanceValidationRuleTest {
     }
 
 	@org.junit.Test
+    public void testRoleNotDistinct() {
+    	GProtocolInstanceValidationRule rule=new GProtocolInstanceValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolInstance gpi=new GProtocolInstance();
+    	gpi.setMemberName(TEST_MEMBER_NAME);
+    	
+    	RoleDecl rd=new RoleDecl();
+    	rd.setName(TEST_NAME1);
+    	gpi.getRoleDeclarations().add(rd);
+    	
+    	RoleInstantiation ri1=new RoleInstantiation();
+    	ri1.setName(TEST_NAME1);
+    	gpi.getRoleInstantiations().add(ri1);
+    	
+    	RoleInstantiation ri2=new RoleInstantiation();
+    	ri2.setName(TEST_NAME1);
+    	gpi.getRoleInstantiations().add(ri2);
+    	
+    	module.getProtocols().add(gpi);
+    	
+    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+
+			public ModelObject getMember(String fqn) {
+				GProtocolDefinition ret=new GProtocolDefinition();
+				ret.getRoleDeclarations().add(new RoleDecl());
+				return ret;
+			}
+    	};
+    	
+    	rule.validate(context, gpi, logger);
+    	
+    	if (!logger.isErrorsOrWarnings()) {
+    		fail("Errors not detected");
+    	}
+    	
+    	if (!logger.getErrors().contains(MessageFormat.format(ValidationMessages.getMessage("ROLE_NOT_DISTINCT"), TEST_NAME1))) {
+    		fail("Error ROLE_NOT_DISTINCT not detected");
+    	}
+    }
+
+	@org.junit.Test
     public void testRoleAliasDeclared() {
     	GProtocolInstanceValidationRule rule=new GProtocolInstanceValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();

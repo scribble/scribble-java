@@ -61,7 +61,22 @@ public class GProtocolInstanceValidationRule implements ValidationRule {
 				}				
 				
 				for (Argument arg : elem.getArguments()) {
-					if (arg.getName() != null) {
+					
+					// TODO: Rules for arg list wellformedness are not clear - especially
+					// the inner bullet points referring to corresponding element, however what
+					// if alias (parameter position) is provided, then it is not clear how
+					// this impacts the 'corresponding element'??
+					
+					if (arg.getMessageSignature() != null) {
+						
+						// Verify message signature is well formed
+						ValidationRule rule=ValidationRuleFactory.getValidationRule(arg.getMessageSignature());
+						
+						if (rule != null) {
+							rule.validate(context, arg.getMessageSignature(), logger);
+						}
+						
+					} else if (arg.getName() != null) {
 						// Check if argument name has been declared on the protocol instance as
 						// a parameter, or it refers to a payload type name
 						Module m=elem.getModule();
@@ -71,11 +86,25 @@ public class GProtocolInstanceValidationRule implements ValidationRule {
 							ptd = m.getTypeDeclaration(arg.getName());
 						}
 						
-						if (ptd == null && elem.getParameterDeclaration(arg.getName()) == null) {
-							logger.error(MessageFormat.format(ValidationMessages.getMessage("ARG_NOT_DECLARED"),
-									arg.getName()), elem);
+						if (ptd == null) {
+							ModelObject impmem=context.getImportedMember(arg.getName());
+							
+							if (impmem instanceof PayloadTypeDecl) {
+								ptd = (PayloadTypeDecl)impmem;
+							}
+						}
+						
+						if (ptd == null) {
+							
+							if (elem.getParameterDeclaration(arg.getName()) == null) {
+								logger.error(MessageFormat.format(ValidationMessages.getMessage("ARG_NOT_DECLARED"),
+											arg.getName()), elem);
+							}
+						} else {
+							
 						}
 					}
+					
 					if (arg.getAlias() != null) {
 						// Check that target protocol declaration has a parameter name matching
 						// the alias
@@ -96,12 +125,22 @@ public class GProtocolInstanceValidationRule implements ValidationRule {
 				}
 				
 				// Check that the roles defined in the instantiation exist in the declaration
+				java.util.List<String> roleNames=new java.util.ArrayList<String>();
+				
 				for (RoleInstantiation ri : elem.getRoleInstantiations()) {
 					if (ri.getName() != null) {
 						// Check if instantiated role name has been declared on the protocol instance
 						if (elem.getRoleDeclaration(ri.getName()) == null) {
 							logger.error(MessageFormat.format(ValidationMessages.getMessage("ROLE_NOT_DECLARED"),
 									ri.getName()), elem);
+						}
+						
+						// Wellformedness - check that role name is distinct
+						if (roleNames.contains(ri.getName())) {
+							logger.error(MessageFormat.format(ValidationMessages.getMessage("ROLE_NOT_DISTINCT"),
+									ri.getName()), elem);
+						} else {
+							roleNames.add(ri.getName());
 						}
 					}
 					if (ri.getAlias() != null) {

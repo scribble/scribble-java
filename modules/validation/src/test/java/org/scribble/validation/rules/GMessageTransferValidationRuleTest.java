@@ -176,4 +176,84 @@ public class GMessageTransferValidationRuleTest {
     		fail("Error UNKNOWN_ROLE not detected");
     	}
     }
+	
+	@org.junit.Test
+    public void testToRolesDistinct() {
+    	GMessageTransferValidationRule rule=new GMessageTransferValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolDefinition gpd=new GProtocolDefinition();
+    	
+    	RoleDecl rd1=new RoleDecl();
+    	rd1.setName(TEST_ROLE1);
+    	gpd.getRoleDeclarations().add(rd1);
+    	
+    	RoleDecl rd2=new RoleDecl();
+    	rd2.setName(TEST_ROLE2);
+    	gpd.getRoleDeclarations().add(rd2);
+    	
+    	module.getProtocols().add(gpd);
+    	
+    	GBlock block=new GBlock();
+    	gpd.setBlock(block);
+    	
+    	GMessageTransfer gm=new GMessageTransfer();
+    	gm.getToRoles().add(new Role(TEST_ROLE1));
+    	gm.getToRoles().add(new Role(TEST_ROLE2));
+    	block.add(gm);
+    	
+    	Message message=new Message();    	
+    	gm.setMessage(message);
+    	
+     	rule.validate(null, gm, logger);
+   	
+    	if (logger.isErrorsOrWarnings()) {
+    		fail("Errors detected");
+    	}
+    }
+	
+	@org.junit.Test
+    public void testToRolesNotDistinct() {
+    	GMessageTransferValidationRule rule=new GMessageTransferValidationRule();
+    	TestValidationLogger logger=new TestValidationLogger();
+    	
+    	Module module=new Module();
+    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	
+    	GProtocolDefinition gpd=new GProtocolDefinition();
+    	
+    	RoleDecl rd1=new RoleDecl();
+    	rd1.setName(TEST_ROLE1);
+    	gpd.getRoleDeclarations().add(rd1);
+    	
+    	RoleDecl rd2=new RoleDecl();
+    	rd2.setName(TEST_ROLE2);
+    	gpd.getRoleDeclarations().add(rd2);
+    	
+    	module.getProtocols().add(gpd);
+    	
+    	GBlock block=new GBlock();
+    	gpd.setBlock(block);
+    	
+    	GMessageTransfer gm=new GMessageTransfer();
+    	gm.getToRoles().add(new Role(TEST_ROLE1));
+    	gm.getToRoles().add(new Role(TEST_ROLE1));
+    	block.add(gm);
+    	
+    	Message message=new Message();    	
+    	gm.setMessage(message);
+    	
+     	rule.validate(null, gm, logger);
+   	
+    	if (!logger.isErrorsOrWarnings()) {
+    		fail("Errors not detected");
+    	}
+    	
+    	if (!logger.getErrors().contains(MessageFormat.format(ValidationMessages.getMessage("ROLE_NOT_DISTINCT"), TEST_ROLE1))) {
+    		fail("Error ROLE_NOT_DISTINCT not detected");
+    	}
+    }
 }

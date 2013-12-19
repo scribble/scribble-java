@@ -42,15 +42,14 @@ public class DefaultModuleContext implements ModuleContext {
 	 */
 	public DefaultModuleContext(Resource resource, Module thisModule,
 						ModuleLoader loader, ModuleCache cache) {
+		_resource = resource;
 		_thisModule = thisModule;
 		_loader = loader;
 		_modules = (cache == null ? new ModuleCache() : cache);
 	}
 	
 	/**
-	 * This method returns the resource associated with the module.
-	 * 
-	 * @return The resource
+	 * {@inheritDoc}
 	 */
 	public Resource getResource() {
 		return (_resource);

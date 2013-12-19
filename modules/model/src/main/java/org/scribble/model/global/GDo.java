@@ -75,16 +75,12 @@ public class GDo extends GActivity {
     /**
      * {@inheritDoc}
      */
-    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    public void identifyInvolvedRoles(java.util.Set<Role> roles) {
     	
     	for (int i=0; i < _roleInstantiations.size(); i++) {
     		RoleInstantiation ri=_roleInstantiations.get(i);
     		
-    		Role role=new Role(ri.getName());
-    		
-    		if (!roles.contains(role)) {
-    			roles.add(role);
-    		}
+   			roles.add(new Role(ri.getName()));
     	}
     }
 
@@ -111,7 +107,7 @@ public class GDo extends GActivity {
      * 
      * @return The scope name
      */
-    public String getScopeName() {
+    public String getScope() {
     	return (_scopeName);
     }
     
@@ -120,7 +116,7 @@ public class GDo extends GActivity {
      * 
      * @param scope The scope name
      */
-    public void setScopeName(String scope) {
+    public void setScope(String scope) {
     	_scopeName = scope;
     }
     

@@ -45,10 +45,12 @@ public class GInterruptibleValidationRule implements ValidationRule {
 		for (Interrupt in : elem.getInterrupts()) {
 			
 			// Validate messages
-			MessageValidationRule mvr=new MessageValidationRule();
-
 			for (Message m : in.getMessages()) {
-				mvr.validate(context, m, logger);
+				ValidationRule rule=ValidationRuleFactory.getValidationRule(m);
+				
+				if (rule != null) {
+					rule.validate(context, m, logger);
+				}
 			}
 			
 			// Validate role
@@ -57,6 +59,9 @@ public class GInterruptibleValidationRule implements ValidationRule {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),
 						in.getRole().getName()), in.getRole());				
 			}
+			
+			// TODO: Wellformedness - check operator/sig parameter is not used in block (need to
+			// clarify whether in general or just for specific roles)
 		}
 		
 		if (elem.getBlock() != null) {

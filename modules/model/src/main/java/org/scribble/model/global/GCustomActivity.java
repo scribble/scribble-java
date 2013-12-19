@@ -46,13 +46,23 @@ public class GCustomActivity extends GActivity {
      * {@inheritDoc}
      */
     public boolean isRoleInvolved(RoleDecl role) {
-    	return (false);
+    	boolean ret=false;
+    	
+    	for (int i=0; !ret && i < _roles.size(); i++) {
+    		Role r=new Role(_roles.get(i));
+    		ret = role.isRole(r);
+    	}
+    	
+    	return (ret);
     }
     
     /**
      * {@inheritDoc}
      */
-    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    public void identifyInvolvedRoles(java.util.Set<Role> roles) {
+    	for (int i=0; i < _roles.size(); i++) {
+   			roles.add(new Role(_roles.get(i)));
+    	}
     }
 
     /**

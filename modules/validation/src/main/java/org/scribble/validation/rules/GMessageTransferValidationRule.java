@@ -41,8 +41,11 @@ public class GMessageTransferValidationRule implements ValidationRule {
 		
 		// Validate message
 		if (elem.getMessage() != null) {
-			MessageValidationRule mvr=new MessageValidationRule();
-			mvr.validate(context, elem.getMessage(), logger);
+			ValidationRule rule=ValidationRuleFactory.getValidationRule(elem.getMessage());
+			
+			if (rule != null) {
+				rule.validate(context, elem.getMessage(), logger);
+			}
 		}
 		
 		ProtocolDecl pd=elem.getParent(ProtocolDecl.class);
@@ -57,7 +60,15 @@ public class GMessageTransferValidationRule implements ValidationRule {
 				}
 			}
 			
+			java.util.List<String> toRoles=new java.util.ArrayList<String>();
+			
 			for (Role r : elem.getToRoles()) {
+				if (toRoles.contains(r.getName())) {
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("ROLE_NOT_DISTINCT"),
+							r.getName()), elem);
+				} else {
+					toRoles.add(r.getName());
+				}
 				
 				if (pd.getRoleDeclaration(r.getName()) == null) {
 					logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),

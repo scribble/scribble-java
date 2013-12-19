@@ -76,7 +76,15 @@ public class Message extends ModelObject {
      * @param sig The message signature
      */
     public void setMessageSignature(MessageSignature sig) {
+        if (_messageSignature != null) {
+        	_messageSignature.setParent(null);
+        }
+        
     	_messageSignature = sig;
+    	
+        if (_messageSignature != null) {
+        	_messageSignature.setParent(this);
+        }
     }
     
     @Override

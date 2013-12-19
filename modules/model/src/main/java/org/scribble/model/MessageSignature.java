@@ -24,7 +24,7 @@ package org.scribble.model;
 public class MessageSignature extends ModelObject {
 
     private String _operator=null;
-    private java.util.List<PayloadType> _types=new java.util.ArrayList<PayloadType>();
+    private java.util.List<PayloadElement> _types=new ContainmentList<PayloadElement>(this, PayloadElement.class);
 
     /**
      * The default constructor.
@@ -37,7 +37,7 @@ public class MessageSignature extends ModelObject {
      * @param operator The operation name.
      * @param types The arguments for the operation.
      */
-    public MessageSignature(String operator, java.util.List<PayloadType> types) {
+    public MessageSignature(String operator, java.util.List<PayloadElement> types) {
         _operator = operator;
         _types.addAll(types);
     }
@@ -52,8 +52,8 @@ public class MessageSignature extends ModelObject {
         
         _operator = msig.getOperator();
         
-        for (PayloadType tref : msig.getTypes()) {
-            _types.add(new PayloadType(tref));
+        for (PayloadElement tref : msig.getPayloadElements()) {
+            _types.add(new PayloadElement(tref));
         }
     }
     
@@ -82,7 +82,7 @@ public class MessageSignature extends ModelObject {
      * 
      * @return The list of types
      */
-    public java.util.List<PayloadType> getTypes() {
+    public java.util.List<PayloadElement> getPayloadElements() {
         return (_types);
     }
 
@@ -101,15 +101,15 @@ public class MessageSignature extends ModelObject {
         if (obj instanceof MessageSignature) {
             MessageSignature other=(MessageSignature) obj;
             
-            if (other.getTypes().size() == getTypes().size()) {
+            if (other.getPayloadElements().size() == getPayloadElements().size()) {
                 if (other._operator != null && _operator != null) {
                     ret = other._operator.equals(_operator);
                 } else if (other._operator == null && _operator == null) {
                     ret = true;
                 }
                 
-                for (int i=0; ret && i < getTypes().size(); i++) {
-                    ret = getTypes().get(i).equals(other.getTypes().get(i));
+                for (int i=0; ret && i < getPayloadElements().size(); i++) {
+                    ret = getPayloadElements().get(i).equals(other.getPayloadElements().get(i));
                 }
             }
         }
@@ -156,11 +156,11 @@ public class MessageSignature extends ModelObject {
 		buf.append(_operator);
 		buf.append('(');
 	
-		for (int i=0; i < getTypes().size(); i++) {
+		for (int i=0; i < getPayloadElements().size(); i++) {
 			if (i > 0) {
 				buf.append(',');
 			}
-			getTypes().get(i).toText(buf, level);
+			getPayloadElements().get(i).toText(buf, level);
 		}
 	
 		buf.append(')');

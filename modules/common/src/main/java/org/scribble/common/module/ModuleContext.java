@@ -16,6 +16,7 @@
  */
 package org.scribble.common.module;
 
+import org.scribble.common.resources.Resource;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 
@@ -24,6 +25,13 @@ import org.scribble.model.Module;
  *
  */
 public interface ModuleContext {
+
+	/**
+	 * This method returns the resource associated with the module.
+	 * 
+	 * @return The resource
+	 */
+	public Resource getResource();
 
 	/**
 	 * This method imports and returns the named module.

@@ -44,7 +44,7 @@ public class GBlock extends GActivity {
     /**
      * {@inheritDoc}
      */
-    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    public void identifyInvolvedRoles(java.util.Set<Role> roles) {
     	for (GActivity act : _contents) {
     		act.identifyInvolvedRoles(roles);
     	}

@@ -35,6 +35,9 @@ public class GParallelValidationRule implements ValidationRule {
 	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
 		GParallel elem=(GParallel)mobj;
 		
+		// TODO: Wellformedness - distinct message operator/parameter between role pairs
+		// Need to check, R' and R'' - seems wrong??
+		
 		for (GBlock subelem : elem.getPaths()) {
 			ValidationRule rule=ValidationRuleFactory.getValidationRule(subelem);
 			

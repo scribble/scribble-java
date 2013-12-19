@@ -18,6 +18,7 @@ package org.scribble.validation.rules;
 
 import org.scribble.model.ImportDecl;
 import org.scribble.model.Message;
+import org.scribble.model.MessageSignature;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.global.GBlock;
@@ -71,6 +72,7 @@ public class ValidationRuleFactory {
 		_rules.put(LRecursion.class, new LRecursionValidationRule());
 		_rules.put(LSend.class, new LSendValidationRule());
 		_rules.put(Message.class, new MessageValidationRule());
+		_rules.put(MessageSignature.class, new MessageSignatureValidationRule());
 		_rules.put(Module.class, new ModuleValidationRule());
 	}
 	

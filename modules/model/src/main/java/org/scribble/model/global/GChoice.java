@@ -24,7 +24,7 @@ import org.scribble.model.RoleDecl;
  * two or more paths.
  * 
  */
-public class GChoice extends GActivity {
+public class GChoice extends GMultiPathActivity {
 
     private Role _role=null;
     private java.util.List<GBlock> _blocks=new ContainmentList<GBlock>(this, GBlock.class);
@@ -56,9 +56,9 @@ public class GChoice extends GActivity {
     /**
      * {@inheritDoc}
      */
-    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    public void identifyInvolvedRoles(java.util.Set<Role> roles) {
     	
-    	if (_role != null && !roles.contains(_role)) {
+    	if (_role != null) {
     		roles.add(_role);
     	}
     	

@@ -51,12 +51,12 @@ public abstract class GActivity extends ModelObject {
     public abstract boolean isRoleInvolved(RoleDecl role);
     
     /**
-     * This method builds up the list of roles involved in the global
+     * This method builds up the set of roles involved in the global
      * activity.
      * 
-     * @param roles The list of involved roles
+     * @param roles The set of involved roles
      */
-    public abstract void identifyInvolvedRoles(java.util.List<Role> roles);
+    public abstract void identifyInvolvedRoles(java.util.Set<Role> roles);
     
     /**
      * {@inheritDoc}

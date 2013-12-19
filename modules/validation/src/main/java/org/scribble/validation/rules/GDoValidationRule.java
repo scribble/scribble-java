@@ -41,6 +41,13 @@ public class GDoValidationRule implements ValidationRule {
 		
 		// Check if protocol has been declared
 		if (elem.getProtocol() != null) {
+			
+			// TODO: Need to sort out locating protocol in the current module, or
+			// will this be done via the context as well?
+			
+			// TODO: Need to register module aliases, so that a search for a module
+			// based on the alias will also find the member
+			
 			ModelObject mo=context.getMember(elem.getProtocol().getName());
 			
 			if (mo == null || ((mo instanceof GProtocolDefinition) == false &&
@@ -48,6 +55,7 @@ public class GDoValidationRule implements ValidationRule {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_PROTOCOL"),
 						elem.getProtocol().getName()), elem);				
 			} else {
+				
 				// TODO: Verify the args and role instantiations
 			}
 		}

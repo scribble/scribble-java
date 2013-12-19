@@ -90,17 +90,13 @@ public class GMessageTransfer extends GActivity {
     /**
      * {@inheritDoc}
      */
-    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    public void identifyInvolvedRoles(java.util.Set<Role> roles) {
     	
-    	if (_fromRole != null && !roles.contains(_fromRole)) {
+    	if (_fromRole != null) {
     		roles.add(_fromRole);
     	}
     	
-    	for (Role r : _toRoles) {
-    		if (!roles.contains(r)) {
-    			roles.add(r);
-    		}
-    	}
+    	roles.addAll(_toRoles);
     }
 
     /**

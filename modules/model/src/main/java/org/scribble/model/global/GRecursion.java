@@ -22,7 +22,7 @@ import org.scribble.model.RoleDecl;
  * This class represents the Recur construct.
  * 
  */
-public class GRecursion extends GActivity {
+public class GRecursion extends GSinglePathActivity {
 
     private String _label=null;
     private GBlock _block=new GBlock();
@@ -45,7 +45,7 @@ public class GRecursion extends GActivity {
     /**
      * {@inheritDoc}
      */
-    public void identifyInvolvedRoles(java.util.List<Role> roles) {
+    public void identifyInvolvedRoles(java.util.Set<Role> roles) {
     	_block.identifyInvolvedRoles(roles);
     }
 

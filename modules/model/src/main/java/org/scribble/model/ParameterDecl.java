@@ -97,6 +97,22 @@ public class ParameterDecl extends ModelObject {
     	_parameterType = type;
     }
     
+    /**
+     * This method returns the declaration name for the parameter
+     * declaration.
+     * 
+     * @return The declaration name
+     */
+    public String getDeclarationName() {
+    	String ret=_alias;
+    	
+    	if (ret == null) {
+    		ret = _name;
+    	}
+    	
+    	return (ret);
+    }
+    
     @Override
     public boolean equals(Object obj) {
         boolean ret=false;
