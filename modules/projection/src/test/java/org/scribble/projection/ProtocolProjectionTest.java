@@ -30,40 +30,40 @@ public class ProtocolProjectionTest {
 
 	@org.junit.Test
     public void testGProtocolDefinition() {
-    	testParser("GProtocolDefinition");
+    	testProjection("GProtocolDefinition");
     }
 	
 	@org.junit.Test
     public void testGProtocolInstance() {
-    	testParser("GProtocolInstance");
+    	testProjection("GProtocolInstance");
     }
 	
 	@org.junit.Test
     public void testGChoice() {
-    	testParser("GChoice");
+    	testProjection("GChoice");
     }
 	
 	@org.junit.Test
     public void testGRecursion() {
-    	testParser("GRecursion");
+    	testProjection("GRecursion");
     }
 	
 	@org.junit.Test
     public void testGParallel() {
-    	testParser("GParallel");
+    	testProjection("GParallel");
     }
 	
 	@org.junit.Test
     public void testGInterruptible() {
-    	testParser("GInterruptible");
+    	testProjection("GInterruptible");
     }
 	
 	@org.junit.Test
     public void testGDo() {
-    	testParser("GDo");
+    	testProjection("GDo");
     }
 	
-    protected void testParser(String name) {
+    protected void testProjection(String name) {
     	
     	try {
     		String path="scribble/examples/"+name+".scr";
