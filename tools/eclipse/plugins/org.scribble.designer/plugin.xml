@@ -74,8 +74,6 @@
      </initializer>
   </extension>
 
-<!-- Disable for now.
-
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -97,6 +95,7 @@
                enablesFor="1"
                id="org.scribble.designer.actions.ProjectionAction">
          </action>
+         <!--
          <action
                label="Simulate"
                class="org.scribble.designer.actions.SimulateAction"
@@ -104,8 +103,8 @@
                enablesFor="1"
                id="org.scribble.designer.actions.SimulateAction">
          </action>
+         -->
       </objectContribution>
    </extension>
--->
-	
+
 </plugin>

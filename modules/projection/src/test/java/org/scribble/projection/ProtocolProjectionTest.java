@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import org.scribble.model.Module;
+import org.scribble.model.local.LProtocolDecl;
 import org.scribble.parser.ProtocolParser;
 import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.common.logging.ConsoleScribbleLogger;
@@ -100,7 +101,17 @@ public class ProtocolProjectionTest {
     		java.util.Set<Module> projected=projector.project(isr, module, loader, logger);
     		
     		for (Module lm : projected) {
-    			String filename="scribble/results/"+lm.getFullyQualifiedName().getLastPart()+".scr";
+    			String filename="scribble/results/"+lm.getFullyQualifiedName().getLastPart();
+    			
+    			if (lm.getProtocols().size() > 0 && lm.getProtocols().get(0) instanceof LProtocolDecl) {
+    				LProtocolDecl ld=(LProtocolDecl)lm.getProtocols().get(0);
+    				
+    				if (ld.getLocalRole() != null) {
+    					filename += "@"+ld.getLocalRole().getName();
+    				}
+    			}
+    			
+    			filename += ".scr";
     			
 	    		is = ClassLoader.getSystemResourceAsStream(filename);
 	    		

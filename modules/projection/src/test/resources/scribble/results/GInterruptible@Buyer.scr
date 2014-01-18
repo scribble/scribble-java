@@ -1,4 +1,4 @@
-module scribble.examples.GInterruptible@Buyer;
+module scribble.examples.GInterruptible;
 
 type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
 

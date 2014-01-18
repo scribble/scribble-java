@@ -1,4 +1,4 @@
-module scribble.examples.GDo@Seller;
+module scribble.examples.GDo;
 
 type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
 type <xsd> "{http://www.acme.com/financial}Receipt" from "http://www.acme.com/schemas/Receipt.xsd" as Receipt;

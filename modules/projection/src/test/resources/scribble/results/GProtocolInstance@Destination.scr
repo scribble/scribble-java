@@ -1,4 +1,4 @@
-module scribble.examples.GProtocolInstance@Destination;
+module scribble.examples.GProtocolInstance;
 
 type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as OrderRequest;
 

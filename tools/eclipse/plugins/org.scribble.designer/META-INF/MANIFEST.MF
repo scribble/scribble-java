@@ -26,5 +26,6 @@ Bundle-ClassPath: .,
  lib/scribble-common.jar,
  lib/scribble-model.jar,
  lib/scribble-parser.jar,
+ lib/scribble-projection.jar,
  lib/scribble-validation.jar,
  lib/stringtemplate.jar

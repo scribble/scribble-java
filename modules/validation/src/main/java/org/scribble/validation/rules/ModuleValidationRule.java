@@ -25,6 +25,8 @@ import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.ProtocolDecl;
+import org.scribble.model.Role;
+import org.scribble.model.local.LProtocolDecl;
 import org.scribble.validation.ValidationMessages;
 
 /**
@@ -60,7 +62,39 @@ public class ModuleValidationRule implements ValidationRule {
 			}
 		}
 
-		for (ProtocolDecl protocol : elem.getProtocols()) {
+		boolean f_global=true;
+		String localRole=null;
+		
+		if (context.getResource() != null) {
+			int pos=context.getResource().getName().indexOf('@');
+			if (pos != -1) {
+				f_global = false;
+				localRole = context.getResource().getName().substring(pos+1,
+								context.getResource().getName().length()-4);
+			}
+		}
+		
+		for (int i=0; i < elem.getProtocols().size(); i++) {
+			ProtocolDecl protocol=elem.getProtocols().get(i);
+			
+			if (context.getResource() != null) {
+				if (protocol instanceof LProtocolDecl) {
+					Role role=((LProtocolDecl)protocol).getLocalRole();
+					
+					if (f_global) {
+						logger.error(MessageFormat.format(ValidationMessages.getMessage("LOCAL_DEFINED_IN_GLOBAL_MODULE"),
+													role.getName()), protocol);
+					} else if (!role.getName().equals(localRole)) {
+						logger.error(MessageFormat.format(ValidationMessages.getMessage("LOCAL_MODULE_ROLE_MISMATCH"),
+								role.getName(), localRole), protocol);
+					}
+				} else if (!f_global) {
+					logger.error(MessageFormat.format(ValidationMessages.getMessage("GLOBAL_DEFINED_IN_LOCAL_MODULE"),
+													localRole), protocol);
+				}
+			}
+			
+			// Validate the protocol
 			ValidationRule rule=ValidationRuleFactory.getValidationRule(protocol);
 			
 			if (rule != null) {
@@ -70,7 +104,15 @@ public class ModuleValidationRule implements ValidationRule {
 		
 		// Well formed ness checks
 		if (context.getResource() != null && context.getResource().getPath() != null) {
-			String fileName=elem.getFullyQualifiedName().getLastPart()+".scr";
+			String fileName=elem.getFullyQualifiedName().getLastPart();
+			
+			if (localRole != null) {
+				fileName += "@"+localRole;
+			}
+			
+			fileName += ".scr";			
+			
+			//String fileName=elem.getFullyQualifiedName().getLastPart()+".scr";
 			String fileName2=java.io.File.separator+fileName;
 			
 			if (!context.getResource().getPath().equals(fileName) &&
@@ -107,7 +149,7 @@ public class ModuleValidationRule implements ValidationRule {
 				
 				if (memberNames.contains(declName)) {
 					logger.error(MessageFormat.format(ValidationMessages.getMessage("MEMBER_NAME_NOT_DISTINCT"),
-							declName), mobj);
+							declName), imp);
 				} else {
 					memberNames.add(declName);
 				}
@@ -117,7 +159,7 @@ public class ModuleValidationRule implements ValidationRule {
 		for (PayloadTypeDecl plt : elem.getPayloadTypeDeclarations()) {
 			if (memberNames.contains(plt.getAlias())) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("MEMBER_NAME_NOT_DISTINCT"),
-						plt.getAlias()), mobj);
+						plt.getAlias()), plt);
 			} else {
 				memberNames.add(plt.getAlias());
 			}
@@ -126,7 +168,7 @@ public class ModuleValidationRule implements ValidationRule {
 		for (ProtocolDecl pd : elem.getProtocols()) {
 			if (memberNames.contains(pd.getName())) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("MEMBER_NAME_NOT_DISTINCT"),
-						pd.getName()), mobj);
+						pd.getName()), pd);
 			} else {
 				memberNames.add(pd.getName());
 			}

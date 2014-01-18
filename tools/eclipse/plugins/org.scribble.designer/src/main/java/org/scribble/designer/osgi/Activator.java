@@ -31,7 +31,6 @@ import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.scribble.designer.validator.ProtocolValidator;
-import org.scribble.designer.DesignerServices;
 import org.scribble.designer.editor.ScribblePartitionScanner;
 import org.scribble.designer.editor.lang.ScribbleCodeScanner;
 import org.scribble.designer.editor.util.ScribbleColorProvider;
@@ -75,9 +74,6 @@ public class Activator extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
 
-        // Initialise the parser
-        DesignerServices.setProtocolParser(new org.scribble.parser.ProtocolParser());
-        
         // Register resource change listener
         IResourceChangeListener rcl=new IResourceChangeListener() {
             public void resourceChanged(IResourceChangeEvent evt) {       
@@ -114,7 +110,7 @@ public class Activator extends AbstractUIPlugin {
      */
     protected boolean isChangeRelevant(IResource res, IResourceDelta delta) {
         return (res instanceof IFile
-                && DesignerServices.PROTOCOL_FILE_EXTENSION.equals(((IFile)res).getFileExtension())
+                && ((IFile)res).getFileExtension().equals("scr")
                 && (((delta.getFlags() & IResourceDelta.CONTENT) != 0)
                         || delta.getKind() == IResourceDelta.ADDED));
     }

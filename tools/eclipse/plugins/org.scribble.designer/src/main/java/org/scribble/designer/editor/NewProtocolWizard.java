@@ -39,7 +39,6 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.scribble.designer.DesignerServices;
 
 /**
  * This class provides the wizard responsible for creating
@@ -234,7 +233,7 @@ public class NewProtocolWizard extends Wizard implements INewWizard {
     protected void initFileCreationPage() {
         String defaultModelBaseFilename = "My";
         
-        String defaultModelFilenameExtension = DesignerServices.PROTOCOL_FILE_EXTENSION;
+        String defaultModelFilenameExtension = "scr";
         String modelFilename = defaultModelBaseFilename + "." + defaultModelFilenameExtension;
 
         // Create a page, set the title, and the initial model file name.
@@ -305,7 +304,7 @@ public class NewProtocolWizard extends Wizard implements INewWizard {
          */
         protected boolean validatePage() {
             if (super.validatePage()) {
-                String requiredExt = DesignerServices.PROTOCOL_FILE_EXTENSION;
+                String requiredExt = "scr";
                 
                 String enteredExt = new Path(getFileName()).getFileExtension();
                 if (enteredExt == null || !enteredExt.equals(requiredExt)) {

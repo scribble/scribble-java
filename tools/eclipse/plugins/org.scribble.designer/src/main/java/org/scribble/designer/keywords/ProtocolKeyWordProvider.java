@@ -42,6 +42,7 @@ public class ProtocolKeyWordProvider extends DefaultKeyWordProvider {
 		"role",
 		"throw",
 		"to",
+		"type",
 		"with",
 		"module"
 	};

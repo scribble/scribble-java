@@ -60,8 +60,8 @@ public class ModuleProjectionRule implements ProjectionRule {
 				projected.setFullyQualifiedName(new FullyQualifiedName(source.getFullyQualifiedName()));
 				
 				// TODO: Need to investigate options for best pro
-				projected.getFullyQualifiedName().setName(projected.getFullyQualifiedName().getName()
-											+"@"+rd.getName());
+				//projected.getFullyQualifiedName().setName(projected.getFullyQualifiedName().getName()
+				//							+"@"+rd.getName());
 			}
 			
 			// Copy imports

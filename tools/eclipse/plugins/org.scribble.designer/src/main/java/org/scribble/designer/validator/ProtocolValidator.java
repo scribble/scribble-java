@@ -16,17 +16,15 @@
  */
 package org.scribble.designer.validator;
 
-import java.io.InputStream;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 //import org.eclipse.core.runtime.IProgressMonitor;
 //import org.eclipse.wst.validation.ValidationResult;
 //import org.eclipse.wst.validation.ValidationState;
-import org.scribble.designer.DesignerServices;
 import org.scribble.designer.logger.EclipseScribbleLogger;
 import org.scribble.designer.osgi.Activator;
 import org.scribble.parser.ProtocolModuleLoader;
+import org.scribble.parser.ProtocolParser;
 import org.scribble.common.resources.InputStreamResource;
 import org.scribble.common.resources.Resource;
 import org.scribble.common.resources.ResourceLocator;
@@ -63,13 +61,11 @@ public class ProtocolValidator {
      * @param res The resource
      */
     public void validateResource(final IResource res) {
-    	java.io.InputStream is=null;
-    	
         EclipseScribbleLogger logger=
                 new EclipseScribbleLogger((IFile)res);
         
         try {
-            InputStreamResource isr = new InputStreamResource(null, res.getLocation().toOSString(),
+            InputStreamResource isr = new InputStreamResource(res.getName(), res.getLocation().toOSString(),
             					((IFile)res).getContents());
             
             // Create a locator based on the Eclipse project root
@@ -92,20 +88,16 @@ public class ProtocolValidator {
 				}
             };
             
-            ProtocolModuleLoader loader=new ProtocolModuleLoader(DesignerServices.getProtocolParser(), locator, logger);
+            ProtocolParser pp=new ProtocolParser();
             
-            DesignerServices.getProtocolParser().parse(isr, loader, logger);
+            ProtocolModuleLoader loader=new ProtocolModuleLoader(pp, locator, logger);
+            
+            pp.parse(isr, loader, logger);
             
         } catch (Exception e) {
             Activator.logError("Failed to record validation issue on resource '"+res+"'", e);
         } finally {
             logger.finished();
-
-            try {
-            	is.close();
-            } catch (Exception e) {
-            	Activator.logError("Failed to close input stream", e);
-            }
         }
     }
 }
