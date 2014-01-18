@@ -97,39 +97,47 @@ public class ProtocolProjectionTest {
     		
     		ProtocolProjector projector=new ProtocolProjector();
     		
-    		Module projected=projector.project(isr, module, loader, logger);
+    		java.util.Set<Module> projected=projector.project(isr, module, loader, logger);
     		
-    		is = ClassLoader.getSystemResourceAsStream("scribble/results/"+name+".scr");
-    		
-    		byte[] b=new byte[is.available()];
-    		is.read(b);
-    		
-    		is.close();
-    		
-    		String projd=projected.toString().trim();
-    		String expecting=new String(b).trim();
-    		
-    		if (!projd.equals(expecting)) {
-    			int len=projd.length();
-    			if (len > expecting.length()) {
-    				len = expecting.length();
-    			}
-    			for (int i=0; i < len; i++) {
-    				if (projd.charAt(i) != expecting.charAt(i)) {
-    					System.out.println("DIFF AT POSITION: "+i);
-    					int showto=i+30;
-    					if (i+10 >= len) {
-    						showto = len;
-    					}    					
-    					System.out.println("PROJECTED: "+projd.substring(i, showto));
-    					System.out.println("EXPECT: "+expecting.substring(i, showto));
-    					break;
-    				}
-    			}
+    		for (Module lm : projected) {
+    			String filename="scribble/results/"+lm.getFullyQualifiedName().getLastPart()+".scr";
     			
-    			System.err.println("Projected protocol '"+name+
-    					"' mismatch\nExpecting:\n"+expecting+"\nProjected:\n"+projd);
-    			fail("Projected protocol '"+name+"' mismatch");
+	    		is = ClassLoader.getSystemResourceAsStream(filename);
+	    		
+	    		if (is == null) {
+	    			fail("Project result for '"+filename+"' not found");
+	    		}
+	    		
+	    		byte[] b=new byte[is.available()];
+	    		is.read(b);
+	    		
+	    		is.close();
+	    		
+	    		String projd=lm.toString().trim();
+	    		String expecting=new String(b).trim();
+	    		
+	    		if (!projd.equals(expecting)) {
+	    			int len=projd.length();
+	    			if (len > expecting.length()) {
+	    				len = expecting.length();
+	    			}
+	    			for (int i=0; i < len; i++) {
+	    				if (projd.charAt(i) != expecting.charAt(i)) {
+	    					System.out.println("DIFF AT POSITION: "+i);
+	    					int showto=i+30;
+	    					if (i+10 >= len) {
+	    						showto = len;
+	    					}    					
+	    					System.out.println("PROJECTED: "+projd.substring(i, showto));
+	    					System.out.println("EXPECT: "+expecting.substring(i, showto));
+	    					break;
+	    				}
+	    			}
+	    			
+	    			System.err.println("Projected protocol '"+name+
+	    					"' mismatch\nExpecting:\n"+expecting+"\nProjected:\n"+projd);
+	    			fail("Projected protocol '"+name+"' mismatch");
+	    		}
     		}
     		
     	} catch (Exception e) {

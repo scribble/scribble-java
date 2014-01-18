@@ -16,6 +16,7 @@
 package org.scribble.model.global;
 
 import org.scribble.model.Argument;
+import org.scribble.model.ContainmentList;
 import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.Role;
 import org.scribble.model.RoleDecl;
@@ -29,8 +30,9 @@ public class GDo extends GActivity {
 
     private FullyQualifiedName _protocol=null;
     private String _scopeName=null;
-    private java.util.List<Argument> _arguments=new java.util.ArrayList<Argument>();
-    private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.ArrayList<RoleInstantiation>();
+    private java.util.List<Argument> _arguments=new ContainmentList<Argument>(this, Argument.class);
+    private java.util.List<RoleInstantiation> _roleInstantiations=new ContainmentList<RoleInstantiation>(this,
+    											RoleInstantiation.class);
 
     /**
      * This is the default constructor.

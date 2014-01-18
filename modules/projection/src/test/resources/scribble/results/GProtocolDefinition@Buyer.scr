@@ -1,4 +1,4 @@
-module scribble.examples.GProtocolDefinition;
+module scribble.examples.GProtocolDefinition@Buyer;
 
 import scribble.examples.ImportDefinitions;
 from scribble.examples.ImportDefinitions import PlaceOrder;
@@ -14,18 +14,4 @@ local protocol GProtocolDefinition at Buyer(role Buyer,role SellerA,role SellerB
 	buy(o:Order,c:Customer) to SellerA;
 	buy(Order) to SellerA,SellerB;
 	buy(ord:Order) to SellerA;
-}
-
-local protocol GProtocolDefinition at SellerA(role Buyer,role SellerA,role SellerB) {
-	buy(Order,Customer) from Buyer;
-	confirm(OrderReceipt) to Buyer;
-	buy(Order,Customer) from Buyer;
-	buy(o:Order,c:Customer) from Buyer;
-	buy(Order) from Buyer;
-	buy(ord:Order) from Buyer;
-}
-
-local protocol GProtocolDefinition at SellerB(role Buyer,role SellerA,role SellerB) {
-	buy(Order,Customer) from Buyer;
-	buy(Order) from Buyer;
 }

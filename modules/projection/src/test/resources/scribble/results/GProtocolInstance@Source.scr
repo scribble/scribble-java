@@ -1,0 +1,6 @@
+module scribble.examples.GProtocolInstance@Source;
+
+type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as OrderRequest;
+
+local protocol Submit at Source<sig Op as SubmitOp>(role Source,role Destination) {
+}

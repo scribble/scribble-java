@@ -1,0 +1,5 @@
+module scribble.examples.GProtocolInstance@Seller;
+
+type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as OrderRequest;
+
+local protocol PlaceOrder at Seller(role Buyer,role Seller) instantiates Submit<place(OrderRequest)>(Buyer,Seller);

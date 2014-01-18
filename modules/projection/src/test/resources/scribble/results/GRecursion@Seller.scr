@@ -1,13 +1,6 @@
-module scribble.examples.GRecursion;
+module scribble.examples.GRecursion@Seller;
 
 type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
-
-local protocol GRecursionTest at Buyer(role Buyer,role Seller) {
-	rec MyLabel {
-		buy(Order) to Seller;
-		continue MyLabel;
-	}
-}
 
 local protocol GRecursionTest at Seller(role Buyer,role Seller) {
 	rec MyLabel {

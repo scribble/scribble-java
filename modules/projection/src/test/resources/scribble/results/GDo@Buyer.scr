@@ -1,0 +1,9 @@
+module scribble.examples.GDo@Buyer;
+
+type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
+type <xsd> "{http://www.acme.com/financial}Receipt" from "http://www.acme.com/schemas/Receipt.xsd" as Receipt;
+
+local protocol GDoTest at Buyer(role Buyer,role Seller) {
+	do OtherProtocol(Buyer as OtherBuyer,Seller as OtherSeller);
+	do myscope: a.b.c.OtherProtocol<buy(Order),confirm(Receipt)>(Buyer as OtherBuyer,Seller as OtherSeller);
+}

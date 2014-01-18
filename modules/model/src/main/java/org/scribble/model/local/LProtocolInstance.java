@@ -16,6 +16,7 @@
 package org.scribble.model.local;
 
 import org.scribble.model.Argument;
+import org.scribble.model.ContainmentList;
 import org.scribble.model.ParameterDecl;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.RoleInstantiation;
@@ -27,8 +28,9 @@ import org.scribble.model.Visitor;
 public class LProtocolInstance extends LProtocolDecl {
     
     private String _memberName=null;
-    private java.util.List<RoleInstantiation> _roleInstantiations=new java.util.ArrayList<RoleInstantiation>();
-    private java.util.List<Argument> _arguments=new java.util.ArrayList<Argument>();
+    private java.util.List<Argument> _arguments=new ContainmentList<Argument>(this, Argument.class);
+    private java.util.List<RoleInstantiation> _roleInstantiations=new ContainmentList<RoleInstantiation>(this,
+    											RoleInstantiation.class);
 
     /**
      * The default constructor.

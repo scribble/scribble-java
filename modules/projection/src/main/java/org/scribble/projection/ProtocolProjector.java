@@ -39,17 +39,19 @@ public class ProtocolProjector {
 	 * @param module The module
 	 * @param loader The module loader
 	 * @param logger The logger
+	 * @return The set of modules representing the local projections
 	 */
-	public Module project(Resource resource, Module module,
+	@SuppressWarnings("unchecked")
+	public java.util.Set<Module> project(Resource resource, Module module,
 							ModuleLoader loader, ScribbleLogger logger) {
-		Module ret=null;
+		java.util.Set<Module> ret=null;
 		ProjectionRule rule=ProjectionRuleFactory.getProjectionRule(module);
 		
 		if (rule != null) {
             DefaultModuleContext context=new DefaultModuleContext(resource,
             				module, loader, new ModuleCache());
             
-			ret = (Module)rule.project(context, module, null, logger);
+			ret = (java.util.Set<Module>)rule.project(context, module, null, logger);
 		}
 		
 		return (ret);

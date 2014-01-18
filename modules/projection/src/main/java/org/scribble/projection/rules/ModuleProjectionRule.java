@@ -39,57 +39,67 @@ public class ModuleProjectionRule implements ProjectionRule {
 	 */
 	public Object project(ModuleContext context, ModelObject mobj,
 								RoleDecl role, ScribbleLogger logger) {
-		Module projected=null;
+		java.util.Set<Module> ret=new java.util.HashSet<Module>();
 		Module source=(Module)mobj;
+
+		java.util.Set<RoleDecl> roles=new java.util.HashSet<RoleDecl>();
 		
-		// Create new module
-		projected = new Module();
-		
-		projected.derivedFrom(source);
-		
-		if (source.getFullyQualifiedName() != null) {
-			projected.setFullyQualifiedName(new FullyQualifiedName(source.getFullyQualifiedName()));
-		}
-		
-		// Copy imports
-		for (ImportDecl imp : source.getImports()) {
-			projected.getImports().add(new ImportDecl(imp));
-		}
-		
-		// Copy payload type declarations
-		for (PayloadTypeDecl ptd : source.getPayloadTypeDeclarations()) {
-			projected.getPayloadTypeDeclarations().add(new PayloadTypeDecl(ptd));
-		}
-		
-		// Project global protocols, to all of their roles (for now)
-		// TODO: Allow config to specify specific list of roles (and possibly global
-		// protocols if more than one)
+		// Build list of roles
 		for (ProtocolDecl pd : source.getProtocols()) {
+			roles.addAll(pd.getRoleDeclarations());
+		}
+		
+		for (RoleDecl rd : roles) {
 			
-			if (pd instanceof GProtocolDefinition || pd instanceof GProtocolInstance) {
-				ProtocolDecl gpd=(ProtocolDecl)pd;
+			// Create new module
+			Module projected = new Module();
+			
+			projected.derivedFrom(source);
+			
+			if (source.getFullyQualifiedName() != null) {
+				projected.setFullyQualifiedName(new FullyQualifiedName(source.getFullyQualifiedName()));
 				
-				// Identify roles
-				for (RoleDecl rd : gpd.getRoleDeclarations()) {
+				// TODO: Need to investigate options for best pro
+				projected.getFullyQualifiedName().setName(projected.getFullyQualifiedName().getName()
+											+"@"+rd.getName());
+			}
+			
+			// Copy imports
+			for (ImportDecl imp : source.getImports()) {
+				projected.getImports().add(new ImportDecl(imp));
+				
+				// Modify the import statements
+			}
+			
+			// Copy payload type declarations
+			for (PayloadTypeDecl ptd : source.getPayloadTypeDeclarations()) {
+				projected.getPayloadTypeDeclarations().add(new PayloadTypeDecl(ptd));
+			}
+			
+			for (ProtocolDecl pd : source.getProtocols()) {
+				
+				if (pd instanceof GProtocolDefinition || pd instanceof GProtocolInstance) {
+					ProtocolDecl gpd=(ProtocolDecl)pd;
 					
-					// TODO: Check if role projection already exists
-					
-					ProjectionRule rule=ProjectionRuleFactory.getProjectionRule(gpd);
-					
-					if (rule != null) {
-						ProtocolDecl lpd=(ProtocolDecl)rule.project(context, gpd, rd, logger);
+					if (pd.getRoleDeclarations().contains(rd)) {
 						
-						if (lpd != null) {
-							projected.getProtocols().add(lpd);
+						ProjectionRule rule=ProjectionRuleFactory.getProjectionRule(gpd);
+						
+						if (rule != null) {
+							ProtocolDecl lpd=(ProtocolDecl)rule.project(context, gpd, rd, logger);
+							
+							if (lpd != null) {
+								projected.getProtocols().add(lpd);
+							}
 						}
 					}
-
 				}
 			}
+			
+			ret.add(projected);
 		}
-		
-		
-		return (projected);
+
+		return (ret);
 	}
 	
 }
