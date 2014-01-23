@@ -57,7 +57,7 @@ public class DefaultParserContext implements ParserContext {
             _properties.put(ModelObject.START_LINE, chobj.getProperties().get(ModelObject.START_LINE));                    
             _properties.put(ModelObject.START_COLUMN, chobj.getProperties().get(ModelObject.START_COLUMN));
         
-            if (!chobj.getProperties().containsKey(ModelObject.END_LINE)) {
+            if (chobj.getProperties().containsKey(ModelObject.END_LINE)) {
                 
                 _properties.put(ModelObject.END_LINE, chobj.getProperties().get(ModelObject.END_LINE));                    
                 _properties.put(ModelObject.END_COLUMN, chobj.getProperties().get(ModelObject.END_COLUMN));

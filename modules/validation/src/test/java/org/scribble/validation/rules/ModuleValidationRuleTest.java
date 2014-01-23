@@ -113,9 +113,12 @@ public class ModuleValidationRuleTest {
     		fail("Errors not detected");
     	}
     	
+    	String moduleName="a.b.D";
+    	String filepath=moduleName.replace('.', java.io.File.separatorChar)+".scr";
+    	
     	if (!logger.getErrors().contains(MessageFormat.format(
-    				ValidationMessages.getMessage("INCORRECT_FILENAME"), "a.b.D", "D.scr"))) {
-    		fail("Error INCORRECT_FILENAME not detected");
+    				ValidationMessages.getMessage("INCORRECT_FILEPATH"), moduleName, filepath))) {
+    		fail("Error INCORRECT_FILEPATH not detected");
     	}
     }
     

@@ -56,7 +56,7 @@ public class GMessageTransferValidationRule implements ValidationRule {
 				
 				if (pd.getRoleDeclaration(elem.getFromRole().getName()) == null) {
 					logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),
-							elem.getFromRole().getName()), elem.getFromRole());				
+							elem.getFromRole().getName()), elem);				
 				}
 			}
 			
@@ -72,7 +72,7 @@ public class GMessageTransferValidationRule implements ValidationRule {
 				
 				if (pd.getRoleDeclaration(r.getName()) == null) {
 					logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_ROLE"),
-							r.getName()), r);				
+							r.getName()), elem);				
 				}
 			}
 		}

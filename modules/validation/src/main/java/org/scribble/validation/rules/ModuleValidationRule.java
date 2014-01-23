@@ -104,22 +104,17 @@ public class ModuleValidationRule implements ValidationRule {
 		
 		// Well formed ness checks
 		if (context.getResource() != null && context.getResource().getPath() != null) {
-			String fileName=elem.getFullyQualifiedName().getLastPart();
+			String filepath=elem.getFullyQualifiedName().getName().replace('.',  java.io.File.separatorChar);
 			
 			if (localRole != null) {
-				fileName += "@"+localRole;
+				filepath += "@"+localRole;
 			}
 			
-			fileName += ".scr";			
+			filepath += ".scr";			
 			
-			//String fileName=elem.getFullyQualifiedName().getLastPart()+".scr";
-			String fileName2=java.io.File.separator+fileName;
-			
-			if (!context.getResource().getPath().equals(fileName) &&
-					!context.getResource().getPath().endsWith(fileName2)) {
-				logger.error(MessageFormat.format(ValidationMessages.getMessage("INCORRECT_FILENAME"),
-						elem.getFullyQualifiedName().getName(),
-						elem.getFullyQualifiedName().getLastPart()+".scr"), mobj);
+			if (!context.getResource().getPath().equals(filepath)) {
+				logger.error(MessageFormat.format(ValidationMessages.getMessage("INCORRECT_FILEPATH"),
+						elem.getFullyQualifiedName().getName(), filepath), mobj);
 			}
 		}
 		
