@@ -23,7 +23,7 @@ import org.scribble.model.ParameterDecl;
  * This class provides the model adapter for the 'roleDef' parser rule.
  *
  */
-public class ParameterDeclListModelAdaptor implements ModelAdaptor {
+public class ParameterDeclListModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -39,6 +39,9 @@ public class ParameterDeclListModelAdaptor implements ModelAdaptor {
 			f_iterate = false;
 			
 			ParameterDecl pd=new ParameterDecl();
+			
+			setEndProperties(pd, context.peek());
+			
 			pd.setName(((CommonToken)context.pop()).getText());
 		
 			if (context.peek() instanceof CommonToken
@@ -49,6 +52,8 @@ public class ParameterDeclListModelAdaptor implements ModelAdaptor {
 				
 				pd.setName(((CommonToken)context.pop()).getText());
 			}
+			
+			setStartProperties(pd, context.peek());
 
 			String type=((CommonToken)context.pop()).getText();
 			

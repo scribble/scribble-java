@@ -23,7 +23,7 @@ import org.scribble.model.local.LContinue;
  * This class provides the model adapter for the 'localContinue' parser rule.
  *
  */
-public class LocalContinueModelAdaptor implements ModelAdaptor {
+public class LocalContinueModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -31,11 +31,11 @@ public class LocalContinueModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {		
 		LContinue ret=new LContinue();
 
-		context.pop(); // ';'
+		setEndProperties(ret, context.pop()); // ';'
 		
 		ret.setLabel(((CommonToken)context.pop()).getText());
 		
-		context.pop(); // continue
+		setStartProperties(ret, context.pop()); // continue
 		
 		context.push(ret);
 			

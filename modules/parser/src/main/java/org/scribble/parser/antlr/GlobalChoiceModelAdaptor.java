@@ -25,13 +25,15 @@ import org.scribble.model.global.GChoice;
  * This class provides the model adapter for the 'choice' parser rule.
  *
  */
-public class GlobalChoiceModelAdaptor implements ModelAdaptor {
+public class GlobalChoiceModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
 		GChoice ret=new GChoice();
+		
+		setEndProperties(ret, context.peek());
 		
 		while (context.peek() instanceof GBlock) {
 			ret.getPaths().add(0, (GBlock)context.pop());
@@ -42,10 +44,18 @@ public class GlobalChoiceModelAdaptor implements ModelAdaptor {
 			}
 		}
 		
-		ret.setRole(new Role(((CommonToken)context.pop()).getText()));
+		Role r=new Role();
+		
+		setStartProperties(r, context.peek());
+		setEndProperties(r, context.peek());
+		
+		r.setName(((CommonToken)context.pop()).getText());
+
+		ret.setRole(r);
 		
 		context.pop(); // at
-		context.pop(); // choice
+		
+		setStartProperties(ret, context.pop()); // choice
 		
 		context.push(ret);
 		

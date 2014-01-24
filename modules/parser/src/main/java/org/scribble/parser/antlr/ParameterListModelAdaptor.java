@@ -23,7 +23,7 @@ import org.scribble.model.Parameter;
  * This class provides the model adapter for the 'parameterList' parser rule.
  *
  */
-public class ParameterListModelAdaptor implements ModelAdaptor {
+public class ParameterListModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -37,9 +37,11 @@ public class ParameterListModelAdaptor implements ModelAdaptor {
 			
 			Parameter p=new Parameter();
 			
+			setEndProperties(p, context.pop());
+			
 			p.setName(((CommonToken)context.pop()).getText());
 			
-			context.pop(); // sig
+			setStartProperties(p, context.pop()); // sig
 
 			ret.add(0, p);
 			

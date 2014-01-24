@@ -23,13 +23,14 @@ import org.scribble.model.FullyQualifiedName;
  * This class provides the model adapter for the 'packageDecl' parser rule.
  *
  */
-public class ModuleDeclModelAdaptor implements ModelAdaptor {
+public class ModuleDeclModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
 		Object component=context.pop();
+		Object endComponent=component;
 		String packageName="";
 		FullyQualifiedName ret=null;
 		
@@ -50,6 +51,9 @@ public class ModuleDeclModelAdaptor implements ModelAdaptor {
 		if (packageName.length() > 0) {
 			ret = new FullyQualifiedName();
 			ret.setName(packageName);
+			
+			setStartProperties(ret, component);
+			setEndProperties(ret, endComponent);
 			
 			context.push(ret);
 		}

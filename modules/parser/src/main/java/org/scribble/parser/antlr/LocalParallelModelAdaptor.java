@@ -24,13 +24,15 @@ import org.scribble.model.local.LParallel;
  * This class provides the model adapter for the 'localParallel' parser rule.
  *
  */
-public class LocalParallelModelAdaptor implements ModelAdaptor {
+public class LocalParallelModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
 		LParallel ret=new LParallel();
+		
+		setEndProperties(ret, context.peek());
 		
 		while (context.peek() instanceof LBlock) {
 			ret.getPaths().add(0, (LBlock)context.pop());
@@ -41,7 +43,7 @@ public class LocalParallelModelAdaptor implements ModelAdaptor {
 			}
 		}
 		
-		context.pop(); // par
+		setStartProperties(ret, context.pop()); // par
 		
 		context.push(ret);
 		

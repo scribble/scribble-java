@@ -24,7 +24,7 @@ import org.scribble.model.local.LRecursion;
  * This class provides the model adapter for the 'localRecursion' parser rule.
  *
  */
-public class LocalRecursionModelAdaptor implements ModelAdaptor {
+public class LocalRecursionModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -32,11 +32,13 @@ public class LocalRecursionModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		LRecursion ret=new LRecursion();
 		
+		setEndProperties(ret, context.peek());
+		
 		ret.setBlock((LBlock)context.pop());
 		
 		ret.setLabel(((CommonToken)context.pop()).getText());
 		
-		context.pop(); // rec
+		setStartProperties(ret, context.pop()); // rec
 		
 		context.push(ret);
 		

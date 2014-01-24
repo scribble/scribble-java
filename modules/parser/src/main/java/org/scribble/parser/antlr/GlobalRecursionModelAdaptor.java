@@ -24,7 +24,7 @@ import org.scribble.model.global.GRecursion;
  * This class provides the model adapter for the 'recursion' parser rule.
  *
  */
-public class GlobalRecursionModelAdaptor implements ModelAdaptor {
+public class GlobalRecursionModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -32,11 +32,13 @@ public class GlobalRecursionModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		GRecursion ret=new GRecursion();
 		
+		setEndProperties(ret, context.peek());
+		
 		ret.setBlock((GBlock)context.pop());
 		
 		ret.setLabel(((CommonToken)context.pop()).getText());
 		
-		context.pop(); // rec
+		setStartProperties(ret, context.pop()); // rec
 		
 		context.push(ret);
 		

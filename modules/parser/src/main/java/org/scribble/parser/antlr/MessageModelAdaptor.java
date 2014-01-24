@@ -24,7 +24,7 @@ import org.scribble.model.MessageSignature;
  * This class provides the model adapter for the 'messageSignature' parser rule.
  *
  */
-public class MessageModelAdaptor implements ModelAdaptor {
+public class MessageModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -32,6 +32,9 @@ public class MessageModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		
 		Message ret=new Message();
+		
+		setStartProperties(ret, context.peek());
+		setEndProperties(ret, context.peek());
 		
 		if (context.peek() instanceof MessageSignature) {
 			ret.setMessageSignature((MessageSignature)context.pop());

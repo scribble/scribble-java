@@ -23,7 +23,7 @@ import org.scribble.model.RoleInstantiation;
  * This class provides the model adapter for the 'roleInstantiationList' parser rule.
  *
  */
-public class RoleInstantiationListModelAdaptor implements ModelAdaptor {
+public class RoleInstantiationListModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -39,6 +39,11 @@ public class RoleInstantiationListModelAdaptor implements ModelAdaptor {
 			f_iterate = false;
 			
 			RoleInstantiation ri=new RoleInstantiation();
+			
+			setEndProperties(ri, context.peek());
+			
+			setStartProperties(ri, context.peek());
+			
 			ri.setName(((CommonToken)context.pop()).getText());
 		
 			if (context.peek() instanceof CommonToken
@@ -46,6 +51,8 @@ public class RoleInstantiationListModelAdaptor implements ModelAdaptor {
 				context.pop(); // 'as'
 				
 				ri.setAlias(ri.getName());
+
+				setStartProperties(ri, context.peek());
 				
 				ri.setName(((CommonToken)context.pop()).getText());
 			}

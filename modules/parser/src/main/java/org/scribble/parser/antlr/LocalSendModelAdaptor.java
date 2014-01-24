@@ -25,7 +25,7 @@ import org.scribble.model.local.LSend;
  * This class provides the model adapter for the 'send' parser rule.
  *
  */
-public class LocalSendModelAdaptor implements ModelAdaptor {
+public class LocalSendModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -34,20 +34,36 @@ public class LocalSendModelAdaptor implements ModelAdaptor {
 		
 		LSend ret=new LSend();
 
-		context.pop(); // ';'
+		setEndProperties(ret, context.pop()); // ';'
 
-		ret.getToRoles().add(new Role(((CommonToken)context.pop()).getText()));
+		Role r=new Role();
+		
+		setStartProperties(r, context.peek());
+		setEndProperties(r, context.peek());
+		
+		r.setName(((CommonToken)context.pop()).getText());
+
+		ret.getToRoles().add(r);
 		
 		while (context.peek() instanceof CommonToken
 				&& ((CommonToken)context.peek()).getText().equals(",")) {
 			context.pop(); // ','
 
-			ret.getToRoles().add(0, new Role(((CommonToken)context.pop()).getText()));
+			r = new Role();
+			
+			setStartProperties(r, context.peek());
+			setEndProperties(r, context.peek());
+			
+			r.setName(((CommonToken)context.pop()).getText());
+			
+			ret.getToRoles().add(0, r);
 		}
 		
 		context.pop(); // to
 	
 		ret.setMessage((Message)context.pop());
+		
+		setStartProperties(ret, ret.getMessage());
 		
 		context.push(ret);
 			

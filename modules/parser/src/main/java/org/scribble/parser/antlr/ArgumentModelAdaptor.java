@@ -24,7 +24,7 @@ import org.scribble.model.MessageSignature;
  * This class provides the model adapter for the 'messageSignature' parser rule.
  *
  */
-public class ArgumentModelAdaptor implements ModelAdaptor {
+public class ArgumentModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -34,7 +34,11 @@ public class ArgumentModelAdaptor implements ModelAdaptor {
 		Argument ret=new Argument();
 		
 		if (context.peek() instanceof CommonToken) {
-			ret.setAlias(((CommonToken)context.pop()).getText());
+			CommonToken end=(CommonToken)context.pop();
+			
+			ret.setAlias(end.getText());
+			
+			setEndProperties(ret, end);
 
 			if (context.peek() instanceof CommonToken &&
 					((CommonToken)context.peek()).getText().equals("as")) {
@@ -42,15 +46,26 @@ public class ArgumentModelAdaptor implements ModelAdaptor {
 				
 				if (context.peek() instanceof MessageSignature) {
 					ret.setMessageSignature((MessageSignature)context.pop());
+					
+					setStartProperties(ret, ret.getMessageSignature());
 				} else {
-					ret.setName(((CommonToken)context.pop()).getText());
+					CommonToken nameToken=(CommonToken)context.pop();
+					
+					ret.setName(nameToken.getText());
+					
+					setStartProperties(ret, nameToken);
 				}
 			} else {
 				ret.setName(ret.getAlias());
 				ret.setAlias(null);
+				
+				setStartProperties(ret, end);
 			}
 		} else if (context.peek() instanceof MessageSignature) {
 			ret.setMessageSignature((MessageSignature)context.pop());
+			
+			setStartProperties(ret, ret.getMessageSignature());
+			setEndProperties(ret, ret.getMessageSignature());
 		}
 		
 		context.push(ret);

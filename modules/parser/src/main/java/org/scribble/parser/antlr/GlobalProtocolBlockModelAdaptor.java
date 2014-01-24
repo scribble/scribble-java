@@ -23,7 +23,7 @@ import org.scribble.model.global.GBlock;
  * This class provides the model adapter for the 'globalInterationBlock' parser rule.
  *
  */
-public class GlobalProtocolBlockModelAdaptor implements ModelAdaptor {
+public class GlobalProtocolBlockModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -31,13 +31,13 @@ public class GlobalProtocolBlockModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		GBlock ret=new GBlock();
 		
-		context.pop(); // consume }
+		setEndProperties(ret, context.pop()); // consume }
 		
 		while (context.peek() instanceof GActivity) {
 			ret.getContents().add(0, (GActivity)context.pop());
 		}
 		
-		context.pop(); // consume {
+		setStartProperties(ret, context.pop()); // consume {
 
 		context.push(ret);
 		

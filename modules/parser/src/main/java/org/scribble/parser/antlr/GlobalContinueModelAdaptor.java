@@ -23,7 +23,7 @@ import org.scribble.model.global.GContinue;
  * This class provides the model adapter for the 'continue' parser rule.
  *
  */
-public class GlobalContinueModelAdaptor implements ModelAdaptor {
+public class GlobalContinueModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -31,11 +31,11 @@ public class GlobalContinueModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {		
 		GContinue ret=new GContinue();
 
-		context.pop(); // ';'
+		setEndProperties(ret, context.pop()); // ';'
 		
 		ret.setLabel(((CommonToken)context.pop()).getText());
 		
-		context.pop(); // continue
+		setStartProperties(ret, context.pop()); // continue
 		
 		context.push(ret);
 			

@@ -24,7 +24,7 @@ import org.scribble.model.global.GInterruptible;
  * This class provides the model adapter for the 'interruptible' parser rule.
  *
  */
-public class GlobalInterruptibleModelAdaptor implements ModelAdaptor {
+public class GlobalInterruptibleModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -32,7 +32,7 @@ public class GlobalInterruptibleModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		GInterruptible ret=new GInterruptible();
 		
-		context.pop(); // '}'
+		setEndProperties(ret, context.pop()); // '}'
 		
 		while (context.peek() instanceof GInterruptible.Interrupt) {
 			ret.getInterrupts().add(0, (GInterruptible.Interrupt)context.pop());
@@ -50,7 +50,7 @@ public class GlobalInterruptibleModelAdaptor implements ModelAdaptor {
 			ret.setScope(((CommonToken)context.pop()).getText());
 		}
 		
-		context.pop(); // interruptible
+		setStartProperties(ret, context.pop()); // interruptible
 		
 		context.push(ret);
 		

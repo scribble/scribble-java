@@ -24,7 +24,7 @@ import org.scribble.model.PayloadElement;
  * This class provides the model adapter for the 'messageSignature' parser rule.
  *
  */
-public class MessageSignatureModelAdaptor implements ModelAdaptor {
+public class MessageSignatureModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -33,7 +33,7 @@ public class MessageSignatureModelAdaptor implements ModelAdaptor {
 		
 		MessageSignature ret=new MessageSignature();
 		
-		context.pop(); // consume )
+		setEndProperties(ret, context.pop()); // consume )
 
 		while (context.peek() instanceof PayloadElement) {
 			ret.getPayloadElements().add(0, (PayloadElement)context.pop());
@@ -46,7 +46,11 @@ public class MessageSignatureModelAdaptor implements ModelAdaptor {
 		
 		context.pop(); // consume (
 
-		ret.setOperator(((CommonToken)context.pop()).getText());
+		CommonToken op=(CommonToken)context.pop();
+		
+		ret.setOperator(op.getText());
+		
+		setStartProperties(ret, op);
 		
 		context.push(ret);
 			

@@ -23,14 +23,17 @@ import org.scribble.model.PayloadTypeDecl;
  * This class provides the model adapter for the 'payloadTypeDecl' parser rule.
  *
  */
-public class PayloadTypeDeclModelAdaptor implements ModelAdaptor {
+public class PayloadTypeDeclModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
+		PayloadTypeDecl ret=new PayloadTypeDecl();
 		
 		context.pop(); // Consume ';'
+		
+		setEndProperties(ret, context.peek());
 		
 		String alias=((CommonToken)context.pop()).getText();
 		context.pop(); // as
@@ -40,12 +43,12 @@ public class PayloadTypeDeclModelAdaptor implements ModelAdaptor {
 		context.pop(); // >
 		String format=((CommonToken)context.pop()).getText();
 		context.pop(); // <
-		context.pop(); // type
+		
+		setStartProperties(ret, context.pop()); // type
 		
 		schema = schema.substring(1, schema.length()-1);
 		type = type.substring(1, type.length()-1);
 		
-		PayloadTypeDecl ret=new PayloadTypeDecl();
 		ret.setAlias(alias);
 		ret.setSchema(schema);
 		ret.setType(type);

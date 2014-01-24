@@ -25,13 +25,15 @@ import org.scribble.model.local.LChoice;
  * This class provides the model adapter for the 'localChoice' parser rule.
  *
  */
-public class LocalChoiceModelAdaptor implements ModelAdaptor {
+public class LocalChoiceModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
 		LChoice ret=new LChoice();
+		
+		setEndProperties(ret, context.peek());
 		
 		while (context.peek() instanceof LBlock) {
 			ret.getPaths().add(0, (LBlock)context.pop());
@@ -42,10 +44,18 @@ public class LocalChoiceModelAdaptor implements ModelAdaptor {
 			}
 		}
 		
-		ret.setRole(new Role(((CommonToken)context.pop()).getText()));
+		Role r=new Role();
+		
+		setStartProperties(r, context.peek());
+		setEndProperties(r, context.peek());
+		
+		r.setName(((CommonToken)context.pop()).getText());
+
+		ret.setRole(r);
 		
 		context.pop(); // at
-		context.pop(); // choice
+		
+		setStartProperties(ret, context.pop()); // choice
 		
 		context.push(ret);
 		

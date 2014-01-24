@@ -23,7 +23,7 @@ import org.scribble.model.Argument;
  * This class provides the model adapter for the 'argumentList' parser rule.
  *
  */
-public class ArgumentListModelAdaptor implements ModelAdaptor {
+public class ArgumentListModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}

@@ -16,12 +16,6 @@
  */
 package org.scribble.parser.antlr;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.antlr.runtime.Token;
-import org.scribble.model.ModelObject;
-
 /**
  * This interface represents the context used by
  * the parser.
@@ -29,41 +23,12 @@ import org.scribble.model.ModelObject;
  */
 public class DefaultParserContext implements ParserContext {
 	
-	private static final Logger LOG=Logger.getLogger(DefaultParserContext.class.getName());
-	
 	private java.util.Stack<Object> _components=new java.util.Stack<Object>();
-	private java.util.Map<String,Object> _properties=new java.util.HashMap<String,Object>();
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object pop() {
-		Object child=_components.peek();
-		
-        if (child instanceof Token) {
-            Token token=(Token)child;
-            
-            _properties.put(ModelObject.START_LINE, token.getLine());                    
-            _properties.put(ModelObject.START_COLUMN, token.getCharPositionInLine());
-            
-            if (!_properties.containsKey(ModelObject.END_LINE)) {
-                _properties.put(ModelObject.END_LINE, token.getLine());                    
-                _properties.put(ModelObject.END_COLUMN, token.getCharPositionInLine()
-                        +token.getText().length());
-            }
-        } else if (child instanceof ModelObject) {
-            ModelObject chobj=(ModelObject)child;
-            
-            _properties.put(ModelObject.START_LINE, chobj.getProperties().get(ModelObject.START_LINE));                    
-            _properties.put(ModelObject.START_COLUMN, chobj.getProperties().get(ModelObject.START_COLUMN));
-        
-            if (chobj.getProperties().containsKey(ModelObject.END_LINE)) {
-                
-                _properties.put(ModelObject.END_LINE, chobj.getProperties().get(ModelObject.END_LINE));                    
-                _properties.put(ModelObject.END_COLUMN, chobj.getProperties().get(ModelObject.END_COLUMN));
-            }
-        }
-		
 		return (_components.pop());
 	}
 	
@@ -79,17 +44,6 @@ public class DefaultParserContext implements ParserContext {
 	 */
 	public void push(Object obj) {
 		_components.push(obj);
-		
-		// Update model object with location info from previously popped components
-		if (obj instanceof ModelObject) {
-			((ModelObject)obj).getProperties().putAll(_properties);
-			
-			if (LOG.isLoggable(Level.FINE)) {
-				LOG.fine("Properties for '"+obj+"' are "+_properties);
-			}
-		}
-
-		_properties.clear();
 	}
 
 }

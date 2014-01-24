@@ -23,7 +23,7 @@ import org.scribble.model.local.LBlock;
  * This class provides the model adapter for the 'localInteractionBlock' parser rule.
  *
  */
-public class LocalProtocolBlockModelAdaptor implements ModelAdaptor {
+public class LocalProtocolBlockModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -31,13 +31,13 @@ public class LocalProtocolBlockModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		LBlock ret=new LBlock();
 		
-		context.pop(); // consume }
+		setEndProperties(ret, context.pop()); // consume }
 		
 		while (context.peek() instanceof LActivity) {
 			ret.getContents().add(0, (LActivity)context.pop());
 		}
 		
-		context.pop(); // consume {
+		setStartProperties(ret, context.pop()); // consume {
 
 		context.push(ret);
 		

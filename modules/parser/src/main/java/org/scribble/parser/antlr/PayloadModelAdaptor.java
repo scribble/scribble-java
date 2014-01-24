@@ -23,7 +23,7 @@ import org.scribble.model.PayloadElement;
  * This class provides the model adapter for the 'payloadType' parser rule.
  *
  */
-public class PayloadModelAdaptor implements ModelAdaptor {
+public class PayloadModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -31,12 +31,18 @@ public class PayloadModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		
 		PayloadElement ret=new PayloadElement();
+		
+		setEndProperties(ret, context.peek());
+		setStartProperties(ret, context.peek());
 
 		ret.setName(((CommonToken)context.pop()).getText());
 		
 		if (context.peek() instanceof CommonToken
 				&& ((CommonToken)context.peek()).getText().equals(":")) {
 			context.pop(); // :
+
+			setStartProperties(ret, context.peek());
+			
 			ret.setAnnotation(((CommonToken)context.pop()).getText());
 		}
 		

@@ -30,7 +30,7 @@ import org.scribble.model.global.GProtocolInstance;
  * This class provides the model adapter for the 'globalProtocolDecl' parser rule.
  *
  */
-public class GlobalProtocolDeclModelAdaptor implements ModelAdaptor {
+public class GlobalProtocolDeclModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -42,11 +42,13 @@ public class GlobalProtocolDeclModelAdaptor implements ModelAdaptor {
 		if (context.peek() instanceof GBlock) {
 			ret = new GProtocolDefinition();
 			
+			setEndProperties(ret, context.peek());
+			
 			((GProtocolDefinition)ret).setBlock((GBlock)context.pop());
 		} else {
 			ret = new GProtocolInstance();
 
-			context.pop(); // consume ;
+			setEndProperties(ret, context.pop()); // consume ;
 
 			((GProtocolInstance)ret).getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
 			
@@ -68,7 +70,8 @@ public class GlobalProtocolDeclModelAdaptor implements ModelAdaptor {
 		ret.setName(((CommonToken)context.pop()).getText());
 		
 		context.pop(); // protocol
-		context.pop(); // global
+		
+		setStartProperties(ret, context.pop()); // global
 		
 		context.push(ret);
 		

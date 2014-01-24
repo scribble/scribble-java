@@ -24,7 +24,7 @@ import org.scribble.model.global.GParallel;
  * This class provides the model adapter for the 'parallel' parser rule.
  *
  */
-public class GlobalParallelModelAdaptor implements ModelAdaptor {
+public class GlobalParallelModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -41,7 +41,9 @@ public class GlobalParallelModelAdaptor implements ModelAdaptor {
 			}
 		}
 		
-		context.pop(); // par
+		setEndProperties(ret, ret.getPaths().get(ret.getPaths().size()-1));
+		
+		setStartProperties(ret, context.pop()); // par
 		
 		context.push(ret);
 		

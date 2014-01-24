@@ -26,13 +26,15 @@ import org.scribble.model.ProtocolDecl;
  * This class provides the model adapter for the 'module' parser rule.
  *
  */
-public class ModuleModelAdaptor implements ModelAdaptor {
+public class ModuleModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object createModelObject(ParserContext context) {
 		Module ret=new Module();
+		
+		setEndProperties(ret, context.peek());
 		
 		while (context.peek() instanceof ProtocolDecl) {
 			ret.getProtocols().add(0, (ProtocolDecl)context.pop());
@@ -47,6 +49,8 @@ public class ModuleModelAdaptor implements ModelAdaptor {
 		}
 
 		if (context.peek() instanceof FullyQualifiedName) {
+			setStartProperties(ret, context.peek());
+			
 			ret.setFullyQualifiedName((FullyQualifiedName)context.pop());
 		}
 		

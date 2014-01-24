@@ -26,7 +26,7 @@ import org.scribble.model.global.GDo;
  * This class provides the model adapter for the 'doDef' parser rule.
  *
  */
-public class GlobalDoModelAdaptor implements ModelAdaptor {
+public class GlobalDoModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -35,7 +35,7 @@ public class GlobalDoModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {		
 		GDo ret=new GDo();
 
-		context.pop(); // ';'
+		setEndProperties(ret, context.pop()); // ';'
 		
 		ret.getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
 		
@@ -64,7 +64,7 @@ public class GlobalDoModelAdaptor implements ModelAdaptor {
 			ret.setScope(((CommonToken)context.pop()).getText());
 		}
 		
-		context.pop(); // do
+		setStartProperties(ret, context.pop()); // do
 
 		context.push(ret);
 			

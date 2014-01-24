@@ -25,7 +25,7 @@ import org.scribble.model.local.LInterruptible;
  * This class provides the model adapter for the 'interruptible' parser rule.
  *
  */
-public class LocalCatchModelAdaptor implements ModelAdaptor {
+public class LocalCatchModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -33,9 +33,16 @@ public class LocalCatchModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		LInterruptible.Catch ret=new LInterruptible.Catch();
 		
-		context.pop(); // ';'
+		setEndProperties(ret, context.pop()); // ';'
 		
-		ret.setRole(new Role(((CommonToken)context.pop()).getText()));
+		Role r=new Role();
+		
+		setStartProperties(r, context.peek());
+		setEndProperties(r, context.peek());
+		
+		r.setName(((CommonToken)context.pop()).getText());
+
+		ret.setRole(r);
 		
 		context.pop(); // 'from'
 		
@@ -48,7 +55,7 @@ public class LocalCatchModelAdaptor implements ModelAdaptor {
 			ret.getMessages().add(0, (Message)context.pop());
 		}
 		
-		context.pop(); // 'catches'
+		setStartProperties(ret, context.pop()); // 'catches'
 
 		context.push(ret);
 		

@@ -24,7 +24,7 @@ import org.scribble.model.ImportDecl;
  * This class provides the model adapter for the 'importDecl' parser rule.
  *
  */
-public class ImportDeclModelAdaptor implements ModelAdaptor {
+public class ImportDeclModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -33,7 +33,7 @@ public class ImportDeclModelAdaptor implements ModelAdaptor {
 		
 		ImportDecl ret=new ImportDecl();
 		
-		context.pop(); // consume ';'
+		setEndProperties(ret, context.pop()); // consume ';'
 
 		String text=((CommonToken)context.pop()).getText();
 		
@@ -61,7 +61,7 @@ public class ImportDeclModelAdaptor implements ModelAdaptor {
 		
 		ret.setModuleName(new FullyQualifiedName(text));
 		
-		context.pop(); // consume 'from' or 'import' depending on which path was taken
+		setStartProperties(ret, context.pop()); // consume 'from' or 'import' depending on which path was taken
 
 		/* Import first approach....
 		 * 

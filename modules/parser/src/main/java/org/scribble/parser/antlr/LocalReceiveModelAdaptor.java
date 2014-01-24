@@ -25,7 +25,7 @@ import org.scribble.model.local.LReceive;
  * This class provides the model adapter for the 'receive' parser rule.
  *
  */
-public class LocalReceiveModelAdaptor implements ModelAdaptor {
+public class LocalReceiveModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -34,13 +34,22 @@ public class LocalReceiveModelAdaptor implements ModelAdaptor {
 		
 		LReceive ret=new LReceive();
 
-		context.pop(); // ';'
+		setEndProperties(ret, context.pop()); // ';'
 
-		ret.setFromRole(new Role(((CommonToken)context.pop()).getText()));
+		Role r=new Role();
+		
+		setStartProperties(r, context.peek());
+		setEndProperties(r, context.peek());
+		
+		r.setName(((CommonToken)context.pop()).getText());
+
+		ret.setFromRole(r);
 		
 		context.pop(); // from
 	
 		ret.setMessage((Message)context.pop());
+		
+		setStartProperties(ret, ret.getMessage());
 		
 		context.push(ret);
 			

@@ -31,7 +31,7 @@ import org.scribble.model.local.LProtocolInstance;
  * This class provides the model adapter for the 'localProtocolDecl' parser rule.
  *
  */
-public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
+public class LocalProtocolDeclModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -43,11 +43,13 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 		if (context.peek() instanceof LBlock) {
 			ret = new LProtocolDefinition();
 			
+			setEndProperties(ret, context.peek());
+			
 			((LProtocolDefinition)ret).setBlock((LBlock)context.pop());
 		} else {
 			ret = new LProtocolInstance();
 
-			context.pop(); // consume ;
+			setEndProperties(ret, context.pop()); // consume ;
 
 			((LProtocolInstance)ret).getRoleInstantiations().addAll((java.util.List<RoleInstantiation>)context.pop());
 			
@@ -68,9 +70,23 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 		}
 		
 		if (ret instanceof LProtocolDefinition) {
-			((LProtocolDefinition)ret).setLocalRole(new Role(((CommonToken)context.pop()).getText()));
+			Role r=new Role();
+			
+			setStartProperties(r, context.peek());
+			setEndProperties(r, context.peek());
+			
+			r.setName(((CommonToken)context.pop()).getText());
+
+			((LProtocolDefinition)ret).setLocalRole(r);
 		} else if (ret instanceof LProtocolInstance) {
-			((LProtocolInstance)ret).setLocalRole(new Role(((CommonToken)context.pop()).getText()));
+			Role r=new Role();
+			
+			setStartProperties(r, context.peek());
+			setEndProperties(r, context.peek());
+			
+			r.setName(((CommonToken)context.pop()).getText());
+
+			((LProtocolInstance)ret).setLocalRole(r);
 		}
 		
 		context.pop(); // at
@@ -78,7 +94,8 @@ public class LocalProtocolDeclModelAdaptor implements ModelAdaptor {
 		ret.setName(((CommonToken)context.pop()).getText());
 		
 		context.pop(); // protocol
-		context.pop(); // local
+		
+		setStartProperties(ret, context.pop()); // local
 		
 		context.push(ret);
 		

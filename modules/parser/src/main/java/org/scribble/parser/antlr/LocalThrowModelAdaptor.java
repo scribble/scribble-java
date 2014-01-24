@@ -25,7 +25,7 @@ import org.scribble.model.local.LInterruptible;
  * This class provides the model adapter for the 'interruptible' parser rule.
  *
  */
-public class LocalThrowModelAdaptor implements ModelAdaptor {
+public class LocalThrowModelAdaptor extends AbstractModelAdaptor {
 
 	/**
 	 * {@inheritDoc}
@@ -33,14 +33,28 @@ public class LocalThrowModelAdaptor implements ModelAdaptor {
 	public Object createModelObject(ParserContext context) {
 		LInterruptible.Throw ret=new LInterruptible.Throw();
 		
-		context.pop(); // ';'
+		setEndProperties(ret, context.pop()); // ';'
 		
-		ret.getToRoles().add(new Role(((CommonToken)context.pop()).getText()));
+		Role r=new Role();
+		
+		setStartProperties(r, context.peek());
+		setEndProperties(r, context.peek());
+		
+		r.setName(((CommonToken)context.pop()).getText());
+
+		ret.getToRoles().add(r);
 		
 		while (((CommonToken)context.peek()).getText().equals(",")) {
 			context.pop(); // ','
 
-			ret.getToRoles().add(new Role(((CommonToken)context.pop()).getText()));
+			r = new Role();
+			
+			setStartProperties(r, context.peek());
+			setEndProperties(r, context.peek());
+			
+			r.setName(((CommonToken)context.pop()).getText());
+
+			ret.getToRoles().add(r);
 		}
 		
 		context.pop(); // 'to'
@@ -54,7 +68,7 @@ public class LocalThrowModelAdaptor implements ModelAdaptor {
 			ret.getMessages().add(0, (Message)context.pop());
 		}
 		
-		context.pop();	// 'throws'
+		setStartProperties(ret, context.pop());	// 'throws'
 
 		context.push(ret);
 		
