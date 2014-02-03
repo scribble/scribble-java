@@ -25,11 +25,11 @@ public interface ResourceLocator {
 
 	/**
 	 * This method obtains the resource associated with the
-	 * supplied name.
+	 * supplied path.
 	 * 
-	 * @param name The  name
+	 * @param path The resource path
 	 * @return The resource, or null if not found
 	 */
-	public Resource getResource(String name);
+	public Resource getResource(String path);
 
 }

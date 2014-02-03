@@ -27,12 +27,11 @@ public class InputStreamResource extends AbstractResource {
 	/**
 	 * The constructor.
 	 * 
-	 * @param name The resource name
 	 * @param path The optional resource path
 	 * @param is The input stream
 	 */
-	public InputStreamResource(String name, String path, java.io.InputStream is) {
-		super(name, path);
+	public InputStreamResource(String path, java.io.InputStream is) {
+		super(path);
 		
 		_inputStream = is;
 	}

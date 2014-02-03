@@ -16,6 +16,7 @@
  */
 package org.scribble.parser.antlr;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.antlr.runtime.RecognitionException;
@@ -87,7 +88,9 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
      * {@inheritDoc}
      */
 	public Object create(Token arg0) {
-		LOG.info("CREATE TOKEN="+arg0);
+		if (LOG.isLoggable(Level.FINE)) {
+			LOG.fine("CREATE TOKEN="+arg0);
+		}
 		_context.push(arg0);
 		return null;
 	}
@@ -264,7 +267,9 @@ public class ProtocolTreeAdaptor implements org.antlr.runtime.tree.TreeAdaptor {
             String ruleName=(String)_parser.getRuleInvocationStack().get(
                     _parser.getRuleInvocationStack().size()-1);
             
-    		LOG.info("RULE POST PROCESSING="+ruleName);
+            if (LOG.isLoggable(Level.FINE)) {
+            	LOG.fine("RULE POST PROCESSING="+ruleName);
+            }
     		
     		if (!_parser.isErrorOccurred()) {
 	    		ModelAdaptor modelAdaptor=ModelAdaptorFactory.getModelAdaptor(ruleName);

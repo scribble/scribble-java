@@ -44,6 +44,7 @@
 		<project.inceptionYear>2008</project.inceptionYear>
 		<antlr.version>3.2</antlr.version>
 		<log4j.version>1.2.14</log4j.version>
+		<jackson.version>1.9.9</jackson.version>
 		<junit.version>4.7</junit.version>
 	</properties>
 
@@ -56,6 +57,16 @@
   
 	<dependencyManagement>
 		<dependencies> 
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-core-asl</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-mapper-asl</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>

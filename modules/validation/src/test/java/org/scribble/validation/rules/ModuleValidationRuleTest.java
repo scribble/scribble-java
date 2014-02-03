@@ -81,7 +81,7 @@ public class ModuleValidationRuleTest {
     	
     	String path="a"+java.io.File.separatorChar+"b"+java.io.File.separatorChar+"C.scr";
     	
-    	InputStreamResource resource=new InputStreamResource("a.b.C", path, null);
+    	InputStreamResource resource=new InputStreamResource(path, null);
     	
     	DefaultModuleContext context=new DefaultModuleContext(resource, null, null, null);
     	
@@ -103,7 +103,7 @@ public class ModuleValidationRuleTest {
     	
     	String path="a"+java.io.File.separatorChar+"b"+java.io.File.separatorChar+"C.scr";
     	
-    	InputStreamResource resource=new InputStreamResource("a.b.D", path, null);
+    	InputStreamResource resource=new InputStreamResource(path, null);
     	
     	DefaultModuleContext context=new DefaultModuleContext(resource, null, null, null);
     	

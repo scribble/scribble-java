@@ -65,7 +65,7 @@ public class ProtocolValidator {
                 new EclipseScribbleLogger((IFile)res);
         
         try {
-            InputStreamResource isr = new InputStreamResource(res.getName(), res.getProjectRelativePath().toOSString(),
+            InputStreamResource isr = new InputStreamResource(res.getProjectRelativePath().toPortableString(),
             					((IFile)res).getContents());
             
             // Create a locator based on the Eclipse project root
@@ -78,7 +78,7 @@ public class ProtocolValidator {
 		            
 		            if (file != null) {
 		            	try {
-		            		return (new InputStreamResource(name, filename, file.getContents()));
+		            		return (new InputStreamResource(filename, file.getContents()));
 		            	} catch (Exception e) {
 		            		e.printStackTrace();
 		            	}

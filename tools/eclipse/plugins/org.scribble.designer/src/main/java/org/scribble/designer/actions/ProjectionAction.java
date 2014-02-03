@@ -64,8 +64,7 @@ public class ProjectionAction implements IObjectActionDelegate {
 		                new ConsoleScribbleLogger();
 		        
 		        try {
-		            InputStreamResource isr = new InputStreamResource(res.getName(),
-		            					res.getLocation().toOSString(),
+		            InputStreamResource isr = new InputStreamResource(res.getLocation().toPortableString(),
 		            					((IFile)res).getContents());
 		            
 		            // Create a locator based on the Eclipse project root
@@ -78,7 +77,7 @@ public class ProjectionAction implements IObjectActionDelegate {
 				            
 				            if (file != null) {
 				            	try {
-				            		return (new InputStreamResource(name, filename, file.getContents()));
+				            		return (new InputStreamResource(filename, file.getContents()));
 				            	} catch (Exception e) {
 				            		e.printStackTrace();
 				            	}

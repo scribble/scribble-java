@@ -135,7 +135,7 @@ public class ProtocolParserTest {
     		
     		ProtocolModuleLoader loader=new ProtocolModuleLoader(pp, locator, logger);
     		
-    		InputStreamResource isr=new InputStreamResource(path, scrFile.getAbsolutePath(), is);
+    		InputStreamResource isr=new InputStreamResource(path, is);
     		
     		Module module=pp.parse(isr, loader, logger);
     		

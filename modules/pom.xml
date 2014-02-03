@@ -19,6 +19,7 @@
 		<module>parser</module>
 		<module>projection</module>
 		<module>validation</module>
+		<module>monitor</module>
 		<module>cli</module>
 	</modules>
 

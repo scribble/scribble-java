@@ -23,16 +23,9 @@ package org.scribble.common.resources;
 public interface Resource {
 	
 	/**
-	 * This method returns the resource name.
-	 * 
-	 * @return The resource name
-	 */
-	public String getName();
-
-	/**
 	 * This method returns the resource path.
 	 * 
-	 * @return The optional resource path
+	 * @return The resource path
 	 */
 	public String getPath();
 

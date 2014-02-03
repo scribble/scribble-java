@@ -66,11 +66,11 @@ public class ModuleValidationRule implements ValidationRule {
 		String localRole=null;
 		
 		if (context.getResource() != null) {
-			int pos=context.getResource().getName().indexOf('@');
+			int pos=context.getResource().getPath().indexOf('@');
 			if (pos != -1) {
 				f_global = false;
-				localRole = context.getResource().getName().substring(pos+1,
-								context.getResource().getName().length()-4);
+				localRole = context.getResource().getPath().substring(pos+1,
+								context.getResource().getPath().length()-4);
 			}
 		}
 		

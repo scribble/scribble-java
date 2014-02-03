@@ -22,25 +22,15 @@ package org.scribble.common.resources;
  */
 public abstract class AbstractResource implements Resource {
 	
-	private String _name=null;
 	private String _path=null;
 	
 	/**
 	 * The constructor.
 	 * 
-	 * @param name The resource name
-	 * @param path The optional path to the resource
+	 * @param path The path to the resource
 	 */
-	public AbstractResource(String name, String path) {
-		_name = name;
+	public AbstractResource(String path) {
 		_path = path;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getName() {
-		return (_name);
 	}
 	
 	/**
