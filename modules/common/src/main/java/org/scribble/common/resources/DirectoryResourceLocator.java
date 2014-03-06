@@ -43,9 +43,8 @@ public class DirectoryResourceLocator implements ResourceLocator {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Resource getResource(String resourcePath) {
+	public Resource getResource(String relativePath) {
 		Resource ret=null;
-		String relativePath=resourcePath.replace('.', java.io.File.separatorChar)+".scr";
 		
 		// Find module
 		for (String path : _paths) {
@@ -61,7 +60,7 @@ public class DirectoryResourceLocator implements ResourceLocator {
 			
 			if (f.isFile()) {
 				try {
-					ret = new InputStreamResource(resourcePath, new java.io.FileInputStream(f));
+					ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
 					
 					break;
 				} catch (Exception e) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-11 www.scribble.org
+ * Copyright 2009-14 www.scribble.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,21 @@
  * limitations under the License.
  *
  */
-package org.scribble.common.module;
+package org.scribble.trace;
 
-public class InputStreamModuleSource  {
+import org.scribble.common.resources.ResourceLocator;
 
+/**
+ * This interface provides context support for the simulator.
+ *
+ */
+public interface SimulatorContext {
+
+	/**
+	 * This method returns the resource locator.
+	 * 
+	 * @return The resource locator
+	 */
+	public ResourceLocator getResourceLocator();
+	
 }

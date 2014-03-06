@@ -86,4 +86,41 @@ public class Message {
 		_values = values;
 		return (this);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean equals(Object obj) {
+		boolean ret=false;
+		
+		if (obj instanceof Message) {
+			Message other=(Message)obj;
+			
+			if (other._operator != null
+					&& _operator != null
+					&& other._operator.equals(_operator)) {
+				
+				if (_types.size() == other._types.size()
+						&& _values.size() == other._values.size()) {
+					ret = true;
+					
+					for (int i=0; ret && i < _types.size(); i++) {
+						if (_types.get(i) == null || other._types.get(i) == null
+								|| !_types.get(i).equals(other._types.get(i))) {
+							ret = false;
+						}
+					}
+					
+					for (int i=0; ret && i < _values.size(); i++) {
+						if (_values.get(i) == null || other._values.get(i) == null
+								|| !_values.get(i).equals(other._values.get(i))) {
+							ret = false;
+						}
+					}
+				}
+			}
+		}
+		
+		return (ret);
+	}
 }

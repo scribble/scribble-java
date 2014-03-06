@@ -14,17 +14,18 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor;
+package org.scribble.trace;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.scribble.trace.model.Trace;
 
 /**
- * This class provides model utility functions.
+ * This class provides trace utility functions.
  *
  */
-public class MonitorUtil {
+public class TraceUtil {
 	
     protected static final ObjectMapper MAPPER=new ObjectMapper();
 
@@ -37,18 +38,18 @@ public class MonitorUtil {
 	}
 	
 	/**
-	 * This method returns the JSON representation of the session instance.
+	 * This method returns the JSON representation of a trace.
 	 * 
-	 * @param instance The session instance
+	 * @param trace The trace
 	 * @return The JSON representation
 	 * @throws Exception Failed to serialize
 	 */
-	public static byte[] serializeSessionInstance(SessionInstance instance) throws Exception {
+	public static byte[] serializeTrace(Trace trace) throws Exception {
 		byte[] ret=null;
 		
         java.io.ByteArrayOutputStream baos=new java.io.ByteArrayOutputStream();
         
-        MAPPER.writeValue(baos, instance);
+        MAPPER.writeValue(baos, trace);
         
         ret = baos.toByteArray();
         
@@ -58,22 +59,21 @@ public class MonitorUtil {
 	}
 	
 	/**
-	 * This method returns the session instance of a supplied JSON representation.
+	 * This method returns the simulation list for a supplied JSON representation.
 	 * 
-	 * @param instance The JSON representation
-	 * @return The session instance
+	 * @param simulations The JSON representation
+	 * @return The simulation list
 	 * @throws Exception Failed to deserialize
 	 */
-	public static SessionInstance deserializeSessionInstance(byte[] instance) throws Exception {
-		SessionInstance ret=null;
+	public static Trace deserializeTrace(byte[] trace) throws Exception {
+		Trace ret=null;
 		
-        java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(instance);
+        java.io.ByteArrayInputStream bais=new java.io.ByteArrayInputStream(trace);
         
-        ret = MAPPER.readValue(bais, SessionInstance.class);
+        ret = MAPPER.readValue(bais, Trace.class);
         
         bais.close();
         
         return (ret);
 	}
-	
 }

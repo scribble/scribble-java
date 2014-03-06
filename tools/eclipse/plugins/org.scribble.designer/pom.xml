@@ -39,6 +39,11 @@
 			<artifactId>scribble-validation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-monitor</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

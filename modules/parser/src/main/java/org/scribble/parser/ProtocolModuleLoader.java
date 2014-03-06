@@ -57,7 +57,9 @@ public class ProtocolModuleLoader implements ModuleLoader {
 	public Module loadModule(String module) {
 		Module ret=null;
 		
-		Resource resource=_locator.getResource(module);
+		String relativePath=module.replace('.', java.io.File.separatorChar)+".scr";
+
+		Resource resource=_locator.getResource(relativePath);
 		
 		if (resource != null) {
 			try {
