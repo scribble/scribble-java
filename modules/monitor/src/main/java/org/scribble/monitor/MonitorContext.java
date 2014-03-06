@@ -16,6 +16,10 @@
  */
 package org.scribble.monitor;
 
+/**
+ * This interface represents the monitor context.
+ *
+ */
 public interface MonitorContext {
 
 }
