@@ -25,11 +25,82 @@ import org.scribble.common.resources.DirectoryResourceLocator;
 public class SimulatorTest {
 
 	@org.junit.Test
-    public void testRequestResponse() {
-    	testSimulator("scribble.examples.RequestResponse@Buyer", "First", "trace1", true);
+    public void testChoice1() {
+    	testSimulator("scribble.examples.Choice@Buyer", "First", 1, true);
     }
 
-    protected void testSimulator(String module, String protocol, String traceFile, boolean successful) {
+	@org.junit.Test
+    public void testChoice2() {
+    	testSimulator("scribble.examples.Choice@Buyer", "First", 2, true);
+    }
+
+	@org.junit.Test
+    public void testDo1() {
+    	testSimulator("scribble.examples.Do@Buyer", "First", 1, true);
+    }
+
+	@org.junit.Test
+    public void testInterruptible1() {
+    	testSimulator("scribble.examples.Interruptible@Buyer", "First", 1, true);
+    }
+
+	@org.junit.Test
+    public void testInterruptible2() {
+    	testSimulator("scribble.examples.Interruptible@Buyer", "First", 2, true);
+    }
+
+	@org.junit.Test
+    public void testInterruptible3() {
+    	testSimulator("scribble.examples.Interruptible@Buyer", "First", 3, true);
+    }
+
+	@org.junit.Test
+    public void testParallel1() {
+    	testSimulator("scribble.examples.Parallel@Buyer", "First", 1, true);
+    }
+
+	@org.junit.Test
+    public void testParallel2() {
+    	testSimulator("scribble.examples.Parallel@Buyer", "First", 2, true);
+    }
+
+	@org.junit.Test
+    public void testRecursion1() {
+    	testSimulator("scribble.examples.Recursion@Buyer", "First", 1, true);
+    }
+
+	@org.junit.Test
+    public void testRecursion2() {
+    	testSimulator("scribble.examples.Recursion@Buyer", "First", 2, true);
+    }
+
+	@org.junit.Test
+    public void testRecursion3() {
+    	testSimulator("scribble.examples.Recursion@Buyer", "First", 3, true);
+    }
+
+	@org.junit.Test
+    public void testRequestResponse1() {
+    	testSimulator("scribble.examples.RequestResponse@Buyer", "First", 1, true);
+    }
+
+	/**
+	 * This test indicates that one of the steps is expected to fail.
+	 */
+	@org.junit.Test
+    public void testRequestResponse2() {
+    	testSimulator("scribble.examples.RequestResponse@Buyer", "First", 2, true);
+    }
+
+	/**
+	 * This test checks that the simulation failed.
+	 */
+	@org.junit.Test
+    public void testRequestResponse3() {
+    	testSimulator("scribble.examples.RequestResponse@Buyer", "First", 3, false);
+    }
+
+    protected void testSimulator(String module, String protocol, int testnum, boolean successful) {
     	
     	try {
     		java.net.URL url=ClassLoader.getSystemResource("scribble");
@@ -40,7 +111,8 @@ public class SimulatorTest {
     		ObjectMapper mapper=new ObjectMapper();
     		mapper.configure(Feature.SORT_PROPERTIES_ALPHABETICALLY, true);
     		
-    		java.io.InputStream is=ClassLoader.getSystemResourceAsStream(module.replace('.', '/')+"."+traceFile);
+    		java.io.InputStream is=ClassLoader.getSystemResourceAsStream(module.replace('.', '/')+
+    									"-"+testnum+".trace");
     		    		
        		Trace trace=mapper.readValue(is, Trace.class);
     		
@@ -56,7 +128,7 @@ public class SimulatorTest {
     		
     	} catch (Exception e) {
     		e.printStackTrace();
-    		fail("Failed to simulate module '"+module+"' protocol '"+protocol+"' and trace: "+traceFile);
+    		fail("Failed to simulate module '"+module+"' protocol '"+protocol+"' and trace number: "+testnum);
     	}
     }
 }

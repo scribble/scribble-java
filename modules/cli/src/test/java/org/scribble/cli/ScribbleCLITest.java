@@ -24,6 +24,7 @@ import org.scribble.cli.ScribbleCLI;
 public class ScribbleCLITest {
 
 	@Test
+	@org.junit.Ignore
 	public void test() {
 		
 		java.net.URL url=ClassLoader.getSystemResource("scribble/examples/GMessage.scr");
