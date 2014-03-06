@@ -110,7 +110,7 @@ public class TraceUtilTest {
 			fail("Failed to serialize trace");
 		}
 		
-		System.out.println("SERIALISED="+new String(ser));
+		//System.out.println("SERIALISED="+new String(ser));
 		
 		Trace result=null;
 		

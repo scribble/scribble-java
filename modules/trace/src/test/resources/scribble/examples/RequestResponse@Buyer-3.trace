@@ -1,0 +1,30 @@
+{
+	"steps":[{
+		"type":"MessageTransfer",
+		"message":{
+			"operator":"buy",
+			"types":["{http://scribble.org/example}OrderRequest"],
+			"values":[""]
+		},
+		"fromRole":"Buyer",
+		"toRoles":["Seller"]
+	},{
+		"type":"MessageTransfer",
+		"message":{
+			"operator":"buy",
+			"types":["{http://scribble.org/example}OrderResponseInvalid"],
+			"values":[""]
+		},
+		"fromRole":"Seller",
+		"toRoles":["Buyer"]
+	}],
+	"simulations":[{
+		"roleSimulators":{
+			"Buyer":{
+				"type":"MonitorRoleSimulator",
+				"module":"scribble.examples.RequestResponse@Buyer",
+				"protocol":"First"
+			}
+		}
+	}
+]}
