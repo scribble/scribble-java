@@ -1,4 +1,5 @@
 {
+	"name":"Parallel@Buyer-2",
 	"steps":[{
 		"type":"MessageTransfer",
 		"message":{
