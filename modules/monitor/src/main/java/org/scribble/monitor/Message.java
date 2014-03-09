@@ -123,4 +123,24 @@ public class Message {
 		
 		return (ret);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		StringBuffer buf=new StringBuffer();
+		
+		buf.append(_operator);
+		buf.append("(");
+		
+		for (int i=0; i < _types.size(); i++) {
+			if (i > 0) {
+				buf.append(",");
+			}
+			buf.append(_types.get(i));
+		}
+		buf.append(")");
+		
+		return (buf.toString());
+	}
 }

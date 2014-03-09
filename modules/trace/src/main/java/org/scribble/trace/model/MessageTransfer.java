@@ -120,4 +120,11 @@ public class MessageTransfer extends Step {
 		
 		return (ret);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		return (_message+" from "+_fromRole+" to "+_toRoles);
+	}
 }

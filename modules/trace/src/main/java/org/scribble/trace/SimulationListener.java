@@ -32,7 +32,17 @@ public interface SimulationListener {
 	 * @param trace The trace
 	 * @param simulation The simulation
 	 */
-	public void startSimulation(Trace trace, Simulation simulation);
+	public void start(Trace trace, Simulation simulation);
+	
+	/**
+	 * This method identifies when the simulation of trace step has
+	 * started.
+	 * 
+	 * @param trace The trace
+	 * @param simulation The simulation
+	 * @param step The step
+	 */
+	public void start(Trace trace, Simulation simulation, Step step);
 	
 	/**
 	 * This method identifies when the simulation of trace step has
@@ -42,7 +52,7 @@ public interface SimulationListener {
 	 * @param simulation The simulation
 	 * @param step The step
 	 */
-	public void stepSuccessful(Trace trace, Simulation simulation, Step step);
+	public void successful(Trace trace, Simulation simulation, Step step);
 	
 	/**
 	 * This method identifies when the simulation of trace step has
@@ -52,7 +62,7 @@ public interface SimulationListener {
 	 * @param simulation The simulation
 	 * @param step The step
 	 */
-	public void stepFailed(Trace trace, Simulation simulation, Step step);
+	public void failed(Trace trace, Simulation simulation, Step step);
 	
 	/**
 	 * This method identifies when a trace simulation has stopped.
@@ -60,6 +70,6 @@ public interface SimulationListener {
 	 * @param trace The trace
 	 * @param simulation The simulation
 	 */
-	public void stopSimulation(Trace trace, Simulation simulation);
+	public void stop(Trace trace, Simulation simulation);
 	
 }

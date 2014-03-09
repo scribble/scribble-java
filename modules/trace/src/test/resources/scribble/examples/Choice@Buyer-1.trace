@@ -1,4 +1,5 @@
 {
+	"name":"Choice@Buyer-1",
 	"steps":[{
 		"type":"MessageTransfer",
 		"message":{

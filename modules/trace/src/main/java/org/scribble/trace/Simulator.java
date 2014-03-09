@@ -69,25 +69,29 @@ public class Simulator {
 			}
 
 			for (SimulationListener l : _listeners) {
-				l.startSimulation(trace, sim);
+				l.start(trace, sim);
 			}
 
 			for (Step step : trace.getSteps()) {
+				for (SimulationListener l : _listeners) {
+					l.start(trace, sim, step);
+				}
+				
 				if (step.simulate(context, sim.getRoleSimulators())) {
 					for (SimulationListener l : _listeners) {
-						l.stepSuccessful(trace, sim, step);
+						l.successful(trace, sim, step);
 					}
 				} else {
 					ret = false;
 					
 					for (SimulationListener l : _listeners) {
-						l.stepFailed(trace, sim, step);
+						l.failed(trace, sim, step);
 					}
 				}
 			}
 			
 			for (SimulationListener l : _listeners) {
-				l.stopSimulation(trace, sim);
+				l.stop(trace, sim);
 			}
 
 			// Close the role simulators

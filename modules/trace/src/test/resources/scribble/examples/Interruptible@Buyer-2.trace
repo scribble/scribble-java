@@ -1,4 +1,5 @@
 {
+	"name":"Interruptible@Buyer-2",
 	"steps":[{
 		"type":"MessageTransfer",
 		"message":{
