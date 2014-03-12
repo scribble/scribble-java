@@ -107,4 +107,32 @@
       </objectContribution>
    </extension>
 
+  <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+    <launchConfigurationType
+       id="org.scribble.designer.simulation.SimulationLauncher"
+       delegate="org.scribble.designer.simulation.SimulationLauncher"
+       modes="run"
+       name="Trace Simulation">
+      <fileExtension extension="trace" default="true"/>
+    </launchConfigurationType>
+  </extension>
+  
+  <extension
+        point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+  	<launchConfigurationTabGroup
+  		id="org.scribble.designer.simulation.SimulationTabGroup"
+  		type="org.scribble.designer.simulation.SimulationLauncher"
+  		class="org.scribble.designer.simulation.SimulationTabGroup"
+  		/>
+  </extension>
+  <extension
+        point="org.eclipse.debug.ui.launchConfigurationTabs">
+     <tab
+     	id="org.scribble.designer.simulation.SimulationMainTab"
+     	group="org.scribble.designer.simulation.SimulationTabGroup"
+     	name="Simulation"
+     	class="org.scribble.designer.simulation.SimulationMainTab"
+     	/>
+  </extension>
+
 </plugin>
