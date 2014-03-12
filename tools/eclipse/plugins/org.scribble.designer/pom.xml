@@ -44,6 +44,11 @@
 			<artifactId>scribble-monitor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-trace</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -84,6 +89,16 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.scribble</groupId>
+									<artifactId>scribble-monitor</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.scribble</groupId>
+									<artifactId>scribble-trace</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.scribble</groupId>
 									<artifactId>scribble-validation</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
@@ -101,6 +116,14 @@
 									<groupId>org.antlr</groupId>
 									<artifactId>stringtemplate</artifactId>
 									<version>${antlr.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.codehaus.jackson</groupId>
+									<artifactId>jackson-core-asl</artifactId>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.codehaus.jackson</groupId>
+									<artifactId>jackson-mapper-asl</artifactId>
 								</artifactItem>
 							</artifactItems>
 						</configuration>

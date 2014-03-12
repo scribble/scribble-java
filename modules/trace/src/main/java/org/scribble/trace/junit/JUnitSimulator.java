@@ -20,6 +20,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.scribble.common.resources.DirectoryResourceLocator;
 import org.scribble.common.resources.ResourceLocator;
 import org.scribble.trace.DefaultSimulatorContext;
 import org.scribble.trace.SimulationListener;
@@ -61,7 +62,23 @@ public class JUnitSimulator {
 			System.exit(1);
 		}
 		
+		if (System.getProperty("MODULE_PATH") == null) {
+			System.err.println("'MODULE_PATH' envionment parameter has not been set");
+			System.exit(2);
+		}
 		
+		JUnitSimulator sim=new JUnitSimulator();
+		
+		try {
+			DirectoryResourceLocator locator=new DirectoryResourceLocator(System.getProperty("MODULE_PATH"));
+			
+			sim.setResourceLocator(locator);
+			
+			sim.simulate(args[0], args[1]);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -96,6 +113,10 @@ public class JUnitSimulator {
 		
 		// Initialize the junit output file
 		_junitFile = new java.io.File(xmlFile);
+		
+		if (_junitFile.getParentFile().exists() == false) {
+			_junitFile.getParentFile().mkdirs();
+		}
 		
 		// Initialize the junit result DOM
 		DocumentBuilder builder=DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -153,27 +174,61 @@ public class JUnitSimulator {
 		
 		simulator.addSimulationListener(l);
 
-		simulator.simulate(context, trace);
+		try {
+			simulator.simulate(context, trace);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		simulator.removeSimulationListener(l);
+	}
+	
+	/**
+	 * This method initialixes the result file.
+	 * 
+	 * @param file The file
+	 * @throws Exception Failed to initialize
+	 */
+	public static void initResultsFile(java.io.File file) throws Exception {
+		// Initialize the junit result DOM
+		DocumentBuilder builder=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		org.w3c.dom.Document doc = builder.newDocument();
+		
+		org.w3c.dom.Element testsuites=doc.createElement("testsuites");
+		doc.appendChild(testsuites);
+
+		updateResultFile(file, doc);
+	}
+	
+	/**
+	 * This method updates the results.
+	 * 
+	 * @throws Exception Failed to update
+	 */
+	protected void updateResultFile() throws Exception {
+		updateResultFile(_junitFile, _junitDoc);
 	}
 	
 	/**
 	 * This method updates the results from the junit document into the output
 	 * (result) file.
 	 * 
+	 * @param file The file
+	 * @param results The results
 	 * @throws Exception Failed to update the result file
 	 */
-	protected void updateResultFile() throws Exception {
-		java.io.FileOutputStream fos=new java.io.FileOutputStream(_junitFile);
+	public static void updateResultFile(java.io.File file, org.w3c.dom.Document results) throws Exception {
+		java.io.FileOutputStream fos=new java.io.FileOutputStream(file);
 		
-		javax.xml.transform.dom.DOMSource source=new javax.xml.transform.dom.DOMSource(_junitDoc);
+		javax.xml.transform.dom.DOMSource source=new javax.xml.transform.dom.DOMSource(results);
 		javax.xml.transform.stream.StreamResult result=new javax.xml.transform.stream.StreamResult(fos);
 		
 		javax.xml.transform.Transformer transformer=
 				javax.xml.transform.TransformerFactory.newInstance().newTransformer();
 		
 		transformer.transform(source, result);
+		
+		fos.flush();
 		
 		fos.close();
 	}
