@@ -102,15 +102,20 @@ public class MonitorRoleSimulator extends RoleSimulator {
 		
 		Module module=loader.loadModule(_module);
 		
-		ProtocolDecl pd=module.getProtocol(_protocol);
-		
-		if (pd instanceof LProtocolDefinition) {
-    		_type = EXPORTER.getSessionType((LProtocolDefinition)pd, loader);
-    		
-    		_context = null;
-    		_instance = new SessionInstance();
-    		
-    		MONITOR.initialize(null, _type, _instance);
+		if (module != null) {
+			ProtocolDecl pd=module.getProtocol(_protocol);
+			
+			if (pd instanceof LProtocolDefinition) {
+	    		_type = EXPORTER.getSessionType((LProtocolDefinition)pd, loader);
+	    		
+	    		_context = null;
+	    		_instance = new SessionInstance();
+	    		
+	    		MONITOR.initialize(null, _type, _instance);
+			}
+		} else {
+			_type = null;
+			_instance = null;
 		}
 	}
 
@@ -119,7 +124,10 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	 */
 	@Override
 	public boolean send(SimulatorContext context, Message mesg, String toRole) {
-		return (MONITOR.sent(_context, _type, _instance, mesg, toRole));
+		if (_type != null && _instance != null) {
+			return (MONITOR.sent(_context, _type, _instance, mesg, toRole));
+		}
+		return (false);
 	}
 
 	/**
@@ -127,7 +135,10 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	 */
 	@Override
 	public boolean receive(SimulatorContext context, Message mesg, String fromRole) {
-		return (MONITOR.received(_context, _type, _instance, mesg, fromRole));
+		if (_type != null && _instance != null) {
+			return (MONITOR.received(_context, _type, _instance, mesg, fromRole));
+		}
+		return (false);
 	}
 
 	/**
