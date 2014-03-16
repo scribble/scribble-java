@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scribble::Tools::Eclipse::Plugins::Designer
 Bundle-SymbolicName: org.scribble.designer;singleton:=true
-Bundle-Version: 0.3.0.qualifier
+Bundle-Version: 0.3.0.20140316-M3
 Bundle-Activator: org.scribble.designer.osgi.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

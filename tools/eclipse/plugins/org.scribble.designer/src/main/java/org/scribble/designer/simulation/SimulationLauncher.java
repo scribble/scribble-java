@@ -191,21 +191,21 @@ public class SimulationLauncher
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
-				display.syncExec(new Runnable() {
-					public void run() {
-						try {
-							file.refreshLocal(0, null);
-							
-							Workbench.getInstance().getActiveWorkbenchWindow().getActivePage().
-									openEditor(new FileEditorInput(file),
-									JUNIT_RESULT_EDITOR);
-						} catch (Throwable t) {
-							t.printStackTrace();
-						}
-					}
-				});
 			}
+			
+			display.syncExec(new Runnable() {
+				public void run() {
+					try {
+						file.refreshLocal(0, null);
+						
+						Workbench.getInstance().getActiveWorkbenchWindow().getActivePage().
+								openEditor(new FileEditorInput(file),
+								JUNIT_RESULT_EDITOR);
+					} catch (Throwable t) {
+						t.printStackTrace();
+					}
+				}
+			});
 			
 			file.delete(true, null);
  		}
