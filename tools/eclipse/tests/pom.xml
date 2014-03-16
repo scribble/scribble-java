@@ -5,13 +5,13 @@
 	<groupId>org.scribble.tools.eclipse</groupId>
 	<artifactId>tests</artifactId>
 	<packaging>pom</packaging>
-	<version>0.3.0.20140316-M3</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<name>Scribble::Tools::Eclipse::Tests</name>
 
 	<parent>
 		<groupId>org.scribble.tools</groupId>
 		<artifactId>eclipse</artifactId>
-		<version>0.3.0.20140316-M3</version>
+		<version>0.3.0-SNAPSHOT</version>
 	</parent>
 
 <!--
