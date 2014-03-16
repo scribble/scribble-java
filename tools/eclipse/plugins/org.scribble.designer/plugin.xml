@@ -134,5 +134,35 @@
      	class="org.scribble.designer.simulation.SimulationMainTab"
      	/>
   </extension>
+  
+  <extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+           class="org.scribble.designer.simulation.SimulationLauncherShortcut"
+           id="org.scribble.designer.simulation.SimulationLauncherShortcut"
+           label="Simulation"
+           modes="run">
+       <contextualLaunch>
+         <enablement>
+           <with variable="selection">
+             <count value="1"/>
+             <iterate>
+             	<or>
+                <adapt type="org.eclipse.core.resources.IFile">
+					<and>
+                		<test property="org.eclipse.core.resources.name" value="*.trace"/>
+            		</and>
+                </adapt>
+                <adapt type="org.eclipse.core.resources.IFolder"/>
+                <adapt type="org.eclipse.core.resources.IProject"/>
+                </or>
+             </iterate>
+           </with>
+         </enablement>
+       </contextualLaunch>
+       <configurationType
+              id="org.scribble.designer.simulation.SimulationLauncher">
+       </configurationType>
+    </shortcut>
+  </extension>
 
 </plugin>

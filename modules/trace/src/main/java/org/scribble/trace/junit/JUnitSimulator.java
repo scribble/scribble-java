@@ -196,6 +196,14 @@ public class JUnitSimulator {
 		
 		org.w3c.dom.Element testsuites=doc.createElement("testsuites");
 		doc.appendChild(testsuites);
+		
+		if (!file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
+		}
+		
+		if (!file.exists()) {
+			file.createNewFile();
+		}
 
 		updateResultFile(file, doc);
 	}

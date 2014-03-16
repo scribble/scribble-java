@@ -60,6 +60,8 @@ import org.scribble.trace.junit.JUnitSimulator;
 public class SimulationLauncher
 			extends AbstractJavaLaunchConfigurationDelegate {
 	
+	private static final String JUNIT_RESULT_EDITOR = "org.eclipse.jdt.junit.JUnitResultEditor";
+
 	private static Logger logger = Logger.getLogger(SimulationLauncher.class.getName());
 
 	private String _xmlFile=null;
@@ -197,13 +199,15 @@ public class SimulationLauncher
 							
 							Workbench.getInstance().getActiveWorkbenchWindow().getActivePage().
 									openEditor(new FileEditorInput(file),
-									"org.eclipse.jdt.junit.JUnitResultEditor");
+									JUNIT_RESULT_EDITOR);
 						} catch (Throwable t) {
 							t.printStackTrace();
 						}
 					}
 				});
 			}
+			
+			file.delete(true, null);
  		}
 		
 		// check for cancellation
