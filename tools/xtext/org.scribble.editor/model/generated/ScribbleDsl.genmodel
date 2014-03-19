@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.scribble.editor/src-gen" editDirectory="/org.scribble.editor.edit/src"
+    editorDirectory="/org.scribble.editor.editor/src" modelPluginID="org.scribble.editor"
+    forceOverwrite="true" modelName="ScribbleDsl" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="5.0" copyrightFields="false" editPluginID="org.scribble.editor.edit"
+    editorPluginID="org.scribble.editor.editor" runtimeVersion="2.9">
+  <genPackages prefix="ScribbleDsl" basePackage="org.scribble.editor.dsl" disposableProviderFactory="true"
+      fileExtensions="scr" ecorePackage="ScribbleDsl.ecore#/">
+    <genClasses ecoreClass="ScribbleDsl.ecore#//Module"/>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//ModuleDecl">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//ModuleDecl/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//ModuleDecl/types"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//ModuleDecl/globals"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//ModuleDecl/name"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//ImportDecl">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//ImportDecl/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//ImportDecl/alias"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//ImportModule"/>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//ImportMember">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//ImportMember/member"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//PayloadTypeDecl">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//PayloadTypeDecl/schema"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//PayloadTypeDecl/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//PayloadTypeDecl/location"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//PayloadTypeDecl/alias"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//MessageSignature">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//MessageSignature/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//MessageSignature/types"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//PayloadElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//PayloadElement/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//PayloadElement/type"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalProtocolDecl">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalProtocolDecl/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalProtocolDecl/parameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalProtocolDecl/roles"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalProtocolDecl/block"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalProtocolDecl/instantiates"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalProtocolDecl/arguments"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalProtocolDecl/roleInstantiations"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//RoleDecl">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//RoleDecl/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//RoleDecl/alias"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//ParameterDecl">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//ParameterDecl/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//ParameterDecl/alias"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//RoleInstantiation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//RoleInstantiation/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//RoleInstantiation/alias"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//Argument">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//Argument/signature"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//Argument/alias"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//Argument/name"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalProtocolBlock">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalProtocolBlock/activities"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalInteraction"/>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalMessageTransfer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalMessageTransfer/message"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalMessageTransfer/fromRole"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalMessageTransfer/toRole"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//Message">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//Message/parameter"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalChoice">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalChoice/role"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalChoice/blocks"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalRecursion">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalRecursion/label"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalRecursion/block"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalContinue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalContinue/label"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalParallel">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalParallel/blocks"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalInterruptible">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalInterruptible/scope"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalInterruptible/block"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalInterruptible/interrupts"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalInterrupt">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalInterrupt/messages"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalInterrupt/role"/>
+    </genClasses>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalDo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalDo/module"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalDo/scope"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalDo/arguments"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//GlobalDo/roles"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
