@@ -27,13 +27,9 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.scribble.designer.validator.ProtocolValidator;
-import org.scribble.designer.editor.ScribblePartitionScanner;
-import org.scribble.designer.editor.lang.ScribbleCodeScanner;
-import org.scribble.designer.editor.util.ScribbleColorProvider;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -42,15 +38,6 @@ public class Activator extends AbstractUIPlugin {
     
     private static Logger logger = Logger.getLogger("org.scribble.designer");
 
-    /**
-     * Scribble partitioning.
-     */
-    public final static String SCRIBBLE_PARTITIONING= "__scribble_partitioning";   //$NON-NLS-1$
-    
-    private ScribblePartitionScanner _fPartitionScanner;
-    private ScribbleColorProvider _fColorProvider;
-    private ScribbleCodeScanner _fCodeScanner;
-    
     private ProtocolValidator _validator=new ProtocolValidator();
 
     /**
@@ -150,39 +137,4 @@ public class Activator extends AbstractUIPlugin {
         logger.severe("LOG ERROR: "+mesg+(t == null ? "" : ": "+t));
     }
     
-    /**
-     * Return a scanner for creating Java partitions.
-     * 
-     * @return a scanner for creating Java partitions
-     */
-    public ScribblePartitionScanner getScribblePartitionScanner() {
-        if (_fPartitionScanner == null) {
-            _fPartitionScanner= new ScribblePartitionScanner();
-        }
-        return _fPartitionScanner;
-    }
-    
-    /**
-     * Returns the singleton Java code scanner.
-     * 
-     * @return the singleton Java code scanner
-     */
-    public RuleBasedScanner getScribbleCodeScanner() {
-         if (_fCodeScanner == null) {
-            _fCodeScanner= new ScribbleCodeScanner(getScribbleColorProvider());
-         }
-         return _fCodeScanner;
-    }
-    
-    /**
-     * Returns the singleton Java color provider.
-     * 
-     * @return the singleton Java color provider
-     */
-    public ScribbleColorProvider getScribbleColorProvider() {
-         if (_fColorProvider == null) {
-            _fColorProvider= new ScribbleColorProvider();
-         }
-        return _fColorProvider;
-    }
 }
