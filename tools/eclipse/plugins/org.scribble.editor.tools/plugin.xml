@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <extension
+    point = "org.eclipse.ui.newWizards">
+    <category
+      id = "org.scribble.wizard.category.ID"
+      name="Scribble">
+    </category>
+    <wizard
+      id = "org.scribble.editor.tools.editor.NewProtocolWizardID"
+      name = "Protocol"
+      class = "org.scribble.editor.tools.editor.NewProtocolWizard"
+      category = "org.scribble.wizard.category.ID"
+      icon = "icons/scribble.png">
+      <description>New Scribble Protocol Description</description>
+      <selection class = "org.eclipse.core.resources.IResource" />
+    </wizard>
+  </extension>
+
+  <extension
+        id="org.scribble.ScribbleProblem"
+        name="Protocol Problem"
+        point="org.eclipse.core.resources.markers">
+     <super
+           type="org.eclipse.core.resources.problemmarker">
+     </super>
+     <persistent
+           value="true">
+     </persistent>
+  </extension>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            id="org.scribble.editor.tools.contribution1"
+            nameFilter="*.scr" >
+         <menu
+               label="Scribble"
+               path="additions"
+               id="org.scribble.tools.menu">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="Project"
+               class="org.scribble.editor.tools.actions.ProjectionAction"
+               menubarPath="org.scribble.tools.menu/group1"
+               enablesFor="1"
+               id="org.scribble.editor.tools.actions.ProjectionAction">
+         </action>
+      </objectContribution>
+   </extension>
+
+  <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+    <launchConfigurationType
+       id="org.scribble.editor.tools.simulation.SimulationLauncher"
+       delegate="org.scribble.editor.tools.simulation.SimulationLauncher"
+       modes="run"
+       name="Trace Simulation">
+      <fileExtension extension="trace" default="true"/>
+    </launchConfigurationType>
+  </extension>
+  
+  <extension
+        point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+  	<launchConfigurationTabGroup
+  		id="org.scribble.editor.tools.simulation.SimulationTabGroup"
+  		type="org.scribble.editor.tools.simulation.SimulationLauncher"
+  		class="org.scribble.editor.tools.simulation.SimulationTabGroup"
+  		/>
+  </extension>
+  <extension
+        point="org.eclipse.debug.ui.launchConfigurationTabs">
+     <tab
+     	id="org.scribble.editor.tools.simulation.SimulationMainTab"
+     	group="org.scribble.editor.tools.simulation.SimulationTabGroup"
+     	name="Simulation"
+     	class="org.scribble.editor.tools.simulation.SimulationMainTab"
+     	/>
+  </extension>
+  
+  <extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+           class="org.scribble.editor.tools.simulation.SimulationLauncherShortcut"
+           id="org.scribble.editor.tools.simulation.SimulationLauncherShortcut"
+           label="Simulation"
+           modes="run">
+       <contextualLaunch>
+         <enablement>
+           <with variable="selection">
+             <count value="1"/>
+             <iterate>
+             	<or>
+                <adapt type="org.eclipse.core.resources.IFile">
+					<and>
+                		<test property="org.eclipse.core.resources.name" value="*.trace"/>
+            		</and>
+                </adapt>
+                <adapt type="org.eclipse.core.resources.IFolder"/>
+                <adapt type="org.eclipse.core.resources.IProject"/>
+                </or>
+             </iterate>
+           </with>
+         </enablement>
+       </contextualLaunch>
+       <configurationType
+              id="org.scribble.editor.tools.simulation.SimulationLauncher">
+       </configurationType>
+    </shortcut>
+  </extension>
+
+</plugin>

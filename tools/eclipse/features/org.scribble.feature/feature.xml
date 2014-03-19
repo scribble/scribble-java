@@ -214,7 +214,21 @@
    </license>
 
    <plugin
-         id="org.scribble.designer"
+         id="org.scribble.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.scribble.editor.tools"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.scribble.editor.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
