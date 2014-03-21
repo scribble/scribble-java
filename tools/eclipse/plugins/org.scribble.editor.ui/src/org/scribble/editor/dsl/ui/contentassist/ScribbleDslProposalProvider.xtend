@@ -4,9 +4,38 @@
 package org.scribble.editor.dsl.ui.contentassist
 
 import org.scribble.editor.dsl.ui.contentassist.AbstractScribbleDslProposalProvider
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.Assignment
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
+import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import org.scribble.editor.dsl.scribbleDsl.GlobalProtocolDecl
+import org.scribble.editor.dsl.scribbleDsl.RoleDecl
 
 /**
  * see http://www.eclipse.org/Xtext/documentation.html#contentAssist on how to customize content assistant
  */
 class ScribbleDslProposalProvider extends AbstractScribbleDslProposalProvider {
+	
+	override completeGlobalChoice_Role(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+
+		var obj=model;
+		
+		while (obj != null) {
+			
+			if (obj instanceof GlobalProtocolDecl) {
+				var GlobalProtocolDecl gpd=obj as GlobalProtocolDecl;
+
+				for (RoleDecl role : gpd.getRoles()) {
+					var String name=role.getName();
+					if (role.getAlias() != null) {
+						name = role.getAlias();
+					}
+					acceptor.accept(createCompletionProposal(name, context));
+				}
+				return;
+			}
+			
+			obj = obj.eContainer();
+		}
+	}
 }

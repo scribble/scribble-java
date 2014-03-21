@@ -3,6 +3,15 @@
  */
 package org.scribble.editor.dsl.ui.contentassist;
 
+import com.google.common.base.Objects;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.xtext.Assignment;
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
+import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
+import org.scribble.editor.dsl.scribbleDsl.GlobalProtocolDecl;
+import org.scribble.editor.dsl.scribbleDsl.RoleDecl;
 import org.scribble.editor.dsl.ui.contentassist.AbstractScribbleDslProposalProvider;
 
 /**
@@ -10,4 +19,35 @@ import org.scribble.editor.dsl.ui.contentassist.AbstractScribbleDslProposalProvi
  */
 @SuppressWarnings("all")
 public class ScribbleDslProposalProvider extends AbstractScribbleDslProposalProvider {
+  public void completeGlobalChoice_Role(final EObject model, final Assignment assignment, final ContentAssistContext context, final ICompletionProposalAcceptor acceptor) {
+    EObject obj = model;
+    boolean _notEquals = (!Objects.equal(obj, null));
+    boolean _while = _notEquals;
+    while (_while) {
+      {
+        if ((obj instanceof GlobalProtocolDecl)) {
+          GlobalProtocolDecl gpd = ((GlobalProtocolDecl) obj);
+          EList<RoleDecl> _roles = gpd.getRoles();
+          for (final RoleDecl role : _roles) {
+            {
+              String name = role.getName();
+              String _alias = role.getAlias();
+              boolean _notEquals_1 = (!Objects.equal(_alias, null));
+              if (_notEquals_1) {
+                String _alias_1 = role.getAlias();
+                name = _alias_1;
+              }
+              ICompletionProposal _createCompletionProposal = this.createCompletionProposal(name, context);
+              acceptor.accept(_createCompletionProposal);
+            }
+          }
+          return;
+        }
+        EObject _eContainer = obj.eContainer();
+        obj = _eContainer;
+      }
+      boolean _notEquals_1 = (!Objects.equal(obj, null));
+      _while = _notEquals_1;
+    }
+  }
 }
