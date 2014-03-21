@@ -60,6 +60,8 @@ public class Activator extends AbstractUIPlugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+        
+        System.out.println("Tools plugin activated");
 
         // Register resource change listener
         IResourceChangeListener rcl=new IResourceChangeListener() {

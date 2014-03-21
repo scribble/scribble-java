@@ -37,3 +37,4 @@ Bundle-ClassPath: .,
  lib/jackson-core-asl.jar,
  lib/jackson-mapper-asl.jar,
  lib/stringtemplate.jar
+Export-Package: org.scribble.editor.tools.logger
