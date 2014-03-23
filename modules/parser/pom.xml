@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
   	<artifactId>scribble-parser</artifactId>
 	<packaging>jar</packaging>
-  	<version>0.3.0-SNAPSHOT</version>
+  	<version>0.3.0.20140324-M4</version>
   	<name>Scribble::Modules::Parser</name>
 
 	<parent>
 		<groupId>org.scribble</groupId>
 		<artifactId>modules</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
+		<version>0.3.0.20140324-M4</version>
 	</parent>
 
 	<dependencies>
