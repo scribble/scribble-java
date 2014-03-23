@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.scribble.editor.dsl.scribbleDsl.GlobalProtocolDecl;
 import org.scribble.editor.dsl.scribbleDsl.ImportDecl;
+import org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl;
 import org.scribble.editor.dsl.scribbleDsl.ModuleDecl;
 import org.scribble.editor.dsl.scribbleDsl.PayloadTypeDecl;
 import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
@@ -33,6 +34,7 @@ import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.ModuleDeclImpl#getImports <em>Imports</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.ModuleDeclImpl#getTypes <em>Types</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.ModuleDeclImpl#getGlobals <em>Globals</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.ModuleDeclImpl#getLocals <em>Locals</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.ModuleDeclImpl#getName <em>Name</em>}</li>
  * </ul>
  * </p>
@@ -70,6 +72,16 @@ public class ModuleDeclImpl extends ModuleImpl implements ModuleDecl
    * @ordered
    */
   protected EList<GlobalProtocolDecl> globals;
+
+  /**
+   * The cached value of the '{@link #getLocals() <em>Locals</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getLocals()
+   * @generated
+   * @ordered
+   */
+  protected EList<LocalProtocolDecl> locals;
 
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -159,6 +171,20 @@ public class ModuleDeclImpl extends ModuleImpl implements ModuleDecl
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<LocalProtocolDecl> getLocals()
+  {
+    if (locals == null)
+    {
+      locals = new EObjectContainmentEList<LocalProtocolDecl>(LocalProtocolDecl.class, this, ScribbleDslPackage.MODULE_DECL__LOCALS);
+    }
+    return locals;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getName()
   {
     return name;
@@ -193,6 +219,8 @@ public class ModuleDeclImpl extends ModuleImpl implements ModuleDecl
         return ((InternalEList<?>)getTypes()).basicRemove(otherEnd, msgs);
       case ScribbleDslPackage.MODULE_DECL__GLOBALS:
         return ((InternalEList<?>)getGlobals()).basicRemove(otherEnd, msgs);
+      case ScribbleDslPackage.MODULE_DECL__LOCALS:
+        return ((InternalEList<?>)getLocals()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -213,6 +241,8 @@ public class ModuleDeclImpl extends ModuleImpl implements ModuleDecl
         return getTypes();
       case ScribbleDslPackage.MODULE_DECL__GLOBALS:
         return getGlobals();
+      case ScribbleDslPackage.MODULE_DECL__LOCALS:
+        return getLocals();
       case ScribbleDslPackage.MODULE_DECL__NAME:
         return getName();
     }
@@ -242,6 +272,10 @@ public class ModuleDeclImpl extends ModuleImpl implements ModuleDecl
         getGlobals().clear();
         getGlobals().addAll((Collection<? extends GlobalProtocolDecl>)newValue);
         return;
+      case ScribbleDslPackage.MODULE_DECL__LOCALS:
+        getLocals().clear();
+        getLocals().addAll((Collection<? extends LocalProtocolDecl>)newValue);
+        return;
       case ScribbleDslPackage.MODULE_DECL__NAME:
         setName((String)newValue);
         return;
@@ -268,6 +302,9 @@ public class ModuleDeclImpl extends ModuleImpl implements ModuleDecl
       case ScribbleDslPackage.MODULE_DECL__GLOBALS:
         getGlobals().clear();
         return;
+      case ScribbleDslPackage.MODULE_DECL__LOCALS:
+        getLocals().clear();
+        return;
       case ScribbleDslPackage.MODULE_DECL__NAME:
         setName(NAME_EDEFAULT);
         return;
@@ -291,6 +328,8 @@ public class ModuleDeclImpl extends ModuleImpl implements ModuleDecl
         return types != null && !types.isEmpty();
       case ScribbleDslPackage.MODULE_DECL__GLOBALS:
         return globals != null && !globals.isEmpty();
+      case ScribbleDslPackage.MODULE_DECL__LOCALS:
+        return locals != null && !locals.isEmpty();
       case ScribbleDslPackage.MODULE_DECL__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
     }

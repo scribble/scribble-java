@@ -12,8 +12,8 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getModule <em>Module</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getScope <em>Scope</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getMember <em>Member</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getArguments <em>Arguments</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getRoles <em>Roles</em>}</li>
  * </ul>
@@ -25,32 +25,6 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface GlobalDo extends GlobalInteraction
 {
-  /**
-   * Returns the value of the '<em><b>Module</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Module</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Module</em>' attribute.
-   * @see #setModule(String)
-   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getGlobalDo_Module()
-   * @model
-   * @generated
-   */
-  String getModule();
-
-  /**
-   * Sets the value of the '{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getModule <em>Module</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Module</em>' attribute.
-   * @see #getModule()
-   * @generated
-   */
-  void setModule(String value);
-
   /**
    * Returns the value of the '<em><b>Scope</b></em>' attribute.
    * <!-- begin-user-doc -->
@@ -76,6 +50,32 @@ public interface GlobalDo extends GlobalInteraction
    * @generated
    */
   void setScope(String value);
+
+  /**
+   * Returns the value of the '<em><b>Member</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Member</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Member</em>' attribute.
+   * @see #setMember(String)
+   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getGlobalDo_Member()
+   * @model
+   * @generated
+   */
+  String getMember();
+
+  /**
+   * Sets the value of the '{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getMember <em>Member</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Member</em>' attribute.
+   * @see #getMember()
+   * @generated
+   */
+  void setMember(String value);
 
   /**
    * Returns the value of the '<em><b>Arguments</b></em>' containment reference list.

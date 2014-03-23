@@ -195,6 +195,71 @@ public class ScribbleDslAdapterFactory extends AdapterFactoryImpl
         return createGlobalDoAdapter();
       }
       @Override
+      public Adapter caseLocalProtocolDecl(LocalProtocolDecl object)
+      {
+        return createLocalProtocolDeclAdapter();
+      }
+      @Override
+      public Adapter caseLocalProtocolBlock(LocalProtocolBlock object)
+      {
+        return createLocalProtocolBlockAdapter();
+      }
+      @Override
+      public Adapter caseLlobalInteraction(LlobalInteraction object)
+      {
+        return createLlobalInteractionAdapter();
+      }
+      @Override
+      public Adapter caseLocalSend(LocalSend object)
+      {
+        return createLocalSendAdapter();
+      }
+      @Override
+      public Adapter caseLocalReceive(LocalReceive object)
+      {
+        return createLocalReceiveAdapter();
+      }
+      @Override
+      public Adapter caseLocalChoice(LocalChoice object)
+      {
+        return createLocalChoiceAdapter();
+      }
+      @Override
+      public Adapter caseLocalRecursion(LocalRecursion object)
+      {
+        return createLocalRecursionAdapter();
+      }
+      @Override
+      public Adapter caseLocalContinue(LocalContinue object)
+      {
+        return createLocalContinueAdapter();
+      }
+      @Override
+      public Adapter caseLocalParallel(LocalParallel object)
+      {
+        return createLocalParallelAdapter();
+      }
+      @Override
+      public Adapter caselocalinterruptible(localinterruptible object)
+      {
+        return createlocalinterruptibleAdapter();
+      }
+      @Override
+      public Adapter caseLocalThrow(LocalThrow object)
+      {
+        return createLocalThrowAdapter();
+      }
+      @Override
+      public Adapter caseLocalCatch(LocalCatch object)
+      {
+        return createLocalCatchAdapter();
+      }
+      @Override
+      public Adapter caseLocalDo(LocalDo object)
+      {
+        return createLocalDoAdapter();
+      }
+      @Override
       public Adapter defaultCase(EObject object)
       {
         return createEObjectAdapter();
@@ -572,6 +637,201 @@ public class ScribbleDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createGlobalDoAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl <em>Local Protocol Decl</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl
+   * @generated
+   */
+  public Adapter createLocalProtocolDeclAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock <em>Local Protocol Block</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock
+   * @generated
+   */
+  public Adapter createLocalProtocolBlockAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LlobalInteraction <em>Llobal Interaction</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LlobalInteraction
+   * @generated
+   */
+  public Adapter createLlobalInteractionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalSend <em>Local Send</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalSend
+   * @generated
+   */
+  public Adapter createLocalSendAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalReceive <em>Local Receive</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalReceive
+   * @generated
+   */
+  public Adapter createLocalReceiveAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalChoice <em>Local Choice</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalChoice
+   * @generated
+   */
+  public Adapter createLocalChoiceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalRecursion <em>Local Recursion</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalRecursion
+   * @generated
+   */
+  public Adapter createLocalRecursionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalContinue <em>Local Continue</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalContinue
+   * @generated
+   */
+  public Adapter createLocalContinueAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalParallel <em>Local Parallel</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalParallel
+   * @generated
+   */
+  public Adapter createLocalParallelAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible <em>localinterruptible</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible
+   * @generated
+   */
+  public Adapter createlocalinterruptibleAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow <em>Local Throw</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalThrow
+   * @generated
+   */
+  public Adapter createLocalThrowAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalCatch <em>Local Catch</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalCatch
+   * @generated
+   */
+  public Adapter createLocalCatchAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalDo <em>Local Do</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalDo
+   * @generated
+   */
+  public Adapter createLocalDoAdapter()
   {
     return null;
   }

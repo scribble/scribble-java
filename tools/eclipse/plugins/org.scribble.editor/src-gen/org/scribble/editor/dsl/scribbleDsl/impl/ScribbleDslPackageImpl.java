@@ -24,6 +24,18 @@ import org.scribble.editor.dsl.scribbleDsl.GlobalRecursion;
 import org.scribble.editor.dsl.scribbleDsl.ImportDecl;
 import org.scribble.editor.dsl.scribbleDsl.ImportMember;
 import org.scribble.editor.dsl.scribbleDsl.ImportModule;
+import org.scribble.editor.dsl.scribbleDsl.LlobalInteraction;
+import org.scribble.editor.dsl.scribbleDsl.LocalCatch;
+import org.scribble.editor.dsl.scribbleDsl.LocalChoice;
+import org.scribble.editor.dsl.scribbleDsl.LocalContinue;
+import org.scribble.editor.dsl.scribbleDsl.LocalDo;
+import org.scribble.editor.dsl.scribbleDsl.LocalParallel;
+import org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock;
+import org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl;
+import org.scribble.editor.dsl.scribbleDsl.LocalReceive;
+import org.scribble.editor.dsl.scribbleDsl.LocalRecursion;
+import org.scribble.editor.dsl.scribbleDsl.LocalSend;
+import org.scribble.editor.dsl.scribbleDsl.LocalThrow;
 import org.scribble.editor.dsl.scribbleDsl.Message;
 import org.scribble.editor.dsl.scribbleDsl.MessageSignature;
 import org.scribble.editor.dsl.scribbleDsl.Module;
@@ -35,6 +47,7 @@ import org.scribble.editor.dsl.scribbleDsl.RoleDecl;
 import org.scribble.editor.dsl.scribbleDsl.RoleInstantiation;
 import org.scribble.editor.dsl.scribbleDsl.ScribbleDslFactory;
 import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
+import org.scribble.editor.dsl.scribbleDsl.localinterruptible;
 
 /**
  * <!-- begin-user-doc -->
@@ -213,6 +226,97 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
   private EClass globalDoEClass = null;
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localProtocolDeclEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localProtocolBlockEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass llobalInteractionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localSendEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localReceiveEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localChoiceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localRecursionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localContinueEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localParallelEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localinterruptibleEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localThrowEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localCatchEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass localDoEClass = null;
+
+  /**
    * Creates an instance of the model <b>Package</b>, registered with
    * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
    * package URI value.
@@ -330,9 +434,19 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
+  public EReference getModuleDecl_Locals()
+  {
+    return (EReference)moduleDeclEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EAttribute getModuleDecl_Name()
   {
-    return (EAttribute)moduleDeclEClass.getEStructuralFeatures().get(3);
+    return (EAttribute)moduleDeclEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -780,7 +894,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getGlobalMessageTransfer_ToRole()
+  public EAttribute getGlobalMessageTransfer_ToRoles()
   {
     return (EAttribute)globalMessageTransferEClass.getEStructuralFeatures().get(2);
   }
@@ -990,7 +1104,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getGlobalDo_Module()
+  public EAttribute getGlobalDo_Scope()
   {
     return (EAttribute)globalDoEClass.getEStructuralFeatures().get(0);
   }
@@ -1000,7 +1114,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getGlobalDo_Scope()
+  public EAttribute getGlobalDo_Member()
   {
     return (EAttribute)globalDoEClass.getEStructuralFeatures().get(1);
   }
@@ -1023,6 +1137,456 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
   public EReference getGlobalDo_Roles()
   {
     return (EReference)globalDoEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalProtocolDecl()
+  {
+    return localProtocolDeclEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalProtocolDecl_Name()
+  {
+    return (EAttribute)localProtocolDeclEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalProtocolDecl_Role()
+  {
+    return (EAttribute)localProtocolDeclEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalProtocolDecl_Parameters()
+  {
+    return (EReference)localProtocolDeclEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalProtocolDecl_Roles()
+  {
+    return (EReference)localProtocolDeclEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalProtocolDecl_Block()
+  {
+    return (EReference)localProtocolDeclEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalProtocolDecl_Instantiates()
+  {
+    return (EAttribute)localProtocolDeclEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalProtocolDecl_Arguments()
+  {
+    return (EReference)localProtocolDeclEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalProtocolDecl_RoleInstantiations()
+  {
+    return (EReference)localProtocolDeclEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalProtocolBlock()
+  {
+    return localProtocolBlockEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalProtocolBlock_Activities()
+  {
+    return (EReference)localProtocolBlockEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLlobalInteraction()
+  {
+    return llobalInteractionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalSend()
+  {
+    return localSendEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalSend_Message()
+  {
+    return (EReference)localSendEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalSend_ToRoles()
+  {
+    return (EAttribute)localSendEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalReceive()
+  {
+    return localReceiveEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalReceive_Message()
+  {
+    return (EReference)localReceiveEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalReceive_FromRole()
+  {
+    return (EAttribute)localReceiveEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalChoice()
+  {
+    return localChoiceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalChoice_Role()
+  {
+    return (EAttribute)localChoiceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalChoice_Blocks()
+  {
+    return (EReference)localChoiceEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalRecursion()
+  {
+    return localRecursionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalRecursion_Label()
+  {
+    return (EAttribute)localRecursionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalRecursion_Block()
+  {
+    return (EReference)localRecursionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalContinue()
+  {
+    return localContinueEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalContinue_Label()
+  {
+    return (EAttribute)localContinueEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalParallel()
+  {
+    return localParallelEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalParallel_Blocks()
+  {
+    return (EReference)localParallelEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getlocalinterruptible()
+  {
+    return localinterruptibleEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getlocalinterruptible_Scope()
+  {
+    return (EAttribute)localinterruptibleEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getlocalinterruptible_Block()
+  {
+    return (EReference)localinterruptibleEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getlocalinterruptible_Throw()
+  {
+    return (EReference)localinterruptibleEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getlocalinterruptible_Catches()
+  {
+    return (EReference)localinterruptibleEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalThrow()
+  {
+    return localThrowEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalThrow_Messages()
+  {
+    return (EReference)localThrowEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalThrow_ToRoles()
+  {
+    return (EAttribute)localThrowEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalThrow_ToRols()
+  {
+    return (EAttribute)localThrowEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalCatch()
+  {
+    return localCatchEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalCatch_Messages()
+  {
+    return (EReference)localCatchEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalCatch_FromRole()
+  {
+    return (EAttribute)localCatchEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLocalDo()
+  {
+    return localDoEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalDo_Scope()
+  {
+    return (EAttribute)localDoEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLocalDo_Member()
+  {
+    return (EAttribute)localDoEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalDo_Arguments()
+  {
+    return (EReference)localDoEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getLocalDo_Roles()
+  {
+    return (EReference)localDoEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1061,6 +1625,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     createEReference(moduleDeclEClass, MODULE_DECL__IMPORTS);
     createEReference(moduleDeclEClass, MODULE_DECL__TYPES);
     createEReference(moduleDeclEClass, MODULE_DECL__GLOBALS);
+    createEReference(moduleDeclEClass, MODULE_DECL__LOCALS);
     createEAttribute(moduleDeclEClass, MODULE_DECL__NAME);
 
     importDeclEClass = createEClass(IMPORT_DECL);
@@ -1120,7 +1685,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     globalMessageTransferEClass = createEClass(GLOBAL_MESSAGE_TRANSFER);
     createEReference(globalMessageTransferEClass, GLOBAL_MESSAGE_TRANSFER__MESSAGE);
     createEAttribute(globalMessageTransferEClass, GLOBAL_MESSAGE_TRANSFER__FROM_ROLE);
-    createEAttribute(globalMessageTransferEClass, GLOBAL_MESSAGE_TRANSFER__TO_ROLE);
+    createEAttribute(globalMessageTransferEClass, GLOBAL_MESSAGE_TRANSFER__TO_ROLES);
 
     messageEClass = createEClass(MESSAGE);
     createEAttribute(messageEClass, MESSAGE__PARAMETER);
@@ -1149,10 +1714,68 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     createEAttribute(globalInterruptEClass, GLOBAL_INTERRUPT__ROLE);
 
     globalDoEClass = createEClass(GLOBAL_DO);
-    createEAttribute(globalDoEClass, GLOBAL_DO__MODULE);
     createEAttribute(globalDoEClass, GLOBAL_DO__SCOPE);
+    createEAttribute(globalDoEClass, GLOBAL_DO__MEMBER);
     createEReference(globalDoEClass, GLOBAL_DO__ARGUMENTS);
     createEReference(globalDoEClass, GLOBAL_DO__ROLES);
+
+    localProtocolDeclEClass = createEClass(LOCAL_PROTOCOL_DECL);
+    createEAttribute(localProtocolDeclEClass, LOCAL_PROTOCOL_DECL__NAME);
+    createEAttribute(localProtocolDeclEClass, LOCAL_PROTOCOL_DECL__ROLE);
+    createEReference(localProtocolDeclEClass, LOCAL_PROTOCOL_DECL__PARAMETERS);
+    createEReference(localProtocolDeclEClass, LOCAL_PROTOCOL_DECL__ROLES);
+    createEReference(localProtocolDeclEClass, LOCAL_PROTOCOL_DECL__BLOCK);
+    createEAttribute(localProtocolDeclEClass, LOCAL_PROTOCOL_DECL__INSTANTIATES);
+    createEReference(localProtocolDeclEClass, LOCAL_PROTOCOL_DECL__ARGUMENTS);
+    createEReference(localProtocolDeclEClass, LOCAL_PROTOCOL_DECL__ROLE_INSTANTIATIONS);
+
+    localProtocolBlockEClass = createEClass(LOCAL_PROTOCOL_BLOCK);
+    createEReference(localProtocolBlockEClass, LOCAL_PROTOCOL_BLOCK__ACTIVITIES);
+
+    llobalInteractionEClass = createEClass(LLOBAL_INTERACTION);
+
+    localSendEClass = createEClass(LOCAL_SEND);
+    createEReference(localSendEClass, LOCAL_SEND__MESSAGE);
+    createEAttribute(localSendEClass, LOCAL_SEND__TO_ROLES);
+
+    localReceiveEClass = createEClass(LOCAL_RECEIVE);
+    createEReference(localReceiveEClass, LOCAL_RECEIVE__MESSAGE);
+    createEAttribute(localReceiveEClass, LOCAL_RECEIVE__FROM_ROLE);
+
+    localChoiceEClass = createEClass(LOCAL_CHOICE);
+    createEAttribute(localChoiceEClass, LOCAL_CHOICE__ROLE);
+    createEReference(localChoiceEClass, LOCAL_CHOICE__BLOCKS);
+
+    localRecursionEClass = createEClass(LOCAL_RECURSION);
+    createEAttribute(localRecursionEClass, LOCAL_RECURSION__LABEL);
+    createEReference(localRecursionEClass, LOCAL_RECURSION__BLOCK);
+
+    localContinueEClass = createEClass(LOCAL_CONTINUE);
+    createEAttribute(localContinueEClass, LOCAL_CONTINUE__LABEL);
+
+    localParallelEClass = createEClass(LOCAL_PARALLEL);
+    createEReference(localParallelEClass, LOCAL_PARALLEL__BLOCKS);
+
+    localinterruptibleEClass = createEClass(LOCALINTERRUPTIBLE);
+    createEAttribute(localinterruptibleEClass, LOCALINTERRUPTIBLE__SCOPE);
+    createEReference(localinterruptibleEClass, LOCALINTERRUPTIBLE__BLOCK);
+    createEReference(localinterruptibleEClass, LOCALINTERRUPTIBLE__THROW);
+    createEReference(localinterruptibleEClass, LOCALINTERRUPTIBLE__CATCHES);
+
+    localThrowEClass = createEClass(LOCAL_THROW);
+    createEReference(localThrowEClass, LOCAL_THROW__MESSAGES);
+    createEAttribute(localThrowEClass, LOCAL_THROW__TO_ROLES);
+    createEAttribute(localThrowEClass, LOCAL_THROW__TO_ROLS);
+
+    localCatchEClass = createEClass(LOCAL_CATCH);
+    createEReference(localCatchEClass, LOCAL_CATCH__MESSAGES);
+    createEAttribute(localCatchEClass, LOCAL_CATCH__FROM_ROLE);
+
+    localDoEClass = createEClass(LOCAL_DO);
+    createEAttribute(localDoEClass, LOCAL_DO__SCOPE);
+    createEAttribute(localDoEClass, LOCAL_DO__MEMBER);
+    createEReference(localDoEClass, LOCAL_DO__ARGUMENTS);
+    createEReference(localDoEClass, LOCAL_DO__ROLES);
   }
 
   /**
@@ -1195,6 +1818,14 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     globalParallelEClass.getESuperTypes().add(this.getGlobalInteraction());
     globalInterruptibleEClass.getESuperTypes().add(this.getGlobalInteraction());
     globalDoEClass.getESuperTypes().add(this.getGlobalInteraction());
+    localSendEClass.getESuperTypes().add(this.getLlobalInteraction());
+    localReceiveEClass.getESuperTypes().add(this.getLlobalInteraction());
+    localChoiceEClass.getESuperTypes().add(this.getLlobalInteraction());
+    localRecursionEClass.getESuperTypes().add(this.getLlobalInteraction());
+    localContinueEClass.getESuperTypes().add(this.getLlobalInteraction());
+    localParallelEClass.getESuperTypes().add(this.getLlobalInteraction());
+    localinterruptibleEClass.getESuperTypes().add(this.getLlobalInteraction());
+    localDoEClass.getESuperTypes().add(this.getLlobalInteraction());
 
     // Initialize classes and features; add operations and parameters
     initEClass(moduleEClass, Module.class, "Module", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1203,6 +1834,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     initEReference(getModuleDecl_Imports(), this.getImportDecl(), null, "imports", null, 0, -1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getModuleDecl_Types(), this.getPayloadTypeDecl(), null, "types", null, 0, -1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getModuleDecl_Globals(), this.getGlobalProtocolDecl(), null, "globals", null, 0, -1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModuleDecl_Locals(), this.getLocalProtocolDecl(), null, "locals", null, 0, -1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getModuleDecl_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(importDeclEClass, ImportDecl.class, "ImportDecl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1262,7 +1894,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     initEClass(globalMessageTransferEClass, GlobalMessageTransfer.class, "GlobalMessageTransfer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getGlobalMessageTransfer_Message(), this.getMessage(), null, "message", null, 0, 1, GlobalMessageTransfer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getGlobalMessageTransfer_FromRole(), ecorePackage.getEString(), "fromRole", null, 0, 1, GlobalMessageTransfer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getGlobalMessageTransfer_ToRole(), ecorePackage.getEString(), "toRole", null, 0, -1, GlobalMessageTransfer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getGlobalMessageTransfer_ToRoles(), ecorePackage.getEString(), "toRoles", null, 0, -1, GlobalMessageTransfer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(messageEClass, Message.class, "Message", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMessage_Parameter(), ecorePackage.getEString(), "parameter", null, 0, 1, Message.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1291,10 +1923,68 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     initEAttribute(getGlobalInterrupt_Role(), ecorePackage.getEString(), "role", null, 0, 1, GlobalInterrupt.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(globalDoEClass, GlobalDo.class, "GlobalDo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getGlobalDo_Module(), ecorePackage.getEString(), "module", null, 0, 1, GlobalDo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getGlobalDo_Scope(), ecorePackage.getEString(), "scope", null, 0, 1, GlobalDo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getGlobalDo_Member(), ecorePackage.getEString(), "member", null, 0, 1, GlobalDo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getGlobalDo_Arguments(), this.getArgument(), null, "arguments", null, 0, -1, GlobalDo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getGlobalDo_Roles(), this.getRoleInstantiation(), null, "roles", null, 0, -1, GlobalDo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localProtocolDeclEClass, LocalProtocolDecl.class, "LocalProtocolDecl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLocalProtocolDecl_Name(), ecorePackage.getEString(), "name", null, 0, 1, LocalProtocolDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLocalProtocolDecl_Role(), ecorePackage.getEString(), "role", null, 0, 1, LocalProtocolDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalProtocolDecl_Parameters(), this.getParameterDecl(), null, "parameters", null, 0, -1, LocalProtocolDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalProtocolDecl_Roles(), this.getRoleDecl(), null, "roles", null, 0, -1, LocalProtocolDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalProtocolDecl_Block(), this.getLocalProtocolBlock(), null, "block", null, 0, 1, LocalProtocolDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLocalProtocolDecl_Instantiates(), ecorePackage.getEString(), "instantiates", null, 0, 1, LocalProtocolDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalProtocolDecl_Arguments(), this.getArgument(), null, "arguments", null, 0, -1, LocalProtocolDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalProtocolDecl_RoleInstantiations(), this.getRoleInstantiation(), null, "roleInstantiations", null, 0, -1, LocalProtocolDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localProtocolBlockEClass, LocalProtocolBlock.class, "LocalProtocolBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getLocalProtocolBlock_Activities(), this.getLlobalInteraction(), null, "activities", null, 0, -1, LocalProtocolBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(llobalInteractionEClass, LlobalInteraction.class, "LlobalInteraction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(localSendEClass, LocalSend.class, "LocalSend", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getLocalSend_Message(), this.getMessage(), null, "message", null, 0, 1, LocalSend.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLocalSend_ToRoles(), ecorePackage.getEString(), "toRoles", null, 0, -1, LocalSend.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localReceiveEClass, LocalReceive.class, "LocalReceive", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getLocalReceive_Message(), this.getMessage(), null, "message", null, 0, 1, LocalReceive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLocalReceive_FromRole(), ecorePackage.getEString(), "fromRole", null, 0, 1, LocalReceive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localChoiceEClass, LocalChoice.class, "LocalChoice", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLocalChoice_Role(), ecorePackage.getEString(), "role", null, 0, 1, LocalChoice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalChoice_Blocks(), this.getLocalProtocolBlock(), null, "blocks", null, 0, -1, LocalChoice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localRecursionEClass, LocalRecursion.class, "LocalRecursion", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLocalRecursion_Label(), ecorePackage.getEString(), "label", null, 0, 1, LocalRecursion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalRecursion_Block(), this.getLocalProtocolBlock(), null, "block", null, 0, 1, LocalRecursion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localContinueEClass, LocalContinue.class, "LocalContinue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLocalContinue_Label(), ecorePackage.getEString(), "label", null, 0, 1, LocalContinue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localParallelEClass, LocalParallel.class, "LocalParallel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getLocalParallel_Blocks(), this.getLocalProtocolBlock(), null, "blocks", null, 0, -1, LocalParallel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localinterruptibleEClass, localinterruptible.class, "localinterruptible", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getlocalinterruptible_Scope(), ecorePackage.getEString(), "scope", null, 0, 1, localinterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getlocalinterruptible_Block(), this.getLocalProtocolBlock(), null, "block", null, 0, 1, localinterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getlocalinterruptible_Throw(), this.getLocalThrow(), null, "throw", null, 0, 1, localinterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getlocalinterruptible_Catches(), this.getLocalCatch(), null, "catches", null, 0, -1, localinterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localThrowEClass, LocalThrow.class, "LocalThrow", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getLocalThrow_Messages(), this.getMessage(), null, "messages", null, 0, -1, LocalThrow.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLocalThrow_ToRoles(), ecorePackage.getEString(), "toRoles", null, 0, -1, LocalThrow.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLocalThrow_ToRols(), ecorePackage.getEString(), "toRols", null, 0, -1, LocalThrow.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localCatchEClass, LocalCatch.class, "LocalCatch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getLocalCatch_Messages(), this.getMessage(), null, "messages", null, 0, -1, LocalCatch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLocalCatch_FromRole(), ecorePackage.getEString(), "fromRole", null, 0, 1, LocalCatch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(localDoEClass, LocalDo.class, "LocalDo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLocalDo_Scope(), ecorePackage.getEString(), "scope", null, 0, 1, LocalDo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLocalDo_Member(), ecorePackage.getEString(), "member", null, 0, 1, LocalDo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalDo_Arguments(), this.getArgument(), null, "arguments", null, 0, -1, LocalDo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalDo_Roles(), this.getRoleInstantiation(), null, "roles", null, 0, -1, LocalDo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

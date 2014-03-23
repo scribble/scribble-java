@@ -113,13 +113,22 @@ public interface ScribbleDslPackage extends EPackage
   int MODULE_DECL__GLOBALS = MODULE_FEATURE_COUNT + 2;
 
   /**
+   * The feature id for the '<em><b>Locals</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MODULE_DECL__LOCALS = MODULE_FEATURE_COUNT + 3;
+
+  /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODULE_DECL__NAME = MODULE_FEATURE_COUNT + 3;
+  int MODULE_DECL__NAME = MODULE_FEATURE_COUNT + 4;
 
   /**
    * The number of structural features of the '<em>Module Decl</em>' class.
@@ -128,7 +137,7 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODULE_DECL_FEATURE_COUNT = MODULE_FEATURE_COUNT + 4;
+  int MODULE_DECL_FEATURE_COUNT = MODULE_FEATURE_COUNT + 5;
 
   /**
    * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.ImportDeclImpl <em>Import Decl</em>}' class.
@@ -731,13 +740,13 @@ public interface ScribbleDslPackage extends EPackage
   int GLOBAL_MESSAGE_TRANSFER__FROM_ROLE = GLOBAL_INTERACTION_FEATURE_COUNT + 1;
 
   /**
-   * The feature id for the '<em><b>To Role</b></em>' attribute list.
+   * The feature id for the '<em><b>To Roles</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int GLOBAL_MESSAGE_TRANSFER__TO_ROLE = GLOBAL_INTERACTION_FEATURE_COUNT + 2;
+  int GLOBAL_MESSAGE_TRANSFER__TO_ROLES = GLOBAL_INTERACTION_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Global Message Transfer</em>' class.
@@ -972,22 +981,22 @@ public interface ScribbleDslPackage extends EPackage
   int GLOBAL_DO = 23;
 
   /**
-   * The feature id for the '<em><b>Module</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int GLOBAL_DO__MODULE = GLOBAL_INTERACTION_FEATURE_COUNT + 0;
-
-  /**
    * The feature id for the '<em><b>Scope</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int GLOBAL_DO__SCOPE = GLOBAL_INTERACTION_FEATURE_COUNT + 1;
+  int GLOBAL_DO__SCOPE = GLOBAL_INTERACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Member</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GLOBAL_DO__MEMBER = GLOBAL_INTERACTION_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Arguments</b></em>' containment reference list.
@@ -1015,6 +1024,541 @@ public interface ScribbleDslPackage extends EPackage
    * @ordered
    */
   int GLOBAL_DO_FEATURE_COUNT = GLOBAL_INTERACTION_FEATURE_COUNT + 4;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalProtocolDeclImpl <em>Local Protocol Decl</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalProtocolDeclImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalProtocolDecl()
+   * @generated
+   */
+  int LOCAL_PROTOCOL_DECL = 24;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_DECL__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Role</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_DECL__ROLE = 1;
+
+  /**
+   * The feature id for the '<em><b>Parameters</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_DECL__PARAMETERS = 2;
+
+  /**
+   * The feature id for the '<em><b>Roles</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_DECL__ROLES = 3;
+
+  /**
+   * The feature id for the '<em><b>Block</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_DECL__BLOCK = 4;
+
+  /**
+   * The feature id for the '<em><b>Instantiates</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_DECL__INSTANTIATES = 5;
+
+  /**
+   * The feature id for the '<em><b>Arguments</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_DECL__ARGUMENTS = 6;
+
+  /**
+   * The feature id for the '<em><b>Role Instantiations</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_DECL__ROLE_INSTANTIATIONS = 7;
+
+  /**
+   * The number of structural features of the '<em>Local Protocol Decl</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_DECL_FEATURE_COUNT = 8;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalProtocolBlockImpl <em>Local Protocol Block</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalProtocolBlockImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalProtocolBlock()
+   * @generated
+   */
+  int LOCAL_PROTOCOL_BLOCK = 25;
+
+  /**
+   * The feature id for the '<em><b>Activities</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_BLOCK__ACTIVITIES = 0;
+
+  /**
+   * The number of structural features of the '<em>Local Protocol Block</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PROTOCOL_BLOCK_FEATURE_COUNT = 1;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LlobalInteractionImpl <em>Llobal Interaction</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LlobalInteractionImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLlobalInteraction()
+   * @generated
+   */
+  int LLOBAL_INTERACTION = 26;
+
+  /**
+   * The number of structural features of the '<em>Llobal Interaction</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LLOBAL_INTERACTION_FEATURE_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalSendImpl <em>Local Send</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalSendImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalSend()
+   * @generated
+   */
+  int LOCAL_SEND = 27;
+
+  /**
+   * The feature id for the '<em><b>Message</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_SEND__MESSAGE = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>To Roles</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_SEND__TO_ROLES = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Local Send</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_SEND_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalReceiveImpl <em>Local Receive</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalReceiveImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalReceive()
+   * @generated
+   */
+  int LOCAL_RECEIVE = 28;
+
+  /**
+   * The feature id for the '<em><b>Message</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_RECEIVE__MESSAGE = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>From Role</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_RECEIVE__FROM_ROLE = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Local Receive</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_RECEIVE_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalChoiceImpl <em>Local Choice</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalChoiceImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalChoice()
+   * @generated
+   */
+  int LOCAL_CHOICE = 29;
+
+  /**
+   * The feature id for the '<em><b>Role</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_CHOICE__ROLE = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Blocks</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_CHOICE__BLOCKS = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Local Choice</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_CHOICE_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalRecursionImpl <em>Local Recursion</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalRecursionImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalRecursion()
+   * @generated
+   */
+  int LOCAL_RECURSION = 30;
+
+  /**
+   * The feature id for the '<em><b>Label</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_RECURSION__LABEL = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Block</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_RECURSION__BLOCK = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Local Recursion</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_RECURSION_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalContinueImpl <em>Local Continue</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalContinueImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalContinue()
+   * @generated
+   */
+  int LOCAL_CONTINUE = 31;
+
+  /**
+   * The feature id for the '<em><b>Label</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_CONTINUE__LABEL = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Local Continue</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_CONTINUE_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalParallelImpl <em>Local Parallel</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalParallelImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalParallel()
+   * @generated
+   */
+  int LOCAL_PARALLEL = 32;
+
+  /**
+   * The feature id for the '<em><b>Blocks</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PARALLEL__BLOCKS = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Local Parallel</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_PARALLEL_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl <em>localinterruptible</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getlocalinterruptible()
+   * @generated
+   */
+  int LOCALINTERRUPTIBLE = 33;
+
+  /**
+   * The feature id for the '<em><b>Scope</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCALINTERRUPTIBLE__SCOPE = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Block</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCALINTERRUPTIBLE__BLOCK = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Throw</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCALINTERRUPTIBLE__THROW = LLOBAL_INTERACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Catches</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCALINTERRUPTIBLE__CATCHES = LLOBAL_INTERACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The number of structural features of the '<em>localinterruptible</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCALINTERRUPTIBLE_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 4;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalThrowImpl <em>Local Throw</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalThrowImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalThrow()
+   * @generated
+   */
+  int LOCAL_THROW = 34;
+
+  /**
+   * The feature id for the '<em><b>Messages</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_THROW__MESSAGES = 0;
+
+  /**
+   * The feature id for the '<em><b>To Roles</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_THROW__TO_ROLES = 1;
+
+  /**
+   * The feature id for the '<em><b>To Rols</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_THROW__TO_ROLS = 2;
+
+  /**
+   * The number of structural features of the '<em>Local Throw</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_THROW_FEATURE_COUNT = 3;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalCatchImpl <em>Local Catch</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalCatchImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalCatch()
+   * @generated
+   */
+  int LOCAL_CATCH = 35;
+
+  /**
+   * The feature id for the '<em><b>Messages</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_CATCH__MESSAGES = 0;
+
+  /**
+   * The feature id for the '<em><b>From Role</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_CATCH__FROM_ROLE = 1;
+
+  /**
+   * The number of structural features of the '<em>Local Catch</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_CATCH_FEATURE_COUNT = 2;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalDoImpl <em>Local Do</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalDoImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalDo()
+   * @generated
+   */
+  int LOCAL_DO = 36;
+
+  /**
+   * The feature id for the '<em><b>Scope</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_DO__SCOPE = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Member</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_DO__MEMBER = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Arguments</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_DO__ARGUMENTS = LLOBAL_INTERACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Roles</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_DO__ROLES = LLOBAL_INTERACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The number of structural features of the '<em>Local Do</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_DO_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 4;
 
 
   /**
@@ -1069,6 +1613,17 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    */
   EReference getModuleDecl_Globals();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getLocals <em>Locals</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Locals</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getLocals()
+   * @see #getModuleDecl()
+   * @generated
+   */
+  EReference getModuleDecl_Locals();
 
   /**
    * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getName <em>Name</em>}'.
@@ -1552,15 +2107,15 @@ public interface ScribbleDslPackage extends EPackage
   EAttribute getGlobalMessageTransfer_FromRole();
 
   /**
-   * Returns the meta object for the attribute list '{@link org.scribble.editor.dsl.scribbleDsl.GlobalMessageTransfer#getToRole <em>To Role</em>}'.
+   * Returns the meta object for the attribute list '{@link org.scribble.editor.dsl.scribbleDsl.GlobalMessageTransfer#getToRoles <em>To Roles</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute list '<em>To Role</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.GlobalMessageTransfer#getToRole()
+   * @return the meta object for the attribute list '<em>To Roles</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.GlobalMessageTransfer#getToRoles()
    * @see #getGlobalMessageTransfer()
    * @generated
    */
-  EAttribute getGlobalMessageTransfer_ToRole();
+  EAttribute getGlobalMessageTransfer_ToRoles();
 
   /**
    * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.Message <em>Message</em>}'.
@@ -1775,17 +2330,6 @@ public interface ScribbleDslPackage extends EPackage
   EClass getGlobalDo();
 
   /**
-   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getModule <em>Module</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Module</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.GlobalDo#getModule()
-   * @see #getGlobalDo()
-   * @generated
-   */
-  EAttribute getGlobalDo_Module();
-
-  /**
    * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getScope <em>Scope</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1795,6 +2339,17 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    */
   EAttribute getGlobalDo_Scope();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getMember <em>Member</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Member</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.GlobalDo#getMember()
+   * @see #getGlobalDo()
+   * @generated
+   */
+  EAttribute getGlobalDo_Member();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.GlobalDo#getArguments <em>Arguments</em>}'.
@@ -1817,6 +2372,488 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    */
   EReference getGlobalDo_Roles();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl <em>Local Protocol Decl</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Protocol Decl</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl
+   * @generated
+   */
+  EClass getLocalProtocolDecl();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getName()
+   * @see #getLocalProtocolDecl()
+   * @generated
+   */
+  EAttribute getLocalProtocolDecl_Name();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getRole <em>Role</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Role</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getRole()
+   * @see #getLocalProtocolDecl()
+   * @generated
+   */
+  EAttribute getLocalProtocolDecl_Role();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getParameters <em>Parameters</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Parameters</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getParameters()
+   * @see #getLocalProtocolDecl()
+   * @generated
+   */
+  EReference getLocalProtocolDecl_Parameters();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getRoles <em>Roles</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Roles</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getRoles()
+   * @see #getLocalProtocolDecl()
+   * @generated
+   */
+  EReference getLocalProtocolDecl_Roles();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getBlock <em>Block</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Block</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getBlock()
+   * @see #getLocalProtocolDecl()
+   * @generated
+   */
+  EReference getLocalProtocolDecl_Block();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getInstantiates <em>Instantiates</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Instantiates</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getInstantiates()
+   * @see #getLocalProtocolDecl()
+   * @generated
+   */
+  EAttribute getLocalProtocolDecl_Instantiates();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getArguments <em>Arguments</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Arguments</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getArguments()
+   * @see #getLocalProtocolDecl()
+   * @generated
+   */
+  EReference getLocalProtocolDecl_Arguments();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getRoleInstantiations <em>Role Instantiations</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Role Instantiations</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl#getRoleInstantiations()
+   * @see #getLocalProtocolDecl()
+   * @generated
+   */
+  EReference getLocalProtocolDecl_RoleInstantiations();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock <em>Local Protocol Block</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Protocol Block</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock
+   * @generated
+   */
+  EClass getLocalProtocolBlock();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock#getActivities <em>Activities</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Activities</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock#getActivities()
+   * @see #getLocalProtocolBlock()
+   * @generated
+   */
+  EReference getLocalProtocolBlock_Activities();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LlobalInteraction <em>Llobal Interaction</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Llobal Interaction</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LlobalInteraction
+   * @generated
+   */
+  EClass getLlobalInteraction();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalSend <em>Local Send</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Send</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalSend
+   * @generated
+   */
+  EClass getLocalSend();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.LocalSend#getMessage <em>Message</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Message</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalSend#getMessage()
+   * @see #getLocalSend()
+   * @generated
+   */
+  EReference getLocalSend_Message();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.scribble.editor.dsl.scribbleDsl.LocalSend#getToRoles <em>To Roles</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>To Roles</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalSend#getToRoles()
+   * @see #getLocalSend()
+   * @generated
+   */
+  EAttribute getLocalSend_ToRoles();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalReceive <em>Local Receive</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Receive</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalReceive
+   * @generated
+   */
+  EClass getLocalReceive();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.LocalReceive#getMessage <em>Message</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Message</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalReceive#getMessage()
+   * @see #getLocalReceive()
+   * @generated
+   */
+  EReference getLocalReceive_Message();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalReceive#getFromRole <em>From Role</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>From Role</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalReceive#getFromRole()
+   * @see #getLocalReceive()
+   * @generated
+   */
+  EAttribute getLocalReceive_FromRole();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalChoice <em>Local Choice</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Choice</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalChoice
+   * @generated
+   */
+  EClass getLocalChoice();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalChoice#getRole <em>Role</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Role</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalChoice#getRole()
+   * @see #getLocalChoice()
+   * @generated
+   */
+  EAttribute getLocalChoice_Role();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalChoice#getBlocks <em>Blocks</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Blocks</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalChoice#getBlocks()
+   * @see #getLocalChoice()
+   * @generated
+   */
+  EReference getLocalChoice_Blocks();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalRecursion <em>Local Recursion</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Recursion</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalRecursion
+   * @generated
+   */
+  EClass getLocalRecursion();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalRecursion#getLabel <em>Label</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Label</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalRecursion#getLabel()
+   * @see #getLocalRecursion()
+   * @generated
+   */
+  EAttribute getLocalRecursion_Label();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.LocalRecursion#getBlock <em>Block</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Block</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalRecursion#getBlock()
+   * @see #getLocalRecursion()
+   * @generated
+   */
+  EReference getLocalRecursion_Block();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalContinue <em>Local Continue</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Continue</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalContinue
+   * @generated
+   */
+  EClass getLocalContinue();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalContinue#getLabel <em>Label</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Label</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalContinue#getLabel()
+   * @see #getLocalContinue()
+   * @generated
+   */
+  EAttribute getLocalContinue_Label();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalParallel <em>Local Parallel</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Parallel</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalParallel
+   * @generated
+   */
+  EClass getLocalParallel();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalParallel#getBlocks <em>Blocks</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Blocks</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalParallel#getBlocks()
+   * @see #getLocalParallel()
+   * @generated
+   */
+  EReference getLocalParallel_Blocks();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible <em>localinterruptible</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>localinterruptible</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible
+   * @generated
+   */
+  EClass getlocalinterruptible();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getScope <em>Scope</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Scope</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible#getScope()
+   * @see #getlocalinterruptible()
+   * @generated
+   */
+  EAttribute getlocalinterruptible_Scope();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getBlock <em>Block</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Block</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible#getBlock()
+   * @see #getlocalinterruptible()
+   * @generated
+   */
+  EReference getlocalinterruptible_Block();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getThrow <em>Throw</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Throw</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible#getThrow()
+   * @see #getlocalinterruptible()
+   * @generated
+   */
+  EReference getlocalinterruptible_Throw();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getCatches <em>Catches</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Catches</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible#getCatches()
+   * @see #getlocalinterruptible()
+   * @generated
+   */
+  EReference getlocalinterruptible_Catches();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow <em>Local Throw</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Throw</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalThrow
+   * @generated
+   */
+  EClass getLocalThrow();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow#getMessages <em>Messages</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Messages</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalThrow#getMessages()
+   * @see #getLocalThrow()
+   * @generated
+   */
+  EReference getLocalThrow_Messages();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow#getToRoles <em>To Roles</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>To Roles</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalThrow#getToRoles()
+   * @see #getLocalThrow()
+   * @generated
+   */
+  EAttribute getLocalThrow_ToRoles();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow#getToRols <em>To Rols</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>To Rols</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalThrow#getToRols()
+   * @see #getLocalThrow()
+   * @generated
+   */
+  EAttribute getLocalThrow_ToRols();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalCatch <em>Local Catch</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Catch</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalCatch
+   * @generated
+   */
+  EClass getLocalCatch();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalCatch#getMessages <em>Messages</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Messages</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalCatch#getMessages()
+   * @see #getLocalCatch()
+   * @generated
+   */
+  EReference getLocalCatch_Messages();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalCatch#getFromRole <em>From Role</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>From Role</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalCatch#getFromRole()
+   * @see #getLocalCatch()
+   * @generated
+   */
+  EAttribute getLocalCatch_FromRole();
+
+  /**
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalDo <em>Local Do</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Do</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalDo
+   * @generated
+   */
+  EClass getLocalDo();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalDo#getScope <em>Scope</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Scope</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalDo#getScope()
+   * @see #getLocalDo()
+   * @generated
+   */
+  EAttribute getLocalDo_Scope();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalDo#getMember <em>Member</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Member</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalDo#getMember()
+   * @see #getLocalDo()
+   * @generated
+   */
+  EAttribute getLocalDo_Member();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalDo#getArguments <em>Arguments</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Arguments</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalDo#getArguments()
+   * @see #getLocalDo()
+   * @generated
+   */
+  EReference getLocalDo_Arguments();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalDo#getRoles <em>Roles</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Roles</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalDo#getRoles()
+   * @see #getLocalDo()
+   * @generated
+   */
+  EReference getLocalDo_Roles();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -1884,6 +2921,14 @@ public interface ScribbleDslPackage extends EPackage
      * @generated
      */
     EReference MODULE_DECL__GLOBALS = eINSTANCE.getModuleDecl_Globals();
+
+    /**
+     * The meta object literal for the '<em><b>Locals</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference MODULE_DECL__LOCALS = eINSTANCE.getModuleDecl_Locals();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -2274,12 +3319,12 @@ public interface ScribbleDslPackage extends EPackage
     EAttribute GLOBAL_MESSAGE_TRANSFER__FROM_ROLE = eINSTANCE.getGlobalMessageTransfer_FromRole();
 
     /**
-     * The meta object literal for the '<em><b>To Role</b></em>' attribute list feature.
+     * The meta object literal for the '<em><b>To Roles</b></em>' attribute list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute GLOBAL_MESSAGE_TRANSFER__TO_ROLE = eINSTANCE.getGlobalMessageTransfer_ToRole();
+    EAttribute GLOBAL_MESSAGE_TRANSFER__TO_ROLES = eINSTANCE.getGlobalMessageTransfer_ToRoles();
 
     /**
      * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.MessageImpl <em>Message</em>}' class.
@@ -2458,20 +3503,20 @@ public interface ScribbleDslPackage extends EPackage
     EClass GLOBAL_DO = eINSTANCE.getGlobalDo();
 
     /**
-     * The meta object literal for the '<em><b>Module</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute GLOBAL_DO__MODULE = eINSTANCE.getGlobalDo_Module();
-
-    /**
      * The meta object literal for the '<em><b>Scope</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
     EAttribute GLOBAL_DO__SCOPE = eINSTANCE.getGlobalDo_Scope();
+
+    /**
+     * The meta object literal for the '<em><b>Member</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute GLOBAL_DO__MEMBER = eINSTANCE.getGlobalDo_Member();
 
     /**
      * The meta object literal for the '<em><b>Arguments</b></em>' containment reference list feature.
@@ -2488,6 +3533,392 @@ public interface ScribbleDslPackage extends EPackage
      * @generated
      */
     EReference GLOBAL_DO__ROLES = eINSTANCE.getGlobalDo_Roles();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalProtocolDeclImpl <em>Local Protocol Decl</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalProtocolDeclImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalProtocolDecl()
+     * @generated
+     */
+    EClass LOCAL_PROTOCOL_DECL = eINSTANCE.getLocalProtocolDecl();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_PROTOCOL_DECL__NAME = eINSTANCE.getLocalProtocolDecl_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Role</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_PROTOCOL_DECL__ROLE = eINSTANCE.getLocalProtocolDecl_Role();
+
+    /**
+     * The meta object literal for the '<em><b>Parameters</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_PROTOCOL_DECL__PARAMETERS = eINSTANCE.getLocalProtocolDecl_Parameters();
+
+    /**
+     * The meta object literal for the '<em><b>Roles</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_PROTOCOL_DECL__ROLES = eINSTANCE.getLocalProtocolDecl_Roles();
+
+    /**
+     * The meta object literal for the '<em><b>Block</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_PROTOCOL_DECL__BLOCK = eINSTANCE.getLocalProtocolDecl_Block();
+
+    /**
+     * The meta object literal for the '<em><b>Instantiates</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_PROTOCOL_DECL__INSTANTIATES = eINSTANCE.getLocalProtocolDecl_Instantiates();
+
+    /**
+     * The meta object literal for the '<em><b>Arguments</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_PROTOCOL_DECL__ARGUMENTS = eINSTANCE.getLocalProtocolDecl_Arguments();
+
+    /**
+     * The meta object literal for the '<em><b>Role Instantiations</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_PROTOCOL_DECL__ROLE_INSTANTIATIONS = eINSTANCE.getLocalProtocolDecl_RoleInstantiations();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalProtocolBlockImpl <em>Local Protocol Block</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalProtocolBlockImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalProtocolBlock()
+     * @generated
+     */
+    EClass LOCAL_PROTOCOL_BLOCK = eINSTANCE.getLocalProtocolBlock();
+
+    /**
+     * The meta object literal for the '<em><b>Activities</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_PROTOCOL_BLOCK__ACTIVITIES = eINSTANCE.getLocalProtocolBlock_Activities();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LlobalInteractionImpl <em>Llobal Interaction</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LlobalInteractionImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLlobalInteraction()
+     * @generated
+     */
+    EClass LLOBAL_INTERACTION = eINSTANCE.getLlobalInteraction();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalSendImpl <em>Local Send</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalSendImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalSend()
+     * @generated
+     */
+    EClass LOCAL_SEND = eINSTANCE.getLocalSend();
+
+    /**
+     * The meta object literal for the '<em><b>Message</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_SEND__MESSAGE = eINSTANCE.getLocalSend_Message();
+
+    /**
+     * The meta object literal for the '<em><b>To Roles</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_SEND__TO_ROLES = eINSTANCE.getLocalSend_ToRoles();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalReceiveImpl <em>Local Receive</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalReceiveImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalReceive()
+     * @generated
+     */
+    EClass LOCAL_RECEIVE = eINSTANCE.getLocalReceive();
+
+    /**
+     * The meta object literal for the '<em><b>Message</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_RECEIVE__MESSAGE = eINSTANCE.getLocalReceive_Message();
+
+    /**
+     * The meta object literal for the '<em><b>From Role</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_RECEIVE__FROM_ROLE = eINSTANCE.getLocalReceive_FromRole();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalChoiceImpl <em>Local Choice</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalChoiceImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalChoice()
+     * @generated
+     */
+    EClass LOCAL_CHOICE = eINSTANCE.getLocalChoice();
+
+    /**
+     * The meta object literal for the '<em><b>Role</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_CHOICE__ROLE = eINSTANCE.getLocalChoice_Role();
+
+    /**
+     * The meta object literal for the '<em><b>Blocks</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_CHOICE__BLOCKS = eINSTANCE.getLocalChoice_Blocks();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalRecursionImpl <em>Local Recursion</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalRecursionImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalRecursion()
+     * @generated
+     */
+    EClass LOCAL_RECURSION = eINSTANCE.getLocalRecursion();
+
+    /**
+     * The meta object literal for the '<em><b>Label</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_RECURSION__LABEL = eINSTANCE.getLocalRecursion_Label();
+
+    /**
+     * The meta object literal for the '<em><b>Block</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_RECURSION__BLOCK = eINSTANCE.getLocalRecursion_Block();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalContinueImpl <em>Local Continue</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalContinueImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalContinue()
+     * @generated
+     */
+    EClass LOCAL_CONTINUE = eINSTANCE.getLocalContinue();
+
+    /**
+     * The meta object literal for the '<em><b>Label</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_CONTINUE__LABEL = eINSTANCE.getLocalContinue_Label();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalParallelImpl <em>Local Parallel</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalParallelImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalParallel()
+     * @generated
+     */
+    EClass LOCAL_PARALLEL = eINSTANCE.getLocalParallel();
+
+    /**
+     * The meta object literal for the '<em><b>Blocks</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_PARALLEL__BLOCKS = eINSTANCE.getLocalParallel_Blocks();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl <em>localinterruptible</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getlocalinterruptible()
+     * @generated
+     */
+    EClass LOCALINTERRUPTIBLE = eINSTANCE.getlocalinterruptible();
+
+    /**
+     * The meta object literal for the '<em><b>Scope</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCALINTERRUPTIBLE__SCOPE = eINSTANCE.getlocalinterruptible_Scope();
+
+    /**
+     * The meta object literal for the '<em><b>Block</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCALINTERRUPTIBLE__BLOCK = eINSTANCE.getlocalinterruptible_Block();
+
+    /**
+     * The meta object literal for the '<em><b>Throw</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCALINTERRUPTIBLE__THROW = eINSTANCE.getlocalinterruptible_Throw();
+
+    /**
+     * The meta object literal for the '<em><b>Catches</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCALINTERRUPTIBLE__CATCHES = eINSTANCE.getlocalinterruptible_Catches();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalThrowImpl <em>Local Throw</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalThrowImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalThrow()
+     * @generated
+     */
+    EClass LOCAL_THROW = eINSTANCE.getLocalThrow();
+
+    /**
+     * The meta object literal for the '<em><b>Messages</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_THROW__MESSAGES = eINSTANCE.getLocalThrow_Messages();
+
+    /**
+     * The meta object literal for the '<em><b>To Roles</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_THROW__TO_ROLES = eINSTANCE.getLocalThrow_ToRoles();
+
+    /**
+     * The meta object literal for the '<em><b>To Rols</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_THROW__TO_ROLS = eINSTANCE.getLocalThrow_ToRols();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalCatchImpl <em>Local Catch</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalCatchImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalCatch()
+     * @generated
+     */
+    EClass LOCAL_CATCH = eINSTANCE.getLocalCatch();
+
+    /**
+     * The meta object literal for the '<em><b>Messages</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_CATCH__MESSAGES = eINSTANCE.getLocalCatch_Messages();
+
+    /**
+     * The meta object literal for the '<em><b>From Role</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_CATCH__FROM_ROLE = eINSTANCE.getLocalCatch_FromRole();
+
+    /**
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalDoImpl <em>Local Do</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalDoImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalDo()
+     * @generated
+     */
+    EClass LOCAL_DO = eINSTANCE.getLocalDo();
+
+    /**
+     * The meta object literal for the '<em><b>Scope</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_DO__SCOPE = eINSTANCE.getLocalDo_Scope();
+
+    /**
+     * The meta object literal for the '<em><b>Member</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_DO__MEMBER = eINSTANCE.getLocalDo_Member();
+
+    /**
+     * The meta object literal for the '<em><b>Arguments</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_DO__ARGUMENTS = eINSTANCE.getLocalDo_Arguments();
+
+    /**
+     * The meta object literal for the '<em><b>Roles</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference LOCAL_DO__ROLES = eINSTANCE.getLocalDo_Roles();
 
   }
 

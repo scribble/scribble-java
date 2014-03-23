@@ -26,17 +26,17 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cImportsImportDeclParserRuleCall_1_0 = (RuleCall)cImportsAssignment_1.eContents().get(0);
 		private final Assignment cTypesAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cTypesPayloadTypeDeclParserRuleCall_2_0 = (RuleCall)cTypesAssignment_2.eContents().get(0);
-		private final Assignment cGlobalsAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cGlobalsGlobalProtocolDeclParserRuleCall_3_0 = (RuleCall)cGlobalsAssignment_3.eContents().get(0);
+		private final Alternatives cAlternatives_3 = (Alternatives)cGroup.eContents().get(3);
+		private final Assignment cGlobalsAssignment_3_0 = (Assignment)cAlternatives_3.eContents().get(0);
+		private final RuleCall cGlobalsGlobalProtocolDeclParserRuleCall_3_0_0 = (RuleCall)cGlobalsAssignment_3_0.eContents().get(0);
+		private final Assignment cLocalsAssignment_3_1 = (Assignment)cAlternatives_3.eContents().get(1);
+		private final RuleCall cLocalsLocalProtocolDeclParserRuleCall_3_1_0 = (RuleCall)cLocalsAssignment_3_1.eContents().get(0);
 		
 		//Module:
-		//	ModuleDecl imports+=ImportDecl* types+=PayloadTypeDecl* globals+=GlobalProtocolDecl* //|
-		//	//	locals=Localprotocoldecl
-		//;
+		//	ModuleDecl imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*;
 		public ParserRule getRule() { return rule; }
 
-		//ModuleDecl imports+=ImportDecl* types+=PayloadTypeDecl* globals+=GlobalProtocolDecl* //|
-		////	locals=Localprotocoldecl
+		//ModuleDecl imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*
 		public Group getGroup() { return cGroup; }
 
 		//ModuleDecl
@@ -54,11 +54,20 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		//PayloadTypeDecl
 		public RuleCall getTypesPayloadTypeDeclParserRuleCall_2_0() { return cTypesPayloadTypeDeclParserRuleCall_2_0; }
 
-		//globals+=GlobalProtocolDecl*
-		public Assignment getGlobalsAssignment_3() { return cGlobalsAssignment_3; }
+		//(globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*
+		public Alternatives getAlternatives_3() { return cAlternatives_3; }
+
+		//globals+=GlobalProtocolDecl
+		public Assignment getGlobalsAssignment_3_0() { return cGlobalsAssignment_3_0; }
 
 		//GlobalProtocolDecl
-		public RuleCall getGlobalsGlobalProtocolDeclParserRuleCall_3_0() { return cGlobalsGlobalProtocolDeclParserRuleCall_3_0; }
+		public RuleCall getGlobalsGlobalProtocolDeclParserRuleCall_3_0_0() { return cGlobalsGlobalProtocolDeclParserRuleCall_3_0_0; }
+
+		//locals+=LocalProtocolDecl
+		public Assignment getLocalsAssignment_3_1() { return cLocalsAssignment_3_1; }
+
+		//LocalProtocolDecl
+		public RuleCall getLocalsLocalProtocolDeclParserRuleCall_3_1_0() { return cLocalsLocalProtocolDeclParserRuleCall_3_1_0; }
 	}
 
 	public class ModuleDeclElements extends AbstractParserRuleElementFinder {
@@ -927,21 +936,21 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cFromRoleAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cFromRoleIDTerminalRuleCall_2_0 = (RuleCall)cFromRoleAssignment_2.eContents().get(0);
 		private final Keyword cToKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Assignment cToRoleAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cToRoleIDTerminalRuleCall_4_0 = (RuleCall)cToRoleAssignment_4.eContents().get(0);
+		private final Assignment cToRolesAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cToRolesIDTerminalRuleCall_4_0 = (RuleCall)cToRolesAssignment_4.eContents().get(0);
 		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
 		private final Keyword cCommaKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
-		private final Assignment cToRoleAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
-		private final RuleCall cToRoleIDTerminalRuleCall_5_1_0 = (RuleCall)cToRoleAssignment_5_1.eContents().get(0);
+		private final Assignment cToRolesAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cToRolesIDTerminalRuleCall_5_1_0 = (RuleCall)cToRolesAssignment_5_1.eContents().get(0);
 		private final Keyword cSemicolonKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		/// **
 		// * Section 3.7.4 Global Message Transfer
 		// * / GlobalMessageTransfer:
-		//	message=Message "from" fromRole=ID "to" toRole+=ID ("," toRole+=ID)* ";";
+		//	message=Message "from" fromRole=ID "to" toRoles+=ID ("," toRoles+=ID)* ";";
 		public ParserRule getRule() { return rule; }
 
-		//message=Message "from" fromRole=ID "to" toRole+=ID ("," toRole+=ID)* ";"
+		//message=Message "from" fromRole=ID "to" toRoles+=ID ("," toRoles+=ID)* ";"
 		public Group getGroup() { return cGroup; }
 
 		//message=Message
@@ -962,23 +971,23 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"to"
 		public Keyword getToKeyword_3() { return cToKeyword_3; }
 
-		//toRole+=ID
-		public Assignment getToRoleAssignment_4() { return cToRoleAssignment_4; }
+		//toRoles+=ID
+		public Assignment getToRolesAssignment_4() { return cToRolesAssignment_4; }
 
 		//ID
-		public RuleCall getToRoleIDTerminalRuleCall_4_0() { return cToRoleIDTerminalRuleCall_4_0; }
+		public RuleCall getToRolesIDTerminalRuleCall_4_0() { return cToRolesIDTerminalRuleCall_4_0; }
 
-		//("," toRole+=ID)*
+		//("," toRoles+=ID)*
 		public Group getGroup_5() { return cGroup_5; }
 
 		//","
 		public Keyword getCommaKeyword_5_0() { return cCommaKeyword_5_0; }
 
-		//toRole+=ID
-		public Assignment getToRoleAssignment_5_1() { return cToRoleAssignment_5_1; }
+		//toRoles+=ID
+		public Assignment getToRolesAssignment_5_1() { return cToRolesAssignment_5_1; }
 
 		//ID
-		public RuleCall getToRoleIDTerminalRuleCall_5_1_0() { return cToRoleIDTerminalRuleCall_5_1_0; }
+		public RuleCall getToRolesIDTerminalRuleCall_5_1_0() { return cToRolesIDTerminalRuleCall_5_1_0; }
 
 		//";"
 		public Keyword getSemicolonKeyword_6() { return cSemicolonKeyword_6; }
@@ -1284,12 +1293,12 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "GlobalDo");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cDoKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cModuleAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cModuleIDTerminalRuleCall_1_0 = (RuleCall)cModuleAssignment_1.eContents().get(0);
-		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cColonKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cScopeAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cScopeIDTerminalRuleCall_2_1_0 = (RuleCall)cScopeAssignment_2_1.eContents().get(0);
+		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
+		private final Assignment cScopeAssignment_1_0 = (Assignment)cGroup_1.eContents().get(0);
+		private final RuleCall cScopeIDTerminalRuleCall_1_0_0 = (RuleCall)cScopeAssignment_1_0.eContents().get(0);
+		private final Keyword cColonKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
+		private final Assignment cMemberAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cMemberIDTerminalRuleCall_2_0 = (RuleCall)cMemberAssignment_2.eContents().get(0);
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
 		private final Keyword cLessThanSignKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
 		private final Assignment cArgumentsAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
@@ -1312,34 +1321,894 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		/// **
 		// * Section 3.7.9 Global Do
 		// * / GlobalDo:
-		//	"do" module=ID (":" scope=ID)? ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "(" roles+=RoleInstantiation
+		//	"do" (scope=ID ":")? member=ID ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "(" roles+=RoleInstantiation
 		//	("," roles+=RoleInstantiation)* ")" ";";
 		public ParserRule getRule() { return rule; }
 
-		//"do" module=ID (":" scope=ID)? ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "(" roles+=RoleInstantiation
+		//"do" (scope=ID ":")? member=ID ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "(" roles+=RoleInstantiation
 		//("," roles+=RoleInstantiation)* ")" ";"
 		public Group getGroup() { return cGroup; }
 
 		//"do"
 		public Keyword getDoKeyword_0() { return cDoKeyword_0; }
 
-		//module=ID
-		public Assignment getModuleAssignment_1() { return cModuleAssignment_1; }
-
-		//ID
-		public RuleCall getModuleIDTerminalRuleCall_1_0() { return cModuleIDTerminalRuleCall_1_0; }
-
-		//(":" scope=ID)?
-		public Group getGroup_2() { return cGroup_2; }
-
-		//":"
-		public Keyword getColonKeyword_2_0() { return cColonKeyword_2_0; }
+		//(scope=ID ":")?
+		public Group getGroup_1() { return cGroup_1; }
 
 		//scope=ID
-		public Assignment getScopeAssignment_2_1() { return cScopeAssignment_2_1; }
+		public Assignment getScopeAssignment_1_0() { return cScopeAssignment_1_0; }
 
 		//ID
-		public RuleCall getScopeIDTerminalRuleCall_2_1_0() { return cScopeIDTerminalRuleCall_2_1_0; }
+		public RuleCall getScopeIDTerminalRuleCall_1_0_0() { return cScopeIDTerminalRuleCall_1_0_0; }
+
+		//":"
+		public Keyword getColonKeyword_1_1() { return cColonKeyword_1_1; }
+
+		//member=ID
+		public Assignment getMemberAssignment_2() { return cMemberAssignment_2; }
+
+		//ID
+		public RuleCall getMemberIDTerminalRuleCall_2_0() { return cMemberIDTerminalRuleCall_2_0; }
+
+		//("<" arguments+=Argument ("," arguments+=Argument)* ">")?
+		public Group getGroup_3() { return cGroup_3; }
+
+		//"<"
+		public Keyword getLessThanSignKeyword_3_0() { return cLessThanSignKeyword_3_0; }
+
+		//arguments+=Argument
+		public Assignment getArgumentsAssignment_3_1() { return cArgumentsAssignment_3_1; }
+
+		//Argument
+		public RuleCall getArgumentsArgumentParserRuleCall_3_1_0() { return cArgumentsArgumentParserRuleCall_3_1_0; }
+
+		//("," arguments+=Argument)*
+		public Group getGroup_3_2() { return cGroup_3_2; }
+
+		//","
+		public Keyword getCommaKeyword_3_2_0() { return cCommaKeyword_3_2_0; }
+
+		//arguments+=Argument
+		public Assignment getArgumentsAssignment_3_2_1() { return cArgumentsAssignment_3_2_1; }
+
+		//Argument
+		public RuleCall getArgumentsArgumentParserRuleCall_3_2_1_0() { return cArgumentsArgumentParserRuleCall_3_2_1_0; }
+
+		//">"
+		public Keyword getGreaterThanSignKeyword_3_3() { return cGreaterThanSignKeyword_3_3; }
+
+		//"("
+		public Keyword getLeftParenthesisKeyword_4() { return cLeftParenthesisKeyword_4; }
+
+		//roles+=RoleInstantiation
+		public Assignment getRolesAssignment_5() { return cRolesAssignment_5; }
+
+		//RoleInstantiation
+		public RuleCall getRolesRoleInstantiationParserRuleCall_5_0() { return cRolesRoleInstantiationParserRuleCall_5_0; }
+
+		//("," roles+=RoleInstantiation)*
+		public Group getGroup_6() { return cGroup_6; }
+
+		//","
+		public Keyword getCommaKeyword_6_0() { return cCommaKeyword_6_0; }
+
+		//roles+=RoleInstantiation
+		public Assignment getRolesAssignment_6_1() { return cRolesAssignment_6_1; }
+
+		//RoleInstantiation
+		public RuleCall getRolesRoleInstantiationParserRuleCall_6_1_0() { return cRolesRoleInstantiationParserRuleCall_6_1_0; }
+
+		//")"
+		public Keyword getRightParenthesisKeyword_7() { return cRightParenthesisKeyword_7; }
+
+		//";"
+		public Keyword getSemicolonKeyword_8() { return cSemicolonKeyword_8; }
+	}
+
+	public class LocalProtocolDeclElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalProtocolDecl");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cLocalKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cProtocolKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameIDTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cAtKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cRoleAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cRoleIDTerminalRuleCall_4_0 = (RuleCall)cRoleAssignment_4.eContents().get(0);
+		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
+		private final Keyword cLessThanSignKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cParametersAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cParametersParameterDeclParserRuleCall_5_1_0 = (RuleCall)cParametersAssignment_5_1.eContents().get(0);
+		private final Group cGroup_5_2 = (Group)cGroup_5.eContents().get(2);
+		private final Keyword cCommaKeyword_5_2_0 = (Keyword)cGroup_5_2.eContents().get(0);
+		private final Assignment cParametersAssignment_5_2_1 = (Assignment)cGroup_5_2.eContents().get(1);
+		private final RuleCall cParametersParameterDeclParserRuleCall_5_2_1_0 = (RuleCall)cParametersAssignment_5_2_1.eContents().get(0);
+		private final Keyword cGreaterThanSignKeyword_5_3 = (Keyword)cGroup_5.eContents().get(3);
+		private final Keyword cLeftParenthesisKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		private final Assignment cRolesAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cRolesRoleDeclParserRuleCall_7_0 = (RuleCall)cRolesAssignment_7.eContents().get(0);
+		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
+		private final Keyword cCommaKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
+		private final Assignment cRolesAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
+		private final RuleCall cRolesRoleDeclParserRuleCall_8_1_0 = (RuleCall)cRolesAssignment_8_1.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Alternatives cAlternatives_10 = (Alternatives)cGroup.eContents().get(10);
+		private final Assignment cBlockAssignment_10_0 = (Assignment)cAlternatives_10.eContents().get(0);
+		private final RuleCall cBlockLocalProtocolBlockParserRuleCall_10_0_0 = (RuleCall)cBlockAssignment_10_0.eContents().get(0);
+		private final Group cGroup_10_1 = (Group)cAlternatives_10.eContents().get(1);
+		private final Keyword cInstantiatesKeyword_10_1_0 = (Keyword)cGroup_10_1.eContents().get(0);
+		private final Assignment cInstantiatesAssignment_10_1_1 = (Assignment)cGroup_10_1.eContents().get(1);
+		private final RuleCall cInstantiatesIDTerminalRuleCall_10_1_1_0 = (RuleCall)cInstantiatesAssignment_10_1_1.eContents().get(0);
+		private final Group cGroup_10_1_2 = (Group)cGroup_10_1.eContents().get(2);
+		private final Keyword cLessThanSignKeyword_10_1_2_0 = (Keyword)cGroup_10_1_2.eContents().get(0);
+		private final Assignment cArgumentsAssignment_10_1_2_1 = (Assignment)cGroup_10_1_2.eContents().get(1);
+		private final RuleCall cArgumentsArgumentParserRuleCall_10_1_2_1_0 = (RuleCall)cArgumentsAssignment_10_1_2_1.eContents().get(0);
+		private final Group cGroup_10_1_2_2 = (Group)cGroup_10_1_2.eContents().get(2);
+		private final Keyword cCommaKeyword_10_1_2_2_0 = (Keyword)cGroup_10_1_2_2.eContents().get(0);
+		private final Assignment cArgumentsAssignment_10_1_2_2_1 = (Assignment)cGroup_10_1_2_2.eContents().get(1);
+		private final RuleCall cArgumentsArgumentParserRuleCall_10_1_2_2_1_0 = (RuleCall)cArgumentsAssignment_10_1_2_2_1.eContents().get(0);
+		private final Keyword cGreaterThanSignKeyword_10_1_2_3 = (Keyword)cGroup_10_1_2.eContents().get(3);
+		private final Keyword cLeftParenthesisKeyword_10_1_3 = (Keyword)cGroup_10_1.eContents().get(3);
+		private final Assignment cRoleInstantiationsAssignment_10_1_4 = (Assignment)cGroup_10_1.eContents().get(4);
+		private final RuleCall cRoleInstantiationsRoleInstantiationParserRuleCall_10_1_4_0 = (RuleCall)cRoleInstantiationsAssignment_10_1_4.eContents().get(0);
+		private final Group cGroup_10_1_5 = (Group)cGroup_10_1.eContents().get(5);
+		private final Keyword cCommaKeyword_10_1_5_0 = (Keyword)cGroup_10_1_5.eContents().get(0);
+		private final Assignment cRoleInstantiationsAssignment_10_1_5_1 = (Assignment)cGroup_10_1_5.eContents().get(1);
+		private final RuleCall cRoleInstantiationsRoleInstantiationParserRuleCall_10_1_5_1_0 = (RuleCall)cRoleInstantiationsAssignment_10_1_5_1.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_10_1_6 = (Keyword)cGroup_10_1.eContents().get(6);
+		private final Keyword cSemicolonKeyword_10_1_7 = (Keyword)cGroup_10_1.eContents().get(7);
+		
+		/// *
+		// * Section 3.8 Local Protocol Declarations
+		// * / LocalProtocolDecl:
+		//	"local" "protocol" name=ID "at" role=ID ("<" parameters+=ParameterDecl ("," parameters+=ParameterDecl)* ">")? "("
+		//	roles+=RoleDecl ("," roles+=RoleDecl)* ")" (block=LocalProtocolBlock | "instantiates" instantiates=ID ("<"
+		//	arguments+=Argument ("," arguments+=Argument)* ">")? "(" roleInstantiations+=RoleInstantiation (","
+		//	roleInstantiations+=RoleInstantiation)* ")" ";");
+		public ParserRule getRule() { return rule; }
+
+		//"local" "protocol" name=ID "at" role=ID ("<" parameters+=ParameterDecl ("," parameters+=ParameterDecl)* ">")? "("
+		//roles+=RoleDecl ("," roles+=RoleDecl)* ")" (block=LocalProtocolBlock | "instantiates" instantiates=ID ("<"
+		//arguments+=Argument ("," arguments+=Argument)* ">")? "(" roleInstantiations+=RoleInstantiation (","
+		//roleInstantiations+=RoleInstantiation)* ")" ";")
+		public Group getGroup() { return cGroup; }
+
+		//"local"
+		public Keyword getLocalKeyword_0() { return cLocalKeyword_0; }
+
+		//"protocol"
+		public Keyword getProtocolKeyword_1() { return cProtocolKeyword_1; }
+
+		//name=ID
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+
+		//ID
+		public RuleCall getNameIDTerminalRuleCall_2_0() { return cNameIDTerminalRuleCall_2_0; }
+
+		//"at"
+		public Keyword getAtKeyword_3() { return cAtKeyword_3; }
+
+		//role=ID
+		public Assignment getRoleAssignment_4() { return cRoleAssignment_4; }
+
+		//ID
+		public RuleCall getRoleIDTerminalRuleCall_4_0() { return cRoleIDTerminalRuleCall_4_0; }
+
+		//("<" parameters+=ParameterDecl ("," parameters+=ParameterDecl)* ">")?
+		public Group getGroup_5() { return cGroup_5; }
+
+		//"<"
+		public Keyword getLessThanSignKeyword_5_0() { return cLessThanSignKeyword_5_0; }
+
+		//parameters+=ParameterDecl
+		public Assignment getParametersAssignment_5_1() { return cParametersAssignment_5_1; }
+
+		//ParameterDecl
+		public RuleCall getParametersParameterDeclParserRuleCall_5_1_0() { return cParametersParameterDeclParserRuleCall_5_1_0; }
+
+		//("," parameters+=ParameterDecl)*
+		public Group getGroup_5_2() { return cGroup_5_2; }
+
+		//","
+		public Keyword getCommaKeyword_5_2_0() { return cCommaKeyword_5_2_0; }
+
+		//parameters+=ParameterDecl
+		public Assignment getParametersAssignment_5_2_1() { return cParametersAssignment_5_2_1; }
+
+		//ParameterDecl
+		public RuleCall getParametersParameterDeclParserRuleCall_5_2_1_0() { return cParametersParameterDeclParserRuleCall_5_2_1_0; }
+
+		//">"
+		public Keyword getGreaterThanSignKeyword_5_3() { return cGreaterThanSignKeyword_5_3; }
+
+		//"("
+		public Keyword getLeftParenthesisKeyword_6() { return cLeftParenthesisKeyword_6; }
+
+		//roles+=RoleDecl
+		public Assignment getRolesAssignment_7() { return cRolesAssignment_7; }
+
+		//RoleDecl
+		public RuleCall getRolesRoleDeclParserRuleCall_7_0() { return cRolesRoleDeclParserRuleCall_7_0; }
+
+		//("," roles+=RoleDecl)*
+		public Group getGroup_8() { return cGroup_8; }
+
+		//","
+		public Keyword getCommaKeyword_8_0() { return cCommaKeyword_8_0; }
+
+		//roles+=RoleDecl
+		public Assignment getRolesAssignment_8_1() { return cRolesAssignment_8_1; }
+
+		//RoleDecl
+		public RuleCall getRolesRoleDeclParserRuleCall_8_1_0() { return cRolesRoleDeclParserRuleCall_8_1_0; }
+
+		//")"
+		public Keyword getRightParenthesisKeyword_9() { return cRightParenthesisKeyword_9; }
+
+		//block=LocalProtocolBlock | "instantiates" instantiates=ID ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "("
+		//roleInstantiations+=RoleInstantiation ("," roleInstantiations+=RoleInstantiation)* ")" ";"
+		public Alternatives getAlternatives_10() { return cAlternatives_10; }
+
+		//block=LocalProtocolBlock
+		public Assignment getBlockAssignment_10_0() { return cBlockAssignment_10_0; }
+
+		//LocalProtocolBlock
+		public RuleCall getBlockLocalProtocolBlockParserRuleCall_10_0_0() { return cBlockLocalProtocolBlockParserRuleCall_10_0_0; }
+
+		//"instantiates" instantiates=ID ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "("
+		//roleInstantiations+=RoleInstantiation ("," roleInstantiations+=RoleInstantiation)* ")" ";"
+		public Group getGroup_10_1() { return cGroup_10_1; }
+
+		//"instantiates"
+		public Keyword getInstantiatesKeyword_10_1_0() { return cInstantiatesKeyword_10_1_0; }
+
+		//instantiates=ID
+		public Assignment getInstantiatesAssignment_10_1_1() { return cInstantiatesAssignment_10_1_1; }
+
+		//ID
+		public RuleCall getInstantiatesIDTerminalRuleCall_10_1_1_0() { return cInstantiatesIDTerminalRuleCall_10_1_1_0; }
+
+		//("<" arguments+=Argument ("," arguments+=Argument)* ">")?
+		public Group getGroup_10_1_2() { return cGroup_10_1_2; }
+
+		//"<"
+		public Keyword getLessThanSignKeyword_10_1_2_0() { return cLessThanSignKeyword_10_1_2_0; }
+
+		//arguments+=Argument
+		public Assignment getArgumentsAssignment_10_1_2_1() { return cArgumentsAssignment_10_1_2_1; }
+
+		//Argument
+		public RuleCall getArgumentsArgumentParserRuleCall_10_1_2_1_0() { return cArgumentsArgumentParserRuleCall_10_1_2_1_0; }
+
+		//("," arguments+=Argument)*
+		public Group getGroup_10_1_2_2() { return cGroup_10_1_2_2; }
+
+		//","
+		public Keyword getCommaKeyword_10_1_2_2_0() { return cCommaKeyword_10_1_2_2_0; }
+
+		//arguments+=Argument
+		public Assignment getArgumentsAssignment_10_1_2_2_1() { return cArgumentsAssignment_10_1_2_2_1; }
+
+		//Argument
+		public RuleCall getArgumentsArgumentParserRuleCall_10_1_2_2_1_0() { return cArgumentsArgumentParserRuleCall_10_1_2_2_1_0; }
+
+		//">"
+		public Keyword getGreaterThanSignKeyword_10_1_2_3() { return cGreaterThanSignKeyword_10_1_2_3; }
+
+		//"("
+		public Keyword getLeftParenthesisKeyword_10_1_3() { return cLeftParenthesisKeyword_10_1_3; }
+
+		//roleInstantiations+=RoleInstantiation
+		public Assignment getRoleInstantiationsAssignment_10_1_4() { return cRoleInstantiationsAssignment_10_1_4; }
+
+		//RoleInstantiation
+		public RuleCall getRoleInstantiationsRoleInstantiationParserRuleCall_10_1_4_0() { return cRoleInstantiationsRoleInstantiationParserRuleCall_10_1_4_0; }
+
+		//("," roleInstantiations+=RoleInstantiation)*
+		public Group getGroup_10_1_5() { return cGroup_10_1_5; }
+
+		//","
+		public Keyword getCommaKeyword_10_1_5_0() { return cCommaKeyword_10_1_5_0; }
+
+		//roleInstantiations+=RoleInstantiation
+		public Assignment getRoleInstantiationsAssignment_10_1_5_1() { return cRoleInstantiationsAssignment_10_1_5_1; }
+
+		//RoleInstantiation
+		public RuleCall getRoleInstantiationsRoleInstantiationParserRuleCall_10_1_5_1_0() { return cRoleInstantiationsRoleInstantiationParserRuleCall_10_1_5_1_0; }
+
+		//")"
+		public Keyword getRightParenthesisKeyword_10_1_6() { return cRightParenthesisKeyword_10_1_6; }
+
+		//";"
+		public Keyword getSemicolonKeyword_10_1_7() { return cSemicolonKeyword_10_1_7; }
+	}
+
+	public class LocalProtocolBlockElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalProtocolBlock");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Action cLocalProtocolBlockAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cActivitiesAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cActivitiesLlobalInteractionParserRuleCall_2_0 = (RuleCall)cActivitiesAssignment_2.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		
+		/// **
+		// * Section 3.8.3 Local Interaction Blocks and Sequences
+		// * / LocalProtocolBlock:
+		//	{LocalProtocolBlock} "{" activities+=LlobalInteraction* "}";
+		public ParserRule getRule() { return rule; }
+
+		//{LocalProtocolBlock} "{" activities+=LlobalInteraction* "}"
+		public Group getGroup() { return cGroup; }
+
+		//{LocalProtocolBlock}
+		public Action getLocalProtocolBlockAction_0() { return cLocalProtocolBlockAction_0; }
+
+		//"{"
+		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
+
+		//activities+=LlobalInteraction*
+		public Assignment getActivitiesAssignment_2() { return cActivitiesAssignment_2; }
+
+		//LlobalInteraction
+		public RuleCall getActivitiesLlobalInteractionParserRuleCall_2_0() { return cActivitiesLlobalInteractionParserRuleCall_2_0; }
+
+		//"}"
+		public Keyword getRightCurlyBracketKeyword_3() { return cRightCurlyBracketKeyword_3; }
+	}
+
+	public class LlobalInteractionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LlobalInteraction");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cLocalSendParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cLocalReceiveParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cLocalChoiceParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
+		private final RuleCall cLocalParallelParserRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
+		private final RuleCall cLocalRecursionParserRuleCall_4 = (RuleCall)cAlternatives.eContents().get(4);
+		private final RuleCall cLocalContinueParserRuleCall_5 = (RuleCall)cAlternatives.eContents().get(5);
+		private final RuleCall cLocalinterruptibleParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
+		private final RuleCall cLocalDoParserRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
+		
+		/// *|
+		//	localspawn* / LlobalInteraction:
+		//	LocalSend | LocalReceive | LocalChoice | LocalParallel | LocalRecursion | LocalContinue | localinterruptible |
+		//	LocalDo;
+		public ParserRule getRule() { return rule; }
+
+		//LocalSend | LocalReceive | LocalChoice | LocalParallel | LocalRecursion | LocalContinue | localinterruptible | LocalDo
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//LocalSend
+		public RuleCall getLocalSendParserRuleCall_0() { return cLocalSendParserRuleCall_0; }
+
+		//LocalReceive
+		public RuleCall getLocalReceiveParserRuleCall_1() { return cLocalReceiveParserRuleCall_1; }
+
+		//LocalChoice
+		public RuleCall getLocalChoiceParserRuleCall_2() { return cLocalChoiceParserRuleCall_2; }
+
+		//LocalParallel
+		public RuleCall getLocalParallelParserRuleCall_3() { return cLocalParallelParserRuleCall_3; }
+
+		//LocalRecursion
+		public RuleCall getLocalRecursionParserRuleCall_4() { return cLocalRecursionParserRuleCall_4; }
+
+		//LocalContinue
+		public RuleCall getLocalContinueParserRuleCall_5() { return cLocalContinueParserRuleCall_5; }
+
+		//localinterruptible
+		public RuleCall getLocalinterruptibleParserRuleCall_6() { return cLocalinterruptibleParserRuleCall_6; }
+
+		//LocalDo
+		public RuleCall getLocalDoParserRuleCall_7() { return cLocalDoParserRuleCall_7; }
+	}
+
+	public class LocalSendElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalSend");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cMessageAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cMessageMessageParserRuleCall_0_0 = (RuleCall)cMessageAssignment_0.eContents().get(0);
+		private final Keyword cToKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cToRolesAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cToRolesIDTerminalRuleCall_2_0 = (RuleCall)cToRolesAssignment_2.eContents().get(0);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cCommaKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cToRolesAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cToRolesIDTerminalRuleCall_3_1_0 = (RuleCall)cToRolesAssignment_3_1.eContents().get(0);
+		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		
+		/// **
+		// * Section 3.8.4 Local Send and Receive
+		// * / LocalSend:
+		//	message=Message "to" toRoles+=ID ("," toRoles+=ID)* ";";
+		public ParserRule getRule() { return rule; }
+
+		//message=Message "to" toRoles+=ID ("," toRoles+=ID)* ";"
+		public Group getGroup() { return cGroup; }
+
+		//message=Message
+		public Assignment getMessageAssignment_0() { return cMessageAssignment_0; }
+
+		//Message
+		public RuleCall getMessageMessageParserRuleCall_0_0() { return cMessageMessageParserRuleCall_0_0; }
+
+		//"to"
+		public Keyword getToKeyword_1() { return cToKeyword_1; }
+
+		//toRoles+=ID
+		public Assignment getToRolesAssignment_2() { return cToRolesAssignment_2; }
+
+		//ID
+		public RuleCall getToRolesIDTerminalRuleCall_2_0() { return cToRolesIDTerminalRuleCall_2_0; }
+
+		//("," toRoles+=ID)*
+		public Group getGroup_3() { return cGroup_3; }
+
+		//","
+		public Keyword getCommaKeyword_3_0() { return cCommaKeyword_3_0; }
+
+		//toRoles+=ID
+		public Assignment getToRolesAssignment_3_1() { return cToRolesAssignment_3_1; }
+
+		//ID
+		public RuleCall getToRolesIDTerminalRuleCall_3_1_0() { return cToRolesIDTerminalRuleCall_3_1_0; }
+
+		//";"
+		public Keyword getSemicolonKeyword_4() { return cSemicolonKeyword_4; }
+	}
+
+	public class LocalReceiveElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalReceive");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cMessageAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cMessageMessageParserRuleCall_0_0 = (RuleCall)cMessageAssignment_0.eContents().get(0);
+		private final Keyword cFromKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cFromRoleAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cFromRoleIDTerminalRuleCall_2_0 = (RuleCall)cFromRoleAssignment_2.eContents().get(0);
+		private final Keyword cSemicolonKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		
+		//LocalReceive:
+		//	message=Message "from" fromRole=ID ";";
+		public ParserRule getRule() { return rule; }
+
+		//message=Message "from" fromRole=ID ";"
+		public Group getGroup() { return cGroup; }
+
+		//message=Message
+		public Assignment getMessageAssignment_0() { return cMessageAssignment_0; }
+
+		//Message
+		public RuleCall getMessageMessageParserRuleCall_0_0() { return cMessageMessageParserRuleCall_0_0; }
+
+		//"from"
+		public Keyword getFromKeyword_1() { return cFromKeyword_1; }
+
+		//fromRole=ID
+		public Assignment getFromRoleAssignment_2() { return cFromRoleAssignment_2; }
+
+		//ID
+		public RuleCall getFromRoleIDTerminalRuleCall_2_0() { return cFromRoleIDTerminalRuleCall_2_0; }
+
+		//";"
+		public Keyword getSemicolonKeyword_3() { return cSemicolonKeyword_3; }
+	}
+
+	public class LocalChoiceElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalChoice");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cChoiceKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cAtKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cRoleAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cRoleIDTerminalRuleCall_2_0 = (RuleCall)cRoleAssignment_2.eContents().get(0);
+		private final Assignment cBlocksAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cBlocksLocalProtocolBlockParserRuleCall_3_0 = (RuleCall)cBlocksAssignment_3.eContents().get(0);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cOrKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cBlocksAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cBlocksLocalProtocolBlockParserRuleCall_4_1_0 = (RuleCall)cBlocksAssignment_4_1.eContents().get(0);
+		
+		/// **
+		// * Section 3.8.5 Local Choice
+		// * / LocalChoice:
+		//	"choice" "at" role=ID blocks+=LocalProtocolBlock ("or" blocks+=LocalProtocolBlock)*;
+		public ParserRule getRule() { return rule; }
+
+		//"choice" "at" role=ID blocks+=LocalProtocolBlock ("or" blocks+=LocalProtocolBlock)*
+		public Group getGroup() { return cGroup; }
+
+		//"choice"
+		public Keyword getChoiceKeyword_0() { return cChoiceKeyword_0; }
+
+		//"at"
+		public Keyword getAtKeyword_1() { return cAtKeyword_1; }
+
+		//role=ID
+		public Assignment getRoleAssignment_2() { return cRoleAssignment_2; }
+
+		//ID
+		public RuleCall getRoleIDTerminalRuleCall_2_0() { return cRoleIDTerminalRuleCall_2_0; }
+
+		//blocks+=LocalProtocolBlock
+		public Assignment getBlocksAssignment_3() { return cBlocksAssignment_3; }
+
+		//LocalProtocolBlock
+		public RuleCall getBlocksLocalProtocolBlockParserRuleCall_3_0() { return cBlocksLocalProtocolBlockParserRuleCall_3_0; }
+
+		//("or" blocks+=LocalProtocolBlock)*
+		public Group getGroup_4() { return cGroup_4; }
+
+		//"or"
+		public Keyword getOrKeyword_4_0() { return cOrKeyword_4_0; }
+
+		//blocks+=LocalProtocolBlock
+		public Assignment getBlocksAssignment_4_1() { return cBlocksAssignment_4_1; }
+
+		//LocalProtocolBlock
+		public RuleCall getBlocksLocalProtocolBlockParserRuleCall_4_1_0() { return cBlocksLocalProtocolBlockParserRuleCall_4_1_0; }
+	}
+
+	public class LocalRecursionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalRecursion");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cRecKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cLabelAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cLabelIDTerminalRuleCall_1_0 = (RuleCall)cLabelAssignment_1.eContents().get(0);
+		private final Assignment cBlockAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cBlockLocalProtocolBlockParserRuleCall_2_0 = (RuleCall)cBlockAssignment_2.eContents().get(0);
+		
+		/// **
+		// * Section 3.8.6 Local Recursion
+		// * / LocalRecursion:
+		//	"rec" label=ID block=LocalProtocolBlock;
+		public ParserRule getRule() { return rule; }
+
+		//"rec" label=ID block=LocalProtocolBlock
+		public Group getGroup() { return cGroup; }
+
+		//"rec"
+		public Keyword getRecKeyword_0() { return cRecKeyword_0; }
+
+		//label=ID
+		public Assignment getLabelAssignment_1() { return cLabelAssignment_1; }
+
+		//ID
+		public RuleCall getLabelIDTerminalRuleCall_1_0() { return cLabelIDTerminalRuleCall_1_0; }
+
+		//block=LocalProtocolBlock
+		public Assignment getBlockAssignment_2() { return cBlockAssignment_2; }
+
+		//LocalProtocolBlock
+		public RuleCall getBlockLocalProtocolBlockParserRuleCall_2_0() { return cBlockLocalProtocolBlockParserRuleCall_2_0; }
+	}
+
+	public class LocalContinueElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalContinue");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cContinueKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cLabelAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cLabelIDTerminalRuleCall_1_0 = (RuleCall)cLabelAssignment_1.eContents().get(0);
+		private final Keyword cSemicolonKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		
+		//LocalContinue:
+		//	"continue" label=ID ";";
+		public ParserRule getRule() { return rule; }
+
+		//"continue" label=ID ";"
+		public Group getGroup() { return cGroup; }
+
+		//"continue"
+		public Keyword getContinueKeyword_0() { return cContinueKeyword_0; }
+
+		//label=ID
+		public Assignment getLabelAssignment_1() { return cLabelAssignment_1; }
+
+		//ID
+		public RuleCall getLabelIDTerminalRuleCall_1_0() { return cLabelIDTerminalRuleCall_1_0; }
+
+		//";"
+		public Keyword getSemicolonKeyword_2() { return cSemicolonKeyword_2; }
+	}
+
+	public class LocalParallelElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalParallel");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cParKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cBlocksAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cBlocksLocalProtocolBlockParserRuleCall_1_0 = (RuleCall)cBlocksAssignment_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cAndKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cBlocksAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cBlocksLocalProtocolBlockParserRuleCall_2_1_0 = (RuleCall)cBlocksAssignment_2_1.eContents().get(0);
+		
+		/// **
+		// * Section 3.8.7 Local Parallel
+		// * / LocalParallel:
+		//	"par" blocks+=LocalProtocolBlock ("and" blocks+=LocalProtocolBlock)*;
+		public ParserRule getRule() { return rule; }
+
+		//"par" blocks+=LocalProtocolBlock ("and" blocks+=LocalProtocolBlock)*
+		public Group getGroup() { return cGroup; }
+
+		//"par"
+		public Keyword getParKeyword_0() { return cParKeyword_0; }
+
+		//blocks+=LocalProtocolBlock
+		public Assignment getBlocksAssignment_1() { return cBlocksAssignment_1; }
+
+		//LocalProtocolBlock
+		public RuleCall getBlocksLocalProtocolBlockParserRuleCall_1_0() { return cBlocksLocalProtocolBlockParserRuleCall_1_0; }
+
+		//("and" blocks+=LocalProtocolBlock)*
+		public Group getGroup_2() { return cGroup_2; }
+
+		//"and"
+		public Keyword getAndKeyword_2_0() { return cAndKeyword_2_0; }
+
+		//blocks+=LocalProtocolBlock
+		public Assignment getBlocksAssignment_2_1() { return cBlocksAssignment_2_1; }
+
+		//LocalProtocolBlock
+		public RuleCall getBlocksLocalProtocolBlockParserRuleCall_2_1_0() { return cBlocksLocalProtocolBlockParserRuleCall_2_1_0; }
+	}
+
+	public class LocalinterruptibleElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "localinterruptible");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cInterruptibleKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
+		private final Assignment cScopeAssignment_1_0 = (Assignment)cGroup_1.eContents().get(0);
+		private final RuleCall cScopeIDTerminalRuleCall_1_0_0 = (RuleCall)cScopeAssignment_1_0.eContents().get(0);
+		private final Keyword cColonKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
+		private final Assignment cBlockAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cBlockLocalProtocolBlockParserRuleCall_2_0 = (RuleCall)cBlockAssignment_2.eContents().get(0);
+		private final Keyword cWithKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Keyword cLeftCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cThrowAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cThrowLocalThrowParserRuleCall_5_0 = (RuleCall)cThrowAssignment_5.eContents().get(0);
+		private final Assignment cCatchesAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cCatchesLocalCatchParserRuleCall_6_0 = (RuleCall)cCatchesAssignment_6.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		
+		/// **
+		// * Section 3.8.8 Local Interruptible
+		// * / localinterruptible:
+		//	"interruptible" (scope=ID ":")? block=LocalProtocolBlock "with" "{" throw=LocalThrow? catches+=LocalCatch* "}";
+		public ParserRule getRule() { return rule; }
+
+		//"interruptible" (scope=ID ":")? block=LocalProtocolBlock "with" "{" throw=LocalThrow? catches+=LocalCatch* "}"
+		public Group getGroup() { return cGroup; }
+
+		//"interruptible"
+		public Keyword getInterruptibleKeyword_0() { return cInterruptibleKeyword_0; }
+
+		//(scope=ID ":")?
+		public Group getGroup_1() { return cGroup_1; }
+
+		//scope=ID
+		public Assignment getScopeAssignment_1_0() { return cScopeAssignment_1_0; }
+
+		//ID
+		public RuleCall getScopeIDTerminalRuleCall_1_0_0() { return cScopeIDTerminalRuleCall_1_0_0; }
+
+		//":"
+		public Keyword getColonKeyword_1_1() { return cColonKeyword_1_1; }
+
+		//block=LocalProtocolBlock
+		public Assignment getBlockAssignment_2() { return cBlockAssignment_2; }
+
+		//LocalProtocolBlock
+		public RuleCall getBlockLocalProtocolBlockParserRuleCall_2_0() { return cBlockLocalProtocolBlockParserRuleCall_2_0; }
+
+		//"with"
+		public Keyword getWithKeyword_3() { return cWithKeyword_3; }
+
+		//"{"
+		public Keyword getLeftCurlyBracketKeyword_4() { return cLeftCurlyBracketKeyword_4; }
+
+		//throw=LocalThrow?
+		public Assignment getThrowAssignment_5() { return cThrowAssignment_5; }
+
+		//LocalThrow
+		public RuleCall getThrowLocalThrowParserRuleCall_5_0() { return cThrowLocalThrowParserRuleCall_5_0; }
+
+		//catches+=LocalCatch*
+		public Assignment getCatchesAssignment_6() { return cCatchesAssignment_6; }
+
+		//LocalCatch
+		public RuleCall getCatchesLocalCatchParserRuleCall_6_0() { return cCatchesLocalCatchParserRuleCall_6_0; }
+
+		//"}"
+		public Keyword getRightCurlyBracketKeyword_7() { return cRightCurlyBracketKeyword_7; }
+	}
+
+	public class LocalThrowElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalThrow");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cThrowKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cMessagesAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cMessagesMessageParserRuleCall_1_0 = (RuleCall)cMessagesAssignment_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cCommaKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cMessagesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cMessagesMessageParserRuleCall_2_1_0 = (RuleCall)cMessagesAssignment_2_1.eContents().get(0);
+		private final Keyword cToKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cToRolesAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cToRolesIDTerminalRuleCall_4_0 = (RuleCall)cToRolesAssignment_4.eContents().get(0);
+		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
+		private final Keyword cCommaKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cToRolsAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cToRolsIDTerminalRuleCall_5_1_0 = (RuleCall)cToRolsAssignment_5_1.eContents().get(0);
+		private final Keyword cSemicolonKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		
+		//LocalThrow:
+		//	"throw" messages+=Message ("," messages+=Message)* "to" toRoles+=ID ("," toRols+=ID)* ";";
+		public ParserRule getRule() { return rule; }
+
+		//"throw" messages+=Message ("," messages+=Message)* "to" toRoles+=ID ("," toRols+=ID)* ";"
+		public Group getGroup() { return cGroup; }
+
+		//"throw"
+		public Keyword getThrowKeyword_0() { return cThrowKeyword_0; }
+
+		//messages+=Message
+		public Assignment getMessagesAssignment_1() { return cMessagesAssignment_1; }
+
+		//Message
+		public RuleCall getMessagesMessageParserRuleCall_1_0() { return cMessagesMessageParserRuleCall_1_0; }
+
+		//("," messages+=Message)*
+		public Group getGroup_2() { return cGroup_2; }
+
+		//","
+		public Keyword getCommaKeyword_2_0() { return cCommaKeyword_2_0; }
+
+		//messages+=Message
+		public Assignment getMessagesAssignment_2_1() { return cMessagesAssignment_2_1; }
+
+		//Message
+		public RuleCall getMessagesMessageParserRuleCall_2_1_0() { return cMessagesMessageParserRuleCall_2_1_0; }
+
+		//"to"
+		public Keyword getToKeyword_3() { return cToKeyword_3; }
+
+		//toRoles+=ID
+		public Assignment getToRolesAssignment_4() { return cToRolesAssignment_4; }
+
+		//ID
+		public RuleCall getToRolesIDTerminalRuleCall_4_0() { return cToRolesIDTerminalRuleCall_4_0; }
+
+		//("," toRols+=ID)*
+		public Group getGroup_5() { return cGroup_5; }
+
+		//","
+		public Keyword getCommaKeyword_5_0() { return cCommaKeyword_5_0; }
+
+		//toRols+=ID
+		public Assignment getToRolsAssignment_5_1() { return cToRolsAssignment_5_1; }
+
+		//ID
+		public RuleCall getToRolsIDTerminalRuleCall_5_1_0() { return cToRolsIDTerminalRuleCall_5_1_0; }
+
+		//";"
+		public Keyword getSemicolonKeyword_6() { return cSemicolonKeyword_6; }
+	}
+
+	public class LocalCatchElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalCatch");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cCatchesKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cMessagesAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cMessagesMessageParserRuleCall_1_0 = (RuleCall)cMessagesAssignment_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cCommaKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cMessagesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cMessagesMessageParserRuleCall_2_1_0 = (RuleCall)cMessagesAssignment_2_1.eContents().get(0);
+		private final Keyword cFromKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cFromRoleAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cFromRoleIDTerminalRuleCall_4_0 = (RuleCall)cFromRoleAssignment_4.eContents().get(0);
+		private final Keyword cSemicolonKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		
+		//LocalCatch:
+		//	"catches" messages+=Message ("," messages+=Message)* "from" fromRole=ID ";";
+		public ParserRule getRule() { return rule; }
+
+		//"catches" messages+=Message ("," messages+=Message)* "from" fromRole=ID ";"
+		public Group getGroup() { return cGroup; }
+
+		//"catches"
+		public Keyword getCatchesKeyword_0() { return cCatchesKeyword_0; }
+
+		//messages+=Message
+		public Assignment getMessagesAssignment_1() { return cMessagesAssignment_1; }
+
+		//Message
+		public RuleCall getMessagesMessageParserRuleCall_1_0() { return cMessagesMessageParserRuleCall_1_0; }
+
+		//("," messages+=Message)*
+		public Group getGroup_2() { return cGroup_2; }
+
+		//","
+		public Keyword getCommaKeyword_2_0() { return cCommaKeyword_2_0; }
+
+		//messages+=Message
+		public Assignment getMessagesAssignment_2_1() { return cMessagesAssignment_2_1; }
+
+		//Message
+		public RuleCall getMessagesMessageParserRuleCall_2_1_0() { return cMessagesMessageParserRuleCall_2_1_0; }
+
+		//"from"
+		public Keyword getFromKeyword_3() { return cFromKeyword_3; }
+
+		//fromRole=ID
+		public Assignment getFromRoleAssignment_4() { return cFromRoleAssignment_4; }
+
+		//ID
+		public RuleCall getFromRoleIDTerminalRuleCall_4_0() { return cFromRoleIDTerminalRuleCall_4_0; }
+
+		//";"
+		public Keyword getSemicolonKeyword_5() { return cSemicolonKeyword_5; }
+	}
+
+	public class LocalDoElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalDo");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cDoKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
+		private final Assignment cScopeAssignment_1_0 = (Assignment)cGroup_1.eContents().get(0);
+		private final RuleCall cScopeIDTerminalRuleCall_1_0_0 = (RuleCall)cScopeAssignment_1_0.eContents().get(0);
+		private final Keyword cColonKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
+		private final Assignment cMemberAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cMemberIDTerminalRuleCall_2_0 = (RuleCall)cMemberAssignment_2.eContents().get(0);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cLessThanSignKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cArgumentsAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cArgumentsArgumentParserRuleCall_3_1_0 = (RuleCall)cArgumentsAssignment_3_1.eContents().get(0);
+		private final Group cGroup_3_2 = (Group)cGroup_3.eContents().get(2);
+		private final Keyword cCommaKeyword_3_2_0 = (Keyword)cGroup_3_2.eContents().get(0);
+		private final Assignment cArgumentsAssignment_3_2_1 = (Assignment)cGroup_3_2.eContents().get(1);
+		private final RuleCall cArgumentsArgumentParserRuleCall_3_2_1_0 = (RuleCall)cArgumentsAssignment_3_2_1.eContents().get(0);
+		private final Keyword cGreaterThanSignKeyword_3_3 = (Keyword)cGroup_3.eContents().get(3);
+		private final Keyword cLeftParenthesisKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cRolesAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cRolesRoleInstantiationParserRuleCall_5_0 = (RuleCall)cRolesAssignment_5.eContents().get(0);
+		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
+		private final Keyword cCommaKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
+		private final Assignment cRolesAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
+		private final RuleCall cRolesRoleInstantiationParserRuleCall_6_1_0 = (RuleCall)cRolesAssignment_6_1.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Keyword cSemicolonKeyword_8 = (Keyword)cGroup.eContents().get(8);
+		
+		/// **
+		// * Section 3.8.9 Local Do
+		// * / LocalDo:
+		//	"do" (scope=ID ":")? member=ID ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "(" roles+=RoleInstantiation
+		//	("," roles+=RoleInstantiation)* ")" ";";
+		public ParserRule getRule() { return rule; }
+
+		//"do" (scope=ID ":")? member=ID ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "(" roles+=RoleInstantiation
+		//("," roles+=RoleInstantiation)* ")" ";"
+		public Group getGroup() { return cGroup; }
+
+		//"do"
+		public Keyword getDoKeyword_0() { return cDoKeyword_0; }
+
+		//(scope=ID ":")?
+		public Group getGroup_1() { return cGroup_1; }
+
+		//scope=ID
+		public Assignment getScopeAssignment_1_0() { return cScopeAssignment_1_0; }
+
+		//ID
+		public RuleCall getScopeIDTerminalRuleCall_1_0_0() { return cScopeIDTerminalRuleCall_1_0_0; }
+
+		//":"
+		public Keyword getColonKeyword_1_1() { return cColonKeyword_1_1; }
+
+		//member=ID
+		public Assignment getMemberAssignment_2() { return cMemberAssignment_2; }
+
+		//ID
+		public RuleCall getMemberIDTerminalRuleCall_2_0() { return cMemberIDTerminalRuleCall_2_0; }
 
 		//("<" arguments+=Argument ("," arguments+=Argument)* ">")?
 		public Group getGroup_3() { return cGroup_3; }
@@ -1423,6 +2292,19 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	private GlobalInterruptibleElements pGlobalInterruptible;
 	private GlobalInterruptElements pGlobalInterrupt;
 	private GlobalDoElements pGlobalDo;
+	private LocalProtocolDeclElements pLocalProtocolDecl;
+	private LocalProtocolBlockElements pLocalProtocolBlock;
+	private LlobalInteractionElements pLlobalInteraction;
+	private LocalSendElements pLocalSend;
+	private LocalReceiveElements pLocalReceive;
+	private LocalChoiceElements pLocalChoice;
+	private LocalRecursionElements pLocalRecursion;
+	private LocalContinueElements pLocalContinue;
+	private LocalParallelElements pLocalParallel;
+	private LocalinterruptibleElements pLocalinterruptible;
+	private LocalThrowElements pLocalThrow;
+	private LocalCatchElements pLocalCatch;
+	private LocalDoElements pLocalDo;
 	
 	private final Grammar grammar;
 
@@ -1463,9 +2345,7 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	
 	//Module:
-	//	ModuleDecl imports+=ImportDecl* types+=PayloadTypeDecl* globals+=GlobalProtocolDecl* //|
-	//	//	locals=Localprotocoldecl
-	//;
+	//	ModuleDecl imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*;
 	public ModuleElements getModuleAccess() {
 		return (pModule != null) ? pModule : (pModule = new ModuleElements());
 	}
@@ -1647,7 +2527,7 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	/// **
 	// * Section 3.7.4 Global Message Transfer
 	// * / GlobalMessageTransfer:
-	//	message=Message "from" fromRole=ID "to" toRole+=ID ("," toRole+=ID)* ";";
+	//	message=Message "from" fromRole=ID "to" toRoles+=ID ("," toRoles+=ID)* ";";
 	public GlobalMessageTransferElements getGlobalMessageTransferAccess() {
 		return (pGlobalMessageTransfer != null) ? pGlobalMessageTransfer : (pGlobalMessageTransfer = new GlobalMessageTransferElements());
 	}
@@ -1737,7 +2617,7 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	/// **
 	// * Section 3.7.9 Global Do
 	// * / GlobalDo:
-	//	"do" module=ID (":" scope=ID)? ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "(" roles+=RoleInstantiation
+	//	"do" (scope=ID ":")? member=ID ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "(" roles+=RoleInstantiation
 	//	("," roles+=RoleInstantiation)* ")" ";";
 	public GlobalDoElements getGlobalDoAccess() {
 		return (pGlobalDo != null) ? pGlobalDo : (pGlobalDo = new GlobalDoElements());
@@ -1745,6 +2625,158 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getGlobalDoRule() {
 		return getGlobalDoAccess().getRule();
+	}
+
+	/// *
+	// * Section 3.8 Local Protocol Declarations
+	// * / LocalProtocolDecl:
+	//	"local" "protocol" name=ID "at" role=ID ("<" parameters+=ParameterDecl ("," parameters+=ParameterDecl)* ">")? "("
+	//	roles+=RoleDecl ("," roles+=RoleDecl)* ")" (block=LocalProtocolBlock | "instantiates" instantiates=ID ("<"
+	//	arguments+=Argument ("," arguments+=Argument)* ">")? "(" roleInstantiations+=RoleInstantiation (","
+	//	roleInstantiations+=RoleInstantiation)* ")" ";");
+	public LocalProtocolDeclElements getLocalProtocolDeclAccess() {
+		return (pLocalProtocolDecl != null) ? pLocalProtocolDecl : (pLocalProtocolDecl = new LocalProtocolDeclElements());
+	}
+	
+	public ParserRule getLocalProtocolDeclRule() {
+		return getLocalProtocolDeclAccess().getRule();
+	}
+
+	/// **
+	// * Section 3.8.3 Local Interaction Blocks and Sequences
+	// * / LocalProtocolBlock:
+	//	{LocalProtocolBlock} "{" activities+=LlobalInteraction* "}";
+	public LocalProtocolBlockElements getLocalProtocolBlockAccess() {
+		return (pLocalProtocolBlock != null) ? pLocalProtocolBlock : (pLocalProtocolBlock = new LocalProtocolBlockElements());
+	}
+	
+	public ParserRule getLocalProtocolBlockRule() {
+		return getLocalProtocolBlockAccess().getRule();
+	}
+
+	/// *|
+	//	localspawn* / LlobalInteraction:
+	//	LocalSend | LocalReceive | LocalChoice | LocalParallel | LocalRecursion | LocalContinue | localinterruptible |
+	//	LocalDo;
+	public LlobalInteractionElements getLlobalInteractionAccess() {
+		return (pLlobalInteraction != null) ? pLlobalInteraction : (pLlobalInteraction = new LlobalInteractionElements());
+	}
+	
+	public ParserRule getLlobalInteractionRule() {
+		return getLlobalInteractionAccess().getRule();
+	}
+
+	/// **
+	// * Section 3.8.4 Local Send and Receive
+	// * / LocalSend:
+	//	message=Message "to" toRoles+=ID ("," toRoles+=ID)* ";";
+	public LocalSendElements getLocalSendAccess() {
+		return (pLocalSend != null) ? pLocalSend : (pLocalSend = new LocalSendElements());
+	}
+	
+	public ParserRule getLocalSendRule() {
+		return getLocalSendAccess().getRule();
+	}
+
+	//LocalReceive:
+	//	message=Message "from" fromRole=ID ";";
+	public LocalReceiveElements getLocalReceiveAccess() {
+		return (pLocalReceive != null) ? pLocalReceive : (pLocalReceive = new LocalReceiveElements());
+	}
+	
+	public ParserRule getLocalReceiveRule() {
+		return getLocalReceiveAccess().getRule();
+	}
+
+	/// **
+	// * Section 3.8.5 Local Choice
+	// * / LocalChoice:
+	//	"choice" "at" role=ID blocks+=LocalProtocolBlock ("or" blocks+=LocalProtocolBlock)*;
+	public LocalChoiceElements getLocalChoiceAccess() {
+		return (pLocalChoice != null) ? pLocalChoice : (pLocalChoice = new LocalChoiceElements());
+	}
+	
+	public ParserRule getLocalChoiceRule() {
+		return getLocalChoiceAccess().getRule();
+	}
+
+	/// **
+	// * Section 3.8.6 Local Recursion
+	// * / LocalRecursion:
+	//	"rec" label=ID block=LocalProtocolBlock;
+	public LocalRecursionElements getLocalRecursionAccess() {
+		return (pLocalRecursion != null) ? pLocalRecursion : (pLocalRecursion = new LocalRecursionElements());
+	}
+	
+	public ParserRule getLocalRecursionRule() {
+		return getLocalRecursionAccess().getRule();
+	}
+
+	//LocalContinue:
+	//	"continue" label=ID ";";
+	public LocalContinueElements getLocalContinueAccess() {
+		return (pLocalContinue != null) ? pLocalContinue : (pLocalContinue = new LocalContinueElements());
+	}
+	
+	public ParserRule getLocalContinueRule() {
+		return getLocalContinueAccess().getRule();
+	}
+
+	/// **
+	// * Section 3.8.7 Local Parallel
+	// * / LocalParallel:
+	//	"par" blocks+=LocalProtocolBlock ("and" blocks+=LocalProtocolBlock)*;
+	public LocalParallelElements getLocalParallelAccess() {
+		return (pLocalParallel != null) ? pLocalParallel : (pLocalParallel = new LocalParallelElements());
+	}
+	
+	public ParserRule getLocalParallelRule() {
+		return getLocalParallelAccess().getRule();
+	}
+
+	/// **
+	// * Section 3.8.8 Local Interruptible
+	// * / localinterruptible:
+	//	"interruptible" (scope=ID ":")? block=LocalProtocolBlock "with" "{" throw=LocalThrow? catches+=LocalCatch* "}";
+	public LocalinterruptibleElements getLocalinterruptibleAccess() {
+		return (pLocalinterruptible != null) ? pLocalinterruptible : (pLocalinterruptible = new LocalinterruptibleElements());
+	}
+	
+	public ParserRule getLocalinterruptibleRule() {
+		return getLocalinterruptibleAccess().getRule();
+	}
+
+	//LocalThrow:
+	//	"throw" messages+=Message ("," messages+=Message)* "to" toRoles+=ID ("," toRols+=ID)* ";";
+	public LocalThrowElements getLocalThrowAccess() {
+		return (pLocalThrow != null) ? pLocalThrow : (pLocalThrow = new LocalThrowElements());
+	}
+	
+	public ParserRule getLocalThrowRule() {
+		return getLocalThrowAccess().getRule();
+	}
+
+	//LocalCatch:
+	//	"catches" messages+=Message ("," messages+=Message)* "from" fromRole=ID ";";
+	public LocalCatchElements getLocalCatchAccess() {
+		return (pLocalCatch != null) ? pLocalCatch : (pLocalCatch = new LocalCatchElements());
+	}
+	
+	public ParserRule getLocalCatchRule() {
+		return getLocalCatchAccess().getRule();
+	}
+
+	/// **
+	// * Section 3.8.9 Local Do
+	// * / LocalDo:
+	//	"do" (scope=ID ":")? member=ID ("<" arguments+=Argument ("," arguments+=Argument)* ">")? "(" roles+=RoleInstantiation
+	//	("," roles+=RoleInstantiation)* ")" ";";
+	public LocalDoElements getLocalDoAccess() {
+		return (pLocalDo != null) ? pLocalDo : (pLocalDo = new LocalDoElements());
+	}
+	
+	public ParserRule getLocalDoRule() {
+		return getLocalDoAccess().getRule();
 	}
 
 	//terminal ID:

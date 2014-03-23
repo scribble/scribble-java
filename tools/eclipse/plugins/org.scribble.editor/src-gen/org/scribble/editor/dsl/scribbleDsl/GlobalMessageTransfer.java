@@ -14,7 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.GlobalMessageTransfer#getMessage <em>Message</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.GlobalMessageTransfer#getFromRole <em>From Role</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.GlobalMessageTransfer#getToRole <em>To Role</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.GlobalMessageTransfer#getToRoles <em>To Roles</em>}</li>
  * </ul>
  * </p>
  *
@@ -77,19 +77,19 @@ public interface GlobalMessageTransfer extends GlobalInteraction
   void setFromRole(String value);
 
   /**
-   * Returns the value of the '<em><b>To Role</b></em>' attribute list.
+   * Returns the value of the '<em><b>To Roles</b></em>' attribute list.
    * The list contents are of type {@link java.lang.String}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>To Role</em>' attribute list isn't clear,
+   * If the meaning of the '<em>To Roles</em>' attribute list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>To Role</em>' attribute list.
-   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getGlobalMessageTransfer_ToRole()
+   * @return the value of the '<em>To Roles</em>' attribute list.
+   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getGlobalMessageTransfer_ToRoles()
    * @model unique="false"
    * @generated
    */
-  EList<String> getToRole();
+  EList<String> getToRoles();
 
 } // GlobalMessageTransfer

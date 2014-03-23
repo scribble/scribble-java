@@ -239,6 +239,123 @@ public interface ScribbleDslFactory extends EFactory
   GlobalDo createGlobalDo();
 
   /**
+   * Returns a new object of class '<em>Local Protocol Decl</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Protocol Decl</em>'.
+   * @generated
+   */
+  LocalProtocolDecl createLocalProtocolDecl();
+
+  /**
+   * Returns a new object of class '<em>Local Protocol Block</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Protocol Block</em>'.
+   * @generated
+   */
+  LocalProtocolBlock createLocalProtocolBlock();
+
+  /**
+   * Returns a new object of class '<em>Llobal Interaction</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Llobal Interaction</em>'.
+   * @generated
+   */
+  LlobalInteraction createLlobalInteraction();
+
+  /**
+   * Returns a new object of class '<em>Local Send</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Send</em>'.
+   * @generated
+   */
+  LocalSend createLocalSend();
+
+  /**
+   * Returns a new object of class '<em>Local Receive</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Receive</em>'.
+   * @generated
+   */
+  LocalReceive createLocalReceive();
+
+  /**
+   * Returns a new object of class '<em>Local Choice</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Choice</em>'.
+   * @generated
+   */
+  LocalChoice createLocalChoice();
+
+  /**
+   * Returns a new object of class '<em>Local Recursion</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Recursion</em>'.
+   * @generated
+   */
+  LocalRecursion createLocalRecursion();
+
+  /**
+   * Returns a new object of class '<em>Local Continue</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Continue</em>'.
+   * @generated
+   */
+  LocalContinue createLocalContinue();
+
+  /**
+   * Returns a new object of class '<em>Local Parallel</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Parallel</em>'.
+   * @generated
+   */
+  LocalParallel createLocalParallel();
+
+  /**
+   * Returns a new object of class '<em>localinterruptible</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>localinterruptible</em>'.
+   * @generated
+   */
+  localinterruptible createlocalinterruptible();
+
+  /**
+   * Returns a new object of class '<em>Local Throw</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Throw</em>'.
+   * @generated
+   */
+  LocalThrow createLocalThrow();
+
+  /**
+   * Returns a new object of class '<em>Local Catch</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Catch</em>'.
+   * @generated
+   */
+  LocalCatch createLocalCatch();
+
+  /**
+   * Returns a new object of class '<em>Local Do</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Do</em>'.
+   * @generated
+   */
+  LocalDo createLocalDo();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

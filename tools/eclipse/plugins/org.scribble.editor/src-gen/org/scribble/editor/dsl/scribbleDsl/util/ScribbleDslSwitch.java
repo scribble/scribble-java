@@ -251,6 +251,105 @@ public class ScribbleDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ScribbleDslPackage.LOCAL_PROTOCOL_DECL:
+      {
+        LocalProtocolDecl localProtocolDecl = (LocalProtocolDecl)theEObject;
+        T result = caseLocalProtocolDecl(localProtocolDecl);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_PROTOCOL_BLOCK:
+      {
+        LocalProtocolBlock localProtocolBlock = (LocalProtocolBlock)theEObject;
+        T result = caseLocalProtocolBlock(localProtocolBlock);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LLOBAL_INTERACTION:
+      {
+        LlobalInteraction llobalInteraction = (LlobalInteraction)theEObject;
+        T result = caseLlobalInteraction(llobalInteraction);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_SEND:
+      {
+        LocalSend localSend = (LocalSend)theEObject;
+        T result = caseLocalSend(localSend);
+        if (result == null) result = caseLlobalInteraction(localSend);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_RECEIVE:
+      {
+        LocalReceive localReceive = (LocalReceive)theEObject;
+        T result = caseLocalReceive(localReceive);
+        if (result == null) result = caseLlobalInteraction(localReceive);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_CHOICE:
+      {
+        LocalChoice localChoice = (LocalChoice)theEObject;
+        T result = caseLocalChoice(localChoice);
+        if (result == null) result = caseLlobalInteraction(localChoice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_RECURSION:
+      {
+        LocalRecursion localRecursion = (LocalRecursion)theEObject;
+        T result = caseLocalRecursion(localRecursion);
+        if (result == null) result = caseLlobalInteraction(localRecursion);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_CONTINUE:
+      {
+        LocalContinue localContinue = (LocalContinue)theEObject;
+        T result = caseLocalContinue(localContinue);
+        if (result == null) result = caseLlobalInteraction(localContinue);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_PARALLEL:
+      {
+        LocalParallel localParallel = (LocalParallel)theEObject;
+        T result = caseLocalParallel(localParallel);
+        if (result == null) result = caseLlobalInteraction(localParallel);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCALINTERRUPTIBLE:
+      {
+        localinterruptible localinterruptible = (localinterruptible)theEObject;
+        T result = caselocalinterruptible(localinterruptible);
+        if (result == null) result = caseLlobalInteraction(localinterruptible);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_THROW:
+      {
+        LocalThrow localThrow = (LocalThrow)theEObject;
+        T result = caseLocalThrow(localThrow);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_CATCH:
+      {
+        LocalCatch localCatch = (LocalCatch)theEObject;
+        T result = caseLocalCatch(localCatch);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ScribbleDslPackage.LOCAL_DO:
+      {
+        LocalDo localDo = (LocalDo)theEObject;
+        T result = caseLocalDo(localDo);
+        if (result == null) result = caseLlobalInteraction(localDo);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       default: return defaultCase(theEObject);
     }
   }
@@ -635,6 +734,214 @@ public class ScribbleDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseGlobalDo(GlobalDo object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Protocol Decl</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Protocol Decl</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalProtocolDecl(LocalProtocolDecl object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Protocol Block</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Protocol Block</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalProtocolBlock(LocalProtocolBlock object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Llobal Interaction</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Llobal Interaction</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLlobalInteraction(LlobalInteraction object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Send</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Send</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalSend(LocalSend object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Receive</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Receive</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalReceive(LocalReceive object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Choice</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Choice</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalChoice(LocalChoice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Recursion</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Recursion</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalRecursion(LocalRecursion object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Continue</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Continue</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalContinue(LocalContinue object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Parallel</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Parallel</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalParallel(LocalParallel object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>localinterruptible</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>localinterruptible</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caselocalinterruptible(localinterruptible object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Throw</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Throw</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalThrow(LocalThrow object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Catch</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Catch</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalCatch(LocalCatch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Do</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Do</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalDo(LocalDo object)
   {
     return null;
   }

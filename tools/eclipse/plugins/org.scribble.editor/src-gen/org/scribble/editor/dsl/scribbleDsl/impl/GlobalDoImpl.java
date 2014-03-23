@@ -29,8 +29,8 @@ import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalDoImpl#getModule <em>Module</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalDoImpl#getScope <em>Scope</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalDoImpl#getMember <em>Member</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalDoImpl#getArguments <em>Arguments</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalDoImpl#getRoles <em>Roles</em>}</li>
  * </ul>
@@ -40,26 +40,6 @@ import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
  */
 public class GlobalDoImpl extends GlobalInteractionImpl implements GlobalDo
 {
-  /**
-   * The default value of the '{@link #getModule() <em>Module</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getModule()
-   * @generated
-   * @ordered
-   */
-  protected static final String MODULE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getModule() <em>Module</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getModule()
-   * @generated
-   * @ordered
-   */
-  protected String module = MODULE_EDEFAULT;
-
   /**
    * The default value of the '{@link #getScope() <em>Scope</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -79,6 +59,26 @@ public class GlobalDoImpl extends GlobalInteractionImpl implements GlobalDo
    * @ordered
    */
   protected String scope = SCOPE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMember() <em>Member</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMember()
+   * @generated
+   * @ordered
+   */
+  protected static final String MEMBER_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getMember() <em>Member</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMember()
+   * @generated
+   * @ordered
+   */
+  protected String member = MEMBER_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getArguments() <em>Arguments</em>}' containment reference list.
@@ -126,29 +126,6 @@ public class GlobalDoImpl extends GlobalInteractionImpl implements GlobalDo
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getModule()
-  {
-    return module;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setModule(String newModule)
-  {
-    String oldModule = module;
-    module = newModule;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.GLOBAL_DO__MODULE, oldModule, module));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public String getScope()
   {
     return scope;
@@ -165,6 +142,29 @@ public class GlobalDoImpl extends GlobalInteractionImpl implements GlobalDo
     scope = newScope;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.GLOBAL_DO__SCOPE, oldScope, scope));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getMember()
+  {
+    return member;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMember(String newMember)
+  {
+    String oldMember = member;
+    member = newMember;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.GLOBAL_DO__MEMBER, oldMember, member));
   }
 
   /**
@@ -223,10 +223,10 @@ public class GlobalDoImpl extends GlobalInteractionImpl implements GlobalDo
   {
     switch (featureID)
     {
-      case ScribbleDslPackage.GLOBAL_DO__MODULE:
-        return getModule();
       case ScribbleDslPackage.GLOBAL_DO__SCOPE:
         return getScope();
+      case ScribbleDslPackage.GLOBAL_DO__MEMBER:
+        return getMember();
       case ScribbleDslPackage.GLOBAL_DO__ARGUMENTS:
         return getArguments();
       case ScribbleDslPackage.GLOBAL_DO__ROLES:
@@ -246,11 +246,11 @@ public class GlobalDoImpl extends GlobalInteractionImpl implements GlobalDo
   {
     switch (featureID)
     {
-      case ScribbleDslPackage.GLOBAL_DO__MODULE:
-        setModule((String)newValue);
-        return;
       case ScribbleDslPackage.GLOBAL_DO__SCOPE:
         setScope((String)newValue);
+        return;
+      case ScribbleDslPackage.GLOBAL_DO__MEMBER:
+        setMember((String)newValue);
         return;
       case ScribbleDslPackage.GLOBAL_DO__ARGUMENTS:
         getArguments().clear();
@@ -274,11 +274,11 @@ public class GlobalDoImpl extends GlobalInteractionImpl implements GlobalDo
   {
     switch (featureID)
     {
-      case ScribbleDslPackage.GLOBAL_DO__MODULE:
-        setModule(MODULE_EDEFAULT);
-        return;
       case ScribbleDslPackage.GLOBAL_DO__SCOPE:
         setScope(SCOPE_EDEFAULT);
+        return;
+      case ScribbleDslPackage.GLOBAL_DO__MEMBER:
+        setMember(MEMBER_EDEFAULT);
         return;
       case ScribbleDslPackage.GLOBAL_DO__ARGUMENTS:
         getArguments().clear();
@@ -300,10 +300,10 @@ public class GlobalDoImpl extends GlobalInteractionImpl implements GlobalDo
   {
     switch (featureID)
     {
-      case ScribbleDslPackage.GLOBAL_DO__MODULE:
-        return MODULE_EDEFAULT == null ? module != null : !MODULE_EDEFAULT.equals(module);
       case ScribbleDslPackage.GLOBAL_DO__SCOPE:
         return SCOPE_EDEFAULT == null ? scope != null : !SCOPE_EDEFAULT.equals(scope);
+      case ScribbleDslPackage.GLOBAL_DO__MEMBER:
+        return MEMBER_EDEFAULT == null ? member != null : !MEMBER_EDEFAULT.equals(member);
       case ScribbleDslPackage.GLOBAL_DO__ARGUMENTS:
         return arguments != null && !arguments.isEmpty();
       case ScribbleDslPackage.GLOBAL_DO__ROLES:
@@ -323,10 +323,10 @@ public class GlobalDoImpl extends GlobalInteractionImpl implements GlobalDo
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (module: ");
-    result.append(module);
-    result.append(", scope: ");
+    result.append(" (scope: ");
     result.append(scope);
+    result.append(", member: ");
+    result.append(member);
     result.append(')');
     return result.toString();
   }

@@ -15,6 +15,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getImports <em>Imports</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getTypes <em>Types</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getGlobals <em>Globals</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getLocals <em>Locals</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getName <em>Name</em>}</li>
  * </ul>
  * </p>
@@ -72,6 +73,22 @@ public interface ModuleDecl extends Module
    * @generated
    */
   EList<GlobalProtocolDecl> getGlobals();
+
+  /**
+   * Returns the value of the '<em><b>Locals</b></em>' containment reference list.
+   * The list contents are of type {@link org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Locals</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Locals</em>' containment reference list.
+   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getModuleDecl_Locals()
+   * @model containment="true"
+   * @generated
+   */
+  EList<LocalProtocolDecl> getLocals();
 
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.

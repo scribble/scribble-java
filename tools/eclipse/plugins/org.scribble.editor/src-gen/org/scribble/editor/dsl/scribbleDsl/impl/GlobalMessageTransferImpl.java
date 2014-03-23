@@ -29,7 +29,7 @@ import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
  * <ul>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalMessageTransferImpl#getMessage <em>Message</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalMessageTransferImpl#getFromRole <em>From Role</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalMessageTransferImpl#getToRole <em>To Role</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalMessageTransferImpl#getToRoles <em>To Roles</em>}</li>
  * </ul>
  * </p>
  *
@@ -68,14 +68,14 @@ public class GlobalMessageTransferImpl extends GlobalInteractionImpl implements 
   protected String fromRole = FROM_ROLE_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getToRole() <em>To Role</em>}' attribute list.
+   * The cached value of the '{@link #getToRoles() <em>To Roles</em>}' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getToRole()
+   * @see #getToRoles()
    * @generated
    * @ordered
    */
-  protected EList<String> toRole;
+  protected EList<String> toRoles;
 
   /**
    * <!-- begin-user-doc -->
@@ -174,13 +174,13 @@ public class GlobalMessageTransferImpl extends GlobalInteractionImpl implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<String> getToRole()
+  public EList<String> getToRoles()
   {
-    if (toRole == null)
+    if (toRoles == null)
     {
-      toRole = new EDataTypeEList<String>(String.class, this, ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLE);
+      toRoles = new EDataTypeEList<String>(String.class, this, ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLES);
     }
-    return toRole;
+    return toRoles;
   }
 
   /**
@@ -213,8 +213,8 @@ public class GlobalMessageTransferImpl extends GlobalInteractionImpl implements 
         return getMessage();
       case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__FROM_ROLE:
         return getFromRole();
-      case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLE:
-        return getToRole();
+      case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLES:
+        return getToRoles();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -236,9 +236,9 @@ public class GlobalMessageTransferImpl extends GlobalInteractionImpl implements 
       case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__FROM_ROLE:
         setFromRole((String)newValue);
         return;
-      case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLE:
-        getToRole().clear();
-        getToRole().addAll((Collection<? extends String>)newValue);
+      case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLES:
+        getToRoles().clear();
+        getToRoles().addAll((Collection<? extends String>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -260,8 +260,8 @@ public class GlobalMessageTransferImpl extends GlobalInteractionImpl implements 
       case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__FROM_ROLE:
         setFromRole(FROM_ROLE_EDEFAULT);
         return;
-      case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLE:
-        getToRole().clear();
+      case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLES:
+        getToRoles().clear();
         return;
     }
     super.eUnset(featureID);
@@ -281,8 +281,8 @@ public class GlobalMessageTransferImpl extends GlobalInteractionImpl implements 
         return message != null;
       case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__FROM_ROLE:
         return FROM_ROLE_EDEFAULT == null ? fromRole != null : !FROM_ROLE_EDEFAULT.equals(fromRole);
-      case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLE:
-        return toRole != null && !toRole.isEmpty();
+      case ScribbleDslPackage.GLOBAL_MESSAGE_TRANSFER__TO_ROLES:
+        return toRoles != null && !toRoles.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -300,8 +300,8 @@ public class GlobalMessageTransferImpl extends GlobalInteractionImpl implements 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (fromRole: ");
     result.append(fromRole);
-    result.append(", toRole: ");
-    result.append(toRole);
+    result.append(", toRoles: ");
+    result.append(toRoles);
     result.append(')');
     return result.toString();
   }

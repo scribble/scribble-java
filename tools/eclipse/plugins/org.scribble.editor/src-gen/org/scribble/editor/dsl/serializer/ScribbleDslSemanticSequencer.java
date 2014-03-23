@@ -26,6 +26,17 @@ import org.scribble.editor.dsl.scribbleDsl.GlobalProtocolDecl;
 import org.scribble.editor.dsl.scribbleDsl.GlobalRecursion;
 import org.scribble.editor.dsl.scribbleDsl.ImportMember;
 import org.scribble.editor.dsl.scribbleDsl.ImportModule;
+import org.scribble.editor.dsl.scribbleDsl.LocalCatch;
+import org.scribble.editor.dsl.scribbleDsl.LocalChoice;
+import org.scribble.editor.dsl.scribbleDsl.LocalContinue;
+import org.scribble.editor.dsl.scribbleDsl.LocalDo;
+import org.scribble.editor.dsl.scribbleDsl.LocalParallel;
+import org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock;
+import org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl;
+import org.scribble.editor.dsl.scribbleDsl.LocalReceive;
+import org.scribble.editor.dsl.scribbleDsl.LocalRecursion;
+import org.scribble.editor.dsl.scribbleDsl.LocalSend;
+import org.scribble.editor.dsl.scribbleDsl.LocalThrow;
 import org.scribble.editor.dsl.scribbleDsl.Message;
 import org.scribble.editor.dsl.scribbleDsl.MessageSignature;
 import org.scribble.editor.dsl.scribbleDsl.ModuleDecl;
@@ -35,6 +46,7 @@ import org.scribble.editor.dsl.scribbleDsl.PayloadTypeDecl;
 import org.scribble.editor.dsl.scribbleDsl.RoleDecl;
 import org.scribble.editor.dsl.scribbleDsl.RoleInstantiation;
 import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
+import org.scribble.editor.dsl.scribbleDsl.localinterruptible;
 import org.scribble.editor.dsl.services.ScribbleDslGrammarAccess;
 
 @SuppressWarnings("all")
@@ -132,6 +144,79 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 					return; 
 				}
 				else break;
+			case ScribbleDslPackage.LOCAL_CATCH:
+				if(context == grammarAccess.getLocalCatchRule()) {
+					sequence_LocalCatch(context, (LocalCatch) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_CHOICE:
+				if(context == grammarAccess.getLlobalInteractionRule() ||
+				   context == grammarAccess.getLocalChoiceRule()) {
+					sequence_LocalChoice(context, (LocalChoice) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_CONTINUE:
+				if(context == grammarAccess.getLlobalInteractionRule() ||
+				   context == grammarAccess.getLocalContinueRule()) {
+					sequence_LocalContinue(context, (LocalContinue) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_DO:
+				if(context == grammarAccess.getLlobalInteractionRule() ||
+				   context == grammarAccess.getLocalDoRule()) {
+					sequence_LocalDo(context, (LocalDo) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_PARALLEL:
+				if(context == grammarAccess.getLlobalInteractionRule() ||
+				   context == grammarAccess.getLocalParallelRule()) {
+					sequence_LocalParallel(context, (LocalParallel) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_PROTOCOL_BLOCK:
+				if(context == grammarAccess.getLocalProtocolBlockRule()) {
+					sequence_LocalProtocolBlock(context, (LocalProtocolBlock) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_PROTOCOL_DECL:
+				if(context == grammarAccess.getLocalProtocolDeclRule()) {
+					sequence_LocalProtocolDecl(context, (LocalProtocolDecl) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_RECEIVE:
+				if(context == grammarAccess.getLlobalInteractionRule() ||
+				   context == grammarAccess.getLocalReceiveRule()) {
+					sequence_LocalReceive(context, (LocalReceive) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_RECURSION:
+				if(context == grammarAccess.getLlobalInteractionRule() ||
+				   context == grammarAccess.getLocalRecursionRule()) {
+					sequence_LocalRecursion(context, (LocalRecursion) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_SEND:
+				if(context == grammarAccess.getLlobalInteractionRule() ||
+				   context == grammarAccess.getLocalSendRule()) {
+					sequence_LocalSend(context, (LocalSend) semanticObject); 
+					return; 
+				}
+				else break;
+			case ScribbleDslPackage.LOCAL_THROW:
+				if(context == grammarAccess.getLocalThrowRule()) {
+					sequence_LocalThrow(context, (LocalThrow) semanticObject); 
+					return; 
+				}
+				else break;
 			case ScribbleDslPackage.MESSAGE:
 				if(context == grammarAccess.getMessageRule()) {
 					sequence_Message(context, (Message) semanticObject); 
@@ -185,6 +270,13 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 					return; 
 				}
 				else break;
+			case ScribbleDslPackage.LOCALINTERRUPTIBLE:
+				if(context == grammarAccess.getLlobalInteractionRule() ||
+				   context == grammarAccess.getLocalinterruptibleRule()) {
+					sequence_localinterruptible(context, (localinterruptible) semanticObject); 
+					return; 
+				}
+				else break;
 			}
 		if (errorAcceptor != null) errorAcceptor.accept(diagnosticProvider.createInvalidContextOrTypeDiagnostic(semanticObject, context));
 	}
@@ -225,7 +317,7 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	
 	/**
 	 * Constraint:
-	 *     (module=ID scope=ID? (arguments+=Argument arguments+=Argument*)? roles+=RoleInstantiation roles+=RoleInstantiation*)
+	 *     (scope=ID? member=ID (arguments+=Argument arguments+=Argument*)? roles+=RoleInstantiation roles+=RoleInstantiation*)
 	 */
 	protected void sequence_GlobalDo(EObject context, GlobalDo semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -252,7 +344,7 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	
 	/**
 	 * Constraint:
-	 *     (message=Message fromRole=ID toRole+=ID toRole+=ID*)
+	 *     (message=Message fromRole=ID toRoles+=ID toRoles+=ID*)
 	 */
 	protected void sequence_GlobalMessageTransfer(EObject context, GlobalMessageTransfer semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -334,6 +426,142 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	
 	/**
 	 * Constraint:
+	 *     (messages+=Message messages+=Message* fromRole=ID)
+	 */
+	protected void sequence_LocalCatch(EObject context, LocalCatch semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (role=ID blocks+=LocalProtocolBlock blocks+=LocalProtocolBlock*)
+	 */
+	protected void sequence_LocalChoice(EObject context, LocalChoice semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     label=ID
+	 */
+	protected void sequence_LocalContinue(EObject context, LocalContinue semanticObject) {
+		if(errorAcceptor != null) {
+			if(transientValues.isValueTransient(semanticObject, ScribbleDslPackage.Literals.LOCAL_CONTINUE__LABEL) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ScribbleDslPackage.Literals.LOCAL_CONTINUE__LABEL));
+		}
+		INodesForEObjectProvider nodes = createNodeProvider(semanticObject);
+		SequenceFeeder feeder = createSequencerFeeder(semanticObject, nodes);
+		feeder.accept(grammarAccess.getLocalContinueAccess().getLabelIDTerminalRuleCall_1_0(), semanticObject.getLabel());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (scope=ID? member=ID (arguments+=Argument arguments+=Argument*)? roles+=RoleInstantiation roles+=RoleInstantiation*)
+	 */
+	protected void sequence_LocalDo(EObject context, LocalDo semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (blocks+=LocalProtocolBlock blocks+=LocalProtocolBlock*)
+	 */
+	protected void sequence_LocalParallel(EObject context, LocalParallel semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (activities+=LlobalInteraction*)
+	 */
+	protected void sequence_LocalProtocolBlock(EObject context, LocalProtocolBlock semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (
+	 *         name=ID 
+	 *         role=ID 
+	 *         (parameters+=ParameterDecl parameters+=ParameterDecl*)? 
+	 *         roles+=RoleDecl 
+	 *         roles+=RoleDecl* 
+	 *         (
+	 *             block=LocalProtocolBlock | 
+	 *             (instantiates=ID (arguments+=Argument arguments+=Argument*)? roleInstantiations+=RoleInstantiation roleInstantiations+=RoleInstantiation*)
+	 *         )
+	 *     )
+	 */
+	protected void sequence_LocalProtocolDecl(EObject context, LocalProtocolDecl semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (message=Message fromRole=ID)
+	 */
+	protected void sequence_LocalReceive(EObject context, LocalReceive semanticObject) {
+		if(errorAcceptor != null) {
+			if(transientValues.isValueTransient(semanticObject, ScribbleDslPackage.Literals.LOCAL_RECEIVE__MESSAGE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ScribbleDslPackage.Literals.LOCAL_RECEIVE__MESSAGE));
+			if(transientValues.isValueTransient(semanticObject, ScribbleDslPackage.Literals.LOCAL_RECEIVE__FROM_ROLE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ScribbleDslPackage.Literals.LOCAL_RECEIVE__FROM_ROLE));
+		}
+		INodesForEObjectProvider nodes = createNodeProvider(semanticObject);
+		SequenceFeeder feeder = createSequencerFeeder(semanticObject, nodes);
+		feeder.accept(grammarAccess.getLocalReceiveAccess().getMessageMessageParserRuleCall_0_0(), semanticObject.getMessage());
+		feeder.accept(grammarAccess.getLocalReceiveAccess().getFromRoleIDTerminalRuleCall_2_0(), semanticObject.getFromRole());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (label=ID block=LocalProtocolBlock)
+	 */
+	protected void sequence_LocalRecursion(EObject context, LocalRecursion semanticObject) {
+		if(errorAcceptor != null) {
+			if(transientValues.isValueTransient(semanticObject, ScribbleDslPackage.Literals.LOCAL_RECURSION__LABEL) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ScribbleDslPackage.Literals.LOCAL_RECURSION__LABEL));
+			if(transientValues.isValueTransient(semanticObject, ScribbleDslPackage.Literals.LOCAL_RECURSION__BLOCK) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ScribbleDslPackage.Literals.LOCAL_RECURSION__BLOCK));
+		}
+		INodesForEObjectProvider nodes = createNodeProvider(semanticObject);
+		SequenceFeeder feeder = createSequencerFeeder(semanticObject, nodes);
+		feeder.accept(grammarAccess.getLocalRecursionAccess().getLabelIDTerminalRuleCall_1_0(), semanticObject.getLabel());
+		feeder.accept(grammarAccess.getLocalRecursionAccess().getBlockLocalProtocolBlockParserRuleCall_2_0(), semanticObject.getBlock());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (message=Message toRoles+=ID toRoles+=ID*)
+	 */
+	protected void sequence_LocalSend(EObject context, LocalSend semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (messages+=Message messages+=Message* toRoles+=ID toRols+=ID*)
+	 */
+	protected void sequence_LocalThrow(EObject context, LocalThrow semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
 	 *     (operator=ID (types+=PayloadElement types+=PayloadElement*)?)
 	 */
 	protected void sequence_MessageSignature(EObject context, MessageSignature semanticObject) {
@@ -368,7 +596,7 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	
 	/**
 	 * Constraint:
-	 *     (name=ModuleName imports+=ImportDecl* types+=PayloadTypeDecl* globals+=GlobalProtocolDecl*)
+	 *     (name=ModuleName imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*)
 	 */
 	protected void sequence_Module_ModuleDecl(EObject context, ModuleDecl semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -432,6 +660,15 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     (name=ID alias=ID?)
 	 */
 	protected void sequence_RoleInstantiation(EObject context, RoleInstantiation semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (scope=ID? block=LocalProtocolBlock throw=LocalThrow? catches+=LocalCatch*)
+	 */
+	protected void sequence_localinterruptible(EObject context, localinterruptible semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 }

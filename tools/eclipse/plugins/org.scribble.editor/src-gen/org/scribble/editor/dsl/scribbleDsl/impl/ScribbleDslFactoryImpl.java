@@ -88,6 +88,19 @@ public class ScribbleDslFactoryImpl extends EFactoryImpl implements ScribbleDslF
       case ScribbleDslPackage.GLOBAL_INTERRUPTIBLE: return createGlobalInterruptible();
       case ScribbleDslPackage.GLOBAL_INTERRUPT: return createGlobalInterrupt();
       case ScribbleDslPackage.GLOBAL_DO: return createGlobalDo();
+      case ScribbleDslPackage.LOCAL_PROTOCOL_DECL: return createLocalProtocolDecl();
+      case ScribbleDslPackage.LOCAL_PROTOCOL_BLOCK: return createLocalProtocolBlock();
+      case ScribbleDslPackage.LLOBAL_INTERACTION: return createLlobalInteraction();
+      case ScribbleDslPackage.LOCAL_SEND: return createLocalSend();
+      case ScribbleDslPackage.LOCAL_RECEIVE: return createLocalReceive();
+      case ScribbleDslPackage.LOCAL_CHOICE: return createLocalChoice();
+      case ScribbleDslPackage.LOCAL_RECURSION: return createLocalRecursion();
+      case ScribbleDslPackage.LOCAL_CONTINUE: return createLocalContinue();
+      case ScribbleDslPackage.LOCAL_PARALLEL: return createLocalParallel();
+      case ScribbleDslPackage.LOCALINTERRUPTIBLE: return createlocalinterruptible();
+      case ScribbleDslPackage.LOCAL_THROW: return createLocalThrow();
+      case ScribbleDslPackage.LOCAL_CATCH: return createLocalCatch();
+      case ScribbleDslPackage.LOCAL_DO: return createLocalDo();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -355,6 +368,149 @@ public class ScribbleDslFactoryImpl extends EFactoryImpl implements ScribbleDslF
   {
     GlobalDoImpl globalDo = new GlobalDoImpl();
     return globalDo;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalProtocolDecl createLocalProtocolDecl()
+  {
+    LocalProtocolDeclImpl localProtocolDecl = new LocalProtocolDeclImpl();
+    return localProtocolDecl;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalProtocolBlock createLocalProtocolBlock()
+  {
+    LocalProtocolBlockImpl localProtocolBlock = new LocalProtocolBlockImpl();
+    return localProtocolBlock;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LlobalInteraction createLlobalInteraction()
+  {
+    LlobalInteractionImpl llobalInteraction = new LlobalInteractionImpl();
+    return llobalInteraction;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalSend createLocalSend()
+  {
+    LocalSendImpl localSend = new LocalSendImpl();
+    return localSend;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalReceive createLocalReceive()
+  {
+    LocalReceiveImpl localReceive = new LocalReceiveImpl();
+    return localReceive;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalChoice createLocalChoice()
+  {
+    LocalChoiceImpl localChoice = new LocalChoiceImpl();
+    return localChoice;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalRecursion createLocalRecursion()
+  {
+    LocalRecursionImpl localRecursion = new LocalRecursionImpl();
+    return localRecursion;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalContinue createLocalContinue()
+  {
+    LocalContinueImpl localContinue = new LocalContinueImpl();
+    return localContinue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalParallel createLocalParallel()
+  {
+    LocalParallelImpl localParallel = new LocalParallelImpl();
+    return localParallel;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public localinterruptible createlocalinterruptible()
+  {
+    localinterruptibleImpl localinterruptible = new localinterruptibleImpl();
+    return localinterruptible;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalThrow createLocalThrow()
+  {
+    LocalThrowImpl localThrow = new LocalThrowImpl();
+    return localThrow;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalCatch createLocalCatch()
+  {
+    LocalCatchImpl localCatch = new LocalCatchImpl();
+    return localCatch;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LocalDo createLocalDo()
+  {
+    LocalDoImpl localDo = new LocalDoImpl();
+    return localDo;
   }
 
   /**

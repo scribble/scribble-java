@@ -5,10 +5,7 @@ generate scribbleDsl "http://www.scribble.org/editor/dsl/ScribbleDsl"
 
 Module:
 	ModuleDecl (imports+=ImportDecl)* (types+=PayloadTypeDecl)*
-		(globals+=GlobalProtocolDecl
-//|
-//	locals=Localprotocoldecl
-		)*
+		(globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl )*
 ;
 
 ModuleDecl:
@@ -116,7 +113,7 @@ GlobalInteraction:
  * Section 3.7.4 Global Message Transfer
  */
 GlobalMessageTransfer:
-	message=Message 'from' fromRole=ID 'to' toRole+=ID (',' toRole+=ID )* ';'
+	message=Message 'from' fromRole=ID 'to' toRoles+=ID (',' toRoles+=ID )* ';'
 ;
 
 Message:
@@ -170,7 +167,111 @@ GlobalInterrupt:
  * Section 3.7.9 Global Do
  */
 GlobalDo:
-	'do' module=ID (':' scope=ID )? ( '<' arguments+=Argument (',' arguments+=Argument )* '>' )? '(' roles+=RoleInstantiation (',' roles+=RoleInstantiation)* ')' ';'
+	'do' ( scope=ID ':' )? member=ID ( '<' arguments+=Argument (',' arguments+=Argument )* '>' )? '(' roles+=RoleInstantiation (',' roles+=RoleInstantiation)* ')' ';'
 ;
 
+
+/*
+ * Section 3.8 Local Protocol Declarations
+ */
+LocalProtocolDecl:
+	'local' 'protocol'  name=ID 'at' role=ID
+			( '<' parameters+=ParameterDecl (',' parameters+=ParameterDecl)* '>' )?
+			'(' roles+=RoleDecl (',' roles+=RoleDecl)* ')' ( block=LocalProtocolBlock |
+				'instantiates' instantiates=ID ( '<' arguments+=Argument (',' arguments+=Argument )* '>' )?
+				'(' roleInstantiations+=RoleInstantiation (',' roleInstantiations+=RoleInstantiation)* ')' ';'
+			)
+;
+
+
+/**
+ * Section 3.8.3 Local Interaction Blocks and Sequences
+ */
+LocalProtocolBlock:
+	{LocalProtocolBlock} '{' (activities+=LlobalInteraction)* '}'
+;
+
+LlobalInteraction:
+	LocalSend
+|
+	LocalReceive
+|
+	LocalChoice
+|
+	LocalParallel
+|
+	LocalRecursion
+|
+	LocalContinue
+|
+	localinterruptible
+|
+	LocalDo
+/*|
+	localspawn*/
+;
+
+
+/**
+ * Section 3.8.4 Local Send and Receive
+ */
+LocalSend:
+	message=Message 'to' toRoles+=ID (',' toRoles+=ID )* ';'
+;
+
+LocalReceive:
+	message=Message 'from' fromRole=ID ';'
+;
+
+
+/**
+ * Section 3.8.5 Local Choice
+ */
+LocalChoice:
+	'choice' 'at' role=ID blocks+=LocalProtocolBlock ('or' blocks+=LocalProtocolBlock)*
+;
+
+
+/**
+ * Section 3.8.6 Local Recursion
+ */
+LocalRecursion:
+	'rec' label=ID block=LocalProtocolBlock
+;
+
+LocalContinue:
+	'continue' label=ID ';'
+;
+
+
+/**
+ * Section 3.8.7 Local Parallel
+ */
+LocalParallel:
+	'par' blocks+=LocalProtocolBlock ('and' blocks+=LocalProtocolBlock)*
+;
+
+
+/**
+ * Section 3.8.8 Local Interruptible
+ */
+localinterruptible:
+	'interruptible' ( scope=ID ':' )? block=LocalProtocolBlock 'with' '{' ( throw=LocalThrow )? ( catches+=LocalCatch )* '}'
+;
+
+LocalThrow:
+	'throw' messages+=Message (',' messages+=Message)* 'to' toRoles+=ID (',' toRols+=ID )* ';'
+;
+
+LocalCatch:
+	'catches' messages+=Message (',' messages+=Message)* 'from' fromRole=ID ';'
+;
+
+
+/**
+ * Section 3.8.9 Local Do
+ */
+LocalDo:
+	'do' ( scope=ID ':' )? member=ID ( '<' arguments+=Argument (',' arguments+=Argument )* '>' )? '(' roles+=RoleInstantiation (',' roles+=RoleInstantiation)* ')' ';'
+;
 
