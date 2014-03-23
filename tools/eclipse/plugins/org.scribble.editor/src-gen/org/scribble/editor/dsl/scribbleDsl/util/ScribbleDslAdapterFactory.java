@@ -235,9 +235,9 @@ public class ScribbleDslAdapterFactory extends AdapterFactoryImpl
         return createLocalParallelAdapter();
       }
       @Override
-      public Adapter caselocalinterruptible(localinterruptible object)
+      public Adapter caseLocalInterruptible(LocalInterruptible object)
       {
-        return createlocalinterruptibleAdapter();
+        return createLocalInterruptibleAdapter();
       }
       @Override
       public Adapter caseLocalThrow(LocalThrow object)
@@ -757,16 +757,16 @@ public class ScribbleDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible <em>localinterruptible</em>}'.
+   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible <em>Local Interruptible</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalInterruptible
    * @generated
    */
-  public Adapter createlocalinterruptibleAdapter()
+  public Adapter createLocalInterruptibleAdapter()
   {
     return null;
   }

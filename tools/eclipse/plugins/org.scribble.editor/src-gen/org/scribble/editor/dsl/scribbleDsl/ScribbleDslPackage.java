@@ -296,34 +296,6 @@ public interface ScribbleDslPackage extends EPackage
   int PAYLOAD_TYPE_DECL_FEATURE_COUNT = 4;
 
   /**
-   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.MessageImpl <em>Message</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.scribble.editor.dsl.scribbleDsl.impl.MessageImpl
-   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getMessage()
-   * @generated
-   */
-  int MESSAGE = 15;
-
-  /**
-   * The feature id for the '<em><b>Parameter</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MESSAGE__PARAMETER = 0;
-
-  /**
-   * The number of structural features of the '<em>Message</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MESSAGE_FEATURE_COUNT = 1;
-
-  /**
    * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.MessageSignatureImpl <em>Message Signature</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -334,22 +306,13 @@ public interface ScribbleDslPackage extends EPackage
   int MESSAGE_SIGNATURE = 5;
 
   /**
-   * The feature id for the '<em><b>Parameter</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MESSAGE_SIGNATURE__PARAMETER = MESSAGE__PARAMETER;
-
-  /**
    * The feature id for the '<em><b>Operator</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MESSAGE_SIGNATURE__OPERATOR = MESSAGE_FEATURE_COUNT + 0;
+  int MESSAGE_SIGNATURE__OPERATOR = 0;
 
   /**
    * The feature id for the '<em><b>Types</b></em>' containment reference list.
@@ -358,7 +321,7 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MESSAGE_SIGNATURE__TYPES = MESSAGE_FEATURE_COUNT + 1;
+  int MESSAGE_SIGNATURE__TYPES = 1;
 
   /**
    * The number of structural features of the '<em>Message Signature</em>' class.
@@ -367,7 +330,7 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MESSAGE_SIGNATURE_FEATURE_COUNT = MESSAGE_FEATURE_COUNT + 2;
+  int MESSAGE_SIGNATURE_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.PayloadElementImpl <em>Payload Element</em>}' class.
@@ -737,6 +700,43 @@ public interface ScribbleDslPackage extends EPackage
    * @ordered
    */
   int GLOBAL_MESSAGE_TRANSFER_FEATURE_COUNT = GLOBAL_INTERACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.MessageImpl <em>Message</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.MessageImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getMessage()
+   * @generated
+   */
+  int MESSAGE = 15;
+
+  /**
+   * The feature id for the '<em><b>Signature</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MESSAGE__SIGNATURE = 0;
+
+  /**
+   * The feature id for the '<em><b>Parameter</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MESSAGE__PARAMETER = 1;
+
+  /**
+   * The number of structural features of the '<em>Message</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MESSAGE_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.GlobalChoiceImpl <em>Global Choice</em>}' class.
@@ -1349,14 +1349,14 @@ public interface ScribbleDslPackage extends EPackage
   int LOCAL_PARALLEL_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
 
   /**
-   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl <em>localinterruptible</em>}' class.
+   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalInterruptibleImpl <em>Local Interruptible</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl
-   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getlocalinterruptible()
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalInterruptibleImpl
+   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalInterruptible()
    * @generated
    */
-  int LOCALINTERRUPTIBLE = 32;
+  int LOCAL_INTERRUPTIBLE = 32;
 
   /**
    * The feature id for the '<em><b>Scope</b></em>' attribute.
@@ -1365,7 +1365,7 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int LOCALINTERRUPTIBLE__SCOPE = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
+  int LOCAL_INTERRUPTIBLE__SCOPE = LLOBAL_INTERACTION_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Block</b></em>' containment reference.
@@ -1374,7 +1374,7 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int LOCALINTERRUPTIBLE__BLOCK = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
+  int LOCAL_INTERRUPTIBLE__BLOCK = LLOBAL_INTERACTION_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Throw</b></em>' containment reference.
@@ -1383,7 +1383,7 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int LOCALINTERRUPTIBLE__THROW = LLOBAL_INTERACTION_FEATURE_COUNT + 2;
+  int LOCAL_INTERRUPTIBLE__THROW = LLOBAL_INTERACTION_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Catches</b></em>' containment reference list.
@@ -1392,16 +1392,16 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int LOCALINTERRUPTIBLE__CATCHES = LLOBAL_INTERACTION_FEATURE_COUNT + 3;
+  int LOCAL_INTERRUPTIBLE__CATCHES = LLOBAL_INTERACTION_FEATURE_COUNT + 3;
 
   /**
-   * The number of structural features of the '<em>localinterruptible</em>' class.
+   * The number of structural features of the '<em>Local Interruptible</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int LOCALINTERRUPTIBLE_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 4;
+  int LOCAL_INTERRUPTIBLE_FEATURE_COUNT = LLOBAL_INTERACTION_FEATURE_COUNT + 4;
 
   /**
    * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalThrowImpl <em>Local Throw</em>}' class.
@@ -2090,6 +2090,17 @@ public interface ScribbleDslPackage extends EPackage
   EClass getMessage();
 
   /**
+   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.Message#getSignature <em>Signature</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Signature</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.Message#getSignature()
+   * @see #getMessage()
+   * @generated
+   */
+  EReference getMessage_Signature();
+
+  /**
    * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.Message#getParameter <em>Parameter</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2635,58 +2646,58 @@ public interface ScribbleDslPackage extends EPackage
   EReference getLocalParallel_Blocks();
 
   /**
-   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible <em>localinterruptible</em>}'.
+   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible <em>Local Interruptible</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>localinterruptible</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible
+   * @return the meta object for class '<em>Local Interruptible</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalInterruptible
    * @generated
    */
-  EClass getlocalinterruptible();
+  EClass getLocalInterruptible();
 
   /**
-   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getScope <em>Scope</em>}'.
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getScope <em>Scope</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Scope</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible#getScope()
-   * @see #getlocalinterruptible()
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getScope()
+   * @see #getLocalInterruptible()
    * @generated
    */
-  EAttribute getlocalinterruptible_Scope();
+  EAttribute getLocalInterruptible_Scope();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getBlock <em>Block</em>}'.
+   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getBlock <em>Block</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Block</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible#getBlock()
-   * @see #getlocalinterruptible()
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getBlock()
+   * @see #getLocalInterruptible()
    * @generated
    */
-  EReference getlocalinterruptible_Block();
+  EReference getLocalInterruptible_Block();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getThrow <em>Throw</em>}'.
+   * Returns the meta object for the containment reference '{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getThrow <em>Throw</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Throw</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible#getThrow()
-   * @see #getlocalinterruptible()
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getThrow()
+   * @see #getLocalInterruptible()
    * @generated
    */
-  EReference getlocalinterruptible_Throw();
+  EReference getLocalInterruptible_Throw();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getCatches <em>Catches</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getCatches <em>Catches</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Catches</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.localinterruptible#getCatches()
-   * @see #getlocalinterruptible()
+   * @see org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getCatches()
+   * @see #getLocalInterruptible()
    * @generated
    */
-  EReference getlocalinterruptible_Catches();
+  EReference getLocalInterruptible_Catches();
 
   /**
    * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow <em>Local Throw</em>}'.
@@ -3278,6 +3289,14 @@ public interface ScribbleDslPackage extends EPackage
     EClass MESSAGE = eINSTANCE.getMessage();
 
     /**
+     * The meta object literal for the '<em><b>Signature</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference MESSAGE__SIGNATURE = eINSTANCE.getMessage_Signature();
+
+    /**
      * The meta object literal for the '<em><b>Parameter</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3718,14 +3737,14 @@ public interface ScribbleDslPackage extends EPackage
     EReference LOCAL_PARALLEL__BLOCKS = eINSTANCE.getLocalParallel_Blocks();
 
     /**
-     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl <em>localinterruptible</em>}' class.
+     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalInterruptibleImpl <em>Local Interruptible</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl
-     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getlocalinterruptible()
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.LocalInterruptibleImpl
+     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalInterruptible()
      * @generated
      */
-    EClass LOCALINTERRUPTIBLE = eINSTANCE.getlocalinterruptible();
+    EClass LOCAL_INTERRUPTIBLE = eINSTANCE.getLocalInterruptible();
 
     /**
      * The meta object literal for the '<em><b>Scope</b></em>' attribute feature.
@@ -3733,7 +3752,7 @@ public interface ScribbleDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute LOCALINTERRUPTIBLE__SCOPE = eINSTANCE.getlocalinterruptible_Scope();
+    EAttribute LOCAL_INTERRUPTIBLE__SCOPE = eINSTANCE.getLocalInterruptible_Scope();
 
     /**
      * The meta object literal for the '<em><b>Block</b></em>' containment reference feature.
@@ -3741,7 +3760,7 @@ public interface ScribbleDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference LOCALINTERRUPTIBLE__BLOCK = eINSTANCE.getlocalinterruptible_Block();
+    EReference LOCAL_INTERRUPTIBLE__BLOCK = eINSTANCE.getLocalInterruptible_Block();
 
     /**
      * The meta object literal for the '<em><b>Throw</b></em>' containment reference feature.
@@ -3749,7 +3768,7 @@ public interface ScribbleDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference LOCALINTERRUPTIBLE__THROW = eINSTANCE.getlocalinterruptible_Throw();
+    EReference LOCAL_INTERRUPTIBLE__THROW = eINSTANCE.getLocalInterruptible_Throw();
 
     /**
      * The meta object literal for the '<em><b>Catches</b></em>' containment reference list feature.
@@ -3757,7 +3776,7 @@ public interface ScribbleDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference LOCALINTERRUPTIBLE__CATCHES = eINSTANCE.getlocalinterruptible_Catches();
+    EReference LOCAL_INTERRUPTIBLE__CATCHES = eINSTANCE.getLocalInterruptible_Catches();
 
     /**
      * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalThrowImpl <em>Local Throw</em>}' class.

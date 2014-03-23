@@ -72,6 +72,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//GlobalMessageTransfer/toRoles"/>
     </genClasses>
     <genClasses ecoreClass="ScribbleDsl.ecore#//Message">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//Message/signature"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//Message/parameter"/>
     </genClasses>
     <genClasses ecoreClass="ScribbleDsl.ecore#//GlobalChoice">
@@ -139,11 +140,11 @@
     <genClasses ecoreClass="ScribbleDsl.ecore#//LocalParallel">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//LocalParallel/blocks"/>
     </genClasses>
-    <genClasses ecoreClass="ScribbleDsl.ecore#//localinterruptible">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//localinterruptible/scope"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//localinterruptible/block"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//localinterruptible/throw"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//localinterruptible/catches"/>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//LocalInterruptible">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//LocalInterruptible/scope"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//LocalInterruptible/block"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//LocalInterruptible/throw"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//LocalInterruptible/catches"/>
     </genClasses>
     <genClasses ecoreClass="ScribbleDsl.ecore#//LocalThrow">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//LocalThrow/messages"/>

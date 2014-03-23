@@ -4,6 +4,8 @@ package org.scribble.editor.dsl.scribbleDsl;
 
 import org.eclipse.emf.common.util.EList;
 
+import org.eclipse.emf.ecore.EObject;
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Message Signature</b></em>'.
@@ -21,7 +23,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface MessageSignature extends Message
+public interface MessageSignature extends EObject
 {
   /**
    * Returns the value of the '<em><b>Operator</b></em>' attribute.

@@ -311,13 +311,13 @@ public interface ScribbleDslFactory extends EFactory
   LocalParallel createLocalParallel();
 
   /**
-   * Returns a new object of class '<em>localinterruptible</em>'.
+   * Returns a new object of class '<em>Local Interruptible</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>localinterruptible</em>'.
+   * @return a new object of class '<em>Local Interruptible</em>'.
    * @generated
    */
-  localinterruptible createlocalinterruptible();
+  LocalInterruptible createLocalInterruptible();
 
   /**
    * Returns a new object of class '<em>Local Throw</em>'.

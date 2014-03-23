@@ -3806,32 +3806,32 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleMessage"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1582:1: ruleMessage returns [EObject current=null] : (this_MessageSignature_0= ruleMessageSignature | ( (lv_parameter_1_0= RULE_ID ) ) ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1582:1: ruleMessage returns [EObject current=null] : ( ( (lv_signature_0_0= ruleMessageSignature ) ) | ( (lv_parameter_1_0= RULE_ID ) ) ) ;
     public final EObject ruleMessage() throws RecognitionException {
         EObject current = null;
 
         Token lv_parameter_1_0=null;
-        EObject this_MessageSignature_0 = null;
+        EObject lv_signature_0_0 = null;
 
 
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1585:28: ( (this_MessageSignature_0= ruleMessageSignature | ( (lv_parameter_1_0= RULE_ID ) ) ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1586:1: (this_MessageSignature_0= ruleMessageSignature | ( (lv_parameter_1_0= RULE_ID ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1585:28: ( ( ( (lv_signature_0_0= ruleMessageSignature ) ) | ( (lv_parameter_1_0= RULE_ID ) ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1586:1: ( ( (lv_signature_0_0= ruleMessageSignature ) ) | ( (lv_parameter_1_0= RULE_ID ) ) )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1586:1: (this_MessageSignature_0= ruleMessageSignature | ( (lv_parameter_1_0= RULE_ID ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1586:1: ( ( (lv_signature_0_0= ruleMessageSignature ) ) | ( (lv_parameter_1_0= RULE_ID ) ) )
             int alt30=2;
             int LA30_0 = input.LA(1);
 
             if ( (LA30_0==RULE_ID) ) {
                 int LA30_1 = input.LA(2);
 
-                if ( (LA30_1==20) ) {
-                    alt30=1;
-                }
-                else if ( (LA30_1==EOF||LA30_1==16||LA30_1==21||LA30_1==31||LA30_1==41) ) {
+                if ( (LA30_1==EOF||LA30_1==16||LA30_1==21||LA30_1==31||LA30_1==41) ) {
                     alt30=2;
+                }
+                else if ( (LA30_1==20) ) {
+                    alt30=1;
                 }
                 else {
                     NoViableAltException nvae =
@@ -3851,31 +3851,50 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt30) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1587:5: this_MessageSignature_0= ruleMessageSignature
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1586:2: ( (lv_signature_0_0= ruleMessageSignature ) )
+                    {
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1586:2: ( (lv_signature_0_0= ruleMessageSignature ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1587:1: (lv_signature_0_0= ruleMessageSignature )
+                    {
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1587:1: (lv_signature_0_0= ruleMessageSignature )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1588:3: lv_signature_0_0= ruleMessageSignature
                     {
                      
-                            newCompositeNode(grammarAccess.getMessageAccess().getMessageSignatureParserRuleCall_0()); 
-                        
-                    pushFollow(FOLLOW_ruleMessageSignature_in_ruleMessage3289);
-                    this_MessageSignature_0=ruleMessageSignature();
+                    	        newCompositeNode(grammarAccess.getMessageAccess().getSignatureMessageSignatureParserRuleCall_0_0()); 
+                    	    
+                    pushFollow(FOLLOW_ruleMessageSignature_in_ruleMessage3288);
+                    lv_signature_0_0=ruleMessageSignature();
 
                     state._fsp--;
 
-                     
-                            current = this_MessageSignature_0; 
-                            afterParserOrEnumRuleCall();
-                        
+
+                    	        if (current==null) {
+                    	            current = createModelElementForParent(grammarAccess.getMessageRule());
+                    	        }
+                           		set(
+                           			current, 
+                           			"signature",
+                            		lv_signature_0_0, 
+                            		"MessageSignature");
+                    	        afterParserOrEnumRuleCall();
+                    	    
+
+                    }
+
+
+                    }
+
 
                     }
                     break;
                 case 2 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1596:6: ( (lv_parameter_1_0= RULE_ID ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1605:6: ( (lv_parameter_1_0= RULE_ID ) )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1596:6: ( (lv_parameter_1_0= RULE_ID ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1597:1: (lv_parameter_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1605:6: ( (lv_parameter_1_0= RULE_ID ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1606:1: (lv_parameter_1_0= RULE_ID )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1597:1: (lv_parameter_1_0= RULE_ID )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1598:3: lv_parameter_1_0= RULE_ID
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1606:1: (lv_parameter_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1607:3: lv_parameter_1_0= RULE_ID
                     {
                     lv_parameter_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleMessage3311); 
 
@@ -3921,7 +3940,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleGlobalChoice"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1622:1: entryRuleGlobalChoice returns [EObject current=null] : iv_ruleGlobalChoice= ruleGlobalChoice EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1631:1: entryRuleGlobalChoice returns [EObject current=null] : iv_ruleGlobalChoice= ruleGlobalChoice EOF ;
     public final EObject entryRuleGlobalChoice() throws RecognitionException {
         EObject current = null;
 
@@ -3929,8 +3948,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1623:2: (iv_ruleGlobalChoice= ruleGlobalChoice EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1624:2: iv_ruleGlobalChoice= ruleGlobalChoice EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1632:2: (iv_ruleGlobalChoice= ruleGlobalChoice EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1633:2: iv_ruleGlobalChoice= ruleGlobalChoice EOF
             {
              newCompositeNode(grammarAccess.getGlobalChoiceRule()); 
             pushFollow(FOLLOW_ruleGlobalChoice_in_entryRuleGlobalChoice3352);
@@ -3957,7 +3976,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleGlobalChoice"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1631:1: ruleGlobalChoice returns [EObject current=null] : (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )* ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1640:1: ruleGlobalChoice returns [EObject current=null] : (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )* ) ;
     public final EObject ruleGlobalChoice() throws RecognitionException {
         EObject current = null;
 
@@ -3973,11 +3992,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1634:28: ( (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )* ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1635:1: (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )* )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1643:28: ( (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )* ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1644:1: (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )* )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1635:1: (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )* )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1635:3: otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1644:1: (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )* )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1644:3: otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )*
             {
             otherlv_0=(Token)match(input,32,FOLLOW_32_in_ruleGlobalChoice3399); 
 
@@ -3987,11 +4006,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_1, grammarAccess.getGlobalChoiceAccess().getAtKeyword_1());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1643:1: ( (lv_role_2_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1644:1: (lv_role_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1652:1: ( (lv_role_2_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1653:1: (lv_role_2_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1644:1: (lv_role_2_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1645:3: lv_role_2_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1653:1: (lv_role_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1654:3: lv_role_2_0= RULE_ID
             {
             lv_role_2_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleGlobalChoice3428); 
 
@@ -4013,11 +4032,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1661:2: ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1662:1: (lv_blocks_3_0= ruleGlobalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1670:2: ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1671:1: (lv_blocks_3_0= ruleGlobalProtocolBlock )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1662:1: (lv_blocks_3_0= ruleGlobalProtocolBlock )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1663:3: lv_blocks_3_0= ruleGlobalProtocolBlock
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1671:1: (lv_blocks_3_0= ruleGlobalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1672:3: lv_blocks_3_0= ruleGlobalProtocolBlock
             {
              
             	        newCompositeNode(grammarAccess.getGlobalChoiceAccess().getBlocksGlobalProtocolBlockParserRuleCall_3_0()); 
@@ -4044,7 +4063,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1679:2: (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1688:2: (otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) ) )*
             loop31:
             do {
                 int alt31=2;
@@ -4057,17 +4076,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt31) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1679:4: otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1688:4: otherlv_4= 'or' ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) )
             	    {
             	    otherlv_4=(Token)match(input,34,FOLLOW_34_in_ruleGlobalChoice3467); 
 
             	        	newLeafNode(otherlv_4, grammarAccess.getGlobalChoiceAccess().getOrKeyword_4_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1683:1: ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1684:1: (lv_blocks_5_0= ruleGlobalProtocolBlock )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1692:1: ( (lv_blocks_5_0= ruleGlobalProtocolBlock ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1693:1: (lv_blocks_5_0= ruleGlobalProtocolBlock )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1684:1: (lv_blocks_5_0= ruleGlobalProtocolBlock )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1685:3: lv_blocks_5_0= ruleGlobalProtocolBlock
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1693:1: (lv_blocks_5_0= ruleGlobalProtocolBlock )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1694:3: lv_blocks_5_0= ruleGlobalProtocolBlock
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getGlobalChoiceAccess().getBlocksGlobalProtocolBlockParserRuleCall_4_1_0()); 
@@ -4124,7 +4143,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleGlobalRecursion"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1709:1: entryRuleGlobalRecursion returns [EObject current=null] : iv_ruleGlobalRecursion= ruleGlobalRecursion EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1718:1: entryRuleGlobalRecursion returns [EObject current=null] : iv_ruleGlobalRecursion= ruleGlobalRecursion EOF ;
     public final EObject entryRuleGlobalRecursion() throws RecognitionException {
         EObject current = null;
 
@@ -4132,8 +4151,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1710:2: (iv_ruleGlobalRecursion= ruleGlobalRecursion EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1711:2: iv_ruleGlobalRecursion= ruleGlobalRecursion EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1719:2: (iv_ruleGlobalRecursion= ruleGlobalRecursion EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1720:2: iv_ruleGlobalRecursion= ruleGlobalRecursion EOF
             {
              newCompositeNode(grammarAccess.getGlobalRecursionRule()); 
             pushFollow(FOLLOW_ruleGlobalRecursion_in_entryRuleGlobalRecursion3526);
@@ -4160,7 +4179,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleGlobalRecursion"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1718:1: ruleGlobalRecursion returns [EObject current=null] : (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) ) ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1727:1: ruleGlobalRecursion returns [EObject current=null] : (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) ) ) ;
     public final EObject ruleGlobalRecursion() throws RecognitionException {
         EObject current = null;
 
@@ -4172,21 +4191,21 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1721:28: ( (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) ) ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1722:1: (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1730:28: ( (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1731:1: (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) ) )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1722:1: (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1722:3: otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1731:1: (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1731:3: otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleGlobalProtocolBlock ) )
             {
             otherlv_0=(Token)match(input,35,FOLLOW_35_in_ruleGlobalRecursion3573); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getGlobalRecursionAccess().getRecKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1726:1: ( (lv_label_1_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1727:1: (lv_label_1_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1735:1: ( (lv_label_1_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1736:1: (lv_label_1_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1727:1: (lv_label_1_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1728:3: lv_label_1_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1736:1: (lv_label_1_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1737:3: lv_label_1_0= RULE_ID
             {
             lv_label_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleGlobalRecursion3590); 
 
@@ -4208,11 +4227,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1744:2: ( (lv_block_2_0= ruleGlobalProtocolBlock ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1745:1: (lv_block_2_0= ruleGlobalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1753:2: ( (lv_block_2_0= ruleGlobalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1754:1: (lv_block_2_0= ruleGlobalProtocolBlock )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1745:1: (lv_block_2_0= ruleGlobalProtocolBlock )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1746:3: lv_block_2_0= ruleGlobalProtocolBlock
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1754:1: (lv_block_2_0= ruleGlobalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1755:3: lv_block_2_0= ruleGlobalProtocolBlock
             {
              
             	        newCompositeNode(grammarAccess.getGlobalRecursionAccess().getBlockGlobalProtocolBlockParserRuleCall_2_0()); 
@@ -4260,7 +4279,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleGlobalContinue"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1770:1: entryRuleGlobalContinue returns [EObject current=null] : iv_ruleGlobalContinue= ruleGlobalContinue EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1779:1: entryRuleGlobalContinue returns [EObject current=null] : iv_ruleGlobalContinue= ruleGlobalContinue EOF ;
     public final EObject entryRuleGlobalContinue() throws RecognitionException {
         EObject current = null;
 
@@ -4268,8 +4287,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1771:2: (iv_ruleGlobalContinue= ruleGlobalContinue EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1772:2: iv_ruleGlobalContinue= ruleGlobalContinue EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1780:2: (iv_ruleGlobalContinue= ruleGlobalContinue EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1781:2: iv_ruleGlobalContinue= ruleGlobalContinue EOF
             {
              newCompositeNode(grammarAccess.getGlobalContinueRule()); 
             pushFollow(FOLLOW_ruleGlobalContinue_in_entryRuleGlobalContinue3652);
@@ -4296,7 +4315,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleGlobalContinue"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1779:1: ruleGlobalContinue returns [EObject current=null] : (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1788:1: ruleGlobalContinue returns [EObject current=null] : (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' ) ;
     public final EObject ruleGlobalContinue() throws RecognitionException {
         EObject current = null;
 
@@ -4307,21 +4326,21 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1782:28: ( (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1783:1: (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1791:28: ( (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1792:1: (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1783:1: (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1783:3: otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1792:1: (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1792:3: otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';'
             {
             otherlv_0=(Token)match(input,36,FOLLOW_36_in_ruleGlobalContinue3699); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getGlobalContinueAccess().getContinueKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1787:1: ( (lv_label_1_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1788:1: (lv_label_1_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1796:1: ( (lv_label_1_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1797:1: (lv_label_1_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1788:1: (lv_label_1_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1789:3: lv_label_1_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1797:1: (lv_label_1_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1798:3: lv_label_1_0= RULE_ID
             {
             lv_label_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleGlobalContinue3716); 
 
@@ -4368,7 +4387,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleGlobalParallel"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1817:1: entryRuleGlobalParallel returns [EObject current=null] : iv_ruleGlobalParallel= ruleGlobalParallel EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1826:1: entryRuleGlobalParallel returns [EObject current=null] : iv_ruleGlobalParallel= ruleGlobalParallel EOF ;
     public final EObject entryRuleGlobalParallel() throws RecognitionException {
         EObject current = null;
 
@@ -4376,8 +4395,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1818:2: (iv_ruleGlobalParallel= ruleGlobalParallel EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1819:2: iv_ruleGlobalParallel= ruleGlobalParallel EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1827:2: (iv_ruleGlobalParallel= ruleGlobalParallel EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1828:2: iv_ruleGlobalParallel= ruleGlobalParallel EOF
             {
              newCompositeNode(grammarAccess.getGlobalParallelRule()); 
             pushFollow(FOLLOW_ruleGlobalParallel_in_entryRuleGlobalParallel3769);
@@ -4404,7 +4423,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleGlobalParallel"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1826:1: ruleGlobalParallel returns [EObject current=null] : (otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )* ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1835:1: ruleGlobalParallel returns [EObject current=null] : (otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )* ) ;
     public final EObject ruleGlobalParallel() throws RecognitionException {
         EObject current = null;
 
@@ -4418,21 +4437,21 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1829:28: ( (otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )* ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1830:1: (otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )* )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1838:28: ( (otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )* ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1839:1: (otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )* )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1830:1: (otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )* )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1830:3: otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1839:1: (otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )* )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1839:3: otherlv_0= 'par' ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )*
             {
             otherlv_0=(Token)match(input,37,FOLLOW_37_in_ruleGlobalParallel3816); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getGlobalParallelAccess().getParKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1834:1: ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1835:1: (lv_blocks_1_0= ruleGlobalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1843:1: ( (lv_blocks_1_0= ruleGlobalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1844:1: (lv_blocks_1_0= ruleGlobalProtocolBlock )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1835:1: (lv_blocks_1_0= ruleGlobalProtocolBlock )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1836:3: lv_blocks_1_0= ruleGlobalProtocolBlock
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1844:1: (lv_blocks_1_0= ruleGlobalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1845:3: lv_blocks_1_0= ruleGlobalProtocolBlock
             {
              
             	        newCompositeNode(grammarAccess.getGlobalParallelAccess().getBlocksGlobalProtocolBlockParserRuleCall_1_0()); 
@@ -4459,7 +4478,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1852:2: (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1861:2: (otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) ) )*
             loop32:
             do {
                 int alt32=2;
@@ -4472,17 +4491,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt32) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1852:4: otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1861:4: otherlv_2= 'and' ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) )
             	    {
             	    otherlv_2=(Token)match(input,38,FOLLOW_38_in_ruleGlobalParallel3850); 
 
             	        	newLeafNode(otherlv_2, grammarAccess.getGlobalParallelAccess().getAndKeyword_2_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1856:1: ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1857:1: (lv_blocks_3_0= ruleGlobalProtocolBlock )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1865:1: ( (lv_blocks_3_0= ruleGlobalProtocolBlock ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1866:1: (lv_blocks_3_0= ruleGlobalProtocolBlock )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1857:1: (lv_blocks_3_0= ruleGlobalProtocolBlock )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1858:3: lv_blocks_3_0= ruleGlobalProtocolBlock
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1866:1: (lv_blocks_3_0= ruleGlobalProtocolBlock )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1867:3: lv_blocks_3_0= ruleGlobalProtocolBlock
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getGlobalParallelAccess().getBlocksGlobalProtocolBlockParserRuleCall_2_1_0()); 
@@ -4539,7 +4558,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleGlobalInterruptible"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1882:1: entryRuleGlobalInterruptible returns [EObject current=null] : iv_ruleGlobalInterruptible= ruleGlobalInterruptible EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1891:1: entryRuleGlobalInterruptible returns [EObject current=null] : iv_ruleGlobalInterruptible= ruleGlobalInterruptible EOF ;
     public final EObject entryRuleGlobalInterruptible() throws RecognitionException {
         EObject current = null;
 
@@ -4547,8 +4566,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1883:2: (iv_ruleGlobalInterruptible= ruleGlobalInterruptible EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1884:2: iv_ruleGlobalInterruptible= ruleGlobalInterruptible EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1892:2: (iv_ruleGlobalInterruptible= ruleGlobalInterruptible EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1893:2: iv_ruleGlobalInterruptible= ruleGlobalInterruptible EOF
             {
              newCompositeNode(grammarAccess.getGlobalInterruptibleRule()); 
             pushFollow(FOLLOW_ruleGlobalInterruptible_in_entryRuleGlobalInterruptible3909);
@@ -4575,7 +4594,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleGlobalInterruptible"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1891:1: ruleGlobalInterruptible returns [EObject current=null] : (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1900:1: ruleGlobalInterruptible returns [EObject current=null] : (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}' ) ;
     public final EObject ruleGlobalInterruptible() throws RecognitionException {
         EObject current = null;
 
@@ -4593,17 +4612,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1894:28: ( (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1895:1: (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1903:28: ( (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1904:1: (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1895:1: (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1895:3: otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1904:1: (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1904:3: otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleGlobalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )* otherlv_7= '}'
             {
             otherlv_0=(Token)match(input,39,FOLLOW_39_in_ruleGlobalInterruptible3956); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getGlobalInterruptibleAccess().getInterruptibleKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1899:1: ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )?
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1908:1: ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )?
             int alt33=2;
             int LA33_0 = input.LA(1);
 
@@ -4612,13 +4631,13 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt33) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1899:2: ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':'
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1908:2: ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':'
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1899:2: ( (lv_scope_1_0= RULE_ID ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1900:1: (lv_scope_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1908:2: ( (lv_scope_1_0= RULE_ID ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1909:1: (lv_scope_1_0= RULE_ID )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1900:1: (lv_scope_1_0= RULE_ID )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1901:3: lv_scope_1_0= RULE_ID
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1909:1: (lv_scope_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1910:3: lv_scope_1_0= RULE_ID
                     {
                     lv_scope_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleGlobalInterruptible3974); 
 
@@ -4650,11 +4669,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1921:3: ( (lv_block_3_0= ruleGlobalProtocolBlock ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1922:1: (lv_block_3_0= ruleGlobalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1930:3: ( (lv_block_3_0= ruleGlobalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1931:1: (lv_block_3_0= ruleGlobalProtocolBlock )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1922:1: (lv_block_3_0= ruleGlobalProtocolBlock )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1923:3: lv_block_3_0= ruleGlobalProtocolBlock
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1931:1: (lv_block_3_0= ruleGlobalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1932:3: lv_block_3_0= ruleGlobalProtocolBlock
             {
              
             	        newCompositeNode(grammarAccess.getGlobalInterruptibleAccess().getBlockGlobalProtocolBlockParserRuleCall_2_0()); 
@@ -4689,7 +4708,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_5, grammarAccess.getGlobalInterruptibleAccess().getLeftCurlyBracketKeyword_4());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1947:1: ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1956:1: ( (lv_interrupts_6_0= ruleGlobalInterrupt ) )*
             loop34:
             do {
                 int alt34=2;
@@ -4702,10 +4721,10 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt34) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1948:1: (lv_interrupts_6_0= ruleGlobalInterrupt )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1957:1: (lv_interrupts_6_0= ruleGlobalInterrupt )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1948:1: (lv_interrupts_6_0= ruleGlobalInterrupt )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1949:3: lv_interrupts_6_0= ruleGlobalInterrupt
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1957:1: (lv_interrupts_6_0= ruleGlobalInterrupt )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1958:3: lv_interrupts_6_0= ruleGlobalInterrupt
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getGlobalInterruptibleAccess().getInterruptsGlobalInterruptParserRuleCall_5_0()); 
@@ -4763,7 +4782,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleGlobalInterrupt"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1977:1: entryRuleGlobalInterrupt returns [EObject current=null] : iv_ruleGlobalInterrupt= ruleGlobalInterrupt EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1986:1: entryRuleGlobalInterrupt returns [EObject current=null] : iv_ruleGlobalInterrupt= ruleGlobalInterrupt EOF ;
     public final EObject entryRuleGlobalInterrupt() throws RecognitionException {
         EObject current = null;
 
@@ -4771,8 +4790,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1978:2: (iv_ruleGlobalInterrupt= ruleGlobalInterrupt EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1979:2: iv_ruleGlobalInterrupt= ruleGlobalInterrupt EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1987:2: (iv_ruleGlobalInterrupt= ruleGlobalInterrupt EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1988:2: iv_ruleGlobalInterrupt= ruleGlobalInterrupt EOF
             {
              newCompositeNode(grammarAccess.getGlobalInterruptRule()); 
             pushFollow(FOLLOW_ruleGlobalInterrupt_in_entryRuleGlobalInterrupt4108);
@@ -4799,7 +4818,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleGlobalInterrupt"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1986:1: ruleGlobalInterrupt returns [EObject current=null] : ( ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1995:1: ruleGlobalInterrupt returns [EObject current=null] : ( ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';' ) ;
     public final EObject ruleGlobalInterrupt() throws RecognitionException {
         EObject current = null;
 
@@ -4815,17 +4834,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1989:28: ( ( ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1990:1: ( ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1998:28: ( ( ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1999:1: ( ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1990:1: ( ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1990:2: ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1999:1: ( ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1999:2: ( (lv_messages_0_0= ruleMessage ) ) (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )* otherlv_3= 'by' ( (lv_role_4_0= RULE_ID ) ) otherlv_5= ';'
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1990:2: ( (lv_messages_0_0= ruleMessage ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1991:1: (lv_messages_0_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1999:2: ( (lv_messages_0_0= ruleMessage ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2000:1: (lv_messages_0_0= ruleMessage )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1991:1: (lv_messages_0_0= ruleMessage )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:1992:3: lv_messages_0_0= ruleMessage
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2000:1: (lv_messages_0_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2001:3: lv_messages_0_0= ruleMessage
             {
              
             	        newCompositeNode(grammarAccess.getGlobalInterruptAccess().getMessagesMessageParserRuleCall_0_0()); 
@@ -4852,7 +4871,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2008:2: (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2017:2: (otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) ) )*
             loop35:
             do {
                 int alt35=2;
@@ -4865,17 +4884,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt35) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2008:4: otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2017:4: otherlv_1= ',' ( (lv_messages_2_0= ruleMessage ) )
             	    {
             	    otherlv_1=(Token)match(input,21,FOLLOW_21_in_ruleGlobalInterrupt4177); 
 
             	        	newLeafNode(otherlv_1, grammarAccess.getGlobalInterruptAccess().getCommaKeyword_1_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2012:1: ( (lv_messages_2_0= ruleMessage ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2013:1: (lv_messages_2_0= ruleMessage )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2021:1: ( (lv_messages_2_0= ruleMessage ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2022:1: (lv_messages_2_0= ruleMessage )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2013:1: (lv_messages_2_0= ruleMessage )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2014:3: lv_messages_2_0= ruleMessage
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2022:1: (lv_messages_2_0= ruleMessage )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2023:3: lv_messages_2_0= ruleMessage
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getGlobalInterruptAccess().getMessagesMessageParserRuleCall_1_1_0()); 
@@ -4915,11 +4934,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_3, grammarAccess.getGlobalInterruptAccess().getByKeyword_2());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2034:1: ( (lv_role_4_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2035:1: (lv_role_4_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2043:1: ( (lv_role_4_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2044:1: (lv_role_4_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2035:1: (lv_role_4_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2036:3: lv_role_4_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2044:1: (lv_role_4_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2045:3: lv_role_4_0= RULE_ID
             {
             lv_role_4_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleGlobalInterrupt4229); 
 
@@ -4966,7 +4985,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleGlobalDo"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2064:1: entryRuleGlobalDo returns [EObject current=null] : iv_ruleGlobalDo= ruleGlobalDo EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2073:1: entryRuleGlobalDo returns [EObject current=null] : iv_ruleGlobalDo= ruleGlobalDo EOF ;
     public final EObject entryRuleGlobalDo() throws RecognitionException {
         EObject current = null;
 
@@ -4974,8 +4993,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2065:2: (iv_ruleGlobalDo= ruleGlobalDo EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2066:2: iv_ruleGlobalDo= ruleGlobalDo EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2074:2: (iv_ruleGlobalDo= ruleGlobalDo EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2075:2: iv_ruleGlobalDo= ruleGlobalDo EOF
             {
              newCompositeNode(grammarAccess.getGlobalDoRule()); 
             pushFollow(FOLLOW_ruleGlobalDo_in_entryRuleGlobalDo4282);
@@ -5002,7 +5021,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleGlobalDo"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2073:1: ruleGlobalDo returns [EObject current=null] : (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2082:1: ruleGlobalDo returns [EObject current=null] : (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' ) ;
     public final EObject ruleGlobalDo() throws RecognitionException {
         EObject current = null;
 
@@ -5029,17 +5048,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2076:28: ( (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2077:1: (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2085:28: ( (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2086:1: (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2077:1: (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2077:3: otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2086:1: (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2086:3: otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';'
             {
             otherlv_0=(Token)match(input,42,FOLLOW_42_in_ruleGlobalDo4329); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getGlobalDoAccess().getDoKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2081:1: ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )?
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2090:1: ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )?
             int alt36=2;
             int LA36_0 = input.LA(1);
 
@@ -5052,13 +5071,13 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt36) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2081:2: ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':'
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2090:2: ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':'
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2081:2: ( (lv_scope_1_0= RULE_ID ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2082:1: (lv_scope_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2090:2: ( (lv_scope_1_0= RULE_ID ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2091:1: (lv_scope_1_0= RULE_ID )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2082:1: (lv_scope_1_0= RULE_ID )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2083:3: lv_scope_1_0= RULE_ID
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2091:1: (lv_scope_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2092:3: lv_scope_1_0= RULE_ID
                     {
                     lv_scope_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleGlobalDo4347); 
 
@@ -5090,11 +5109,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2103:3: ( (lv_member_3_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2104:1: (lv_member_3_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2112:3: ( (lv_member_3_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2113:1: (lv_member_3_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2104:1: (lv_member_3_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2105:3: lv_member_3_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2113:1: (lv_member_3_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2114:3: lv_member_3_0= RULE_ID
             {
             lv_member_3_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleGlobalDo4383); 
 
@@ -5116,7 +5135,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2121:2: (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )?
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2130:2: (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )?
             int alt38=2;
             int LA38_0 = input.LA(1);
 
@@ -5125,17 +5144,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt38) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2121:4: otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>'
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2130:4: otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>'
                     {
                     otherlv_4=(Token)match(input,18,FOLLOW_18_in_ruleGlobalDo4401); 
 
                         	newLeafNode(otherlv_4, grammarAccess.getGlobalDoAccess().getLessThanSignKeyword_3_0());
                         
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2125:1: ( (lv_arguments_5_0= ruleArgument ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2126:1: (lv_arguments_5_0= ruleArgument )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2134:1: ( (lv_arguments_5_0= ruleArgument ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2135:1: (lv_arguments_5_0= ruleArgument )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2126:1: (lv_arguments_5_0= ruleArgument )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2127:3: lv_arguments_5_0= ruleArgument
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2135:1: (lv_arguments_5_0= ruleArgument )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2136:3: lv_arguments_5_0= ruleArgument
                     {
                      
                     	        newCompositeNode(grammarAccess.getGlobalDoAccess().getArgumentsArgumentParserRuleCall_3_1_0()); 
@@ -5162,7 +5181,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2143:2: (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )*
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2152:2: (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )*
                     loop37:
                     do {
                         int alt37=2;
@@ -5175,17 +5194,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                         switch (alt37) {
                     	case 1 :
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2143:4: otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2152:4: otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) )
                     	    {
                     	    otherlv_6=(Token)match(input,21,FOLLOW_21_in_ruleGlobalDo4435); 
 
                     	        	newLeafNode(otherlv_6, grammarAccess.getGlobalDoAccess().getCommaKeyword_3_2_0());
                     	        
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2147:1: ( (lv_arguments_7_0= ruleArgument ) )
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2148:1: (lv_arguments_7_0= ruleArgument )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2156:1: ( (lv_arguments_7_0= ruleArgument ) )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2157:1: (lv_arguments_7_0= ruleArgument )
                     	    {
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2148:1: (lv_arguments_7_0= ruleArgument )
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2149:3: lv_arguments_7_0= ruleArgument
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2157:1: (lv_arguments_7_0= ruleArgument )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2158:3: lv_arguments_7_0= ruleArgument
                     	    {
                     	     
                     	    	        newCompositeNode(grammarAccess.getGlobalDoAccess().getArgumentsArgumentParserRuleCall_3_2_1_0()); 
@@ -5235,11 +5254,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_9, grammarAccess.getGlobalDoAccess().getLeftParenthesisKeyword_4());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2173:1: ( (lv_roles_10_0= ruleRoleInstantiation ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2174:1: (lv_roles_10_0= ruleRoleInstantiation )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2182:1: ( (lv_roles_10_0= ruleRoleInstantiation ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2183:1: (lv_roles_10_0= ruleRoleInstantiation )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2174:1: (lv_roles_10_0= ruleRoleInstantiation )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2175:3: lv_roles_10_0= ruleRoleInstantiation
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2183:1: (lv_roles_10_0= ruleRoleInstantiation )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2184:3: lv_roles_10_0= ruleRoleInstantiation
             {
              
             	        newCompositeNode(grammarAccess.getGlobalDoAccess().getRolesRoleInstantiationParserRuleCall_5_0()); 
@@ -5266,7 +5285,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2191:2: (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2200:2: (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )*
             loop39:
             do {
                 int alt39=2;
@@ -5279,17 +5298,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt39) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2191:4: otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2200:4: otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) )
             	    {
             	    otherlv_11=(Token)match(input,21,FOLLOW_21_in_ruleGlobalDo4518); 
 
             	        	newLeafNode(otherlv_11, grammarAccess.getGlobalDoAccess().getCommaKeyword_6_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2195:1: ( (lv_roles_12_0= ruleRoleInstantiation ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2196:1: (lv_roles_12_0= ruleRoleInstantiation )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2204:1: ( (lv_roles_12_0= ruleRoleInstantiation ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2205:1: (lv_roles_12_0= ruleRoleInstantiation )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2196:1: (lv_roles_12_0= ruleRoleInstantiation )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2197:3: lv_roles_12_0= ruleRoleInstantiation
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2205:1: (lv_roles_12_0= ruleRoleInstantiation )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2206:3: lv_roles_12_0= ruleRoleInstantiation
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getGlobalDoAccess().getRolesRoleInstantiationParserRuleCall_6_1_0()); 
@@ -5354,7 +5373,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalProtocolDecl"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2229:1: entryRuleLocalProtocolDecl returns [EObject current=null] : iv_ruleLocalProtocolDecl= ruleLocalProtocolDecl EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2238:1: entryRuleLocalProtocolDecl returns [EObject current=null] : iv_ruleLocalProtocolDecl= ruleLocalProtocolDecl EOF ;
     public final EObject entryRuleLocalProtocolDecl() throws RecognitionException {
         EObject current = null;
 
@@ -5362,8 +5381,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2230:2: (iv_ruleLocalProtocolDecl= ruleLocalProtocolDecl EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2231:2: iv_ruleLocalProtocolDecl= ruleLocalProtocolDecl EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2239:2: (iv_ruleLocalProtocolDecl= ruleLocalProtocolDecl EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2240:2: iv_ruleLocalProtocolDecl= ruleLocalProtocolDecl EOF
             {
              newCompositeNode(grammarAccess.getLocalProtocolDeclRule()); 
             pushFollow(FOLLOW_ruleLocalProtocolDecl_in_entryRuleLocalProtocolDecl4601);
@@ -5390,7 +5409,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalProtocolDecl"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2238:1: ruleLocalProtocolDecl returns [EObject current=null] : (otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) ) ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2247:1: ruleLocalProtocolDecl returns [EObject current=null] : (otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) ) ) ;
     public final EObject ruleLocalProtocolDecl() throws RecognitionException {
         EObject current = null;
 
@@ -5436,11 +5455,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2241:28: ( (otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) ) ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2242:1: (otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2250:28: ( (otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2251:1: (otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) ) )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2242:1: (otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2242:3: otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2251:1: (otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2251:3: otherlv_0= 'local' otherlv_1= 'protocol' ( (lv_name_2_0= RULE_ID ) ) otherlv_3= 'at' ( (lv_role_4_0= RULE_ID ) ) (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )? otherlv_10= '(' ( (lv_roles_11_0= ruleRoleDecl ) ) (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )* otherlv_14= ')' ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) )
             {
             otherlv_0=(Token)match(input,43,FOLLOW_43_in_ruleLocalProtocolDecl4648); 
 
@@ -5450,11 +5469,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_1, grammarAccess.getLocalProtocolDeclAccess().getProtocolKeyword_1());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2250:1: ( (lv_name_2_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2251:1: (lv_name_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2259:1: ( (lv_name_2_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2260:1: (lv_name_2_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2251:1: (lv_name_2_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2252:3: lv_name_2_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2260:1: (lv_name_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2261:3: lv_name_2_0= RULE_ID
             {
             lv_name_2_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalProtocolDecl4677); 
 
@@ -5480,11 +5499,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_3, grammarAccess.getLocalProtocolDeclAccess().getAtKeyword_3());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2272:1: ( (lv_role_4_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2273:1: (lv_role_4_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2281:1: ( (lv_role_4_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2282:1: (lv_role_4_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2273:1: (lv_role_4_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2274:3: lv_role_4_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2282:1: (lv_role_4_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2283:3: lv_role_4_0= RULE_ID
             {
             lv_role_4_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalProtocolDecl4711); 
 
@@ -5506,7 +5525,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2290:2: (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )?
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2299:2: (otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>' )?
             int alt41=2;
             int LA41_0 = input.LA(1);
 
@@ -5515,17 +5534,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt41) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2290:4: otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>'
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2299:4: otherlv_5= '<' ( (lv_parameters_6_0= ruleParameterDecl ) ) (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )* otherlv_9= '>'
                     {
                     otherlv_5=(Token)match(input,18,FOLLOW_18_in_ruleLocalProtocolDecl4729); 
 
                         	newLeafNode(otherlv_5, grammarAccess.getLocalProtocolDeclAccess().getLessThanSignKeyword_5_0());
                         
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2294:1: ( (lv_parameters_6_0= ruleParameterDecl ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2295:1: (lv_parameters_6_0= ruleParameterDecl )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2303:1: ( (lv_parameters_6_0= ruleParameterDecl ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2304:1: (lv_parameters_6_0= ruleParameterDecl )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2295:1: (lv_parameters_6_0= ruleParameterDecl )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2296:3: lv_parameters_6_0= ruleParameterDecl
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2304:1: (lv_parameters_6_0= ruleParameterDecl )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2305:3: lv_parameters_6_0= ruleParameterDecl
                     {
                      
                     	        newCompositeNode(grammarAccess.getLocalProtocolDeclAccess().getParametersParameterDeclParserRuleCall_5_1_0()); 
@@ -5552,7 +5571,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2312:2: (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )*
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2321:2: (otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) ) )*
                     loop40:
                     do {
                         int alt40=2;
@@ -5565,17 +5584,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                         switch (alt40) {
                     	case 1 :
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2312:4: otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2321:4: otherlv_7= ',' ( (lv_parameters_8_0= ruleParameterDecl ) )
                     	    {
                     	    otherlv_7=(Token)match(input,21,FOLLOW_21_in_ruleLocalProtocolDecl4763); 
 
                     	        	newLeafNode(otherlv_7, grammarAccess.getLocalProtocolDeclAccess().getCommaKeyword_5_2_0());
                     	        
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2316:1: ( (lv_parameters_8_0= ruleParameterDecl ) )
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2317:1: (lv_parameters_8_0= ruleParameterDecl )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2325:1: ( (lv_parameters_8_0= ruleParameterDecl ) )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2326:1: (lv_parameters_8_0= ruleParameterDecl )
                     	    {
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2317:1: (lv_parameters_8_0= ruleParameterDecl )
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2318:3: lv_parameters_8_0= ruleParameterDecl
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2326:1: (lv_parameters_8_0= ruleParameterDecl )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2327:3: lv_parameters_8_0= ruleParameterDecl
                     	    {
                     	     
                     	    	        newCompositeNode(grammarAccess.getLocalProtocolDeclAccess().getParametersParameterDeclParserRuleCall_5_2_1_0()); 
@@ -5625,11 +5644,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_10, grammarAccess.getLocalProtocolDeclAccess().getLeftParenthesisKeyword_6());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2342:1: ( (lv_roles_11_0= ruleRoleDecl ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2343:1: (lv_roles_11_0= ruleRoleDecl )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2351:1: ( (lv_roles_11_0= ruleRoleDecl ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2352:1: (lv_roles_11_0= ruleRoleDecl )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2343:1: (lv_roles_11_0= ruleRoleDecl )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2344:3: lv_roles_11_0= ruleRoleDecl
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2352:1: (lv_roles_11_0= ruleRoleDecl )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2353:3: lv_roles_11_0= ruleRoleDecl
             {
              
             	        newCompositeNode(grammarAccess.getLocalProtocolDeclAccess().getRolesRoleDeclParserRuleCall_7_0()); 
@@ -5656,7 +5675,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2360:2: (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2369:2: (otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) ) )*
             loop42:
             do {
                 int alt42=2;
@@ -5669,17 +5688,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt42) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2360:4: otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2369:4: otherlv_12= ',' ( (lv_roles_13_0= ruleRoleDecl ) )
             	    {
             	    otherlv_12=(Token)match(input,21,FOLLOW_21_in_ruleLocalProtocolDecl4846); 
 
             	        	newLeafNode(otherlv_12, grammarAccess.getLocalProtocolDeclAccess().getCommaKeyword_8_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2364:1: ( (lv_roles_13_0= ruleRoleDecl ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2365:1: (lv_roles_13_0= ruleRoleDecl )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2373:1: ( (lv_roles_13_0= ruleRoleDecl ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2374:1: (lv_roles_13_0= ruleRoleDecl )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2365:1: (lv_roles_13_0= ruleRoleDecl )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2366:3: lv_roles_13_0= ruleRoleDecl
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2374:1: (lv_roles_13_0= ruleRoleDecl )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2375:3: lv_roles_13_0= ruleRoleDecl
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getLocalProtocolDeclAccess().getRolesRoleDeclParserRuleCall_8_1_0()); 
@@ -5719,7 +5738,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_14, grammarAccess.getLocalProtocolDeclAccess().getRightParenthesisKeyword_9());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2386:1: ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2395:1: ( ( (lv_block_15_0= ruleLocalProtocolBlock ) ) | (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' ) )
             int alt46=2;
             int LA46_0 = input.LA(1);
 
@@ -5737,13 +5756,13 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt46) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2386:2: ( (lv_block_15_0= ruleLocalProtocolBlock ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2395:2: ( (lv_block_15_0= ruleLocalProtocolBlock ) )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2386:2: ( (lv_block_15_0= ruleLocalProtocolBlock ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2387:1: (lv_block_15_0= ruleLocalProtocolBlock )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2395:2: ( (lv_block_15_0= ruleLocalProtocolBlock ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2396:1: (lv_block_15_0= ruleLocalProtocolBlock )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2387:1: (lv_block_15_0= ruleLocalProtocolBlock )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2388:3: lv_block_15_0= ruleLocalProtocolBlock
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2396:1: (lv_block_15_0= ruleLocalProtocolBlock )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2397:3: lv_block_15_0= ruleLocalProtocolBlock
                     {
                      
                     	        newCompositeNode(grammarAccess.getLocalProtocolDeclAccess().getBlockLocalProtocolBlockParserRuleCall_10_0_0()); 
@@ -5774,20 +5793,20 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2405:6: (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2414:6: (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2405:6: (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2405:8: otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';'
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2414:6: (otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';' )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2414:8: otherlv_16= 'instantiates' ( (lv_instantiates_17_0= RULE_ID ) ) (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )? otherlv_23= '(' ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) ) (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )* otherlv_27= ')' otherlv_28= ';'
                     {
                     otherlv_16=(Token)match(input,26,FOLLOW_26_in_ruleLocalProtocolDecl4922); 
 
                         	newLeafNode(otherlv_16, grammarAccess.getLocalProtocolDeclAccess().getInstantiatesKeyword_10_1_0());
                         
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2409:1: ( (lv_instantiates_17_0= RULE_ID ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2410:1: (lv_instantiates_17_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2418:1: ( (lv_instantiates_17_0= RULE_ID ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2419:1: (lv_instantiates_17_0= RULE_ID )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2410:1: (lv_instantiates_17_0= RULE_ID )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2411:3: lv_instantiates_17_0= RULE_ID
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2419:1: (lv_instantiates_17_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2420:3: lv_instantiates_17_0= RULE_ID
                     {
                     lv_instantiates_17_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalProtocolDecl4939); 
 
@@ -5809,7 +5828,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2427:2: (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )?
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2436:2: (otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>' )?
                     int alt44=2;
                     int LA44_0 = input.LA(1);
 
@@ -5818,17 +5837,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
                     }
                     switch (alt44) {
                         case 1 :
-                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2427:4: otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>'
+                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2436:4: otherlv_18= '<' ( (lv_arguments_19_0= ruleArgument ) ) (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )* otherlv_22= '>'
                             {
                             otherlv_18=(Token)match(input,18,FOLLOW_18_in_ruleLocalProtocolDecl4957); 
 
                                 	newLeafNode(otherlv_18, grammarAccess.getLocalProtocolDeclAccess().getLessThanSignKeyword_10_1_2_0());
                                 
-                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2431:1: ( (lv_arguments_19_0= ruleArgument ) )
-                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2432:1: (lv_arguments_19_0= ruleArgument )
+                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2440:1: ( (lv_arguments_19_0= ruleArgument ) )
+                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2441:1: (lv_arguments_19_0= ruleArgument )
                             {
-                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2432:1: (lv_arguments_19_0= ruleArgument )
-                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2433:3: lv_arguments_19_0= ruleArgument
+                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2441:1: (lv_arguments_19_0= ruleArgument )
+                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2442:3: lv_arguments_19_0= ruleArgument
                             {
                              
                             	        newCompositeNode(grammarAccess.getLocalProtocolDeclAccess().getArgumentsArgumentParserRuleCall_10_1_2_1_0()); 
@@ -5855,7 +5874,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                             }
 
-                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2449:2: (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )*
+                            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2458:2: (otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) ) )*
                             loop43:
                             do {
                                 int alt43=2;
@@ -5868,17 +5887,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                                 switch (alt43) {
                             	case 1 :
-                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2449:4: otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) )
+                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2458:4: otherlv_20= ',' ( (lv_arguments_21_0= ruleArgument ) )
                             	    {
                             	    otherlv_20=(Token)match(input,21,FOLLOW_21_in_ruleLocalProtocolDecl4991); 
 
                             	        	newLeafNode(otherlv_20, grammarAccess.getLocalProtocolDeclAccess().getCommaKeyword_10_1_2_2_0());
                             	        
-                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2453:1: ( (lv_arguments_21_0= ruleArgument ) )
-                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2454:1: (lv_arguments_21_0= ruleArgument )
+                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2462:1: ( (lv_arguments_21_0= ruleArgument ) )
+                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2463:1: (lv_arguments_21_0= ruleArgument )
                             	    {
-                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2454:1: (lv_arguments_21_0= ruleArgument )
-                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2455:3: lv_arguments_21_0= ruleArgument
+                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2463:1: (lv_arguments_21_0= ruleArgument )
+                            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2464:3: lv_arguments_21_0= ruleArgument
                             	    {
                             	     
                             	    	        newCompositeNode(grammarAccess.getLocalProtocolDeclAccess().getArgumentsArgumentParserRuleCall_10_1_2_2_1_0()); 
@@ -5928,11 +5947,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                         	newLeafNode(otherlv_23, grammarAccess.getLocalProtocolDeclAccess().getLeftParenthesisKeyword_10_1_3());
                         
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2479:1: ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2480:1: (lv_roleInstantiations_24_0= ruleRoleInstantiation )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2488:1: ( (lv_roleInstantiations_24_0= ruleRoleInstantiation ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2489:1: (lv_roleInstantiations_24_0= ruleRoleInstantiation )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2480:1: (lv_roleInstantiations_24_0= ruleRoleInstantiation )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2481:3: lv_roleInstantiations_24_0= ruleRoleInstantiation
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2489:1: (lv_roleInstantiations_24_0= ruleRoleInstantiation )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2490:3: lv_roleInstantiations_24_0= ruleRoleInstantiation
                     {
                      
                     	        newCompositeNode(grammarAccess.getLocalProtocolDeclAccess().getRoleInstantiationsRoleInstantiationParserRuleCall_10_1_4_0()); 
@@ -5959,7 +5978,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2497:2: (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )*
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2506:2: (otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) ) )*
                     loop45:
                     do {
                         int alt45=2;
@@ -5972,17 +5991,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                         switch (alt45) {
                     	case 1 :
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2497:4: otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2506:4: otherlv_25= ',' ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) )
                     	    {
                     	    otherlv_25=(Token)match(input,21,FOLLOW_21_in_ruleLocalProtocolDecl5074); 
 
                     	        	newLeafNode(otherlv_25, grammarAccess.getLocalProtocolDeclAccess().getCommaKeyword_10_1_5_0());
                     	        
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2501:1: ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) )
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2502:1: (lv_roleInstantiations_26_0= ruleRoleInstantiation )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2510:1: ( (lv_roleInstantiations_26_0= ruleRoleInstantiation ) )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2511:1: (lv_roleInstantiations_26_0= ruleRoleInstantiation )
                     	    {
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2502:1: (lv_roleInstantiations_26_0= ruleRoleInstantiation )
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2503:3: lv_roleInstantiations_26_0= ruleRoleInstantiation
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2511:1: (lv_roleInstantiations_26_0= ruleRoleInstantiation )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2512:3: lv_roleInstantiations_26_0= ruleRoleInstantiation
                     	    {
                     	     
                     	    	        newCompositeNode(grammarAccess.getLocalProtocolDeclAccess().getRoleInstantiationsRoleInstantiationParserRuleCall_10_1_5_1_0()); 
@@ -6056,7 +6075,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalProtocolBlock"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2535:1: entryRuleLocalProtocolBlock returns [EObject current=null] : iv_ruleLocalProtocolBlock= ruleLocalProtocolBlock EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2544:1: entryRuleLocalProtocolBlock returns [EObject current=null] : iv_ruleLocalProtocolBlock= ruleLocalProtocolBlock EOF ;
     public final EObject entryRuleLocalProtocolBlock() throws RecognitionException {
         EObject current = null;
 
@@ -6064,8 +6083,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2536:2: (iv_ruleLocalProtocolBlock= ruleLocalProtocolBlock EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2537:2: iv_ruleLocalProtocolBlock= ruleLocalProtocolBlock EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2545:2: (iv_ruleLocalProtocolBlock= ruleLocalProtocolBlock EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2546:2: iv_ruleLocalProtocolBlock= ruleLocalProtocolBlock EOF
             {
              newCompositeNode(grammarAccess.getLocalProtocolBlockRule()); 
             pushFollow(FOLLOW_ruleLocalProtocolBlock_in_entryRuleLocalProtocolBlock5159);
@@ -6092,7 +6111,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalProtocolBlock"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2544:1: ruleLocalProtocolBlock returns [EObject current=null] : ( () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2553:1: ruleLocalProtocolBlock returns [EObject current=null] : ( () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}' ) ;
     public final EObject ruleLocalProtocolBlock() throws RecognitionException {
         EObject current = null;
 
@@ -6104,14 +6123,14 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2547:28: ( ( () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2548:1: ( () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2556:28: ( ( () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2557:1: ( () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2548:1: ( () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2548:2: () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2557:1: ( () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2557:2: () otherlv_1= '{' ( (lv_activities_2_0= ruleLlobalInteraction ) )* otherlv_3= '}'
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2548:2: ()
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2549:5: 
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2557:2: ()
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2558:5: 
             {
 
                     current = forceCreateModelElement(
@@ -6125,7 +6144,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_1, grammarAccess.getLocalProtocolBlockAccess().getLeftCurlyBracketKeyword_1());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2558:1: ( (lv_activities_2_0= ruleLlobalInteraction ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2567:1: ( (lv_activities_2_0= ruleLlobalInteraction ) )*
             loop47:
             do {
                 int alt47=2;
@@ -6138,10 +6157,10 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt47) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2559:1: (lv_activities_2_0= ruleLlobalInteraction )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2568:1: (lv_activities_2_0= ruleLlobalInteraction )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2559:1: (lv_activities_2_0= ruleLlobalInteraction )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2560:3: lv_activities_2_0= ruleLlobalInteraction
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2568:1: (lv_activities_2_0= ruleLlobalInteraction )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2569:3: lv_activities_2_0= ruleLlobalInteraction
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getLocalProtocolBlockAccess().getActivitiesLlobalInteractionParserRuleCall_2_0()); 
@@ -6199,7 +6218,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLlobalInteraction"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2588:1: entryRuleLlobalInteraction returns [EObject current=null] : iv_ruleLlobalInteraction= ruleLlobalInteraction EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2597:1: entryRuleLlobalInteraction returns [EObject current=null] : iv_ruleLlobalInteraction= ruleLlobalInteraction EOF ;
     public final EObject entryRuleLlobalInteraction() throws RecognitionException {
         EObject current = null;
 
@@ -6207,8 +6226,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2589:2: (iv_ruleLlobalInteraction= ruleLlobalInteraction EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2590:2: iv_ruleLlobalInteraction= ruleLlobalInteraction EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2598:2: (iv_ruleLlobalInteraction= ruleLlobalInteraction EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2599:2: iv_ruleLlobalInteraction= ruleLlobalInteraction EOF
             {
              newCompositeNode(grammarAccess.getLlobalInteractionRule()); 
             pushFollow(FOLLOW_ruleLlobalInteraction_in_entryRuleLlobalInteraction5285);
@@ -6235,7 +6254,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLlobalInteraction"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2597:1: ruleLlobalInteraction returns [EObject current=null] : (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_localinterruptible_6= rulelocalinterruptible | this_LocalDo_7= ruleLocalDo ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2606:1: ruleLlobalInteraction returns [EObject current=null] : (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_LocalInterruptible_6= ruleLocalInterruptible | this_LocalDo_7= ruleLocalDo ) ;
     public final EObject ruleLlobalInteraction() throws RecognitionException {
         EObject current = null;
 
@@ -6251,7 +6270,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
         EObject this_LocalContinue_5 = null;
 
-        EObject this_localinterruptible_6 = null;
+        EObject this_LocalInterruptible_6 = null;
 
         EObject this_LocalDo_7 = null;
 
@@ -6259,15 +6278,15 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2600:28: ( (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_localinterruptible_6= rulelocalinterruptible | this_LocalDo_7= ruleLocalDo ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2601:1: (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_localinterruptible_6= rulelocalinterruptible | this_LocalDo_7= ruleLocalDo )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2609:28: ( (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_LocalInterruptible_6= ruleLocalInterruptible | this_LocalDo_7= ruleLocalDo ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2610:1: (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_LocalInterruptible_6= ruleLocalInterruptible | this_LocalDo_7= ruleLocalDo )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2601:1: (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_localinterruptible_6= rulelocalinterruptible | this_LocalDo_7= ruleLocalDo )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2610:1: (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_LocalInterruptible_6= ruleLocalInterruptible | this_LocalDo_7= ruleLocalDo )
             int alt48=8;
             alt48 = dfa48.predict(input);
             switch (alt48) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2602:5: this_LocalSend_0= ruleLocalSend
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2611:5: this_LocalSend_0= ruleLocalSend
                     {
                      
                             newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalSendParserRuleCall_0()); 
@@ -6285,7 +6304,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2612:5: this_LocalReceive_1= ruleLocalReceive
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2621:5: this_LocalReceive_1= ruleLocalReceive
                     {
                      
                             newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalReceiveParserRuleCall_1()); 
@@ -6303,7 +6322,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2622:5: this_LocalChoice_2= ruleLocalChoice
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2631:5: this_LocalChoice_2= ruleLocalChoice
                     {
                      
                             newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalChoiceParserRuleCall_2()); 
@@ -6321,7 +6340,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 4 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2632:5: this_LocalParallel_3= ruleLocalParallel
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2641:5: this_LocalParallel_3= ruleLocalParallel
                     {
                      
                             newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalParallelParserRuleCall_3()); 
@@ -6339,7 +6358,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 5 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2642:5: this_LocalRecursion_4= ruleLocalRecursion
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2651:5: this_LocalRecursion_4= ruleLocalRecursion
                     {
                      
                             newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalRecursionParserRuleCall_4()); 
@@ -6357,7 +6376,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 6 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2652:5: this_LocalContinue_5= ruleLocalContinue
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2661:5: this_LocalContinue_5= ruleLocalContinue
                     {
                      
                             newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalContinueParserRuleCall_5()); 
@@ -6375,25 +6394,25 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 7 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2662:5: this_localinterruptible_6= rulelocalinterruptible
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2671:5: this_LocalInterruptible_6= ruleLocalInterruptible
                     {
                      
-                            newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalinterruptibleParserRuleCall_6()); 
+                            newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalInterruptibleParserRuleCall_6()); 
                         
-                    pushFollow(FOLLOW_rulelocalinterruptible_in_ruleLlobalInteraction5504);
-                    this_localinterruptible_6=rulelocalinterruptible();
+                    pushFollow(FOLLOW_ruleLocalInterruptible_in_ruleLlobalInteraction5504);
+                    this_LocalInterruptible_6=ruleLocalInterruptible();
 
                     state._fsp--;
 
                      
-                            current = this_localinterruptible_6; 
+                            current = this_LocalInterruptible_6; 
                             afterParserOrEnumRuleCall();
                         
 
                     }
                     break;
                 case 8 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2672:5: this_LocalDo_7= ruleLocalDo
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2681:5: this_LocalDo_7= ruleLocalDo
                     {
                      
                             newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalDoParserRuleCall_7()); 
@@ -6431,7 +6450,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalSend"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2688:1: entryRuleLocalSend returns [EObject current=null] : iv_ruleLocalSend= ruleLocalSend EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2697:1: entryRuleLocalSend returns [EObject current=null] : iv_ruleLocalSend= ruleLocalSend EOF ;
     public final EObject entryRuleLocalSend() throws RecognitionException {
         EObject current = null;
 
@@ -6439,8 +6458,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2689:2: (iv_ruleLocalSend= ruleLocalSend EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2690:2: iv_ruleLocalSend= ruleLocalSend EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2698:2: (iv_ruleLocalSend= ruleLocalSend EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2699:2: iv_ruleLocalSend= ruleLocalSend EOF
             {
              newCompositeNode(grammarAccess.getLocalSendRule()); 
             pushFollow(FOLLOW_ruleLocalSend_in_entryRuleLocalSend5566);
@@ -6467,7 +6486,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalSend"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2697:1: ruleLocalSend returns [EObject current=null] : ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2706:1: ruleLocalSend returns [EObject current=null] : ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';' ) ;
     public final EObject ruleLocalSend() throws RecognitionException {
         EObject current = null;
 
@@ -6482,17 +6501,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2700:28: ( ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2701:1: ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2709:28: ( ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2710:1: ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2701:1: ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2701:2: ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2710:1: ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2710:2: ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'to' ( (lv_toRoles_2_0= RULE_ID ) ) (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )* otherlv_5= ';'
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2701:2: ( (lv_message_0_0= ruleMessage ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2702:1: (lv_message_0_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2710:2: ( (lv_message_0_0= ruleMessage ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2711:1: (lv_message_0_0= ruleMessage )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2702:1: (lv_message_0_0= ruleMessage )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2703:3: lv_message_0_0= ruleMessage
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2711:1: (lv_message_0_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2712:3: lv_message_0_0= ruleMessage
             {
              
             	        newCompositeNode(grammarAccess.getLocalSendAccess().getMessageMessageParserRuleCall_0_0()); 
@@ -6523,11 +6542,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_1, grammarAccess.getLocalSendAccess().getToKeyword_1());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2723:1: ( (lv_toRoles_2_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2724:1: (lv_toRoles_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2732:1: ( (lv_toRoles_2_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2733:1: (lv_toRoles_2_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2724:1: (lv_toRoles_2_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2725:3: lv_toRoles_2_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2733:1: (lv_toRoles_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2734:3: lv_toRoles_2_0= RULE_ID
             {
             lv_toRoles_2_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalSend5651); 
 
@@ -6549,7 +6568,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2741:2: (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2750:2: (otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) ) )*
             loop49:
             do {
                 int alt49=2;
@@ -6562,17 +6581,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt49) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2741:4: otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2750:4: otherlv_3= ',' ( (lv_toRoles_4_0= RULE_ID ) )
             	    {
             	    otherlv_3=(Token)match(input,21,FOLLOW_21_in_ruleLocalSend5669); 
 
             	        	newLeafNode(otherlv_3, grammarAccess.getLocalSendAccess().getCommaKeyword_3_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2745:1: ( (lv_toRoles_4_0= RULE_ID ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2746:1: (lv_toRoles_4_0= RULE_ID )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2754:1: ( (lv_toRoles_4_0= RULE_ID ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2755:1: (lv_toRoles_4_0= RULE_ID )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2746:1: (lv_toRoles_4_0= RULE_ID )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2747:3: lv_toRoles_4_0= RULE_ID
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2755:1: (lv_toRoles_4_0= RULE_ID )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2756:3: lv_toRoles_4_0= RULE_ID
             	    {
             	    lv_toRoles_4_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalSend5686); 
 
@@ -6628,7 +6647,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalReceive"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2775:1: entryRuleLocalReceive returns [EObject current=null] : iv_ruleLocalReceive= ruleLocalReceive EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2784:1: entryRuleLocalReceive returns [EObject current=null] : iv_ruleLocalReceive= ruleLocalReceive EOF ;
     public final EObject entryRuleLocalReceive() throws RecognitionException {
         EObject current = null;
 
@@ -6636,8 +6655,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2776:2: (iv_ruleLocalReceive= ruleLocalReceive EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2777:2: iv_ruleLocalReceive= ruleLocalReceive EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2785:2: (iv_ruleLocalReceive= ruleLocalReceive EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2786:2: iv_ruleLocalReceive= ruleLocalReceive EOF
             {
              newCompositeNode(grammarAccess.getLocalReceiveRule()); 
             pushFollow(FOLLOW_ruleLocalReceive_in_entryRuleLocalReceive5741);
@@ -6664,7 +6683,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalReceive"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2784:1: ruleLocalReceive returns [EObject current=null] : ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2793:1: ruleLocalReceive returns [EObject current=null] : ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';' ) ;
     public final EObject ruleLocalReceive() throws RecognitionException {
         EObject current = null;
 
@@ -6677,17 +6696,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2787:28: ( ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2788:1: ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2796:28: ( ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2797:1: ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2788:1: ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2788:2: ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2797:1: ( ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2797:2: ( (lv_message_0_0= ruleMessage ) ) otherlv_1= 'from' ( (lv_fromRole_2_0= RULE_ID ) ) otherlv_3= ';'
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2788:2: ( (lv_message_0_0= ruleMessage ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2789:1: (lv_message_0_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2797:2: ( (lv_message_0_0= ruleMessage ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2798:1: (lv_message_0_0= ruleMessage )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2789:1: (lv_message_0_0= ruleMessage )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2790:3: lv_message_0_0= ruleMessage
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2798:1: (lv_message_0_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2799:3: lv_message_0_0= ruleMessage
             {
              
             	        newCompositeNode(grammarAccess.getLocalReceiveAccess().getMessageMessageParserRuleCall_0_0()); 
@@ -6718,11 +6737,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_1, grammarAccess.getLocalReceiveAccess().getFromKeyword_1());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2810:1: ( (lv_fromRole_2_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2811:1: (lv_fromRole_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2819:1: ( (lv_fromRole_2_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2820:1: (lv_fromRole_2_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2811:1: (lv_fromRole_2_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2812:3: lv_fromRole_2_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2820:1: (lv_fromRole_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2821:3: lv_fromRole_2_0= RULE_ID
             {
             lv_fromRole_2_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalReceive5826); 
 
@@ -6769,7 +6788,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalChoice"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2840:1: entryRuleLocalChoice returns [EObject current=null] : iv_ruleLocalChoice= ruleLocalChoice EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2849:1: entryRuleLocalChoice returns [EObject current=null] : iv_ruleLocalChoice= ruleLocalChoice EOF ;
     public final EObject entryRuleLocalChoice() throws RecognitionException {
         EObject current = null;
 
@@ -6777,8 +6796,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2841:2: (iv_ruleLocalChoice= ruleLocalChoice EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2842:2: iv_ruleLocalChoice= ruleLocalChoice EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2850:2: (iv_ruleLocalChoice= ruleLocalChoice EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2851:2: iv_ruleLocalChoice= ruleLocalChoice EOF
             {
              newCompositeNode(grammarAccess.getLocalChoiceRule()); 
             pushFollow(FOLLOW_ruleLocalChoice_in_entryRuleLocalChoice5879);
@@ -6805,7 +6824,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalChoice"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2849:1: ruleLocalChoice returns [EObject current=null] : (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )* ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2858:1: ruleLocalChoice returns [EObject current=null] : (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )* ) ;
     public final EObject ruleLocalChoice() throws RecognitionException {
         EObject current = null;
 
@@ -6821,11 +6840,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2852:28: ( (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )* ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2853:1: (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )* )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2861:28: ( (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )* ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2862:1: (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )* )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2853:1: (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )* )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2853:3: otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2862:1: (otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )* )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2862:3: otherlv_0= 'choice' otherlv_1= 'at' ( (lv_role_2_0= RULE_ID ) ) ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )*
             {
             otherlv_0=(Token)match(input,32,FOLLOW_32_in_ruleLocalChoice5926); 
 
@@ -6835,11 +6854,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_1, grammarAccess.getLocalChoiceAccess().getAtKeyword_1());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2861:1: ( (lv_role_2_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2862:1: (lv_role_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2870:1: ( (lv_role_2_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2871:1: (lv_role_2_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2862:1: (lv_role_2_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2863:3: lv_role_2_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2871:1: (lv_role_2_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2872:3: lv_role_2_0= RULE_ID
             {
             lv_role_2_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalChoice5955); 
 
@@ -6861,11 +6880,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2879:2: ( (lv_blocks_3_0= ruleLocalProtocolBlock ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2880:1: (lv_blocks_3_0= ruleLocalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2888:2: ( (lv_blocks_3_0= ruleLocalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2889:1: (lv_blocks_3_0= ruleLocalProtocolBlock )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2880:1: (lv_blocks_3_0= ruleLocalProtocolBlock )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2881:3: lv_blocks_3_0= ruleLocalProtocolBlock
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2889:1: (lv_blocks_3_0= ruleLocalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2890:3: lv_blocks_3_0= ruleLocalProtocolBlock
             {
              
             	        newCompositeNode(grammarAccess.getLocalChoiceAccess().getBlocksLocalProtocolBlockParserRuleCall_3_0()); 
@@ -6892,7 +6911,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2897:2: (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2906:2: (otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) ) )*
             loop50:
             do {
                 int alt50=2;
@@ -6905,17 +6924,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt50) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2897:4: otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2906:4: otherlv_4= 'or' ( (lv_blocks_5_0= ruleLocalProtocolBlock ) )
             	    {
             	    otherlv_4=(Token)match(input,34,FOLLOW_34_in_ruleLocalChoice5994); 
 
             	        	newLeafNode(otherlv_4, grammarAccess.getLocalChoiceAccess().getOrKeyword_4_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2901:1: ( (lv_blocks_5_0= ruleLocalProtocolBlock ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2902:1: (lv_blocks_5_0= ruleLocalProtocolBlock )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2910:1: ( (lv_blocks_5_0= ruleLocalProtocolBlock ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2911:1: (lv_blocks_5_0= ruleLocalProtocolBlock )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2902:1: (lv_blocks_5_0= ruleLocalProtocolBlock )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2903:3: lv_blocks_5_0= ruleLocalProtocolBlock
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2911:1: (lv_blocks_5_0= ruleLocalProtocolBlock )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2912:3: lv_blocks_5_0= ruleLocalProtocolBlock
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getLocalChoiceAccess().getBlocksLocalProtocolBlockParserRuleCall_4_1_0()); 
@@ -6972,7 +6991,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalRecursion"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2927:1: entryRuleLocalRecursion returns [EObject current=null] : iv_ruleLocalRecursion= ruleLocalRecursion EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2936:1: entryRuleLocalRecursion returns [EObject current=null] : iv_ruleLocalRecursion= ruleLocalRecursion EOF ;
     public final EObject entryRuleLocalRecursion() throws RecognitionException {
         EObject current = null;
 
@@ -6980,8 +6999,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2928:2: (iv_ruleLocalRecursion= ruleLocalRecursion EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2929:2: iv_ruleLocalRecursion= ruleLocalRecursion EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2937:2: (iv_ruleLocalRecursion= ruleLocalRecursion EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2938:2: iv_ruleLocalRecursion= ruleLocalRecursion EOF
             {
              newCompositeNode(grammarAccess.getLocalRecursionRule()); 
             pushFollow(FOLLOW_ruleLocalRecursion_in_entryRuleLocalRecursion6053);
@@ -7008,7 +7027,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalRecursion"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2936:1: ruleLocalRecursion returns [EObject current=null] : (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) ) ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2945:1: ruleLocalRecursion returns [EObject current=null] : (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) ) ) ;
     public final EObject ruleLocalRecursion() throws RecognitionException {
         EObject current = null;
 
@@ -7020,21 +7039,21 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2939:28: ( (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) ) ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2940:1: (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2948:28: ( (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2949:1: (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) ) )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2940:1: (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2940:3: otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2949:1: (otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2949:3: otherlv_0= 'rec' ( (lv_label_1_0= RULE_ID ) ) ( (lv_block_2_0= ruleLocalProtocolBlock ) )
             {
             otherlv_0=(Token)match(input,35,FOLLOW_35_in_ruleLocalRecursion6100); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getLocalRecursionAccess().getRecKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2944:1: ( (lv_label_1_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2945:1: (lv_label_1_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2953:1: ( (lv_label_1_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2954:1: (lv_label_1_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2945:1: (lv_label_1_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2946:3: lv_label_1_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2954:1: (lv_label_1_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2955:3: lv_label_1_0= RULE_ID
             {
             lv_label_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalRecursion6117); 
 
@@ -7056,11 +7075,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2962:2: ( (lv_block_2_0= ruleLocalProtocolBlock ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2963:1: (lv_block_2_0= ruleLocalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2971:2: ( (lv_block_2_0= ruleLocalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2972:1: (lv_block_2_0= ruleLocalProtocolBlock )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2963:1: (lv_block_2_0= ruleLocalProtocolBlock )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2964:3: lv_block_2_0= ruleLocalProtocolBlock
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2972:1: (lv_block_2_0= ruleLocalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2973:3: lv_block_2_0= ruleLocalProtocolBlock
             {
              
             	        newCompositeNode(grammarAccess.getLocalRecursionAccess().getBlockLocalProtocolBlockParserRuleCall_2_0()); 
@@ -7108,7 +7127,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalContinue"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2988:1: entryRuleLocalContinue returns [EObject current=null] : iv_ruleLocalContinue= ruleLocalContinue EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2997:1: entryRuleLocalContinue returns [EObject current=null] : iv_ruleLocalContinue= ruleLocalContinue EOF ;
     public final EObject entryRuleLocalContinue() throws RecognitionException {
         EObject current = null;
 
@@ -7116,8 +7135,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2989:2: (iv_ruleLocalContinue= ruleLocalContinue EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2990:2: iv_ruleLocalContinue= ruleLocalContinue EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2998:2: (iv_ruleLocalContinue= ruleLocalContinue EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2999:2: iv_ruleLocalContinue= ruleLocalContinue EOF
             {
              newCompositeNode(grammarAccess.getLocalContinueRule()); 
             pushFollow(FOLLOW_ruleLocalContinue_in_entryRuleLocalContinue6179);
@@ -7144,7 +7163,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalContinue"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:2997:1: ruleLocalContinue returns [EObject current=null] : (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3006:1: ruleLocalContinue returns [EObject current=null] : (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' ) ;
     public final EObject ruleLocalContinue() throws RecognitionException {
         EObject current = null;
 
@@ -7155,21 +7174,21 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3000:28: ( (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3001:1: (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3009:28: ( (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3010:1: (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3001:1: (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3001:3: otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3010:1: (otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3010:3: otherlv_0= 'continue' ( (lv_label_1_0= RULE_ID ) ) otherlv_2= ';'
             {
             otherlv_0=(Token)match(input,36,FOLLOW_36_in_ruleLocalContinue6226); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getLocalContinueAccess().getContinueKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3005:1: ( (lv_label_1_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3006:1: (lv_label_1_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3014:1: ( (lv_label_1_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3015:1: (lv_label_1_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3006:1: (lv_label_1_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3007:3: lv_label_1_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3015:1: (lv_label_1_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3016:3: lv_label_1_0= RULE_ID
             {
             lv_label_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalContinue6243); 
 
@@ -7216,7 +7235,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalParallel"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3035:1: entryRuleLocalParallel returns [EObject current=null] : iv_ruleLocalParallel= ruleLocalParallel EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3044:1: entryRuleLocalParallel returns [EObject current=null] : iv_ruleLocalParallel= ruleLocalParallel EOF ;
     public final EObject entryRuleLocalParallel() throws RecognitionException {
         EObject current = null;
 
@@ -7224,8 +7243,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3036:2: (iv_ruleLocalParallel= ruleLocalParallel EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3037:2: iv_ruleLocalParallel= ruleLocalParallel EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3045:2: (iv_ruleLocalParallel= ruleLocalParallel EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3046:2: iv_ruleLocalParallel= ruleLocalParallel EOF
             {
              newCompositeNode(grammarAccess.getLocalParallelRule()); 
             pushFollow(FOLLOW_ruleLocalParallel_in_entryRuleLocalParallel6296);
@@ -7252,7 +7271,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalParallel"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3044:1: ruleLocalParallel returns [EObject current=null] : (otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )* ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3053:1: ruleLocalParallel returns [EObject current=null] : (otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )* ) ;
     public final EObject ruleLocalParallel() throws RecognitionException {
         EObject current = null;
 
@@ -7266,21 +7285,21 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3047:28: ( (otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )* ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3048:1: (otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )* )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3056:28: ( (otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )* ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3057:1: (otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )* )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3048:1: (otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )* )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3048:3: otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3057:1: (otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )* )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3057:3: otherlv_0= 'par' ( (lv_blocks_1_0= ruleLocalProtocolBlock ) ) (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )*
             {
             otherlv_0=(Token)match(input,37,FOLLOW_37_in_ruleLocalParallel6343); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getLocalParallelAccess().getParKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3052:1: ( (lv_blocks_1_0= ruleLocalProtocolBlock ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3053:1: (lv_blocks_1_0= ruleLocalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3061:1: ( (lv_blocks_1_0= ruleLocalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3062:1: (lv_blocks_1_0= ruleLocalProtocolBlock )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3053:1: (lv_blocks_1_0= ruleLocalProtocolBlock )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3054:3: lv_blocks_1_0= ruleLocalProtocolBlock
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3062:1: (lv_blocks_1_0= ruleLocalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3063:3: lv_blocks_1_0= ruleLocalProtocolBlock
             {
              
             	        newCompositeNode(grammarAccess.getLocalParallelAccess().getBlocksLocalProtocolBlockParserRuleCall_1_0()); 
@@ -7307,7 +7326,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3070:2: (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3079:2: (otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) ) )*
             loop51:
             do {
                 int alt51=2;
@@ -7320,17 +7339,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt51) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3070:4: otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3079:4: otherlv_2= 'and' ( (lv_blocks_3_0= ruleLocalProtocolBlock ) )
             	    {
             	    otherlv_2=(Token)match(input,38,FOLLOW_38_in_ruleLocalParallel6377); 
 
             	        	newLeafNode(otherlv_2, grammarAccess.getLocalParallelAccess().getAndKeyword_2_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3074:1: ( (lv_blocks_3_0= ruleLocalProtocolBlock ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3075:1: (lv_blocks_3_0= ruleLocalProtocolBlock )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3083:1: ( (lv_blocks_3_0= ruleLocalProtocolBlock ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3084:1: (lv_blocks_3_0= ruleLocalProtocolBlock )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3075:1: (lv_blocks_3_0= ruleLocalProtocolBlock )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3076:3: lv_blocks_3_0= ruleLocalProtocolBlock
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3084:1: (lv_blocks_3_0= ruleLocalProtocolBlock )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3085:3: lv_blocks_3_0= ruleLocalProtocolBlock
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getLocalParallelAccess().getBlocksLocalProtocolBlockParserRuleCall_2_1_0()); 
@@ -7386,26 +7405,26 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
     // $ANTLR end "ruleLocalParallel"
 
 
-    // $ANTLR start "entryRulelocalinterruptible"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3100:1: entryRulelocalinterruptible returns [EObject current=null] : iv_rulelocalinterruptible= rulelocalinterruptible EOF ;
-    public final EObject entryRulelocalinterruptible() throws RecognitionException {
+    // $ANTLR start "entryRuleLocalInterruptible"
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3109:1: entryRuleLocalInterruptible returns [EObject current=null] : iv_ruleLocalInterruptible= ruleLocalInterruptible EOF ;
+    public final EObject entryRuleLocalInterruptible() throws RecognitionException {
         EObject current = null;
 
-        EObject iv_rulelocalinterruptible = null;
+        EObject iv_ruleLocalInterruptible = null;
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3101:2: (iv_rulelocalinterruptible= rulelocalinterruptible EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3102:2: iv_rulelocalinterruptible= rulelocalinterruptible EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3110:2: (iv_ruleLocalInterruptible= ruleLocalInterruptible EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3111:2: iv_ruleLocalInterruptible= ruleLocalInterruptible EOF
             {
-             newCompositeNode(grammarAccess.getLocalinterruptibleRule()); 
-            pushFollow(FOLLOW_rulelocalinterruptible_in_entryRulelocalinterruptible6436);
-            iv_rulelocalinterruptible=rulelocalinterruptible();
+             newCompositeNode(grammarAccess.getLocalInterruptibleRule()); 
+            pushFollow(FOLLOW_ruleLocalInterruptible_in_entryRuleLocalInterruptible6436);
+            iv_ruleLocalInterruptible=ruleLocalInterruptible();
 
             state._fsp--;
 
-             current =iv_rulelocalinterruptible; 
-            match(input,EOF,FOLLOW_EOF_in_entryRulelocalinterruptible6446); 
+             current =iv_ruleLocalInterruptible; 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleLocalInterruptible6446); 
 
             }
 
@@ -7419,12 +7438,12 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
         }
         return current;
     }
-    // $ANTLR end "entryRulelocalinterruptible"
+    // $ANTLR end "entryRuleLocalInterruptible"
 
 
-    // $ANTLR start "rulelocalinterruptible"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3109:1: rulelocalinterruptible returns [EObject current=null] : (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}' ) ;
-    public final EObject rulelocalinterruptible() throws RecognitionException {
+    // $ANTLR start "ruleLocalInterruptible"
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3118:1: ruleLocalInterruptible returns [EObject current=null] : (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}' ) ;
+    public final EObject ruleLocalInterruptible() throws RecognitionException {
         EObject current = null;
 
         Token otherlv_0=null;
@@ -7443,17 +7462,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3112:28: ( (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3113:1: (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3121:28: ( (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3122:1: (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3113:1: (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3113:3: otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3122:1: (otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3122:3: otherlv_0= 'interruptible' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_block_3_0= ruleLocalProtocolBlock ) ) otherlv_4= 'with' otherlv_5= '{' ( (lv_throw_6_0= ruleLocalThrow ) )? ( (lv_catches_7_0= ruleLocalCatch ) )* otherlv_8= '}'
             {
-            otherlv_0=(Token)match(input,39,FOLLOW_39_in_rulelocalinterruptible6483); 
+            otherlv_0=(Token)match(input,39,FOLLOW_39_in_ruleLocalInterruptible6483); 
 
-                	newLeafNode(otherlv_0, grammarAccess.getLocalinterruptibleAccess().getInterruptibleKeyword_0());
+                	newLeafNode(otherlv_0, grammarAccess.getLocalInterruptibleAccess().getInterruptibleKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3117:1: ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )?
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3126:1: ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )?
             int alt52=2;
             int LA52_0 = input.LA(1);
 
@@ -7462,21 +7481,21 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt52) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3117:2: ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':'
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3126:2: ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':'
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3117:2: ( (lv_scope_1_0= RULE_ID ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3118:1: (lv_scope_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3126:2: ( (lv_scope_1_0= RULE_ID ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3127:1: (lv_scope_1_0= RULE_ID )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3118:1: (lv_scope_1_0= RULE_ID )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3119:3: lv_scope_1_0= RULE_ID
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3127:1: (lv_scope_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3128:3: lv_scope_1_0= RULE_ID
                     {
-                    lv_scope_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_rulelocalinterruptible6501); 
+                    lv_scope_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalInterruptible6501); 
 
-                    			newLeafNode(lv_scope_1_0, grammarAccess.getLocalinterruptibleAccess().getScopeIDTerminalRuleCall_1_0_0()); 
+                    			newLeafNode(lv_scope_1_0, grammarAccess.getLocalInterruptibleAccess().getScopeIDTerminalRuleCall_1_0_0()); 
                     		
 
                     	        if (current==null) {
-                    	            current = createModelElement(grammarAccess.getLocalinterruptibleRule());
+                    	            current = createModelElement(grammarAccess.getLocalInterruptibleRule());
                     	        }
                            		setWithLastConsumed(
                            			current, 
@@ -7490,9 +7509,9 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    otherlv_2=(Token)match(input,23,FOLLOW_23_in_rulelocalinterruptible6518); 
+                    otherlv_2=(Token)match(input,23,FOLLOW_23_in_ruleLocalInterruptible6518); 
 
-                        	newLeafNode(otherlv_2, grammarAccess.getLocalinterruptibleAccess().getColonKeyword_1_1());
+                        	newLeafNode(otherlv_2, grammarAccess.getLocalInterruptibleAccess().getColonKeyword_1_1());
                         
 
                     }
@@ -7500,23 +7519,23 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3139:3: ( (lv_block_3_0= ruleLocalProtocolBlock ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3140:1: (lv_block_3_0= ruleLocalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3148:3: ( (lv_block_3_0= ruleLocalProtocolBlock ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3149:1: (lv_block_3_0= ruleLocalProtocolBlock )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3140:1: (lv_block_3_0= ruleLocalProtocolBlock )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3141:3: lv_block_3_0= ruleLocalProtocolBlock
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3149:1: (lv_block_3_0= ruleLocalProtocolBlock )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3150:3: lv_block_3_0= ruleLocalProtocolBlock
             {
              
-            	        newCompositeNode(grammarAccess.getLocalinterruptibleAccess().getBlockLocalProtocolBlockParserRuleCall_2_0()); 
+            	        newCompositeNode(grammarAccess.getLocalInterruptibleAccess().getBlockLocalProtocolBlockParserRuleCall_2_0()); 
             	    
-            pushFollow(FOLLOW_ruleLocalProtocolBlock_in_rulelocalinterruptible6541);
+            pushFollow(FOLLOW_ruleLocalProtocolBlock_in_ruleLocalInterruptible6541);
             lv_block_3_0=ruleLocalProtocolBlock();
 
             state._fsp--;
 
 
             	        if (current==null) {
-            	            current = createModelElementForParent(grammarAccess.getLocalinterruptibleRule());
+            	            current = createModelElementForParent(grammarAccess.getLocalInterruptibleRule());
             	        }
                    		set(
                    			current, 
@@ -7531,15 +7550,15 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_4=(Token)match(input,40,FOLLOW_40_in_rulelocalinterruptible6553); 
+            otherlv_4=(Token)match(input,40,FOLLOW_40_in_ruleLocalInterruptible6553); 
 
-                	newLeafNode(otherlv_4, grammarAccess.getLocalinterruptibleAccess().getWithKeyword_3());
+                	newLeafNode(otherlv_4, grammarAccess.getLocalInterruptibleAccess().getWithKeyword_3());
                 
-            otherlv_5=(Token)match(input,29,FOLLOW_29_in_rulelocalinterruptible6565); 
+            otherlv_5=(Token)match(input,29,FOLLOW_29_in_ruleLocalInterruptible6565); 
 
-                	newLeafNode(otherlv_5, grammarAccess.getLocalinterruptibleAccess().getLeftCurlyBracketKeyword_4());
+                	newLeafNode(otherlv_5, grammarAccess.getLocalInterruptibleAccess().getLeftCurlyBracketKeyword_4());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3165:1: ( (lv_throw_6_0= ruleLocalThrow ) )?
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3174:1: ( (lv_throw_6_0= ruleLocalThrow ) )?
             int alt53=2;
             int LA53_0 = input.LA(1);
 
@@ -7548,22 +7567,22 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt53) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3166:1: (lv_throw_6_0= ruleLocalThrow )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3175:1: (lv_throw_6_0= ruleLocalThrow )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3166:1: (lv_throw_6_0= ruleLocalThrow )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3167:3: lv_throw_6_0= ruleLocalThrow
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3175:1: (lv_throw_6_0= ruleLocalThrow )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3176:3: lv_throw_6_0= ruleLocalThrow
                     {
                      
-                    	        newCompositeNode(grammarAccess.getLocalinterruptibleAccess().getThrowLocalThrowParserRuleCall_5_0()); 
+                    	        newCompositeNode(grammarAccess.getLocalInterruptibleAccess().getThrowLocalThrowParserRuleCall_5_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleLocalThrow_in_rulelocalinterruptible6586);
+                    pushFollow(FOLLOW_ruleLocalThrow_in_ruleLocalInterruptible6586);
                     lv_throw_6_0=ruleLocalThrow();
 
                     state._fsp--;
 
 
                     	        if (current==null) {
-                    	            current = createModelElementForParent(grammarAccess.getLocalinterruptibleRule());
+                    	            current = createModelElementForParent(grammarAccess.getLocalInterruptibleRule());
                     	        }
                            		set(
                            			current, 
@@ -7581,7 +7600,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3183:3: ( (lv_catches_7_0= ruleLocalCatch ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3192:3: ( (lv_catches_7_0= ruleLocalCatch ) )*
             loop54:
             do {
                 int alt54=2;
@@ -7594,22 +7613,22 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt54) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3184:1: (lv_catches_7_0= ruleLocalCatch )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3193:1: (lv_catches_7_0= ruleLocalCatch )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3184:1: (lv_catches_7_0= ruleLocalCatch )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3185:3: lv_catches_7_0= ruleLocalCatch
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3193:1: (lv_catches_7_0= ruleLocalCatch )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3194:3: lv_catches_7_0= ruleLocalCatch
             	    {
             	     
-            	    	        newCompositeNode(grammarAccess.getLocalinterruptibleAccess().getCatchesLocalCatchParserRuleCall_6_0()); 
+            	    	        newCompositeNode(grammarAccess.getLocalInterruptibleAccess().getCatchesLocalCatchParserRuleCall_6_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleLocalCatch_in_rulelocalinterruptible6608);
+            	    pushFollow(FOLLOW_ruleLocalCatch_in_ruleLocalInterruptible6608);
             	    lv_catches_7_0=ruleLocalCatch();
 
             	    state._fsp--;
 
 
             	    	        if (current==null) {
-            	    	            current = createModelElementForParent(grammarAccess.getLocalinterruptibleRule());
+            	    	            current = createModelElementForParent(grammarAccess.getLocalInterruptibleRule());
             	    	        }
             	           		add(
             	           			current, 
@@ -7630,9 +7649,9 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
                 }
             } while (true);
 
-            otherlv_8=(Token)match(input,30,FOLLOW_30_in_rulelocalinterruptible6621); 
+            otherlv_8=(Token)match(input,30,FOLLOW_30_in_ruleLocalInterruptible6621); 
 
-                	newLeafNode(otherlv_8, grammarAccess.getLocalinterruptibleAccess().getRightCurlyBracketKeyword_7());
+                	newLeafNode(otherlv_8, grammarAccess.getLocalInterruptibleAccess().getRightCurlyBracketKeyword_7());
                 
 
             }
@@ -7651,11 +7670,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
         }
         return current;
     }
-    // $ANTLR end "rulelocalinterruptible"
+    // $ANTLR end "ruleLocalInterruptible"
 
 
     // $ANTLR start "entryRuleLocalThrow"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3213:1: entryRuleLocalThrow returns [EObject current=null] : iv_ruleLocalThrow= ruleLocalThrow EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3222:1: entryRuleLocalThrow returns [EObject current=null] : iv_ruleLocalThrow= ruleLocalThrow EOF ;
     public final EObject entryRuleLocalThrow() throws RecognitionException {
         EObject current = null;
 
@@ -7663,8 +7682,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3214:2: (iv_ruleLocalThrow= ruleLocalThrow EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3215:2: iv_ruleLocalThrow= ruleLocalThrow EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3223:2: (iv_ruleLocalThrow= ruleLocalThrow EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3224:2: iv_ruleLocalThrow= ruleLocalThrow EOF
             {
              newCompositeNode(grammarAccess.getLocalThrowRule()); 
             pushFollow(FOLLOW_ruleLocalThrow_in_entryRuleLocalThrow6657);
@@ -7691,7 +7710,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalThrow"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3222:1: ruleLocalThrow returns [EObject current=null] : (otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3231:1: ruleLocalThrow returns [EObject current=null] : (otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';' ) ;
     public final EObject ruleLocalThrow() throws RecognitionException {
         EObject current = null;
 
@@ -7710,21 +7729,21 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3225:28: ( (otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3226:1: (otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3234:28: ( (otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3235:1: (otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3226:1: (otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3226:3: otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3235:1: (otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3235:3: otherlv_0= 'throw' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'to' ( (lv_toRoles_5_0= RULE_ID ) ) (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )* otherlv_8= ';'
             {
             otherlv_0=(Token)match(input,44,FOLLOW_44_in_ruleLocalThrow6704); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getLocalThrowAccess().getThrowKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3230:1: ( (lv_messages_1_0= ruleMessage ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3231:1: (lv_messages_1_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3239:1: ( (lv_messages_1_0= ruleMessage ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3240:1: (lv_messages_1_0= ruleMessage )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3231:1: (lv_messages_1_0= ruleMessage )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3232:3: lv_messages_1_0= ruleMessage
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3240:1: (lv_messages_1_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3241:3: lv_messages_1_0= ruleMessage
             {
              
             	        newCompositeNode(grammarAccess.getLocalThrowAccess().getMessagesMessageParserRuleCall_1_0()); 
@@ -7751,7 +7770,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3248:2: (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3257:2: (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )*
             loop55:
             do {
                 int alt55=2;
@@ -7764,17 +7783,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt55) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3248:4: otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3257:4: otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) )
             	    {
             	    otherlv_2=(Token)match(input,21,FOLLOW_21_in_ruleLocalThrow6738); 
 
             	        	newLeafNode(otherlv_2, grammarAccess.getLocalThrowAccess().getCommaKeyword_2_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3252:1: ( (lv_messages_3_0= ruleMessage ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3253:1: (lv_messages_3_0= ruleMessage )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3261:1: ( (lv_messages_3_0= ruleMessage ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3262:1: (lv_messages_3_0= ruleMessage )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3253:1: (lv_messages_3_0= ruleMessage )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3254:3: lv_messages_3_0= ruleMessage
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3262:1: (lv_messages_3_0= ruleMessage )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3263:3: lv_messages_3_0= ruleMessage
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getLocalThrowAccess().getMessagesMessageParserRuleCall_2_1_0()); 
@@ -7814,11 +7833,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_4, grammarAccess.getLocalThrowAccess().getToKeyword_3());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3274:1: ( (lv_toRoles_5_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3275:1: (lv_toRoles_5_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3283:1: ( (lv_toRoles_5_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3284:1: (lv_toRoles_5_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3275:1: (lv_toRoles_5_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3276:3: lv_toRoles_5_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3284:1: (lv_toRoles_5_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3285:3: lv_toRoles_5_0= RULE_ID
             {
             lv_toRoles_5_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalThrow6790); 
 
@@ -7840,7 +7859,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3292:2: (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3301:2: (otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) ) )*
             loop56:
             do {
                 int alt56=2;
@@ -7853,17 +7872,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt56) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3292:4: otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3301:4: otherlv_6= ',' ( (lv_toRoles_7_0= RULE_ID ) )
             	    {
             	    otherlv_6=(Token)match(input,21,FOLLOW_21_in_ruleLocalThrow6808); 
 
             	        	newLeafNode(otherlv_6, grammarAccess.getLocalThrowAccess().getCommaKeyword_5_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3296:1: ( (lv_toRoles_7_0= RULE_ID ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3297:1: (lv_toRoles_7_0= RULE_ID )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3305:1: ( (lv_toRoles_7_0= RULE_ID ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3306:1: (lv_toRoles_7_0= RULE_ID )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3297:1: (lv_toRoles_7_0= RULE_ID )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3298:3: lv_toRoles_7_0= RULE_ID
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3306:1: (lv_toRoles_7_0= RULE_ID )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3307:3: lv_toRoles_7_0= RULE_ID
             	    {
             	    lv_toRoles_7_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalThrow6825); 
 
@@ -7919,7 +7938,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalCatch"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3326:1: entryRuleLocalCatch returns [EObject current=null] : iv_ruleLocalCatch= ruleLocalCatch EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3335:1: entryRuleLocalCatch returns [EObject current=null] : iv_ruleLocalCatch= ruleLocalCatch EOF ;
     public final EObject entryRuleLocalCatch() throws RecognitionException {
         EObject current = null;
 
@@ -7927,8 +7946,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3327:2: (iv_ruleLocalCatch= ruleLocalCatch EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3328:2: iv_ruleLocalCatch= ruleLocalCatch EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3336:2: (iv_ruleLocalCatch= ruleLocalCatch EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3337:2: iv_ruleLocalCatch= ruleLocalCatch EOF
             {
              newCompositeNode(grammarAccess.getLocalCatchRule()); 
             pushFollow(FOLLOW_ruleLocalCatch_in_entryRuleLocalCatch6880);
@@ -7955,7 +7974,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalCatch"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3335:1: ruleLocalCatch returns [EObject current=null] : (otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3344:1: ruleLocalCatch returns [EObject current=null] : (otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';' ) ;
     public final EObject ruleLocalCatch() throws RecognitionException {
         EObject current = null;
 
@@ -7972,21 +7991,21 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3338:28: ( (otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3339:1: (otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3347:28: ( (otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3348:1: (otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3339:1: (otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3339:3: otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3348:1: (otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3348:3: otherlv_0= 'catches' ( (lv_messages_1_0= ruleMessage ) ) (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )* otherlv_4= 'from' ( (lv_fromRole_5_0= RULE_ID ) ) otherlv_6= ';'
             {
             otherlv_0=(Token)match(input,45,FOLLOW_45_in_ruleLocalCatch6927); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getLocalCatchAccess().getCatchesKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3343:1: ( (lv_messages_1_0= ruleMessage ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3344:1: (lv_messages_1_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3352:1: ( (lv_messages_1_0= ruleMessage ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3353:1: (lv_messages_1_0= ruleMessage )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3344:1: (lv_messages_1_0= ruleMessage )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3345:3: lv_messages_1_0= ruleMessage
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3353:1: (lv_messages_1_0= ruleMessage )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3354:3: lv_messages_1_0= ruleMessage
             {
              
             	        newCompositeNode(grammarAccess.getLocalCatchAccess().getMessagesMessageParserRuleCall_1_0()); 
@@ -8013,7 +8032,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3361:2: (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3370:2: (otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) ) )*
             loop57:
             do {
                 int alt57=2;
@@ -8026,17 +8045,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt57) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3361:4: otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3370:4: otherlv_2= ',' ( (lv_messages_3_0= ruleMessage ) )
             	    {
             	    otherlv_2=(Token)match(input,21,FOLLOW_21_in_ruleLocalCatch6961); 
 
             	        	newLeafNode(otherlv_2, grammarAccess.getLocalCatchAccess().getCommaKeyword_2_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3365:1: ( (lv_messages_3_0= ruleMessage ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3366:1: (lv_messages_3_0= ruleMessage )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3374:1: ( (lv_messages_3_0= ruleMessage ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3375:1: (lv_messages_3_0= ruleMessage )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3366:1: (lv_messages_3_0= ruleMessage )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3367:3: lv_messages_3_0= ruleMessage
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3375:1: (lv_messages_3_0= ruleMessage )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3376:3: lv_messages_3_0= ruleMessage
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getLocalCatchAccess().getMessagesMessageParserRuleCall_2_1_0()); 
@@ -8076,11 +8095,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_4, grammarAccess.getLocalCatchAccess().getFromKeyword_3());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3387:1: ( (lv_fromRole_5_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3388:1: (lv_fromRole_5_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3396:1: ( (lv_fromRole_5_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3397:1: (lv_fromRole_5_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3388:1: (lv_fromRole_5_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3389:3: lv_fromRole_5_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3397:1: (lv_fromRole_5_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3398:3: lv_fromRole_5_0= RULE_ID
             {
             lv_fromRole_5_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalCatch7013); 
 
@@ -8127,7 +8146,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLocalDo"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3417:1: entryRuleLocalDo returns [EObject current=null] : iv_ruleLocalDo= ruleLocalDo EOF ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3426:1: entryRuleLocalDo returns [EObject current=null] : iv_ruleLocalDo= ruleLocalDo EOF ;
     public final EObject entryRuleLocalDo() throws RecognitionException {
         EObject current = null;
 
@@ -8135,8 +8154,8 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3418:2: (iv_ruleLocalDo= ruleLocalDo EOF )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3419:2: iv_ruleLocalDo= ruleLocalDo EOF
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3427:2: (iv_ruleLocalDo= ruleLocalDo EOF )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3428:2: iv_ruleLocalDo= ruleLocalDo EOF
             {
              newCompositeNode(grammarAccess.getLocalDoRule()); 
             pushFollow(FOLLOW_ruleLocalDo_in_entryRuleLocalDo7066);
@@ -8163,7 +8182,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLocalDo"
-    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3426:1: ruleLocalDo returns [EObject current=null] : (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' ) ;
+    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3435:1: ruleLocalDo returns [EObject current=null] : (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' ) ;
     public final EObject ruleLocalDo() throws RecognitionException {
         EObject current = null;
 
@@ -8190,17 +8209,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3429:28: ( (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3430:1: (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3438:28: ( (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3439:1: (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3430:1: (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3430:3: otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';'
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3439:1: (otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';' )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3439:3: otherlv_0= 'do' ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )? ( (lv_member_3_0= RULE_ID ) ) (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )? otherlv_9= '(' ( (lv_roles_10_0= ruleRoleInstantiation ) ) (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )* otherlv_13= ')' otherlv_14= ';'
             {
             otherlv_0=(Token)match(input,42,FOLLOW_42_in_ruleLocalDo7113); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getLocalDoAccess().getDoKeyword_0());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3434:1: ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )?
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3443:1: ( ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':' )?
             int alt58=2;
             int LA58_0 = input.LA(1);
 
@@ -8213,13 +8232,13 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt58) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3434:2: ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':'
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3443:2: ( (lv_scope_1_0= RULE_ID ) ) otherlv_2= ':'
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3434:2: ( (lv_scope_1_0= RULE_ID ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3435:1: (lv_scope_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3443:2: ( (lv_scope_1_0= RULE_ID ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3444:1: (lv_scope_1_0= RULE_ID )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3435:1: (lv_scope_1_0= RULE_ID )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3436:3: lv_scope_1_0= RULE_ID
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3444:1: (lv_scope_1_0= RULE_ID )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3445:3: lv_scope_1_0= RULE_ID
                     {
                     lv_scope_1_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalDo7131); 
 
@@ -8251,11 +8270,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3456:3: ( (lv_member_3_0= RULE_ID ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3457:1: (lv_member_3_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3465:3: ( (lv_member_3_0= RULE_ID ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3466:1: (lv_member_3_0= RULE_ID )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3457:1: (lv_member_3_0= RULE_ID )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3458:3: lv_member_3_0= RULE_ID
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3466:1: (lv_member_3_0= RULE_ID )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3467:3: lv_member_3_0= RULE_ID
             {
             lv_member_3_0=(Token)match(input,RULE_ID,FOLLOW_RULE_ID_in_ruleLocalDo7167); 
 
@@ -8277,7 +8296,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3474:2: (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )?
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3483:2: (otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>' )?
             int alt60=2;
             int LA60_0 = input.LA(1);
 
@@ -8286,17 +8305,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             }
             switch (alt60) {
                 case 1 :
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3474:4: otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>'
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3483:4: otherlv_4= '<' ( (lv_arguments_5_0= ruleArgument ) ) (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )* otherlv_8= '>'
                     {
                     otherlv_4=(Token)match(input,18,FOLLOW_18_in_ruleLocalDo7185); 
 
                         	newLeafNode(otherlv_4, grammarAccess.getLocalDoAccess().getLessThanSignKeyword_3_0());
                         
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3478:1: ( (lv_arguments_5_0= ruleArgument ) )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3479:1: (lv_arguments_5_0= ruleArgument )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3487:1: ( (lv_arguments_5_0= ruleArgument ) )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3488:1: (lv_arguments_5_0= ruleArgument )
                     {
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3479:1: (lv_arguments_5_0= ruleArgument )
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3480:3: lv_arguments_5_0= ruleArgument
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3488:1: (lv_arguments_5_0= ruleArgument )
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3489:3: lv_arguments_5_0= ruleArgument
                     {
                      
                     	        newCompositeNode(grammarAccess.getLocalDoAccess().getArgumentsArgumentParserRuleCall_3_1_0()); 
@@ -8323,7 +8342,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3496:2: (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )*
+                    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3505:2: (otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) ) )*
                     loop59:
                     do {
                         int alt59=2;
@@ -8336,17 +8355,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                         switch (alt59) {
                     	case 1 :
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3496:4: otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3505:4: otherlv_6= ',' ( (lv_arguments_7_0= ruleArgument ) )
                     	    {
                     	    otherlv_6=(Token)match(input,21,FOLLOW_21_in_ruleLocalDo7219); 
 
                     	        	newLeafNode(otherlv_6, grammarAccess.getLocalDoAccess().getCommaKeyword_3_2_0());
                     	        
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3500:1: ( (lv_arguments_7_0= ruleArgument ) )
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3501:1: (lv_arguments_7_0= ruleArgument )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3509:1: ( (lv_arguments_7_0= ruleArgument ) )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3510:1: (lv_arguments_7_0= ruleArgument )
                     	    {
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3501:1: (lv_arguments_7_0= ruleArgument )
-                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3502:3: lv_arguments_7_0= ruleArgument
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3510:1: (lv_arguments_7_0= ruleArgument )
+                    	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3511:3: lv_arguments_7_0= ruleArgument
                     	    {
                     	     
                     	    	        newCompositeNode(grammarAccess.getLocalDoAccess().getArgumentsArgumentParserRuleCall_3_2_1_0()); 
@@ -8396,11 +8415,11 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 	newLeafNode(otherlv_9, grammarAccess.getLocalDoAccess().getLeftParenthesisKeyword_4());
                 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3526:1: ( (lv_roles_10_0= ruleRoleInstantiation ) )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3527:1: (lv_roles_10_0= ruleRoleInstantiation )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3535:1: ( (lv_roles_10_0= ruleRoleInstantiation ) )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3536:1: (lv_roles_10_0= ruleRoleInstantiation )
             {
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3527:1: (lv_roles_10_0= ruleRoleInstantiation )
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3528:3: lv_roles_10_0= ruleRoleInstantiation
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3536:1: (lv_roles_10_0= ruleRoleInstantiation )
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3537:3: lv_roles_10_0= ruleRoleInstantiation
             {
              
             	        newCompositeNode(grammarAccess.getLocalDoAccess().getRolesRoleInstantiationParserRuleCall_5_0()); 
@@ -8427,7 +8446,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3544:2: (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )*
+            // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3553:2: (otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) ) )*
             loop61:
             do {
                 int alt61=2;
@@ -8440,17 +8459,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt61) {
             	case 1 :
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3544:4: otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3553:4: otherlv_11= ',' ( (lv_roles_12_0= ruleRoleInstantiation ) )
             	    {
             	    otherlv_11=(Token)match(input,21,FOLLOW_21_in_ruleLocalDo7302); 
 
             	        	newLeafNode(otherlv_11, grammarAccess.getLocalDoAccess().getCommaKeyword_6_0());
             	        
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3548:1: ( (lv_roles_12_0= ruleRoleInstantiation ) )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3549:1: (lv_roles_12_0= ruleRoleInstantiation )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3557:1: ( (lv_roles_12_0= ruleRoleInstantiation ) )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3558:1: (lv_roles_12_0= ruleRoleInstantiation )
             	    {
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3549:1: (lv_roles_12_0= ruleRoleInstantiation )
-            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3550:3: lv_roles_12_0= ruleRoleInstantiation
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3558:1: (lv_roles_12_0= ruleRoleInstantiation )
+            	    // ../org.scribble.editor/src-gen/org/scribble/editor/dsl/parser/antlr/internal/InternalScribbleDsl.g:3559:3: lv_roles_12_0= ruleRoleInstantiation
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getLocalDoAccess().getRolesRoleInstantiationParserRuleCall_6_1_0()); 
@@ -8524,7 +8543,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
     static final String DFA48_minS =
         "\1\4\1\20\1\4\10\uffff\1\25\1\20\2\4\2\25\1\4\1\25";
     static final String DFA48_maxS =
-        "\1\52\1\37\1\26\10\uffff\1\27\1\37\2\4\1\27\1\26\1\4\1\26";
+        "\1\52\1\37\1\26\10\uffff\1\27\1\37\2\4\1\26\1\27\1\4\1\26";
     static final String DFA48_acceptS =
         "\3\uffff\1\3\1\4\1\5\1\6\1\7\1\10\1\2\1\1\10\uffff";
     static final String DFA48_specialS =
@@ -8542,14 +8561,14 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             "",
             "",
             "",
-            "\1\15\1\14\1\16",
+            "\1\16\1\14\1\15",
             "\1\11\16\uffff\1\12",
             "\1\17",
             "\1\20",
-            "\1\15\1\14\1\21",
-            "\1\15\1\14",
+            "\1\16\1\14",
+            "\1\16\1\14\1\21",
             "\1\22",
-            "\1\15\1\14"
+            "\1\16\1\14"
     };
 
     static final short[] DFA48_eot = DFA.unpackEncodedString(DFA48_eotS);
@@ -8582,7 +8601,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
             this.transition = DFA48_transition;
         }
         public String getDescription() {
-            return "2601:1: (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_localinterruptible_6= rulelocalinterruptible | this_LocalDo_7= ruleLocalDo )";
+            return "2610:1: (this_LocalSend_0= ruleLocalSend | this_LocalReceive_1= ruleLocalReceive | this_LocalChoice_2= ruleLocalChoice | this_LocalParallel_3= ruleLocalParallel | this_LocalRecursion_4= ruleLocalRecursion | this_LocalContinue_5= ruleLocalContinue | this_LocalInterruptible_6= ruleLocalInterruptible | this_LocalDo_7= ruleLocalDo )";
         }
     }
  
@@ -8730,7 +8749,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_12_in_ruleGlobalMessageTransfer3196 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleMessage_in_entryRuleMessage3232 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleMessage3242 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleMessageSignature_in_ruleMessage3289 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleMessageSignature_in_ruleMessage3288 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_RULE_ID_in_ruleMessage3311 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleGlobalChoice_in_entryRuleGlobalChoice3352 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleGlobalChoice3362 = new BitSet(new long[]{0x0000000000000002L});
@@ -8835,7 +8854,7 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_ruleLocalParallel_in_ruleLlobalInteraction5423 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleLocalRecursion_in_ruleLlobalInteraction5450 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleLocalContinue_in_ruleLlobalInteraction5477 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rulelocalinterruptible_in_ruleLlobalInteraction5504 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleLocalInterruptible_in_ruleLlobalInteraction5504 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleLocalDo_in_ruleLlobalInteraction5531 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleLocalSend_in_entryRuleLocalSend5566 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleLocalSend5576 = new BitSet(new long[]{0x0000000000000002L});
@@ -8875,17 +8894,17 @@ public class InternalScribbleDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_ruleLocalProtocolBlock_in_ruleLocalParallel6364 = new BitSet(new long[]{0x0000004000000002L});
     public static final BitSet FOLLOW_38_in_ruleLocalParallel6377 = new BitSet(new long[]{0x0000000020000000L});
     public static final BitSet FOLLOW_ruleLocalProtocolBlock_in_ruleLocalParallel6398 = new BitSet(new long[]{0x0000004000000002L});
-    public static final BitSet FOLLOW_rulelocalinterruptible_in_entryRulelocalinterruptible6436 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRulelocalinterruptible6446 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_39_in_rulelocalinterruptible6483 = new BitSet(new long[]{0x0000000020000010L});
-    public static final BitSet FOLLOW_RULE_ID_in_rulelocalinterruptible6501 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_rulelocalinterruptible6518 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_ruleLocalProtocolBlock_in_rulelocalinterruptible6541 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_40_in_rulelocalinterruptible6553 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_rulelocalinterruptible6565 = new BitSet(new long[]{0x0000300040000000L});
-    public static final BitSet FOLLOW_ruleLocalThrow_in_rulelocalinterruptible6586 = new BitSet(new long[]{0x0000200040000000L});
-    public static final BitSet FOLLOW_ruleLocalCatch_in_rulelocalinterruptible6608 = new BitSet(new long[]{0x0000200040000000L});
-    public static final BitSet FOLLOW_30_in_rulelocalinterruptible6621 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleLocalInterruptible_in_entryRuleLocalInterruptible6436 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleLocalInterruptible6446 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_39_in_ruleLocalInterruptible6483 = new BitSet(new long[]{0x0000000020000010L});
+    public static final BitSet FOLLOW_RULE_ID_in_ruleLocalInterruptible6501 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_ruleLocalInterruptible6518 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_ruleLocalProtocolBlock_in_ruleLocalInterruptible6541 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_40_in_ruleLocalInterruptible6553 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_ruleLocalInterruptible6565 = new BitSet(new long[]{0x0000300040000000L});
+    public static final BitSet FOLLOW_ruleLocalThrow_in_ruleLocalInterruptible6586 = new BitSet(new long[]{0x0000200040000000L});
+    public static final BitSet FOLLOW_ruleLocalCatch_in_ruleLocalInterruptible6608 = new BitSet(new long[]{0x0000200040000000L});
+    public static final BitSet FOLLOW_30_in_ruleLocalInterruptible6621 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleLocalThrow_in_entryRuleLocalThrow6657 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleLocalThrow6667 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_44_in_ruleLocalThrow6704 = new BitSet(new long[]{0x0000000000100010L});

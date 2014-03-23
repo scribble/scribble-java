@@ -115,8 +115,8 @@ public class ScribbleDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLocalContinueAccess().getGroup(), "rule__LocalContinue__Group__0");
 					put(grammarAccess.getLocalParallelAccess().getGroup(), "rule__LocalParallel__Group__0");
 					put(grammarAccess.getLocalParallelAccess().getGroup_2(), "rule__LocalParallel__Group_2__0");
-					put(grammarAccess.getLocalinterruptibleAccess().getGroup(), "rule__Localinterruptible__Group__0");
-					put(grammarAccess.getLocalinterruptibleAccess().getGroup_1(), "rule__Localinterruptible__Group_1__0");
+					put(grammarAccess.getLocalInterruptibleAccess().getGroup(), "rule__LocalInterruptible__Group__0");
+					put(grammarAccess.getLocalInterruptibleAccess().getGroup_1(), "rule__LocalInterruptible__Group_1__0");
 					put(grammarAccess.getLocalThrowAccess().getGroup(), "rule__LocalThrow__Group__0");
 					put(grammarAccess.getLocalThrowAccess().getGroup_2(), "rule__LocalThrow__Group_2__0");
 					put(grammarAccess.getLocalThrowAccess().getGroup_5(), "rule__LocalThrow__Group_5__0");
@@ -174,6 +174,7 @@ public class ScribbleDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getGlobalMessageTransferAccess().getFromRoleAssignment_2(), "rule__GlobalMessageTransfer__FromRoleAssignment_2");
 					put(grammarAccess.getGlobalMessageTransferAccess().getToRolesAssignment_4(), "rule__GlobalMessageTransfer__ToRolesAssignment_4");
 					put(grammarAccess.getGlobalMessageTransferAccess().getToRolesAssignment_5_1(), "rule__GlobalMessageTransfer__ToRolesAssignment_5_1");
+					put(grammarAccess.getMessageAccess().getSignatureAssignment_0(), "rule__Message__SignatureAssignment_0");
 					put(grammarAccess.getMessageAccess().getParameterAssignment_1(), "rule__Message__ParameterAssignment_1");
 					put(grammarAccess.getGlobalChoiceAccess().getRoleAssignment_2(), "rule__GlobalChoice__RoleAssignment_2");
 					put(grammarAccess.getGlobalChoiceAccess().getBlocksAssignment_3(), "rule__GlobalChoice__BlocksAssignment_3");
@@ -221,10 +222,10 @@ public class ScribbleDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLocalContinueAccess().getLabelAssignment_1(), "rule__LocalContinue__LabelAssignment_1");
 					put(grammarAccess.getLocalParallelAccess().getBlocksAssignment_1(), "rule__LocalParallel__BlocksAssignment_1");
 					put(grammarAccess.getLocalParallelAccess().getBlocksAssignment_2_1(), "rule__LocalParallel__BlocksAssignment_2_1");
-					put(grammarAccess.getLocalinterruptibleAccess().getScopeAssignment_1_0(), "rule__Localinterruptible__ScopeAssignment_1_0");
-					put(grammarAccess.getLocalinterruptibleAccess().getBlockAssignment_2(), "rule__Localinterruptible__BlockAssignment_2");
-					put(grammarAccess.getLocalinterruptibleAccess().getThrowAssignment_5(), "rule__Localinterruptible__ThrowAssignment_5");
-					put(grammarAccess.getLocalinterruptibleAccess().getCatchesAssignment_6(), "rule__Localinterruptible__CatchesAssignment_6");
+					put(grammarAccess.getLocalInterruptibleAccess().getScopeAssignment_1_0(), "rule__LocalInterruptible__ScopeAssignment_1_0");
+					put(grammarAccess.getLocalInterruptibleAccess().getBlockAssignment_2(), "rule__LocalInterruptible__BlockAssignment_2");
+					put(grammarAccess.getLocalInterruptibleAccess().getThrowAssignment_5(), "rule__LocalInterruptible__ThrowAssignment_5");
+					put(grammarAccess.getLocalInterruptibleAccess().getCatchesAssignment_6(), "rule__LocalInterruptible__CatchesAssignment_6");
 					put(grammarAccess.getLocalThrowAccess().getMessagesAssignment_1(), "rule__LocalThrow__MessagesAssignment_1");
 					put(grammarAccess.getLocalThrowAccess().getMessagesAssignment_2_1(), "rule__LocalThrow__MessagesAssignment_2_1");
 					put(grammarAccess.getLocalThrowAccess().getToRolesAssignment_4(), "rule__LocalThrow__ToRolesAssignment_4");

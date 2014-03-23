@@ -968,19 +968,23 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	public class MessageElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Message");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final RuleCall cMessageSignatureParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final Assignment cSignatureAssignment_0 = (Assignment)cAlternatives.eContents().get(0);
+		private final RuleCall cSignatureMessageSignatureParserRuleCall_0_0 = (RuleCall)cSignatureAssignment_0.eContents().get(0);
 		private final Assignment cParameterAssignment_1 = (Assignment)cAlternatives.eContents().get(1);
 		private final RuleCall cParameterIDTerminalRuleCall_1_0 = (RuleCall)cParameterAssignment_1.eContents().get(0);
 		
 		//Message:
-		//	MessageSignature | parameter=ID;
+		//	signature=MessageSignature | parameter=ID;
 		public ParserRule getRule() { return rule; }
 
-		//MessageSignature | parameter=ID
+		//signature=MessageSignature | parameter=ID
 		public Alternatives getAlternatives() { return cAlternatives; }
 
+		//signature=MessageSignature
+		public Assignment getSignatureAssignment_0() { return cSignatureAssignment_0; }
+
 		//MessageSignature
-		public RuleCall getMessageSignatureParserRuleCall_0() { return cMessageSignatureParserRuleCall_0; }
+		public RuleCall getSignatureMessageSignatureParserRuleCall_0_0() { return cSignatureMessageSignatureParserRuleCall_0_0; }
 
 		//parameter=ID
 		public Assignment getParameterAssignment_1() { return cParameterAssignment_1; }
@@ -1638,16 +1642,16 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cLocalParallelParserRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
 		private final RuleCall cLocalRecursionParserRuleCall_4 = (RuleCall)cAlternatives.eContents().get(4);
 		private final RuleCall cLocalContinueParserRuleCall_5 = (RuleCall)cAlternatives.eContents().get(5);
-		private final RuleCall cLocalinterruptibleParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
+		private final RuleCall cLocalInterruptibleParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
 		private final RuleCall cLocalDoParserRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
 		
 		/// *|
 		//	localspawn* / LlobalInteraction:
-		//	LocalSend | LocalReceive | LocalChoice | LocalParallel | LocalRecursion | LocalContinue | localinterruptible |
+		//	LocalSend | LocalReceive | LocalChoice | LocalParallel | LocalRecursion | LocalContinue | LocalInterruptible |
 		//	LocalDo;
 		public ParserRule getRule() { return rule; }
 
-		//LocalSend | LocalReceive | LocalChoice | LocalParallel | LocalRecursion | LocalContinue | localinterruptible | LocalDo
+		//LocalSend | LocalReceive | LocalChoice | LocalParallel | LocalRecursion | LocalContinue | LocalInterruptible | LocalDo
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//LocalSend
@@ -1668,8 +1672,8 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		//LocalContinue
 		public RuleCall getLocalContinueParserRuleCall_5() { return cLocalContinueParserRuleCall_5; }
 
-		//localinterruptible
-		public RuleCall getLocalinterruptibleParserRuleCall_6() { return cLocalinterruptibleParserRuleCall_6; }
+		//LocalInterruptible
+		public RuleCall getLocalInterruptibleParserRuleCall_6() { return cLocalInterruptibleParserRuleCall_6; }
 
 		//LocalDo
 		public RuleCall getLocalDoParserRuleCall_7() { return cLocalDoParserRuleCall_7; }
@@ -1923,8 +1927,8 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		public RuleCall getBlocksLocalProtocolBlockParserRuleCall_2_1_0() { return cBlocksLocalProtocolBlockParserRuleCall_2_1_0; }
 	}
 
-	public class LocalinterruptibleElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "localinterruptible");
+	public class LocalInterruptibleElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LocalInterruptible");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cInterruptibleKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
@@ -1943,7 +1947,7 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		/// **
 		// * Section 3.8.8 Local Interruptible
-		// * / localinterruptible:
+		// * / LocalInterruptible:
 		//	"interruptible" (scope=ID ":")? block=LocalProtocolBlock "with" "{" throw=LocalThrow? catches+=LocalCatch* "}";
 		public ParserRule getRule() { return rule; }
 
@@ -2271,7 +2275,7 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	private LocalRecursionElements pLocalRecursion;
 	private LocalContinueElements pLocalContinue;
 	private LocalParallelElements pLocalParallel;
-	private LocalinterruptibleElements pLocalinterruptible;
+	private LocalInterruptibleElements pLocalInterruptible;
 	private LocalThrowElements pLocalThrow;
 	private LocalCatchElements pLocalCatch;
 	private LocalDoElements pLocalDo;
@@ -2487,7 +2491,7 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Message:
-	//	MessageSignature | parameter=ID;
+	//	signature=MessageSignature | parameter=ID;
 	public MessageElements getMessageAccess() {
 		return (pMessage != null) ? pMessage : (pMessage = new MessageElements());
 	}
@@ -2606,7 +2610,7 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	/// *|
 	//	localspawn* / LlobalInteraction:
-	//	LocalSend | LocalReceive | LocalChoice | LocalParallel | LocalRecursion | LocalContinue | localinterruptible |
+	//	LocalSend | LocalReceive | LocalChoice | LocalParallel | LocalRecursion | LocalContinue | LocalInterruptible |
 	//	LocalDo;
 	public LlobalInteractionElements getLlobalInteractionAccess() {
 		return (pLlobalInteraction != null) ? pLlobalInteraction : (pLlobalInteraction = new LlobalInteractionElements());
@@ -2686,14 +2690,14 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	/// **
 	// * Section 3.8.8 Local Interruptible
-	// * / localinterruptible:
+	// * / LocalInterruptible:
 	//	"interruptible" (scope=ID ":")? block=LocalProtocolBlock "with" "{" throw=LocalThrow? catches+=LocalCatch* "}";
-	public LocalinterruptibleElements getLocalinterruptibleAccess() {
-		return (pLocalinterruptible != null) ? pLocalinterruptible : (pLocalinterruptible = new LocalinterruptibleElements());
+	public LocalInterruptibleElements getLocalInterruptibleAccess() {
+		return (pLocalInterruptible != null) ? pLocalInterruptible : (pLocalInterruptible = new LocalInterruptibleElements());
 	}
 	
-	public ParserRule getLocalinterruptibleRule() {
-		return getLocalinterruptibleAccess().getRule();
+	public ParserRule getLocalInterruptibleRule() {
+		return getLocalInterruptibleAccess().getRule();
 	}
 
 	//LocalThrow:

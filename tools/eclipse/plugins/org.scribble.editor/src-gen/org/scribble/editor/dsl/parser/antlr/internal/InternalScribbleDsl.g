@@ -1583,16 +1583,25 @@ ruleMessage returns [EObject current=null]
     @init { enterRule(); 
     }
     @after { leaveRule(); }:
+((
 (
-    { 
-        newCompositeNode(grammarAccess.getMessageAccess().getMessageSignatureParserRuleCall_0()); 
-    }
-    this_MessageSignature_0=ruleMessageSignature
-    { 
-        $current = $this_MessageSignature_0.current; 
-        afterParserOrEnumRuleCall();
-    }
+		{ 
+	        newCompositeNode(grammarAccess.getMessageAccess().getSignatureMessageSignatureParserRuleCall_0_0()); 
+	    }
+		lv_signature_0_0=ruleMessageSignature		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getMessageRule());
+	        }
+       		set(
+       			$current, 
+       			"signature",
+        		lv_signature_0_0, 
+        		"MessageSignature");
+	        afterParserOrEnumRuleCall();
+	    }
 
+)
+)
     |(
 (
 		lv_parameter_1_0=RULE_ID
@@ -2660,11 +2669,11 @@ ruleLlobalInteraction returns [EObject current=null]
 
     |
     { 
-        newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalinterruptibleParserRuleCall_6()); 
+        newCompositeNode(grammarAccess.getLlobalInteractionAccess().getLocalInterruptibleParserRuleCall_6()); 
     }
-    this_localinterruptible_6=rulelocalinterruptible
+    this_LocalInterruptible_6=ruleLocalInterruptible
     { 
-        $current = $this_localinterruptible_6.current; 
+        $current = $this_LocalInterruptible_6.current; 
         afterParserOrEnumRuleCall();
     }
 
@@ -3096,33 +3105,33 @@ ruleLocalParallel returns [EObject current=null]
 
 
 
-// Entry rule entryRulelocalinterruptible
-entryRulelocalinterruptible returns [EObject current=null] 
+// Entry rule entryRuleLocalInterruptible
+entryRuleLocalInterruptible returns [EObject current=null] 
 	:
-	{ newCompositeNode(grammarAccess.getLocalinterruptibleRule()); }
-	 iv_rulelocalinterruptible=rulelocalinterruptible 
-	 { $current=$iv_rulelocalinterruptible.current; } 
+	{ newCompositeNode(grammarAccess.getLocalInterruptibleRule()); }
+	 iv_ruleLocalInterruptible=ruleLocalInterruptible 
+	 { $current=$iv_ruleLocalInterruptible.current; } 
 	 EOF 
 ;
 
-// Rule localinterruptible
-rulelocalinterruptible returns [EObject current=null] 
+// Rule LocalInterruptible
+ruleLocalInterruptible returns [EObject current=null] 
     @init { enterRule(); 
     }
     @after { leaveRule(); }:
 (	otherlv_0='interruptible' 
     {
-    	newLeafNode(otherlv_0, grammarAccess.getLocalinterruptibleAccess().getInterruptibleKeyword_0());
+    	newLeafNode(otherlv_0, grammarAccess.getLocalInterruptibleAccess().getInterruptibleKeyword_0());
     }
 ((
 (
 		lv_scope_1_0=RULE_ID
 		{
-			newLeafNode(lv_scope_1_0, grammarAccess.getLocalinterruptibleAccess().getScopeIDTerminalRuleCall_1_0_0()); 
+			newLeafNode(lv_scope_1_0, grammarAccess.getLocalInterruptibleAccess().getScopeIDTerminalRuleCall_1_0_0()); 
 		}
 		{
 	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getLocalinterruptibleRule());
+	            $current = createModelElement(grammarAccess.getLocalInterruptibleRule());
 	        }
        		setWithLastConsumed(
        			$current, 
@@ -3134,16 +3143,16 @@ rulelocalinterruptible returns [EObject current=null]
 )
 )	otherlv_2=':' 
     {
-    	newLeafNode(otherlv_2, grammarAccess.getLocalinterruptibleAccess().getColonKeyword_1_1());
+    	newLeafNode(otherlv_2, grammarAccess.getLocalInterruptibleAccess().getColonKeyword_1_1());
     }
 )?(
 (
 		{ 
-	        newCompositeNode(grammarAccess.getLocalinterruptibleAccess().getBlockLocalProtocolBlockParserRuleCall_2_0()); 
+	        newCompositeNode(grammarAccess.getLocalInterruptibleAccess().getBlockLocalProtocolBlockParserRuleCall_2_0()); 
 	    }
 		lv_block_3_0=ruleLocalProtocolBlock		{
 	        if ($current==null) {
-	            $current = createModelElementForParent(grammarAccess.getLocalinterruptibleRule());
+	            $current = createModelElementForParent(grammarAccess.getLocalInterruptibleRule());
 	        }
        		set(
        			$current, 
@@ -3156,20 +3165,20 @@ rulelocalinterruptible returns [EObject current=null]
 )
 )	otherlv_4='with' 
     {
-    	newLeafNode(otherlv_4, grammarAccess.getLocalinterruptibleAccess().getWithKeyword_3());
+    	newLeafNode(otherlv_4, grammarAccess.getLocalInterruptibleAccess().getWithKeyword_3());
     }
 	otherlv_5='{' 
     {
-    	newLeafNode(otherlv_5, grammarAccess.getLocalinterruptibleAccess().getLeftCurlyBracketKeyword_4());
+    	newLeafNode(otherlv_5, grammarAccess.getLocalInterruptibleAccess().getLeftCurlyBracketKeyword_4());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getLocalinterruptibleAccess().getThrowLocalThrowParserRuleCall_5_0()); 
+	        newCompositeNode(grammarAccess.getLocalInterruptibleAccess().getThrowLocalThrowParserRuleCall_5_0()); 
 	    }
 		lv_throw_6_0=ruleLocalThrow		{
 	        if ($current==null) {
-	            $current = createModelElementForParent(grammarAccess.getLocalinterruptibleRule());
+	            $current = createModelElementForParent(grammarAccess.getLocalInterruptibleRule());
 	        }
        		set(
        			$current, 
@@ -3183,11 +3192,11 @@ rulelocalinterruptible returns [EObject current=null]
 )?(
 (
 		{ 
-	        newCompositeNode(grammarAccess.getLocalinterruptibleAccess().getCatchesLocalCatchParserRuleCall_6_0()); 
+	        newCompositeNode(grammarAccess.getLocalInterruptibleAccess().getCatchesLocalCatchParserRuleCall_6_0()); 
 	    }
 		lv_catches_7_0=ruleLocalCatch		{
 	        if ($current==null) {
-	            $current = createModelElementForParent(grammarAccess.getLocalinterruptibleRule());
+	            $current = createModelElementForParent(grammarAccess.getLocalInterruptibleRule());
 	        }
        		add(
        			$current, 
@@ -3200,7 +3209,7 @@ rulelocalinterruptible returns [EObject current=null]
 )
 )*	otherlv_8='}' 
     {
-    	newLeafNode(otherlv_8, grammarAccess.getLocalinterruptibleAccess().getRightCurlyBracketKeyword_7());
+    	newLeafNode(otherlv_8, grammarAccess.getLocalInterruptibleAccess().getRightCurlyBracketKeyword_7());
     }
 )
 ;

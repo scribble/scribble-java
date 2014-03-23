@@ -6,24 +6,24 @@ import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>localinterruptible</b></em>'.
+ * A representation of the model object '<em><b>Local Interruptible</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getScope <em>Scope</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getBlock <em>Block</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getThrow <em>Throw</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getCatches <em>Catches</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getScope <em>Scope</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getBlock <em>Block</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getThrow <em>Throw</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getCatches <em>Catches</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getlocalinterruptible()
+ * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getLocalInterruptible()
  * @model
  * @generated
  */
-public interface localinterruptible extends LlobalInteraction
+public interface LocalInterruptible extends LlobalInteraction
 {
   /**
    * Returns the value of the '<em><b>Scope</b></em>' attribute.
@@ -35,14 +35,14 @@ public interface localinterruptible extends LlobalInteraction
    * <!-- end-user-doc -->
    * @return the value of the '<em>Scope</em>' attribute.
    * @see #setScope(String)
-   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getlocalinterruptible_Scope()
+   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getLocalInterruptible_Scope()
    * @model
    * @generated
    */
   String getScope();
 
   /**
-   * Sets the value of the '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getScope <em>Scope</em>}' attribute.
+   * Sets the value of the '{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getScope <em>Scope</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Scope</em>' attribute.
@@ -61,14 +61,14 @@ public interface localinterruptible extends LlobalInteraction
    * <!-- end-user-doc -->
    * @return the value of the '<em>Block</em>' containment reference.
    * @see #setBlock(LocalProtocolBlock)
-   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getlocalinterruptible_Block()
+   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getLocalInterruptible_Block()
    * @model containment="true"
    * @generated
    */
   LocalProtocolBlock getBlock();
 
   /**
-   * Sets the value of the '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getBlock <em>Block</em>}' containment reference.
+   * Sets the value of the '{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getBlock <em>Block</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Block</em>' containment reference.
@@ -87,14 +87,14 @@ public interface localinterruptible extends LlobalInteraction
    * <!-- end-user-doc -->
    * @return the value of the '<em>Throw</em>' containment reference.
    * @see #setThrow(LocalThrow)
-   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getlocalinterruptible_Throw()
+   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getLocalInterruptible_Throw()
    * @model containment="true"
    * @generated
    */
   LocalThrow getThrow();
 
   /**
-   * Sets the value of the '{@link org.scribble.editor.dsl.scribbleDsl.localinterruptible#getThrow <em>Throw</em>}' containment reference.
+   * Sets the value of the '{@link org.scribble.editor.dsl.scribbleDsl.LocalInterruptible#getThrow <em>Throw</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Throw</em>' containment reference.
@@ -113,10 +113,10 @@ public interface localinterruptible extends LlobalInteraction
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Catches</em>' containment reference list.
-   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getlocalinterruptible_Catches()
+   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getLocalInterruptible_Catches()
    * @model containment="true"
    * @generated
    */
   EList<LocalCatch> getCatches();
 
-} // localinterruptible
+} // LocalInterruptible

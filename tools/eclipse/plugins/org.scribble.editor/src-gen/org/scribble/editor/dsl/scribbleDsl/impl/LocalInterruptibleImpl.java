@@ -18,28 +18,28 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.scribble.editor.dsl.scribbleDsl.LocalCatch;
+import org.scribble.editor.dsl.scribbleDsl.LocalInterruptible;
 import org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock;
 import org.scribble.editor.dsl.scribbleDsl.LocalThrow;
 import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
-import org.scribble.editor.dsl.scribbleDsl.localinterruptible;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>localinterruptible</b></em>'.
+ * An implementation of the model object '<em><b>Local Interruptible</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl#getScope <em>Scope</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl#getBlock <em>Block</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl#getThrow <em>Throw</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.localinterruptibleImpl#getCatches <em>Catches</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalInterruptibleImpl#getScope <em>Scope</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalInterruptibleImpl#getBlock <em>Block</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalInterruptibleImpl#getThrow <em>Throw</em>}</li>
+ *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalInterruptibleImpl#getCatches <em>Catches</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class localinterruptibleImpl extends LlobalInteractionImpl implements localinterruptible
+public class LocalInterruptibleImpl extends LlobalInteractionImpl implements LocalInterruptible
 {
   /**
    * The default value of the '{@link #getScope() <em>Scope</em>}' attribute.
@@ -96,7 +96,7 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
    * <!-- end-user-doc -->
    * @generated
    */
-  protected localinterruptibleImpl()
+  protected LocalInterruptibleImpl()
   {
     super();
   }
@@ -109,7 +109,7 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
   @Override
   protected EClass eStaticClass()
   {
-    return ScribbleDslPackage.Literals.LOCALINTERRUPTIBLE;
+    return ScribbleDslPackage.Literals.LOCAL_INTERRUPTIBLE;
   }
 
   /**
@@ -132,7 +132,7 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
     String oldScope = scope;
     scope = newScope;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCALINTERRUPTIBLE__SCOPE, oldScope, scope));
+      eNotify(new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCAL_INTERRUPTIBLE__SCOPE, oldScope, scope));
   }
 
   /**
@@ -156,7 +156,7 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
     block = newBlock;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCALINTERRUPTIBLE__BLOCK, oldBlock, newBlock);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCAL_INTERRUPTIBLE__BLOCK, oldBlock, newBlock);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -173,14 +173,14 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
     {
       NotificationChain msgs = null;
       if (block != null)
-        msgs = ((InternalEObject)block).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ScribbleDslPackage.LOCALINTERRUPTIBLE__BLOCK, null, msgs);
+        msgs = ((InternalEObject)block).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ScribbleDslPackage.LOCAL_INTERRUPTIBLE__BLOCK, null, msgs);
       if (newBlock != null)
-        msgs = ((InternalEObject)newBlock).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ScribbleDslPackage.LOCALINTERRUPTIBLE__BLOCK, null, msgs);
+        msgs = ((InternalEObject)newBlock).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ScribbleDslPackage.LOCAL_INTERRUPTIBLE__BLOCK, null, msgs);
       msgs = basicSetBlock(newBlock, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCALINTERRUPTIBLE__BLOCK, newBlock, newBlock));
+      eNotify(new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCAL_INTERRUPTIBLE__BLOCK, newBlock, newBlock));
   }
 
   /**
@@ -204,7 +204,7 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
     throw_ = newThrow;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCALINTERRUPTIBLE__THROW, oldThrow, newThrow);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCAL_INTERRUPTIBLE__THROW, oldThrow, newThrow);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -221,14 +221,14 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
     {
       NotificationChain msgs = null;
       if (throw_ != null)
-        msgs = ((InternalEObject)throw_).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ScribbleDslPackage.LOCALINTERRUPTIBLE__THROW, null, msgs);
+        msgs = ((InternalEObject)throw_).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ScribbleDslPackage.LOCAL_INTERRUPTIBLE__THROW, null, msgs);
       if (newThrow != null)
-        msgs = ((InternalEObject)newThrow).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ScribbleDslPackage.LOCALINTERRUPTIBLE__THROW, null, msgs);
+        msgs = ((InternalEObject)newThrow).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ScribbleDslPackage.LOCAL_INTERRUPTIBLE__THROW, null, msgs);
       msgs = basicSetThrow(newThrow, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCALINTERRUPTIBLE__THROW, newThrow, newThrow));
+      eNotify(new ENotificationImpl(this, Notification.SET, ScribbleDslPackage.LOCAL_INTERRUPTIBLE__THROW, newThrow, newThrow));
   }
 
   /**
@@ -240,7 +240,7 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
   {
     if (catches == null)
     {
-      catches = new EObjectContainmentEList<LocalCatch>(LocalCatch.class, this, ScribbleDslPackage.LOCALINTERRUPTIBLE__CATCHES);
+      catches = new EObjectContainmentEList<LocalCatch>(LocalCatch.class, this, ScribbleDslPackage.LOCAL_INTERRUPTIBLE__CATCHES);
     }
     return catches;
   }
@@ -255,11 +255,11 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
   {
     switch (featureID)
     {
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__BLOCK:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__BLOCK:
         return basicSetBlock(null, msgs);
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__THROW:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__THROW:
         return basicSetThrow(null, msgs);
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__CATCHES:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__CATCHES:
         return ((InternalEList<?>)getCatches()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -275,13 +275,13 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
   {
     switch (featureID)
     {
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__SCOPE:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__SCOPE:
         return getScope();
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__BLOCK:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__BLOCK:
         return getBlock();
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__THROW:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__THROW:
         return getThrow();
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__CATCHES:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__CATCHES:
         return getCatches();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -298,16 +298,16 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
   {
     switch (featureID)
     {
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__SCOPE:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__SCOPE:
         setScope((String)newValue);
         return;
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__BLOCK:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__BLOCK:
         setBlock((LocalProtocolBlock)newValue);
         return;
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__THROW:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__THROW:
         setThrow((LocalThrow)newValue);
         return;
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__CATCHES:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__CATCHES:
         getCatches().clear();
         getCatches().addAll((Collection<? extends LocalCatch>)newValue);
         return;
@@ -325,16 +325,16 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
   {
     switch (featureID)
     {
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__SCOPE:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__SCOPE:
         setScope(SCOPE_EDEFAULT);
         return;
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__BLOCK:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__BLOCK:
         setBlock((LocalProtocolBlock)null);
         return;
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__THROW:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__THROW:
         setThrow((LocalThrow)null);
         return;
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__CATCHES:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__CATCHES:
         getCatches().clear();
         return;
     }
@@ -351,13 +351,13 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
   {
     switch (featureID)
     {
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__SCOPE:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__SCOPE:
         return SCOPE_EDEFAULT == null ? scope != null : !SCOPE_EDEFAULT.equals(scope);
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__BLOCK:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__BLOCK:
         return block != null;
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__THROW:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__THROW:
         return throw_ != null;
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE__CATCHES:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE__CATCHES:
         return catches != null && !catches.isEmpty();
     }
     return super.eIsSet(featureID);
@@ -380,4 +380,4 @@ public class localinterruptibleImpl extends LlobalInteractionImpl implements loc
     return result.toString();
   }
 
-} //localinterruptibleImpl
+} //LocalInterruptibleImpl

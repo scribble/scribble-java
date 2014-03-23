@@ -107,7 +107,7 @@ GlobalMessageTransfer:
 ;
 
 Message:
-	MessageSignature
+	signature=MessageSignature
 |
 	parameter=ID
 ;
@@ -194,7 +194,7 @@ LlobalInteraction:
 |
 	LocalContinue
 |
-	localinterruptible
+	LocalInterruptible
 |
 	LocalDo
 /*|
@@ -245,7 +245,7 @@ LocalParallel:
 /**
  * Section 3.8.8 Local Interruptible
  */
-localinterruptible:
+LocalInterruptible:
 	'interruptible' ( scope=ID ':' )? block=LocalProtocolBlock 'with' '{' ( throw=LocalThrow )? ( catches+=LocalCatch )* '}'
 ;
 

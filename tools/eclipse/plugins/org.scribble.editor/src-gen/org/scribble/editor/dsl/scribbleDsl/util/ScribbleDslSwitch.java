@@ -113,7 +113,6 @@ public class ScribbleDslSwitch<T> extends Switch<T>
       {
         MessageSignature messageSignature = (MessageSignature)theEObject;
         T result = caseMessageSignature(messageSignature);
-        if (result == null) result = caseMessage(messageSignature);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -312,11 +311,11 @@ public class ScribbleDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE:
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE:
       {
-        localinterruptible localinterruptible = (localinterruptible)theEObject;
-        T result = caselocalinterruptible(localinterruptible);
-        if (result == null) result = caseLlobalInteraction(localinterruptible);
+        LocalInterruptible localInterruptible = (LocalInterruptible)theEObject;
+        T result = caseLocalInterruptible(localInterruptible);
+        if (result == null) result = caseLlobalInteraction(localInterruptible);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -859,17 +858,17 @@ public class ScribbleDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>localinterruptible</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Local Interruptible</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>localinterruptible</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Local Interruptible</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caselocalinterruptible(localinterruptible object)
+  public T caseLocalInterruptible(LocalInterruptible object)
   {
     return null;
   }

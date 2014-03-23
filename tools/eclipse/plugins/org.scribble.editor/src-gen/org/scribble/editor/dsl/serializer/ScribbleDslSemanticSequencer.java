@@ -30,6 +30,7 @@ import org.scribble.editor.dsl.scribbleDsl.LocalCatch;
 import org.scribble.editor.dsl.scribbleDsl.LocalChoice;
 import org.scribble.editor.dsl.scribbleDsl.LocalContinue;
 import org.scribble.editor.dsl.scribbleDsl.LocalDo;
+import org.scribble.editor.dsl.scribbleDsl.LocalInterruptible;
 import org.scribble.editor.dsl.scribbleDsl.LocalParallel;
 import org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock;
 import org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl;
@@ -46,7 +47,6 @@ import org.scribble.editor.dsl.scribbleDsl.PayloadTypeDecl;
 import org.scribble.editor.dsl.scribbleDsl.RoleDecl;
 import org.scribble.editor.dsl.scribbleDsl.RoleInstantiation;
 import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
-import org.scribble.editor.dsl.scribbleDsl.localinterruptible;
 import org.scribble.editor.dsl.services.ScribbleDslGrammarAccess;
 
 @SuppressWarnings("all")
@@ -171,6 +171,13 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 					return; 
 				}
 				else break;
+			case ScribbleDslPackage.LOCAL_INTERRUPTIBLE:
+				if(context == grammarAccess.getLlobalInteractionRule() ||
+				   context == grammarAccess.getLocalInterruptibleRule()) {
+					sequence_LocalInterruptible(context, (LocalInterruptible) semanticObject); 
+					return; 
+				}
+				else break;
 			case ScribbleDslPackage.LOCAL_PARALLEL:
 				if(context == grammarAccess.getLlobalInteractionRule() ||
 				   context == grammarAccess.getLocalParallelRule()) {
@@ -224,8 +231,7 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 				}
 				else break;
 			case ScribbleDslPackage.MESSAGE_SIGNATURE:
-				if(context == grammarAccess.getMessageRule() ||
-				   context == grammarAccess.getMessageSignatureRule()) {
+				if(context == grammarAccess.getMessageSignatureRule()) {
 					sequence_MessageSignature(context, (MessageSignature) semanticObject); 
 					return; 
 				}
@@ -263,13 +269,6 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 			case ScribbleDslPackage.ROLE_INSTANTIATION:
 				if(context == grammarAccess.getRoleInstantiationRule()) {
 					sequence_RoleInstantiation(context, (RoleInstantiation) semanticObject); 
-					return; 
-				}
-				else break;
-			case ScribbleDslPackage.LOCALINTERRUPTIBLE:
-				if(context == grammarAccess.getLlobalInteractionRule() ||
-				   context == grammarAccess.getLocalinterruptibleRule()) {
-					sequence_localinterruptible(context, (localinterruptible) semanticObject); 
 					return; 
 				}
 				else break;
@@ -465,6 +464,15 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	
 	/**
 	 * Constraint:
+	 *     (scope=ID? block=LocalProtocolBlock throw=LocalThrow? catches+=LocalCatch*)
+	 */
+	protected void sequence_LocalInterruptible(EObject context, LocalInterruptible semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
 	 *     (blocks+=LocalProtocolBlock blocks+=LocalProtocolBlock*)
 	 */
 	protected void sequence_LocalParallel(EObject context, LocalParallel semanticObject) {
@@ -567,17 +575,10 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	
 	/**
 	 * Constraint:
-	 *     parameter=ID
+	 *     (signature=MessageSignature | parameter=ID)
 	 */
 	protected void sequence_Message(EObject context, Message semanticObject) {
-		if(errorAcceptor != null) {
-			if(transientValues.isValueTransient(semanticObject, ScribbleDslPackage.Literals.MESSAGE__PARAMETER) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ScribbleDslPackage.Literals.MESSAGE__PARAMETER));
-		}
-		INodesForEObjectProvider nodes = createNodeProvider(semanticObject);
-		SequenceFeeder feeder = createSequencerFeeder(semanticObject, nodes);
-		feeder.accept(grammarAccess.getMessageAccess().getParameterIDTerminalRuleCall_1_0(), semanticObject.getParameter());
-		feeder.finish();
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -647,15 +648,6 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     (name=ID alias=ID?)
 	 */
 	protected void sequence_RoleInstantiation(EObject context, RoleInstantiation semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Constraint:
-	 *     (scope=ID? block=LocalProtocolBlock throw=LocalThrow? catches+=LocalCatch*)
-	 */
-	protected void sequence_localinterruptible(EObject context, localinterruptible semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 }

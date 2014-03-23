@@ -96,7 +96,7 @@ public class ScribbleDslFactoryImpl extends EFactoryImpl implements ScribbleDslF
       case ScribbleDslPackage.LOCAL_RECURSION: return createLocalRecursion();
       case ScribbleDslPackage.LOCAL_CONTINUE: return createLocalContinue();
       case ScribbleDslPackage.LOCAL_PARALLEL: return createLocalParallel();
-      case ScribbleDslPackage.LOCALINTERRUPTIBLE: return createlocalinterruptible();
+      case ScribbleDslPackage.LOCAL_INTERRUPTIBLE: return createLocalInterruptible();
       case ScribbleDslPackage.LOCAL_THROW: return createLocalThrow();
       case ScribbleDslPackage.LOCAL_CATCH: return createLocalCatch();
       case ScribbleDslPackage.LOCAL_DO: return createLocalDo();
@@ -462,10 +462,10 @@ public class ScribbleDslFactoryImpl extends EFactoryImpl implements ScribbleDslF
    * <!-- end-user-doc -->
    * @generated
    */
-  public localinterruptible createlocalinterruptible()
+  public LocalInterruptible createLocalInterruptible()
   {
-    localinterruptibleImpl localinterruptible = new localinterruptibleImpl();
-    return localinterruptible;
+    LocalInterruptibleImpl localInterruptible = new LocalInterruptibleImpl();
+    return localInterruptible;
   }
 
   /**

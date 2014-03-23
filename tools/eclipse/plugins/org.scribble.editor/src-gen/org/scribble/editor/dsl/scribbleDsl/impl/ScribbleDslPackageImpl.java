@@ -29,6 +29,7 @@ import org.scribble.editor.dsl.scribbleDsl.LocalCatch;
 import org.scribble.editor.dsl.scribbleDsl.LocalChoice;
 import org.scribble.editor.dsl.scribbleDsl.LocalContinue;
 import org.scribble.editor.dsl.scribbleDsl.LocalDo;
+import org.scribble.editor.dsl.scribbleDsl.LocalInterruptible;
 import org.scribble.editor.dsl.scribbleDsl.LocalParallel;
 import org.scribble.editor.dsl.scribbleDsl.LocalProtocolBlock;
 import org.scribble.editor.dsl.scribbleDsl.LocalProtocolDecl;
@@ -46,7 +47,6 @@ import org.scribble.editor.dsl.scribbleDsl.RoleDecl;
 import org.scribble.editor.dsl.scribbleDsl.RoleInstantiation;
 import org.scribble.editor.dsl.scribbleDsl.ScribbleDslFactory;
 import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
-import org.scribble.editor.dsl.scribbleDsl.localinterruptible;
 
 /**
  * <!-- begin-user-doc -->
@@ -285,7 +285,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass localinterruptibleEClass = null;
+  private EClass localInterruptibleEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -896,9 +896,19 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
+  public EReference getMessage_Signature()
+  {
+    return (EReference)messageEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EAttribute getMessage_Parameter()
   {
-    return (EAttribute)messageEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)messageEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1406,9 +1416,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getlocalinterruptible()
+  public EClass getLocalInterruptible()
   {
-    return localinterruptibleEClass;
+    return localInterruptibleEClass;
   }
 
   /**
@@ -1416,9 +1426,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getlocalinterruptible_Scope()
+  public EAttribute getLocalInterruptible_Scope()
   {
-    return (EAttribute)localinterruptibleEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)localInterruptibleEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1426,9 +1436,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getlocalinterruptible_Block()
+  public EReference getLocalInterruptible_Block()
   {
-    return (EReference)localinterruptibleEClass.getEStructuralFeatures().get(1);
+    return (EReference)localInterruptibleEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1436,9 +1446,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getlocalinterruptible_Throw()
+  public EReference getLocalInterruptible_Throw()
   {
-    return (EReference)localinterruptibleEClass.getEStructuralFeatures().get(2);
+    return (EReference)localInterruptibleEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -1446,9 +1456,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getlocalinterruptible_Catches()
+  public EReference getLocalInterruptible_Catches()
   {
-    return (EReference)localinterruptibleEClass.getEStructuralFeatures().get(3);
+    return (EReference)localInterruptibleEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1658,6 +1668,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     createEAttribute(globalMessageTransferEClass, GLOBAL_MESSAGE_TRANSFER__TO_ROLES);
 
     messageEClass = createEClass(MESSAGE);
+    createEReference(messageEClass, MESSAGE__SIGNATURE);
     createEAttribute(messageEClass, MESSAGE__PARAMETER);
 
     globalChoiceEClass = createEClass(GLOBAL_CHOICE);
@@ -1726,11 +1737,11 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     localParallelEClass = createEClass(LOCAL_PARALLEL);
     createEReference(localParallelEClass, LOCAL_PARALLEL__BLOCKS);
 
-    localinterruptibleEClass = createEClass(LOCALINTERRUPTIBLE);
-    createEAttribute(localinterruptibleEClass, LOCALINTERRUPTIBLE__SCOPE);
-    createEReference(localinterruptibleEClass, LOCALINTERRUPTIBLE__BLOCK);
-    createEReference(localinterruptibleEClass, LOCALINTERRUPTIBLE__THROW);
-    createEReference(localinterruptibleEClass, LOCALINTERRUPTIBLE__CATCHES);
+    localInterruptibleEClass = createEClass(LOCAL_INTERRUPTIBLE);
+    createEAttribute(localInterruptibleEClass, LOCAL_INTERRUPTIBLE__SCOPE);
+    createEReference(localInterruptibleEClass, LOCAL_INTERRUPTIBLE__BLOCK);
+    createEReference(localInterruptibleEClass, LOCAL_INTERRUPTIBLE__THROW);
+    createEReference(localInterruptibleEClass, LOCAL_INTERRUPTIBLE__CATCHES);
 
     localThrowEClass = createEClass(LOCAL_THROW);
     createEReference(localThrowEClass, LOCAL_THROW__MESSAGES);
@@ -1778,7 +1789,6 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     // Add supertypes to classes
     importModuleEClass.getESuperTypes().add(this.getImportDecl());
     importMemberEClass.getESuperTypes().add(this.getImportDecl());
-    messageSignatureEClass.getESuperTypes().add(this.getMessage());
     globalMessageTransferEClass.getESuperTypes().add(this.getGlobalInteraction());
     globalChoiceEClass.getESuperTypes().add(this.getGlobalInteraction());
     globalRecursionEClass.getESuperTypes().add(this.getGlobalInteraction());
@@ -1792,7 +1802,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     localRecursionEClass.getESuperTypes().add(this.getLlobalInteraction());
     localContinueEClass.getESuperTypes().add(this.getLlobalInteraction());
     localParallelEClass.getESuperTypes().add(this.getLlobalInteraction());
-    localinterruptibleEClass.getESuperTypes().add(this.getLlobalInteraction());
+    localInterruptibleEClass.getESuperTypes().add(this.getLlobalInteraction());
     localDoEClass.getESuperTypes().add(this.getLlobalInteraction());
 
     // Initialize classes and features; add operations and parameters
@@ -1863,6 +1873,7 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     initEAttribute(getGlobalMessageTransfer_ToRoles(), ecorePackage.getEString(), "toRoles", null, 0, -1, GlobalMessageTransfer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(messageEClass, Message.class, "Message", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getMessage_Signature(), this.getMessageSignature(), null, "signature", null, 0, 1, Message.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMessage_Parameter(), ecorePackage.getEString(), "parameter", null, 0, 1, Message.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(globalChoiceEClass, GlobalChoice.class, "GlobalChoice", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1931,11 +1942,11 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     initEClass(localParallelEClass, LocalParallel.class, "LocalParallel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getLocalParallel_Blocks(), this.getLocalProtocolBlock(), null, "blocks", null, 0, -1, LocalParallel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(localinterruptibleEClass, localinterruptible.class, "localinterruptible", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getlocalinterruptible_Scope(), ecorePackage.getEString(), "scope", null, 0, 1, localinterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getlocalinterruptible_Block(), this.getLocalProtocolBlock(), null, "block", null, 0, 1, localinterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getlocalinterruptible_Throw(), this.getLocalThrow(), null, "throw", null, 0, 1, localinterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getlocalinterruptible_Catches(), this.getLocalCatch(), null, "catches", null, 0, -1, localinterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(localInterruptibleEClass, LocalInterruptible.class, "LocalInterruptible", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLocalInterruptible_Scope(), ecorePackage.getEString(), "scope", null, 0, 1, LocalInterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalInterruptible_Block(), this.getLocalProtocolBlock(), null, "block", null, 0, 1, LocalInterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalInterruptible_Throw(), this.getLocalThrow(), null, "throw", null, 0, 1, LocalInterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getLocalInterruptible_Catches(), this.getLocalCatch(), null, "catches", null, 0, -1, LocalInterruptible.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(localThrowEClass, LocalThrow.class, "LocalThrow", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getLocalThrow_Messages(), this.getMessage(), null, "messages", null, 0, -1, LocalThrow.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
