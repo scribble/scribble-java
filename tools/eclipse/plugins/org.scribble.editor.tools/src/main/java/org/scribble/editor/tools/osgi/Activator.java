@@ -61,8 +61,6 @@ public class Activator extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
         
-        System.out.println("Tools plugin activated");
-
         // Register resource change listener
         IResourceChangeListener rcl=new IResourceChangeListener() {
             public void resourceChanged(IResourceChangeEvent evt) {       

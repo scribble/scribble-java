@@ -4,12 +4,8 @@ generate scribbleDsl "http://www.scribble.org/editor/dsl/ScribbleDsl"
 
 
 Module:
-	ModuleDecl (imports+=ImportDecl)* (types+=PayloadTypeDecl)*
+	'module' name=ModuleName ';' (imports+=ImportDecl)* (types+=PayloadTypeDecl)*
 		(globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl )*
-;
-
-ModuleDecl:
-	'module' name=ModuleName ';'
 ;
 
 ModuleName:	
@@ -37,14 +33,8 @@ PayloadTypeDecl:
 /**
  * Section 3.5 Message Signatures
  */
-MessageOperator:
-	ID //(LETTER | DIGIT | UNDERSCORE)+
-;
-
 MessageSignature:
-//	'(' payload ')'
-//|
-	operator=ID '(' ( types+=PayloadElement (',' types+=PayloadElement)* )? ')'
+	{MessageSignature} ( operator=ID )? '(' ( types+=PayloadElement (',' types+=PayloadElement)* )? ')'
 ;
 
 PayloadElement:
@@ -260,7 +250,7 @@ localinterruptible:
 ;
 
 LocalThrow:
-	'throw' messages+=Message (',' messages+=Message)* 'to' toRoles+=ID (',' toRols+=ID )* ';'
+	'throw' messages+=Message (',' messages+=Message)* 'to' toRoles+=ID (',' toRoles+=ID )* ';'
 ;
 
 LocalCatch:

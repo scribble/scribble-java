@@ -21,68 +21,27 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	public class ModuleElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Module");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final RuleCall cModuleDeclParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
-		private final Assignment cImportsAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cImportsImportDeclParserRuleCall_1_0 = (RuleCall)cImportsAssignment_1.eContents().get(0);
-		private final Assignment cTypesAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cTypesPayloadTypeDeclParserRuleCall_2_0 = (RuleCall)cTypesAssignment_2.eContents().get(0);
-		private final Alternatives cAlternatives_3 = (Alternatives)cGroup.eContents().get(3);
-		private final Assignment cGlobalsAssignment_3_0 = (Assignment)cAlternatives_3.eContents().get(0);
-		private final RuleCall cGlobalsGlobalProtocolDeclParserRuleCall_3_0_0 = (RuleCall)cGlobalsAssignment_3_0.eContents().get(0);
-		private final Assignment cLocalsAssignment_3_1 = (Assignment)cAlternatives_3.eContents().get(1);
-		private final RuleCall cLocalsLocalProtocolDeclParserRuleCall_3_1_0 = (RuleCall)cLocalsAssignment_3_1.eContents().get(0);
-		
-		//Module:
-		//	ModuleDecl imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*;
-		public ParserRule getRule() { return rule; }
-
-		//ModuleDecl imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*
-		public Group getGroup() { return cGroup; }
-
-		//ModuleDecl
-		public RuleCall getModuleDeclParserRuleCall_0() { return cModuleDeclParserRuleCall_0; }
-
-		//imports+=ImportDecl*
-		public Assignment getImportsAssignment_1() { return cImportsAssignment_1; }
-
-		//ImportDecl
-		public RuleCall getImportsImportDeclParserRuleCall_1_0() { return cImportsImportDeclParserRuleCall_1_0; }
-
-		//types+=PayloadTypeDecl*
-		public Assignment getTypesAssignment_2() { return cTypesAssignment_2; }
-
-		//PayloadTypeDecl
-		public RuleCall getTypesPayloadTypeDeclParserRuleCall_2_0() { return cTypesPayloadTypeDeclParserRuleCall_2_0; }
-
-		//(globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*
-		public Alternatives getAlternatives_3() { return cAlternatives_3; }
-
-		//globals+=GlobalProtocolDecl
-		public Assignment getGlobalsAssignment_3_0() { return cGlobalsAssignment_3_0; }
-
-		//GlobalProtocolDecl
-		public RuleCall getGlobalsGlobalProtocolDeclParserRuleCall_3_0_0() { return cGlobalsGlobalProtocolDeclParserRuleCall_3_0_0; }
-
-		//locals+=LocalProtocolDecl
-		public Assignment getLocalsAssignment_3_1() { return cLocalsAssignment_3_1; }
-
-		//LocalProtocolDecl
-		public RuleCall getLocalsLocalProtocolDeclParserRuleCall_3_1_0() { return cLocalsLocalProtocolDeclParserRuleCall_3_1_0; }
-	}
-
-	public class ModuleDeclElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ModuleDecl");
-		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cModuleKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameModuleNameParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Keyword cSemicolonKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cImportsAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cImportsImportDeclParserRuleCall_3_0 = (RuleCall)cImportsAssignment_3.eContents().get(0);
+		private final Assignment cTypesAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cTypesPayloadTypeDeclParserRuleCall_4_0 = (RuleCall)cTypesAssignment_4.eContents().get(0);
+		private final Alternatives cAlternatives_5 = (Alternatives)cGroup.eContents().get(5);
+		private final Assignment cGlobalsAssignment_5_0 = (Assignment)cAlternatives_5.eContents().get(0);
+		private final RuleCall cGlobalsGlobalProtocolDeclParserRuleCall_5_0_0 = (RuleCall)cGlobalsAssignment_5_0.eContents().get(0);
+		private final Assignment cLocalsAssignment_5_1 = (Assignment)cAlternatives_5.eContents().get(1);
+		private final RuleCall cLocalsLocalProtocolDeclParserRuleCall_5_1_0 = (RuleCall)cLocalsAssignment_5_1.eContents().get(0);
 		
-		//ModuleDecl:
-		//	"module" name=ModuleName ";";
+		//Module:
+		//	"module" name=ModuleName ";" imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl |
+		//	locals+=LocalProtocolDecl)*;
 		public ParserRule getRule() { return rule; }
 
-		//"module" name=ModuleName ";"
+		//"module" name=ModuleName ";" imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl |
+		//locals+=LocalProtocolDecl)*
 		public Group getGroup() { return cGroup; }
 
 		//"module"
@@ -96,6 +55,33 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//";"
 		public Keyword getSemicolonKeyword_2() { return cSemicolonKeyword_2; }
+
+		//imports+=ImportDecl*
+		public Assignment getImportsAssignment_3() { return cImportsAssignment_3; }
+
+		//ImportDecl
+		public RuleCall getImportsImportDeclParserRuleCall_3_0() { return cImportsImportDeclParserRuleCall_3_0; }
+
+		//types+=PayloadTypeDecl*
+		public Assignment getTypesAssignment_4() { return cTypesAssignment_4; }
+
+		//PayloadTypeDecl
+		public RuleCall getTypesPayloadTypeDeclParserRuleCall_4_0() { return cTypesPayloadTypeDeclParserRuleCall_4_0; }
+
+		//(globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*
+		public Alternatives getAlternatives_5() { return cAlternatives_5; }
+
+		//globals+=GlobalProtocolDecl
+		public Assignment getGlobalsAssignment_5_0() { return cGlobalsAssignment_5_0; }
+
+		//GlobalProtocolDecl
+		public RuleCall getGlobalsGlobalProtocolDeclParserRuleCall_5_0_0() { return cGlobalsGlobalProtocolDeclParserRuleCall_5_0_0; }
+
+		//locals+=LocalProtocolDecl
+		public Assignment getLocalsAssignment_5_1() { return cLocalsAssignment_5_1; }
+
+		//LocalProtocolDecl
+		public RuleCall getLocalsLocalProtocolDeclParserRuleCall_5_1_0() { return cLocalsLocalProtocolDeclParserRuleCall_5_1_0; }
 	}
 
 	public class ModuleNameElements extends AbstractParserRuleElementFinder {
@@ -314,80 +300,66 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getSemicolonKeyword_9() { return cSemicolonKeyword_9; }
 	}
 
-	public class MessageOperatorElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "MessageOperator");
-		private final RuleCall cIDTerminalRuleCall = (RuleCall)rule.eContents().get(1);
-		
-		/// **
-		// * Section 3.5 Message Signatures
-		// * / MessageOperator: //(LETTER | DIGIT | UNDERSCORE)+
-		//	ID;
-		public ParserRule getRule() { return rule; }
-
-		////(LETTER | DIGIT | UNDERSCORE)+
-		//ID
-		public RuleCall getIDTerminalRuleCall() { return cIDTerminalRuleCall; }
-	}
-
 	public class MessageSignatureElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "MessageSignature");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cOperatorAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cOperatorIDTerminalRuleCall_0_0 = (RuleCall)cOperatorAssignment_0.eContents().get(0);
-		private final Keyword cLeftParenthesisKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Assignment cTypesAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
-		private final RuleCall cTypesPayloadElementParserRuleCall_2_0_0 = (RuleCall)cTypesAssignment_2_0.eContents().get(0);
-		private final Group cGroup_2_1 = (Group)cGroup_2.eContents().get(1);
-		private final Keyword cCommaKeyword_2_1_0 = (Keyword)cGroup_2_1.eContents().get(0);
-		private final Assignment cTypesAssignment_2_1_1 = (Assignment)cGroup_2_1.eContents().get(1);
-		private final RuleCall cTypesPayloadElementParserRuleCall_2_1_1_0 = (RuleCall)cTypesAssignment_2_1_1.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Action cMessageSignatureAction_0 = (Action)cGroup.eContents().get(0);
+		private final Assignment cOperatorAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cOperatorIDTerminalRuleCall_1_0 = (RuleCall)cOperatorAssignment_1.eContents().get(0);
+		private final Keyword cLeftParenthesisKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Assignment cTypesAssignment_3_0 = (Assignment)cGroup_3.eContents().get(0);
+		private final RuleCall cTypesPayloadElementParserRuleCall_3_0_0 = (RuleCall)cTypesAssignment_3_0.eContents().get(0);
+		private final Group cGroup_3_1 = (Group)cGroup_3.eContents().get(1);
+		private final Keyword cCommaKeyword_3_1_0 = (Keyword)cGroup_3_1.eContents().get(0);
+		private final Assignment cTypesAssignment_3_1_1 = (Assignment)cGroup_3_1.eContents().get(1);
+		private final RuleCall cTypesPayloadElementParserRuleCall_3_1_1_0 = (RuleCall)cTypesAssignment_3_1_1.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
-		//MessageSignature: //	'(' payload ')'
-		////|
-		//	operator=ID "(" (types+=PayloadElement ("," types+=PayloadElement)*)? ")";
+		/// **
+		// * Section 3.5 Message Signatures
+		// * / MessageSignature:
+		//	{MessageSignature} operator=ID? "(" (types+=PayloadElement ("," types+=PayloadElement)*)? ")";
 		public ParserRule getRule() { return rule; }
 
-		////	'(' payload ')'
-		////|
-		//operator=ID "(" (types+=PayloadElement ("," types+=PayloadElement)*)? ")"
+		//{MessageSignature} operator=ID? "(" (types+=PayloadElement ("," types+=PayloadElement)*)? ")"
 		public Group getGroup() { return cGroup; }
 
-		////	'(' payload ')'
-		////|
-		//operator=ID
-		public Assignment getOperatorAssignment_0() { return cOperatorAssignment_0; }
+		//{MessageSignature}
+		public Action getMessageSignatureAction_0() { return cMessageSignatureAction_0; }
+
+		//operator=ID?
+		public Assignment getOperatorAssignment_1() { return cOperatorAssignment_1; }
 
 		//ID
-		public RuleCall getOperatorIDTerminalRuleCall_0_0() { return cOperatorIDTerminalRuleCall_0_0; }
+		public RuleCall getOperatorIDTerminalRuleCall_1_0() { return cOperatorIDTerminalRuleCall_1_0; }
 
 		//"("
-		public Keyword getLeftParenthesisKeyword_1() { return cLeftParenthesisKeyword_1; }
+		public Keyword getLeftParenthesisKeyword_2() { return cLeftParenthesisKeyword_2; }
 
 		//(types+=PayloadElement ("," types+=PayloadElement)*)?
-		public Group getGroup_2() { return cGroup_2; }
+		public Group getGroup_3() { return cGroup_3; }
 
 		//types+=PayloadElement
-		public Assignment getTypesAssignment_2_0() { return cTypesAssignment_2_0; }
+		public Assignment getTypesAssignment_3_0() { return cTypesAssignment_3_0; }
 
 		//PayloadElement
-		public RuleCall getTypesPayloadElementParserRuleCall_2_0_0() { return cTypesPayloadElementParserRuleCall_2_0_0; }
+		public RuleCall getTypesPayloadElementParserRuleCall_3_0_0() { return cTypesPayloadElementParserRuleCall_3_0_0; }
 
 		//("," types+=PayloadElement)*
-		public Group getGroup_2_1() { return cGroup_2_1; }
+		public Group getGroup_3_1() { return cGroup_3_1; }
 
 		//","
-		public Keyword getCommaKeyword_2_1_0() { return cCommaKeyword_2_1_0; }
+		public Keyword getCommaKeyword_3_1_0() { return cCommaKeyword_3_1_0; }
 
 		//types+=PayloadElement
-		public Assignment getTypesAssignment_2_1_1() { return cTypesAssignment_2_1_1; }
+		public Assignment getTypesAssignment_3_1_1() { return cTypesAssignment_3_1_1; }
 
 		//PayloadElement
-		public RuleCall getTypesPayloadElementParserRuleCall_2_1_1_0() { return cTypesPayloadElementParserRuleCall_2_1_1_0; }
+		public RuleCall getTypesPayloadElementParserRuleCall_3_1_1_0() { return cTypesPayloadElementParserRuleCall_3_1_1_0; }
 
 		//")"
-		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
+		public Keyword getRightParenthesisKeyword_4() { return cRightParenthesisKeyword_4; }
 	}
 
 	public class PayloadElementElements extends AbstractParserRuleElementFinder {
@@ -2036,15 +2008,15 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cToRolesIDTerminalRuleCall_4_0 = (RuleCall)cToRolesAssignment_4.eContents().get(0);
 		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
 		private final Keyword cCommaKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
-		private final Assignment cToRolsAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
-		private final RuleCall cToRolsIDTerminalRuleCall_5_1_0 = (RuleCall)cToRolsAssignment_5_1.eContents().get(0);
+		private final Assignment cToRolesAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cToRolesIDTerminalRuleCall_5_1_0 = (RuleCall)cToRolesAssignment_5_1.eContents().get(0);
 		private final Keyword cSemicolonKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		//LocalThrow:
-		//	"throw" messages+=Message ("," messages+=Message)* "to" toRoles+=ID ("," toRols+=ID)* ";";
+		//	"throw" messages+=Message ("," messages+=Message)* "to" toRoles+=ID ("," toRoles+=ID)* ";";
 		public ParserRule getRule() { return rule; }
 
-		//"throw" messages+=Message ("," messages+=Message)* "to" toRoles+=ID ("," toRols+=ID)* ";"
+		//"throw" messages+=Message ("," messages+=Message)* "to" toRoles+=ID ("," toRoles+=ID)* ";"
 		public Group getGroup() { return cGroup; }
 
 		//"throw"
@@ -2077,17 +2049,17 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 		//ID
 		public RuleCall getToRolesIDTerminalRuleCall_4_0() { return cToRolesIDTerminalRuleCall_4_0; }
 
-		//("," toRols+=ID)*
+		//("," toRoles+=ID)*
 		public Group getGroup_5() { return cGroup_5; }
 
 		//","
 		public Keyword getCommaKeyword_5_0() { return cCommaKeyword_5_0; }
 
-		//toRols+=ID
-		public Assignment getToRolsAssignment_5_1() { return cToRolsAssignment_5_1; }
+		//toRoles+=ID
+		public Assignment getToRolesAssignment_5_1() { return cToRolesAssignment_5_1; }
 
 		//ID
-		public RuleCall getToRolsIDTerminalRuleCall_5_1_0() { return cToRolsIDTerminalRuleCall_5_1_0; }
+		public RuleCall getToRolesIDTerminalRuleCall_5_1_0() { return cToRolesIDTerminalRuleCall_5_1_0; }
 
 		//";"
 		public Keyword getSemicolonKeyword_6() { return cSemicolonKeyword_6; }
@@ -2267,13 +2239,11 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	
 	private ModuleElements pModule;
-	private ModuleDeclElements pModuleDecl;
 	private ModuleNameElements pModuleName;
 	private ImportDeclElements pImportDecl;
 	private ImportModuleElements pImportModule;
 	private ImportMemberElements pImportMember;
 	private PayloadTypeDeclElements pPayloadTypeDecl;
-	private MessageOperatorElements pMessageOperator;
 	private MessageSignatureElements pMessageSignature;
 	private PayloadElementElements pPayloadElement;
 	private GlobalProtocolDeclElements pGlobalProtocolDecl;
@@ -2345,23 +2315,14 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	
 	//Module:
-	//	ModuleDecl imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*;
+	//	"module" name=ModuleName ";" imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl |
+	//	locals+=LocalProtocolDecl)*;
 	public ModuleElements getModuleAccess() {
 		return (pModule != null) ? pModule : (pModule = new ModuleElements());
 	}
 	
 	public ParserRule getModuleRule() {
 		return getModuleAccess().getRule();
-	}
-
-	//ModuleDecl:
-	//	"module" name=ModuleName ";";
-	public ModuleDeclElements getModuleDeclAccess() {
-		return (pModuleDecl != null) ? pModuleDecl : (pModuleDecl = new ModuleDeclElements());
-	}
-	
-	public ParserRule getModuleDeclRule() {
-		return getModuleDeclAccess().getRule();
 	}
 
 	//ModuleName:
@@ -2416,19 +2377,8 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	/// **
 	// * Section 3.5 Message Signatures
-	// * / MessageOperator: //(LETTER | DIGIT | UNDERSCORE)+
-	//	ID;
-	public MessageOperatorElements getMessageOperatorAccess() {
-		return (pMessageOperator != null) ? pMessageOperator : (pMessageOperator = new MessageOperatorElements());
-	}
-	
-	public ParserRule getMessageOperatorRule() {
-		return getMessageOperatorAccess().getRule();
-	}
-
-	//MessageSignature: //	'(' payload ')'
-	////|
-	//	operator=ID "(" (types+=PayloadElement ("," types+=PayloadElement)*)? ")";
+	// * / MessageSignature:
+	//	{MessageSignature} operator=ID? "(" (types+=PayloadElement ("," types+=PayloadElement)*)? ")";
 	public MessageSignatureElements getMessageSignatureAccess() {
 		return (pMessageSignature != null) ? pMessageSignature : (pMessageSignature = new MessageSignatureElements());
 	}
@@ -2747,7 +2697,7 @@ public class ScribbleDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//LocalThrow:
-	//	"throw" messages+=Message ("," messages+=Message)* "to" toRoles+=ID ("," toRols+=ID)* ";";
+	//	"throw" messages+=Message ("," messages+=Message)* "to" toRoles+=ID ("," toRoles+=ID)* ";";
 	public LocalThrowElements getLocalThrowAccess() {
 		return (pLocalThrow != null) ? pLocalThrow : (pLocalThrow = new LocalThrowElements());
 	}

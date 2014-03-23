@@ -30,7 +30,6 @@ import org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage;
  * <ul>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalThrowImpl#getMessages <em>Messages</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalThrowImpl#getToRoles <em>To Roles</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalThrowImpl#getToRols <em>To Rols</em>}</li>
  * </ul>
  * </p>
  *
@@ -57,16 +56,6 @@ public class LocalThrowImpl extends MinimalEObjectImpl.Container implements Loca
    * @ordered
    */
   protected EList<String> toRoles;
-
-  /**
-   * The cached value of the '{@link #getToRols() <em>To Rols</em>}' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getToRols()
-   * @generated
-   * @ordered
-   */
-  protected EList<String> toRols;
 
   /**
    * <!-- begin-user-doc -->
@@ -122,20 +111,6 @@ public class LocalThrowImpl extends MinimalEObjectImpl.Container implements Loca
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<String> getToRols()
-  {
-    if (toRols == null)
-    {
-      toRols = new EDataTypeEList<String>(String.class, this, ScribbleDslPackage.LOCAL_THROW__TO_ROLS);
-    }
-    return toRols;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -161,8 +136,6 @@ public class LocalThrowImpl extends MinimalEObjectImpl.Container implements Loca
         return getMessages();
       case ScribbleDslPackage.LOCAL_THROW__TO_ROLES:
         return getToRoles();
-      case ScribbleDslPackage.LOCAL_THROW__TO_ROLS:
-        return getToRols();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -186,10 +159,6 @@ public class LocalThrowImpl extends MinimalEObjectImpl.Container implements Loca
         getToRoles().clear();
         getToRoles().addAll((Collection<? extends String>)newValue);
         return;
-      case ScribbleDslPackage.LOCAL_THROW__TO_ROLS:
-        getToRols().clear();
-        getToRols().addAll((Collection<? extends String>)newValue);
-        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -210,9 +179,6 @@ public class LocalThrowImpl extends MinimalEObjectImpl.Container implements Loca
       case ScribbleDslPackage.LOCAL_THROW__TO_ROLES:
         getToRoles().clear();
         return;
-      case ScribbleDslPackage.LOCAL_THROW__TO_ROLS:
-        getToRols().clear();
-        return;
     }
     super.eUnset(featureID);
   }
@@ -231,8 +197,6 @@ public class LocalThrowImpl extends MinimalEObjectImpl.Container implements Loca
         return messages != null && !messages.isEmpty();
       case ScribbleDslPackage.LOCAL_THROW__TO_ROLES:
         return toRoles != null && !toRoles.isEmpty();
-      case ScribbleDslPackage.LOCAL_THROW__TO_ROLS:
-        return toRols != null && !toRols.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -250,8 +214,6 @@ public class LocalThrowImpl extends MinimalEObjectImpl.Container implements Loca
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (toRoles: ");
     result.append(toRoles);
-    result.append(", toRols: ");
-    result.append(toRols);
     result.append(')');
     return result.toString();
   }

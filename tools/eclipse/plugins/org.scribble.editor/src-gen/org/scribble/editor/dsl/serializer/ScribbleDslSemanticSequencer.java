@@ -39,7 +39,7 @@ import org.scribble.editor.dsl.scribbleDsl.LocalSend;
 import org.scribble.editor.dsl.scribbleDsl.LocalThrow;
 import org.scribble.editor.dsl.scribbleDsl.Message;
 import org.scribble.editor.dsl.scribbleDsl.MessageSignature;
-import org.scribble.editor.dsl.scribbleDsl.ModuleDecl;
+import org.scribble.editor.dsl.scribbleDsl.Module;
 import org.scribble.editor.dsl.scribbleDsl.ParameterDecl;
 import org.scribble.editor.dsl.scribbleDsl.PayloadElement;
 import org.scribble.editor.dsl.scribbleDsl.PayloadTypeDecl;
@@ -230,13 +230,9 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 					return; 
 				}
 				else break;
-			case ScribbleDslPackage.MODULE_DECL:
-				if(context == grammarAccess.getModuleDeclRule()) {
-					sequence_ModuleDecl(context, (ModuleDecl) semanticObject); 
-					return; 
-				}
-				else if(context == grammarAccess.getModuleRule()) {
-					sequence_Module_ModuleDecl(context, (ModuleDecl) semanticObject); 
+			case ScribbleDslPackage.MODULE:
+				if(context == grammarAccess.getModuleRule()) {
+					sequence_Module(context, (Module) semanticObject); 
 					return; 
 				}
 				else break;
@@ -553,7 +549,7 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	
 	/**
 	 * Constraint:
-	 *     (messages+=Message messages+=Message* toRoles+=ID toRols+=ID*)
+	 *     (messages+=Message messages+=Message* toRoles+=ID toRoles+=ID*)
 	 */
 	protected void sequence_LocalThrow(EObject context, LocalThrow semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -562,7 +558,7 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	
 	/**
 	 * Constraint:
-	 *     (operator=ID (types+=PayloadElement types+=PayloadElement*)?)
+	 *     (operator=ID? (types+=PayloadElement types+=PayloadElement*)?)
 	 */
 	protected void sequence_MessageSignature(EObject context, MessageSignature semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -587,18 +583,9 @@ public class ScribbleDslSemanticSequencer extends AbstractDelegatingSemanticSequ
 	
 	/**
 	 * Constraint:
-	 *     name=ModuleName
-	 */
-	protected void sequence_ModuleDecl(EObject context, ModuleDecl semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Constraint:
 	 *     (name=ModuleName imports+=ImportDecl* types+=PayloadTypeDecl* (globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl)*)
 	 */
-	protected void sequence_Module_ModuleDecl(EObject context, ModuleDecl semanticObject) {
+	protected void sequence_Module(EObject context, Module semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

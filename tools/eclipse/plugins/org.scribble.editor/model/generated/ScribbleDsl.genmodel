@@ -7,13 +7,12 @@
     editorPluginID="org.scribble.editor.editor" runtimeVersion="2.9">
   <genPackages prefix="ScribbleDsl" basePackage="org.scribble.editor.dsl" disposableProviderFactory="true"
       fileExtensions="scr" ecorePackage="ScribbleDsl.ecore#/">
-    <genClasses ecoreClass="ScribbleDsl.ecore#//Module"/>
-    <genClasses ecoreClass="ScribbleDsl.ecore#//ModuleDecl">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//ModuleDecl/imports"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//ModuleDecl/types"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//ModuleDecl/globals"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//ModuleDecl/locals"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//ModuleDecl/name"/>
+    <genClasses ecoreClass="ScribbleDsl.ecore#//Module">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//Module/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//Module/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//Module/types"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//Module/globals"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//Module/locals"/>
     </genClasses>
     <genClasses ecoreClass="ScribbleDsl.ecore#//ImportDecl">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//ImportDecl/name"/>
@@ -149,7 +148,6 @@
     <genClasses ecoreClass="ScribbleDsl.ecore#//LocalThrow">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//LocalThrow/messages"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//LocalThrow/toRoles"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ScribbleDsl.ecore#//LocalThrow/toRols"/>
     </genClasses>
     <genClasses ecoreClass="ScribbleDsl.ecore#//LocalCatch">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ScribbleDsl.ecore#//LocalCatch/messages"/>

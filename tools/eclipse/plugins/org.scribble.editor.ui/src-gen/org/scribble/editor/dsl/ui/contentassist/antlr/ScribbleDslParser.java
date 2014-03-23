@@ -37,7 +37,7 @@ public class ScribbleDslParser extends AbstractContentAssistParser {
 			nameMappings = new HashMap<AbstractElement, String>() {
 				private static final long serialVersionUID = 1L;
 				{
-					put(grammarAccess.getModuleAccess().getAlternatives_3(), "rule__Module__Alternatives_3");
+					put(grammarAccess.getModuleAccess().getAlternatives_5(), "rule__Module__Alternatives_5");
 					put(grammarAccess.getImportDeclAccess().getAlternatives(), "rule__ImportDecl__Alternatives");
 					put(grammarAccess.getGlobalProtocolDeclAccess().getAlternatives_8(), "rule__GlobalProtocolDecl__Alternatives_8");
 					put(grammarAccess.getParameterDeclAccess().getAlternatives(), "rule__ParameterDecl__Alternatives");
@@ -47,7 +47,6 @@ public class ScribbleDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLocalProtocolDeclAccess().getAlternatives_10(), "rule__LocalProtocolDecl__Alternatives_10");
 					put(grammarAccess.getLlobalInteractionAccess().getAlternatives(), "rule__LlobalInteraction__Alternatives");
 					put(grammarAccess.getModuleAccess().getGroup(), "rule__Module__Group__0");
-					put(grammarAccess.getModuleDeclAccess().getGroup(), "rule__ModuleDecl__Group__0");
 					put(grammarAccess.getModuleNameAccess().getGroup(), "rule__ModuleName__Group__0");
 					put(grammarAccess.getModuleNameAccess().getGroup_1(), "rule__ModuleName__Group_1__0");
 					put(grammarAccess.getImportModuleAccess().getGroup(), "rule__ImportModule__Group__0");
@@ -56,8 +55,8 @@ public class ScribbleDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getImportMemberAccess().getGroup_4(), "rule__ImportMember__Group_4__0");
 					put(grammarAccess.getPayloadTypeDeclAccess().getGroup(), "rule__PayloadTypeDecl__Group__0");
 					put(grammarAccess.getMessageSignatureAccess().getGroup(), "rule__MessageSignature__Group__0");
-					put(grammarAccess.getMessageSignatureAccess().getGroup_2(), "rule__MessageSignature__Group_2__0");
-					put(grammarAccess.getMessageSignatureAccess().getGroup_2_1(), "rule__MessageSignature__Group_2_1__0");
+					put(grammarAccess.getMessageSignatureAccess().getGroup_3(), "rule__MessageSignature__Group_3__0");
+					put(grammarAccess.getMessageSignatureAccess().getGroup_3_1(), "rule__MessageSignature__Group_3_1__0");
 					put(grammarAccess.getPayloadElementAccess().getGroup(), "rule__PayloadElement__Group__0");
 					put(grammarAccess.getPayloadElementAccess().getGroup_0(), "rule__PayloadElement__Group_0__0");
 					put(grammarAccess.getGlobalProtocolDeclAccess().getGroup(), "rule__GlobalProtocolDecl__Group__0");
@@ -128,11 +127,11 @@ public class ScribbleDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLocalDoAccess().getGroup_3(), "rule__LocalDo__Group_3__0");
 					put(grammarAccess.getLocalDoAccess().getGroup_3_2(), "rule__LocalDo__Group_3_2__0");
 					put(grammarAccess.getLocalDoAccess().getGroup_6(), "rule__LocalDo__Group_6__0");
-					put(grammarAccess.getModuleAccess().getImportsAssignment_1(), "rule__Module__ImportsAssignment_1");
-					put(grammarAccess.getModuleAccess().getTypesAssignment_2(), "rule__Module__TypesAssignment_2");
-					put(grammarAccess.getModuleAccess().getGlobalsAssignment_3_0(), "rule__Module__GlobalsAssignment_3_0");
-					put(grammarAccess.getModuleAccess().getLocalsAssignment_3_1(), "rule__Module__LocalsAssignment_3_1");
-					put(grammarAccess.getModuleDeclAccess().getNameAssignment_1(), "rule__ModuleDecl__NameAssignment_1");
+					put(grammarAccess.getModuleAccess().getNameAssignment_1(), "rule__Module__NameAssignment_1");
+					put(grammarAccess.getModuleAccess().getImportsAssignment_3(), "rule__Module__ImportsAssignment_3");
+					put(grammarAccess.getModuleAccess().getTypesAssignment_4(), "rule__Module__TypesAssignment_4");
+					put(grammarAccess.getModuleAccess().getGlobalsAssignment_5_0(), "rule__Module__GlobalsAssignment_5_0");
+					put(grammarAccess.getModuleAccess().getLocalsAssignment_5_1(), "rule__Module__LocalsAssignment_5_1");
 					put(grammarAccess.getImportModuleAccess().getNameAssignment_1(), "rule__ImportModule__NameAssignment_1");
 					put(grammarAccess.getImportModuleAccess().getAliasAssignment_2_1(), "rule__ImportModule__AliasAssignment_2_1");
 					put(grammarAccess.getImportMemberAccess().getNameAssignment_1(), "rule__ImportMember__NameAssignment_1");
@@ -142,9 +141,9 @@ public class ScribbleDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getPayloadTypeDeclAccess().getTypeAssignment_4(), "rule__PayloadTypeDecl__TypeAssignment_4");
 					put(grammarAccess.getPayloadTypeDeclAccess().getLocationAssignment_6(), "rule__PayloadTypeDecl__LocationAssignment_6");
 					put(grammarAccess.getPayloadTypeDeclAccess().getAliasAssignment_8(), "rule__PayloadTypeDecl__AliasAssignment_8");
-					put(grammarAccess.getMessageSignatureAccess().getOperatorAssignment_0(), "rule__MessageSignature__OperatorAssignment_0");
-					put(grammarAccess.getMessageSignatureAccess().getTypesAssignment_2_0(), "rule__MessageSignature__TypesAssignment_2_0");
-					put(grammarAccess.getMessageSignatureAccess().getTypesAssignment_2_1_1(), "rule__MessageSignature__TypesAssignment_2_1_1");
+					put(grammarAccess.getMessageSignatureAccess().getOperatorAssignment_1(), "rule__MessageSignature__OperatorAssignment_1");
+					put(grammarAccess.getMessageSignatureAccess().getTypesAssignment_3_0(), "rule__MessageSignature__TypesAssignment_3_0");
+					put(grammarAccess.getMessageSignatureAccess().getTypesAssignment_3_1_1(), "rule__MessageSignature__TypesAssignment_3_1_1");
 					put(grammarAccess.getPayloadElementAccess().getNameAssignment_0_0(), "rule__PayloadElement__NameAssignment_0_0");
 					put(grammarAccess.getPayloadElementAccess().getTypeAssignment_1(), "rule__PayloadElement__TypeAssignment_1");
 					put(grammarAccess.getGlobalProtocolDeclAccess().getNameAssignment_2(), "rule__GlobalProtocolDecl__NameAssignment_2");
@@ -229,7 +228,7 @@ public class ScribbleDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLocalThrowAccess().getMessagesAssignment_1(), "rule__LocalThrow__MessagesAssignment_1");
 					put(grammarAccess.getLocalThrowAccess().getMessagesAssignment_2_1(), "rule__LocalThrow__MessagesAssignment_2_1");
 					put(grammarAccess.getLocalThrowAccess().getToRolesAssignment_4(), "rule__LocalThrow__ToRolesAssignment_4");
-					put(grammarAccess.getLocalThrowAccess().getToRolsAssignment_5_1(), "rule__LocalThrow__ToRolsAssignment_5_1");
+					put(grammarAccess.getLocalThrowAccess().getToRolesAssignment_5_1(), "rule__LocalThrow__ToRolesAssignment_5_1");
 					put(grammarAccess.getLocalCatchAccess().getMessagesAssignment_1(), "rule__LocalCatch__MessagesAssignment_1");
 					put(grammarAccess.getLocalCatchAccess().getMessagesAssignment_2_1(), "rule__LocalCatch__MessagesAssignment_2_1");
 					put(grammarAccess.getLocalCatchAccess().getFromRoleAssignment_4(), "rule__LocalCatch__FromRoleAssignment_4");

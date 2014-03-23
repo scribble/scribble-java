@@ -32,15 +32,6 @@ public interface ScribbleDslFactory extends EFactory
   Module createModule();
 
   /**
-   * Returns a new object of class '<em>Module Decl</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Module Decl</em>'.
-   * @generated
-   */
-  ModuleDecl createModuleDecl();
-
-  /**
    * Returns a new object of class '<em>Import Decl</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

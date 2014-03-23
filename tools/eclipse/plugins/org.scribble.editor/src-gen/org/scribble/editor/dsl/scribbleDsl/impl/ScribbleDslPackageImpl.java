@@ -39,7 +39,6 @@ import org.scribble.editor.dsl.scribbleDsl.LocalThrow;
 import org.scribble.editor.dsl.scribbleDsl.Message;
 import org.scribble.editor.dsl.scribbleDsl.MessageSignature;
 import org.scribble.editor.dsl.scribbleDsl.Module;
-import org.scribble.editor.dsl.scribbleDsl.ModuleDecl;
 import org.scribble.editor.dsl.scribbleDsl.ParameterDecl;
 import org.scribble.editor.dsl.scribbleDsl.PayloadElement;
 import org.scribble.editor.dsl.scribbleDsl.PayloadTypeDecl;
@@ -63,13 +62,6 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * @generated
    */
   private EClass moduleEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass moduleDeclEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -394,9 +386,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getModuleDecl()
+  public EAttribute getModule_Name()
   {
-    return moduleDeclEClass;
+    return (EAttribute)moduleEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -404,9 +396,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModuleDecl_Imports()
+  public EReference getModule_Imports()
   {
-    return (EReference)moduleDeclEClass.getEStructuralFeatures().get(0);
+    return (EReference)moduleEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -414,9 +406,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModuleDecl_Types()
+  public EReference getModule_Types()
   {
-    return (EReference)moduleDeclEClass.getEStructuralFeatures().get(1);
+    return (EReference)moduleEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -424,9 +416,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModuleDecl_Globals()
+  public EReference getModule_Globals()
   {
-    return (EReference)moduleDeclEClass.getEStructuralFeatures().get(2);
+    return (EReference)moduleEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -434,19 +426,9 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModuleDecl_Locals()
+  public EReference getModule_Locals()
   {
-    return (EReference)moduleDeclEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getModuleDecl_Name()
-  {
-    return (EAttribute)moduleDeclEClass.getEStructuralFeatures().get(4);
+    return (EReference)moduleEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -1504,16 +1486,6 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getLocalThrow_ToRols()
-  {
-    return (EAttribute)localThrowEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EClass getLocalCatch()
   {
     return localCatchEClass;
@@ -1620,13 +1592,11 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
 
     // Create classes and their features
     moduleEClass = createEClass(MODULE);
-
-    moduleDeclEClass = createEClass(MODULE_DECL);
-    createEReference(moduleDeclEClass, MODULE_DECL__IMPORTS);
-    createEReference(moduleDeclEClass, MODULE_DECL__TYPES);
-    createEReference(moduleDeclEClass, MODULE_DECL__GLOBALS);
-    createEReference(moduleDeclEClass, MODULE_DECL__LOCALS);
-    createEAttribute(moduleDeclEClass, MODULE_DECL__NAME);
+    createEAttribute(moduleEClass, MODULE__NAME);
+    createEReference(moduleEClass, MODULE__IMPORTS);
+    createEReference(moduleEClass, MODULE__TYPES);
+    createEReference(moduleEClass, MODULE__GLOBALS);
+    createEReference(moduleEClass, MODULE__LOCALS);
 
     importDeclEClass = createEClass(IMPORT_DECL);
     createEAttribute(importDeclEClass, IMPORT_DECL__NAME);
@@ -1765,7 +1735,6 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     localThrowEClass = createEClass(LOCAL_THROW);
     createEReference(localThrowEClass, LOCAL_THROW__MESSAGES);
     createEAttribute(localThrowEClass, LOCAL_THROW__TO_ROLES);
-    createEAttribute(localThrowEClass, LOCAL_THROW__TO_ROLS);
 
     localCatchEClass = createEClass(LOCAL_CATCH);
     createEReference(localCatchEClass, LOCAL_CATCH__MESSAGES);
@@ -1807,7 +1776,6 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     // Set bounds for type parameters
 
     // Add supertypes to classes
-    moduleDeclEClass.getESuperTypes().add(this.getModule());
     importModuleEClass.getESuperTypes().add(this.getImportDecl());
     importMemberEClass.getESuperTypes().add(this.getImportDecl());
     messageSignatureEClass.getESuperTypes().add(this.getMessage());
@@ -1829,13 +1797,11 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
 
     // Initialize classes and features; add operations and parameters
     initEClass(moduleEClass, Module.class, "Module", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(moduleDeclEClass, ModuleDecl.class, "ModuleDecl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getModuleDecl_Imports(), this.getImportDecl(), null, "imports", null, 0, -1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getModuleDecl_Types(), this.getPayloadTypeDecl(), null, "types", null, 0, -1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getModuleDecl_Globals(), this.getGlobalProtocolDecl(), null, "globals", null, 0, -1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getModuleDecl_Locals(), this.getLocalProtocolDecl(), null, "locals", null, 0, -1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getModuleDecl_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModuleDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getModule_Name(), ecorePackage.getEString(), "name", null, 0, 1, Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModule_Imports(), this.getImportDecl(), null, "imports", null, 0, -1, Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModule_Types(), this.getPayloadTypeDecl(), null, "types", null, 0, -1, Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModule_Globals(), this.getGlobalProtocolDecl(), null, "globals", null, 0, -1, Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModule_Locals(), this.getLocalProtocolDecl(), null, "locals", null, 0, -1, Module.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(importDeclEClass, ImportDecl.class, "ImportDecl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getImportDecl_Name(), ecorePackage.getEString(), "name", null, 0, 1, ImportDecl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1974,7 +1940,6 @@ public class ScribbleDslPackageImpl extends EPackageImpl implements ScribbleDslP
     initEClass(localThrowEClass, LocalThrow.class, "LocalThrow", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getLocalThrow_Messages(), this.getMessage(), null, "messages", null, 0, -1, LocalThrow.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getLocalThrow_ToRoles(), ecorePackage.getEString(), "toRoles", null, 0, -1, LocalThrow.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getLocalThrow_ToRols(), ecorePackage.getEString(), "toRols", null, 0, -1, LocalThrow.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(localCatchEClass, LocalCatch.class, "LocalCatch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getLocalCatch_Messages(), this.getMessage(), null, "messages", null, 0, -1, LocalCatch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

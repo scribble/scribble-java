@@ -80,11 +80,6 @@ public class ScribbleDslAdapterFactory extends AdapterFactoryImpl
         return createModuleAdapter();
       }
       @Override
-      public Adapter caseModuleDecl(ModuleDecl object)
-      {
-        return createModuleDeclAdapter();
-      }
-      @Override
       public Adapter caseImportDecl(ImportDecl object)
       {
         return createImportDeclAdapter();
@@ -292,21 +287,6 @@ public class ScribbleDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createModuleAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl <em>Module Decl</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.scribble.editor.dsl.scribbleDsl.ModuleDecl
-   * @generated
-   */
-  public Adapter createModuleDeclAdapter()
   {
     return null;
   }

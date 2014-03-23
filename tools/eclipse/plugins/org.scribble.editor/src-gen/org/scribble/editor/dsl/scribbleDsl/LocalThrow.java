@@ -16,7 +16,6 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow#getMessages <em>Messages</em>}</li>
  *   <li>{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow#getToRoles <em>To Roles</em>}</li>
- *   <li>{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow#getToRols <em>To Rols</em>}</li>
  * </ul>
  * </p>
  *
@@ -57,21 +56,5 @@ public interface LocalThrow extends EObject
    * @generated
    */
   EList<String> getToRoles();
-
-  /**
-   * Returns the value of the '<em><b>To Rols</b></em>' attribute list.
-   * The list contents are of type {@link java.lang.String}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>To Rols</em>' attribute list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>To Rols</em>' attribute list.
-   * @see org.scribble.editor.dsl.scribbleDsl.ScribbleDslPackage#getLocalThrow_ToRols()
-   * @model unique="false"
-   * @generated
-   */
-  EList<String> getToRols();
 
 } // LocalThrow

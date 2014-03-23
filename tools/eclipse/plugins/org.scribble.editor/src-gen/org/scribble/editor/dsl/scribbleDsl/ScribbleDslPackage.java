@@ -67,23 +67,13 @@ public interface ScribbleDslPackage extends EPackage
   int MODULE = 0;
 
   /**
-   * The number of structural features of the '<em>Module</em>' class.
+   * The feature id for the '<em><b>Name</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODULE_FEATURE_COUNT = 0;
-
-  /**
-   * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.ModuleDeclImpl <em>Module Decl</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.scribble.editor.dsl.scribbleDsl.impl.ModuleDeclImpl
-   * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getModuleDecl()
-   * @generated
-   */
-  int MODULE_DECL = 1;
+  int MODULE__NAME = 0;
 
   /**
    * The feature id for the '<em><b>Imports</b></em>' containment reference list.
@@ -92,7 +82,7 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODULE_DECL__IMPORTS = MODULE_FEATURE_COUNT + 0;
+  int MODULE__IMPORTS = 1;
 
   /**
    * The feature id for the '<em><b>Types</b></em>' containment reference list.
@@ -101,7 +91,7 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODULE_DECL__TYPES = MODULE_FEATURE_COUNT + 1;
+  int MODULE__TYPES = 2;
 
   /**
    * The feature id for the '<em><b>Globals</b></em>' containment reference list.
@@ -110,7 +100,7 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODULE_DECL__GLOBALS = MODULE_FEATURE_COUNT + 2;
+  int MODULE__GLOBALS = 3;
 
   /**
    * The feature id for the '<em><b>Locals</b></em>' containment reference list.
@@ -119,25 +109,16 @@ public interface ScribbleDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODULE_DECL__LOCALS = MODULE_FEATURE_COUNT + 3;
+  int MODULE__LOCALS = 4;
 
   /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * The number of structural features of the '<em>Module</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODULE_DECL__NAME = MODULE_FEATURE_COUNT + 4;
-
-  /**
-   * The number of structural features of the '<em>Module Decl</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MODULE_DECL_FEATURE_COUNT = MODULE_FEATURE_COUNT + 5;
+  int MODULE_FEATURE_COUNT = 5;
 
   /**
    * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.ImportDeclImpl <em>Import Decl</em>}' class.
@@ -147,7 +128,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getImportDecl()
    * @generated
    */
-  int IMPORT_DECL = 2;
+  int IMPORT_DECL = 1;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -184,7 +165,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getImportModule()
    * @generated
    */
-  int IMPORT_MODULE = 3;
+  int IMPORT_MODULE = 2;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -221,7 +202,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getImportMember()
    * @generated
    */
-  int IMPORT_MEMBER = 4;
+  int IMPORT_MEMBER = 3;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -267,7 +248,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getPayloadTypeDecl()
    * @generated
    */
-  int PAYLOAD_TYPE_DECL = 5;
+  int PAYLOAD_TYPE_DECL = 4;
 
   /**
    * The feature id for the '<em><b>Schema</b></em>' attribute.
@@ -322,7 +303,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getMessage()
    * @generated
    */
-  int MESSAGE = 16;
+  int MESSAGE = 15;
 
   /**
    * The feature id for the '<em><b>Parameter</b></em>' attribute.
@@ -350,7 +331,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getMessageSignature()
    * @generated
    */
-  int MESSAGE_SIGNATURE = 6;
+  int MESSAGE_SIGNATURE = 5;
 
   /**
    * The feature id for the '<em><b>Parameter</b></em>' attribute.
@@ -396,7 +377,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getPayloadElement()
    * @generated
    */
-  int PAYLOAD_ELEMENT = 7;
+  int PAYLOAD_ELEMENT = 6;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -433,7 +414,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalProtocolDecl()
    * @generated
    */
-  int GLOBAL_PROTOCOL_DECL = 8;
+  int GLOBAL_PROTOCOL_DECL = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -515,7 +496,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getRoleDecl()
    * @generated
    */
-  int ROLE_DECL = 9;
+  int ROLE_DECL = 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -552,7 +533,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getParameterDecl()
    * @generated
    */
-  int PARAMETER_DECL = 10;
+  int PARAMETER_DECL = 9;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -589,7 +570,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getRoleInstantiation()
    * @generated
    */
-  int ROLE_INSTANTIATION = 11;
+  int ROLE_INSTANTIATION = 10;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -626,7 +607,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getArgument()
    * @generated
    */
-  int ARGUMENT = 12;
+  int ARGUMENT = 11;
 
   /**
    * The feature id for the '<em><b>Signature</b></em>' containment reference.
@@ -672,7 +653,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalProtocolBlock()
    * @generated
    */
-  int GLOBAL_PROTOCOL_BLOCK = 13;
+  int GLOBAL_PROTOCOL_BLOCK = 12;
 
   /**
    * The feature id for the '<em><b>Activities</b></em>' containment reference list.
@@ -700,7 +681,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalInteraction()
    * @generated
    */
-  int GLOBAL_INTERACTION = 14;
+  int GLOBAL_INTERACTION = 13;
 
   /**
    * The number of structural features of the '<em>Global Interaction</em>' class.
@@ -719,7 +700,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalMessageTransfer()
    * @generated
    */
-  int GLOBAL_MESSAGE_TRANSFER = 15;
+  int GLOBAL_MESSAGE_TRANSFER = 14;
 
   /**
    * The feature id for the '<em><b>Message</b></em>' containment reference.
@@ -765,7 +746,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalChoice()
    * @generated
    */
-  int GLOBAL_CHOICE = 17;
+  int GLOBAL_CHOICE = 16;
 
   /**
    * The feature id for the '<em><b>Role</b></em>' attribute.
@@ -802,7 +783,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalRecursion()
    * @generated
    */
-  int GLOBAL_RECURSION = 18;
+  int GLOBAL_RECURSION = 17;
 
   /**
    * The feature id for the '<em><b>Label</b></em>' attribute.
@@ -839,7 +820,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalContinue()
    * @generated
    */
-  int GLOBAL_CONTINUE = 19;
+  int GLOBAL_CONTINUE = 18;
 
   /**
    * The feature id for the '<em><b>Label</b></em>' attribute.
@@ -867,7 +848,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalParallel()
    * @generated
    */
-  int GLOBAL_PARALLEL = 20;
+  int GLOBAL_PARALLEL = 19;
 
   /**
    * The feature id for the '<em><b>Blocks</b></em>' containment reference list.
@@ -895,7 +876,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalInterruptible()
    * @generated
    */
-  int GLOBAL_INTERRUPTIBLE = 21;
+  int GLOBAL_INTERRUPTIBLE = 20;
 
   /**
    * The feature id for the '<em><b>Scope</b></em>' attribute.
@@ -941,7 +922,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalInterrupt()
    * @generated
    */
-  int GLOBAL_INTERRUPT = 22;
+  int GLOBAL_INTERRUPT = 21;
 
   /**
    * The feature id for the '<em><b>Messages</b></em>' containment reference list.
@@ -978,7 +959,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getGlobalDo()
    * @generated
    */
-  int GLOBAL_DO = 23;
+  int GLOBAL_DO = 22;
 
   /**
    * The feature id for the '<em><b>Scope</b></em>' attribute.
@@ -1033,7 +1014,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalProtocolDecl()
    * @generated
    */
-  int LOCAL_PROTOCOL_DECL = 24;
+  int LOCAL_PROTOCOL_DECL = 23;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1124,7 +1105,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalProtocolBlock()
    * @generated
    */
-  int LOCAL_PROTOCOL_BLOCK = 25;
+  int LOCAL_PROTOCOL_BLOCK = 24;
 
   /**
    * The feature id for the '<em><b>Activities</b></em>' containment reference list.
@@ -1152,7 +1133,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLlobalInteraction()
    * @generated
    */
-  int LLOBAL_INTERACTION = 26;
+  int LLOBAL_INTERACTION = 25;
 
   /**
    * The number of structural features of the '<em>Llobal Interaction</em>' class.
@@ -1171,7 +1152,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalSend()
    * @generated
    */
-  int LOCAL_SEND = 27;
+  int LOCAL_SEND = 26;
 
   /**
    * The feature id for the '<em><b>Message</b></em>' containment reference.
@@ -1208,7 +1189,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalReceive()
    * @generated
    */
-  int LOCAL_RECEIVE = 28;
+  int LOCAL_RECEIVE = 27;
 
   /**
    * The feature id for the '<em><b>Message</b></em>' containment reference.
@@ -1245,7 +1226,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalChoice()
    * @generated
    */
-  int LOCAL_CHOICE = 29;
+  int LOCAL_CHOICE = 28;
 
   /**
    * The feature id for the '<em><b>Role</b></em>' attribute.
@@ -1282,7 +1263,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalRecursion()
    * @generated
    */
-  int LOCAL_RECURSION = 30;
+  int LOCAL_RECURSION = 29;
 
   /**
    * The feature id for the '<em><b>Label</b></em>' attribute.
@@ -1319,7 +1300,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalContinue()
    * @generated
    */
-  int LOCAL_CONTINUE = 31;
+  int LOCAL_CONTINUE = 30;
 
   /**
    * The feature id for the '<em><b>Label</b></em>' attribute.
@@ -1347,7 +1328,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalParallel()
    * @generated
    */
-  int LOCAL_PARALLEL = 32;
+  int LOCAL_PARALLEL = 31;
 
   /**
    * The feature id for the '<em><b>Blocks</b></em>' containment reference list.
@@ -1375,7 +1356,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getlocalinterruptible()
    * @generated
    */
-  int LOCALINTERRUPTIBLE = 33;
+  int LOCALINTERRUPTIBLE = 32;
 
   /**
    * The feature id for the '<em><b>Scope</b></em>' attribute.
@@ -1430,7 +1411,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalThrow()
    * @generated
    */
-  int LOCAL_THROW = 34;
+  int LOCAL_THROW = 33;
 
   /**
    * The feature id for the '<em><b>Messages</b></em>' containment reference list.
@@ -1451,22 +1432,13 @@ public interface ScribbleDslPackage extends EPackage
   int LOCAL_THROW__TO_ROLES = 1;
 
   /**
-   * The feature id for the '<em><b>To Rols</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int LOCAL_THROW__TO_ROLS = 2;
-
-  /**
    * The number of structural features of the '<em>Local Throw</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int LOCAL_THROW_FEATURE_COUNT = 3;
+  int LOCAL_THROW_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalCatchImpl <em>Local Catch</em>}' class.
@@ -1476,7 +1448,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalCatch()
    * @generated
    */
-  int LOCAL_CATCH = 35;
+  int LOCAL_CATCH = 34;
 
   /**
    * The feature id for the '<em><b>Messages</b></em>' containment reference list.
@@ -1513,7 +1485,7 @@ public interface ScribbleDslPackage extends EPackage
    * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getLocalDo()
    * @generated
    */
-  int LOCAL_DO = 36;
+  int LOCAL_DO = 35;
 
   /**
    * The feature id for the '<em><b>Scope</b></em>' attribute.
@@ -1572,69 +1544,59 @@ public interface ScribbleDslPackage extends EPackage
   EClass getModule();
 
   /**
-   * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl <em>Module Decl</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Module Decl</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.ModuleDecl
-   * @generated
-   */
-  EClass getModuleDecl();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getImports <em>Imports</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Imports</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getImports()
-   * @see #getModuleDecl()
-   * @generated
-   */
-  EReference getModuleDecl_Imports();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getTypes <em>Types</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Types</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getTypes()
-   * @see #getModuleDecl()
-   * @generated
-   */
-  EReference getModuleDecl_Types();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getGlobals <em>Globals</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Globals</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getGlobals()
-   * @see #getModuleDecl()
-   * @generated
-   */
-  EReference getModuleDecl_Globals();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getLocals <em>Locals</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Locals</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getLocals()
-   * @see #getModuleDecl()
-   * @generated
-   */
-  EReference getModuleDecl_Locals();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link org.scribble.editor.dsl.scribbleDsl.Module#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.ModuleDecl#getName()
-   * @see #getModuleDecl()
+   * @see org.scribble.editor.dsl.scribbleDsl.Module#getName()
+   * @see #getModule()
    * @generated
    */
-  EAttribute getModuleDecl_Name();
+  EAttribute getModule_Name();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.Module#getImports <em>Imports</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Imports</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.Module#getImports()
+   * @see #getModule()
+   * @generated
+   */
+  EReference getModule_Imports();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.Module#getTypes <em>Types</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Types</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.Module#getTypes()
+   * @see #getModule()
+   * @generated
+   */
+  EReference getModule_Types();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.Module#getGlobals <em>Globals</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Globals</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.Module#getGlobals()
+   * @see #getModule()
+   * @generated
+   */
+  EReference getModule_Globals();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.scribble.editor.dsl.scribbleDsl.Module#getLocals <em>Locals</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Locals</em>'.
+   * @see org.scribble.editor.dsl.scribbleDsl.Module#getLocals()
+   * @see #getModule()
+   * @generated
+   */
+  EReference getModule_Locals();
 
   /**
    * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.ImportDecl <em>Import Decl</em>}'.
@@ -2759,17 +2721,6 @@ public interface ScribbleDslPackage extends EPackage
   EAttribute getLocalThrow_ToRoles();
 
   /**
-   * Returns the meta object for the attribute list '{@link org.scribble.editor.dsl.scribbleDsl.LocalThrow#getToRols <em>To Rols</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute list '<em>To Rols</em>'.
-   * @see org.scribble.editor.dsl.scribbleDsl.LocalThrow#getToRols()
-   * @see #getLocalThrow()
-   * @generated
-   */
-  EAttribute getLocalThrow_ToRols();
-
-  /**
    * Returns the meta object for class '{@link org.scribble.editor.dsl.scribbleDsl.LocalCatch <em>Local Catch</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2889,14 +2840,12 @@ public interface ScribbleDslPackage extends EPackage
     EClass MODULE = eINSTANCE.getModule();
 
     /**
-     * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.ModuleDeclImpl <em>Module Decl</em>}' class.
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.scribble.editor.dsl.scribbleDsl.impl.ModuleDeclImpl
-     * @see org.scribble.editor.dsl.scribbleDsl.impl.ScribbleDslPackageImpl#getModuleDecl()
      * @generated
      */
-    EClass MODULE_DECL = eINSTANCE.getModuleDecl();
+    EAttribute MODULE__NAME = eINSTANCE.getModule_Name();
 
     /**
      * The meta object literal for the '<em><b>Imports</b></em>' containment reference list feature.
@@ -2904,7 +2853,7 @@ public interface ScribbleDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference MODULE_DECL__IMPORTS = eINSTANCE.getModuleDecl_Imports();
+    EReference MODULE__IMPORTS = eINSTANCE.getModule_Imports();
 
     /**
      * The meta object literal for the '<em><b>Types</b></em>' containment reference list feature.
@@ -2912,7 +2861,7 @@ public interface ScribbleDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference MODULE_DECL__TYPES = eINSTANCE.getModuleDecl_Types();
+    EReference MODULE__TYPES = eINSTANCE.getModule_Types();
 
     /**
      * The meta object literal for the '<em><b>Globals</b></em>' containment reference list feature.
@@ -2920,7 +2869,7 @@ public interface ScribbleDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference MODULE_DECL__GLOBALS = eINSTANCE.getModuleDecl_Globals();
+    EReference MODULE__GLOBALS = eINSTANCE.getModule_Globals();
 
     /**
      * The meta object literal for the '<em><b>Locals</b></em>' containment reference list feature.
@@ -2928,15 +2877,7 @@ public interface ScribbleDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference MODULE_DECL__LOCALS = eINSTANCE.getModuleDecl_Locals();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MODULE_DECL__NAME = eINSTANCE.getModuleDecl_Name();
+    EReference MODULE__LOCALS = eINSTANCE.getModule_Locals();
 
     /**
      * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.ImportDeclImpl <em>Import Decl</em>}' class.
@@ -3843,14 +3784,6 @@ public interface ScribbleDslPackage extends EPackage
      * @generated
      */
     EAttribute LOCAL_THROW__TO_ROLES = eINSTANCE.getLocalThrow_ToRoles();
-
-    /**
-     * The meta object literal for the '<em><b>To Rols</b></em>' attribute list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute LOCAL_THROW__TO_ROLS = eINSTANCE.getLocalThrow_ToRols();
 
     /**
      * The meta object literal for the '{@link org.scribble.editor.dsl.scribbleDsl.impl.LocalCatchImpl <em>Local Catch</em>}' class.

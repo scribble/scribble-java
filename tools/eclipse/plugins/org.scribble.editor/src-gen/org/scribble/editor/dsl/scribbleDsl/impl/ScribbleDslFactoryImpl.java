@@ -65,7 +65,6 @@ public class ScribbleDslFactoryImpl extends EFactoryImpl implements ScribbleDslF
     switch (eClass.getClassifierID())
     {
       case ScribbleDslPackage.MODULE: return createModule();
-      case ScribbleDslPackage.MODULE_DECL: return createModuleDecl();
       case ScribbleDslPackage.IMPORT_DECL: return createImportDecl();
       case ScribbleDslPackage.IMPORT_MODULE: return createImportModule();
       case ScribbleDslPackage.IMPORT_MEMBER: return createImportMember();
@@ -115,17 +114,6 @@ public class ScribbleDslFactoryImpl extends EFactoryImpl implements ScribbleDslF
   {
     ModuleImpl module = new ModuleImpl();
     return module;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ModuleDecl createModuleDecl()
-  {
-    ModuleDeclImpl moduleDecl = new ModuleDeclImpl();
-    return moduleDecl;
   }
 
   /**
