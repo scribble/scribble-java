@@ -227,21 +227,21 @@
 	<!-- marker definitions for org.scribble.editor.dsl.ScribbleDsl -->
 	<extension
 	        id="scribbledsl.check.fast"
-	        name="ScribbleDsl Problem"
+	        name="Protocol Problem"
 	        point="org.eclipse.core.resources.markers">
 	    <super type="org.eclipse.xtext.ui.check.fast"/>
 	    <persistent value="true"/>
 	</extension>
 	<extension
 	        id="scribbledsl.check.normal"
-	        name="ScribbleDsl Problem"
+	        name="Protocol Problem"
 	        point="org.eclipse.core.resources.markers">
 	    <super type="org.eclipse.xtext.ui.check.normal"/>
 	    <persistent value="true"/>
 	</extension>
 	<extension
 	        id="scribbledsl.check.expensive"
-	        name="ScribbleDsl Problem"
+	        name="Protocol Problem"
 	        point="org.eclipse.core.resources.markers">
 	    <super type="org.eclipse.xtext.ui.check.expensive"/>
 	    <persistent value="true"/>

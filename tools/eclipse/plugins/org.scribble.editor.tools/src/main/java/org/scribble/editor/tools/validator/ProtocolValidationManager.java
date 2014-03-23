@@ -18,13 +18,14 @@ package org.scribble.editor.tools.validator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-//import org.eclipse.core.runtime.IProgressMonitor;
-//import org.eclipse.wst.validation.ValidationResult;
-//import org.eclipse.wst.validation.ValidationState;
 import org.scribble.editor.tools.logger.EclipseScribbleLogger;
 import org.scribble.editor.tools.osgi.Activator;
+import org.scribble.model.Module;
 import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.parser.ProtocolParser;
+import org.scribble.common.logging.ConsoleScribbleLogger;
+import org.scribble.common.module.DefaultModuleContext;
+import org.scribble.common.module.ModuleCache;
 import org.scribble.common.resources.InputStreamResource;
 import org.scribble.common.resources.Resource;
 import org.scribble.common.resources.ResourceLocator;
@@ -33,13 +34,13 @@ import org.scribble.common.resources.ResourceLocator;
  * Protocol validator.
  *
  */
-public class ProtocolValidator {
+public class ProtocolValidationManager {
                 //extends org.eclipse.wst.validation.AbstractValidator {
 
     /**
      * Default constructor.
      */
-    public ProtocolValidator() {
+    public ProtocolValidationManager() {
     }
 
     /*
@@ -92,7 +93,21 @@ public class ProtocolValidator {
             
             ProtocolModuleLoader loader=new ProtocolModuleLoader(pp, locator, logger);
             
-            pp.parse(isr, loader, logger);
+            ModuleCache cache=new ModuleCache();
+            
+            // Use console logger, to 'ignore' parser errors, as these will be detected and
+            // reported by the XText generated Scribble editor. However the validation errors
+            // should be reported via the Eclipse based logger
+            Module module=pp.parse(isr, loader, cache, new ConsoleScribbleLogger());
+            
+            if (module != null) {            	
+            	// Validate
+                org.scribble.validation.ProtocolValidator pv=new org.scribble.validation.ProtocolValidator();
+                
+                DefaultModuleContext context=new DefaultModuleContext(isr, module, loader, cache);
+                
+                pv.validate(context, module, logger);
+            }
             
         } catch (Exception e) {
             Activator.logError("Failed to record validation issue on resource '"+res+"'", e);

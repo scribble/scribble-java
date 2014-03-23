@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.scribble.editor.tools.validator.ProtocolValidator;
+import org.scribble.editor.tools.validator.ProtocolValidationManager;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -38,7 +38,7 @@ public class Activator extends AbstractUIPlugin {
     
     private static Logger logger = Logger.getLogger("org.scribble.eclipse.tools");
 
-    private ProtocolValidator _validator=new ProtocolValidator();
+    private ProtocolValidationManager _validator=new ProtocolValidationManager();
 
     /**
      * Plugin id.
