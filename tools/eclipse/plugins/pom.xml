@@ -15,7 +15,9 @@
 	</parent>
 
 	<modules>
-		<module>org.scribble.designer</module>
+		<module>org.scribble.editor</module>
+		<module>org.scribble.editor.tools</module>
+		<module>org.scribble.editor.ui</module>
 	</modules>
 	
 </project>

@@ -1,0 +1,267 @@
+grammar org.scribble.editor.dsl.ScribbleDsl with org.eclipse.xtext.common.Terminals
+
+generate scribbleDsl "http://www.scribble.org/editor/dsl/ScribbleDsl"
+
+
+Module:
+	'module' name=ModuleName ';' (imports+=ImportDecl)* (types+=PayloadTypeDecl)*
+		(globals+=GlobalProtocolDecl | locals+=LocalProtocolDecl )*
+;
+
+ModuleName:	
+	ID ('.' ID)*
+;
+
+ImportDecl:
+	ImportModule
+|
+	ImportMember
+;
+
+ImportModule:
+	'import' name=ModuleName ( 'as' alias=ID )? ';'
+;
+
+ImportMember:
+	'from' name=ModuleName 'import' member=ID ( 'as' alias=ID )? ';'
+;
+
+PayloadTypeDecl:
+	'type' '<' schema=ID '>' type=STRING 'from' location=STRING  'as' alias=ID ';'
+;
+
+/**
+ * Section 3.5 Message Signatures
+ */
+MessageSignature:
+	{MessageSignature} ( operator=ID )? '(' ( types+=PayloadElement (',' types+=PayloadElement)* )? ')'
+;
+
+PayloadElement:
+	( name=ID ':' )? type=ID
+;
+
+
+GlobalProtocolDecl:
+	'global' 'protocol' name=ID ( '<' parameters+=ParameterDecl (',' parameters+=ParameterDecl)* '>' )?
+			'(' roles+=RoleDecl (',' roles+=RoleDecl)* ')' ( block=GlobalProtocolBlock |
+				'instantiates' instantiates=ID ( '<' arguments+=Argument (',' arguments+=Argument )* '>' )?
+				'(' roleInstantiations+=RoleInstantiation (',' roleInstantiations+=RoleInstantiation)* ')' ';'
+			)
+;
+
+RoleDecl:
+	'role' name=ID ( 'as' alias=ID )?
+;
+
+ParameterDecl:
+	 'type' name=ID ( 'as' alias=ID )?
+|
+	 'sig' name=ID ( 'as' alias=ID )?
+;
+
+
+
+RoleInstantiation:
+	name=ID ( 'as' alias=ID )?
+;
+
+Argument:
+	signature=MessageSignature ( 'as' alias=ID )?
+|
+	name=ID ( 'as' alias=ID )?
+;
+
+
+/**
+ * Section 3.7.3 Global Interaction Sequences and Blocks
+ */
+GlobalProtocolBlock:
+	{GlobalProtocolBlock} '{' (activities+=GlobalInteraction)* '}'
+;
+
+GlobalInteraction:
+	GlobalMessageTransfer
+|
+	GlobalChoice
+|
+	GlobalRecursion
+|
+	GlobalContinue
+|
+	GlobalParallel
+|
+	GlobalInterruptible
+|
+	GlobalDo
+/*|
+	globalspawn*/
+;
+
+
+/**
+ * Section 3.7.4 Global Message Transfer
+ */
+GlobalMessageTransfer:
+	message=Message 'from' fromRole=ID 'to' toRoles+=ID (',' toRoles+=ID )* ';'
+;
+
+Message:
+	signature=MessageSignature
+|
+	parameter=ID
+;
+
+
+/**
+ * Section 3.7.5 Global Choice
+ */
+GlobalChoice:
+	'choice' 'at' role=ID blocks+=GlobalProtocolBlock ('or' blocks+=GlobalProtocolBlock)*
+;
+
+
+/**
+ * Section 3.7.6 Global Recursion
+ */
+GlobalRecursion:
+	'rec' label=ID block=GlobalProtocolBlock
+;
+
+GlobalContinue:
+	'continue' label=ID ';'
+;
+
+
+/**
+ * Section 3.7.7 Global Parallel
+ */
+GlobalParallel:
+	'par' blocks+=GlobalProtocolBlock ('and' blocks+=GlobalProtocolBlock)*
+;
+
+
+/**
+ * Section 3.7.8 Global Interruptible
+ */
+GlobalInterruptible:
+	'interruptible' ( scope=ID ':' )? block=GlobalProtocolBlock 'with' '{' (interrupts+=GlobalInterrupt)* '}'
+;
+
+GlobalInterrupt:
+	messages+=Message (',' messages+=Message)* 'by' role=ID ';'
+;
+
+
+/**
+ * Section 3.7.9 Global Do
+ */
+GlobalDo:
+	'do' ( scope=ID ':' )? member=ID ( '<' arguments+=Argument (',' arguments+=Argument )* '>' )? '(' roles+=RoleInstantiation (',' roles+=RoleInstantiation)* ')' ';'
+;
+
+
+/*
+ * Section 3.8 Local Protocol Declarations
+ */
+LocalProtocolDecl:
+	'local' 'protocol'  name=ID 'at' role=ID
+			( '<' parameters+=ParameterDecl (',' parameters+=ParameterDecl)* '>' )?
+			'(' roles+=RoleDecl (',' roles+=RoleDecl)* ')' ( block=LocalProtocolBlock |
+				'instantiates' instantiates=ID ( '<' arguments+=Argument (',' arguments+=Argument )* '>' )?
+				'(' roleInstantiations+=RoleInstantiation (',' roleInstantiations+=RoleInstantiation)* ')' ';'
+			)
+;
+
+
+/**
+ * Section 3.8.3 Local Interaction Blocks and Sequences
+ */
+LocalProtocolBlock:
+	{LocalProtocolBlock} '{' (activities+=LlobalInteraction)* '}'
+;
+
+LlobalInteraction:
+	LocalSend
+|
+	LocalReceive
+|
+	LocalChoice
+|
+	LocalParallel
+|
+	LocalRecursion
+|
+	LocalContinue
+|
+	LocalInterruptible
+|
+	LocalDo
+/*|
+	localspawn*/
+;
+
+
+/**
+ * Section 3.8.4 Local Send and Receive
+ */
+LocalSend:
+	message=Message 'to' toRoles+=ID (',' toRoles+=ID )* ';'
+;
+
+LocalReceive:
+	message=Message 'from' fromRole=ID ';'
+;
+
+
+/**
+ * Section 3.8.5 Local Choice
+ */
+LocalChoice:
+	'choice' 'at' role=ID blocks+=LocalProtocolBlock ('or' blocks+=LocalProtocolBlock)*
+;
+
+
+/**
+ * Section 3.8.6 Local Recursion
+ */
+LocalRecursion:
+	'rec' label=ID block=LocalProtocolBlock
+;
+
+LocalContinue:
+	'continue' label=ID ';'
+;
+
+
+/**
+ * Section 3.8.7 Local Parallel
+ */
+LocalParallel:
+	'par' blocks+=LocalProtocolBlock ('and' blocks+=LocalProtocolBlock)*
+;
+
+
+/**
+ * Section 3.8.8 Local Interruptible
+ */
+LocalInterruptible:
+	'interruptible' ( scope=ID ':' )? block=LocalProtocolBlock 'with' '{' ( throw=LocalThrow )? ( catches+=LocalCatch )* '}'
+;
+
+LocalThrow:
+	'throw' messages+=Message (',' messages+=Message)* 'to' toRoles+=ID (',' toRoles+=ID )* ';'
+;
+
+LocalCatch:
+	'catches' messages+=Message (',' messages+=Message)* 'from' fromRole=ID ';'
+;
+
+
+/**
+ * Section 3.8.9 Local Do
+ */
+LocalDo:
+	'do' ( scope=ID ':' )? member=ID ( '<' arguments+=Argument (',' arguments+=Argument )* '>' )? '(' roles+=RoleInstantiation (',' roles+=RoleInstantiation)* ')' ';'
+;
+

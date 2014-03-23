@@ -108,13 +108,6 @@ public class ProtocolParser {
                 // Add the module to the cache, in case it directly or
                 // indirectly references itself, therefore avoiding reparsing
                 cache.register(ret);
-            	
-            	// Validate
-                ProtocolValidator pv=new ProtocolValidator();
-                
-                DefaultModuleContext context=new DefaultModuleContext(resource, ret, loader, cache);
-                
-                pv.validate(context, ret, logger);
             }
             
         } catch (Exception e)  {
