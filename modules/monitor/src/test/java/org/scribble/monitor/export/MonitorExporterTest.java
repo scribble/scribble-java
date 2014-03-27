@@ -21,14 +21,14 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
+import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.model.Module;
 import org.scribble.model.local.LProtocolDefinition;
 import org.scribble.monitor.model.SessionType;
 import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.parser.ProtocolParser;
-import org.scribble.common.logging.ConsoleScribbleLogger;
-import org.scribble.common.resources.DirectoryResourceLocator;
-import org.scribble.common.resources.InputStreamResource;
+import org.scribble.resources.DirectoryResourceLocator;
+import org.scribble.resources.InputStreamResource;
 
 public class MonitorExporterTest {
 
@@ -148,7 +148,7 @@ public class MonitorExporterTest {
     	}
     }
     
-    protected class TestIssueLogger extends ConsoleScribbleLogger {
+    protected class TestIssueLogger extends ConsoleIssueLogger {
     	
     	private java.util.List<String> _errors=new java.util.ArrayList<String>();
     	private java.util.List<String> _warnings=new java.util.ArrayList<String>();

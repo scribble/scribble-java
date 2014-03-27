@@ -20,9 +20,8 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.common.module.ModuleContext;
-import org.scribble.model.FullyQualifiedName;
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.Role;
@@ -44,7 +43,7 @@ public class LProtocolDefinitionValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition gpi=new LProtocolDefinition();
     	gpi.setLocalRole(new Role(TEST_NAME1));
@@ -56,7 +55,7 @@ public class LProtocolDefinitionValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();
@@ -78,7 +77,7 @@ public class LProtocolDefinitionValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition gpi=new LProtocolDefinition();
     	gpi.setLocalRole(new Role(TEST_NAME2));
@@ -90,7 +89,7 @@ public class LProtocolDefinitionValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				LProtocolDefinition ret=new LProtocolDefinition();

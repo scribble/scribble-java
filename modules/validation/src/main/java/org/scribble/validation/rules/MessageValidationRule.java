@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Message;
 import org.scribble.model.ModelObject;
 import org.scribble.model.ParameterDecl;
@@ -36,7 +36,7 @@ public class MessageValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, IssueLogger logger) {
 		Message elem=(Message)mobj;
 		
 		ProtocolDecl gpd=elem.getParent(ProtocolDecl.class);

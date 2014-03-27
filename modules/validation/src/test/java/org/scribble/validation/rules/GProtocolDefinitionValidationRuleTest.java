@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.module.DefaultModuleContext;
+import org.scribble.context.DefaultModuleContext;
 import org.scribble.model.Message;
 import org.scribble.model.MessageSignature;
 import org.scribble.model.Module;
@@ -58,7 +58,7 @@ public class GProtocolDefinitionValidationRuleTest {
     	gpd.getRoleDeclarations().add(rd1);
     	gpd.getRoleDeclarations().add(rd2);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, gpd, logger);
     	
@@ -86,7 +86,7 @@ public class GProtocolDefinitionValidationRuleTest {
     	gpd.getRoleDeclarations().add(rd1);
     	gpd.getRoleDeclarations().add(rd2);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, gpd, logger);
     	
@@ -118,7 +118,7 @@ public class GProtocolDefinitionValidationRuleTest {
     	gpd.getParameterDeclarations().add(pd1);
     	gpd.getParameterDeclarations().add(pd2);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, gpd, logger);
     	
@@ -146,7 +146,7 @@ public class GProtocolDefinitionValidationRuleTest {
     	gpd.getParameterDeclarations().add(pd1);
     	gpd.getParameterDeclarations().add(pd2);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, gpd, logger);
     	
@@ -180,7 +180,7 @@ public class GProtocolDefinitionValidationRuleTest {
     	d1.setScope(NAME2);
 
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, gpd, logger);
     	
@@ -210,7 +210,7 @@ public class GProtocolDefinitionValidationRuleTest {
     	d1.setScope(NAME1);
     	
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, gpd, logger);
     	
@@ -262,7 +262,7 @@ public class GProtocolDefinitionValidationRuleTest {
     	pe2.setAnnotation(NAME2);
     	
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, gpd, logger);
     	
@@ -310,7 +310,7 @@ public class GProtocolDefinitionValidationRuleTest {
     	pe2.setAnnotation(NAME1);
     	
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, gpd, logger);
     	

@@ -16,7 +16,7 @@
  */
 package org.scribble.monitor.export;
 
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.Message;
 import org.scribble.model.ModelObject;
 import org.scribble.model.PayloadElement;
@@ -110,7 +110,7 @@ public class LInterruptibleNodeExporter implements NodeExporter {
 			PayloadTypeDecl ptype=elem.getModule().getTypeDeclaration(pe.getName());
 
 			if (ptype == null) {
-				ModelObject alias=context.getImportedMember(pe.getName());
+				ModelObject alias=context.getMember(pe.getName());
 				
 				if (alias instanceof PayloadTypeDecl) {
 					ptype = (PayloadTypeDecl)alias;
@@ -139,7 +139,7 @@ public class LInterruptibleNodeExporter implements NodeExporter {
 			PayloadTypeDecl ptype=elem.getModule().getTypeDeclaration(pe.getName());
 
 			if (ptype == null) {
-				ModelObject alias=context.getImportedMember(pe.getName());
+				ModelObject alias=context.getMember(pe.getName());
 				
 				if (alias instanceof PayloadTypeDecl) {
 					ptype = (PayloadTypeDecl)alias;

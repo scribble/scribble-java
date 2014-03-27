@@ -17,7 +17,6 @@
 package org.scribble.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.ImportDecl;
 
 /**
@@ -59,7 +58,7 @@ public class ImportDeclModelAdaptor extends AbstractModelAdaptor {
 			text = ((CommonToken)context.pop()).getText()+text;
 		}
 		
-		ret.setModuleName(new FullyQualifiedName(text));
+		ret.setModuleName(text);
 		
 		setStartProperties(ret, context.pop()); // consume 'from' or 'import' depending on which path was taken
 

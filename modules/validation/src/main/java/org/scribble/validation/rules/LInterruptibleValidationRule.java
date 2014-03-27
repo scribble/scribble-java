@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Message;
 import org.scribble.model.ModelObject;
 import org.scribble.model.ProtocolDecl;
@@ -38,7 +38,7 @@ public class LInterruptibleValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, IssueLogger logger) {
 		LInterruptible elem=(LInterruptible)mobj;
 		
 		ProtocolDecl pd=elem.getParent(ProtocolDecl.class);

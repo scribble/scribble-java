@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Argument;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
@@ -39,7 +39,7 @@ public class GProtocolInstanceValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, IssueLogger logger) {
 		GProtocolInstance elem=(GProtocolInstance)mobj;
 		
 		if (elem.getMemberName() != null) {
@@ -87,7 +87,7 @@ public class GProtocolInstanceValidationRule implements ValidationRule {
 						}
 						
 						if (ptd == null) {
-							ModelObject impmem=context.getImportedMember(arg.getName());
+							ModelObject impmem=context.getMember(arg.getName());
 							
 							if (impmem instanceof PayloadTypeDecl) {
 								ptd = (PayloadTypeDecl)impmem;

@@ -19,8 +19,8 @@ import static org.junit.Assert.*;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
+import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.trace.model.Trace;
-import org.scribble.common.resources.DirectoryResourceLocator;
 
 public class SimulatorTest {
 

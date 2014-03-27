@@ -16,8 +16,8 @@
  */
 package org.scribble.projection.rules;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Message;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Role;
@@ -36,7 +36,7 @@ public class GMessageTransferProjectionRule implements ProjectionRule {
 	 * {@inheritDoc}
 	 */
 	public Object project(ModuleContext context, ModelObject mobj,
-							RoleDecl role, ScribbleLogger logger) {
+							RoleDecl role, IssueLogger logger) {
 		java.util.List<ModelObject> ret=new java.util.ArrayList<ModelObject>();
 		GMessageTransfer source=(GMessageTransfer)mobj;
 		

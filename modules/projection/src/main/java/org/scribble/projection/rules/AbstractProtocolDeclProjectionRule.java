@@ -16,8 +16,8 @@
  */
 package org.scribble.projection.rules;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ParameterDecl;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.model.Role;
@@ -42,7 +42,7 @@ public class AbstractProtocolDeclProjectionRule {
 	 * @param logger The logger
 	 */
 	public void projectProtocolDecl(ModuleContext context,
-						ProtocolDecl elem, LProtocolDecl ret, RoleDecl role, ScribbleLogger logger) {
+						ProtocolDecl elem, LProtocolDecl ret, RoleDecl role, IssueLogger logger) {
 		ret.setName(elem.getName());
 		ret.setLocalRole(new Role(role.getName()));
 		

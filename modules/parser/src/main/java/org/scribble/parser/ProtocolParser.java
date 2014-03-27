@@ -20,17 +20,15 @@ import java.io.IOException;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleCache;
-import org.scribble.common.module.ModuleLoader;
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.common.resources.Resource;
+import org.scribble.context.ModuleCache;
+import org.scribble.context.ModuleLoader;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Module;
 import org.scribble.parser.ProtocolParser;
 import org.scribble.parser.antlr.ProtocolTreeAdaptor;
 import org.scribble.parser.antlr.ScribbleLexer;
 import org.scribble.parser.antlr.ScribbleParser;
-import org.scribble.validation.ProtocolValidator;
+import org.scribble.resources.Resource;
 
 /**
  * This class provides the ANTLR implementation of the Protocol Parser
@@ -56,7 +54,7 @@ public class ProtocolParser {
      * @return The module, or null if an error occurred
      * @throws IOException Failed to retrieve protocol from input stream
      */
-    public Module parse(Resource resource, final ModuleLoader loader, final ScribbleLogger logger)
+    public Module parse(Resource resource, final ModuleLoader loader, final IssueLogger logger)
                             throws IOException {
     	return (parse(resource, loader, new ModuleCache(), logger));
     }
@@ -73,7 +71,7 @@ public class ProtocolParser {
      * @return The module, or null if an error occurred
      * @throws IOException Failed to retrieve protocol from input stream
      */
-    public Module parse(Resource resource, ModuleLoader loader, ModuleCache cache, ScribbleLogger logger)
+    protected Module parse(Resource resource, ModuleLoader loader, ModuleCache cache, IssueLogger logger)
                             throws IOException {
         Module ret=null;
         

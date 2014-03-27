@@ -20,10 +20,9 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.Argument;
-import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.ParameterDecl;
@@ -50,13 +49,13 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				return new GProtocolDefinition();
@@ -76,13 +75,13 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				return null;
@@ -106,13 +105,13 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				return new Role();
@@ -136,14 +135,14 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
     	gpi.getArguments().add(new Argument());
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				return new GProtocolDefinition();
@@ -167,14 +166,14 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
     	gpi.getRoleInstantiations().add(new RoleInstantiation());
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				return new GProtocolDefinition();
@@ -198,7 +197,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
@@ -213,7 +212,7 @@ public class GProtocolInstanceValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();
@@ -235,7 +234,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
@@ -246,7 +245,7 @@ public class GProtocolInstanceValidationRuleTest {
     	gpi.getRoleInstantiations().add(ri);
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();
@@ -272,7 +271,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
@@ -291,7 +290,7 @@ public class GProtocolInstanceValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();
@@ -317,7 +316,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
@@ -333,7 +332,7 @@ public class GProtocolInstanceValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();
@@ -357,7 +356,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
@@ -373,7 +372,7 @@ public class GProtocolInstanceValidationRuleTest {
     	gpi.getRoleInstantiations().add(ri);
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();
@@ -401,7 +400,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
@@ -416,7 +415,7 @@ public class GProtocolInstanceValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();
@@ -438,7 +437,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	PayloadTypeDecl ptd=new PayloadTypeDecl();
     	ptd.setAlias(TEST_NAME1);
@@ -453,7 +452,7 @@ public class GProtocolInstanceValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();
@@ -475,7 +474,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
@@ -486,7 +485,7 @@ public class GProtocolInstanceValidationRuleTest {
     	gpi.getArguments().add(arg);
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();
@@ -512,7 +511,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
@@ -528,7 +527,7 @@ public class GProtocolInstanceValidationRuleTest {
     	
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();
@@ -552,7 +551,7 @@ public class GProtocolInstanceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolInstance gpi=new GProtocolInstance();
     	gpi.setMemberName(TEST_MEMBER_NAME);
@@ -568,7 +567,7 @@ public class GProtocolInstanceValidationRuleTest {
     	gpi.getArguments().add(arg);
     	module.getProtocols().add(gpi);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				GProtocolDefinition ret=new GProtocolDefinition();

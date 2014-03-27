@@ -16,7 +16,7 @@
  */
 package org.scribble.parser.antlr;
 
-import org.scribble.model.FullyQualifiedName;
+import org.antlr.runtime.CommonToken;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.Module;
 import org.scribble.model.PayloadTypeDecl;
@@ -48,10 +48,29 @@ public class ModuleModelAdaptor extends AbstractModelAdaptor {
 			ret.getImports().add(0, (ImportDecl)context.pop());
 		}
 
-		if (context.peek() instanceof FullyQualifiedName) {
-			setStartProperties(ret, context.peek());
+		// Initialize module name
+		
+		Object component=context.pop();
+		String packageName="";
+
+		if (component instanceof CommonToken
+				&& ((CommonToken)component).getText().equals(";")) {
+			component = context.pop(); // Replace ';'
+		}
+		
+		do {
+			if (component instanceof CommonToken) {
+				packageName = ((CommonToken)component).getText()+packageName;
+			}
 			
-			ret.setFullyQualifiedName((FullyQualifiedName)context.pop());
+			component = context.pop();
+			
+		} while (!(component instanceof CommonToken && ((CommonToken)component).getText().equals("module")));
+
+		if (packageName.length() > 0) {
+			ret.setName(packageName);
+			
+			setStartProperties(ret, component);
 		}
 		
 		context.push(ret);

@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ModelObject;
 import org.scribble.model.global.DefaultGVisitor;
 import org.scribble.model.global.GProtocolDefinition;
@@ -36,7 +36,7 @@ public class GRecursionValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, final ScribbleLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, final IssueLogger logger) {
 		final GRecursion elem=(GRecursion)mobj;
 		
 		// Check that bound label is unique

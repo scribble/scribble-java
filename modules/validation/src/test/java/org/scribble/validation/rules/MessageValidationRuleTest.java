@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.Message;
 import org.scribble.model.Module;
 import org.scribble.model.ParameterDecl;
@@ -42,7 +41,7 @@ public class MessageValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -75,7 +74,7 @@ public class MessageValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -113,7 +112,7 @@ public class MessageValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	

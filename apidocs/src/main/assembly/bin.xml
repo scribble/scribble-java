@@ -26,8 +26,8 @@
     <fileSets>
 
 	    <fileSet>
-	    	<directory>../modules/model/target/javadoc</directory>
-	    	<outputDirectory>/apidocs/model</outputDirectory>
+	    	<directory>../modules/core/target/javadoc</directory>
+	    	<outputDirectory>/apidocs/core</outputDirectory>
 	    </fileSet>
 
     </fileSets>

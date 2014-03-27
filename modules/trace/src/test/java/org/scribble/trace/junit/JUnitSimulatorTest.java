@@ -17,7 +17,7 @@ package org.scribble.trace.junit;
 
 import static org.junit.Assert.*;
 
-import org.scribble.common.resources.DirectoryResourceLocator;
+import org.scribble.resources.DirectoryResourceLocator;
 
 public class JUnitSimulatorTest {
 

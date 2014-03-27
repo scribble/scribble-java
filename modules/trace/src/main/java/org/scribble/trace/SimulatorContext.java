@@ -16,7 +16,7 @@
  */
 package org.scribble.trace;
 
-import org.scribble.common.resources.ResourceLocator;
+import org.scribble.resources.ResourceLocator;
 
 /**
  * This interface provides context support for the simulator.

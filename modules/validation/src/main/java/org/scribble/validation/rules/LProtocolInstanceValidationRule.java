@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Argument;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
@@ -39,7 +39,7 @@ public class LProtocolInstanceValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, IssueLogger logger) {
 		LProtocolInstance elem=(LProtocolInstance)mobj;
 		
 		if (elem.getLocalRole() != null) {

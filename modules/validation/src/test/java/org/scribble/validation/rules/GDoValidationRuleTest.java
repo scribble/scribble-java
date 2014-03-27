@@ -20,9 +20,8 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.common.module.ModuleContext;
-import org.scribble.model.FullyQualifiedName;
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.global.GBlock;
@@ -43,7 +42,7 @@ public class GDoValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd1=new GProtocolDefinition();
     	gpd1.setName(PROTOCOL1);
@@ -54,10 +53,10 @@ public class GDoValidationRuleTest {
     	gpd1.setBlock(block);
     	
     	GDo gdo=new GDo();
-    	gdo.setProtocol(new FullyQualifiedName(PROTOCOL2));
+    	gdo.setProtocol(PROTOCOL2);
     	block.add(gdo);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				return new GProtocolDefinition();
@@ -77,7 +76,7 @@ public class GDoValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd1=new GProtocolDefinition();
     	gpd1.setName(PROTOCOL1);
@@ -88,10 +87,10 @@ public class GDoValidationRuleTest {
     	gpd1.setBlock(block);
     	
     	GDo gdo=new GDo();
-    	gdo.setProtocol(new FullyQualifiedName(PROTOCOL2));
+    	gdo.setProtocol(PROTOCOL2);
     	block.add(gdo);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				return null;

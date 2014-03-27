@@ -16,8 +16,8 @@
  */
 package org.scribble.validation;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Module;
 import org.scribble.validation.rules.ValidationRule;
 import org.scribble.validation.rules.ValidationRuleFactory;
@@ -36,7 +36,7 @@ public class ProtocolValidator {
 	 * @param module The module
 	 * @param logger The logger
 	 */
-	public void validate(ModuleContext context, Module module, ScribbleLogger logger) {
+	public void validate(ModuleContext context, Module module, IssueLogger logger) {
 		
 		ValidationRule rule=ValidationRuleFactory.getValidationRule(module);
 		

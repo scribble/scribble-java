@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.scribble.editor.tools.validator.ProtocolValidationManager;
+import org.scribble.parser.ProtocolDefinitions;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -97,7 +98,7 @@ public class Activator extends AbstractUIPlugin {
      */
     protected boolean isChangeRelevant(IResource res, IResourceDelta delta) {
         return (res instanceof IFile
-                && ((IFile)res).getFileExtension().equals("scr")
+                && ((IFile)res).getFileExtension().equals(ProtocolDefinitions.PROTOCOL_EXTENSION)
                 && (((delta.getFlags() & IResourceDelta.CONTENT) != 0)
                         || delta.getKind() == IResourceDelta.ADDED));
     }

@@ -16,8 +16,8 @@
  */
 package org.scribble.projection.rules;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ModelObject;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.global.GActivity;
@@ -35,7 +35,7 @@ public class GBlockProjectionRule implements ProjectionRule {
 	 * {@inheritDoc}
 	 */
 	public Object project(ModuleContext context, ModelObject mobj,
-						RoleDecl role, ScribbleLogger logger) {
+						RoleDecl role, IssueLogger logger) {
 		LBlock projected=new LBlock();
 		GBlock source=(GBlock)mobj;
 

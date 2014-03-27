@@ -20,9 +20,8 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.common.module.ModuleContext;
-import org.scribble.model.FullyQualifiedName;
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
 import org.scribble.model.local.LBlock;
@@ -43,7 +42,7 @@ public class LDoValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition lpd1=new LProtocolDefinition();
     	lpd1.setName(PROTOCOL1);
@@ -54,10 +53,10 @@ public class LDoValidationRuleTest {
     	lpd1.setBlock(block);
     	
     	LDo ldo=new LDo();
-    	ldo.setProtocol(new FullyQualifiedName(PROTOCOL2));
+    	ldo.setProtocol(PROTOCOL2);
     	block.add(ldo);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				return new LProtocolDefinition();
@@ -77,7 +76,7 @@ public class LDoValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition lpd1=new LProtocolDefinition();
     	lpd1.setName(PROTOCOL1);
@@ -88,10 +87,10 @@ public class LDoValidationRuleTest {
     	lpd1.setBlock(block);
     	
     	LDo ldo=new LDo();
-    	ldo.setProtocol(new FullyQualifiedName(PROTOCOL2));
+    	ldo.setProtocol(PROTOCOL2);
     	block.add(ldo);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null) {
+    	ModuleContext context=new DefaultModuleContext(null, null, null) {
 
 			public ModelObject getMember(String fqn) {
 				return null;

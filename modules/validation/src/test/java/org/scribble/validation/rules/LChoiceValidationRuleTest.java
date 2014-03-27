@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.Module;
 import org.scribble.model.Role;
 import org.scribble.model.RoleDecl;
@@ -41,7 +40,7 @@ public class LChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition pd=new LProtocolDefinition();
     	
@@ -73,7 +72,7 @@ public class LChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition lpd=new LProtocolDefinition();
     	module.getProtocols().add(lpd);
@@ -104,7 +103,7 @@ public class LChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition pd=new LProtocolDefinition();
     	module.getProtocols().add(pd);

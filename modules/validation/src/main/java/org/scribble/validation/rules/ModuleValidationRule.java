@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
@@ -39,10 +39,10 @@ public class ModuleValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, IssueLogger logger) {
 		Module elem=(Module)mobj;
 		
-		if (elem.getFullyQualifiedName() == null) {
+		if (elem.getName() == null) {
 			logger.error(ValidationMessages.getMessage("NO_FULLY_QUALIFIED_NAME"), mobj);
 		}
 		
@@ -104,7 +104,7 @@ public class ModuleValidationRule implements ValidationRule {
 		
 		// Well formed ness checks
 		if (context.getResource() != null && context.getResource().getPath() != null) {
-			String filepath=elem.getFullyQualifiedName().getName().replace('.',  java.io.File.separatorChar);
+			String filepath=elem.getName().replace('.',  java.io.File.separatorChar);
 			
 			if (localRole != null) {
 				filepath += "@"+localRole;
@@ -114,13 +114,13 @@ public class ModuleValidationRule implements ValidationRule {
 			
 			if (!context.getResource().getPath().equals(filepath)) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("INCORRECT_FILEPATH"),
-						elem.getFullyQualifiedName().getName(), filepath), mobj);
+						elem.getName(), filepath), mobj);
 			}
 		}
 		
 		java.util.List<String> moduleNames=new java.util.ArrayList<String>();
-		if (elem.getFullyQualifiedName() != null) {
-			moduleNames.add(elem.getFullyQualifiedName().getLastPart());
+		if (elem.getName() != null) {
+			moduleNames.add(elem.getLocalName());
 		}
 		
 		for (ImportDecl imp : elem.getImports()) {

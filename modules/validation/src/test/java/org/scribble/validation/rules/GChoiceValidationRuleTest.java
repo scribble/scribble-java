@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.Message;
 import org.scribble.model.MessageSignature;
 import org.scribble.model.Module;
@@ -56,7 +55,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	
@@ -88,7 +87,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -119,7 +118,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -147,7 +146,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -216,7 +215,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -289,7 +288,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -387,7 +386,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -490,7 +489,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -596,7 +595,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -707,7 +706,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
@@ -757,7 +756,7 @@ public class GChoiceValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd=new GProtocolDefinition();
     	module.getProtocols().add(gpd);
