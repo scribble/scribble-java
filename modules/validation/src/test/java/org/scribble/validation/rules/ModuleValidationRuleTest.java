@@ -20,13 +20,13 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.common.resources.InputStreamResource;
-import org.scribble.model.FullyQualifiedName;
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.DefaultModuleLoader;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.Module;
 import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.global.GProtocolDefinition;
+import org.scribble.resources.InputStreamResource;
 import org.scribble.validation.TestValidationLogger;
 import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.ModuleValidationRule;
@@ -39,11 +39,11 @@ public class ModuleValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	module.getProtocols().add(new GProtocolDefinition());
     	
-    	rule.validate(new DefaultModuleContext(null, null, null, null), module, logger);
+    	rule.validate(new DefaultModuleContext(null, null, null), module, logger);
     	
     	if (logger.isErrorsOrWarnings()) {
     		fail("Errors detected");
@@ -59,7 +59,7 @@ public class ModuleValidationRuleTest {
     	
     	module.getProtocols().add(new GProtocolDefinition());
     	
-    	rule.validate(new DefaultModuleContext(null, null, null, null), module, logger);
+    	rule.validate(new DefaultModuleContext(null, null, null), module, logger);
     	
     	if (!logger.isErrorsOrWarnings()) {
     		fail("Errors not detected");
@@ -77,13 +77,13 @@ public class ModuleValidationRuleTest {
     	
     	Module module=new Module();
     	
-    	module.setFullyQualifiedName(new FullyQualifiedName("a.b.C"));
+    	module.setName("a.b.C");
     	
     	String path="a"+java.io.File.separatorChar+"b"+java.io.File.separatorChar+"C.scr";
     	
     	InputStreamResource resource=new InputStreamResource(path, null);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(resource, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(resource, null, null);
     	
     	rule.validate(context, module, logger);
     	
@@ -99,13 +99,13 @@ public class ModuleValidationRuleTest {
     	
     	Module module=new Module();
     	
-    	module.setFullyQualifiedName(new FullyQualifiedName("a.b.D"));
+    	module.setName("a.b.D");
     	
     	String path="a"+java.io.File.separatorChar+"b"+java.io.File.separatorChar+"C.scr";
     	
     	InputStreamResource resource=new InputStreamResource(path, null);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(resource, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(resource, null, null);
     	
     	rule.validate(context, module, logger);
     	
@@ -129,17 +129,18 @@ public class ModuleValidationRuleTest {
     	
     	Module module=new Module();
     	
-    	module.setFullyQualifiedName(new FullyQualifiedName("a.b.C"));
+    	module.setName("a.b.C");
     	
     	ImportDecl imp=new ImportDecl();
-    	imp.setModuleName(new FullyQualifiedName("a.b.D"));
+    	imp.setModuleName("a.b.D");
     	module.getImports().add(imp);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleLoader loader=new DefaultModuleLoader();
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, loader);
     	
     	Module impmodule=new Module();
-    	impmodule.setFullyQualifiedName(new FullyQualifiedName("a.b.D"));
-    	context.registerModule(impmodule);
+    	impmodule.setName("a.b.D");
+    	loader.registerModule(impmodule);
     	
     	rule.validate(context, module, logger);
     	
@@ -155,18 +156,19 @@ public class ModuleValidationRuleTest {
     	
     	Module module=new Module();
     	
-    	module.setFullyQualifiedName(new FullyQualifiedName("a.b.C"));
+    	module.setName("a.b.C");
     	
     	ImportDecl imp=new ImportDecl();
-    	imp.setModuleName(new FullyQualifiedName("a.b.D"));
+    	imp.setModuleName("a.b.D");
     	imp.setAlias("C");
     	module.getImports().add(imp);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleLoader loader=new DefaultModuleLoader();
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, loader);
     	
     	Module impmodule=new Module();
-    	impmodule.setFullyQualifiedName(new FullyQualifiedName("a.b.D"));
-    	context.registerModule(impmodule);
+    	impmodule.setName("a.b.D");
+    	loader.registerModule(impmodule);
     	
     	rule.validate(context, module, logger);
     	
@@ -187,10 +189,10 @@ public class ModuleValidationRuleTest {
     	
     	Module module=new Module();
     	
-    	module.setFullyQualifiedName(new FullyQualifiedName("a.b.C"));
+    	module.setName("a.b.C");
     	
     	ImportDecl imp=new ImportDecl();
-    	imp.setModuleName(new FullyQualifiedName("a.b.D"));
+    	imp.setModuleName("a.b.D");
     	imp.setMemberName("E");
     	module.getImports().add(imp);
     	
@@ -202,16 +204,17 @@ public class ModuleValidationRuleTest {
     	gpd.setName("G");
     	module.getProtocols().add(gpd);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleLoader loader=new DefaultModuleLoader();
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, loader);
     	
     	Module impmodule=new Module();
-    	impmodule.setFullyQualifiedName(new FullyQualifiedName("a.b.D"));
+    	impmodule.setName("a.b.D");
 
     	PayloadTypeDecl impptd=new PayloadTypeDecl();
     	impptd.setAlias("E");
     	impmodule.getPayloadTypeDeclarations().add(impptd);
 
-    	context.registerModule(impmodule);
+    	loader.registerModule(impmodule);
     	
     	rule.validate(context, module, logger);
     	
@@ -227,10 +230,10 @@ public class ModuleValidationRuleTest {
     	
     	Module module=new Module();
     	
-    	module.setFullyQualifiedName(new FullyQualifiedName("a.b.C"));
+    	module.setName("a.b.C");
     	
     	ImportDecl imp=new ImportDecl();
-    	imp.setModuleName(new FullyQualifiedName("a.b.D"));
+    	imp.setModuleName("a.b.D");
     	imp.setMemberName("E");
     	module.getImports().add(imp);
     	
@@ -242,16 +245,17 @@ public class ModuleValidationRuleTest {
     	gpd.setName("F");
     	module.getProtocols().add(gpd);
     	
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleLoader loader=new DefaultModuleLoader();
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, loader);
     	
     	Module impmodule=new Module();
-    	impmodule.setFullyQualifiedName(new FullyQualifiedName("a.b.D"));
+    	impmodule.setName("a.b.D");
     	
     	PayloadTypeDecl impptd=new PayloadTypeDecl();
     	impptd.setAlias("E");
     	impmodule.getPayloadTypeDeclarations().add(impptd);
 
-    	context.registerModule(impmodule);
+    	loader.registerModule(impmodule);
     	
     	rule.validate(context, module, logger);
     	

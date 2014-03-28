@@ -18,14 +18,14 @@ package org.scribble.cli;
 
 import java.io.IOException;
 
-import org.scribble.common.logging.ConsoleScribbleLogger;
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.resources.DirectoryResourceLocator;
-import org.scribble.common.resources.Resource;
-import org.scribble.common.resources.ResourceLocator;
+import org.scribble.logging.ConsoleIssueLogger;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Module;
 import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.parser.ProtocolParser;
+import org.scribble.resources.DirectoryResourceLocator;
+import org.scribble.resources.Resource;
+import org.scribble.resources.ResourceLocator;
 
 /**
  * This class provides the command line interface for the
@@ -111,7 +111,7 @@ public class ScribbleCLI {
 
 					if (resource != null) {
 						try {
-							ScribbleLogger logger=new ConsoleScribbleLogger();
+							IssueLogger logger=new ConsoleIssueLogger();
 							 
 							ProtocolModuleLoader loader=new ProtocolModuleLoader(pp, _locator, logger);
 							

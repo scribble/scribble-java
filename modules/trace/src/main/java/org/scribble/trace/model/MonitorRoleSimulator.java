@@ -16,8 +16,8 @@
  */
 package org.scribble.trace.model;
 
-import org.scribble.common.logging.ConsoleScribbleLogger;
-import org.scribble.common.module.ModuleLoader;
+import org.scribble.context.ModuleLoader;
+import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.model.Module;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.model.local.LProtocolDefinition;
@@ -98,7 +98,7 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	public void init(SimulatorContext context) {
 		// TODO: Need to consider different logger impl?
 		ModuleLoader loader=new ProtocolModuleLoader(PARSER, context.getResourceLocator(), 
-							new ConsoleScribbleLogger());
+							new ConsoleIssueLogger());
 		
 		Module module=loader.loadModule(_module);
 		

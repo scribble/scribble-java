@@ -148,11 +148,11 @@ package org.scribble.parser.antlr;
 }
    
 @members {
-	private org.scribble.common.logging.ScribbleLogger _logger=null;
+	private org.scribble.logging.IssueLogger _logger=null;
 	private String _document=null;
 	private boolean _errorOccurred=false;
 	
-    public void setLogger(org.scribble.common.logging.ScribbleLogger logger) {
+    public void setLogger(org.scribble.logging.IssueLogger logger) {
     	_logger = logger;
     }
     

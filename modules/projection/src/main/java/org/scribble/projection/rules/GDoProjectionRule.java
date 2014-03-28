@@ -16,10 +16,9 @@
  */
 package org.scribble.projection.rules;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Argument;
-import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.ModelObject;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.RoleInstantiation;
@@ -36,7 +35,7 @@ public class GDoProjectionRule implements ProjectionRule {
 	 * {@inheritDoc}
 	 */
 	public Object project(ModuleContext context, ModelObject mobj,
-						RoleDecl role, ScribbleLogger logger) {
+						RoleDecl role, IssueLogger logger) {
 		LDo projected=null;
 		GDo source=(GDo)mobj;
 		
@@ -47,7 +46,7 @@ public class GDoProjectionRule implements ProjectionRule {
 			
 			// TODO: Modify the protocol name as described in section 5.3.6
 			
-			projected.setProtocol(new FullyQualifiedName(source.getProtocol()));
+			projected.setProtocol(source.getProtocol());
 			
 			for (RoleInstantiation ri : source.getRoleInstantiations()) {
 				projected.getRoleInstantiations().add(new RoleInstantiation(ri));

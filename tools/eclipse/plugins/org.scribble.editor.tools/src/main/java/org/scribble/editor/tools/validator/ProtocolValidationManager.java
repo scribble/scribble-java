@@ -18,17 +18,16 @@ package org.scribble.editor.tools.validator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.scribble.editor.tools.logger.EclipseScribbleLogger;
+import org.scribble.editor.tools.logger.EclipseIssueLogger;
 import org.scribble.editor.tools.osgi.Activator;
 import org.scribble.model.Module;
 import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.parser.ProtocolParser;
-import org.scribble.common.logging.ConsoleScribbleLogger;
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.common.module.ModuleCache;
-import org.scribble.common.resources.InputStreamResource;
-import org.scribble.common.resources.Resource;
-import org.scribble.common.resources.ResourceLocator;
+import org.scribble.logging.ConsoleIssueLogger;
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.resources.InputStreamResource;
+import org.scribble.resources.Resource;
+import org.scribble.resources.ResourceLocator;
 
 /**
  * Protocol validator.
@@ -62,8 +61,8 @@ public class ProtocolValidationManager {
      * @param res The resource
      */
     public void validateResource(final IResource res) {
-        EclipseScribbleLogger logger=
-                new EclipseScribbleLogger((IFile)res);
+        EclipseIssueLogger logger=
+                new EclipseIssueLogger((IFile)res);
         
         try {
             InputStreamResource isr = new InputStreamResource(res.getProjectRelativePath().toPortableString(),
@@ -93,18 +92,16 @@ public class ProtocolValidationManager {
             
             ProtocolModuleLoader loader=new ProtocolModuleLoader(pp, locator, logger);
             
-            ModuleCache cache=new ModuleCache();
-            
             // Use console logger, to 'ignore' parser errors, as these will be detected and
             // reported by the XText generated Scribble editor. However the validation errors
             // should be reported via the Eclipse based logger
-            Module module=pp.parse(isr, loader, cache, new ConsoleScribbleLogger());
+            Module module=pp.parse(isr, loader, new ConsoleIssueLogger());
             
             if (module != null) {            	
             	// Validate
                 org.scribble.validation.ProtocolValidator pv=new org.scribble.validation.ProtocolValidator();
                 
-                DefaultModuleContext context=new DefaultModuleContext(isr, module, loader, cache);
+                DefaultModuleContext context=new DefaultModuleContext(isr, module, loader);
                 
                 pv.validate(context, module, logger);
             }

@@ -19,11 +19,12 @@ package org.scribble.parser;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleLoader;
-import org.scribble.common.resources.Resource;
-import org.scribble.common.resources.ResourceLocator;
+import org.scribble.context.ModuleCache;
+import org.scribble.context.ModuleLoader;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.Module;
+import org.scribble.resources.Resource;
+import org.scribble.resources.ResourceLocator;
 
 /**
  * This class provides a default implementation of the ModuleLoader interface.
@@ -34,8 +35,29 @@ public class ProtocolModuleLoader implements ModuleLoader {
 	private static final Logger LOG=Logger.getLogger(ProtocolModuleLoader.class.getName());
 
 	private ResourceLocator _locator=null;
-	private ScribbleLogger _logger=null;
+	private IssueLogger _logger=null;
+	private ModuleCache _cache=null;
 	private ProtocolParser _parser=null;
+	
+	/**
+	 * This constructor initializes the module loader.
+	 * 
+	 * @param parser The parser
+	 * @param locator The locator
+	 * @param cache The optional module cache
+	 * @param logger The logger
+	 */
+	public ProtocolModuleLoader(ProtocolParser parser, ResourceLocator locator,
+					ModuleCache cache, IssueLogger logger) {
+		_parser = parser;
+		_locator = locator;
+		_cache = cache;
+		_logger = logger;
+		
+		if (_cache == null) {
+			_cache = new ModuleCache();
+		}
+	}
 	
 	/**
 	 * This constructor initializes the module loader.
@@ -45,27 +67,27 @@ public class ProtocolModuleLoader implements ModuleLoader {
 	 * @param logger The logger
 	 */
 	public ProtocolModuleLoader(ProtocolParser parser, ResourceLocator locator,
-					ScribbleLogger logger) {
-		_parser = parser;
-		_locator = locator;
-		_logger = logger;
+					IssueLogger logger) {
+		this(parser, locator, null, logger);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Module loadModule(String module) {
-		Module ret=null;
+		Module ret=_cache.getModule(module);
 		
-		String relativePath=module.replace('.', java.io.File.separatorChar)+".scr";
-
-		Resource resource=_locator.getResource(relativePath);
-		
-		if (resource != null) {
-			try {
-				ret = _parser.parse(resource, this, _logger);
-			} catch (Exception e) {
-				LOG.log(Level.SEVERE, "Failed to parse imported module '"+module+"'", e);
+		if (ret == null) {
+			String relativePath=module.replace('.', java.io.File.separatorChar)+".scr";
+	
+			Resource resource=_locator.getResource(relativePath);
+			
+			if (resource != null) {
+				try {
+					ret = _parser.parse(resource, this, _cache, _logger);
+				} catch (Exception e) {
+					LOG.log(Level.SEVERE, "Failed to parse imported module '"+module+"'", e);
+				}
 			}
 		}
 		

@@ -148,48 +148,11 @@
 	</build>
 
 	<repositories>
-    <repository>
-      <id>juno</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/juno</url>
-    </repository>
-<!--
 		<repository>
-			<id>jboss-developer-repository-group</id>
-			<name>JBoss Developer Maven Repository Group</name>
-			<url>https://repository.jboss.org/nexus/content/groups/developer/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>jbosstools-target-site</id>
-			<url>http://download.jboss.org/jbosstools/updates/juno/SR1a/REPO/</url>
+			<id>juno</id>
 			<layout>p2</layout>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
+			<url>http://download.eclipse.org/releases/juno</url>
 		</repository>
-		<repository>
-			<id>jbosstools-stable-indigo</id>
-			<url>http://download.jboss.org/jbosstools/updates/stable/indigo/</url>
-			<layout>p2</layout>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
--->
 	</repositories>
 
 	<pluginRepositories>

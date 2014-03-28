@@ -16,9 +16,8 @@
  */
 package org.scribble.projection.rules;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
-import org.scribble.model.FullyQualifiedName;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
@@ -38,7 +37,7 @@ public class ModuleProjectionRule implements ProjectionRule {
 	 * {@inheritDoc}
 	 */
 	public Object project(ModuleContext context, ModelObject mobj,
-								RoleDecl role, ScribbleLogger logger) {
+								RoleDecl role, IssueLogger logger) {
 		java.util.Set<Module> ret=new java.util.HashSet<Module>();
 		Module source=(Module)mobj;
 
@@ -56,8 +55,8 @@ public class ModuleProjectionRule implements ProjectionRule {
 			
 			projected.derivedFrom(source);
 			
-			if (source.getFullyQualifiedName() != null) {
-				projected.setFullyQualifiedName(new FullyQualifiedName(source.getFullyQualifiedName()));
+			if (source.getName() != null) {
+				projected.setName(source.getName());
 				
 				// TODO: Need to investigate options for best pro
 				//projected.getFullyQualifiedName().setName(projected.getFullyQualifiedName().getName()

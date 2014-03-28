@@ -19,13 +19,13 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
+import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.model.Module;
 import org.scribble.model.local.LProtocolDecl;
 import org.scribble.parser.ProtocolParser;
 import org.scribble.parser.ProtocolModuleLoader;
-import org.scribble.common.logging.ConsoleScribbleLogger;
-import org.scribble.common.resources.DirectoryResourceLocator;
-import org.scribble.common.resources.InputStreamResource;
+import org.scribble.resources.DirectoryResourceLocator;
+import org.scribble.resources.InputStreamResource;
 
 public class ProtocolProjectionTest {
 
@@ -101,7 +101,7 @@ public class ProtocolProjectionTest {
     		java.util.Set<Module> projected=projector.project(isr, module, loader, logger);
     		
     		for (Module lm : projected) {
-    			String filename="scribble/results/"+lm.getFullyQualifiedName().getLastPart();
+    			String filename="scribble/results/"+lm.getLocalName();
     			
     			if (lm.getProtocols().size() > 0 && lm.getProtocols().get(0) instanceof LProtocolDecl) {
     				LProtocolDecl ld=(LProtocolDecl)lm.getProtocols().get(0);
@@ -157,7 +157,7 @@ public class ProtocolProjectionTest {
     	}
     }
     
-    protected class TestIssueLogger extends ConsoleScribbleLogger {
+    protected class TestIssueLogger extends ConsoleIssueLogger {
     	
     	private java.util.List<String> _errors=new java.util.ArrayList<String>();
     	private java.util.List<String> _warnings=new java.util.ArrayList<String>();

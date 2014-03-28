@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Role;
 import org.scribble.model.global.GActivity;
@@ -41,7 +41,7 @@ public class GChoiceValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, IssueLogger logger) {
 		GChoice elem=(GChoice)mobj;
 		
 		// Check if decision role has been declared
@@ -120,7 +120,7 @@ public class GChoiceValidationRule implements ValidationRule {
 	 * @param logger The logger
 	 */
 	protected void checkReceiverBeforeOtherActivity(ModuleContext context, GBlock block,
-								java.util.Set<Role> roles, ScribbleLogger logger) {
+								java.util.Set<Role> roles, IssueLogger logger) {
 		for (GActivity act : block.getContents()) {
 			
 			if (act instanceof GMessageTransfer) {
@@ -183,7 +183,7 @@ public class GChoiceValidationRule implements ValidationRule {
 	 */
 	protected void checkReceiverOpSigDistinct(ModuleContext context, GBlock block,
 							java.util.Set<Role> roles, java.util.Map<Role, java.util.Set<String>> operators,
-							java.util.Map<Role, java.util.Set<String>> signatures, ScribbleLogger logger) {
+							java.util.Map<Role, java.util.Set<String>> signatures, IssueLogger logger) {
 		for (int i=0; roles.size() > 0 && i < block.getContents().size(); i++) {
 			GActivity act=block.getContents().get(i);
 		

@@ -29,8 +29,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.IStreamListener;
-import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.ExecutionArguments;
@@ -40,15 +38,11 @@ import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.Path;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.scribble.editor.tools.osgi.Activator;
@@ -89,7 +83,7 @@ public class SimulationLauncher
 			monitor = new NullProgressMonitor();
 		}
 		
-		monitor.beginTask(MessageFormat.format("{0}...", new String[]{configuration.getName()}), 3); //$NON-NLS-1$
+		monitor.beginTask(MessageFormat.format("{0}...", new Object[]{configuration.getName()}), 3); //$NON-NLS-1$
 		// check for cancellation
 		if (monitor.isCanceled()) {
 			return;
@@ -182,7 +176,8 @@ public class SimulationLauncher
 		if (processes.length > 0) {
 			final IFile file=ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new org.eclipse.core.runtime.Path(_xmlFile));
 			
-			Display display=Workbench.getInstance().getDisplay();
+			@SuppressWarnings("restriction")
+			Display display=org.eclipse.ui.internal.Workbench.getInstance().getDisplay();
 			
 			while (!processes[0].isTerminated()) {
 				try {
@@ -195,11 +190,12 @@ public class SimulationLauncher
 			}
 			
 			display.syncExec(new Runnable() {
+				@SuppressWarnings("restriction")
 				public void run() {
 					try {
 						file.refreshLocal(0, null);
 						
-						Workbench.getInstance().getActiveWorkbenchWindow().getActivePage().
+						org.eclipse.ui.internal.Workbench.getInstance().getActiveWorkbenchWindow().getActivePage().
 								openEditor(new FileEditorInput(file),
 								JUNIT_RESULT_EDITOR);
 					} catch (Throwable t) {

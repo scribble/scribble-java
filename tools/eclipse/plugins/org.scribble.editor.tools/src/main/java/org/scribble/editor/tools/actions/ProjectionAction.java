@@ -25,10 +25,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.scribble.common.logging.ConsoleScribbleLogger;
-import org.scribble.common.resources.InputStreamResource;
-import org.scribble.common.resources.Resource;
-import org.scribble.common.resources.ResourceLocator;
+import org.scribble.logging.ConsoleIssueLogger;
+import org.scribble.resources.InputStreamResource;
+import org.scribble.resources.Resource;
+import org.scribble.resources.ResourceLocator;
 import org.scribble.editor.tools.osgi.Activator;
 import org.scribble.model.Module;
 import org.scribble.model.local.LProtocolDecl;
@@ -60,8 +60,8 @@ public class ProjectionAction implements IObjectActionDelegate {
 			final IResource res=(IResource)sel.getFirstElement();
 
 			if (res instanceof IFile) {
-		        ConsoleScribbleLogger logger=
-		                new ConsoleScribbleLogger();
+		        ConsoleIssueLogger logger=
+		                new ConsoleIssueLogger();
 		        
 		        try {
 		            InputStreamResource isr = new InputStreamResource(res.getLocation().toPortableString(),
@@ -109,7 +109,7 @@ public class ProjectionAction implements IObjectActionDelegate {
 		            			 }
 		            		}
 		            		
-							String filename=lm.getFullyQualifiedName().getName().replace('.',
+							String filename=lm.getName().replace('.',
 									java.io.File.separatorChar)+"@"+roleName+".scr";
 							
 				            IFile file=res.getProject().getFile(filename);

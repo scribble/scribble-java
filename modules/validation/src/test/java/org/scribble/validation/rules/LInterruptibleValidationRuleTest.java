@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.Message;
 import org.scribble.model.Module;
 import org.scribble.model.Role;
@@ -43,7 +42,7 @@ public class LInterruptibleValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition lpd=new LProtocolDefinition();
     	
@@ -81,7 +80,7 @@ public class LInterruptibleValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition lpd=new LProtocolDefinition();
     	
@@ -119,7 +118,7 @@ public class LInterruptibleValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition lpd=new LProtocolDefinition();
     	
@@ -161,7 +160,7 @@ public class LInterruptibleValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	LProtocolDefinition lpd=new LProtocolDefinition();
     	

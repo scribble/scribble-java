@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ModelObject;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.model.local.LBlock;
@@ -36,7 +36,7 @@ public class LChoiceValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, IssueLogger logger) {
 		LChoice elem=(LChoice)mobj;
 		
 		// Check if decision role has been declared

@@ -20,8 +20,8 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.model.FullyQualifiedName;
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.DefaultModuleLoader;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.Module;
 import org.scribble.model.ProtocolDecl;
@@ -36,14 +36,15 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclValid() {
     	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleLoader loader=new DefaultModuleLoader();
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, loader);
     	
     	Module impmodule=new Module();
-    	impmodule.setFullyQualifiedName(new FullyQualifiedName("a.b.c"));
-    	context.registerModule(impmodule);
+    	impmodule.setName("a.b.c");
+    	loader.registerModule(impmodule);
     	
     	ImportDecl elem=new ImportDecl();
-    	elem.setModuleName(new FullyQualifiedName("a.b.c"));
+    	elem.setModuleName("a.b.c");
     	
     	rule.validate(context, elem, logger);
     	
@@ -56,7 +57,7 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclNoModule() {
    	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	ImportDecl elem=new ImportDecl();
     	
@@ -75,10 +76,10 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclNotFoundModule() {
    	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	ImportDecl elem=new ImportDecl();
-    	elem.setModuleName(new FullyQualifiedName("a.b.c"));
+    	elem.setModuleName("a.b.c");
     	
     	rule.validate(context, elem, logger);
     	
@@ -95,14 +96,15 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclNotFoundMember() {
    	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleLoader loader=new DefaultModuleLoader();
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, loader);
 
     	Module impmodule=new Module();
-    	impmodule.setFullyQualifiedName(new FullyQualifiedName("a.b.c"));
-    	context.registerModule(impmodule);
+    	impmodule.setName("a.b.c");
+    	loader.registerModule(impmodule);
     	
     	ImportDecl elem=new ImportDecl();
-    	elem.setModuleName(new FullyQualifiedName("a.b.c"));
+    	elem.setModuleName("a.b.c");
     	elem.setMemberName("Test");
     	
     	rule.validate(context, elem, logger);
@@ -120,22 +122,30 @@ public class ImportDeclValidationRuleTest {
     public void testImportDeclExistsAlias() {
    	ImportDeclValidationRule rule=new ImportDeclValidationRule();
     	TestValidationLogger logger=new TestValidationLogger();
-    	DefaultModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	DefaultModuleLoader loader=new DefaultModuleLoader();
+    	DefaultModuleContext context=new DefaultModuleContext(null, null, loader);
     	
     	Module m=new Module();
-    	m.setFullyQualifiedName(new FullyQualifiedName("a.b.c"));
-    	ProtocolDecl p=new GProtocolDefinition();
-    	p.setName("Init");
-    	m.getProtocols().add(p);
-    	context.registerModule(m);
-    	context.registerImportedMember("a.b.c", "Init", "MyAlias");
+    	m.setName("a.b.c");
+    	ProtocolDecl p1=new GProtocolDefinition();
+    	p1.setName("First");
+    	m.getProtocols().add(p1);
+    	ProtocolDecl p2=new GProtocolDefinition();
+    	p2.setName("Second");
+    	m.getProtocols().add(p2);
+    	loader.registerModule(m);
     	
-    	ImportDecl elem=new ImportDecl();
-    	elem.setModuleName(new FullyQualifiedName("a.b.c"));
-    	elem.setMemberName("Init");
-    	elem.setAlias("MyAlias");
+    	ImportDecl elem1=new ImportDecl();
+    	elem1.setModuleName("a.b.c");
+    	elem1.setMemberName("First");
+    	elem1.setAlias("MyAlias");
     	
-    	rule.validate(context, elem, logger);
+    	ImportDecl elem2=new ImportDecl();
+    	elem2.setModuleName("a.b.c");
+    	elem2.setMemberName("Second");
+    	elem2.setAlias("MyAlias");
+    	
+    	rule.validate(context, elem2, logger);
     	
     	if (!logger.isErrorsOrWarnings()) {
     		fail("Errors not detected");

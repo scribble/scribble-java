@@ -31,6 +31,6 @@ public final class ProtocolDefinitions {
     /**
      * The protocol type.
      */
-    public static final String PROTOCOL_TYPE = "scr";
+    public static final String PROTOCOL_EXTENSION = "scr";
 
 }

@@ -16,9 +16,9 @@
  */
 package org.scribble.monitor.export;
 
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.common.module.ModuleContext;
-import org.scribble.common.module.ModuleLoader;
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.context.ModuleLoader;
 import org.scribble.model.local.LProtocolDefinition;
 import org.scribble.monitor.model.SessionType;
 
@@ -39,7 +39,7 @@ public class MonitorExporter {
 		SessionType ret=new SessionType();
 		
 		ModuleContext context=new DefaultModuleContext(null, protocol.getModule(),
-							loader, null);
+							loader);
 		
 		NodeExporter ne=NodeExporterFactory.getNodeExporter(protocol.getBlock());
 		

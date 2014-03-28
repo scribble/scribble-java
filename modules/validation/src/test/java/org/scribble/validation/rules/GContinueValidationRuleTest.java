@@ -20,9 +20,8 @@ import static org.junit.Assert.*;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.module.DefaultModuleContext;
-import org.scribble.common.module.ModuleContext;
-import org.scribble.model.FullyQualifiedName;
+import org.scribble.context.DefaultModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.Module;
 import org.scribble.model.global.GBlock;
 import org.scribble.model.global.GContinue;
@@ -44,7 +43,7 @@ public class GContinueValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
     	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd1=new GProtocolDefinition();    	
     	module.getProtocols().add(gpd1);
@@ -60,7 +59,7 @@ public class GContinueValidationRuleTest {
     	cont.setLabel(LABEL1);
     	recur.getBlock().add(cont);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	ModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, cont, logger);
     	
@@ -75,7 +74,7 @@ public class GContinueValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
        	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd1=new GProtocolDefinition();    	
     	module.getProtocols().add(gpd1);
@@ -91,7 +90,7 @@ public class GContinueValidationRuleTest {
     	cont.setLabel(LABEL2);
     	recur.getBlock().add(cont);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	ModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, cont, logger);
     	
@@ -110,7 +109,7 @@ public class GContinueValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
        	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd1=new GProtocolDefinition();    	
     	module.getProtocols().add(gpd1);
@@ -132,7 +131,7 @@ public class GContinueValidationRuleTest {
     	cont.setLabel(LABEL1);
     	p1.add(cont);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	ModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, cont, logger);
     	
@@ -151,7 +150,7 @@ public class GContinueValidationRuleTest {
     	TestValidationLogger logger=new TestValidationLogger();
     	
        	Module module=new Module();
-    	module.setFullyQualifiedName(new FullyQualifiedName("test"));
+    	module.setName("test");
     	
     	GProtocolDefinition gpd1=new GProtocolDefinition();    	
     	module.getProtocols().add(gpd1);
@@ -173,7 +172,7 @@ public class GContinueValidationRuleTest {
     	cont.setLabel(LABEL1);
     	p1.add(cont);
     	
-    	ModuleContext context=new DefaultModuleContext(null, null, null, null);
+    	ModuleContext context=new DefaultModuleContext(null, null, null);
     	
     	rule.validate(context, cont, logger);
     	

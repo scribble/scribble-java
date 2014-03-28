@@ -57,7 +57,6 @@ public class ModelAdaptorFactory {
 		_modelAdaptors.put("payloadelement", new PayloadModelAdaptor());
 		_modelAdaptors.put("payloadtypedecl", new PayloadTypeDeclModelAdaptor());
 		_modelAdaptors.put("module", new ModuleModelAdaptor());
-		_modelAdaptors.put("moduledecl", new ModuleDeclModelAdaptor());
 		_modelAdaptors.put("roledecllist", new RoleDeclListModelAdaptor());
 		_modelAdaptors.put("roleinstantiationlist", new RoleInstantiationListModelAdaptor());
 	}

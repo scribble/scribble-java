@@ -16,12 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.scribble</groupId>
-			<artifactId>scribble-model</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scribble</groupId>
-			<artifactId>scribble-common</artifactId>
+			<artifactId>scribble-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -69,12 +64,7 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>org.scribble</groupId>
-									<artifactId>scribble-model</artifactId>
-									<version>${project.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.scribble</groupId>
-									<artifactId>scribble-common</artifactId>
+									<artifactId>scribble-core</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>

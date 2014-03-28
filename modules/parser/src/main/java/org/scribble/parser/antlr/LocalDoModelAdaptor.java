@@ -18,7 +18,6 @@ package org.scribble.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
 import org.scribble.model.Argument;
-import org.scribble.model.FullyQualifiedName;
 import org.scribble.model.RoleInstantiation;
 import org.scribble.model.local.LDo;
 
@@ -55,7 +54,7 @@ public class LocalDoModelAdaptor extends AbstractModelAdaptor {
 			protocol.insert(0, ((CommonToken)context.pop()).getText());
 		}
 		
-		ret.setProtocol(new FullyQualifiedName(protocol.toString()));
+		ret.setProtocol(protocol.toString());
 		
 		if (context.peek() instanceof CommonToken
 				&& ((CommonToken)context.peek()).getText().equals(":")) {

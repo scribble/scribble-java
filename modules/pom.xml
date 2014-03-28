@@ -14,8 +14,7 @@
 	</parent>
 
 	<modules>
-		<module>common</module>
-		<module>model</module>
+		<module>core</module>
 		<module>parser</module>
 		<module>projection</module>
 		<module>validation</module>

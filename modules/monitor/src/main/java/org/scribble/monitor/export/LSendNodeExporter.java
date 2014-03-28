@@ -16,7 +16,7 @@
  */
 package org.scribble.monitor.export;
 
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.PayloadElement;
 import org.scribble.model.PayloadTypeDecl;
@@ -50,7 +50,7 @@ public class LSendNodeExporter implements NodeExporter {
 			PayloadTypeDecl ptype=send.getModule().getTypeDeclaration(pe.getName());
 
 			if (ptype == null) {
-				ModelObject alias=context.getImportedMember(pe.getName());
+				ModelObject alias=context.getMember(pe.getName());
 				
 				if (alias instanceof PayloadTypeDecl) {
 					ptype = (PayloadTypeDecl)alias;

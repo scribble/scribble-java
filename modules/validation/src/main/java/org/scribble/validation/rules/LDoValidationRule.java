@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ModelObject;
 import org.scribble.model.local.LDo;
 import org.scribble.model.local.LProtocolDefinition;
@@ -36,17 +36,17 @@ public class LDoValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, ModelObject mobj, ScribbleLogger logger) {
+	public void validate(ModuleContext context, ModelObject mobj, IssueLogger logger) {
 		LDo elem=(LDo)mobj;
 		
 		// Check if protocol has been declared
 		if (elem.getProtocol() != null) {
-			ModelObject mo=context.getMember(elem.getProtocol().getName());
+			ModelObject mo=context.getMember(elem.getProtocol());
 			
 			if (mo == null || ((mo instanceof LProtocolDefinition) == false &&
 					(mo instanceof LProtocolInstance) == false)) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("UNKNOWN_PROTOCOL"),
-						elem.getProtocol().getName()), elem);				
+						elem.getProtocol()), elem);				
 			} else {
 				// TODO: Verify the args and role instantiations
 			}

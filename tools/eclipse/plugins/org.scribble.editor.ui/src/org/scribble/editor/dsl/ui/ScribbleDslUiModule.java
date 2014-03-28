@@ -4,7 +4,7 @@
 package org.scribble.editor.dsl.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.scribble.editor.tools.logger.EclipseScribbleLogger;
+import org.scribble.editor.tools.logger.EclipseIssueLogger;
 
 /**
  * Use this class to register components to be used within the IDE.
@@ -14,6 +14,6 @@ public class ScribbleDslUiModule extends org.scribble.editor.dsl.ui.AbstractScri
 		super(plugin);
 		
 		// Trigger the tools plugin
-		EclipseScribbleLogger logger=new EclipseScribbleLogger(null);
+		EclipseIssueLogger logger=new EclipseIssueLogger(null);
 	}
 }

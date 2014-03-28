@@ -16,10 +16,10 @@
  */
 package org.scribble.validation;
 
-import org.scribble.common.logging.ConsoleScribbleLogger;
+import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.model.ModelObject;
 
-public class TestValidationLogger extends ConsoleScribbleLogger {
+public class TestValidationLogger extends ConsoleIssueLogger {
     	
 	private java.util.List<String> _errors=new java.util.ArrayList<String>();
 	private java.util.List<String> _warnings=new java.util.ArrayList<String>();

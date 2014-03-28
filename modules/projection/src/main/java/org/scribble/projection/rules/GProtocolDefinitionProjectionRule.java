@@ -16,8 +16,8 @@
  */
 package org.scribble.projection.rules;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ModelObject;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.global.GProtocolDefinition;
@@ -35,7 +35,7 @@ public class GProtocolDefinitionProjectionRule extends AbstractProtocolDeclProje
 	 * {@inheritDoc}
 	 */
 	public Object project(ModuleContext context, ModelObject mobj,
-							RoleDecl role, ScribbleLogger logger) {
+							RoleDecl role, IssueLogger logger) {
 		LProtocolDefinition projected=new LProtocolDefinition();
 		GProtocolDefinition source=(GProtocolDefinition)mobj;
 

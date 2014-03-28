@@ -16,7 +16,7 @@
  */
 package org.scribble.monitor.export;
 
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.local.LBlock;
 import org.scribble.model.local.LDo;
@@ -41,7 +41,7 @@ public class LDoNodeExporter implements NodeExporter {
 		
 		type.getNodes().add(doNode);
 		
-		ModelObject mo=context.getMember(elem.getProtocol().getName());
+		ModelObject mo=context.getMember(elem.getProtocol());
 		
 		// TODO: Need to handle cyclic dependencies - store protocol definition when
 		// first used, against the index

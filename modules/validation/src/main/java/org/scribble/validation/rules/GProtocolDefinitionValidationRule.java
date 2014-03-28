@@ -18,8 +18,8 @@ package org.scribble.validation.rules;
 
 import java.text.MessageFormat;
 
-import org.scribble.common.logging.ScribbleLogger;
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.ModelObject;
 import org.scribble.model.ParameterDecl;
@@ -43,7 +43,7 @@ public class GProtocolDefinitionValidationRule implements ValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validate(ModuleContext context, final ModelObject mobj, final ScribbleLogger logger) {
+	public void validate(ModuleContext context, final ModelObject mobj, final IssueLogger logger) {
 		GProtocolDefinition elem=(GProtocolDefinition)mobj;
 		
 		// Wellformedness - check role declaration names are distinct

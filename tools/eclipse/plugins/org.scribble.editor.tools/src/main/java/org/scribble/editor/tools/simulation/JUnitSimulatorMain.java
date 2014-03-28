@@ -16,7 +16,7 @@
  */
 package org.scribble.editor.tools.simulation;
 
-import org.scribble.common.resources.DirectoryResourceLocator;
+import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.trace.junit.JUnitSimulator;
 
 /**

@@ -17,7 +17,7 @@ package org.scribble.projection.util;
 
 import java.util.logging.Logger;
 
-import org.scribble.common.logging.ScribbleLogger;
+import org.scribble.logging.IssueLogger;
 import org.scribble.model.local.LActivity;
 import org.scribble.model.local.LBlock;
 import org.scribble.model.local.LChoice;
@@ -39,7 +39,7 @@ public class ChoiceMergingUtil {
      * @return The processed activities
      */
     public static Object merge(LChoice projected, RoleDecl role,
-                            ScribbleLogger l) {
+                            IssueLogger l) {
         Object ret=null;
         
         ret = extractCommonBehaviour(projected, role, l);
@@ -79,7 +79,7 @@ public class ChoiceMergingUtil {
      */
     @SuppressWarnings("unchecked")
     protected static void groupSubpathsWithCommonInitiator(LChoice projected,
-                            RoleDecl role, ScribbleLogger l) {
+                            RoleDecl role, IssueLogger l) {
         java.util.Map<LActivity, java.util.List<LBlock>> pathGroups=
                             new java.util.HashMap<LActivity, java.util.List<LBlock>>();
         
@@ -139,7 +139,7 @@ public class ChoiceMergingUtil {
      */
     @SuppressWarnings("unchecked")
     protected static Object extractCommonBehaviour(LChoice projected,
-                            RoleDecl role, ScribbleLogger l) {
+                            RoleDecl role, IssueLogger l) {
         Object ret=projected;
         
         // Check to see whether common interaction sentences can be extracted

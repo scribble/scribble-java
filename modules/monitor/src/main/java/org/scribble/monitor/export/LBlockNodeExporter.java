@@ -16,7 +16,7 @@
  */
 package org.scribble.monitor.export;
 
-import org.scribble.common.module.ModuleContext;
+import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.local.LActivity;
 import org.scribble.model.local.LBlock;
