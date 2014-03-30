@@ -16,7 +16,6 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionScope;
 
 /**
@@ -49,7 +48,7 @@ public class Do extends Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean evaluate(MonitorContext context, SessionType type, int index, SessionScope scope) {
+	public boolean evaluate(SessionType type, int index, SessionScope scope) {
 		SessionScope subScope=new SessionScope();
 		
 		if (Node._nameSessions) {
@@ -59,7 +58,7 @@ public class Do extends Node {
 		subScope.setCompletionIndex(getNext());
 		
 		Node protocolNode=type.getNode(getProtocolIndex());
-		protocolNode.evaluate(context, type, getProtocolIndex(), subScope);
+		protocolNode.evaluate(type, getProtocolIndex(), subScope);
 		
 		scope.addSubScope(subScope);
 		

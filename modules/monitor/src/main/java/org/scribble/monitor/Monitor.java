@@ -23,36 +23,33 @@ public interface Monitor {
 	/**
 	 * This method initializes a session instance based on the supplied session type.
 	 * 
-	 * @param context The monitor's context
 	 * @param type The session type
 	 * @param instance The session instance
 	 */
-	public void initialize(MonitorContext context, SessionType type, SessionInstance instance);
+	public void initialize(SessionType type, SessionInstance instance);
 	
 	/**
 	 * This method checks whether the sent message is valid.
 	 *
-	 * @param context The monitor's context
 	 * @param type The session type
 	 * @param instance The session instance
 	 * @param message The message
 	 * @param toRole The optional 'to' role
 	 * @return Whether the sent message was expected
 	 */
-	public boolean sent(MonitorContext context, SessionType type, SessionInstance instance,
+	public boolean sent(SessionType type, SessionInstance instance,
 					Message message, String toRole);
 
 	/**
 	 * This method checks whether the received message is valid.
 	 *
-	 * @param context The monitor's context
 	 * @param type The session type
 	 * @param instance The session instance
 	 * @param message The message
 	 * @param fromRole The optional 'from' role
 	 * @return Whether the received message was expected
 	 */
-	public boolean received(MonitorContext context, SessionType type, SessionInstance instance,
+	public boolean received(SessionType type, SessionInstance instance,
 					Message message, String fromRole);
 
 }

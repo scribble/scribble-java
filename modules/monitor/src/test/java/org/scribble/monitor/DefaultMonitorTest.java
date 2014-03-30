@@ -68,7 +68,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -78,11 +78,11 @@ public class DefaultMonitorTest {
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message not expected");
 		}
 		
@@ -114,7 +114,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -124,15 +124,15 @@ public class DefaultMonitorTest {
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		if (!monitor.sent(null, type, instance, m1, ROLE1)) {
+		if (!monitor.sent(type, instance, m1, ROLE1)) {
 			fail("Sent message not expected");
 		}
 		
-		if (monitor.received(null, type, instance, m2, ROLE2)) {
+		if (monitor.received(type, instance, m2, ROLE2)) {
 			fail("Receive should be invalid, as from wrong role");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, ROLE1)) {
+		if (!monitor.received(type, instance, m2, ROLE1)) {
 			fail("Received message not expected");
 		}
 		
@@ -174,7 +174,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -188,11 +188,11 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
@@ -200,7 +200,7 @@ public class DefaultMonitorTest {
 			fail("Session shouldn't have completed");
 		}
 		
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 		
@@ -242,7 +242,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -256,11 +256,11 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 		
@@ -268,7 +268,7 @@ public class DefaultMonitorTest {
 			fail("Session shouldn't have completed");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
@@ -317,7 +317,7 @@ public class DefaultMonitorTest {
 
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -335,11 +335,11 @@ public class DefaultMonitorTest {
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
@@ -347,11 +347,11 @@ public class DefaultMonitorTest {
 			fail("Session shouldn't have completed");
 		}
 		
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m4, null)) {
+		if (!monitor.sent(type, instance, m4, null)) {
 			fail("Sent message 4 not expected");
 		}
 		
@@ -393,7 +393,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -403,11 +403,11 @@ public class DefaultMonitorTest {
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
@@ -449,7 +449,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -459,11 +459,11 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 		
@@ -512,7 +512,7 @@ public class DefaultMonitorTest {
 
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -526,15 +526,15 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP4);
 		m3.getTypes().add(TYPE4);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m3, null)) {
+		if (!monitor.sent(type, instance, m3, null)) {
 			fail("Sent message 4 not expected");
 		}
 		
@@ -608,7 +608,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -630,19 +630,19 @@ public class DefaultMonitorTest {
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m5, null)) {
+		if (!monitor.sent(type, instance, m5, null)) {
 			fail("Sent message 5 not expected");
 		}
 		
@@ -659,7 +659,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -681,19 +681,19 @@ public class DefaultMonitorTest {
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m4, null)) {
+		if (!monitor.received(type, instance, m4, null)) {
 			fail("Received message 4 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m5, null)) {
+		if (!monitor.sent(type, instance, m5, null)) {
 			fail("Sent message 5 not expected");
 		}
 		
@@ -710,7 +710,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -732,19 +732,19 @@ public class DefaultMonitorTest {
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 
-		if (!monitor.received(null, type, instance, m4, null)) {
+		if (!monitor.received(type, instance, m4, null)) {
 			fail("Received message 4 not expected");
 		}
 
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m5, null)) {
+		if (!monitor.sent(type, instance, m5, null)) {
 			fail("Sent message 5 not expected");
 		}
 		
@@ -761,7 +761,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -783,19 +783,19 @@ public class DefaultMonitorTest {
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m5, null)) {
+		if (!monitor.sent(type, instance, m5, null)) {
 			fail("Sent message 5 not expected");
 		}
 		
@@ -869,7 +869,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -891,19 +891,19 @@ public class DefaultMonitorTest {
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m4, null)) {
+		if (!monitor.received(type, instance, m4, null)) {
 			fail("Received message 4 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m5, null)) {
+		if (!monitor.sent(type, instance, m5, null)) {
 			fail("Sent message 5 not expected");
 		}
 		
@@ -920,7 +920,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -942,19 +942,19 @@ public class DefaultMonitorTest {
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m4, null)) {
+		if (!monitor.received(type, instance, m4, null)) {
 			fail("Received message 4 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m5, null)) {
+		if (!monitor.sent(type, instance, m5, null)) {
 			fail("Sent message 5 not expected");
 		}
 		
@@ -971,7 +971,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -993,15 +993,15 @@ public class DefaultMonitorTest {
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m5, null)) {
+		if (!monitor.sent(type, instance, m5, null)) {
 			fail("Sent message 5 not expected");
 		}
 		
@@ -1043,7 +1043,7 @@ public class DefaultMonitorTest {
 
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1057,15 +1057,15 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m3, null)) {
+		if (!monitor.sent(type, instance, m3, null)) {
 			fail("Sent message 3 not expected");
 		}
 		
@@ -1125,7 +1125,7 @@ public class DefaultMonitorTest {
 
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1151,27 +1151,27 @@ public class DefaultMonitorTest {
 		m6.setOperator(OP4);
 		m6.getTypes().add(TYPE4);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m4, null)) {
+		if (!monitor.received(type, instance, m4, null)) {
 			fail("Received message 4 not expected");
 		}
 
-		if (!monitor.received(null, type, instance, m5, null)) {
+		if (!monitor.received(type, instance, m5, null)) {
 			fail("Received message 5 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m6, null)) {
+		if (!monitor.sent(type, instance, m6, null)) {
 			fail("Sent message 6 not expected");
 		}
 		
@@ -1275,7 +1275,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1301,27 +1301,27 @@ public class DefaultMonitorTest {
 		m6.setOperator(OP5);
 		m6.getTypes().add(TYPE5);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m3, null)) {
+		if (!monitor.received(type, instance, m3, null)) {
 			fail("Received message 3 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m4, null)) {
+		if (!monitor.received(type, instance, m4, null)) {
 			fail("Received message 4 not expected");
 		}
 
-		if (!monitor.received(null, type, instance, m5, null)) {
+		if (!monitor.received(type, instance, m5, null)) {
 			fail("Received message 5 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m6, null)) {
+		if (!monitor.sent(type, instance, m6, null)) {
 			fail("Sent message 6 not expected");
 		}
 		
@@ -1403,7 +1403,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1417,15 +1417,15 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m3, null)) {
+		if (!monitor.sent(type, instance, m3, null)) {
 			fail("Sent message 3 not expected");
 		}
 		
@@ -1445,7 +1445,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1460,15 +1460,15 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m5, null)) {
+		if (!monitor.sent(type, instance, m5, null)) {
 			fail("Sent message 5 (thrown interrupt) not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m3, null)) {
+		if (!monitor.sent(type, instance, m3, null)) {
 			fail("Sent message 3 not expected");
 		}
 		
@@ -1488,7 +1488,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1507,19 +1507,19 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m2, null)) {
+		if (!monitor.received(type, instance, m2, null)) {
 			fail("Received message 2 not expected");
 		}
 		
-		if (monitor.sent(null, type, instance, m5, null)) {
+		if (monitor.sent(type, instance, m5, null)) {
 			fail("Sent message 5 (thrown interrupt) should not be expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m3, null)) {
+		if (!monitor.sent(type, instance, m3, null)) {
 			fail("Sent message 3 not expected");
 		}
 		
@@ -1587,7 +1587,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1601,15 +1601,15 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m2, null)) {
+		if (!monitor.sent(type, instance, m2, null)) {
 			fail("Sent message 2 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m3, null)) {
+		if (!monitor.sent(type, instance, m3, null)) {
 			fail("Sent message 3 not expected");
 		}
 		
@@ -1629,7 +1629,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1644,15 +1644,15 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.received(null, type, instance, m5, null)) {
+		if (!monitor.received(type, instance, m5, null)) {
 			fail("Received message 5 (caught interrupt) not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m3, null)) {
+		if (!monitor.sent(type, instance, m3, null)) {
 			fail("Sent message 3 not expected");
 		}
 		
@@ -1672,7 +1672,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(null, type, instance);
+		monitor.initialize(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1691,19 +1691,19 @@ public class DefaultMonitorTest {
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		if (!monitor.sent(null, type, instance, m1, null)) {
+		if (!monitor.sent(type, instance, m1, null)) {
 			fail("Sent message 1 not expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m2, null)) {
+		if (!monitor.sent(type, instance, m2, null)) {
 			fail("Sent message 2 not expected");
 		}
 		
-		if (monitor.received(null, type, instance, m5, null)) {
+		if (monitor.received(type, instance, m5, null)) {
 			fail("Received message 5 (caught interrupt) should not be expected");
 		}
 		
-		if (!monitor.sent(null, type, instance, m3, null)) {
+		if (!monitor.sent(type, instance, m3, null)) {
 			fail("Sent message 3 not expected");
 		}
 		
@@ -1767,17 +1767,17 @@ public class DefaultMonitorTest {
 		for (int i=0; i < 1000000; i++) {
 			SessionInstance instance=new SessionInstance();
 			
-			monitor.initialize(null, type, instance);
+			monitor.initialize(type, instance);
 			
-			if (!monitor.sent(null, type, instance, m1, null)) {
+			if (!monitor.sent(type, instance, m1, null)) {
 				fail("Sent message 1 not expected");
 			}
 			
-			if (!monitor.received(null, type, instance, m2, null)) {
+			if (!monitor.received(type, instance, m2, null)) {
 				fail("Received message 2 not expected");
 			}
 			
-			if (!monitor.sent(null, type, instance, m3, null)) {
+			if (!monitor.sent(type, instance, m3, null)) {
 				fail("Sent message 4 not expected");
 			}
 		}

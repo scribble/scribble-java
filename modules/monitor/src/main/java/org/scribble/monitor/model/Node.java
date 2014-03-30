@@ -20,7 +20,6 @@ import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonSubTypes.Type;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.scribble.monitor.Message;
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionScope;
 
 /**
@@ -75,13 +74,12 @@ public abstract class Node {
 	 * This method checks whether the node can be evaluated without external trigger. If
 	 * not, then the index should be added to the scope for later processing.
 	 *
-	 * @param context The monitor's context
 	 * @param type The session type
 	 * @param index The index
 	 * @param scope The session scope
 	 * @return Whether the node was evaluated
 	 */
-	public boolean evaluate(MonitorContext context, SessionType type, int index, SessionScope scope) {
+	public boolean evaluate(SessionType type, int index, SessionScope scope) {
 		
 		// Associate the node index with the scope, as it cannot be evaluated
 		scope.addNodeIndex(index);
@@ -93,12 +91,11 @@ public abstract class Node {
 	 * This method unschedules the current node, if part of the session scope, and
 	 * if a next index is identified, this will be evaluated.
 	 * 
-	 * @param context The monitor's context
 	 * @param type The session type
 	 * @param scope The scope
 	 * @param scopeIndex The index in the scope, or -1 if not contained in the scope
 	 */
-	protected void handled(MonitorContext context, SessionType type, SessionScope scope, int scopeIndex) {
+	protected void handled(SessionType type, SessionScope scope, int scopeIndex) {
 		
 		if (scopeIndex != -1) {
 			// Remove index from scope
@@ -109,14 +106,13 @@ public abstract class Node {
 			// Check if node can be directly evaluated
 			Node nextNode=type.getNode(getNext());
 			
-			nextNode.evaluate(context, type, getNext(), scope);
+			nextNode.evaluate(type, getNext(), scope);
 		}
 	}
 	
 	/**
 	 * This method checks whether the sent message is valid.
 	 *
-	 * @param context The monitor's context
 	 * @param type The session type
 	 * @param scope The session scope
 	 * @param scopeIndex The index within the scope, or -1 if not currently part of scope
@@ -124,7 +120,7 @@ public abstract class Node {
 	 * @param toRole The optional 'to' role
 	 * @return Whether the sent message was expected
 	 */
-	public boolean sent(MonitorContext context, SessionType type,
+	public boolean sent(SessionType type,
 						SessionScope scope, int scopeIndex, Message message, String toRole) {
 		return (false);
 	}
@@ -132,7 +128,6 @@ public abstract class Node {
 	/**
 	 * This method checks whether the sent message is valid.
 	 *
-	 * @param context The monitor's context
 	 * @param type The session type
 	 * @param scope The session scope
 	 * @param scopeIndex The index within the scope, or -1 if not currently part of scope
@@ -140,7 +135,7 @@ public abstract class Node {
 	 * @param fromRole The optional 'from' role
 	 * @return Whether the sent message was expected
 	 */
-	public boolean received(MonitorContext context, SessionType type,
+	public boolean received(SessionType type,
 						SessionScope scope, int scopeIndex, Message message, String fromRole) {
 		return (false);
 	}
