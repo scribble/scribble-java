@@ -14,50 +14,47 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor.export;
+package org.scribble.monitor.export.rules;
 
 import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
+import org.scribble.model.local.LActivity;
 import org.scribble.model.local.LBlock;
-import org.scribble.model.local.LDo;
-import org.scribble.model.local.LProtocolDefinition;
-import org.scribble.monitor.model.Do;
+import org.scribble.monitor.model.Node;
 import org.scribble.monitor.model.SessionType;
 
 /**
- * This class exports a Do into a session type
+ * This class exports a block into a session type
  * to be monitored.
  *
  */
-public class LDoNodeExporter implements NodeExporter {
+public class LBlockNodeExporter implements NodeExporter {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void export(ModuleContext context, ExportState state, ModelObject mobj, SessionType type) {
-		LDo elem=(LDo)mobj;
+		LBlock block=(LBlock)mobj;
+		Node lastNode=null;
 		
-		Do doNode=new Do();
+		state.push();
 		
-		type.getNodes().add(doNode);
-		
-		ModelObject mo=context.getMember(elem.getProtocol());
-		
-		// TODO: Need to handle cyclic dependencies - store protocol definition when
-		// first used, against the index
-		
-		// TODO: Handle different instantiations of a protocol if parameterised or
-		// using protocol instance
-		
-		if (mo instanceof LProtocolDefinition) {
-			doNode.setProtocolIndex(type.getNodes().size());
+		for (LActivity act : block.getContents()) {
+			NodeExporter ne=NodeExporterFactory.getNodeExporter(act);
+			int size=type.getNodes().size();
 			
-			LBlock block=((LProtocolDefinition)mo).getBlock();
-			
-			NodeExporter ne=NodeExporterFactory.getNodeExporter(block);
-			
-			ne.export(context, state, block, type);
+			if (ne != null) {
+				ne.export(context, state, act, type);
+				
+				if (lastNode != null) {
+					lastNode.setNext(size);
+				}
+				
+				lastNode = type.getNode(size);
+			}
 		}
+		
+		state.pop();
 	}
 	
 }

@@ -27,7 +27,6 @@ import org.scribble.model.local.LBlock;
 import org.scribble.model.local.LChoice;
 import org.scribble.model.local.LProtocolDefinition;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.LChoiceValidationRule;
 
 public class LChoiceValidationRuleTest {

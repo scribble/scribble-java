@@ -27,7 +27,6 @@ import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.model.Role;
 import org.scribble.model.local.LProtocolDecl;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the GMessage

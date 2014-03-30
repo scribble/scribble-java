@@ -16,6 +16,7 @@
  */
 package org.scribble.trace.model;
 
+import org.scribble.context.DefaultModuleContext;
 import org.scribble.context.ModuleLoader;
 import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.model.Module;
@@ -106,7 +107,9 @@ public class MonitorRoleSimulator extends RoleSimulator {
 			ProtocolDecl pd=module.getProtocol(_protocol);
 			
 			if (pd instanceof LProtocolDefinition) {
-	    		_type = EXPORTER.getSessionType((LProtocolDefinition)pd, loader);
+				DefaultModuleContext mc=new DefaultModuleContext(null, pd.getModule(), loader);
+				
+	    		_type = EXPORTER.export(mc, (LProtocolDefinition)pd);
 	    		
 	    		_context = null;
 	    		_instance = new SessionInstance();

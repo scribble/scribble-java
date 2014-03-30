@@ -31,7 +31,6 @@ import org.scribble.model.global.GDo;
 import org.scribble.model.global.GInterruptible;
 import org.scribble.model.global.GMessageTransfer;
 import org.scribble.model.global.GProtocolDefinition;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the GProtocolDefinition

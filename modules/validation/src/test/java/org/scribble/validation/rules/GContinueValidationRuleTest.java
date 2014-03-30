@@ -30,7 +30,6 @@ import org.scribble.model.global.GParallel;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.model.global.GRecursion;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 
 public class GContinueValidationRuleTest {
 

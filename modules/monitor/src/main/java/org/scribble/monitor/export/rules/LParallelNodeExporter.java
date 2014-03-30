@@ -14,47 +14,39 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor.export;
+package org.scribble.monitor.export.rules;
 
 import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
-import org.scribble.model.local.LActivity;
 import org.scribble.model.local.LBlock;
-import org.scribble.monitor.model.Node;
+import org.scribble.model.local.LParallel;
+import org.scribble.monitor.model.Parallel;
 import org.scribble.monitor.model.SessionType;
 
 /**
- * This class exports a block into a session type
+ * This class exports a parallel into a session type
  * to be monitored.
  *
  */
-public class LBlockNodeExporter implements NodeExporter {
+public class LParallelNodeExporter implements NodeExporter {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void export(ModuleContext context, ExportState state, ModelObject mobj, SessionType type) {
-		LBlock block=(LBlock)mobj;
-		Node lastNode=null;
+		LParallel parallel=(LParallel)mobj;
 		
-		state.push();
+		Parallel parallelNode=new Parallel();
 		
-		for (LActivity act : block.getContents()) {
-			NodeExporter ne=NodeExporterFactory.getNodeExporter(act);
-			int size=type.getNodes().size();
+		type.getNodes().add(parallelNode);
+		
+		for (LBlock block : parallel.getPaths()) {
+			parallelNode.getPathIndexes().add(type.getNodes().size());
 			
-			if (ne != null) {
-				ne.export(context, state, act, type);
-				
-				if (lastNode != null) {
-					lastNode.setNext(size);
-				}
-				
-				lastNode = type.getNode(size);
-			}
+			NodeExporter ne=NodeExporterFactory.getNodeExporter(block);
+			
+			ne.export(context, state, block, type);
 		}
-		
-		state.pop();
 	}
 	
 }

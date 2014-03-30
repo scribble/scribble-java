@@ -24,7 +24,6 @@ import org.scribble.model.ModelObject;
 import org.scribble.model.local.LDo;
 import org.scribble.model.local.LProtocolDefinition;
 import org.scribble.model.local.LProtocolInstance;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the LDo

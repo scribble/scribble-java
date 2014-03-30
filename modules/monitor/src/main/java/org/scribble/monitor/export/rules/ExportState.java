@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor.export;
+package org.scribble.monitor.export.rules;
 
 /**
  * This class represents state information associated with the exported

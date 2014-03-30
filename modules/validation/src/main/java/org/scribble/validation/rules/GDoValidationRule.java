@@ -24,7 +24,6 @@ import org.scribble.model.ModelObject;
 import org.scribble.model.global.GDo;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.model.global.GProtocolInstance;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the GDo

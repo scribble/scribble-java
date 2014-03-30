@@ -14,39 +14,31 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor.export;
+package org.scribble.monitor.export.rules;
 
 import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
-import org.scribble.model.local.LBlock;
-import org.scribble.model.local.LChoice;
-import org.scribble.monitor.model.Choice;
+import org.scribble.model.local.LContinue;
+import org.scribble.monitor.model.Continue;
 import org.scribble.monitor.model.SessionType;
 
 /**
- * This class exports a choice into a session type
+ * This class exports a receive into a session type
  * to be monitored.
  *
  */
-public class LChoiceNodeExporter implements NodeExporter {
+public class LContinueNodeExporter implements NodeExporter {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void export(ModuleContext context, ExportState state, ModelObject mobj, SessionType type) {
-		LChoice choice=(LChoice)mobj;
+		LContinue elem=(LContinue)mobj;
 		
-		Choice choiceNode=new Choice();
+		Continue continueNode=new Continue();
+		continueNode.setNext(state.getLabelIndex(elem.getLabel()));
 		
-		type.getNodes().add(choiceNode);
-		
-		for (LBlock block : choice.getPaths()) {
-			choiceNode.getPathIndexes().add(type.getNodes().size());
-			
-			NodeExporter ne=NodeExporterFactory.getNodeExporter(block);
-			
-			ne.export(context, state, block, type);
-		}
+		type.getNodes().add(continueNode);
 	}
 	
 }

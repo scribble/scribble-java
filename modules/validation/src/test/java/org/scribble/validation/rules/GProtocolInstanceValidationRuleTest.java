@@ -33,7 +33,6 @@ import org.scribble.model.RoleInstantiation;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.model.global.GProtocolInstance;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.GProtocolInstanceValidationRule;
 
 public class GProtocolInstanceValidationRuleTest {

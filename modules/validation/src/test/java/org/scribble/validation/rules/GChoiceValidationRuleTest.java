@@ -33,7 +33,6 @@ import org.scribble.model.global.GMessageTransfer;
 import org.scribble.model.global.GParallel;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.GChoiceValidationRule;
 
 public class GChoiceValidationRuleTest {

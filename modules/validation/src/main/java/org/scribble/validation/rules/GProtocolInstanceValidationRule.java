@@ -27,7 +27,6 @@ import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.RoleInstantiation;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.model.global.GProtocolInstance;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the GProtocolInstance

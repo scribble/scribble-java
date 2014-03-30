@@ -23,7 +23,6 @@ import org.scribble.logging.IssueLogger;
 import org.scribble.model.ModelObject;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.model.local.LReceive;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the LSend

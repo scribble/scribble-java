@@ -16,10 +16,11 @@
  */
 package org.scribble.monitor.export;
 
-import org.scribble.context.DefaultModuleContext;
 import org.scribble.context.ModuleContext;
-import org.scribble.context.ModuleLoader;
 import org.scribble.model.local.LProtocolDefinition;
+import org.scribble.monitor.export.rules.ExportState;
+import org.scribble.monitor.export.rules.NodeExporter;
+import org.scribble.monitor.export.rules.NodeExporterFactory;
 import org.scribble.monitor.model.SessionType;
 
 /**
@@ -31,15 +32,12 @@ public class MonitorExporter {
 	/**
 	 * This method returns the session type associated with the supplied protocol.
 	 * 
+	 * @param context The module context
 	 * @param protocol The local protocol
-	 * @param loader The module loader
 	 * @return The session type
 	 */
-	public SessionType getSessionType(LProtocolDefinition protocol, ModuleLoader loader) {
+	public SessionType export(ModuleContext context, LProtocolDefinition protocol) {
 		SessionType ret=new SessionType();
-		
-		ModuleContext context=new DefaultModuleContext(null, protocol.getModule(),
-							loader);
 		
 		NodeExporter ne=NodeExporterFactory.getNodeExporter(protocol.getBlock());
 		
