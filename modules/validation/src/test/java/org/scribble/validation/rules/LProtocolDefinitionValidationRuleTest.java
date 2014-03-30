@@ -28,7 +28,6 @@ import org.scribble.model.Role;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.local.LProtocolDefinition;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.LProtocolDefinitionValidationRule;
 
 public class LProtocolDefinitionValidationRuleTest {

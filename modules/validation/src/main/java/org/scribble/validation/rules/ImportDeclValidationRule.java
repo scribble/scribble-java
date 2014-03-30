@@ -23,7 +23,6 @@ import org.scribble.logging.IssueLogger;
 import org.scribble.model.ImportDecl;
 import org.scribble.model.ModelObject;
 import org.scribble.model.Module;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the ImportDecl

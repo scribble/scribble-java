@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
+import org.scribble.context.DefaultModuleContext;
 import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.model.Module;
 import org.scribble.model.local.LProtocolDefinition;
@@ -104,7 +105,9 @@ public class MonitorExporterTest {
     		
     		MonitorExporter exporter=new MonitorExporter();
     		
-    		SessionType type=exporter.getSessionType(lp, loader);
+    		DefaultModuleContext context=new DefaultModuleContext(isr, lp.getModule(), loader);
+    		
+    		SessionType type=exporter.export(context, lp);
     		
     		is = ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+"@"+role+".monitor");
     		

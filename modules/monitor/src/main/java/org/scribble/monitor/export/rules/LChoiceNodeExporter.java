@@ -14,34 +14,34 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor.export;
+package org.scribble.monitor.export.rules;
 
 import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.local.LBlock;
-import org.scribble.model.local.LParallel;
-import org.scribble.monitor.model.Parallel;
+import org.scribble.model.local.LChoice;
+import org.scribble.monitor.model.Choice;
 import org.scribble.monitor.model.SessionType;
 
 /**
- * This class exports a parallel into a session type
+ * This class exports a choice into a session type
  * to be monitored.
  *
  */
-public class LParallelNodeExporter implements NodeExporter {
+public class LChoiceNodeExporter implements NodeExporter {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void export(ModuleContext context, ExportState state, ModelObject mobj, SessionType type) {
-		LParallel parallel=(LParallel)mobj;
+		LChoice choice=(LChoice)mobj;
 		
-		Parallel parallelNode=new Parallel();
+		Choice choiceNode=new Choice();
 		
-		type.getNodes().add(parallelNode);
+		type.getNodes().add(choiceNode);
 		
-		for (LBlock block : parallel.getPaths()) {
-			parallelNode.getPathIndexes().add(type.getNodes().size());
+		for (LBlock block : choice.getPaths()) {
+			choiceNode.getPathIndexes().add(type.getNodes().size());
 			
 			NodeExporter ne=NodeExporterFactory.getNodeExporter(block);
 			

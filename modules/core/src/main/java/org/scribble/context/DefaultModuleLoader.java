@@ -24,22 +24,22 @@ import org.scribble.model.Module;
  */
 public class DefaultModuleLoader implements ModuleLoader {
 	
-	private ModuleCache _cache=new ModuleCache();
-	
+	private java.util.Map<String,Module> _modules=new java.util.HashMap<String,Module>();
+
 	/**
 	 * This method registers the supplied module.
 	 * 
 	 * @param module The module
 	 */
 	public void registerModule(Module module) {
-		_cache.register(module);
+		_modules.put(module.getName(), module);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Module loadModule(String module) {
-		return (_cache.getModule(module));
+		return (_modules.get(module));
 	}
 	
 }

@@ -27,7 +27,6 @@ import org.scribble.model.Module;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.ImportDeclValidationRule;
 
 public class ImportDeclValidationRuleTest {

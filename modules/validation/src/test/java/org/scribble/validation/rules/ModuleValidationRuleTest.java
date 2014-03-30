@@ -28,7 +28,6 @@ import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.resources.InputStreamResource;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.ModuleValidationRule;
 
 public class ModuleValidationRuleTest {

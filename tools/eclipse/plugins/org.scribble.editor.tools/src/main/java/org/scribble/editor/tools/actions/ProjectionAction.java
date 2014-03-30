@@ -29,6 +29,7 @@ import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.resources.InputStreamResource;
 import org.scribble.resources.Resource;
 import org.scribble.resources.ResourceLocator;
+import org.scribble.context.DefaultModuleContext;
 import org.scribble.editor.tools.osgi.Activator;
 import org.scribble.model.Module;
 import org.scribble.model.local.LProtocolDecl;
@@ -96,7 +97,9 @@ public class ProjectionAction implements IObjectActionDelegate {
 		            if (module != null) {
 		            	ProtocolProjector projector=new ProtocolProjector();
 		            	
-		            	java.util.Set<Module> projections=projector.project(isr, module, loader, logger);
+		            	DefaultModuleContext context=new DefaultModuleContext(isr, module, loader);
+		            	
+		            	java.util.Set<Module> projections=projector.project(context, module, logger);
 		            	
 		            	for (Module lm : projections) {
 		            		// Find role name

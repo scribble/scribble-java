@@ -28,7 +28,6 @@ import org.scribble.model.local.LBlock;
 import org.scribble.model.local.LProtocolDefinition;
 import org.scribble.model.local.LReceive;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.LReceiveValidationRule;
 
 public class LReceiveValidationRuleTest {

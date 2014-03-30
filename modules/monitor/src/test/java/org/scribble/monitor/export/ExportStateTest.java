@@ -17,6 +17,8 @@ package org.scribble.monitor.export;
 
 import static org.junit.Assert.*;
 
+import org.scribble.monitor.export.rules.ExportState;
+
 public class ExportStateTest {
 
 	private static final String TEST_LABEL = "TestLabel";

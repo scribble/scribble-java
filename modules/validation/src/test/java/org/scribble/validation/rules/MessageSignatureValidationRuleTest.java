@@ -30,7 +30,6 @@ import org.scribble.model.global.GBlock;
 import org.scribble.model.global.GMessageTransfer;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 
 public class MessageSignatureValidationRuleTest {
 

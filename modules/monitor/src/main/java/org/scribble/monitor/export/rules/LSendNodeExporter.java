@@ -14,36 +14,40 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor.export;
+package org.scribble.monitor.export.rules;
 
 import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
 import org.scribble.model.PayloadElement;
 import org.scribble.model.PayloadTypeDecl;
-import org.scribble.model.local.LReceive;
-import org.scribble.monitor.model.Receive;
+import org.scribble.model.local.LSend;
+import org.scribble.monitor.model.Send;
 import org.scribble.monitor.model.SessionType;
 
 /**
- * This class exports a receive into a session type
+ * This class exports a send into a session type
  * to be monitored.
  *
  */
-public class LReceiveNodeExporter implements NodeExporter {
+public class LSendNodeExporter implements NodeExporter {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void export(ModuleContext context, ExportState state, ModelObject mobj, SessionType type) {
-		LReceive recv=(LReceive)mobj;
+		LSend send=(LSend)mobj;
 		
 		// TODO: Handle parameter
 		
-		Receive recvNode=new Receive();
-		recvNode.setOperator(recv.getMessage().getMessageSignature().getOperator());
+		Send sendNode=new Send();
+		sendNode.setOperator(send.getMessage().getMessageSignature().getOperator());
 		
-		for (PayloadElement pe : recv.getMessage().getMessageSignature().getPayloadElements()) {
-			PayloadTypeDecl ptype=recv.getModule().getTypeDeclaration(pe.getName());
+		for (PayloadElement pe : send.getMessage().getMessageSignature().getPayloadElements()) {
+			
+			// TODO: Need to provide utility functions for extracting the payload type
+			// and make sure the context methods are as clear as possible
+			
+			PayloadTypeDecl ptype=send.getModule().getTypeDeclaration(pe.getName());
 
 			if (ptype == null) {
 				ModelObject alias=context.getMember(pe.getName());
@@ -54,14 +58,14 @@ public class LReceiveNodeExporter implements NodeExporter {
 			}
 
 			if (ptype != null) {
-				recvNode.getTypes().add(ptype.getType());
+				sendNode.getTypes().add(ptype.getType());
 			}
 		}
 		
-		// TODO: Ned to cater for list of 'to' roles
-		recvNode.setFromRole(recv.getFromRole().getName());
+		// TODO: Need to cater for list of 'to' roles
+		sendNode.setToRole(send.getToRoles().get(0).getName());
 		
-		type.getNodes().add(recvNode);
+		type.getNodes().add(sendNode);
 	}
 	
 }

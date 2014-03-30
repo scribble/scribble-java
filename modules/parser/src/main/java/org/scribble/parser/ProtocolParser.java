@@ -20,7 +20,6 @@ import java.io.IOException;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.scribble.context.ModuleCache;
 import org.scribble.context.ModuleLoader;
 import org.scribble.logging.IssueLogger;
 import org.scribble.model.Module;
@@ -56,23 +55,6 @@ public class ProtocolParser {
      */
     public Module parse(Resource resource, final ModuleLoader loader, final IssueLogger logger)
                             throws IOException {
-    	return (parse(resource, loader, new ModuleCache(), logger));
-    }
-    
-    /**
-     * This method parses the scribble protocol contained in the supplied
-     * resource. The resource locator is used to access other resources,
-     * and the logger reports information, warnings and errors.
-     * 
-     * @param resource The resource
-     * @param loader The module locator
-     * @param cache The cache of parsed modules
-     * @param logger The logger
-     * @return The module, or null if an error occurred
-     * @throws IOException Failed to retrieve protocol from input stream
-     */
-    protected Module parse(Resource resource, ModuleLoader loader, ModuleCache cache, IssueLogger logger)
-                            throws IOException {
         Module ret=null;
         
         try {
@@ -102,10 +84,6 @@ public class ProtocolParser {
             
             if (!parser.isErrorOccurred()) {
                 ret = adaptor.getModule();
-                
-                // Add the module to the cache, in case it directly or
-                // indirectly references itself, therefore avoiding reparsing
-                cache.register(ret);
             }
             
         } catch (Exception e)  {

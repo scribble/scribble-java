@@ -28,7 +28,6 @@ import org.scribble.model.global.GBlock;
 import org.scribble.model.global.GDo;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.validation.TestValidationLogger;
-import org.scribble.validation.ValidationMessages;
 import org.scribble.validation.rules.GDoValidationRule;
 
 public class GDoValidationRuleTest {

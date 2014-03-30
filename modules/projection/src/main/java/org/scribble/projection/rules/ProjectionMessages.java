@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.projection;
+package org.scribble.projection.rules;
 
 /**
  * This class is responsible for returning the projection messages

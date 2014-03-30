@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor.export;
+package org.scribble.monitor.export.rules;
 
 import org.scribble.model.ModelObject;
 import org.scribble.model.local.LBlock;

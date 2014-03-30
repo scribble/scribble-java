@@ -26,7 +26,6 @@ import org.scribble.model.ParameterDecl;
 import org.scribble.model.PayloadElement;
 import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.ProtocolDecl;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the MessageSignature

@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
+import org.scribble.context.DefaultModuleContext;
 import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.model.Module;
 import org.scribble.model.local.LProtocolDecl;
@@ -98,7 +99,9 @@ public class ProtocolProjectionTest {
     		
     		ProtocolProjector projector=new ProtocolProjector();
     		
-    		java.util.Set<Module> projected=projector.project(isr, module, loader, logger);
+    		DefaultModuleContext context=new DefaultModuleContext(isr, module, loader);
+    		
+    		java.util.Set<Module> projected=projector.project(context, module, logger);
     		
     		for (Module lm : projected) {
     			String filename="scribble/results/"+lm.getLocalName();

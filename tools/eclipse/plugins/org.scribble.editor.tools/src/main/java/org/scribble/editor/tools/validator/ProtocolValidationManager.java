@@ -42,19 +42,6 @@ public class ProtocolValidationManager {
     public ProtocolValidationManager() {
     }
 
-    /*
-    public ValidationResult validate(IResource resource, int kind, ValidationState state, IProgressMonitor monitor) {
-        ValidationResult result=super.validate(resource, kind, state, monitor);
-
-        // TODO: Not currently used. Instead a resource change listener is used to automatically
-        // trigger validation. However if this turns out to be inefficient, or if the WST validator
-        // can be automatically enabled for protocol definitions, then possibly can use the
-        // standard WST approach
-        System.out.println("VALIDATE:" + resource.getFullPath());
-        return (result);
-    }
-    */
-    
     /**
      * This method validates the resource.
      * 

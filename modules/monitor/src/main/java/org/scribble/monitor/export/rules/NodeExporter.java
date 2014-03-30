@@ -14,31 +14,27 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor.export;
+package org.scribble.monitor.export.rules;
 
 import org.scribble.context.ModuleContext;
 import org.scribble.model.ModelObject;
-import org.scribble.model.local.LContinue;
-import org.scribble.monitor.model.Continue;
 import org.scribble.monitor.model.SessionType;
 
 /**
- * This class exports a receive into a session type
+ * This class exports local protocol objects into a session type
  * to be monitored.
  *
  */
-public class LContinueNodeExporter implements NodeExporter {
+public interface NodeExporter {
 
 	/**
-	 * {@inheritDoc}
+	 * This method exports the model object to the session type.
+	 * 
+	 * @param context The module context
+	 * @param state The export state
+	 * @param mobj The local protocol object
+	 * @param type The session type
 	 */
-	public void export(ModuleContext context, ExportState state, ModelObject mobj, SessionType type) {
-		LContinue elem=(LContinue)mobj;
-		
-		Continue continueNode=new Continue();
-		continueNode.setNext(state.getLabelIndex(elem.getLabel()));
-		
-		type.getNodes().add(continueNode);
-	}
+	public void export(ModuleContext context, ExportState state, ModelObject mobj, SessionType type);
 	
 }

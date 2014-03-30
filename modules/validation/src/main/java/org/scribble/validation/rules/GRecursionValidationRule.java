@@ -24,7 +24,6 @@ import org.scribble.model.ModelObject;
 import org.scribble.model.global.DefaultGVisitor;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.model.global.GRecursion;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the GRecursion

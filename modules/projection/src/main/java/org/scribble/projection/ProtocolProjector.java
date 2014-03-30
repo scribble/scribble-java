@@ -16,13 +16,11 @@
  */
 package org.scribble.projection;
 
-import org.scribble.context.DefaultModuleContext;
-import org.scribble.context.ModuleLoader;
+import org.scribble.context.ModuleContext;
 import org.scribble.logging.IssueLogger;
 import org.scribble.model.Module;
 import org.scribble.projection.rules.ProjectionRule;
 import org.scribble.projection.rules.ProjectionRuleFactory;
-import org.scribble.resources.Resource;
 
 /**
  * This class is responsible for projecting a protocol module.
@@ -31,25 +29,21 @@ import org.scribble.resources.Resource;
 public class ProtocolProjector {
 
 	/**
-	 * This method validates the supplied module, reporting
+	 * This method projects the supplied module, reporting
 	 * any issues to the logger.
 	 * 
-	 * @param resource The resource
+	 * @param context The module context
 	 * @param module The module
 	 * @param loader The module loader
 	 * @param logger The logger
 	 * @return The set of modules representing the local projections
 	 */
 	@SuppressWarnings("unchecked")
-	public java.util.Set<Module> project(Resource resource, Module module,
-							ModuleLoader loader, IssueLogger logger) {
+	public java.util.Set<Module> project(ModuleContext context, Module module, IssueLogger logger) {
 		java.util.Set<Module> ret=null;
 		ProjectionRule rule=ProjectionRuleFactory.getProjectionRule(module);
 		
 		if (rule != null) {
-            DefaultModuleContext context=new DefaultModuleContext(resource,
-            				module, loader);
-            
 			ret = (java.util.Set<Module>)rule.project(context, module, null, logger);
 		}
 		

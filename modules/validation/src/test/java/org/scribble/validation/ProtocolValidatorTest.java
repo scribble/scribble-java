@@ -22,7 +22,7 @@ import org.scribble.context.DefaultModuleContext;
 import org.scribble.model.Module;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.validation.ProtocolValidator;
-import org.scribble.validation.ValidationMessages;
+import org.scribble.validation.rules.ValidationMessages;
 
 public class ProtocolValidatorTest {
 

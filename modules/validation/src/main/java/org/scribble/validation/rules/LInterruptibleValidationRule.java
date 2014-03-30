@@ -26,7 +26,6 @@ import org.scribble.model.ProtocolDecl;
 import org.scribble.model.Role;
 import org.scribble.model.local.LInterruptible;
 import org.scribble.model.local.LInterruptible.Catch;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the LInterruptible

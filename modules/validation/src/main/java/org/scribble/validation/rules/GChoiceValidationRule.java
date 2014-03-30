@@ -29,7 +29,6 @@ import org.scribble.model.global.GMessageTransfer;
 import org.scribble.model.global.GMultiPathActivity;
 import org.scribble.model.global.GProtocolDefinition;
 import org.scribble.model.global.GSinglePathActivity;
-import org.scribble.validation.ValidationMessages;
 
 /**
  * This class implements the validation rule for the GChoice

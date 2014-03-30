@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.validation;
+package org.scribble.validation.rules;
 
 /**
  * This class is responsible for returning the validation messages
