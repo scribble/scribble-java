@@ -17,7 +17,6 @@
 package org.scribble.monitor.model;
 
 import org.scribble.monitor.Message;
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionScope;
 
 /**
@@ -50,12 +49,12 @@ public class Send extends MessageNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean sent(MonitorContext context, SessionType type,
+	public boolean sent(SessionType type,
 					SessionScope scope, int scopeIndex, Message message, String toRole) {
 		if (toRole != null && !toRole.equals(_toRole)) {
 			return (false);
 		}
-		return (checkMessage(context, type, scope, scopeIndex, message));
+		return (checkMessage(type, scope, scopeIndex, message));
 	}
 
 }

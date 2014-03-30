@@ -16,7 +16,6 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionScope;
 
 /**
@@ -29,9 +28,9 @@ public class Continue extends Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean evaluate(MonitorContext context, SessionType type, int index, SessionScope scope) {
+	public boolean evaluate(SessionType type, int index, SessionScope scope) {
 		
-		handled(context, type, scope, -1);
+		handled(type, scope, -1);
 		
 		return (false);
 	}

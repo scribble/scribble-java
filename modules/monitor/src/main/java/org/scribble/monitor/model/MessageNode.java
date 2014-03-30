@@ -17,7 +17,6 @@
 package org.scribble.monitor.model;
 
 import org.scribble.monitor.Message;
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionScope;
 
 /**
@@ -69,14 +68,13 @@ public abstract class MessageNode extends Node {
 	/**
 	 * This method checks the message against the message node.
 	 * 
-	 * @param context The context
 	 * @param type The session type
 	 * @param scope The scope
 	 * @param scopeIndex The scope index
 	 * @param message The message
 	 * @return Whether the message is valid
 	 */
-	protected boolean checkMessage(MonitorContext context, SessionType type,
+	protected boolean checkMessage(SessionType type,
 							SessionScope scope, int scopeIndex, Message message) {
 		boolean ret=false;
 		
@@ -91,7 +89,7 @@ public abstract class MessageNode extends Node {
 		}
 		
 		if (ret) {
-			handled(context, type, scope, scopeIndex);
+			handled(type, scope, scopeIndex);
 		}
 		
 		return (ret);

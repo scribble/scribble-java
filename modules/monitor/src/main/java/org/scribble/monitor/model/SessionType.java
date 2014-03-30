@@ -16,7 +16,6 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionInstance;
 import org.scribble.monitor.SessionScope;
 
@@ -60,10 +59,9 @@ public class SessionType {
 	 * This method initializes the supplied session instance to monitor
 	 * against this session type.
 	 * 
-	 * @param context The monitor's context
 	 * @param instance The new session instance
 	 */
-	public void initialize(MonitorContext context, SessionInstance instance) {
+	public void initialize(SessionInstance instance) {
 		
 		// Create a new top level session scope
 		SessionScope scope=new SessionScope();

@@ -25,7 +25,6 @@ import org.scribble.model.local.LProtocolDefinition;
 import org.scribble.monitor.DefaultMonitor;
 import org.scribble.monitor.Message;
 import org.scribble.monitor.Monitor;
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionInstance;
 import org.scribble.monitor.export.MonitorExporter;
 import org.scribble.monitor.model.SessionType;
@@ -43,8 +42,6 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	private String _module;
 	private String _protocol;
 	
-	private MonitorContext _context;
-
 	private SessionType _type;
 	private SessionInstance _instance;
 	
@@ -111,10 +108,9 @@ public class MonitorRoleSimulator extends RoleSimulator {
 				
 	    		_type = EXPORTER.export(mc, (LProtocolDefinition)pd);
 	    		
-	    		_context = null;
 	    		_instance = new SessionInstance();
 	    		
-	    		MONITOR.initialize(null, _type, _instance);
+	    		MONITOR.initialize(_type, _instance);
 			}
 		} else {
 			_type = null;
@@ -128,7 +124,7 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	@Override
 	public boolean send(SimulatorContext context, Message mesg, String toRole) {
 		if (_type != null && _instance != null) {
-			return (MONITOR.sent(_context, _type, _instance, mesg, toRole));
+			return (MONITOR.sent(_type, _instance, mesg, toRole));
 		}
 		return (false);
 	}
@@ -139,7 +135,7 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	@Override
 	public boolean receive(SimulatorContext context, Message mesg, String fromRole) {
 		if (_type != null && _instance != null) {
-			return (MONITOR.received(_context, _type, _instance, mesg, fromRole));
+			return (MONITOR.received(_type, _instance, mesg, fromRole));
 		}
 		return (false);
 	}

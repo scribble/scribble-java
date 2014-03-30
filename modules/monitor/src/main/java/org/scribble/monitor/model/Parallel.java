@@ -16,7 +16,6 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionScope;
 
 /**
@@ -49,7 +48,7 @@ public class Parallel extends Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean evaluate(MonitorContext context, SessionType type, int index, SessionScope scope) {
+	public boolean evaluate(SessionType type, int index, SessionScope scope) {
 		
 		SessionScope parallelScope=new SessionScope();
 		parallelScope.setName("Parallel/"+index);
@@ -66,7 +65,7 @@ public class Parallel extends Node {
 			Node nextNode=type.getNode(_pathIndexes.get(i));
 			
 			// Evaluate node on sub-scope
-			nextNode.evaluate(context, type, subIndex, sub);
+			nextNode.evaluate(type, subIndex, sub);
 			
 			// Check if should add
 			if (!sub.completed()) {

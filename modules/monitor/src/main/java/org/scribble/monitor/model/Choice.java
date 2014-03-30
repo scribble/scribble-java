@@ -16,7 +16,6 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionScope;
 
 /**
@@ -49,7 +48,7 @@ public class Choice extends Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean evaluate(MonitorContext context, SessionType type, int index, SessionScope scope) {
+	public boolean evaluate(SessionType type, int index, SessionScope scope) {
 		
 		java.util.List<SessionScope> subs=new java.util.ArrayList<SessionScope>();
 		
@@ -65,7 +64,7 @@ public class Choice extends Node {
 			
 			Node node=type.getNode(subIndex);
 			
-			if (node.evaluate(context, type, subIndex, sub)) {
+			if (node.evaluate(type, subIndex, sub)) {
 				sub.setCompletionIndex(getNext());
 				scope.addSubScope(sub);
 				return (false);

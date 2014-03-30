@@ -16,7 +16,6 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.MonitorContext;
 import org.scribble.monitor.SessionScope;
 
 /**
@@ -91,7 +90,7 @@ public class Interruptible extends Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean evaluate(MonitorContext context, SessionType type, int index, SessionScope scope) {
+	public boolean evaluate(SessionType type, int index, SessionScope scope) {
 		SessionScope subScope=new SessionScope();
 		
 		if (Node._nameSessions) {
@@ -104,7 +103,7 @@ public class Interruptible extends Node {
 		subScope.setThrows(_throws);
 		
 		Node blockNode=type.getNode(getBlockIndex());
-		blockNode.evaluate(context, type, getBlockIndex(), subScope);
+		blockNode.evaluate(type, getBlockIndex(), subScope);
 		
 		scope.addSubScope(subScope);
 		
