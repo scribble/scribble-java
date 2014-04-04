@@ -19,7 +19,7 @@ package org.scribble.trace.model;
 import java.util.Map;
 
 import org.scribble.monitor.Message;
-import org.scribble.trace.SimulatorContext;
+import org.scribble.trace.simulation.SimulatorContext;
 
 /**
  * This class represents a message being transferred between the specified

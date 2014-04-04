@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.trace;
+package org.scribble.trace.simulation;
 
 import org.scribble.trace.model.Simulation;
 import org.scribble.trace.model.Step;

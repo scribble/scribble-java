@@ -46,7 +46,7 @@ import org.eclipse.core.resources.IFile;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.scribble.editor.tools.osgi.Activator;
-import org.scribble.trace.junit.JUnitSimulator;
+import org.scribble.trace.simulation.junit.JUnitSimulator;
 
 /**
  * This class is responsible for launching a scenario test against

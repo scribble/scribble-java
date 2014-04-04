@@ -20,11 +20,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.scribble.monitor.Message;
-import org.scribble.trace.TraceUtil;
 import org.scribble.trace.model.MessageTransfer;
 import org.scribble.trace.model.MonitorRoleSimulator;
 import org.scribble.trace.model.Simulation;
 import org.scribble.trace.model.Trace;
+import org.scribble.trace.util.TraceUtil;
 
 public class TraceUtilTest {
 

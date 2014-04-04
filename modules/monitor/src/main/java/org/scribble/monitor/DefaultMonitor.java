@@ -29,7 +29,7 @@ public class DefaultMonitor implements Monitor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void initialize(SessionType type, SessionInstance instance) {
+	public void initializeInstance(SessionType type, SessionInstance instance) {
 		type.initialize(instance);
 	}
 	

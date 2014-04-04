@@ -21,6 +21,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.trace.model.Trace;
+import org.scribble.trace.simulation.DefaultSimulatorContext;
+import org.scribble.trace.simulation.Simulator;
+import org.scribble.trace.simulation.SimulatorContext;
 
 public class SimulatorTest {
 

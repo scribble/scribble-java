@@ -17,7 +17,7 @@
 package org.scribble.editor.tools.simulation;
 
 import org.scribble.resources.DirectoryResourceLocator;
-import org.scribble.trace.junit.JUnitSimulator;
+import org.scribble.trace.simulation.junit.JUnitSimulator;
 
 /**
  * This class provides the Eclipse extended version of the JUnit based

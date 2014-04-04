@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.trace;
+package org.scribble.trace.simulation;
 
 import org.scribble.trace.model.RoleSimulator;
 import org.scribble.trace.model.Simulation;

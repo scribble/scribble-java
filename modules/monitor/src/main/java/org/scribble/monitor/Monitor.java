@@ -26,7 +26,7 @@ public interface Monitor {
 	 * @param type The session type
 	 * @param instance The session instance
 	 */
-	public void initialize(SessionType type, SessionInstance instance);
+	public void initializeInstance(SessionType type, SessionInstance instance);
 	
 	/**
 	 * This method checks whether the sent message is valid.
