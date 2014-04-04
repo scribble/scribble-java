@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.trace.junit;
+package org.scribble.trace.simulation.junit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,13 +22,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.resources.ResourceLocator;
-import org.scribble.trace.DefaultSimulatorContext;
-import org.scribble.trace.SimulationListener;
-import org.scribble.trace.Simulator;
-import org.scribble.trace.SimulatorContext;
 import org.scribble.trace.model.Simulation;
 import org.scribble.trace.model.Step;
 import org.scribble.trace.model.Trace;
+import org.scribble.trace.simulation.DefaultSimulatorContext;
+import org.scribble.trace.simulation.SimulationListener;
+import org.scribble.trace.simulation.Simulator;
+import org.scribble.trace.simulation.SimulatorContext;
 
 /**
  * This class performs simulation of one or more trace files, and

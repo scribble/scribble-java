@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.trace;
+package org.scribble.trace.util;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;

@@ -14,21 +14,34 @@
  * limitations under the License.
  *
  */
-package org.scribble.trace;
+package org.scribble.trace.simulation;
 
 import org.scribble.resources.ResourceLocator;
 
 /**
- * This interface provides context support for the simulator.
+ * This class provides the default context support implementation for the simulator.
  *
  */
-public interface SimulatorContext {
+public class DefaultSimulatorContext implements SimulatorContext {
+	
+	private ResourceLocator _locator;
+	
+	/**
+	 * This constructor initializes the resource locator.
+	 * 
+	 * @param locator The resource locator
+	 */
+	public DefaultSimulatorContext(ResourceLocator locator) {
+		_locator = locator;
+	}
 
 	/**
 	 * This method returns the resource locator.
 	 * 
 	 * @return The resource locator
 	 */
-	public ResourceLocator getResourceLocator();
+	public ResourceLocator getResourceLocator() {
+		return (_locator);
+	}
 	
 }

@@ -30,7 +30,7 @@ import org.scribble.monitor.export.MonitorExporter;
 import org.scribble.monitor.model.SessionType;
 import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.parser.ProtocolParser;
-import org.scribble.trace.SimulatorContext;
+import org.scribble.trace.simulation.SimulatorContext;
 
 /**
  * This abstract class represents a simulator associated with a
@@ -110,7 +110,7 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	    		
 	    		_instance = new SessionInstance();
 	    		
-	    		MONITOR.initialize(_type, _instance);
+	    		MONITOR.initializeInstance(_type, _instance);
 			}
 		} else {
 			_type = null;

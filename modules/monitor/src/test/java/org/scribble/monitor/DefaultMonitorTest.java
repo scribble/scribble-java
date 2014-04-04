@@ -68,7 +68,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -114,7 +114,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -174,7 +174,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -242,7 +242,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -317,7 +317,7 @@ public class DefaultMonitorTest {
 
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -393,7 +393,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -449,7 +449,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -512,7 +512,7 @@ public class DefaultMonitorTest {
 
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -608,7 +608,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -659,7 +659,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -710,7 +710,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -761,7 +761,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -869,7 +869,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -920,7 +920,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -971,7 +971,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1043,7 +1043,7 @@ public class DefaultMonitorTest {
 
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1125,7 +1125,7 @@ public class DefaultMonitorTest {
 
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1275,7 +1275,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1403,7 +1403,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1445,7 +1445,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1488,7 +1488,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1587,7 +1587,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1629,7 +1629,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1672,7 +1672,7 @@ public class DefaultMonitorTest {
 		
 		SessionInstance instance=new SessionInstance();
 		
-		monitor.initialize(type, instance);
+		monitor.initializeInstance(type, instance);
 		
 		Message m1=new Message();
 		m1.setOperator(OP1);
@@ -1767,7 +1767,7 @@ public class DefaultMonitorTest {
 		for (int i=0; i < 1000000; i++) {
 			SessionInstance instance=new SessionInstance();
 			
-			monitor.initialize(type, instance);
+			monitor.initializeInstance(type, instance);
 			
 			if (!monitor.sent(type, instance, m1, null)) {
 				fail("Sent message 1 not expected");

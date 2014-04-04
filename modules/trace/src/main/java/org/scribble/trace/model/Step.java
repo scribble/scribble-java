@@ -19,7 +19,7 @@ package org.scribble.trace.model;
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonSubTypes.Type;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.scribble.trace.SimulatorContext;
+import org.scribble.trace.simulation.SimulatorContext;
 
 /**
  * This class represents the base class from which all simulation actions
