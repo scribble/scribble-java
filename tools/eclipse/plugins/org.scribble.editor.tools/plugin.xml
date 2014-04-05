@@ -9,9 +9,9 @@
       name="Scribble">
     </category>
     <wizard
-      id = "org.scribble.editor.tools.editor.NewProtocolWizardID"
+      id = "org.scribble.editor.tools.ui.NewProtocolWizardID"
       name = "Protocol"
-      class = "org.scribble.editor.tools.editor.NewProtocolWizard"
+      class = "org.scribble.editor.tools.ui.NewProtocolWizard"
       category = "org.scribble.wizard.category.ID"
       icon = "icons/scribble.png">
       <description>New Scribble Protocol Description</description>

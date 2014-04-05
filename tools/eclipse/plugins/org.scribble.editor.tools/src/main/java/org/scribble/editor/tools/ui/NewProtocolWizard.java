@@ -82,9 +82,7 @@ public class NewProtocolWizard extends Wizard implements INewWizard {
             WorkspaceModifyOperation operation =
                 new WorkspaceModifyOperation() {
                     protected void execute(IProgressMonitor progressMonitor) {
-                        try {
-                            byte[] b=new byte[0];
-                            
+                        try {                            
                             // Identify the model reference from the resource
                             org.eclipse.core.runtime.IPath path=modelFile.getFullPath();
                             org.eclipse.core.runtime.IPath fqnPath=path.removeFirstSegments(1);
@@ -131,7 +129,17 @@ public class NewProtocolWizard extends Wizard implements INewWizard {
                                 name += LOCATED_REFERENCE_SEPARATOR + located;
                             }
                             
-                            java.io.ByteArrayInputStream bis=new java.io.ByteArrayInputStream(b);
+                            StringBuffer text=new StringBuffer("module "+namespace+"."+local+";\r\n\r\n");
+                            
+                            if (located == null) {
+                            	text.append("global protocol ProtocolName(role Role1");
+                            } else {
+                            	text.append("local protocol ProtocolName at "+located+"(role "+located);
+                            }
+                            
+                            text.append(", role Role2) {\r\n}\r\n");
+                            
+                            java.io.ByteArrayInputStream bis=new java.io.ByteArrayInputStream(text.toString().getBytes());
                             
                             modelFile.create(bis, true, progressMonitor);
                             
