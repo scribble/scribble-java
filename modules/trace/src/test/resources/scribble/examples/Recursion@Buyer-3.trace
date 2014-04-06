@@ -77,7 +77,8 @@
 		"roleSimulators":{
 			"Buyer":{
 				"type":"MonitorRoleSimulator",
-				"module":"scribble.examples.Recursion@Buyer",
+				"module":"scribble.examples.Recursion",
+				"role":"Buyer",
 				"protocol":"First"
 			}
 		}

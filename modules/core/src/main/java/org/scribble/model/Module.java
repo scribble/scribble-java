@@ -75,6 +75,23 @@ public class Module extends ModelObject {
     }
     
     /**
+     * This method returns the role associated with a local module.
+     * If the module is a global module, then null is returned.
+     * 
+     * @return The located role, if the module is local
+     */
+    public Role getLocatedRole() {
+    	Role ret=null;
+    	
+    	if (_protocols.size() > 0
+    			&& _protocols.get(0) instanceof org.scribble.model.local.LProtocolDecl) {
+    		ret = ((org.scribble.model.local.LProtocolDecl)_protocols.get(0)).getLocalRole();
+    	}
+    	
+    	return (ret);
+    }
+    
+    /**
      * This method returns the list of import definitions.
      * 
      * @return The import definitions

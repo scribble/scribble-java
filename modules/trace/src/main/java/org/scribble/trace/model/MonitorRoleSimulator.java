@@ -16,11 +16,15 @@
  */
 package org.scribble.trace.model;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.scribble.context.DefaultModuleContext;
 import org.scribble.context.ModuleLoader;
 import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.model.Module;
 import org.scribble.model.ProtocolDecl;
+import org.scribble.model.Role;
 import org.scribble.model.local.LProtocolDefinition;
 import org.scribble.monitor.DefaultMonitor;
 import org.scribble.monitor.Message;
@@ -30,6 +34,7 @@ import org.scribble.monitor.export.MonitorExporter;
 import org.scribble.monitor.model.SessionType;
 import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.parser.ProtocolParser;
+import org.scribble.projection.ProtocolProjector;
 import org.scribble.trace.simulation.SimulatorContext;
 
 /**
@@ -38,8 +43,11 @@ import org.scribble.trace.simulation.SimulatorContext;
  *
  */
 public class MonitorRoleSimulator extends RoleSimulator {
+	
+	private static final Logger LOG=Logger.getLogger(MonitorRoleSimulator.class.getName());
 
 	private String _module;
+	private String _role;
 	private String _protocol;
 	
 	private SessionType _type;
@@ -70,6 +78,26 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	}
 
 	/**
+	 * This method returns the role within the module to be monitored.
+	 * 
+	 * @return The role
+	 */
+	public String getRole() {
+		return (_role);
+	}
+	
+	/**
+	 * This method sets the role within the module to be monitored.
+	 * 
+	 * @param role The role
+	 * @return The simulator
+	 */
+	public MonitorRoleSimulator setRole(String role) {
+		_role = role;
+		return (this);
+	}
+
+	/**
 	 * This method returns the protocol to be monitored.
 	 * 
 	 * @return The protocol
@@ -94,12 +122,58 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	 */
 	@Override
 	public void init(SimulatorContext context) {
+		if (LOG.isLoggable(Level.FINE)) {
+			LOG.fine("Init monitor role simulator for module="+_module+", role="
+							+_role+" and protocol="+_protocol);
+		}
+		
 		// TODO: Need to consider different logger impl?
 		ModuleLoader loader=new ProtocolModuleLoader(PARSER, context.getResourceLocator(), 
 							new ConsoleIssueLogger());
 		
-		Module module=loader.loadModule(_module);
+		String localModule=_module+"@"+_role;
 		
+		Module module=loader.loadModule(localModule);
+		
+		if (LOG.isLoggable(Level.FINE)) {
+			LOG.fine("Local module="+module);
+		}
+		
+		if (module == null) {
+			// Attempt to project the local module from a global module
+			Module global=loader.loadModule(_module);
+			
+			if (LOG.isLoggable(Level.FINE)) {
+				LOG.fine("Global module="+global);
+			}
+			
+			if (global != null) {
+				// Project
+				ProtocolProjector projector=new ProtocolProjector();
+				
+				DefaultModuleContext mc=new DefaultModuleContext(null, global, loader);
+
+				java.util.Set<Module> locals=projector.project(mc, global, new ConsoleIssueLogger());
+				
+				for (Module lm : locals) {
+					Role located=lm.getLocatedRole();
+
+					if (LOG.isLoggable(Level.FINE)) {
+						LOG.fine("Check module="+lm+" with located role="+located);
+					}
+					
+					if (located != null && located.getName().equals(_role)) {
+						module = lm;
+						break;
+					}
+				}
+			}
+		}
+		
+		if (LOG.isLoggable(Level.FINE)) {
+			LOG.fine("Module to simulate="+module);
+		}
+
 		if (module != null) {
 			ProtocolDecl pd=module.getProtocol(_protocol);
 			
