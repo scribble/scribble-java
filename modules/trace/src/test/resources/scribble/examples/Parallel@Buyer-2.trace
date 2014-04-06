@@ -41,7 +41,8 @@
 		"roleSimulators":{
 			"Buyer":{
 				"type":"MonitorRoleSimulator",
-				"module":"scribble.examples.Parallel@Buyer",
+				"module":"scribble.examples.Parallel",
+				"role":"Buyer",
 				"protocol":"First"
 			}
 		}

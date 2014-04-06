@@ -23,7 +23,8 @@
 		"roleSimulators":{
 			"Buyer":{
 				"type":"MonitorRoleSimulator",
-				"module":"scribble.examples.RequestResponse@Buyer",
+				"module":"scribble.examples.RequestResponse",
+				"role":"Buyer",
 				"protocol":"First"
 			}
 		}
