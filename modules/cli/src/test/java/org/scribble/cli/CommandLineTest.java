@@ -19,9 +19,9 @@ package org.scribble.cli;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.scribble.cli.ScribbleCLI;
+import org.scribble.cli.CommandLine;
 
-public class ScribbleCLITest {
+public class CommandLineTest {
 
 	@Test
 	@org.junit.Ignore
@@ -39,7 +39,7 @@ public class ScribbleCLITest {
 		
 		String[] args={ "-path", path, "scribble.examples.Imports" };
 		
-		ScribbleCLI cli=new ScribbleCLI();
+		CommandLine cli=new CommandLine();
 		
 		if (!cli.execute(args)) {
 			fail("Failed to execute");

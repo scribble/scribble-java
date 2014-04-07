@@ -39,6 +39,15 @@ public class DirectoryResourceLocator implements ResourceLocator {
 	public DirectoryResourceLocator(String paths) {
 		_paths = paths.split(":");
 	}
+	
+	/**
+	 * This method returns the first path.
+	 * 
+	 * @return The first path
+	 */
+	public String getFirstPath() {
+		return (_paths != null && _paths.length > 0 ? _paths[0] : null);
+	}
 
 	/**
 	 * {@inheritDoc}

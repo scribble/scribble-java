@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+	<!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
+	<id>bin</id>
+	<includeBaseDirectory>true</includeBaseDirectory>
+	<formats>
+		<format>zip</format>
+	</formats>
+
+	<fileSets>
+		<fileSet>
+			<directory>src/main/release</directory>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
+    
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+			<unpack>false</unpack>
+			<includes>
+				<include>org.scribble:scribble-core</include>
+				<include>org.scribble:scribble-cli</include>
+				<include>org.scribble:scribble-parser</include>
+				<include>org.scribble:scribble-validation</include>
+				<include>org.scribble:scribble-projection</include>
+				<include>org.antlr:antlr-runtime</include>
+			</includes>
+			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+		</dependencySet>        
+	</dependencySets>
+
+</assembly>
