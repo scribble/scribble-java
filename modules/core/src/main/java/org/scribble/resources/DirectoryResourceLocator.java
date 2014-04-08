@@ -41,12 +41,26 @@ public class DirectoryResourceLocator implements ResourceLocator {
 	}
 	
 	/**
-	 * This method returns the first path.
+	 * This method returns the root location containing the supplied
+	 * resource.
 	 * 
-	 * @return The first path
+	 * @return The resource's root location
 	 */
-	public String getFirstPath() {
-		return (_paths != null && _paths.length > 0 ? _paths[0] : null);
+	public String getResourceRoot(Resource resource) {
+		String ret=null;
+		
+		for (String path : _paths) {
+			String fullPath=path+java.io.File.separator+resource.getPath();
+			
+			java.io.File f=new java.io.File(fullPath);
+			
+			if (f.exists()) {
+				ret = path;
+				break;
+			}
+		}
+		
+		return (ret);
 	}
 
 	/**

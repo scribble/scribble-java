@@ -121,10 +121,18 @@ public class CommandLine {
 							System.err.println("ERROR: Module name '"+args[i]+"' is not valid\r\n");
 							f_error = true;
 						} else {
-							Module module=loadModule(args[i]);
 							
-							if (module != null) {
-								project(module);
+							Resource resource=getResource(args[i]);
+							
+							if (resource != null) {
+								Module module=loadModule(resource);
+								
+								if (module != null) {
+									project(module, resource);
+								}
+							} else {
+								System.err.println("ERROR: Module name '"+args[i]
+										+"' could not be located\r\n");
 							}
 						}
 					}
@@ -170,34 +178,40 @@ public class CommandLine {
 	}
 	
 	/**
-	 * This method determines whether the module with the supplied name is valid.
+	 * This method returns the resource associated with the supplied
+	 * module name.
 	 * 
 	 * @param moduleName The module name
-	 * @return The module name, if valid, otherwise null
+	 * @return The resource, or null if not found
 	 */
-	protected Module loadModule(String moduleName) {	
-		Module module=null;
-		
+	protected Resource getResource(String moduleName) {	
 		String relativePath=moduleName.replace('.', java.io.File.separatorChar)+".scr";
 		
-		Resource resource=_locator.getResource(relativePath);
-
-		if (resource != null) {
-			try {
-				module = PARSER.parse(resource, _loader, LOGGER);
+		return (_locator.getResource(relativePath));
+	}
+	
+	/**
+	 * This method determines whether the module associated with the
+	 * supplied resource is valid.
+	 * 
+	 * @param resource The resource
+	 * @return The module name, if valid, otherwise null
+	 */
+	protected Module loadModule(Resource resource) {	
+		Module module=null;
+		
+		try {
+			module = PARSER.parse(resource, _loader, LOGGER);
+			
+			if (module != null) {
 				
-				if (module != null) {
-					
-					ModuleContext context=new DefaultModuleContext(resource, module, _loader);
-					
-					VALIDATOR.validate(context, module, LOGGER);
-				}
+				ModuleContext context=new DefaultModuleContext(resource, module, _loader);
 				
-			} catch (IOException e) {
-				System.err.println("ERROR: Failed to parse '"+moduleName+"': "+e+"\r\n");
+				VALIDATOR.validate(context, module, LOGGER);
 			}
-		} else {
-			System.err.println("ERROR: Module name '"+moduleName+"' could not be located\r\n");
+			
+		} catch (IOException e) {
+			System.err.println("ERROR: Failed to parse '"+resource+"': "+e+"\r\n");
 		}
 		
 		return (module);
@@ -248,16 +262,22 @@ public class CommandLine {
 	 * This method projects the supplied module.
 	 * 
 	 * @param module The module
+	 * @param resource The resource
 	 */
-	protected void project(Module module) {
-		String firstPath=_locator.getFirstPath();
+	protected void project(Module module, Resource resource) {
+		String resourceRoot=_locator.getResourceRoot(resource);
 		
-		ModuleContext context=new DefaultModuleContext(null, module, _loader);
+		if (resourceRoot == null) {
+			System.err.println("Unable to find root location for resource");
+			return;
+		}
+		
+		ModuleContext context=new DefaultModuleContext(resource, module, _loader);
 		
 		java.util.Set<Module> modules=PROJECTOR.project(context, module, LOGGER);
 		
 		for (Module m : modules) {
-			String path=firstPath+java.io.File.separatorChar
+			String path=resourceRoot+java.io.File.separatorChar
 						+m.getName().replaceAll("\\.",java.io.File.separator)
 						+"@"+m.getLocatedRole().getName()+".scr";
 			
