@@ -34,6 +34,28 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-monitor</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-trace</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>      
 			<scope>test</scope>

@@ -24,6 +24,10 @@
 				<include>org.scribble:scribble-parser</include>
 				<include>org.scribble:scribble-validation</include>
 				<include>org.scribble:scribble-projection</include>
+				<include>org.scribble:scribble-trace</include>
+				<include>org.scribble:scribble-monitor</include>
+				<include>org.codehaus.jackson:jackson-core-asl</include>
+				<include>org.codehaus.jackson:jackson-mapper-asl</include>
 				<include>org.antlr:antlr-runtime</include>
 			</includes>
 			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
