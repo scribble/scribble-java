@@ -18,6 +18,7 @@ package org.scribble.cli;
 
 import java.io.IOException;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.scribble.context.DefaultModuleContext;
 import org.scribble.context.ModuleContext;
 import org.scribble.logging.ConsoleIssueLogger;
@@ -28,6 +29,13 @@ import org.scribble.parser.ProtocolParser;
 import org.scribble.projection.ProtocolProjector;
 import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.resources.Resource;
+import org.scribble.trace.model.Simulation;
+import org.scribble.trace.model.Step;
+import org.scribble.trace.model.Trace;
+import org.scribble.trace.simulation.DefaultSimulatorContext;
+import org.scribble.trace.simulation.SimulationListener;
+import org.scribble.trace.simulation.Simulator;
+import org.scribble.trace.simulation.SimulatorContext;
 import org.scribble.validation.ProtocolValidator;
 
 /**
@@ -41,10 +49,11 @@ public class CommandLine {
 	
 	private static final ProtocolParser PARSER=new ProtocolParser();
 	private static final ProtocolValidator VALIDATOR=new ProtocolValidator();
-	private static final ProtocolProjector PROJECTOR=new ProtocolProjector();
-	
+	private static final ProtocolProjector PROJECTOR=new ProtocolProjector();	
 	private static final IssueLogger LOGGER=new ConsoleIssueLogger();
-	
+
+	private static final ObjectMapper MAPPER=new ObjectMapper();
+
 	private DirectoryResourceLocator _locator;
 	private ProtocolModuleLoader _loader;
 	
@@ -56,7 +65,9 @@ public class CommandLine {
 	public static void main(String[] args) {
 		CommandLine cli=new CommandLine();
 		
-		cli.execute(args);
+		if (!cli.execute(args)) {
+			System.exit(1);
+		}
 	}
 	
 	/**
@@ -66,26 +77,27 @@ public class CommandLine {
 	 * @param Whether execution was successful
 	 */
 	public boolean execute(String[] args) {
+		boolean f_usageError=false;
 		boolean f_error=false;
 		
 		if (args.length > 0) {
 			// Find the path
-			for (int i=0; !f_error && i < args.length-1; i++) {
+			for (int i=0; !f_usageError && i < args.length-1; i++) {
 				if (args[i].equals("-path")) {
 					
 					if (i >= args.length-2) {
 						System.err.println("ERROR: No path value has been defined\r\n");
-						f_error = true;
+						f_usageError = true;
 					} else {
 						i++;
 						
-						f_error = !validatePaths(args[i]);
+						f_usageError = !validatePaths(args[i]);
 						
-						if (!f_error) {
+						if (!f_usageError) {
 							initLoader(args[i]);
 						} else {
 							System.err.println("ERROR: Module path '"+args[i]+"' is not valid\r\n");
-							f_error = true;
+							f_usageError = true;
 						}
 					}
 					break;
@@ -93,33 +105,33 @@ public class CommandLine {
 			}
 			
 			// Check whether a locator has been defined
-			if (!f_error && _locator == null) {
+			if (!f_usageError && _locator == null) {
 				if (!System.getenv().containsKey(MODULE_PATH)) {
 					System.err.println("ERROR: MODULE_PATH has not been defined\r\n");
-					f_error = true;
+					f_usageError = true;
 				} else if (!validatePaths(System.getenv().get(MODULE_PATH))) {
 					System.err.println("ERROR: Module path '"+System.getenv().get(MODULE_PATH)+"' is not valid\r\n");
-					f_error = true;
+					f_usageError = true;
 				} else {
 					initLoader(System.getenv().get(MODULE_PATH));
 				}
 			}
 			
 			// Parse all non-path parameters
-			for (int i=0; !f_error && i < args.length-1; i++) {
+			for (int i=0; !f_usageError && i < args.length-1; i++) {
 				if (args[i].equals("-path")) {					
 					i++;
 				} else if (args[i].equals("-project")) {
 					
 					if (i+1 >= args.length) {
 						System.err.println("ERROR: No global module has been defined\r\n");
-						f_error = true;
+						f_usageError = true;
 					} else {
 						i++;
 						
 						if (!validateModuleName(args[i])) {
 							System.err.println("ERROR: Module name '"+args[i]+"' is not valid\r\n");
-							f_error = true;
+							f_usageError = true;
 						} else {
 							
 							Resource resource=getResource(args[i]);
@@ -141,30 +153,42 @@ public class CommandLine {
 					
 					if (i+1 >= args.length) {
 						System.err.println("ERROR: No trace file has been defined\r\n");
-						f_error = true;
+						f_usageError = true;
 					} else {
+						i++;
 						
+						java.io.File location=new java.io.File(args[i]);
+						
+						if (!validateTraceLocation(location)) {
+							System.err.println("ERROR: No trace files could be found at location '"+args[i]+"'\r\n");
+							f_usageError = true;
+						} else {
+							if (!simulate(location)) {
+								System.err.println("\r\nERROR: Simulation failed\r\n");
+								f_error = true;
+							}
+						}	
 					}
 
 				} else {
 					System.err.println("ERROR: Unknown option '"+args[i]+"'\r\n");
-					f_error = true;
+					f_usageError = true;
 				}
 			}
 
 		} else {
-			f_error = true;
+			f_usageError = true;
 		}
 		
-		if (f_error) {
-			System.err.println("Usage: scribble [-path <module-path>] [ -project module ] [ -simulate trace ]");
+		if (f_usageError) {
+			System.err.println("Usage: scribble [-path <module-path>] [ -project <module> ] [ -simulate <trace file/dir> ]");
 			System.err.println("Options:");
 			System.err.println("\t-path\t\tList of root directories separated by ':'");
 			System.err.println("\t-project\tProject global protocols to local");
-			System.err.println("\t-simulate\tSimulate the supplied trace file");
+			System.err.println("\t-simulate\tSimulate the supplied trace file or files within a directory");
 		}
 		
-		return (!f_error);
+		return (!f_usageError && !f_error);
 	}
 	
 	/**
@@ -292,5 +316,119 @@ public class CommandLine {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * This method validates the trace location. The location
+	 * can either be a single trace file, or a folder containing
+	 * one or more trace files.
+	 * 
+	 * @param location The location
+	 * @return Whether the location is valid
+	 */
+	protected static boolean validateTraceLocation(java.io.File location) {
+		boolean ret=false;
+		
+		if (location.exists()) {
+			if (location.isFile()) {
+				ret = location.getName().endsWith(".trace");
+				
+			} else if (location.isDirectory()) {
+				for (java.io.File child : location.listFiles()) {
+					if (validateTraceLocation(child)) {
+						ret = true;
+						break;
+					}
+				}
+			}
+		}
+		
+		return (ret);
+	}
+	
+	/**
+	 * This method recursively scans the supplied location to determine
+	 * if a trace file is present, and if found, simulates it.
+	 * 
+	 * @param location The location
+	 * @return Whether simulation was successful
+	 */
+	protected boolean simulate(java.io.File location) {
+		boolean ret=true;
+		
+		if (location.exists()) {
+			if (location.isFile()) {
+				
+				if (location.getName().endsWith(".trace")) {
+					System.out.println("\r\nSimulate: "+location.getPath());
+
+					try {
+						java.io.InputStream is=new java.io.FileInputStream(location);
+	
+						Trace trace=MAPPER.readValue(is, Trace.class);
+	
+						is.close();
+	
+						SimulatorContext context=new DefaultSimulatorContext(_locator);
+	
+						Simulator simulator=new Simulator();
+						
+						final java.util.List<Step> failed=new java.util.ArrayList<Step>();
+						
+						SimulationListener l=new SimulationListener() {
+
+							public void start(Trace trace, Simulation simulation) {
+								// TODO Auto-generated method stub
+								
+							}
+
+							public void start(Trace trace,
+									Simulation simulation, Step step) {
+							}
+
+							public void successful(Trace trace,
+									Simulation simulation, Step step) {
+								System.out.println("\tSUCCESSFUL: "+step);
+							}
+
+							public void failed(Trace trace,
+									Simulation simulation, Step step) {
+								System.out.println("\tFAILED: "+step);
+								failed.add(step);
+							}
+
+							public void stop(Trace trace, Simulation simulation) {
+							}
+							
+						};
+						
+						simulator.addSimulationListener(l);
+
+						simulator.simulate(context, trace);
+						
+						simulator.removeSimulationListener(l);
+						
+						if (failed.size() > 0) {
+							ret = false;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						ret = false;
+						
+					}
+				}
+				
+			} else if (location.isDirectory()) {
+				for (java.io.File child : location.listFiles()) {
+					ret = simulate(child);
+					
+					if (!ret) {
+						break;
+					}
+				}
+			}
+		}
+		
+		return (ret);
 	}
 }
