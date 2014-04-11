@@ -325,9 +325,10 @@ public class CommandLine {
 		java.util.Set<Module> modules=PROJECTOR.project(context, module, LOGGER);
 		
 		for (Module m : modules) {
+			String name=m.getName().replace('.', java.io.File.separatorChar);
+			
 			String path=resourceRoot+java.io.File.separatorChar
-						+m.getName().replaceAll("\\.",java.io.File.separator)
-						+"@"+m.getLocatedRole().getName()+".scr";
+						+name+"@"+m.getLocatedRole().getName()+".scr";
 			
 			try {
 				java.io.FileOutputStream fos=new java.io.FileOutputStream(path);
