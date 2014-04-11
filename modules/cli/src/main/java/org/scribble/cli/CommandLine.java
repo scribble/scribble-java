@@ -149,6 +149,30 @@ public class CommandLine {
 						}
 					}
 					
+				} else if (args[i].equals("-validate")) {
+					
+					if (i+1 >= args.length) {
+						System.err.println("ERROR: No module has been defined\r\n");
+						f_usageError = true;
+					} else {
+						i++;
+						
+						if (!validateModuleName(args[i])) {
+							System.err.println("ERROR: Module name '"+args[i]+"' is not valid\r\n");
+							f_usageError = true;
+						} else {
+							
+							Resource resource=getResource(args[i]);
+							
+							if (resource != null) {
+								loadModule(resource);
+							} else {
+								System.err.println("ERROR: Module name '"+args[i]
+										+"' could not be located\r\n");
+							}
+						}
+					}
+					
 				} else if (args[i].equals("-simulate")) {
 					
 					if (i+1 >= args.length) {
