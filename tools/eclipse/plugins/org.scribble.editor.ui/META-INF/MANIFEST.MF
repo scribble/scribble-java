@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.scribble.editor.ui
 Bundle-Vendor: Scribble.org
-Bundle-Version: 0.3.0.qualifier
+Bundle-Version: 0.3.0.20140412-M5
 Bundle-SymbolicName: org.scribble.editor.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.scribble.editor;visibility:=reexport,

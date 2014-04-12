@@ -3,38 +3,15 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<modelVersion>4.0.0</modelVersion> 
 	<groupId>org.scribble.tools.eclipse</groupId>
 	<artifactId>scribble-update-site</artifactId> 
-	<version>0.3.0-SNAPSHOT</version>
+	<version>0.3.0.20140412-M5</version>
 	<packaging>eclipse-update-site</packaging>
 	<name>Scribble::Tools::Eclipse::Site</name>
 
 	<parent>
 		<groupId>org.scribble.tools</groupId>
 		<artifactId>eclipse</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
+		<version>0.3.0.20140412-M5</version>
 	</parent>
-
-	<dependencies>
-	    <dependency>
-	      <groupId>org.scribble</groupId>
-	      <artifactId>scribble-model</artifactId>
-	      <version>${project.version}</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.scribble</groupId>
-	      <artifactId>scribble-parser</artifactId>
-	      <version>${project.version}</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.scribble</groupId>
-	      <artifactId>scribble-validation</artifactId>
-	      <version>${project.version}</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.scribble</groupId>
-	      <artifactId>scribble-cli</artifactId>
-	      <version>${project.version}</version>
-	    </dependency>
-	</dependencies>
 
 </project>
 
