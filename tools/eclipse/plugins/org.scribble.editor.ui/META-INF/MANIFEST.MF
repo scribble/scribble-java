@@ -19,7 +19,7 @@ Require-Bundle: org.scribble.editor;visibility:=reexport,
  org.eclipse.compare
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.xbase.lib
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.scribble.editor.dsl.ui.quickfix,
  org.scribble.editor.dsl.ui.contentassist,
  org.scribble.editor.dsl.ui.contentassist.antlr,
