@@ -16,7 +16,6 @@
  */
 package org.scribble.trace.simulation;
 
-import org.scribble.trace.model.Simulation;
 import org.scribble.trace.model.Step;
 import org.scribble.trace.model.Trace;
 
@@ -30,46 +29,41 @@ public interface SimulationListener {
 	 * This method identifies when a trace simulation has started.
 	 * 
 	 * @param trace The trace
-	 * @param simulation The simulation
 	 */
-	public void start(Trace trace, Simulation simulation);
+	public void start(Trace trace);
 	
 	/**
 	 * This method identifies when the simulation of trace step has
 	 * started.
 	 * 
 	 * @param trace The trace
-	 * @param simulation The simulation
 	 * @param step The step
 	 */
-	public void start(Trace trace, Simulation simulation, Step step);
+	public void start(Trace trace, Step step);
 	
 	/**
 	 * This method identifies when the simulation of trace step has
 	 * been successful.
 	 * 
 	 * @param trace The trace
-	 * @param simulation The simulation
 	 * @param step The step
 	 */
-	public void successful(Trace trace, Simulation simulation, Step step);
+	public void successful(Trace trace, Step step);
 	
 	/**
 	 * This method identifies when the simulation of trace step has
 	 * been unsuccessful.
 	 * 
 	 * @param trace The trace
-	 * @param simulation The simulation
 	 * @param step The step
 	 */
-	public void failed(Trace trace, Simulation simulation, Step step);
+	public void failed(Trace trace, Step step);
 	
 	/**
 	 * This method identifies when a trace simulation has stopped.
 	 * 
 	 * @param trace The trace
-	 * @param simulation The simulation
 	 */
-	public void stop(Trace trace, Simulation simulation);
+	public void stop(Trace trace);
 	
 }

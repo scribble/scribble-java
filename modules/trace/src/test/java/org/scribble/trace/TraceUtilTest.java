@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.scribble.monitor.Message;
 import org.scribble.trace.model.MessageTransfer;
 import org.scribble.trace.model.MonitorRoleSimulator;
-import org.scribble.trace.model.Simulation;
+import org.scribble.trace.model.Role;
 import org.scribble.trace.model.Trace;
 import org.scribble.trace.util.TraceUtil;
 
@@ -87,19 +87,21 @@ public class TraceUtilTest {
 		mt2.setMessage(m2);
 		t1.getSteps().add(mt2);
 		
-		Simulation sim1=new Simulation();
-		t1.getSimulations().add(sim1);
+		Role role1=new Role();
+		role1.setName(ROLE_A);
+		t1.getRoles().add(role1);
 		
 		MonitorRoleSimulator mrs1=new MonitorRoleSimulator();
 		mrs1.setProtocol("a.b.c.P1");
-		sim1.getRoleSimulators().put(ROLE_A, mrs1);
+		role1.setSimulator(mrs1);
 		
-		Simulation sim2=new Simulation();
-		t1.getSimulations().add(sim2);
+		Role role2=new Role();
+		role2.setName(ROLE_B);
+		t1.getRoles().add(role2);
 		
 		MonitorRoleSimulator mrs2=new MonitorRoleSimulator();
 		mrs2.setProtocol("a.b.c.P2");
-		sim2.getRoleSimulators().put(ROLE_B, mrs2);
+		role2.setSimulator(mrs2);
 		
 		
 		byte[] ser=null;
@@ -129,8 +131,8 @@ public class TraceUtilTest {
 			fail("Expecting 2 steps: "+result.getSteps().size());
 		}
 		
-		if (result.getSimulations().size() != 2) {
-			fail("Expecting 2 simulations: "+result.getSimulations().size());
+		if (result.getRoles().size() != 2) {
+			fail("Expecting 2 simulations: "+result.getRoles().size());
 		}
 	}
 }

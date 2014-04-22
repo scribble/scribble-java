@@ -29,7 +29,6 @@ import org.scribble.parser.ProtocolParser;
 import org.scribble.projection.ProtocolProjector;
 import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.resources.Resource;
-import org.scribble.trace.model.Simulation;
 import org.scribble.trace.model.Step;
 import org.scribble.trace.model.Trace;
 import org.scribble.trace.simulation.DefaultSimulatorContext;
@@ -402,27 +401,22 @@ public class CommandLine {
 						
 						SimulationListener l=new SimulationListener() {
 
-							public void start(Trace trace, Simulation simulation) {
-								// TODO Auto-generated method stub
-								
+							public void start(Trace trace) {
 							}
 
-							public void start(Trace trace,
-									Simulation simulation, Step step) {
+							public void start(Trace trace, Step step) {
 							}
 
-							public void successful(Trace trace,
-									Simulation simulation, Step step) {
+							public void successful(Trace trace, Step step) {
 								System.out.println("\tSUCCESSFUL: "+step);
 							}
 
-							public void failed(Trace trace,
-									Simulation simulation, Step step) {
+							public void failed(Trace trace, Step step) {
 								System.out.println("\tFAILED: "+step);
 								failed.add(step);
 							}
 
-							public void stop(Trace trace, Simulation simulation) {
+							public void stop(Trace trace) {
 							}
 							
 						};
