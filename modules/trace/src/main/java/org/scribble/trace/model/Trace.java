@@ -24,8 +24,8 @@ public class Trace {
 
 	private String _name;
 	private String _description;
+	private java.util.List<Role> _roles=new java.util.ArrayList<Role>();
 	private java.util.List<Step> _steps=new java.util.ArrayList<Step>();
-	private java.util.List<Simulation> _simulations=new java.util.ArrayList<Simulation>();
 	
 	/**
 	 * This method returns the name of the trace.
@@ -68,6 +68,26 @@ public class Trace {
 	}
 	
 	/**
+	 * This method returns the roles.
+	 * 
+	 * @return The roles
+	 */
+	public java.util.List<Role> getRoles() {
+		return (_roles);
+	}
+	
+	/**
+	 * This method sets the roles.
+	 * 
+	 * @param simulations The roles
+	 * @return The trace
+	 */
+	public Trace setRoles(java.util.List<Role> roles) {
+		_roles = roles;
+		return (this);
+	}
+
+	/**
 	 * This method returns the trace steps.
 	 * 
 	 * @return The trace steps
@@ -84,26 +104,6 @@ public class Trace {
 	 */
 	public Trace setSteps(java.util.List<Step> steps) {
 		_steps = steps;
-		return (this);
-	}
-
-	/**
-	 * This method returns the simulations.
-	 * 
-	 * @return The simulations
-	 */
-	public java.util.List<Simulation> getSimulations() {
-		return (_simulations);
-	}
-	
-	/**
-	 * This method sets the simulations.
-	 * 
-	 * @param simulations The simulations
-	 * @return The trace
-	 */
-	public Trace setSimulations(java.util.List<Simulation> simulations) {
-		_simulations = simulations;
 		return (this);
 	}
 

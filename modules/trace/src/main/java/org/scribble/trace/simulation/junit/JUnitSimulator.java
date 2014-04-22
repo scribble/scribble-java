@@ -22,7 +22,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.resources.ResourceLocator;
-import org.scribble.trace.model.Simulation;
 import org.scribble.trace.model.Step;
 import org.scribble.trace.model.Trace;
 import org.scribble.trace.simulation.DefaultSimulatorContext;
@@ -254,14 +253,8 @@ public class JUnitSimulator {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void start(Trace trace, Simulation simulation) {
-			String name=trace.getName()+":";
-			
-			if (simulation.getName() == null) {
-				name += (trace.getSimulations().indexOf(simulation)+1);
-			} else {
-				name += simulation.getName();
-			}
+		public void start(Trace trace) {
+			String name=trace.getName();
 			
 			_currentTestSuite = _junitDoc.createElement("testsuite");
 			_currentTestSuite.setAttribute("name", name);
@@ -279,16 +272,14 @@ public class JUnitSimulator {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void start(Trace trace, Simulation simulation,
-				Step step) {
+		public void start(Trace trace, Step step) {
 			_stepStart = System.currentTimeMillis();
 		}
 		
 		/**
 		 * {@inheritDoc}
 		 */
-		public void successful(Trace trace, Simulation simulation,
-					Step step) {
+		public void successful(Trace trace, Step step) {
 			createTestCase(step);
 
 			try {
@@ -320,7 +311,7 @@ public class JUnitSimulator {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void failed(Trace trace, Simulation simulation, Step step) {
+		public void failed(Trace trace, Step step) {
 			org.w3c.dom.Element testcase=createTestCase(step);
 			
 			org.w3c.dom.Element error=_junitDoc.createElement("error");
@@ -340,7 +331,7 @@ public class JUnitSimulator {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void stop(Trace trace, Simulation simulation) {
+		public void stop(Trace trace) {
 			_currentTestSuite = null;
 
 			try {

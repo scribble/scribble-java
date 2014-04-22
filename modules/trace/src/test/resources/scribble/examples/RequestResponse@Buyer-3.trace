@@ -19,14 +19,13 @@
 		"fromRole":"Seller",
 		"toRoles":["Buyer"]
 	}],
-	"simulations":[{
-		"roleSimulators":{
-			"Buyer":{
-				"type":"MonitorRoleSimulator",
-				"module":"scribble.examples.RequestResponse",
-				"role":"Buyer",
-				"protocol":"First"
-			}
+	"roles":[{
+		"name":"Buyer",
+		"simulator":{
+			"type":"MonitorRoleSimulator",
+			"module":"scribble.examples.RequestResponse",
+			"role":"Buyer",
+			"protocol":"First"
 		}
-	}
-]}
+	}]
+}

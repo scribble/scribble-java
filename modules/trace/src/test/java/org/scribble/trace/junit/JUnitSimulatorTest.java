@@ -89,7 +89,7 @@ public class JUnitSimulatorTest {
 					org.w3c.dom.Element testcase=(org.w3c.dom.Element)elem.getChildNodes().item(j);
 					
 					if (testcase.getChildNodes().getLength() != 0 &&
-							!elem.getAttribute("name").equals("RequestResponse@Buyer-3:1")) {
+							!elem.getAttribute("name").equals("RequestResponse@Buyer-3")) {
 						fail("Test case '"+testcase.getAttribute("name")+"', in testsuite '"+
 								elem.getAttribute("name")+
 								"' should not have a failure or error");

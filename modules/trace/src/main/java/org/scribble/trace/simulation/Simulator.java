@@ -17,7 +17,7 @@
 package org.scribble.trace.simulation;
 
 import org.scribble.trace.model.RoleSimulator;
-import org.scribble.trace.model.Simulation;
+import org.scribble.trace.model.Role;
 import org.scribble.trace.model.Step;
 import org.scribble.trace.model.Trace;
 
@@ -60,43 +60,48 @@ public class Simulator {
 	 */
 	public boolean simulate(SimulatorContext context, Trace trace) {
 		boolean ret=true;
+		java.util.Map<String, RoleSimulator> sims=new java.util.HashMap<String, RoleSimulator>();
 		
-		for (Simulation sim : trace.getSimulations()) {
-			
-			// Initialize the role simulators
-			for (RoleSimulator rs : sim.getRoleSimulators().values()) {
-				rs.init(context);
-			}
-
-			for (SimulationListener l : _listeners) {
-				l.start(trace, sim);
-			}
-
-			for (Step step : trace.getSteps()) {
-				for (SimulationListener l : _listeners) {
-					l.start(trace, sim, step);
-				}
+		// Initialize the role simulators
+		for (Role role : trace.getRoles()) {			
+			if (role.getSimulator() != null) {
+				role.getSimulator().init(context);
 				
-				if (step.simulate(context, sim.getRoleSimulators())) {
-					for (SimulationListener l : _listeners) {
-						l.successful(trace, sim, step);
-					}
-				} else {
-					ret = false;
-					
-					for (SimulationListener l : _listeners) {
-						l.failed(trace, sim, step);
-					}
-				}
+				sims.put(role.getName(), role.getSimulator());
+			}
+		}
+
+		for (SimulationListener l : _listeners) {
+			l.start(trace);
+		}
+
+
+		for (Step step : trace.getSteps()) {
+			for (SimulationListener l : _listeners) {
+				l.start(trace, step);
 			}
 			
-			for (SimulationListener l : _listeners) {
-				l.stop(trace, sim);
+			if (step.simulate(context, sims)) {
+				for (SimulationListener l : _listeners) {
+					l.successful(trace, step);
+				}
+			} else {
+				ret = false;
+				
+				for (SimulationListener l : _listeners) {
+					l.failed(trace, step);
+				}
 			}
+		}
+			
+		for (SimulationListener l : _listeners) {
+			l.stop(trace);
+		}
 
-			// Close the role simulators
-			for (RoleSimulator rs : sim.getRoleSimulators().values()) {
-				rs.close(context);
+		// Close the role simulators
+		for (Role role : trace.getRoles()) {			
+			if (role.getSimulator() != null) {
+				role.getSimulator().close(context);
 			}
 		}
 		
