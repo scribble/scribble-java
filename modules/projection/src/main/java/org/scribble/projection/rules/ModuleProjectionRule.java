@@ -56,11 +56,11 @@ public class ModuleProjectionRule implements ProjectionRule {
 			projected.derivedFrom(source);
 			
 			if (source.getName() != null) {
-				projected.setName(source.getName());
+				projected.setName(source.getName()+"_"+rd.getName());
 				
 				// TODO: Need to investigate options for best pro
 				//projected.getFullyQualifiedName().setName(projected.getFullyQualifiedName().getName()
-				//							+"@"+rd.getName());
+				//							+"_"+rd.getName());
 			}
 			
 			// Copy imports

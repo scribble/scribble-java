@@ -131,7 +131,7 @@ public class MonitorRoleSimulator extends RoleSimulator {
 		ModuleLoader loader=new ProtocolModuleLoader(PARSER, context.getResourceLocator(), 
 							new ConsoleIssueLogger());
 		
-		String localModule=_module+"@"+_role;
+		String localModule=_module+"_"+_role;
 		
 		Module module=loader.loadModule(localModule);
 		

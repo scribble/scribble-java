@@ -56,7 +56,19 @@ public class GlobalProtocolDeclModelAdaptor extends AbstractModelAdaptor {
 				((GProtocolInstance)ret).getArguments().addAll((java.util.List<Argument>)context.pop());
 			}
 			
-			((GProtocolInstance)ret).setMemberName(((CommonToken)context.pop()).getText());		
+			StringBuffer protocol=new StringBuffer(((CommonToken)context.pop()).getText());
+			
+			// Check for module and set as separate property
+			while (context.peek() instanceof CommonToken
+					&& ((CommonToken)context.peek()).getText().equals(".")) {
+				context.pop(); // consume '.'
+				
+				protocol.insert(0, ".");
+				
+				protocol.insert(0, ((CommonToken)context.pop()).getText());
+			}
+			
+			((GProtocolInstance)ret).setMemberName(protocol.toString());		
 
 			context.pop(); // instantiates
 		}

@@ -1,12 +1,12 @@
-module scribble.examples.GChoice;
+module scribble.examples.GChoice_Buyer;
 
 type <xsd> "{http://www.acme.com/financial}Order" from "http://www.acme.com/schemas/Order.xsd" as Order;
 type <xsd> "{http://www.acme.com/financial}QuoteRequest" from "http://www.acme.com/schemas/QuoteRequest.xsd" as QuoteRequest;
 
-local protocol GChoiceTest at Seller(role Buyer,role Seller) {
+local protocol GChoiceTest at Buyer(role Buyer,role Seller) {
 	choice at Buyer {
-		buy(Order) from Buyer;
+		buy(Order) to Seller;
 	} or {
-		buy(QuoteRequest) from Buyer;
+		buy(QuoteRequest) to Seller;
 	}
 }

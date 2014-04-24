@@ -1,4 +1,4 @@
-module scribble.examples.GProtocolDefinition;
+module scribble.examples.GProtocolDefinition_Buyer;
 
 import scribble.examples.ImportDefinitions;
 from scribble.examples.ImportDefinitions import PlaceOrder;

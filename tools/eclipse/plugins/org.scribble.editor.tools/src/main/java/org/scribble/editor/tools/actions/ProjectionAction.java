@@ -32,11 +32,9 @@ import org.scribble.resources.ResourceLocator;
 import org.scribble.context.DefaultModuleContext;
 import org.scribble.editor.tools.osgi.Activator;
 import org.scribble.model.Module;
-import org.scribble.model.local.LProtocolDecl;
 import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.parser.ProtocolParser;
 import org.scribble.projection.ProtocolProjector;
-
 
 /**
 * This class implements the action to project a global model.
@@ -102,18 +100,8 @@ public class ProjectionAction implements IObjectActionDelegate {
 		            	java.util.Set<Module> projections=projector.project(context, module, logger);
 		            	
 		            	for (Module lm : projections) {
-		            		// Find role name
-		            		String roleName="UNKNOWN";
-		            		
-		            		if (lm.getProtocols().size() > 0 && lm.getProtocols().get(0) instanceof LProtocolDecl) {
-		            			 LProtocolDecl ld=((LProtocolDecl)lm.getProtocols().get(0));
-		            			 if (ld.getLocalRole() != null) {
-		            				 roleName = ld.getLocalRole().getName();
-		            			 }
-		            		}
-		            		
 							String filename=lm.getName().replace('.',
-									java.io.File.separatorChar)+"@"+roleName+".scr";
+									java.io.File.separatorChar)+".scr";
 							
 				            IFile file=res.getProject().getFile(filename);
 				            
@@ -145,8 +133,9 @@ public class ProjectionAction implements IObjectActionDelegate {
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		_selection = selection;
-		action.setEnabled(false);
+		action.setEnabled(true);
                 
+		/*
 		if (_selection instanceof StructuredSelection) {
 			StructuredSelection sel=(StructuredSelection)_selection;
             IResource res=(IResource)sel.getFirstElement();
@@ -160,6 +149,7 @@ public class ProjectionAction implements IObjectActionDelegate {
             	}
             }
 		}
+		*/
 	}
 
 	/**

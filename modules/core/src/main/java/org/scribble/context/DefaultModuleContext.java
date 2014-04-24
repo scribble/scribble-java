@@ -68,7 +68,7 @@ public class DefaultModuleContext implements ModuleContext {
 		String memberName=null;
 		
 		if (index != -1) {
-			moduleName=fqn.substring(0, index-1);
+			moduleName=fqn.substring(0, index);
 			memberName = fqn.substring(index+1);
 		} else {
 			// Local definition
