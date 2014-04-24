@@ -71,7 +71,7 @@ public class MonitorExporterTest {
     protected void testMonitorExporter(String name, String role) {
     	
     	try {
-    		String path="scribble/examples/"+name+"@"+role+".scr";
+    		String path="scribble/examples/"+name+"_"+role+".scr";
     		
     		java.net.URL scrurl=ClassLoader.getSystemResource(path);
     		java.io.File scrFile=new java.io.File(scrurl.getFile());
@@ -97,7 +97,7 @@ public class MonitorExporterTest {
     		}
     		
     		if (logger.isErrorsOrWarnings()) {
-    			fail("Unexpected errors and/or warnings in "+name+"@"+role+".scr");
+    			fail("Unexpected errors and/or warnings in "+name+"_"+role+".scr");
     		}
     		
     		// Get first local protocol
@@ -109,7 +109,7 @@ public class MonitorExporterTest {
     		
     		SessionType type=exporter.export(context, lp);
     		
-    		is = ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+"@"+role+".monitor");
+    		is = ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+"_"+role+".monitor");
     		
     		byte[] b=new byte[is.available()];
     		is.read(b);
@@ -141,13 +141,13 @@ public class MonitorExporterTest {
     			}
     			
     			System.err.println("Exported monitor representation '"+name+
-    					"@"+role+"' mismatch\nExpecting:\n"+expecting+"\nExported:\n"+monitor);
-    			fail("Monitor export '"+name+"@"+role+"' mismatch");
+    					"_"+role+"' mismatch\nExpecting:\n"+expecting+"\nExported:\n"+monitor);
+    			fail("Monitor export '"+name+"_"+role+"' mismatch");
     		}
     		
     	} catch (Exception e) {
     		e.printStackTrace();
-    		fail("Failed to export monitor '"+name+"@"+role+".scr'");
+    		fail("Failed to export monitor '"+name+"_"+role+".scr'");
     	}
     }
     

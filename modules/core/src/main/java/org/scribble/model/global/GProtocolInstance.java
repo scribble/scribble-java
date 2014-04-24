@@ -19,6 +19,7 @@ import org.scribble.model.Argument;
 import org.scribble.model.ContainmentList;
 import org.scribble.model.ParameterDecl;
 import org.scribble.model.ProtocolDecl;
+import org.scribble.model.Role;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.RoleInstantiation;
 import org.scribble.model.Visitor;
@@ -65,6 +66,23 @@ public class GProtocolInstance extends ProtocolDecl {
      */
     public java.util.List<RoleInstantiation> getRoleInstantiations() {
         return (_roleInstantiations);
+    }
+    
+    /**
+     * This method returns the role instantiation associated with the supplied
+     * role name, or null if not found.
+     * 
+     * @param role The role
+     * @return The role instantiation, or null if not found
+     */
+    public RoleInstantiation getRoleInstantiation(RoleDecl role) {
+    	for (RoleInstantiation ri : _roleInstantiations) {
+    		if (role.isRole(new Role(ri.getName()))) {
+    			return (ri);
+    		}
+    	}
+    	
+        return (null);
     }
     
     /**

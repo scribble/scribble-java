@@ -106,13 +106,15 @@ public class ProtocolProjectionTest {
     		for (Module lm : projected) {
     			String filename="scribble/results/"+lm.getLocalName();
     			
+    			/*
     			if (lm.getProtocols().size() > 0 && lm.getProtocols().get(0) instanceof LProtocolDecl) {
     				LProtocolDecl ld=(LProtocolDecl)lm.getProtocols().get(0);
     				
     				if (ld.getLocalRole() != null) {
-    					filename += "@"+ld.getLocalRole().getName();
+    					filename += "_"+ld.getLocalRole().getName();
     				}
     			}
+    			*/
     			
     			filename += ".scr";
     			

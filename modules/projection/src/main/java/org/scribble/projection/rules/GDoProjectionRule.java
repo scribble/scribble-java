@@ -20,6 +20,7 @@ import org.scribble.context.ModuleContext;
 import org.scribble.logging.IssueLogger;
 import org.scribble.model.Argument;
 import org.scribble.model.ModelObject;
+import org.scribble.model.ProtocolDecl;
 import org.scribble.model.RoleDecl;
 import org.scribble.model.RoleInstantiation;
 import org.scribble.model.global.GDo;
@@ -44,9 +45,50 @@ public class GDoProjectionRule implements ProjectionRule {
 			
 			projected.derivedFrom(source);
 			
+			String protocolName=source.getProtocol();
+			
+			if (protocolName.indexOf('.') != -1) {
+				// Find the role of the target protocol
+				RoleInstantiation targetri=source.getRoleInstantiation(role);
+				
+				if (targetri == null) {
+					logger.error("Could not find role '"+role+"'", mobj);
+					return null;
+				}
+				
+				String otherRole=targetri.getAlias();
+				
+				if (otherRole == null) {
+					// Find position
+					int index=source.getRoleInstantiations().indexOf(targetri);
+					
+					if (index != -1) {
+						ModelObject mo=context.getMember(source.getProtocol());
+						
+						if (mo instanceof ProtocolDecl) {
+							ProtocolDecl pd=(ProtocolDecl)mo;
+							
+							if (pd.getRoleDeclarations().size() <= index) {
+								logger.error("Could not determine target role for '"+role+"'", mobj);
+							} else {
+								otherRole = pd.getRoleDeclarations().get(index).getName();
+							}
+						}
+					}
+				}
+				
+				if (otherRole != null) {
+					// Modify final module part to include role name
+					int index=protocolName.lastIndexOf('.');
+					
+					protocolName = protocolName.substring(0, index) + "_" + otherRole
+							+ protocolName.substring(index);
+				}
+			}
+			
 			// TODO: Modify the protocol name as described in section 5.3.6
 			
-			projected.setProtocol(source.getProtocol());
+			projected.setProtocol(protocolName);
 			
 			for (RoleInstantiation ri : source.getRoleInstantiations()) {
 				projected.getRoleInstantiations().add(new RoleInstantiation(ri));

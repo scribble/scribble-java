@@ -65,7 +65,7 @@ public class ModuleValidationRule implements ValidationRule {
 		String localRole=null;
 		
 		if (context.getResource() != null) {
-			int pos=context.getResource().getPath().indexOf('@');
+			int pos=context.getResource().getPath().indexOf('_');
 			if (pos != -1) {
 				f_global = false;
 				localRole = context.getResource().getPath().substring(pos+1,
@@ -103,13 +103,7 @@ public class ModuleValidationRule implements ValidationRule {
 		
 		// Well formed ness checks
 		if (context.getResource() != null && context.getResource().getPath() != null) {
-			String filepath=elem.getName().replace('.',  java.io.File.separatorChar);
-			
-			if (localRole != null) {
-				filepath += "@"+localRole;
-			}
-			
-			filepath += ".scr";			
+			String filepath=elem.getName().replace('.',  java.io.File.separatorChar)+".scr";
 			
 			if (!context.getResource().getPath().equals(filepath)) {
 				logger.error(MessageFormat.format(ValidationMessages.getMessage("INCORRECT_FILEPATH"),

@@ -29,62 +29,62 @@ public class SimulatorTest {
 
 	@org.junit.Test
     public void testChoice1() {
-    	testSimulator("scribble.examples.Choice@Buyer", "First", 1, true);
+    	testSimulator("scribble.examples.Choice_Buyer", "First", 1, true);
     }
 
 	@org.junit.Test
     public void testChoice2() {
-    	testSimulator("scribble.examples.Choice@Buyer", "First", 2, true);
+    	testSimulator("scribble.examples.Choice_Buyer", "First", 2, true);
     }
 
 	@org.junit.Test
     public void testDo1() {
-    	testSimulator("scribble.examples.Do@Buyer", "First", 1, true);
+    	testSimulator("scribble.examples.Do_Buyer", "First", 1, true);
     }
 
 	@org.junit.Test
     public void testInterruptible1() {
-    	testSimulator("scribble.examples.Interruptible@Buyer", "First", 1, true);
+    	testSimulator("scribble.examples.Interruptible_Buyer", "First", 1, true);
     }
 
 	@org.junit.Test
     public void testInterruptible2() {
-    	testSimulator("scribble.examples.Interruptible@Buyer", "First", 2, true);
+    	testSimulator("scribble.examples.Interruptible_Buyer", "First", 2, true);
     }
 
 	@org.junit.Test
     public void testInterruptible3() {
-    	testSimulator("scribble.examples.Interruptible@Buyer", "First", 3, true);
+    	testSimulator("scribble.examples.Interruptible_Buyer", "First", 3, true);
     }
 
 	@org.junit.Test
     public void testParallel1() {
-    	testSimulator("scribble.examples.Parallel@Buyer", "First", 1, true);
+    	testSimulator("scribble.examples.Parallel_Buyer", "First", 1, true);
     }
 
 	@org.junit.Test
     public void testParallel2() {
-    	testSimulator("scribble.examples.Parallel@Buyer", "First", 2, true);
+    	testSimulator("scribble.examples.Parallel_Buyer", "First", 2, true);
     }
 
 	@org.junit.Test
     public void testRecursion1() {
-    	testSimulator("scribble.examples.Recursion@Buyer", "First", 1, true);
+    	testSimulator("scribble.examples.Recursion_Buyer", "First", 1, true);
     }
 
 	@org.junit.Test
     public void testRecursion2() {
-    	testSimulator("scribble.examples.Recursion@Buyer", "First", 2, true);
+    	testSimulator("scribble.examples.Recursion_Buyer", "First", 2, true);
     }
 
 	@org.junit.Test
     public void testRecursion3() {
-    	testSimulator("scribble.examples.Recursion@Buyer", "First", 3, true);
+    	testSimulator("scribble.examples.Recursion_Buyer", "First", 3, true);
     }
 
 	@org.junit.Test
     public void testRequestResponse1() {
-    	testSimulator("scribble.examples.RequestResponse@Buyer", "First", 1, true);
+    	testSimulator("scribble.examples.RequestResponse_Buyer", "First", 1, true);
     }
 
 	/**
@@ -92,7 +92,7 @@ public class SimulatorTest {
 	 */
 	@org.junit.Test
     public void testRequestResponse2() {
-    	testSimulator("scribble.examples.RequestResponse@Buyer", "First", 2, true);
+    	testSimulator("scribble.examples.RequestResponse_Buyer", "First", 2, true);
     }
 
 	/**
@@ -100,7 +100,7 @@ public class SimulatorTest {
 	 */
 	@org.junit.Test
     public void testRequestResponse3() {
-    	testSimulator("scribble.examples.RequestResponse@Buyer", "First", 3, false);
+    	testSimulator("scribble.examples.RequestResponse_Buyer", "First", 3, false);
     }
 
     protected void testSimulator(String module, String protocol, int testnum, boolean successful) {

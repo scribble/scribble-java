@@ -140,6 +140,23 @@ public class GDo extends GActivity {
     }
     
     /**
+     * This method returns the role instantiation associated with the supplied
+     * role name, or null if not found.
+     * 
+     * @param role The role
+     * @return The role instantiation, or null if not found
+     */
+    public RoleInstantiation getRoleInstantiation(RoleDecl role) {
+    	for (RoleInstantiation ri : _roleInstantiations) {
+    		if (role.isRole(new Role(ri.getName()))) {
+    			return (ri);
+    		}
+    	}
+    	
+        return (null);
+    }
+    
+    /**
      * This method visits the model object using the supplied
      * visitor.
      * 

@@ -81,12 +81,12 @@ public class ProtocolParserTest {
 
     @org.junit.Test
     public void testLSend() {
-    	testParser("LSend");
+    	testParser("LSend_Buyer");
     }
     
     @org.junit.Test
     public void testLReceive() {
-    	testParser("LReceive");
+    	testParser("LReceive_Seller");
     }
 
     @org.junit.Test
