@@ -130,7 +130,10 @@ public class Message {
 	public String toString() {
 		StringBuffer buf=new StringBuffer();
 		
-		buf.append(_operator);
+		if (_operator != null) {
+			buf.append(_operator);
+		}
+		
 		buf.append("(");
 		
 		for (int i=0; i < _types.size(); i++) {
