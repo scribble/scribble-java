@@ -543,6 +543,64 @@ public class DefaultMonitorTest {
 		}
 	}
 
+	protected SessionType getParallelOnly() {
+		SessionType type=new SessionType();
+		
+		// 0
+		Parallel par=new Parallel();
+		par.getPathIndexes().add(1);
+		par.getPathIndexes().add(2);
+		
+		type.getNodes().add(par);
+		
+		// 1
+		Receive r1=new Receive();
+		r1.setOperator(OP2);
+		r1.getTypes().add(TYPE2);
+		
+		type.getNodes().add(r1);
+		
+		// 2
+		Send s2=new Send();
+		s2.setOperator(OP5);
+		s2.getTypes().add(TYPE5);
+		
+		type.getNodes().add(s2);
+
+		return (type);
+	}
+	
+	@Test
+	public void testParallelOnly() {
+		Monitor monitor=new DefaultMonitor();
+		
+		SessionType type=getParallelOnly();
+		
+		SessionInstance instance=new SessionInstance();
+		
+		monitor.initializeInstance(type, instance);
+		
+		Message m2=new Message();
+		m2.setOperator(OP2);
+		m2.getTypes().add(TYPE2);
+		
+		Message m5=new Message();
+		m5.setOperator(OP5);
+		m5.getTypes().add(TYPE5);
+		
+		if (!monitor.received(type, instance, m2, null)) {
+			fail("Received message 2 not expected");
+		}
+		
+		if (!monitor.sent(type, instance, m5, null)) {
+			fail("Sent message 5 not expected");
+		}
+		
+		if (!instance.hasCompleted()) {
+			fail("Session hasn't completed");
+		}
+	}
+	
 	protected SessionType getParallelChoiceFollowedBySend() {
 		SessionType type=new SessionType();
 		

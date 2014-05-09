@@ -69,8 +69,10 @@ public class SessionType {
 		if (Node._nameSessions) {
 			scope.setName("Main");
 		}
-		
-		scope.addNodeIndex(0);
+				
+		Node node=getNode(0);
+		 
+		node.evaluate(this, 0, scope);
 		
 		instance.setScope(scope);
 	}

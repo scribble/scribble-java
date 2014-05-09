@@ -49,6 +49,21 @@ public class MonitorExporterTest {
     }
 
 	@org.junit.Test
+    public void testParallel2() {
+    	testMonitorExporter("Parallel2", "Buyer");
+    }
+
+	@org.junit.Test
+    public void testParallel3() {
+    	testMonitorExporter("Parallel3", "Buyer");
+    }
+
+	@org.junit.Test
+    public void testParallel4() {
+    	testMonitorExporter("Parallel4", "Buyer");
+    }
+
+	@org.junit.Test
     public void testDo() {
     	testMonitorExporter("Do", "Buyer");
     }
