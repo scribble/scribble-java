@@ -1,0 +1,1 @@
+{"nodes":[{"type":"Parallel","next":-1,"pathIndexes":[1]},{"type":"Receive","fromRole":"Seller","next":-1,"operator":"op2","types":["{http://scribble.org/example}M2"]}]}

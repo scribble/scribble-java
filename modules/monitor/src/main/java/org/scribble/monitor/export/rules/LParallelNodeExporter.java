@@ -41,11 +41,21 @@ public class LParallelNodeExporter implements NodeExporter {
 		type.getNodes().add(parallelNode);
 		
 		for (LBlock block : parallel.getPaths()) {
-			parallelNode.getPathIndexes().add(type.getNodes().size());
+			int newIndex=type.getNodes().size();
 			
 			NodeExporter ne=NodeExporterFactory.getNodeExporter(block);
 			
 			ne.export(context, state, block, type);
+			
+			// Check if items have been exported, then add path index
+			if (type.getNodes().size() != newIndex) {
+				parallelNode.getPathIndexes().add(newIndex);				
+			}
+		}
+		
+		// If no paths have been exported, then remove parallel node
+		if (parallelNode.getPathIndexes().size() == 0) {
+			type.getNodes().remove(parallelNode);
 		}
 	}
 	
