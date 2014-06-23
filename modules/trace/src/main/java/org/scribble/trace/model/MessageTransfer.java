@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-11 www.scribble.org
+ * Copyright 2009-14 www.scribble.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,6 +125,8 @@ public class MessageTransfer extends Step {
 	 * {@inheritDoc}
 	 */
 	public String toString() {
-		return (_message+" from "+_fromRole+" to "+_toRoles);
+		return ((_message==null?"()":_message)
+				+" from "+(_fromRole==null?"<role>":_fromRole)
+				+" to "+(_toRoles.size()==0?"[<role>]":_toRoles));
 	}
 }
