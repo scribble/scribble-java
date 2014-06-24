@@ -73,8 +73,12 @@ public class MainPage extends FormPage {
 	 * @param id
 	 * @param title
 	 */
-	public MainPage(FormEditor editor) {
+	public MainPage(TraceEditor editor) {
 		super(editor, "main", Messages.getString("MainPage.label")); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+	
+	protected TraceEditor getTraceEditor() {
+		return ((TraceEditor)this.getEditor());
 	}
 	
 	/**
@@ -83,7 +87,7 @@ public class MainPage extends FormPage {
 	 * @return The trace
 	 */
 	protected Trace getTrace() {
-		return (((TraceEditor)this.getEditor()).getTrace());
+		return (getTraceEditor().getTrace());
 	}
 	
 	protected void setRole(Role role) {
@@ -649,7 +653,7 @@ public class MainPage extends FormPage {
 	
 	protected void execute(AbstractCommand operation) {
 		if (operation.canSchedule()) {
-			operation.addContext(TraceEditor.UNDO_CONTEXT);
+			operation.addContext(getTraceEditor().UNDO_CONTEXT);
 			
 			try {
 				OperationHistoryFactory.getOperationHistory().execute(operation, null, null);						

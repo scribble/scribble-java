@@ -84,7 +84,7 @@ public class StepsPage extends FormPage {
 	 * @param id
 	 * @param title
 	 */
-	public StepsPage(FormEditor editor) {
+	public StepsPage(TraceEditor editor) {
 		super(editor, "steps", Messages.getString("StepsPage.label")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
@@ -94,7 +94,11 @@ public class StepsPage extends FormPage {
 	 * @return The trace
 	 */
 	protected Trace getTrace() {
-		return (((TraceEditor)this.getEditor()).getTrace());
+		return (getTraceEditor().getTrace());
+	}
+	
+	protected TraceEditor getTraceEditor() {
+		return ((TraceEditor)this.getEditor());
 	}
 	
 	protected void setSelected(Step step) {
@@ -918,7 +922,7 @@ public class StepsPage extends FormPage {
 	
 	protected void execute(AbstractCommand operation) {
 		if (operation.canSchedule()) {
-			operation.addContext(TraceEditor.UNDO_CONTEXT);
+			operation.addContext(getTraceEditor().UNDO_CONTEXT);
 			
 			try {
 				OperationHistoryFactory.getOperationHistory().execute(operation, null, null);						

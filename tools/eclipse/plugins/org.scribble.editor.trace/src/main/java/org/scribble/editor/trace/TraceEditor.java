@@ -42,7 +42,7 @@ public class TraceEditor extends FormEditor {
 	
 	private Trace _trace=null;
 	
-	protected static IUndoContext UNDO_CONTEXT=new UndoContext();
+	protected IUndoContext UNDO_CONTEXT=new UndoContext();
 	
 	/**
 	 *  
