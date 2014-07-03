@@ -149,9 +149,9 @@
 
 	<repositories>
 		<repository>
-			<id>juno</id>
+			<id>luna</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/juno</url>
+			<url>http://download.eclipse.org/releases/luna</url>
 		</repository>
 	</repositories>
 

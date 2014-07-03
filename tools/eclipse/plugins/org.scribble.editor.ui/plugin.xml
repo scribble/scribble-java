@@ -11,7 +11,8 @@
             default="true"
             extensions="scr"
             id="org.scribble.editor.dsl.ScribbleDsl"
-            name="ScribbleDsl Editor">
+            icon="icons/scribble.png"
+            name="Scribble Editor">
         </editor>
     </extension>
     <extension

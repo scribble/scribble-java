@@ -7,7 +7,7 @@
             class="org.scribble.editor.trace.TraceEditor"
             contributorClass="org.scribble.editor.trace.TraceEditorContributor"
             extensions="trace"
-            icon="icons/sample.gif"
+            icon="icons/scribble.png"
             id="org.scribble.editor.trace.TraceEditor"
             name="Trace Editor">
       </editor>

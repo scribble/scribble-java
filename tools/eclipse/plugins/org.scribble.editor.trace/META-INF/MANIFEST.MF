@@ -13,5 +13,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
  org.eclipse.ui.ide,
+ org.eclipse.swt,
  org.scribble.editor.tools
 Bundle-Activator: org.scribble.editor.trace.osgi.TraceEditorActivator
