@@ -327,7 +327,7 @@ public class CommandLine {
 			String name=m.getName().replace('.', java.io.File.separatorChar);
 			
 			String path=resourceRoot+java.io.File.separatorChar
-						+name+"_"+m.getLocatedRole().getName()+".scr";
+						+name+".scr";
 			
 			try {
 				java.io.FileOutputStream fos=new java.io.FileOutputStream(path);

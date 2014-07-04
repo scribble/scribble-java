@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.scribble</groupId>
 		<artifactId>tools</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
+		<version>0.3.0.M6</version>
 	</parent>
 
 	<dependencies>
@@ -82,6 +82,14 @@
 	</dependencies> 
 
 	<build>
+		<resources>
+			<resource>
+ 				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
