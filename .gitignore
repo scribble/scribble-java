@@ -1,6 +1,6 @@
 target/
-bin/
 classes/
+tools/eclipse/plugins/org.scribble.*/bin/
 *.jar
 .classpath
 .project
