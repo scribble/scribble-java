@@ -6,3 +6,5 @@ classes/
 .project
 .checkstyle
 .settings/
+.DS_Store
+*~

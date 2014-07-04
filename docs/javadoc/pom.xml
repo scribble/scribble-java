@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>scribble-javadoc</artifactId>
+	<packaging>jar</packaging>
+	<name>Scribble::Docs::Javadoc</name>
+
+	<parent>
+        <groupId>org.scribble</groupId>
+		<artifactId>docs</artifactId>
+		<version>0.3.0-SNAPSHOT</version>
+	</parent>
+
+    <dependencies>
+		<dependency>
+			<groupId>org.scribble</groupId>
+			<artifactId>scribble-parser</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr-runtime</artifactId>
+		</dependency>
+		
+    </dependencies>
+
+	<build>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<configuration>
+						<excludePackageNames>*.internal.*</excludePackageNames>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${project.build.directory}/sources" />
+                                <copy todir="${project.build.directory}/sources">
+                                    <fileset dir="../../modules">
+                                        <include name="**/src/main/java/**/*.java" />
+                                        <exclude name="**/internal/**" />
+                                    </fileset>
+                                </copy>                                
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <sourcepath>${project.build.directory}/sources</sourcepath>
+                            <notimestamp>true</notimestamp>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>rtgov-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <sourcepath>${project.build.directory}/sources</sourcepath>
+                            <outputDirectory>${project.build.directory}/api</outputDirectory>
+                            <finalName>scribble-javadoc</finalName>
+                            <attach>false</attach>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <minmemory>128m</minmemory>
+                    <maxmemory>768m</maxmemory>
+                    <header>Scribble Java</header>
+                    <footer>Scribble Java</footer>
+                    <doctitle>Scribble Java ${project.version} API</doctitle>
+                    <notimestamp>true</notimestamp>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

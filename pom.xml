@@ -46,17 +46,48 @@
 		<log4j.version>1.2.14</log4j.version>
 		<jackson.version>1.9.9</jackson.version>
 		<junit.version>4.7</junit.version>
+		<scribble-docs.version>0.3.0-SNAPSHOT</scribble-docs.version>
 	</properties>
 
 	<modules>
 		<module>build</module>
 		<module>modules</module>
-		<module>apidocs</module>
+		<module>docs</module>
 		<module>tools</module>
 	</modules>
   
 	<dependencyManagement>
 		<dependencies> 
+		    <dependency>
+			    <groupId>org.scribble</groupId>
+			    <artifactId>scribble-core</artifactId>
+                <version>${project.version}</version>
+		    </dependency>
+		    <dependency>
+			    <groupId>org.scribble</groupId>
+			    <artifactId>scribble-parser</artifactId>
+                <version>${project.version}</version>
+		    </dependency>
+
+		    <dependency>
+			    <groupId>org.scribble.docs.java</groupId>
+			    <artifactId>scribblejavauserguide</artifactId>
+                <type>jdocbook</type>
+				<version>${scribble-docs.version}</version>
+		    </dependency>
+		    <dependency>
+			    <groupId>org.scribble.docs.java</groupId>
+			    <artifactId>scribblejavadeveloperguide</artifactId>
+                <type>jdocbook</type>
+				<version>${scribble-docs.version}</version>
+		    </dependency>
+		    <dependency>
+			    <groupId>org.scribble</groupId>
+			    <artifactId>scribble-javadoc</artifactId>
+                <type>javadoc</type>
+                <version>${project.version}</version>
+		    </dependency>
+
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>
@@ -98,10 +129,22 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.2</version>
-					<configuration>
-						<aggregate>true</aggregate>
-					</configuration>
+					<version>2.9</version>
+ 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.7</version>
+ 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.4</version>
+ 				</plugin>
+			    <plugin>
+				    <groupId>org.jboss.maven.plugins</groupId>
+				    <artifactId>maven-jdocbook-plugin</artifactId>
+				    <version>2.3.8</version>
  				</plugin>
 			</plugins>
 		</pluginManagement>
