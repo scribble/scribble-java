@@ -8,3 +8,4 @@ tools/eclipse/plugins/org.scribble.*/bin/
 .settings/
 .DS_Store
 *~
+*.swp
