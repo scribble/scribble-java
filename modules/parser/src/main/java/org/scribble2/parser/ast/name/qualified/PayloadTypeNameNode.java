@@ -1,14 +1,14 @@
 package org.scribble2.parser.ast.name.qualified;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
 import org.scribble2.parser.ast.name.PayloadElementNameNode;
 
-public class PayloadTypeNameNode extends MemberNameNodes implements PayloadElementNameNode //PayloadTypeOrParameterNode
+public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode //PayloadTypeOrParameterNode
 {
 	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
-	public PayloadTypeNameNode(CommonTree ct, String... ns)
+	public PayloadTypeNameNode(Token t, String... ns)
 	{
-		super(ct, ns);
+		super(t, ns);
 	}
 
 	/*// Basically a copy without the AST

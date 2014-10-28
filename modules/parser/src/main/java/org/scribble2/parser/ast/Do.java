@@ -2,7 +2,7 @@ package org.scribble2.parser.ast;
 
 import org.antlr.runtime.Token;
 import org.scribble2.parser.AntlrConstants;
-import org.scribble2.parser.ast.name.qualified.ProtocolNameNodes;
+import org.scribble2.parser.ast.name.qualified.ProtocolNameNode;
 import org.scribble2.parser.ast.name.simple.ScopeNode;
 
 public abstract class Do extends ScribbleASTBase implements SimpleInteractionNode //ScopedNode
@@ -10,7 +10,7 @@ public abstract class Do extends ScribbleASTBase implements SimpleInteractionNod
 	public final ScopeNode scope;
 	public final RoleInstantiationList roleinstans;
 	public final ArgumentInstantiationList arginstans;
-	public final ProtocolNameNodes proto;  // Maybe use an "Ambiguous" version until names resolved -- is a visible protocol, but not necessarily a simple or full member name
+	public final ProtocolNameNode proto;  // Maybe use an "Ambiguous" version until names resolved -- is a visible protocol, but not necessarily a simple or full member name
 
 	/*protected Do(CommonTree ct, RoleInstantiationList ril, ArgumentInstantiationList ail, ProtocolNameNodes proto)
 	{
@@ -27,7 +27,7 @@ public abstract class Do extends ScribbleASTBase implements SimpleInteractionNod
 		this(ct, scope, roleinstans, arginstans, proto, sicontext, null);
 	}*/
 	
-	protected Do(Token t, ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNodes proto)//, SimpleInteractionNodeContext sicontext, Env env)
+	protected Do(Token t, ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)//, SimpleInteractionNodeContext sicontext, Env env)
 	{
 		super(t);//, sicontext, env);
 		this.scope = scope;

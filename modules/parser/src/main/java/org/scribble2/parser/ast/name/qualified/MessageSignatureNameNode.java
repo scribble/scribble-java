@@ -1,15 +1,9 @@
 package org.scribble2.parser.ast.name.qualified;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
+import org.scribble2.parser.ast.MessageNode;
 
-import scribble2.ast.MessageNode;
-import scribble2.sesstype.Message;
-import scribble2.sesstype.name.MessageSignatureName;
-import scribble2.sesstype.name.ModuleName;
-import scribble2.visit.Projector;
-import scribble2.visit.env.ProjectionEnv;
-
-public class MessageSignatureNameNodes extends MemberNameNodes implements MessageNode
+public class MessageSignatureNameNode extends MemberNameNode implements MessageNode
 {
 	/*// FIXME: not syntax
 	public final String schema;
@@ -18,12 +12,12 @@ public class MessageSignatureNameNodes extends MemberNameNodes implements Messag
 	
 	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
 	//public MessageSignatureNameNodes(CommonTree ct, String... ns, String schema, String extName, String source)
-	public MessageSignatureNameNodes(CommonTree ct, String... ns)
+	public MessageSignatureNameNode(Token t, String... ns)
 	{
-		super(ct, ns);
+		super(t, ns);
 	}
 
-	// Basically a copy without the AST
+	/*// Basically a copy without the AST
 	@Override
 	public MessageSignatureNameNodes leaveProjection(Projector proj) //throws ScribbleException
 	{
@@ -79,5 +73,5 @@ public class MessageSignatureNameNodes extends MemberNameNodes implements Messag
 	public boolean isAmbiguousNode()
 	{
 		return false;
-	}
+	}*/
 }

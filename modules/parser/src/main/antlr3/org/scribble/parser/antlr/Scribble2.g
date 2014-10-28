@@ -359,7 +359,7 @@ globalprotocoldecl:
 	^(globalprotocolheader globalprotocoldefinition)
 ;
 
-globalprotocolheader:  // Currently, header is not an explicit category
+globalprotocolheader:
 	GLOBALKW PROTOCOLKW simpleprotocolname roledecllist
 	->
 	//simpleprotocolname EMPTY_PARAMETERDECLLIST roledecllist

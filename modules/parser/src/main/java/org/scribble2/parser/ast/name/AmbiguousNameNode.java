@@ -1,7 +1,7 @@
 package scribble2.ast.name;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.parser.ast.name.qualified.MessageSignatureNameNodes;
+import org.scribble2.parser.ast.name.qualified.MessageSignatureNameNode;
 import org.scribble2.parser.ast.name.simple.ParameterNode;
 
 import scribble2.ast.ArgumentNode;
@@ -35,7 +35,7 @@ public class AmbiguousNameNode extends PrimitiveNameNode implements //ArgumentNo
 		}
 		else if (disamb.isVisibleMessageSignatureName(name))
 		{
-			return new MessageSignatureNameNodes(this.ct, name.toString());
+			return new MessageSignatureNameNode(this.ct, name.toString());
 		}
 		else if (disamb.isBoundParameter(name))
 		{

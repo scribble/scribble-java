@@ -1,19 +1,16 @@
 package org.scribble2.parser.ast.name.qualified;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
 
-import scribble2.sesstype.name.ModuleName;
-import scribble2.sesstype.name.ProtocolName;
-
-public class ProtocolNameNodes extends MemberNameNodes
+public class ProtocolNameNode extends MemberNameNode
 {
 	//public ProtocolNameNodes(PrimitiveNameNode... ns)
-	public ProtocolNameNodes(CommonTree ct, String... ns)
+	public ProtocolNameNode(Token t, String... ns)
 	{
-		super(ct, ns);
+		super(t, ns);
 	}
 	
-	@Override
+	/*@Override
 	public ProtocolName toName()
 	{
 		String membname = getLastElement();
@@ -23,5 +20,5 @@ public class ProtocolNameNodes extends MemberNameNodes
 		}
 		ModuleName modname = getModulePrefix().toName();
 		return new ProtocolName(modname, membname);
-	}
+	}*/
 }
