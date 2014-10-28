@@ -1,31 +1,23 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
 
-import scribble2.main.ScribbleException;
-import scribble2.sesstype.name.Parameter;
-import scribble2.sesstype.name.Role;
-import scribble2.visit.NodeVisitor;
-import scribble2.visit.Projector;
-import scribble2.visit.env.ProjectionEnv;
-
-public class ParameterDeclList extends NameDeclList<ParameterDecl>
+public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 {
-	public ParameterDeclList(CommonTree ct, List<ParameterDecl> pds)
+	public ParameterDeclList(Token t, List<ParameterDecl> pds)
 	{
-		super(ct, pds);
+		super(t, pds);
 	}
 
-	// Not doing anything except cloning
+	/*// Not doing anything except cloning
 	@Override
 	public ParameterDeclList leaveProjection(Projector proj)  // Redundant now
 	{
 		/*List<ParameterDecl> paramdecls =
 				this.decls.stream().map((pd) -> (ParameterDecl) ((ProjectionEnv) pd.getEnv()).getProjection()).collect(Collectors.toList());	
-		ParameterDeclList projection = new ParameterDeclList(null, paramdecls);*/
+		ParameterDeclList projection = new ParameterDeclList(null, paramdecls);* /
 		ParameterDeclList projection = project(proj.peekSelf());
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
@@ -36,7 +28,7 @@ public class ParameterDeclList extends NameDeclList<ParameterDecl>
 		List<ParameterDecl> paramdecls =
 				this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
 		return new ParameterDeclList(null, paramdecls);
-	}
+	}*/
 	
 	/*@Override 
 	public ParameterDeclList checkWellFormedness(WellFormednessChecker wfc) throws ScribbleException
@@ -73,10 +65,10 @@ public class ParameterDeclList extends NameDeclList<ParameterDecl>
 		return pdl;
 	}*/
 	
-	@Override
+	/*@Override
 	public ParameterDeclList visitChildren(NodeVisitor nv) throws ScribbleException
 	{
-		NameDeclList<ParameterDecl> nds = super.visitChildren(nv);
+		HeaderParameterDeclList<ParameterDecl> nds = super.visitChildren(nv);
 		//List<ParameterDecl> pds = NameDeclList.toParameterDeclList.apply(nds.decls);
 		//List<ParameterDecl> pds = nds.decls.stream().map(ParameterDecl.toParameterDecl).collect(Collectors.toList());
 		return new ParameterDeclList(this.ct, nds.decls);
@@ -85,7 +77,7 @@ public class ParameterDeclList extends NameDeclList<ParameterDecl>
 	public List<Parameter> getParameters()
 	{
 		return this.decls.stream().map((decl) -> decl.name.toName()).collect(Collectors.toList());
-	}
+	}*/
 	
 	/*public List<Argument> asArguments()
 	{

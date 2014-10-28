@@ -11,14 +11,14 @@ public class Module extends ScribbleASTBase
 	public final ModuleDecl moddecl;
 	public final List<? extends ImportDecl> imports;
 	public final List<DataTypeDecl> data;
-	public final List<? extends ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
+	public final List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 			protos;
 	
 	public Module(Token t, 
 			ModuleDecl moddecl,
 			List<? extends ImportDecl> imports,
 			List<DataTypeDecl> data,
-			List<? extends ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
+			List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 	{
 		super(t);
 		this.moddecl = moddecl;
@@ -39,7 +39,7 @@ public class Module extends ScribbleASTBase
 		{
 			s += "\n" + dtd;
 		}
-		for (ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd : this.protos)
+		for (ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd : this.protos)
 		{
 			s += "\n" + pd;
 		}

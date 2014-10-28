@@ -1,31 +1,21 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.antlr.runtime.Token;
+import org.scribble2.parser.ast.name.simple.OperatorNode;
 
-import org.antlr.runtime.tree.CommonTree;
-
-import scribble2.ast.name.OperatorNode;
-import scribble2.main.ScribbleException;
-import scribble2.sesstype.MessageSignature;
-import scribble2.sesstype.name.PayloadTypeOrParameter;
-import scribble2.visit.NodeVisitor;
-import scribble2.visit.Projector;
-import scribble2.visit.env.ProjectionEnv;
-
-public class MessageSignatureNode extends AbstractNode implements MessageNode
+public class MessageSignatureNode extends ScribbleASTBase implements MessageNode//, ArgumentInstantiation
 {
 	public final OperatorNode op;
 	public final Payload payload;
 
-	public MessageSignatureNode(CommonTree ct, OperatorNode op, Payload payload)
+	public MessageSignatureNode(Token t, OperatorNode op, Payload payload)
 	{
-		super(ct);
+		super(t);
 		this.op = op;
 		this.payload = payload;
 	}
 
-	// Basically a copy without the AST
+	/*// Basically a copy without the AST
 	@Override
 	public MessageSignatureNode leaveProjection(Projector proj) //throws ScribbleException
 	{
@@ -48,7 +38,7 @@ public class MessageSignatureNode extends AbstractNode implements MessageNode
 	public Operator getOperator()
 	{
 		return this.op;
-	}*/
+	}* /
 
 	// FIXME: make a direct scoped version (taking scope as argument)
 	@Override
@@ -83,14 +73,14 @@ public class MessageSignatureNode extends AbstractNode implements MessageNode
 	}
 
 	@Override
-	public String toString()
-	{
-		return this.op.toString() + this.payload.toString();
-	}
-
-	@Override
 	public boolean isAmbiguousNode()
 	{
 		return false;
+	}*/
+
+	@Override
+	public String toString()
+	{
+		return this.op.toString() + this.payload.toString();
 	}
 }

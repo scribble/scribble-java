@@ -1,13 +1,9 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
-import org.antlr.runtime.tree.CommonTree;
 
-import scribble2.ast.name.RoleNode;
-import scribble2.sesstype.name.Role;
-
-public class RoleInstantiation extends Instantiation<RoleNode>
+public interface RoleInstantiation extends Instantiation//<RoleNode>
 {
-	public RoleInstantiation(CommonTree ct, RoleNode arg)
+	/*public RoleInstantiation(CommonTree ct, RoleNode arg)
 	{
 		super(ct, arg);
 	}	
@@ -36,11 +32,11 @@ public class RoleInstantiation extends Instantiation<RoleNode>
 	{
 		//rc.addRole(this.arg.toName());
 		return (RoleInstantiation) super.collectRoles(rc);
-	}*/
+	}* /
 
 	@Override
 	public String toString()
 	{
 		return this.arg.toString();
-	}
+	}*/
 }

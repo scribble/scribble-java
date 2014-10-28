@@ -1,32 +1,24 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
-import org.antlr.runtime.tree.CommonTree;
-
-import scribble2.ast.local.SelfRoleDecl;
-import scribble2.ast.name.PrimitiveNameNode;
-import scribble2.ast.name.RoleNode;
-import scribble2.main.ScribbleException;
+import org.antlr.runtime.Token;
+import org.scribble2.parser.ast.name.simple.RoleNode;
 //import scribble2.sesstype.name.NameDeclaration;
-import scribble2.sesstype.name.Kind;
-import scribble2.sesstype.name.Role;
-import scribble2.visit.NodeVisitor;
-import scribble2.visit.Projector;
-import scribble2.visit.env.ProjectionEnv;
 
-public class RoleDecl extends NameDecl<RoleNode> //implements NameDeclaration
+public class RoleDecl extends HeaderParameterDecl<RoleNode> //implements NameDeclaration
 {
 	/*public static final Function<NameDecl<? extends PrimitiveNameNode>, RoleDecl> toRoleDecl =
 			(NameDecl<? extends PrimitiveNameNode> nd) -> (RoleDecl) nd;*/
 
 	//public final RoleNode role;
 	
-	public RoleDecl(CommonTree ct, RoleNode rn)
+	public RoleDecl(Token t, RoleNode rn)
 	{
-		super(ct, Kind.ROLE, rn);
+		//super(ct, Kind.ROLE, rn);
+		super(t, rn);
 		//this.role = rn;
 	}
 
-	@Override
+	/*@Override
 	public RoleDecl leaveProjection(Projector proj)  // Redundant now
 	{
 		RoleDecl projection = project(proj.peekSelf());
@@ -48,9 +40,9 @@ public class RoleDecl extends NameDecl<RoleNode> //implements NameDeclaration
 	@Override
 	public RoleDecl visitChildren(NodeVisitor nv) throws ScribbleException
 	{
-		NameDecl<? extends PrimitiveNameNode> nd = super.visitChildren(nv);
+		HeaderNameDecl<? extends PrimitiveNameNode> nd = super.visitChildren(nv);
 		return new RoleDecl(nd.ct, (RoleNode) nd.name);
-	}
+	}*/
 	
 	/*@Override
 	public Role getDeclarationName()
@@ -59,8 +51,8 @@ public class RoleDecl extends NameDecl<RoleNode> //implements NameDeclaration
 		return new Role(name.text);
 	}*/
 	
-	public boolean isSelfRoleDecl()
+	/*public boolean isSelfRoleDecl()
 	{
 		return false;
-	}
+	}*/
 }

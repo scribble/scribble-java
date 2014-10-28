@@ -1,28 +1,21 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
+import org.scribble2.parser.ast.name.simple.ParameterNode;
 
-import scribble2.ast.name.ParameterNode;
-import scribble2.ast.name.PrimitiveNameNode;
-import scribble2.main.ScribbleException;
-import scribble2.sesstype.name.Kind;
-import scribble2.sesstype.name.Role;
-import scribble2.visit.NameDisambiguator;
-import scribble2.visit.NodeVisitor;
-import scribble2.visit.Projector;
-import scribble2.visit.env.ProjectionEnv;
-
-public class ParameterDecl extends NameDecl<ParameterNode> //implements NameDeclaration
+public class ParameterDecl extends HeaderParameterDecl<ParameterNode> //implements NameDeclaration
 {
 	/*public static final Function<NameDecl<? extends PrimitiveNameNode>, ParameterDecl> toParameterDecl =
 			(NameDecl<? extends PrimitiveNameNode> nd) -> (ParameterDecl) nd;*/
 
-	public ParameterDecl(CommonTree ct, Kind kind, ParameterNode namenode)
+	//public ParameterDecl(Toke t, Kind kind, ParameterNode namenode)
+	public ParameterDecl(Token t, ParameterNode namenode)
 	{
-		super(ct, kind, namenode);
+		//super(t, kind, namenode);
+		super(t, namenode);
 	}
 	
-	@Override
+	/*@Override
 	public NameDisambiguator enterDisambiguation(NameDisambiguator disamb) throws ScribbleException
 	{
 		disamb.addParameter(this.name.toName());
@@ -47,7 +40,7 @@ public class ParameterDecl extends NameDecl<ParameterNode> //implements NameDecl
 	@Override
 	public ParameterDecl visitChildren(NodeVisitor nv) throws ScribbleException
 	{
-		NameDecl<? extends PrimitiveNameNode> nd = super.visitChildren(nv);
+		HeaderParameterDecl<? extends PrimitiveNameNode> nd = super.visitChildren(nv);
 		return new ParameterDecl(nd.ct, nd.kind, (ParameterNode) nd.name);
-	}
+	}*/
 }

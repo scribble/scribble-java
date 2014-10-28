@@ -1,21 +1,18 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
+import org.scribble2.parser.ast.name.simple.SimpleNameNode;
 
-import scribble2.ast.name.PrimitiveNameNode;
-import scribble2.main.ScribbleException;
-import scribble2.visit.NodeVisitor;
-
-public class NameDeclList<T extends NameDecl<? extends PrimitiveNameNode>> extends AbstractNode
+public class HeaderParameterDeclList<T extends HeaderParameterDecl<? extends SimpleNameNode>> extends ScribbleASTBase
 {
 	public final List<T> decls;
 	
-	public NameDeclList(CommonTree ct, List<T> decls)
+	public HeaderParameterDeclList(Token t, List<T> decls)
 	{
-		super(ct);
+		super(t);
 		this.decls = new LinkedList<>(decls);
 	}
 	
@@ -64,12 +61,12 @@ public class NameDeclList<T extends NameDecl<? extends PrimitiveNameNode>> exten
 		return pdl;
 	}*/
 	
-	@Override
+	/*@Override
 	public NameDeclList<T> visitChildren(NodeVisitor nv) throws ScribbleException
 	{
 		List<T> nds = visitChildListWithClassCheck(this, this.decls, nv);
 		return new NameDeclList<>(this.ct, nds);
-	}
+	}*/
 
 	@Override
 	public String toString()

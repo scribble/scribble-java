@@ -1,8 +1,9 @@
 package org.scribble2.parser.ast.name.qualified;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.parser.ast.name.PayloadElementNameNode;
 
-public class PayloadTypeNameNode extends MemberNameNodes //implements PayloadTypeOrParameterNode
+public class PayloadTypeNameNode extends MemberNameNodes implements PayloadElementNameNode //PayloadTypeOrParameterNode
 {
 	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
 	public PayloadTypeNameNode(CommonTree ct, String... ns)

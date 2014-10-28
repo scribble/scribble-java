@@ -1,18 +1,17 @@
 package org.scribble2.parser.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble2.parser.AntlrConstants;
-import org.scribble2.parser.ast.name.simple.SimpleProtocolNameNode;
 
 //public class ProtocolDecl extends AbstractNode
-public abstract class ProtocolDecl<T extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+public abstract class ProtocolDecl<
+				T1 extends ProtocolHeader,
+				T2 extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
+		>
 		extends ScribbleASTBase// implements ContextStackNode//, ModuleMember
 {
-	public final SimpleProtocolNameNode name;
-	public final RoleDeclList roledecls;
-	public final ParameterDeclList paramdecls;
 	//public final ProtocolDefinition def;
-	public final T def;
+	public final T1 header;
+	public final T2 def;
 
 	//public ProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList rdl, ParameterDeclList pdl, ProtocolDefinition def)
 	/*protected ProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, T def)
@@ -25,12 +24,11 @@ public abstract class ProtocolDecl<T extends ProtocolDefinition<? extends Protoc
 		this(ct, name, roledecls, paramdecls, def, pdcontext, null);
 	}*/
 
-	protected ProtocolDecl(Token t, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, T def)//, ProtocolDeclContext pdcontext, Env env)
+	//protected ProtocolDecl(Token t, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, T def)//, ProtocolDeclContext pdcontext, Env env)
+	protected ProtocolDecl(Token t, T1 header, T2 def)//, ProtocolDeclContext pdcontext, Env env)
 	{
 		super(t);//, pdcontext, env);
-		this.name = name;
-		this.roledecls = roledecls;
-		this.paramdecls = paramdecls;
+		this.header = header;
 		this.def = def;
 	}
 
@@ -130,11 +128,6 @@ public abstract class ProtocolDecl<T extends ProtocolDefinition<? extends Protoc
 		return this.def.block;
 	}*/
 	
-	public boolean isParameterDeclListEmpty()
-	{
-		return this.paramdecls.isEmpty();
-	}
-	
 	/*@Override
 	public ProtocolDeclContext getContext()
 	{
@@ -144,11 +137,6 @@ public abstract class ProtocolDecl<T extends ProtocolDefinition<? extends Protoc
 	@Override
 	public String toString()
 	{
-		String s = AntlrConstants.PROTOCOL_KW + " " + this.name;
-		if (!isParameterDeclListEmpty())
-		{
-			s += this.paramdecls;
-		}
-		return s + this.roledecls + " " + this.def;
+		return this.header + " " + this.def;
 	}
 }

@@ -1,8 +1,11 @@
 package org.scribble2.parser.ast.name.simple;
 
 import org.antlr.runtime.Token;
+import org.scribble2.parser.ast.ArgumentInstantiation;
+import org.scribble2.parser.ast.MessageNode;
+import org.scribble2.parser.ast.name.PayloadElementNameNode;
 
-public class ParameterNode extends SimpleNameNode //implements MessageNode//, PayloadTypeOrParameterNode
+public class ParameterNode extends SimpleNameNode implements PayloadElementNameNode, MessageNode, ArgumentInstantiation//, PayloadTypeOrParameterNode
 {
 	//public final Kind kind;
 	

@@ -1,23 +1,20 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.antlr.runtime.tree.CommonTree;
-
-import scribble2.sesstype.name.Role;
+import org.antlr.runtime.Token;
 
 public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 {
 	//public final List<RoleInstantiation> ris;
 
-	public RoleInstantiationList(CommonTree ct, List<RoleInstantiation> ris)
+	public RoleInstantiationList(Token t, List<RoleInstantiation> ris)
 	{
-		super(ct, ris);
+		super(t, ris);
 		//this.is = ris;
 	}
 
-	public RoleInstantiationList project(Role self)
+	/*public RoleInstantiationList project(Role self)
 	{
 		List<RoleInstantiation> roleinstans =
 				this.instans.stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
@@ -67,13 +64,13 @@ public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 	{
 		List<RoleInstantiation> ris = nv.visitAll(this.is);
 		return new RoleInstantiationList(this.ct, ris);
-	}*/
+	}* /
 	
 	// The role arguments
 	public List<Role> getRoles()
 	{
 		return this.instans.stream().map((ri) -> ri.arg.toName()).collect(Collectors.toList());
-	}
+	}*/
 
 	@Override
 	public String toString()

@@ -1,24 +1,12 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
+import org.scribble2.parser.ast.name.simple.RoleNode;
 
-import scribble2.ast.context.CompoundInteractionContext;
-import scribble2.ast.context.SimpleInteractionNodeContext;
-import scribble2.ast.name.RoleNode;
-import scribble2.main.ScribbleException;
-import scribble2.sesstype.Message;
-import scribble2.sesstype.name.Role;
-import scribble2.visit.NodeContextBuilder;
-import scribble2.visit.NodeVisitor;
-import scribble2.visit.WellFormedChoiceChecker;
-import scribble2.visit.env.Env;
-import scribble2.visit.env.WellFormedChoiceEnv;
-
-public abstract class MessageTransfer extends AbstractSimpleInteractionNode
+public abstract class MessageTransfer extends ScribbleASTBase implements SimpleInteractionNode
 {
 	public final RoleNode src;
 	public final MessageNode msg;
@@ -34,15 +22,15 @@ public abstract class MessageTransfer extends AbstractSimpleInteractionNode
 		this(ct, src, msg, dests, sicontext, null);
 	}*/
 
-	protected MessageTransfer(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext, Env env)
+	protected MessageTransfer(Token t, RoleNode src, MessageNode msg, List<RoleNode> dests)//, SimpleInteractionNodeContext sicontext, Env env)
 	{
-		super(ct, sicontext, env);
+		super(t);//, sicontext, env);
 		this.src = src;
 		this.msg = msg;
 		this.dests = new LinkedList<>(dests);
 	}
 
-	protected abstract MessageTransfer reconstruct(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext, Env env);
+	/*protected abstract MessageTransfer reconstruct(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
 	public MessageTransfer leaveContextBuilding(NodeContextBuilder builder) throws ScribbleException
@@ -132,7 +120,7 @@ public abstract class MessageTransfer extends AbstractSimpleInteractionNode
 			env.ops.addOperator(src, dest, op);  // Recorded separately from enabling ops
 		}
 		return gmt;	
-	}*/
+	}* /
 
 	@Override
 	public MessageTransfer visitChildren(NodeVisitor nv) throws ScribbleException
@@ -157,7 +145,7 @@ public abstract class MessageTransfer extends AbstractSimpleInteractionNode
 			dests.add(rn.toName());
 		}
 		return dests;
-	}
+	}*/
 	
 	/*// Maybe move into NodeVisitor -- no: now redundant, as all nodes including names nodes are uniformly visited
 	public static MessageNode visitMessageNode(NodeVisitor nv, MessageNode msg) throws ScribbleException

@@ -1,24 +1,22 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
+import org.scribble2.parser.ast.name.PayloadElementNameNode;
 
-import scribble2.ast.name.PayloadTypeOrParameterNode;
-import scribble2.main.ScribbleException;
-import scribble2.visit.NodeVisitor;
-import scribble2.visit.Projector;
-import scribble2.visit.env.ProjectionEnv;
 
-public class PayloadElement extends AbstractNode
+// Not in grammar file
+public class PayloadElement extends ScribbleASTBase
 {
-	public final PayloadTypeOrParameterNode type;
+	//public final AnnotationNameNode annot;
+	public final PayloadElementNameNode name;
 
-	public PayloadElement(CommonTree ct, PayloadTypeOrParameterNode type)
+	public PayloadElement(Token t, PayloadElementNameNode name)
 	{
-		super(ct);
-		this.type = type;
+		super(t);
+		this.name = name;
 	}
 
-	// Basically a copy without the AST
+	/*// Basically a copy without the AST
 	@Override
 	public PayloadElement leaveProjection(Projector proj) //throws ScribbleException
 	{
@@ -26,7 +24,7 @@ public class PayloadElement extends AbstractNode
 		PayloadElement projection = new PayloadElement(null, type);
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
-	}
+	}*/
 
 	/*@Override
 	public PayloadElement disambiguate(PayloadTypeOrParameterDisambiguator disamb) throws ScribbleException
@@ -105,16 +103,16 @@ public class PayloadElement extends AbstractNode
 		return new PayloadElement(this.ct, this.annot, this.type);
 	}*/
 
-	@Override
+	/*@Override
 	public PayloadElement visitChildren(NodeVisitor nv) throws ScribbleException
 	{
 		PayloadTypeOrParameterNode type = (PayloadTypeOrParameterNode) visitChild((Node) this.type, nv);
 		return new PayloadElement(this.ct, type);
-	}
+	}*/
 	
 	@Override
 	public String toString()
 	{
-		return this.type.toString();
+		return this.name.toString();
 	}
 }

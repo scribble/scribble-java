@@ -1,8 +1,9 @@
 package org.scribble2.parser.ast.name.simple;
 
 import org.antlr.runtime.Token;
+import org.scribble2.parser.ast.MessageNode;
 
-public class SimpleMessageSignatureNameNode extends SimpleNameNode//SimpleMemberNameNode
+public class SimpleMessageSignatureNameNode extends SimpleNameNode implements MessageNode//SimpleMemberNameNode
 {
 	//public final String extType;  // Not current considered for equals/hashCode
 

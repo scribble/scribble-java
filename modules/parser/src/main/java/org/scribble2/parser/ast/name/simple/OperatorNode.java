@@ -1,19 +1,17 @@
-package scribble2.ast.name;
+package org.scribble2.parser.ast.name.simple;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
 
-import scribble2.sesstype.name.Operator;
-
-public class OperatorNode extends PrimitiveNameNode
+public class OperatorNode extends SimpleNameNode
 {
 	public static final String EMPTY_OPERATOR_IDENTIFIER = "";
 	
-	public OperatorNode(CommonTree ct, String name)
+	public OperatorNode(Token t, String name)
 	{
-		super(ct, name);
+		super(t, name);
 	}
 	
-	@Override
+	/*@Override
 	public Operator toName()
 	{
 		if (this.identifier.equals(EMPTY_OPERATOR_IDENTIFIER))
@@ -21,5 +19,5 @@ public class OperatorNode extends PrimitiveNameNode
 			return Operator.EMPTY_OPERATOR;
 		}
 		return new Operator(this.identifier);
-	}
+	}*/
 }

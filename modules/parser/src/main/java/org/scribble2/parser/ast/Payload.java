@@ -1,29 +1,23 @@
-package scribble2.ast;
+package org.scribble2.parser.ast;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.Token;
 
-import scribble2.main.ScribbleException;
-import scribble2.visit.NodeVisitor;
-import scribble2.visit.Projector;
-import scribble2.visit.env.ProjectionEnv;
-
-public class Payload extends AbstractNode
+public class Payload extends ScribbleASTBase
 {
 	//public static final Payload EMPTY_PAYLOAD = new Payload(null, Collections.<PayloadElement> emptyList());
 
 	public final List<PayloadElement> payloadelems;
 
-	public Payload(CommonTree ct, List<PayloadElement> payloadelems)
+	public Payload(Token t, List<PayloadElement> payloadelems)
 	{
-		super(ct);
+		super(t);
 		this.payloadelems = new LinkedList<>(payloadelems);
 	}
 
-	// Basically a copy without the AST
+	/*// Basically a copy without the AST
 	@Override
 	public Payload leaveProjection(Projector proj) //throws ScribbleException
 	{
@@ -43,7 +37,7 @@ public class Payload extends AbstractNode
 		}
 		List<PayloadElement> pes = visitChildListWithClassCheck(this, this.payloadelems, nv);
 		return new Payload(this.ct, pes);
-	}
+	}*/
 
 	public boolean isEmpty()
 	{

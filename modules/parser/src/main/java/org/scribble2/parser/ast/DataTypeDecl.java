@@ -1,7 +1,7 @@
 package org.scribble2.parser.ast;
 
 import org.antlr.runtime.Token;
-import org.scribble2.parser.ast.name.PrimitiveNameNode;
+import org.scribble2.parser.ast.name.simple.SimpleNameNode;
 
 // FIXME: rename to something better
 public abstract class DataTypeDecl extends ScribbleASTBase //implements ModuleMember //implements NameDeclaration
@@ -10,10 +10,10 @@ public abstract class DataTypeDecl extends ScribbleASTBase //implements ModuleMe
 	public final String extName;
 	public final String source;
 	//public final SimpleMemberNameNode alias;
-	public final PrimitiveNameNode alias;  // Fix MessageSignatureDecl to make this back to member name node?
+	public final SimpleNameNode alias;  // Fix MessageSignatureDecl to make this back to member name node?
 
 	//public DataTypeDecl(CommonTree ct, String schema, String extName, String source, SimpleMemberNameNode alias)
-	public DataTypeDecl(Token t, String schema, String extName, String source, PrimitiveNameNode alias)
+	public DataTypeDecl(Token t, String schema, String extName, String source, SimpleNameNode alias)
 	{
 		super(t);
 		this.schema = schema;

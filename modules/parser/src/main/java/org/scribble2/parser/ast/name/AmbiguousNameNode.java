@@ -18,7 +18,7 @@ import scribble2.visit.NameDisambiguator;
 // Primitive payload type or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
 public class AmbiguousNameNode extends PrimitiveNameNode implements //ArgumentNode
-	PayloadTypeOrParameterNode, MessageNode
+	PayloadElementName, MessageNode
 {
 	public AmbiguousNameNode(CommonTree ct, String name)
 	{

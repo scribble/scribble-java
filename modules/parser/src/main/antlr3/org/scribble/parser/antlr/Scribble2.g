@@ -193,7 +193,7 @@ simplename:
 	IDENTIFIER
 ;
 
-annotationname:   simplename;
+//annotationname:   simplename;
 parametername:    simplename;
 recursionvarname: simplename;
 rolename:         simplename;
@@ -317,23 +317,26 @@ messagesignature:
 ;
 
 payload:
-	->
+/*	->
 	^()
 |
 	payloadelement (',' payloadelement)*
 	->
-	^(payloadelement+)
+	^(payloadelement+)*/
+	payloadelement*
 ;
 
 // Payload type names need disambiguation pass
 payloadelement:
-	payloadtypename
-	->
 	payloadtypename  // FIXME: this case subsumes the parametername case
+/*->
+	ambiguousname
+*/
 |
 	parametername
-	->
-	parametername
+/*->
+	ambiguousname
+*/
 ;
 
 
@@ -554,17 +557,14 @@ argumentinstantiationlist:
 
 // Like PayloadElement, simple names need disambiguation
 argumentinstantiation:
-	messagesignature
-	->
-	messagesignature
+/*	messagesignature
+//->
+//	messagesignature*/
+	message
 |
 	payloadtypename
-	->
-	payloadtypename
 |
-	parametername  // Overlaps with singleton payloadtypename case
-	->
-	parametername
+	parametername  // Overlaps with previous cases
 ;
 
 
