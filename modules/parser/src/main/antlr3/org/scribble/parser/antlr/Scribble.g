@@ -351,7 +351,7 @@ messagesignature:
 	'(' payload ')'
 |
 	//messageoperator '(' payload ')'  // Doesn't work (conflict with IDENTIFIER?)
-	IDENTIFIER '(' ( payload )+ ')'
+	IDENTIFIER '(' payload? ')'
 ;
 
 payload:

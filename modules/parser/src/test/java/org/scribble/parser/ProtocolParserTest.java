@@ -29,97 +29,108 @@ import org.scribble.resources.InputStreamResource;
 public class ProtocolParserTest {
 
 	@org.junit.Test
+    public void testRTGOV406() {
+    	testIssue("RTGOV406");
+    }
+
+	@org.junit.Test
     public void testTypes() {
-    	testParser("Types");
+    	testExample("Types");
     }
 
     @org.junit.Test
     public void testImports() {
-    	testParser("Imports");
+    	testExample("Imports");
     }
 
     @org.junit.Test
     public void testGMessage() {
-    	testParser("GMessage");
+    	testExample("GMessage");
     }
 
     @org.junit.Test
     public void testGProtocol() {
-    	testParser("GProtocol");
+    	testExample("GProtocol");
     }
 
     @org.junit.Test
     public void testGChoice() {
-    	testParser("GChoice");
+    	testExample("GChoice");
     }
 
     @org.junit.Test
     public void testGRecursion() {
-    	testParser("GRecursion");
+    	testExample("GRecursion");
     }
     
     @org.junit.Test
     public void testGParallel() {
-    	testParser("GParallel");
+    	testExample("GParallel");
     }
     
     @org.junit.Test
     @Ignore
     public void testGDo() {
-    	testParser("GDo");
+    	testExample("GDo");
     }
 
     @org.junit.Test
     public void testGInterruptible() {
-    	testParser("GInterruptible");
+    	testExample("GInterruptible");
     }
 
     @org.junit.Test
     public void testLProtocol() {
-    	testParser("LProtocol");
+    	testExample("LProtocol");
     }
 
     @org.junit.Test
     public void testLSend() {
-    	testParser("LSend_Buyer");
+    	testExample("LSend_Buyer");
     }
     
     @org.junit.Test
     public void testLReceive() {
-    	testParser("LReceive_Seller");
+    	testExample("LReceive_Seller");
     }
 
     @org.junit.Test
     public void testLChoice() {
-    	testParser("LChoice");
+    	testExample("LChoice");
     }
     
     @org.junit.Test
     public void testLParallel() {
-    	testParser("LParallel");
+    	testExample("LParallel");
     }
 
     @org.junit.Test
     public void testLRecursion() {
-    	testParser("LRecursion");
+    	testExample("LRecursion");
     }
     
     @org.junit.Test
     @Ignore
     public void testLDo() {
-    	testParser("LDo");
+    	testExample("LDo");
     }
 
     @org.junit.Test
     public void testLInterruptible() {
-   		testParser("LInterruptible");
+   		testExample("LInterruptible");
    	}
 
-    protected void testParser(String name) {
-    	
-    	try {
-    		String path="scribble/examples/"+name+".scr";
+    protected void testExample(String name) {
+    	testParser("scribble/examples/"+name+".scr");
+    }
     		
+    protected void testIssue(String name) {
+    	testParser("scribble/issues/"+name+".scr");
+    }
+    		
+    protected void testParser(String path) {
+    	
+    	try {    		
     		java.net.URL scrurl=ClassLoader.getSystemResource(path);
     		java.io.File scrFile=new java.io.File(scrurl.getFile());
     		java.io.InputStream is=new java.io.FileInputStream(scrFile);
@@ -144,10 +155,10 @@ public class ProtocolParserTest {
     		}
     		
     		if (logger.isErrorsOrWarnings()) {
-    			fail("Unexpected errors and/or warnings in "+name+".scr");
+    			fail("Unexpected errors and/or warnings in "+path);
     		}
     		
-    		is = ClassLoader.getSystemResourceAsStream("scribble/examples/"+name+".scr");
+    		is = ClassLoader.getSystemResourceAsStream(path);
     		
     		byte[] b=new byte[is.available()];
     		is.read(b);
@@ -155,7 +166,7 @@ public class ProtocolParserTest {
     		is.close();
     		
     		String parsed=module.toString().trim();
-    		String expecting=new String(b).trim();
+    		String expecting=new String(b).replace("\r", "").trim();
     		
     		if (!parsed.equals(expecting)) {
     			int len=parsed.length();
@@ -175,14 +186,14 @@ public class ProtocolParserTest {
     				}
     			}
     			
-    			System.err.println("Parsed protocol '"+name+
+    			System.err.println("Parsed protocol '"+path+
     					"' mismatch\nExpecting:\n"+expecting+"\nParsed:\n"+parsed);
-    			fail("Parsed protocol '"+name+"' mismatch");
+    			fail("Parsed protocol '"+path+"' mismatch");
     		}
     		
     	} catch (Exception e) {
     		e.printStackTrace();
-    		fail("Failed to parse '"+name+".scr'");
+    		fail("Failed to parse '"+path+"'");
     	}
     }
     
