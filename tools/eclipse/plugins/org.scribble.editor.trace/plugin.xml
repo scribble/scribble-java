@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.editors">
-      <editor
-            class="org.scribble.editor.trace.TraceEditor"
-            contributorClass="org.scribble.editor.trace.TraceEditorContributor"
-            extensions="trace"
-            icon="icons/scribble.png"
-            id="org.scribble.editor.trace.TraceEditor"
-            name="Trace Editor">
-      </editor>
-   </extension>
-
   <extension
     point = "org.eclipse.ui.newWizards">
     <category

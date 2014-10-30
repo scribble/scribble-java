@@ -1,0 +1,18 @@
+module scribble.examples.Choice;
+
+type <xsd> "{http://scribble.org/example}M1" from "http://scribble.org/schema/Example.xsd" as M1;
+type <xsd> "{http://scribble.org/example}M2" from "http://scribble.org/schema/Example.xsd" as M2;
+type <xsd> "{http://scribble.org/example}M3" from "http://scribble.org/schema/Example.xsd" as M3;
+type <xsd> "{http://scribble.org/example}M4" from "http://scribble.org/schema/Example.xsd" as M4;
+
+global protocol First(role Buyer, role Seller) {
+	op1(M1) from Buyer to Seller;
+	
+	choice at Seller {
+		op2(M2) from Seller to Buyer;
+	} or {
+		op3(M3) from Seller to Buyer;
+	}
+	
+	op4(M4) from Buyer to Seller;
+}
