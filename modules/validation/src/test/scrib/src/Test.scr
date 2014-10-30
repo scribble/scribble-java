@@ -3,8 +3,17 @@
 
 module Test;
 
-/*global protocol Foo(role A, role B)
+global protocol Foo(role A, role B)
+{
+	m1() from A to B;
+	/*choice at A
+	{
+	}*/
+}
+
+/*global protocol Foo2(role A, role B)
 {
 	//m1() from A to B;
+
 }*/
 

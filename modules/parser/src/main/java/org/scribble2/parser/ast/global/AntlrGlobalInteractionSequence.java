@@ -1,0 +1,33 @@
+package org.scribble2.parser.ast.global;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.global.GlobalInteraction;
+import org.scribble2.model.global.GlobalInteractionSequence;
+import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.util.Util;
+
+public class AntlrGlobalInteractionSequence
+{
+	public static GlobalInteractionSequence parseGlobalInteractionSequence(AntlrModuleParser parser, CommonTree ct)
+	{
+		List<GlobalInteraction> gis = new LinkedList<>();
+		for (CommonTree gi : getInteractionChildren(ct))
+		{
+			gis.add((GlobalInteraction) parser.parse(gi));
+		}
+		return new GlobalInteractionSequence(gis);
+	}
+
+	public static List<CommonTree> getInteractionChildren(CommonTree ct)
+	{
+		if (ct.getChildCount() == 0)
+		{
+			return Collections.emptyList();
+		}
+		return Util.toCommonTreeList(ct.getChildren());
+	}
+}

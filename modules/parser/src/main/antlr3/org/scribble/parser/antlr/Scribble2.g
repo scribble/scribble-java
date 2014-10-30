@@ -1,5 +1,5 @@
 /*
- * $ java -cp lib/antlr-3.5.2-complete.jar org.antlr.Tool -o parser/scribble2/parser src/scribble2/parser/Scribble2.g
+ * $ java -cp ../../eclipse-luna/scribble-java-research/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o test modules/parser/src/main/antlr3/org/scribble/parser/antlr/Scribble2.g
  */
 
 
@@ -69,6 +69,79 @@ tokens
 
 	KIND_MESSAGESIGNATURE = 'KIND_MESSAGESIGNATURE';
 	KIND_PAYLOADTYPE = 'KIND_PAYLOADTYPE';
+	
+	
+	/*
+	 * Parser output "node types" (corresponding to the various syntactic
+	 * categories) i.e. the labels used to distinguish resulting AST nodes.
+	 * The value of these token variables doesn't matter, only the token
+	 * (i.e. variable) names themselves are used (for AST node root text
+	 * field)
+	 */
+	//NAME = 'name';
+	QUALIFIEDNAME = 'qualified-name';
+	//PACKAGENAME = 'package-name';
+	//FULLMODULENAME = 'full-module-name';
+	//SIMPLEMEMBERNAME = 'simple-member-name';
+	//QUALIFIEDMEMBERNAME = 'qualified-member-name';
+	
+	
+	//MODULE = 'module';
+	MODULE = 'modul';
+	//PACKAGEDECL = 'package-decl';
+	MODULEDECL = 'module-decl';
+	//IMPORTDECL = 'import-decl';
+	//FROMIMPORTDECL = 'from-import-decl';
+	IMPORTMODULE = 'import-module';
+	IMPORTMEMBER = 'import-member';
+	PAYLOADTYPEDECL = 'payload-type-decl';
+	MESSAGESIGNATUREDECL = 'message-signature-decl';
+	PARAMETERDECLLIST = 'parameter-decl-list';
+	PARAMETERDECL = 'parameter-decl';
+	MESSAGESIGNATURE = 'message-signature';
+	ROLEDECLLIST = 'role-decl-list';
+	ROLEDECL = 'role-decl';
+	ARGUMENTINSTANTIATIONLIST = 'argument-instantiation-list';
+	ARGUMENTINSTANTIATION = 'argument-instantiation';
+	PAYLOAD = 'payload';
+	PAYLOADELEMENT = 'payloadelement';
+	ROLEINSTANTIATIONLIST = 'role-instantiation-list';
+	ROLEINSTANTIATION = 'role-instantiation';
+
+	GLOBALPROTOCOLDECL = 'global-protocol-decl';
+	GLOBALPROTOCOLHEADER = 'global-protocol-header';
+	GLOBALPROTOCOLDEF = 'global-protocol-def';
+	GLOBALPROTOCOLBLOCK = 'global-protocol-block';
+	GLOBALINTERACTIONSEQUENCE = 'global-interaction-sequence';
+	GLOBALMESSAGETRANSFER = 'global-message-transfer';
+	GLOBALCHOICE = 'global-choice';
+	GLOBALRECURSION = 'global-recursion';
+	GLOBALCONTINUE = 'global-continue';
+	GLOBALPARALLEL = 'global-parallel';
+	GLOBALINTERRUPTIBLE = 'global-interruptible';
+	GLOBALINTERRUPT = 'global-interrupt';
+	GLOBALDO = 'global-do';
+
+	/*LOCALPROTOCOLDECL = 'local-protocol-decl';
+	LOCALROLEDECLLIST = 'local-role-decl-list';
+	LOCALROLEDECL = 'local-role-decl';
+	SELFDECL = 'self-decl';
+	LOCALPROTOCOLDEF = 'local-protocol-def';
+	LOCALPROTOCOLINSTANCE = 'local-protocol-instance';
+	LOCALPROTOCOLBLOCK = 'local-protocol-block';
+	LOCALINTERACTIONSEQUENCE = 'local-interaction-sequence';
+	LOCALMESSAGETRANSFER = 'local-message-transfer';
+	LOCALCHOICE = 'local-choice';
+	LOCALRECURSION = 'local-recursion';
+	LOCALCONTINUE = 'local-continue';
+	LOCALPARALLEL = 'local-parallel';
+	LOCALINTERRUPTIBLE = 'local-interruptible';
+	LOCALINTERRUPT = 'local-interrupt';
+	LOCALDO = 'local-do';
+	LOCALTHROWS = 'local-throws';
+	LOCALCATCHES = 'local-catches';
+	LOCALSEND = 'local-send';
+	LOCALRECEIVE = 'local-receive';*/
 }
 
 
@@ -213,7 +286,7 @@ simplemembername:           simplename;  // Only for member declarations
 qualifiedname:
 	IDENTIFIER ('.' IDENTIFIER)*
 	->
-	^(IDENTIFIER+)
+	^(QUALIFIEDNAME IDENTIFIER+)
 ;
 
 packagename:          qualifiedname;
@@ -231,7 +304,8 @@ messagesignaturename: membername;
 module:
 	moduledecl importdecl* datatypedecl* protocoldecl*
 ->
-	moduledecl ^(importdecl*) ^(datatypedecl*) ^(protocoldecl*)
+	^(MODULE moduledecl importdecl* datatypedecl* protocoldecl*)
+	//^(MODULE moduledecl protocoldecl*)
 ;
 
 
@@ -241,7 +315,7 @@ module:
 moduledecl:
 	MODULEKW modulename ';'
 ->
-	modulename
+	^(MODULEDECL modulename)
 ;
 
 
@@ -257,21 +331,21 @@ importdecl:
 importmodule:
 	IMPORTKW modulename ';'
 	->
-	^(modulename EMPTY_ALIAS)
+	^(IMPORTMODULE modulename EMPTY_ALIAS)
 |
 	IMPORTKW modulename ASKW simplemodulename ';'
 ->
-	^(modulename simplemodulename)
+	^(IMPORTMODULE modulename simplemodulename)
 ;
 
 importmember:
 	FROMKW modulename IMPORTKW simplemembername ';'
 	->
-	^(modulename simplemembername EMPTY_ALIAS)
+	^(IMPORTMEMBER modulename simplemembername EMPTY_ALIAS)
 |
 	FROMKW modulename IMPORTKW simplemembername ASKW simplemembername ';'
 	->
-	^(modulename simplemembername simplemembername)
+	^(IMPORTMEMBER modulename simplemembername simplemembername)
 ;
 
 
@@ -288,32 +362,32 @@ datatypedecl:
 payloadtypedecl:
 	TYPEKW '<' IDENTIFIER '>' EXTIDENTIFIER FROMKW EXTIDENTIFIER ASKW simplepayloadtypename ';'
 	->
-	^(IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
+	^(PAYLOADTYPEDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
 ;
 
 messagesignaturedecl:
 	SIGKW '<' IDENTIFIER '>' EXTIDENTIFIER FROMKW EXTIDENTIFIER ASKW simplemessagesignaturename ';'
 	->
-	^(IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplemessagesignaturename)
+	^(MESSAGESIGNATUREDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplemessagesignaturename)
 ;
 
 
 /**
  * Section 3.5 Message Signatures
  */
-messageoperator:
+/*messageoperator:
 	IDENTIFIER
-;
+;*/
 
 messagesignature:
 	'(' payload ')'
 	->
-	^(EMPTY_OPERATOR payload)
+	^(MESSAGESIGNATURE EMPTY_OPERATOR payload)
 |
 	//messageoperator '(' payload ')'  // Doesn't work (conflict with IDENTIFIER?)
 	IDENTIFIER '(' payload ')'
 	->
-	^(IDENTIFIER payload)
+	^(MESSAGESIGNATURE IDENTIFIER payload)
 ;
 
 payload:
@@ -324,6 +398,8 @@ payload:
 	->
 	^(payloadelement+)*/
 	payloadelement*
+->
+	^(PAYLOAD payloadelement*)
 ;
 
 // Payload type names need disambiguation pass
@@ -356,46 +432,48 @@ protocoldecl:
 globalprotocoldecl:
 	 globalprotocolheader globalprotocoldefinition
 	->
-	^(globalprotocolheader globalprotocoldefinition)
+	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition)
+	//^(GLOBALPROTOCOLDECL globalprotocolheader)
 ;
 
 globalprotocolheader:
 	GLOBALKW PROTOCOLKW simpleprotocolname roledecllist
 	->
 	//simpleprotocolname EMPTY_PARAMETERDECLLIST roledecllist
-	^(simpleprotocolname ^() roledecllist)
+	//^(GLOBALPROTOCOLHEADER simpleprotocolname ^() roledecllist)
+	^(GLOBALPROTOCOLHEADER simpleprotocolname ^(PARAMETERDECLLIST) roledecllist)
 |
 	GLOBALKW PROTOCOLKW simpleprotocolname parameterdecllist roledecllist
 	->
-	^(simpleprotocolname parameterdecllist roledecllist)
+	^(GLOBALPROTOCOLHEADER simpleprotocolname parameterdecllist roledecllist)
 ;
 
 roledecllist:
 	'(' roledecl (',' roledecl)* ')'
 	->
-	^(roledecl+)
+	^(ROLEDECLLIST roledecl+)
 ;
 
 roledecl:
 	ROLEKW rolename
 	->
-	rolename
+	^(ROLEDECL rolename)
 ;
 
 parameterdecllist:
 	'<' parameterdecl (',' parameterdecl)* '>'
 	->
-	^(parameterdecl+)
+	^(PARAMETERDECLLIST parameterdecl+)
 ;
 
 parameterdecl:
 	 TYPEKW parametername
 	->
-	^(KIND_PAYLOADTYPE parametername)
+	^(PARAMETERDECL KIND_PAYLOADTYPE parametername)
 |
 	 SIGKW parametername
 	->
-	^(KIND_MESSAGESIGNATURE parametername)
+	^(PARAMETERDECL KIND_MESSAGESIGNATURE parametername)
 ;
 
 
@@ -404,6 +482,8 @@ parameterdecl:
  */
 globalprotocoldefinition:
 	globalprotocolblock
+->
+	^(GLOBALPROTOCOLDEF globalprotocolblock)
 ;
 
 
@@ -413,13 +493,13 @@ globalprotocoldefinition:
 globalprotocolblock:
 	'{' globalinteractionsequence '}'
 	->
-	globalinteractionsequence
+	^(GLOBALPROTOCOLBLOCK globalinteractionsequence)
 ;
 
 globalinteractionsequence:
 	globalinteraction*
 	->
-	^(globalinteraction*)
+	^(GLOBALINTERACTIONSEQUENCE globalinteraction*)
 ;
 
 globalinteraction:
@@ -445,7 +525,7 @@ globalinteraction:
 globalmessagetransfer:
 	message FROMKW rolename TOKW rolename (',' rolename )* ';'
 	->
-	^(message rolename rolename+)
+	^(GLOBALMESSAGETRANSFER message rolename rolename+)
 ;
 
 message:
@@ -463,7 +543,7 @@ message:
 globalchoice:
 	CHOICEKW ATKW rolename globalprotocolblock (ORKW globalprotocolblock)*
 	->
-	^(rolename globalprotocolblock+)
+	^(GLOBALCHOICE rolename globalprotocolblock+)
 ;
 
 
@@ -473,13 +553,13 @@ globalchoice:
 globalrecursion:
 	RECKW recursionvarname globalprotocolblock
 	->
-	^(recursionvarname globalprotocolblock)
+	^(GLOBALRECURSION recursionvarname globalprotocolblock)
 ;
 
 globalcontinue:
 	CONTINUEKW recursionvarname ';'
 	->
-	recursionvarname
+	^(GLOBALCONTINUE recursionvarname)
 ;
 
 
@@ -489,7 +569,7 @@ globalcontinue:
 globalparallel:
 	PARKW globalprotocolblock (ANDKW globalprotocolblock)*
 	->
-	^(globalprotocolblock+)
+	^(GLOBALPARALLEL globalprotocolblock+)
 ;
 
 
@@ -500,17 +580,17 @@ globalinterruptible:
 	INTERRUPTIBLEKW globalprotocolblock WITHKW '{' globalinterrupt* '}'
 	->
 	//^(GLOBALINTERRUPTIBLE EMPTY_SCOPENAME globalprotocolblock globalinterrupt*)
-	^(EMPTY_SCOPENAME globalprotocolblock globalinterrupt*)
+	^(GLOBALINTERRUPTIBLE EMPTY_SCOPENAME globalprotocolblock globalinterrupt*)
 |
 	INTERRUPTIBLEKW scopename globalprotocolblock WITHKW '{' (globalinterrupt)* '}'
 	->
-	^(scopename globalprotocolblock globalinterrupt*)
+	^(GLOBALINTERRUPTIBLE scopename globalprotocolblock globalinterrupt*)
 ;
 
 globalinterrupt:
 	message (',' message)* BYKW rolename ';'
 	->
-	^(rolename message+)
+	^(GLOBALINTERRUPT rolename message+)
 ;
 
 
@@ -521,38 +601,39 @@ globaldo:
 	DOKW protocolname roleinstantiationlist ';'
 	->
 	//^(GLOBALDO EMPTY_SCOPENAME protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
-	^(NO_SCOPE protocolname ^() roleinstantiationlist)
+	//^(GLOBALDO NO_SCOPE protocolname ^() roleinstantiationlist)
+	^(GLOBALDO NO_SCOPE protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
 	DOKW protocolname argumentinstantiationlist roleinstantiationlist ';'
 	->
 	//^(GLOBALDO EMPTY_SCOPENAME protocolname argumentinstantiationlist roleinstantiationlist)
-	^(NO_SCOPE protocolname argumentinstantiationlist roleinstantiationlist)
+	^(GLOBALDO NO_SCOPE protocolname argumentinstantiationlist roleinstantiationlist)
 |
 	DOKW scopename ':' protocolname roleinstantiationlist ';'
 	->
-	^(scopename protocolname ^() roleinstantiationlist)
+	^(GLOBALDO scopename protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
 	DOKW scopename ':' protocolname argumentinstantiationlist roleinstantiationlist ';'
 	->
-	^(scopename protocolname argumentinstantiationlist roleinstantiationlist)
+	^(GLOBALDO scopename protocolname argumentinstantiationlist roleinstantiationlist)
 ;
 
 roleinstantiationlist:
 	'(' roleinstantiation (',' roleinstantiation)* ')'
 	->
-	^(roleinstantiation+)
+	^(ROLEINSTANTIATIONLIST roleinstantiation+)
 ;
 
 roleinstantiation:
 	rolename
 	->
-	^(rolename)
+	^(ROLEINSTANTIATION rolename)
 ;
 
 argumentinstantiationlist:
 	'<' argumentinstantiation (',' argumentinstantiation)* '>'
 	->
-	^(argumentinstantiation+)
+	^(ARGUMENTINSTANTIATIONLIST argumentinstantiation+)
 ;
 
 // Like PayloadElement, simple names need disambiguation
