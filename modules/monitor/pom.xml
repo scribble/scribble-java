@@ -3,13 +3,13 @@
   	<modelVersion>4.0.0</modelVersion>
   	<artifactId>scribble-monitor</artifactId>
 	<packaging>jar</packaging>
-  	<version>0.3.0-SNAPSHOT</version>
+  	<version>0.3.0.Final</version>
   	<name>Scribble::Modules::Monitor</name>
 
 	<parent>
 		<groupId>org.scribble</groupId>
 		<artifactId>modules</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
+		<version>0.3.0.Final</version>
 	</parent>
 
 	<dependencies>

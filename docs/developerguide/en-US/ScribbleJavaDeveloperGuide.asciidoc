@@ -1,0 +1,10 @@
+Scribble Java Developer Guide
+=============================
+:doctype: book
+
+include::SJDGProtocol.asciidoc[]
+
+include::SJDGMonitor.asciidoc[]
+
+include::SJDGSimulation.asciidoc[]
+

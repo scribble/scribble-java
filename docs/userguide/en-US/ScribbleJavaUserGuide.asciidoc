@@ -1,0 +1,8 @@
+Scribble Java User Guide
+========================
+:doctype: book
+
+include::SJUGEclipse.asciidoc[]
+
+include::SJUGCommandLine.asciidoc[]
+

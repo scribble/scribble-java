@@ -2,18 +2,21 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>docs</artifactId>
+	<groupId>org.scribble.docs</groupId>
+	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Scribble::Docs</name>
 
 	<parent>
 		<groupId>org.scribble</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
+		<version>0.3.0.Final</version>
 	</parent>
 
 	<modules>
+		<module>developerguide</module>
 		<module>javadoc</module>
+		<module>userguide</module>
 	</modules>
 
 </project>

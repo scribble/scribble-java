@@ -1,0 +1,120 @@
+== Monitor
+
+The monitoring capability is used to ensure that a system conforms to a protocol description at runtime. This is a form of dynamic validation, or conformance checking.
+
+
+=== Converting a Protocol into a Monitor State Machine
+
+To efficiently monitor a running system, to ensure that it is conformed to one or more roles within a protocol description, it is necessary to transform the text based description (and even the object model representation) into a form that can more effectively be used to drive a runtime monitoring solution.
+
+----
+org.scribble.context.ModuleLoader loader=...;		
+org.scribble.resources.Resource res=...;
+
+org.scribble.model.local.LProtocolDefinition lp=...;	// Obtain the required local protocol definition
+    		
+org.scribble.monitor.export.MonitorExporter exporter=new org.scribble.monitor.export.MonitorExporter();
+    		
+org.scribble.context.ModuleContext context=new org.scribble.context.DefaultModuleContext(res, lp.getModule(), loader);
+    		
+org.scribble.monitor.model.SessionType type=exporter.export(context, lp);
+----
+
+The first step is to obtain the module that contains the local protocol definition to be monitored. This can ether be achieved by parsing a textual representation of a local protocol definition, or by projecting the local modules from a global module.
+
+Once the module is obtained, then the specific local protocol definition can be retrieved. As a module may contain multiple local protocol definitions, it is important to select the one that represents the initial (or top level) protocol definition from the perspective of what needs to be monitored.
+
+Once the exporter has been instantiated, invoke the _export_ method with the selected local protocol definition. This will export the protocol definition into a state machine representation associated with the returned _org.scribble.monitor.model.SessionType_ object. This object will be used in subsequent runtime monitoring session instances to define the behavioural type being verified.
+
+
+=== Dynamically Monitoring Message Exchanges
+
+==== Managing session instances
+
+It is currently out of the scope of the Scribble monitor to manage session instances. It is up to the application invoking the monitor to determine:
+
+* When a new session instance must be created and initialized
+
+In this situation, the application should instantiated an instance of the _org.scribble.monitor.SessionInstance_ class and supply it, along with the relevant _org.scribble.monitor.model.SessionType_ object (defining the behavioural type to be monitored), to the _initializeInstance_ method of the monitor, e.g.
+
+----
+org.scribble.monitor.Monitor monitor=new org.scribble.monitor.DefaultMonitor();
+org.scribble.monitor.model.SessionType sessionType=....;
+
+org.scribble.monitor.SessionInstance instance=new org.scribble.monitor.SessionInstance();
+
+monitor.initializeInstance(sessionType, instance);
+----
+
+The new session instance should then be stored by the application, associated with some relevant key that can be used to retrieve it later.
+
+* When an existing session instance should be retrieved
+
+If a key is obtained from the interaction being monitored, possibly by extracting relevant information from the message content or header, then it can be used to locate an existing session instance.
+
+* When a session instance is no longer required
+
+The _org.scribble.monitor.SessionInstance_ class has a method called _hasCompleted_ which will return a boolean result, indicating whether the session instance has completed.
+
+This should be checked after any processing of the session instance by the Scribble monitor. If this method returns _true_, then the session instance object should be removed from the set of application managed session instances.
+
+==== Verifying behaviour
+
+When behaviour is detected, and an appropriate session instance object created or retrieved, then the behaviour can be verified using the Scribble monitor. Currently the following types of verification can be performed:
+
+* Message Sent
+
+The following is an example of how to verify a sent message:
+
+----
+org.scribble.monitor.Monitor monitor=....;
+org.scribble.monitor.model.SessionType sessionType=....;
+org.scribble.monitor.SessionInstance instance=....;
+
+String toRole=....;
+org.scribble.monitor.Message mesg=new org.scribble.monitor.Message();
+
+mesg.setOperator("placeOrder");
+mesg.getTypes().add("{http://acme.org/ordermgmt}Order");
+mesg.getValues().add("<order xmlns=\"http://acme.org/ordermgmt\" id=\"xyz\" />");
+
+boolean result=monitor.sent(sessionType, instance, mesg, toRole);
+----
+
+The first lines are simply present to identify the types associated with the parameters to the _sent_ method.
+
+The next block would identify the _toRole_, i.e. the role that the message is being sent to, and the message details. The message includes an operator name, and a list of parameter types/values.
+
+NOTE: Currently the values are not used, so it is not necessary to supply them, but in the future they will be used in the evaluation of assertions.
+
+The monitor is then invoked using the _sent_ method, supplying the session type and instance, as well as the message and 'to' role. The result of this method is a boolean value indicating whether the monitor considered it to be valid or not.
+
+
+* Message Received
+
+The following is an example of how to verify a received message:
+
+----
+org.scribble.monitor.Monitor monitor=....;
+org.scribble.monitor.model.SessionType sessionType=....;
+org.scribble.monitor.SessionInstance instance=....;
+
+String fromRole=....;
+org.scribble.monitor.Message mesg=new org.scribble.monitor.Message();
+
+mesg.setOperator("placeOrder");
+mesg.getTypes().add("{http://acme.org/ordermgmt}Order");
+mesg.getValues().add("<order xmlns=\"http://acme.org/ordermgmt\" id=\"xyz\" />");
+
+boolean result=monitor.received(sessionType, instance, mesg, fromRole);
+----
+
+The first lines are simply present to identify the types associated with the parameters to the _received_ method.
+
+The next block would identify the _fromRole_, i.e. the role that the message is been received from, and the message details. The message includes an operator name, and a list of parameter types/values.
+
+NOTE: Currently the values are not used, so it is not necessary to supply them, but in the future they will be used in the evaluation of assertions.
+
+The monitor is then invoked using the _received_ method, supplying the session type and instance, as well as the message and 'from' role. The result of this method is a boolean value indicating whether the monitor considered it to be valid or not.
+
+
