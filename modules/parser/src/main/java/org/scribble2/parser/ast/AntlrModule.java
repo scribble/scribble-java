@@ -9,6 +9,7 @@ import org.scribble2.model.DataTypeDecl;
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.InteractionNode;
 import org.scribble2.model.InteractionSequence;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.Module;
 import org.scribble2.model.ModuleDecl;
 import org.scribble2.model.ProtocolBlock;
@@ -47,11 +48,9 @@ public class AntlrModule
 					tmp = (ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) parser.parse(pd);
 			pds.add(tmp);
 		}
-			
-			
-		System.out.println("c: " + pds);
 
-		return new Module(md, ids, ptds, pds);
+		//return new Module(md, ids, ptds, pds);
+		return ModelFactoryImpl.FACTORY.Module(md, ids, ptds, pds);
 	}
 
 	/*public static ModuleName getFullModuleName(CommonTree ct)

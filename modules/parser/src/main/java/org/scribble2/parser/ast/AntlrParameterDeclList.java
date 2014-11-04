@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ParameterDecl;
 import org.scribble2.model.ParameterDeclList;
 import org.scribble2.parser.AntlrModuleParser;
@@ -28,7 +29,8 @@ public class AntlrParameterDeclList
 				{
 					pds.add((ParameterDecl) parser.parse(pd));
 				}
-				return new ParameterDeclList(pds);
+				//return new ParameterDeclList(pds);
+				return ModelFactoryImpl.FACTORY.ParameterDeclList(pds);
 			/*}
 		}*/
 	}

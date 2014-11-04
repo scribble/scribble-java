@@ -15,16 +15,62 @@
  */
 package org.scribble2.model;
 
+import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.visit.ModelVisitor;
+
 /**
  * This is the generic object from which all Scribble model objects
  * are derived.
  */
 public abstract class ModelNodeBase implements ModelNode
 {
+	private ModelDelegate del;
+
+	/*protected ModelNodeBase(ModelDelegate del)
+	{
+		this.del = del;
+	}*/
+	
+	@Override
+	public ModelNode visit(ModelVisitor nv)// throws ScribbleException;
+	{
+		//return this.del.visit(this, nv);
+		return visitChild(this, nv);
+	}
+	
+	//@Override
+	protected ModelNode visitChild(ModelNode child, ModelVisitor nv)// throws ScribbleException
+	{
+		//return this.del.visit(this, child, nv);
+		return nv.visit(this, child);
+	}
+
+	@Override
+	public ModelNode visitChildren(ModelVisitor nv)// throws ScribbleException;
+	{
+		return this;
+	}
+
 	/*private final CommonTree ct;
 	
 	public ModelNodeBase(CommonTree ct)
 	{
 		this.ct = ct;
 	}*/
+	
+	protected ModelDelegate del()
+	{
+		return this.del;
+	}
+	
+	protected ModelNodeBase del(ModelDelegate del)
+	{
+		ModelNodeBase copy = copy();
+		copy.del = del;
+		return copy;
+	}
+	
+	// Internal shallow copy for immutables
+	//@Override
+	protected abstract ModelNodeBase copy();
 }

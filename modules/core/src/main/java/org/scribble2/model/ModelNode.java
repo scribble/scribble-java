@@ -15,11 +15,14 @@
  */
 package org.scribble2.model;
 
+import org.scribble2.model.visit.ModelVisitor;
+
 /**
  * This is the generic object from which all Scribble model objects
  * are derived.
  */
-public interface ModelNode 
+public interface ModelNode// extends Copy
 {
-
+	ModelNode visit(ModelVisitor nv);// throws ScribbleException;
+	ModelNode visitChildren(ModelVisitor nv);// throws ScribbleException;
 }

@@ -101,10 +101,10 @@ public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequ
 	@Override
 	public String toString()
 	{
-		String s = AntlrConstants.PAR_KW + " " + this.blocks.get(0);
+		String s = Constants.PAR_KW + " " + this.blocks.get(0);
 		for (T block : this.blocks.subList(1, this.blocks.size()))
 		{
-			s += " " + AntlrConstants.AND_KW + " " + block;
+			s += " " + Constants.AND_KW + " " + block;
 		}
 		return s;
 	}

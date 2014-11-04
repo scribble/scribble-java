@@ -2,8 +2,10 @@ package org.scribble2.model.global;
 
 import java.util.List;
 
+import org.scribble2.model.Constants;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.MessageTransfer;
+import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.name.simple.RoleNode;
 
 public class GlobalMessageTransfer extends MessageTransfer implements GlobalInteraction
@@ -174,14 +176,20 @@ public class GlobalMessageTransfer extends MessageTransfer implements GlobalInte
 		return new GlobalMessageTransfer(mt.ct, mt.src, mt.msg, mt.dests, mt.getContext(), mt.getEnv());
 	}*/
 
-	/*@Override
+	@Override
 	public String toString()
 	{
-		String s = this.msg + " " + AntlrConstants.FROM_KW + " " + this.src + " " + AntlrConstants.TO_KW + " " + this.dests.get(0);
+		String s = this.msg + " " + Constants.FROM_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dests.get(0);
 		for (RoleNode dest : this.dests.subList(1, this.dests.size()))
 		{
 			s += ", " + dest;
 		}
 		return s + ";";
-	}*/
+	}
+
+	@Override
+	protected GlobalMessageTransfer copy()
+	{
+		return new GlobalMessageTransfer(this.src, this.msg, this.dests);
+	}
 }

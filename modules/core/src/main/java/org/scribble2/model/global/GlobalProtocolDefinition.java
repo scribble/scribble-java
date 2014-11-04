@@ -9,6 +9,12 @@ public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalProtocolB
 		super(block);
 	}
 
+	@Override
+	protected GlobalProtocolDefinition copy()
+	{
+		return new GlobalProtocolDefinition(this.block);
+	}
+
 	/*@Override
 	protected GlobalProtocolDefinition reconstruct(CommonTree ct, GlobalProtocolBlock block)
 	{

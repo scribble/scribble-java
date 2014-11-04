@@ -1,6 +1,7 @@
 package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.PayloadElement;
 import org.scribble2.model.name.AmbiguousNameNode;
 import org.scribble2.model.name.PayloadElementNameNode;
@@ -39,7 +40,8 @@ public class AntlrPayloadElement
 				ptpn = AntlrSimpleName.toAmbiguousNameNode(child);
 			}
 		}
-		return new PayloadElement(ptpn);
+		//return new PayloadElement(ptpn);
+		return ModelFactoryImpl.FACTORY.PayloadElement(ptpn);
 	}
 
 	public static CommonTree getTypeChild(CommonTree ct)

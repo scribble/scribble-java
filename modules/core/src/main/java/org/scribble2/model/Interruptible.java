@@ -116,12 +116,12 @@ public abstract class Interruptible<
 	@Override
 	public String toString()
 	{
-		String s = AntlrConstants.INTERRUPTIBLE_KW + " ";
+		String s = Constants.INTERRUPTIBLE_KW + " ";
 		if (!isScopeNodeImplicit())
 		{
 			s += this.scope + " ";
 		}
-		s += this.block + " " + AntlrConstants.WITH_KW + " {";
+		s += this.block + " " + Constants.WITH_KW + " {";
 		for (Interrupt interr : this.interrs)
 		{
 			s += "\n" + interr;

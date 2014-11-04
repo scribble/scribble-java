@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.RoleDecl;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.parser.AntlrModuleParser;
@@ -18,7 +19,8 @@ public class AntlrRoleDeclList
 		{
 			rds.add((RoleDecl) parser.parse(pd));
 		}
-		return new RoleDeclList(rds);
+		//return new RoleDeclList(rds);
+		return ModelFactoryImpl.FACTORY.RoleDeclList(rds);
 	}
 
 	public static List<CommonTree> getRoleDeclChildren(CommonTree ct)

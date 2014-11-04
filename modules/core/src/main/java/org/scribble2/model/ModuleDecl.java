@@ -16,11 +16,17 @@ public class ModuleDecl extends ModelNodeBase
 	{
 		ModuleNameNodes fullmodname = (ModuleNameNodes) visitChild(this.fullmodname, nv);
 		return new ModuleDecl(this.ct, fullmodname);
-	}
+	}*/
 
 	@Override
 	public String toString()
 	{
-		return AntlrConstants.MODULE_KW + " " + this.fullmodname + ";";
-	}*/
+		return Constants.MODULE_KW + " " + this.fullmodname + ";";
+	}
+
+	@Override
+	protected ModuleDecl copy()
+	{
+		return new ModuleDecl(fullmodname);
+	}
 }

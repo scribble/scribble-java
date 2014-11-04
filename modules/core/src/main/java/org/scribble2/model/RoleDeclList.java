@@ -4,9 +4,9 @@ import java.util.List;
 
 public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 {
-	public RoleDeclList(List<RoleDecl> rds)
+	public RoleDeclList(List<RoleDecl> decls)
 	{
-		super(rds);
+		super(decls);
 	}
 
 	/*@Override 
@@ -85,5 +85,11 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 	public String toString()
 	{
 		return "(" + super.toString() + ")";
+	}
+
+	@Override
+	protected RoleDeclList copy()
+	{
+		return new RoleDeclList(this.decls);
 	}
 }

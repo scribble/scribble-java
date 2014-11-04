@@ -41,6 +41,6 @@ public abstract class Continue extends ModelNodeBase implements SimpleInteractio
 	@Override
 	public String toString()
 	{
-		return AntlrConstants.CONTINUE_KW + " " + recvar + ";";
+		return Constants.CONTINUE_KW + " " + recvar + ";";
 	}
 }

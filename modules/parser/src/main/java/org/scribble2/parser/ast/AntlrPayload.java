@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.Payload;
 import org.scribble2.model.PayloadElement;
 import org.scribble2.parser.AntlrModuleParser;
@@ -19,7 +20,8 @@ public class AntlrPayload
 		{
 			pes.add((PayloadElement) parser.parse(pe));
 		}
-		return new Payload(pes);
+		//return new Payload(pes);
+		return ModelFactoryImpl.FACTORY.Payload(pes);
 	}
 
 	public static final List<CommonTree> getPayloadElements(CommonTree ct)

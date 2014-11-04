@@ -10,9 +10,9 @@ public abstract class InteractionSequence<T extends InteractionNode> extends Mod
 	public final List<T> actions;
 
 	//public InteractionSequence(CommonTree ct, List<? extends InteractionNode> ins)
-	protected InteractionSequence(List<T> ins)
+	protected InteractionSequence(List<T> actions)
 	{
-		this.actions = ins;
+		this.actions = actions;
 	}
 	
 	/*protected abstract InteractionSequence<T> reconstruct(CommonTree ct, List<T> ins);
@@ -26,7 +26,7 @@ public abstract class InteractionSequence<T extends InteractionNode> extends Mod
 		return reconstruct(this.ct, actions);
 	}*/
 	
-	/*public boolean isEmpty()
+	public boolean isEmpty()
 	{
 		return this.actions.isEmpty();
 	}
@@ -45,5 +45,5 @@ public abstract class InteractionSequence<T extends InteractionNode> extends Mod
 			s += "\n" + in;
 		}
 		return s;
-	}*/
+	}
 }

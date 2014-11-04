@@ -24,9 +24,9 @@ public abstract class ProtocolDefinition<T extends ProtocolBlock<? extends Inter
 		return reconstruct(this.ct, block);
 	}*/
 
-	/*@Override
+	@Override
 	public String toString()
 	{
 		return this.block.toString();
-	}*/
+	}
 }

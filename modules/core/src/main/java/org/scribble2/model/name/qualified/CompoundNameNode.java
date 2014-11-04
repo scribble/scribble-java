@@ -70,11 +70,12 @@ public abstract class CompoundNameNode extends ModelNodeBase //implements Named
 		throw new RuntimeException("Shouldn't get in here: " + this.elems);
 	}*/
 
+	// FIXME:
 	@Override
 	public String toString()
 	{
 		//return toName().toString();
-		return null;
+		return Arrays.toString(this.elems);
 	}
 	
 	@Override

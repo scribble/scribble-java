@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-
 public class Module extends ModelNodeBase
 {
 	public final ModuleDecl moddecl;
@@ -28,9 +27,6 @@ public class Module extends ModelNodeBase
 	@Override
 	public String toString()
 	{
-		
-		..tostirng.. visitor pattern..
-		
 		String s = moddecl.toString();
 		for (ImportDecl id : this.imports)
 		{
@@ -45,5 +41,11 @@ public class Module extends ModelNodeBase
 			s += "\n" + pd;
 		}
 		return s;
+	}
+
+	@Override
+	protected Module copy()
+	{
+		return new Module(this.moddecl, this.imports, this.data, this.protos);
 	}
 }

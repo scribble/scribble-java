@@ -55,4 +55,10 @@ public class Payload extends ModelNodeBase
 		}
 		return s + ")";
 	}
+
+	@Override
+	protected Payload copy()
+	{
+		return new Payload(this.payloadelems);
+	}
 }

@@ -81,4 +81,10 @@ public class MessageSignatureNode extends ModelNodeBase implements MessageNode//
 	{
 		return this.op.toString() + this.payload.toString();
 	}
+
+	@Override
+	protected MessageSignatureNode copy()
+	{
+		return new MessageSignatureNode(this.op, this.payload);
+	}
 }

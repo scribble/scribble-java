@@ -133,9 +133,9 @@ public abstract class ProtocolDecl<
 		return (ProtocolDeclContext) super.getContext();
 	}*/
 
-	/*@Override
+	@Override
 	public String toString()
 	{
 		return this.header + " " + this.def;
-	}*/
+	}
 }

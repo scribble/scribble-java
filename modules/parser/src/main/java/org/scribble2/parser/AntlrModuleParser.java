@@ -20,6 +20,7 @@ import org.scribble2.parser.ast.AntlrParameterDecl;
 import org.scribble2.parser.ast.AntlrParameterDeclList;
 import org.scribble2.parser.ast.AntlrPayload;
 import org.scribble2.parser.ast.AntlrPayloadElement;
+import org.scribble2.parser.ast.AntlrRoleDecl;
 import org.scribble2.parser.ast.AntlrRoleDeclList;
 import org.scribble2.parser.ast.global.AntlrGlobalChoice;
 import org.scribble2.parser.ast.global.AntlrGlobalContinue;
@@ -35,8 +36,6 @@ import org.scribble2.parser.ast.global.AntlrGlobalProtocolHeader;
 import org.scribble2.parser.ast.global.AntlrGlobalRecursion;
 import org.scribble2.parser.util.Pair;
 import org.scribble2.parser.util.Util;
-
-import scribble2.parser.ast.AntlrRoleDecl;
 
 /*import scribble2.ast.*;
 import scribble2.ast.global.*;

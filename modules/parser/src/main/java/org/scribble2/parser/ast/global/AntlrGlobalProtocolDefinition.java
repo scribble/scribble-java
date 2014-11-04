@@ -1,6 +1,7 @@
 package org.scribble2.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalProtocolDefinition;
 import org.scribble2.parser.AntlrModuleParser;
@@ -12,7 +13,8 @@ public class AntlrGlobalProtocolDefinition
 	public static GlobalProtocolDefinition parseGlobalProtocolDefinition(AntlrModuleParser parser, CommonTree ct)
 	{
 		GlobalProtocolBlock gpb = (GlobalProtocolBlock) parser.parse(getBlockChild(ct));
-		return new GlobalProtocolDefinition(gpb);
+		//return new GlobalProtocolDefinition(gpb);
+		return ModelFactoryImpl.FACTORY.GlobalProtocolDefinition(gpb);
 	}
 
 	public static CommonTree getBlockChild(CommonTree ct)

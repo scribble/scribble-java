@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalInteraction;
 import org.scribble2.model.global.GlobalInteractionSequence;
 import org.scribble2.parser.AntlrModuleParser;
@@ -19,7 +20,8 @@ public class AntlrGlobalInteractionSequence
 		{
 			gis.add((GlobalInteraction) parser.parse(gi));
 		}
-		return new GlobalInteractionSequence(gis);
+		//return new GlobalInteractionSequence(gis);
+		return ModelFactoryImpl.FACTORY.GlobalInteractionSequence(gis);
 	}
 
 	public static List<CommonTree> getInteractionChildren(CommonTree ct)

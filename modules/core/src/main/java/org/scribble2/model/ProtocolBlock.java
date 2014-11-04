@@ -96,9 +96,9 @@ public abstract class ProtocolBlock<T extends InteractionSequence<? extends Inte
 		return this.env;
 	}*/
 
-	/*@Override
+	@Override
 	public String toString()
 	{
 		return "{\n" + this.seq + "\n}";
-	}*/
+	}
 }

@@ -113,4 +113,10 @@ public class PayloadElement extends ModelNodeBase
 	{
 		return this.name.toString();
 	}
+
+	@Override
+	protected PayloadElement copy()
+	{
+		return new PayloadElement(this.name);
+	}
 }

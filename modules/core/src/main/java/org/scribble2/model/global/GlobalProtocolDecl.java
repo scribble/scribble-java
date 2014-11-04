@@ -23,6 +23,12 @@ public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, Globa
 		super(header, def);
 	}
 
+	@Override
+	protected GlobalProtocolDecl copy()
+	{
+		return new GlobalProtocolDecl(this.header, this.def);
+	}
+
 	/*public GlobalProtocolDecl(CommonTree t)//, GlobalProtocolHeader header, GlobalProtocolDefinition def)
 	{
 		//this(t, name, roledecls, paramdecls, def, null, null);

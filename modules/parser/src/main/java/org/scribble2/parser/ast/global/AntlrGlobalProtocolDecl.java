@@ -1,6 +1,7 @@
 package org.scribble2.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.global.GlobalProtocolDefinition;
 import org.scribble2.model.global.GlobalProtocolHeader;
@@ -21,7 +22,8 @@ public class AntlrGlobalProtocolDecl
 		ParameterDeclList pdl = (ParameterDeclList) parser.parse(getParameterDeclListChild(ct));*/
 		GlobalProtocolHeader header = (GlobalProtocolHeader) parser.parse(getHeaderChild(ct));
 		GlobalProtocolDefinition def = (GlobalProtocolDefinition) parser.parse(getBodyChild(ct));
-		return new GlobalProtocolDecl(header, def);
+		//return new GlobalProtocolDecl(header, def);
+		return ModelFactoryImpl.FACTORY.GlobalProtocolDecl(header, def);
 	}
 
 	/*public static CommonTree getNameChild(CommonTree ct)

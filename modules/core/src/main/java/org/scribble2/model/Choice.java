@@ -151,10 +151,10 @@ public abstract class Choice<T extends ProtocolBlock<? extends InteractionSequen
 	@Override
 	public String toString()
 	{
-		String s = AntlrConstants.CHOICE_KW + " " + AntlrConstants.AT_KW + " " + this.subj + this.blocks.get(0);
+		String s = Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + this.blocks.get(0);
 		for (T block : this.blocks.subList(1, this.blocks.size()))
 		{
-			s += " " + AntlrConstants.OR_KW + " " + block;
+			s += " " + Constants.OR_KW + " " + block;
 		}
 		return s;
 	}

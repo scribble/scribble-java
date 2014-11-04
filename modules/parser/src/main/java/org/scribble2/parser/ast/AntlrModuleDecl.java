@@ -1,6 +1,7 @@
 package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModuleDecl;
 import org.scribble2.parser.AntlrModuleParser;
 
@@ -10,7 +11,8 @@ public class AntlrModuleDecl
 
 	public static ModuleDecl parseModuleDecl(AntlrModuleParser parser, CommonTree ct)
 	{
-		return new ModuleDecl(AntlrQualifiedName.toModuleNameNodes(getModuleNameChild(ct)));
+		//return new ModuleDecl(AntlrQualifiedName.toModuleNameNodes(getModuleNameChild(ct)));
+		return ModelFactoryImpl.FACTORY.ModuleDecl(AntlrQualifiedName.toModuleNameNodes(getModuleNameChild(ct)));
 	}
 
 	public static CommonTree getModuleNameChild(CommonTree ct)

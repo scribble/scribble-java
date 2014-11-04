@@ -33,9 +33,9 @@ public class PayloadTypeDecl extends DataTypeDecl //AbstractNode implements Modu
 	@Override
 	public String toString()
 	{
-		return AntlrConstants.TYPE_KW + " <" + this.schema + "> " + this.extName
-				+ " " + AntlrConstants.FROM_KW + " " + this.source + " "
-				+ AntlrConstants.AS_KW + " " + this.alias + ";";
+		return Constants.TYPE_KW + " <" + this.schema + "> " + this.extName
+				+ " " + Constants.FROM_KW + " " + this.source + " "
+				+ Constants.AS_KW + " " + this.alias + ";";
 	}
 
 	/*public PayloadType getFullPayloadTypeName()

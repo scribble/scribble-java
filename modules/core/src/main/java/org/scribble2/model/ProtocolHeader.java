@@ -28,7 +28,7 @@ public abstract class ProtocolHeader extends ModelNodeBase
 		return reconstruct(this.ct, block);
 	}*/
 
-	/*public boolean isParameterDeclListEmpty()
+	public boolean isParameterDeclListEmpty()
 	{
 		return this.paramdecls.isEmpty();
 	}
@@ -36,11 +36,11 @@ public abstract class ProtocolHeader extends ModelNodeBase
 	@Override
 	public String toString()
 	{
-		String s = AntlrConstants.PROTOCOL_KW + " " + this.name;
+		String s = Constants.PROTOCOL_KW + " " + this.name;
 		if (!isParameterDeclListEmpty())
 		{
 			s += this.paramdecls;
 		}
 		return s + this.roledecls;
-	}*/
+	}
 }

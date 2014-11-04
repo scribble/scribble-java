@@ -6,6 +6,7 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.MessageSignatureNode;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalMessageTransfer;
 import org.scribble2.model.name.AmbiguousNameNode;
 import org.scribble2.model.name.qualified.MessageSignatureNameNode;
@@ -32,7 +33,8 @@ public class AntlrGlobalMessageTransfer
 		{
 			dests.add(AntlrSimpleName.toRoleNode(dest));
 		}
-		return new GlobalMessageTransfer(src, msg, dests);
+		//return new GlobalMessageTransfer(src, msg, dests);
+		return ModelFactoryImpl.FACTORY.GlobalMessageTransfer(src, msg, dests);
 	}
 
 	protected static MessageNode parseMessage(AntlrModuleParser parser, CommonTree ct)

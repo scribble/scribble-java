@@ -1,5 +1,6 @@
 package org.scribble2.model.global;
 
+import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.ProtocolBlock;
 
 public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence> implements GlobalNode
@@ -15,11 +16,17 @@ public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence
 							//-> blocks.stream().map(GlobalChoice.toGlobalProtocolBlock).collect(Collectors.toList());
 							-> Util.listCast(blocks, toGlobalProtocolBlock);*/
 
-	public GlobalProtocolBlock(GlobalInteractionSequence gis)
+	public GlobalProtocolBlock(GlobalInteractionSequence seq)
 	{
 		//this(t, gis, null, null);
-		super(gis);
+		super(seq);
 		//super(ct, gis);
+	}
+
+	@Override
+	protected GlobalProtocolBlock copy()
+	{
+		return new GlobalProtocolBlock(this.seq);
 	}
 
 	/*public GlobalProtocolBlock(CommonTree ct, GlobalInteractionSequence gis, ProtocolBlockContext bcontext)

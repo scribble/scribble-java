@@ -7,9 +7,15 @@ import org.scribble2.model.InteractionSequence;
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
 public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction> implements GlobalNode
 {
-	public GlobalInteractionSequence(List<GlobalInteraction> gis)
+	public GlobalInteractionSequence(List<GlobalInteraction> actions)
 	{
-		super(gis);
+		super(actions);
+	}
+
+	@Override
+	protected GlobalInteractionSequence copy()
+	{
+		return new GlobalInteractionSequence(actions);
 	}
 
 	/*@Override

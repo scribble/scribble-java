@@ -2,7 +2,7 @@ package org.scribble2.model.global;
 
 import java.util.List;
 
-import org.scribble2.model.AntlrConstants;
+import org.scribble2.model.Constants;
 import org.scribble2.model.Interrupt;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.name.simple.RoleNode;
@@ -178,6 +178,6 @@ public class GlobalInterrupt extends Interrupt //implements GlobalInteraction
 		{
 			s += ", " + msg;
 		}
-		return s + " " + AntlrConstants.BY_KW + " " + this.src + ";";
+		return s + " " + Constants.BY_KW + " " + this.src + ";";
 	}
 }

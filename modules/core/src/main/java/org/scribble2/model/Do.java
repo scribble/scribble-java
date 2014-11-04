@@ -285,7 +285,7 @@ public abstract class Do extends ModelNodeBase implements SimpleInteractionNode 
 	@Override
 	public String toString()
 	{
-		String s = AntlrConstants.DO_KW + " ";
+		String s = Constants.DO_KW + " ";
 		//if (!hasEmptyScopeNode())
 		if (isScoped())
 		{

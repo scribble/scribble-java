@@ -60,10 +60,10 @@ public class ImportModule extends ImportDecl
 	@Override
 	public String toString()
 	{
-		String s = AntlrConstants.IMPORT_KW + " " + modname;
+		String s = Constants.IMPORT_KW + " " + modname;
 		if (isAliased())
 		{
-			s += " " + AntlrConstants.AS_KW + " " + this.alias;
+			s += " " + Constants.AS_KW + " " + this.alias;
 		}
 		return s + ";";
 	}

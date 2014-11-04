@@ -1,6 +1,7 @@
 package org.scribble2.model;
 
-public class AntlrConstants
+// don't know how to use class from org.scribble2.parser
+public class Constants
 {
 	// Duplicated from Scribble2.g -- what's the best way to share it?
 	// Mostly used in projection (outputting local types)

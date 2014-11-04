@@ -3,7 +3,7 @@ package org.scribble2.model;
 import java.util.LinkedList;
 import java.util.List;
 
-public class HeaderParameterDeclList<T extends HeaderParameterDecl> extends ModelNodeBase 
+public abstract class HeaderParameterDeclList<T extends HeaderParameterDecl> extends ModelNodeBase 
 {
 	public final List<T> decls;
 	

@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 {
-	public ParameterDeclList(List<ParameterDecl> pds)
+	public ParameterDeclList(List<ParameterDecl> decls)
 	{
-		super(pds);
+		super(decls);
 	}
 
 	/*// Not doing anything except cloning
@@ -91,5 +91,11 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 			return "";
 		}
 		return "<" + super.toString() + ">";
+	}
+
+	@Override
+	protected ParameterDeclList copy()
+	{
+		return new ParameterDeclList(this.decls);
 	}
 }

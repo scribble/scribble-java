@@ -100,6 +100,6 @@ public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSeq
 	@Override
 	public String toString()
 	{
-		return AntlrConstants.REC_KW + " " + this.recvar + " " + block;
+		return Constants.REC_KW + " " + this.recvar + " " + block;
 	}
 }
