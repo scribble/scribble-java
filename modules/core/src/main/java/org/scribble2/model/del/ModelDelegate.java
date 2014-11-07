@@ -1,5 +1,9 @@
 package org.scribble2.model.del;
 
+import org.scribble2.model.ModelNode;
+import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.util.ScribbleException;
+
 
 public interface ModelDelegate
 {
@@ -8,10 +12,10 @@ public interface ModelDelegate
 	ModelNode visitChildren(ModelVisitor nv);// throws ScribbleException;*/
 	//ModelNode visitChildrenInSubprotocols(SubprotocolVisitor spv);// throws ScribbleException;
 	
-	/*NameDisambiguator enterDisambiguation(NameDisambiguator disamb) throws ScribbleException;
-	ModelNode leaveDisambiguation(NameDisambiguator disamb) throws ScribbleException;
+	NameDisambiguator enterDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException;
+	ModelNode leaveDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException;
 
-	ModelNodeContextBuilder enterContextBuilding(ModelNodeContextBuilder builder) throws ScribbleException;
+	/*ModelNodeContextBuilder enterContextBuilding(ModelNodeContextBuilder builder) throws ScribbleException;
 	ModelNode leaveContextBuilding(ModelNodeContextBuilder builder) throws ScribbleException;
 
 	WellFormedChoiceChecker enterWFChoiceCheck(WellFormedChoiceChecker checker) throws ScribbleException;

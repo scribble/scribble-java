@@ -2,7 +2,9 @@ package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ParameterDecl;
+import org.scribble2.model.ParameterDecl.Kind;
 import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.AntlrModuleParser;
 
 public class AntlrParameterDecl
@@ -12,14 +14,14 @@ public class AntlrParameterDecl
 
 	public static ParameterDecl parseParameterDecl(AntlrModuleParser parser, CommonTree ct)
 	{
-		/*Kind kind = parseKind(getKindChild(ct));
-		ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct), kind);*/
+		Kind kind = parseKind(getKindChild(ct));
+		//ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct), kind);
 		ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct));
 		//return new ParameterDecl(kind, name);
-		return new ParameterDecl(name);
+		return new ParameterDecl(kind, name);
 	}
 
-	/*private static Kind parseKind(CommonTree ct)
+	private static Kind parseKind(CommonTree ct)
 	{
 		String kind = ct.getText();
 		switch (kind)
@@ -37,7 +39,7 @@ public class AntlrParameterDecl
 				throw new RuntimeException("Unknown parameter declaration kind: " + kind);
 			}
 		}
-	}*/
+	}
 
 	public static CommonTree getKindChild(CommonTree ct)
 	{

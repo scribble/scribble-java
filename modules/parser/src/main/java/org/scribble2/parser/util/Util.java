@@ -20,6 +20,7 @@ public class Util
 		switch (type)
 		{
 			//case AntlrConstants.EMPTY_PARAMETERDECLLST_NODE_TYPE: return AntlrNodeType.EMPTY_PARAMETERDECLLST;
+			case AntlrConstants.AMBIGUOUSNAME_NODE_TYPE: return AntlrNodeType.AMBIGUOUSNAME;
 			case AntlrConstants.QUALIFIEDNAME_NODE_TYPE: return AntlrNodeType.QUALIFIEDNAME;
 
 			case AntlrConstants.MESSAGESIGNATURE_NODE_TYPE: return AntlrNodeType.MESSAGESIGNATURE;

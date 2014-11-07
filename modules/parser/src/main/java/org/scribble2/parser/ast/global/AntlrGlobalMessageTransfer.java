@@ -8,8 +8,6 @@ import org.scribble2.model.MessageNode;
 import org.scribble2.model.MessageSignatureNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalMessageTransfer;
-import org.scribble2.model.name.AmbiguousNameNode;
-import org.scribble2.model.name.qualified.MessageSignatureNameNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.AntlrModuleParser;
@@ -57,7 +55,7 @@ public class AntlrGlobalMessageTransfer
 			return (MessageSignatureNode) parser.parse(ct);
 		}
 		// Duplicated from AntlrPayloadElement parse
-		else if (type.equals(AntlrConstants.QUALIFIEDNAME_NODE_TYPE))  // member name
+		/*else if (type.equals(AntlrConstants.QUALIFIEDNAME_NODE_TYPE))  // member name
 		{
 			MessageSignatureNameNode name = AntlrQualifiedName.toMessageSignatureNameNodes(ct);
 			if (name.getElementCount() == 1)  // HACK: parser returns the simple name case as a qualified name
@@ -70,10 +68,22 @@ public class AntlrGlobalMessageTransfer
 			{
 				return name;
 			}
+		}*/
+		else //if (type.equals(AntlrConstants.AMBIGUOUSNAME_NODE_TYPE))
+		{
+			// Duplicated from AntlrPayloadElement parse
+			if (ct.getChildCount() == 0)
+			{
+				return AntlrSimpleName.toAmbiguousNameNode(ct);  // parametername or simple messagesignaturename
+			}
+			else
+			{
+				return AntlrQualifiedName.toMessageSignatureNameNodes(ct);
+			}
 		}
-		//return AntlrSimpleName.toParameterNode(ct, Kind.SIG);
+		/*//return AntlrSimpleName.toParameterNode(ct, Kind.SIG);
 		//return AntlrSimpleName.toSimpleMessageSignatureNameNode(ct);
-		return new AmbiguousNameNode(type);
+		return new AmbiguousNameNode(type);*/
 	}
 
 	public static CommonTree getSourceChild(CommonTree ct)

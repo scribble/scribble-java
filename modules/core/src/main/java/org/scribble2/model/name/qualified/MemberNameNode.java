@@ -9,8 +9,8 @@ public abstract class MemberNameNode extends QualifiedNameNode
 		super(ns);
 	}
 	
-	/*protected ModuleNameNode getModulePrefix()
+	protected ModuleNameNode getModulePrefix()
 	{
-		return new ModuleNameNode(null, getPrefixElements());
-	}*/
+		return new ModuleNameNode(getPrefixElements());
+	}
 }

@@ -3,8 +3,12 @@ package org.scribble2.model.name.qualified;
 import java.util.Arrays;
 
 import org.scribble2.model.ModelNodeBase;
+import org.scribble2.sesstype.name.CompoundName;
+import org.scribble2.sesstype.name.Kind;
+import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.Named;
 
-public abstract class CompoundNameNode extends ModelNodeBase //implements Named
+public abstract class CompoundNameNode extends ModelNodeBase implements Named
 {
 	//public final List<PrimitiveNameNode> names;
 	protected final String[] elems;
@@ -66,16 +70,15 @@ public abstract class CompoundNameNode extends ModelNodeBase //implements Named
 	/*@Override
 	public Name toName()
 	{
-		//return new CompoundName(Kind.AMBIGUOUS, toStringArray());
-		throw new RuntimeException("Shouldn't get in here: " + this.elems);
+		return new CompoundName(Kind.AMBIGUOUS, toStringArray());
 	}*/
 
 	// FIXME:
 	@Override
 	public String toString()
 	{
-		//return toName().toString();
-		return Arrays.toString(this.elems);
+		return toName().toString();
+		//return Arrays.toString(this.elems);
 	}
 	
 	@Override
@@ -100,7 +103,7 @@ public abstract class CompoundNameNode extends ModelNodeBase //implements Named
 		return hash;
 	}
 	
-	/*protected String[] toStringArray()
+	protected String[] toStringArray()
 	{
 		String[] names = new String[this.elems.length];
 		for (int i = 0; i < this.elems.length; i++)
@@ -110,7 +113,7 @@ public abstract class CompoundNameNode extends ModelNodeBase //implements Named
 		return names;
 	}
 	
-	protected static String[] getIdentifiers(PrimitiveNameNode[] ns)
+	/*protected static String[] getIdentifiers(PrimitiveNameNode[] ns)
 	{
 		String[] ids = new String[ns.length];
 		for (int i = 0; i < ns.length; i++)

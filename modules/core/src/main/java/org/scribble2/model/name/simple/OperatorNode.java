@@ -1,16 +1,25 @@
 package org.scribble2.model.name.simple;
 
+import org.scribble2.sesstype.name.Operator;
+
+
 
 public class OperatorNode extends SimpleNameNode
 {
 	public static final String EMPTY_OPERATOR_IDENTIFIER = "";
 	
-	public OperatorNode(String name)
+	public OperatorNode(String identifier)
 	{
-		super(name);
+		super(identifier);
+	}
+
+	@Override
+	protected OperatorNode copy()
+	{
+		return new OperatorNode(this.identifier);
 	}
 	
-	/*@Override
+	@Override
 	public Operator toName()
 	{
 		if (this.identifier.equals(EMPTY_OPERATOR_IDENTIFIER))
@@ -18,5 +27,5 @@ public class OperatorNode extends SimpleNameNode
 			return Operator.EMPTY_OPERATOR;
 		}
 		return new Operator(this.identifier);
-	}*/
+	}
 }

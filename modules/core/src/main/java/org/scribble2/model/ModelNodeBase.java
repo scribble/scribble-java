@@ -17,6 +17,7 @@ package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
 
 /**
  * This is the generic object from which all Scribble model objects
@@ -32,21 +33,21 @@ public abstract class ModelNodeBase implements ModelNode
 	}*/
 	
 	@Override
-	public ModelNode visit(ModelVisitor nv)// throws ScribbleException;
+	public ModelNode visit(ModelVisitor nv) throws ScribbleException
 	{
 		//return this.del.visit(this, nv);
 		return visitChild(this, nv);
 	}
 	
 	//@Override
-	protected ModelNode visitChild(ModelNode child, ModelVisitor nv)// throws ScribbleException
+	protected ModelNode visitChild(ModelNode child, ModelVisitor nv) throws ScribbleException
 	{
 		//return this.del.visit(this, child, nv);
 		return nv.visit(this, child);
 	}
 
 	@Override
-	public ModelNode visitChildren(ModelVisitor nv)// throws ScribbleException;
+	public ModelNode visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		return this;
 	}
@@ -58,12 +59,14 @@ public abstract class ModelNodeBase implements ModelNode
 		this.ct = ct;
 	}*/
 	
-	protected ModelDelegate del()
+	@Override
+	public ModelDelegate del()
 	{
 		return this.del;
 	}
 	
-	protected ModelNodeBase del(ModelDelegate del)
+	@Override
+	public ModelNodeBase del(ModelDelegate del)
 	{
 		ModelNodeBase copy = copy();
 		copy.del = del;

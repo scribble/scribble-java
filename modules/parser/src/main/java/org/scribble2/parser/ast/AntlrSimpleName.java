@@ -3,7 +3,7 @@ package org.scribble2.parser.ast;
 import java.nio.file.WatchEvent.Kind;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.name.AmbiguousNameNode;
+import org.scribble2.model.name.simple.AmbiguousNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecursionVarNode;

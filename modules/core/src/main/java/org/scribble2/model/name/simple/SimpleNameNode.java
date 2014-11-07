@@ -1,18 +1,19 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.ModelNodeBase;
+import org.scribble2.sesstype.name.Named;
 
 
 // Parser Identifier
 // The various kinds of names cannot be distinguished from parameter names at the parser level -- maybe no point to distinguish in the AST?
 // Could make a subclass of CompoundNameNode (but not very convenient, and wouldn't match grammar def)
-public abstract class SimpleNameNode extends ModelNodeBase //implements Named
+public abstract class SimpleNameNode extends ModelNodeBase implements Named
 {
 	public final String identifier;
 
-	public SimpleNameNode(String name)
+	public SimpleNameNode(String identifier)
 	{
-		this.identifier = name;
+		this.identifier = identifier;
 	}
 
 	/*@Override
@@ -24,7 +25,8 @@ public abstract class SimpleNameNode extends ModelNodeBase //implements Named
 	@Override
 	public String toString()
 	{
-		return this.identifier;
+		//return this.identifier;
+		return toName().toString();
 	}
 	
 	@Override

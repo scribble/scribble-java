@@ -3,7 +3,7 @@ package org.scribble2.model;
 
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
-public interface HeaderParameterDecl extends ModelNode //implements NameDeclaration
+public interface HeaderParameterDecl extends ModelNode, NameDecl //implements NameDeclaration
 {
 	
 }

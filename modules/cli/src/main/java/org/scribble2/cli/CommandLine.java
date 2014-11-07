@@ -17,13 +17,15 @@
 package org.scribble2.cli;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.Module;
 import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.resources.Resource;
 import org.scribble2.foo.ModuleParser;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.model.Module;
+import org.scribble2.model.visit.Job;
+import org.scribble2.util.ScribbleException;
 
 /**
  * This class provides the command line interface for the scribble parser.
@@ -265,25 +267,42 @@ public class CommandLine {
 		//try {
 			//module = PARSER.parse(resource, _loader, LOGGER);
 			//module = PARSER.parse(resource);
-			module = new AntlrModuleParser().parseModuleFromSource("../validation/src/test/scrib/src/Test.scr");
+
+			//module = new AntlrModuleParser().parseModuleFromSource("../validation/src/test/scrib/src/Test.scr");
 			//module = new AntlrModuleParser().parseModuleFromSource("modules/validation/src/test/scrib/src/Test.scr");
 			//module = new AntlrModuleParser().parseModuleFromSource("Test.scr");
 
-			if (module != null) {
+			//if (module != null) 
+		{
 
 				/*ModuleContext context =
 						new DefaultModuleContext(resource, module, _loader);
 
 				VALIDATOR.validate(context, module, LOGGER);*/
 				
+				List<String> impath = new LinkedList<String>();
+				String mainpath = "../validation/src/test/scrib/src/Test.scr";
+				
+				try
+				{
+					CliJob cjob = new CliJob(impath, mainpath);
+					Job job = new Job(impath, mainpath, cjob.jcontext.getModules(), cjob.jcontext.getModules().get(cjob.jcontext.main));
+					job.checkWellFormedness();
+				}
+				catch (IOException | ScribbleException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				System.out.println("a: " + module);
 				//System.out.println("a: " + module.getChildren());
 			}
-			else
+			/*else
 			{
 			System.err.println("ERROR: Failed to parse '" + resource + "': "
 					 + "\r\n");
-			}
+			}*/
 
 		/*} catch (IOException e) {
 			System.err.println("ERROR: Failed to parse '" + resource + "': "

@@ -1,6 +1,8 @@
 package org.scribble2.model.name.qualified;
 
 import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.sesstype.name.ModuleName;
+import org.scribble2.sesstype.name.PayloadType;
 
 public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode //PayloadTypeOrParameterNode
 {
@@ -10,6 +12,12 @@ public class PayloadTypeNameNode extends MemberNameNode implements PayloadElemen
 		super(ns);
 	}
 
+	@Override
+	protected PayloadTypeNameNode copy()
+	{
+		return new PayloadTypeNameNode(this.elems);
+	}
+
 	/*// Basically a copy without the AST
 	@Override
 	public PayloadTypeNameNode leaveProjection(Projector proj) //throws ScribbleException
@@ -17,7 +25,7 @@ public class PayloadTypeNameNode extends MemberNameNode implements PayloadElemen
 		PayloadTypeNameNode projection = new PayloadTypeNameNode(null, getElements());
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
-	}
+	}*/
 	
 	@Override
 	public PayloadType toName()
@@ -32,7 +40,7 @@ public class PayloadTypeNameNode extends MemberNameNode implements PayloadElemen
 		return new PayloadType(modname, membname);
 	}
 
-	@Override
+	/*@Override
 	public PayloadTypeOrParameter toPayloadTypeOrParameter()
 	{
 		return toName();

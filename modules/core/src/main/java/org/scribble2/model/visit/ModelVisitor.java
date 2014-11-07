@@ -1,31 +1,35 @@
 package org.scribble2.model.visit;
 
 import org.scribble2.model.ModelNode;
+import org.scribble2.util.ScribbleException;
 
 public class ModelVisitor
 {
-	//private final Job job;
+	private final Job job;
 	
-	//public ModelVisitor(Job job)
-	public ModelVisitor()
+	public ModelVisitor(Job job)
 	{
-		//this.job = job;
+		this.job = job;
+		
+		...context visitChildren...
+		...  name disambiguation, name kind nodes, ... del context/env, def factory, visitors: subprotocol/context/env, ..ModelVisitor...
+		
 	}
 
 	// Visit the child under the context of parent
-	public ModelNode visit(ModelNode parent, ModelNode child) //throws ScribbleException
+	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		ModelVisitor nv = enter(parent, child);
 		ModelNode visited = child.visitChildren(nv);
 		return leave(parent, child, nv, visited);
 	}
 	
-	protected ModelVisitor enter(ModelNode parent, ModelNode child) //throws ScribbleException
+	protected ModelVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		return this;
 	}
 	
-	protected ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) //throws ScribbleException
+	protected ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
 	{
 		return visited;
 	}

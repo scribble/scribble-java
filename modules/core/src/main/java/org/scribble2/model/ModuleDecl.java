@@ -1,8 +1,9 @@
 package org.scribble2.model;
 
 import org.scribble2.model.name.qualified.ModuleNameNode;
+import org.scribble2.sesstype.name.ModuleName;
 
-public class ModuleDecl extends ModelNodeBase
+public class ModuleDecl extends ModelNodeBase implements NameDecl
 {
 	public final ModuleNameNode fullmodname;
 
@@ -28,5 +29,11 @@ public class ModuleDecl extends ModelNodeBase
 	protected ModuleDecl copy()
 	{
 		return new ModuleDecl(fullmodname);
+	}
+
+	@Override
+	public ModuleName toName()
+	{
+		return this.fullmodname.toName();
 	}
 }

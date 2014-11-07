@@ -1,20 +1,42 @@
 package org.scribble2.model;
 
 import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.sesstype.name.Parameter;
 
-public class ParameterDecl implements HeaderParameterDecl//extends HeaderParameterDecl<ParameterNode> //implements NameDeclaration
+public class ParameterDecl extends ModelNodeBase implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
 {
+	public enum Kind { TYPE, SIG }  // ROLE
+	
 	/*public static final Function<NameDecl<? extends PrimitiveNameNode>, ParameterDecl> toParameterDecl =
 			(NameDecl<? extends PrimitiveNameNode> nd) -> (ParameterDecl) nd;*/
 	
 	public final ParameterNode name;
+	public final Kind kind;
 
-	//public ParameterDecl(Toke t, Kind kind, ParameterNode namenode)
-	public ParameterDecl(ParameterNode namenode)
+	public ParameterDecl(Kind kind, ParameterNode namenode)
 	{
 		//super(t, kind, namenode);
 		//super(namenode);
+		this.kind = kind;
 		this.name = namenode;
+	}
+
+	@Override
+	protected ParameterDecl copy()
+	{
+		return new ParameterDecl(this.kind, this.name);
+	}
+
+	@Override
+	public Parameter toName()
+	{
+		return this.name.toName();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return toName().toString();
 	}
 	
 	/*@Override

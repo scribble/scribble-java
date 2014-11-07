@@ -15,7 +15,9 @@
  */
 package org.scribble2.model;
 
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
 
 /**
  * This is the generic object from which all Scribble model objects
@@ -23,6 +25,9 @@ import org.scribble2.model.visit.ModelVisitor;
  */
 public interface ModelNode// extends Copy
 {
-	ModelNode visit(ModelVisitor nv);// throws ScribbleException;
-	ModelNode visitChildren(ModelVisitor nv);// throws ScribbleException;
+	ModelNode visit(ModelVisitor nv) throws ScribbleException;
+	ModelNode visitChildren(ModelVisitor nv) throws ScribbleException;
+
+	public ModelDelegate del();
+	public ModelNodeBase del(ModelDelegate del);
 }

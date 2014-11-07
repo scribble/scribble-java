@@ -1,8 +1,28 @@
 package org.scribble2.model.del;
 
+import org.scribble2.model.ModelNode;
+import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.util.ScribbleException;
 
-public abstract class ModelDelegateBase implements ModelDelegate
+
+//public abstract class ModelDelegateBase implements ModelDelegate
+public class ModelDelegateBase implements ModelDelegate
 {
+	@Override
+	public NameDisambiguator enterDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
+	{
+		return disamb;
+	}
+
+	@Override
+	public ModelNode leaveDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
+	{
+		
+		System.out.println("1: " + n.getClass());
+		
+		return n;
+	}
+
 	/*@Override
 	public ModelNode visit(ModelNodeBase n, ModelVisitor nv)// throws ScribbleException
 	{

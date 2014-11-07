@@ -1,5 +1,6 @@
 package org.scribble2.parser;
 
+// FIXME: refer to values from core model.Constants
 public class AntlrConstants
 {
 	public static final String SCRIBBLE_FILE_EXTENSION = "scr";
@@ -12,6 +13,7 @@ public class AntlrConstants
 	public static final String PAYLOADELEMENT_NODE_TYPE = "PAYLOADELEMENT";
 
 	//public static final String EMPTY_PARAMETERDECLLST_NODE_TYPE = "EMPTY_PARAMETERDECLLIST";
+	public static final String AMBIGUOUSNAME_NODE_TYPE = "AMBIGUOUSNAME";
 	public static final String QUALIFIEDNAME_NODE_TYPE = "QUALIFIEDNAME";
 	
 	public static final String MODULE_NODE_TYPE = "MODULE";
@@ -65,6 +67,7 @@ public class AntlrConstants
 	public enum AntlrNodeType 
 	{
 		//EMPTY_PARAMETERDECLLST,
+		AMBIGUOUSNAME,
 		QUALIFIEDNAME,
 
 		MODULE,

@@ -3,9 +3,9 @@
 
 module Test;
 
-global protocol Foo(role A, role B)
+global protocol Foo<sig X>(role A, role B)
 {
-	m1() from A to B;
+	X from A to B;
 	/*choice at A
 	{
 	}*/

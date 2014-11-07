@@ -1,6 +1,8 @@
 package org.scribble2.model.name.qualified;
 
 import org.scribble2.model.MessageNode;
+import org.scribble2.sesstype.name.MessageSignatureName;
+import org.scribble2.sesstype.name.ModuleName;
 
 public class MessageSignatureNameNode extends MemberNameNode implements MessageNode
 {
@@ -16,6 +18,12 @@ public class MessageSignatureNameNode extends MemberNameNode implements MessageN
 		super(ns);
 	}
 
+	@Override
+	protected MessageSignatureNameNode copy()
+	{
+		return new MessageSignatureNameNode(this.elems);
+	}
+
 	/*// Basically a copy without the AST
 	@Override
 	public MessageSignatureNameNodes leaveProjection(Projector proj) //throws ScribbleException
@@ -24,7 +32,7 @@ public class MessageSignatureNameNode extends MemberNameNode implements MessageN
 		MessageSignatureNameNodes projection = new MessageSignatureNameNodes(null, getElements());
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
-	}
+	}*/
 	
 	@Override
 	public MessageSignatureName toName()
@@ -39,7 +47,7 @@ public class MessageSignatureNameNode extends MemberNameNode implements MessageN
 		return new MessageSignatureName(modname, membname);
 	}
 
-	@Override
+	/*@Override
 	public MessageSignatureName toArgument()
 	{
 		return toName();

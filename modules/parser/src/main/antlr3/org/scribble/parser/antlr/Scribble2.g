@@ -79,6 +79,7 @@ tokens
 	 * field)
 	 */
 	//NAME = 'name';
+	AMBIGUOUSNAME = 'ambiguous-name';
 	QUALIFIEDNAME = 'qualified-name';
 	//PACKAGENAME = 'package-name';
 	//FULLMODULENAME = 'full-module-name';
@@ -264,6 +265,8 @@ fragment UNDERSCORE:
 
 simplename:
 	IDENTIFIER
+/*->
+	^(SIMPLENAME IDENTIFIER)*/
 ;
 
 //annotationname:   simplename;
@@ -271,6 +274,12 @@ parametername:    simplename;
 recursionvarname: simplename;
 rolename:         simplename;
 scopename:        simplename;
+
+ambiguousname:
+	simplename
+->
+	^(AMBIGUOUSNAME simplename)
+;
 
 
 /**
@@ -404,14 +413,11 @@ payload:
 
 // Payload type names need disambiguation pass
 payloadelement:
-	payloadtypename  // FIXME: this case subsumes the parametername case
-/*->
+	// qualified payloadtypename subsumes simplename case
 	ambiguousname
-*/
+/*	payloadtypename  // this case subsumes the parametername case
 |
 	parametername
-/*->
-	ambiguousname
 */
 ;
 
@@ -531,9 +537,11 @@ globalmessagetransfer:
 message:
 	messagesignature
 |
-	messagesignaturename
+	ambiguousname
+/*|
+	messagesignaturename  // qualified messagesignaturename subsumes parametername case
 |
-	parametername
+	parametername*/
 ;
 
 

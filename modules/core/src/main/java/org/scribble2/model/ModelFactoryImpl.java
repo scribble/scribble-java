@@ -3,6 +3,7 @@ package org.scribble2.model;
 import java.util.List;
 
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDelegateBase;
 import org.scribble2.model.global.GlobalInteraction;
 import org.scribble2.model.global.GlobalInteractionSequence;
 import org.scribble2.model.global.GlobalMessageTransfer;
@@ -31,11 +32,16 @@ public class ModelFactoryImpl implements ModelFactory
 		return (T) ret;
 	}
 	
+	private ModelDelegate createDefaultDelegate()
+	{
+		return new ModelDelegateBase();
+	}
+	
 	@Override
 	public MessageSignatureNode MessageSignatureNode(OperatorNode op, Payload payload)
 	{
 		MessageSignatureNode msn = new MessageSignatureNode(op, payload);
-		msn = del(msn, null);
+		msn = del(msn, createDefaultDelegate());
 		return msn;
 	}
 
@@ -43,7 +49,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public Payload Payload(List<PayloadElement> payloadelems)
 	{
 		Payload p = new Payload(payloadelems);
-		p = del(p, null);
+		p = del(p, createDefaultDelegate());
 		return p;
 	}
 
@@ -51,7 +57,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public PayloadElement PayloadElement(PayloadElementNameNode name)
 	{
 		PayloadElement pe = new PayloadElement(name);
-		pe = del(pe, null);
+		pe = del(pe, createDefaultDelegate());
 		return pe;
 	}
 	
@@ -63,7 +69,7 @@ public class ModelFactoryImpl implements ModelFactory
 			List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
-		module = del(module, null);
+		module = del(module, createDefaultDelegate());
 		return module;
 	}
 
@@ -71,7 +77,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public ModuleDecl ModuleDecl(ModuleNameNode fullmodname)
 	{
 		ModuleDecl md = new ModuleDecl(fullmodname);
-		md = del(md, null);
+		md = del(md, createDefaultDelegate());
 		return md;
 	}
 
@@ -79,7 +85,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolDecl GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def)
 	{
 		GlobalProtocolDecl gpd = new GlobalProtocolDecl(header, def);
-		gpd = del(gpd, null);
+		gpd = del(gpd, createDefaultDelegate());
 		return gpd;
 	}
 
@@ -87,7 +93,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls)
 	{
 		GlobalProtocolHeader gph = new GlobalProtocolHeader(name, roledecls, paramdecls);
-		gph = del(gph, null);
+		gph = del(gph, createDefaultDelegate());
 		return gph;
 	}
 
@@ -95,7 +101,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public RoleDeclList RoleDeclList(List<RoleDecl> rds)
 	{
 		RoleDeclList rdl = new RoleDeclList(rds);
-		rdl = del(rdl, null);
+		rdl = del(rdl, createDefaultDelegate());
 		return rdl;
 	}
 
@@ -103,7 +109,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public ParameterDeclList ParameterDeclList(List<ParameterDecl> pds)
 	{
 		ParameterDeclList pdl = new ParameterDeclList(pds);
-		pdl = del(pdl, null);
+		pdl = del(pdl, createDefaultDelegate());
 		return pdl;
 	}
 
@@ -111,7 +117,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolDefinition GlobalProtocolDefinition(GlobalProtocolBlock block)
 	{
 		GlobalProtocolDefinition gpd = new GlobalProtocolDefinition(block);
-		gpd = del(gpd, null);
+		gpd = del(gpd, createDefaultDelegate());
 		return gpd;
 	}
 
@@ -119,7 +125,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolBlock GlobalProtocolBlock(GlobalInteractionSequence seq)
 	{
 		GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);
-		gpb = del(gpb, null);
+		gpb = del(gpb, createDefaultDelegate());
 		return gpb;
 	}
 
@@ -127,7 +133,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteraction> actions)
 	{
 		GlobalInteractionSequence gis = new GlobalInteractionSequence(actions);
-		gis = del(gis, null);
+		gis = del(gis, createDefaultDelegate());
 		return gis;
 	}
 
@@ -135,7 +141,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		GlobalMessageTransfer gmt = new GlobalMessageTransfer(src, msg, dests);
-		gmt = del(gmt, null);
+		gmt = del(gmt, createDefaultDelegate());
 		return gmt;
 	}
 }

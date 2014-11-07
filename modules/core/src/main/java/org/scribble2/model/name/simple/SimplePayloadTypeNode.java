@@ -1,16 +1,23 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.ArgumentInstantiation;
+import org.scribble2.model.ModelNodeBase;
 
 public class SimplePayloadTypeNode extends SimpleNameNode implements ArgumentInstantiation//, PayloadElementNameNode// SimpleMemberNameNode
 {
 	//public final String extType;  // Not current considered for equals/hashCode
 
 	//public SimplePayloadTypeNode(CommonTree ct, String name, String extType)
-	public SimplePayloadTypeNode(String name)
+	public SimplePayloadTypeNode(String identifier)
 	{
-		super(name);
+		super(identifier);
 		//this.extType = extType;
+	}
+
+	@Override
+	protected SimplePayloadTypeNode copy()
+	{
+		return new SimplePayloadTypeNode(this.identifier);
 	}
 	
 	/*@Override

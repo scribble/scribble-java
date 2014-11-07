@@ -3,15 +3,22 @@ package org.scribble2.model.name.simple;
 import org.scribble2.model.ArgumentInstantiation;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.sesstype.name.Parameter;
 
 public class ParameterNode extends SimpleNameNode implements PayloadElementNameNode, MessageNode, ArgumentInstantiation//, PayloadTypeOrParameterNode
 {
 	//public final Kind kind;
 	
-	public ParameterNode(String name)//, Kind kind)
+	public ParameterNode(String identifier)//, Kind kind)
 	{
-		super(name);
+		super(identifier);
 		//this.kind = kind;
+	}
+
+	@Override
+	protected ParameterNode copy()
+	{
+		return new ParameterNode(this.identifier);
 	}
 	
 	/*// Only useful for MessageSignatureDecls -- FIXME: integrate sig decls properly
@@ -27,15 +34,15 @@ public class ParameterNode extends SimpleNameNode implements PayloadElementNameN
 	public ArgumentNode substitute(Substitutor subs)
 	{
 		return subs.getArgumentSubstitution(toName());
-	}
+	}*/
 	
 	@Override
 	public Parameter toName()
 	{
-		return new Parameter(this.kind, this.identifier);
+		return new Parameter(null, this.identifier);
 	}
 
-	@Override
+	/*@Override
 	public PayloadTypeOrParameter toPayloadTypeOrParameter()
 	{
 		if (this.kind != Kind.TYPE)

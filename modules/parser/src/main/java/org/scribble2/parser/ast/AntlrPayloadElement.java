@@ -3,9 +3,7 @@ package org.scribble2.parser.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.PayloadElement;
-import org.scribble2.model.name.AmbiguousNameNode;
 import org.scribble2.model.name.PayloadElementNameNode;
-import org.scribble2.model.name.qualified.PayloadTypeNameNode;
 import org.scribble2.parser.AntlrModuleParser;
 import org.scribble2.parser.util.Util;
 
@@ -19,7 +17,7 @@ public class AntlrPayloadElement
 		PayloadElementNameNode ptpn;
 		switch (Util.getAntlrNodeType(child))
 		{
-			case QUALIFIEDNAME:
+			/*case QUALIFIEDNAME:
 			{
 				PayloadTypeNameNode name = AntlrQualifiedName.toPayloadTypeNameNodes(child);
 				if (name.getElementCount() == 1)  // HACK: parser returns the simple name case as a qualified name
@@ -34,10 +32,23 @@ public class AntlrPayloadElement
 					ptpn = name;
 				}
 				break;
+			}*/
+			case AMBIGUOUSNAME:
+			{
+				if (child.getChildCount() == 0)
+				{
+					ptpn = AntlrSimpleName.toAmbiguousNameNode(child);
+				}
+				else
+				{
+					ptpn = AntlrQualifiedName.toPayloadTypeNameNodes(child);
+				}
+				break;
 			}
 			default:  // FIXME: never gets in here (above case in parser grammar subsumes this case)
 			{
-				ptpn = AntlrSimpleName.toAmbiguousNameNode(child);
+				//ptpn = AntlrSimpleName.toAmbiguousNameNode(child);
+				throw new RuntimeException("Shouldn't get in here: " + ct);
 			}
 		}
 		//return new PayloadElement(ptpn);

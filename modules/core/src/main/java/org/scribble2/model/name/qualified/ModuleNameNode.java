@@ -1,5 +1,9 @@
 package org.scribble2.model.name.qualified;
 
+import org.scribble2.sesstype.name.ModuleName;
+import org.scribble2.sesstype.name.PackageName;
+
+
 
 
 public class ModuleNameNode extends QualifiedNameNode
@@ -8,6 +12,12 @@ public class ModuleNameNode extends QualifiedNameNode
 	public ModuleNameNode(String... ns)
 	{
 		super(ns);
+	}
+
+	@Override
+	protected ModuleNameNode copy()
+	{
+		return new ModuleNameNode(this.elems);
 	}
 	
 	/*public ModuleNameNodes(ModuleName mn)
@@ -47,7 +57,7 @@ public class ModuleNameNode extends QualifiedNameNode
 		return new ModuleName(PackageName.EMPTY_PACKAGENAME, smn);
 	}*/
 	
-	/*@Override
+	@Override
 	public ModuleName toName()
 	{
 		//return toModuleName(this);
@@ -58,7 +68,7 @@ public class ModuleNameNode extends QualifiedNameNode
 		}
 		PackageName packname = new PackageName(getPrefixElements());
 		return new ModuleName(packname, modname);
-	}*/
+	}
 
 	/*public static ModuleName toModuleName(CompoundNameNodes ns)
 	{

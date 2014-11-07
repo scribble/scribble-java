@@ -1,10 +1,9 @@
 package org.scribble2.sesstype.name;
 
-import scribble2.sesstype.Message;
 
 
 // The name of a declared (imported) message signature member
-public class MessageSignatureName extends MemberName implements Message
+public class MessageSignatureName extends MemberName //implements Message
 {
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +23,7 @@ public class MessageSignatureName extends MemberName implements Message
 		return new MessageSignatureName(getLastElement());
 	}
 	
-	@Override
+	/*@Override
 	public boolean isParameter()
 	{
 		return false;
@@ -34,5 +33,5 @@ public class MessageSignatureName extends MemberName implements Message
 	public ScopedMessageSignatureName toScopedMessage(Scope scope)
 	{
 		return new ScopedMessageSignatureName(scope, this.toString());
-	}
+	}*/
 }
