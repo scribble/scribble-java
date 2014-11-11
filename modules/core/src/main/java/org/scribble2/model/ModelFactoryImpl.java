@@ -17,7 +17,9 @@ import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 
-public class ModelFactoryImpl implements ModelFactory
+public class ModelFactoryImpl
+
+implements ModelFactory
 {
 	public static final ModelFactory FACTORY = new ModelFactoryImpl();  // FIXME: move somewhere else
 	

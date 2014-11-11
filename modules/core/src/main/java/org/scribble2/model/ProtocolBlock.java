@@ -1,5 +1,8 @@
 package org.scribble2.model;
 
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
+
 
 //public class ProtocolBlock extends AbstractNode
 public abstract class ProtocolBlock<T extends InteractionSequence<? extends InteractionNode>> extends ModelNodeBase //extends AbstractEnvDelegationNode
@@ -29,9 +32,18 @@ public abstract class ProtocolBlock<T extends InteractionSequence<? extends Inte
 		//this.seq = seq;
 	}*/
 	
-	/*protected abstract ProtocolBlock<T> reconstruct(CommonTree ct, T seq, ProtocolBlockContext bcontext, Env env);
-	
+	protected abstract ProtocolBlock<T> reconstruct(T seq);//, ProtocolBlockContext bcontext, Env env);
+
 	@Override
+	//public ProtocolBlock visitChildren(NodeVisitor nv) throws ScribbleException
+	public ProtocolBlock<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	{
+		T seq = visitChildWithClassCheck(this, this.seq, nv);
+		//return new ProtocolBlock<>(this.ct, seq, getContext(), getEnv());
+		return reconstruct(seq);//, getContext(), getEnv());
+	}
+	
+	/*@Override
 	public NodeContextBuilder enterContextBuilding(NodeContextBuilder builder) throws ScribbleException
 	{
 		builder.pushContext(new ProtocolBlockContext());
@@ -70,15 +82,6 @@ public abstract class ProtocolBlock<T extends InteractionSequence<? extends Inte
 		return block;*
 		return new ProtocolBlock(block.ct, block.seq, new Env(nv.getEnv()));
 	}*
-	
-	@Override
-	//public ProtocolBlock visitChildren(NodeVisitor nv) throws ScribbleException
-	public ProtocolBlock<T> visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		T seq = visitChildWithClassCheck(this, this.seq, nv);
-		//return new ProtocolBlock<>(this.ct, seq, getContext(), getEnv());
-		return reconstruct(this.ct, seq, getContext(), getEnv());
-	}
 	
 	@Override
 	public ProtocolBlockContext getContext()

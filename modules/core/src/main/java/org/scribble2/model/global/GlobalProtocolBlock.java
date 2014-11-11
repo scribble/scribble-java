@@ -2,6 +2,7 @@ package org.scribble2.model.global;
 
 import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.ProtocolBlock;
+import org.scribble2.model.del.ModelDelegate;
 
 public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence> implements GlobalNode
 {
@@ -27,6 +28,15 @@ public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence
 	protected GlobalProtocolBlock copy()
 	{
 		return new GlobalProtocolBlock(this.seq);
+	}
+
+	@Override
+	protected ProtocolBlock<GlobalInteractionSequence> reconstruct(GlobalInteractionSequence seq)
+	{
+		ModelDelegate del = del();
+		GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);
+		gpb = (GlobalProtocolBlock) gpb.del(del);
+		return gpb;
 	}
 
 	/*public GlobalProtocolBlock(CommonTree ct, GlobalInteractionSequence gis, ProtocolBlockContext bcontext)

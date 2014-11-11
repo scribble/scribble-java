@@ -1,6 +1,7 @@
 package org.scribble2.model.global;
 
 import org.scribble2.model.ProtocolDefinition;
+import org.scribble2.model.del.ModelDelegate;
 
 public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalProtocolBlock> implements GlobalNode
 {
@@ -13,6 +14,15 @@ public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalProtocolB
 	protected GlobalProtocolDefinition copy()
 	{
 		return new GlobalProtocolDefinition(this.block);
+	}
+
+	@Override
+	protected ProtocolDefinition<GlobalProtocolBlock> reconstruct(GlobalProtocolBlock block)
+	{
+		ModelDelegate del = del();
+		GlobalProtocolDefinition gpd = new GlobalProtocolDefinition(block);
+		gpd = (GlobalProtocolDefinition) gpd.del(del);
+		return gpd;
 	}
 
 	/*@Override

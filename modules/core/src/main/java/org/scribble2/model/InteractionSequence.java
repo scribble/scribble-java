@@ -2,6 +2,9 @@ package org.scribble2.model;
 
 import java.util.List;
 
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
+
 
 //public class InteractionSequence extends AbstractNode
 public abstract class InteractionSequence<T extends InteractionNode> extends ModelNodeBase
@@ -15,16 +18,16 @@ public abstract class InteractionSequence<T extends InteractionNode> extends Mod
 		this.actions = actions;
 	}
 	
-	/*protected abstract InteractionSequence<T> reconstruct(CommonTree ct, List<T> ins);
+	protected abstract InteractionSequence<T> reconstruct(List<T> ins);
 	
 	@Override
 	//public InteractionSequence visitChildren(NodeVisitor nv) throws ScribbleException
-	public InteractionSequence<T> visitChildren(NodeVisitor nv) throws ScribbleException
+	public InteractionSequence<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		List<T> actions = visitChildListWithClassCheck(this, this.actions, nv);  // OK to require all nodes to keep the same class? Maybe better to leave abstract and implement in the global/local subclasses
 		//return new InteractionSequence<T>(this.ct, actions);
-		return reconstruct(this.ct, actions);
-	}*/
+		return reconstruct(actions);
+	}
 	
 	public boolean isEmpty()
 	{

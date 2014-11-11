@@ -1,7 +1,9 @@
 package org.scribble2.model;
 
 import org.scribble2.model.name.qualified.ModuleNameNode;
+import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.name.ModuleName;
+import org.scribble2.util.ScribbleException;
 
 public class ModuleDecl extends ModelNodeBase implements NameDecl
 {
@@ -13,10 +15,10 @@ public class ModuleDecl extends ModelNodeBase implements NameDecl
 	}
 
 	/*@Override
-	public ModuleDecl visitChildren(NodeVisitor nv) throws ScribbleException
+	public ModuleDecl visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		ModuleNameNodes fullmodname = (ModuleNameNodes) visitChild(this.fullmodname, nv);
-		return new ModuleDecl(this.ct, fullmodname);
+		ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.fullmodname, nv);
+		return ModelFactoryImpl.FACTORY.ModuleDecl(fullmodname);
 	}*/
 
 	@Override

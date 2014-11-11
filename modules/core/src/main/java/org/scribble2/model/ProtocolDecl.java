@@ -1,5 +1,8 @@
 package org.scribble2.model;
 
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
+
 
 //public class ProtocolDecl extends AbstractNode
 public abstract class ProtocolDecl<
@@ -30,10 +33,10 @@ public abstract class ProtocolDecl<
 		this.def = def;
 	}
 	
+	// Keeps the current del (shallow reconstruct with new children)
+	protected abstract ProtocolDecl<T1, T2> reconstruct(T1 header, T2 def);//, ProtocolDeclContext pdcontext, Env env);
 
-	/*protected abstract ProtocolDecl<T> reconstruct(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, T def, ProtocolDeclContext pdcontext, Env env);
-
-	@Override
+	/*@Override
 	public NameDisambiguator enterDisambiguation(NameDisambiguator disamb) throws ScribbleException
 	{
 		disamb.enterProtocolDecl(this);
@@ -79,21 +82,19 @@ public abstract class ProtocolDecl<
 			params.add(pd.name.toName());
 		}
 		return new ProtocolSignature(fmn, roles, params);
-	}*
+	}*/
 	
 	//public abstract ProtocolName getFullProtocolName(Env ev) throws ScribbleException;
 
 	@Override
-	public ProtocolDecl<T> visitChildren(NodeVisitor nv) throws ScribbleException
+	public ProtocolDecl<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		RoleDeclList rdl = (RoleDeclList) visitChild(this.roledecls, nv);
-		ParameterDeclList pdl = (ParameterDeclList) visitChild(this.paramdecls, nv);
-		T def = visitChildWithClassCheck(this, this.def, nv);
-		//return new ProtocolDecl<T>(this.ct, this.name, rdl, pdl, def, getContext(), getEnv());
-		return reconstruct(this.ct, this.name, rdl, pdl, def, getContext(), getEnv());
+		T1 header = visitChildWithClassCheck(this, this.header, nv);
+		T2 def = visitChildWithClassCheck(this, this.def, nv);
+		return reconstruct(header, def);//, getContext(), getEnv());
 	}
 	
-	@Override
+	/*@Override
 	public ProtocolDecl<T> visitChildrenInSubprotocols(SubprotocolVisitor spv) throws ScribbleException
 	{
 		//ProtocolName fullname = getFullProtocolName();
@@ -109,7 +110,7 @@ public abstract class ProtocolDecl<
 		//ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrGlobalProtocolDecl.getModuleParent(this.ct));  // FIXME: globalprotocoldecl same as local hack
 		ModuleName fullmodname = mod.getFullModuleName();
 		return new ProtocolName(fullmodname, this.name.toString());
-	}
+	}*/
 	
 	public boolean isGlobal()
 	{
@@ -122,7 +123,7 @@ public abstract class ProtocolDecl<
 	}
 	
 	//public ProtocolBlock getBody()
-	public ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>> getBody()
+	/*public ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>> getBody()
 	{
 		return this.def.block;
 	}*/

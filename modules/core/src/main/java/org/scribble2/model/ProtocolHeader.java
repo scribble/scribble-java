@@ -1,6 +1,8 @@
 package org.scribble2.model;
 
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
 
 
 // TODO: parameterize on global/local role decl list
@@ -17,16 +19,15 @@ public abstract class ProtocolHeader extends ModelNodeBase
 		this.paramdecls = paramdecls;
 	}
 	
-	/*protected abstract ProtocolDefinition<T> reconstruct(CommonTree ct, T block);
+	protected abstract ProtocolHeader reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParameterDeclList pdl);
 	
 	@Override
-	//public ProtocolDefinition<T> visitChildren(NodeVisitor nv) throws ScribbleException
-	public ProtocolDefinition<T> visitChildren(NodeVisitor nv) throws ScribbleException
+	public ProtocolHeader visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		T block = visitChildWithClassCheck(this, this.block, nv);
-		//return new ProtocolDefinition<T>(this.ct, block);
-		return reconstruct(this.ct, block);
-	}*/
+		RoleDeclList rdl = (RoleDeclList) visitChild(this.roledecls, nv);
+		ParameterDeclList pdl = (ParameterDeclList) visitChild(this.paramdecls, nv);
+		return reconstruct(this.name, rdl, pdl);
+	}
 
 	public boolean isParameterDeclListEmpty()
 	{

@@ -3,6 +3,7 @@ package org.scribble2.model.global;
 import java.util.List;
 
 import org.scribble2.model.InteractionSequence;
+import org.scribble2.model.del.ModelDelegate;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
 public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction> implements GlobalNode
@@ -16,6 +17,15 @@ public class GlobalInteractionSequence extends InteractionSequence<GlobalInterac
 	protected GlobalInteractionSequence copy()
 	{
 		return new GlobalInteractionSequence(actions);
+	}
+
+	@Override
+	protected InteractionSequence<GlobalInteraction> reconstruct(List<GlobalInteraction> ins)
+	{
+		ModelDelegate del = del();
+		GlobalInteractionSequence gis = new GlobalInteractionSequence(ins);
+		gis = (GlobalInteractionSequence) gis.del(del);
+		return gis;
 	}
 
 	/*@Override

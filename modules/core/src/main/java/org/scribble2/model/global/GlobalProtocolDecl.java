@@ -1,6 +1,7 @@
 package org.scribble2.model.global;
 
 import org.scribble2.model.ProtocolDecl;
+import org.scribble2.model.del.ModelDelegate;
 
 //public class GlobalProtocolDecl extends ProtocolDecl<GlobalInteraction>
 public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, GlobalProtocolDefinition> implements GlobalNode
@@ -26,6 +27,7 @@ public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, Globa
 	@Override
 	protected GlobalProtocolDecl copy()
 	{
+		//GlobalProtocolDecl gpd = ModelFactoryModelFactoryImpl.FACTORY.GlobalProtocolDecl(header, def);  // No: don't want del
 		return new GlobalProtocolDecl(this.header, this.def);
 	}
 
@@ -38,12 +40,17 @@ public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, Globa
 	/*protected GlobalProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, GlobalProtocolDefinition def, ProtocolDeclContext pdcontext, Env env)
 	{
 		super(ct, name, roledecls, paramdecls, def, pdcontext, env);
-	}
+	}*/
 
 	@Override
-	protected GlobalProtocolDecl reconstruct(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, GlobalProtocolDefinition def, ProtocolDeclContext pdcontext, Env env)
+	protected GlobalProtocolDecl reconstruct(GlobalProtocolHeader header, GlobalProtocolDefinition def)//, ProtocolDeclContext pdcontext, Env env)
 	{
-		return new GlobalProtocolDecl(ct, name, roledecls, paramdecls, def, pdcontext, env);
+		
+		ModelDelegate del = del();
+		//GlobalProtocolDecl gpd = ModelFactoryImpl.FACTORY.GlobalProtocolDecl(header, def);  // No: don't want del
+		GlobalProtocolDecl gpd = new GlobalProtocolDecl(header, def);
+		gpd = (GlobalProtocolDecl) gpd.del(del);  // FIXME: does another shallow copy
+		return gpd;
 	}
 
 	/*@Override
@@ -142,14 +149,7 @@ public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, Globa
 			}
 		}
 		return this;
-	}* /
-
-	/*@Override
-	public GlobalProtocolDecl visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		ProtocolDecl<GlobalProtocolDefinition> pd = super.visitChildren(nv);
-		return new GlobalProtocolDecl(pd.ct, pd.name, pd.roledecls, pd.paramdecls, pd.def);
-	}* /
+	}*/
 
 	@Override
 	public boolean isGlobal()
@@ -157,7 +157,7 @@ public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, Globa
 		return true;
 	}
 	
-	@Override
+	/*@Override
 	public GlobalProtocolBlock getBody()
 	{
 		return (GlobalProtocolBlock) super.getBody();

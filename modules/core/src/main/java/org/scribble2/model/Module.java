@@ -2,15 +2,12 @@ package org.scribble2.model;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
-import org.scribble.context.ModuleContext;
-import org.scribble2.model.global.GlobalProtocolDecl;
+import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.Name;
-import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.util.ScribbleException;
 
 
 public class Module extends ModelNodeBase
@@ -89,7 +86,32 @@ public class Module extends ModelNodeBase
 		}
 		throw new RuntimeException("Message signature not found: " + msn);
 	}
-
+	
+	protected Module reconstruct(
+			ModuleDecl moddecl,
+			List<? extends ImportDecl> imports,
+			List<DataTypeDecl> data,
+			List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
+	{
+		ModelDelegate del = del();
+		Module m = new Module(moddecl, imports, data, protos);
+		m = (Module) m.del(del);
+		return m;
+	}
+	
+	@Override
+	public Module visitChildren(ModelVisitor nv) throws ScribbleException
+	{
+		ModuleDecl moddecl = (ModuleDecl) visitChild(this.moddecl, nv);
+		List<? extends ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);
+		List<DataTypeDecl> data = visitChildListWithClassCheck(this, this.data, nv);
+		List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
+				protos = visitChildListWithClassCheck(this, this.protos, nv);
+		//return ModelFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);//, getContext(), getEnv());
+		//return new Module(moddecl, imports, data, protos);//, getContext(), getEnv());
+		return reconstruct(moddecl, imports, data, protos);
+	}
+	
 	/*public
 			<T extends ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 					List<T> getProtocolDecls
