@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.sesstype.name.Kind;
+import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.util.ScribbleException;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
@@ -26,15 +28,16 @@ public class NameDisambiguator extends ModelVisitor
 	{
 		//this.types.clear();
 		this.context = new ModuleContext(this.getJobContext(), mod);
-	}
+	}*/
 	
-	public void enterProtocolDecl(ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+	//public void enterProtocolDecl(ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+	public void reset()
 	{
 		this.counter = 1;
 		this.params.clear();
 	}
 	
-	public ScopeNode getFreshScope()
+	/*public ScopeNode getFreshScope()
 	{
 		return new ScopeNode(null, Scope.IMPLICIT_SCOPE_PREFIX + "." + counter++);
 	}
@@ -48,7 +51,7 @@ public class NameDisambiguator extends ModelVisitor
 	public boolean isVisibleMessageSignatureName(Name name)
 	{
 		return this.context.isMessageSignatureNameVisible(new MessageSignatureName(name.toString()));
-	}
+	}*/
 	
 	// name is a simple name (compound names are not ambiguous)
 	public boolean isBoundParameter(Name name)
@@ -64,7 +67,7 @@ public class NameDisambiguator extends ModelVisitor
 	public Kind getParameterKind(Name name)
 	{
 		return this.params.get(name.toString());
-	}*/
+	}
 	
 	/*@Override
 	public Node visit(Node parent, Node child) throws ScribbleException
@@ -82,6 +85,8 @@ public class NameDisambiguator extends ModelVisitor
 	@Override
 	public ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
 	{
+		System.out.println("1: " + visited.getClass() + ", " + visited.del().getClass());
+		
 		return visited.del().leaveDisambiguation(visited, (NameDisambiguator) nv);
 	}
 

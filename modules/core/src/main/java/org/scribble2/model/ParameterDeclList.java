@@ -2,11 +2,28 @@ package org.scribble2.model;
 
 import java.util.List;
 
+import org.scribble2.model.del.ModelDelegate;
+
 public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 {
 	public ParameterDeclList(List<ParameterDecl> decls)
 	{
 		super(decls);
+	}
+
+	@Override
+	protected ParameterDeclList copy()
+	{
+		return new ParameterDeclList(this.decls);
+	}
+
+	@Override
+	protected ParameterDeclList reconstruct(List<ParameterDecl> decls)
+	{
+		ModelDelegate del = del();
+		ParameterDeclList rdl = new ParameterDeclList(decls);
+		rdl = (ParameterDeclList) rdl.del(del);
+		return rdl;
 	}
 
 	/*// Not doing anything except cloning
@@ -91,11 +108,5 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 			return "";
 		}
 		return "<" + super.toString() + ">";
-	}
-
-	@Override
-	protected ParameterDeclList copy()
-	{
-		return new ParameterDeclList(this.decls);
 	}
 }

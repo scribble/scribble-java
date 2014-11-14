@@ -10,6 +10,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalMessageTransfer;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.AntlrConstants;
+import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.AntlrModuleParser;
 import org.scribble2.parser.ast.AntlrQualifiedName;
 import org.scribble2.parser.ast.AntlrSimpleName;
@@ -49,8 +50,10 @@ public class AntlrGlobalMessageTransfer
 				return AntlrSimpleName.toParameterNode(ct, Kind.SIG);
 			}
 		}*/
-		String type = ct.getToken().getText();  // Hacky? cf. Util.getAntlrNodeType (parameter nodes have no "node type")
-		if (type.equals(AntlrConstants.MESSAGESIGNATURE_NODE_TYPE))
+		/*String type = ct.getToken().getText();  // Hacky? cf. Util.getAntlrNodeType (parameter nodes have no "node type")
+		if (type.equals(AntlrConstants.MESSAGESIGNATURE_NODE_TYPE))*/
+		AntlrNodeType type = Util.getAntlrNodeType(ct);
+		if (type == AntlrNodeType.MESSAGESIGNATURE)
 		{
 			return (MessageSignatureNode) parser.parse(ct);
 		}
@@ -70,9 +73,10 @@ public class AntlrGlobalMessageTransfer
 			}
 		}*/
 		else //if (type.equals(AntlrConstants.AMBIGUOUSNAME_NODE_TYPE))
+		//if (Util.getAntlrNodeType(ct) == AntlrNodeType.AMBIGUOUSNAME)
 		{
 			// Duplicated from AntlrPayloadElement parse
-			if (ct.getChildCount() == 0)
+			if (ct.getChildCount() == 1)
 			{
 				return AntlrSimpleName.toAmbiguousNameNode(ct);  // parametername or simple messagesignaturename
 			}

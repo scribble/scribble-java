@@ -29,6 +29,23 @@ public abstract class MessageTransfer extends ModelNodeBase implements SimpleInt
 		this.dests = new LinkedList<>(dests);
 	}
 
+	..visitchildren..
+	
+	@Override
+	public MessageTransfer visitChildren(NodeVisitor nv) throws ScribbleException
+	{
+		RoleNode src = (RoleNode) visitChild(this.src, nv);
+		//MessageNode msg = visitMessageNode(nv, this.msg);
+		MessageNode msg = (MessageNode) visitChild(this.msg, nv);
+		List<RoleNode> dests = new LinkedList<RoleNode>();
+		for (RoleNode dest : this.dests)
+		{
+			dests.add((RoleNode) visitChild(dest, nv));
+		}
+		//return new MessageTransfer(this.ct, src, msg, dests, getContext(), getEnv());
+		return reconstruct(this.ct, src, msg, dests, getContext(), getEnv());
+	}
+
 	/*protected abstract MessageTransfer reconstruct(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
@@ -120,21 +137,6 @@ public abstract class MessageTransfer extends ModelNodeBase implements SimpleInt
 		}
 		return gmt;	
 	}* /
-
-	@Override
-	public MessageTransfer visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		RoleNode src = (RoleNode) visitChild(this.src, nv);
-		//MessageNode msg = visitMessageNode(nv, this.msg);
-		MessageNode msg = (MessageNode) visitChild(this.msg, nv);
-		List<RoleNode> dests = new LinkedList<RoleNode>();
-		for (RoleNode dest : this.dests)
-		{
-			dests.add((RoleNode) visitChild(dest, nv));
-		}
-		//return new MessageTransfer(this.ct, src, msg, dests, getContext(), getEnv());
-		return reconstruct(this.ct, src, msg, dests, getContext(), getEnv());
-	}
 	
 	public List<Role> getDestinationRoles()
 	{

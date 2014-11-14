@@ -1,23 +1,45 @@
-package org.scribble2.model.del;
+package org.scribble2.model.del.name;
 
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.del.ModelDelegateBase;
+import org.scribble2.model.name.qualified.MessageSignatureNameNode;
+import org.scribble2.model.name.qualified.PayloadTypeNameNode;
+import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.Named;
 import org.scribble2.util.ScribbleException;
 
 
 //public abstract class ModelDelegateBase implements ModelDelegate
-public class ModelDelegateBase implements ModelDelegate
+public class AmbiguousNameDelegate extends ModelDelegateBase
 {
-	@Override
+	/*@Override
 	public NameDisambiguator enterDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
 	{
 		return disamb;
-	}
+	}*/
 
 	@Override
 	public ModelNode leaveDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
 	{
-		return n;
+		System.out.println("2: " + n);
+		
+		Name name = ((Named) n).toName();
+		/*if (disamb.isVisiblePayloadType(name))  // By well-formedness (checked later), payload type and parameter names are distinct
+		{
+			return new PayloadTypeNameNode(this.ct, name.toString());
+		}
+		else if (disamb.isVisibleMessageSignatureName(name))
+		{
+			return new MessageSignatureNameNode(this.ct, name.toString());
+		}
+		else */if (disamb.isBoundParameter(name))
+		{
+			return ModelFactoryImpl.FACTORY.Param(name.toString(), disamb.getParameterKind(name));
+		}
+		throw new ScribbleException("Cannot disambiguate name: " + name);
 	}
 
 	/*@Override

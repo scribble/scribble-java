@@ -39,9 +39,9 @@ public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
 			return new ParameterNode(this.ct, name.toString(), disamb.getParameterKind(name));
 		}
 		throw new ScribbleException("Cannot disambiguate name: " + name);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public Argument toArgument()
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);

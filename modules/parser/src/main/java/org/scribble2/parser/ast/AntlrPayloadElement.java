@@ -35,7 +35,8 @@ public class AntlrPayloadElement
 			}*/
 			case AMBIGUOUSNAME:
 			{
-				if (child.getChildCount() == 0)
+				//if (child.getChildCount() == 0)
+				if (child.getChildCount() == 1)
 				{
 					ptpn = AntlrSimpleName.toAmbiguousNameNode(child);
 				}

@@ -14,12 +14,12 @@ public class ModuleDecl extends ModelNodeBase implements NameDecl
 		this.fullmodname = fullmodname;
 	}
 
-	/*@Override
+	@Override
 	public ModuleDecl visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.fullmodname, nv);
 		return ModelFactoryImpl.FACTORY.ModuleDecl(fullmodname);
-	}*/
+	}
 
 	@Override
 	public String toString()

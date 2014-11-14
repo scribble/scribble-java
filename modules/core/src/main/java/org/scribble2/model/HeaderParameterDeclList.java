@@ -3,6 +3,9 @@ package org.scribble2.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
+
 public abstract class HeaderParameterDeclList<T extends HeaderParameterDecl> extends ModelNodeBase 
 {
 	public final List<T> decls;
@@ -20,6 +23,16 @@ public abstract class HeaderParameterDeclList<T extends HeaderParameterDecl> ext
 	public boolean isEmpty()
 	{
 		return this.decls.isEmpty();
+	}
+	
+	protected abstract HeaderParameterDeclList<T> reconstruct(List<T> decls);
+	
+	@Override
+	public HeaderParameterDeclList<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	{
+		List<T> nds = visitChildListWithClassCheck(this, this.decls, nv);
+		//return new HeaderParameterDeclList<>(this.ct, nds);
+		return reconstruct(nds);
 	}
 
 	/*@Override 
@@ -55,13 +68,6 @@ public abstract class HeaderParameterDeclList<T extends HeaderParameterDecl> ext
 			env.params.addParameter(pd.getDeclarationName(), pd.kind);
 		}
 		return pdl;
-	}*/
-	
-	/*@Override
-	public NameDeclList<T> visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		List<T> nds = visitChildListWithClassCheck(this, this.decls, nv);
-		return new NameDeclList<>(this.ct, nds);
 	}*/
 
 	@Override

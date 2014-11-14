@@ -1,6 +1,7 @@
 package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ParameterDecl;
 import org.scribble2.model.ParameterDecl.Kind;
 import org.scribble2.model.name.simple.ParameterNode;
@@ -18,7 +19,7 @@ public class AntlrParameterDecl
 		//ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct), kind);
 		ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct));
 		//return new ParameterDecl(kind, name);
-		return new ParameterDecl(kind, name);
+		return ModelFactoryImpl.FACTORY.ParameterDecl(kind, name);
 	}
 
 	private static Kind parseKind(CommonTree ct)

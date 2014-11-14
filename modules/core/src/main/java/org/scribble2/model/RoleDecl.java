@@ -1,9 +1,41 @@
 package org.scribble2.model;
 
+import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.model.name.simple.SimpleNameNode;
+import org.scribble2.sesstype.name.Name;
 
-public interface RoleDecl extends HeaderParameterDecl
+
+//public interface RoleDecl extends HeaderParameterDecl
+public class RoleDecl extends HeaderParameterDecl
 {
-	
+	public RoleDecl(RoleNode namenode)
+	{
+		//super(t, kind, namenode);
+		super(namenode);
+		//this.name = namenode;
+	}
+
+	@Override
+	public Name toName()
+	{
+		return ((RoleNode) this.name).toName();
+	}
+
+	@Override
+	protected HeaderParameterDecl reconstruct(SimpleNameNode namenode)
+	{
+		ModelDelegate del = del();
+		RoleDecl rd = new RoleDecl((RoleNode) namenode);
+		rd = (RoleDecl) rd.del(del);
+		return rd;
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new RoleDecl((RoleNode) this.name);
+	}
 }
 
 /*class RoleDecl extends HeaderParameterDecl<RoleNode> //implements NameDeclaration

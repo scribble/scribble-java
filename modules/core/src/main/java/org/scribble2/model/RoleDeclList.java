@@ -2,11 +2,28 @@ package org.scribble2.model;
 
 import java.util.List;
 
+import org.scribble2.model.del.ModelDelegate;
+
 public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 {
 	public RoleDeclList(List<RoleDecl> decls)
 	{
 		super(decls);
+	}
+
+	@Override
+	protected RoleDeclList copy()
+	{
+		return new RoleDeclList(this.decls);
+	}
+
+	@Override
+	protected HeaderParameterDeclList<RoleDecl> reconstruct(List<RoleDecl> decls)
+	{
+		ModelDelegate del = del();
+		RoleDeclList rdl = new RoleDeclList(decls);
+		rdl = (RoleDeclList) rdl.del(del);
+		return rdl;
 	}
 
 	/*@Override 
@@ -85,11 +102,5 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 	public String toString()
 	{
 		return "(" + super.toString() + ")";
-	}
-
-	@Override
-	protected RoleDeclList copy()
-	{
-		return new RoleDeclList(this.decls);
 	}
 }

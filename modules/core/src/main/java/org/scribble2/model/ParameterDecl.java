@@ -1,42 +1,47 @@
 package org.scribble2.model;
 
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.sesstype.name.Parameter;
 
-public class ParameterDecl extends ModelNodeBase implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
+public class ParameterDecl extends HeaderParameterDecl //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
 {
 	public enum Kind { TYPE, SIG }  // ROLE
 	
 	/*public static final Function<NameDecl<? extends PrimitiveNameNode>, ParameterDecl> toParameterDecl =
 			(NameDecl<? extends PrimitiveNameNode> nd) -> (ParameterDecl) nd;*/
 	
-	public final ParameterNode name;
+	//public final ParameterNode name;
 	public final Kind kind;
 
 	public ParameterDecl(Kind kind, ParameterNode namenode)
 	{
 		//super(t, kind, namenode);
-		//super(namenode);
+		super(namenode);
 		this.kind = kind;
-		this.name = namenode;
+		//this.name = namenode;
+	}
+	
+	@Override
+	protected ParameterDecl reconstruct(SimpleNameNode namenode)
+	{
+		ModelDelegate del = del();
+		ParameterDecl pd = new ParameterDecl(this.kind, (ParameterNode) namenode);
+		pd = (ParameterDecl) pd.del(del);
+		return pd;
 	}
 
 	@Override
 	protected ParameterDecl copy()
 	{
-		return new ParameterDecl(this.kind, this.name);
+		return new ParameterDecl(this.kind, (ParameterNode) this.name);
 	}
 
 	@Override
 	public Parameter toName()
 	{
-		return this.name.toName();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return toName().toString();
+		return ((ParameterNode) this.name).toName();
 	}
 	
 	/*@Override
