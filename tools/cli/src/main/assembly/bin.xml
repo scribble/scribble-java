@@ -37,7 +37,7 @@
         <dependencySet>
             <outputDirectory>docs/userguide</outputDirectory>
             <includes>
-                <include>org.scribble.docs:userguide:jdocbook</include>
+                <include>org.scribble.docs:scribble-userguide:jdocbook</include>
             </includes>
             <useProjectArtifact>false</useProjectArtifact>
             <useProjectAttachments>false</useProjectAttachments>
@@ -56,7 +56,7 @@
         <dependencySet>
             <outputDirectory>docs/developerguide</outputDirectory>
             <includes>
-                <include>org.scribble.docs:developerguide:jdocbook</include>
+                <include>org.scribble.docs:scribble-developerguide:jdocbook</include>
             </includes>
             <useProjectArtifact>false</useProjectArtifact>
             <useProjectAttachments>false</useProjectAttachments>

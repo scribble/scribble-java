@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.scribble.tools.eclipse</groupId>
 		<artifactId>plugins</artifactId>
-		<version>0.3.0.Final</version>
+		<version>0.4.0-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>

@@ -2,7 +2,7 @@
 <feature
       id="org.scribble.feature"
       label="Scribble Feature"
-      version="0.3.0.Final"
+      version="0.4.0.qualifier"
       provider-name="www.scribble.org">
 
    <description url="http://www.scribble.org">

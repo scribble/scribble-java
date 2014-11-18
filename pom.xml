@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.3.0.Final</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Scribble</name>
 	<url>http://www.scribble.org</url>
@@ -70,13 +70,13 @@
 
 		    <dependency>
 			    <groupId>org.scribble.docs</groupId>
-			    <artifactId>userguide</artifactId>
+			    <artifactId>scribble-userguide</artifactId>
                 <type>jdocbook</type>
 				<version>${project.version}</version>
 		    </dependency>
 		    <dependency>
 			    <groupId>org.scribble.docs</groupId>
-			    <artifactId>developerguide</artifactId>
+			    <artifactId>scribble-developerguide</artifactId>
                 <type>jdocbook</type>
 				<version>${project.version}</version>
 		    </dependency>
