@@ -1,11 +1,9 @@
 package org.scribble2.model.del.name;
 
+import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.ModelDelegateBase;
-import org.scribble2.model.name.qualified.MessageSignatureNameNode;
-import org.scribble2.model.name.qualified.PayloadTypeNameNode;
-import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Named;
@@ -24,8 +22,6 @@ public class AmbiguousNameDelegate extends ModelDelegateBase
 	@Override
 	public ModelNode leaveDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
 	{
-		System.out.println("2: " + n);
-		
 		Name name = ((Named) n).toName();
 		/*if (disamb.isVisiblePayloadType(name))  // By well-formedness (checked later), payload type and parameter names are distinct
 		{
@@ -37,7 +33,7 @@ public class AmbiguousNameDelegate extends ModelDelegateBase
 		}
 		else */if (disamb.isBoundParameter(name))
 		{
-			return ModelFactoryImpl.FACTORY.Param(name.toString(), disamb.getParameterKind(name));
+			return ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, name.toString());
 		}
 		throw new ScribbleException("Cannot disambiguate name: " + name);
 	}

@@ -5,6 +5,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.RoleDecl;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrRoleDecl
 {

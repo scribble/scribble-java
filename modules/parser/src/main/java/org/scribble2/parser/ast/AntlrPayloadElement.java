@@ -5,6 +5,9 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.PayloadElement;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ast.name.AntlrAmbiguousName;
+import org.scribble2.parser.ast.name.AntlrQualifiedName;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
 
 public class AntlrPayloadElement
@@ -38,7 +41,8 @@ public class AntlrPayloadElement
 				//if (child.getChildCount() == 0)
 				if (child.getChildCount() == 1)
 				{
-					ptpn = AntlrSimpleName.toAmbiguousNameNode(child);
+					//ptpn = AntlrSimpleName.toAmbiguousNameNode(child);
+					ptpn = AntlrAmbiguousName.toAmbiguousNameNode(child);
 				}
 				else
 				{

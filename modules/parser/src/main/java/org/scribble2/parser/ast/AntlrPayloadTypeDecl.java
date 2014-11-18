@@ -1,6 +1,7 @@
 package scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 import scribble2.ast.PayloadTypeDecl;
 import scribble2.ast.name.SimplePayloadTypeNode;

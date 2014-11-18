@@ -5,7 +5,7 @@ import java.util.List;
 import org.scribble2.model.Constants;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.MessageTransfer;
-import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 
 public class GlobalMessageTransfer extends MessageTransfer implements GlobalInteraction
@@ -19,17 +19,20 @@ public class GlobalMessageTransfer extends MessageTransfer implements GlobalInte
 	/*protected GlobalMessageTransfer(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext)
 	{
 		super(ct, src, msg, dests, sicontext);
-	}*/
+	}* /
 
 	/*protected GlobalMessageTransfer(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext, Env env)
 	{
 		super(ct, src, msg, dests, sicontext, env);
-	}
+	}*/
 
 	@Override
-	protected MessageTransfer reconstruct(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext, Env env)
+	protected GlobalMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)//, SimpleInteractionNodeContext sicontext, Env env)
 	{
-		return new GlobalMessageTransfer(ct, src, msg, dests, sicontext, env);
+		ModelDelegate del = del();
+		GlobalMessageTransfer gmt = new GlobalMessageTransfer(src, msg, dests);//, sicontext, env);
+		gmt = (GlobalMessageTransfer) del(del);
+		return gmt;
 	}
 
 	/*@Override

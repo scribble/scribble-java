@@ -4,6 +4,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModuleDecl;
 import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ast.name.AntlrQualifiedName;
 
 public class AntlrModuleDecl
 {

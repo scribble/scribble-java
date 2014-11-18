@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
 
 
 public abstract class MessageTransfer extends ModelNodeBase implements SimpleInteractionNode
@@ -29,26 +31,25 @@ public abstract class MessageTransfer extends ModelNodeBase implements SimpleInt
 		this.dests = new LinkedList<>(dests);
 	}
 
-	..visitchildren..
-	
+	protected abstract MessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests);//, SimpleInteractionNodeContext sicontext, Env env);
+
 	@Override
-	public MessageTransfer visitChildren(NodeVisitor nv) throws ScribbleException
+	public MessageTransfer visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		RoleNode src = (RoleNode) visitChild(this.src, nv);
 		//MessageNode msg = visitMessageNode(nv, this.msg);
 		MessageNode msg = (MessageNode) visitChild(this.msg, nv);
-		List<RoleNode> dests = new LinkedList<RoleNode>();
+		/*List<RoleNode> dests = new LinkedList<RoleNode>();
 		for (RoleNode dest : this.dests)
 		{
 			dests.add((RoleNode) visitChild(dest, nv));
-		}
+		}*/
 		//return new MessageTransfer(this.ct, src, msg, dests, getContext(), getEnv());
-		return reconstruct(this.ct, src, msg, dests, getContext(), getEnv());
+		List<RoleNode> dests = visitChildListWithClassCheck(this, this.dests, nv);
+		return reconstruct(src, msg, dests);//, getContext(), getEnv());
 	}
 
-	/*protected abstract MessageTransfer reconstruct(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext, Env env);
-
-	@Override
+	/*@Override
 	public MessageTransfer leaveContextBuilding(NodeContextBuilder builder) throws ScribbleException
 	{
 		Role src = this.src.toName();

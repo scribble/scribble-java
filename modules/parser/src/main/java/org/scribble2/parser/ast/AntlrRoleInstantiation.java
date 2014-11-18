@@ -4,6 +4,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.RoleInstantiation;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrRoleInstantiation
 {

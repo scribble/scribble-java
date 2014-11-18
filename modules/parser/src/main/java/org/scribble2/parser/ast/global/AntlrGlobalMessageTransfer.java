@@ -12,8 +12,9 @@ import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.AntlrModuleParser;
-import org.scribble2.parser.ast.AntlrQualifiedName;
-import org.scribble2.parser.ast.AntlrSimpleName;
+import org.scribble2.parser.ast.name.AntlrAmbiguousName;
+import org.scribble2.parser.ast.name.AntlrQualifiedName;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
 
 
@@ -78,7 +79,8 @@ public class AntlrGlobalMessageTransfer
 			// Duplicated from AntlrPayloadElement parse
 			if (ct.getChildCount() == 1)
 			{
-				return AntlrSimpleName.toAmbiguousNameNode(ct);  // parametername or simple messagesignaturename
+				//return AntlrSimpleName.toAmbiguousNameNode(ct);  // parametername or simple messagesignaturename
+				return AntlrAmbiguousName.toAmbiguousNameNode(ct);
 			}
 			else
 			{

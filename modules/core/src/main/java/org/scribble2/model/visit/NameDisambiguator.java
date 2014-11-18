@@ -85,8 +85,6 @@ public class NameDisambiguator extends ModelVisitor
 	@Override
 	public ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
 	{
-		System.out.println("1: " + visited.getClass() + ", " + visited.del().getClass());
-		
 		return visited.del().leaveDisambiguation(visited, (NameDisambiguator) nv);
 	}
 

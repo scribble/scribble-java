@@ -5,11 +5,10 @@ import org.scribble2.model.MessageSignatureNode;
 import org.scribble2.model.Payload;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrMessageSignature
 {
-	protected static final String ANTLR_EMPTY_OPERATOR = "EMPTY_OPERATOR";
-
 	public static final int OPERATOR_CHILD_INDEX = 0;
 	public static final int PAYLOAD_CHILD_INDEX = 1;
 	

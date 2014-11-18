@@ -9,7 +9,7 @@ import org.scribble2.model.global.GlobalInterruptible;
 import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.parser.AntlrModuleParser;
-import org.scribble2.parser.ast.AntlrSimpleName;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
 
 public class AntlrGlobalInterruptible

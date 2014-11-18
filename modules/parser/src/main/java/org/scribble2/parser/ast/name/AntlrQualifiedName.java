@@ -1,4 +1,4 @@
-package org.scribble2.parser.ast;
+package org.scribble2.parser.ast.name;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactory;

@@ -1,10 +1,10 @@
 package scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
-
-import scribble2.ast.MessageSignatureDecl;
-import scribble2.ast.name.SimpleMessageSignatureNameNode;
-import scribble2.parser.AntlrTreeParser;
+import org.scribble2.model.MessageSignatureDecl;
+import org.scribble2.model.name.simple.SimpleMessageSignatureNameNode;
+import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 // FIXME: factor out with AntlrPayloadTypeDecl
 public class AntlrMessageSignatureDecl

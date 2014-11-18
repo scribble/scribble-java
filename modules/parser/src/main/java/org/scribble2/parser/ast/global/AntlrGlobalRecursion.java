@@ -5,7 +5,7 @@ import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalRecursion;
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.parser.AntlrModuleParser;
-import org.scribble2.parser.ast.AntlrSimpleName;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrGlobalRecursion
 {
