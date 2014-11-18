@@ -15,8 +15,8 @@
 
 	<modules>
 		<module>developerguide</module>
-		<module>javadoc</module>
 		<module>userguide</module>
+		<module>javadoc</module>
 	</modules>
 
 </project>

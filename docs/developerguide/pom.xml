@@ -2,7 +2,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>developerguide</artifactId>
+	<groupId>org.scribble.docs</groupId>
+	<artifactId>scribble-developerguide</artifactId>
 	<packaging>jdocbook</packaging>
 	<name>Scribble::Docs::DeveloperGuide</name>
 	<description>The Developer Guide for Scribble Java.</description>
