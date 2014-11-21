@@ -1,6 +1,7 @@
 package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.RoleInstantiation;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.AntlrModuleParser;
@@ -12,9 +13,10 @@ public class AntlrRoleInstantiation
 
 	public static RoleInstantiation parseRoleInstantiation(AntlrModuleParser parser, CommonTree ct)
 	{
-		RoleNode arg = AntlrSimpleName.toRoleNode(getArgChild(ct));
+		RoleNode role = AntlrSimpleName.toRoleNode(getArgChild(ct));
 		//return new RoleInstantiation(arg);
-		return arg;
+		//return arg;
+		return ModelFactoryImpl.FACTORY.RoleInstantiation(role);
 	}
 
 	public static CommonTree getArgChild(CommonTree ct)

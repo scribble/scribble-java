@@ -8,19 +8,19 @@ import org.scribble2.util.ScribbleException;
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
 //public interface HeaderParameterDecl extends ModelNode, NameDecl //implements NameDeclaration
-public abstract class HeaderParameterDecl extends ModelNodeBase implements NameDecl //implements NameDeclaration
+public abstract class HeaderParameterDecl<T extends SimpleNameNode> extends ModelNodeBase implements NameDecl //implements NameDeclaration
 {
-	public final SimpleNameNode name;
+	public final T name;
 
-	protected HeaderParameterDecl(SimpleNameNode namenode)
+	protected HeaderParameterDecl(T namenode)
 	{
 		this.name = namenode;
 	}
 
-	protected abstract HeaderParameterDecl reconstruct(SimpleNameNode namenode);
+	protected abstract HeaderParameterDecl<T> reconstruct(SimpleNameNode namenode);
 	
 	@Override
-	public HeaderParameterDecl visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParameterDecl<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		SimpleNameNode name = (SimpleNameNode) visitChild(this.name, nv);
 		return reconstruct(name);

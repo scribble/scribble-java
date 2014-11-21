@@ -1,7 +1,9 @@
 package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.util.ScribbleException;
 
 
@@ -12,16 +14,14 @@ public interface ModelDelegate
 	ModelNode visitChildren(ModelVisitor nv);// throws ScribbleException;*/
 	//ModelNode visitChildrenInSubprotocols(SubprotocolVisitor spv);// throws ScribbleException;
 	
-	NameDisambiguator enterDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException;
-	ModelNode leaveDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException;
+	NameDisambiguator enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException;
+	ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException;
+	ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException;
+	ModelNode leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException;
+	WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException;
+	ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker nv, ModelNode visited) throws ScribbleException;
 
-	/*ModelNodeContextBuilder enterContextBuilding(ModelNodeContextBuilder builder) throws ScribbleException;
-	ModelNode leaveContextBuilding(ModelNodeContextBuilder builder) throws ScribbleException;
-
-	WellFormedChoiceChecker enterWFChoiceCheck(WellFormedChoiceChecker checker) throws ScribbleException;
-	ModelNode leaveWFChoiceCheck(WellFormedChoiceChecker checker) throws ScribbleException;
-
-	// FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections)
+	/* // FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections)
 	Projector enterProjection(Projector proj);
 	ModelNode visitForProjection(Projector proj) throws ScribbleException;
 	ModelNode leaveProjection(Projector proj);  // Move to GlobalModelNode? Cannot use visitor pattern then?

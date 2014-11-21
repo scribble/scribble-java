@@ -16,7 +16,7 @@ public class AntlrImportModule
 
 	public static ImportModule parseImportModule(AntlrModuleParser parser, CommonTree ct)
 	{
-		ModuleNameNodes fmn = AntlrQualifiedName.toModuleNameNodes(getModuleNameChild(ct));
+		ModuleNameNodes fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
 		SimpleProtocolNameNode alias = null;
 		if (hasAlias(ct))
 		{

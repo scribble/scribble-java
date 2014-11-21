@@ -14,7 +14,7 @@ import org.scribble2.parser.util.Util;
 
 public class AntlrGlobalInterruptible
 {
-	public static final String NO_SCOPE = "NO_SCOPE";
+	//public static final String NO_SCOPE = "NO_SCOPE";
 
 	public static final int SCOPE_CHILD_INDEX = 0;
 	public static final int BLOCK_CHILD_INDEX = 1;

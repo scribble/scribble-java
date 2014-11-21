@@ -11,11 +11,12 @@ import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.model.name.simple.SimpleMessageSignatureNameNode;
 import org.scribble2.model.name.simple.SimplePayloadTypeNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
-import org.scribble2.parser.ast.global.AntlrGlobalInterruptible;
 
 public class AntlrSimpleName
 {
 	private static final String ANTLR_EMPTY_OPERATOR = "EMPTY_OPERATOR";
+	private static final String ANTLR_NO_SCOPE = "NO_SCOPE";
+	//private static final String ANTLR_EMPTY_SCOPE = "EMPTY_SCOPENAME";
 	
 	public static SimpleProtocolNameNode toSimpleProtocolNameNode(CommonTree ct)
 	{
@@ -80,7 +81,7 @@ public class AntlrSimpleName
 	public static ScopeNode toScopeNode(CommonTree ct)
 	{
 		String scope = getName(ct);
-		if (scope.equals(AntlrGlobalInterruptible.NO_SCOPE))
+		if (scope.equals(ANTLR_NO_SCOPE))
 		{
 			return null;
 		}

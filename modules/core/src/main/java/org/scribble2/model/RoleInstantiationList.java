@@ -1,6 +1,9 @@
 package org.scribble2.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.scribble2.sesstype.name.Role;
 
 public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 {
@@ -62,13 +65,13 @@ public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 	{
 		List<RoleInstantiation> ris = nv.visitAll(this.is);
 		return new RoleInstantiationList(this.ct, ris);
-	}* /
+	}*/
 	
 	// The role arguments
 	public List<Role> getRoles()
 	{
 		return this.instans.stream().map((ri) -> ri.arg.toName()).collect(Collectors.toList());
-	}*/
+	}
 
 	@Override
 	public String toString()
@@ -79,5 +82,11 @@ public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 			s += ", " + ri;
 		}
 		return s + ")";
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new RoleInstantiationList(this.instans);
 	}
 }

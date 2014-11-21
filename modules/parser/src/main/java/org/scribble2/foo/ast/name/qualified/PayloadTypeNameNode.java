@@ -1,7 +1,7 @@
 package org.scribble2.foo.ast.name.qualified;
 
 import org.antlr.runtime.Token;
-import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.foo.ast.name.PayloadElementNameNode;
 
 public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode //PayloadTypeOrParameterNode
 {

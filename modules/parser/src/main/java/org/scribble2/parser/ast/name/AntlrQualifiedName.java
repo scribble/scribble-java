@@ -21,26 +21,27 @@ public class AntlrQualifiedName
 		return names;
 	}
 	
-	public static ModuleNameNode toModuleNameNodes(CommonTree ct)
+	public static ModuleNameNode toModuleNameNode(CommonTree ct)
 	{
 		//return new ModuleNameNode(getElements(ct));
 		return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MODULE, getElements(ct));
 	}
 
-	public static PayloadTypeNameNode toPayloadTypeNameNodes(CommonTree ct)
+	public static PayloadTypeNameNode toPayloadTypeNameNode(CommonTree ct)
 	{
 		//return new PayloadTypeNameNode(getElements(ct));
 		return (PayloadTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PAYLOADTYPE, getElements(ct));
 	}
 
-	public static MessageSignatureNameNode toMessageSignatureNameNodes(CommonTree ct)
+	public static MessageSignatureNameNode toMessageSignatureNameNode(CommonTree ct)
 	{
 		//return new MessageSignatureNameNode(getElements(ct));
 		return (MessageSignatureNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MESSAGESIGNATURE, getElements(ct));
 	}
 
-	public static ProtocolNameNode toProtocolNameNodes(CommonTree ct)
+	public static ProtocolNameNode toProtocolNameNode(CommonTree ct)
 	{
-		return new ProtocolNameNode(getElements(ct));
+		//return new ProtocolNameNode(getElements(ct));
+		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, getElements(ct));
 	}
 }

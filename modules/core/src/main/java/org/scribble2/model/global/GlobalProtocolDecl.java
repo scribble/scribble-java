@@ -6,16 +6,6 @@ import org.scribble2.model.del.ModelDelegate;
 //public class GlobalProtocolDecl extends ProtocolDecl<GlobalInteraction>
 public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, GlobalProtocolDefinition> implements GlobalNode
 {
-	/*public static final Predicate<ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
-			isGlobalProtocolDecl =
-					(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-							-> pd.isGlobal();
-
-	public static final Function<ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>, GlobalProtocolDecl>
-			toGlobalProtocolDecl =
-					(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-							-> (GlobalProtocolDecl) pd;*/
-							
 	//public GlobalProtocolDecl(CommonTree ct, ProtocolNode name, RoleDeclList rdl, ParameterDeclList pdl, ProtocolDefinition<GlobalInteraction> def)
 	//public GlobalProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, GlobalProtocolDefinition def)
 	public GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def)

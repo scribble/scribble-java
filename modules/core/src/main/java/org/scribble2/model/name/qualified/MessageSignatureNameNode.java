@@ -47,18 +47,7 @@ public class MessageSignatureNameNode extends MemberNameNode implements MessageN
 		return new MessageSignatureName(modname, membname);
 	}
 
-	/*@Override
-	public MessageSignatureName toArgument()
-	{
-		return toName();
-	}
-
 	@Override
-	public Message toMessage()
-	{
-		return toArgument();
-	}
-
 	public boolean isMessageSignatureNode()
 	{
 		return false;
@@ -74,6 +63,18 @@ public class MessageSignatureNameNode extends MemberNameNode implements MessageN
 	public boolean isParameterNode()
 	{
 		return false;
+	}
+
+	@Override
+	public MessageSignatureName toArgument()
+	{
+		return toName();
+	}
+
+	/*@Override
+	public Message toMessage()
+	{
+		return toArgument();
 	}
 
 	@Override

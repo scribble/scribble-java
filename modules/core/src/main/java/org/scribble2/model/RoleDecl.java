@@ -3,11 +3,11 @@ package org.scribble2.model;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
-import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.Role;
 
 
 //public interface RoleDecl extends HeaderParameterDecl
-public class RoleDecl extends HeaderParameterDecl
+public class RoleDecl extends HeaderParameterDecl<RoleNode>
 {
 	public RoleDecl(RoleNode namenode)
 	{
@@ -17,13 +17,13 @@ public class RoleDecl extends HeaderParameterDecl
 	}
 
 	@Override
-	public Name toName()
+	public Role toName()
 	{
 		return ((RoleNode) this.name).toName();
 	}
 
 	@Override
-	protected HeaderParameterDecl reconstruct(SimpleNameNode namenode)
+	protected RoleDecl reconstruct(SimpleNameNode namenode)
 	{
 		ModelDelegate del = del();
 		RoleDecl rd = new RoleDecl((RoleNode) namenode);

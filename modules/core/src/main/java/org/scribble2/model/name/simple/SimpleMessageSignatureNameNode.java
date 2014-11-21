@@ -1,6 +1,7 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
+import org.scribble2.sesstype.name.Name;
 
 public class SimpleMessageSignatureNameNode extends SimpleNameNode implements MessageNode//SimpleMemberNameNode
 {
@@ -17,6 +18,31 @@ public class SimpleMessageSignatureNameNode extends SimpleNameNode implements Me
 	protected SimpleMessageSignatureNameNode copy()
 	{
 		return new SimpleMessageSignatureNameNode(this.identifier);
+	}
+
+	@Override
+	public boolean isMessageSignatureNode()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isPayloadTypeNode()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isParameterNode()
+	{
+		return false;
+	}
+
+	@Override
+	public Name toName()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/*@Override

@@ -1,6 +1,9 @@
 package org.scribble2.model;
 
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.model.visit.SubprotocolVisitor;
+import org.scribble2.sesstype.name.ModuleName;
+import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
 
@@ -42,31 +45,6 @@ public abstract class ProtocolDecl<
 		disamb.enterProtocolDecl(this);
 		return disamb;
 	}
-
-	@Override
-	public NodeContextBuilder enterContextBuilding(NodeContextBuilder builder) throws ScribbleException
-	{
-		builder.clearProtocolDependencies();
-		ProtocolDeclContext pdcontext = new ProtocolDeclContext();  // FIXME: use replaceProtocolDeclContext in builder? (here this initial value not used, set properly on leave)
-		builder.pushContext(pdcontext);
-		builder.addProtocolDependency(getFullProtocolName(builder.getModuleContext().root));
-		//builder.pushContext(new CompoundInteractionContext(pdcontext));  // Not needed: def block pushes a context
-		return builder;
-	}
-
-	@Override
-	public ProtocolDecl<T> leaveContextBuilding(NodeContextBuilder builder) throws ScribbleException
-	{
-		/*this.setContext(builder.popContext());
-		return this;*
-		//CompoundInteractionContext cicontext = (CompoundInteractionContext)
-		//builder.popContext();  // Associate to the def? -- not currently merged into the protocol decl context
-		//return new ProtocolDecl<T>(this.ct, this.name, this.roledecls, this.paramdecls, this.def, (ProtocolDeclContext) builder.popContext());
-		
-		//ProtocolDeclContext pdcontext = new ProtocolDeclContext((ProtocolDeclContext) builder.popContext(), builder.getProtocolDependencies());
-		ProtocolDeclContext pdcontext = (ProtocolDeclContext) builder.popContext();
-		return reconstruct(this.ct, this.name, this.roledecls, this.paramdecls, this.def, pdcontext, getEnv());
-	}
 	
 	/*public ProtocolSignature getProtocolSignature(ProtocolName fmn)// throws ScribbleException
 	{
@@ -94,8 +72,8 @@ public abstract class ProtocolDecl<
 		return reconstruct(header, def);//, getContext(), getEnv());
 	}
 	
-	/*@Override
-	public ProtocolDecl<T> visitChildrenInSubprotocols(SubprotocolVisitor spv) throws ScribbleException
+	@Override
+	public ProtocolDecl<T1, T2> visitChildrenInSubprotocols(SubprotocolVisitor spv) throws ScribbleException
 	{
 		//ProtocolName fullname = getFullProtocolName();
 		spv.enterRootProtocolDecl(this);  // Doesn't push proto stack, just for root role/arg names
@@ -109,8 +87,8 @@ public abstract class ProtocolDecl<
 	{
 		//ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrGlobalProtocolDecl.getModuleParent(this.ct));  // FIXME: globalprotocoldecl same as local hack
 		ModuleName fullmodname = mod.getFullModuleName();
-		return new ProtocolName(fullmodname, this.name.toString());
-	}*/
+		return new ProtocolName(fullmodname, this.header.name.toString());
+	}
 	
 	public boolean isGlobal()
 	{
@@ -122,7 +100,7 @@ public abstract class ProtocolDecl<
 		return false;
 	}
 	
-	//public ProtocolBlock getBody()
+	/* //public ProtocolBlock getBody()
 	/*public ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>> getBody()
 	{
 		return this.def.block;

@@ -646,14 +646,15 @@ argumentinstantiationlist:
 
 // Like PayloadElement, simple names need disambiguation
 argumentinstantiation:
-/*	messagesignature
-//->
-//	messagesignature*/
-	message
+	//message
+  // Grammatically same as message, but argument case can also be a payload type
+	messagesignature
 |
+	ambiguousname  // FIXME: can only be simple name
+/*|
 	payloadtypename
 |
-	parametername  // Overlaps with previous cases
+	parametername  // Overlaps with previous cases*/
 ;
 
 

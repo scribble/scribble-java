@@ -2,6 +2,7 @@ package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.name.Kind;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.SimpleName;
@@ -41,13 +42,13 @@ public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
 		throw new ScribbleException("Cannot disambiguate name: " + name);
 	}*/
 
-	/*@Override
+	@Override
 	public Argument toArgument()
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
 	}
 
-	@Override
+	/*@Override
 	public Message toMessage()
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
@@ -66,7 +67,7 @@ public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
 		return new SimpleName(Kind.AMBIGUOUS, this.identifier);
 	}
 
-	/*@Override
+	@Override
 	public boolean isMessageSignatureNode()
 	{
 		return false;
@@ -83,10 +84,4 @@ public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
 	{
 		return false;
 	}
-
-	@Override
-	public boolean isAmbiguousNode()
-	{
-		return true;
-	}*/
 }

@@ -1,8 +1,13 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.simple.OperatorNode;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class MessageSignatureNode extends ModelNodeBase implements MessageNode//, ArgumentInstantiation
+import org.scribble2.model.name.simple.OperatorNode;
+import org.scribble2.sesstype.MessageSignature;
+import org.scribble2.sesstype.name.PayloadTypeOrParameter;
+
+public class MessageSignatureNode extends ModelNodeBase implements MessageNode
 {
 	public final OperatorNode op;
 	public final Payload payload;
@@ -11,6 +16,24 @@ public class MessageSignatureNode extends ModelNodeBase implements MessageNode//
 	{
 		this.op = op;
 		this.payload = payload;
+	}
+
+	@Override
+	public boolean isMessageSignatureNode()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isPayloadTypeNode()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isParameterNode()
+	{
+		return false;
 	}
 
 	/*// Basically a copy without the AST
@@ -36,38 +59,20 @@ public class MessageSignatureNode extends ModelNodeBase implements MessageNode//
 	public Operator getOperator()
 	{
 		return this.op;
-	}* /
+	}*/
 
 	// FIXME: make a direct scoped version (taking scope as argument)
 	@Override
 	public MessageSignature toArgument()
 	{
-		List<PayloadTypeOrParameter> payload = this.payload.payloadelems.stream().map((pe) -> pe.type.toPayloadTypeOrParameter()).collect(Collectors.toList());
+		List<PayloadTypeOrParameter> payload = this.payload.payloadelems.stream().map((pe) -> pe.name.toPayloadTypeOrParameter()).collect(Collectors.toList());
 		return new MessageSignature(this.op.toName(), payload);
 	}
 
-	@Override
+	/*@Override
 	public MessageSignature toMessage()
 	{
 		return toArgument();
-	}
-
-	@Override
-	public boolean isMessageSignatureNode()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean isPayloadTypeNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isParameterNode()
-	{
-		return false;
 	}
 
 	@Override

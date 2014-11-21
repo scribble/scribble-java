@@ -3,7 +3,7 @@ package org.scribble2.foo.ast.name.simple;
 import org.antlr.runtime.Token;
 import org.scribble2.foo.ast.ArgumentInstantiation;
 import org.scribble2.foo.ast.MessageNode;
-import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.foo.ast.name.PayloadElementNameNode;
 
 public class ParameterNode extends SimpleNameNode implements PayloadElementNameNode, MessageNode, ArgumentInstantiation//, PayloadTypeOrParameterNode
 {

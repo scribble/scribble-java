@@ -2,20 +2,38 @@ package org.scribble2.model.global;
 
 import org.scribble2.model.ArgumentInstantiationList;
 import org.scribble2.model.Do;
+import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.RoleInstantiationList;
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
+import org.scribble2.model.name.simple.ScopeNode;
 
 public class GlobalDo extends Do implements GlobalInteraction
 {
-	public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	/*public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
-		//this(t, null, roleinstans, arginstans, proto, null, null);
-		super(null, roleinstans, arginstans, proto);
+		this(null, roleinstans, arginstans, proto);
+		//super(null, roleinstans, arginstans, proto);
+	}*/
+
+	public GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	{
+		super(scope, roleinstans, arginstans, proto);
 	}
 
-	/*public GlobalDo(CommonTree ct, ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	@Override
+	protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
-		this(ct, scope, roleinstans, arginstans, proto, null, null);
+		ModelDelegate del = del();
+		GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
+		gd = (GlobalDo) gd.del(del);
+		return gd;
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new GlobalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
 	}
 
 	/*protected GlobalDo(CommonTree ct, ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNodes proto, SimpleInteractionNodeContext sicontext)

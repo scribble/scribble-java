@@ -1,13 +1,13 @@
-package scribble2.parser.ast;
+package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ArgumentInstantiation;
+import org.scribble2.model.ArgumentNode;
+import org.scribble2.model.ModelFactoryImpl;
+import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ast.name.AntlrAmbiguousName;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
-import org.scribble2.parser.ast.name.AntlrSimpleName;
-
-import scribble2.ast.ArgumentInstantiation;
-import scribble2.ast.ArgumentNode;
-import scribble2.parser.AntlrTreeParser;
-import scribble2.util.Util;
+import org.scribble2.parser.util.Util;
 
 public class AntlrArgumentInstantiation
 {
@@ -16,7 +16,8 @@ public class AntlrArgumentInstantiation
 	public static ArgumentInstantiation parseArgumentInstantiation(AntlrModuleParser parser, CommonTree ct)
 	{
 		ArgumentNode arg = parseArgument(parser, getArgChild(ct));
-		return new ArgumentInstantiation(ct, arg);
+		//return new ArgumentInstantiation(ct, arg);
+		return ModelFactoryImpl.FACTORY.ArgumentInstantiation(arg);
 	}
 
 	// Similar to AntlrGlobalMessageTransfer.parseMessage
@@ -30,11 +31,11 @@ public class AntlrArgumentInstantiation
 			}
 			case QUALIFIEDNAME:
 			{
-				return AntlrQualifiedName.toPayloadTypeNameNodes(ct);
+				return AntlrQualifiedName.toPayloadTypeNameNode(ct);
 			}
 			default: // As for PayloadElement: cannot syntactically distinguish between SimplePayloadTypeNode and ParameterNode
 			{
-				return AntlrSimpleName.toAmbiguousNameNode(ct);
+				return AntlrAmbiguousName.toAmbiguousNameNode(ct);
 			}
 		}
 	}

@@ -45,7 +45,7 @@ public class AmbiguousNameNode extends PrimitiveNameNode implements //ArgumentNo
 	}
 
 	@Override
-	public Argument toArgument()
+	public ArgumentNode toArgument()
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
 	}

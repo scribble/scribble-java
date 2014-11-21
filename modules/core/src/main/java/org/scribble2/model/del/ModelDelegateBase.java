@@ -1,7 +1,9 @@
 package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.util.ScribbleException;
 
 
@@ -9,15 +11,39 @@ import org.scribble2.util.ScribbleException;
 public class ModelDelegateBase implements ModelDelegate
 {
 	@Override
-	public NameDisambiguator enterDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
+	public NameDisambiguator enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 		return disamb;
 	}
 
 	@Override
-	public ModelNode leaveDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
+	public ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException
 	{
-		return n;
+		return visited;
+	}
+
+	@Override
+	public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
+	{
+		return builder;
+	}
+
+	@Override
+	public ModelNode leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	@Override
+	public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	{
+		return checker;
+	}
+
+	@Override
+	public ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker nv, ModelNode visited) throws ScribbleException
+	{
+		return visited;
 	}
 
 	/*@Override

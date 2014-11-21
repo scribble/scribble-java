@@ -5,8 +5,12 @@ import java.util.List;
 import org.scribble2.model.ParameterDecl.Kind;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.del.ModelDelegateBase;
+import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.del.ParameterDeclDelegate;
+import org.scribble2.model.del.ProtocolDeclDelegate;
 import org.scribble2.model.del.name.AmbiguousNameDelegate;
+import org.scribble2.model.global.GlobalChoice;
+import org.scribble2.model.global.GlobalDo;
 import org.scribble2.model.global.GlobalInteraction;
 import org.scribble2.model.global.GlobalInteractionSequence;
 import org.scribble2.model.global.GlobalMessageTransfer;
@@ -24,28 +28,13 @@ import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 
 public class ModelFactoryImpl implements ModelFactory
 {
 	public static final ModelFactory FACTORY = new ModelFactoryImpl();  // FIXME: move somewhere else
-	
-	@SuppressWarnings("unchecked")
-	private static <T extends ModelNodeBase> T del(T n, ModelDelegate del)
-	{
-		ModelNodeBase ret = n.del(del);
-		if (ret.getClass() != n.getClass())
-		{
-			throw new RuntimeException("Shouldn't get in here: " + ret);
-		}
-		return (T) ret;
-	}
-	
-	private ModelDelegate createDefaultDelegate()
-	{
-		return new ModelDelegateBase();
-	}
 	
 	@Override
 	public MessageSignatureNode MessageSignatureNode(OperatorNode op, Payload payload)
@@ -79,7 +68,8 @@ public class ModelFactoryImpl implements ModelFactory
 			List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
-		module = del(module, createDefaultDelegate());
+		//module = del(module, createDefaultDelegate());
+		module = del(module, new ModuleDelegate(module.getFullModuleName()));
 		return module;
 	}
 
@@ -95,7 +85,8 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolDecl GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def)
 	{
 		GlobalProtocolDecl gpd = new GlobalProtocolDecl(header, def);
-		gpd = del(gpd, createDefaultDelegate());
+		//gpd = del(gpd, createDefaultDelegate());
+		gpd = del(gpd, new ProtocolDeclDelegate());
 		return gpd;
 	}
 
@@ -171,6 +162,60 @@ public class ModelFactoryImpl implements ModelFactory
 		gmt = del(gmt, createDefaultDelegate());
 		return gmt;
 	}
+
+	@Override
+	public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
+	{
+		GlobalChoice gc = new GlobalChoice(subj, blocks);
+		gc = del(gc, createDefaultDelegate());
+		return gc;
+	}
+
+	@Override
+	public GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	{
+		return GlobalDo(null, roleinstans, arginstans, proto);
+	}
+
+	@Override
+	public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	{
+		GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
+		gd = del(gd, createDefaultDelegate());
+		return gd;
+	}
+
+	@Override
+	public RoleInstantiationList RoleInstantiationList(List<RoleInstantiation> ris)
+	{
+		RoleInstantiationList rdl = new RoleInstantiationList(ris);
+		rdl = del(rdl, createDefaultDelegate());
+		return rdl;
+	}
+
+	@Override
+	public RoleInstantiation RoleInstantiation(RoleNode role)
+	{
+		RoleInstantiation ri = new RoleInstantiation(role);
+		ri = del(ri, createDefaultDelegate());
+		return ri;
+	}
+
+	@Override
+	public ArgumentInstantiationList ArgumentInstantiationList(List<ArgumentInstantiation> ais)
+	{
+		ArgumentInstantiationList rdl = new ArgumentInstantiationList(ais);
+		rdl = del(rdl, createDefaultDelegate());
+		return rdl;
+	}
+
+	@Override
+	public ArgumentInstantiation ArgumentInstantiation(ArgumentNode arg)
+	{
+		ArgumentInstantiation ri = new ArgumentInstantiation(arg);
+		ri = del(ri, createDefaultDelegate());
+		return ri;
+	}
 	
 	@Override
 	public SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier)
@@ -208,5 +253,21 @@ public class ModelFactoryImpl implements ModelFactory
 		}
 		qnn = (QualifiedNameNode) qnn.del(createDefaultDelegate());
 		return qnn;
+	}
+	
+	private ModelDelegate createDefaultDelegate()
+	{
+		return new ModelDelegateBase();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static <T extends ModelNodeBase> T del(T n, ModelDelegate del)
+	{
+		ModelNodeBase ret = n.del(del);
+		if (ret.getClass() != n.getClass())
+		{
+			throw new RuntimeException("Shouldn't get in here: " + ret);
+		}
+		return (T) ret;
 	}
 }

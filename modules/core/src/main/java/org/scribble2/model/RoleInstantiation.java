@@ -1,14 +1,22 @@
 package org.scribble2.model;
 
+import org.scribble2.model.name.simple.RoleNode;
 
-public interface RoleInstantiation extends Instantiation//<RoleNode>
+
+public class RoleInstantiation extends Instantiation<RoleNode>
 {
-	/*public RoleInstantiation(CommonTree ct, RoleNode arg)
+	public RoleInstantiation(RoleNode arg)
 	{
-		super(ct, arg);
+		super(arg);
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new RoleInstantiation(this.arg);
 	}	
 	
-	public RoleInstantiation project(Role self)
+	/*public RoleInstantiation project(Role self)
 	{
 		RoleNode rn = new RoleNode(null, this.arg.toName().toString());
 		return new RoleInstantiation(null, rn);

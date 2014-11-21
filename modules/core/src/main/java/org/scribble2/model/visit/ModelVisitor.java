@@ -35,7 +35,7 @@ public class ModelVisitor
 		return visited;
 	}
 	
-	/*public Job getJob()
+	public Job getJob()
 	{
 		return this.job;
 	}
@@ -43,7 +43,7 @@ public class ModelVisitor
 	public JobContext getJobContext()
 	{
 		return this.job.getContext();
-	}*/
+	}
 	
 	/*// Requires visited ModelNode to be of the same class as the original ModelNode
 	// Not suitable for general Visitor pattern: as well as the strict class check (so no substitutability), overriding is not convenient

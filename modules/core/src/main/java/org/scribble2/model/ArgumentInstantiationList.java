@@ -1,6 +1,9 @@
 package org.scribble2.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.scribble2.sesstype.Argument;
 
 public class ArgumentInstantiationList extends InstantiationList<ArgumentInstantiation>
 {
@@ -14,10 +17,10 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 		return this.instans.isEmpty();
 	}
 	
-	/*public List<Argument> getArguments()
+	public List<Argument> getArguments()
 	{
 		return this.instans.stream().map((ai) -> ai.arg.toArgument()).collect(Collectors.toList());
-	}*/
+	}
 
 	@Override
 	public String toString()
@@ -32,5 +35,11 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 			s += ", " + a;
 		}
 		return s + ">";
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new ArgumentInstantiationList(this.instans);
 	}
 }

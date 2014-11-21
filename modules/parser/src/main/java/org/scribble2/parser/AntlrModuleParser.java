@@ -13,6 +13,8 @@ import org.scribble.parser.antlr.Scribble2Parser;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
+import org.scribble2.parser.ast.AntlrArgumentInstantiation;
+import org.scribble2.parser.ast.AntlrArgumentInstantiationList;
 import org.scribble2.parser.ast.AntlrMessageSignature;
 import org.scribble2.parser.ast.AntlrModule;
 import org.scribble2.parser.ast.AntlrModuleDecl;
@@ -22,8 +24,11 @@ import org.scribble2.parser.ast.AntlrPayload;
 import org.scribble2.parser.ast.AntlrPayloadElement;
 import org.scribble2.parser.ast.AntlrRoleDecl;
 import org.scribble2.parser.ast.AntlrRoleDeclList;
+import org.scribble2.parser.ast.AntlrRoleInstantiation;
+import org.scribble2.parser.ast.AntlrRoleInstantiationList;
 import org.scribble2.parser.ast.global.AntlrGlobalChoice;
 import org.scribble2.parser.ast.global.AntlrGlobalContinue;
+import org.scribble2.parser.ast.global.AntlrGlobalDo;
 import org.scribble2.parser.ast.global.AntlrGlobalInteractionSequence;
 import org.scribble2.parser.ast.global.AntlrGlobalInterrupt;
 import org.scribble2.parser.ast.global.AntlrGlobalInterruptible;
@@ -151,7 +156,7 @@ public class AntlrModuleParser
 				return AntlrGlobalInterruptible.parseGlobalInterruptible(this, ct);
 			case GLOBALINTERRUPT:
 				return AntlrGlobalInterrupt.parseGlobalInterrupt(this, ct);
-			/*case GLOBALDO:
+			case GLOBALDO:
 				return AntlrGlobalDo.parseGlobalDo(this, ct);
 			case ROLEINSTANTIATIONLIST:
 				return AntlrRoleInstantiationList.parseRoleInstantiationList(this, ct);
@@ -160,7 +165,7 @@ public class AntlrModuleParser
 			case ARGUMENTINSTANTIATIONLIST:
 				return AntlrArgumentInstantiationList.parseArgumentInstantiationList(this, ct);
 			case ARGUMENTINSTANTIATION:
-				return AntlrArgumentInstantiation.parseArgumentInstantiation(this, ct);*/
+				return AntlrArgumentInstantiation.parseArgumentInstantiation(this, ct);
 			default:
 				throw new RuntimeException("Unknown ANTLR node type: " + type);
 		}

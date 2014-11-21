@@ -1,8 +1,10 @@
 package org.scribble2.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.name.Role;
 
 public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 {
@@ -93,10 +95,10 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 		return this.decls.size();
 	}*/
 	
-	/*public List<Role> getRoles()
+	public List<Role> getRoles()
 	{
-		return this.decls.stream().map((decl) -> decl.name.toName()).collect(Collectors.toList());
-	}*/
+		return this.decls.stream().map((decl) -> decl.toName()).collect(Collectors.toList());
+	}
 
 	@Override
 	public String toString()

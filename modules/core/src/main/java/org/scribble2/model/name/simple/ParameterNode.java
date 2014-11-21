@@ -1,11 +1,10 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.ArgumentInstantiation;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.name.Parameter;
 
-public class ParameterNode extends SimpleNameNode implements PayloadElementNameNode, MessageNode, ArgumentInstantiation//, PayloadTypeOrParameterNode
+public class ParameterNode extends SimpleNameNode implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 {
 	//public final Kind kind;
 	
@@ -42,6 +41,24 @@ public class ParameterNode extends SimpleNameNode implements PayloadElementNameN
 		return new Parameter(null, this.identifier);
 	}
 
+	@Override
+	public boolean isMessageSignatureNode()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isPayloadTypeNode()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isParameterNode()
+	{
+		return true;
+	}
+
 	/*@Override
 	public PayloadTypeOrParameter toPayloadTypeOrParameter()
 	{
@@ -68,24 +85,6 @@ public class ParameterNode extends SimpleNameNode implements PayloadElementNameN
 	public Parameter toMessage()
 	{
 		return toName();
-	}
-
-	@Override
-	public boolean isMessageSignatureNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isPayloadTypeNode()
-	{
-		return false;
-	}
-
-	@Override 
-	public boolean isParameterNode()
-	{
-		return true;
 	}
 
 	@Override

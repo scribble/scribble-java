@@ -1,8 +1,10 @@
 package org.scribble2.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.name.Parameter;
 
 public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 {
@@ -87,12 +89,12 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 		//List<ParameterDecl> pds = NameDeclList.toParameterDeclList.apply(nds.decls);
 		//List<ParameterDecl> pds = nds.decls.stream().map(ParameterDecl.toParameterDecl).collect(Collectors.toList());
 		return new ParameterDeclList(this.ct, nds.decls);
-	}
+	}*/
 	
 	public List<Parameter> getParameters()
 	{
-		return this.decls.stream().map((decl) -> decl.name.toName()).collect(Collectors.toList());
-	}*/
+		return this.decls.stream().map((decl) -> decl.toName()).collect(Collectors.toList());
+	}
 	
 	/*public List<Argument> asArguments()
 	{

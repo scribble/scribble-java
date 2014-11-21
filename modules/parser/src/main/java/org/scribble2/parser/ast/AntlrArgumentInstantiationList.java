@@ -1,15 +1,15 @@
-package scribble2.parser.ast;
+package org.scribble2.parser.ast;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-
-import scribble2.ast.ArgumentInstantiation;
-import scribble2.ast.ArgumentInstantiationList;
-import scribble2.parser.AntlrTreeParser;
-import scribble2.util.Util;
+import org.scribble2.model.ArgumentInstantiation;
+import org.scribble2.model.ArgumentInstantiationList;
+import org.scribble2.model.ModelFactoryImpl;
+import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.util.Util;
 
 public class AntlrArgumentInstantiationList
 {
@@ -23,7 +23,8 @@ public class AntlrArgumentInstantiationList
 		{
 			as.add((ArgumentInstantiation) parser.parse(a));
 		}
-		return new ArgumentInstantiationList(ct, as);
+		//return new ArgumentInstantiationList(as);
+		return ModelFactoryImpl.FACTORY.ArgumentInstantiationList(as);
 	}
 
 	public static List<CommonTree> getArgumentChildren(CommonTree ct)

@@ -3,7 +3,7 @@ package org.scribble2.model;
 
 // A sig kind node: MessageSignatureNode or ParameterNode
 // MessageSignatureOrParameterNode (sig counterpart to PayloadTypeOrParameterNode)
-public interface MessageNode extends ArgumentInstantiation
+public interface MessageNode extends ArgumentNode
 {
 	// OperatorOrParameter
 	//Operator getOperator();  // If a parameter, then the parameter name

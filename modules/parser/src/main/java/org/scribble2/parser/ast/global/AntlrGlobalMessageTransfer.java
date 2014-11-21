@@ -84,7 +84,7 @@ public class AntlrGlobalMessageTransfer
 			}
 			else
 			{
-				return AntlrQualifiedName.toMessageSignatureNameNodes(ct);
+				return AntlrQualifiedName.toMessageSignatureNameNode(ct);
 			}
 		}
 		/*//return AntlrSimpleName.toParameterNode(ct, Kind.SIG);

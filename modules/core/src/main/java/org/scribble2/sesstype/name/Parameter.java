@@ -1,8 +1,10 @@
 package org.scribble2.sesstype.name;
 
+import org.scribble2.sesstype.Message;
+
 
 // A "Scribble generics" parameter -- FIXME: deprecate, parameter is a syntactic category, wrt. typing it should just be a message signature, payload, etc.
-public class Parameter extends SimpleName //implements Message, PayloadTypeOrParameter
+public class Parameter extends SimpleName implements Message, PayloadTypeOrParameter
 {
 	private static final long serialVersionUID = 1L;
 
@@ -31,11 +33,11 @@ public class Parameter extends SimpleName //implements Message, PayloadTypeOrPar
 			throw new RuntimeException("Not a message signature parameter: " + this.kind);
 		}
 		return new ScopedMessageParameter(scope, this.kind, toString());
-	}
+	}*/
 	
 	@Override
 	public boolean isParameter()
 	{
 		return true;
-	}*/
+	}
 }

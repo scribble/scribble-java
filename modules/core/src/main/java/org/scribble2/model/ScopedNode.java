@@ -1,7 +1,9 @@
 package org.scribble2.model;
 
+import org.scribble2.sesstype.name.SimpleName;
 
-@Deprecated
+
+// FIXME: move to types? uniform with Named
 public interface ScopedNode
 {
 	boolean isEmptyScope();  // false for interruptible (can be implicit but not empty)
@@ -9,5 +11,6 @@ public interface ScopedNode
 	//Scope getScope();
 	//String getScopeElement();
 
-	//SimpleName getScopeElement();  // Distinguish simple and compound scope names? (as name kinds)
+	// SimpleName for Scope "elements" (Scope is a compound name with prefix)
+	SimpleName getScopeElement();  // Distinguish simple and compound scope names? (as name kinds)
 }

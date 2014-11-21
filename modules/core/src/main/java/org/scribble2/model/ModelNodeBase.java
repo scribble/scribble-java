@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.model.visit.SubprotocolVisitor;
+import org.scribble2.model.visit.Substitutor;
 import org.scribble2.util.ScribbleException;
 
 /**
@@ -60,6 +62,12 @@ public abstract class ModelNodeBase implements ModelNode
 		return this;
 	}
 
+	@Override
+	public ModelNode visitChildrenInSubprotocols(SubprotocolVisitor nv) throws ScribbleException
+	{
+		return visitChildren(nv);
+	}
+
 	/*private final CommonTree ct;
 	
 	public ModelNodeBase(CommonTree ct)
@@ -68,21 +76,28 @@ public abstract class ModelNodeBase implements ModelNode
 	}*/
 	
 	@Override
-	public ModelDelegate del()
+	public final ModelDelegate del()
 	{
 		return this.del;
 	}
 	
 	@Override
-	public ModelNodeBase del(ModelDelegate del)
+	public final ModelNodeBase del(ModelDelegate del)
 	{
 		ModelNodeBase copy = copy();
 		copy.del = del;
 		return copy;
 	}
+	
+	@Override
+	public ModelNode substitute(Substitutor subs) throws ScribbleException
+	{
+		//return visit(subs);
+		return this;
+	}
 		
 	// Used when a generic cast would otherwise be needed (non-generic children casts don't need this)
-	protected static <T extends ModelNode> T visitChildWithClassCheck(ModelNode parent, T child, ModelVisitor nv) throws ScribbleException
+	protected final static <T extends ModelNode> T visitChildWithClassCheck(ModelNode parent, T child, ModelVisitor nv) throws ScribbleException
 	{
 		ModelNode visited = ((ModelNodeBase) parent).visitChild(child, nv);
 		if (visited.getClass() != child.getClass())  // Visitor is not allowed to replace the node by a different node type
@@ -94,7 +109,7 @@ public abstract class ModelNodeBase implements ModelNode
 		return t;
 	}
 
-	protected static <T extends ModelNode> List<T> visitChildListWithClassCheck(ModelNode parent, List<T> children, ModelVisitor nv) throws ScribbleException
+	protected final static <T extends ModelNode> List<T> visitChildListWithClassCheck(ModelNode parent, List<T> children, ModelVisitor nv) throws ScribbleException
 	{
 		List<T> visited = new LinkedList<>();
 		for (T n : children)

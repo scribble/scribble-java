@@ -5,7 +5,7 @@ import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.sesstype.name.Parameter;
 
-public class ParameterDecl extends HeaderParameterDecl //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
+public class ParameterDecl extends HeaderParameterDecl<ParameterNode> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
 {
 	public enum Kind { TYPE, SIG }  // ROLE
 	

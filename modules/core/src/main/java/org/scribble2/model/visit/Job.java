@@ -28,13 +28,13 @@ public class Job
 		System.out.println("\n--- Name disambigiation --- ");
 		runNodeVisitorPass(NameDisambiguator.class);
 						
-		/*System.out.println("\n--- Node context building --- ");
-		job.runNodeVisitorPass(NodeContextBuilder.class);
+		System.out.println("\n--- Context building --- ");
+		runNodeVisitorPass(ContextBuilder.class);
 
 		System.out.println("\n--- Well-formed choice visitor test --- ");
-		job.runNodeVisitorPass(WellFormedChoiceChecker.class);
+		runNodeVisitorPass(WellFormedChoiceChecker.class);
 
-		System.out.println("\n--- Projection --- ");
+		/*System.out.println("\n--- Projection --- ");
 		job.runNodeVisitorPass(Projector.class);
 
 		System.out.println("\n--- Reachability check --- ");

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.RoleInstantiation;
 import org.scribble2.model.RoleInstantiationList;
 import org.scribble2.parser.AntlrModuleParser;
@@ -18,7 +19,8 @@ public class AntlrRoleInstantiationList
 		{
 			ris.add((RoleInstantiation) parser.parse(ri));
 		}
-		return new RoleInstantiationList(ris);
+		//return new RoleInstantiationList(ris);
+		return ModelFactoryImpl.FACTORY.RoleInstantiationList(ris);
 	}
 
 	public static final List<CommonTree> getRoleInstantiationChildren(CommonTree ct)

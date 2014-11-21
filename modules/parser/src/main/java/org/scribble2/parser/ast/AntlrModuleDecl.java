@@ -13,7 +13,7 @@ public class AntlrModuleDecl
 	public static ModuleDecl parseModuleDecl(AntlrModuleParser parser, CommonTree ct)
 	{
 		//return new ModuleDecl(AntlrQualifiedName.toModuleNameNodes(getModuleNameChild(ct)));
-		return ModelFactoryImpl.FACTORY.ModuleDecl(AntlrQualifiedName.toModuleNameNodes(getModuleNameChild(ct)));
+		return ModelFactoryImpl.FACTORY.ModuleDecl(AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct)));
 	}
 
 	public static CommonTree getModuleNameChild(CommonTree ct)

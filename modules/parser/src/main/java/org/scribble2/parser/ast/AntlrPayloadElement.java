@@ -46,7 +46,7 @@ public class AntlrPayloadElement
 				}
 				else
 				{
-					ptpn = AntlrQualifiedName.toPayloadTypeNameNodes(child);
+					ptpn = AntlrQualifiedName.toPayloadTypeNameNode(child);
 				}
 				break;
 			}

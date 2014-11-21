@@ -1,15 +1,15 @@
-package scribble2.parser.ast.global;
+package org.scribble2.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-
-import scribble2.ast.ArgumentInstantiationList;
-import scribble2.ast.RoleInstantiationList;
-import scribble2.ast.global.GlobalDo;
-import scribble2.ast.name.ProtocolNameNodes;
-import scribble2.ast.name.ScopeNode;
-import scribble2.parser.AntlrTreeParser;
-import scribble2.parser.ast.AntlrQualifiedName;
-import scribble2.parser.ast.AntlrSimpleName;
+import org.scribble2.model.ArgumentInstantiationList;
+import org.scribble2.model.ModelFactoryImpl;
+import org.scribble2.model.RoleInstantiationList;
+import org.scribble2.model.global.GlobalDo;
+import org.scribble2.model.name.qualified.ProtocolNameNode;
+import org.scribble2.model.name.simple.ScopeNode;
+import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ast.name.AntlrQualifiedName;
+import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrGlobalDo
 {
@@ -22,18 +22,21 @@ public class AntlrGlobalDo
 	{
 		RoleInstantiationList ril = (RoleInstantiationList) parser.parse(getRoleInstantiationListChild(ct));
 		ArgumentInstantiationList al = (ArgumentInstantiationList) parser.parse(getArgumentInstantiationListChild(ct));
-		ProtocolNameNodes pnn = AntlrQualifiedName.toProtocolNameNodes(getProtocolNameChild(ct));
+		ProtocolNameNode pnn = AntlrQualifiedName.toProtocolNameNode(getProtocolNameChild(ct));
 		if (!isScoped(ct))
 		{
-			return new GlobalDo(ct, ril, al, pnn);
+			//return new GlobalDo(ril, al, pnn);
+			return ModelFactoryImpl.FACTORY.GlobalDo(ril, al, pnn);
 		}
 		ScopeNode scope = AntlrSimpleName.toScopeNode(getScopeChild(ct));
-		return new GlobalDo(ct, scope, ril, al, pnn);
+		//return new GlobalDo(scope, ril, al, pnn);
+		return ModelFactoryImpl.FACTORY.GlobalDo(scope, ril, al, pnn);
 	}
 	
 	public static boolean isScoped(CommonTree ct)
 	{
-		return AntlrSimpleName.toScopeNode(ct) != null;
+		return AntlrSimpleName.toScopeNode(getScopeChild(ct)) != null;  // No scope recorded as null
+		//return !AntlrSimpleName.toScopeNode(getScopeChild(ct)).toName().equals("NO_SCOPE");  // FIXME: constants
 	}
 
 	public static CommonTree getScopeChild(CommonTree ct)

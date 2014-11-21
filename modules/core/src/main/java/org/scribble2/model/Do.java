@@ -1,9 +1,16 @@
 package org.scribble2.model;
 
+import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.simple.ScopeNode;
+import org.scribble2.model.visit.JobContext;
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.model.visit.SubprotocolVisitor;
+import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.SimpleName;
+import org.scribble2.util.ScribbleException;
 
-public abstract class Do extends ModelNodeBase implements SimpleInteractionNode //ScopedNode
+public abstract class Do extends ModelNodeBase implements SimpleInteractionNode, ScopedNode
 {
 	public final ScopeNode scope;
 	public final RoleInstantiationList roleinstans;
@@ -33,9 +40,53 @@ public abstract class Do extends ModelNodeBase implements SimpleInteractionNode 
 		this.proto = proto;
 	}
 
-	/*protected abstract Do reconstruct(CommonTree ct, ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNodes proto, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
+	public Do visitChildren(ModelVisitor nv) throws ScribbleException
+	{
+		ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
+		RoleInstantiationList ril = (RoleInstantiationList) visitChild(this.roleinstans, nv);
+		ArgumentInstantiationList al = (ArgumentInstantiationList) visitChild(this.arginstans, nv);
+		ProtocolNameNode proto = (ProtocolNameNode) visitChild(this.proto, nv);
+		return reconstruct(scope, ril, al, proto);//, getContext(), getEnv());
+	}
+
+	@Override
+	public Do visitChildrenInSubprotocols(SubprotocolVisitor spv) throws ScribbleException
+	{
+		/*Do doo = visitChildren(spv);  // Should we do this or not?
+		ModuleContext mcontext = ((CompoundInteractionContext) spv.peekContext()).getModuleContext();
+		ProtocolName fullname = mcontext.getFullProtocolDeclName(this.proto.toName());
+		//spv.enterSubprotocol(fullname, this.ril.getRoles(), this.ail.getArguments());*/
+		if (!spv.isCycle())
+		//if (spv.isCycle() != -1)
+		{
+			//ModuleDelegate mcontext = spv.getModuleContext();
+			JobContext jcontext = spv.getJobContext();
+			ModuleDelegate mcontext = (ModuleDelegate) jcontext.getMainModule().del();
+			
+			System.out.println("3a: " + this.proto); 
+			
+			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+					//pd = spv.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());* /
+					pd = getTargetProtocolDecl(spv.getJobContext(), mcontext);
+
+			//... do wf-choice env building and checking
+			//... scopes (all messages/operators are scoped?)
+			
+			//Node substituted = pd.def.block.visit(spv.getSubstitutor());  // block does an env push/pop without merge to parent
+			ModelNode seq = spv.applySubstitutions(pd.def.block.seq);
+			seq.visit(spv);  // Return is discarded
+		}
+		else
+		{
+			System.out.println("3b: " + this.proto); 
+		}
+		return this;
+	}
+
+	/*@Override
 	public Do leaveContextBuilding(NodeContextBuilder builder) throws ScribbleException
 	{
 		builder.addProtocolDependency(getTargetFullProtocolName(builder.getModuleContext()));
@@ -196,51 +247,15 @@ public abstract class Do extends ModelNodeBase implements SimpleInteractionNode 
 		RoleInstantiationList ril = (RoleInstantiationList) subs.visit(this.ril);
 		ArgumentInstantiationList ail = (ArgumentInstantiationList) subs.visit(this.ail);
 		return new Do(this.ct, this.scope, ril, ail, this.cn);
-	}* /
+	}*/
 	
-	@Override
-	public Do visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
-		RoleInstantiationList ril = (RoleInstantiationList) visitChild(this.roleinstans, nv);
-		ArgumentInstantiationList al = (ArgumentInstantiationList) visitChild(this.arginstans, nv);
-		ProtocolNameNodes proto = (ProtocolNameNodes) visitChild(this.proto, nv);
-		//return new Do(this.ct, scope, ril, al, proto, getContext(), getEnv());
-		return reconstruct(this.ct, scope, ril, al, proto, getContext(), getEnv());
-	}
-	
-	@Override
-	public Do visitChildrenInSubprotocols(SubprotocolVisitor spv) throws ScribbleException
-	{
-		/*Do doo = visitChildren(spv);  // Should we do this or not?
-		ModuleContext mcontext = ((CompoundInteractionContext) spv.peekContext()).getModuleContext();
-		ProtocolName fullname = mcontext.getFullProtocolDeclName(this.proto.toName());
-		//spv.enterSubprotocol(fullname, this.ril.getRoles(), this.ail.getArguments());* /
-		if (!spv.isCycle())
-		//if (spv.isCycle() != -1)
-		{
-			ModuleContext mcontext = spv.getModuleContext();
-			ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-					//pd = spv.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());* /
-					pd = getTargetProtocolDecl(spv.getJobContext(), mcontext);
-
-			//... do wf-choice env building and checking
-			//... scopes (all messages/operators are scoped?)
-			
-			//Node substituted = pd.def.block.visit(spv.getSubstitutor());  // block does an env push/pop without merge to parent
-			ScribbleAST seq = spv.applySubstitutions(pd.def.block.seq);
-			seq.visit(spv);  // Return is discarded
-		}
-		return this;
-	}
-	
-	public ProtocolName getTargetFullProtocolName(ModuleContext mcontext)
+	private ProtocolName getTargetFullProtocolName(ModuleDelegate mcontext)
 	{
 		return mcontext.getFullProtocolDeclName(this.proto.toName());
 	}
 	
-	public ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-			getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
+	public ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			getTargetProtocolDecl(JobContext jcontext, ModuleDelegate mcontext)
 	{
 		ProtocolName fullname = getTargetFullProtocolName(mcontext);
 		return jcontext.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
@@ -259,7 +274,7 @@ public abstract class Do extends ModelNodeBase implements SimpleInteractionNode 
 		return this.scope.toName();
 	}
 
-	/* // Make public
+	/*// Make public
 	private boolean hasEmptyScope()
 	{
 		return isScopeNodeEmpty() || this.scope.toName().equals(Scope.EMPTY_SCOPE);
@@ -274,7 +289,7 @@ public abstract class Do extends ModelNodeBase implements SimpleInteractionNode 
 	{
 		//return new ProtocolName(this.cn.compileName());
 		throw new RuntimeException("To be overridden: " + this.cn.compileName());
-	}
+	}(/
 	
 	public ProtocolDecl getTargetProtocolDecl(Env env) throws ScribbleException
 	{

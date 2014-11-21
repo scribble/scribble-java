@@ -3,6 +3,8 @@ package org.scribble2.model.global;
 import java.util.List;
 
 import org.scribble2.model.Choice;
+import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 
 public class GlobalChoice extends Choice<GlobalProtocolBlock> implements GlobalInteraction
@@ -12,6 +14,21 @@ public class GlobalChoice extends Choice<GlobalProtocolBlock> implements GlobalI
 	{
 		//this(ct, subj, blocks, null, null);
 		super(subj, blocks);
+	}
+
+	@Override
+	protected Choice<GlobalProtocolBlock> reconstruct(RoleNode subj, List<GlobalProtocolBlock> blocks)
+	{
+		ModelDelegate del = del();
+		GlobalChoice gc = new GlobalChoice(subj, blocks);
+		gc = (GlobalChoice) gc.del(del);
+		return gc;
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new GlobalChoice(this.subj, this.blocks);
 	}
 
 	/*protected GlobalChoice(CommonTree ct, RoleNode subj, List<GlobalProtocolBlock> blocks, CompoundInteractionNodeContext ccontext)
