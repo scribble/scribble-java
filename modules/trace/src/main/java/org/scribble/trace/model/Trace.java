@@ -24,6 +24,7 @@ public class Trace {
 
 	private String _name;
 	private String _description;
+	private String _author;
 	private java.util.List<Role> _roles=new java.util.ArrayList<Role>();
 	private java.util.List<Step> _steps=new java.util.ArrayList<Step>();
 	
@@ -44,6 +45,26 @@ public class Trace {
 	 */
 	public Trace setName(String name) {
 		_name = name;
+		return (this);
+	}
+	
+	/**
+	 * This method returns the author of the trace.
+	 * 
+	 * @return The author of the trace
+	 */
+	public String getAuthor() {
+		return (_author);
+	}
+	
+	/**
+	 * This method sets the author of the trace.
+	 * 
+	 * @param author The author of the trace
+	 * @return The trace
+	 */
+	public Trace setAuthor(String author) {
+		_author = author;
 		return (this);
 	}
 	
@@ -106,5 +127,49 @@ public class Trace {
 		_steps = steps;
 		return (this);
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+    	StringBuffer buf=new StringBuffer();
+    	toText(buf, 0);
+    	
+    	return (buf.toString());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void toText(StringBuffer buf, int level) {
+		buf.append("trace ");
+		
+    	if (_name != null && _name.trim().length() > 0) {    		
+    		buf.append(_name.trim());
+    	}
+    	
+    	if (_author != null && _author.trim().length() > 0) {
+    		buf.append(" by "+_author.trim());
+    	}
+		
+    	if (_description != null && _description.trim().length() > 0) {
+    		buf.append(" shows "+_description.trim());
+    	}
+		
+		buf.append(";\n\n");
+    	
+    	for (Role role : getRoles()) {
+    		role.toText(buf, level);
+    	}
+    	
+    	if (getRoles().size() > 0) {
+    		buf.append("\n");
+    	}
+    	
+    	for (Step step : getSteps()) {
+    		step.toText(buf, level);
+    	}
+    	
+    }
 
 }

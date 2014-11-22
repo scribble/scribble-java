@@ -68,4 +68,9 @@ public abstract class RoleSimulator {
 	 */
 	public abstract void close(SimulatorContext context);
 	
+    /**
+     * This method describes the simulator configuration in text.
+     */
+    public abstract void toText(StringBuffer buf);
+
 }

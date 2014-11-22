@@ -20,6 +20,7 @@
 		<module>validation</module>
 		<module>monitor</module>
 		<module>trace</module>
+		<module>trace-parser</module>
 		<module>cli</module>
 	</modules>
 

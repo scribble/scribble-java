@@ -223,4 +223,21 @@ public class MonitorRoleSimulator extends RoleSimulator {
 		_type = null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+    public void toText(StringBuffer buf) {
+    	if (_module != null && _module.trim().length() > 0) {
+    		buf.append(" simulating "+_module.trim());
+
+        	if (_protocol != null && _protocol.trim().length() > 0) {
+        		buf.append(" protocol "+_protocol.trim());
+        	}
+
+        	if (_role != null && _role.trim().length() > 0) {
+        		buf.append(" as "+_role.trim());
+        	}
+    	}
+    }
+
 }

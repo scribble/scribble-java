@@ -64,4 +64,22 @@ public abstract class Step {
 	public abstract boolean simulate(SimulatorContext context,
 					java.util.Map<String,RoleSimulator> roleSimulators);
 	
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+    	StringBuffer buf=new StringBuffer();
+    	toText(buf, 0);
+    	
+    	return (buf.toString());
+    }
+    
+    /**
+     * This method generates a text based representation of the step.
+     * 
+     * @param buf The buffer
+     * @param level The indentation level
+     */
+    public abstract void toText(StringBuffer buf, int level);
+
 }
