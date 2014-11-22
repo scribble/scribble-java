@@ -65,4 +65,31 @@ public class Role {
 		return (this);
 	}
 	
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+    	StringBuffer buf=new StringBuffer();
+    	toText(buf, 0);
+    	
+    	return (buf.toString());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void toText(StringBuffer buf, int level) {
+		buf.append("role ");
+		
+    	if (_name != null && _name.trim().length() > 0) {    		
+    		buf.append(_name.trim());
+    	}
+    	
+    	if (_simulator != null) {
+    		_simulator.toText(buf);
+    	}
+    	
+		buf.append(";\n");
+    }
+
 }

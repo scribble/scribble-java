@@ -121,12 +121,49 @@ public class MessageTransfer extends Step {
 		return (ret);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public String toString() {
-		return ((_message==null?"()":_message)
-				+" from "+(_fromRole==null?"<role>":_fromRole)
-				+" to "+(_toRoles.size()==0?"[<role>]":_toRoles));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void toText(StringBuffer buf, int level) {
+		if (getMessage() != null) {
+			if( getMessage().getOperator() != null) {
+				buf.append(getMessage().getOperator());
+			}
+		
+			if (getMessage().getTypes().size() > 0) {
+				buf.append("(");
+				
+				for (int i=0; i < getMessage().getTypes().size(); i++) {
+					if (i > 0) {
+						buf.append(",");
+					}
+					buf.append(getMessage().getTypes().get(i));
+					
+					if (i < getMessage().getValues().size()) {
+						buf.append("=");
+						buf.append(getMessage().getValues().get(i));
+					}
+				}
+				
+				buf.append(")");
+			}
+		}
+		
+		if (getFromRole() != null) {
+			buf.append(" from "+getFromRole());
+		}
+		
+		if (getToRoles().size() > 0) {
+			buf.append(" to ");
+			
+			for (int i=0; i < getToRoles().size(); i++) {
+				if (i > 0) {
+					buf.append(",");
+				}
+				buf.append(getToRoles().get(i));
+			}
+		}
+    	
+		buf.append(";\n");
+    }
 }
