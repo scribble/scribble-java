@@ -139,7 +139,7 @@ roledefn: ROLEKW IDENTIFIER ( SIMULATINGKW module PROTOCOLKW IDENTIFIER ( ASKW I
 
 stepdefn: messagetransfer ;
 
-messagetransfer: IDENTIFIER '(' parameter ( ',' parameter )* ')' FROMKW IDENTIFIER TOKW IDENTIFIER ( ',' IDENTIFIER )* ';' ;
+messagetransfer: IDENTIFIER ( '(' ( parameter ( ',' parameter )* )? ')' )? FROMKW IDENTIFIER TOKW IDENTIFIER ( ',' IDENTIFIER )* ';' ;
 
 parameter: EXTIDENTIFIER ( '=' EXTIDENTIFIER )? ;
 

@@ -1,0 +1,22 @@
+grammar org.scribble.trace.editor.dsl.ScribbleTraceDsl with org.eclipse.xtext.common.Terminals
+
+generate scribbleTraceDsl "http://www.scribble.org/trace/editor/dsl/ScribbleTraceDsl"
+
+
+Trace: {Trace} Tracedefn ( roles+=Roledefn )* ( steps+=Stepdefn )* ;
+
+Sentence: ID+;
+
+Tracedefn: 'trace' ID ( 'by' Sentence ( 'shows' Sentence )? )? ';' ;
+
+Module: ID ( '.' ID )* ;
+
+Roledefn: 'role' ID ( 'simulating' Module 'protocol' ID ( 'as' ID )? )? ';' ;
+
+Stepdefn: Messagetransfer ;
+
+Messagetransfer: {Messagetransfer} ID ( '(' ( parameters+=Parameter ( ',' parameters+=Parameter )* )? ')' )? 'from' ID 'to' ID ( ',' ID )* ';' ;
+
+Parameter: type=STRING ( '=' value=STRING )? ;
+
+
