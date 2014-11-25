@@ -241,4 +241,18 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.scribble.trace.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.scribble.trace.editor.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

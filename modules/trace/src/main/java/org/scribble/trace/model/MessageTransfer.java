@@ -137,11 +137,14 @@ public class MessageTransfer extends Step {
 					if (i > 0) {
 						buf.append(",");
 					}
+					buf.append("\"");
 					buf.append(getMessage().getTypes().get(i));
+					buf.append("\"");
 					
 					if (i < getMessage().getValues().size()) {
-						buf.append("=");
+						buf.append("=\"");
 						buf.append(getMessage().getValues().get(i));
+						buf.append("\"");
 					}
 				}
 				

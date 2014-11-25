@@ -61,15 +61,15 @@ public class MessageTransferModelAdaptor extends AbstractModelAdaptor {
 				String text=((CommonToken)context.pop()).getText();
 				
 				if (context.peek() instanceof CommonToken && ((CommonToken)context.peek()).getText().equals("=")) {
-					mesg.getValues().add(0, text);
+					mesg.getValues().add(0, stripQuotes(text));
 					
 					// Consume '='
 					context.pop();
 					
-					mesg.getTypes().add(0, ((CommonToken)context.pop()).getText());
+					mesg.getTypes().add(0, stripQuotes(((CommonToken)context.pop()).getText()));
 					
 				} else {
-					mesg.getTypes().add(0, text);
+					mesg.getTypes().add(0, stripQuotes(text));
 				}
 			} while (((CommonToken)context.pop()).getText().equals(","));
 		}
@@ -83,4 +83,7 @@ public class MessageTransferModelAdaptor extends AbstractModelAdaptor {
 		return ret;
 	}
 
+	protected String stripQuotes(String text) {
+		return (text.substring(1, text.length()-1));
+	}
 }
