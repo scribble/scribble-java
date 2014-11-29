@@ -20,7 +20,9 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.scribble.context.DefaultModuleContext;
 import org.scribble.logging.ConsoleIssueLogger;
 import org.scribble.model.Module;
@@ -132,7 +134,15 @@ public class MonitorExporterTest {
     		is.close();
     		
     		ObjectMapper mapper=new ObjectMapper();
+    		
+            SerializationConfig config=mapper.getSerializationConfig()
+                    .withSerializationInclusion(JsonSerialize.Inclusion.NON_NULL)
+                    .withSerializationInclusion(JsonSerialize.Inclusion.NON_DEFAULT);
+            
+            mapper.setSerializationConfig(config);
+
     		mapper.configure(Feature.SORT_PROPERTIES_ALPHABETICALLY, true);
+    		mapper.configure(SerializationConfig.Feature.WRITE_EMPTY_JSON_ARRAYS, false);
 
     		String monitor=mapper.writeValueAsString(type);
     		String expecting=new String(b).trim();

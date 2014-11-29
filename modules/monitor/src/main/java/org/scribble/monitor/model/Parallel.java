@@ -16,7 +16,8 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.SessionScope;
+import org.scribble.monitor.runtime.MonitorContext;
+import org.scribble.monitor.runtime.SessionScope;
 
 /**
  * This class represents a Parallel action.
@@ -26,6 +27,12 @@ public class Parallel extends Node {
 	
 	private java.util.List<Integer> _pathIndexes=new java.util.ArrayList<Integer>();
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void init(MonitorContext context) {
+	}
+	
 	/**
 	 * This method returns the choice path indexes.
 	 * 

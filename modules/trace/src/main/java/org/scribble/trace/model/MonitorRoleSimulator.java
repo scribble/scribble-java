@@ -26,16 +26,17 @@ import org.scribble.model.Module;
 import org.scribble.model.ProtocolDecl;
 import org.scribble.model.Role;
 import org.scribble.model.local.LProtocolDefinition;
-import org.scribble.monitor.DefaultMonitor;
-import org.scribble.monitor.Message;
-import org.scribble.monitor.Monitor;
-import org.scribble.monitor.SessionInstance;
 import org.scribble.monitor.export.MonitorExporter;
 import org.scribble.monitor.model.SessionType;
+import org.scribble.monitor.runtime.DefaultMonitor;
+import org.scribble.monitor.runtime.DefaultMonitorContext;
+import org.scribble.monitor.runtime.Monitor;
+import org.scribble.monitor.runtime.SessionInstance;
 import org.scribble.parser.ProtocolModuleLoader;
 import org.scribble.parser.ProtocolParser;
 import org.scribble.projection.ProtocolProjector;
 import org.scribble.trace.simulation.SimulatorContext;
+import org.scribble.trace.simulation.TraceMessageComparatorFactory;
 
 /**
  * This abstract class represents a simulator associated with a
@@ -56,6 +57,14 @@ public class MonitorRoleSimulator extends RoleSimulator {
 	private static final ProtocolParser PARSER=new ProtocolParser();
 	private static final MonitorExporter EXPORTER=new MonitorExporter();
 	private static final Monitor MONITOR=new DefaultMonitor();
+	
+	static {
+		DefaultMonitorContext context=new DefaultMonitorContext();
+		
+		((DefaultMonitor)MONITOR).setMonitorContext(context);
+		
+		context.register(new TraceMessageComparatorFactory());
+	}
 	
 	/**
 	 * This method returns the local module to be monitored.

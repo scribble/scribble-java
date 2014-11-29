@@ -1,0 +1,128 @@
+/*
+ * Copyright 2009-11 www.scribble.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+package org.scribble.monitor.rest;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.scribble.monitor.model.Annotation;
+import org.scribble.monitor.model.Receive;
+import org.scribble.monitor.model.Send;
+import org.scribble.monitor.model.SessionType;
+import org.scribble.monitor.model.Parameter;
+import org.scribble.monitor.runtime.DefaultMonitor;
+import org.scribble.monitor.rest.RESTMessage;
+import org.scribble.monitor.runtime.DefaultMonitorContext;
+import org.scribble.monitor.runtime.Monitor;
+import org.scribble.monitor.runtime.SessionInstance;
+
+public class RESTMonitorTest {
+
+	private static final String ROLE1 = "Role1";
+
+	private static final String OP1 = "op1";
+	private static final String OP2 = "op2";
+	
+	private static final String TYPE1 = "type1";
+	private static final String TYPE2 = "type2";
+
+	@Test
+	public void testRequestResponse() {
+		Monitor monitor=new DefaultMonitor();
+		
+		DefaultMonitorContext context=new DefaultMonitorContext();
+		((DefaultMonitor)monitor).setMonitorContext(context);
+		
+		context.register(new RESTMessageComparatorFactory());
+		
+		SessionType type=new SessionType();
+		
+		Send s1=new Send();
+		s1.setOperator(OP1);
+		
+		Parameter t1=new Parameter("f", TYPE1);
+		Annotation t1ann=new Annotation();
+		t1ann.setName("REST");
+		t1ann.addProperty("query", "field");
+		t1.getAnnotations().add(t1ann);
+		
+		Parameter t2=new Parameter("c", TYPE1);
+		Annotation t2ann=new Annotation();
+		t2ann.setName("REST");
+		t2ann.addProperty("path", "customer");
+		t2.getAnnotations().add(t2ann);
+		
+		s1.getParameters().add(t1);
+		s1.getParameters().add(t2);
+		s1.setToRole(ROLE1);
+		s1.setNext(1);
+		
+		Annotation s1ann=new Annotation();
+		s1ann.setName("REST");
+		s1ann.addProperty("method", RESTMessage.METHOD_GET);
+		s1ann.addProperty("path", "/customer/{customer}/address");
+		
+		s1.getAnnotations().add(s1ann);
+		
+		type.getNodes().add(s1);
+		
+		Receive r1=new Receive();
+		r1.setOperator(OP2);
+		r1.getParameters().add(new Parameter(TYPE2));
+		r1.setFromRole(ROLE1);
+		
+		Annotation r1ann=new Annotation();
+		r1ann.setName("REST");
+		r1ann.addProperty("method", RESTMessage.METHOD_POST);
+		r1ann.addProperty("path", "/customer/{customer}/invoice");
+		
+		r1.getAnnotations().add(r1ann);
+		
+		type.getNodes().add(r1);
+		
+		SessionInstance instance=new SessionInstance();
+		
+		monitor.initializeInstance(type, instance);
+		
+		RESTMessage m1=new RESTMessage();
+		m1.setMethod(RESTMessage.METHOD_GET);
+		m1.getPath().add("customer");
+		m1.getPath().add("fred");
+		m1.getPath().add("address");
+		m1.getQueryParameters().put("field","postcode");
+		
+		RESTMessage m2=new RESTMessage();
+		m2.setMethod(RESTMessage.METHOD_POST);
+		m2.getPath().add("customer");
+		m2.getPath().add("fred");
+		m2.getPath().add("invoice");
+		m2.setContent("{ \"id\":\"12345\" }");
+		
+		if (!monitor.sent(type, instance, m1, null)) {
+			fail("Sent message not expected");
+		}
+		
+		if (!monitor.received(type, instance, m2, null)) {
+			fail("Received message not expected");
+		}
+		
+		if (!instance.hasCompleted()) {
+			fail("Session hasn't completed");
+		}
+	}
+
+}

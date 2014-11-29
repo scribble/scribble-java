@@ -1,1 +1,1 @@
-{"nodes":[{"type":"Parallel","next":-1,"pathIndexes":[1,2]},{"type":"Receive","fromRole":"Seller","next":-1,"operator":"op2","types":["{http://scribble.org/example}M2"]},{"type":"Receive","fromRole":"Seller","next":-1,"operator":"op3","types":["{http://scribble.org/example}M3"]}]}
+{"nodes":[{"type":"Parallel","pathIndexes":[1,2]},{"type":"Receive","fromRole":"Seller","operator":"op2","parameters":[{"type":"{http://scribble.org/example}M2"}]},{"type":"Receive","fromRole":"Seller","operator":"op3","parameters":[{"type":"{http://scribble.org/example}M3"}]}]}

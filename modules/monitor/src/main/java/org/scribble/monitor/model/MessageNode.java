@@ -16,8 +16,9 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.Message;
-import org.scribble.monitor.SessionScope;
+import org.scribble.monitor.runtime.MessageComparator;
+import org.scribble.monitor.runtime.MonitorContext;
+import org.scribble.monitor.runtime.SessionScope;
 
 /**
  * This class represents the base class for message related
@@ -27,7 +28,16 @@ import org.scribble.monitor.SessionScope;
 public abstract class MessageNode extends Node {
 	
 	private String _operator;
-	private java.util.List<String> _types=new java.util.ArrayList<String>();
+	private java.util.List<Parameter> _types=new java.util.ArrayList<Parameter>();
+	
+	private MessageComparator _comparator;
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void init(MonitorContext context) {
+		_comparator = context.getMessageComparator(this);
+	}
 	
 	/**
 	 * This method returns the operator.
@@ -52,7 +62,7 @@ public abstract class MessageNode extends Node {
 	 * 
 	 * @return The types
 	 */
-	public java.util.List<String> getTypes() {
+	public java.util.List<Parameter> getParameters() {
 		return (_types);
 	}
 	
@@ -61,7 +71,7 @@ public abstract class MessageNode extends Node {
 	 * 
 	 * @param types The types
 	 */
-	public void setTypes(java.util.List<String> types) {
+	public void setTypes(java.util.List<Parameter> types) {
 		_types = types;
 	}
 	
@@ -75,23 +85,12 @@ public abstract class MessageNode extends Node {
 	 * @return Whether the message is valid
 	 */
 	protected boolean checkMessage(SessionType type,
-							SessionScope scope, int scopeIndex, Message message) {
-		boolean ret=false;
-		
-		if (_operator.equals(message.getOperator())
-				&& _types.size() == message.getTypes().size()) {
-			
-			ret = true;
-			
-			for (int i=0; ret && i < _types.size(); i++) {
-				ret = _types.get(i).equals(message.getTypes().get(i));
-			}
-		}
-		
-		if (ret) {
+							SessionScope scope, int scopeIndex, Object message) {
+		if (_comparator.isMatch(message)) {
 			handled(type, scope, scopeIndex);
+			return (true);
 		}
 		
-		return (ret);
+		return (false);
 	}
 }

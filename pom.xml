@@ -51,6 +51,7 @@
 	<modules>
 		<module>build</module>
 		<module>modules</module>
+		<module>extensions</module>
 		<module>docs</module>
 		<module>tools</module>
 	</modules>

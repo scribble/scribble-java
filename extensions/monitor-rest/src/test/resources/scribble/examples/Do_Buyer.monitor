@@ -1,0 +1,1 @@
+{"nodes":[{"type":"Send","next":1,"operator":"op1","toRole":"Seller","types":["{http://scribble.org/example}M1"]},{"type":"Do","next":3,"protocolIndex":2},{"type":"Receive","fromRole":"Seller","next":-1,"operator":"op2","types":["{http://scribble.org/example}M2"]},{"type":"Send","next":-1,"operator":"op3","toRole":"Seller","types":["{http://scribble.org/example}M3"]}]}

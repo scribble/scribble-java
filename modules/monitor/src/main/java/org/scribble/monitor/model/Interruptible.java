@@ -16,13 +16,20 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.SessionScope;
+import org.scribble.monitor.runtime.MonitorContext;
+import org.scribble.monitor.runtime.SessionScope;
 
 /**
  * This class represents an Interruptible action.
  *
  */
 public class Interruptible extends Node {
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void init(MonitorContext context) {
+	}
 	
 	private int _blockIndex;
 	private int _catches=-1;

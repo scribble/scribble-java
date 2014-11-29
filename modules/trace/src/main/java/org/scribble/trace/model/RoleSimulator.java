@@ -19,7 +19,6 @@ package org.scribble.trace.model;
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonSubTypes.Type;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.scribble.monitor.Message;
 import org.scribble.trace.simulation.SimulatorContext;
 
 // TODO: Need to change subtype mechanism to allow new role simulators to be dynamically

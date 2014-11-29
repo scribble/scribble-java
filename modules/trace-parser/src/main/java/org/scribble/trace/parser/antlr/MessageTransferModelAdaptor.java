@@ -17,7 +17,7 @@
 package org.scribble.trace.parser.antlr;
 
 import org.antlr.runtime.CommonToken;
-import org.scribble.monitor.Message;
+import org.scribble.trace.model.Message;
 import org.scribble.trace.model.MessageTransfer;
 
 /**

@@ -16,7 +16,8 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.SessionScope;
+import org.scribble.monitor.runtime.MonitorContext;
+import org.scribble.monitor.runtime.SessionScope;
 
 /**
  * This class represents a Recursion action.
@@ -26,6 +27,12 @@ public class Recursion extends Node {
 	
 	private int _blockIndex;
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void init(MonitorContext context) {
+	}
+	
 	/**
 	 * This method returns the block index.
 	 * 

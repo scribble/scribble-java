@@ -16,8 +16,7 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.Message;
-import org.scribble.monitor.SessionScope;
+import org.scribble.monitor.runtime.SessionScope;
 
 /**
  * This class represents a Receive action.
@@ -50,7 +49,7 @@ public class Receive extends MessageNode {
 	 */
 	@Override
 	public boolean received(SessionType type,
-						SessionScope scope, int scopeIndex, Message message, String fromRole) {
+						SessionScope scope, int scopeIndex, Object message, String fromRole) {
 		if (fromRole != null && !fromRole.equals(_fromRole)) {
 			return (false);
 		}
