@@ -16,8 +16,7 @@
  */
 package org.scribble.monitor.model;
 
-import org.scribble.monitor.Message;
-import org.scribble.monitor.SessionScope;
+import org.scribble.monitor.runtime.SessionScope;
 
 /**
  * This class represents a Send action.
@@ -50,7 +49,7 @@ public class Send extends MessageNode {
 	 */
 	@Override
 	public boolean sent(SessionType type,
-					SessionScope scope, int scopeIndex, Message message, String toRole) {
+					SessionScope scope, int scopeIndex, Object message, String toRole) {
 		if (toRole != null && !toRole.equals(_toRole)) {
 			return (false);
 		}

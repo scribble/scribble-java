@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor;
+package org.scribble.monitor.runtime;
 
 // TODO: Could try:
 // (1) with map of session scopes, with the parent/child relationship defined by scope names, with

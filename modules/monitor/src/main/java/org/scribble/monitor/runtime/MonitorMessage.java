@@ -14,18 +14,21 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor;
+package org.scribble.monitor.runtime;
 
 /**
  * This class represents a message being sent or received by the
  * role being monitored.
  *
  */
-public class Message {
+public class MonitorMessage {
 
 	private String _operator;
 	private java.util.List<String> _types=new java.util.ArrayList<String>();
 	private java.util.List<Object> _values=new java.util.ArrayList<Object>();
+	
+	public MonitorMessage() {
+	}
 	
 	/**
 	 * This method returns the operator.
@@ -42,7 +45,7 @@ public class Message {
 	 * @param operator The operator
 	 * @return The message
 	 */
-	public Message setOperator(String operator) {
+	public MonitorMessage setOperator(String operator) {
 		_operator = operator;
 		return (this);
 	}
@@ -62,7 +65,7 @@ public class Message {
 	 * @param types The types
 	 * @return The message
 	 */
-	public Message setTypes(java.util.List<String> types) {
+	public MonitorMessage setTypes(java.util.List<String> types) {
 		_types = types;
 		return (this);
 	}
@@ -82,7 +85,7 @@ public class Message {
 	 * @param values The values
 	 * @return The message
 	 */
-	public Message setValues(java.util.List<Object> values) {
+	public MonitorMessage setValues(java.util.List<Object> values) {
 		_values = values;
 		return (this);
 	}
@@ -93,8 +96,8 @@ public class Message {
 	public boolean equals(Object obj) {
 		boolean ret=false;
 		
-		if (obj instanceof Message) {
-			Message other=(Message)obj;
+		if (obj instanceof MonitorMessage) {
+			MonitorMessage other=(MonitorMessage)obj;
 			
 			if (other._operator != null
 					&& _operator != null

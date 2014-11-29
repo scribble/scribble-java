@@ -19,8 +19,8 @@ package org.scribble.monitor.model;
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonSubTypes.Type;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.scribble.monitor.Message;
-import org.scribble.monitor.SessionScope;
+import org.scribble.monitor.runtime.MonitorContext;
+import org.scribble.monitor.runtime.SessionScope;
 
 /**
  * This class represents the base class for all session nodes.
@@ -41,6 +41,15 @@ public abstract class Node {
 	protected static boolean _nameSessions=false;
 	
 	private int _next=-1;
+	
+	private java.util.List<Annotation> _annotations=new java.util.ArrayList<Annotation>();
+	
+	/**
+	 * This method initializes the monitoring node.
+	 * 
+	 * @param context The monitor context
+	 */
+	protected abstract void init(MonitorContext context);
 	
 	/**
 	 * This method sets whether to name the
@@ -70,6 +79,40 @@ public abstract class Node {
 		_next = next;
 	}
 
+	/**
+	 * This method returns the annotations.
+	 * 
+	 * @return The annotations
+	 */
+	public java.util.List<Annotation> getAnnotations() {
+		return (_annotations);
+	}
+	
+	/**
+	 * This method sets the annotations.
+	 * 
+	 * @param annotations The annotations
+	 */
+	public void setAnnotations(java.util.List<Annotation> annotations) {
+		_annotations = annotations;
+	}
+	
+	/**
+	 * This method returns the annotation with the specified name.
+	 * 
+	 * @param name The name
+	 * @return The annotation, or null if not found
+	 */
+	public Annotation getAnnotation(String name) {
+		for (int i=0; i < _annotations.size(); i++) {
+			if (_annotations.get(i).getName().equals(name)) {
+				return (_annotations.get(i));
+			}
+		}
+		
+		return (null);
+	}
+	
 	/**
 	 * This method checks whether the node can be evaluated without external trigger. If
 	 * not, then the index should be added to the scope for later processing.
@@ -121,7 +164,7 @@ public abstract class Node {
 	 * @return Whether the sent message was expected
 	 */
 	public boolean sent(SessionType type,
-						SessionScope scope, int scopeIndex, Message message, String toRole) {
+						SessionScope scope, int scopeIndex, Object message, String toRole) {
 		return (false);
 	}
 
@@ -136,7 +179,7 @@ public abstract class Node {
 	 * @return Whether the sent message was expected
 	 */
 	public boolean received(SessionType type,
-						SessionScope scope, int scopeIndex, Message message, String fromRole) {
+						SessionScope scope, int scopeIndex, Object message, String fromRole) {
 		return (false);
 	}
 

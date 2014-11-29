@@ -23,6 +23,7 @@ import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.local.LReceive;
 import org.scribble.monitor.model.Receive;
 import org.scribble.monitor.model.SessionType;
+import org.scribble.monitor.model.Parameter;
 
 /**
  * This class exports a receive into a session type
@@ -54,7 +55,7 @@ public class LReceiveNodeExporter implements NodeExporter {
 			}
 
 			if (ptype != null) {
-				recvNode.getTypes().add(ptype.getType());
+				recvNode.getParameters().add(new Parameter(ptype.getType()));
 			}
 		}
 		

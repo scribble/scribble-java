@@ -28,6 +28,7 @@ import org.scribble.monitor.model.Interruptible;
 import org.scribble.monitor.model.Receive;
 import org.scribble.monitor.model.Send;
 import org.scribble.monitor.model.SessionType;
+import org.scribble.monitor.model.Parameter;
 
 /**
  * This class exports an Interruptible into a session type
@@ -118,7 +119,7 @@ public class LInterruptibleNodeExporter implements NodeExporter {
 			}
 
 			if (ptype != null) {
-				sendNode.getTypes().add(ptype.getType());
+				sendNode.getParameters().add(new Parameter(ptype.getType()));
 			}
 		}
 		
@@ -147,7 +148,7 @@ public class LInterruptibleNodeExporter implements NodeExporter {
 			}
 
 			if (ptype != null) {
-				recvNode.getTypes().add(ptype.getType());
+				recvNode.getParameters().add(new Parameter(ptype.getType()));
 			}
 		}
 		

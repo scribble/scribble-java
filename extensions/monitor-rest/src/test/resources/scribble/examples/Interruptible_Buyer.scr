@@ -1,0 +1,21 @@
+module scribble.examples.Interruptible;
+
+type <xsd> "{http://scribble.org/example}M1" from "http://scribble.org/schema/Example.xsd" as M1;
+type <xsd> "{http://scribble.org/example}M2" from "http://scribble.org/schema/Example.xsd" as M2;
+type <xsd> "{http://scribble.org/example}M3" from "http://scribble.org/schema/Example.xsd" as M3;
+type <xsd> "{http://scribble.org/example}M4" from "http://scribble.org/schema/Example.xsd" as M4;
+type <xsd> "{http://scribble.org/example}M5" from "http://scribble.org/schema/Example.xsd" as M5;
+
+local protocol First at Buyer (role Buyer, role Seller) {
+	op1(M1) to Seller;
+	
+	interruptible TestScope: {
+		op2(M2) from Seller;
+		
+	}  with {
+		throws op3(M3) to Seller;
+		catches op4(M4) from Seller;
+	}
+	
+	op5(M5) to Seller;
+}

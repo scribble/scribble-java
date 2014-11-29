@@ -18,7 +18,6 @@ package org.scribble.trace.model;
 
 import java.util.Map;
 
-import org.scribble.monitor.Message;
 import org.scribble.trace.simulation.SimulatorContext;
 
 /**

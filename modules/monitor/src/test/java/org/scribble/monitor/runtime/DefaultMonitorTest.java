@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor;
+package org.scribble.monitor.runtime;
 
 import static org.junit.Assert.*;
 
@@ -28,6 +28,11 @@ import org.scribble.monitor.model.Receive;
 import org.scribble.monitor.model.Recursion;
 import org.scribble.monitor.model.Send;
 import org.scribble.monitor.model.SessionType;
+import org.scribble.monitor.model.Parameter;
+import org.scribble.monitor.runtime.DefaultMonitor;
+import org.scribble.monitor.runtime.MonitorMessage;
+import org.scribble.monitor.runtime.Monitor;
+import org.scribble.monitor.runtime.SessionInstance;
 
 public class DefaultMonitorTest {
 
@@ -53,7 +58,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setToRole(ROLE1);
 		s1.setNext(1);
 		
@@ -61,7 +66,7 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		r1.setFromRole(ROLE1);
 		
 		type.getNodes().add(r1);
@@ -70,11 +75,11 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
@@ -99,7 +104,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setToRole(ROLE1);
 		s1.setNext(1);
 		
@@ -107,7 +112,7 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		r1.setFromRole(ROLE1);
 		
 		type.getNodes().add(r1);
@@ -116,11 +121,11 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
@@ -149,7 +154,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -162,13 +167,13 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
@@ -176,15 +181,15 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -217,7 +222,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -230,13 +235,13 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
@@ -244,15 +249,15 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -285,7 +290,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -299,19 +304,19 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
 		Send s2=new Send();
 		s2.setOperator(OP4);
-		s2.getTypes().add(TYPE4);
+		s2.getParameters().add(new Parameter(TYPE4));
 		
 		type.getNodes().add(s2);
 
@@ -319,19 +324,19 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 		
@@ -368,7 +373,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -381,13 +386,13 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
@@ -395,11 +400,11 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
@@ -424,7 +429,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -437,13 +442,13 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
@@ -451,11 +456,11 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -480,7 +485,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -494,19 +499,19 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
 		Send s2=new Send();
 		s2.setOperator(OP4);
-		s2.getTypes().add(TYPE4);
+		s2.getParameters().add(new Parameter(TYPE4));
 		
 		type.getNodes().add(s2);
 
@@ -514,15 +519,15 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP4);
 		m3.getTypes().add(TYPE4);
 		
@@ -556,14 +561,14 @@ public class DefaultMonitorTest {
 		// 1
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
 		// 2
 		Send s2=new Send();
 		s2.setOperator(OP5);
-		s2.getTypes().add(TYPE5);
+		s2.getParameters().add(new Parameter(TYPE5));
 		
 		type.getNodes().add(s2);
 
@@ -580,11 +585,11 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
@@ -607,7 +612,7 @@ public class DefaultMonitorTest {
 		// 0
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -623,7 +628,7 @@ public class DefaultMonitorTest {
 		// 2
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
@@ -637,21 +642,21 @@ public class DefaultMonitorTest {
 		// 4
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
 		// 5
 		Receive r3=new Receive();
 		r3.setOperator(OP4);
-		r3.getTypes().add(TYPE4);
+		r3.getParameters().add(new Parameter(TYPE4));
 		
 		type.getNodes().add(r3);
 		
 		// 6
 		Send s2=new Send();
 		s2.setOperator(OP5);
-		s2.getTypes().add(TYPE5);
+		s2.getParameters().add(new Parameter(TYPE5));
 		
 		type.getNodes().add(s2);
 
@@ -668,23 +673,23 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 		
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
@@ -719,23 +724,23 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 		
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
@@ -770,23 +775,23 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 		
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
@@ -821,23 +826,23 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 		
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
@@ -868,7 +873,7 @@ public class DefaultMonitorTest {
 		// 0
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -884,7 +889,7 @@ public class DefaultMonitorTest {
 		// 2
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
@@ -898,21 +903,21 @@ public class DefaultMonitorTest {
 		// 4
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
 		// 5
 		Receive r3=new Receive();
 		r3.setOperator(OP4);
-		r3.getTypes().add(TYPE4);
+		r3.getParameters().add(new Parameter(TYPE4));
 		
 		type.getNodes().add(r3);
 		
 		// 6
 		Send s2=new Send();
 		s2.setOperator(OP5);
-		s2.getTypes().add(TYPE5);
+		s2.getParameters().add(new Parameter(TYPE5));
 		
 		type.getNodes().add(s2);
 
@@ -929,23 +934,23 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 		
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
@@ -980,23 +985,23 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 		
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
@@ -1031,23 +1036,23 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 		
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
@@ -1076,7 +1081,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -1089,13 +1094,13 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
 		Send s2=new Send();
 		s2.setOperator(OP3);
-		s2.getTypes().add(TYPE3);
+		s2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(s2);
 
@@ -1103,15 +1108,15 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -1140,7 +1145,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -1160,7 +1165,7 @@ public class DefaultMonitorTest {
 		Receive r1=new Receive();
 		r1.setNext(4);
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
@@ -1171,13 +1176,13 @@ public class DefaultMonitorTest {
 		
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
 		Send s2=new Send();
 		s2.setOperator(OP4);
-		s2.getTypes().add(TYPE4);
+		s2.getParameters().add(new Parameter(TYPE4));
 		
 		type.getNodes().add(s2);
 
@@ -1185,27 +1190,27 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP2);
 		m3.getTypes().add(TYPE2);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP2);
 		m4.getTypes().add(TYPE2);
 
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP3);
 		m5.getTypes().add(TYPE3);
 		
-		Message m6=new Message();
+		MonitorMessage m6=new MonitorMessage();
 		m6.setOperator(OP4);
 		m6.getTypes().add(TYPE4);
 		
@@ -1269,7 +1274,7 @@ public class DefaultMonitorTest {
 		// 0
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -1299,7 +1304,7 @@ public class DefaultMonitorTest {
 		Receive r1=new Receive();
 		r1.setNext(5);
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
@@ -1312,21 +1317,21 @@ public class DefaultMonitorTest {
 		// 6
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
 		// 7
 		Receive r3=new Receive();
 		r3.setOperator(OP4);
-		r3.getTypes().add(TYPE4);
+		r3.getParameters().add(new Parameter(TYPE4));
 		
 		type.getNodes().add(r3);
 		
 		// 8
 		Send s2=new Send();
 		s2.setOperator(OP5);
-		s2.getTypes().add(TYPE5);
+		s2.getParameters().add(new Parameter(TYPE5));
 		
 		type.getNodes().add(s2);
 
@@ -1335,27 +1340,27 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP4);
 		m2.getTypes().add(TYPE4);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP2);
 		m3.getTypes().add(TYPE2);
 		
-		Message m4=new Message();
+		MonitorMessage m4=new MonitorMessage();
 		m4.setOperator(OP4);
 		m4.getTypes().add(TYPE4);
 
-		Message m5=new Message();
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP3);
 		m5.getTypes().add(TYPE3);
 		
-		Message m6=new Message();
+		MonitorMessage m6=new MonitorMessage();
 		m6.setOperator(OP5);
 		m6.getTypes().add(TYPE5);
 		
@@ -1407,7 +1412,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setToRole(ROLE1);
 		s1.setNext(1);
 		
@@ -1425,7 +1430,7 @@ public class DefaultMonitorTest {
 		// 2
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		r1.setFromRole(ROLE1);
 		
 		type.getNodes().add(r1);
@@ -1433,7 +1438,7 @@ public class DefaultMonitorTest {
 		// 3
 		Send throw1=new Send();
 		throw1.setOperator(OP5);
-		throw1.getTypes().add(TYPE5);
+		throw1.getParameters().add(new Parameter(TYPE5));
 		throw1.setToRole(ROLE1);
 		
 		type.getNodes().add(throw1);
@@ -1441,7 +1446,7 @@ public class DefaultMonitorTest {
 		// 4
 		Send s3=new Send();
 		s3.setOperator(OP3);
-		s3.getTypes().add(TYPE3);
+		s3.getParameters().add(new Parameter(TYPE3));
 		s3.setToRole(ROLE1);
 		
 		type.getNodes().add(s3);
@@ -1463,15 +1468,15 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -1505,16 +1510,16 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		// The interrupt message
-		Message m5=new Message();
+		// The interrupt MonitorMessage
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -1548,20 +1553,20 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		// The interrupt message
-		Message m5=new Message();
+		// The interrupt MonitorMessage
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -1591,7 +1596,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setToRole(ROLE1);
 		s1.setNext(1);
 		
@@ -1609,7 +1614,7 @@ public class DefaultMonitorTest {
 		// 2
 		Send s2=new Send();
 		s2.setOperator(OP2);
-		s2.getTypes().add(TYPE2);
+		s2.getParameters().add(new Parameter(TYPE2));
 		s2.setToRole(ROLE1);
 		
 		type.getNodes().add(s2);
@@ -1617,7 +1622,7 @@ public class DefaultMonitorTest {
 		// 3
 		Receive catch1=new Receive();
 		catch1.setOperator(OP5);
-		catch1.getTypes().add(TYPE5);
+		catch1.getParameters().add(new Parameter(TYPE5));
 		catch1.setFromRole(ROLE1);
 		
 		type.getNodes().add(catch1);
@@ -1625,7 +1630,7 @@ public class DefaultMonitorTest {
 		// 4
 		Send s3=new Send();
 		s3.setOperator(OP3);
-		s3.getTypes().add(TYPE3);
+		s3.getParameters().add(new Parameter(TYPE3));
 		s3.setToRole(ROLE1);
 		
 		type.getNodes().add(s3);
@@ -1647,15 +1652,15 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -1689,16 +1694,16 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		// The interrupt message
-		Message m5=new Message();
+		// The interrupt MonitorMessage
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -1732,20 +1737,20 @@ public class DefaultMonitorTest {
 		
 		monitor.initializeInstance(type, instance);
 		
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		// The interrupt message
-		Message m5=new Message();
+		// The interrupt MonitorMessage
+		MonitorMessage m5=new MonitorMessage();
 		m5.setOperator(OP5);
 		m5.getTypes().add(TYPE5);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP3);
 		m3.getTypes().add(TYPE3);
 		
@@ -1778,7 +1783,7 @@ public class DefaultMonitorTest {
 		
 		Send s1=new Send();
 		s1.setOperator(OP1);
-		s1.getTypes().add(TYPE1);
+		s1.getParameters().add(new Parameter(TYPE1));
 		s1.setNext(1);
 		
 		type.getNodes().add(s1);
@@ -1792,31 +1797,31 @@ public class DefaultMonitorTest {
 		
 		Receive r1=new Receive();
 		r1.setOperator(OP2);
-		r1.getTypes().add(TYPE2);
+		r1.getParameters().add(new Parameter(TYPE2));
 		
 		type.getNodes().add(r1);
 		
 		Receive r2=new Receive();
 		r2.setOperator(OP3);
-		r2.getTypes().add(TYPE3);
+		r2.getParameters().add(new Parameter(TYPE3));
 		
 		type.getNodes().add(r2);
 		
 		Send s2=new Send();
 		s2.setOperator(OP4);
-		s2.getTypes().add(TYPE4);
+		s2.getParameters().add(new Parameter(TYPE4));
 		
 		type.getNodes().add(s2);
 
-		Message m1=new Message();
+		MonitorMessage m1=new MonitorMessage();
 		m1.setOperator(OP1);
 		m1.getTypes().add(TYPE1);
 		
-		Message m2=new Message();
+		MonitorMessage m2=new MonitorMessage();
 		m2.setOperator(OP2);
 		m2.getTypes().add(TYPE2);
 		
-		Message m3=new Message();
+		MonitorMessage m3=new MonitorMessage();
 		m3.setOperator(OP4);
 		m3.getTypes().add(TYPE4);
 		

@@ -19,7 +19,7 @@ package org.scribble.trace;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.scribble.monitor.Message;
+import org.scribble.trace.model.Message;
 import org.scribble.trace.model.MessageTransfer;
 import org.scribble.trace.model.MonitorRoleSimulator;
 import org.scribble.trace.model.Role;

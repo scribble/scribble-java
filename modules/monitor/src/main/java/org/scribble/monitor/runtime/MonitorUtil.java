@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor;
+package org.scribble.monitor.runtime;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -34,6 +34,8 @@ public class MonitorUtil {
                 .withSerializationInclusion(JsonSerialize.Inclusion.NON_DEFAULT);
         
         MAPPER.setSerializationConfig(config);
+        
+        MAPPER.configure(SerializationConfig.Feature.WRITE_EMPTY_JSON_ARRAYS, false);
 	}
 	
 	/**

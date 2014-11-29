@@ -23,6 +23,7 @@ import org.scribble.model.PayloadTypeDecl;
 import org.scribble.model.local.LSend;
 import org.scribble.monitor.model.Send;
 import org.scribble.monitor.model.SessionType;
+import org.scribble.monitor.model.Parameter;
 
 /**
  * This class exports a send into a session type
@@ -58,7 +59,7 @@ public class LSendNodeExporter implements NodeExporter {
 			}
 
 			if (ptype != null) {
-				sendNode.getTypes().add(ptype.getType());
+				sendNode.getParameters().add(new Parameter(ptype.getType()));
 			}
 		}
 		

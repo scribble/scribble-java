@@ -1,0 +1,1 @@
+{"nodes":[{"type":"Send","next":1,"operator":"buy","toRole":"Seller","types":["{http://scribble.org/example}OrderRequest"]},{"type":"Receive","fromRole":"Seller","next":-1,"operator":"buy","types":["{http://scribble.org/example}OrderResponse"]}]}

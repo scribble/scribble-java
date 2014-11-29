@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor;
+package org.scribble.monitor.runtime;
 
 import org.scribble.monitor.model.SessionType;
 
@@ -38,7 +38,7 @@ public interface Monitor {
 	 * @return Whether the sent message was expected
 	 */
 	public boolean sent(SessionType type, SessionInstance instance,
-					Message message, String toRole);
+					Object message, String toRole);
 
 	/**
 	 * This method checks whether the received message is valid.
@@ -50,6 +50,6 @@ public interface Monitor {
 	 * @return Whether the received message was expected
 	 */
 	public boolean received(SessionType type, SessionInstance instance,
-					Message message, String fromRole);
+					Object message, String fromRole);
 
 }

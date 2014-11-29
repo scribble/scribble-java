@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor;
+package org.scribble.monitor.runtime;
 
 /**
  * This class represents the state associated with an instance of

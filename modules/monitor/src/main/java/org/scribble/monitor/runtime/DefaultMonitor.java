@@ -14,30 +14,56 @@
  * limitations under the License.
  *
  */
-package org.scribble.monitor;
+package org.scribble.monitor.runtime;
 
-import org.scribble.monitor.SessionInstance;
 import org.scribble.monitor.model.Node;
 import org.scribble.monitor.model.SessionType;
+import org.scribble.monitor.runtime.SessionInstance;
 
 /**
  * This class represents the monitorable version of a local protocol.
  *
  */
 public class DefaultMonitor implements Monitor {
+	
+	private MonitorContext _context;
+	
+	/**
+	 * This method sets the monitor context.
+	 * 
+	 * @param context The monitor context
+	 */
+	public void setMonitorContext(MonitorContext context) {
+		_context = context;
+	}
+	
+	/**
+	 * This method returns the monitor context.
+	 * 
+	 * @return The monitor context
+	 */
+	public MonitorContext getMonitorContext() {
+		return (_context);
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void initializeInstance(SessionType type, SessionInstance instance) {
-		type.initialize(instance);
+		MonitorContext context=getMonitorContext();
+		
+		if (context == null) {
+			context = new DefaultMonitorContext();
+		}
+		
+		type.initialize(context, instance);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean sent(SessionType type, SessionInstance instance,
-							Message message, String toRole) {
+							Object message, String toRole) {
 		return (sent(type, instance.getScope(), message, toRole));
 	}
 	
@@ -52,7 +78,7 @@ public class DefaultMonitor implements Monitor {
 	 * @return Whether the sent message is applicable to the scope
 	 */
 	protected boolean sent(SessionType type, SessionScope scope,
-							Message message, String toRole) {
+							Object message, String toRole) {
 		boolean ret=false;
 		
 		// Check throws
@@ -101,7 +127,7 @@ public class DefaultMonitor implements Monitor {
 	 * {@inheritDoc}
 	 */
 	public boolean received(SessionType type, SessionInstance instance,
-							Message message, String fromRole) {
+							Object message, String fromRole) {
 		return (received(type, instance.getScope(), message, fromRole));
 	}
 	
@@ -116,7 +142,7 @@ public class DefaultMonitor implements Monitor {
 	 * @return Whether the sent message is applicable to the scope
 	 */
 	protected boolean received(SessionType type, SessionScope scope,
-							Message message, String fromRole) {
+							Object message, String fromRole) {
 		boolean ret=false;
 		
 		// Check catches
