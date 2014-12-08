@@ -8,9 +8,9 @@ import org.scribble2.util.ScribbleException;
 public class ParameterDeclDelegate extends ModelDelegateBase
 {
 	@Override
-	public NameDisambiguator enterDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
+	public NameDisambiguator enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
 	{
-		disamb.addParameter(((ParameterDecl) n).toName());
+		disamb.addParameter(((ParameterDecl) child).toName());
 		return disamb;
 	}
 

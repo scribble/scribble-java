@@ -5,11 +5,9 @@ package scribble2.main;
 import java.util.Arrays;
 import java.util.List;
 
-import scribble2.visit.NameDisambiguator;
-import scribble2.visit.NodeContextBuilder;
-import scribble2.visit.Projector;
-import scribble2.visit.ReachabilityChecker;
-import scribble2.visit.WellFormedChoiceChecker;
+import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.model.visit.WellFormedChoiceChecker;
+import org.scribble2.util.ScribbleException;
 
 public class Main
 {

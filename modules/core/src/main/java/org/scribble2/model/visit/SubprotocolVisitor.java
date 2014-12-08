@@ -52,7 +52,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	{
 		SubprotocolVisitor spv = (SubprotocolVisitor) super.enter(parent, child);
 
-		if (child instanceof Module)
+		if (child instanceof Module)  // Factor out?
 		{
 			this.mcontext = (ModuleDelegate) ((Module) child).del();
 		}
@@ -91,9 +91,9 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	@Override
 	protected final ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
 	{
-		ModelNode n = super.leave(parent, child, nv, visited);
-		n = subprotocolLeave(parent, child, nv, n);
-		if (child instanceof Do)
+		//ModelNode n = super.leave(parent, child, nv, visited);
+		ModelNode n = subprotocolLeave(parent, child, (SubprotocolVisitor) nv, visited);
+		if (child instanceof Do)  // child or visited/n?
 		{
 			leaveSubprotocol();
 		}
@@ -103,10 +103,11 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 			setScope(getScope().getPrefix());
 		}
 		//return subprotocolLeave(parent, child, nv, n);
-		return n;
+		//return n;
+		return super.leave(parent, child, nv, n);
 	}
 
-	protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
+	protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, SubprotocolVisitor nv, ModelNode visited) throws ScribbleException
 	{
 		return visited;
 	}
@@ -134,7 +135,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	private void enterSubprotocol(Do doo)
 	{
 		//ModuleContext mcontext = ((CompoundInteractionContext) peekContext()).getModuleContext();
-		//ModuleDelegate mcontext = //getModuleContext();
+		ModuleDelegate mcontext = getModuleDelegate();
 		ProtocolName fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());
 		List<Role> roleargs = doo.roleinstans.getRoles();
 		List<Argument> argargs = doo.arginstans.getArguments();
@@ -267,5 +268,10 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	protected void setScope(Scope scope)
 	{
 		this.scope = scope;
+	}
+	
+	protected ModuleDelegate getModuleDelegate()
+	{
+		return this.mcontext;
 	}
 }

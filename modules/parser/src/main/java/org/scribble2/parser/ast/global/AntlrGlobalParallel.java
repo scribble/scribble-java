@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalParallel;
 import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.parser.AntlrModuleParser;
@@ -19,6 +20,7 @@ public class AntlrGlobalParallel
 			blocks.add((GlobalProtocolBlock) parser.parse(block));
 		}
 		return new GlobalParallel(blocks);
+		//return ModelFactoryImpl.FACTORY.G;
 	}
 
 	public static final List<CommonTree> getBlockChildren(CommonTree ct)

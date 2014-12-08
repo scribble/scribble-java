@@ -5,6 +5,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.ModelDelegateBase;
 import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.model.visit.env.Env;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Named;
 import org.scribble2.util.ScribbleException;
@@ -13,6 +14,12 @@ import org.scribble2.util.ScribbleException;
 //public abstract class ModelDelegateBase implements ModelDelegate
 public class AmbiguousNameDelegate extends ModelDelegateBase
 {
+	//public AmbiguousNameDelegate(Env env)
+	public AmbiguousNameDelegate()
+	{
+		//super(env);
+	}
+
 	/*@Override
 	public NameDisambiguator enterDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
 	{
@@ -20,9 +27,9 @@ public class AmbiguousNameDelegate extends ModelDelegateBase
 	}*/
 
 	@Override
-	public ModelNode leaveDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
+	public ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException
 	{
-		Name name = ((Named) n).toName();
+		Name name = ((Named) visited).toName();
 		/*if (disamb.isVisiblePayloadType(name))  // By well-formedness (checked later), payload type and parameter names are distinct
 		{
 			return new PayloadTypeNameNode(this.ct, name.toString());

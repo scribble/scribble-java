@@ -1,15 +1,25 @@
 package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
+import org.scribble2.model.visit.env.Env;
 import org.scribble2.util.ScribbleException;
 
 
 //public abstract class ModelDelegateBase implements ModelDelegate
 public class ModelDelegateBase implements ModelDelegate
 {
+	private Env env;
+	
+	//public ModelDelegateBase(Env env)
+	public ModelDelegateBase()
+	{
+		//this.env = env;
+	}
+	
 	@Override
 	public NameDisambiguator enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
 	{
@@ -41,8 +51,12 @@ public class ModelDelegateBase implements ModelDelegate
 	}
 
 	@Override
-	public ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker nv, ModelNode visited) throws ScribbleException
+	public ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
 	{
+		if (checker.hasEnv())
+		{
+			setEnv(checker.peekEnv());
+		}
 		return visited;
 	}
 
@@ -74,15 +88,20 @@ public class ModelDelegateBase implements ModelDelegate
 	public ModelNodeContext getContext()
 	{
 		return this.ncontext;
-	}
+	}*/
 
 	@Override
 	public Env getEnv()
 	{
 		return this.env;
 	}
+	
+	protected void setEnv(Env env)
+	{
+		this.env = env;
+	}
 
-	//@Override
+	/* //@Override
 	public void setEnv(Env env)  // Used from inside Env to modify the ModelNode (cf. context building done from inside ModelNode and modified using copy constructor) -- defensive copy responsibility left to leave call
 	{  
 		this.env = env;  // Inconsistent with immutable pattern?

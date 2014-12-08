@@ -1,6 +1,7 @@
 package org.scribble2.model.global;
 
 import org.scribble2.model.Continue;
+import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.name.simple.RecursionVarNode;
 
 public class GlobalContinue extends Continue implements GlobalInteraction
@@ -9,6 +10,12 @@ public class GlobalContinue extends Continue implements GlobalInteraction
 	{
 		//this(t, recvar, null, null);
 		super(recvar);
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new GlobalContinue(recvar);
 	}
 
 	/*protected GlobalContinue(CommonTree ct, RecursionVarNode recvar, SimpleInteractionNodeContext sicontext)

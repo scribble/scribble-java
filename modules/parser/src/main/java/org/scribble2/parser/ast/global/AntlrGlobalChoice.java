@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.name.simple.RoleNode;
@@ -24,7 +25,8 @@ public class AntlrGlobalChoice
 		{
 			blocks.add((GlobalProtocolBlock) parser.parse(block));
 		}
-		return new GlobalChoice(subj, blocks);
+		//return new GlobalChoice(subj, blocks);
+		return ModelFactoryImpl.FACTORY.GlobalChoice(subj, blocks);
 	}
 
 	public static CommonTree getSubjectChild(CommonTree ct)

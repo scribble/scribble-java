@@ -8,6 +8,8 @@ import org.scribble2.model.del.ModelDelegateBase;
 import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.del.ParameterDeclDelegate;
 import org.scribble2.model.del.ProtocolDeclDelegate;
+import org.scribble2.model.del.RoleDeclDelegate;
+import org.scribble2.model.del.global.GlobalChoiceDelegate;
 import org.scribble2.model.del.name.AmbiguousNameDelegate;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.global.GlobalDo;
@@ -110,7 +112,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public RoleDecl RoleDecl(RoleNode namenode)
 	{
 		RoleDecl rd = new RoleDecl(namenode);
-		rd = del(rd, createDefaultDelegate());
+		rd = del(rd, new RoleDeclDelegate());
 		return rd;
 	}
 
@@ -167,7 +169,8 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
 	{
 		GlobalChoice gc = new GlobalChoice(subj, blocks);
-		gc = del(gc, createDefaultDelegate());
+		//gc = del(gc, createDefaultDelegate());
+		gc = del(gc, new GlobalChoiceDelegate());
 		return gc;
 	}
 
