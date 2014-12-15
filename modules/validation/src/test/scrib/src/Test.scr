@@ -10,6 +10,10 @@ global protocol Foo(role A, role B)
 		1() from A to B;
 	//do Bar(A, B);
 	}
+	or
+	{
+		2() from A to B;
+	}
 }
 
 /*global protocol Bar(role C, role D)

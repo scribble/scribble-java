@@ -1,6 +1,7 @@
 package org.scribble2.model.name.qualified;
 
 import org.scribble2.model.MessageNode;
+import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.name.MessageSignatureName;
 import org.scribble2.sesstype.name.ModuleName;
 
@@ -71,13 +72,13 @@ public class MessageSignatureNameNode extends MemberNameNode implements MessageN
 		return toName();
 	}
 
-	/*@Override
+	@Override
 	public Message toMessage()
 	{
 		return toArgument();
 	}
 
-	@Override
+	/*@Override
 	public boolean isAmbiguousNode()
 	{
 		return false;

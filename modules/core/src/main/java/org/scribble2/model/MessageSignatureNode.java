@@ -69,13 +69,13 @@ public class MessageSignatureNode extends ModelNodeBase implements MessageNode
 		return new MessageSignature(this.op.toName(), payload);
 	}
 
-	/*@Override
+	@Override
 	public MessageSignature toMessage()
 	{
 		return toArgument();
 	}
 
-	@Override
+	/*@Override
 	public boolean isAmbiguousNode()
 	{
 		return false;

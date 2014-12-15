@@ -10,6 +10,7 @@ import org.scribble2.model.del.ParameterDeclDelegate;
 import org.scribble2.model.del.ProtocolDeclDelegate;
 import org.scribble2.model.del.RoleDeclDelegate;
 import org.scribble2.model.del.global.GlobalChoiceDelegate;
+import org.scribble2.model.del.global.GlobalMessageTransferDelegate;
 import org.scribble2.model.del.name.AmbiguousNameDelegate;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.global.GlobalDo;
@@ -161,7 +162,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		GlobalMessageTransfer gmt = new GlobalMessageTransfer(src, msg, dests);
-		gmt = del(gmt, createDefaultDelegate());
+		gmt = del(gmt, new GlobalMessageTransferDelegate());
 		return gmt;
 	}
 

@@ -1,7 +1,7 @@
 package org.scribble2.model.del;
 
+import org.scribble2.model.CompoundInteractionNode;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.util.ScribbleException;
@@ -28,6 +28,13 @@ public class CompoundInteractionNodeDelegate extends CompoundInteractionDelegate
 	}
 	//public void enter(Choice<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> cho, WellFormedChoiceChecker checker)
 	
-	//@Override
-	//public CompoundInteractionNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker nv, ModelNode visited) throws ScribbleException
+	@Override
+	public CompoundInteractionNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	{
+		WellFormedChoiceEnv env = checker.popEnv();
+		env = checker.popEnv().merge(env);
+		checker.pushEnv(env);
+		setEnv(env);
+		return (CompoundInteractionNode) visited;
+	}
 }

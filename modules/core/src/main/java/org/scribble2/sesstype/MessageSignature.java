@@ -5,6 +5,7 @@ import java.util.List;
 import org.scribble2.sesstype.name.Kind;
 import org.scribble2.sesstype.name.Operator;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
+import org.scribble2.sesstype.name.Scope;
 
 // FIXME: rename to UnscopedMessageSignature
 public class MessageSignature implements Message
@@ -18,11 +19,11 @@ public class MessageSignature implements Message
 		this.payload = payload;
 	}
 
-	/*@Override
+	@Override
 	public ScopedMessage toScopedMessage(Scope scope)
 	{
 		return new ScopedMessageSignature(scope, this.op, this.payload);
-	}*/
+	}
 
 	@Override
 	public Kind getKind()

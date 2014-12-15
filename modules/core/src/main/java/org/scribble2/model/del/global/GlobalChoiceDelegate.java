@@ -1,6 +1,7 @@
 package org.scribble2.model.del.global;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,14 +34,19 @@ public class GlobalChoiceDelegate extends CompoundInteractionNodeDelegate
 	{
 		GlobalChoice cho = (GlobalChoice) visited;
 		Role subj = cho.subj.toName();
+		
+		//System.out.println("1: " + subj + ", " + checker.peekParentEnv().getEnabled());
+		
 		if (!checker.peekParentEnv().isEnabled(subj))
 		{
 			throw new ScribbleException("Subject not enabled: " + subj);
 		}
 		
 		Map<Role, Set<ScopedMessage>> seen = null;
-		for (WellFormedChoiceEnv benv :
-			cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().getEnv()).collect(Collectors.toList()))
+		List<WellFormedChoiceEnv> benvs =
+				cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().getEnv()).collect(Collectors.toList());
+		//for (WellFormedChoiceEnv benv : cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().getEnv()).collect(Collectors.toList()))
+		for (WellFormedChoiceEnv benv : benvs)
 		{
 			MessageMap<ScopedMessage> enabled = benv.getEnabled();
 			
@@ -86,9 +92,15 @@ public class GlobalChoiceDelegate extends CompoundInteractionNodeDelegate
 			}
 		}
 		
+		WellFormedChoiceEnv merged = checker.popEnv().merge(benvs);
+		checker.pushEnv(merged);
+		/*WellFormedChoiceEnv parent = pop();
+		parent = parent.merge(merged);
+		checker.setEnv(parent);	*/
+		
 		/*Choice<GlobalProtocolBlock> cho = super.leaveWFChoiceCheck(checker);
 		//return new GlobalChoice(cho.ct, cho.subj, cho.blocks, cho.getContext(), cho.getEnv());
 		// .. reconstruct*/
-		return (GlobalChoice) super.leaveWFChoiceCheck(parent, child, checker, visited);
+		return (GlobalChoice) super.leaveWFChoiceCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

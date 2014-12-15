@@ -276,7 +276,7 @@ public class WellFormedChoiceEnv extends Env
 	}
 
 	// Rename: more like enable-if-not-already
-	public WellFormedChoiceEnv addMessage(Role src, Role dest, ScopedMessage msg)
+	private WellFormedChoiceEnv addMessage(Role src, Role dest, ScopedMessage msg)
 	{
 		WellFormedChoiceEnv copy = copy();
 		addMessages(copy.initial, src, dest, Arrays.asList(msg));
@@ -303,6 +303,7 @@ public class WellFormedChoiceEnv extends Env
 		return copy;
 	}
 
+	// The "main" public routine: "addMessage taking into account subprotocols"
 	public WellFormedChoiceEnv addMessageForSubprotocol(SubprotocolVisitor spv, Role src, Role dest, ScopedMessage msg)
 	{
 		WellFormedChoiceEnv copy = copy();

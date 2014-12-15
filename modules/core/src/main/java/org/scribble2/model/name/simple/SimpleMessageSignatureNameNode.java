@@ -1,7 +1,9 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
-import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.Message;
+import org.scribble2.sesstype.name.MessageSignatureName;
 
 public class SimpleMessageSignatureNameNode extends SimpleNameNode implements MessageNode//SimpleMemberNameNode
 {
@@ -39,15 +41,20 @@ public class SimpleMessageSignatureNameNode extends SimpleNameNode implements Me
 	}
 
 	@Override
-	public Name toName()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/*@Override
 	public MessageSignatureName toName()
 	{
 		return new MessageSignatureName(this.identifier);
-	}*/
+	}
+
+	@Override
+	public Argument toArgument()
+	{
+		throw new RuntimeException("TODO");
+	}
+
+	@Override
+	public Message toMessage()
+	{
+		throw new RuntimeException("TODO");
+	}
 }
