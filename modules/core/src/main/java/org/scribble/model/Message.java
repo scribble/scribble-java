@@ -88,6 +88,39 @@ public class Message extends ModelObject {
     }
     
     @Override
+    public int hashCode() {
+        int result = 13;
+        result = 31 * result + (_parameter == null ? 0 : _parameter.hashCode());
+        result = 31 * result + (_messageSignature == null ? 0 : _messageSignature.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret=false;
+        
+        if (obj instanceof Message) {
+        	Message other=(Message)obj;
+        	
+        	if (other._parameter != null && _parameter != null) {
+                ret = other._parameter.equals(_parameter);
+            } else if (other._parameter == null && _parameter == null) {
+                ret = true;
+            }
+        	
+        	if (ret) {
+            	if (other._messageSignature != null && _messageSignature != null) {
+                    ret = other._messageSignature.equals(_messageSignature);
+                } else if (other._messageSignature == null && _messageSignature == null) {
+                    ret = true;
+                }
+        	}
+        }
+        
+        return (ret);
+    }
+    
+    @Override
     public String toString() {
         String ret="";
         

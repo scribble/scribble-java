@@ -184,6 +184,13 @@ public class GChoiceValidationRuleTest {
     	par2.getPaths().add(b3);
     	
     	GMessageTransfer mt2=new GMessageTransfer();
+    	MessageSignature sig2=new MessageSignature();
+    	sig2.setOperator(OP1);
+    	
+    	Message m2=new Message();
+    	m2.setMessageSignature(sig2);
+    	
+    	mt2.setMessage(m2);
     	mt2.setFromRole(new Role(TEST_ROLE1));
     	mt2.getToRoles().add(new Role(TEST_ROLE2));
     	b3.add(mt2);
@@ -197,6 +204,14 @@ public class GChoiceValidationRuleTest {
     	par2.getPaths().add(b4);
     	
     	GMessageTransfer mt4=new GMessageTransfer();
+    	
+    	MessageSignature sig4=new MessageSignature();
+    	sig4.setOperator(OP2);
+    	
+    	Message m4=new Message();
+    	m4.setMessageSignature(sig4);
+    	
+    	mt4.setMessage(m4);
     	mt4.setFromRole(new Role(TEST_ROLE1));
     	mt4.getToRoles().add(new Role(TEST_ROLE2));
     	b4.add(mt4);
