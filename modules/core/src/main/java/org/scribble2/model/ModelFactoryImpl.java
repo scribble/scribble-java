@@ -7,6 +7,7 @@ import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.del.ModelDelegateBase;
 import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.del.ParameterDeclDelegate;
+import org.scribble2.model.del.ProtocolBlockDelegate;
 import org.scribble2.model.del.ProtocolDeclDelegate;
 import org.scribble2.model.del.RoleDeclDelegate;
 import org.scribble2.model.del.global.GlobalChoiceDelegate;
@@ -146,7 +147,9 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolBlock GlobalProtocolBlock(GlobalInteractionSequence seq)
 	{
 		GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);
-		gpb = del(gpb, createDefaultDelegate());
+		//gpb = del(gpb, createDefaultDelegate());
+		//gpb = del(gpb, new GlobalProtocolBlockDelegate());
+		gpb = del(gpb, new ProtocolBlockDelegate());
 		return gpb;
 	}
 

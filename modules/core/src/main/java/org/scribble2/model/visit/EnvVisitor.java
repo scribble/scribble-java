@@ -58,6 +58,7 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 				ev.setScope(new Scope(ev.getScope(), sn.getScopeElement()));
 			}
 		}*/
+		
 		return ev.envEnter(parent, child);
 	}
 	

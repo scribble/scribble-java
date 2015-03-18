@@ -88,6 +88,14 @@ public class GlobalChoiceDelegate extends CompoundInteractionNodeDelegate
 						}
 						current.addAll(next);
 					}
+					
+					for (Role dest : seen.keySet())
+					{
+						if (!dests.contains(dest))
+						{
+							throw new ScribbleException("Mismatched role enabling: " + dest);
+						}
+					}
 				}
 			}
 		}

@@ -25,6 +25,8 @@ public class GlobalMessageTransferDelegate extends SimpleInteractionNodeDelegate
 		{
 			//checker.setEnv(checker.getEnv().addMessageForSubprotocol(checker, src, dest, msg.toScopedMessage(checker.getScope())));
 			env = env.addMessageForSubprotocol(checker, src, dest, msg.toScopedMessage(checker.getScope()));
+			
+			System.out.println("1: " + src + ", " + dest + ", " + msg);
 		}
 		checker.pushEnv(env);
 		
