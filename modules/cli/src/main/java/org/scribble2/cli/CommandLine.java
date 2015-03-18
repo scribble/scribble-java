@@ -162,9 +162,7 @@ public class CommandLine {
 									+ "' is not valid\r\n");
 							f_usageError = true;
 						} else {
-
 							Resource resource = getResource(args[i]);
-
 							if (resource != null) {
 								loadModule(resource);
 							} else {
@@ -246,9 +244,8 @@ public class CommandLine {
 	 * @return The resource, or null if not found
 	 */
 	protected Resource getResource(String moduleName) {
-		String relativePath = moduleName.replace('.',
-				java.io.File.separatorChar) + ".scr";
-
+		//String relativePath = moduleName.replace('.', java.io.File.separatorChar) + ".scr";
+		String relativePath = moduleName;  // RAY
 		return (_locator.getResource(relativePath));
 	}
 
@@ -281,8 +278,8 @@ public class CommandLine {
 				VALIDATOR.validate(context, module, LOGGER);*/
 				
 				List<String> impath = new LinkedList<String>();
-				String mainpath = "../validation/src/test/scrib/src/Test.scr";
-				
+				//String mainpath = "../validation/src/test/scrib/src/Test.scr";
+				String mainpath = resource.getPath();  // Needs relative->full path fix in DirectoryResourceLocator -- but maybe Resource should abstract away from file system? Job could directly use the encaps inputstream?
 				try
 				{
 					CliJob cjob = new CliJob(impath, mainpath);

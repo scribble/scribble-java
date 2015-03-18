@@ -78,12 +78,13 @@ public class DirectoryResourceLocator implements ResourceLocator {
 			}
 			
 			fullPath += relativePath;
-			
+
 			java.io.File f=new java.io.File(fullPath);
 			
 			if (f.isFile()) {
 				try {
-					ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
+					//ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
+					ret = new InputStreamResource(fullPath, new java.io.FileInputStream(f));  // RAY
 					
 					break;
 				} catch (Exception e) {
