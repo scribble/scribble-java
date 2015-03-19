@@ -1,5 +1,6 @@
 package org.scribble2.model.name.simple;
 
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.name.Operator;
 
 
@@ -11,6 +12,15 @@ public class OperatorNode extends SimpleNameNode
 	public OperatorNode(String identifier)
 	{
 		super(identifier);
+	}
+
+	@Override
+	protected OperatorNode reconstruct(String identifier)
+	{
+		ModelDelegate del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
+		OperatorNode on = new OperatorNode(identifier);
+		on = (OperatorNode) on.del(del);
+		return on;
 	}
 
 	@Override

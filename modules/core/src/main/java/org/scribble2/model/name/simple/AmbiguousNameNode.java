@@ -20,6 +20,12 @@ public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
 	}
 
 	@Override
+	protected SimpleNameNode reconstruct(String identifier)
+	{
+		throw new RuntimeException("Shouldn't get in here.");
+	}
+
+	@Override
 	protected AmbiguousNameNode copy()
 	{
 		return new AmbiguousNameNode(this.identifier);

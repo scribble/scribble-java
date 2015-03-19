@@ -1,7 +1,7 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.ArgumentInstantiation;
-import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.del.ModelDelegate;
 
 public class SimplePayloadTypeNode extends SimpleNameNode implements ArgumentInstantiation//, PayloadElementNameNode// SimpleMemberNameNode
 {
@@ -12,6 +12,15 @@ public class SimplePayloadTypeNode extends SimpleNameNode implements ArgumentIns
 	{
 		super(identifier);
 		//this.extType = extType;
+	}
+
+	@Override
+	protected SimplePayloadTypeNode reconstruct(String identifier)
+	{
+		ModelDelegate del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
+		SimplePayloadTypeNode sptn = new SimplePayloadTypeNode(identifier);
+		sptn = (SimplePayloadTypeNode) sptn.del(del);
+		return sptn;
 	}
 
 	@Override

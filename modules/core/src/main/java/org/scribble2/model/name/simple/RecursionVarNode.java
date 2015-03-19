@@ -1,5 +1,6 @@
 package org.scribble2.model.name.simple;
 
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.name.RecursionVar;
 
 
@@ -9,6 +10,15 @@ public class RecursionVarNode extends SimpleNameNode
 	public RecursionVarNode(String identifier)
 	{
 		super(identifier);
+	}
+
+	@Override
+	protected RecursionVarNode reconstruct(String identifier)
+	{
+		ModelDelegate del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
+		RecursionVarNode rvn = new RecursionVarNode(identifier);
+		rvn = (RecursionVarNode) rvn.del(del);
+		return rvn;
 	}
 
 	@Override
