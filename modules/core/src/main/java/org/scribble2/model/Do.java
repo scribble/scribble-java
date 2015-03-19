@@ -65,9 +65,6 @@ public abstract class Do extends ModelNodeBase implements SimpleInteractionNode,
 			//ModuleDelegate mcontext = spv.getModuleContext();
 			JobContext jcontext = spv.getJobContext();
 			ModuleDelegate mcontext = (ModuleDelegate) jcontext.getMainModule().del();
-			
-			System.out.println("3a: " + this.proto); 
-			
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 					//pd = spv.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());* /
 					pd = getTargetProtocolDecl(spv.getJobContext(), mcontext);
@@ -78,10 +75,6 @@ public abstract class Do extends ModelNodeBase implements SimpleInteractionNode,
 			//Node substituted = pd.def.block.visit(spv.getSubstitutor());  // block does an env push/pop without merge to parent
 			ModelNode seq = spv.applySubstitutions(pd.def.block.seq);
 			seq.visit(spv);  // Return is discarded
-		}
-		else
-		{
-			System.out.println("3b: " + this.proto); 
 		}
 		return this;
 	}

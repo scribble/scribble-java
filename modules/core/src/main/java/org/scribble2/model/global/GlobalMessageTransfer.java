@@ -19,7 +19,7 @@ public class GlobalMessageTransfer extends MessageTransfer implements GlobalInte
 	/*protected GlobalMessageTransfer(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext)
 	{
 		super(ct, src, msg, dests, sicontext);
-	}* /
+	}*/
 
 	/*protected GlobalMessageTransfer(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests, SimpleInteractionNodeContext sicontext, Env env)
 	{
@@ -31,7 +31,7 @@ public class GlobalMessageTransfer extends MessageTransfer implements GlobalInte
 	{
 		ModelDelegate del = del();
 		GlobalMessageTransfer gmt = new GlobalMessageTransfer(src, msg, dests);//, sicontext, env);
-		gmt = (GlobalMessageTransfer) del(del);
+		gmt = (GlobalMessageTransfer) gmt.del(del);
 		return gmt;
 	}
 

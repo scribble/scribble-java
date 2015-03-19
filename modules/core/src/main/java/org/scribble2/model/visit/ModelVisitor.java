@@ -21,7 +21,7 @@ public class ModelVisitor
 	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		ModelVisitor nv = enter(parent, child);
-		ModelNode visited = child.visitChildren(nv);
+		ModelNode visited = child.visitChildren(nv);  // visited means "children visited so far"; we're about to visit "this" now via "leave"
 		return leave(parent, child, nv, visited);
 	}
 	

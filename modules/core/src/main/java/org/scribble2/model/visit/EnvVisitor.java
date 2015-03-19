@@ -35,8 +35,6 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 		EnvVisitor ev = (EnvVisitor) super.subprotocolEnter(parent, child);
 		if (child instanceof ProtocolDecl)  // Only the root ProtocolDecl is visited: subprotocols visit the body directly
 		{
-			//System.out.println("1: " + child.getClass());
-			
 			//ev.setEnv(new Env(this.job.getContext(), (ModuleContext) peekContext()));
 			//if (isNoEnvSet())
 

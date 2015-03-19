@@ -31,11 +31,16 @@ public class Substitutor extends ModelVisitor
 		return visited.substitute((Substitutor) nv);
 	}
 
-	public RoleNode getRoleSubstitution(Role role)
+	public Role getRoleSubstitution(Role role)
+	{
+		return this.rolemap.get(role).toName();
+	}
+
+	/*public RoleNode getRoleSubstitution(Role role)
 	{
 		RoleNode rn = this.rolemap.get(role);
 		return new RoleNode(rn.toName().toString());
-	}
+	}*/
 
 	public ArgumentNode getArgumentSubstitution(Argument arg)
 	{

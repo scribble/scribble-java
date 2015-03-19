@@ -154,8 +154,6 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		ScopedSubprotocolSignature ssubsig = new ScopedSubprotocolSignature(getScope(), fullname, roles, args);
 		//ScopedSubprotocolSignature ssubsig = getSubprotocolSignature(fullname, roleargs, argargs);
 		this.stack.add(ssubsig);
-		
-		//System.out.println("1: " + ssubsig);
 	}
 	
 	private void pushNameMaps(ProtocolName fullname, List<Role> roleargs, List<Argument> argargs)

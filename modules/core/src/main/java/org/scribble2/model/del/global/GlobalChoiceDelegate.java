@@ -34,9 +34,6 @@ public class GlobalChoiceDelegate extends CompoundInteractionNodeDelegate
 	{
 		GlobalChoice cho = (GlobalChoice) visited;
 		Role subj = cho.subj.toName();
-		
-		//System.out.println("1: " + subj + ", " + checker.peekParentEnv().getEnabled());
-		
 		if (!checker.peekParentEnv().isEnabled(subj))
 		{
 			throw new ScribbleException("Subject not enabled: " + subj);

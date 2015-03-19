@@ -22,6 +22,8 @@ public abstract class SimpleNameNode extends ModelNodeBase implements Named
 		return new SimpleName(Kind.AMBIGUOUS, this.identifier);
 	}*/
 
+	protected abstract SimpleNameNode reconstruct(String identifier);
+
 	@Override
 	public String toString()
 	{
