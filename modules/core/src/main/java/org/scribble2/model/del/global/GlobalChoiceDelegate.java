@@ -97,8 +97,8 @@ public class GlobalChoiceDelegate extends CompoundInteractionNodeDelegate
 			}
 		}
 		
-		WellFormedChoiceEnv merged = checker.popEnv().merge(benvs);
-		checker.pushEnv(merged);
+		WellFormedChoiceEnv merged = checker.popEnv().merge(benvs); 
+		checker.pushEnv(merged);  // Merges the child block envs into the current choice env; super call below merges this choice env into the parent env of the choice
 		/*WellFormedChoiceEnv parent = pop();
 		parent = parent.merge(merged);
 		checker.setEnv(parent);	*/

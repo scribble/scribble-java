@@ -282,6 +282,7 @@ public class CommandLine {
 				String mainpath = resource.getPath();  // Needs relative->full path fix in DirectoryResourceLocator -- but maybe Resource should abstract away from file system? Job could directly use the encaps inputstream?
 				try
 				{
+					// FIXME: CLiJob and Job
 					CliJob cjob = new CliJob(impath, mainpath);
 					Job job = new Job(impath, mainpath, cjob.jcontext.getModules(), cjob.jcontext.getModules().get(cjob.jcontext.main));
 					job.checkWellFormedness();

@@ -32,7 +32,7 @@ public class CompoundInteractionDelegate extends ModelDelegateBase
 	public ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
 	{
 		WellFormedChoiceEnv env = checker.popEnv();
-		//env = checker.popEnv().merge(env);
+		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
 		//checker.pushEnv(env);
 		setEnv(env);
 		return visited;

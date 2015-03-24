@@ -4,6 +4,7 @@ import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.sesstype.name.Parameter;
+import org.scribble2.sesstype.name.Role;
 
 public class ParameterDecl extends HeaderParameterDecl<ParameterNode> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
 {
@@ -44,6 +45,12 @@ public class ParameterDecl extends HeaderParameterDecl<ParameterNode> //implemen
 		return ((ParameterNode) this.name).toName();
 	}
 	
+	public ParameterDecl project(Role self)
+	{
+		ParameterNode pn = new ParameterNode(this.name.toString());
+		return new ParameterDecl(this.kind, pn);
+	}
+	
 	/*@Override
 	public NameDisambiguator enterDisambiguation(NameDisambiguator disamb) throws ScribbleException
 	{
@@ -58,12 +65,6 @@ public class ParameterDecl extends HeaderParameterDecl<ParameterNode> //implemen
 		ParameterDecl projection = project(proj.peekSelf());
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
-	}
-	
-	public ParameterDecl project(Role self)
-	{
-		ParameterNode pn = new ParameterNode(null, this.name.toString(), this.kind);
-		return new ParameterDecl(null, this.kind, pn);
 	}
 
 	@Override

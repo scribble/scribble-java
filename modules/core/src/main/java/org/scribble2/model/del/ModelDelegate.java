@@ -3,6 +3,7 @@ package org.scribble2.model.del;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.Env;
 import org.scribble2.util.ScribbleException;
@@ -24,18 +25,18 @@ public interface ModelDelegate
 	WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException;
 	ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException;
 
-	/* // FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections)
-	Projector enterProjection(Projector proj);
-	ModelNode visitForProjection(Projector proj) throws ScribbleException;
-	ModelNode leaveProjection(Projector proj);  // Move to GlobalModelNode? Cannot use visitor pattern then?
+	// FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections)
+	Projector enterProjection(ModelNode parent, ModelNode child, Projector proj);
+	//ModelNode visitForProjection(Projector proj) throws ScribbleException;
+	ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited);  // Move to GlobalModelNode? Cannot use visitor pattern then?
+
+	/*ReachabilityChecker enterReachabilityCheck(ReachabilityChecker checker) throws ScribbleException;
+	ModelNode visitForReachabilityChecking(ReachabilityChecker proj) throws ScribbleException;
+	ModelNode leaveReachabilityCheck(ReachabilityChecker checker) throws ScribbleException;
 
 	GraphBuilder enterGraphBuilding(GraphBuilder builder);
 	ModelNode visitForGraphBuilding(GraphBuilder builder);
 	ModelNode leaveGraphBuilding(GraphBuilder builder);
-
-	ReachabilityChecker enterReachabilityCheck(ReachabilityChecker checker) throws ScribbleException;
-	ModelNode visitForReachabilityChecking(ReachabilityChecker proj) throws ScribbleException;
-	ModelNode leaveReachabilityCheck(ReachabilityChecker checker) throws ScribbleException;
 
 	ModelNode substitute(Substitutor subs);
 	

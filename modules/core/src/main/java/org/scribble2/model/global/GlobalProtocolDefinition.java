@@ -11,18 +11,18 @@ public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalProtocolB
 	}
 
 	@Override
-	protected GlobalProtocolDefinition copy()
-	{
-		return new GlobalProtocolDefinition(this.block);
-	}
-
-	@Override
 	protected ProtocolDefinition<GlobalProtocolBlock> reconstruct(GlobalProtocolBlock block)
 	{
 		ModelDelegate del = del();
 		GlobalProtocolDefinition gpd = new GlobalProtocolDefinition(block);
 		gpd = (GlobalProtocolDefinition) gpd.del(del);
 		return gpd;
+	}
+
+	@Override
+	protected GlobalProtocolDefinition copy()
+	{
+		return new GlobalProtocolDefinition(this.block);
 	}
 
 	/*@Override

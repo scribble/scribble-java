@@ -1,31 +1,72 @@
 package org.scribble2.model.del;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.visit.ContextBuilder;
+import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 public class ProtocolDeclDelegate extends ModelDelegateBase
 {
 	//private final ModuleDelegate mcontext;
 	
-	//private final Map<Role, Map<ProtocolName, Set<Role>>> dependencies;  // All the potential dependencies from this protocol decl as the root
+	private final Map<Role, Map<ProtocolName, Set<Role>>> dependencies;  // All the potential dependencies from this protocol decl as the root
 
 	//public ProtocolDeclDelegate(ModuleDelegate parent, ProtocolDecl<? extends ProtocolDefinition<ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 	//public ProtocolDeclDelegate(ModuleDelegate mcontext)
 	public ProtocolDeclDelegate()
 	{
 		//this.mcontext = mcontext;
-		//this.dependencies = null;
+		this.dependencies = null;
 	}
 	
-	/*public ProtocolDeclDelegate(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
+	public ProtocolDeclDelegate(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
 	{
 		//this.dependencies = new HashSet<>(pdcontext.dependencies);
 		super();
 		//this.dependencies.putAll(dependencies);
 		//merge(this.dependencies, dependencies);
 		this.dependencies = clone(dependencies);
+	}
+	
+	/*public ProtocolDeclDelegate setDependencies(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
+	{
+		ProtocolDeclDelegate del = new ProtocolDeclDelegate();
+		//del.dependencies = clone(dependencies);
+		del.dependencies.putAll(dependencies);  // Rely on defensive copy treatment
+		return del;
 	}*/
+
+	private static Map<Role, Map<ProtocolName, Set<Role>>> clone(Map<Role, Map<ProtocolName, Set<Role>>> map)
+	{
+		Map<Role, Map<ProtocolName, Set<Role>>> clone = new HashMap<>();
+		for (Role role : map.keySet())
+		{
+			Map<ProtocolName, Set<Role>> vals = map.get(role);
+			Map<ProtocolName, Set<Role>> tmp1 = clone.get(role);
+			if (tmp1 == null)
+			{
+				tmp1 = new HashMap<>();
+				clone.put(role, tmp1);
+			}
+			for (ProtocolName pn : vals.keySet())
+			{
+				Set<Role> tmp2 = tmp1.get(pn);
+				if (tmp2 == null)
+				{
+					tmp2 = new HashSet<>();
+					tmp1.put(pn, tmp2);
+				}
+				tmp2.addAll(vals.get(pn));
+			}
+		}
+		return clone;
+	}
 	
 	/*protected ProtocolDeclDelegate(ProtocolDeclDelegate pdcontext)
 	{
@@ -114,7 +155,7 @@ public class ProtocolDeclDelegate extends ModelDelegateBase
 			}
 			tmp.addAll(map2.get(pn));
 		}
-	}* /
+	}*/
 	
 	public Map<Role, Map<ProtocolName, Set<Role>>> getProtocolDependencies()
 	{

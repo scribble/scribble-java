@@ -1,9 +1,7 @@
 package org.scribble2.model;
 
-import org.antlr.runtime.Token;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
-import org.scribble2.parser.AntlrConstants;
 
 public class ImportModule extends ImportDecl
 {
@@ -11,10 +9,9 @@ public class ImportModule extends ImportDecl
 	public final SimpleProtocolNameNode alias;
 
 	// FIXME: make a no alias constructor
-	public ImportModule(Token t, ModuleNameNode fmn, SimpleProtocolNameNode alias)
+	public ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)
 	{
-		super(t);
-		this.modname = fmn;
+		this.modname = modname;
 		this.alias = alias;
 	}
 	
@@ -66,6 +63,12 @@ public class ImportModule extends ImportDecl
 			s += " " + Constants.AS_KW + " " + this.alias;
 		}
 		return s + ";";
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new ImportModule(this.modname, this.alias);
 	}
 	
 	/*@Override

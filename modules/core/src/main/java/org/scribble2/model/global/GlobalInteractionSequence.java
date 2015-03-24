@@ -14,18 +14,18 @@ public class GlobalInteractionSequence extends InteractionSequence<GlobalInterac
 	}
 
 	@Override
-	protected GlobalInteractionSequence copy()
-	{
-		return new GlobalInteractionSequence(actions);
-	}
-
-	@Override
 	protected InteractionSequence<GlobalInteraction> reconstruct(List<GlobalInteraction> ins)
 	{
 		ModelDelegate del = del();
 		GlobalInteractionSequence gis = new GlobalInteractionSequence(ins);
 		gis = (GlobalInteractionSequence) gis.del(del);
 		return gis;
+	}
+
+	@Override
+	protected GlobalInteractionSequence copy()
+	{
+		return new GlobalInteractionSequence(this.actions);
 	}
 
 	/*@Override

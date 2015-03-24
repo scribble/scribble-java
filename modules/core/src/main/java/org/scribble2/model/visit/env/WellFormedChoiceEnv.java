@@ -48,17 +48,17 @@ public class WellFormedChoiceEnv extends Env
 		this(jcontext, mcontext, new MessageMap<>(), new MessageMap<>(), new HashMap<>(), new HashSet<>());
 	}
 	
-	protected WellFormedChoiceEnv(WellFormedChoiceEnv parent)  // "push" constructor
+	/*protected WellFormedChoiceEnv(WellFormedChoiceEnv parent)  // "push" constructor
 	{
 		/*this.initial = new MessageMap<>(parent.initial);
 		this.initialInterrupts = new MessageMap<>(parent.initialInterrupts);
 		this.subsigs =
 				parent.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap<>(parent.subsigs.get(k))));
-		this.recording = new HashSet<>(parent.recording);*/
+		this.recording = new HashSet<>(parent.recording);*
 		this(parent.getJobContext(), parent.getModuleDelegate(), parent.initial, parent.initialInterrupts, 
 				parent.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap<>(parent.subsigs.get(k)))),
 				parent.recording);
-	}
+	}*/
 	
 	protected WellFormedChoiceEnv(JobContext jcontext, ModuleDelegate mcontext, //WellFormedChoiceEnv root, WellFormedChoiceEnv parent,
 			MessageMap<ScopedMessage> initial, MessageMap<ScopedMessage> initialInterrupts,
@@ -225,6 +225,7 @@ public class WellFormedChoiceEnv extends Env
 		return merge(Arrays.asList(child));
 	}
 
+	//@Override
 	public WellFormedChoiceEnv merge(List<WellFormedChoiceEnv> children)
 	{
 		WellFormedChoiceEnv copy = copy();
@@ -392,12 +393,16 @@ public class WellFormedChoiceEnv extends Env
 		return (WellFormedChoiceEnv) super.getParent();
 	}*/
 
+	@Override
 	public WellFormedChoiceEnv push()
 	{
-		WellFormedChoiceEnv env = new WellFormedChoiceEnv(this);
+		/*WellFormedChoiceEnv env = new WellFormedChoiceEnv(this);
 		//env.initial.clear();
 		//env.initialInterrupts.clear();
-		return env;
+		return env;*/
+		return new WellFormedChoiceEnv(getJobContext(), getModuleDelegate(), this.initial, this.initialInterrupts, 
+				this.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap<>(this.subsigs.get(k)))),
+				this.recording);
 	}
 
 	@Override

@@ -48,6 +48,14 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	//.. do arguments for subprotocol sigs .. substitutions ..
 
 	@Override
+	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
+		ModelNode visited = child.visitChildrenInSubprotocols(spv);
+		return leave(parent, child, spv, visited);
+	}
+
+	@Override
 	protected final SubprotocolVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		SubprotocolVisitor spv = (SubprotocolVisitor) super.enter(parent, child);
@@ -78,14 +86,6 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	protected SubprotocolVisitor subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		return this;
-	}
-
-	@Override
-	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
-	{
-		SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
-		ModelNode visited = child.visitChildrenInSubprotocols(spv);
-		return leave(parent, child, spv, visited);
 	}
 
 	@Override
@@ -268,7 +268,8 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		this.scope = scope;
 	}
 	
-	protected ModuleDelegate getModuleDelegate()
+	//protected ModuleDelegate getModuleDelegate()
+	public ModuleDelegate getModuleDelegate()
 	{
 		return this.mcontext;
 	}

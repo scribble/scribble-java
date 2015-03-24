@@ -1,6 +1,7 @@
 package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.sesstype.name.Role;
@@ -31,10 +32,26 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode>
 		return rd;
 	}
 
+	public RoleDecl project(Role self)
+	{
+		Role role = this.name.toName();
+		RoleNode rn = new RoleNode(role.toString());
+		if (role.equals(self))
+		{
+			return new SelfRoleDecl(rn);
+		}
+		return new RoleDecl(rn);
+	}
+
 	@Override
 	protected ModelNodeBase copy()
 	{
 		return new RoleDecl((RoleNode) this.name);
+	}
+	
+	public boolean isSelfRoleDecl()
+	{
+		return false;
 	}
 }
 
@@ -59,17 +76,6 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode>
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
 	}
-	
-	public RoleDecl project(Role self)
-	{
-		Role role = this.name.toName();
-		RoleNode rn = new RoleNode(null, role.toString());
-		if (role.equals(self))
-		{
-			return new SelfRoleDecl(null, rn);
-		}
-		return new RoleDecl(null, rn);
-	}
 
 	@Override
 	public RoleDecl visitChildren(NodeVisitor nv) throws ScribbleException
@@ -83,10 +89,5 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode>
 	{
 		Name name = (hasAlias()) ? this.alias.toName() : this.name.toName(); 
 		return new Role(name.text);
-	}*/
-	
-	/*public boolean isSelfRoleDecl()
-	{
-		return false;
 	}* /
 }*/

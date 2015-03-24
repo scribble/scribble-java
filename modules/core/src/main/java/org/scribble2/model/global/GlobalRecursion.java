@@ -1,6 +1,7 @@
 package org.scribble2.model.global;
 
 import org.scribble2.model.Recursion;
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RecursionVarNode;
 
 public class GlobalRecursion extends Recursion<GlobalProtocolBlock> implements GlobalInteraction
@@ -9,6 +10,21 @@ public class GlobalRecursion extends Recursion<GlobalProtocolBlock> implements G
 	{
 		//super(ct, recvar, block, null, null);
 		super(recvar, block);
+	}
+
+	@Override
+	protected GlobalRecursion reconstruct(RecursionVarNode recvar, GlobalProtocolBlock block)
+	{
+		ModelDelegate del = del();
+		GlobalRecursion gr = new GlobalRecursion(recvar, block);
+		gr = (GlobalRecursion) gr.del(del);
+		return gr;
+	}
+
+	@Override
+	protected GlobalRecursion copy()
+	{
+		return new GlobalRecursion(this.recvar, this.block);
 	}
 
 	/*public GlobalRecursion(CommonTree ct, RecursionVarNode recvar, GlobalProtocolBlock block, CompoundInteractionNodeContext cicontext)

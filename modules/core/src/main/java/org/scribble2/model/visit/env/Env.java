@@ -4,6 +4,7 @@ import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.visit.JobContext;
 
 // Integrate with NodeContext? (e.g. ast.context and visit.env)
+// Immutable
 public abstract class Env
 {
 	private final JobContext jcontext;  // Can be obtained from ModuleContext
@@ -40,7 +41,12 @@ public abstract class Env
 		this.parent = parent;
 	}*/
 	
-	protected abstract Env copy();
+	protected abstract Env copy();  // Shallow copy (FIXME: factor out shallow copy interface)
+
+	// Default push for entering a compound interaction context (e.g. used in CompoundInteractionDelegate)
+	public abstract Env push();
+
+	//public abstract WellFormedChoiceEnv merge(List<? extends Env> children)
 
 	/*public Env push()
 	{

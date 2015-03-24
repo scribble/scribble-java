@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.name.Parameter;
+import org.scribble2.sesstype.name.Role;
 
 public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 {
@@ -28,6 +29,12 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 		return rdl;
 	}
 
+	public ParameterDeclList project(Role self)
+	{
+		List<ParameterDecl> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
+		return new ParameterDeclList(paramdecls);
+	}
+
 	/*// Not doing anything except cloning
 	@Override
 	public ParameterDeclList leaveProjection(Projector proj)  // Redundant now
@@ -38,13 +45,6 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 		ParameterDeclList projection = project(proj.peekSelf());
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
-	}
-
-	public ParameterDeclList project(Role self)
-	{
-		List<ParameterDecl> paramdecls =
-				this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
-		return new ParameterDeclList(null, paramdecls);
 	}*/
 	
 	/*@Override 

@@ -35,7 +35,7 @@ public abstract class HeaderParameterDecl<T extends SimpleNameNode> extends Mode
 	@Override
 	public String toString()
 	{
-		return toName().toString();
+		return toName().toString();  // FIXME: need declaration kind keyword
 	}
 }
 

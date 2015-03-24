@@ -3,6 +3,9 @@ package org.scribble2.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
+
 public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 		extends ModelNodeBase implements CompoundInteractionNode
 {
@@ -23,9 +26,17 @@ public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequ
 		this.blocks = new LinkedList<>(blocks);
 	}
 
-	/*protected abstract Parallel<T> reconstruct(CommonTree ct, List<T> blocks, CompoundInteractionNodeContext cicontext, Env env);
+	protected abstract Parallel<T> reconstruct(List<T> blocks);
 
 	@Override
+	public Parallel<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	{
+		List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
+		//return new Parallel<>(this.ct, blocks, getContext(), getEnv());
+		return reconstruct(blocks);
+	}
+
+	/*@Override
 	public NodeContextBuilder enterContextBuilding(NodeContextBuilder builder) throws ScribbleException
 	{
 		builder.pushContext(new CompoundInteractionNodeContext());
@@ -88,14 +99,6 @@ public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequ
 		}
 		nv.setEnv(env);
 		return new Parallel(this.ct, blocks);
-	}*
-
-	@Override
-	public Parallel<T> visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
-		//return new Parallel<>(this.ct, blocks, getContext(), getEnv());
-		return reconstruct(this.ct, blocks, getContext(), getEnv());
 	}*/
 
 	@Override

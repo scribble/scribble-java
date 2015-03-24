@@ -10,6 +10,10 @@ import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
+// - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting
+
+// - streamline visitor pattern calls (e.g. accept)
+// - streamline vistitor/del env references -- and del enter/leave env setter on visitors
 public class Job
 {
 	/*private static final AntlrModuleParser PARSER = new AntlrModuleParser();
@@ -32,12 +36,12 @@ public class Job
 		runNodeVisitorPass(ContextBuilder.class);
 
 		System.out.println("\n--- Well-formed choice visitor test --- ");
-		runNodeVisitorPass(WellFormedChoiceChecker.class);
+		//runNodeVisitorPass(WellFormedChoiceChecker.class);
 
-		/*System.out.println("\n--- Projection --- ");
-		job.runNodeVisitorPass(Projector.class);
+		System.out.println("\n--- Projection --- ");
+		runNodeVisitorPass(Projector.class);
 
-		System.out.println("\n--- Reachability check --- ");
+		/*System.out.println("\n--- Reachability check --- ");
 		job.runNodeVisitorPass(ReachabilityChecker.class);*/
 	}
 

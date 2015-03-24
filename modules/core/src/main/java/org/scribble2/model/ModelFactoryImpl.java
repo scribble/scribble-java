@@ -7,11 +7,13 @@ import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.del.ModelDelegateBase;
 import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.del.ParameterDeclDelegate;
-import org.scribble2.model.del.ProtocolBlockDelegate;
 import org.scribble2.model.del.ProtocolDeclDelegate;
 import org.scribble2.model.del.RoleDeclDelegate;
 import org.scribble2.model.del.global.GlobalChoiceDelegate;
+import org.scribble2.model.del.global.GlobalInteractionSequenceDelegate;
 import org.scribble2.model.del.global.GlobalMessageTransferDelegate;
+import org.scribble2.model.del.global.GlobalProtocolBlockDelegate;
+import org.scribble2.model.del.global.GlobalProtocolDefinitionDelegate;
 import org.scribble2.model.del.name.AmbiguousNameDelegate;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.global.GlobalDo;
@@ -139,7 +141,8 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolDefinition GlobalProtocolDefinition(GlobalProtocolBlock block)
 	{
 		GlobalProtocolDefinition gpd = new GlobalProtocolDefinition(block);
-		gpd = del(gpd, createDefaultDelegate());
+		//gpd = del(gpd, createDefaultDelegate());
+		gpd = del(gpd, new GlobalProtocolDefinitionDelegate());
 		return gpd;
 	}
 
@@ -148,8 +151,8 @@ public class ModelFactoryImpl implements ModelFactory
 	{
 		GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);
 		//gpb = del(gpb, createDefaultDelegate());
-		//gpb = del(gpb, new GlobalProtocolBlockDelegate());
-		gpb = del(gpb, new ProtocolBlockDelegate());
+		gpb = del(gpb, new GlobalProtocolBlockDelegate());
+		//gpb = del(gpb, new ProtocolBlockDelegate());
 		return gpb;
 	}
 
@@ -157,7 +160,8 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteraction> actions)
 	{
 		GlobalInteractionSequence gis = new GlobalInteractionSequence(actions);
-		gis = del(gis, createDefaultDelegate());
+		//gis = del(gis, createDefaultDelegate());
+		gis = del(gis, new GlobalInteractionSequenceDelegate());
 		return gis;
 	}
 

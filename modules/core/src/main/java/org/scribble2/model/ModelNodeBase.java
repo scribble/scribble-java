@@ -46,7 +46,7 @@ public abstract class ModelNodeBase implements ModelNode
 	public ModelNode visit(ModelVisitor nv) throws ScribbleException
 	{
 		//return this.del.visit(this, nv);
-		return visitChild(this, nv);
+		return visitChild(this, nv);  // FIXME: weird to call visitChild with "this" as the child
 	}
 	
 	//@Override

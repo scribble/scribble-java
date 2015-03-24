@@ -15,7 +15,7 @@ public class GlobalContinue extends Continue implements GlobalInteraction
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new GlobalContinue(recvar);
+		return new GlobalContinue(this.recvar);
 	}
 
 	/*protected GlobalContinue(CommonTree ct, RecursionVarNode recvar, SimpleInteractionNodeContext sicontext)

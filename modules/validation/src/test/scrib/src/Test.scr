@@ -24,9 +24,7 @@ global protocol Bar(role C, role D)
 }
 
 
-
 /*global protocol Foo2(role A, role B)
 {
 	//m1() from A to B;
-
 }*/

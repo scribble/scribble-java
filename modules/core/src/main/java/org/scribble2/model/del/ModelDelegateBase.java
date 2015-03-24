@@ -1,9 +1,10 @@
 package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.visit.ContextBuilder;
+import org.scribble2.model.visit.EnvVisitor;
 import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.Env;
 import org.scribble2.util.ScribbleException;
@@ -55,10 +56,20 @@ public class ModelDelegateBase implements ModelDelegate
 	@Override
 	public ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
 	{
-		if (checker.hasEnv())
-		{
-			setEnv(checker.peekEnv());
-		}
+		copyEnv(checker);
+		return visited;
+	}
+
+	@Override
+	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj)
+	{
+		return proj;
+	}
+
+	@Override
+	public ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited)
+	{
+		copyEnv(proj);
 		return visited;
 	}
 
@@ -91,6 +102,15 @@ public class ModelDelegateBase implements ModelDelegate
 	{
 		return this.ncontext;
 	}*/
+	
+	private void copyEnv(EnvVisitor ev)
+	{
+		if (ev.hasEnv())
+		{
+			//setEnv(ev.peekEnv().copy());  // FIXME: need a deep copy for Env -- no: Env immutable
+			setEnv(ev.peekEnv());
+		}
+	}
 
 	@Override
 	public Env getEnv()

@@ -2,7 +2,9 @@ package org.scribble2.model.global;
 
 import java.util.List;
 
+import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.Parallel;
+import org.scribble2.model.del.ModelDelegate;
 
 public class GlobalParallel extends Parallel<GlobalProtocolBlock> implements GlobalInteraction
 {
@@ -11,24 +13,23 @@ public class GlobalParallel extends Parallel<GlobalProtocolBlock> implements Glo
 		//this(t, blocks, null, null);
 		super(blocks);
 	}
-
-	/*protected GlobalParallel(CommonTree ct, List<GlobalProtocolBlock> blocks, CompoundInteractionNodeContext cicontext)
-	{
-		super(ct, blocks, cicontext);
-	}*/
-
-	/*protected GlobalParallel(CommonTree ct, List<GlobalProtocolBlock> blocks, CompoundInteractionNodeContext cicontext, Env env)
-	{
-		super(ct, blocks, cicontext, env);
-	}
 	
 	@Override
-	protected GlobalParallel reconstruct(CommonTree ct, List<GlobalProtocolBlock> blocks, CompoundInteractionNodeContext cicontext, Env env)
+	protected GlobalParallel reconstruct(List<GlobalProtocolBlock> blocks)
 	{
-		return new GlobalParallel(ct, blocks, cicontext, env);
+		ModelDelegate del = del();
+		GlobalParallel gp = new GlobalParallel(blocks);
+		gp = (GlobalParallel) gp.del(del);
+		return gp;
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new GlobalParallel(this.blocks);
 	}
 	
-	@Override
+	/*@Override
 	public GlobalParallel leaveProjection(Projector proj) //throws ScribbleException
 	{
 		List<LocalProtocolBlock> blocks = new LinkedList<>();

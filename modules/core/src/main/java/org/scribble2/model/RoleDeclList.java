@@ -28,6 +28,12 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 		return rdl;
 	}
 
+	public RoleDeclList project(Role self)
+	{
+		List<RoleDecl> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
+		return new RoleDeclList(roledecls);
+	}
+
 	/*@Override 
 	public RoleDeclList checkWellFormedness(WellFormednessChecker wfc) throws ScribbleException
 	{
@@ -72,13 +78,6 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 		RoleDeclList projection = project(proj.peekSelf());
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
-	}
-
-	public RoleDeclList project(Role self)
-	{
-		List<RoleDecl> roledecls =
-				this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
-		return new RoleDeclList(null, roledecls);
 	}
 	
 	@Override

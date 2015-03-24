@@ -24,9 +24,9 @@ public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSeq
 		this.block = block;
 	}
 
-	/*protected abstract Recursion<T> reconstruct(CommonTree ct, RecursionVarNode recvar, T block, CompoundInteractionNodeContext cicontext, Env env);
+	protected abstract Recursion<T> reconstruct(RecursionVarNode recvar, T block);
 
-	@Override
+	/*@Override
 	public NodeContextBuilder enterContextBuilding(NodeContextBuilder builder) throws ScribbleException
 	{
 		builder.pushContext(new CompoundInteractionNodeContext());
