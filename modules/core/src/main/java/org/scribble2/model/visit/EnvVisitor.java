@@ -66,6 +66,12 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 
 	protected EnvVisitor envEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
+		
+		//... HERE: push copy of parent Env onto visitor stack for use by visitor pass (del env-leave routine should pop and push back the final result)
+		//... only if want an env for every node (unless restrict to specific nodes types -- e.g. interaction nodes) -- as opposed to only e.g. compound nodes, as done via del
+		//... so either do base env management here or via del -- here, need to do instanceof; in delegates, need to duplicate base push/pop for each pass
+		//... no: should be only compound interaction nodes, as typing environments
+		
 		return this;
 	}
 	
@@ -100,6 +106,12 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 	
 	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor nv, ModelNode visited) throws ScribbleException
 	{
+		/*if (hasEnv())
+		{
+			//setEnv(ev.peekEnv().copy());  // FIXME: need a deep copy for Env -- no: Env immutable
+			((ModelDelegateBase) visited.del()).setEnv(peekEnv());  // no defensive copy of visited
+		}*/
+
 		return visited;
 	}
 	

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 
@@ -47,6 +48,16 @@ public abstract class MessageTransfer extends ModelNodeBase implements SimpleInt
 		//return new MessageTransfer(this.ct, src, msg, dests, getContext(), getEnv());
 		List<RoleNode> dests = visitChildListWithClassCheck(this, this.dests, nv);
 		return reconstruct(src, msg, dests);//, getContext(), getEnv());
+	}
+	
+	public List<Role> getDestinationRoles()
+	{
+		List<Role> dests = new LinkedList<>();
+		for (RoleNode rn : this.dests)
+		{
+			dests.add(rn.toName());
+		}
+		return dests;
 	}
 
 	/*@Override
@@ -137,16 +148,6 @@ public abstract class MessageTransfer extends ModelNodeBase implements SimpleInt
 			env.ops.addOperator(src, dest, op);  // Recorded separately from enabling ops
 		}
 		return gmt;	
-	}* /
-	
-	public List<Role> getDestinationRoles()
-	{
-		List<Role> dests = new LinkedList<>();
-		for (RoleNode rn : this.dests)
-		{
-			dests.add(rn.toName());
-		}
-		return dests;
 	}*/
 	
 	/*// Maybe move into NodeVisitor -- no: now redundant, as all nodes including names nodes are uniformly visited

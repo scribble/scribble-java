@@ -54,7 +54,9 @@ public class GlobalInteractionSequence extends InteractionSequence<GlobalInterac
 		LocalInteractionSequence projection = new LocalInteractionSequence(null, lis);
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
-	}
+	}*/
+	
+	... HERE: move projection stuff into delegate
 	
 	/*@Override
 	public LocalInteractionSequence project(Projector proj) throws ScribbleException

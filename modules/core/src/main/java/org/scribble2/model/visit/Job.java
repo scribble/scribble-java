@@ -36,7 +36,7 @@ public class Job
 		runNodeVisitorPass(ContextBuilder.class);
 
 		System.out.println("\n--- Well-formed choice visitor test --- ");
-		//runNodeVisitorPass(WellFormedChoiceChecker.class);
+		runNodeVisitorPass(WellFormedChoiceChecker.class);
 
 		System.out.println("\n--- Projection --- ");
 		runNodeVisitorPass(Projector.class);

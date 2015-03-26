@@ -24,6 +24,13 @@ import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.global.GlobalProtocolDefinition;
 import org.scribble2.model.global.GlobalProtocolHeader;
+import org.scribble2.model.local.LocalInteraction;
+import org.scribble2.model.local.LocalInteractionSequence;
+import org.scribble2.model.local.LocalProtocolBlock;
+import org.scribble2.model.local.LocalProtocolDecl;
+import org.scribble2.model.local.LocalProtocolDefinition;
+import org.scribble2.model.local.LocalProtocolHeader;
+import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.name.qualified.MessageSignatureNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
@@ -265,6 +272,61 @@ public class ModelFactoryImpl implements ModelFactory
 		qnn = (QualifiedNameNode) qnn.del(createDefaultDelegate());
 		return qnn;
 	}
+
+	@Override
+	public LocalProtocolDecl LocalProtocolDecl(LocalProtocolHeader header, LocalProtocolDefinition def)
+	{
+		LocalProtocolDecl lpd = new LocalProtocolDecl(header, def);
+		//gpd = del(gpd, createDefaultDelegate());
+		lpd = del(lpd, new ProtocolDeclDelegate());
+		return lpd;
+	}
+
+	@Override
+	public LocalProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls)
+	{
+		LocalProtocolHeader lph = new LocalProtocolHeader(name, roledecls, paramdecls);
+		lph = del(lph, createDefaultDelegate());
+		return lph;
+	}
+
+	@Override
+	public SelfRoleDecl SelfRoleDecl(RoleNode namenode)
+	{
+		SelfRoleDecl rd = new SelfRoleDecl(namenode);
+		//rd = del(rd, new RoleDeclDelegate());
+		rd = del(rd, createDefaultDelegate());
+		return rd;
+	}
+
+	@Override
+	public LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block)
+	{
+		LocalProtocolDefinition lpd = new LocalProtocolDefinition(block);
+		lpd = del(lpd, createDefaultDelegate());
+		//gpd = del(gpd, new LocalProtocolDefinitionDelegate());
+		return lpd;
+	}
+
+	@Override
+	public LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq)
+	{
+		LocalProtocolBlock lpb = new LocalProtocolBlock(seq);
+		lpb = del(lpb, createDefaultDelegate());
+		//gpb = del(gpb, new LocalProtocolBlockDelegate());
+		//gpb = del(gpb, new ProtocolBlockDelegate());
+		return lpb;
+	}
+
+	@Override
+	public LocalInteractionSequence LocalInteractionSequence(List<LocalInteraction> actions)
+	{
+		LocalInteractionSequence lis = new LocalInteractionSequence(actions);
+		lis = del(lis, createDefaultDelegate());
+		//gis = del(gis, new LocalInteractionSequenceDelegate());
+		return lis;
+	}
+
 	
 	private ModelDelegate createDefaultDelegate()
 	{

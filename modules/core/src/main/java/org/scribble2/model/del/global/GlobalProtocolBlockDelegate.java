@@ -1,5 +1,6 @@
 package org.scribble2.model.del.global;
 
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.ProtocolBlockDelegate;
 import org.scribble2.model.global.GlobalProtocolBlock;
@@ -7,19 +8,21 @@ import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.env.ProjectionEnv;
+import org.scribble2.util.ScribbleException;
 
 
 public class GlobalProtocolBlockDelegate extends ProtocolBlockDelegate
 {
 	@Override
-	public GlobalProtocolBlock leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) //throws ScribbleException
+	public GlobalProtocolBlock leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
 	{
 		GlobalProtocolBlock gpd = (GlobalProtocolBlock) visited;
 		LocalInteractionSequence seq = (LocalInteractionSequence) ((ProjectionEnv) gpd.seq.del().getEnv()).getProjection();	
-		LocalProtocolBlock projection = new LocalProtocolBlock(seq);
+		//LocalProtocolBlock projection = ModelFactoryImpl.FACTORY.LocalProtocolBlock(ModelFactoryImpl.FACTORY.LocalInteractionSequence(Collections.emptyList()));
+		LocalProtocolBlock projection = ModelFactoryImpl.FACTORY.LocalProtocolBlock(seq);
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
-		//proj.popEnv(). ...
-		proj.pushEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
+		ProjectionEnv env = proj.popEnv();
+		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		return (GlobalProtocolBlock) super.leaveProjection(parent, child, proj, gpd);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 

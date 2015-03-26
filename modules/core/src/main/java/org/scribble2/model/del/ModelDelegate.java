@@ -26,9 +26,9 @@ public interface ModelDelegate
 	ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException;
 
 	// FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections)
-	Projector enterProjection(ModelNode parent, ModelNode child, Projector proj);
+	Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException;
 	//ModelNode visitForProjection(Projector proj) throws ScribbleException;
-	ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited);  // Move to GlobalModelNode? Cannot use visitor pattern then?
+	ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException;  // Move to GlobalModelNode? Cannot use visitor pattern then?
 
 	/*ReachabilityChecker enterReachabilityCheck(ReachabilityChecker checker) throws ScribbleException;
 	ModelNode visitForReachabilityChecking(ReachabilityChecker proj) throws ScribbleException;

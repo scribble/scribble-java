@@ -37,4 +37,23 @@ public class CompoundInteractionDelegate extends ModelDelegateBase
 		setEnv(env);
 		return visited;
 	}
+
+	/*@Override
+	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	{
+		ProjectionEnv env = proj.peekEnv().push();
+		proj.pushEnv(env);
+		return proj;
+	}
+	//public void enter(Choice<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> cho, WellFormedChoiceChecker checker)
+	
+	@Override
+	public ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	{
+		ProjectionEnv env = proj.popEnv();
+		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
+		//checker.pushEnv(env);
+		setEnv(env);
+		return visited;
+	}*/
 }

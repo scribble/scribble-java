@@ -14,6 +14,7 @@ public abstract class Env
 	//private Env parent;
 	////private final Node node;
 	
+	// FIXME: duplicated with Visitor fields?  Visitor jcontext is from Job and mcontext is from SubprotocolVisitor
 	public Env(JobContext jcontext, ModuleDelegate mcontext)//, Module mod)
 	{
 		//this(jcontext, mcontext, this, null);

@@ -1,12 +1,13 @@
 package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.global.GlobalNode;
 import org.scribble2.model.visit.ContextBuilder;
-import org.scribble2.model.visit.EnvVisitor;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.Env;
+import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.util.ScribbleException;
 
 
@@ -56,20 +57,31 @@ public class ModelDelegateBase implements ModelDelegate
 	@Override
 	public ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
 	{
-		copyEnv(checker);
 		return visited;
 	}
 
 	@Override
-	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj)
+	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	{
+		if (child instanceof GlobalNode)
+		{
+			ProjectionEnv env = proj.peekEnv().push();
+			proj.pushEnv(env);
+		}
 		return proj;
 	}
-
+	//public void enter(Choice<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> cho, WellFormedChoiceChecker checker)
+	
 	@Override
-	public ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited)
+	public ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
 	{
-		copyEnv(proj);
+		if (visited instanceof GlobalNode)
+		{
+			ProjectionEnv env = proj.popEnv();
+			//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
+			//checker.pushEnv(env);
+			setEnv(env);
+		}
 		return visited;
 	}
 
@@ -103,14 +115,14 @@ public class ModelDelegateBase implements ModelDelegate
 		return this.ncontext;
 	}*/
 	
-	private void copyEnv(EnvVisitor ev)
+	/*private void copyEnv(EnvVisitor ev)
 	{
 		if (ev.hasEnv())
 		{
 			//setEnv(ev.peekEnv().copy());  // FIXME: need a deep copy for Env -- no: Env immutable
 			setEnv(ev.peekEnv());
 		}
-	}
+	}*/
 
 	@Override
 	public Env getEnv()
@@ -118,6 +130,7 @@ public class ModelDelegateBase implements ModelDelegate
 		return this.env;
 	}
 	
+	//@Override
 	protected void setEnv(Env env)
 	{
 		this.env = env;

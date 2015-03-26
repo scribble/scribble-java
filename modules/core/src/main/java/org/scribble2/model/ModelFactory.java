@@ -12,6 +12,13 @@ import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.global.GlobalProtocolDefinition;
 import org.scribble2.model.global.GlobalProtocolHeader;
+import org.scribble2.model.local.LocalInteraction;
+import org.scribble2.model.local.LocalInteractionSequence;
+import org.scribble2.model.local.LocalProtocolBlock;
+import org.scribble2.model.local.LocalProtocolDecl;
+import org.scribble2.model.local.LocalProtocolDefinition;
+import org.scribble2.model.local.LocalProtocolHeader;
+import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
@@ -64,4 +71,11 @@ public interface ModelFactory
 
 	SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);
 	QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems);
+
+	LocalProtocolDecl LocalProtocolDecl(LocalProtocolHeader header, LocalProtocolDefinition def);
+	LocalProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls);
+	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
+	LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block);
+	LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq);
+	LocalInteractionSequence LocalInteractionSequence(List<LocalInteraction> actions);
 }

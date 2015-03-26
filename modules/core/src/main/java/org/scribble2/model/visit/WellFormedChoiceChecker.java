@@ -28,14 +28,17 @@ public class WellFormedChoiceChecker extends EnvVisitor
 	protected WellFormedChoiceChecker envEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		//return this;
-		return (WellFormedChoiceChecker) child.del().enterWFChoiceCheck(parent, child, this);
+		WellFormedChoiceChecker checker = (WellFormedChoiceChecker) super.envEnter(parent, child);
+		return (WellFormedChoiceChecker) child.del().enterWFChoiceCheck(parent, child, checker);
 	}
 	
 	@Override
 	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor nv, ModelNode visited) throws ScribbleException
 	{
 		//return visited;
-		return visited.del().leaveWFChoiceCheck(parent, child, (WellFormedChoiceChecker) nv, visited);
+		visited = visited.del().leaveWFChoiceCheck(parent, child, (WellFormedChoiceChecker) nv, visited);
+		visited = super.envLeave(parent, child, nv, visited);
+		return visited;
 	}
 
 	/*@Override

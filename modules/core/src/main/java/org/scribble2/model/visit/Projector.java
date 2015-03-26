@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.scribble2.model.InteractionNode;
 import org.scribble2.model.InteractionSequence;
@@ -33,7 +34,7 @@ import org.scribble2.util.ScribbleException;
 // FIXME: uses envs but does not need to be a SubProtocolVisitor -- swap env and subprotocol visitors in hierarchy? Maybe not: e.g. GraphBuilder is a subprotocol visitor but not an env visitor
 public class Projector extends EnvVisitor
 {
-	//private Stack<Role> selfs = new Stack<>();
+	private Stack<Role> selfs = new Stack<>();
 	
 	// first protocol name is full global protocol name, second is full local projection names
 	private Map<ProtocolName, Map<Role, Module>> projections = new HashMap<>();
@@ -84,7 +85,7 @@ public class Projector extends EnvVisitor
 		Map<Role, Map<ProtocolName, Set<Role>>> dependencies = new HashMap<>();
 		for (Role self : child.header.roledecls.getRoles())
 		{
-			//pushSelf(self);
+			pushSelf(self);
 			//proj.addProtocolDependency(gpn, self, gpn, self);
 			clearProtocolDependencies();
 			addProtocolDependency(gpn, self);
@@ -107,10 +108,12 @@ public class Projector extends EnvVisitor
 			// store projections in projector? in context? do earlier with context building? (but subprotocol pattern not available there)* /
 			addProjection(gpn, self, projected);
 			
+			System.out.println(self + ": " + projected);
+			
 			//.. add all dependencies to projection set (needs to be done after all modules have been visited) .. FIXME: dependencies need to be the sigs for the argument positions, not just the name -- or maybe ok to not, just be conservative
 			//.. maybe just record all projections in one big store for reachability checking, projection set for a specific global protocol can be worked out form dependencies?
 			
-			//popSelf();
+			popSelf();
 		}
 		//return this;
 		//ProtocolDeclContext pdcontext = new ProtocolDeclContext(dependencies);
@@ -119,7 +122,7 @@ public class Projector extends EnvVisitor
 		//System.out.println("c: " + this.name + ", " + pdcontext.getProtocolDependencies());
 
 		//return reconstruct(this.name, this.roledecls, this.paramdecls, this.def, pdcontext, getEnv());
-		return (GlobalProtocolDecl) child.del(del);  // FIXME: move to leaveProjection in GlobalProtocolDecl
+		return (GlobalProtocolDecl) child.del(del);  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
 	}
 	
 	@Override
@@ -128,17 +131,17 @@ public class Projector extends EnvVisitor
 		/*Projector proj = (Projector) super.envEnter(parent, child);
 		return proj;*/
 		//return child.enterProjection(this);
-		return (Projector) child.del().enterProjection(parent, child, this);
+		Projector proj = (Projector) super.envEnter(parent, child);
+		return (Projector) child.del().enterProjection(parent, child, proj);
 	}
 	
 	@Override
 	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor nv, ModelNode visited) throws ScribbleException
 	{
-		System.out.println("2: " + visited.getClass());
-
 		/*ModelNode n = super.envLeave(parent, child, nv, visited);
 		return n.leaveProjection((Projector) nv);*/
-		return visited.del().leaveProjection(parent, child, (Projector) nv, visited);
+		visited = visited.del().leaveProjection(parent, child, (Projector) nv, visited);
+		return super.envLeave(parent, child, nv, visited);
 	}
 	
 	// Simple projected protocol name for protocol decls -- Move into SimpleProtocolName?
@@ -203,7 +206,7 @@ public class Projector extends EnvVisitor
 		return leave(parent, child, spv, visited);
 	}*/
 	
-	/*public void pushSelf(Role self)
+	public void pushSelf(Role self)
 	{
 		this.selfs.push(self);
 	}
@@ -216,7 +219,7 @@ public class Projector extends EnvVisitor
 	public Role popSelf()
 	{
 		return this.selfs.pop();
-	}*/
+	}
 	
 	// finally store projections in ProtocolDecl contexts
 	
@@ -277,6 +280,24 @@ public class Projector extends EnvVisitor
 	public Map<ProtocolName, Set<Role>> getProtocolDependencies()
 	{
 		return this.dependencies;
+	}
+	
+	@Override
+	public ProjectionEnv peekEnv()
+	{
+		return (ProjectionEnv) super.peekEnv();
+	}
+
+	@Override
+	public ProjectionEnv peekParentEnv()
+	{
+		return (ProjectionEnv) super.peekParentEnv();
+	}
+	
+	@Override
+	public ProjectionEnv popEnv()
+	{
+		return (ProjectionEnv) super.popEnv();
 	}
 
 	/*public void addProtocolDependency(ProtocolName root, Role self, ProtocolName dep, Role param)
