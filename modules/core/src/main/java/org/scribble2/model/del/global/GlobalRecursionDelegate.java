@@ -1,9 +1,19 @@
 package org.scribble2.model.del.global;
 
+import java.util.List;
+
+import org.scribble2.model.Continue;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.CompoundInteractionNodeDelegate;
 import org.scribble2.model.global.GlobalRecursion;
+import org.scribble2.model.local.LocalInteraction;
+import org.scribble2.model.local.LocalProtocolBlock;
+import org.scribble2.model.local.LocalRecursion;
+import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
+import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.util.ScribbleException;
 
@@ -18,5 +28,26 @@ public class GlobalRecursionDelegate extends CompoundInteractionNodeDelegate
 		WellFormedChoiceEnv merged = checker.popEnv().merge((WellFormedChoiceEnv) rec.block.del().getEnv());
 		checker.pushEnv(merged);
 		return rec;
+	}
+
+	@Override
+	public GlobalRecursion leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	{
+		GlobalRecursion gr = (GlobalRecursion) visited;
+		RecursionVarNode recvar = new RecursionVarNode(gr.recvar.toName().toString());
+		LocalProtocolBlock block = (LocalProtocolBlock) ((ProjectionEnv) gr.block.del().getEnv()).getProjection();	
+		LocalRecursion projection = null;
+		if (!block.isEmpty())
+		{
+			List<LocalInteraction> lis = block.seq.actions;
+			if (!(lis.size() == 1 && lis.get(0) instanceof Continue))
+			{
+				projection = ModelFactoryImpl.FACTORY.LocalRecursion(recvar, block);
+			}
+		}
+		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
+		ProjectionEnv env = proj.popEnv();
+		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		return (GlobalRecursion) super.leaveProjection(parent, child, proj, gr);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

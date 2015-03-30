@@ -10,12 +10,15 @@ import org.scribble2.model.del.ParameterDeclDelegate;
 import org.scribble2.model.del.ProtocolDeclDelegate;
 import org.scribble2.model.del.RoleDeclDelegate;
 import org.scribble2.model.del.global.GlobalChoiceDelegate;
+import org.scribble2.model.del.global.GlobalContinueDelegate;
 import org.scribble2.model.del.global.GlobalInteractionSequenceDelegate;
 import org.scribble2.model.del.global.GlobalMessageTransferDelegate;
 import org.scribble2.model.del.global.GlobalProtocolBlockDelegate;
 import org.scribble2.model.del.global.GlobalProtocolDefinitionDelegate;
+import org.scribble2.model.del.global.GlobalRecursionDelegate;
 import org.scribble2.model.del.name.AmbiguousNameDelegate;
 import org.scribble2.model.global.GlobalChoice;
+import org.scribble2.model.global.GlobalContinue;
 import org.scribble2.model.global.GlobalDo;
 import org.scribble2.model.global.GlobalInteraction;
 import org.scribble2.model.global.GlobalInteractionSequence;
@@ -24,7 +27,9 @@ import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.global.GlobalProtocolDefinition;
 import org.scribble2.model.global.GlobalProtocolHeader;
+import org.scribble2.model.global.GlobalRecursion;
 import org.scribble2.model.local.LocalChoice;
+import org.scribble2.model.local.LocalContinue;
 import org.scribble2.model.local.LocalDo;
 import org.scribble2.model.local.LocalInteraction;
 import org.scribble2.model.local.LocalInteractionSequence;
@@ -33,6 +38,7 @@ import org.scribble2.model.local.LocalProtocolDecl;
 import org.scribble2.model.local.LocalProtocolDefinition;
 import org.scribble2.model.local.LocalProtocolHeader;
 import org.scribble2.model.local.LocalReceive;
+import org.scribble2.model.local.LocalRecursion;
 import org.scribble2.model.local.LocalSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.PayloadElementNameNode;
@@ -194,6 +200,22 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
+	public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
+	{
+		GlobalRecursion gr = new GlobalRecursion(recvar, block);
+		gr = del(gr, new GlobalRecursionDelegate());
+		return gr;
+	}
+
+	@Override
+	public GlobalContinue GlobalContinue(RecursionVarNode recvar)
+	{
+		GlobalContinue gc = new GlobalContinue(recvar);
+		gc = del(gc, new GlobalContinueDelegate());
+		return gc;
+	}
+
+	@Override
 	public GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		return GlobalDo(null, roleinstans, arginstans, proto);
@@ -351,6 +373,22 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
 	{
 		LocalChoice lc = new LocalChoice(subj, blocks);
+		lc = del(lc, createDefaultDelegate());
+		return lc;
+	}
+
+	@Override
+	public LocalRecursion LocalRecursion(RecursionVarNode recvar, LocalProtocolBlock block)
+	{
+		LocalRecursion lr = new LocalRecursion(recvar, block);
+		lr = del(lr, createDefaultDelegate());
+		return lr;
+	}
+
+	@Override
+	public LocalContinue LocalContinue(RecursionVarNode recvar)
+	{
+		LocalContinue lc = new LocalContinue(recvar);
 		lc = del(lc, createDefaultDelegate());
 		return lc;
 	}

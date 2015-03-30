@@ -1,6 +1,7 @@
 package org.scribble2.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalRecursion;
 import org.scribble2.model.name.simple.RecursionVarNode;
@@ -14,9 +15,10 @@ public class AntlrGlobalRecursion
 
 	public static GlobalRecursion parseGlobalRecursion(AntlrModuleParser parser, CommonTree ct)
 	{
-		RecursionVarNode lab = AntlrSimpleName.toRecursionVarNode(getRecursionVarChild(ct));
+		RecursionVarNode recvar = AntlrSimpleName.toRecursionVarNode(getRecursionVarChild(ct));
 		GlobalProtocolBlock block = (GlobalProtocolBlock) parser.parse(getBlockChild(ct));
-		return new GlobalRecursion(lab, block);
+		//return new GlobalRecursion(lab, block);
+		return ModelFactoryImpl.FACTORY.GlobalRecursion(recvar, block);
 	}
 
 	public static final CommonTree getRecursionVarChild(CommonTree ct)

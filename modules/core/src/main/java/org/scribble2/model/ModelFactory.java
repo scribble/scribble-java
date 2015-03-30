@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.scribble2.model.ParameterDecl.Kind;
 import org.scribble2.model.global.GlobalChoice;
+import org.scribble2.model.global.GlobalContinue;
 import org.scribble2.model.global.GlobalDo;
 import org.scribble2.model.global.GlobalInteraction;
 import org.scribble2.model.global.GlobalInteractionSequence;
@@ -12,7 +13,9 @@ import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.global.GlobalProtocolDefinition;
 import org.scribble2.model.global.GlobalProtocolHeader;
+import org.scribble2.model.global.GlobalRecursion;
 import org.scribble2.model.local.LocalChoice;
+import org.scribble2.model.local.LocalContinue;
 import org.scribble2.model.local.LocalDo;
 import org.scribble2.model.local.LocalInteraction;
 import org.scribble2.model.local.LocalInteractionSequence;
@@ -21,6 +24,7 @@ import org.scribble2.model.local.LocalProtocolDecl;
 import org.scribble2.model.local.LocalProtocolDefinition;
 import org.scribble2.model.local.LocalProtocolHeader;
 import org.scribble2.model.local.LocalReceive;
+import org.scribble2.model.local.LocalRecursion;
 import org.scribble2.model.local.LocalSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.PayloadElementNameNode;
@@ -29,6 +33,7 @@ import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
@@ -64,7 +69,8 @@ public interface ModelFactory
 
 	GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks);
-
+	GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block);
+	GlobalContinue GlobalContinue(RecursionVarNode recvar);
 	GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	
@@ -86,6 +92,8 @@ public interface ModelFactory
 	LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks);
+	LocalRecursion LocalRecursion(RecursionVarNode recvar, LocalProtocolBlock block);
+	LocalContinue LocalContinue(RecursionVarNode recvar);
 	LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 }
 

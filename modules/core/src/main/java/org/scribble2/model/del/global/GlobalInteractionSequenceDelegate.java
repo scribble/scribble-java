@@ -3,6 +3,8 @@ package org.scribble2.model.del.global;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.scribble2.model.Continue;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.ModelDelegateBase;
 import org.scribble2.model.global.GlobalInteraction;
@@ -42,7 +44,14 @@ public class GlobalInteractionSequenceDelegate extends ModelDelegateBase
 				lis.add((LocalInteraction) ln);
 			}
 		}
-		LocalInteractionSequence projection = new LocalInteractionSequence(lis);
+		if (lis.size() == 1)
+		{
+			if (lis.get(0) instanceof Continue)
+			{
+				lis.clear();
+			}
+		}
+		LocalInteractionSequence projection = ModelFactoryImpl.FACTORY.LocalInteractionSequence(lis);
 		ProjectionEnv env = proj.popEnv();
 		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		//return gis;

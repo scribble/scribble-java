@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.MessageNode;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.SimpleInteractionNodeDelegate;
 import org.scribble2.model.global.GlobalMessageTransfer;
 import org.scribble2.model.local.LocalInteraction;
-import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalNode;
 import org.scribble2.model.local.LocalReceive;
-import org.scribble2.model.local.LocalSend;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
@@ -67,18 +66,19 @@ public class GlobalMessageTransferDelegate extends SimpleInteractionNodeDelegate
 					destroles.stream().map((d) -> new RoleNode(d.toString())).collect(Collectors.toList());
 			if (srcrole.equals(self))
 			{
-				projection = new LocalSend(src, msg, dests);
+				projection = ModelFactoryImpl.FACTORY.LocalSend(src, msg, dests);
 			}
 			if (destroles.contains(self))
 			{
 				if (projection == null)
 				{
-					projection = new LocalReceive(src, msg, dests);
+					projection = ModelFactoryImpl.FACTORY.LocalReceive(src, msg, dests);
 				}
 				else
 				{
-					List<LocalInteraction> lis = Arrays.asList(new LocalInteraction[]{(LocalInteraction) projection, new LocalReceive(src, msg, dests)});
-					projection = new LocalInteractionSequence(lis);
+					LocalReceive lr = ModelFactoryImpl.FACTORY.LocalReceive(src, msg, dests);
+					List<LocalInteraction> lis = Arrays.asList(new LocalInteraction[]{(LocalInteraction) projection, lr});
+					projection = ModelFactoryImpl.FACTORY.LocalInteractionSequence(lis);
 				}
 			}
 		}

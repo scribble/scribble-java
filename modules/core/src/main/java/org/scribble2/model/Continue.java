@@ -1,6 +1,8 @@
 package org.scribble2.model;
 
 import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
 
 public abstract class Continue extends ModelNodeBase implements SimpleInteractionNode
 {
@@ -21,17 +23,17 @@ public abstract class Continue extends ModelNodeBase implements SimpleInteractio
 		this.recvar = recvar;
 	}
 
-	/*protected abstract Continue reconstruct(CommonTree ct, RecursionVarNode recvar, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract Continue reconstruct(RecursionVarNode recvar);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
-	public Continue visitChildren(NodeVisitor nv) throws ScribbleException
+	public Continue visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		RecursionVarNode recvar = (RecursionVarNode) visitChild(this.recvar, nv);
 		//return new Continue(this.ct, recvar, getContext(), getEnv());
-		return reconstruct(this.ct, recvar, getContext(), getEnv());
+		return reconstruct(recvar);//, getContext(), getEnv());
 	}
 
-	@Override
+	/*@Override
 	public Continue leaveReachabilityCheck(ReachabilityChecker checker) throws ScribbleException
 	{
 		checker.getEnv().leave(this, checker);

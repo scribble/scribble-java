@@ -2,6 +2,7 @@ package org.scribble2.model.global;
 
 import org.scribble2.model.Continue;
 import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RecursionVarNode;
 
 public class GlobalContinue extends Continue implements GlobalInteraction
@@ -10,6 +11,15 @@ public class GlobalContinue extends Continue implements GlobalInteraction
 	{
 		//this(t, recvar, null, null);
 		super(recvar);
+	}
+
+	@Override
+	protected GlobalContinue reconstruct(RecursionVarNode recvar)
+	{
+		ModelDelegate del = del();
+		GlobalContinue gc = new GlobalContinue(recvar);//, sicontext, env);
+		gc = (GlobalContinue) gc.del(del);
+		return gc;
 	}
 
 	@Override
@@ -26,12 +36,6 @@ public class GlobalContinue extends Continue implements GlobalInteraction
 	/*protected GlobalContinue(CommonTree ct, RecursionVarNode recvar, SimpleInteractionNodeContext sicontext, Env env)
 	{
 		super(ct, recvar, sicontext, env);
-	}
-
-	@Override
-	protected GlobalContinue reconstruct(CommonTree ct, RecursionVarNode recvar, SimpleInteractionNodeContext sicontext, Env env)
-	{
-		return new GlobalContinue(ct, recvar, sicontext, env);
 	}
 	
 	@Override

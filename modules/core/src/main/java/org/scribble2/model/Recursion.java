@@ -1,6 +1,8 @@
 package org.scribble2.model;
 
 import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
 
 public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 		extends ModelNodeBase implements CompoundInteractionNode
@@ -25,6 +27,15 @@ public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSeq
 	}
 
 	protected abstract Recursion<T> reconstruct(RecursionVarNode recvar, T block);
+
+	@Override
+	public Recursion<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	{
+		RecursionVarNode recvar = (RecursionVarNode) visitChild(this.recvar, nv);
+		T block = visitChildWithClassCheck(this, this.block, nv);
+		//return new Recursion<>(this.ct, recvar, block, getContext(), getEnv());
+		return reconstruct(recvar, block);//, getContext(), getEnv());
+	}
 
 	/*@Override
 	public NodeContextBuilder enterContextBuilding(NodeContextBuilder builder) throws ScribbleException
@@ -88,15 +99,6 @@ public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSeq
 		return gr;
 	}*/
 	
-	/*@Override
-	public Recursion<T> visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		RecursionVarNode recvar = (RecursionVarNode) visitChild(this.recvar, nv);
-		T block = visitChildWithClassCheck(this, this.block, nv);
-		//return new Recursion<>(this.ct, recvar, block, getContext(), getEnv());
-		return reconstruct(this.ct, recvar, block, getContext(), getEnv());
-	}*/
-
 	@Override
 	public String toString()
 	{

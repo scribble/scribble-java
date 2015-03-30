@@ -78,8 +78,6 @@ public class NameDisambiguator extends ModelVisitor
 	@Override
 	public NameDisambiguator enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		//System.out.println("2: " + child + ", " + child.del() + ", " + child.getClass());
-		
 		// Could make forwarder methods in ModelNode
 		return (NameDisambiguator) child.del().enterDisambiguation(parent, child, this);
 	}
