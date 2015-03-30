@@ -6,10 +6,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.CompoundInteractionNodeDelegate;
 import org.scribble2.model.global.GlobalChoice;
+import org.scribble2.model.local.LocalChoice;
+import org.scribble2.model.local.LocalProtocolBlock;
+import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
+import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.ScopedMessage;
@@ -107,5 +113,22 @@ public class GlobalChoiceDelegate extends CompoundInteractionNodeDelegate
 		//return new GlobalChoice(cho.ct, cho.subj, cho.blocks, cho.getContext(), cho.getEnv());
 		// .. reconstruct*/
 		return (GlobalChoice) super.leaveWFChoiceCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+	}
+	
+	@Override
+	public GlobalChoice leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	{
+		GlobalChoice gc = (GlobalChoice) visited;
+		RoleNode subj = new RoleNode(gc.subj.toName().toString());  // Inconsistent to copy role nodes manually, but do via children visiting for other children
+		List<LocalProtocolBlock> blocks = 
+				gc.blocks.stream().map((b) -> (LocalProtocolBlock) ((ProjectionEnv) b.del().getEnv()).getProjection()).collect(Collectors.toList());	
+		LocalChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
+		if (!blocks.get(0).isEmpty())  // WF allows this
+		{
+			projection = ModelFactoryImpl.FACTORY.LocalChoice(subj, blocks);
+		}
+		ProjectionEnv env = proj.popEnv();
+		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		return (GlobalChoice) super.leaveProjection(parent, child, proj, gc);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

@@ -43,6 +43,11 @@ public abstract class ProtocolBlock<T extends InteractionSequence<? extends Inte
 		return reconstruct(seq);//, getContext(), getEnv());
 	}
 	
+	public boolean isEmpty()
+	{
+		return this.seq.isEmpty();
+	}
+	
 	/*@Override
 	public NodeContextBuilder enterContextBuilding(NodeContextBuilder builder) throws ScribbleException
 	{

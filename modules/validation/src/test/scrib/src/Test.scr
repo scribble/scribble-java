@@ -7,7 +7,7 @@ module Test;
 global protocol Foo(role A, role B, role C)
 {
 	1() from A to B;
-	/*choice at A
+	choice at A
 	{
 		1() from A to B;
 	}
@@ -15,7 +15,8 @@ global protocol Foo(role A, role B, role C)
 	{
 		//do Bar(A, B);
 		2() from A to B;
-	}*/
+	}
+	3() from C to B;
 }
 
 /*global protocol Bar(role C, role D)

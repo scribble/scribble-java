@@ -24,12 +24,16 @@ import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.global.GlobalProtocolDefinition;
 import org.scribble2.model.global.GlobalProtocolHeader;
+import org.scribble2.model.local.LocalChoice;
+import org.scribble2.model.local.LocalDo;
 import org.scribble2.model.local.LocalInteraction;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.local.LocalProtocolDecl;
 import org.scribble2.model.local.LocalProtocolDefinition;
 import org.scribble2.model.local.LocalProtocolHeader;
+import org.scribble2.model.local.LocalReceive;
+import org.scribble2.model.local.LocalSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.name.qualified.MessageSignatureNameNode;
@@ -325,6 +329,44 @@ public class ModelFactoryImpl implements ModelFactory
 		lis = del(lis, createDefaultDelegate());
 		//gis = del(gis, new LocalInteractionSequenceDelegate());
 		return lis;
+	}
+
+	@Override
+	public LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	{
+		LocalSend ls = new LocalSend(src, msg, dests);
+		ls = del(ls, createDefaultDelegate());
+		return ls;
+	}
+
+	@Override
+	public LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	{
+		LocalReceive ls = new LocalReceive(src, msg, dests);
+		ls = del(ls, createDefaultDelegate());
+		return ls;
+	}
+
+	@Override
+	public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
+	{
+		LocalChoice lc = new LocalChoice(subj, blocks);
+		lc = del(lc, createDefaultDelegate());
+		return lc;
+	}
+
+	/*@Override
+	public LocalDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	{
+		return LocalDo(null, roleinstans, arginstans, proto);
+	}*/
+
+	@Override
+	public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	{
+		LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
+		ld = del(ld, createDefaultDelegate());
+		return ld;
 	}
 
 	

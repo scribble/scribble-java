@@ -12,12 +12,16 @@ import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.global.GlobalProtocolDefinition;
 import org.scribble2.model.global.GlobalProtocolHeader;
+import org.scribble2.model.local.LocalChoice;
+import org.scribble2.model.local.LocalDo;
 import org.scribble2.model.local.LocalInteraction;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.local.LocalProtocolDecl;
 import org.scribble2.model.local.LocalProtocolDefinition;
 import org.scribble2.model.local.LocalProtocolHeader;
+import org.scribble2.model.local.LocalReceive;
+import org.scribble2.model.local.LocalSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
@@ -78,4 +82,10 @@ public interface ModelFactory
 	LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block);
 	LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq);
 	LocalInteractionSequence LocalInteractionSequence(List<LocalInteraction> actions);
+
+	LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
+	LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
+	LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks);
+	LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 }
+
