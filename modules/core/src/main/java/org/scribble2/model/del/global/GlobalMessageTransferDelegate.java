@@ -22,6 +22,7 @@ import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
+// FIXME: make base MessageTransferDelegate?
 public class GlobalMessageTransferDelegate extends SimpleInteractionNodeDelegate
 {
 	@Override
@@ -49,7 +50,7 @@ public class GlobalMessageTransferDelegate extends SimpleInteractionNodeDelegate
 	}
 
 	@Override
-	public GlobalMessageTransfer leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) //throws ScribbleException
+	public GlobalMessageTransfer leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException //throws ScribbleException
 	{
 		GlobalMessageTransfer gmt = (GlobalMessageTransfer) visited;
 
@@ -86,6 +87,7 @@ public class GlobalMessageTransferDelegate extends SimpleInteractionNodeDelegate
 		ProjectionEnv env = proj.popEnv();
 		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 
-		return gmt;
+		//return gmt;
+		return (GlobalMessageTransfer) super.leaveProjection(parent, child, proj, gmt);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

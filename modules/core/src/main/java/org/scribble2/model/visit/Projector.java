@@ -51,6 +51,7 @@ public class Projector extends EnvVisitor
 		super(job);
 	}
 
+	// Envs pushed for GlobalNode delegates (doesn't include interaction seqs)
 	@Override
 	protected ProjectionEnv makeRootProtocolDeclEnv(
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
@@ -108,7 +109,7 @@ public class Projector extends EnvVisitor
 			// store projections in projector? in context? do earlier with context building? (but subprotocol pattern not available there)* /
 			addProjection(gpn, self, projected);
 			
-			System.out.println(self + ": " + projected);
+			System.out.println(self + ":\n" + projected);
 			
 			//.. add all dependencies to projection set (needs to be done after all modules have been visited) .. FIXME: dependencies need to be the sigs for the argument positions, not just the name -- or maybe ok to not, just be conservative
 			//.. maybe just record all projections in one big store for reachability checking, projection set for a specific global protocol can be worked out form dependencies?

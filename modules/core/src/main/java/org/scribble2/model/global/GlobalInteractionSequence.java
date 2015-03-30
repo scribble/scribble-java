@@ -56,8 +56,6 @@ public class GlobalInteractionSequence extends InteractionSequence<GlobalInterac
 		return this;
 	}*/
 	
-	... HERE: move projection stuff into delegate
-	
 	/*@Override
 	public LocalInteractionSequence project(Projector proj) throws ScribbleException
 	{
