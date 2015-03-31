@@ -1,7 +1,6 @@
 package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.sesstype.name.Role;
@@ -35,16 +34,19 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode>
 	public RoleDecl project(Role self)
 	{
 		Role role = this.name.toName();
-		RoleNode rn = new RoleNode(role.toString());
+		//RoleNode rn = new RoleNode(role.toString());
+		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, role.toString());
 		if (role.equals(self))
 		{
-			return new SelfRoleDecl(rn);
+			//return new SelfRoleDecl(rn);
+			return ModelFactoryImpl.FACTORY.SelfRoleDecl(rn);
 		}
-		return new RoleDecl(rn);
+		//return new RoleDecl(rn);
+		return ModelFactoryImpl.FACTORY.RoleDecl(rn);
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected RoleDecl copy()
 	{
 		return new RoleDecl((RoleNode) this.name);
 	}

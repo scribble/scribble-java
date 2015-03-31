@@ -1,7 +1,10 @@
 package org.scribble2.model;
 
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
 
 public class ImportModule extends ImportDecl
 {
@@ -15,6 +18,28 @@ public class ImportModule extends ImportDecl
 		this.alias = alias;
 	}
 	
+	protected ImportModule reconstruct(ModuleNameNode modname, SimpleProtocolNameNode alias)
+	{
+		ModelDelegate del = del();
+		ImportModule im = new ImportModule(modname, alias);
+		im = (ImportModule) im.del(del);
+		return im;
+	}
+
+	@Override
+	public ImportModule visitChildren(ModelVisitor nv) throws ScribbleException
+	{
+		ModuleNameNode modname = (ModuleNameNode) visitChild(this.modname, nv);
+		if (isAliased())
+		{
+			SimpleProtocolNameNode alias = (SimpleProtocolNameNode) visitChild(this.alias, nv);
+			//return new ImportModule(this.ct, modname, alias);
+			return reconstruct(modname, alias);
+		}
+		//return new ImportModule(this.ct, modname, null);
+		return reconstruct(modname, null);
+	}
+	
 	/*@Override
 	public ImportModule project(Projector proj)
 	{
@@ -22,18 +47,6 @@ public class ImportModule extends ImportDecl
 		PrimitiveNameNode pnn = new PrimitiveNameNode(null, proj.getProjectedModuleName(this.fmn.smn, ...));
 		ModuleNameNode mnn = new ModuleNameNode(this.fmn.pn, pnn);
 		return new ImportModule(null, mnn, this.alias);
-	}*/
-
-	/*@Override
-	public ImportModule visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		ModuleNameNodes modname = (ModuleNameNodes) visitChild(this.modname, nv);
-		if (isAliased())
-		{
-			SimpleProtocolNameNode alias = (SimpleProtocolNameNode) visitChild(this.alias, nv);
-			return new ImportModule(this.ct, modname, alias);
-		}
-		return new ImportModule(this.ct, modname, null);
 	}*/
 	
 	@Override

@@ -32,9 +32,20 @@ public class CompoundInteractionNodeDelegate extends CompoundInteractionDelegate
 	public CompoundInteractionNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
 	{
 		WellFormedChoiceEnv env = checker.popEnv();
+		setEnv(env);
+		env = checker.popEnv().merge(env);  // Overrides super method to merge results back into parent context
+		checker.pushEnv(env);
+		//setEnv(env);
+		return (CompoundInteractionNode) visited;
+	}
+	
+	/*@Override
+	public CompoundInteractionNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	{
+		ReachabilityEnv env = checker.popEnv();
 		env = checker.popEnv().merge(env);  // Overrides super method to merge results back into parent context
 		checker.pushEnv(env);
 		setEnv(env);
 		return (CompoundInteractionNode) visited;
-	}
+	}*/
 }

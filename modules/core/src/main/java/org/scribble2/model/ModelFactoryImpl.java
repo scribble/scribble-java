@@ -16,6 +16,7 @@ import org.scribble2.model.del.global.GlobalMessageTransferDelegate;
 import org.scribble2.model.del.global.GlobalProtocolBlockDelegate;
 import org.scribble2.model.del.global.GlobalProtocolDefinitionDelegate;
 import org.scribble2.model.del.global.GlobalRecursionDelegate;
+import org.scribble2.model.del.local.LocalChoiceDelegate;
 import org.scribble2.model.del.name.AmbiguousNameDelegate;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.global.GlobalContinue;
@@ -102,6 +103,14 @@ public class ModelFactoryImpl implements ModelFactory
 		ModuleDecl md = new ModuleDecl(fullmodname);
 		md = del(md, createDefaultDelegate());
 		return md;
+	}
+
+	@Override
+	public ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)
+	{
+		ImportModule im = new ImportModule(modname, alias);
+		im = del(im, createDefaultDelegate());
+		return im;
 	}
 
 	@Override
@@ -373,7 +382,8 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
 	{
 		LocalChoice lc = new LocalChoice(subj, blocks);
-		lc = del(lc, createDefaultDelegate());
+		//lc = del(lc, createDefaultDelegate());
+		lc = del(lc, new LocalChoiceDelegate());
 		return lc;
 	}
 
@@ -419,7 +429,7 @@ public class ModelFactoryImpl implements ModelFactory
 		ModelNodeBase ret = n.del(del);
 		if (ret.getClass() != n.getClass())
 		{
-			throw new RuntimeException("Shouldn't get in here: " + ret);
+			throw new RuntimeException("Shouldn't get in here: " + ret.getClass() + ", " + n.getClass());
 		}
 		return (T) ret;
 	}

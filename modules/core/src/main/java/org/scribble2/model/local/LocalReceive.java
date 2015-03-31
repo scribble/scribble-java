@@ -6,6 +6,7 @@ import org.scribble2.model.Constants;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.MessageTransfer;
 import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 
 public class LocalReceive extends MessageTransfer implements LocalInteraction
@@ -19,7 +20,10 @@ public class LocalReceive extends MessageTransfer implements LocalInteraction
 	@Override
 	protected LocalReceive reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		return new LocalReceive(src, msg, dests);
+		ModelDelegate del = del();
+		LocalReceive lr = new LocalReceive(src, msg, dests);
+		lr = (LocalReceive) lr.del(del);
+		return lr;
 	}
 	
 	/*@Override

@@ -31,7 +31,8 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 	public RoleDeclList project(Role self)
 	{
 		List<RoleDecl> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
-		return new RoleDeclList(roledecls);
+		//return new RoleDeclList(roledecls);
+		return ModelFactoryImpl.FACTORY.RoleDeclList(roledecls);
 	}
 
 	/*@Override 

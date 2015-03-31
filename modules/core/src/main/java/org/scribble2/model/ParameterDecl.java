@@ -48,7 +48,8 @@ public class ParameterDecl extends HeaderParameterDecl<ParameterNode> //implemen
 	public ParameterDecl project(Role self)
 	{
 		ParameterNode pn = new ParameterNode(this.name.toString());
-		return new ParameterDecl(this.kind, pn);
+		//return new ParameterDecl(this.kind, pn);
+		return ModelFactoryImpl.FACTORY.ParameterDecl(this.kind, pn);
 	}
 	
 	/*@Override

@@ -9,6 +9,8 @@ import java.util.Set;
 
 import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
+import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 // Immutable (from outside) -- no: projections are added mutably later
@@ -25,14 +27,14 @@ public class JobContext
 	
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
 	private final Map<ModuleName, Module> modules;// = new HashMap<>();
-	private final Map<ModuleName, String> sources = new HashMap<>();
+	//private final Map<ModuleName, String> sources = new HashMap<>();
 	
 	/*// ProtocolName is the full global protocol name
 	private final Map<ProtocolName, Map<Role, Module>> projections;// = new HashMap<>();
 	private final Map<ModuleName, Module> projections2;// = new HashMap<>();  // FIXME: factor with above*/
 	
 	// ProtocolName is the full local protocol name
-	//private final Map<ProtocolName, Module> projections = new HashMap<>();
+	private final Map<ProtocolName, Module> projections = new HashMap<>();
 	private final Map<ModuleName, Module> projectionsByModules = new HashMap<>();  // An alternative view of projections
 
 	//public JobContext(Job job, List<String> importPath, String mainpath) throws ScribbleException
@@ -128,17 +130,18 @@ public class JobContext
 		{
 			this.modules.put(fullmodname, module);
 		}
-		/*else if (this.projectionsByModules.containsKey(fullmodname)) 
+		else if (this.projectionsByModules.containsKey(fullmodname)) 
 		{
 			addProjection(module);
-		}*/
+		}
 		else
 		{
 			throw new RuntimeException("Unknown module: " + fullmodname);
 		}
 	}
 	
-	/*public void addProjections(Map<ProtocolName, Map<Role, Module>> projections)
+	// FIXME: make immutable (will need to assign updated context back to Job) -- will also need to do for Module replacing
+	public void addProjections(Map<ProtocolName, Map<Role, Module>> projections)
 	{
 		for (ProtocolName gpn : projections.keySet())
 		{
@@ -151,7 +154,7 @@ public class JobContext
 
 		try
 		{
-			NodeContextBuilder builder = new NodeContextBuilder(this.job);
+			ContextBuilder builder = new ContextBuilder(this.job);
 			for (ProtocolName lpn : this.projections.keySet())
 			{
 				Module mod = this.projections.get(lpn);
@@ -170,7 +173,7 @@ public class JobContext
 		ProtocolName lpn = mod.protos.get(0).getFullProtocolName(mod);
 		this.projections.put(lpn, mod);
 		this.projectionsByModules.put(mod.getFullModuleName(), mod);
-	}*/
+	}
 	
 	public Module getMainModule()
 	{

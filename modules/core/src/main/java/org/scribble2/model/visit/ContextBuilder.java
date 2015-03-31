@@ -1,7 +1,6 @@
 package org.scribble2.model.visit;
 
 import org.scribble2.model.ModelNode;
-import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
@@ -17,7 +16,7 @@ public class ContextBuilder extends ModelVisitor
 	//private Module module;
 	
 	// Subprotocol dependencies: full protocol names
-	private ProtocolName root = null;
+	//private ProtocolName root = null;
 	/*private final Map<Role, Map<ProtocolName, Set<Role>>> dependencies;  // All the potential dependencies from this protocol decl as the root
 	//private Set<ProtocolName> depenencies;// = new HashSet<>();*/
 	
@@ -57,6 +56,8 @@ public class ContextBuilder extends ModelVisitor
 	@Override
 	protected ContextBuilder enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
+		System.out.println("2: " + child.getClass() + ", " + child.del());
+		
 		return child.del().enterContextBuilding(parent, child, this);
 	}
 

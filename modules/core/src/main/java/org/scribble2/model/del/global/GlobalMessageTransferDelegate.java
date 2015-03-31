@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.MessageNode;
+import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.SimpleInteractionNodeDelegate;
@@ -59,11 +60,13 @@ public class GlobalMessageTransferDelegate extends SimpleInteractionNodeDelegate
 		LocalNode projection = null;
 		if (srcrole.equals(self) || destroles.contains(self))
 		{
-			RoleNode src = new RoleNode(gmt.src.toName().toString());  // FIXME: project by visiting -- or maybe not: projection visiting only for GlobalNode
+			//RoleNode src = new RoleNode(gmt.src.toName().toString());  // FIXME: project by visiting -- or maybe not: projection visiting only for GlobalNode
+			RoleNode src = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, gmt.src.toName().toString());
 			//MessageNode msg = (MessageNode) ((ProjectionEnv) gmt.msg.del().getEnv()).getProjection();
 			MessageNode msg = (MessageNode) gmt.msg;  // FIXME: need namespace prefix update?
 			List<RoleNode> dests =
-					destroles.stream().map((d) -> new RoleNode(d.toString())).collect(Collectors.toList());
+					//destroles.stream().map((d) -> new RoleNode(d.toString())).collect(Collectors.toList());
+					destroles.stream().map((d) -> (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, d.toString())).collect(Collectors.toList());
 			if (srcrole.equals(self))
 			{
 				projection = ModelFactoryImpl.FACTORY.LocalSend(src, msg, dests);

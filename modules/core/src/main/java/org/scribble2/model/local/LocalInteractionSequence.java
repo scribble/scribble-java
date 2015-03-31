@@ -23,12 +23,6 @@ public class LocalInteractionSequence extends InteractionSequence<LocalInteracti
 		return lis;
 	}
 
-	/*@Override
-	public LocalInteractionSequence leaveReachabilityCheck(ReachabilityChecker checker) throws ScribbleException
-	{
-		return (LocalInteractionSequence) super.leaveReachabilityCheck(checker);
-	}*/
-
 	/*// Alternative to overriding visit(Children) is to set Env copies on every interaction node and go through the sequence after visiting all children in leave
 	@Override
 	public LocalInteractionSequence visitForReachabilityChecking(ReachabilityChecker checker) throws ScribbleException
@@ -45,9 +39,15 @@ public class LocalInteractionSequence extends InteractionSequence<LocalInteracti
 			visited.add((LocalInteraction) li.visit(checker));
 		}
 		return reconstruct(this.ct, actions);
-	}
+	}*/
+
+	/*@Override
+	public LocalInteractionSequence leaveReachabilityCheck(ReachabilityChecker checker) throws ScribbleException
+	{
+		return (LocalInteractionSequence) super.leaveReachabilityCheck(checker);
+	}*/
 	
-	@Override
+	/*@Override
 	public LocalInteractionSequence visitForGraphBuilding(GraphBuilder builder)
 	{
 		ProtocolState entry = builder.getEntry();

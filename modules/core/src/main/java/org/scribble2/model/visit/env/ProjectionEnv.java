@@ -62,6 +62,7 @@ public class ProjectionEnv extends Env
 	@Override
 	public ProjectionEnv push()
 	{
-		return new ProjectionEnv(getJobContext(), getModuleDelegate(), this.projection);
+		//return new ProjectionEnv(getJobContext(), getModuleDelegate(), this.projection);
+		return copy();
 	}
 }

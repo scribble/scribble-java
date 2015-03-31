@@ -10,6 +10,7 @@ import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
+// - remove job/module contexts from Envs (refer from visitor -- can be updated during visitor pass and reassigned to root module on leave)
 // - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting
 
 // - streamline visitor pattern calls (e.g. accept)
@@ -35,14 +36,14 @@ public class Job
 		System.out.println("\n--- Context building --- ");
 		runNodeVisitorPass(ContextBuilder.class);
 
-		System.out.println("\n--- Well-formed choice visitor test --- ");
+		System.out.println("\n--- Well-formed choice check --- ");
 		runNodeVisitorPass(WellFormedChoiceChecker.class);
 
 		System.out.println("\n--- Projection --- ");
 		runNodeVisitorPass(Projector.class);
 
-		/*System.out.println("\n--- Reachability check --- ");
-		job.runNodeVisitorPass(ReachabilityChecker.class);*/
+		System.out.println("\n--- Reachability check --- ");
+		runNodeVisitorPass(ReachabilityChecker.class);
 	}
 
 	//... duplicate job/jobcontext in cli; pass core DS to core job/jobcontext; finish name dismabiguation and other visitors ...

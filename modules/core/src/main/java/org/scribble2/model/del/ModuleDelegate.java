@@ -8,6 +8,7 @@ import org.scribble2.model.Module;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
+import org.scribble2.model.visit.Projector;
 import org.scribble2.sesstype.name.MessageSignatureName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.PayloadType;
@@ -70,6 +71,20 @@ public class ModuleDelegate extends ModelDelegateBase
 	{
 		visited = visited.del(new ModuleDelegate(builder.getJobContext(), (Module) visited));
 		return visited;
+	}
+
+	@Override
+	public Module leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) //throws ScribbleException
+	{
+		Module mod = (Module) visited;
+		// .. store projections for each globalprotocoldecl in module and context and return new module with updated context
+		JobContext jcontext = proj.getJobContext();
+		//proj.getProjections()
+		//NodeContextBuilder builder = new NodeContextBuilder(proj.job);
+
+		jcontext.addProjections(proj.getProjections());
+		
+		return mod;
 	}
 
 	/*protected ModuleContext(ModuleContext mcontext)

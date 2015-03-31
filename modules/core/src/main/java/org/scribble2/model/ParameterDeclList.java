@@ -32,7 +32,8 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
 	public ParameterDeclList project(Role self)
 	{
 		List<ParameterDecl> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
-		return new ParameterDeclList(paramdecls);
+		//return new ParameterDeclList(paramdecls);
+		return ModelFactoryImpl.FACTORY.ParameterDeclList(paramdecls);
 	}
 
 	/*// Not doing anything except cloning

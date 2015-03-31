@@ -4,6 +4,7 @@ import org.scribble2.model.ModelNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.Projector;
+import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.Env;
 import org.scribble2.util.ScribbleException;
@@ -30,11 +31,10 @@ public interface ModelDelegate
 	//ModelNode visitForProjection(Projector proj) throws ScribbleException;
 	ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException;  // Move to GlobalModelNode? Cannot use visitor pattern then?
 
-	/*ReachabilityChecker enterReachabilityCheck(ReachabilityChecker checker) throws ScribbleException;
-	ModelNode visitForReachabilityChecking(ReachabilityChecker proj) throws ScribbleException;
-	ModelNode leaveReachabilityCheck(ReachabilityChecker checker) throws ScribbleException;
+	ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException;
+	ModelNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException;
 
-	GraphBuilder enterGraphBuilding(GraphBuilder builder);
+	/*GraphBuilder enterGraphBuilding(GraphBuilder builder);
 	ModelNode visitForGraphBuilding(GraphBuilder builder);
 	ModelNode leaveGraphBuilding(GraphBuilder builder);
 

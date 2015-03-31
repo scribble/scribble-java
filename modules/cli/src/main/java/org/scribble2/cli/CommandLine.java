@@ -286,6 +286,8 @@ public class CommandLine {
 					CliJob cjob = new CliJob(impath, mainpath);
 					Job job = new Job(impath, mainpath, cjob.jcontext.getModules(), cjob.jcontext.getModules().get(cjob.jcontext.main));
 					job.checkWellFormedness();
+
+					System.out.println("a: " + cjob.jcontext.main);
 				}
 				catch (IOException | ScribbleException e)
 				{
@@ -293,7 +295,6 @@ public class CommandLine {
 					e.printStackTrace();
 				}
 				
-				System.out.println("a: " + module);
 				//System.out.println("a: " + module.getChildren());
 			}
 			/*else

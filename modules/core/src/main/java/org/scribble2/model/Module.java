@@ -208,7 +208,8 @@ public class Module extends ModelNodeBase
 		//.. factor out full name making, use also for do
 		//.. record protocol dependencies in context
 
-		ModuleDecl moddecl = new ModuleDecl(modname);
+		//ModuleDecl moddecl = new ModuleDecl(modname);
+		ModuleDecl moddecl = ModelFactoryImpl.FACTORY.ModuleDecl(modname);
 		List<ImportDecl> imports = new LinkedList<>();  // Need names from do
 		
 		for (ProtocolName gpn : dependencies.keySet())
@@ -216,19 +217,21 @@ public class Module extends ModelNodeBase
 			Set<Role> tmp = dependencies.get(gpn);
 			for (Role role : tmp)
 			{
-				ProtocolNameNode targetfullname = Projector.makeProjectedProtocolNameNodes(gpn, role);
+				ProtocolNameNode targetfullname = Projector.makeProjectedProtocolNameNode(gpn, role);
 				SimpleProtocolNameNode targetsimname = proj.makeProjectedLocalName(gpn.getSimpleName(), role);
 				ModuleNameNode targetmodname =  Projector.makeProjectedModuleNameNodes(this.getFullModuleName(), targetsimname.toName());
 				if (!targetfullname.toName().getPrefix().equals(modname.toName()))
 				{
-					imports.add(new ImportModule(targetmodname, null));
+					//imports.add(new ImportModule(targetmodname, null));
+					imports.add(ModelFactoryImpl.FACTORY.ImportModule(targetmodname, null));
 				}
 			}
 		}
 		
 		List<DataTypeDecl> data = new LinkedList<>(this.data);  // FIXME: copy  // FIXME: only project dependencies
 		List<LocalProtocolDecl> protos = Arrays.asList(lpd);
-		return new Module(moddecl, imports, data, protos);
+		//return new Module(moddecl, imports, data, protos);
+		return ModelFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}
 
 	/*public List<LocalProtocolDecl> getLocalProtocolDecls()

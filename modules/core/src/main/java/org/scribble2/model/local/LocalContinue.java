@@ -1,7 +1,7 @@
 package org.scribble2.model.local;
 
 import org.scribble2.model.Continue;
-import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RecursionVarNode;
 
 public class LocalContinue extends Continue implements LocalInteraction
@@ -12,7 +12,16 @@ public class LocalContinue extends Continue implements LocalInteraction
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected LocalContinue reconstruct(RecursionVarNode recvar)
+	{
+		ModelDelegate del = del();
+		LocalContinue lc = new LocalContinue(recvar);//, sicontext, env);
+		lc = (LocalContinue) lc.del(del);
+		return lc;
+	}
+
+	@Override
+	protected LocalContinue copy()
 	{
 		return new LocalContinue(this.recvar);
 	}

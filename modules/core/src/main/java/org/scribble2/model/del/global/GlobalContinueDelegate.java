@@ -1,5 +1,6 @@
 package org.scribble2.model.del.global;
 
+import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.SimpleInteractionNodeDelegate;
@@ -17,7 +18,8 @@ public class GlobalContinueDelegate extends SimpleInteractionNodeDelegate
 	public GlobalContinue leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException //throws ScribbleException
 	{
 		GlobalContinue gc = (GlobalContinue) visited;
-		RecursionVarNode recvar = new RecursionVarNode(gc.recvar.toName().toString());
+		//RecursionVarNode recvar = new RecursionVarNode(gc.recvar.toName().toString());
+		RecursionVarNode recvar = (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, gc.recvar.toName().toString());
 		LocalContinue projection = ModelFactoryImpl.FACTORY.LocalContinue(recvar);
 		ProjectionEnv env = proj.popEnv();
 		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));

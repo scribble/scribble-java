@@ -2,12 +2,15 @@ package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.global.GlobalNode;
+import org.scribble2.model.local.LocalNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.Projector;
+import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.Env;
 import org.scribble2.model.visit.env.ProjectionEnv;
+import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.util.ScribbleException;
 
 
@@ -65,7 +68,7 @@ public class ModelDelegateBase implements ModelDelegate
 	{
 		if (child instanceof GlobalNode)
 		{
-			ProjectionEnv env = proj.peekEnv().push();
+			ProjectionEnv env = proj.peekEnv().push();  // By default: copy
 			proj.pushEnv(env);
 		}
 		return proj;
@@ -81,6 +84,32 @@ public class ModelDelegateBase implements ModelDelegate
 			//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
 			//checker.pushEnv(env);
 			setEnv(env);
+		}
+		return visited;
+	}
+
+	@Override
+	public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	{
+		if (child instanceof LocalNode)
+		{
+			ReachabilityEnv env = checker.peekEnv().push();
+			checker.pushEnv(env);
+		}
+		return checker;
+	}
+	//public void enter(Choice<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> cho, WellFormedChoiceChecker checker)
+	
+	@Override
+	public ModelNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	{
+		if (visited instanceof LocalNode)
+		{
+			ReachabilityEnv env = checker.popEnv();
+			setEnv(env);
+			//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
+			//checker.pushEnv(env);
+			//setEnv(env);
 		}
 		return visited;
 	}

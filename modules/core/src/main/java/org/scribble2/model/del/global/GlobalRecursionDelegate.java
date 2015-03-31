@@ -3,6 +3,7 @@ package org.scribble2.model.del.global;
 import java.util.List;
 
 import org.scribble2.model.Continue;
+import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.CompoundInteractionNodeDelegate;
@@ -34,7 +35,8 @@ public class GlobalRecursionDelegate extends CompoundInteractionNodeDelegate
 	public GlobalRecursion leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
 	{
 		GlobalRecursion gr = (GlobalRecursion) visited;
-		RecursionVarNode recvar = new RecursionVarNode(gr.recvar.toName().toString());
+		//RecursionVarNode recvar = new RecursionVarNode(gr.recvar.toName().toString());
+		RecursionVarNode recvar = (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, gr.recvar.toName().toString());
 		LocalProtocolBlock block = (LocalProtocolBlock) ((ProjectionEnv) gr.block.del().getEnv()).getProjection();	
 		LocalRecursion projection = null;
 		if (!block.isEmpty())

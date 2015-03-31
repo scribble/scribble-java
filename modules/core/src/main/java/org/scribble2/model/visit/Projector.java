@@ -8,6 +8,8 @@ import java.util.Stack;
 
 import org.scribble2.model.InteractionNode;
 import org.scribble2.model.InteractionSequence;
+import org.scribble2.model.ModelFactory;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ParameterDeclList;
@@ -76,6 +78,8 @@ public class Projector extends EnvVisitor
 		}
 	}
 
+	// FIXME: here or in GlobalProtocolDecl
+	// FIXME: parent not used
 	private GlobalProtocolDecl visitForProjection(Module parent, GlobalProtocolDecl child) throws ScribbleException
 	{
 		//ModuleDelegate md = getModuleDelegate();
@@ -97,9 +101,11 @@ public class Projector extends EnvVisitor
 			RoleDeclList roledecls = gpd.header.roledecls.project(self);//peekSelf());
 			//ParameterDeclList paramdecls = (ParameterDeclList) ((ProjectionEnv) gpd.paramdecls.getEnv()).getProjection();
 			ParameterDeclList paramdecls = gpd.header.paramdecls.project(self);//peekSelf());
-			LocalProtocolHeader lph = new LocalProtocolHeader(pn, roledecls, paramdecls);
+			//LocalProtocolHeader lph = new LocalProtocolHeader(pn, roledecls, paramdecls);
+			LocalProtocolHeader lph = ModelFactoryImpl.FACTORY.LocalProtocolHeader(pn, roledecls, paramdecls);
 			LocalProtocolDefinition def = (LocalProtocolDefinition) ((ProjectionEnv) gpd.def.del().getEnv()).getProjection();
-			LocalProtocolDecl lpd = new LocalProtocolDecl(lph, def);
+			//LocalProtocolDecl lpd = new LocalProtocolDecl(lph, def);
+			LocalProtocolDecl lpd = ModelFactoryImpl.FACTORY.LocalProtocolDecl(lph, def);
 
 			//pdcontext = new ProtocolDeclContext(getContext(), self, proj.getProtocolDependencies());  // FIXME: move dependency building to after initial context building (or integrate into it?)
 			Map<ProtocolName, Set<Role>> deps = getProtocolDependencies();
@@ -124,6 +130,8 @@ public class Projector extends EnvVisitor
 
 		//return reconstruct(this.name, this.roledecls, this.paramdecls, this.def, pdcontext, getEnv());
 		return (GlobalProtocolDecl) child.del(del);  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
+		
+		// projected modules added to context delegate in (main) module leaveProjection
 	}
 	
 	@Override
@@ -148,11 +156,12 @@ public class Projector extends EnvVisitor
 	// Simple projected protocol name for protocol decls -- Move into SimpleProtocolName?
 	public SimpleProtocolNameNode makeProjectedLocalName(ProtocolName simplename, Role role)
 	{
-		return new SimpleProtocolNameNode(makeProjectedLocalNameAux(simplename.toString(), role.toString()));
+		//return new SimpleProtocolNameNode(makeProjectedLocalNameAux(simplename.toString(), role.toString()));
+		return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
 	}
 
 	// Role is the target subprotocol parameter (not the current projector self -- actually the self just popped)
-	public static ProtocolNameNode makeProjectedProtocolNameNodes(ProtocolName fullname, Role role)
+	public static ProtocolNameNode makeProjectedProtocolNameNode(ProtocolName fullname, Role role)
 	{
 		String simplename = makeProjectedLocalNameAux(fullname.getLastElement(), role.toString());
 		String[] elems = fullname.getElements();
@@ -160,15 +169,16 @@ public class Projector extends EnvVisitor
 		System.arraycopy(elems, 0, tmp, 0, elems.length - 2);
 		tmp[tmp.length - 2] = makeProjectedModuleSimpleName(fullname.getPrefix().getSimpleName().toString(), simplename);
 		tmp[tmp.length - 1] = simplename;
-		return new ProtocolNameNode(tmp);
+		//return new ProtocolNameNode(tmp);
+		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, tmp);
 	}
 
-	public static ProtocolName makeProjectedProtocolName(ProtocolName fullname, Role role)
+	/*public static ProtocolName makeProjectedProtocolName(ProtocolName fullname, Role role)
 	{
 		String simplename = makeProjectedLocalNameAux(fullname.getLastElement(), role.toString());
 		ModuleName mn = makeProjectedModuleName(fullname.getPrefix(), new ProtocolName(simplename));
 		return new ProtocolName(mn, simplename);
-	}
+	}*/
 
 	// Factor out with above
 	// fullname is the un-projected name; localname is the already projected simple name
@@ -178,14 +188,15 @@ public class Projector extends EnvVisitor
 		String[] tmp = new String[elems.length];
 		System.arraycopy(elems, 0, tmp, 0, elems.length);
 		tmp[tmp.length - 1] = makeProjectedModuleSimpleName(fullname.getSimpleName().toString(), localname.toString());
-		return new ModuleNameNode(tmp);
+		//return new ModuleNameNode(tmp);
+		return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MODULE, tmp);
 	}
 
-	public static ModuleName makeProjectedModuleName(ModuleName fullname, ProtocolName localname)
+	/*public static ModuleName makeProjectedModuleName(ModuleName fullname, ProtocolName localname)
 	{
 		String tmp = makeProjectedModuleSimpleName(fullname.getSimpleName().toString(), localname.toString());
 		return new ModuleName(fullname.getPrefix(), tmp);
-	}
+	}*/
 
 	private static String makeProjectedLocalNameAux(String fullglobalname, String role)
 	{

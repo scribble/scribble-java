@@ -24,9 +24,15 @@ public class SelfRoleDecl extends RoleDecl
 	protected RoleDecl reconstruct(SimpleNameNode snn)
 	{
 		ModelDelegate del = del();
-		RoleDecl rd = new RoleDecl((RoleNode) snn);
-		rd = (RoleDecl) rd.del(del);
+		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) snn);
+		rd = (SelfRoleDecl) rd.del(del);
 		return rd;
+	}
+
+	@Override
+	protected SelfRoleDecl copy()
+	{
+		return new SelfRoleDecl((RoleNode) this.name);
 	}
 	
 	@Override

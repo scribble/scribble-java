@@ -55,6 +55,8 @@ public interface ModelFactory
 	PayloadElement PayloadElement(PayloadElementNameNode name);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
+	ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias);
+
 	GlobalProtocolDecl GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def);
 	GlobalProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls);
 
