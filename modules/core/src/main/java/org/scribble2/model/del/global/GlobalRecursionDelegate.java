@@ -6,9 +6,8 @@ import org.scribble2.model.Continue;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.CompoundInteractionNodeDelegate;
 import org.scribble2.model.global.GlobalRecursion;
-import org.scribble2.model.local.LocalInteraction;
+import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.local.LocalRecursion;
 import org.scribble2.model.name.simple.RecursionVarNode;
@@ -18,7 +17,7 @@ import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.util.ScribbleException;
 
-public class GlobalRecursionDelegate extends CompoundInteractionNodeDelegate
+public class GlobalRecursionDelegate extends CompoundGlobalInteractionNodeDelegate
 {
 	@Override
 	//public void leave(Recursion<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> rec, WellFormedChoiceChecker checker)
@@ -41,7 +40,7 @@ public class GlobalRecursionDelegate extends CompoundInteractionNodeDelegate
 		LocalRecursion projection = null;
 		if (!block.isEmpty())
 		{
-			List<LocalInteraction> lis = block.seq.actions;
+			List<LocalInteractionNode> lis = block.seq.actions;
 			if (!(lis.size() == 1 && lis.get(0) instanceof Continue))
 			{
 				projection = ModelFactoryImpl.FACTORY.LocalRecursion(recvar, block);

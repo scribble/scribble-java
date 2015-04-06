@@ -9,7 +9,7 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 
-public class LocalReceive extends MessageTransfer implements LocalInteraction
+public class LocalReceive extends MessageTransfer implements SimpleLocalInteractionNode
 {
 	// HACK: will make dummy dest Nodes, would be better to just be Roles
 	public LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)

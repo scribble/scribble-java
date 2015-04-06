@@ -79,6 +79,205 @@ public class WellFormedChoiceEnv extends Env
 				this.initial, this.initialInterrupts, this.subsigs, this.recording);
 	}
 	
+	public WellFormedChoiceEnv clear()
+	{
+		WellFormedChoiceEnv copy = copy();
+		copy.initial.clear();
+		copy.initialInterrupts.clear();
+		return copy;
+	}
+	
+	public WellFormedChoiceEnv merge(WellFormedChoiceEnv child)
+	{
+		return merge(Arrays.asList(child));
+	}
+
+	//@Override
+	public WellFormedChoiceEnv merge(List<WellFormedChoiceEnv> children)
+	{
+		WellFormedChoiceEnv copy = copy();
+		for (WellFormedChoiceEnv child : children)
+		{
+			merge(this, copy.initial, child.initial);
+			merge(this, copy.initialInterrupts, child.initialInterrupts);
+			
+			for (SubprotocolSignature subsig : child.subsigs.keySet())
+			{
+				if (!copy.subsigs.containsKey(subsig))  // If already recorded from an earlier child, no need to do anything (will be the same result)
+				{
+					copy.subsigs.put(subsig, new MessageMap<>());
+				}
+				copy.subsigs.get(subsig).merge(child.subsigs.get(subsig));
+			}
+			// No need to merge recording
+		}
+		return copy;
+	}
+
+	private static void merge(WellFormedChoiceEnv parent, MessageMap<ScopedMessage> foo, MessageMap<ScopedMessage> child)
+	{
+		for (Role dest : child.getLeftKeys())
+		{
+			for (Role src : child.getRightKeys(dest))
+			{
+				/*for (ScopedMessage msg : child.getMessages(dest, src))
+				{
+					//parent.addMessage(src, dest, msg);  // Checks if dest already enabled or not -- takes care of SUBJECT_OPERATOR case
+					//addMessages(parent.initial, src, dest, Arrays.asList(msg));
+				}*/
+				if (!parent.isEnabled(dest))
+				{
+					foo.putMessages(dest, src, child.getMessages(dest, src));
+				}
+			}
+		}
+	}
+	
+	public WellFormedChoiceEnv enableRoleForRootProtocolDecl(Role role)
+	{
+		return addMessage(WellFormedChoiceEnv.DUMMY_ROLE, role, WellFormedChoiceEnv.ROOT_MESSAGESIGNATURE);
+	}
+
+	public WellFormedChoiceEnv enableChoiceSubject(Role role)
+	{
+		return addMessage(WellFormedChoiceEnv.DUMMY_ROLE, role, WellFormedChoiceEnv.SUBJECT_MESSAGESIGNATURE);
+	}
+
+	// Rename: more like enable-if-not-already
+	private WellFormedChoiceEnv addMessage(Role src, Role dest, ScopedMessage msg)
+	{
+		WellFormedChoiceEnv copy = copy();
+		addMessages(copy.initial, src, dest, Arrays.asList(msg));
+		return copy;
+	}
+
+	@Override
+	public WellFormedChoiceEnv push()
+	{
+		/*WellFormedChoiceEnv env = new WellFormedChoiceEnv(this);
+		//env.initial.clear();
+		//env.initialInterrupts.clear();
+		return env;*/
+		return new WellFormedChoiceEnv(getJobContext(), getModuleDelegate(), this.initial, this.initialInterrupts, 
+				this.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap<>(this.subsigs.get(k)))),
+				this.recording);
+	}
+
+	// FIXME: List/Set argument
+	// Means: record message as initial enabling message if dest not already enabled
+	private static void addMessages(MessageMap<ScopedMessage> map, Role src, Role dest, List<ScopedMessage> msgs)
+	{
+		if (!map.containsLeftKey(dest))  // FIXME: factor out isEnabled
+		{
+			map.putMessages(dest, src, new HashSet<>(msgs));
+		}
+	}
+
+	public WellFormedChoiceEnv addInterrupt(Role src, Role dest, ScopedMessage msg)
+	{
+		WellFormedChoiceEnv copy = copy();
+		if (!copy.initial.containsLeftKey(dest))
+		{
+			copy.initialInterrupts.putMessage(dest, src, msg);
+		}
+		return copy;
+	}
+
+	// The "main" public routine: "addMessage taking into account subprotocols"
+	public WellFormedChoiceEnv addMessageForSubprotocol(SubprotocolVisitor spv, Role src, Role dest, ScopedMessage msg)
+	{
+		WellFormedChoiceEnv copy = copy();
+		if (!spv.isStackEmpty())
+		{
+			//WellFormedChoiceEnv root = this;//getRoot();
+			SubprotocolSignature subsig = spv.peekStack().sig;
+			if (copy.recording.contains(subsig))
+			{
+				addMessages(copy.subsigs.get(subsig), src, dest, Arrays.asList(msg));
+			}
+		}
+		//addMessage(src, dest, msg);
+		addMessages(copy.initial, src, dest, Arrays.asList(msg));
+		return copy;
+	}
+	
+	/* // No defensive copy
+	private void addSubprotocolEnabled(Scope scope, SubprotocolSignature subsig)
+	{
+		MessageMap<ScopedMessage> enabled = this.subsigs.get(subsig);
+		for (Role dest : enabled.getLeftKeys())
+		{
+			for (Role src : enabled.getRightKeys(dest))
+			{
+				// Take do-scopes into account
+				//enabled.getMessages(dest, src).stream().map((sm) -> new ScopedMessageSignature(scope, sm.op, sm.payload)).collect(Collectors.toList());
+				List<ScopedMessage> sms = new LinkedList<>();
+				for (ScopedMessage sm : enabled.getMessages(dest, src))
+				{
+					if (sm.isParameter())
+					{
+						ScopedMessageParameter p = (ScopedMessageParameter) sm;
+						sms.add(new ScopedMessageParameter(scope, p.getKind(), p.toString()));
+					}
+					else
+					{
+						ScopedMessageSignature smsg = (ScopedMessageSignature) sm;
+						sms.add(new ScopedMessageSignature(scope, smsg.op, smsg.payload));
+					}
+				}
+				addMessages(this.initial, src, dest, sms);
+			}
+		}
+	}*/
+	
+	public boolean isEnabled(Role role)
+	{
+		return this.initial.containsLeftKey(role);
+	}
+
+	public MessageMap<ScopedMessage> getEnabled()
+	{
+		MessageMap<ScopedMessage> tmp = new MessageMap<>(this.initial);
+		tmp.merge(this.initialInterrupts);
+		return tmp;
+	}
+	
+	// FIXME: move to basic name checking pass (not WF choice)
+	public boolean isRoleBound(Role role)
+	{
+		return this.initial.containsLeftKey(role);  // FIXME: this.initial only contains enabled, not declared
+	}
+
+	@Override
+	public String toString()
+	{
+		return "initial=" + this.initial.toString() + ", initialInterrupts=" + this.initialInterrupts.toString();
+	}
+	
+	/*@Override
+	public WellFormedChoiceEnv getProtocolDeclEnv()
+	{
+		return (WellFormedChoiceEnv) super.getProtocolDeclEnv();
+	}
+
+	@Override
+	public WellFormedChoiceEnv push()
+	{
+		return (WellFormedChoiceEnv) super.push();
+	}
+	
+	@Override
+	public WellFormedChoiceEnv pop()
+	{
+		return (WellFormedChoiceEnv) super.pop();
+	}
+	
+	@Override
+	public WellFormedChoiceEnv getParent()
+	{
+		return (WellFormedChoiceEnv) super.getParent();
+	}*/
+	
 	/* // Maybe declare these in Env interface -- contract is to update the checker's env using defensive copies accordingly
 	public void enter(EnvDelegationNode en, WellFormedChoiceChecker checker)
 	{
@@ -211,203 +410,4 @@ public class WellFormedChoiceEnv extends Env
 		//return copy;
 		checker.setEnv(copy);
 	}*/
-	
-	public WellFormedChoiceEnv clear()
-	{
-		WellFormedChoiceEnv copy = copy();
-		copy.initial.clear();
-		copy.initialInterrupts.clear();
-		return copy;
-	}
-	
-	public WellFormedChoiceEnv merge(WellFormedChoiceEnv child)
-	{
-		return merge(Arrays.asList(child));
-	}
-
-	//@Override
-	public WellFormedChoiceEnv merge(List<WellFormedChoiceEnv> children)
-	{
-		WellFormedChoiceEnv copy = copy();
-		for (WellFormedChoiceEnv child : children)
-		{
-			merge(this, copy.initial, child.initial);
-			merge(this, copy.initialInterrupts, child.initialInterrupts);
-			
-			for (SubprotocolSignature subsig : child.subsigs.keySet())
-			{
-				if (!copy.subsigs.containsKey(subsig))  // If already recorded from an earlier child, no need to do anything (will be the same result)
-				{
-					copy.subsigs.put(subsig, new MessageMap<>());
-				}
-				copy.subsigs.get(subsig).merge(child.subsigs.get(subsig));
-			}
-			// No need to merge recording
-		}
-		return copy;
-	}
-
-	private static void merge(WellFormedChoiceEnv parent, MessageMap<ScopedMessage> foo, MessageMap<ScopedMessage> child)
-	{
-		for (Role dest : child.getLeftKeys())
-		{
-			for (Role src : child.getRightKeys(dest))
-			{
-				/*for (ScopedMessage msg : child.getMessages(dest, src))
-				{
-					//parent.addMessage(src, dest, msg);  // Checks if dest already enabled or not -- takes care of SUBJECT_OPERATOR case
-					//addMessages(parent.initial, src, dest, Arrays.asList(msg));
-				}*/
-				if (!parent.isEnabled(dest))
-				{
-					foo.putMessages(dest, src, child.getMessages(dest, src));
-				}
-			}
-		}
-	}
-	
-	public WellFormedChoiceEnv enableRoleForRootProtocolDecl(Role role)
-	{
-		return addMessage(WellFormedChoiceEnv.DUMMY_ROLE, role, WellFormedChoiceEnv.ROOT_MESSAGESIGNATURE);
-	}
-
-	public WellFormedChoiceEnv enableChoiceSubject(Role role)
-	{
-		return addMessage(WellFormedChoiceEnv.DUMMY_ROLE, role, WellFormedChoiceEnv.SUBJECT_MESSAGESIGNATURE);
-	}
-
-	// Rename: more like enable-if-not-already
-	private WellFormedChoiceEnv addMessage(Role src, Role dest, ScopedMessage msg)
-	{
-		WellFormedChoiceEnv copy = copy();
-		addMessages(copy.initial, src, dest, Arrays.asList(msg));
-		return copy;
-	}
-
-	// FIXME: List/Set argument
-	// Means: record message as initial enabling message if dest not already enabled
-	private static void addMessages(MessageMap<ScopedMessage> map, Role src, Role dest, List<ScopedMessage> msgs)
-	{
-		if (!map.containsLeftKey(dest))  // FIXME: factor out isEnabled
-		{
-			map.putMessages(dest, src, new HashSet<>(msgs));
-		}
-	}
-
-	public WellFormedChoiceEnv addInterrupt(Role src, Role dest, ScopedMessage msg)
-	{
-		WellFormedChoiceEnv copy = copy();
-		if (!copy.initial.containsLeftKey(dest))
-		{
-			copy.initialInterrupts.putMessage(dest, src, msg);
-		}
-		return copy;
-	}
-
-	// The "main" public routine: "addMessage taking into account subprotocols"
-	public WellFormedChoiceEnv addMessageForSubprotocol(SubprotocolVisitor spv, Role src, Role dest, ScopedMessage msg)
-	{
-		WellFormedChoiceEnv copy = copy();
-		if (!spv.isStackEmpty())
-		{
-			//WellFormedChoiceEnv root = this;//getRoot();
-			SubprotocolSignature subsig = spv.peekStack().sig;
-			if (copy.recording.contains(subsig))
-			{
-				addMessages(copy.subsigs.get(subsig), src, dest, Arrays.asList(msg));
-			}
-		}
-		//addMessage(src, dest, msg);
-		addMessages(copy.initial, src, dest, Arrays.asList(msg));
-		return copy;
-	}
-	
-	/* // No defensive copy
-	private void addSubprotocolEnabled(Scope scope, SubprotocolSignature subsig)
-	{
-		MessageMap<ScopedMessage> enabled = this.subsigs.get(subsig);
-		for (Role dest : enabled.getLeftKeys())
-		{
-			for (Role src : enabled.getRightKeys(dest))
-			{
-				// Take do-scopes into account
-				//enabled.getMessages(dest, src).stream().map((sm) -> new ScopedMessageSignature(scope, sm.op, sm.payload)).collect(Collectors.toList());
-				List<ScopedMessage> sms = new LinkedList<>();
-				for (ScopedMessage sm : enabled.getMessages(dest, src))
-				{
-					if (sm.isParameter())
-					{
-						ScopedMessageParameter p = (ScopedMessageParameter) sm;
-						sms.add(new ScopedMessageParameter(scope, p.getKind(), p.toString()));
-					}
-					else
-					{
-						ScopedMessageSignature smsg = (ScopedMessageSignature) sm;
-						sms.add(new ScopedMessageSignature(scope, smsg.op, smsg.payload));
-					}
-				}
-				addMessages(this.initial, src, dest, sms);
-			}
-		}
-	}*/
-	
-	public boolean isEnabled(Role role)
-	{
-		return this.initial.containsLeftKey(role);
-	}
-
-	public MessageMap<ScopedMessage> getEnabled()
-	{
-		MessageMap<ScopedMessage> tmp = new MessageMap<>(this.initial);
-		tmp.merge(this.initialInterrupts);
-		return tmp;
-	}
-	
-	// FIXME: move to basic name checking pass (not WF choice)
-	public boolean isRoleBound(Role role)
-	{
-		return this.initial.containsLeftKey(role);  // FIXME: this.initial only contains enabled, not declared
-	}
-	
-	/*@Override
-	public WellFormedChoiceEnv getProtocolDeclEnv()
-	{
-		return (WellFormedChoiceEnv) super.getProtocolDeclEnv();
-	}
-
-	@Override
-	public WellFormedChoiceEnv push()
-	{
-		return (WellFormedChoiceEnv) super.push();
-	}
-	
-	@Override
-	public WellFormedChoiceEnv pop()
-	{
-		return (WellFormedChoiceEnv) super.pop();
-	}
-	
-	@Override
-	public WellFormedChoiceEnv getParent()
-	{
-		return (WellFormedChoiceEnv) super.getParent();
-	}*/
-
-	@Override
-	public WellFormedChoiceEnv push()
-	{
-		/*WellFormedChoiceEnv env = new WellFormedChoiceEnv(this);
-		//env.initial.clear();
-		//env.initialInterrupts.clear();
-		return env;*/
-		return new WellFormedChoiceEnv(getJobContext(), getModuleDelegate(), this.initial, this.initialInterrupts, 
-				this.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap<>(this.subsigs.get(k)))),
-				this.recording);
-	}
-
-	@Override
-	public String toString()
-	{
-		return "initial=" + this.initial.toString() + ", initialInterrupts=" + this.initialInterrupts.toString();
-	}
 }

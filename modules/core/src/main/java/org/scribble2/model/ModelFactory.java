@@ -6,7 +6,7 @@ import org.scribble2.model.ParameterDecl.Kind;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.global.GlobalContinue;
 import org.scribble2.model.global.GlobalDo;
-import org.scribble2.model.global.GlobalInteraction;
+import org.scribble2.model.global.GlobalInteractionNode;
 import org.scribble2.model.global.GlobalInteractionSequence;
 import org.scribble2.model.global.GlobalMessageTransfer;
 import org.scribble2.model.global.GlobalProtocolBlock;
@@ -17,7 +17,7 @@ import org.scribble2.model.global.GlobalRecursion;
 import org.scribble2.model.local.LocalChoice;
 import org.scribble2.model.local.LocalContinue;
 import org.scribble2.model.local.LocalDo;
-import org.scribble2.model.local.LocalInteraction;
+import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.local.LocalProtocolDecl;
@@ -67,7 +67,7 @@ public interface ModelFactory
 	
 	GlobalProtocolDefinition GlobalProtocolDefinition(GlobalProtocolBlock block);
 	GlobalProtocolBlock GlobalProtocolBlock(GlobalInteractionSequence gis);
-	GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteraction> gis);
+	GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteractionNode> gis);
 
 	GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks);
@@ -89,7 +89,7 @@ public interface ModelFactory
 	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
 	LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block);
 	LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq);
-	LocalInteractionSequence LocalInteractionSequence(List<LocalInteraction> actions);
+	LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions);
 
 	LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);

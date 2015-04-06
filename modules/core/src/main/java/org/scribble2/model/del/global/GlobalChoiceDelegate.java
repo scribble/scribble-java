@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.CompoundInteractionNodeDelegate;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.local.LocalChoice;
 import org.scribble2.model.local.LocalProtocolBlock;
@@ -24,7 +23,7 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.MessageMap;
 import org.scribble2.util.ScribbleException;
 
-public class GlobalChoiceDelegate extends CompoundInteractionNodeDelegate
+public class GlobalChoiceDelegate extends CompoundGlobalInteractionNodeDelegate
 {
 	@Override
 	public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException

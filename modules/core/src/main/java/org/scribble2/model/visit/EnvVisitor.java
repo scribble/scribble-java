@@ -41,7 +41,6 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 			@SuppressWarnings("unchecked")
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd = 
 					(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) child;
-
 			//ev.setEnv(makeRootProtocolDeclEnv(pd));
 			ev.pushEnv(makeRootProtocolDeclEnv(pd));
 			/*//ev.scope.add(Scope.ROOT_SCOPE);
@@ -138,8 +137,6 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 	{
 		//this.env = env;
 		this.envs.push(env);
-
-		//System.out.println("3: " + this.envs);
 	}
 	
 	public Env popEnv()

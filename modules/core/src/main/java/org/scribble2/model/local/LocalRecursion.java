@@ -4,7 +4,7 @@ import org.scribble2.model.Recursion;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RecursionVarNode;
 
-public class LocalRecursion extends Recursion<LocalProtocolBlock> implements LocalInteraction
+public class LocalRecursion extends Recursion<LocalProtocolBlock> implements CompoundLocalInteractionNode
 {
 	public LocalRecursion(RecursionVarNode recvar, LocalProtocolBlock block)
 	{
@@ -15,9 +15,9 @@ public class LocalRecursion extends Recursion<LocalProtocolBlock> implements Loc
 	protected LocalRecursion reconstruct(RecursionVarNode recvar, LocalProtocolBlock block)
 	{
 		ModelDelegate del = del();
-		LocalRecursion gr = new LocalRecursion(recvar, block);
-		gr = (LocalRecursion) gr.del(del);
-		return gr;
+		LocalRecursion lr = new LocalRecursion(recvar, block);
+		lr = (LocalRecursion) lr.del(del);
+		return lr;
 	}
 
 	@Override

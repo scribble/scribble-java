@@ -17,11 +17,18 @@ import org.scribble2.model.del.global.GlobalProtocolBlockDelegate;
 import org.scribble2.model.del.global.GlobalProtocolDefinitionDelegate;
 import org.scribble2.model.del.global.GlobalRecursionDelegate;
 import org.scribble2.model.del.local.LocalChoiceDelegate;
+import org.scribble2.model.del.local.LocalContinueDelegate;
+import org.scribble2.model.del.local.LocalInteractionSequenceDelegate;
+import org.scribble2.model.del.local.LocalProtocolBlockDelegate;
+import org.scribble2.model.del.local.LocalProtocolDefinitionDelegate;
+import org.scribble2.model.del.local.LocalReceiveDelegate;
+import org.scribble2.model.del.local.LocalRecursionDelegate;
+import org.scribble2.model.del.local.LocalSendDelegate;
 import org.scribble2.model.del.name.AmbiguousNameDelegate;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.global.GlobalContinue;
 import org.scribble2.model.global.GlobalDo;
-import org.scribble2.model.global.GlobalInteraction;
+import org.scribble2.model.global.GlobalInteractionNode;
 import org.scribble2.model.global.GlobalInteractionSequence;
 import org.scribble2.model.global.GlobalMessageTransfer;
 import org.scribble2.model.global.GlobalProtocolBlock;
@@ -32,7 +39,7 @@ import org.scribble2.model.global.GlobalRecursion;
 import org.scribble2.model.local.LocalChoice;
 import org.scribble2.model.local.LocalContinue;
 import org.scribble2.model.local.LocalDo;
-import org.scribble2.model.local.LocalInteraction;
+import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.local.LocalProtocolDecl;
@@ -183,7 +190,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteraction> actions)
+	public GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteractionNode> actions)
 	{
 		GlobalInteractionSequence gis = new GlobalInteractionSequence(actions);
 		//gis = del(gis, createDefaultDelegate());
@@ -338,8 +345,8 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block)
 	{
 		LocalProtocolDefinition lpd = new LocalProtocolDefinition(block);
-		lpd = del(lpd, createDefaultDelegate());
-		//gpd = del(gpd, new LocalProtocolDefinitionDelegate());
+		//lpd = del(lpd, createDefaultDelegate());
+		lpd = del(lpd, new LocalProtocolDefinitionDelegate());
 		return lpd;
 	}
 
@@ -347,18 +354,18 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq)
 	{
 		LocalProtocolBlock lpb = new LocalProtocolBlock(seq);
-		lpb = del(lpb, createDefaultDelegate());
-		//gpb = del(gpb, new LocalProtocolBlockDelegate());
+		//lpb = del(lpb, createDefaultDelegate());
+		lpb = del(lpb, new LocalProtocolBlockDelegate());
 		//gpb = del(gpb, new ProtocolBlockDelegate());
 		return lpb;
 	}
 
 	@Override
-	public LocalInteractionSequence LocalInteractionSequence(List<LocalInteraction> actions)
+	public LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions)
 	{
 		LocalInteractionSequence lis = new LocalInteractionSequence(actions);
-		lis = del(lis, createDefaultDelegate());
-		//gis = del(gis, new LocalInteractionSequenceDelegate());
+		//lis = del(lis, createDefaultDelegate());
+		lis = del(lis, new LocalInteractionSequenceDelegate());
 		return lis;
 	}
 
@@ -366,7 +373,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		LocalSend ls = new LocalSend(src, msg, dests);
-		ls = del(ls, createDefaultDelegate());
+		ls = del(ls, new LocalSendDelegate());
 		return ls;
 	}
 
@@ -374,7 +381,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		LocalReceive ls = new LocalReceive(src, msg, dests);
-		ls = del(ls, createDefaultDelegate());
+		ls = del(ls, new LocalReceiveDelegate());
 		return ls;
 	}
 
@@ -391,7 +398,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalRecursion LocalRecursion(RecursionVarNode recvar, LocalProtocolBlock block)
 	{
 		LocalRecursion lr = new LocalRecursion(recvar, block);
-		lr = del(lr, createDefaultDelegate());
+		lr = del(lr, new LocalRecursionDelegate());
 		return lr;
 	}
 
@@ -399,7 +406,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalContinue LocalContinue(RecursionVarNode recvar)
 	{
 		LocalContinue lc = new LocalContinue(recvar);
-		lc = del(lc, createDefaultDelegate());
+		lc = del(lc, new LocalContinueDelegate());
 		return lc;
 	}
 

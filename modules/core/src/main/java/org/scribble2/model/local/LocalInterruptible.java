@@ -11,7 +11,7 @@ import scribble2.ast.name.ScopeNode;
 import scribble2.visit.GraphBuilder;
 import scribble2.visit.env.Env;
 
-public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalInterrupt> implements LocalInteraction
+public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalInterrupt> implements LocalInteractionNode
 {
 	public LocalInterruptible(CommonTree ct, ScopeNode scope, LocalProtocolBlock block, LocalThrows thro, List<LocalCatches> cats)
 	{

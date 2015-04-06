@@ -6,7 +6,7 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.Parallel;
 import org.scribble2.model.del.ModelDelegate;
 
-public class LocalParallel extends Parallel<LocalProtocolBlock> implements LocalInteraction
+public class LocalParallel extends Parallel<LocalProtocolBlock> implements CompoundLocalInteractionNode
 {
 	public LocalParallel(List<LocalProtocolBlock> blocks)
 	{

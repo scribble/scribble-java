@@ -8,9 +8,8 @@ import org.scribble2.model.MessageNode;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.SimpleInteractionNodeDelegate;
 import org.scribble2.model.global.GlobalMessageTransfer;
-import org.scribble2.model.local.LocalInteraction;
+import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalNode;
 import org.scribble2.model.local.LocalReceive;
 import org.scribble2.model.name.simple.RoleNode;
@@ -23,8 +22,13 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 // FIXME: make base MessageTransferDelegate?
-public class GlobalMessageTransferDelegate extends SimpleInteractionNodeDelegate
+public class GlobalMessageTransferDelegate extends SimpleGlobalInteractionNodeDelegate
 {
+	public GlobalMessageTransferDelegate()
+	{
+		
+	}
+
 	@Override
 	public GlobalMessageTransfer leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
 	{
@@ -38,7 +42,7 @@ public class GlobalMessageTransferDelegate extends SimpleInteractionNodeDelegate
 			//checker.setEnv(checker.getEnv().addMessageForSubprotocol(checker, src, dest, msg.toScopedMessage(checker.getScope())));
 			env = env.addMessageForSubprotocol(checker, src, dest, msg.toScopedMessage(checker.getScope()));
 			
-			System.out.println("1: " + src + ", " + dest + ", " + msg);
+			//System.out.println("1: " + src + ", " + dest + ", " + msg);
 		}
 		checker.pushEnv(env);
 		
@@ -80,7 +84,7 @@ public class GlobalMessageTransferDelegate extends SimpleInteractionNodeDelegate
 				else
 				{
 					LocalReceive lr = ModelFactoryImpl.FACTORY.LocalReceive(src, msg, dests);
-					List<LocalInteraction> lis = Arrays.asList(new LocalInteraction[]{(LocalInteraction) projection, lr});
+					List<LocalInteractionNode> lis = Arrays.asList(new LocalInteractionNode[]{(LocalInteractionNode) projection, lr});
 					projection = ModelFactoryImpl.FACTORY.LocalInteractionSequence(lis);
 				}
 			}

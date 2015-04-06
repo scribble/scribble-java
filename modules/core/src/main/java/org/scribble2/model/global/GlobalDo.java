@@ -8,7 +8,7 @@ import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.simple.ScopeNode;
 
-public class GlobalDo extends Do implements GlobalInteraction
+public class GlobalDo extends Do implements GlobalInteractionNode
 {
 	/*public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{

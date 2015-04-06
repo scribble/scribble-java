@@ -78,7 +78,7 @@ public class Projector extends EnvVisitor
 		}
 	}
 
-	// FIXME: here or in GlobalProtocolDecl
+	// FIXME: move to GlobalProtocolDecl
 	// FIXME: parent not used
 	private GlobalProtocolDecl visitForProjection(Module parent, GlobalProtocolDecl child) throws ScribbleException
 	{
@@ -94,7 +94,7 @@ public class Projector extends EnvVisitor
 			//proj.addProtocolDependency(gpn, self, gpn, self);
 			clearProtocolDependencies();
 			addProtocolDependency(gpn, self);
-			GlobalProtocolDecl gpd = (GlobalProtocolDecl) child.visitChildrenInSubprotocols(this);  // cf. SubprotocolVisitor.visit
+			GlobalProtocolDecl gpd = (GlobalProtocolDecl) child.visitChildrenInSubprotocols(this);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
 			
 			SimpleProtocolNameNode pn = makeProjectedLocalName(child.header.name.toName(), self);
 			//RoleDeclList roledecls = (RoleDeclList) ((ProjectionEnv) gpd.roledecls.getEnv()).getProjection();
@@ -115,7 +115,7 @@ public class Projector extends EnvVisitor
 			// store projections in projector? in context? do earlier with context building? (but subprotocol pattern not available there)* /
 			addProjection(gpn, self, projected);
 			
-			System.out.println(self + ":\n" + projected);
+			//System.out.println("P: " + self + ":\n" + projected);
 			
 			//.. add all dependencies to projection set (needs to be done after all modules have been visited) .. FIXME: dependencies need to be the sigs for the argument positions, not just the name -- or maybe ok to not, just be conservative
 			//.. maybe just record all projections in one big store for reachability checking, projection set for a specific global protocol can be worked out form dependencies?

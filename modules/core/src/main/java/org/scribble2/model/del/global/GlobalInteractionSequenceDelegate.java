@@ -6,10 +6,10 @@ import java.util.List;
 import org.scribble2.model.Continue;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.ModelDelegateBase;
-import org.scribble2.model.global.GlobalInteraction;
+import org.scribble2.model.del.InteractionSequenceDelegate;
+import org.scribble2.model.global.GlobalInteractionNode;
 import org.scribble2.model.global.GlobalInteractionSequence;
-import org.scribble2.model.local.LocalInteraction;
+import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalNode;
 import org.scribble2.model.visit.Projector;
@@ -18,9 +18,14 @@ import org.scribble2.util.ScribbleException;
 
 
 // FIXME: should be a CompoundInteractionDelegate? -- no: compound interaction delegates for typing contexts (done for block only, not seqs)
-// FIXME: make InteractionSequenceDelegate (and LocalInteractionSequenceDelegate?)
-public class GlobalInteractionSequenceDelegate extends ModelDelegateBase
+public class GlobalInteractionSequenceDelegate extends InteractionSequenceDelegate
 {
+	@Override
+	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	{
+		return (Projector) pushEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
+	}
+	
 	@Override
 	public GlobalInteractionSequence leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
 	{
@@ -30,9 +35,9 @@ public class GlobalInteractionSequenceDelegate extends ModelDelegateBase
 		return (GlobalInteractionSequence) super.leaveProjection(parent, child, proj, visited);*/
 		
 		GlobalInteractionSequence gis = (GlobalInteractionSequence) visited;
-		List<LocalInteraction> lis = new LinkedList<>();
+		List<LocalInteractionNode> lis = new LinkedList<>();
 			//this.actions.stream().map((action) -> (LocalInteraction) ((ProjectionEnv) ((LocalNode) action).getEnv()).getProjection()).collect(Collectors.toList());	
-		for (GlobalInteraction gi : gis.actions)
+		for (GlobalInteractionNode gi : gis.actions)
 		{
 			LocalNode ln = (LocalNode) ((ProjectionEnv) gi.del().getEnv()).getProjection();
 			if (ln instanceof LocalInteractionSequence)
@@ -41,7 +46,7 @@ public class GlobalInteractionSequenceDelegate extends ModelDelegateBase
 			}
 			else if (ln != null)
 			{
-				lis.add((LocalInteraction) ln);
+				lis.add((LocalInteractionNode) ln);
 			}
 		}
 		if (lis.size() == 1)
@@ -55,6 +60,6 @@ public class GlobalInteractionSequenceDelegate extends ModelDelegateBase
 		ProjectionEnv env = proj.popEnv();
 		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		//return gis;
-		return (GlobalInteractionSequence) super.leaveProjection(parent, child, proj, gis);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		return (GlobalInteractionSequence) super.popAndSetEnv(parent, child, proj, gis);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

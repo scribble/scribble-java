@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.scribble2.model.Choice;
 import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 
-public class LocalChoice extends Choice<LocalProtocolBlock> implements LocalInteraction
+public class LocalChoice extends Choice<LocalProtocolBlock> implements CompoundLocalInteractionNode
 {
 	public LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
 	{
@@ -16,7 +17,10 @@ public class LocalChoice extends Choice<LocalProtocolBlock> implements LocalInte
 	@Override
 	protected LocalChoice reconstruct(RoleNode subj, List<LocalProtocolBlock> blocks)
 	{
-		return new LocalChoice(subj, blocks);
+		ModelDelegate del = del();
+		LocalChoice lc = new LocalChoice(subj, blocks);
+		lc = (LocalChoice) lc.del(del);
+		return lc;
 	}
 
 	@Override

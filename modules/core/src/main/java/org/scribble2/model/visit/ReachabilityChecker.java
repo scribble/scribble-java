@@ -10,7 +10,7 @@ import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
-import org.scribble2.model.local.LocalInteraction;
+import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.visit.env.ReachabilityEnv;
@@ -39,6 +39,7 @@ public class ReachabilityChecker extends EnvVisitor
 	@Override
 	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
 	{
+		// FIXME: move to LocalInteractionSequence
 		if (child instanceof LocalInteractionSequence)
 		{
 			/*Projector proj = (Projector) enter(parent, child);
@@ -54,18 +55,20 @@ public class ReachabilityChecker extends EnvVisitor
 		}
 	}
 
+	// Replaces visitChildrenInSubprotocols for the LocalInteractionSequence 
 	private LocalInteractionSequence visitForReachabilityChecking(LocalProtocolBlock parent, LocalInteractionSequence child) throws ScribbleException
 	{
 		//List<T> actions = visitChildListWithClassCheck(this, this.actions, nv);  // OK to require all nodes to keep the same class? Maybe better to leave abstract and implement in the global/local subclasses
-		List<LocalInteraction> visited = new LinkedList<>();
-		for (LocalInteraction li : child.actions)
+		List<LocalInteractionNode> visited = new LinkedList<>();
+		for (LocalInteractionNode li : child.actions)
 		{
 			ReachabilityEnv re = peekEnv();
 			if (!re.isExitable())
 			{
 				throw new ScribbleException("Bad sequence to: " + li);
 			}
-			visited.add((LocalInteraction) li.visitChildrenInSubprotocols(this));
+			//visited.add((LocalInteractionNode) li.visitChildrenInSubprotocols(this));
+			visited.add((LocalInteractionNode) li.visit(this));
 		}
 		//return reconstruct(this.ct, actions);
 		return child;

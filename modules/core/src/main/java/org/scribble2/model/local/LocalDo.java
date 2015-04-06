@@ -8,7 +8,7 @@ import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.simple.ScopeNode;
 
-public class LocalDo extends Do implements LocalInteraction, ScopedNode
+public class LocalDo extends Do implements LocalInteractionNode, ScopedNode
 {
 	public LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{

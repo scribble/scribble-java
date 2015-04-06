@@ -5,7 +5,7 @@ import java.util.List;
 import org.scribble2.model.Interruptible;
 import org.scribble2.model.name.simple.ScopeNode;
 
-public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, GlobalInterrupt> implements GlobalInteraction
+public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, GlobalInterrupt> implements GlobalInteractionNode
 {
 	/*public static final Function<Interrupt, GlobalInterrupt> toGlobalInterrupt =
 			(Interrupt interr)

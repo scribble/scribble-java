@@ -4,7 +4,7 @@ import org.scribble2.model.Continue;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RecursionVarNode;
 
-public class LocalContinue extends Continue implements LocalInteraction
+public class LocalContinue extends Continue implements SimpleLocalInteractionNode
 {
 	public LocalContinue(RecursionVarNode recvar)
 	{

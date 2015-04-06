@@ -6,15 +6,15 @@ import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.del.ModelDelegate;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
-public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction> implements GlobalNode
+public class GlobalInteractionSequence extends InteractionSequence<GlobalInteractionNode> implements GlobalNode
 {
-	public GlobalInteractionSequence(List<GlobalInteraction> actions)
+	public GlobalInteractionSequence(List<GlobalInteractionNode> actions)
 	{
 		super(actions);
 	}
 
 	@Override
-	protected InteractionSequence<GlobalInteraction> reconstruct(List<GlobalInteraction> ins)
+	protected InteractionSequence<GlobalInteractionNode> reconstruct(List<GlobalInteractionNode> ins)
 	{
 		ModelDelegate del = del();
 		GlobalInteractionSequence gis = new GlobalInteractionSequence(ins);

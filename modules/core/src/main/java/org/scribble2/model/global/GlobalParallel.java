@@ -6,7 +6,7 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.Parallel;
 import org.scribble2.model.del.ModelDelegate;
 
-public class GlobalParallel extends Parallel<GlobalProtocolBlock> implements GlobalInteraction
+public class GlobalParallel extends Parallel<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
 {
 	public GlobalParallel(List<GlobalProtocolBlock> blocks)
 	{

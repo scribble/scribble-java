@@ -7,20 +7,26 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.del.ModelDelegate;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
-public class LocalInteractionSequence extends InteractionSequence<LocalInteraction> implements LocalNode
+public class LocalInteractionSequence extends InteractionSequence<LocalInteractionNode> implements LocalNode
 {
-	public LocalInteractionSequence(List<LocalInteraction> lis)
+	public LocalInteractionSequence(List<LocalInteractionNode> lis)
 	{
 		super(lis);
 	}
 
 	@Override
-	protected LocalInteractionSequence reconstruct(List<LocalInteraction> actions)
+	protected LocalInteractionSequence reconstruct(List<LocalInteractionNode> actions)
 	{
 		ModelDelegate del = del();
 		LocalInteractionSequence lis = new LocalInteractionSequence(actions);
 		lis = (LocalInteractionSequence) lis.del(del);
 		return lis;
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new LocalInteractionSequence(this.actions);
 	}
 
 	/*// Alternative to overriding visit(Children) is to set Env copies on every interaction node and go through the sequence after visiting all children in leave
@@ -78,12 +84,6 @@ public class LocalInteractionSequence extends InteractionSequence<LocalInteracti
 		builder.setExit(exit);
 		return this;
 	}*/
-
-	@Override
-	protected ModelNodeBase copy()
-	{
-		return new LocalInteractionSequence(this.actions);
-	}
 	
 	/*@Override
 	public LocalInteractionSequence project(Projector proj) throws ScribbleException

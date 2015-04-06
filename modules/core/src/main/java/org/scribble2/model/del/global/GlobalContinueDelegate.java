@@ -3,7 +3,6 @@ package org.scribble2.model.del.global;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.SimpleInteractionNodeDelegate;
 import org.scribble2.model.global.GlobalContinue;
 import org.scribble2.model.local.LocalContinue;
 import org.scribble2.model.name.simple.RecursionVarNode;
@@ -12,7 +11,7 @@ import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.util.ScribbleException;
 
 // FIXME: make base MessageTransferDelegate?
-public class GlobalContinueDelegate extends SimpleInteractionNodeDelegate
+public class GlobalContinueDelegate extends SimpleGlobalInteractionNodeDelegate
 {
 	@Override
 	public GlobalContinue leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException //throws ScribbleException

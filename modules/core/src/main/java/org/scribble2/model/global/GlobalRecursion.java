@@ -4,7 +4,7 @@ import org.scribble2.model.Recursion;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RecursionVarNode;
 
-public class GlobalRecursion extends Recursion<GlobalProtocolBlock> implements GlobalInteraction
+public class GlobalRecursion extends Recursion<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
 {
 	public GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
 	{

@@ -7,7 +7,7 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 
-public class GlobalChoice extends Choice<GlobalProtocolBlock> implements GlobalInteraction
+public class GlobalChoice extends Choice<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
 {
 	// Move parser specific constructors (i.e. no context or env yet) to a parser node factory?
 	public GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)

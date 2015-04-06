@@ -79,7 +79,7 @@ public class AntlrModuleParser
 				}
 			}*/
 			
-			System.out.println("b: " + module);
+			//System.out.println("b: " + module);
 			
 			return module;
 		}

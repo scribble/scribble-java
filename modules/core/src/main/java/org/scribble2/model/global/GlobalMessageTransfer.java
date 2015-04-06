@@ -8,7 +8,7 @@ import org.scribble2.model.MessageTransfer;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 
-public class GlobalMessageTransfer extends MessageTransfer implements GlobalInteraction
+public class GlobalMessageTransfer extends MessageTransfer implements SimpleGlobalInteractionNode
 {
 	public GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
