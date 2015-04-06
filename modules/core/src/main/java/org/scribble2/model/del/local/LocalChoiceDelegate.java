@@ -9,7 +9,7 @@ import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.util.ScribbleException;
 
-public class LocalChoiceDelegate extends CompoundLocalInteractionNodeDelegate
+public class LocalChoiceDelegate extends LocalCompoundInteractionNodeDelegate
 {
 	@Override
 	public LocalChoice leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException

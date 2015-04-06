@@ -6,7 +6,7 @@ import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.util.ScribbleException;
 
-public class LocalContinueDelegate extends SimpleLocalInteractionNodeDelegate
+public class LocalContinueDelegate extends LocalSimpleInteractionNodeDelegate
 {
 	/*@Override
 	public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException

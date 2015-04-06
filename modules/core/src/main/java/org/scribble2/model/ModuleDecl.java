@@ -5,7 +5,7 @@ import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
-public class ModuleDecl extends ModelNodeBase implements NameDecl
+public class ModuleDecl extends NameDeclNode
 {
 	public final ModuleNameNode fullmodname;
 

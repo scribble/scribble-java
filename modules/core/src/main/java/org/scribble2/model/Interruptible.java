@@ -6,7 +6,7 @@ import org.scribble2.model.name.simple.ScopeNode;
 
 public abstract class Interruptible<
 				T1 extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>, T2 extends Interrupt>
-		extends ModelNodeBase implements CompoundInteractionNode, ScopedNode
+		extends CompoundInteractionNode implements ScopedNode
 {
 	public final ScopeNode scope;
 	public final T1 block;

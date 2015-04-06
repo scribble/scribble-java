@@ -5,7 +5,7 @@ import org.scribble2.util.ScribbleException;
 
 
 //public class ProtocolBlock extends AbstractNode
-public abstract class ProtocolBlock<T extends InteractionSequence<? extends InteractionNode>> extends ModelNodeBase implements CompoundInteraction //extends AbstractEnvDelegationNode
+public abstract class ProtocolBlock<T extends InteractionSequence<? extends InteractionNode>> extends CompoundInteraction //extends AbstractEnvDelegationNode
 {
 	//public final InteractionSequence seq;
 	public final T seq;

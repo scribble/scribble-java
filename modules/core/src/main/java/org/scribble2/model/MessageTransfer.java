@@ -9,7 +9,7 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 
-public abstract class MessageTransfer extends ModelNodeBase implements SimpleInteractionNode
+public abstract class MessageTransfer extends SimpleInteractionNode
 {
 	public final RoleNode src;
 	public final MessageNode msg;

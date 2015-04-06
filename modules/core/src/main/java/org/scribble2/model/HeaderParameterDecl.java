@@ -8,7 +8,7 @@ import org.scribble2.util.ScribbleException;
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
 //public interface HeaderParameterDecl extends ModelNode, NameDecl //implements NameDeclaration
-public abstract class HeaderParameterDecl<T extends SimpleNameNode> extends ModelNodeBase implements NameDecl //implements NameDeclaration
+public abstract class HeaderParameterDecl<T extends SimpleNameNode> extends NameDeclNode //implements NameDeclaration
 {
 	public final T name;
 

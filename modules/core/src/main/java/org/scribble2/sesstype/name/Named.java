@@ -1,6 +1,8 @@
 package org.scribble2.sesstype.name;
 
+
 public interface Named
 {
-	Name toName();
+	//public abstract Name toName();
+	abstract Name toName();
 }

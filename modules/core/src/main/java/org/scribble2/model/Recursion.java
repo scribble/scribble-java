@@ -5,7 +5,7 @@ import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.util.ScribbleException;
 
 public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
-		extends ModelNodeBase implements CompoundInteractionNode
+		extends CompoundInteractionNode
 {
 	public final RecursionVarNode recvar;
 	public final T block;

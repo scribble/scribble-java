@@ -8,10 +8,10 @@ import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.util.ScribbleException;
 
 // For CompoundInteractionNode and ProtocolBlock
-public class CompoundLocalInteractionNodeDelegate extends CompoundInteractionNodeDelegate
+public class LocalCompoundInteractionNodeDelegate extends CompoundInteractionNodeDelegate
 {
 	//public CompoundInteractionDelegate(Env env)
-	public CompoundLocalInteractionNodeDelegate()
+	public LocalCompoundInteractionNodeDelegate()
 	{
 		//super(env);
 	}

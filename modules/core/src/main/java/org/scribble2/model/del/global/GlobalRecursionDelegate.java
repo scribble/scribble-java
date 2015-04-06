@@ -17,7 +17,7 @@ import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.util.ScribbleException;
 
-public class GlobalRecursionDelegate extends CompoundGlobalInteractionNodeDelegate
+public class GlobalRecursionDelegate extends GlobalCompoundInteractionNodeDelegate
 {
 	@Override
 	//public void leave(Recursion<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> rec, WellFormedChoiceChecker checker)

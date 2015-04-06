@@ -6,7 +6,7 @@ import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.util.ScribbleException;
 
-public class LocalRecursionDelegate extends CompoundLocalInteractionNodeDelegate
+public class LocalRecursionDelegate extends LocalCompoundInteractionNodeDelegate
 {
 	@Override
 	public LocalRecursion leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException

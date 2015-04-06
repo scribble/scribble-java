@@ -10,7 +10,7 @@ import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.util.ScribbleException;
 
-public class GlobalParallelDelegate extends CompoundGlobalInteractionNodeDelegate
+public class GlobalParallelDelegate extends GlobalCompoundInteractionNodeDelegate
 {
 	@Override
 	//public GlobalParallel leave(Parallel<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> par,

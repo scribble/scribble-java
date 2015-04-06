@@ -2,13 +2,9 @@ package org.scribble2.model.name.qualified;
 
 import java.util.Arrays;
 
-import org.scribble2.model.ModelNodeBase;
-import org.scribble2.sesstype.name.CompoundName;
-import org.scribble2.sesstype.name.Kind;
-import org.scribble2.sesstype.name.Name;
-import org.scribble2.sesstype.name.Named;
+import org.scribble2.model.name.NameNode;
 
-public abstract class CompoundNameNode extends ModelNodeBase implements Named
+public abstract class CompoundNameNode extends NameNode
 {
 	//public final List<PrimitiveNameNode> names;
 	protected final String[] elems;

@@ -22,7 +22,7 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 // FIXME: make base MessageTransferDelegate?
-public class GlobalMessageTransferDelegate extends SimpleGlobalInteractionNodeDelegate
+public class GlobalMessageTransferDelegate extends GlobalSimpleInteractionNodeDelegate
 {
 	public GlobalMessageTransferDelegate()
 	{

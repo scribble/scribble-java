@@ -4,7 +4,7 @@ import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.util.ScribbleException;
 
-public abstract class Continue extends ModelNodeBase implements SimpleInteractionNode
+public abstract class Continue extends SimpleInteractionNode
 {
 	public final RecursionVarNode recvar;
 

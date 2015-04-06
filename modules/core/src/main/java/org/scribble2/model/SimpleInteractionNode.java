@@ -1,6 +1,6 @@
 package org.scribble2.model;
 
-public interface SimpleInteractionNode extends InteractionNode
+public abstract class SimpleInteractionNode extends ModelNodeBase implements InteractionNode
 {
 
 }

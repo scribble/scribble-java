@@ -1,7 +1,7 @@
 package org.scribble2.model.del;
 
 
-public class ProtocolBlockDelegate extends CompoundInteractionDelegate
+public abstract class ProtocolBlockDelegate extends CompoundInteractionDelegate
 {
 	/*@Override
 	public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException

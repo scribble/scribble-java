@@ -1,15 +1,14 @@
 package org.scribble2.model.del.global;
 
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.SimpleInteractionNodeDelegate;
+import org.scribble2.model.del.CompoundInteractionNodeDelegate;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.util.ScribbleException;
 
-
-public abstract class SimpleGlobalInteractionNodeDelegate extends SimpleInteractionNodeDelegate
+public abstract class GlobalCompoundInteractionNodeDelegate extends CompoundInteractionNodeDelegate
 {
 	//public CompoundInteractionNodeDelegate(Env env)
-	public SimpleGlobalInteractionNodeDelegate()
+	public GlobalCompoundInteractionNodeDelegate()
 	{
 		//super(env);
 	}

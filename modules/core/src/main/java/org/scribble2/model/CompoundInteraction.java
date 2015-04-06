@@ -1,7 +1,10 @@
 package org.scribble2.model;
 
 // ProtocolBlock or CompoundInteractionNode
-public interface CompoundInteraction
+public abstract class CompoundInteraction extends ModelNodeBase
 {
-
+	public CompoundInteraction()
+	{
+		
+	}
 }

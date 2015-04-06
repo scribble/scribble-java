@@ -11,7 +11,7 @@ import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.util.ScribbleException;
 
 // FIXME: make base MessageTransferDelegate?
-public class GlobalContinueDelegate extends SimpleGlobalInteractionNodeDelegate
+public class GlobalContinueDelegate extends GlobalSimpleInteractionNodeDelegate
 {
 	@Override
 	public GlobalContinue leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException //throws ScribbleException

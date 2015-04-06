@@ -1,6 +1,6 @@
 package org.scribble2.model;
 
-public interface CompoundInteractionNode extends InteractionNode, CompoundInteraction
+public abstract class CompoundInteractionNode extends CompoundInteraction implements InteractionNode
 {
 
 }

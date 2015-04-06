@@ -10,6 +10,9 @@ import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
+// - make model and del hierarchies uniform -- make compoundinteraction a class (super of protocolblock); make a createDelegate method in ModelNode
+// - or otherwise make compound delegates abstract (and models asbtract too)
+
 // - remove job/module contexts from Envs (refer from visitor -- can be updated during visitor pass and reassigned to root module on leave)
 // - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting
 

@@ -23,7 +23,7 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.MessageMap;
 import org.scribble2.util.ScribbleException;
 
-public class GlobalChoiceDelegate extends CompoundGlobalInteractionNodeDelegate
+public class GlobalChoiceDelegate extends GlobalCompoundInteractionNodeDelegate
 {
 	@Override
 	public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException

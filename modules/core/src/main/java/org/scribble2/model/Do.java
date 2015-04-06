@@ -10,7 +10,7 @@ import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.SimpleName;
 import org.scribble2.util.ScribbleException;
 
-public abstract class Do extends ModelNodeBase implements SimpleInteractionNode, ScopedNode
+public abstract class Do extends SimpleInteractionNode implements ScopedNode
 {
 	public final ScopeNode scope;
 	public final RoleInstantiationList roleinstans;

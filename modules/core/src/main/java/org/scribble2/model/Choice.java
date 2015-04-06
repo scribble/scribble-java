@@ -8,7 +8,7 @@ import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.util.ScribbleException;
 
 public abstract class Choice<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
-		extends ModelNodeBase implements CompoundInteractionNode
+		extends CompoundInteractionNode
 {
 	public final RoleNode subj;
 	public final List<T> blocks;

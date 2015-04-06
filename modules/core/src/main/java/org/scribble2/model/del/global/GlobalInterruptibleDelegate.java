@@ -7,7 +7,7 @@ import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.util.ScribbleException;
 
-public class GlobalInterruptibleDelegate extends CompoundInteractionNodeDelegate
+public class GlobalInterruptibleDelegate extends GlobalCompoundInteractionNodeDelegate
 {
 	@Override
 	//public void leave(Interruptible<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>, ? extends Interrupt> intt, WellFormedChoiceChecker checker)

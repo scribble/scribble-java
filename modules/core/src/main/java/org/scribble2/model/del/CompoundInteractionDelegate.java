@@ -5,7 +5,7 @@ import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.util.ScribbleException;
 
 // For CompoundInteractionNode and ProtocolBlock
-public class CompoundInteractionDelegate extends ModelDelegateBase
+public abstract class CompoundInteractionDelegate extends ModelDelegateBase
 {
 	//public CompoundInteractionDelegate(Env env)
 	public CompoundInteractionDelegate()

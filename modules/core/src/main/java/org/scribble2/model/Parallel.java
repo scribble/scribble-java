@@ -7,7 +7,7 @@ import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.util.ScribbleException;
 
 public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
-		extends ModelNodeBase implements CompoundInteractionNode
+		extends CompoundInteractionNode
 {
 	public final List<T> blocks;
 
