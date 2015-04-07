@@ -11,8 +11,7 @@ import org.scribble2.model.visit.env.Env;
 import org.scribble2.util.ScribbleException;
 
 
-// Mutable for Envs -- make immutable?
-
+// Mutable for Envs (by visitors) -- make immutable?
 public abstract class ModelDelegateBase implements ModelDelegate
 {
 	private Env env;
@@ -62,70 +61,51 @@ public abstract class ModelDelegateBase implements ModelDelegate
 	@Override
 	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	{
-		/*if (child instanceof GlobalNode)
-		{
-			ProjectionEnv env = proj.peekEnv().push();  // By default: copy
-			proj.pushEnv(env);
-		}*/
 		return proj;
 	}
-	//public void enter(Choice<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> cho, WellFormedChoiceChecker checker)
 	
 	@Override
 	public ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
 	{
-		/*if (visited instanceof GlobalNode)
-		{
-			ProjectionEnv env = proj.popEnv();
-			//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
-			//checker.pushEnv(env);
-			setEnv(env);
-		}*/
 		return visited;
 	}
 
 	@Override
 	public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		/*if (child instanceof LocalNode)
-		{
-			/*ReachabilityEnv env = checker.peekEnv().push();
-			checker.pushEnv(env);
-		}*/
 		return checker;
 	}
-	//public void enter(Choice<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> cho, WellFormedChoiceChecker checker)
 	
 	@Override
 	public ModelNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
 	{
-		/*if (visited instanceof LocalNode)
-		{
-			ReachabilityEnv env = checker.popEnv();
-			setEnv(env);
-			//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
-			//checker.pushEnv(env);
-			//setEnv(env);
-		}*/
 		return visited;
 	}
 	
-	protected EnvVisitor pushEnv(ModelNode parent, ModelNode child, EnvVisitor ev) throws ScribbleException
+	protected <T extends Env> EnvVisitor<T> pushEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev) throws ScribbleException
 	{
-		Env env = ev.peekEnv().push();  // By default: copy
+		//T env = ev.peekEnv().<T>push();
+		//T env = ev.peekEnv().getClass().cast(ev.peekEnv().push());
+		T env = castEnv(ev, ev.peekEnv().push());  // By default: copy
 		ev.pushEnv(env);
 		return ev;
 	}
 	
-	protected ModelNode popAndSetEnv(ModelNode parent, ModelNode child, EnvVisitor ev, ModelNode visited) throws ScribbleException
+	protected <T extends Env> ModelNode popAndSetEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev, ModelNode visited) throws ScribbleException
 	{
-		Env env = ev.popEnv();
+		T env = ev.popEnv();
 		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
 		//checker.pushEnv(env);
 		setEnv(env);
 		return visited;
 	}
 	
+	private static <T extends Env> T castEnv(EnvVisitor<T> ev, Env env) 
+	{
+		@SuppressWarnings("unchecked")
+		T tmp = (T) env;
+		return tmp;
+	}
 
 	/*@Override
 	public ModelNode visit(ModelNodeBase n, ModelVisitor nv)// throws ScribbleException

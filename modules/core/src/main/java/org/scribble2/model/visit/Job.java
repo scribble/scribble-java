@@ -10,9 +10,6 @@ import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
-// - make model and del hierarchies uniform -- make compoundinteraction a class (super of protocolblock); make a createDelegate method in ModelNode
-// - or otherwise make compound delegates abstract (and models asbtract too)
-
 // - remove job/module contexts from Envs (refer from visitor -- can be updated during visitor pass and reassigned to root module on leave)
 // - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting
 
@@ -21,9 +18,15 @@ import org.scribble2.util.ScribbleException;
 // - streamline visitor pattern calls (e.g. accept)
 // - streamline vistitor/del env references -- and del enter/leave env setter on visitors
 
-		
 //...HERE: fix ReachabilityEnv merge; do enter/leave reachability check for recursion/continue/parallel/etc; check reachability pass visits all projected modules
 //... check delegates for local nodes; check reachability visiting for (local) interaction sequence (and delegate)
+
+
+// No
+// - FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections) -- no, leave in delegate
+// - change InteractionNode interface to a base class -- no, better for interaction nodes to extend simple/compound as base
+// - make a createDelegate method in ModelNode -- no, leave association of delegates to model nodes in factory -- then replacing a delegate requires changing the factory only
+
 public class Job
 {
 	/*private static final AntlrModuleParser PARSER = new AntlrModuleParser();
