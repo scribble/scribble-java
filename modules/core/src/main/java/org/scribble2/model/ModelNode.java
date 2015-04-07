@@ -33,7 +33,7 @@ public interface ModelNode// extends Copy
 
 	ModelDelegate del();
 	ModelNodeBase del(ModelDelegate del);
-
+	
 	// FIXME: move to delegate
 	ModelNode substitute(Substitutor subs) throws ScribbleException;
 }

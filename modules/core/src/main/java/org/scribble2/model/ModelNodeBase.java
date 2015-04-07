@@ -33,26 +33,18 @@ public abstract class ModelNodeBase implements ModelNode
 {
 	private ModelDelegate del;
 
-	// Internal shallow copy for immutables
+	// Internal shallow copy for (immutable) ModelNodes
 	//@Override
 	protected abstract ModelNodeBase copy();
-
-	/*protected ModelNodeBase(ModelDelegate del)
-	{
-		this.del = del;
-	}*/
 	
 	@Override
 	public ModelNode visit(ModelVisitor nv) throws ScribbleException
 	{
-		//return this.del.visit(this, nv);
-		return visitChild(this, nv);  // FIXME: weird to call visitChild with "this" as the child
+		return visitChild(this, nv);  // FIXME: weird to call visitChild with "this" as the child (only done for root visit calls) -- use null instead?
 	}
 	
-	//@Override
 	protected ModelNode visitChild(ModelNode child, ModelVisitor nv) throws ScribbleException
 	{
-		//return this.del.visit(this, child, nv);
 		return nv.visit(this, child);
 	}
 
@@ -67,13 +59,6 @@ public abstract class ModelNodeBase implements ModelNode
 	{
 		return visitChildren(nv);
 	}
-
-	/*private final CommonTree ct;
-	
-	public ModelNodeBase(CommonTree ct)
-	{
-		this.ct = ct;
-	}*/
 	
 	@Override
 	public final ModelDelegate del()
@@ -89,6 +74,7 @@ public abstract class ModelNodeBase implements ModelNode
 		return copy;
 	}
 	
+	// FIXME: move to delegate
 	@Override
 	public ModelNode substitute(Substitutor subs) throws ScribbleException
 	{

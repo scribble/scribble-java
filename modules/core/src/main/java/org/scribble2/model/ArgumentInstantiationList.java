@@ -11,6 +11,12 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 	{
 		super(as);
 	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		return new ArgumentInstantiationList(this.instans);
+	}
 	
 	public boolean isEmpty()
 	{
@@ -35,11 +41,5 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 			s += ", " + a;
 		}
 		return s + ">";
-	}
-
-	@Override
-	protected ModelNodeBase copy()
-	{
-		return new ArgumentInstantiationList(this.instans);
 	}
 }

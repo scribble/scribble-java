@@ -20,6 +20,10 @@ import org.scribble2.util.ScribbleException;
 
 // - streamline visitor pattern calls (e.g. accept)
 // - streamline vistitor/del env references -- and del enter/leave env setter on visitors
+
+		
+//...HERE: fix ReachabilityEnv merge; do enter/leave reachability check for recursion/continue/parallel/etc; check reachability pass visits all projected modules
+//... check delegates for local nodes; check reachability visiting for (local) interaction sequence (and delegate)
 public class Job
 {
 	/*private static final AntlrModuleParser PARSER = new AntlrModuleParser();

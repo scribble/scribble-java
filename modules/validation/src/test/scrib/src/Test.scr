@@ -15,6 +15,7 @@ global protocol Foo(role A, role B, role C)
 		}
 		or
 		{
+			//1() from A to B;
 			2() from A to B;
 			//continue X;
 		}

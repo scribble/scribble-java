@@ -3,23 +3,24 @@ package org.scribble2.model;
 import java.util.List;
 
 import org.scribble2.model.ParameterDecl.Kind;
+import org.scribble2.model.del.DefaultModelDelegate;
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.del.ModelDelegateBase;
 import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.del.ParameterDeclDelegate;
-import org.scribble2.model.del.ProtocolDeclDelegate;
 import org.scribble2.model.del.RoleDeclDelegate;
 import org.scribble2.model.del.global.GlobalChoiceDelegate;
 import org.scribble2.model.del.global.GlobalContinueDelegate;
 import org.scribble2.model.del.global.GlobalInteractionSequenceDelegate;
 import org.scribble2.model.del.global.GlobalMessageTransferDelegate;
 import org.scribble2.model.del.global.GlobalProtocolBlockDelegate;
+import org.scribble2.model.del.global.GlobalProtocolDeclDelegate;
 import org.scribble2.model.del.global.GlobalProtocolDefinitionDelegate;
 import org.scribble2.model.del.global.GlobalRecursionDelegate;
 import org.scribble2.model.del.local.LocalChoiceDelegate;
 import org.scribble2.model.del.local.LocalContinueDelegate;
 import org.scribble2.model.del.local.LocalInteractionSequenceDelegate;
 import org.scribble2.model.del.local.LocalProtocolBlockDelegate;
+import org.scribble2.model.del.local.LocalProtocolDeclDelegate;
 import org.scribble2.model.del.local.LocalProtocolDefinitionDelegate;
 import org.scribble2.model.del.local.LocalReceiveDelegate;
 import org.scribble2.model.del.local.LocalRecursionDelegate;
@@ -99,7 +100,6 @@ public class ModelFactoryImpl implements ModelFactory
 			List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
-		//module = del(module, createDefaultDelegate());
 		module = del(module, new ModuleDelegate(module.getFullModuleName()));
 		return module;
 	}
@@ -124,8 +124,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolDecl GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def)
 	{
 		GlobalProtocolDecl gpd = new GlobalProtocolDecl(header, def);
-		//gpd = del(gpd, createDefaultDelegate());
-		gpd = del(gpd, new ProtocolDeclDelegate());
+		gpd = del(gpd, new GlobalProtocolDeclDelegate());
 		return gpd;
 	}
 
@@ -165,7 +164,6 @@ public class ModelFactoryImpl implements ModelFactory
 	public ParameterDecl ParameterDecl(Kind kind, ParameterNode namenode)
 	{
 		ParameterDecl pd = new ParameterDecl(kind, namenode);
-		//pd = del(pd, createDefaultDelegate());
 		pd = del(pd, new ParameterDeclDelegate());
 		return pd;
 	}
@@ -174,7 +172,6 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolDefinition GlobalProtocolDefinition(GlobalProtocolBlock block)
 	{
 		GlobalProtocolDefinition gpd = new GlobalProtocolDefinition(block);
-		//gpd = del(gpd, createDefaultDelegate());
 		gpd = del(gpd, new GlobalProtocolDefinitionDelegate());
 		return gpd;
 	}
@@ -183,9 +180,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalProtocolBlock GlobalProtocolBlock(GlobalInteractionSequence seq)
 	{
 		GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);
-		//gpb = del(gpb, createDefaultDelegate());
 		gpb = del(gpb, new GlobalProtocolBlockDelegate());
-		//gpb = del(gpb, new ProtocolBlockDelegate());
 		return gpb;
 	}
 
@@ -193,7 +188,6 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteractionNode> actions)
 	{
 		GlobalInteractionSequence gis = new GlobalInteractionSequence(actions);
-		//gis = del(gis, createDefaultDelegate());
 		gis = del(gis, new GlobalInteractionSequenceDelegate());
 		return gis;
 	}
@@ -210,7 +204,6 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
 	{
 		GlobalChoice gc = new GlobalChoice(subj, blocks);
-		//gc = del(gc, createDefaultDelegate());
 		gc = del(gc, new GlobalChoiceDelegate());
 		return gc;
 	}
@@ -241,7 +234,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
-		gd = del(gd, createDefaultDelegate());
+		gd = del(gd, createDefaultDelegate());  // FIXME
 		return gd;
 	}
 
@@ -289,11 +282,11 @@ public class ModelFactoryImpl implements ModelFactory
 				snn = (AmbiguousNameNode) snn.del(new AmbiguousNameDelegate());
 				return snn;
 			}
-			case OPERATOR: snn = new OperatorNode(identifier); break;
-			case PARAMETER: snn = new ParameterNode(identifier); break;
-			case RECURSIONVAR: snn = new RecursionVarNode(identifier); break;
-			case ROLE: snn = new RoleNode(identifier); break;
-			case PROTOCOL: snn = new SimpleProtocolNameNode(identifier); break;
+			case OPERATOR:     snn = new OperatorNode(identifier);           break;
+			case PARAMETER:    snn = new ParameterNode(identifier);          break;
+			case RECURSIONVAR: snn = new RecursionVarNode(identifier);       break;
+			case ROLE:         snn = new RoleNode(identifier);               break;
+			case PROTOCOL:     snn = new SimpleProtocolNameNode(identifier); break;
 			default: throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
 		snn = (SimpleNameNode) snn.del(createDefaultDelegate());
@@ -307,8 +300,8 @@ public class ModelFactoryImpl implements ModelFactory
 		switch(kind)
 		{
 			case MESSAGESIGNATURE: qnn = new MessageSignatureNameNode(elems); break;
-			case MODULE: qnn = new ModuleNameNode(elems); break;
-			case PROTOCOL: qnn = new ProtocolNameNode(elems); break;
+			case MODULE:           qnn = new ModuleNameNode(elems); break;
+			case PROTOCOL:         qnn = new ProtocolNameNode(elems); break;
 			default: throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
 		qnn = (QualifiedNameNode) qnn.del(createDefaultDelegate());
@@ -319,8 +312,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalProtocolDecl LocalProtocolDecl(LocalProtocolHeader header, LocalProtocolDefinition def)
 	{
 		LocalProtocolDecl lpd = new LocalProtocolDecl(header, def);
-		//gpd = del(gpd, createDefaultDelegate());
-		lpd = del(lpd, new ProtocolDeclDelegate());
+		lpd = del(lpd, new LocalProtocolDeclDelegate());
 		return lpd;
 	}
 
@@ -336,8 +328,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public SelfRoleDecl SelfRoleDecl(RoleNode namenode)
 	{
 		SelfRoleDecl rd = new SelfRoleDecl(namenode);
-		//rd = del(rd, new RoleDeclDelegate());
-		rd = del(rd, createDefaultDelegate());
+		rd = del(rd, new RoleDeclDelegate());
 		return rd;
 	}
 
@@ -345,7 +336,6 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block)
 	{
 		LocalProtocolDefinition lpd = new LocalProtocolDefinition(block);
-		//lpd = del(lpd, createDefaultDelegate());
 		lpd = del(lpd, new LocalProtocolDefinitionDelegate());
 		return lpd;
 	}
@@ -354,9 +344,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq)
 	{
 		LocalProtocolBlock lpb = new LocalProtocolBlock(seq);
-		//lpb = del(lpb, createDefaultDelegate());
 		lpb = del(lpb, new LocalProtocolBlockDelegate());
-		//gpb = del(gpb, new ProtocolBlockDelegate());
 		return lpb;
 	}
 
@@ -364,7 +352,6 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions)
 	{
 		LocalInteractionSequence lis = new LocalInteractionSequence(actions);
-		//lis = del(lis, createDefaultDelegate());
 		lis = del(lis, new LocalInteractionSequenceDelegate());
 		return lis;
 	}
@@ -389,7 +376,6 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
 	{
 		LocalChoice lc = new LocalChoice(subj, blocks);
-		//lc = del(lc, createDefaultDelegate());
 		lc = del(lc, new LocalChoiceDelegate());
 		return lc;
 	}
@@ -420,14 +406,13 @@ public class ModelFactoryImpl implements ModelFactory
 	public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
-		ld = del(ld, createDefaultDelegate());
+		ld = del(ld, createDefaultDelegate());  // FIXME
 		return ld;
 	}
 
-	
 	private ModelDelegate createDefaultDelegate()
 	{
-		return new ModelDelegateBase();
+		return new DefaultModelDelegate();
 	}
 	
 	@SuppressWarnings("unchecked")

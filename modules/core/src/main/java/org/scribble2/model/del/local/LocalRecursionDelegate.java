@@ -17,9 +17,5 @@ public class LocalRecursionDelegate extends LocalCompoundInteractionNodeDelegate
 		//merged.contExitable = this.contExitable;
 		checker.pushEnv(env);
 		return (LocalRecursion) super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env*/
-		/*setEnv(env);
-		env = checker.popEnv().merge(env);  // Overrides super method to merge results back into parent context
-		checker.pushEnv(env);
-		return lr;*/
 	}
 }

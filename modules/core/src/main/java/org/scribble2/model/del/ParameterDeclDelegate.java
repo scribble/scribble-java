@@ -13,10 +13,4 @@ public class ParameterDeclDelegate extends ModelDelegateBase
 		disamb.addParameter(((ParameterDecl) child).toName());
 		return disamb;
 	}
-
-	/*@Override
-	public ModelNode leaveDisambiguation(ModelNode n, NameDisambiguator disamb) throws ScribbleException
-	{
-		
-	}*/
 }

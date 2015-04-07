@@ -8,15 +8,6 @@ import org.scribble2.util.ScribbleException;
 
 public class LocalContinueDelegate extends LocalSimpleInteractionNodeDelegate
 {
-	/*@Override
-	public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
-	{
-		LocalContinue lc = (LocalContinue) child;
-		ReachabilityEnv env = checker.peekEnv().enterContinue(lc.recvar.toName());
-		checker.pushEnv(env);
-		return checker;
-	}*/
-
 	public LocalContinue leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
 	{
 		LocalContinue lc = (LocalContinue) visited;

@@ -11,10 +11,9 @@ import org.scribble2.model.visit.env.Env;
 import org.scribble2.util.ScribbleException;
 
 
-// Mutable for Envs
+// Mutable for Envs -- make immutable?
 
-//public abstract class ModelDelegateBase implements ModelDelegate
-public class ModelDelegateBase implements ModelDelegate
+public abstract class ModelDelegateBase implements ModelDelegate
 {
 	private Env env;
 	

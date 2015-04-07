@@ -6,7 +6,8 @@ import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.util.ScribbleException;
 
-// Unlike model nodes that extend the base interactions (choice/recursion/etc), delegates extend simple/compound
+// Unlike global/local interaction model nodes that extend the base constructs (choice/recursion/etc) that extend simple/compound,
+// each interaction construct delegate extends base global/local delegates that extend simple/compound
 // e.g. CompoundInteractionNode -> Choice -> Global/LocalChoice
 //      CompoundInteractionNodeDelegate -> Global/LocalCompoundInteractionNodeDelegate -> [Global/Local]ChoiceDelegate
 // works better for each that way: global/local model nodes share the base node visiting pattern, while global/local delegates share Env handling based on simple/compound (i.e. Env merging) for passes according to global or local

@@ -18,7 +18,7 @@ import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.RoleDeclList;
-import org.scribble2.model.del.ProtocolDeclDelegate;
+import org.scribble2.model.del.global.GlobalProtocolDeclDelegate;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.local.LocalProtocolDecl;
 import org.scribble2.model.local.LocalProtocolDefinition;
@@ -124,7 +124,7 @@ public class Projector extends EnvVisitor
 		}
 		//return this;
 		//ProtocolDeclContext pdcontext = new ProtocolDeclContext(dependencies);
-		ProtocolDeclDelegate del = new ProtocolDeclDelegate(dependencies);  // FIXME: move to leaveProjection in GlobalProtocolDecl
+		GlobalProtocolDeclDelegate del = ((GlobalProtocolDeclDelegate) child.del()).setDependencies(dependencies);  // FIXME: move to leaveProjection in GlobalProtocolDecl
 			
 		//System.out.println("c: " + this.name + ", " + pdcontext.getProtocolDependencies());
 

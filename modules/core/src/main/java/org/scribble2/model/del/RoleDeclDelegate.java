@@ -9,12 +9,6 @@ import org.scribble2.util.ScribbleException;
 
 public class RoleDeclDelegate extends ModelDelegateBase
 {
-	/*@Override
-	public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
-	{
-		
-	}*/
-
 	@Override
 	public RoleDecl leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
 	{

@@ -6,13 +6,11 @@ import org.scribble2.model.local.SimpleLocalInteractionNode;
 import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.util.ScribbleException;
 
-// For CompoundInteractionNode and ProtocolBlock
 public abstract class LocalSimpleInteractionNodeDelegate extends SimpleInteractionNodeDelegate
 {
-	//public CompoundInteractionDelegate(Env env)
 	public LocalSimpleInteractionNodeDelegate()
 	{
-		//super(env);
+
 	}
 
 	@Override

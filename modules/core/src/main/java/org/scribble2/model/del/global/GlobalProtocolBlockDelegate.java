@@ -31,22 +31,4 @@ public class GlobalProtocolBlockDelegate extends ProtocolBlockDelegate
 		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		return (GlobalProtocolBlock) super.popAndSetEnv(parent, child, proj, gpd);
 	}
-
-	/*@Override
-	public EnvVisitor envEnter(ModelNode parent, ModelNode child, EnvVisitor ev) throws ScribbleException
-	{
-		WellFormedChoiceEnv env = checker.peekEnv().push();
-		env = env.clear();
-		env = env.enableChoiceSubject(((GlobalChoice) child).subj.toName());
-		checker.pushEnv(env);
-		return checker;
-		
-		//.. push env for blocks in EnvVitistor.subprotocolEnter; or override every visitor pass in block delegate -- better in ProtocolBlockDelegate?
-	}*/
-	
-	/*@Override
-	public GlobalProtocolBlock leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
-	{
-		return (GlobalProtocolBlock) super.leaveWFChoiceCheck(parent, child, checker, visited);
-	}*/
 }
