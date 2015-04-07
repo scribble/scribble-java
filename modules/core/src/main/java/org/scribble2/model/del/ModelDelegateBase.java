@@ -106,7 +106,7 @@ public abstract class ModelDelegateBase implements ModelDelegate
 		T tmp = (T) env;
 		return tmp;
 	}
-
+	
 	/*@Override
 	public ModelNode visit(ModelNodeBase n, ModelVisitor nv)// throws ScribbleException
 	{

@@ -22,7 +22,7 @@ public class RoleNode extends SimpleNameNode //implements RoleDecl, RoleInstanti
 	}
 	
 	@Override
-	public RoleNode substitute(Substitutor subs)
+	public RoleNode substituteNames(Substitutor subs)
 	{
 		//return subs.getRoleSubstitution(toName());
 		return reconstruct(subs.getRoleSubstitution(toName()).toString());

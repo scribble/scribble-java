@@ -30,9 +30,7 @@ public interface ModelDelegate
 
 	/*GraphBuilder enterGraphBuilding(GraphBuilder builder);
 	ModelNode visitForGraphBuilding(GraphBuilder builder);
-	ModelNode leaveGraphBuilding(GraphBuilder builder);
-
-	ModelNode substitute(Substitutor subs);*/
+	ModelNode leaveGraphBuilding(GraphBuilder builder);*/
 
 	Env getEnv();
 	//void setEnv(Env env);  // No defensive copy -- used from inside Env during a env pass

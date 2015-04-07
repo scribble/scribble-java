@@ -28,7 +28,8 @@ public class Substitutor extends ModelVisitor
 	@Override
 	public ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
 	{
-		return visited.substitute((Substitutor) nv);
+		return visited.substituteNames((Substitutor) nv);
+		//return visited.del().substituteNames((Substitutor) nv, visited);
 	}
 
 	public Role getRoleSubstitution(Role role)

@@ -73,12 +73,10 @@ public abstract class ModelNodeBase implements ModelNode
 		copy.del = del;
 		return copy;
 	}
-	
-	// FIXME: move to delegate
+
 	@Override
-	public ModelNode substitute(Substitutor subs) throws ScribbleException
+	public ModelNode substituteNames(Substitutor subs)
 	{
-		//return visit(subs);
 		return this;
 	}
 		

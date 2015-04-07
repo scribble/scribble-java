@@ -10,6 +10,9 @@ import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
+// fix instanceof in projector and reachability checker
+// make module/protocol delegate state (module context, protocol dependencies) setting uniform -- related to (non-)immutablity of delegates (where to store "context" state)
+
 // - remove job/module contexts from Envs (refer from visitor -- can be updated during visitor pass and reassigned to root module on leave)
 // - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting
 
@@ -26,6 +29,7 @@ import org.scribble2.util.ScribbleException;
 // - FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections) -- no, leave in delegate
 // - change InteractionNode interface to a base class -- no, better for interaction nodes to extend simple/compound as base
 // - make a createDelegate method in ModelNode -- no, leave association of delegates to model nodes in factory -- then replacing a delegate requires changing the factory only
+// - substitute to delegate? -- no, better to have as a simple node operation that uses the protected reconstruct pattern directly (a del operation is more indirect with no advantages)
 
 public class Job
 {
