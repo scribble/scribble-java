@@ -10,7 +10,7 @@ import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.util.ScribbleException;
 
-public class WellFormedChoiceChecker extends EnvVisitor
+public class WellFormedChoiceChecker extends EnvVisitor<WellFormedChoiceEnv>
 {
 	public WellFormedChoiceChecker(Job job)
 	{
@@ -33,49 +33,11 @@ public class WellFormedChoiceChecker extends EnvVisitor
 	}
 	
 	@Override
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor nv, ModelNode visited) throws ScribbleException
+	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<WellFormedChoiceEnv> nv, ModelNode visited) throws ScribbleException
 	{
 		//return visited;
 		visited = visited.del().leaveWFChoiceCheck(parent, child, (WellFormedChoiceChecker) nv, visited);
 		visited = super.envLeave(parent, child, nv, visited);
 		return visited;
-	}
-
-	/*@Override
-	protected WellFormedChoiceEnv makeRootProtocolDeclEnv(
-			ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-	{
-		WellFormedChoiceEnv env = new WellFormedChoiceEnv(this.getJobContext(), getModuleContext());
-		//pd.roledecls.getRoles().forEach((r) -> env.enableRoleForRootProtocolDecl(r));
-		for (Role role : pd.roledecls.getRoles())
-		{
-			env = env.enableRoleForRootProtocolDecl(role);
-		}
-		return env;
-	}
-	
-	@Override
-	public WellFormedChoiceEnv getEnv()
-	{
-		return (WellFormedChoiceEnv) super.getEnv();
-	}*/
-
-	@Override
-	public WellFormedChoiceEnv peekEnv()
-	//public Env getEnv()
-	{
-		return (WellFormedChoiceEnv) super.peekEnv();
-	}
-
-	@Override
-	public WellFormedChoiceEnv peekParentEnv()
-	{
-		return (WellFormedChoiceEnv) super.peekParentEnv();
-	}
-	
-	@Override
-	public WellFormedChoiceEnv popEnv()
-	{
-		return (WellFormedChoiceEnv) super.popEnv();
 	}
 }

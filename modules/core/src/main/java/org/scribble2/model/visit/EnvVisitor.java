@@ -12,9 +12,9 @@ import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.visit.env.Env;
 import org.scribble2.util.ScribbleException;
 
-public abstract class EnvVisitor extends SubprotocolVisitor
+public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 {
-	private Stack<Env> envs = new Stack<Env>();
+	private Stack<T> envs = new Stack<T>();
 	//private Env env = null;  // Inconsistent setter pattern with NodeContextVisitor: there done implicitly, here done explicitly by setter
 	
 	//private Scope scope = null;
@@ -30,9 +30,10 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 	}*/
 	
 	@Override
-	protected final EnvVisitor subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected final EnvVisitor<T> subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		EnvVisitor ev = (EnvVisitor) super.subprotocolEnter(parent, child);
+		//EnvVisitor<T> ev = (EnvVisitor) super.subprotocolEnter(parent, child);
+		EnvVisitor<T> ev = castEnvVisitor(super.subprotocolEnter(parent, child), this);
 		if (child instanceof ProtocolDecl)  // Only the root ProtocolDecl is visited: subprotocols visit the body directly
 		{
 			//ev.setEnv(new Env(this.job.getContext(), (ModuleContext) peekContext()));
@@ -60,10 +61,10 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 	}
 	
 	// getProtocolDeclEnv
-	protected abstract Env makeRootProtocolDeclEnv(
+	protected abstract T makeRootProtocolDeclEnv(
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd);
 
-	protected EnvVisitor envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected EnvVisitor<T> envEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		
 		//... HERE: push copy of parent Env onto visitor stack for use by visitor pass (del env-leave routine should pop and push back the final result)
@@ -77,7 +78,8 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 	@Override
 	protected final ModelNode subprotocolLeave(ModelNode parent, ModelNode child, SubprotocolVisitor nv, ModelNode visited) throws ScribbleException
 	{
-		ModelNode n = envLeave(parent, child, (EnvVisitor) nv, visited); 
+		//ModelNode n = envLeave(parent, child, (EnvVisitor) nv, visited); 
+		ModelNode n = envLeave(parent, child, castEnvVisitor(nv, this), visited); 
 
 		//ModelNode n = super.subprotocolLeave(parent, child, nv, visited);
 		/*n = envLeave(parent, child, nv, n);
@@ -89,9 +91,9 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 		//if (isRootProtocolDeclEntry())
 		if (n instanceof ProtocolDecl)  // Only the root ProtocolDecl is visited by SubprotocolVisitor (subprotocols visit the body directly)
 		{
-			EnvVisitor ev = (EnvVisitor) nv;
-			//ev.setEnv(ev.getEnv().getParent());
-			//this.setEnv(ev.getEnv().getParent());
+			//EnvVisitor ev = (EnvVisitor) nv;
+			////ev.setEnv(ev.getEnv().getParent());
+			////this.setEnv(ev.getEnv().getParent());
 			this.envs.pop();
 		}
 		/*if (child instanceof ScopedNode && !((ScopedNode) child).isEmptyScope())
@@ -103,7 +105,7 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 		return super.subprotocolLeave(parent, child, nv, n);
 	}
 	
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor nv, ModelNode visited) throws ScribbleException
+	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<T> nv, ModelNode visited) throws ScribbleException
 	{
 		/*if (hasEnv())
 		{
@@ -120,26 +122,26 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 		return !this.envs.isEmpty();
 	}
 
-	public Env peekEnv()
+	public T peekEnv()
 	//public Env getEnv()
 	{
 		return this.envs.peek();
 		//return this.env;
 	}
 
-	public Env peekParentEnv()
+	public T peekParentEnv()
 	{
 		return this.envs.get(this.envs.size() - 2);
 	}
 	
 	//public void setEnv(Env env)
-	public void pushEnv(Env env)
+	public void pushEnv(T env)
 	{
 		//this.env = env;
 		this.envs.push(env);
 	}
 	
-	public Env popEnv()
+	public T popEnv()
 	{
 		return this.envs.pop();
 	}
@@ -158,4 +160,15 @@ public abstract class EnvVisitor extends SubprotocolVisitor
 	{
 		this.scope = scope;
 	}*/
+	
+	private static <T extends Env> EnvVisitor<T> castEnvVisitor(SubprotocolVisitor sv, EnvVisitor<T> ev)
+	{
+		if (sv.getClass() != ev.getClass())
+		{
+			throw new RuntimeException("SubprotocolVisitor to EnvVisitor cast error: " + sv.getClass() + ", " + ev.getClass());
+		}
+		@SuppressWarnings("unchecked")
+		EnvVisitor<T> tmp = (EnvVisitor<T>) sv;
+		return tmp;
+	}
 }

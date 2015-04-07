@@ -16,7 +16,7 @@ import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.util.ScribbleException;
 
-public class ReachabilityChecker extends EnvVisitor
+public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 {
 	public ReachabilityChecker(Job job)
 	{
@@ -83,28 +83,10 @@ public class ReachabilityChecker extends EnvVisitor
 	}
 	
 	@Override
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor nv, ModelNode visited) throws ScribbleException
+	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<ReachabilityEnv> nv, ModelNode visited) throws ScribbleException
 	{
 		//return visited.leaveReachabilityCheck(this);
 		visited = visited.del().leaveReachabilityCheck(parent, child, (ReachabilityChecker) nv, visited);
 		return super.envLeave(parent, child, nv, visited);
-	}
-	
-	@Override
-	public ReachabilityEnv peekEnv()
-	{
-		return (ReachabilityEnv) super.peekEnv();
-	}
-
-	@Override
-	public ReachabilityEnv peekParentEnv()
-	{
-		return (ReachabilityEnv) super.peekParentEnv();
-	}
-	
-	@Override
-	public ReachabilityEnv popEnv()
-	{
-		return (ReachabilityEnv) super.popEnv();
 	}
 }

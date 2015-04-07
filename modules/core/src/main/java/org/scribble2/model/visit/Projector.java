@@ -34,7 +34,7 @@ import org.scribble2.util.ScribbleException;
 
 // Uses visitor infrastructure to traverse AST and generate local nodes from global with original nodes unchanged (so does not use normal visitChildren pattern -- env used to pass the working projections)
 // FIXME: uses envs but does not need to be a SubProtocolVisitor -- swap env and subprotocol visitors in hierarchy? Maybe not: e.g. GraphBuilder is a subprotocol visitor but not an env visitor
-public class Projector extends EnvVisitor
+public class Projector extends EnvVisitor<ProjectionEnv>
 {
 	private Stack<Role> selfs = new Stack<>();
 	
@@ -145,7 +145,7 @@ public class Projector extends EnvVisitor
 	}
 	
 	@Override
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor nv, ModelNode visited) throws ScribbleException
+	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<ProjectionEnv> nv, ModelNode visited) throws ScribbleException
 	{
 		/*ModelNode n = super.envLeave(parent, child, nv, visited);
 		return n.leaveProjection((Projector) nv);*/
@@ -293,51 +293,4 @@ public class Projector extends EnvVisitor
 	{
 		return this.dependencies;
 	}
-	
-	@Override
-	public ProjectionEnv peekEnv()
-	{
-		return (ProjectionEnv) super.peekEnv();
-	}
-
-	@Override
-	public ProjectionEnv peekParentEnv()
-	{
-		return (ProjectionEnv) super.peekParentEnv();
-	}
-	
-	@Override
-	public ProjectionEnv popEnv()
-	{
-		return (ProjectionEnv) super.popEnv();
-	}
-
-	/*public void addProtocolDependency(ProtocolName root, Role self, ProtocolName dep, Role param)
-	{
-		Map<Role, Map<ProtocolName, Set<Role>>> tmp1 = this.dependencies.get(root);
-		if (tmp1 == null)
-		{
-			tmp1 = new HashMap<>();
-			this.dependencies.put(root, tmp1);
-		}
-		Map<ProtocolName, Set<Role>> tmp2 = tmp1.get(self);
-		if (tmp2 == null)
-		{
-			tmp2 = new HashMap<>();
-			tmp1.put(self, tmp2);
-		}
-		Set<Role> tmp3 = tmp2.get(dep);
-		if (tmp3 == null)
-		{
-			tmp3 = new HashSet<>();
-		}
-		tmp3.add(param);
-		
-		System.out.println("b: " + root + ", " + self + ", " + dep + ", " + param);
-	}
-	
-	public Map<ProtocolName, Set<Role>> getProtocolDependencies(ProtocolName root, Role self)
-	{
-		return this.dependencies.get(root).get(self);
-	}*/
 }
