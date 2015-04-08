@@ -35,7 +35,6 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 	@Override
 	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		// FIXME: move to LocalInteractionSequence
 		if (child instanceof LocalInteractionSequence)
 		{
 			/*Projector proj = (Projector) enter(parent, child);

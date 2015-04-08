@@ -82,8 +82,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		return true;
 	}*/
 
-	/*// FIXME: move to GlobalProtocolDecl
-	// FIXME: parent not used
+	/*// FIXME: parent not used
 	private GlobalProtocolDecl visitForProjection(Module parent, GlobalProtocolDecl child) throws ScribbleException
 	{
 		//ModuleDelegate md = getModuleDelegate();
