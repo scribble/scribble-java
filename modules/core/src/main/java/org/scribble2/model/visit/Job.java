@@ -32,6 +32,7 @@ import org.scribble2.util.ScribbleException;
 // - make a createDelegate method in ModelNode -- no, leave association of delegates to model nodes in factory -- then replacing a delegate requires changing the factory only
 // - substitute to delegate? -- no, better to have as a simple node operation that uses the protected reconstruct pattern directly (a del operation is more indirect with no advantages)
 // fix instanceof in projector and reachability checker -- only partly: moved main code to delegates but the "root" instanceof needs to stay inside the visitors to "override" the base subprotocol visitInSubprotocols pattern
+// override del in each ModelNode to cast -- no: leave as base del for most flexibility in case of replacement
 
 public class Job
 {
