@@ -42,8 +42,7 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 			ModelNode visited = visitForProjection((Module) parent, (GlobalProtocolDecl) child);
 			return leave(parent, child, proj, visited);*/
 			ReachabilityChecker checker = (ReachabilityChecker) enter(parent, child);
-			LocalInteractionSequence lis = (LocalInteractionSequence) child;
-			ModelNode visited = ((LocalInteractionSequenceDelegate) lis.del()).visitForReachabilityChecking(this, lis);
+			ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(this, (LocalInteractionSequence) child);
 			return leave(parent, child, checker, visited);
 		}
 		else
