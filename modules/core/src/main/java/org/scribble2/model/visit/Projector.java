@@ -12,17 +12,12 @@ import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
-import org.scribble2.model.ParameterDeclList;
 import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
-import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.del.global.GlobalProtocolDeclDelegate;
 import org.scribble2.model.global.GlobalProtocolDecl;
-import org.scribble2.model.local.LocalProtocolDecl;
-import org.scribble2.model.local.LocalProtocolDefinition;
-import org.scribble2.model.local.LocalProtocolHeader;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
@@ -36,7 +31,7 @@ import org.scribble2.util.ScribbleException;
 // FIXME: uses envs but does not need to be a SubProtocolVisitor -- swap env and subprotocol visitors in hierarchy? Maybe not: e.g. GraphBuilder is a subprotocol visitor but not an env visitor
 public class Projector extends EnvVisitor<ProjectionEnv>
 {
-	private Stack<Role> selfs = new Stack<>();
+	private Stack<Role> selfs = new Stack<>();  // Is a stack needed? roles only pushed from GlobalProtocolDecl, which should be only done once at the root?
 	
 	// first protocol name is full global protocol name, second is full local projection names
 	private Map<ProtocolName, Map<Role, Module>> projections = new HashMap<>();
@@ -65,11 +60,14 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	@Override
 	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
 	{
+		// Hack to "override" SubprotocolVisitor visitChildrenInSubprotocols pattern
+		// But avoids adding visitForProjection to every ModelNode
+		// Or else need to build in a "visit override" mechanism into the parent visitors
 		if (child instanceof GlobalProtocolDecl)
 		{
 			Projector proj = (Projector) enter(parent, child);
 			//ModelNode visited = child.visitChildrenInSubprotocols(spv);  visitForProjection
-			ModelNode visited = visitForProjection((Module) parent, (GlobalProtocolDecl) child);
+			ModelNode visited = ((GlobalProtocolDeclDelegate) child.del()).visitForProjection(this, (GlobalProtocolDecl) child);
 			return leave(parent, child, proj, visited);
 		}
 		else
@@ -77,8 +75,14 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			return super.visit(parent, child);
 		}
 	}
+	
+	/*@Override
+	protected boolean overrideSubstitution()
+	{
+		return true;
+	}*/
 
-	// FIXME: move to GlobalProtocolDecl
+	/*// FIXME: move to GlobalProtocolDecl
 	// FIXME: parent not used
 	private GlobalProtocolDecl visitForProjection(Module parent, GlobalProtocolDecl child) throws ScribbleException
 	{
@@ -132,7 +136,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		return (GlobalProtocolDecl) child.del(del);  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
 		
 		// projected modules added to context delegate in (main) module leaveProjection
-	}
+	}*/
 	
 	@Override
 	protected final Projector envEnter(ModelNode parent, ModelNode child) throws ScribbleException
@@ -234,12 +238,6 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	}
 	
 	// finally store projections in ProtocolDecl contexts
-	
-	/*@Override
-	protected boolean overrideSubstitution()
-	{
-		return true;
-	}*/
 	
 	// gpn is full global protocol name, mod is a module with the single local protocol projection
 	public void addProjection(ProtocolName gpn, Role role, Module mod)

@@ -1,11 +1,23 @@
 package org.scribble2.model.del;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.scribble2.model.DataTypeDecl;
+import org.scribble2.model.ImportDecl;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
+import org.scribble2.model.ModuleDecl;
 import org.scribble2.model.global.GlobalProtocolDecl;
+import org.scribble2.model.local.LocalProtocolDecl;
+import org.scribble2.model.name.qualified.ModuleNameNode;
+import org.scribble2.model.name.qualified.ProtocolNameNode;
+import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
@@ -13,6 +25,7 @@ import org.scribble2.sesstype.name.MessageSignatureName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.PayloadType;
 import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 public class ModuleDelegate extends ModelDelegateBase
@@ -85,6 +98,42 @@ public class ModuleDelegate extends ModelDelegateBase
 		jcontext.addProjections(proj.getProjections());
 		
 		return mod;
+	}
+
+	public Module createModuleForProjection(Projector proj, Module main, LocalProtocolDecl lpd, Map<ProtocolName, Set<Role>> dependencies)
+	{
+		//.. store projection module in context? do this earlier?
+		//.. look up all projection sets from global protocol decls and store somewhere? in context?
+		
+		ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(main.moddecl.fullmodname.toName(), lpd.header.name.toName());
+		
+		//.. factor out full name making, use also for do
+		//.. record protocol dependencies in context
+
+		//ModuleDecl moddecl = new ModuleDecl(modname);
+		ModuleDecl moddecl = ModelFactoryImpl.FACTORY.ModuleDecl(modname);
+		List<ImportDecl> imports = new LinkedList<>();  // Need names from do
+		
+		for (ProtocolName gpn : dependencies.keySet())
+		{
+			Set<Role> tmp = dependencies.get(gpn);
+			for (Role role : tmp)
+			{
+				ProtocolNameNode targetfullname = Projector.makeProjectedProtocolNameNode(gpn, role);
+				SimpleProtocolNameNode targetsimname = proj.makeProjectedLocalName(gpn.getSimpleName(), role);
+				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(main.getFullModuleName(), targetsimname.toName());
+				if (!targetfullname.toName().getPrefix().equals(modname.toName()))
+				{
+					//imports.add(new ImportModule(targetmodname, null));
+					imports.add(ModelFactoryImpl.FACTORY.ImportModule(targetmodname, null));
+				}
+			}
+		}
+		
+		List<DataTypeDecl> data = new LinkedList<>(main.data);  // FIXME: copy  // FIXME: only project dependencies
+		List<LocalProtocolDecl> protos = Arrays.asList(lpd);
+		//return new Module(moddecl, imports, data, protos);
+		return ModelFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}
 
 	/*protected ModuleContext(ModuleContext mcontext)

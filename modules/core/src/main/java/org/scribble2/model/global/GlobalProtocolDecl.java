@@ -21,17 +21,6 @@ public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, Globa
 		return new GlobalProtocolDecl(this.header, this.def);
 	}
 
-	/*public GlobalProtocolDecl(CommonTree t)//, GlobalProtocolHeader header, GlobalProtocolDefinition def)
-	{
-		//this(t, name, roledecls, paramdecls, def, null, null);
-		super(t);//, header, def);
-	}*/
-
-	/*protected GlobalProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, GlobalProtocolDefinition def, ProtocolDeclContext pdcontext, Env env)
-	{
-		super(ct, name, roledecls, paramdecls, def, pdcontext, env);
-	}*/
-
 	@Override
 	protected GlobalProtocolDecl reconstruct(GlobalProtocolHeader header, GlobalProtocolDefinition def)//, ProtocolDeclContext pdcontext, Env env)
 	{
@@ -41,6 +30,12 @@ public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, Globa
 		GlobalProtocolDecl gpd = new GlobalProtocolDecl(header, def);
 		gpd = (GlobalProtocolDecl) gpd.del(del);  // FIXME: does another shallow copy
 		return gpd;
+	}
+
+	@Override
+	public boolean isGlobal()
+	{
+		return true;
 	}
 
 	/*@Override
@@ -140,12 +135,6 @@ public class GlobalProtocolDecl extends ProtocolDecl<GlobalProtocolHeader, Globa
 		}
 		return this;
 	}*/
-
-	@Override
-	public boolean isGlobal()
-	{
-		return true;
-	}
 	
 	/*@Override
 	public GlobalProtocolBlock getBody()
