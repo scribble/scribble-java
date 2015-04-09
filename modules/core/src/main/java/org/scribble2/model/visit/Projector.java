@@ -1,9 +1,7 @@
 package org.scribble2.model.visit;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 import org.scribble2.model.InteractionNode;
@@ -16,7 +14,6 @@ import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
-import org.scribble2.model.del.global.GlobalProtocolDeclDelegate;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
@@ -36,9 +33,9 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	// first protocol name is full global protocol name, second is full local projection names
 	private Map<ProtocolName, Map<Role, Module>> projections = new HashMap<>();
 	
-	// cache of dependencies, cleared on entering each root global protocol
+	/*// cache of dependencies, cleared on entering each root global protocol
 	// protocol name is full name of global protocol dependencies
-	private Map<ProtocolName, Set<Role>> dependencies = new HashMap<>();
+	private Map<ProtocolName, Set<Role>> dependencies = new HashMap<>();*/
 	
 	// first protocol name is full root global protocol name, second is full global protocol dependency names (reflexive)
 	//private Map<ProtocolName, Map<Role, Map<ProtocolName, Set<Role>>>> dependencies = new HashMap<>();
@@ -88,11 +85,11 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		Module main = jc.getMainModule();
 
 		ProtocolName gpn = child.getFullProtocolName(main);*/
-		Map<Role, Map<ProtocolName, Set<Role>>> deps = new HashMap<>();  // FIXME: factor dependency building out to a context pass
+		//Map<Role, Map<ProtocolName, Set<Role>>> deps = new HashMap<>();  // FIXME: factor dependency building out to a context pass
 		for (Role self : child.header.roledecls.getRoles())
 		{
 			pushSelf(self);
-			clearProtocolDependencies();
+			//clearProtocolDependencies();
 
 			Projector proj = (Projector) enter(parent, child);
 			//GlobalProtocolDecl gpd = (GlobalProtocolDecl)
@@ -100,7 +97,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			visited = (GlobalProtocolDecl) leave(parent, child, proj, visited);
 			// projection will not change original global protocol (visited discarded)
 			
-			deps.put(self, proj.getProtocolDependencies());
+			//deps.put(self, proj.getProtocolDependencies());
 			
 			//System.out.println("P: " + self + ":\n" + projected + "\n");
 			
@@ -109,16 +106,20 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			
 			popSelf();
 		}
-		//return this;
+		/*//return this;
 		//ProtocolDeclContext pdcontext = new ProtocolDeclContext(dependencies);
 		GlobalProtocolDeclDelegate del = ((GlobalProtocolDeclDelegate) child.del()).setDependencies(deps);  // FIXME: move to leaveProjection in GlobalProtocolDecl
-			
-		//System.out.println("c: " + this.name + ", " + pdcontext.getProtocolDependencies());
 
 		//return reconstruct(this.name, this.roledecls, this.paramdecls, this.def, pdcontext, getEnv());
 		return (GlobalProtocolDecl) child.del(del);  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
-		
-		// projected modules added to context delegate in (main) module delegate leaveProjection
+			
+		// projected modules added to context delegate in (main) module delegate leaveProjection*/
+
+		//System.out.println("c: " + child.header.name); 
+		//System.out.println("c: " + deps);
+		//System.out.println("c: " + ((GlobalProtocolDeclDelegate) child.del()).getProtocolDependencies());
+
+		return child;
 	}
 	
 	/*@Override
@@ -312,7 +313,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		return this.projections;
 	}
 	
-	public void clearProtocolDependencies()
+	/*public void clearProtocolDependencies()
 	{
 		//this.dependencies.clear();  // clears the reference obtained from getProtocolDependencies  // maybe we/client should make a defensive copy
 		this.dependencies = new HashMap<>();
@@ -334,5 +335,5 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	public Map<ProtocolName, Set<Role>> getProtocolDependencies()
 	{
 		return this.dependencies;
-	}
+	}*/
 }

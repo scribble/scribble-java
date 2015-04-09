@@ -1,11 +1,6 @@
 package org.scribble2.model.del.local;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.scribble2.model.del.ProtocolDeclDelegate;
-import org.scribble2.sesstype.name.ProtocolName;
-import org.scribble2.sesstype.name.Role;
 
 public class LocalProtocolDeclDelegate extends ProtocolDeclDelegate
 {
@@ -14,7 +9,7 @@ public class LocalProtocolDeclDelegate extends ProtocolDeclDelegate
 
 	}
 
-	protected LocalProtocolDeclDelegate(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
+	/*protected LocalProtocolDeclDelegate(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
 	{
 		super(dependencies);
 	}
@@ -23,6 +18,12 @@ public class LocalProtocolDeclDelegate extends ProtocolDeclDelegate
 	protected LocalProtocolDeclDelegate reconstruct(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
 	{
 		return new LocalProtocolDeclDelegate(dependencies);
+	}*/
+
+	@Override
+	protected LocalProtocolDeclDelegate copy()
+	{
+		return new LocalProtocolDeclDelegate();
 	}
 
 	/*@Override

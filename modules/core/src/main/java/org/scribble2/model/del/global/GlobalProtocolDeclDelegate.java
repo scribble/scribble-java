@@ -29,7 +29,7 @@ public class GlobalProtocolDeclDelegate extends ProtocolDeclDelegate
 
 	}
 	
-	protected GlobalProtocolDeclDelegate(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
+	/*protected GlobalProtocolDeclDelegate(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
 	{
 		super(dependencies);
 	}
@@ -44,22 +44,28 @@ public class GlobalProtocolDeclDelegate extends ProtocolDeclDelegate
 	public GlobalProtocolDeclDelegate setDependencies(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
 	{
 		return (GlobalProtocolDeclDelegate) super.setDependencies(dependencies);
-	}
+	}*/
 
 	@Override
+	protected GlobalProtocolDeclDelegate copy()
+	{
+		return new GlobalProtocolDeclDelegate();
+	}
+
+	/*@Override
 	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	{
-		JobContext jc = proj.getJobContext();
+		/*JobContext jc = proj.getJobContext();
 		Module main = jc.getMainModule();
 
 		ProtocolName gpn = ((GlobalProtocolDecl) child).getFullProtocolName(main);
 		Role self = proj.peekSelf();
 
 		//proj.addProtocolDependency(gpn, self, gpn, self);
-		proj.addProtocolDependency(gpn, self);
+		proj.addProtocolDependency(gpn, self);* /
 
 		return proj;
-	}
+	}*/
 	
 	@Override
 	public GlobalProtocolDecl leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
@@ -72,7 +78,8 @@ public class GlobalProtocolDeclDelegate extends ProtocolDeclDelegate
 		GlobalProtocolDecl gpd = (GlobalProtocolDecl) visited;
 
 		LocalProtocolDecl lpd = project(proj, gpd);
-		Map<ProtocolName, Set<Role>> deps = proj.getProtocolDependencies();
+		//Map<ProtocolName, Set<Role>> deps = proj.getProtocolDependencies();
+		Map<ProtocolName, Set<Role>> deps = ((GlobalProtocolDeclDelegate) gpd.del()).getProtocolDependencies().get(self);
 		//Module projected = projectIntoModule(proj, gpd);
 		Module projected = ((ModuleDelegate) main.del()).createModuleForProjection(proj, main, lpd, deps);  // FIXME: projection should always use the main module?
 		// store projections in projector? in context? do earlier with context building? (but subprotocol pattern not available there)* /
