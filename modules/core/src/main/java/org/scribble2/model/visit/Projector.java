@@ -65,15 +65,60 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		// Or else need to build in a "visit override" mechanism into the parent visitors
 		if (child instanceof GlobalProtocolDecl)
 		{
-			Projector proj = (Projector) enter(parent, child);
+			/*Projector proj = (Projector) enter(parent, child);
 			//ModelNode visited = child.visitChildrenInSubprotocols(spv);  visitForProjection
 			ModelNode visited = ((GlobalProtocolDeclDelegate) child.del()).visitForProjection(this, (GlobalProtocolDecl) child);
-			return leave(parent, child, proj, visited);
+			return leave(parent, child, proj, visited);*/
+			//return ((GlobalProtocolDeclDelegate) child.del()).visitOverrideForProjection(this, (Module) parent, (GlobalProtocolDecl) child);
+			return visitOverrideForProjection((Module) parent, (GlobalProtocolDecl) child);
 		}
 		else
 		{
 			return super.visit(parent, child);
 		}
+	}
+
+	// Projector uses this to "override" the base SubprotocolVisitor visitChildrenInSubprotocols pattern
+	// Better to be in the visitor than in the del for visibility of visitor enter/leave -- also localises special visiting pattern inside the visitor, while keeping the del enter/leave methods uniform (e.g. GlobalProtocolDeclDelegate enter/leave relies on the same peekSelf API as for other nodes)
+	private GlobalProtocolDecl visitOverrideForProjection(Module parent, GlobalProtocolDecl child) throws ScribbleException
+	{
+		//ModelNode visited = child.visitChildrenInSubprotocols(spv);  visitForProjection
+		//ModuleDelegate md = getModuleDelegate();
+		/*JobContext jc = proj.getJobContext();
+		Module main = jc.getMainModule();
+
+		ProtocolName gpn = child.getFullProtocolName(main);*/
+		Map<Role, Map<ProtocolName, Set<Role>>> dependencies = new HashMap<>();
+		for (Role self : child.header.roledecls.getRoles())
+		{
+			pushSelf(self);
+			clearProtocolDependencies();
+
+			Projector proj = (Projector) enter(parent, child);
+			//GlobalProtocolDecl gpd = (GlobalProtocolDecl)
+			GlobalProtocolDecl visited = (GlobalProtocolDecl) child.visitChildrenInSubprotocols(proj);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
+			visited = (GlobalProtocolDecl) leave(parent, child, proj, visited);
+			// projection will not change original global protocol (visited discarded)
+			
+			dependencies.put(self, proj.getProtocolDependencies());
+			
+			//System.out.println("P: " + self + ":\n" + projected + "\n");
+			
+			//.. add all dependencies to projection set (needs to be done after all modules have been visited) .. FIXME: dependencies need to be the sigs for the argument positions, not just the name -- or maybe ok to not, just be conservative
+			//.. maybe just record all projections in one big store for reachability checking, projection set for a specific global protocol can be worked out form dependencies?
+			
+			popSelf();
+		}
+		//return this;
+		//ProtocolDeclContext pdcontext = new ProtocolDeclContext(dependencies);
+		GlobalProtocolDeclDelegate del = ((GlobalProtocolDeclDelegate) child.del()).setDependencies(dependencies);  // FIXME: move to leaveProjection in GlobalProtocolDecl
+			
+		//System.out.println("c: " + this.name + ", " + pdcontext.getProtocolDependencies());
+
+		//return reconstruct(this.name, this.roledecls, this.paramdecls, this.def, pdcontext, getEnv());
+		return (GlobalProtocolDecl) child.del(del);  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
+		
+		// projected modules added to context delegate in (main) module delegate leaveProjection
 	}
 	
 	/*@Override
