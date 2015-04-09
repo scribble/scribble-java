@@ -115,11 +115,11 @@ public class ContextBuilder extends ModelVisitor
 		return this.mcontext;
 	}
 	
-	/*public void clearProtocolDependencies()
+	public void clearProtocolDependencies()
 	{
 		//this.dependencies.clear();  // clears the reference obtained from getProtocolDependencies  // maybe we/client should make a defensive copy
 		this.dependencies = new HashMap<>();
-	}*/
+	}
 
 	public void addProtocolDependency(Role self, ProtocolName gpn, Role role)
 	{

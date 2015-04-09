@@ -47,6 +47,8 @@ public abstract class ProtocolDeclDelegate extends ModelDelegateBase
 	@Override
 	public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder proj) throws ScribbleException
 	{
+		proj.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
+		
 		JobContext jc = proj.getJobContext();
 		Module main = jc.getMainModule();
 		
@@ -71,7 +73,7 @@ public abstract class ProtocolDeclDelegate extends ModelDelegateBase
 
 		//return reconstruct(this.name, this.roledecls, this.paramdecls, this.def, pdcontext, getEnv());
 		//GlobalProtocolDeclDelegate del = setDependencies(proj.getProtocolDependencies());  // FIXME: should be a deep clone in principle
-		ProtocolDeclDelegate del = copy();  // FIXME: should be a deep clone in principle
+		ProtocolDeclDelegate del = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
 		del.pdcontext = new ProtocolDeclContext(builder.getProtocolDependencies());
 		return cast(child.del(del));  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
 	}
@@ -90,14 +92,15 @@ public abstract class ProtocolDeclDelegate extends ModelDelegateBase
 	private ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 		cast(ModelNode child)
 	{
-		if (ProtocolDecl.class.isAssignableFrom(child.getClass()))
+		ProtocolDecl.class.cast(child);
+		//if (ProtocolDecl.class.isAssignableFrom(child.getClass()))
 		{
 			@SuppressWarnings("unchecked")
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 				pd = (ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) child;
 			return pd;
 		}
-		throw new RuntimeException("Bad ProtocolDecl cast: " + child.getClass());
+		//throw new RuntimeException("Bad ProtocolDecl cast: " + child.getClass());
 	}
 
 	/*private static Map<Role, Map<ProtocolName, Set<Role>>> cloneDependencyMap(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
