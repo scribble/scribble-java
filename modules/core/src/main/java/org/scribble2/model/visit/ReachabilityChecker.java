@@ -9,6 +9,7 @@ import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.del.local.LocalInteractionSequenceDelegate;
 import org.scribble2.model.local.LocalInteractionSequence;
+import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.util.ScribbleException;
 
@@ -37,17 +38,22 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 	{
 		if (child instanceof LocalInteractionSequence)
 		{
-			/*Projector proj = (Projector) enter(parent, child);
-			ModelNode visited = visitForProjection((Module) parent, (GlobalProtocolDecl) child);
-			return leave(parent, child, proj, visited);*/
-			ReachabilityChecker checker = (ReachabilityChecker) enter(parent, child);
-			ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(this, (LocalInteractionSequence) child);
-			return leave(parent, child, checker, visited);
+			return visitOverrideForLocalInteractionSequence((LocalProtocolBlock) parent, (LocalInteractionSequence) child);
 		}
 		else
 		{
 			return super.visit(parent, child);
 		}
+	}
+	
+	private LocalInteractionSequence visitOverrideForLocalInteractionSequence(LocalProtocolBlock parent, LocalInteractionSequence child) throws ScribbleException
+	{
+		/*Projector proj = (Projector) enter(parent, child);
+		ModelNode visited = visitForProjection((Module) parent, (GlobalProtocolDecl) child);
+		return leave(parent, child, proj, visited);*/
+		ReachabilityChecker checker = (ReachabilityChecker) enter(parent, child);
+		ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(this, (LocalInteractionSequence) child);
+		return (LocalInteractionSequence) leave(parent, child, checker, visited);
 	}
 
 	@Override
