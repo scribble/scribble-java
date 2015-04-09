@@ -64,6 +64,7 @@ public class ModuleDelegate extends ModelDelegateBase
 		return new ModuleDelegate();
 	}
 
+	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)
 	@Override
 	public ModelNode leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
 	{

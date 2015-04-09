@@ -45,6 +45,8 @@ public class ModuleContext
 		
 		//addImportedModules(jcontext);
 		//addMembers();
+		
+		//System.out.println("1: " + this);
 	}
 
 	/*protected ModuleContext(ModuleContext mcontext)
