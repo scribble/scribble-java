@@ -1,6 +1,6 @@
 // java -cp bin';'lib/antlr-3.5.2-complete.jar';'parser scribble.main.Main2 test/src/test/Test7.scr
  
-package scribble2.main;
+package org.scribble2.cli;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +49,7 @@ public class Main
 		//.. make visitChildren override (cancel/replace) feature, e.g. project, buildgraph
 		//.. job context is mutable -- refactor job/jobcontexts?
 
-		try
+		/*try
 		{
 			System.out.println("\n--- Name disambigiation --- ");
 			job.runNodeVisitorPass(NameDisambiguator.class);
@@ -69,6 +69,6 @@ public class Main
 		catch (ScribbleException e)
 		{
 			System.out.println(e.getMessage());
-		}
+		}*/
 	}
 }

@@ -1,13 +1,12 @@
-package scribble2.parser.ast;
+package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.ImportModule;
+import org.scribble2.model.name.qualified.ModuleNameNode;
+import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.parser.AntlrModuleParser;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
-
-import scribble2.ast.ImportModule;
-import scribble2.ast.name.ModuleNameNodes;
-import scribble2.ast.name.SimpleProtocolNameNode;
-import scribble2.parser.AntlrTreeParser;
 
 public class AntlrImportModule
 {
@@ -16,13 +15,13 @@ public class AntlrImportModule
 
 	public static ImportModule parseImportModule(AntlrModuleParser parser, CommonTree ct)
 	{
-		ModuleNameNodes fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
+		ModuleNameNode fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
 		SimpleProtocolNameNode alias = null;
 		if (hasAlias(ct))
 		{
 			alias = AntlrSimpleName.toSimpleProtocolNameNode(getAliasChild(ct));
 		}
-		return new ImportModule(ct, fmn, alias);
+		return new ImportModule(fmn, alias);
 	}
 
 	public static CommonTree getModuleNameChild(CommonTree ct)

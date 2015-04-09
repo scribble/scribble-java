@@ -1,4 +1,4 @@
-package scribble2.parser.ast;
+package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.MessageSignatureDecl;
@@ -23,7 +23,7 @@ public class AntlrMessageSignatureDecl
 		CommonTree tmp3 = getExtNameChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
 		SimpleMessageSignatureNameNode alias = AntlrSimpleName.toSimpleMessageSignatureNameNode(getAliasChild(ct));
-		return new MessageSignatureDecl(ct, schema, extName, source, alias);
+		return new MessageSignatureDecl(schema, extName, source, alias);
 	}
 
 	/*public static MessageSignature getFullMessageSignatureName(CommonTree ct)
