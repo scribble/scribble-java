@@ -88,7 +88,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		Module main = jc.getMainModule();
 
 		ProtocolName gpn = child.getFullProtocolName(main);*/
-		Map<Role, Map<ProtocolName, Set<Role>>> dependencies = new HashMap<>();
+		Map<Role, Map<ProtocolName, Set<Role>>> deps = new HashMap<>();  // FIXME: factor dependency building out to a context pass
 		for (Role self : child.header.roledecls.getRoles())
 		{
 			pushSelf(self);
@@ -100,7 +100,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			visited = (GlobalProtocolDecl) leave(parent, child, proj, visited);
 			// projection will not change original global protocol (visited discarded)
 			
-			dependencies.put(self, proj.getProtocolDependencies());
+			deps.put(self, proj.getProtocolDependencies());
 			
 			//System.out.println("P: " + self + ":\n" + projected + "\n");
 			
@@ -111,7 +111,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		}
 		//return this;
 		//ProtocolDeclContext pdcontext = new ProtocolDeclContext(dependencies);
-		GlobalProtocolDeclDelegate del = ((GlobalProtocolDeclDelegate) child.del()).setDependencies(dependencies);  // FIXME: move to leaveProjection in GlobalProtocolDecl
+		GlobalProtocolDeclDelegate del = ((GlobalProtocolDeclDelegate) child.del()).setDependencies(deps);  // FIXME: move to leaveProjection in GlobalProtocolDecl
 			
 		//System.out.println("c: " + this.name + ", " + pdcontext.getProtocolDependencies());
 

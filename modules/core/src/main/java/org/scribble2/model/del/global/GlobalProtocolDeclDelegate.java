@@ -55,8 +55,8 @@ public class GlobalProtocolDeclDelegate extends ProtocolDeclDelegate
 		ProtocolName gpn = ((GlobalProtocolDecl) child).getFullProtocolName(main);
 		Role self = proj.peekSelf();
 
-			//proj.addProtocolDependency(gpn, self, gpn, self);
-			proj.addProtocolDependency(gpn, self);
+		//proj.addProtocolDependency(gpn, self, gpn, self);
+		proj.addProtocolDependency(gpn, self);
 
 		return proj;
 	}

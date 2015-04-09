@@ -100,7 +100,8 @@ public class ModelFactoryImpl implements ModelFactory
 			List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
-		module = del(module, new ModuleDelegate(module.getFullModuleName()));
+		//module = del(module, new ModuleDelegate(module.getFullModuleName()));
+		module = del(module, new ModuleDelegate());
 		return module;
 	}
 

@@ -25,9 +25,9 @@ public class LocalProtocolDeclDelegate extends ProtocolDeclDelegate
 		return new LocalProtocolDeclDelegate(dependencies);
 	}
 
-	@Override
+	/*@Override
 	public LocalProtocolDeclDelegate setDependencies(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
 	{
 		return (LocalProtocolDeclDelegate) super.setDependencies(dependencies);
-	}
+	}*/
 }
