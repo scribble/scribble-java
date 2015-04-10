@@ -58,7 +58,8 @@ public class GlobalInteractionSequenceDelegate extends InteractionSequenceDelega
 		}
 		LocalInteractionSequence projection = ModelFactoryImpl.FACTORY.LocalInteractionSequence(lis);
 		ProjectionEnv env = proj.popEnv();
-		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		proj.pushEnv(new ProjectionEnv(projection));
 		//return gis;
 		return (GlobalInteractionSequence) super.popAndSetEnv(parent, child, proj, gis);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}

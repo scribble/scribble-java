@@ -10,7 +10,6 @@ import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
-// make module/protocol delegate state (module context, protocol dependencies) setting uniform -- related to (non-)immutablity of delegates (where to store "context" state)
 
 // enter doesn't need to return visitor, not using visitor immutability? (or visitor replacement flexibility)
 
@@ -25,8 +24,10 @@ import org.scribble2.util.ScribbleException;
 //...HERE: fix ReachabilityEnv merge; do enter/leave reachability check for recursion/continue/parallel/etc; check reachability pass visits all projected modules
 //... check delegates for local nodes; check reachability visiting for (local) interaction sequence (and delegate)
 
+// Done
+// - make module/protocol delegate state (module context, protocol dependencies) setting uniform -- related to (non-)immutablity of delegates (where to store "context" state)
 
-// No
+// Not done
 // - FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections) -- no, leave in delegate
 // - change InteractionNode interface to a base class -- no, better for interaction nodes to extend simple/compound as base
 // - make a createDelegate method in ModelNode -- no, leave association of delegates to model nodes in factory -- then replacing a delegate requires changing the factory only

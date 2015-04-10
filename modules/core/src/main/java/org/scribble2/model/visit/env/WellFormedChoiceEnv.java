@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.del.ModuleDelegate;
-import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.SubprotocolVisitor;
 import org.scribble2.sesstype.ScopedMessage;
 import org.scribble2.sesstype.ScopedMessageSignature;
@@ -38,14 +36,16 @@ public class WellFormedChoiceEnv extends Env
 	private Map<SubprotocolSignature, MessageMap<ScopedMessage>> subsigs;
 	private Set<SubprotocolSignature> recording;
 
-	public WellFormedChoiceEnv(JobContext jcontext, ModuleDelegate mcontext)
+	//public WellFormedChoiceEnv(JobContext jcontext, ModuleDelegate mcontext)
+	public WellFormedChoiceEnv()
 	{
 		/*super(jcontext, mcontext);
 		this.initial = new MessageMap<>();
 		this.initialInterrupts = new MessageMap<>();
 		this.subsigs = new HashMap<>();
 		this.recording = new HashSet<>();*/
-		this(jcontext, mcontext, new MessageMap<>(), new MessageMap<>(), new HashMap<>(), new HashSet<>());
+		//this(jcontext, mcontext, new MessageMap<>(), new MessageMap<>(), new HashMap<>(), new HashSet<>());
+		this(new MessageMap<>(), new MessageMap<>(), new HashMap<>(), new HashSet<>());
 	}
 	
 	/*protected WellFormedChoiceEnv(WellFormedChoiceEnv parent)  // "push" constructor
@@ -60,11 +60,11 @@ public class WellFormedChoiceEnv extends Env
 				parent.recording);
 	}*/
 	
-	protected WellFormedChoiceEnv(JobContext jcontext, ModuleDelegate mcontext, //WellFormedChoiceEnv root, WellFormedChoiceEnv parent,
+	protected WellFormedChoiceEnv(//JobContext jcontext, ModuleDelegate mcontext, //WellFormedChoiceEnv root, WellFormedChoiceEnv parent,
 			MessageMap<ScopedMessage> initial, MessageMap<ScopedMessage> initialInterrupts,
 			Map<SubprotocolSignature, MessageMap<ScopedMessage>> subsigs, Set<SubprotocolSignature> recording)
 	{
-		super(jcontext, mcontext);//, root, parent);
+		//super(jcontext, mcontext);//, root, parent);
 		this.initial = new MessageMap<>(initial);
 		this.initialInterrupts = new MessageMap<>(initialInterrupts);
 		this.subsigs =
@@ -75,7 +75,7 @@ public class WellFormedChoiceEnv extends Env
 	@Override
 	protected WellFormedChoiceEnv copy()
 	{
-		return new WellFormedChoiceEnv(getJobContext(), getModuleDelegate(), //getProtocolDeclEnv(), getParent(),
+		return new WellFormedChoiceEnv(//getJobContext(), getModuleDelegate(), //getProtocolDeclEnv(), getParent(),
 				this.initial, this.initialInterrupts, this.subsigs, this.recording);
 	}
 	
@@ -158,7 +158,8 @@ public class WellFormedChoiceEnv extends Env
 		//env.initial.clear();
 		//env.initialInterrupts.clear();
 		return env;*/
-		return new WellFormedChoiceEnv(getJobContext(), getModuleDelegate(), this.initial, this.initialInterrupts, 
+		return new WellFormedChoiceEnv(//getJobContext(), getModuleDelegate(),
+				this.initial, this.initialInterrupts, 
 				this.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap<>(this.subsigs.get(k)))),
 				this.recording);
 	}

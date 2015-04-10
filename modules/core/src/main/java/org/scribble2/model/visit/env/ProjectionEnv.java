@@ -1,8 +1,6 @@
 package org.scribble2.model.visit.env;
 
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.ModuleDelegate;
-import org.scribble2.model.visit.JobContext;
 
 public class ProjectionEnv extends Env
 {
@@ -11,15 +9,17 @@ public class ProjectionEnv extends Env
 	//.. do projection for each node
 
 	//public ProjectionEnv(JobContext jcontext, ModuleContext mcontext, Node projection)
-	public ProjectionEnv(JobContext jcontext, ModuleDelegate mcontext)
+	//public ProjectionEnv(JobContext jcontext, ModuleDelegate mcontext)
+	public ProjectionEnv()
 	{
-		super(jcontext, mcontext);
+		//super(jcontext, mcontext);
 		//this.projection = projection;
 	}
 
-	public ProjectionEnv(JobContext jcontext, ModuleDelegate mcontext, ModelNode projection)
+	//public ProjectionEnv(JobContext jcontext, ModuleDelegate mcontext, ModelNode projection)
+	public ProjectionEnv(ModelNode projection)
 	{
-		this(jcontext, mcontext);
+		//this(jcontext, mcontext);
 		this.projection = projection;
 	}
 	
@@ -38,7 +38,8 @@ public class ProjectionEnv extends Env
 	@Override
 	public ProjectionEnv copy()
 	{
-		return new ProjectionEnv(getJobContext(), getModuleDelegate(), this.projection);
+		//return new ProjectionEnv(getJobContext(), getModuleDelegate(), this.projection);
+		return new ProjectionEnv(this.projection);
 	}
 
 	/*@Override

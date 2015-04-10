@@ -51,7 +51,8 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 	{
 		//return new ProjectionEnv(this.getJobContext(), getModuleContext(), null);
-		return new ProjectionEnv(this.getJobContext(), getModuleDelegate());
+		//return new ProjectionEnv(this.getJobContext(), getModuleDelegate());
+		return new ProjectionEnv();
 	}
 
 	@Override

@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.scribble2.model.del.ModuleDelegate;
-import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.name.RecursionVar;
 
 // FIXME: nested subprotocol reachability (e.g. subprotocol cycle contained within a choice block)
@@ -17,18 +15,21 @@ public class ReachabilityEnv extends Env
 	private boolean contExitable;  // false after a continue; true if choice has an exit (false inherited for all other constructs)
 	private boolean doExitable;
 	
-	public ReachabilityEnv(JobContext jcontext, ModuleDelegate mcontext)
+	//public ReachabilityEnv(JobContext jcontext, ModuleDelegate mcontext)
+	public ReachabilityEnv()
 	{
 		/*super(jcontext, mcontext);
 		this.contlabs = new HashSet<>();*/
-		this(jcontext, mcontext, Collections.emptySet(), true, true);
+		//this(jcontext, mcontext, Collections.emptySet(), true, true);
+		this(Collections.emptySet(), true, true);
 	}
 	
 	//protected ReachabilityEnv(JobContext jcontext, ModuleDelegate mcontext, ReachabilityEnv root, ReachabilityEnv parent, Set<RecursionVar> contlabs, boolean contExitable, boolean doExitable)
-	protected ReachabilityEnv(JobContext jcontext, ModuleDelegate mcontext, Set<RecursionVar> contlabs, boolean contExitable, boolean doExitable)
+	//protected ReachabilityEnv(JobContext jcontext, ModuleDelegate mcontext, Set<RecursionVar> contlabs, boolean contExitable, boolean doExitable)
+	protected ReachabilityEnv(Set<RecursionVar> contlabs, boolean contExitable, boolean doExitable)
 	{
 		//super(jcontext, mcontext, root, parent);
-		super(jcontext, mcontext);//, root, parent);
+		//super(jcontext, mcontext);//, root, parent);
 		this.contlabs = new HashSet<RecursionVar>(contlabs);
 		this.contExitable = contExitable;
 		this.doExitable = doExitable;
@@ -43,7 +44,8 @@ public class ReachabilityEnv extends Env
 	public ReachabilityEnv copy()
 	{
 		//return new ReachabilityEnv(getJobContext(), getModuleDelegate(), getProtocolDeclEnv(), getParent(), this.contlabs, this.contExitable, this.doExitable);
-		return new ReachabilityEnv(getJobContext(), getModuleDelegate(), this.contlabs, this.contExitable, this.doExitable);
+		//return new ReachabilityEnv(getJobContext(), getModuleDelegate(), this.contlabs, this.contExitable, this.doExitable);
+		return new ReachabilityEnv(this.contlabs, this.contExitable, this.doExitable);
 	}
 
 	@Override

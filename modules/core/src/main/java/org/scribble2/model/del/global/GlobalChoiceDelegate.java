@@ -132,7 +132,8 @@ public class GlobalChoiceDelegate extends GlobalCompoundInteractionNodeDelegate
 			projection = ModelFactoryImpl.FACTORY.LocalChoice(subj, blocks);
 		}
 		ProjectionEnv env = proj.popEnv();
-		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		proj.pushEnv(new ProjectionEnv(projection));
 		return (GlobalChoice) super.leaveProjection(parent, child, proj, gc);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

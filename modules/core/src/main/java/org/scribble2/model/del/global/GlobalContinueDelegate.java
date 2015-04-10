@@ -21,7 +21,8 @@ public class GlobalContinueDelegate extends GlobalSimpleInteractionNodeDelegate
 		RecursionVarNode recvar = (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, gc.recvar.toName().toString());
 		LocalContinue projection = ModelFactoryImpl.FACTORY.LocalContinue(recvar);
 		ProjectionEnv env = proj.popEnv();
-		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		proj.pushEnv(new ProjectionEnv(projection));
 		return (GlobalContinue) super.leaveProjection(parent, child, proj, gc);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

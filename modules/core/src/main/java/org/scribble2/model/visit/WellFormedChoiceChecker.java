@@ -21,7 +21,8 @@ public class WellFormedChoiceChecker extends EnvVisitor<WellFormedChoiceEnv>
 	protected WellFormedChoiceEnv makeRootProtocolDeclEnv(
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 	{
-		return new WellFormedChoiceEnv(getJobContext(), getModuleDelegate());
+		//return new WellFormedChoiceEnv(getJobContext(), getModuleDelegate());
+		return new WellFormedChoiceEnv();
 	}
 	
 	@Override

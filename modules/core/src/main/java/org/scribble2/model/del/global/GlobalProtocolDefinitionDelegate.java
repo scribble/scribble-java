@@ -32,7 +32,8 @@ public class GlobalProtocolDefinitionDelegate extends ProtocolDefinitionDelegate
 		LocalProtocolDefinition projection = ModelFactoryImpl.FACTORY.LocalProtocolDefinition(block);
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
 		ProjectionEnv env = proj.popEnv();
-		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		proj.pushEnv(new ProjectionEnv(projection));
 		return (GlobalProtocolDefinition) popAndSetEnv(parent, child, proj, gpd);
 	}
 }

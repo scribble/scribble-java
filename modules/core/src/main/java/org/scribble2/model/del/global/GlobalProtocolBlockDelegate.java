@@ -28,7 +28,8 @@ public class GlobalProtocolBlockDelegate extends ProtocolBlockDelegate
 		LocalProtocolBlock projection = ModelFactoryImpl.FACTORY.LocalProtocolBlock(seq);
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
 		ProjectionEnv env = proj.popEnv();
-		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		proj.pushEnv(new ProjectionEnv(projection));
 		return (GlobalProtocolBlock) super.popAndSetEnv(parent, child, proj, gpd);
 	}
 }

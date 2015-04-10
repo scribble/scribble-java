@@ -48,7 +48,8 @@ public class GlobalRecursionDelegate extends GlobalCompoundInteractionNodeDelega
 		}
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		ProjectionEnv env = proj.popEnv();
-		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		proj.pushEnv(new ProjectionEnv(projection));
 		return (GlobalRecursion) super.leaveProjection(parent, child, proj, gr);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

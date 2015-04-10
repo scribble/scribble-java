@@ -24,7 +24,8 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 	protected ReachabilityEnv makeRootProtocolDeclEnv(
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 	{
-		ReachabilityEnv env = new ReachabilityEnv(this.getJobContext(), getModuleDelegate());
+		//ReachabilityEnv env = new ReachabilityEnv(this.getJobContext(), getModuleDelegate());
+		ReachabilityEnv env = new ReachabilityEnv();
 		/*for (Role role : pd.roledecls.getRoles())
 		{
 			env = env.enableRoleForRootProtocolDecl(role);
