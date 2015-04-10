@@ -11,10 +11,9 @@ import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
 
-// - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting
-
 // - perhaps refactor to have choice/recursion/etc as packages with global/local/del/etc in each
 
+// - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting
 // - streamline visitor pattern calls (e.g. accept)
 // - streamline vistitor/del env references -- and del enter/leave env setter on visitors
 
