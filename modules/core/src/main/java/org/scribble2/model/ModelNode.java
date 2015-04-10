@@ -27,7 +27,7 @@ import org.scribble2.util.ScribbleException;
  */
 public interface ModelNode// extends Copy
 {
-	ModelNode visit(ModelVisitor nv) throws ScribbleException;
+	ModelNode accept(ModelVisitor nv) throws ScribbleException;
 	ModelNode visitChildren(ModelVisitor nv) throws ScribbleException;
 	ModelNode visitChildrenInSubprotocols(SubprotocolVisitor nv) throws ScribbleException;
 

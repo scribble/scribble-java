@@ -27,7 +27,7 @@ public class LocalInteractionSequenceDelegate extends InteractionSequenceDelegat
 				throw new ScribbleException("Bad sequence to: " + li);
 			}
 			//visited.add((LocalInteractionNode) li.visitChildrenInSubprotocols(this));
-			visited.add((LocalInteractionNode) li.visit(checker));
+			visited.add((LocalInteractionNode) li.accept(checker));
 		}
 		//return reconstruct(this.ct, actions);
 		return child;

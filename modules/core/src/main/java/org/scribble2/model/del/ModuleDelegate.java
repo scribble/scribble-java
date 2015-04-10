@@ -68,7 +68,8 @@ public class ModuleDelegate extends ModelDelegateBase
 	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder)
 	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder)
 	{
-		builder.setModuleContext(new ModuleContext(builder.getJobContext(), (Module) child));
+		//builder.setModuleContext(new ModuleContext(builder.job.getJobContext(), (Module) child));
+		builder.setModuleContext(new ModuleContext((Module) child));
 		//return builder;
 	}
 

@@ -10,7 +10,6 @@ import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
-// - enter doesn't need to return visitor, not using visitor immutability? (or visitor replacement flexibility)
 
 // - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting
 
@@ -25,6 +24,7 @@ import org.scribble2.util.ScribbleException;
 // Done
 // - make module/protocol delegate state (module context, protocol dependencies) setting uniform -- related to (non-)immutablity of delegates (where to store "context" state)
 // - remove job/module contexts from Envs (refer from visitor -- can be updated during visitor pass and reassigned to root module on leave)
+// - enter doesn't need to return visitor, not using visitor immutability? (or visitor replacement flexibility)
 
 // Not done
 // - FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections) -- no, leave in delegate
@@ -67,7 +67,7 @@ public class Job
 
 	//... duplicate job/jobcontext in cli; pass core DS to core job/jobcontext; finish name dismabiguation and other visitors ...
 
-	public void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException
+	private void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException
 	{
 		try
 		{
@@ -75,7 +75,7 @@ public class Job
 			for (ModuleName modname : this.jcontext.getFullModuleNames())
 			{
 				ModelVisitor nv = cons.newInstance(this);
-				Module visited = (Module) this.jcontext.getModule(modname).visit(nv);
+				Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
 				this.jcontext.replaceModule(visited);
 			}
 		}

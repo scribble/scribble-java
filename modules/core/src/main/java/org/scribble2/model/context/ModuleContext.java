@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.scribble2.model.Module;
 import org.scribble2.model.global.GlobalProtocolDecl;
-import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.name.MessageSignatureName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.PayloadType;
@@ -27,7 +26,8 @@ public class ModuleContext
 
 	// Made by ContextBuilder
 	// ModuleContext is the root context
-	public ModuleContext(JobContext jcontext, Module root)
+	//public ModuleContext(JobContext jcontext, Module root)
+	public ModuleContext(Module root)
 	{
 		ModuleName fullmodname = root.getFullModuleName(); 
 

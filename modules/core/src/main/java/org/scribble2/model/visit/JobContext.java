@@ -13,7 +13,7 @@ import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
-// Immutable (from outside) -- no: projections are added mutably later
+// Immutable (from outside) -- no: projections are added mutably later -- also replaceModule not immutable
 // Global "static" context information for a Job
 public class JobContext
 {
@@ -158,7 +158,7 @@ public class JobContext
 			for (ProtocolName lpn : this.projections.keySet())
 			{
 				Module mod = this.projections.get(lpn);
-				mod = (Module) mod.visit(builder);
+				mod = (Module) mod.accept(builder);
 				replaceModule(mod);
 			}
 		}

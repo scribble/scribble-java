@@ -47,15 +47,22 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	
 	//.. do arguments for subprotocol sigs .. substitutions ..
 
-	@Override
-	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
+	// Doesn't push a subprotocol signature; only records the roles/args
+	// proto is fullname
+	public void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 	{
-		/*SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
-		ModelNode visited = child.visitChildrenInSubprotocols(spv);
-		return leave(parent, child, spv, visited);*/
-		enter(parent, child);
-		ModelNode visited = child.visitChildrenInSubprotocols(this);
-		return leave(parent, child, visited);
+		//ProtocolName fullname = pd.getFullProtocolName(getModuleContext().root);
+		/*List<Role> roleparams = pd.roledecls.getRoles();
+		List<Parameter> argparams = pd.paramdecls.getParameters();
+		Map<Role, Role> rolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> r));
+		Map<Argument, Argument> argmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> a));*/
+
+		Map<Role, RoleNode> rolemap = pd.header.roledecls.decls.stream().collect(Collectors.toMap((r) -> r.toName(), (r) -> r.name));
+		Map<Argument, ArgumentNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> p.toName(), (p) -> p.name));
+		this.rolemaps.push(rolemap);
+		this.argmaps.push(argmap);
+
+		//System.out.println("\n0: " + Arrays.asList(fullname.getElements()));
 	}
 
 	@Override
@@ -92,12 +99,6 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		subprotocolEnter(parent, child);
 	}
 
-	//protected SubprotocolVisitor subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected void subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
-	{
-		//return this;
-	}
-
 	@Override
 	//protected final ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
 	protected final ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
@@ -119,28 +120,27 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		return super.leave(parent, child, n);
 	}
 
+	@Override
+	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		/*SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
+		ModelNode visited = child.visitChildrenInSubprotocols(spv);
+		return leave(parent, child, spv, visited);*/
+		enter(parent, child);
+		ModelNode visited = child.visitChildrenInSubprotocols(this);
+		return leave(parent, child, visited);
+	}
+
+	//protected SubprotocolVisitor subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		//return this;
+	}
+
 	//protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, SubprotocolVisitor nv, ModelNode visited) throws ScribbleException
 	protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
 	{
 		return visited;
-	}
-
-	// Doesn't push a subprotocol signature; only records the roles/args
-	// proto is fullname
-	public void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-	{
-		//ProtocolName fullname = pd.getFullProtocolName(getModuleContext().root);
-		/*List<Role> roleparams = pd.roledecls.getRoles();
-		List<Parameter> argparams = pd.paramdecls.getParameters();
-		Map<Role, Role> rolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> r));
-		Map<Argument, Argument> argmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> a));*/
-
-		Map<Role, RoleNode> rolemap = pd.header.roledecls.decls.stream().collect(Collectors.toMap((r) -> r.toName(), (r) -> r.name));
-		Map<Argument, ArgumentNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> p.toName(), (p) -> p.name));
-		this.rolemaps.push(rolemap);
-		this.argmaps.push(argmap);
-
-		//System.out.println("\n0: " + Arrays.asList(fullname.getElements()));
 	}
 
 	// proto is full name
@@ -172,7 +172,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	private void pushNameMaps(ProtocolName fullname, List<Role> roleargs, List<Argument> argargs)
 	{
 		ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-				pd = this.getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+				pd = getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 		List<Role> roleparams = pd.header.roledecls.getRoles();
 		List<Parameter> argparams = pd.header.paramdecls.getParameters();
 		
@@ -235,7 +235,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		}
 		try
 		{
-			return n.visit(new Substitutor(this.getJob(), this.rolemaps.peek(), this.argmaps.peek()));
+			return n.accept(new Substitutor(getJob(), this.rolemaps.peek(), this.argmaps.peek()));
 		}
 		catch (ScribbleException e)
 		{

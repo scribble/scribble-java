@@ -74,7 +74,7 @@ public abstract class Do extends SimpleInteractionNode implements ScopedNode
 			
 			//Node substituted = pd.def.block.visit(spv.getSubstitutor());  // block does an env push/pop without merge to parent
 			ModelNode seq = spv.applySubstitutions(pd.def.block.seq);
-			seq.visit(spv);  // Return is discarded
+			seq.accept(spv);  // Return is discarded
 		}
 		return this;
 	}

@@ -38,7 +38,7 @@ public abstract class ModelNodeBase implements ModelNode
 	protected abstract ModelNodeBase copy();
 	
 	@Override
-	public ModelNode visit(ModelVisitor nv) throws ScribbleException
+	public ModelNode accept(ModelVisitor nv) throws ScribbleException
 	{
 		return visitChild(this, nv);  // FIXME: weird to call visitChild with "this" as the child (only done for root visit calls) -- use null instead?
 	}
