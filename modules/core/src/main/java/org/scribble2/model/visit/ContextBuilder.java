@@ -67,19 +67,23 @@ public class ContextBuilder extends ModelVisitor
 	}*/
 
 	@Override
-	protected ContextBuilder enter(ModelNode parent, ModelNode child) throws ScribbleException
+	//protected ContextBuilder enter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		//System.out.println("2a: " + child.getClass() + ", " + child.del());
 		
-		return child.del().enterContextBuilding(parent, child, this);
+		//return child.del().enterContextBuilding(parent, child, this);
+		child.del().enterContextBuilding(parent, child, this);
 	}
 
 	@Override
-	protected ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor builder, ModelNode visited) throws ScribbleException
+	//protected ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor builder, ModelNode visited) throws ScribbleException
+	protected ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
 	{
 		//System.out.println("2b: " + visited.getClass() + ", " + visited.del());
 
-		return visited.del().leaveContextBuilding(parent, child, (ContextBuilder) this, visited);
+		//return visited.del().leaveContextBuilding(parent, child, (ContextBuilder) builder, visited);
+		return visited.del().leaveContextBuilding(parent, child, this, visited);
 	}
 	
 	/*public void pushContext(NodeContext ncontext)

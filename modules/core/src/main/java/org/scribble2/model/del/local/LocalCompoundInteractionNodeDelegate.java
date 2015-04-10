@@ -18,9 +18,11 @@ public class LocalCompoundInteractionNodeDelegate extends CompoundInteractionNod
 
 	// Unlike WF-choice enter/leave for CompoundInteractionNodeDelegate (i.e. both global/local), reachability is limited to local only
 	@Override
-	public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	//public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	public void enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		return (ReachabilityChecker) pushEnv(parent, child, checker);
+		//return (ReachabilityChecker) pushEnv(parent, child, checker);
+		pushVisitorEnv(parent, child, checker);
 	}
 
 	@Override
@@ -39,7 +41,7 @@ public class LocalCompoundInteractionNodeDelegate extends CompoundInteractionNod
 		//checker.setEnv(parent);*/
 		ReachabilityEnv env = checker.popEnv();
 		setEnv(env);
-		env = checker.popEnv().merge(env);  // Overrides super method to merge results back into parent context
+		env = checker.popEnv().mergeContext(env);  // Overrides super method to merge results back into parent context
 		checker.pushEnv(env);
 		//setEnv(env);
 		return (CompoundInteractionNode) visited;

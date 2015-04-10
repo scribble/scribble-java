@@ -21,9 +21,11 @@ import org.scribble2.util.ScribbleException;
 public class GlobalInteractionSequenceDelegate extends InteractionSequenceDelegate
 {
 	@Override
-	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	{
-		return (Projector) pushEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
+		//return (Projector) pushEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
+		pushVisitorEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 	}
 	
 	@Override
@@ -61,6 +63,6 @@ public class GlobalInteractionSequenceDelegate extends InteractionSequenceDelega
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		proj.pushEnv(new ProjectionEnv(projection));
 		//return gis;
-		return (GlobalInteractionSequence) super.popAndSetEnv(parent, child, proj, gis);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		return (GlobalInteractionSequence) super.popAndSetVisitorEnv(parent, child, proj, gis);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

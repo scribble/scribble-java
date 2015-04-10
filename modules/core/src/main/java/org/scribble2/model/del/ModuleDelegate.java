@@ -65,10 +65,11 @@ public class ModuleDelegate extends ModelDelegateBase
 	}
 
 	@Override
-	public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder)
+	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder)
+	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder)
 	{
 		builder.setModuleContext(new ModuleContext(builder.getJobContext(), (Module) child));
-		return builder;
+		//return builder;
 	}
 
 	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)

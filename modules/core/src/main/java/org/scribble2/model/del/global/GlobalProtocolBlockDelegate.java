@@ -14,9 +14,11 @@ import org.scribble2.util.ScribbleException;
 public class GlobalProtocolBlockDelegate extends ProtocolBlockDelegate
 {
 	@Override
-	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	{
-		return (Projector) pushEnv(parent, child, proj);
+		//return (Projector) pushEnv(parent, child, proj);
+		pushVisitorEnv(parent, child, proj);
 	}
 
 	@Override
@@ -30,6 +32,6 @@ public class GlobalProtocolBlockDelegate extends ProtocolBlockDelegate
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		proj.pushEnv(new ProjectionEnv(projection));
-		return (GlobalProtocolBlock) super.popAndSetEnv(parent, child, proj, gpd);
+		return (GlobalProtocolBlock) super.popAndSetVisitorEnv(parent, child, proj, gpd);
 	}
 }

@@ -10,15 +10,17 @@ import org.scribble2.util.ScribbleException;
 public class LocalProtocolBlockDelegate extends ProtocolBlockDelegate
 {
 	@Override
-	public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	//public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	public void enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		return (ReachabilityChecker) pushEnv(parent, child, checker);
+		//return (ReachabilityChecker) pushEnv(parent, child, checker);
+		pushVisitorEnv(parent, child, checker);
 	}
 
 	@Override
 	public LocalProtocolBlock leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
 	{
-		return (LocalProtocolBlock) popAndSetEnv(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		return (LocalProtocolBlock) popAndSetVisitorEnv(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 		/*LocalProtocolBlock lpd = (LocalProtocolBlock) visited;
 		LocalInteractionSequence seq = (LocalInteractionSequence) ((ProjectionEnv) lpd.seq.del().getEnv()).getProjection();	
 		LocalProtocolBlock projection = ModelFactoryImpl.FACTORY.LocalProtocolBlock(seq);

@@ -14,7 +14,8 @@ public abstract class CompoundInteractionDelegate extends ModelDelegateBase
 	}
 
 	@Override
-	public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	//public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
 	{
 		/*//WellFormedChoiceEnv env = new WellFormedChoiceEnv(checker.peekEnv());
 		WellFormedChoiceEnv env = checker.peekEnv().push();
@@ -24,7 +25,8 @@ public abstract class CompoundInteractionDelegate extends ModelDelegateBase
 		//checker.setEnv(env);
 		checker.pushEnv(env);
 		return checker;*/
-		return (WellFormedChoiceChecker) pushEnv(parent, child, checker);
+		//return (WellFormedChoiceChecker) pushEnv(parent, child, checker);
+		pushVisitorEnv(parent, child, checker);
 	}
 	//public void enter(Choice<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> cho, WellFormedChoiceChecker checker)
 	
@@ -36,7 +38,7 @@ public abstract class CompoundInteractionDelegate extends ModelDelegateBase
 		//checker.pushEnv(env);
 		setEnv(env);
 		return visited;*/
-		return popAndSetEnv(parent, child, checker, visited);
+		return popAndSetVisitorEnv(parent, child, checker, visited);
 	}
 
 	// Projection only done for global nodes, Reachability Check only for local

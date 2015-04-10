@@ -14,14 +14,16 @@ public abstract class LocalSimpleInteractionNodeDelegate extends SimpleInteracti
 	}
 
 	@Override
-	public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	//public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	public void enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		return (ReachabilityChecker) pushEnv(parent, child, checker);
+		//return (ReachabilityChecker) pushEnv(parent, child, checker);
+		pushVisitorEnv(parent, child, checker);
 	}
 
 	@Override
 	public SimpleLocalInteractionNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
 	{
-		return (SimpleLocalInteractionNode) popAndSetEnv(parent, child, checker, visited);
+		return (SimpleLocalInteractionNode) popAndSetVisitorEnv(parent, child, checker, visited);
 	}
 }

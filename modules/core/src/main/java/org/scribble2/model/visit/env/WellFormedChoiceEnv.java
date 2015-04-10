@@ -89,14 +89,14 @@ public class WellFormedChoiceEnv extends Env
 	
 	//public WellFormedChoiceEnv merge(WellFormedChoiceEnv child)
 	@Override
-	public WellFormedChoiceEnv merge(Env child)
+	public WellFormedChoiceEnv mergeContext(Env child)
 	{
-		return merge(Arrays.asList(child));
+		return mergeContexts(Arrays.asList(child));
 	}
 
 	@Override
 	//public WellFormedChoiceEnv merge(List<WellFormedChoiceEnv> children)
-	public WellFormedChoiceEnv merge(List<? extends Env> children)
+	public WellFormedChoiceEnv mergeContexts(List<? extends Env> children)
 	{
 		WellFormedChoiceEnv copy = copy();
 		for (WellFormedChoiceEnv child : castList(children))
@@ -155,7 +155,7 @@ public class WellFormedChoiceEnv extends Env
 	}
 
 	@Override
-	public WellFormedChoiceEnv push()
+	public WellFormedChoiceEnv pushContext()
 	{
 		/*WellFormedChoiceEnv env = new WellFormedChoiceEnv(this);
 		//env.initial.clear();

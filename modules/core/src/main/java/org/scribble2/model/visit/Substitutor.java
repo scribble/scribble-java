@@ -26,9 +26,11 @@ public class Substitutor extends ModelVisitor
 	}
 	
 	@Override
-	public ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
+	//public ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
+	public ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
 	{
-		return visited.substituteNames((Substitutor) nv);
+		//return visited.substituteNames((Substitutor) nv);
+		return visited.substituteNames(this);
 		//return visited.del().substituteNames((Substitutor) nv, visited);
 	}
 

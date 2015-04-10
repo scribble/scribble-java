@@ -35,9 +35,10 @@ public abstract class ModelDelegateBase implements ModelDelegate
 	}
 
 	@Override
-	public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
+	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
+	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
 	{
-		return builder;
+		//return builder;
 	}
 
 	@Override
@@ -47,9 +48,10 @@ public abstract class ModelDelegateBase implements ModelDelegate
 	}
 
 	@Override
-	public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	//public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
 	{
-		return checker;
+		//return checker;
 	}
 
 	@Override
@@ -59,9 +61,10 @@ public abstract class ModelDelegateBase implements ModelDelegate
 	}
 
 	@Override
-	public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	{
-		return proj;
+		//return proj;
 	}
 	
 	@Override
@@ -71,9 +74,10 @@ public abstract class ModelDelegateBase implements ModelDelegate
 	}
 
 	@Override
-	public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	//public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	public void enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		return checker;
+		//return checker;
 	}
 	
 	@Override
@@ -82,16 +86,16 @@ public abstract class ModelDelegateBase implements ModelDelegate
 		return visited;
 	}
 	
-	protected <T extends Env> EnvVisitor<T> pushEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev) throws ScribbleException
+	protected <T extends Env> EnvVisitor<T> pushVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev) throws ScribbleException
 	{
 		//T env = ev.peekEnv().<T>push();
 		//T env = ev.peekEnv().getClass().cast(ev.peekEnv().push());
-		T env = castEnv(ev, ev.peekEnv().push());  // By default: copy
+		T env = castEnv(ev, ev.peekEnv().pushContext());  // By default: copy
 		ev.pushEnv(env);
 		return ev;
 	}
 	
-	protected <T extends Env> ModelNode popAndSetEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev, ModelNode visited) throws ScribbleException
+	protected <T extends Env> ModelNode popAndSetVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev, ModelNode visited) throws ScribbleException
 	{
 		T env = ev.popEnv();
 		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes

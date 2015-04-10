@@ -25,7 +25,7 @@ public class GlobalRecursionDelegate extends GlobalCompoundInteractionNodeDelega
 	{
 		GlobalRecursion rec = (GlobalRecursion) visited;
 		//WellFormedChoiceEnv parent = checker.getEnv().getParent();
-		WellFormedChoiceEnv merged = checker.popEnv().merge((WellFormedChoiceEnv) rec.block.del().getEnv());
+		WellFormedChoiceEnv merged = checker.popEnv().mergeContext((WellFormedChoiceEnv) rec.block.del().getEnv());
 		checker.pushEnv(merged);
 		return rec;
 	}

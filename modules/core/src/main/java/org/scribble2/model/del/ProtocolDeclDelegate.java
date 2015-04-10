@@ -45,7 +45,8 @@ public abstract class ProtocolDeclDelegate extends ModelDelegateBase
 	protected abstract ProtocolDeclDelegate copy();
 
 	@Override
-	public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder proj) throws ScribbleException
+	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder proj) throws ScribbleException
+	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder proj) throws ScribbleException
 	{
 		proj.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
 		
@@ -62,7 +63,7 @@ public abstract class ProtocolDeclDelegate extends ModelDelegateBase
 			proj.addProtocolDependency(role, pn, role);  // FIXME: is it needed to add self protocol decl?
 		}
 
-		return proj;
+		//return proj;
 	}
 	
 	@Override

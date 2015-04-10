@@ -21,17 +21,22 @@ public class ModelVisitor
 	// Visit the child under the context of parent
 	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		ModelVisitor nv = enter(parent, child);
-		ModelNode visited = child.visitChildren(nv);  // visited means "children visited so far"; we're about to visit "this" now via "leave"
-		return leave(parent, child, nv, visited);
+		/*ModelVisitor nv = enter(parent, child);
+		ModelNode visited = child.visitChildren(nv);
+		return leave(parent, child, nv, visited);*/
+		enter(parent, child);
+		ModelNode visited = child.visitChildren(this);   // visited means "children visited so far"; we're about to visit "this" now via "leave"
+		return leave(parent, child, visited);
 	}
 	
-	protected ModelVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
+	//protected ModelVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		return this;
+		//return this;
 	}
 	
-	protected ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
+	//protected ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
+	protected ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
 	{
 		return visited;
 	}

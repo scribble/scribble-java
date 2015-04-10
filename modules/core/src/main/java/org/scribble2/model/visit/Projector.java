@@ -92,10 +92,13 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			pushSelf(self);
 			//clearProtocolDependencies();
 
-			Projector proj = (Projector) enter(parent, child);
-			//GlobalProtocolDecl gpd = (GlobalProtocolDecl)
+			//Projector proj = (Projector) enter(parent, child);
+			/*GlobalProtocolDecl gpd = (GlobalProtocolDecl)
 			GlobalProtocolDecl visited = (GlobalProtocolDecl) child.visitChildrenInSubprotocols(proj);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
-			visited = (GlobalProtocolDecl) leave(parent, child, proj, visited);
+			visited = (GlobalProtocolDecl) leave(parent, child, proj, visited);*/
+			enter(parent, child);
+			GlobalProtocolDecl visited = (GlobalProtocolDecl) child.visitChildrenInSubprotocols(this);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
+			visited = (GlobalProtocolDecl) leave(parent, child, visited);
 			// projection will not change original global protocol (visited discarded)
 			
 			//deps.put(self, proj.getProtocolDependencies());
@@ -185,22 +188,28 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	}*/
 	
 	@Override
-	protected final Projector envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	//protected final Projector envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected final void envEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		/*Projector proj = (Projector) super.envEnter(parent, child);
 		return proj;*/
 		//return child.enterProjection(this);
-		Projector proj = (Projector) super.envEnter(parent, child);
-		return (Projector) child.del().enterProjection(parent, child, proj);
+		/*Projector proj = (Projector) super.envEnter(parent, child);
+		return (Projector) child.del().enterProjection(parent, child, proj);*/
+		super.envEnter(parent, child);
+		child.del().enterProjection(parent, child, this);
 	}
 	
 	@Override
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<ProjectionEnv> nv, ModelNode visited) throws ScribbleException
+	//protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<ProjectionEnv> nv, ModelNode visited) throws ScribbleException
+	protected ModelNode envLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
 	{
 		/*ModelNode n = super.envLeave(parent, child, nv, visited);
 		return n.leaveProjection((Projector) nv);*/
-		visited = visited.del().leaveProjection(parent, child, (Projector) nv, visited);
-		return super.envLeave(parent, child, nv, visited);
+		/*visited = visited.del().leaveProjection(parent, child, (Projector) nv, visited);
+		return super.envLeave(parent, child, nv, visited);*/
+		visited = visited.del().leaveProjection(parent, child, this, visited);
+		return super.envLeave(parent, child, visited);
 	}
 	
 	// Simple projected protocol name for protocol decls -- Move into SimpleProtocolName?

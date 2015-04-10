@@ -30,7 +30,7 @@ import org.scribble2.util.ScribbleException;
 
 public abstract class SubprotocolVisitor extends ModelVisitor
 {
-	private ModuleDelegate mcontext;  // Factor out?
+	private ModuleDelegate mcontext;  // Factor up to ModelVisitor? (will be null before context building)
 	
 	private List<ScopedSubprotocolSignature> stack = new LinkedList<>();
 	
@@ -50,15 +50,20 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	@Override
 	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
+		/*SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
 		ModelNode visited = child.visitChildrenInSubprotocols(spv);
-		return leave(parent, child, spv, visited);
+		return leave(parent, child, spv, visited);*/
+		enter(parent, child);
+		ModelNode visited = child.visitChildrenInSubprotocols(this);
+		return leave(parent, child, visited);
 	}
 
 	@Override
-	protected final SubprotocolVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
+	//protected final SubprotocolVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected final void enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		SubprotocolVisitor spv = (SubprotocolVisitor) super.enter(parent, child);
+		//SubprotocolVisitor spv = (SubprotocolVisitor) super.enter(parent, child);
+		super.enter(parent, child);
 
 		if (child instanceof Module)  // Factor out?
 		{
@@ -66,33 +71,40 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		}
 		if (child instanceof ProtocolDecl)
 		{
-			spv.setScope(Scope.ROOT_SCOPE);
+			//spv.setScope(Scope.ROOT_SCOPE);
+			setScope(Scope.ROOT_SCOPE);
 		}
 		if (child instanceof ScopedNode)
 		{
 			ScopedNode sn = (ScopedNode) child;
 			if(!sn.isEmptyScope())
 			{
-				spv.setScope(new Scope(spv.getScope(), sn.getScopeElement()));
+				//spv.setScope(new Scope(spv.getScope(), sn.getScopeElement()));
+				setScope(new Scope(getScope(), sn.getScopeElement()));
 			}
 		}
 		if (child instanceof Do)
 		{
-			spv.enterSubprotocol((Do) child);  // Scope already pushed
+			//spv.enterSubprotocol((Do) child);  // Scope already pushed
+			enterSubprotocol((Do) child);  // Scope already pushed
 		}
-		return spv.subprotocolEnter(parent, child);
+		//return spv.subprotocolEnter(parent, child);
+		subprotocolEnter(parent, child);
 	}
 
-	protected SubprotocolVisitor subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	//protected SubprotocolVisitor subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		return this;
+		//return this;
 	}
 
 	@Override
-	protected final ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
+	//protected final ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
+	protected final ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
 	{
 		//ModelNode n = super.leave(parent, child, nv, visited);
-		ModelNode n = subprotocolLeave(parent, child, (SubprotocolVisitor) nv, visited);
+		//ModelNode n = subprotocolLeave(parent, child, (SubprotocolVisitor) nv, visited);
+		ModelNode n = subprotocolLeave(parent, child, visited);
 		if (child instanceof Do)  // child or visited/n?
 		{
 			leaveSubprotocol();
@@ -104,10 +116,11 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		}
 		//return subprotocolLeave(parent, child, nv, n);
 		//return n;
-		return super.leave(parent, child, nv, n);
+		return super.leave(parent, child, n);
 	}
 
-	protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, SubprotocolVisitor nv, ModelNode visited) throws ScribbleException
+	//protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, SubprotocolVisitor nv, ModelNode visited) throws ScribbleException
+	protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
 	{
 		return visited;
 	}

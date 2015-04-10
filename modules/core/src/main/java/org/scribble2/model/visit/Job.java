@@ -10,13 +10,11 @@ import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
+// - enter doesn't need to return visitor, not using visitor immutability? (or visitor replacement flexibility)
 
-// enter doesn't need to return visitor, not using visitor immutability? (or visitor replacement flexibility)
-
-// - remove job/module contexts from Envs (refer from visitor -- can be updated during visitor pass and reassigned to root module on leave)
 // - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting
 
-// perhaps refactor to have choice/recursion/etc as packages with global/local/del/etc in each
+// - perhaps refactor to have choice/recursion/etc as packages with global/local/del/etc in each
 
 // - streamline visitor pattern calls (e.g. accept)
 // - streamline vistitor/del env references -- and del enter/leave env setter on visitors
@@ -26,6 +24,7 @@ import org.scribble2.util.ScribbleException;
 
 // Done
 // - make module/protocol delegate state (module context, protocol dependencies) setting uniform -- related to (non-)immutablity of delegates (where to store "context" state)
+// - remove job/module contexts from Envs (refer from visitor -- can be updated during visitor pass and reassigned to root module on leave)
 
 // Not done
 // - FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections) -- no, leave in delegate

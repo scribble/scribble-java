@@ -50,7 +50,7 @@ public class ReachabilityEnv extends Env
 	}
 
 	@Override
-	public ReachabilityEnv push()
+	public ReachabilityEnv pushContext()
 	{
 		//return (ReachabilityEnv) super.push();
 		//return new ReachabilityEnv(getJobContext(), getModuleDelegate(), this.contlabs, this.contExitable, this.doExitable);
@@ -60,7 +60,7 @@ public class ReachabilityEnv extends Env
 	// Add merge to Env interface? Or make a compound Env subclass? Maybe not if merge is node type dependent (or could incorporate node type into interface)
 	//public ReachabilityEnv merge(ModelNode n, ReachabilityEnv child)
 	@Override
-	public ReachabilityEnv merge(Env child)
+	public ReachabilityEnv mergeContext(Env child)
 	{
 		//return merge(n, Arrays.asList(child));
 		return merge(false, Arrays.asList((ReachabilityEnv) child));
@@ -69,7 +69,7 @@ public class ReachabilityEnv extends Env
 	// Shouldn't be used for Choice
 	//public ReachabilityEnv merge(List<ReachabilityEnv> children)
 	@Override
-	public ReachabilityEnv merge(List<? extends Env> children)
+	public ReachabilityEnv mergeContexts(List<? extends Env> children)
 	{
 		return merge(false, castList(children));
 	}

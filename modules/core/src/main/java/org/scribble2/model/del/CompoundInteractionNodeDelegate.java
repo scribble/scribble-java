@@ -38,7 +38,7 @@ public abstract class CompoundInteractionNodeDelegate extends CompoundInteractio
 	{
 		WellFormedChoiceEnv env = checker.popEnv();
 		setEnv(env);
-		env = checker.popEnv().merge(env);  // Overrides super method to merge results back into parent context
+		env = checker.popEnv().mergeContext(env);  // Overrides super method to merge results back into parent context
 		checker.pushEnv(env);
 		//setEnv(env);
 		return (CompoundInteractionNode) visited;

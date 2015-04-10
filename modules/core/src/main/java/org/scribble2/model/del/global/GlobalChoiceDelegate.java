@@ -26,13 +26,14 @@ import org.scribble2.util.ScribbleException;
 public class GlobalChoiceDelegate extends GlobalCompoundInteractionNodeDelegate
 {
 	@Override
-	public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	//public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
 	{
-		WellFormedChoiceEnv env = checker.peekEnv().push();
+		WellFormedChoiceEnv env = checker.peekEnv().pushContext();
 		env = env.clear();
 		env = env.enableChoiceSubject(((GlobalChoice) child).subj.toName());
 		checker.pushEnv(env);
-		return checker;
+		//return checker;
 	}
 	
 	@Override
@@ -103,7 +104,7 @@ public class GlobalChoiceDelegate extends GlobalCompoundInteractionNodeDelegate
 			}
 		}
 		
-		WellFormedChoiceEnv merged = checker.popEnv().merge(benvs); 
+		WellFormedChoiceEnv merged = checker.popEnv().mergeContexts(benvs); 
 		checker.pushEnv(merged);  // Merges the child block envs into the current choice env; super call below merges this choice env into the parent env of the choice
 		/*WellFormedChoiceEnv parent = pop();
 		parent = parent.merge(merged);

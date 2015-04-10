@@ -22,15 +22,15 @@ public abstract class Env
 	protected abstract Env copy();  // Shallow copy (FIXME: factor out shallow copy interface)
 
 	// Default push for entering a compound interaction context (e.g. used in CompoundInteractionDelegate)
-	public abstract Env push();
+	public abstract Env pushContext();
 
   //  By default: merge just discards the argument(s) -- not all EnvVisitors need to merge (e.g. 
-	public Env merge(Env env)
+	public Env mergeContext(Env env)
 	{
 		return this;
 	}
 
-	public Env merge(List<? extends Env> envs)
+	public Env mergeContexts(List<? extends Env> envs)
 	{
 		return this;
 	}

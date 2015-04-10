@@ -52,24 +52,33 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 		/*Projector proj = (Projector) enter(parent, child);
 		ModelNode visited = visitForProjection((Module) parent, (GlobalProtocolDecl) child);
 		return leave(parent, child, proj, visited);*/
-		ReachabilityChecker checker = (ReachabilityChecker) enter(parent, child);
+		/*ReachabilityChecker checker = (ReachabilityChecker) enter(parent, child);
+		ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(checker, (LocalInteractionSequence) child);
+		return (LocalInteractionSequence) leave(parent, child, checker, visited);*/
+		enter(parent, child);
 		ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(this, (LocalInteractionSequence) child);
-		return (LocalInteractionSequence) leave(parent, child, checker, visited);
+		return (LocalInteractionSequence) leave(parent, child, visited);
 	}
 
 	@Override
-	protected ReachabilityChecker envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	//protected ReachabilityChecker envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void envEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		//return child.enterReachabilityCheck(this);
-		ReachabilityChecker checker = (ReachabilityChecker) super.envEnter(parent, child);
-		return (ReachabilityChecker) child.del().enterReachabilityCheck(parent, child, checker);
+		/*ReachabilityChecker checker = (ReachabilityChecker) super.envEnter(parent, child);
+		return (ReachabilityChecker) child.del().enterReachabilityCheck(parent, child, checker);*/
+		super.envEnter(parent, child);
+		child.del().enterReachabilityCheck(parent, child, this);
 	}
 	
 	@Override
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<ReachabilityEnv> nv, ModelNode visited) throws ScribbleException
+	//protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<ReachabilityEnv> nv, ModelNode visited) throws ScribbleException
+	protected ModelNode envLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
 	{
 		//return visited.leaveReachabilityCheck(this);
-		visited = visited.del().leaveReachabilityCheck(parent, child, (ReachabilityChecker) nv, visited);
-		return super.envLeave(parent, child, nv, visited);
+		/*visited = visited.del().leaveReachabilityCheck(parent, child, (ReachabilityChecker) nv, visited);
+		return super.envLeave(parent, child, nv, visited);*/
+		visited = visited.del().leaveReachabilityCheck(parent, child, this, visited);
+		return super.envLeave(parent, child, visited);
 	}
 }
