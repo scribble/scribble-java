@@ -29,7 +29,7 @@ public class GlobalChoiceDelegate extends GlobalCompoundInteractionNodeDelegate
 	//public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
 	public void enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
 	{
-		WellFormedChoiceEnv env = checker.peekEnv().pushContext();
+		WellFormedChoiceEnv env = checker.peekEnv().enterContext();
 		env = env.clear();
 		env = env.enableChoiceSubject(((GlobalChoice) child).subj.toName());
 		checker.pushEnv(env);

@@ -90,7 +90,7 @@ public abstract class ModelDelegateBase implements ModelDelegate
 	{
 		//T env = ev.peekEnv().<T>push();
 		//T env = ev.peekEnv().getClass().cast(ev.peekEnv().push());
-		T env = castEnv(ev, ev.peekEnv().pushContext());  // By default: copy
+		T env = castEnv(ev, ev.peekEnv().enterContext());  // By default: copy
 		ev.pushEnv(env);
 		return ev;
 	}

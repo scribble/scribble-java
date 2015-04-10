@@ -155,7 +155,7 @@ public class WellFormedChoiceEnv extends Env
 	}
 
 	@Override
-	public WellFormedChoiceEnv pushContext()
+	public WellFormedChoiceEnv enterContext()
 	{
 		/*WellFormedChoiceEnv env = new WellFormedChoiceEnv(this);
 		//env.initial.clear();
