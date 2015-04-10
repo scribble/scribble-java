@@ -1,5 +1,7 @@
 package org.scribble2.model.visit.env;
 
+import java.util.List;
+
 
 
 // Immutable
@@ -21,6 +23,17 @@ public abstract class Env
 
 	// Default push for entering a compound interaction context (e.g. used in CompoundInteractionDelegate)
 	public abstract Env push();
+
+  //  By default: merge just discards the argument(s) -- not all EnvVisitors need to merge (e.g. 
+	public Env merge(Env env)
+	{
+		return this;
+	}
+
+	public Env merge(List<? extends Env> envs)
+	{
+		return this;
+	}
 		
 	/*//@Override
 	public JobContext getJobContext() 

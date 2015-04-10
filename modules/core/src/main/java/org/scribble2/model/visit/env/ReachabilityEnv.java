@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble2.sesstype.name.RecursionVar;
 
@@ -58,16 +59,19 @@ public class ReachabilityEnv extends Env
 
 	// Add merge to Env interface? Or make a compound Env subclass? Maybe not if merge is node type dependent (or could incorporate node type into interface)
 	//public ReachabilityEnv merge(ModelNode n, ReachabilityEnv child)
-	public ReachabilityEnv merge(ReachabilityEnv child)
+	@Override
+	public ReachabilityEnv merge(Env child)
 	{
 		//return merge(n, Arrays.asList(child));
-		return merge(false, Arrays.asList(child));
+		return merge(false, Arrays.asList((ReachabilityEnv) child));
 	}
 
 	// Shouldn't be used for Choice
-	public ReachabilityEnv merge(List<ReachabilityEnv> children)
+	//public ReachabilityEnv merge(List<ReachabilityEnv> children)
+	@Override
+	public ReachabilityEnv merge(List<? extends Env> children)
 	{
-		return merge(false, children);
+		return merge(false, castList(children));
 	}
 
 	public ReachabilityEnv mergeForChoice(List<ReachabilityEnv> children)
@@ -124,6 +128,11 @@ public class ReachabilityEnv extends Env
 		ReachabilityEnv copy = copy();
 		copy.contlabs.remove(recvar);
 		return copy;
+	}
+	
+	private static List<ReachabilityEnv> castList(List<? extends Env> envs)
+	{
+		return envs.stream().map((e) -> (ReachabilityEnv) e).collect(Collectors.toList());
 	}
 	
 	/*public void enter(EnvDelegationNode en, ReachabilityChecker checker)

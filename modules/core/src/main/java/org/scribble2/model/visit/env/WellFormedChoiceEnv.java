@@ -87,16 +87,19 @@ public class WellFormedChoiceEnv extends Env
 		return copy;
 	}
 	
-	public WellFormedChoiceEnv merge(WellFormedChoiceEnv child)
+	//public WellFormedChoiceEnv merge(WellFormedChoiceEnv child)
+	@Override
+	public WellFormedChoiceEnv merge(Env child)
 	{
 		return merge(Arrays.asList(child));
 	}
 
-	//@Override
-	public WellFormedChoiceEnv merge(List<WellFormedChoiceEnv> children)
+	@Override
+	//public WellFormedChoiceEnv merge(List<WellFormedChoiceEnv> children)
+	public WellFormedChoiceEnv merge(List<? extends Env> children)
 	{
 		WellFormedChoiceEnv copy = copy();
-		for (WellFormedChoiceEnv child : children)
+		for (WellFormedChoiceEnv child : castList(children))
 		{
 			merge(this, copy.initial, child.initial);
 			merge(this, copy.initialInterrupts, child.initialInterrupts);
@@ -200,6 +203,11 @@ public class WellFormedChoiceEnv extends Env
 		//addMessage(src, dest, msg);
 		addMessages(copy.initial, src, dest, Arrays.asList(msg));
 		return copy;
+	}
+	
+	private static List<WellFormedChoiceEnv> castList(List<? extends Env> envs)
+	{
+		return envs.stream().map((e) -> (WellFormedChoiceEnv) e).collect(Collectors.toList());
 	}
 	
 	/* // No defensive copy

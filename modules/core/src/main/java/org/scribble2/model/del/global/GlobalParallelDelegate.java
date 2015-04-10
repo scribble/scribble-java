@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.CompoundInteractionNodeDelegate;
 import org.scribble2.model.global.GlobalParallel;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
