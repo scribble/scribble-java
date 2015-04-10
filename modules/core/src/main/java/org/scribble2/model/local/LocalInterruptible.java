@@ -1,19 +1,43 @@
-package scribble2.ast.local;
+package org.scribble2.model.local;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import org.antlr.runtime.tree.CommonTree;
-
-import scribble2.ast.Interruptible;
-import scribble2.ast.context.CompoundInteractionNodeContext;
-import scribble2.ast.name.ScopeNode;
-import scribble2.visit.GraphBuilder;
-import scribble2.visit.env.Env;
+import org.scribble2.model.Interruptible;
+import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.name.simple.ScopeNode;
+import org.scribble2.sesstype.name.SimpleName;
 
 public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalInterrupt> implements LocalInteractionNode
 {
-	public LocalInterruptible(CommonTree ct, ScopeNode scope, LocalProtocolBlock block, LocalThrows thro, List<LocalCatches> cats)
+	protected LocalInterruptible(ScopeNode scope, LocalProtocolBlock block,
+			List<LocalInterrupt> interrs)
+	{
+		super(scope, block, interrs);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public boolean isEmptyScope()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public SimpleName getScopeElement()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*public LocalInterruptible(CommonTree ct, ScopeNode scope, LocalProtocolBlock block, LocalThrows thro, List<LocalCatches> cats)
 	{
 		this(ct, scope, block, compileInterrupts(thro, cats), null, null);
 	}
@@ -21,7 +45,7 @@ public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalI
 	/*public LocalInterruptible(CommonTree ct, ScopeNode scope, LocalProtocolBlock block, List<LocalInterrupt> interrs, CompoundInteractionNodeContext icontext)
 	{
 		super(ct, scope, block, interrs, icontext);
-	}*/
+	}* /
 
 	protected LocalInterruptible(CommonTree ct, ScopeNode scope, LocalProtocolBlock block, List<LocalInterrupt> interrs, CompoundInteractionNodeContext icontext, Env env)
 	{

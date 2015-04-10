@@ -1,18 +1,20 @@
-package scribble2.ast.local;
+package org.scribble2.model.local;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.MessageNode;
+import org.scribble2.model.name.simple.RoleNode;
 
-import scribble2.ast.MessageNode;
-import scribble2.ast.context.global.GlobalInterruptContext;
-import scribble2.ast.name.RoleNode;
-import scribble2.parser.AntlrConstants;
-import scribble2.visit.env.Env;
 
 public class LocalCatches extends LocalInterrupt
 {
-	public LocalCatches(CommonTree ct, RoleNode src, List<MessageNode> msgs, List<RoleNode> dests)
+	protected LocalCatches(RoleNode src, List<MessageNode> msgs)
+	{
+		super(src, msgs);
+		// TODO Auto-generated constructor stub
+	}
+
+	/*public LocalCatches(CommonTree ct, RoleNode src, List<MessageNode> msgs, List<RoleNode> dests)
 	{
 		this(ct, src, msgs, dests, null, null);
 	}
@@ -33,7 +35,7 @@ public class LocalCatches extends LocalInterrupt
 	{
 		LocalInterrupt interr = super.visitChildren(nv);
 		return new LocalCatches(interr.ct, interr.src, interr.msgs, interr.dests, (GlobalInterruptContext) interr.getContext());
-	}*/
+	}* /
 	
 	@Override
 	public String toString()

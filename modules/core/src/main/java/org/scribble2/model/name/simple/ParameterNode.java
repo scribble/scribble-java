@@ -74,11 +74,11 @@ public class ParameterNode extends SimpleNameNode implements PayloadElementNameN
 	@Override
 	public PayloadTypeOrParameter toPayloadTypeOrParameter()
 	{
-		if (this.kind != Kind.TYPE)
+		//if (this.kind != Kind.TYPE)
 		{
 			throw new RuntimeException("Not a type-kind parameter: " + this);
 		}
-		return toName();
+		//return toName();
 	}
 	
 	/*@Override

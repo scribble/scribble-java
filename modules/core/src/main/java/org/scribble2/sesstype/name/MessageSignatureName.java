@@ -1,7 +1,7 @@
 package org.scribble2.sesstype.name;
 
 import org.scribble2.sesstype.Message;
-
+import org.scribble2.sesstype.ScopedMessage;
 
 
 // The name of a declared (imported) message signature member
@@ -29,6 +29,13 @@ public class MessageSignatureName extends MemberName implements Message
 	public boolean isParameter()
 	{
 		return false;
+	}
+
+	@Override
+	public ScopedMessage toScopedMessage(Scope scope)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/*@Override

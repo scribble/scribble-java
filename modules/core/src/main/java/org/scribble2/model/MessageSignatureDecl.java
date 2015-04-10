@@ -39,6 +39,13 @@ public class MessageSignatureDecl extends DataTypeDecl //AbstractNode implements
 				+ Constants.AS_KW + " " + this.alias + ";";
 	}
 
+	@Override
+	protected ModelNodeBase copy()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/*public PayloadType getFullPayloadTypeName()
 	{
 		ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrPayloadTypeDecl.getModuleParent(this.ct));

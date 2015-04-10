@@ -31,6 +31,13 @@ public class Interrupt extends ModelNodeBase//AbstractSimpleInteractionNode
 		this.src = src;
 		this.msgs = new LinkedList<>(msgs);
 	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	//protected abstract Interrupt reconstruct(CommonTree ct, RoleNode src, List<MessageNode> msgs, GlobalInterruptContext ncontext, Env env);
 

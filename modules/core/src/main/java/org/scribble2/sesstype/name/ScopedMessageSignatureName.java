@@ -1,6 +1,6 @@
 package org.scribble2.sesstype.name;
 
-import scribble2.sesstype.ScopedMessage;
+import org.scribble2.sesstype.ScopedMessage;
 
 // A "Scribble generics" parameter -- FIXME: deprecate, parameter is a syntactic category, wrt. typing it should just be a message signature, payload, etc.
 public class ScopedMessageSignatureName extends MessageSignatureName implements ScopedMessage

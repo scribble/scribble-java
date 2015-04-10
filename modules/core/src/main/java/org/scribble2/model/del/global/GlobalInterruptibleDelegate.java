@@ -9,7 +9,7 @@ import org.scribble2.util.ScribbleException;
 
 public class GlobalInterruptibleDelegate extends GlobalCompoundInteractionNodeDelegate
 {
-	@Override
+	/*@Override
 	//public void leave(Interruptible<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>, ? extends Interrupt> intt, WellFormedChoiceChecker checker)
 	public GlobalInterruptible leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
 	{
@@ -18,5 +18,5 @@ public class GlobalInterruptibleDelegate extends GlobalCompoundInteractionNodeDe
 		merged.initial.merge(ienv.initialInterrupts);
 		checker.pushEnv(merged);
 		return intt;
-	}
+	}*/
 }

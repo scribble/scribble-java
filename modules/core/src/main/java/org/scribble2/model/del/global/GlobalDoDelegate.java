@@ -14,7 +14,7 @@ import org.scribble2.util.MessageMap;
 // FIXME: simple or compound?
 public class GlobalDoDelegate extends SimpleInteractionNodeDelegate
 {
-	public void enter(Do doo, WellFormedChoiceChecker checker)
+	/*public void enter(Do doo, WellFormedChoiceChecker checker)
 	{
 		WellFormedChoiceEnv copy = copy();
 		SubprotocolSignature subsig = checker.peekStack().sig;
@@ -51,7 +51,7 @@ public class GlobalDoDelegate extends SimpleInteractionNodeDelegate
 					break;
 				}
 				addSubprotocolEnabled(tmp);
-			}*/
+			}* /
 			int entry = checker.getCycleEntryIndex();
 			Scope prev = (entry == 0) ? Scope.ROOT_SCOPE : stack.get(entry).scope;
 			for (int i = checker.getCycleEntryIndex(); i < stack.size(); i++)
@@ -68,5 +68,5 @@ public class GlobalDoDelegate extends SimpleInteractionNodeDelegate
 
 		//return copy;
 		checker.setEnv(copy);
-	}
+	}*/
 }

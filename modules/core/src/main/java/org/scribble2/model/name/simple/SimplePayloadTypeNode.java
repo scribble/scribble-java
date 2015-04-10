@@ -1,9 +1,9 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.ArgumentInstantiation;
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.name.Name;
 
-public class SimplePayloadTypeNode extends SimpleNameNode implements ArgumentInstantiation//, PayloadElementNameNode// SimpleMemberNameNode
+public class SimplePayloadTypeNode extends SimpleNameNode //implements ArgumentInstantiation//, PayloadElementNameNode// SimpleMemberNameNode
 {
 	//public final String extType;  // Not current considered for equals/hashCode
 
@@ -27,6 +27,13 @@ public class SimplePayloadTypeNode extends SimpleNameNode implements ArgumentIns
 	protected SimplePayloadTypeNode copy()
 	{
 		return new SimplePayloadTypeNode(this.identifier);
+	}
+
+	@Override
+	public Name toName()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/*@Override

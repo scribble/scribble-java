@@ -3,7 +3,9 @@ package org.scribble2.model.global;
 import java.util.List;
 
 import org.scribble2.model.Interruptible;
+import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.name.simple.ScopeNode;
+import org.scribble2.sesstype.name.SimpleName;
 
 public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, GlobalInterrupt> implements GlobalInteractionNode
 {
@@ -25,6 +27,27 @@ public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, Glob
 	{
 		//this(ct, scope, block, interrs, null, null);
 		super(scope, block, interrs);
+	}
+
+	@Override
+	public boolean isEmptyScope()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public SimpleName getScopeElement()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected ModelNodeBase copy()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/*protected GlobalInterruptible(CommonTree ct, ScopeNode scope, GlobalProtocolBlock block, List<GlobalInterrupt> interrs, CompoundInteractionNodeContext icontext)
