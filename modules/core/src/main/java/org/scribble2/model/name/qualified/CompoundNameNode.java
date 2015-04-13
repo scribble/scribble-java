@@ -3,8 +3,9 @@ package org.scribble2.model.name.qualified;
 import java.util.Arrays;
 
 import org.scribble2.model.name.NameNode;
+import org.scribble2.sesstype.name.CompoundName;
 
-public abstract class CompoundNameNode extends NameNode
+public abstract class CompoundNameNode<T extends CompoundName> extends NameNode<T>
 {
 	//public final List<PrimitiveNameNode> names;
 	protected final String[] elems;
@@ -88,7 +89,8 @@ public abstract class CompoundNameNode extends NameNode
 		{
 			return false;
 		}
-		return this.elems.equals(((CompoundNameNode) o).elems);
+		//return this.elems.equals(((CompoundNameNode) o).elems);
+		return this.elems.equals(CompoundNameNode.class.cast(o).elems);
 	}
 	
 	@Override

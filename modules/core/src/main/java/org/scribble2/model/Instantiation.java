@@ -1,7 +1,9 @@
 package org.scribble2.model;
 
 
-public abstract class Instantiation<T extends ModelNode> extends ModelNodeBase
+// Cf. NameDeclNode/HeaderParameterDecl
+// Simpler than NameDeclNode, doesn't constrain node-type correspondence for names
+public abstract class Instantiation<T extends InstantiationNode> extends ModelNodeBase
 {
 	public final T arg;
 

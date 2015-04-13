@@ -1,6 +1,7 @@
 package org.scribble2.model;
 
 import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.sesstype.name.Role;
 
 
 public class RoleInstantiation extends Instantiation<RoleNode>
@@ -16,10 +17,11 @@ public class RoleInstantiation extends Instantiation<RoleNode>
 		return new RoleInstantiation(this.arg);
 	}	
 	
-	/*public RoleInstantiation project(Role self)
+	// FIXME: move to delegate?
+	public RoleInstantiation project(Role self)
 	{
-		RoleNode rn = new RoleNode(null, this.arg.toName().toString());
-		return new RoleInstantiation(null, rn);
+		RoleNode rn = new RoleNode(this.arg.toName().toString());
+		return new RoleInstantiation(rn);
 	}
 	
 	/*@Override

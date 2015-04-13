@@ -28,7 +28,8 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl, Pa
 		rdl = (ParameterDeclList) rdl.del(del);
 		return rdl;
 	}
-
+		
+	// FIXME: move to delegate?
 	public ParameterDeclList project(Role self)
 	{
 		List<ParameterDecl> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	

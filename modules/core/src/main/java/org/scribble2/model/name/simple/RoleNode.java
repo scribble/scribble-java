@@ -1,11 +1,12 @@
 package org.scribble2.model.name.simple;
 
+import org.scribble2.model.InstantiationNode;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.visit.Substitutor;
 import org.scribble2.sesstype.name.Role;
 
 
-public class RoleNode extends SimpleNameNode<Role> //implements RoleDecl, RoleInstantiation
+public class RoleNode extends SimpleNameNode<Role> implements InstantiationNode //RoleDecl, RoleInstantiation
 {
 	public RoleNode(String identifier)
 	{

@@ -2,7 +2,8 @@ package org.scribble2.model;
 
 import org.scribble2.sesstype.Argument;
 
-public interface ArgumentNode extends ModelNode
+// Payload argument nodes (doesn't include role instantation arguments)
+public interface ArgumentNode extends InstantiationNode
 {
 	boolean isMessageSignatureNode();
 	boolean isPayloadTypeNode();

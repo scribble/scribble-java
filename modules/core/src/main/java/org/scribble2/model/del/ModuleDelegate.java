@@ -103,7 +103,8 @@ public class ModuleDelegate extends ModelDelegateBase
 		//.. store projection module in context? do this earlier?
 		//.. look up all projection sets from global protocol decls and store somewhere? in context?
 		
-		ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(main.moddecl.fullmodname.toName(), lpd.header.name.toName());
+		//ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(main.moddecl.fullmodname.toName(), lpd.header.name.toName());
+		ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(main.moddecl.fullmodname.toName(), lpd.header.name.toCompoundName());
 		
 		//.. factor out full name making, use also for do
 		//.. record protocol dependencies in context
@@ -119,7 +120,8 @@ public class ModuleDelegate extends ModelDelegateBase
 			{
 				ProtocolNameNode targetfullname = Projector.makeProjectedProtocolNameNode(gpn, role);
 				SimpleProtocolNameNode targetsimname = proj.makeProjectedLocalName(gpn.getSimpleName(), role);
-				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(main.getFullModuleName(), targetsimname.toName());
+				//ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(main.getFullModuleName(), targetsimname.toName());
+				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(main.getFullModuleName(), targetsimname.toCompoundName());
 				if (!targetfullname.toName().getPrefix().equals(modname.toName()))
 				{
 					//imports.add(new ImportModule(targetmodname, null));

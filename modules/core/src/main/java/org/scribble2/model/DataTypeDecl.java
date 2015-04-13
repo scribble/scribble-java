@@ -3,6 +3,7 @@ package org.scribble2.model;
 import org.scribble2.model.name.simple.SimpleNameNode;
 
 // FIXME: rename to something better
+// FIXME: should be a NameDeclNode?
 public abstract class DataTypeDecl extends ModelNodeBase //implements ModuleMember //implements NameDeclaration
 {
 	public final String schema;

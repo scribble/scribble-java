@@ -15,11 +15,12 @@ public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 		//this.is = ris;
 	}
 
-	/*public RoleInstantiationList project(Role self)
+	// FIXME: move to delegate?
+	public RoleInstantiationList project(Role self)
 	{
 		List<RoleInstantiation> roleinstans =
 				this.instans.stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
-		return new RoleInstantiationList(null, roleinstans);
+		return new RoleInstantiationList(roleinstans);
 	}
 
 	/*@Override

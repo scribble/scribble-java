@@ -5,8 +5,9 @@ import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.name.MessageSignatureName;
+import org.scribble2.sesstype.name.SimpleName;
 
-public class SimpleMessageSignatureNameNode extends SimpleNameNode implements MessageNode//SimpleMemberNameNode
+public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<MessageSignatureName> implements MessageNode//SimpleMemberNameNode
 {
 	//public final String extType;  // Not current considered for equals/hashCode
 
@@ -51,7 +52,15 @@ public class SimpleMessageSignatureNameNode extends SimpleNameNode implements Me
 	}
 
 	@Override
-	public MessageSignatureName toName()
+	public SimpleName toName()
+	{
+		//return new MessageSignatureName(this.identifier);
+		//return new SimpleName(Kind..., text)
+		throw new RuntimeException("TODO");
+	}
+
+	@Override
+	public MessageSignatureName toCompoundName()
 	{
 		return new MessageSignatureName(this.identifier);
 	}

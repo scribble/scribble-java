@@ -1,11 +1,13 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.name.Kind;
 import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.SimpleName;
 
 
 
-public class SimpleProtocolNameNode extends SimpleNameNode //SimpleMemberNameNode
+public class SimpleProtocolNameNode extends SimpleCompoundNameNode<ProtocolName> //SimpleMemberNameNode
 {
 	public SimpleProtocolNameNode(String identifier)
 	{
@@ -28,7 +30,13 @@ public class SimpleProtocolNameNode extends SimpleNameNode //SimpleMemberNameNod
 	}
 
 	@Override
-	public ProtocolName toName()
+	public SimpleName toName()
+	{
+		return new SimpleName(Kind.PROTOCOL, this.identifier);
+	}
+
+	@Override
+	public ProtocolName toCompoundName()
 	{
 		return new ProtocolName(this.identifier);
 	}

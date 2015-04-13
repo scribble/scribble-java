@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.name.Role;
+
 
 public class ArgumentInstantiationList extends InstantiationList<ArgumentInstantiation>
 {
@@ -16,6 +18,13 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 	protected ModelNodeBase copy()
 	{
 		return new ArgumentInstantiationList(this.instans);
+	}
+
+	public ArgumentInstantiationList project(Role self)
+	{
+		List<ArgumentInstantiation> arginstans =
+				this.instans.stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
+		return new ArgumentInstantiationList(arginstans);
 	}
 	
 	public boolean isEmpty()

@@ -2,10 +2,10 @@ package org.scribble2.model.name.simple;
 
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.name.ModuleName;
-import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.SimpleName;
 
 
-public class SimpleModuleNameNode extends SimpleNameNode
+public class SimpleModuleNameNode extends SimpleCompoundNameNode<ModuleName>
 {
 	public SimpleModuleNameNode(String name)
 	{
@@ -29,7 +29,14 @@ public class SimpleModuleNameNode extends SimpleNameNode
 	}
 
 	@Override
-	public Name toName()
+	public SimpleName toName()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ModuleName toCompoundName()
 	{
 		// TODO Auto-generated method stub
 		return null;

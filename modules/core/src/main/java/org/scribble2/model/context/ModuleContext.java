@@ -129,7 +129,8 @@ public class ModuleContext
 		}*/
 		for (GlobalProtocolDecl gpd : m.getGlobalProtocolDecls())
 		{
-			ProtocolName simplename = gpd.header.name.toName();
+			//ProtocolName simplename = gpd.header.name.toName();
+			ProtocolName simplename = gpd.header.name.toCompoundName();
 			ProtocolName fullname = new ProtocolName(fullmodname, simplename.toString());
 			ProtocolName selfname = new ProtocolName(simplemodname, simplename.toString());
 			this.globals.put(simplename, fullname);

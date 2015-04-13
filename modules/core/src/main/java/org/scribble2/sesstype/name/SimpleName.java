@@ -1,6 +1,7 @@
 package org.scribble2.sesstype.name;
 
 
+// Make a subclass of CompoundName? Better for e.g. simple member name nodes?
 public class SimpleName extends CompoundName
 {
 	private static final long serialVersionUID = 1L;

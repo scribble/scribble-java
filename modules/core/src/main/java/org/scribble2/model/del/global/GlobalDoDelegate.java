@@ -1,5 +1,7 @@
 package org.scribble2.model.del.global;
 
+import java.lang.reflect.Parameter;
+
 import org.scribble2.model.ArgumentInstantiationList;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -26,6 +28,9 @@ public class GlobalDoDelegate extends GlobalSimpleInteractionNodeDelegate
 		JobContext jcontext = builder.getJobContext();
 		ModuleContext mcontext = builder.getModuleContext();
 		GlobalDo gd = (GlobalDo) visited;
+		
+		// FIXME: use lambda (also in LocalDoDelegate -- factor out)
+		
 		for (Role role : gd.roleinstans.getRoles())
 		{
 			builder.addProtocolDependency(role, gd.getTargetFullProtocolName(builder.getModuleContext()), gd.getTargetRoleParameter(jcontext, mcontext, role));
@@ -63,6 +68,12 @@ public class GlobalDoDelegate extends GlobalSimpleInteractionNodeDelegate
 			proj.pushSelf(self);
 		}
 		//return proj;
+		
+		
+		..HERE:  didn't push env but leave is popping
+		.. fix projection env to take projection output type as Parameter
+		.. fix global/local do delegate context build loop
+		.. get simple/compound name node and name classes into shape
 	}
 	
 	@Override
@@ -90,8 +101,10 @@ public class GlobalDoDelegate extends GlobalSimpleInteractionNodeDelegate
 			ProtocolNameNode target = Projector.makeProjectedProtocolNameNodes(gd.getTargetFullProtocolName(proj.getModuleContext()), popped);
 			//projection = new LocalDo(null, scope, roleinstans, arginstans, target);
 			projection = ModelFactoryImpl.FACTORY.LocalDo(null, scope, roleinstans, arginstans, target);*/
-			RoleInstantiationList roleinstans = (RoleInstantiationList) ((ProjectionEnv) gd.roleinstans.del().env()).getProjection();
-			ArgumentInstantiationList arginstans = (ArgumentInstantiationList) ((ProjectionEnv) gd.arginstans.del().env()).getProjection();
+			/*RoleInstantiationList roleinstans = (RoleInstantiationList) ((ProjectionEnv) gd.roleinstans.del().env()).getProjection();
+			ArgumentInstantiationList arginstans = (ArgumentInstantiationList) ((ProjectionEnv) gd.arginstans.del().env()).getProjection();*/
+			RoleInstantiationList roleinstans = gd.roleinstans.project(self);
+			ArgumentInstantiationList arginstans = gd.arginstans.project(self);
 			ProtocolNameNode target = Projector.makeProjectedProtocolNameNode(gd.getTargetFullProtocolName(proj.getModuleContext()), popped);
 			projection = ModelFactoryImpl.FACTORY.LocalDo(roleinstans, arginstans, target);
 			
