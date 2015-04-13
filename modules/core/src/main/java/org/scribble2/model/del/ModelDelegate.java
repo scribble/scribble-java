@@ -37,6 +37,6 @@ public interface ModelDelegate
 	ModelNode visitForGraphBuilding(GraphBuilder builder);
 	ModelNode leaveGraphBuilding(GraphBuilder builder);*/
 
-	Env getEnv();
+	Env env();
 	//void setEnv(Env env);  // No defensive copy -- used from inside Env during a env pass
 }

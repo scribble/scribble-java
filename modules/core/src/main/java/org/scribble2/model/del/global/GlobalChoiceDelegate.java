@@ -48,7 +48,7 @@ public class GlobalChoiceDelegate extends GlobalCompoundInteractionNodeDelegate
 		
 		Map<Role, Set<ScopedMessage>> seen = null;
 		List<WellFormedChoiceEnv> benvs =
-				cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().getEnv()).collect(Collectors.toList());
+				cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().env()).collect(Collectors.toList());
 		//for (WellFormedChoiceEnv benv : cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().getEnv()).collect(Collectors.toList()))
 		for (WellFormedChoiceEnv benv : benvs)
 		{
@@ -126,7 +126,7 @@ public class GlobalChoiceDelegate extends GlobalCompoundInteractionNodeDelegate
 		//RoleNode subj = new RoleNode(gc.subj.toName().toString());  // Inconsistent to copy role nodes manually, but do via children visiting for other children
 		RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, gc.subj.toName().toString());
 		List<LocalProtocolBlock> blocks = 
-				gc.blocks.stream().map((b) -> (LocalProtocolBlock) ((ProjectionEnv) b.del().getEnv()).getProjection()).collect(Collectors.toList());	
+				gc.blocks.stream().map((b) -> (LocalProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());	
 		LocalChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
 		if (!blocks.get(0).isEmpty())  // WF allows this
 		{

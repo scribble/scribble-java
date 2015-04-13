@@ -134,9 +134,9 @@ public class ModuleDelegate extends ModelDelegateBase
 		return ModelFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}
 	
-	public ProtocolName getFullProtocolDeclName(ProtocolName visname)
+	/*public ProtocolName getFullProtocolDeclName(ProtocolName visname)
 	{
-		/*// Global and local protocol names (all member names) are distinct by well-formedness
+		/* // Global and local protocol names (all member names) are distinct by well-formedness
 		if (this.globals.containsKey(visname))
 		{
 			return this.globals.get(visname);
@@ -145,9 +145,9 @@ public class ModuleDelegate extends ModelDelegateBase
 		{
 			return this.locals.get(visname);
 		}
-		throw new RuntimeException("Protocol name not visible: " + visname);*/
+		throw new RuntimeException("Protocol name not visible: " + visname);* /
 		return this.context.getFullProtocolDeclName(visname);
-	}
+	}*/
 	
 	@Override 
 	public String toString()
@@ -162,4 +162,9 @@ public class ModuleDelegate extends ModelDelegateBase
 		ModuleName fullmodname = this.root.getFullModuleName();
 		return new ProtocolName(fullmodname, pd.name.toString());
 	}*/
+	
+	public ModuleContext getModuleContext()
+	{
+		return this.context;
+	}
 }

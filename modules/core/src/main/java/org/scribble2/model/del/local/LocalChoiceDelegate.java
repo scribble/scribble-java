@@ -16,7 +16,7 @@ public class LocalChoiceDelegate extends LocalCompoundInteractionNodeDelegate
 	{
 		LocalChoice cho = (LocalChoice) visited;
 		List<ReachabilityEnv> benvs =
-				cho.blocks.stream().map((b) -> (ReachabilityEnv) b.del().getEnv()).collect(Collectors.toList());
+				cho.blocks.stream().map((b) -> (ReachabilityEnv) b.del().env()).collect(Collectors.toList());
 		ReachabilityEnv merged = checker.popEnv().mergeForChoice(benvs);
 		checker.pushEnv(merged);
 		return (LocalChoice) super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env

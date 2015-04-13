@@ -4,7 +4,18 @@
 
 module Test;
 
-global protocol Foo(role A, role B, role C)
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	do Bar(A, B);
+}
+
+global protocol Bar(role C, role D)
+{
+	2() from C to D;
+}
+
+/*global protocol Foo(role A, role B, role C)
 {
 	rec X {
 		choice at A
@@ -21,16 +32,4 @@ global protocol Foo(role A, role B, role C)
 		}
 	}
 	3() from A to B;
-}
-
-/*global protocol Bar(role C, role D)
-{
-	1() from C to D;
-	//do Bar(D, C);
-}*/
-
-
-/*global protocol Foo2(role A, role B)
-{
-	//m1() from A to B;
 }*/

@@ -115,11 +115,18 @@ public class ReachabilityEnv extends Env
 	}
 	
 	//public ReachabilityEnv addContinueLabel(RecursionVar recvar)
-	public ReachabilityEnv enterContinue(RecursionVar recvar)
+	public ReachabilityEnv leaveContinue(RecursionVar recvar)
 	{
 		ReachabilityEnv copy = copy();
 		copy.contlabs.add(recvar);
 		copy.contExitable = false;
+		return copy;
+	}
+
+	public ReachabilityEnv leaveRecursiveDo()
+	{
+		ReachabilityEnv copy = copy();
+		copy.doExitable = false;
 		return copy;
 	}
 	

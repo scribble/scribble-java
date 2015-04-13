@@ -145,7 +145,7 @@ public class GlobalProtocolDeclDelegate extends ProtocolDeclDelegate
 	{
 		Role self = proj.peekSelf();
 		//Module projected = projectToModule(proj, (LocalProtocolDefinition) ((ProjectionEnv) gpd.def.del().getEnv()).getProjection());
-		LocalProtocolDefinition def = (LocalProtocolDefinition) ((ProjectionEnv) gpd.def.del().getEnv()).getProjection();
+		LocalProtocolDefinition def = (LocalProtocolDefinition) ((ProjectionEnv) gpd.def.del().env()).getProjection();
 		SimpleProtocolNameNode pn = proj.makeProjectedLocalName(gpd.header.name.toName(), self);
 		RoleDeclList roledecls = gpd.header.roledecls.project(self);
 		ParameterDeclList paramdecls = gpd.header.paramdecls.project(self);//peekSelf());

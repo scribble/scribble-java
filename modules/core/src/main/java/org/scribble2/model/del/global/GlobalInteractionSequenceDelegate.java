@@ -41,7 +41,7 @@ public class GlobalInteractionSequenceDelegate extends InteractionSequenceDelega
 			//this.actions.stream().map((action) -> (LocalInteraction) ((ProjectionEnv) ((LocalNode) action).getEnv()).getProjection()).collect(Collectors.toList());	
 		for (GlobalInteractionNode gi : gis.actions)
 		{
-			LocalNode ln = (LocalNode) ((ProjectionEnv) gi.del().getEnv()).getProjection();
+			LocalNode ln = (LocalNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			if (ln instanceof LocalInteractionSequence)
 			{
 				lis.addAll(((LocalInteractionSequence) ln).actions);

@@ -1,55 +1,44 @@
 package org.scribble2.model;
 
-import org.scribble2.model.del.ModuleDelegate;
+import java.util.Iterator;
+
+import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.model.visit.SubprotocolVisitor;
 import org.scribble2.sesstype.name.ProtocolName;
-import org.scribble2.sesstype.name.SimpleName;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
-public abstract class Do extends SimpleInteractionNode implements ScopedNode
+public abstract class Do extends SimpleInteractionNode //implements ScopedNode
 {
-	public final ScopeNode scope;
+	//public final ScopeNode scope;
 	public final RoleInstantiationList roleinstans;
 	public final ArgumentInstantiationList arginstans;
 	public final ProtocolNameNode proto;  // Maybe use an "Ambiguous" version until names resolved -- is a visible protocol, but not necessarily a simple or full member name
 
-	/*protected Do(CommonTree ct, RoleInstantiationList ril, ArgumentInstantiationList ail, ProtocolNameNodes proto)
+	//protected Do(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	protected Do(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
-		this(ct, null, ril, ail, proto, null, null);
-	}
-
-	protected Do(CommonTree ct, ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNodes proto)
-	{
-		this(ct, scope, roleinstans, arginstans, proto, null, null);
-	}
-
-	protected Do(CommonTree ct, ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNodes proto, SimpleInteractionNodeContext sicontext)
-	{
-		this(ct, scope, roleinstans, arginstans, proto, sicontext, null);
-	}*/
-	
-	protected Do(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)//, SimpleInteractionNodeContext sicontext, Env env)
-	{
-		this.scope = scope;
+		//this.scope = scope;
 		this.roleinstans = roleinstans;
 		this.arginstans = arginstans;
 		this.proto = proto;
 	}
 
-	protected abstract Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
+	//protected abstract Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract Do reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
 	public Do visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
+		//ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
 		RoleInstantiationList ril = (RoleInstantiationList) visitChild(this.roleinstans, nv);
 		ArgumentInstantiationList al = (ArgumentInstantiationList) visitChild(this.arginstans, nv);
 		ProtocolNameNode proto = (ProtocolNameNode) visitChild(this.proto, nv);
-		return reconstruct(scope, ril, al, proto);//, getContext(), getEnv());
+		//return reconstruct(scope, ril, al, proto);//, getContext(), getEnv());
+		return reconstruct(ril, al, proto);//, getContext(), getEnv());
 	}
 
 	@Override
@@ -63,8 +52,9 @@ public abstract class Do extends SimpleInteractionNode implements ScopedNode
 		//if (spv.isCycle() != -1)
 		{
 			//ModuleDelegate mcontext = spv.getModuleContext();
-			JobContext jcontext = spv.getJobContext();
-			ModuleDelegate mcontext = (ModuleDelegate) jcontext.getMainModule().del();
+			/*JobContext jcontext = spv.getJobContext();
+			ModuleDelegate mcontext = (ModuleDelegate) jcontext.getMainModule().del();*/
+			ModuleContext mcontext = spv.getModuleContext();
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 					//pd = spv.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());* /
 					pd = getTargetProtocolDecl(spv.getJobContext(), mcontext);
@@ -77,6 +67,66 @@ public abstract class Do extends SimpleInteractionNode implements ScopedNode
 			seq.accept(spv);  // Return is discarded
 		}
 		return this;
+	}
+	
+	//private ProtocolName getTargetFullProtocolName(ModuleDelegate mcontext)
+	public ProtocolName getTargetFullProtocolName(ModuleContext mcontext)
+	{
+		return mcontext.getFullProtocolDeclName(this.proto.toName());
+	}
+	
+	public ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			//getTargetProtocolDecl(JobContext jcontext, ModuleDelegate mcontext)
+			getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
+	{
+		ProtocolName fullname = getTargetFullProtocolName(mcontext);
+		return jcontext.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+	}
+	
+	public Role getTargetRoleParameter(JobContext jcontext, ModuleContext mcontext, Role role)
+	{
+		Iterator<Role> args = this.roleinstans.getRoles().iterator();
+		Iterator<Role> params = getTargetProtocolDecl(jcontext, mcontext).header.roledecls.getRoles().iterator();
+		while (args.hasNext())
+		{
+			Role arg = args.next();
+			Role param = params.next();
+			if (arg.equals(role))
+			{
+				return param;
+			}
+		}
+		throw new RuntimeException("Not an argument role: " + role);
+	}
+	
+	/*@Override
+	public boolean isEmptyScope()
+	{
+		return this.scope == null;
+	}
+
+	@Override
+	//public Scope getScope()
+	public SimpleName getScopeElement()
+	{
+		return this.scope.toName();
+	}
+	
+	public boolean isScoped()
+	{
+		return this.scope != null;
+	}*/
+
+	@Override
+	public String toString()
+	{
+		String s = Constants.DO_KW + " ";
+		//if (!hasEmptyScopeNode())
+		/*if (isScoped())
+		{
+			s += this.scope + ":";
+		}*/
+		return s + this.proto + this.arginstans + this.roleinstans + ";";
 	}
 
 	/*@Override
@@ -241,42 +291,12 @@ public abstract class Do extends SimpleInteractionNode implements ScopedNode
 		ArgumentInstantiationList ail = (ArgumentInstantiationList) subs.visit(this.ail);
 		return new Do(this.ct, this.scope, ril, ail, this.cn);
 	}*/
-	
-	private ProtocolName getTargetFullProtocolName(ModuleDelegate mcontext)
-	{
-		return mcontext.getFullProtocolDeclName(this.proto.toName());
-	}
-	
-	public ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-			getTargetProtocolDecl(JobContext jcontext, ModuleDelegate mcontext)
-	{
-		ProtocolName fullname = getTargetFullProtocolName(mcontext);
-		return jcontext.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
-	}
-	
-	@Override
-	public boolean isEmptyScope()
-	{
-		return this.scope == null;
-	}
-
-	@Override
-	//public Scope getScope()
-	public SimpleName getScopeElement()
-	{
-		return this.scope.toName();
-	}
 
 	/*// Make public
 	private boolean hasEmptyScope()
 	{
 		return isScopeNodeEmpty() || this.scope.toName().equals(Scope.EMPTY_SCOPE);
 	}*/
-
-	public boolean isScoped()
-	{
-		return this.scope != null;
-	}
 	
 	/*public ProtocolName getFullTargetProtocolName(Env env) throws ScribbleException
 	{
@@ -289,16 +309,4 @@ public abstract class Do extends SimpleInteractionNode implements ScopedNode
 		throw new RuntimeException("Should be overridden: " + getFullTargetProtocolName(env));
 		//throw OperationNotSupportedException("Should be overridden: " + this);
 	}*/
-
-	@Override
-	public String toString()
-	{
-		String s = Constants.DO_KW + " ";
-		//if (!hasEmptyScopeNode())
-		if (isScoped())
-		{
-			s += this.scope + ":";
-		}
-		return s + this.proto + this.arginstans + this.roleinstans + ";";
-	}
 }

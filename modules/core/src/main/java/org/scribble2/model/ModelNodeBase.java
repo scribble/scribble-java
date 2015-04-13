@@ -107,14 +107,18 @@ public abstract class ModelNodeBase implements ModelNode
 		// Maybe this hack is not worth it?  Better to throw directly as ScribbleException
 		try
 		{
-			System.out.println(parent);
 			return children.stream()
 					.map((n) -> ScribbleUtil.handleLambdaScribbleException(() -> ModelNodeBase.visitChildWithClassCheck(parent, n, nv)))
 					.collect(Collectors.toList());
 		}
 		catch (RuntimeScribbleException rse)
 		{
-			throw (ScribbleException) rse.getCause();
+			Throwable cause = rse.getCause();
+			if (cause instanceof ScribbleException)
+			{
+				throw (ScribbleException) cause;
+			}
+			throw (RuntimeException) cause;
 		}
 	}
 }

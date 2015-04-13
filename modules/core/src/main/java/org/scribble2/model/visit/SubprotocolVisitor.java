@@ -18,6 +18,7 @@ import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.ScopedNode;
+import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Argument;
@@ -30,7 +31,8 @@ import org.scribble2.util.ScribbleException;
 
 public abstract class SubprotocolVisitor extends ModelVisitor
 {
-	private ModuleDelegate mcontext;  // Factor up to ModelVisitor? (will be null before context building)
+	//private ModuleDelegate mcontext;  // Factor up to ModelVisitor? (will be null before context building)
+	private ModuleContext mcontext;  // Factor up to ModelVisitor? (will be null before context building)
 	
 	private List<ScopedSubprotocolSignature> stack = new LinkedList<>();
 	
@@ -74,7 +76,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 		if (child instanceof Module)  // Factor out?
 		{
-			this.mcontext = (ModuleDelegate) ((Module) child).del();
+			this.mcontext = ((ModuleDelegate) ((Module) child).del()).getModuleContext();
 		}
 		if (child instanceof ProtocolDecl)
 		{
@@ -148,7 +150,10 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	private void enterSubprotocol(Do doo)
 	{
 		//ModuleContext mcontext = ((CompoundInteractionContext) peekContext()).getModuleContext();
-		ModuleDelegate mcontext = getModuleDelegate();
+		/*ModuleDelegate mcontext = getModuleDelegate().g;
+		ProtocolName fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());*/
+		//ModuleDelegate mcontext = getModuleContext();
+		ModuleContext mcontext = getModuleContext();
 		ProtocolName fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());
 		List<Role> roleargs = doo.roleinstans.getRoles();
 		List<Argument> argargs = doo.arginstans.getArguments();
@@ -282,7 +287,12 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	}
 	
 	//protected ModuleDelegate getModuleDelegate()
-	public ModuleDelegate getModuleDelegate()
+	/*public ModuleDelegate getModuleDelegate()
+	{
+		return this.mcontext;
+	}*/
+
+	public ModuleContext getModuleContext()
 	{
 		return this.mcontext;
 	}

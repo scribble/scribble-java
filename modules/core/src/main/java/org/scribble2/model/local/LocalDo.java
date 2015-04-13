@@ -3,31 +3,34 @@ package org.scribble2.model.local;
 import org.scribble2.model.ArgumentInstantiationList;
 import org.scribble2.model.Do;
 import org.scribble2.model.RoleInstantiationList;
-import org.scribble2.model.ScopedNode;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.model.name.simple.ScopeNode;
 
-public class LocalDo extends Do implements SimpleLocalInteractionNode, ScopedNode
+public class LocalDo extends Do implements SimpleLocalInteractionNode
 {
-	public LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//public LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
-		super(scope, roleinstans, arginstans, proto);
+		//super(scope, roleinstans, arginstans, proto);
+		super(roleinstans, arginstans, proto);
 	}
 
 	@Override
-	protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	protected Do reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		ModelDelegate del = del();
-		LocalDo gd = new LocalDo(scope, roleinstans, arginstans, proto);
-		gd = (LocalDo) gd.del(del);
-		return gd;
+		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
+		LocalDo ld = new LocalDo(roleinstans, arginstans, proto);
+		ld = (LocalDo) ld.del(del);
+		return ld;
 	}
 
 	@Override
 	protected LocalDo copy()
 	{
-		return new LocalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
+		//return new LocalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
+		return new LocalDo(this.roleinstans, this.arginstans, this.proto);
 	}
 	
 	/*@Override

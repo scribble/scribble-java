@@ -2,6 +2,7 @@ package org.scribble2.model.visit.env;
 
 import org.scribble2.model.ModelNode;
 
+// could make projection type a class parameter
 public class ProjectionEnv extends Env
 {
 	private ModelNode projection;  // FIXME: need to generalise for do projection (target protocol as well as the do)
@@ -16,6 +17,7 @@ public class ProjectionEnv extends Env
 		//this.projection = projection;
 	}
 
+	// FIXME: make into a defensive setter
 	//public ProjectionEnv(JobContext jcontext, ModuleDelegate mcontext, ModelNode projection)
 	public ProjectionEnv(ModelNode projection)
 	{

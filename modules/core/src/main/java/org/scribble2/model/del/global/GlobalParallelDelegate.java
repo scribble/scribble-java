@@ -18,7 +18,7 @@ public class GlobalParallelDelegate extends GlobalCompoundInteractionNodeDelegat
 	{
 		GlobalParallel par = (GlobalParallel) visited;
 		List<WellFormedChoiceEnv> benvs =
-				par.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().getEnv()).collect(Collectors.toList());
+				par.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().env()).collect(Collectors.toList());
 		checker.pushEnv(checker.popEnv().mergeContexts(benvs));
 		return par;
 	}

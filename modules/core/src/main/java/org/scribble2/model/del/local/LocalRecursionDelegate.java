@@ -12,7 +12,7 @@ public class LocalRecursionDelegate extends LocalCompoundInteractionNodeDelegate
 	public LocalRecursion leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
 	{
 		LocalRecursion lr = (LocalRecursion) visited;
-		ReachabilityEnv env = checker.popEnv().mergeContext((ReachabilityEnv) lr.block.del().getEnv());  //...HERE: env is null
+		ReachabilityEnv env = checker.popEnv().mergeContext((ReachabilityEnv) lr.block.del().env());  //...HERE: env is null
 		env = env.removeContinueLabel(lr.recvar.toName());
 		//merged.contExitable = this.contExitable;
 		checker.pushEnv(env);

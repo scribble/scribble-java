@@ -25,7 +25,7 @@ public class GlobalRecursionDelegate extends GlobalCompoundInteractionNodeDelega
 	{
 		GlobalRecursion rec = (GlobalRecursion) visited;
 		//WellFormedChoiceEnv parent = checker.getEnv().getParent();
-		WellFormedChoiceEnv merged = checker.popEnv().mergeContext((WellFormedChoiceEnv) rec.block.del().getEnv());
+		WellFormedChoiceEnv merged = checker.popEnv().mergeContext((WellFormedChoiceEnv) rec.block.del().env());
 		checker.pushEnv(merged);
 		return rec;
 	}
@@ -36,7 +36,7 @@ public class GlobalRecursionDelegate extends GlobalCompoundInteractionNodeDelega
 		GlobalRecursion gr = (GlobalRecursion) visited;
 		//RecursionVarNode recvar = new RecursionVarNode(gr.recvar.toName().toString());
 		RecursionVarNode recvar = (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, gr.recvar.toName().toString());
-		LocalProtocolBlock block = (LocalProtocolBlock) ((ProjectionEnv) gr.block.del().getEnv()).getProjection();	
+		LocalProtocolBlock block = (LocalProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection();	
 		LocalRecursion projection = null;
 		if (!block.isEmpty())
 		{

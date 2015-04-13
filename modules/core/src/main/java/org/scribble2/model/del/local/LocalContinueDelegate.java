@@ -14,7 +14,7 @@ public class LocalContinueDelegate extends LocalSimpleInteractionNodeDelegate
 		// "Entering" the continue here in leave, where we can merge the new state into the parent Env
 		// Generally: if side effecting Env state to be merged into the parent (not just popped and discarded), leave must be overridden to do so
 
-		ReachabilityEnv env = checker.popEnv().enterContinue(lc.recvar.toName());
+		ReachabilityEnv env = checker.popEnv().leaveContinue(lc.recvar.toName());
 		checker.pushEnv(env);
 		setEnv(env);  // Env recording probably not needed for all LocalInteractionNodes, just the compound ones, like for WF-choice checking
 		env = checker.popEnv().mergeContext(env);  // Overrides super method to merge results back into parent context (otherwise modified Env state not merged, just discarded)

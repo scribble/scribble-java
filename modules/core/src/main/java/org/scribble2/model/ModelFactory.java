@@ -35,7 +35,6 @@ import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 
@@ -73,8 +72,8 @@ public interface ModelFactory
 	GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks);
 	GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block);
 	GlobalContinue GlobalContinue(RecursionVarNode recvar);
+	//GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	
 	RoleInstantiationList RoleInstantiationList(List<RoleInstantiation> ris);
 	RoleInstantiation RoleInstantiation(RoleNode role);
@@ -96,6 +95,7 @@ public interface ModelFactory
 	LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks);
 	LocalRecursion LocalRecursion(RecursionVarNode recvar, LocalProtocolBlock block);
 	LocalContinue LocalContinue(RecursionVarNode recvar);
-	LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
+	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
+	LocalDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 }
 

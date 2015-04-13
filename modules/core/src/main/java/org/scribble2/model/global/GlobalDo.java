@@ -6,34 +6,31 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.RoleInstantiationList;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.model.name.simple.ScopeNode;
 
-public class GlobalDo extends Do implements GlobalInteractionNode
+public class GlobalDo extends Do implements SimpleGlobalInteractionNode
 {
-	/*public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//public GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
-		this(null, roleinstans, arginstans, proto);
-		//super(null, roleinstans, arginstans, proto);
-	}*/
-
-	public GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	{
-		super(scope, roleinstans, arginstans, proto);
-	}
-
-	@Override
-	protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	{
-		ModelDelegate del = del();
-		GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
-		gd = (GlobalDo) gd.del(del);
-		return gd;
+		//super(scope, roleinstans, arginstans, proto);
+		super(roleinstans, arginstans, proto);
 	}
 
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new GlobalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
+		//return new GlobalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
+		return new GlobalDo(this.roleinstans, this.arginstans, this.proto);
+	}
+
+	@Override
+	//protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	protected Do reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	{
+		ModelDelegate del = del();
+		GlobalDo gd = new GlobalDo(roleinstans, arginstans, proto);
+		gd = (GlobalDo) gd.del(del);
+		return gd;
 	}
 
 	/*protected GlobalDo(CommonTree ct, ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNodes proto, SimpleInteractionNodeContext sicontext)
@@ -102,22 +99,6 @@ public class GlobalDo extends Do implements GlobalInteractionNode
 		}
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
-	}
-	
-	public Role getTargetRoleParameter(JobContext jcontext, ModuleContext mcontext, Role role)
-	{
-		Iterator<Role> args = this.roleinstans.getRoles().iterator();
-		Iterator<Role> params = getTargetProtocolDecl(jcontext, mcontext).roledecls.getRoles().iterator();
-		while (args.hasNext())
-		{
-			Role arg = args.next();
-			Role param = params.next();
-			if (arg.equals(role))
-			{
-				return param;
-			}
-		}
-		throw new RuntimeException("Not an argument role: " + role);
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class GlobalProtocolDefinitionDelegate extends ProtocolDefinitionDelegate
 	public GlobalProtocolDefinition leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
 	{
 		GlobalProtocolDefinition gpd = (GlobalProtocolDefinition) visited;
-		LocalProtocolBlock block = (LocalProtocolBlock) ((ProjectionEnv) gpd.block.del().getEnv()).getProjection();	
+		LocalProtocolBlock block = (LocalProtocolBlock) ((ProjectionEnv) gpd.block.del().env()).getProjection();	
 		//LocalProtocolDefinition projection = new LocalProtocolDefinition(block);
 		LocalProtocolDefinition projection = ModelFactoryImpl.FACTORY.LocalProtocolDefinition(block);
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));

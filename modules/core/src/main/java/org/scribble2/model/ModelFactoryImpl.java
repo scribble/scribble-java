@@ -10,6 +10,7 @@ import org.scribble2.model.del.ParameterDeclDelegate;
 import org.scribble2.model.del.RoleDeclDelegate;
 import org.scribble2.model.del.global.GlobalChoiceDelegate;
 import org.scribble2.model.del.global.GlobalContinueDelegate;
+import org.scribble2.model.del.global.GlobalDoDelegate;
 import org.scribble2.model.del.global.GlobalInteractionSequenceDelegate;
 import org.scribble2.model.del.global.GlobalMessageTransferDelegate;
 import org.scribble2.model.del.global.GlobalProtocolBlockDelegate;
@@ -18,6 +19,7 @@ import org.scribble2.model.del.global.GlobalProtocolDefinitionDelegate;
 import org.scribble2.model.del.global.GlobalRecursionDelegate;
 import org.scribble2.model.del.local.LocalChoiceDelegate;
 import org.scribble2.model.del.local.LocalContinueDelegate;
+import org.scribble2.model.del.local.LocalDoDelegate;
 import org.scribble2.model.del.local.LocalInteractionSequenceDelegate;
 import org.scribble2.model.del.local.LocalProtocolBlockDelegate;
 import org.scribble2.model.del.local.LocalProtocolDeclDelegate;
@@ -60,7 +62,6 @@ import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 
@@ -225,17 +226,20 @@ public class ModelFactoryImpl implements ModelFactory
 		return gc;
 	}
 
-	@Override
+	/*@Override
 	public GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		return GlobalDo(null, roleinstans, arginstans, proto);
-	}
+	}*/
 
 	@Override
-	public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
-		GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
-		gd = del(gd, createDefaultDelegate());  // FIXME
+		//GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
+		GlobalDo gd = new GlobalDo(roleinstans, arginstans, proto);
+		//gd = del(gd, createDefaultDelegate());  // FIXME
+		gd = del(gd, new GlobalDoDelegate());  // FIXME
 		return gd;
 	}
 
@@ -404,10 +408,13 @@ public class ModelFactoryImpl implements ModelFactory
 	}*/
 
 	@Override
-	public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public LocalDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
-		LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
-		ld = del(ld, createDefaultDelegate());  // FIXME
+		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
+		LocalDo ld = new LocalDo(roleinstans, arginstans, proto);
+		//ld = del(ld, createDefaultDelegate());
+		ld = del(ld, new LocalDoDelegate());
 		return ld;
 	}
 

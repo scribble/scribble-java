@@ -4,19 +4,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.visit.SubprotocolVisitor;
+import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.sesstype.ScopedMessage;
 import org.scribble2.sesstype.ScopedMessageSignature;
+import org.scribble2.sesstype.ScopedSubprotocolSignature;
 import org.scribble2.sesstype.SubprotocolSignature;
 import org.scribble2.sesstype.name.Operator;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.Scope;
+import org.scribble2.sesstype.name.ScopedMessageParameter;
 import org.scribble2.util.MessageMap;
+import org.scribble2.util.ScribbleException;
 
 public class WellFormedChoiceEnv extends Env
 {
@@ -204,13 +209,68 @@ public class WellFormedChoiceEnv extends Env
 		addMessages(copy.initial, src, dest, Arrays.asList(msg));
 		return copy;
 	}
-	
-	private static List<WellFormedChoiceEnv> castList(List<? extends Env> envs)
+
+	//public WellFormedChoiceEnv enterDo(ScopedSubprotocolSignature subsig) throws ScribbleException
+	//public WellFormedChoiceEnv enterDoContext(SubprotocolSignature subsig) throws ScribbleException
+	public WellFormedChoiceEnv enterDoContext(WellFormedChoiceChecker checker) throws ScribbleException
 	{
-		return envs.stream().map((e) -> (WellFormedChoiceEnv) e).collect(Collectors.toList());
+		WellFormedChoiceEnv copy = copy();
+		//SubprotocolSignature subsig = checker.peekStack().sig;
+		SubprotocolSignature subsig = checker.peekStack().sig;
+		if (!copy.subsigs.containsKey(subsig))
+		{
+			copy.recording.add(subsig);
+			copy.subsigs.put(subsig, new MessageMap<>());
+		}
+		//checker.setEnv(copy);
+		return copy;
+	}
+
+	public WellFormedChoiceEnv leaveWFChoiceCheck(WellFormedChoiceChecker checker) throws ScribbleException
+	{
+		WellFormedChoiceEnv copy = copy();
+		ScopedSubprotocolSignature subsig = checker.peekStack();
+		if (copy.recording.contains(subsig.sig))
+		{
+			copy.recording.remove(subsig.sig);
+		}
+
+		//int isCycle = checker.isCycle();
+		//if (isCycle != -1)
+		if (checker.isCycle())
+		{
+			//addSubprotocolEnabled(subsig);
+			List<ScopedSubprotocolSignature> stack = checker.getStack();
+			stack = stack.subList(0, stack.size() - 1);
+			Scope scope = stack.get(stack.size() - 1).scope;  // Doesn't include final cycle sig scope
+			/*for (int i = stack.size() - 2; i >= 0; i--)
+			{
+				SubprotocolSignature tmp = stack.get(i);
+				if (tmp.equals(subsig))
+				{
+					break;
+				}
+				addSubprotocolEnabled(tmp);
+			}*/
+			int entry = checker.getCycleEntryIndex();
+			Scope prev = (entry == 0) ? Scope.ROOT_SCOPE : stack.get(entry).scope;
+			for (int i = checker.getCycleEntryIndex(); i < stack.size(); i++)
+			{
+				ScopedSubprotocolSignature ssubsig = stack.get(i);
+				if (!prev.equals(ssubsig.scope))
+				{
+					scope = new Scope(scope, ssubsig.scope.getSimpleName());
+					prev = ssubsig.scope;
+				}
+				copy.addSubprotocolEnabled(scope, ssubsig.sig);
+			}
+		}
+
+		return copy;
+		//ev.setEnv(copy);
 	}
 	
-	/* // No defensive copy
+	// No defensive copy
 	private void addSubprotocolEnabled(Scope scope, SubprotocolSignature subsig)
 	{
 		MessageMap<ScopedMessage> enabled = this.subsigs.get(subsig);
@@ -237,7 +297,7 @@ public class WellFormedChoiceEnv extends Env
 				addMessages(this.initial, src, dest, sms);
 			}
 		}
-	}*/
+	}
 	
 	public boolean isEnabled(Role role)
 	{
@@ -419,4 +479,9 @@ public class WellFormedChoiceEnv extends Env
 		//return copy;
 		checker.setEnv(copy);
 	}*/
+	
+	private static List<WellFormedChoiceEnv> castList(List<? extends Env> envs)
+	{
+		return envs.stream().map((e) -> (WellFormedChoiceEnv) e).collect(Collectors.toList());
+	}
 }

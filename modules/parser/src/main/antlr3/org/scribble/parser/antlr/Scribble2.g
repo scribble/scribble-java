@@ -608,22 +608,24 @@ globalinterrupt:
 globaldo:
 	DOKW protocolname roleinstantiationlist ';'
 	->
-	//^(GLOBALDO EMPTY_SCOPENAME protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
-	//^(GLOBALDO NO_SCOPE protocolname ^() roleinstantiationlist)
-	^(GLOBALDO NO_SCOPE protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
+	/*//^(GLOBALDO EMPTY_SCOPENAME protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
+	//^(GLOBALDO NO_SCOPE protocolname ^() roleinstantiationlist)*/
+	//^(GLOBALDO NO_SCOPE protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
+	^(GLOBALDO protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
 	DOKW protocolname argumentinstantiationlist roleinstantiationlist ';'
 	->
-	//^(GLOBALDO EMPTY_SCOPENAME protocolname argumentinstantiationlist roleinstantiationlist)
-	^(GLOBALDO NO_SCOPE protocolname argumentinstantiationlist roleinstantiationlist)
-|
+	////^(GLOBALDO EMPTY_SCOPENAME protocolname argumentinstantiationlist roleinstantiationlist)
+	//^(GLOBALDO NO_SCOPE protocolname argumentinstantiationlist roleinstantiationlist)
+	^(GLOBALDO protocolname argumentinstantiationlist roleinstantiationlist)
+/*|
 	DOKW scopename ':' protocolname roleinstantiationlist ';'
 	->
 	^(GLOBALDO scopename protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
 	DOKW scopename ':' protocolname argumentinstantiationlist roleinstantiationlist ';'
 	->
-	^(GLOBALDO scopename protocolname argumentinstantiationlist roleinstantiationlist)
+	^(GLOBALDO scopename protocolname argumentinstantiationlist roleinstantiationlist)*/
 ;
 
 roleinstantiationlist:

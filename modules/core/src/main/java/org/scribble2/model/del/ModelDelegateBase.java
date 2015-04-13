@@ -95,9 +95,10 @@ public abstract class ModelDelegateBase implements ModelDelegate
 		return ev;
 	}
 	
-	protected <T extends Env> ModelNode popAndSetVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev, ModelNode visited) throws ScribbleException
+	protected <T1 extends Env, T2 extends ModelNode>
+			T2 popAndSetVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T1> ev, T2 visited) throws ScribbleException
 	{
-		T env = ev.popEnv();
+		T1 env = ev.popEnv();
 		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
 		//checker.pushEnv(env);
 		setEnv(env);
@@ -151,11 +152,12 @@ public abstract class ModelDelegateBase implements ModelDelegate
 	}*/
 
 	@Override
-	public Env getEnv()
+	public Env env()
 	{
 		return this.env;
 	}
 	
+	// "setEnv" rather than "env" as a non-defensive setter (cf. ModelNodeBase#del)
 	//@Override
 	protected void setEnv(Env env)
 	{
