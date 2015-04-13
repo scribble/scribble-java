@@ -16,7 +16,6 @@
 package org.scribble2.model;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDelegate;
@@ -105,47 +104,17 @@ public abstract class ModelNodeBase implements ModelNode
 			visited.add(visitChildWithClassCheck(parent, n, nv));
 		}
 		return visited;*/
-		/*return children.stream()
-				.map((n) ->
-						{
-							try
-							{
-								return visitChildWithClassCheck(parent, n, nv);
-							}
-							catch (ScribbleException se)
-							{
-								throw new RuntimeException(se);  // Maybe this hack is not worth it?  Better to throw directly as ScribbleException
-							}
-						}
-			).collect(Collectors.toList());*/
+		// Maybe this hack is not worth it?  Better to throw directly as ScribbleException
 		try
 		{
+			System.out.println(parent);
 			return children.stream()
-					.map((n) -> ScribbleUtil.handleLambdaScribbleException(new visitChildWithClassCheckCallable<T>(parent, n, nv))).collect(Collectors.toList());
+					.map((n) -> ScribbleUtil.handleLambdaScribbleException(() -> ModelNodeBase.visitChildWithClassCheck(parent, n, nv)))
+					.collect(Collectors.toList());
 		}
 		catch (RuntimeScribbleException rse)
 		{
 			throw (ScribbleException) rse.getCause();
-		}
-	}
-		
-	private static class visitChildWithClassCheckCallable<T extends ModelNode> implements Callable<T>
-	{
-		private ModelNode parent;
-		private T n;
-		private ModelVisitor nv;
-
-		public visitChildWithClassCheckCallable(ModelNode parent, T n, ModelVisitor nv)
-		{
-			this.parent = parent;
-			this.n = n;
-			this.nv = nv;
-		}
-		
-		@Override
-		public T call() throws ScribbleException
-		{
-			return visitChildWithClassCheck(parent, n, nv);
 		}
 	}
 }
