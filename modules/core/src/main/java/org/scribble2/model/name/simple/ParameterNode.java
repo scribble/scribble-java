@@ -1,13 +1,12 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.ParameterDecl.Kind;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
 
-public class ParameterNode extends SimpleNameNode implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
+public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 {
 	//public final Kind kind;
 	

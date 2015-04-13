@@ -2,28 +2,31 @@ package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.sesstype.name.Role;
 
 
 //public interface RoleDecl extends HeaderParameterDecl
-public class RoleDecl extends HeaderParameterDecl<RoleNode>
+public class RoleDecl extends HeaderParameterDecl<RoleNode, Role>
 {
-	public RoleDecl(RoleNode namenode)
+	public RoleDecl(RoleNode name)
 	{
 		//super(t, kind, namenode);
-		super(namenode);
+		super(name);
 		//this.name = namenode;
 	}
 
+  /*// FIXME: types do not enforce this to return Role
+	// -- but seems NameDeclNode will need to expose both NameNode and Name as separate type parameters to do so
+	// -- in that case, then would need, e.g. RoleDecl and Role, in the type params -- not enforced to put Role there either, but at least avoids any casts
 	@Override
 	public Role toName()
 	{
-		return ((RoleNode) this.name).toName();
-	}
+		//return ((RoleNode) this.name).toName();
+		return (Role) super.toName();
+	}*/
 
 	@Override
-	protected RoleDecl reconstruct(SimpleNameNode namenode)
+	protected RoleDecl reconstruct(RoleNode namenode)
 	{
 		ModelDelegate del = del();
 		RoleDecl rd = new RoleDecl((RoleNode) namenode);
@@ -54,6 +57,12 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode>
 	public boolean isSelfRoleDecl()
 	{
 		return false;
+	}
+
+	@Override
+	public String getKeyword()
+	{
+		return Constants.ROLE_KW;
 	}
 }
 

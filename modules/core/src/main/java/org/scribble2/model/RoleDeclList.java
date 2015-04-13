@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.name.Role;
 
-public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
+public class RoleDeclList extends HeaderParameterDeclList<RoleDecl, Role>
 {
 	public RoleDeclList(List<RoleDecl> decls)
 	{
@@ -20,7 +20,7 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl>
 	}
 
 	@Override
-	protected HeaderParameterDeclList<RoleDecl> reconstruct(List<RoleDecl> decls)
+	protected HeaderParameterDeclList<RoleDecl, Role> reconstruct(List<RoleDecl> decls)
 	{
 		ModelDelegate del = del();
 		RoleDeclList rdl = new RoleDeclList(decls);

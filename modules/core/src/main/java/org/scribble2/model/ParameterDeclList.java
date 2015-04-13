@@ -7,7 +7,7 @@ import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.sesstype.name.Role;
 
-public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl>
+public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl, Parameter>
 {
 	public ParameterDeclList(List<ParameterDecl> decls)
 	{

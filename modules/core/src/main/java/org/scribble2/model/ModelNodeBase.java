@@ -83,6 +83,7 @@ public abstract class ModelNodeBase implements ModelNode
 		return this;
 	}
 		
+	// FIXME: remove parent parameter, to make uniform with visitChild
 	// Used when a generic cast would otherwise be needed (non-generic children casts don't need this)
 	protected final static <T extends ModelNode> T visitChildWithClassCheck(ModelNode parent, T child, ModelVisitor nv) throws ScribbleException
 	{

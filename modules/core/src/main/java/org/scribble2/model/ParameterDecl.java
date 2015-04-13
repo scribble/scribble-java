@@ -2,11 +2,10 @@ package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.ParameterNode;
-import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.sesstype.name.Role;
 
-public class ParameterDecl extends HeaderParameterDecl<ParameterNode> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
+public class ParameterDecl extends HeaderParameterDecl<ParameterNode, Parameter> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
 {
 	public enum Kind { TYPE, SIG }  // ROLE
 	
@@ -16,19 +15,19 @@ public class ParameterDecl extends HeaderParameterDecl<ParameterNode> //implemen
 	//public final ParameterNode name;
 	public final Kind kind;
 
-	public ParameterDecl(Kind kind, ParameterNode namenode)
+	public ParameterDecl(Kind kind, ParameterNode name)
 	{
 		//super(t, kind, namenode);
-		super(namenode);
+		super(name);
 		this.kind = kind;
 		//this.name = namenode;
 	}
 	
 	@Override
-	protected ParameterDecl reconstruct(SimpleNameNode namenode)
+	protected ParameterDecl reconstruct(ParameterNode name)
 	{
 		ModelDelegate del = del();
-		ParameterDecl pd = new ParameterDecl(this.kind, (ParameterNode) namenode);
+		ParameterDecl pd = new ParameterDecl(this.kind, (ParameterNode) name);
 		pd = (ParameterDecl) pd.del(del);
 		return pd;
 	}
@@ -39,17 +38,24 @@ public class ParameterDecl extends HeaderParameterDecl<ParameterNode> //implemen
 		return new ParameterDecl(this.kind, (ParameterNode) this.name);
 	}
 
-	@Override
+	/*@Override
 	public Parameter toName()
 	{
 		return ((ParameterNode) this.name).toName();
-	}
+	}*/
 	
 	public ParameterDecl project(Role self)
 	{
 		ParameterNode pn = new ParameterNode(this.name.toString());
 		//return new ParameterDecl(this.kind, pn);
 		return ModelFactoryImpl.FACTORY.ParameterDecl(this.kind, pn);
+	}
+	
+	@Override
+	public String getKeyword()
+	{
+		//return Constants....;
+		throw new RuntimeException("TODO");
 	}
 	
 	/*@Override

@@ -3,10 +3,15 @@ package org.scribble2.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.name.SimpleName;
 import org.scribble2.util.ScribbleException;
 
-public abstract class HeaderParameterDeclList<T extends HeaderParameterDecl> extends ModelNodeBase 
+public abstract class HeaderParameterDeclList<
+		T extends HeaderParameterDecl<? extends SimpleNameNode<T2>,	T2>,
+		T2 extends SimpleName
+> extends ModelNodeBase 
 {
 	public final List<T> decls;
 	
@@ -25,10 +30,10 @@ public abstract class HeaderParameterDeclList<T extends HeaderParameterDecl> ext
 		return this.decls.isEmpty();
 	}
 	
-	protected abstract HeaderParameterDeclList<T> reconstruct(List<T> decls);
+	protected abstract HeaderParameterDeclList<T, T2> reconstruct(List<T> decls);
 	
 	@Override
-	public HeaderParameterDeclList<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParameterDeclList<T, T2> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		List<T> nds = visitChildListWithClassCheck(this, this.decls, nv);
 		//return new HeaderParameterDeclList<>(this.ct, nds);
