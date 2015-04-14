@@ -34,7 +34,14 @@ public class LocalDoDelegate extends LocalSimpleInteractionNodeDelegate
 		{
 			env = env.leaveRecursiveDo();
 		}
+		/*checker.pushEnv(env);
+		//return popAndSetVisitorEnv(parent, child, checker, (LocalDo) visited);  // no: modified exitable env state, need to merge back to parent (interaction seq) -- following LocalContinueDelegate
+		setEnv(env);
+		env = checker.popEnv().mergeContext(env);
 		checker.pushEnv(env);
-		return popAndSetVisitorEnv(parent, child, checker, (LocalDo) visited);
+		return (LocalDo) visited;*/
+		setEnv(env);
+		checker.pushEnv(checker.popEnv().mergeContext(env));
+		return (LocalDo) visited;
 	}
 }

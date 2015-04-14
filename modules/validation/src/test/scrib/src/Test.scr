@@ -8,14 +8,17 @@ global protocol Foo(role A, role B)
 {
 	1() from A to B;
 	do Bar(A, B);
+	3() from A to B;
 }
 
 global protocol Bar(role C, role D)
 {
 	2() from C to D;
+	do Bar(C, D);
+	//2() from C to D;
 }
 
-/*global protocol Foo(role A, role B, role C)
+/*global protocol Foo(role A, role B, role C, role D)
 {
 	rec X {
 		choice at A
@@ -28,8 +31,9 @@ global protocol Bar(role C, role D)
 		{
 			//1() from A to B;
 			2() from A to B;
-			//continue X;
+			continue X;
 		}
 	}
-	3() from A to B;
+	//3() from A to B;
+	4() from C to D;
 }*/

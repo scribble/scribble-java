@@ -29,6 +29,7 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl, Role>
 	}
 
 	// FIXME: move to delegate?
+	@Override
 	public RoleDeclList project(Role self)
 	{
 		List<RoleDecl> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	

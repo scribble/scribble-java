@@ -80,6 +80,7 @@ public interface ModelFactory
 	ArgumentInstantiationList ArgumentInstantiationList(List<ArgumentInstantiation> ais);
 	ArgumentInstantiation ArgumentInstantiation(ArgumentNode arg);
 
+	// FIXME: instead of enums, take class as generic parameter
 	SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);
 	QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems);
 

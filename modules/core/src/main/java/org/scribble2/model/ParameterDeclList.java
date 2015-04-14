@@ -30,6 +30,7 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl, Pa
 	}
 		
 	// FIXME: move to delegate?
+	@Override
 	public ParameterDeclList project(Role self)
 	{
 		List<ParameterDecl> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	

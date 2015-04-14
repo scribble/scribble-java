@@ -4,6 +4,7 @@ import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
 public class ImportModule extends ImportDecl
@@ -16,6 +17,12 @@ public class ImportModule extends ImportDecl
 	{
 		this.modname = modname;
 		this.alias = alias;
+	}
+
+	@Override
+	protected ImportModule copy()
+	{
+		return new ImportModule(this.modname, this.alias);
 	}
 	
 	protected ImportModule reconstruct(ModuleNameNode modname, SimpleProtocolNameNode alias)
@@ -30,24 +37,15 @@ public class ImportModule extends ImportDecl
 	public ImportModule visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		ModuleNameNode modname = (ModuleNameNode) visitChild(this.modname, nv);
+		SimpleProtocolNameNode alias = null;
 		if (isAliased())
 		{
-			SimpleProtocolNameNode alias = (SimpleProtocolNameNode) visitChild(this.alias, nv);
+			alias = (SimpleProtocolNameNode) visitChild(this.alias, nv);
 			//return new ImportModule(this.ct, modname, alias);
-			return reconstruct(modname, alias);
 		}
 		//return new ImportModule(this.ct, modname, null);
-		return reconstruct(modname, null);
+		return reconstruct(modname, alias);
 	}
-	
-	/*@Override
-	public ImportModule project(Projector proj)
-	{
-		// Don't know target protocol
-		PrimitiveNameNode pnn = new PrimitiveNameNode(null, proj.getProjectedModuleName(this.fmn.smn, ...));
-		ModuleNameNode mnn = new ModuleNameNode(this.fmn.pn, pnn);
-		return new ImportModule(null, mnn, this.alias);
-	}*/
 	
 	@Override
 	public boolean isAliased()
@@ -59,13 +57,13 @@ public class ImportModule extends ImportDecl
 	public ModuleName getVisibleName()
 	{
 		return isAliased() ? getAlias() : this.modname.toName();
-	}
+	}*/
 	
-	@Override
-	public ModuleName getAlias()
+	//@Override
+	public ModuleName getModuleNameAlias()
 	{
 		return new ModuleName(this.alias.identifier);
-	}*/
+	}
 	
 	@Override
 	public String toString()
@@ -77,16 +75,10 @@ public class ImportModule extends ImportDecl
 		}
 		return s + ";";
 	}
-
-	@Override
-	protected ModelNodeBase copy()
-	{
-		return new ImportModule(this.modname, this.alias);
-	}
 	
-	/*@Override
+	@Override
 	public boolean isImportModule()
 	{
 		return true;
-	}*/
+	}
 }

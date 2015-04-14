@@ -44,6 +44,7 @@ public class ParameterDecl extends HeaderParameterDecl<ParameterNode, Parameter>
 		return ((ParameterNode) this.name).toName();
 	}*/
 	
+	@Override
 	public ParameterDecl project(Role self)
 	{
 		ParameterNode pn = new ParameterNode(this.name.toString());

@@ -158,6 +158,10 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		List<Role> roleargs = doo.roleinstans.getRoles();
 		List<Argument> argargs = doo.arginstans.getArguments();
 		
+		System.out.println("2a: " + fullname + ", " + roleargs + ", " + argargs);
+		if (!isStackEmpty())
+			System.out.println("2b: " + peekStack());
+		
 		pushSubprotocolSignature(fullname, roleargs, argargs);
 		//pushSubprotocolSignature(fullname, roleargs, argargs);*/
 		pushNameMaps(fullname, roleargs, argargs);
@@ -167,6 +171,17 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	{
 		Map<Role, RoleNode> rolemap = rolemaps.peek();
 		Map<Argument, ArgumentNode> argmap = argmaps.peek();
+
+		System.out.println("2c: " + fullname + ", " + roleargs + ", " + argargs + ", " + rolemap + ", " + argmap);
+		
+		
+		..HERE: fix recursive subprotocol visit
+				2a: Test.Bar, [A, B], []
+				2c: Test.Bar, [A, B], [], {A=A, B=B}, {}
+				2a: Test.Bar, [A, B], []
+				2b: __root:Test.Bar<[]>([A, B])
+				2c: Test.Bar, [A, B], [], {C=A, D=B}, {}
+
 		List<Role> roles = roleargs.stream().map((r) -> rolemap.get(r).toName()).collect(Collectors.toList());
 		List<Argument> args = argargs.stream().map((a) -> argmap.get(a).toArgument()).collect(Collectors.toList());
 		ScopedSubprotocolSignature ssubsig = new ScopedSubprotocolSignature(getScope(), fullname, roles, args);

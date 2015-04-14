@@ -2,6 +2,7 @@ package org.scribble2.model;
 
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.SimpleName;
 import org.scribble2.util.ScribbleException;
 
@@ -27,6 +28,8 @@ public abstract class HeaderParameterDecl<T extends SimpleNameNode<T2>, T2 exten
 		T name = visitChildWithClassCheck(this, this.name, nv);
 		return reconstruct(name);
 	}
+	
+	abstract NameDeclNode<T, T2> project(Role self);
 
 	@Override
 	//public SimpleName toName()

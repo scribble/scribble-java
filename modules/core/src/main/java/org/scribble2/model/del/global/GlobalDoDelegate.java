@@ -1,7 +1,5 @@
 package org.scribble2.model.del.global;
 
-import java.lang.reflect.Parameter;
-
 import org.scribble2.model.ArgumentInstantiationList;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -54,6 +52,8 @@ public class GlobalDoDelegate extends GlobalSimpleInteractionNodeDelegate
 	@Override
 	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	{
+		super.enterProjection(parent, child, proj);
+
 		GlobalDo gd = (GlobalDo) child;
 		//ProtocolName gpn = gd.getTargetFullProtocolName(proj.getModuleContext());
 		Role self = proj.peekSelf();
@@ -68,12 +68,6 @@ public class GlobalDoDelegate extends GlobalSimpleInteractionNodeDelegate
 			proj.pushSelf(self);
 		}
 		//return proj;
-		
-		
-		..HERE:  didn't push env but leave is popping
-		.. fix projection env to take projection output type as Parameter
-		.. fix global/local do delegate context build loop
-		.. get simple/compound name node and name classes into shape
 	}
 	
 	@Override

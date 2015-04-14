@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.global.GlobalProtocolDecl;
+import org.scribble2.model.local.LocalProtocolDecl;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.Name;
@@ -146,12 +147,13 @@ public class Module extends ModelNodeBase
 		return getProtocolDecls(IS_GLOBALPROTOCOLDECL, TO_GLOBALPROTOCOLDECL);
 	}
 
-	/*public List<LocalProtocolDecl> getLocalProtocolDecls()
+	public List<LocalProtocolDecl> getLocalProtocolDecls()
 	{
 		//return Util.listCast(this.protos.stream().filter(LocalProtocolDecl.isLocalProtocolDecl).collect(Collectors.toList()), LocalProtocolDecl.toLocalProtocolDecl);
 		//return this.protos.stream().filter(LocalProtocolDecl.isLocalProtocolDecl).map(LocalProtocolDecl.toLocalProtocolDecl).collect(Collectors.toList());
-		return getProtocolDecls(LocalProtocolDecl.isLocalProtocolDecl, LocalProtocolDecl.toLocalProtocolDecl);
-	}*/
+		//return getProtocolDecls(LocalProtocolDecl.isLocalProtocolDecl, LocalProtocolDecl.toLocalProtocolDecl);
+		return getProtocolDecls(IS_LOCALPROTOCOLDECL, TO_LOCALPROTOCOLDECL);
+	}
 
 	public <T extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 			List<T> getProtocolDecls(
@@ -237,8 +239,26 @@ public class Module extends ModelNodeBase
 					(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 							-> pd.isGlobal();
 
-	private static final Function<ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>, GlobalProtocolDecl>
+	private static final Predicate<ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
+			IS_LOCALPROTOCOLDECL =
+					(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+							-> pd.isLocal();
+
+	private static final Function
+			<
+					ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>,
+					GlobalProtocolDecl
+			>
 			TO_GLOBALPROTOCOLDECL =
 					(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 							-> (GlobalProtocolDecl) pd;
+
+	private static final Function
+			<
+					ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>,
+					LocalProtocolDecl
+			>
+			TO_LOCALPROTOCOLDECL =
+					(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+							-> (LocalProtocolDecl) pd;
 }

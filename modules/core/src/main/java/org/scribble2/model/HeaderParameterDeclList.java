@@ -5,17 +5,18 @@ import java.util.List;
 
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.SimpleName;
 import org.scribble2.util.ScribbleException;
 
 public abstract class HeaderParameterDeclList<
-		T extends HeaderParameterDecl<? extends SimpleNameNode<T2>,	T2>,
+		T1 extends HeaderParameterDecl<? extends SimpleNameNode<T2>,	T2>,
 		T2 extends SimpleName
 > extends ModelNodeBase 
 {
-	public final List<T> decls;
+	public final List<T1> decls;
 	
-	public HeaderParameterDeclList(List<T> decls)
+	protected HeaderParameterDeclList(List<T1> decls)
 	{
 		this.decls = new LinkedList<>(decls);
 	}
@@ -30,12 +31,14 @@ public abstract class HeaderParameterDeclList<
 		return this.decls.isEmpty();
 	}
 	
-	protected abstract HeaderParameterDeclList<T, T2> reconstruct(List<T> decls);
+	public abstract HeaderParameterDeclList<T1, T2> project(Role self);
+	
+	protected abstract HeaderParameterDeclList<T1, T2> reconstruct(List<T1> decls);
 	
 	@Override
-	public HeaderParameterDeclList<T, T2> visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParameterDeclList<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		List<T> nds = visitChildListWithClassCheck(this, this.decls, nv);
+		List<T1> nds = visitChildListWithClassCheck(this, this.decls, nv);
 		//return new HeaderParameterDeclList<>(this.ct, nds);
 		return reconstruct(nds);
 	}
@@ -83,7 +86,7 @@ public abstract class HeaderParameterDeclList<
 			return "";
 		}
 		String s = decls.get(0).toString();
-		for (T nd : this.decls.subList(1, this.decls.size()))
+		for (T1 nd : this.decls.subList(1, this.decls.size()))
 		{
 			s += ", " + nd;
 		}

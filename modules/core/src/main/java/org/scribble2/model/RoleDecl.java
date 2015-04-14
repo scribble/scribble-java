@@ -34,6 +34,8 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode, Role>
 		return rd;
 	}
 
+	
+	@Override
 	public RoleDecl project(Role self)
 	{
 		Role role = this.name.toName();

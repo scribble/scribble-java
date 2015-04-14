@@ -11,6 +11,14 @@ import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
 
+		//.. fix projection env to take projection output type as Parameter
+		//.. fix global/local do delegate context build loop -- use lambda
+		//.. get simple/compound name node and name classes into shape
+		//.. fix del parameterized return type (take class as arg) -- maybe also copy
+		//.. fix modelfactory simple name node parameterization (take class instead of enum)
+		//.. remove scoped subprotocols for now
+
+
 // - perhaps refactor to have choice/recursion/etc as packages with global/local/del/etc in each
 
 // - visitor pattern, delegates, envs (root, creating and assigning, merging, super calls), subprotocol visiting

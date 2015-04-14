@@ -33,7 +33,7 @@ import org.scribble2.util.ScribbleUtil;
 // Currently name nodes don't have dels (aren't made by node factory)
 public abstract class ModelNodeBase implements ModelNode
 {
-	private ModelDelegate del;
+	protected ModelDelegate del;
 
 	// Internal shallow copy for (immutable) ModelNodes
 	//@Override
@@ -76,6 +76,19 @@ public abstract class ModelNodeBase implements ModelNode
 		copy.del = del;
 		return copy;
 	}
+
+	/*@Override
+	public final <T extends ModelNodeBase> T del(T n, ModelDelegate del)
+	{
+		T copy = n.copy();
+		copy.del = del;
+		return copy;
+	}*/
+	
+	/*protected static <T extends ModelNodeBase> T reconstruct(T n)
+	{
+		return castReconstruction(n.del(n.del()), n);  // del setter returns a shallow copy -- which is enough for immutable model nodes
+	}*/
 
 	@Override
 	public ModelNode substituteNames(Substitutor subs)
@@ -122,4 +135,15 @@ public abstract class ModelNodeBase implements ModelNode
 			throw (RuntimeException) cause;
 		}
 	}
+	
+	/*private static <T extends ModelNodeBase> T castReconstruction(ModelNodeBase n, T t)
+	{
+		if (!n.getClass().equals(t.getClass()))
+		{
+			throw new RuntimeException("Cast error: " + n.getClass() + ", " + t.getClass());
+		}
+		@SuppressWarnings("unchecked")
+		T tmp = (T) n;
+		return tmp;
+	}*/
 }

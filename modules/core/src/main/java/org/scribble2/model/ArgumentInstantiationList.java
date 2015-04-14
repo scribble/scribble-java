@@ -3,15 +3,16 @@ package org.scribble2.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.name.Role;
 
 
 public class ArgumentInstantiationList extends InstantiationList<ArgumentInstantiation>
 {
-	public ArgumentInstantiationList(List<ArgumentInstantiation> as)
+	public ArgumentInstantiationList(List<ArgumentInstantiation> instans)
 	{
-		super(as);
+		super(instans);
 	}
 
 	@Override
@@ -20,11 +21,21 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 		return new ArgumentInstantiationList(this.instans);
 	}
 
+	@Override
+	protected InstantiationList<ArgumentInstantiation> reconstruct(List<ArgumentInstantiation> instans)
+	{
+		ModelDelegate del = del();
+		ArgumentInstantiationList ail = ModelFactoryImpl.FACTORY.ArgumentInstantiationList(instans);
+		ail = (ArgumentInstantiationList) ail.del(del);
+		return ail;
+	}
+
+	@Override
 	public ArgumentInstantiationList project(Role self)
 	{
-		List<ArgumentInstantiation> arginstans =
+		List<ArgumentInstantiation> instans =
 				this.instans.stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
-		return new ArgumentInstantiationList(arginstans);
+		return ModelFactoryImpl.FACTORY.ArgumentInstantiationList(instans);
 	}
 	
 	public boolean isEmpty()

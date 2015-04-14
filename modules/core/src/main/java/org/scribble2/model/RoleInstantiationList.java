@@ -3,24 +3,42 @@ package org.scribble2.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.name.Role;
 
 public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 {
 	//public final List<RoleInstantiation> ris;
 
-	public RoleInstantiationList(List<RoleInstantiation> ris)
+	public RoleInstantiationList(List<RoleInstantiation> instans)
 	{
-		super(ris);
+		super(instans);
+		
 		//this.is = ris;
 	}
 
+	@Override
+	protected RoleInstantiationList copy()
+	{
+		return new RoleInstantiationList(this.instans);
+	}
+
+	@Override
+	protected RoleInstantiationList reconstruct(List<RoleInstantiation> instans)
+	{
+		ModelDelegate del = del();
+		RoleInstantiationList rl = new RoleInstantiationList(instans);
+		rl = (RoleInstantiationList) rl.del(del);
+		return rl;
+	}
+
 	// FIXME: move to delegate?
+	@Override
 	public RoleInstantiationList project(Role self)
 	{
-		List<RoleInstantiation> roleinstans =
+		List<RoleInstantiation> instans =
 				this.instans.stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
-		return new RoleInstantiationList(roleinstans);
+		return ModelFactoryImpl.FACTORY.RoleInstantiationList(instans);
 	}
 
 	/*@Override
@@ -59,13 +77,6 @@ public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 			}
 		}
 		return ril;
-	}
-	
-	@Override
-	public RoleInstantiationList visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		List<RoleInstantiation> ris = nv.visitAll(this.is);
-		return new RoleInstantiationList(this.ct, ris);
 	}*/
 	
 	// The role arguments
@@ -83,11 +94,5 @@ public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 			s += ", " + ri;
 		}
 		return s + ")";
-	}
-
-	@Override
-	protected ModelNodeBase copy()
-	{
-		return new RoleInstantiationList(this.instans);
 	}
 }

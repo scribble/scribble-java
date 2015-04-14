@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.scribble2.model.ParameterDecl.Kind;
 import org.scribble2.model.del.DefaultModelDelegate;
+import org.scribble2.model.del.ImportModuleDelegate;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.del.ParameterDeclDelegate;
@@ -118,7 +119,8 @@ public class ModelFactoryImpl implements ModelFactory
 	public ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)
 	{
 		ImportModule im = new ImportModule(modname, alias);
-		im = del(im, createDefaultDelegate());
+		//im = del(im, createDefaultDelegate());
+		im = del(im, new ImportModuleDelegate());
 		return im;
 	}
 

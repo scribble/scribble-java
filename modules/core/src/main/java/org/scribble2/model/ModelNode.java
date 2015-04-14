@@ -32,7 +32,8 @@ public interface ModelNode// extends Copy
 	ModelNode visitChildrenInSubprotocols(SubprotocolVisitor nv) throws ScribbleException;
 
 	ModelDelegate del();
-	ModelNodeBase del(ModelDelegate del);
+	ModelNode del(ModelDelegate del);
+	//<T extends ModelNodeBase> T del(T t, ModelDelegate del);
 	
 	ModelNode substituteNames(Substitutor subs);
 }

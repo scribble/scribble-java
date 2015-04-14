@@ -2,6 +2,7 @@ package org.scribble2.model;
 
 import org.scribble2.model.name.NameNode;
 import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.Role;
 
 // Should also include type decls?
 public abstract class NameDeclNode<T1 extends NameNode<T2>, T2 extends Name> extends ModelNodeBase //implements Named<Name> -- no: NameDeclNode is not a Named node itself

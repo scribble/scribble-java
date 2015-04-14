@@ -68,20 +68,19 @@ public class ModuleDelegate extends ModelDelegateBase
 	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder)
 	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder)
 	{
-		//builder.setModuleContext(new ModuleContext(builder.job.getJobContext(), (Module) child));
-		builder.setModuleContext(new ModuleContext((Module) child));
+		builder.setModuleContext(new ModuleContext(builder.getJobContext(), (Module) child));
 		//return builder;
 	}
 
 	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)
 	@Override
-	public ModelNode leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	public Module leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
 	{
 		//visited = visited.del(new ModuleDelegate(builder.getJobContext(), (Module) visited));
 		ModuleDelegate del = copy();  // FIXME: should be a deep clone in principle
 		//del.context = new ModuleContext(builder.getJobContext(), (Module) visited);
 		del.context = builder.getModuleContext();
-		return visited.del(del);
+		return (Module) visited.del(del);
 	}
 
 	@Override
@@ -155,7 +154,7 @@ public class ModuleDelegate extends ModelDelegateBase
 	public String toString()
 	{
 		//return "[modules=" + this.modules + ", types=" + this.types + ", sigs=" + this.sigs + ", globals=" + this.globals + ", locals=" + this.locals;
-		return this.context.toString();
+		return (this.context == null) ? null : this.context.toString();  // null in and before context building
 	}
 
 	/*private ProtocolName getFullProtocolName(

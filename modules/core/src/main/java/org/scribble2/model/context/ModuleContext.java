@@ -3,8 +3,12 @@ package org.scribble2.model.context;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scribble2.model.ImportDecl;
+import org.scribble2.model.ImportModule;
 import org.scribble2.model.Module;
 import org.scribble2.model.global.GlobalProtocolDecl;
+import org.scribble2.model.local.LocalProtocolDecl;
+import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.name.MessageSignatureName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.PayloadType;
@@ -23,11 +27,9 @@ public class ModuleContext
 	private final Map<ProtocolName, ProtocolName> globals;
 	private final Map<ProtocolName, ProtocolName> locals;
 
-
 	// Made by ContextBuilder
 	// ModuleContext is the root context
-	//public ModuleContext(JobContext jcontext, Module root)
-	public ModuleContext(Module root)
+	public ModuleContext(JobContext jcontext, Module root)
 	{
 		ModuleName fullmodname = root.getFullModuleName(); 
 
@@ -43,7 +45,7 @@ public class ModuleContext
 		addModule(root, fullmodname);
 		addLocalMembers(root, fullmodname);
 		
-		//addImportedModules(jcontext);
+		addImportedModules(jcontext);
 		//addMembers();
 		
 		//System.out.println("1: " + this);
@@ -93,13 +95,13 @@ public class ModuleContext
 			ProtocolName visname = new ProtocolName(vismodname, gpd.header.name.toString());
 			this.globals.put(visname, fullname);
 		}
-		/*for (LocalProtocolDecl lpd : mod.getLocalProtocolDecls())
+		for (LocalProtocolDecl lpd : mod.getLocalProtocolDecls())
 		{
 			ProtocolName fullname = lpd.getFullProtocolName(mod);
 			//ProtocolName fullname = getFullProtocolName(lpd);
-			ProtocolName visname = new ProtocolName(vismodname, lpd.name.toString());
+			ProtocolName visname = new ProtocolName(vismodname, lpd.header.name.toString());
 			this.locals.put(visname, fullname);
-		}*/
+		}
 	}
 	
 	private void addLocalMembers(Module m, ModuleName fullmodname)
@@ -146,9 +148,11 @@ public class ModuleContext
 		}*/
 	}
 	
-	/*private void addImportedModules(JobContext jcontext)
+	// Could move to ImportModule but would need a defensive copy setter, or cache info in builder and create on leave
+	private void addImportedModules(JobContext jcontext)
 	{
-		for (ImportDecl id : this.root.imports)
+		Module mod = jcontext.getModule(this.root);  // Not the same as Job main module
+		for (ImportDecl id : mod.imports)
 		{
 			if (id.isImportModule())
 			{
@@ -156,7 +160,7 @@ public class ModuleContext
 				ModuleName fullmodname = im.modname.toName();
 				if (!this.modules.keySet().contains(fullmodname))
 				{
-					ModuleName modname = (im.isAliased()) ? im.getAlias() : fullmodname;
+					ModuleName modname = (im.isAliased()) ? im.getModuleNameAlias() : fullmodname;
 					addModule(jcontext.getModule(fullmodname), modname);
 				}
 			}
@@ -165,7 +169,7 @@ public class ModuleContext
 				throw new RuntimeException("TODO: " + id);
 			}
 		}
-	}*/
+	}
 
 	/*// Separate the above into adders
 	public void addLocalProtocolDecl(LocalProtocolDecl lpd)

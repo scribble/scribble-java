@@ -4,6 +4,7 @@ import org.scribble2.model.RoleDecl;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 //import scribble2.sesstype.name.NameDeclaration;
+import org.scribble2.sesstype.name.Role;
 
 public class SelfRoleDecl extends RoleDecl
 {
@@ -18,6 +19,12 @@ public class SelfRoleDecl extends RoleDecl
 		NameDecl<? extends PrimitiveNameNode> nd = super.visitChildren(nv);
 		return new SelfRoleDecl(nd.ct, (RoleNode) nd.name);
 	}*/
+	
+	@Override
+	public SelfRoleDecl project(Role self)
+	{
+		throw new RuntimeException("Shouldn't get in here: " + this);
+	}
 
 	@Override
 	//protected RoleDecl reconstruct(SimpleNameNode snn)

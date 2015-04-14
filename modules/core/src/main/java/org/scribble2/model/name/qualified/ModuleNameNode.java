@@ -6,7 +6,7 @@ import org.scribble2.sesstype.name.PackageName;
 
 
 
-public class ModuleNameNode extends QualifiedNameNode
+public class ModuleNameNode extends QualifiedNameNode<ModuleName>
 {
 	//public ModuleNameNodes(PrimitiveNameNode... ns)
 	public ModuleNameNode(String... ns)
