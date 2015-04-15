@@ -68,6 +68,17 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	}
 
 	@Override
+	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		/*SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
+		ModelNode visited = child.visitChildrenInSubprotocols(spv);
+		return leave(parent, child, spv, visited);*/
+		enter(parent, child);
+		ModelNode visited = child.visitChildrenInSubprotocols(this);
+		return leave(parent, child, visited);
+	}
+
+	@Override
 	//protected final SubprotocolVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
 	protected final void enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
@@ -108,6 +119,11 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		//ModelNode n = super.leave(parent, child, nv, visited);
 		//ModelNode n = subprotocolLeave(parent, child, (SubprotocolVisitor) nv, visited);
 		ModelNode n = subprotocolLeave(parent, child, visited);
+		if (child instanceof ProtocolDecl)
+		{
+			this.rolemaps.pop();
+			this.argmaps.pop();
+		}
 		if (child instanceof Do)  // child or visited/n?
 		{
 			leaveSubprotocol();
@@ -120,17 +136,6 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		//return subprotocolLeave(parent, child, nv, n);
 		//return n;
 		return super.leave(parent, child, n);
-	}
-
-	@Override
-	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
-	{
-		/*SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
-		ModelNode visited = child.visitChildrenInSubprotocols(spv);
-		return leave(parent, child, spv, visited);*/
-		enter(parent, child);
-		ModelNode visited = child.visitChildrenInSubprotocols(this);
-		return leave(parent, child, visited);
 	}
 
 	//protected SubprotocolVisitor subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
@@ -157,11 +162,6 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		ProtocolName fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());
 		List<Role> roleargs = doo.roleinstans.getRoles();
 		List<Argument> argargs = doo.arginstans.getArguments();
-		
-		System.out.println("2a: " + fullname + ", " + roleargs + ", " + argargs);
-		if (!isStackEmpty())
-			System.out.println("2b: " + peekStack());
-		
 		pushSubprotocolSignature(fullname, roleargs, argargs);
 		//pushSubprotocolSignature(fullname, roleargs, argargs);*/
 		pushNameMaps(fullname, roleargs, argargs);
@@ -171,19 +171,10 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	{
 		Map<Role, RoleNode> rolemap = rolemaps.peek();
 		Map<Argument, ArgumentNode> argmap = argmaps.peek();
-
-		System.out.println("2c: " + fullname + ", " + roleargs + ", " + argargs + ", " + rolemap + ", " + argmap);
-		
-		
-		..HERE: fix recursive subprotocol visit
-				2a: Test.Bar, [A, B], []
-				2c: Test.Bar, [A, B], [], {A=A, B=B}, {}
-				2a: Test.Bar, [A, B], []
-				2b: __root:Test.Bar<[]>([A, B])
-				2c: Test.Bar, [A, B], [], {C=A, D=B}, {}
-
-		List<Role> roles = roleargs.stream().map((r) -> rolemap.get(r).toName()).collect(Collectors.toList());
-		List<Argument> args = argargs.stream().map((a) -> argmap.get(a).toArgument()).collect(Collectors.toList());
+		/*List<Role> roles = roleargs.stream().map((r) -> rolemap.get(r).toName()).collect(Collectors.toList());
+		List<Argument> args = argargs.stream().map((a) -> argmap.get(a).toArgument()).collect(Collectors.toList());*/
+		List<Role> roles = new LinkedList<>(roleargs);
+		List<Argument> args = new LinkedList<>(argargs);
 		ScopedSubprotocolSignature ssubsig = new ScopedSubprotocolSignature(getScope(), fullname, roles, args);
 		//ScopedSubprotocolSignature ssubsig = getSubprotocolSignature(fullname, roleargs, argargs);
 		this.stack.add(ssubsig);
@@ -200,8 +191,10 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		Map<Argument, ArgumentNode> argmap = argmaps.peek();
 		Iterator<Role> roleargiter = roleargs.iterator();
 		Iterator<Argument> argargiter = argargs.iterator();
-		Map<Role, RoleNode> newrolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> rolemap.get(roleargiter.next())));
-		Map<Argument, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> argmap.get(argargiter.next())));
+		/*Map<Role, RoleNode> newrolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> rolemap.get(roleargiter.next())));
+		Map<Argument, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> argmap.get(argargiter.next())));*/
+		Map<Role, RoleNode> newrolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> this.rolemaps.get(0).get(roleargiter.next())));
+		Map<Argument, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> this.argmaps.get(0).get(argargiter.next())));
 		this.rolemaps.push(newrolemap);
 		this.argmaps.push(newargmap);
 	}
