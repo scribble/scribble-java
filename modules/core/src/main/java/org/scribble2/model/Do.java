@@ -41,19 +41,19 @@ public abstract class Do extends SimpleInteractionNode //implements ScopedNode
 		return reconstruct(ril, al, proto);//, getContext(), getEnv());
 	}
 
-	@Override
+	/*@Override
 	public Do visitChildrenInSubprotocols(SubprotocolVisitor spv) throws ScribbleException
 	{
 		/*Do doo = visitChildren(spv);  // Should we do this or not?
 		ModuleContext mcontext = ((CompoundInteractionContext) spv.peekContext()).getModuleContext();
 		ProtocolName fullname = mcontext.getFullProtocolDeclName(this.proto.toName());
-		//spv.enterSubprotocol(fullname, this.ril.getRoles(), this.ail.getArguments());*/
+		//spv.enterSubprotocol(fullname, this.ril.getRoles(), this.ail.getArguments());* /
 		if (!spv.isCycle())
 		//if (spv.isCycle() != -1)
 		{
 			//ModuleDelegate mcontext = spv.getModuleContext();
 			/*JobContext jcontext = spv.getJobContext();
-			ModuleDelegate mcontext = (ModuleDelegate) jcontext.getMainModule().del();*/
+			ModuleDelegate mcontext = (ModuleDelegate) jcontext.getMainModule().del();* /
 			ModuleContext mcontext = spv.getModuleContext();
 			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 					//pd = spv.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());* /
@@ -67,7 +67,7 @@ public abstract class Do extends SimpleInteractionNode //implements ScopedNode
 			seq.accept(spv);  // Return is discarded
 		}
 		return this;
-	}
+	}*/
 	
 	//private ProtocolName getTargetFullProtocolName(ModuleDelegate mcontext)
 	public ProtocolName getTargetFullProtocolName(ModuleContext mcontext)

@@ -51,7 +51,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 	// Doesn't push a subprotocol signature; only records the roles/args
 	// proto is fullname
-	public void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+	private void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 	{
 		//ProtocolName fullname = pd.getFullProtocolName(getModuleContext().root);
 		/*List<Role> roleparams = pd.roledecls.getRoles();
@@ -73,9 +73,48 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		/*SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
 		ModelNode visited = child.visitChildrenInSubprotocols(spv);
 		return leave(parent, child, spv, visited);*/
-		enter(parent, child);
+		/*enter(parent, child);
 		ModelNode visited = child.visitChildrenInSubprotocols(this);
+		return leave(parent, child, visited);*/
+		enter(parent, child);
+		ModelNode visited = visitForSubprotocols(parent, child);
 		return leave(parent, child, visited);
+	}
+
+	protected ModelNode visitForSubprotocols(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		if (child instanceof Do)
+		{
+			return visitOverrideForDo(parent, (Do) child);	// parent is InteractionSequence
+		}
+		else
+		{
+			return child.visitChildren(this);  // The base (super) behaviour
+		}
+	}
+	
+	// The Do node itself is no longer visited -- FIXME: projection needs to visit it -- no: that's in enter/leave, visited means "visit children"
+	private Do visitOverrideForDo(ModelNode parent, Do doo) throws ScribbleException
+	{
+		if (!isCycle())
+		//if (spv.isCycle() != -1)
+		{
+			//enter(parent, doo);  // need to enter/leave even if cycle, e.g. for projection
+			
+			ModuleContext mcontext = getModuleContext();
+			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+					//pd = spv.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());* /
+					pd = doo.getTargetProtocolDecl(getJobContext(), mcontext);
+
+			//... do wf-choice env building and checking
+			//... scopes (all messages/operators are scoped?)
+			
+			ModelNode seq = applySubstitutions(pd.def.block.seq);  // Visit the seq? -- or visit the interactions in the seq directly? ()
+			seq.accept(this);  // Result from visiting subprotocol body is discarded
+
+			//leave(parent, doo, doo);  // the Do node itself was not visited; return from the subprotocol body is discarded
+		}
+		return doo;
 	}
 
 	@Override
@@ -93,6 +132,8 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		{
 			//spv.setScope(Scope.ROOT_SCOPE);
 			setScope(Scope.ROOT_SCOPE);
+
+			enterRootProtocolDecl((ProtocolDecl) child);  // Doesn't push proto stack, just for root role/arg names
 		}
 		if (child instanceof ScopedNode)
 		{
@@ -240,7 +281,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		return false;
 	}
 	
-	public ModelNode applySubstitutions(ModelNode n)
+	private ModelNode applySubstitutions(ModelNode n)
 	{
 		if (overrideSubstitution())
 		{

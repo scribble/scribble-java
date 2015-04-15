@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.model.visit.SubprotocolVisitor;
 import org.scribble2.model.visit.Substitutor;
 import org.scribble2.util.RuntimeScribbleException;
 import org.scribble2.util.ScribbleException;
@@ -57,11 +56,11 @@ public abstract class ModelNodeBase implements ModelNode
 		return nv.visit(this, child);
 	}
 
-	@Override
+	/*@Override
 	public ModelNode visitChildrenInSubprotocols(SubprotocolVisitor nv) throws ScribbleException
 	{
 		return visitChildren(nv);
-	}
+	}*/
 	
 	@Override
 	public final ModelDelegate del()

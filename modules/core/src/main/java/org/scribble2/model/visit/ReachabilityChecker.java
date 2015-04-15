@@ -35,6 +35,35 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 
 	// Following Projector visit pattern -- for overriding base enter/visit/leave pattern
 	@Override
+	protected ModelNode visitForSubprotocols(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		if (child instanceof LocalInteractionSequence)
+		{
+			return visitOverrideForLocalInteractionSequence((LocalProtocolBlock) parent, (LocalInteractionSequence) child);
+		}
+		else
+		{
+			return super.visitForSubprotocols(parent, child);
+		}
+	}
+
+	private LocalInteractionSequence visitOverrideForLocalInteractionSequence(LocalProtocolBlock parent, LocalInteractionSequence child) throws ScribbleException
+	{
+		/*Projector proj = (Projector) enter(parent, child);
+		ModelNode visited = visitForProjection((Module) parent, (GlobalProtocolDecl) child);
+		return leave(parent, child, proj, visited);*/
+		/*ReachabilityChecker checker = (ReachabilityChecker) enter(parent, child);
+		ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(checker, (LocalInteractionSequence) child);
+		return (LocalInteractionSequence) leave(parent, child, checker, visited);*/
+		/*enter(parent, child);
+		ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(this, (LocalInteractionSequence) child);
+		return (LocalInteractionSequence) leave(parent, child, visited);*/
+		return ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(this, (LocalInteractionSequence) child);
+	}
+	
+
+	/*// Following Projector visit pattern -- for overriding base enter/visit/leave pattern
+	@Override
 	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		if (child instanceof LocalInteractionSequence)
@@ -54,11 +83,11 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 		return leave(parent, child, proj, visited);*/
 		/*ReachabilityChecker checker = (ReachabilityChecker) enter(parent, child);
 		ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(checker, (LocalInteractionSequence) child);
-		return (LocalInteractionSequence) leave(parent, child, checker, visited);*/
+		return (LocalInteractionSequence) leave(parent, child, checker, visited);* /
 		enter(parent, child);
 		ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(this, (LocalInteractionSequence) child);
 		return (LocalInteractionSequence) leave(parent, child, visited);
-	}
+	}*/
 
 	@Override
 	//protected ReachabilityChecker envEnter(ModelNode parent, ModelNode child) throws ScribbleException

@@ -72,14 +72,14 @@ public abstract class ProtocolDecl<
 		return reconstruct(header, def);//, getContext(), getEnv());
 	}
 	
-	@Override
+	/*@Override
 	public ProtocolDecl<T1, T2> visitChildrenInSubprotocols(SubprotocolVisitor spv) throws ScribbleException
 	{
 		//ProtocolName fullname = getFullProtocolName();
 		spv.enterRootProtocolDecl(this);  // Doesn't push proto stack, just for root role/arg names
 		//return (ProtocolDecl<T>) super.visitChildrenInSubprotocols(spv);
 		return visitChildren(spv);
-	}
+	}*/
 
 	// Module for ModuleContext creation and local projections (no context built yet)
 	//public ProtocolName getFullProtocolName(ModuleContext mcontext)

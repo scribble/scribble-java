@@ -59,13 +59,15 @@ public class GlobalDoDelegate extends GlobalSimpleInteractionNodeDelegate
 		Role self = proj.peekSelf();
 		if (gd.roleinstans.getRoles().contains(self))
 		{
+			// For correct name mangling, need to use the parameter corresponding to the self argument
+			// N.B. -- this depends on Projector not following the Subprotocol pattern, otherwise self is wrong
 			Role param = gd.getTargetRoleParameter(proj.getJobContext(), proj.getModuleContext(), self);
 			proj.pushSelf(param);
 			//proj.addProtocolDependency(gpn, param);
 		}
 		else
 		{
-			proj.pushSelf(self);
+			proj.pushSelf(self);  // Dummy: just to make pop in leave work
 		}
 		//return proj;
 	}

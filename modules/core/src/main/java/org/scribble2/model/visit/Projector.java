@@ -68,17 +68,24 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			ModelNode visited = ((GlobalProtocolDeclDelegate) child.del()).visitForProjection(this, (GlobalProtocolDecl) child);
 			return leave(parent, child, proj, visited);*/
 			//return ((GlobalProtocolDeclDelegate) child.del()).visitOverrideForProjection(this, (Module) parent, (GlobalProtocolDecl) child);
-			return visitOverrideForProjection((Module) parent, (GlobalProtocolDecl) child);
+			return visitOverrideForGlobalProtocolDecl((Module) parent, (GlobalProtocolDecl) child);
 		}
 		else
 		{
 			return super.visit(parent, child);
 		}
 	}
+	
+  // Important: projection should not follow the subprotocol visiting pattern for do's -- projection uses some name mangling, which isn't compatible with subprotocol visitor name maps
+	@Override
+	protected ModelNode visitForSubprotocols(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		return child.visitChildren(this);
+	}
 
 	// Projector uses this to "override" the base SubprotocolVisitor visitChildrenInSubprotocols pattern
 	// Better to be in the visitor than in the del for visibility of visitor enter/leave -- also localises special visiting pattern inside the visitor, while keeping the del enter/leave methods uniform (e.g. GlobalProtocolDeclDelegate enter/leave relies on the same peekSelf API as for other nodes)
-	private GlobalProtocolDecl visitOverrideForProjection(Module parent, GlobalProtocolDecl child) throws ScribbleException
+	private GlobalProtocolDecl visitOverrideForGlobalProtocolDecl(Module parent, GlobalProtocolDecl child) throws ScribbleException
 	{
 		//ModelNode visited = child.visitChildrenInSubprotocols(spv);  visitForProjection
 		//ModuleDelegate md = getModuleDelegate();
@@ -97,7 +104,9 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			GlobalProtocolDecl visited = (GlobalProtocolDecl) child.visitChildrenInSubprotocols(proj);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
 			visited = (GlobalProtocolDecl) leave(parent, child, proj, visited);*/
 			enter(parent, child);
-			GlobalProtocolDecl visited = (GlobalProtocolDecl) child.visitChildrenInSubprotocols(this);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
+			//GlobalProtocolDecl visited = (GlobalProtocolDecl) child.visitChildrenInSubprotocols(this);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
+			//GlobalProtocolDecl visited = (GlobalProtocolDecl) super.visitForSubprotocols(parent, child);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
+			GlobalProtocolDecl visited = (GlobalProtocolDecl) child.visitChildren(this);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
 			visited = (GlobalProtocolDecl) leave(parent, child, visited);
 			// projection will not change original global protocol (visited discarded)
 			

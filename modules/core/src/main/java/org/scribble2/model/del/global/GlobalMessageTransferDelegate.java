@@ -94,7 +94,6 @@ public class GlobalMessageTransferDelegate extends GlobalSimpleInteractionNodeDe
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		proj.pushEnv(new ProjectionEnv(projection));
-
 		//return gmt;
 		return (GlobalMessageTransfer) super.leaveProjection(parent, child, proj, gmt);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}

@@ -8,14 +8,14 @@ global protocol Foo(role A, role B)
 {
 	1() from A to B;
 	do Bar(A, B);
-	3() from A to B;
+	//3() from A to B;
 }
 
 global protocol Bar(role C, role D)
 {
 	2() from C to D;
-	//do Foo(C, D);
-	2() from C to D;
+	do Foo(C, D);
+	//2() from C to D;
 }
 
 /*global protocol Foo(role A, role B, role C, role D)

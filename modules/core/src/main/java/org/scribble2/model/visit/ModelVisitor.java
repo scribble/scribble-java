@@ -4,11 +4,11 @@ import org.scribble2.model.ModelNode;
 import org.scribble2.util.ScribbleException;
 
 // Pattern: node accepts visitor and calls visitor back (standard visitor pattern -- a new operation doesn't affect the model), but then visitor delegates back to node delegate (so routines for handling each node type not centralised in visitor, but decentralised to delegates)
-public class ModelVisitor
+public abstract class ModelVisitor
 {
 	private final Job job;
 	
-	public ModelVisitor(Job job)
+	protected ModelVisitor(Job job)
 	{
 		this.job = job;
 		
@@ -26,8 +26,14 @@ public class ModelVisitor
 		return leave(parent, child, nv, visited);*/
 		enter(parent, child);
 		ModelNode visited = child.visitChildren(this);   // visited means "children visited so far"; we're about to visit "this" now via "leave"
+		//ModelNode visited = visitOverride(parent, child);   // visited means "children visited so far"; we're about to visit "this" now via "leave"
 		return leave(parent, child, visited);
 	}
+	
+	/*protected ModelNode visitOverride(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		return child.visitChildren(this);
+	}*/
 	
 	//protected ModelVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
 	protected void enter(ModelNode parent, ModelNode child) throws ScribbleException
