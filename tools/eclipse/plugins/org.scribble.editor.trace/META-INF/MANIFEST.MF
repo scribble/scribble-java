@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.scribble.editor.trace
 Bundle-Vendor: Scribble.org
-Bundle-Version: 0.3.1.Final
+Bundle-Version: 0.3.2.qualifier
 Bundle-SymbolicName: org.scribble.editor.trace;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

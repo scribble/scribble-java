@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.scribble.tools</groupId>
 	<artifactId>eclipse</artifactId>
-        <version>0.3.1.Final</version>
+        <version>0.3.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Scribble::Tools::Eclipse</name>
 
         <parent>
                 <groupId>org.scribble</groupId>
                 <artifactId>tools</artifactId>
-        	<version>0.3.1.Final</version>
+        	<version>0.3.2-SNAPSHOT</version>
         </parent>
 
 	<properties>
