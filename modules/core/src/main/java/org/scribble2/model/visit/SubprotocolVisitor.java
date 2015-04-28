@@ -81,6 +81,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		return leave(parent, child, visited);
 	}
 
+	// Subclasses can override this to disable subprotocol visiting
 	protected ModelNode visitForSubprotocols(ModelNode parent, ModelNode child) throws ScribbleException
 	{
 		if (child instanceof Do)
@@ -89,7 +90,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		}
 		else
 		{
-			return child.visitChildren(this);  // The base (super) behaviour
+			return child.visitChildren(this);  // The base (super) behaviour (could factor it out in ModelVisitor as its own visitor method)
 		}
 	}
 	

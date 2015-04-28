@@ -7,7 +7,7 @@ module Test;
 global protocol Foo(role A, role B)
 {
 	1() from A to B;
-	do Bar(A, B);
+	do Foo(A, B);
 	//3() from A to B;
 }
 
