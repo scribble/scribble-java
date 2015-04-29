@@ -32,4 +32,6 @@ public interface ResourceLocator {
 	 */
 	public Resource getResource(String path);
 
+	public Resource getResourceByFullPath(String path);  // Doesn't search import paths
+	public Resource searchResourceOnImportPaths(String path);  // Tries without import paths first, then searches import paths
 }

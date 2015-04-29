@@ -16,6 +16,8 @@
  */
 package org.scribble.resources;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -74,52 +76,59 @@ public class DirectoryResourceLocator implements ResourceLocator {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Resource getResource(String relativePath) {
-		Resource ret=null;
-		
-		System.out.println("c: " + Arrays.toString(_paths));
-		
-		java.io.File f=new java.io.File(relativePath);
-		
-			if (f.isFile()) {
+	public Resource getResource(String path) {
+		return searchResourceOnImportPaths(path);
+	}
+
+	private Resource openResource(String path, File f)
+	{
 				try {
 					//ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
-					ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));  // RAY
-					return ret;
+					return new InputStreamResource(path, new FileInputStream(f));  // RAY
 				} catch (Exception e) {
 					LOG.log(Level.SEVERE, "Failed to create file input stream for '"+f+"'", e);
 				}
-			}
+				return null;
+	}
 
+	public Resource getResourceByFullPath(String path) {
+		File f= new File(path);
+		
+		// case of: relativePath is actually a full path
+			if (f.isFile()) {
+				return openResource(path, f);
+			}
+			return null;
+	}
+
+	public Resource searchResourceOnImportPaths(String relativePath) {
+		//Resource ret= getResourceByFullPath(relativePath);  // Debatable
+		File f = new File(relativePath);
+		if (f.isFile())
+		{
+			return openResource(relativePath, f);
+		}
+		
 		// Find module
 		for (String path : _paths) {
 			String fullPath=path;
 			
-			if (!fullPath.endsWith(java.io.File.separator)) {
+			/*if (!fullPath.endsWith(java.io.File.separator)) {  // FIXME: cygwin/windows separators
 				fullPath += java.io.File.separator;
-			}
+			}*/
 			
 			fullPath += relativePath;
 
-			System.out.println("a1: " + fullPath + ", " + ret);
+			//System.out.println("a1: " + fullPath + ", " + ret);
 
-			f=new java.io.File(fullPath);
+			f = new File(fullPath);
 			
 			if (f.isFile()) {
-				try {
-					//ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
-					ret = new InputStreamResource(fullPath, new java.io.FileInputStream(f));  // RAY
-					
-					System.out.println("a2: " + fullPath + ", " + ret);
-					
-					break;
-				} catch (Exception e) {
-					LOG.log(Level.SEVERE, "Failed to create file input stream for '"+f+"'", e);
-				}
+				return openResource(fullPath, f);
 			}
 		}
 		
-		return (ret);
+		return null;
 	}
 	
 }

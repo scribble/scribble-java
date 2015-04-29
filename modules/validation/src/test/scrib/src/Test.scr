@@ -4,7 +4,15 @@
 
 module Test;
 
+import Test2;
+
 global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	//do Test2.XXX(A, B);
+}
+
+/*global protocol Foo(role A, role B)
 {
 	1() from A to B;
 	do Foo(A, B);
@@ -16,7 +24,7 @@ global protocol Bar(role C, role D)
 	2() from C to D;
 	do Foo(C, D);
 	//2() from C to D;
-}
+}*/
 
 /*global protocol Foo(role A, role B, role C, role D)
 {

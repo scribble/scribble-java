@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.scribble.resources.Resource;
+import org.scribble2.model.ImportDecl;
+import org.scribble2.model.ImportModule;
 import org.scribble2.model.Module;
+import org.scribble2.parser.util.Pair;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
@@ -20,7 +23,7 @@ public class CliJobContext
 	//private ModuleName main;
 	public final ModuleName main;
 	
-	//private final CliJob job;
+	private final CliJob job;
 	
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
 	private final Map<ModuleName, Module> modules = new HashMap<>();
@@ -29,7 +32,7 @@ public class CliJobContext
 	
 	public CliJobContext(CliJob job, List<String> importPath, String mainpath) throws ScribbleException
 	{
-		//this.job = job;
+		this.job = job;
 		this.importPath = new LinkedList<>(importPath);
 
 		//Module mainmod = job.parser.parseModuleFromSource(mainpath);
@@ -37,33 +40,41 @@ public class CliJobContext
 		//this.main = mainmod.getFullModuleName();
 
 		//String mainpath = resource.getPath(); // Needs relative->full path fix in DirectoryResourceLocator -- but maybe Resource should abstract away from file system? Job could directly use the encaps inputstream?
-		Resource resource = job.getResource(mainpath);
-		
-		System.out.println("b: " + mainpath + ", " + resource);
-		
-			if (resource == null)
-			{
-				System.err.println("ERROR: Module name '" + mainpath + "' could not be located\r\n");
-			}
-			
-			Module mainmod = job.parser.parseModuleFromResource(resource);
-
+		Resource resource = job.loader.getResourceByFullPath(mainpath);
+		if (resource == null)
+		{
+			System.err.println("ERROR: Module name '" + mainpath + "' could not be located\r\n");
+		}
+		Module mainmod = job.parser.parseModuleFromResource(resource);
 		this.main = mainmod.getFullModuleName();
 
-		addModule(resource, mainmod);
 		//importModules(mainmod);
+		importModules(mainpath);
 	}
 	
-	/*private void importModules(Module module) throws ScribbleException
+	// path could be either full path in the sense of import-path prefix not needed (for main) or relative (need to search in import paths)
+	private void importModules(String path) throws ScribbleException
 	{
+		Resource resource = job.loader.searchResourceOnImportPaths(path);
+		if (resource == null)
+		{
+			System.err.println("ERROR: Module name '" + path + "' could not be located\r\n");
+		}
+		Module module = job.parser.parseModuleFromResource(resource);
+		if (this.modules.containsKey(module.getFullModuleName()))
+		{
+			return;
+		}
+		addModule(resource, module);
+		
 		for (ImportDecl id : module.imports)
 		{
-			if (id instanceof ImportModule)
+			if (id.isImportModule())
 			{
 				ModuleName modname = ((ImportModule) id).modname.toName();
 				if (!this.modules.keySet().contains(modname))
 				{
-					Pair<String, Module> imported;
+					/*Pair<String, Module> imported;
 					/*if (this.projections2.containsKey(fmn.toName()))
 					{
 						imported = this.projections2.get(fmn.toName());
@@ -72,12 +83,12 @@ public class CliJobContext
 					{
 						imported = this.job.parser.importModule(this.importPath, modname.toPath());
 						addModule(imported.left, imported.right);
-					}
-					importModules(imported.right);
+					}*/
+					importModules(modname.toPath());
 				}
 			}
 		}
-	}*/
+	}
 
 	// For modules parsed from source (not generated projections)
 	//private void addModule(String source, Module module)

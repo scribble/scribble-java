@@ -12,13 +12,13 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.parser.antlr.Scribble2Lexer;
 import org.scribble.parser.antlr.Scribble2Parser;
-import org.scribble.parser.antlr.ScribbleLexer;
 import org.scribble.resources.Resource;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.ast.AntlrArgumentInstantiation;
 import org.scribble2.parser.ast.AntlrArgumentInstantiationList;
+import org.scribble2.parser.ast.AntlrImportModule;
 import org.scribble2.parser.ast.AntlrMessageSignature;
 import org.scribble2.parser.ast.AntlrModule;
 import org.scribble2.parser.ast.AntlrModuleDecl;
@@ -68,13 +68,14 @@ public class AntlrModuleParser
 		try
 		{
 			//CharStream input = isFile ? new ANTLRFileStream(path) : new ANTLRInputStream(System.in);
-			//CharStream input = new ANTLRFileStream(path);
-      InputStream is = res.getInputStream();
+			CharStream input = new ANTLRFileStream(res.getPath());
+			Scribble2Lexer lex = new Scribble2Lexer(input);
+      /*InputStream is = res.getInputStream();
       byte[] bs=new byte[is.available()];
       is.read(bs);
       is.close();
       String input=new String(bs);
-			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));
+			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));*/
 			Scribble2Parser parser = new Scribble2Parser(new CommonTokenStream(lex));
 			CommonTree ct = (CommonTree) parser.module().getTree();
 			Module module = (Module) parse(ct);
@@ -88,7 +89,7 @@ public class AntlrModuleParser
 				}
 			}*/
 			
-			//System.out.println("b: " + module);
+			// FIXME: check loaded module name correct
 			
 			return module;
 		}
@@ -155,9 +156,9 @@ public class AntlrModuleParser
 			/*case PAYLOADTYPEDECL:
 				return AntlrPayloadTypeDecl.parsePayloadTypeDecl(this, ct);
 			case MESSAGESIGNATUREDECL:
-				return AntlrMessageSignatureDecl.parseMessageSignatureDecl(this, ct);
+				return AntlrMessageSignatureDecl.parseMessageSignatureDecl(this, ct);*/
 			case IMPORTMODULE:
-				return AntlrImportModule.parseImportModule(this, ct);*/
+				return AntlrImportModule.parseImportModule(this, ct);
 			case GLOBALPROTOCOLDECL:
 				return AntlrGlobalProtocolDecl.parseGlobalPrototocolDecl(this, ct);
 			case ROLEDECLLIST:

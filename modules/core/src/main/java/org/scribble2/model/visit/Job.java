@@ -11,6 +11,7 @@ import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
 
+		//.. separatate protocol names into global/local
 		//.. fix projection env to take projection output type as Parameter
 		//.. fix global/local do delegate context build loop -- use lambda
 		//.. get simple/compound name node and name classes into shape

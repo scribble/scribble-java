@@ -119,7 +119,8 @@ public class JobContext
 		{
 			return this.projectionsByModules.get(fullmodname);
 		}
-		throw new RuntimeException("Unknown module: " + fullmodname);
+		//throw new RuntimeException("Unknown module: " + fullmodname);
+		throw new RuntimeException("Unknown module: " + fullmodname + ", " + this.modules.keySet() + ", " + this.projectionsByModules.keySet());
 	}
 
 	//protected void replaceModule(ModuleName fullmodname, Module module)
@@ -143,6 +144,8 @@ public class JobContext
 	// FIXME: make immutable (will need to assign updated context back to Job) -- will also need to do for Module replacing
 	public void addProjections(Map<ProtocolName, Map<Role, Module>> projections)
 	{
+		System.out.println("1: " + projections.keySet());
+		
 		for (ProtocolName gpn : projections.keySet())
 		{
 			Map<Role, Module> mods = projections.get(gpn);

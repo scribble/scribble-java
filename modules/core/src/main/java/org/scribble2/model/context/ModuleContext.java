@@ -93,6 +93,9 @@ public class ModuleContext
 		{
 			ProtocolName fullname = gpd.getFullProtocolName(mod);
 			ProtocolName visname = new ProtocolName(vismodname, gpd.header.name.toString());
+			
+			System.out.println("1: " + fullname + ", " + visname);
+			
 			this.globals.put(visname, fullname);
 		}
 		for (LocalProtocolDecl lpd : mod.getLocalProtocolDecls())
@@ -247,7 +250,8 @@ public class ModuleContext
 		{
 			return this.locals.get(visname);
 		}
-		throw new RuntimeException("Protocol name not visible: " + visname);
+		//throw new RuntimeException("Protocol name not visible: " + visname);
+		throw new RuntimeException("Protocol name not visible: " + visname + ", " + this.globals);
 	}
 	
 	@Override 

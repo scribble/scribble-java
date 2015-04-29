@@ -3,6 +3,8 @@ package org.scribble2.model;
 // don't know how to use class from org.scribble2.parser
 public class Constants
 {
+	public static final String SCRIBBLE_FILE_EXTENSION = "scr";
+	
 	// Duplicated from Scribble2.g -- what's the best way to share it?
 	// Mostly used in projection (outputting local types)
 	public static final String MODULE_KW = "module";
