@@ -1,15 +1,19 @@
 package org.scribble2.parser;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRFileStream;
+import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.parser.antlr.Scribble2Lexer;
 import org.scribble.parser.antlr.Scribble2Parser;
+import org.scribble.parser.antlr.ScribbleLexer;
+import org.scribble.resources.Resource;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
@@ -56,6 +60,43 @@ public class AntlrModuleParser
 {
 	public AntlrModuleParser()
 	{
+	}
+
+	// Does not use import paths
+	public Module parseModuleFromResource(Resource res) //throws ScribbleException
+	{
+		try
+		{
+			//CharStream input = isFile ? new ANTLRFileStream(path) : new ANTLRInputStream(System.in);
+			//CharStream input = new ANTLRFileStream(path);
+      InputStream is = res.getInputStream();
+      byte[] bs=new byte[is.available()];
+      is.read(bs);
+      is.close();
+      String input=new String(bs);
+			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));
+			Scribble2Parser parser = new Scribble2Parser(new CommonTokenStream(lex));
+			CommonTree ct = (CommonTree) parser.module().getTree();
+			Module module = (Module) parse(ct);
+			/*if (isFile) {
+				String filename = new File(path).getName();
+				String obtainedName = filename.substring(0, filename.indexOf("."));
+				ModuleName expected = module.getFullModuleName();
+				if (!obtainedName.equals(expected.getSimpleName().toString()))
+				{
+					throw new ScribbleException("Incorrect file \"" + obtainedName + "\" for module declaration: " + expected);
+				}
+			}*/
+			
+			//System.out.println("b: " + module);
+			
+			return module;
+		}
+		catch (IOException | RecognitionException e)
+		{
+			//throw new ScribbleException(e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	// Does not use import paths

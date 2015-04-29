@@ -16,6 +16,8 @@
  */
 package org.scribble.resources;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +40,12 @@ public class DirectoryResourceLocator implements ResourceLocator {
 	 */
 	public DirectoryResourceLocator(String paths) {
 		_paths = paths.split(":");
+	}
+
+	public DirectoryResourceLocator(List<String> paths) {
+		//_paths = paths.split(":");
+		_paths = new String[paths.size()];
+		_paths = paths.toArray(_paths);
 	}
 	
 	/**
@@ -69,6 +77,20 @@ public class DirectoryResourceLocator implements ResourceLocator {
 	public Resource getResource(String relativePath) {
 		Resource ret=null;
 		
+		System.out.println("c: " + Arrays.toString(_paths));
+		
+		java.io.File f=new java.io.File(relativePath);
+		
+			if (f.isFile()) {
+				try {
+					//ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
+					ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));  // RAY
+					return ret;
+				} catch (Exception e) {
+					LOG.log(Level.SEVERE, "Failed to create file input stream for '"+f+"'", e);
+				}
+			}
+
 		// Find module
 		for (String path : _paths) {
 			String fullPath=path;
@@ -79,12 +101,16 @@ public class DirectoryResourceLocator implements ResourceLocator {
 			
 			fullPath += relativePath;
 
-			java.io.File f=new java.io.File(fullPath);
+			System.out.println("a1: " + fullPath + ", " + ret);
+
+			f=new java.io.File(fullPath);
 			
 			if (f.isFile()) {
 				try {
 					//ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
 					ret = new InputStreamResource(fullPath, new java.io.FileInputStream(f));  // RAY
+					
+					System.out.println("a2: " + fullPath + ", " + ret);
 					
 					break;
 				} catch (Exception e) {

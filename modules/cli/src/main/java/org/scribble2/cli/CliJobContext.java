@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.scribble.resources.Resource;
 import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
@@ -23,7 +24,8 @@ public class CliJobContext
 	
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
 	private final Map<ModuleName, Module> modules = new HashMap<>();
-	private final Map<ModuleName, String> sources = new HashMap<>();
+	//private final Map<ModuleName, String> sources = new HashMap<>();
+	private final Map<ModuleName, Resource> sources = new HashMap<>();
 	
 	public CliJobContext(CliJob job, List<String> importPath, String mainpath) throws ScribbleException
 	{
@@ -31,11 +33,24 @@ public class CliJobContext
 		this.importPath = new LinkedList<>(importPath);
 
 		//Module mainmod = job.parser.parseModuleFromSource(mainpath);
-		Module mainmod = job.parser.parseModuleFromSource(mainpath);
+
+		//this.main = mainmod.getFullModuleName();
+
+		//String mainpath = resource.getPath(); // Needs relative->full path fix in DirectoryResourceLocator -- but maybe Resource should abstract away from file system? Job could directly use the encaps inputstream?
+		Resource resource = job.getResource(mainpath);
+		
+		System.out.println("b: " + mainpath + ", " + resource);
+		
+			if (resource == null)
+			{
+				System.err.println("ERROR: Module name '" + mainpath + "' could not be located\r\n");
+			}
+			
+			Module mainmod = job.parser.parseModuleFromResource(resource);
 
 		this.main = mainmod.getFullModuleName();
 
-		addModule(mainpath, mainmod);
+		addModule(resource, mainmod);
 		//importModules(mainmod);
 	}
 	
@@ -65,7 +80,8 @@ public class CliJobContext
 	}*/
 
 	// For modules parsed from source (not generated projections)
-	private void addModule(String source, Module module)
+	//private void addModule(String source, Module module)
+	private void addModule(Resource source, Module module)
 	//private void addModule(Module module)
 	{
 		ModuleName fullmodname = module.getFullModuleName();

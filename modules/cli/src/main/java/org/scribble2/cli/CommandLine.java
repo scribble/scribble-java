@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.scribble.resources.DirectoryResourceLocator;
-import org.scribble.resources.Resource;
 import org.scribble2.model.visit.Job;
 import org.scribble2.util.ScribbleException;
 
@@ -17,46 +15,17 @@ public class CommandLine implements Runnable
 {
 	public static final String PATH_FLAG = "-path";
 	
-	enum Arg { PATH, MAIN }//, PROJECT }
-	
-	private static final ArgumentParser ap = new ArgumentParser();
+	protected enum Arg { PATH, MAIN }//, PROJECT }
 	
 	private final Map<Arg, String> args;
-
-	private DirectoryResourceLocator _locator;
 	
 	public CommandLine(String[] args)
 	{
-		this.args = parseArgs(args);
-	}
-	
-	private static Map<Arg, String> parseArgs(String[] args)
-	{
-		Map<Arg, String> parsed = new HashMap<>();
-		for (int i = 0; i < args.length; i++)
+		this.args = new ArgumentParser().parseArgs(args);
+		if (!this.args.containsKey(Arg.PATH))
 		{
-			if (!CommandLine.ap.FLAGS.containsKey(args[i]) && parsed.containsKey(Arg.MAIN))
-			{
-				throw new RuntimeException("Bad: " + args[i]);
-			}
-			if (CommandLine.ap.FLAGS.containsKey(args[i]))
-			{
-				if (i >= args.length)
-				{
-					throw new RuntimeException("Bad: " + args[i]);
-				}
-				parsed.put(CommandLine.ap.FLAGS.get(args[i]), CommandLine.ap.parse(args[i], args[++i]));
-			}
-			else
-			{
-				if (!ArgumentParser.validateModuleName(args[i]))
-				{
-					throw new RuntimeException("Bad: " + args[i]);
-				}
-				parsed.put(Arg.MAIN, args[i]);
-			}
+			throw new RuntimeException("ERROR: No path value has been defined\r\n");
 		}
-		return parsed;
 	}
 
 	public static void main(String[] args)
@@ -64,73 +33,32 @@ public class CommandLine implements Runnable
 		new CommandLine(args).run();
 	}
 
+	@Override
 	public void run()
 	{
-		if (!this.args.containsKey(Arg.PATH))
-		{
-			throw new RuntimeException("ERROR: No path value has been defined\r\n");
-		}
-		initLoader(this.args.get(Arg.PATH));
+		//initLoader(this.args.get(Arg.PATH));
 		loadModules(this.args.get(Arg.MAIN));
 	}
 
-	protected void initLoader(String paths)
-	{
-		_locator = new DirectoryResourceLocator(paths);
-		//_loader = new ProtocolModuleLoader(PARSER, _locator, LOGGER);
-	}
-
-	//protected Resource getResource(String moduleName) {
-	protected Resource getResource(String filename) {
-		//String relativePath = moduleName.replace('.', java.io.File.separatorChar) + ".scr";
-		String relativePath = filename;  // RAY
-		return (_locator.getResource(relativePath));
-	}
-
 	//protected Module loadModule(Resource resource) {
-	protected void loadModules(String main)
+	//protected void loadModules(List<String> path, String mainpath)
+	protected void loadModules(String mainpath)
 	{
+		List<String> impath = Arrays.asList(this.args.get(Arg.PATH).split(":"));//new LinkedList<String>();
+		try
 		{
-			Resource resource = getResource(main);
-			if (resource == null)
-			{
-				System.err.println("ERROR: Module name '" + main + "' could not be located\r\n");
-			}
+			// FIXME: CLiJob and Job
+			CliJob cjob = new CliJob(impath, mainpath);
+			Job job = new Job(impath, mainpath, cjob.jcontext.getModules(), cjob.jcontext.getModules().get(cjob.jcontext.main));
+			job.checkWellFormedness();
 
-			List<String> impath = new LinkedList<String>();
-			String mainpath = resource.getPath(); // Needs relative->full path fix in
-																						// DirectoryResourceLocator -- but
-																						// maybe Resource should abstract
-																						// away from file system? Job could
-																						// directly use the encaps
-																						// inputstream?
-			try
-			{
-				// FIXME: CLiJob and Job
-				CliJob cjob = new CliJob(impath, mainpath);
-				Job job = new Job(impath, mainpath, cjob.jcontext.getModules(), cjob.jcontext.getModules().get(cjob.jcontext.main));
-				job.checkWellFormedness();
-
-				System.out.println("a: " + cjob.jcontext.main);
-			}
-			catch (IOException | ScribbleException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			// System.out.println("a: " + module.getChildren());
+			System.out.println("a: " + cjob.jcontext.main);
 		}
-		/*else
+		catch (IOException | ScribbleException e)
 		{
-		System.err.println("ERROR: Failed to parse '" + resource + "': "
-				 + "\r\n");
-		}*/
-
-		/*} catch (IOException e) {
-			System.err.println("ERROR: Failed to parse '" + resource + "': "
-					+ e + "\r\n");
-		}*/
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/*/**
@@ -298,8 +226,37 @@ class ArgumentParser
 		FLAGS.put(CommandLine.PATH_FLAG, CommandLine.Arg.PATH);
 		//FLAGS.put("-validate", CommandLine.Arg.PATH);
 	}
+	
+	public Map<CommandLine.Arg, String> parseArgs(String[] args)
+	{
+		Map<CommandLine.Arg, String> parsed = new HashMap<>();
+		for (int i = 0; i < args.length; i++)
+		{
+			if (this.FLAGS.containsKey(args[i]) && parsed.containsKey(CommandLine.Arg.MAIN))
+			{
+				throw new RuntimeException("Bad: " + args[i]);
+			}
+			if (this.FLAGS.containsKey(args[i]))
+			{
+				if (i >= args.length)
+				{
+					throw new RuntimeException("Bad: " + args[i]);
+				}
+				parsed.put(this.FLAGS.get(args[i]), this.parseFlag(args[i], args[++i]));
+			}
+			else
+			{
+				if (!ArgumentParser.validateModuleName(args[i]))
+				{
+					throw new RuntimeException("Bad: " + args[i]);
+				}
+				parsed.put(CommandLine.Arg.MAIN, args[i]);
+			}
+		}
+		return parsed;
+	}
 
-	public String parse(String flag, String m)
+	private String parseFlag(String flag, String m)
 	{
 		switch (flag)
 		{
@@ -318,6 +275,11 @@ class ArgumentParser
 		}
 	}
 
+	private String parsePath(String m)
+	{
+		return m;
+	}
+
 	private static boolean validatePaths(String paths)
 	{
 		for (String path : paths.split(":"))
@@ -331,7 +293,7 @@ class ArgumentParser
 		return true;
 	}
 
-	protected static boolean validateModuleName(String module)
+	private static boolean validateModuleName(String module)
 	{
 		for (String part : module.split("."))
 		{
@@ -347,10 +309,5 @@ class ArgumentParser
 			}
 		}
 		return true;
-	}
-
-	private String parsePath(String m)
-	{
-		return m;
 	}
 }
