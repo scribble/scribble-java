@@ -9,7 +9,7 @@ import Test2;
 global protocol Foo(role A, role B)
 {
 	1() from A to B;
-	//do Test2.XXX(A, B);
+	do Test2.XXX(A, B);
 }
 
 /*global protocol Foo(role A, role B)

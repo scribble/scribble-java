@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble2.model.Module;
+import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
@@ -144,8 +145,6 @@ public class JobContext
 	// FIXME: make immutable (will need to assign updated context back to Job) -- will also need to do for Module replacing
 	public void addProjections(Map<ProtocolName, Map<Role, Module>> projections)
 	{
-		System.out.println("1: " + projections.keySet());
-		
 		for (ProtocolName gpn : projections.keySet())
 		{
 			Map<Role, Module> mods = projections.get(gpn);
@@ -155,6 +154,7 @@ public class JobContext
 			}
 		}
 
+		/*// Doesn't work for external subprotocols now that Projector doesn't record Module-specific dependencies itself
 		try
 		{
 			ContextBuilder builder = new ContextBuilder(this.job);
@@ -162,6 +162,28 @@ public class JobContext
 			{
 				Module mod = this.projections.get(lpn);
 				mod = (Module) mod.accept(builder);
+				replaceModule(mod);
+			}
+		}
+		catch (ScribbleException e)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + e);
+		}*/
+	}
+	
+	// To be done as a barrier pass after projection done on all Modules
+	protected void buildProjectionContexts()
+	{
+		try
+		{
+			ContextBuilder builder = new ContextBuilder(this.job);
+			for (ProtocolName lpn : this.projections.keySet())
+			{
+				Module mod = this.projections.get(lpn);
+				mod = (Module) mod.accept(builder);
+				
+				System.out.println("AA: " + lpn + ", " + ((ModuleDelegate) mod.del()).getModuleContext());
+				
 				replaceModule(mod);
 			}
 		}

@@ -51,7 +51,9 @@ public abstract class ProtocolDeclDelegate extends ModelDelegateBase
 		proj.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
 		
 		JobContext jc = proj.getJobContext();
-		Module main = jc.getMainModule();
+		//Module main = jc.getMainModule();
+		//Module main = proj.getModuleContext();
+		Module main = (Module) parent;
 		
 		ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 			pd = cast(child);

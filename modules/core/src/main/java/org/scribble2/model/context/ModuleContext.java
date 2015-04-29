@@ -45,7 +45,7 @@ public class ModuleContext
 		addModule(root, fullmodname);
 		addLocalMembers(root, fullmodname);
 		
-		addImportedModules(jcontext);
+		addImportedModules(jcontext, jcontext.getModule(this.root));
 		//addMembers();
 		
 		//System.out.println("1: " + this);
@@ -93,9 +93,6 @@ public class ModuleContext
 		{
 			ProtocolName fullname = gpd.getFullProtocolName(mod);
 			ProtocolName visname = new ProtocolName(vismodname, gpd.header.name.toString());
-			
-			System.out.println("1: " + fullname + ", " + visname);
-			
 			this.globals.put(visname, fullname);
 		}
 		for (LocalProtocolDecl lpd : mod.getLocalProtocolDecls())
@@ -152,9 +149,9 @@ public class ModuleContext
 	}
 	
 	// Could move to ImportModule but would need a defensive copy setter, or cache info in builder and create on leave
-	private void addImportedModules(JobContext jcontext)
+	private void addImportedModules(JobContext jcontext, Module mod)
 	{
-		Module mod = jcontext.getModule(this.root);  // Not the same as Job main module
+		//Module mod = jcontext.getModule(this.root);  // Not the same as Job main module
 		for (ImportDecl id : mod.imports)
 		{
 			if (id.isImportModule())
@@ -164,7 +161,9 @@ public class ModuleContext
 				if (!this.modules.keySet().contains(fullmodname))
 				{
 					ModuleName modname = (im.isAliased()) ? im.getModuleNameAlias() : fullmodname;
-					addModule(jcontext.getModule(fullmodname), modname);
+					Module m = jcontext.getModule(fullmodname);
+					addModule(m, modname);
+					addImportedModules(jcontext, m);
 				}
 			}
 			else
@@ -251,7 +250,7 @@ public class ModuleContext
 			return this.locals.get(visname);
 		}
 		//throw new RuntimeException("Protocol name not visible: " + visname);
-		throw new RuntimeException("Protocol name not visible: " + visname + ", " + this.globals);
+		throw new RuntimeException("Protocol name not visible: " + visname + ", " + this.globals + ", " + this.locals);
 	}
 	
 	@Override 

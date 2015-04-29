@@ -71,8 +71,12 @@ public class GlobalProtocolDeclDelegate extends ProtocolDeclDelegate
 	public GlobalProtocolDecl leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
 	{
 		JobContext jc = proj.getJobContext();
-		Module main = jc.getMainModule();
-		ProtocolName gpn = ((GlobalProtocolDecl) child).getFullProtocolName(main);
+		//Module main = jc.getMainModule();
+		
+		//FIXME: it's the "root" we need, not the main
+		Module root = jc.getModule(proj.getModuleContext().root);
+		
+		ProtocolName gpn = ((GlobalProtocolDecl) child).getFullProtocolName(root);
 		
 		Role self = proj.peekSelf();
 		GlobalProtocolDecl gpd = (GlobalProtocolDecl) visited;
@@ -80,8 +84,9 @@ public class GlobalProtocolDeclDelegate extends ProtocolDeclDelegate
 		LocalProtocolDecl lpd = project(proj, gpd);
 		//Map<ProtocolName, Set<Role>> deps = proj.getProtocolDependencies();
 		Map<ProtocolName, Set<Role>> deps = ((GlobalProtocolDeclDelegate) gpd.del()).getProtocolDependencies().get(self);
+		
 		//Module projected = projectIntoModule(proj, gpd);
-		Module projected = ((ModuleDelegate) main.del()).createModuleForProjection(proj, main, lpd, deps);  // FIXME: projection should always use the main module?
+		Module projected = ((ModuleDelegate) root.del()).createModuleForProjection(proj, root, lpd, deps);  // FIXME: projection should always use the main module?
 		// store projections in projector? in context? do earlier with context building? (but subprotocol pattern not available there)* /
 		//dependencies.put(self, deps);
 

@@ -23,7 +23,7 @@ public class ContextBuilder extends ModelVisitor
 	
 	//... module and protocoldecl contexts (delegates) ...
 	
-	private ModuleContext mcontext;
+	private ModuleContext mcontext;  // The "root" Module context (not the "main" module)
 	//private ProtocolDeclContext pdcontext;*/
 	
 	//private Module module;
@@ -141,8 +141,6 @@ public class ContextBuilder extends ModelVisitor
 			tmp1.put(gpn, tmp2);
 		}
 		tmp2.add(role);
-		
-		//System.out.println("b: " + gpn + ", " + role);
 	}
 
 	public Map<Role, Map<ProtocolName, Set<Role>>> getProtocolDependencies()

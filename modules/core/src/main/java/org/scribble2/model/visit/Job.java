@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.ModuleName;
+import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
 
@@ -68,6 +69,9 @@ public class Job
 
 		System.out.println("\n--- Projection --- ");
 		runNodeVisitorPass(Projector.class);
+		this.jcontext.buildProjectionContexts();  // Hacky? -- due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
+		// No: SubprotocolVisitor is an "inlining" step, it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
+		// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
 
 		System.out.println("\n--- Reachability check --- ");
 		runNodeVisitorPass(ReachabilityChecker.class);

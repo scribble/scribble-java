@@ -26,4 +26,10 @@ public abstract class Instantiation<T extends InstantiationNode> extends ModelNo
 	}
 
 	public abstract Instantiation<T> project(Role self);
+	
+	@Override
+	public String toString()
+	{
+		return this.arg.toString();
+	}
 }

@@ -7,6 +7,8 @@ import org.scribble2.util.ScribbleException;
 public abstract class ModelVisitor
 {
 	private final Job job;
+
+	//private ModuleContext mcontext;  // Factor up to ModelVisitor? (will be null before context building)
 	
 	protected ModelVisitor(Job job)
 	{
@@ -38,6 +40,10 @@ public abstract class ModelVisitor
 	//protected ModelVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
 	protected void enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
+		/*if (child instanceof Module)  // Factor out?
+		{
+			this.mcontext = ((ModuleDelegate) ((Module) child).del()).getModuleContext();
+		}*/
 		//return this;
 	}
 	
@@ -88,5 +94,10 @@ public abstract class ModelVisitor
 	/*protected ModelVisitor copy()
 	{
 		return this;
+	}*/
+
+	/*public ModuleContext getModuleContext()
+	{
+		return this.mcontext;
 	}*/
 }
