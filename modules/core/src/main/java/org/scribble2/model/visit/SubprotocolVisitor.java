@@ -32,7 +32,7 @@ import org.scribble2.util.ScribbleException;
 public abstract class SubprotocolVisitor extends ModelVisitor
 {
 	//private ModuleDelegate mcontext;  // Factor up to ModelVisitor? (will be null before context building)
-	private ModuleContext mcontext;  // Factor up to ModelVisitor? (will be null before context building)
+	private ModuleContext mcontext;  // The "root" module context (different than the front-end "main" module)  // Factor up to ModelVisitor? (will be null before context building)
 	
 	private List<ScopedSubprotocolSignature> stack = new LinkedList<>();
 	

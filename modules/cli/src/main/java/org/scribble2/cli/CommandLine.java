@@ -47,6 +47,8 @@ public class CommandLine implements Runnable
 		List<String> impath = Arrays.asList(this.args.get(Arg.PATH).split(":"));//new LinkedList<String>();
 		try
 		{
+			..HERE: fix CliJob/Job factoring (e.g. pointers and Modules -- maybe already ok); CliJob should record job parameters; smoothen related APIs; additional flags, e.g. projection
+			
 			// FIXME: CLiJob and Job
 			CliJob cjob = new CliJob(impath, mainpath);
 			Job job = new Job(impath, mainpath, cjob.jcontext.getModules(), cjob.jcontext.getModules().get(cjob.jcontext.main));

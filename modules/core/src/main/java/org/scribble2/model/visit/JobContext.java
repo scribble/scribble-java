@@ -35,6 +35,7 @@ public class JobContext
 	private final Map<ModuleName, Module> projections2;// = new HashMap<>();  // FIXME: factor with above*/
 	
 	// ProtocolName is the full local protocol name
+	// FIXME: collapse to one Map (modulename is part of protocol name?) -- debug print after projection to check
 	private final Map<ProtocolName, Module> projections = new HashMap<>();
 	private final Map<ModuleName, Module> projectionsByModules = new HashMap<>();  // An alternative view of projections
 
@@ -171,7 +172,7 @@ public class JobContext
 		}*/
 	}
 	
-	// To be done as a barrier pass after projection done on all Modules
+	/*// To be done as a barrier pass after projection done on all Modules
 	protected void buildProjectionContexts()
 	{
 		try
@@ -181,9 +182,6 @@ public class JobContext
 			{
 				Module mod = this.projections.get(lpn);
 				mod = (Module) mod.accept(builder);
-				
-				System.out.println("AA: " + lpn + ", " + ((ModuleDelegate) mod.del()).getModuleContext());
-				
 				replaceModule(mod);
 			}
 		}
@@ -191,13 +189,18 @@ public class JobContext
 		{
 			throw new RuntimeException("Shouldn't get in here: " + e);
 		}
-	}
+	}*/
 
 	private void addProjection(Module mod)
 	{
 		ProtocolName lpn = mod.protos.get(0).getFullProtocolName(mod);
 		this.projections.put(lpn, mod);
 		this.projectionsByModules.put(mod.getFullModuleName(), mod);
+	}
+	
+	public Map<ProtocolName, Module> getProjections()
+	{
+		return this.projections;
 	}
 	
 	public Module getMainModule()
