@@ -17,9 +17,9 @@
 package org.scribble2.parser;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CharStream;
+import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
@@ -60,40 +60,42 @@ public class ScribbleModuleLoader /*extends DefaultModuleLoader*/ implements Mod
 		Resource res = this.locator.searchResourceOnImportPaths(path);
 		return new Pair<>(res, parseModuleFromResource(res));
 	}
+	
+	private byte[] readResource(Resource res)
+	{
+		try (InputStream is = res.getInputStream())
+		{
+			byte[] bs = new byte[is.available()];
+			is.read(bs);
+			return bs;
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
 
-	private org.scribble2.model.Module parseModuleFromResource(Resource res) //throws ScribbleException
+	private org.scribble2.model.Module parseModuleFromResource(Resource res) // throws ScribbleException
 	{
 		try
 		{
-			//CharStream input = isFile ? new ANTLRFileStream(path) : new ANTLRInputStream(System.in);
-			CharStream input = new ANTLRFileStream(res.getPath());
-			Scribble2Lexer lex = new Scribble2Lexer(input);  // FIXME: use Resource inputStream
-      /*InputStream is = res.getInputStream();
-      byte[] bs=new byte[is.available()];
-      is.read(bs);
-      is.close();
-      String input=new String(bs);
-			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));*/
+			// CharStream input = isFile ? new ANTLRFileStream(path) : new
+			// ANTLRInputStream(System.in);
+			/*CharStream input = new ANTLRFileStream(res.getPath());
+			Scribble2Lexer lex = new Scribble2Lexer(input);  // FIXME: use Resource inputStream*/
+			String input = new String(readResource(res));
+			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));
 			Scribble2Parser parser = new Scribble2Parser(new CommonTokenStream(lex));
 			CommonTree ct = (CommonTree) parser.module().getTree();
 			org.scribble2.model.Module module = (org.scribble2.model.Module) this.parser.parse(ct);
-			/*if (isFile) {
-				String filename = new File(path).getName();
-				String obtainedName = filename.substring(0, filename.indexOf("."));
-				ModuleName expected = module.getFullModuleName();
-				if (!obtainedName.equals(expected.getSimpleName().toString()))
-				{
-					throw new ScribbleException("Incorrect file \"" + obtainedName + "\" for module declaration: " + expected);
-				}
-			}*/
-			
+
 			// FIXME: check loaded module name correct
-			
+
 			return module;
 		}
-		catch (IOException | RecognitionException e)
+		catch (RecognitionException e)
 		{
-			//throw new ScribbleException(e);
+			// throw new ScribbleException(e);
 			throw new RuntimeException(e);
 		}
 	}
