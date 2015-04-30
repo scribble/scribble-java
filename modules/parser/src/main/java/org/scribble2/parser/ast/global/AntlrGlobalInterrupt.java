@@ -7,7 +7,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.global.GlobalInterrupt;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
 
@@ -17,7 +17,7 @@ public class AntlrGlobalInterrupt
 	public static final int SOURCE_CHILD_INDEX = 0;
 	public static final int MESSAGE_CHILDREN_START_INDEX = 1;
 
-	public static GlobalInterrupt parseGlobalInterrupt(AntlrModuleParser parser, CommonTree ct)
+	public static GlobalInterrupt parseGlobalInterrupt(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		List<MessageNode> msgs = new LinkedList<>();

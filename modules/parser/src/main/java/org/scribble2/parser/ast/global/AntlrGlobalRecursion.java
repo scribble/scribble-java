@@ -5,7 +5,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.global.GlobalRecursion;
 import org.scribble2.model.name.simple.RecursionVarNode;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrGlobalRecursion
@@ -13,7 +13,7 @@ public class AntlrGlobalRecursion
 	public static final int RECURSIONVAR_CHILD_INDEX = 0;
 	public static final int BLOCK_CHILD_INDEX = 1;
 
-	public static GlobalRecursion parseGlobalRecursion(AntlrModuleParser parser, CommonTree ct)
+	public static GlobalRecursion parseGlobalRecursion(ScribbleParser parser, CommonTree ct)
 	{
 		RecursionVarNode recvar = AntlrSimpleName.toRecursionVarNode(getRecursionVarChild(ct));
 		GlobalProtocolBlock block = (GlobalProtocolBlock) parser.parse(getBlockChild(ct));

@@ -7,12 +7,12 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.RoleDecl;
 import org.scribble2.model.RoleDeclList;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
 public class AntlrRoleDeclList
 {
-	public static RoleDeclList parseRoleDeclList(AntlrModuleParser parser, CommonTree ct)
+	public static RoleDeclList parseRoleDeclList(ScribbleParser parser, CommonTree ct)
 	{
 		List<RoleDecl> rds = new LinkedList<>();
 		for (CommonTree pd : getRoleDeclChildren(ct))

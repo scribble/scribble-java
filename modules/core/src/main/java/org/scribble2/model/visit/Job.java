@@ -56,6 +56,9 @@ public class Job
 		this.jcontext = new JobContext(this, importPath, mainpath, modules, mainmodule);
 	}
 
+	//...HERE duplicate job/jobcontext in cli; pass core DS to core job/jobcontext; finish name dismabiguation and other visitors ...
+	
+
 	public void checkWellFormedness() throws ScribbleException
 	{
 		System.out.println("\n--- Name disambigiation --- ");
@@ -77,9 +80,6 @@ public class Job
 		System.out.println("\n--- Reachability check --- ");
 		runNodeVisitorPass(ReachabilityChecker.class);
 	}
-
-	//... duplicate job/jobcontext in cli; pass core DS to core job/jobcontext; finish name dismabiguation and other visitors ...
-	
 	
 	// To be done as a barrier pass after projection done on all Modules
 	private void buildProjectionContexts()

@@ -6,7 +6,7 @@ import org.scribble2.model.ParameterDeclList;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.global.GlobalProtocolHeader;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrGlobalProtocolHeader
@@ -15,7 +15,7 @@ public class AntlrGlobalProtocolHeader
 	public static final int PARAMETERDECLLIST_CHILD_INDEX = 1;
 	public static final int ROLEDECLLIST_CHILD_INDEX = 2;
 
-	public static GlobalProtocolHeader parseGlobalProtocolHeader(AntlrModuleParser parser, CommonTree ct)
+	public static GlobalProtocolHeader parseGlobalProtocolHeader(ScribbleParser parser, CommonTree ct)
 	{
 		SimpleProtocolNameNode name = AntlrSimpleName.toSimpleProtocolNameNode(getNameChild(ct));
 		RoleDeclList rdl = (RoleDeclList) parser.parse(getRoleDeclListChild(ct));

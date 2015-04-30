@@ -56,13 +56,13 @@ import scribble2.sesstype.name.*;
 import scribble2.util.Util;*/
 
 // Parses a Antlr tree into a scribble.ast.Node tree
-public class AntlrModuleParser
+public class ScribbleParser
 {
-	public AntlrModuleParser()
+	public ScribbleParser()
 	{
 	}
 
-	// Does not use import paths
+	/*// Does not use import paths
 	public Module parseModuleFromResource(Resource res) //throws ScribbleException
 	{
 		try
@@ -75,7 +75,7 @@ public class AntlrModuleParser
       is.read(bs);
       is.close();
       String input=new String(bs);
-			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));*/
+			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));* /
 			Scribble2Parser parser = new Scribble2Parser(new CommonTokenStream(lex));
 			CommonTree ct = (CommonTree) parser.module().getTree();
 			Module module = (Module) parse(ct);
@@ -87,7 +87,7 @@ public class AntlrModuleParser
 				{
 					throw new ScribbleException("Incorrect file \"" + obtainedName + "\" for module declaration: " + expected);
 				}
-			}*/
+			}* /
 			
 			// FIXME: check loaded module name correct
 			
@@ -119,7 +119,7 @@ public class AntlrModuleParser
 				{
 					throw new ScribbleException("Incorrect file \"" + obtainedName + "\" for module declaration: " + expected);
 				}
-			}*/
+			}* /
 			
 			//System.out.println("b: " + module);
 			
@@ -142,7 +142,7 @@ public class AntlrModuleParser
 		}
 		//throw new ScribbleException("Module not found: " + path);
 		throw new RuntimeException("Module not found: " + path);
-	}
+	}*/
 
 	public ModelNode parse(CommonTree ct)
 	{

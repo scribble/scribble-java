@@ -4,7 +4,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.PayloadElement;
 import org.scribble2.model.name.PayloadElementNameNode;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrAmbiguousName;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
@@ -14,7 +14,7 @@ public class AntlrPayloadElement
 {
 	public static final int TYPE_CHILD_INDEX = 0;
 
-	public static PayloadElement parsePayloadElement(AntlrModuleParser parser, CommonTree ct)
+	public static PayloadElement parsePayloadElement(ScribbleParser parser, CommonTree ct)
 	{
 		CommonTree child = getTypeChild(ct);
 		PayloadElementNameNode ptpn;

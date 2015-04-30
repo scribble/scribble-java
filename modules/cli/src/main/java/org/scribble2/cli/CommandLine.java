@@ -13,7 +13,7 @@ import org.scribble2.util.ScribbleException;
 
 public class CommandLine implements Runnable
 {
-	public static final String PATH_FLAG = "-path";
+	public static final String PATH_FLAG = "-path";  // FIXME: use Path
 	
 	protected enum Arg { PATH, MAIN }//, PROJECT }
 	
@@ -47,14 +47,16 @@ public class CommandLine implements Runnable
 		List<String> impath = Arrays.asList(this.args.get(Arg.PATH).split(":"));//new LinkedList<String>();
 		try
 		{
-			..HERE: fix CliJob/Job factoring (e.g. pointers and Modules -- maybe already ok); CliJob should record job parameters; smoothen related APIs; additional flags, e.g. projection
+			//..HERE: fix CliJob/Job factoring (e.g. pointers and Modules -- maybe already ok); CliJob should record job parameters; smoothen related APIs; additional flags, e.g. projection
+			
+			
 			
 			// FIXME: CLiJob and Job
 			CliJob cjob = new CliJob(impath, mainpath);
-			Job job = new Job(impath, mainpath, cjob.jcontext.getModules(), cjob.jcontext.getModules().get(cjob.jcontext.main));
+			Job job = new Job(impath, mainpath, cjob.getModules(), cjob.getModules().get(cjob.main));
 			job.checkWellFormedness();
 
-			System.out.println("a: " + cjob.jcontext.main);
+			System.out.println("a: " + cjob.main);
 		}
 		catch (IOException | ScribbleException e)
 		{

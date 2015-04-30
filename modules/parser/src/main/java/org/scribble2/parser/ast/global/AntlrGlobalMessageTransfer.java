@@ -11,7 +11,7 @@ import org.scribble2.model.global.GlobalMessageTransfer;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrAmbiguousName;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
@@ -24,7 +24,7 @@ public class AntlrGlobalMessageTransfer
 	public static final int SOURCE_CHILD_INDEX = 1;
 	public static final int DESTINATION_CHILDREN_START_INDEX = 2;
 
-	public static GlobalMessageTransfer parseGlobalMessageTransfer(AntlrModuleParser parser, CommonTree ct)
+	public static GlobalMessageTransfer parseGlobalMessageTransfer(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
@@ -37,7 +37,7 @@ public class AntlrGlobalMessageTransfer
 		return ModelFactoryImpl.FACTORY.GlobalMessageTransfer(src, msg, dests);
 	}
 
-	protected static MessageNode parseMessage(AntlrModuleParser parser, CommonTree ct)
+	protected static MessageNode parseMessage(ScribbleParser parser, CommonTree ct)
 	{
 		/*switch (Util.getAntlrNodeType(ct))
 		{

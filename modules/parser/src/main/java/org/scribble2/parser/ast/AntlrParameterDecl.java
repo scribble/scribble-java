@@ -6,7 +6,7 @@ import org.scribble2.model.ParameterDecl;
 import org.scribble2.model.ParameterDecl.Kind;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.parser.AntlrConstants;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrParameterDecl
@@ -14,7 +14,7 @@ public class AntlrParameterDecl
 	public static final int KIND_CHILD_INDEX = 0;
 	public static final int NAME_CHILD_INDEX = 1;
 
-	public static ParameterDecl parseParameterDecl(AntlrModuleParser parser, CommonTree ct)
+	public static ParameterDecl parseParameterDecl(ScribbleParser parser, CommonTree ct)
 	{
 		Kind kind = parseKind(getKindChild(ct));
 		//ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct), kind);

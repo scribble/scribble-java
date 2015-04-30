@@ -8,12 +8,12 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.Payload;
 import org.scribble2.model.PayloadElement;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
 public class AntlrPayload
 {
-	public static Payload parsePayload(AntlrModuleParser parser, CommonTree ct)
+	public static Payload parsePayload(ScribbleParser parser, CommonTree ct)
 	{
 		List<PayloadElement> pes = new LinkedList<>();
 		for (CommonTree pe : getPayloadElements(ct))

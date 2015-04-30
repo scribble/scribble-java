@@ -3,7 +3,7 @@ package org.scribble2.parser.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.MessageSignatureDecl;
 import org.scribble2.model.name.simple.SimpleMessageSignatureNameNode;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 // FIXME: factor out with AntlrPayloadTypeDecl
@@ -14,7 +14,7 @@ public class AntlrMessageSignatureDecl
 	public static final int SOURCE_CHILD_INDEX = 2;
 	public static final int ALIAS_CHILD_INDEX = 3;
 
-	public static MessageSignatureDecl parseMessageSignatureDecl(AntlrModuleParser parser, CommonTree ct)
+	public static MessageSignatureDecl parseMessageSignatureDecl(ScribbleParser parser, CommonTree ct)
 	{
 		CommonTree tmp1 = getSchemaChild(ct);
 		String schema = AntlrSimpleName.getName(tmp1);

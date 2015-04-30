@@ -3,7 +3,7 @@ package org.scribble2.parser.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.PayloadTypeDecl;
 import org.scribble2.model.name.simple.SimplePayloadTypeNode;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrPayloadTypeDecl
@@ -13,7 +13,7 @@ public class AntlrPayloadTypeDecl
 	public static final int SOURCE_CHILD_INDEX = 2;
 	public static final int ALIAS_CHILD_INDEX = 3;
 
-	public static PayloadTypeDecl parsePayloadTypeDecl(AntlrModuleParser parser, CommonTree ct)
+	public static PayloadTypeDecl parsePayloadTypeDecl(ScribbleParser parser, CommonTree ct)
 	{
 		CommonTree tmp1 = getSchemaChild(ct);
 		String schema = AntlrSimpleName.getName(tmp1);

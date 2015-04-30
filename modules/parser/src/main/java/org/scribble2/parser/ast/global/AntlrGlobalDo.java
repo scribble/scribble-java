@@ -6,7 +6,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.RoleInstantiationList;
 import org.scribble2.model.global.GlobalDo;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 
 public class AntlrGlobalDo
@@ -16,7 +16,7 @@ public class AntlrGlobalDo
 	public static final int ARGUMENTLIST_CHILD_INDEX = 1;
 	public static final int ROLEINSTANTIATIONLIST_CHILD_INDEX = 2;
 
-	public static GlobalDo parseGlobalDo(AntlrModuleParser parser, CommonTree ct)
+	public static GlobalDo parseGlobalDo(ScribbleParser parser, CommonTree ct)
 	{
 		RoleInstantiationList ril = (RoleInstantiationList) parser.parse(getRoleInstantiationListChild(ct));
 		ArgumentInstantiationList al = (ArgumentInstantiationList) parser.parse(getArgumentInstantiationListChild(ct));

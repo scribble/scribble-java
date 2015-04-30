@@ -5,7 +5,7 @@ import org.scribble2.model.ImportModule;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
@@ -16,7 +16,7 @@ public class AntlrImportModule
 
 	private static final String EMPTY_ALIAS = "EMPTY_ALIAS";
 
-	public static ImportModule parseImportModule(AntlrModuleParser parser, CommonTree ct)
+	public static ImportModule parseImportModule(ScribbleParser parser, CommonTree ct)
 	{
 		ModuleNameNode fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
 		SimpleProtocolNameNode alias = null;

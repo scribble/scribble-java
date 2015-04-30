@@ -8,12 +8,12 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ParameterDecl;
 import org.scribble2.model.ParameterDeclList;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
 public class AntlrParameterDeclList
 {
-	public static ParameterDeclList parseParameterDeclList(AntlrModuleParser parser, CommonTree ct)
+	public static ParameterDeclList parseParameterDeclList(ScribbleParser parser, CommonTree ct)
 	{
 		/*AntlrNodeType type = Util.getAntlrNodeType(ct);
 		switch (type)

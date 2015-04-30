@@ -8,7 +8,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ArgumentInstantiation;
 import org.scribble2.model.ArgumentInstantiationList;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
 public class AntlrArgumentInstantiationList
@@ -16,7 +16,7 @@ public class AntlrArgumentInstantiationList
 	//public static final String EMPTY_ARGUMENTLIST = "EMPTY_ARGUMENT_LIST";
 
 	// Similar to parseParameterDeclList
-	public static ArgumentInstantiationList parseArgumentInstantiationList(AntlrModuleParser parser, CommonTree ct)
+	public static ArgumentInstantiationList parseArgumentInstantiationList(ScribbleParser parser, CommonTree ct)
 	{
 		List<ArgumentInstantiation> as = new LinkedList<>();
 		for (CommonTree a : getArgumentChildren(ct))

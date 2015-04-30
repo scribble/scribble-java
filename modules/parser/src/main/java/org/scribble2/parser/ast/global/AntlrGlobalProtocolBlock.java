@@ -4,13 +4,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalInteractionSequence;
 import org.scribble2.model.global.GlobalProtocolBlock;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 
 public class AntlrGlobalProtocolBlock
 {
 	public static final int INTERACTIONSEQUENCE_CHILD_INDEX = 0;
 
-	public static GlobalProtocolBlock parseGlobalProtocolBlock(AntlrModuleParser parser, CommonTree ct)
+	public static GlobalProtocolBlock parseGlobalProtocolBlock(ScribbleParser parser, CommonTree ct)
 	{
 		GlobalInteractionSequence gis = (GlobalInteractionSequence) parser.parse(getInteractionSequenceChild(ct));
 		//return new GlobalProtocolBlock(gis);

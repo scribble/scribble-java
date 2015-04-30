@@ -8,7 +8,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.global.GlobalProtocolBlock;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
 
@@ -17,7 +17,7 @@ public class AntlrGlobalChoice
 	public static final int SUBJECT_CHILD_INDEX = 0;
 	public static final int BLOCK_CHILDREN_START_INDEX = 1;
 	
-	public static GlobalChoice parseGlobalChoice(AntlrModuleParser parser, CommonTree ct)
+	public static GlobalChoice parseGlobalChoice(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct));
 		List<GlobalProtocolBlock> blocks = new LinkedList<>();

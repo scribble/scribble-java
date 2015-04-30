@@ -15,6 +15,7 @@ import org.scribble2.util.ScribbleException;
 
 // Immutable (from outside) -- no: projections are added mutably later
 // Global "static" context information for a Job
+@Deprecated
 public class CliJobContext
 {
 	public final List<String> importPath;
@@ -26,7 +27,7 @@ public class CliJobContext
 	private final CliJob job;
 	
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
-	private final Map<ModuleName, Module> modules = new HashMap<>();
+	private final Map<ModuleName, Module> parsed = new HashMap<>();
 	//private final Map<ModuleName, String> sources = new HashMap<>();
 	private final Map<ModuleName, Resource> sources = new HashMap<>();
 	
@@ -61,7 +62,7 @@ public class CliJobContext
 			System.err.println("ERROR: Module name '" + path + "' could not be located\r\n");
 		}
 		Module module = job.parser.parseModuleFromResource(resource);
-		if (this.modules.containsKey(module.getFullModuleName()))
+		if (this.parsed.containsKey(module.getFullModuleName()))
 		{
 			return;
 		}
@@ -72,7 +73,7 @@ public class CliJobContext
 			if (id.isImportModule())
 			{
 				ModuleName modname = ((ImportModule) id).modname.toName();
-				if (!this.modules.keySet().contains(modname))
+				if (!this.parsed.keySet().contains(modname))
 				{
 					/*Pair<String, Module> imported;
 					/*if (this.projections2.containsKey(fmn.toName()))
@@ -96,7 +97,7 @@ public class CliJobContext
 	//private void addModule(Module module)
 	{
 		ModuleName fullmodname = module.getFullModuleName();
-		this.modules.put(fullmodname, module);
+		this.parsed.put(fullmodname, module);
 		this.sources.put(fullmodname, source);
 	}
 	
@@ -116,6 +117,6 @@ public class CliJobContext
 	
 	public Map<ModuleName, Module> getModules()
 	{
-		return this.modules;
+		return this.parsed;
 	}
 }

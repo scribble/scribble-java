@@ -18,17 +18,15 @@ package org.scribble.resources;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * This class provides a directory based resource locator.
  *
  */
-public class DirectoryResourceLocator implements ResourceLocator {
-	
+public class DirectoryResourceLocator implements ResourceLocator
+{
 	private static final Logger LOG=Logger.getLogger(DirectoryResourceLocator.class.getName());
 	
 	private String[] _paths=null;
@@ -82,53 +80,55 @@ public class DirectoryResourceLocator implements ResourceLocator {
 
 	private Resource openResource(String path, File f)
 	{
-				try {
-					//ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
-					return new InputStreamResource(path, new FileInputStream(f));  // RAY
-				} catch (Exception e) {
-					LOG.log(Level.SEVERE, "Failed to create file input stream for '"+f+"'", e);
-				}
-				return null;
+		try
+		{
+			// ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
+			return new InputStreamResource(path, new FileInputStream(f)); // RAY
+		}
+		catch (Exception e)
+		{
+			//LOG.log(Level.SEVERE, "Failed to create file input stream for '" + f + "'", e);
+			throw new RuntimeException("Failed to create file input stream for '" + f + "'", e);
+		}
+		//return null;
 	}
 
-	public Resource getResourceByFullPath(String path) {
-		File f= new File(path);
-		
-		// case of: relativePath is actually a full path
-			if (f.isFile()) {
-				return openResource(path, f);
-			}
-			return null;
+	public Resource getResourceByFullPath(String path)
+	{
+		return openResource(path, openFile(path, true));
 	}
 
-	public Resource searchResourceOnImportPaths(String relativePath) {
-		//Resource ret= getResourceByFullPath(relativePath);  // Debatable
-		File f = new File(relativePath);
-		if (f.isFile())
+	public Resource searchResourceOnImportPaths(String relativePath)
+	{
+		// Resource ret= getResourceByFullPath(relativePath); // Debatable
+		File f = openFile(relativePath, false);
+		if (f.isFile()) // relativePath is actually a full path
 		{
 			return openResource(relativePath, f);
 		}
-		
+
 		// Find module
-		for (String path : _paths) {
-			String fullPath=path;
-			
+		for (String path : _paths)
+		{
+			String tmp = path;
+
 			/*if (!fullPath.endsWith(java.io.File.separator)) {  // FIXME: cygwin/windows separators
 				fullPath += java.io.File.separator;
 			}*/
-			
-			fullPath += relativePath;
 
-			//System.out.println("a1: " + fullPath + ", " + ret);
-
-			f = new File(fullPath);
-			
-			if (f.isFile()) {
-				return openResource(fullPath, f);
-			}
+			String fullPath = tmp + relativePath;
+			return openResource(fullPath, openFile(fullPath, true));
 		}
-		
-		return null;
+		throw new RuntimeException("Couldn't open resource: " + relativePath);
 	}
 	
+	private File openFile(String path, boolean check)
+	{
+		File f = new File(path);
+		if (check && !f.isFile())
+		{
+			throw new RuntimeException("File couldn't be opened: " + path);
+		}
+		return f;
+	}
 }

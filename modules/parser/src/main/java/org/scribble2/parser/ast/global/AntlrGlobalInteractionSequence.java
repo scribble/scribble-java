@@ -8,12 +8,12 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalInteractionNode;
 import org.scribble2.model.global.GlobalInteractionSequence;
-import org.scribble2.parser.AntlrModuleParser;
+import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
 public class AntlrGlobalInteractionSequence
 {
-	public static GlobalInteractionSequence parseGlobalInteractionSequence(AntlrModuleParser parser, CommonTree ct)
+	public static GlobalInteractionSequence parseGlobalInteractionSequence(ScribbleParser parser, CommonTree ct)
 	{
 		List<GlobalInteractionNode> gis = new LinkedList<>();
 		for (CommonTree gi : getInteractionChildren(ct))
