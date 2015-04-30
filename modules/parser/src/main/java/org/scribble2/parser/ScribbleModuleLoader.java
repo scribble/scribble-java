@@ -23,6 +23,7 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.context.DefaultModuleLoader;
 import org.scribble.context.ModuleLoader;
 import org.scribble.model.Module;
 import org.scribble.parser.antlr.Scribble2Lexer;
@@ -32,7 +33,7 @@ import org.scribble.resources.ResourceLocator;
 import org.scribble2.parser.util.Pair;
 
 // loading = file input + parsing (i.e. path -> Module; cf. ModuleName -> Module)
-public class ScribbleModuleLoader /*extends DefaultModuleLoader*/ implements ModuleLoader
+public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleLoader
 {
 	//private static final Logger LOG=Logger.getLogger(ModuleLoader.class.getName());
 
@@ -48,9 +49,22 @@ public class ScribbleModuleLoader /*extends DefaultModuleLoader*/ implements Mod
 	}
 
 	@Override
-	public Module loadModule(String path)
+	public Module loadModule(String module)
 	{
+		/*Module mod = super.loadModule(module);
+		if (mod == null)
+		{
+			// ...convert module name string to path...
+			return loadScribbleModule(path);
+		}*/
 		throw new RuntimeException("Shouldn't get in here.");
+	}
+
+  // FIXME: old/new Modules incompatible
+	//@Override
+	public void registerModule(org.scribble2.model.Module module)
+	{
+		//super.registerModule(module);
 	}
 
 	//public Module loadModule(String module)
@@ -58,23 +72,19 @@ public class ScribbleModuleLoader /*extends DefaultModuleLoader*/ implements Mod
 	{
 		//Module ret=super.loadModule(module);
 		Resource res = this.locator.searchResourceOnImportPaths(path);
-		return new Pair<>(res, parseModuleFromResource(res));
+		Pair<Resource, org.scribble2.model.Module> p = new Pair<>(res, parseModuleFromResource(res));
+		registerModule(p.right);
+		return p;
 	}
 	
-	private byte[] readResource(Resource res)
+	public Pair<Resource, org.scribble2.model.Module> loadMainModule(String path)
 	{
-		try (InputStream is = res.getInputStream())
-		{
-			byte[] bs = new byte[is.available()];
-			is.read(bs);
-			return bs;
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException(e);
-		}
+		Resource res = this.locator.getResourceByFullPath(path);
+		Pair<Resource, org.scribble2.model.Module> p = new Pair<>(res, parseModuleFromResource(res));
+		registerModule(p.right);
+		return p;
 	}
-
+	
 	private org.scribble2.model.Module parseModuleFromResource(Resource res) // throws ScribbleException
 	{
 		try
@@ -96,6 +106,20 @@ public class ScribbleModuleLoader /*extends DefaultModuleLoader*/ implements Mod
 		catch (RecognitionException e)
 		{
 			// throw new ScribbleException(e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static byte[] readResource(Resource res)
+	{
+		try (InputStream is = res.getInputStream())
+		{
+			byte[] bs = new byte[is.available()];
+			is.read(bs);
+			return bs;
+		}
+		catch (IOException e)
+		{
 			throw new RuntimeException(e);
 		}
 	}

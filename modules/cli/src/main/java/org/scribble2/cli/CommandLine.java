@@ -36,6 +36,11 @@ public class CommandLine implements Runnable
 	@Override
 	public void run()
 	{
+		/*if (this.args.containsKey(..project..))
+		{
+			
+		}*/
+
 		//initLoader(this.args.get(Arg.PATH));
 		loadModules(this.args.get(Arg.MAIN));
 	}
@@ -52,7 +57,7 @@ public class CommandLine implements Runnable
 			
 			
 			// FIXME: CLiJob and Job
-			CliJob cjob = new CliJob(impath, mainpath);
+			MainContext cjob = new MainContext(impath, mainpath);
 			Job job = new Job(impath, mainpath, cjob.getModules(), cjob.getModules().get(cjob.main));
 			job.checkWellFormedness();
 

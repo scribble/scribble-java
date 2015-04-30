@@ -18,12 +18,13 @@ import org.scribble2.parser.util.Pair;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
-public class CliJob
+public class MainContext
 {
-	private static final ScribbleParser PARSER = new ScribbleParser();
+	//private static final ScribbleParser PARSER = new ScribbleParser();
 
-	public final ScribbleParser parser = CliJob.PARSER;
+	public final ScribbleParser parser = new ScribbleParser();
 	public final DirectoryResourceLocator locator;
+	public final ScribbleModuleLoader loader;
 
 	//public final CliJobContext clijcontext;  // Mutable (Visitor passes replace modules)
 	
@@ -35,26 +36,42 @@ public class CliJob
 	/*private final Map<ModuleName, Module> parsed = new HashMap<>();
 	private final Map<ModuleName, Resource> sources = new HashMap<>();*/
 	
-	private final Map<ModuleName, Pair<Resource, Module>> parsed;
+	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
 
 	
-	public CliJob(List<String> importPath, String mainpath) throws IOException, ScribbleException
+	public MainContext(List<String> importPath, String mainpath) throws IOException, ScribbleException
 	{
-		this.locator = new DirectoryResourceLocator(importPath);
-		
 		this.importPath = importPath;
-		//this.clijcontext = new CliJobContext(this, importPath, mainpath);
 
-		ScribbleModuleLoader loader = new ScribbleModuleLoader(this.locator, this.parser);
+		this.locator = new DirectoryResourceLocator(importPath);
+		this.loader = new ScribbleModuleLoader(this.locator, this.parser);
 
-		this.main = loader.loadScribbleModule(mainpath).right.getFullModuleName();
+		Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
 
-		this.parsed = new ModuleLoader(loader).loadAll(mainpath);
+		this.main = p.right.getFullModuleName();
+		
+		loadAll(p);
+	}
+
+	private void loadAll(Pair<Resource, Module> module) throws ScribbleException
+	{
+		this.parsed.put(module.right.getFullModuleName(), module);
+		for (ImportDecl id : module.right.imports)
+		{
+			if (id.isImportModule())
+			{
+				ModuleName modname = ((ImportModule) id).modname.toName();
+				if (!this.parsed.containsKey(modname))
+				{
+					loadAll(this.loader.loadScribbleModule(modname.toPath()));
+				}
+			}
+		}
 	}
 	
 	public Map<ModuleName, Module> getModules()
 	{
-		return parsed.entrySet().stream().collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue().right));
+		return this.parsed.entrySet().stream().collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue().right));
 	}
 
 	/*//private void initLoader(String paths)
@@ -71,7 +88,7 @@ public class CliJob
 	}*/
 }
 
-class ModuleLoader
+/*class ModuleLoader
 {
 	//private final ResourceLocator loader;
 	//private final ScribbleParser parser;
@@ -81,7 +98,7 @@ class ModuleLoader
 	public ModuleLoader(ScribbleModuleLoader loader) throws ScribbleException
 	{
 		/*this.loader = locator;
-		this.parser = parser;*/
+		this.parser = parser;* /
 		//this.loader = new ScribbleModuleLoader(locator, parser);
 		this.loader = loader;
 	}
@@ -117,4 +134,4 @@ class ModuleLoader
 			}
 		}
 	}
-}
+}*/

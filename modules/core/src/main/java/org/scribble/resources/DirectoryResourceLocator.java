@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  */
 public class DirectoryResourceLocator implements ResourceLocator
 {
-	private static final Logger LOG=Logger.getLogger(DirectoryResourceLocator.class.getName());
+	private static final Logger LOG = Logger.getLogger(DirectoryResourceLocator.class.getName());
 	
 	private String[] _paths=null;
 
@@ -122,7 +122,7 @@ public class DirectoryResourceLocator implements ResourceLocator
 		throw new RuntimeException("Couldn't open resource: " + relativePath);
 	}
 	
-	private File openFile(String path, boolean check)
+	private static File openFile(String path, boolean check)
 	{
 		File f = new File(path);
 		if (check && !f.isFile())

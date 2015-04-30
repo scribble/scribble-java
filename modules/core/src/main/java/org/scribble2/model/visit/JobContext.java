@@ -18,7 +18,7 @@ import org.scribble2.util.ScribbleException;
 // Global "static" context information for a Job
 public class JobContext
 {
-	public final List<String> importPath;
+	public final List<String> importPath;  // Not needed
 	//public final Module main;
 	//private Module main;
 	//private ModuleName main;

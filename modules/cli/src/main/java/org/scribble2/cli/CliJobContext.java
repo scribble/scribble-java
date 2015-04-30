@@ -24,14 +24,14 @@ public class CliJobContext
 	//private ModuleName main;
 	public final ModuleName main;
 	
-	private final CliJob job;
+	private final MainContext job;
 	
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
 	private final Map<ModuleName, Module> parsed = new HashMap<>();
 	//private final Map<ModuleName, String> sources = new HashMap<>();
 	private final Map<ModuleName, Resource> sources = new HashMap<>();
 	
-	public CliJobContext(CliJob job, List<String> importPath, String mainpath) throws ScribbleException
+	public CliJobContext(MainContext job, List<String> importPath, String mainpath) throws ScribbleException
 	{
 		this.job = job;
 		this.importPath = new LinkedList<>(importPath);
@@ -41,13 +41,13 @@ public class CliJobContext
 		//this.main = mainmod.getFullModuleName();
 
 		//String mainpath = resource.getPath(); // Needs relative->full path fix in DirectoryResourceLocator -- but maybe Resource should abstract away from file system? Job could directly use the encaps inputstream?
-		Resource resource = job.loader.getResourceByFullPath(mainpath);
+		Resource resource = job.locator.getResourceByFullPath(mainpath);
 		if (resource == null)
 		{
 			System.err.println("ERROR: Module name '" + mainpath + "' could not be located\r\n");
 		}
-		Module mainmod = job.parser.parseModuleFromResource(resource);
-		this.main = mainmod.getFullModuleName();
+		//Module mainmod = job.loader.parseModuleFromResource(resource);
+		this.main = null;//mainmod.getFullModuleName();
 
 		//importModules(mainmod);
 		importModules(mainpath);
@@ -56,12 +56,12 @@ public class CliJobContext
 	// path could be either full path in the sense of import-path prefix not needed (for main) or relative (need to search in import paths)
 	private void importModules(String path) throws ScribbleException
 	{
-		Resource resource = job.loader.searchResourceOnImportPaths(path);
+		Resource resource = job.locator.searchResourceOnImportPaths(path);
 		if (resource == null)
 		{
 			System.err.println("ERROR: Module name '" + path + "' could not be located\r\n");
 		}
-		Module module = job.parser.parseModuleFromResource(resource);
+		Module module = null;//job.loader.parseModuleFromResource(resource);
 		if (this.parsed.containsKey(module.getFullModuleName()))
 		{
 			return;
