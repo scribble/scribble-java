@@ -50,6 +50,7 @@ public class Job
 	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
 	
+	// FIXME: just take MainContext as arg
 	//public Job(List<String> importPath, String mainpath) throws IOException, ScribbleException
 	public Job(List<String> importPath, String mainpath, Map<ModuleName, Module> modules, Module mainmodule) throws IOException, ScribbleException
 	{

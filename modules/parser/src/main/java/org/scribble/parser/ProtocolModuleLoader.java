@@ -24,7 +24,7 @@ import org.scribble.context.ModuleLoader;
 import org.scribble.logging.IssueLogger;
 import org.scribble.model.Module;
 import org.scribble.resources.Resource;
-import org.scribble.resources.ResourceLocator;
+import org.scribble.resources.IResourceLocator;
 
 /**
  * This class provides a default implementation of the ModuleLoader interface.
@@ -34,7 +34,7 @@ public class ProtocolModuleLoader extends DefaultModuleLoader implements ModuleL
 	
 	private static final Logger LOG=Logger.getLogger(ProtocolModuleLoader.class.getName());
 
-	private ResourceLocator _locator=null;
+	private IResourceLocator _locator=null;
 	private IssueLogger _logger=null;
 	private ProtocolParser _parser=null;
 	
@@ -45,7 +45,7 @@ public class ProtocolModuleLoader extends DefaultModuleLoader implements ModuleL
 	 * @param locator The locator
 	 * @param logger The logger
 	 */
-	public ProtocolModuleLoader(ProtocolParser parser, ResourceLocator locator,
+	public ProtocolModuleLoader(ProtocolParser parser, IResourceLocator locator,
 					IssueLogger logger) {
 		_parser = parser;
 		_locator = locator;

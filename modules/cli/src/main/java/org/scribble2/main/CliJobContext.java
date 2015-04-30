@@ -1,4 +1,4 @@
-package org.scribble2.cli;
+package org.scribble2.main;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -56,7 +56,7 @@ public class CliJobContext
 	// path could be either full path in the sense of import-path prefix not needed (for main) or relative (need to search in import paths)
 	private void importModules(String path) throws ScribbleException
 	{
-		Resource resource = job.locator.searchResourceOnImportPaths(path);
+		Resource resource = job.locator.getResource(path);
 		if (resource == null)
 		{
 			System.err.println("ERROR: Module name '" + path + "' could not be located\r\n");

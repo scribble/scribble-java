@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.scribble2.main.MainContext;
 import org.scribble2.model.visit.Job;
 import org.scribble2.util.ScribbleException;
 

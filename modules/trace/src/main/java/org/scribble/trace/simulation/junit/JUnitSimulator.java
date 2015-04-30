@@ -21,7 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.scribble.resources.DirectoryResourceLocator;
-import org.scribble.resources.ResourceLocator;
+import org.scribble.resources.IResourceLocator;
 import org.scribble.trace.model.Step;
 import org.scribble.trace.model.Trace;
 import org.scribble.trace.simulation.DefaultSimulatorContext;
@@ -42,7 +42,7 @@ public class JUnitSimulator {
 	
 	private java.io.File _junitFile;
 	
-	private ResourceLocator _locator;
+	private IResourceLocator _locator;
 	
 	private int _id=0;
 	
@@ -85,7 +85,7 @@ public class JUnitSimulator {
 	 * 
 	 * @param locator The resource locator
 	 */
-	public void setResourceLocator(ResourceLocator locator) {
+	public void setResourceLocator(IResourceLocator locator) {
 		_locator = locator;
 	}
 	
@@ -94,7 +94,7 @@ public class JUnitSimulator {
 	 * 
 	 * @return The resource locator
 	 */
-	public ResourceLocator getResourceLocator() {
+	public IResourceLocator getResourceLocator() {
 		return (_locator);
 	}
 	

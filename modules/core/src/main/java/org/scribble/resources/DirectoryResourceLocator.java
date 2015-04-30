@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * This class provides a directory based resource locator.
  *
  */
-public class DirectoryResourceLocator implements ResourceLocator
+public class DirectoryResourceLocator extends ResourceLocator // implements ResourceLocator
 {
 	private static final Logger LOG = Logger.getLogger(DirectoryResourceLocator.class.getName());
 	
@@ -74,61 +74,33 @@ public class DirectoryResourceLocator implements ResourceLocator
 	/**
 	 * {@inheritDoc}
 	 */
-	public Resource getResource(String path) {
-		return searchResourceOnImportPaths(path);
-	}
-
-	private Resource openResource(String path, File f)
-	{
-		try
-		{
-			// ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
-			return new InputStreamResource(path, new FileInputStream(f)); // RAY
-		}
-		catch (Exception e)
-		{
-			//LOG.log(Level.SEVERE, "Failed to create file input stream for '" + f + "'", e);
-			throw new RuntimeException("Failed to create file input stream for '" + f + "'", e);
-		}
-		//return null;
-	}
-
-	public Resource getResourceByFullPath(String path)
-	{
-		return openResource(path, openFile(path, true));
-	}
-
-	public Resource searchResourceOnImportPaths(String relativePath)
+	@Override
+	public InputStreamResource getResource(String path)
 	{
 		// Resource ret= getResourceByFullPath(relativePath); // Debatable
-		File f = openFile(relativePath, false);
+		/*File f = openFile(relativePath, false);
 		if (f.isFile()) // relativePath is actually a full path
 		{
 			return openResource(relativePath, f);
-		}
+		}*/
 
 		// Find module
-		for (String path : _paths)
+		for (String impath : _paths)
 		{
-			String tmp = path;
+			String tmp = impath;
 
 			/*if (!fullPath.endsWith(java.io.File.separator)) {  // FIXME: cygwin/windows separators
 				fullPath += java.io.File.separator;
 			}*/
 
-			String fullPath = tmp + relativePath;
-			return openResource(fullPath, openFile(fullPath, true));
+			String prefixedpath = tmp + path;
+			File f = new File(prefixedpath);
+			if (f.isFile())
+			{
+				//return openResource(fullPath, f);
+				return new InputStreamResource(prefixedpath, getFileInputStream(f));
+			}
 		}
-		throw new RuntimeException("Couldn't open resource: " + relativePath);
-	}
-	
-	private static File openFile(String path, boolean check)
-	{
-		File f = new File(path);
-		if (check && !f.isFile())
-		{
-			throw new RuntimeException("File couldn't be opened: " + path);
-		}
-		return f;
+		throw new RuntimeException("Couldn't open resource: " + path);
 	}
 }

@@ -28,23 +28,27 @@ import org.scribble.context.ModuleLoader;
 import org.scribble.model.Module;
 import org.scribble.parser.antlr.Scribble2Lexer;
 import org.scribble.parser.antlr.Scribble2Parser;
-import org.scribble.resources.Resource;
 import org.scribble.resources.ResourceLocator;
+import org.scribble.resources.Resource;
+import org.scribble.resources.IResourceLocator;
 import org.scribble2.parser.util.Pair;
+import org.scribble2.sesstype.name.ModuleName;
 
 // loading = file input + parsing (i.e. path -> Module; cf. ModuleName -> Module)
 public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleLoader
 {
 	//private static final Logger LOG=Logger.getLogger(ModuleLoader.class.getName());
 
-	private ResourceLocator locator = null;
+	private ResourceLocator locator;
 	//private ProtocolParser parser = null;
-	private ScribbleParser parser = null;
+	private AntlrParser antlr;
+	private ScribbleParser parser;
 	//private IssueLogger _logger=null;
 	
-	public ScribbleModuleLoader(ResourceLocator locator, ScribbleParser parser)
+	public ScribbleModuleLoader(ResourceLocator locator, AntlrParser antlr, ScribbleParser parser)
 	{
 		this.locator = locator;
+		this.antlr = antlr;
 		this.parser = parser;
 	}
 
@@ -54,8 +58,8 @@ public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleL
 		/*Module mod = super.loadModule(module);
 		if (mod == null)
 		{
-			// ...convert module name string to path...
-			return loadScribbleModule(path);
+			// ...convert module name string to ModuleName...
+			return loadScribbleModule(name);
 		}*/
 		throw new RuntimeException("Shouldn't get in here.");
 	}
@@ -68,59 +72,39 @@ public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleL
 	}
 
 	//public Module loadModule(String module)
-	public Pair<Resource, org.scribble2.model.Module> loadScribbleModule(String path)
+	//public Pair<Resource, org.scribble2.model.Module> loadScribbleModule(String path)
+	public Pair<Resource, org.scribble2.model.Module> loadScribbleModule(ModuleName mod)
 	{
 		//Module ret=super.loadModule(module);
-		Resource res = this.locator.searchResourceOnImportPaths(path);
-		Pair<Resource, org.scribble2.model.Module> p = new Pair<>(res, parseModuleFromResource(res));
-		registerModule(p.right);
-		return p;
+		Resource res = this.locator.getResource(mod.toPath());
+		org.scribble2.model.Module parsed = parseModuleFromResource(res);
+		checkModuleName(mod, res, parsed);
+		registerModule(parsed);
+		return new Pair<>(res, parsed);
+	}
+
+	private static void checkModuleName(ModuleName mn, Resource res, org.scribble2.model.Module mod)
+	{
+		if (!mn.equals(mod.getFullModuleName()))
+		{
+			throw new RuntimeException("Invalid module name " + mod.getFullModuleName() + " at path: " + res.getPath());
+		}
 	}
 	
-	public Pair<Resource, org.scribble2.model.Module> loadMainModule(String path)
+	/*public Pair<Resource, org.scribble2.model.Module> loadMainModule(String path)
 	{
 		Resource res = this.locator.getResourceByFullPath(path);
 		Pair<Resource, org.scribble2.model.Module> p = new Pair<>(res, parseModuleFromResource(res));
 		registerModule(p.right);
 		return p;
-	}
+	}*/
 	
 	private org.scribble2.model.Module parseModuleFromResource(Resource res) // throws ScribbleException
 	{
-		try
-		{
-			// CharStream input = isFile ? new ANTLRFileStream(path) : new
-			// ANTLRInputStream(System.in);
-			/*CharStream input = new ANTLRFileStream(res.getPath());
-			Scribble2Lexer lex = new Scribble2Lexer(input);  // FIXME: use Resource inputStream*/
-			String input = new String(readResource(res));
-			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));
-			Scribble2Parser parser = new Scribble2Parser(new CommonTokenStream(lex));
-			CommonTree ct = (CommonTree) parser.module().getTree();
-			org.scribble2.model.Module module = (org.scribble2.model.Module) this.parser.parse(ct);
+		org.scribble2.model.Module module = (org.scribble2.model.Module) this.parser.parse(this.antlr.parseAntlrTree(res));
 
-			// FIXME: check loaded module name correct
+		// FIXME: check loaded module name correct
 
-			return module;
-		}
-		catch (RecognitionException e)
-		{
-			// throw new ScribbleException(e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	private static byte[] readResource(Resource res)
-	{
-		try (InputStream is = res.getInputStream())
-		{
-			byte[] bs = new byte[is.available()];
-			is.read(bs);
-			return bs;
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException(e);
-		}
+		return module;
 	}
 }

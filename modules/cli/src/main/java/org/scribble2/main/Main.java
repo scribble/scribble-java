@@ -1,6 +1,6 @@
 // java -cp bin';'lib/antlr-3.5.2-complete.jar';'parser scribble.main.Main2 test/src/test/Test7.scr
  
-package org.scribble2.cli;
+package org.scribble2.main;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.util.ScribbleException;
 
+@Deprecated
 public class Main
 {
 	public Main()

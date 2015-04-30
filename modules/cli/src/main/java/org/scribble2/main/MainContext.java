@@ -1,4 +1,4 @@
-package org.scribble2.cli;
+package org.scribble2.main;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,6 +12,7 @@ import org.scribble.resources.ResourceLocator;
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.ImportModule;
 import org.scribble2.model.Module;
+import org.scribble2.parser.AntlrParser;
 import org.scribble2.parser.ScribbleModuleLoader;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Pair;
@@ -21,39 +22,55 @@ import org.scribble2.util.ScribbleException;
 public class MainContext
 {
 	//private static final ScribbleParser PARSER = new ScribbleParser();
-
-	public final ScribbleParser parser = new ScribbleParser();
-	public final DirectoryResourceLocator locator;
-	public final ScribbleModuleLoader loader;
-
-	//public final CliJobContext clijcontext;  // Mutable (Visitor passes replace modules)
 	
 	// FIXME: path and other command line args should be job parameters stored here
 	public final List<String> importPath;
 	public final ModuleName main;
-	
-	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
-	/*private final Map<ModuleName, Module> parsed = new HashMap<>();
-	private final Map<ModuleName, Resource> sources = new HashMap<>();*/
-	
-	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
 
+	public final ResourceLocator locator;
+	public final AntlrParser aparser;
+	public final ScribbleParser sparser;
+	public final ScribbleModuleLoader loader;
+
+	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
+	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
 	
 	public MainContext(List<String> importPath, String mainpath) throws IOException, ScribbleException
 	{
 		this.importPath = importPath;
 
 		this.locator = new DirectoryResourceLocator(importPath);
-		this.loader = new ScribbleModuleLoader(this.locator, this.parser);
+		this.aparser = new AntlrParser();
+		this.sparser = new ScribbleParser();
+		this.loader = new ScribbleModuleLoader(this.locator, this.aparser, this.sparser);
 
-		Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
+		Pair<Resource, Module> p = loadMainModule(mainpath);
 
 		this.main = p.right.getFullModuleName();
 		
-		loadAll(p);
+		loadAllModules(p);
+	}
+	
+	private Pair<Resource, Module> loadMainModule(String mainpath)
+	{
+		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
+		Resource res = ResourceLocator.getResourceByFullPath(mainpath);
+		Module mod = (Module) this.sparser.parse(this.aparser.parseAntlrTree(res));
+		checkMainModuleName(mainpath, mod);
+		return new Pair<>(res, mod);
+	}
+	
+	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes
+	private void checkMainModuleName(String mainpath, Module main)
+	{
+		String tmp = mainpath.substring(mainpath.lastIndexOf('/') == -1 ? 0 : mainpath.lastIndexOf('/') + 1, mainpath.lastIndexOf('.'));
+		if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))  // ModuleName.toString hack?
+		{
+			throw new RuntimeException("Simple module name at path " + mainpath + " mismatch: " + main.getFullModuleName());
+		}
 	}
 
-	private void loadAll(Pair<Resource, Module> module) throws ScribbleException
+	private void loadAllModules(Pair<Resource, Module> module) throws ScribbleException
 	{
 		this.parsed.put(module.right.getFullModuleName(), module);
 		for (ImportDecl id : module.right.imports)
@@ -63,7 +80,7 @@ public class MainContext
 				ModuleName modname = ((ImportModule) id).modname.toName();
 				if (!this.parsed.containsKey(modname))
 				{
-					loadAll(this.loader.loadScribbleModule(modname.toPath()));
+					loadAllModules(this.loader.loadScribbleModule(modname));
 				}
 			}
 		}

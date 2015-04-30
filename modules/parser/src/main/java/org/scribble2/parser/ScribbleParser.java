@@ -55,7 +55,7 @@ import scribble2.parser.ast.global.*;
 import scribble2.sesstype.name.*;
 import scribble2.util.Util;*/
 
-// Parses a Antlr tree into a scribble.ast.Node tree
+// Parses ANTLR Trees into Scribble.Ast.ModelNode trees
 public class ScribbleParser
 {
 	public ScribbleParser()

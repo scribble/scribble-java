@@ -1,37 +1,48 @@
-/*
- * Copyright 2009-11 www.scribble.org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 package org.scribble.resources;
 
+import java.io.File;
+import java.io.FileInputStream;
 
-/**
- * This interface provides the resource location capability.
- *
- */
-public interface ResourceLocator {
+public abstract class ResourceLocator implements IResourceLocator
+{
+	//public abstract Resource getResource(String path);
 
-	/**
-	 * This method obtains the resource associated with the
-	 * supplied path.
-	 * 
-	 * @param path The resource path
-	 * @return The resource, or null if not found
-	 */
-	public Resource getResource(String path);
+	public static InputStreamResource getResourceByFullPath(String path)
+	{
+		File f = new File(path);
+		if (!f.isFile())
+		{
+			throw new RuntimeException("File couldn't be opened: " + path);
+		}
 
-	public Resource getResourceByFullPath(String path);  // Doesn't search import paths
-	public Resource searchResourceOnImportPaths(String path);  // Tries without import paths first, then searches import paths
+		//return openResource(path, f);
+		return new InputStreamResource(path, getFileInputStream(f));
+	}
+	
+	//protected static Resource openResource(String path, File f)
+	protected static FileInputStream getFileInputStream(File f)
+	{
+		try
+		{
+			// ret = new InputStreamResource(relativePath, new java.io.FileInputStream(f));
+			//return new InputStreamResource(path, new FileInputStream(f)); // RAY
+			return new FileInputStream(f);
+		}
+		catch (Exception e)
+		{
+			//LOG.log(Level.SEVERE, "Failed to create file input stream for '" + f + "'", e);
+			throw new RuntimeException("Failed to create file input stream for '" + f + "'", e);
+		}
+		//return null;
+	}
+
+	/*protected static File openFile(String path, boolean check)
+	{
+		File f = new File(path);
+		if (check && !f.isFile())
+		{
+			throw new RuntimeException("File couldn't be opened: " + path);
+		}
+		return f;
+	}*/
 }

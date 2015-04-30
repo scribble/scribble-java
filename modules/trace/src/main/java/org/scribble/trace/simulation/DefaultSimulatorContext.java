@@ -16,7 +16,7 @@
  */
 package org.scribble.trace.simulation;
 
-import org.scribble.resources.ResourceLocator;
+import org.scribble.resources.IResourceLocator;
 
 /**
  * This class provides the default context support implementation for the simulator.
@@ -24,14 +24,14 @@ import org.scribble.resources.ResourceLocator;
  */
 public class DefaultSimulatorContext implements SimulatorContext {
 	
-	private ResourceLocator _locator;
+	private IResourceLocator _locator;
 	
 	/**
 	 * This constructor initializes the resource locator.
 	 * 
 	 * @param locator The resource locator
 	 */
-	public DefaultSimulatorContext(ResourceLocator locator) {
+	public DefaultSimulatorContext(IResourceLocator locator) {
 		_locator = locator;
 	}
 
@@ -40,7 +40,7 @@ public class DefaultSimulatorContext implements SimulatorContext {
 	 * 
 	 * @return The resource locator
 	 */
-	public ResourceLocator getResourceLocator() {
+	public IResourceLocator getResourceLocator() {
 		return (_locator);
 	}
 	

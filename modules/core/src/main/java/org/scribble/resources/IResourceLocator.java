@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-14 www.scribble.org
+ * Copyright 2009-11 www.scribble.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,24 @@
  * limitations under the License.
  *
  */
-package org.scribble.trace.simulation;
+package org.scribble.resources;
 
-import org.scribble.resources.IResourceLocator;
 
 /**
- * This interface provides context support for the simulator.
+ * This interface provides the resource location capability.
  *
  */
-public interface SimulatorContext {
+public interface IResourceLocator {
 
 	/**
-	 * This method returns the resource locator.
+	 * This method obtains the resource associated with the
+	 * supplied path.
 	 * 
-	 * @return The resource locator
+	 * @param path The resource path
+	 * @return The resource, or null if not found
 	 */
-	public IResourceLocator getResourceLocator();
-	
+	public Resource getResource(String path);
+
+	//public Resource getResourceByFullPath(String path);  // Doesn't search import paths
+	//public Resource getResource(String path);  // Tries without import paths first, then searches import paths
 }
