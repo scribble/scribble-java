@@ -1,10 +1,7 @@
 package org.scribble2.model.visit;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 
 import org.scribble2.model.Module;
@@ -13,14 +10,16 @@ import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
 
-		//.. separatate protocol names into global/local
+	//.. factor out main module resource loading in front end from main context -- front end should take main argument, check existence, and pass MainContext the abstract resource identifier to load the main
+	//.. ^^ alternatively keep ResourceLocator specific to file systems -- "DirectoryResourceLocator" just uses the import paths
+
+		//.. sepatate protocol names into global/local -- use generic parameter for name kinds rather than subclasses
 		//.. fix projection env to take projection output type as Parameter
 		//.. fix global/local do delegate context build loop -- use lambda
 		//.. get simple/compound name node and name classes into shape
 		//.. fix del parameterized return type (take class as arg) -- maybe also copy
 		//.. fix modelfactory simple name node parameterization (take class instead of enum)
 		//.. remove scoped subprotocols for now
-
 
 // - perhaps refactor to have choice/recursion/etc as packages with global/local/del/etc in each
 
@@ -35,17 +34,22 @@ import org.scribble2.util.ScribbleException;
 // - make module/protocol delegate state (module context, protocol dependencies) setting uniform -- related to (non-)immutablity of delegates (where to store "context" state)
 // - remove job/module contexts from Envs (refer from visitor -- can be updated during visitor pass and reassigned to root module on leave)
 // - enter doesn't need to return visitor, not using visitor immutability? (or visitor replacement flexibility)
+// - use Path API (though path separators not taken from nio api)
+// - import path should be a CL parameter, not MainContext
 
 // Not done
 // - FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections) -- no, leave in delegate
 // - change InteractionNode interface to a base class -- no, better for interaction nodes to extend simple/compound as base
 // - make a createDelegate method in ModelNode -- no, leave association of delegates to model nodes in factory -- then replacing a delegate requires changing the factory only
 // - substitute to delegate? -- no, better to have as a simple node operation that uses the protected reconstruct pattern directly (a del operation is more indirect with no advantages)
-// fix instanceof in projector and reachability checker -- only partly: moved main code to delegates but the "root" instanceof needs to stay inside the visitors to "override" the base subprotocol visitInSubprotocols pattern
-// override del in each ModelNode to cast -- no: leave as base del for most flexibility in case of replacement
+// - fix instanceof in projector and reachability checker -- only partly: moved main code to delegates but the "root" instanceof needs to stay inside the visitors to "override" the base subprotocol visitInSubprotocols pattern
+// - override del in each ModelNode to cast -- no: leave as base del for most flexibility in case of replacement
+// - Job takes MainContext as argument -- no: recursive maven dependencies between cli-core-parser
 
 public class Job
 {
+	public final boolean debug;
+	
 	/*private static final AntlrModuleParser PARSER = new AntlrModuleParser();
 	public final AntlrModuleParser parser = Job.PARSER;*/
 	
@@ -56,27 +60,26 @@ public class Job
 	//public Job(List<String> importPath, String mainpath, Map<ModuleName, Module> modules, Module mainmodule) throws IOException, ScribbleException
 	//public Job(List<Path> importPath, Path mainpath, Map<ModuleName, Module> modules, Module mainmodule) throws IOException, ScribbleException
 	//public Job(MainContext mc) throws IOException, ScribbleException  // FIXME: can't take MainContext because in CLI and MainContext needs parser stuff from there (moving to core makes a recursive maven dependency, because parser needs core)
-	public Job(Map<ModuleName, Module> parsed, ModuleName main)
+	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main)
 	{
+		this.debug = debug;
+		
 		//this.jcontext = new JobContext(this, importPath, mainpath, modules, mainmodule);
 		this.jcontext = new JobContext(parsed, main);
 	}
 
-	//...HERE duplicate job/jobcontext in cli; pass core DS to core job/jobcontext; finish name dismabiguation and other visitors ...
-	
-
 	public void checkWellFormedness() throws ScribbleException
 	{
-		//System.out.println("\n--- Name disambigiation --- ");  // FIXME: verbose/debug printing parameter -- should be in MainContext, but cannot access directly from here
+		debugPrintln("\n--- Name disambigiation --- ");  // FIXME: verbose/debug printing parameter -- should be in MainContext, but cannot access directly from here
 		runNodeVisitorPass(NameDisambiguator.class);
 						
-		//System.out.println("\n--- Context building --- ");
+		debugPrintln("\n--- Context building --- ");
 		runNodeVisitorPass(ContextBuilder.class);
 
-		//System.out.println("\n--- Well-formed choice check --- ");
+		debugPrintln("\n--- Well-formed choice check --- ");
 		runNodeVisitorPass(WellFormedChoiceChecker.class);
 
-		//System.out.println("\n--- Projection --- ");
+		debugPrintln("\n--- Projection --- ");
 		runNodeVisitorPass(Projector.class);
 		//this.jcontext.buildProjectionContexts();  // Hacky? -- due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
 		// No: SubprotocolVisitor is an "inlining" step, it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
@@ -208,4 +211,12 @@ public class Job
 		
 		return graphs;
 	}*/
+	
+	public void debugPrintln(String s)
+	{
+		if (this.debug)
+		{
+			System.out.println(s);
+		}
+	}
 }

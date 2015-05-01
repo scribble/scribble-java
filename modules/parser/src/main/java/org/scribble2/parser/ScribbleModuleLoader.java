@@ -16,21 +16,11 @@
  */
 package org.scribble2.parser;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.tree.CommonTree;
 import org.scribble.context.DefaultModuleLoader;
 import org.scribble.context.ModuleLoader;
 import org.scribble.model.Module;
-import org.scribble.parser.antlr.Scribble2Lexer;
-import org.scribble.parser.antlr.Scribble2Parser;
-import org.scribble.resources.ResourceLocator;
 import org.scribble.resources.Resource;
-import org.scribble.resources.IResourceLocator;
+import org.scribble.resources.ResourceLocator;
 import org.scribble2.parser.util.Pair;
 import org.scribble2.sesstype.name.ModuleName;
 
@@ -64,9 +54,9 @@ public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleL
 		throw new RuntimeException("Shouldn't get in here.");
 	}
 
-  // FIXME: old/new Modules incompatible
+  // FIXME: old/new Modules incompatible -- should be replaced by direct super call
 	//@Override
-	public void registerModule(org.scribble2.model.Module module)
+	private void registerModule(org.scribble2.model.Module module)
 	{
 		//super.registerModule(module);
 	}
@@ -77,9 +67,9 @@ public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleL
 	{
 		//Module ret=super.loadModule(module);
 		Resource res = this.locator.getResource(mod.toPath());
-		org.scribble2.model.Module parsed = parseModuleFromResource(res);
+		org.scribble2.model.Module parsed = (org.scribble2.model.Module) this.parser.parse(this.antlr.parseAntlrTree(res));
 		checkModuleName(mod, res, parsed);
-		registerModule(parsed);
+		registerModule(parsed);  // FIXME: should be super call
 		return new Pair<>(res, parsed);
 	}
 
@@ -98,13 +88,4 @@ public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleL
 		registerModule(p.right);
 		return p;
 	}*/
-	
-	private org.scribble2.model.Module parseModuleFromResource(Resource res) // throws ScribbleException
-	{
-		org.scribble2.model.Module module = (org.scribble2.model.Module) this.parser.parse(this.antlr.parseAntlrTree(res));
-
-		// FIXME: check loaded module name correct
-
-		return module;
-	}
 }
