@@ -1,14 +1,13 @@
 package org.scribble2.model.visit;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.scribble2.model.Module;
-import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
@@ -18,16 +17,16 @@ import org.scribble2.util.ScribbleException;
 // Global "static" context information for a Job
 public class JobContext
 {
-	public final List<String> importPath;  // Not needed
+	//public final List<String> importPath;  // Not needed
 	//public final Module main;
 	//private Module main;
 	//private ModuleName main;
 	public final ModuleName main;
 	
-	private final Job job;
+	//private final Job job;
 	
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
-	private final Map<ModuleName, Module> modules;// = new HashMap<>();
+	private final Map<ModuleName, Module> parsed;// = new HashMap<>();
 	//private final Map<ModuleName, String> sources = new HashMap<>();
 	
 	/*// ProtocolName is the full global protocol name
@@ -36,21 +35,24 @@ public class JobContext
 	
 	// ProtocolName is the full local protocol name
 	// FIXME: collapse to one Map (modulename is part of protocol name?) -- debug print after projection to check
-	private final Map<ProtocolName, Module> projections = new HashMap<>();
+	private final Map<ProtocolName, Module> projected = new HashMap<>();
 	private final Map<ModuleName, Module> projectionsByModules = new HashMap<>();  // An alternative view of projections
 
 	//public JobContext(Job job, List<String> importPath, String mainpath) throws ScribbleException
-	public JobContext(Job job, List<String> importPath, String mainpath, Map<ModuleName, Module> modules, Module mainmod) throws ScribbleException
+	//public JobContext(Job job, List<String> importPath, String mainpath, Map<ModuleName, Module> modules, Module mainmod) throws ScribbleException
+	//public JobContext(Job job, List<Path> importPath, Path mainpath, Map<ModuleName, Module> modules, Module mainmod) throws ScribbleException
+	public JobContext(Map<ModuleName, Module> parsed, ModuleName main)
 	{
-		this.job = job;
-		this.importPath = new LinkedList<>(importPath);
+		// FIXME: mainpath not used
+		
+		//this.job = job;
+		//this.importPath = new LinkedList<>(importPath);
 
 		//Module mainmod = job.parser.parseModuleFromSource(mainpath);
 		//Module mainmod = job.parser.parseModuleFromSource("../validation/src/test/scrib/src/Test.scr");
 
-		this.modules = new HashMap<ModuleName, Module>(modules);
-
-		this.main = mainmod.getFullModuleName();
+		this.parsed = new HashMap<ModuleName, Module>(parsed);
+		this.main = main;
 
 		//addModule(mainpath, mainmod);
 		//importModules(mainmod);
@@ -106,32 +108,32 @@ public class JobContext
 	public Set<ModuleName> getFullModuleNames()
 	{
 		Set<ModuleName> modnames = new HashSet<>();
-		modnames.addAll(this.modules.keySet());
+		modnames.addAll(this.parsed.keySet());
 		modnames.addAll(this.projectionsByModules.keySet());
 		return modnames;
 	}
 
 	public Module getModule(ModuleName fullmodname)
 	{
-		if (this.modules.containsKey(fullmodname))
+		if (this.parsed.containsKey(fullmodname))
 		{
-			return this.modules.get(fullmodname);
+			return this.parsed.get(fullmodname);
 		}
 		if (this.projectionsByModules.containsKey(fullmodname))
 		{
 			return this.projectionsByModules.get(fullmodname);
 		}
 		//throw new RuntimeException("Unknown module: " + fullmodname);
-		throw new RuntimeException("Unknown module: " + fullmodname + ", " + this.modules.keySet() + ", " + this.projectionsByModules.keySet());
+		throw new RuntimeException("Unknown module: " + fullmodname + ", " + this.parsed.keySet() + ", " + this.projectionsByModules.keySet());
 	}
 
 	//protected void replaceModule(ModuleName fullmodname, Module module)
 	protected void replaceModule(Module module)
 	{
 		ModuleName fullmodname = module.getFullModuleName(); 
-		if (this.modules.containsKey(fullmodname))
+		if (this.parsed.containsKey(fullmodname))
 		{
-			this.modules.put(fullmodname, module);
+			this.parsed.put(fullmodname, module);
 		}
 		else if (this.projectionsByModules.containsKey(fullmodname)) 
 		{
@@ -194,13 +196,13 @@ public class JobContext
 	private void addProjection(Module mod)
 	{
 		ProtocolName lpn = mod.protos.get(0).getFullProtocolName(mod);
-		this.projections.put(lpn, mod);
+		this.projected.put(lpn, mod);
 		this.projectionsByModules.put(mod.getFullModuleName(), mod);
 	}
 	
 	public Map<ProtocolName, Module> getProjections()
 	{
-		return this.projections;
+		return this.projected;
 	}
 	
 	public Module getMainModule()

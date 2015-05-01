@@ -41,7 +41,7 @@ public class CliJobContext
 		//this.main = mainmod.getFullModuleName();
 
 		//String mainpath = resource.getPath(); // Needs relative->full path fix in DirectoryResourceLocator -- but maybe Resource should abstract away from file system? Job could directly use the encaps inputstream?
-		Resource resource = job.locator.getResourceByFullPath(mainpath);
+		Resource resource = null;//job.locator.getResourceByFullPath(mainpath);
 		if (resource == null)
 		{
 			System.err.println("ERROR: Module name '" + mainpath + "' could not be located\r\n");
@@ -56,7 +56,7 @@ public class CliJobContext
 	// path could be either full path in the sense of import-path prefix not needed (for main) or relative (need to search in import paths)
 	private void importModules(String path) throws ScribbleException
 	{
-		Resource resource = job.locator.getResource(path);
+		Resource resource = null;//job.locator.getResource(path);
 		if (resource == null)
 		{
 			System.err.println("ERROR: Module name '" + path + "' could not be located\r\n");
@@ -85,7 +85,7 @@ public class CliJobContext
 						imported = this.job.parser.importModule(this.importPath, modname.toPath());
 						addModule(imported.left, imported.right);
 					}*/
-					importModules(modname.toPath());
+					importModules(null);//modname.toPath());
 				}
 			}
 		}

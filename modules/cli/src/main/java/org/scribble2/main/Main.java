@@ -20,7 +20,7 @@ public class Main
 	{
 		//new AntlrTreeParser().parseModuleFromSource(args[0])
 		List<String> importPath = Arrays.asList(new String[] {"test/src/"});
-		MainContext job = new MainContext(importPath, args[0]);
+		//MainContext job = new MainContext(importPath, args[0]);
 		//System.out.println("1: " + new NodeVisitor(job).visit(n));
 		//job.runNodeVisitorPass(NodeVisitor.class);
 		

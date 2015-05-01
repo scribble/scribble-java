@@ -1,5 +1,7 @@
 package org.scribble2.sesstype.name;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import org.scribble2.model.Constants;
@@ -27,7 +29,8 @@ public class ModuleName extends QualifiedName
 	}
 
 	// FIXME: use java.nio.file.Path
-	public String toPath()
+	//public String toPath()
+	public Path toPath()
 	{
 		String[] elems = getElements();
 		String file = elems[0];
@@ -35,7 +38,7 @@ public class ModuleName extends QualifiedName
 		{
 			file += "/" + elems[i];
 		}
-		return file + "." + Constants.SCRIBBLE_FILE_EXTENSION;
+		return Paths.get(file + "." + Constants.SCRIBBLE_FILE_EXTENSION);
 	}
 	
 	public boolean isSimpleName()

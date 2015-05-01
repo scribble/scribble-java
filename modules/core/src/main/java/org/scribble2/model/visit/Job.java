@@ -3,6 +3,7 @@ package org.scribble2.model.visit;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -52,9 +53,13 @@ public class Job
 	
 	// FIXME: just take MainContext as arg
 	//public Job(List<String> importPath, String mainpath) throws IOException, ScribbleException
-	public Job(List<String> importPath, String mainpath, Map<ModuleName, Module> modules, Module mainmodule) throws IOException, ScribbleException
+	//public Job(List<String> importPath, String mainpath, Map<ModuleName, Module> modules, Module mainmodule) throws IOException, ScribbleException
+	//public Job(List<Path> importPath, Path mainpath, Map<ModuleName, Module> modules, Module mainmodule) throws IOException, ScribbleException
+	//public Job(MainContext mc) throws IOException, ScribbleException  // FIXME: can't take MainContext because in CLI and MainContext needs parser stuff from there (moving to core makes a recursive maven dependency, because parser needs core)
+	public Job(Map<ModuleName, Module> parsed, ModuleName main)
 	{
-		this.jcontext = new JobContext(this, importPath, mainpath, modules, mainmodule);
+		//this.jcontext = new JobContext(this, importPath, mainpath, modules, mainmodule);
+		this.jcontext = new JobContext(parsed, main);
 	}
 
 	//...HERE duplicate job/jobcontext in cli; pass core DS to core job/jobcontext; finish name dismabiguation and other visitors ...
@@ -62,23 +67,23 @@ public class Job
 
 	public void checkWellFormedness() throws ScribbleException
 	{
-		System.out.println("\n--- Name disambigiation --- ");
+		//System.out.println("\n--- Name disambigiation --- ");  // FIXME: verbose/debug printing parameter -- should be in MainContext, but cannot access directly from here
 		runNodeVisitorPass(NameDisambiguator.class);
 						
-		System.out.println("\n--- Context building --- ");
+		//System.out.println("\n--- Context building --- ");
 		runNodeVisitorPass(ContextBuilder.class);
 
-		System.out.println("\n--- Well-formed choice check --- ");
+		//System.out.println("\n--- Well-formed choice check --- ");
 		runNodeVisitorPass(WellFormedChoiceChecker.class);
 
-		System.out.println("\n--- Projection --- ");
+		//System.out.println("\n--- Projection --- ");
 		runNodeVisitorPass(Projector.class);
 		//this.jcontext.buildProjectionContexts();  // Hacky? -- due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
 		// No: SubprotocolVisitor is an "inlining" step, it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
 		// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
 		buildProjectionContexts();
 
-		System.out.println("\n--- Reachability check --- ");
+		//System.out.println("\n--- Reachability check --- ");
 		runNodeVisitorPass(ReachabilityChecker.class);
 	}
 	

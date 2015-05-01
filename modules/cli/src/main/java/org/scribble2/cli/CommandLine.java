@@ -1,31 +1,39 @@
 package org.scribble2.cli;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.scribble2.main.MainContext;
+import org.scribble2.model.Module;
 import org.scribble2.model.visit.Job;
+import org.scribble2.model.visit.JobContext;
+import org.scribble2.model.visit.Projector;
+import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 public class CommandLine implements Runnable
 {
-	public static final String PATH_FLAG = "-path";  // FIXME: use Path
+	public static final String PATH_FLAG = "-path";
+	public static final String PROJECT_FLAG = "-project";
 	
-	protected enum Arg { PATH, MAIN }//, PROJECT }
+	protected enum Arg { MAIN, PATH, PROJECT }
 	
-	private final Map<Arg, String> args;
+	private final Map<Arg, String[]> args;
 	
 	public CommandLine(String[] args)
 	{
-		this.args = new ArgumentParser().parseArgs(args);
-		if (!this.args.containsKey(Arg.PATH))
+		this.args = new CommandLineArgumentParser(args).getArgs();
+		if (!this.args.containsKey(Arg.MAIN))
 		{
-			throw new RuntimeException("ERROR: No path value has been defined\r\n");
+			throw new RuntimeException("No main module has been specified\r\n");
 		}
 	}
 
@@ -37,38 +45,65 @@ public class CommandLine implements Runnable
 	@Override
 	public void run()
 	{
-		/*if (this.args.containsKey(..project..))
-		{
+		//..HERE: import path should be a CL parameter, not MainContext; MainContext should be working off abstract resource locators only -- but then Resource and ResourceLocator should be made abstract from (file)paths (cf. toPath in ScribbleModuleLoader)
+		//..HERE: use Path API; Job takes MainContext as argument
+		//..HERE: fix CliJob/Job factoring (e.g. pointers and Modules -- maybe already ok); CliJob should record job parameters; smoothen related APIs; additional flags, e.g. projection
 			
-		}*/
+		MainContext mc = newMainContext();
+		Job job = newJob(mc);
 
-		//initLoader(this.args.get(Arg.PATH));
-		loadModules(this.args.get(Arg.MAIN));
-	}
-
-	//protected Module loadModule(Resource resource) {
-	//protected void loadModules(List<String> path, String mainpath)
-	protected void loadModules(String mainpath)
-	{
-		List<String> impath = Arrays.asList(this.args.get(Arg.PATH).split(":"));//new LinkedList<String>();
 		try
 		{
-			//..HERE: fix CliJob/Job factoring (e.g. pointers and Modules -- maybe already ok); CliJob should record job parameters; smoothen related APIs; additional flags, e.g. projection
-			
-			
-			
-			// FIXME: CLiJob and Job
-			MainContext cjob = new MainContext(impath, mainpath);
-			Job job = new Job(impath, mainpath, cjob.getModules(), cjob.getModules().get(cjob.main));
 			job.checkWellFormedness();
 
-			System.out.println("a: " + cjob.main);
+			JobContext jc = job.getContext();
+			if (this.args.containsKey(Arg.PROJECT))
+			{
+				outputProjection(jc);
+			}
 		}
-		catch (IOException | ScribbleException e)
+		catch (ScribbleException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
+	}
+	
+	private void outputProjection(JobContext jc)
+	{
+		Map<ProtocolName, Module> projs = jc.getProjections();
+		Role role = new Role(this.args.get(Arg.PROJECT)[1]);
+		ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, this.args.get(Arg.PROJECT)[0]), role).toName();
+		if (!projs.containsKey(proto))
+		{
+			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));
+		}
+		System.out.println(projs.get(proto));
+	}
+	
+	private MainContext newMainContext()
+	{
+		Path mainpath = CommandLine.parseMainPath(this.args.get(Arg.MAIN)[0]);
+		List<Path> impaths = this.args.containsKey(Arg.PATH) ? CommandLine.parseImportPaths(this.args.get(Arg.PATH)[0]) : Collections.emptyList();
+		return new MainContext(impaths, mainpath);
+	}
+	
+	//protected Module loadModule(Resource resource) {
+	//protected void loadModules(List<String> path, String mainpath)
+	private Job newJob(MainContext mc)
+	{
+		//Job job = new Job(impaths, mainpath, cjob.getModules(), cjob.getModules().get(cjob.main));
+		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
+		return new Job(mc.getModules(), mc.main);
+	}
+	
+	private static Path parseMainPath(String path)
+	{
+		return Paths.get(path);
+	}
+	
+	private static List<Path> parseImportPaths(String paths)
+	{
+		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
 	}
 
 	/*/**
@@ -226,57 +261,61 @@ public class CommandLine implements Runnable
 	}*/
 }
 
-class ArgumentParser
+class CommandLineArgumentParser
 {
-	public final Map<String, CommandLine.Arg> FLAGS;
+	private final Map<String, CommandLine.Arg> FLAGS = new HashMap<>();
 
-	public ArgumentParser()
+	private final String[] args;
+	private Map<CommandLine.Arg, String[]> parsed = new HashMap<>();
+	
+	public CommandLineArgumentParser(String[] args)
 	{
-		FLAGS = new HashMap<>();
-		FLAGS.put(CommandLine.PATH_FLAG, CommandLine.Arg.PATH);
-		//FLAGS.put("-validate", CommandLine.Arg.PATH);
+		this.args = args;
+
+		addFlags();
+		parseArgs();
+	}		
+	
+	private void addFlags()
+	{
+		this.FLAGS.put(CommandLine.PATH_FLAG, CommandLine.Arg.PATH);
+		this.FLAGS.put(CommandLine.PROJECT_FLAG, CommandLine.Arg.PROJECT);
 	}
 	
-	public Map<CommandLine.Arg, String> parseArgs(String[] args)
+	private void parseArgs()
 	{
-		Map<CommandLine.Arg, String> parsed = new HashMap<>();
-		for (int i = 0; i < args.length; i++)
+		for (int i = 0; i < this.args.length; i++)
 		{
-			if (this.FLAGS.containsKey(args[i]) && parsed.containsKey(CommandLine.Arg.MAIN))
+			String arg = args[i];
+			if (this.FLAGS.containsKey(arg))
 			{
-				throw new RuntimeException("Bad: " + args[i]);
-			}
-			if (this.FLAGS.containsKey(args[i]))
-			{
-				if (i >= args.length)
-				{
-					throw new RuntimeException("Bad: " + args[i]);
-				}
-				parsed.put(this.FLAGS.get(args[i]), this.parseFlag(args[i], args[++i]));
+				i = this.parseFlag(i);
 			}
 			else
 			{
-				if (!ArgumentParser.validateModuleName(args[i]))
+				if (this.parsed.containsKey(CommandLine.Arg.MAIN))
 				{
-					throw new RuntimeException("Bad: " + args[i]);
+					throw new RuntimeException("Bad: " + arg);
 				}
-				parsed.put(CommandLine.Arg.MAIN, args[i]);
+				parseMain(i);
 			}
 		}
-		return parsed;
 	}
 
-	private String parseFlag(String flag, String m)
+	// Pre: i is the index of the current flag to parse
+	// Post: i is the index of the last argument parsed
+	private int parseFlag(int i)
 	{
+		String flag = this.args[i];
 		switch (flag)
 		{
 			case CommandLine.PATH_FLAG:
 			{
-				if (!validatePaths(m))
-				{
-					throw new RuntimeException("ERROR: Module path '"+ m +"' is not valid\r\n");
-				}
-				return parsePath(m);
+				return parsePath(i);
+			}
+			case CommandLine.PROJECT_FLAG:
+			{
+				return parseProject(i);
 			}
 			default:
 			{
@@ -285,22 +324,45 @@ class ArgumentParser
 		}
 	}
 
-	private String parsePath(String m)
+	private void parseMain(int i)
 	{
-		return m;
+		String main = args[i];
+		if (!CommandLineArgumentParser.validateModuleName(main))
+		{
+			throw new RuntimeException("Bad: " + main);
+		}
+		this.parsed.put(CommandLine.Arg.MAIN, new String[] { main } );
 	}
 
-	private static boolean validatePaths(String paths)
+	private int parsePath(int i)
 	{
-		for (String path : paths.split(":"))
+		if ((i + 1) >= this.args.length)
 		{
-			File f = new File(path);
-			if (!f.isDirectory())
-			{
-				return false;
-			}
+			throw new RuntimeException("Missing path argument");
 		}
-		return true;
+		String path = this.args[++i];
+		if (!validatePaths(path))
+		{
+			throw new RuntimeException("Module path '"+ path +"' is not valid\r\n");
+		}
+		this.parsed.put(this.FLAGS.get(CommandLine.PATH_FLAG), new String[] { path });
+		return i;
+	}
+	
+	private int parseProject(int i)
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new RuntimeException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		/*if (!validateProtocolName(proto))  // TODO
+		{
+			throw new RuntimeException("Protocol name '"+ proto +"' is not valid\r\n");
+		}*/
+		this.parsed.put(this.FLAGS.get(CommandLine.PROJECT_FLAG), new String[] { proto, role } );
+		return i;
 	}
 
 	private static boolean validateModuleName(String module)
@@ -319,5 +381,22 @@ class ArgumentParser
 			}
 		}
 		return true;
+	}
+
+	private static boolean validatePaths(String paths)
+	{
+		for (String path : paths.split(":"))
+		{
+			if (!new File(path).isDirectory())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public Map<CommandLine.Arg, String[]> getArgs()
+	{
+		return this.parsed;
 	}
 }

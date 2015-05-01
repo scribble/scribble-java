@@ -16,6 +16,8 @@
  */
 package org.scribble.resources;
 
+import java.nio.file.Path;
+
 /**
  * This class represents the resource.
  *
@@ -31,6 +33,12 @@ public class InputStreamResource extends AbstractResource {
 	 * @param is The input stream
 	 */
 	public InputStreamResource(String path, java.io.InputStream is) {
+		super(path);
+		
+		_inputStream = is;
+	}
+
+	public InputStreamResource(Path path, java.io.InputStream is) {
 		super(path);
 		
 		_inputStream = is;

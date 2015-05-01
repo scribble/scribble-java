@@ -118,7 +118,7 @@ public class ModuleDelegate extends ModelDelegateBase
 			for (Role role : tmp)
 			{
 				ProtocolNameNode targetfullname = Projector.makeProjectedProtocolNameNode(gpn, role);
-				SimpleProtocolNameNode targetsimname = proj.makeProjectedLocalName(gpn.getSimpleName(), role);
+				SimpleProtocolNameNode targetsimname = Projector.makeProjectedLocalName(gpn.getSimpleName(), role);
 
 				//ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(main.getFullModuleName(), targetsimname.toName());
 				//ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(root.getFullModuleName(), targetsimname.toCompoundName());

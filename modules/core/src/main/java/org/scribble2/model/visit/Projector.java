@@ -222,7 +222,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	}
 	
 	// Simple projected protocol name for protocol decls -- Move into SimpleProtocolName?
-	public SimpleProtocolNameNode makeProjectedLocalName(ProtocolName simplename, Role role)
+	public static SimpleProtocolNameNode makeProjectedLocalName(ProtocolName simplename, Role role)
 	{
 		//return new SimpleProtocolNameNode(makeProjectedLocalNameAux(simplename.toString(), role.toString()));
 		return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, makeProjectedLocalNameAux(simplename.toString(), role.toString()));

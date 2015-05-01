@@ -17,7 +17,10 @@
 package org.scribble.resources;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -30,6 +33,8 @@ public class DirectoryResourceLocator extends ResourceLocator // implements Reso
 	private static final Logger LOG = Logger.getLogger(DirectoryResourceLocator.class.getName());
 	
 	private String[] _paths=null;
+	
+	private List<Path> paths;
 
 	/**
 	 * This is the constructor for the directory resource
@@ -42,10 +47,12 @@ public class DirectoryResourceLocator extends ResourceLocator // implements Reso
 		_paths = paths.split(":");
 	}
 
-	public DirectoryResourceLocator(List<String> paths) {
+	public DirectoryResourceLocator(List<Path> paths) {
 		//_paths = paths.split(":");
 		_paths = new String[paths.size()];
-		_paths = paths.toArray(_paths);
+		//_paths = paths.toArray(_paths);
+		
+		this.paths = new LinkedList<>(paths);
 	}
 	
 	/**
@@ -87,7 +94,7 @@ public class DirectoryResourceLocator extends ResourceLocator // implements Reso
 		// Find module
 		for (String impath : _paths)
 		{
-			String tmp = impath;
+			String tmp = impath.toString();
 
 			/*if (!fullPath.endsWith(java.io.File.separator)) {  // FIXME: cygwin/windows separators
 				fullPath += java.io.File.separator;
@@ -99,6 +106,32 @@ public class DirectoryResourceLocator extends ResourceLocator // implements Reso
 			{
 				//return openResource(fullPath, f);
 				return new InputStreamResource(prefixedpath, getFileInputStream(f));
+			}
+		}
+		throw new RuntimeException("Couldn't open resource: " + path);
+	}
+
+	public InputStreamResource getResource(Path path)
+	{
+		for (Path impath : this.paths)
+		{
+			/*if (!fullPath.endsWith(java.io.File.separator)) {  // FIXME: cygwin/windows separators
+				fullPath += java.io.File.separator;
+			}*/
+
+			Path prefixedpath = impath.resolve(path);
+			//File f = new File(prefixedpath);
+			if (Files.exists(prefixedpath))
+			{
+				//return openResource(fullPath, f);
+				try
+				{
+					return new InputStreamResource(prefixedpath, Files.newInputStream(prefixedpath));
+				}
+				catch (IOException e)
+				{
+					throw new RuntimeException(e);
+				}
 			}
 		}
 		throw new RuntimeException("Couldn't open resource: " + path);

@@ -1,6 +1,8 @@
 package org.scribble2.main;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,24 +23,19 @@ import org.scribble2.util.ScribbleException;
 
 public class MainContext
 {
-	//private static final ScribbleParser PARSER = new ScribbleParser();
-	
-	// FIXME: path and other command line args should be job parameters stored here
-	public final List<String> importPath;
 	public final ModuleName main;
 
-	public final ResourceLocator locator;
-	public final AntlrParser aparser;
-	public final ScribbleParser sparser;
-	public final ScribbleModuleLoader loader;
+	private final ResourceLocator locator;
+	private final AntlrParser aparser;
+	private final ScribbleParser sparser;
+	private final ScribbleModuleLoader loader;
 
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
 	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
 	
-	public MainContext(List<String> importPath, String mainpath) throws IOException, ScribbleException
+	//public MainContext(List<Path> importPath, String mainpath) throws IOException, ScribbleException
+	public MainContext(List<Path> importPath, Path mainpath)
 	{
-		this.importPath = importPath;
-
 		this.locator = new DirectoryResourceLocator(importPath);
 		this.aparser = new AntlrParser();
 		this.sparser = new ScribbleParser();
@@ -51,7 +48,7 @@ public class MainContext
 		loadAllModules(p);
 	}
 	
-	private Pair<Resource, Module> loadMainModule(String mainpath)
+	private Pair<Resource, Module> loadMainModule(Path mainpath)
 	{
 		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
 		Resource res = ResourceLocator.getResourceByFullPath(mainpath);
@@ -61,16 +58,18 @@ public class MainContext
 	}
 	
 	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes
-	private void checkMainModuleName(String mainpath, Module main)
+	private void checkMainModuleName(Path mainpath, Module main)
 	{
-		String tmp = mainpath.substring(mainpath.lastIndexOf('/') == -1 ? 0 : mainpath.lastIndexOf('/') + 1, mainpath.lastIndexOf('.'));
+		String path = mainpath.toString();  // FIXME: hack
+		// FileSystems.getDefault().getSeparator() ?
+		String tmp = path.substring((path.lastIndexOf(File.separator) == -1) ? 0 : path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.'));
 		if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))  // ModuleName.toString hack?
 		{
-			throw new RuntimeException("Simple module name at path " + mainpath + " mismatch: " + main.getFullModuleName());
+			throw new RuntimeException("Simple module name at path " + path + " mismatch: " + main.getFullModuleName());
 		}
 	}
 
-	private void loadAllModules(Pair<Resource, Module> module) throws ScribbleException
+	private void loadAllModules(Pair<Resource, Module> module)
 	{
 		this.parsed.put(module.right.getFullModuleName(), module);
 		for (ImportDecl id : module.right.imports)

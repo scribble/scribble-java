@@ -16,6 +16,8 @@
  */
 package org.scribble.resources;
 
+import java.nio.file.Path;
+
 
 /**
  * This interface provides the resource location capability.
@@ -31,6 +33,7 @@ public interface IResourceLocator {
 	 * @return The resource, or null if not found
 	 */
 	public Resource getResource(String path);
+	public Resource getResource(Path path);
 
 	//public Resource getResourceByFullPath(String path);  // Doesn't search import paths
 	//public Resource getResource(String path);  // Tries without import paths first, then searches import paths
