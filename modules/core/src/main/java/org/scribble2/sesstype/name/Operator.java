@@ -13,12 +13,12 @@ public class Operator extends SimpleName //SerializableSimpleName
 
 	protected Operator()
 	{
-		super(Kind.OPERATOR);
+		super(KindEnum.OPERATOR);
 	}
 
 	// FIXME: scope should be a subcomponent -- or in MessageSignature
 	public Operator(String text)
 	{
-		super(Kind.OPERATOR, text);
+		super(KindEnum.OPERATOR, text);
 	}
 }

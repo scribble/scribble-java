@@ -9,11 +9,11 @@ public class Role extends SimpleName
 
 	protected Role()
 	{
-		super(Kind.ROLE);
+		super(KindEnum.ROLE);
 	}
 
 	public Role(String text)
 	{
-		super(Kind.ROLE, text);
+		super(KindEnum.ROLE, text);
 	}
 }

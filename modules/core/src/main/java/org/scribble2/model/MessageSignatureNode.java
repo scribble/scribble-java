@@ -3,16 +3,19 @@ package org.scribble2.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.name.simple.OperatorNode;
+import org.scribble2.model.name.SimpleKindedNameNode;
 import org.scribble2.sesstype.MessageSignature;
+import org.scribble2.sesstype.kind.OperatorKind;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
 
 public class MessageSignatureNode extends ModelNodeBase implements MessageNode
 {
-	public final OperatorNode op;
+	//public final OperatorNode op;
+	public final SimpleKindedNameNode<OperatorKind> op;
 	public final Payload payload;
 
-	public MessageSignatureNode(OperatorNode op, Payload payload)
+	//public MessageSignatureNode(OperatorNode op, Payload payload)
+	public MessageSignatureNode(SimpleKindedNameNode<OperatorKind> op, Payload payload)
 	{
 		this.op = op;
 		this.payload = payload;

@@ -1,8 +1,9 @@
 package org.scribble2.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.scribble2.model.ParameterDecl.Kind;
+import org.scribble2.model.ParameterDecl.ParamDeclKind;
 import org.scribble2.model.del.DefaultModelDelegate;
 import org.scribble2.model.del.ImportModuleDelegate;
 import org.scribble2.model.del.ModelDelegate;
@@ -53,25 +54,31 @@ import org.scribble2.model.local.LocalReceive;
 import org.scribble2.model.local.LocalRecursion;
 import org.scribble2.model.local.LocalSend;
 import org.scribble2.model.local.SelfRoleDecl;
+import org.scribble2.model.name.AmbiguousKindedNameNode;
+import org.scribble2.model.name.KindedNameNode;
 import org.scribble2.model.name.PayloadElementNameNode;
-import org.scribble2.model.name.qualified.MessageSignatureNameNode;
-import org.scribble2.model.name.qualified.ModuleNameNode;
+import org.scribble2.model.name.SimpleKindedNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.model.name.qualified.QualifiedNameNode;
-import org.scribble2.model.name.simple.AmbiguousNameNode;
-import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.sesstype.kind.AmbiguousKind;
+import org.scribble2.sesstype.kind.GlobalProtocolKind;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ModuleKind;
+import org.scribble2.sesstype.kind.OperatorKind;
+import org.scribble2.sesstype.kind.ProtocolKind;
+import org.scribble2.sesstype.kind.RecursionVarKind;
+import org.scribble2.sesstype.kind.RoleKind;
 
 public class ModelFactoryImpl implements ModelFactory
 {
 	public static final ModelFactory FACTORY = new ModelFactoryImpl();  // FIXME: move somewhere else
 	
 	@Override
-	public MessageSignatureNode MessageSignatureNode(OperatorNode op, Payload payload)
+	//public MessageSignatureNode MessageSignatureNode(OperatorNode op, Payload payload)
+	public MessageSignatureNode MessageSignatureNode(SimpleKindedNameNode<OperatorKind> op, Payload payload)
 	{
 		MessageSignatureNode msn = new MessageSignatureNode(op, payload);
 		msn = del(msn, createDefaultDelegate());  // FIXME: does another shallow copy
@@ -99,7 +106,7 @@ public class ModelFactoryImpl implements ModelFactory
 			ModuleDecl moddecl,
 			List<? extends ImportDecl> imports,
 			List<DataTypeDecl> data,
-			List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
+			List<? extends ProtocolDecl<? extends ProtocolHeader<? extends ProtocolKind>, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
 		//module = del(module, new ModuleDelegate(module.getFullModuleName()));
@@ -108,7 +115,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ModuleDecl ModuleDecl(ModuleNameNode fullmodname)
+	//public ModuleDecl ModuleDecl(ModuleNameNode fullmodname)
+	public ModuleDecl ModuleDecl(KindedNameNode<ModuleKind> fullmodname)
 	{
 		ModuleDecl md = new ModuleDecl(fullmodname);
 		md = del(md, createDefaultDelegate());
@@ -116,7 +124,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)
+	//public ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)  // FIXME: protocol name?
+	public ImportModule ImportModule(KindedNameNode<ModuleKind> modname, SimpleKindedNameNode<ModuleKind> alias)
 	{
 		ImportModule im = new ImportModule(modname, alias);
 		//im = del(im, createDefaultDelegate());
@@ -133,7 +142,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GlobalProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls)
+	//public GlobalProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls)
+	public GlobalProtocolHeader GlobalProtocolHeader(SimpleKindedNameNode<GlobalProtocolKind> name, RoleDeclList roledecls, ParameterDeclList paramdecls)
 	{
 		GlobalProtocolHeader gph = new GlobalProtocolHeader(name, roledecls, paramdecls);
 		gph = del(gph, createDefaultDelegate());
@@ -149,7 +159,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public RoleDecl RoleDecl(RoleNode namenode)
+	//public RoleDecl RoleDecl(RoleNode namenode)
+	public RoleDecl RoleDecl(SimpleKindedNameNode<RoleKind> namenode)
 	{
 		RoleDecl rd = new RoleDecl(namenode);
 		rd = del(rd, new RoleDeclDelegate());
@@ -157,7 +168,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ParameterDeclList ParameterDeclList(List<ParameterDecl> pds)
+	public ParameterDeclList ParameterDeclList(List<ParameterDecl<Kind>> pds)
 	{
 		ParameterDeclList pdl = new ParameterDeclList(pds);
 		pdl = del(pdl, createDefaultDelegate());
@@ -165,9 +176,10 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ParameterDecl ParameterDecl(Kind kind, ParameterNode namenode)
+	//public ParameterDecl ParameterDecl(ParamDeclKind kind, ParameterNode namenode)
+	public <K extends Kind> ParameterDecl<K> ParameterDecl(K kind, ParameterNode<K> namenode)
 	{
-		ParameterDecl pd = new ParameterDecl(kind, namenode);
+		ParameterDecl<K> pd = new ParameterDecl<>(kind, namenode);
 		pd = del(pd, new ParameterDeclDelegate());
 		return pd;
 	}
@@ -197,7 +209,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	//public GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public GlobalMessageTransfer GlobalMessageTransfer(SimpleKindedNameNode<RoleKind> src, MessageNode msg, List<SimpleKindedNameNode<RoleKind>> dests)
 	{
 		GlobalMessageTransfer gmt = new GlobalMessageTransfer(src, msg, dests);
 		gmt = del(gmt, new GlobalMessageTransferDelegate());
@@ -205,7 +218,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
+	//public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
+	public GlobalChoice GlobalChoice(SimpleKindedNameNode<RoleKind> subj, List<GlobalProtocolBlock> blocks)
 	{
 		GlobalChoice gc = new GlobalChoice(subj, blocks);
 		gc = del(gc, new GlobalChoiceDelegate());
@@ -213,7 +227,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
+	//public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
+	public GlobalRecursion GlobalRecursion(SimpleKindedNameNode<RecursionVarKind> recvar, GlobalProtocolBlock block)
 	{
 		GlobalRecursion gr = new GlobalRecursion(recvar, block);
 		gr = del(gr, new GlobalRecursionDelegate());
@@ -221,7 +236,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GlobalContinue GlobalContinue(RecursionVarNode recvar)
+	//public GlobalContinue GlobalContinue(RecursionVarNode recvar)
+	public GlobalContinue GlobalContinue(SimpleKindedNameNode<RecursionVarKind> recvar)
 	{
 		GlobalContinue gc = new GlobalContinue(recvar);
 		gc = del(gc, new GlobalContinueDelegate());
@@ -236,7 +252,8 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//public GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, KindedNameNode<GlobalProtocolKind> proto)
 	{
 		//GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
 		GlobalDo gd = new GlobalDo(roleinstans, arginstans, proto);
@@ -254,7 +271,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public RoleInstantiation RoleInstantiation(RoleNode role)
+	//public RoleInstantiation RoleInstantiation(RoleNode role)
+	public RoleInstantiation RoleInstantiation(SimpleKindedNameNode<RoleKind> role)
 	{
 		RoleInstantiation ri = new RoleInstantiation(role);
 		ri = del(ri, createDefaultDelegate());
@@ -277,7 +295,7 @@ public class ModelFactoryImpl implements ModelFactory
 		return ri;
 	}
 	
-	@Override
+	/*@Override
 	public SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier)
 	{
 		SimpleNameNode snn;
@@ -313,6 +331,50 @@ public class ModelFactoryImpl implements ModelFactory
 		}
 		qnn = (QualifiedNameNode) qnn.del(createDefaultDelegate());
 		return qnn;
+	}*/
+
+	@Override
+	public AmbiguousKindedNameNode AmbiguousKindedNameNode(String identifier)
+	{
+		AmbiguousKindedNameNode aknn = new AmbiguousKindedNameNode(identifier);
+		ModelDelegate del = new AmbiguousNameDelegate();
+		return (AmbiguousKindedNameNode) aknn.del(del);
+	}
+
+	@Override
+	public <K extends Kind> SimpleKindedNameNode<K> SimpleKindedNameNode(K kind, String identifier)
+	{
+		SimpleKindedNameNode<K> snn = new SimpleKindedNameNode<K>(kind, identifier);
+		ModelDelegate del;
+		if (kind.equals(AmbiguousKind.KIND))
+		{
+			//del = new AmbiguousNameDelegate();
+			throw new RuntimeException("Shouldn't get in here: " + identifier);
+		}
+		else
+		{
+			del = createDefaultDelegate();
+		}
+		return castKindedNameNode(snn, snn.del(del));
+	}
+
+	@Override
+	public <K extends Kind> KindedNameNode<K> KindedNameNode(K kind, String... elems)
+	{
+		KindedNameNode<K> nn = new KindedNameNode<K>(kind, elems);
+		return castKindedNameNode(nn, nn.del(createDefaultDelegate()));
+	}
+	
+	private static <K extends Kind, T extends KindedNameNode<K>> T castKindedNameNode(T knn, ModelNode n)
+	{
+		//knn.getClass().cast(n);
+		if (!knn.getClass().equals(n.getClass()))
+		{
+			throw new RuntimeException("Kinded name node cast (" + knn.getClass() + ") failed: " + n.getClass());
+		}
+		@SuppressWarnings("unchecked")
+		T tmp = (T) n;
+		return tmp;
 	}
 
 	@Override
@@ -332,7 +394,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public SelfRoleDecl SelfRoleDecl(RoleNode namenode)
+	//public SelfRoleDecl SelfRoleDecl(RoleNode namenode)
+	public SelfRoleDecl SelfRoleDecl(SimpleKindedNameNode<RoleKind> namenode)
 	{
 		SelfRoleDecl rd = new SelfRoleDecl(namenode);
 		rd = del(rd, new RoleDeclDelegate());

@@ -6,12 +6,12 @@ public abstract class MemberName extends QualifiedName //SerializableSimpleName
 {
 	private static final long serialVersionUID = 1L;
 	
-	public MemberName(Kind kind, ModuleName modname, String membname)
+	public MemberName(KindEnum kind, ModuleName modname, String membname)
 	{
 		super(kind, compileMemberName(modname, membname));
 	}
 	
-	public MemberName(Kind kind, String simplename)
+	public MemberName(KindEnum kind, String simplename)
 	{
 		this(kind, ModuleName.EMPTY_MODULENAME, simplename);
 	}

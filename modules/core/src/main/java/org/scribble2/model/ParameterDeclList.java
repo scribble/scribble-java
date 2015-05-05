@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.sesstype.name.Parameter;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.KindedName;
 import org.scribble2.sesstype.name.Role;
 
-public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl, Parameter>
+//public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl, Parameter>
+public class ParameterDeclList extends HeaderParameterDeclList<Kind>
 {
-	public ParameterDeclList(List<ParameterDecl> decls)
+	public ParameterDeclList(List<ParameterDecl<Kind>> decls)
 	{
 		super(decls);
 	}
@@ -17,14 +19,23 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl, Pa
 	@Override
 	protected ParameterDeclList copy()
 	{
-		return new ParameterDeclList(this.decls);
+		//return new ParameterDeclList(this.decls);
+		return new ParameterDeclList(getDecls());
+	}
+	
+	@Override
+	public List<ParameterDecl<Kind>> getDecls()
+	{
+		return this.decls.stream().map((hd) -> (ParameterDecl<Kind>) hd).collect(Collectors.toList());
 	}
 
 	@Override
-	protected ParameterDeclList reconstruct(List<ParameterDecl> decls)
+	//protected ParameterDeclList reconstruct(List<ParameterDecl> decls)
+	protected ParameterDeclList reconstruct(List<? extends HeaderParameterDecl<Kind>> decls)
 	{
 		ModelDelegate del = del();
-		ParameterDeclList rdl = new ParameterDeclList(decls);
+		//ParameterDeclList rdl = new ParameterDeclList(decls);
+		ParameterDeclList rdl = new ParameterDeclList(getDecls());
 		rdl = (ParameterDeclList) rdl.del(del);
 		return rdl;
 	}
@@ -33,7 +44,8 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl, Pa
 	@Override
 	public ParameterDeclList project(Role self)
 	{
-		List<ParameterDecl> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
+		//List<ParameterDecl> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
+		List<ParameterDecl<Kind>> paramdecls = getDecls().stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
 		//return new ParameterDeclList(paramdecls);
 		return ModelFactoryImpl.FACTORY.ParameterDeclList(paramdecls);
 	}
@@ -94,7 +106,8 @@ public class ParameterDeclList extends HeaderParameterDeclList<ParameterDecl, Pa
 		return new ParameterDeclList(this.ct, nds.decls);
 	}*/
 	
-	public List<Parameter> getParameters()
+	//public List<Parameter> getParameters()
+	public List<KindedName<Kind>> getParameters()
 	{
 		return this.decls.stream().map((decl) -> decl.toName()).collect(Collectors.toList());
 	}

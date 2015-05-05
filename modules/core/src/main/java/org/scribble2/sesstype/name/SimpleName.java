@@ -10,14 +10,14 @@ public class SimpleName extends CompoundName
 	
 	//public final String text;
 
-	protected SimpleName(Kind kind)
+	protected SimpleName(KindEnum kind)
 	{
 		super(kind);
 		//this.text = "";
 	}
 
 	//public SimpleName(String text)
-	public SimpleName(Kind kind, String text)
+	public SimpleName(KindEnum kind, String text)
 	{
 		super(kind, text);
 		//this.text = text;

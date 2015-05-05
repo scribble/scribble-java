@@ -1,33 +1,30 @@
 package org.scribble2.sesstype.name;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 
+import org.scribble2.sesstype.kind.Kind;
 
-public abstract class CompoundName implements Name
+
+public class KindedName<K extends Kind> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
-	protected final KindEnum kind;
+	public final K kind;
 	
-	//public static final CompoundName EMPTY_NAME = new CompoundName();
-
-	//private final List<String> elems;
-	//public final String[] elems;
 	private String[] elems;  // non-final, for serialization
 
-	//public CompoundName(List<String> elems)
-	public CompoundName(KindEnum kind, String... elems)
+	public KindedName(K kind, String... elems)
 	{
 		this.kind = kind;
 		this.elems = elems;
 	}
 
-	@Override
-	public KindEnum getKind()
+	/*public K getKind()
 	{
 		return this.kind;
-	}
+	}*/
 	
 	public boolean isEmpty()
 	{
@@ -71,6 +68,7 @@ public abstract class CompoundName implements Name
 	{
 		int hash = 2749;
 		//hash = 31 * hash + this.elems.hashCode();
+		hash = 31 * hash + this.kind.hashCode();
 		hash = 31 * hash + Arrays.hashCode(this.elems);
 		return hash;
 	}
@@ -82,13 +80,13 @@ public abstract class CompoundName implements Name
 		{
 			return true;
 		}
-		//if (o == null || this.getClass() != o.getClass())
-		if (!(o instanceof CompoundName))
+		if (o == null || !this.getClass().equals(o.getClass()))
+		//if (!(o instanceof KindedName))
 		{
 			return false;
 		}
 		//return this.elems.equals(((CompoundName) o).elems);
-		return Arrays.equals(this.elems, ((CompoundName) o).elems);
+		return this.kind.equals(KindedName.class.cast(o).kind) && Arrays.equals(this.elems, KindedName.class.cast(o).elems);
 	}
 	
 	@Override

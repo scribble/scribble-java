@@ -2,18 +2,21 @@ package org.scribble2.sesstype;
 
 import java.util.List;
 
-import org.scribble2.sesstype.name.Kind;
-import org.scribble2.sesstype.name.Operator;
+import org.scribble2.sesstype.kind.OperatorKind;
+import org.scribble2.sesstype.name.KindEnum;
+import org.scribble2.sesstype.name.KindedName;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
 import org.scribble2.sesstype.name.Scope;
 
 // FIXME: rename to UnscopedMessageSignature
 public class MessageSignature implements Message
 {
-	public final Operator op;
+	//public final Operator op;
+	public final KindedName<OperatorKind> op;
 	public final List<PayloadTypeOrParameter> payload;
 	
-	public MessageSignature(Operator op, List<PayloadTypeOrParameter> payload)
+	//public MessageSignature(Operator op, List<PayloadTypeOrParameter> payload)
+	public MessageSignature(KindedName<OperatorKind> op, List<PayloadTypeOrParameter> payload)
 	{
 		this.op = op;
 		this.payload = payload;
@@ -26,9 +29,9 @@ public class MessageSignature implements Message
 	}
 
 	@Override
-	public Kind getKind()
+	public KindEnum getKind()
 	{
-		return Kind.SIG;
+		return KindEnum.SIG;
 	}
 
 	@Override

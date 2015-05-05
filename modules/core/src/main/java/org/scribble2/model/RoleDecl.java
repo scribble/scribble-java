@@ -1,14 +1,18 @@
 package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.model.name.SimpleKindedNameNode;
+import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.name.KindedName;
 import org.scribble2.sesstype.name.Role;
 
 
 //public interface RoleDecl extends HeaderParameterDecl
-public class RoleDecl extends HeaderParameterDecl<RoleNode, Role>
+//public class RoleDecl extends HeaderParameterDecl<RoleNode, Role>
+public class RoleDecl extends HeaderParameterDecl<RoleKind>
 {
-	public RoleDecl(RoleNode name)
+	//public RoleDecl(RoleNode name)
+	public RoleDecl(SimpleKindedNameNode<RoleKind> name)
 	{
 		//super(t, kind, namenode);
 		super(name);
@@ -26,10 +30,11 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode, Role>
 	}*/
 
 	@Override
-	protected RoleDecl reconstruct(RoleNode namenode)
+	//protected RoleDecl reconstruct(RoleNode namenode)
+	protected RoleDecl reconstruct(SimpleKindedNameNode<RoleKind> namenode)
 	{
 		ModelDelegate del = del();
-		RoleDecl rd = new RoleDecl((RoleNode) namenode);
+		RoleDecl rd = new RoleDecl(namenode);
 		rd = (RoleDecl) rd.del(del);
 		return rd;
 	}
@@ -38,9 +43,11 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode, Role>
 	@Override
 	public RoleDecl project(Role self)
 	{
-		Role role = this.name.toName();
-		//RoleNode rn = new RoleNode(role.toString());
-		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, role.toString());
+		//Role role = this.name.toName();
+		KindedName<RoleKind> role = this.name.toName();
+		////RoleNode rn = new RoleNode(role.toString());
+		//RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, role.toString());
+		SimpleKindedNameNode<RoleKind> rn = ModelFactoryImpl.FACTORY.SimpleKindedNameNode(RoleKind.KIND, role.toString());
 		if (role.equals(self))
 		{
 			//return new SelfRoleDecl(rn);
@@ -53,7 +60,7 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode, Role>
 	@Override
 	protected RoleDecl copy()
 	{
-		return new RoleDecl((RoleNode) this.name);
+		return new RoleDecl(this.name);
 	}
 	
 	public boolean isSelfRoleDecl()

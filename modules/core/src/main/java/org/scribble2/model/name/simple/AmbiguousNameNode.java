@@ -4,7 +4,7 @@ import org.scribble2.model.MessageNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
-import org.scribble2.sesstype.name.Kind;
+import org.scribble2.sesstype.name.KindEnum;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
 import org.scribble2.sesstype.name.SimpleName;
@@ -72,7 +72,7 @@ public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
 	@Override
 	public Name toName()
 	{
-		return new SimpleName(Kind.AMBIGUOUS, this.identifier);
+		return new SimpleName(KindEnum.AMBIGUOUS, this.identifier);
 	}
 
 	@Override

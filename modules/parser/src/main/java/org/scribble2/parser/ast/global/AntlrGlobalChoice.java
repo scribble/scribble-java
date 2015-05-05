@@ -7,10 +7,11 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.global.GlobalProtocolBlock;
-import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.model.name.SimpleKindedNameNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
+import org.scribble2.sesstype.kind.RoleKind;
 
 public class AntlrGlobalChoice
 {
@@ -19,13 +20,15 @@ public class AntlrGlobalChoice
 	
 	public static GlobalChoice parseGlobalChoice(ScribbleParser parser, CommonTree ct)
 	{
-		RoleNode subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct));
+		//RoleNode subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct));
+		SimpleKindedNameNode<RoleKind> subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct));
 		List<GlobalProtocolBlock> blocks = new LinkedList<>();
 		for (CommonTree block : getBlockChildren(ct))
 		{
 			blocks.add((GlobalProtocolBlock) parser.parse(block));
 		}
 		//return new GlobalChoice(subj, blocks);
+		//return ModelFactoryImpl.FACTORY.GlobalChoice(subj, blocks);
 		return ModelFactoryImpl.FACTORY.GlobalChoice(subj, blocks);
 	}
 

@@ -1,7 +1,7 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.sesstype.name.Kind;
+import org.scribble2.sesstype.name.KindEnum;
 import org.scribble2.sesstype.name.SimpleName;
 
 
@@ -34,7 +34,7 @@ public class ScopeNode extends SimpleNameNode
 	public SimpleName toName()
 	{
 		//return new Scope(Scope.ROOT_SCOPE, new SimpleName(K, this.identifier));
-		return new SimpleName(Kind.SCOPE, this.identifier);
+		return new SimpleName(KindEnum.SCOPE, this.identifier);
 	}
 	
 	/*@Override

@@ -1,39 +1,43 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.simple.SimpleNameNode;
+import org.scribble2.model.name.SimpleKindedNameNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.KindedName;
 import org.scribble2.sesstype.name.Role;
-import org.scribble2.sesstype.name.SimpleName;
 import org.scribble2.util.ScribbleException;
 
 
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
 //public interface HeaderParameterDecl extends ModelNode, NameDecl //implements NameDeclaration
-public abstract class HeaderParameterDecl<T extends SimpleNameNode<T2>, T2 extends SimpleName> extends NameDeclNode<T, T2> //implements NameDeclaration
+//public abstract class HeaderParameterDecl<T extends SimpleNameNode<T2>, T2 extends SimpleName> extends NameDeclNode<T, T2> //implements NameDeclaration
+public abstract class HeaderParameterDecl<T extends Kind> extends NameDeclNode<T>  // Could specialise to Role/etc. kinds only
 {
-	public final T name;
+	public final SimpleKindedNameNode<T> name;
 
-	protected HeaderParameterDecl(T name)
+	protected HeaderParameterDecl(SimpleKindedNameNode<T> name)
 	{
 		this.name = name;
 	}
 
-	protected abstract HeaderParameterDecl<T, T2> reconstruct(T namenode);
+	//protected abstract HeaderParameterDecl<T, T2> reconstruct(T namenode);
+	protected abstract HeaderParameterDecl<T> reconstruct(SimpleKindedNameNode<T> namenode);
 	
 	@Override
-	public HeaderParameterDecl<T, T2> visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParameterDecl<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		//SimpleNameNode name = (SimpleNameNode) visitChild(this.name, nv);
-		T name = visitChildWithClassCheck(this, this.name, nv);
+		SimpleKindedNameNode<T> name = visitChildWithClassCheck(this, this.name, nv);
 		return reconstruct(name);
 	}
 	
-	abstract NameDeclNode<T, T2> project(Role self);
+	abstract HeaderParameterDecl<T> project(Role self);
 
 	@Override
 	//public SimpleName toName()
-	public T2 toName()
+	//public T2 toName()
+	public KindedName<T> toName()
 	{
 		return this.name.toName();
 	}

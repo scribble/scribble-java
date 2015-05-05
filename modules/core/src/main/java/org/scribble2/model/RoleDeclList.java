@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.name.KindedName;
 import org.scribble2.sesstype.name.Role;
 
-public class RoleDeclList extends HeaderParameterDeclList<RoleDecl, Role>
+//public class RoleDeclList extends HeaderParameterDeclList<RoleDecl, Role>
+public class RoleDeclList extends HeaderParameterDeclList<RoleKind>
 {
 	public RoleDeclList(List<RoleDecl> decls)
 	{
@@ -16,14 +19,21 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl, Role>
 	@Override
 	protected RoleDeclList copy()
 	{
-		return new RoleDeclList(this.decls);
+		return new RoleDeclList(getDecls());
+	}
+	
+	@Override
+	public List<RoleDecl> getDecls()
+	{
+		return this.decls.stream().map((hd) -> (RoleDecl) hd).collect(Collectors.toList());
 	}
 
 	@Override
-	protected HeaderParameterDeclList<RoleDecl, Role> reconstruct(List<RoleDecl> decls)
+	//protected HeaderParameterDeclList<RoleDecl, Role> reconstruct(List<RoleDecl> decls)
+	protected HeaderParameterDeclList<RoleKind> reconstruct(List<? extends HeaderParameterDecl<RoleKind>> decls)
 	{
 		ModelDelegate del = del();
-		RoleDeclList rdl = new RoleDeclList(decls);
+		RoleDeclList rdl = new RoleDeclList(getDecls());
 		rdl = (RoleDeclList) rdl.del(del);
 		return rdl;
 	}
@@ -32,7 +42,8 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl, Role>
 	@Override
 	public RoleDeclList project(Role self)
 	{
-		List<RoleDecl> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
+		//List<RoleDecl> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
+		List<RoleDecl> roledecls = getDecls().stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
 		//return new RoleDeclList(roledecls);
 		return ModelFactoryImpl.FACTORY.RoleDeclList(roledecls);
 	}
@@ -97,7 +108,8 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl, Role>
 		return this.decls.size();
 	}*/
 	
-	public List<Role> getRoles()
+	//public List<Role> getRoles()
+	public List<KindedName<RoleKind>> getRoles()
 	{
 		return this.decls.stream().map((decl) -> decl.toName()).collect(Collectors.toList());
 	}

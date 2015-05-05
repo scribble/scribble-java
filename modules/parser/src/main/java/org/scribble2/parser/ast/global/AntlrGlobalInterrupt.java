@@ -6,10 +6,12 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.global.GlobalInterrupt;
+import org.scribble2.model.name.SimpleKindedNameNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
+import org.scribble2.sesstype.kind.RoleKind;
 
 
 public class AntlrGlobalInterrupt
@@ -19,7 +21,8 @@ public class AntlrGlobalInterrupt
 
 	public static GlobalInterrupt parseGlobalInterrupt(ScribbleParser parser, CommonTree ct)
 	{
-		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
+		//RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
+		SimpleKindedNameNode<RoleKind> src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		List<MessageNode> msgs = new LinkedList<>();
 		for (CommonTree msg : getMessageChildren(ct))
 		{

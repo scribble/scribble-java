@@ -20,6 +20,7 @@ import org.scribble2.util.ScribbleException;
 		//.. fix del parameterized return type (take class as arg) -- maybe also copy
 		//.. fix modelfactory simple name node parameterization (take class instead of enum)
 		//.. remove scoped subprotocols for now
+		//.. factor out Projector name mangling routines from name node creation
 
 // - perhaps refactor to have choice/recursion/etc as packages with global/local/del/etc in each
 
