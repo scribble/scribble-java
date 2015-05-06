@@ -28,6 +28,7 @@ import org.scribble2.model.local.LocalSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.AmbiguousKindedNameNode;
 import org.scribble2.model.name.KindedNameNode;
+import org.scribble2.model.name.KindedRoleNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.name.SimpleKindedNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
@@ -93,7 +94,8 @@ public interface ModelFactory
 
 	RoleInstantiationList RoleInstantiationList(List<RoleInstantiation> ris);
 	//RoleInstantiation RoleInstantiation(RoleNode role);
-	RoleInstantiation RoleInstantiation(SimpleKindedNameNode<RoleKind> role);
+	//RoleInstantiation RoleInstantiation(SimpleKindedNameNode<RoleKind> role);
+	RoleInstantiation RoleInstantiation(KindedRoleNode role);
 	ArgumentInstantiationList ArgumentInstantiationList(List<ArgumentInstantiation> ais);
 	ArgumentInstantiation ArgumentInstantiation(ArgumentNode arg);
 

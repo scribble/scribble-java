@@ -1,9 +1,7 @@
 package org.scribble2.model;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.scribble2.model.ParameterDecl.ParamDeclKind;
 import org.scribble2.model.del.DefaultModelDelegate;
 import org.scribble2.model.del.ImportModuleDelegate;
 import org.scribble2.model.del.ModelDelegate;
@@ -56,6 +54,7 @@ import org.scribble2.model.local.LocalSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.AmbiguousKindedNameNode;
 import org.scribble2.model.name.KindedNameNode;
+import org.scribble2.model.name.KindedRoleNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.name.SimpleKindedNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
@@ -272,7 +271,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public RoleInstantiation RoleInstantiation(RoleNode role)
-	public RoleInstantiation RoleInstantiation(SimpleKindedNameNode<RoleKind> role)
+	public RoleInstantiation RoleInstantiation(KindedRoleNode role)
 	{
 		RoleInstantiation ri = new RoleInstantiation(role);
 		ri = del(ri, createDefaultDelegate());

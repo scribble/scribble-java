@@ -6,11 +6,13 @@ import org.scribble2.model.Constants;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.MessageTransfer;
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.model.name.SimpleKindedNameNode;
+import org.scribble2.sesstype.kind.RoleKind;
 
 public class GlobalMessageTransfer extends MessageTransfer implements SimpleGlobalInteractionNode
 {
-	public GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	//public GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public GlobalMessageTransfer(SimpleKindedNameNode<RoleKind> src, MessageNode msg, List<SimpleKindedNameNode<RoleKind>> dests)
 	{
 		//this(t, src, msg, dests, null, null);
 		super(src, msg, dests);
@@ -27,7 +29,8 @@ public class GlobalMessageTransfer extends MessageTransfer implements SimpleGlob
 	}*/
 
 	@Override
-	protected GlobalMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)//, SimpleInteractionNodeContext sicontext, Env env)
+	//protected GlobalMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)//, SimpleInteractionNodeContext sicontext, Env env)
+	protected GlobalMessageTransfer reconstruct(SimpleKindedNameNode<RoleKind> src, MessageNode msg, List<SimpleKindedNameNode<RoleKind>> dests)//, SimpleInteractionNodeContext sicontext, Env env)
 	{
 		ModelDelegate del = del();
 		GlobalMessageTransfer gmt = new GlobalMessageTransfer(src, msg, dests);//, sicontext, env);
@@ -183,7 +186,8 @@ public class GlobalMessageTransfer extends MessageTransfer implements SimpleGlob
 	public String toString()
 	{
 		String s = this.msg + " " + Constants.FROM_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dests.get(0);
-		for (RoleNode dest : this.dests.subList(1, this.dests.size()))
+		//for (RoleNode dest : this.dests.subList(1, this.dests.size()))
+		for (SimpleKindedNameNode<RoleKind> dest : this.dests.subList(1, this.dests.size()))
 		{
 			s += ", " + dest;
 		}

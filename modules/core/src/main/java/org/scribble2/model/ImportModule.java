@@ -42,13 +42,15 @@ public class ImportModule extends ImportDecl
 	{
 		/*ModuleNameNode modname = (ModuleNameNode) visitChild(this.modname, nv);
 		SimpleProtocolNameNode alias = null;*/
-		KindedNameNode<ModuleKind> modname = KindedNameNode.castKindedNameNode(ModuleKind.KIND, visitChild(this.modname, nv));
+		//KindedNameNode<ModuleKind> modname = KindedNameNode.castKindedNameNode(ModuleKind.KIND, visitChild(this.modname, nv));
+		KindedNameNode<ModuleKind> modname = KindedNameNode.castKindedNameNode(this.modname, visitChild(this.modname, nv));
 		//SimpleProtocolNameNode alias = null;
 		SimpleKindedNameNode<ModuleKind> alias = null;
 		if (isAliased())
 		{
 			//alias = (SimpleProtocolNameNode) visitChild(this.alias, nv);
-			alias = SimpleKindedNameNode.castSimpleKindedNameNode(ModuleKind.KIND, visitChild(this.alias, nv));
+			//alias = SimpleKindedNameNode.castSimpleKindedNameNode(ModuleKind.KIND, visitChild(this.alias, nv));
+			alias = KindedNameNode.castKindedNameNode(this.alias, visitChild(this.alias, nv));
 			////return new ImportModule(this.ct, modname, alias);
 		}
 		//return new ImportModule(this.ct, modname, null);

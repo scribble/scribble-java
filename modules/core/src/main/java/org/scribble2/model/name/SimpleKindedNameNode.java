@@ -35,6 +35,7 @@ public class SimpleKindedNameNode<K extends Kind> extends KindedNameNode<K>
 		return ids;
 	}*/
 
+	@Deprecated
 	public static <K extends Kind> SimpleKindedNameNode<K> castSimpleKindedNameNode(K kind, ModelNode n)
 	{
 		return (SimpleKindedNameNode<K>) KindedNameNode.castKindedNameNode(kind, n);
