@@ -6,12 +6,12 @@ import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
-public abstract class Do<K extends Kind> extends SimpleInteractionNode<K> //implements ScopedNode
+public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K> //implements ScopedNode
 {
 	//public final ScopeNode scope;
 	public final RoleInstantiationList roleinstans;

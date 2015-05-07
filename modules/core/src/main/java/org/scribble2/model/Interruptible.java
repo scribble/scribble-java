@@ -3,11 +3,11 @@ package org.scribble2.model;
 import java.util.List;
 
 import org.scribble2.model.name.simple.ScopeNode;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 
 public abstract class Interruptible<
 //			T1 extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>, T2 extends Interrupt>
-				K extends Kind>
+				K extends ProtocolKind>
 		extends CompoundInteractionNode<K> implements ScopedNode
 {
 	public final ScopeNode scope;

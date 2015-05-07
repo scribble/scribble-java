@@ -3,7 +3,7 @@ package org.scribble2.model.visit;
 import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.util.ScribbleException;
 
 public class WellFormedChoiceChecker extends EnvVisitor<WellFormedChoiceEnv>
@@ -16,7 +16,7 @@ public class WellFormedChoiceChecker extends EnvVisitor<WellFormedChoiceEnv>
 	@Override
 	protected WellFormedChoiceEnv makeRootProtocolDeclEnv(
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-			AbstractProtocolDecl<? extends Kind> pd)
+			AbstractProtocolDecl<? extends ProtocolKind> pd)
 	{
 		//return new WellFormedChoiceEnv(getJobContext(), getModuleDelegate());
 		return new WellFormedChoiceEnv();

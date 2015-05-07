@@ -7,20 +7,20 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.sesstype.kind.LocalKind;
+import org.scribble2.sesstype.kind.Local;
 
 //public class LocalChoice extends Choice<LocalProtocolBlock> implements CompoundLocalInteractionNode
-public class LocalChoice extends Choice<LocalKind> implements CompoundLocalInteractionNode
+public class LocalChoice extends Choice<Local> implements CompoundLocalInteractionNode
 {
 	//public LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
-	public LocalChoice(RoleNode subj, List<? extends ProtocolBlock<LocalKind>> blocks)
+	public LocalChoice(RoleNode subj, List<? extends ProtocolBlock<Local>> blocks)
 	{
 		super(subj, blocks);
 	}
 
 	@Override
 	//protected LocalChoice reconstruct(RoleNode subj, List<LocalProtocolBlock> blocks)
-	protected LocalChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<LocalKind>> blocks)
+	protected LocalChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Local>> blocks)
 	{
 		ModelDelegate del = del();
 		LocalChoice lc = new LocalChoice(subj, blocks);

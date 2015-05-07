@@ -14,7 +14,7 @@ import org.scribble2.model.ProtocolDecl;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 
 public class AntlrModule
 {
@@ -26,7 +26,7 @@ public class AntlrModule
 		List<ImportDecl> ids = new LinkedList<>();
 		List<DataTypeDecl> ptds = new LinkedList<>();
 		//List<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
-		List<ProtocolDecl<? extends Kind>>
+		List<ProtocolDecl<? extends ProtocolKind>>
 				pds = new LinkedList<>();
 		for (CommonTree id : getImportDeclChildren(ct))
 		{
@@ -43,7 +43,7 @@ public class AntlrModule
 			@SuppressWarnings("unchecked")
 			/*AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 					tmp = (AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) parser.parse(pd);*/
-			ProtocolDecl<Kind> tmp = (ProtocolDecl<Kind>) parser.parse(pd);
+			ProtocolDecl<ProtocolKind> tmp = (ProtocolDecl<ProtocolKind>) parser.parse(pd);
 			pds.add(tmp);
 		}
 

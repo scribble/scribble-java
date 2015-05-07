@@ -36,8 +36,8 @@ import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
-import org.scribble2.sesstype.kind.GlobalKind;
-import org.scribble2.sesstype.kind.LocalKind;
+import org.scribble2.sesstype.kind.Global;
+import org.scribble2.sesstype.kind.Local;
 
 public interface ModelFactory
 {
@@ -50,7 +50,7 @@ public interface ModelFactory
 			List<ImportDecl> imports,
 			List<DataTypeDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
-			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.Kind>> protos);
+			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.ProtocolKind>> protos);
 	
 	MessageSignatureNode MessageSignatureNode(OperatorNode op, Payload payload);
 	Payload Payload(List<PayloadElement> payloadelems);
@@ -73,9 +73,9 @@ public interface ModelFactory
 
 	GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	//GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks);
-	GlobalChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<GlobalKind>> blocks);
+	GlobalChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks);
 	//GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block);
-	GlobalRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<GlobalKind> block);
+	GlobalRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<Global> block);
 	GlobalContinue GlobalContinue(RecursionVarNode recvar);
 	//GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
@@ -95,12 +95,12 @@ public interface ModelFactory
 	LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block);
 	LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq);
 	//LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions);
-	LocalInteractionSequence LocalInteractionSequence(List<? extends InteractionNode<LocalKind>> actions);
+	LocalInteractionSequence LocalInteractionSequence(List<? extends InteractionNode<Local>> actions);
 
 	LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	//LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks);
-	LocalChoice LocalChoice(RoleNode subj, List<ProtocolBlock<LocalKind>> blocks);
+	LocalChoice LocalChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks);
 	LocalRecursion LocalRecursion(RecursionVarNode recvar, LocalProtocolBlock block);
 	LocalContinue LocalContinue(RecursionVarNode recvar);
 	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);

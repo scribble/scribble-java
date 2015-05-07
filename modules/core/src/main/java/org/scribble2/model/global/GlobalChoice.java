@@ -7,14 +7,14 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.sesstype.kind.GlobalKind;
+import org.scribble2.sesstype.kind.Global;
 
 //public class GlobalChoice extends Choice<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
-public class GlobalChoice extends Choice<GlobalKind> implements CompoundGlobalInteractionNode
+public class GlobalChoice extends Choice<Global> implements CompoundGlobalInteractionNode
 {
 	// Move parser specific constructors (i.e. no context or env yet) to a parser node factory?
 	//public GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
-	public GlobalChoice(RoleNode subj, List<? extends ProtocolBlock<GlobalKind>> blocks)
+	public GlobalChoice(RoleNode subj, List<? extends ProtocolBlock<Global>> blocks)
 	{
 		//this(ct, subj, blocks, null, null);
 		super(subj, blocks);
@@ -22,7 +22,7 @@ public class GlobalChoice extends Choice<GlobalKind> implements CompoundGlobalIn
 
 	@Override
 	//protected Choice<GlobalProtocolBlock> reconstruct(RoleNode subj, List<GlobalProtocolBlock> blocks)
-	protected GlobalChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<GlobalKind>> blocks)
+	protected GlobalChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Global>> blocks)
 	{
 		ModelDelegate del = del();
 		GlobalChoice gc = new GlobalChoice(subj, blocks);

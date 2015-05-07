@@ -12,7 +12,7 @@ import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
-import org.scribble2.sesstype.kind.GlobalKind;
+import org.scribble2.sesstype.kind.Global;
 
 public class AntlrGlobalChoice
 {
@@ -22,7 +22,7 @@ public class AntlrGlobalChoice
 	public static GlobalChoice parseGlobalChoice(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct));
-		List<ProtocolBlock<GlobalKind>> blocks = new LinkedList<>();
+		List<ProtocolBlock<Global>> blocks = new LinkedList<>();
 		for (CommonTree block : getBlockChildren(ct))
 		{
 			blocks.add((GlobalProtocolBlock) parser.parse(block));

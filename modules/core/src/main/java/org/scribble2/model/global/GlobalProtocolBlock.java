@@ -3,10 +3,10 @@ package org.scribble2.model.global;
 import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.sesstype.kind.GlobalKind;
+import org.scribble2.sesstype.kind.Global;
 
 //public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence> implements GlobalNode
-public class GlobalProtocolBlock extends ProtocolBlock<GlobalKind> implements GlobalNode
+public class GlobalProtocolBlock extends ProtocolBlock<Global> implements GlobalNode
 {
 	/*public static final Function<ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>, GlobalProtocolBlock>
 			toGlobalProtocolBlock =
@@ -20,7 +20,7 @@ public class GlobalProtocolBlock extends ProtocolBlock<GlobalKind> implements Gl
 							-> Util.listCast(blocks, toGlobalProtocolBlock);*/
 
 	//public GlobalProtocolBlock(GlobalInteractionSequence seq)
-	public GlobalProtocolBlock(InteractionSequence<GlobalKind> seq)
+	public GlobalProtocolBlock(InteractionSequence<Global> seq)
 	{
 		//this(t, gis, null, null);
 		super(seq);
@@ -29,7 +29,7 @@ public class GlobalProtocolBlock extends ProtocolBlock<GlobalKind> implements Gl
 
 	@Override
 	//protected ProtocolBlock<GlobalInteractionSequence> reconstruct(GlobalInteractionSequence seq)
-	protected GlobalProtocolBlock reconstruct(InteractionSequence<GlobalKind> seq)
+	protected GlobalProtocolBlock reconstruct(InteractionSequence<Global> seq)
 	{
 		ModelDelegate del = del();
 		//GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);

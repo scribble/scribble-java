@@ -3,20 +3,20 @@ package org.scribble2.model.global;
 import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.sesstype.kind.GlobalKind;
+import org.scribble2.sesstype.kind.Global;
 
 //public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalProtocolBlock> implements GlobalNode
-public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalKind> implements GlobalNode
+public class GlobalProtocolDefinition extends ProtocolDefinition<Global> implements GlobalNode
 {
 	//public GlobalProtocolDefinition(GlobalProtocolBlock block)
-	public GlobalProtocolDefinition(ProtocolBlock<GlobalKind> block)
+	public GlobalProtocolDefinition(ProtocolBlock<Global> block)
 	{
 		super(block);
 	}
 
 	@Override
 	//protected ProtocolDefinition<GlobalProtocolBlock> reconstruct(GlobalProtocolBlock block)
-	protected GlobalProtocolDefinition reconstruct(ProtocolBlock<GlobalKind> block)
+	protected GlobalProtocolDefinition reconstruct(ProtocolBlock<Global> block)
 	{
 		ModelDelegate del = del();
 		GlobalProtocolDefinition gpd = new GlobalProtocolDefinition(block);

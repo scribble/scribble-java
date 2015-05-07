@@ -1,13 +1,13 @@
 package org.scribble2.model;
 
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.util.ScribbleException;
 
 
 //public class ProtocolBlock extends AbstractNode
 //public abstract class ProtocolBlock<T extends InteractionSequence<? extends InteractionNode>> extends CompoundInteraction //extends AbstractEnvDelegationNode
-public abstract class ProtocolBlock<K extends Kind> extends CompoundInteraction //extends AbstractEnvDelegationNode
+public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInteraction //extends AbstractEnvDelegationNode
 {
 	public final InteractionSequence<K> seq;
 	//public final T seq;

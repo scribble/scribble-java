@@ -6,13 +6,13 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.Parallel;
 import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.sesstype.kind.GlobalKind;
+import org.scribble2.sesstype.kind.Global;
 
 //public class GlobalParallel extends Parallel<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
-public class GlobalParallel extends Parallel<GlobalKind> implements CompoundGlobalInteractionNode
+public class GlobalParallel extends Parallel<Global> implements CompoundGlobalInteractionNode
 {
 	//public GlobalParallel(List<GlobalProtocolBlock> blocks)
-	public GlobalParallel(List<? extends ProtocolBlock<GlobalKind>> blocks)
+	public GlobalParallel(List<? extends ProtocolBlock<Global>> blocks)
 	{
 		//this(t, blocks, null, null);
 		super(blocks);
@@ -20,7 +20,7 @@ public class GlobalParallel extends Parallel<GlobalKind> implements CompoundGlob
 	
 	@Override
 	//protected GlobalParallel reconstruct(List<GlobalProtocolBlock> blocks)
-	protected GlobalParallel reconstruct(List<? extends ProtocolBlock<GlobalKind>> blocks)
+	protected GlobalParallel reconstruct(List<? extends ProtocolBlock<Global>> blocks)
 	{
 		ModelDelegate del = del();
 		GlobalParallel gp = new GlobalParallel(blocks);

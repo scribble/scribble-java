@@ -1,8 +1,8 @@
 package org.scribble2.model;
 
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 
-public abstract class CompoundInteractionNode<K extends Kind> extends CompoundInteraction implements InteractionNode<K>
+public abstract class CompoundInteractionNode<K extends ProtocolKind> extends CompoundInteraction implements InteractionNode<K>
 {
 
 }

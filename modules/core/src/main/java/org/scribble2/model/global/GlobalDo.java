@@ -6,9 +6,9 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.RoleInstantiationList;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.sesstype.kind.GlobalKind;
+import org.scribble2.sesstype.kind.Global;
 
-public class GlobalDo extends Do<GlobalKind> implements SimpleGlobalInteractionNode
+public class GlobalDo extends Do<Global> implements SimpleGlobalInteractionNode
 {
 	//public GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)

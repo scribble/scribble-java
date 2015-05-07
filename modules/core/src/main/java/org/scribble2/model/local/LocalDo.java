@@ -5,9 +5,9 @@ import org.scribble2.model.Do;
 import org.scribble2.model.RoleInstantiationList;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.sesstype.kind.LocalKind;
+import org.scribble2.sesstype.kind.Local;
 
-public class LocalDo extends Do<LocalKind> implements SimpleLocalInteractionNode
+public class LocalDo extends Do<Local> implements SimpleLocalInteractionNode
 {
 	//public LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	public LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)

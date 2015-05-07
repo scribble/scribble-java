@@ -3,9 +3,9 @@ package org.scribble2.model.local;
 import org.scribble2.model.Continue;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RecursionVarNode;
-import org.scribble2.sesstype.kind.LocalKind;
+import org.scribble2.sesstype.kind.Local;
 
-public class LocalContinue extends Continue<LocalKind> implements SimpleLocalInteractionNode
+public class LocalContinue extends Continue<Local> implements SimpleLocalInteractionNode
 {
 	public LocalContinue(RecursionVarNode recvar)
 	{

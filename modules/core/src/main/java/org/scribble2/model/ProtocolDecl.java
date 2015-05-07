@@ -1,9 +1,9 @@
 package org.scribble2.model;
 
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ProtocolName;
 
-public interface ProtocolDecl<K extends Kind> extends ModelNode
+public interface ProtocolDecl<K extends ProtocolKind> extends ModelNode
 {
 	ProtocolName getFullProtocolName(Module mod);
 	

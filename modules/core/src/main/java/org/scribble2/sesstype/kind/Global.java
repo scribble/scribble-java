@@ -1,10 +1,10 @@
 package org.scribble2.sesstype.kind;
 
-public class GlobalKind extends Kind
+public class Global extends ProtocolKind
 {
-	public static final GlobalKind KIND = new GlobalKind();
+	public static final Global KIND = new Global();
 	
-	protected GlobalKind()
+	protected Global()
 	{
 
 	}
@@ -22,7 +22,7 @@ public class GlobalKind extends Kind
 		{
 			return true;
 		}
-		if (o == null | !(o instanceof GlobalKind))
+		if (o == null | !(o instanceof Global))
 		{
 			return false;
 		}

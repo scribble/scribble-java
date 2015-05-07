@@ -14,8 +14,8 @@ import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalNode;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.env.ProjectionEnv;
-import org.scribble2.sesstype.kind.GlobalKind;
-import org.scribble2.sesstype.kind.LocalKind;
+import org.scribble2.sesstype.kind.Global;
+import org.scribble2.sesstype.kind.Local;
 import org.scribble2.util.ScribbleException;
 
 
@@ -40,10 +40,10 @@ public class GlobalInteractionSequenceDelegate extends InteractionSequenceDelega
 		
 		GlobalInteractionSequence gis = (GlobalInteractionSequence) visited;
 		//List<LocalInteractionNode> lis = new LinkedList<>();
-		List<InteractionNode<LocalKind>> lis = new LinkedList<>();
+		List<InteractionNode<Local>> lis = new LinkedList<>();
 			//this.actions.stream().map((action) -> (LocalInteraction) ((ProjectionEnv) ((LocalNode) action).getEnv()).getProjection()).collect(Collectors.toList());	
 		//for (GlobalInteractionNode gi : gis.actions)
-		for (InteractionNode<GlobalKind> gi : gis.actions)
+		for (InteractionNode<Global> gi : gis.actions)
 		{
 			LocalNode ln = (LocalNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			if (ln instanceof LocalInteractionSequence)

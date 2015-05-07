@@ -6,19 +6,19 @@ import org.scribble2.model.InteractionNode;
 import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.sesstype.kind.LocalKind;
+import org.scribble2.sesstype.kind.Local;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
-public class LocalInteractionSequence extends InteractionSequence<LocalKind> implements LocalNode
+public class LocalInteractionSequence extends InteractionSequence<Local> implements LocalNode
 {
 	//public LocalInteractionSequence(List<LocalInteractionNode> lis)
-	public LocalInteractionSequence(List<? extends InteractionNode<LocalKind>> lis)
+	public LocalInteractionSequence(List<? extends InteractionNode<Local>> lis)
 	{
 		super(lis);
 	}
 
 	@Override
-	protected LocalInteractionSequence reconstruct(List<? extends InteractionNode<LocalKind>> actions)
+	protected LocalInteractionSequence reconstruct(List<? extends InteractionNode<Local>> actions)
 	{
 		ModelDelegate del = del();
 		LocalInteractionSequence lis = new LocalInteractionSequence(actions);

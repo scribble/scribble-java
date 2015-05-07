@@ -3,12 +3,12 @@ package org.scribble2.model;
 import java.util.List;
 
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.util.ScribbleException;
 
 
 //public class InteractionSequence extends AbstractNode
-public abstract class InteractionSequence<K extends Kind> extends ModelNodeBase
+public abstract class InteractionSequence<K extends ProtocolKind> extends ModelNodeBase
 {
 	//public final List<? extends InteractionNode> actions;
 	public final List<? extends InteractionNode<K>> actions;

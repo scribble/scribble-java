@@ -21,7 +21,7 @@ import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
@@ -136,7 +136,7 @@ public class ModuleDelegate extends ModelDelegateBase
 		
 		List<DataTypeDecl> data = new LinkedList<>(root.data);  // FIXME: copy  // FIXME: only project dependencies
 		//List<LocalProtocolDecl> protos = Arrays.asList(lpd);
-		List<ProtocolDecl<? extends Kind>> protos = Arrays.asList(lpd);
+		List<ProtocolDecl<? extends ProtocolKind>> protos = Arrays.asList(lpd);
 		//return new Module(moddecl, imports, data, protos);
 		return ModelFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}

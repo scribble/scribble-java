@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 
-public abstract class MessageTransfer<K extends Kind> extends SimpleInteractionNode<K>
+public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInteractionNode<K>
 {
 	public final RoleNode src;
 	public final MessageNode msg;

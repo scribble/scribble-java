@@ -64,8 +64,8 @@ import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
-import org.scribble2.sesstype.kind.GlobalKind;
-import org.scribble2.sesstype.kind.LocalKind;
+import org.scribble2.sesstype.kind.Global;
+import org.scribble2.sesstype.kind.Local;
 
 public class ModelFactoryImpl implements ModelFactory
 {
@@ -102,7 +102,7 @@ public class ModelFactoryImpl implements ModelFactory
 			List<ImportDecl> imports,
 			List<DataTypeDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
-			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.Kind>> protos)
+			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.ProtocolKind>> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
 		//module = del(module, new ModuleDelegate(module.getFullModuleName()));
@@ -209,7 +209,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
-	public GlobalChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<GlobalKind>> blocks)
+	public GlobalChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks)
 	{
 		GlobalChoice gc = new GlobalChoice(subj, blocks);
 		gc = del(gc, new GlobalChoiceDelegate());
@@ -218,7 +218,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
-	public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<GlobalKind> block)
+	public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<Global> block)
 	{
 		GlobalRecursion gr = new GlobalRecursion(recvar, block);
 		gr = del(gr, new GlobalRecursionDelegate());
@@ -362,7 +362,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions)
-	public LocalInteractionSequence LocalInteractionSequence(List<? extends InteractionNode<LocalKind>> actions)
+	public LocalInteractionSequence LocalInteractionSequence(List<? extends InteractionNode<Local>> actions)
 	{
 		LocalInteractionSequence lis = new LocalInteractionSequence(actions);
 		lis = del(lis, new LocalInteractionSequenceDelegate());
@@ -387,7 +387,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
-	public LocalChoice LocalChoice(RoleNode subj, List<ProtocolBlock<LocalKind>> blocks)
+	public LocalChoice LocalChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks)
 	{
 		LocalChoice lc = new LocalChoice(subj, blocks);
 		lc = del(lc, new LocalChoiceDelegate());

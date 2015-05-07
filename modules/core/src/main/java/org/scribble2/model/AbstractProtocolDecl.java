@@ -1,7 +1,7 @@
 package org.scribble2.model;
 
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
@@ -12,7 +12,7 @@ import org.scribble2.util.ScribbleException;
 				T1 extends ProtocolHeader,
 				T2 extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 		>*/
-public abstract class AbstractProtocolDecl<K extends Kind>
+public abstract class AbstractProtocolDecl<K extends ProtocolKind>
 		extends ModelNodeBase// implements ContextStackNode//, ModuleMember
 		implements ProtocolDecl<K>
 {

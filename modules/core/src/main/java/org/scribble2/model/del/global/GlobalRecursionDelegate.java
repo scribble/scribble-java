@@ -15,7 +15,7 @@ import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
-import org.scribble2.sesstype.kind.LocalKind;
+import org.scribble2.sesstype.kind.Local;
 import org.scribble2.util.ScribbleException;
 
 public class GlobalRecursionDelegate extends GlobalCompoundInteractionNodeDelegate
@@ -42,7 +42,7 @@ public class GlobalRecursionDelegate extends GlobalCompoundInteractionNodeDelega
 		if (!block.isEmpty())
 		{
 			//List<LocalInteractionNode> lis = block.seq.actions;
-			List<? extends InteractionNode<LocalKind>> lis = block.seq.actions;
+			List<? extends InteractionNode<Local>> lis = block.seq.actions;
 			if (!(lis.size() == 1 && lis.get(0) instanceof Continue))
 			{
 				projection = ModelFactoryImpl.FACTORY.LocalRecursion(recvar, block);

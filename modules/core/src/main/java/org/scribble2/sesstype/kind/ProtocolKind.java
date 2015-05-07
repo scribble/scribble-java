@@ -1,20 +1,13 @@
 package org.scribble2.sesstype.kind;
 
-public class LocalKind extends Kind
+public abstract class ProtocolKind implements Kind
 {
-	public static final LocalKind KIND = new LocalKind();
-	
-	protected LocalKind()
-	{
-
-	}
-
 	@Override
 	public int hashCode()
 	{
 		return super.hashCode();
 	}
-
+	
 	@Override
 	public boolean equals(Object o)
 	{
@@ -22,10 +15,16 @@ public class LocalKind extends Kind
 		{
 			return true;
 		}
-		if (o == null | !(o instanceof LocalKind))
+		if (o == null | !(o instanceof ProtocolKind))
 		{
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return this.getClass().toString();
 	}
 }

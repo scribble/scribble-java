@@ -14,7 +14,7 @@ import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.model.visit.env.ProjectionEnv;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
@@ -45,7 +45,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	@Override
 	protected ProjectionEnv makeRootProtocolDeclEnv(
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-			AbstractProtocolDecl<? extends Kind> pd)
+			AbstractProtocolDecl<? extends ProtocolKind> pd)
 	{
 		//return new ProjectionEnv(this.getJobContext(), getModuleContext(), null);
 		//return new ProjectionEnv(this.getJobContext(), getModuleDelegate());

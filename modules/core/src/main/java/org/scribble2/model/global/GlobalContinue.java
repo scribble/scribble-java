@@ -3,9 +3,9 @@ package org.scribble2.model.global;
 import org.scribble2.model.Continue;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RecursionVarNode;
-import org.scribble2.sesstype.kind.GlobalKind;
+import org.scribble2.sesstype.kind.Global;
 
-public class GlobalContinue extends Continue<GlobalKind> implements SimpleGlobalInteractionNode
+public class GlobalContinue extends Continue<Global> implements SimpleGlobalInteractionNode
 {
 	public GlobalContinue(RecursionVarNode recvar)
 	{

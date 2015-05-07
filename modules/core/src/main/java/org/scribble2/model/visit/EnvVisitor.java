@@ -10,7 +10,7 @@ import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.visit.env.Env;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.util.ScribbleException;
 
 public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
@@ -44,9 +44,9 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 
 			@SuppressWarnings("unchecked")
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd = 
-			AbstractProtocolDecl<? extends Kind> pd = 
+			AbstractProtocolDecl<? extends ProtocolKind> pd = 
 					//(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) child;
-					(AbstractProtocolDecl<? extends Kind>) child;
+					(AbstractProtocolDecl<? extends ProtocolKind>) child;
 			//ev.setEnv(makeRootProtocolDeclEnv(pd));
 			//ev.pushEnv(makeRootProtocolDeclEnv(pd));
 			pushEnv(makeRootProtocolDeclEnv(pd));
@@ -70,7 +70,7 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 	// getProtocolDeclEnv
 	protected abstract T makeRootProtocolDeclEnv(
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd);
-			AbstractProtocolDecl<? extends Kind> pd);
+			AbstractProtocolDecl<? extends ProtocolKind> pd);
 
 	//protected EnvVisitor<T> envEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	protected void envEnter(ModelNode parent, ModelNode child) throws ScribbleException

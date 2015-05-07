@@ -2,10 +2,10 @@ package org.scribble2.model;
 
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.util.ScribbleException;
 
-public abstract class Continue<K extends Kind> extends SimpleInteractionNode<K>
+public abstract class Continue<K extends ProtocolKind> extends SimpleInteractionNode<K>
 {
 	public final RecursionVarNode recvar;
 
