@@ -1,13 +1,13 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.util.ScribbleException;
 
 public abstract class Continue<K extends ProtocolKind> extends SimpleInteractionNode<K>
 {
-	public final RecursionVarNode recvar;
+	public final RecVarNode recvar;
 
 	/*protected Continue(CommonTree ct, RecursionVarNode lab)
 	{
@@ -19,17 +19,17 @@ public abstract class Continue<K extends ProtocolKind> extends SimpleInteraction
 		this(ct, lab, sicontext, null);
 	}*/
 
-	protected Continue(RecursionVarNode recvar)//, SimpleInteractionNodeContext sicontext, Env env)
+	protected Continue(RecVarNode recvar)//, SimpleInteractionNodeContext sicontext, Env env)
 	{
 		this.recvar = recvar;
 	}
 
-	protected abstract Continue<K> reconstruct(RecursionVarNode recvar);//, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract Continue<K> reconstruct(RecVarNode recvar);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
 	public Continue<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		RecursionVarNode recvar = (RecursionVarNode) visitChild(this.recvar, nv);
+		RecVarNode recvar = (RecVarNode) visitChild(this.recvar, nv);
 		//return new Continue(this.ct, recvar, getContext(), getEnv());
 		return reconstruct(recvar);//, getContext(), getEnv());
 	}

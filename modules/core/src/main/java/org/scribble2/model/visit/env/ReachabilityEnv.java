@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble2.sesstype.name.RecursionVar;
+import org.scribble2.sesstype.name.RecVar;
 
 // FIXME: nested subprotocol reachability (e.g. subprotocol cycle contained within a choice block)
 public class ReachabilityEnv extends Env
 {
-	private final Set<RecursionVar> contlabs;  // Used to check non-tail recursion (in the presence of sequencing)
+	private final Set<RecVar> contlabs;  // Used to check non-tail recursion (in the presence of sequencing)
 	private boolean contExitable;  // false after a continue; true if choice has an exit (false inherited for all other constructs)
 	private boolean doExitable;
 	
@@ -27,11 +27,11 @@ public class ReachabilityEnv extends Env
 	
 	//protected ReachabilityEnv(JobContext jcontext, ModuleDelegate mcontext, ReachabilityEnv root, ReachabilityEnv parent, Set<RecursionVar> contlabs, boolean contExitable, boolean doExitable)
 	//protected ReachabilityEnv(JobContext jcontext, ModuleDelegate mcontext, Set<RecursionVar> contlabs, boolean contExitable, boolean doExitable)
-	protected ReachabilityEnv(Set<RecursionVar> contlabs, boolean contExitable, boolean doExitable)
+	protected ReachabilityEnv(Set<RecVar> contlabs, boolean contExitable, boolean doExitable)
 	{
 		//super(jcontext, mcontext, root, parent);
 		//super(jcontext, mcontext);//, root, parent);
-		this.contlabs = new HashSet<RecursionVar>(contlabs);
+		this.contlabs = new HashSet<RecVar>(contlabs);
 		this.contExitable = contExitable;
 		this.doExitable = doExitable;
 	}
@@ -115,7 +115,7 @@ public class ReachabilityEnv extends Env
 	}
 	
 	//public ReachabilityEnv addContinueLabel(RecursionVar recvar)
-	public ReachabilityEnv leaveContinue(RecursionVar recvar)
+	public ReachabilityEnv leaveContinue(RecVar recvar)
 	{
 		ReachabilityEnv copy = copy();
 		copy.contlabs.add(recvar);
@@ -130,7 +130,7 @@ public class ReachabilityEnv extends Env
 		return copy;
 	}
 	
-	public ReachabilityEnv removeContinueLabel(RecursionVar recvar)
+	public ReachabilityEnv removeContinueLabel(RecVar recvar)
 	{
 		ReachabilityEnv copy = copy();
 		copy.contlabs.remove(recvar);

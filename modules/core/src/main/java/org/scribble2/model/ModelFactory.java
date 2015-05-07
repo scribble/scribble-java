@@ -32,7 +32,7 @@ import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
-import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.sesstype.kind.Global;
@@ -81,8 +81,8 @@ public interface ModelFactory
 	//GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks);
 	GChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks);
 	//GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block);
-	GRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<Global> block);
-	GContinue GlobalContinue(RecursionVarNode recvar);
+	GRecursion GlobalRecursion(RecVarNode recvar, ProtocolBlock<Global> block);
+	GContinue GlobalContinue(RecVarNode recvar);
 	//GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	
@@ -109,8 +109,8 @@ public interface ModelFactory
 	LReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	//LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks);
 	LChoice LocalChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks);
-	LRecursion LocalRecursion(RecursionVarNode recvar, LProtocolBlock block);
-	LContinue LocalContinue(RecursionVarNode recvar);
+	LRecursion LocalRecursion(RecVarNode recvar, LProtocolBlock block);
+	LContinue LocalContinue(RecVarNode recvar);
 	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 }

@@ -57,7 +57,7 @@ import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
-import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.sesstype.kind.Global;
@@ -225,7 +225,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
-	public GRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<Global> block)
+	public GRecursion GlobalRecursion(RecVarNode recvar, ProtocolBlock<Global> block)
 	{
 		GRecursion gr = new GRecursion(recvar, block);
 		gr = del(gr, new GRecursionDel());
@@ -233,7 +233,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GContinue GlobalContinue(RecursionVarNode recvar)
+	public GContinue GlobalContinue(RecVarNode recvar)
 	{
 		GContinue gc = new GContinue(recvar);
 		gc = del(gc, new GContinueDel());
@@ -316,7 +316,7 @@ public class ModelFactoryImpl implements ModelFactory
 		}
 		else if (kind.equals(RecVarKind.KIND))
 		{
-			snn = new RecursionVarNode(identifier);
+			snn = new RecVarNode(identifier);
 		}
 		else if (kind.equals(RoleKind.KIND))
 		{
@@ -435,7 +435,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LRecursion LocalRecursion(RecursionVarNode recvar, LProtocolBlock block)
+	public LRecursion LocalRecursion(RecVarNode recvar, LProtocolBlock block)
 	{
 		LRecursion lr = new LRecursion(recvar, block);
 		lr = del(lr, new LRecursionDel());
@@ -443,7 +443,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LContinue LocalContinue(RecursionVarNode recvar)
+	public LContinue LocalContinue(RecVarNode recvar)
 	{
 		LContinue lc = new LContinue(recvar);
 		lc = del(lc, new LContinueDel());

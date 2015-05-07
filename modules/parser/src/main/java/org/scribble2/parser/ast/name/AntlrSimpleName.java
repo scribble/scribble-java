@@ -5,7 +5,7 @@ import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
-import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.model.name.simple.SimpleMessageSignatureNameNode;
@@ -96,11 +96,11 @@ public class AntlrSimpleName
 		throw new RuntimeException("TODO: " + ct);
 	}
 	
-	public static RecursionVarNode toRecursionVarNode(CommonTree ct)
+	public static RecVarNode toRecursionVarNode(CommonTree ct)
 	{
 		//return new RecursionVarNode(getName(ct));
 		//return (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, getName(ct));
-		return (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, getName(ct));
+		return (RecVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, getName(ct));
 	}
 
 	public static String getName(CommonTree ct)

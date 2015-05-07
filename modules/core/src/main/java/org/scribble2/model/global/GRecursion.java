@@ -3,14 +3,14 @@ package org.scribble2.model.global;
 import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.Recursion;
 import org.scribble2.model.del.ModelDel;
-import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.sesstype.kind.Global;
 
 //public class GlobalRecursion extends Recursion<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
 public class GRecursion extends Recursion<Global> implements GCompoundInteractionNode
 {
 	//public GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
-	public GRecursion(RecursionVarNode recvar, ProtocolBlock<Global> block)
+	public GRecursion(RecVarNode recvar, ProtocolBlock<Global> block)
 	{
 		//super(ct, recvar, block, null, null);
 		super(recvar, block);
@@ -18,7 +18,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 
 	@Override
 	//protected GlobalRecursion reconstruct(RecursionVarNode recvar, GlobalProtocolBlock block)
-	protected GRecursion reconstruct(RecursionVarNode recvar, ProtocolBlock<Global> block)
+	protected GRecursion reconstruct(RecVarNode recvar, ProtocolBlock<Global> block)
 	{
 		ModelDel del = del();
 		GRecursion gr = new GRecursion(recvar, block);

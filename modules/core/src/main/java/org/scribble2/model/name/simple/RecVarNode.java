@@ -1,14 +1,14 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.sesstype.kind.RecVarKind;
-import org.scribble2.sesstype.name.RecursionVar;
+import org.scribble2.sesstype.name.RecVar;
 
 
 
 //public class RecursionVarNode extends SimpleNameNode
-public class RecursionVarNode extends SimpleNameNode<RecursionVar, RecVarKind>
+public class RecVarNode extends SimpleNameNode<RecVar, RecVarKind>
 {
-	public RecursionVarNode(String identifier)
+	public RecVarNode(String identifier)
 	{
 		super(identifier);
 	}
@@ -23,14 +23,14 @@ public class RecursionVarNode extends SimpleNameNode<RecursionVar, RecVarKind>
 	}*/
 
 	@Override
-	protected RecursionVarNode copy()
+	protected RecVarNode copy()
 	{
-		return new RecursionVarNode(this.identifier);
+		return new RecVarNode(this.identifier);
 	}
 
 	@Override
-	public RecursionVar toName()
+	public RecVar toName()
 	{
-		return new RecursionVar(this.identifier);
+		return new RecVar(this.identifier);
 	}
 }

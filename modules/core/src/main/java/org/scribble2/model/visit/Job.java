@@ -19,6 +19,7 @@ import org.scribble2.util.ScribbleException;
 
 	//.. do call type checking as well as basic name binding
 	//.. make headerparamdecl into paramdecl directly
+	//.. maybe make an UnkindedName superclass of Name, use for e.g. parameters or ambiguous
 
 		//.. sepatate protocol names into global/local -- use generic parameter for name kinds rather than subclasses
 		//.. fix projection env to take projection output type as Parameter

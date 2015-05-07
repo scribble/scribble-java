@@ -1,6 +1,6 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.util.ScribbleException;
@@ -9,7 +9,7 @@ import org.scribble2.util.ScribbleException;
 public abstract class Recursion<K extends ProtocolKind>
 		extends CompoundInteractionNode<K>
 {
-	public final RecursionVarNode recvar;
+	public final RecVarNode recvar;
 	//public final T block;
 	public final ProtocolBlock<K> block;
 
@@ -24,20 +24,20 @@ public abstract class Recursion<K extends ProtocolKind>
 	}*/
 
 	//protected Recursion(RecursionVarNode recvar, T block)//, CompoundInteractionNodeContext cicontext, Env env)
-	protected Recursion(RecursionVarNode recvar, ProtocolBlock<K> block)//, CompoundInteractionNodeContext cicontext, Env env)
+	protected Recursion(RecVarNode recvar, ProtocolBlock<K> block)//, CompoundInteractionNodeContext cicontext, Env env)
 	{
 		this.recvar = recvar;
 		this.block = block;
 	}
 
 	//protected abstract Recursion<T> reconstruct(RecursionVarNode recvar, T block);
-	protected abstract Recursion<K> reconstruct(RecursionVarNode recvar, ProtocolBlock<K> block);
+	protected abstract Recursion<K> reconstruct(RecVarNode recvar, ProtocolBlock<K> block);
 
 	@Override
 	//public Recursion<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	public Recursion<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		RecursionVarNode recvar = (RecursionVarNode) visitChild(this.recvar, nv);
+		RecVarNode recvar = (RecVarNode) visitChild(this.recvar, nv);
 		//T block = visitChildWithClassCheck(this, this.block, nv);
 		ProtocolBlock<K> block = visitChildWithClassCheck(this, this.block, nv);
 		//return new Recursion<>(this.ct, recvar, block, getContext(), getEnv());

@@ -9,7 +9,7 @@ import org.scribble2.model.ModelNode;
 import org.scribble2.model.global.GRecursion;
 import org.scribble2.model.local.LProtocolBlock;
 import org.scribble2.model.local.LRecursion;
-import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.ProjectionEnv;
@@ -37,7 +37,7 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 		GRecursion gr = (GRecursion) visited;
 		//RecursionVarNode recvar = new RecursionVarNode(gr.recvar.toName().toString());
 		//RecursionVarNode recvar = (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, gr.recvar.toName().toString());
-		RecursionVarNode recvar = (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
+		RecVarNode recvar = (RecVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection();	
 		LRecursion projection = null;
 		if (!block.isEmpty())

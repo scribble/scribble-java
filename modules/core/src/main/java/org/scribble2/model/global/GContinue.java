@@ -2,19 +2,19 @@ package org.scribble2.model.global;
 
 import org.scribble2.model.Continue;
 import org.scribble2.model.del.ModelDel;
-import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.sesstype.kind.Global;
 
 public class GContinue extends Continue<Global> implements GSimpleInteractionNode
 {
-	public GContinue(RecursionVarNode recvar)
+	public GContinue(RecVarNode recvar)
 	{
 		//this(t, recvar, null, null);
 		super(recvar);
 	}
 
 	@Override
-	protected GContinue reconstruct(RecursionVarNode recvar)
+	protected GContinue reconstruct(RecVarNode recvar)
 	{
 		ModelDel del = del();
 		GContinue gc = new GContinue(recvar);//, sicontext, env);

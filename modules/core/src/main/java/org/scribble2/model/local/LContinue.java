@@ -2,18 +2,18 @@ package org.scribble2.model.local;
 
 import org.scribble2.model.Continue;
 import org.scribble2.model.del.ModelDel;
-import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.sesstype.kind.Local;
 
 public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 {
-	public LContinue(RecursionVarNode recvar)
+	public LContinue(RecVarNode recvar)
 	{
 		super(recvar);
 	}
 
 	@Override
-	protected LContinue reconstruct(RecursionVarNode recvar)
+	protected LContinue reconstruct(RecVarNode recvar)
 	{
 		ModelDel del = del();
 		LContinue lc = new LContinue(recvar);//, sicontext, env);
