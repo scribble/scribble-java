@@ -9,10 +9,8 @@ import java.nio.file.Path;
 
 public abstract class ResourceLocator implements IResourceLocator
 {
-	//public abstract Resource getResource(String path);
-
 	//public static InputStreamResource getResourceByFullPath(String path)
-	public static InputStreamResource getResourceByFullPath(Path path)
+	public static InputStreamResource getResourceByFullPath(Path path)  // FIXME: should be in front-end specific e.g. DirectoryResourceLocator, used to find/load main module; then MainContext uses abstract ResourceLocator to load rest
 	{
 		/*File f = new File(path);
 		if (!f.isFile())
@@ -26,10 +24,10 @@ public abstract class ResourceLocator implements IResourceLocator
 		{
 			throw new RuntimeException("File couldn't be opened: " + path);
 		}
-		return new InputStreamResource(path, getFileInputStream(path));
+		return new InputStreamResource(path, getInputStream(path));
 	}
 	
-	protected static InputStream getFileInputStream(Path path)
+	protected static InputStream getInputStream(Path path)  // FIXME: this is specific to file systems
 	{
 		try
 		{
@@ -41,6 +39,7 @@ public abstract class ResourceLocator implements IResourceLocator
 		}
 	}
 
+	@Deprecated
 	//protected static Resource openResource(String path, File f)
 	protected static FileInputStream getFileInputStream(File f)
 	{

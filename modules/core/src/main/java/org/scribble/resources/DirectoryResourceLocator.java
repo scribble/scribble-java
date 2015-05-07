@@ -82,6 +82,7 @@ public class DirectoryResourceLocator extends ResourceLocator // implements Reso
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public InputStreamResource getResource(String path)
 	{
 		// Resource ret= getResourceByFullPath(relativePath); // Debatable
@@ -111,6 +112,7 @@ public class DirectoryResourceLocator extends ResourceLocator // implements Reso
 		throw new RuntimeException("Couldn't open resource: " + path);
 	}
 
+	// FIXME: need to sort out what "getResource" should mean at level of ResourceLocator abstraction, e.g. if arg is specifically a Path or more abstract, whether it is the complete location or partial, etc
 	public InputStreamResource getResource(Path path)
 	{
 		for (Path impath : this.paths)

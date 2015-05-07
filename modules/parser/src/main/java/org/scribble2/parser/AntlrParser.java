@@ -14,8 +14,11 @@ import org.scribble.resources.Resource;
 
 
 // Parses Resources into ANTLR Trees
+// Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" CommonTrees into ModelNodes
 public class AntlrParser
 {
+	//public static final AntlrParser parser = new AntlrParser();
+	
 	public AntlrParser()
 	{
 	}

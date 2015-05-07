@@ -32,8 +32,10 @@ public interface IResourceLocator {
 	 * @param path The resource path
 	 * @return The resource, or null if not found
 	 */
+	@Deprecated
 	public Resource getResource(String path);
-	public Resource getResource(Path path);
+
+	public Resource getResource(Path path);  // Should be something more abstract, some kind of URI
 
 	//public Resource getResourceByFullPath(String path);  // Doesn't search import paths
 	//public Resource getResource(String path);  // Tries without import paths first, then searches import paths

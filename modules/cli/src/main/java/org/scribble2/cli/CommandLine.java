@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.scribble.resources.DirectoryResourceLocator;
+import org.scribble.resources.ResourceLocator;
 import org.scribble2.main.MainContext;
 import org.scribble2.model.Module;
 import org.scribble2.model.visit.Job;
@@ -21,10 +23,11 @@ import org.scribble2.util.ScribbleException;
 
 public class CommandLine implements Runnable
 {
+	public static final String VERBOSE_FLAG = "-V";
 	public static final String PATH_FLAG = "-path";
 	public static final String PROJECT_FLAG = "-project";
 	
-	protected enum Arg { MAIN, PATH, PROJECT }
+	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE }
 	
 	private final Map<Arg, String[]> args;
 	
@@ -45,12 +48,7 @@ public class CommandLine implements Runnable
 	@Override
 	public void run()
 	{
-		//..HERE: import path should be a CL parameter, not MainContext; MainContext should be working off abstract resource locators only -- but then Resource and ResourceLocator should be made abstract from (file)paths (cf. toPath in ScribbleModuleLoader)
-		//..HERE: use Path API; Job takes MainContext as argument
-		//..HERE: fix CliJob/Job factoring (e.g. pointers and Modules -- maybe already ok); CliJob should record job parameters; smoothen related APIs; additional flags, e.g. projection
-			
-		MainContext mc = newMainContext();
-		Job job = newJob(mc);
+		Job job = newJob(newMainContext());
 
 		try
 		{
@@ -72,7 +70,7 @@ public class CommandLine implements Runnable
 	{
 		Map<ProtocolName, Module> projs = jc.getProjections();
 		Role role = new Role(this.args.get(Arg.PROJECT)[1]);
-		ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, this.args.get(Arg.PROJECT)[0]), role).toName();
+		ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, this.args.get(Arg.PROJECT)[0]), role).toName();  // FIXME: factor out name projection from name node construction
 		if (!projs.containsKey(proto))
 		{
 			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));
@@ -82,9 +80,11 @@ public class CommandLine implements Runnable
 	
 	private MainContext newMainContext()
 	{
+		boolean debug = this.args.containsKey(Arg.VERBOSE);
 		Path mainpath = CommandLine.parseMainPath(this.args.get(Arg.MAIN)[0]);
 		List<Path> impaths = this.args.containsKey(Arg.PATH) ? CommandLine.parseImportPaths(this.args.get(Arg.PATH)[0]) : Collections.emptyList();
-		return new MainContext(impaths, mainpath);
+		ResourceLocator locator = new DirectoryResourceLocator(impaths);
+		return new MainContext(debug, locator, mainpath);
 	}
 	
 	//protected Module loadModule(Resource resource) {
@@ -93,7 +93,7 @@ public class CommandLine implements Runnable
 	{
 		//Job job = new Job(impaths, mainpath, cjob.getModules(), cjob.getModules().get(cjob.main));
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
-		return new Job(mc.getModules(), mc.main);
+		return new Job(mc.debug, mc.getModules(), mc.main);
 	}
 	
 	private static Path parseMainPath(String path)
@@ -278,6 +278,7 @@ class CommandLineArgumentParser
 	
 	private void addFlags()
 	{
+		this.FLAGS.put(CommandLine.VERBOSE_FLAG, CommandLine.Arg.VERBOSE);
 		this.FLAGS.put(CommandLine.PATH_FLAG, CommandLine.Arg.PATH);
 		this.FLAGS.put(CommandLine.PROJECT_FLAG, CommandLine.Arg.PROJECT);
 	}
@@ -309,6 +310,11 @@ class CommandLineArgumentParser
 		String flag = this.args[i];
 		switch (flag)
 		{
+			case CommandLine.VERBOSE_FLAG:
+			{
+				this.parsed.put(CommandLine.Arg.VERBOSE, new String[0]);
+				return i;
+			}
 			case CommandLine.PATH_FLAG:
 			{
 				return parsePath(i);

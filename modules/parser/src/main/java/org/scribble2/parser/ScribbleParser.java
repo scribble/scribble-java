@@ -58,8 +58,11 @@ import scribble2.util.Util;*/
 // Parses ANTLR Trees into Scribble.Ast.ModelNode trees
 public class ScribbleParser
 {
+	//public static final ScribbleParser parser = new ScribbleParser();
+	
 	public ScribbleParser()
 	{
+
 	}
 
 	/*// Does not use import paths
