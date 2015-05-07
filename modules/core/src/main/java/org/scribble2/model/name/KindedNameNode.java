@@ -149,8 +149,7 @@ public class KindedNameNode<K extends Kind> extends ModelNodeBase implements Kin
 		KindedNameNode<? extends Kind> n = (KindedNameNode<? extends Kind>) super.del(del);
 		return n;
 	}*/
-
-	@Deprecated
+	
 	public static <K extends Kind> KindedNameNode<K> castKindedNameNode(K kind, ModelNode n)
 	{
 		if (!(n instanceof KindedNameNode))
@@ -166,20 +165,5 @@ public class KindedNameNode<K extends Kind> extends ModelNodeBase implements Kin
 		@SuppressWarnings("unchecked")
 		KindedNameNode<K> tmp2 = (KindedNameNode<K>) n;
 		return tmp2;
-	}
-
-	public static <T extends KindedNameNode<K>, K extends Kind> T castKindedNameNode(T cast, ModelNode n)
-	{
-		if (!(n.getClass().equals(cast.getClass())))
-		{
-			throw new RuntimeException("KindedNameNode " + cast + " class cast error: " + n);
-		}
-		@SuppressWarnings("unchecked")
-		T tmp = (T) n;
-		if (!tmp.kind.equals(cast.kind))
-		{
-			throw new RuntimeException("KindedNameNode " + cast.kind + " kind cast error: " + tmp.kind);
-		}
-		return tmp;
 	}
 }

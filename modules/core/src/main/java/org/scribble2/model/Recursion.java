@@ -1,15 +1,13 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.SimpleKindedNameNode;
+import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.RecursionVarKind;
 import org.scribble2.util.ScribbleException;
 
 public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 		extends CompoundInteractionNode
 {
-	//public final RecursionVarNode recvar;
-	public final SimpleKindedNameNode<RecursionVarKind> recvar;
+	public final RecursionVarNode recvar;
 	public final T block;
 
 	/*protected Recursion(CommonTree ct, RecursionVarNode recvar, T block)
@@ -22,21 +20,18 @@ public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSeq
 		this(ct, recvar, block, cicontext, null);
 	}*/
 
-	//protected Recursion(RecursionVarNode recvar, T block)//, CompoundInteractionNodeContext cicontext, Env env)
-	protected Recursion(SimpleKindedNameNode<RecursionVarKind> recvar, T block)//, CompoundInteractionNodeContext cicontext, Env env)
+	protected Recursion(RecursionVarNode recvar, T block)//, CompoundInteractionNodeContext cicontext, Env env)
 	{
 		this.recvar = recvar;
 		this.block = block;
 	}
 
-	//protected abstract Recursion<T> reconstruct(RecursionVarNode recvar, T block);
-	protected abstract Recursion<T> reconstruct(SimpleKindedNameNode<RecursionVarKind> recvar, T block);
+	protected abstract Recursion<T> reconstruct(RecursionVarNode recvar, T block);
 
 	@Override
 	public Recursion<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		//RecursionVarNode recvar = (RecursionVarNode) visitChild(this.recvar, nv);
-		SimpleKindedNameNode<RecursionVarKind> recvar = SimpleKindedNameNode.castSimpleKindedNameNode(RecursionVarKind.KIND, visitChild(this.recvar, nv));
+		RecursionVarNode recvar = (RecursionVarNode) visitChild(this.recvar, nv);
 		T block = visitChildWithClassCheck(this, this.block, nv);
 		//return new Recursion<>(this.ct, recvar, block, getContext(), getEnv());
 		return reconstruct(recvar, block);//, getContext(), getEnv());

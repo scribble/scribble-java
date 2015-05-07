@@ -3,16 +3,14 @@ package org.scribble2.model;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble2.model.name.SimpleKindedNameNode;
+import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.util.ScribbleException;
 
 public abstract class Choice<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 		extends CompoundInteractionNode
 {
-	//public final RoleNode subj;
-	public final SimpleKindedNameNode<RoleKind> subj;
+	public final RoleNode subj;
 	public final List<T> blocks;
 
 	// All constructors being protected is a kind of "abstract class"
@@ -26,22 +24,19 @@ public abstract class Choice<T extends ProtocolBlock<? extends InteractionSequen
 		this(ct, subj, blocks, cicontext, null);
 	}*/
 
-	//protected Choice(RoleNode subj, List<T> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
-	protected Choice(SimpleKindedNameNode<RoleKind> subj, List<T> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
+	protected Choice(RoleNode subj, List<T> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
 	{
 		super();//, cicontext, env);
 		this.subj = subj;
 		this.blocks = new LinkedList<>(blocks);
 	}
 	
-	//protected abstract Choice<T> reconstruct(RoleNode subj, List<T> blocks);//, CompoundInteractionNodeContext cicontext, Env env);
-	protected abstract Choice<T> reconstruct(SimpleKindedNameNode<RoleKind> subj, List<T> blocks);//, CompoundInteractionNodeContext cicontext, Env env);
+	protected abstract Choice<T> reconstruct(RoleNode subj, List<T> blocks);//, CompoundInteractionNodeContext cicontext, Env env);
 	
 	@Override
 	public Choice<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		//RoleNode subj = (RoleNode) visitChild(this.subj, nv);
-		SimpleKindedNameNode<RoleKind> subj = SimpleKindedNameNode.castSimpleKindedNameNode(RoleKind.KIND, visitChild(this.subj, nv));
+		RoleNode subj = (RoleNode) visitChild(this.subj, nv);
 		List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
 		//return new Choice<T>(this.ct, subj, blocks, getContext(), getEnv());
 		return reconstruct(subj, blocks);//, getContext(), getEnv());  // OK to alias the same context/env objects here? because leave should take care of making new ones as necessary -- now immutable anyway

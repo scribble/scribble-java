@@ -5,14 +5,12 @@ import org.scribble2.model.Do;
 import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.RoleInstantiationList;
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.name.KindedNameNode;
-import org.scribble2.sesstype.kind.GlobalProtocolKind;
+import org.scribble2.model.name.qualified.ProtocolNameNode;
 
-public class GlobalDo extends Do<GlobalProtocolKind> implements SimpleGlobalInteractionNode
+public class GlobalDo extends Do implements SimpleGlobalInteractionNode
 {
 	//public GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	//public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, KindedNameNode<GlobalProtocolKind> proto)
+	public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		//super(scope, roleinstans, arginstans, proto);
 		super(roleinstans, arginstans, proto);
@@ -22,14 +20,12 @@ public class GlobalDo extends Do<GlobalProtocolKind> implements SimpleGlobalInte
 	protected ModelNodeBase copy()
 	{
 		//return new GlobalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
-		//return new GlobalDo(this.roleinstans, this.arginstans, KindedNameNode.castKindedNameNode(GlobalProtocolKind.KIND, this.proto));
 		return new GlobalDo(this.roleinstans, this.arginstans, this.proto);
 	}
 
 	@Override
 	//protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	//protected Do reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	protected Do<GlobalProtocolKind> reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, KindedNameNode<GlobalProtocolKind> proto)
+	protected Do reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		ModelDelegate del = del();
 		GlobalDo gd = new GlobalDo(roleinstans, arginstans, proto);

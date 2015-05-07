@@ -113,7 +113,6 @@ public class ParameterNode<K extends Kind> extends SimpleKindedNameNode<K> imple
 		return false;
 	}*/
 
-	@Deprecated
 	public static <K extends Kind> ParameterNode<K> castParameterNode(K kind, ModelNode n)
 	{
 		return (ParameterNode<K>) SimpleKindedNameNode.castSimpleKindedNameNode(kind, n);

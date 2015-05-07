@@ -2,21 +2,18 @@ package org.scribble2.model.global;
 
 import org.scribble2.model.Continue;
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.name.SimpleKindedNameNode;
-import org.scribble2.sesstype.kind.RecursionVarKind;
+import org.scribble2.model.name.simple.RecursionVarNode;
 
 public class GlobalContinue extends Continue implements SimpleGlobalInteractionNode
 {
-	//public GlobalContinue(RecursionVarNode recvar)
-	public GlobalContinue(SimpleKindedNameNode<RecursionVarKind> recvar)
+	public GlobalContinue(RecursionVarNode recvar)
 	{
 		//this(t, recvar, null, null);
 		super(recvar);
 	}
 
 	@Override
-	//protected GlobalContinue reconstruct(RecursionVarNode recvar)
-	protected GlobalContinue reconstruct(SimpleKindedNameNode<RecursionVarKind> recvar)
+	protected GlobalContinue reconstruct(RecursionVarNode recvar)
 	{
 		ModelDelegate del = del();
 		GlobalContinue gc = new GlobalContinue(recvar);//, sicontext, env);

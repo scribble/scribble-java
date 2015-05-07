@@ -3,20 +3,17 @@ package org.scribble2.model;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble2.model.name.SimpleKindedNameNode;
+import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.RoleKind;
-import org.scribble2.sesstype.name.KindedName;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 
 public abstract class MessageTransfer extends SimpleInteractionNode
 {
-	//public final RoleNode src;
-	public final SimpleKindedNameNode<RoleKind> src;
+	public final RoleNode src;
 	public final MessageNode msg;
-	//public final List<RoleNode> dests;
-	public final List<SimpleKindedNameNode<RoleKind>> dests;
+	public final List<RoleNode> dests;
 
 	/*protected MessageTransfer(CommonTree ct, RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
@@ -28,22 +25,19 @@ public abstract class MessageTransfer extends SimpleInteractionNode
 		this(ct, src, msg, dests, sicontext, null);
 	}*/
 
-	//protected MessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)//, SimpleInteractionNodeContext sicontext, Env env)
-	protected MessageTransfer(SimpleKindedNameNode<RoleKind> src, MessageNode msg, List<SimpleKindedNameNode<RoleKind>> dests)//, SimpleInteractionNodeContext sicontext, Env env)
+	protected MessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)//, SimpleInteractionNodeContext sicontext, Env env)
 	{
 		this.src = src;
 		this.msg = msg;
 		this.dests = new LinkedList<>(dests);
 	}
 
-	//protected abstract MessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests);//, SimpleInteractionNodeContext sicontext, Env env);
-	protected abstract MessageTransfer reconstruct(SimpleKindedNameNode<RoleKind> src, MessageNode msg, List<SimpleKindedNameNode<RoleKind>> dests);//, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract MessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
 	public MessageTransfer visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		//RoleNode src = (RoleNode) visitChild(this.src, nv);
-		SimpleKindedNameNode<RoleKind> src = SimpleKindedNameNode.castSimpleKindedNameNode(RoleKind.KIND, visitChild(this.src, nv));
+		RoleNode src = (RoleNode) visitChild(this.src, nv);
 		//MessageNode msg = visitMessageNode(nv, this.msg);
 		MessageNode msg = (MessageNode) visitChild(this.msg, nv);
 		/*List<RoleNode> dests = new LinkedList<RoleNode>();
@@ -52,18 +46,14 @@ public abstract class MessageTransfer extends SimpleInteractionNode
 			dests.add((RoleNode) visitChild(dest, nv));
 		}*/
 		//return new MessageTransfer(this.ct, src, msg, dests, getContext(), getEnv());
-		//List<RoleNode> dests = visitChildListWithClassCheck(this, this.dests, nv);
-		List<SimpleKindedNameNode<RoleKind>> dests = visitChildListWithClassCheck(this, this.dests, nv);  // FIXME: use kinded name node cast
+		List<RoleNode> dests = visitChildListWithClassCheck(this, this.dests, nv);
 		return reconstruct(src, msg, dests);//, getContext(), getEnv());
 	}
 	
-	//public List<Role> getDestinationRoles()
-	public List<KindedName<RoleKind>> getDestinationRoles()
+	public List<Role> getDestinationRoles()
 	{
-		//List<Role> dests = new LinkedList<>();
-		List<KindedName<RoleKind>> dests = new LinkedList<>();
-		//for (RoleNode rn : this.dests)
-		for (SimpleKindedNameNode<RoleKind> rn : this.dests)
+		List<Role> dests = new LinkedList<>();
+		for (RoleNode rn : this.dests)
 		{
 			dests.add(rn.toName());
 		}

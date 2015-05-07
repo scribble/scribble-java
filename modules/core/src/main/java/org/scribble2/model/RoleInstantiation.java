@@ -1,17 +1,13 @@
 package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.name.KindedRoleNode;
-import org.scribble2.model.name.SimpleKindedNameNode;
-import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.name.Role;
 
 
-//public class RoleInstantiation extends Instantiation<RoleNode>
-public class RoleInstantiation extends Instantiation<KindedRoleNode>
+public class RoleInstantiation extends Instantiation<RoleNode>
 {
-	//public RoleInstantiation(RoleNode arg)
-	public RoleInstantiation(KindedRoleNode arg)
+	public RoleInstantiation(RoleNode arg)
 	{
 		super(arg);
 	}
@@ -23,8 +19,7 @@ public class RoleInstantiation extends Instantiation<KindedRoleNode>
 	}	
 
 	@Override
-	//protected RoleInstantiation reconstruct(RoleNode arg)
-	protected RoleInstantiation reconstruct(KindedRoleNode arg)
+	protected RoleInstantiation reconstruct(RoleNode arg)
 	{
 		ModelDelegate del = del();
 		RoleInstantiation ri = new RoleInstantiation(arg);
@@ -36,8 +31,7 @@ public class RoleInstantiation extends Instantiation<KindedRoleNode>
 	@Override
 	public RoleInstantiation project(Role self)
 	{
-		//RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, this.arg.toName().toString());
-		SimpleKindedNameNode<RoleKind> rn = ModelFactoryImpl.FACTORY.SimpleKindedNameNode(RoleKind.KIND, this.arg.toName().toString());
+		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, this.arg.toName().toString());
 		//return new RoleInstantiation(rn);
 		return ModelFactoryImpl.FACTORY.RoleInstantiation(rn);
 	}
