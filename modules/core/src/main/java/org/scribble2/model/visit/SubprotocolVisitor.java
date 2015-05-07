@@ -14,7 +14,7 @@ import org.scribble2.model.Module;
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ScopedNode;
 import org.scribble2.model.context.ModuleContext;
-import org.scribble2.model.del.ModuleDelegate;
+import org.scribble2.model.del.ModuleDel;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.ScopedSubprotocolSignature;
@@ -126,7 +126,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 		if (child instanceof Module)  // Factor out?
 		{
-			this.mcontext = ((ModuleDelegate) ((Module) child).del()).getModuleContext();
+			this.mcontext = ((ModuleDel) ((Module) child).del()).getModuleContext();
 		}
 		if (child instanceof ProtocolDecl)
 		{

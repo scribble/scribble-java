@@ -8,7 +8,7 @@ import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ParamDeclList;
 import org.scribble2.model.RoleDeclList;
-import org.scribble2.model.del.ModuleDelegate;
+import org.scribble2.model.del.ModuleDel;
 import org.scribble2.model.del.ProtocolDeclDel;
 import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.local.LProtocolDecl;
@@ -86,7 +86,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel
 		Map<ProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getProtocolDependencies().get(self);
 		
 		//Module projected = projectIntoModule(proj, gpd);
-		Module projected = ((ModuleDelegate) root.del()).createModuleForProjection(proj, root, lpd, deps);  // FIXME: projection should always use the main module?
+		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);  // FIXME: projection should always use the main module?
 		// store projections in projector? in context? do earlier with context building? (but subprotocol pattern not available there)* /
 		//dependencies.put(self, deps);
 

@@ -26,7 +26,7 @@ import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
-public class ModuleDelegate extends ModelDelBase
+public class ModuleDel extends ModelDelBase
 {
 	private ModuleContext context;
 	
@@ -43,7 +43,7 @@ public class ModuleDelegate extends ModelDelBase
 
 	// Used by parser and projection
 	//public ModuleDelegate(ModuleName root)
-	public ModuleDelegate()
+	public ModuleDel()
 	{
 
 	}
@@ -61,9 +61,9 @@ public class ModuleDelegate extends ModelDelBase
 	}*/
 
 	//@Override
-	private ModuleDelegate copy()
+	private ModuleDel copy()
 	{
-		return new ModuleDelegate();
+		return new ModuleDel();
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class ModuleDelegate extends ModelDelBase
 	public Module leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
 	{
 		//visited = visited.del(new ModuleDelegate(builder.getJobContext(), (Module) visited));
-		ModuleDelegate del = copy();  // FIXME: should be a deep clone in principle
+		ModuleDel del = copy();  // FIXME: should be a deep clone in principle
 		//del.context = new ModuleContext(builder.getJobContext(), (Module) visited);
 		del.context = builder.getModuleContext();
 		return (Module) visited.del(del);

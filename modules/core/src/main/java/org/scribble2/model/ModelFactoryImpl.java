@@ -5,7 +5,7 @@ import java.util.List;
 import org.scribble2.model.del.DefaultModelDel;
 import org.scribble2.model.del.ImportModuleDel;
 import org.scribble2.model.del.ModelDel;
-import org.scribble2.model.del.ModuleDelegate;
+import org.scribble2.model.del.ModuleDel;
 import org.scribble2.model.del.ParamDeclDel;
 import org.scribble2.model.del.RoleDeclDel;
 import org.scribble2.model.del.global.GChoiceDel;
@@ -110,7 +110,7 @@ public class ModelFactoryImpl implements ModelFactory
 	{
 		Module module = new Module(moddecl, imports, data, protos);
 		//module = del(module, new ModuleDelegate(module.getFullModuleName()));
-		module = del(module, new ModuleDelegate());
+		module = del(module, new ModuleDel());
 		return module;
 	}
 
