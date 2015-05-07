@@ -1,11 +1,14 @@
 package org.scribble2.main;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.resources.Resource;
 import org.scribble.resources.ResourceLocator;
 import org.scribble2.model.ImportDecl;
@@ -16,31 +19,26 @@ import org.scribble2.parser.ScribbleModuleLoader;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Pair;
 import org.scribble2.sesstype.name.ModuleName;
+import org.scribble2.util.ScribbleException;
 
-// MainContext takes ResourceLocator abstractly (e.g. DirectoryResourceLocator), but because abstract Resource itself works off paths, it takes mainpath (rather than something more abstract to identify the "main" resource)
-// Resource and ResourceLocator should be made abstract from (file)paths (cf. toPath in ScribbleModuleLoader)
 public class MainContext
 {
-	public final boolean debug;
-	
 	public final ModuleName main;
 
-	private final AntlrParser aparser = new AntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" CommonTrees into ModelNodes
-	private final ScribbleParser sparser = new ScribbleParser();
-
 	private final ResourceLocator locator;
+	private final AntlrParser aparser;
+	private final ScribbleParser sparser;
 	private final ScribbleModuleLoader loader;
 
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
 	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
 	
 	//public MainContext(List<Path> importPath, String mainpath) throws IOException, ScribbleException
-	//public MainContext(List<Path> importPath, Path mainpath)
-	public MainContext(boolean debug, ResourceLocator locator, Path mainpath)
+	public MainContext(List<Path> importPath, Path mainpath)
 	{
-		this.debug = debug;
-
-		this.locator = locator; 
+		this.locator = new DirectoryResourceLocator(importPath);
+		this.aparser = new AntlrParser();
+		this.sparser = new ScribbleParser();
 		this.loader = new ScribbleModuleLoader(this.locator, this.aparser, this.sparser);
 
 		Pair<Resource, Module> p = loadMainModule(mainpath);
@@ -50,7 +48,6 @@ public class MainContext
 		loadAllModules(p);
 	}
 	
-	// Checking main module resource exists at specific location should be factored out to front-end -- main module resource is specified at local front end level of abstraction, while MainConetext uses abstract resource loading
 	private Pair<Resource, Module> loadMainModule(Path mainpath)
 	{
 		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
