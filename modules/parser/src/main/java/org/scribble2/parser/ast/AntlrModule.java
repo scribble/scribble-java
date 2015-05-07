@@ -5,21 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.DataTypeDecl;
 import org.scribble2.model.ImportDecl;
-import org.scribble2.model.InteractionNode;
-import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.Module;
 import org.scribble2.model.ModuleDecl;
-import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.ProtocolDecl;
-import org.scribble2.model.ProtocolDefinition;
-import org.scribble2.model.ProtocolHeader;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
+import org.scribble2.sesstype.kind.Kind;
 
 public class AntlrModule
 {
@@ -31,7 +26,7 @@ public class AntlrModule
 		List<ImportDecl> ids = new LinkedList<>();
 		List<DataTypeDecl> ptds = new LinkedList<>();
 		//List<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
-		List<ProtocolDecl>
+		List<ProtocolDecl<? extends Kind>>
 				pds = new LinkedList<>();
 		for (CommonTree id : getImportDeclChildren(ct))
 		{
@@ -45,10 +40,10 @@ public class AntlrModule
 		}
 		for (CommonTree pd : getProtocolDeclChildren(ct))
 		{
-			/*@SuppressWarnings("unchecked")
-			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			@SuppressWarnings("unchecked")
+			/*AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 					tmp = (AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) parser.parse(pd);*/
-			ProtocolDecl tmp = (ProtocolDecl) parser.parse(pd);
+			ProtocolDecl<Kind> tmp = (ProtocolDecl<Kind>) parser.parse(pd);
 			pds.add(tmp);
 		}
 

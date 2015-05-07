@@ -10,20 +10,16 @@ import java.util.stream.Collectors;
 import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.Do;
-import org.scribble2.model.InteractionNode;
-import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
-import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.ProtocolDecl;
-import org.scribble2.model.ProtocolDefinition;
-import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.ScopedNode;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.ScopedSubprotocolSignature;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
@@ -52,7 +48,8 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 	// Doesn't push a subprotocol signature; only records the roles/args
 	// proto is fullname
-	private void enterRootProtocolDecl(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+	//private void enterRootProtocolDecl(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+	private void enterRootProtocolDecl(AbstractProtocolDecl<? extends Kind> pd)
 	{
 		//ProtocolName fullname = pd.getFullProtocolName(getModuleContext().root);
 		/*List<Role> roleparams = pd.roledecls.getRoles();

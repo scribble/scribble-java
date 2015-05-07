@@ -5,11 +5,12 @@ import java.util.List;
 
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 
-public abstract class MessageTransfer extends SimpleInteractionNode
+public abstract class MessageTransfer<K extends Kind> extends SimpleInteractionNode<K>
 {
 	public final RoleNode src;
 	public final MessageNode msg;
@@ -32,10 +33,10 @@ public abstract class MessageTransfer extends SimpleInteractionNode
 		this.dests = new LinkedList<>(dests);
 	}
 
-	protected abstract MessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests);//, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract MessageTransfer<K> reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
-	public MessageTransfer visitChildren(ModelVisitor nv) throws ScribbleException
+	public MessageTransfer<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		RoleNode src = (RoleNode) visitChild(this.src, nv);
 		//MessageNode msg = visitMessageNode(nv, this.msg);

@@ -1,14 +1,19 @@
 package org.scribble2.model.global;
 
 import org.scribble2.model.AbstractProtocolDecl;
+import org.scribble2.model.ProtocolDefinition;
+import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.kind.GlobalKind;
 
 //public class GlobalProtocolDecl extends ProtocolDecl<GlobalInteraction>
-public class GlobalProtocolDecl extends AbstractProtocolDecl<GlobalProtocolHeader, GlobalProtocolDefinition> implements GlobalNode
+//public class GlobalProtocolDecl extends AbstractProtocolDecl<GlobalProtocolHeader, GlobalProtocolDefinition> implements GlobalNode
+public class GlobalProtocolDecl extends AbstractProtocolDecl<GlobalKind> implements GlobalNode
 {
 	//public GlobalProtocolDecl(CommonTree ct, ProtocolNode name, RoleDeclList rdl, ParameterDeclList pdl, ProtocolDefinition<GlobalInteraction> def)
 	//public GlobalProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, GlobalProtocolDefinition def)
-	public GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def)
+	//public GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def)
+	public GlobalProtocolDecl(ProtocolHeader header, ProtocolDefinition<GlobalKind> def)
 	{
 		//this(t, name, roledecls, paramdecls, def, null, null);
 		super(header, def);
@@ -22,7 +27,8 @@ public class GlobalProtocolDecl extends AbstractProtocolDecl<GlobalProtocolHeade
 	}
 
 	@Override
-	protected GlobalProtocolDecl reconstruct(GlobalProtocolHeader header, GlobalProtocolDefinition def)//, ProtocolDeclContext pdcontext, Env env)
+	//protected GlobalProtocolDecl reconstruct(GlobalProtocolHeader header, GlobalProtocolDefinition def)//, ProtocolDeclContext pdcontext, Env env)
+	protected GlobalProtocolDecl reconstruct(ProtocolHeader header, ProtocolDefinition<GlobalKind> def)//, ProtocolDeclContext pdcontext, Env env)
 	{
 		
 		ModelDelegate del = del();

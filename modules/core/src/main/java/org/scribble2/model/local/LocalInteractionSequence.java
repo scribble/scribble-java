@@ -2,20 +2,23 @@ package org.scribble2.model.local;
 
 import java.util.List;
 
+import org.scribble2.model.InteractionNode;
 import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.kind.LocalKind;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
-public class LocalInteractionSequence extends InteractionSequence<LocalInteractionNode> implements LocalNode
+public class LocalInteractionSequence extends InteractionSequence<LocalKind> implements LocalNode
 {
-	public LocalInteractionSequence(List<LocalInteractionNode> lis)
+	//public LocalInteractionSequence(List<LocalInteractionNode> lis)
+	public LocalInteractionSequence(List<? extends InteractionNode<LocalKind>> lis)
 	{
 		super(lis);
 	}
 
 	@Override
-	protected LocalInteractionSequence reconstruct(List<LocalInteractionNode> actions)
+	protected LocalInteractionSequence reconstruct(List<? extends InteractionNode<LocalKind>> actions)
 	{
 		ModelDelegate del = del();
 		LocalInteractionSequence lis = new LocalInteractionSequence(actions);

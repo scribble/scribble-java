@@ -1,17 +1,22 @@
 package org.scribble2.model.local;
 
+import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.kind.LocalKind;
 
-public class LocalProtocolDefinition extends ProtocolDefinition<LocalProtocolBlock> implements LocalNode
+//public class LocalProtocolDefinition extends ProtocolDefinition<LocalProtocolBlock> implements LocalNode
+public class LocalProtocolDefinition extends ProtocolDefinition<LocalKind> implements LocalNode
 {
-	public LocalProtocolDefinition(LocalProtocolBlock block)
+	//public LocalProtocolDefinition(LocalProtocolBlock block)
+	public LocalProtocolDefinition(ProtocolBlock<LocalKind> block)
 	{
 		super(block);
 	}
 
 	@Override
-	protected LocalProtocolDefinition reconstruct(LocalProtocolBlock block)
+	//protected LocalProtocolDefinition reconstruct(LocalProtocolBlock block)
+	protected LocalProtocolDefinition reconstruct(ProtocolBlock<LocalKind> block)
 	{
 		ModelDelegate del = del();
 		LocalProtocolDefinition lpd = new LocalProtocolDefinition(block);

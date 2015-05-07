@@ -1,19 +1,21 @@
 package org.scribble2.model;
 
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.util.ScribbleException;
 
 
 //public class ProtocolBlock extends AbstractNode
-public abstract class ProtocolBlock<T extends InteractionSequence<? extends InteractionNode>> extends CompoundInteraction //extends AbstractEnvDelegationNode
+//public abstract class ProtocolBlock<T extends InteractionSequence<? extends InteractionNode>> extends CompoundInteraction //extends AbstractEnvDelegationNode
+public abstract class ProtocolBlock<K extends Kind> extends CompoundInteraction //extends AbstractEnvDelegationNode
 {
-	//public final InteractionSequence seq;
-	public final T seq;
+	public final InteractionSequence<K> seq;
+	//public final T seq;
 	
 	//private final Env env;  // Could save env on all "statements"
 
-	//public ProtocolBlock(CommonTree ct, InteractionSequence seq)
-	protected ProtocolBlock(T seq)
+	public ProtocolBlock(InteractionSequence<K> seq)
+	//protected ProtocolBlock(T seq)
 	{
 		//this(ct, is, null);
 		this.seq = seq;
@@ -32,13 +34,15 @@ public abstract class ProtocolBlock<T extends InteractionSequence<? extends Inte
 		//this.seq = seq;
 	}*/
 	
-	protected abstract ProtocolBlock<T> reconstruct(T seq);//, ProtocolBlockContext bcontext, Env env);
+	//protected abstract ProtocolBlock<T> reconstruct(T seq);//, ProtocolBlockContext bcontext, Env env);
+	protected abstract ProtocolBlock<K> reconstruct(InteractionSequence<K> seq);//, ProtocolBlockContext bcontext, Env env);
 
 	@Override
-	//public ProtocolBlock visitChildren(NodeVisitor nv) throws ScribbleException
-	public ProtocolBlock<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	public ProtocolBlock<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	//public ProtocolBlock<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		T seq = visitChildWithClassCheck(this, this.seq, nv);
+		//T seq = visitChildWithClassCheck(this, this.seq, nv);
+		InteractionSequence<K> seq = visitChildWithClassCheck(this, this.seq, nv);
 		//return new ProtocolBlock<>(this.ct, seq, getContext(), getEnv());
 		return reconstruct(seq);//, getContext(), getEnv());
 	}

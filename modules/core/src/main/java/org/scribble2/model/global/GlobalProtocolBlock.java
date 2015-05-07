@@ -1,9 +1,12 @@
 package org.scribble2.model.global;
 
+import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.kind.GlobalKind;
 
-public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence> implements GlobalNode
+//public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence> implements GlobalNode
+public class GlobalProtocolBlock extends ProtocolBlock<GlobalKind> implements GlobalNode
 {
 	/*public static final Function<ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>, GlobalProtocolBlock>
 			toGlobalProtocolBlock =
@@ -16,7 +19,8 @@ public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence
 							//-> blocks.stream().map(GlobalChoice.toGlobalProtocolBlock).collect(Collectors.toList());
 							-> Util.listCast(blocks, toGlobalProtocolBlock);*/
 
-	public GlobalProtocolBlock(GlobalInteractionSequence seq)
+	//public GlobalProtocolBlock(GlobalInteractionSequence seq)
+	public GlobalProtocolBlock(InteractionSequence<GlobalKind> seq)
 	{
 		//this(t, gis, null, null);
 		super(seq);
@@ -24,9 +28,11 @@ public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence
 	}
 
 	@Override
-	protected ProtocolBlock<GlobalInteractionSequence> reconstruct(GlobalInteractionSequence seq)
+	//protected ProtocolBlock<GlobalInteractionSequence> reconstruct(GlobalInteractionSequence seq)
+	protected GlobalProtocolBlock reconstruct(InteractionSequence<GlobalKind> seq)
 	{
 		ModelDelegate del = del();
+		//GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);
 		GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);
 		gpb = (GlobalProtocolBlock) gpb.del(del);
 		return gpb;

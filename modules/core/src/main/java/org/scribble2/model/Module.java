@@ -10,6 +10,7 @@ import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.local.LocalProtocolDecl;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.ProtocolName;
@@ -23,7 +24,7 @@ public class Module extends ModelNodeBase
 	public final List<ImportDecl> imports;
 	public final List<DataTypeDecl> data;
 	//public final List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
-	public final List<ProtocolDecl>
+	public final List<ProtocolDecl<? extends Kind>>
 			protos;
 	
 	public Module( 
@@ -32,7 +33,7 @@ public class Module extends ModelNodeBase
 			List<ImportDecl> imports,
 			List<DataTypeDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
-			List<ProtocolDecl> protos)
+			List<ProtocolDecl<? extends Kind>> protos)
 	{
 		this.moddecl = moddecl;
 		this.imports = new LinkedList<>(imports);
@@ -53,7 +54,7 @@ public class Module extends ModelNodeBase
 			s += "\n" + dtd;
 		}
 		//for (AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd : this.protos)
-		for (ProtocolDecl pd : this.protos)
+		for (ProtocolDecl<? extends Kind> pd : this.protos)
 		{
 			s += "\n" + pd;
 		}
@@ -77,7 +78,7 @@ public class Module extends ModelNodeBase
 			List<ImportDecl> imports,
 			List<DataTypeDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
-			List<ProtocolDecl> protos)
+			List<ProtocolDecl<? extends Kind>> protos)
 	{
 		ModelDelegate del = del();
 		Module m = new Module(moddecl, imports, data, protos);
@@ -93,7 +94,7 @@ public class Module extends ModelNodeBase
 		List<ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);
 		List<DataTypeDecl> data = visitChildListWithClassCheck(this, this.data, nv);
 		//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
-		List<ProtocolDecl>
+		List<ProtocolDecl<? extends Kind>>
 				protos = visitChildListWithClassCheck(this, this.protos, nv);
 		//return ModelFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);//, getContext(), getEnv());
 		//return new Module(moddecl, imports, data, protos);//, getContext(), getEnv());
@@ -168,10 +169,10 @@ public class Module extends ModelNodeBase
 			List<T> getProtocolDecls(
 					Predicate<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> filter,
 					Function<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>, T> cast)*/
-	private <T extends ProtocolDecl>
+	private <T extends ProtocolDecl<? extends Kind>>
 			List<T> getProtocolDecls(
-					Predicate<ProtocolDecl> filter,
-					Function<ProtocolDecl, T> cast)
+					Predicate<ProtocolDecl<? extends Kind>> filter,
+					Function<ProtocolDecl<? extends Kind>, T> cast)
 	{
 		return this.protos.stream().filter(filter).map(cast).collect(Collectors.toList());
 	}
@@ -208,7 +209,7 @@ public class Module extends ModelNodeBase
 	
 	public
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-			ProtocolDecl
+			ProtocolDecl<? extends Kind>
 			getProtocolDecl(ProtocolName pn)
 	{
 		//.. HERE: refactor to get global/local protocol decl
@@ -221,11 +222,12 @@ public class Module extends ModelNodeBase
 			//<T extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 			//<T extends ProtocolDecl>
 			//T getProtocolDecl(List<T> pds, ProtocolName pn)
-			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-			getProtocolDecl(List<ProtocolDecl> pds, ProtocolName pn)
+			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			ProtocolDecl<? extends Kind>
+			getProtocolDecl(List<ProtocolDecl<? extends Kind>> pds, ProtocolName pn)
 	{
 		//List<T>
-		List<ProtocolDecl> filtered = pds.stream().filter((pd) -> ((AbstractProtocolDecl) pd).header.name.toName().equals(pn)).collect(Collectors.toList());
+		List<ProtocolDecl<? extends Kind>> filtered = pds.stream().filter((pd) -> ((AbstractProtocolDecl) pd).header.name.toName().equals(pn)).collect(Collectors.toList());
 		if (filtered.size() != 1)
 		{
 			throw new RuntimeException("Protocol not found: " + pn);
@@ -278,39 +280,39 @@ public class Module extends ModelNodeBase
 
 	private static final 
 			//Predicate<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
-			Predicate<ProtocolDecl>
+			Predicate<ProtocolDecl<? extends Kind>>
 			IS_GLOBALPROTOCOLDECL =
 					//(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-					(ProtocolDecl pd)
+					(ProtocolDecl<? extends Kind> pd)
 							-> pd.isGlobal();
 
 	private static final
 			//Predicate<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
-			Predicate<ProtocolDecl>
+			Predicate<ProtocolDecl<? extends Kind>>
 			IS_LOCALPROTOCOLDECL =
 					//(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-					(ProtocolDecl pd)
+					(ProtocolDecl<? extends Kind> pd)
 							-> pd.isLocal();
 
 	private static final Function
 			<
 				//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>,
-				ProtocolDecl,
+				ProtocolDecl<? extends Kind>,
 				GlobalProtocolDecl
 			>
 			TO_GLOBALPROTOCOLDECL =
 					//(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-					(ProtocolDecl pd)
+					(ProtocolDecl<? extends Kind> pd)
 							-> (GlobalProtocolDecl) pd;
 
 	private static final Function
 			<
 				//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>,
-				ProtocolDecl,
+				ProtocolDecl<? extends Kind>,
 				LocalProtocolDecl
 			>
 			TO_LOCALPROTOCOLDECL =
 					//(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-					(ProtocolDecl pd)
+					(ProtocolDecl<? extends Kind> pd)
 							-> (LocalProtocolDecl) pd;
 }

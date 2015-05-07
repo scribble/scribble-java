@@ -3,11 +3,13 @@ package org.scribble2.model.del.local;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.scribble2.model.InteractionNode;
 import org.scribble2.model.del.InteractionSequenceDelegate;
 import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.env.ReachabilityEnv;
+import org.scribble2.sesstype.kind.LocalKind;
 import org.scribble2.util.ScribbleException;
 
 
@@ -19,7 +21,8 @@ public class LocalInteractionSequenceDelegate extends InteractionSequenceDelegat
 	{
 		//List<T> actions = visitChildListWithClassCheck(this, this.actions, nv);  // OK to require all nodes to keep the same class? Maybe better to leave abstract and implement in the global/local subclasses
 		List<LocalInteractionNode> visited = new LinkedList<>();
-		for (LocalInteractionNode li : child.actions)
+		//for (LocalInteractionNode li : child.actions)
+		for (InteractionNode<LocalKind> li : child.actions)
 		{
 			ReachabilityEnv re = checker.peekEnv();
 			if (!re.isExitable())

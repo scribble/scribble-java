@@ -1,15 +1,19 @@
 package org.scribble2.model.local;
 
-import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.AbstractProtocolDecl;
+import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.ProtocolDefinition;
+import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.kind.LocalKind;
 import org.scribble2.sesstype.name.Role;
 
-// FIXME: LocalProtocolDefinition
-public class LocalProtocolDecl extends AbstractProtocolDecl<LocalProtocolHeader, LocalProtocolDefinition> implements LocalNode
+//public class LocalProtocolDecl extends AbstractProtocolDecl<LocalProtocolHeader, LocalProtocolDefinition> implements LocalNode
+public class LocalProtocolDecl extends AbstractProtocolDecl<LocalKind> implements LocalNode
 {
 	//public LocalProtocolDecl(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, LocalProtocolDefinition def)
-	public LocalProtocolDecl(LocalProtocolHeader header, LocalProtocolDefinition def)
+	//public LocalProtocolDecl(LocalProtocolHeader header, LocalProtocolDefinition def)
+	public LocalProtocolDecl(ProtocolHeader header, ProtocolDefinition<LocalKind> def)
 	{
 		super(header, def);
 	}
@@ -46,7 +50,7 @@ public class LocalProtocolDecl extends AbstractProtocolDecl<LocalProtocolHeader,
 	
 	public Role getSelfRole()
 	{
-		return this.header.getSelfRole();
+		return ((LocalProtocolHeader) this.header).getSelfRole();  // FIXME: cast
 	}
 	
 	/*@Override
@@ -56,7 +60,8 @@ public class LocalProtocolDecl extends AbstractProtocolDecl<LocalProtocolHeader,
 	}*/
 
 	@Override
-	protected LocalProtocolDecl reconstruct(LocalProtocolHeader header, LocalProtocolDefinition def)
+	//protected LocalProtocolDecl reconstruct(LocalProtocolHeader header, LocalProtocolDefinition def)
+	protected LocalProtocolDecl reconstruct(ProtocolHeader header, ProtocolDefinition<LocalKind> def)
 	{
 		ModelDelegate del = del();
 		LocalProtocolDecl lpd = new LocalProtocolDecl(header, def);

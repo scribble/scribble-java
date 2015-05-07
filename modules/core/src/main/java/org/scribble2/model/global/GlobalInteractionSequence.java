@@ -2,19 +2,22 @@ package org.scribble2.model.global;
 
 import java.util.List;
 
+import org.scribble2.model.InteractionNode;
 import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.kind.GlobalKind;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
-public class GlobalInteractionSequence extends InteractionSequence<GlobalInteractionNode> implements GlobalNode
+public class GlobalInteractionSequence extends InteractionSequence<GlobalKind> implements GlobalNode
 {
-	public GlobalInteractionSequence(List<GlobalInteractionNode> actions)
+	//public GlobalInteractionSequence(List<GlobalInteractionNode> actions)
+	public GlobalInteractionSequence(List<? extends InteractionNode<GlobalKind>> actions)
 	{
 		super(actions);
 	}
 
 	@Override
-	protected InteractionSequence<GlobalInteractionNode> reconstruct(List<GlobalInteractionNode> ins)
+	protected GlobalInteractionSequence reconstruct(List<? extends InteractionNode<GlobalKind>> ins)
 	{
 		ModelDelegate del = del();
 		GlobalInteractionSequence gis = new GlobalInteractionSequence(ins);

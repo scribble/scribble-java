@@ -43,7 +43,6 @@ import org.scribble2.model.global.GlobalRecursion;
 import org.scribble2.model.local.LocalChoice;
 import org.scribble2.model.local.LocalContinue;
 import org.scribble2.model.local.LocalDo;
-import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.local.LocalProtocolDecl;
@@ -65,6 +64,7 @@ import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.sesstype.kind.LocalKind;
 
 public class ModelFactoryImpl implements ModelFactory
 {
@@ -101,7 +101,7 @@ public class ModelFactoryImpl implements ModelFactory
 			List<ImportDecl> imports,
 			List<DataTypeDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
-			List<ProtocolDecl> protos)
+			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.Kind>> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
 		//module = del(module, new ModuleDelegate(module.getFullModuleName()));
@@ -358,7 +358,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions)
+	//public LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions)
+	public LocalInteractionSequence LocalInteractionSequence(List<? extends InteractionNode<LocalKind>> actions)
 	{
 		LocalInteractionSequence lis = new LocalInteractionSequence(actions);
 		lis = del(lis, new LocalInteractionSequenceDelegate());

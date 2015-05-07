@@ -17,7 +17,6 @@ import org.scribble2.model.global.GlobalRecursion;
 import org.scribble2.model.local.LocalChoice;
 import org.scribble2.model.local.LocalContinue;
 import org.scribble2.model.local.LocalDo;
-import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.local.LocalProtocolDecl;
@@ -37,6 +36,7 @@ import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.sesstype.kind.LocalKind;
 
 public interface ModelFactory
 {
@@ -49,7 +49,7 @@ public interface ModelFactory
 			List<ImportDecl> imports,
 			List<DataTypeDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
-			List<ProtocolDecl> protos);
+			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.Kind>> protos);
 	
 	MessageSignatureNode MessageSignatureNode(OperatorNode op, Payload payload);
 	Payload Payload(List<PayloadElement> payloadelems);
@@ -91,7 +91,8 @@ public interface ModelFactory
 	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
 	LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block);
 	LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq);
-	LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions);
+	//LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions);
+	LocalInteractionSequence LocalInteractionSequence(List<? extends InteractionNode<LocalKind>> actions);
 
 	LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);

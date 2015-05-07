@@ -1,6 +1,8 @@
 package org.scribble2.model;
 
-public abstract class SimpleInteractionNode extends ModelNodeBase implements InteractionNode
+import org.scribble2.sesstype.kind.Kind;
+
+public abstract class SimpleInteractionNode<K extends Kind> extends ModelNodeBase implements InteractionNode<K>
 {
 
 }

@@ -8,8 +8,9 @@ import org.scribble2.model.MessageTransfer;
 import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.sesstype.kind.LocalKind;
 
-public class LocalSend extends MessageTransfer implements SimpleLocalInteractionNode
+public class LocalSend extends MessageTransfer<LocalKind> implements SimpleLocalInteractionNode
 {
 	public LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{

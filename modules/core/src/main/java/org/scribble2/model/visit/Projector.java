@@ -4,21 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.scribble2.model.InteractionNode;
-import org.scribble2.model.InteractionSequence;
+import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
-import org.scribble2.model.ProtocolBlock;
-import org.scribble2.model.AbstractProtocolDecl;
-import org.scribble2.model.ProtocolDefinition;
-import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.global.GlobalProtocolDecl;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.model.visit.env.ProjectionEnv;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
@@ -48,7 +44,8 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	// Envs pushed for GlobalNode delegates (doesn't include interaction seqs)
 	@Override
 	protected ProjectionEnv makeRootProtocolDeclEnv(
-			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+			AbstractProtocolDecl<? extends Kind> pd)
 	{
 		//return new ProjectionEnv(this.getJobContext(), getModuleContext(), null);
 		//return new ProjectionEnv(this.getJobContext(), getModuleDelegate());

@@ -5,7 +5,7 @@ import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.util.ScribbleException;
 
 
-// TODO: parameterize on global/local role decl list
+// TODO: parameterize on global/local name node and role decl list (i.e. self roles)
 public abstract class ProtocolHeader extends ModelNodeBase
 {
 	public final SimpleProtocolNameNode name;

@@ -2,14 +2,15 @@ package org.scribble2.model.visit;
 
 import java.util.Stack;
 
+import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.InteractionNode;
 import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.ProtocolBlock;
-import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.visit.env.Env;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.util.ScribbleException;
 
 public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
@@ -42,8 +43,10 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 			//if (isNoEnvSet())
 
 			@SuppressWarnings("unchecked")
-			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd = 
-					(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) child;
+			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd = 
+			AbstractProtocolDecl<? extends Kind> pd = 
+					//(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) child;
+					(AbstractProtocolDecl<? extends Kind>) child;
 			//ev.setEnv(makeRootProtocolDeclEnv(pd));
 			//ev.pushEnv(makeRootProtocolDeclEnv(pd));
 			pushEnv(makeRootProtocolDeclEnv(pd));
@@ -66,7 +69,8 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 	
 	// getProtocolDeclEnv
 	protected abstract T makeRootProtocolDeclEnv(
-			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd);
+			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd);
+			AbstractProtocolDecl<? extends Kind> pd);
 
 	//protected EnvVisitor<T> envEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	protected void envEnter(ModelNode parent, ModelNode child) throws ScribbleException

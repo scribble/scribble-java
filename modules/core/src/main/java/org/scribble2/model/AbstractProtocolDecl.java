@@ -1,22 +1,25 @@
 package org.scribble2.model;
 
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
 
 //public class ProtocolDecl extends AbstractNode
-public abstract class AbstractProtocolDecl<
+/*public abstract class AbstractProtocolDecl<
 				T1 extends ProtocolHeader,
 				T2 extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
-		>
+		>*/
+public abstract class AbstractProtocolDecl<K extends Kind>
 		extends ModelNodeBase// implements ContextStackNode//, ModuleMember
-		implements ProtocolDecl
+		implements ProtocolDecl<K>
 {
-	//public final ProtocolDefinition def;
-	public final T1 header;
-	public final T2 def;
+	public final ProtocolHeader header;
+	public final ProtocolDefinition<K> def;
+	/*public final T1 header;
+	public final T2 def;*/
 
 	//public ProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList rdl, ParameterDeclList pdl, ProtocolDefinition def)
 	/*protected ProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, T def)
@@ -30,26 +33,30 @@ public abstract class AbstractProtocolDecl<
 	}*/
 
 	//protected ProtocolDecl(Token t, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, T def)//, ProtocolDeclContext pdcontext, Env env)
-	protected AbstractProtocolDecl(T1 header, T2 def)//, ProtocolDeclContext pdcontext, Env env)
+	//protected AbstractProtocolDecl(T1 header, T2 def)//, ProtocolDeclContext pdcontext, Env env)
+	protected AbstractProtocolDecl(ProtocolHeader header, ProtocolDefinition<K> def)//, ProtocolDeclContext pdcontext, Env env)
 	{
 		this.header = header;
 		this.def = def;
 	}
 
 	@Override
-	public T1 getHeader()
+	//public T1 getHeader()
+	public ProtocolHeader getHeader()
 	{
 		return this.header;
 	}
 
 	@Override
-	public T2 getDef()
+	//public T2 getDef()
+	public ProtocolDefinition<K> getDef()
 	{
 		return this.def;
 	}
 	
 	// Keeps the current del (shallow reconstruct with new children)
-	protected abstract AbstractProtocolDecl<T1, T2> reconstruct(T1 header, T2 def);//, ProtocolDeclContext pdcontext, Env env);
+	//protected abstract AbstractProtocolDecl<T1, T2> reconstruct(T1 header, T2 def);//, ProtocolDeclContext pdcontext, Env env);
+	protected abstract AbstractProtocolDecl<K> reconstruct(ProtocolHeader header, ProtocolDefinition<K> def);//, ProtocolDeclContext pdcontext, Env env);
 
 	/*@Override
 	public NameDisambiguator enterDisambiguation(NameDisambiguator disamb) throws ScribbleException
@@ -77,10 +84,13 @@ public abstract class AbstractProtocolDecl<
 	//public abstract ProtocolName getFullProtocolName(Env ev) throws ScribbleException;
 
 	@Override
-	public AbstractProtocolDecl<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
+	//public AbstractProtocolDecl<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
+	public AbstractProtocolDecl<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		T1 header = visitChildWithClassCheck(this, this.header, nv);
-		T2 def = visitChildWithClassCheck(this, this.def, nv);
+		/*T1 header = visitChildWithClassCheck(this, this.header, nv);
+		T2 def = visitChildWithClassCheck(this, this.def, nv);*/
+		ProtocolHeader header = visitChildWithClassCheck(this, this.header, nv);
+		ProtocolDefinition<K> def = visitChildWithClassCheck(this, this.def, nv);
 		return reconstruct(header, def);//, getContext(), getEnv());
 	}
 	

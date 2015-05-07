@@ -6,8 +6,9 @@ import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.RoleInstantiationList;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
+import org.scribble2.sesstype.kind.GlobalKind;
 
-public class GlobalDo extends Do implements SimpleGlobalInteractionNode
+public class GlobalDo extends Do<GlobalKind> implements SimpleGlobalInteractionNode
 {
 	//public GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	public GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
@@ -25,7 +26,7 @@ public class GlobalDo extends Do implements SimpleGlobalInteractionNode
 
 	@Override
 	//protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	protected Do reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	protected GlobalDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		ModelDelegate del = del();
 		GlobalDo gd = new GlobalDo(roleinstans, arginstans, proto);

@@ -1,17 +1,22 @@
 package org.scribble2.model.global;
 
+import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.kind.GlobalKind;
 
-public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalProtocolBlock> implements GlobalNode
+//public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalProtocolBlock> implements GlobalNode
+public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalKind> implements GlobalNode
 {
-	public GlobalProtocolDefinition(GlobalProtocolBlock block)
+	//public GlobalProtocolDefinition(GlobalProtocolBlock block)
+	public GlobalProtocolDefinition(ProtocolBlock<GlobalKind> block)
 	{
 		super(block);
 	}
 
 	@Override
-	protected ProtocolDefinition<GlobalProtocolBlock> reconstruct(GlobalProtocolBlock block)
+	//protected ProtocolDefinition<GlobalProtocolBlock> reconstruct(GlobalProtocolBlock block)
+	protected GlobalProtocolDefinition reconstruct(ProtocolBlock<GlobalKind> block)
 	{
 		ModelDelegate del = del();
 		GlobalProtocolDefinition gpd = new GlobalProtocolDefinition(block);

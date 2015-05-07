@@ -4,16 +4,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble2.model.Continue;
+import org.scribble2.model.InteractionNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.InteractionSequenceDelegate;
-import org.scribble2.model.global.GlobalInteractionNode;
 import org.scribble2.model.global.GlobalInteractionSequence;
 import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalInteractionSequence;
 import org.scribble2.model.local.LocalNode;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.env.ProjectionEnv;
+import org.scribble2.sesstype.kind.GlobalKind;
+import org.scribble2.sesstype.kind.LocalKind;
 import org.scribble2.util.ScribbleException;
 
 
@@ -37,9 +39,11 @@ public class GlobalInteractionSequenceDelegate extends InteractionSequenceDelega
 		return (GlobalInteractionSequence) super.leaveProjection(parent, child, proj, visited);*/
 		
 		GlobalInteractionSequence gis = (GlobalInteractionSequence) visited;
-		List<LocalInteractionNode> lis = new LinkedList<>();
+		//List<LocalInteractionNode> lis = new LinkedList<>();
+		List<InteractionNode<LocalKind>> lis = new LinkedList<>();
 			//this.actions.stream().map((action) -> (LocalInteraction) ((ProjectionEnv) ((LocalNode) action).getEnv()).getProjection()).collect(Collectors.toList());	
-		for (GlobalInteractionNode gi : gis.actions)
+		//for (GlobalInteractionNode gi : gis.actions)
+		for (InteractionNode<GlobalKind> gi : gis.actions)
 		{
 			LocalNode ln = (LocalNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			if (ln instanceof LocalInteractionSequence)

@@ -6,11 +6,12 @@ import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
-public abstract class Do extends SimpleInteractionNode //implements ScopedNode
+public abstract class Do<K extends Kind> extends SimpleInteractionNode<K> //implements ScopedNode
 {
 	//public final ScopeNode scope;
 	public final RoleInstantiationList roleinstans;
@@ -27,10 +28,10 @@ public abstract class Do extends SimpleInteractionNode //implements ScopedNode
 	}
 
 	//protected abstract Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
-	protected abstract Do reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract Do<K> reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
-	public Do visitChildren(ModelVisitor nv) throws ScribbleException
+	public Do<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		//ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
 		RoleInstantiationList ril = (RoleInstantiationList) visitChild(this.roleinstans, nv);
