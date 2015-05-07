@@ -47,7 +47,8 @@ public interface ModelFactory
 			ModuleDecl moddecl,
 			List<? extends ImportDecl> imports,
 			List<DataTypeDecl> data,
-			List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
+			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
+			List<ProtocolDecl> protos);
 	
 	MessageSignatureNode MessageSignatureNode(OperatorNode op, Payload payload);
 	Payload Payload(List<PayloadElement> payloadelems);

@@ -14,7 +14,7 @@ import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ProtocolBlock;
-import org.scribble2.model.ProtocolDecl;
+import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.ScopedNode;
@@ -51,7 +51,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 	// Doesn't push a subprotocol signature; only records the roles/args
 	// proto is fullname
-	private void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+	private void enterRootProtocolDecl(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 	{
 		//ProtocolName fullname = pd.getFullProtocolName(getModuleContext().root);
 		/*List<Role> roleparams = pd.roledecls.getRoles();
@@ -103,7 +103,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 			//enter(parent, doo);  // need to enter/leave even if cycle, e.g. for projection
 			
 			ModuleContext mcontext = getModuleContext();
-			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 					//pd = spv.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());* /
 					pd = doo.getTargetProtocolDecl(getJobContext(), mcontext);
 
@@ -129,12 +129,12 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		{
 			this.mcontext = ((ModuleDelegate) ((Module) child).del()).getModuleContext();
 		}
-		if (child instanceof ProtocolDecl)
+		if (child instanceof AbstractProtocolDecl)
 		{
 			//spv.setScope(Scope.ROOT_SCOPE);
 			setScope(Scope.ROOT_SCOPE);
 
-			enterRootProtocolDecl((ProtocolDecl) child);  // Doesn't push proto stack, just for root role/arg names
+			enterRootProtocolDecl((AbstractProtocolDecl) child);  // Doesn't push proto stack, just for root role/arg names
 		}
 		if (child instanceof ScopedNode)
 		{
@@ -161,7 +161,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		//ModelNode n = super.leave(parent, child, nv, visited);
 		//ModelNode n = subprotocolLeave(parent, child, (SubprotocolVisitor) nv, visited);
 		ModelNode n = subprotocolLeave(parent, child, visited);
-		if (child instanceof ProtocolDecl)
+		if (child instanceof AbstractProtocolDecl)
 		{
 			this.rolemaps.pop();
 			this.argmaps.pop();
@@ -224,7 +224,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	
 	private void pushNameMaps(ProtocolName fullname, List<Role> roleargs, List<Argument> argargs)
 	{
-		ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+		AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 				pd = getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 		List<Role> roleparams = pd.header.roledecls.getRoles();
 		List<Parameter> argparams = pd.header.paramdecls.getParameters();

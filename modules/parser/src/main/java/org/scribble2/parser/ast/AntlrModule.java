@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.DataTypeDecl;
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.InteractionNode;
@@ -29,7 +30,8 @@ public class AntlrModule
 		ModuleDecl md = (ModuleDecl) parser.parse(getModuleDeclChild(ct));
 		List<ImportDecl> ids = new LinkedList<>();
 		List<DataTypeDecl> ptds = new LinkedList<>();
-		List<ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
+		//List<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
+		List<ProtocolDecl>
 				pds = new LinkedList<>();
 		for (CommonTree id : getImportDeclChildren(ct))
 		{
@@ -43,9 +45,10 @@ public class AntlrModule
 		}
 		for (CommonTree pd : getProtocolDeclChildren(ct))
 		{
-			@SuppressWarnings("unchecked")
-			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-					tmp = (ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) parser.parse(pd);
+			/*@SuppressWarnings("unchecked")
+			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+					tmp = (AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) parser.parse(pd);*/
+			ProtocolDecl tmp = (ProtocolDecl) parser.parse(pd);
 			pds.add(tmp);
 		}
 

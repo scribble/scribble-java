@@ -99,7 +99,8 @@ public class ModelFactoryImpl implements ModelFactory
 			ModuleDecl moddecl,
 			List<? extends ImportDecl> imports,
 			List<DataTypeDecl> data,
-			List<? extends ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
+			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
+			List<ProtocolDecl> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
 		//module = del(module, new ModuleDelegate(module.getFullModuleName()));

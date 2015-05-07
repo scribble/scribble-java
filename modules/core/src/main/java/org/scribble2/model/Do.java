@@ -75,7 +75,7 @@ public abstract class Do extends SimpleInteractionNode //implements ScopedNode
 		return mcontext.getFullProtocolDeclName(this.proto.toName());
 	}
 	
-	public ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+	public AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 			//getTargetProtocolDecl(JobContext jcontext, ModuleDelegate mcontext)
 			getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
 	{

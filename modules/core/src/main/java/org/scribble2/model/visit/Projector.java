@@ -11,7 +11,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ProtocolBlock;
-import org.scribble2.model.ProtocolDecl;
+import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.global.GlobalProtocolDecl;
@@ -48,7 +48,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	// Envs pushed for GlobalNode delegates (doesn't include interaction seqs)
 	@Override
 	protected ProjectionEnv makeRootProtocolDeclEnv(
-			ProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
+			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 	{
 		//return new ProjectionEnv(this.getJobContext(), getModuleContext(), null);
 		//return new ProjectionEnv(this.getJobContext(), getModuleDelegate());

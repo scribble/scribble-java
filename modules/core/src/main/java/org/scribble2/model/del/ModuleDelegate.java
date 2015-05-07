@@ -12,6 +12,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ModuleDecl;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.local.LocalProtocolDecl;
 import org.scribble2.model.name.qualified.ModuleNameNode;
@@ -133,7 +134,8 @@ public class ModuleDelegate extends ModelDelegateBase
 		}
 		
 		List<DataTypeDecl> data = new LinkedList<>(root.data);  // FIXME: copy  // FIXME: only project dependencies
-		List<LocalProtocolDecl> protos = Arrays.asList(lpd);
+		//List<LocalProtocolDecl> protos = Arrays.asList(lpd);
+		List<ProtocolDecl> protos = Arrays.asList(lpd);
 		//return new Module(moddecl, imports, data, protos);
 		return ModelFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}

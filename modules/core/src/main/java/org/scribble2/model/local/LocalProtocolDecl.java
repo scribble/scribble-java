@@ -1,12 +1,12 @@
 package org.scribble2.model.local;
 
 import org.scribble2.model.ModelNodeBase;
-import org.scribble2.model.ProtocolDecl;
+import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.sesstype.name.Role;
 
 // FIXME: LocalProtocolDefinition
-public class LocalProtocolDecl extends ProtocolDecl<LocalProtocolHeader, LocalProtocolDefinition> implements LocalNode
+public class LocalProtocolDecl extends AbstractProtocolDecl<LocalProtocolHeader, LocalProtocolDefinition> implements LocalNode
 {
 	//public LocalProtocolDecl(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, LocalProtocolDefinition def)
 	public LocalProtocolDecl(LocalProtocolHeader header, LocalProtocolDefinition def)
