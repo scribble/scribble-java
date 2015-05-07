@@ -2,7 +2,7 @@ package org.scribble2.model.visit;
 
 import java.util.Stack;
 
-import org.scribble2.model.AbstractProtocolDecl;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.InteractionNode;
 import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ModelNode;
@@ -37,16 +37,16 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 		////EnvVisitor<T> ev = (EnvVisitor) super.subprotocolEnter(parent, child);
 		//EnvVisitor<T> ev = castEnvVisitor(super.subprotocolEnter(parent, child), this);
 		super.subprotocolEnter(parent, child);
-		if (child instanceof AbstractProtocolDecl)  // Only the root ProtocolDecl is visited: subprotocols visit the body directly
+		if (child instanceof ProtocolDecl)  // Only the root ProtocolDecl is visited: subprotocols visit the body directly
 		{
 			//ev.setEnv(new Env(this.job.getContext(), (ModuleContext) peekContext()));
 			//if (isNoEnvSet())
 
 			@SuppressWarnings("unchecked")
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd = 
-			AbstractProtocolDecl<? extends ProtocolKind> pd = 
+			ProtocolDecl<? extends ProtocolKind> pd = 
 					//(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) child;
-					(AbstractProtocolDecl<? extends ProtocolKind>) child;
+					(ProtocolDecl<? extends ProtocolKind>) child;
 			//ev.setEnv(makeRootProtocolDeclEnv(pd));
 			//ev.pushEnv(makeRootProtocolDeclEnv(pd));
 			pushEnv(makeRootProtocolDeclEnv(pd));
@@ -70,7 +70,7 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 	// getProtocolDeclEnv
 	protected abstract T makeRootProtocolDeclEnv(
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd);
-			AbstractProtocolDecl<? extends ProtocolKind> pd);
+			ProtocolDecl<? extends ProtocolKind> pd);
 
 	//protected EnvVisitor<T> envEnter(ModelNode parent, ModelNode child) throws ScribbleException
 	protected void envEnter(ModelNode parent, ModelNode child) throws ScribbleException
@@ -101,7 +101,7 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 		}
 		return n;*/  // Not doing automatically for every Env -- has to be done explicitly for each EnvVisitor
 		//if (isRootProtocolDeclEntry())
-		if (n instanceof AbstractProtocolDecl)  // Only the root ProtocolDecl is visited by SubprotocolVisitor (subprotocols visit the body directly)
+		if (n instanceof ProtocolDecl)  // Only the root ProtocolDecl is visited by SubprotocolVisitor (subprotocols visit the body directly)
 		{
 			//EnvVisitor ev = (EnvVisitor) nv;
 			////ev.setEnv(ev.getEnv().getParent());

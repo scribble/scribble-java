@@ -1,6 +1,6 @@
 package org.scribble2.model.visit;
 
-import org.scribble2.model.AbstractProtocolDecl;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.local.LocalInteractionSequenceDelegate;
 import org.scribble2.model.local.LocalInteractionSequence;
@@ -19,7 +19,7 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 	@Override
 	protected ReachabilityEnv makeRootProtocolDeclEnv(
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-			AbstractProtocolDecl<? extends ProtocolKind> pd)
+			ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		//ReachabilityEnv env = new ReachabilityEnv(this.getJobContext(), getModuleDelegate());
 		ReachabilityEnv env = new ReachabilityEnv();

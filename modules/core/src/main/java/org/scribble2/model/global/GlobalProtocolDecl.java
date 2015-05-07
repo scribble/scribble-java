@@ -1,6 +1,6 @@
 package org.scribble2.model.global;
 
-import org.scribble2.model.AbstractProtocolDecl;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.del.ModelDelegate;
@@ -8,7 +8,7 @@ import org.scribble2.sesstype.kind.Global;
 
 //public class GlobalProtocolDecl extends ProtocolDecl<GlobalInteraction>
 //public class GlobalProtocolDecl extends AbstractProtocolDecl<GlobalProtocolHeader, GlobalProtocolDefinition> implements GlobalNode
-public class GlobalProtocolDecl extends AbstractProtocolDecl<Global> implements GlobalNode
+public class GlobalProtocolDecl extends ProtocolDecl<Global> implements GlobalNode
 {
 	//public GlobalProtocolDecl(CommonTree ct, ProtocolNode name, RoleDeclList rdl, ParameterDeclList pdl, ProtocolDefinition<GlobalInteraction> def)
 	//public GlobalProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, GlobalProtocolDefinition def)

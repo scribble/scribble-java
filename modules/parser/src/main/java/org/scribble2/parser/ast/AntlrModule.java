@@ -43,7 +43,7 @@ public class AntlrModule
 			@SuppressWarnings("unchecked")
 			/*AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 					tmp = (AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) parser.parse(pd);*/
-			ProtocolDecl<ProtocolKind> tmp = (ProtocolDecl<ProtocolKind>) parser.parse(pd);
+			ProtocolDecl<? extends ProtocolKind> tmp = (ProtocolDecl<? extends ProtocolKind>) parser.parse(pd);
 			pds.add(tmp);
 		}
 

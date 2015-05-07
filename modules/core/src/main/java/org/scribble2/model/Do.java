@@ -77,7 +77,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	
 	public
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-			ProtocolDecl
+			ProtocolDecl<? extends ProtocolKind>
 			//getTargetProtocolDecl(JobContext jcontext, ModuleDelegate mcontext)
 			getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
 	{
@@ -89,7 +89,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	public Role getTargetRoleParameter(JobContext jcontext, ModuleContext mcontext, Role role)
 	{
 		Iterator<Role> args = this.roleinstans.getRoles().iterator();
-		Iterator<Role> params = getTargetProtocolDecl(jcontext, mcontext).getHeader().roledecls.getRoles().iterator();
+		Iterator<Role> params = getTargetProtocolDecl(jcontext, mcontext).header.roledecls.getRoles().iterator();
 		while (args.hasNext())
 		{
 			Role arg = args.next();

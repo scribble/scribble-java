@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.scribble2.model.AbstractProtocolDecl;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -45,7 +45,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	@Override
 	protected ProjectionEnv makeRootProtocolDeclEnv(
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-			AbstractProtocolDecl<? extends ProtocolKind> pd)
+			ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		//return new ProjectionEnv(this.getJobContext(), getModuleContext(), null);
 		//return new ProjectionEnv(this.getJobContext(), getModuleDelegate());

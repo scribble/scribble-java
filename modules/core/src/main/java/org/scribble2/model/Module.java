@@ -227,12 +227,12 @@ public class Module extends ModelNodeBase
 			getProtocolDecl(List<ProtocolDecl<? extends ProtocolKind>> pds, ProtocolName pn)
 	{
 		//List<T>
-		List<ProtocolDecl<? extends ProtocolKind>> filtered = pds.stream().filter((pd) -> ((AbstractProtocolDecl) pd).header.name.toName().equals(pn)).collect(Collectors.toList());
+		List<ProtocolDecl<? extends ProtocolKind>> filtered = pds.stream().filter((pd) -> ((ProtocolDecl) pd).header.name.toName().equals(pn)).collect(Collectors.toList());
 		if (filtered.size() != 1)
 		{
 			throw new RuntimeException("Protocol not found: " + pn);
 		}
-		return (AbstractProtocolDecl) filtered.get(0);
+		return (ProtocolDecl) filtered.get(0);
 	}
 
 	/*public List<LocalProtocolDecl> getLocalProtocolDecls()

@@ -3,7 +3,7 @@ package org.scribble2.model.del;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble2.model.AbstractProtocolDecl;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.InteractionNode;
 import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ModelNode;
@@ -57,7 +57,7 @@ public abstract class ProtocolDeclDelegate extends ModelDelegateBase
 		Module main = (Module) parent;
 		
 		//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-		AbstractProtocolDecl<? extends ProtocolKind>
+		ProtocolDecl<? extends ProtocolKind>
 			pd = cast(child);
 
 		ProtocolName pn = pd.getFullProtocolName(main);
@@ -73,7 +73,7 @@ public abstract class ProtocolDeclDelegate extends ModelDelegateBase
 	@Override
 	public
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> 
-			AbstractProtocolDecl<? extends ProtocolKind>
+			ProtocolDecl<? extends ProtocolKind>
 			leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
 	{
 		//System.out.println("c: " + proj.getProtocolDependencies());
@@ -98,17 +98,17 @@ public abstract class ProtocolDeclDelegate extends ModelDelegateBase
 	
 	private
 		//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-		AbstractProtocolDecl<? extends ProtocolKind>
+		ProtocolDecl<? extends ProtocolKind>
 		cast(ModelNode child)
 	{
-		AbstractProtocolDecl.class.cast(child);
+		ProtocolDecl.class.cast(child);
 		//if (ProtocolDecl.class.isAssignableFrom(child.getClass()))
 		{
 			@SuppressWarnings("unchecked")
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-			AbstractProtocolDecl<? extends ProtocolKind>
+			ProtocolDecl<? extends ProtocolKind>
 				//pd = (AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>) child;
-				pd = (AbstractProtocolDecl<? extends ProtocolKind>) child;
+				pd = (ProtocolDecl<? extends ProtocolKind>) child;
 			return pd;
 		}
 		//throw new RuntimeException("Bad ProtocolDecl cast: " + child.getClass());
