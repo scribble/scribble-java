@@ -2,7 +2,7 @@ package org.scribble2.sesstype;
 
 import java.util.List;
 
-import org.scribble2.sesstype.name.Kind;
+import org.scribble2.sesstype.name.KindEnum;
 import org.scribble2.sesstype.name.Operator;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
 import org.scribble2.sesstype.name.Scope;
@@ -26,9 +26,9 @@ public class MessageSignature implements Message
 	}
 
 	@Override
-	public Kind getKind()
+	public KindEnum getKindEnum()
 	{
-		return Kind.SIG;
+		return KindEnum.SIG;
 	}
 
 	@Override

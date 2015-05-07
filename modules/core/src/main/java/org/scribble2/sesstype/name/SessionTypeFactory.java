@@ -2,6 +2,7 @@ package org.scribble2.sesstype.name;
 
 import java.util.Arrays;
 
+@Deprecated
 public class SessionTypeFactory
 {
 	public SessionTypeFactory()

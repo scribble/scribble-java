@@ -5,7 +5,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.ModelDelBase;
 import org.scribble2.model.visit.NameDisambiguator;
-import org.scribble2.model.visit.env.Env;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Named;
 import org.scribble2.util.ScribbleException;
@@ -29,7 +29,8 @@ public class AmbiguousNameDelegate extends ModelDelBase
 	@Override
 	public ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException
 	{
-		Name name = ((Named) visited).toName();
+		//IName name = ((Named) visited).toName();
+		Name<? extends Kind> name = ((Named<? extends Name<? extends Kind>, ? extends Kind>) visited).toName();
 		/*if (disamb.isVisiblePayloadType(name))  // By well-formedness (checked later), payload type and parameter names are distinct
 		{
 			return new PayloadTypeNameNode(this.ct, name.toString());

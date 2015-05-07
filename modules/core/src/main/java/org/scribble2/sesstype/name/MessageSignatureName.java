@@ -11,12 +11,12 @@ public class MessageSignatureName extends MemberName implements Message
 
 	public MessageSignatureName(ModuleName modname, String membname)
 	{
-		super(Kind.TYPE, modname, membname);
+		super(KindEnum.TYPE, modname, membname);
 	}
 	
 	public MessageSignatureName(String simplename)
 	{
-		super(Kind.TYPE, simplename);
+		super(KindEnum.TYPE, simplename);
 	}
 
 	@Override

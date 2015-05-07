@@ -1,35 +1,43 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.simple.SimpleNameNode;
+import org.scribble2.model.name.NameNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Role;
-import org.scribble2.sesstype.name.SimpleName;
 import org.scribble2.util.ScribbleException;
 
 
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
 //public interface HeaderParameterDecl extends ModelNode, NameDecl //implements NameDeclaration
-public abstract class HeaderParamDecl<T extends SimpleNameNode<T2>, T2 extends SimpleName> extends NameDeclNode<T, T2> //implements NameDeclaration
+//public abstract class HeaderParamDecl<T extends SimpleNameNode<T2>, T2 extends SimpleName> extends NameDeclNode<T, T2> //implements NameDeclaration
+public abstract class HeaderParamDecl<T2 extends Name<K>, K extends Kind> extends NameDeclNode<T2, K> //implements NameDeclaration
 {
-	public final T name;
+	//public final T name;
+	public final NameNode<T2, K> name;
 
-	protected HeaderParamDecl(T name)
+	//protected HeaderParamDecl(T name)
+	protected HeaderParamDecl(NameNode<T2, K> name)
 	{
 		this.name = name;
 	}
 
-	protected abstract HeaderParamDecl<T, T2> reconstruct(T namenode);
+	//protected abstract HeaderParamDecl<T, T2> reconstruct(T namenode);
+	protected abstract HeaderParamDecl<T2, K> reconstruct(NameNode<T2, K> namenode);
 	
 	@Override
-	public HeaderParamDecl<T, T2> visitChildren(ModelVisitor nv) throws ScribbleException
+	//public HeaderParamDecl<T, T2> visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParamDecl<T2, K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		//SimpleNameNode name = (SimpleNameNode) visitChild(this.name, nv);
-		T name = visitChildWithClassCheck(this, this.name, nv);
+		//T name = visitChildWithClassCheck(this, this.name, nv);
+		NameNode<T2, K> name = visitChildWithClassCheck(this, this.name, nv);
 		return reconstruct(name);
 	}
 	
-	abstract NameDeclNode<T, T2> project(Role self);
+	//public abstract NameDeclNode<T, T2> project(Role self);
+	public abstract HeaderParamDecl<T2, K> project(Role self);
 
 	@Override
 	//public SimpleName toName()

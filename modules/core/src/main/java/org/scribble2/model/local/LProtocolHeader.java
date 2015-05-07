@@ -2,12 +2,14 @@ package org.scribble2.model.local;
 
 import org.scribble2.model.Constants;
 import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.NameDeclNode;
 import org.scribble2.model.ParamDeclList;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.RoleDecl;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.Role;
 
 public class LProtocolHeader extends ProtocolHeader implements LocalNode
@@ -19,11 +21,13 @@ public class LProtocolHeader extends ProtocolHeader implements LocalNode
 
 	public Role getSelfRole()
 	{
-		for (RoleDecl rd : this.roledecls.decls)
+		//for (RoleDecl rd : this.roledecls.decls)
+		for (NameDeclNode<Role, RoleKind> rd : this.roledecls.decls)
 		{
-			if (rd.isSelfRoleDecl())
+			RoleDecl tmp = (RoleDecl) rd;
+			if (tmp.isSelfRoleDecl())
 			{
-				return rd.name.toName();
+				return tmp.name.toName();
 			}
 		}
 		throw new RuntimeException("Shouldn't get here: " + this.roledecls);

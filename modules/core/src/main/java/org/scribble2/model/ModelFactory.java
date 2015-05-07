@@ -2,7 +2,6 @@ package org.scribble2.model;
 
 import java.util.List;
 
-import org.scribble2.model.ParamDecl.Kind;
 import org.scribble2.model.global.GChoice;
 import org.scribble2.model.global.GContinue;
 import org.scribble2.model.global.GDo;
@@ -26,6 +25,7 @@ import org.scribble2.model.local.LReceive;
 import org.scribble2.model.local.LRecursion;
 import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
+import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
@@ -34,15 +34,18 @@ import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.sesstype.kind.Global;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.Local;
+import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.Role;
 
 public interface ModelFactory
 {
-	enum SIMPLE_NAME { AMBIG, OPERATOR, PARAMETER, RECURSIONVAR, ROLE, MODULE, PROTOCOL }
-	enum QUALIFIED_NAME { MESSAGESIGNATURE, MODULE, PAYLOADTYPE, PROTOCOL }
+	//enum SIMPLE_NAME { AMBIG, OPERATOR, PARAMETER, RECURSIONVAR, ROLE, MODULE, PROTOCOL }
+	//enum QUALIFIED_NAME { MESSAGESIGNATURE, MODULE, PAYLOADTYPE, PROTOCOL }
 	
 	Module Module( 
 			ModuleDecl moddecl,
@@ -62,10 +65,13 @@ public interface ModelFactory
 	GProtocolDecl GlobalProtocolDecl(GProtocolHeader header, GProtocolDef def);
 	GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
 
-	RoleDeclList RoleDeclList(List<RoleDecl> rds);
+	//RoleDeclList RoleDeclList(List<RoleDecl> rds);
+	RoleDeclList RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> rds);
 	RoleDecl RoleDecl(RoleNode namenode);
-	ParamDeclList ParameterDeclList(List<ParamDecl> pds);
-	ParamDecl ParameterDecl(Kind kind, ParameterNode namenode);
+	//ParamDeclList ParameterDeclList(List<ParamDecl> pds);
+	ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds);
+	//ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode);
+	<K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParameterNode<K> namenode);
 	
 	GProtocolDef GlobalProtocolDefinition(GProtocolBlock block);
 	GProtocolBlock GlobalProtocolBlock(GInteractionSeq gis);
@@ -86,8 +92,10 @@ public interface ModelFactory
 	ArgumentInstantiation ArgumentInstantiation(ArgumentNode arg);
 
 	// FIXME: instead of enums, take class as generic parameter
-	SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);
-	QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems);
+	//SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);
+	<K extends Kind> NameNode<? extends Name<K>, K> SimpleNameNode(K kind, String identifier);
+	//QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems);
+	<K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems);
 
 	LProtocolDecl LocalProtocolDecl(LProtocolHeader header, LProtocolDef def);
 	LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);

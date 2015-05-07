@@ -8,12 +8,12 @@ public class PayloadType extends MemberName implements PayloadTypeOrParameter
 
 	public PayloadType(ModuleName modname, String membname)
 	{
-		super(Kind.TYPE, modname, membname);
+		super(KindEnum.TYPE, modname, membname);
 	}
 	
 	public PayloadType(String simplename)
 	{
-		super(Kind.TYPE, simplename);
+		super(KindEnum.TYPE, simplename);
 	}
 
 	@Override

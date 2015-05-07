@@ -4,17 +4,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.HeaderParamDecl;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.RoleDecl;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
+import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.name.Role;
 
 public class AntlrRoleDeclList
 {
 	public static RoleDeclList parseRoleDeclList(ScribbleParser parser, CommonTree ct)
 	{
-		List<RoleDecl> rds = new LinkedList<>();
+		//List<RoleDecl> rds = new LinkedList<>();
+		List<HeaderParamDecl<Role, RoleKind>> rds = new LinkedList<>();
 		for (CommonTree pd : getRoleDeclChildren(ct))
 		{
 			rds.add((RoleDecl) parser.parse(pd));

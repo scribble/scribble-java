@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.global.GMessageTransfer;
 import org.scribble2.model.local.LInteractionNode;
-import org.scribble2.model.local.LocalNode;
 import org.scribble2.model.local.LReceive;
+import org.scribble2.model.local.LocalNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.sesstype.Message;
+import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -65,12 +65,14 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		if (srcrole.equals(self) || destroles.contains(self))
 		{
 			//RoleNode src = new RoleNode(gmt.src.toName().toString());  // FIXME: project by visiting -- or maybe not: projection visiting only for GlobalNode
-			RoleNode src = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, gmt.src.toName().toString());
+			//RoleNode src = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, gmt.src.toName().toString());
+			RoleNode src = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gmt.src.toName().toString());
 			//MessageNode msg = (MessageNode) ((ProjectionEnv) gmt.msg.del().getEnv()).getProjection();
 			MessageNode msg = (MessageNode) gmt.msg;  // FIXME: need namespace prefix update?
 			List<RoleNode> dests =
 					//destroles.stream().map((d) -> new RoleNode(d.toString())).collect(Collectors.toList());
-					destroles.stream().map((d) -> (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, d.toString())).collect(Collectors.toList());
+					//destroles.stream().map((d) -> (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, d.toString())).collect(Collectors.toList());
+					destroles.stream().map((d) -> (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, d.toString())).collect(Collectors.toList());
 			if (srcrole.equals(self))
 			{
 				projection = ModelFactoryImpl.FACTORY.LocalSend(src, msg, dests);

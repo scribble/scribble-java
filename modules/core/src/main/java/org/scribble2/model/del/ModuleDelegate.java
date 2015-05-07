@@ -105,7 +105,8 @@ public class ModuleDelegate extends ModelDelBase
 		//.. look up all projection sets from global protocol decls and store somewhere? in context?
 
 		//ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(main.moddecl.fullmodname.toName(), lpd.header.name.toName());
-		ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.fullmodname.toName(), lpd.header.name.toCompoundName());
+		//ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.fullmodname.toName(), lpd.header.name.toCompoundName());
+		ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.fullmodname.toName(), lpd.header.name.toName());
 		
 		//.. factor out full name making, use also for do
 		//.. record protocol dependencies in context
@@ -124,7 +125,8 @@ public class ModuleDelegate extends ModelDelBase
 
 				//ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(main.getFullModuleName(), targetsimname.toName());
 				//ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(root.getFullModuleName(), targetsimname.toCompoundName());
-				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(gpn.getPrefix(), targetsimname.toCompoundName());
+				//ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(gpn.getPrefix(), targetsimname.toCompoundName());
+				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(gpn.getPrefix(), targetsimname.toName());
 
 				if (!targetfullname.toName().getPrefix().equals(modname.toName()))
 				{

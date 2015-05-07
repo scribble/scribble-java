@@ -1,12 +1,15 @@
 package org.scribble2.sesstype.name;
 
+import org.scribble2.sesstype.kind.Kind;
 
 
-public abstract class QualifiedName extends CompoundName
+
+public abstract class QualifiedName<K extends Kind> extends Name<K>
 {
 	private static final long serialVersionUID = 1L;
 
-	public QualifiedName(Kind kind, String... elems)
+	//public QualifiedName(KindEnum kind, String... elems)
+	public QualifiedName(K kind, String... elems)
 	{
 		super(kind, elems);
 	}
@@ -24,6 +27,6 @@ public abstract class QualifiedName extends CompoundName
 	}
 	
 	// Also done by Scope
-	public abstract CompoundName getPrefix();
-	public abstract Name getSimpleName();
+	public abstract Name<? extends Kind> getPrefix();
+	public abstract Name<K> getSimpleName();
 }

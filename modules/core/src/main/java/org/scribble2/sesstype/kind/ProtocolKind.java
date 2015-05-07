@@ -1,7 +1,15 @@
 package org.scribble2.sesstype.kind;
 
-public abstract class ProtocolKind implements Kind
+//public abstract class ProtocolKind implements Kind
+public class ProtocolKind implements Kind
 {
+	public static final ProtocolKind KIND = new ProtocolKind();
+	
+	protected ProtocolKind()
+	{
+
+	}
+
 	@Override
 	public int hashCode()
 	{
@@ -15,7 +23,7 @@ public abstract class ProtocolKind implements Kind
 		{
 			return true;
 		}
-		if (o == null | !(o instanceof ProtocolKind))
+		if (!(o instanceof ProtocolKind))
 		{
 			return false;
 		}

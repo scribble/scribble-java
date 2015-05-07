@@ -1,6 +1,8 @@
 package org.scribble2.sesstype.name;
 
-public class PackageName extends QualifiedName
+import org.scribble2.sesstype.kind.PackageKind;
+
+public class PackageName extends QualifiedName<PackageKind>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -10,7 +12,8 @@ public class PackageName extends QualifiedName
 
 	public PackageName(String... elems)
 	{
-		super(Kind.PACKAGE, elems);
+		//super(KindEnum.PACKAGE, elems);
+		super(PackageKind.KIND, elems);
 	}
 
 	@Override

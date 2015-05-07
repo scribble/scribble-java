@@ -2,7 +2,8 @@ package org.scribble2.sesstype.name;
 
 //import org.scribble2.parser.AntlrConstants;
 
-public enum Kind
+@Deprecated
+public enum KindEnum
 {
   // FIXME: factor out constants
 	ROLE("role"),
@@ -18,7 +19,7 @@ public enum Kind
 	
 	private final String kind;
 	
-	private Kind(String kind)
+	private KindEnum(String kind)
 	{
 		this.kind = kind;
 	}

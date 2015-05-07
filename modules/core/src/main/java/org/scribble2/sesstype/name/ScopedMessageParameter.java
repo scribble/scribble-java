@@ -9,7 +9,7 @@ public class ScopedMessageParameter extends Parameter implements ScopedMessage
 
 	public final Scope scope;
 
-	public ScopedMessageParameter(Scope scope, Kind kind, String text)
+	public ScopedMessageParameter(Scope scope, KindEnum kind, String text)
 	{
 		super(kind, text);
 		this.scope = scope;

@@ -5,11 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble2.model.HeaderParamDecl;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ParamDecl;
 import org.scribble2.model.ParamDeclList;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.Name;
 
 public class AntlrParameterDeclList
 {
@@ -24,7 +27,8 @@ public class AntlrParameterDeclList
 			}
 			default:
 			{*/
-				List<ParamDecl> pds = new LinkedList<>();
+				//List<ParamDecl> pds = new LinkedList<>();
+				List<HeaderParamDecl<Name<Kind>, Kind>> pds = new LinkedList<>();
 				for (CommonTree pd : getParameterDeclChildren(ct))
 				{
 					pds.add((ParamDecl) parser.parse(pd));

@@ -1,14 +1,18 @@
 package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDel;
+import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.Role;
 
 
 //public interface RoleDecl extends HeaderParameterDecl
-public class RoleDecl extends HeaderParamDecl<RoleNode, Role>
+//public class RoleDecl extends HeaderParamDecl<RoleNode, Role>
+public class RoleDecl extends HeaderParamDecl<Role, RoleKind>
 {
-	public RoleDecl(RoleNode name)
+	//public RoleDecl(RoleNode name)
+	public RoleDecl(NameNode<Role, RoleKind> name)
 	{
 		//super(t, kind, namenode);
 		super(name);
@@ -26,7 +30,8 @@ public class RoleDecl extends HeaderParamDecl<RoleNode, Role>
 	}*/
 
 	@Override
-	protected RoleDecl reconstruct(RoleNode namenode)
+	//protected RoleDecl reconstruct(RoleNode namenode)
+	protected RoleDecl reconstruct(NameNode<Role, RoleKind> namenode)
 	{
 		ModelDel del = del();
 		RoleDecl rd = new RoleDecl((RoleNode) namenode);
@@ -40,7 +45,8 @@ public class RoleDecl extends HeaderParamDecl<RoleNode, Role>
 	{
 		Role role = this.name.toName();
 		//RoleNode rn = new RoleNode(role.toString());
-		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, role.toString());
+		//RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, role.toString());
+		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, role.toString());
 		if (role.equals(self))
 		{
 			//return new SelfRoleDecl(rn);

@@ -286,7 +286,7 @@ public class WellFormedChoiceEnv extends Env
 					if (sm.isParameter())
 					{
 						ScopedMessageParameter p = (ScopedMessageParameter) sm;
-						sms.add(new ScopedMessageParameter(scope, p.getKind(), p.toString()));
+						sms.add(new ScopedMessageParameter(scope, p.getKindEnum(), p.toString()));
 					}
 					else
 					{

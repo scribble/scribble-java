@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDel;
+import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.Role;
 
-public class RoleDeclList extends HeaderParamDeclList<RoleDecl, Role>
+//public class RoleDeclList extends HeaderParamDeclList<RoleDecl, Role>
+public class RoleDeclList extends HeaderParamDeclList<Role, RoleKind>
 {
-	public RoleDeclList(List<RoleDecl> decls)
+	//public RoleDeclList(List<RoleDecl> decls)
+	public RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> decls)
 	{
 		super(decls);
 	}
@@ -20,7 +23,8 @@ public class RoleDeclList extends HeaderParamDeclList<RoleDecl, Role>
 	}
 
 	@Override
-	protected HeaderParamDeclList<RoleDecl, Role> reconstruct(List<RoleDecl> decls)
+	//protected HeaderParamDeclList<RoleDecl, Role> reconstruct(List<RoleDecl> decls)
+	protected HeaderParamDeclList<Role, RoleKind> reconstruct(List<HeaderParamDecl<Role, RoleKind>> decls)
 	{
 		ModelDel del = del();
 		RoleDeclList rdl = new RoleDeclList(decls);
@@ -32,7 +36,8 @@ public class RoleDeclList extends HeaderParamDeclList<RoleDecl, Role>
 	@Override
 	public RoleDeclList project(Role self)
 	{
-		List<RoleDecl> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
+		//List<RoleDecl> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
+		List<HeaderParamDecl<Role, RoleKind>> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
 		//return new RoleDeclList(roledecls);
 		return ModelFactoryImpl.FACTORY.RoleDeclList(roledecls);
 	}

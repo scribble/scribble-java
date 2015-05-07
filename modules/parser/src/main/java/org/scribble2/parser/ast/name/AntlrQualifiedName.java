@@ -7,6 +7,8 @@ import org.scribble2.model.name.qualified.MessageSignatureNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.PayloadTypeNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
+import org.scribble2.sesstype.kind.ModuleKind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 
 public class AntlrQualifiedName
 {
@@ -24,7 +26,8 @@ public class AntlrQualifiedName
 	public static ModuleNameNode toModuleNameNode(CommonTree ct)
 	{
 		//return new ModuleNameNode(getElements(ct));
-		return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MODULE, getElements(ct));
+		//return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MODULE, getElements(ct));
+		return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, getElements(ct));
 	}
 
 	public static PayloadTypeNameNode toPayloadTypeNameNode(CommonTree ct)
@@ -42,6 +45,7 @@ public class AntlrQualifiedName
 	public static ProtocolNameNode toProtocolNameNode(CommonTree ct)
 	{
 		//return new ProtocolNameNode(getElements(ct));
-		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, getElements(ct));
+		//return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, getElements(ct));
+		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ProtocolKind.KIND, getElements(ct));
 	}
 }

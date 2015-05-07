@@ -2,6 +2,7 @@ package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.Role;
 
 
@@ -31,7 +32,8 @@ public class RoleInstantiation extends Instantiation<RoleNode>
 	@Override
 	public RoleInstantiation project(Role self)
 	{
-		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, this.arg.toName().toString());
+		//RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, this.arg.toName().toString());
+		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.arg.toName().toString());
 		//return new RoleInstantiation(rn);
 		return ModelFactoryImpl.FACTORY.RoleInstantiation(rn);
 	}

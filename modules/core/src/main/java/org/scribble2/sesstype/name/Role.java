@@ -1,7 +1,10 @@
 package org.scribble2.sesstype.name;
 
+import org.scribble2.sesstype.kind.RoleKind;
 
-public class Role extends SimpleName
+
+//public class Role extends SimpleName
+public class Role extends Name<RoleKind>
 {
 	public static final Role EMPTY_ROLE = new Role();
 
@@ -9,11 +12,13 @@ public class Role extends SimpleName
 
 	protected Role()
 	{
-		super(Kind.ROLE);
+		//super(KindEnum.ROLE);
+		super(RoleKind.KIND);
 	}
 
 	public Role(String text)
 	{
-		super(Kind.ROLE, text);
+		//super(KindEnum.ROLE, text);
+		super(RoleKind.KIND, text);
 	}
 }

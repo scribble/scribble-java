@@ -2,7 +2,6 @@ package org.scribble2.model;
 
 import java.util.List;
 
-import org.scribble2.model.ParamDecl.Kind;
 import org.scribble2.model.del.DefaultModelDel;
 import org.scribble2.model.del.ImportModuleDel;
 import org.scribble2.model.del.ModelDel;
@@ -28,7 +27,6 @@ import org.scribble2.model.del.local.LProtocolDefDel;
 import org.scribble2.model.del.local.LReceiveDel;
 import org.scribble2.model.del.local.LRecursionDel;
 import org.scribble2.model.del.local.LSendDel;
-import org.scribble2.model.del.name.AmbiguousNameDelegate;
 import org.scribble2.model.global.GChoice;
 import org.scribble2.model.global.GContinue;
 import org.scribble2.model.global.GDo;
@@ -52,20 +50,26 @@ import org.scribble2.model.local.LReceive;
 import org.scribble2.model.local.LRecursion;
 import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
+import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.PayloadElementNameNode;
-import org.scribble2.model.name.qualified.MessageSignatureNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
-import org.scribble2.model.name.simple.AmbiguousNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.sesstype.kind.Global;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.Local;
+import org.scribble2.sesstype.kind.ModuleKind;
+import org.scribble2.sesstype.kind.OperatorKind;
+import org.scribble2.sesstype.kind.ProtocolKind;
+import org.scribble2.sesstype.kind.RecVarKind;
+import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.Role;
 
 public class ModelFactoryImpl implements ModelFactory
 {
@@ -144,7 +148,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public RoleDeclList RoleDeclList(List<RoleDecl> rds)
+	//public RoleDeclList RoleDeclList(List<RoleDecl> rds)
+	public RoleDeclList RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> rds)
 	{
 		RoleDeclList rdl = new RoleDeclList(rds);
 		rdl = del(rdl, createDefaultDelegate());
@@ -160,7 +165,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ParamDeclList ParameterDeclList(List<ParamDecl> pds)
+	//public ParamDeclList ParameterDeclList(List<ParamDecl> pds)
+	public ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds)
 	{
 		ParamDeclList pdl = new ParamDeclList(pds);
 		pdl = del(pdl, createDefaultDelegate());
@@ -168,9 +174,10 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ParamDecl ParameterDecl(Kind kind, ParameterNode namenode)
+	//public ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode)
+	public <K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParameterNode<K> namenode)
 	{
-		ParamDecl pd = new ParamDecl(kind, namenode);
+		ParamDecl<K> pd = new ParamDecl<K>(kind, namenode);
 		pd = del(pd, new ParamDeclDel());
 		return pd;
 	}
@@ -283,10 +290,12 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 	
 	@Override
-	public SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier)
+	//public SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier)
+	public <K extends Kind> NameNode<? extends Name<K>, K> SimpleNameNode(K kind, String identifier)
 	{
-		SimpleNameNode snn;
-		switch(kind)
+		//SimpleNameNode snn;
+		NameNode<? extends Name<? extends Kind>, ? extends Kind> snn;
+		/*switch(kind)
 		{
 			case AMBIG: 
 			{
@@ -300,24 +309,55 @@ public class ModelFactoryImpl implements ModelFactory
 			case ROLE:         snn = new RoleNode(identifier);               break;
 			case PROTOCOL:     snn = new SimpleProtocolNameNode(identifier); break;
 			default: throw new RuntimeException("Shouldn't get in here: " + kind);
+		}*/
+		if (kind.equals(OperatorKind.KIND))
+		{
+			snn = new OperatorNode(identifier);
 		}
-		snn = (SimpleNameNode) snn.del(createDefaultDelegate());
-		return snn;
+		else if (kind.equals(RecVarKind.KIND))
+		{
+			snn = new RecursionVarNode(identifier);
+		}
+		else if (kind.equals(RoleKind.KIND))
+		{
+			snn = new RoleNode(identifier);
+		}
+		else if (kind.equals(ProtocolKind.KIND))
+		{
+			snn = new SimpleProtocolNameNode(identifier);
+		}
+		else
+		{
+			throw new RuntimeException("Shouldn't get in here: " + kind);
+		}
+		return (NameNode<? extends Name<K>, K>) snn.del(createDefaultDelegate());
 	}
 
 	@Override
-	public QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems)
+	//public QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems)
+	public <K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems)
 	{
-		QualifiedNameNode qnn;
-		switch(kind)
+		QualifiedNameNode<? extends Name<? extends Kind>, ? extends Kind> qnn;
+		/*switch(kind)
 		{
 			case MESSAGESIGNATURE: qnn = new MessageSignatureNameNode(elems); break;
 			case MODULE:           qnn = new ModuleNameNode(elems); break;
 			case PROTOCOL:         qnn = new ProtocolNameNode(elems); break;
 			default: throw new RuntimeException("Shouldn't get in here: " + kind);
+		}*/
+		if (kind.equals(ModuleKind.KIND))
+		{
+			qnn = new ModuleNameNode(elems);
 		}
-		qnn = (QualifiedNameNode) qnn.del(createDefaultDelegate());
-		return qnn;
+		else if (kind.equals(ProtocolKind.KIND))
+		{
+			qnn = new ProtocolNameNode(elems);
+		}
+		else
+		{
+			throw new RuntimeException("Shouldn't get in here: " + kind);
+		}
+		return (QualifiedNameNode<? extends Name<K>, K>) qnn.del(createDefaultDelegate());
 	}
 
 	@Override

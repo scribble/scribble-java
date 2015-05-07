@@ -1,7 +1,10 @@
 package org.scribble2.sesstype.name;
 
+import org.scribble2.sesstype.kind.ScopeKind;
+
 // Should be a compound name?
-public class Scope extends CompoundName
+//public class Scope extends Name
+public class Scope extends Name<ScopeKind>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -12,10 +15,12 @@ public class Scope extends CompoundName
 	protected Scope(String... elems)
 	//public Scope(String... elems)  // For runtime sockets
 	{
-		super(Kind.SCOPE, elems);
+		//super(KindEnum.SCOPE, elems);
+		super(ScopeKind.KIND, elems);
 	}
 	
-	public Scope(Scope prefix, SimpleName name)
+	//public Scope(Scope prefix, SimpleName name)
+	public Scope(Scope prefix, Name<ScopeKind> name)
 	{
 		this(compileScope(prefix, name));
 	}
@@ -26,12 +31,15 @@ public class Scope extends CompoundName
 		return new Scope(getPrefixElements());
 	}
 
-	public SimpleName getSimpleName()
+	//public SimpleName getSimpleName()
+	public Scope getSimpleName()
 	{
-		return new SimpleName(Kind.SCOPE, getLastElement());
+		//return new SimpleName(KindEnum.SCOPE, getLastElement());
+		return new Scope(getLastElement());
 	}
 	
-	private static String[] compileScope(Scope prefix, SimpleName name)
+	//private static String[] compileScope(Scope prefix, SimpleName name)
+	private static String[] compileScope(Scope prefix, Name<ScopeKind> name)
 	{
 		String[] tmp = prefix.getElements();
 		String[] elems = new String[tmp.length + 1];

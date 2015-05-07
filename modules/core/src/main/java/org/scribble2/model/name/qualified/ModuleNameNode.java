@@ -1,12 +1,14 @@
 package org.scribble2.model.name.qualified;
 
+import org.scribble2.sesstype.kind.ModuleKind;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.PackageName;
 
 
 
 
-public class ModuleNameNode extends QualifiedNameNode<ModuleName>
+//public class ModuleNameNode extends QualifiedNameNode<ModuleName>
+public class ModuleNameNode extends QualifiedNameNode<ModuleName, ModuleKind>
 {
 	//public ModuleNameNodes(PrimitiveNameNode... ns)
 	public ModuleNameNode(String... ns)
@@ -61,10 +63,12 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleName>
 	public ModuleName toName()
 	{
 		//return toModuleName(this);
-		String modname = getLastElement();
+		//String modname = getLastElement();
+		ModuleName modname = new ModuleName(getLastElement());
 		if (!isPrefixed())
 		{
-			return new ModuleName(modname);
+			//return new ModuleName(modname);
+			return modname;
 		}
 		PackageName packname = new PackageName(getPrefixElements());
 		return new ModuleName(packname, modname);

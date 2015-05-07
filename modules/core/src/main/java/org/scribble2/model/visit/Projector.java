@@ -14,6 +14,7 @@ import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.model.visit.env.ProjectionEnv;
+import org.scribble2.sesstype.kind.ModuleKind;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
@@ -222,7 +223,8 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	public static SimpleProtocolNameNode makeProjectedLocalName(ProtocolName simplename, Role role)
 	{
 		//return new SimpleProtocolNameNode(makeProjectedLocalNameAux(simplename.toString(), role.toString()));
-		return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
+		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
+		return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ProtocolKind.KIND, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
 	}
 
 	// Role is the target subprotocol parameter (not the current projector self -- actually the self just popped)
@@ -235,7 +237,8 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		tmp[tmp.length - 2] = makeProjectedModuleSimpleName(fullname.getPrefix().getSimpleName().toString(), simplename);
 		tmp[tmp.length - 1] = simplename;
 		//return new ProtocolNameNode(tmp);
-		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, tmp);
+		//return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, tmp);
+		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ProtocolKind.KIND, tmp);
 	}
 
 	/*public static ProtocolName makeProjectedProtocolName(ProtocolName fullname, Role role)
@@ -254,7 +257,8 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		System.arraycopy(elems, 0, tmp, 0, elems.length);
 		tmp[tmp.length - 1] = makeProjectedModuleSimpleName(fullname.getSimpleName().toString(), localname.toString());
 		//return new ModuleNameNode(tmp);
-		return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MODULE, tmp);
+		//return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MODULE, tmp);
+		return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, tmp);
 	}
 
 	/*public static ModuleName makeProjectedModuleName(ModuleName fullname, ProtocolName localname)

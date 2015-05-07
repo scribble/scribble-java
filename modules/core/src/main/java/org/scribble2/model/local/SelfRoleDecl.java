@@ -2,13 +2,16 @@ package org.scribble2.model.local;
 
 import org.scribble2.model.RoleDecl;
 import org.scribble2.model.del.ModelDel;
+import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.sesstype.kind.RoleKind;
 //import scribble2.sesstype.name.NameDeclaration;
 import org.scribble2.sesstype.name.Role;
 
 public class SelfRoleDecl extends RoleDecl
 {
-	public SelfRoleDecl(RoleNode rn)
+	//public SelfRoleDecl(RoleNode rn)
+	public SelfRoleDecl(NameNode<Role, RoleKind> rn)
 	{
 		super(rn);
 	}
@@ -28,10 +31,11 @@ public class SelfRoleDecl extends RoleDecl
 
 	@Override
 	//protected RoleDecl reconstruct(SimpleNameNode snn)
-	protected RoleDecl reconstruct(RoleNode snn)
+	//protected RoleDecl reconstruct(RoleNode snn)
+	protected RoleDecl reconstruct(NameNode<Role, RoleKind> snn)
 	{
 		ModelDel del = del();
-		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) snn);
+		SelfRoleDecl rd = new SelfRoleDecl(snn);
 		rd = (SelfRoleDecl) rd.del(del);
 		return rd;
 	}

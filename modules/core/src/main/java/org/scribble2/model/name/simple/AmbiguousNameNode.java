@@ -4,14 +4,15 @@ import org.scribble2.model.MessageNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
-import org.scribble2.sesstype.name.Kind;
+import org.scribble2.sesstype.kind.AmbiguousKind;
+import org.scribble2.sesstype.name.AmbiguousName;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
-import org.scribble2.sesstype.name.SimpleName;
 
 // Primitive payload type or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
-public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
+//public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
+public class AmbiguousNameNode extends SimpleNameNode<Name<AmbiguousKind>, AmbiguousKind> implements //ArgumentNode
 	PayloadElementNameNode, MessageNode
 {
 	public AmbiguousNameNode(String identifier)
@@ -19,15 +20,16 @@ public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
 		super(identifier);
 	}
 
-	@Override
+	/*@Override
 	protected SimpleNameNode reconstruct(String identifier)
 	{
 		throw new RuntimeException("Shouldn't get in here.");
-	}
+	}*/
 
 	@Override
 	protected AmbiguousNameNode copy()
 	{
+		//return new AmbiguousNameNode(this.identifier);
 		return new AmbiguousNameNode(this.identifier);
 	}
 	
@@ -70,9 +72,11 @@ public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
 	}
 
 	@Override
-	public Name toName()
+	//public IName toName()
+	public Name<AmbiguousKind> toName()
 	{
-		return new SimpleName(Kind.AMBIGUOUS, this.identifier);
+		//return new SimpleName(KindEnum.AMBIGUOUS, this.identifier);
+		return new AmbiguousName(this.identifier);
 	}
 
 	@Override

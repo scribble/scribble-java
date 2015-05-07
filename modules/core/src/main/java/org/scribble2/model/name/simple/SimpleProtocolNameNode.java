@@ -1,45 +1,47 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.del.ModelDel;
-import org.scribble2.sesstype.name.Kind;
-import org.scribble2.sesstype.name.ProtocolName;
-import org.scribble2.sesstype.name.SimpleName;
+import org.scribble2.model.name.qualified.ProtocolNameNode;
 
 
 
-public class SimpleProtocolNameNode extends SimpleCompoundNameNode<ProtocolName> //SimpleMemberNameNode
+//public class SimpleProtocolNameNode extends SimpleCompoundNameNode<ProtocolName> //SimpleMemberNameNode
+public class SimpleProtocolNameNode extends ProtocolNameNode
 {
+	public final String identifier;
+	
 	public SimpleProtocolNameNode(String identifier)
 	{
 		super(identifier);
+		this.identifier = identifier;
 	}
 
-	@Override
+	/*@Override
 	protected SimpleProtocolNameNode reconstruct(String identifier)
 	{
 		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
 		SimpleProtocolNameNode spnn = new SimpleProtocolNameNode(identifier);
 		spnn = (SimpleProtocolNameNode) spnn.del(del);
 		return spnn;
-	}
+	}*/
 
 	@Override
 	protected SimpleProtocolNameNode copy()
 	{
 		return new SimpleProtocolNameNode(this.identifier);
+		//return new SimpleProtocolNameNode(getLastElement());
 	}
 
-	@Override
+	/*@Override
 	public SimpleName toName()
 	{
-		return new SimpleName(Kind.PROTOCOL, this.identifier);
-	}
+		return new SimpleName(KindEnum.PROTOCOL, this.identifier);
+	}*/
 
-	@Override
+	/*@Override
 	public ProtocolName toCompoundName()
 	{
 		return new ProtocolName(this.identifier);
-	}
+	}*/
 
 	/*@Override
 	public PrimitiveNameNode toPrimitiveNameNode()

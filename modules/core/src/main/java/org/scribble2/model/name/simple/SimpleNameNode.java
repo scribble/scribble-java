@@ -1,13 +1,15 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.name.NameNode;
-import org.scribble2.sesstype.name.SimpleName;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.Name;
 
 
 // Parser Identifier
 // The various kinds of names cannot be distinguished from parameter names at the parser level -- maybe no point to distinguish in the AST?
 // Could make a subclass of CompoundNameNode (but not very convenient, and wouldn't match grammar def)
-public abstract class SimpleNameNode<T extends SimpleName> extends NameNode<T>
+//public abstract class SimpleNameNode<T extends SimpleName> extends NameNode<T>
+public abstract class SimpleNameNode<T extends Name<K>, K extends Kind> extends NameNode<T, K>
 {
 	public final String identifier;
 
@@ -22,7 +24,7 @@ public abstract class SimpleNameNode<T extends SimpleName> extends NameNode<T>
 		return new SimpleName(Kind.AMBIGUOUS, this.identifier);
 	}*/
 
-	protected abstract SimpleNameNode<T> reconstruct(String identifier);
+	//protected abstract SimpleNameNode<T> reconstruct(String identifier);
 
 	@Override
 	public String toString()
@@ -38,7 +40,8 @@ public abstract class SimpleNameNode<T extends SimpleName> extends NameNode<T>
 		{
 			return true;
 		}
-		if (o == null || this.getClass() != o.getClass())
+		//if (o == null || this.getClass() != o.getClass())
+		if (!(o instanceof SimpleNameNode))
 		{
 			return false;
 		}

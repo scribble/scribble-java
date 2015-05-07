@@ -11,6 +11,10 @@ import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.model.name.simple.SimpleMessageSignatureNameNode;
 import org.scribble2.model.name.simple.SimplePayloadTypeNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.sesstype.kind.OperatorKind;
+import org.scribble2.sesstype.kind.ProtocolKind;
+import org.scribble2.sesstype.kind.RecVarKind;
+import org.scribble2.sesstype.kind.RoleKind;
 
 public class AntlrSimpleName
 {
@@ -21,7 +25,8 @@ public class AntlrSimpleName
 	public static SimpleProtocolNameNode toSimpleProtocolNameNode(CommonTree ct)
 	{
 		//return new SimpleProtocolNameNode(AntlrSimpleName.getName(ct));
-		return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, getName(ct));
+		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, getName(ct));
+		return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ProtocolKind.KIND, getName(ct));
 	}
 
 	public static SimplePayloadTypeNode toSimplePayloadTypeNode(CommonTree ct)
@@ -41,7 +46,8 @@ public class AntlrSimpleName
 	public static RoleNode toRoleNode(CommonTree ct)
 	{
 		//return new RoleNode(getName(ct));
-		return (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, getName(ct));
+		//return (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, getName(ct));
+		return (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getName(ct));
 	}
 
 	/*public static ParameterNode toParameterNode(CommonTree ct)
@@ -72,10 +78,11 @@ public class AntlrSimpleName
 		if (op.equals(ANTLR_EMPTY_OPERATOR))
 		{
 			//return new OperatorNode(OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
-			return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.OPERATOR, OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
+			//return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.OPERATOR, OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
+			return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OperatorKind.KIND, OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
 		}
 		//return new OperatorNode(op);
-		return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.OPERATOR, getName(ct));
+		return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OperatorKind.KIND, getName(ct));
 	}
 	
 	public static ScopeNode toScopeNode(CommonTree ct)
@@ -92,7 +99,8 @@ public class AntlrSimpleName
 	public static RecursionVarNode toRecursionVarNode(CommonTree ct)
 	{
 		//return new RecursionVarNode(getName(ct));
-		return (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, getName(ct));
+		//return (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, getName(ct));
+		return (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, getName(ct));
 	}
 
 	public static String getName(CommonTree ct)

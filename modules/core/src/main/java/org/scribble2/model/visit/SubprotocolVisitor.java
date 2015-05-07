@@ -7,20 +7,20 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.Do;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
-import org.scribble2.model.IProtocolDecl;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ScopedNode;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModuleDelegate;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.ScopedSubprotocolSignature;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.ProtocolKind;
-import org.scribble2.sesstype.name.Parameter;
+import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.Scope;
@@ -57,8 +57,8 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		Map<Role, Role> rolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> r));
 		Map<Argument, Argument> argmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> a));*/
 
-		Map<Role, RoleNode> rolemap = pd.header.roledecls.decls.stream().collect(Collectors.toMap((r) -> r.toName(), (r) -> r.name));
-		Map<Argument, ArgumentNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> p.toName(), (p) -> p.name));
+		Map<Role, RoleNode> rolemap = pd.header.roledecls.decls.stream().collect(Collectors.toMap((r) -> r.toName(), (r) -> (RoleNode) r.name));
+		Map<Argument, ArgumentNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> (Argument) p.toName(), (p) -> (ArgumentNode) p.name));
 		this.rolemaps.push(rolemap);
 		this.argmaps.push(argmap);
 
@@ -227,7 +227,8 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		ProtocolDecl<? extends ProtocolKind>
 				pd = getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 		List<Role> roleparams = pd.header.roledecls.getRoles();
-		List<Parameter> argparams = pd.header.paramdecls.getParameters();
+		//List<Parameter> argparams = pd.header.paramdecls.getParameters();
+		List<Name<Kind>> argparams = pd.header.paramdecls.getParameters();
 		
 		Map<Role, RoleNode> rolemap = rolemaps.peek();
 		Map<Argument, ArgumentNode> argmap = argmaps.peek();
@@ -236,7 +237,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		/*Map<Role, RoleNode> newrolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> rolemap.get(roleargiter.next())));
 		Map<Argument, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> argmap.get(argargiter.next())));*/
 		Map<Role, RoleNode> newrolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> this.rolemaps.get(0).get(roleargiter.next())));
-		Map<Argument, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> this.argmaps.get(0).get(argargiter.next())));
+		Map<Argument, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> (Argument) a, (a) -> this.argmaps.get(0).get(argargiter.next())));
 		this.rolemaps.push(newrolemap);
 		this.argmaps.push(newargmap);
 	}

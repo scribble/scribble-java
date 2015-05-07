@@ -3,20 +3,24 @@ package org.scribble2.model;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Role;
-import org.scribble2.sesstype.name.SimpleName;
 import org.scribble2.util.ScribbleException;
 
 public abstract class HeaderParamDeclList<
-		T1 extends HeaderParamDecl<? extends SimpleNameNode<T2>,	T2>,
-		T2 extends SimpleName
+		/*T1 extends HeaderParamDecl<? extends SimpleNameNode<T2>,	T2>,
+		T2 extends SimpleName*/
+		T extends Name<K>,
+		K extends Kind
 > extends ModelNodeBase 
 {
-	public final List<T1> decls;
+	//public final List<T1> decls;
+	public final List<HeaderParamDecl<T, K>> decls;  // Not List<? extends HeaderParamDecl<T, K>> because ParamDeclList contains mixed kinds
 	
-	protected HeaderParamDeclList(List<T1> decls)
+	//protected HeaderParamDeclList(List<T1> decls)
+	protected HeaderParamDeclList(List<HeaderParamDecl<T, K>> decls)
 	{
 		this.decls = new LinkedList<>(decls);
 	}
@@ -31,14 +35,18 @@ public abstract class HeaderParamDeclList<
 		return this.decls.isEmpty();
 	}
 	
-	public abstract HeaderParamDeclList<T1, T2> project(Role self);
+	//public abstract HeaderParamDeclList<T1, T2> project(Role self);
+	public abstract HeaderParamDeclList<T, K> project(Role self);
 	
-	protected abstract HeaderParamDeclList<T1, T2> reconstruct(List<T1> decls);
+	//protected abstract HeaderParamDeclList<T1, T2> reconstruct(List<T1> decls);
+	protected abstract HeaderParamDeclList<T, K> reconstruct(List<HeaderParamDecl<T, K>> decls);
 	
 	@Override
-	public HeaderParamDeclList<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
+	//public HeaderParamDeclList<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParamDeclList<T, K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		List<T1> nds = visitChildListWithClassCheck(this, this.decls, nv);
+		//List<T1> nds = visitChildListWithClassCheck(this, this.decls, nv);
+		List<HeaderParamDecl<T, K>> nds = visitChildListWithClassCheck(this, this.decls, nv);
 		//return new HeaderParameterDeclList<>(this.ct, nds);
 		return reconstruct(nds);
 	}
@@ -86,7 +94,8 @@ public abstract class HeaderParamDeclList<
 			return "";
 		}
 		String s = decls.get(0).toString();
-		for (T1 nd : this.decls.subList(1, this.decls.size()))
+		//for (T1 nd : this.decls.subList(1, this.decls.size()))
+		for (HeaderParamDecl<T, K> nd : this.decls.subList(1, this.decls.size()))
 		{
 			s += ", " + nd;
 		}

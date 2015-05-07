@@ -4,6 +4,7 @@ import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.PayloadType;
 import org.scribble2.sesstype.name.SimpleName;
 
+@Deprecated
 public class SimplePayloadTypeNode extends SimpleCompoundNameNode<PayloadType> //implements ArgumentInstantiation//, PayloadElementNameNode// SimpleMemberNameNode
 {
 	//public final String extType;  // Not current considered for equals/hashCode

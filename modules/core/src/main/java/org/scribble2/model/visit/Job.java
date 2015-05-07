@@ -18,6 +18,7 @@ import org.scribble2.util.ScribbleException;
 	//.. fix parameterdecllist generics (not fixed to one kind)
 
 	//.. do call type checking as well as basic name binding
+	//.. make headerparamdecl into paramdecl directly
 
 		//.. sepatate protocol names into global/local -- use generic parameter for name kinds rather than subclasses
 		//.. fix projection env to take projection output type as Parameter

@@ -2,12 +2,12 @@ package org.scribble2.sesstype.name;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import org.scribble2.model.Constants;
+import org.scribble2.sesstype.kind.ModuleKind;
 
 // General name: simple or full (a central class for value comparison)
-public class ModuleName extends QualifiedName
+public class ModuleName extends QualifiedName<ModuleKind>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -15,17 +15,21 @@ public class ModuleName extends QualifiedName
 	
 	protected ModuleName(String... elems)
 	{
-		super(Kind.MODULE, elems);
+		//super(KindEnum.MODULE, elems);
+		super(ModuleKind.KIND, elems);
 	}
 
-	public ModuleName(PackageName packname, String modname)
+	//public ModuleName(PackageName packname, String modname)
+	public ModuleName(PackageName packname, ModuleName modname)
 	{
-		super(Kind.MODULE, compileModuleName(packname, modname));
+		//super(KindEnum.MODULE, compileModuleName(packname, modname));
+		super(ModuleKind.KIND, compileModuleName(packname, modname));
 	}
 
 	public ModuleName(String modname)
 	{
-		this(PackageName.EMPTY_PACKAGENAME, modname);
+		//this(PackageName.EMPTY_PACKAGENAME, modname);
+		super(ModuleKind.KIND, Name.compileElements(PackageName.EMPTY_PACKAGENAME.getElements(), modname));
 	}
 
 	// FIXME: use java.nio.file.Path
@@ -63,16 +67,10 @@ public class ModuleName extends QualifiedName
 		return getPrefix();
 	}
 	
-	private static String[] compileModuleName(PackageName packname, String modname)
+	//private static String[] compileModuleName(PackageName packname, String modname)
+	private static String[] compileModuleName(PackageName packname, ModuleName modname)
 	{
-		return compileElements(packname, modname);
-	}
-
-	protected static String[] compileElements(CompoundName cn, String n)
-	{
-		String[] prefix = cn.getElements();
-		String[] elems = Arrays.copyOf(prefix, prefix.length + 1);
-		elems[elems.length - 1] = n;
-		return elems;
+		//return compileElements(packname, modname);
+		return Name.compileElements(packname.getElements(), modname.getLastElement());
 	}
 }

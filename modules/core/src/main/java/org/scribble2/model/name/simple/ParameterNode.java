@@ -1,12 +1,14 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
 
-public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
+//public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
+public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 {
 	//public final Kind kind;
 	
@@ -16,19 +18,19 @@ public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadE
 		//this.kind = kind;
 	}
 
-	@Override
+	/*@Override
 	protected ParameterNode reconstruct(String identifier)
 	{
 		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
 		ParameterNode pn = new ParameterNode(identifier);
 		pn = (ParameterNode) pn.del(del);
 		return pn;
-	}
+	}*/
 
 	@Override
-	protected ParameterNode copy()
+	protected ParameterNode<K> copy()
 	{
-		return new ParameterNode(this.identifier);
+		return new ParameterNode<>(this.identifier);
 	}
 	
 	/*// Only useful for MessageSignatureDecls -- FIXME: integrate sig decls properly

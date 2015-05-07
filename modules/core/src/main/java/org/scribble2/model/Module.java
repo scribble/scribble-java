@@ -12,7 +12,7 @@ import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ModuleName;
-import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.IName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
@@ -103,7 +103,7 @@ public class Module extends ModelNodeBase
 
 	// FIXME: refactor
 	// ptn simple alias name
-	public PayloadTypeDecl getPayloadTypeDecl(Name ptn)
+	public PayloadTypeDecl getPayloadTypeDecl(IName ptn)
 	{
 		for (DataTypeDecl dtd : this.data)
 		{
@@ -116,7 +116,7 @@ public class Module extends ModelNodeBase
 	}
 
 	// ptn simple alias name
-	public MessageSigDecl getMessageSignatureDecl(Name msn)
+	public MessageSigDecl getMessageSignatureDecl(IName msn)
 	{
 		for (DataTypeDecl dtd : this.data)
 		{

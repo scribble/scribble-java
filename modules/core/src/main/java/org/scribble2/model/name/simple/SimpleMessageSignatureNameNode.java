@@ -7,6 +7,7 @@ import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.name.MessageSignatureName;
 import org.scribble2.sesstype.name.SimpleName;
 
+@Deprecated
 public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<MessageSignatureName> implements MessageNode//SimpleMemberNameNode
 {
 	//public final String extType;  // Not current considered for equals/hashCode

@@ -1,10 +1,10 @@
 package org.scribble2.sesstype.kind;
 
-public class Local extends ProtocolKind
+public class ModuleKind implements Kind
 {
-	public static final Local KIND = new Local();
+	public static final ModuleKind KIND = new ModuleKind();
 	
-	protected Local()
+	protected ModuleKind()
 	{
 
 	}
@@ -22,7 +22,7 @@ public class Local extends ProtocolKind
 		{
 			return true;
 		}
-		if (!(o instanceof Local))
+		if (!(o instanceof ModuleKind))
 		{
 			return false;
 		}

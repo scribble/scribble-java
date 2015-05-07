@@ -70,7 +70,8 @@ public class CommandLine implements Runnable
 	{
 		Map<ProtocolName, Module> projs = jc.getProjections();
 		Role role = new Role(this.args.get(Arg.PROJECT)[1]);
-		ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, this.args.get(Arg.PROJECT)[0]), role).toName();  // FIXME: factor out name projection from name node construction
+		//ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, this.args.get(Arg.PROJECT)[0]), role).toName();  // FIXME: factor out name projection from name node construction
+		ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, new ProtocolName(this.args.get(Arg.PROJECT)[0])), role).toName();  // FIXME: factor out name projection from name node construction
 		if (!projs.containsKey(proto))
 		{
 			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));

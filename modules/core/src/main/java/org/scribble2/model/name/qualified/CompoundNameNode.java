@@ -3,9 +3,10 @@ package org.scribble2.model.name.qualified;
 import java.util.Arrays;
 
 import org.scribble2.model.name.NameNode;
-import org.scribble2.sesstype.name.CompoundName;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.Name;
 
-public abstract class CompoundNameNode<T extends CompoundName> extends NameNode<T>
+public abstract class CompoundNameNode<T extends Name<K>, K extends Kind> extends NameNode<T, K>
 {
 	//public final List<PrimitiveNameNode> names;
 	protected final String[] elems;

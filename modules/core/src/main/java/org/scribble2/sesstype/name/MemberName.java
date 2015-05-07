@@ -1,19 +1,24 @@
 package org.scribble2.sesstype.name;
 
+import org.scribble2.sesstype.kind.Kind;
+
 
 // Simple name or qualified name
-public abstract class MemberName extends QualifiedName //SerializableSimpleName
+public abstract class MemberName<K extends Kind> extends QualifiedName<K> //SerializableSimpleName
 {
 	private static final long serialVersionUID = 1L;
 	
-	public MemberName(Kind kind, ModuleName modname, String membname)
+	//public MemberName(KindEnum kind, ModuleName modname, String membname)
+	public MemberName(K kind, ModuleName modname, Name<K> membname)
 	{
 		super(kind, compileMemberName(modname, membname));
 	}
 	
-	public MemberName(Kind kind, String simplename)
+	//public MemberName(KindEnum kind, String simplename)
+	public MemberName(K kind, String simplename)
 	{
-		this(kind, ModuleName.EMPTY_MODULENAME, simplename);
+		//this(kind, ModuleName.EMPTY_MODULENAME, simplename);
+		super(kind, Name.compileElements(ModuleName.EMPTY_MODULENAME.getElements(), simplename));
 	}
 	
 	/*@Override
@@ -37,8 +42,9 @@ public abstract class MemberName extends QualifiedName //SerializableSimpleName
 	}
 	
 	// Similar in ModuleName
-	private static String[] compileMemberName(ModuleName modname, String membname)
+	//private static String[] compileMemberName(ModuleName modname, String membname)
+	private static String[] compileMemberName(ModuleName modname, Name<? extends Kind> membname)
 	{
-		return ModuleName.compileElements(modname, membname);
+		return Name.compileElements(modname.getElements(), membname.getLastElement());
 	}
 }

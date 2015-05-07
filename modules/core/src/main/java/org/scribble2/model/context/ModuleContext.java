@@ -92,14 +92,16 @@ public class ModuleContext
 		for (GProtocolDecl gpd : mod.getGlobalProtocolDecls())
 		{
 			ProtocolName fullname = gpd.getFullProtocolName(mod);
-			ProtocolName visname = new ProtocolName(vismodname, gpd.header.name.toString());
+			//ProtocolName visname = new ProtocolName(vismodname, gpd.header.name.toString());
+			ProtocolName visname = new ProtocolName(vismodname, gpd.header.name.toName());
 			this.globals.put(visname, fullname);
 		}
 		for (LProtocolDecl lpd : mod.getLocalProtocolDecls())
 		{
 			ProtocolName fullname = lpd.getFullProtocolName(mod);
 			//ProtocolName fullname = getFullProtocolName(lpd);
-			ProtocolName visname = new ProtocolName(vismodname, lpd.header.name.toString());
+			//ProtocolName visname = new ProtocolName(vismodname, lpd.header.name.toString());
+			ProtocolName visname = new ProtocolName(vismodname, lpd.header.name.toName());
 			this.locals.put(visname, fullname);
 		}
 	}
@@ -132,9 +134,12 @@ public class ModuleContext
 		for (GProtocolDecl gpd : m.getGlobalProtocolDecls())
 		{
 			//ProtocolName simplename = gpd.header.name.toName();
-			ProtocolName simplename = gpd.header.name.toCompoundName();
+			/*ProtocolName simplename = gpd.header.name.toCompoundName();
 			ProtocolName fullname = new ProtocolName(fullmodname, simplename.toString());
-			ProtocolName selfname = new ProtocolName(simplemodname, simplename.toString());
+			ProtocolName selfname = new ProtocolName(simplemodname, simplename.toString());*/
+			ProtocolName simplename = gpd.header.name.toName();
+			ProtocolName fullname = new ProtocolName(fullmodname, simplename);
+			ProtocolName selfname = new ProtocolName(simplemodname, simplename);
 			this.globals.put(simplename, fullname);
 			this.globals.put(selfname, fullname);
 		}

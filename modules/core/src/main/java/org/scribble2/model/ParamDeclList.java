@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDel;
-import org.scribble2.sesstype.name.Parameter;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Role;
 
-public class ParamDeclList extends HeaderParamDeclList<ParamDecl, Parameter>
+//public class ParamDeclList extends HeaderParamDeclList<ParamDecl, Parameter>
+public class ParamDeclList extends HeaderParamDeclList<Name<Kind>, Kind>
 {
-	public ParamDeclList(List<ParamDecl> decls)
+	//public ParamDeclList(List<ParamDecl> decls)
+	public ParamDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> decls)
 	{
 		super(decls);
 	}
@@ -21,7 +24,8 @@ public class ParamDeclList extends HeaderParamDeclList<ParamDecl, Parameter>
 	}
 
 	@Override
-	protected ParamDeclList reconstruct(List<ParamDecl> decls)
+	//protected ParamDeclList reconstruct(List<ParamDecl> decls)
+	protected ParamDeclList reconstruct(List<HeaderParamDecl<Name<Kind>, Kind>> decls)
 	{
 		ModelDel del = del();
 		ParamDeclList rdl = new ParamDeclList(decls);
@@ -33,7 +37,8 @@ public class ParamDeclList extends HeaderParamDeclList<ParamDecl, Parameter>
 	@Override
 	public ParamDeclList project(Role self)
 	{
-		List<ParamDecl> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
+		//List<ParamDecl> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
+		List<HeaderParamDecl<Name<Kind>, Kind>> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
 		//return new ParameterDeclList(paramdecls);
 		return ModelFactoryImpl.FACTORY.ParameterDeclList(paramdecls);
 	}
@@ -94,7 +99,8 @@ public class ParamDeclList extends HeaderParamDeclList<ParamDecl, Parameter>
 		return new ParameterDeclList(this.ct, nds.decls);
 	}*/
 	
-	public List<Parameter> getParameters()
+	//public List<Parameter> getParameters()
+	public List<Name<Kind>> getParameters()
 	{
 		return this.decls.stream().map((decl) -> decl.toName()).collect(Collectors.toList());
 	}
