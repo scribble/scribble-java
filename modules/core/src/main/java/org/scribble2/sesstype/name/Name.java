@@ -5,7 +5,7 @@ import java.io.Serializable;
 // Structured name for packages, modules, members etc; subsuming simple names like roles, operators, etc
 public interface Name extends Serializable
 {
-	KindEnum getKind();
+	Kind getKind();
 	/*boolean isEmpty();
 	boolean isPrefixed();
 	Name getPrefix();

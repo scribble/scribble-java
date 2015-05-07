@@ -2,8 +2,7 @@ package org.scribble2.sesstype;
 
 import java.util.List;
 
-import org.scribble2.sesstype.kind.OperatorKind;
-import org.scribble2.sesstype.name.KindedName;
+import org.scribble2.sesstype.name.Operator;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
 import org.scribble2.sesstype.name.Scope;
 
@@ -11,8 +10,7 @@ public class ScopedMessageSignature extends MessageSignature implements ScopedMe
 {
 	public final Scope scope;
 	
-	//public ScopedMessageSignature(Scope scope, Operator op, List<PayloadTypeOrParameter> payload)
-	public ScopedMessageSignature(Scope scope, KindedName<OperatorKind> op, List<PayloadTypeOrParameter> payload)
+	public ScopedMessageSignature(Scope scope, Operator op, List<PayloadTypeOrParameter> payload)
 	{
 		super(op, payload);
 		this.scope = scope;

@@ -2,15 +2,13 @@ package org.scribble2.model.local;
 
 import org.scribble2.model.RoleDecl;
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.name.SimpleKindedNameNode;
-import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.model.name.simple.RoleNode;
 //import scribble2.sesstype.name.NameDeclaration;
 import org.scribble2.sesstype.name.Role;
 
 public class SelfRoleDecl extends RoleDecl
 {
-	//public SelfRoleDecl(RoleNode rn)
-	public SelfRoleDecl(SimpleKindedNameNode<RoleKind> rn)
+	public SelfRoleDecl(RoleNode rn)
 	{
 		super(rn);
 	}
@@ -30,11 +28,10 @@ public class SelfRoleDecl extends RoleDecl
 
 	@Override
 	//protected RoleDecl reconstruct(SimpleNameNode snn)
-	//protected RoleDecl reconstruct(RoleNode snn)
-	protected RoleDecl reconstruct(SimpleKindedNameNode<RoleKind> snn)
+	protected RoleDecl reconstruct(RoleNode snn)
 	{
 		ModelDelegate del = del();
-		SelfRoleDecl rd = new SelfRoleDecl(snn);
+		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) snn);
 		rd = (SelfRoleDecl) rd.del(del);
 		return rd;
 	}
@@ -42,7 +39,7 @@ public class SelfRoleDecl extends RoleDecl
 	@Override
 	protected SelfRoleDecl copy()
 	{
-		return new SelfRoleDecl(this.name);
+		return new SelfRoleDecl((RoleNode) this.name);
 	}
 	
 	@Override

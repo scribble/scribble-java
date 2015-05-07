@@ -3,12 +3,11 @@ package org.scribble2.parser.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ImportModule;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.name.KindedNameNode;
-import org.scribble2.model.name.SimpleKindedNameNode;
+import org.scribble2.model.name.qualified.ModuleNameNode;
+import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
-import org.scribble2.sesstype.kind.ModuleKind;
 
 public class AntlrImportModule
 {
@@ -19,14 +18,11 @@ public class AntlrImportModule
 
 	public static ImportModule parseImportModule(ScribbleParser parser, CommonTree ct)
 	{
-		/*ModuleNameNode fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
-		SimpleProtocolNameNode alias = null;*/
-		KindedNameNode<ModuleKind> fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
-		SimpleKindedNameNode<ModuleKind> alias = null;
+		ModuleNameNode fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
+		SimpleProtocolNameNode alias = null;
 		if (hasAlias(ct))
 		{
-			//alias = AntlrSimpleName.toSimpleProtocolNameNode(getAliasChild(ct));
-			alias = AntlrSimpleName.toSimpleModuleNameNode(getAliasChild(ct));  // FIXME: hardcoded to global
+			alias = AntlrSimpleName.toSimpleProtocolNameNode(getAliasChild(ct));
 		}
 		//return new ImportModule(fmn, alias);
 		return ModelFactoryImpl.FACTORY.ImportModule(fmn, alias);

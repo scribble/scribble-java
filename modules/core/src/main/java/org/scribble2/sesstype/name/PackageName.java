@@ -10,7 +10,7 @@ public class PackageName extends QualifiedName
 
 	public PackageName(String... elems)
 	{
-		super(KindEnum.PACKAGE, elems);
+		super(Kind.PACKAGE, elems);
 	}
 
 	@Override

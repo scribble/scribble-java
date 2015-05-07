@@ -63,13 +63,13 @@ public abstract class ModelNodeBase implements ModelNode
 	}*/
 	
 	@Override
-	public ModelDelegate del()
+	public final ModelDelegate del()
 	{
 		return this.del;
 	}
 	
 	@Override
-	public ModelNodeBase del(ModelDelegate del)
+	public final ModelNodeBase del(ModelDelegate del)
 	{
 		ModelNodeBase copy = copy();
 		copy.del = del;
@@ -96,12 +96,10 @@ public abstract class ModelNodeBase implements ModelNode
 	}
 		
 	// FIXME: remove parent parameter, to make uniform with visitChild
-	// FIXME: refactor uses of this to fully check generic type (e.g. KindedNameNode.king) where possible
 	// Used when a generic cast would otherwise be needed (non-generic children casts don't need this)
 	protected final static <T extends ModelNode> T visitChildWithClassCheck(ModelNode parent, T child, ModelVisitor nv) throws ScribbleException
 	{
 		ModelNode visited = ((ModelNodeBase) parent).visitChild(child, nv);
-		//child.getClass().cast(visited);
 		if (visited.getClass() != child.getClass())  // Visitor is not allowed to replace the node by a different node type
 		{
 			throw new RuntimeException("Visitor generic visit error: " + child.getClass() + ", " + visited.getClass());

@@ -6,6 +6,6 @@ public class RecursionVar extends SimpleName
 
 	public RecursionVar(String text)
 	{
-		super(KindEnum.RECURSIONVAR, text);
+		super(Kind.RECURSIONVAR, text);
 	}
 }

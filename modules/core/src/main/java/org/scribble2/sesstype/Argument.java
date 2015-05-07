@@ -1,10 +1,10 @@
 package org.scribble2.sesstype;
 
-import org.scribble2.sesstype.name.KindEnum;
+import org.scribble2.sesstype.name.Kind;
 
 public interface Argument
 {
-	KindEnum getKind();
+	Kind getKind();
 
 	boolean isParameter();
 }

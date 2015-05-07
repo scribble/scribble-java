@@ -1,7 +1,7 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.sesstype.name.KindEnum;
+import org.scribble2.sesstype.name.Kind;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.SimpleName;
 
@@ -32,7 +32,7 @@ public class SimpleProtocolNameNode extends SimpleCompoundNameNode<ProtocolName>
 	@Override
 	public SimpleName toName()
 	{
-		return new SimpleName(KindEnum.PROTOCOL, this.identifier);
+		return new SimpleName(Kind.PROTOCOL, this.identifier);
 	}
 
 	@Override

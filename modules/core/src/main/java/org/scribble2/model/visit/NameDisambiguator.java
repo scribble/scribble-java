@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scribble2.model.ModelNode;
-import org.scribble2.sesstype.name.KindEnum;
+import org.scribble2.sesstype.name.Kind;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.util.ScribbleException;
@@ -17,7 +17,7 @@ public class NameDisambiguator extends ModelVisitor
 
   // Reset per ProtocolDecl
 	private int counter = 1;
-	private Map<String, KindEnum> params = new HashMap<>();
+	private Map<String, Kind> params = new HashMap<>();
 
 	public NameDisambiguator(Job job)
 	{
@@ -64,7 +64,7 @@ public class NameDisambiguator extends ModelVisitor
 		this.params.put(param.toString(), param.getKind());
 	}
 
-	public KindEnum getParameterKind(Name name)
+	public Kind getParameterKind(Name name)
 	{
 		return this.params.get(name.toString());
 	}

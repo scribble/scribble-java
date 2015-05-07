@@ -12,7 +12,7 @@ public class Scope extends CompoundName
 	protected Scope(String... elems)
 	//public Scope(String... elems)  // For runtime sockets
 	{
-		super(KindEnum.SCOPE, elems);
+		super(Kind.SCOPE, elems);
 	}
 	
 	public Scope(Scope prefix, SimpleName name)
@@ -28,7 +28,7 @@ public class Scope extends CompoundName
 
 	public SimpleName getSimpleName()
 	{
-		return new SimpleName(KindEnum.SCOPE, getLastElement());
+		return new SimpleName(Kind.SCOPE, getLastElement());
 	}
 	
 	private static String[] compileScope(Scope prefix, SimpleName name)

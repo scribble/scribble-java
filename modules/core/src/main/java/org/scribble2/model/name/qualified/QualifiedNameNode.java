@@ -1,6 +1,5 @@
 package org.scribble2.model.name.qualified;
 
-import org.scribble2.model.name.CompoundNameNode;
 import org.scribble2.sesstype.name.CompoundName;
 
 

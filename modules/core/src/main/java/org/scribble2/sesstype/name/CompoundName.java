@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.Arrays;
 
 
-public abstract class CompoundName implements Name
+public class CompoundName implements Name
 {
 	private static final long serialVersionUID = 1L;
 	
-	protected final KindEnum kind;
+	protected final Kind kind;
 	
 	//public static final CompoundName EMPTY_NAME = new CompoundName();
 
@@ -17,14 +17,14 @@ public abstract class CompoundName implements Name
 	private String[] elems;  // non-final, for serialization
 
 	//public CompoundName(List<String> elems)
-	public CompoundName(KindEnum kind, String... elems)
+	public CompoundName(Kind kind, String... elems)
 	{
 		this.kind = kind;
 		this.elems = elems;
 	}
 
 	@Override
-	public KindEnum getKind()
+	public Kind getKind()
 	{
 		return this.kind;
 	}

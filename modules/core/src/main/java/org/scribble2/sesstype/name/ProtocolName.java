@@ -7,12 +7,12 @@ public class ProtocolName extends MemberName
 
 	public ProtocolName(ModuleName modname, String membname)
 	{
-		super(KindEnum.PROTOCOL, modname, membname);
+		super(Kind.PROTOCOL, modname, membname);
 	}
 	
 	public ProtocolName(String membname)
 	{
-		super(KindEnum.PROTOCOL, membname);
+		super(Kind.PROTOCOL, membname);
 	}
 
 	@Override

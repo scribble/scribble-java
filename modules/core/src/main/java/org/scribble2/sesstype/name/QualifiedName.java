@@ -6,7 +6,7 @@ public abstract class QualifiedName extends CompoundName
 {
 	private static final long serialVersionUID = 1L;
 
-	public QualifiedName(KindEnum kind, String... elems)
+	public QualifiedName(Kind kind, String... elems)
 	{
 		super(kind, elems);
 	}

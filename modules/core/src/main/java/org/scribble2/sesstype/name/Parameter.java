@@ -20,7 +20,7 @@ public class Parameter extends SimpleName implements Message, PayloadTypeOrParam
 	//public final ParameterDecl.Kind kind;
 
 	//public Parameter(ParameterDecl.Kind kind, String text)
-	public Parameter(KindEnum kind, String text)
+	public Parameter(Kind kind, String text)
 	{
 		super(kind, text);
 		//this.kind = kind;
@@ -29,7 +29,7 @@ public class Parameter extends SimpleName implements Message, PayloadTypeOrParam
 	@Override
 	public ScopedMessage toScopedMessage(Scope scope)
 	{
-		if (this.kind != KindEnum.SIG)
+		if (this.kind != Kind.SIG)
 		{
 			throw new RuntimeException("Not a message signature parameter: " + this.kind);
 		}

@@ -15,12 +15,12 @@ public class ModuleName extends QualifiedName
 	
 	protected ModuleName(String... elems)
 	{
-		super(KindEnum.MODULE, elems);
+		super(Kind.MODULE, elems);
 	}
 
 	public ModuleName(PackageName packname, String modname)
 	{
-		super(KindEnum.MODULE, compileModuleName(packname, modname));
+		super(Kind.MODULE, compileModuleName(packname, modname));
 	}
 
 	public ModuleName(String modname)

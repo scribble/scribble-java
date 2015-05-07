@@ -1,26 +1,21 @@
 package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.name.SimpleKindedNameNode;
 import org.scribble2.model.name.simple.ParameterNode;
-import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.sesstype.name.Role;
 
-//public class ParameterDecl extends HeaderParameterDecl<ParameterNode, Parameter> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
-public class ParameterDecl<K extends Kind> extends HeaderParameterDecl<K> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
+public class ParameterDecl extends HeaderParameterDecl<ParameterNode, Parameter> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
 {
-	//public enum ParamDeclKind { TYPE, SIG }  // ROLE
+	public enum Kind { TYPE, SIG }  // ROLE
 	
 	/*public static final Function<NameDecl<? extends PrimitiveNameNode>, ParameterDecl> toParameterDecl =
 			(NameDecl<? extends PrimitiveNameNode> nd) -> (ParameterDecl) nd;*/
 	
-	////public final ParameterNode<K> name;
-	//public final ParamDeclKind kind;
-	
-	public final K kind;
+	//public final ParameterNode name;
+	public final Kind kind;
 
-	//public ParameterDecl(ParamDeclKind kind, ParameterNode name)
-	public ParameterDecl(K kind, ParameterNode<K> name)  // FIXME: restrict to TYPE/SIG?
+	public ParameterDecl(Kind kind, ParameterNode name)
 	{
 		//super(t, kind, namenode);
 		super(name);
@@ -29,20 +24,18 @@ public class ParameterDecl<K extends Kind> extends HeaderParameterDecl<K> //impl
 	}
 	
 	@Override
-	//protected ParameterDecl reconstruct(ParameterNode name)
-	protected ParameterDecl<K> reconstruct(SimpleKindedNameNode<K> name)
+	protected ParameterDecl reconstruct(ParameterNode name)
 	{
 		ModelDelegate del = del();
-		ParameterDecl<K> pd = new ParameterDecl<>(this.kind, (ParameterNode<K>) name);
-		@SuppressWarnings("unchecked")
-		ParameterDecl<K> tmp = (ParameterDecl<K>) pd.del(del);  // Hack? or OK since we just made pd
-		return tmp;
+		ParameterDecl pd = new ParameterDecl(this.kind, (ParameterNode) name);
+		pd = (ParameterDecl) pd.del(del);
+		return pd;
 	}
 
 	@Override
-	protected ParameterDecl<K> copy()
+	protected ParameterDecl copy()
 	{
-		return new ParameterDecl<>(this.kind, (ParameterNode<K>) this.name);
+		return new ParameterDecl(this.kind, (ParameterNode) this.name);
 	}
 
 	/*@Override
@@ -52,9 +45,9 @@ public class ParameterDecl<K extends Kind> extends HeaderParameterDecl<K> //impl
 	}*/
 	
 	@Override
-	public ParameterDecl<K> project(Role self)
+	public ParameterDecl project(Role self)
 	{
-		ParameterNode<K> pn = new ParameterNode<>(this.kind, this.name.toString());
+		ParameterNode pn = new ParameterNode(this.name.toString());
 		//return new ParameterDecl(this.kind, pn);
 		return ModelFactoryImpl.FACTORY.ParameterDecl(this.kind, pn);
 	}

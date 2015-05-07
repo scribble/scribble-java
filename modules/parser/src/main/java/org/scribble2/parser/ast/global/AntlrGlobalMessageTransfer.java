@@ -8,14 +8,14 @@ import org.scribble2.model.MessageNode;
 import org.scribble2.model.MessageSignatureNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.global.GlobalMessageTransfer;
-import org.scribble2.model.name.SimpleKindedNameNode;
+import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrAmbiguousName;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
-import org.scribble2.sesstype.kind.RoleKind;
 
 
 public class AntlrGlobalMessageTransfer
@@ -26,11 +26,9 @@ public class AntlrGlobalMessageTransfer
 
 	public static GlobalMessageTransfer parseGlobalMessageTransfer(ScribbleParser parser, CommonTree ct)
 	{
-		//RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
-		SimpleKindedNameNode<RoleKind> src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
+		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
-		//List<RoleNode> dests = new LinkedList<>();
-		List<SimpleKindedNameNode<RoleKind>> dests = new LinkedList<>();
+		List<RoleNode> dests = new LinkedList<>();
 		for (CommonTree dest : getDestinationChildren(ct))
 		{
 			dests.add(AntlrSimpleName.toRoleNode(dest));

@@ -1,33 +1,20 @@
-package org.scribble2.model.name;
+package org.scribble2.model.name.qualified;
 
 import java.util.Arrays;
 
-import org.scribble2.model.ModelNode;
-import org.scribble2.model.ModelNodeBase;
-import org.scribble2.sesstype.kind.Kind;
-import org.scribble2.sesstype.name.KindedName;
-import org.scribble2.sesstype.name.KindedNamed;
+import org.scribble2.model.name.NameNode;
+import org.scribble2.sesstype.name.CompoundName;
 
-public class KindedNameNode<K extends Kind> extends ModelNodeBase implements KindedNamed<K>
+public abstract class CompoundNameNode<T extends CompoundName> extends NameNode<T>
 {
-	public final K kind;
-
 	//public final List<PrimitiveNameNode> names;
 	protected final String[] elems;
 
 	//public CompoundNameNodes(List<PrimitiveNameNode> names)
-	public KindedNameNode(K kind, String... elems)
+	public CompoundNameNode(String... elems)
 	{
-		this.kind = kind;
-		
 		//this.names = new LinkedList<>(names);
 		this.elems = elems;
-	}
-	
-	@Override
-	public KindedName<K> toName()
-	{
-		return new KindedName<K>(this.kind, this.elems);
 	}
 	
 	/*public CompoundNameNodes(String name)
@@ -72,7 +59,6 @@ public class KindedNameNode<K extends Kind> extends ModelNodeBase implements Kin
 		return this.elems[this.elems.length - 1];
 	}
 	
-	// Usage should be guarded by isPrefixed
 	protected String[] getPrefixElements()
 	{
 		return Arrays.copyOfRange(this.elems, 0, this.elems.length - 1);
@@ -104,14 +90,13 @@ public class KindedNameNode<K extends Kind> extends ModelNodeBase implements Kin
 			return false;
 		}
 		//return this.elems.equals(((CompoundNameNode) o).elems);
-		return this.kind.equals(KindedNameNode.class.cast(o).kind) && this.elems.equals(KindedNameNode.class.cast(o).elems);
+		return this.elems.equals(CompoundNameNode.class.cast(o).elems);
 	}
 	
 	@Override
 	public int hashCode()
 	{
 		int hash = 317;
-		hash = 31 * hash + this.kind.hashCode();
 		hash = 31 * hash + this.elems.hashCode();
 		return hash;
 	}
@@ -125,12 +110,6 @@ public class KindedNameNode<K extends Kind> extends ModelNodeBase implements Kin
 		}
 		return names;
 	}
-
-	@Override
-	protected KindedNameNode<K> copy()
-	{
-		return new KindedNameNode<K>(this.kind, this.elems);
-	}
 	
 	/*protected static String[] getIdentifiers(PrimitiveNameNode[] ns)
 	{
@@ -141,29 +120,4 @@ public class KindedNameNode<K extends Kind> extends ModelNodeBase implements Kin
 		}
 		return ids;
 	}*/
-	
-	/*@Override
-	public KindedNameNode<? extends Kind> del(ModelDelegate del)
-	{
-		@SuppressWarnings("unchecked")
-		KindedNameNode<? extends Kind> n = (KindedNameNode<? extends Kind>) super.del(del);
-		return n;
-	}*/
-	
-	public static <K extends Kind> KindedNameNode<K> castKindedNameNode(K kind, ModelNode n)
-	{
-		if (!(n instanceof KindedNameNode))
-		{
-			throw new RuntimeException("Kinded name node " + kind + " cast error: " + n);
-		}
-		@SuppressWarnings("unchecked")
-		KindedNameNode<? extends Kind> tmp1 = (KindedNameNode<? extends Kind>) n;
-		if (!tmp1.kind.equals(kind))
-		{
-			throw new RuntimeException("Kinded name node " + kind + " cast error: " + n);
-		}
-		@SuppressWarnings("unchecked")
-		KindedNameNode<K> tmp2 = (KindedNameNode<K>) n;
-		return tmp2;
-	}
 }

@@ -4,10 +4,9 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.MessageSignatureNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.Payload;
-import org.scribble2.model.name.SimpleKindedNameNode;
+import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
-import org.scribble2.sesstype.kind.OperatorKind;
 
 public class AntlrMessageSignature
 {
@@ -16,8 +15,7 @@ public class AntlrMessageSignature
 	
 	public static MessageSignatureNode parseMessageSignature(ScribbleParser parser, CommonTree ct)
 	{
-		//OperatorNode op = AntlrSimpleName.toOperatorNode(getOperatorChild(ct));
-		SimpleKindedNameNode<OperatorKind> op = AntlrSimpleName.toOperatorNode(getOperatorChild(ct));
+		OperatorNode op = AntlrSimpleName.toOperatorNode(getOperatorChild(ct));
 		Payload payload = (Payload) parser.parse(getPayloadChild(ct));
 		//return new MessageSignatureNode(op, payload);
 		return ModelFactoryImpl.FACTORY.MessageSignatureNode(op, payload);

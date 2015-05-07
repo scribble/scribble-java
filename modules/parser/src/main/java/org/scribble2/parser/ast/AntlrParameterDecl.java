@@ -3,7 +3,7 @@ package org.scribble2.parser.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ParameterDecl;
-import org.scribble2.model.ParameterDecl.ParamDeclKind;
+import org.scribble2.model.ParameterDecl.Kind;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.ScribbleParser;
@@ -16,25 +16,25 @@ public class AntlrParameterDecl
 
 	public static ParameterDecl parseParameterDecl(ScribbleParser parser, CommonTree ct)
 	{
-		ParamDeclKind kind = parseKind(getKindChild(ct));
+		Kind kind = parseKind(getKindChild(ct));
 		//ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct), kind);
 		ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct));
 		//return new ParameterDecl(kind, name);
 		return ModelFactoryImpl.FACTORY.ParameterDecl(kind, name);
 	}
 
-	private static ParamDeclKind parseKind(CommonTree ct)
+	private static Kind parseKind(CommonTree ct)
 	{
 		String kind = ct.getText();
 		switch (kind)
 		{
 			case AntlrConstants.KIND_MESSAGESIGNATURE:
 			{
-				return ParamDeclKind.SIG;
+				return Kind.SIG;
 			}
 			case AntlrConstants.KIND_PAYLOADTYPE:
 			{
-				return ParamDeclKind.TYPE;
+				return Kind.TYPE;
 			}
 			default:
 			{

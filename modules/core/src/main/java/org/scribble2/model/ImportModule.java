@@ -1,22 +1,19 @@
 package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.name.KindedNameNode;
-import org.scribble2.model.name.SimpleKindedNameNode;
+import org.scribble2.model.name.qualified.ModuleNameNode;
+import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.ModuleKind;
+import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
 public class ImportModule extends ImportDecl
 {
-	/*public final ModuleNameNode modname;
-	public final SimpleProtocolNameNode alias;*/
-	public final KindedNameNode<ModuleKind> modname;
-	public final SimpleKindedNameNode<ModuleKind> alias;
+	public final ModuleNameNode modname;
+	public final SimpleProtocolNameNode alias;
 
 	// FIXME: make a no alias constructor
-	//public ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)  // FIXME: protocol name?
-	public ImportModule(KindedNameNode<ModuleKind> modname, SimpleKindedNameNode<ModuleKind> alias)
+	public ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)
 	{
 		this.modname = modname;
 		this.alias = alias;
@@ -28,8 +25,7 @@ public class ImportModule extends ImportDecl
 		return new ImportModule(this.modname, this.alias);
 	}
 	
-	//protected ImportModule reconstruct(ModuleNameNode modname, SimpleProtocolNameNode alias)
-	protected ImportModule reconstruct(KindedNameNode<ModuleKind> modname, SimpleKindedNameNode<ModuleKind> alias)
+	protected ImportModule reconstruct(ModuleNameNode modname, SimpleProtocolNameNode alias)
 	{
 		ModelDelegate del = del();
 		ImportModule im = new ImportModule(modname, alias);
@@ -40,16 +36,12 @@ public class ImportModule extends ImportDecl
 	@Override
 	public ImportModule visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		/*ModuleNameNode modname = (ModuleNameNode) visitChild(this.modname, nv);
-		SimpleProtocolNameNode alias = null;*/
-		KindedNameNode<ModuleKind> modname = KindedNameNode.castKindedNameNode(ModuleKind.KIND, visitChild(this.modname, nv));
-		//SimpleProtocolNameNode alias = null;
-		SimpleKindedNameNode<ModuleKind> alias = null;
+		ModuleNameNode modname = (ModuleNameNode) visitChild(this.modname, nv);
+		SimpleProtocolNameNode alias = null;
 		if (isAliased())
 		{
-			//alias = (SimpleProtocolNameNode) visitChild(this.alias, nv);
-			alias = SimpleKindedNameNode.castSimpleKindedNameNode(ModuleKind.KIND, visitChild(this.alias, nv));
-			////return new ImportModule(this.ct, modname, alias);
+			alias = (SimpleProtocolNameNode) visitChild(this.alias, nv);
+			//return new ImportModule(this.ct, modname, alias);
 		}
 		//return new ImportModule(this.ct, modname, null);
 		return reconstruct(modname, alias);
@@ -68,11 +60,9 @@ public class ImportModule extends ImportDecl
 	}*/
 	
 	//@Override
-	//public ModuleName getModuleNameAlias()
-	public SimpleKindedNameNode<ModuleKind> getModuleNameAlias()
+	public ModuleName getModuleNameAlias()
 	{
-		//return new ModuleName(this.alias.identifier);
-		return new SimpleKindedNameNode<>(ModuleKind.KIND, this.alias.identifier);
+		return new ModuleName(this.alias.identifier);
 	}
 	
 	@Override

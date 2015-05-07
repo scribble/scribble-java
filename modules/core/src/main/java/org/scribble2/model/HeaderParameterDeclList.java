@@ -3,27 +3,23 @@ package org.scribble2.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Role;
+import org.scribble2.sesstype.name.SimpleName;
 import org.scribble2.util.ScribbleException;
 
-/*public abstract class HeaderParameterDeclList<
+public abstract class HeaderParameterDeclList<
 		T1 extends HeaderParameterDecl<? extends SimpleNameNode<T2>,	T2>,
-		T2 extends SimpleName  // FIXME: WRONG parameters decls can be of mixed kinds
-> extends ModelNodeBase*/
-public abstract class HeaderParameterDeclList<K extends Kind> extends ModelNodeBase
+		T2 extends SimpleName
+> extends ModelNodeBase 
 {
-	//public final List<T1> decls;
-	protected final List<? extends HeaderParameterDecl<K>> decls;
+	public final List<T1> decls;
 	
-	//protected HeaderParameterDeclList(List<T1> decls)
-	protected HeaderParameterDeclList(List<? extends HeaderParameterDecl<K>> decls)
+	protected HeaderParameterDeclList(List<T1> decls)
 	{
 		this.decls = new LinkedList<>(decls);
 	}
-	
-	public abstract List<? extends HeaderParameterDecl<K>> getDecls();
 	
 	public int length()
 	{
@@ -35,18 +31,14 @@ public abstract class HeaderParameterDeclList<K extends Kind> extends ModelNodeB
 		return this.decls.isEmpty();
 	}
 	
-	//public abstract HeaderParameterDeclList<T1, T2> project(Role self);
-	public abstract HeaderParameterDeclList<K> project(Role self);
+	public abstract HeaderParameterDeclList<T1, T2> project(Role self);
 	
-	//protected abstract HeaderParameterDeclList<T1, T2> reconstruct(List<T1> decls);
-	protected abstract HeaderParameterDeclList<K> reconstruct(List<? extends HeaderParameterDecl<K>> decls);
+	protected abstract HeaderParameterDeclList<T1, T2> reconstruct(List<T1> decls);
 	
 	@Override
-	//public HeaderParameterDeclList<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
-	public HeaderParameterDeclList<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParameterDeclList<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		//List<T1> nds = visitChildListWithClassCheck(this, this.decls, nv);
-		List<? extends HeaderParameterDecl<K>> nds = visitChildListWithClassCheck(this, this.decls, nv);
+		List<T1> nds = visitChildListWithClassCheck(this, this.decls, nv);
 		//return new HeaderParameterDeclList<>(this.ct, nds);
 		return reconstruct(nds);
 	}
@@ -94,8 +86,7 @@ public abstract class HeaderParameterDeclList<K extends Kind> extends ModelNodeB
 			return "";
 		}
 		String s = decls.get(0).toString();
-		//for (T1 nd : this.decls.subList(1, this.decls.size()))
-		for (HeaderParameterDecl<K> nd : this.decls.subList(1, this.decls.size()))
+		for (T1 nd : this.decls.subList(1, this.decls.size()))
 		{
 			s += ", " + nd;
 		}
