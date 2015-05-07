@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+import org.scribble2.model.AbstractProtocolDecl;
 import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.Do;
 import org.scribble2.model.InteractionNode;
@@ -14,7 +15,7 @@ import org.scribble2.model.InteractionSequence;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ProtocolBlock;
-import org.scribble2.model.AbstractProtocolDecl;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ProtocolDefinition;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.ScopedNode;
@@ -103,14 +104,15 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 			//enter(parent, doo);  // need to enter/leave even if cycle, e.g. for projection
 			
 			ModuleContext mcontext = getModuleContext();
-			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			ProtocolDecl
 					//pd = spv.job.getContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());* /
 					pd = doo.getTargetProtocolDecl(getJobContext(), mcontext);
 
 			//... do wf-choice env building and checking
 			//... scopes (all messages/operators are scoped?)
 			
-			ModelNode seq = applySubstitutions(pd.def.block.seq);  // Visit the seq? -- or visit the interactions in the seq directly? ()
+			ModelNode seq = applySubstitutions(pd.getDef().block.seq);  // Visit the seq? -- or visit the interactions in the seq directly? ()
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 
 			//leave(parent, doo, doo);  // the Do node itself was not visited; return from the subprotocol body is discarded
@@ -224,10 +226,11 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	
 	private void pushNameMaps(ProtocolName fullname, List<Role> roleargs, List<Argument> argargs)
 	{
-		AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+		//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+		ProtocolDecl
 				pd = getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
-		List<Role> roleparams = pd.header.roledecls.getRoles();
-		List<Parameter> argparams = pd.header.paramdecls.getParameters();
+		List<Role> roleparams = pd.getHeader().roledecls.getRoles();
+		List<Parameter> argparams = pd.getHeader().paramdecls.getParameters();
 		
 		Map<Role, RoleNode> rolemap = rolemaps.peek();
 		Map<Argument, ArgumentNode> argmap = argmaps.peek();

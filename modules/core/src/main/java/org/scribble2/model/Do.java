@@ -6,7 +6,6 @@ import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.ModelVisitor;
-import org.scribble2.model.visit.SubprotocolVisitor;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
@@ -75,18 +74,21 @@ public abstract class Do extends SimpleInteractionNode //implements ScopedNode
 		return mcontext.getFullProtocolDeclName(this.proto.toName());
 	}
 	
-	public AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+	public
+			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			ProtocolDecl
 			//getTargetProtocolDecl(JobContext jcontext, ModuleDelegate mcontext)
 			getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
 	{
 		ProtocolName fullname = getTargetFullProtocolName(mcontext);
 		return jcontext.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 	}
+	//public abstract ProtocolDecl getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext);
 	
 	public Role getTargetRoleParameter(JobContext jcontext, ModuleContext mcontext, Role role)
 	{
 		Iterator<Role> args = this.roleinstans.getRoles().iterator();
-		Iterator<Role> params = getTargetProtocolDecl(jcontext, mcontext).header.roledecls.getRoles().iterator();
+		Iterator<Role> params = getTargetProtocolDecl(jcontext, mcontext).getHeader().roledecls.getRoles().iterator();
 		while (args.hasNext())
 		{
 			Role arg = args.next();

@@ -2,11 +2,16 @@ package org.scribble2.model;
 
 import org.scribble2.sesstype.name.ProtocolName;
 
-public abstract class ProtocolDecl extends ModelNodeBase
+public interface ProtocolDecl extends ModelNode
 {
-	public abstract ProtocolName getFullProtocolName(Module mod);
+	ProtocolName getFullProtocolName(Module mod);
 	
-	public boolean isGlobal()
+	ProtocolHeader getHeader();
+	ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> getDef();
+	
+	boolean isGlobal();
+	boolean isLocal();
+	/*public boolean isGlobal()
 	{
 		return false;
 	}
@@ -14,5 +19,5 @@ public abstract class ProtocolDecl extends ModelNodeBase
 	public boolean isLocal()
 	{
 		return false;
-	}
+	}*/
 }

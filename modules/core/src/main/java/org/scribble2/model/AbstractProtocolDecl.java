@@ -11,8 +11,8 @@ public abstract class AbstractProtocolDecl<
 				T1 extends ProtocolHeader,
 				T2 extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 		>
-		//extends ModelNodeBase// implements ContextStackNode//, ModuleMember
-		extends ProtocolDecl
+		extends ModelNodeBase// implements ContextStackNode//, ModuleMember
+		implements ProtocolDecl
 {
 	//public final ProtocolDefinition def;
 	public final T1 header;
@@ -34,6 +34,18 @@ public abstract class AbstractProtocolDecl<
 	{
 		this.header = header;
 		this.def = def;
+	}
+
+	@Override
+	public T1 getHeader()
+	{
+		return this.header;
+	}
+
+	@Override
+	public T2 getDef()
+	{
+		return this.def;
 	}
 	
 	// Keeps the current del (shallow reconstruct with new children)
@@ -91,15 +103,17 @@ public abstract class AbstractProtocolDecl<
 		return new ProtocolName(fullmodname, this.header.name.toString());
 	}
 	
-	/*public boolean isGlobal()
+	@Override
+	public boolean isGlobal()
 	{
 		return false;
 	}
 		
+	@Override
 	public boolean isLocal()
 	{
 		return false;
-	}*/
+	}
 	
 	/* //public ProtocolBlock getBody()
 	/*public ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>> getBody()

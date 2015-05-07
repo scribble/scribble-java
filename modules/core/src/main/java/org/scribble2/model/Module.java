@@ -168,7 +168,7 @@ public class Module extends ModelNodeBase
 			List<T> getProtocolDecls(
 					Predicate<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> filter,
 					Function<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>, T> cast)*/
-	public <T extends ProtocolDecl>
+	private <T extends ProtocolDecl>
 			List<T> getProtocolDecls(
 					Predicate<ProtocolDecl> filter,
 					Function<ProtocolDecl, T> cast)
@@ -186,10 +186,33 @@ public class Module extends ModelNodeBase
 		return getProtocolDecl(getLocalProtocolDecls(), simplename);
 	}*/
 
+	/*public GlobalProtocolDecl getGlobalProtocolDecl(ProtocolName pn)
+	{
+		ProtocolDecl pd = getProtocolDecl(this.protos, pn);
+		if (!pd.isGlobal())
+		{
+			throw new RuntimeException("Not a GlobalProtocolDecl: " + pn);
+		}
+		return (GlobalProtocolDecl) pd;
+	}
+
+	public LocalProtocolDecl getLocalProtocolDecl(ProtocolName pn)
+	{
+		ProtocolDecl pd = getProtocolDecl(this.protos, pn);
+		if (!pd.isLocal())
+		{
+			throw new RuntimeException("Not a LocalProtocolDecl: " + pn);
+		}
+		return (LocalProtocolDecl) pd;
+	}*/
+	
 	public
-			AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
+			ProtocolDecl
 			getProtocolDecl(ProtocolName pn)
 	{
+		//.. HERE: refactor to get global/local protocol decl
+		
 		return getProtocolDecl(this.protos, pn);
 	}
 
