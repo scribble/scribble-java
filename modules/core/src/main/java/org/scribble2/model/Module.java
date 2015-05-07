@@ -19,7 +19,8 @@ import org.scribble2.util.ScribbleException;
 public class Module extends ModelNodeBase
 {
 	public final ModuleDecl moddecl;
-	public final List<? extends ImportDecl> imports;
+	//public final List<? extends ImportDecl> imports;
+	public final List<ImportDecl> imports;
 	public final List<DataTypeDecl> data;
 	//public final List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 	public final List<ProtocolDecl>
@@ -27,7 +28,8 @@ public class Module extends ModelNodeBase
 	
 	public Module( 
 			ModuleDecl moddecl,
-			List<? extends ImportDecl> imports,
+			//List<? extends ImportDecl> imports,
+			List<ImportDecl> imports,
 			List<DataTypeDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl> protos)
@@ -71,7 +73,8 @@ public class Module extends ModelNodeBase
 	
 	protected Module reconstruct(
 			ModuleDecl moddecl,
-			List<? extends ImportDecl> imports,
+			//List<? extends ImportDecl> imports,
+			List<ImportDecl> imports,
 			List<DataTypeDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl> protos)
@@ -86,7 +89,8 @@ public class Module extends ModelNodeBase
 	public Module visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		ModuleDecl moddecl = (ModuleDecl) visitChild(this.moddecl, nv);
-		List<? extends ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);
+		//List<? extends ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);
+		List<ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);
 		List<DataTypeDecl> data = visitChildListWithClassCheck(this, this.data, nv);
 		//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 		List<ProtocolDecl>

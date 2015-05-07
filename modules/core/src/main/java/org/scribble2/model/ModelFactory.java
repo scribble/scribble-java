@@ -45,7 +45,8 @@ public interface ModelFactory
 	
 	Module Module( 
 			ModuleDecl moddecl,
-			List<? extends ImportDecl> imports,
+			//List<? extends ImportDecl> imports,
+			List<ImportDecl> imports,
 			List<DataTypeDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
 			List<ProtocolDecl> protos);

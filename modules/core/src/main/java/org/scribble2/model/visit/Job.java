@@ -15,6 +15,7 @@ import org.scribble2.util.ScribbleException;
 	//.. check use of generics
 	//.. refactor simple/compound names to just names; and simple name nodes to be subtypes of compound
 	//.. consider refactoring all uses of AbstractProtocolDecl to be able to get global/local directly (would need global/local as a generic parameter)
+	//.. fix parameterdecllist generics (not fixed to one kind)
 
 		//.. sepatate protocol names into global/local -- use generic parameter for name kinds rather than subclasses
 		//.. fix projection env to take projection output type as Parameter
