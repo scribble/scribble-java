@@ -3,7 +3,7 @@ package org.scribble2.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.Role;
 
 public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
@@ -26,7 +26,7 @@ public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 	@Override
 	protected RoleInstantiationList reconstruct(List<RoleInstantiation> instans)
 	{
-		ModelDelegate del = del();
+		ModelDel del = del();
 		RoleInstantiationList rl = new RoleInstantiationList(instans);
 		rl = (RoleInstantiationList) rl.del(del);
 		return rl;

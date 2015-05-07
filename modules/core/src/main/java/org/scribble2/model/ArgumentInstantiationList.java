@@ -3,7 +3,7 @@ package org.scribble2.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.name.Role;
 
@@ -24,7 +24,7 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 	@Override
 	protected InstantiationList<ArgumentInstantiation> reconstruct(List<ArgumentInstantiation> instans)
 	{
-		ModelDelegate del = del();
+		ModelDel del = del();
 		ArgumentInstantiationList ail = ModelFactoryImpl.FACTORY.ArgumentInstantiationList(instans);
 		ail = (ArgumentInstantiationList) ail.del(del);
 		return ail;

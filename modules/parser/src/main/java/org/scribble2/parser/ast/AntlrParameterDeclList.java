@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.ParameterDecl;
-import org.scribble2.model.ParameterDeclList;
+import org.scribble2.model.ParamDecl;
+import org.scribble2.model.ParamDeclList;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
 public class AntlrParameterDeclList
 {
-	public static ParameterDeclList parseParameterDeclList(ScribbleParser parser, CommonTree ct)
+	public static ParamDeclList parseParameterDeclList(ScribbleParser parser, CommonTree ct)
 	{
 		/*AntlrNodeType type = Util.getAntlrNodeType(ct);
 		switch (type)
@@ -24,10 +24,10 @@ public class AntlrParameterDeclList
 			}
 			default:
 			{*/
-				List<ParameterDecl> pds = new LinkedList<>();
+				List<ParamDecl> pds = new LinkedList<>();
 				for (CommonTree pd : getParameterDeclChildren(ct))
 				{
-					pds.add((ParameterDecl) parser.parse(pd));
+					pds.add((ParamDecl) parser.parse(pd));
 				}
 				//return new ParameterDeclList(pds);
 				return ModelFactoryImpl.FACTORY.ParameterDeclList(pds);

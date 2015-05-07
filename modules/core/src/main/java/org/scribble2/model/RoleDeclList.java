@@ -3,10 +3,10 @@ package org.scribble2.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.Role;
 
-public class RoleDeclList extends HeaderParameterDeclList<RoleDecl, Role>
+public class RoleDeclList extends HeaderParamDeclList<RoleDecl, Role>
 {
 	public RoleDeclList(List<RoleDecl> decls)
 	{
@@ -20,9 +20,9 @@ public class RoleDeclList extends HeaderParameterDeclList<RoleDecl, Role>
 	}
 
 	@Override
-	protected HeaderParameterDeclList<RoleDecl, Role> reconstruct(List<RoleDecl> decls)
+	protected HeaderParamDeclList<RoleDecl, Role> reconstruct(List<RoleDecl> decls)
 	{
-		ModelDelegate del = del();
+		ModelDel del = del();
 		RoleDeclList rdl = new RoleDeclList(decls);
 		rdl = (RoleDeclList) rdl.del(del);
 		return rdl;

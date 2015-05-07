@@ -2,9 +2,9 @@ package org.scribble2.model.visit;
 
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.local.LocalInteractionSequenceDelegate;
-import org.scribble2.model.local.LocalInteractionSequence;
-import org.scribble2.model.local.LocalProtocolBlock;
+import org.scribble2.model.del.local.LInteractionSeqDel;
+import org.scribble2.model.local.LInteractionSeq;
+import org.scribble2.model.local.LProtocolBlock;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.util.ScribbleException;
@@ -34,9 +34,9 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 	@Override
 	protected ModelNode visitForSubprotocols(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		if (child instanceof LocalInteractionSequence)
+		if (child instanceof LInteractionSeq)
 		{
-			return visitOverrideForLocalInteractionSequence((LocalProtocolBlock) parent, (LocalInteractionSequence) child);
+			return visitOverrideForLocalInteractionSequence((LProtocolBlock) parent, (LInteractionSeq) child);
 		}
 		else
 		{
@@ -44,7 +44,7 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 		}
 	}
 
-	private LocalInteractionSequence visitOverrideForLocalInteractionSequence(LocalProtocolBlock parent, LocalInteractionSequence child) throws ScribbleException
+	private LInteractionSeq visitOverrideForLocalInteractionSequence(LProtocolBlock parent, LInteractionSeq child) throws ScribbleException
 	{
 		/*Projector proj = (Projector) enter(parent, child);
 		ModelNode visited = visitForProjection((Module) parent, (GlobalProtocolDecl) child);
@@ -55,7 +55,7 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 		/*enter(parent, child);
 		ModelNode visited = ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(this, (LocalInteractionSequence) child);
 		return (LocalInteractionSequence) leave(parent, child, visited);*/
-		return ((LocalInteractionSequenceDelegate) child.del()).visitForReachabilityChecking(this, (LocalInteractionSequence) child);
+		return ((LInteractionSeqDel) child.del()).visitForReachabilityChecking(this, (LInteractionSeq) child);
 	}
 	
 

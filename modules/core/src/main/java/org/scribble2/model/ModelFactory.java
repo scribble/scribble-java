@@ -2,29 +2,29 @@ package org.scribble2.model;
 
 import java.util.List;
 
-import org.scribble2.model.ParameterDecl.Kind;
-import org.scribble2.model.global.GlobalChoice;
-import org.scribble2.model.global.GlobalContinue;
-import org.scribble2.model.global.GlobalDo;
-import org.scribble2.model.global.GlobalInteractionNode;
-import org.scribble2.model.global.GlobalInteractionSequence;
-import org.scribble2.model.global.GlobalMessageTransfer;
-import org.scribble2.model.global.GlobalProtocolBlock;
-import org.scribble2.model.global.GlobalProtocolDecl;
-import org.scribble2.model.global.GlobalProtocolDefinition;
-import org.scribble2.model.global.GlobalProtocolHeader;
-import org.scribble2.model.global.GlobalRecursion;
-import org.scribble2.model.local.LocalChoice;
-import org.scribble2.model.local.LocalContinue;
-import org.scribble2.model.local.LocalDo;
-import org.scribble2.model.local.LocalInteractionSequence;
-import org.scribble2.model.local.LocalProtocolBlock;
-import org.scribble2.model.local.LocalProtocolDecl;
-import org.scribble2.model.local.LocalProtocolDefinition;
-import org.scribble2.model.local.LocalProtocolHeader;
-import org.scribble2.model.local.LocalReceive;
-import org.scribble2.model.local.LocalRecursion;
-import org.scribble2.model.local.LocalSend;
+import org.scribble2.model.ParamDecl.Kind;
+import org.scribble2.model.global.GChoice;
+import org.scribble2.model.global.GContinue;
+import org.scribble2.model.global.GDo;
+import org.scribble2.model.global.GInteractionNode;
+import org.scribble2.model.global.GInteractionSeq;
+import org.scribble2.model.global.GMessageTransfer;
+import org.scribble2.model.global.GProtocolBlock;
+import org.scribble2.model.global.GProtocolDecl;
+import org.scribble2.model.global.GProtocolDef;
+import org.scribble2.model.global.GProtocolHeader;
+import org.scribble2.model.global.GRecursion;
+import org.scribble2.model.local.LChoice;
+import org.scribble2.model.local.LContinue;
+import org.scribble2.model.local.LDo;
+import org.scribble2.model.local.LInteractionSeq;
+import org.scribble2.model.local.LProtocolBlock;
+import org.scribble2.model.local.LProtocolDecl;
+import org.scribble2.model.local.LProtocolDef;
+import org.scribble2.model.local.LProtocolHeader;
+import org.scribble2.model.local.LReceive;
+import org.scribble2.model.local.LRecursion;
+import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
@@ -52,33 +52,33 @@ public interface ModelFactory
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
 			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.ProtocolKind>> protos);
 	
-	MessageSignatureNode MessageSignatureNode(OperatorNode op, Payload payload);
+	MessageSigNode MessageSignatureNode(OperatorNode op, Payload payload);
 	Payload Payload(List<PayloadElement> payloadelems);
 	PayloadElement PayloadElement(PayloadElementNameNode name);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
 	ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias);
 
-	GlobalProtocolDecl GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def);
-	GlobalProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls);
+	GProtocolDecl GlobalProtocolDecl(GProtocolHeader header, GProtocolDef def);
+	GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
 
 	RoleDeclList RoleDeclList(List<RoleDecl> rds);
 	RoleDecl RoleDecl(RoleNode namenode);
-	ParameterDeclList ParameterDeclList(List<ParameterDecl> pds);
-	ParameterDecl ParameterDecl(Kind kind, ParameterNode namenode);
+	ParamDeclList ParameterDeclList(List<ParamDecl> pds);
+	ParamDecl ParameterDecl(Kind kind, ParameterNode namenode);
 	
-	GlobalProtocolDefinition GlobalProtocolDefinition(GlobalProtocolBlock block);
-	GlobalProtocolBlock GlobalProtocolBlock(GlobalInteractionSequence gis);
-	GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteractionNode> gis);
+	GProtocolDef GlobalProtocolDefinition(GProtocolBlock block);
+	GProtocolBlock GlobalProtocolBlock(GInteractionSeq gis);
+	GInteractionSeq GlobalInteractionSequence(List<GInteractionNode> gis);
 
-	GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
+	GMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	//GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks);
-	GlobalChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks);
+	GChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks);
 	//GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block);
-	GlobalRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<Global> block);
-	GlobalContinue GlobalContinue(RecursionVarNode recvar);
+	GRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<Global> block);
+	GContinue GlobalContinue(RecursionVarNode recvar);
 	//GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
+	GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	
 	RoleInstantiationList RoleInstantiationList(List<RoleInstantiation> ris);
 	RoleInstantiation RoleInstantiation(RoleNode role);
@@ -89,21 +89,21 @@ public interface ModelFactory
 	SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);
 	QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems);
 
-	LocalProtocolDecl LocalProtocolDecl(LocalProtocolHeader header, LocalProtocolDefinition def);
-	LocalProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls);
+	LProtocolDecl LocalProtocolDecl(LProtocolHeader header, LProtocolDef def);
+	LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
 	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
-	LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block);
-	LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq);
+	LProtocolDef LocalProtocolDefinition(LProtocolBlock block);
+	LProtocolBlock LocalProtocolBlock(LInteractionSeq seq);
 	//LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions);
-	LocalInteractionSequence LocalInteractionSequence(List<? extends InteractionNode<Local>> actions);
+	LInteractionSeq LocalInteractionSequence(List<? extends InteractionNode<Local>> actions);
 
-	LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
+	LSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
+	LReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	//LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks);
-	LocalChoice LocalChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks);
-	LocalRecursion LocalRecursion(RecursionVarNode recvar, LocalProtocolBlock block);
-	LocalContinue LocalContinue(RecursionVarNode recvar);
+	LChoice LocalChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks);
+	LRecursion LocalRecursion(RecursionVarNode recvar, LProtocolBlock block);
+	LContinue LocalContinue(RecursionVarNode recvar);
 	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	LocalDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
+	LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 }
 

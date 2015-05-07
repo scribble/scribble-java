@@ -1,7 +1,7 @@
 package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.MessageSignatureNode;
+import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.Payload;
 import org.scribble2.model.name.simple.OperatorNode;
@@ -13,7 +13,7 @@ public class AntlrMessageSignature
 	public static final int OPERATOR_CHILD_INDEX = 0;
 	public static final int PAYLOAD_CHILD_INDEX = 1;
 	
-	public static MessageSignatureNode parseMessageSignature(ScribbleParser parser, CommonTree ct)
+	public static MessageSigNode parseMessageSignature(ScribbleParser parser, CommonTree ct)
 	{
 		OperatorNode op = AntlrSimpleName.toOperatorNode(getOperatorChild(ct));
 		Payload payload = (Payload) parser.parse(getPayloadChild(ct));

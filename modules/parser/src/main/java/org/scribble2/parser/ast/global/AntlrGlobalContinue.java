@@ -2,7 +2,7 @@ package org.scribble2.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.global.GlobalContinue;
+import org.scribble2.model.global.GContinue;
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
@@ -11,7 +11,7 @@ public class AntlrGlobalContinue
 {
 	public static final int LABEL_CHILD_INDEX = 0;
 
-	public static GlobalContinue parseGlobalContinue(ScribbleParser parser, CommonTree ct)
+	public static GContinue parseGlobalContinue(ScribbleParser parser, CommonTree ct)
 	{
 		RecursionVarNode recvar = AntlrSimpleName.toRecursionVarNode(getRecursionVarChild(ct));
 		//return new GlobalContinue(recvar);

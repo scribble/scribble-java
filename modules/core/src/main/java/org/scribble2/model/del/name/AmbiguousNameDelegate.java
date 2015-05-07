@@ -3,7 +3,7 @@ package org.scribble2.model.del.name;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.del.ModelDelegateBase;
+import org.scribble2.model.del.ModelDelBase;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.env.Env;
 import org.scribble2.sesstype.name.Name;
@@ -12,7 +12,7 @@ import org.scribble2.util.ScribbleException;
 
 
 //public abstract class ModelDelegateBase implements ModelDelegate
-public class AmbiguousNameDelegate extends ModelDelegateBase
+public class AmbiguousNameDelegate extends ModelDelBase
 {
 	//public AmbiguousNameDelegate(Env env)
 	public AmbiguousNameDelegate()

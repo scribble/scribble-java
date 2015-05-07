@@ -5,21 +5,21 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.global.GlobalParallel;
-import org.scribble2.model.global.GlobalProtocolBlock;
+import org.scribble2.model.global.GParallel;
+import org.scribble2.model.global.GProtocolBlock;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
 public class AntlrGlobalParallel
 {
-	public static GlobalParallel parseGlobalParallel(ScribbleParser parser, CommonTree ct)
+	public static GParallel parseGlobalParallel(ScribbleParser parser, CommonTree ct)
 	{
-		List<GlobalProtocolBlock> blocks = new LinkedList<>();
+		List<GProtocolBlock> blocks = new LinkedList<>();
 		for (CommonTree block : getBlockChildren(ct))
 		{
-			blocks.add((GlobalProtocolBlock) parser.parse(block));
+			blocks.add((GProtocolBlock) parser.parse(block));
 		}
-		return new GlobalParallel(blocks);
+		return new GParallel(blocks);
 		//return ModelFactoryImpl.FACTORY.G;
 	}
 

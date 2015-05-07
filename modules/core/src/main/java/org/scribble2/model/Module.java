@@ -6,9 +6,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.del.ModelDelegate;
-import org.scribble2.model.global.GlobalProtocolDecl;
-import org.scribble2.model.local.LocalProtocolDecl;
+import org.scribble2.model.del.ModelDel;
+import org.scribble2.model.global.GProtocolDecl;
+import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ModuleName;
@@ -80,7 +80,7 @@ public class Module extends ModelNodeBase
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl<? extends ProtocolKind>> protos)
 	{
-		ModelDelegate del = del();
+		ModelDel del = del();
 		Module m = new Module(moddecl, imports, data, protos);
 		m = (Module) m.del(del);
 		return m;
@@ -116,13 +116,13 @@ public class Module extends ModelNodeBase
 	}
 
 	// ptn simple alias name
-	public MessageSignatureDecl getMessageSignatureDecl(Name msn)
+	public MessageSigDecl getMessageSignatureDecl(Name msn)
 	{
 		for (DataTypeDecl dtd : this.data)
 		{
-			if (dtd instanceof MessageSignatureDecl && dtd.alias.toName().equals(msn))
+			if (dtd instanceof MessageSigDecl && dtd.alias.toName().equals(msn))
 			{
-				return (MessageSignatureDecl) dtd;
+				return (MessageSigDecl) dtd;
 			}
 		}
 		throw new RuntimeException("Message signature not found: " + msn);
@@ -145,7 +145,7 @@ public class Module extends ModelNodeBase
 		return pds;
 	}*/
 	
-	public List<GlobalProtocolDecl> getGlobalProtocolDecls()
+	public List<GProtocolDecl> getGlobalProtocolDecls()
 	{
 		/*List<GlobalProtocolDecl> gpds =
 				this.<GlobalProtocolDecl>getProtocolDecls(
@@ -157,7 +157,7 @@ public class Module extends ModelNodeBase
 		return getProtocolDecls(IS_GLOBALPROTOCOLDECL, TO_GLOBALPROTOCOLDECL);
 	}
 
-	public List<LocalProtocolDecl> getLocalProtocolDecls()
+	public List<LProtocolDecl> getLocalProtocolDecls()
 	{
 		//return Util.listCast(this.protos.stream().filter(LocalProtocolDecl.isLocalProtocolDecl).collect(Collectors.toList()), LocalProtocolDecl.toLocalProtocolDecl);
 		//return this.protos.stream().filter(LocalProtocolDecl.isLocalProtocolDecl).map(LocalProtocolDecl.toLocalProtocolDecl).collect(Collectors.toList());
@@ -298,21 +298,21 @@ public class Module extends ModelNodeBase
 			<
 				//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>,
 				ProtocolDecl<? extends ProtocolKind>,
-				GlobalProtocolDecl
+				GProtocolDecl
 			>
 			TO_GLOBALPROTOCOLDECL =
 					//(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 					(ProtocolDecl<? extends ProtocolKind> pd)
-							-> (GlobalProtocolDecl) pd;
+							-> (GProtocolDecl) pd;
 
 	private static final Function
 			<
 				//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>,
 				ProtocolDecl<? extends ProtocolKind>,
-				LocalProtocolDecl
+				LProtocolDecl
 			>
 			TO_LOCALPROTOCOLDECL =
 					//(AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 					(ProtocolDecl<? extends ProtocolKind> pd)
-							-> (LocalProtocolDecl) pd;
+							-> (LProtocolDecl) pd;
 }

@@ -4,9 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.global.GlobalInterrupt;
-import org.scribble2.model.global.GlobalInterruptible;
-import org.scribble2.model.global.GlobalProtocolBlock;
+import org.scribble2.model.global.GInterrupt;
+import org.scribble2.model.global.GInterruptible;
+import org.scribble2.model.global.GProtocolBlock;
 import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
@@ -20,21 +20,21 @@ public class AntlrGlobalInterruptible
 	public static final int BLOCK_CHILD_INDEX = 1;
 	public static final int INTERRUPT_CHILDREN_START_INDEX = 2;
 
-	public static GlobalInterruptible parseGlobalInterruptible(ScribbleParser parser, CommonTree ct)
+	public static GInterruptible parseGlobalInterruptible(ScribbleParser parser, CommonTree ct)
 	{
-		GlobalProtocolBlock block = (GlobalProtocolBlock) parser.parse(getBlockChild(ct));
+		GProtocolBlock block = (GProtocolBlock) parser.parse(getBlockChild(ct));
 		//List<GlobalInterrupt> interrs = new LinkedList<>();
-		List<GlobalInterrupt> interrs = new LinkedList<>();
+		List<GInterrupt> interrs = new LinkedList<>();
 		for (CommonTree interr : getInterruptChildren(ct))
 		{
-			interrs.add((GlobalInterrupt) parser.parse(interr));
+			interrs.add((GInterrupt) parser.parse(interr));
 		}
 		if (isScopeImplicit(ct))
 		{
-			return new GlobalInterruptible(block, interrs);
+			return new GInterruptible(block, interrs);
 		}
 		ScopeNode scope = AntlrSimpleName.toScopeNode(getScopeChild(ct));
-		return new GlobalInterruptible(scope, block, interrs);
+		return new GInterruptible(scope, block, interrs);
 	}
 	
 	public static boolean isScopeImplicit(CommonTree ct)

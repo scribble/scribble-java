@@ -1,12 +1,12 @@
 package org.scribble2.model;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.name.Role;
 
 
 //public interface RoleDecl extends HeaderParameterDecl
-public class RoleDecl extends HeaderParameterDecl<RoleNode, Role>
+public class RoleDecl extends HeaderParamDecl<RoleNode, Role>
 {
 	public RoleDecl(RoleNode name)
 	{
@@ -28,7 +28,7 @@ public class RoleDecl extends HeaderParameterDecl<RoleNode, Role>
 	@Override
 	protected RoleDecl reconstruct(RoleNode namenode)
 	{
-		ModelDelegate del = del();
+		ModelDel del = del();
 		RoleDecl rd = new RoleDecl((RoleNode) namenode);
 		rd = (RoleDecl) rd.del(del);
 		return rd;

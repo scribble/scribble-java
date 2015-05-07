@@ -2,9 +2,9 @@ package org.scribble2.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.global.GlobalProtocolDecl;
-import org.scribble2.model.global.GlobalProtocolDefinition;
-import org.scribble2.model.global.GlobalProtocolHeader;
+import org.scribble2.model.global.GProtocolDecl;
+import org.scribble2.model.global.GProtocolDef;
+import org.scribble2.model.global.GProtocolHeader;
 import org.scribble2.parser.ScribbleParser;
 
 public class AntlrGlobalProtocolDecl
@@ -15,13 +15,13 @@ public class AntlrGlobalProtocolDecl
 	public static final int HEADER_CHILD_INDEX = 0;
 	public static final int BODY_CHILD_INDEX = 1;
 
-	public static GlobalProtocolDecl parseGlobalPrototocolDecl(ScribbleParser parser, CommonTree ct)
+	public static GProtocolDecl parseGlobalPrototocolDecl(ScribbleParser parser, CommonTree ct)
 	{
 		/*SimpleProtocolNameNode name = AntlrSimpleName.toSimpleProtocolNameNode(getNameChild(ct));
 		RoleDeclList rdl = (RoleDeclList) parser.parse(getRoleDeclListChild(ct));
 		ParameterDeclList pdl = (ParameterDeclList) parser.parse(getParameterDeclListChild(ct));*/
-		GlobalProtocolHeader header = (GlobalProtocolHeader) parser.parse(getHeaderChild(ct));
-		GlobalProtocolDefinition def = (GlobalProtocolDefinition) parser.parse(getBodyChild(ct));
+		GProtocolHeader header = (GProtocolHeader) parser.parse(getHeaderChild(ct));
+		GProtocolDef def = (GProtocolDef) parser.parse(getBodyChild(ct));
 		//return new GlobalProtocolDecl(header, def);
 		return ModelFactoryImpl.FACTORY.GlobalProtocolDecl(header, def);
 	}

@@ -1,6 +1,6 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.Kind;
 import org.scribble2.sesstype.name.SimpleName;
 
@@ -17,7 +17,7 @@ public class ScopeNode extends SimpleNameNode
 	@Override
 	protected ScopeNode reconstruct(String identifier)
 	{
-		ModelDelegate del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
+		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
 		ScopeNode sn = new ScopeNode(identifier);
 		sn = (ScopeNode) sn.del(del);
 		return sn;

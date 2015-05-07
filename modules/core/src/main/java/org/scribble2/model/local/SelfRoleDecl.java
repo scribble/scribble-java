@@ -1,7 +1,7 @@
 package org.scribble2.model.local;
 
 import org.scribble2.model.RoleDecl;
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.simple.RoleNode;
 //import scribble2.sesstype.name.NameDeclaration;
 import org.scribble2.sesstype.name.Role;
@@ -30,7 +30,7 @@ public class SelfRoleDecl extends RoleDecl
 	//protected RoleDecl reconstruct(SimpleNameNode snn)
 	protected RoleDecl reconstruct(RoleNode snn)
 	{
-		ModelDelegate del = del();
+		ModelDel del = del();
 		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) snn);
 		rd = (SelfRoleDecl) rd.del(del);
 		return rd;

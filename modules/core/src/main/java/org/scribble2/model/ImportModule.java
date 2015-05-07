@@ -1,6 +1,6 @@
 package org.scribble2.model;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
 import org.scribble2.model.visit.ModelVisitor;
@@ -27,7 +27,7 @@ public class ImportModule extends ImportDecl
 	
 	protected ImportModule reconstruct(ModuleNameNode modname, SimpleProtocolNameNode alias)
 	{
-		ModelDelegate del = del();
+		ModelDel del = del();
 		ImportModule im = new ImportModule(modname, alias);
 		im = (ImportModule) im.del(del);
 		return im;

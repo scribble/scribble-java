@@ -4,10 +4,10 @@ import java.util.Stack;
 
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.InteractionNode;
-import org.scribble2.model.InteractionSequence;
+import org.scribble2.model.InteractionSeq;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.ProtocolBlock;
-import org.scribble2.model.ProtocolDefinition;
+import org.scribble2.model.ProtocolDef;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.visit.env.Env;
 import org.scribble2.sesstype.kind.ProtocolKind;

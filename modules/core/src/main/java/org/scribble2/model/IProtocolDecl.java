@@ -10,7 +10,7 @@ public interface IProtocolDecl<K extends ProtocolKind> extends ModelNode
 	
 	ProtocolHeader getHeader();
 	//ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> getDef();
-	ProtocolDefinition<K> getDef();
+	ProtocolDef<K> getDef();
 	
 	boolean isGlobal();
 	boolean isLocal();

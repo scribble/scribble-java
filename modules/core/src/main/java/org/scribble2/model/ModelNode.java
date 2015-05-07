@@ -15,7 +15,7 @@
  */
 package org.scribble2.model;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.model.visit.Substitutor;
 import org.scribble2.util.ScribbleException;
@@ -30,8 +30,8 @@ public interface ModelNode// extends Copy
 	ModelNode visitChildren(ModelVisitor nv) throws ScribbleException;
 	//ModelNode visitChildrenInSubprotocols(SubprotocolVisitor nv) throws ScribbleException;
 
-	ModelDelegate del();
-	ModelNode del(ModelDelegate del);
+	ModelDel del();
+	ModelNode del(ModelDel del);
 	//<T extends ModelNodeBase> T del(T t, ModelDelegate del);
 	
 	ModelNode substituteNames(Substitutor subs);

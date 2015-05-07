@@ -2,55 +2,55 @@ package org.scribble2.model;
 
 import java.util.List;
 
-import org.scribble2.model.ParameterDecl.Kind;
-import org.scribble2.model.del.DefaultModelDelegate;
-import org.scribble2.model.del.ImportModuleDelegate;
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.ParamDecl.Kind;
+import org.scribble2.model.del.DefaultModelDel;
+import org.scribble2.model.del.ImportModuleDel;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.del.ModuleDelegate;
-import org.scribble2.model.del.ParameterDeclDelegate;
-import org.scribble2.model.del.RoleDeclDelegate;
-import org.scribble2.model.del.global.GlobalChoiceDelegate;
-import org.scribble2.model.del.global.GlobalContinueDelegate;
-import org.scribble2.model.del.global.GlobalDoDelegate;
-import org.scribble2.model.del.global.GlobalInteractionSequenceDelegate;
-import org.scribble2.model.del.global.GlobalMessageTransferDelegate;
-import org.scribble2.model.del.global.GlobalProtocolBlockDelegate;
-import org.scribble2.model.del.global.GlobalProtocolDeclDelegate;
-import org.scribble2.model.del.global.GlobalProtocolDefinitionDelegate;
-import org.scribble2.model.del.global.GlobalRecursionDelegate;
-import org.scribble2.model.del.local.LocalChoiceDelegate;
-import org.scribble2.model.del.local.LocalContinueDelegate;
-import org.scribble2.model.del.local.LocalDoDelegate;
-import org.scribble2.model.del.local.LocalInteractionSequenceDelegate;
-import org.scribble2.model.del.local.LocalProtocolBlockDelegate;
-import org.scribble2.model.del.local.LocalProtocolDeclDelegate;
-import org.scribble2.model.del.local.LocalProtocolDefinitionDelegate;
-import org.scribble2.model.del.local.LocalReceiveDelegate;
-import org.scribble2.model.del.local.LocalRecursionDelegate;
-import org.scribble2.model.del.local.LocalSendDelegate;
+import org.scribble2.model.del.ParamDeclDel;
+import org.scribble2.model.del.RoleDeclDel;
+import org.scribble2.model.del.global.GChoiceDel;
+import org.scribble2.model.del.global.GContinueDel;
+import org.scribble2.model.del.global.GDoDel;
+import org.scribble2.model.del.global.GInteractionSeqDel;
+import org.scribble2.model.del.global.GMessageTransferDel;
+import org.scribble2.model.del.global.GProtocolBlockDel;
+import org.scribble2.model.del.global.GProtocolDeclDel;
+import org.scribble2.model.del.global.GProtocolDefDel;
+import org.scribble2.model.del.global.GRecursionDel;
+import org.scribble2.model.del.local.LChoiceDel;
+import org.scribble2.model.del.local.LContinueDel;
+import org.scribble2.model.del.local.LDoDel;
+import org.scribble2.model.del.local.LInteractionSeqDel;
+import org.scribble2.model.del.local.LProtocolBlockDel;
+import org.scribble2.model.del.local.LProtocolDeclDel;
+import org.scribble2.model.del.local.LProtocolDefDel;
+import org.scribble2.model.del.local.LReceiveDel;
+import org.scribble2.model.del.local.LRecursionDel;
+import org.scribble2.model.del.local.LSendDel;
 import org.scribble2.model.del.name.AmbiguousNameDelegate;
-import org.scribble2.model.global.GlobalChoice;
-import org.scribble2.model.global.GlobalContinue;
-import org.scribble2.model.global.GlobalDo;
-import org.scribble2.model.global.GlobalInteractionNode;
-import org.scribble2.model.global.GlobalInteractionSequence;
-import org.scribble2.model.global.GlobalMessageTransfer;
-import org.scribble2.model.global.GlobalProtocolBlock;
-import org.scribble2.model.global.GlobalProtocolDecl;
-import org.scribble2.model.global.GlobalProtocolDefinition;
-import org.scribble2.model.global.GlobalProtocolHeader;
-import org.scribble2.model.global.GlobalRecursion;
-import org.scribble2.model.local.LocalChoice;
-import org.scribble2.model.local.LocalContinue;
-import org.scribble2.model.local.LocalDo;
-import org.scribble2.model.local.LocalInteractionSequence;
-import org.scribble2.model.local.LocalProtocolBlock;
-import org.scribble2.model.local.LocalProtocolDecl;
-import org.scribble2.model.local.LocalProtocolDefinition;
-import org.scribble2.model.local.LocalProtocolHeader;
-import org.scribble2.model.local.LocalReceive;
-import org.scribble2.model.local.LocalRecursion;
-import org.scribble2.model.local.LocalSend;
+import org.scribble2.model.global.GChoice;
+import org.scribble2.model.global.GContinue;
+import org.scribble2.model.global.GDo;
+import org.scribble2.model.global.GInteractionNode;
+import org.scribble2.model.global.GInteractionSeq;
+import org.scribble2.model.global.GMessageTransfer;
+import org.scribble2.model.global.GProtocolBlock;
+import org.scribble2.model.global.GProtocolDecl;
+import org.scribble2.model.global.GProtocolDef;
+import org.scribble2.model.global.GProtocolHeader;
+import org.scribble2.model.global.GRecursion;
+import org.scribble2.model.local.LChoice;
+import org.scribble2.model.local.LContinue;
+import org.scribble2.model.local.LDo;
+import org.scribble2.model.local.LInteractionSeq;
+import org.scribble2.model.local.LProtocolBlock;
+import org.scribble2.model.local.LProtocolDecl;
+import org.scribble2.model.local.LProtocolDef;
+import org.scribble2.model.local.LProtocolHeader;
+import org.scribble2.model.local.LReceive;
+import org.scribble2.model.local.LRecursion;
+import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.name.qualified.MessageSignatureNameNode;
@@ -72,9 +72,9 @@ public class ModelFactoryImpl implements ModelFactory
 	public static final ModelFactory FACTORY = new ModelFactoryImpl();  // FIXME: move somewhere else
 	
 	@Override
-	public MessageSignatureNode MessageSignatureNode(OperatorNode op, Payload payload)
+	public MessageSigNode MessageSignatureNode(OperatorNode op, Payload payload)
 	{
-		MessageSignatureNode msn = new MessageSignatureNode(op, payload);
+		MessageSigNode msn = new MessageSigNode(op, payload);
 		msn = del(msn, createDefaultDelegate());  // FIXME: does another shallow copy
 		return msn;
 	}
@@ -123,22 +123,22 @@ public class ModelFactoryImpl implements ModelFactory
 	{
 		ImportModule im = new ImportModule(modname, alias);
 		//im = del(im, createDefaultDelegate());
-		im = del(im, new ImportModuleDelegate());
+		im = del(im, new ImportModuleDel());
 		return im;
 	}
 
 	@Override
-	public GlobalProtocolDecl GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def)
+	public GProtocolDecl GlobalProtocolDecl(GProtocolHeader header, GProtocolDef def)
 	{
-		GlobalProtocolDecl gpd = new GlobalProtocolDecl(header, def);
-		gpd = del(gpd, new GlobalProtocolDeclDelegate());
+		GProtocolDecl gpd = new GProtocolDecl(header, def);
+		gpd = del(gpd, new GProtocolDeclDel());
 		return gpd;
 	}
 
 	@Override
-	public GlobalProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls)
+	public GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	{
-		GlobalProtocolHeader gph = new GlobalProtocolHeader(name, roledecls, paramdecls);
+		GProtocolHeader gph = new GProtocolHeader(name, roledecls, paramdecls);
 		gph = del(gph, createDefaultDelegate());
 		return gph;
 	}
@@ -155,81 +155,81 @@ public class ModelFactoryImpl implements ModelFactory
 	public RoleDecl RoleDecl(RoleNode namenode)
 	{
 		RoleDecl rd = new RoleDecl(namenode);
-		rd = del(rd, new RoleDeclDelegate());
+		rd = del(rd, new RoleDeclDel());
 		return rd;
 	}
 
 	@Override
-	public ParameterDeclList ParameterDeclList(List<ParameterDecl> pds)
+	public ParamDeclList ParameterDeclList(List<ParamDecl> pds)
 	{
-		ParameterDeclList pdl = new ParameterDeclList(pds);
+		ParamDeclList pdl = new ParamDeclList(pds);
 		pdl = del(pdl, createDefaultDelegate());
 		return pdl;
 	}
 
 	@Override
-	public ParameterDecl ParameterDecl(Kind kind, ParameterNode namenode)
+	public ParamDecl ParameterDecl(Kind kind, ParameterNode namenode)
 	{
-		ParameterDecl pd = new ParameterDecl(kind, namenode);
-		pd = del(pd, new ParameterDeclDelegate());
+		ParamDecl pd = new ParamDecl(kind, namenode);
+		pd = del(pd, new ParamDeclDel());
 		return pd;
 	}
 
 	@Override
-	public GlobalProtocolDefinition GlobalProtocolDefinition(GlobalProtocolBlock block)
+	public GProtocolDef GlobalProtocolDefinition(GProtocolBlock block)
 	{
-		GlobalProtocolDefinition gpd = new GlobalProtocolDefinition(block);
-		gpd = del(gpd, new GlobalProtocolDefinitionDelegate());
+		GProtocolDef gpd = new GProtocolDef(block);
+		gpd = del(gpd, new GProtocolDefDel());
 		return gpd;
 	}
 
 	@Override
-	public GlobalProtocolBlock GlobalProtocolBlock(GlobalInteractionSequence seq)
+	public GProtocolBlock GlobalProtocolBlock(GInteractionSeq seq)
 	{
-		GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);
-		gpb = del(gpb, new GlobalProtocolBlockDelegate());
+		GProtocolBlock gpb = new GProtocolBlock(seq);
+		gpb = del(gpb, new GProtocolBlockDel());
 		return gpb;
 	}
 
 	@Override
-	public GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteractionNode> actions)
+	public GInteractionSeq GlobalInteractionSequence(List<GInteractionNode> actions)
 	{
-		GlobalInteractionSequence gis = new GlobalInteractionSequence(actions);
-		gis = del(gis, new GlobalInteractionSequenceDelegate());
+		GInteractionSeq gis = new GInteractionSeq(actions);
+		gis = del(gis, new GInteractionSeqDel());
 		return gis;
 	}
 
 	@Override
-	public GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public GMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		GlobalMessageTransfer gmt = new GlobalMessageTransfer(src, msg, dests);
-		gmt = del(gmt, new GlobalMessageTransferDelegate());
+		GMessageTransfer gmt = new GMessageTransfer(src, msg, dests);
+		gmt = del(gmt, new GMessageTransferDel());
 		return gmt;
 	}
 
 	@Override
 	//public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
-	public GlobalChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks)
+	public GChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks)
 	{
-		GlobalChoice gc = new GlobalChoice(subj, blocks);
-		gc = del(gc, new GlobalChoiceDelegate());
+		GChoice gc = new GChoice(subj, blocks);
+		gc = del(gc, new GChoiceDel());
 		return gc;
 	}
 
 	@Override
 	//public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
-	public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<Global> block)
+	public GRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<Global> block)
 	{
-		GlobalRecursion gr = new GlobalRecursion(recvar, block);
-		gr = del(gr, new GlobalRecursionDelegate());
+		GRecursion gr = new GRecursion(recvar, block);
+		gr = del(gr, new GRecursionDel());
 		return gr;
 	}
 
 	@Override
-	public GlobalContinue GlobalContinue(RecursionVarNode recvar)
+	public GContinue GlobalContinue(RecursionVarNode recvar)
 	{
-		GlobalContinue gc = new GlobalContinue(recvar);
-		gc = del(gc, new GlobalContinueDelegate());
+		GContinue gc = new GContinue(recvar);
+		gc = del(gc, new GContinueDel());
 		return gc;
 	}
 
@@ -241,12 +241,12 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		//GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
-		GlobalDo gd = new GlobalDo(roleinstans, arginstans, proto);
+		GDo gd = new GDo(roleinstans, arginstans, proto);
 		//gd = del(gd, createDefaultDelegate());  // FIXME
-		gd = del(gd, new GlobalDoDelegate());  // FIXME
+		gd = del(gd, new GDoDel());  // FIXME
 		return gd;
 	}
 
@@ -321,17 +321,17 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LocalProtocolDecl LocalProtocolDecl(LocalProtocolHeader header, LocalProtocolDefinition def)
+	public LProtocolDecl LocalProtocolDecl(LProtocolHeader header, LProtocolDef def)
 	{
-		LocalProtocolDecl lpd = new LocalProtocolDecl(header, def);
-		lpd = del(lpd, new LocalProtocolDeclDelegate());
+		LProtocolDecl lpd = new LProtocolDecl(header, def);
+		lpd = del(lpd, new LProtocolDeclDel());
 		return lpd;
 	}
 
 	@Override
-	public LocalProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls)
+	public LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	{
-		LocalProtocolHeader lph = new LocalProtocolHeader(name, roledecls, paramdecls);
+		LProtocolHeader lph = new LProtocolHeader(name, roledecls, paramdecls);
 		lph = del(lph, createDefaultDelegate());
 		return lph;
 	}
@@ -340,73 +340,73 @@ public class ModelFactoryImpl implements ModelFactory
 	public SelfRoleDecl SelfRoleDecl(RoleNode namenode)
 	{
 		SelfRoleDecl rd = new SelfRoleDecl(namenode);
-		rd = del(rd, new RoleDeclDelegate());
+		rd = del(rd, new RoleDeclDel());
 		return rd;
 	}
 
 	@Override
-	public LocalProtocolDefinition LocalProtocolDefinition(LocalProtocolBlock block)
+	public LProtocolDef LocalProtocolDefinition(LProtocolBlock block)
 	{
-		LocalProtocolDefinition lpd = new LocalProtocolDefinition(block);
-		lpd = del(lpd, new LocalProtocolDefinitionDelegate());
+		LProtocolDef lpd = new LProtocolDef(block);
+		lpd = del(lpd, new LProtocolDefDel());
 		return lpd;
 	}
 
 	@Override
-	public LocalProtocolBlock LocalProtocolBlock(LocalInteractionSequence seq)
+	public LProtocolBlock LocalProtocolBlock(LInteractionSeq seq)
 	{
-		LocalProtocolBlock lpb = new LocalProtocolBlock(seq);
-		lpb = del(lpb, new LocalProtocolBlockDelegate());
+		LProtocolBlock lpb = new LProtocolBlock(seq);
+		lpb = del(lpb, new LProtocolBlockDel());
 		return lpb;
 	}
 
 	@Override
 	//public LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions)
-	public LocalInteractionSequence LocalInteractionSequence(List<? extends InteractionNode<Local>> actions)
+	public LInteractionSeq LocalInteractionSequence(List<? extends InteractionNode<Local>> actions)
 	{
-		LocalInteractionSequence lis = new LocalInteractionSequence(actions);
-		lis = del(lis, new LocalInteractionSequenceDelegate());
+		LInteractionSeq lis = new LInteractionSeq(actions);
+		lis = del(lis, new LInteractionSeqDel());
 		return lis;
 	}
 
 	@Override
-	public LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		LocalSend ls = new LocalSend(src, msg, dests);
-		ls = del(ls, new LocalSendDelegate());
+		LSend ls = new LSend(src, msg, dests);
+		ls = del(ls, new LSendDel());
 		return ls;
 	}
 
 	@Override
-	public LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		LocalReceive ls = new LocalReceive(src, msg, dests);
-		ls = del(ls, new LocalReceiveDelegate());
+		LReceive ls = new LReceive(src, msg, dests);
+		ls = del(ls, new LReceiveDel());
 		return ls;
 	}
 
 	@Override
 	//public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
-	public LocalChoice LocalChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks)
+	public LChoice LocalChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks)
 	{
-		LocalChoice lc = new LocalChoice(subj, blocks);
-		lc = del(lc, new LocalChoiceDelegate());
+		LChoice lc = new LChoice(subj, blocks);
+		lc = del(lc, new LChoiceDel());
 		return lc;
 	}
 
 	@Override
-	public LocalRecursion LocalRecursion(RecursionVarNode recvar, LocalProtocolBlock block)
+	public LRecursion LocalRecursion(RecursionVarNode recvar, LProtocolBlock block)
 	{
-		LocalRecursion lr = new LocalRecursion(recvar, block);
-		lr = del(lr, new LocalRecursionDelegate());
+		LRecursion lr = new LRecursion(recvar, block);
+		lr = del(lr, new LRecursionDel());
 		return lr;
 	}
 
 	@Override
-	public LocalContinue LocalContinue(RecursionVarNode recvar)
+	public LContinue LocalContinue(RecursionVarNode recvar)
 	{
-		LocalContinue lc = new LocalContinue(recvar);
-		lc = del(lc, new LocalContinueDelegate());
+		LContinue lc = new LContinue(recvar);
+		lc = del(lc, new LContinueDel());
 		return lc;
 	}
 
@@ -418,22 +418,22 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public LocalDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	{
 		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
-		LocalDo ld = new LocalDo(roleinstans, arginstans, proto);
+		LDo ld = new LDo(roleinstans, arginstans, proto);
 		//ld = del(ld, createDefaultDelegate());
-		ld = del(ld, new LocalDoDelegate());
+		ld = del(ld, new LDoDel());
 		return ld;
 	}
 
-	private ModelDelegate createDefaultDelegate()
+	private ModelDel createDefaultDelegate()
 	{
-		return new DefaultModelDelegate();
+		return new DefaultModelDel();
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static <T extends ModelNodeBase> T del(T n, ModelDelegate del)
+	private static <T extends ModelNodeBase> T del(T n, ModelDel del)
 	{
 		ModelNodeBase ret = n.del(del);
 		if (ret.getClass() != n.getClass())

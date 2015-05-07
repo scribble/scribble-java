@@ -9,12 +9,12 @@ import org.scribble2.util.ScribbleException;
 //public abstract class ProtocolBlock<T extends InteractionSequence<? extends InteractionNode>> extends CompoundInteraction //extends AbstractEnvDelegationNode
 public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInteraction //extends AbstractEnvDelegationNode
 {
-	public final InteractionSequence<K> seq;
+	public final InteractionSeq<K> seq;
 	//public final T seq;
 	
 	//private final Env env;  // Could save env on all "statements"
 
-	public ProtocolBlock(InteractionSequence<K> seq)
+	public ProtocolBlock(InteractionSeq<K> seq)
 	//protected ProtocolBlock(T seq)
 	{
 		//this(ct, is, null);
@@ -35,14 +35,14 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 	}*/
 	
 	//protected abstract ProtocolBlock<T> reconstruct(T seq);//, ProtocolBlockContext bcontext, Env env);
-	protected abstract ProtocolBlock<K> reconstruct(InteractionSequence<K> seq);//, ProtocolBlockContext bcontext, Env env);
+	protected abstract ProtocolBlock<K> reconstruct(InteractionSeq<K> seq);//, ProtocolBlockContext bcontext, Env env);
 
 	@Override
 	public ProtocolBlock<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	//public ProtocolBlock<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		//T seq = visitChildWithClassCheck(this, this.seq, nv);
-		InteractionSequence<K> seq = visitChildWithClassCheck(this, this.seq, nv);
+		InteractionSeq<K> seq = visitChildWithClassCheck(this, this.seq, nv);
 		//return new ProtocolBlock<>(this.ct, seq, getContext(), getEnv());
 		return reconstruct(seq);//, getContext(), getEnv());
 	}

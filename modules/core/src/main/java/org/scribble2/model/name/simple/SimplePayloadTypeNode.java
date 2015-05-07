@@ -1,6 +1,6 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.PayloadType;
 import org.scribble2.sesstype.name.SimpleName;
 
@@ -18,7 +18,7 @@ public class SimplePayloadTypeNode extends SimpleCompoundNameNode<PayloadType> /
 	@Override
 	protected SimplePayloadTypeNode reconstruct(String identifier)
 	{
-		ModelDelegate del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
+		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
 		SimplePayloadTypeNode sptn = new SimplePayloadTypeNode(identifier);
 		sptn = (SimplePayloadTypeNode) sptn.del(del);
 		return sptn;

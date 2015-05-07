@@ -3,7 +3,7 @@ package org.scribble2.model.visit;
 import java.util.Map;
 
 import org.scribble2.model.ArgumentNode;
-import org.scribble2.model.MessageSignatureNode;
+import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -50,8 +50,8 @@ public class Substitutor extends ModelVisitor
 		ArgumentNode an = this.argmap.get(arg);
 		if (an.isMessageSignatureNode())
 		{
-			MessageSignatureNode msn = (MessageSignatureNode) an;
-			return new MessageSignatureNode(msn.op, msn.payload);
+			MessageSigNode msn = (MessageSigNode) an;
+			return new MessageSigNode(msn.op, msn.payload);
 		}
 		/*else if (an.isPayloadTypeNode())
 		{

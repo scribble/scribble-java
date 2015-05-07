@@ -18,7 +18,7 @@ package org.scribble2.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.model.visit.Substitutor;
 import org.scribble2.util.RuntimeScribbleException;
@@ -32,7 +32,7 @@ import org.scribble2.util.ScribbleUtil;
 // Currently name nodes don't have dels (aren't made by node factory)
 public abstract class ModelNodeBase implements ModelNode
 {
-	protected ModelDelegate del;
+	protected ModelDel del;
 
 	// Internal shallow copy for (immutable) ModelNodes
 	//@Override
@@ -63,13 +63,13 @@ public abstract class ModelNodeBase implements ModelNode
 	}*/
 	
 	@Override
-	public final ModelDelegate del()
+	public final ModelDel del()
 	{
 		return this.del;
 	}
 	
 	@Override
-	public final ModelNodeBase del(ModelDelegate del)
+	public final ModelNodeBase del(ModelDel del)
 	{
 		ModelNodeBase copy = copy();
 		copy.del = del;

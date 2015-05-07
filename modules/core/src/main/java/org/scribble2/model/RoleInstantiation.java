@@ -1,6 +1,6 @@
 package org.scribble2.model;
 
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.name.Role;
 
@@ -21,7 +21,7 @@ public class RoleInstantiation extends Instantiation<RoleNode>
 	@Override
 	protected RoleInstantiation reconstruct(RoleNode arg)
 	{
-		ModelDelegate del = del();
+		ModelDel del = del();
 		RoleInstantiation ri = new RoleInstantiation(arg);
 		ri = (RoleInstantiation) ri.del(del);
 		return ri;

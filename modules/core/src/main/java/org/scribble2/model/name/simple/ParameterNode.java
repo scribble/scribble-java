@@ -1,7 +1,7 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.sesstype.name.PayloadTypeOrParameter;
@@ -19,7 +19,7 @@ public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadE
 	@Override
 	protected ParameterNode reconstruct(String identifier)
 	{
-		ModelDelegate del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
+		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
 		ParameterNode pn = new ParameterNode(identifier);
 		pn = (ParameterNode) pn.del(del);
 		return pn;

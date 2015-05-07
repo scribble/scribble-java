@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.MessageSignatureNode;
+import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.global.GlobalMessageTransfer;
+import org.scribble2.model.global.GMessageTransfer;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
@@ -24,7 +24,7 @@ public class AntlrGlobalMessageTransfer
 	public static final int SOURCE_CHILD_INDEX = 1;
 	public static final int DESTINATION_CHILDREN_START_INDEX = 2;
 
-	public static GlobalMessageTransfer parseGlobalMessageTransfer(ScribbleParser parser, CommonTree ct)
+	public static GMessageTransfer parseGlobalMessageTransfer(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
@@ -56,7 +56,7 @@ public class AntlrGlobalMessageTransfer
 		AntlrNodeType type = Util.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)
 		{
-			return (MessageSignatureNode) parser.parse(ct);
+			return (MessageSigNode) parser.parse(ct);
 		}
 		// Duplicated from AntlrPayloadElement parse
 		/*else if (type.equals(AntlrConstants.QUALIFIEDNAME_NODE_TYPE))  // member name

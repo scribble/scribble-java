@@ -14,7 +14,7 @@ import org.scribble2.model.Module;
 import org.scribble2.model.ModuleDecl;
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.context.ModuleContext;
-import org.scribble2.model.local.LocalProtocolDecl;
+import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
@@ -26,7 +26,7 @@ import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
-public class ModuleDelegate extends ModelDelegateBase
+public class ModuleDelegate extends ModelDelBase
 {
 	private ModuleContext context;
 	
@@ -99,7 +99,7 @@ public class ModuleDelegate extends ModelDelegateBase
 		return mod;
 	}
 
-	public Module createModuleForProjection(Projector proj, Module root, LocalProtocolDecl lpd, Map<ProtocolName, Set<Role>> dependencies)
+	public Module createModuleForProjection(Projector proj, Module root, LProtocolDecl lpd, Map<ProtocolName, Set<Role>> dependencies)
 	{
 		//.. store projection module in context? do this earlier?
 		//.. look up all projection sets from global protocol decls and store somewhere? in context?

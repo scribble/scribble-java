@@ -6,8 +6,8 @@ import java.util.Map;
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.ImportModule;
 import org.scribble2.model.Module;
-import org.scribble2.model.global.GlobalProtocolDecl;
-import org.scribble2.model.local.LocalProtocolDecl;
+import org.scribble2.model.global.GProtocolDecl;
+import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.name.MessageSignatureName;
 import org.scribble2.sesstype.name.ModuleName;
@@ -89,13 +89,13 @@ public class ModuleContext
 				this.sigs.put(visname, fullname);
 			}
 		}*/
-		for (GlobalProtocolDecl gpd : mod.getGlobalProtocolDecls())
+		for (GProtocolDecl gpd : mod.getGlobalProtocolDecls())
 		{
 			ProtocolName fullname = gpd.getFullProtocolName(mod);
 			ProtocolName visname = new ProtocolName(vismodname, gpd.header.name.toString());
 			this.globals.put(visname, fullname);
 		}
-		for (LocalProtocolDecl lpd : mod.getLocalProtocolDecls())
+		for (LProtocolDecl lpd : mod.getLocalProtocolDecls())
 		{
 			ProtocolName fullname = lpd.getFullProtocolName(mod);
 			//ProtocolName fullname = getFullProtocolName(lpd);
@@ -129,7 +129,7 @@ public class ModuleContext
 				this.sigs.put(selfname, fullname);
 			}
 		}*/
-		for (GlobalProtocolDecl gpd : m.getGlobalProtocolDecls())
+		for (GProtocolDecl gpd : m.getGlobalProtocolDecls())
 		{
 			//ProtocolName simplename = gpd.header.name.toName();
 			ProtocolName simplename = gpd.header.name.toCompoundName();

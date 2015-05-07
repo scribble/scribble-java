@@ -1,7 +1,7 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.name.MessageSignatureName;
@@ -21,7 +21,7 @@ public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<Messa
 	@Override
 	protected SimpleMessageSignatureNameNode reconstruct(String identifier)
 	{
-		ModelDelegate del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
+		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
 		SimpleMessageSignatureNameNode smsnn = new SimpleMessageSignatureNameNode(identifier);
 		smsnn = (SimpleMessageSignatureNameNode) smsnn.del(del);
 		return smsnn;

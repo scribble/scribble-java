@@ -17,7 +17,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 		//implements IProtocolDecl<K>
 {
 	public final ProtocolHeader header;
-	public final ProtocolDefinition<K> def;
+	public final ProtocolDef<K> def;
 	/*public final T1 header;
 	public final T2 def;*/
 
@@ -34,7 +34,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 
 	//protected ProtocolDecl(Token t, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, T def)//, ProtocolDeclContext pdcontext, Env env)
 	//protected AbstractProtocolDecl(T1 header, T2 def)//, ProtocolDeclContext pdcontext, Env env)
-	protected ProtocolDecl(ProtocolHeader header, ProtocolDefinition<K> def)//, ProtocolDeclContext pdcontext, Env env)
+	protected ProtocolDecl(ProtocolHeader header, ProtocolDef<K> def)//, ProtocolDeclContext pdcontext, Env env)
 	{
 		this.header = header;
 		this.def = def;
@@ -56,7 +56,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 	
 	// Keeps the current del (shallow reconstruct with new children)
 	//protected abstract AbstractProtocolDecl<T1, T2> reconstruct(T1 header, T2 def);//, ProtocolDeclContext pdcontext, Env env);
-	protected abstract ProtocolDecl<K> reconstruct(ProtocolHeader header, ProtocolDefinition<K> def);//, ProtocolDeclContext pdcontext, Env env);
+	protected abstract ProtocolDecl<K> reconstruct(ProtocolHeader header, ProtocolDef<K> def);//, ProtocolDeclContext pdcontext, Env env);
 
 	/*@Override
 	public NameDisambiguator enterDisambiguation(NameDisambiguator disamb) throws ScribbleException
@@ -90,7 +90,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 		/*T1 header = visitChildWithClassCheck(this, this.header, nv);
 		T2 def = visitChildWithClassCheck(this, this.def, nv);*/
 		ProtocolHeader header = visitChildWithClassCheck(this, this.header, nv);
-		ProtocolDefinition<K> def = visitChildWithClassCheck(this, this.def, nv);
+		ProtocolDef<K> def = visitChildWithClassCheck(this, this.def, nv);
 		return reconstruct(header, def);//, getContext(), getEnv());
 	}
 	
