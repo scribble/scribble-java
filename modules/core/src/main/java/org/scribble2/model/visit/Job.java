@@ -17,6 +17,8 @@ import org.scribble2.util.ScribbleException;
 	//.. consider refactoring all uses of AbstractProtocolDecl to be able to get global/local directly (would need global/local as a generic parameter) -- e.g. Do.getTargetProtocolDecl
 	//.. fix parameterdecllist generics (not fixed to one kind)
 
+	//.. do call type checking as well as basic name binding
+
 		//.. sepatate protocol names into global/local -- use generic parameter for name kinds rather than subclasses
 		//.. fix projection env to take projection output type as Parameter
 		//.. fix global/local do delegate context build loop -- use lambda

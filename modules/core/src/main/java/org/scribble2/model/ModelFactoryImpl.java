@@ -64,6 +64,7 @@ import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.sesstype.kind.GlobalKind;
 import org.scribble2.sesstype.kind.LocalKind;
 
 public class ModelFactoryImpl implements ModelFactory
@@ -207,7 +208,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
+	//public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
+	public GlobalChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<GlobalKind>> blocks)
 	{
 		GlobalChoice gc = new GlobalChoice(subj, blocks);
 		gc = del(gc, new GlobalChoiceDelegate());
@@ -215,7 +217,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
+	//public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
+	public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<GlobalKind> block)
 	{
 		GlobalRecursion gr = new GlobalRecursion(recvar, block);
 		gr = del(gr, new GlobalRecursionDelegate());
@@ -383,7 +386,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
+	//public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
+	public LocalChoice LocalChoice(RoleNode subj, List<ProtocolBlock<LocalKind>> blocks)
 	{
 		LocalChoice lc = new LocalChoice(subj, blocks);
 		lc = del(lc, new LocalChoiceDelegate());

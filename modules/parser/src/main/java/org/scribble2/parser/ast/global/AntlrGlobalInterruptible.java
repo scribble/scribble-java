@@ -23,6 +23,7 @@ public class AntlrGlobalInterruptible
 	public static GlobalInterruptible parseGlobalInterruptible(ScribbleParser parser, CommonTree ct)
 	{
 		GlobalProtocolBlock block = (GlobalProtocolBlock) parser.parse(getBlockChild(ct));
+		//List<GlobalInterrupt> interrs = new LinkedList<>();
 		List<GlobalInterrupt> interrs = new LinkedList<>();
 		for (CommonTree interr : getInterruptChildren(ct))
 		{

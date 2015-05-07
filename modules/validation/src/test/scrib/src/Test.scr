@@ -49,4 +49,5 @@ global protocol Bar(role C, role D)
 	}
 	//3() from A to B;
 	4() from C to D;
-}*/
+}
+//*/

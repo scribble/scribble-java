@@ -3,14 +3,18 @@ package org.scribble2.model;
 import java.util.List;
 
 import org.scribble2.model.name.simple.ScopeNode;
+import org.scribble2.sesstype.kind.Kind;
 
 public abstract class Interruptible<
-				T1 extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>, T2 extends Interrupt>
-		extends CompoundInteractionNode implements ScopedNode
+//			T1 extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>, T2 extends Interrupt>
+				K extends Kind>
+		extends CompoundInteractionNode<K> implements ScopedNode
 {
 	public final ScopeNode scope;
-	public final T1 block;
-	public final List<T2> interrs;
+	/*public final T1 block;
+	public final List<T2> interrs;*/
+	public final ProtocolBlock<K> block;
+	public final List<? extends Interrupt> interrs;
 
 	/*protected Interruptible(CommonTree ct, T1 block, List<T2> interrs)
 	{
@@ -27,7 +31,8 @@ public abstract class Interruptible<
 		this(ct, scope, block, interrs, icontext, null);
 	}*/
 
-	protected Interruptible(ScopeNode scope, T1 block, List<T2> interrs)//, CompoundInteractionNodeContext icontext, Env env)
+	//protected Interruptible(ScopeNode scope, T1 block, List<T2> interrs)//, CompoundInteractionNodeContext icontext, Env env)
+	protected Interruptible(ScopeNode scope, ProtocolBlock<K> block, List<? extends Interrupt> interrs)//, CompoundInteractionNodeContext icontext, Env env)
 	{
 		this.scope = scope;
 		this.block = block;

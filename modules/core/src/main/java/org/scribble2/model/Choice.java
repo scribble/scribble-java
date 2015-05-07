@@ -5,13 +5,16 @@ import java.util.List;
 
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.util.ScribbleException;
 
-public abstract class Choice<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
-		extends CompoundInteractionNode
+//public abstract class Choice<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
+public abstract class Choice<K extends Kind>
+		extends CompoundInteractionNode<K>
 {
 	public final RoleNode subj;
-	public final List<T> blocks;
+	//public final List<T> blocks;
+	public final List<? extends ProtocolBlock<K>> blocks;
 
 	// All constructors being protected is a kind of "abstract class"
 	/*protected Choice(CommonTree ct, RoleNode subj, List<T> blocks)
@@ -24,20 +27,24 @@ public abstract class Choice<T extends ProtocolBlock<? extends InteractionSequen
 		this(ct, subj, blocks, cicontext, null);
 	}*/
 
-	protected Choice(RoleNode subj, List<T> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
+	//protected Choice(RoleNode subj, List<T> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
+	protected Choice(RoleNode subj, List<? extends ProtocolBlock<K>> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
 	{
 		super();//, cicontext, env);
 		this.subj = subj;
 		this.blocks = new LinkedList<>(blocks);
 	}
 	
-	protected abstract Choice<T> reconstruct(RoleNode subj, List<T> blocks);//, CompoundInteractionNodeContext cicontext, Env env);
+	//protected abstract Choice<T> reconstruct(RoleNode subj, List<T> blocks);//, CompoundInteractionNodeContext cicontext, Env env);
+	protected abstract Choice<K> reconstruct(RoleNode subj, List<? extends ProtocolBlock<K>> blocks);//, CompoundInteractionNodeContext cicontext, Env env);
 	
 	@Override
-	public Choice<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	//public Choice<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	public Choice<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		RoleNode subj = (RoleNode) visitChild(this.subj, nv);
-		List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
+		//List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
+		List<? extends ProtocolBlock<K>> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
 		//return new Choice<T>(this.ct, subj, blocks, getContext(), getEnv());
 		return reconstruct(subj, blocks);//, getContext(), getEnv());  // OK to alias the same context/env objects here? because leave should take care of making new ones as necessary -- now immutable anyway
 	}
@@ -163,7 +170,8 @@ public abstract class Choice<T extends ProtocolBlock<? extends InteractionSequen
 	public String toString()
 	{
 		String s = Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + this.blocks.get(0);
-		for (T block : this.blocks.subList(1, this.blocks.size()))
+		//for (T block : this.blocks.subList(1, this.blocks.size()))
+		for (ProtocolBlock<K> block : this.blocks.subList(1, this.blocks.size()))
 		{
 			s += " " + Constants.OR_KW + " " + block;
 		}

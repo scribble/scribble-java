@@ -4,17 +4,22 @@ import java.util.List;
 
 import org.scribble2.model.ModelNodeBase;
 import org.scribble2.model.Parallel;
+import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.del.ModelDelegate;
+import org.scribble2.sesstype.kind.LocalKind;
 
-public class LocalParallel extends Parallel<LocalProtocolBlock> implements CompoundLocalInteractionNode
+//public class LocalParallel extends Parallel<LocalProtocolBlock> implements CompoundLocalInteractionNode
+public class LocalParallel extends Parallel<LocalKind> implements CompoundLocalInteractionNode
 {
-	public LocalParallel(List<LocalProtocolBlock> blocks)
+	//public LocalParallel(List<LocalProtocolBlock> blocks)
+	public LocalParallel(List<? extends ProtocolBlock<LocalKind>> blocks)
 	{
 		super(blocks);
 	}
 	
 	@Override
-	protected LocalParallel reconstruct(List<LocalProtocolBlock> blocks)
+	//protected LocalParallel reconstruct(List<LocalProtocolBlock> blocks)
+	protected LocalParallel reconstruct(List<? extends ProtocolBlock<LocalKind>> blocks)
 	{
 		ModelDelegate del = del();
 		LocalParallel lp = new LocalParallel(blocks);

@@ -4,12 +4,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.util.ScribbleException;
 
-public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
-		extends CompoundInteractionNode
+//public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
+public abstract class Parallel<K extends Kind>
+		extends CompoundInteractionNode<K>
 {
-	public final List<T> blocks;
+	//public final List<T> blocks;
+	public final List<? extends ProtocolBlock<K>> blocks;
 
 	/*protected Parallel(CommonTree ct, List<T> blocks)
 	{
@@ -21,17 +24,21 @@ public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequ
 		this(ct, blocks, cicontext, null);
 	}*/
 
-	protected Parallel(List<T> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
+	//protected Parallel(List<T> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
+	protected Parallel(List<? extends ProtocolBlock<K>> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
 	{
 		this.blocks = new LinkedList<>(blocks);
 	}
 
-	protected abstract Parallel<T> reconstruct(List<T> blocks);
+	//protected abstract Parallel<T> reconstruct(List<T> blocks);
+	protected abstract Parallel<K> reconstruct(List<? extends ProtocolBlock<K>> blocks);
 
 	@Override
-	public Parallel<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	//public Parallel<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	public Parallel<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
+		//List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
+		List<? extends ProtocolBlock<K>> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
 		//return new Parallel<>(this.ct, blocks, getContext(), getEnv());
 		return reconstruct(blocks);
 	}
@@ -105,7 +112,8 @@ public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequ
 	public String toString()
 	{
 		String s = Constants.PAR_KW + " " + this.blocks.get(0);
-		for (T block : this.blocks.subList(1, this.blocks.size()))
+		//for (T block : this.blocks.subList(1, this.blocks.size()))
+		for (ProtocolBlock<K> block : this.blocks.subList(1, this.blocks.size()))
 		{
 			s += " " + Constants.AND_KW + " " + block;
 		}

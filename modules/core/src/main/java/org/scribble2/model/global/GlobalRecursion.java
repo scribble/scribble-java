@@ -1,19 +1,24 @@
 package org.scribble2.model.global;
 
+import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.Recursion;
 import org.scribble2.model.del.ModelDelegate;
 import org.scribble2.model.name.simple.RecursionVarNode;
+import org.scribble2.sesstype.kind.GlobalKind;
 
-public class GlobalRecursion extends Recursion<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
+//public class GlobalRecursion extends Recursion<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
+public class GlobalRecursion extends Recursion<GlobalKind> implements CompoundGlobalInteractionNode
 {
-	public GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
+	//public GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
+	public GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<GlobalKind> block)
 	{
 		//super(ct, recvar, block, null, null);
 		super(recvar, block);
 	}
 
 	@Override
-	protected GlobalRecursion reconstruct(RecursionVarNode recvar, GlobalProtocolBlock block)
+	//protected GlobalRecursion reconstruct(RecursionVarNode recvar, GlobalProtocolBlock block)
+	protected GlobalRecursion reconstruct(RecursionVarNode recvar, ProtocolBlock<GlobalKind> block)
 	{
 		ModelDelegate del = del();
 		GlobalRecursion gr = new GlobalRecursion(recvar, block);

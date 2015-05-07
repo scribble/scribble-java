@@ -2,13 +2,16 @@ package org.scribble2.model;
 
 import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.util.ScribbleException;
 
-public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
-		extends CompoundInteractionNode
+//public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
+public abstract class Recursion<K extends Kind>
+		extends CompoundInteractionNode<K>
 {
 	public final RecursionVarNode recvar;
-	public final T block;
+	//public final T block;
+	public final ProtocolBlock<K> block;
 
 	/*protected Recursion(CommonTree ct, RecursionVarNode recvar, T block)
 	{
@@ -20,19 +23,23 @@ public abstract class Recursion<T extends ProtocolBlock<? extends InteractionSeq
 		this(ct, recvar, block, cicontext, null);
 	}*/
 
-	protected Recursion(RecursionVarNode recvar, T block)//, CompoundInteractionNodeContext cicontext, Env env)
+	//protected Recursion(RecursionVarNode recvar, T block)//, CompoundInteractionNodeContext cicontext, Env env)
+	protected Recursion(RecursionVarNode recvar, ProtocolBlock<K> block)//, CompoundInteractionNodeContext cicontext, Env env)
 	{
 		this.recvar = recvar;
 		this.block = block;
 	}
 
-	protected abstract Recursion<T> reconstruct(RecursionVarNode recvar, T block);
+	//protected abstract Recursion<T> reconstruct(RecursionVarNode recvar, T block);
+	protected abstract Recursion<K> reconstruct(RecursionVarNode recvar, ProtocolBlock<K> block);
 
 	@Override
-	public Recursion<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	//public Recursion<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	public Recursion<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		RecursionVarNode recvar = (RecursionVarNode) visitChild(this.recvar, nv);
-		T block = visitChildWithClassCheck(this, this.block, nv);
+		//T block = visitChildWithClassCheck(this, this.block, nv);
+		ProtocolBlock<K> block = visitChildWithClassCheck(this, this.block, nv);
 		//return new Recursion<>(this.ct, recvar, block, getContext(), getEnv());
 		return reconstruct(recvar, block);//, getContext(), getEnv());
 	}

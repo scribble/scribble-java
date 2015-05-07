@@ -36,6 +36,7 @@ import org.scribble2.model.name.simple.RecursionVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.SimpleNameNode;
 import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.sesstype.kind.GlobalKind;
 import org.scribble2.sesstype.kind.LocalKind;
 
 public interface ModelFactory
@@ -71,8 +72,10 @@ public interface ModelFactory
 	GlobalInteractionSequence GlobalInteractionSequence(List<GlobalInteractionNode> gis);
 
 	GlobalMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks);
-	GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block);
+	//GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks);
+	GlobalChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<GlobalKind>> blocks);
+	//GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block);
+	GlobalRecursion GlobalRecursion(RecursionVarNode recvar, ProtocolBlock<GlobalKind> block);
 	GlobalContinue GlobalContinue(RecursionVarNode recvar);
 	//GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
@@ -96,7 +99,8 @@ public interface ModelFactory
 
 	LocalSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LocalReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks);
+	//LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks);
+	LocalChoice LocalChoice(RoleNode subj, List<ProtocolBlock<LocalKind>> blocks);
 	LocalRecursion LocalRecursion(RecursionVarNode recvar, LocalProtocolBlock block);
 	LocalContinue LocalContinue(RecursionVarNode recvar);
 	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);

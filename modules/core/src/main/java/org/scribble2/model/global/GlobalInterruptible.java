@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.scribble2.model.Interruptible;
 import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.name.simple.ScopeNode;
+import org.scribble2.sesstype.kind.GlobalKind;
 import org.scribble2.sesstype.name.SimpleName;
 
-public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, GlobalInterrupt> implements GlobalInteractionNode
+//public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, GlobalInterrupt> implements GlobalInteractionNode
+public class GlobalInterruptible extends Interruptible<GlobalKind> implements GlobalInteractionNode
 {
 	/*public static final Function<Interrupt, GlobalInterrupt> toGlobalInterrupt =
 			(Interrupt interr)
@@ -17,13 +20,15 @@ public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, Glob
 			(List<? extends Interrupt> interrs)
 					-> interrs.stream().map(GlobalInterruptible.toGlobalInterrupt).collect(Collectors.toList());*/
 
-	public GlobalInterruptible(GlobalProtocolBlock block, List<GlobalInterrupt> interrs)
+	//public GlobalInterruptible(GlobalProtocolBlock block, List<GlobalInterrupt> interrs)
+	public GlobalInterruptible(ProtocolBlock<GlobalKind> block, List<GlobalInterrupt> interrs)
 	{
 		//this(null, block, interrs, null, null);
 		this(null, block, interrs);
 	}
 
-	public GlobalInterruptible(ScopeNode scope, GlobalProtocolBlock block, List<GlobalInterrupt> interrs)
+	//public GlobalInterruptible(ScopeNode scope, GlobalProtocolBlock block, List<GlobalInterrupt> interrs)
+	public GlobalInterruptible(ScopeNode scope, ProtocolBlock<GlobalKind> block, List<GlobalInterrupt> interrs)
 	{
 		//this(ct, scope, block, interrs, null, null);
 		super(scope, block, interrs);

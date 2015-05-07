@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.global.GlobalChoice;
 import org.scribble2.model.local.LocalChoice;
 import org.scribble2.model.local.LocalProtocolBlock;
@@ -19,6 +20,7 @@ import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.ScopedMessage;
+import org.scribble2.sesstype.kind.LocalKind;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.MessageMap;
 import org.scribble2.util.ScribbleException;
@@ -125,7 +127,7 @@ public class GlobalChoiceDelegate extends GlobalCompoundInteractionNodeDelegate
 		GlobalChoice gc = (GlobalChoice) visited;
 		//RoleNode subj = new RoleNode(gc.subj.toName().toString());  // Inconsistent to copy role nodes manually, but do via children visiting for other children
 		RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, gc.subj.toName().toString());
-		List<LocalProtocolBlock> blocks = 
+		List<ProtocolBlock<LocalKind>> blocks = 
 				gc.blocks.stream().map((b) -> (LocalProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());	
 		LocalChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
 		if (!blocks.get(0).isEmpty())  // WF allows this

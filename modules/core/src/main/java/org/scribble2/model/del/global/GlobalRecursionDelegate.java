@@ -3,11 +3,11 @@ package org.scribble2.model.del.global;
 import java.util.List;
 
 import org.scribble2.model.Continue;
+import org.scribble2.model.InteractionNode;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.global.GlobalRecursion;
-import org.scribble2.model.local.LocalInteractionNode;
 import org.scribble2.model.local.LocalProtocolBlock;
 import org.scribble2.model.local.LocalRecursion;
 import org.scribble2.model.name.simple.RecursionVarNode;
@@ -15,6 +15,7 @@ import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
+import org.scribble2.sesstype.kind.LocalKind;
 import org.scribble2.util.ScribbleException;
 
 public class GlobalRecursionDelegate extends GlobalCompoundInteractionNodeDelegate
@@ -40,7 +41,8 @@ public class GlobalRecursionDelegate extends GlobalCompoundInteractionNodeDelega
 		LocalRecursion projection = null;
 		if (!block.isEmpty())
 		{
-			List<LocalInteractionNode> lis = block.seq.actions;
+			//List<LocalInteractionNode> lis = block.seq.actions;
+			List<? extends InteractionNode<LocalKind>> lis = block.seq.actions;
 			if (!(lis.size() == 1 && lis.get(0) instanceof Continue))
 			{
 				projection = ModelFactoryImpl.FACTORY.LocalRecursion(recvar, block);

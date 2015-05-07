@@ -4,13 +4,16 @@ import java.util.List;
 
 import org.scribble2.model.Interruptible;
 import org.scribble2.model.ModelNodeBase;
+import org.scribble2.model.ProtocolBlock;
 import org.scribble2.model.name.simple.ScopeNode;
+import org.scribble2.sesstype.kind.LocalKind;
 import org.scribble2.sesstype.name.SimpleName;
 
-public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalInterrupt> implements LocalInteractionNode
+//public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalInterrupt> implements LocalInteractionNode
+public class LocalInterruptible extends Interruptible<LocalKind> implements LocalInteractionNode
 {
-	protected LocalInterruptible(ScopeNode scope, LocalProtocolBlock block,
-			List<LocalInterrupt> interrs)
+	//protected LocalInterruptible(ScopeNode scope, LocalProtocolBlock block, List<LocalInterrupt> interrs)
+	protected LocalInterruptible(ScopeNode scope, ProtocolBlock<LocalKind> block, List<LocalInterrupt> interrs)
 	{
 		super(scope, block, interrs);
 		// TODO Auto-generated constructor stub
