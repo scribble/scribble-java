@@ -2,7 +2,7 @@ package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.qualified.ModuleNameNode;
-import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;

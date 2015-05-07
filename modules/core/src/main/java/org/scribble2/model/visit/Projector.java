@@ -12,7 +12,7 @@ import org.scribble2.model.Module;
 import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.sesstype.kind.ModuleKind;
 import org.scribble2.sesstype.kind.ProtocolKind;

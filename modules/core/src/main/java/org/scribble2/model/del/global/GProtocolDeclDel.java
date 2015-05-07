@@ -14,7 +14,7 @@ import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.local.LProtocolDef;
 import org.scribble2.model.local.LProtocolHeader;
-import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.env.ProjectionEnv;

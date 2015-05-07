@@ -6,7 +6,7 @@ import org.scribble2.model.ParamDeclList;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.del.ModelDel;
-import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 
 public class GProtocolHeader extends ProtocolHeader implements GlobalNode
 {

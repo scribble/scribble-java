@@ -4,7 +4,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ImportModule;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.ModuleNameNode;
-import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;

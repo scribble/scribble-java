@@ -17,7 +17,7 @@ import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;

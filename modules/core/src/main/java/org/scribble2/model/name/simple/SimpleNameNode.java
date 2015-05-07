@@ -10,6 +10,7 @@ import org.scribble2.sesstype.name.Name;
 // Could make a subclass of CompoundNameNode (but not very convenient, and wouldn't match grammar def)
 //public abstract class SimpleNameNode<T extends SimpleName> extends NameNode<T>
 public abstract class SimpleNameNode<T extends Name<K>, K extends Kind> extends NameNode<T, K>
+//public abstract class SimpleNameNode<T extends Name<K>, K extends Kind> extends CompoundNameNode<T, K>  // No: SimpleNameNode isn't a CompoundNameNode -- syntactically different; cf. Name, where they are not distinct
 {
 	public final String identifier;
 

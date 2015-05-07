@@ -1,9 +1,8 @@
-package org.scribble2.model.name.simple;
-
-import org.scribble2.model.name.qualified.ProtocolNameNode;
+package org.scribble2.model.name.qualified;
 
 
 
+// N.B. not a SimpleNameNode
 //public class SimpleProtocolNameNode extends SimpleCompoundNameNode<ProtocolName> //SimpleMemberNameNode
 public class SimpleProtocolNameNode extends ProtocolNameNode
 {

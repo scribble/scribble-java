@@ -5,7 +5,7 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ParamDeclList;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.global.GProtocolHeader;
-import org.scribble2.model.name.simple.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
