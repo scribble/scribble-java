@@ -11,8 +11,8 @@ import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.ProtocolKind;
-import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.IName;
+import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
@@ -227,12 +227,12 @@ public class Module extends ModelNodeBase
 			getProtocolDecl(List<ProtocolDecl<? extends ProtocolKind>> pds, ProtocolName pn)
 	{
 		//List<T>
-		List<ProtocolDecl<? extends ProtocolKind>> filtered = pds.stream().filter((pd) -> ((ProtocolDecl) pd).header.name.toName().equals(pn)).collect(Collectors.toList());
+		List<ProtocolDecl<? extends ProtocolKind>> filtered = pds.stream().filter((pd) -> pd.header.name.toName().equals(pn)).collect(Collectors.toList());
 		if (filtered.size() != 1)
 		{
 			throw new RuntimeException("Protocol not found: " + pn);
 		}
-		return (ProtocolDecl) filtered.get(0);
+		return filtered.get(0);
 	}
 
 	/*public List<LocalProtocolDecl> getLocalProtocolDecls()
