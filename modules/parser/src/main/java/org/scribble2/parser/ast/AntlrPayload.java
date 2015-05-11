@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.Payload;
+import org.scribble2.model.PayloadNode;
 import org.scribble2.model.PayloadElement;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
 public class AntlrPayload
 {
-	public static Payload parsePayload(ScribbleParser parser, CommonTree ct)
+	public static PayloadNode parsePayload(ScribbleParser parser, CommonTree ct)
 	{
 		List<PayloadElement> pes = new LinkedList<>();
 		for (CommonTree pe : getPayloadElements(ct))

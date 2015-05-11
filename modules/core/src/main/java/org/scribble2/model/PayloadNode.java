@@ -2,16 +2,27 @@ package org.scribble2.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class Payload extends ModelNodeBase
+import org.scribble2.sesstype.Payload;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.PayloadType;
+
+public class PayloadNode extends ModelNodeBase
 {
 	//public static final Payload EMPTY_PAYLOAD = new Payload(null, Collections.<PayloadElement> emptyList());
 
-	public final List<PayloadElement> payloadelems;
+	public final List<PayloadElement> elems;  // FIXME: parameterise on Kind (cf. sesstypes)
 
-	public Payload(List<PayloadElement> payloadelems)
+	public PayloadNode(List<PayloadElement> payloadelems)
 	{
-		this.payloadelems = new LinkedList<>(payloadelems);
+		this.elems = new LinkedList<>(payloadelems);
+	}
+	
+	public Payload toPayload()
+	{
+		List<PayloadType<? extends Kind>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadTypeOrParameter()).collect(Collectors.toList());
+		return new Payload(pts);
 	}
 
 	/*// Basically a copy without the AST
@@ -38,7 +49,7 @@ public class Payload extends ModelNodeBase
 
 	public boolean isEmpty()
 	{
-		return this.payloadelems.isEmpty();
+		return this.elems.isEmpty();
 	}
 
 	@Override
@@ -47,8 +58,8 @@ public class Payload extends ModelNodeBase
 		String s = "(";
 		if (!isEmpty())
 		{
-			s += this.payloadelems.get(0).toString();
-			for (PayloadElement pe : this.payloadelems.subList(1, this.payloadelems.size()))
+			s += this.elems.get(0).toString();
+			for (PayloadElement pe : this.elems.subList(1, this.elems.size()))
 			{
 				s += ", " + pe;
 			}
@@ -57,8 +68,8 @@ public class Payload extends ModelNodeBase
 	}
 
 	@Override
-	protected Payload copy()
+	protected PayloadNode copy()
 	{
-		return new Payload(this.payloadelems);
+		return new PayloadNode(this.elems);
 	}
 }

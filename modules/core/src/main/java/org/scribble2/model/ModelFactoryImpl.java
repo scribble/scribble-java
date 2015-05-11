@@ -76,7 +76,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public static final ModelFactory FACTORY = new ModelFactoryImpl();  // FIXME: move somewhere else
 	
 	@Override
-	public MessageSigNode MessageSignatureNode(OperatorNode op, Payload payload)
+	public MessageSigNode MessageSignatureNode(OperatorNode op, PayloadNode payload)
 	{
 		MessageSigNode msn = new MessageSigNode(op, payload);
 		msn = del(msn, createDefaultDelegate());  // FIXME: does another shallow copy
@@ -84,9 +84,9 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public Payload Payload(List<PayloadElement> payloadelems)
+	public PayloadNode Payload(List<PayloadElement> payloadelems)
 	{
-		Payload p = new Payload(payloadelems);
+		PayloadNode p = new PayloadNode(payloadelems);
 		p = del(p, createDefaultDelegate());
 		return p;
 	}

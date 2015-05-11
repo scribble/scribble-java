@@ -11,7 +11,7 @@ public abstract class Name<K extends Kind> implements Serializable//, IName
 {
 	private static final long serialVersionUID = 1L;
 	
-	protected final KindEnum kindenum = null;
+	//protected final KindEnum kindenum = null;
 	public final K kind;
 	
 	//public static final CompoundName EMPTY_NAME = new CompoundName();
@@ -29,11 +29,11 @@ public abstract class Name<K extends Kind> implements Serializable//, IName
 		this.elems = elems;
 	}
 
-	//@Override
+	/*@Override
 	public KindEnum getKindEnum()
 	{
 		return this.kindenum;
-	}
+	}*/
 
 	/*@Override
 	public K getKind()

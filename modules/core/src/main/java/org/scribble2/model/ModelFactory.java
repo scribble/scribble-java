@@ -55,8 +55,8 @@ public interface ModelFactory
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
 			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.ProtocolKind>> protos);
 	
-	MessageSigNode MessageSignatureNode(OperatorNode op, Payload payload);
-	Payload Payload(List<PayloadElement> payloadelems);
+	MessageSigNode MessageSignatureNode(OperatorNode op, PayloadNode payload);
+	PayloadNode Payload(List<PayloadElement> payloadelems);
 	PayloadElement PayloadElement(PayloadElementNameNode name);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);

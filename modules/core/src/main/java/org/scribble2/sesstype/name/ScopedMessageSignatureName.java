@@ -3,7 +3,8 @@ package org.scribble2.sesstype.name;
 import org.scribble2.sesstype.ScopedMessage;
 
 // A "Scribble generics" parameter -- FIXME: deprecate, parameter is a syntactic category, wrt. typing it should just be a message signature, payload, etc.
-public class ScopedMessageSignatureName extends MessageSignatureName implements ScopedMessage
+@Deprecated
+public class ScopedMessageSignatureName extends MessageSignatureName //implements ScopedMessage
 {
 	private static final long serialVersionUID = 1L;
 
@@ -15,9 +16,9 @@ public class ScopedMessageSignatureName extends MessageSignatureName implements 
 		this.scope = scope;
 	}
 
-	@Override
+	/*@Override
 	public Scope getScope()
 	{
 		return this.scope;
-	}
+	}*/
 }

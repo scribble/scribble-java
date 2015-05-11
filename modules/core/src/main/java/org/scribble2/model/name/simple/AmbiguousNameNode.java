@@ -5,9 +5,11 @@ import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.kind.AmbiguousKind;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.AmbiguousName;
 import org.scribble2.sesstype.name.Name;
-import org.scribble2.sesstype.name.PayloadTypeOrParameter;
+import org.scribble2.sesstype.name.PayloadType;
+import org.scribble2.sesstype.name.Scope;
 
 // Primitive payload type or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
@@ -53,19 +55,19 @@ public class AmbiguousNameNode extends SimpleNameNode<Name<AmbiguousKind>, Ambig
 	}*/
 
 	@Override
-	public Argument toArgument()
+	public Argument<? extends Kind> toArgument(Scope scope)
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
 	}
 
 	@Override
-	public Message toMessage()
+	public Message toMessage(Scope scope)
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
 	}
 
 	@Override
-	public PayloadTypeOrParameter toPayloadTypeOrParameter()
+	public PayloadType toPayloadTypeOrParameter()
 	{
 		//throw new RuntimeException("Shouldn't get in here: " + this);
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);

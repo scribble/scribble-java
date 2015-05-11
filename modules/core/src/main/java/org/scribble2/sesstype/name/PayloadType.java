@@ -1,30 +1,11 @@
 package org.scribble2.sesstype.name;
 
+import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.kind.Kind;
 
-// Potentially qualified/canonical payload type name; not the AST primitive identifier
-public class PayloadType extends MemberName implements PayloadTypeOrParameter
+
+// PayloadElementName ?
+public interface PayloadType<K extends Kind> extends Argument<K>
 {
-	private static final long serialVersionUID = 1L;
 
-	public PayloadType(ModuleName modname, String membname)
-	{
-		super(KindEnum.TYPE, modname, membname);
-	}
-	
-	public PayloadType(String simplename)
-	{
-		super(KindEnum.TYPE, simplename);
-	}
-
-	@Override
-	public PayloadType getSimpleName()
-	{
-		return new PayloadType(getLastElement());
-	}
-	
-	@Override
-	public boolean isParameter()
-	{
-		return false;
-	}
 }

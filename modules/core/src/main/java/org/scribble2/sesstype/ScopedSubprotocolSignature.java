@@ -2,20 +2,24 @@ package org.scribble2.sesstype;
 
 import java.util.List;
 
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.Scope;
 
+// FIXME: deprecate
+@Deprecated
 public class ScopedSubprotocolSignature extends SubprotocolSignature
 {
 	public Scope scope;
 	//public SimpleName scope;
 	public SubprotocolSignature sig;  // Message signature arguments are not scoped
 
-	public ScopedSubprotocolSignature(Scope scope, ProtocolName fmn, List<Role> roles, List<Argument> args)
+	public ScopedSubprotocolSignature(Scope scope, ProtocolName fmn, List<Role> roles, List<Argument<? extends Kind>> args)
 	{
-		super(fmn, roles, args);
-		this.sig = new SubprotocolSignature(fmn, roles, args);
+		//super(fmn, roles, args);
+		super(fmn, null, roles, args);
+		this.sig = null;//new SubprotocolSignature(fmn, roles, args);
 		this.scope = scope;
 	}
 	

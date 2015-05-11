@@ -1,18 +1,15 @@
 package org.scribble2.model;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.sesstype.MessageSignature;
-import org.scribble2.sesstype.name.PayloadTypeOrParameter;
+import org.scribble2.sesstype.name.Scope;
 
 public class MessageSigNode extends ModelNodeBase implements MessageNode
 {
 	public final OperatorNode op;
-	public final Payload payload;
+	public final PayloadNode payload;
 
-	public MessageSigNode(OperatorNode op, Payload payload)
+	public MessageSigNode(OperatorNode op, PayloadNode payload)
 	{
 		this.op = op;
 		this.payload = payload;
@@ -63,16 +60,17 @@ public class MessageSigNode extends ModelNodeBase implements MessageNode
 
 	// FIXME: make a direct scoped version (taking scope as argument)
 	@Override
-	public MessageSignature toArgument()
+	public MessageSignature toArgument(Scope scope)
 	{
-		List<PayloadTypeOrParameter> payload = this.payload.payloadelems.stream().map((pe) -> pe.name.toPayloadTypeOrParameter()).collect(Collectors.toList());
-		return new MessageSignature(this.op.toName(), payload);
+		/*List<PayloadType<? extends Kind>> types = this.payload.payloadelems.stream().map((pe) -> pe.name.toPayloadTypeOrParameter()).collect(Collectors.toList());
+		return new MessageSignature(this.op.toName(), payload);*/
+		return new MessageSignature(scope, this.op.toName(), this.payload.toPayload());
 	}
 
 	@Override
-	public MessageSignature toMessage()
+	public MessageSignature toMessage(Scope scope)
 	{
-		return toArgument();
+		return toArgument(scope);
 	}
 
 	/*@Override

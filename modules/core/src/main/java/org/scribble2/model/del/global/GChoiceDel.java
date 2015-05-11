@@ -18,7 +18,6 @@ import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.sesstype.Message;
-import org.scribble2.sesstype.ScopedMessage;
 import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.Role;
@@ -48,13 +47,15 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 			throw new ScribbleException("Subject not enabled: " + subj);
 		}
 		
-		Map<Role, Set<ScopedMessage>> seen = null;
+		//Map<Role, Set<ScopedMessage>> seen = null;
+		Map<Role, Set<Message>> seen = null;
 		List<WellFormedChoiceEnv> benvs =
 				cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().env()).collect(Collectors.toList());
 		//for (WellFormedChoiceEnv benv : cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().getEnv()).collect(Collectors.toList()))
 		for (WellFormedChoiceEnv benv : benvs)
 		{
-			MessageMap<ScopedMessage> enabled = benv.getEnabled();
+			//MessageMap<ScopedMessage> enabled = benv.getEnabled();
+			MessageMap<Message> enabled = benv.getEnabled();
 			
 			Set<Role> dests = enabled.getLeftKeys();
 			dests.remove(subj);
@@ -83,8 +84,13 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 						{
 							throw new ScribbleException("Mismatched role enabling: " + dest);
 						}
-						Set<ScopedMessage> current = seen.get(dest);
-						Set<ScopedMessage> next = enabled.getMessages(dest);
+						/*Set<ScopedMessage> current = seen.get(dest);
+						Set<ScopedMessage> next = enabled.getMessages(dest);*/
+						Set<Message> current = seen.get(dest);
+						Set<Message> next = enabled.getMessages(dest);
+						
+						System.out.println("a: " + current + ", " + next);
+						
 						for (Message msg : next)
 						{
 							if (current.contains(msg))

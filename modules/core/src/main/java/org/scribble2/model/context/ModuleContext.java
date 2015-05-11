@@ -11,7 +11,7 @@ import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.name.MessageSignatureName;
 import org.scribble2.sesstype.name.ModuleName;
-import org.scribble2.sesstype.name.PayloadType;
+import org.scribble2.sesstype.name.DataType;
 import org.scribble2.sesstype.name.ProtocolName;
 
 public class ModuleContext
@@ -22,7 +22,7 @@ public class ModuleContext
 	// The modules and member names that are visible from this Module
 	private final Map<ModuleName, ModuleName> modules;
 	//private final Map<PayloadTypeOrParameter, PayloadTypeOrParameter> data;  // FIXME: refactor properly for sig members
-	private final Map<PayloadType, PayloadType> types;
+	private final Map<DataType, DataType> types;
 	private final Map<MessageSignatureName, MessageSignatureName> sigs;
 	private final Map<ProtocolName, ProtocolName> globals;
 	private final Map<ProtocolName, ProtocolName> locals;

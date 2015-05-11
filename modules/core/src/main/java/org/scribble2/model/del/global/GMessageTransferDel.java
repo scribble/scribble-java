@@ -35,12 +35,13 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		GMessageTransfer msgtrans = (GMessageTransfer) visited;
 		
 		Role src = msgtrans.src.toName();
-		Message msg = msgtrans.msg.toMessage();
+		Message msg = msgtrans.msg.toMessage(checker.getScope());
 		WellFormedChoiceEnv env = checker.popEnv();
 		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
 		{
 			//checker.setEnv(checker.getEnv().addMessageForSubprotocol(checker, src, dest, msg.toScopedMessage(checker.getScope())));
-			env = env.addMessageForSubprotocol(checker, src, dest, msg.toScopedMessage(checker.getScope()));
+			//env = env.addMessageForSubprotocol(checker, src, dest, msg.toScopedMessage(checker.getScope()));
+			env = env.addMessageForSubprotocol(checker, src, dest, msg);
 			
 			//System.out.println("1: " + src + ", " + dest + ", " + msg);
 		}

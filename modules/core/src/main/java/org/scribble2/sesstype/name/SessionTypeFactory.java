@@ -24,7 +24,7 @@ public class SessionTypeFactory
 			throw new RuntimeException("Bad protocol full name: " + name);
 		}
 		ModuleName mn = new ModuleName(Arrays.copyOfRange(elems, 0, elems.length - 1));
-		return new ProtocolName(mn, elems[elems.length - 1]);
+		return null;//new ProtocolName(mn, elems[elems.length - 1]);
 	}
 	
 	public static Scope parseScope(String name)

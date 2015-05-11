@@ -4,8 +4,8 @@ import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.name.ModuleName;
+import org.scribble2.sesstype.name.DataType;
 import org.scribble2.sesstype.name.PayloadType;
-import org.scribble2.sesstype.name.PayloadTypeOrParameter;
 
 public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode//, PayloadTypeOrParameterNode
 {
@@ -31,20 +31,20 @@ public class PayloadTypeNameNode extends MemberNameNode implements PayloadElemen
 	}*/
 	
 	@Override
-	public PayloadType toName()
+	public DataType toName()
 	{
 		String membname = getLastElement();
 		if (!isPrefixed())
 		{
-			return new PayloadType(membname);
+			return new DataType(membname);
 		}
 		//ModuleName modname = ModuleNameNodes.toModuleName(getModulePrefix());
 		ModuleName modname = getModulePrefix().toName();
-		return new PayloadType(modname, membname);
+		return new DataType(modname, membname);
 	}
 
 	@Override
-	public PayloadTypeOrParameter toPayloadTypeOrParameter()
+	public PayloadType toPayloadTypeOrParameter()
 	{
 		return toName();
 	}

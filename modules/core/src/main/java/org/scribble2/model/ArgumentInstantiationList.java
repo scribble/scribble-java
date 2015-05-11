@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Role;
+import org.scribble2.sesstype.name.Scope;
 
 
 public class ArgumentInstantiationList extends InstantiationList<ArgumentInstantiation>
@@ -43,9 +45,9 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 		return this.instans.isEmpty();
 	}
 	
-	public List<Argument> getArguments()
+	public List<Argument<? extends Kind>> getArguments(Scope scope)
 	{
-		return this.instans.stream().map((ai) -> ai.arg.toArgument()).collect(Collectors.toList());
+		return this.instans.stream().map((ai) -> ai.arg.toArgument(scope)).collect(Collectors.toList());
 	}
 
 	@Override

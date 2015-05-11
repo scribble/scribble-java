@@ -10,15 +10,17 @@ import org.scribble2.model.ModelNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 public class Substitutor extends ModelVisitor
 {
 	private final Map<Role, RoleNode> rolemap;
-	private final Map<Argument, ArgumentNode> argmap;
+	//private final Map<Argument, ArgumentNode> argmap;
+	private final Map<Argument<? extends Kind>, ArgumentNode> argmap;
 
-	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Argument, ArgumentNode> argmap)
+	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Argument<? extends Kind>, ArgumentNode> argmap)
 	{
 		super(job);
 		this.rolemap = rolemap;
@@ -45,7 +47,8 @@ public class Substitutor extends ModelVisitor
 		return new RoleNode(rn.toName().toString());
 	}*/
 
-	public ArgumentNode getArgumentSubstitution(Argument arg)
+	//public ArgumentNode getArgumentSubstitution(Argument arg)
+	public ArgumentNode getArgumentSubstitution(Argument<? extends Kind> arg)
 	{
 		ArgumentNode an = this.argmap.get(arg);
 		if (an.isMessageSignatureNode())

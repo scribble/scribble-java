@@ -1,11 +1,11 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.del.ModelDel;
-import org.scribble2.sesstype.name.PayloadType;
+import org.scribble2.sesstype.name.DataType;
 import org.scribble2.sesstype.name.SimpleName;
 
 @Deprecated
-public class SimplePayloadTypeNode extends SimpleCompoundNameNode<PayloadType> //implements ArgumentInstantiation//, PayloadElementNameNode// SimpleMemberNameNode
+public class SimplePayloadTypeNode extends SimpleCompoundNameNode<DataType> //implements ArgumentInstantiation//, PayloadElementNameNode// SimpleMemberNameNode
 {
 	//public final String extType;  // Not current considered for equals/hashCode
 
@@ -39,7 +39,7 @@ public class SimplePayloadTypeNode extends SimpleCompoundNameNode<PayloadType> /
 	}
 
 	@Override
-	public PayloadType toCompoundName()
+	public DataType toCompoundName()
 	{
 		// TODO Auto-generated method stub
 		return null;

@@ -5,7 +5,7 @@ import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Parameter;
-import org.scribble2.sesstype.name.PayloadTypeOrParameter;
+import org.scribble2.sesstype.name.PayloadType;
 
 //public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
@@ -73,7 +73,7 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	}
 
 	@Override
-	public PayloadTypeOrParameter toPayloadTypeOrParameter()
+	public PayloadType toPayloadTypeOrParameter()
 	{
 		//if (this.kind != Kind.TYPE)
 		{
