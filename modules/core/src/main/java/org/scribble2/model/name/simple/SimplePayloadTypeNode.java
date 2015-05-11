@@ -16,7 +16,7 @@ public class SimplePayloadTypeNode extends SimpleCompoundNameNode<DataType> //im
 		//this.extType = extType;
 	}
 
-	@Override
+	/*@Override
 	protected SimplePayloadTypeNode reconstruct(String identifier)
 	{
 		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
@@ -36,7 +36,7 @@ public class SimplePayloadTypeNode extends SimpleCompoundNameNode<DataType> //im
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	@Override
 	public DataType toCompoundName()
@@ -44,7 +44,6 @@ public class SimplePayloadTypeNode extends SimpleCompoundNameNode<DataType> //im
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 	
 	/*@Override
 	public PayloadType toName()

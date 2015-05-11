@@ -1,11 +1,15 @@
-package org.scribble2.model.name.qualified;
+package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
+import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.MessageSignatureName;
-import org.scribble2.sesstype.name.ModuleName;
+import org.scribble2.sesstype.name.Scope;
 
-public class MessageSignatureNameNode extends MemberNameNode implements MessageNode
+//public class MessageSignatureNameNode extends MemberNameNode implements MessageNode
+public class MessageSignatureNameNode extends SimpleNameNode<MessageSignatureName, SigKind> implements MessageNode
 {
 	/*// FIXME: not syntax
 	public final String schema;
@@ -14,15 +18,18 @@ public class MessageSignatureNameNode extends MemberNameNode implements MessageN
 	
 	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
 	//public MessageSignatureNameNodes(CommonTree ct, String... ns, String schema, String extName, String source)
-	public MessageSignatureNameNode(String... ns)
+	//public MessageSignatureNameNode(String... ns)
+	public MessageSignatureNameNode(String identifier)
 	{
-		super(ns);
+		//super(ns);
+		super(identifier);
 	}
 
 	@Override
 	protected MessageSignatureNameNode copy()
 	{
-		return new MessageSignatureNameNode(this.elems);
+		//return new MessageSignatureNameNode(this.elems);
+		return new MessageSignatureNameNode(this.identifier);
 	}
 
 	/*// Basically a copy without the AST
@@ -38,14 +45,15 @@ public class MessageSignatureNameNode extends MemberNameNode implements MessageN
 	@Override
 	public MessageSignatureName toName()
 	{
-		String membname = getLastElement();
+		/*String membname = getLastElement();
 		if (!isPrefixed())
 		{
 			return new MessageSignatureName(membname);
 		}
 		//ModuleName modname = ModuleNameNodes.toModuleName(getModulePrefix());
 		ModuleName modname = getModulePrefix().toName();
-		return new MessageSignatureName(modname, membname);
+		return new MessageSignatureName(modname, membname);*/
+		return new MessageSignatureName(Scope.EMPTY_SCOPE, this.identifier);  // HACK?
 	}
 
 	@Override
@@ -67,15 +75,17 @@ public class MessageSignatureNameNode extends MemberNameNode implements MessageN
 	}
 
 	@Override
-	public MessageSignatureName toArgument()
+	public Message toMessage(Scope scope)  // Difference between toName and toMessage is scope? does that make sense?
 	{
-		return toName();
+		//return toArgument();
+		//return toName();
+		return new MessageSignatureName(scope, this.identifier);
 	}
 
 	@Override
-	public Message toMessage()
+	public Argument<? extends Kind> toArgument(Scope scope)
 	{
-		return toArgument();
+		return toMessage(scope);
 	}
 
 	/*@Override

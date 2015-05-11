@@ -21,7 +21,7 @@ public class PayloadNode extends ModelNodeBase
 	
 	public Payload toPayload()
 	{
-		List<PayloadType<? extends Kind>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadTypeOrParameter()).collect(Collectors.toList());
+		List<PayloadType<? extends Kind>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
 		return new Payload(pts);
 	}
 

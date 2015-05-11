@@ -1,11 +1,10 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.del.ModelDel;
-import org.scribble2.sesstype.name.KindEnum;
-import org.scribble2.sesstype.name.SimpleName;
+import org.scribble2.sesstype.kind.ScopeKind;
+import org.scribble2.sesstype.name.Scope;
 
 
-public class ScopeNode extends SimpleNameNode
+public class ScopeNode extends SimpleNameNode<Scope, ScopeKind>
 {
 	//public static final String EMPTY_SCOPENAME_IDENTIFIER = "";  // Same pattern as empty operator
 
@@ -14,14 +13,14 @@ public class ScopeNode extends SimpleNameNode
 		super(identifier);
 	}
 
-	@Override
+	/*@Override
 	protected ScopeNode reconstruct(String identifier)
 	{
 		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
 		ScopeNode sn = new ScopeNode(identifier);
 		sn = (ScopeNode) sn.del(del);
 		return sn;
-	}
+	}*/
 
 	@Override
 	protected ScopeNode copy()
@@ -30,11 +29,13 @@ public class ScopeNode extends SimpleNameNode
 	}
 
 	@Override
-	//public Scope toName()
-	public SimpleName toName()
+	public Scope toName()
+	//public SimpleName toName()
 	{
 		//return new Scope(Scope.ROOT_SCOPE, new SimpleName(K, this.identifier));
-		return new SimpleName(KindEnum.SCOPE, this.identifier);
+		//return new SimpleName(KindEnum.SCOPE, this.identifier);
+		//return new Scope(Scope.EMPTY_SCOPE, this.identifier);
+		return new Scope(this.identifier);
 	}
 	
 	/*@Override

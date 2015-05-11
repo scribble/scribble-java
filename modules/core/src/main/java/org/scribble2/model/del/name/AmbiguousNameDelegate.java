@@ -41,7 +41,8 @@ public class AmbiguousNameDelegate extends ModelDelBase
 		}
 		else */if (disamb.isBoundParameter(name))
 		{
-			return ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, name.toString());
+			//return ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, name.toString());
+			return ModelFactoryImpl.FACTORY.ParameterNode(disamb.getParameterKind(name), name.toString());
 		}
 		throw new ScribbleException("Cannot disambiguate name: " + name);
 	}

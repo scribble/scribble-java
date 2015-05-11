@@ -19,6 +19,11 @@ public class Scope extends Name<ScopeKind>
 		super(ScopeKind.KIND, elems);
 	}
 	
+	public Scope(String name)
+	{
+		this(new String[] { name });
+	}
+
 	//public Scope(Scope prefix, SimpleName name)
 	public Scope(Scope prefix, Name<ScopeKind> name)
 	{

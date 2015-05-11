@@ -12,7 +12,7 @@ public class ScopedMessageSignatureName extends MessageSignatureName //implement
 
 	public ScopedMessageSignatureName(Scope scope, String text)
 	{
-		super(text);
+		super(scope, text);
 		this.scope = scope;
 	}
 

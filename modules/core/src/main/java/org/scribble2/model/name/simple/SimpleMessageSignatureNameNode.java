@@ -8,7 +8,7 @@ import org.scribble2.sesstype.name.MessageSignatureName;
 import org.scribble2.sesstype.name.SimpleName;
 
 @Deprecated
-public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<MessageSignatureName> implements MessageNode//SimpleMemberNameNode
+public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<MessageSignatureName> //implements MessageNode//SimpleMemberNameNode
 {
 	//public final String extType;  // Not current considered for equals/hashCode
 
@@ -19,7 +19,7 @@ public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<Messa
 		//this.extType = extType;
 	}
 
-	@Override
+	/*@Override
 	protected SimpleMessageSignatureNameNode reconstruct(String identifier)
 	{
 		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
@@ -32,9 +32,9 @@ public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<Messa
 	protected SimpleMessageSignatureNameNode copy()
 	{
 		return new SimpleMessageSignatureNameNode(this.identifier);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public boolean isMessageSignatureNode()
 	{
 		return false;
@@ -58,15 +58,15 @@ public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<Messa
 		//return new MessageSignatureName(this.identifier);
 		//return new SimpleName(Kind..., text)
 		throw new RuntimeException("TODO");
-	}
+	}*/
 
 	@Override
 	public MessageSignatureName toCompoundName()
 	{
-		return new MessageSignatureName(this.identifier);
+		return null;//new MessageSignatureName(this.identifier);
 	}
 
-	@Override
+	/*@Override
 	public Argument toArgument()
 	{
 		throw new RuntimeException("TODO");
@@ -76,5 +76,5 @@ public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<Messa
 	public Message toMessage()
 	{
 		throw new RuntimeException("TODO");
-	}
+	}*/
 }

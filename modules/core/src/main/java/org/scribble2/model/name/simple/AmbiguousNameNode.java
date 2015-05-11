@@ -67,7 +67,7 @@ public class AmbiguousNameNode extends SimpleNameNode<Name<AmbiguousKind>, Ambig
 	}
 
 	@Override
-	public PayloadType toPayloadTypeOrParameter()
+	public PayloadType toPayloadType()
 	{
 		//throw new RuntimeException("Shouldn't get in here: " + this);
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);

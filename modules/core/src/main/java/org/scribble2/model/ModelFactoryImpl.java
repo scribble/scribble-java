@@ -104,7 +104,7 @@ public class ModelFactoryImpl implements ModelFactory
 			ModuleDecl moddecl,
 			//List<? extends ImportDecl> imports,
 			List<ImportDecl> imports,
-			List<DataTypeDecl> data,
+			List<NonProtocolDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.ProtocolKind>> protos)
 	{
@@ -358,6 +358,14 @@ public class ModelFactoryImpl implements ModelFactory
 			throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
 		return (QualifiedNameNode<? extends Name<K>, K>) qnn.del(createDefaultDelegate());
+	}
+
+	@Override
+	public <K extends Kind> ParameterNode<K> ParameterNode(K kind, String identifier)
+	{
+		ParameterNode<K> pn = new ParameterNode<K>(kind, identifier);
+		pn = del(pn, createDefaultDelegate());
+		return pn;
 	}
 
 	@Override

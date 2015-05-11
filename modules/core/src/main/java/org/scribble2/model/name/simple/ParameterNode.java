@@ -1,21 +1,24 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.MessageNode;
-import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.ArgumentNode;
+import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Name;
-import org.scribble2.sesstype.name.Parameter;
-import org.scribble2.sesstype.name.PayloadType;
+import org.scribble2.sesstype.name.Scope;
 
 //public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
-public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
+//public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
+public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements ArgumentNode //, ArgumentInstantiation//, PayloadTypeOrParameterNode
 {
-	//public final Kind kind;
+	// FIXME: maybe shouldn't be kinded, as just AST node?  or do name/kind disambiguation
 	
-	public ParameterNode(String identifier)//, Kind kind)
+	public final K kind;
+	
+	//public ParameterNode(String identifier)//, Kind kind)
+	public ParameterNode(K kind, String identifier)//, Kind kind)
 	{
 		super(identifier);
-		//this.kind = kind;
+		this.kind = kind;
 	}
 
 	/*@Override
@@ -30,7 +33,8 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	@Override
 	protected ParameterNode<K> copy()
 	{
-		return new ParameterNode<>(this.identifier);
+		//return new ParameterNode<>(this.identifier);
+		return new ParameterNode<>(this.kind, this.identifier);
 	}
 	
 	/*// Only useful for MessageSignatureDecls -- FIXME: integrate sig decls properly
@@ -49,9 +53,11 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	}*/
 	
 	@Override
-	public Parameter toName()
+	//public Parameter toName()
+	public Name<K> toName()
 	{
-		return new Parameter(null, this.identifier);
+		//return new Parameter(null, this.identifier);
+		return null;  // FIXME: need kind
 	}
 
 	@Override
@@ -72,7 +78,7 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 		return true;
 	}
 
-	@Override
+	/*//@Override
 	public PayloadType toPayloadTypeOrParameter()
 	{
 		//if (this.kind != Kind.TYPE)
@@ -80,7 +86,7 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 			throw new RuntimeException("Not a type-kind parameter: " + this);
 		}
 		//return toName();
-	}
+	}*/
 	
 	/*@Override
 	public Operator getOperator()
@@ -88,16 +94,25 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 		return new Operator(toString());
 	}*/
 
-	@Override
-	public Parameter toArgument()
+	//@Override
+	//public Parameter toArgument()
+	public Name<K> toArgument()
+	{
+		return toName();
+	}
+
+	//@Override
+	//public Parameter toMessage()
+	public Name<K> toMessage()
 	{
 		return toName();
 	}
 
 	@Override
-	public Parameter toMessage()
+	public Argument<? extends Kind> toArgument(Scope scope)
 	{
-		return toName();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/*@Override

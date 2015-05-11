@@ -7,7 +7,7 @@ import org.scribble2.sesstype.kind.Kind;
 
 // A "Scribble generics" parameter -- FIXME: deprecate, parameter is a syntactic category, wrt. typing it should just be a message signature, payload, etc.
 @Deprecated
-public class Parameter extends SimpleName implements Message, PayloadType
+public class Parameter extends SimpleName implements Message//, PayloadType
 {
 	private static final long serialVersionUID = 1L;
 

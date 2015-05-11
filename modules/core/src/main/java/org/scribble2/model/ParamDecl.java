@@ -53,7 +53,8 @@ public class ParamDecl<K extends Kind> extends HeaderParamDecl<Name<K>, K> //imp
 	//public ParamDecl project(Role self)
 	public ParamDecl<K> project(Role self)
 	{
-		ParameterNode<K> pn = new ParameterNode<>(this.name.toString());  // FIXME: use factory?
+		//ParameterNode<K> pn = new ParameterNode<>(this.kind, this.name.toString());  // FIXME: use factory?
+		ParameterNode<K> pn = ModelFactoryImpl.FACTORY.ParameterNode(this.kind, this.name.toString());
 		//return new ParameterDecl(this.kind, pn);
 		return ModelFactoryImpl.FACTORY.ParameterDecl(this.kind, pn);
 	}

@@ -1,24 +1,15 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.simple.SimpleNameNode;
+import org.scribble2.model.name.simple.DataTypeNameNode;
+import org.scribble2.sesstype.kind.DataTypeKind;
 
-// FIXME: rename to something better
-// FIXME: should be a NameDeclNode?
-public abstract class DataTypeDecl extends ModelNodeBase //implements ModuleMember //implements NameDeclaration
+//public class PayloadTypeDecl extends NonProtocolDecl //AbstractNode implements ModuleMember //implements NameDeclaration
+public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 {
-	public final String schema;
-	public final String extName;
-	public final String source;
-	//public final SimpleMemberNameNode alias;
-	public final SimpleNameNode alias;  // Fix MessageSignatureDecl to make this back to member name node?
-
-	//public DataTypeDecl(CommonTree ct, String schema, String extName, String source, SimpleMemberNameNode alias)
-	public DataTypeDecl(String schema, String extName, String source, SimpleNameNode alias)
+	//public PayloadTypeDecl(String schema, String extName, String source, SimplePayloadTypeNode alias)
+	public DataTypeDecl(String schema, String extName, String source, DataTypeNameNode alias)
 	{
-		this.schema = schema;
-		this.extName = extName;
-		this.source = source;
-		this.alias = alias;
+		super(schema, extName, source, alias);
 	}
 
 	/*@Override
@@ -28,34 +19,44 @@ public abstract class DataTypeDecl extends ModelNodeBase //implements ModuleMemb
 		disamb.addPayloadType(visited);
 		return visited;
 	}*/
-	
-	/*protected abstract DataTypeDecl reconstruct(CommonTree ct, String schema, String extName, String source, PrimitiveNameNode alias);
 
-	@Override
-	public DataTypeDecl visitChildren(NodeVisitor nv) throws ScribbleException
+	/*@Override
+	public PayloadTypeDecl visitChildren(NodeVisitor nv) throws ScribbleException
 	{
-		//SimplePayloadTypeNode alias = (SimplePayloadTypeNode) visitChild(this.alias, nv);
-		//return new DataTypeDecl(this.ct, this.schema, this.extName, this.source, alias);
-		PrimitiveNameNode alias = (PrimitiveNameNode) visitChild(this.alias, nv);
-		return reconstruct(ct, schema, extName, source, alias);
-	}
-	
-	public Name getAliasName()
-	{
-		return this.alias.toName();
+		SimplePayloadTypeNode alias = (SimplePayloadTypeNode) visitChild(this.alias, nv);
+		return new PayloadTypeDecl(this.ct, this.schema, this.extName, this.source, alias);
 	}*/
 
 	/*@Override
+	protected DataTypeDecl reconstruct(CommonTree ct, String schema, String extName, String source, PrimitiveNameNode alias)
+	{
+		return new PayloadTypeDecl(ct, schema, extName, source, (SimplePayloadTypeNode) alias);
+	}*/
+
+	@Override
 	public String toString()
 	{
-		return AntlrConstants.TYPE_KW + " <" + this.schema + "> " + this.extName
-				+ " " + AntlrConstants.FROM_KW + " " + this.source + " "
-				+ AntlrConstants.AS_KW + " " + this.alias + ";";
+		return Constants.TYPE_KW + " <" + this.schema + "> " + this.extName
+				+ " " + Constants.FROM_KW + " " + this.source + " "
+				+ Constants.AS_KW + " " + this.alias + ";";
 	}
 
-	public PayloadType getFullPayloadTypeName()
+	@Override
+	protected ModelNodeBase copy()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*public PayloadType getFullPayloadTypeName()
 	{
 		ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrPayloadTypeDecl.getModuleParent(this.ct));
 		return new PayloadType(fullmodname + "." + this.alias.toName());
+	}
+
+	@Override
+	public PayloadType getAliasName()
+	{
+		return (PayloadType) this.alias.toName();
 	}*/
 }

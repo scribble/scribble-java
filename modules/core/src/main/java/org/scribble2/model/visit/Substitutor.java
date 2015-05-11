@@ -4,13 +4,13 @@ import java.util.Map;
 
 import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.MessageSigNode;
-import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.OperatorKind;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -48,13 +48,13 @@ public class Substitutor extends ModelVisitor
 	}*/
 
 	//public ArgumentNode getArgumentSubstitution(Argument arg)
-	public ArgumentNode getArgumentSubstitution(Argument<? extends Kind> arg)
+	public <K extends Kind> ArgumentNode getArgumentSubstitution(Argument<K> arg)
 	{
 		ArgumentNode an = this.argmap.get(arg);
 		if (an.isMessageSignatureNode())
 		{
 			MessageSigNode msn = (MessageSigNode) an;
-			return new MessageSigNode(msn.op, msn.payload);
+			return new MessageSigNode(msn.op, msn.payload);  // FIXME: use factory
 		}
 		/*else if (an.isPayloadTypeNode())
 		{
@@ -63,13 +63,19 @@ public class Substitutor extends ModelVisitor
 		}*/
 		else if (an.isParameterNode())
 		{
-			ParameterNode pn = (ParameterNode) an;
-			//return new ParameterNode(null, pn.toName().toString());//, pn.kind);
-			return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, pn.identifier);
+			return Substitutor.<K>copyParameterNode(an);
 		}
 		else
 		{
 			throw new RuntimeException("TODO: " + arg);
 		}
+	}
+
+	private static <K extends Kind> ArgumentNode copyParameterNode(ArgumentNode an)
+	{
+		ParameterNode<K> pn = (ParameterNode<K>) an;
+		//return new ParameterNode(null, pn.toName().toString());//, pn.kind);
+		//return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, pn.identifier);
+		return ModelFactoryImpl.FACTORY.ParameterNode(pn.kind, pn.identifier);
 	}
 }

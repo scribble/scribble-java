@@ -51,7 +51,7 @@ public interface ModelFactory
 			ModuleDecl moddecl,
 			//List<? extends ImportDecl> imports,
 			List<ImportDecl> imports,
-			List<DataTypeDecl> data,
+			List<NonProtocolDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
 			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.ProtocolKind>> protos);
 	
@@ -96,6 +96,8 @@ public interface ModelFactory
 	<K extends Kind> NameNode<? extends Name<K>, K> SimpleNameNode(K kind, String identifier);
 	//QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems);
 	<K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems);
+	
+	<K extends Kind> ParameterNode<K> ParameterNode(K kind, String identifier);
 
 	LProtocolDecl LocalProtocolDecl(LProtocolHeader header, LProtocolDef def);
 	LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);

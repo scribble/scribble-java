@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble2.model.DataTypeDecl;
+import org.scribble2.model.NonProtocolDecl;
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -136,7 +136,7 @@ public class ModuleDel extends ModelDelBase
 			}
 		}
 		
-		List<DataTypeDecl> data = new LinkedList<>(root.data);  // FIXME: copy  // FIXME: only project dependencies
+		List<NonProtocolDecl> data = new LinkedList<>(root.data);  // FIXME: copy  // FIXME: only project dependencies
 		//List<LocalProtocolDecl> protos = Arrays.asList(lpd);
 		List<ProtocolDecl<? extends ProtocolKind>> protos = Arrays.asList(lpd);
 		//return new Module(moddecl, imports, data, protos);

@@ -1,7 +1,6 @@
 package org.scribble2.parser.ast.name;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
@@ -11,6 +10,8 @@ import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.model.name.simple.SimpleMessageSignatureNameNode;
 import org.scribble2.model.name.simple.SimplePayloadTypeNode;
+import org.scribble2.sesstype.kind.AmbiguousKind;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.OperatorKind;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.kind.RecVarKind;
@@ -56,11 +57,12 @@ public class AntlrSimpleName
 	}*/
 
 	//public static ParameterNode toParameterNode(CommonTree ct, Kind kind)
-	public static ParameterNode toParameterNode(CommonTree ct)
+	public static ParameterNode<? extends Kind> toParameterNode(CommonTree ct)
 	{
 		//return new ParameterNode(getName(ct), kind);
 		//return new ParameterNode(getName(ct));
-		return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, getName(ct));
+		//return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, getName(ct));
+		return ModelFactoryImpl.FACTORY.ParameterNode(AmbiguousKind.KIND, getName(ct));
 	}
 	
 	/*public static AmbiguousNameNode toAmbiguousNameNode(CommonTree ct)

@@ -22,7 +22,7 @@ public class Module extends ModelNodeBase
 	public final ModuleDecl moddecl;
 	//public final List<? extends ImportDecl> imports;
 	public final List<ImportDecl> imports;
-	public final List<DataTypeDecl> data;
+	public final List<NonProtocolDecl> data;
 	//public final List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 	public final List<ProtocolDecl<? extends ProtocolKind>>
 			protos;
@@ -31,7 +31,7 @@ public class Module extends ModelNodeBase
 			ModuleDecl moddecl,
 			//List<? extends ImportDecl> imports,
 			List<ImportDecl> imports,
-			List<DataTypeDecl> data,
+			List<NonProtocolDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl<? extends ProtocolKind>> protos)
 	{
@@ -49,7 +49,7 @@ public class Module extends ModelNodeBase
 		{
 			s += "\n" + id;
 		}
-		for (DataTypeDecl dtd : this.data)
+		for (NonProtocolDecl dtd : this.data)
 		{
 			s += "\n" + dtd;
 		}
@@ -76,7 +76,7 @@ public class Module extends ModelNodeBase
 			ModuleDecl moddecl,
 			//List<? extends ImportDecl> imports,
 			List<ImportDecl> imports,
-			List<DataTypeDecl> data,
+			List<NonProtocolDecl> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl<? extends ProtocolKind>> protos)
 	{
@@ -92,7 +92,7 @@ public class Module extends ModelNodeBase
 		ModuleDecl moddecl = (ModuleDecl) visitChild(this.moddecl, nv);
 		//List<? extends ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);
 		List<ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);
-		List<DataTypeDecl> data = visitChildListWithClassCheck(this, this.data, nv);
+		List<NonProtocolDecl> data = visitChildListWithClassCheck(this, this.data, nv);
 		//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 		List<ProtocolDecl<? extends ProtocolKind>>
 				protos = visitChildListWithClassCheck(this, this.protos, nv);
@@ -103,13 +103,13 @@ public class Module extends ModelNodeBase
 
 	// FIXME: refactor
 	// ptn simple alias name
-	public PayloadTypeDecl getPayloadTypeDecl(IName ptn)
+	public DataTypeDecl getPayloadTypeDecl(IName ptn)
 	{
-		for (DataTypeDecl dtd : this.data)
+		for (NonProtocolDecl dtd : this.data)
 		{
-			if (dtd instanceof PayloadTypeDecl && dtd.alias.toName().equals(ptn))
+			if (dtd instanceof DataTypeDecl && dtd.alias.toName().equals(ptn))
 			{
-				return (PayloadTypeDecl) dtd;
+				return (DataTypeDecl) dtd;
 			}
 		}
 		throw new RuntimeException("Payload type not found: " + ptn);
@@ -118,7 +118,7 @@ public class Module extends ModelNodeBase
 	// ptn simple alias name
 	public MessageSigDecl getMessageSignatureDecl(IName msn)
 	{
-		for (DataTypeDecl dtd : this.data)
+		for (NonProtocolDecl dtd : this.data)
 		{
 			if (dtd instanceof MessageSigDecl && dtd.alias.toName().equals(msn))
 			{

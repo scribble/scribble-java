@@ -5,10 +5,7 @@ import java.util.Map;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.sesstype.kind.Kind;
-import org.scribble2.sesstype.name.IName;
-import org.scribble2.sesstype.name.KindEnum;
 import org.scribble2.sesstype.name.Name;
-import org.scribble2.sesstype.name.Parameter;
 import org.scribble2.util.ScribbleException;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
@@ -19,7 +16,8 @@ public class NameDisambiguator extends ModelVisitor
 
   // Reset per ProtocolDecl
 	private int counter = 1;
-	private Map<String, KindEnum> params = new HashMap<>();
+	//private Map<String, KindEnum> params = new HashMap<>();
+	private Map<Name<? extends Kind>, Kind> params = new HashMap<>();
 
 	public NameDisambiguator(Job job)
 	{
@@ -59,17 +57,25 @@ public class NameDisambiguator extends ModelVisitor
 	//public boolean isBoundParameter(IName name)
 	public boolean isBoundParameter(Name<? extends Kind> name)
 	{
-		return this.params.containsKey(name.toString());
+		//return this.params.containsKey(name.toString());
+		return this.params.containsKey(name);
 	}
 	
-	public void addParameter(Parameter param)
+	//public void addParameter(Parameter param)
+	//public void addParameter(Parameter param)
+	//public <K extends Kind> void addParameter(Name<K> param, K kind)
+	public void addParameter(Name<? extends Kind> param, Kind kind)
 	{
-		this.params.put(param.toString(), param.getKindEnum());
+		//this.params.put(param.toString(), param.getKindEnum());
+		//this.params.add(param);
+		this.params.put(param, kind);
 	}
 
-	public KindEnum getParameterKind(IName name)
+	//public KindEnum getParameterKind(IName name)
+	public Kind getParameterKind(Name<? extends Kind> name)
 	{
-		return this.params.get(name.toString());
+		//return this.params.get(name.toString());
+		return this.params.get(name);
 	}
 	
 	/*@Override
