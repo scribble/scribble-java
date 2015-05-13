@@ -2,6 +2,7 @@ package org.scribble2.sesstype;
 
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.SigKind;
+import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Operator;
 
 // FIXME: rename to UnscopedMessageSignature -- no: scope now here
@@ -25,6 +26,12 @@ public class MessageSig implements Message
 	public Kind getKind()
 	{
 		return SigKind.KIND;
+	}
+
+	@Override
+	public MessageId getId()
+	{
+		return this.op;
 	}
 
 	/*//@Override

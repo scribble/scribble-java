@@ -51,4 +51,11 @@ public class Parameter extends SimpleName implements Message//, PayloadType
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public MessageId getId()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

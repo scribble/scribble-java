@@ -3,7 +3,7 @@ package org.scribble2.sesstype.name;
 import org.scribble2.sesstype.kind.OperatorKind;
 
 //public class Operator extends SimpleName //SerializableSimpleName
-public class Operator extends Name<OperatorKind> //SerializableSimpleName
+public class Operator extends Name<OperatorKind> implements MessageId //SerializableSimpleName
 {
 	private static final long serialVersionUID = 1L;
 	

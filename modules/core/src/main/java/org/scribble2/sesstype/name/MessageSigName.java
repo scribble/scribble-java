@@ -8,7 +8,7 @@ import org.scribble2.sesstype.kind.SigKind;
 // The name of a declared (imported) message signature member
 //public class MessageSignatureName extends MemberName implements Message
 //public class MessageSignatureName extends Name<SigKind> implements Message
-public class MessageSigName extends MemberName<SigKind> implements Message
+public class MessageSigName extends MemberName<SigKind> implements Message, MessageId
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -50,6 +50,13 @@ public class MessageSigName extends MemberName<SigKind> implements Message
 	public MessageSigName getSimpleName()
 	{
 		return new MessageSigName(getLastElement());
+	}
+	
+	@Override 
+	public MessageId getId()
+	{
+		//return getSimpleName();	
+		return this;  // FIXME: should be resolved to a canonical name
 	}
 
 	/*@Override
