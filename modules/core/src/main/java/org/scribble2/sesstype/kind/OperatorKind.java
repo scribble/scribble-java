@@ -1,6 +1,6 @@
 package org.scribble2.sesstype.kind;
 
-public class OperatorKind implements Kind
+public class OperatorKind extends Kind
 {
 	public static final OperatorKind KIND = new OperatorKind();
 	

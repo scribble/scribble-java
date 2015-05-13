@@ -1,6 +1,6 @@
 package org.scribble2.sesstype.kind;
 
-public class AmbiguousKind implements Kind
+public class AmbiguousKind extends Kind
 {
 	public static final AmbiguousKind KIND = new AmbiguousKind();
 	

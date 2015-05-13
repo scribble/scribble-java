@@ -4,6 +4,7 @@ import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Role;
 
@@ -62,8 +63,18 @@ public class ParamDecl<K extends Kind> extends HeaderParamDecl<Name<K>, K> //imp
 	@Override
 	public String getKeyword()
 	{
-		//return Constants....;
-		throw new RuntimeException("TODO");
+		if (this.kind.equals(SigKind.KIND))
+		{
+			return Constants.SIG_KW;
+		}
+		else if (this.kind.equals(SigKind.KIND))
+		{
+			return Constants.SIG_KW;
+		}
+		else
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this.kind);
+		}
 	}
 	
 	/*@Override

@@ -1,6 +1,6 @@
 package org.scribble2.sesstype.kind;
 
-public class ModuleKind implements Kind
+public class ModuleKind extends Kind
 {
 	public static final ModuleKind KIND = new ModuleKind();
 	

@@ -1,6 +1,6 @@
 package org.scribble2.sesstype.kind;
 
-public class ScopeKind implements Kind
+public class ScopeKind extends Kind
 {
 	public static final ScopeKind KIND = new ScopeKind();
 	

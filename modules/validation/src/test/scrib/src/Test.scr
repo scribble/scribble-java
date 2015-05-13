@@ -8,10 +8,24 @@
 
 module Test;
 
-import Test2;
+//import Test2;
 
+//sig <java> "foo" from "bar" as M1;
 
-///*
+global protocol Foo<sig M2>(role A, role B)
+{
+	choice at A
+	{
+		M2 from A to B;
+	}
+	or
+	{
+		//M2 from A to B;
+		1() from A to B;
+	}
+}
+
+/*
 global protocol Foo(role A, role B)
 {
 	1() from A to B;

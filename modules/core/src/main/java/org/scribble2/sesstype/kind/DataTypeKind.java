@@ -1,6 +1,6 @@
 package org.scribble2.sesstype.kind;
 
-public class DataTypeKind implements Kind
+public class DataTypeKind extends Kind
 {
 	public static final DataTypeKind KIND = new DataTypeKind();
 	

@@ -17,7 +17,8 @@ public class NameDisambiguator extends ModelVisitor
   // Reset per ProtocolDecl
 	private int counter = 1;
 	//private Map<String, KindEnum> params = new HashMap<>();
-	private Map<Name<? extends Kind>, Kind> params = new HashMap<>();
+	//private Map<Name<? extends Kind>, Kind> params = new HashMap<>();
+	private Map<String, Kind> params = new HashMap<>();
 
 	public NameDisambiguator(Job job)
 	{
@@ -57,8 +58,8 @@ public class NameDisambiguator extends ModelVisitor
 	//public boolean isBoundParameter(IName name)
 	public boolean isBoundParameter(Name<? extends Kind> name)
 	{
-		//return this.params.containsKey(name.toString());
-		return this.params.containsKey(name);
+		return this.params.containsKey(name.toString());
+		//return this.params.containsKey(name);
 	}
 	
 	//public void addParameter(Parameter param)
@@ -68,14 +69,14 @@ public class NameDisambiguator extends ModelVisitor
 	{
 		//this.params.put(param.toString(), param.getKindEnum());
 		//this.params.add(param);
-		this.params.put(param, kind);
+		this.params.put(param.toString(), kind);
 	}
 
 	//public KindEnum getParameterKind(IName name)
 	public Kind getParameterKind(Name<? extends Kind> name)
 	{
-		//return this.params.get(name.toString());
-		return this.params.get(name);
+		return this.params.get(name.toString());
+		//return this.params.get(name);
 	}
 	
 	/*@Override

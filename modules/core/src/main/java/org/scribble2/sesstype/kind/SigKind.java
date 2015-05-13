@@ -1,6 +1,6 @@
 package org.scribble2.sesstype.kind;
 
-public class SigKind implements Kind
+public class SigKind extends Kind
 {
 	public static final SigKind KIND = new SigKind();
 	
@@ -8,6 +8,12 @@ public class SigKind implements Kind
 	{
 
 	}
+	
+	/*@Override
+	public String toString()
+	{
+		return "sig";
+	}*/
 
 	@Override
 	public int hashCode()

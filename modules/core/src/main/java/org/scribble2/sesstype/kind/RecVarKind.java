@@ -1,6 +1,6 @@
 package org.scribble2.sesstype.kind;
 
-public class RecVarKind implements Kind
+public class RecVarKind extends Kind
 {
 	public static final RecVarKind KIND = new RecVarKind();
 	

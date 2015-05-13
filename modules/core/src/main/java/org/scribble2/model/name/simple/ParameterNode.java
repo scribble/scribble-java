@@ -1,13 +1,18 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.ArgumentNode;
+import org.scribble2.model.MessageNode;
 import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.Message;
+import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.SigKind;
+import org.scribble2.sesstype.name.DataType;
+import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.Name;
 
 //public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 //public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
-public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements ArgumentNode //, ArgumentInstantiation//, PayloadTypeOrParameterNode
+public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements MessageNode//ArgumentNode //, ArgumentInstantiation//, PayloadTypeOrParameterNode
 {
 	// FIXME: maybe shouldn't be kinded, as just AST node?  or do name/kind disambiguation -- maybe disamb not needed, AmbiguousNameNode --disamb--> kinded Parameter
 	
@@ -56,7 +61,18 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	public Name<K> toName()
 	{
 		//return new Parameter(null, this.identifier);
-		return null;  // FIXME: need kind
+		if (this.kind.equals(SigKind.KIND))
+		{
+			return Kind.castName(kind, new MessageSigName(this.identifier));
+		}
+		else if (this.kind.equals(DataTypeKind.KIND))
+		{
+			return Kind.castName(kind, new DataType(this.identifier));
+		}
+		else
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this.kind);
+		}
 	}
 
 	@Override
@@ -104,9 +120,14 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 
 	//@Override
 	//public Parameter toMessage()
-	public Name<K> toMessage()
+	//public Name<K> toMessage()
+	public Message toMessage()
 	{
-		return toName();
+		if (!this.kind.equals(SigKind.KIND))
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this);
+		}
+		return (Message) toName();
 	}
 
 	/*@Override

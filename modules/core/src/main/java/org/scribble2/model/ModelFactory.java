@@ -31,6 +31,7 @@ import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
 import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
+import org.scribble2.model.name.simple.AmbiguousNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecVarNode;
@@ -98,6 +99,7 @@ public interface ModelFactory
 	//QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems);
 	<K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems);
 	
+	AmbiguousNameNode AmbiguousNameNode(String identifier);
 	<K extends Kind> ParameterNode<K> ParameterNode(K kind, String identifier);
 
 	LProtocolDecl LocalProtocolDecl(LProtocolHeader header, LProtocolDef def);

@@ -1,6 +1,5 @@
 package org.scribble2.model.del.name;
 
-import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.ModelDelBase;

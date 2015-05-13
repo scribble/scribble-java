@@ -11,7 +11,7 @@ public class AntlrAmbiguousName
 	{
 		//return new AmbiguousNameNode(getName(ct));
 		//return (AmbiguousNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.AMBIG, getName(ct));
-		throw new RuntimeException("TODO: " + ct);
+		return ModelFactoryImpl.FACTORY.AmbiguousNameNode(getName(ct));
 	}
 	
 	private static String getName(CommonTree ct)
