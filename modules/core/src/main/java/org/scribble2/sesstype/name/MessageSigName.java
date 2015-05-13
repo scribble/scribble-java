@@ -8,7 +8,7 @@ import org.scribble2.sesstype.kind.SigKind;
 // The name of a declared (imported) message signature member
 //public class MessageSignatureName extends MemberName implements Message
 //public class MessageSignatureName extends Name<SigKind> implements Message
-public class MessageSignatureName extends QualifiedName<SigKind> implements Message
+public class MessageSigName extends MemberName<SigKind> implements Message
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -19,11 +19,18 @@ public class MessageSignatureName extends QualifiedName<SigKind> implements Mess
 		super(KindEnum.TYPE, modname, membname);
 	}*/
 	
-	public MessageSignatureName(Scope scope, String simplename)  // FIXME: could make a compound name with scope built into it
+	//public MessageSignatureName(Scope scope, MessageSignatureName simplename)  // FIXME: could make a compound name with scope built into it
+	public MessageSigName(ModuleName modname, MessageSigName simplename)
 	{
 		/*super(SigKind.KIND, simplename);
 		this.scope = scope;*/
-		super(SigKind.KIND, Name.compileElements(scope.getElements(), simplename));
+		//super(SigKind.KIND, Name.compileElements(scope.getElements(), simplename.getLastElement()));
+		super(SigKind.KIND, modname, simplename);
+	}
+
+	public MessageSigName(String simplename)
+	{
+		super(SigKind.KIND, simplename);
 	}
 
 	@Override
@@ -32,18 +39,17 @@ public class MessageSignatureName extends QualifiedName<SigKind> implements Mess
 		return SigKind.KIND;  // Same as this.kind
 	}
 
-	@Override
+	/*@Override
 	public Name<? extends Kind> getPrefix()
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	@Override
-	public Name<SigKind> getSimpleName()
+	public MessageSigName getSimpleName()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new MessageSigName(getLastElement());
 	}
 
 	/*@Override

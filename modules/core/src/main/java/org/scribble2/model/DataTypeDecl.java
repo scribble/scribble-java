@@ -1,6 +1,6 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.simple.DataTypeNameNode;
+import org.scribble2.model.name.qualified.DataTypeNameNode;
 import org.scribble2.sesstype.kind.DataTypeKind;
 
 //public class PayloadTypeDecl extends NonProtocolDecl //AbstractNode implements ModuleMember //implements NameDeclaration

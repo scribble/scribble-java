@@ -4,11 +4,11 @@ import org.scribble2.model.MessageNode;
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
-import org.scribble2.sesstype.name.MessageSignatureName;
+import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.SimpleName;
 
 @Deprecated
-public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<MessageSignatureName> //implements MessageNode//SimpleMemberNameNode
+public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<MessageSigName> //implements MessageNode//SimpleMemberNameNode
 {
 	//public final String extType;  // Not current considered for equals/hashCode
 
@@ -61,7 +61,7 @@ public class SimpleMessageSignatureNameNode extends SimpleCompoundNameNode<Messa
 	}*/
 
 	@Override
-	public MessageSignatureName toCompoundName()
+	public MessageSigName toCompoundName()
 	{
 		return null;//new MessageSignatureName(this.identifier);
 	}

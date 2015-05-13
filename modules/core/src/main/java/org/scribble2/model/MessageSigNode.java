@@ -1,7 +1,7 @@
 package org.scribble2.model;
 
 import org.scribble2.model.name.simple.OperatorNode;
-import org.scribble2.sesstype.MessageSignature;
+import org.scribble2.sesstype.MessageSig;
 import org.scribble2.sesstype.name.Scope;
 
 public class MessageSigNode extends ModelNodeBase implements MessageNode
@@ -60,17 +60,20 @@ public class MessageSigNode extends ModelNodeBase implements MessageNode
 
 	// FIXME: make a direct scoped version (taking scope as argument)
 	@Override
-	public MessageSignature toArgument(Scope scope)
+	//public MessageSignature toArgument(Scope scope)
+	public MessageSig toArgument()
 	{
 		/*List<PayloadType<? extends Kind>> types = this.payload.payloadelems.stream().map((pe) -> pe.name.toPayloadTypeOrParameter()).collect(Collectors.toList());
 		return new MessageSignature(this.op.toName(), payload);*/
-		return new MessageSignature(scope, this.op.toName(), this.payload.toPayload());
+		//return new MessageSignature(scope, this.op.toName(), this.payload.toPayload());
+		return new MessageSig(this.op.toName(), this.payload.toPayload());
 	}
 
 	@Override
-	public MessageSignature toMessage(Scope scope)
+	//public MessageSignature toMessage(Scope scope)
+	public MessageSig toMessage()
 	{
-		return toArgument(scope);
+		return toArgument();
 	}
 
 	/*@Override

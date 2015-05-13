@@ -1,31 +1,30 @@
-package org.scribble2.model.name.simple;
+package org.scribble2.model.name.qualified;
 
 import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.name.DataType;
-import org.scribble2.sesstype.name.Scope;
+import org.scribble2.sesstype.name.ModuleName;
 
 //public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode//, PayloadTypeOrParameterNode
 //public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode
-public class DataTypeNameNode extends SimpleNameNode<DataType, DataTypeKind> implements PayloadElementNameNode, ArgumentNode
+//public class DataTypeNameNode extends SimpleNameNode<DataType, DataTypeKind> implements PayloadElementNameNode, ArgumentNode
+public class DataTypeNameNode extends MemberNameNode<DataType, DataTypeKind> implements PayloadElementNameNode, ArgumentNode
 {
-	..HERE make qualified again (and MessageSigNames)
-
 	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
-	//public PayloadTypeNameNode(String... ns)
-	public DataTypeNameNode(String identifier)
+	public DataTypeNameNode(String... elems)
+	//public DataTypeNameNode(String identifier)
 	{
-		//super(ns);
-		super(identifier);
+		super(elems);
+		//super(identifier);
 	}
 
 	@Override
 	protected DataTypeNameNode copy()
 	{
-		//return new PayloadTypeNameNode(this.elems);
-		return new DataTypeNameNode(this.identifier);
+		return new DataTypeNameNode(this.elems);
+		//return new DataTypeNameNode(this.identifier);
 	}
 
 	/*// Basically a copy without the AST
@@ -40,15 +39,18 @@ public class DataTypeNameNode extends SimpleNameNode<DataType, DataTypeKind> imp
 	@Override
 	public DataType toName()
 	{
-		/*String membname = getLastElement();
+		//String membname = getLastElement();
+		DataType membname = new DataType(getLastElement());
 		if (!isPrefixed())
 		{
-			return new DataType(membname);
+			//return new DataType(membname);
+			return membname;
 		}
 		//ModuleName modname = ModuleNameNodes.toModuleName(getModulePrefix());
-		ModuleName modname = getModulePrefix().toName();
-		return new DataType(modname, membname);*/
-		return new DataType(this.identifier);
+		//ModuleName modname = getModulePrefix().toName();
+		ModuleName modname = getModuleNamePrefix();
+		return new DataType(modname, membname);
+		//return new DataType(this.identifier);
 	}
 
 	/*@Override
@@ -76,7 +78,8 @@ public class DataTypeNameNode extends SimpleNameNode<DataType, DataTypeKind> imp
 	}
 
 	@Override
-	public Argument<DataTypeKind> toArgument(Scope scope)  // FIXME: shouldn't be scoped
+	//public Argument<DataTypeKind> toArgument(Scope scope)  // FIXME: shouldn't be scoped
+	public Argument<DataTypeKind> toArgument()  // FIXME: shouldn't be scoped
 	{
 		//return toName();
 		return null;

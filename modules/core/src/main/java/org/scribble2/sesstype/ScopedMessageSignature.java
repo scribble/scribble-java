@@ -7,14 +7,14 @@ import org.scribble2.sesstype.name.PayloadType;
 import org.scribble2.sesstype.name.Scope;
 
 @Deprecated
-public class ScopedMessageSignature extends MessageSignature //implements ScopedMessage
+public class ScopedMessageSignature extends MessageSig //implements ScopedMessage
 {
 	public final Scope scope;
 	
 	public ScopedMessageSignature(Scope scope, Operator op, List<PayloadType> payload)
 	{
-		//super(op, payload);
-		super(scope, op , null);
+		super(op, null);// payload);
+		//super(scope, op , null);
 		this.scope = scope;
 	}
 

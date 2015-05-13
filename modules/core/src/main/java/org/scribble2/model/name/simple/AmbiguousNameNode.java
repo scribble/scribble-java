@@ -55,13 +55,15 @@ public class AmbiguousNameNode extends SimpleNameNode<Name<AmbiguousKind>, Ambig
 	}*/
 
 	@Override
-	public Argument<? extends Kind> toArgument(Scope scope)
+	//public Argument<? extends Kind> toArgument(Scope scope)
+	public Argument<? extends Kind> toArgument()
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
 	}
 
 	@Override
-	public Message toMessage(Scope scope)
+	//public Message toMessage(Scope scope)
+	public Message toMessage()
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
 	}

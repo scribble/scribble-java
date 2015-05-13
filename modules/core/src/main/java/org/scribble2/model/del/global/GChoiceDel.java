@@ -88,9 +88,6 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 						Set<ScopedMessage> next = enabled.getMessages(dest);*/
 						Set<Message> current = seen.get(dest);
 						Set<Message> next = enabled.getMessages(dest);
-						
-						System.out.println("a: " + current + ", " + next);
-						
 						for (Message msg : next)
 						{
 							if (current.contains(msg))

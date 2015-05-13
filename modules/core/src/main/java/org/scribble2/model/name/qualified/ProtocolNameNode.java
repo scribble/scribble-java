@@ -35,7 +35,7 @@ public class ProtocolNameNode extends MemberNameNode<ProtocolName, ProtocolKind>
 			//return new ProtocolName(membname);
 			return membname;
 		}
-		ModuleName modname = getModulePrefix().toName();
+		ModuleName modname = getModuleNamePrefix();
 		//return new ProtocolName<>(null, modname, membname);  // FIXME
 		return new ProtocolName(modname, membname);
 	}

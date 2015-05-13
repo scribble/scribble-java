@@ -31,7 +31,7 @@ public class AntlrArgumentInstantiation
 			}
 			case QUALIFIEDNAME:
 			{
-				return AntlrQualifiedName.toPayloadTypeNameNode(ct);
+				return AntlrQualifiedName.toDataTypeNameNode(ct);
 			}
 			default: // As for PayloadElement: cannot syntactically distinguish between SimplePayloadTypeNode and ParameterNode
 			{

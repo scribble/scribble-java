@@ -4,7 +4,6 @@ import org.scribble2.model.ArgumentNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Name;
-import org.scribble2.sesstype.name.Scope;
 
 //public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 //public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
@@ -94,11 +93,13 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 		return new Operator(toString());
 	}*/
 
-	//@Override
+	@Override
 	//public Parameter toArgument()
-	public Name<K> toArgument()
+	//public Name<K> toArgument()
+	public Argument<? extends Kind> toArgument()
 	{
-		return toName();
+		//return toName();
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	//@Override
@@ -108,12 +109,12 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 		return toName();
 	}
 
-	@Override
+	/*@Override
 	public Argument<? extends Kind> toArgument(Scope scope)
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	/*@Override
 	public boolean isAmbiguousNode()

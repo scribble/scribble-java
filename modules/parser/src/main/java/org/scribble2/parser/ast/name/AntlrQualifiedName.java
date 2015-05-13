@@ -3,10 +3,10 @@ package org.scribble2.parser.ast.name;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
+import org.scribble2.model.name.qualified.DataTypeNameNode;
+import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.model.name.simple.DataTypeNameNode;
-import org.scribble2.model.name.simple.MessageSignatureNameNode;
 import org.scribble2.sesstype.kind.ModuleKind;
 import org.scribble2.sesstype.kind.ProtocolKind;
 
@@ -30,17 +30,19 @@ public class AntlrQualifiedName
 		return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, getElements(ct));
 	}
 
-	public static DataTypeNameNode toPayloadTypeNameNode(CommonTree ct)
+	public static DataTypeNameNode toDataTypeNameNode(CommonTree ct)
 	{
 		//return new PayloadTypeNameNode(getElements(ct));
 		//return (DataTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PAYLOADTYPE, getElements(ct));
-		return (DataTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PAYLOADTYPE, getElements(ct));
+		//return (DataTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PAYLOADTYPE, getElements(ct));
+		throw new RuntimeException("TODO: " + ct);
 	}
 
-	public static MessageSignatureNameNode toMessageSignatureNameNode(CommonTree ct)
+	public static MessageSigNameNode toMessageSignatureNameNode(CommonTree ct)
 	{
 		//return new MessageSignatureNameNode(getElements(ct));
-		return (MessageSignatureNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MESSAGESIGNATURE, getElements(ct));
+		//return (MessageSignatureNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MESSAGESIGNATURE, getElements(ct));
+		throw new RuntimeException("TODO: " + ct);
 	}
 
 	public static ProtocolNameNode toProtocolNameNode(CommonTree ct)

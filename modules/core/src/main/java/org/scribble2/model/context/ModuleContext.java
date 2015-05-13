@@ -9,7 +9,7 @@ import org.scribble2.model.Module;
 import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.JobContext;
-import org.scribble2.sesstype.name.MessageSignatureName;
+import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.DataType;
 import org.scribble2.sesstype.name.ProtocolName;
@@ -23,7 +23,7 @@ public class ModuleContext
 	private final Map<ModuleName, ModuleName> modules;
 	//private final Map<PayloadTypeOrParameter, PayloadTypeOrParameter> data;  // FIXME: refactor properly for sig members
 	private final Map<DataType, DataType> types;
-	private final Map<MessageSignatureName, MessageSignatureName> sigs;
+	private final Map<MessageSigName, MessageSigName> sigs;
 	private final Map<ProtocolName, ProtocolName> globals;
 	private final Map<ProtocolName, ProtocolName> locals;
 

@@ -176,8 +176,10 @@ public class ModelFactoryImpl implements ModelFactory
 	@Override
 	//public ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode)
 	public <K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParameterNode<K> namenode)
+	//public <K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode)
 	{
 		ParamDecl<K> pd = new ParamDecl<K>(kind, namenode);
+		//ParamDecl<K> pd = new ParamDecl<K>(namenode);
 		pd = del(pd, new ParamDeclDel());
 		return pd;
 	}

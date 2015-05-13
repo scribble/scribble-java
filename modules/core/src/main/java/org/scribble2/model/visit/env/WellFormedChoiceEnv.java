@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.scribble2.model.visit.SubprotocolVisitor;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.sesstype.Message;
-import org.scribble2.sesstype.MessageSignature;
+import org.scribble2.sesstype.MessageSig;
 import org.scribble2.sesstype.Payload;
 import org.scribble2.sesstype.SubprotocolSignature;
 import org.scribble2.sesstype.name.Operator;
@@ -29,8 +29,10 @@ public class WellFormedChoiceEnv extends Env
 
 	/*public static final ScopedMessageSignature ROOT_MESSAGESIGNATURE = new ScopedMessageSignature(Scope.EMPTY_SCOPE, ROOT_OPERATOR, Collections.emptyList());
 	public static final ScopedMessageSignature SUBJECT_MESSAGESIGNATURE = new ScopedMessageSignature(Scope.EMPTY_SCOPE, SUBJECT_OPERATOR, Collections.emptyList());*/
-	public static final MessageSignature ROOT_MESSAGESIGNATURE = new MessageSignature(Scope.EMPTY_SCOPE, ROOT_OPERATOR, Payload.EMPTY_PAYLOAD);
-	public static final MessageSignature SUBJECT_MESSAGESIGNATURE = new MessageSignature(Scope.EMPTY_SCOPE, SUBJECT_OPERATOR, Payload.EMPTY_PAYLOAD);
+	/*public static final MessageSignature ROOT_MESSAGESIGNATURE = new MessageSignature(Scope.EMPTY_SCOPE, ROOT_OPERATOR, Payload.EMPTY_PAYLOAD);
+	public static final MessageSignature SUBJECT_MESSAGESIGNATURE = new MessageSignature(Scope.EMPTY_SCOPE, SUBJECT_OPERATOR, Payload.EMPTY_PAYLOAD);*/
+	public static final MessageSig ROOT_MESSAGESIGNATURE = new MessageSig(ROOT_OPERATOR, Payload.EMPTY_PAYLOAD);
+	public static final MessageSig SUBJECT_MESSAGESIGNATURE = new MessageSig(SUBJECT_OPERATOR, Payload.EMPTY_PAYLOAD);
 	
 	// dest -> src -> msg
 	/*private MessageMap<ScopedMessage> initial;  // message transfers recorded here in block envs

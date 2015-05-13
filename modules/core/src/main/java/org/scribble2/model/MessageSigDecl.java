@@ -1,13 +1,13 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.simple.MessageSignatureNameNode;
+import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.sesstype.kind.SigKind;
 
 public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode implements ModuleMember //implements NameDeclaration
 {
 	// FIXME: need to replace ParameterNode by a signature member node
 	//public MessageSigDecl(String schema, String extName, String source, SimpleMessageSignatureNameNode alias)
-	public MessageSigDecl(String schema, String extName, String source, MessageSignatureNameNode alias)
+	public MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias)
 	{
 		super(schema, extName, source, alias);
 	}

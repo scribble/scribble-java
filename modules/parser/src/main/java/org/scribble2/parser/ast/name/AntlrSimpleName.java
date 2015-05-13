@@ -8,9 +8,6 @@ import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.ScopeNode;
-import org.scribble2.model.name.simple.SimpleMessageSignatureNameNode;
-import org.scribble2.model.name.simple.SimplePayloadTypeNode;
-import org.scribble2.sesstype.kind.AmbiguousKind;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.OperatorKind;
 import org.scribble2.sesstype.kind.ProtocolKind;
@@ -30,7 +27,7 @@ public class AntlrSimpleName
 		return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ProtocolKind.KIND, getName(ct));
 	}
 
-	public static SimplePayloadTypeNode toSimplePayloadTypeNode(CommonTree ct)
+	/*public static SimplePayloadTypeNode toSimplePayloadTypeNode(CommonTree ct)
 	{
 		//return new SimplePayloadTypeNode(AntlrSimpleName.getName(ct));
 		//return (SimplePayloadTypeNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PAYLOADTYPE, getName(ct));
@@ -42,7 +39,7 @@ public class AntlrSimpleName
 		//return new SimpleMessageSignatureNameNode(AntlrSimpleName.getName(ct));
 		//return (SimpleMessageSignatureNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.MESSAGESIGNATURE, getName(ct));
 		throw new RuntimeException("TODO: " + ct);
-	}
+	}*/
 
 	public static RoleNode toRoleNode(CommonTree ct)
 	{
@@ -57,12 +54,13 @@ public class AntlrSimpleName
 	}*/
 
 	//public static ParameterNode toParameterNode(CommonTree ct, Kind kind)
-	public static ParameterNode<? extends Kind> toParameterNode(CommonTree ct)
+	public static <K extends Kind> ParameterNode<K> toParameterNode(K kind, CommonTree ct)
 	{
 		//return new ParameterNode(getName(ct), kind);
 		//return new ParameterNode(getName(ct));
 		//return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, getName(ct));
-		return ModelFactoryImpl.FACTORY.ParameterNode(AmbiguousKind.KIND, getName(ct));
+		//return ModelFactoryImpl.FACTORY.ParameterNode(AmbiguousKind.KIND, getName(ct));
+		return ModelFactoryImpl.FACTORY.ParameterNode(kind, getName(ct));
 	}
 	
 	/*public static AmbiguousNameNode toAmbiguousNameNode(CommonTree ct)

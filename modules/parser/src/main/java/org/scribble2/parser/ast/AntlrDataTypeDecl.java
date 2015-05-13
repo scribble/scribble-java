@@ -2,8 +2,9 @@ package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.DataTypeDecl;
-import org.scribble2.model.name.simple.SimplePayloadTypeNode;
+import org.scribble2.model.name.qualified.DataTypeNameNode;
 import org.scribble2.parser.ScribbleParser;
+import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrDataTypeDecl
@@ -21,7 +22,8 @@ public class AntlrDataTypeDecl
 		String extName = AntlrExtIdentifier.getName(tmp2);
 		CommonTree tmp3 = getExtNameChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
-		SimplePayloadTypeNode alias = AntlrSimpleName.toSimplePayloadTypeNode(getAliasChild(ct));
+		//SimplePayloadTypeNode alias = AntlrSimpleName.toSimplePayloadTypeNode(getAliasChild(ct));
+		DataTypeNameNode alias = AntlrQualifiedName.toDataTypeNameNode(getAliasChild(ct));
 		return new DataTypeDecl(schema, extName, source, alias);
 	}
 

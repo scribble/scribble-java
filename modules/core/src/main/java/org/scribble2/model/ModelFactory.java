@@ -72,6 +72,7 @@ public interface ModelFactory
 	ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds);
 	//ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode);
 	<K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParameterNode<K> namenode);
+	//<K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode);
 	
 	GProtocolDef GlobalProtocolDefinition(GProtocolBlock block);
 	GProtocolBlock GlobalProtocolBlock(GInteractionSeq gis);

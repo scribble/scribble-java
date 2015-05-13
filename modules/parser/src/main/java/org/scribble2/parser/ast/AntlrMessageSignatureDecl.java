@@ -2,8 +2,9 @@ package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.MessageSigDecl;
-import org.scribble2.model.name.simple.SimpleMessageSignatureNameNode;
+import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.parser.ScribbleParser;
+import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 // FIXME: factor out with AntlrPayloadTypeDecl
@@ -22,7 +23,8 @@ public class AntlrMessageSignatureDecl
 		String extName = AntlrExtIdentifier.getName(tmp2);
 		CommonTree tmp3 = getExtNameChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
-		SimpleMessageSignatureNameNode alias = AntlrSimpleName.toSimpleMessageSignatureNameNode(getAliasChild(ct));
+		//SimpleMessageSignatureNameNode alias = AntlrSimpleName.toSimpleMessageSignatureNameNode(getAliasChild(ct));
+		MessageSigNameNode alias = AntlrQualifiedName.toMessageSignatureNameNode(getAliasChild(ct));
 		return new MessageSigDecl(schema, extName, source, alias);
 	}
 
