@@ -17,9 +17,9 @@ import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
-import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.MessageMap;
 import org.scribble2.util.ScribbleException;
@@ -48,14 +48,16 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		}
 		
 		//Map<Role, Set<ScopedMessage>> seen = null;
-		Map<Role, Set<Message>> seen = null;
+		//Map<Role, Set<Message>> seen = null;
+		Map<Role, Set<MessageId>> seen = null;
 		List<WellFormedChoiceEnv> benvs =
 				cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().env()).collect(Collectors.toList());
 		//for (WellFormedChoiceEnv benv : cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().getEnv()).collect(Collectors.toList()))
 		for (WellFormedChoiceEnv benv : benvs)
 		{
 			//MessageMap<ScopedMessage> enabled = benv.getEnabled();
-			MessageMap<Message> enabled = benv.getEnabled();
+			//MessageMap<Message> enabled = benv.getEnabled();
+			MessageMap enabled = benv.getEnabled();
 			
 			Set<Role> dests = enabled.getLeftKeys();
 			dests.remove(subj);
@@ -86,9 +88,12 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 						}
 						/*Set<ScopedMessage> current = seen.get(dest);
 						Set<ScopedMessage> next = enabled.getMessages(dest);*/
-						Set<Message> current = seen.get(dest);
-						Set<Message> next = enabled.getMessages(dest);
-						for (Message msg : next)
+						/*Set<Message> current = seen.get(dest);
+						Set<Message> next = enabled.getMessages(dest);*/
+						Set<MessageId> current = seen.get(dest);
+						Set<MessageId> next = enabled.getMessages(dest);
+						//for (Message msg : next)
+						for (MessageId msg : next)
 						{
 							if (current.contains(msg))
 							{
