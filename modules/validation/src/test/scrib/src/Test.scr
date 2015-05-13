@@ -11,7 +11,7 @@ module Test;
 import Test2;
 
 
-/*
+///*
 global protocol Foo(role A, role B)
 {
 	1() from A to B;
@@ -20,7 +20,28 @@ global protocol Foo(role A, role B)
 }
 //*/
 
-///*
+/*
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		do Test2.Bar(A, B);
+		//do Bar(A, B);
+	}
+}
+
+global protocol Bar(role C, role D)
+{
+	//1() from C to D;
+	2() from C to D;
+}
+//*/
+
+/*
 global protocol Foo(role A, role B)
 {
 	choice at A

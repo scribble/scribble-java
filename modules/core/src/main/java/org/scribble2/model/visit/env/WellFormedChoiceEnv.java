@@ -278,7 +278,7 @@ public class WellFormedChoiceEnv extends Env
 			//List<ScopedSubprotocolSignature> stack = checker.getStack();
 			List<SubprotocolSignature> stack = checker.getStack();
 			stack = stack.subList(0, stack.size() - 1);
-			Scope scope = stack.get(stack.size() - 1).scope;  // Doesn't include final cycle sig scope
+			//Scope scope = stack.get(stack.size() - 1).scope;  // Doesn't include final cycle sig scope
 			/*for (int i = stack.size() - 2; i >= 0; i--)
 			{
 				SubprotocolSignature tmp = stack.get(i);
@@ -289,18 +289,19 @@ public class WellFormedChoiceEnv extends Env
 				addSubprotocolEnabled(tmp);
 			}*/
 			int entry = checker.getCycleEntryIndex();
-			Scope prev = (entry == 0) ? Scope.ROOT_SCOPE : stack.get(entry).scope;
+			//Scope prev = (entry == 0) ? Scope.ROOT_SCOPE : stack.get(entry).scope;
 			for (int i = checker.getCycleEntryIndex(); i < stack.size(); i++)
 			{
 				//ScopedSubprotocolSignature ssubsig = stack.get(i);
 				SubprotocolSignature ssubsig = stack.get(i);
-				if (!prev.equals(ssubsig.scope))
+				/*if (!prev.equals(ssubsig.scope))
 				{
 					scope = new Scope(scope, ssubsig.scope.getSimpleName());
 					prev = ssubsig.scope;
-				}
+				}*/
 				//copy.addSubprotocolEnabled(scope, ssubsig.sig);
-				copy.addSubprotocolEnabled(scope, ssubsig);
+				//copy.addSubprotocolEnabled(scope, ssubsig);
+				copy.addSubprotocolEnabled(ssubsig);
 			}
 		}
 
@@ -309,7 +310,8 @@ public class WellFormedChoiceEnv extends Env
 	}
 	
 	// No defensive copy
-	private void addSubprotocolEnabled(Scope scope, SubprotocolSignature subsig)
+	//private void addSubprotocolEnabled(Scope scope, SubprotocolSignature subsig)
+	private void addSubprotocolEnabled(SubprotocolSignature subsig)
 	{
 		//MessageMap<ScopedMessage> enabled = this.subsigs.get(subsig);
 		//MessageMap<Message> enabled = this.subsigs.get(subsig);

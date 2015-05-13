@@ -17,8 +17,8 @@ public class ScopedSubprotocolSignature extends SubprotocolSignature
 
 	public ScopedSubprotocolSignature(Scope scope, ProtocolName fmn, List<Role> roles, List<Argument<? extends Kind>> args)
 	{
-		//super(fmn, roles, args);
-		super(fmn, null, roles, args);
+		super(fmn, roles, args);
+		//super(fmn, null, roles, args);
 		this.sig = null;//new SubprotocolSignature(fmn, roles, args);
 		this.scope = scope;
 	}

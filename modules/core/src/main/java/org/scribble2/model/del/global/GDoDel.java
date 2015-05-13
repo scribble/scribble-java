@@ -13,6 +13,7 @@ import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.ProjectionEnv;
+import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -45,8 +46,16 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	@Override
 	public GDo leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
 	{
-		checker.pushEnv(checker.popEnv().leaveWFChoiceCheck(checker));
-		return popAndSetVisitorEnv(parent, child, checker, (GDo) visited);
+		/*checker.pushEnv(checker.popEnv().leaveWFChoiceCheck(checker));
+		return popAndSetVisitorEnv(parent, child, checker, (GDo) visited);*/
+		WellFormedChoiceEnv env = checker.popEnv();
+		//if (checker.isCycle())  // Cf. LDoDel, isCycle done inside env.leaveWFChoiceCheck
+		{
+			env = env.leaveWFChoiceCheck(checker);
+		}
+		setEnv(env);
+		checker.pushEnv(checker.popEnv().mergeContext(env));
+		return (GDo) visited;
 	}
 
 	@Override

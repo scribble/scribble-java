@@ -220,7 +220,8 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		List<Role> roles = new LinkedList<>(roleargs);
 		List<Argument<? extends Kind>> args = new LinkedList<>(argargs);
 		//ScopedSubprotocolSignature ssubsig = new ScopedSubprotocolSignature(getScope(), fullname, roles, args);
-		SubprotocolSignature ssubsig = new SubprotocolSignature(fullname, getScope(), roles, args);
+		//SubprotocolSignature ssubsig = new SubprotocolSignature(fullname, getScope(), roles, args);
+		SubprotocolSignature ssubsig = new SubprotocolSignature(fullname, roles, args);
 		//ScopedSubprotocolSignature ssubsig = getSubprotocolSignature(fullname, roleargs, argargs);
 		this.stack.add(ssubsig);
 	}

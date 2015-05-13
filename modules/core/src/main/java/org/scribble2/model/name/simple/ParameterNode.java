@@ -9,7 +9,7 @@ import org.scribble2.sesstype.name.Name;
 //public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements ArgumentNode //, ArgumentInstantiation//, PayloadTypeOrParameterNode
 {
-	// FIXME: maybe shouldn't be kinded, as just AST node?  or do name/kind disambiguation
+	// FIXME: maybe shouldn't be kinded, as just AST node?  or do name/kind disambiguation -- maybe disamb not needed, AmbiguousNameNode --disamb--> kinded Parameter
 	
 	public final K kind;
 	
