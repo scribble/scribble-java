@@ -102,7 +102,7 @@ public abstract class ModelNodeBase implements ModelNode
 		ModelNode visited = ((ModelNodeBase) parent).visitChild(child, nv);
 		if (visited.getClass() != child.getClass())  // Visitor is not allowed to replace the node by a different node type
 		{
-			throw new RuntimeException("Visitor generic visit error: " + child.getClass() + ", " + visited.getClass());
+			throw new RuntimeException(nv.getClass() + " generic visit error: " + child.getClass() + ", " + visited.getClass());
 		}
 		@SuppressWarnings("unchecked")
 		T t = (T) visited;

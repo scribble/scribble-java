@@ -9,6 +9,8 @@ import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
+	// visitchildren shouldn't use check class on visited nodes so strictly, e.g. name disambiguation changes from ambiguousnodes
+	// get rid of argument instantiation
 
 	//.. factor out main module resource loading in front end from main context -- front end should take main argument, check existence, and pass MainContext the abstract resource identifier to load the main
 	//.. ^^ alternatively keep ResourceLocator specific to file systems -- "DirectoryResourceLocator" just uses the import paths

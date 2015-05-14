@@ -21,7 +21,9 @@ public abstract class Instantiation<T extends InstantiationNode> extends ModelNo
 	@Override
 	public Instantiation<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		T arg = visitChildWithClassCheck(this, this.arg, nv);
+		//T arg = visitChildWithClassCheck(this, this.arg, nv);
+		@SuppressWarnings("unchecked")
+		T arg = (T) this.visitChild(this.arg, nv);  // Disambiguation will change AmbiguousNameNodes to 
 		return reconstruct(arg);
 	}
 

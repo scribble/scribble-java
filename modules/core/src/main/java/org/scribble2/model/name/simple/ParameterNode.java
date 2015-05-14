@@ -1,6 +1,9 @@
 package org.scribble2.model.name.simple;
 
+import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.MessageNode;
+import org.scribble2.model.name.qualified.DataTypeNameNode;
+import org.scribble2.model.visit.Substitutor;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.kind.DataTypeKind;
@@ -48,13 +51,33 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 		ParameterNode projection = new ParameterNode(null, toName().toString(), this.kind);
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
-	}
+	}*/
 	
-	@Override
+	/*@Override
 	public ArgumentNode substitute(Substitutor subs)
 	{
 		return subs.getArgumentSubstitution(toName());
 	}*/
+
+	@Override
+	public ArgumentNode substituteNames(Substitutor subs)
+	{
+		ArgumentNode an;
+		if (this.kind.equals(SigKind.KIND))
+		{
+			an = (MessageNode) subs.getArgumentSubstitution(toArgument());  // FIXME: reconstruct/clone?
+		}
+		else if (this.kind.equals(DataTypeKind.KIND))
+		{
+			an = (DataTypeNameNode) subs.getArgumentSubstitution(toArgument());  // FIXME: reconstruct/clone?
+		}
+		else
+		{
+			throw new RuntimeException("TODO: " + this);
+		}
+		an = (ArgumentNode) an.del(del());
+		return an;
+	}
 	
 	@Override
 	//public Parameter toName()
@@ -63,11 +86,11 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 		//return new Parameter(null, this.identifier);
 		if (this.kind.equals(SigKind.KIND))
 		{
-			return Kind.castName(kind, new MessageSigName(this.identifier));
+			return Kind.castName(this.kind, new MessageSigName(this.identifier));
 		}
 		else if (this.kind.equals(DataTypeKind.KIND))
 		{
-			return Kind.castName(kind, new DataType(this.identifier));
+			return Kind.castName(this.kind, new DataType(this.identifier));
 		}
 		else
 		{
@@ -115,7 +138,15 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	public Argument<? extends Kind> toArgument()
 	{
 		//return toName();
-		throw new RuntimeException("TODO: " + this);
+		if (this.kind.equals(DataTypeKind.KIND))
+		{
+			throw new RuntimeException("TODO: " + this);
+		}
+		else if (this.kind.equals(SigKind.KIND))
+		{
+			return toMessage();
+		}
+		throw new RuntimeException("Shouldn't get here: " + this);
 	}
 
 	//@Override

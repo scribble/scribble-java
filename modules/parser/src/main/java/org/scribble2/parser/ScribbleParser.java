@@ -211,6 +211,8 @@ public class ScribbleParser
 				return AntlrArgumentInstantiationList.parseArgumentInstantiationList(this, ct);
 			case ARGUMENTINSTANTIATION:
 				return AntlrArgumentInstantiation.parseArgumentInstantiation(this, ct);
+			case AMBIGUOUSNAME:
+				return AntlrArgumentInstantiation.parseArgumentInstantiation(this, ct);
 			default:
 				throw new RuntimeException("Unknown ANTLR node type: " + type);
 		}

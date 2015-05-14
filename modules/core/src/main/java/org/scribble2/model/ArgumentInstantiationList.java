@@ -45,6 +45,11 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 		return this.instans.isEmpty();
 	}
 	
+	public List<ArgumentNode> getArgumentNodes()
+	{
+		return this.instans.stream().map((ai) -> ai.arg).collect(Collectors.toList());
+	}
+
 	public List<Argument<? extends Kind>> getArguments(Scope scope)
 	{
 		//return this.instans.stream().map((ai) -> ai.arg.toArgument(scope)).collect(Collectors.toList());

@@ -13,10 +13,10 @@ import org.scribble2.sesstype.name.PayloadType;
 // Primitive payload type or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
 //public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
-public class AmbiguousNameNode extends SimpleNameNode<Name<AmbiguousKind>, AmbiguousKind> implements //ArgumentNode
+public class AmbigNameNode extends SimpleNameNode<Name<AmbiguousKind>, AmbiguousKind> implements //ArgumentNode
 	PayloadElementNameNode, MessageNode
 {
-	public AmbiguousNameNode(String identifier)
+	public AmbigNameNode(String identifier)
 	{
 		super(identifier);
 	}
@@ -28,10 +28,10 @@ public class AmbiguousNameNode extends SimpleNameNode<Name<AmbiguousKind>, Ambig
 	}*/
 
 	@Override
-	protected AmbiguousNameNode copy()
+	protected AmbigNameNode copy()
 	{
 		//return new AmbiguousNameNode(this.identifier);
-		return new AmbiguousNameNode(this.identifier);
+		return new AmbigNameNode(this.identifier);
 	}
 	
 	/*@Override

@@ -1,6 +1,7 @@
 package org.scribble2.model.name.qualified;
 
 import org.scribble2.model.MessageNode;
+import org.scribble2.model.visit.Substitutor;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.ModuleName;
@@ -38,6 +39,16 @@ public class MessageSigNameNode extends MemberNameNode<MessageSigName, SigKind> 
 		MessageSignatureNameNodes projection = new MessageSignatureNameNodes(null, getElements());
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
+	}*/
+
+	/*@Override
+	public MessageNode substituteNames(Substitutor subs)
+	{
+		//return reconstruct(subs.getRoleSubstitution(toName()).toString());
+		
+		System.out.println("b: " + this + ", " + subs.getArgumentSubstitution(toArgument()));
+		
+		return (MessageNode) subs.getArgumentSubstitution(toArgument());  // FIXME: reconstruct/clone?
 	}*/
 	
 	@Override

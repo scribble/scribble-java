@@ -11,10 +11,10 @@ import org.scribble2.util.ScribbleException;
 
 
 //public abstract class ModelDelegateBase implements ModelDelegate
-public class AmbiguousNameDelegate extends ModelDelBase
+public class AmbigNameDel extends ModelDelBase
 {
 	//public AmbiguousNameDelegate(Env env)
-	public AmbiguousNameDelegate()
+	public AmbigNameDel()
 	{
 		//super(env);
 	}

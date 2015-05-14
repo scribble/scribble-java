@@ -27,7 +27,7 @@ import org.scribble2.model.del.local.LProtocolDefDel;
 import org.scribble2.model.del.local.LReceiveDel;
 import org.scribble2.model.del.local.LRecursionDel;
 import org.scribble2.model.del.local.LSendDel;
-import org.scribble2.model.del.name.AmbiguousNameDelegate;
+import org.scribble2.model.del.name.AmbigNameDel;
 import org.scribble2.model.global.GChoice;
 import org.scribble2.model.global.GContinue;
 import org.scribble2.model.global.GDo;
@@ -57,7 +57,7 @@ import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
 import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
-import org.scribble2.model.name.simple.AmbiguousNameNode;
+import org.scribble2.model.name.simple.AmbigNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParameterNode;
 import org.scribble2.model.name.simple.RecVarNode;
@@ -365,10 +365,10 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public AmbiguousNameNode AmbiguousNameNode(String identifier)
+	public AmbigNameNode AmbiguousNameNode(String identifier)
 	{
-		AmbiguousNameNode ann = new AmbiguousNameNode(identifier); 
-		ann = (AmbiguousNameNode) ann.del(new AmbiguousNameDelegate());
+		AmbigNameNode ann = new AmbigNameNode(identifier); 
+		ann = (AmbigNameNode) ann.del(new AmbigNameDel());
 		return ann;
 	}
 
