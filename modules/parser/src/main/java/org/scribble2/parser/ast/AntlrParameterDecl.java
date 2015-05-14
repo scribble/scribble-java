@@ -3,7 +3,7 @@ package org.scribble2.parser.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ParamDecl;
-import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
@@ -26,12 +26,12 @@ public class AntlrParameterDecl
 		//return ModelFactoryImpl.FACTORY.ParameterDecl(name);*/
 		if (kind.equals(SigKind.KIND))
 		{
-			ParameterNode<SigKind> name = AntlrSimpleName.toParameterNode(SigKind.KIND, getNameChild(ct));
+			ParamNode<SigKind> name = AntlrSimpleName.toParameterNode(SigKind.KIND, getNameChild(ct));
 			return ModelFactoryImpl.FACTORY.ParameterDecl(SigKind.KIND, name);
 		}
 		else if (kind.equals(DataTypeKind.KIND))
 		{
-			ParameterNode<DataTypeKind> name = AntlrSimpleName.toParameterNode(DataTypeKind.KIND, getNameChild(ct));
+			ParamNode<DataTypeKind> name = AntlrSimpleName.toParameterNode(DataTypeKind.KIND, getNameChild(ct));
 			return ModelFactoryImpl.FACTORY.ParameterDecl(DataTypeKind.KIND, name);
 		}
 		else

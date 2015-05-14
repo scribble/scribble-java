@@ -2,7 +2,7 @@ package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.NameNode;
-import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.Name;
@@ -41,7 +41,7 @@ public class ParamDecl<K extends Kind> extends HeaderParamDecl<Name<K>, K> //imp
 	@Override
 	protected ParamDecl<K> copy()
 	{
-		return new ParamDecl<>(this.kind, (ParameterNode<K>) this.name);
+		return new ParamDecl<>(this.kind, (ParamNode<K>) this.name);
 	}
 
 	/*@Override
@@ -55,7 +55,7 @@ public class ParamDecl<K extends Kind> extends HeaderParamDecl<Name<K>, K> //imp
 	public ParamDecl<K> project(Role self)
 	{
 		//ParameterNode<K> pn = new ParameterNode<>(this.kind, this.name.toString());  // FIXME: use factory?
-		ParameterNode<K> pn = ModelFactoryImpl.FACTORY.ParameterNode(this.kind, this.name.toString());
+		ParamNode<K> pn = ModelFactoryImpl.FACTORY.ParamNode(this.kind, this.name.toString());
 		//return new ParameterDecl(this.kind, pn);
 		return ModelFactoryImpl.FACTORY.ParameterDecl(this.kind, pn);
 	}

@@ -11,10 +11,10 @@ import org.scribble2.util.ScribbleException;
 
 
 //public abstract class ModelDelegateBase implements ModelDelegate
-public class AmbigNameDel extends ModelDelBase
+public class AmbigNameNodeDel extends ModelDelBase
 {
 	//public AmbiguousNameDelegate(Env env)
-	public AmbigNameDel()
+	public AmbigNameNodeDel()
 	{
 		//super(env);
 	}
@@ -41,7 +41,7 @@ public class AmbigNameDel extends ModelDelBase
 		else */if (disamb.isBoundParameter(name))
 		{
 			//return ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, name.toString());
-			return ModelFactoryImpl.FACTORY.ParameterNode(disamb.getParameterKind(name), name.toString());
+			return ModelFactoryImpl.FACTORY.ParamNode(disamb.getParameterKind(name), name.toString());
 		}
 		throw new ScribbleException("Cannot disambiguate name: " + name);
 	}

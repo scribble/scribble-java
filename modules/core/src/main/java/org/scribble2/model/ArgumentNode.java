@@ -6,6 +6,7 @@ import org.scribble2.sesstype.kind.Kind;
 
 // Payload argument nodes (doesn't include role instantation arguments)
 //public interface ArgumentNode<K extends Kind> extends InstantiationNode  // FIXME: possible to take Kind parameter? with disambiguation?
+// Not kinded: point of this interface is don't know which kind the node is -- so use the "is" methods -- cf. AmbigNameNode inherits both sig and data kind
 public interface ArgumentNode extends InstantiationNode
 {
 	boolean isMessageSigNode();

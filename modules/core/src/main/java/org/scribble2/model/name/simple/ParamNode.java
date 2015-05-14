@@ -16,7 +16,7 @@ import org.scribble2.sesstype.name.PayloadType;
 
 //public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 //public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
-public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements
+public class ParamNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements
 		//ArgumentNode 
 		MessageNode, PayloadElementNameNode
 {
@@ -25,7 +25,7 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	public final K kind;
 	
 	//public ParameterNode(String identifier)//, Kind kind)
-	public ParameterNode(K kind, String identifier)//, Kind kind)
+	public ParamNode(K kind, String identifier)//, Kind kind)
 	{
 		super(identifier);
 		this.kind = kind;
@@ -41,10 +41,10 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	}*/
 
 	@Override
-	protected ParameterNode<K> copy()
+	protected ParamNode<K> copy()
 	{
 		//return new ParameterNode<>(this.identifier);
-		return new ParameterNode<>(this.kind, this.identifier);
+		return new ParamNode<>(this.kind, this.identifier);
 	}
 	
 	/*// Only useful for MessageSignatureDecls -- FIXME: integrate sig decls properly

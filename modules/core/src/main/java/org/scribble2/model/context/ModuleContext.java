@@ -19,10 +19,10 @@ public class ModuleContext
 	//public final Module root;
 	public final ModuleName root;
 
-	// The modules and member names that are visible from this Module
+	// The modules and member names that are visible from this Module -- mapped to "cannonical" (fully qualified) names
 	private final Map<ModuleName, ModuleName> modules;
 	//private final Map<PayloadTypeOrParameter, PayloadTypeOrParameter> data;  // FIXME: refactor properly for sig members
-	private final Map<DataType, DataType> types;
+	private final Map<DataType, DataType> data;
 	private final Map<MessageSigName, MessageSigName> sigs;
 	private final Map<ProtocolName, ProtocolName> globals;
 	private final Map<ProtocolName, ProtocolName> locals;
@@ -37,7 +37,7 @@ public class ModuleContext
 		
 		this.modules = new HashMap<>();
 		//this.data = new HashMap<>();
-		this.types = new HashMap<>();
+		this.data = new HashMap<>();
 		this.sigs = new HashMap<>();
 		this.globals = new HashMap<>();
 		this.locals = new HashMap<>();
@@ -261,7 +261,7 @@ public class ModuleContext
 	@Override 
 	public String toString()
 	{
-		return "[modules=" + this.modules + ", types=" + this.types + ", sigs=" + this.sigs + ", globals=" + this.globals + ", locals=" + this.locals;
+		return "[modules=" + this.modules + ", types=" + this.data + ", sigs=" + this.sigs + ", globals=" + this.globals + ", locals=" + this.locals;
 	}
 
 	/*private ProtocolName getFullProtocolName(

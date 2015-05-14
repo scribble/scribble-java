@@ -4,7 +4,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
-import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.ScopeNode;
@@ -54,13 +54,13 @@ public class AntlrSimpleName
 	}*/
 
 	//public static ParameterNode toParameterNode(CommonTree ct, Kind kind)
-	public static <K extends Kind> ParameterNode<K> toParameterNode(K kind, CommonTree ct)
+	public static <K extends Kind> ParamNode<K> toParameterNode(K kind, CommonTree ct)
 	{
 		//return new ParameterNode(getName(ct), kind);
 		//return new ParameterNode(getName(ct));
 		//return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, getName(ct));
 		//return ModelFactoryImpl.FACTORY.ParameterNode(AmbiguousKind.KIND, getName(ct));
-		return ModelFactoryImpl.FACTORY.ParameterNode(kind, getName(ct));
+		return ModelFactoryImpl.FACTORY.ParamNode(kind, getName(ct));
 	}
 	
 	/*public static AmbiguousNameNode toAmbiguousNameNode(CommonTree ct)

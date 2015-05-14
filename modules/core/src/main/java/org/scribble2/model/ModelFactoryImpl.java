@@ -27,7 +27,9 @@ import org.scribble2.model.del.local.LProtocolDefDel;
 import org.scribble2.model.del.local.LReceiveDel;
 import org.scribble2.model.del.local.LRecursionDel;
 import org.scribble2.model.del.local.LSendDel;
-import org.scribble2.model.del.name.AmbigNameDel;
+import org.scribble2.model.del.name.AmbigNameNodeDel;
+import org.scribble2.model.del.name.ParamNodeDel;
+import org.scribble2.model.del.name.RoleNodeDel;
 import org.scribble2.model.global.GChoice;
 import org.scribble2.model.global.GContinue;
 import org.scribble2.model.global.GDo;
@@ -59,7 +61,7 @@ import org.scribble2.model.name.qualified.QualifiedNameNode;
 import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.name.simple.AmbigNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
-import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.kind.Global;
@@ -177,7 +179,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode)
-	public <K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParameterNode<K> namenode)
+	public <K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParamNode<K> namenode)
 	//public <K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode)
 	{
 		ParamDecl<K> pd = new ParamDecl<K>(kind, namenode);
@@ -324,7 +326,9 @@ public class ModelFactoryImpl implements ModelFactory
 		}
 		else if (kind.equals(RoleKind.KIND))
 		{
-			snn = new RoleNode(identifier);
+			RoleNode rn = new RoleNode(identifier);
+			rn = (RoleNode) rn.del(new RoleNodeDel());
+			return castNameNode(kind, rn);
 		}
 		else if (kind.equals(ProtocolKind.KIND))
 		{
@@ -334,7 +338,18 @@ public class ModelFactoryImpl implements ModelFactory
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
-		return (NameNode<? extends Name<K>, K>) snn.del(createDefaultDelegate());
+		return castNameNode(kind, (NameNode<? extends Name<K>, K>) snn.del(createDefaultDelegate()));
+	}
+	
+	private static <T extends NameNode<? extends Name<? extends Kind>, K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Name<? extends Kind>, ? extends Kind> n)
+	{
+		if (!n.toName().kind.equals(kind))
+		{
+			throw new RuntimeException("Shouldn't get in here: " + kind + ", " + n);
+		}
+		@SuppressWarnings("unchecked")
+		T tmp = (T) n;
+		return tmp;
 	}
 
 	@Override
@@ -368,15 +383,15 @@ public class ModelFactoryImpl implements ModelFactory
 	public AmbigNameNode AmbiguousNameNode(String identifier)
 	{
 		AmbigNameNode ann = new AmbigNameNode(identifier); 
-		ann = (AmbigNameNode) ann.del(new AmbigNameDel());
+		ann = (AmbigNameNode) ann.del(new AmbigNameNodeDel());
 		return ann;
 	}
 
 	@Override
-	public <K extends Kind> ParameterNode<K> ParameterNode(K kind, String identifier)
+	public <K extends Kind> ParamNode<K> ParamNode(K kind, String identifier)
 	{
-		ParameterNode<K> pn = new ParameterNode<K>(kind, identifier);
-		pn = del(pn, createDefaultDelegate());
+		ParamNode<K> pn = new ParamNode<K>(kind, identifier);
+		pn = del(pn, new ParamNodeDel());
 		return pn;
 	}
 

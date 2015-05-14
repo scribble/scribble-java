@@ -3,15 +3,11 @@ package org.scribble2.model.del;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble2.model.ProtocolDecl;
-import org.scribble2.model.InteractionNode;
-import org.scribble2.model.InteractionSeq;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
-import org.scribble2.model.ProtocolBlock;
-import org.scribble2.model.ProtocolDef;
-import org.scribble2.model.ProtocolHeader;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.context.ProtocolDeclContext;
+import org.scribble2.model.visit.BoundNameChecker;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.kind.ProtocolKind;
@@ -44,7 +40,15 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 	}*/
 	
 	protected abstract ProtocolDeclDel copy();
-
+	
+	@Override
+	public ProtocolDecl<? extends ProtocolKind> leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException
+	{
+		checker.clear();
+		return cast(visited);
+	}
+	
+	
 	@Override
 	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder proj) throws ScribbleException
 	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder proj) throws ScribbleException
@@ -96,7 +100,7 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 		return this.pdcontext.getDependencies();
 	}
 	
-	private
+	private static
 		//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 		ProtocolDecl<? extends ProtocolKind>
 		cast(ModelNode child)

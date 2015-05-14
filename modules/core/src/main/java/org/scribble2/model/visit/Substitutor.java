@@ -6,7 +6,7 @@ import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.kind.Kind;
@@ -69,8 +69,8 @@ public class Substitutor extends ModelVisitor
 		else if (an.isParameterNode())
 		{
 			//return Substitutor.copyParameterNode((ParameterNode<K>) an);
-			ParameterNode<K> pn = (ParameterNode<K>) an;
-			return ModelFactoryImpl.FACTORY.ParameterNode(pn.kind, pn.identifier);
+			ParamNode<K> pn = (ParamNode<K>) an;
+			return ModelFactoryImpl.FACTORY.ParamNode(pn.kind, pn.identifier);
 		}
 		else
 		{

@@ -1,6 +1,7 @@
 package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.visit.BoundNameChecker;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.EnvVisitor;
 import org.scribble2.model.visit.NameDisambiguator;
@@ -23,13 +24,25 @@ public abstract class ModelDelBase implements ModelDel
 	}
 	
 	@Override
-	public NameDisambiguator enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
+	public void enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
 	{
-		return disamb;
+
 	}
 
 	@Override
 	public ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	@Override
+	public void enterBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker) throws ScribbleException
+	{
+
+	}
+
+	@Override
+	public ModelNode leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException
 	{
 		return visited;
 	}

@@ -33,7 +33,7 @@ import org.scribble2.model.name.qualified.QualifiedNameNode;
 import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.name.simple.AmbigNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
-import org.scribble2.model.name.simple.ParameterNode;
+import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.kind.Global;
@@ -72,7 +72,7 @@ public interface ModelFactory
 	//ParamDeclList ParameterDeclList(List<ParamDecl> pds);
 	ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds);
 	//ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode);
-	<K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParameterNode<K> namenode);
+	<K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParamNode<K> namenode);
 	//<K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode);
 	
 	GProtocolDef GlobalProtocolDefinition(GProtocolBlock block);
@@ -100,7 +100,7 @@ public interface ModelFactory
 	<K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems);
 	
 	AmbigNameNode AmbiguousNameNode(String identifier);
-	<K extends Kind> ParameterNode<K> ParameterNode(K kind, String identifier);
+	<K extends Kind> ParamNode<K> ParamNode(K kind, String identifier);
 
 	LProtocolDecl LocalProtocolDecl(LProtocolHeader header, LProtocolDef def);
 	LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
