@@ -9,6 +9,7 @@ import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
+// FIXME: integrate with NameDisambiguator
 public class BoundNameChecker extends ModelVisitor
 {
 	private Set<Role> roles = new HashSet<>();

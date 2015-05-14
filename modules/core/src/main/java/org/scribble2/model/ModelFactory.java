@@ -27,6 +27,7 @@ import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
@@ -52,7 +53,7 @@ public interface ModelFactory
 			ModuleDecl moddecl,
 			//List<? extends ImportDecl> imports,
 			List<ImportDecl> imports,
-			List<NonProtocolDecl> data,
+			List<NonProtocolDecl<? extends Kind>> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
 			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.ProtocolKind>> protos);
 	
@@ -62,6 +63,8 @@ public interface ModelFactory
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
 	ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias);
+	
+	MessageSigDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias);
 
 	GProtocolDecl GlobalProtocolDecl(GProtocolHeader header, GProtocolDef def);
 	GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
@@ -119,4 +122,3 @@ public interface ModelFactory
 	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 }
-

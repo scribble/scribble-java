@@ -1,25 +1,13 @@
 package org.scribble2.parser;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.parser.antlr.Scribble2Lexer;
-import org.scribble.parser.antlr.Scribble2Parser;
-import org.scribble.resources.Resource;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.Module;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.ast.AntlrArgumentInstantiation;
 import org.scribble2.parser.ast.AntlrArgumentInstantiationList;
 import org.scribble2.parser.ast.AntlrImportModule;
 import org.scribble2.parser.ast.AntlrMessageSignature;
+import org.scribble2.parser.ast.AntlrMessageSignatureDecl;
 import org.scribble2.parser.ast.AntlrModule;
 import org.scribble2.parser.ast.AntlrModuleDecl;
 import org.scribble2.parser.ast.AntlrParameterDecl;
@@ -43,7 +31,6 @@ import org.scribble2.parser.ast.global.AntlrGlobalProtocolDecl;
 import org.scribble2.parser.ast.global.AntlrGlobalProtocolDefinition;
 import org.scribble2.parser.ast.global.AntlrGlobalProtocolHeader;
 import org.scribble2.parser.ast.global.AntlrGlobalRecursion;
-import org.scribble2.parser.util.Pair;
 import org.scribble2.parser.util.Util;
 
 /*import scribble2.ast.*;
@@ -157,9 +144,9 @@ public class ScribbleParser
 			case MODULEDECL:
 				return AntlrModuleDecl.parseModuleDecl(this, ct);
 			/*case PAYLOADTYPEDECL:
-				return AntlrPayloadTypeDecl.parsePayloadTypeDecl(this, ct);
+				return AntlrPayloadTypeDecl.parsePayloadTypeDecl(this, ct);*/
 			case MESSAGESIGNATUREDECL:
-				return AntlrMessageSignatureDecl.parseMessageSignatureDecl(this, ct);*/
+				return AntlrMessageSignatureDecl.parseMessageSignatureDecl(this, ct);
 			case IMPORTMODULE:
 				return AntlrImportModule.parseImportModule(this, ct);
 			case GLOBALPROTOCOLDECL:

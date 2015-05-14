@@ -21,6 +21,7 @@ import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
@@ -136,7 +137,7 @@ public class ModuleDel extends ModelDelBase
 			}
 		}
 		
-		List<NonProtocolDecl> data = new LinkedList<>(root.data);  // FIXME: copy  // FIXME: only project dependencies
+		List<NonProtocolDecl<? extends Kind>> data = new LinkedList<>(root.data);  // FIXME: copy  // FIXME: only project dependencies
 		//List<LocalProtocolDecl> protos = Arrays.asList(lpd);
 		List<ProtocolDecl<? extends ProtocolKind>> protos = Arrays.asList(lpd);
 		//return new Module(moddecl, imports, data, protos);

@@ -10,6 +10,7 @@ import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.IName;
 import org.scribble2.sesstype.name.ModuleName;
@@ -22,7 +23,7 @@ public class Module extends ModelNodeBase
 	public final ModuleDecl moddecl;
 	//public final List<? extends ImportDecl> imports;
 	public final List<ImportDecl> imports;
-	public final List<NonProtocolDecl> data;
+	public final List<NonProtocolDecl<? extends Kind>> data;
 	//public final List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 	public final List<ProtocolDecl<? extends ProtocolKind>>
 			protos;
@@ -31,7 +32,7 @@ public class Module extends ModelNodeBase
 			ModuleDecl moddecl,
 			//List<? extends ImportDecl> imports,
 			List<ImportDecl> imports,
-			List<NonProtocolDecl> data,
+			List<NonProtocolDecl<? extends Kind>> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl<? extends ProtocolKind>> protos)
 	{
@@ -49,7 +50,7 @@ public class Module extends ModelNodeBase
 		{
 			s += "\n" + id;
 		}
-		for (NonProtocolDecl dtd : this.data)
+		for (NonProtocolDecl<? extends Kind> dtd : this.data)
 		{
 			s += "\n" + dtd;
 		}
@@ -76,7 +77,7 @@ public class Module extends ModelNodeBase
 			ModuleDecl moddecl,
 			//List<? extends ImportDecl> imports,
 			List<ImportDecl> imports,
-			List<NonProtocolDecl> data,
+			List<NonProtocolDecl<? extends Kind>> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl<? extends ProtocolKind>> protos)
 	{
@@ -92,7 +93,7 @@ public class Module extends ModelNodeBase
 		ModuleDecl moddecl = (ModuleDecl) visitChild(this.moddecl, nv);
 		//List<? extends ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);
 		List<ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);
-		List<NonProtocolDecl> data = visitChildListWithClassCheck(this, this.data, nv);
+		List<NonProtocolDecl<? extends Kind>> data = visitChildListWithClassCheck(this, this.data, nv);
 		//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 		List<ProtocolDecl<? extends ProtocolKind>>
 				protos = visitChildListWithClassCheck(this, this.protos, nv);
@@ -105,7 +106,7 @@ public class Module extends ModelNodeBase
 	// ptn simple alias name
 	public DataTypeDecl getPayloadTypeDecl(IName ptn)
 	{
-		for (NonProtocolDecl dtd : this.data)
+		for (NonProtocolDecl<? extends Kind> dtd : this.data)
 		{
 			if (dtd instanceof DataTypeDecl && dtd.alias.toName().equals(ptn))
 			{
@@ -118,7 +119,7 @@ public class Module extends ModelNodeBase
 	// ptn simple alias name
 	public MessageSigDecl getMessageSignatureDecl(IName msn)
 	{
-		for (NonProtocolDecl dtd : this.data)
+		for (NonProtocolDecl<? extends Kind> dtd : this.data)
 		{
 			if (dtd instanceof MessageSigDecl && dtd.alias.toName().equals(msn))
 			{

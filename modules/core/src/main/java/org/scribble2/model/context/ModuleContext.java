@@ -9,9 +9,11 @@ import org.scribble2.model.Module;
 import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.JobContext;
+import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.name.DataType;
 import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.ModuleName;
-import org.scribble2.sesstype.name.DataType;
+import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.ProtocolName;
 
 public class ModuleContext
@@ -109,8 +111,10 @@ public class ModuleContext
 	private void addLocalMembers(Module m, ModuleName fullmodname)
 	{
 		ModuleName simplemodname = m.getFullModuleName().getSimpleName();
-		/*for (DataTypeDecl dtd : m.data)
+		for (DataTypeDecl dtd : m.data)
 		{
+			..HERE: record message signature names for name checking
+			
 			if (dtd instanceof PayloadTypeDecl)
 			{
 				//PayloadType simplename = ptd.alias.toName();
@@ -130,7 +134,7 @@ public class ModuleContext
 				this.sigs.put(simplename, fullname);
 				this.sigs.put(selfname, fullname);
 			}
-		}*/
+		}
 		for (GProtocolDecl gpd : m.getGlobalProtocolDecls())
 		{
 			//ProtocolName simplename = gpd.header.name.toName();
@@ -182,9 +186,9 @@ public class ModuleContext
 	public void addLocalProtocolDecl(LocalProtocolDecl lpd)
 	{
 		this.locals.put(lpd., value);
-	}* /
+	}*/
 
-	public boolean isModuleVisible(ModuleName modname)
+	/*public boolean isModuleVisible(ModuleName modname)
 	{
 		return this.modules.keySet().contains(modname);
 	}
@@ -192,14 +196,14 @@ public class ModuleContext
 	public boolean isPayloadTypeVisible(PayloadType typename)
 	{
 		return this.types.keySet().contains(typename);
-	}
+	}*/
 
-	public boolean isMessageSignatureNameVisible(MessageSignatureName signame)
+	public boolean isMessageSigNameVisible(Name<? extends Kind> signame)
 	{
-		return this.sigs.keySet().contains(signame);
+		return this.sigs.containsKey(signame);
 	}
 
-	public boolean isGlobalProtocolVisible(ProtocolName proto)
+	/*public boolean isGlobalProtocolVisible(ProtocolName proto)
 	{
 		return this.globals.keySet().contains(proto);
 	}

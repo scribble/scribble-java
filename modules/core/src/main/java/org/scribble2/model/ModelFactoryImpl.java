@@ -1,5 +1,6 @@
 package org.scribble2.model;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.scribble2.model.del.DefaultModelDel;
@@ -55,6 +56,7 @@ import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
@@ -72,6 +74,7 @@ import org.scribble2.sesstype.kind.OperatorKind;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.kind.RecVarKind;
 import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Role;
 
@@ -108,7 +111,7 @@ public class ModelFactoryImpl implements ModelFactory
 			ModuleDecl moddecl,
 			//List<? extends ImportDecl> imports,
 			List<ImportDecl> imports,
-			List<NonProtocolDecl> data,
+			List<NonProtocolDecl<? extends Kind>> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.ProtocolKind>> protos)
 	{
@@ -133,6 +136,14 @@ public class ModelFactoryImpl implements ModelFactory
 		//im = del(im, createDefaultDelegate());
 		im = del(im, new ImportModuleDel());
 		return im;
+	}
+	
+	@Override
+	public MessageSigDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias)
+	{
+		MessageSigDecl msd = new MessageSigDecl(schema, extName, source, alias);
+		msd = del(msd, createDefaultDelegate());
+		return msd;
 	}
 
 	@Override
@@ -327,7 +338,7 @@ public class ModelFactoryImpl implements ModelFactory
 		else if (kind.equals(RoleKind.KIND))
 		{
 			RoleNode rn = new RoleNode(identifier);
-			rn = (RoleNode) rn.del(new RoleNodeDel());
+			rn = (RoleNode) del(rn, new RoleNodeDel());
 			return castNameNode(kind, rn);
 		}
 		else if (kind.equals(ProtocolKind.KIND))
@@ -338,10 +349,12 @@ public class ModelFactoryImpl implements ModelFactory
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
-		return castNameNode(kind, (NameNode<? extends Name<K>, K>) snn.del(createDefaultDelegate()));
+		//return castNameNode(kind, (NameNode<? extends Name<K>, K>) snn.del(createDefaultDelegate()));
+		return castNameNode(kind, del(snn, createDefaultDelegate()));
 	}
 	
-	private static <T extends NameNode<? extends Name<? extends Kind>, K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Name<? extends Kind>, ? extends Kind> n)
+	private static <T extends NameNode<? extends Name<? extends Kind>, K>, K extends Kind> T
+			castNameNode(K kind, NameNode<? extends Name<? extends Kind>, ? extends Kind> n)
 	{
 		if (!n.toName().kind.equals(kind))
 		{
@@ -372,11 +385,31 @@ public class ModelFactoryImpl implements ModelFactory
 		{
 			qnn = new ProtocolNameNode(elems);
 		}
+		else if (kind.equals(SigKind.KIND))
+		{
+			qnn = new MessageSigNameNode(elems);
+		}
 		else
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
-		return (QualifiedNameNode<? extends Name<K>, K>) qnn.del(createDefaultDelegate());
+		
+		System.out.println("a: " + Arrays.toString(elems));
+		System.out.println("a: " + Arrays.toString(elems));
+		
+		return castQualifiedNameNode(kind, del(qnn, createDefaultDelegate()));
+	}
+
+	private static <T extends QualifiedNameNode<? extends Name<? extends Kind>, K>, K extends Kind> T
+			castQualifiedNameNode(K kind, QualifiedNameNode<? extends Name<? extends Kind>, ? extends Kind> n)
+	{
+		if (!n.toName().kind.equals(kind))
+		{
+			throw new RuntimeException("Shouldn't get in here: " + kind + ", " + n);
+		}
+		@SuppressWarnings("unchecked")
+		T tmp = (T) n;
+		return tmp;
 	}
 
 	@Override

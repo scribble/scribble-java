@@ -5,15 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.NonProtocolDecl;
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.Module;
 import org.scribble2.model.ModuleDecl;
+import org.scribble2.model.NonProtocolDecl;
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
+import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.ProtocolKind;
 
 public class AntlrModule
@@ -24,7 +25,7 @@ public class AntlrModule
 	{
 		ModuleDecl md = (ModuleDecl) parser.parse(getModuleDeclChild(ct));
 		List<ImportDecl> ids = new LinkedList<>();
-		List<NonProtocolDecl> ptds = new LinkedList<>();
+		List<NonProtocolDecl<? extends Kind>> ptds = new LinkedList<>();
 		//List<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 		List<ProtocolDecl<? extends ProtocolKind>>
 				pds = new LinkedList<>();
@@ -36,7 +37,7 @@ public class AntlrModule
 		for (CommonTree ptd : getDataTypeDeclChildren(ct))
 		{
 			//ptds.add((PayloadTypeDecl) parser.parse(ptd));
-			ptds.add((NonProtocolDecl) parser.parse(ptd));
+			ptds.add((NonProtocolDecl<? extends Kind>) parser.parse(ptd));
 		}
 		for (CommonTree pd : getProtocolDeclChildren(ct))
 		{

@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.Module;
+import org.scribble2.model.context.ModuleContext;
+import org.scribble2.model.del.ModuleDel;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.util.ScribbleException;
@@ -85,10 +88,17 @@ public class NameDisambiguator extends ModelVisitor
 		return n.disambiguate(this);
 	}*/
 	
+	private ModuleContext mcontext;  // FIXME: hack -- factor out ContextVisitor
+	
 	@Override
 	//public NameDisambiguator enter(ModelNode parent, ModelNode child) throws ScribbleException
 	public void enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
+		if (child instanceof Module)
+		{
+			this.mcontext = ((ModuleDel) child.del()).getModuleContext();
+		}
+
 		// Could make forwarder methods in ModelNode
 		//return (NameDisambiguator) child.del().enterDisambiguation(parent, child, this);
 		child.del().enterDisambiguation(parent, child, this);
@@ -99,6 +109,11 @@ public class NameDisambiguator extends ModelVisitor
 	{
 		//return visited.del().leaveDisambiguation(parent, child, (NameDisambiguator) nv, visited);
 		return visited.del().leaveDisambiguation(parent, child, this, visited);
+	}
+	
+	public ModuleContext getModuleContext() throws ScribbleException
+	{
+		return this.mcontext;
 	}
 
 	/*public PayloadTypeOrParameterNode disambiguate(AmbiguousNameNode ambig) throws ScribbleException

@@ -2,9 +2,11 @@ package org.scribble2.model.del.name;
 
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModelDelBase;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Named;
 import org.scribble2.util.ScribbleException;
@@ -28,17 +30,19 @@ public class AmbigNameNodeDel extends ModelDelBase
 	@Override
 	public ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException
 	{
+		ModuleContext mcontext = disamb.getModuleContext();
+
 		//IName name = ((Named) visited).toName();
 		Name<? extends Kind> name = ((Named<? extends Name<? extends Kind>, ? extends Kind>) visited).toName();
 		/*if (disamb.isVisiblePayloadType(name))  // By well-formedness (checked later), payload type and parameter names are distinct
 		{
 			return new PayloadTypeNameNode(this.ct, name.toString());
 		}
-		else if (disamb.isVisibleMessageSignatureName(name))
+		else*/ if (mcontext.isMessageSigNameVisible(name))
 		{
-			return new MessageSignatureNameNode(this.ct, name.toString());
+			return ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, name.getElements());
 		}
-		else */if (disamb.isBoundParameter(name))
+		else if (disamb.isBoundParameter(name))
 		{
 			//return ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, name.toString());
 			return ModelFactoryImpl.FACTORY.ParamNode(disamb.getParameterKind(name), name.toString());

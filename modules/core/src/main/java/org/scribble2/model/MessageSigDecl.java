@@ -1,13 +1,14 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.qualified.MessageSigNameNode;
+import org.scribble2.model.name.qualified.MemberNameNode;
 import org.scribble2.sesstype.kind.SigKind;
+import org.scribble2.sesstype.name.MemberName;
 
 public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode implements ModuleMember //implements NameDeclaration
 {
 	// FIXME: need to replace ParameterNode by a signature member node
 	//public MessageSigDecl(String schema, String extName, String source, SimpleMessageSignatureNameNode alias)
-	public MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias)
+	public MessageSigDecl(String schema, String extName, String source, MemberNameNode<? extends MemberName<SigKind>, SigKind> alias)
 	{
 		super(schema, extName, source, alias);
 	}
@@ -42,10 +43,9 @@ public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode impl
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected MessageSigDecl copy()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new MessageSigDecl(this.schema, this.extName, this.source, this.alias);
 	}
 
 	/*public PayloadType getFullPayloadTypeName()
