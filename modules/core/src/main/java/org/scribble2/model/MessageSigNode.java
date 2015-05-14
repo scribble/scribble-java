@@ -2,7 +2,6 @@ package org.scribble2.model;
 
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.sesstype.MessageSig;
-import org.scribble2.sesstype.name.Scope;
 
 public class MessageSigNode extends ModelNodeBase implements MessageNode
 {
@@ -16,13 +15,19 @@ public class MessageSigNode extends ModelNodeBase implements MessageNode
 	}
 
 	@Override
-	public boolean isMessageSignatureNode()
+	public boolean isMessageSigNode()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isPayloadTypeNode()
+	public boolean isMessageSigNameNode()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isDataTypeNameNode()
 	{
 		return false;
 	}

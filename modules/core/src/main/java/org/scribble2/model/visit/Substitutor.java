@@ -50,11 +50,16 @@ public class Substitutor extends ModelVisitor
 	//public ArgumentNode getArgumentSubstitution(Argument arg)
 	public <K extends Kind> ArgumentNode getArgumentSubstitution(Argument<K> arg)
 	{
-		ArgumentNode an = this.argmap.get(arg);
-		if (an.isMessageSignatureNode())
+		ArgumentNode an = (ArgumentNode) this.argmap.get(arg);
+		if (an.isMessageSigNode())
 		{
 			MessageSigNode msn = (MessageSigNode) an;
-			return new MessageSigNode(msn.op, msn.payload);  // FIXME: use factory
+			//return new MessageSigNode(msn.op, msn.payload);  // FIXME: use factory
+			return (ArgumentNode) ModelFactoryImpl.FACTORY.MessageSignatureNode(msn.op, msn.payload);
+		}
+		else if (an.isMessageSigNameNode())
+		{
+			throw new RuntimeException("TODO: " + arg);
 		}
 		/*else if (an.isPayloadTypeNode())
 		{
@@ -63,7 +68,9 @@ public class Substitutor extends ModelVisitor
 		}*/
 		else if (an.isParameterNode())
 		{
-			return Substitutor.<K>copyParameterNode(an);
+			//return Substitutor.copyParameterNode((ParameterNode<K>) an);
+			ParameterNode<K> pn = (ParameterNode<K>) an;
+			return ModelFactoryImpl.FACTORY.ParameterNode(pn.kind, pn.identifier);
 		}
 		else
 		{
@@ -71,11 +78,11 @@ public class Substitutor extends ModelVisitor
 		}
 	}
 
-	private static <K extends Kind> ArgumentNode copyParameterNode(ArgumentNode an)
+	/*private static <K extends Kind> ParameterNode<K> copyParameterNode(ParameterNode<K> an)
 	{
-		ParameterNode<K> pn = (ParameterNode<K>) an;
+		ParameterNode<K> pn = an;
 		//return new ParameterNode(null, pn.toName().toString());//, pn.kind);
 		//return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, pn.identifier);
 		return ModelFactoryImpl.FACTORY.ParameterNode(pn.kind, pn.identifier);
-	}
+	}*/
 }

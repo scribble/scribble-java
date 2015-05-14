@@ -19,7 +19,7 @@ global protocol Foo<sig M2>(role A, role B)
 	{
 		//1() from A to B;
 		//do Bar<1()>(A, B);
-		do Bar<2()>(A, B);
+		//do Bar<2()>(A, B);
 		M2 from A to B;
 	}
 	or

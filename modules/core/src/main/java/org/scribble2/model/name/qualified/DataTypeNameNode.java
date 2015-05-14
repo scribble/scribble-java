@@ -1,6 +1,5 @@
 package org.scribble2.model.name.qualified;
 
-import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.kind.DataTypeKind;
@@ -10,7 +9,7 @@ import org.scribble2.sesstype.name.ModuleName;
 //public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode//, PayloadTypeOrParameterNode
 //public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode
 //public class DataTypeNameNode extends SimpleNameNode<DataType, DataTypeKind> implements PayloadElementNameNode, ArgumentNode
-public class DataTypeNameNode extends MemberNameNode<DataType, DataTypeKind> implements PayloadElementNameNode, ArgumentNode
+public class DataTypeNameNode extends MemberNameNode<DataType, DataTypeKind> implements PayloadElementNameNode//, ArgumentNode
 {
 	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
 	public DataTypeNameNode(String... elems)
@@ -60,15 +59,21 @@ public class DataTypeNameNode extends MemberNameNode<DataType, DataTypeKind> imp
 	}*/
 
 	@Override
-	public boolean isMessageSignatureNode()
+	public boolean isMessageSigNode()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isPayloadTypeNode()
+	public boolean isMessageSigNameNode()
 	{
 		return false;
+	}
+
+	@Override
+	public boolean isDataTypeNameNode()
+	{
+		return true;
 	}
 
 	@Override
@@ -82,7 +87,7 @@ public class DataTypeNameNode extends MemberNameNode<DataType, DataTypeKind> imp
 	public Argument<DataTypeKind> toArgument()  // FIXME: shouldn't be scoped
 	{
 		//return toName();
-		return null;
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	@Override

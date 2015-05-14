@@ -1,28 +1,28 @@
 package org.scribble2.sesstype.name;
 
-import org.scribble2.sesstype.kind.AmbiguousKind;
+import org.scribble2.sesstype.kind.AmbigKind;
 
-public class AmbiguousName extends Name<AmbiguousKind> //SerializableSimpleName
+public class AmbigName extends Name<AmbigKind> //SerializableSimpleName
 {
 	private static final long serialVersionUID = 1L;
 	
-	public static final AmbiguousName EMPTY_OPERATOR = new AmbiguousName();
+	public static final AmbigName EMPTY_OPERATOR = new AmbigName();
 	
 	//public static final Operator TAU = new Operator("__tau");
 	//public static final Operator ENTER = new Operator("__enter");
 	//public static final Operator FORK = new Operator("__fork");
 	//public static final Operator JOIN = new Operator("__join");
 
-	protected AmbiguousName()
+	protected AmbigName()
 	{
 		//super(KindEnum.OPERATOR);
-		super(AmbiguousKind.KIND);
+		super(AmbigKind.KIND);
 	}
 
 	// FIXME: scope should be a subcomponent -- or in MessageSignature
-	public AmbiguousName(String text)
+	public AmbigName(String text)
 	{
 		//super(KindEnum.OPERATOR, text);
-		super(AmbiguousKind.KIND, text);
+		super(AmbigKind.KIND, text);
 	}
 }

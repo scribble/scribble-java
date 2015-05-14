@@ -48,6 +48,7 @@ import org.scribble2.util.ScribbleException;
 // - import path should be a CL parameter, not MainContext
 
 // Not done
+// - ArgumentNode is not kinded -- argument interface is about not knowing what kind of argument it is; e.g. AmbiguousNameNode has both DataType and Sig kind interfaces
 // - FIXME: factor out a project method (like a reconstruct) to GlobalModelNode (and use the below for recording/assembling the projections) -- no, leave in delegate
 // - change InteractionNode interface to a base class -- no, better for interaction nodes to extend simple/compound as base
 // - make a createDelegate method in ModelNode -- no, leave association of delegates to model nodes in factory -- then replacing a delegate requires changing the factory only

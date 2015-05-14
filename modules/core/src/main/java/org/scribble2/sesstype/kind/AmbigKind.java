@@ -1,10 +1,10 @@
 package org.scribble2.sesstype.kind;
 
-public class AmbiguousKind extends Kind
+public class AmbigKind extends Kind
 {
-	public static final AmbiguousKind KIND = new AmbiguousKind();
+	public static final AmbigKind KIND = new AmbigKind();
 	
-	protected AmbiguousKind()
+	protected AmbigKind()
 	{
 
 	}
@@ -22,7 +22,7 @@ public class AmbiguousKind extends Kind
 		{
 			return true;
 		}
-		if (!(o instanceof AmbiguousKind))
+		if (!(o instanceof AmbigKind))
 		{
 			return false;
 		}

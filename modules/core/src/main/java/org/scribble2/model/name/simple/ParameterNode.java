@@ -2,7 +2,7 @@ package org.scribble2.model.name.simple;
 
 import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.name.qualified.DataTypeNameNode;
+import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.visit.Substitutor;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
@@ -12,10 +12,13 @@ import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.DataType;
 import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.PayloadType;
 
 //public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 //public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
-public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements MessageNode//ArgumentNode //, ArgumentInstantiation//, PayloadTypeOrParameterNode
+public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements
+		//ArgumentNode 
+		MessageNode, PayloadElementNameNode
 {
 	// FIXME: maybe shouldn't be kinded, as just AST node?  or do name/kind disambiguation -- maybe disamb not needed, AmbiguousNameNode --disamb--> kinded Parameter
 	
@@ -62,14 +65,15 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	@Override
 	public ArgumentNode substituteNames(Substitutor subs)
 	{
+		Argument<K> arg = toArgument();
 		ArgumentNode an;
 		if (this.kind.equals(SigKind.KIND))
 		{
-			an = (MessageNode) subs.getArgumentSubstitution(toArgument());  // FIXME: reconstruct/clone?
+			an = subs.getArgumentSubstitution(arg);  // FIXME: reconstruct/clone?
 		}
 		else if (this.kind.equals(DataTypeKind.KIND))
 		{
-			an = (DataTypeNameNode) subs.getArgumentSubstitution(toArgument());  // FIXME: reconstruct/clone?
+			an = subs.getArgumentSubstitution(arg);  // FIXME: reconstruct/clone?)
 		}
 		else
 		{
@@ -99,13 +103,19 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	}
 
 	@Override
-	public boolean isMessageSignatureNode()
+	public boolean isMessageSigNode()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isPayloadTypeNode()
+	public boolean isMessageSigNameNode()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isDataTypeNameNode()
 	{
 		return false;
 	}
@@ -135,7 +145,7 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 	@Override
 	//public Parameter toArgument()
 	//public Name<K> toArgument()
-	public Argument<? extends Kind> toArgument()
+	public Argument<K> toArgument()
 	{
 		//return toName();
 		if (this.kind.equals(DataTypeKind.KIND))
@@ -144,7 +154,7 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 		}
 		else if (this.kind.equals(SigKind.KIND))
 		{
-			return toMessage();
+			return (Argument<K>) toMessage();
 		}
 		throw new RuntimeException("Shouldn't get here: " + this);
 	}
@@ -159,6 +169,16 @@ public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> im
 			throw new RuntimeException("Shouldn't get in here: " + this);
 		}
 		return (Message) toName();
+	}
+
+	@Override
+	public PayloadType<? extends Kind> toPayloadType()
+	{
+		if (!this.kind.equals(DataTypeKind.KIND))
+		{
+			throw new RuntimeException("Shouldn't get in here: " + this);
+		}
+		return (DataType) toName();
 	}
 
 	/*@Override

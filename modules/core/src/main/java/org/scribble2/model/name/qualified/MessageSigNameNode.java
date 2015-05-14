@@ -1,7 +1,6 @@
 package org.scribble2.model.name.qualified;
 
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.visit.Substitutor;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.ModuleName;
@@ -68,13 +67,19 @@ public class MessageSigNameNode extends MemberNameNode<MessageSigName, SigKind> 
 	}
 
 	@Override
-	public boolean isMessageSignatureNode()
+	public boolean isMessageSigNode()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isPayloadTypeNode()
+	public boolean isMessageSigNameNode()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isDataTypeNameNode()
 	{
 		return false;
 	}

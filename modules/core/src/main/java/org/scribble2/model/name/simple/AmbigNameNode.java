@@ -4,17 +4,18 @@ import org.scribble2.model.MessageNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.Message;
-import org.scribble2.sesstype.kind.AmbiguousKind;
+import org.scribble2.sesstype.kind.AmbigKind;
 import org.scribble2.sesstype.kind.Kind;
-import org.scribble2.sesstype.name.AmbiguousName;
+import org.scribble2.sesstype.name.AmbigName;
 import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.PayloadType;
 
 // Primitive payload type or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
 //public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
-public class AmbigNameNode extends SimpleNameNode<Name<AmbiguousKind>, AmbiguousKind> implements //ArgumentNode
+public class AmbigNameNode extends SimpleNameNode<Name<AmbigKind>, AmbigKind> implements
 	PayloadElementNameNode, MessageNode
+	//ArgumentNode<AmbiguousKind>
 {
 	public AmbigNameNode(String identifier)
 	{
@@ -56,6 +57,7 @@ public class AmbigNameNode extends SimpleNameNode<Name<AmbiguousKind>, Ambiguous
 	@Override
 	//public Argument<? extends Kind> toArgument(Scope scope)
 	public Argument<? extends Kind> toArgument()
+	//public Argument<AmbiguousKind> toArgument()
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
 	}
@@ -68,7 +70,7 @@ public class AmbigNameNode extends SimpleNameNode<Name<AmbiguousKind>, Ambiguous
 	}
 
 	@Override
-	public PayloadType toPayloadType()
+	public PayloadType<? extends Kind> toPayloadType()
 	{
 		//throw new RuntimeException("Shouldn't get in here: " + this);
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
@@ -76,20 +78,26 @@ public class AmbigNameNode extends SimpleNameNode<Name<AmbiguousKind>, Ambiguous
 
 	@Override
 	//public IName toName()
-	public Name<AmbiguousKind> toName()
+	public Name<AmbigKind> toName()
 	{
 		//return new SimpleName(KindEnum.AMBIGUOUS, this.identifier);
-		return new AmbiguousName(this.identifier);
+		return new AmbigName(this.identifier);
 	}
 
 	@Override
-	public boolean isMessageSignatureNode()
+	public boolean isMessageSigNode()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isPayloadTypeNode()
+	public boolean isMessageSigNameNode()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isDataTypeNameNode()
 	{
 		return false;
 	}
