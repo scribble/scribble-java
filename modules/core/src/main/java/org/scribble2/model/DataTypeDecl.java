@@ -2,6 +2,7 @@ package org.scribble2.model;
 
 import org.scribble2.model.name.qualified.DataTypeNameNode;
 import org.scribble2.sesstype.kind.DataTypeKind;
+import org.scribble2.sesstype.name.DataType;
 
 //public class PayloadTypeDecl extends NonProtocolDecl //AbstractNode implements ModuleMember //implements NameDeclaration
 public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
@@ -32,6 +33,18 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	{
 		return new PayloadTypeDecl(ct, schema, extName, source, (SimplePayloadTypeNode) alias);
 	}*/
+	
+	@Override
+	public DataType getAliasName()
+	{
+		return (DataType) super.getAliasName();
+	}
+	
+	@Override
+	public boolean isDataTypeDecl()
+	{
+		return true;
+	}
 
 	@Override
 	public String toString()
@@ -44,8 +57,7 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	@Override
 	protected ModelNodeBase copy()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	/*public PayloadType getFullPayloadTypeName()

@@ -24,6 +24,16 @@ public abstract class NonProtocolDecl<K extends Kind> extends ModelNodeBase //im
 		this.source = source;
 		this.alias = alias;
 	}
+	
+	public boolean isDataTypeDecl()
+	{
+		return false;
+	}
+
+	public boolean isMessageSigDecl()
+	{
+		return false;
+	}
 
 	/*@Override
 	public PayloadTypeDecl disambiguate(PayloadTypeOrParameterDisambiguator disamb) throws ScribbleException
@@ -42,12 +52,15 @@ public abstract class NonProtocolDecl<K extends Kind> extends ModelNodeBase //im
 		//return new DataTypeDecl(this.ct, this.schema, this.extName, this.source, alias);
 		PrimitiveNameNode alias = (PrimitiveNameNode) visitChild(this.alias, nv);
 		return reconstruct(ct, schema, extName, source, alias);
-	}
+	}*/
 	
-	public Name getAliasName()
+	//public abstract MemberName<K> getFullDeclName();
+	
+	//public Name getAliasName()
+	public MemberName<K> getAliasName()
 	{
 		return this.alias.toName();
-	}*/
+	}
 
 	/*@Override
 	public String toString()

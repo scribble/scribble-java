@@ -25,4 +25,14 @@ public class AmbigName extends Name<AmbigKind> //SerializableSimpleName
 		//super(KindEnum.OPERATOR, text);
 		super(AmbigKind.KIND, text);
 	}
+	
+	public MessageSigName toMessageSigName()
+	{
+		return new MessageSigName(getLastElement());
+	}
+
+	public DataType toDataType()
+	{
+		return new DataType(getLastElement());
+	}
 }

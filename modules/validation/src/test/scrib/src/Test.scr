@@ -10,13 +10,36 @@ module Test;
 
 //import Test2;
 
-sig <java> "foo" from "bar" as M1;
 
 
 global protocol Foo(role A, role B)
 {
-	M1 from A to B;
+	
 }
+
+
+/*
+sig <java> "foo" from "bar" as M1;
+
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		M1 from A to B;
+	}
+	or
+	{
+		do Foo(A, B);  // Not guarded -- FSM translation would be weird
+		//do Bar<M1>(A, B);
+		//do Bar<1()>(A, B);
+	}
+}
+
+global protocol Bar<sig M>(role A, role B)
+{
+	M from A to B;
+}
+//*/
 
 
 /*//

@@ -393,10 +393,6 @@ public class ModelFactoryImpl implements ModelFactory
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
-		
-		System.out.println("a: " + Arrays.toString(elems));
-		System.out.println("a: " + Arrays.toString(elems));
-		
 		return castQualifiedNameNode(kind, del(qnn, createDefaultDelegate()));
 	}
 

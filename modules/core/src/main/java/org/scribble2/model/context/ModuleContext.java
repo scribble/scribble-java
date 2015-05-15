@@ -5,11 +5,14 @@ import java.util.Map;
 
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.ImportModule;
+import org.scribble2.model.MessageSigDecl;
 import org.scribble2.model.Module;
+import org.scribble2.model.NonProtocolDecl;
 import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.DataType;
 import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.ModuleName;
@@ -45,7 +48,7 @@ public class ModuleContext
 		this.locals = new HashMap<>();
 		
 		addModule(root, fullmodname);
-		addLocalMembers(root, fullmodname);
+		addLocalMembers(root);//, fullmodname);
 		
 		addImportedModules(jcontext, jcontext.getModule(this.root));
 		//addMembers();
@@ -108,31 +111,36 @@ public class ModuleContext
 		}
 	}
 	
-	private void addLocalMembers(Module m, ModuleName fullmodname)
+	private void addLocalMembers(Module m)//, ModuleName fullmodname)
 	{
-		ModuleName simplemodname = m.getFullModuleName().getSimpleName();
-		for (DataTypeDecl dtd : m.data)
+		ModuleName fullmodname = m.getFullModuleName();
+		ModuleName simplemodname = fullmodname.getSimpleName();
+		for (NonProtocolDecl<? extends Kind> dtd : m.data)
 		{
-			..HERE: record message signature names for name checking
-			
-			if (dtd instanceof PayloadTypeDecl)
+			if (dtd.isDataTypeDecl())
 			{
-				//PayloadType simplename = ptd.alias.toName();
+				/*//PayloadType simplename = ptd.alias.toName();
 				PayloadType simplename = ((PayloadTypeDecl) dtd).getAliasName();
 				PayloadType fullname = ((PayloadTypeDecl) dtd).getFullPayloadTypeName();
 				PayloadType selfname = new PayloadType(simplemodname, simplename.toString());
 				//this.data.put(simplename, fullname);
 				//this.data.put(selfname, fullname);
 				this.types.put(simplename, fullname);
-				this.types.put(selfname, fullname);
+				this.types.put(selfname, fullname);*/
+				throw new RuntimeException("TODO: " + dtd);
 			}
-			else //if (dtd instanceof MessageSignatureDecl)
+			else if (dtd.isMessageSigDecl())
 			{
-				MessageSignatureName simplename = ((MessageSignatureDecl) dtd).getAliasName();
-				MessageSignatureName fullname = ((MessageSignatureDecl) dtd).getFullMessageSignatureName();  // FIXME: compound full sig name
-				MessageSignatureName selfname = new MessageSignatureName(simplemodname, simplename.toString());  // FIXME: hack
+				MessageSigName simplename = ((MessageSigDecl) dtd).getAliasName();
+				//MessageSigName fullname = ((MessageSigDecl) dtd).getFullMessageSignatureName();  // FIXME: compound full sig name
+				MessageSigName fullname = new MessageSigName(fullmodname, simplename);
+				MessageSigName selfname = new MessageSigName(simplemodname, simplename);
 				this.sigs.put(simplename, fullname);
 				this.sigs.put(selfname, fullname);
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + dtd);
 			}
 		}
 		for (GProtocolDecl gpd : m.getGlobalProtocolDecls())
@@ -198,7 +206,7 @@ public class ModuleContext
 		return this.types.keySet().contains(typename);
 	}*/
 
-	public boolean isMessageSigNameVisible(Name<? extends Kind> signame)
+	public boolean isMessageSigNameVisible(Name<? extends SigKind> signame)
 	{
 		return this.sigs.containsKey(signame);
 	}

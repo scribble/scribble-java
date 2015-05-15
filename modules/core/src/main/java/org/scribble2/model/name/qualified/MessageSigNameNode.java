@@ -75,7 +75,7 @@ public class MessageSigNameNode extends MemberNameNode<MessageSigName, SigKind> 
 	@Override
 	public boolean isMessageSigNameNode()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

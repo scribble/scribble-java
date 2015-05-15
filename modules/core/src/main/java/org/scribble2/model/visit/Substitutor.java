@@ -6,11 +6,12 @@ import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Argument;
 import org.scribble2.sesstype.kind.Kind;
-import org.scribble2.sesstype.kind.OperatorKind;
+import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -59,7 +60,8 @@ public class Substitutor extends ModelVisitor
 		}
 		else if (an.isMessageSigNameNode())
 		{
-			throw new RuntimeException("TODO: " + arg);
+			MessageSigNameNode msn = (MessageSigNameNode) an;
+			return (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, msn.getElements());
 		}
 		/*else if (an.isPayloadTypeNode())
 		{

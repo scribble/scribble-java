@@ -3,6 +3,7 @@ package org.scribble2.model;
 import org.scribble2.model.name.qualified.MemberNameNode;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.MemberName;
+import org.scribble2.sesstype.name.MessageSigName;
 
 public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode implements ModuleMember //implements NameDeclaration
 {
@@ -11,6 +12,18 @@ public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode impl
 	public MessageSigDecl(String schema, String extName, String source, MemberNameNode<? extends MemberName<SigKind>, SigKind> alias)
 	{
 		super(schema, extName, source, alias);
+	}
+
+	/*public MessageSigName getFullDeclName()
+	{
+		//ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrPayloadTypeDecl.getModuleParent(this.ct));
+		return new MessageSigName(fullmodname, this.alias.toName().toString());
+	}*/
+	
+	@Override
+	public MessageSigName getAliasName()
+	{
+		return (MessageSigName) super.getAliasName();
 	}
 
 	/*@Override
@@ -33,6 +46,12 @@ public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode impl
 	{
 		return new MessageSignatureDecl(ct, schema, extName, source, (SimpleMessageSignatureNameNode) alias);
 	}*/
+	
+	@Override
+	public boolean isMessageSigDecl()
+	{
+		return true;
+	}
 
 	@Override
 	public String toString()
@@ -59,18 +78,5 @@ public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode impl
 	{
 		ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrPayloadTypeDecl.getModuleParent(this.ct));
 		return new Parameter(Kind.SIG, fullmodname + "." + this.alias.toName());
-	}*/
-
-	/*public MessageSignatureName getFullMessageSignatureName()
-	{
-		ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrPayloadTypeDecl.getModuleParent(this.ct));
-		return new MessageSignatureName(fullmodname, this.alias.toName().toString());
-	}
-
-	@Override
-	public MessageSignatureName getAliasName()
-	{
-		//return ((ParameterNode) this.alias).toName();
-		return ((SimpleMessageSignatureNameNode) this.alias).toName();
 	}*/
 }

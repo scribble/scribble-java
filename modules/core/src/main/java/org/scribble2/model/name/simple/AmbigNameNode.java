@@ -78,7 +78,7 @@ public class AmbigNameNode extends SimpleNameNode<Name<AmbigKind>, AmbigKind> im
 
 	@Override
 	//public IName toName()
-	public Name<AmbigKind> toName()
+	public AmbigName toName()
 	{
 		//return new SimpleName(KindEnum.AMBIGUOUS, this.identifier);
 		return new AmbigName(this.identifier);
