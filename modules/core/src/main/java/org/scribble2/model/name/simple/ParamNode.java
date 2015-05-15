@@ -16,7 +16,8 @@ import org.scribble2.sesstype.name.PayloadType;
 
 //public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 //public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
-public class ParamNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements
+//public class ParamNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements
+public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
 		//ArgumentNode 
 		MessageNode, PayloadElementNameNode
 {

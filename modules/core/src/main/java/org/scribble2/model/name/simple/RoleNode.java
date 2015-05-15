@@ -8,7 +8,8 @@ import org.scribble2.sesstype.name.Role;
 
 
 //public class RoleNode extends SimpleNameNode<Role> implements InstantiationNode //RoleDecl, RoleInstantiation
-public class RoleNode extends SimpleNameNode<Role, RoleKind> implements InstantiationNode //RoleDecl, RoleInstantiation
+//public class RoleNode extends SimpleNameNode<Role, RoleKind> implements InstantiationNode //RoleDecl, RoleInstantiation
+public class RoleNode extends SimpleNameNode<RoleKind> implements InstantiationNode //RoleDecl, RoleInstantiation
 {
 	public RoleNode(String identifier)
 	{

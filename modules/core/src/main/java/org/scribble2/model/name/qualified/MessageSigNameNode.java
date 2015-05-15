@@ -7,7 +7,8 @@ import org.scribble2.sesstype.name.ModuleName;
 
 //public class MessageSignatureNameNode extends MemberNameNode implements MessageNode
 //public class MessageSignatureNameNode extends SimpleNameNode<MessageSignatureName, SigKind> implements MessageNode
-public class MessageSigNameNode extends MemberNameNode<MessageSigName, SigKind> implements MessageNode
+//public class MessageSigNameNode extends MemberNameNode<MessageSigName, SigKind> implements MessageNode
+public class MessageSigNameNode extends MemberNameNode<SigKind> implements MessageNode
 {
 	/*// FIXME: not syntax
 	public final String schema;

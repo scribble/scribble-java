@@ -40,9 +40,7 @@ import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.kind.Global;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.Local;
-import org.scribble2.sesstype.kind.RoleKind;
-import org.scribble2.sesstype.name.Name;
-import org.scribble2.sesstype.name.Role;
+import org.scribble2.sesstype.kind.ProtocolKind;
 
 public interface ModelFactory
 {
@@ -55,7 +53,7 @@ public interface ModelFactory
 			List<ImportDecl> imports,
 			List<NonProtocolDecl<? extends Kind>> data,
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
-			List<ProtocolDecl<? extends org.scribble2.sesstype.kind.ProtocolKind>> protos);
+			List<ProtocolDecl<? extends ProtocolKind>> protos);
 	
 	MessageSigNode MessageSignatureNode(OperatorNode op, PayloadNode payload);
 	PayloadNode Payload(List<PayloadElement> payloadelems);
@@ -70,10 +68,13 @@ public interface ModelFactory
 	GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
 
 	//RoleDeclList RoleDeclList(List<RoleDecl> rds);
-	RoleDeclList RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> rds);
+	//RoleDeclList RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> rds);
+	RoleDeclList RoleDeclList(List<RoleDecl> rds);
 	RoleDecl RoleDecl(RoleNode namenode);
 	//ParamDeclList ParameterDeclList(List<ParamDecl> pds);
-	ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds);
+	//ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds);
+	//ParamDeclList ParameterDeclList(List<HeaderParamDecl<Kind>> pds);
+	ParamDeclList ParameterDeclList(List<ParamDecl<Kind>> pds);
 	//ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode);
 	<K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParamNode<K> namenode);
 	//<K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode);
@@ -98,9 +99,11 @@ public interface ModelFactory
 
 	// FIXME: instead of enums, take class as generic parameter
 	//SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);
-	<K extends Kind> NameNode<? extends Name<K>, K> SimpleNameNode(K kind, String identifier);
+	//<K extends Kind> NameNode<? extends Name<K>, K> SimpleNameNode(K kind, String identifier);
+	<K extends Kind> NameNode<K> SimpleNameNode(K kind, String identifier);
 	//QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems);
-	<K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems);
+	//<K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems);
+	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind, String... elems);
 	
 	AmbigNameNode AmbiguousNameNode(String identifier);
 	<K extends Kind> ParamNode<K> ParamNode(K kind, String identifier);

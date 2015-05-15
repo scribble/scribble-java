@@ -1,14 +1,16 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.qualified.DataTypeNameNode;
+import org.scribble2.model.name.qualified.MemberNameNode;
 import org.scribble2.sesstype.kind.DataTypeKind;
-import org.scribble2.sesstype.name.DataType;
 
 //public class PayloadTypeDecl extends NonProtocolDecl //AbstractNode implements ModuleMember //implements NameDeclaration
+//public class DataTypeDecl extends NonProtocolDecl<DataType, DataTypeKind>
 public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 {
 	//public PayloadTypeDecl(String schema, String extName, String source, SimplePayloadTypeNode alias)
-	public DataTypeDecl(String schema, String extName, String source, DataTypeNameNode alias)
+	//public DataTypeDecl(String schema, String extName, String source, DataTypeNameNode alias)
+	//public DataTypeDecl(String schema, String extName, String source, MemberNameNode<? extends DataType, DataTypeKind> alias)
+	public DataTypeDecl(String schema, String extName, String source, MemberNameNode<DataTypeKind> alias)
 	{
 		super(schema, extName, source, alias);
 	}
@@ -34,11 +36,17 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 		return new PayloadTypeDecl(ct, schema, extName, source, (SimplePayloadTypeNode) alias);
 	}*/
 	
-	@Override
+	/*@Override
 	public DataType getAliasName()
 	{
 		return (DataType) super.getAliasName();
-	}
+	}*/
+
+	/*@Override
+	public DataType toName()
+	{
+		return (DataType) super.toName(); 
+	}*/
 	
 	@Override
 	public boolean isDataTypeDecl()
@@ -51,7 +59,9 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	{
 		return Constants.TYPE_KW + " <" + this.schema + "> " + this.extName
 				+ " " + Constants.FROM_KW + " " + this.source + " "
-				+ Constants.AS_KW + " " + this.alias + ";";
+				+ Constants.AS_KW + " "
+				//+ this.alias + ";";
+				+ this.name + ";";
 	}
 
 	@Override

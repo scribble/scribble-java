@@ -3,13 +3,13 @@ package org.scribble2.model.name.qualified;
 import java.util.Arrays;
 
 import org.scribble2.sesstype.kind.Kind;
-import org.scribble2.sesstype.name.MemberName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.PackageName;
 
 
 //public abstract class MemberNameNode<T extends Name<K>, K extends Kind> extends QualifiedNameNode<T, K>
-public abstract class MemberNameNode<T extends MemberName<K>, K extends Kind> extends QualifiedNameNode<T, K>
+//public abstract class MemberNameNode<T extends MemberName<K>, K extends Kind> extends QualifiedNameNode<T, K>
+public abstract class MemberNameNode<K extends Kind> extends QualifiedNameNode<K>
 {
 	//public MemberNameNodes(PrimitiveNameNode... ns)
 	public MemberNameNode(String... ns)

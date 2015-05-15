@@ -8,7 +8,8 @@ import org.scribble2.sesstype.name.PackageName;
 
 
 //public class ModuleNameNode extends QualifiedNameNode<ModuleName>
-public class ModuleNameNode extends QualifiedNameNode<ModuleName, ModuleKind>
+//public class ModuleNameNode extends QualifiedNameNode<ModuleName, ModuleKind>
+public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 {
 	//public ModuleNameNodes(PrimitiveNameNode... ns)
 	public ModuleNameNode(String... ns)

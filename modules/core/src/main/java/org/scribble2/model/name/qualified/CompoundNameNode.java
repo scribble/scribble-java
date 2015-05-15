@@ -4,9 +4,9 @@ import java.util.Arrays;
 
 import org.scribble2.model.name.NameNode;
 import org.scribble2.sesstype.kind.Kind;
-import org.scribble2.sesstype.name.Name;
 
-public abstract class CompoundNameNode<T extends Name<K>, K extends Kind> extends NameNode<T, K>
+//public abstract class CompoundNameNode<T extends Name<K>, K extends Kind> extends NameNode<T, K>
+public abstract class CompoundNameNode<K extends Kind> extends NameNode<K>
 {
 	//public final List<PrimitiveNameNode> names;
 	protected final String[] elems;

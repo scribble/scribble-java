@@ -59,9 +59,9 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		Map<Role, Role> rolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> r));
 		Map<Argument, Argument> argmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> a));*/
 
-		Map<Role, RoleNode> rolemap = pd.header.roledecls.decls.stream().collect(Collectors.toMap((r) -> r.toName(), (r) -> (RoleNode) r.name));
+		Map<Role, RoleNode> rolemap = pd.header.roledecls.getRoleDecls().stream().collect(Collectors.toMap((r) -> r.getDeclName(), (r) -> (RoleNode) r.name));
 		//Map<Argument, ArgumentNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> (Argument) p.toName(), (p) -> (ArgumentNode) p.name));
-		Map<Argument<? extends Kind>, ArgumentNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> (Argument<? extends Kind>) p.toName(), (p) -> (ArgumentNode) p.name));
+		Map<Argument<? extends Kind>, ArgumentNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> (Argument<? extends Kind>) p.getDeclName(), (p) -> (ArgumentNode) p.name));
 		this.rolemaps.push(rolemap);
 		this.argmaps.push(argmap);
 

@@ -12,7 +12,7 @@ public class ParamDeclDel extends ModelDelBase
 	public void enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 		ParamDecl<? extends Kind> pd = cast(child);
-		disamb.addParameter(pd.toName(), pd.kind);
+		disamb.addParameter(pd.getDeclName(), pd.kind);
 		//return disamb;
 	}
 	

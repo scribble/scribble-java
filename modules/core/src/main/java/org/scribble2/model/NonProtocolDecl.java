@@ -6,23 +6,30 @@ import org.scribble2.sesstype.name.MemberName;
 
 // FIXME: rename to something better
 // FIXME: should be a NameDeclNode?
-public abstract class NonProtocolDecl<K extends Kind> extends ModelNodeBase //implements ModuleMember //implements NameDeclaration
+//public abstract class NonProtocolDecl<N extends MemberName<K>, K extends Kind>
+public abstract class NonProtocolDecl<K extends Kind>
+		//extends ModelNodeBase //implements ModuleMember //implements NameDeclaration
+		//extends NameDeclNode<N, K>
+		extends NameDeclNode<K>
 {
 	public final String schema;
 	public final String extName;
 	public final String source;
 	//public final SimpleMemberNameNode alias;
 	//public final SimpleNameNode<? extends Name<K>, K> alias;  // Fix MessageSignatureDecl to make this back to member name node?
-	public final MemberNameNode<? extends MemberName<K>, K> alias;  // Fix MessageSignatureDecl to make this back to member name node?
+	//public final MemberNameNode<? extends MemberName<K>, K> alias;  // Fix MessageSignatureDecl to make this back to member name node?
+	//public final MemberNameNode<? extends N, K> alias;  // Fix MessageSignatureDecl to make this back to member name node?
 
 	//public NonProtocolDecl(String schema, String extName, String source, MemberNameNode<? extends MemberName<? extends Kind>, ? extends Kind> alias)
-	public NonProtocolDecl(String schema, String extName, String source, MemberNameNode<? extends MemberName<K>, K> alias)
+	//public NonProtocolDecl(String schema, String extName, String source, MemberNameNode<? extends N, K> alias)
+	public NonProtocolDecl(String schema, String extName, String source, MemberNameNode<K> alias)
 	//public NonProtocolDecl(String schema, String extName, String source, SimpleNameNode<? extends Name<K>, K> alias)
 	{
+		super(alias);
 		this.schema = schema;
 		this.extName = extName;
 		this.source = source;
-		this.alias = alias;
+		//this.alias = alias;
 	}
 	
 	public boolean isDataTypeDecl()
@@ -56,10 +63,18 @@ public abstract class NonProtocolDecl<K extends Kind> extends ModelNodeBase //im
 	
 	//public abstract MemberName<K> getFullDeclName();
 	
-	//public Name getAliasName()
+	/*//public Name getAliasName()
 	public MemberName<K> getAliasName()
 	{
 		return this.alias.toName();
+	}*/
+
+	@Override
+	//public N getName()
+	public MemberName<K> getDeclName()
+	{
+		//return this.alias.getName();  // Returns the "declaration name" (i.e. NameDeclNode.toName), i.e. not the full name
+		return (MemberName<K>) super.getDeclName();
 	}
 
 	/*@Override

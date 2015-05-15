@@ -14,6 +14,7 @@ import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.DataType;
+import org.scribble2.sesstype.name.MemberName;
 import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.Name;
@@ -131,7 +132,7 @@ public class ModuleContext
 			}
 			else if (dtd.isMessageSigDecl())
 			{
-				MessageSigName simplename = ((MessageSigDecl) dtd).getAliasName();
+				MessageSigName simplename = ((MessageSigDecl) dtd).getDeclName();
 				//MessageSigName fullname = ((MessageSigDecl) dtd).getFullMessageSignatureName();  // FIXME: compound full sig name
 				MessageSigName fullname = new MessageSigName(fullmodname, simplename);
 				MessageSigName selfname = new MessageSigName(simplemodname, simplename);

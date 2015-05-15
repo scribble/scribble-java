@@ -6,7 +6,8 @@ import org.scribble2.sesstype.name.RecVar;
 
 
 //public class RecursionVarNode extends SimpleNameNode
-public class RecVarNode extends SimpleNameNode<RecVar, RecVarKind>
+//public class RecVarNode extends SimpleNameNode<RecVar, RecVarKind>
+public class RecVarNode extends SimpleNameNode<RecVarKind>
 {
 	public RecVarNode(String identifier)
 	{

@@ -3,7 +3,6 @@ package org.scribble2.model;
 import org.scribble2.model.name.NameNode;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.Kind;
-import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -12,39 +11,46 @@ import org.scribble2.util.ScribbleException;
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
 //public interface HeaderParameterDecl extends ModelNode, NameDecl //implements NameDeclaration
 //public abstract class HeaderParamDecl<T extends SimpleNameNode<T2>, T2 extends SimpleName> extends NameDeclNode<T, T2> //implements NameDeclaration
-public abstract class HeaderParamDecl<T2 extends Name<K>, K extends Kind> extends NameDeclNode<T2, K> //implements NameDeclaration
+//public abstract class HeaderParamDecl<T2 extends Name<K>, K extends Kind> extends NameDeclNode<T2, K> //implements NameDeclaration
+public abstract class HeaderParamDecl<K extends Kind> extends NameDeclNode<K> //implements NameDeclaration
 {
 	//public final T name;
-	public final NameNode<T2, K> name;
+	//public final NameNode<T2, K> name;
 
 	//protected HeaderParamDecl(T name)
-	protected HeaderParamDecl(NameNode<T2, K> name)
+	//protected HeaderParamDecl(NameNode<T2, K> name)
+	protected HeaderParamDecl(NameNode<K> name)
 	{
-		this.name = name;
+		//this.name = name;
+		super(name);
 	}
 
 	//protected abstract HeaderParamDecl<T, T2> reconstruct(T namenode);
-	protected abstract HeaderParamDecl<T2, K> reconstruct(NameNode<T2, K> namenode);
+	//protected abstract HeaderParamDecl<T2, K> reconstruct(NameNode<T2, K> namenode);
+	protected abstract HeaderParamDecl<K> reconstruct(NameNode<K> namenode);
 	
 	@Override
 	//public HeaderParamDecl<T, T2> visitChildren(ModelVisitor nv) throws ScribbleException
-	public HeaderParamDecl<T2, K> visitChildren(ModelVisitor nv) throws ScribbleException
+	//public HeaderParamDecl<T2, K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParamDecl<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		//SimpleNameNode name = (SimpleNameNode) visitChild(this.name, nv);
 		//T name = visitChildWithClassCheck(this, this.name, nv);
-		NameNode<T2, K> name = visitChildWithClassCheck(this, this.name, nv);
+		//NameNode<T2, K> name = visitChildWithClassCheck(this, this.name, nv);
+		NameNode<K> name = visitChildWithClassCheck(this, this.name, nv);
 		return reconstruct(name);
 	}
 	
 	//public abstract NameDeclNode<T, T2> project(Role self);
-	public abstract HeaderParamDecl<T2, K> project(Role self);
+	//public abstract HeaderParamDecl<T2, K> project(Role self);
+	public abstract HeaderParamDecl<K> project(Role self);
 
-	@Override
+	/*@Override
 	//public SimpleName toName()
-	public T2 toName()
+	public T2 getName()
 	{
-		return this.name.toName();
-	}
+		return this.name.getName();
+	}*/
 	
 	public abstract String getKeyword();
 	
@@ -53,9 +59,9 @@ public abstract class HeaderParamDecl<T2 extends Name<K>, K extends Kind> extend
 	{
 		//return toName().toString();  // FIXME: need declaration kind keyword
 		
-		System.out.println("c: " + toName());
+		System.out.println("c: " + getDeclName());
 		
-		return getKeyword() + " " + toName().toString();
+		return getKeyword() + " " + getDeclName().toString();
 	}
 }
 

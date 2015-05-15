@@ -6,7 +6,8 @@ import org.scribble2.sesstype.name.Operator;
 
 
 //public class OperatorNode extends SimpleNameNode
-public class OperatorNode extends SimpleNameNode<Operator, OperatorKind>
+//public class OperatorNode extends SimpleNameNode<Operator, OperatorKind>
+public class OperatorNode extends SimpleNameNode<OperatorKind>
 {
 	public static final String EMPTY_OPERATOR_IDENTIFIER = "";
 	

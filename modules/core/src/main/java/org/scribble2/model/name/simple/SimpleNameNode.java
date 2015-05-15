@@ -2,14 +2,15 @@ package org.scribble2.model.name.simple;
 
 import org.scribble2.model.name.NameNode;
 import org.scribble2.sesstype.kind.Kind;
-import org.scribble2.sesstype.name.Name;
 
 
+// FIXME: make subclass of compound
 // Parser Identifier
 // The various kinds of names cannot be distinguished from parameter names at the parser level -- maybe no point to distinguish in the AST?
 // Could make a subclass of CompoundNameNode (but not very convenient, and wouldn't match grammar def)
 //public abstract class SimpleNameNode<T extends SimpleName> extends NameNode<T>
-public abstract class SimpleNameNode<T extends Name<K>, K extends Kind> extends NameNode<T, K>
+//public abstract class SimpleNameNode<T extends Name<K>, K extends Kind> extends NameNode<T, K>
+public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 //public abstract class SimpleNameNode<T extends Name<K>, K extends Kind> extends CompoundNameNode<T, K>  // No: SimpleNameNode isn't a CompoundNameNode -- syntactically different; cf. Name, where they are not distinct
 {
 	public final String identifier;

@@ -15,7 +15,7 @@ public class RoleDeclDel extends ModelDelBase
 	public void enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 		RoleDecl rd = (RoleDecl) child;
-		disamb.addRole(rd.toName());
+		disamb.addRole(rd.getDeclName());
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class RoleDeclDel extends ModelDelBase
 	{
 		WellFormedChoiceEnv env = checker.popEnv();
 		RoleDecl rd = (RoleDecl) visited;
-		Role role = rd.name.toName();
+		Role role = rd.getDeclName();
 		//Name dn = rd.getDeclarationName();
 		/*if (env.isRoleBound(role))  // TODO: do for basic name checking (not WF choice)
 		{

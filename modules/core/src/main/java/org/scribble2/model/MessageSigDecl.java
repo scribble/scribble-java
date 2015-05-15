@@ -1,15 +1,16 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.qualified.MemberNameNode;
+import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.sesstype.kind.SigKind;
-import org.scribble2.sesstype.name.MemberName;
 import org.scribble2.sesstype.name.MessageSigName;
 
+//public class MessageSigDecl extends NonProtocolDecl<MessageSigName, SigKind> //AbstractNode implements ModuleMember //implements NameDeclaration
 public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode implements ModuleMember //implements NameDeclaration
 {
 	// FIXME: need to replace ParameterNode by a signature member node
 	//public MessageSigDecl(String schema, String extName, String source, SimpleMessageSignatureNameNode alias)
-	public MessageSigDecl(String schema, String extName, String source, MemberNameNode<? extends MemberName<SigKind>, SigKind> alias)
+	//public MessageSigDecl(String schema, String extName, String source, MemberNameNode<? extends MessageSigName, SigKind> alias)
+	public MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias)
 	{
 		super(schema, extName, source, alias);
 	}
@@ -19,12 +20,6 @@ public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode impl
 		//ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrPayloadTypeDecl.getModuleParent(this.ct));
 		return new MessageSigName(fullmodname, this.alias.toName().toString());
 	}*/
-	
-	@Override
-	public MessageSigName getAliasName()
-	{
-		return (MessageSigName) super.getAliasName();
-	}
 
 	/*@Override
 	public PayloadTypeDecl disambiguate(PayloadTypeOrParameterDisambiguator disamb) throws ScribbleException
@@ -52,19 +47,34 @@ public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode impl
 	{
 		return true;
 	}
+	
+	/*@Override
+	public MessageSigName getAliasName()
+	{
+		return (MessageSigName) super.getAliasName();
+	}*/
+
+	@Override
+	public MessageSigName getDeclName()
+	{
+		return (MessageSigName) super.getDeclName();
+	}
 
 	@Override
 	public String toString()
 	{
 		return Constants.SIG_KW + " <" + this.schema + "> " + this.extName
 				+ " " + Constants.FROM_KW + " " + this.source + " "
-				+ Constants.AS_KW + " " + this.alias + ";";
+				+ Constants.AS_KW + " " + 
+				//this.alias + ";";
+				this.name + ";";
 	}
 
 	@Override
 	protected MessageSigDecl copy()
 	{
-		return new MessageSigDecl(this.schema, this.extName, this.source, this.alias);
+		//return new MessageSigDecl(this.schema, this.extName, this.source, this.alias);
+		return new MessageSigDecl(this.schema, this.extName, this.source, (MessageSigNameNode) this.name);
 	}
 
 	/*public PayloadType getFullPayloadTypeName()

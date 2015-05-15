@@ -9,7 +9,8 @@ import org.scribble2.sesstype.name.ModuleName;
 //public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode//, PayloadTypeOrParameterNode
 //public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode
 //public class DataTypeNameNode extends SimpleNameNode<DataType, DataTypeKind> implements PayloadElementNameNode, ArgumentNode
-public class DataTypeNameNode extends MemberNameNode<DataType, DataTypeKind> implements PayloadElementNameNode//, ArgumentNode
+//public class DataTypeNameNode extends MemberNameNode<DataType, DataTypeKind> implements PayloadElementNameNode//, ArgumentNode
+public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements PayloadElementNameNode//, ArgumentNode
 {
 	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
 	public DataTypeNameNode(String... elems)

@@ -7,7 +7,8 @@ import org.scribble2.sesstype.name.ProtocolName;
 
 
 //public class ProtocolNameNode<K extends ProtocolKind> extends MemberNameNode<ProtocolName<K>, K>
-public class ProtocolNameNode extends MemberNameNode<ProtocolName, ProtocolKind>
+//public class ProtocolNameNode extends MemberNameNode<ProtocolName, ProtocolKind>
+public class ProtocolNameNode extends MemberNameNode<ProtocolKind>
 {
 	//public ProtocolNameNodes(PrimitiveNameNode... ns)
 	public ProtocolNameNode(String... ns)

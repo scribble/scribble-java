@@ -22,12 +22,13 @@ public class LProtocolHeader extends ProtocolHeader implements LocalNode
 	public Role getSelfRole()
 	{
 		//for (RoleDecl rd : this.roledecls.decls)
-		for (NameDeclNode<Role, RoleKind> rd : this.roledecls.decls)
+		//for (NameDeclNode<Role, RoleKind> rd : this.roledecls.decls)
+		for (NameDeclNode<RoleKind> rd : this.roledecls.decls)
 		{
 			RoleDecl tmp = (RoleDecl) rd;
 			if (tmp.isSelfRoleDecl())
 			{
-				return tmp.name.toName();
+				return tmp.getDeclName();
 			}
 		}
 		throw new RuntimeException("Shouldn't get here: " + this.roledecls);

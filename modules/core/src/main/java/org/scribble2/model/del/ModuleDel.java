@@ -107,7 +107,8 @@ public class ModuleDel extends ModelDelBase
 
 		//ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(main.moddecl.fullmodname.toName(), lpd.header.name.toName());
 		//ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.fullmodname.toName(), lpd.header.name.toCompoundName());
-		ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.fullmodname.toName(), lpd.header.name.toName());
+		//ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.fullmodname.toName(), lpd.header.name.toName());
+		ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.getFullModuleName(), lpd.header.name.toName());
 		
 		//.. factor out full name making, use also for do
 		//.. record protocol dependencies in context

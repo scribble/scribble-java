@@ -1,6 +1,5 @@
 package org.scribble2.model;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.scribble2.model.del.DefaultModelDel;
@@ -75,8 +74,6 @@ import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.kind.RecVarKind;
 import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.kind.SigKind;
-import org.scribble2.sesstype.name.Name;
-import org.scribble2.sesstype.name.Role;
 
 public class ModelFactoryImpl implements ModelFactory
 {
@@ -164,7 +161,8 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public RoleDeclList RoleDeclList(List<RoleDecl> rds)
-	public RoleDeclList RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> rds)
+	//public RoleDeclList RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> rds)
+	public RoleDeclList RoleDeclList(List<RoleDecl> rds)
 	{
 		RoleDeclList rdl = new RoleDeclList(rds);
 		rdl = del(rdl, createDefaultDelegate());
@@ -181,7 +179,8 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public ParamDeclList ParameterDeclList(List<ParamDecl> pds)
-	public ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds)
+	//public ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds)
+	public ParamDeclList ParameterDeclList(List<ParamDecl<Kind>> pds)
 	{
 		ParamDeclList pdl = new ParamDeclList(pds);
 		pdl = del(pdl, createDefaultDelegate());
@@ -308,10 +307,12 @@ public class ModelFactoryImpl implements ModelFactory
 	
 	@Override
 	//public SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier)
-	public <K extends Kind> NameNode<? extends Name<K>, K> SimpleNameNode(K kind, String identifier)
+	//public <K extends Kind> NameNode<? extends Name<K>, K> SimpleNameNode(K kind, String identifier)
+	public <K extends Kind> NameNode<K> SimpleNameNode(K kind, String identifier)
 	{
 		//SimpleNameNode snn;
-		NameNode<? extends Name<? extends Kind>, ? extends Kind> snn;
+		//NameNode<? extends Name<? extends Kind>, ? extends Kind> snn;
+		NameNode<? extends Kind> snn;
 		/*switch(kind)
 		{
 			case AMBIG: 
@@ -353,8 +354,10 @@ public class ModelFactoryImpl implements ModelFactory
 		return castNameNode(kind, del(snn, createDefaultDelegate()));
 	}
 	
-	private static <T extends NameNode<? extends Name<? extends Kind>, K>, K extends Kind> T
-			castNameNode(K kind, NameNode<? extends Name<? extends Kind>, ? extends Kind> n)
+	/*private static <T extends NameNode<? extends Name<? extends Kind>, K>, K extends Kind> T
+			castNameNode(K kind, NameNode<? extends Name<? extends Kind>, ? extends Kind> n)*/
+	private static <T extends NameNode<K>, K extends Kind> T
+			castNameNode(K kind, NameNode<? extends Kind> n)
 	{
 		if (!n.toName().kind.equals(kind))
 		{
@@ -367,9 +370,11 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems)
-	public <K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems)
+	//public <K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems)
+	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind, String... elems)
 	{
-		QualifiedNameNode<? extends Name<? extends Kind>, ? extends Kind> qnn;
+		//QualifiedNameNode<? extends Name<? extends Kind>, ? extends Kind> qnn;
+		QualifiedNameNode<? extends Kind> qnn;
 		/*switch(kind)
 		{
 			case MESSAGESIGNATURE: qnn = new MessageSignatureNameNode(elems); break;
@@ -396,8 +401,10 @@ public class ModelFactoryImpl implements ModelFactory
 		return castQualifiedNameNode(kind, del(qnn, createDefaultDelegate()));
 	}
 
-	private static <T extends QualifiedNameNode<? extends Name<? extends Kind>, K>, K extends Kind> T
-			castQualifiedNameNode(K kind, QualifiedNameNode<? extends Name<? extends Kind>, ? extends Kind> n)
+	/*private static <T extends QualifiedNameNode<? extends Name<? extends Kind>, K>, K extends Kind> T
+			castQualifiedNameNode(K kind, QualifiedNameNode<? extends Name<? extends Kind>, ? extends Kind> n)*/
+	private static <T extends QualifiedNameNode<K>, K extends Kind> T
+			castQualifiedNameNode(K kind, QualifiedNameNode<? extends Kind> n)
 	{
 		if (!n.toName().kind.equals(kind))
 		{

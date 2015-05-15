@@ -4,15 +4,19 @@ import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Role;
 
 
 //public interface RoleDecl extends HeaderParameterDecl
 //public class RoleDecl extends HeaderParamDecl<RoleNode, Role>
-public class RoleDecl extends HeaderParamDecl<Role, RoleKind>
+//public class RoleDecl extends HeaderParamDecl<Role, RoleKind>
+public class RoleDecl extends HeaderParamDecl<RoleKind>
 {
 	//public RoleDecl(RoleNode name)
-	public RoleDecl(NameNode<Role, RoleKind> name)
+	//public RoleDecl(NameNode<Role, RoleKind> name)
+	//public RoleDecl(NameNode<RoleKind> name)
+	public RoleDecl(RoleNode name)
 	{
 		//super(t, kind, namenode);
 		super(name);
@@ -31,7 +35,8 @@ public class RoleDecl extends HeaderParamDecl<Role, RoleKind>
 
 	@Override
 	//protected RoleDecl reconstruct(RoleNode namenode)
-	protected RoleDecl reconstruct(NameNode<Role, RoleKind> namenode)
+	//protected RoleDecl reconstruct(NameNode<Role, RoleKind> namenode)
+	protected RoleDecl reconstruct(NameNode<RoleKind> namenode)
 	{
 		ModelDel del = del();
 		RoleDecl rd = new RoleDecl((RoleNode) namenode);
@@ -43,7 +48,8 @@ public class RoleDecl extends HeaderParamDecl<Role, RoleKind>
 	@Override
 	public RoleDecl project(Role self)
 	{
-		Role role = this.name.toName();
+		//Role role = this.name.toName();
+		Name<RoleKind> role = this.name.toName();
 		//RoleNode rn = new RoleNode(role.toString());
 		//RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, role.toString());
 		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, role.toString());
@@ -54,6 +60,12 @@ public class RoleDecl extends HeaderParamDecl<Role, RoleKind>
 		}
 		//return new RoleDecl(rn);
 		return ModelFactoryImpl.FACTORY.RoleDecl(rn);
+	}
+	
+	@Override
+	public Role getDeclName()
+	{
+		return (Role) super.getDeclName();
 	}
 
 	@Override

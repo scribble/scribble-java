@@ -5,11 +5,11 @@ import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.SigKind;
-import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.Role;
 
 //public class ParamDecl extends HeaderParamDecl<ParameterNode, Parameter> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
-public class ParamDecl<K extends Kind> extends HeaderParamDecl<Name<K>, K> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
+//public class ParamDecl<K extends Kind> extends HeaderParamDecl<Name<K>, K> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
+public class ParamDecl<K extends Kind> extends HeaderParamDecl<K> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
 {
 	//public enum Kind { TYPE, SIG }  // ROLE
 	
@@ -21,7 +21,8 @@ public class ParamDecl<K extends Kind> extends HeaderParamDecl<Name<K>, K> //imp
 	public final K kind;
 
 	//public ParamDecl(Kind kind, ParameterNode name)
-	public ParamDecl(K kind, NameNode<Name<K>, K> name)
+	//public ParamDecl(K kind, NameNode<Name<K>, K> name)
+	public ParamDecl(K kind, NameNode<K> name)
 	{
 		//super(t, kind, namenode);
 		super(name);
@@ -30,7 +31,8 @@ public class ParamDecl<K extends Kind> extends HeaderParamDecl<Name<K>, K> //imp
 	}
 	
 	@Override
-	protected ParamDecl<K> reconstruct(NameNode<Name<K>, K> namenode)
+	//protected ParamDecl<K> reconstruct(NameNode<Name<K>, K> namenode)
+	protected ParamDecl<K> reconstruct(NameNode<K> namenode)
 	{
 		ModelDel del = del();
 		ParamDecl<K> pd = new ParamDecl<>(this.kind, this.name);

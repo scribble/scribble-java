@@ -4,7 +4,8 @@ import org.scribble2.sesstype.kind.ScopeKind;
 import org.scribble2.sesstype.name.Scope;
 
 
-public class ScopeNode extends SimpleNameNode<Scope, ScopeKind>
+//public class ScopeNode extends SimpleNameNode<Scope, ScopeKind>
+public class ScopeNode extends SimpleNameNode<ScopeKind>
 {
 	//public static final String EMPTY_SCOPENAME_IDENTIFIER = "";  // Same pattern as empty operator
 

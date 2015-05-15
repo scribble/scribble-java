@@ -8,26 +8,35 @@ import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.Role;
 
 //public class RoleDeclList extends HeaderParamDeclList<RoleDecl, Role>
-public class RoleDeclList extends HeaderParamDeclList<Role, RoleKind>
+//public class RoleDeclList extends HeaderParamDeclList<Role, RoleKind>
+public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 {
 	//public RoleDeclList(List<RoleDecl> decls)
-	public RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> decls)
+	//public RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> decls)
+	//public RoleDeclList(List<HeaderParamDecl<RoleKind>> decls)
+	public RoleDeclList(List<RoleDecl> decls)
 	{
 		super(decls);
+	}
+	
+	public List<RoleDecl> getRoleDecls()
+	{
+		return this.decls.stream().map((d) -> (RoleDecl) d).collect(Collectors.toList());
 	}
 
 	@Override
 	protected RoleDeclList copy()
 	{
-		return new RoleDeclList(this.decls);
+		return new RoleDeclList(getRoleDecls());
 	}
 
 	@Override
 	//protected HeaderParamDeclList<RoleDecl, Role> reconstruct(List<RoleDecl> decls)
-	protected HeaderParamDeclList<Role, RoleKind> reconstruct(List<HeaderParamDecl<Role, RoleKind>> decls)
+	//protected HeaderParamDeclList<Role, RoleKind> reconstruct(List<HeaderParamDecl<Role, RoleKind>> decls)
+	protected HeaderParamDeclList<RoleKind> reconstruct(List<? extends HeaderParamDecl<RoleKind>> decls)
 	{
 		ModelDel del = del();
-		RoleDeclList rdl = new RoleDeclList(decls);
+		RoleDeclList rdl = new RoleDeclList(getRoleDecls());
 		rdl = (RoleDeclList) rdl.del(del);
 		return rdl;
 	}
@@ -37,9 +46,10 @@ public class RoleDeclList extends HeaderParamDeclList<Role, RoleKind>
 	public RoleDeclList project(Role self)
 	{
 		//List<RoleDecl> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
-		List<HeaderParamDecl<Role, RoleKind>> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
+		//List<HeaderParamDecl<Role, RoleKind>> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
+		//List<HeaderParamDecl<RoleKind>> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
 		//return new RoleDeclList(roledecls);
-		return ModelFactoryImpl.FACTORY.RoleDeclList(roledecls);
+		return ModelFactoryImpl.FACTORY.RoleDeclList(getRoleDecls());
 	}
 
 	/*@Override 
@@ -102,9 +112,11 @@ public class RoleDeclList extends HeaderParamDeclList<Role, RoleKind>
 		return this.decls.size();
 	}*/
 	
+	//public List<Name<RoleKind>> getRoles()
 	public List<Role> getRoles()
 	{
-		return this.decls.stream().map((decl) -> decl.toName()).collect(Collectors.toList());
+		//return this.decls.stream().map((decl) -> decl.getName()).collect(Collectors.toList());
+		return this.decls.stream().map((decl) -> ((RoleDecl) decl).getDeclName()).collect(Collectors.toList());
 	}
 
 	@Override

@@ -70,7 +70,8 @@ public class Module extends ModelNodeBase
 
 	public ModuleName getFullModuleName()
 	{
-		return this.moddecl.fullmodname.toName();
+		//return this.moddecl.fullmodname.toName();
+		return this.moddecl.getFullModuleName();
 	}
 	
 	protected Module reconstruct(
@@ -108,7 +109,8 @@ public class Module extends ModelNodeBase
 	{
 		for (NonProtocolDecl<? extends Kind> dtd : this.data)
 		{
-			if (dtd instanceof DataTypeDecl && dtd.alias.toName().equals(ptn))
+			//if (dtd instanceof DataTypeDecl && dtd.alias.getName().equals(ptn))
+			if (dtd instanceof DataTypeDecl && dtd.getDeclName().equals(ptn))
 			{
 				return (DataTypeDecl) dtd;
 			}
@@ -121,7 +123,8 @@ public class Module extends ModelNodeBase
 	{
 		for (NonProtocolDecl<? extends Kind> dtd : this.data)
 		{
-			if (dtd instanceof MessageSigDecl && dtd.alias.toName().equals(msn))
+			//if (dtd instanceof MessageSigDecl && dtd.alias.getName().equals(msn))
+			if (dtd instanceof MessageSigDecl && dtd.getDeclName().equals(msn))
 			{
 				return (MessageSigDecl) dtd;
 			}

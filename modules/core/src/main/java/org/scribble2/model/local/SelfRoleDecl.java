@@ -11,7 +11,8 @@ import org.scribble2.sesstype.name.Role;
 public class SelfRoleDecl extends RoleDecl
 {
 	//public SelfRoleDecl(RoleNode rn)
-	public SelfRoleDecl(NameNode<Role, RoleKind> rn)
+	//public SelfRoleDecl(NameNode<Role, RoleKind> rn)
+	public SelfRoleDecl(RoleNode rn)
 	{
 		super(rn);
 	}
@@ -32,10 +33,11 @@ public class SelfRoleDecl extends RoleDecl
 	@Override
 	//protected RoleDecl reconstruct(SimpleNameNode snn)
 	//protected RoleDecl reconstruct(RoleNode snn)
-	protected RoleDecl reconstruct(NameNode<Role, RoleKind> snn)
+	//protected RoleDecl reconstruct(NameNode<Role, RoleKind> snn)
+	protected RoleDecl reconstruct(NameNode<RoleKind> snn)
 	{
 		ModelDel del = del();
-		SelfRoleDecl rd = new SelfRoleDecl(snn);
+		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) snn);
 		rd = (SelfRoleDecl) rd.del(del);
 		return rd;
 	}
