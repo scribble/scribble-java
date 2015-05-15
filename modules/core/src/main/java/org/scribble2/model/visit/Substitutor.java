@@ -72,7 +72,7 @@ public class Substitutor extends ModelVisitor
 		{
 			//return Substitutor.copyParameterNode((ParameterNode<K>) an);
 			ParamNode<K> pn = (ParamNode<K>) an;
-			return ModelFactoryImpl.FACTORY.ParamNode(pn.kind, pn.identifier);
+			return ModelFactoryImpl.FACTORY.ParamNode(pn.kind, pn.getIdentifier());
 		}
 		else
 		{

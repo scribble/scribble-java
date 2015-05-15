@@ -35,13 +35,13 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements InstantiationN
 	@Override
 	protected RoleNode copy()  // Specified to be internal shallow copy (e.g. used by del)
 	{
-		return new RoleNode(this.identifier);
+		return new RoleNode(getIdentifier());
 		//return reconstruct(this.identifier);
 	}
 	
 	@Override
 	public Role toName()
 	{
-		return new Role(this.identifier);
+		return new Role(getIdentifier());
 	}
 }

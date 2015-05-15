@@ -7,7 +7,6 @@ import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.kind.AmbigKind;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.AmbigName;
-import org.scribble2.sesstype.name.Name;
 import org.scribble2.sesstype.name.PayloadType;
 
 // Primitive payload type or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
@@ -33,7 +32,8 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements
 	protected AmbigNameNode copy()
 	{
 		//return new AmbiguousNameNode(this.identifier);
-		return new AmbigNameNode(this.identifier);
+		//return new AmbigNameNode(this.identifier);
+		return new AmbigNameNode(getIdentifier());
 	}
 	
 	/*@Override
@@ -82,7 +82,8 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements
 	public AmbigName toName()
 	{
 		//return new SimpleName(KindEnum.AMBIGUOUS, this.identifier);
-		return new AmbigName(this.identifier);
+		//return new AmbigName(this.identifier);
+		return new AmbigName(getIdentifier());
 	}
 
 	@Override

@@ -1,13 +1,15 @@
-package org.scribble2.model.name.qualified;
+package org.scribble2.model.name;
 
 import java.util.Arrays;
 
-import org.scribble2.model.name.NameNode;
 import org.scribble2.sesstype.kind.Kind;
 
 //public abstract class CompoundNameNode<T extends Name<K>, K extends Kind> extends NameNode<T, K>
+@Deprecated
 public abstract class CompoundNameNode<K extends Kind> extends NameNode<K>
 {
+	// Kind parameter used for typing help, but NameNodes don't record kind as state (not part of the syntax) -- so kind doesn't affect e.g. equals (names nodes of different kinds are still only compared syntactically)
+	
 	//public final List<PrimitiveNameNode> names;
 	protected final String[] elems;
 

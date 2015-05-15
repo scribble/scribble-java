@@ -10,14 +10,22 @@ import org.scribble2.sesstype.kind.Kind;
 // Could make a subclass of CompoundNameNode (but not very convenient, and wouldn't match grammar def)
 //public abstract class SimpleNameNode<T extends SimpleName> extends NameNode<T>
 //public abstract class SimpleNameNode<T extends Name<K>, K extends Kind> extends NameNode<T, K>
-public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
+public abstract class SimpleNameNode<K extends Kind>
+		//extends NameNode<K>
+		extends NameNode<K> //CompoundNameNode<K>
 //public abstract class SimpleNameNode<T extends Name<K>, K extends Kind> extends CompoundNameNode<T, K>  // No: SimpleNameNode isn't a CompoundNameNode -- syntactically different; cf. Name, where they are not distinct
 {
-	public final String identifier;
+	//public final String identifier;
 
 	public SimpleNameNode(String identifier)
 	{
-		this.identifier = identifier;
+		super(new String[] { identifier });
+		//this.identifier = identifier;
+	}
+	
+	public String getIdentifier()
+	{
+		return getLastElement();
 	}
 
 	/*@Override
@@ -48,14 +56,16 @@ public abstract class SimpleNameNode<K extends Kind> extends NameNode<K>
 			return false;
 		}
 		//return this.identifier.equals(((SimpleNameNode) o).identifier);
-		return this.identifier.equals(SimpleNameNode.class.cast(o).identifier);
+		//return this.identifier.equals(SimpleNameNode.class.cast(o).identifier);
+		return super.equals(o);
 	}
 	
 	@Override
 	public int hashCode()
 	{
 		int hash = 313;
-		hash = 31 * hash + this.identifier.hashCode();
+		//hash = 31 * hash + this.identifier.hashCode();
+		hash = 31 * super.hashCode();
 		return hash;
 	}
 }

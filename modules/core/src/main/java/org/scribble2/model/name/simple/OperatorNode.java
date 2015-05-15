@@ -28,16 +28,18 @@ public class OperatorNode extends SimpleNameNode<OperatorKind>
 	@Override
 	protected OperatorNode copy()
 	{
-		return new OperatorNode(this.identifier);
+		//return new OperatorNode(this.identifier);
+		return new OperatorNode(getIdentifier());
 	}
 	
 	@Override
 	public Operator toName()
 	{
-		if (this.identifier.equals(EMPTY_OPERATOR_IDENTIFIER))
+		String id = getIdentifier();
+		if (id.equals(EMPTY_OPERATOR_IDENTIFIER))
 		{
 			return Operator.EMPTY_OPERATOR;
 		}
-		return new Operator(this.identifier);
+		return new Operator(id);
 	}
 }

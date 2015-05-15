@@ -26,7 +26,8 @@ public class ScopeNode extends SimpleNameNode<ScopeKind>
 	@Override
 	protected ScopeNode copy()
 	{
-		return new ScopeNode(this.identifier);
+		//return new ScopeNode(this.identifier);
+		return new ScopeNode(getIdentifier());
 	}
 
 	@Override
@@ -36,7 +37,8 @@ public class ScopeNode extends SimpleNameNode<ScopeKind>
 		//return new Scope(Scope.ROOT_SCOPE, new SimpleName(K, this.identifier));
 		//return new SimpleName(KindEnum.SCOPE, this.identifier);
 		//return new Scope(Scope.EMPTY_SCOPE, this.identifier);
-		return new Scope(this.identifier);
+		//return new Scope(this.identifier);
+		return new Scope(getIdentifier());
 	}
 	
 	/*@Override

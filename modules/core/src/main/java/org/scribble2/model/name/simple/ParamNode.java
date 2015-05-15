@@ -45,7 +45,8 @@ public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
 	protected ParamNode<K> copy()
 	{
 		//return new ParameterNode<>(this.identifier);
-		return new ParamNode<>(this.kind, this.identifier);
+		//return new ParamNode<>(this.kind, this.identifier);
+		return new ParamNode<>(this.kind, getIdentifier());
 	}
 	
 	/*// Only useful for MessageSignatureDecls -- FIXME: integrate sig decls properly
@@ -89,13 +90,14 @@ public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
 	public Name<K> toName()
 	{
 		//return new Parameter(null, this.identifier);
+		String id = getIdentifier();
 		if (this.kind.equals(SigKind.KIND))
 		{
-			return Kind.castName(this.kind, new MessageSigName(this.identifier));
+			return Kind.castName(this.kind, new MessageSigName(id));
 		}
 		else if (this.kind.equals(DataTypeKind.KIND))
 		{
-			return Kind.castName(this.kind, new DataType(this.identifier));
+			return Kind.castName(this.kind, new DataType(id));
 		}
 		else
 		{

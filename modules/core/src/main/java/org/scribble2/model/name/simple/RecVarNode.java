@@ -26,12 +26,14 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	@Override
 	protected RecVarNode copy()
 	{
-		return new RecVarNode(this.identifier);
+		//return new RecVarNode(this.identifier);
+		return new RecVarNode(getIdentifier());
 	}
 
 	@Override
 	public RecVar toName()
 	{
-		return new RecVar(this.identifier);
+		//return new RecVar(this.identifier);
+		return new RecVar(getIdentifier());
 	}
 }

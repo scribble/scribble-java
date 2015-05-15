@@ -22,7 +22,7 @@ global protocol Foo(role A, role B)
 //*/
 
 
-/*
+///*
 sig <java> "foo" from "bar" as M1;
 
 global protocol Foo(role A, role B)
@@ -46,7 +46,7 @@ global protocol Bar<sig M>(role A, role B)
 //*/
 
 
-///*
+/*
 sig <java> "foo" from "bar" as M1;
 
 global protocol Foo<sig M>(role A, role B)
