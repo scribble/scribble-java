@@ -1,6 +1,7 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
+import org.scribble2.model.name.NameNode;
+import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ProtocolName;
@@ -8,16 +9,17 @@ import org.scribble2.util.ScribbleException;
 
 
 // TODO: parameterize on global/local name node and role decl list (i.e. self roles)
-public abstract class ProtocolHeader
+public abstract class ProtocolHeader<K extends ProtocolKind>
 		//extends ModelNodeBase
-		extends NameDeclNode<ProtocolKind>
+		extends NameDeclNode<K>
 {
 	//public final SimpleProtocolNameNode name;
 	public final RoleDeclList roledecls;
 	public final ParamDeclList paramdecls;
 
 	// Maybe deprecate SimpleProtocolNameNode
-	protected ProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	//protected ProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	protected ProtocolHeader(NameNode<K> name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	{
 		//this.name = name;
 		super(name);
@@ -25,14 +27,16 @@ public abstract class ProtocolHeader
 		this.paramdecls = paramdecls;
 	}
 	
-	protected abstract ProtocolHeader reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl);
+	//protected abstract ProtocolHeader<K> reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl);
+	protected abstract ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, ParamDeclList pdl);
 	
 	@Override
-	public ProtocolHeader visitChildren(ModelVisitor nv) throws ScribbleException
+	public ProtocolHeader<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		RoleDeclList rdl = (RoleDeclList) visitChild(this.roledecls, nv);
 		ParamDeclList pdl = (ParamDeclList) visitChild(this.paramdecls, nv);
-		return reconstruct((SimpleProtocolNameNode) this.name, rdl, pdl);
+		//return reconstruct((SimpleProtocolNameNode) this.name, rdl, pdl);
+		return reconstruct((ProtocolNameNode<K>) this.name, rdl, pdl);
 	}
 
 	public boolean isParameterDeclListEmpty()
@@ -41,9 +45,9 @@ public abstract class ProtocolHeader
 	}
 	
 	@Override
-	public ProtocolName getDeclName()
+	public ProtocolName<K> getDeclName()
 	{
-		return (ProtocolName) super.getDeclName();
+		return (ProtocolName<K>) super.getDeclName();
 	}
 
 	@Override

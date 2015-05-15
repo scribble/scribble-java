@@ -5,7 +5,7 @@ import org.scribble2.model.ArgumentInstantiationList;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.RoleInstantiationList;
 import org.scribble2.model.global.GDo;
-import org.scribble2.model.name.qualified.ProtocolNameNode;
+import org.scribble2.model.name.qualified.GProtocolNameNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 
@@ -20,7 +20,8 @@ public class AntlrGlobalDo
 	{
 		RoleInstantiationList ril = (RoleInstantiationList) parser.parse(getRoleInstantiationListChild(ct));
 		ArgumentInstantiationList al = (ArgumentInstantiationList) parser.parse(getArgumentInstantiationListChild(ct));
-		ProtocolNameNode pnn = AntlrQualifiedName.toProtocolNameNode(getProtocolNameChild(ct));
+		//ProtocolNameNode pnn = AntlrQualifiedName.toProtocolNameNode(getProtocolNameChild(ct));
+		GProtocolNameNode pnn = AntlrQualifiedName.toGlobalProtocolNameNode(getProtocolNameChild(ct));
 		//if (!isScoped(ct))
 		{
 			//return new GlobalDo(ril, al, pnn);

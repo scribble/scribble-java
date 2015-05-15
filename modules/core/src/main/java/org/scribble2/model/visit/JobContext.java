@@ -1,17 +1,15 @@
 package org.scribble2.model.visit;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.scribble2.model.Module;
+import org.scribble2.sesstype.name.GProtocolName;
+import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.ModuleName;
-import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
-import org.scribble2.util.ScribbleException;
 
 // Immutable (from outside) -- no: projections are added mutably later -- also replaceModule not immutable
 // Global "static" context information for a Job
@@ -35,7 +33,7 @@ public class JobContext
 	
 	// ProtocolName is the full local protocol name
 	// FIXME: collapse to one Map (modulename is part of protocol name?) -- debug print after projection to check
-	private final Map<ProtocolName, Module> projected = new HashMap<>();
+	private final Map<LProtocolName, Module> projected = new HashMap<>();
 	private final Map<ModuleName, Module> projectionsByModules = new HashMap<>();  // An alternative view of projections
 
 	//public JobContext(Job job, List<String> importPath, String mainpath) throws ScribbleException
@@ -146,9 +144,10 @@ public class JobContext
 	}
 	
 	// FIXME: make immutable (will need to assign updated context back to Job) -- will also need to do for Module replacing
-	public void addProjections(Map<ProtocolName, Map<Role, Module>> projections)
+	//public void addProjections(Map<ProtocolName, Map<Role, Module>> projections)
+	public void addProjections(Map<GProtocolName, Map<Role, Module>> projections)
 	{
-		for (ProtocolName gpn : projections.keySet())
+		for (GProtocolName gpn : projections.keySet())
 		{
 			Map<Role, Module> mods = projections.get(gpn);
 			for (Role role : mods.keySet())
@@ -195,12 +194,12 @@ public class JobContext
 
 	private void addProjection(Module mod)
 	{
-		ProtocolName lpn = mod.protos.get(0).getFullProtocolName(mod);
+		LProtocolName lpn = (LProtocolName) mod.protos.get(0).getFullProtocolName(mod);
 		this.projected.put(lpn, mod);
 		this.projectionsByModules.put(mod.getFullModuleName(), mod);
 	}
 	
-	public Map<ProtocolName, Module> getProjections()
+	public Map<LProtocolName, Module> getProjections()
 	{
 		return this.projected;
 	}

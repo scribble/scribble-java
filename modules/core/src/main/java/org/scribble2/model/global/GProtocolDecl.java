@@ -1,10 +1,13 @@
 package org.scribble2.model.global;
 
+import org.scribble2.model.Module;
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.ProtocolDef;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.kind.Global;
+import org.scribble2.sesstype.name.GProtocolName;
+import org.scribble2.sesstype.name.ModuleName;
 
 //public class GlobalProtocolDecl extends ProtocolDecl<GlobalInteraction>
 //public class GlobalProtocolDecl extends AbstractProtocolDecl<GlobalProtocolHeader, GlobalProtocolDefinition> implements GlobalNode
@@ -13,7 +16,7 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GlobalNode
 	//public GlobalProtocolDecl(CommonTree ct, ProtocolNode name, RoleDeclList rdl, ParameterDeclList pdl, ProtocolDefinition<GlobalInteraction> def)
 	//public GlobalProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, GlobalProtocolDefinition def)
 	//public GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def)
-	public GProtocolDecl(ProtocolHeader header, ProtocolDef<Global> def)
+	public GProtocolDecl(ProtocolHeader<Global> header, ProtocolDef<Global> def)
 	{
 		//this(t, name, roledecls, paramdecls, def, null, null);
 		super(header, def);
@@ -28,7 +31,7 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GlobalNode
 
 	@Override
 	//protected GlobalProtocolDecl reconstruct(GlobalProtocolHeader header, GlobalProtocolDefinition def)//, ProtocolDeclContext pdcontext, Env env)
-	protected GProtocolDecl reconstruct(ProtocolHeader header, ProtocolDef<Global> def)//, ProtocolDeclContext pdcontext, Env env)
+	protected GProtocolDecl reconstruct(ProtocolHeader<Global> header, ProtocolDef<Global> def)//, ProtocolDeclContext pdcontext, Env env)
 	{
 		
 		ModelDel del = del();
@@ -42,6 +45,13 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GlobalNode
 	public boolean isGlobal()
 	{
 		return true;
+	}
+
+	@Override
+	public GProtocolName getFullProtocolName(Module mod)
+	{
+		ModuleName fullmodname = mod.getFullModuleName();
+		return new GProtocolName(fullmodname, this.header.getDeclName());
 	}
 
 	/*@Override

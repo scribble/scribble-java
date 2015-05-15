@@ -6,24 +6,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble2.model.NonProtocolDecl;
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ModuleDecl;
+import org.scribble2.model.NonProtocolDecl;
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.local.LProtocolDecl;
+import org.scribble2.model.local.LProtocolHeader;
+import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
-import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.ProtocolKind;
-import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.GProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -100,7 +100,7 @@ public class ModuleDel extends ModelDelBase
 		return mod;
 	}
 
-	public Module createModuleForProjection(Projector proj, Module root, LProtocolDecl lpd, Map<ProtocolName, Set<Role>> dependencies)
+	public Module createModuleForProjection(Projector proj, Module root, LProtocolDecl lpd, Map<GProtocolName, Set<Role>> dependencies)
 	{
 		//.. store projection module in context? do this earlier?
 		//.. look up all projection sets from global protocol decls and store somewhere? in context?
@@ -108,7 +108,7 @@ public class ModuleDel extends ModelDelBase
 		//ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(main.moddecl.fullmodname.toName(), lpd.header.name.toName());
 		//ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.fullmodname.toName(), lpd.header.name.toCompoundName());
 		//ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.fullmodname.toName(), lpd.header.name.toName());
-		ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.getFullModuleName(), lpd.header.getDeclName());
+		ModuleNameNode modname = Projector.makeProjectedModuleNameNodes(root.moddecl.getFullModuleName(), ((LProtocolHeader) lpd.header).getDeclName());
 		
 		//.. factor out full name making, use also for do
 		//.. record protocol dependencies in context
@@ -117,13 +117,14 @@ public class ModuleDel extends ModelDelBase
 		ModuleDecl moddecl = ModelFactoryImpl.FACTORY.ModuleDecl(modname);
 		List<ImportDecl> imports = new LinkedList<>();  // Need names from do
 		
-		for (ProtocolName gpn : dependencies.keySet())
+		for (GProtocolName gpn : dependencies.keySet())
 		{
 			Set<Role> tmp = dependencies.get(gpn);
 			for (Role role : tmp)
 			{
-				ProtocolNameNode targetfullname = Projector.makeProjectedProtocolNameNode(gpn, role);
-				SimpleProtocolNameNode targetsimname = Projector.makeProjectedLocalName(gpn.getSimpleName(), role);
+				LProtocolNameNode targetfullname = Projector.makeProjectedProtocolNameNode(gpn, role);
+				//SimpleProtocolNameNode targetsimname = Projector.makeProjectedLocalName(gpn.getSimpleName(), role);
+				LProtocolNameNode targetsimname = Projector.makeProjectedLocalName(gpn.getSimpleName(), role);
 
 				//ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(main.getFullModuleName(), targetsimname.toName());
 				//ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNodes(root.getFullModuleName(), targetsimname.toCompoundName());

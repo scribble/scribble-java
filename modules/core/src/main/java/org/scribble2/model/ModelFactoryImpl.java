@@ -55,11 +55,11 @@ import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.name.qualified.GProtocolNameNode;
+import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
-import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.name.simple.AmbigNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParamNode;
@@ -70,7 +70,6 @@ import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.kind.ModuleKind;
 import org.scribble2.sesstype.kind.OperatorKind;
-import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.kind.RecVarKind;
 import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.kind.SigKind;
@@ -127,7 +126,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)
+	//public ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)
+	public ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		ImportModule im = new ImportModule(modname, alias);
 		//im = del(im, createDefaultDelegate());
@@ -152,7 +152,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	//public GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	public GProtocolHeader GlobalProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	{
 		GProtocolHeader gph = new GProtocolHeader(name, roledecls, paramdecls);
 		gph = del(gph, createDefaultDelegate());
@@ -264,7 +265,8 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//public GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, GProtocolNameNode proto)
 	{
 		//GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
 		GDo gd = new GDo(roleinstans, arginstans, proto);
@@ -342,10 +344,10 @@ public class ModelFactoryImpl implements ModelFactory
 			rn = (RoleNode) del(rn, new RoleNodeDel());
 			return castNameNode(kind, rn);
 		}
-		else if (kind.equals(ProtocolKind.KIND))
+		/*else if (kind.equals(ProtocolKind.KIND))
 		{
 			snn = new SimpleProtocolNameNode(identifier);
-		}
+		}*/
 		else
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind);
@@ -386,9 +388,13 @@ public class ModelFactoryImpl implements ModelFactory
 		{
 			qnn = new ModuleNameNode(elems);
 		}
-		else if (kind.equals(ProtocolKind.KIND))
+		else if (kind.equals(Global.KIND))
 		{
-			qnn = new ProtocolNameNode(elems);
+			qnn = new GProtocolNameNode(elems);
+		}
+		else if (kind.equals(Local.KIND))
+		{
+			qnn = new LProtocolNameNode(elems);
 		}
 		else if (kind.equals(SigKind.KIND))
 		{
@@ -440,7 +446,8 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	//public LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	public LProtocolHeader LocalProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	{
 		LProtocolHeader lph = new LProtocolHeader(name, roledecls, paramdecls);
 		lph = del(lph, createDefaultDelegate());
@@ -529,7 +536,8 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//public LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, LProtocolNameNode proto)
 	{
 		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
 		LDo ld = new LDo(roleinstans, arginstans, proto);

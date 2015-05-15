@@ -16,10 +16,10 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	//public final ScopeNode scope;
 	public final RoleInstantiationList roleinstans;
 	public final ArgumentInstantiationList arginstans;
-	public final ProtocolNameNode proto;  // Maybe use an "Ambiguous" version until names resolved -- is a visible protocol, but not necessarily a simple or full member name
+	public final ProtocolNameNode<K> proto;  // Maybe use an "Ambiguous" version until names resolved -- is a visible protocol, but not necessarily a simple or full member name
 
 	//protected Do(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	protected Do(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	protected Do(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode<K> proto)
 	{
 		//this.scope = scope;
 		this.roleinstans = roleinstans;
@@ -28,7 +28,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	}
 
 	//protected abstract Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
-	protected abstract Do<K> reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract Do<K> reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode<K> proto);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
 	public Do<K> visitChildren(ModelVisitor nv) throws ScribbleException
@@ -36,7 +36,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 		//ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
 		RoleInstantiationList ril = (RoleInstantiationList) visitChild(this.roleinstans, nv);
 		ArgumentInstantiationList al = (ArgumentInstantiationList) visitChild(this.arginstans, nv);
-		ProtocolNameNode proto = (ProtocolNameNode) visitChild(this.proto, nv);
+		ProtocolNameNode<K> proto = visitChildWithClassCheck(this, this.proto, nv);
 		//return reconstruct(scope, ril, al, proto);//, getContext(), getEnv());
 		return reconstruct(ril, al, proto);//, getContext(), getEnv());
 	}
@@ -69,11 +69,12 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 		return this;
 	}*/
 	
-	//private ProtocolName getTargetFullProtocolName(ModuleDelegate mcontext)
-	public ProtocolName getTargetFullProtocolName(ModuleContext mcontext)
+	/*//private ProtocolName getTargetFullProtocolName(ModuleDelegate mcontext)
+	public ProtocolName<K> getTargetFullProtocolName(ModuleContext mcontext)
 	{
 		return mcontext.getFullProtocolDeclName(this.proto.toName());
-	}
+	}*/
+	public abstract ProtocolName<K> getTargetFullProtocolName(ModuleContext mcontext);
 	
 	public
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
@@ -81,7 +82,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 			//getTargetProtocolDecl(JobContext jcontext, ModuleDelegate mcontext)
 			getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
 	{
-		ProtocolName fullname = getTargetFullProtocolName(mcontext);
+		ProtocolName<K> fullname = getTargetFullProtocolName(mcontext);
 		return jcontext.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 	}
 	//public abstract ProtocolDecl getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext);

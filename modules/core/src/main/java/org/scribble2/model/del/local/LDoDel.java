@@ -21,7 +21,12 @@ public class LDoDel extends LSimpleInteractionNodeDel
 		LDo ld = (LDo) visited;
 		for (Role role : ld.roleinstans.getRoles())
 		{
-			builder.addProtocolDependency(role, ld.getTargetFullProtocolName(builder.getModuleContext()), ld.getTargetRoleParameter(jcontext, mcontext, role));
+			//builder.addProtocolDependency(role, ld.getTargetFullProtocolName(builder.getModuleContext()), ld.getTargetRoleParameter(jcontext, mcontext, role));
+			
+			
+			..FIXME: generalise dependencies to support local
+			
+			
 		}
 		return ld;
 	}

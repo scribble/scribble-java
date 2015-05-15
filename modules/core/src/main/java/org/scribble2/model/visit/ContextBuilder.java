@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.context.ModuleContext;
-import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.GProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -17,7 +17,8 @@ public class ContextBuilder extends ModelVisitor
 	// cache of dependencies, cleared on entering each root global protocol
 	// protocol name is full name of global protocol dependencies
 	// role is the target role?
-	private Map<Role, Map<ProtocolName, Set<Role>>> dependencies = new HashMap<>();
+	private Map<Role, Map<GProtocolName, Set<Role>>> dependencies = new HashMap<>();
+			// FIXME: generalise to support locals
 
 	//private Stack<NodeContext> contexts = new Stack<>();
 	
@@ -125,9 +126,9 @@ public class ContextBuilder extends ModelVisitor
 		this.dependencies = new HashMap<>();
 	}
 
-	public void addProtocolDependency(Role self, ProtocolName gpn, Role role)
+	public void addProtocolDependency(Role self, GProtocolName gpn, Role role)
 	{
-		Map<ProtocolName, Set<Role>> tmp1 = this.dependencies.get(self);
+		Map<GProtocolName, Set<Role>> tmp1 = this.dependencies.get(self);
 		if (tmp1 == null)
 		{
 			tmp1 = new HashMap<>();
@@ -143,7 +144,7 @@ public class ContextBuilder extends ModelVisitor
 		tmp2.add(role);
 	}
 
-	public Map<Role, Map<ProtocolName, Set<Role>>> getProtocolDependencies()
+	public Map<Role, Map<GProtocolName, Set<Role>>> getProtocolDependencies()
 	{
 		return this.dependencies;
 	}

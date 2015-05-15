@@ -136,7 +136,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 			//spv.setScope(Scope.ROOT_SCOPE);
 			setScope(Scope.ROOT_SCOPE);
 
-			enterRootProtocolDecl((ProtocolDecl) child);  // Doesn't push proto stack, just for root role/arg names
+			enterRootProtocolDecl((ProtocolDecl<? extends ProtocolKind>) child);  // Doesn't push proto stack, just for root role/arg names
 		}
 		if (child instanceof ScopedNode)
 		{
@@ -150,7 +150,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		if (child instanceof Do)
 		{
 			//spv.enterSubprotocol((Do) child);  // Scope already pushed
-			enterSubprotocol((Do) child);  // Scope already pushed
+			enterSubprotocol((Do<? extends ProtocolKind>) child);  // Scope already pushed
 		}
 		//return spv.subprotocolEnter(parent, child);
 		subprotocolEnter(parent, child);
@@ -196,14 +196,14 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 	// proto is full name
 	//public void enterSubprotocol(ProtocolName proto, List<Role> roleargs, List<Argument> argargs)
-	private void enterSubprotocol(Do doo)
+	private void enterSubprotocol(Do<? extends ProtocolKind> doo)
 	{
 		//ModuleContext mcontext = ((CompoundInteractionContext) peekContext()).getModuleContext();
 		/*ModuleDelegate mcontext = getModuleDelegate().g;
 		ProtocolName fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());*/
 		//ModuleDelegate mcontext = getModuleContext();
 		ModuleContext mcontext = getModuleContext();
-		ProtocolName fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());
+		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolName(doo.proto.toName());
 		List<Role> roleargs = doo.roleinstans.getRoles();
 		List<Argument<? extends Kind>> argargs = doo.arginstans.getArguments(getScope());
 		pushSubprotocolSignature(fullname, roleargs, argargs);
@@ -211,7 +211,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		pushNameMaps(fullname, doo, roleargs, argargs);
 	}
 	
-	private void pushSubprotocolSignature(ProtocolName fullname, List<Role> roleargs, List<Argument<? extends Kind>> argargs)
+	private void pushSubprotocolSignature(ProtocolName<? extends ProtocolKind> fullname, List<Role> roleargs, List<Argument<? extends Kind>> argargs)
 	{
 		Map<Role, RoleNode> rolemap = rolemaps.peek();
 		Map<Argument<? extends Kind>, ArgumentNode> argmap = argmaps.peek();

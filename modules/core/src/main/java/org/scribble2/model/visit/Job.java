@@ -5,8 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.scribble2.model.Module;
+import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.ModuleName;
-import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
 	// visitchildren shouldn't use check class on visited nodes so strictly, e.g. name disambiguation changes from ambiguousnodes
@@ -107,11 +107,11 @@ public class Job
 	// To be done as a barrier pass after projection done on all Modules
 	private void buildProjectionContexts()
 	{
-		Map<ProtocolName, Module> projections = this.jcontext.getProjections();
+		Map<LProtocolName, Module> projections = this.jcontext.getProjections();
 		try
 		{
 			ContextBuilder builder = new ContextBuilder(this);
-			for (ProtocolName lpn : projections.keySet())
+			for (LProtocolName lpn : projections.keySet())
 			{
 				Module mod = projections.get(lpn);
 				mod = (Module) mod.accept(builder);

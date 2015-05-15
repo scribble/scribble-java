@@ -4,10 +4,8 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ImportModule;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.ModuleNameNode;
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
-import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrImportModule
 {
@@ -19,10 +17,12 @@ public class AntlrImportModule
 	public static ImportModule parseImportModule(ScribbleParser parser, CommonTree ct)
 	{
 		ModuleNameNode fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
-		SimpleProtocolNameNode alias = null;
+		//SimpleProtocolNameNode alias = null;
+		ModuleNameNode alias = null;
 		if (hasAlias(ct))
 		{
-			alias = AntlrSimpleName.toSimpleProtocolNameNode(getAliasChild(ct));
+			//alias = AntlrSimpleName.toSimpleProtocolNameNode(getAliasChild(ct));
+			alias = AntlrQualifiedName.toModuleNameNode(getAliasChild(ct));
 		}
 		//return new ImportModule(fmn, alias);
 		return ModelFactoryImpl.FACTORY.ImportModule(fmn, alias);

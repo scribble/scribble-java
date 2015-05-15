@@ -3,26 +3,37 @@ package org.scribble2.model.local;
 import org.scribble2.model.ArgumentInstantiationList;
 import org.scribble2.model.Do;
 import org.scribble2.model.RoleInstantiationList;
+import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModelDel;
+import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.sesstype.kind.Local;
+import org.scribble2.sesstype.name.LProtocolName;
 
 public class LDo extends Do<Local> implements LSimpleInteractionNode
 {
 	//public LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public LDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//public LDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	public LDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, LProtocolNameNode proto)
 	{
 		//super(scope, roleinstans, arginstans, proto);
 		super(roleinstans, arginstans, proto);
 	}
 
 	@Override
+	public LProtocolName getTargetFullProtocolName(ModuleContext mcontext)
+	{
+		return mcontext.getFullLocalProtocolName(((LProtocolNameNode) this.proto).toName());
+	}
+
+	@Override
 	//protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	protected LDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	//protected LDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
+	protected LDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode<Local> proto)
 	{
 		ModelDel del = del();
 		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
-		LDo ld = new LDo(roleinstans, arginstans, proto);
+		LDo ld = new LDo(roleinstans, arginstans, (LProtocolNameNode) proto);
 		ld = (LDo) ld.del(del);
 		return ld;
 	}
@@ -31,7 +42,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	protected LDo copy()
 	{
 		//return new LocalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
-		return new LDo(this.roleinstans, this.arginstans, this.proto);
+		return new LDo(this.roleinstans, this.arginstans, (LProtocolNameNode) this.proto);
 	}
 	
 	/*@Override

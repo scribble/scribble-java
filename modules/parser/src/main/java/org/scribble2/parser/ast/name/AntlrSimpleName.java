@@ -10,7 +10,6 @@ import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.ScopeNode;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.OperatorKind;
-import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.kind.RecVarKind;
 import org.scribble2.sesstype.kind.RoleKind;
 
@@ -20,11 +19,13 @@ public class AntlrSimpleName
 	private static final String ANTLR_NO_SCOPE = "NO_SCOPE";
 	//private static final String ANTLR_EMPTY_SCOPE = "EMPTY_SCOPENAME";
 	
+	..FIXME: do global/local versions
 	public static SimpleProtocolNameNode toSimpleProtocolNameNode(CommonTree ct)
 	{
 		//return new SimpleProtocolNameNode(AntlrSimpleName.getName(ct));
 		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, getName(ct));
-		return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ProtocolKind.KIND, getName(ct));
+		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ProtocolKind.KIND, getName(ct));
+		throw new RuntimeException("TODO: " + ct);
 	}
 
 	/*public static SimplePayloadTypeNode toSimplePayloadTypeNode(CommonTree ct)

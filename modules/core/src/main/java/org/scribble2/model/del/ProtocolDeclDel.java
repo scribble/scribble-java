@@ -11,7 +11,7 @@ import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.sesstype.kind.ProtocolKind;
-import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.GProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -65,7 +65,8 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 		ProtocolDecl<? extends ProtocolKind>
 			pd = cast(child);
 
-		ProtocolName pn = pd.getFullProtocolName(main);
+		//ProtocolName<? extends ProtocolKind> pn = pd.getFullProtocolName(main);
+		GProtocolName pn = (GProtocolName) pd.getFullProtocolName(main);
 
 		for (Role role : pd.header.roledecls.getRoles())
 		{
@@ -95,7 +96,7 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 		return this.pdcontext;
 	}
 	
-	public Map<Role, Map<ProtocolName, Set<Role>>> getProtocolDependencies()
+	public Map<Role, Map<GProtocolName, Set<Role>>> getProtocolDependencies()
 	{
 		//return this.dependencies;
 		return this.pdcontext.getDependencies();

@@ -11,14 +11,15 @@ import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.del.ModuleDel;
 import org.scribble2.model.del.ProtocolDeclDel;
 import org.scribble2.model.global.GProtocolDecl;
+import org.scribble2.model.global.GProtocolHeader;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.local.LProtocolDef;
 import org.scribble2.model.local.LProtocolHeader;
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.env.ProjectionEnv;
-import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.GProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -76,14 +77,14 @@ public class GProtocolDeclDel extends ProtocolDeclDel
 		//FIXME: it's the "root" we need, not the main
 		Module root = jc.getModule(proj.getModuleContext().root);
 		
-		ProtocolName gpn = ((GProtocolDecl) child).getFullProtocolName(root);
+		GProtocolName gpn = ((GProtocolDecl) child).getFullProtocolName(root);
 		
 		Role self = proj.peekSelf();
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 
 		LProtocolDecl lpd = project(proj, gpd);
 		//Map<ProtocolName, Set<Role>> deps = proj.getProtocolDependencies();
-		Map<ProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getProtocolDependencies().get(self);
+		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getProtocolDependencies().get(self);
 		
 		//Module projected = projectIntoModule(proj, gpd);
 		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);  // FIXME: projection should always use the main module?
@@ -153,7 +154,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel
 		LProtocolDef def = (LProtocolDef) ((ProjectionEnv) gpd.def.del().env()).getProjection();
 		//SimpleProtocolNameNode pn = proj.makeProjectedLocalName(gpd.header.name.toName(), self);
 		//SimpleProtocolNameNode pn = Projector.makeProjectedLocalName(gpd.header.name.toCompoundName(), self);
-		SimpleProtocolNameNode pn = Projector.makeProjectedLocalName(gpd.header.getDeclName(), self);
+		//SimpleProtocolNameNode pn = Projector.makeProjectedLocalName(gpd.header.getDeclName(), self);
+		LProtocolNameNode pn = Projector.makeProjectedLocalName(((GProtocolHeader) gpd.header).getDeclName(), self);
 		
 		// FIXME: move to delegate? -- maybe fully integrate into projection pass
 		RoleDeclList roledecls = gpd.header.roledecls.project(self);

@@ -4,7 +4,8 @@ package org.scribble2.model.name.qualified;
 
 // N.B. not a SimpleNameNode
 //public class SimpleProtocolNameNode extends SimpleCompoundNameNode<ProtocolName> //SimpleMemberNameNode
-public class SimpleProtocolNameNode extends ProtocolNameNode
+@Deprecated
+public abstract class SimpleProtocolNameNode extends ProtocolNameNode
 {
 	public final String identifier;
 	
@@ -26,7 +27,7 @@ public class SimpleProtocolNameNode extends ProtocolNameNode
 	@Override
 	protected SimpleProtocolNameNode copy()
 	{
-		return new SimpleProtocolNameNode(this.identifier);
+		return null;//new SimpleProtocolNameNode(this.identifier);
 		//return new SimpleProtocolNameNode(getLastElement());
 	}
 

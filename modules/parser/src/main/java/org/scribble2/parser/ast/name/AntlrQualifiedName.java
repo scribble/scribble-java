@@ -5,11 +5,13 @@ import java.util.Arrays;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.DataTypeNameNode;
+import org.scribble2.model.name.qualified.GProtocolNameNode;
+import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
-import org.scribble2.model.name.qualified.ProtocolNameNode;
+import org.scribble2.sesstype.kind.Global;
+import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.kind.ModuleKind;
-import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.kind.SigKind;
 
 public class AntlrQualifiedName
@@ -49,10 +51,20 @@ public class AntlrQualifiedName
 		return (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getElements(ct));
 	}
 
-	public static ProtocolNameNode toProtocolNameNode(CommonTree ct)
+	/*public static ProtocolNameNode toProtocolNameNode(CommonTree ct)
 	{
 		//return new ProtocolNameNode(getElements(ct));
 		//return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, getElements(ct));
 		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ProtocolKind.KIND, getElements(ct));
+	}*/
+
+	public static GProtocolNameNode toGlobalProtocolNameNode(CommonTree ct)
+	{
+		return (GProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getElements(ct));
+	}
+
+	public static LProtocolNameNode toLocalProtocolNameNode(CommonTree ct)
+	{
+		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getElements(ct));
 	}
 }

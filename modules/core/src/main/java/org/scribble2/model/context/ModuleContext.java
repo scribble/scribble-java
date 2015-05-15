@@ -12,9 +12,11 @@ import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.DataType;
-import org.scribble2.sesstype.name.MemberName;
+import org.scribble2.sesstype.name.GProtocolName;
+import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.Name;
@@ -30,8 +32,8 @@ public class ModuleContext
 	//private final Map<PayloadTypeOrParameter, PayloadTypeOrParameter> data;  // FIXME: refactor properly for sig members
 	private final Map<DataType, DataType> data;
 	private final Map<MessageSigName, MessageSigName> sigs;
-	private final Map<ProtocolName, ProtocolName> globals;
-	private final Map<ProtocolName, ProtocolName> locals;
+	private final Map<GProtocolName, GProtocolName> globals;
+	private final Map<LProtocolName, LProtocolName> locals;
 
 	// Made by ContextBuilder
 	// ModuleContext is the root context
@@ -97,17 +99,17 @@ public class ModuleContext
 		}*/
 		for (GProtocolDecl gpd : mod.getGlobalProtocolDecls())
 		{
-			ProtocolName fullname = gpd.getFullProtocolName(mod);
+			GProtocolName fullname = gpd.getFullProtocolName(mod);
 			//ProtocolName visname = new ProtocolName(vismodname, gpd.header.name.toString());
-			ProtocolName visname = new ProtocolName(vismodname, gpd.header.getDeclName());
+			GProtocolName visname = new GProtocolName(vismodname, gpd.header.getDeclName());
 			this.globals.put(visname, fullname);
 		}
 		for (LProtocolDecl lpd : mod.getLocalProtocolDecls())
 		{
-			ProtocolName fullname = lpd.getFullProtocolName(mod);
+			LProtocolName fullname = lpd.getFullProtocolName(mod);
 			//ProtocolName fullname = getFullProtocolName(lpd);
 			//ProtocolName visname = new ProtocolName(vismodname, lpd.header.name.toString());
-			ProtocolName visname = new ProtocolName(vismodname, lpd.header.getDeclName());
+			LProtocolName visname = new LProtocolName(vismodname, lpd.header.getDeclName());
 			this.locals.put(visname, fullname);
 		}
 	}
@@ -150,9 +152,9 @@ public class ModuleContext
 			/*ProtocolName simplename = gpd.header.name.toCompoundName();
 			ProtocolName fullname = new ProtocolName(fullmodname, simplename.toString());
 			ProtocolName selfname = new ProtocolName(simplemodname, simplename.toString());*/
-			ProtocolName simplename = gpd.header.getDeclName();
-			ProtocolName fullname = new ProtocolName(fullmodname, simplename);
-			ProtocolName selfname = new ProtocolName(simplemodname, simplename);
+			GProtocolName simplename = (GProtocolName) gpd.header.getDeclName();
+			GProtocolName fullname = new GProtocolName(fullmodname, simplename);
+			GProtocolName selfname = new GProtocolName(simplemodname, simplename);
 			this.globals.put(simplename, fullname);
 			this.globals.put(selfname, fullname);
 		}
@@ -256,7 +258,8 @@ public class ModuleContext
 		return map.get(visname);
 	}*/
 	
-	public ProtocolName getFullProtocolDeclName(ProtocolName visname)
+	/*//public ProtocolNamegetFullProtocolDeclName(ProtocolName visname)
+	public <K extends ProtocolKind> ProtocolName<K> getFullProtocolDeclName(ProtocolName<K> visname)
 	{
 		// Global and local protocol names (all member names) are distinct by well-formedness
 		if (this.globals.containsKey(visname))
@@ -269,6 +272,35 @@ public class ModuleContext
 		}
 		//throw new RuntimeException("Protocol name not visible: " + visname);
 		throw new RuntimeException("Protocol name not visible: " + visname + ", " + this.globals + ", " + this.locals);
+	}*/
+	public <K extends ProtocolKind> ProtocolName<K> getFullProtocolName(ProtocolName<K> visname)
+	{
+		try
+		{
+			return (ProtocolName<K>) getFullGlobalProtocolName((GProtocolName) visname);  // FIXME: hack
+		}
+		catch (Exception x)
+		{
+			return (ProtocolName<K>) getFullLocalProtocolName((LProtocolName) visname);
+		}
+	}
+
+	public GProtocolName getFullGlobalProtocolName(GProtocolName visname)
+	{
+		if (!this.globals.containsKey(visname))
+		{
+			throw new RuntimeException("Global protocol name not visible: " + visname + ", " + this.globals);
+		}
+		return this.globals.get(visname);
+	}
+
+	public LProtocolName getFullLocalProtocolName(LProtocolName visname)
+	{
+		if (!this.locals.containsKey(visname))
+		{
+			throw new RuntimeException("Local protocol name not visible: " + visname + ", " + this.locals);
+		}
+		return this.locals.get(visname);
 	}
 	
 	@Override 

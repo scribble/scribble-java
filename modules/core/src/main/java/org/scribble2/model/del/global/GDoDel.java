@@ -7,7 +7,7 @@ import org.scribble2.model.RoleInstantiationList;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.global.GDo;
 import org.scribble2.model.local.LDo;
-import org.scribble2.model.name.qualified.ProtocolNameNode;
+import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
@@ -110,7 +110,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 			ArgumentInstantiationList arginstans = (ArgumentInstantiationList) ((ProjectionEnv) gd.arginstans.del().env()).getProjection();*/
 			RoleInstantiationList roleinstans = gd.roleinstans.project(self);
 			ArgumentInstantiationList arginstans = gd.arginstans.project(self);
-			ProtocolNameNode target = Projector.makeProjectedProtocolNameNode(gd.getTargetFullProtocolName(proj.getModuleContext()), popped);
+			LProtocolNameNode target = Projector.makeProjectedProtocolNameNode(gd.getTargetFullProtocolName(proj.getModuleContext()), popped);
 			projection = ModelFactoryImpl.FACTORY.LocalDo(roleinstans, arginstans, target);
 			
 			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking?

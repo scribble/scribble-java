@@ -4,20 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.scribble2.model.ProtocolDecl;
-import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
+import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.global.GProtocolDecl;
+import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
-import org.scribble2.model.name.qualified.ProtocolNameNode;
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.visit.env.ProjectionEnv;
+import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.kind.ModuleKind;
 import org.scribble2.sesstype.kind.ProtocolKind;
+import org.scribble2.sesstype.name.GProtocolName;
+import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.ModuleName;
-import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -28,7 +28,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	private Stack<Role> selfs = new Stack<>();  // Is a stack needed? roles only pushed from GlobalProtocolDecl, which should be only done once at the root?
 	
 	// first protocol name is full global protocol name, second is full local projection names
-	private Map<ProtocolName, Map<Role, Module>> projections = new HashMap<>();
+	private Map<GProtocolName, Map<Role, Module>> projections = new HashMap<>();
 	
 	/*// cache of dependencies, cleared on entering each root global protocol
 	// protocol name is full name of global protocol dependencies
@@ -220,15 +220,18 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	}
 	
 	// Simple projected protocol name for protocol decls -- Move into SimpleProtocolName?
-	public static SimpleProtocolNameNode makeProjectedLocalName(ProtocolName simplename, Role role)
+	//public static SimpleProtocolNameNode makeProjectedLocalName(ProtocolName simplename, Role role)
+	public static LProtocolNameNode makeProjectedLocalName(GProtocolName simplename, Role role)
 	{
 		//return new SimpleProtocolNameNode(makeProjectedLocalNameAux(simplename.toString(), role.toString()));
 		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
-		return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ProtocolKind.KIND, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
+		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ProtocolKind.KIND, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
+		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
 	}
 
 	// Role is the target subprotocol parameter (not the current projector self -- actually the self just popped)
-	public static ProtocolNameNode makeProjectedProtocolNameNode(ProtocolName fullname, Role role)
+	//public static ProtocolNameNode makeProjectedProtocolNameNode(ProtocolName fullname, Role role)
+	public static LProtocolNameNode makeProjectedProtocolNameNode(GProtocolName fullname, Role role)
 	{
 		String simplename = makeProjectedLocalNameAux(fullname.getLastElement(), role.toString());
 		String[] elems = fullname.getElements();
@@ -238,7 +241,8 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		tmp[tmp.length - 1] = simplename;
 		//return new ProtocolNameNode(tmp);
 		//return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, tmp);
-		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ProtocolKind.KIND, tmp);
+		//return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ProtocolKind.KIND, tmp);
+		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, tmp);
 	}
 
 	/*public static ProtocolName makeProjectedProtocolName(ProtocolName fullname, Role role)
@@ -250,7 +254,8 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 
 	// Factor out with above
 	// fullname is the un-projected name; localname is the already projected simple name
-	public static ModuleNameNode makeProjectedModuleNameNodes(ModuleName fullname, ProtocolName localname)
+	//public static ModuleNameNode makeProjectedModuleNameNodes(ModuleName fullname, ProtocolName localname)
+	public static ModuleNameNode makeProjectedModuleNameNodes(ModuleName fullname, LProtocolName localname)
 	{
 		String[] elems = fullname.getElements();
 		String[] tmp = new String[elems.length];
@@ -305,7 +310,8 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	// finally store projections in ProtocolDecl contexts
 	
 	// gpn is full global protocol name, mod is a module with the single local protocol projection
-	public void addProjection(ProtocolName gpn, Role role, Module mod)
+	//public void addProjection(ProtocolName gpn, Role role, Module mod)
+	public void addProjection(GProtocolName gpn, Role role, Module mod)
 	{
 		/*try  // Inconvenient: protocol decls not available/visible
 		{
@@ -328,7 +334,8 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		//System.out.println("a: \n" + mod + "\n\n");
 	}
 
-	public Map<ProtocolName, Map<Role, Module>> getProjections()
+	//public Map<ProtocolName, Map<Role, Module>> getProjections()
+	public Map<GProtocolName, Map<Role, Module>> getProjections()
 	{
 		return this.projections;
 	}

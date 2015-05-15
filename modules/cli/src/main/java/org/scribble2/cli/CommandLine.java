@@ -17,7 +17,8 @@ import org.scribble2.model.Module;
 import org.scribble2.model.visit.Job;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
-import org.scribble2.sesstype.name.ProtocolName;
+import org.scribble2.sesstype.name.GProtocolName;
+import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -68,10 +69,10 @@ public class CommandLine implements Runnable
 	
 	private void outputProjection(JobContext jc)
 	{
-		Map<ProtocolName, Module> projs = jc.getProjections();
+		Map<LProtocolName, Module> projs = jc.getProjections();
 		Role role = new Role(this.args.get(Arg.PROJECT)[1]);
 		//ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, this.args.get(Arg.PROJECT)[0]), role).toName();  // FIXME: factor out name projection from name node construction
-		ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, new ProtocolName(this.args.get(Arg.PROJECT)[0])), role).toName();  // FIXME: factor out name projection from name node construction
+		LProtocolName proto = Projector.makeProjectedProtocolNameNode(new GProtocolName(jc.main, new GProtocolName(this.args.get(Arg.PROJECT)[0])), role).toName();  // FIXME: factor out name projection from name node construction
 		if (!projs.containsKey(proto))
 		{
 			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));

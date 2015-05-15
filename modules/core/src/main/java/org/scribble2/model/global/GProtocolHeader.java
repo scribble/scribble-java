@@ -6,13 +6,23 @@ import org.scribble2.model.ParamDeclList;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.del.ModelDel;
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.GProtocolNameNode;
+import org.scribble2.model.name.qualified.ProtocolNameNode;
+import org.scribble2.sesstype.kind.Global;
+import org.scribble2.sesstype.name.GProtocolName;
 
-public class GProtocolHeader extends ProtocolHeader implements GlobalNode
+public class GProtocolHeader extends ProtocolHeader<Global> implements GlobalNode
 {
-	public GProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	//public GProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	public GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	{
 		super(name, roledecls, paramdecls);
+	}
+	
+	@Override
+	public GProtocolName getDeclName()
+	{
+		return (GProtocolName) super.getDeclName();
 	}
 	
 	@Override
@@ -24,14 +34,16 @@ public class GProtocolHeader extends ProtocolHeader implements GlobalNode
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new GProtocolHeader((SimpleProtocolNameNode) this.name, this.roledecls, this.paramdecls);
+		//return new GProtocolHeader((SimpleProtocolNameNode) this.name, this.roledecls, this.paramdecls);
+		return new GProtocolHeader((GProtocolNameNode) this.name, this.roledecls, this.paramdecls);
 	}
 
 	@Override
-	protected ProtocolHeader reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl)
+	//protected ProtocolHeader reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl)
+	protected GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, ParamDeclList pdl)
 	{
 		ModelDel del = del();
-		GProtocolHeader gph = new GProtocolHeader(name, rdl, pdl);
+		GProtocolHeader gph = new GProtocolHeader((GProtocolNameNode) name, rdl, pdl);
 		gph = (GProtocolHeader) gph.del(del);
 		return gph;
 	}

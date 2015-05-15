@@ -2,7 +2,6 @@ package org.scribble2.model;
 
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.ProtocolKind;
-import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
 
@@ -16,7 +15,8 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 		extends ModelNodeBase// implements ContextStackNode//, ModuleMember
 		//implements IProtocolDecl<K>
 {
-	public final ProtocolHeader header;
+	// FIXME: make private with casting getters -- works better (e.g. to use overridden getName)
+	public final ProtocolHeader<K> header;
 	public final ProtocolDef<K> def;
 	/*public final T1 header;
 	public final T2 def;*/
@@ -34,7 +34,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 
 	//protected ProtocolDecl(Token t, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, T def)//, ProtocolDeclContext pdcontext, Env env)
 	//protected AbstractProtocolDecl(T1 header, T2 def)//, ProtocolDeclContext pdcontext, Env env)
-	protected ProtocolDecl(ProtocolHeader header, ProtocolDef<K> def)//, ProtocolDeclContext pdcontext, Env env)
+	protected ProtocolDecl(ProtocolHeader<K> header, ProtocolDef<K> def)//, ProtocolDeclContext pdcontext, Env env)
 	{
 		this.header = header;
 		this.def = def;
@@ -56,7 +56,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 	
 	// Keeps the current del (shallow reconstruct with new children)
 	//protected abstract AbstractProtocolDecl<T1, T2> reconstruct(T1 header, T2 def);//, ProtocolDeclContext pdcontext, Env env);
-	protected abstract ProtocolDecl<K> reconstruct(ProtocolHeader header, ProtocolDef<K> def);//, ProtocolDeclContext pdcontext, Env env);
+	protected abstract ProtocolDecl<K> reconstruct(ProtocolHeader<K> header, ProtocolDef<K> def);//, ProtocolDeclContext pdcontext, Env env);
 
 	/*@Override
 	public NameDisambiguator enterDisambiguation(NameDisambiguator disamb) throws ScribbleException
@@ -89,7 +89,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 	{
 		/*T1 header = visitChildWithClassCheck(this, this.header, nv);
 		T2 def = visitChildWithClassCheck(this, this.def, nv);*/
-		ProtocolHeader header = visitChildWithClassCheck(this, this.header, nv);
+		ProtocolHeader<K> header = visitChildWithClassCheck(this, this.header, nv);
 		ProtocolDef<K> def = visitChildWithClassCheck(this, this.def, nv);
 		return reconstruct(header, def);//, getContext(), getEnv());
 	}
@@ -103,16 +103,21 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 		return visitChildren(spv);
 	}*/
 
-	// Module for ModuleContext creation and local projections (no context built yet)
+	/*// Module for ModuleContext creation and local projections (no context built yet)
 	//public ProtocolName getFullProtocolName(ModuleContext mcontext)
 	//@Override
-	public ProtocolName getFullProtocolName(Module mod)
+	public ProtocolName<? extends ProtocolKind> getFullProtocolName(Module mod)
 	{
 		//ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrGlobalProtocolDecl.getModuleParent(this.ct));  // FIXME: globalprotocoldecl same as local hack
 		ModuleName fullmodname = mod.getFullModuleName();
 		//return new ProtocolName(fullmodname, this.header.name.toString());
-		return new ProtocolName(fullmodname, this.header.getDeclName());
-	}
+		//return new ProtocolName(fullmodname, this.header.getDeclName());
+		if (isGlobal())
+		{
+			return new GProtocolName(fullmodname, (ProtocolName<Global>k this.header.getDeclName());
+		}
+	}*/
+	public abstract ProtocolName<? extends ProtocolKind> getFullProtocolName(Module mod);
 	
 	//@Override
 	public boolean isGlobal()

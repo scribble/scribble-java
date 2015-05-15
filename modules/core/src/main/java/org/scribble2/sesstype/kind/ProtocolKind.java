@@ -3,7 +3,7 @@ package org.scribble2.sesstype.kind;
 //public abstract class ProtocolKind implements Kind
 public class ProtocolKind extends Kind
 {
-	public static final ProtocolKind KIND = new ProtocolKind();
+	//public static final ProtocolKind KIND = new ProtocolKind();
 	
 	protected ProtocolKind()
 	{

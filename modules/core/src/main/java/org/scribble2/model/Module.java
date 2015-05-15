@@ -212,9 +212,12 @@ public class Module extends ModelNodeBase
 	}*/
 	
 	public
+			<K extends ProtocolKind>
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-			ProtocolDecl<? extends ProtocolKind>
-			getProtocolDecl(ProtocolName pn)
+			//ProtocolDecl<? extends ProtocolKind>
+			ProtocolDecl<K>
+			//getProtocolDecl(ProtocolName<? extends ProtocolKind> pn)
+			getProtocolDecl(ProtocolName<K> pn)  // FIXME: separate to global/local
 	{
 		//.. HERE: refactor to get global/local protocol decl
 		
@@ -227,16 +230,19 @@ public class Module extends ModelNodeBase
 			//<T extends ProtocolDecl>
 			//T getProtocolDecl(List<T> pds, ProtocolName pn)
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
-			ProtocolDecl<? extends ProtocolKind>
-			getProtocolDecl(List<ProtocolDecl<? extends ProtocolKind>> pds, ProtocolName pn)
+			<K extends ProtocolKind>
+			//ProtocolDecl<? extends ProtocolKind>
+			ProtocolDecl<K>
+			//getProtocolDecl(List<ProtocolDecl<? extends ProtocolKind>> pds, ProtocolName pn)
+			getProtocolDecl(List<ProtocolDecl<? extends ProtocolKind>> pds, ProtocolName<K> pn)
 	{
 		//List<T>
-		List<ProtocolDecl<? extends ProtocolKind>> filtered = pds.stream().filter((pd) -> pd.header.name.toName().equals(pn)).collect(Collectors.toList());
+		List<ProtocolDecl<? extends ProtocolKind>> filtered = pds.stream().filter((pd) -> pd.header.getDeclName().equals(pn)).collect(Collectors.toList());
 		if (filtered.size() != 1)
 		{
 			throw new RuntimeException("Protocol not found: " + pn);
 		}
-		return filtered.get(0);
+		return (ProtocolDecl<K>) filtered.get(0);  // FIXME
 	}
 
 	/*public List<LocalProtocolDecl> getLocalProtocolDecls()

@@ -1,14 +1,13 @@
 package org.scribble2.model.name.qualified;
 
 import org.scribble2.sesstype.kind.ProtocolKind;
-import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 
 
 
 //public class ProtocolNameNode<K extends ProtocolKind> extends MemberNameNode<ProtocolName<K>, K>
 //public class ProtocolNameNode extends MemberNameNode<ProtocolName, ProtocolKind>
-public class ProtocolNameNode extends MemberNameNode<ProtocolKind>
+public abstract class ProtocolNameNode<K extends ProtocolKind> extends MemberNameNode<K>
 {
 	//public ProtocolNameNodes(PrimitiveNameNode... ns)
 	public ProtocolNameNode(String... ns)
@@ -16,17 +15,17 @@ public class ProtocolNameNode extends MemberNameNode<ProtocolKind>
 		super(ns);
 	}
 
-	@Override
+	/*@Override
 	//protected ProtocolNameNode<K> copy()
-	protected ProtocolNameNode copy()
+	protected ProtocolNameNode<K> copy()
 	{
 		//return new ProtocolNameNode<>(this.elems);
-		return new ProtocolNameNode(this.elems);
-	}
+		return new ProtocolNameNode<>(this.elems);
+	}*/
 	
 	@Override
-	//public ProtocolName<K> toName()
-	public ProtocolName toName()
+	/*//public ProtocolName<K> toName()
+	public ProtocolName<K> toName()
 	{
 		//String membname = getLastElement();
 		//ProtocolName<K> membname = new ProtocolName<>(null, getLastElement());  // FIXME: global/local
@@ -39,5 +38,6 @@ public class ProtocolNameNode extends MemberNameNode<ProtocolKind>
 		ModuleName modname = getModuleNamePrefix();
 		//return new ProtocolName<>(null, modname, membname);  // FIXME
 		return new ProtocolName(modname, membname);
-	}
+	}*/
+	public abstract ProtocolName<K> toName();
 }

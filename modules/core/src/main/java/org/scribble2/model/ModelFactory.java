@@ -27,11 +27,11 @@ import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.name.qualified.GProtocolNameNode;
+import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
-import org.scribble2.model.name.qualified.ProtocolNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.model.name.simple.AmbigNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParamNode;
@@ -60,12 +60,14 @@ public interface ModelFactory
 	PayloadElement PayloadElement(PayloadElementNameNode name);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
-	ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias);
+	//ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias);
+	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);
 	
 	MessageSigDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias);
 
 	GProtocolDecl GlobalProtocolDecl(GProtocolHeader header, GProtocolDef def);
-	GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
+	//GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
+	GProtocolHeader GlobalProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
 
 	//RoleDeclList RoleDeclList(List<RoleDecl> rds);
 	//RoleDeclList RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> rds);
@@ -90,7 +92,8 @@ public interface ModelFactory
 	GRecursion GlobalRecursion(RecVarNode recvar, ProtocolBlock<Global> block);
 	GContinue GlobalContinue(RecVarNode recvar);
 	//GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
+	//GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
+	GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, GProtocolNameNode proto);
 	
 	RoleInstantiationList RoleInstantiationList(List<RoleInstantiation> ris);
 	RoleInstantiation RoleInstantiation(RoleNode role);
@@ -109,7 +112,8 @@ public interface ModelFactory
 	<K extends Kind> ParamNode<K> ParamNode(K kind, String identifier);
 
 	LProtocolDecl LocalProtocolDecl(LProtocolHeader header, LProtocolDef def);
-	LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
+	//LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
+	LProtocolHeader LocalProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
 	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
 	LProtocolDef LocalProtocolDefinition(LProtocolBlock block);
 	LProtocolBlock LocalProtocolBlock(LInteractionSeq seq);
@@ -123,5 +127,6 @@ public interface ModelFactory
 	LRecursion LocalRecursion(RecVarNode recvar, LProtocolBlock block);
 	LContinue LocalContinue(RecVarNode recvar);
 	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
+	//LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
+	LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, LProtocolNameNode proto);
 }
