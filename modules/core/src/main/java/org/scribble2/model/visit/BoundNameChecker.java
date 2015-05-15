@@ -10,6 +10,7 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 // FIXME: integrate with NameDisambiguator
+@Deprecated
 public class BoundNameChecker extends ModelVisitor
 {
 	private Set<Role> roles = new HashSet<>();
@@ -23,13 +24,13 @@ public class BoundNameChecker extends ModelVisitor
 	@Override
 	public void enter(ModelNode parent, ModelNode child) throws ScribbleException
 	{
-		child.del().enterBoundNamesCheck(parent, child, this);
+		//child.del().enterBoundNamesCheck(parent, child, this);
 	}
 	
 	@Override
 	public ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
 	{
-		return visited.del().leaveBoundNamesCheck(parent, child, this, visited);
+		return null;// visited.del().leaveBoundNamesCheck(parent, child, this, visited);
 	}
 	
 	public void clear()

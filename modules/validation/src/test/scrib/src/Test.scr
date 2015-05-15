@@ -11,11 +11,15 @@ module Test;
 //import Test2;
 
 
-
+/*
 global protocol Foo(role A, role B)
 {
-	
+	rec X
+	{
+		continue X;
+	}
 }
+//*/
 
 
 /*
@@ -29,9 +33,9 @@ global protocol Foo(role A, role B)
 	}
 	or
 	{
-		do Foo(A, B);  // Not guarded -- FSM translation would be weird
+		//do Foo(A, B);  // Not guarded -- FSM translation would be weird
 		//do Bar<M1>(A, B);
-		//do Bar<1()>(A, B);
+		do Bar<1()>(A, B);
 	}
 }
 
@@ -42,15 +46,15 @@ global protocol Bar<sig M>(role A, role B)
 //*/
 
 
-/*//
+///*
+sig <java> "foo" from "bar" as M1;
+
 global protocol Foo<sig M>(role A, role B)
 {
+	() from A to B;
 	M from A to B;
-}
-
-global protocol Bar(role C, role D)
-{
-	() from C to D;
+	M1 from A to B;
+	//M2 from A to B;
 }
 //*/
 

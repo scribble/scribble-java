@@ -7,9 +7,9 @@ import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.context.ProtocolDeclContext;
-import org.scribble2.model.visit.BoundNameChecker;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
+import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
@@ -42,9 +42,10 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 	protected abstract ProtocolDeclDel copy();
 	
 	@Override
-	public ProtocolDecl<? extends ProtocolKind> leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException
+	//public ProtocolDecl<? extends ProtocolKind> leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException
+	public ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException
 	{
-		checker.clear();
+		disamb.clear();
 		return cast(visited);
 	}
 	

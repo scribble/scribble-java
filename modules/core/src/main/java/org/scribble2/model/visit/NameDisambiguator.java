@@ -1,7 +1,9 @@
 package org.scribble2.model.visit;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
@@ -9,18 +11,24 @@ import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModuleDel;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.Name;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
 public class NameDisambiguator extends ModelVisitor
 {
+	private ModuleContext mcontext;  // FIXME: hack -- factor out ContextVisitor
+
   // Reset per Module
 	//private ModuleContext context;
 
   // Reset per ProtocolDecl
-	private int counter = 1;
+	//private int counter = 1;
+
 	//private Map<String, KindEnum> params = new HashMap<>();
 	//private Map<Name<? extends Kind>, Kind> params = new HashMap<>();
+	private Set<Role> roles = new HashSet<>();
+
 	private Map<String, Kind> params = new HashMap<>();
 
 	public NameDisambiguator(Job job)
@@ -35,9 +43,10 @@ public class NameDisambiguator extends ModelVisitor
 	}*/
 	
 	//public void enterProtocolDecl(ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
-	public void reset()
+	public void clear()
 	{
-		this.counter = 1;
+		//this.counter = 1;
+		this.roles.clear();
 		this.params.clear();
 	}
 	
@@ -57,14 +66,6 @@ public class NameDisambiguator extends ModelVisitor
 		return this.context.isMessageSignatureNameVisible(new MessageSignatureName(name.toString()));
 	}*/
 	
-	// name is a simple name (compound names are not ambiguous)
-	//public boolean isBoundParameter(IName name)
-	public boolean isBoundParameter(Name<? extends Kind> name)
-	{
-		return this.params.containsKey(name.toString());
-		//return this.params.containsKey(name);
-	}
-	
 	//public void addParameter(Parameter param)
 	//public void addParameter(Parameter param)
 	//public <K extends Kind> void addParameter(Name<K> param, K kind)
@@ -75,20 +76,30 @@ public class NameDisambiguator extends ModelVisitor
 		this.params.put(param.toString(), kind);
 	}
 
+	public void addRole(Role role)
+	{
+		this.roles.add(role);
+	}
+	
+	public boolean isBoundRole(Role role)
+	{
+		return this.roles.contains(role);
+	}
+	
+	// name is a simple name (compound names are not ambiguous)
+	//public boolean isBoundParameter(IName name)
+	public boolean isBoundParameter(Name<? extends Kind> name)
+	{
+		return this.params.containsKey(name.toString());
+		//return this.params.containsKey(name);
+	}
+
 	//public KindEnum getParameterKind(IName name)
 	public Kind getParameterKind(Name<? extends Kind> name)
 	{
 		return this.params.get(name.toString());
 		//return this.params.get(name);
 	}
-	
-	/*@Override
-	public Node visit(Node parent, Node child) throws ScribbleException
-	{
-		return n.disambiguate(this);
-	}*/
-	
-	private ModuleContext mcontext;  // FIXME: hack -- factor out ContextVisitor
 	
 	@Override
 	//public NameDisambiguator enter(ModelNode parent, ModelNode child) throws ScribbleException
@@ -111,6 +122,7 @@ public class NameDisambiguator extends ModelVisitor
 		return visited.del().leaveDisambiguation(parent, child, this, visited);
 	}
 	
+	// FIXME: factor up
 	public ModuleContext getModuleContext() throws ScribbleException
 	{
 		return this.mcontext;
@@ -152,5 +164,11 @@ public class NameDisambiguator extends ModelVisitor
 	/*public String getExternalPayloadType(PayloadType pt)
 	{
 		return this.types.get(pt);
+	}*/
+	
+	/*@Override
+	public Node visit(Node parent, Node child) throws ScribbleException
+	{
+		return n.disambiguate(this);
 	}*/
 }

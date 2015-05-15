@@ -35,7 +35,7 @@ public abstract class ModelDelBase implements ModelDel
 		return visited;
 	}
 
-	@Override
+	/*@Override
 	public void enterBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker) throws ScribbleException
 	{
 
@@ -45,7 +45,7 @@ public abstract class ModelDelBase implements ModelDel
 	public ModelNode leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException
 	{
 		return visited;
-	}
+	}*/
 
 	@Override
 	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException

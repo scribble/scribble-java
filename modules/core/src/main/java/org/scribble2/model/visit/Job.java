@@ -87,8 +87,8 @@ public class Job
 		debugPrintln("\n--- Name disambigiation --- ");  // FIXME: verbose/debug printing parameter -- should be in MainContext, but cannot access directly from here
 		runNodeVisitorPass(NameDisambiguator.class);
 
-		debugPrintln("\n--- Bound name checking --- ");
-		runNodeVisitorPass(BoundNameChecker.class);
+		/*debugPrintln("\n--- Bound name checking --- ");
+		runNodeVisitorPass(BoundNameChecker.class);*/
 
 		debugPrintln("\n--- Well-formed choice check --- ");
 		runNodeVisitorPass(WellFormedChoiceChecker.class);

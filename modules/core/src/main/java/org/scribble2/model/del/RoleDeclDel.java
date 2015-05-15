@@ -2,7 +2,7 @@ package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.RoleDecl;
-import org.scribble2.model.visit.BoundNameChecker;
+import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.sesstype.name.Role;
@@ -11,10 +11,11 @@ import org.scribble2.util.ScribbleException;
 public class RoleDeclDel extends ModelDelBase
 {
 	@Override
-	public void enterBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker) throws ScribbleException
+	//public void enterBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker) throws ScribbleException
+	public void enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 		RoleDecl rd = (RoleDecl) child;
-		checker.addRole(rd.toName());
+		disamb.addRole(rd.toName());
 	}
 
 	@Override

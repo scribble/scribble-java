@@ -1,7 +1,6 @@
 package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.visit.BoundNameChecker;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.Projector;
@@ -17,8 +16,8 @@ public interface ModelDel
 	void enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException;
 	ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException;
 
-	void enterBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker) throws ScribbleException; 
-	ModelNode leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException;
+	/*void enterBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker) throws ScribbleException; 
+	ModelNode leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException;*/
 	
 	//ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException;
 	void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException;
