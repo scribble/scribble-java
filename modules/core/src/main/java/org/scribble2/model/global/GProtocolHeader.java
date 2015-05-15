@@ -24,7 +24,7 @@ public class GProtocolHeader extends ProtocolHeader implements GlobalNode
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new GProtocolHeader(this.name, this.roledecls, this.paramdecls);
+		return new GProtocolHeader((SimpleProtocolNameNode) this.name, this.roledecls, this.paramdecls);
 	}
 
 	@Override

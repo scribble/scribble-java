@@ -153,7 +153,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel
 		LProtocolDef def = (LProtocolDef) ((ProjectionEnv) gpd.def.del().env()).getProjection();
 		//SimpleProtocolNameNode pn = proj.makeProjectedLocalName(gpd.header.name.toName(), self);
 		//SimpleProtocolNameNode pn = Projector.makeProjectedLocalName(gpd.header.name.toCompoundName(), self);
-		SimpleProtocolNameNode pn = Projector.makeProjectedLocalName(gpd.header.name.toName(), self);
+		SimpleProtocolNameNode pn = Projector.makeProjectedLocalName(gpd.header.getDeclName(), self);
 		
 		// FIXME: move to delegate? -- maybe fully integrate into projection pass
 		RoleDeclList roledecls = gpd.header.roledecls.project(self);

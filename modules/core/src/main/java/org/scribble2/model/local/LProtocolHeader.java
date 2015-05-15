@@ -43,7 +43,7 @@ public class LProtocolHeader extends ProtocolHeader implements LocalNode
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new LProtocolHeader(this.name, this.roledecls, this.paramdecls);
+		return new LProtocolHeader((SimpleProtocolNameNode) this.name, this.roledecls, this.paramdecls);
 	}
 
 	@Override

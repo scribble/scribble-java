@@ -111,7 +111,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 		//ModuleName fullmodname = AntlrModule.getFullModuleName(AntlrGlobalProtocolDecl.getModuleParent(this.ct));  // FIXME: globalprotocoldecl same as local hack
 		ModuleName fullmodname = mod.getFullModuleName();
 		//return new ProtocolName(fullmodname, this.header.name.toString());
-		return new ProtocolName(fullmodname, this.header.name.toName());
+		return new ProtocolName(fullmodname, this.header.getDeclName());
 	}
 	
 	//@Override
