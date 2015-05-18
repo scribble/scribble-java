@@ -134,13 +134,13 @@ public class ContextBuilder extends ModelVisitor
 		//this.deps = new HashMap<>();
 	}
 
-	public void addGlobalProtocolDependency(Role self, GProtocolName gpn, Role role)
+	public void addProtocolDependency(Role self, GProtocolName gpn, Role role)
 	{
 		addProtocolDependency(this.gdeps, self, gpn, role);
 		//addProtocolDependency(this.deps, self, gpn, role);
 	}
 
-	public void addLocalProtocolDependency(Role self, LProtocolName gpn, Role role)
+	public void addProtocolDependency(Role self, LProtocolName gpn, Role role)
 	{
 		addProtocolDependency(this.ldeps, self, gpn, role);
 	}

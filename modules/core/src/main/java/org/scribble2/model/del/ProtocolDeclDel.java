@@ -77,11 +77,11 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBa
 		{
 			if (pd.isGlobal())
 			{
-				builder.addGlobalProtocolDependency(role, (GProtocolName) pn, role);  // FIXME: is it needed to add self protocol decl?
+				builder.addProtocolDependency(role, (GProtocolName) pn, role);  // FIXME: is it needed to add self protocol decl?
 			}
 			else
 			{
-				builder.addLocalProtocolDependency(role, (LProtocolName) pn, role);  // FIXME: is it needed to add self protocol decl?
+				builder.addProtocolDependency(role, (LProtocolName) pn, role);  // FIXME: is it needed to add self protocol decl?
 			}
 		}
 
