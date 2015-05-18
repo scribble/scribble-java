@@ -2,6 +2,7 @@ package org.scribble2.model.del.global;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -20,13 +21,16 @@ import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.env.ProjectionEnv;
+import org.scribble2.sesstype.kind.Global;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.GProtocolName;
+import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.DependencyMap;
 import org.scribble2.util.ScribbleException;
 
-//public class GProtocolDeclDel extends ProtocolDeclDel<Global>
-public class GProtocolDeclDel extends ProtocolDeclDel
+public class GProtocolDeclDel extends ProtocolDeclDel<Global>
+//public class GProtocolDeclDel extends ProtocolDeclDel
 {
 	public GProtocolDeclDel()
 	{
@@ -44,13 +48,19 @@ public class GProtocolDeclDel extends ProtocolDeclDel
 	//public DependencyMap<GProtocolName, Global> getGlobalProtocolDependencies()
 	public Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
 	{
-		GProtocolDeclContext pcontext = (GProtocolDeclContext) getProtocolDeclContext();
+		//GProtocolDeclContext pcontext = getProtocolDeclContext();
 		//Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> deps = pcontext.getDependencies();
 		//DependencyMap<GProtocolName, Global> deps = pcontext.getDependencies();
-		DependencyMap<GProtocolName> deps = pcontext.getDependencies();
+		DependencyMap<GProtocolName> deps = getProtocolDeclContext().getDependencies();
 		//return cast(deps);
 		//return deps;
 		return deps.getDependencies().get(self);
+	}
+	
+	@Override
+	public GProtocolDeclContext getProtocolDeclContext()
+	{
+		return (GProtocolDeclContext) super.getProtocolDeclContext();
 	}
 	
 	/*private static Map<Role, Map<GProtocolName, Set<Role>>> cast(Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> map)
@@ -203,5 +213,22 @@ public class GProtocolDeclDel extends ProtocolDeclDel
 		//Map<ProtocolName, Set<Role>> deps = proj.getProtocolDependencies();
 		//dependencies.put(self, deps);
 		return projected;
+	}
+
+	@Override
+	protected GProtocolDeclContext newProtocolDeclContext(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> deps)
+	{
+		return new GProtocolDeclContext(new DependencyMap<>(cast(deps)));
+		//return new GProtocolDeclContext(cast(deps));
+	}
+
+	private static Map<Role, Map<GProtocolName, Set<Role>>> cast(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> map)
+	{
+		return map.keySet().stream().collect(Collectors.toMap((r) -> r, (r) -> castAux(map.get(r))));
+	}
+
+	private static Map<GProtocolName, Set<Role>> castAux(Map<ProtocolName<? extends ProtocolKind>, Set<Role>> map)
+	{
+		return map.keySet().stream().collect(Collectors.toMap((k) -> (GProtocolName) k, (k) -> map.get(k)));
 	}
 }

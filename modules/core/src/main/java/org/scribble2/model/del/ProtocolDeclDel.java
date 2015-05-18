@@ -1,31 +1,30 @@
 package org.scribble2.model.del;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ProtocolDecl;
-import org.scribble2.model.context.GProtocolDeclContext;
-import org.scribble2.model.context.LProtocolDeclContext;
 import org.scribble2.model.context.ProtocolDeclContext;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.sesstype.kind.ProtocolKind;
-import org.scribble2.sesstype.name.GProtocolName;
-import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
-//public abstract class ProtocolDeclDel<K extends Kind> extends ModelDelBase
-public abstract class ProtocolDeclDel extends ModelDelBase
+public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBase
+//public abstract class ProtocolDeclDel extends ModelDelBase
 //public abstract class ProtocolDeclDelegate<T> extends ModelDelegateBase  // T should be the subclass extending ProtocolDeclDelegate
 {
 	//private Map<Role, Map<ProtocolName, Set<Role>>> dependencies;  // All the potential dependencies from this protocol decl as the root
 	
 	//ProtocolDeclContext pdcontext;
 	//protected ProtocolDeclContext<? extends ProtocolName<K>, K> pdcontext;
-	//protected ProtocolDeclContext<K> pdcontext;
-	protected ProtocolDeclContext<? extends ProtocolKind> pdcontext;
+	protected ProtocolDeclContext<K> pdcontext;
+	//protected ProtocolDeclContext<? extends ProtocolKind> pdcontext;
 
 	protected ProtocolDeclDel()
 	{
@@ -45,7 +44,7 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 	}*/
 	
 	//protected abstract ProtocolDeclDel<K> copy();
-	protected abstract ProtocolDeclDel copy();
+	protected abstract ProtocolDeclDel<K> copy();
 	
 	@Override
 	//public ProtocolDecl<? extends ProtocolKind> leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException
@@ -75,18 +74,22 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 		ProtocolName<? extends ProtocolKind> pn = pd.getFullProtocolName(main);
 		for (Role role : pd.header.roledecls.getRoles())
 		{
-			if (pd.isGlobal())
+			/*if (pd.isGlobal())
 			{
 				builder.addProtocolDependency(role, (GProtocolName) pn, role);  // FIXME: is it needed to add self protocol decl?
 			}
 			else
 			{
 				builder.addProtocolDependency(role, (LProtocolName) pn, role);  // FIXME: is it needed to add self protocol decl?
-			}
+			}*/
+			builder.addProtocolDependency(role, pn, role);  // FIXME: is it needed to add self protocol decl?
 		}
 
 		//return proj;
 	}
+	
+	//protected abstract void setProtocolDeclContext(DependencyMap<? extends ProtocolName<K>> deps);
+	protected abstract ProtocolDeclContext<K> newProtocolDeclContext(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> deps);
 	
 	@Override
 	public
@@ -100,9 +103,9 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 		//GlobalProtocolDeclDelegate del = setDependencies(proj.getProtocolDependencies());  // FIXME: should be a deep clone in principle
 		ProtocolDecl<? extends ProtocolKind> pd = cast(visited);
 		//ProtocolDeclDel<K> del = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
-		ProtocolDeclDel del = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
+		ProtocolDeclDel<K> del = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
 		//del.pdcontext = new ProtocolDeclContext(builder.getGlobalProtocolDependencies());
-		if ((pd.isGlobal()))
+		/*if ((pd.isGlobal()))
 		{
 			//del.pdcontext = (ProtocolDeclContext<K>) new GProtocolDeclContext(builder.getGlobalProtocolDependencies());
 			del.pdcontext = new GProtocolDeclContext(builder.getGlobalProtocolDependencies());
@@ -112,7 +115,8 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 		{
 			//del.pdcontext = (ProtocolDeclContext<K>) new LProtocolDeclContext(builder.getLocalProtocolDependencies());
 			del.pdcontext = new LProtocolDeclContext(builder.getLocalProtocolDependencies());
-		}
+		}*/
+		del.pdcontext = del.newProtocolDeclContext(builder.getProtocolDependencies());
 		//return cast(child.del(del));  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
 		//return cast(visited.del(del));  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
 		return cast(pd.del(del));
