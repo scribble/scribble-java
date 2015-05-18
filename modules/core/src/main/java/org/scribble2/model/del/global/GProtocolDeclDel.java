@@ -2,7 +2,6 @@ package org.scribble2.model.del.global;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -21,10 +20,9 @@ import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.env.ProjectionEnv;
-import org.scribble2.sesstype.kind.Global;
 import org.scribble2.sesstype.name.GProtocolName;
-import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
+import org.scribble2.util.DependencyMap;
 import org.scribble2.util.ScribbleException;
 
 //public class GProtocolDeclDel extends ProtocolDeclDel<Global>
@@ -35,14 +33,27 @@ public class GProtocolDeclDel extends ProtocolDeclDel
 
 	}
 
-	public Map<Role, Map<GProtocolName, Set<Role>>> getGlobalProtocolDependencies()
+	/*@Override
+	//protected DependencyMap<? extends ProtocolName<? extends ProtocolKind>> newDependencyMap()
+	protected DependencyMap<GProtocolName> newDependencyMap()
+	{
+		return new DependencyMap<GProtocolName>();
+	}*/
+
+	//public Map<Role, Map<GProtocolName, Set<Role>>> getGlobalProtocolDependencies()
+	//public DependencyMap<GProtocolName, Global> getGlobalProtocolDependencies()
+	public Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
 	{
 		GProtocolDeclContext pcontext = (GProtocolDeclContext) getProtocolDeclContext();
-		Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> deps = pcontext.getDependencies();
-		return cast(deps);
+		//Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> deps = pcontext.getDependencies();
+		//DependencyMap<GProtocolName, Global> deps = pcontext.getDependencies();
+		DependencyMap<GProtocolName> deps = pcontext.getDependencies();
+		//return cast(deps);
+		//return deps;
+		return deps.getDependencies().get(self);
 	}
 	
-	private static Map<Role, Map<GProtocolName, Set<Role>>> cast(Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> map)
+	/*private static Map<Role, Map<GProtocolName, Set<Role>>> cast(Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> map)
 	{
 		return map.keySet().stream().collect(Collectors.toMap((r) -> r, (r) -> castAux(map.get(r))));
 	}
@@ -50,7 +61,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel
 	private static Map<GProtocolName, Set<Role>> castAux(Map<? extends ProtocolName<Global>, Set<Role>> map)
 	{
 		return map.keySet().stream().collect(Collectors.toMap((k) -> (GProtocolName) k, (k) -> map.get(k)));
-	}
+	}*/
 	
 	/*protected GlobalProtocolDeclDelegate(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
 	{
@@ -107,7 +118,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel
 		LProtocolDecl lpd = project(proj, gpd);
 		//Map<ProtocolName, Set<Role>> deps = proj.getProtocolDependencies();
 		//Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getProtocolDependencies().get(self);
-		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies().get(self);
+		//Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies().get(self);
+		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
 		
 		//Module projected = projectIntoModule(proj, gpd);
 		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);  // FIXME: projection should always use the main module?

@@ -19,7 +19,7 @@ import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Operator;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.Scope;
-import org.scribble2.util.MessageMap;
+import org.scribble2.util.MessageIdMap;
 import org.scribble2.util.ScribbleException;
 
 public class WellFormedChoiceEnv extends Env
@@ -40,13 +40,13 @@ public class WellFormedChoiceEnv extends Env
 	private MessageMap<ScopedMessage> initialInterrupts;  //  interrupts recorded here in interruptible env*/
 	/*private MessageMap<Message> initial;  // message transfers recorded here in block envs
 	private MessageMap<Message> initialInterrupts;  //  interrupts recorded here in interruptible env*/
-	private MessageMap initial;  // message transfers recorded here in block envs
-	private MessageMap initialInterrupts;  //  interrupts recorded here in interruptible env
+	private MessageIdMap initial;  // message transfers recorded here in block envs
+	private MessageIdMap initialInterrupts;  //  interrupts recorded here in interruptible env
 	
 	// FIXME: interrupts
 	//private Map<SubprotocolSignature, MessageMap<ScopedMessage>> subsigs;
 	//private Map<SubprotocolSignature, MessageMap<Message>> subsigs;
-	private Map<SubprotocolSignature, MessageMap> subsigs;
+	private Map<SubprotocolSignature, MessageIdMap> subsigs;
 	private Set<SubprotocolSignature> recording;
 
 	//public WellFormedChoiceEnv(JobContext jcontext, ModuleDelegate mcontext)
@@ -59,7 +59,7 @@ public class WellFormedChoiceEnv extends Env
 		this.recording = new HashSet<>();*/
 		//this(jcontext, mcontext, new MessageMap<>(), new MessageMap<>(), new HashMap<>(), new HashSet<>());
 		//this(new MessageMap<>(), new MessageMap<>(), new HashMap<>(), new HashSet<>());
-		this(new MessageMap(), new MessageMap(), new HashMap<>(), new HashSet<>());
+		this(new MessageIdMap(), new MessageIdMap(), new HashMap<>(), new HashSet<>());
 	}
 	
 	/*protected WellFormedChoiceEnv(WellFormedChoiceEnv parent)  // "push" constructor
@@ -79,17 +79,17 @@ public class WellFormedChoiceEnv extends Env
 			Map<SubprotocolSignature, MessageMap<ScopedMessage>> subsigs, Set<SubprotocolSignature> recording)*/
 			/*MessageMap<Message> initial, MessageMap<Message> initialInterrupts,
 			Map<SubprotocolSignature, MessageMap<Message>> subsigs, Set<SubprotocolSignature> recording)*/
-			MessageMap initial, MessageMap initialInterrupts,
-			Map<SubprotocolSignature, MessageMap> subsigs, Set<SubprotocolSignature> recording)
+			MessageIdMap initial, MessageIdMap initialInterrupts,
+			Map<SubprotocolSignature, MessageIdMap> subsigs, Set<SubprotocolSignature> recording)
 	{
 		//super(jcontext, mcontext);//, root, parent);
 		/*this.initial = new MessageMap<>(initial);
 		this.initialInterrupts = new MessageMap<>(initialInterrupts);*/
-		this.initial = new MessageMap(initial);
-		this.initialInterrupts = new MessageMap(initialInterrupts);
+		this.initial = new MessageIdMap(initial);
+		this.initialInterrupts = new MessageIdMap(initialInterrupts);
 		this.subsigs =
 				//subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap<>(subsigs.get(k))));
-				subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap(subsigs.get(k))));
+				subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageIdMap(subsigs.get(k))));
 		this.recording = new HashSet<>(recording);
 	}
 
@@ -130,7 +130,7 @@ public class WellFormedChoiceEnv extends Env
 				if (!copy.subsigs.containsKey(subsig))  // If already recorded from an earlier child, no need to do anything (will be the same result)
 				{
 					//copy.subsigs.put(subsig, new MessageMap<>());
-					copy.subsigs.put(subsig, new MessageMap());
+					copy.subsigs.put(subsig, new MessageIdMap());
 				}
 				copy.subsigs.get(subsig).merge(child.subsigs.get(subsig));
 			}
@@ -141,7 +141,7 @@ public class WellFormedChoiceEnv extends Env
 
 	//private static void merge(WellFormedChoiceEnv parent, MessageMap<ScopedMessage> foo, MessageMap<ScopedMessage> child)
 	//private static void merge(WellFormedChoiceEnv parent, MessageMap<Message> foo, MessageMap<Message> child)
-	private static void merge(WellFormedChoiceEnv parent, MessageMap foo, MessageMap child)
+	private static void merge(WellFormedChoiceEnv parent, MessageIdMap foo, MessageIdMap child)
 	{
 		for (Role dest : child.getLeftKeys())
 		{
@@ -191,7 +191,7 @@ public class WellFormedChoiceEnv extends Env
 		return new WellFormedChoiceEnv(//getJobContext(), getModuleDelegate(),
 				this.initial, this.initialInterrupts, 
 				//this.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap<>(this.subsigs.get(k)))),
-				this.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap(this.subsigs.get(k)))),
+				this.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageIdMap(this.subsigs.get(k)))),
 				this.recording);
 	}
 
@@ -199,7 +199,7 @@ public class WellFormedChoiceEnv extends Env
 	// Means: record message as initial enabling message if dest not already enabled
 	//private static void addMessages(MessageMap<ScopedMessage> map, Role src, Role dest, List<ScopedMessage> msgs)
 	//private static void addMessages(MessageMap<Message> map, Role src, Role dest, List<Message> msgs)
-	private static void addMessages(MessageMap map, Role src, Role dest, List<MessageId> msgs)
+	private static void addMessages(MessageIdMap map, Role src, Role dest, List<MessageId> msgs)
 	{
 		if (!map.containsLeftKey(dest))  // FIXME: factor out isEnabled
 		{
@@ -253,7 +253,7 @@ public class WellFormedChoiceEnv extends Env
 		{
 			copy.recording.add(subsig);
 			//copy.subsigs.put(subsig, new MessageMap<>());
-			copy.subsigs.put(subsig, new MessageMap());
+			copy.subsigs.put(subsig, new MessageIdMap());
 		}
 		//checker.setEnv(copy);
 		return copy;
@@ -315,7 +315,7 @@ public class WellFormedChoiceEnv extends Env
 	{
 		//MessageMap<ScopedMessage> enabled = this.subsigs.get(subsig);
 		//MessageMap<Message> enabled = this.subsigs.get(subsig);
-		MessageMap enabled = this.subsigs.get(subsig);
+		MessageIdMap enabled = this.subsigs.get(subsig);
 		for (Role dest : enabled.getLeftKeys())
 		{
 			for (Role src : enabled.getRightKeys(dest))
@@ -353,11 +353,11 @@ public class WellFormedChoiceEnv extends Env
 
 	//public MessageMap<ScopedMessage> getEnabled()
 	//public MessageMap<Message> getEnabled()
-	public MessageMap getEnabled()
+	public MessageIdMap getEnabled()
 	{
 		//MessageMap<ScopedMessage> tmp = new MessageMap<>(this.initial);
 		//MessageMap<Message> tmp = new MessageMap<>(this.initial);
-		MessageMap tmp = new MessageMap(this.initial);
+		MessageIdMap tmp = new MessageIdMap(this.initial);
 		tmp.merge(this.initialInterrupts);
 		return tmp;
 	}

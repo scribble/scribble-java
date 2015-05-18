@@ -10,6 +10,13 @@ public class LProtocolDeclDel extends ProtocolDeclDel
 
 	}
 
+	/*@Override
+	//protected DependencyMap<? extends ProtocolName<? extends ProtocolKind>> newDependencyMap()
+	protected DependencyMap<LProtocolName> newDependencyMap()
+	{
+		return new DependencyMap<LProtocolName>();
+	}*/
+
 	/*protected LocalProtocolDeclDelegate(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
 	{
 		super(dependencies);

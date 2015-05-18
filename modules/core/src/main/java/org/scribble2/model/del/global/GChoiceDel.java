@@ -21,7 +21,7 @@ import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Role;
-import org.scribble2.util.MessageMap;
+import org.scribble2.util.MessageIdMap;
 import org.scribble2.util.ScribbleException;
 
 public class GChoiceDel extends GCompoundInteractionNodeDel
@@ -57,7 +57,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		{
 			//MessageMap<ScopedMessage> enabled = benv.getEnabled();
 			//MessageMap<Message> enabled = benv.getEnabled();
-			MessageMap enabled = benv.getEnabled();
+			MessageIdMap enabled = benv.getEnabled();
 			
 			Set<Role> dests = enabled.getLeftKeys();
 			dests.remove(subj);

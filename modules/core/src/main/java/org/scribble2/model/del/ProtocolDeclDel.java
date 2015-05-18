@@ -1,8 +1,5 @@
 package org.scribble2.model.del;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ProtocolDecl;
@@ -109,6 +106,7 @@ public abstract class ProtocolDeclDel extends ModelDelBase
 		{
 			//del.pdcontext = (ProtocolDeclContext<K>) new GProtocolDeclContext(builder.getGlobalProtocolDependencies());
 			del.pdcontext = new GProtocolDeclContext(builder.getGlobalProtocolDependencies());
+			//del.pdcontext newProtocolContextxt(builder.getGlobalProtocolDependencies());
 		}
 		else //if ((pd.isLocal()))
 		{

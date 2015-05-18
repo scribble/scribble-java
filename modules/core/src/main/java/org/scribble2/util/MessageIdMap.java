@@ -11,19 +11,19 @@ import org.scribble2.sesstype.name.Role;
 
 // Mutable
 //public class MessageMap<T extends Message>
-public class MessageMap
+public class MessageIdMap
 {
 	//private Map<Role, Map<Role, Set<T>>> map = new HashMap<>();
 	private Map<Role, Map<Role, Set<MessageId>>> map = new HashMap<>();
 	
 	//public final Set<Role> sources = map.keySet();
 
-	public MessageMap()
+	public MessageIdMap()
 	{
 	}
 
 	//public MessageMap(MessageMap<T> map)
-	public MessageMap(MessageMap map)
+	public MessageIdMap(MessageIdMap map)
 	{
 		for (Role left : map.getLeftKeys())
 		{
@@ -35,7 +35,7 @@ public class MessageMap
 	}
 	
 	//public void merge(MessageMap<T> map)
-	public void merge(MessageMap map)
+	public void merge(MessageIdMap map)
 	{
 		for (Role left : map.getLeftKeys())
 		{
