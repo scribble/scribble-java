@@ -23,7 +23,8 @@ public class AntlrDataTypeDecl
 		CommonTree tmp3 = getExtNameChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
 		//SimplePayloadTypeNode alias = AntlrSimpleName.toSimplePayloadTypeNode(getAliasChild(ct));
-		DataTypeNameNode alias = AntlrQualifiedName.toDataTypeNameNode(getAliasChild(ct));
+		//DataTypeNameNode alias = AntlrQualifiedName.toDataTypeNameNode(getAliasChild(ct));
+		DataTypeNameNode alias = AntlrSimpleName.toDataTypeNameNode(getAliasChild(ct));
 		return new DataTypeDecl(schema, extName, source, alias);
 	}
 

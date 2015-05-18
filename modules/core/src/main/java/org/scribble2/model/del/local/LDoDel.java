@@ -24,7 +24,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 			//builder.addProtocolDependency(role, ld.getTargetFullProtocolName(builder.getModuleContext()), ld.getTargetRoleParameter(jcontext, mcontext, role));
 			
 			
-			..FIXME: generalise dependencies to support local
+			//..FIXME: generalise dependencies to support local
 			
 			
 		}

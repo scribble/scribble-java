@@ -6,9 +6,7 @@ import org.scribble2.model.ParamDeclList;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.global.GProtocolHeader;
 import org.scribble2.model.name.qualified.GProtocolNameNode;
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
 import org.scribble2.parser.ScribbleParser;
-import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrGlobalProtocolHeader
@@ -20,7 +18,8 @@ public class AntlrGlobalProtocolHeader
 	public static GProtocolHeader parseGlobalProtocolHeader(ScribbleParser parser, CommonTree ct)
 	{
 		//SimpleProtocolNameNode name = AntlrSimpleName.toSimpleProtocolNameNode(getNameChild(ct));
-		GProtocolNameNode name = AntlrQualifiedName.toGlobalProtocolNameNode(getNameChild(ct));
+		//GProtocolNameNode name = AntlrQualifiedName.toGlobalProtocolNameNode(getNameChild(ct));
+		GProtocolNameNode name = AntlrSimpleName.toGlobalProtocolNameNode(getNameChild(ct));
 		RoleDeclList rdl = (RoleDeclList) parser.parse(getRoleDeclListChild(ct));
 		ParamDeclList pdl = (ParamDeclList) parser.parse(getParameterDeclListChild(ct));
 		//return new GlobalProtocolHeader(name, rdl, pdl);

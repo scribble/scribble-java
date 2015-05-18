@@ -6,7 +6,6 @@ import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
-import org.scribble2.sesstype.kind.SigKind;
 
 // FIXME: factor out with AntlrPayloadTypeDecl
 public class AntlrMessageSignatureDecl
@@ -26,7 +25,8 @@ public class AntlrMessageSignatureDecl
 		String source = AntlrExtIdentifier.getName(tmp3);
 		//SimpleMessageSignatureNameNode alias = AntlrSimpleName.toSimpleMessageSignatureNameNode(getAliasChild(ct));
 		//MessageSigNameNode alias = AntlrQualifiedName.toMessageSignatureNameNode(getAliasChild(ct)); -- no: that expects a compound messigname node with elems
-		MessageSigNameNode alias = (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getAliasChild(ct).getText());
+		//MessageSigNameNode alias = (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getAliasChild(ct).getText());
+		MessageSigNameNode alias = AntlrSimpleName.toMessageSigNameNode(getAliasChild(ct));
 		//return new MessageSigDecl(schema, extName, source, alias);
 		return ModelFactoryImpl.FACTORY.MessageSigDecl(schema, extName, source, alias);
 	}

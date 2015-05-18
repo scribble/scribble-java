@@ -2,16 +2,23 @@ package org.scribble2.parser.ast.name;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.name.qualified.SimpleProtocolNameNode;
+import org.scribble2.model.name.qualified.DataTypeNameNode;
+import org.scribble2.model.name.qualified.GProtocolNameNode;
+import org.scribble2.model.name.qualified.LProtocolNameNode;
+import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.simple.OperatorNode;
 import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.ScopeNode;
+import org.scribble2.sesstype.kind.DataTypeKind;
+import org.scribble2.sesstype.kind.Global;
 import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.kind.OperatorKind;
 import org.scribble2.sesstype.kind.RecVarKind;
 import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.kind.SigKind;
 
 public class AntlrSimpleName
 {
@@ -19,28 +26,43 @@ public class AntlrSimpleName
 	private static final String ANTLR_NO_SCOPE = "NO_SCOPE";
 	//private static final String ANTLR_EMPTY_SCOPE = "EMPTY_SCOPENAME";
 	
-	..FIXME: do global/local versions
-	public static SimpleProtocolNameNode toSimpleProtocolNameNode(CommonTree ct)
+	/*public static SimpleProtocolNameNode toSimpleProtocolNameNode(CommonTree ct)
 	{
 		//return new SimpleProtocolNameNode(AntlrSimpleName.getName(ct));
 		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, getName(ct));
 		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ProtocolKind.KIND, getName(ct));
 		throw new RuntimeException("TODO: " + ct);
+	}*/
+
+	public static GProtocolNameNode toGlobalProtocolNameNode(CommonTree ct)
+	{
+		return (GProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getName(ct));  // No: qualified uses the node's elements, not the node's text itself
+		//return AntlrQualifiedName.toGlobalProtocolNameNode(ct);
 	}
 
-	/*public static SimplePayloadTypeNode toSimplePayloadTypeNode(CommonTree ct)
+	public static LProtocolNameNode toLocalProtocolNameNode(CommonTree ct)
+	{
+		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getName(ct));
+		//return AntlrQualifiedName.toLocalProtocolNameNode(ct);
+	}
+
+	//public static SimplePayloadTypeNode toSimplePayloadTypeNode(CommonTree ct)
+	public static DataTypeNameNode toDataTypeNameNode(CommonTree ct)
 	{
 		//return new SimplePayloadTypeNode(AntlrSimpleName.getName(ct));
 		//return (SimplePayloadTypeNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PAYLOADTYPE, getName(ct));
-		throw new RuntimeException("TODO: " + ct);
+		return (DataTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, getName(ct));
+		//return AntlrQualifiedName.toDataTypeNameNode(ct);
 	}
 
-	public static SimpleMessageSignatureNameNode toSimpleMessageSignatureNameNode(CommonTree ct)
+	//public static SimpleMessageSignatureNameNode toSimpleMessageSignatureNameNode(CommonTree ct)
+	public static MessageSigNameNode toMessageSigNameNode(CommonTree ct)
 	{
 		//return new SimpleMessageSignatureNameNode(AntlrSimpleName.getName(ct));
 		//return (SimpleMessageSignatureNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.MESSAGESIGNATURE, getName(ct));
-		throw new RuntimeException("TODO: " + ct);
-	}*/
+		return (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getName(ct));
+		//return AntlrQualifiedName.toMessageSigNameNode(ct);  // No: qualified uses the node's elements, not the node's text itself
+	}
 
 	public static RoleNode toRoleNode(CommonTree ct)
 	{

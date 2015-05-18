@@ -1,7 +1,5 @@
 package org.scribble2.parser.ast.name;
 
-import java.util.Arrays;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.DataTypeNameNode;
@@ -42,10 +40,8 @@ public class AntlrQualifiedName
 		throw new RuntimeException("TODO: " + ct);
 	}
 
-	public static MessageSigNameNode toMessageSignatureNameNode(CommonTree ct)
+	public static MessageSigNameNode toMessageSigNameNode(CommonTree ct)
 	{
-		System.out.println("b: " + ct + ", " + Arrays.toString(getElements(ct)));
-		
 		//return new MessageSignatureNameNode(getElements(ct));
 		//return (MessageSignatureNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MESSAGESIGNATURE, getElements(ct));
 		return (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getElements(ct));
