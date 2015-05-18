@@ -9,6 +9,7 @@ import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
 import org.scribble2.model.ParamDeclList;
 import org.scribble2.model.RoleDeclList;
+import org.scribble2.model.context.GProtocolDeclContext;
 import org.scribble2.model.del.ModuleDel;
 import org.scribble2.model.del.ProtocolDeclDel;
 import org.scribble2.model.global.GProtocolDecl;
@@ -26,7 +27,8 @@ import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
-public class GProtocolDeclDel extends ProtocolDeclDel<Global>
+//public class GProtocolDeclDel extends ProtocolDeclDel<Global>
+public class GProtocolDeclDel extends ProtocolDeclDel
 {
 	public GProtocolDeclDel()
 	{
@@ -35,7 +37,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 
 	public Map<Role, Map<GProtocolName, Set<Role>>> getGlobalProtocolDependencies()
 	{
-		Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> deps = getProtocolDependencies();
+		GProtocolDeclContext pcontext = (GProtocolDeclContext) getProtocolDeclContext();
+		Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> deps = pcontext.getDependencies();
 		return cast(deps);
 	}
 	

@@ -2,6 +2,7 @@ package org.scribble2.model.del.local;
 
 import org.scribble2.model.del.ProtocolDeclDel;
 
+//public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 public class LProtocolDeclDel extends ProtocolDeclDel
 {
 	public LProtocolDeclDel()
