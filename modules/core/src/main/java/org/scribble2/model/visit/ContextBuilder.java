@@ -7,7 +7,10 @@ import java.util.Set;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.context.ModuleContext;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.GProtocolName;
+import org.scribble2.sesstype.name.LProtocolName;
+import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -17,8 +20,11 @@ public class ContextBuilder extends ModelVisitor
 	// cache of dependencies, cleared on entering each root global protocol
 	// protocol name is full name of global protocol dependencies
 	// role is the target role?
-	private Map<Role, Map<GProtocolName, Set<Role>>> dependencies = new HashMap<>();
-			// FIXME: generalise to support locals
+	private Map<Role, Map<GProtocolName, Set<Role>>> gdeps = new HashMap<>();  // FIXME: generalise to support locals
+	private Map<Role, Map<LProtocolName, Set<Role>>> ldeps = new HashMap<>();
+	/*private Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> gdeps = new HashMap<>();  // FIXME: generalise to support locals
+	private Map<Role, Map<? extends ProtocolName<Local>, Set<Role>>> ldeps = new HashMap<>();*/
+	//private Map<Role, Map<? extends ProtocolName<? extends ProtocolKind>, Set<Role>>> deps = new HashMap<>();
 
 	//private Stack<NodeContext> contexts = new Stack<>();
 	
@@ -123,16 +129,32 @@ public class ContextBuilder extends ModelVisitor
 	public void clearProtocolDependencies()
 	{
 		//this.dependencies.clear();  // clears the reference obtained from getProtocolDependencies  // maybe we/client should make a defensive copy
-		this.dependencies = new HashMap<>();
+		this.gdeps = new HashMap<>();
+		this.ldeps = new HashMap<>();
+		//this.deps = new HashMap<>();
 	}
 
-	public void addProtocolDependency(Role self, GProtocolName gpn, Role role)
+	public void addGlobalProtocolDependency(Role self, GProtocolName gpn, Role role)
 	{
-		Map<GProtocolName, Set<Role>> tmp1 = this.dependencies.get(self);
+		addProtocolDependency(this.gdeps, self, gpn, role);
+		//addProtocolDependency(this.deps, self, gpn, role);
+	}
+
+	public void addLocalProtocolDependency(Role self, LProtocolName gpn, Role role)
+	{
+		addProtocolDependency(this.ldeps, self, gpn, role);
+	}
+
+	//private <K extends ProtocolKind> void addProtocolDependency(Map<Role, Map<ProtocolName<K>, Set<Role>>> map, Role self, ProtocolName<K> gpn, Role role)
+	private static <N extends ProtocolName<K>, K extends ProtocolKind> void addProtocolDependency(Map<Role, Map<N, Set<Role>>> map, Role self, N gpn, Role role)
+	//private static <K extends ProtocolKind> void addProtocolDependency(Map<Role, Map<? extends ProtocolName<K>, Set<Role>>> map, Role self, ProtocolName<K> gpn, Role role)
+	{
+		Map<N, Set<Role>> tmp1 = map.get(self);
+		//Map<? extends ProtocolName<K>, Set<Role>> tmp1 = map.get(self);
 		if (tmp1 == null)
 		{
 			tmp1 = new HashMap<>();
-			this.dependencies.put(self, tmp1);
+			map.put(self, tmp1);
 		}
 		
 		Set<Role> tmp2 = tmp1.get(gpn);
@@ -144,8 +166,21 @@ public class ContextBuilder extends ModelVisitor
 		tmp2.add(role);
 	}
 
-	public Map<Role, Map<GProtocolName, Set<Role>>> getProtocolDependencies()
+	//public Map<Role, Map<GProtocolName, Set<Role>>> getProtocolDependencies()
+	public Map<Role, Map<GProtocolName, Set<Role>>> getGlobalProtocolDependencies()
+	//public Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> getGlobalProtocolDependencies()
 	{
-		return this.dependencies;
+		return this.gdeps;
 	}
+
+	public Map<Role, Map<LProtocolName, Set<Role>>> getLocalProtocolDependencies()
+	//public Map<Role, Map<? extends ProtocolName<Local>, Set<Role>>> getLocalProtocolDependencies()
+	{
+		return this.ldeps;
+	}
+
+	/*public Map<Role, Map<? extends ProtocolName<? extends ProtocolKind>, Set<Role>>> getProtocolDependencies()
+	{
+		return this.deps;
+	}*/
 }

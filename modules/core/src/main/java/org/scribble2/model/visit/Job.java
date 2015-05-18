@@ -9,6 +9,8 @@ import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
+	// dels should be kinded as well?
+
 	// visitchildren shouldn't use check class on visited nodes so strictly, e.g. name disambiguation changes from ambiguousnodes
 	// get rid of argument instantiation
 	// - generalise dependency building to support local protocols

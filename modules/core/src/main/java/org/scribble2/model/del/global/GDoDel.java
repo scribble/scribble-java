@@ -32,7 +32,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 		
 		for (Role role : gd.roleinstans.getRoles())
 		{
-			builder.addProtocolDependency(role, gd.getTargetFullProtocolName(builder.getModuleContext()), gd.getTargetRoleParameter(jcontext, mcontext, role));
+			builder.addGlobalProtocolDependency(role, gd.getTargetFullProtocolName(builder.getModuleContext()), gd.getTargetRoleParameter(jcontext, mcontext, role));
 		}
 		return gd;
 	}
