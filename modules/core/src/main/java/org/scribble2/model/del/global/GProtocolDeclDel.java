@@ -2,7 +2,6 @@ package org.scribble2.model.del.global;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -18,13 +17,12 @@ import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.local.LProtocolDef;
 import org.scribble2.model.local.LProtocolHeader;
 import org.scribble2.model.name.qualified.LProtocolNameNode;
+import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.sesstype.kind.Global;
-import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.GProtocolName;
-import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.DependencyMap;
 import org.scribble2.util.ScribbleException;
@@ -35,6 +33,34 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	public GProtocolDeclDel()
 	{
 
+	}
+
+	@Override
+	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
+	{
+		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
+		
+		Module main = (Module) parent;
+		
+		GProtocolDecl gpd = (GProtocolDecl) child;
+		GProtocolName gpn = gpd.getFullProtocolName(main);
+		for (Role role : gpd.header.roledecls.getRoles())
+		{
+			builder.addProtocolDependency(role, gpn, role);  // FIXME: is it needed to add self protocol decl?
+		}
+	}
+	
+	@Override
+	public GProtocolDecl leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	{
+		//System.out.println("c: " + proj.getProtocolDependencies());
+
+		GProtocolDecl gpd = (GProtocolDecl) visited;
+		/*GProtocolDeclDel del = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
+		del.setProtocolDeclContext(new GProtocolDeclContext(builder.getGlobalProtocolDependencies()));*/
+		GProtocolDeclContext gcontext = new GProtocolDeclContext(builder.getGlobalProtocolDependencies());
+		GProtocolDeclDel del = (GProtocolDeclDel) setProtocolDeclContext(gcontext);
+		return (GProtocolDecl) gpd.del(del);
 	}
 
 	/*@Override
@@ -215,14 +241,14 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return projected;
 	}
 
-	@Override
+	/*@Override
 	protected GProtocolDeclContext newProtocolDeclContext(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> deps)
 	{
 		return new GProtocolDeclContext(new DependencyMap<>(cast(deps)));
 		//return new GProtocolDeclContext(cast(deps));
-	}
+	}*/
 
-	private static Map<Role, Map<GProtocolName, Set<Role>>> cast(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> map)
+	/*private static Map<Role, Map<GProtocolName, Set<Role>>> cast(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> map)
 	{
 		return map.keySet().stream().collect(Collectors.toMap((r) -> r, (r) -> castAux(map.get(r))));
 	}
@@ -230,5 +256,5 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	private static Map<GProtocolName, Set<Role>> castAux(Map<ProtocolName<? extends ProtocolKind>, Set<Role>> map)
 	{
 		return map.keySet().stream().collect(Collectors.toMap((k) -> (GProtocolName) k, (k) -> map.get(k)));
-	}
+	}*/
 }

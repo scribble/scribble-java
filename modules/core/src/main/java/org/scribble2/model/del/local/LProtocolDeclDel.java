@@ -1,17 +1,15 @@
 package org.scribble2.model.del.local;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import org.scribble2.model.ModelNode;
+import org.scribble2.model.Module;
 import org.scribble2.model.context.LProtocolDeclContext;
 import org.scribble2.model.del.ProtocolDeclDel;
+import org.scribble2.model.local.LProtocolDecl;
+import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.sesstype.kind.Local;
-import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.LProtocolName;
-import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
-import org.scribble2.util.DependencyMap;
+import org.scribble2.util.ScribbleException;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 //public class LProtocolDeclDel extends ProtocolDeclDel
@@ -21,6 +19,40 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 
 	}
 
+	@Override
+	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
+	{
+		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
+		
+		Module main = (Module) parent;
+		
+		LProtocolDecl lpd = (LProtocolDecl) child;
+		LProtocolName lpn = lpd.getFullProtocolName(main);
+		for (Role role : lpd.header.roledecls.getRoles())
+		{
+			builder.addProtocolDependency(role, lpn, role);  // FIXME: is it needed to add self protocol decl?
+		}
+	}
+	
+	@Override
+	public LProtocolDecl leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	{
+		//System.out.println("c: " + proj.getProtocolDependencies());
+
+		LProtocolDecl gpd = (LProtocolDecl) visited;
+		/*LProtocolDeclDel del = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
+		del.setProtocolDeclContext(new LProtocolDeclContext(builder.getLocalProtocolDependencies()));*/
+		LProtocolDeclContext gcontext = new LProtocolDeclContext(builder.getLocalProtocolDependencies());
+		LProtocolDeclDel del = (LProtocolDeclDel) setProtocolDeclContext(gcontext);
+		return (LProtocolDecl) gpd.del(del);
+	}
+	
+	@Override
+	public LProtocolDeclContext getProtocolDeclContext()
+	{
+		return (LProtocolDeclContext) super.getProtocolDeclContext();
+	}
+	
 	/*@Override
 	//protected DependencyMap<? extends ProtocolName<? extends ProtocolKind>> newDependencyMap()
 	protected DependencyMap<LProtocolName> newDependencyMap()
@@ -51,8 +83,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 		return (LocalProtocolDeclDelegate) super.setDependencies(dependencies);
 	}*/
 
-
-	@Override
+	/*@Override
 	protected LProtocolDeclContext newProtocolDeclContext(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> deps)
 	{
 		return new LProtocolDeclContext(new DependencyMap<>(cast(deps)));
@@ -66,5 +97,5 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	private static Map<LProtocolName, Set<Role>> castAux(Map<ProtocolName<? extends ProtocolKind>, Set<Role>> map)
 	{
 		return map.keySet().stream().collect(Collectors.toMap((k) -> (LProtocolName) k, (k) -> map.get(k)));
-	}
+	}*/
 }

@@ -1,18 +1,9 @@
 package org.scribble2.model.del;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.Module;
-import org.scribble2.model.ProtocolDecl;
 import org.scribble2.model.context.ProtocolDeclContext;
-import org.scribble2.model.visit.ContextBuilder;
-import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.sesstype.kind.ProtocolKind;
-import org.scribble2.sesstype.name.ProtocolName;
-import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBase
@@ -51,11 +42,26 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBa
 	public ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException
 	{
 		disamb.clear();
-		return cast(visited);
+		//return cast(visited);
+		return visited;
 	}
 	
+	/*@Override
+	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
+	{
+		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
+		
+		Module main = (Module) parent;
+		
+		ProtocolDecl<? extends ProtocolKind> pd = cast(child);
+		ProtocolName<? extends ProtocolKind> pn = pd.getFullProtocolName(main);
+		for (Role role : pd.header.roledecls.getRoles())
+		{
+			builder.addProtocolDependency(role, pn, role);  // FIXME: is it needed to add self protocol decl?
+		}
+	}*/
 	
-	@Override
+	/*@Override
 	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
 	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
 	{
@@ -81,17 +87,17 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBa
 			else
 			{
 				builder.addProtocolDependency(role, (LProtocolName) pn, role);  // FIXME: is it needed to add self protocol decl?
-			}*/
+			}* /
 			builder.addProtocolDependency(role, pn, role);  // FIXME: is it needed to add self protocol decl?
 		}
 
 		//return proj;
 	}
 	
+	//HERE: change context builder back to separate global/local deps; invert decldel to move enter/leave context building into subclasses and use a base setter here; global/local decl contexts should keep separate global/local dep fields (maybe? -- protocol dependencies are common, but otherwise global/local contexts are too different? contexts aren't ModelNodes)
+
 	//protected abstract void setProtocolDeclContext(DependencyMap<? extends ProtocolName<K>> deps);
 	protected abstract ProtocolDeclContext<K> newProtocolDeclContext(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> deps);
-	
-	//HERE: change context builder back to separate global/local deps; invert decldel to move enter/leave context building into subclasses and use a base setter here; global/local decl contexts should keep separate global/local dep fields (maybe? -- protocol dependencies are common, but otherwise global/local contexts are too different? contexts aren't ModelNodes)
 	
 	@Override
 	public
@@ -117,16 +123,23 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBa
 		{
 			//del.pdcontext = (ProtocolDeclContext<K>) new LProtocolDeclContext(builder.getLocalProtocolDependencies());
 			del.pdcontext = new LProtocolDeclContext(builder.getLocalProtocolDependencies());
-		}*/
+		}* /
 		del.pdcontext = del.newProtocolDeclContext(builder.getProtocolDependencies());
 		//return cast(child.del(del));  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
 		//return cast(visited.del(del));  // del setter needs to be done here (access to collected dependencies) -- envLeave uses this new del (including Env setting)
 		return cast(pd.del(del));
+	}*/
+	
+	protected ProtocolDeclDel<K> setProtocolDeclContext(ProtocolDeclContext<K> pdcontext)
+	{
+		ProtocolDeclDel<K> copy = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
+		copy.pdcontext = pdcontext;
+		return copy;
 	}
 	
 	//public ProtocolDeclContext<? extends ProtocolName<? extends ProtocolKind>, ? extends ProtocolKind> getProtocolDeclContext()
 	//public ProtocolDeclContext<K> getProtocolDeclContext()
-	public ProtocolDeclContext<? extends ProtocolKind> getProtocolDeclContext()
+	public ProtocolDeclContext<K> getProtocolDeclContext()
 	{
 		return this.pdcontext;
 	}
@@ -139,7 +152,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBa
 		return this.pdcontext.getDependencies();
 	}*/
 	
-	private static
+	/*private static
 		//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 		ProtocolDecl<? extends ProtocolKind>
 		cast(ModelNode child)
@@ -155,7 +168,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBa
 			return pd;
 		}
 		//throw new RuntimeException("Bad ProtocolDecl cast: " + child.getClass());
-	}
+	}*/
 
 	/*private static Map<Role, Map<ProtocolName, Set<Role>>> cloneDependencyMap(Map<Role, Map<ProtocolName, Set<Role>>> dependencies)
 	{
