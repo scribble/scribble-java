@@ -6,24 +6,25 @@ import org.scribble2.util.DependencyMap;
 
 // Make abstract with Global/Local extensions?
 //public class GProtocolDeclContext extends ProtocolDeclContext<GProtocolName, Global>
-public class GProtocolDeclContext extends ProtocolDeclContext<Global>
+public class GProtocolDeclContext implements ProtocolDeclContext<Global>
 {
 	// cache of dependencies, cleared on entering each root global protocol
 	// protocol name is full name of global protocol dependencies
 	//private Map<Role, Map<GProtocolName, Set<Role>>> deps;  // All the potential dependencies from this protocol decl as the root
-			// FIXME: generalise to support locals
-	//private final DependencyMap<GProtocolName> deps;
+	private final DependencyMap<GProtocolName> deps;
+	//private Map<Role, Map<GProtocolName, Set<Role>>> deps;  // All the potential dependencies from this protocol decl as the root
 	
 	//public GProtocolDeclContext(Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> dependencies)
+	//public GProtocolDeclContext(Map<Role, Map<GProtocolName, Set<Role>>> deps)
 	//public GProtocolDeclContext(Map<Role, Map<GProtocolName, Set<Role>>> dependencies)
 	public GProtocolDeclContext(DependencyMap<GProtocolName> deps)
 	//public GProtocolDeclContext(Map<Role, Map<GProtocolName, Set<Role>>> deps)
 	{
-		//this.dependencies = dependencies;
+		//this.deps = deps;
 		//super(cast(dependencies));
 		//super(deps);
-		//this.deps = new DependencyMap<>(deps);
-		super(deps);
+		this.deps = new DependencyMap<>(deps);
+		//super(deps);
 	}
 	
 	/*private static Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> cast(Map<Role, Map<GProtocolName, Set<Role>>> map)
@@ -39,12 +40,12 @@ public class GProtocolDeclContext extends ProtocolDeclContext<Global>
 	@Override
 	//public Map<Role, Map<GProtocolName, Set<Role>>> getDependencies()
 	//public DependencyMap<GProtocolName, Global> getDependencies()
-	//public DependencyMap<GProtocolName> getDependencies()
-	public DependencyMap<GProtocolName> getDependencies()
+	public DependencyMap<GProtocolName> getDependencyMap()
+	//public DependencyMap<? extends ProtocolName<Global>> getDependencies()
 	//public DependencyMap<? extends ProtocolName<Global>> getDependencies()
 	{
-		//return this.deps;
-		return (DependencyMap<GProtocolName>) super.getDependencies();  // FIXME: maybe make global/local dep maps
+		return this.deps;
+		//return (DependencyMap<GProtocolName>) super.getDependencies();  // FIXME: maybe make global/local dep maps
 	}
 
 	/*public Map<Role, Map<GProtocolName, Set<Role>>> getGlobalDependencies()

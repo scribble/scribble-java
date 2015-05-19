@@ -58,7 +58,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		/*GProtocolDeclDel del = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
 		del.setProtocolDeclContext(new GProtocolDeclContext(builder.getGlobalProtocolDependencies()));*/
-		GProtocolDeclContext gcontext = new GProtocolDeclContext(builder.getGlobalProtocolDependencies());
+		GProtocolDeclContext gcontext = new GProtocolDeclContext(builder.getGlobalProtocolDependencyMap());
 		GProtocolDeclDel del = (GProtocolDeclDel) setProtocolDeclContext(gcontext);
 		return (GProtocolDecl) gpd.del(del);
 	}
@@ -77,7 +77,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		//GProtocolDeclContext pcontext = getProtocolDeclContext();
 		//Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> deps = pcontext.getDependencies();
 		//DependencyMap<GProtocolName, Global> deps = pcontext.getDependencies();
-		DependencyMap<GProtocolName> deps = getProtocolDeclContext().getDependencies();
+		DependencyMap<GProtocolName> deps = getProtocolDeclContext().getDependencyMap();
 		//return cast(deps);
 		//return deps;
 		return deps.getDependencies().get(self);
@@ -155,7 +155,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		//Map<ProtocolName, Set<Role>> deps = proj.getProtocolDependencies();
 		//Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getProtocolDependencies().get(self);
 		//Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies().get(self);
-		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
+		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);  // FIXME: hard coupled del to GProtocolDeclDel -- OK: because this is localised here (i.e. GProtocolDeclDel)
 		
 		//Module projected = projectIntoModule(proj, gpd);
 		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);  // FIXME: projection should always use the main module?

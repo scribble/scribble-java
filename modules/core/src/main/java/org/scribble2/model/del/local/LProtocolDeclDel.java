@@ -42,7 +42,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 		LProtocolDecl gpd = (LProtocolDecl) visited;
 		/*LProtocolDeclDel del = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
 		del.setProtocolDeclContext(new LProtocolDeclContext(builder.getLocalProtocolDependencies()));*/
-		LProtocolDeclContext gcontext = new LProtocolDeclContext(builder.getLocalProtocolDependencies());
+		LProtocolDeclContext gcontext = new LProtocolDeclContext(builder.getLocalProtocolDependencyMap());
 		LProtocolDeclDel del = (LProtocolDeclDel) setProtocolDeclContext(gcontext);
 		return (LProtocolDecl) gpd.del(del);
 	}

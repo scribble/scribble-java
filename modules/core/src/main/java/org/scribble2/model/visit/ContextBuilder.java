@@ -1,16 +1,9 @@
 package org.scribble2.model.visit;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.context.ModuleContext;
-import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.GProtocolName;
 import org.scribble2.sesstype.name.LProtocolName;
-import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.DependencyMap;
 import org.scribble2.util.ScribbleException;
@@ -188,18 +181,21 @@ public class ContextBuilder extends ModelVisitor
 	//public Map<Role, Map<GProtocolName, Set<Role>>> getGlobalProtocolDependencies()
 	//public Map<Role, Map<? extends ProtocolName<Global>, Set<Role>>> getGlobalProtocolDependencies()
 	//public DependencyMap<GProtocolName, Global> getGlobalProtocolDependencies()
-	public DependencyMap<GProtocolName> getGlobalProtocolDependencies()
+	public DependencyMap<GProtocolName> getGlobalProtocolDependencyMap()
 	{
 		return this.gdeps;
 		//return new DependencyMap<>(this.gdeps);
+		//return this.gdeps.getDependencies();
 	}
 
 	//public DependencyMap<LProtocolName, Local> getLocalProtocolDependencies()
 	//public Map<Role, Map<? extends ProtocolName<Local>, Set<Role>>> getLocalProtocolDependencies()
-	public DependencyMap<LProtocolName> getLocalProtocolDependencies()
+	public DependencyMap<LProtocolName> getLocalProtocolDependencyMap()
+	//public Map<Role, Map<LProtocolName, Set<Role>>> getLocalProtocolDependencies()
 	{
 		return this.ldeps;
 		//return new DependencyMap<>(this.ldeps);
+		//return this.ldeps.getDependencies();
 	}
 
 	/*public Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> getProtocolDependencies()
