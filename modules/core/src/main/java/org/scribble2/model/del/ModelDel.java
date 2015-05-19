@@ -37,8 +37,8 @@ public interface ModelDel
 	void enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException;
 	ModelNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException;
 
-	void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter checker);// throws ScribbleException;
-	ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter checker, ModelNode visited);// throws ScribbleException;
+	void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv);// throws ScribbleException;
+	ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited);// throws ScribbleException;
 
 	Env env();
 	//void setEnv(Env env);  // No defensive copy -- used from inside Env during a env pass

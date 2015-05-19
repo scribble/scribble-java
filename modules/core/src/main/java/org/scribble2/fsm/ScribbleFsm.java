@@ -4,16 +4,16 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.scribble2.sesstype.name.Op;
+import org.scribble2.sesstype.name.MessageId;
 
-public class ScribbleFSM
+public class ScribbleFsm
 {
 	public final ProtocolState init;
 	public final ProtocolState term;
 	
 	//private final Set<ProtocolState> preterms = new HashSet<>();
 	
-	public ScribbleFSM(ProtocolState init, ProtocolState term)
+	public ScribbleFsm(ProtocolState init, ProtocolState term)
 	{
 		this.init = init;
 		this.term = term;
@@ -23,7 +23,7 @@ public class ScribbleFSM
 		}*/
 	}
 	
-	public ScribbleFSM stitch(ScribbleFSM f)
+	public ScribbleFsm stitch(ScribbleFsm f)
 	{
 		if (this.term == null)
 		{
@@ -45,9 +45,8 @@ public class ScribbleFSM
 		}
 		return new ScribbleFSM(init, copy.findTerminals().iterator().next());  // FIXME: check single terminal?*/
 		FsmBuilder b = new FsmBuilder(); 
-		ProtocolState init = b.newState(this.init.getLabels());
+		ProtocolState init = b.makeInit(this.init.getLabels());
 		ProtocolState swap = b.newState(f.init.getLabels());
-		b.addInit(init);
 		stitch(b, new HashSet<>(), this.init, init, this.term, swap);
 		stitch(b, new HashSet<>(), f.init, swap, f.term, f.term);  // Essentially copy
 		return b.build();
@@ -60,9 +59,9 @@ public class ScribbleFSM
 			return;
 		}
 		seen.add(curr);
-		for (Entry<Op, ProtocolState> e : curr.getEdges().entrySet())
+		for (Entry<MessageId, ProtocolState> e : curr.getEdges().entrySet())
 		{
-			Op op = e.getKey();
+			MessageId op = e.getKey();
 			ProtocolState next = e.getValue();
 			if (next.equals(term))
 			{
@@ -75,6 +74,12 @@ public class ScribbleFSM
 				stitch(b, seen, next, tmp, term, swap);
 			}
 		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return this.init.toDot();
 	}
 	
 	/*private static void findPreTerminals(Set<ProtocolState> seen, ProtocolState curr, Set<ProtocolState> preterms)

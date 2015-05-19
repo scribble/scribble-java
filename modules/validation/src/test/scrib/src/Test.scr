@@ -11,6 +11,12 @@ module Test;
 //import Test2;
 
 
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+}
+
+
 /*
 global protocol Foo(role A, role B)
 {
@@ -22,7 +28,7 @@ global protocol Foo(role A, role B)
 //*/
 
 
-///*
+/*
 sig <java> "foo" from "bar" as M1;
 
 global protocol Foo(role A, role B)

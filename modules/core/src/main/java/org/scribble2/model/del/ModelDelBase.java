@@ -111,7 +111,7 @@ public abstract class ModelDelBase implements ModelDel
 		return visited;
 	}
 	
-	protected <T extends Env> EnvVisitor<T> pushVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev) throws ScribbleException
+	protected <T extends Env> EnvVisitor<T> pushVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev) //throws ScribbleException
 	{
 		//T env = ev.peekEnv().<T>push();
 		//T env = ev.peekEnv().getClass().cast(ev.peekEnv().push());
@@ -121,7 +121,7 @@ public abstract class ModelDelBase implements ModelDel
 	}
 	
 	protected <T1 extends Env, T2 extends ModelNode>
-			T2 popAndSetVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T1> ev, T2 visited) throws ScribbleException
+			T2 popAndSetVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T1> ev, T2 visited) //throws ScribbleException
 	{
 		T1 env = ev.popEnv();
 		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes

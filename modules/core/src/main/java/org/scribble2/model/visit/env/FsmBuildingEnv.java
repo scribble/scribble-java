@@ -1,24 +1,24 @@
 package org.scribble2.model.visit.env;
 
-import org.scribble2.fsm.ScribbleFSM;
+import org.scribble2.fsm.ScribbleFsm;
 
 public class FsmBuildingEnv extends Env
 {
-	private ScribbleFSM fsm;
+	private ScribbleFsm fsm;
 
 	public FsmBuildingEnv()
 	{
 
 	}
 
-	public FsmBuildingEnv setFsm(ScribbleFSM fsm)
+	public FsmBuildingEnv setFsm(ScribbleFsm fsm)
 	{
 		FsmBuildingEnv copy = copy();
 		copy.fsm = fsm;
 		return copy;
 	}
 	
-	public ScribbleFSM getFsm()
+	public ScribbleFsm getFsm()
 	{
 		return this.fsm;
 	}
