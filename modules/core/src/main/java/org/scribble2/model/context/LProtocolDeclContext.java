@@ -12,7 +12,7 @@ public class LProtocolDeclContext extends ProtocolDeclContext<Local>
 	// protocol name is full name of global protocol dependencies
 	//private Map<Role, Map<GProtocolName, Set<Role>>> dependencies;  // All the potential dependencies from this protocol decl as the root
 			// FIXME: generalise to support locals
-	private final DependencyMap<LProtocolName> deps;
+	//private final DependencyMap<LProtocolName> deps;
 	
 	//public LProtocolDeclContext(Map<Role, Map<LProtocolName, Set<Role>>> dependencies)
 	//public LProtocolDeclContext(Map<Role, Map<? extends ProtocolName<Local>, Set<Role>>> dependencies)
@@ -22,8 +22,8 @@ public class LProtocolDeclContext extends ProtocolDeclContext<Local>
 	{
 		//this.dependencies = dependencies;
 		//super(cast(dependencies));
-		//super(deps);
-		this.deps = deps;
+		super(deps);
+		//this.deps = deps;
 	}
 	
 	/*private static Map<Role, Map<? extends ProtocolName<Local>, Set<Role>>> cast(Map<Role, Map<LProtocolName, Set<Role>>> map)
@@ -40,6 +40,7 @@ public class LProtocolDeclContext extends ProtocolDeclContext<Local>
 	//public Map<Role, Map<GProtocolName, Set<Role>>> getDependencies()
 	public DependencyMap<LProtocolName> getDependencies()
 	{
-		return this.deps;
+		//return this.deps;
+		return (DependencyMap<LProtocolName>) super.getDependencies();  // FIXME
 	}
 }

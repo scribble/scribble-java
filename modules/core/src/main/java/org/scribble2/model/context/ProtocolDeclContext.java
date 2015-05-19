@@ -14,7 +14,7 @@ public abstract class ProtocolDeclContext<K extends ProtocolKind>
 	//private Map<Role, Map<N, Set<Role>>> dependencies;  // All the potential dependencies from this protocol decl as the root
 	//private Map<Role, Map<? extends ProtocolName<K>, Set<Role>>> dependencies;  // All the potential dependencies from this protocol decl as the root
 			// FIXME: generalise to support locals
-	//protected DependencyMap<? extends ProtocolName<K>, K> deps;
+	//protected DependencyMap<? extends ProtocolName<K>, K> deps;*/
 	protected DependencyMap<? extends ProtocolName<K>> deps;
 	
 	//public ProtocolDeclContext(Map<Role, Map<GProtocolName, Set<Role>>> dependencies)
@@ -22,6 +22,7 @@ public abstract class ProtocolDeclContext<K extends ProtocolKind>
 	//public ProtocolDeclContext(Map<Role, Map<? extends ProtocolName<K>, Set<Role>>> deps)
 	//public ProtocolDeclContext(DependencyMap<? extends ProtocolName<K>, K> deps)
 	public ProtocolDeclContext(DependencyMap<? extends ProtocolName<K>> deps)
+	//public ProtocolDeclContext(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> deps)
 	{
 		this.deps = deps;
 	}
@@ -48,5 +49,5 @@ public abstract class ProtocolDeclContext<K extends ProtocolKind>
 	}*/
 	
 	//public abstract Map<Role, Map<? extends ProtocolName<K>, Set<Role>>> getDependencies();
-	public abstract DependencyMap<? extends ProtocolName<K>> getDependencies();
+	//public abstract DependencyMap<? extends ProtocolName<K>> getDependencies();
 }

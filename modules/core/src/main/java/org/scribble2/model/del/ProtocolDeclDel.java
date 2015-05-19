@@ -23,7 +23,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBa
 	
 	//ProtocolDeclContext pdcontext;
 	//protected ProtocolDeclContext<? extends ProtocolName<K>, K> pdcontext;
-	protected ProtocolDeclContext<K> pdcontext;
+	private ProtocolDeclContext<K> pdcontext;
 	//protected ProtocolDeclContext<? extends ProtocolKind> pdcontext;
 
 	protected ProtocolDeclDel()
@@ -90,6 +90,8 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBa
 	
 	//protected abstract void setProtocolDeclContext(DependencyMap<? extends ProtocolName<K>> deps);
 	protected abstract ProtocolDeclContext<K> newProtocolDeclContext(Map<Role, Map<ProtocolName<? extends ProtocolKind>, Set<Role>>> deps);
+	
+	//HERE: change context builder back to separate global/local deps; invert decldel to move enter/leave context building into subclasses and use a base setter here; global/local decl contexts should keep separate global/local dep fields (maybe? -- protocol dependencies are common, but otherwise global/local contexts are too different? contexts aren't ModelNodes)
 	
 	@Override
 	public
