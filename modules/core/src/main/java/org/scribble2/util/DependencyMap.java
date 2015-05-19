@@ -10,7 +10,7 @@ import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 
-// Used for two purposes: one to encapsulate Map structure and add method; second to allow overriding the generic types (cf. nested Map generics)
+// Used for two purposes: one to encapsulate Map structure and add method for ContextBuilder; second to allow overriding the generic types in ProtocolDeclContext (cf. nested Map generics)
 //public class DependencyMap<N extends ProtocolName<K>, K extends ProtocolKind>
 public class DependencyMap<N extends ProtocolName<? extends ProtocolKind>>  // Maybe better to parameterise on Kind only?
 {
