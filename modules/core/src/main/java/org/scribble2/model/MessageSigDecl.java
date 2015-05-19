@@ -63,8 +63,8 @@ public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode impl
 	@Override
 	public String toString()
 	{
-		return Constants.SIG_KW + " <" + this.schema + "> " + this.extName
-				+ " " + Constants.FROM_KW + " " + this.source + " "
+		return Constants.SIG_KW + " <" + this.schema + "> \"" + this.extName
+				+ "\" " + Constants.FROM_KW + " \"" + this.source + "\" "
 				+ Constants.AS_KW + " " + 
 				//this.alias + ";";
 				this.name + ";";

@@ -21,7 +21,7 @@ public class AntlrMessageSignatureDecl
 		String schema = AntlrSimpleName.getName(tmp1);
 		CommonTree tmp2 = getExtNameChild(ct);
 		String extName = AntlrExtIdentifier.getName(tmp2);
-		CommonTree tmp3 = getExtNameChild(ct);
+		CommonTree tmp3 = getSourceChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
 		//SimpleMessageSignatureNameNode alias = AntlrSimpleName.toSimpleMessageSignatureNameNode(getAliasChild(ct));
 		//MessageSigNameNode alias = AntlrQualifiedName.toMessageSignatureNameNode(getAliasChild(ct)); -- no: that expects a compound messigname node with elems

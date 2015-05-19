@@ -58,9 +58,6 @@ public abstract class HeaderParamDecl<K extends Kind> extends NameDeclNode<K> //
 	public String toString()
 	{
 		//return toName().toString();  // FIXME: need declaration kind keyword
-		
-		System.out.println("c: " + getDeclName());
-		
 		return getKeyword() + " " + getDeclName().toString();
 	}
 }
