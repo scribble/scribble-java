@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.ParamDecl;
+import org.scribble2.model.NonRoleParamDecl;
 import org.scribble2.model.ParamDeclList;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
@@ -28,10 +28,10 @@ public class AntlrParameterDeclList
 				//List<ParamDecl> pds = new LinkedList<>();
 				//List<HeaderParamDecl<Name<Kind>, Kind>> pds = new LinkedList<>();
 				//List<HeaderParamDecl<Kind>> pds = new LinkedList<>();
-				List<ParamDecl<Kind>> pds = new LinkedList<>();
+				List<NonRoleParamDecl<Kind>> pds = new LinkedList<>();
 				for (CommonTree pd : getParameterDeclChildren(ct))
 				{
-					pds.add((ParamDecl) parser.parse(pd));
+					pds.add((NonRoleParamDecl) parser.parse(pd));
 				}
 				//return new ParameterDeclList(pds);
 				return ModelFactoryImpl.FACTORY.ParameterDeclList(pds);

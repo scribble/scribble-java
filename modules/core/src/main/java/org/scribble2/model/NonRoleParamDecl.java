@@ -9,7 +9,7 @@ import org.scribble2.sesstype.name.Role;
 
 //public class ParamDecl extends HeaderParamDecl<ParameterNode, Parameter> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
 //public class ParamDecl<K extends Kind> extends HeaderParamDecl<Name<K>, K> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
-public class ParamDecl<K extends Kind> extends HeaderParamDecl<K> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
+public class NonRoleParamDecl<K extends Kind> extends HeaderParamDecl<K> //implements HeaderParameterDecl// extends HeaderParameterDecl<ParameterNode>
 {
 	//public enum Kind { TYPE, SIG }  // ROLE
 	
@@ -22,7 +22,7 @@ public class ParamDecl<K extends Kind> extends HeaderParamDecl<K> //implements H
 
 	//public ParamDecl(Kind kind, ParameterNode name)
 	//public ParamDecl(K kind, NameNode<Name<K>, K> name)
-	public ParamDecl(K kind, NameNode<K> name)
+	public NonRoleParamDecl(K kind, NameNode<K> name)
 	{
 		//super(t, kind, namenode);
 		super(name);
@@ -32,18 +32,18 @@ public class ParamDecl<K extends Kind> extends HeaderParamDecl<K> //implements H
 	
 	@Override
 	//protected ParamDecl<K> reconstruct(NameNode<Name<K>, K> namenode)
-	protected ParamDecl<K> reconstruct(NameNode<K> namenode)
+	protected NonRoleParamDecl<K> reconstruct(NameNode<K> namenode)
 	{
 		ModelDel del = del();
-		ParamDecl<K> pd = new ParamDecl<>(this.kind, this.name);
-		pd = (ParamDecl<K>) pd.del(del);
+		NonRoleParamDecl<K> pd = new NonRoleParamDecl<>(this.kind, this.name);
+		pd = (NonRoleParamDecl<K>) pd.del(del);
 		return pd;
 	}
 
 	@Override
-	protected ParamDecl<K> copy()
+	protected NonRoleParamDecl<K> copy()
 	{
-		return new ParamDecl<>(this.kind, (ParamNode<K>) this.name);
+		return new NonRoleParamDecl<>(this.kind, (ParamNode<K>) this.name);
 	}
 
 	/*@Override
@@ -54,7 +54,7 @@ public class ParamDecl<K extends Kind> extends HeaderParamDecl<K> //implements H
 	
 	@Override
 	//public ParamDecl project(Role self)
-	public ParamDecl<K> project(Role self)
+	public NonRoleParamDecl<K> project(Role self)
 	{
 		//ParameterNode<K> pn = new ParameterNode<>(this.kind, this.name.toString());  // FIXME: use factory?
 		ParamNode<K> pn = ModelFactoryImpl.FACTORY.ParamNode(this.kind, this.name.toString());

@@ -1,7 +1,7 @@
 package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.ArgumentInstantiation;
+import org.scribble2.model.NonRoleArgument;
 import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.parser.ScribbleParser;
@@ -13,7 +13,7 @@ public class AntlrArgumentInstantiation
 {
 	public static final int ARG_CHILD_INDEX = 0;
 
-	public static ArgumentInstantiation parseArgumentInstantiation(ScribbleParser parser, CommonTree ct)
+	public static NonRoleArgument parseArgumentInstantiation(ScribbleParser parser, CommonTree ct)
 	{
 		ArgumentNode arg = parseArgument(parser, getArgChild(ct));
 		//return new ArgumentInstantiation(ct, arg);

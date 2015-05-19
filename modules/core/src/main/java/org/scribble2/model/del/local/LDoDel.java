@@ -19,7 +19,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 		JobContext jcontext = builder.getJobContext();
 		ModuleContext mcontext = builder.getModuleContext();
 		LDo ld = (LDo) visited;
-		for (Role role : ld.roleinstans.getRoles())
+		for (Role role : ld.roles.getRoles())
 		{
 			builder.addProtocolDependency(role, ld.getTargetFullProtocolName(builder.getModuleContext()), ld.getTargetRoleParameter(jcontext, mcontext, role));
 		}

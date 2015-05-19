@@ -1,9 +1,9 @@
 package org.scribble2.model.global;
 
-import org.scribble2.model.ArgumentInstantiationList;
+import org.scribble2.model.ArgumentList;
 import org.scribble2.model.Do;
 import org.scribble2.model.ModelNodeBase;
-import org.scribble2.model.RoleInstantiationList;
+import org.scribble2.model.RoleArgumentList;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.qualified.GProtocolNameNode;
@@ -14,7 +14,7 @@ import org.scribble2.sesstype.name.GProtocolName;
 public class GDo extends Do<Global> implements GSimpleInteractionNode
 {
 	//public GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public GDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, GProtocolNameNode proto)
+	public GDo(RoleArgumentList roleinstans, ArgumentList arginstans, GProtocolNameNode proto)
 	{
 		//super(scope, roleinstans, arginstans, proto);
 		super(roleinstans, arginstans, proto);
@@ -30,13 +30,13 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	protected ModelNodeBase copy()
 	{
 		//return new GlobalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
-		return new GDo(this.roleinstans, this.arginstans, (GProtocolNameNode) this.proto);
+		return new GDo(this.roles, this.args, (GProtocolNameNode) this.proto);
 	}
 
 	@Override
 	//protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//protected GDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	protected GDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode<Global> proto)
+	protected GDo reconstruct(RoleArgumentList roleinstans, ArgumentList arginstans, ProtocolNameNode<Global> proto)
 	{
 		ModelDel del = del();
 		GDo gd = new GDo(roleinstans, arginstans, (GProtocolNameNode) proto);

@@ -204,8 +204,8 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		//ModuleDelegate mcontext = getModuleContext();
 		ModuleContext mcontext = getModuleContext();
 		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolName(doo.proto.toName());
-		List<Role> roleargs = doo.roleinstans.getRoles();
-		List<Argument<? extends Kind>> argargs = doo.arginstans.getArguments(getScope());
+		List<Role> roleargs = doo.roles.getRoles();
+		List<Argument<? extends Kind>> argargs = doo.args.getArguments(getScope());
 		pushSubprotocolSignature(fullname, roleargs, argargs);
 		//pushSubprotocolSignature(fullname, roleargs, argargs);*/
 		pushNameMaps(fullname, doo, roleargs, argargs);
@@ -248,7 +248,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		
 		//Map<Argument<? extends Kind>, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> (Argument<? extends Kind>) a, (a) -> this.argmaps.get(0).get(argargiter.next())));
 		Map<Argument<? extends Kind>, ArgumentNode> newargmap = new HashMap<>();
-		Iterator<ArgumentNode> foo = doo.arginstans.getArgumentNodes().iterator();
+		Iterator<ArgumentNode> foo = doo.args.getArgumentNodes().iterator();
 		for (Name<Kind> p : argparams)
 		{
 			Argument<? extends Kind> tmp = argargiter.next();

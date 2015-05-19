@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.Role;
 
-public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
+public class RoleArgumentList extends DoArgumentList<RoleArgument>
 {
 	//public final List<RoleInstantiation> ris;
 
-	public RoleInstantiationList(List<RoleInstantiation> instans)
+	public RoleArgumentList(List<RoleArgument> instans)
 	{
 		super(instans);
 		
@@ -18,25 +18,25 @@ public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 	}
 
 	@Override
-	protected RoleInstantiationList copy()
+	protected RoleArgumentList copy()
 	{
-		return new RoleInstantiationList(this.instans);
+		return new RoleArgumentList(this.instans);
 	}
 
 	@Override
-	protected RoleInstantiationList reconstruct(List<RoleInstantiation> instans)
+	protected RoleArgumentList reconstruct(List<RoleArgument> instans)
 	{
 		ModelDel del = del();
-		RoleInstantiationList rl = new RoleInstantiationList(instans);
-		rl = (RoleInstantiationList) rl.del(del);
+		RoleArgumentList rl = new RoleArgumentList(instans);
+		rl = (RoleArgumentList) rl.del(del);
 		return rl;
 	}
 
 	// FIXME: move to delegate?
 	@Override
-	public RoleInstantiationList project(Role self)
+	public RoleArgumentList project(Role self)
 	{
-		List<RoleInstantiation> instans =
+		List<RoleArgument> instans =
 				this.instans.stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
 		return ModelFactoryImpl.FACTORY.RoleInstantiationList(instans);
 	}
@@ -89,7 +89,7 @@ public class RoleInstantiationList extends InstantiationList<RoleInstantiation>
 	public String toString()
 	{
 		String s = "(" + this.instans.get(0);
-		for (RoleInstantiation ri : this.instans.subList(1, this.instans.size()))
+		for (RoleArgument ri : this.instans.subList(1, this.instans.size()))
 		{
 			s += ", " + ri;
 		}

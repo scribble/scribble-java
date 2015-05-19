@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.ArgumentInstantiation;
-import org.scribble2.model.ArgumentInstantiationList;
+import org.scribble2.model.NonRoleArgument;
+import org.scribble2.model.ArgumentList;
 import org.scribble2.model.ArgumentNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
@@ -19,9 +19,9 @@ public class AntlrArgumentInstantiationList
 	//public static final String EMPTY_ARGUMENTLIST = "EMPTY_ARGUMENT_LIST";
 
 	// Similar to parseParameterDeclList
-	public static ArgumentInstantiationList parseArgumentInstantiationList(ScribbleParser parser, CommonTree ct)
+	public static ArgumentList parseArgumentInstantiationList(ScribbleParser parser, CommonTree ct)
 	{
-		List<ArgumentInstantiation> as = new LinkedList<>();
+		List<NonRoleArgument> as = new LinkedList<>();
 		for (CommonTree a : getArgumentChildren(ct))
 		{
 			AntlrNodeType type = Util.getAntlrNodeType(a);

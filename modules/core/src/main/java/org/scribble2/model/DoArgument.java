@@ -7,19 +7,19 @@ import org.scribble2.util.ScribbleException;
 
 // Cf. NameDeclNode/HeaderParameterDecl
 // Simpler than NameDeclNode, doesn't constrain node-type correspondence for names
-public abstract class Instantiation<T extends InstantiationNode> extends ModelNodeBase
+public abstract class DoArgument<T extends DoArgumentNode> extends ModelNodeBase
 {
 	public final T arg;
 
-	protected Instantiation(T arg)
+	protected DoArgument(T arg)
 	{
 		this.arg = arg;
 	}
 
-	protected abstract Instantiation<T> reconstruct(T arg);
+	protected abstract DoArgument<T> reconstruct(T arg);
 	
 	@Override
-	public Instantiation<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	public DoArgument<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		//T arg = visitChildWithClassCheck(this, this.arg, nv);
 		@SuppressWarnings("unchecked")
@@ -27,7 +27,7 @@ public abstract class Instantiation<T extends InstantiationNode> extends ModelNo
 		return reconstruct(arg);
 	}
 
-	public abstract Instantiation<T> project(Role self);
+	public abstract DoArgument<T> project(Role self);
 	
 	@Override
 	public String toString()

@@ -14,28 +14,28 @@ import org.scribble2.util.ScribbleException;
 public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K> //implements ScopedNode
 {
 	//public final ScopeNode scope;
-	public final RoleInstantiationList roleinstans;
-	public final ArgumentInstantiationList arginstans;
+	public final RoleArgumentList roles;
+	public final ArgumentList args;
 	public final ProtocolNameNode<K> proto;  // Maybe use an "Ambiguous" version until names resolved -- is a visible protocol, but not necessarily a simple or full member name
 
 	//protected Do(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	protected Do(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode<K> proto)
+	protected Do(RoleArgumentList roleinstans, ArgumentList arginstans, ProtocolNameNode<K> proto)
 	{
 		//this.scope = scope;
-		this.roleinstans = roleinstans;
-		this.arginstans = arginstans;
+		this.roles = roleinstans;
+		this.args = arginstans;
 		this.proto = proto;
 	}
 
 	//protected abstract Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
-	protected abstract Do<K> reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode<K> proto);//, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract Do<K> reconstruct(RoleArgumentList roleinstans, ArgumentList arginstans, ProtocolNameNode<K> proto);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
 	public Do<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		//ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
-		RoleInstantiationList ril = (RoleInstantiationList) visitChild(this.roleinstans, nv);
-		ArgumentInstantiationList al = (ArgumentInstantiationList) visitChild(this.arginstans, nv);
+		RoleArgumentList ril = (RoleArgumentList) visitChild(this.roles, nv);
+		ArgumentList al = (ArgumentList) visitChild(this.args, nv);
 		ProtocolNameNode<K> proto = visitChildWithClassCheck(this, this.proto, nv);
 		//return reconstruct(scope, ril, al, proto);//, getContext(), getEnv());
 		return reconstruct(ril, al, proto);//, getContext(), getEnv());
@@ -89,7 +89,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	
 	public Role getTargetRoleParameter(JobContext jcontext, ModuleContext mcontext, Role role)
 	{
-		Iterator<Role> args = this.roleinstans.getRoles().iterator();
+		Iterator<Role> args = this.roles.getRoles().iterator();
 		Iterator<Role> params = getTargetProtocolDecl(jcontext, mcontext).header.roledecls.getRoles().iterator();
 		while (args.hasNext())
 		{
@@ -130,7 +130,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 		{
 			s += this.scope + ":";
 		}*/
-		return s + this.proto + this.arginstans + this.roleinstans + ";";
+		return s + this.proto + this.args + this.roles + ";";
 	}
 
 	/*@Override

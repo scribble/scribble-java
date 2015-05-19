@@ -181,7 +181,7 @@ public class ModelFactoryImpl implements ModelFactory
 	@Override
 	//public ParamDeclList ParameterDeclList(List<ParamDecl> pds)
 	//public ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds)
-	public ParamDeclList ParameterDeclList(List<ParamDecl<Kind>> pds)
+	public ParamDeclList ParameterDeclList(List<NonRoleParamDecl<Kind>> pds)
 	{
 		ParamDeclList pdl = new ParamDeclList(pds);
 		pdl = del(pdl, createDefaultDelegate());
@@ -190,10 +190,10 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode)
-	public <K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParamNode<K> namenode)
+	public <K extends Kind> NonRoleParamDecl<K> ParameterDecl(K kind, ParamNode<K> namenode)
 	//public <K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode)
 	{
-		ParamDecl<K> pd = new ParamDecl<K>(kind, namenode);
+		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(kind, namenode);
 		//ParamDecl<K> pd = new ParamDecl<K>(namenode);
 		pd = del(pd, new ParamDeclDel());
 		return pd;
@@ -266,7 +266,7 @@ public class ModelFactoryImpl implements ModelFactory
 	@Override
 	//public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//public GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, GProtocolNameNode proto)
+	public GDo GlobalDo(RoleArgumentList roleinstans, ArgumentList arginstans, GProtocolNameNode proto)
 	{
 		//GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
 		GDo gd = new GDo(roleinstans, arginstans, proto);
@@ -276,33 +276,33 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public RoleInstantiationList RoleInstantiationList(List<RoleInstantiation> ris)
+	public RoleArgumentList RoleInstantiationList(List<RoleArgument> ris)
 	{
-		RoleInstantiationList rdl = new RoleInstantiationList(ris);
+		RoleArgumentList rdl = new RoleArgumentList(ris);
 		rdl = del(rdl, createDefaultDelegate());
 		return rdl;
 	}
 
 	@Override
-	public RoleInstantiation RoleInstantiation(RoleNode role)
+	public RoleArgument RoleInstantiation(RoleNode role)
 	{
-		RoleInstantiation ri = new RoleInstantiation(role);
+		RoleArgument ri = new RoleArgument(role);
 		ri = del(ri, createDefaultDelegate());
 		return ri;
 	}
 
 	@Override
-	public ArgumentInstantiationList ArgumentInstantiationList(List<ArgumentInstantiation> ais)
+	public ArgumentList ArgumentInstantiationList(List<NonRoleArgument> ais)
 	{
-		ArgumentInstantiationList rdl = new ArgumentInstantiationList(ais);
+		ArgumentList rdl = new ArgumentList(ais);
 		rdl = del(rdl, createDefaultDelegate());
 		return rdl;
 	}
 
 	@Override
-	public ArgumentInstantiation ArgumentInstantiation(ArgumentNode arg)
+	public NonRoleArgument ArgumentInstantiation(ArgumentNode arg)
 	{
-		ArgumentInstantiation ri = new ArgumentInstantiation(arg);
+		NonRoleArgument ri = new NonRoleArgument(arg);
 		ri = del(ri, createDefaultDelegate());
 		return ri;
 	}
@@ -537,7 +537,7 @@ public class ModelFactoryImpl implements ModelFactory
 	@Override
 	//public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//public LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, LProtocolNameNode proto)
+	public LDo LocalDo(RoleArgumentList roleinstans, ArgumentList arginstans, LProtocolNameNode proto)
 	{
 		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
 		LDo ld = new LDo(roleinstans, arginstans, proto);

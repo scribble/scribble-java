@@ -4,9 +4,9 @@ import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.Role;
 
 
-public class ArgumentInstantiation extends Instantiation<ArgumentNode>
+public class NonRoleArgument extends DoArgument<ArgumentNode>
 {
-	public ArgumentInstantiation(ArgumentNode arg)
+	public NonRoleArgument(ArgumentNode arg)
 	{
 		super(arg);
 	}
@@ -14,20 +14,20 @@ public class ArgumentInstantiation extends Instantiation<ArgumentNode>
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new ArgumentInstantiation(this.arg);
+		return new NonRoleArgument(this.arg);
 	}
 
 	@Override
-	protected ArgumentInstantiation reconstruct(ArgumentNode arg)
+	protected NonRoleArgument reconstruct(ArgumentNode arg)
 	{
 		ModelDel del = del();
-		ArgumentInstantiation ai = new ArgumentInstantiation(arg);
-		ai = (ArgumentInstantiation) ai.del(del);
+		NonRoleArgument ai = new NonRoleArgument(arg);
+		ai = (NonRoleArgument) ai.del(del);
 		return ai;
 	}
 	
 	@Override
-	public ArgumentInstantiation project(Role self)
+	public NonRoleArgument project(Role self)
 	{
 		/*ArgumentNode arg = (ArgumentNode) ((ProjectionEnv) this.arg.del().env()).getProjection();	
 		return new ArgumentInstantiation(arg);*/

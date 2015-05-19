@@ -1,9 +1,9 @@
 package org.scribble2.model.del.global;
 
-import org.scribble2.model.ArgumentInstantiationList;
+import org.scribble2.model.ArgumentList;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.RoleInstantiationList;
+import org.scribble2.model.RoleArgumentList;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.global.GDo;
 import org.scribble2.model.local.LDo;
@@ -30,7 +30,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 		
 		// FIXME: use lambda (also in LocalDoDelegate -- factor out)
 		
-		for (Role role : gd.roleinstans.getRoles())
+		for (Role role : gd.roles.getRoles())
 		{
 			builder.addProtocolDependency(role, gd.getTargetFullProtocolName(builder.getModuleContext()), gd.getTargetRoleParameter(jcontext, mcontext, role));
 		}
@@ -66,7 +66,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 		GDo gd = (GDo) child;
 		//ProtocolName gpn = gd.getTargetFullProtocolName(proj.getModuleContext());
 		Role self = proj.peekSelf();
-		if (gd.roleinstans.getRoles().contains(self))
+		if (gd.roles.getRoles().contains(self))
 		{
 			// For correct name mangling, need to use the parameter corresponding to the self argument
 			// N.B. -- this depends on Projector not following the Subprotocol pattern, otherwise self is wrong
@@ -88,7 +88,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 		Role popped = proj.popSelf();
 		Role self = proj.peekSelf();
 		LDo projection = null;
-		if (gd.roleinstans.getRoles().contains(self))
+		if (gd.roles.getRoles().contains(self))
 		{
 			/*ModuleContext mcontext = proj.getModuleContext();
 			ProtocolDecl<? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
@@ -108,8 +108,8 @@ public class GDoDel extends GSimpleInteractionNodeDel
 			projection = ModelFactoryImpl.FACTORY.LocalDo(null, scope, roleinstans, arginstans, target);*/
 			/*RoleInstantiationList roleinstans = (RoleInstantiationList) ((ProjectionEnv) gd.roleinstans.del().env()).getProjection();
 			ArgumentInstantiationList arginstans = (ArgumentInstantiationList) ((ProjectionEnv) gd.arginstans.del().env()).getProjection();*/
-			RoleInstantiationList roleinstans = gd.roleinstans.project(self);
-			ArgumentInstantiationList arginstans = gd.arginstans.project(self);
+			RoleArgumentList roleinstans = gd.roles.project(self);
+			ArgumentList arginstans = gd.args.project(self);
 			LProtocolNameNode target = Projector.makeProjectedProtocolNameNode(gd.getTargetFullProtocolName(proj.getModuleContext()), popped);
 			projection = ModelFactoryImpl.FACTORY.LocalDo(roleinstans, arginstans, target);
 			

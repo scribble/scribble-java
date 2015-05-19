@@ -2,7 +2,7 @@ package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.ParamDecl;
+import org.scribble2.model.NonRoleParamDecl;
 import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.ScribbleParser;
@@ -16,7 +16,7 @@ public class AntlrParameterDecl
 	public static final int KIND_CHILD_INDEX = 0;
 	public static final int NAME_CHILD_INDEX = 1;
 
-	public static ParamDecl<? extends Kind> parseParameterDecl(ScribbleParser parser, CommonTree ct)
+	public static NonRoleParamDecl<? extends Kind> parseParameterDecl(ScribbleParser parser, CommonTree ct)
 	{
 		Kind kind = parseKind(getKindChild(ct));
 		/*//ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct), kind);

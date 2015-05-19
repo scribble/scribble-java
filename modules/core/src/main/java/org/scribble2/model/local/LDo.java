@@ -1,8 +1,8 @@
 package org.scribble2.model.local;
 
-import org.scribble2.model.ArgumentInstantiationList;
+import org.scribble2.model.ArgumentList;
 import org.scribble2.model.Do;
-import org.scribble2.model.RoleInstantiationList;
+import org.scribble2.model.RoleArgumentList;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.qualified.LProtocolNameNode;
@@ -14,7 +14,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 {
 	//public LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//public LDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public LDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, LProtocolNameNode proto)
+	public LDo(RoleArgumentList roleinstans, ArgumentList arginstans, LProtocolNameNode proto)
 	{
 		//super(scope, roleinstans, arginstans, proto);
 		super(roleinstans, arginstans, proto);
@@ -29,7 +29,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	@Override
 	//protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//protected LDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	protected LDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode<Local> proto)
+	protected LDo reconstruct(RoleArgumentList roleinstans, ArgumentList arginstans, ProtocolNameNode<Local> proto)
 	{
 		ModelDel del = del();
 		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
@@ -42,7 +42,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	protected LDo copy()
 	{
 		//return new LocalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
-		return new LDo(this.roleinstans, this.arginstans, (LProtocolNameNode) this.proto);
+		return new LDo(this.roles, this.args, (LProtocolNameNode) this.proto);
 	}
 	
 	/*@Override

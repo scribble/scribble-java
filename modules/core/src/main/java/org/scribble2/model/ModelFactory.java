@@ -76,9 +76,9 @@ public interface ModelFactory
 	//ParamDeclList ParameterDeclList(List<ParamDecl> pds);
 	//ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds);
 	//ParamDeclList ParameterDeclList(List<HeaderParamDecl<Kind>> pds);
-	ParamDeclList ParameterDeclList(List<ParamDecl<Kind>> pds);
+	ParamDeclList ParameterDeclList(List<NonRoleParamDecl<Kind>> pds);
 	//ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode);
-	<K extends Kind> ParamDecl<K> ParameterDecl(K kind, ParamNode<K> namenode);
+	<K extends Kind> NonRoleParamDecl<K> ParameterDecl(K kind, ParamNode<K> namenode);
 	//<K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode);
 	
 	GProtocolDef GlobalProtocolDefinition(GProtocolBlock block);
@@ -93,12 +93,12 @@ public interface ModelFactory
 	GContinue GlobalContinue(RecVarNode recvar);
 	//GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	//GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, GProtocolNameNode proto);
+	GDo GlobalDo(RoleArgumentList roleinstans, ArgumentList arginstans, GProtocolNameNode proto);
 	
-	RoleInstantiationList RoleInstantiationList(List<RoleInstantiation> ris);
-	RoleInstantiation RoleInstantiation(RoleNode role);
-	ArgumentInstantiationList ArgumentInstantiationList(List<ArgumentInstantiation> ais);
-	ArgumentInstantiation ArgumentInstantiation(ArgumentNode arg);
+	RoleArgumentList RoleInstantiationList(List<RoleArgument> ris);
+	RoleArgument RoleInstantiation(RoleNode role);
+	ArgumentList ArgumentInstantiationList(List<NonRoleArgument> ais);
+	NonRoleArgument ArgumentInstantiation(ArgumentNode arg);
 
 	// FIXME: instead of enums, take class as generic parameter
 	//SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);
@@ -128,5 +128,5 @@ public interface ModelFactory
 	LContinue LocalContinue(RecVarNode recvar);
 	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	//LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, LProtocolNameNode proto);
+	LDo LocalDo(RoleArgumentList roleinstans, ArgumentList arginstans, LProtocolNameNode proto);
 }

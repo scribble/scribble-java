@@ -10,9 +10,9 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.Scope;
 
 
-public class ArgumentInstantiationList extends InstantiationList<ArgumentInstantiation>
+public class ArgumentList extends DoArgumentList<NonRoleArgument>
 {
-	public ArgumentInstantiationList(List<ArgumentInstantiation> instans)
+	public ArgumentList(List<NonRoleArgument> instans)
 	{
 		super(instans);
 	}
@@ -20,22 +20,22 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new ArgumentInstantiationList(this.instans);
+		return new ArgumentList(this.instans);
 	}
 
 	@Override
-	protected InstantiationList<ArgumentInstantiation> reconstruct(List<ArgumentInstantiation> instans)
+	protected DoArgumentList<NonRoleArgument> reconstruct(List<NonRoleArgument> instans)
 	{
 		ModelDel del = del();
-		ArgumentInstantiationList ail = ModelFactoryImpl.FACTORY.ArgumentInstantiationList(instans);
-		ail = (ArgumentInstantiationList) ail.del(del);
+		ArgumentList ail = ModelFactoryImpl.FACTORY.ArgumentInstantiationList(instans);
+		ail = (ArgumentList) ail.del(del);
 		return ail;
 	}
 
 	@Override
-	public ArgumentInstantiationList project(Role self)
+	public ArgumentList project(Role self)
 	{
-		List<ArgumentInstantiation> instans =
+		List<NonRoleArgument> instans =
 				this.instans.stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
 		return ModelFactoryImpl.FACTORY.ArgumentInstantiationList(instans);
 	}
@@ -64,7 +64,7 @@ public class ArgumentInstantiationList extends InstantiationList<ArgumentInstant
 			return "";
 		}
 		String s = "<" + this.instans.get(0);
-		for (ArgumentInstantiation a : this.instans.subList(1, this.instans.size()))
+		for (NonRoleArgument a : this.instans.subList(1, this.instans.size()))
 		{
 			s += ", " + a;
 		}

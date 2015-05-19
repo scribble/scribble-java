@@ -1,6 +1,6 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.InstantiationNode;
+import org.scribble2.model.DoArgumentNode;
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.visit.Substitutor;
 import org.scribble2.sesstype.kind.RoleKind;
@@ -9,7 +9,7 @@ import org.scribble2.sesstype.name.Role;
 
 //public class RoleNode extends SimpleNameNode<Role> implements InstantiationNode //RoleDecl, RoleInstantiation
 //public class RoleNode extends SimpleNameNode<Role, RoleKind> implements InstantiationNode //RoleDecl, RoleInstantiation
-public class RoleNode extends SimpleNameNode<RoleKind> implements InstantiationNode //RoleDecl, RoleInstantiation
+public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgumentNode //RoleDecl, RoleInstantiation
 {
 	public RoleNode(String identifier)
 	{

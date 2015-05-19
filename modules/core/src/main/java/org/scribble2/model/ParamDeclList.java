@@ -15,7 +15,7 @@ public class ParamDeclList extends HeaderParamDeclList<Kind>
 	//public ParamDeclList(List<ParamDecl> decls)
 	//public ParamDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> decls)
 	//public ParamDeclList(List<HeaderParamDecl<Kind>> decls)
-	public ParamDeclList(List<ParamDecl<Kind>> decls)
+	public ParamDeclList(List<NonRoleParamDecl<Kind>> decls)
 	{
 		super(decls);
 	}
@@ -26,9 +26,9 @@ public class ParamDeclList extends HeaderParamDeclList<Kind>
 		return new ParamDeclList(getParamDecls());
 	}
 	
-	public List<ParamDecl<Kind>> getParamDecls()
+	public List<NonRoleParamDecl<Kind>> getParamDecls()
 	{
-		return this.decls.stream().map((d) -> (ParamDecl<Kind>) d).collect(Collectors.toList());
+		return this.decls.stream().map((d) -> (NonRoleParamDecl<Kind>) d).collect(Collectors.toList());
 	}
 
 	@Override
