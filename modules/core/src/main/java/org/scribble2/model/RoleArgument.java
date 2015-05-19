@@ -6,7 +6,7 @@ import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.Role;
 
 
-public class RoleArgument extends DoArgument<RoleNode>
+public class RoleArgument extends DoArg<RoleNode>
 {
 	public RoleArgument(RoleNode arg)
 	{
@@ -16,7 +16,7 @@ public class RoleArgument extends DoArgument<RoleNode>
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new RoleArgument(this.arg);
+		return new RoleArgument(this.val);
 	}	
 
 	@Override
@@ -33,7 +33,7 @@ public class RoleArgument extends DoArgument<RoleNode>
 	public RoleArgument project(Role self)
 	{
 		//RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, this.arg.toName().toString());
-		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.arg.toName().toString());
+		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.val.toName().toString());
 		//return new RoleInstantiation(rn);
 		return ModelFactoryImpl.FACTORY.RoleInstantiation(rn);
 	}

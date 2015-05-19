@@ -266,7 +266,7 @@ public class ModelFactoryImpl implements ModelFactory
 	@Override
 	//public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//public GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public GDo GlobalDo(RoleArgumentList roleinstans, ArgumentList arginstans, GProtocolNameNode proto)
+	public GDo GlobalDo(RoleArgList roleinstans, ArgList arginstans, GProtocolNameNode proto)
 	{
 		//GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
 		GDo gd = new GDo(roleinstans, arginstans, proto);
@@ -276,9 +276,9 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public RoleArgumentList RoleInstantiationList(List<RoleArgument> ris)
+	public RoleArgList RoleInstantiationList(List<RoleArgument> ris)
 	{
-		RoleArgumentList rdl = new RoleArgumentList(ris);
+		RoleArgList rdl = new RoleArgList(ris);
 		rdl = del(rdl, createDefaultDelegate());
 		return rdl;
 	}
@@ -292,15 +292,15 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ArgumentList ArgumentInstantiationList(List<NonRoleArgument> ais)
+	public ArgList ArgumentInstantiationList(List<NonRoleArgument> ais)
 	{
-		ArgumentList rdl = new ArgumentList(ais);
+		ArgList rdl = new ArgList(ais);
 		rdl = del(rdl, createDefaultDelegate());
 		return rdl;
 	}
 
 	@Override
-	public NonRoleArgument ArgumentInstantiation(ArgumentNode arg)
+	public NonRoleArgument ArgumentInstantiation(ArgNode arg)
 	{
 		NonRoleArgument ri = new NonRoleArgument(arg);
 		ri = del(ri, createDefaultDelegate());
@@ -537,7 +537,7 @@ public class ModelFactoryImpl implements ModelFactory
 	@Override
 	//public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//public LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public LDo LocalDo(RoleArgumentList roleinstans, ArgumentList arginstans, LProtocolNameNode proto)
+	public LDo LocalDo(RoleArgList roleinstans, ArgList arginstans, LProtocolNameNode proto)
 	{
 		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
 		LDo ld = new LDo(roleinstans, arginstans, proto);

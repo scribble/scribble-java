@@ -2,7 +2,7 @@ package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.name.PayloadElementNameNode;
-import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.kind.AmbigKind;
 import org.scribble2.sesstype.kind.Kind;
@@ -57,7 +57,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements
 
 	@Override
 	//public Argument<? extends Kind> toArgument(Scope scope)
-	public Argument<? extends Kind> toArgument()
+	public Arg<? extends Kind> toArg()
 	//public Argument<AmbiguousKind> toArgument()
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
@@ -105,7 +105,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements
 	}
 
 	@Override
-	public boolean isParameterNode()
+	public boolean isParamNode()
 	{
 		return false;
 	}

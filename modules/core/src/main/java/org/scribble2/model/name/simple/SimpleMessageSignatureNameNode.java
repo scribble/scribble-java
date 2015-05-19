@@ -2,7 +2,7 @@ package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.del.ModelDel;
-import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.SimpleName;

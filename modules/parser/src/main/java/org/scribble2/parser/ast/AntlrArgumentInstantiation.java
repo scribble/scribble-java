@@ -2,7 +2,7 @@ package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.NonRoleArgument;
-import org.scribble2.model.ArgumentNode;
+import org.scribble2.model.ArgNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrAmbiguousName;
@@ -15,13 +15,13 @@ public class AntlrArgumentInstantiation
 
 	public static NonRoleArgument parseArgumentInstantiation(ScribbleParser parser, CommonTree ct)
 	{
-		ArgumentNode arg = parseArgument(parser, getArgChild(ct));
+		ArgNode arg = parseArgument(parser, getArgChild(ct));
 		//return new ArgumentInstantiation(ct, arg);
 		return ModelFactoryImpl.FACTORY.ArgumentInstantiation(arg);
 	}
 
 	// Similar to AntlrGlobalMessageTransfer.parseMessage
-	protected static ArgumentNode parseArgument(ScribbleParser parser, CommonTree ct)
+	protected static ArgNode parseArgument(ScribbleParser parser, CommonTree ct)
 	{
 		switch (Util.getAntlrNodeType(ct))
 		{

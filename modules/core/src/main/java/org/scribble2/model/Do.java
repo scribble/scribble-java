@@ -14,12 +14,12 @@ import org.scribble2.util.ScribbleException;
 public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K> //implements ScopedNode
 {
 	//public final ScopeNode scope;
-	public final RoleArgumentList roles;
-	public final ArgumentList args;
+	public final RoleArgList roles;
+	public final ArgList args;
 	public final ProtocolNameNode<K> proto;  // Maybe use an "Ambiguous" version until names resolved -- is a visible protocol, but not necessarily a simple or full member name
 
 	//protected Do(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	protected Do(RoleArgumentList roleinstans, ArgumentList arginstans, ProtocolNameNode<K> proto)
+	protected Do(RoleArgList roleinstans, ArgList arginstans, ProtocolNameNode<K> proto)
 	{
 		//this.scope = scope;
 		this.roles = roleinstans;
@@ -28,14 +28,14 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	}
 
 	//protected abstract Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);//, SimpleInteractionNodeContext sicontext, Env env);
-	protected abstract Do<K> reconstruct(RoleArgumentList roleinstans, ArgumentList arginstans, ProtocolNameNode<K> proto);//, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract Do<K> reconstruct(RoleArgList roleinstans, ArgList arginstans, ProtocolNameNode<K> proto);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
 	public Do<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		//ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
-		RoleArgumentList ril = (RoleArgumentList) visitChild(this.roles, nv);
-		ArgumentList al = (ArgumentList) visitChild(this.args, nv);
+		RoleArgList ril = (RoleArgList) visitChild(this.roles, nv);
+		ArgList al = (ArgList) visitChild(this.args, nv);
 		ProtocolNameNode<K> proto = visitChildWithClassCheck(this, this.proto, nv);
 		//return reconstruct(scope, ril, al, proto);//, getContext(), getEnv());
 		return reconstruct(ril, al, proto);//, getContext(), getEnv());

@@ -15,7 +15,7 @@ public class ScopedSubprotocolSignature extends SubprotocolSignature
 	//public SimpleName scope;
 	public SubprotocolSignature sig;  // Message signature arguments are not scoped
 
-	public ScopedSubprotocolSignature(Scope scope, ProtocolName fmn, List<Role> roles, List<Argument<? extends Kind>> args)
+	public ScopedSubprotocolSignature(Scope scope, ProtocolName fmn, List<Role> roles, List<Arg<? extends Kind>> args)
 	{
 		super(fmn, roles, args);
 		//super(fmn, null, roles, args);

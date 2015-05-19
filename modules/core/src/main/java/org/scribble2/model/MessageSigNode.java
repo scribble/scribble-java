@@ -33,7 +33,7 @@ public class MessageSigNode extends ModelNodeBase implements MessageNode
 	}
 
 	@Override
-	public boolean isParameterNode()
+	public boolean isParamNode()
 	{
 		return false;
 	}
@@ -66,7 +66,7 @@ public class MessageSigNode extends ModelNodeBase implements MessageNode
 	// FIXME: make a direct scoped version (taking scope as argument)
 	@Override
 	//public MessageSignature toArgument(Scope scope)
-	public MessageSig toArgument()
+	public MessageSig toArg()
 	{
 		/*List<PayloadType<? extends Kind>> types = this.payload.payloadelems.stream().map((pe) -> pe.name.toPayloadTypeOrParameter()).collect(Collectors.toList());
 		return new MessageSignature(this.op.toName(), payload);*/
@@ -78,7 +78,7 @@ public class MessageSigNode extends ModelNodeBase implements MessageNode
 	//public MessageSignature toMessage(Scope scope)
 	public MessageSig toMessage()
 	{
-		return toArgument();
+		return toArg();
 	}
 
 	/*@Override

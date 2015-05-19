@@ -2,14 +2,14 @@ package org.scribble2.model.visit;
 
 import java.util.Map;
 
-import org.scribble2.model.ArgumentNode;
+import org.scribble2.model.ArgNode;
 import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.simple.ParamNode;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.Role;
@@ -19,9 +19,9 @@ public class Substitutor extends ModelVisitor
 {
 	private final Map<Role, RoleNode> rolemap;
 	//private final Map<Argument, ArgumentNode> argmap;
-	private final Map<Argument<? extends Kind>, ArgumentNode> argmap;
+	private final Map<Arg<? extends Kind>, ArgNode> argmap;
 
-	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Argument<? extends Kind>, ArgumentNode> argmap)
+	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Arg<? extends Kind>, ArgNode> argmap)
 	{
 		super(job);
 		this.rolemap = rolemap;
@@ -49,14 +49,14 @@ public class Substitutor extends ModelVisitor
 	}*/
 
 	//public ArgumentNode getArgumentSubstitution(Argument arg)
-	public <K extends Kind> ArgumentNode getArgumentSubstitution(Argument<K> arg)
+	public <K extends Kind> ArgNode getArgumentSubstitution(Arg<K> arg)
 	{
-		ArgumentNode an = (ArgumentNode) this.argmap.get(arg);
+		ArgNode an = (ArgNode) this.argmap.get(arg);
 		if (an.isMessageSigNode())
 		{
 			MessageSigNode msn = (MessageSigNode) an;
 			//return new MessageSigNode(msn.op, msn.payload);  // FIXME: use factory
-			return (ArgumentNode) ModelFactoryImpl.FACTORY.MessageSignatureNode(msn.op, msn.payload);
+			return (ArgNode) ModelFactoryImpl.FACTORY.MessageSignatureNode(msn.op, msn.payload);
 		}
 		else if (an.isMessageSigNameNode())
 		{
@@ -68,7 +68,7 @@ public class Substitutor extends ModelVisitor
 			PayloadTypeNameNodes ptn = (PayloadTypeNameNodes) an;
 			return new PayloadTypeNameNodes(ptn.getElements());
 		}*/
-		else if (an.isParameterNode())
+		else if (an.isParamNode())
 		{
 			//return Substitutor.copyParameterNode((ParameterNode<K>) an);
 			ParamNode<K> pn = (ParamNode<K>) an;

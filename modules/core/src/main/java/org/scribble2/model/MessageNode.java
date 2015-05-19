@@ -5,7 +5,7 @@ import org.scribble2.sesstype.Message;
 
 // A sig kind node: MessageSignatureNode or ParameterNode
 // MessageSignatureOrParameterNode (sig counterpart to PayloadTypeOrParameterNode)
-public interface MessageNode extends ArgumentNode
+public interface MessageNode extends ArgNode
 {
 	// OperatorOrParameter
 	//Operator getOperator();  // If a parameter, then the parameter name

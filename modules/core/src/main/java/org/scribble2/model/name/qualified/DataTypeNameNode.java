@@ -1,7 +1,7 @@
 package org.scribble2.model.name.qualified;
 
 import org.scribble2.model.name.PayloadElementNameNode;
-import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.name.DataType;
 import org.scribble2.sesstype.name.ModuleName;
@@ -78,14 +78,14 @@ public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements Pa
 	}
 
 	@Override
-	public boolean isParameterNode()
+	public boolean isParamNode()
 	{
 		return false;
 	}
 
 	@Override
 	//public Argument<DataTypeKind> toArgument(Scope scope)  // FIXME: shouldn't be scoped
-	public Argument<DataTypeKind> toArgument()  // FIXME: shouldn't be scoped
+	public Arg<DataTypeKind> toArg()  // FIXME: shouldn't be scoped
 	{
 		//return toName();
 		throw new RuntimeException("TODO: " + this);

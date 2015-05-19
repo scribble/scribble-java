@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.Role;
 
-public class RoleArgumentList extends DoArgumentList<RoleArgument>
+public class RoleArgList extends DoArgList<RoleArgument>
 {
 	//public final List<RoleInstantiation> ris;
 
-	public RoleArgumentList(List<RoleArgument> instans)
+	public RoleArgList(List<RoleArgument> instans)
 	{
 		super(instans);
 		
@@ -18,26 +18,26 @@ public class RoleArgumentList extends DoArgumentList<RoleArgument>
 	}
 
 	@Override
-	protected RoleArgumentList copy()
+	protected RoleArgList copy()
 	{
-		return new RoleArgumentList(this.instans);
+		return new RoleArgList(this.args);
 	}
 
 	@Override
-	protected RoleArgumentList reconstruct(List<RoleArgument> instans)
+	protected RoleArgList reconstruct(List<RoleArgument> instans)
 	{
 		ModelDel del = del();
-		RoleArgumentList rl = new RoleArgumentList(instans);
-		rl = (RoleArgumentList) rl.del(del);
+		RoleArgList rl = new RoleArgList(instans);
+		rl = (RoleArgList) rl.del(del);
 		return rl;
 	}
 
 	// FIXME: move to delegate?
 	@Override
-	public RoleArgumentList project(Role self)
+	public RoleArgList project(Role self)
 	{
 		List<RoleArgument> instans =
-				this.instans.stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
+				this.args.stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
 		return ModelFactoryImpl.FACTORY.RoleInstantiationList(instans);
 	}
 
@@ -82,14 +82,14 @@ public class RoleArgumentList extends DoArgumentList<RoleArgument>
 	// The role arguments
 	public List<Role> getRoles()
 	{
-		return this.instans.stream().map((ri) -> ri.arg.toName()).collect(Collectors.toList());
+		return this.args.stream().map((ri) -> ri.val.toName()).collect(Collectors.toList());
 	}
 
 	@Override
 	public String toString()
 	{
-		String s = "(" + this.instans.get(0);
-		for (RoleArgument ri : this.instans.subList(1, this.instans.size()))
+		String s = "(" + this.args.get(0);
+		for (RoleArgument ri : this.args.subList(1, this.args.size()))
 		{
 			s += ", " + ri;
 		}

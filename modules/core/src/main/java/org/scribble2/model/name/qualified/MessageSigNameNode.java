@@ -86,7 +86,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 	}
 
 	@Override
-	public boolean isParameterNode()
+	public boolean isParamNode()
 	{
 		return false;
 	}
@@ -102,7 +102,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 
 	@Override
 	//public Argument<? extends Kind> toArgument(Scope scope)
-	public MessageSigName toArgument()
+	public MessageSigName toArg()
 	{
 		//return toMessage(scope);
 		return toMessage();

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.ArgumentNode;
+import org.scribble2.model.ArgNode;
 import org.scribble2.model.Do;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
@@ -17,7 +17,7 @@ import org.scribble2.model.ScopedNode;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModuleDel;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.SubprotocolSignature;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.ProtocolKind;
@@ -37,7 +37,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	
 	// name in the current protocoldecl scope -> the original name node in the root protocol decl
 	private Stack<Map<Role, RoleNode>> rolemaps = new Stack<>();
-	private Stack<Map<Argument<? extends Kind>, ArgumentNode>> argmaps = new Stack<>();
+	private Stack<Map<Arg<? extends Kind>, ArgNode>> argmaps = new Stack<>();
 	
 	private Scope scope = null;
 
@@ -61,7 +61,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 		Map<Role, RoleNode> rolemap = pd.header.roledecls.getRoleDecls().stream().collect(Collectors.toMap((r) -> r.getDeclName(), (r) -> (RoleNode) r.name));
 		//Map<Argument, ArgumentNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> (Argument) p.toName(), (p) -> (ArgumentNode) p.name));
-		Map<Argument<? extends Kind>, ArgumentNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> (Argument<? extends Kind>) p.getDeclName(), (p) -> (ArgumentNode) p.name));
+		Map<Arg<? extends Kind>, ArgNode> argmap = pd.header.paramdecls.decls.stream().collect(Collectors.toMap((p) -> (Arg<? extends Kind>) p.getDeclName(), (p) -> (ArgNode) p.name));
 		this.rolemaps.push(rolemap);
 		this.argmaps.push(argmap);
 
@@ -205,20 +205,20 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		ModuleContext mcontext = getModuleContext();
 		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolName(doo.proto.toName());
 		List<Role> roleargs = doo.roles.getRoles();
-		List<Argument<? extends Kind>> argargs = doo.args.getArguments(getScope());
+		List<Arg<? extends Kind>> argargs = doo.args.getArguments(getScope());
 		pushSubprotocolSignature(fullname, roleargs, argargs);
 		//pushSubprotocolSignature(fullname, roleargs, argargs);*/
 		pushNameMaps(fullname, doo, roleargs, argargs);
 	}
 	
-	private void pushSubprotocolSignature(ProtocolName<? extends ProtocolKind> fullname, List<Role> roleargs, List<Argument<? extends Kind>> argargs)
+	private void pushSubprotocolSignature(ProtocolName<? extends ProtocolKind> fullname, List<Role> roleargs, List<Arg<? extends Kind>> argargs)
 	{
 		Map<Role, RoleNode> rolemap = rolemaps.peek();
-		Map<Argument<? extends Kind>, ArgumentNode> argmap = argmaps.peek();
+		Map<Arg<? extends Kind>, ArgNode> argmap = argmaps.peek();
 		/*List<Role> roles = roleargs.stream().map((r) -> rolemap.get(r).toName()).collect(Collectors.toList());
 		List<Argument> args = argargs.stream().map((a) -> argmap.get(a).toArgument()).collect(Collectors.toList());*/
 		List<Role> roles = new LinkedList<>(roleargs);
-		List<Argument<? extends Kind>> args = new LinkedList<>(argargs);
+		List<Arg<? extends Kind>> args = new LinkedList<>(argargs);
 		//ScopedSubprotocolSignature ssubsig = new ScopedSubprotocolSignature(getScope(), fullname, roles, args);
 		//SubprotocolSignature ssubsig = new SubprotocolSignature(fullname, getScope(), roles, args);
 		SubprotocolSignature ssubsig = new SubprotocolSignature(fullname, roles, args);
@@ -227,7 +227,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	}
 	
 	// FIXME: doo param hack
-	private void pushNameMaps(ProtocolName fullname, Do doo, List<Role> roleargs, List<Argument<? extends Kind>> argargs)
+	private void pushNameMaps(ProtocolName fullname, Do doo, List<Role> roleargs, List<Arg<? extends Kind>> argargs)
 	{
 		//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>
 		ProtocolDecl<? extends ProtocolKind>
@@ -237,9 +237,9 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		List<Name<Kind>> argparams = pd.header.paramdecls.getParameters();
 		
 		Map<Role, RoleNode> rolemap = rolemaps.peek();
-		Map<Argument<? extends Kind>, ArgumentNode> argmap = argmaps.peek();
+		Map<Arg<? extends Kind>, ArgNode> argmap = argmaps.peek();
 		Iterator<Role> roleargiter = roleargs.iterator();
-		Iterator<Argument<? extends Kind>> argargiter = argargs.iterator();
+		Iterator<Arg<? extends Kind>> argargiter = argargs.iterator();
 		/*Map<Role, RoleNode> newrolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> rolemap.get(roleargiter.next())));
 		Map<Argument, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> a, (a) -> argmap.get(argargiter.next())));*/
 		Map<Role, RoleNode> newrolemap = roleparams.stream().collect(Collectors.toMap((r) -> r, (r) -> this.rolemaps.get(0).get(roleargiter.next())));
@@ -247,12 +247,12 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		//..HERE: debug; and makeArgumentNode take kind parameter
 		
 		//Map<Argument<? extends Kind>, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> (Argument<? extends Kind>) a, (a) -> this.argmaps.get(0).get(argargiter.next())));
-		Map<Argument<? extends Kind>, ArgumentNode> newargmap = new HashMap<>();
-		Iterator<ArgumentNode> foo = doo.args.getArgumentNodes().iterator();
+		Map<Arg<? extends Kind>, ArgNode> newargmap = new HashMap<>();
+		Iterator<ArgNode> foo = doo.args.getArgumentNodes().iterator();
 		for (Name<Kind> p : argparams)
 		{
-			Argument<? extends Kind> tmp = argargiter.next();
-			ArgumentNode a;
+			Arg<? extends Kind> tmp = argargiter.next();
+			ArgNode a;
 			if (this.argmaps.get(0).containsKey(tmp))
 			{
 				a = this.argmaps.get(0).get(tmp);
@@ -262,7 +262,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 			{
 				a = foo.next();
 			}
-			newargmap.put((Argument<? extends Kind>) p, a);
+			newargmap.put((Arg<? extends Kind>) p, a);
 		}
 		
 		this.rolemaps.push(newrolemap);

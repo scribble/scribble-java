@@ -1,10 +1,10 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.model.ArgumentNode;
+import org.scribble2.model.ArgNode;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.name.PayloadElementNameNode;
 import org.scribble2.model.visit.Substitutor;
-import org.scribble2.sesstype.Argument;
+import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.kind.Kind;
@@ -65,10 +65,10 @@ public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
 	}*/
 
 	@Override
-	public ArgumentNode substituteNames(Substitutor subs)
+	public ArgNode substituteNames(Substitutor subs)
 	{
-		Argument<K> arg = toArgument();
-		ArgumentNode an;
+		Arg<K> arg = toArg();
+		ArgNode an;
 		if (this.kind.equals(SigKind.KIND))
 		{
 			an = subs.getArgumentSubstitution(arg);  // FIXME: reconstruct/clone?
@@ -81,7 +81,7 @@ public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
 		{
 			throw new RuntimeException("TODO: " + this);
 		}
-		an = (ArgumentNode) an.del(del());
+		an = (ArgNode) an.del(del());
 		return an;
 	}
 	
@@ -124,7 +124,7 @@ public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
 	}
 
 	@Override
-	public boolean isParameterNode()
+	public boolean isParamNode()
 	{
 		return true;
 	}
@@ -148,7 +148,7 @@ public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
 	@Override
 	//public Parameter toArgument()
 	//public Name<K> toArgument()
-	public Argument<K> toArgument()
+	public Arg<K> toArg()
 	{
 		//return toName();
 		if (this.kind.equals(DataTypeKind.KIND))
@@ -157,7 +157,7 @@ public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
 		}
 		else if (this.kind.equals(SigKind.KIND))
 		{
-			return (Argument<K>) toMessage();
+			return (Arg<K>) toMessage();
 		}
 		throw new RuntimeException("Shouldn't get here: " + this);
 	}

@@ -13,10 +13,10 @@ public class SubprotocolSignature
 	public ProtocolName fmn;
 	//public Scope scope;
 	public List<Role> roles;
-	public List<Argument<? extends Kind>> args;
+	public List<Arg<? extends Kind>> args;
 
 	//public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role> roles, List<Argument<? extends Kind>> args)
-	public SubprotocolSignature(ProtocolName fmn, List<Role> roles, List<Argument<? extends Kind>> args)
+	public SubprotocolSignature(ProtocolName fmn, List<Role> roles, List<Arg<? extends Kind>> args)
 	{
 		this.fmn = fmn;
 		//this.scope = scope;

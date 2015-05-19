@@ -1,9 +1,9 @@
 package org.scribble2.model.del.global;
 
-import org.scribble2.model.ArgumentList;
+import org.scribble2.model.ArgList;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.RoleArgumentList;
+import org.scribble2.model.RoleArgList;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.global.GDo;
 import org.scribble2.model.local.LDo;
@@ -108,8 +108,8 @@ public class GDoDel extends GSimpleInteractionNodeDel
 			projection = ModelFactoryImpl.FACTORY.LocalDo(null, scope, roleinstans, arginstans, target);*/
 			/*RoleInstantiationList roleinstans = (RoleInstantiationList) ((ProjectionEnv) gd.roleinstans.del().env()).getProjection();
 			ArgumentInstantiationList arginstans = (ArgumentInstantiationList) ((ProjectionEnv) gd.arginstans.del().env()).getProjection();*/
-			RoleArgumentList roleinstans = gd.roles.project(self);
-			ArgumentList arginstans = gd.args.project(self);
+			RoleArgList roleinstans = gd.roles.project(self);
+			ArgList arginstans = gd.args.project(self);
 			LProtocolNameNode target = Projector.makeProjectedProtocolNameNode(gd.getTargetFullProtocolName(proj.getModuleContext()), popped);
 			projection = ModelFactoryImpl.FACTORY.LocalDo(roleinstans, arginstans, target);
 			

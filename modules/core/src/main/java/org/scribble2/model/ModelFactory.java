@@ -93,12 +93,12 @@ public interface ModelFactory
 	GContinue GlobalContinue(RecVarNode recvar);
 	//GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	//GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	GDo GlobalDo(RoleArgumentList roleinstans, ArgumentList arginstans, GProtocolNameNode proto);
+	GDo GlobalDo(RoleArgList roleinstans, ArgList arginstans, GProtocolNameNode proto);
 	
-	RoleArgumentList RoleInstantiationList(List<RoleArgument> ris);
+	RoleArgList RoleInstantiationList(List<RoleArgument> ris);
 	RoleArgument RoleInstantiation(RoleNode role);
-	ArgumentList ArgumentInstantiationList(List<NonRoleArgument> ais);
-	NonRoleArgument ArgumentInstantiation(ArgumentNode arg);
+	ArgList ArgumentInstantiationList(List<NonRoleArgument> ais);
+	NonRoleArgument ArgumentInstantiation(ArgNode arg);
 
 	// FIXME: instead of enums, take class as generic parameter
 	//SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);
@@ -128,5 +128,5 @@ public interface ModelFactory
 	LContinue LocalContinue(RecVarNode recvar);
 	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	//LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	LDo LocalDo(RoleArgumentList roleinstans, ArgumentList arginstans, LProtocolNameNode proto);
+	LDo LocalDo(RoleArgList roleinstans, ArgList arginstans, LProtocolNameNode proto);
 }
