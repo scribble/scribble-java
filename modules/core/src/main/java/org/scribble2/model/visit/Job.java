@@ -13,17 +13,16 @@ import org.scribble2.util.ScribbleException;
 
 	// visitchildren shouldn't use check class on visited nodes so strictly, e.g. name disambiguation changes from ambiguousnodes
 	// get rid of argument instantiation
-	// - generalise dependency building to support local protocols
 
 	//.. factor out main module resource loading in front end from main context -- front end should take main argument, check existence, and pass MainContext the abstract resource identifier to load the main
 	//.. ^^ alternatively keep ResourceLocator specific to file systems -- "DirectoryResourceLocator" just uses the import paths
 	//.. check use of generics
-	//.. refactor simple/compound names to just names; and simple name nodes to be subtypes of compound
 	//.. consider refactoring all uses of AbstractProtocolDecl to be able to get global/local directly (would need global/local as a generic parameter) -- e.g. Do.getTargetProtocolDecl
 	//.. fix parameterdecllist generics (not fixed to one kind)
 
 	//.. do call type checking as well as basic name binding
-	//.. make headerparamdecl into paramdecl directly
+	//.. guarded recursive subprotocols -- guarded recursion vars not needed? handled by projection
+	//.. make headerparamdecl into paramdecl directly, i.e. and then role is a specialised param kind
 	//.. maybe make an UnkindedName superclass of Name, use for e.g. parameters or ambiguous
 
 		//.. sepatate protocol names into global/local -- use generic parameter for name kinds rather than subclasses
@@ -44,6 +43,8 @@ import org.scribble2.util.ScribbleException;
 //... check delegates for local nodes; check reachability visiting for (local) interaction sequence (and delegate)
 
 // Done
+// - refactor simple/compound names to just names; and simple name nodes to be subtypes of compound -- simple/compound distinction only relevant to name nodes (i.e. syntax); type names are all uniform (compound)
+// - generalise dependency building to support local protocols -- though only global dependencies used so far, for projection
 // - make module/protocol delegate state (module context, protocol dependencies) setting uniform -- related to (non-)immutablity of delegates (where to store "context" state)
 // - remove job/module contexts from Envs (refer from visitor -- can be updated during visitor pass and reassigned to root module on leave)
 // - enter doesn't need to return visitor, not using visitor immutability? (or visitor replacement flexibility)
