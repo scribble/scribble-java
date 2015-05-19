@@ -27,8 +27,9 @@ public class CommandLine implements Runnable
 	public static final String VERBOSE_FLAG = "-V";
 	public static final String PATH_FLAG = "-path";
 	public static final String PROJECT_FLAG = "-project";
+	public static final String FSM_FLAG = "-fsm";
 	
-	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE }
+	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM }
 	
 	private final Map<Arg, String[]> args;
 	
@@ -60,6 +61,10 @@ public class CommandLine implements Runnable
 			{
 				outputProjection(jc);
 			}
+			if (this.args.containsKey(Arg.FSM))
+			{
+				buildFsm(job);
+			}
 		}
 		catch (ScribbleException e)
 		{
@@ -78,6 +83,23 @@ public class CommandLine implements Runnable
 			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));
 		}
 		System.out.println(projs.get(proto));
+	}
+
+	private void buildFsm(Job job) throws ScribbleException
+	{
+		JobContext jc = job.getContext();
+		// Factor out with outputProjection
+		Map<LProtocolName, Module> projs = jc.getProjections();
+		Role role = new Role(this.args.get(Arg.FSM)[1]);
+		//ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, this.args.get(Arg.PROJECT)[0]), role).toName();  // FIXME: factor out name projection from name node construction
+		LProtocolName proto = Projector.makeProjectedProtocolNameNode(new GProtocolName(jc.main, new GProtocolName(this.args.get(Arg.FSM)[0])), role).toName();  // FIXME: factor out name projection from name node construction
+		if (!projs.containsKey(proto))
+		{
+			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.FSM)));
+		}
+		/*LProtocolDecl lpd = (LProtocolDecl) projs.get(proto).protos.get(0);
+		job.buildFsm(lpd);*/
+		job.buildFsm(projs.get(proto));  // Need Module for context
 	}
 	
 	private MainContext newMainContext()
@@ -283,6 +305,7 @@ class CommandLineArgumentParser
 		this.FLAGS.put(CommandLine.VERBOSE_FLAG, CommandLine.Arg.VERBOSE);
 		this.FLAGS.put(CommandLine.PATH_FLAG, CommandLine.Arg.PATH);
 		this.FLAGS.put(CommandLine.PROJECT_FLAG, CommandLine.Arg.PROJECT);
+		this.FLAGS.put(CommandLine.FSM_FLAG, CommandLine.Arg.FSM);
 	}
 	
 	private void parseArgs()
@@ -324,6 +347,10 @@ class CommandLineArgumentParser
 			case CommandLine.PROJECT_FLAG:
 			{
 				return parseProject(i);
+			}
+			case CommandLine.FSM_FLAG:
+			{
+				return parseFsm(i);
 			}
 			default:
 			{
@@ -370,6 +397,18 @@ class CommandLineArgumentParser
 			throw new RuntimeException("Protocol name '"+ proto +"' is not valid\r\n");
 		}*/
 		this.parsed.put(this.FLAGS.get(CommandLine.PROJECT_FLAG), new String[] { proto, role } );
+		return i;
+	}
+	
+	private int parseFsm(int i)  // Almost same as parseProject
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new RuntimeException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		this.parsed.put(this.FLAGS.get(CommandLine.FSM_FLAG), new String[] { proto, role } );
 		return i;
 	}
 

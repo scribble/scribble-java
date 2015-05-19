@@ -3,19 +3,19 @@ package org.scribble2.sesstype;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.MessageId;
-import org.scribble2.sesstype.name.Operator;
+import org.scribble2.sesstype.name.Op;
 
 // FIXME: rename to UnscopedMessageSignature -- no: scope now here
 public class MessageSig implements Message
 {
 	//public final Scope scope;  // Maybe scope should be built into the operator
-	public final Operator op;
+	public final Op op;
 	//public final List<PayloadType> payload;
 	public final Payload payload;
 	
 	//public MessageSignature(Scope scope, Operator op, List<PayloadType> payload)
 	//public MessageSignature(Scope scope, Operator op, Payload payload)
-	public MessageSig(Operator op, Payload payload)
+	public MessageSig(Op op, Payload payload)
 	{
 		//this.scope = scope;
 		this.op = op;

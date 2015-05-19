@@ -1,9 +1,9 @@
 package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.visit.BoundNameChecker;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.EnvVisitor;
+import org.scribble2.model.visit.FsmConverter;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.ReachabilityChecker;
@@ -95,6 +95,18 @@ public abstract class ModelDelBase implements ModelDel
 	
 	@Override
 	public ModelNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	@Override
+	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter checker) //throws ScribbleException
+	{
+		
+	}
+
+	@Override
+	public ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter checker, ModelNode visited) //throws ScribbleException
 	{
 		return visited;
 	}

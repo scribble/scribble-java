@@ -17,7 +17,7 @@ public class ProjectionEnv extends Env
 		//this.projection = projection;
 	}
 
-	// FIXME: make into a defensive setter
+	// FIXME: make into a defensive setter (or just a setter?)
 	//public ProjectionEnv(JobContext jcontext, ModuleDelegate mcontext, ModelNode projection)
 	public ProjectionEnv(ModelNode projection)
 	{

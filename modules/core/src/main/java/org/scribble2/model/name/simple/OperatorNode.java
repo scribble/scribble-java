@@ -1,7 +1,7 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.sesstype.kind.OperatorKind;
-import org.scribble2.sesstype.name.Operator;
+import org.scribble2.sesstype.name.Op;
 
 
 
@@ -33,13 +33,13 @@ public class OperatorNode extends SimpleNameNode<OperatorKind>
 	}
 	
 	@Override
-	public Operator toName()
+	public Op toName()
 	{
 		String id = getIdentifier();
 		if (id.equals(EMPTY_OPERATOR_IDENTIFIER))
 		{
-			return Operator.EMPTY_OPERATOR;
+			return Op.EMPTY_OPERATOR;
 		}
-		return new Operator(id);
+		return new Op(id);
 	}
 }

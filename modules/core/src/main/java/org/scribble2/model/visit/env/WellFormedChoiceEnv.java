@@ -16,7 +16,7 @@ import org.scribble2.sesstype.MessageSig;
 import org.scribble2.sesstype.Payload;
 import org.scribble2.sesstype.SubprotocolSignature;
 import org.scribble2.sesstype.name.MessageId;
-import org.scribble2.sesstype.name.Operator;
+import org.scribble2.sesstype.name.Op;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.Scope;
 import org.scribble2.util.MessageIdMap;
@@ -25,8 +25,8 @@ import org.scribble2.util.ScribbleException;
 public class WellFormedChoiceEnv extends Env
 {
 	public static final Role DUMMY_ROLE = new Role("__ROLE");
-	public static final Operator ROOT_OPERATOR = new Operator("__ROOT");
-	public static final Operator SUBJECT_OPERATOR = new Operator("__SUBJECT");
+	public static final Op ROOT_OPERATOR = new Op("__ROOT");
+	public static final Op SUBJECT_OPERATOR = new Op("__SUBJECT");
 
 	/*public static final ScopedMessageSignature ROOT_MESSAGESIGNATURE = new ScopedMessageSignature(Scope.EMPTY_SCOPE, ROOT_OPERATOR, Collections.emptyList());
 	public static final ScopedMessageSignature SUBJECT_MESSAGESIGNATURE = new ScopedMessageSignature(Scope.EMPTY_SCOPE, SUBJECT_OPERATOR, Collections.emptyList());*/

@@ -9,6 +9,7 @@ import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.util.ScribbleException;
 
+	//.. both projector and graphbuilder are env visitors but not subprotocol visitors now, so swap visitor hierarchy?
 	// dels should be kinded as well?
 
 	// visitchildren shouldn't use check class on visited nodes so strictly, e.g. name disambiguation changes from ambiguousnodes
@@ -106,6 +107,17 @@ public class Job
 
 		//System.out.println("\n--- Reachability check --- ");
 		runNodeVisitorPass(ReachabilityChecker.class);
+	}
+	
+	//public void buildFsm(LProtocolDecl lpd) throws ScribbleException
+	public void buildFsm(Module mod) throws ScribbleException  // Need Module for context
+	{
+		debugPrintln("\n--- Convert to FSMs --- ");
+		FsmConverter conv = new FsmConverter(this);
+		
+		System.out.println("a: " + mod);
+		
+		mod.accept(conv);
 	}
 	
 	// To be done as a barrier pass after projection done on all Modules
