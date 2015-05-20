@@ -27,13 +27,13 @@ public class ProtocolState
 		this.edges = new HashMap<>();
 	}
 	
-	public Set<RecVar> getLabels()
+	public Set<RecVar> getLabels()  // protected -- use an isLabelled instead
 	{
-		//return new HashSet<>(this.labs);
-		return this.labs;
+		return new HashSet<>(this.labs);
+		//return this.labs;
 	}
 	
-	public Map<MessageId, ProtocolState> getEdges()
+	protected Map<MessageId, ProtocolState> getEdges()
 	{
 		return this.edges;
 	}
@@ -99,7 +99,7 @@ public class ProtocolState
 		this.edges.put(op, s);
 	}
 	
-	public boolean isValid(MessageId op)
+	public boolean isAcceptable(MessageId op)
 	{
 		return this.edges.containsKey(op);
 	}
@@ -211,5 +211,4 @@ public class ProtocolState
 	{
 		return "label=\"" + msg + "\"";
 	}
-	
 }

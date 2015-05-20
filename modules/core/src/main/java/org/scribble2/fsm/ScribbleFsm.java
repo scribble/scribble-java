@@ -25,9 +25,9 @@ public class ScribbleFsm
 	
 	public ScribbleFsm stitch(ScribbleFsm f)
 	{
-		if (this.term == null)
+		if (this.term == null || this.init.equals(this.term))
 		{
-			throw new RuntimeException("Cannot stitch onto FSM with no terminal: " + this);
+			throw new RuntimeException("Cannot stitch onto FSM: " + this);
 		}
 		/*ProtocolState init = this.init.copy();
 		ProtocolState copy = f.init.copy();
@@ -48,7 +48,7 @@ public class ScribbleFsm
 		ProtocolState init = b.makeInit(this.init.getLabels());
 		ProtocolState swap = b.newState(f.init.getLabels());
 		stitch(b, new HashSet<>(), this.init, init, this.term, swap);
-		stitch(b, new HashSet<>(), f.init, swap, f.term, f.term);  // Essentially copy
+		stitch(b, new HashSet<>(), f.init, swap, f.term, f.term);  // Essentially copy (could factor out as aux) -- unnecessary as PrototolStates are immutable, but would need to change FsmBuilder validation to record all newly reachable states
 		return b.build();
 	}
 	
@@ -79,6 +79,7 @@ public class ScribbleFsm
 	@Override
 	public String toString()
 	{
+		//return this.init.toString();
 		return this.init.toDot();
 	}
 	

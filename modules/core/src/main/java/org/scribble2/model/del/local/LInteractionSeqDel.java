@@ -53,11 +53,19 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	{
 		LInteractionSeq lis = (LInteractionSeq) visited;
 		FsmBuilder b = new FsmBuilder();
-		b.makeInit(Collections.emptySet());
-		ScribbleFsm f = b.build();
-		for (InteractionNode<Local> li : lis.actions)
+		ScribbleFsm f;
+		if (lis.isEmpty())
 		{
-			f = f.stitch(((FsmBuildingEnv) li.del().env()).getFsm());
+			b.makeInit(Collections.emptySet());
+			f = b.build();
+		}
+		else
+		{
+			f = ((FsmBuildingEnv) lis.actions.get(0).del().env()).getFsm();
+			for (InteractionNode<Local> li : lis.actions.subList(1, lis.actions.size()))
+			{
+				f = f.stitch(((FsmBuildingEnv) li.del().env()).getFsm());
+			}
 		}
 		FsmBuildingEnv env = conv.popEnv();
 		conv.pushEnv(env.setFsm(f));
