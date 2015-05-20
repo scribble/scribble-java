@@ -189,10 +189,10 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		//RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
 		List<ProtocolBlock<Local>> blocks = 
 				gc.blocks.stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());	
-		RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getSubject(blocks.get(0)).toString());
 		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
 		if (!blocks.get(0).isEmpty())  // WF allows this
 		{
+			RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getSubject(blocks.get(0)).toString());
 			projection = ModelFactoryImpl.FACTORY.LocalChoice(subj, blocks);
 		}
 		ProjectionEnv env = proj.popEnv();

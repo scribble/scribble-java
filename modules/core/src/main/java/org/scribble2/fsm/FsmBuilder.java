@@ -1,6 +1,7 @@
 package org.scribble2.fsm;
 
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.scribble2.sesstype.name.RecVar;
@@ -18,12 +19,21 @@ public class FsmBuilder
 
 	public ProtocolState makeInit(Set<RecVar> labs)
 	{
+		setInit(newState(labs));
+		return this.init;
+	}
+
+	protected void setInit(ProtocolState s)
+	{
 		if (this.init != null)
 		{
 			throw new RuntimeException("Initial state already set.");
 		}
-		this.init = newState(labs);
-		return this.init;
+		if (!this.states.contains(s))
+		{
+			this.states.add(s);
+		}
+		this.init = s;
 	}
 	
 	public ProtocolState newState(Set<RecVar> labs)
@@ -32,7 +42,37 @@ public class FsmBuilder
 		this.states.add(s);
 		return s;
 	}
+
+	/*public ProtocolState importState(ProtocolState s)
+	{
+		ProtocolState copy = newState(s.getLabels());
+		importState(new HashSet<>(), s, copy);
+		return copy;
+	}
+
+	private void importState(Set<ProtocolState> seen, ProtocolState curr, ProtocolState copy)
+	{
+		if (seen.contains(curr))
+		{
+			return;
+		}
+		seen.add(curr);
+		//ProtocolState copy = newState(curr.getLabels());
+		for (Entry<IOAction, ProtocolState> e : curr.getEdges().entrySet())
+		{
+			IOAction op = e.getKey();
+			ProtocolState next = e.getValue();
+			ProtocolState tmp = newState(next.getLabels());
+			addEdge(copy, op, tmp);
+			importState(seen, next, tmp);
+		}
+	}*/
 	
+	protected void addState(ProtocolState s)
+	{
+		this.states.add(s);
+	}
+
 	public void addEdge(ProtocolState s, IOAction act, ProtocolState succ)
 	{
 		/*Map<Op, ProtocolState> tmp = this.edges.get(s);
@@ -42,14 +82,15 @@ public class FsmBuilder
 			this.edges.put(s, tmp);
 		}
 		tmp.put(op, succ);*/
-		if (!this.states.contains(s))
+		if (!this.states.contains(s) || !this.states.contains(succ))
 		{
 			throw new RuntimeException("Unknown state: " + s);
+			//this.states.add(s);
 		}
-		if (!this.states.contains(succ))
+		/*if (!this.states.contains(succ))
 		{
 			this.states.add(succ);
-		}
+		}*/
 		s.addEdge(act, succ);
 	}
 	
@@ -62,7 +103,7 @@ public class FsmBuilder
 		return f;
 	}
 	
-	private ProtocolState validate()
+	private ProtocolState validate()  // Factor out as a ProtocolState method
 	{
 		Set<ProtocolState> terms = this.init.findTerminals();
 		if (terms.size() > 1)
@@ -79,7 +120,8 @@ public class FsmBuilder
 		checkConnectedness(seen, this.init);
 		if (!seen.equals(this.states))
 		{
-			throw new RuntimeException("Graph not connected: " + this.states.removeAll(seen));
+			this.states.removeAll(seen);
+			throw new RuntimeException("Graph not connected: " + this.states);
 		}
 	}
 

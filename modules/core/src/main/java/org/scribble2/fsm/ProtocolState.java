@@ -14,14 +14,14 @@ public class ProtocolState
 {
 	private static int count = 0;
 	
-	public final int mid;
+	public final int id;
 
 	private final Set<RecVar> labs;
 	private final Map<IOAction, ProtocolState> edges;
 	
 	protected ProtocolState(Set<RecVar> labs)
 	{
-		this.mid = ProtocolState.count++;
+		this.id = ProtocolState.count++;
 		this.labs = new HashSet<>(labs);
 		this.edges = new HashMap<>();
 	}
@@ -117,9 +117,9 @@ public class ProtocolState
 	public int hashCode()
 	{
 		int hash = 73;
-		hash = 31 * hash + this.mid;  // Would be enough by itself, but keep consistent with equals
-		hash = 31 * hash + this.labs.hashCode();
-		hash = 31 * hash + this.edges.hashCode();
+		hash = 31 * hash + this.id;  // Would be enough by itself, but keep consistent with equals
+		//hash = 31 * hash + this.labs.hashCode();
+		//hash = 31 * hash + this.edges.hashCode();
 		return hash;
 	}
 
@@ -135,22 +135,22 @@ public class ProtocolState
 			return false;
 		}
 		ProtocolState s = (ProtocolState) o;
-		return this.mid == s.mid && this.labs.equals(s.labs) && this.edges.equals(s.edges);
+		return this.id == s.id;// && this.labs.equals(s.labs) && this.edges.equals(s.edges);
 	}
 	
 	@Override
 	public String toString()
 	{
-		String s = "\"" + this.mid + "\":[";
+		String s = "\"" + this.id + "\":[";
 		if (!this.edges.isEmpty())
 		{
 			Iterator<Entry<IOAction, ProtocolState>> es = this.edges.entrySet().iterator();
 			Entry<IOAction, ProtocolState> first = es.next();
-			s += first.getKey() + "=\"" + first.getValue().mid + "\"";
+			s += first.getKey() + "=\"" + first.getValue().id + "\"";
 			while (es.hasNext())
 			{
 				Entry<IOAction, ProtocolState> e = es.next();
-				s += ", " + e.getKey() + "=\"" + e.getValue().mid + "\"";
+				s += ", " + e.getKey() + "=\"" + e.getValue().id + "\"";
 			}
 		}
 		return s + "]";
@@ -195,7 +195,7 @@ public class ProtocolState
 	
 	protected String getDotNodeId()
 	{
-		return "\"" + this.mid + "\"";
+		return "\"" + this.id + "\"";
 	}
 
 	// Override to change edge drawing from "this" as src

@@ -64,7 +64,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			f = ((FsmBuildingEnv) lis.actions.get(0).del().env()).getFsm();
 			for (InteractionNode<Local> li : lis.actions.subList(1, lis.actions.size()))
 			{
-				f = f.stitch(((FsmBuildingEnv) li.del().env()).getFsm());
+				f = f.fstitch(((FsmBuildingEnv) li.del().env()).getFsm());
 			}
 		}
 		FsmBuildingEnv env = conv.popEnv();

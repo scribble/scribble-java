@@ -21,36 +21,22 @@ public class ScribbleFsm
 		}*/
 	}
 	
-	public ScribbleFsm stitch(ScribbleFsm f)
+	public ScribbleFsm fstitch(ScribbleFsm f)
 	{
 		if (this.term == null || this.init.equals(this.term))
 		{
 			throw new RuntimeException("Cannot stitch onto FSM: " + this);
 		}
-		/*ProtocolState init = this.init.copy();
-		ProtocolState copy = f.init.copy();
-		Set<ProtocolState> preterms = new HashSet<>();
-		findPreTerminals(new HashSet<>(), init, preterms);
-		for (ProtocolState s : preterms)
-		{
-			for (Entry<Op, ProtocolState> e : s.getEdges().entrySet())
-			{
-				if (e.getValue().isTerminal())	
-				{
-					s.edges.put(e.getKey(), copy);
-				}
-			}
-		}
-		return new ScribbleFSM(init, copy.findTerminals().iterator().next());  // FIXME: check single terminal?*/
 		FsmBuilder b = new FsmBuilder(); 
 		ProtocolState init = b.makeInit(this.init.getLabels());
 		ProtocolState swap = b.newState(f.init.getLabels());
-		stitch(b, new HashSet<>(), this.init, init, this.term, swap);
-		stitch(b, new HashSet<>(), f.init, swap, f.term, f.term);  // Essentially copy (could factor out as aux) -- unnecessary as PrototolStates are immutable, but would need to change FsmBuilder validation to record all newly reachable states
+		fstitch(b, new HashSet<>(), this.init, init, this.term, swap);
+		ProtocolState tmp = b.newState(f.term.getLabels());
+		fstitch(b, new HashSet<>(), f.init, swap, f.term, tmp);  // Essentially copy (could factor out as aux) -- unnecessary as PrototolStates are immutable, but would need to change FsmBuilder validation to record all newly reachable states
 		return b.build();
 	}
 	
-	private static void stitch(FsmBuilder b, Set<ProtocolState> seen, ProtocolState curr, ProtocolState copy, ProtocolState term, ProtocolState swap)
+	private static void fstitch(FsmBuilder b, Set<ProtocolState> seen, ProtocolState curr, ProtocolState copy, ProtocolState term, ProtocolState swap)
 	{
 		if (seen.contains(curr))
 		{
@@ -69,10 +55,71 @@ public class ScribbleFsm
 			{
 				ProtocolState tmp = b.newState(next.getLabels());
 				b.addEdge(copy, op, tmp);
-				stitch(b, seen, next, tmp, term, swap);
+				fstitch(b, seen, next, tmp, term, swap);
 			}
 		}
 	}
+	
+	public ScribbleFsm embed(ProtocolState init, ScribbleFsm f, ProtocolState term)
+	{
+		if (f.term == null)
+		{
+			throw new RuntimeException("Cannot embed FSM: " + f);
+		}
+		/*FsmBuilder b = new FsmBuilder();
+		b.setInit(init);
+		b.addState(term);
+		for (Entry<IOAction, ProtocolState> e : f.init.getEdges().entrySet())
+		{
+			//ProtocolState tmp = b.importState(e.getValue());
+			ProtocolState succ = e.getValue();
+			ProtocolState tmp = b.newState(succ.getLabels());
+			b.addEdge(init, e.getKey(), tmp);
+			fstitch(b, new HashSet<>(), succ, tmp, f.term, term);
+		}
+		return b.build();*/
+		for (Entry<IOAction, ProtocolState> e : f.init.getEdges().entrySet())
+		{
+			init.addEdge(e.getKey(), e.getValue());
+		}
+		Set<ProtocolState> preterms = new HashSet<ProtocolState>();
+		findPreTerminals(new HashSet<>(), init, preterms);
+		for (ProtocolState s : preterms)
+		{
+			for (IOAction a : s.getEdges().keySet())
+			{
+				if (s.accept(a).isTerminal())
+				{
+					s.addEdge(a, term);
+				}
+			}
+		}
+		return new ScribbleFsm(init, term);
+	}
+
+	/*public ScribbleFsm bstitch(ScribbleFsm f)
+	{
+		if (this.term == null || this.init.equals(this.term))
+		{
+			throw new RuntimeException("Cannot stitch onto FSM: " + this);
+		}
+		FsmBuilder b = new FsmBuilder(); 
+		ProtocolState init = b.makeInit(this.init.getLabels());
+		ProtocolState tmp = b.newState(this.term.getLabels());
+		fstitch(b, new HashSet<>(), this.init, init, this.term, tmp);  // Essentially copy (could factor out as aux) -- unnecessary as PrototolStates are immutable, but would need to change FsmBuilder validation to record all newly reachable states
+		bstitch(b, this.term, f);
+		return b.build();
+	}
+	
+	private static void bstitch(FsmBuilder b, ProtocolState term, ScribbleFsm f)
+	{
+		for (Entry<IOAction, ProtocolState> e : f.init.getEdges().entrySet())
+		{
+			ProtocolState tmp = b.newState(e.getValue().getLabels());
+			fstitch(b, new HashSet<>(), f.init, tmp, f.term, f.term);  // Essentially copy (could factor out as aux) -- unnecessary as PrototolStates are immutable, but would need to change FsmBuilder validation to record all newly reachable states
+			b.addEdge(term, e.getKey(), tmp);
+		}
+	}*/
 	
 	@Override
 	public String toString()
@@ -81,7 +128,7 @@ public class ScribbleFsm
 		return this.init.toDot();
 	}
 	
-	/*private static void findPreTerminals(Set<ProtocolState> seen, ProtocolState curr, Set<ProtocolState> preterms)
+	private static void findPreTerminals(Set<ProtocolState> seen, ProtocolState curr, Set<ProtocolState> preterms)
 	{
 		if (seen.contains(curr))
 		{
@@ -100,5 +147,5 @@ public class ScribbleFsm
 				findPreTerminals(seen, succ, preterms);
 			}
 		}
-	}*/
+	}
 }
