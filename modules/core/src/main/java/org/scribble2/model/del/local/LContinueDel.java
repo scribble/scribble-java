@@ -23,4 +23,20 @@ public class LContinueDel extends LSimpleInteractionNodeDel
 		checker.pushEnv(checker.popEnv().mergeContext(env));
 		return lc;
 	}
+
+	@Override
+	public LContinue leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)
+	{
+		LRecursion lr = (LRecursion) visited;
+		FsmBuilder b = new FsmBuilder();
+		Set<RecVar> labs = new HashSet<>();
+		labs.add(lr.recvar.toName());
+		b.makeInit(labs);
+		ScribbleFsm fr = b.build();
+		ScribbleFsm fblock = ((FsmBuildingEnv) lr.block.del().env()).getFsm();
+		ScribbleFsm f = fr.stitch(fblock);
+		FsmBuildingEnv env = conv.popEnv();
+		conv.pushEnv(env.setFsm(f));
+		return (LRecursion) super.leaveFsmConversion(parent, child, conv, lr);
+	}
 }

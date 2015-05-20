@@ -3,7 +3,7 @@ package org.scribble2.model.del.local;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble2.fsm.FsmBuilder;
+import org.scribble2.fsm.ProtocolState;
 import org.scribble2.fsm.ScribbleFsm;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.local.LRecursion;
@@ -28,14 +28,22 @@ public class LRecursionDel extends LCompoundInteractionNodeDel
 	}
 	
 	@Override
+	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv)
+	{
+		LRecursion lr = (LRecursion) child;
+		RecVar rv = lr.recvar.toName();
+		Set<RecVar> labs = new HashSet<>();
+		labs.add(rv);
+		conv.addLabelledState(new ProtocolState(labs));
+	}
+
+	@Override
 	public LRecursion leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)
 	{
 		LRecursion lr = (LRecursion) visited;
-		FsmBuilder b = new FsmBuilder();
-		Set<RecVar> labs = new HashSet<>();
-		labs.add(lr.recvar.toName());
-		b.makeInit(labs);
-		ScribbleFsm fr = b.build();
+		RecVar rv = lr.recvar.toName();
+		ProtocolState init = conv.getLabelledState(rv);
+		ScribbleFsm fr = new ScribbleFsm(init, init);
 		ScribbleFsm fblock = ((FsmBuildingEnv) lr.block.del().env()).getFsm();
 		ScribbleFsm f = fr.stitch(fblock);
 		FsmBuildingEnv env = conv.popEnv();

@@ -19,7 +19,7 @@ public class ProtocolState
 	private final Set<RecVar> labs;
 	private final Map<IOAction, ProtocolState> edges;
 	
-	protected ProtocolState(Set<RecVar> labs)
+	public ProtocolState(Set<RecVar> labs)  // Immutable singleton node
 	{
 		this.id = ProtocolState.count++;
 		this.labs = new HashSet<>(labs);

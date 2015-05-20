@@ -26,7 +26,7 @@ public class ScribbleFsm
 		}
 		FsmBuilder b = new FsmBuilder(); 
 		ProtocolState swap;
-		if (this.init.equals(this.term))
+		if (this.init.equals(this.term))  // Catches cycles
 		{
 			// Return f but updated with labels from this
 			Set<RecVar> labs = this.init.getLabels();
@@ -35,6 +35,7 @@ public class ScribbleFsm
 		}
 		else
 		{
+			// FIXME: do we need to take into account any labels on this.term that we are throwing away?
 			ProtocolState init = b.makeInit(this.init.getLabels());
 			swap = b.newState(f.init.getLabels());
 			stitch(b, new HashSet<>(), this.init, init, this.term, swap);
