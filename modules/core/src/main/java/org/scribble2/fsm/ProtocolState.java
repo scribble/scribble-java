@@ -170,7 +170,13 @@ public class ProtocolState
 	// Override to change drawing declaration of "this" node
 	protected String toNodeDot()
 	{
-		return getDotNodeId() + ";";
+		return getDotNodeId() + " [ " + getNodeLabel() + " ];";
+	}
+	
+	protected String getNodeLabel()
+	{
+		String labs = this.labs.toString();
+		return "label=\"" + labs.substring(1, labs.length() - 1) + "\"";
 	}
 	
 	protected String getDotNodeId()

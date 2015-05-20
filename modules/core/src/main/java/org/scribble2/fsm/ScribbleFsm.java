@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.scribble2.sesstype.name.RecVar;
+
 public class ScribbleFsm
 {
 	public final ProtocolState init;
@@ -22,21 +24,24 @@ public class ScribbleFsm
 		{
 			throw new RuntimeException("Cannot stitch onto FSM: " + this);
 		}
+		FsmBuilder b = new FsmBuilder(); 
+		ProtocolState swap;
 		if (this.init.equals(this.term))
 		{
 			// Return f but updated with labels from this
-			throw new RuntimeException("TODO: ");
+			Set<RecVar> labs = this.init.getLabels();
+			labs.addAll(f.init.getLabels());
+			swap = b.makeInit(labs);
 		}
 		else
 		{
-			FsmBuilder b = new FsmBuilder(); 
 			ProtocolState init = b.makeInit(this.init.getLabels());
-			ProtocolState swap = b.newState(f.init.getLabels());
+			swap = b.newState(f.init.getLabels());
 			stitch(b, new HashSet<>(), this.init, init, this.term, swap);
-			ProtocolState term = b.newState(f.term.getLabels());
-			stitch(b, new HashSet<>(), f.init, swap, f.term, term);  // Essentially copy (could factor out as aux) -- unnecessary as PrototolStates are immutable, but would need to change FsmBuilder validation to record all newly reachable states
-			return b.build();
 		}
+		ProtocolState term = b.newState(f.term.getLabels());
+		stitch(b, new HashSet<>(), f.init, swap, f.term, term);  // Essentially copy (could factor out as aux) -- unnecessary as PrototolStates are immutable, but would need to change FsmBuilder validation to record all newly reachable states
+		return b.build();
 	}
 	
 	private static void stitch(FsmBuilder b, Set<ProtocolState> seen, ProtocolState curr, ProtocolState cswap, ProtocolState term, ProtocolState tswap)
