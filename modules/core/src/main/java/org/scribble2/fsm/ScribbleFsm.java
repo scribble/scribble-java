@@ -74,7 +74,7 @@ public class ScribbleFsm
 		{
 			if (f.term == null)
 			{
-				throw new RuntimeException("Cannot embed FSM: " + f);
+				throw new RuntimeException("Cannot merge FSM: " + f);
 			}
 			else if (!f.init.getLabels().isEmpty())  // FIXME: recursive subprotocols won't have a label
 			{
