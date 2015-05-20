@@ -19,7 +19,7 @@ public class ProtocolState
 	private final Set<RecVar> labs;
 	private final Map<IOAction, ProtocolState> edges;
 	
-	public ProtocolState(Set<RecVar> labs)  // Immutable singleton node
+	protected ProtocolState(Set<RecVar> labs)  // Immutable singleton node
 	{
 		this.id = ProtocolState.count++;
 		this.labs = new HashSet<>(labs);
@@ -31,9 +31,9 @@ public class ProtocolState
 		return this.edges;
 	}*/
 	
-	protected void addEdge(IOAction op, ProtocolState s)
+	protected void addEdge(IOAction a, ProtocolState s)
 	{
-		this.edges.put(op, s);
+		this.edges.put(a, s);
 	}
 	
 	public Set<RecVar> getLabels()
@@ -46,14 +46,14 @@ public class ProtocolState
 		return new HashSet<>(this.edges.keySet());
 	}
 	
-	public boolean isAcceptable(IOAction op)
+	public boolean isAcceptable(IOAction a)
 	{
-		return this.edges.containsKey(op);
+		return this.edges.containsKey(a);
 	}
 
-	public ProtocolState accept(IOAction op)
+	public ProtocolState accept(IOAction a)
 	{
-		return this.edges.get(op);
+		return this.edges.get(a);
 	}
 	
 	public Collection<ProtocolState> getSuccessors()

@@ -3,7 +3,6 @@ package org.scribble2.model.del.local;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.CompoundInteractionNodeDel;
 import org.scribble2.model.local.LCompoundInteractionNode;
-import org.scribble2.model.visit.FsmConverter;
 import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.util.ScribbleException;
@@ -48,7 +47,7 @@ public class LCompoundInteractionNodeDel extends CompoundInteractionNodeDel
 		return (LCompoundInteractionNode) visited;
 	}
 
-	@Override
+	/*@Override
 	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv)
 	{
 		pushVisitorEnv(parent, child, conv);
@@ -61,7 +60,7 @@ public class LCompoundInteractionNodeDel extends CompoundInteractionNodeDel
 		setEnv(env);
 		env = conv.popEnv().mergeContext(env);  // Overrides super method to merge results back into parent context
 		conv.pushEnv(env);
-		return (LCompoundInteractionNode) visited;*/
+		return (LCompoundInteractionNode) visited;* /
 		return popAndSetVisitorEnv(parent, child, conv, visited);
-	}
+	}*/
 }

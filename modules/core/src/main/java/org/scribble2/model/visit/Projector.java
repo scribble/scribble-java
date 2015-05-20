@@ -66,7 +66,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 			ModelNode visited = ((GlobalProtocolDeclDelegate) child.del()).visitForProjection(this, (GlobalProtocolDecl) child);
 			return leave(parent, child, proj, visited);*/
 			//return ((GlobalProtocolDeclDelegate) child.del()).visitOverrideForProjection(this, (Module) parent, (GlobalProtocolDecl) child);
-			return visitOverrideForGlobalProtocolDecl((Module) parent, (GProtocolDecl) child);
+			return visitOverrideForGProtocolDecl((Module) parent, (GProtocolDecl) child);
 		}
 		else
 		{
@@ -83,7 +83,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 
 	// Projector uses this to "override" the base SubprotocolVisitor visitChildrenInSubprotocols pattern
 	// Better to be in the visitor than in the del for visibility of visitor enter/leave -- also localises special visiting pattern inside the visitor, while keeping the del enter/leave methods uniform (e.g. GlobalProtocolDeclDelegate enter/leave relies on the same peekSelf API as for other nodes)
-	private GProtocolDecl visitOverrideForGlobalProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
+	protected GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
 		//ModelNode visited = child.visitChildrenInSubprotocols(spv);  visitForProjection
 		//ModuleDelegate md = getModuleDelegate();

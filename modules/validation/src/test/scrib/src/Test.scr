@@ -11,16 +11,26 @@ module Test;
 //import Test2;
 
 
+///*
 global protocol Foo(role A, role B)
 {
 	0() from A to B;
 	rec X
 	{
-		1() from A to B;
-		2() from A to B;
+		choice at A
+		{
+			1() from A to B;
+			2() from B to A;
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+		}
 	}
-	3() from A to B;
+	4() from A to B;
 }
+//*/
 
 
 /*
@@ -36,7 +46,7 @@ global protocol Foo(role A, role B)
 		2a() from A to B;
 		2b() from B to A;
 	}
-	3() from B to B;
+	3() from B to A;
 }
 //*/
 

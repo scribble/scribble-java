@@ -1,12 +1,9 @@
 package org.scribble2.model.del.local;
 
-import org.scribble2.fsm.ScribbleFsm;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.ProtocolBlockDel;
 import org.scribble2.model.local.LProtocolBlock;
-import org.scribble2.model.visit.FsmConverter;
 import org.scribble2.model.visit.ReachabilityChecker;
-import org.scribble2.model.visit.env.FsmBuildingEnv;
 import org.scribble2.util.ScribbleException;
 
 
@@ -32,7 +29,7 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 		return (LocalProtocolBlock) super.popAndSetEnv(parent, child, checker, lpd);*/
 	}
 
-	@Override
+	/*@Override
 	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv)
 	{
 		pushVisitorEnv(parent, child, conv);
@@ -41,12 +38,12 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 	@Override
 	public ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)
 	{
-		LProtocolBlock block = (LProtocolBlock) visited;
+		/*LProtocolBlock block = (LProtocolBlock) visited;
 		ScribbleFsm f = ((FsmBuildingEnv) block.seq.del().env()).getFsm();	
 		FsmBuildingEnv env = conv.popEnv();
-		conv.pushEnv(env.setFsm(f));
+		conv.pushEnv(env.setFsm(f));* /
 		return popAndSetVisitorEnv(parent, child, conv, visited);
-	}
+	}*/
 
 	/*@Override
 	public EnvVisitor envEnter(ModelNode parent, ModelNode child, EnvVisitor ev) throws ScribbleException

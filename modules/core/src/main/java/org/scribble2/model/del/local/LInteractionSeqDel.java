@@ -4,16 +4,13 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble2.fsm.FsmBuilder;
-import org.scribble2.fsm.ScribbleFsm;
+import org.scribble2.fsm.ProtocolState;
 import org.scribble2.model.InteractionNode;
-import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.InteractionSeqDel;
 import org.scribble2.model.local.LInteractionNode;
 import org.scribble2.model.local.LInteractionSeq;
 import org.scribble2.model.visit.FsmConverter;
 import org.scribble2.model.visit.ReachabilityChecker;
-import org.scribble2.model.visit.env.FsmBuildingEnv;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.sesstype.kind.Local;
 import org.scribble2.util.ScribbleException;
@@ -42,7 +39,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		return child;
 	}
 
-	@Override
+	/*@Override
 	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv)
 	{
 		pushVisitorEnv(parent, child, conv);  // Like Projection, Fsm Conversion uses an Env for InteractionSequences
@@ -70,5 +67,36 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		FsmBuildingEnv env = conv.popEnv();
 		conv.pushEnv(env.setFsm(f));
 		return (LInteractionSeq) super.popAndSetVisitorEnv(parent, child, conv, lis);
+	}*/
+
+	public LInteractionSeq visitForFsmConversion(FsmConverter conv, LInteractionSeq child) //throws ScribbleException
+	{
+		ProtocolState entry = conv.builder.getEntry();
+		ProtocolState exit = conv.builder.getExit();
+		// Backwards for "tau-less" continue
+		for (int i = child.actions.size() - 1; i >= 0; i--)
+		{
+			try
+			{
+				if (i > 0)
+				{
+					ProtocolState tmp = conv.builder.newState(Collections.emptySet());
+					conv.builder.setEntry(tmp);
+					child.actions.get(i).accept(conv);
+					conv.builder.setExit(conv.builder.getEntry());  // entry may not be tmp, entry/exit can be modified, e.g. continue
+				}
+				else
+				{
+					conv.builder.setEntry(entry);
+					child.actions.get(i).accept(conv);
+				}
+			}
+			catch (ScribbleException e)
+			{
+				throw new RuntimeException("Shouldn't get in here: " + e);
+			}
+		}
+		conv.builder.setExit(exit);
+		return child;	
 	}
 }

@@ -8,7 +8,6 @@ import org.scribble2.model.del.ProtocolDeclDel;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.FsmConverter;
-import org.scribble2.model.visit.env.FsmBuildingEnv;
 import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.Role;
@@ -53,15 +52,16 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	@Override
 	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv)// throws ScribbleException
 	{
-		pushVisitorEnv(parent, child, conv);
+		//pushVisitorEnv(parent, child, conv);
+		conv.builder.reset();
 	}
 
 	@Override
 	public ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)// throws ScribbleException
 	{
-		LProtocolDecl lpd = (LProtocolDecl) visited;
-		ScribbleFsm f = ((FsmBuildingEnv) lpd.def.del().env()).getFsm();
-		System.out.println("b: " + f);
+		//LProtocolDecl lpd = (LProtocolDecl) visited;
+		//ScribbleFsm f = ((FsmBuildingEnv) lpd.def.del().env()).getFsm();
+		System.out.println("b: " + new ScribbleFsm(conv.builder.getEntry(), conv.builder.getExit()));
 		return visited;
 	}
 	

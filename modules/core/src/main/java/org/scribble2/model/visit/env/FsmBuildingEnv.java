@@ -2,6 +2,7 @@ package org.scribble2.model.visit.env;
 
 import org.scribble2.fsm.ScribbleFsm;
 
+@Deprecated
 public class FsmBuildingEnv extends Env
 {
 	private ScribbleFsm fsm;

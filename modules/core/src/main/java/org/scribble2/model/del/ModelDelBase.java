@@ -100,13 +100,13 @@ public abstract class ModelDelBase implements ModelDel
 	}
 
 	@Override
-	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter checker) //throws ScribbleException
+	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv) //throws ScribbleException
 	{
 		
 	}
 
 	@Override
-	public ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter checker, ModelNode visited) //throws ScribbleException
+	public ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited) //throws ScribbleException
 	{
 		return visited;
 	}

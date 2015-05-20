@@ -1,29 +1,59 @@
 package org.scribble2.model.visit;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.scribble2.fsm.FsmBuilder;
-import org.scribble2.fsm.ProtocolState;
+import org.scribble2.fsm.GraphBuilder;
 import org.scribble2.model.ModelNode;
-import org.scribble2.model.ProtocolDecl;
-import org.scribble2.model.visit.env.FsmBuildingEnv;
-import org.scribble2.sesstype.kind.ProtocolKind;
-import org.scribble2.sesstype.name.RecVar;
+import org.scribble2.model.del.local.LInteractionSeqDel;
+import org.scribble2.model.local.LInteractionSeq;
+import org.scribble2.model.local.LProtocolBlock;
 import org.scribble2.util.ScribbleException;
 
-public class FsmConverter extends EnvVisitor<FsmBuildingEnv>
+// FIXME: doesn't need to be an EnvVisitor?
+//public class FsmConverter extends EnvVisitor<FsmBuildingEnv>
+public class FsmConverter extends ModelVisitor
 {
-	public final FsmBuilder builder = new FsmBuilder();
+	//public final FsmBuilder builder = new FsmBuilder();
+	public final GraphBuilder builder = new GraphBuilder();
 
-	private final Map<RecVar, ProtocolState> labelled = new HashMap<>();
+	//private final Map<RecVar, ProtocolState> labelled = new HashMap<>();
 	
 	public FsmConverter(Job job)
 	{
 		super(job);
 	}
+
+	@Override
+	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		if (child instanceof LInteractionSeq)
+		{
+			return visitOverrideForLInteractionSeq((LProtocolBlock) parent, (LInteractionSeq) child);
+		}
+		else
+		{
+			return super.visit(parent, child);
+		}
+	}
+
+	protected LInteractionSeq visitOverrideForLInteractionSeq(LProtocolBlock parent, LInteractionSeq child)
+	{
+		return ((LInteractionSeqDel) child.del()).visitForFsmConversion(this, (LInteractionSeq) child);
+	}
+
+	@Override
+	protected final void enter(ModelNode parent, ModelNode child) throws ScribbleException
+	{
+		super.enter(parent, child);
+		child.del().enterFsmConversion(parent, child, this);
+	}
 	
-	public void addLabelledState(ProtocolState s)
+	@Override
+	protected ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	{
+		visited = visited.del().leaveFsmConversion(parent, child, this, visited);
+		return super.leave(parent, child, visited);
+	}
+	
+	/*public void addLabelledState(ProtocolState s)
 	{
 		for (RecVar rv : s.getLabels())
 		{
@@ -34,9 +64,9 @@ public class FsmConverter extends EnvVisitor<FsmBuildingEnv>
 	public ProtocolState getLabelledState(RecVar rv)
 	{
 		return this.labelled.get(rv);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	protected FsmBuildingEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		return new FsmBuildingEnv();
@@ -60,5 +90,5 @@ public class FsmConverter extends EnvVisitor<FsmBuildingEnv>
 	{
 		visited = visited.del().leaveFsmConversion(parent, child, this, visited);
 		return super.envLeave(parent, child, visited);
-	}
+	}*/
 }

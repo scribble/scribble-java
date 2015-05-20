@@ -36,7 +36,7 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 	{
 		if (child instanceof LInteractionSeq)
 		{
-			return visitOverrideForLocalInteractionSequence((LProtocolBlock) parent, (LInteractionSeq) child);
+			return visitOverrideForLInteractionSequence((LProtocolBlock) parent, (LInteractionSeq) child);
 		}
 		else
 		{
@@ -44,7 +44,7 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 		}
 	}
 
-	private LInteractionSeq visitOverrideForLocalInteractionSequence(LProtocolBlock parent, LInteractionSeq child) throws ScribbleException
+	protected LInteractionSeq visitOverrideForLInteractionSequence(LProtocolBlock parent, LInteractionSeq child) throws ScribbleException
 	{
 		/*Projector proj = (Projector) enter(parent, child);
 		ModelNode visited = visitForProjection((Module) parent, (GlobalProtocolDecl) child);
