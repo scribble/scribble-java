@@ -64,7 +64,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 
 		System.out.println("b: " + new ScribbleFsm(conv.builder.getEntry(), conv.builder.getExit()));
 		
-		..HERE: store graphs in jobcontext; bit like projections, but store in jc here directly, don't wait for ModuleDel
+		..HERE: store graphs/fsms in jobcontext; bit like projections, but store in jc here directly, don't wait for ModuleDel
 
 		return visited;
 	}

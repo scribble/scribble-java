@@ -97,11 +97,11 @@ public class CommandLine implements Runnable
 		GProtocolName gpn = new GProtocolName(this.args.get(Arg.FSM)[0]);
 		Role role = new Role(this.args.get(Arg.FSM)[1]);
 		ModuleName modname = getProjectedName(jc, gpn, role).getPrefix();
-		if (!jc.hasModule(modname))
+		if (!jc.hasModule(modname))  // Move into Job?  But this is a check on the CL args
 		{
 			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(Arg.FSM)));
 		}
-		job.buildFsm(jc.getModule(modname));  // Need Module for context (not just the LProtoDecl)
+		job.buildFsm(jc.getModule(modname));  // Need Module for context (not just the LProtoDecl) -- builds FSMs for all locals in the module
 		
 		..HERE: get constructed FSM from jc and output
 		
