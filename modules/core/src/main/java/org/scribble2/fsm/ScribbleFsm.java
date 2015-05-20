@@ -1,7 +1,8 @@
 package org.scribble2.fsm;
 
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Set;
 
 public class ScribbleFsm
@@ -9,67 +10,93 @@ public class ScribbleFsm
 	public final ProtocolState init;
 	public final ProtocolState term;
 	
-	//private final Set<ProtocolState> preterms = new HashSet<>();
-	
 	public ScribbleFsm(ProtocolState init, ProtocolState term)
 	{
 		this.init = init;
 		this.term = term;
-		/*if (term != null)
-		{
-			findPreTerminals(new HashSet<>(), init);
-		}*/
 	}
 	
-	public ScribbleFsm fstitch(ScribbleFsm f)
+	public ScribbleFsm stitch(ScribbleFsm f)
 	{
-		if (this.term == null || this.init.equals(this.term))
+		if (this.term == null)
 		{
 			throw new RuntimeException("Cannot stitch onto FSM: " + this);
 		}
-		FsmBuilder b = new FsmBuilder(); 
-		ProtocolState init = b.makeInit(this.init.getLabels());
-		ProtocolState swap = b.newState(f.init.getLabels());
-		fstitch(b, new HashSet<>(), this.init, init, this.term, swap);
-		ProtocolState tmp = b.newState(f.term.getLabels());
-		fstitch(b, new HashSet<>(), f.init, swap, f.term, tmp);  // Essentially copy (could factor out as aux) -- unnecessary as PrototolStates are immutable, but would need to change FsmBuilder validation to record all newly reachable states
-		return b.build();
+		if (this.init.equals(this.term))
+		{
+			// Return f but updated with labels from this
+			throw new RuntimeException("TODO: ");
+		}
+		else
+		{
+			FsmBuilder b = new FsmBuilder(); 
+			ProtocolState init = b.makeInit(this.init.getLabels());
+			ProtocolState swap = b.newState(f.init.getLabels());
+			stitch(b, new HashSet<>(), this.init, init, this.term, swap);
+			ProtocolState term = b.newState(f.term.getLabels());
+			stitch(b, new HashSet<>(), f.init, swap, f.term, term);  // Essentially copy (could factor out as aux) -- unnecessary as PrototolStates are immutable, but would need to change FsmBuilder validation to record all newly reachable states
+			return b.build();
+		}
 	}
 	
-	private static void fstitch(FsmBuilder b, Set<ProtocolState> seen, ProtocolState curr, ProtocolState copy, ProtocolState term, ProtocolState swap)
+	private static void stitch(FsmBuilder b, Set<ProtocolState> seen, ProtocolState curr, ProtocolState cswap, ProtocolState term, ProtocolState tswap)
 	{
 		if (seen.contains(curr))
 		{
 			return;
 		}
 		seen.add(curr);
-		for (Entry<IOAction, ProtocolState> e : curr.getEdges().entrySet())
+		for (IOAction a : curr.getAcceptable())
 		{
-			IOAction op = e.getKey();
-			ProtocolState next = e.getValue();
+			ProtocolState next = curr.accept(a);
 			if (next.equals(term))
 			{
-				b.addEdge(copy, op, swap);
+				b.addEdge(cswap, a, tswap);
 			}
 			else
 			{
 				ProtocolState tmp = b.newState(next.getLabels());
-				b.addEdge(copy, op, tmp);
-				fstitch(b, seen, next, tmp, term, swap);
+				b.addEdge(cswap, a, tmp);
+				stitch(b, seen, next, tmp, term, tswap);
 			}
 		}
 	}
 	
-	public ScribbleFsm embed(ProtocolState init, ScribbleFsm f, ProtocolState term)
+	//public ScribbleFsm embed(ProtocolState init, ProtocolState term, ScribbleFsm... fs)
+	public static ScribbleFsm merge(List<ScribbleFsm> fs)
 	{
-		if (f.term == null)
+		FsmBuilder b = new FsmBuilder();
+		//b.setInit(init);
+		//b.addState(term);
+		ProtocolState init = b.makeInit(Collections.emptySet());
+		ProtocolState term = b.newState(Collections.emptySet());
+		for (ScribbleFsm f : fs)
 		{
-			throw new RuntimeException("Cannot embed FSM: " + f);
+			if (f.term == null)
+			{
+				throw new RuntimeException("Cannot embed FSM: " + f);
+			}
+			else if (!f.init.getLabels().isEmpty())  // FIXME: recursive subprotocols won't have a label
+			{
+				throw new RuntimeException("TODO: ");  // For potential recursion, a kind of unfolding could work?
+			}
+			for (IOAction a : f.init.getAcceptable())
+			{
+				ProtocolState succ = f.init.accept(a);
+				if (succ.isTerminal())
+				{
+					b.addEdge(init, a, term);
+				}
+				else
+				{
+					ProtocolState tmp = b.newState(succ.getLabels());
+					b.addEdge(init, a, tmp);
+					stitch(b, new HashSet<>(), succ, tmp, f.term, term);
+				}
+			}
 		}
-		/*FsmBuilder b = new FsmBuilder();
-		b.setInit(init);
-		b.addState(term);
-		for (Entry<IOAction, ProtocolState> e : f.init.getEdges().entrySet())
+		return b.build();
+		/*for (Entry<IOAction, ProtocolState> e : f.init.getEdges().entrySet())
 		{
 			//ProtocolState tmp = b.importState(e.getValue());
 			ProtocolState succ = e.getValue();
@@ -77,8 +104,8 @@ public class ScribbleFsm
 			b.addEdge(init, e.getKey(), tmp);
 			fstitch(b, new HashSet<>(), succ, tmp, f.term, term);
 		}
-		return b.build();*/
-		for (Entry<IOAction, ProtocolState> e : f.init.getEdges().entrySet())
+		return b.build();
+		/*for (Entry<IOAction, ProtocolState> e : f.init.getEdges().entrySet())
 		{
 			init.addEdge(e.getKey(), e.getValue());
 		}
@@ -94,7 +121,7 @@ public class ScribbleFsm
 				}
 			}
 		}
-		return new ScribbleFsm(init, term);
+		return new ScribbleFsm(init, term);*/
 	}
 
 	/*public ScribbleFsm bstitch(ScribbleFsm f)
@@ -128,7 +155,7 @@ public class ScribbleFsm
 		return this.init.toDot();
 	}
 	
-	private static void findPreTerminals(Set<ProtocolState> seen, ProtocolState curr, Set<ProtocolState> preterms)
+	/*private static void findPreTerminals(Set<ProtocolState> seen, ProtocolState curr, Set<ProtocolState> preterms)
 	{
 		if (seen.contains(curr))
 		{
@@ -147,5 +174,5 @@ public class ScribbleFsm
 				findPreTerminals(seen, succ, preterms);
 			}
 		}
-	}
+	}*/
 }

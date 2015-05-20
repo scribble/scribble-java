@@ -1,7 +1,6 @@
 package org.scribble2.fsm;
 
 import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.scribble2.sesstype.name.RecVar;
@@ -19,11 +18,16 @@ public class FsmBuilder
 
 	public ProtocolState makeInit(Set<RecVar> labs)
 	{
-		setInit(newState(labs));
+		//setInit(newState(labs));
+		if (this.init != null)
+		{
+			throw new RuntimeException("Initial state already set.");
+		}
+		this.init = newState(labs);
 		return this.init;
 	}
 
-	protected void setInit(ProtocolState s)
+	/*protected void setInit(ProtocolState s)
 	{
 		if (this.init != null)
 		{
@@ -34,7 +38,7 @@ public class FsmBuilder
 			this.states.add(s);
 		}
 		this.init = s;
-	}
+	}*/
 	
 	public ProtocolState newState(Set<RecVar> labs)
 	{
@@ -68,10 +72,10 @@ public class FsmBuilder
 		}
 	}*/
 	
-	protected void addState(ProtocolState s)
+	/*protected void addState(ProtocolState s)
 	{
 		this.states.add(s);
-	}
+	}*/
 
 	public void addEdge(ProtocolState s, IOAction act, ProtocolState succ)
 	{
@@ -82,7 +86,7 @@ public class FsmBuilder
 			this.edges.put(s, tmp);
 		}
 		tmp.put(op, succ);*/
-		if (!this.states.contains(s) || !this.states.contains(succ))
+		if (!this.states.contains(s) || !this.states.contains(succ))  // Guarantees s and succ are fresh states, so OK to addEdge mutate below
 		{
 			throw new RuntimeException("Unknown state: " + s);
 			//this.states.add(s);
@@ -103,7 +107,7 @@ public class FsmBuilder
 		return f;
 	}
 	
-	private ProtocolState validate()  // Factor out as a ProtocolState method
+	private ProtocolState validate()  // Factor out as a ProtocolState method -- not quite: single init/term is an FSM property, and connected is wrt. recorded states
 	{
 		Set<ProtocolState> terms = this.init.findTerminals();
 		if (terms.size() > 1)

@@ -26,15 +26,39 @@ public class ProtocolState
 		this.edges = new HashMap<>();
 	}
 	
-	public Set<RecVar> getLabels()  // protected -- use an isLabelled instead
-	{
-		return new HashSet<>(this.labs);
-		//return this.labs;
-	}
-	
-	protected Map<IOAction, ProtocolState> getEdges()
+	/*protected Map<IOAction, ProtocolState> getEdges()
 	{
 		return this.edges;
+	}*/
+	
+	protected void addEdge(IOAction op, ProtocolState s)
+	{
+		this.edges.put(op, s);
+	}
+	
+	public Set<RecVar> getLabels()
+	{
+		return new HashSet<>(this.labs);
+	}
+	
+	public Set<IOAction> getAcceptable()
+	{
+		return new HashSet<>(this.edges.keySet());
+	}
+	
+	public boolean isAcceptable(IOAction op)
+	{
+		return this.edges.containsKey(op);
+	}
+
+	public ProtocolState accept(IOAction op)
+	{
+		return this.edges.get(op);
+	}
+	
+	public Collection<ProtocolState> getSuccessors()
+	{
+		return this.edges.values();
 	}
 	
 	public boolean isTerminal()
@@ -68,58 +92,14 @@ public class ProtocolState
 			}
 		}
 	}
-	
-	/*public ProtocolState copy()
-	{
-		ProtocolState copy = new ProtocolState(this.labs);
-		copy(new HashSet<>(), this, copy);
-		return copy;
-	}
-
-	public static void copy(Set<ProtocolState> seen, ProtocolState curr, ProtocolState copy)
-	{
-		if (seen.contains(curr))
-		{
-			return;
-		}
-		seen.add(curr);
-		for(Entry<Op, ProtocolState> e : curr.edges.entrySet())
-		{
-			Op op = e.getKey();
-			ProtocolState next = e.getValue();
-			ProtocolState tmp = new ProtocolState(next.labs);
-			copy.edges.put(op, tmp);
-			copy(seen, next, tmp);
-		}
-	}*/
-	
-	protected void addEdge(IOAction op, ProtocolState s)
-	{
-		this.edges.put(op, s);
-	}
-	
-	public boolean isAcceptable(IOAction op)
-	{
-		return this.edges.containsKey(op);
-	}
-
-	public ProtocolState accept(IOAction op)
-	{
-		return this.edges.get(op);
-	}
-	
-	public Collection<ProtocolState> getSuccessors()
-	{
-		return this.edges.values();
-	}
 
 	@Override
 	public int hashCode()
 	{
 		int hash = 73;
 		hash = 31 * hash + this.id;  // Would be enough by itself, but keep consistent with equals
-		//hash = 31 * hash + this.labs.hashCode();
-		//hash = 31 * hash + this.edges.hashCode();
+		/*hash = 31 * hash + this.labs.hashCode();
+		hash = 31 * hash + this.edges.hashCode();*/
 		return hash;
 	}
 
@@ -210,4 +190,28 @@ public class ProtocolState
 	{
 		return "label=\"" + msg + "\"";
 	}
+	
+	/*public ProtocolState copy()
+	{
+		ProtocolState copy = new ProtocolState(this.labs);
+		copy(new HashSet<>(), this, copy);
+		return copy;
+	}
+
+	public static void copy(Set<ProtocolState> seen, ProtocolState curr, ProtocolState copy)
+	{
+		if (seen.contains(curr))
+		{
+			return;
+		}
+		seen.add(curr);
+		for(Entry<Op, ProtocolState> e : curr.edges.entrySet())
+		{
+			Op op = e.getKey();
+			ProtocolState next = e.getValue();
+			ProtocolState tmp = new ProtocolState(next.labs);
+			copy.edges.put(op, tmp);
+			copy(seen, next, tmp);
+		}
+	}*/
 }
