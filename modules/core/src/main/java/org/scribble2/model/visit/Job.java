@@ -112,17 +112,6 @@ public class Job
 		runNodeVisitorPass(ReachabilityChecker.class);
 	}
 	
-	//public void buildFsm(LProtocolDecl lpd) throws ScribbleException
-	public void buildFsm(Module mod) throws ScribbleException  // Need Module for context
-	{
-		debugPrintln("\n--- Convert to FSMs --- ");
-		FsmConverter conv = new FsmConverter(this);
-		
-		System.out.println("a: " + mod);
-		
-		mod.accept(conv);
-	}
-	
 	// To be done as a barrier pass after projection done on all Modules
 	private void buildProjectionContexts()
 	{
@@ -141,6 +130,13 @@ public class Job
 		{
 			throw new RuntimeException("Shouldn't get in here: " + e);
 		}
+	}
+	
+	//public void buildFsm(LProtocolDecl lpd) throws ScribbleException
+	public void buildFsm(Module mod) throws ScribbleException  // Need Module for context
+	{
+		debugPrintln("\n--- Convert to FSMs --- ");
+		mod.accept(new FsmConstructor(this));
 	}
 
 	private void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException

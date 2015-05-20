@@ -1,12 +1,18 @@
 package org.scribble2.model.del.local;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.scribble2.fsm.ProtocolState;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.local.LDo;
 import org.scribble2.model.visit.ContextBuilder;
+import org.scribble2.model.visit.FsmConstructor;
 import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.env.ReachabilityEnv;
+import org.scribble2.sesstype.SubprotocolSig;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -44,4 +50,55 @@ public class LDoDel extends LSimpleInteractionNodeDel
 		checker.pushEnv(checker.popEnv().mergeContext(env));
 		return (LDo) visited;
 	}
+
+	@Override
+	public void enterFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv)
+	{
+		super.enterFsmConstruction(parent, child, conv);
+		if (!conv.isCycle())
+		{
+			SubprotocolSig subsig = conv.peekStack();  // SubprotocolVisitor has already entered subprotocol
+			//SubprotocolSig noscope = new SubprotocolSig(subsig.fmn, subsig.roles, subsig.args);  // FIXME: factor better
+
+		Set<String> labs = new HashSet<>();
+		labs.add(subsig.toString());
+		ProtocolState s = conv.builder.newState(labs);
+		conv.builder.setEntry(s);
+
+			conv.builder.setSubprotocolEntry(subsig);
+		}
+	}
+
+	public LDo visitForFsmConversion(FsmConstructor conv, LDo child) //throws ScribbleException
+	{
+		//if (isEmptyScope())
+		{
+			/*if (conv.isCycle())
+			{*/
+				//ScopedSubprotocolSig subsig = builder.getSubprotocolSig(this);
+				SubprotocolSig subsig = conv.peekStack();
+				//SubprotocolSig noscope = new SubprotocolSig(subsig.fmn, subsig.roles, subsig.args);  // FIXME: factor better
+				conv.builder.setEntry(conv.builder.getSubprotocolEntry(subsig));  // Like continue
+			/*
+			else
+			{
+				super.visitForGraphBuilding(conv);
+			}*/
+			return child;
+		}
+		/*else
+		{
+			throw new RuntimeException("TODO: ");  // Need protocol ref state
+		}*/
+	}
+	
+	@Override
+	public LDo leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)
+	{
+		SubprotocolSig subsig = conv.peekStack();
+		//SubprotocolSig noscope = new SubprotocolSig(subsig.fmn, subsig.roles, subsig.args);  // FIXME: factor better
+		conv.builder.removeSubprotocolEntry(subsig);
+		return (LDo) super.leaveFsmConstruction(parent, child, conv, visited);
+	}
+
 }

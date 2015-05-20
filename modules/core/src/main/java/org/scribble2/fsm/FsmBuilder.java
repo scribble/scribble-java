@@ -42,7 +42,7 @@ public class FsmBuilder
 	
 	public ProtocolState newState(Set<RecVar> labs)
 	{
-		ProtocolState s = new ProtocolState(labs);
+		ProtocolState s = null;//new ProtocolState(labs);
 		this.states.add(s);
 		return s;
 	}

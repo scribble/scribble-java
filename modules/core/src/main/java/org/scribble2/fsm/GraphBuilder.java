@@ -5,14 +5,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble2.sesstype.SubprotocolSig;
 import org.scribble2.sesstype.name.RecVar;
 
+// If not used as a standalone library, then integrate into FsmConverter
 public class GraphBuilder
 {
 	//private final Map<LProtocolName, ProtocolState> graphs = new HashMap<>();  // Move to FsmConverter probably
 	
 	private final Map<RecVar, ProtocolState> recvars = new HashMap<>();
-	//private final Map<SubprotocolSignature, ProtocolState> subprotos = new HashMap<>();  // Not scoped sigs
+	private final Map<SubprotocolSig, ProtocolState> subprotos = new HashMap<>();  // Not scoped sigs
 
 	private ProtocolState entry;
 	private ProtocolState exit;
@@ -40,7 +42,8 @@ public class GraphBuilder
 		return this.graphs;
 	}*/
 	
-	public ProtocolState newState(Set<RecVar> labs)
+	//public ProtocolState newState(Set<RecVar> labs)
+	public ProtocolState newState(Set<String> labs)
 	{
 		ProtocolState s = new ProtocolState(labs);
 		//this.states.add(s);
@@ -67,29 +70,29 @@ public class GraphBuilder
 		this.recvars.remove(recvar);
 	}	
 	
-	/*public ProtocolState getSubprotocolEntry(SubprotocolSignature subsig)
+	public ProtocolState getSubprotocolEntry(SubprotocolSig subsig)
 	{
 		return this.subprotos.get(subsig);
 	}
 
-	public void setSubprotocolEntry(SubprotocolSignature subsig)
+	public void setSubprotocolEntry(SubprotocolSig subsig)
 	{
 		this.subprotos.put(subsig, this.entry);
 	}	
 
-	public void removeSubprotocolEntry(SubprotocolSignature subsig)
+	public void removeSubprotocolEntry(SubprotocolSig subsig)
 	{
 		this.subprotos.remove(subsig);
-	}*/
-
-	public void setEntry(ProtocolState entry)
-	{
-		this.entry = entry;
 	}
 	
 	public ProtocolState getEntry()
 	{
 		return this.entry;
+	}
+
+	public void setEntry(ProtocolState entry)
+	{
+		this.entry = entry;
 	}
 
 	public ProtocolState getExit()

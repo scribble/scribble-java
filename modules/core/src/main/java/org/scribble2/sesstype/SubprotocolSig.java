@@ -4,19 +4,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble2.sesstype.kind.Kind;
+import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.sesstype.name.Role;
 
-// FIXME: rename to unscoped
-public class SubprotocolSignature
+public class SubprotocolSig
 {
-	public ProtocolName fmn;
+	public ProtocolName<? extends ProtocolKind> fmn;
 	//public Scope scope;
 	public List<Role> roles;
 	public List<Arg<? extends Kind>> args;
 
 	//public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role> roles, List<Argument<? extends Kind>> args)
-	public SubprotocolSignature(ProtocolName fmn, List<Role> roles, List<Arg<? extends Kind>> args)
+	public SubprotocolSig(ProtocolName<? extends ProtocolKind> fmn, List<Role> roles, List<Arg<? extends Kind>> args)
 	{
 		this.fmn = fmn;
 		//this.scope = scope;
@@ -43,11 +43,11 @@ public class SubprotocolSignature
 			return true;
 		}
 		//if (o == null || this.getClass() != o.getClass())
-		if (!(o instanceof SubprotocolSignature))
+		if (!(o instanceof SubprotocolSig))
 		{
 			return false;
 		}
-		SubprotocolSignature subsig = (SubprotocolSignature) o;
+		SubprotocolSig subsig = (SubprotocolSig) o;
 		return this.fmn.equals(subsig.fmn) //&& this.scope.equals(subsig.scope)
 				&& this.roles.equals(subsig.roles) && this.args.equals(subsig.args);
 	}
@@ -55,8 +55,9 @@ public class SubprotocolSignature
 	@Override
 	public String toString()
 	{
-		// FIXME: lists are being printed directly
+		String args = this.args.toString();
+		String roles = this.roles.toString();
 		return //this.scope + ":" + 
-				this.fmn + "<" + this.args + ">(" + this.roles + ")";
+				this.fmn + "<" + args.substring(1, args.length() - 1) + ">(" + roles.substring(1, roles.length() - 1) + ")";
 	}
 }

@@ -111,6 +111,11 @@ public class JobContext
 		return modnames;
 	}
 
+	public boolean hasModule(ModuleName fullmodname)
+	{
+		return (this.parsed.containsKey(fullmodname) || this.projectionsByModules.containsKey(fullmodname));
+	}
+
 	public Module getModule(ModuleName fullmodname)
 	{
 		if (this.parsed.containsKey(fullmodname))

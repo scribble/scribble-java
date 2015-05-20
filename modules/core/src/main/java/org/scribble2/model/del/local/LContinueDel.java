@@ -2,7 +2,7 @@ package org.scribble2.model.del.local;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.local.LContinue;
-import org.scribble2.model.visit.FsmConverter;
+import org.scribble2.model.visit.FsmConstructor;
 import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.sesstype.name.RecVar;
@@ -27,11 +27,11 @@ public class LContinueDel extends LSimpleInteractionNodeDel
 	}
 
 	@Override
-	public LContinue leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)
+	public LContinue leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.recvar.toName();
 		conv.builder.setEntry(conv.builder.getRecursionEntry(rv));
-		return (LContinue) super.leaveFsmConversion(parent, child, conv, lr);
+		return (LContinue) super.leaveFsmConstruction(parent, child, conv, lr);
 	}
 }

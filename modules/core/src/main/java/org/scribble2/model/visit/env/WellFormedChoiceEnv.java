@@ -14,7 +14,7 @@ import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.MessageSig;
 import org.scribble2.sesstype.Payload;
-import org.scribble2.sesstype.SubprotocolSignature;
+import org.scribble2.sesstype.SubprotocolSig;
 import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Op;
 import org.scribble2.sesstype.name.Role;
@@ -46,8 +46,8 @@ public class WellFormedChoiceEnv extends Env
 	// FIXME: interrupts
 	//private Map<SubprotocolSignature, MessageMap<ScopedMessage>> subsigs;
 	//private Map<SubprotocolSignature, MessageMap<Message>> subsigs;
-	private Map<SubprotocolSignature, MessageIdMap> subsigs;
-	private Set<SubprotocolSignature> recording;
+	private Map<SubprotocolSig, MessageIdMap> subsigs;
+	private Set<SubprotocolSig> recording;
 
 	//public WellFormedChoiceEnv(JobContext jcontext, ModuleDelegate mcontext)
 	public WellFormedChoiceEnv()
@@ -80,7 +80,7 @@ public class WellFormedChoiceEnv extends Env
 			/*MessageMap<Message> initial, MessageMap<Message> initialInterrupts,
 			Map<SubprotocolSignature, MessageMap<Message>> subsigs, Set<SubprotocolSignature> recording)*/
 			MessageIdMap initial, MessageIdMap initialInterrupts,
-			Map<SubprotocolSignature, MessageIdMap> subsigs, Set<SubprotocolSignature> recording)
+			Map<SubprotocolSig, MessageIdMap> subsigs, Set<SubprotocolSig> recording)
 	{
 		//super(jcontext, mcontext);//, root, parent);
 		/*this.initial = new MessageMap<>(initial);
@@ -125,7 +125,7 @@ public class WellFormedChoiceEnv extends Env
 			merge(this, copy.initial, child.initial);
 			merge(this, copy.initialInterrupts, child.initialInterrupts);
 			
-			for (SubprotocolSignature subsig : child.subsigs.keySet())
+			for (SubprotocolSig subsig : child.subsigs.keySet())
 			{
 				if (!copy.subsigs.containsKey(subsig))  // If already recorded from an earlier child, no need to do anything (will be the same result)
 				{
@@ -228,7 +228,7 @@ public class WellFormedChoiceEnv extends Env
 		{
 			//WellFormedChoiceEnv root = this;//getRoot();
 			//SubprotocolSignature subsig = spv.peekStack().sig;
-			SubprotocolSignature subsig = spv.peekStack();
+			SubprotocolSig subsig = spv.peekStack();
 			if (copy.recording.contains(subsig))
 			{
 				//addMessages(copy.subsigs.get(subsig), src, dest, Arrays.asList(msg));
@@ -248,7 +248,7 @@ public class WellFormedChoiceEnv extends Env
 		WellFormedChoiceEnv copy = copy();
 		//SubprotocolSignature subsig = checker.peekStack().sig;
 		//SubprotocolSignature subsig = checker.peekStack().sig;
-		SubprotocolSignature subsig = checker.peekStack();
+		SubprotocolSig subsig = checker.peekStack();
 		if (!copy.subsigs.containsKey(subsig))
 		{
 			copy.recording.add(subsig);
@@ -263,7 +263,7 @@ public class WellFormedChoiceEnv extends Env
 	{
 		WellFormedChoiceEnv copy = copy();
 		//ScopedSubprotocolSignature subsig = checker.peekStack();
-		SubprotocolSignature subsig = checker.peekStack();
+		SubprotocolSig subsig = checker.peekStack();
 		//if (copy.recording.contains(subsig.sig))
 		if (copy.recording.contains(subsig))
 		{
@@ -276,7 +276,7 @@ public class WellFormedChoiceEnv extends Env
 		{
 			//addSubprotocolEnabled(subsig);
 			//List<ScopedSubprotocolSignature> stack = checker.getStack();
-			List<SubprotocolSignature> stack = checker.getStack();
+			List<SubprotocolSig> stack = checker.getStack();
 			stack = stack.subList(0, stack.size() - 1);
 			//Scope scope = stack.get(stack.size() - 1).scope;  // Doesn't include final cycle sig scope
 			/*for (int i = stack.size() - 2; i >= 0; i--)
@@ -293,7 +293,7 @@ public class WellFormedChoiceEnv extends Env
 			for (int i = checker.getCycleEntryIndex(); i < stack.size(); i++)
 			{
 				//ScopedSubprotocolSignature ssubsig = stack.get(i);
-				SubprotocolSignature ssubsig = stack.get(i);
+				SubprotocolSig ssubsig = stack.get(i);
 				/*if (!prev.equals(ssubsig.scope))
 				{
 					scope = new Scope(scope, ssubsig.scope.getSimpleName());
@@ -311,7 +311,7 @@ public class WellFormedChoiceEnv extends Env
 	
 	// No defensive copy
 	//private void addSubprotocolEnabled(Scope scope, SubprotocolSignature subsig)
-	private void addSubprotocolEnabled(SubprotocolSignature subsig)
+	private void addSubprotocolEnabled(SubprotocolSig subsig)
 	{
 		//MessageMap<ScopedMessage> enabled = this.subsigs.get(subsig);
 		//MessageMap<Message> enabled = this.subsigs.get(subsig);

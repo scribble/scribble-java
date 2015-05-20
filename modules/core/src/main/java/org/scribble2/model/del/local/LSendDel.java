@@ -3,7 +3,7 @@ package org.scribble2.model.del.local;
 import org.scribble2.fsm.Send;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.local.LSend;
-import org.scribble2.model.visit.FsmConverter;
+import org.scribble2.model.visit.FsmConstructor;
 import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Role;
 
@@ -11,7 +11,7 @@ import org.scribble2.sesstype.name.Role;
 public class LSendDel extends LSimpleInteractionNodeDel
 {
 	@Override
-	public LSend leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)
+	public LSend leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)
 	{
 		LSend ls = (LSend) visited;
 		/*FsmBuilder b = new FsmBuilder();
@@ -34,6 +34,6 @@ public class LSendDel extends LSimpleInteractionNodeDel
 		Role peer = ls.dests.get(0).toName();
 		MessageId mid = ls.msg.toMessage().getId();
 		conv.builder.addEdge(conv.builder.getEntry(), new Send(peer, mid), conv.builder.getExit());
-		return (LSend) super.leaveFsmConversion(parent, child, conv, ls);
+		return (LSend) super.leaveFsmConstruction(parent, child, conv, ls);
 	}
 }

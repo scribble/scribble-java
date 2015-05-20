@@ -9,11 +9,11 @@ import org.scribble2.sesstype.name.Scope;
 
 // FIXME: deprecate
 @Deprecated
-public class ScopedSubprotocolSignature extends SubprotocolSignature
+public class ScopedSubprotocolSignature extends SubprotocolSig
 {
 	public Scope scope;
 	//public SimpleName scope;
-	public SubprotocolSignature sig;  // Message signature arguments are not scoped
+	public SubprotocolSig sig;  // Message signature arguments are not scoped
 
 	public ScopedSubprotocolSignature(Scope scope, ProtocolName fmn, List<Role> roles, List<Arg<? extends Kind>> args)
 	{

@@ -8,18 +8,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.scribble2.sesstype.name.RecVar;
-
+// http://sandbox.kidstrythisathome.com/erdos/
 public class ProtocolState
 {
 	private static int count = 0;
 	
 	public final int id;
 
-	private final Set<RecVar> labs;
+	//private final Set<RecVar> labs;
+	private final Set<String> labs;  // Something better to cover both RecVar and SubprotocolSigs?
 	private final Map<IOAction, ProtocolState> edges;
 	
-	protected ProtocolState(Set<RecVar> labs)  // Immutable singleton node
+	//protected ProtocolState(Set<RecVar> labs)  // Immutable singleton node
+	protected ProtocolState(Set<String> labs)  // Immutable singleton node
 	{
 		this.id = ProtocolState.count++;
 		this.labs = new HashSet<>(labs);
@@ -36,7 +37,8 @@ public class ProtocolState
 		this.edges.put(a, s);
 	}
 	
-	public Set<RecVar> getLabels()
+	//public Set<RecVar> getLabels()
+	public Set<String> getLabels()
 	{
 		return new HashSet<>(this.labs);
 	}

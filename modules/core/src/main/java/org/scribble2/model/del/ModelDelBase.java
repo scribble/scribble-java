@@ -3,7 +3,7 @@ package org.scribble2.model.del;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.EnvVisitor;
-import org.scribble2.model.visit.FsmConverter;
+import org.scribble2.model.visit.FsmConstructor;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.ReachabilityChecker;
@@ -100,13 +100,13 @@ public abstract class ModelDelBase implements ModelDel
 	}
 
 	@Override
-	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv) //throws ScribbleException
+	public void enterFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv) //throws ScribbleException
 	{
 		
 	}
 
 	@Override
-	public ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited) //throws ScribbleException
+	public ModelNode leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited) //throws ScribbleException
 	{
 		return visited;
 	}

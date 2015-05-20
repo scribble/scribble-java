@@ -18,7 +18,7 @@ import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModuleDel;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Arg;
-import org.scribble2.sesstype.SubprotocolSignature;
+import org.scribble2.sesstype.SubprotocolSig;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.Name;
@@ -33,7 +33,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	private ModuleContext mcontext;  // The "root" module context (different than the front-end "main" module)  // Factor up to ModelVisitor? (will be null before context building)
 	
 	//private List<ScopedSubprotocolSignature> stack = new LinkedList<>();
-	private List<SubprotocolSignature> stack = new LinkedList<>();
+	private List<SubprotocolSig> stack = new LinkedList<>();
 	
 	// name in the current protocoldecl scope -> the original name node in the root protocol decl
 	private Stack<Map<Role, RoleNode>> rolemaps = new Stack<>();
@@ -68,6 +68,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		//System.out.println("\n0: " + Arrays.asList(fullname.getElements()));
 	}
 
+	// Most subclasses will override visitForSubprotocols (e.g. ReachabilityChecker, FsmConstructor), but sometimes still want to change whole visit pattern (e.g. Projector)
 	@Override
 	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
 	{
@@ -206,12 +207,12 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolName(doo.proto.toName());
 		List<Role> roleargs = doo.roles.getRoles();
 		List<Arg<? extends Kind>> argargs = doo.args.getArguments(getScope());
-		pushSubprotocolSignature(fullname, roleargs, argargs);
+		pushSubprotocolSig(fullname, roleargs, argargs);
 		//pushSubprotocolSignature(fullname, roleargs, argargs);*/
 		pushNameMaps(fullname, doo, roleargs, argargs);
 	}
 	
-	private void pushSubprotocolSignature(ProtocolName<? extends ProtocolKind> fullname, List<Role> roleargs, List<Arg<? extends Kind>> argargs)
+	private void pushSubprotocolSig(ProtocolName<? extends ProtocolKind> fullname, List<Role> roleargs, List<Arg<? extends Kind>> argargs)
 	{
 		Map<Role, RoleNode> rolemap = rolemaps.peek();
 		Map<Arg<? extends Kind>, ArgNode> argmap = argmaps.peek();
@@ -221,7 +222,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		List<Arg<? extends Kind>> args = new LinkedList<>(argargs);
 		//ScopedSubprotocolSignature ssubsig = new ScopedSubprotocolSignature(getScope(), fullname, roles, args);
 		//SubprotocolSignature ssubsig = new SubprotocolSignature(fullname, getScope(), roles, args);
-		SubprotocolSignature ssubsig = new SubprotocolSignature(fullname, roles, args);
+		SubprotocolSig ssubsig = new SubprotocolSig(fullname, roles, args);
 		//ScopedSubprotocolSignature ssubsig = getSubprotocolSignature(fullname, roleargs, argargs);
 		this.stack.add(ssubsig);
 	}
@@ -288,7 +289,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		if (size > 1)
 		{
 			//ScopedSubprotocolSignature last = this.stack.get(size - 1);
-			SubprotocolSignature last = this.stack.get(size - 1);
+			SubprotocolSig last = this.stack.get(size - 1);
 			for (int i = size - 2; i >= 0; i--)
 			{
 				//if (this.stack.get(i).sig.equals(last.sig))
@@ -329,7 +330,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	}
 	
 	//public List<ScopedSubprotocolSignature> getStack()
-	public List<SubprotocolSignature> getStack()
+	public List<SubprotocolSig> getStack()
 	{
 		return this.stack;
 	}
@@ -341,7 +342,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 	// FIXME: returning scoped sigs, from which sometimes just the unscoped part is needed (e.g. WF choice checking), is a tricky interface
 	//public ScopedSubprotocolSignature peekStack()
-	public SubprotocolSignature peekStack()
+	public SubprotocolSig peekStack()
 	{
 		return this.stack.get(this.stack.size() - 1);
 	}

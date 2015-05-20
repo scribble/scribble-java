@@ -19,6 +19,7 @@ import org.scribble2.model.visit.JobContext;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.sesstype.name.GProtocolName;
 import org.scribble2.sesstype.name.LProtocolName;
+import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -75,31 +76,35 @@ public class CommandLine implements Runnable
 	private void outputProjection(JobContext jc)
 	{
 		Map<LProtocolName, Module> projs = jc.getProjections();
+		GProtocolName gpn = new GProtocolName(this.args.get(Arg.PROJECT)[0]);
 		Role role = new Role(this.args.get(Arg.PROJECT)[1]);
-		//ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, this.args.get(Arg.PROJECT)[0]), role).toName();  // FIXME: factor out name projection from name node construction
-		LProtocolName proto = Projector.makeProjectedProtocolNameNode(new GProtocolName(jc.main, new GProtocolName(this.args.get(Arg.PROJECT)[0])), role).toName();  // FIXME: factor out name projection from name node construction
+		LProtocolName proto = getProjectedName(jc, gpn, role);
 		if (!projs.containsKey(proto))
 		{
 			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));
 		}
 		System.out.println(projs.get(proto));
 	}
+	
+	private static LProtocolName getProjectedName(JobContext jc, GProtocolName gpn, Role role)
+	{
+		return Projector.makeProjectedProtocolNameNode(new GProtocolName(jc.main, gpn), role).toName();  // FIXME: factor out name projection from name node construction
+	}
 
 	private void buildFsm(Job job) throws ScribbleException
 	{
 		JobContext jc = job.getContext();
-		// Factor out with outputProjection
-		Map<LProtocolName, Module> projs = jc.getProjections();
+		GProtocolName gpn = new GProtocolName(this.args.get(Arg.FSM)[0]);
 		Role role = new Role(this.args.get(Arg.FSM)[1]);
-		//ProtocolName proto = Projector.makeProjectedProtocolNameNode(new ProtocolName(jc.main, this.args.get(Arg.PROJECT)[0]), role).toName();  // FIXME: factor out name projection from name node construction
-		LProtocolName proto = Projector.makeProjectedProtocolNameNode(new GProtocolName(jc.main, new GProtocolName(this.args.get(Arg.FSM)[0])), role).toName();  // FIXME: factor out name projection from name node construction
-		if (!projs.containsKey(proto))
+		ModuleName modname = getProjectedName(jc, gpn, role).getPrefix();
+		if (!jc.hasModule(modname))
 		{
-			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.FSM)));
+			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(Arg.FSM)));
 		}
-		/*LProtocolDecl lpd = (LProtocolDecl) projs.get(proto).protos.get(0);
-		job.buildFsm(lpd);*/
-		job.buildFsm(projs.get(proto));  // Need Module for context
+		job.buildFsm(jc.getModule(modname));  // Need Module for context (not just the LProtoDecl)
+		
+		..HERE: get constructed FSM from jc and output
+		
 	}
 	
 	private MainContext newMainContext()

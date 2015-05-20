@@ -11,6 +11,28 @@ module Test;
 //import Test2;
 
 
+/*
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		2() from A to B;
+		do Bar(A, B);
+	}
+	or
+	{
+		4() from A to B;
+	}
+}
+
+global protocol Bar(role A, role B)
+{
+	3() from B to A;
+	do Foo(B, A);
+}
+//*/
+
 ///*
 global protocol Foo(role A, role B)
 {

@@ -9,7 +9,7 @@ import org.scribble2.model.InteractionNode;
 import org.scribble2.model.del.InteractionSeqDel;
 import org.scribble2.model.local.LInteractionNode;
 import org.scribble2.model.local.LInteractionSeq;
-import org.scribble2.model.visit.FsmConverter;
+import org.scribble2.model.visit.FsmConstructor;
 import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.sesstype.kind.Local;
@@ -69,7 +69,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		return (LInteractionSeq) super.popAndSetVisitorEnv(parent, child, conv, lis);
 	}*/
 
-	public LInteractionSeq visitForFsmConversion(FsmConverter conv, LInteractionSeq child) //throws ScribbleException
+	public LInteractionSeq visitForFsmConversion(FsmConstructor conv, LInteractionSeq child) //throws ScribbleException
 	{
 		ProtocolState entry = conv.builder.getEntry();
 		ProtocolState exit = conv.builder.getExit();

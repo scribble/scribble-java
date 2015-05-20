@@ -2,7 +2,7 @@ package org.scribble2.model.del;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.visit.ContextBuilder;
-import org.scribble2.model.visit.FsmConverter;
+import org.scribble2.model.visit.FsmConstructor;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.ReachabilityChecker;
@@ -37,8 +37,8 @@ public interface ModelDel
 	void enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException;
 	ModelNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException;
 
-	void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv);// throws ScribbleException;
-	ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited);// throws ScribbleException;
+	void enterFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor fsmcon);// throws ScribbleException;
+	ModelNode leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor fsmcon, ModelNode visited);// throws ScribbleException;
 
 	Env env();
 	//void setEnv(Env env);  // No defensive copy -- used from inside Env during a env pass

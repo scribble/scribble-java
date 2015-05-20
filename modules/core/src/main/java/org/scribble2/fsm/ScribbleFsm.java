@@ -1,11 +1,5 @@
 package org.scribble2.fsm;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.scribble2.sesstype.name.RecVar;
 
 public class ScribbleFsm
 {
@@ -18,7 +12,7 @@ public class ScribbleFsm
 		this.term = term;
 	}
 	
-	public ScribbleFsm stitch(ScribbleFsm f)
+	/*public ScribbleFsm stitch(ScribbleFsm f)
 	{
 		if (this.term == null)
 		{
@@ -127,8 +121,8 @@ public class ScribbleFsm
 				}
 			}
 		}
-		return new ScribbleFsm(init, term);*/
-	}
+		return new ScribbleFsm(init, term);* /
+	}*/
 
 	/*public ScribbleFsm bstitch(ScribbleFsm f)
 	{

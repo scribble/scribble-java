@@ -6,7 +6,7 @@ import java.util.Set;
 import org.scribble2.fsm.ProtocolState;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.local.LRecursion;
-import org.scribble2.model.visit.FsmConverter;
+import org.scribble2.model.visit.FsmConstructor;
 import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.env.ReachabilityEnv;
 import org.scribble2.sesstype.name.RecVar;
@@ -18,7 +18,7 @@ public class LRecursionDel extends LCompoundInteractionNodeDel
 	public LRecursion leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
 	{
 		LRecursion lr = (LRecursion) visited;
-		ReachabilityEnv env = checker.popEnv().mergeContext((ReachabilityEnv) lr.block.del().env());  //...HERE: env is null
+		ReachabilityEnv env = checker.popEnv().mergeContext((ReachabilityEnv) lr.block.del().env());
 		env = env.removeContinueLabel(lr.recvar.toName());
 		//merged.contExitable = this.contExitable;
 		checker.pushEnv(env);
@@ -26,24 +26,26 @@ public class LRecursionDel extends LCompoundInteractionNodeDel
 	}
 	
 	@Override
-	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv)
+	public void enterFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv)
 	{
-		super.enterFsmConversion(parent, child, conv);
+		super.enterFsmConstruction(parent, child, conv);
 		LRecursion lr = (LRecursion) child;
 		RecVar rv = lr.recvar.toName();
-		Set<RecVar> labs = new HashSet<>();
-		labs.add(rv);
+		/*Set<RecVar> labs = new HashSet<>();
+		labs.add(rv);*/
+		Set<String> labs = new HashSet<>();
+		labs.add(rv.toString());
 		ProtocolState s = conv.builder.newState(labs);
 		conv.builder.setEntry(s);
 		conv.builder.setRecursionEntry(rv);
 	}
 
 	@Override
-	public LRecursion leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)
+	public LRecursion leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)
 	{
 		LRecursion lr = (LRecursion) visited;
 		RecVar rv = lr.recvar.toName();
 		conv.builder.removeRecursionEntry(rv);
-		return (LRecursion) super.leaveFsmConversion(parent, child, conv, lr);
+		return (LRecursion) super.leaveFsmConstruction(parent, child, conv, lr);
 	}
 }
