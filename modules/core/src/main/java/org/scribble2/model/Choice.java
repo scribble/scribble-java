@@ -14,7 +14,7 @@ public abstract class Choice<K extends ProtocolKind>
 {
 	public final RoleNode subj;
 	//public final List<T> blocks;
-	public final List<? extends ProtocolBlock<K>> blocks;
+	public final List<? extends ProtocolBlock<K>> blocks;  // Factor up? And specialise to singleton for Recursion/Interruptible?
 
 	// All constructors being protected is a kind of "abstract class"
 	/*protected Choice(CommonTree ct, RoleNode subj, List<T> blocks)

@@ -6,9 +6,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble2.model.CompoundInteractionNode;
+import org.scribble2.model.InteractionNode;
+import org.scribble2.model.MessageTransfer;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.ProtocolBlock;
+import org.scribble2.model.SimpleInteractionNode;
 import org.scribble2.model.global.GChoice;
 import org.scribble2.model.local.LChoice;
 import org.scribble2.model.local.LProtocolBlock;
@@ -129,15 +133,41 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		// In principle, for the envLeave we should only be doing the latter (as countpart to enterEnv), but it is much more convenient for the compound-node (choice) to collect all the child block envs and merge here, rather than each individual block env trying to (partially) merge into the parent-choice as they are visited
 	}
 	
+	
+	private static Role getSubject(ProtocolBlock<Local> block)
+	{
+		InteractionNode<Local> ln = block.seq.actions.get(0);
+		Role subj;
+		if (ln instanceof SimpleInteractionNode)
+		{
+			// By well-formedness and projection, cannot be RecursionVar, but it can be a (recursive) subprotocol
+			if (ln instanceof MessageTransfer)
+			{
+				subj = ((MessageTransfer<Local>) ln).src.toName();
+			}
+			else //if (ln instanceof Do)
+			{
+				throw new RuntimeException("TODO: " + ln);
+			}
+		}
+		else //if (ln instanceof CompoundInteractionNode)
+		{
+			CompoundInteractionNode<Local> cn = (CompoundInteractionNode<Local>) ln;
+			throw new RuntimeException("TODO: " + ln);
+		}
+		return subj;
+	}
+	
 	@Override
 	public GChoice leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
 		//RoleNode subj = new RoleNode(gc.subj.toName().toString());  // Inconsistent to copy role nodes manually, but do via children visiting for other children
 		//RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, gc.subj.toName().toString());
-		RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
+		//RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
 		List<ProtocolBlock<Local>> blocks = 
 				gc.blocks.stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());	
+		RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getSubject(blocks.get(0)).toString());
 		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
 		if (!blocks.get(0).isEmpty())  // WF allows this
 		{
