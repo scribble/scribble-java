@@ -15,8 +15,8 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GlobalNode
 {
 	//public GlobalProtocolDecl(CommonTree ct, ProtocolNode name, RoleDeclList rdl, ParameterDeclList pdl, ProtocolDefinition<GlobalInteraction> def)
 	//public GlobalProtocolDecl(CommonTree ct, SimpleProtocolNameNode name, RoleDeclList roledecls, ParameterDeclList paramdecls, GlobalProtocolDefinition def)
-	//public GlobalProtocolDecl(GlobalProtocolHeader header, GlobalProtocolDefinition def)
-	public GProtocolDecl(ProtocolHeader<Global> header, ProtocolDef<Global> def)
+	public GProtocolDecl(GProtocolHeader header, GProtocolDef def)  // FIXME: refactor concrete Node classes to not use generic parameters, like this
+	//public GProtocolDecl(ProtocolHeader<Global> header, ProtocolDef<Global> def)
 	{
 		//this(t, name, roledecls, paramdecls, def, null, null);
 		super(header, def);
@@ -26,7 +26,7 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GlobalNode
 	protected GProtocolDecl copy()
 	{
 		//GlobalProtocolDecl gpd = ModelFactoryModelFactoryImpl.FACTORY.GlobalProtocolDecl(header, def);  // No: don't want del
-		return new GProtocolDecl(this.header, this.def);
+		return new GProtocolDecl((GProtocolHeader) this.header, (GProtocolDef) this.def);
 	}
 
 	@Override
@@ -36,7 +36,8 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GlobalNode
 		
 		ModelDel del = del();
 		//GlobalProtocolDecl gpd = ModelFactoryImpl.FACTORY.GlobalProtocolDecl(header, def);  // No: don't want del
-		GProtocolDecl gpd = new GProtocolDecl(header, def);
+		//GProtocolDecl gpd = new GProtocolDecl(header, def);
+		GProtocolDecl gpd = new GProtocolDecl((GProtocolHeader) header, (GProtocolDef) def);
 		gpd = (GProtocolDecl) gpd.del(del);  // FIXME: does another shallow copy
 		return gpd;
 	}
