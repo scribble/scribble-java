@@ -3,7 +3,6 @@ package org.scribble2.fsm;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.RecVar;
 
 public class FsmBuilder
@@ -34,7 +33,7 @@ public class FsmBuilder
 		return s;
 	}
 	
-	public void addEdge(ProtocolState s, MessageId op, ProtocolState succ)
+	public void addEdge(ProtocolState s, IOAction act, ProtocolState succ)
 	{
 		/*Map<Op, ProtocolState> tmp = this.edges.get(s);
 		if (tmp == null)	
@@ -51,7 +50,7 @@ public class FsmBuilder
 		{
 			this.states.add(succ);
 		}
-		s.addEdge(op, succ);
+		s.addEdge(act, succ);
 	}
 	
 	public ScribbleFsm build()

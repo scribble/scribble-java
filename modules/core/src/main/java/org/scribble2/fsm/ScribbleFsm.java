@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.scribble2.sesstype.name.MessageId;
-
 public class ScribbleFsm
 {
 	public final ProtocolState init;
@@ -59,9 +57,9 @@ public class ScribbleFsm
 			return;
 		}
 		seen.add(curr);
-		for (Entry<MessageId, ProtocolState> e : curr.getEdges().entrySet())
+		for (Entry<IOAction, ProtocolState> e : curr.getEdges().entrySet())
 		{
-			MessageId op = e.getKey();
+			IOAction op = e.getKey();
 			ProtocolState next = e.getValue();
 			if (next.equals(term))
 			{

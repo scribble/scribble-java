@@ -8,21 +8,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.RecVar;
 
 public class ProtocolState
 {
 	private static int count = 0;
 	
-	public final int id;
+	public final int mid;
 
 	private final Set<RecVar> labs;
-	private final Map<MessageId, ProtocolState> edges;
+	private final Map<IOAction, ProtocolState> edges;
 	
 	protected ProtocolState(Set<RecVar> labs)
 	{
-		this.id = ProtocolState.count++;
+		this.mid = ProtocolState.count++;
 		this.labs = new HashSet<>(labs);
 		this.edges = new HashMap<>();
 	}
@@ -33,7 +32,7 @@ public class ProtocolState
 		//return this.labs;
 	}
 	
-	protected Map<MessageId, ProtocolState> getEdges()
+	protected Map<IOAction, ProtocolState> getEdges()
 	{
 		return this.edges;
 	}
@@ -63,7 +62,7 @@ public class ProtocolState
 		}
 		else
 		{
-			for (Entry<MessageId, ProtocolState> e : curr.edges.entrySet())
+			for (Entry<IOAction, ProtocolState> e : curr.edges.entrySet())
 			{
 				findTerminals(seen, e.getValue(), terms);
 			}
@@ -94,17 +93,17 @@ public class ProtocolState
 		}
 	}*/
 	
-	protected void addEdge(MessageId op, ProtocolState s)
+	protected void addEdge(IOAction op, ProtocolState s)
 	{
 		this.edges.put(op, s);
 	}
 	
-	public boolean isAcceptable(MessageId op)
+	public boolean isAcceptable(IOAction op)
 	{
 		return this.edges.containsKey(op);
 	}
 
-	public ProtocolState accept(MessageId op)
+	public ProtocolState accept(IOAction op)
 	{
 		return this.edges.get(op);
 	}
@@ -118,7 +117,7 @@ public class ProtocolState
 	public int hashCode()
 	{
 		int hash = 73;
-		hash = 31 * hash + this.id;  // Would be enough by itself, but keep consistent with equals
+		hash = 31 * hash + this.mid;  // Would be enough by itself, but keep consistent with equals
 		hash = 31 * hash + this.labs.hashCode();
 		hash = 31 * hash + this.edges.hashCode();
 		return hash;
@@ -136,22 +135,22 @@ public class ProtocolState
 			return false;
 		}
 		ProtocolState s = (ProtocolState) o;
-		return this.id == s.id && this.labs.equals(s.labs) && this.edges.equals(s.edges);
+		return this.mid == s.mid && this.labs.equals(s.labs) && this.edges.equals(s.edges);
 	}
 	
 	@Override
 	public String toString()
 	{
-		String s = "\"" + this.id + "\":[";
+		String s = "\"" + this.mid + "\":[";
 		if (!this.edges.isEmpty())
 		{
-			Iterator<Entry<MessageId, ProtocolState>> es = this.edges.entrySet().iterator();
-			Entry<MessageId, ProtocolState> first = es.next();
-			s += first.getKey() + "=\"" + first.getValue().id + "\"";
+			Iterator<Entry<IOAction, ProtocolState>> es = this.edges.entrySet().iterator();
+			Entry<IOAction, ProtocolState> first = es.next();
+			s += first.getKey() + "=\"" + first.getValue().mid + "\"";
 			while (es.hasNext())
 			{
-				Entry<MessageId, ProtocolState> e = es.next();
-				s += ", " + e.getKey() + "=\"" + e.getValue().id + "\"";
+				Entry<IOAction, ProtocolState> e = es.next();
+				s += ", " + e.getKey() + "=\"" + e.getValue().mid + "\"";
 			}
 		}
 		return s + "]";
@@ -169,9 +168,9 @@ public class ProtocolState
 	{
 		seen.add(this);
 		String s = toNodeDot();
-		for (Entry<MessageId, ProtocolState> e : this.edges.entrySet())
+		for (Entry<IOAction, ProtocolState> e : this.edges.entrySet())
 		{
-			MessageId msg = e.getKey();
+			IOAction msg = e.getKey();
 			ProtocolState p = e.getValue();
 			s += "\n" + toEdgeDot(msg, p);
 			if (!seen.contains(p))
@@ -196,18 +195,18 @@ public class ProtocolState
 	
 	protected String getDotNodeId()
 	{
-		return "\"" + this.id + "\"";
+		return "\"" + this.mid + "\"";
 	}
 
 	// Override to change edge drawing from "this" as src
-	protected String toEdgeDot(MessageId msg, ProtocolState next)
+	protected String toEdgeDot(IOAction msg, ProtocolState next)
 	{
 		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));
 	}
 	
 	// "this" is the dest node of the edge
 	// Override to change edge drawing to "this" as dest
-	protected String getEdgeLabel(MessageId msg)
+	protected String getEdgeLabel(IOAction msg)
 	{
 		return "label=\"" + msg + "\"";
 	}
