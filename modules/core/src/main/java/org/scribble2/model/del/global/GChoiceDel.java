@@ -6,12 +6,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble2.model.CompoundInteractionNode;
+import org.scribble2.model.Choice;
 import org.scribble2.model.InteractionNode;
+import org.scribble2.model.Interruptible;
 import org.scribble2.model.MessageTransfer;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.Parallel;
 import org.scribble2.model.ProtocolBlock;
+import org.scribble2.model.Recursion;
 import org.scribble2.model.SimpleInteractionNode;
 import org.scribble2.model.global.GChoice;
 import org.scribble2.model.local.LChoice;
@@ -133,7 +136,6 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		// In principle, for the envLeave we should only be doing the latter (as countpart to enterEnv), but it is much more convenient for the compound-node (choice) to collect all the child block envs and merge here, rather than each individual block env trying to (partially) merge into the parent-choice as they are visited
 	}
 	
-	
 	private static Role getSubject(ProtocolBlock<Local> block)
 	{
 		InteractionNode<Local> ln = block.seq.actions.get(0);
@@ -152,8 +154,28 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		}
 		else //if (ln instanceof CompoundInteractionNode)
 		{
-			CompoundInteractionNode<Local> cn = (CompoundInteractionNode<Local>) ln;
-			throw new RuntimeException("TODO: " + ln);
+			//CompoundInteractionNode<Local> cn = (CompoundInteractionNode<Local>) ln;
+			// FIXME: streamline -- factor out CompoundBlockedNode?
+			if (ln instanceof Choice)
+			{
+				return getSubject(((Choice<Local>) ln).blocks.get(0));
+			}
+			else if (ln instanceof Recursion)
+			{
+				return getSubject(((Recursion<Local>) ln).block);
+			}
+			else if (ln instanceof Parallel)
+			{
+				return getSubject(((Parallel<Local>) ln).blocks.get(0));
+			}
+			else if (ln instanceof Interruptible)
+			{
+				return getSubject(((Interruptible<Local>) ln).block);
+			}
+			else
+			{
+				throw new RuntimeException("Shoudln't get in here: " + ln);
+			}
 		}
 		return subj;
 	}
