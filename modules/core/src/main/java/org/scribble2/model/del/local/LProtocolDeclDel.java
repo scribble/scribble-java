@@ -8,6 +8,7 @@ import org.scribble2.model.del.ProtocolDeclDel;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.FsmConstructor;
+import org.scribble2.model.visit.JobContext;
 import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.Role;
@@ -59,13 +60,12 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	@Override
 	public ModelNode leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)// throws ScribbleException
 	{
-		//LProtocolDecl lpd = (LProtocolDecl) visited;
+		LProtocolDecl lpd = (LProtocolDecl) visited;
 		//ScribbleFsm f = ((FsmBuildingEnv) lpd.def.del().env()).getFsm();
-
-		System.out.println("b: " + new ScribbleFsm(conv.builder.getEntry(), conv.builder.getExit()));
-		
-		..HERE: store graphs/fsms in jobcontext; bit like projections, but store in jc here directly, don't wait for ModuleDel
-
+		//store graphs/fsms in jobcontext; bit like projections, but store in jc here directly, don't wait for ModuleDel
+		ScribbleFsm fsm = new ScribbleFsm(conv.builder.getEntry(), conv.builder.getExit());
+		JobContext jc = conv.getJobContext();
+		jc.addFsm(lpd.getFullProtocolName((Module) parent), fsm);
 		return visited;
 	}
 	

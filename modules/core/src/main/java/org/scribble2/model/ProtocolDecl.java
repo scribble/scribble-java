@@ -42,12 +42,12 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 
 	/*@Override
 	//public T1 getHeader()
-	public ProtocolHeader getHeader()
+	public ProtocolHeader<K> getHeader()
 	{
 		return this.header;
 	}
 
-	@Override
+	/*@Override
 	//public T2 getDef()
 	public ProtocolDefinition<K> getDef()
 	{
@@ -118,6 +118,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 		}
 	}*/
 	public abstract ProtocolName<? extends ProtocolKind> getFullProtocolName(Module mod);
+	//public abstract ProtocolName<? extends ProtocolKind> getFullProtocolName(ModuleContext mcontext);  // Maybe better, but ModuleContext itself currently uses this method
 	
 	//@Override
 	public boolean isGlobal()

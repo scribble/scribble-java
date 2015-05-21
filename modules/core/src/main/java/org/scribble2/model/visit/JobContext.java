@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble2.fsm.ScribbleFsm;
 import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.GProtocolName;
 import org.scribble2.sesstype.name.LProtocolName;
@@ -36,6 +37,8 @@ public class JobContext
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
 	private final Map<ModuleName, Module> projectionsByModules = new HashMap<>();  // An alternative view of projections
 
+	private final Map<LProtocolName, ScribbleFsm> fsms = new HashMap<>();
+	
 	//public JobContext(Job job, List<String> importPath, String mainpath) throws ScribbleException
 	//public JobContext(Job job, List<String> importPath, String mainpath, Map<ModuleName, Module> modules, Module mainmod) throws ScribbleException
 	//public JobContext(Job job, List<Path> importPath, Path mainpath, Map<ModuleName, Module> modules, Module mainmod) throws ScribbleException
@@ -146,6 +149,16 @@ public class JobContext
 		{
 			throw new RuntimeException("Unknown module: " + fullmodname);
 		}
+	}
+	
+	public void addFsm(LProtocolName lpn, ScribbleFsm fsm)
+	{
+		this.fsms.put(lpn, fsm);
+	}
+	
+	public ScribbleFsm getFsm(LProtocolName lpn)
+	{
+		return this.fsms.get(lpn);
 	}
 	
 	// FIXME: make immutable (will need to assign updated context back to Job) -- will also need to do for Module replacing

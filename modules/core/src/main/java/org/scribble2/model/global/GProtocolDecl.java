@@ -50,9 +50,11 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GlobalNode
 
 	@Override
 	public GProtocolName getFullProtocolName(Module mod)
+	//public GProtocolName getFullProtocolName(ModuleContext mcontext)
 	{
 		ModuleName fullmodname = mod.getFullModuleName();
 		return new GProtocolName(fullmodname, this.header.getDeclName());
+		//return mcontext.getFullGlobalProtocolName(((GProtocolHeader) this.header).getDeclName());
 	}
 
 	/*@Override
