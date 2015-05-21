@@ -29,8 +29,9 @@ public class CommandLine implements Runnable
 	public static final String PATH_FLAG = "-path";
 	public static final String PROJECT_FLAG = "-project";
 	public static final String FSM_FLAG = "-fsm";
+	public static final String FSM_API = "-api";
 	
-	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM }
+	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM, API }
 	
 	private final Map<Arg, String[]> args;
 	
@@ -64,7 +65,11 @@ public class CommandLine implements Runnable
 			}
 			if (this.args.containsKey(Arg.FSM))
 			{
-				buildFsm(job);
+				outputFsm(job);
+			}
+			if (this.args.containsKey(Arg.API))
+			{
+				outputApi(job);
 			}
 		}
 		catch (ScribbleException e)
@@ -85,25 +90,40 @@ public class CommandLine implements Runnable
 		}
 		System.out.println(projs.get(proto));
 	}
-	
-	private static LProtocolName getProjectedName(JobContext jc, GProtocolName gpn, Role role)
-	{
-		return Projector.makeProjectedProtocolNameNode(new GProtocolName(jc.main, gpn), role).toName();  // FIXME: factor out name projection from name node construction
-	}
 
-	private void buildFsm(Job job) throws ScribbleException
+	private void outputFsm(Job job) throws ScribbleException
 	{
 		JobContext jc = job.getContext();
 		GProtocolName gpn = new GProtocolName(this.args.get(Arg.FSM)[0]);
 		Role role = new Role(this.args.get(Arg.FSM)[1]);
 		LProtocolName lpn = getProjectedName(jc, gpn, role);
+		buildFsm(job, lpn);
+		System.out.println(jc.getFsm(lpn));
+	}
+
+	private void outputApi(Job job) throws ScribbleException
+	{
+		JobContext jc = job.getContext();
+		GProtocolName gpn = new GProtocolName(this.args.get(Arg.API)[0]);
+		Role role = new Role(this.args.get(Arg.API)[1]);
+		LProtocolName lpn = getProjectedName(jc, gpn, role);
+		//buildFsm(job, lpn);
+		Map<String, String> classes = job.generateApi(lpn);
+		for (String clazz : classes.values())
+		{
+			System.out.println(clazz);
+		}
+	}
+
+	private void buildFsm(Job job, LProtocolName lpn) throws ScribbleException
+	{
+		JobContext jc = job.getContext();
 		ModuleName modname = lpn.getPrefix();
 		if (!jc.hasModule(modname))  // Move into Job?  But this is a check on the CL args
 		{
 			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(Arg.FSM)));
 		}
 		job.buildFsm(jc.getModule(modname));  // Need Module for context (not just the LProtoDecl) -- builds FSMs for all locals in the module
-		System.out.println(jc.getFsm(lpn));
 	}
 	
 	private MainContext newMainContext()
@@ -113,6 +133,11 @@ public class CommandLine implements Runnable
 		List<Path> impaths = this.args.containsKey(Arg.PATH) ? CommandLine.parseImportPaths(this.args.get(Arg.PATH)[0]) : Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		return new MainContext(debug, locator, mainpath);
+	}
+	
+	private static LProtocolName getProjectedName(JobContext jc, GProtocolName gpn, Role role)
+	{
+		return Projector.makeProjectedProtocolNameNode(new GProtocolName(jc.main, gpn), role).toName();  // FIXME: factor out name projection from name node construction
 	}
 	
 	//protected Module loadModule(Resource resource) {
@@ -310,6 +335,7 @@ class CommandLineArgumentParser
 		this.FLAGS.put(CommandLine.PATH_FLAG, CommandLine.Arg.PATH);
 		this.FLAGS.put(CommandLine.PROJECT_FLAG, CommandLine.Arg.PROJECT);
 		this.FLAGS.put(CommandLine.FSM_FLAG, CommandLine.Arg.FSM);
+		this.FLAGS.put(CommandLine.FSM_API, CommandLine.Arg.API);
 	}
 	
 	private void parseArgs()
@@ -355,6 +381,10 @@ class CommandLineArgumentParser
 			case CommandLine.FSM_FLAG:
 			{
 				return parseFsm(i);
+			}
+			case CommandLine.FSM_API:
+			{
+				return parseApi(i);
 			}
 			default:
 			{
@@ -413,6 +443,18 @@ class CommandLineArgumentParser
 		String proto = this.args[++i];
 		String role = this.args[++i];
 		this.parsed.put(this.FLAGS.get(CommandLine.FSM_FLAG), new String[] { proto, role } );
+		return i;
+	}
+
+	private int parseApi(int i)  // Almost same as parseProject
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new RuntimeException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		this.parsed.put(this.FLAGS.get(CommandLine.FSM_API), new String[] { proto, role } );
 		return i;
 	}
 

@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import org.scribble2.fsm.ApiGenerator;
 import org.scribble2.model.Module;
 import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.ModuleName;
@@ -137,6 +138,16 @@ public class Job
 	{
 		debugPrintln("\n--- Convert to FSMs --- ");
 		mod.accept(new FsmConstructor(this));
+	}
+	
+	public Map<String, String> generateApi(LProtocolName lpn) throws ScribbleException
+	{
+		if (this.jcontext.getFsm(lpn) == null)  // FIXME: null hack
+		{
+			Module mod = this.jcontext.getModule(lpn.getPrefix());
+			buildFsm(mod);
+		}
+		return new ApiGenerator(this, lpn).getClasses();  // FIXME: store results?
 	}
 
 	private void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException
