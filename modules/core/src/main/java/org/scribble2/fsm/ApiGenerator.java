@@ -190,7 +190,7 @@ public class ApiGenerator
 			}
 			case BRANCH:
 			{
-				throw new RuntimeException("TODO");
+				throw new RuntimeException("TODO: " + st);
 				/*method += this.classNames.get(succ) + " receive() {\n";
 				method += "\t\torg.scribble2.sesstype.name.MessageId mid = super.receive(" + a.peer + ");\n";
 				method +=  ...;
