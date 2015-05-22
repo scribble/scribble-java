@@ -1,7 +1,8 @@
 package org.scribble2.net;
 
-import org.scribble2.net.session.ScribbleRuntimeException;
 import org.scribble2.net.session.SessionEndpoint;
+import org.scribble2.util.ScribbleRuntimeException;
+
 
 // LinearSocket
 public abstract class ScribSocket implements AutoCloseable
@@ -9,6 +10,11 @@ public abstract class ScribSocket implements AutoCloseable
 	protected SessionEndpoint ep;
 	
 	private boolean used = false;
+	
+	protected ScribSocket(SessionEndpoint ep)
+	{
+		this.ep = ep;
+	}
 	
 	protected boolean isUsed()
 	{
@@ -55,8 +61,15 @@ public abstract class ScribSocket implements AutoCloseable
 	{
 		//this.sessep.close();
 		if (!this.used)
+		//if (!this.ep.isCompleted())
 		{
-			throw new ScribbleRuntimeException("Socket not used: ");
+			//throw new ScribbleRuntimeException("Socket not used: ");
+			this.ep.close();
 		}
 	}
+	
+	/*protected void setCompleted()
+	{
+		this.ep.setCompleted();
+	}*/
 }

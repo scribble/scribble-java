@@ -29,9 +29,10 @@ public class CommandLine implements Runnable
 	public static final String PATH_FLAG = "-path";
 	public static final String PROJECT_FLAG = "-project";
 	public static final String FSM_FLAG = "-fsm";
-	public static final String FSM_API = "-api";
+	public static final String API_FLAG = "-api";
+	public static final String SESSION_FLAG = "-session";
 	
-	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM, API }
+	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM, API, SESSION }
 	
 	private final Map<Arg, String[]> args;
 	
@@ -71,6 +72,10 @@ public class CommandLine implements Runnable
 			{
 				outputApi(job);
 			}
+			if (this.args.containsKey(Arg.SESSION))
+			{
+				outputSession(job);
+			}
 		}
 		catch (ScribbleException e)
 		{
@@ -106,13 +111,24 @@ public class CommandLine implements Runnable
 		JobContext jc = job.getContext();
 		GProtocolName gpn = new GProtocolName(this.args.get(Arg.API)[0]);
 		Role role = new Role(this.args.get(Arg.API)[1]);
-		LProtocolName lpn = getProjectedName(jc, gpn, role);
+		/*LProtocolName lpn = getProjectedName(jc, gpn, role);
 		//buildFsm(job, lpn);
-		Map<String, String> classes = job.generateApi(lpn);
+		Map<String, String> classes = job.generateApi(lpn);*/
+		GProtocolName fullname = new GProtocolName(jc.main, gpn);
+		Map<String, String> classes = job.generateApi(fullname, role);
 		for (String clazz : classes.values())
 		{
 			System.out.println(clazz);
 		}
+	}
+	
+	private void outputSession(Job job) throws ScribbleException
+	{
+		JobContext jc = job.getContext();
+		GProtocolName gpn = new GProtocolName(this.args.get(Arg.SESSION)[0]);
+		GProtocolName fullname = new GProtocolName(jc.main, gpn);
+		String clazz = job.generateSession(fullname);
+		System.out.println(clazz);
 	}
 
 	private void buildFsm(Job job, LProtocolName lpn) throws ScribbleException
@@ -335,7 +351,8 @@ class CommandLineArgumentParser
 		this.FLAGS.put(CommandLine.PATH_FLAG, CommandLine.Arg.PATH);
 		this.FLAGS.put(CommandLine.PROJECT_FLAG, CommandLine.Arg.PROJECT);
 		this.FLAGS.put(CommandLine.FSM_FLAG, CommandLine.Arg.FSM);
-		this.FLAGS.put(CommandLine.FSM_API, CommandLine.Arg.API);
+		this.FLAGS.put(CommandLine.API_FLAG, CommandLine.Arg.API);
+		this.FLAGS.put(CommandLine.SESSION_FLAG, CommandLine.Arg.SESSION);
 	}
 	
 	private void parseArgs()
@@ -382,9 +399,13 @@ class CommandLineArgumentParser
 			{
 				return parseFsm(i);
 			}
-			case CommandLine.FSM_API:
+			case CommandLine.API_FLAG:
 			{
 				return parseApi(i);
+			}
+			case CommandLine.SESSION_FLAG:
+			{
+				return parseSession(i);
 			}
 			default:
 			{
@@ -454,7 +475,18 @@ class CommandLineArgumentParser
 		}
 		String proto = this.args[++i];
 		String role = this.args[++i];
-		this.parsed.put(this.FLAGS.get(CommandLine.FSM_API), new String[] { proto, role } );
+		this.parsed.put(this.FLAGS.get(CommandLine.API_FLAG), new String[] { proto, role } );
+		return i;
+	}
+
+	private int parseSession(int i)  // Almost same as parseProject
+	{
+		if ((i + 1) >= this.args.length)
+		{
+			throw new RuntimeException("Missing protocol argument");
+		}
+		String proto = this.args[++i];
+		this.parsed.put(this.FLAGS.get(CommandLine.SESSION_FLAG), new String[] { proto } );
 		return i;
 	}
 

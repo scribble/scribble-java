@@ -15,6 +15,8 @@ public class SessionEndpoint
 	public final Session sess;
 	//public final Principal self;
 	public final Role self;
+	
+	private boolean complete = false;
 
 	//private final Map<Role, Principal> remroles = new HashMap<Role, Principal>();  // Doesn't include self
 	private final Map<Role, SocketEndpoint> sockets = new HashMap<Role, SocketEndpoint>();   // Includes SelfSocketEndpoint
@@ -31,6 +33,17 @@ public class SessionEndpoint
 		/*ProtocolName lpn = Projector.makeProjectedProtocolName(sess.proto, this.self.role);
 		this.root = (LocalProtocolDecl) projections.get(lpn.getPrefix()).protos.get(0);*/
 		//this.monitor = createMonitor(sess.impath, sess.source, sess.proto, self);
+	}
+	
+	//protected void setCompleted()
+	public void setCompleted()
+	{
+		this.complete = true;	
+	}
+	
+	public boolean isCompleted()
+	{
+		return this.complete;
 	}
 
 	// Only for remote endpoints (self SocketEndpoint is done in above constructor; but not recorded in role-principal map)

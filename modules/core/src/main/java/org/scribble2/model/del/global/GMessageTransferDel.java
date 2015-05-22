@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.MessageNode;
+import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.global.GMessageTransfer;
@@ -12,6 +13,7 @@ import org.scribble2.model.local.LInteractionNode;
 import org.scribble2.model.local.LReceive;
 import org.scribble2.model.local.LocalNode;
 import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.model.visit.OpCollector;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.ProjectionEnv;
@@ -100,5 +102,17 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		proj.pushEnv(new ProjectionEnv(projection));
 		//return gmt;
 		return (GMessageTransfer) super.leaveProjection(parent, child, proj, gmt);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+	}
+
+	@Override
+	public ModelNode leaveOpCollection(ModelNode parent, ModelNode child, OpCollector coll, ModelNode visited)
+	{
+		GMessageTransfer gmt = (GMessageTransfer) visited;
+		if (!gmt.msg.isMessageSigNode())
+		{
+			throw new RuntimeException("Op collection should be run on ground types: " + gmt.msg);
+		}
+		coll.addOp(((MessageSigNode) gmt.msg).op.toName());
+		return visited;
 	}
 }

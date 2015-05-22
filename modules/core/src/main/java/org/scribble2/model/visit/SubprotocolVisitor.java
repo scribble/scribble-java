@@ -379,4 +379,10 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	{
 		return this.mcontext;
 	}
+	
+	// Factor out -- e.g. some Visitors want to root on ProtocolDecl, not Module
+	protected void setModuleContext(ModuleContext mcontext)
+	{
+		this.mcontext = mcontext;
+	}
 }
