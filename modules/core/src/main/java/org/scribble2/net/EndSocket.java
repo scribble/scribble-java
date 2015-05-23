@@ -7,7 +7,7 @@ import org.scribble2.util.ScribbleRuntimeException;
 
 public abstract class EndSocket extends ScribSocket
 {
-	private boolean closed = false;
+	//private boolean closed = false;
 
 	protected EndSocket(SessionEndpoint ep)
 	{
@@ -19,15 +19,15 @@ public abstract class EndSocket extends ScribSocket
 		use();
 		//this.ep.setCompleted();
 		this.ep.close();
-		this.closed = true;
+		//this.closed = true;
 	}
 	
-	@Override
+	/*@Override
 	public void close()
 	{
 		if (!this.closed)
 		{
 			this.ep.close();
 		}
-	}
+	}*/
 }

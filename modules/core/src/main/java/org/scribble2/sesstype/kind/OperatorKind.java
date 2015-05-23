@@ -1,7 +1,11 @@
 package org.scribble2.sesstype.kind;
 
-public class OperatorKind extends Kind
+import java.io.Serializable;
+
+public class OperatorKind extends Kind implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	public static final OperatorKind KIND = new OperatorKind();
 	
 	protected OperatorKind()

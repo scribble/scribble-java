@@ -13,9 +13,9 @@ module Test;
 
 global protocol Foo(role A, role B)
 {
-	1() from A to B;
-	2() from B to A;
-	/*choice at B
+	/*1() from A to B;
+	2() from B to A;*/
+	choice at B
 	{
 		1a() from B to A;
 		//1b() from A to B;
@@ -24,7 +24,7 @@ global protocol Foo(role A, role B)
 	{
 		2a() from B to A;
 		//2b() from A to B;
-	}*/
+	}
 }
 
 

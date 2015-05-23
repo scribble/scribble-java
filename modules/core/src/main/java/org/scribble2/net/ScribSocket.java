@@ -72,10 +72,11 @@ public abstract class ScribSocket implements AutoCloseable
 		return this.ep.getSocketEndpoint(role).readObject();
 	}*/
 
+	// Only triggered by autoclose or explicit close
 	@Override
 	public void close() throws ScribbleRuntimeException
 	{
-		System.out.println("c1: ");
+		System.out.println("c1: " + this.ep.self + ", " + this.getClass());
 
 		//this.sessep.close();
 		if (!this.used)

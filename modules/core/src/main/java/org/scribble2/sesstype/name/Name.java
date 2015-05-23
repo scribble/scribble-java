@@ -12,7 +12,8 @@ public abstract class Name<K extends Kind> implements Serializable//, IName
 	private static final long serialVersionUID = 1L;
 	
 	//protected final KindEnum kindenum = null;
-	public final K kind;
+	//public final K kind;
+	public K kind;  // FIXME: nonfinal for serialization
 	
 	//public static final CompoundName EMPTY_NAME = new CompoundName();
 
@@ -125,11 +126,13 @@ public abstract class Name<K extends Kind> implements Serializable//, IName
 
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException
 	{
+		out.writeObject(this.kind);
 		out.writeObject(this.elems);
 	}
 
 	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
+		this.kind = (K) in.readObject();
 		this.elems = (String[]) in.readObject();
 	}
 

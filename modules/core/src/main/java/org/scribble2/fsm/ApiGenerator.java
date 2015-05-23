@@ -12,6 +12,7 @@ import org.scribble2.sesstype.name.GProtocolName;
 import org.scribble2.sesstype.name.LProtocolName;
 import org.scribble2.sesstype.name.Op;
 import org.scribble2.sesstype.name.Role;
+import org.scribble2.util.ScribbleRuntimeException;
 
 public class ApiGenerator
 {
@@ -32,6 +33,7 @@ public class ApiGenerator
 		SOCKET_CLASSES = new HashMap<>();
 		SOCKET_CLASSES.put(SocketType.SEND, "org.scribble2.net.SendSocket");
 		SOCKET_CLASSES.put(SocketType.RECIEVE, "org.scribble2.net.ReceiveSocket");
+		SOCKET_CLASSES.put(SocketType.BRANCH, "org.scribble2.net.BranchSocket");
 		SOCKET_CLASSES.put(SocketType.END, "org.scribble2.net.EndSocket");
 	}
 
@@ -229,16 +231,28 @@ public class ApiGenerator
 				clazz += "\n";
 				clazz += generateImports(ps);
 				clazz += "\n";
-				clazz += "public class " + tmp + " extends " + SOCKET_CLASSES.get(SocketType.RECIEVE) + " {\n";
-				clazz += generateConstructor(tmp);
+				clazz += "public class " + tmp + " extends " + SOCKET_CLASSES.get(SocketType.BRANCH) + " {\n";
+				clazz += "\n";
+				clazz += "\tpublic final " + this.classNames.get(ps) + "." + this.classNames.get(ps) + "Enum op;\n";
+				clazz += "\tprivate final ScribMessage m;\n";
+				//clazz += generateConstructor(tmp);
+				clazz += "\tprotected " + tmp + "(SessionEndpoint se, " + this.classNames.get(ps) + "." + this.classNames.get(ps) + "Enum op, ScribMessage m) {\n";
+				clazz += "\t\tsuper(se);\n";
+				clazz += "\t\tthis.op = op;\n";
+				clazz += "\t\tthis.m = m;\n";
+				clazz += "\t}";
 				clazz += "\n\n";
 				for (IOAction a : ps.getAcceptable())
 				{
 					ProtocolState succ = ps.accept(a);
-					String next = (succ.isTerminal()) ? SOCKET_CLASSES.get(SocketType.END) : this.classNames.get(succ);
-					clazz += "\tpublic " + next + " receive() throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-					clazz += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
-					clazz += "\t\t\treturn new " + next + "(this.ep);\n";
+					String next = this.classNames.get(succ);
+					clazz += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName((Op) a.mid) + " op) throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
+					//clazz += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
+					clazz += "\t\tsuper.use();\n";
+					clazz += "\t\tif (!this.m.op.equals(" + getOp((Op) a.mid) + ")) {\n";
+					clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, should be: + " + this.getOp((Op) a.mid) + "\");\n";
+					clazz += "\t\t}\n";
+					clazz += "\t\treturn new " + next + "(this.ep);\n";
 					clazz += "\t}\n";
 				}
 				clazz += "}";
@@ -248,20 +262,35 @@ public class ApiGenerator
 				IOAction first = as.next();
 				String next = tmp;
 				method += "\tpublic " + next + " branch() throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-				method += "\t\tsuper.receive(" + getRole(first.peer) + ");\n";
-				method += "\t\t\treturn new " + next + "(this.ep);\n";
-				method += "\t}\n";
-				method += "\n";
-				method += "\tenum " + this.classNames.get(ps) + "Enum implements org.scribble2.net.session.OpEnum { ";   // FIXME: should be in methods
-				method += first.mid.toString();
+				method += "\t\tScribMessage m = super.readScribMessage(" + getRole(first.peer) + ");\n";
+				method += "\t\t" + this.classNames.get(ps) + "Enum openum;\n";
+				method += "\t\tif (m.op.equals(" + getOp((Op) first.mid) + ")) {\n";
+				//method += "\t\t\treturn " + this.classNames.get(ps) + "Enum." + first.mid.toString() + ";\n";
+				method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionGenerator.getOpClassName((Op) first.mid) + ";\n";
+				method += "\t\t}\n";
 				for (; as.hasNext(); )
 				{
 					IOAction a = as.next();
-					method += ", " + a.mid.toString();
+					method += "\t\telse if (m.op.equals(" + getOp((Op) a.mid) + ")) {\n";
+					//method += "\t\t\treturn " + this.classNames.get(ps) + "Enum." + a.mid.toString() + ";\n";
+					method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionGenerator.getOpClassName((Op) a.mid) + ";\n";
+					method += "\t\t}\n";
+				}
+				method += "\t\treturn new " + next + "(this.ep, openum, m);\n";
+				//method += "\t\tthrow new RuntimeException(\"Shouldn't get here: \" + m.op);\n";
+				method += "\t}\n";
+
+				as = ps.getAcceptable().iterator();
+				first = as.next();
+				method += "\n";
+				method += "\tprotected enum " + this.classNames.get(ps) + "Enum implements org.scribble2.net.session.OpEnum { ";   // FIXME: should be in methods
+				method += SessionGenerator.getOpClassName((Op) first.mid);
+				for (; as.hasNext(); )
+				{
+					IOAction a = as.next();
+					method += ", " + SessionGenerator.getOpClassName((Op) a.mid);
 				}
 				method += "; }\n";
-				method += "\n";
-				method += "\tpublic " + this.classNames.get(ps) + "Enum op;\n";
 				break;
 			}
 			default:
@@ -282,7 +311,7 @@ public class ApiGenerator
 	{
 		return SessionGenerator.getSessionClassName(gpn) + "." + SessionGenerator.getOpClassName(op);
 	}
-
+	
 	private String getRole(Role role)
 	{
 		return SessionGenerator.getSessionClassName(gpn) + "." + role.toString();
