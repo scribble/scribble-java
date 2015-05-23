@@ -148,6 +148,8 @@ public class ApiGenerator
 		imports += "import org.scribble2.net.ScribMessage;\n";
 		imports += "import org.scribble2.net.session.SessionEndpoint;\n";
 		imports += "import org.scribble2.util.ScribbleRuntimeException;\n";
+		imports += "\n";
+		imports += "import " + SessionGenerator.getPackageName(this.gpn) + "." + SessionGenerator.getSessionClassName(this.gpn) + ";\n";
 		//imports += "import org.scribble2.util.SessionIncompleteException;\n";
 		/*imports += "\n";
 		imports += "import " + getPackageName() + "." + this.role + ";\n";
@@ -247,11 +249,11 @@ public class ApiGenerator
 				{
 					ProtocolState succ = ps.accept(a);
 					String next = this.classNames.get(succ);
-					clazz += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName((Op) a.mid) + " op) throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
+					clazz += "\tpublic " + next + " receive(" + SessionGenerator.getPackageName(this.gpn) + "." + SessionGenerator.getOpClassName((Op) a.mid) + " op) throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
 					//clazz += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
 					clazz += "\t\tsuper.use();\n";
 					clazz += "\t\tif (!this.m.op.equals(" + getOp((Op) a.mid) + ")) {\n";
-					clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: + this.m.op\");\n";
+					clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);\n";
 					clazz += "\t\t}\n";
 					clazz += "\t\treturn new " + next + "(this.ep);\n";
 					clazz += "\t}\n";
@@ -286,7 +288,7 @@ public class ApiGenerator
 				as = ps.getAcceptable().iterator();
 				first = as.next();
 				method += "\n";
-				method += "\tprotected enum " + this.classNames.get(ps) + "Enum implements org.scribble2.net.session.OpEnum { ";   // FIXME: should be in methods
+				method += "\tpublic enum " + this.classNames.get(ps) + "Enum implements org.scribble2.net.session.OpEnum { ";   // FIXME: should be in methods
 				method += SessionGenerator.getOpClassName((Op) first.mid);
 				for (; as.hasNext(); )
 				{
@@ -308,6 +310,7 @@ public class ApiGenerator
 	{
 		//return this.gpn.getPrefix().toString();
 		return SessionGenerator.getPackageName(this.gpn);
+		//return this.gpn.toString();// + "." + this.role;  // role causes clash with Role constant in session class
 	}
 	
 	private String getOp(Op op)

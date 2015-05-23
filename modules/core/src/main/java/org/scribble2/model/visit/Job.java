@@ -2,7 +2,9 @@ package org.scribble2.model.visit;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.scribble2.fsm.ApiGenerator;
 import org.scribble2.model.Module;
@@ -156,10 +158,16 @@ public class Job
 		return new ApiGenerator(this, gpn, role).getClasses();  // FIXME: store results?
 	}
 	
-	public String generateSession(GProtocolName gpn) throws ScribbleException
+	//public String generateSession(GProtocolName gpn) throws ScribbleException
+	public Set<String> generateSession(GProtocolName gpn) throws ScribbleException
 	{
 		// FIXME: check gpn is valid
-		return new SessionGenerator(this, gpn).getSessionClass();
+		//return new SessionGenerator(this, gpn).getSessionClass();
+		SessionGenerator sg = new SessionGenerator(this, gpn);
+		Set<String> classes = new HashSet<>();
+		classes.add(sg.getSessionClass());
+		//classes.addAll(sg.getOpClasses().values());
+		return classes;
 	}
 
 	private void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException

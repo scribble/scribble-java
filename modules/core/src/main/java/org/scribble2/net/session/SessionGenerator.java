@@ -41,7 +41,6 @@ public class SessionGenerator
 		for (Op op : coll.getOps())
 		{
 			this.ops.put(op, generateOpClass(op));
-
 		}
 	}
 	
@@ -57,8 +56,14 @@ public class SessionGenerator
 	
 	private String generateOpClass(Op op)
 	{
-		String clazz = "";
 		String s = getOpClassName(op);
+
+		String clazz = "";
+		//clazz += "package " + getPackageName(gpn) + ";\n";
+		//clazz += "\n";
+		//clazz += "import org.scribble2.sesstype.name.Op;\n";
+		//clazz += "\n";
+		//clazz += "public class " + s + " extends Op {\n";
 		clazz += "class " + s + " extends Op {\n";
 		clazz += "\tprivate static final long serialVersionUID = 1L;\n";
 		clazz += "\n";
@@ -72,6 +77,11 @@ public class SessionGenerator
 	public String getSessionClass()
 	{
 		return this.clazz;
+	}
+
+	public Map<Op, String> getOpClasses()
+	{
+		return this.ops;
 	}
 	
 	public static String getPackageName(GProtocolName gpn)
@@ -112,7 +122,7 @@ public class SessionGenerator
 		{
 			clazz += generateRole(role);
 		}
-		clazz += "\n";
+		//clazz += "\n";
 		for (Op op : this.ops.keySet())
 		{
 			clazz += generateOp(op);
@@ -121,10 +131,10 @@ public class SessionGenerator
 		clazz += "\tpublic " + sn +"() {\n";
 		clazz += "\t\tsuper(" + sn + ".impath, " + sn + ".source, " + sn + ".proto);\n";
 		clazz += "\t}\n";
-		clazz += "}\n";
+		clazz += "}";//\n";
 		for (String s : this.ops.values())
 		{
-			clazz += "\n";
+			clazz += "\n\n";
 			clazz += s;
 		}
 		return clazz;

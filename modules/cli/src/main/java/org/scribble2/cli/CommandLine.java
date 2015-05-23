@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.resources.DirectoryResourceLocator;
@@ -127,8 +128,13 @@ public class CommandLine implements Runnable
 		JobContext jc = job.getContext();
 		GProtocolName gpn = new GProtocolName(this.args.get(Arg.SESSION)[0]);
 		GProtocolName fullname = new GProtocolName(jc.main, gpn);
-		String clazz = job.generateSession(fullname);
-		System.out.println(clazz);
+		/*String clazz = job.generateSession(fullname);
+		System.out.println(clazz);*/
+		Set<String> classes = job.generateSession(fullname);
+		for (String clazz : classes)
+		{
+			System.out.println(clazz);
+		}
 	}
 
 	private void buildFsm(Job job, LProtocolName lpn) throws ScribbleException
