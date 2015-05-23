@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.scribble2.net.SocketEndpoint;
+import org.scribble2.net.ScribMessageFormatter;
 import org.scribble2.net.SocketWrapper;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
@@ -15,20 +15,22 @@ public class SessionEndpoint
 	public final Session sess;
 	//public final Principal self;
 	public final Role self;
+	public final ScribMessageFormatter smf;
 	
 	private boolean complete = false;
 
 	//private final Map<Role, Principal> remroles = new HashMap<Role, Principal>();  // Doesn't include self
-	private final Map<Role, SocketEndpoint> sockets = new HashMap<Role, SocketEndpoint>();   // Includes SelfSocketEndpoint
+	private final Map<Role, SocketWrapper> sockets = new HashMap<Role, SocketWrapper>();   // Includes SelfSocketEndpoint
 
 	//protected final LocalProtocolDecl root;
 	//public final Monitor monitor;
 
 	//protected SessionEndpoint(Session sess, Principal self) throws ScribbleException, IOException
-	protected SessionEndpoint(Session sess, Role self) throws ScribbleException, IOException
+	protected SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf) throws ScribbleException, IOException
 	{
 		this.sess = sess;
 		this.self = self;
+		this.smf = smf;
 
 		/*ProtocolName lpn = Projector.makeProjectedProtocolName(sess.proto, this.self.role);
 		this.root = (LocalProtocolDecl) projections.get(lpn.getPrefix()).protos.get(0);*/
@@ -53,7 +55,8 @@ public class SessionEndpoint
 		/*this.remroles.put(remote.role, remote);
 		this.sockets.put(remote.role, new SocketEndpoint(remote.role, this.inputq, sw));*/
 		//this.sockets.put(remote.role, new SocketEndpoint(sw));
-		this.sockets.put(role, new SocketEndpoint(sw));
+		//this.sockets.put(role, new SocketEndpoint(sw));
+		this.sockets.put(role, sw);
 	}
 	
 	/*public Set<Role> getRemoteRoles()
@@ -66,14 +69,16 @@ public class SessionEndpoint
 		return this.remroles.get(role);
 	}*/
 	
-	public SocketEndpoint getSocketEndpoint(Role role)
+	//public SocketEndpoint getSocketEndpoint(Role role)
+	public SocketWrapper getSocketWrapper(Role role)
 	{
 		return this.sockets.get(role);
 	}
 	
 	public void close()
 	{
-		for (SocketEndpoint se : this.sockets.values())
+		//for (SocketEndpoint se : this.sockets.values())
+		for (SocketWrapper se : this.sockets.values())
 		{
 			try
 			{

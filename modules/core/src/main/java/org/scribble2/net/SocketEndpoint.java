@@ -3,6 +3,7 @@ package org.scribble2.net;
 import java.io.IOException;
 
 // Read/write Objects on the binary connection to an endpoint in the session
+@Deprecated
 public class SocketEndpoint
 {
 	/*// Used by SelfSocketEndpoint
@@ -35,18 +36,18 @@ public class SocketEndpoint
 
 	public void writeObject(Object o) throws IOException
 	{
-		this.sw.oos.writeObject(o);
+		//this.sw.dos.writeObject(o);
 	}
 	
 	public Object readObject() throws IOException, ClassNotFoundException
 	{
 		//return this.inputq.readObject(this.src);
-		return this.sw.ois.readObject();
+		return null;//this.sw.dis.readObject();
 	}
 
 	public void flush() throws IOException
 	{
-		this.sw.oos.flush();
+		this.sw.dos.flush();
 	}
 
 	public void writeObjectAndFlush(Object o) throws IOException

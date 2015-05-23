@@ -13,9 +13,11 @@ public abstract class SendSocket extends ScribSocket
 		super(ep);
 	}
 
-	protected void send(Role role, Object o) throws IOException, ScribbleRuntimeException
+	protected void writeScribMessage(Role role, ScribMessage msg) throws IOException, ScribbleRuntimeException
 	{
 		use();
-		this.ep.getSocketEndpoint(role).writeObjectAndFlush(o);
+		//this.ep.getSocketWrapper(role).writeObjectAndFlush(o);
+		//this.ep.getSocketWrapper(role).dos.write(this.ep.smf.toBytes(msg));
+		this.ep.smf.writeMessage(this.ep.getSocketWrapper(role).dos, msg);
 	}
 }

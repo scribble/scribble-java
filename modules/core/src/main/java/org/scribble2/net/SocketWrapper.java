@@ -1,42 +1,34 @@
 package org.scribble2.net;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class SocketWrapper
 {
 	public final Socket sock;
-	public final ObjectOutputStream oos;
-	public final ObjectInputStream ois;
+	public final DataOutputStream dos;
+	public final DataInputStream dis;
 
-	public SocketWrapper(Socket s, boolean client) throws IOException
+	public SocketWrapper(Socket s) throws IOException
 	{
 		this.sock = s;
-		if (client)
-		{
-			this.oos = new ObjectOutputStream(s.getOutputStream());
-			this.ois = new ObjectInputStream(s.getInputStream());
-		}
-		else
-		{
-			this.ois = new ObjectInputStream(s.getInputStream());
-			this.oos = new ObjectOutputStream(s.getOutputStream());
-		}
+		this.dos = new DataOutputStream(s.getOutputStream());
+		this.dis = new DataInputStream(s.getInputStream());
 	}
 
 	public void close() throws IOException
 	{
 		try
 		{
-			this.ois.close();  // FIXME: may already be closed by receiver thread
+			this.dis.close();
 		}
 		finally
 		{
 			try
 			{
-				this.oos.close();
+				this.dos.close();
 			}
 			finally
 			{

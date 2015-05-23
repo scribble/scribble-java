@@ -13,9 +13,10 @@ public abstract class ReceiveSocket extends ScribSocket
 		super(ep);
 	}
 
-	protected Object receive(Role role) throws ClassNotFoundException, IOException, ScribbleRuntimeException
+	protected ScribMessage readScribMessage(Role role) throws ClassNotFoundException, IOException, ScribbleRuntimeException
 	{
 		use();
-		return this.ep.getSocketEndpoint(role).readObject();
+		//return this.ep.getSocketWrapper(role).readObject();
+		return this.ep.smf.readMessage(this.ep.getSocketWrapper(role).dis);
 	}
 }

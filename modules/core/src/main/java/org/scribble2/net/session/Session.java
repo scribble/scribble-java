@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.scribble2.net.ScribMessageFormatter;
 import org.scribble2.sesstype.name.GProtocolName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
@@ -38,13 +39,13 @@ public class Session
 	}
 
 	//public SessionEndpointOld toEndpoint(Principal p) throws ScribbleException, IOException
-	public SessionEndpoint project(Role role) throws ScribbleException, IOException
+	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleException, IOException
 	{
 		if (this.endpoints.containsKey(role))
 		{
 			throw new ScribbleException("Session endpoint already created for: " + role);
 		}
-		SessionEndpoint ep = new SessionEndpoint(this, role);
+		SessionEndpoint ep = new SessionEndpoint(this, role, smf);
 		this.endpoints.put(role, ep);
 		return ep;
 	}

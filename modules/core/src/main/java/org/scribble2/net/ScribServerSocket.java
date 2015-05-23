@@ -16,7 +16,7 @@ public class ScribServerSocket implements AutoCloseable
 
 	protected SocketWrapper accept() throws IOException
 	{
-		return new SocketWrapper(this.ss.accept(), false);
+		return new SocketWrapper(this.ss.accept());
 	}
 
 	@Override

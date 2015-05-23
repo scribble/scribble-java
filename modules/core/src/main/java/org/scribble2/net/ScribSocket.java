@@ -1,6 +1,11 @@
 package org.scribble2.net;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import org.scribble2.net.session.SessionEndpoint;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleRuntimeException;
 
 
@@ -14,6 +19,17 @@ public abstract class ScribSocket implements AutoCloseable
 	protected ScribSocket(SessionEndpoint ep)
 	{
 		this.ep = ep;
+	}
+
+	public void connect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	{
+		Socket s = new Socket(host, port);
+		this.ep.register(role, new SocketWrapper(s));
+	}
+
+	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
+	{
+		this.ep.register(role, ss.accept());
 	}
 	
 	protected boolean isUsed()
@@ -59,10 +75,14 @@ public abstract class ScribSocket implements AutoCloseable
 	@Override
 	public void close() throws ScribbleRuntimeException
 	{
+		System.out.println("c1: ");
+
 		//this.sessep.close();
 		if (!this.used)
 		//if (!this.ep.isCompleted())
 		{
+			System.out.println("c2: ");
+			
 			//throw new ScribbleRuntimeException("Socket not used: ");
 			this.ep.close();
 		}

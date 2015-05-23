@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import org.scribble2.net.session.SessionEndpoint;
 import org.scribble2.sesstype.name.Role;
+import org.scribble2.util.ScribbleRuntimeException;
 
 public abstract class ConnectSocket extends ScribSocket
 {
@@ -14,9 +15,10 @@ public abstract class ConnectSocket extends ScribSocket
 		super(ep);
 	}
 
-	public void connect(Role role, String host, int port) throws UnknownHostException, IOException
+	public void connect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
+		use();
 		Socket s = new Socket(host, port);
-		this.ep.register(role, new SocketWrapper(s, true));
+		this.ep.register(role, new SocketWrapper(s));
 	}
 }
