@@ -347,7 +347,12 @@ public class ApiGenerator
 	
 	public Map<String, String> getClasses()
 	{
-		return this.classes;
+		Map<String, String> map = new HashMap<String, String>();
+		for (String s : this.classes.keySet())
+		{
+			map.put(SessionGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java", this.classes.get(s));
+		}
+		return map;
 	}
 	
 	private String newClassName()

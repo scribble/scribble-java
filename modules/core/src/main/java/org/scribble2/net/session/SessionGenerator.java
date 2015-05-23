@@ -74,9 +74,13 @@ public class SessionGenerator
 		return clazz;
 	}
 	
-	public String getSessionClass()
+	//public String getSessionClass()
+	public Map<String, String> getSessionClass()
 	{
-		return this.clazz;
+		String path = getPackageName(this.gpn).replace('.', '/') + "/" + getSessionClassName(this.gpn) + ".java";
+		Map<String, String> map = new HashMap<>();
+		map.put(path, this.clazz);
+		return map;
 	}
 
 	public Map<Op, String> getOpClasses()

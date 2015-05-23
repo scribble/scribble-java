@@ -159,15 +159,17 @@ public class Job
 	}
 	
 	//public String generateSession(GProtocolName gpn) throws ScribbleException
-	public Set<String> generateSession(GProtocolName gpn) throws ScribbleException
+	//public Set<String> generateSession(GProtocolName gpn) throws ScribbleException
+	public Map<String, String> generateSession(GProtocolName gpn) throws ScribbleException
 	{
 		// FIXME: check gpn is valid
 		//return new SessionGenerator(this, gpn).getSessionClass();
 		SessionGenerator sg = new SessionGenerator(this, gpn);
-		Set<String> classes = new HashSet<>();
+		/*Set<String> classes = new HashSet<>();
 		classes.add(sg.getSessionClass());
-		//classes.addAll(sg.getOpClasses().values());
-		return classes;
+		//classes.addAll(sg.getOpClasses().values());*/
+		Map<String, String> map = sg.getSessionClass();
+		return map;
 	}
 
 	private void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException

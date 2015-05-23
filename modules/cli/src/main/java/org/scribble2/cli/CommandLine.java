@@ -1,6 +1,13 @@
 package org.scribble2.cli;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -8,7 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.scribble.resources.DirectoryResourceLocator;
@@ -32,8 +39,9 @@ public class CommandLine implements Runnable
 	public static final String FSM_FLAG = "-fsm";
 	public static final String API_FLAG = "-api";
 	public static final String SESSION_FLAG = "-session";
+	public static final String OUTPUT_FLAG = "-d";
 	
-	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM, API, SESSION }
+	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM, API, SESSION, OUTPUT }
 	
 	private final Map<Arg, String[]> args;
 	
@@ -117,9 +125,17 @@ public class CommandLine implements Runnable
 		Map<String, String> classes = job.generateApi(lpn);*/
 		GProtocolName fullname = new GProtocolName(jc.main, gpn);
 		Map<String, String> classes = job.generateApi(fullname, role);
-		for (String clazz : classes.values())
+		for (String clazz : classes.keySet())
 		{
-			System.out.println(clazz);
+			if (this.args.containsKey(Arg.OUTPUT))
+			{
+				String dir = this.args.get(Arg.OUTPUT)[0];
+				writeToFile(dir + "/" + clazz, classes.get(clazz));
+			}
+			else
+			{
+				System.out.println(clazz + ", " + classes.get(clazz));
+			}
 		}
 	}
 	
@@ -130,10 +146,33 @@ public class CommandLine implements Runnable
 		GProtocolName fullname = new GProtocolName(jc.main, gpn);
 		/*String clazz = job.generateSession(fullname);
 		System.out.println(clazz);*/
-		Set<String> classes = job.generateSession(fullname);
-		for (String clazz : classes)
+		//Set<String> classes = job.generateSession(fullname);
+		Map<String, String> map = job.generateSession(fullname);
+		for (String clazz : map.keySet())
 		{
-			System.out.println(clazz);
+			if (this.args.containsKey(Arg.OUTPUT))
+			{
+				String dir = this.args.get(Arg.OUTPUT)[0];
+				/*Entry<String, String> e = map.entrySet().iterator().next();
+				writeToFile(dir + "/" + e.getKey(), e.getValue());*/
+				writeToFile(dir + "/" + clazz, map.get(clazz));
+			}
+			else
+			{
+				System.out.println(clazz);
+			}
+		}
+	}
+	
+	private static void writeToFile(String file, String text) throws ScribbleException
+	{
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8")))
+		{
+			writer.write(text);
+		}
+		catch (IOException e)
+		{
+			throw new ScribbleException(e);
 		}
 	}
 
@@ -359,6 +398,7 @@ class CommandLineArgumentParser
 		this.FLAGS.put(CommandLine.FSM_FLAG, CommandLine.Arg.FSM);
 		this.FLAGS.put(CommandLine.API_FLAG, CommandLine.Arg.API);
 		this.FLAGS.put(CommandLine.SESSION_FLAG, CommandLine.Arg.SESSION);
+		this.FLAGS.put(CommandLine.OUTPUT_FLAG, CommandLine.Arg.OUTPUT);
 	}
 	
 	private void parseArgs()
@@ -412,6 +452,10 @@ class CommandLineArgumentParser
 			case CommandLine.SESSION_FLAG:
 			{
 				return parseSession(i);
+			}
+			case CommandLine.OUTPUT_FLAG:
+			{
+				return parseOutput(i);
 			}
 			default:
 			{
@@ -493,6 +537,17 @@ class CommandLineArgumentParser
 		}
 		String proto = this.args[++i];
 		this.parsed.put(this.FLAGS.get(CommandLine.SESSION_FLAG), new String[] { proto } );
+		return i;
+	}
+
+	private int parseOutput(int i)  // Almost same as parseProject
+	{
+		if ((i + 1) >= this.args.length)
+		{
+			throw new RuntimeException("Missing directory argument");
+		}
+		String dir = this.args[++i];
+		this.parsed.put(this.FLAGS.get(CommandLine.OUTPUT_FLAG), new String[] { dir } );
 		return i;
 	}
 
