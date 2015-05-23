@@ -26,13 +26,13 @@ public class ApiGenerator
 	private String root = null;
 	private Map<String, String> classes = new HashMap<>();  // class name -> class source
 	
-	private enum SocketType { SEND, RECIEVE, BRANCH, END }
+	private enum SocketType { SEND, RECEIVE, BRANCH, END }
 	private final Map<SocketType, String> SOCKET_CLASSES;
 
 	{
 		SOCKET_CLASSES = new HashMap<>();
 		SOCKET_CLASSES.put(SocketType.SEND, "org.scribble2.net.SendSocket");
-		SOCKET_CLASSES.put(SocketType.RECIEVE, "org.scribble2.net.ReceiveSocket");
+		SOCKET_CLASSES.put(SocketType.RECEIVE, "org.scribble2.net.ReceiveSocket");
 		SOCKET_CLASSES.put(SocketType.BRANCH, "org.scribble2.net.BranchSocket");
 		SOCKET_CLASSES.put(SocketType.END, "org.scribble2.net.EndSocket");
 	}
@@ -196,20 +196,21 @@ public class ApiGenerator
 					String next = this.classNames.get(succ);
 					Op op = (Op) a.mid;
 					String opref = getOp(op);
-					method += "\tpublic " + next + " send_" + op + "() throws ScribbleRuntimeException, IOException {\n";
+					method += "\tpublic " + next + " send(" + SessionGenerator.getOpClassName(op) + " op) throws ScribbleRuntimeException, IOException {\n";
 					method += "\t\tsuper.writeScribMessage(" + getRole(a.peer) + ", new ScribMessage(" + opref + "));\n";
 					method += "\t\treturn new " + next + "(this.ep);\n";
 					method += "\t}\n";
 				}
 				break;
 			}
-			case RECIEVE:
+			case RECEIVE:
 			{
 				IOAction a = ps.getAcceptable().iterator().next();
 				ProtocolState succ = ps.accept(a);
 				//String next = (succ.isTerminal()) ? SOCKET_CLASSES.get(SocketType.END) : this.classNames.get(succ);
 				String next = this.classNames.get(succ);
-				method += "\tpublic " + next + " receive() throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
+				Op op = (Op) a.mid;
+				method += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(op) + " op) throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
 				method += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
 				method += "\t\treturn new " + next + "(this.ep);\n";
 				method += "\t}\n";
@@ -231,7 +232,7 @@ public class ApiGenerator
 				clazz += "\n";
 				clazz += generateImports(ps);
 				clazz += "\n";
-				clazz += "public class " + tmp + " extends " + SOCKET_CLASSES.get(SocketType.BRANCH) + " {\n";
+				clazz += "public class " + tmp + " extends " + SOCKET_CLASSES.get(SocketType.RECEIVE) + " {\n";
 				clazz += "\n";
 				clazz += "\tpublic final " + this.classNames.get(ps) + "." + this.classNames.get(ps) + "Enum op;\n";
 				clazz += "\tprivate final ScribMessage m;\n";
@@ -250,7 +251,7 @@ public class ApiGenerator
 					//clazz += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
 					clazz += "\t\tsuper.use();\n";
 					clazz += "\t\tif (!this.m.op.equals(" + getOp((Op) a.mid) + ")) {\n";
-					clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, should be: + " + this.getOp((Op) a.mid) + "\");\n";
+					clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: + this.m.op\");\n";
 					clazz += "\t\t}\n";
 					clazz += "\t\treturn new " + next + "(this.ep);\n";
 					clazz += "\t}\n";
@@ -276,8 +277,10 @@ public class ApiGenerator
 					method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionGenerator.getOpClassName((Op) a.mid) + ";\n";
 					method += "\t\t}\n";
 				}
+				method += "\t\telse {\n";
+				method += "\t\t\tthrow new RuntimeException(\"Won't get here: \" + m.op);\n";
+				method += "\t\t}\n";
 				method += "\t\treturn new " + next + "(this.ep, openum, m);\n";
-				//method += "\t\tthrow new RuntimeException(\"Shouldn't get here: \" + m.op);\n";
 				method += "\t}\n";
 
 				as = ps.getAcceptable().iterator();
@@ -331,7 +334,7 @@ public class ApiGenerator
 		}
 		else if (a instanceof Receive)
 		{
-			return (as.size() > 1) ? SocketType.BRANCH : SocketType.RECIEVE;
+			return (as.size() > 1) ? SocketType.BRANCH : SocketType.RECEIVE;
 		}
 		else
 		{
