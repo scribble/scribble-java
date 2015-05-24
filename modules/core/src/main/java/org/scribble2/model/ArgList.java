@@ -10,9 +10,9 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.Scope;
 
 
-public class ArgList extends DoArgList<NonRoleArgument>
+public class ArgList extends DoArgList<NonRoleArg>
 {
-	public ArgList(List<NonRoleArgument> instans)
+	public ArgList(List<NonRoleArg> instans)
 	{
 		super(instans);
 	}
@@ -24,10 +24,10 @@ public class ArgList extends DoArgList<NonRoleArgument>
 	}
 
 	@Override
-	protected DoArgList<NonRoleArgument> reconstruct(List<NonRoleArgument> instans)
+	protected DoArgList<NonRoleArg> reconstruct(List<NonRoleArg> instans)
 	{
 		ModelDel del = del();
-		ArgList ail = ModelFactoryImpl.FACTORY.ArgumentInstantiationList(instans);
+		ArgList ail = ModelFactoryImpl.FACTORY.ArgList(instans);
 		ail = (ArgList) ail.del(del);
 		return ail;
 	}
@@ -35,9 +35,9 @@ public class ArgList extends DoArgList<NonRoleArgument>
 	@Override
 	public ArgList project(Role self)
 	{
-		List<NonRoleArgument> instans =
+		List<NonRoleArg> instans =
 				this.args.stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
-		return ModelFactoryImpl.FACTORY.ArgumentInstantiationList(instans);
+		return ModelFactoryImpl.FACTORY.ArgList(instans);
 	}
 	
 	public boolean isEmpty()
@@ -64,7 +64,7 @@ public class ArgList extends DoArgList<NonRoleArgument>
 			return "";
 		}
 		String s = "<" + this.args.get(0);
-		for (NonRoleArgument a : this.args.subList(1, this.args.size()))
+		for (NonRoleArg a : this.args.subList(1, this.args.size()))
 		{
 			s += ", " + a;
 		}

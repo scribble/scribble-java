@@ -97,8 +97,8 @@ public interface ModelFactory
 	
 	RoleArgList RoleInstantiationList(List<RoleArgument> ris);
 	RoleArgument RoleInstantiation(RoleNode role);
-	ArgList ArgumentInstantiationList(List<NonRoleArgument> ais);
-	NonRoleArgument ArgumentInstantiation(ArgNode arg);
+	ArgList ArgList(List<NonRoleArg> ais);
+	NonRoleArg NonAroleArg(ArgNode arg);
 
 	// FIXME: instead of enums, take class as generic parameter
 	//SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);

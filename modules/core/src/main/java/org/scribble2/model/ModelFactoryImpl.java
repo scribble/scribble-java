@@ -292,7 +292,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public ArgList ArgumentInstantiationList(List<NonRoleArgument> ais)
+	public ArgList ArgList(List<NonRoleArg> ais)
 	{
 		ArgList rdl = new ArgList(ais);
 		rdl = del(rdl, createDefaultDelegate());
@@ -300,9 +300,9 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public NonRoleArgument ArgumentInstantiation(ArgNode arg)
+	public NonRoleArg NonAroleArg(ArgNode arg)
 	{
-		NonRoleArgument ri = new NonRoleArgument(arg);
+		NonRoleArg ri = new NonRoleArg(arg);
 		ri = del(ri, createDefaultDelegate());
 		return ri;
 	}

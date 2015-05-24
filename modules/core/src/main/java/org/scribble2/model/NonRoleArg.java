@@ -4,9 +4,9 @@ import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.Role;
 
 
-public class NonRoleArgument extends DoArg<ArgNode>
+public class NonRoleArg extends DoArg<ArgNode>
 {
-	public NonRoleArgument(ArgNode arg)
+	public NonRoleArg(ArgNode arg)
 	{
 		super(arg);
 	}
@@ -14,25 +14,25 @@ public class NonRoleArgument extends DoArg<ArgNode>
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new NonRoleArgument(this.val);
+		return new NonRoleArg(this.val);
 	}
 
 	@Override
-	protected NonRoleArgument reconstruct(ArgNode arg)
+	protected NonRoleArg reconstruct(ArgNode arg)
 	{
 		ModelDel del = del();
-		NonRoleArgument ai = new NonRoleArgument(arg);
-		ai = (NonRoleArgument) ai.del(del);
+		NonRoleArg ai = new NonRoleArg(arg);
+		ai = (NonRoleArg) ai.del(del);
 		return ai;
 	}
 	
 	@Override
-	public NonRoleArgument project(Role self)
+	public NonRoleArg project(Role self)
 	{
 		/*ArgumentNode arg = (ArgumentNode) ((ProjectionEnv) this.arg.del().env()).getProjection();	
 		return new ArgumentInstantiation(arg);*/
 		//ArgumentNode an = new ArgumentNode(this.arg.toName().toString());
 		//return new ArgumentInstantiation(this.arg);  // FIXME: arg needs projection?
-		return ModelFactoryImpl.FACTORY.ArgumentInstantiation(this.val);  // FIXME: arg needs projection?
+		return ModelFactoryImpl.FACTORY.NonAroleArg(this.val);  // FIXME: arg needs projection?
 	}
 }

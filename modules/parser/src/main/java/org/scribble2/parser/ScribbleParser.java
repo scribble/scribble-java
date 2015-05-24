@@ -3,8 +3,8 @@ package org.scribble2.parser;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelNode;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
-import org.scribble2.parser.ast.AntlrArgumentInstantiation;
-import org.scribble2.parser.ast.AntlrArgumentInstantiationList;
+import org.scribble2.parser.ast.AntlrNonRoleArg;
+import org.scribble2.parser.ast.AntlrArgList;
 import org.scribble2.parser.ast.AntlrImportModule;
 import org.scribble2.parser.ast.AntlrMessageSignature;
 import org.scribble2.parser.ast.AntlrMessageSignatureDecl;
@@ -195,11 +195,11 @@ public class ScribbleParser
 			case ROLEINSTANTIATION:
 				return AntlrRoleInstantiation.parseRoleInstantiation(this, ct);
 			case ARGUMENTINSTANTIATIONLIST:
-				return AntlrArgumentInstantiationList.parseArgumentInstantiationList(this, ct);
+				return AntlrArgList.parseArgList(this, ct);
 			case ARGUMENTINSTANTIATION:
-				return AntlrArgumentInstantiation.parseArgumentInstantiation(this, ct);
+				return AntlrNonRoleArg.parseNonRoleArg(this, ct);
 			case AMBIGUOUSNAME:
-				return AntlrArgumentInstantiation.parseArgumentInstantiation(this, ct);
+				return AntlrNonRoleArg.parseNonRoleArg(this, ct);
 			default:
 				throw new RuntimeException("Unknown ANTLR node type: " + type);
 		}
