@@ -1,13 +1,13 @@
 package org.scribble2.model.name.simple;
 
-import org.scribble2.sesstype.kind.OperatorKind;
+import org.scribble2.sesstype.kind.OpKind;
 import org.scribble2.sesstype.name.Op;
 
 
 
 //public class OperatorNode extends SimpleNameNode
 //public class OperatorNode extends SimpleNameNode<Operator, OperatorKind>
-public class OpNode extends SimpleNameNode<OperatorKind>
+public class OpNode extends SimpleNameNode<OpKind>
 {
 	public static final String EMPTY_OPERATOR_IDENTIFIER = "";
 	

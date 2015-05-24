@@ -1,9 +1,9 @@
 package org.scribble2.sesstype.name;
 
-import org.scribble2.sesstype.kind.OperatorKind;
+import org.scribble2.sesstype.kind.OpKind;
 
 //public class Operator extends SimpleName //SerializableSimpleName
-public class Op extends Name<OperatorKind> implements MessageId //SerializableSimpleName
+public class Op extends Name<OpKind> implements MessageId //SerializableSimpleName
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -17,13 +17,13 @@ public class Op extends Name<OperatorKind> implements MessageId //SerializableSi
 	protected Op()
 	{
 		//super(KindEnum.OPERATOR);
-		super(OperatorKind.KIND);
+		super(OpKind.KIND);
 	}
 
 	// FIXME: scope should be a subcomponent -- or in MessageSignature
 	public Op(String text)
 	{
 		//super(KindEnum.OPERATOR, text);
-		super(OperatorKind.KIND, text);
+		super(OpKind.KIND, text);
 	}
 }

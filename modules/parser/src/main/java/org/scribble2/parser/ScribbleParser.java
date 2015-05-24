@@ -3,21 +3,20 @@ package org.scribble2.parser;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelNode;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
-import org.scribble2.parser.ast.AntlrNonRoleArg;
-import org.scribble2.parser.ast.AntlrNonRoleArgList;
+import org.scribble2.parser.ast.AntlrDataTypeDecl;
 import org.scribble2.parser.ast.AntlrImportModule;
 import org.scribble2.parser.ast.AntlrMessageSig;
 import org.scribble2.parser.ast.AntlrMessageSigDecl;
 import org.scribble2.parser.ast.AntlrModule;
 import org.scribble2.parser.ast.AntlrModuleDecl;
+import org.scribble2.parser.ast.AntlrNonRoleArgList;
 import org.scribble2.parser.ast.AntlrNonRoleParamDecl;
 import org.scribble2.parser.ast.AntlrNonRoleParamDeclList;
 import org.scribble2.parser.ast.AntlrPayloadElemList;
-import org.scribble2.parser.ast.AntlrPayloadElem;
-import org.scribble2.parser.ast.AntlrRoleDecl;
-import org.scribble2.parser.ast.AntlrRoleDeclList;
 import org.scribble2.parser.ast.AntlrRoleArg;
 import org.scribble2.parser.ast.AntlrRoleArgList;
+import org.scribble2.parser.ast.AntlrRoleDecl;
+import org.scribble2.parser.ast.AntlrRoleDeclList;
 import org.scribble2.parser.ast.global.AntlrGChoice;
 import org.scribble2.parser.ast.global.AntlrGContinue;
 import org.scribble2.parser.ast.global.AntlrGDo;
@@ -31,7 +30,6 @@ import org.scribble2.parser.ast.global.AntlrGProtocolDecl;
 import org.scribble2.parser.ast.global.AntlrGProtocolDefinition;
 import org.scribble2.parser.ast.global.AntlrGProtocolHeader;
 import org.scribble2.parser.ast.global.AntlrGRecursion;
-import org.scribble2.parser.ast.name.AntlrAmbigName;
 import org.scribble2.parser.util.Util;
 
 /*import scribble2.ast.*;
@@ -144,10 +142,10 @@ public class ScribbleParser
 				return AntlrModule.parseModule(this, ct);
 			case MODULEDECL:
 				return AntlrModuleDecl.parseModuleDecl(this, ct);
-			/*case PAYLOADTYPEDECL:
-				return AntlrPayloadTypeDecl.parsePayloadTypeDecl(this, ct);*/
 			case MESSAGESIGNATUREDECL:
 				return AntlrMessageSigDecl.parseMessageSigDecl(this, ct);
+			case PAYLOADTYPEDECL:
+				return AntlrDataTypeDecl.parseDataTypeDecl(this, ct);
 			case IMPORTMODULE:
 				return AntlrImportModule.parseImportModule(this, ct);
 			case GLOBALPROTOCOLDECL:

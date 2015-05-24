@@ -2,9 +2,9 @@ package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.DataTypeDecl;
+import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.DataTypeNameNode;
 import org.scribble2.parser.ScribbleParser;
-import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 public class AntlrDataTypeDecl
@@ -14,7 +14,7 @@ public class AntlrDataTypeDecl
 	public static final int SOURCE_CHILD_INDEX = 2;
 	public static final int ALIAS_CHILD_INDEX = 3;
 
-	public static DataTypeDecl parsePayloadTypeDecl(ScribbleParser parser, CommonTree ct)
+	public static DataTypeDecl parseDataTypeDecl(ScribbleParser parser, CommonTree ct)
 	{
 		CommonTree tmp1 = getSchemaChild(ct);
 		String schema = AntlrSimpleName.getName(tmp1);
@@ -25,7 +25,8 @@ public class AntlrDataTypeDecl
 		//SimplePayloadTypeNode alias = AntlrSimpleName.toSimplePayloadTypeNode(getAliasChild(ct));
 		//DataTypeNameNode alias = AntlrQualifiedName.toDataTypeNameNode(getAliasChild(ct));
 		DataTypeNameNode alias = AntlrSimpleName.toDataTypeNameNode(getAliasChild(ct));
-		return new DataTypeDecl(schema, extName, source, alias);
+		//return new DataTypeDecl(schema, extName, source, alias);
+		return ModelFactoryImpl.FACTORY.DataTypeDecl(schema, extName, source, alias);
 	}
 
 	/*public static PayloadType getFullPayloadTypeName(CommonTree ct)

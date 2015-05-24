@@ -55,21 +55,23 @@ import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.PayloadElemNameNode;
+import org.scribble2.model.name.qualified.DataTypeNameNode;
 import org.scribble2.model.name.qualified.GProtocolNameNode;
 import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
 import org.scribble2.model.name.simple.AmbigNameNode;
-import org.scribble2.model.name.simple.OpNode;
 import org.scribble2.model.name.simple.NonRoleParamNode;
+import org.scribble2.model.name.simple.OpNode;
 import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
+import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.kind.Global;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.Local;
 import org.scribble2.sesstype.kind.ModuleKind;
-import org.scribble2.sesstype.kind.OperatorKind;
+import org.scribble2.sesstype.kind.OpKind;
 import org.scribble2.sesstype.kind.RecVarKind;
 import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.kind.SigKind;
@@ -141,6 +143,14 @@ public class ModelFactoryImpl implements ModelFactory
 		MessageSigDecl msd = new MessageSigDecl(schema, extName, source, alias);
 		msd = del(msd, createDefaultDelegate());
 		return msd;
+	}
+
+	@Override
+	public DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNameNode alias)
+	{
+		DataTypeDecl dtd = new DataTypeDecl(schema, extName, source, alias);
+		dtd = del(dtd, createDefaultDelegate());
+		return dtd;
 	}
 
 	@Override
@@ -330,7 +340,7 @@ public class ModelFactoryImpl implements ModelFactory
 			case PROTOCOL:     snn = new SimpleProtocolNameNode(identifier); break;
 			default: throw new RuntimeException("Shouldn't get in here: " + kind);
 		}*/
-		if (kind.equals(OperatorKind.KIND))
+		if (kind.equals(OpKind.KIND))
 		{
 			snn = new OpNode(identifier);
 		}
@@ -399,6 +409,10 @@ public class ModelFactoryImpl implements ModelFactory
 		else if (kind.equals(SigKind.KIND))
 		{
 			qnn = new MessageSigNameNode(elems);
+		}
+		else if (kind.equals(DataTypeKind.KIND))
+		{
+			qnn = new DataTypeNameNode(elems);
 		}
 		else
 		{

@@ -2,13 +2,13 @@ package org.scribble2.sesstype.kind;
 
 import java.io.Serializable;
 
-public class OperatorKind extends Kind implements Serializable
+public class OpKind extends Kind implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static final OperatorKind KIND = new OperatorKind();
+	public static final OpKind KIND = new OpKind();
 	
-	protected OperatorKind()
+	protected OpKind()
 	{
 
 	}
@@ -26,7 +26,7 @@ public class OperatorKind extends Kind implements Serializable
 		{
 			return true;
 		}
-		if (!(o instanceof OperatorKind))
+		if (!(o instanceof OpKind))
 		{
 			return false;
 		}

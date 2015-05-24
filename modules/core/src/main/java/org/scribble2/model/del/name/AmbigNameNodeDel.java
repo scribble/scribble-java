@@ -6,8 +6,10 @@ import org.scribble2.model.context.ModuleContext;
 import org.scribble2.model.del.ModelDelBase;
 import org.scribble2.model.name.simple.AmbigNameNode;
 import org.scribble2.model.visit.NameDisambiguator;
+import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.AmbigName;
+import org.scribble2.sesstype.name.DataType;
 import org.scribble2.util.ScribbleException;
 
 
@@ -33,11 +35,12 @@ public class AmbigNameNodeDel extends ModelDelBase
 
 		//IName name = ((Named) visited).toName();
 		AmbigName name = ((AmbigNameNode) visited).toName();
-		/*if (disamb.isVisiblePayloadType(name))  // By well-formedness (checked later), payload type and parameter names are distinct
+		// By well-formedness (checked later), payload type and parameter names are distinct
+		if (mcontext.isDataTypeVisible(name.toDataType()))
 		{
-			return new PayloadTypeNameNode(this.ct, name.toString());
+			return ModelFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, name.getElements());
 		}
-		else*/ if (mcontext.isMessageSigNameVisible(name.toMessageSigName()))
+		else if (mcontext.isMessageSigNameVisible(name.toMessageSigName()))
 		{
 			return ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, name.getElements());
 		}

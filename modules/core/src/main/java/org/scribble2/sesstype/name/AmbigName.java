@@ -26,6 +26,7 @@ public class AmbigName extends Name<AmbigKind> //SerializableSimpleName
 		super(AmbigKind.KIND, text);
 	}
 	
+	// Bit hacky
 	public MessageSigName toMessageSigName()
 	{
 		return new MessageSigName(getLastElement());

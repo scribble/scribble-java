@@ -3,6 +3,7 @@ package org.scribble2.model.context;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scribble2.model.DataTypeDecl;
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.ImportModule;
 import org.scribble2.model.MessageSigDecl;
@@ -122,15 +123,11 @@ public class ModuleContext
 		{
 			if (dtd.isDataTypeDecl())
 			{
-				/*//PayloadType simplename = ptd.alias.toName();
-				PayloadType simplename = ((PayloadTypeDecl) dtd).getAliasName();
-				PayloadType fullname = ((PayloadTypeDecl) dtd).getFullPayloadTypeName();
-				PayloadType selfname = new PayloadType(simplemodname, simplename.toString());
-				//this.data.put(simplename, fullname);
-				//this.data.put(selfname, fullname);
-				this.types.put(simplename, fullname);
-				this.types.put(selfname, fullname);*/
-				throw new RuntimeException("TODO: " + dtd);
+				DataType simplename = ((DataTypeDecl) dtd).getDeclName();
+				DataType fullname = new DataType(fullmodname, simplename);
+				DataType selfname = new DataType(simplemodname, simplename);
+				this.data.put(simplename, fullname);
+				this.data.put(selfname, fullname);
 			}
 			else if (dtd.isMessageSigDecl())
 			{
@@ -202,12 +199,12 @@ public class ModuleContext
 	/*public boolean isModuleVisible(ModuleName modname)
 	{
 		return this.modules.keySet().contains(modname);
-	}
-
-	public boolean isPayloadTypeVisible(PayloadType typename)
-	{
-		return this.types.keySet().contains(typename);
 	}*/
+
+	public boolean isDataTypeVisible(DataType typename)
+	{
+		return this.data.keySet().contains(typename);
+	}
 
 	public boolean isMessageSigNameVisible(Name<? extends SigKind> signame)
 	{

@@ -15,7 +15,7 @@ import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.kind.Global;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.Local;
-import org.scribble2.sesstype.kind.OperatorKind;
+import org.scribble2.sesstype.kind.OpKind;
 import org.scribble2.sesstype.kind.RecVarKind;
 import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.kind.SigKind;
@@ -36,7 +36,7 @@ public class AntlrSimpleName
 
 	public static GProtocolNameNode toGProtocolNameNode(CommonTree ct)
 	{
-		return (GProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getName(ct));  // No: qualified uses the node's elements, not the node's text itself
+		return (GProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getName(ct));  // Cannot use SimpleNameNode because qualified uses the node's elements, not the node's text itself
 		//return AntlrQualifiedName.toGlobalProtocolNameNode(ct);
 	}
 
@@ -102,10 +102,10 @@ public class AntlrSimpleName
 		{
 			//return new OperatorNode(OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
 			//return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.OPERATOR, OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
-			return (OpNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OperatorKind.KIND, OpNode.EMPTY_OPERATOR_IDENTIFIER);
+			return (OpNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, OpNode.EMPTY_OPERATOR_IDENTIFIER);
 		}
 		//return new OperatorNode(op);
-		return (OpNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OperatorKind.KIND, getName(ct));
+		return (OpNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, getName(ct));
 	}
 	
 	public static ScopeNode toScopeNode(CommonTree ct)

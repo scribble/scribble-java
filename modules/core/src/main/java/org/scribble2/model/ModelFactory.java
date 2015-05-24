@@ -27,6 +27,7 @@ import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.NameNode;
 import org.scribble2.model.name.PayloadElemNameNode;
+import org.scribble2.model.name.qualified.DataTypeNameNode;
 import org.scribble2.model.name.qualified.GProtocolNameNode;
 import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
@@ -64,6 +65,7 @@ public interface ModelFactory
 	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);
 	
 	MessageSigDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias);
+	DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNameNode alias);
 
 	GProtocolDecl GProtocolDecl(GProtocolHeader header, GProtocolDef def);
 	//GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
