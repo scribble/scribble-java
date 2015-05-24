@@ -6,5 +6,11 @@ public class Buff<T>
 
 	public Buff()
 	{
+		
+	}
+
+	public Buff(T val)
+	{
+		this.val = val;
 	}
 }
