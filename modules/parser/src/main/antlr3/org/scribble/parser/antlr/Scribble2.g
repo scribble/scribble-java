@@ -397,6 +397,14 @@ messagesignature:
 	IDENTIFIER '(' payload ')'
 	->
 	^(MESSAGESIGNATURE IDENTIFIER payload)
+|
+	'(' ')'
+	->
+	^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD))
+|
+	IDENTIFIER '(' ')'
+	->
+	^(MESSAGESIGNATURE IDENTIFIER ^(PAYLOAD))
 ;
 
 payload:
@@ -406,9 +414,12 @@ payload:
 	payloadelement (',' payloadelement)*
 	->
 	^(payloadelement+)*/
-	payloadelement*
+/*	(payloadelement)*
 ->
-	^(PAYLOAD payloadelement*)
+	^(PAYLOAD payloadelement*)*/
+	payloadelement (',' payloadelement)*
+->
+	^(PAYLOAD payloadelement+)
 ;
 
 // Payload type names need disambiguation pass

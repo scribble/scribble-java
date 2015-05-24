@@ -16,6 +16,11 @@ public class Payload
 	{
 		this.elems = payload;
 	}
+	
+	public boolean isEmpty()
+	{
+		return this.elems.isEmpty();
+	}
 
 	@Override
 	public int hashCode()

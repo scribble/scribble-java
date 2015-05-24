@@ -11,11 +11,12 @@ module Test;
 //import Test2;
 
 type <java> "java.lang.String" from "rt.jar" as String;
+type <java> "java.lang.Integer" from "rt.jar" as Integer;
 
 
 global protocol Foo(role A, role B)
 {
-	1(String) from A to B;
+	1(String, Integer1) from A to B;
 	//M from A to B;
 	//do Bar<1()>(A, B);
 	//do Bar<M>(A, B);

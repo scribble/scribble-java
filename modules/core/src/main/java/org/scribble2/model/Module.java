@@ -12,6 +12,7 @@ import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.ProtocolKind;
+import org.scribble2.sesstype.name.DataType;
 import org.scribble2.sesstype.name.IName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
@@ -105,17 +106,18 @@ public class Module extends ModelNodeBase
 
 	// FIXME: refactor
 	// ptn simple alias name
-	public DataTypeDecl getPayloadTypeDecl(IName ptn)
+	//public DataTypeDecl getPayloadTypeDecl(IName ptn)
+	public DataTypeDecl getDataTypeDecl(DataType ptn)  // Simple name (as for getProtocolDecl)
 	{
 		for (NonProtocolDecl<? extends Kind> dtd : this.data)
 		{
 			//if (dtd instanceof DataTypeDecl && dtd.alias.getName().equals(ptn))
-			if (dtd instanceof DataTypeDecl && dtd.getDeclName().equals(ptn))
+			if (dtd.isDataTypeDecl() && dtd.getDeclName().equals(ptn))
 			{
 				return (DataTypeDecl) dtd;
 			}
 		}
-		throw new RuntimeException("Payload type not found: " + ptn);
+		throw new RuntimeException("Data type not found: " + ptn);
 	}
 
 	// ptn simple alias name
