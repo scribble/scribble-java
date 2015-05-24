@@ -1,16 +1,11 @@
 package org.scribble2.net;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 import org.scribble2.net.session.SessionEndpoint;
-import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleRuntimeException;
 
 
 // LinearSocket
-public abstract class ScribSocket implements AutoCloseable
+public abstract class ScribSocket //implements AutoCloseable
 {
 	protected SessionEndpoint ep;
 	
@@ -21,7 +16,7 @@ public abstract class ScribSocket implements AutoCloseable
 		this.ep = ep;
 	}
 
-	public void connect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	/*public void connect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		Socket s = new Socket(host, port);
 		this.ep.register(role, new SocketWrapper(s));
@@ -30,7 +25,7 @@ public abstract class ScribSocket implements AutoCloseable
 	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
 	{
 		this.ep.register(role, ss.accept());
-	}
+	}*/
 	
 	protected boolean isUsed()
 	{
@@ -41,7 +36,7 @@ public abstract class ScribSocket implements AutoCloseable
 	{
 		if (this.used)
 		{
-			throw new ScribbleRuntimeException("Socket already used: ");
+			throw new ScribbleRuntimeException("Socket already used: " + this.getClass());
 		}
 		this.used = true;
 	}
@@ -73,19 +68,16 @@ public abstract class ScribSocket implements AutoCloseable
 	}*/
 
 	// Only triggered by autoclose or explicit close
-	@Override
-	public void close() throws ScribbleRuntimeException
+	/*@Override
+	public void close() throws ScribbleRuntimeException*/
+	protected void close() throws ScribbleRuntimeException
 	{
-		System.out.println("c1: " + this.ep.self + ", " + this.getClass());
-
 		//this.sessep.close();
 		if (!this.used)
 		//if (!this.ep.isCompleted())
 		{
-			System.out.println("c2: ");
-			
-			//throw new ScribbleRuntimeException("Socket not used: ");
 			this.ep.close();
+			throw new ScribbleRuntimeException("Socket not used: " + this.getClass());
 		}
 	}
 	

@@ -17,7 +17,7 @@ public abstract class EndSocket extends ScribSocket
 	public void end() throws ScribbleRuntimeException
 	{
 		super.use();
-		//this.ep.setCompleted();
+		this.ep.setCompleted();
 		this.ep.close();
 		//this.closed = true;
 	}

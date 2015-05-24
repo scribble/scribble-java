@@ -21,12 +21,12 @@ public class ApiGenerator
 	private final Role role;
 	private final LProtocolName lpn;
 
-	private int counter = 0;
+	private int counter = 1;
 	Map<ProtocolState, String> classNames = new HashMap<>();
 	private String root = null;
 	private Map<String, String> classes = new HashMap<>();  // class name -> class source
 	
-	private enum SocketType { SEND, RECEIVE, BRANCH, END }
+	private enum SocketType { SEND, RECEIVE, BRANCH, END, INIT }
 	private final Map<SocketType, String> SOCKET_CLASSES;
 
 	{
@@ -35,6 +35,7 @@ public class ApiGenerator
 		SOCKET_CLASSES.put(SocketType.RECEIVE, "org.scribble2.net.ReceiveSocket");
 		SOCKET_CLASSES.put(SocketType.BRANCH, "org.scribble2.net.BranchSocket");
 		SOCKET_CLASSES.put(SocketType.END, "org.scribble2.net.EndSocket");
+		SOCKET_CLASSES.put(SocketType.INIT, "org.scribble2.net.InitSocket");
 	}
 
 	//public ApiGenerator(Job job, LProtocolName lpn)
@@ -84,6 +85,31 @@ public class ApiGenerator
 		{
 			generateClasses(succ);
 		}
+		String init = this.lpn.getSimpleName().toString() + "_" + 0;  // FIXME: factor out with newClassName
+		this.classes.put(init, generateInitClass(init));
+	}
+
+	private String generateInitClass(String className)
+	{
+		String clazz = "";
+		clazz += "package " + getPackageName() + ";\n";
+		clazz += "\n";
+		clazz += "import org.scribble2.net.session.SessionEndpoint;\n";
+		clazz += "import org.scribble2.util.ScribbleRuntimeException;\n";
+		clazz += "\n";
+		clazz += "public class " + className + " extends " + SOCKET_CLASSES.get(SocketType.INIT) + " {\n";
+		clazz += "\tpublic " + className + "(SessionEndpoint se) {\n";
+		clazz += "\t\tsuper(se);\n";
+		clazz += "\t}";
+		clazz += "\n\n";
+		
+		clazz += "\tpublic " + this.root + " init() throws ScribbleRuntimeException {\n";
+		clazz += "\t\tsuper.use();\n";
+		clazz += "\t\treturn new " + this.root + "(this.ep);\n";
+		clazz += "\t}\n";
+		
+		clazz += "}\n";
+		return clazz;
 	}
 
 	private String generateClass(ProtocolState ps)
@@ -164,11 +190,11 @@ public class ApiGenerator
 	private String generateConstructor(String className)
 	{
 		String cons = "";
-		if (this.root.equals(className))
+		/*if (this.root.equals(className))
 		{
 			cons += "\tpublic ";
 		}
-		else
+		else*/
 		{
 			cons += "\tprotected ";
 		}
