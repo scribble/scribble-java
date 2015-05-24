@@ -1,9 +1,11 @@
 package org.scribble2.model.del.local;
 
 import org.scribble2.fsm.Send;
+import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.local.LSend;
 import org.scribble2.model.visit.FsmConstructor;
+import org.scribble2.sesstype.Payload;
 import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Role;
 
@@ -33,7 +35,16 @@ public class LSendDel extends LSimpleInteractionNodeDel
 		}
 		Role peer = ls.dests.get(0).toName();
 		MessageId mid = ls.msg.toMessage().getId();
-		conv.builder.addEdge(conv.builder.getEntry(), new Send(peer, mid), conv.builder.getExit());
+		Payload payload;
+		if (ls.msg.isMessageSigNode())  // Hacky?
+		{
+			payload = ((MessageSigNode) ls.msg).payload.toPayload();
+		}
+		else
+		{
+			payload = Payload.EMPTY_PAYLOAD;
+		}
+		conv.builder.addEdge(conv.builder.getEntry(), new Send(peer, mid, payload), conv.builder.getExit());
 		return (LSend) super.leaveFsmConstruction(parent, child, conv, ls);
 	}
 }

@@ -6,10 +6,12 @@ import org.scribble2.model.ArgNode;
 import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
+import org.scribble2.model.name.qualified.DataTypeNameNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.simple.NonRoleParamNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Arg;
+import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.Role;
@@ -63,11 +65,11 @@ public class Substitutor extends ModelVisitor
 			MessageSigNameNode msn = (MessageSigNameNode) an;
 			return (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, msn.getElements());
 		}
-		/*else if (an.isPayloadTypeNode())
+		else if (an.isDataTypeNameNode())
 		{
-			PayloadTypeNameNodes ptn = (PayloadTypeNameNodes) an;
-			return new PayloadTypeNameNodes(ptn.getElements());
-		}*/
+			DataTypeNameNode dtn = (DataTypeNameNode) an;
+			return (DataTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, dtn.getElements());
+		}
 		else if (an.isParamNode())
 		{
 			//return Substitutor.copyParameterNode((ParameterNode<K>) an);

@@ -151,15 +151,20 @@ public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implemen
 	public Arg<K> toArg()
 	{
 		//return toName();
+		Arg<? extends Kind> arg;
 		if (this.kind.equals(DataTypeKind.KIND))
 		{
-			throw new RuntimeException("TODO: " + this);
+			arg = toPayloadType();
 		}
 		else if (this.kind.equals(SigKind.KIND))
 		{
-			return (Arg<K>) toMessage();
+			 arg = toMessage();
 		}
-		throw new RuntimeException("Shouldn't get here: " + this);
+		else
+		{
+			throw new RuntimeException("Shouldn't get here: " + this);
+		}
+		return (Arg<K>) arg;
 	}
 
 	//@Override

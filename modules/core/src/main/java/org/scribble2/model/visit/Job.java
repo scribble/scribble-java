@@ -16,7 +16,8 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 
-	// FIXME: a role should be enabled by the same role in all blocks
+	// FIXME: wf-choice: a role should be enabled by the same role in all blocks
+	// FIXME: do-call argument kinding (sig/type args/params), arity, etc
 
 	//.. do projection should filter unused roles -- but scoped subprotocols may need extra name mangling
 	//.. both projector and graphbuilder are env visitors but not subprotocol visitors now, so swap visitor hierarchy?

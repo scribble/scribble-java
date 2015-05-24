@@ -87,8 +87,7 @@ public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements Pa
 	//public Argument<DataTypeKind> toArgument(Scope scope)  // FIXME: shouldn't be scoped
 	public Arg<DataTypeKind> toArg()  // FIXME: shouldn't be scoped
 	{
-		//return toName();
-		throw new RuntimeException("TODO: " + this);
+		return toPayloadType();
 	}
 
 	@Override

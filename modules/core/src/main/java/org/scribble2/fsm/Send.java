@@ -1,13 +1,14 @@
 package org.scribble2.fsm;
 
+import org.scribble2.sesstype.Payload;
 import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Role;
 
 public class Send extends IOAction
 {
-	public Send(Role peer, MessageId mid)
+	public Send(Role peer, MessageId mid, Payload payload)
 	{
-		super(peer, mid);
+		super(peer, mid, payload);
 	}
 	
 	@Override
