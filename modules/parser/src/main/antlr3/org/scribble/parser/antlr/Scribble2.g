@@ -103,11 +103,11 @@ tokens
 	ROLEDECLLIST = 'role-decl-list';
 	ROLEDECL = 'role-decl';
 	ARGUMENTINSTANTIATIONLIST = 'argument-instantiation-list';
-	ARGUMENTINSTANTIATION = 'argument-instantiation';
+	//ARGUMENTINSTANTIATION = 'argument-instantiation';
 	PAYLOAD = 'payload';
-	PAYLOADELEMENT = 'payloadelement';
+	//PAYLOADELEMENT = 'payloadelement';
 	ROLEINSTANTIATIONLIST = 'role-instantiation-list';
-	ROLEINSTANTIATION = 'role-instantiation';
+	ROLEINSTANTIATION = 'role-instantiation';  // FIXME: not consistent with arginstas/payloadeles
 
 	GLOBALPROTOCOLDECL = 'global-protocol-decl';
 	GLOBALPROTOCOLHEADER = 'global-protocol-header';
@@ -637,7 +637,7 @@ roleinstantiationlist:
 roleinstantiation:
 	rolename
 	->
-	^(ROLEINSTANTIATION rolename)
+	^(ROLEINSTANTIATION rolename)  // FIXME: not consistent with arginstas/payloadeles
 ;
 
 argumentinstantiationlist:

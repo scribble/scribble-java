@@ -1,14 +1,17 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.simple.OperatorNode;
+import org.scribble2.model.del.ModelDel;
+import org.scribble2.model.name.simple.OpNode;
+import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.MessageSig;
+import org.scribble2.util.ScribbleException;
 
 public class MessageSigNode extends ModelNodeBase implements MessageNode
 {
-	public final OperatorNode op;
-	public final PayloadNode payload;
+	public final OpNode op;
+	public final PayloadElemList payload;
 
-	public MessageSigNode(OperatorNode op, PayloadNode payload)
+	public MessageSigNode(OpNode op, PayloadElemList payload)
 	{
 		this.op = op;
 		this.payload = payload;
@@ -47,14 +50,22 @@ public class MessageSigNode extends ModelNodeBase implements MessageNode
 		MessageSignatureNode projection = new MessageSignatureNode(null, op, payload);
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
+	}*/
+	
+	protected MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
+	{
+		ModelDel del = del();	
+		MessageSigNode msn = new MessageSigNode(op, payload);
+		msn = (MessageSigNode) msn.del(del);
+		return msn;
 	}
 	
 	@Override
-	public MessageSignatureNode visitChildren(NodeVisitor nv) throws ScribbleException
+	public MessageSigNode visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		OperatorNode op = (OperatorNode) visitChild(this.op, nv);
-		Payload payload = (Payload) visitChild(this.payload, nv);
-		return new MessageSignatureNode(this.ct, op, payload);
+		OpNode op = (OpNode) visitChild(this.op, nv);
+		PayloadElemList payload = (PayloadElemList) visitChild(this.payload, nv);
+		return reconstruct(op, payload);
 	}
 	
 	/*@Override 

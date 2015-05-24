@@ -7,11 +7,11 @@ import org.scribble2.sesstype.name.Op;
 
 //public class OperatorNode extends SimpleNameNode
 //public class OperatorNode extends SimpleNameNode<Operator, OperatorKind>
-public class OperatorNode extends SimpleNameNode<OperatorKind>
+public class OpNode extends SimpleNameNode<OperatorKind>
 {
 	public static final String EMPTY_OPERATOR_IDENTIFIER = "";
 	
-	public OperatorNode(String identifier)
+	public OpNode(String identifier)
 	{
 		super(identifier);
 	}
@@ -26,10 +26,10 @@ public class OperatorNode extends SimpleNameNode<OperatorKind>
 	}*/
 
 	@Override
-	protected OperatorNode copy()
+	protected OpNode copy()
 	{
 		//return new OperatorNode(this.identifier);
-		return new OperatorNode(getIdentifier());
+		return new OpNode(getIdentifier());
 	}
 	
 	@Override

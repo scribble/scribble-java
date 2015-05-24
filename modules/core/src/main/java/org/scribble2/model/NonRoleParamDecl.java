@@ -2,7 +2,7 @@ package org.scribble2.model;
 
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.model.name.NameNode;
-import org.scribble2.model.name.simple.ParamNode;
+import org.scribble2.model.name.simple.NonRoleParamNode;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.Role;
@@ -43,7 +43,7 @@ public class NonRoleParamDecl<K extends Kind> extends HeaderParamDecl<K> //imple
 	@Override
 	protected NonRoleParamDecl<K> copy()
 	{
-		return new NonRoleParamDecl<>(this.kind, (ParamNode<K>) this.name);
+		return new NonRoleParamDecl<>(this.kind, (NonRoleParamNode<K>) this.name);
 	}
 
 	/*@Override
@@ -57,9 +57,9 @@ public class NonRoleParamDecl<K extends Kind> extends HeaderParamDecl<K> //imple
 	public NonRoleParamDecl<K> project(Role self)
 	{
 		//ParameterNode<K> pn = new ParameterNode<>(this.kind, this.name.toString());  // FIXME: use factory?
-		ParamNode<K> pn = ModelFactoryImpl.FACTORY.ParamNode(this.kind, this.name.toString());
+		NonRoleParamNode<K> pn = ModelFactoryImpl.FACTORY.NonRoleParamNode(this.kind, this.name.toString());
 		//return new ParameterDecl(this.kind, pn);
-		return ModelFactoryImpl.FACTORY.ParameterDecl(this.kind, pn);
+		return ModelFactoryImpl.FACTORY.ParamDecl(this.kind, pn);
 	}
 	
 	@Override

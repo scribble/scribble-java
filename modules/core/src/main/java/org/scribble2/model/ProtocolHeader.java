@@ -15,11 +15,11 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 {
 	//public final SimpleProtocolNameNode name;
 	public final RoleDeclList roledecls;
-	public final ParamDeclList paramdecls;
+	public final NonRoleParamDeclList paramdecls;
 
 	// Maybe deprecate SimpleProtocolNameNode
 	//protected ProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
-	protected ProtocolHeader(NameNode<K> name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	protected ProtocolHeader(NameNode<K> name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
 		//this.name = name;
 		super(name);
@@ -28,13 +28,13 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 	}
 	
 	//protected abstract ProtocolHeader<K> reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl);
-	protected abstract ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, ParamDeclList pdl);
+	protected abstract ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, NonRoleParamDeclList pdl);
 	
 	@Override
 	public ProtocolHeader<K> visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		RoleDeclList rdl = (RoleDeclList) visitChild(this.roledecls, nv);
-		ParamDeclList pdl = (ParamDeclList) visitChild(this.paramdecls, nv);
+		NonRoleParamDeclList pdl = (NonRoleParamDeclList) visitChild(this.paramdecls, nv);
 		//return reconstruct((SimpleProtocolNameNode) this.name, rdl, pdl);
 		return reconstruct((ProtocolNameNode<K>) this.name, rdl, pdl);
 	}

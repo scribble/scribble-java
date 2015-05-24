@@ -6,8 +6,8 @@ import org.scribble2.model.name.qualified.DataTypeNameNode;
 import org.scribble2.model.name.qualified.GProtocolNameNode;
 import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
-import org.scribble2.model.name.simple.OperatorNode;
-import org.scribble2.model.name.simple.ParamNode;
+import org.scribble2.model.name.simple.OpNode;
+import org.scribble2.model.name.simple.NonRoleParamNode;
 import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.name.simple.ScopeNode;
@@ -34,13 +34,13 @@ public class AntlrSimpleName
 		throw new RuntimeException("TODO: " + ct);
 	}*/
 
-	public static GProtocolNameNode toGlobalProtocolNameNode(CommonTree ct)
+	public static GProtocolNameNode toGProtocolNameNode(CommonTree ct)
 	{
 		return (GProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getName(ct));  // No: qualified uses the node's elements, not the node's text itself
 		//return AntlrQualifiedName.toGlobalProtocolNameNode(ct);
 	}
 
-	public static LProtocolNameNode toLocalProtocolNameNode(CommonTree ct)
+	public static LProtocolNameNode toLProtocolNameNode(CommonTree ct)
 	{
 		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getName(ct));
 		//return AntlrQualifiedName.toLocalProtocolNameNode(ct);
@@ -77,13 +77,13 @@ public class AntlrSimpleName
 	}*/
 
 	//public static ParameterNode toParameterNode(CommonTree ct, Kind kind)
-	public static <K extends Kind> ParamNode<K> toParameterNode(K kind, CommonTree ct)
+	public static <K extends Kind> NonRoleParamNode<K> toParamNode(K kind, CommonTree ct)
 	{
 		//return new ParameterNode(getName(ct), kind);
 		//return new ParameterNode(getName(ct));
 		//return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, getName(ct));
 		//return ModelFactoryImpl.FACTORY.ParameterNode(AmbiguousKind.KIND, getName(ct));
-		return ModelFactoryImpl.FACTORY.ParamNode(kind, getName(ct));
+		return ModelFactoryImpl.FACTORY.NonRoleParamNode(kind, getName(ct));
 	}
 	
 	/*public static AmbiguousNameNode toAmbiguousNameNode(CommonTree ct)
@@ -95,17 +95,17 @@ public class AntlrSimpleName
 		return (AmbiguousNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.AMBIG, AntlrSimpleName.getName(ct));
 	}*/
 
-	public static OperatorNode toOperatorNode(CommonTree ct)
+	public static OpNode toOpNode(CommonTree ct)
 	{
 		String op = getName(ct);
 		if (op.equals(ANTLR_EMPTY_OPERATOR))
 		{
 			//return new OperatorNode(OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
 			//return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.OPERATOR, OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
-			return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OperatorKind.KIND, OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
+			return (OpNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OperatorKind.KIND, OpNode.EMPTY_OPERATOR_IDENTIFIER);
 		}
 		//return new OperatorNode(op);
-		return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OperatorKind.KIND, getName(ct));
+		return (OpNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OperatorKind.KIND, getName(ct));
 	}
 	
 	public static ScopeNode toScopeNode(CommonTree ct)
@@ -119,7 +119,7 @@ public class AntlrSimpleName
 		throw new RuntimeException("TODO: " + ct);
 	}
 	
-	public static RecVarNode toRecursionVarNode(CommonTree ct)
+	public static RecVarNode toRecVarNode(CommonTree ct)
 	{
 		//return new RecursionVarNode(getName(ct));
 		//return (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, getName(ct));

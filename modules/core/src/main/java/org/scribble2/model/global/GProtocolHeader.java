@@ -2,7 +2,7 @@ package org.scribble2.model.global;
 
 import org.scribble2.model.Constants;
 import org.scribble2.model.ModelNodeBase;
-import org.scribble2.model.ParamDeclList;
+import org.scribble2.model.NonRoleParamDeclList;
 import org.scribble2.model.ProtocolHeader;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.del.ModelDel;
@@ -14,7 +14,7 @@ import org.scribble2.sesstype.name.GProtocolName;
 public class GProtocolHeader extends ProtocolHeader<Global> implements GlobalNode
 {
 	//public GProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
-	public GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	public GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
 		super(name, roledecls, paramdecls);
 	}
@@ -40,7 +40,7 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GlobalNod
 
 	@Override
 	//protected ProtocolHeader reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl)
-	protected GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, ParamDeclList pdl)
+	protected GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
 	{
 		ModelDel del = del();
 		GProtocolHeader gph = new GProtocolHeader((GProtocolNameNode) name, rdl, pdl);

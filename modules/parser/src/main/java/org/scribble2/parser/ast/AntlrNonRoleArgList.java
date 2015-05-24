@@ -6,20 +6,20 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.NonRoleArg;
-import org.scribble2.model.ArgList;
+import org.scribble2.model.NonRoleArgList;
 import org.scribble2.model.ArgNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.ScribbleParser;
-import org.scribble2.parser.ast.name.AntlrAmbiguousName;
+import org.scribble2.parser.ast.name.AntlrAmbigName;
 import org.scribble2.parser.util.Util;
 
-public class AntlrArgList
+public class AntlrNonRoleArgList
 {
 	//public static final String EMPTY_ARGUMENTLIST = "EMPTY_ARGUMENT_LIST";
 
 	// Similar to parseParameterDeclList
-	public static ArgList parseArgList(ScribbleParser parser, CommonTree ct)
+	public static NonRoleArgList parseNonRoleArgList(ScribbleParser parser, CommonTree ct)
 	{
 		List<NonRoleArg> as = new LinkedList<>();
 		for (CommonTree a : getArgumentChildren(ct))
@@ -29,15 +29,19 @@ public class AntlrArgList
 			{
 				//as.add((ArgumentInstantiation) parser.parse(a));
 				ArgNode arg = (ArgNode) parser.parse(a);
-				as.add(ModelFactoryImpl.FACTORY.NonAroleArg(arg));
+				as.add(ModelFactoryImpl.FACTORY.NonRoleArg(arg));
+			}
+			else if (type == AntlrNodeType.AMBIGUOUSNAME)
+			{
+				as.add(ModelFactoryImpl.FACTORY.NonRoleArg(AntlrAmbigName.toAmbigNameNode(a)));
 			}
 			else
 			{
-				as.add(ModelFactoryImpl.FACTORY.NonAroleArg(AntlrAmbiguousName.toAmbiguousNameNode(a)));
+				throw new RuntimeException("Shouldn't get in here: " + type);
 			}
 		}
 		//return new ArgumentInstantiationList(as);
-		return ModelFactoryImpl.FACTORY.ArgList(as);
+		return ModelFactoryImpl.FACTORY.NonRoleArgList(as);
 	}
 
 	public static List<CommonTree> getArgumentChildren(CommonTree ct)

@@ -3,7 +3,7 @@ package org.scribble2.parser.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.NonRoleParamDecl;
-import org.scribble2.model.name.simple.ParamNode;
+import org.scribble2.model.name.simple.NonRoleParamNode;
 import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
@@ -11,12 +11,12 @@ import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.SigKind;
 
-public class AntlrParameterDecl
+public class AntlrNonRoleParamDecl
 {
 	public static final int KIND_CHILD_INDEX = 0;
 	public static final int NAME_CHILD_INDEX = 1;
 
-	public static NonRoleParamDecl<? extends Kind> parseParameterDecl(ScribbleParser parser, CommonTree ct)
+	public static NonRoleParamDecl<? extends Kind> parseNonRoleParamDecl(ScribbleParser parser, CommonTree ct)
 	{
 		Kind kind = parseKind(getKindChild(ct));
 		/*//ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct), kind);
@@ -26,13 +26,13 @@ public class AntlrParameterDecl
 		//return ModelFactoryImpl.FACTORY.ParameterDecl(name);*/
 		if (kind.equals(SigKind.KIND))
 		{
-			ParamNode<SigKind> name = AntlrSimpleName.toParameterNode(SigKind.KIND, getNameChild(ct));
-			return ModelFactoryImpl.FACTORY.ParameterDecl(SigKind.KIND, name);
+			NonRoleParamNode<SigKind> name = AntlrSimpleName.toParamNode(SigKind.KIND, getNameChild(ct));
+			return ModelFactoryImpl.FACTORY.ParamDecl(SigKind.KIND, name);
 		}
 		else if (kind.equals(DataTypeKind.KIND))
 		{
-			ParamNode<DataTypeKind> name = AntlrSimpleName.toParameterNode(DataTypeKind.KIND, getNameChild(ct));
-			return ModelFactoryImpl.FACTORY.ParameterDecl(DataTypeKind.KIND, name);
+			NonRoleParamNode<DataTypeKind> name = AntlrSimpleName.toParamNode(DataTypeKind.KIND, getNameChild(ct));
+			return ModelFactoryImpl.FACTORY.ParamDecl(DataTypeKind.KIND, name);
 		}
 		else
 		{

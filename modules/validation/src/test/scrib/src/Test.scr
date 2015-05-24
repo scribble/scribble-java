@@ -12,10 +12,19 @@ module Test;
 
 
 
-global protocol Foo(role A, role B)
+global protocol Foo<sig M>(role A, role B)
 {
 	1(String) from A to B;
+	//M from A to B;
+	//do Bar<1()>(A, B);
+	//do Bar<M>(A, B);
 }
+
+/*global protocol Bar<sig M>(role A, role B)
+{
+	//1(String) from A to B;
+	M from A to B;
+}*/
 
 
 /*

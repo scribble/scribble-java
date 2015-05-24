@@ -46,7 +46,7 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 			List<? extends InteractionNode<Local>> lis = block.seq.actions;
 			if (!(lis.size() == 1 && lis.get(0) instanceof Continue))
 			{
-				projection = ModelFactoryImpl.FACTORY.LocalRecursion(recvar, block);
+				projection = ModelFactoryImpl.FACTORY.LRecursion(recvar, block);
 			}
 		}
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));

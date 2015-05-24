@@ -10,9 +10,9 @@ import org.scribble2.sesstype.name.Role;
 import org.scribble2.sesstype.name.Scope;
 
 
-public class ArgList extends DoArgList<NonRoleArg>
+public class NonRoleArgList extends DoArgList<NonRoleArg>
 {
-	public ArgList(List<NonRoleArg> instans)
+	public NonRoleArgList(List<NonRoleArg> instans)
 	{
 		super(instans);
 	}
@@ -20,24 +20,25 @@ public class ArgList extends DoArgList<NonRoleArg>
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new ArgList(this.args);
+		return new NonRoleArgList(this.args);
 	}
 
 	@Override
 	protected DoArgList<NonRoleArg> reconstruct(List<NonRoleArg> instans)
 	{
 		ModelDel del = del();
-		ArgList ail = ModelFactoryImpl.FACTORY.ArgList(instans);
-		ail = (ArgList) ail.del(del);
+		//NonRoleArgList ail = ModelFactoryImpl.FACTORY.ArgList(instans);
+		NonRoleArgList ail = new NonRoleArgList(instans);
+		ail = (NonRoleArgList) ail.del(del);
 		return ail;
 	}
 
 	@Override
-	public ArgList project(Role self)
+	public NonRoleArgList project(Role self)
 	{
 		List<NonRoleArg> instans =
 				this.args.stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
-		return ModelFactoryImpl.FACTORY.ArgList(instans);
+		return ModelFactoryImpl.FACTORY.NonRoleArgList(instans);
 	}
 	
 	public boolean isEmpty()

@@ -4,17 +4,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.scribble2.model.del.ModelDel;
+import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.Payload;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.name.PayloadType;
+import org.scribble2.util.ScribbleException;
 
-public class PayloadNode extends ModelNodeBase
+public class PayloadElemList extends ModelNodeBase
 {
 	//public static final Payload EMPTY_PAYLOAD = new Payload(null, Collections.<PayloadElement> emptyList());
 
-	public final List<PayloadElement> elems;  // FIXME: parameterise on Kind (cf. sesstypes)
+	public final List<PayloadElem> elems;  // FIXME: parameterise on Kind (cf. sesstypes)
 
-	public PayloadNode(List<PayloadElement> payloadelems)
+	public PayloadElemList(List<PayloadElem> payloadelems)
 	{
 		this.elems = new LinkedList<>(payloadelems);
 	}
@@ -34,18 +37,22 @@ public class PayloadNode extends ModelNodeBase
 		Payload projection = new Payload(null, payloadelems);
 		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;
+	}*/
+
+	protected PayloadElemList reconstruct(List<PayloadElem> elems)
+	{
+		ModelDel del = del();
+		PayloadElemList pel = new PayloadElemList(elems);
+		pel = (PayloadElemList) pel.del(del);
+		return pel;
 	}
 	
 	@Override
-	public Payload visitChildren(NodeVisitor nv) throws ScribbleException
+	public PayloadElemList visitChildren(ModelVisitor nv) throws ScribbleException
 	{
-		if (isEmpty())
-		{
-			return this;
-		}
-		List<PayloadElement> pes = visitChildListWithClassCheck(this, this.payloadelems, nv);
-		return new Payload(this.ct, pes);
-	}*/
+		List<PayloadElem> elems = visitChildListWithClassCheck(this, this.elems, nv);
+		return reconstruct(elems);
+	}
 
 	public boolean isEmpty()
 	{
@@ -59,7 +66,7 @@ public class PayloadNode extends ModelNodeBase
 		if (!isEmpty())
 		{
 			s += this.elems.get(0).toString();
-			for (PayloadElement pe : this.elems.subList(1, this.elems.size()))
+			for (PayloadElem pe : this.elems.subList(1, this.elems.size()))
 			{
 				s += ", " + pe;
 			}
@@ -68,8 +75,8 @@ public class PayloadNode extends ModelNodeBase
 	}
 
 	@Override
-	protected PayloadNode copy()
+	protected PayloadElemList copy()
 	{
-		return new PayloadNode(this.elems);
+		return new PayloadElemList(this.elems);
 	}
 }

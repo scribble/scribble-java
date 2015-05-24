@@ -6,15 +6,15 @@ import org.scribble2.model.global.GProtocolBlock;
 import org.scribble2.model.global.GProtocolDef;
 import org.scribble2.parser.ScribbleParser;
 
-public class AntlrGlobalProtocolDefinition
+public class AntlrGProtocolDefinition
 {
 	public static final int BLOCK_CHILD_INDEX = 0;
 
-	public static GProtocolDef parseGlobalProtocolDefinition(ScribbleParser parser, CommonTree ct)
+	public static GProtocolDef parseGProtocolDefinition(ScribbleParser parser, CommonTree ct)
 	{
 		GProtocolBlock gpb = (GProtocolBlock) parser.parse(getBlockChild(ct));
 		//return new GlobalProtocolDefinition(gpb);
-		return ModelFactoryImpl.FACTORY.GlobalProtocolDefinition(gpb);
+		return ModelFactoryImpl.FACTORY.GProtocolDefinition(gpb);
 	}
 
 	public static CommonTree getBlockChild(CommonTree ct)

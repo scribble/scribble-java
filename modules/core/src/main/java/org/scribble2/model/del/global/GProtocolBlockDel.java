@@ -27,7 +27,7 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		GProtocolBlock gpd = (GProtocolBlock) visited;
 		LInteractionSeq seq = (LInteractionSeq) ((ProjectionEnv) gpd.seq.del().env()).getProjection();	
 		//LocalProtocolBlock projection = ModelFactoryImpl.FACTORY.LocalProtocolBlock(ModelFactoryImpl.FACTORY.LocalInteractionSequence(Collections.emptyList()));
-		LProtocolBlock projection = ModelFactoryImpl.FACTORY.LocalProtocolBlock(seq);
+		LProtocolBlock projection = ModelFactoryImpl.FACTORY.LProtocolBlock(seq);
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));

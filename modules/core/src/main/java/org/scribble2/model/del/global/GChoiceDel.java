@@ -193,7 +193,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		if (!blocks.get(0).isEmpty())  // WF allows this
 		{
 			RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getSubject(blocks.get(0)).toString());
-			projection = ModelFactoryImpl.FACTORY.LocalChoice(subj, blocks);
+			projection = ModelFactoryImpl.FACTORY.LChoice(subj, blocks);
 		}
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));

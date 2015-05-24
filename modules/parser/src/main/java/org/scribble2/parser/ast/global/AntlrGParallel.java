@@ -10,9 +10,9 @@ import org.scribble2.model.global.GProtocolBlock;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
-public class AntlrGlobalParallel
+public class AntlrGParallel
 {
-	public static GParallel parseGlobalParallel(ScribbleParser parser, CommonTree ct)
+	public static GParallel parseGParallel(ScribbleParser parser, CommonTree ct)
 	{
 		List<GProtocolBlock> blocks = new LinkedList<>();
 		for (CommonTree block : getBlockChildren(ct))

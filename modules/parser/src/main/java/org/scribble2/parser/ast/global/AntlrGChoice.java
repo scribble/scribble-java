@@ -14,12 +14,12 @@ import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
 import org.scribble2.sesstype.kind.Global;
 
-public class AntlrGlobalChoice
+public class AntlrGChoice
 {
 	public static final int SUBJECT_CHILD_INDEX = 0;
 	public static final int BLOCK_CHILDREN_START_INDEX = 1;
 	
-	public static GChoice parseGlobalChoice(ScribbleParser parser, CommonTree ct)
+	public static GChoice parseGChoice(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct));
 		List<ProtocolBlock<Global>> blocks = new LinkedList<>();
@@ -28,7 +28,7 @@ public class AntlrGlobalChoice
 			blocks.add((GProtocolBlock) parser.parse(block));
 		}
 		//return new GlobalChoice(subj, blocks);
-		return ModelFactoryImpl.FACTORY.GlobalChoice(subj, blocks);
+		return ModelFactoryImpl.FACTORY.GChoice(subj, blocks);
 	}
 
 	public static CommonTree getSubjectChild(CommonTree ct)

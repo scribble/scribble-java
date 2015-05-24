@@ -12,7 +12,7 @@ import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
 
-public class AntlrGlobalInterruptible
+public class AntlrGInterruptible
 {
 	//public static final String NO_SCOPE = "NO_SCOPE";
 
@@ -20,7 +20,7 @@ public class AntlrGlobalInterruptible
 	public static final int BLOCK_CHILD_INDEX = 1;
 	public static final int INTERRUPT_CHILDREN_START_INDEX = 2;
 
-	public static GInterruptible parseGlobalInterruptible(ScribbleParser parser, CommonTree ct)
+	public static GInterruptible parseGInterruptible(ScribbleParser parser, CommonTree ct)
 	{
 		GProtocolBlock block = (GProtocolBlock) parser.parse(getBlockChild(ct));
 		//List<GlobalInterrupt> interrs = new LinkedList<>();

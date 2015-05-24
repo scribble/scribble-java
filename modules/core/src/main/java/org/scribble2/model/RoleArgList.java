@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import org.scribble2.model.del.ModelDel;
 import org.scribble2.sesstype.name.Role;
 
-public class RoleArgList extends DoArgList<RoleArgument>
+public class RoleArgList extends DoArgList<RoleArg>
 {
 	//public final List<RoleInstantiation> ris;
 
-	public RoleArgList(List<RoleArgument> instans)
+	public RoleArgList(List<RoleArg> instans)
 	{
 		super(instans);
 		
@@ -24,7 +24,7 @@ public class RoleArgList extends DoArgList<RoleArgument>
 	}
 
 	@Override
-	protected RoleArgList reconstruct(List<RoleArgument> instans)
+	protected RoleArgList reconstruct(List<RoleArg> instans)
 	{
 		ModelDel del = del();
 		RoleArgList rl = new RoleArgList(instans);
@@ -36,9 +36,9 @@ public class RoleArgList extends DoArgList<RoleArgument>
 	@Override
 	public RoleArgList project(Role self)
 	{
-		List<RoleArgument> instans =
+		List<RoleArg> instans =
 				this.args.stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
-		return ModelFactoryImpl.FACTORY.RoleInstantiationList(instans);
+		return ModelFactoryImpl.FACTORY.RoleArgList(instans);
 	}
 
 	/*@Override
@@ -89,7 +89,7 @@ public class RoleArgList extends DoArgList<RoleArgument>
 	public String toString()
 	{
 		String s = "(" + this.args.get(0);
-		for (RoleArgument ri : this.args.subList(1, this.args.size()))
+		for (RoleArg ri : this.args.subList(1, this.args.size()))
 		{
 			s += ", " + ri;
 		}

@@ -1,6 +1,6 @@
 package org.scribble2.model.name.qualified;
 
-import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.name.PayloadElemNameNode;
 import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.kind.DataTypeKind;
 import org.scribble2.sesstype.name.DataType;
@@ -10,7 +10,7 @@ import org.scribble2.sesstype.name.ModuleName;
 //public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode
 //public class DataTypeNameNode extends SimpleNameNode<DataType, DataTypeKind> implements PayloadElementNameNode, ArgumentNode
 //public class DataTypeNameNode extends MemberNameNode<DataType, DataTypeKind> implements PayloadElementNameNode//, ArgumentNode
-public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements PayloadElementNameNode//, ArgumentNode
+public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode//, ArgumentNode
 {
 	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
 	public DataTypeNameNode(String... elems)

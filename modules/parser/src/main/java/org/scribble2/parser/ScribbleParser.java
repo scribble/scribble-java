@@ -4,33 +4,34 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelNode;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.ast.AntlrNonRoleArg;
-import org.scribble2.parser.ast.AntlrArgList;
+import org.scribble2.parser.ast.AntlrNonRoleArgList;
 import org.scribble2.parser.ast.AntlrImportModule;
-import org.scribble2.parser.ast.AntlrMessageSignature;
-import org.scribble2.parser.ast.AntlrMessageSignatureDecl;
+import org.scribble2.parser.ast.AntlrMessageSig;
+import org.scribble2.parser.ast.AntlrMessageSigDecl;
 import org.scribble2.parser.ast.AntlrModule;
 import org.scribble2.parser.ast.AntlrModuleDecl;
-import org.scribble2.parser.ast.AntlrParameterDecl;
-import org.scribble2.parser.ast.AntlrParameterDeclList;
-import org.scribble2.parser.ast.AntlrPayload;
-import org.scribble2.parser.ast.AntlrPayloadElement;
+import org.scribble2.parser.ast.AntlrNonRoleParamDecl;
+import org.scribble2.parser.ast.AntlrNonRoleParamDeclList;
+import org.scribble2.parser.ast.AntlrPayloadElemList;
+import org.scribble2.parser.ast.AntlrPayloadElem;
 import org.scribble2.parser.ast.AntlrRoleDecl;
 import org.scribble2.parser.ast.AntlrRoleDeclList;
-import org.scribble2.parser.ast.AntlrRoleInstantiation;
-import org.scribble2.parser.ast.AntlrRoleInstantiationList;
-import org.scribble2.parser.ast.global.AntlrGlobalChoice;
-import org.scribble2.parser.ast.global.AntlrGlobalContinue;
-import org.scribble2.parser.ast.global.AntlrGlobalDo;
-import org.scribble2.parser.ast.global.AntlrGlobalInteractionSequence;
-import org.scribble2.parser.ast.global.AntlrGlobalInterrupt;
-import org.scribble2.parser.ast.global.AntlrGlobalInterruptible;
-import org.scribble2.parser.ast.global.AntlrGlobalMessageTransfer;
-import org.scribble2.parser.ast.global.AntlrGlobalParallel;
-import org.scribble2.parser.ast.global.AntlrGlobalProtocolBlock;
-import org.scribble2.parser.ast.global.AntlrGlobalProtocolDecl;
-import org.scribble2.parser.ast.global.AntlrGlobalProtocolDefinition;
-import org.scribble2.parser.ast.global.AntlrGlobalProtocolHeader;
-import org.scribble2.parser.ast.global.AntlrGlobalRecursion;
+import org.scribble2.parser.ast.AntlrRoleArg;
+import org.scribble2.parser.ast.AntlrRoleArgList;
+import org.scribble2.parser.ast.global.AntlrGChoice;
+import org.scribble2.parser.ast.global.AntlrGContinue;
+import org.scribble2.parser.ast.global.AntlrGDo;
+import org.scribble2.parser.ast.global.AntlrGInteractionSequence;
+import org.scribble2.parser.ast.global.AntlrGInterrupt;
+import org.scribble2.parser.ast.global.AntlrGInterruptible;
+import org.scribble2.parser.ast.global.AntlrGMessageTransfer;
+import org.scribble2.parser.ast.global.AntlrGParallel;
+import org.scribble2.parser.ast.global.AntlrGProtocolBlock;
+import org.scribble2.parser.ast.global.AntlrGProtocolDecl;
+import org.scribble2.parser.ast.global.AntlrGProtocolDefinition;
+import org.scribble2.parser.ast.global.AntlrGProtocolHeader;
+import org.scribble2.parser.ast.global.AntlrGRecursion;
+import org.scribble2.parser.ast.name.AntlrAmbigName;
 import org.scribble2.parser.util.Util;
 
 /*import scribble2.ast.*;
@@ -146,60 +147,63 @@ public class ScribbleParser
 			/*case PAYLOADTYPEDECL:
 				return AntlrPayloadTypeDecl.parsePayloadTypeDecl(this, ct);*/
 			case MESSAGESIGNATUREDECL:
-				return AntlrMessageSignatureDecl.parseMessageSignatureDecl(this, ct);
+				return AntlrMessageSigDecl.parseMessageSigDecl(this, ct);
 			case IMPORTMODULE:
 				return AntlrImportModule.parseImportModule(this, ct);
 			case GLOBALPROTOCOLDECL:
-				return AntlrGlobalProtocolDecl.parseGlobalPrototocolDecl(this, ct);
+				return AntlrGProtocolDecl.parseGPrototocolDecl(this, ct);
 			case ROLEDECLLIST:
 				return AntlrRoleDeclList.parseRoleDeclList(this, ct);
 			case ROLEDECL:
 				return AntlrRoleDecl.parseRoleDecl(this, ct);
 			case PARAMETERDECLLIST:
 			//case EMPTY_PARAMETERDECLLST:
-				return AntlrParameterDeclList.parseParameterDeclList(this, ct);
+				return AntlrNonRoleParamDeclList.parseNonRoleParamDeclList(this, ct);
 			case PARAMETERDECL:
-				return AntlrParameterDecl.parseParameterDecl(this, ct);
+				return AntlrNonRoleParamDecl.parseNonRoleParamDecl(this, ct);
 			case GLOBALPROTOCOLHEADER:
-				return AntlrGlobalProtocolHeader.parseGlobalProtocolHeader(this, ct);
+				return AntlrGProtocolHeader.parseGProtocolHeader(this, ct);
 			case GLOBALPROTOCOLDEF:
-				return AntlrGlobalProtocolDefinition.parseGlobalProtocolDefinition(this, ct);
+				return AntlrGProtocolDefinition.parseGProtocolDefinition(this, ct);
 			case GLOBALPROTOCOLBLOCK:
-				return AntlrGlobalProtocolBlock.parseGlobalProtocolBlock(this, ct);
+				return AntlrGProtocolBlock.parseGProtocolBlock(this, ct);
 			case GLOBALINTERACTIONSEQUENCE:
-				return AntlrGlobalInteractionSequence.parseGlobalInteractionSequence(this, ct);
+				return AntlrGInteractionSequence.parseGInteractionSequence(this, ct);
 			case MESSAGESIGNATURE:
-				return AntlrMessageSignature.parseMessageSignature(this, ct);
+				return AntlrMessageSig.parseMessageSig(this, ct);
 			case PAYLOAD:
-				return AntlrPayload.parsePayload(this, ct);
-			case PAYLOADELEMENT:
-				return AntlrPayloadElement.parsePayloadElement(this, ct);
+				return AntlrPayloadElemList.parsePayloadElemList(this, ct);
+			/*case PAYLOADELEMENT:
+				return AntlrPayloadElement.parsePayloadElement(this, ct);*/
 			case GLOBALMESSAGETRANSFER:
-				return AntlrGlobalMessageTransfer.parseGlobalMessageTransfer(this, ct);
+				return AntlrGMessageTransfer.parseGMessageTransfer(this, ct);
 			case GLOBALCHOICE:
-				return AntlrGlobalChoice.parseGlobalChoice(this, ct);
+				return AntlrGChoice.parseGChoice(this, ct);
 			case GLOBALRECURSION:
-				return AntlrGlobalRecursion.parseGlobalRecursion(this, ct);
+				return AntlrGRecursion.parseGRecursion(this, ct);
 			case GLOBALCONTINUE:
-				return AntlrGlobalContinue.parseGlobalContinue(this, ct);
+				return AntlrGContinue.parseGContinue(this, ct);
 			case GLOBALPARALLEL:
-				return AntlrGlobalParallel.parseGlobalParallel(this, ct);
+				return AntlrGParallel.parseGParallel(this, ct);
 			case GLOBALINTERRUPTIBLE:
-				return AntlrGlobalInterruptible.parseGlobalInterruptible(this, ct);
+				return AntlrGInterruptible.parseGInterruptible(this, ct);
 			case GLOBALINTERRUPT:
-				return AntlrGlobalInterrupt.parseGlobalInterrupt(this, ct);
+				return AntlrGInterrupt.parseGInterrupt(this, ct);
 			case GLOBALDO:
-				return AntlrGlobalDo.parseGlobalDo(this, ct);
+				return AntlrGDo.parseGDo(this, ct);
 			case ROLEINSTANTIATIONLIST:
-				return AntlrRoleInstantiationList.parseRoleInstantiationList(this, ct);
+				return AntlrRoleArgList.parseRoleArgList(this, ct);
 			case ROLEINSTANTIATION:
-				return AntlrRoleInstantiation.parseRoleInstantiation(this, ct);
+				return AntlrRoleArg.parseRoleArg(this, ct);
 			case ARGUMENTINSTANTIATIONLIST:
-				return AntlrArgList.parseArgList(this, ct);
-			case ARGUMENTINSTANTIATION:
-				return AntlrNonRoleArg.parseNonRoleArg(this, ct);
-			case AMBIGUOUSNAME:
-				return AntlrNonRoleArg.parseNonRoleArg(this, ct);
+				return AntlrNonRoleArgList.parseNonRoleArgList(this, ct);
+			/*case ARGUMENTINSTANTIATION:
+				return AntlrNonRoleArg.parseNonRoleArg(this, ct);*/
+
+			/*case AMBIGUOUSNAME:  // Should this be here?
+				System.out.println("c: " + ct);
+				//return AntlrNonRoleArg.parseNonRoleArg(this, ct);
+				return AntlrAmbiguousName.toAmbiguousNameNode(ct);*/
 			default:
 				throw new RuntimeException("Unknown ANTLR node type: " + type);
 		}

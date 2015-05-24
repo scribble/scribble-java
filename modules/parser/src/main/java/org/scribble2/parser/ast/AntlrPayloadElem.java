@@ -2,21 +2,22 @@ package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble2.model.ModelFactoryImpl;
-import org.scribble2.model.PayloadElement;
-import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.PayloadElem;
+import org.scribble2.model.name.PayloadElemNameNode;
 import org.scribble2.parser.ScribbleParser;
-import org.scribble2.parser.ast.name.AntlrAmbiguousName;
+import org.scribble2.parser.ast.name.AntlrAmbigName;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.util.Util;
 
-public class AntlrPayloadElement
+@Deprecated
+public class AntlrPayloadElem
 {
 	public static final int TYPE_CHILD_INDEX = 0;
 
-	public static PayloadElement parsePayloadElement(ScribbleParser parser, CommonTree ct)
+	public static PayloadElem parsePayloadElement(ScribbleParser parser, CommonTree ct)
 	{
 		CommonTree child = getTypeChild(ct);
-		PayloadElementNameNode ptpn;
+		PayloadElemNameNode ptpn;
 		switch (Util.getAntlrNodeType(child))
 		{
 			/*case QUALIFIEDNAME:
@@ -41,7 +42,7 @@ public class AntlrPayloadElement
 				if (child.getChildCount() == 1)
 				{
 					//ptpn = AntlrSimpleName.toAmbiguousNameNode(child);
-					ptpn = AntlrAmbiguousName.toAmbiguousNameNode(child);
+					ptpn = AntlrAmbigName.toAmbigNameNode(child);
 				}
 				else
 				{

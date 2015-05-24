@@ -1,7 +1,7 @@
 package org.scribble2.model.name.simple;
 
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.name.PayloadElemNameNode;
 import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.kind.AmbigKind;
@@ -14,7 +14,7 @@ import org.scribble2.sesstype.name.PayloadType;
 //public class AmbiguousNameNode extends SimpleNameNode implements //ArgumentNode
 //public class AmbigNameNode extends SimpleNameNode<Name<AmbigKind>, AmbigKind> implements
 public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements
-	PayloadElementNameNode, MessageNode
+	PayloadElemNameNode, MessageNode
 	//ArgumentNode<AmbiguousKind>
 {
 	public AmbigNameNode(String identifier)

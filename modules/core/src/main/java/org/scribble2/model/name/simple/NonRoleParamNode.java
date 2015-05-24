@@ -2,7 +2,7 @@ package org.scribble2.model.name.simple;
 
 import org.scribble2.model.ArgNode;
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.name.PayloadElemNameNode;
 import org.scribble2.model.visit.Substitutor;
 import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.Message;
@@ -17,16 +17,16 @@ import org.scribble2.sesstype.name.PayloadType;
 //public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 //public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 //public class ParamNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements
-public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
+public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implements
 		//ArgumentNode 
-		MessageNode, PayloadElementNameNode
+		MessageNode, PayloadElemNameNode
 {
 	// FIXME: maybe shouldn't be kinded, as just AST node?  or do name/kind disambiguation -- maybe disamb not needed, AmbiguousNameNode --disamb--> kinded Parameter
 	
 	public final K kind;
 	
 	//public ParameterNode(String identifier)//, Kind kind)
-	public ParamNode(K kind, String identifier)//, Kind kind)
+	public NonRoleParamNode(K kind, String identifier)//, Kind kind)
 	{
 		super(identifier);
 		this.kind = kind;
@@ -42,11 +42,11 @@ public class ParamNode<K extends Kind> extends SimpleNameNode<K> implements
 	}*/
 
 	@Override
-	protected ParamNode<K> copy()
+	protected NonRoleParamNode<K> copy()
 	{
 		//return new ParameterNode<>(this.identifier);
 		//return new ParamNode<>(this.kind, this.identifier);
-		return new ParamNode<>(this.kind, getIdentifier());
+		return new NonRoleParamNode<>(this.kind, getIdentifier());
 	}
 	
 	/*// Only useful for MessageSignatureDecls -- FIXME: integrate sig decls properly

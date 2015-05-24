@@ -54,12 +54,12 @@ public class AntlrQualifiedName
 		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ProtocolKind.KIND, getElements(ct));
 	}*/
 
-	public static GProtocolNameNode toGlobalProtocolNameNode(CommonTree ct)
+	public static GProtocolNameNode toGProtocolNameNode(CommonTree ct)
 	{
 		return (GProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getElements(ct));
 	}
 
-	public static LProtocolNameNode toLocalProtocolNameNode(CommonTree ct)
+	public static LProtocolNameNode toLProtocolNameNode(CommonTree ct)
 	{
 		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getElements(ct));
 	}

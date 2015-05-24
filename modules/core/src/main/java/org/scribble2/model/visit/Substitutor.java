@@ -7,7 +7,7 @@ import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
-import org.scribble2.model.name.simple.ParamNode;
+import org.scribble2.model.name.simple.NonRoleParamNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.kind.Kind;
@@ -56,7 +56,7 @@ public class Substitutor extends ModelVisitor
 		{
 			MessageSigNode msn = (MessageSigNode) an;
 			//return new MessageSigNode(msn.op, msn.payload);  // FIXME: use factory
-			return (ArgNode) ModelFactoryImpl.FACTORY.MessageSignatureNode(msn.op, msn.payload);
+			return (ArgNode) ModelFactoryImpl.FACTORY.MessageSigNode(msn.op, msn.payload);
 		}
 		else if (an.isMessageSigNameNode())
 		{
@@ -71,8 +71,8 @@ public class Substitutor extends ModelVisitor
 		else if (an.isParamNode())
 		{
 			//return Substitutor.copyParameterNode((ParameterNode<K>) an);
-			ParamNode<K> pn = (ParamNode<K>) an;
-			return ModelFactoryImpl.FACTORY.ParamNode(pn.kind, pn.getIdentifier());
+			NonRoleParamNode<K> pn = (NonRoleParamNode<K>) an;
+			return ModelFactoryImpl.FACTORY.NonRoleParamNode(pn.kind, pn.getIdentifier());
 		}
 		else
 		{

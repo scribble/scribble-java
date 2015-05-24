@@ -5,9 +5,9 @@ import org.scribble2.model.ModelFactory;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.simple.AmbigNameNode;
 
-public class AntlrAmbiguousName
+public class AntlrAmbigName
 {
-	public static AmbigNameNode toAmbiguousNameNode(CommonTree ct)
+	public static AmbigNameNode toAmbigNameNode(CommonTree ct)
 	{
 		//return new AmbiguousNameNode(getName(ct));
 		//return (AmbiguousNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.AMBIG, getName(ct));

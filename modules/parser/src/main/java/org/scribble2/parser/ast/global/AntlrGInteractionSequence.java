@@ -11,9 +11,9 @@ import org.scribble2.model.global.GInteractionSeq;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.util.Util;
 
-public class AntlrGlobalInteractionSequence
+public class AntlrGInteractionSequence
 {
-	public static GInteractionSeq parseGlobalInteractionSequence(ScribbleParser parser, CommonTree ct)
+	public static GInteractionSeq parseGInteractionSequence(ScribbleParser parser, CommonTree ct)
 	{
 		List<GInteractionNode> gis = new LinkedList<>();
 		for (CommonTree gi : getInteractionChildren(ct))
@@ -21,7 +21,7 @@ public class AntlrGlobalInteractionSequence
 			gis.add((GInteractionNode) parser.parse(gi));
 		}
 		//return new GlobalInteractionSequence(gis);
-		return ModelFactoryImpl.FACTORY.GlobalInteractionSequence(gis);
+		return ModelFactoryImpl.FACTORY.GInteractionSequence(gis);
 	}
 
 	public static List<CommonTree> getInteractionChildren(CommonTree ct)

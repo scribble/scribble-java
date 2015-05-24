@@ -8,14 +8,14 @@ import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
 // FIXME: factor out with AntlrPayloadTypeDecl
-public class AntlrMessageSignatureDecl
+public class AntlrMessageSigDecl
 {
 	public static final int SCHEMA_CHILD_INDEX = 0;
 	public static final int EXTNAME_CHILD_INDEX = 1;
 	public static final int SOURCE_CHILD_INDEX = 2;
 	public static final int ALIAS_CHILD_INDEX = 3;
 
-	public static MessageSigDecl parseMessageSignatureDecl(ScribbleParser parser, CommonTree ct)
+	public static MessageSigDecl parseMessageSigDecl(ScribbleParser parser, CommonTree ct)
 	{
 		CommonTree tmp1 = getSchemaChild(ct);
 		String schema = AntlrSimpleName.getName(tmp1);

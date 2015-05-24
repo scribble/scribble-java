@@ -20,7 +20,7 @@ public class GContinueDel extends GSimpleInteractionNodeDel
 		//RecursionVarNode recvar = new RecursionVarNode(gc.recvar.toName().toString());
 		//RecursionVarNode recvar = (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, gc.recvar.toName().toString());
 		RecVarNode recvar = (RecVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gc.recvar.toName().toString());
-		LContinue projection = ModelFactoryImpl.FACTORY.LocalContinue(recvar);
+		LContinue projection = ModelFactoryImpl.FACTORY.LContinue(recvar);
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		proj.pushEnv(new ProjectionEnv(projection));

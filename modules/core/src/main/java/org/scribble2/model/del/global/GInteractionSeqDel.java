@@ -62,7 +62,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				lis.clear();
 			}
 		}
-		LInteractionSeq projection = ModelFactoryImpl.FACTORY.LocalInteractionSequence(lis);
+		LInteractionSeq projection = ModelFactoryImpl.FACTORY.LInteractionSequence(lis);
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		proj.pushEnv(new ProjectionEnv(projection));

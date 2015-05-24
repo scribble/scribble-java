@@ -44,7 +44,7 @@ public class AmbigNameNodeDel extends ModelDelBase
 		else if (disamb.isBoundParameter(name))
 		{
 			//return ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, name.toString());
-			return ModelFactoryImpl.FACTORY.ParamNode(disamb.getParameterKind(name), name.toString());
+			return ModelFactoryImpl.FACTORY.NonRoleParamNode(disamb.getParameterKind(name), name.toString());
 		}
 		throw new ScribbleException("Cannot disambiguate name: " + name);
 	}

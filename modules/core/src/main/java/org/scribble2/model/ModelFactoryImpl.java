@@ -54,15 +54,15 @@ import org.scribble2.model.local.LRecursion;
 import org.scribble2.model.local.LSend;
 import org.scribble2.model.local.SelfRoleDecl;
 import org.scribble2.model.name.NameNode;
-import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.name.PayloadElemNameNode;
 import org.scribble2.model.name.qualified.GProtocolNameNode;
 import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.qualified.ModuleNameNode;
 import org.scribble2.model.name.qualified.QualifiedNameNode;
 import org.scribble2.model.name.simple.AmbigNameNode;
-import org.scribble2.model.name.simple.OperatorNode;
-import org.scribble2.model.name.simple.ParamNode;
+import org.scribble2.model.name.simple.OpNode;
+import org.scribble2.model.name.simple.NonRoleParamNode;
 import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.sesstype.kind.Global;
@@ -79,7 +79,7 @@ public class ModelFactoryImpl implements ModelFactory
 	public static final ModelFactory FACTORY = new ModelFactoryImpl();  // FIXME: move somewhere else
 	
 	@Override
-	public MessageSigNode MessageSignatureNode(OperatorNode op, PayloadNode payload)
+	public MessageSigNode MessageSigNode(OpNode op, PayloadElemList payload)
 	{
 		MessageSigNode msn = new MessageSigNode(op, payload);
 		msn = del(msn, createDefaultDelegate());  // FIXME: does another shallow copy
@@ -87,17 +87,17 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public PayloadNode Payload(List<PayloadElement> payloadelems)
+	public PayloadElemList PayloadElemList(List<PayloadElem> payloadelems)
 	{
-		PayloadNode p = new PayloadNode(payloadelems);
+		PayloadElemList p = new PayloadElemList(payloadelems);
 		p = del(p, createDefaultDelegate());
 		return p;
 	}
 
 	@Override
-	public PayloadElement PayloadElement(PayloadElementNameNode name)
+	public PayloadElem PayloadElement(PayloadElemNameNode name)
 	{
-		PayloadElement pe = new PayloadElement(name);
+		PayloadElem pe = new PayloadElem(name);
 		pe = del(pe, createDefaultDelegate());
 		return pe;
 	}
@@ -144,7 +144,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GProtocolDecl GlobalProtocolDecl(GProtocolHeader header, GProtocolDef def)
+	public GProtocolDecl GProtocolDecl(GProtocolHeader header, GProtocolDef def)
 	{
 		GProtocolDecl gpd = new GProtocolDecl(header, def);
 		gpd = del(gpd, new GProtocolDeclDel());
@@ -153,7 +153,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
-	public GProtocolHeader GlobalProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	public GProtocolHeader GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
 		GProtocolHeader gph = new GProtocolHeader(name, roledecls, paramdecls);
 		gph = del(gph, createDefaultDelegate());
@@ -181,16 +181,16 @@ public class ModelFactoryImpl implements ModelFactory
 	@Override
 	//public ParamDeclList ParameterDeclList(List<ParamDecl> pds)
 	//public ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds)
-	public ParamDeclList ParameterDeclList(List<NonRoleParamDecl<Kind>> pds)
+	public NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<Kind>> pds)
 	{
-		ParamDeclList pdl = new ParamDeclList(pds);
+		NonRoleParamDeclList pdl = new NonRoleParamDeclList(pds);
 		pdl = del(pdl, createDefaultDelegate());
 		return pdl;
 	}
 
 	@Override
 	//public ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode)
-	public <K extends Kind> NonRoleParamDecl<K> ParameterDecl(K kind, ParamNode<K> namenode)
+	public <K extends Kind> NonRoleParamDecl<K> ParamDecl(K kind, NonRoleParamNode<K> namenode)
 	//public <K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode)
 	{
 		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(kind, namenode);
@@ -200,7 +200,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GProtocolDef GlobalProtocolDefinition(GProtocolBlock block)
+	public GProtocolDef GProtocolDefinition(GProtocolBlock block)
 	{
 		GProtocolDef gpd = new GProtocolDef(block);
 		gpd = del(gpd, new GProtocolDefDel());
@@ -208,7 +208,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GProtocolBlock GlobalProtocolBlock(GInteractionSeq seq)
+	public GProtocolBlock GProtocolBlock(GInteractionSeq seq)
 	{
 		GProtocolBlock gpb = new GProtocolBlock(seq);
 		gpb = del(gpb, new GProtocolBlockDel());
@@ -216,7 +216,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GInteractionSeq GlobalInteractionSequence(List<GInteractionNode> actions)
+	public GInteractionSeq GInteractionSequence(List<GInteractionNode> actions)
 	{
 		GInteractionSeq gis = new GInteractionSeq(actions);
 		gis = del(gis, new GInteractionSeqDel());
@@ -224,7 +224,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GMessageTransfer GlobalMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		GMessageTransfer gmt = new GMessageTransfer(src, msg, dests);
 		gmt = del(gmt, new GMessageTransferDel());
@@ -233,7 +233,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
-	public GChoice GlobalChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks)
+	public GChoice GChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks)
 	{
 		GChoice gc = new GChoice(subj, blocks);
 		gc = del(gc, new GChoiceDel());
@@ -242,7 +242,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
-	public GRecursion GlobalRecursion(RecVarNode recvar, ProtocolBlock<Global> block)
+	public GRecursion GRecursion(RecVarNode recvar, ProtocolBlock<Global> block)
 	{
 		GRecursion gr = new GRecursion(recvar, block);
 		gr = del(gr, new GRecursionDel());
@@ -250,7 +250,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public GContinue GlobalContinue(RecVarNode recvar)
+	public GContinue GContinue(RecVarNode recvar)
 	{
 		GContinue gc = new GContinue(recvar);
 		gc = del(gc, new GContinueDel());
@@ -266,7 +266,7 @@ public class ModelFactoryImpl implements ModelFactory
 	@Override
 	//public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//public GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public GDo GlobalDo(RoleArgList roleinstans, ArgList arginstans, GProtocolNameNode proto)
+	public GDo GDo(RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto)
 	{
 		//GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
 		GDo gd = new GDo(roleinstans, arginstans, proto);
@@ -276,7 +276,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public RoleArgList RoleInstantiationList(List<RoleArgument> ris)
+	public RoleArgList RoleArgList(List<RoleArg> ris)
 	{
 		RoleArgList rdl = new RoleArgList(ris);
 		rdl = del(rdl, createDefaultDelegate());
@@ -284,23 +284,23 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public RoleArgument RoleInstantiation(RoleNode role)
+	public RoleArg RoleArg(RoleNode role)
 	{
-		RoleArgument ri = new RoleArgument(role);
+		RoleArg ri = new RoleArg(role);
 		ri = del(ri, createDefaultDelegate());
 		return ri;
 	}
 
 	@Override
-	public ArgList ArgList(List<NonRoleArg> ais)
+	public NonRoleArgList NonRoleArgList(List<NonRoleArg> ais)
 	{
-		ArgList rdl = new ArgList(ais);
+		NonRoleArgList rdl = new NonRoleArgList(ais);
 		rdl = del(rdl, createDefaultDelegate());
 		return rdl;
 	}
 
 	@Override
-	public NonRoleArg NonAroleArg(ArgNode arg)
+	public NonRoleArg NonRoleArg(ArgNode arg)
 	{
 		NonRoleArg ri = new NonRoleArg(arg);
 		ri = del(ri, createDefaultDelegate());
@@ -332,7 +332,7 @@ public class ModelFactoryImpl implements ModelFactory
 		}*/
 		if (kind.equals(OperatorKind.KIND))
 		{
-			snn = new OperatorNode(identifier);
+			snn = new OpNode(identifier);
 		}
 		else if (kind.equals(RecVarKind.KIND))
 		{
@@ -430,15 +430,15 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public <K extends Kind> ParamNode<K> ParamNode(K kind, String identifier)
+	public <K extends Kind> NonRoleParamNode<K> NonRoleParamNode(K kind, String identifier)
 	{
-		ParamNode<K> pn = new ParamNode<K>(kind, identifier);
+		NonRoleParamNode<K> pn = new NonRoleParamNode<K>(kind, identifier);
 		pn = del(pn, new ParamNodeDel());
 		return pn;
 	}
 
 	@Override
-	public LProtocolDecl LocalProtocolDecl(LProtocolHeader header, LProtocolDef def)
+	public LProtocolDecl LProtocolDecl(LProtocolHeader header, LProtocolDef def)
 	{
 		LProtocolDecl lpd = new LProtocolDecl(header, def);
 		lpd = del(lpd, new LProtocolDeclDel());
@@ -447,7 +447,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
-	public LProtocolHeader LocalProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
+	public LProtocolHeader LProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
 		LProtocolHeader lph = new LProtocolHeader(name, roledecls, paramdecls);
 		lph = del(lph, createDefaultDelegate());
@@ -463,7 +463,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LProtocolDef LocalProtocolDefinition(LProtocolBlock block)
+	public LProtocolDef LProtocolDefinition(LProtocolBlock block)
 	{
 		LProtocolDef lpd = new LProtocolDef(block);
 		lpd = del(lpd, new LProtocolDefDel());
@@ -471,7 +471,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LProtocolBlock LocalProtocolBlock(LInteractionSeq seq)
+	public LProtocolBlock LProtocolBlock(LInteractionSeq seq)
 	{
 		LProtocolBlock lpb = new LProtocolBlock(seq);
 		lpb = del(lpb, new LProtocolBlockDel());
@@ -480,7 +480,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions)
-	public LInteractionSeq LocalInteractionSequence(List<? extends InteractionNode<Local>> actions)
+	public LInteractionSeq LInteractionSequence(List<? extends InteractionNode<Local>> actions)
 	{
 		LInteractionSeq lis = new LInteractionSeq(actions);
 		lis = del(lis, new LInteractionSeqDel());
@@ -488,7 +488,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LSend LocalSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LSend LSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		LSend ls = new LSend(src, msg, dests);
 		ls = del(ls, new LSendDel());
@@ -496,7 +496,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LReceive LocalReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LReceive LReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		LReceive ls = new LReceive(src, msg, dests);
 		ls = del(ls, new LReceiveDel());
@@ -505,7 +505,7 @@ public class ModelFactoryImpl implements ModelFactory
 
 	@Override
 	//public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
-	public LChoice LocalChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks)
+	public LChoice LChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks)
 	{
 		LChoice lc = new LChoice(subj, blocks);
 		lc = del(lc, new LChoiceDel());
@@ -513,7 +513,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LRecursion LocalRecursion(RecVarNode recvar, LProtocolBlock block)
+	public LRecursion LRecursion(RecVarNode recvar, LProtocolBlock block)
 	{
 		LRecursion lr = new LRecursion(recvar, block);
 		lr = del(lr, new LRecursionDel());
@@ -521,7 +521,7 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 
 	@Override
-	public LContinue LocalContinue(RecVarNode recvar)
+	public LContinue LContinue(RecVarNode recvar)
 	{
 		LContinue lc = new LContinue(recvar);
 		lc = del(lc, new LContinueDel());
@@ -537,7 +537,7 @@ public class ModelFactoryImpl implements ModelFactory
 	@Override
 	//public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//public LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public LDo LocalDo(RoleArgList roleinstans, ArgList arginstans, LProtocolNameNode proto)
+	public LDo LDo(RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto)
 	{
 		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
 		LDo ld = new LDo(roleinstans, arginstans, proto);

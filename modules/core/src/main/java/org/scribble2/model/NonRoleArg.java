@@ -33,6 +33,6 @@ public class NonRoleArg extends DoArg<ArgNode>
 		return new ArgumentInstantiation(arg);*/
 		//ArgumentNode an = new ArgumentNode(this.arg.toName().toString());
 		//return new ArgumentInstantiation(this.arg);  // FIXME: arg needs projection?
-		return ModelFactoryImpl.FACTORY.NonAroleArg(this.val);  // FIXME: arg needs projection?
+		return ModelFactoryImpl.FACTORY.NonRoleArg(this.val);  // FIXME: arg needs projection?
 	}
 }

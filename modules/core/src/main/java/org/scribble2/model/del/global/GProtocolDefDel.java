@@ -31,7 +31,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 		GProtocolDef gpd = (GProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.block.del().env()).getProjection();	
 		//LocalProtocolDefinition projection = new LocalProtocolDefinition(block);
-		LProtocolDef projection = ModelFactoryImpl.FACTORY.LocalProtocolDefinition(block);
+		LProtocolDef projection = ModelFactoryImpl.FACTORY.LProtocolDefinition(block);
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));

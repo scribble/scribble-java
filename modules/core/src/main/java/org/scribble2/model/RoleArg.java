@@ -6,9 +6,9 @@ import org.scribble2.sesstype.kind.RoleKind;
 import org.scribble2.sesstype.name.Role;
 
 
-public class RoleArgument extends DoArg<RoleNode>
+public class RoleArg extends DoArg<RoleNode>
 {
-	public RoleArgument(RoleNode arg)
+	public RoleArg(RoleNode arg)
 	{
 		super(arg);
 	}
@@ -16,26 +16,26 @@ public class RoleArgument extends DoArg<RoleNode>
 	@Override
 	protected ModelNodeBase copy()
 	{
-		return new RoleArgument(this.val);
+		return new RoleArg(this.val);
 	}	
 
 	@Override
-	protected RoleArgument reconstruct(RoleNode arg)
+	protected RoleArg reconstruct(RoleNode arg)
 	{
 		ModelDel del = del();
-		RoleArgument ri = new RoleArgument(arg);
-		ri = (RoleArgument) ri.del(del);
+		RoleArg ri = new RoleArg(arg);
+		ri = (RoleArg) ri.del(del);
 		return ri;
 	}
 	
 	// FIXME: move to delegate?
 	@Override
-	public RoleArgument project(Role self)
+	public RoleArg project(Role self)
 	{
 		//RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, this.arg.toName().toString());
 		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.val.toName().toString());
 		//return new RoleInstantiation(rn);
-		return ModelFactoryImpl.FACTORY.RoleInstantiation(rn);
+		return ModelFactoryImpl.FACTORY.RoleArg(rn);
 	}
 	
 	/*@Override

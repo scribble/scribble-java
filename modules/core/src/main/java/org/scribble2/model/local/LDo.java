@@ -1,6 +1,6 @@
 package org.scribble2.model.local;
 
-import org.scribble2.model.ArgList;
+import org.scribble2.model.NonRoleArgList;
 import org.scribble2.model.Do;
 import org.scribble2.model.RoleArgList;
 import org.scribble2.model.context.ModuleContext;
@@ -14,7 +14,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 {
 	//public LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//public LDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	public LDo(RoleArgList roleinstans, ArgList arginstans, LProtocolNameNode proto)
+	public LDo(RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto)
 	{
 		//super(scope, roleinstans, arginstans, proto);
 		super(roleinstans, arginstans, proto);
@@ -29,7 +29,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	@Override
 	//protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//protected LDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	protected LDo reconstruct(RoleArgList roleinstans, ArgList arginstans, ProtocolNameNode<Local> proto)
+	protected LDo reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<Local> proto)
 	{
 		ModelDel del = del();
 		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);

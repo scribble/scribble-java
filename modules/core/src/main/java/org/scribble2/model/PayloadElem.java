@@ -1,15 +1,18 @@
 package org.scribble2.model;
 
-import org.scribble2.model.name.PayloadElementNameNode;
+import org.scribble2.model.del.ModelDel;
+import org.scribble2.model.name.PayloadElemNameNode;
+import org.scribble2.model.visit.ModelVisitor;
+import org.scribble2.util.ScribbleException;
 
 
-// Not in grammar file
-public class PayloadElement extends ModelNodeBase
+// Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList)
+public class PayloadElem extends ModelNodeBase
 {
 	//public final AnnotationNameNode annot;
-	public final PayloadElementNameNode name;
+	public final PayloadElemNameNode name;
 
-	public PayloadElement(PayloadElementNameNode name)
+	public PayloadElem(PayloadElemNameNode name)
 	{
 		this.name = name;
 	}
@@ -100,13 +103,22 @@ public class PayloadElement extends ModelNodeBase
 		//return new PayloadElement(this.ct, kind, this.annot, this.type);
 		return new PayloadElement(this.ct, this.annot, this.type);
 	}*/
-
-	/*@Override
-	public PayloadElement visitChildren(NodeVisitor nv) throws ScribbleException
+	
+	protected PayloadElem reconstruct(PayloadElemNameNode name)
 	{
-		PayloadTypeOrParameterNode type = (PayloadTypeOrParameterNode) visitChild((Node) this.type, nv);
-		return new PayloadElement(this.ct, type);
-	}*/
+		ModelDel del = del();
+		PayloadElem elem = new PayloadElem(name);
+		elem = (PayloadElem) elem.del(del);
+		return elem;
+	}
+
+	@Override
+	public PayloadElem visitChildren(ModelVisitor nv) throws ScribbleException
+	{
+		//PayloadTypeOrParameterNode type = (PayloadTypeOrParameterNode) visitChild((Node) this.type, nv);
+		PayloadElemNameNode name = (PayloadElemNameNode) visitChild(this.name, nv);
+		return reconstruct(name);
+	}
 	
 	@Override
 	public String toString()
@@ -115,8 +127,8 @@ public class PayloadElement extends ModelNodeBase
 	}
 
 	@Override
-	protected PayloadElement copy()
+	protected PayloadElem copy()
 	{
-		return new PayloadElement(this.name);
+		return new PayloadElem(this.name);
 	}
 }

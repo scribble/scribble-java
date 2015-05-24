@@ -79,19 +79,19 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 					destroles.stream().map((d) -> (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, d.toString())).collect(Collectors.toList());
 			if (srcrole.equals(self))
 			{
-				projection = ModelFactoryImpl.FACTORY.LocalSend(src, msg, dests);
+				projection = ModelFactoryImpl.FACTORY.LSend(src, msg, dests);
 			}
 			if (destroles.contains(self))
 			{
 				if (projection == null)
 				{
-					projection = ModelFactoryImpl.FACTORY.LocalReceive(src, msg, dests);
+					projection = ModelFactoryImpl.FACTORY.LReceive(src, msg, dests);
 				}
 				else
 				{
-					LReceive lr = ModelFactoryImpl.FACTORY.LocalReceive(src, msg, dests);
+					LReceive lr = ModelFactoryImpl.FACTORY.LReceive(src, msg, dests);
 					List<LInteractionNode> lis = Arrays.asList(new LInteractionNode[]{(LInteractionNode) projection, lr});
-					projection = ModelFactoryImpl.FACTORY.LocalInteractionSequence(lis);
+					projection = ModelFactoryImpl.FACTORY.LInteractionSequence(lis);
 				}
 			}
 		}

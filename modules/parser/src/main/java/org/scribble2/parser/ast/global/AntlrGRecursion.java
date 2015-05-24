@@ -8,20 +8,20 @@ import org.scribble2.model.name.simple.RecVarNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 
-public class AntlrGlobalRecursion
+public class AntlrGRecursion
 {
 	public static final int RECURSIONVAR_CHILD_INDEX = 0;
 	public static final int BLOCK_CHILD_INDEX = 1;
 
-	public static GRecursion parseGlobalRecursion(ScribbleParser parser, CommonTree ct)
+	public static GRecursion parseGRecursion(ScribbleParser parser, CommonTree ct)
 	{
-		RecVarNode recvar = AntlrSimpleName.toRecursionVarNode(getRecursionVarChild(ct));
+		RecVarNode recvar = AntlrSimpleName.toRecVarNode(getRecVarChild(ct));
 		GProtocolBlock block = (GProtocolBlock) parser.parse(getBlockChild(ct));
 		//return new GlobalRecursion(lab, block);
-		return ModelFactoryImpl.FACTORY.GlobalRecursion(recvar, block);
+		return ModelFactoryImpl.FACTORY.GRecursion(recvar, block);
 	}
 
-	public static final CommonTree getRecursionVarChild(CommonTree ct)
+	public static final CommonTree getRecVarChild(CommonTree ct)
 	{
 		return (CommonTree) ct.getChild(RECURSIONVAR_CHILD_INDEX);
 	}

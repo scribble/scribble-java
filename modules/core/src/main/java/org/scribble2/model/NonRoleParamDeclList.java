@@ -10,20 +10,20 @@ import org.scribble2.sesstype.name.Role;
 
 //public class ParamDeclList extends HeaderParamDeclList<ParamDecl, Parameter>
 //public class ParamDeclList extends HeaderParamDeclList<Name<Kind>, Kind>
-public class ParamDeclList extends HeaderParamDeclList<Kind>
+public class NonRoleParamDeclList extends HeaderParamDeclList<Kind>
 {
 	//public ParamDeclList(List<ParamDecl> decls)
 	//public ParamDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> decls)
 	//public ParamDeclList(List<HeaderParamDecl<Kind>> decls)
-	public ParamDeclList(List<NonRoleParamDecl<Kind>> decls)
+	public NonRoleParamDeclList(List<NonRoleParamDecl<Kind>> decls)
 	{
 		super(decls);
 	}
 
 	@Override
-	protected ParamDeclList copy()
+	protected NonRoleParamDeclList copy()
 	{
-		return new ParamDeclList(getParamDecls());
+		return new NonRoleParamDeclList(getParamDecls());
 	}
 	
 	public List<NonRoleParamDecl<Kind>> getParamDecls()
@@ -34,23 +34,23 @@ public class ParamDeclList extends HeaderParamDeclList<Kind>
 	@Override
 	//protected ParamDeclList reconstruct(List<ParamDecl> decls)
 	//protected ParamDeclList reconstruct(List<HeaderParamDecl<Name<Kind>, Kind>> decls)
-	protected ParamDeclList reconstruct(List<? extends HeaderParamDecl<Kind>> decls)
+	protected NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<Kind>> decls)
 	{
 		ModelDel del = del();
-		ParamDeclList rdl = new ParamDeclList(getParamDecls());
-		rdl = (ParamDeclList) rdl.del(del);
+		NonRoleParamDeclList rdl = new NonRoleParamDeclList(getParamDecls());
+		rdl = (NonRoleParamDeclList) rdl.del(del);
 		return rdl;
 	}
 		
 	// FIXME: move to delegate?
 	@Override
-	public ParamDeclList project(Role self)
+	public NonRoleParamDeclList project(Role self)
 	{
 		//List<ParamDecl> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
 		//List<HeaderParamDecl<Name<Kind>, Kind>> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
 		//List<HeaderParamDecl<Kind>> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
 		//return new ParameterDeclList(paramdecls);
-		return ModelFactoryImpl.FACTORY.ParameterDeclList(getParamDecls());
+		return ModelFactoryImpl.FACTORY.NonRoleParamDeclList(getParamDecls());
 	}
 
 	/*// Not doing anything except cloning

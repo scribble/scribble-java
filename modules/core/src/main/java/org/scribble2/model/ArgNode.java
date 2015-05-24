@@ -4,11 +4,13 @@ import org.scribble2.sesstype.Arg;
 import org.scribble2.sesstype.kind.Kind;
 
 
-// Payload argument nodes (doesn't include role instantation arguments)
+// sig or payloadtype kinds
+// "Value nodes" (sigs or names) that can be used as non-role subprotocol arguments (doesn't include role instantation arguments)
+// N.B. not the actual argument node itself (that is NonRoleArg, element of NonRoleArgList, which wraps these nodes)
 //public interface ArgumentNode<K extends Kind> extends InstantiationNode  // FIXME: possible to take Kind parameter? with disambiguation?
-// Not kinded: point of this interface is don't know which kind the node is -- so use the "is" methods -- cf. AmbigNameNode inherits both sig and data kind
 public interface ArgNode extends DoArgNode
 {
+	// Not kinded: point of this interface is don't know which kind the node is -- so use the "is" methods -- cf. AmbigNameNode inherits both sig and data kind
 	boolean isMessageSigNode();
 	boolean isMessageSigNameNode();
 	boolean isDataTypeNameNode();

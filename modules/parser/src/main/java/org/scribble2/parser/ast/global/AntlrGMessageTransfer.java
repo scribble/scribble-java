@@ -12,29 +12,29 @@ import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.parser.AntlrConstants;
 import org.scribble2.parser.AntlrConstants.AntlrNodeType;
 import org.scribble2.parser.ScribbleParser;
-import org.scribble2.parser.ast.name.AntlrAmbiguousName;
+import org.scribble2.parser.ast.name.AntlrAmbigName;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
 
 
-public class AntlrGlobalMessageTransfer
+public class AntlrGMessageTransfer
 {
 	public static final int MESSAGE_CHILD_INDEX = 0;
 	public static final int SOURCE_CHILD_INDEX = 1;
 	public static final int DESTINATION_CHILDREN_START_INDEX = 2;
 
-	public static GMessageTransfer parseGlobalMessageTransfer(ScribbleParser parser, CommonTree ct)
+	public static GMessageTransfer parseGMessageTransfer(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
 		List<RoleNode> dests = new LinkedList<>();
-		for (CommonTree dest : getDestinationChildren(ct))
+		for (CommonTree dest : getDestChildren(ct))
 		{
 			dests.add(AntlrSimpleName.toRoleNode(dest));
 		}
 		//return new GlobalMessageTransfer(src, msg, dests);
-		return ModelFactoryImpl.FACTORY.GlobalMessageTransfer(src, msg, dests);
+		return ModelFactoryImpl.FACTORY.GMessageTransfer(src, msg, dests);
 	}
 
 	protected static MessageNode parseMessage(ScribbleParser parser, CommonTree ct)
@@ -80,7 +80,7 @@ public class AntlrGlobalMessageTransfer
 			if (ct.getChildCount() == 1)
 			{
 				//return AntlrSimpleName.toAmbiguousNameNode(ct);  // parametername or simple messagesignaturename
-				return AntlrAmbiguousName.toAmbiguousNameNode(ct);
+				return AntlrAmbigName.toAmbigNameNode(ct);
 			}
 			else
 			{
@@ -102,7 +102,7 @@ public class AntlrGlobalMessageTransfer
 		return (CommonTree) ct.getChild(MESSAGE_CHILD_INDEX);
 	}
 
-	public static List<CommonTree> getDestinationChildren(CommonTree ct)
+	public static List<CommonTree> getDestChildren(CommonTree ct)
 	{
 		return Util.toCommonTreeList(ct.getChildren().subList(DESTINATION_CHILDREN_START_INDEX, ct.getChildCount()));
 	}

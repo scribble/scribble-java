@@ -6,7 +6,7 @@ import java.util.Set;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.Module;
-import org.scribble2.model.ParamDeclList;
+import org.scribble2.model.NonRoleParamDeclList;
 import org.scribble2.model.RoleDeclList;
 import org.scribble2.model.context.GProtocolDeclContext;
 import org.scribble2.model.del.ModuleDel;
@@ -230,10 +230,10 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		
 		// FIXME: move to delegate? -- maybe fully integrate into projection pass
 		RoleDeclList roledecls = gpd.header.roledecls.project(self);
-		ParamDeclList paramdecls = gpd.header.paramdecls.project(self);//peekSelf());
-		LProtocolHeader lph = ModelFactoryImpl.FACTORY.LocalProtocolHeader(pn, roledecls, paramdecls);
+		NonRoleParamDeclList paramdecls = gpd.header.paramdecls.project(self);//peekSelf());
+		LProtocolHeader lph = ModelFactoryImpl.FACTORY.LProtocolHeader(pn, roledecls, paramdecls);
 		//LocalProtocolDefinition def = (LocalProtocolDefinition) ((ProjectionEnv) gpd.def.del().getEnv()).getProjection();
-		LProtocolDecl projected = ModelFactoryImpl.FACTORY.LocalProtocolDecl(lph, def);
+		LProtocolDecl projected = ModelFactoryImpl.FACTORY.LProtocolDecl(lph, def);
 
 		////pdcontext = new ProtocolDeclContext(getContext(), self, proj.getProtocolDependencies());  // FIXME: move dependency building to after initial context building (or integrate into it?)
 		//Map<ProtocolName, Set<Role>> deps = proj.getProtocolDependencies();

@@ -1,7 +1,7 @@
 package org.scribble2.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.ArgList;
+import org.scribble2.model.NonRoleArgList;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.RoleArgList;
 import org.scribble2.model.global.GDo;
@@ -9,23 +9,23 @@ import org.scribble2.model.name.qualified.GProtocolNameNode;
 import org.scribble2.parser.ScribbleParser;
 import org.scribble2.parser.ast.name.AntlrQualifiedName;
 
-public class AntlrGlobalDo
+public class AntlrGDo
 {
 	//public static final int SCOPE_CHILD_INDEX = 0;
 	public static final int MEMBERNAME_CHILD_INDEX = 0;
 	public static final int ARGUMENTLIST_CHILD_INDEX = 1;
 	public static final int ROLEINSTANTIATIONLIST_CHILD_INDEX = 2;
 
-	public static GDo parseGlobalDo(ScribbleParser parser, CommonTree ct)
+	public static GDo parseGDo(ScribbleParser parser, CommonTree ct)
 	{
-		RoleArgList ril = (RoleArgList) parser.parse(getRoleInstantiationListChild(ct));
-		ArgList al = (ArgList) parser.parse(getArgumentInstantiationListChild(ct));
+		RoleArgList ril = (RoleArgList) parser.parse(getRoleArgListChild(ct));
+		NonRoleArgList al = (NonRoleArgList) parser.parse(getNonRoleArgListChild(ct));
 		//ProtocolNameNode pnn = AntlrQualifiedName.toProtocolNameNode(getProtocolNameChild(ct));
-		GProtocolNameNode pnn = AntlrQualifiedName.toGlobalProtocolNameNode(getProtocolNameChild(ct));
+		GProtocolNameNode pnn = AntlrQualifiedName.toGProtocolNameNode(getProtocolNameChild(ct));
 		//if (!isScoped(ct))
 		{
 			//return new GlobalDo(ril, al, pnn);
-			return ModelFactoryImpl.FACTORY.GlobalDo(ril, al, pnn);
+			return ModelFactoryImpl.FACTORY.GDo(ril, al, pnn);
 		}
 		/*ScopeNode scope = AntlrSimpleName.toScopeNode(getScopeChild(ct));
 		//return new GlobalDo(scope, ril, al, pnn);
@@ -48,12 +48,12 @@ public class AntlrGlobalDo
 		return (CommonTree) ct.getChild(MEMBERNAME_CHILD_INDEX);
 	}
 
-	public static CommonTree getArgumentInstantiationListChild(CommonTree ct)
+	public static CommonTree getNonRoleArgListChild(CommonTree ct)
 	{
 		return (CommonTree) ct.getChild(ARGUMENTLIST_CHILD_INDEX);
 	}
 
-	public static CommonTree getRoleInstantiationListChild(CommonTree ct)
+	public static CommonTree getRoleArgListChild(CommonTree ct)
 	{
 		return (CommonTree) ct.getChild(ROLEINSTANTIATIONLIST_CHILD_INDEX);
 	}

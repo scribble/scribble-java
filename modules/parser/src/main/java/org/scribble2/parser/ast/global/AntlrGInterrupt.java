@@ -12,18 +12,18 @@ import org.scribble2.parser.ast.name.AntlrSimpleName;
 import org.scribble2.parser.util.Util;
 
 
-public class AntlrGlobalInterrupt
+public class AntlrGInterrupt
 {
 	public static final int SOURCE_CHILD_INDEX = 0;
 	public static final int MESSAGE_CHILDREN_START_INDEX = 1;
 
-	public static GInterrupt parseGlobalInterrupt(ScribbleParser parser, CommonTree ct)
+	public static GInterrupt parseGInterrupt(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		List<MessageNode> msgs = new LinkedList<>();
 		for (CommonTree msg : getMessageChildren(ct))
 		{
-			msgs.add(AntlrGlobalMessageTransfer.parseMessage(parser, msg));
+			msgs.add(AntlrGMessageTransfer.parseMessage(parser, msg));
 		}
 		//return new GlobalInterrupt(ct, src, msgs, Collections.<Role>emptyList());  // Destination roles set by later pass
 		return new GInterrupt(src, msgs);
