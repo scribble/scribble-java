@@ -1,6 +1,5 @@
 package org.scribble2.net.session;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class Session
 	}
 
 	//public SessionEndpointOld toEndpoint(Principal p) throws ScribbleException, IOException
-	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleException, IOException
+	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleException//, IOException
 	{
 		if (this.endpoints.containsKey(role))
 		{

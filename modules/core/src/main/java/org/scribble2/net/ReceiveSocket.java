@@ -17,6 +17,10 @@ public abstract class ReceiveSocket extends ScribSocket
 	{
 		use();
 		//return this.ep.getSocketWrapper(role).readObject();
-		return this.ep.smf.readMessage(this.ep.getSocketWrapper(role).dis);
+		ScribMessage m = this.ep.smf.readMessage(this.ep.getSocketWrapper(role).dis);
+
+		//System.out.println("Read: " + m);
+
+		return m;
 	}
 }

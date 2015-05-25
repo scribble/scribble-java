@@ -15,6 +15,8 @@ public abstract class SendSocket extends ScribSocket
 
 	protected void writeScribMessage(Role role, ScribMessage msg) throws IOException, ScribbleRuntimeException
 	{
+		//System.out.println("Write: " + msg);
+
 		use();
 		//this.ep.getSocketWrapper(role).writeObjectAndFlush(o);
 		//this.ep.getSocketWrapper(role).dos.write(this.ep.smf.toBytes(msg));

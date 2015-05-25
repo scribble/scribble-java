@@ -7,7 +7,6 @@ import java.util.Map;
 import org.scribble2.net.ScribMessageFormatter;
 import org.scribble2.net.SocketWrapper;
 import org.scribble2.sesstype.name.Role;
-import org.scribble2.util.ScribbleException;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 public class SessionEndpoint
@@ -26,7 +25,7 @@ public class SessionEndpoint
 	//public final Monitor monitor;
 
 	//protected SessionEndpoint(Session sess, Principal self) throws ScribbleException, IOException
-	protected SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf) throws ScribbleException, IOException
+	protected SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf) //throws ScribbleException, IOException
 	{
 		this.sess = sess;
 		this.self = self;
