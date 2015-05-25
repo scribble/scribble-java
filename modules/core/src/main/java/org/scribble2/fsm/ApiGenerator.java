@@ -279,28 +279,40 @@ public class ApiGenerator
 				ProtocolState succ = ps.accept(a);
 				//String next = (succ.isTerminal()) ? SOCKET_CLASSES.get(SocketType.END) : this.classNames.get(succ);
 				String next = this.classNames.get(succ);
-				method += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
-				if (!a.payload.isEmpty())
+				if (a.mid.isOp())
 				{
-					int i = 1;
-					for (PayloadType<? extends Kind> pt : a.payload.elems)
+					method += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
+					if (!a.payload.isEmpty())
 					{
-						DataType dt = (DataType) pt;  // TODO: if not DataType
-						DataTypeDecl dtd = main.getDataTypeDecl(dt);
-						method += ", Buff<" + dtd.extName + "> arg" + i++;
+						int i = 1;
+						for (PayloadType<? extends Kind> pt : a.payload.elems)
+						{
+							DataType dt = (DataType) pt;  // TODO: if not DataType
+							DataTypeDecl dtd = main.getDataTypeDecl(dt);
+							method += ", Buff<" + dtd.extName + "> arg" + i++;
+						}
+					}
+					method += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
+					method += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
+					if (!a.payload.isEmpty())
+					{
+						int i = 1;
+						for (PayloadType<? extends Kind> pt : a.payload.elems)
+						{
+							DataType dt = (DataType) pt;  // TODO: if not DataType
+							DataTypeDecl dtd = main.getDataTypeDecl(dt);
+							method += "\t\targ" + i + ".val = (" + dtd.extName + ") m.payload[" + (i++ - 1) +"];\n";
+						}
 					}
 				}
-				method += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-				method += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
-				if (!a.payload.isEmpty())
+				else //if (a.mid.isMessageSigName())
 				{
-					int i = 1;
-					for (PayloadType<? extends Kind> pt : a.payload.elems)
-					{
-						DataType dt = (DataType) pt;  // TODO: if not DataType
-						DataTypeDecl dtd = main.getDataTypeDecl(dt);
-						method += "\t\targ" + i + ".val = (" + dtd.extName + ") m.payload[" + (i++ - 1) +"];\n";
-					}
+					MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+					method += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
+					method += ", Buff<" + msd.extName + "> b";
+					method += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
+					method += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
+					method += "\t\tb.val = (" + msd.extName + ") m;\n";
 				}
 				method += "\t\treturn new " + next + "(this.ep);\n";
 				method += "\t}\n";
@@ -337,34 +349,50 @@ public class ApiGenerator
 				{
 					ProtocolState succ = ps.accept(a);
 					String next = this.classNames.get(succ);
-					// FIXME: problem if package and protocol have the same name
-					clazz += "\tpublic " + next + " receive(" + SessionGenerator.getPackageName(this.gpn) + "." + SessionGenerator.getOpClassName(a.mid) + " op";
-					//clazz += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
-					if (!a.payload.isEmpty())
+					if (a.mid.isOp())
 					{
-						int i = 1;
-						for (PayloadType<? extends Kind> pt : a.payload.elems)
+						// FIXME: problem if package and protocol have the same name
+						clazz += "\tpublic " + next + " receive(" + SessionGenerator.getPackageName(this.gpn) + "." + SessionGenerator.getOpClassName(a.mid) + " op";
+						//clazz += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
+						if (!a.payload.isEmpty())
 						{
-							DataType dt = (DataType) pt;  // TODO: if not DataType
-							DataTypeDecl dtd = main.getDataTypeDecl(dt);
-							clazz += ", Buff<" + dtd.extName + "> arg" + i++;
+							int i = 1;
+							for (PayloadType<? extends Kind> pt : a.payload.elems)
+							{
+								DataType dt = (DataType) pt;  // TODO: if not DataType
+								DataTypeDecl dtd = main.getDataTypeDecl(dt);
+								clazz += ", Buff<" + dtd.extName + "> arg" + i++;
+							}
+						}
+						clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
+						//clazz += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
+						clazz += "\t\tsuper.use();\n";
+						clazz += "\t\tif (!this.m.op.equals(" + getOp(a.mid) + ")) {\n";
+						clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);\n";
+						clazz += "\t\t}\n";
+						if (!a.payload.isEmpty())
+						{
+							int i = 1;
+							for (PayloadType<? extends Kind> pt : a.payload.elems)
+							{
+								DataType dt = (DataType) pt;  // TODO: if not DataType
+								DataTypeDecl dtd = main.getDataTypeDecl(dt);
+								clazz += "\t\targ" + i + ".val = (" + dtd.extName + ") m.payload[" + (i++ - 1) +"];\n";
+							}
 						}
 					}
-					clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-					//clazz += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
-					clazz += "\t\tsuper.use();\n";
-					clazz += "\t\tif (!this.m.op.equals(" + getOp(a.mid) + ")) {\n";
-					clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);\n";
-					clazz += "\t\t}\n";
-					if (!a.payload.isEmpty())
+					else //if (a.mid.isMessageSigName())
 					{
-						int i = 1;
-						for (PayloadType<? extends Kind> pt : a.payload.elems)
-						{
-							DataType dt = (DataType) pt;  // TODO: if not DataType
-							DataTypeDecl dtd = main.getDataTypeDecl(dt);
-							clazz += "\t\targ" + i + ".val = (" + dtd.extName + ") m.payload[" + (i++ - 1) +"];\n";
-						}
+						MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+						// FIXME: problem if package and protocol have the same name
+						clazz += "\tpublic " + next + " receive(" + SessionGenerator.getPackageName(this.gpn) + "." + SessionGenerator.getOpClassName(a.mid) + " op";
+						clazz += ", Buff<" + msd.extName + "> b";
+						clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
+						clazz += "\t\tsuper.use();\n";
+						clazz += "\t\tif (!this.m.op.equals(" + getOp(a.mid) + ")) {\n";
+						clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);\n";
+						clazz += "\t\t}\n";
+						clazz += "\t\tb.val = (" + msd.extName + ") m;\n";
 					}
 					clazz += "\t\treturn new " + next + "(this.ep);\n";
 					clazz += "\t}\n";
