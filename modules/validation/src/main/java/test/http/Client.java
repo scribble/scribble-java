@@ -32,7 +32,7 @@ public class Client
 
 	}
 
-	public static void main(String[] args) throws ScribbleException, ScribbleRuntimeException
+	public static void main(String[] args) throws ScribbleException
 	{
 		Buff<HttpVersion> b_vers = new Buff<>();
 		Buff<AcceptRanges> b_acc = new Buff<>();
@@ -132,7 +132,7 @@ public class Client
 				}
 			}
 		}
-		catch (IOException | ClassNotFoundException e)
+		catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
 		{
 			e.printStackTrace();
 		}
