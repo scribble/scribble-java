@@ -1,0 +1,121 @@
+//Raymond@HZHL3 ~/code/scribble-java/scribble-java
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/main/java/test/http/http.scr -session Http -d modules/validation/src/main/java
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/main/java/test/http/http.scr -api Http A -d modules/validation/src/main/java
+
+//$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/validation/src/main/java/Test modules/validation/src/main/java/http/Foo*.java -d test/doc/http
+
+
+module test.http;
+
+
+sig <java> "test.http.message.RequestLine" from "test.http.message.RequestLine.java" as REQUESTL;  // GET /~rhu/ HTTP/1.1 
+sig <java> "test.http.message.Host" from "test.http.message.Host.java" as HOST;      // host: www.doc.ic.ac.uk
+sig <java> "test.http.message.CRLF" from "test.http.message.CRLF.java" as CRLF;
+
+sig <java> "test.http.message.HttpVersion" from "test.http.message.HttpVersion.java" as HTTPV;     // HTTP/1.1 
+sig <java> "test.http.message._200" from "test.http.message._200.java" as 200;                     // 200 OK
+sig <java> "test.http.message._404" from "test.http.message._404.java" as 404;
+sig <java> "test.http.message.Date" from "test.http.message.Date.java" as DATE;                    // Date: Sun, 24 May 2015 21:04:36 GMT
+sig <java> "test.http.message.Server" from "test.http.message.Server.java" as SERVER;              // Server: Apache
+sig <java> "test.http.message.LastModified" from "test.http.message.LastModified.java" as LASTM;   // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
+sig <java> "test.http.message.ETag" from "test.http.message.ETag.java" as ETAG;                    // ETag: "ac6fa008-559-4a8b95908aec0"
+sig <java> "test.http.message.AcceptRanges" from "test.http.message.AcceptRanges.java" as ACCEPTR; // Accept-Ranges: bytes
+sig <java> "test.http.message.ContentLength" from "test.http.message.ContentLength.java" as CONTENTL;  // Content-Length: 1369
+sig <java> "test.http.message.Vary" from "test.http.message.Vary.java" as VARY;                    // Vary: Accept-Encoding
+sig <java> "test.http.message.ContentType" from "test.http.message.ContentType.java" as CONTENTT;  // Content-Type: text/html
+sig <java> "test.http.message.Via" from "test.http.message.Via.java" as VIA;                       // Via: 1.1 www.doc.ic.ac.uk	
+sig <java> "test.http.message.Body" from "test.http.message.Body.java" as BODY;
+
+
+global protocol Http(role C, role S)
+{
+	do Request(C, S);
+	do Response(C, S);
+}
+
+global protocol Request(role C, role S)
+{
+	choice at C
+	{
+		REQUESTL from C to S;  // GET /~rhu/ HTTP/1.1 
+		rec X
+		{
+			choice at C
+			{
+				HOST from C to S;  // host: www.doc.ic.ac.uk
+				continue X;
+			}
+			or
+			{
+				CRLF from C to S;  //BODY from S to C;  // Maybe do as payload of CRLF
+			}
+		}
+	}
+}
+	
+global protocol Response(role C, role S)
+{
+	HTTPV from S to C;    // HTTP/1.1
+	rec Y
+	{
+		choice at S
+		{
+			200 from S to C;  // 200 OK
+			continue Y;
+		}
+		or
+		{
+			404 from S to C;
+			continue Y;
+		}
+		or
+		{
+			DATE from S to C;  // Date: Sun, 24 May 2015 21:04:36 GMT
+			continue Y;
+		}
+		or
+		{
+			SERVER from S to C;  // Server: Apache
+			continue Y;
+		}
+		or
+		{
+			LASTM from S to C;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
+			continue Y;
+		}
+		or
+		{
+			ETAG from S to C;  // ETag: "ac6fa008-559-4a8b95908aec0"
+			continue Y;
+		}
+		or
+		{
+			ACCEPTR from S to C;  // Accept-Ranges: bytes
+			continue Y;
+		}
+		or
+		{
+			CONTENTL from S to C;  // Content-Length: 1369
+			continue Y;
+		}
+		or
+		{
+			VARY from S to C;  // Vary: Accept-Encoding
+			continue Y;
+		}
+		or
+		{
+			CONTENTT from S to C;  // Content-Type: text/html
+			continue Y;
+		}
+		or
+		{
+			VIA from S to C;  // Via: 1.1 www.doc.ic.ac.uk	
+			continue Y;
+		}
+		or
+		{
+			BODY from S to C;
+		}
+	}
+}
