@@ -12,6 +12,7 @@ import org.scribble2.model.global.GMessageTransfer;
 import org.scribble2.model.local.LInteractionNode;
 import org.scribble2.model.local.LReceive;
 import org.scribble2.model.local.LocalNode;
+import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.OpCollector;
 import org.scribble2.model.visit.Projector;
@@ -20,6 +21,7 @@ import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.name.Op;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -108,11 +110,22 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	public ModelNode leaveOpCollection(ModelNode parent, ModelNode child, OpCollector coll, ModelNode visited)
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
-		if (!gmt.msg.isMessageSigNode())
+		/*if (!gmt.msg.isMessageSigNode())
 		{
 			throw new RuntimeException("Op collection should be run on ground types: " + gmt.msg);
+		}*/
+		if (gmt.msg.isMessageSigNode())
+		{
+			coll.addOp(((MessageSigNode) gmt.msg).op.toName());
 		}
-		coll.addOp(((MessageSigNode) gmt.msg).op.toName());
+		else if (gmt.msg.isMessageSigNameNode())
+		{
+			coll.addOp(new Op(((MessageSigNameNode) gmt.msg).toMessage().getId().toString()));  // FIXME: HACK -- change IOAction back to use MessageId?
+		}
+		else
+		{
+			throw new RuntimeException("Shouldn't get in here: " + gmt.msg);
+		}
 		return visited;
 	}
 }

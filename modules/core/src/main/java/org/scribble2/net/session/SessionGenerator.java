@@ -126,7 +126,7 @@ public class SessionGenerator
 		{
 			clazz += generateRole(role);
 		}
-		//clazz += "\n";
+		clazz += "\n";
 		for (Op op : this.ops.keySet())
 		{
 			clazz += generateOp(op);

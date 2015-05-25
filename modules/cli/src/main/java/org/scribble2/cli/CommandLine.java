@@ -159,7 +159,7 @@ public class CommandLine implements Runnable
 			}
 			else
 			{
-				System.out.println(clazz);
+				System.out.println(map.get(clazz));
 			}
 		}
 	}
