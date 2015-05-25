@@ -33,7 +33,7 @@ public class LRecursionDel extends LCompoundInteractionNodeDel
 		RecVar rv = lr.recvar.toName();
 		/*Set<RecVar> labs = new HashSet<>();
 		labs.add(rv);*/
-		Set<String> labs = new HashSet<>();
+		Set<String> labs = new HashSet<>(conv.builder.getEntry().getLabels());
 		labs.add(rv.toString());
 		ProtocolState s = conv.builder.newState(labs);
 		conv.builder.setEntry(s);

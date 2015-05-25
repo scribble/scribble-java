@@ -59,12 +59,10 @@ public class LDoDel extends LSimpleInteractionNodeDel
 		{
 			SubprotocolSig subsig = conv.peekStack();  // SubprotocolVisitor has already entered subprotocol
 			//SubprotocolSig noscope = new SubprotocolSig(subsig.fmn, subsig.roles, subsig.args);  // FIXME: factor better
-
-		Set<String> labs = new HashSet<>();
-		labs.add(subsig.toString());
-		ProtocolState s = conv.builder.newState(labs);
-		conv.builder.setEntry(s);
-
+			Set<String> labs = new HashSet<>(conv.builder.getEntry().getLabels());
+			labs.add(subsig.toString());
+			ProtocolState s = conv.builder.newState(labs);
+			conv.builder.setEntry(s);
 			conv.builder.setSubprotocolEntry(subsig);
 		}
 	}
