@@ -13,7 +13,7 @@ import org.scribble2.model.visit.ModelVisitor;
 import org.scribble2.sesstype.kind.Kind;
 import org.scribble2.sesstype.kind.ProtocolKind;
 import org.scribble2.sesstype.name.DataType;
-import org.scribble2.sesstype.name.IName;
+import org.scribble2.sesstype.name.MessageSigName;
 import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.ProtocolName;
 import org.scribble2.util.ScribbleException;
@@ -121,14 +121,15 @@ public class Module extends ModelNodeBase
 	}
 
 	// ptn simple alias name
-	public MessageSigDecl getMessageSignatureDecl(IName msn)
+	//public MessageSigDecl getMessageSigDecl(IName msn)
+	public MessageSigNameDecl getMessageSigDecl(MessageSigName msn)
 	{
 		for (NonProtocolDecl<? extends Kind> dtd : this.data)
 		{
 			//if (dtd instanceof MessageSigDecl && dtd.alias.getName().equals(msn))
-			if (dtd instanceof MessageSigDecl && dtd.getDeclName().equals(msn))
+			if (dtd instanceof MessageSigNameDecl && dtd.getDeclName().equals(msn))
 			{
-				return (MessageSigDecl) dtd;
+				return (MessageSigNameDecl) dtd;
 			}
 		}
 		throw new RuntimeException("Message signature not found: " + msn);

@@ -5,7 +5,7 @@ import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.EnvVisitor;
 import org.scribble2.model.visit.FsmConstructor;
 import org.scribble2.model.visit.NameDisambiguator;
-import org.scribble2.model.visit.OpCollector;
+import org.scribble2.model.visit.MessageIdCollector;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
@@ -113,13 +113,13 @@ public abstract class ModelDelBase implements ModelDel
 	}
 
 	@Override
-	public void enterOpCollection(ModelNode parent, ModelNode child, OpCollector coll) //throws ScribbleException
+	public void enterOpCollection(ModelNode parent, ModelNode child, MessageIdCollector coll) //throws ScribbleException
 	{
 		
 	}
 
 	@Override
-	public ModelNode leaveOpCollection(ModelNode parent, ModelNode child, OpCollector coll, ModelNode visited) //throws ScribbleException
+	public ModelNode leaveOpCollection(ModelNode parent, ModelNode child, MessageIdCollector coll, ModelNode visited) //throws ScribbleException
 	{
 		return visited;
 	}

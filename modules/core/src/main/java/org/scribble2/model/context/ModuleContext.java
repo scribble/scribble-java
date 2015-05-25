@@ -6,7 +6,7 @@ import java.util.Map;
 import org.scribble2.model.DataTypeDecl;
 import org.scribble2.model.ImportDecl;
 import org.scribble2.model.ImportModule;
-import org.scribble2.model.MessageSigDecl;
+import org.scribble2.model.MessageSigNameDecl;
 import org.scribble2.model.Module;
 import org.scribble2.model.NonProtocolDecl;
 import org.scribble2.model.global.GProtocolDecl;
@@ -131,7 +131,7 @@ public class ModuleContext
 			}
 			else if (dtd.isMessageSigDecl())
 			{
-				MessageSigName simplename = ((MessageSigDecl) dtd).getDeclName();
+				MessageSigName simplename = ((MessageSigNameDecl) dtd).getDeclName();
 				//MessageSigName fullname = ((MessageSigDecl) dtd).getFullMessageSignatureName();  // FIXME: compound full sig name
 				MessageSigName fullname = new MessageSigName(fullmodname, simplename);
 				MessageSigName selfname = new MessageSigName(simplemodname, simplename);

@@ -5,23 +5,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble2.model.MessageNode;
-import org.scribble2.model.MessageSigNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.global.GMessageTransfer;
 import org.scribble2.model.local.LInteractionNode;
 import org.scribble2.model.local.LReceive;
 import org.scribble2.model.local.LocalNode;
-import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.model.name.simple.RoleNode;
-import org.scribble2.model.visit.OpCollector;
+import org.scribble2.model.visit.MessageIdCollector;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.sesstype.Message;
 import org.scribble2.sesstype.kind.RoleKind;
-import org.scribble2.sesstype.name.Op;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -107,20 +104,16 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public ModelNode leaveOpCollection(ModelNode parent, ModelNode child, OpCollector coll, ModelNode visited)
+	public ModelNode leaveOpCollection(ModelNode parent, ModelNode child, MessageIdCollector coll, ModelNode visited)
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		/*if (!gmt.msg.isMessageSigNode())
 		{
-			throw new RuntimeException("Op collection should be run on ground types: " + gmt.msg);
+			throw new RuntimeException("Op collection should be run on ground types: " + gmt.msg);  // Ground means non-param -- signames are OK (from sigdecls)
 		}*/
-		if (gmt.msg.isMessageSigNode())
+		if (gmt.msg.isMessageSigNode() || gmt.msg.isMessageSigNameNode())
 		{
-			coll.addOp(((MessageSigNode) gmt.msg).op.toName());
-		}
-		else if (gmt.msg.isMessageSigNameNode())
-		{
-			coll.addOp(new Op(((MessageSigNameNode) gmt.msg).toMessage().getId().toString()));  // FIXME: HACK -- change IOAction back to use MessageId?
+			coll.addMessageId(gmt.msg.toMessage().getId());
 		}
 		else
 		{

@@ -26,4 +26,22 @@ public class Op extends Name<OpKind> implements MessageId //SerializableSimpleNa
 		//super(KindEnum.OPERATOR, text);
 		super(OpKind.KIND, text);
 	}
+
+	@Override
+	public boolean isOp()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isMessageSigName()
+	{
+		return false;
+	}
+
+	/*@Override
+	public String getId()
+	{
+		return this.toString();
+	}*/
 }

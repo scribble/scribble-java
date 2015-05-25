@@ -64,7 +64,7 @@ public interface ModelFactory
 	//ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias);
 	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);
 	
-	MessageSigDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias);
+	MessageSigNameDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias);
 	DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNameNode alias);
 
 	GProtocolDecl GProtocolDecl(GProtocolHeader header, GProtocolDef def);

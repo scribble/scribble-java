@@ -8,9 +8,9 @@ import org.scribble2.model.del.ModuleDel;
 import org.scribble2.model.global.GProtocolDecl;
 import org.scribble2.model.visit.Job;
 import org.scribble2.model.visit.JobContext;
-import org.scribble2.model.visit.OpCollector;
+import org.scribble2.model.visit.MessageIdCollector;
 import org.scribble2.sesstype.name.GProtocolName;
-import org.scribble2.sesstype.name.Op;
+import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -19,7 +19,7 @@ public class SessionGenerator
 	private final Job job;
 	private final GProtocolName gpn;
 	private final String clazz;
-	private final Map<Op, String> ops = new HashMap<>();
+	private final Map<MessageId, String> mids = new HashMap<>();
 
 	public SessionGenerator(Job job, GProtocolName gpn) throws ScribbleException
 	{
@@ -36,17 +36,17 @@ public class SessionGenerator
 		Module mod = jc.getModule(gpn.getPrefix());
 		GProtocolName sn = gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(sn);
-		OpCollector coll = new OpCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
+		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
-		for (Op op : coll.getOps())
+		for (MessageId mid : coll.getMessageIds())
 		{
-			this.ops.put(op, generateOpClass(op));
+			this.mids.put(mid, generateOpClass(mid));
 		}
 	}
 	
-	public static String getOpClassName(Op op)
+	public static String getOpClassName(MessageId mid)
 	{
-		String s = op.toString();
+		String s = mid.toString();
 		if (s.isEmpty() || s.charAt(0) < 65)
 		{
 			return "_" + s;
@@ -54,9 +54,9 @@ public class SessionGenerator
 		return s;
 	}
 	
-	private String generateOpClass(Op op)
+	private String generateOpClass(MessageId mid)
 	{
-		String s = getOpClassName(op);
+		String s = getOpClassName(mid);
 
 		String clazz = "";
 		//clazz += "package " + getPackageName(gpn) + ";\n";
@@ -68,7 +68,7 @@ public class SessionGenerator
 		clazz += "\tprivate static final long serialVersionUID = 1L;\n";
 		clazz += "\n";
 		clazz += "\tprotected " + s + "() {\n";
-		clazz += "\t\tsuper(\"" + op + "\");\n";
+		clazz += "\t\tsuper(\"" + mid + "\");\n";
 		clazz += "\t}\n";
 		clazz += "}";
 		return clazz;
@@ -83,9 +83,9 @@ public class SessionGenerator
 		return map;
 	}
 
-	public Map<Op, String> getOpClasses()
+	public Map<MessageId, String> getOpClasses()
 	{
-		return this.ops;
+		return this.mids;
 	}
 	
 	public static String getPackageName(GProtocolName gpn)
@@ -127,16 +127,16 @@ public class SessionGenerator
 			clazz += generateRole(role);
 		}
 		clazz += "\n";
-		for (Op op : this.ops.keySet())
+		for (MessageId mid : this.mids.keySet())
 		{
-			clazz += generateOp(op);
+			clazz += generateOp(mid);
 		}
 		clazz += "\n";
 		clazz += "\tpublic " + sn +"() {\n";
 		clazz += "\t\tsuper(" + sn + ".impath, " + sn + ".source, " + sn + ".proto);\n";
 		clazz += "\t}\n";
 		clazz += "}";//\n";
-		for (String s : this.ops.values())
+		for (String s : this.mids.values())
 		{
 			clazz += "\n\n";
 			clazz += s;
@@ -149,9 +149,9 @@ public class SessionGenerator
 		return "\tpublic static final Role " + role + " = new Role(\"" + role + "\");\n";
 	}
 	
-	private String generateOp(Op op)
+	private String generateOp(MessageId mid)
 	{
-		String s = getOpClassName(op);
+		String s = getOpClassName(mid);
 		return "\tpublic static final " + s + " " + s + " = new " + s + "();\n";
 	}
 }

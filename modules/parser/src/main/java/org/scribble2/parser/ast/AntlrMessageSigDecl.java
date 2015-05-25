@@ -1,7 +1,7 @@
 package org.scribble2.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble2.model.MessageSigDecl;
+import org.scribble2.model.MessageSigNameDecl;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.name.qualified.MessageSigNameNode;
 import org.scribble2.parser.ScribbleParser;
@@ -15,7 +15,7 @@ public class AntlrMessageSigDecl
 	public static final int SOURCE_CHILD_INDEX = 2;
 	public static final int ALIAS_CHILD_INDEX = 3;
 
-	public static MessageSigDecl parseMessageSigDecl(ScribbleParser parser, CommonTree ct)
+	public static MessageSigNameDecl parseMessageSigDecl(ScribbleParser parser, CommonTree ct)
 	{
 		CommonTree tmp1 = getSchemaChild(ct);
 		String schema = AntlrSimpleName.getName(tmp1);

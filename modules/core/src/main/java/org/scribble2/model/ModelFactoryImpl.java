@@ -138,9 +138,9 @@ public class ModelFactoryImpl implements ModelFactory
 	}
 	
 	@Override
-	public MessageSigDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias)
+	public MessageSigNameDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias)
 	{
-		MessageSigDecl msd = new MessageSigDecl(schema, extName, source, alias);
+		MessageSigNameDecl msd = new MessageSigNameDecl(schema, extName, source, alias);
 		msd = del(msd, createDefaultDelegate());
 		return msd;
 	}

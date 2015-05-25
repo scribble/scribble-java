@@ -5,12 +5,12 @@ import org.scribble2.sesstype.kind.SigKind;
 import org.scribble2.sesstype.name.MessageSigName;
 
 //public class MessageSigDecl extends NonProtocolDecl<MessageSigName, SigKind> //AbstractNode implements ModuleMember //implements NameDeclaration
-public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode implements ModuleMember //implements NameDeclaration
+public class MessageSigNameDecl extends NonProtocolDecl<SigKind> //AbstractNode implements ModuleMember //implements NameDeclaration
 {
 	// FIXME: need to replace ParameterNode by a signature member node
 	//public MessageSigDecl(String schema, String extName, String source, SimpleMessageSignatureNameNode alias)
 	//public MessageSigDecl(String schema, String extName, String source, MemberNameNode<? extends MessageSigName, SigKind> alias)
-	public MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias)
+	public MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode alias)
 	{
 		super(schema, extName, source, alias);
 	}
@@ -71,10 +71,10 @@ public class MessageSigDecl extends NonProtocolDecl<SigKind> //AbstractNode impl
 	}
 
 	@Override
-	protected MessageSigDecl copy()
+	protected MessageSigNameDecl copy()
 	{
 		//return new MessageSigDecl(this.schema, this.extName, this.source, this.alias);
-		return new MessageSigDecl(this.schema, this.extName, this.source, (MessageSigNameNode) this.name);
+		return new MessageSigNameDecl(this.schema, this.extName, this.source, (MessageSigNameNode) this.name);
 	}
 
 	/*public PayloadType getFullPayloadTypeName()

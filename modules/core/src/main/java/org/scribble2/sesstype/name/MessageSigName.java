@@ -59,6 +59,18 @@ public class MessageSigName extends MemberName<SigKind> implements Message, Mess
 		return this;  // FIXME: should be resolved to a canonical name
 	}
 
+	@Override
+	public boolean isOp()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isMessageSigName()
+	{
+		return true;
+	}
+
 	/*@Override
 	public MessageSignatureName getSimpleName()
 	{

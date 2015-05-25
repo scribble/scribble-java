@@ -5,27 +5,27 @@ import java.util.Set;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.context.ModuleContext;
-import org.scribble2.sesstype.name.Op;
+import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.util.ScribbleException;
 
-public class OpCollector extends SubprotocolVisitor
+public class MessageIdCollector extends SubprotocolVisitor
 {
-	private Set<Op> ops = new HashSet<>();
+	private Set<MessageId> mids = new HashSet<>();
 	
-	public OpCollector(Job job, ModuleContext mcontext)
+	public MessageIdCollector(Job job, ModuleContext mcontext)
 	{
 		super(job);
 		setModuleContext(mcontext);
 	}
 	
-	public void addOp(Op op)
+	public void addMessageId(MessageId mid)
 	{
-		this.ops.add(op);
+		this.mids.add(mid);
 	}
 	
-	public Set<Op> getOps()
+	public Set<MessageId> getMessageIds()
 	{
-		return this.ops;
+		return this.mids;
 	}
 
 	@Override
