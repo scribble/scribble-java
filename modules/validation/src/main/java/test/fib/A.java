@@ -19,14 +19,14 @@ public class A
 		Buff<Integer> i1 = new Buff<>(0);
 		Buff<Integer> i2 = new Buff<>(1);
 		
-		Adder foo = new Adder();
-		SessionEndpoint se = foo.project(Adder.A, new ObjectStreamFormatter());
+		Adder adder = new Adder();
+		SessionEndpoint se = adder.project(Adder.A, new ObjectStreamFormatter());
 		
 		try (Adder_A_0 init = new Adder_A_0(se))
 		{
 			init.connect(Adder.B, "localhost", 8888);
 			Adder_A_1 s1 = init.init();
-			
+
 			fib(s1, i1, i2, 0).end();
 		}
 		catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
