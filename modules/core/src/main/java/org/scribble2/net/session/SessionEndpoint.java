@@ -7,6 +7,7 @@ import java.util.Map;
 import org.scribble2.net.ScribMessageFormatter;
 import org.scribble2.net.SocketWrapper;
 import org.scribble2.sesstype.name.Role;
+import org.scribble2.util.ScribbleRuntimeException;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 public class SessionEndpoint
@@ -69,8 +70,12 @@ public class SessionEndpoint
 	}*/
 	
 	//public SocketEndpoint getSocketEndpoint(Role role)
-	public SocketWrapper getSocketWrapper(Role role)
+	public SocketWrapper getSocketWrapper(Role role) throws ScribbleRuntimeException
 	{
+		if (!this.sockets.containsKey(role))
+		{
+			throw new ScribbleRuntimeException(this.self + " is not connected to: " + role);
+		}
 		return this.sockets.get(role);
 	}
 	
