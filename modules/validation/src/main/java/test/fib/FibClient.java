@@ -4,17 +4,17 @@
 package test.fib;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 import org.scribble2.net.Buff;
 import org.scribble2.net.ObjectStreamFormatter;
 import org.scribble2.net.session.SessionEndpoint;
-import org.scribble2.util.ScribbleException;
 import org.scribble2.util.ScribbleRuntimeException;
 
 
 public class FibClient
 {
-	public static void main(String[] args) throws ScribbleException
+	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		Buff<Integer> i1 = new Buff<>(0);
 		Buff<Integer> i2 = new Buff<>(1);
@@ -22,16 +22,12 @@ public class FibClient
 		Adder adder = new Adder();
 		SessionEndpoint se = adder.project(Adder.AddClient, new ObjectStreamFormatter());
 		
-		try (Adder_AddClient_0 init = new Adder_AddClient_0(se))
+		try (Adder_AddClient_0 s0 = new Adder_AddClient_0(se))
 		{
-			init.connect(Adder.AddServer, "localhost", 8888);
-			Adder_AddClient_1 s1 = init.init();
+			s0.connect(Adder.AddServer, "localhost", 8888);
+			Adder_AddClient_1 s1 = s0.init();
 
 			fib(s1, i1, i2, 0).end();
-		}
-		catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
-		{
-			e.printStackTrace();
 		}
 	}
 

@@ -6,29 +6,27 @@ import org.scribble2.net.Buff;
 import org.scribble2.net.ObjectStreamFormatter;
 import org.scribble2.net.ScribServerSocket;
 import org.scribble2.net.session.SessionEndpoint;
-import org.scribble2.util.ScribbleException;
 import org.scribble2.util.ScribbleRuntimeException;
 
 public class AdderServer
 {
-	public static void main(String[] args) throws ScribbleException, IOException
+	public static void main(String[] args) throws IOException, ScribbleRuntimeException
 	{
 		Adder foo = new Adder();
 		SessionEndpoint se = foo.project(Adder.AddServer, new ObjectStreamFormatter());
 		try (ScribServerSocket ss = new ScribServerSocket(8888))
 		{
-			//Buff<String> s = new Buff<>();
 			Buff<Integer> i1 = new Buff<>();
 			Buff<Integer> i2 = new Buff<>();
 
 			while (true)
 			{
-				try (Adder_AddServer_0 init = new Adder_AddServer_0(se))
-				{
-					init.accept(ss, Adder.AddClient);
-					Adder_AddServer_1 s1 = init.init();
+				Adder_AddServer_0 init = new Adder_AddServer_0(se);
+				init.accept(ss, Adder.AddClient);
 
-					X(s1, i1, i2).end();
+				try(Adder_AddServer_0 s0 = init)
+				{
+					X(s0.init(), i1, i2).end();
 				}
 				catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
 				{

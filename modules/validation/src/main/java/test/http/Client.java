@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.scribble2.net.Buff;
 import org.scribble2.net.session.SessionEndpoint;
-import org.scribble2.util.ScribbleException;
 import org.scribble2.util.ScribbleRuntimeException;
 
 import test.http.message.AcceptRanges;
@@ -32,7 +31,7 @@ public class Client
 
 	}
 
-	public static void main(String[] args) throws ScribbleException
+	public static void main(String[] args) throws ScribbleRuntimeException
 	{
 		Buff<HttpVersion> b_vers = new Buff<>();
 		Buff<AcceptRanges> b_acc = new Buff<>();
