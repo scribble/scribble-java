@@ -9,12 +9,12 @@ import org.scribble2.net.session.SessionEndpoint;
 import org.scribble2.util.ScribbleException;
 import org.scribble2.util.ScribbleRuntimeException;
 
-public class B
+public class AdderServer
 {
 	public static void main(String[] args) throws ScribbleException, IOException
 	{
 		Adder foo = new Adder();
-		SessionEndpoint se = foo.project(Adder.B, new ObjectStreamFormatter());
+		SessionEndpoint se = foo.project(Adder.AddServer, new ObjectStreamFormatter());
 		try (ScribServerSocket ss = new ScribServerSocket(8888))
 		{
 			//Buff<String> s = new Buff<>();
@@ -23,10 +23,10 @@ public class B
 
 			while (true)
 			{
-				try (Adder_B_0 init = new Adder_B_0(se))
+				try (Adder_AddServer_0 init = new Adder_AddServer_0(se))
 				{
-					init.accept(ss, Adder.A);
-					Adder_B_1 s1 = init.init();
+					init.accept(ss, Adder.AddClient);
+					Adder_AddServer_1 s1 = init.init();
 
 					X(s1, i1, i2).end();
 				}
@@ -38,9 +38,9 @@ public class B
 		}
 	}
 	
-	private static Adder_B_2 X(Adder_B_1 s1, Buff<Integer> i1, Buff<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	private static Adder_AddServer_3 X(Adder_AddServer_1 s1, Buff<Integer> i1, Buff<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException
 	{
-		Adder_B_4 s4 = s1.branch();
+		Adder_AddServer_4 s4 = s1.branch();
 		switch (s4.op)
 		{
 			case BYE:

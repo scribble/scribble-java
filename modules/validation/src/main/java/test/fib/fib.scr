@@ -9,19 +9,19 @@ module test.fib;
 
 type <java> "java.lang.Integer" from "rt.jar" as Integer;
 
-global protocol Adder(role A, role B)
+global protocol Adder(role AddClient, role AddServer)
 {
 	rec X
 	{
-		choice at A
+		choice at AddClient
 		{
-			ADD(Integer, Integer) from A to B;
-			RES(Integer) from B to A;
+			ADD(Integer, Integer) from AddClient to AddServer;
+			RES(Integer) from AddServer to AddClient;
 			continue X;
 		}
 		or
 		{
-			BYE() from A to B;
+			BYE() from AddClient to AddServer;
 		}
 	}
 }

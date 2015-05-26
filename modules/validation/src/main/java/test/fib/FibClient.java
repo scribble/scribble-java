@@ -12,7 +12,7 @@ import org.scribble2.util.ScribbleException;
 import org.scribble2.util.ScribbleRuntimeException;
 
 
-public class A
+public class FibClient
 {
 	public static void main(String[] args) throws ScribbleException
 	{
@@ -20,12 +20,12 @@ public class A
 		Buff<Integer> i2 = new Buff<>(1);
 		
 		Adder adder = new Adder();
-		SessionEndpoint se = adder.project(Adder.A, new ObjectStreamFormatter());
+		SessionEndpoint se = adder.project(Adder.AddClient, new ObjectStreamFormatter());
 		
-		try (Adder_A_0 init = new Adder_A_0(se))
+		try (Adder_AddClient_0 init = new Adder_AddClient_0(se))
 		{
-			init.connect(Adder.B, "localhost", 8888);
-			Adder_A_1 s1 = init.init();
+			init.connect(Adder.AddServer, "localhost", 8888);
+			Adder_AddClient_1 s1 = init.init();
 
 			fib(s1, i1, i2, 0).end();
 		}
@@ -35,19 +35,14 @@ public class A
 		}
 	}
 
-	private static Adder_A_3 fib(Adder_A_1 s1, Buff<Integer> i1, Buff<Integer> i2, int i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	private static Adder_AddClient_3 fib(Adder_AddClient_1 s1, Buff<Integer> i1, Buff<Integer> i2, int i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
 	{
-		if (i < 20)
-		{
-			return fib(side(s1.send(Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1);
-		}
-		else
-		{	
-			return s1.send(Adder.BYE);
-		}
+		return (i < 10)
+			? fib(side(s1.send(Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
+			: s1.send(Adder.BYE);
 	}
 	
-	private static Adder_A_2 side(Adder_A_2 s2, Buff<Integer> i1, Buff<Integer> i2)
+	private static Adder_AddClient_2 side(Adder_AddClient_2 s2, Buff<Integer> i1, Buff<Integer> i2)
 	{
 		System.out.println("A: " + i1.val);
 		i1.val = i2.val;
