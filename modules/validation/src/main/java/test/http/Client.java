@@ -61,71 +61,76 @@ public class Client
 			s2 = s2.send(new Host(host));
 			Http_C_3 s3 = s2.send(new CRLF());
 			Http_C_4 s4 = s3.receive(Http.HTTPV, b_vers);
+			Http_C_7 s7 = s4.branch();
+			Http_C_5 s5 = null;
+			switch (s7.op)
+			{
+				case _200:
+				{
+					s5 = s7.receive(Http._200, b_200);
+					break;
+				}
+				case _404:
+				{
+					s5 = s7.receive(Http._404, b_404);
+					break;
+				}
+			}
 			X: while (true)
 			{
-				Http_C_6 s6 = s4.branch();
-				switch (s6.op)
+				Http_C_8 s8 = s5.branch();
+				switch (s8.op)
 				{
 					case ACCEPTR:
 					{
-						s4 = s6.receive(Http.ACCEPTR, b_acc);
+						s5 = s8.receive(Http.ACCEPTR, b_acc);
 						break;
 					}
 					case BODY:
 					{
-						Http_C_5 s5 = s6.receive(Http.BODY, b_body);
+						Http_C_6 s6 = s8.receive(Http.BODY, b_body);
 						System.out.println(b_body.val.getBody());
-						s5.end();
+						s6.end();
 						break X;
 					}
 					case CONTENTL:
 					{
-						s4 = s6.receive(Http.CONTENTL, b_clen);
+						s5 = s8.receive(Http.CONTENTL, b_clen);
 						break;
 					}
 					case CONTENTT:
 					{
-						s4 = s6.receive(Http.CONTENTT, b_ctype);
+						s5 = s8.receive(Http.CONTENTT, b_ctype);
 						break;
 					}
 					case DATE:
 					{
-						s4 = s6.receive(Http.DATE, b_date);
+						s5 = s8.receive(Http.DATE, b_date);
 						break;
 					}
 					case ETAG:
 					{
-						s4 = s6.receive(Http.ETAG, b_etag);
+						s5 = s8.receive(Http.ETAG, b_etag);
 						break;
 					}
 					case LASTM:
 					{
-						s4 = s6.receive(Http.LASTM, b_lastm);
+						s5 = s8.receive(Http.LASTM, b_lastm);
 						break;
 					}
 					case SERVER:
 					{
-						s4 = s6.receive(Http.SERVER, b_serv);
+						s5 = s8.receive(Http.SERVER, b_serv);
 						break;
 					}
 					case VARY:
 					{
-						s4 = s6.receive(Http.VARY, b_vary);
+						s5 = s8.receive(Http.VARY, b_vary);
 						break;
 					}
 					case VIA:
 					{
-						s4 = s6.receive(Http.VIA, b_via);
-						break;
-					}
-					case _200:
-					{
-						s4 = s6.receive(Http._200, b_200);
-						break;
-					}
-					case _404:
-					{
-						s4 = s6.receive(Http._404, b_404);
+						s5  = s8.receive(Http.VIA, b_via);
 						break;
 					}
 				}

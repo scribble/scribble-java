@@ -1,6 +1,6 @@
 //Raymond@HZHL3 ~/code/scribble-java/scribble-java
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/main/java/test/http/http.scr -session Http -d modules/validation/src/main/java
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/main/java/test/http/http.scr -api Http A -d modules/validation/src/main/java
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/main/java/test/http/http.scr -api Http C -d modules/validation/src/main/java
 
 //$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/validation/src/main/java/Test modules/validation/src/main/java/test/http/Http*.java -d test/doc/http
 
@@ -11,6 +11,16 @@ module test.http;
 sig <java> "test.http.message.RequestLine" from "test.http.message.RequestLine.java" as REQUESTL;  // GET /~rhu/ HTTP/1.1 
 sig <java> "test.http.message.Host" from "test.http.message.Host.java" as HOST;      // host: www.doc.ic.ac.uk
 sig <java> "test.http.message.CRLF" from "test.http.message.CRLF.java" as CRLF;
+
+//GET / HTTP/1.1
+//Host: localhost:8000
+//User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
+//Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+//Accept-Language: en-GB,en;q=0.5
+//Accept-Encoding: gzip, deflate
+//DNT: 1
+//Connection: keep-alive
+
 
 sig <java> "test.http.message.HttpVersion" from "test.http.message.HttpVersion.java" as HTTPV;     // HTTP/1.1 
 sig <java> "test.http.message._200" from "test.http.message._200.java" as 200;                     // 200 OK
@@ -55,20 +65,19 @@ global protocol Request(role C, role S)
 	
 global protocol Response(role C, role S)
 {
-	HTTPV from S to C;    // HTTP/1.1
+	HTTPV from S to C;  // HTTP/1.1
+	choice at S
+	{
+		200 from S to C;  // 200 OK
+	}
+	or
+	{
+		404 from S to C;
+	}
+
 	rec Y
 	{
 		choice at S
-		{
-			200 from S to C;  // 200 OK
-			continue Y;
-		}
-		or
-		{
-			404 from S to C;
-			continue Y;
-		}
-		or
 		{
 			DATE from S to C;  // Date: Sun, 24 May 2015 21:04:36 GMT
 			continue Y;
