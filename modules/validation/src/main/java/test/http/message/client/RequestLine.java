@@ -1,6 +1,7 @@
-package test.http.message;
+package test.http.message.client;
 
 import test.http.Http;
+import test.http.message.StartLine;
 
 
 // FIXME: not just GET

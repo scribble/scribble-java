@@ -10,7 +10,14 @@ public abstract class HttpMessage extends ScribMessage
 {
 	public static final String GET = "GET";
 	public static final String HTTP = "HTTP";
-	public static final String HOST = "host";
+	public static final String HOST = "Host";
+
+	public static final String USER_AGENT = "User-Agent";
+	public static final String ACCEPT = "Accept";
+	public static final String ACCEPT_LANGUAGE = "Accept-Language";
+	public static final String ACCEPT_ENCODING = "Accept-Encoding";
+	public static final String DO_NOT_TRACK = "DNT";     
+	public static final String CONNECTION = "Connection";
 
 	public static final String DATE = "Date";
 	public static final String CONTENT_TYPE = "Content-Type";
@@ -48,6 +55,12 @@ public abstract class HttpMessage extends ScribMessage
 		return (getOpString(op) + getBody() + HttpMessage.CRLF).getBytes(HttpMessageFormatter.cs);  // Can give "utf-8" as arg directly
 	}
 	
+	@Override
+	public String toString()
+	{
+		return new String(toBytes());
+	}
+	
 	protected static String getOpString(Op op)
 	{
 		if (op.equals(Http.CONTENTL))
@@ -74,7 +87,7 @@ public abstract class HttpMessage extends ScribMessage
 		{
 			return HttpMessage.VARY;
 		}
-		else if (op.equals(Http.CRLF))
+		else if (op.equals(HttpMessage.CRLF))
 		{
 			return "";
 		}

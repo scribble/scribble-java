@@ -1,4 +1,4 @@
-package test.http.message;
+package test.http.message.server;
 
 import test.http.Http;
 

@@ -1,6 +1,8 @@
-package test.http.message;
+package test.http.message.server;
 
 import org.scribble2.sesstype.name.Op;
+
+import test.http.message.HttpMessage;
 
 public abstract class StatusCode extends HttpMessage
 {

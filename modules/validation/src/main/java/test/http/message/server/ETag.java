@@ -1,6 +1,7 @@
-package test.http.message;
+package test.http.message.server;
 
 import test.http.Http;
+import test.http.message.HeaderField;
 
 public class ETag extends HeaderField
 {

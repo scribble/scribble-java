@@ -12,8 +12,6 @@ public class AdderServer
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException
 	{
-		Adder foo = new Adder();
-		SessionEndpoint se = foo.project(Adder.AddServer, new ObjectStreamFormatter());
 		try (ScribServerSocket ss = new ScribServerSocket(8888))
 		{
 			Buff<Integer> i1 = new Buff<>();
@@ -21,6 +19,8 @@ public class AdderServer
 
 			while (true)
 			{
+				Adder foo = new Adder();
+				SessionEndpoint se = foo.project(Adder.AddServer, new ObjectStreamFormatter());
 				Adder_AddServer_0 init = new Adder_AddServer_0(se);
 				init.accept(ss, Adder.AddClient);
 

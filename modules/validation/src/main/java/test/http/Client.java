@@ -6,23 +6,22 @@ import org.scribble2.net.Buff;
 import org.scribble2.net.session.SessionEndpoint;
 import org.scribble2.util.ScribbleRuntimeException;
 
-import test.http.message.AcceptRanges;
 import test.http.message.Body;
-import test.http.message.CRLF;
-import test.http.message.ContentLength;
-import test.http.message.ContentType;
-import test.http.message.Date;
-import test.http.message.ETag;
-import test.http.message.Host;
 import test.http.message.HttpMessageFormatter;
-import test.http.message.HttpVersion;
-import test.http.message.LastModified;
-import test.http.message.RequestLine;
-import test.http.message.Server;
-import test.http.message.Vary;
-import test.http.message.Via;
-import test.http.message._200;
-import test.http.message._404;
+import test.http.message.client.Host;
+import test.http.message.client.RequestLine;
+import test.http.message.server.AcceptRanges;
+import test.http.message.server.ContentLength;
+import test.http.message.server.ContentType;
+import test.http.message.server.Date;
+import test.http.message.server.ETag;
+import test.http.message.server.HttpVersion;
+import test.http.message.server.LastModified;
+import test.http.message.server.Server;
+import test.http.message.server.Vary;
+import test.http.message.server.Via;
+import test.http.message.server._200;
+import test.http.message.server._404;
 
 public class Client
 {
@@ -50,16 +49,20 @@ public class Client
 		Http http = new Http();
 		SessionEndpoint se = http.project(Http.C, new HttpMessageFormatter());
 		
-		String host = "www.doc.ic.ac.uk";
+		//String host = "www.doc.ic.ac.uk";
+		//int port = 80;
+		String host = "localhost";
+		int port = 8000;
 		
 		try (Http_C_0 init = new Http_C_0(se))
 		{
-			init.connect(Http.S, host, 80);
+			init.connect(Http.S, host, port);
 			Http_C_1 s1 = init.init();
 
 			Http_C_2 s2 = s1.send(new RequestLine("/~rhu/", "1.1"));
 			s2 = s2.send(new Host(host));
-			Http_C_3 s3 = s2.send(new CRLF());
+			//Http_C_3 s3 = s2.send(new CRLF());
+			Http_C_3 s3 = s2.send(new Body(""));
 			Http_C_4 s4 = s3.receive(Http.HTTPV, b_vers);
 			Http_C_7 s7 = s4.branch();
 			Http_C_5 s5 = null;
@@ -76,7 +79,7 @@ public class Client
 					break;
 				}
 			}
-			X: while (true)
+			Y: while (true)
 			{
 				Http_C_8 s8 = s5.branch();
 				switch (s8.op)
@@ -91,7 +94,7 @@ public class Client
 						Http_C_6 s6 = s8.receive(Http.BODY, b_body);
 						System.out.println(b_body.val.getBody());
 						s6.end();
-						break X;
+						break Y;
 					}
 					case CONTENTL:
 					{
