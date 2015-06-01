@@ -20,6 +20,7 @@ import test.http.message.client.UserAgent;
 import test.http.message.server.ContentLength;
 import test.http.message.server.HttpVersion;
 import test.http.message.server._200;
+import test.http.message.server._404;
 
 public class DummyServer
 {
