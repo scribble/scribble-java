@@ -12,12 +12,12 @@ import org.scribble2.net.session.SessionEndpoint;
 import org.scribble2.util.ScribbleRuntimeException;
 
 
-public class FibClient
+public class AdderClient
 {
 	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
-		Buff<Integer> i1 = new Buff<>(0);
-		Buff<Integer> i2 = new Buff<>(1);
+		Buff<Integer> i1 = new Buff<>(1);
+		Buff<Integer> i2 = new Buff<>(2);
 		
 		Adder adder = new Adder();
 		SessionEndpoint se = adder.project(Adder.AddClient, new ObjectStreamFormatter());
@@ -27,21 +27,32 @@ public class FibClient
 			s0.connect(Adder.AddServer, "localhost", 8888);
 			Adder_AddClient_1 s1 = s0.init();
 
-			fib(s1, i1, i2, 0).end();
+			while (i1.val < 100)
+			{
+				s1 = s1.send(Adder.ADD, i1.val, i1.val).receive(Adder.RES, i1);
+			}
+
+			s1.send(Adder.BYE)
+				.end();
+			//tmp(i1, i2, s1).end();
+			
+			System.out.println("Client: " + i1.val);
 		}
 	}
 
-	private static Adder_AddClient_3 fib(Adder_AddClient_1 s1, Buff<Integer> i1, Buff<Integer> i2, int i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	/*private static Adder_AddClient_3 tmp(Buff<Integer> i1, Buff<Integer> i2, Adder_AddClient_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
-		return (i < 10)
-			? fib(side(s1.send(Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
-			: s1.send(Adder.BYE);
+		return (i1.val < 100)
+				? tmp(i1, i2,
+											side(i1, i2, s1.send(Adder.ADD, i1.val, i2.val)).receive(Adder.RES, i2)
+							)
+				: s1.send(Adder.BYE);
 	}
 	
-	private static Adder_AddClient_2 side(Adder_AddClient_2 s2, Buff<Integer> i1, Buff<Integer> i2)
+	private static Adder_AddClient_2 side(Buff<Integer> i1, Buff<Integer> i2, Adder_AddClient_2 s2)
 	{
-		System.out.print(i1.val + " ");
 		i1.val = i2.val;
+		System.out.print(i1.val + " ");
 		return s2;
-	}
+	}*/
 }

@@ -49,10 +49,10 @@ public class Client
 		Http http = new Http();
 		SessionEndpoint se = http.project(Http.C, new HttpMessageFormatter());
 		
-		//String host = "www.doc.ic.ac.uk";
-		//int port = 80;
-		String host = "localhost";
-		int port = 8000;
+		String host = "www.doc.ic.ac.uk";
+		int port = 80;
+		//String host = "localhost";
+		//int port = 8000;
 		
 		try (Http_C_0 init = new Http_C_0(se))
 		{
