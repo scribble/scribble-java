@@ -289,7 +289,8 @@ public class ApiGenerator
 						{
 							DataType dt = (DataType) pt;  // TODO: if not DataType
 							DataTypeDecl dtd = main.getDataTypeDecl(dt);
-							method += ", Buff<" + dtd.extName + "> arg" + i++;
+							//method += ", Buff<" + dtd.extName + "> arg" + i++;
+							method += ", Buff<? super " + dtd.extName + "> arg" + i++;
 						}
 					}
 					method += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
@@ -309,7 +310,8 @@ public class ApiGenerator
 				{
 					MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 					method += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
-					method += ", Buff<" + msd.extName + "> b";
+					//method += ", Buff<" + msd.extName + "> b";
+					method += ", Buff<? super " + msd.extName + "> b";
 					method += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
 					method += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
 					method += "\t\tb.val = (" + msd.extName + ") m;\n";
@@ -361,7 +363,8 @@ public class ApiGenerator
 							{
 								DataType dt = (DataType) pt;  // TODO: if not DataType
 								DataTypeDecl dtd = main.getDataTypeDecl(dt);
-								clazz += ", Buff<" + dtd.extName + "> arg" + i++;
+								//clazz += ", Buff<" + dtd.extName + "> arg" + i++;
+								clazz += ", Buff<? super " + dtd.extName + "> arg" + i++;
 							}
 						}
 						clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
@@ -386,7 +389,8 @@ public class ApiGenerator
 						MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 						// FIXME: problem if package and protocol have the same name
 						clazz += "\tpublic " + next + " receive(" + SessionGenerator.getPackageName(this.gpn) + "." + SessionGenerator.getOpClassName(a.mid) + " op";
-						clazz += ", Buff<" + msd.extName + "> b";
+						//clazz += ", Buff<" + msd.extName + "> b";
+						clazz += ", Buff<? super " + msd.extName + "> b";
 						clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
 						clazz += "\t\tsuper.use();\n";
 						clazz += "\t\tif (!this.m.op.equals(" + getOp(a.mid) + ")) {\n";

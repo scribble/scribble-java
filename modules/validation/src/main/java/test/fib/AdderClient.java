@@ -27,20 +27,27 @@ public class AdderClient
 			s0.connect(Adder.AddServer, "localhost", 8888);
 			Adder_AddClient_1 s1 = s0.init();
 
-			while (i1.val < 100)
+			s1.send(Adder.ADD, i1.val, i1.val)
+			  .receive(Adder.RES, i1)
+				.send(Adder.ADD, i1.val, i1.val)
+			  .receive(Adder.RES, i1)
+			  .send(Adder.BYE)
+			  .end();
+			
+			/*while (i1.val < 100)
 			{
 				s1 = s1.send(Adder.ADD, i1.val, i1.val).receive(Adder.RES, i1);
 			}
-
 			s1.send(Adder.BYE)
 				.end();
-			//tmp(i1, i2, s1).end();
+
+			//fib(i1, i2, s1).end();*/
 			
 			System.out.println("Client: " + i1.val);
 		}
 	}
 
-	/*private static Adder_AddClient_3 tmp(Buff<Integer> i1, Buff<Integer> i2, Adder_AddClient_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	/*private static Adder_AddClient_3 fib(Buff<Integer> i1, Buff<Integer> i2, Adder_AddClient_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		return (i1.val < 100)
 				? tmp(i1, i2,

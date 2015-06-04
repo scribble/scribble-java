@@ -55,7 +55,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 		byte[] bs = new byte[2];
 		dis.readFully(bs);
 		String front = new String(bs, HttpMessageFormatter.cs);
-		if (front.equals(HttpMessage.CRLF))  // HACK: not sound -- actually, maybe due to sess types it is safe (same reason why interpreting any of these messages without context is sound) -- parsing doesn't have to follow the *full protocol* BNF any more to be sound
+		if (front.equals(HttpMessage.CRLF))  // not sound? -- actually, due to sess types it is safe (same reason why interpreting any of these messages without context is sound) -- parsing doesn't have to follow the *full protocol* BNF any more to be sound
 		{
 			if (this.len == -1)
 			{

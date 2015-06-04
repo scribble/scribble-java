@@ -1,11 +1,13 @@
 package test.http;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import org.scribble2.net.Buff;
 import org.scribble2.net.session.SessionEndpoint;
 import org.scribble2.util.ScribbleRuntimeException;
 
+import test.http.Http_C_4.Http_C_4Enum;
 import test.http.message.Body;
 import test.http.message.HttpMessageFormatter;
 import test.http.message.client.Host;
@@ -25,12 +27,17 @@ import test.http.message.server._404;
 
 public class Client
 {
-	public Client()
+	public Client() throws ScribbleRuntimeException
 	{
-
+		run();
 	}
 
 	public static void main(String[] args) throws ScribbleRuntimeException
+	{
+		new Client();
+	}
+
+	public void run() throws ScribbleRuntimeException
 	{
 		Buff<HttpVersion> b_vers = new Buff<>();
 		Buff<AcceptRanges> b_acc = new Buff<>();
@@ -46,6 +53,8 @@ public class Client
 		Buff<_200> b_200 = new Buff<>();
 		Buff<_404> b_404 = new Buff<>();
 		
+		Caller c = new Caller();
+		
 		Http http = new Http();
 		SessionEndpoint se = http.project(Http.C, new HttpMessageFormatter());
 		
@@ -58,27 +67,17 @@ public class Client
 		{
 			init.connect(Http.S, host, port);
 			Http_C_1 s1 = init.init();
+			Http_C_7 s7 =
+					s1.send(new RequestLine("/~rhu/", "1.1"))
+					  .send(new Host(host))
+					  .send(new Body(""))
+					  .receive(Http.HTTPV, b_vers)
+					  .branch();
+			Http_C_5 s5 = 
+					  (s7.op == Http_C_4Enum._200) ? s7.receive(Http._200, b_200)
+					: (s7.op == Http_C_4Enum._404) ? s7.receive(Http._404, b_404)
+					: c.call(() -> { throw new RuntimeException("Unknown status code: " + s7.op); });
 
-			Http_C_2 s2 = s1.send(new RequestLine("/~rhu/", "1.1"));
-			s2 = s2.send(new Host(host));
-			//Http_C_3 s3 = s2.send(new CRLF());
-			Http_C_3 s3 = s2.send(new Body(""));
-			Http_C_4 s4 = s3.receive(Http.HTTPV, b_vers);
-			Http_C_7 s7 = s4.branch();
-			Http_C_5 s5 = null;
-			switch (s7.op)
-			{
-				case _200:
-				{
-					s5 = s7.receive(Http._200, b_200);
-					break;
-				}
-				case _404:
-				{
-					s5 = s7.receive(Http._404, b_404);
-					break;
-				}
-			}
 			Y: while (true)
 			{
 				Http_C_8 s8 = s5.branch();
@@ -91,9 +90,9 @@ public class Client
 					}
 					case BODY:
 					{
-						Http_C_6 s6 = s8.receive(Http.BODY, b_body);
+						s8.receive(Http.BODY, b_body)
+						  .end();
 						System.out.println(b_body.val.getBody());
-						s6.end();
 						break Y;
 					}
 					case CONTENTL:
@@ -142,6 +141,21 @@ public class Client
 		catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
 		{
 			e.printStackTrace();
+		}
+	}
+	
+	class Caller
+	{
+		public <T> T call(Callable<T> c)
+		{
+			try
+			{
+				return c.call();
+			}
+			catch (Exception e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 	}
 }
