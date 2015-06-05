@@ -33,9 +33,9 @@ public class FibClient
 
 	private static Adder_AddClient_3 fib(Adder_AddClient_1 s1, Buff<Integer> i1, Buff<Integer> i2, int i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
 	{
-		return (i < 10)
-			? fib(side(s1.send(Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
-			: s1.send(Adder.BYE);
+		return (i < 20)
+			? fib(side(s1.send(Adder.AddServer, Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
+			: s1.send(Adder.AddServer, Adder.BYE);
 	}
 	
 	private static Adder_AddClient_2 side(Adder_AddClient_2 s2, Buff<Integer> i1, Buff<Integer> i2)

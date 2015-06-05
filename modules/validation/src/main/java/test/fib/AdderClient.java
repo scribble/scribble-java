@@ -27,19 +27,19 @@ public class AdderClient
 			s0.connect(Adder.AddServer, "localhost", 8888);
 			Adder_AddClient_1 s1 = s0.init();
 
-			s1.send(Adder.ADD, i1.val, i1.val)
+			s1.send(Adder.AddServer, Adder.ADD, i1.val, i1.val)
 			  .receive(Adder.RES, i1)
-				.send(Adder.ADD, i1.val, i1.val)
+				.send(Adder.AddServer, Adder.ADD, i1.val, i1.val)
 			  .receive(Adder.RES, i1)
-			  .send(Adder.BYE)
+			  .send(Adder.AddServer, Adder.BYE)
 			  .end();
 			
 			/*while (i1.val < 100)
 			{
-				s1 = s1.send(Adder.ADD, i1.val, i1.val).receive(Adder.RES, i1);
+				s1 = s1.send(Adder.AddServer, Adder.ADD, i1.val, i1.val).receive(Adder.RES, i1);
 			}
-			s1.send(Adder.BYE)
-				.end();
+			s1.send(Adder.AddServer, Adder.BYE)
+				.end();*/
 
 			//fib(i1, i2, s1).end();*/
 			
@@ -50,10 +50,10 @@ public class AdderClient
 	/*private static Adder_AddClient_3 fib(Buff<Integer> i1, Buff<Integer> i2, Adder_AddClient_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		return (i1.val < 100)
-				? tmp(i1, i2,
-											side(i1, i2, s1.send(Adder.ADD, i1.val, i2.val)).receive(Adder.RES, i2)
+				? fib(i1, i2,
+											side(i1, i2, s1.send(Adder.AddServer, Adder.ADD, i1.val, i2.val)).receive(Adder.RES, i2)
 							)
-				: s1.send(Adder.BYE);
+				: s1.send(Adder.AddServer, Adder.BYE);
 	}
 	
 	private static Adder_AddClient_2 side(Buff<Integer> i1, Buff<Integer> i2, Adder_AddClient_2 s2)

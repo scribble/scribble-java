@@ -20,6 +20,7 @@ public class SessionGenerator
 	private final GProtocolName gpn;
 	private final String clazz;
 	private final Map<MessageId, String> mids = new HashMap<>();
+	private final Map<Role, String> roles = new HashMap<>();
 
 	public SessionGenerator(Job job, GProtocolName gpn) throws ScribbleException
 	{
@@ -27,6 +28,7 @@ public class SessionGenerator
 		this.gpn = gpn;
 
 		generateOps();
+		generateRoles();
 		this.clazz = generate();
 	}
 	
@@ -42,16 +44,6 @@ public class SessionGenerator
 		{
 			this.mids.put(mid, generateOpClass(mid));
 		}
-	}
-	
-	public static String getOpClassName(MessageId mid)
-	{
-		String s = mid.toString();
-		if (s.isEmpty() || s.charAt(0) < 65)
-		{
-			return "_" + s;
-		}
-		return s;
 	}
 	
 	private String generateOpClass(MessageId mid)
@@ -72,6 +64,48 @@ public class SessionGenerator
 		clazz += "\t}\n";
 		clazz += "}";
 		return clazz;
+	}
+	
+	public static String getOpClassName(MessageId mid)
+	{
+		String s = mid.toString();
+		if (s.isEmpty() || s.charAt(0) < 65)
+		{
+			return "_" + s;
+		}
+		return s;
+	}
+
+	private void generateRoles() throws ScribbleException
+	{
+		JobContext jc = this.job.getContext();
+		Module mod = jc.getModule(gpn.getPrefix());
+		GProtocolName sn = gpn.getSimpleName();
+		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(sn);
+		for (Role r : gpd.header.roledecls.getRoles())
+		{
+			this.roles.put(r, generateRoleClass(r));
+		}
+	}
+	
+	private String generateRoleClass(Role r)
+	{
+		String s = getRoleClassName(r);
+
+		String clazz = "";
+		clazz += "class " + s + " extends Role {\n";
+		clazz += "\tprivate static final long serialVersionUID = 1L;\n";
+		clazz += "\n";
+		clazz += "\tprotected " + s + "() {\n";
+		clazz += "\t\tsuper(\"" + r + "\");\n";
+		clazz += "\t}\n";
+		clazz += "}";
+		return clazz;
+	}
+
+	public static String getRoleClassName(Role r)
+	{
+		return r.toString();
 	}
 	
 	//public String getSessionClass()
@@ -136,6 +170,11 @@ public class SessionGenerator
 		clazz += "\t\tsuper(" + sn + ".impath, " + sn + ".source, " + sn + ".proto);\n";
 		clazz += "\t}\n";
 		clazz += "}";//\n";
+		for (String rc : this.roles.values())
+		{
+			clazz += "\n\n";
+			clazz += rc;
+		}
 		for (String s : this.mids.values())
 		{
 			clazz += "\n\n";
@@ -146,7 +185,9 @@ public class SessionGenerator
 
 	private String generateRole(Role role)
 	{
-		return "\tpublic static final Role " + role + " = new Role(\"" + role + "\");\n";
+		//return "\tpublic static final Role " + role + " = new Role(\"" + role + "\");\n";
+		String rc = getRoleClassName(role);
+		return "\tpublic static final " + rc + " " + rc + " = new " + rc + "();\n";
 	}
 	
 	private String generateOp(MessageId mid)

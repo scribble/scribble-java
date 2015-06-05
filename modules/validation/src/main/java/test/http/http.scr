@@ -151,6 +151,23 @@ global protocol Request(role C, role S)
 		}
 	}
 }
+
+/*interruptible 
+{
+	par
+	{
+		HOST from C to S;
+	}
+	and
+	{
+		USERA from C to S;
+	}
+	...
+}
+with  // finally?
+{
+	BODY by C;
+}*/
 	
 global protocol Response(role C, role S)
 {

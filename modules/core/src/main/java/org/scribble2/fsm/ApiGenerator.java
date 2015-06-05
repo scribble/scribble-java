@@ -238,7 +238,7 @@ public class ApiGenerator
 					
 					if (a.mid.isOp())
 					{	
-						method += "\tpublic " + next + " send(" + SessionGenerator.getOpClassName(a.mid) + " op";
+						method += "\tpublic " + next + " send(" + SessionGenerator.getRoleClassName(a.peer) + " role" + ", " + SessionGenerator.getOpClassName(a.mid) + " op";
 						if (!a.payload.isEmpty())
 						{
 							int i = 1;
@@ -250,7 +250,8 @@ public class ApiGenerator
 							}
 						}
 						method += ") throws ScribbleRuntimeException, IOException {\n";
-						method += "\t\tsuper.writeScribMessage(" + getRole(a.peer) + ", new ScribMessage(" + opref;
+						//method += "\t\tsuper.writeScribMessage(" + getRole(a.peer) + ", new ScribMessage(" + opref;
+						method += "\t\tsuper.writeScribMessage(role, new ScribMessage(" + opref;
 						if (!a.payload.isEmpty())
 						{
 							int i = 1;
@@ -264,9 +265,10 @@ public class ApiGenerator
 					else //if (a.mid.isMessageSigName())
 					{	
 						MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-						method += "\tpublic " + next + " send(" + msd.extName + " m";
+						method += "\tpublic " + next + " send(" + SessionGenerator.getRoleClassName(a.peer) + " role, " + msd.extName + " m";
 						method += ") throws ScribbleRuntimeException, IOException {\n";
-						method += "\t\tsuper.writeScribMessage(" + getRole(a.peer) + ", m);\n";
+						//method += "\t\tsuper.writeScribMessage(" + getRole(a.peer) + ", m);\n";
+						method += "\t\tsuper.writeScribMessage(role, m);\n";
 					}
 					method += "\t\treturn new " + next + "(this.ep);\n";
 					method += "\t}\n";

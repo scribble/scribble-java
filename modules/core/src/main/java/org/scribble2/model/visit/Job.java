@@ -15,6 +15,8 @@ import org.scribble2.sesstype.name.ModuleName;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
+	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B })
+	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
 
 	// FIXME: wf-choice: a role should be enabled by the same role in all blocks
 	// FIXME: do-call argument kinding (sig/type args/params), arity, etc

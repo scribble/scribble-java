@@ -24,7 +24,7 @@ public class AdderServer
 				Adder_AddServer_0 init = new Adder_AddServer_0(se);
 				init.accept(ss, Adder.AddClient);
 
-				try(Adder_AddServer_0 s0 = init)
+				try (Adder_AddServer_0 s0 = init)
 				{
 					X(s0.init(), i1, i2).end();
 				}
@@ -47,7 +47,7 @@ public class AdderServer
 			}
 			case ADD:
 			{
-				return X(s4.receive(Adder.ADD, i1, i2).send(Adder.RES, i1.val + i2.val), i1, i2);
+				return X(s4.receive(Adder.ADD, i1, i2).send(Adder.AddClient, Adder.RES, i1.val + i2.val), i1, i2);
 			}
 			default:
 			{

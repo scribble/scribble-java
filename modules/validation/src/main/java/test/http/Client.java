@@ -61,16 +61,16 @@ public class Client
 		String host = "www.doc.ic.ac.uk";
 		int port = 80;
 		//String host = "localhost";
-		//int port = 8000;
+		//int port = 8080;
 		
 		try (Http_C_0 init = new Http_C_0(se))
 		{
 			init.connect(Http.S, host, port);
 			Http_C_1 s1 = init.init();
 			Http_C_7 s7 =
-					s1.send(new RequestLine("/~rhu/", "1.1"))
-					  .send(new Host(host))
-					  .send(new Body(""))
+					s1.send(Http.S, new RequestLine("/~rhu/", "1.1"))
+					  .send(Http.S, new Host(host))
+					  .send(Http.S, new Body(""))
 					  .receive(Http.HTTPV, b_vers)
 					  .branch();
 			Http_C_5 s5 = 

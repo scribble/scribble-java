@@ -40,7 +40,7 @@ public class DummyServer
 		Buff<Connection> b_conn = new Buff<>();
 		Buff<Body> b_body = new Buff<>();
 		
-		try (ScribServerSocket ss = new ScribServerSocket(8000))
+		try (ScribServerSocket ss = new ScribServerSocket(8080))
 		{
 			while (true)	
 			{
@@ -81,10 +81,10 @@ public class DummyServer
 								String body = "";
 								//String body = "<html><body>Hello</body></html>";
 								s7.receive(Http.BODY, b_body)
-									.send(new HttpVersion("1.1"))
-									.send(new _200("OK"))
-									.send(new ContentLength(body.length()))
-									.send(new Body(body))
+									.send(Http.C, new HttpVersion("1.1"))
+									.send(Http.C, new _200("OK"))
+									.send(Http.C, new ContentLength(body.length()))
+									.send(Http.C, new Body(body))
 									.end();
 								break X;
 							}
