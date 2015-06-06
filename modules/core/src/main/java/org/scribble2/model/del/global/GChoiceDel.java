@@ -57,6 +57,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		//Map<Role, Set<ScopedMessage>> seen = null;
 		//Map<Role, Set<Message>> seen = null;
 		Map<Role, Set<MessageId>> seen = null;
+		Map<Role, Role> enablers = null;
 		List<WellFormedChoiceEnv> benvs =
 				cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().env()).collect(Collectors.toList());
 		//for (WellFormedChoiceEnv benv : cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().getEnv()).collect(Collectors.toList()))
@@ -71,9 +72,17 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 			if (seen == null)
 			{
 				seen = new HashMap<>();				//dests.forEach((left) -> seen.put(left, enabled.getMessages(left)));
+				enablers = new HashMap<>();
 				for (Role dest : dests)
 				{
 					seen.put(dest, enabled.getMessages(dest));
+
+					Set<Role> srcs = enabled.getRightKeys(dest);
+					if (srcs.size() > 1)
+					{
+						throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + srcs);
+					}
+					enablers.put(dest, srcs.iterator().next());
 				}
 			}
 			else
@@ -108,6 +117,8 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 							}
 						}
 						current.addAll(next);
+						
+						checkEnablers(enabled, dest, enablers);
 					}
 					
 					for (Role dest : seen.keySet())
@@ -116,6 +127,8 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 						{
 							throw new ScribbleException("Mismatched role enabling: " + dest);
 						}
+
+						checkEnablers(enabled, dest, enablers);
 					}
 				}
 			}
@@ -134,6 +147,21 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		
 		// On leaving global choice, we're doing both the merging of block envs into the choice env, and the merging of the choice env to the parent-of-choice env
 		// In principle, for the envLeave we should only be doing the latter (as countpart to enterEnv), but it is much more convenient for the compound-node (choice) to collect all the child block envs and merge here, rather than each individual block env trying to (partially) merge into the parent-choice as they are visited
+	}
+	
+	// FIXME: factor better
+	private void checkEnablers(MessageIdMap enabled, Role dest, Map<Role, Role> enablers) throws ScribbleException
+	{
+		Set<Role> srcs = enabled.getRightKeys(dest);
+		if (srcs.size() > 1)
+		{
+			throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + srcs);
+		}
+		if (!enablers.get(dest).equals(srcs.iterator().next()))
+		{
+			throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + enablers.get(dest) + ", " + srcs);
+		}
+		enablers.put(dest, srcs.iterator().next());
 	}
 	
 	private static Role getSubject(ProtocolBlock<Local> block)

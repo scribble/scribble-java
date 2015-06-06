@@ -8,6 +8,24 @@
 
 module Test;
 
+global protocol Foo(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		3() from C to A;
+	}
+	or
+	{
+		4() from A to B;
+		2() from B to C;
+		6() from C to A;
+	}
+}
+
+
+/*
 //import Test2;
 
 type <java> "java.lang.String" from "rt.jar" as String;
@@ -34,7 +52,7 @@ global protocol Foo(role A, role B)
 global protocol Foo(role A, role B)
 {
 	/*1() from A to B;
-	2() from B to A;*/
+	2() from B to A;* /
 	choice at B
 	{
 		1a() from B to A;

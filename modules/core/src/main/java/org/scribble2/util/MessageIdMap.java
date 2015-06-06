@@ -13,6 +13,7 @@ import org.scribble2.sesstype.name.Role;
 //public class MessageMap<T extends Message>
 public class MessageIdMap
 {
+	// dest -> (src -> mids)
 	//private Map<Role, Map<Role, Set<T>>> map = new HashMap<>();
 	private Map<Role, Map<Role, Set<MessageId>>> map = new HashMap<>();
 	
