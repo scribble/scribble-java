@@ -36,7 +36,7 @@ public abstract class ScribSocket //implements AutoCloseable
 	{
 		if (this.used)
 		{
-			throw new ScribbleRuntimeException("Socket already used: " + this.getClass());
+			throw new ScribbleRuntimeException("Socket resource already used: " + this.getClass());
 		}
 		this.used = true;
 	}
@@ -77,7 +77,7 @@ public abstract class ScribSocket //implements AutoCloseable
 		//if (!this.ep.isCompleted())
 		{
 			this.ep.close();
-			throw new ScribbleRuntimeException("Socket not used: " + this.getClass());
+			throw new ScribbleRuntimeException("Socket resource not used: " + this.getClass());
 		}
 	}
 	
