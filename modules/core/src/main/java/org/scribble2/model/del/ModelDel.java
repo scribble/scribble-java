@@ -3,6 +3,7 @@ package org.scribble2.model.del;
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.FsmConstructor;
+import org.scribble2.model.visit.ModelBuilder;
 import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.MessageIdCollector;
 import org.scribble2.model.visit.Projector;
@@ -44,6 +45,9 @@ public interface ModelDel
 	void enterOpCollection(ModelNode parent, ModelNode child, MessageIdCollector coll);// throws ScribbleException;
 	ModelNode leaveOpCollection(ModelNode parent, ModelNode child, MessageIdCollector coll, ModelNode visited);// throws ScribbleException;
 
+	void enterModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder) throws ScribbleException;
+	ModelNode leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException;
+	
 	Env env();
 	//void setEnv(Env env);  // No defensive copy -- used from inside Env during a env pass
 }

@@ -1,9 +1,14 @@
 package org.scribble2.model.del.global;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble2.fsm.Receive;
+import org.scribble2.fsm.Send;
 import org.scribble2.model.MessageNode;
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -11,14 +16,19 @@ import org.scribble2.model.global.GMessageTransfer;
 import org.scribble2.model.local.LInteractionNode;
 import org.scribble2.model.local.LReceive;
 import org.scribble2.model.local.LocalNode;
+import org.scribble2.model.model.ModelAction;
 import org.scribble2.model.name.simple.RoleNode;
 import org.scribble2.model.visit.MessageIdCollector;
+import org.scribble2.model.visit.ModelBuilder;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
+import org.scribble2.model.visit.env.ModelEnv;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.model.visit.env.WellFormedChoiceEnv;
 import org.scribble2.sesstype.Message;
+import org.scribble2.sesstype.Payload;
 import org.scribble2.sesstype.kind.RoleKind;
+import org.scribble2.sesstype.name.MessageId;
 import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
@@ -120,5 +130,31 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 			throw new RuntimeException("Shouldn't get in here: " + gmt.msg);
 		}
 		return visited;
+	}
+	
+	@Override
+	public GMessageTransfer leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	{
+		GMessageTransfer gmt = (GMessageTransfer) visited;
+		ModelEnv env = builder.popEnv();
+		Set<ModelAction> actions = env.getActions();
+		Map<Role, ModelAction> leaves = new HashMap<>();
+		if (gmt.dests.size() > 1)
+		{
+			throw new RuntimeException("TODO: " + gmt);
+		}
+		Role src = gmt.src.toName();
+		Role dest = gmt.dests.get(0).toName();
+		MessageId mid = gmt.msg.toMessage().getId();
+		ModelAction send = new ModelAction(src, new Send(dest, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
+		ModelAction receive = new ModelAction(dest, new Receive(src, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
+		receive.addDependency(send);
+		actions.add(send);
+		actions.add(receive);
+		leaves.put(src, send);
+		leaves.put(dest, receive);
+		env = env.setActions(actions, leaves);
+		builder.pushEnv(env);
+		return (GMessageTransfer) super.leaveModelBuilding(parent, child, builder, visited);
 	}
 }

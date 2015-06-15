@@ -1,7 +1,12 @@
 package org.scribble2.model.del.global;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble2.model.Continue;
 import org.scribble2.model.InteractionNode;
@@ -12,10 +17,14 @@ import org.scribble2.model.global.GInteractionSeq;
 import org.scribble2.model.local.LInteractionNode;
 import org.scribble2.model.local.LInteractionSeq;
 import org.scribble2.model.local.LocalNode;
+import org.scribble2.model.model.ModelAction;
+import org.scribble2.model.visit.ModelBuilder;
 import org.scribble2.model.visit.Projector;
+import org.scribble2.model.visit.env.ModelEnv;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.sesstype.kind.Global;
 import org.scribble2.sesstype.kind.Local;
+import org.scribble2.sesstype.name.Role;
 import org.scribble2.util.ScribbleException;
 
 
@@ -46,7 +55,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		for (InteractionNode<Global> gi : gis.actions)
 		{
 			LocalNode ln = (LocalNode) ((ProjectionEnv) gi.del().env()).getProjection();
-			if (ln instanceof LInteractionSeq)
+			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
 				lis.addAll(((LInteractionSeq) ln).actions);
 			}
@@ -67,6 +76,55 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		proj.pushEnv(new ProjectionEnv(projection));
 		//return gis;
-		return (GInteractionSeq) super.popAndSetVisitorEnv(parent, child, proj, gis);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, proj, gis);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+	}
+	
+	@Override
+	public void enterModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder) throws ScribbleException
+	{
+		pushVisitorEnv(parent, child, builder);
+	}
+
+	@Override
+	public GInteractionSeq leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	{
+		GInteractionSeq gis = (GInteractionSeq) visited;
+		Set<ModelAction> as = new HashSet<>();
+		Map<Role, ModelAction> leaves = new HashMap<>();
+		for (InteractionNode<Global> gi : gis.actions)
+		{
+			as.addAll(((ModelEnv) gi.del().env()).getActions());
+			//Map<Role, ModelAction> tmp = ((ModelEnv) gi.del().env()).getLeaves();
+			Set<ModelAction> tmp = ((ModelEnv) gi.del().env()).getLeaves().values().stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
+			
+			System.out.println("3: " + tmp);
+			
+			for (ModelAction a : tmp)	
+			{
+				// FIXME: doesn't support self comm
+				addDepedency(leaves, a, a.src);
+				addDepedency(leaves, a, a.action.peer);
+			}
+		}
+
+		ModelEnv env = builder.popEnv();
+		env = env.setActions(as, leaves);
+		builder.pushEnv(env);
+		GInteractionSeq tmp = (GInteractionSeq) popAndSetVisitorEnv(parent, child, builder, visited);
+		return tmp;
+	}
+
+	private void addDepedency(Map<Role, ModelAction> leaves, ModelAction a, Role r)
+	{
+		if (!leaves.containsKey(r))
+		{
+			leaves.put(r, a);
+		}
+		else
+		{
+			ModelAction dep = leaves.get(r);
+			a.addDependency(dep);
+			leaves.put(r, a);
+		}
 	}
 }

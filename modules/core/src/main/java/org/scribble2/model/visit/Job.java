@@ -107,6 +107,9 @@ public class Job
 
 		/*debugPrintln("\n--- Bound name checking --- ");
 		runNodeVisitorPass(BoundNameChecker.class);*/
+		
+		debugPrintln("\n--- Model building --- ");
+		runNodeVisitorPass(ModelBuilder.class);
 
 		debugPrintln("\n--- Well-formed choice check --- ");
 		runNodeVisitorPass(WellFormedChoiceChecker.class);

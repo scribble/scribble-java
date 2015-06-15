@@ -2,6 +2,7 @@ package org.scribble2.model.del.global;
 
 import org.scribble2.model.ModelNode;
 import org.scribble2.model.del.SimpleInteractionNodeDel;
+import org.scribble2.model.visit.ModelBuilder;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.util.ScribbleException;
 
@@ -34,5 +35,17 @@ public abstract class GSimpleInteractionNodeDel extends SimpleInteractionNodeDel
 		setEnv(env);
 		return visited;*/
 		return popAndSetVisitorEnv(parent, child, proj, visited);
+	}
+
+	@Override
+	public void enterModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder) throws ScribbleException
+	{
+		pushVisitorEnv(parent, child, builder);
+	}
+
+	@Override
+	public ModelNode leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	{
+		return popAndSetVisitorEnv(parent, child, builder, visited);
 	}
 }

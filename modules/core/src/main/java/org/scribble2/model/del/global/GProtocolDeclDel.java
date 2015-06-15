@@ -1,7 +1,9 @@
 package org.scribble2.model.del.global;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble2.model.ModelFactoryImpl;
 import org.scribble2.model.ModelNode;
@@ -16,10 +18,14 @@ import org.scribble2.model.global.GProtocolHeader;
 import org.scribble2.model.local.LProtocolDecl;
 import org.scribble2.model.local.LProtocolDef;
 import org.scribble2.model.local.LProtocolHeader;
+import org.scribble2.model.model.ModelAction;
+import org.scribble2.model.model.ModelState;
 import org.scribble2.model.name.qualified.LProtocolNameNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.JobContext;
+import org.scribble2.model.visit.ModelBuilder;
 import org.scribble2.model.visit.Projector;
+import org.scribble2.model.visit.env.ModelEnv;
 import org.scribble2.model.visit.env.ProjectionEnv;
 import org.scribble2.sesstype.kind.Global;
 import org.scribble2.sesstype.name.GProtocolName;
@@ -257,4 +263,44 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	{
 		return map.keySet().stream().collect(Collectors.toMap((k) -> (GProtocolName) k, (k) -> map.get(k)));
 	}*/
+
+	@Override
+	public GProtocolDecl leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	{
+		GProtocolDecl gpd = (GProtocolDecl) visited;
+		System.out.println("1: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
+		System.out.println("2: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());
+		return gpd;
+	}
+	
+	private static ModelState parseModel(Set<ModelAction> as)
+	{
+		ModelState root = new ModelState();
+		Set<ModelAction> eligible = as.stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
+		Set<ModelAction> rest = new HashSet<>(as);
+		rest.removeAll(eligible);
+		parseModel(rest, root, eligible);
+		return root;
+	}
+
+	private static void parseModel(Set<ModelAction> rest, ModelState curr, Set<ModelAction> eligible)
+	{
+		for (ModelAction e : eligible)
+		{
+			ModelState next = new ModelState();
+			curr.addEdge(e, next);
+			Set<ModelAction> tmp = new HashSet<>(eligible);
+			tmp.remove(e);
+			Set<ModelAction> tmp2 = new HashSet<>(rest);
+			for (ModelAction r : rest)
+			{
+				if (eligible.containsAll(r.getDependencies()))
+				{
+					tmp.add(r);
+					tmp2.remove(r);
+				}
+			}
+			parseModel(tmp2, next, tmp);
+		}
+	}
 }

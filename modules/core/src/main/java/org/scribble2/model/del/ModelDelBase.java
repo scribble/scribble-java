@@ -4,8 +4,9 @@ import org.scribble2.model.ModelNode;
 import org.scribble2.model.visit.ContextBuilder;
 import org.scribble2.model.visit.EnvVisitor;
 import org.scribble2.model.visit.FsmConstructor;
-import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.MessageIdCollector;
+import org.scribble2.model.visit.ModelBuilder;
+import org.scribble2.model.visit.NameDisambiguator;
 import org.scribble2.model.visit.Projector;
 import org.scribble2.model.visit.ReachabilityChecker;
 import org.scribble2.model.visit.WellFormedChoiceChecker;
@@ -120,6 +121,16 @@ public abstract class ModelDelBase implements ModelDel
 
 	@Override
 	public ModelNode leaveOpCollection(ModelNode parent, ModelNode child, MessageIdCollector coll, ModelNode visited) //throws ScribbleException
+	{
+		return visited;
+	}
+
+	public void enterModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder) throws ScribbleException
+	{
+		
+	}
+
+	public ModelNode leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
 	{
 		return visited;
 	}

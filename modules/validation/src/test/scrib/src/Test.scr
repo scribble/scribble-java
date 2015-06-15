@@ -8,35 +8,6 @@
 
 module Test;
 
-global protocol Foo(role A, role B, role C)
-{
-	choice at A
-	{
-		1() from A to B;
-		2() from B to C;
-		3() from C to A;
-	}
-	or
-	{
-		4() from A to B;
-		2() from B to C;
-		6() from C to A;
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
 //import Test2;
 
 type <java> "java.lang.String" from "rt.jar" as String;
@@ -45,7 +16,8 @@ type <java> "java.lang.Integer" from "rt.jar" as Integer;
 
 global protocol Foo(role A, role B)
 {
-	1(String, Integer1) from A to B;
+	1() from A to B;
+	2() from B to A;
 	//M from A to B;
 	//do Bar<1()>(A, B);
 	//do Bar<M>(A, B);
