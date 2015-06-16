@@ -16,7 +16,6 @@
  */
 package org.scribble.context;
 
-import org.scribble.model.Module;
 
 /**
  * This class provides a default implementation of the module loader interface.
@@ -24,22 +23,22 @@ import org.scribble.model.Module;
  */
 public class DefaultModuleLoader implements ModuleLoader {
 	
-	private java.util.Map<String,Module> _modules=new java.util.HashMap<String,Module>();
+	/*private java.util.Map<String,Module> _modules=new java.util.HashMap<String,Module>();
 
 	/**
 	 * This method registers the supplied module.
 	 * 
 	 * @param module The module
-	 */
+	 * /
 	public void registerModule(Module module) {
 		_modules.put(module.getName(), module);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 */
+	 * /
 	public Module loadModule(String module) {
 		return (_modules.get(module));
-	}
+	}*/
 	
 }

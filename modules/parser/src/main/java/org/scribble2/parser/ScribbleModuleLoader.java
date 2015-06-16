@@ -18,7 +18,6 @@ package org.scribble2.parser;
 
 import org.scribble.context.DefaultModuleLoader;
 import org.scribble.context.ModuleLoader;
-import org.scribble.model.Module;
 import org.scribble.resources.Resource;
 import org.scribble.resources.ResourceLocator;
 import org.scribble2.parser.util.Pair;
@@ -42,7 +41,7 @@ public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleL
 		this.parser = parser;
 	}
 
-	@Override
+	/*@Override
 	public Module loadModule(String module)
 	{
 		/*Module mod = super.loadModule(module);
@@ -50,9 +49,9 @@ public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleL
 		{
 			// ...convert module name string to ModuleName...
 			return loadScribbleModule(name);
-		}*/
+		}* /
 		throw new RuntimeException("Shouldn't get in here.");
-	}
+	}*/
 
   // FIXME: old/new Modules incompatible -- should be replaced by direct super call
 	//@Override

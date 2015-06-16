@@ -16,7 +16,6 @@
  */
 package org.scribble.context;
 
-import org.scribble.model.Module;
 
 /**
  * This interface is responsible for loading modules.
@@ -30,6 +29,6 @@ public interface ModuleLoader {
 	 * @param module The module name
 	 * @return The module, or null if not found
 	 */
-	public Module loadModule(String module);
+	//public Module loadModule(String module);
 	
 }
