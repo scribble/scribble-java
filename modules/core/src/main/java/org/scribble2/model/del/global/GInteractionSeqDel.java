@@ -1,5 +1,6 @@
 package org.scribble2.model.del.global;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -89,32 +90,63 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	public GInteractionSeq leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
-		Set<ModelAction> as = new HashSet<>();
-		Map<Role, ModelAction> leaves = new HashMap<>();
+		Set<ModelAction> all = new HashSet<>();
+		Map<Role, ModelAction> leaves = null;
 		for (InteractionNode<Global> gi : gis.actions)
 		{
-			as.addAll(((ModelEnv) gi.del().env()).getActions());
+			ModelEnv env = ((ModelEnv) gi.del().env());
+			Set<ModelAction> as = env.getActions();
+			all.addAll(as);
 			//Map<Role, ModelAction> tmp = ((ModelEnv) gi.del().env()).getLeaves();
-			Set<ModelAction> tmp = ((ModelEnv) gi.del().env()).getLeaves().values().stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
 			
-			System.out.println("3: " + tmp);
-			
+			/*Set<ModelAction> tmp = ((ModelEnv) gi.del().env()).getLeaves().values().stream().filter((a) -> !a.getDependencies().isEmpty()).collect(Collectors.toSet());
 			for (ModelAction a : tmp)	
 			{
 				// FIXME: doesn't support self comm
 				addDepedency(leaves, a, a.src);
 				addDepedency(leaves, a, a.action.peer);
+			}*/
+			
+			if (leaves == null)
+			{
+				leaves = new HashMap<>(env.getLeaves());
+			}
+			else
+			{
+				Set<ModelAction> init = as.stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
+				addDeps(leaves, init);
+				setLeaves(leaves, env.getLeaves().values());
 			}
 		}
 
 		ModelEnv env = builder.popEnv();
-		env = env.setActions(as, leaves);
+		env = env.setActions(all, leaves);
 		builder.pushEnv(env);
 		GInteractionSeq tmp = (GInteractionSeq) popAndSetVisitorEnv(parent, child, builder, visited);
 		return tmp;
 	}
+	
+	private static void addDeps(Map<Role, ModelAction> leaves, Set<ModelAction> next)
+	{
+		for (ModelAction a : next)
+		{
+			if (leaves.containsKey(a.src))
+			{
+				a.addDependency(leaves.get(a.src));
+			}
+		}
+	}
+	
+	private static void setLeaves(Map<Role, ModelAction> leaves, Collection<ModelAction> as)
+	{
+		for (ModelAction a : as)
+		{
+			leaves.put(a.src, a);
+		}
+	}
+	
 
-	private void addDepedency(Map<Role, ModelAction> leaves, ModelAction a, Role r)
+	/*private void addDepedency(Map<Role, ModelAction> leaves, ModelAction a, Role r)
 	{
 		if (!leaves.containsKey(r))
 		{
@@ -126,5 +158,5 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			a.addDependency(dep);
 			leaves.put(r, a);
 		}
-	}
+	}*/
 }

@@ -18,7 +18,6 @@ import org.scribble2.util.ScribbleException;
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B })
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
 
-	// FIXME: wf-choice: a role should be enabled by the same role in all blocks
 	// FIXME: do-call argument kinding (sig/type args/params), arity, etc
 
 	//.. do projection should filter unused roles -- but scoped subprotocols may need extra name mangling
@@ -56,6 +55,7 @@ import org.scribble2.util.ScribbleException;
 //... check delegates for local nodes; check reachability visiting for (local) interaction sequence (and delegate)
 
 // Done
+// - wf-choice: a role should be enabled by the same role in all blocks
 // - get rid of argument instantiation -- renamed, but otherwise structurally the same (unlike name/param decls, arg nodes are not kinded)
 // - refactor simple/compound names to just names; and simple name nodes to be subtypes of compound -- simple/compound distinction only relevant to name nodes (i.e. syntax); type names are all uniform (compound)
 // - generalise dependency building to support local protocols -- though only global dependencies used so far, for projection
@@ -108,8 +108,8 @@ public class Job
 		/*debugPrintln("\n--- Bound name checking --- ");
 		runNodeVisitorPass(BoundNameChecker.class);*/
 		
-		debugPrintln("\n--- Model building --- ");
-		runNodeVisitorPass(ModelBuilder.class);
+		/*debugPrintln("\n--- Model building --- ");
+		runNodeVisitorPass(ModelBuilder.class);*/
 
 		debugPrintln("\n--- Well-formed choice check --- ");
 		runNodeVisitorPass(WellFormedChoiceChecker.class);

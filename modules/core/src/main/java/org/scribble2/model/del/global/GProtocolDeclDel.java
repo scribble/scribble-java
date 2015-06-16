@@ -289,18 +289,22 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		{
 			ModelState next = new ModelState();
 			curr.addEdge(e, next);
-			Set<ModelAction> tmp = new HashSet<>(eligible);
-			tmp.remove(e);
-			Set<ModelAction> tmp2 = new HashSet<>(rest);
+			Set<ModelAction> etmp = new HashSet<>(eligible);
+			etmp.remove(e);
+			Set<ModelAction> rtmp = new HashSet<>(rest);
 			for (ModelAction r : rest)
 			{
-				if (eligible.containsAll(r.getDependencies()))
+				//if (eligible.containsAll(r.getDependencies()))
+				Set<ModelAction> tmp =  new HashSet<>(etmp);
+				tmp.addAll(rtmp);
+				tmp.retainAll(r.getDependencies());
+				if (tmp.isEmpty())
 				{
-					tmp.add(r);
-					tmp2.remove(r);
+					etmp.add(r);
+					rtmp.remove(r);
 				}
 			}
-			parseModel(tmp2, next, tmp);
+			parseModel(rtmp, next, etmp);
 		}
 	}
 }
