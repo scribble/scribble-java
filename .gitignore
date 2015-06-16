@@ -9,8 +9,8 @@ tools/eclipse/plugins/org.scribble.*/bin/
 .DS_Store
 *~
 *.swp
-modules/validation/src/main/java/test/http/Http.java
-modules/validation/src/main/java/test/http/Http_*
-modules/validation/src/main/java/test/fib/Adder.java
-modules/validation/src/main/java/test/fib/Adder_*
+modules/core/src/test/scrib/test/http/Http.java
+modules/core/src/test/scrib/test/http/Http_*
+modules/core/src/test/scrib/test/fib/Adder.java
+modules/core/src/test/scrib/test/fib/Adder_*
 
