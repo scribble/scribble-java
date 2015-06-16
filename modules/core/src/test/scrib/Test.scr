@@ -13,7 +13,7 @@ module Test;
 
 global protocol Foo(role A, role B)
 {
-	
+	() from C to D;
 }
 
 
