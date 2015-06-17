@@ -116,7 +116,7 @@ public class CommandLine implements Runnable
 			}
 			else
 			{
-				System.out.println(map.get(path));
+				System.out.println(path + ":\n" + map.get(path));
 			}
 		}
 	}
@@ -128,16 +128,16 @@ public class CommandLine implements Runnable
 		Role role = new Role(this.args.get(Arg.EP_API)[1]);
 		GProtocolName fullname = new GProtocolName(jcontext.main, gpn);
 		Map<String, String> classes = job.generateEndpointApi(fullname, role);
-		for (String clazz : classes.keySet())
+		for (String path : classes.keySet())
 		{
 			if (this.args.containsKey(Arg.OUTPUT))
 			{
 				String dir = this.args.get(Arg.OUTPUT)[0];
-				writeToFile(dir + "/" + clazz, classes.get(clazz));
+				writeToFile(dir + "/" + path, classes.get(path));
 			}
 			else
 			{
-				System.out.println(clazz + ", " + classes.get(clazz));
+				System.out.println(path + ":\n" + classes.get(path));
 			}
 		}
 	}

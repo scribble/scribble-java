@@ -86,7 +86,7 @@ public class Job
 		debugPrintln("\n--- Session API generation --- ");
 		// FIXME: check gpn is valid
 		SessionApiGenerator sg = new SessionApiGenerator(this, gpn);
-		Map<String, String> map = sg.getSessionClass();
+		Map<String, String> map = sg.getSessionClass();  // filepath -> class source
 		return map;
 	}
 	
@@ -99,7 +99,7 @@ public class Job
 			constructFsms(mod);
 		}
 		debugPrintln("\n--- Endpoint API generation --- ");
-		return new EndpointApiGenerator(this, gpn, role).getClasses();  // FIXME: store results?
+		return new EndpointApiGenerator(this, gpn, role).getClasses(); // filepath -> class source  // FIXME: store results?
 	}
 
 	private void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException
