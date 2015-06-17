@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.ast.model.ModelAction;
+import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.name.Role;
 
 

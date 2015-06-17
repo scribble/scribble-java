@@ -2,8 +2,8 @@ package org.scribble.ast.local;
 
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.simple.RecVarNode;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class LocalRecursion extends Recursion<LocalProtocolBlock> implements CompoundLocalInteractionNode

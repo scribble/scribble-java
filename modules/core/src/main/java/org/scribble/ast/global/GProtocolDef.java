@@ -2,7 +2,7 @@ package org.scribble.ast.global;
 
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
-import org.scribble.ast.del.ModelDel;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Global;
 
 //public class GlobalProtocolDefinition extends ProtocolDefinition<GlobalProtocolBlock> implements GlobalNode

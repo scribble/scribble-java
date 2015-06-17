@@ -18,9 +18,9 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.ast.visit.Substitutor;
+import org.scribble.del.ModelDel;
 import org.scribble.util.RuntimeScribbleException;
 import org.scribble.util.ScribbleException;
 import org.scribble.util.ScribbleUtil;

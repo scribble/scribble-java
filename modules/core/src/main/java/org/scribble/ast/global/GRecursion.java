@@ -2,8 +2,8 @@ package org.scribble.ast.global;
 
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.simple.RecVarNode;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Global;
 
 //public class GlobalRecursion extends Recursion<GlobalProtocolBlock> implements CompoundGlobalInteractionNode

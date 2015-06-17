@@ -1,12 +1,12 @@
 package org.scribble.ast.visit;
 
 import org.scribble.ast.ModelNode;
-import org.scribble.ast.del.local.LDoDel;
-import org.scribble.ast.del.local.LInteractionSeqDel;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.fsm.GraphBuilder;
+import org.scribble.del.local.LDoDel;
+import org.scribble.del.local.LInteractionSeqDel;
+import org.scribble.model.local.GraphBuilder;
 import org.scribble.util.ScribbleException;
 
 // FIXME: doesn't need to be an EnvVisitor?

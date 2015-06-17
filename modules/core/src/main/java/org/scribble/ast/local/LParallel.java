@@ -5,7 +5,7 @@ import java.util.List;
 import org.scribble.ast.ModelNodeBase;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
-import org.scribble.ast.del.ModelDel;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class LocalParallel extends Parallel<LocalProtocolBlock> implements CompoundLocalInteractionNode

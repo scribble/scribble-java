@@ -6,8 +6,8 @@ import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ModelNodeBase;
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Local;
 
 public class LReceive extends MessageTransfer<Local> implements LSimpleInteractionNode

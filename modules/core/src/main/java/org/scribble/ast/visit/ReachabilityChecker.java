@@ -2,10 +2,10 @@ package org.scribble.ast.visit;
 
 import org.scribble.ast.ModelNode;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.del.local.LInteractionSeqDel;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.visit.env.ReachabilityEnv;
+import org.scribble.del.local.LInteractionSeqDel;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.util.ScribbleException;
 

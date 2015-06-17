@@ -1,8 +1,8 @@
 package org.scribble.ast;
 
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.Role;

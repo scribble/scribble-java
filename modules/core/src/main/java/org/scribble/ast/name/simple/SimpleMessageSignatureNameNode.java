@@ -1,7 +1,7 @@
 package org.scribble.ast.name.simple;
 
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.del.ModelDel;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.MessageSigName;

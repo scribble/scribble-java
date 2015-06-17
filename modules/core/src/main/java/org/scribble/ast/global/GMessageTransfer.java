@@ -5,8 +5,8 @@ import java.util.List;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Global;
 
 public class GMessageTransfer extends MessageTransfer<Global> implements GSimpleInteractionNode

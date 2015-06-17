@@ -8,7 +8,7 @@ import java.util.Set;
 import org.scribble.ast.ModelNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
-import org.scribble.ast.del.ModuleDel;
+import org.scribble.del.ModuleDel;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;

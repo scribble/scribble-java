@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.Module;
-import org.scribble.fsm.ScribbleFsm;
+import org.scribble.model.local.ScribbleFsm;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;

@@ -1,8 +1,8 @@
 package org.scribble.ast.global;
 
 import org.scribble.ast.Continue;
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.simple.RecVarNode;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Global;
 
 public class GContinue extends Continue<Global> implements GSimpleInteractionNode

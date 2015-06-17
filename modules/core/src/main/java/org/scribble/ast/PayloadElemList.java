@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.PayloadType;

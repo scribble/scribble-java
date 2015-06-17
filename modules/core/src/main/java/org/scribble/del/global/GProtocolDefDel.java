@@ -1,0 +1,41 @@
+package org.scribble.del.global;
+
+import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.ModelNode;
+import org.scribble.ast.global.GProtocolDef;
+import org.scribble.ast.local.LProtocolBlock;
+import org.scribble.ast.local.LProtocolDef;
+import org.scribble.ast.visit.Projector;
+import org.scribble.ast.visit.env.ProjectionEnv;
+import org.scribble.del.ProtocolDefDel;
+import org.scribble.util.ScribbleException;
+
+public class GProtocolDefDel extends ProtocolDefDel
+{
+	public GProtocolDefDel()
+	{
+
+	}
+
+	@Override
+	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	{
+		//return (Projector) pushEnv(parent, child, proj);
+		pushVisitorEnv(parent, child, proj);
+	}
+
+	@Override
+	public GProtocolDef leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	{
+		GProtocolDef gpd = (GProtocolDef) visited;
+		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.block.del().env()).getProjection();	
+		//LocalProtocolDefinition projection = new LocalProtocolDefinition(block);
+		LProtocolDef projection = ModelFactoryImpl.FACTORY.LProtocolDefinition(block);
+		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
+		ProjectionEnv env = proj.popEnv();
+		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
+		proj.pushEnv(new ProjectionEnv(projection));
+		return (GProtocolDef) popAndSetVisitorEnv(parent, child, proj, gpd);
+	}
+}

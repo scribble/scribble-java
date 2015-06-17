@@ -5,9 +5,9 @@ import org.scribble.ast.ModelNodeBase;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.context.ModuleContext;
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 

@@ -1,9 +1,9 @@
 package org.scribble.ast.local;
 
 import org.scribble.ast.RoleDecl;
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 //import scribble2.sesstype.name.NameDeclaration;

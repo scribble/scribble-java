@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.scribble.ast.Module;
-import org.scribble.fsm.ApiGenerator;
+import org.scribble.model.local.ApiGenerator;
 import org.scribble.net.session.SessionGenerator;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;

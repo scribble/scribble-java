@@ -1,8 +1,8 @@
 package org.scribble.ast;
 
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.MessageSig;
 import org.scribble.util.ScribbleException;
 

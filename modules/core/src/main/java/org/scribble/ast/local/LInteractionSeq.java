@@ -5,7 +5,7 @@ import java.util.List;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ModelNodeBase;
-import org.scribble.ast.del.ModelDel;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>

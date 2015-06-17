@@ -1,8 +1,8 @@
 package org.scribble.ast.name.simple;
 
 import org.scribble.ast.DoArgNode;
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.visit.Substitutor;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 

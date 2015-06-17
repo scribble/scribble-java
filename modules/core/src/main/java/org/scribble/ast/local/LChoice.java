@@ -5,8 +5,8 @@ import java.util.List;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ModelNodeBase;
 import org.scribble.ast.ProtocolBlock;
-import org.scribble.ast.del.ModelDel;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.ModelDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class LocalChoice extends Choice<LocalProtocolBlock> implements CompoundLocalInteractionNode
