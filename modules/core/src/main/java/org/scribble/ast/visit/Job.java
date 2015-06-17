@@ -73,6 +73,7 @@ import org.scribble.util.ScribbleException;
 // - override del in each ModelNode to cast -- no: leave as base del for most flexibility in case of replacement
 // - Job takes MainContext as argument -- no: recursive maven dependencies between cli-core-parser
 
+// A "compiler job" that supports operations comprising one or more visitor passes over the AST
 public class Job
 {
 	public final boolean debug;

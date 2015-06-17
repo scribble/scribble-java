@@ -14,35 +14,24 @@
  * limitations under the License.
  *
  */
-package org.scribble.resources;
+package org.scribble.main.resource;
 
 import java.nio.file.Path;
 
+
 /**
- * This class represents the resource.
+ * This interface provides the resource location capability.
  *
  */
-public abstract class AbstractResource implements Resource
+public interface IResourceLocator
 {
-	private final Path path;
-	
 	/**
-	 * The constructor.
+	 * This method obtains the resource associated with the
+	 * supplied path.
 	 * 
-	 * @param path The path to the resource -- the "full" path including import path prefix
+	 * @param path The resource path -- "relative" path from import path prefixes
+	 * @return The resource, or null if not found
 	 */
-	public AbstractResource(Path path)
-	{
-		this.path = path;
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Path getPath()
-	{
-		return this.path;
-	}
+
+	Resource getResource(Path path);  // Path should be made more abstract, e.g. some kind of URI
 }

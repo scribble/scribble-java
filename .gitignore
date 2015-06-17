@@ -13,4 +13,6 @@ modules/core/src/test/scrib/test/http/Http.java
 modules/core/src/test/scrib/test/http/Http_*
 modules/core/src/test/scrib/test/fib/Adder.java
 modules/core/src/test/scrib/test/fib/Adder_*
+modules/core/src/test/scrib/test/foo/Foo.java
+modules/core/src/test/scrib/test/foo/Foo_*
 

@@ -9,18 +9,18 @@ import java.util.stream.Collectors;
 import org.scribble.ast.ImportDecl;
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.Module;
+import org.scribble.main.resource.DirectoryResourceLocator;
+import org.scribble.main.resource.Resource;
+import org.scribble.main.resource.ResourceLocator;
 import org.scribble.parser.AntlrParser;
 import org.scribble.parser.ScribbleModuleLoader;
 import org.scribble.parser.ScribbleParser;
-import org.scribble.resources.DirectoryResourceLocator;
-import org.scribble.resources.Resource;
-import org.scribble.resources.ResourceLocator;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.util.Pair;
 
 
 // Scribble tool context for main module
-// FIXME: should be in core, but currently here due to Maven dependency restrictions
+// FIXME: should be in core org.scribble.main, but currently here due to Maven dependency restrictions
 // MainContext takes ResourceLocator abstractly (e.g. DirectoryResourceLocator), but because abstract Resource itself works off paths, it takes mainpath (rather than something more abstract, e.g. URI, to identify the "main" resource)
 // Resource and ResourceLocator should be made abstract from (file)paths (cf. use of toPath in ScribbleModuleLoader)
 public class MainContext

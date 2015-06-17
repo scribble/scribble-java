@@ -17,15 +17,15 @@
 package org.scribble.parser;
 
 import org.scribble.ast.Module;
-import org.scribble.context.DefaultModuleLoader;
-import org.scribble.resources.Resource;
-import org.scribble.resources.ResourceLocator;
+import org.scribble.main.DefaultModuleLoader;
+import org.scribble.main.resource.Resource;
+import org.scribble.main.resource.ResourceLocator;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.util.Pair;
 
 // loading = ModuleName -> Module
 //   ModuleName --> Path --ResourceLocator--> Resource --AntlrParser--> ANTLR --ScribParser--> ScribNode
-// FIXME: should be in org.scribble.context -- here due to Maven dependency restrictions
+// FIXME: should be in core org.scribble.main -- here due to Maven dependency restrictions
 public class ScribbleModuleLoader extends DefaultModuleLoader //implements ModuleLoader
 {
 	private ResourceLocator locator;

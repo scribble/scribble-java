@@ -13,6 +13,9 @@ import java.util.List;
 
 
 
+
+
+
 //import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +23,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.scribble.ast.visit.Job;
 import org.scribble.main.MainContext;
-import org.scribble.resources.DirectoryResourceLocator;
-import org.scribble.resources.ResourceLocator;
+import org.scribble.main.resource.DirectoryResourceLocator;
+import org.scribble.main.resource.ResourceLocator;
 import org.scribble.util.ScribbleException;
 
 /**

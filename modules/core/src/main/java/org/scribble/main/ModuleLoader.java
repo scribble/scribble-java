@@ -14,10 +14,10 @@
  * limitations under the License.
  *
  */
-package org.scribble.context;
+package org.scribble.main;
 
 import org.scribble.ast.Module;
-import org.scribble.resources.Resource;
+import org.scribble.main.resource.Resource;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.util.Pair;
 

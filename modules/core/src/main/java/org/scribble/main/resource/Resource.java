@@ -14,35 +14,29 @@
  * limitations under the License.
  *
  */
-package org.scribble.resources;
+package org.scribble.main.resource;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 
 /**
  * This class represents the resource.
  *
  */
-public class InputStreamResource extends AbstractResource
+public interface Resource
 {
-	private java.io.InputStream _inputStream = null;
-
 	/**
-	 * The constructor.
+	 * This method returns the resource path.
 	 * 
-	 * @param path The optional resource path
-	 * @param is The input stream
+	 * @return The resource path -- the "full" path including import path prefix
 	 */
-	public InputStreamResource(Path path, java.io.InputStream is)
-	{
-		super(path);
-		this._inputStream = is;
-	}
+	Path getPath();
 
 	/**
-	 * {@inheritDoc}
+	 * This method returns an input stream containing the
+	 * resource content.
+	 * 
+	 * @return The input stream
 	 */
-	public java.io.InputStream getInputStream()
-	{
-		return (this._inputStream);
-	}
+	InputStream getInputStream();
 }

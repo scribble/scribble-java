@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.scribble.resources;
+package org.scribble.main.resource;
 
 import java.io.IOException;
 import java.nio.file.Files;
