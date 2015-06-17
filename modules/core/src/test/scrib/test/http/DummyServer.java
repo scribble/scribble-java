@@ -2,10 +2,10 @@ package test.http;
 
 import java.io.IOException;
 
-import org.scribble2.net.Buff;
-import org.scribble2.net.ScribServerSocket;
-import org.scribble2.net.session.SessionEndpoint;
-import org.scribble2.util.ScribbleRuntimeException;
+import org.scribble.net.Buff;
+import org.scribble.net.ScribServerSocket;
+import org.scribble.net.session.SessionEndpoint;
+import org.scribble.util.ScribbleRuntimeException;
 
 import test.http.message.Body;
 import test.http.message.HttpMessageFormatter;

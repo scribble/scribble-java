@@ -6,10 +6,10 @@ package test.fib;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-import org.scribble2.net.Buff;
-import org.scribble2.net.ObjectStreamFormatter;
-import org.scribble2.net.session.SessionEndpoint;
-import org.scribble2.util.ScribbleRuntimeException;
+import org.scribble.net.Buff;
+import org.scribble.net.ObjectStreamFormatter;
+import org.scribble.net.session.SessionEndpoint;
+import org.scribble.util.ScribbleRuntimeException;
 
 
 public class AdderClient

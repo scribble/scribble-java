@@ -5,8 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.scribble2.net.ScribMessage;
-import org.scribble2.net.ScribMessageFormatter;
+import org.scribble.net.ScribMessage;
+import org.scribble.net.ScribMessageFormatter;
 
 import test.http.message.client.Accept;
 import test.http.message.client.AcceptEncoding;

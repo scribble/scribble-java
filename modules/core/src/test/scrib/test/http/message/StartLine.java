@@ -1,6 +1,6 @@
 package test.http.message;
 
-import org.scribble2.sesstype.name.Op;
+import org.scribble.sesstype.name.Op;
 
 public abstract class StartLine extends HttpMessage
 {

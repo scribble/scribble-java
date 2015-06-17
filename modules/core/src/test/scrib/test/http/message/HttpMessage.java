@@ -1,7 +1,7 @@
 package test.http.message;
 
-import org.scribble2.net.ScribMessage;
-import org.scribble2.sesstype.name.Op;
+import org.scribble.net.ScribMessage;
+import org.scribble.sesstype.name.Op;
 
 import test.http.Http;
 

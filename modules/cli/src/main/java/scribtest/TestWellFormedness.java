@@ -9,16 +9,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+
+
+
+
 //import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.scribble.ast.visit.Job;
+import org.scribble.main.MainContext;
 import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.resources.ResourceLocator;
-import org.scribble2.main.MainContext;
-import org.scribble2.model.visit.Job;
-import org.scribble2.util.ScribbleException;
+import org.scribble.util.ScribbleException;
 
 /**
  * Runs good and bad tests in Scribble.
