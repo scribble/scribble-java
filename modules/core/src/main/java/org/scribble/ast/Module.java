@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.visit.ModelVisitor;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.DataType;
@@ -19,7 +19,7 @@ import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.util.ScribbleException;
 
 
-public class Module extends ModelNodeBase
+public class Module extends ScribNodeBase
 {
 	public final ModuleDecl moddecl;
 	//public final List<? extends ImportDecl> imports;
@@ -83,7 +83,7 @@ public class Module extends ModelNodeBase
 			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl<? extends ProtocolKind>> protos)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		Module m = new Module(moddecl, imports, data, protos);
 		m = (Module) m.del(del);
 		return m;

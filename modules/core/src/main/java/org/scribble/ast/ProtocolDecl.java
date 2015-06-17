@@ -12,7 +12,7 @@ import org.scribble.util.ScribbleException;
 				T2 extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 		>*/
 public abstract class ProtocolDecl<K extends ProtocolKind>
-		extends ModelNodeBase// implements ContextStackNode//, ModuleMember
+		extends ScribNodeBase// implements ContextStackNode//, ModuleMember
 		//implements IProtocolDecl<K>
 {
 	// FIXME: make private with casting getters -- works better (e.g. to use overridden getName)

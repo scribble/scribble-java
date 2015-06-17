@@ -10,8 +10,8 @@ import org.scribble.ast.Choice;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.Interruptible;
 import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
@@ -35,7 +35,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 {
 	@Override
 	//public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
-	public void enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker) throws ScribbleException
 	{
 		WellFormedChoiceEnv env = checker.peekEnv().enterContext();
 		env = env.clear();
@@ -45,7 +45,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 	}
 	
 	@Override
-	public GChoice leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	public GChoice leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GChoice cho = (GChoice) visited;
 		Role subj = cho.subj.toName();
@@ -209,7 +209,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 	}
 	
 	@Override
-	public GChoice leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	public GChoice leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
 		//RoleNode subj = new RoleNode(gc.subj.toName().toString());  // Inconsistent to copy role nodes manually, but do via children visiting for other children
@@ -220,8 +220,8 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
 		if (!blocks.get(0).isEmpty())  // WF allows this
 		{
-			RoleNode subj = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getSubject(blocks.get(0)).toString());
-			projection = ModelFactoryImpl.FACTORY.LChoice(subj, blocks);
+			RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getSubject(blocks.get(0)).toString());
+			projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 		}
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));

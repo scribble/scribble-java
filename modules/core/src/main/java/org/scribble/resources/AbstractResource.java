@@ -22,24 +22,17 @@ import java.nio.file.Path;
  * This class represents the resource.
  *
  */
-public abstract class AbstractResource implements Resource {
-	
-	private String _path=null;
-	
+public abstract class AbstractResource implements Resource
+{
 	private final Path path;
 	
 	/**
 	 * The constructor.
 	 * 
-	 * @param path The path to the resource
+	 * @param path The path to the resource -- the "full" path including import path prefix
 	 */
-	public AbstractResource(String path) {
-		_path = path;
-		this.path = null;
-	}
-
-	public AbstractResource(Path path) {
-		_path = path.toString();
+	public AbstractResource(Path path)
+	{
 		this.path = path;
 	}
 	
@@ -47,8 +40,9 @@ public abstract class AbstractResource implements Resource {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getPath() {  // FIXME: return Path
-		return (_path);
+	@Override
+	public Path getPath()
+	{
+		return this.path;
 	}
-	
 }

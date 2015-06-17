@@ -1,7 +1,7 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 
@@ -14,7 +14,7 @@ public class RoleArg extends DoArg<RoleNode>
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new RoleArg(this.val);
 	}	
@@ -22,7 +22,7 @@ public class RoleArg extends DoArg<RoleNode>
 	@Override
 	protected RoleArg reconstruct(RoleNode arg)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		RoleArg ri = new RoleArg(arg);
 		ri = (RoleArg) ri.del(del);
 		return ri;
@@ -33,9 +33,9 @@ public class RoleArg extends DoArg<RoleNode>
 	public RoleArg project(Role self)
 	{
 		//RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, this.arg.toName().toString());
-		RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.val.toName().toString());
+		RoleNode rn = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.val.toName().toString());
 		//return new RoleInstantiation(rn);
-		return ModelFactoryImpl.FACTORY.RoleArg(rn);
+		return AstFactoryImpl.FACTORY.RoleArg(rn);
 	}
 	
 	/*@Override

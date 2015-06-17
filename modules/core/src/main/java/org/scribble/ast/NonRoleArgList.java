@@ -3,7 +3,7 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Role;
@@ -18,7 +18,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new NonRoleArgList(this.args);
 	}
@@ -26,7 +26,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	@Override
 	protected DoArgList<NonRoleArg> reconstruct(List<NonRoleArg> instans)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		//NonRoleArgList ail = ModelFactoryImpl.FACTORY.ArgList(instans);
 		NonRoleArgList ail = new NonRoleArgList(instans);
 		ail = (NonRoleArgList) ail.del(del);
@@ -38,7 +38,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	{
 		List<NonRoleArg> instans =
 				this.args.stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
-		return ModelFactoryImpl.FACTORY.NonRoleArgList(instans);
+		return AstFactoryImpl.FACTORY.NonRoleArgList(instans);
 	}
 	
 	public boolean isEmpty()

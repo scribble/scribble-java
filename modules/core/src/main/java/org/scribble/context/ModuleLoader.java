@@ -16,19 +16,27 @@
  */
 package org.scribble.context;
 
+import org.scribble.ast.Module;
+import org.scribble.resources.Resource;
+import org.scribble.sesstype.name.ModuleName;
+import org.scribble.util.Pair;
+
 
 /**
  * This interface is responsible for loading modules.
  *
+ * loading = sesstype.ModuleName -> Pair<Resource, Module>
+ *   ModuleName --> Path --ResourceLocator--> Resource --AntlrParser--> ANTLR --ScribParser--> ScribNode
+ *   
+ * FIXME: Path should be abstracted, e.g. URI (Path is tied to DirectoryResourceLocator)
  */
-public interface ModuleLoader {
-
+public interface ModuleLoader
+{
 	/**
 	 * This method loads the module associated with the specified name.
 	 * 
 	 * @param module The module name
 	 * @return The module, or null if not found
 	 */
-	//public Module loadModule(String module);
-	
+	public Pair<Resource, Module> loadModule(ModuleName modname);
 }

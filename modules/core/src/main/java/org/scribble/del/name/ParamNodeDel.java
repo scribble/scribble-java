@@ -1,9 +1,9 @@
 package org.scribble.del.name;
 
-import org.scribble.del.ModelDelBase;
+import org.scribble.del.ScribDelBase;
 
 
-public class ParamNodeDel extends ModelDelBase
+public class ParamNodeDel extends ScribDelBase
 {
 	public ParamNodeDel()
 	{

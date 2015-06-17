@@ -1,6 +1,6 @@
 package org.scribble.del;
 
-public interface InteractionNodeDel extends ModelDel
+public interface InteractionNodeDel extends ScribDel
 {
 
 }

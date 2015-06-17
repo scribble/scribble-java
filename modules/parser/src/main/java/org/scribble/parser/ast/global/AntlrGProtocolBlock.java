@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.parser.ScribbleParser;
@@ -14,7 +14,7 @@ public class AntlrGProtocolBlock
 	{
 		GInteractionSeq gis = (GInteractionSeq) parser.parse(getInteractionSequenceChild(ct));
 		//return new GlobalProtocolBlock(gis);
-		return ModelFactoryImpl.FACTORY.GProtocolBlock(gis);
+		return AstFactoryImpl.FACTORY.GProtocolBlock(gis);
 	}
 
 	public static final CommonTree getInteractionSequenceChild(CommonTree ct)

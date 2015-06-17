@@ -1,6 +1,6 @@
 package org.scribble.del.local;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.visit.FsmConstructor;
 import org.scribble.ast.visit.ReachabilityChecker;
@@ -10,7 +10,7 @@ import org.scribble.util.ScribbleException;
 
 public class LContinueDel extends LSimpleInteractionNodeDel
 {
-	public LContinue leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	public LContinue leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		LContinue lc = (LContinue) visited;
 		// "Entering" the continue here in leave, where we can merge the new state into the parent Env
@@ -27,7 +27,7 @@ public class LContinueDel extends LSimpleInteractionNodeDel
 	}
 
 	@Override
-	public LContinue leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)
+	public LContinue leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.recvar.toName();

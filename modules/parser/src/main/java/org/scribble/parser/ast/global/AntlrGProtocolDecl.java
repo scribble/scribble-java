@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
@@ -23,7 +23,7 @@ public class AntlrGProtocolDecl
 		GProtocolHeader header = (GProtocolHeader) parser.parse(getHeaderChild(ct));
 		GProtocolDef def = (GProtocolDef) parser.parse(getBodyChild(ct));
 		//return new GlobalProtocolDecl(header, def);
-		return ModelFactoryImpl.FACTORY.GProtocolDecl(header, def);
+		return AstFactoryImpl.FACTORY.GProtocolDecl(header, def);
 	}
 
 	/*public static CommonTree getNameChild(CommonTree ct)

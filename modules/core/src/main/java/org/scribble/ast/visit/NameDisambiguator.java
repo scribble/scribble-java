@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.del.ModuleDel;
@@ -103,7 +103,7 @@ public class NameDisambiguator extends ModelVisitor
 	
 	@Override
 	//public NameDisambiguator enter(ModelNode parent, ModelNode child) throws ScribbleException
-	public void enter(ModelNode parent, ModelNode child) throws ScribbleException
+	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof Module)
 		{
@@ -116,7 +116,7 @@ public class NameDisambiguator extends ModelVisitor
 	}
 	
 	@Override
-	public ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		//return visited.del().leaveDisambiguation(parent, child, (NameDisambiguator) nv, visited);
 		return visited.del().leaveDisambiguation(parent, child, this, visited);

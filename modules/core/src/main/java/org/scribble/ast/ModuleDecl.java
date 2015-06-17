@@ -23,7 +23,7 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	{
 		//ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.fullmodname, nv);
 		ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.name, nv);
-		return ModelFactoryImpl.FACTORY.ModuleDecl(fullmodname);
+		return AstFactoryImpl.FACTORY.ModuleDecl(fullmodname);
 	}
 
 	@Override

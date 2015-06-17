@@ -3,10 +3,10 @@ package org.scribble.ast.global;
 import java.util.List;
 
 import org.scribble.ast.Choice;
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
 //public class GlobalChoice extends Choice<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
@@ -24,14 +24,14 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 	//protected Choice<GlobalProtocolBlock> reconstruct(RoleNode subj, List<GlobalProtocolBlock> blocks)
 	protected GChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Global>> blocks)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		GChoice gc = new GChoice(subj, blocks);
 		gc = (GChoice) gc.del(del);
 		return gc;
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new GChoice(this.subj, this.blocks);
 	}

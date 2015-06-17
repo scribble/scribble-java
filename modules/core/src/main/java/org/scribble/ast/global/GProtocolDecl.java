@@ -4,7 +4,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ProtocolHeader;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ModuleName;
@@ -34,7 +34,7 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GlobalNode
 	protected GProtocolDecl reconstruct(ProtocolHeader<Global> header, ProtocolDef<Global> def)//, ProtocolDeclContext pdcontext, Env env)
 	{
 		
-		ModelDel del = del();
+		ScribDel del = del();
 		//GlobalProtocolDecl gpd = ModelFactoryImpl.FACTORY.GlobalProtocolDecl(header, def);  // No: don't want del
 		//GProtocolDecl gpd = new GProtocolDecl(header, def);
 		GProtocolDecl gpd = new GProtocolDecl((GProtocolHeader) header, (GProtocolDef) def);

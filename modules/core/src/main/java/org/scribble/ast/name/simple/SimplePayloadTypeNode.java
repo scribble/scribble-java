@@ -1,6 +1,6 @@
 package org.scribble.ast.name.simple;
 
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.SimpleName;
 

@@ -2,13 +2,13 @@ package org.scribble.ast.name;
 
 import java.util.Arrays;
 
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Named;
 
 //public abstract class NameNode<T extends IName> extends ModelNodeBase implements Named<T>
 //public abstract class NameNode<T extends Name<K>, K extends Kind> extends ModelNodeBase implements Named<T, K>
-public abstract class NameNode<K extends Kind> extends ModelNodeBase implements Named<K>
+public abstract class NameNode<K extends Kind> extends ScribNodeBase implements Named<K>
 {
 	// Kind parameter used for typing help, but NameNodes don't record kind as state (not part of the syntax) -- so kind doesn't affect e.g. equals (names nodes of different kinds are still only compared syntactically)
 	

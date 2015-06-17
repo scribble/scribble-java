@@ -5,9 +5,9 @@ import java.util.List;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 public class LReceive extends MessageTransfer<Local> implements LSimpleInteractionNode
@@ -21,7 +21,7 @@ public class LReceive extends MessageTransfer<Local> implements LSimpleInteracti
 	@Override
 	protected LReceive reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		LReceive lr = new LReceive(src, msg, dests);
 		lr = (LReceive) lr.del(del);
 		return lr;
@@ -56,7 +56,7 @@ public class LReceive extends MessageTransfer<Local> implements LSimpleInteracti
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new LReceive(this.src, this.msg, this.dests);
 	}

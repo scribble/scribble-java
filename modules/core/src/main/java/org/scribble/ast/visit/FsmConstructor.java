@@ -1,6 +1,6 @@
 package org.scribble.ast.visit;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
@@ -26,7 +26,7 @@ public class FsmConstructor extends SubprotocolVisitor  // For "inlining" Do
 
 	// Override visitForSubprotocols, not visit, or else enter/exit is lost
 	@Override
-	public ModelNode visitForSubprotocols(ModelNode parent, ModelNode child) throws ScribbleException
+	public ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof LInteractionSeq)
 		{
@@ -57,14 +57,14 @@ public class FsmConstructor extends SubprotocolVisitor  // For "inlining" Do
 	}
 
 	@Override
-	protected final void subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected final void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.subprotocolEnter(parent, child);
 		child.del().enterFsmConstruction(parent, child, this);
 	}
 	
 	@Override
-	protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveFsmConstruction(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);

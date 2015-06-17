@@ -3,7 +3,7 @@ package org.scribble.del.local;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.visit.FsmConstructor;
 import org.scribble.ast.visit.ReachabilityChecker;
@@ -15,7 +15,7 @@ import org.scribble.util.ScribbleException;
 public class LRecursionDel extends LCompoundInteractionNodeDel
 {
 	@Override
-	public LRecursion leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	public LRecursion leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		LRecursion lr = (LRecursion) visited;
 		ReachabilityEnv env = checker.popEnv().mergeContext((ReachabilityEnv) lr.block.del().env());
@@ -26,7 +26,7 @@ public class LRecursionDel extends LCompoundInteractionNodeDel
 	}
 	
 	@Override
-	public void enterFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv)
+	public void enterFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv)
 	{
 		super.enterFsmConstruction(parent, child, conv);
 		LRecursion lr = (LRecursion) child;
@@ -41,7 +41,7 @@ public class LRecursionDel extends LCompoundInteractionNodeDel
 	}
 
 	@Override
-	public LRecursion leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)
+	public LRecursion leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)
 	{
 		LRecursion lr = (LRecursion) visited;
 		RecVar rv = lr.recvar.toName();

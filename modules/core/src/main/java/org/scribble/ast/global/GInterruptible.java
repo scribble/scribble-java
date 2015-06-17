@@ -3,7 +3,7 @@ package org.scribble.ast.global;
 import java.util.List;
 
 import org.scribble.ast.Interruptible;
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.Global;
@@ -49,7 +49,7 @@ public class GInterruptible extends Interruptible<Global> implements GInteractio
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		// TODO Auto-generated method stub
 		return null;

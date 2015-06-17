@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.RoleDeclList;
@@ -42,7 +42,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	@Override
-	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
+	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
 	{
 		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
 		
@@ -57,7 +57,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 	
 	@Override
-	public GProtocolDecl leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	public GProtocolDecl leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		//System.out.println("c: " + proj.getProtocolDependencies());
 
@@ -144,7 +144,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}*/
 	
 	@Override
-	public GProtocolDecl leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	public GProtocolDecl leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		JobContext jc = proj.getJobContext();
 		//Module main = jc.getMainModule();
@@ -237,9 +237,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		// FIXME: move to delegate? -- maybe fully integrate into projection pass
 		RoleDeclList roledecls = gpd.header.roledecls.project(self);
 		NonRoleParamDeclList paramdecls = gpd.header.paramdecls.project(self);//peekSelf());
-		LProtocolHeader lph = ModelFactoryImpl.FACTORY.LProtocolHeader(pn, roledecls, paramdecls);
+		LProtocolHeader lph = AstFactoryImpl.FACTORY.LProtocolHeader(pn, roledecls, paramdecls);
 		//LocalProtocolDefinition def = (LocalProtocolDefinition) ((ProjectionEnv) gpd.def.del().getEnv()).getProjection();
-		LProtocolDecl projected = ModelFactoryImpl.FACTORY.LProtocolDecl(lph, def);
+		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProtocolDecl(lph, def);
 
 		////pdcontext = new ProtocolDeclContext(getContext(), self, proj.getProtocolDependencies());  // FIXME: move dependency building to after initial context building (or integrate into it?)
 		//Map<ProtocolName, Set<Role>> deps = proj.getProtocolDependencies();
@@ -265,7 +265,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}*/
 
 	@Override
-	public GProtocolDecl leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	public GProtocolDecl leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		System.out.println("1: " + ((ModelEnv) gpd.def.block.del().env()).getActions());

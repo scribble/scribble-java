@@ -2,10 +2,10 @@ package org.scribble.ast.global;
 
 import java.util.List;
 
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
 //public class GlobalParallel extends Parallel<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
@@ -22,14 +22,14 @@ public class GParallel extends Parallel<Global> implements GCompoundInteractionN
 	//protected GlobalParallel reconstruct(List<GlobalProtocolBlock> blocks)
 	protected GParallel reconstruct(List<? extends ProtocolBlock<Global>> blocks)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		GParallel gp = new GParallel(blocks);
 		gp = (GParallel) gp.del(del);
 		return gp;
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new GParallel(this.blocks);
 	}

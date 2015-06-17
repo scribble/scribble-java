@@ -1,11 +1,11 @@
 package org.scribble.ast.visit.env;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 
 // could make projection type a class parameter
 public class ProjectionEnv extends Env
 {
-	private ModelNode projection;  // FIXME: need to generalise for do projection (target protocol as well as the do)
+	private ScribNode projection;  // FIXME: need to generalise for do projection (target protocol as well as the do)
 	
 	//.. do projection for each node
 
@@ -19,7 +19,7 @@ public class ProjectionEnv extends Env
 
 	// FIXME: make into a defensive setter (or just a setter?)
 	//public ProjectionEnv(JobContext jcontext, ModuleDelegate mcontext, ModelNode projection)
-	public ProjectionEnv(ModelNode projection)
+	public ProjectionEnv(ScribNode projection)
 	{
 		//this(jcontext, mcontext);
 		this.projection = projection;
@@ -32,7 +32,7 @@ public class ProjectionEnv extends Env
 	}*/
 	
 	//public LocalNode getProjection()
-	public ModelNode getProjection()
+	public ScribNode getProjection()
 	{
 		return this.projection;
 	}

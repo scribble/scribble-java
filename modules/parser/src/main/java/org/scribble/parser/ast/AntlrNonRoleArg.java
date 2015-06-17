@@ -2,7 +2,7 @@ package org.scribble.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ArgNode;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleArg;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
@@ -17,7 +17,7 @@ public class AntlrNonRoleArg
 	{
 		ArgNode arg = parseArgument(parser, getArgChild(ct));
 		//return new ArgumentInstantiation(ct, arg);
-		return ModelFactoryImpl.FACTORY.NonRoleArg(arg);
+		return AstFactoryImpl.FACTORY.NonRoleArg(arg);
 	}
 
 	// Similar to AntlrGlobalMessageTransfer.parseMessage

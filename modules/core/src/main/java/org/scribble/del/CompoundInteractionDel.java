@@ -1,11 +1,11 @@
 package org.scribble.del;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.util.ScribbleException;
 
 // For CompoundInteractionNode and ProtocolBlock
-public abstract class CompoundInteractionDel extends ModelDelBase
+public abstract class CompoundInteractionDel extends ScribDelBase
 {
 	//public CompoundInteractionDelegate(Env env)
 	public CompoundInteractionDel()
@@ -15,7 +15,7 @@ public abstract class CompoundInteractionDel extends ModelDelBase
 
 	@Override
 	//public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
-	public void enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker) throws ScribbleException
 	{
 		/*//WellFormedChoiceEnv env = new WellFormedChoiceEnv(checker.peekEnv());
 		WellFormedChoiceEnv env = checker.peekEnv().push();
@@ -31,7 +31,7 @@ public abstract class CompoundInteractionDel extends ModelDelBase
 	//public void enter(Choice<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> cho, WellFormedChoiceChecker checker)
 	
 	@Override
-	public ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	public ScribNode leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		/*WellFormedChoiceEnv env = checker.popEnv();
 		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes

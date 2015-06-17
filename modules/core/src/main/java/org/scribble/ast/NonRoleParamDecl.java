@@ -2,7 +2,7 @@ package org.scribble.ast;
 
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.Role;
@@ -34,7 +34,7 @@ public class NonRoleParamDecl<K extends Kind> extends HeaderParamDecl<K> //imple
 	//protected ParamDecl<K> reconstruct(NameNode<Name<K>, K> namenode)
 	protected NonRoleParamDecl<K> reconstruct(NameNode<K> namenode)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		NonRoleParamDecl<K> pd = new NonRoleParamDecl<>(this.kind, this.name);
 		pd = (NonRoleParamDecl<K>) pd.del(del);
 		return pd;
@@ -57,9 +57,9 @@ public class NonRoleParamDecl<K extends Kind> extends HeaderParamDecl<K> //imple
 	public NonRoleParamDecl<K> project(Role self)
 	{
 		//ParameterNode<K> pn = new ParameterNode<>(this.kind, this.name.toString());  // FIXME: use factory?
-		NonRoleParamNode<K> pn = ModelFactoryImpl.FACTORY.NonRoleParamNode(this.kind, this.name.toString());
+		NonRoleParamNode<K> pn = AstFactoryImpl.FACTORY.NonRoleParamNode(this.kind, this.name.toString());
 		//return new ParameterDecl(this.kind, pn);
-		return ModelFactoryImpl.FACTORY.ParamDecl(this.kind, pn);
+		return AstFactoryImpl.FACTORY.ParamDecl(this.kind, pn);
 	}
 	
 	@Override

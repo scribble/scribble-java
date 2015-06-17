@@ -1,7 +1,7 @@
 package org.scribble.parser;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ast.AntlrDataTypeDecl;
 import org.scribble.parser.ast.AntlrImportModule;
@@ -32,108 +32,16 @@ import org.scribble.parser.ast.global.AntlrGProtocolHeader;
 import org.scribble.parser.ast.global.AntlrGRecursion;
 import org.scribble.parser.util.Util;
 
-/*import scribble2.ast.*;
-import scribble2.ast.global.*;
-import scribble2.ast.name.*;
-import scribble2.main.Job;
-import scribble2.parser.ast.*;
-import scribble2.parser.ast.global.*;
-import scribble2.sesstype.name.*;
-import scribble2.util.Util;*/
-
-// Parses ANTLR Trees into Scribble.Ast.ModelNode trees
+// ANTLR CommonTree -> ScribNode
+// Parses ANTLR nodes into ScribNodes using the parser.ast.Antlr[...] helper classes
 public class ScribbleParser
 {
-	//public static final ScribbleParser parser = new ScribbleParser();
-	
 	public ScribbleParser()
 	{
 
 	}
 
-	/*// Does not use import paths
-	public Module parseModuleFromResource(Resource res) //throws ScribbleException
-	{
-		try
-		{
-			//CharStream input = isFile ? new ANTLRFileStream(path) : new ANTLRInputStream(System.in);
-			CharStream input = new ANTLRFileStream(res.getPath());
-			Scribble2Lexer lex = new Scribble2Lexer(input);
-      /*InputStream is = res.getInputStream();
-      byte[] bs=new byte[is.available()];
-      is.read(bs);
-      is.close();
-      String input=new String(bs);
-			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));* /
-			Scribble2Parser parser = new Scribble2Parser(new CommonTokenStream(lex));
-			CommonTree ct = (CommonTree) parser.module().getTree();
-			Module module = (Module) parse(ct);
-			/*if (isFile) {
-				String filename = new File(path).getName();
-				String obtainedName = filename.substring(0, filename.indexOf("."));
-				ModuleName expected = module.getFullModuleName();
-				if (!obtainedName.equals(expected.getSimpleName().toString()))
-				{
-					throw new ScribbleException("Incorrect file \"" + obtainedName + "\" for module declaration: " + expected);
-				}
-			}* /
-			
-			// FIXME: check loaded module name correct
-			
-			return module;
-		}
-		catch (IOException | RecognitionException e)
-		{
-			//throw new ScribbleException(e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	// Does not use import paths
-	public Module parseModuleFromSource(String path) //throws ScribbleException
-	{
-		try
-		{
-			//CharStream input = isFile ? new ANTLRFileStream(path) : new ANTLRInputStream(System.in);
-			CharStream input = new ANTLRFileStream(path);
-			Scribble2Lexer lex = new Scribble2Lexer(input);
-			Scribble2Parser parser = new Scribble2Parser(new CommonTokenStream(lex));
-			CommonTree ct = (CommonTree) parser.module().getTree();
-			Module module = (Module) parse(ct);
-			/*if (isFile) {
-				String filename = new File(path).getName();
-				String obtainedName = filename.substring(0, filename.indexOf("."));
-				ModuleName expected = module.getFullModuleName();
-				if (!obtainedName.equals(expected.getSimpleName().toString()))
-				{
-					throw new ScribbleException("Incorrect file \"" + obtainedName + "\" for module declaration: " + expected);
-				}
-			}* /
-			
-			//System.out.println("b: " + module);
-			
-			return module;
-		}
-		catch (IOException | RecognitionException e)
-		{
-			//throw new ScribbleException(e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	//public Module importModule(JobEnv job, ModuleName modname) throws ScribbleException
-	public Pair<String, Module> importModule(List<String> importPath, String path) //throws ScribbleException
-	{
-		for (String ip : importPath)
-		{
-			String tmp = ip + "/" + path;
-			return new Pair<>(tmp, parseModuleFromSource(tmp));
-		}
-		//throw new ScribbleException("Module not found: " + path);
-		throw new RuntimeException("Module not found: " + path);
-	}*/
-
-	public ModelNode parse(CommonTree ct)
+	public ScribNode parse(CommonTree ct)
 	{
 		AntlrNodeType type = Util.getAntlrNodeType(ct);
 		switch (type)
@@ -171,8 +79,6 @@ public class ScribbleParser
 				return AntlrMessageSig.parseMessageSig(this, ct);
 			case PAYLOAD:
 				return AntlrPayloadElemList.parsePayloadElemList(this, ct);
-			/*case PAYLOADELEMENT:
-				return AntlrPayloadElement.parsePayloadElement(this, ct);*/
 			case GLOBALMESSAGETRANSFER:
 				return AntlrGMessageTransfer.parseGMessageTransfer(this, ct);
 			case GLOBALCHOICE:
@@ -195,13 +101,6 @@ public class ScribbleParser
 				return AntlrRoleArg.parseRoleArg(this, ct);
 			case ARGUMENTINSTANTIATIONLIST:
 				return AntlrNonRoleArgList.parseNonRoleArgList(this, ct);
-			/*case ARGUMENTINSTANTIATION:
-				return AntlrNonRoleArg.parseNonRoleArg(this, ct);*/
-
-			/*case AMBIGUOUSNAME:  // Should this be here?
-				System.out.println("c: " + ct);
-				//return AntlrNonRoleArg.parseNonRoleArg(this, ct);
-				return AntlrAmbiguousName.toAmbiguousNameNode(ct);*/
 			default:
 				throw new RuntimeException("Unknown ANTLR node type: " + type);
 		}

@@ -1,6 +1,6 @@
 package org.scribble.ast.visit;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -75,7 +75,7 @@ public class ContextBuilder extends ModelVisitor
 
 	@Override
 	//protected ContextBuilder enter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected void enter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		//System.out.println("2a: " + child.getClass() + ", " + child.del());
 		
@@ -85,7 +85,7 @@ public class ContextBuilder extends ModelVisitor
 
 	@Override
 	//protected ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor builder, ModelNode visited) throws ScribbleException
-	protected ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		//System.out.println("2b: " + visited.getClass() + ", " + visited.del());
 

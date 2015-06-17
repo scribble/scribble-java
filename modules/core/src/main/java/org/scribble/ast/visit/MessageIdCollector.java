@@ -3,7 +3,7 @@ package org.scribble.ast.visit;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.util.ScribbleException;
@@ -29,14 +29,14 @@ public class MessageIdCollector extends SubprotocolVisitor
 	}
 
 	@Override
-	protected final void subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected final void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.subprotocolEnter(parent, child);
 		child.del().enterOpCollection(parent, child, this);
 	}
 	
 	@Override
-	protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveOpCollection(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);

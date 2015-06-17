@@ -6,7 +6,7 @@ import org.scribble.ast.RoleArgList;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 
@@ -31,7 +31,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	//protected LDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	protected LDo reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<Local> proto)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
 		LDo ld = new LDo(roleinstans, arginstans, (LProtocolNameNode) proto);
 		ld = (LDo) ld.del(del);

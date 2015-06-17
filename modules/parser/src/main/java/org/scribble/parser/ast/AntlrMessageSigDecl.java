@@ -2,7 +2,7 @@ package org.scribble.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageSigNameDecl;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
@@ -28,7 +28,7 @@ public class AntlrMessageSigDecl
 		//MessageSigNameNode alias = (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getAliasChild(ct).getText());
 		MessageSigNameNode alias = AntlrSimpleName.toMessageSigNameNode(getAliasChild(ct));
 		//return new MessageSigDecl(schema, extName, source, alias);
-		return ModelFactoryImpl.FACTORY.MessageSigDecl(schema, extName, source, alias);
+		return AstFactoryImpl.FACTORY.MessageSigDecl(schema, extName, source, alias);
 	}
 
 	/*public static MessageSignature getFullMessageSignatureName(CommonTree ct)

@@ -16,23 +16,21 @@
  */
 package org.scribble.parser;
 
+import org.scribble.ast.Module;
 import org.scribble.context.DefaultModuleLoader;
-import org.scribble.context.ModuleLoader;
-import org.scribble.parser.util.Pair;
 import org.scribble.resources.Resource;
 import org.scribble.resources.ResourceLocator;
 import org.scribble.sesstype.name.ModuleName;
+import org.scribble.util.Pair;
 
-// loading = file input + parsing (i.e. path -> Module; cf. ModuleName -> Module)
-public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleLoader
+// loading = ModuleName -> Module
+//   ModuleName --> Path --ResourceLocator--> Resource --AntlrParser--> ANTLR --ScribParser--> ScribNode
+// FIXME: should be in org.scribble.context -- here due to Maven dependency restrictions
+public class ScribbleModuleLoader extends DefaultModuleLoader //implements ModuleLoader
 {
-	//private static final Logger LOG=Logger.getLogger(ModuleLoader.class.getName());
-
 	private ResourceLocator locator;
-	//private ProtocolParser parser = null;
 	private AntlrParser antlr;
 	private ScribbleParser parser;
-	//private IssueLogger _logger=null;
 	
 	public ScribbleModuleLoader(ResourceLocator locator, AntlrParser antlr, ScribbleParser parser)
 	{
@@ -41,50 +39,26 @@ public class ScribbleModuleLoader extends DefaultModuleLoader implements ModuleL
 		this.parser = parser;
 	}
 
-	/*@Override
-	public Module loadModule(String module)
+	@Override
+	public Pair<Resource, Module> loadModule(ModuleName modname)
 	{
-		/*Module mod = super.loadModule(module);
-		if (mod == null)
+		Pair<Resource, Module> cached = super.loadModule(modname);
+		if (cached != null)
 		{
-			// ...convert module name string to ModuleName...
-			return loadScribbleModule(name);
-		}* /
-		throw new RuntimeException("Shouldn't get in here.");
-	}*/
-
-  // FIXME: old/new Modules incompatible -- should be replaced by direct super call
-	//@Override
-	private void registerModule(org.scribble.ast.Module module)
-	{
-		//super.registerModule(module);
-	}
-
-	//public Module loadModule(String module)
-	//public Pair<Resource, org.scribble2.model.Module> loadScribbleModule(String path)
-	public Pair<Resource, org.scribble.ast.Module> loadScribbleModule(ModuleName mod)
-	{
-		//Module ret=super.loadModule(module);
-		Resource res = this.locator.getResource(mod.toPath());
-		org.scribble.ast.Module parsed = (org.scribble.ast.Module) this.parser.parse(this.antlr.parseAntlrTree(res));
-		checkModuleName(mod, res, parsed);
-		registerModule(parsed);  // FIXME: should be super call
+			return cached;
+		}	
+		Resource res = this.locator.getResource(modname.toPath());
+		Module parsed = (Module) this.parser.parse(this.antlr.parseAntlrTree(res));
+		checkModuleName(modname, res, parsed);
+		registerModule(res, parsed);
 		return new Pair<>(res, parsed);
 	}
 
-	private static void checkModuleName(ModuleName mn, Resource res, org.scribble.ast.Module mod)
+	private static void checkModuleName(ModuleName mn, Resource res, Module mod)
 	{
 		if (!mn.equals(mod.getFullModuleName()))
 		{
 			throw new RuntimeException("Invalid module name " + mod.getFullModuleName() + " at path: " + res.getPath());
 		}
 	}
-	
-	/*public Pair<Resource, org.scribble2.model.Module> loadMainModule(String path)
-	{
-		Resource res = this.locator.getResourceByFullPath(path);
-		Pair<Resource, org.scribble2.model.Module> p = new Pair<>(res, parseModuleFromResource(res));
-		registerModule(p.right);
-		return p;
-	}*/
 }

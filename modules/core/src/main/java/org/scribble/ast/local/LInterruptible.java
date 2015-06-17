@@ -3,7 +3,7 @@ package org.scribble.ast.local;
 import java.util.List;
 
 import org.scribble.ast.Interruptible;
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.Local;
@@ -34,7 +34,7 @@ public class LInterruptible extends Interruptible<Local> implements LInteraction
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		// TODO Auto-generated method stub
 		return null;

@@ -1,7 +1,7 @@
 package org.scribble.del;
 
 
-public abstract class ProtocolDefDel extends ModelDelBase
+public abstract class ProtocolDefDel extends ScribDelBase
 {
 
 }

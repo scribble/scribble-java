@@ -3,7 +3,7 @@ package org.scribble.ast.local;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 //import scribble2.sesstype.name.NameDeclaration;
@@ -36,7 +36,7 @@ public class SelfRoleDecl extends RoleDecl
 	//protected RoleDecl reconstruct(NameNode<Role, RoleKind> snn)
 	protected RoleDecl reconstruct(NameNode<RoleKind> snn)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) snn);
 		rd = (SelfRoleDecl) rd.del(del);
 		return rd;

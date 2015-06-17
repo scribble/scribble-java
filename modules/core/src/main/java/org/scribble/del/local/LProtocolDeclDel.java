@@ -1,6 +1,6 @@
 package org.scribble.del.local;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.context.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
@@ -23,7 +23,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
+	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
 	{
 		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
 		
@@ -38,7 +38,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 	
 	@Override
-	public LProtocolDecl leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	public LProtocolDecl leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		//System.out.println("c: " + proj.getProtocolDependencies());
 
@@ -51,14 +51,14 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	public void enterFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv)// throws ScribbleException
+	public void enterFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv)// throws ScribbleException
 	{
 		//pushVisitorEnv(parent, child, conv);
 		conv.builder.reset();
 	}
 
 	@Override
-	public ModelNode leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)// throws ScribbleException
+	public ScribNode leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)// throws ScribbleException
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
 		//ScribbleFsm f = ((FsmBuildingEnv) lpd.def.del().env()).getFsm();

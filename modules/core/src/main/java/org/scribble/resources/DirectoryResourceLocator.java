@@ -16,7 +16,6 @@
  */
 package org.scribble.resources;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,13 +27,11 @@ import java.util.logging.Logger;
  * This class provides a directory based resource locator.
  *
  */
-public class DirectoryResourceLocator extends ResourceLocator // implements ResourceLocator
+public class DirectoryResourceLocator extends ResourceLocator
 {
 	private static final Logger LOG = Logger.getLogger(DirectoryResourceLocator.class.getName());
 	
-	private String[] _paths=null;
-	
-	private List<Path> paths;
+	private List<Path> impaths;
 
 	/**
 	 * This is the constructor for the directory resource
@@ -43,99 +40,45 @@ public class DirectoryResourceLocator extends ResourceLocator // implements Reso
 	 * 
 	 * @param paths The ':' separated list of directory paths
 	 */
-	public DirectoryResourceLocator(String paths) {
-		_paths = paths.split(":");
-	}
-
-	public DirectoryResourceLocator(List<Path> paths) {
-		//_paths = paths.split(":");
-		_paths = new String[paths.size()];
-		//_paths = paths.toArray(_paths);
-		
-		this.paths = new LinkedList<>(paths);
+	public DirectoryResourceLocator(List<Path> paths)
+	{
+		this.impaths = new LinkedList<>(paths);
 	}
 	
-	/**
-	 * This method returns the root location containing the supplied
-	 * resource.
-	 * 
-	 * @return The resource's root location
-	 */
-	public String getResourceRoot(Resource resource) {
-		String ret=null;
-		
-		for (String path : _paths) {
-			String fullPath=path+java.io.File.separator+resource.getPath();
-			
-			java.io.File f=new java.io.File(fullPath);
-			
-			if (f.exists()) {
-				ret = path;
-				break;
-			}
-		}
-		
-		return (ret);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	@Deprecated
-	public InputStreamResource getResource(String path)
-	{
-		// Resource ret= getResourceByFullPath(relativePath); // Debatable
-		/*File f = openFile(relativePath, false);
-		if (f.isFile()) // relativePath is actually a full path
-		{
-			return openResource(relativePath, f);
-		}*/
-
-		// Find module
-		for (String impath : _paths)
-		{
-			String tmp = impath.toString();
-
-			/*if (!fullPath.endsWith(java.io.File.separator)) {  // FIXME: cygwin/windows separators
-				fullPath += java.io.File.separator;
-			}*/
-
-			String prefixedpath = tmp + path;
-			File f = new File(prefixedpath);
-			if (f.isFile())
-			{
-				//return openResource(fullPath, f);
-				return new InputStreamResource(prefixedpath, getFileInputStream(f));
-			}
-		}
-		throw new RuntimeException("Couldn't open resource: " + path);
-	}
-
 	// FIXME: need to sort out what "getResource" should mean at level of ResourceLocator abstraction, e.g. if arg is specifically a Path or more abstract, whether it is the complete location or partial, etc
+	@Override
 	public InputStreamResource getResource(Path path)
 	{
-		for (Path impath : this.paths)
+		for (Path impath : this.impaths)
 		{
-			/*if (!fullPath.endsWith(java.io.File.separator)) {  // FIXME: cygwin/windows separators
-				fullPath += java.io.File.separator;
-			}*/
-
 			Path prefixedpath = impath.resolve(path);
-			//File f = new File(prefixedpath);
 			if (Files.exists(prefixedpath))
 			{
-				//return openResource(fullPath, f);
-				try
-				{
-					return new InputStreamResource(prefixedpath, Files.newInputStream(prefixedpath));
-				}
-				catch (IOException e)
-				{
-					throw new RuntimeException(e);
-				}
+				return openFileInputStreamResource(prefixedpath);
 			}
 		}
 		throw new RuntimeException("Couldn't open resource: " + path);
+	}
+
+	// "full" path from working directory, as opposed to "relative" paths from import prefixes
+	public static InputStreamResource getResourceByFullPath(Path path)  // FIXME: should be abstracted out as front-end functionality, e.g. DirectoryResourceLocator, to find/load main module; then MainContext uses abstract ResourceLocator to load rest
+	{
+		if (!Files.exists(path))
+		{
+			throw new RuntimeException("File couldn't be opened: " + path);
+		}
+		return openFileInputStreamResource(path);
+	}
+	
+	private static InputStreamResource openFileInputStreamResource(Path path)
+	{
+		try
+		{
+			return new InputStreamResource(path, Files.newInputStream(path));
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

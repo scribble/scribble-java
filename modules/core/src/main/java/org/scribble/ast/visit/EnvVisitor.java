@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ProtocolDef;
@@ -32,7 +32,7 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 	
 	@Override
 	//protected final EnvVisitor<T> subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected final void subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected final void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		////EnvVisitor<T> ev = (EnvVisitor) super.subprotocolEnter(parent, child);
 		//EnvVisitor<T> ev = castEnvVisitor(super.subprotocolEnter(parent, child), this);
@@ -73,7 +73,7 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 			ProtocolDecl<? extends ProtocolKind> pd);
 
 	//protected EnvVisitor<T> envEnter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected void envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		
 		//... HERE: push copy of parent Env onto visitor stack for use by visitor pass (del env-leave routine should pop and push back the final result)
@@ -86,12 +86,12 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 	
 	@Override
 	//protected final ModelNode subprotocolLeave(ModelNode parent, ModelNode child, SubprotocolVisitor nv, ModelNode visited) throws ScribbleException
-	protected final ModelNode subprotocolLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected final ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		//ModelNode n = envLeave(parent, child, (EnvVisitor) nv, visited); 
 		//ModelNode n = envLeave(parent, child, castEnvVisitor(nv, this), visited); 
 		//ModelNode n = envLeave(parent, child, this, visited); 
-		ModelNode n = envLeave(parent, child, visited); 
+		ScribNode n = envLeave(parent, child, visited); 
 
 		//ModelNode n = super.subprotocolLeave(parent, child, nv, visited);
 		/*n = envLeave(parent, child, nv, n);
@@ -119,7 +119,7 @@ public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 	}
 	
 	//protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<T> nv, ModelNode visited) throws ScribbleException
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		/*if (hasEnv())
 		{

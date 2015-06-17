@@ -3,10 +3,10 @@ package org.scribble.ast.local;
 import java.util.List;
 
 import org.scribble.ast.Choice;
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class LocalChoice extends Choice<LocalProtocolBlock> implements CompoundLocalInteractionNode
@@ -22,14 +22,14 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	//protected LocalChoice reconstruct(RoleNode subj, List<LocalProtocolBlock> blocks)
 	protected LChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Local>> blocks)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		LChoice lc = new LChoice(subj, blocks);
 		lc = (LChoice) lc.del(del);
 		return lc;
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new LChoice(this.subj, this.blocks);
 	}

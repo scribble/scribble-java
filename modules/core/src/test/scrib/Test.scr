@@ -13,7 +13,15 @@ module Test;
 
 global protocol Foo(role A, role B)
 {
-	() from A to B;
+	choice at A
+	{
+		2() from A to B;
+	}
+	or
+	{
+		//do Test2.Bar(A, B);
+		1() from A to B;
+	}
 }
 
 

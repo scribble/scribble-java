@@ -72,7 +72,7 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new DataTypeDecl(this.schema, this.extName, this.source, (DataTypeNameNode) this.name);
 	}

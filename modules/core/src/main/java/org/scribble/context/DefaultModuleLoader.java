@@ -16,29 +16,38 @@
  */
 package org.scribble.context;
 
+import org.scribble.ast.Module;
+import org.scribble.resources.Resource;
+import org.scribble.sesstype.name.ModuleName;
+import org.scribble.util.Pair;
+
 
 /**
  * This class provides a default implementation of the module loader interface.
  *
  */
-public class DefaultModuleLoader implements ModuleLoader {
-	
-	/*private java.util.Map<String,Module> _modules=new java.util.HashMap<String,Module>();
+public class DefaultModuleLoader implements ModuleLoader
+{
+  // A caching mechanism? -- not currently used for anything meaningful
+	// FIXME: redundant? Modules recorded (and updated) in MainContext
+	// ModuleName is full module name
+	private java.util.Map<ModuleName, Pair<Resource, Module>> _modules=new java.util.HashMap<>();
 
 	/**
 	 * This method registers the supplied module.
 	 * 
 	 * @param module The module
-	 * /
-	public void registerModule(Module module) {
-		_modules.put(module.getName(), module);
+	 */
+	public void registerModule(Resource res, Module module)
+	{
+		_modules.put(module.getFullModuleName(), new Pair<>(res, module));
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * /
-	public Module loadModule(String module) {
-		return (_modules.get(module));
-	}*/
-	
+	 */
+	public Pair<Resource, Module> loadModule(ModuleName modname)
+	{
+		return (_modules.get(modname));
+	}
 }

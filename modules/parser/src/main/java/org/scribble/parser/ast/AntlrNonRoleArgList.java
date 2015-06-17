@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ArgNode;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleArg;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.parser.ScribbleParser;
@@ -29,11 +29,11 @@ public class AntlrNonRoleArgList
 			{
 				//as.add((ArgumentInstantiation) parser.parse(a));
 				ArgNode arg = (ArgNode) parser.parse(a);
-				as.add(ModelFactoryImpl.FACTORY.NonRoleArg(arg));
+				as.add(AstFactoryImpl.FACTORY.NonRoleArg(arg));
 			}
 			else if (type == AntlrNodeType.AMBIGUOUSNAME)
 			{
-				as.add(ModelFactoryImpl.FACTORY.NonRoleArg(AntlrAmbigName.toAmbigNameNode(a)));
+				as.add(AstFactoryImpl.FACTORY.NonRoleArg(AntlrAmbigName.toAmbigNameNode(a)));
 			}
 			else
 			{
@@ -41,7 +41,7 @@ public class AntlrNonRoleArgList
 			}
 		}
 		//return new ArgumentInstantiationList(as);
-		return ModelFactoryImpl.FACTORY.NonRoleArgList(as);
+		return AstFactoryImpl.FACTORY.NonRoleArgList(as);
 	}
 
 	public static List<CommonTree> getArgumentChildren(CommonTree ct)

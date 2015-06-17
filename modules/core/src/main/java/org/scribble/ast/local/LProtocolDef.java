@@ -2,7 +2,7 @@ package org.scribble.ast.local;
 
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class LocalProtocolDefinition extends ProtocolDefinition<LocalProtocolBlock> implements LocalNode
@@ -18,7 +18,7 @@ public class LProtocolDef extends ProtocolDef<Local> implements LocalNode
 	//protected LocalProtocolDefinition reconstruct(LocalProtocolBlock block)
 	protected LProtocolDef reconstruct(ProtocolBlock<Local> block)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		LProtocolDef lpd = new LProtocolDef(block);
 		lpd = (LProtocolDef) lpd.del(del);
 		return lpd;

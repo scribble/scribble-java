@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Continue;
 import org.scribble.ast.InteractionNode;
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
@@ -34,14 +34,14 @@ public class GInteractionSeqDel extends InteractionSeqDel
 {
 	@Override
 	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
-	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
 		//return (Projector) pushEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 		pushVisitorEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 	}
 	
 	@Override
-	public GInteractionSeq leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		/*LocalInteractionSequence projection = new LocalInteractionSequence(Collections.emptyList());
 		ProjectionEnv env = proj.popEnv();
@@ -72,7 +72,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				lis.clear();
 			}
 		}
-		LInteractionSeq projection = ModelFactoryImpl.FACTORY.LInteractionSequence(lis);
+		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSequence(lis);
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
 		proj.pushEnv(new ProjectionEnv(projection));
@@ -81,13 +81,13 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	}
 	
 	@Override
-	public void enterModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder) throws ScribbleException
+	public void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
 	{
 		pushVisitorEnv(parent, child, builder);
 	}
 
 	@Override
-	public GInteractionSeq leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	public GInteractionSeq leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		Set<ModelAction> all = new HashSet<>();

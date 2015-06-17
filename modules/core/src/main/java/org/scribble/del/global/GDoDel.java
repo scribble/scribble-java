@@ -1,7 +1,7 @@
 package org.scribble.del.global;
 
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.context.ModuleContext;
@@ -22,7 +22,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 {
 	// Would like to factor out with LocalDoDelegate, but global/local interaction node delegates extend from simple/compound base
 	@Override
-	public GDo leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	public GDo leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		JobContext jcontext = builder.getJobContext();
 		ModuleContext mcontext = builder.getModuleContext();
@@ -38,13 +38,13 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public void enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker) throws ScribbleException
 	{
 		checker.pushEnv(checker.peekEnv().enterDoContext(checker));
 	}
 
 	@Override
-	public GDo leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	public GDo leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		/*checker.pushEnv(checker.popEnv().leaveWFChoiceCheck(checker));
 		return popAndSetVisitorEnv(parent, child, checker, (GDo) visited);*/
@@ -59,7 +59,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
 		super.enterProjection(parent, child, proj);
 
@@ -82,7 +82,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public GDo leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException //throws ScribbleException
+	public GDo leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
 	{
 		GDo gd = (GDo) visited;
 		Role popped = proj.popSelf();
@@ -111,7 +111,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 			RoleArgList roleinstans = gd.roles.project(self);
 			NonRoleArgList arginstans = gd.args.project(self);
 			LProtocolNameNode target = Projector.makeProjectedProtocolNameNode(gd.getTargetFullProtocolName(proj.getModuleContext()), popped);
-			projection = ModelFactoryImpl.FACTORY.LDo(roleinstans, arginstans, target);
+			projection = AstFactoryImpl.FACTORY.LDo(roleinstans, arginstans, target);
 			
 			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking?
 		}

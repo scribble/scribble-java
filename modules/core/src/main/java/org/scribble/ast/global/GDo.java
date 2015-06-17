@@ -1,13 +1,13 @@
 package org.scribble.ast.global;
 
 import org.scribble.ast.Do;
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 
@@ -27,7 +27,7 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		//return new GlobalDo(this.scope, this.roleinstans, this.arginstans, this.proto);
 		return new GDo(this.roles, this.args, (GProtocolNameNode) this.proto);
@@ -38,7 +38,7 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	//protected GDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	protected GDo reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<Global> proto)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		GDo gd = new GDo(roleinstans, arginstans, (GProtocolNameNode) proto);
 		gd = (GDo) gd.del(del);
 		return gd;

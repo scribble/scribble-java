@@ -3,7 +3,7 @@ package org.scribble.del.local;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.visit.ContextBuilder;
@@ -20,7 +20,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 {
 	// Would like to factor out with GlobalDoDelegate, but global/local interaction node delegates extend from simple/compound base
 	@Override
-	public LDo leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	public LDo leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		JobContext jcontext = builder.getJobContext();
 		ModuleContext mcontext = builder.getModuleContext();
@@ -33,7 +33,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 	}
 
 	@Override
-	public LDo leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	public LDo leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		ReachabilityEnv env = checker.popEnv();
 		if (checker.isCycle())
@@ -52,7 +52,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 	}
 
 	@Override
-	public void enterFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv)
+	public void enterFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv)
 	{
 		super.enterFsmConstruction(parent, child, conv);
 		if (!conv.isCycle())
@@ -91,7 +91,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public LDo leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)
+	public LDo leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)
 	{
 		SubprotocolSig subsig = conv.peekStack();
 		//SubprotocolSig noscope = new SubprotocolSig(subsig.fmn, subsig.roles, subsig.args);  // FIXME: factor better

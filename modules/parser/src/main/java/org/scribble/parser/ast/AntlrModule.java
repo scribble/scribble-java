@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ImportDecl;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonProtocolDecl;
@@ -49,7 +49,7 @@ public class AntlrModule
 		}
 
 		//return new Module(md, ids, ptds, pds);
-		return ModelFactoryImpl.FACTORY.Module(md, ids, ptds, pds);
+		return AstFactoryImpl.FACTORY.Module(md, ids, ptds, pds);
 	}
 
 	/*public static ModuleName getFullModuleName(CommonTree ct)

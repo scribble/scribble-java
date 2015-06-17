@@ -1,12 +1,11 @@
 package org.scribble.ast;
 
-// don't know how to use class from org.scribble2.parser
+// FIXME: cannot use AntlrConstants from org.scribble.parser due to Maven dependency restrictions
 public class Constants
 {
 	public static final String SCRIBBLE_FILE_EXTENSION = "scr";
 	
-	// Duplicated from Scribble2.g -- what's the best way to share it?
-	// Mostly used in projection (outputting local types)
+	// Duplicated from AntlrConstants due to Maven dependency restrictions
 	public static final String MODULE_KW = "module";
 	public static final String IMPORT_KW = "import";
 	public static final String TYPE_KW = "type";

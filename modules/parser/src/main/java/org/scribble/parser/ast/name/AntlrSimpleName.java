@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.name;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.name.qualified.DataTypeNameNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
@@ -36,13 +36,13 @@ public class AntlrSimpleName
 
 	public static GProtocolNameNode toGProtocolNameNode(CommonTree ct)
 	{
-		return (GProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getName(ct));  // Cannot use SimpleNameNode because qualified uses the node's elements, not the node's text itself
+		return (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getName(ct));  // Cannot use SimpleNameNode because qualified uses the node's elements, not the node's text itself
 		//return AntlrQualifiedName.toGlobalProtocolNameNode(ct);
 	}
 
 	public static LProtocolNameNode toLProtocolNameNode(CommonTree ct)
 	{
-		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getName(ct));
+		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getName(ct));
 		//return AntlrQualifiedName.toLocalProtocolNameNode(ct);
 	}
 
@@ -51,7 +51,7 @@ public class AntlrSimpleName
 	{
 		//return new SimplePayloadTypeNode(AntlrSimpleName.getName(ct));
 		//return (SimplePayloadTypeNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PAYLOADTYPE, getName(ct));
-		return (DataTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, getName(ct));
+		return (DataTypeNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, getName(ct));
 		//return AntlrQualifiedName.toDataTypeNameNode(ct);
 	}
 
@@ -60,7 +60,7 @@ public class AntlrSimpleName
 	{
 		//return new SimpleMessageSignatureNameNode(AntlrSimpleName.getName(ct));
 		//return (SimpleMessageSignatureNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.MESSAGESIGNATURE, getName(ct));
-		return (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getName(ct));
+		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getName(ct));
 		//return AntlrQualifiedName.toMessageSigNameNode(ct);  // No: qualified uses the node's elements, not the node's text itself
 	}
 
@@ -68,7 +68,7 @@ public class AntlrSimpleName
 	{
 		//return new RoleNode(getName(ct));
 		//return (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, getName(ct));
-		return (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getName(ct));
+		return (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getName(ct));
 	}
 
 	/*public static ParameterNode toParameterNode(CommonTree ct)
@@ -83,7 +83,7 @@ public class AntlrSimpleName
 		//return new ParameterNode(getName(ct));
 		//return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, getName(ct));
 		//return ModelFactoryImpl.FACTORY.ParameterNode(AmbiguousKind.KIND, getName(ct));
-		return ModelFactoryImpl.FACTORY.NonRoleParamNode(kind, getName(ct));
+		return AstFactoryImpl.FACTORY.NonRoleParamNode(kind, getName(ct));
 	}
 	
 	/*public static AmbiguousNameNode toAmbiguousNameNode(CommonTree ct)
@@ -102,10 +102,10 @@ public class AntlrSimpleName
 		{
 			//return new OperatorNode(OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
 			//return (OperatorNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.OPERATOR, OperatorNode.EMPTY_OPERATOR_IDENTIFIER);
-			return (OpNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, OpNode.EMPTY_OPERATOR_IDENTIFIER);
+			return (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, OpNode.EMPTY_OPERATOR_IDENTIFIER);
 		}
 		//return new OperatorNode(op);
-		return (OpNode) ModelFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, getName(ct));
+		return (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, getName(ct));
 	}
 	
 	public static ScopeNode toScopeNode(CommonTree ct)
@@ -123,7 +123,7 @@ public class AntlrSimpleName
 	{
 		//return new RecursionVarNode(getName(ct));
 		//return (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, getName(ct));
-		return (RecVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, getName(ct));
+		return (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, getName(ct));
 	}
 
 	public static String getName(CommonTree ct)

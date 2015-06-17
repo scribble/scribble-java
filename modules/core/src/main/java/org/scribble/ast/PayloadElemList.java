@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.visit.ModelVisitor;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.util.ScribbleException;
 
-public class PayloadElemList extends ModelNodeBase
+public class PayloadElemList extends ScribNodeBase
 {
 	//public static final Payload EMPTY_PAYLOAD = new Payload(null, Collections.<PayloadElement> emptyList());
 
@@ -41,7 +41,7 @@ public class PayloadElemList extends ModelNodeBase
 
 	protected PayloadElemList reconstruct(List<PayloadElem> elems)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		PayloadElemList pel = new PayloadElemList(elems);
 		pel = (PayloadElemList) pel.del(del);
 		return pel;

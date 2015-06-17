@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.global.GDo;
@@ -25,7 +25,7 @@ public class AntlrGDo
 		//if (!isScoped(ct))
 		{
 			//return new GlobalDo(ril, al, pnn);
-			return ModelFactoryImpl.FACTORY.GDo(ril, al, pnn);
+			return AstFactoryImpl.FACTORY.GDo(ril, al, pnn);
 		}
 		/*ScopeNode scope = AntlrSimpleName.toScopeNode(getScopeChild(ct));
 		//return new GlobalDo(scope, ril, al, pnn);

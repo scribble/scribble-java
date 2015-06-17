@@ -1,7 +1,7 @@
 package org.scribble.del;
 
 import org.scribble.ast.Do;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.visit.ContextBuilder;
 import org.scribble.util.ScribbleException;
 
@@ -9,7 +9,7 @@ import org.scribble.util.ScribbleException;
 public class DoDel extends SimpleInteractionNodeDel
 {
 	@Override
-	public Do leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	public Do leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		//builder.addProtocolDependency(getTargetFullProtocolName(builder.getModuleContext()));
 		return (Do) visited;

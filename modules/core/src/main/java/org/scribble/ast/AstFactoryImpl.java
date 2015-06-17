@@ -40,7 +40,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.DefaultModelDel;
 import org.scribble.del.ImportModuleDel;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ParamDeclDel;
 import org.scribble.del.RoleDeclDel;
@@ -76,9 +76,9 @@ import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.kind.SigKind;
 
-public class ModelFactoryImpl implements ModelFactory
+public class AstFactoryImpl implements AstFactory
 {
-	public static final ModelFactory FACTORY = new ModelFactoryImpl();  // FIXME: move somewhere else
+	public static final AstFactory FACTORY = new AstFactoryImpl();  // FIXME: move somewhere else
 	
 	@Override
 	public MessageSigNode MessageSigNode(OpNode op, PayloadElemList payload)
@@ -560,15 +560,15 @@ public class ModelFactoryImpl implements ModelFactory
 		return ld;
 	}
 
-	private ModelDel createDefaultDelegate()
+	private ScribDel createDefaultDelegate()
 	{
 		return new DefaultModelDel();
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static <T extends ModelNodeBase> T del(T n, ModelDel del)
+	private static <T extends ScribNodeBase> T del(T n, ScribDel del)
 	{
-		ModelNodeBase ret = n.del(del);
+		ScribNodeBase ret = n.del(del);
 		if (ret.getClass() != n.getClass())
 		{
 			throw new RuntimeException("Shouldn't get in here: " + ret.getClass() + ", " + n.getClass());

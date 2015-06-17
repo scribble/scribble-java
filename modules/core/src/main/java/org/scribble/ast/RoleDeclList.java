@@ -3,7 +3,7 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 
@@ -35,7 +35,7 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	//protected HeaderParamDeclList<Role, RoleKind> reconstruct(List<HeaderParamDecl<Role, RoleKind>> decls)
 	protected HeaderParamDeclList<RoleKind> reconstruct(List<? extends HeaderParamDecl<RoleKind>> decls)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		RoleDeclList rdl = new RoleDeclList(getRoleDecls());
 		rdl = (RoleDeclList) rdl.del(del);
 		return rdl;
@@ -49,7 +49,7 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 		//List<HeaderParamDecl<Role, RoleKind>> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
 		//List<HeaderParamDecl<RoleKind>> roledecls = this.decls.stream().map((rd) -> rd.project(self)).collect(Collectors.toList());	
 		//return new RoleDeclList(roledecls);
-		return ModelFactoryImpl.FACTORY.RoleDeclList(getRoleDecls());
+		return AstFactoryImpl.FACTORY.RoleDeclList(getRoleDecls());
 	}
 
 	/*@Override 

@@ -4,7 +4,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
 
 @Deprecated
-public interface IProtocolDecl<K extends ProtocolKind> extends ModelNode
+public interface IProtocolDecl<K extends ProtocolKind> extends ScribNode
 {
 	ProtocolName getFullProtocolName(Module mod);
 	

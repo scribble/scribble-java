@@ -12,25 +12,20 @@ import org.scribble.parser.antlr.Scribble2Parser;
 import org.scribble.resources.Resource;
 
 
-
-// Parses Resources into ANTLR Trees
-// Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" CommonTrees into ModelNodes
+// Resource -> ANTLR CommonTree
+// Parses Resources into ANTLR CommonTrees
+// Not encapsulated inside ScribbleParser, because ScribbleParser's main function is the higher-level operation of "parsing" CommonTrees into ScribNodes
 public class AntlrParser
 {
-	//public static final AntlrParser parser = new AntlrParser();
-	
 	public AntlrParser()
 	{
+
 	}
 	
 	public CommonTree parseAntlrTree(Resource res)
 	{
 		try
 		{
-			// CharStream input = isFile ? new ANTLRFileStream(path) : new
-			// ANTLRInputStream(System.in);
-			/*CharStream input = new ANTLRFileStream(res.getPath());
-			Scribble2Lexer lex = new Scribble2Lexer(input);  // FIXME: use Resource inputStream*/
 			String input = new String(readResource(res));
 			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));
 			Scribble2Parser parser = new Scribble2Parser(new CommonTokenStream(lex));

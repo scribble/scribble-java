@@ -8,7 +8,7 @@ import org.scribble.util.ScribbleException;
 //public class ProtocolDefinition extends AbstractNode
 //public abstract class ProtocolDefinition<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 public abstract class ProtocolDef<K extends ProtocolKind>
-		extends ModelNodeBase
+		extends ScribNodeBase
 {
 	public final ProtocolBlock<K> block;
 	//public final T block;

@@ -1,6 +1,6 @@
 package org.scribble.del;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.visit.ContextBuilder;
 import org.scribble.ast.visit.EnvVisitor;
 import org.scribble.ast.visit.FsmConstructor;
@@ -15,24 +15,24 @@ import org.scribble.util.ScribbleException;
 
 
 // Mutable for Envs (by visitors) -- make immutable?
-public abstract class ModelDelBase implements ModelDel
+public abstract class ScribDelBase implements ScribDel
 {
 	private Env env;
 	
 	//public ModelDelegateBase(Env env)
-	public ModelDelBase()
+	public ScribDelBase()
 	{
 		//this.env = env;
 	}
 	
 	@Override
-	public void enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
+	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 
 	}
 
 	@Override
-	public ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
@@ -51,91 +51,91 @@ public abstract class ModelDelBase implements ModelDel
 
 	@Override
 	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
-	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder) throws ScribbleException
+	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
 	{
 		//return builder;
 	}
 
 	@Override
-	public ModelNode leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	public ScribNode leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
 	@Override
 	//public WellFormedChoiceChecker enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
-	public void enterWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker) throws ScribbleException
 	{
 		//return checker;
 	}
 
 	@Override
-	public ModelNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	public ScribNode leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
 	@Override
 	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
-	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
 		//return proj;
 	}
 	
 	@Override
-	public ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
 	@Override
 	//public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
-	public void enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	public void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
 	{
 		//return checker;
 	}
 	
 	@Override
-	public ModelNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	public ScribNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 
 	@Override
-	public void enterFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv) //throws ScribbleException
+	public void enterFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv) //throws ScribbleException
 	{
 		
 	}
 
 	@Override
-	public ModelNode leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited) //throws ScribbleException
+	public ScribNode leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited) //throws ScribbleException
 	{
 		return visited;
 	}
 
 	@Override
-	public void enterOpCollection(ModelNode parent, ModelNode child, MessageIdCollector coll) //throws ScribbleException
+	public void enterOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll) //throws ScribbleException
 	{
 		
 	}
 
 	@Override
-	public ModelNode leaveOpCollection(ModelNode parent, ModelNode child, MessageIdCollector coll, ModelNode visited) //throws ScribbleException
+	public ScribNode leaveOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited) //throws ScribbleException
 	{
 		return visited;
 	}
 
-	public void enterModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder) throws ScribbleException
+	public void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
 	{
 		
 	}
 
-	public ModelNode leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	public ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
 	
-	protected <T extends Env> EnvVisitor<T> pushVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T> ev) //throws ScribbleException
+	protected <T extends Env> EnvVisitor<T> pushVisitorEnv(ScribNode parent, ScribNode child, EnvVisitor<T> ev) //throws ScribbleException
 	{
 		//T env = ev.peekEnv().<T>push();
 		//T env = ev.peekEnv().getClass().cast(ev.peekEnv().push());
@@ -144,8 +144,8 @@ public abstract class ModelDelBase implements ModelDel
 		return ev;
 	}
 	
-	protected <T1 extends Env, T2 extends ModelNode>
-			T2 popAndSetVisitorEnv(ModelNode parent, ModelNode child, EnvVisitor<T1> ev, T2 visited) //throws ScribbleException
+	protected <T1 extends Env, T2 extends ScribNode>
+			T2 popAndSetVisitorEnv(ScribNode parent, ScribNode child, EnvVisitor<T1> ev, T2 visited) //throws ScribbleException
 	{
 		T1 env = ev.popEnv();
 		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes

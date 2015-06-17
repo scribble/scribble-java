@@ -12,50 +12,60 @@ import org.scribble.ast.Module;
 import org.scribble.parser.AntlrParser;
 import org.scribble.parser.ScribbleModuleLoader;
 import org.scribble.parser.ScribbleParser;
-import org.scribble.parser.util.Pair;
+import org.scribble.resources.DirectoryResourceLocator;
 import org.scribble.resources.Resource;
 import org.scribble.resources.ResourceLocator;
 import org.scribble.sesstype.name.ModuleName;
+import org.scribble.util.Pair;
 
-// MainContext takes ResourceLocator abstractly (e.g. DirectoryResourceLocator), but because abstract Resource itself works off paths, it takes mainpath (rather than something more abstract to identify the "main" resource)
-// Resource and ResourceLocator should be made abstract from (file)paths (cf. toPath in ScribbleModuleLoader)
+
+// Scribble tool context for main module
+// FIXME: should be in core, but currently here due to Maven dependency restrictions
+// MainContext takes ResourceLocator abstractly (e.g. DirectoryResourceLocator), but because abstract Resource itself works off paths, it takes mainpath (rather than something more abstract, e.g. URI, to identify the "main" resource)
+// Resource and ResourceLocator should be made abstract from (file)paths (cf. use of toPath in ScribbleModuleLoader)
 public class MainContext
 {
 	public final boolean debug;
 	
 	public final ModuleName main;
 
-	private final AntlrParser aparser = new AntlrParser();  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" CommonTrees into ModelNodes
-	private final ScribbleParser sparser = new ScribbleParser();
+	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
+	private final AntlrParser antlrParser;  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
+	private final ScribbleParser scribParser;
 
-	private final ResourceLocator locator;
-	private final ScribbleModuleLoader loader;
+	private final ResourceLocator locator;  // Path -> Resource
+	private final ScribbleModuleLoader loader;  // sesstype.ModuleName -> Pair<Resource, Module>
 
-	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
+	// ModuleName keys are full module names -- parsed are the modules read from file, distinguished from the generated projection modules
+	// Resource recorded for source path
 	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
 	
-	//public MainContext(List<Path> importPath, String mainpath) throws IOException, ScribbleException
-	//public MainContext(List<Path> importPath, Path mainpath)
+	// FIXME: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
 	public MainContext(boolean debug, ResourceLocator locator, Path mainpath)
 	{
 		this.debug = debug;
-
+		this.antlrParser = new AntlrParser();
+		this.scribParser = new ScribbleParser();
 		this.locator = locator; 
-		this.loader = new ScribbleModuleLoader(this.locator, this.aparser, this.sparser);
+		this.loader = new ScribbleModuleLoader(this.locator, this.antlrParser, this.scribParser);
 
 		Pair<Resource, Module> p = loadMainModule(mainpath);
-
 		this.main = p.right.getFullModuleName();
 		
 		loadAllModules(p);
 	}
 	
-	// Checking main module resource exists at specific location should be factored out to front-end -- main module resource is specified at local front end level of abstraction, while MainConetext uses abstract resource loading
+	public Map<ModuleName, Module> getModules()
+	{
+		return this.parsed.entrySet().stream().collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue().right));
+	}
+	
+	// FIXME: checking main module resource exists at specific location should be factored out to front-end (e.g. CommandLine) -- main module resource is specified at local front end level of abstraction, while MainContext uses abstract resource loading
 	private Pair<Resource, Module> loadMainModule(Path mainpath)
 	{
 		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
-		Resource res = ResourceLocator.getResourceByFullPath(mainpath);
-		Module mod = (Module) this.sparser.parse(this.aparser.parseAntlrTree(res));
+		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  // FIXME: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
+		Module mod = (Module) this.scribParser.parse(this.antlrParser.parseAntlrTree(res));
 		checkMainModuleName(mainpath, mod);
 		return new Pair<>(res, mod);
 	}
@@ -82,75 +92,9 @@ public class MainContext
 				ModuleName modname = ((ImportModule) id).modname.toName();
 				if (!this.parsed.containsKey(modname))
 				{
-					loadAllModules(this.loader.loadScribbleModule(modname));
+					loadAllModules(this.loader.loadModule(modname));
 				}
 			}
 		}
 	}
-	
-	public Map<ModuleName, Module> getModules()
-	{
-		return this.parsed.entrySet().stream().collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue().right));
-	}
-
-	/*//private void initLoader(String paths)
-	private void initLoader(List<String> paths)
-	{
-		this._locator = new DirectoryResourceLocator(paths);
-		//_loader = new ProtocolModuleLoader(PARSER, _locator, LOGGER);
-	}*/
-
-	/*//protected Resource getResource(String moduleName) {
-	public Resource getResource(String path) {
-		//String relativePath = moduleName.replace('.', java.io.File.separatorChar) + ".scr";  // RAY
-		return (this._locator.getResource(path));
-	}*/
 }
-
-/*class ModuleLoader
-{
-	//private final ResourceLocator loader;
-	//private final ScribbleParser parser;
-	
-	private final ScribbleModuleLoader loader;
-
-	public ModuleLoader(ScribbleModuleLoader loader) throws ScribbleException
-	{
-		/*this.loader = locator;
-		this.parser = parser;* /
-		//this.loader = new ScribbleModuleLoader(locator, parser);
-		this.loader = loader;
-	}
-	
-	public Map<ModuleName, Pair<Resource, Module>> loadAll(String mainpath) throws ScribbleException
-	{
-		Map<ModuleName, Pair<Resource, Module>> modules = new HashMap<>();
-		
-		Pair<Resource, Module> mainmod = this.loader.loadScribbleModule(mainpath);  // FIXME: should be direct path location, not import path search
-		
-		modules.put(mainmod.right.getFullModuleName(), mainmod);
-
-		importModules(modules, mainmod.right);
-		
-		return modules;
-	}
-	
-	// Pre: modules.containsKey(module)
-	private void importModules(Map<ModuleName, Pair<Resource, Module>> modules, Module module)
-	{
-		for (ImportDecl id : module.imports)
-		{
-			if (id.isImportModule())
-			{
-				ModuleName modname = ((ImportModule) id).modname.toName();
-				if (!modules.containsKey(modname))
-				{
-					String path = modname.toPath();
-					Pair<Resource, Module> next = this.loader.loadScribbleModule(path);
-					modules.put(next.right.getFullModuleName(), next);
-					importModules(modules, next.right);
-				}
-			}
-		}
-	}
-}*/

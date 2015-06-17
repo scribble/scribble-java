@@ -17,22 +17,22 @@ package org.scribble.ast;
 
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.ast.visit.Substitutor;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.util.ScribbleException;
 
 /**
  * This is the generic object from which all Scribble model objects
  * are derived.
  */
-public interface ModelNode// extends Copy
+public interface ScribNode
 {
-	ModelNode accept(ModelVisitor nv) throws ScribbleException;
-	ModelNode visitChildren(ModelVisitor nv) throws ScribbleException;
+	ScribNode accept(ModelVisitor nv) throws ScribbleException;
+	ScribNode visitChildren(ModelVisitor nv) throws ScribbleException;
 	//ModelNode visitChildrenInSubprotocols(SubprotocolVisitor nv) throws ScribbleException;
 
-	ModelDel del();
-	ModelNode del(ModelDel del);
+	ScribDel del();
+	ScribNode del(ScribDel del);
 	//<T extends ModelNodeBase> T del(T t, ModelDelegate del);
 	
-	ModelNode substituteNames(Substitutor subs);
+	ScribNode substituteNames(Substitutor subs);
 }

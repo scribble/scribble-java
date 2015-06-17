@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.ImportDecl;
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonProtocolDecl;
@@ -27,7 +27,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribbleException;
 
-public class ModuleDel extends ModelDelBase
+public class ModuleDel extends ScribDelBase
 {
 	private ModuleContext context;
 	
@@ -69,7 +69,7 @@ public class ModuleDel extends ModelDelBase
 
 	@Override
 	//public ContextBuilder enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder)
-	public void enterContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder)
+	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder)
 	{
 		builder.setModuleContext(new ModuleContext(builder.getJobContext(), (Module) child));
 		//return builder;
@@ -77,7 +77,7 @@ public class ModuleDel extends ModelDelBase
 
 	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)
 	@Override
-	public Module leaveContextBuilding(ModelNode parent, ModelNode child, ContextBuilder builder, ModelNode visited) throws ScribbleException
+	public Module leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		//visited = visited.del(new ModuleDelegate(builder.getJobContext(), (Module) visited));
 		ModuleDel del = copy();  // FIXME: should be a deep clone in principle
@@ -87,7 +87,7 @@ public class ModuleDel extends ModelDelBase
 	}
 
 	@Override
-	public Module leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) //throws ScribbleException
+	public Module leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) //throws ScribbleException
 	{
 		Module mod = (Module) visited;
 		// .. store projections for each globalprotocoldecl in module and context and return new module with updated context
@@ -114,7 +114,7 @@ public class ModuleDel extends ModelDelBase
 		//.. record protocol dependencies in context
 
 		//ModuleDecl moddecl = new ModuleDecl(modname);
-		ModuleDecl moddecl = ModelFactoryImpl.FACTORY.ModuleDecl(modname);
+		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(modname);
 		List<ImportDecl> imports = new LinkedList<>();  // Need names from do
 		
 		for (GProtocolName gpn : dependencies.keySet())
@@ -134,7 +134,7 @@ public class ModuleDel extends ModelDelBase
 				if (!targetfullname.toName().getPrefix().equals(modname.toName()))
 				{
 					//imports.add(new ImportModule(targetmodname, null));
-					imports.add(ModelFactoryImpl.FACTORY.ImportModule(targetmodname, null));
+					imports.add(AstFactoryImpl.FACTORY.ImportModule(targetmodname, null));
 				}
 			}
 		}
@@ -143,7 +143,7 @@ public class ModuleDel extends ModelDelBase
 		//List<LocalProtocolDecl> protos = Arrays.asList(lpd);
 		List<ProtocolDecl<? extends ProtocolKind>> protos = Arrays.asList(lpd);
 		//return new Module(moddecl, imports, data, protos);
-		return ModelFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
+		return AstFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}
 	
 	/*public ProtocolName getFullProtocolDeclName(ProtocolName visname)

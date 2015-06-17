@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GProtocolBlock;
@@ -28,7 +28,7 @@ public class AntlrGChoice
 			blocks.add((GProtocolBlock) parser.parse(block));
 		}
 		//return new GlobalChoice(subj, blocks);
-		return ModelFactoryImpl.FACTORY.GChoice(subj, blocks);
+		return AstFactoryImpl.FACTORY.GChoice(subj, blocks);
 	}
 
 	public static CommonTree getSubjectChild(CommonTree ct)

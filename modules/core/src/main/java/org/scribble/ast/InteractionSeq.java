@@ -8,7 +8,7 @@ import org.scribble.util.ScribbleException;
 
 
 //public class InteractionSequence extends AbstractNode
-public abstract class InteractionSeq<K extends ProtocolKind> extends ModelNodeBase
+public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBase
 {
 	//public final List<? extends InteractionNode> actions;
 	public final List<? extends InteractionNode<K>> actions;

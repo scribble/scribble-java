@@ -3,7 +3,7 @@ package org.scribble.del.global;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GParallel;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.ast.visit.env.WellFormedChoiceEnv;
@@ -14,7 +14,7 @@ public class GParallelDel extends GCompoundInteractionNodeDel
 	@Override
 	//public GlobalParallel leave(Parallel<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> par,
 	//public GlobalParallel leave(GlobalParallel par, WellFormedChoiceChecker checker)
-	public GParallel leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	public GParallel leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GParallel par = (GParallel) visited;
 		List<WellFormedChoiceEnv> benvs =

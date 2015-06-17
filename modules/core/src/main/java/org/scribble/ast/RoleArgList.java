@@ -3,7 +3,7 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.Role;
 
 public class RoleArgList extends DoArgList<RoleArg>
@@ -26,7 +26,7 @@ public class RoleArgList extends DoArgList<RoleArg>
 	@Override
 	protected RoleArgList reconstruct(List<RoleArg> instans)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		RoleArgList rl = new RoleArgList(instans);
 		rl = (RoleArgList) rl.del(del);
 		return rl;
@@ -38,7 +38,7 @@ public class RoleArgList extends DoArgList<RoleArg>
 	{
 		List<RoleArg> instans =
 				this.args.stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
-		return ModelFactoryImpl.FACTORY.RoleArgList(instans);
+		return AstFactoryImpl.FACTORY.RoleArgList(instans);
 	}
 
 	/*@Override

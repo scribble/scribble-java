@@ -1,6 +1,6 @@
 package org.scribble.del.global;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.visit.ModelBuilder;
 import org.scribble.ast.visit.Projector;
 import org.scribble.del.SimpleInteractionNodeDel;
@@ -17,7 +17,7 @@ public abstract class GSimpleInteractionNodeDel extends SimpleInteractionNodeDel
 
 	@Override
 	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
-	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
 		/*ProjectionEnv env = proj.peekEnv().push();  // By default: copy
 		proj.pushEnv(env);
@@ -27,7 +27,7 @@ public abstract class GSimpleInteractionNodeDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	public ModelNode leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		/*ProjectionEnv env = proj.popEnv();
 		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
@@ -38,13 +38,13 @@ public abstract class GSimpleInteractionNodeDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	public void enterModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder) throws ScribbleException
+	public void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
 	{
 		pushVisitorEnv(parent, child, builder);
 	}
 
 	@Override
-	public ModelNode leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	public ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		return popAndSetVisitorEnv(parent, child, builder, visited);
 	}

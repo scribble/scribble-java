@@ -1,10 +1,10 @@
 package org.scribble.del;
 
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.visit.Projector;
 
-public class ImportModuleDel extends ModelDelBase
+public class ImportModuleDel extends ScribDelBase
 {
 	public ImportModuleDel()
 	{
@@ -33,7 +33,7 @@ public class ImportModuleDel extends ModelDelBase
 	}*/
 
 	@Override
-	public ImportModule leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) //throws ScribbleException
+	public ImportModule leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) //throws ScribbleException
 	{
 		/*// Don't know target protocol
 		PrimitiveNameNode pnn = new PrimitiveNameNode(null, proj.getProjectedModuleName(this.fmn.smn, ...));

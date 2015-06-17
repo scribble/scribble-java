@@ -1,6 +1,6 @@
 package org.scribble.del;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.visit.NameDisambiguator;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
@@ -8,18 +8,18 @@ import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribbleException;
 
-public class RoleDeclDel extends ModelDelBase
+public class RoleDeclDel extends ScribDelBase
 {
 	@Override
 	//public void enterBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker) throws ScribbleException
-	public void enterDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb) throws ScribbleException
+	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 		RoleDecl rd = (RoleDecl) child;
 		disamb.addRole(rd.getDeclName());
 	}
 
 	@Override
-	public RoleDecl leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	public RoleDecl leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		WellFormedChoiceEnv env = checker.popEnv();
 		RoleDecl rd = (RoleDecl) visited;

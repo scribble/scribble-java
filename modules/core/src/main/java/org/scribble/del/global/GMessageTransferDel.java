@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LReceive;
@@ -41,7 +41,7 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public GMessageTransfer leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	public GMessageTransfer leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer msgtrans = (GMessageTransfer) visited;
 		
@@ -67,7 +67,7 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public GMessageTransfer leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException //throws ScribbleException
+	public GMessageTransfer leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 
@@ -79,28 +79,28 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		{
 			//RoleNode src = new RoleNode(gmt.src.toName().toString());  // FIXME: project by visiting -- or maybe not: projection visiting only for GlobalNode
 			//RoleNode src = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, gmt.src.toName().toString());
-			RoleNode src = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gmt.src.toName().toString());
+			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gmt.src.toName().toString());
 			//MessageNode msg = (MessageNode) ((ProjectionEnv) gmt.msg.del().getEnv()).getProjection();
 			MessageNode msg = (MessageNode) gmt.msg;  // FIXME: need namespace prefix update?
 			List<RoleNode> dests =
 					//destroles.stream().map((d) -> new RoleNode(d.toString())).collect(Collectors.toList());
 					//destroles.stream().map((d) -> (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, d.toString())).collect(Collectors.toList());
-					destroles.stream().map((d) -> (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, d.toString())).collect(Collectors.toList());
+					destroles.stream().map((d) -> (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, d.toString())).collect(Collectors.toList());
 			if (srcrole.equals(self))
 			{
-				projection = ModelFactoryImpl.FACTORY.LSend(src, msg, dests);
+				projection = AstFactoryImpl.FACTORY.LSend(src, msg, dests);
 			}
 			if (destroles.contains(self))
 			{
 				if (projection == null)
 				{
-					projection = ModelFactoryImpl.FACTORY.LReceive(src, msg, dests);
+					projection = AstFactoryImpl.FACTORY.LReceive(src, msg, dests);
 				}
 				else
 				{
-					LReceive lr = ModelFactoryImpl.FACTORY.LReceive(src, msg, dests);
+					LReceive lr = AstFactoryImpl.FACTORY.LReceive(src, msg, dests);
 					List<LInteractionNode> lis = Arrays.asList(new LInteractionNode[]{(LInteractionNode) projection, lr});
-					projection = ModelFactoryImpl.FACTORY.LInteractionSequence(lis);
+					projection = AstFactoryImpl.FACTORY.LInteractionSequence(lis);
 				}
 			}
 		}
@@ -114,7 +114,7 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public ModelNode leaveOpCollection(ModelNode parent, ModelNode child, MessageIdCollector coll, ModelNode visited)
+	public ScribNode leaveOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		/*if (!gmt.msg.isMessageSigNode())
@@ -133,7 +133,7 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public GMessageTransfer leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		ModelEnv env = builder.popEnv();

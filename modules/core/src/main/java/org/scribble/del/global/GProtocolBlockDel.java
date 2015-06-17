@@ -3,8 +3,8 @@ package org.scribble.del.global;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
@@ -22,19 +22,19 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 {
 	@Override
 	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
-	public void enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
+	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
 		//return (Projector) pushEnv(parent, child, proj);
 		pushVisitorEnv(parent, child, proj);
 	}
 
 	@Override
-	public GProtocolBlock leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	public GProtocolBlock leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GProtocolBlock gpd = (GProtocolBlock) visited;
 		LInteractionSeq seq = (LInteractionSeq) ((ProjectionEnv) gpd.seq.del().env()).getProjection();	
 		//LocalProtocolBlock projection = ModelFactoryImpl.FACTORY.LocalProtocolBlock(ModelFactoryImpl.FACTORY.LocalInteractionSequence(Collections.emptyList()));
-		LProtocolBlock projection = ModelFactoryImpl.FACTORY.LProtocolBlock(seq);
+		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(seq);
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
@@ -43,13 +43,13 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 	}
 	
 	@Override
-	public void enterModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder) throws ScribbleException
+	public void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
 	{
 		pushVisitorEnv(parent, child, builder);
 	}
 
 	@Override
-	public GProtocolBlock leaveModelBuilding(ModelNode parent, ModelNode child, ModelBuilder builder, ModelNode visited) throws ScribbleException
+	public GProtocolBlock leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolBlock gpb = (GProtocolBlock) visited;
 		Set<ModelAction> as = ((ModelEnv) gpb.seq.del().env()).getActions();

@@ -1,7 +1,7 @@
 package org.scribble.del;
 
 import org.scribble.ast.CompoundInteractionNode;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.util.ScribbleException;
@@ -34,7 +34,7 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 	//public void enter(Choice<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> cho, WellFormedChoiceChecker checker)
 	
 	@Override
-	public CompoundInteractionNode leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	public CompoundInteractionNode leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		WellFormedChoiceEnv env = checker.popEnv();
 		setEnv(env);

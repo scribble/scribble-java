@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
-import org.scribble.ast.ModelNodeBase;
-import org.scribble.del.ModelDel;
+import org.scribble.ast.ScribNodeBase;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
@@ -20,14 +20,14 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LocalNode
 	@Override
 	protected LInteractionSeq reconstruct(List<? extends InteractionNode<Local>> actions)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		LInteractionSeq lis = new LInteractionSeq(actions);
 		lis = (LInteractionSeq) lis.del(del);
 		return lis;
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new LInteractionSeq(this.actions);
 	}

@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
@@ -54,7 +54,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	}
 
 	@Override
-	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		// Hack to "override" SubprotocolVisitor visitChildrenInSubprotocols pattern
 		// But avoids adding visitForProjection to every ModelNode
@@ -76,7 +76,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	
   // Important: projection should not follow the subprotocol visiting pattern for do's -- projection uses some name mangling, which isn't compatible with subprotocol visitor name maps
 	@Override
-	protected ModelNode visitForSubprotocols(ModelNode parent, ModelNode child) throws ScribbleException
+	protected ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		return child.visitChildren(this);
 	}
@@ -196,7 +196,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	
 	@Override
 	//protected final Projector envEnter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected final void envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected final void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		/*Projector proj = (Projector) super.envEnter(parent, child);
 		return proj;*/
@@ -209,7 +209,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 	
 	@Override
 	//protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<ProjectionEnv> nv, ModelNode visited) throws ScribbleException
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		/*ModelNode n = super.envLeave(parent, child, nv, visited);
 		return n.leaveProjection((Projector) nv);*/
@@ -226,7 +226,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		//return new SimpleProtocolNameNode(makeProjectedLocalNameAux(simplename.toString(), role.toString()));
 		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PROTOCOL, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
 		//return (SimpleProtocolNameNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ProtocolKind.KIND, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
-		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
+		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, makeProjectedLocalNameAux(simplename.toString(), role.toString()));
 	}
 
 	// Role is the target subprotocol parameter (not the current projector self -- actually the self just popped)
@@ -242,7 +242,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		//return new ProtocolNameNode(tmp);
 		//return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, tmp);
 		//return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ProtocolKind.KIND, tmp);
-		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, tmp);
+		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, tmp);
 	}
 
 	/*public static ProtocolName makeProjectedProtocolName(ProtocolName fullname, Role role)
@@ -263,7 +263,7 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		tmp[tmp.length - 1] = makeProjectedModuleSimpleName(fullname.getSimpleName().toString(), localname.toString());
 		//return new ModuleNameNode(tmp);
 		//return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MODULE, tmp);
-		return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, tmp);
+		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, tmp);
 	}
 
 	/*public static ModuleName makeProjectedModuleName(ModuleName fullname, ProtocolName localname)

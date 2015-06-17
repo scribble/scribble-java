@@ -8,7 +8,7 @@ import org.scribble.sesstype.name.Name;
 //public abstract class NameDeclNode<T1 extends NameNode<T2>, T2 extends IName> extends ModelNodeBase //implements Named<Name> -- no: NameDeclNode is not a Named node itself
 //public abstract class NameDeclNode<T2 extends Name<K>, K extends Kind> extends ModelNodeBase //implements Named<Name> -- no: NameDeclNode is not a Named node itself
 //public abstract class NameDeclNode<T1 extends NameNode<? extends Name>> extends ModelNodeBase
-public abstract class NameDeclNode<K extends Kind> extends ModelNodeBase //implements Named<Name> -- no: NameDeclNode is not a Named node itself
+public abstract class NameDeclNode<K extends Kind> extends ScribNodeBase //implements Named<Name> -- no: NameDeclNode is not a Named node itself
 { 
 	public final NameNode<K> name;
 	

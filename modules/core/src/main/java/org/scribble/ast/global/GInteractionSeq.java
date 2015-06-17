@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
@@ -19,7 +19,7 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GlobalNod
 	@Override
 	protected GInteractionSeq reconstruct(List<? extends InteractionNode<Global>> ins)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		GInteractionSeq gis = new GInteractionSeq(ins);
 		gis = (GInteractionSeq) gis.del(del);
 		return gis;

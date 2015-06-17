@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.scribble.ast.Continue;
 import org.scribble.ast.InteractionNode;
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
@@ -22,7 +22,7 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 {
 	@Override
 	//public void leave(Recursion<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> rec, WellFormedChoiceChecker checker)
-	public GRecursion leaveWFChoiceCheck(ModelNode parent, ModelNode child, WellFormedChoiceChecker checker, ModelNode visited) throws ScribbleException
+	public GRecursion leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GRecursion rec = (GRecursion) visited;
 		//WellFormedChoiceEnv parent = checker.getEnv().getParent();
@@ -32,12 +32,12 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 	}
 
 	@Override
-	public GRecursion leaveProjection(ModelNode parent, ModelNode child, Projector proj, ModelNode visited) throws ScribbleException
+	public GRecursion leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GRecursion gr = (GRecursion) visited;
 		//RecursionVarNode recvar = new RecursionVarNode(gr.recvar.toName().toString());
 		//RecursionVarNode recvar = (RecursionVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.RECURSIONVAR, gr.recvar.toName().toString());
-		RecVarNode recvar = (RecVarNode) ModelFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection();	
 		LRecursion projection = null;
 		if (!block.isEmpty())
@@ -46,7 +46,7 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 			List<? extends InteractionNode<Local>> lis = block.seq.actions;
 			if (!(lis.size() == 1 && lis.get(0) instanceof Continue))
 			{
-				projection = ModelFactoryImpl.FACTORY.LRecursion(recvar, block);
+				projection = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
 			}
 		}
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));

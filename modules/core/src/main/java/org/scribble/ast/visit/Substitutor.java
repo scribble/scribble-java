@@ -4,8 +4,8 @@ import java.util.Map;
 
 import org.scribble.ast.ArgNode;
 import org.scribble.ast.MessageSigNode;
-import org.scribble.ast.ModelFactoryImpl;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.DataTypeNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
@@ -32,7 +32,7 @@ public class Substitutor extends ModelVisitor
 	
 	@Override
 	//public ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
-	public ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		//return visited.substituteNames((Substitutor) nv);
 		return visited.substituteNames(this);
@@ -58,23 +58,23 @@ public class Substitutor extends ModelVisitor
 		{
 			MessageSigNode msn = (MessageSigNode) an;
 			//return new MessageSigNode(msn.op, msn.payload);  // FIXME: use factory
-			return (ArgNode) ModelFactoryImpl.FACTORY.MessageSigNode(msn.op, msn.payload);
+			return (ArgNode) AstFactoryImpl.FACTORY.MessageSigNode(msn.op, msn.payload);
 		}
 		else if (an.isMessageSigNameNode())
 		{
 			MessageSigNameNode msn = (MessageSigNameNode) an;
-			return (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, msn.getElements());
+			return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, msn.getElements());
 		}
 		else if (an.isDataTypeNameNode())
 		{
 			DataTypeNameNode dtn = (DataTypeNameNode) an;
-			return (DataTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, dtn.getElements());
+			return (DataTypeNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, dtn.getElements());
 		}
 		else if (an.isParamNode())
 		{
 			//return Substitutor.copyParameterNode((ParameterNode<K>) an);
 			NonRoleParamNode<K> pn = (NonRoleParamNode<K>) an;
-			return ModelFactoryImpl.FACTORY.NonRoleParamNode(pn.kind, pn.getIdentifier());
+			return AstFactoryImpl.FACTORY.NonRoleParamNode(pn.kind, pn.getIdentifier());
 		}
 		else
 		{

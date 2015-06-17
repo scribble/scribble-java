@@ -5,9 +5,9 @@ import java.util.List;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 public class LSend extends MessageTransfer<Local> implements LSimpleInteractionNode
@@ -20,7 +20,7 @@ public class LSend extends MessageTransfer<Local> implements LSimpleInteractionN
 	@Override
 	protected LSend reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		LSend ls = new LSend(src, msg, dests);
 		ls = (LSend) ls.del(del);
 		return ls;
@@ -84,7 +84,7 @@ public class LSend extends MessageTransfer<Local> implements LSimpleInteractionN
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new LSend(this.src, this.msg, this.dests);
 	}

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.ast.visit.Substitutor;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.util.RuntimeScribbleException;
 import org.scribble.util.ScribbleException;
 import org.scribble.util.ScribbleUtil;
@@ -30,28 +30,28 @@ import org.scribble.util.ScribbleUtil;
  * are derived.
  */
 // Currently name nodes don't have dels (aren't made by node factory)
-public abstract class ModelNodeBase implements ModelNode
+public abstract class ScribNodeBase implements ScribNode
 {
-	protected ModelDel del;
+	protected ScribDel del;
 
 	// Internal shallow copy for (immutable) ModelNodes
 	//@Override
-	protected abstract ModelNodeBase copy();
+	protected abstract ScribNodeBase copy();
 	
 	@Override
-	public ModelNode accept(ModelVisitor nv) throws ScribbleException
+	public ScribNode accept(ModelVisitor nv) throws ScribbleException
 	{
 		//return visitChild(this, nv);  // FIXME: weird to call visitChild with "this" as the child (only done for root visit calls)
 		return nv.visit(null, this);
 	}
 
 	@Override
-	public ModelNode visitChildren(ModelVisitor nv) throws ScribbleException
+	public ScribNode visitChildren(ModelVisitor nv) throws ScribbleException
 	{
 		return this;
 	}
 	
-	protected ModelNode visitChild(ModelNode child, ModelVisitor nv) throws ScribbleException
+	protected ScribNode visitChild(ScribNode child, ModelVisitor nv) throws ScribbleException
 	{
 		return nv.visit(this, child);
 	}
@@ -63,15 +63,15 @@ public abstract class ModelNodeBase implements ModelNode
 	}*/
 	
 	@Override
-	public final ModelDel del()
+	public final ScribDel del()
 	{
 		return this.del;
 	}
 	
 	@Override
-	public final ModelNodeBase del(ModelDel del)
+	public final ScribNodeBase del(ScribDel del)
 	{
-		ModelNodeBase copy = copy();
+		ScribNodeBase copy = copy();
 		copy.del = del;
 		return copy;
 	}
@@ -90,16 +90,16 @@ public abstract class ModelNodeBase implements ModelNode
 	}*/
 
 	@Override
-	public ModelNode substituteNames(Substitutor subs)
+	public ScribNode substituteNames(Substitutor subs)
 	{
 		return this;
 	}
 		
 	// FIXME: remove parent parameter, to make uniform with visitChild
 	// Used when a generic cast would otherwise be needed (non-generic children casts don't need this)
-	protected final static <T extends ModelNode> T visitChildWithClassCheck(ModelNode parent, T child, ModelVisitor nv) throws ScribbleException
+	protected final static <T extends ScribNode> T visitChildWithClassCheck(ScribNode parent, T child, ModelVisitor nv) throws ScribbleException
 	{
-		ModelNode visited = ((ModelNodeBase) parent).visitChild(child, nv);
+		ScribNode visited = ((ScribNodeBase) parent).visitChild(child, nv);
 		if (visited.getClass() != child.getClass())  // Visitor is not allowed to replace the node by a different node type
 		{
 			throw new RuntimeException(nv.getClass() + " generic visit error: " + child.getClass() + ", " + visited.getClass());
@@ -109,7 +109,7 @@ public abstract class ModelNodeBase implements ModelNode
 		return t;
 	}
 
-	protected final static <T extends ModelNode> List<T> visitChildListWithClassCheck(ModelNode parent, List<T> children, ModelVisitor nv) throws ScribbleException
+	protected final static <T extends ScribNode> List<T> visitChildListWithClassCheck(ScribNode parent, List<T> children, ModelVisitor nv) throws ScribbleException
 	{
 		/*List<T> visited = new LinkedList<>();
 		for (T n : children)
@@ -121,7 +121,7 @@ public abstract class ModelNodeBase implements ModelNode
 		try
 		{
 			return children.stream()
-					.map((n) -> ScribbleUtil.handleLambdaScribbleException(() -> ModelNodeBase.visitChildWithClassCheck(parent, n, nv)))
+					.map((n) -> ScribbleUtil.handleLambdaScribbleException(() -> ScribNodeBase.visitChildWithClassCheck(parent, n, nv)))
 					.collect(Collectors.toList());
 		}
 		catch (RuntimeScribbleException rse)

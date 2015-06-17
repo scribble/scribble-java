@@ -2,7 +2,7 @@ package org.scribble.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageSigNode;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.PayloadElemList;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.parser.ScribbleParser;
@@ -18,7 +18,7 @@ public class AntlrMessageSig
 		OpNode op = AntlrSimpleName.toOpNode(getOpChild(ct));
 		PayloadElemList payload = (PayloadElemList) parser.parse(getPayloadElemListChild(ct));
 		//return new MessageSignatureNode(op, payload);
-		return ModelFactoryImpl.FACTORY.MessageSigNode(op, payload);
+		return AstFactoryImpl.FACTORY.MessageSigNode(op, payload);
 	}
 
 	public static CommonTree getOpChild(CommonTree ct)

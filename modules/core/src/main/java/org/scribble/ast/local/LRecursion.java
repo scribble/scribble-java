@@ -3,7 +3,7 @@ package org.scribble.ast.local;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class LocalRecursion extends Recursion<LocalProtocolBlock> implements CompoundLocalInteractionNode
@@ -19,7 +19,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	//protected LocalRecursion reconstruct(RecursionVarNode recvar, LocalProtocolBlock block)
 	protected LRecursion reconstruct(RecVarNode recvar, ProtocolBlock<Local> block)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		LRecursion lr = new LRecursion(recvar, block);
 		lr = (LRecursion) lr.del(del);
 		return lr;

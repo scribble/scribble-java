@@ -2,7 +2,7 @@ package org.scribble.ast.name.simple;
 
 import org.scribble.ast.DoArgNode;
 import org.scribble.ast.visit.Substitutor;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 
@@ -19,7 +19,7 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 	//@Override
 	private RoleNode reconstruct(String identifier)
 	{
-		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
+		ScribDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
 		RoleNode rn = new RoleNode(identifier);
 		rn = (RoleNode) rn.del(del);
 		return rn;

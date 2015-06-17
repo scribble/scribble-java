@@ -2,7 +2,7 @@ package org.scribble.del;
 
 
 // FIXME: should be a CompoundInteractionDelegate? -- no: compound interaction delegates for typing contexts (done for block only, not seqs)
-public abstract class InteractionSeqDel extends ModelDelBase
+public abstract class InteractionSeqDel extends ScribDelBase
 {
 	// Projection only done for global nodes, Reachability Check only for local
 

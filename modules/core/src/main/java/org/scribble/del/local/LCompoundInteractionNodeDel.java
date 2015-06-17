@@ -1,6 +1,6 @@
 package org.scribble.del.local;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LCompoundInteractionNode;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.ast.visit.env.ReachabilityEnv;
@@ -19,14 +19,14 @@ public class LCompoundInteractionNodeDel extends CompoundInteractionNodeDel
 	// Unlike WF-choice enter/leave for CompoundInteractionNodeDelegate (i.e. both global/local), reachability is limited to local only
 	@Override
 	//public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
-	public void enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	public void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
 	{
 		//return (ReachabilityChecker) pushEnv(parent, child, checker);
 		pushVisitorEnv(parent, child, checker);
 	}
 
 	@Override
-	public ModelNode leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	public ScribNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		/*ProjectionEnv env = proj.popEnv();
 		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes

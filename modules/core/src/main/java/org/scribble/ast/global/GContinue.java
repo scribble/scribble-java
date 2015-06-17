@@ -2,7 +2,7 @@ package org.scribble.ast.global;
 
 import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
 public class GContinue extends Continue<Global> implements GSimpleInteractionNode
@@ -16,7 +16,7 @@ public class GContinue extends Continue<Global> implements GSimpleInteractionNod
 	@Override
 	protected GContinue reconstruct(RecVarNode recvar)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		GContinue gc = new GContinue(recvar);//, sicontext, env);
 		gc = (GContinue) gc.del(del);
 		return gc;

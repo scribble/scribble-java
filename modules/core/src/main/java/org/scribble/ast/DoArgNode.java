@@ -4,7 +4,7 @@ package org.scribble.ast;
 // RoleNodes and ArgumentNodes
 // Not "InstantationArgument" to avoid confusion with ArgumentInstantiation[List]
 //public interface DoArgumentNode extends ModelNode
-public interface DoArgNode extends ModelNode
+public interface DoArgNode extends ScribNode
 {
 
 }

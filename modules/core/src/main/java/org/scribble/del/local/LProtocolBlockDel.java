@@ -1,6 +1,6 @@
 package org.scribble.del.local;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.del.ProtocolBlockDel;
@@ -11,14 +11,14 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 {
 	@Override
 	//public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
-	public void enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
+	public void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
 	{
 		//return (ReachabilityChecker) pushEnv(parent, child, checker);
 		pushVisitorEnv(parent, child, checker);
 	}
 
 	@Override
-	public LProtocolBlock leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	public LProtocolBlock leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return (LProtocolBlock) popAndSetVisitorEnv(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 		/*LocalProtocolBlock lpd = (LocalProtocolBlock) visited;

@@ -1,7 +1,7 @@
 package org.scribble.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.parser.AntlrConstants;
@@ -27,12 +27,12 @@ public class AntlrNonRoleParamDecl
 		if (kind.equals(SigKind.KIND))
 		{
 			NonRoleParamNode<SigKind> name = AntlrSimpleName.toParamNode(SigKind.KIND, getNameChild(ct));
-			return ModelFactoryImpl.FACTORY.ParamDecl(SigKind.KIND, name);
+			return AstFactoryImpl.FACTORY.ParamDecl(SigKind.KIND, name);
 		}
 		else if (kind.equals(DataTypeKind.KIND))
 		{
 			NonRoleParamNode<DataTypeKind> name = AntlrSimpleName.toParamNode(DataTypeKind.KIND, getNameChild(ct));
-			return ModelFactoryImpl.FACTORY.ParamDecl(DataTypeKind.KIND, name);
+			return AstFactoryImpl.FACTORY.ParamDecl(DataTypeKind.KIND, name);
 		}
 		else
 		{

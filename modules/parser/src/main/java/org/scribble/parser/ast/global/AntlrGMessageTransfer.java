@@ -6,7 +6,7 @@ import java.util.List;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.parser.AntlrConstants;
@@ -34,7 +34,7 @@ public class AntlrGMessageTransfer
 			dests.add(AntlrSimpleName.toRoleNode(dest));
 		}
 		//return new GlobalMessageTransfer(src, msg, dests);
-		return ModelFactoryImpl.FACTORY.GMessageTransfer(src, msg, dests);
+		return AstFactoryImpl.FACTORY.GMessageTransfer(src, msg, dests);
 	}
 
 	protected static MessageNode parseMessage(ScribbleParser parser, CommonTree ct)

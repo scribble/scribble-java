@@ -3,7 +3,7 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
@@ -36,7 +36,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<Kind>
 	//protected ParamDeclList reconstruct(List<HeaderParamDecl<Name<Kind>, Kind>> decls)
 	protected NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<Kind>> decls)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		NonRoleParamDeclList rdl = new NonRoleParamDeclList(getParamDecls());
 		rdl = (NonRoleParamDeclList) rdl.del(del);
 		return rdl;
@@ -50,7 +50,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<Kind>
 		//List<HeaderParamDecl<Name<Kind>, Kind>> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
 		//List<HeaderParamDecl<Kind>> paramdecls = this.decls.stream().map((pd) -> pd.project(self)).collect(Collectors.toList());	
 		//return new ParameterDeclList(paramdecls);
-		return ModelFactoryImpl.FACTORY.NonRoleParamDeclList(getParamDecls());
+		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(getParamDecls());
 	}
 
 	/*// Not doing anything except cloning

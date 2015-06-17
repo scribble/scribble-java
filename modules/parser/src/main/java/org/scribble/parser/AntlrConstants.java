@@ -1,6 +1,6 @@
 package org.scribble.parser;
 
-// FIXME: refer to values from core model.Constants
+// FIXME: refer to values from core ast.Constants
 public class AntlrConstants
 {
 	public static final String SCRIBBLE_FILE_EXTENSION = "scr";

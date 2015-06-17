@@ -3,7 +3,7 @@ package org.scribble.ast.visit;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
@@ -22,13 +22,13 @@ public class BoundNameChecker extends ModelVisitor
 	}
 	
 	@Override
-	public void enter(ModelNode parent, ModelNode child) throws ScribbleException
+	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		//child.del().enterBoundNamesCheck(parent, child, this);
 	}
 	
 	@Override
-	public ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		return null;// visited.del().leaveBoundNamesCheck(parent, child, this, visited);
 	}

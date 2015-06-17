@@ -13,7 +13,7 @@ public abstract class HeaderParamDeclList<
 		T2 extends SimpleName*/
 		//T extends Name<K>,
 		K extends Kind
-> extends ModelNodeBase 
+> extends ScribNodeBase 
 {
 	//public final List<T1> decls;
 	//public final List<HeaderParamDecl<T, K>> decls;  // Not List<? extends HeaderParamDecl<T, K>> because ParamDeclList contains mixed kinds

@@ -1,4 +1,4 @@
-package org.scribble.parser.util;
+package org.scribble.util;
 
 public class Pair<T1, T2>
 {

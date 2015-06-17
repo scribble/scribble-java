@@ -1,6 +1,6 @@
 package org.scribble.ast;
 
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.Role;
 
 
@@ -12,7 +12,7 @@ public class NonRoleArg extends DoArg<ArgNode>
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new NonRoleArg(this.val);
 	}
@@ -20,7 +20,7 @@ public class NonRoleArg extends DoArg<ArgNode>
 	@Override
 	protected NonRoleArg reconstruct(ArgNode arg)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		NonRoleArg ai = new NonRoleArg(arg);
 		ai = (NonRoleArg) ai.del(del);
 		return ai;
@@ -33,6 +33,6 @@ public class NonRoleArg extends DoArg<ArgNode>
 		return new ArgumentInstantiation(arg);*/
 		//ArgumentNode an = new ArgumentNode(this.arg.toName().toString());
 		//return new ArgumentInstantiation(this.arg);  // FIXME: arg needs projection?
-		return ModelFactoryImpl.FACTORY.NonRoleArg(this.val);  // FIXME: arg needs projection?
+		return AstFactoryImpl.FACTORY.NonRoleArg(this.val);  // FIXME: arg needs projection?
 	}
 }

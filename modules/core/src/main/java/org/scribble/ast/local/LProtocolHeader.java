@@ -1,7 +1,7 @@
 package org.scribble.ast.local;
 
 import org.scribble.ast.Constants;
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.NameDeclNode;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
@@ -9,7 +9,7 @@ import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.LProtocolName;
@@ -51,7 +51,7 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LocalNode
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		//return new LProtocolHeader((SimpleProtocolNameNode) this.name, this.roledecls, this.paramdecls);
 		return new LProtocolHeader((LProtocolNameNode) this.name, this.roledecls, this.paramdecls);
@@ -61,7 +61,7 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LocalNode
 	//protected ProtocolHeader reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl)
 	protected LProtocolHeader reconstruct(ProtocolNameNode<Local> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		LProtocolHeader gph = new LProtocolHeader((LProtocolNameNode) name, rdl, pdl);
 		gph = (LProtocolHeader) gph.del(del);
 		return gph;

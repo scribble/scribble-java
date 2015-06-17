@@ -150,21 +150,9 @@ public class Job
 		mod.accept(new FsmConstructor(this));
 	}
 	
-	//public Map<String, String> generateApi(LProtocolName lpn) throws ScribbleException
-	public Map<String, String> generateApi(GProtocolName gpn, Role role) throws ScribbleException
-	{
-		LProtocolName lpn = Projector.makeProjectedProtocolNameNode(new GProtocolName(this.jcontext.main, gpn), role).toName();
-		if (this.jcontext.getFsm(lpn) == null)  // FIXME: null hack
-		{
-			Module mod = this.jcontext.getModule(lpn.getPrefix());
-			buildFsm(mod);
-		}
-		return new ApiGenerator(this, gpn, role).getClasses();  // FIXME: store results?
-	}
-	
 	//public String generateSession(GProtocolName gpn) throws ScribbleException
 	//public Set<String> generateSession(GProtocolName gpn) throws ScribbleException
-	public Map<String, String> generateSession(GProtocolName gpn) throws ScribbleException
+	public Map<String, String> generateSessionApi(GProtocolName gpn) throws ScribbleException
 	{
 		// FIXME: check gpn is valid
 		//return new SessionGenerator(this, gpn).getSessionClass();
@@ -174,6 +162,18 @@ public class Job
 		//classes.addAll(sg.getOpClasses().values());*/
 		Map<String, String> map = sg.getSessionClass();
 		return map;
+	}
+	
+	//public Map<String, String> generateApi(LProtocolName lpn) throws ScribbleException
+	public Map<String, String> generateEndpointApi(GProtocolName gpn, Role role) throws ScribbleException
+	{
+		LProtocolName lpn = Projector.makeProjectedProtocolNameNode(new GProtocolName(this.jcontext.main, gpn), role).toName();
+		if (this.jcontext.getFsm(lpn) == null)  // FIXME: null hack
+		{
+			Module mod = this.jcontext.getModule(lpn.getPrefix());
+			buildFsm(mod);
+		}
+		return new ApiGenerator(this, gpn, role).getClasses();  // FIXME: store results?
 	}
 
 	private void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException

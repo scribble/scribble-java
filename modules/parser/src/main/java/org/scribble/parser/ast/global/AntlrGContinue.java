@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.parser.ScribbleParser;
@@ -15,7 +15,7 @@ public class AntlrGContinue
 	{
 		RecVarNode recvar = AntlrSimpleName.toRecVarNode(getRecVarChild(ct));
 		//return new GlobalContinue(recvar);
-		return ModelFactoryImpl.FACTORY.GContinue(recvar);
+		return AstFactoryImpl.FACTORY.GContinue(recvar);
 	}
 
 	public static final CommonTree getRecVarChild(CommonTree ct)

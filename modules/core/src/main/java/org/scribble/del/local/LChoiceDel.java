@@ -3,7 +3,7 @@ package org.scribble.del.local;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.ast.visit.env.ReachabilityEnv;
@@ -12,7 +12,7 @@ import org.scribble.util.ScribbleException;
 public class LChoiceDel extends LCompoundInteractionNodeDel
 {
 	@Override
-	public LChoice leaveReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker, ModelNode visited) throws ScribbleException
+	public LChoice leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		LChoice cho = (LChoice) visited;
 		List<ReachabilityEnv> benvs =

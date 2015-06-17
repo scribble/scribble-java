@@ -2,7 +2,7 @@ package org.scribble.ast.global;
 
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
 //public class GlobalProtocolBlock extends ProtocolBlock<GlobalInteractionSequence> implements GlobalNode
@@ -31,7 +31,7 @@ public class GProtocolBlock extends ProtocolBlock<Global> implements GlobalNode
 	//protected ProtocolBlock<GlobalInteractionSequence> reconstruct(GlobalInteractionSequence seq)
 	protected GProtocolBlock reconstruct(InteractionSeq<Global> seq)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		//GlobalProtocolBlock gpb = new GlobalProtocolBlock(seq);
 		GProtocolBlock gpb = new GProtocolBlock(seq);
 		gpb = (GProtocolBlock) gpb.del(del);

@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.global;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.global.GProtocolHeader;
@@ -23,7 +23,7 @@ public class AntlrGProtocolHeader
 		RoleDeclList rdl = (RoleDeclList) parser.parse(getRoleDeclListChild(ct));
 		NonRoleParamDeclList pdl = (NonRoleParamDeclList) parser.parse(getParamDeclListChild(ct));
 		//return new GlobalProtocolHeader(name, rdl, pdl);
-		return ModelFactoryImpl.FACTORY.GProtocolHeader(name, rdl, pdl);
+		return AstFactoryImpl.FACTORY.GProtocolHeader(name, rdl, pdl);
 	}
 
 	public static CommonTree getNameChild(CommonTree ct)

@@ -7,7 +7,7 @@ import org.scribble.util.ScribbleException;
 
 // Cf. NameDeclNode/HeaderParameterDecl
 // Simpler than NameDeclNode, doesn't constrain node-type correspondence for names
-public abstract class DoArg<T extends DoArgNode> extends ModelNodeBase
+public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 //public abstract class DoArgument<K extends Kind> extends ModelNodeBase
 {
 	public final T val;

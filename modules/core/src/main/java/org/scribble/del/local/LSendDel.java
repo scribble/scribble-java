@@ -1,7 +1,7 @@
 package org.scribble.del.local;
 
 import org.scribble.ast.MessageSigNode;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.visit.FsmConstructor;
 import org.scribble.model.local.Send;
@@ -13,7 +13,7 @@ import org.scribble.sesstype.name.Role;
 public class LSendDel extends LSimpleInteractionNodeDel
 {
 	@Override
-	public LSend leaveFsmConstruction(ModelNode parent, ModelNode child, FsmConstructor conv, ModelNode visited)
+	public LSend leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)
 	{
 		LSend ls = (LSend) visited;
 		/*FsmBuilder b = new FsmBuilder();

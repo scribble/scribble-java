@@ -1,6 +1,6 @@
 package org.scribble.ast.visit;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.util.ScribbleException;
 
 // Pattern: node accepts visitor and calls visitor back (standard visitor pattern -- a new operation doesn't affect the model), but then visitor delegates back to node delegate (so routines for handling each node type not centralised in visitor, but decentralised to delegates)
@@ -21,13 +21,13 @@ public abstract class ModelVisitor
 	}
 
 	// Visit the child under the context of parent
-	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		/*ModelVisitor nv = enter(parent, child);
 		ModelNode visited = child.visitChildren(nv);
 		return leave(parent, child, nv, visited);*/
 		enter(parent, child);
-		ModelNode visited = child.visitChildren(this);   // visited means "children visited so far"; we're about to visit "this" now via "leave"
+		ScribNode visited = child.visitChildren(this);   // visited means "children visited so far"; we're about to visit "this" now via "leave"
 		//ModelNode visited = visitOverride(parent, child);   // visited means "children visited so far"; we're about to visit "this" now via "leave"
 		return leave(parent, child, visited);
 	}
@@ -38,7 +38,7 @@ public abstract class ModelVisitor
 	}*/
 	
 	//protected ModelVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected void enter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		/*if (child instanceof Module)  // Factor out?
 		{
@@ -48,7 +48,7 @@ public abstract class ModelVisitor
 	}
 	
 	//protected ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
-	protected ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

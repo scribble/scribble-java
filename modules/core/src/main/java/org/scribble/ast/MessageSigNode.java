@@ -2,11 +2,11 @@ package org.scribble.ast;
 
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.visit.ModelVisitor;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.MessageSig;
 import org.scribble.util.ScribbleException;
 
-public class MessageSigNode extends ModelNodeBase implements MessageNode
+public class MessageSigNode extends ScribNodeBase implements MessageNode
 {
 	public final OpNode op;
 	public final PayloadElemList payload;
@@ -54,7 +54,7 @@ public class MessageSigNode extends ModelNodeBase implements MessageNode
 	
 	protected MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
 	{
-		ModelDel del = del();	
+		ScribDel del = del();	
 		MessageSigNode msn = new MessageSigNode(op, payload);
 		msn = (MessageSigNode) msn.del(del);
 		return msn;

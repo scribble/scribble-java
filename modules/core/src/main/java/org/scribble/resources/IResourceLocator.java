@@ -23,20 +23,15 @@ import java.nio.file.Path;
  * This interface provides the resource location capability.
  *
  */
-public interface IResourceLocator {
-
+public interface IResourceLocator
+{
 	/**
 	 * This method obtains the resource associated with the
 	 * supplied path.
 	 * 
-	 * @param path The resource path
+	 * @param path The resource path -- "relative" path from import path prefixes
 	 * @return The resource, or null if not found
 	 */
-	@Deprecated
-	public Resource getResource(String path);
 
-	public Resource getResource(Path path);  // Should be something more abstract, some kind of URI
-
-	//public Resource getResourceByFullPath(String path);  // Doesn't search import paths
-	//public Resource getResource(String path);  // Tries without import paths first, then searches import paths
+	Resource getResource(Path path);  // Path should be made more abstract, e.g. some kind of URI
 }

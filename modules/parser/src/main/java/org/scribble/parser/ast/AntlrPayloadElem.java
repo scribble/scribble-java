@@ -1,7 +1,7 @@
 package org.scribble.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.parser.ScribbleParser;
@@ -57,7 +57,7 @@ public class AntlrPayloadElem
 			}
 		}
 		//return new PayloadElement(ptpn);
-		return ModelFactoryImpl.FACTORY.PayloadElement(ptpn);
+		return AstFactoryImpl.FACTORY.PayloadElement(ptpn);
 	}
 
 	public static CommonTree getTypeChild(CommonTree ct)

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GParallel;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.parser.ScribbleParser;

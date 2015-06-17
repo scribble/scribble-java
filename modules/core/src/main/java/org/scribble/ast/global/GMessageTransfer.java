@@ -6,7 +6,7 @@ import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
 public class GMessageTransfer extends MessageTransfer<Global> implements GSimpleInteractionNode
@@ -30,7 +30,7 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 	@Override
 	protected GMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)//, SimpleInteractionNodeContext sicontext, Env env)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		GMessageTransfer gmt = new GMessageTransfer(src, msg, dests);//, sicontext, env);
 		gmt = (GMessageTransfer) gmt.del(del);
 		return gmt;

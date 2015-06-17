@@ -2,10 +2,10 @@ package org.scribble.ast.local;
 
 import java.util.List;
 
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class LocalParallel extends Parallel<LocalProtocolBlock> implements CompoundLocalInteractionNode
@@ -21,14 +21,14 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	//protected LocalParallel reconstruct(List<LocalProtocolBlock> blocks)
 	protected LParallel reconstruct(List<? extends ProtocolBlock<Local>> blocks)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		LParallel lp = new LParallel(blocks);
 		lp = (LParallel) lp.del(del);
 		return lp;
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		return new LParallel(this.blocks);
 	}

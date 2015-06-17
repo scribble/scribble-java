@@ -1,6 +1,6 @@
 package org.scribble.ast.visit;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -24,7 +24,7 @@ public class WellFormedChoiceChecker extends EnvVisitor<WellFormedChoiceEnv>
 	
 	@Override
 	//protected WellFormedChoiceChecker envEnter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected void envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		//return this;
 		/*WellFormedChoiceChecker checker = (WellFormedChoiceChecker) super.envEnter(parent, child);
@@ -35,7 +35,7 @@ public class WellFormedChoiceChecker extends EnvVisitor<WellFormedChoiceEnv>
 	
 	@Override
 	//protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<WellFormedChoiceEnv> nv, ModelNode visited) throws ScribbleException
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		//return visited;
 		/*visited = visited.del().leaveWFChoiceCheck(parent, child, (WellFormedChoiceChecker) nv, visited);

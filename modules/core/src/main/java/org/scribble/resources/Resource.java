@@ -16,18 +16,21 @@
  */
 package org.scribble.resources;
 
+import java.io.InputStream;
+import java.nio.file.Path;
+
 /**
  * This class represents the resource.
  *
  */
-public interface Resource {
-	
+public interface Resource
+{
 	/**
 	 * This method returns the resource path.
 	 * 
-	 * @return The resource path
+	 * @return The resource path -- the "full" path including import path prefix
 	 */
-	public String getPath();
+	Path getPath();
 
 	/**
 	 * This method returns an input stream containing the
@@ -35,6 +38,5 @@ public interface Resource {
 	 * 
 	 * @return The input stream
 	 */
-	public java.io.InputStream getInputStream();
-	
+	InputStream getInputStream();
 }

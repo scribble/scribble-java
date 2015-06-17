@@ -1,9 +1,9 @@
 package org.scribble.ast.local;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 
 
-public interface LocalNode extends ModelNode
+public interface LocalNode extends ScribNode
 {
 	//LocalNode project(Projector proj) throws ScribbleException;
 }

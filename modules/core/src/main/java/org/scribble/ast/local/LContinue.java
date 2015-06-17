@@ -2,7 +2,7 @@ package org.scribble.ast.local;
 
 import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 public class LContinue extends Continue<Local> implements LSimpleInteractionNode
@@ -15,7 +15,7 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	@Override
 	protected LContinue reconstruct(RecVarNode recvar)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		LContinue lc = new LContinue(recvar);//, sicontext, env);
 		lc = (LContinue) lc.del(del);
 		return lc;

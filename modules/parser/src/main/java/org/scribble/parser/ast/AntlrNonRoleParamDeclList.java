@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.parser.ScribbleParser;
@@ -34,7 +34,7 @@ public class AntlrNonRoleParamDeclList
 					pds.add((NonRoleParamDecl) parser.parse(pd));
 				}
 				//return new ParameterDeclList(pds);
-				return ModelFactoryImpl.FACTORY.NonRoleParamDeclList(pds);
+				return AstFactoryImpl.FACTORY.NonRoleParamDeclList(pds);
 			/*}
 		}*/
 	}

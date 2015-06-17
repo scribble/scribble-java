@@ -1,13 +1,13 @@
 package org.scribble.ast.global;
 
 import org.scribble.ast.Constants;
-import org.scribble.ast.ModelNodeBase;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 
@@ -32,7 +32,7 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GlobalNod
 	}
 
 	@Override
-	protected ModelNodeBase copy()
+	protected ScribNodeBase copy()
 	{
 		//return new GProtocolHeader((SimpleProtocolNameNode) this.name, this.roledecls, this.paramdecls);
 		return new GProtocolHeader((GProtocolNameNode) this.name, this.roledecls, this.paramdecls);
@@ -42,7 +42,7 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GlobalNod
 	//protected ProtocolHeader reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl)
 	protected GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		GProtocolHeader gph = new GProtocolHeader((GProtocolNameNode) name, rdl, pdl);
 		gph = (GProtocolHeader) gph.del(del);
 		return gph;

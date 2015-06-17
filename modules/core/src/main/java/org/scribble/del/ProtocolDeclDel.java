@@ -1,12 +1,12 @@
 package org.scribble.del;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ProtocolDeclContext;
 import org.scribble.ast.visit.NameDisambiguator;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.util.ScribbleException;
 
-public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBase
+public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBase
 //public abstract class ProtocolDeclDel extends ModelDelBase
 //public abstract class ProtocolDeclDelegate<T> extends ModelDelegateBase  // T should be the subclass extending ProtocolDeclDelegate
 {
@@ -39,7 +39,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ModelDelBa
 	
 	@Override
 	//public ProtocolDecl<? extends ProtocolKind> leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException
-	public ModelNode leaveDisambiguation(ModelNode parent, ModelNode child, NameDisambiguator disamb, ModelNode visited) throws ScribbleException
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		disamb.clear();
 		//return cast(visited);

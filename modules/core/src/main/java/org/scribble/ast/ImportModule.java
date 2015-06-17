@@ -2,7 +2,7 @@ package org.scribble.ast;
 
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.visit.ModelVisitor;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.util.ScribbleException;
 
@@ -29,7 +29,7 @@ public class ImportModule extends ImportDecl
 	//protected ImportModule reconstruct(ModuleNameNode modname, SimpleProtocolNameNode alias)
 	protected ImportModule reconstruct(ModuleNameNode modname, ModuleNameNode alias)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		ImportModule im = new ImportModule(modname, alias);
 		im = (ImportModule) im.del(del);
 		return im;

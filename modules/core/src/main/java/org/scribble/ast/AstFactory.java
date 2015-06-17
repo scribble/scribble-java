@@ -43,7 +43,7 @@ import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ProtocolKind;
 
-public interface ModelFactory
+public interface AstFactory
 {
 	//enum SIMPLE_NAME { AMBIG, OPERATOR, PARAMETER, RECURSIONVAR, ROLE, MODULE, PROTOCOL }
 	//enum QUALIFIED_NAME { MESSAGESIGNATURE, MODULE, PAYLOADTYPE, PROTOCOL }

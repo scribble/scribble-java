@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.ArgNode;
 import org.scribble.ast.Do;
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScopedNode;
@@ -70,7 +70,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 	// Most subclasses will override visitForSubprotocols (e.g. ReachabilityChecker, FsmConstructor), but sometimes still want to change whole visit pattern (e.g. Projector)
 	@Override
-	public ModelNode visit(ModelNode parent, ModelNode child) throws ScribbleException
+	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		/*SubprotocolVisitor spv = (SubprotocolVisitor) enter(parent, child);
 		ModelNode visited = child.visitChildrenInSubprotocols(spv);
@@ -79,12 +79,12 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		ModelNode visited = child.visitChildrenInSubprotocols(this);
 		return leave(parent, child, visited);*/
 		enter(parent, child);
-		ModelNode visited = visitForSubprotocols(parent, child);
+		ScribNode visited = visitForSubprotocols(parent, child);
 		return leave(parent, child, visited);
 	}
 
 	// Subclasses can override this to disable subprotocol visiting
-	protected ModelNode visitForSubprotocols(ModelNode parent, ModelNode child) throws ScribbleException
+	protected ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof Do)
 		{
@@ -97,7 +97,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	}
 	
 	// The Do node itself is no longer visited -- FIXME: projection needs to visit it -- no: that's in enter/leave, visited means "visit children"
-	private Do<? extends ProtocolKind> visitOverrideForDo(ModelNode parent, Do<? extends ProtocolKind> doo) throws ScribbleException
+	private Do<? extends ProtocolKind> visitOverrideForDo(ScribNode parent, Do<? extends ProtocolKind> doo) throws ScribbleException
 	{
 		if (!isCycle())
 		//if (spv.isCycle() != -1)
@@ -113,7 +113,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 			//... do wf-choice env building and checking
 			//... scopes (all messages/operators are scoped?)
 			
-			ModelNode seq = applySubstitutions(pd.def.block.seq);  // Visit the seq? -- or visit the interactions in the seq directly? ()
+			ScribNode seq = applySubstitutions(pd.def.block.seq);  // Visit the seq? -- or visit the interactions in the seq directly? ()
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 
 			//leave(parent, doo, doo);  // the Do node itself was not visited; return from the subprotocol body is discarded
@@ -123,7 +123,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 	@Override
 	//protected final SubprotocolVisitor enter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected final void enter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected final void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		//SubprotocolVisitor spv = (SubprotocolVisitor) super.enter(parent, child);
 		super.enter(parent, child);
@@ -159,11 +159,11 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 
 	@Override
 	//protected final ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
-	protected final ModelNode leave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected final ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		//ModelNode n = super.leave(parent, child, nv, visited);
 		//ModelNode n = subprotocolLeave(parent, child, (SubprotocolVisitor) nv, visited);
-		ModelNode n = subprotocolLeave(parent, child, visited);
+		ScribNode n = subprotocolLeave(parent, child, visited);
 		if (child instanceof ProtocolDecl)
 		{
 			this.rolemaps.pop();
@@ -184,13 +184,13 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 	}
 
 	//protected SubprotocolVisitor subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected void subprotocolEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		//return this;
 	}
 
 	//protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, SubprotocolVisitor nv, ModelNode visited) throws ScribbleException
-	protected ModelNode subprotocolLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
@@ -313,7 +313,7 @@ public abstract class SubprotocolVisitor extends ModelVisitor
 		return false;
 	}
 	
-	private ModelNode applySubstitutions(ModelNode n)
+	private ScribNode applySubstitutions(ScribNode n)
 	{
 		if (overrideSubstitution())
 		{

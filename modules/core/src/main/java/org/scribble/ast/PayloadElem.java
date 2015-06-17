@@ -2,12 +2,12 @@ package org.scribble.ast;
 
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.ast.visit.ModelVisitor;
-import org.scribble.del.ModelDel;
+import org.scribble.del.ScribDel;
 import org.scribble.util.ScribbleException;
 
 
 // Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList)
-public class PayloadElem extends ModelNodeBase
+public class PayloadElem extends ScribNodeBase
 {
 	//public final AnnotationNameNode annot;
 	public final PayloadElemNameNode name;
@@ -106,7 +106,7 @@ public class PayloadElem extends ModelNodeBase
 	
 	protected PayloadElem reconstruct(PayloadElemNameNode name)
 	{
-		ModelDel del = del();
+		ScribDel del = del();
 		PayloadElem elem = new PayloadElem(name);
 		elem = (PayloadElem) elem.del(del);
 		return elem;

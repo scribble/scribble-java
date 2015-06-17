@@ -2,7 +2,7 @@ package org.scribble.parser.ast;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ImportModule;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
@@ -25,7 +25,7 @@ public class AntlrImportModule
 			alias = AntlrQualifiedName.toModuleNameNode(getAliasChild(ct));
 		}
 		//return new ImportModule(fmn, alias);
-		return ModelFactoryImpl.FACTORY.ImportModule(fmn, alias);
+		return AstFactoryImpl.FACTORY.ImportModule(fmn, alias);
 	}
 
 	public static CommonTree getModuleNameChild(CommonTree ct)

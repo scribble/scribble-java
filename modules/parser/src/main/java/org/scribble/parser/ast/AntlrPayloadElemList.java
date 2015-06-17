@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.PayloadElemList;
 import org.scribble.ast.name.qualified.DataTypeNameNode;
@@ -30,13 +30,13 @@ public class AntlrPayloadElemList
 			if (type == AntlrNodeType.QUALIFIEDNAME)
 			{
 				DataTypeNameNode dt = AntlrQualifiedName.toDataTypeNameNode(pe);
-				pes.add(ModelFactoryImpl.FACTORY.PayloadElement(dt));
+				pes.add(AstFactoryImpl.FACTORY.PayloadElement(dt));
 			}
 			else if (type == AntlrNodeType.AMBIGUOUSNAME)
 			{
 				// As for PayloadElement: cannot syntactically distinguish between SimplePayloadTypeNode and ParameterNode
 				AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(pe);
-				pes.add(ModelFactoryImpl.FACTORY.PayloadElement(an));
+				pes.add(AstFactoryImpl.FACTORY.PayloadElement(an));
 			}
 			else
 			{
@@ -44,7 +44,7 @@ public class AntlrPayloadElemList
 			}
 		}
 		//return new Payload(pes);
-		return ModelFactoryImpl.FACTORY.PayloadElemList(pes);
+		return AstFactoryImpl.FACTORY.PayloadElemList(pes);
 	}
 
 	public static final List<CommonTree> getPayloadElements(CommonTree ct)

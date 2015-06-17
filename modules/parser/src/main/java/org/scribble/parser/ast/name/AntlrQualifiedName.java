@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.name;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ModelFactoryImpl;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.name.qualified.DataTypeNameNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
@@ -29,7 +29,7 @@ public class AntlrQualifiedName
 	{
 		//return new ModuleNameNode(getElements(ct));
 		//return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MODULE, getElements(ct));
-		return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, getElements(ct));
+		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, getElements(ct));
 	}
 
 	public static DataTypeNameNode toDataTypeNameNode(CommonTree ct)
@@ -44,7 +44,7 @@ public class AntlrQualifiedName
 	{
 		//return new MessageSignatureNameNode(getElements(ct));
 		//return (MessageSignatureNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MESSAGESIGNATURE, getElements(ct));
-		return (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getElements(ct));
+		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getElements(ct));
 	}
 
 	/*public static ProtocolNameNode toProtocolNameNode(CommonTree ct)
@@ -56,11 +56,11 @@ public class AntlrQualifiedName
 
 	public static GProtocolNameNode toGProtocolNameNode(CommonTree ct)
 	{
-		return (GProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getElements(ct));
+		return (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Global.KIND, getElements(ct));
 	}
 
 	public static LProtocolNameNode toLProtocolNameNode(CommonTree ct)
 	{
-		return (LProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getElements(ct));
+		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getElements(ct));
 	}
 }

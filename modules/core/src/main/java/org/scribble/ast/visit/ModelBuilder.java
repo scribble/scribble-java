@@ -1,6 +1,6 @@
 package org.scribble.ast.visit;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.visit.env.ModelEnv;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -20,14 +20,14 @@ public class ModelBuilder extends EnvVisitor<ModelEnv>
 	}
 	
 	@Override
-	protected void envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.envEnter(parent, child);
 		child.del().enterModelBuilding(parent, child, this);
 	}
 	
 	@Override
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveModelBuilding(parent, child, this, visited);
 		return super.envLeave(parent, child, visited);

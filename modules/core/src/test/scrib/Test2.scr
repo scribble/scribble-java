@@ -9,7 +9,7 @@ global protocol Bar(role C, role D)
 {
 	//1() from C to D;
 	2() from C to D;
-	do Test.Foo(C, D);
+	//do Test.Foo(C, D);
 	//do Test.Foo(D, C);
 	//3() from C to D;
 }

@@ -1,6 +1,6 @@
 package org.scribble.ast.visit;
 
-import org.scribble.ast.ModelNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
@@ -32,7 +32,7 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 
 	// Following Projector visit pattern -- for overriding base enter/visit/leave pattern
 	@Override
-	protected ModelNode visitForSubprotocols(ModelNode parent, ModelNode child) throws ScribbleException
+	protected ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof LInteractionSeq)
 		{
@@ -88,7 +88,7 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 
 	@Override
 	//protected ReachabilityChecker envEnter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected void envEnter(ModelNode parent, ModelNode child) throws ScribbleException
+	protected void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		//return child.enterReachabilityCheck(this);
 		/*ReachabilityChecker checker = (ReachabilityChecker) super.envEnter(parent, child);
@@ -99,7 +99,7 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 	
 	@Override
 	//protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<ReachabilityEnv> nv, ModelNode visited) throws ScribbleException
-	protected ModelNode envLeave(ModelNode parent, ModelNode child, ModelNode visited) throws ScribbleException
+	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		//return visited.leaveReachabilityCheck(this);
 		/*visited = visited.del().leaveReachabilityCheck(parent, child, (ReachabilityChecker) nv, visited);
