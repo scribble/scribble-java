@@ -12,8 +12,8 @@ import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 
-// Immutable (from outside) -- no: projections are added mutably later -- also replaceModule not immutable
 // Global "static" context information for a Job
+// Mutable: projections are added mutably later -- replaceModule also mutable setter
 public class JobContext
 {
 	public final ModuleName main;
@@ -21,10 +21,8 @@ public class JobContext
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
 	private final Map<ModuleName, Module> parsed;// = new HashMap<>();
 	
-	// LProtocolName is the full local protocol name
-	// FIXME: collapse to one Map (modulename is part of protocol name?) -- debug print after projection to check
+	// LProtocolName is the full local protocol name (module name is the prefix)
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
-	private final Map<ModuleName, Module> projectionsByModuleNames = new HashMap<>();  // An alternative view of projections
 
 	private final Map<LProtocolName, ScribFsm> fsms = new HashMap<>();
 	
@@ -34,18 +32,28 @@ public class JobContext
 		this.main = main;
 	}
 	
-	// Used by Job for pass running, include projections?
+	// Used by Job for pass running, includes projections (e.g. for reachability checking)
 	public Set<ModuleName> getFullModuleNames()
 	{
 		Set<ModuleName> modnames = new HashSet<>();
 		modnames.addAll(this.parsed.keySet());
-		modnames.addAll(this.projectionsByModuleNames.keySet());
+		this.projected.keySet().stream().forEach((lpn) -> modnames.add(lpn.getPrefix()));
 		return modnames;
 	}
 
 	public boolean hasModule(ModuleName fullmodname)
 	{
-		return (this.parsed.containsKey(fullmodname) || this.projectionsByModuleNames.containsKey(fullmodname));
+		return isParsedModule(fullmodname) || isProjectedModule(fullmodname);
+	}
+	
+	private boolean isParsedModule(ModuleName fullmodname)
+	{
+		return this.parsed.containsKey(fullmodname);
+	}
+	
+	private boolean isProjectedModule(ModuleName fullmodname)
+	{
+		return this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullmodname)).count() > 0;
 	}
 
 	public Module getModule(ModuleName fullmodname)
@@ -54,22 +62,24 @@ public class JobContext
 		{
 			return this.parsed.get(fullmodname);
 		}
-		if (this.projectionsByModuleNames.containsKey(fullmodname))
+		for (LProtocolName lpn : this.projected.keySet())
 		{
-			return this.projectionsByModuleNames.get(fullmodname);
+			if (lpn.getPrefix().equals(fullmodname))
+			{
+				return this.projected.get(lpn);
+			}
 		}
-		//throw new RuntimeException("Unknown module: " + fullmodname);
-		throw new RuntimeException("Unknown module: " + fullmodname + ", " + this.parsed.keySet() + ", " + this.projectionsByModuleNames.keySet());
+		throw new RuntimeException("Unknown module: " + fullmodname);
 	}
 
 	protected void replaceModule(Module module)
 	{
 		ModuleName fullmodname = module.getFullModuleName(); 
-		if (this.parsed.containsKey(fullmodname))
+		if (isParsedModule(fullmodname))
 		{
 			this.parsed.put(fullmodname, module);
 		}
-		else if (this.projectionsByModuleNames.containsKey(fullmodname)) 
+		else if (isProjectedModule(fullmodname))
 		{
 			addProjection(module);
 		}
@@ -112,7 +122,6 @@ public class JobContext
 	{
 		LProtocolName lpn = (LProtocolName) mod.protos.get(0).getFullProtocolName(mod);
 		this.projected.put(lpn, mod);
-		this.projectionsByModuleNames.put(mod.getFullModuleName(), mod);
 	}
 	
 	public Map<LProtocolName, Module> getProjections()

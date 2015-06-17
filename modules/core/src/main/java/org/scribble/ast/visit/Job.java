@@ -33,7 +33,7 @@ public class Job
 		debugPrintln("\n--- Context building --- ");
 		runNodeVisitorPass(ContextBuilder.class);
 
-		debugPrintln("\n--- Name disambigiation --- ");  // FIXME: verbose/debug printing parameter -- should be in MainContext, but currently cannot access that class directly from here
+		debugPrintln("\n--- Name disambigiation --- ");  // FIXME: verbose/debug printing parameter: should be in MainContext, but currently cannot access that class directly from here
 		runNodeVisitorPass(NameDisambiguator.class);
 		
 		/*debugPrintln("\n--- Model building --- ");
@@ -73,10 +73,12 @@ public class Job
 		}
 	}
 	
-	public void buildFsm(Module mod) throws ScribbleException  // Need to visit from Module for visitor context
+	public void constructFsms(Module mod) throws ScribbleException  // Need to visit from Module for visitor context
 	{
-		debugPrintln("\n--- FSM generation --- ");
-		mod.accept(new FsmConstructor(this));
+		debugPrintln("\n--- FSM construction --- ");
+		mod.accept(new FsmConstructor(this)); 
+			// Constructs FSMs from all local protocols in this module (projected modules contain a single local protocol)
+			// Subprotocols "inlined" (scoped subprotocols not supported)
 	}
 	
 	public Map<String, String> generateSessionApi(GProtocolName gpn) throws ScribbleException
@@ -94,7 +96,7 @@ public class Job
 		if (this.jcontext.getFsm(lpn) == null)  // FIXME: null hack
 		{
 			Module mod = this.jcontext.getModule(lpn.getPrefix());
-			buildFsm(mod);
+			constructFsms(mod);
 		}
 		debugPrintln("\n--- Endpoint API generation --- ");
 		return new EndpointApiGenerator(this, gpn, role).getClasses();  // FIXME: store results?

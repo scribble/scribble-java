@@ -29,9 +29,9 @@ import org.scribble.sesstype.name.Role;
 
 public class CommandLine implements Runnable
 {
-	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM, API, SESSION, OUTPUT }
+	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, EP_API, OUTPUT }
 	
-	private final Map<Arg, String[]> args;
+	private final Map<Arg, String[]> args;  // Maps each flag to list of associated argument values
 	
 	public CommandLine(String[] args)
 	{
@@ -62,11 +62,11 @@ public class CommandLine implements Runnable
 			{
 				outputFsm(job);
 			}
-			if (this.args.containsKey(Arg.SESSION))
+			if (this.args.containsKey(Arg.SESS_API))
 			{
 				outputSessionApi(job);
 			}
-			if (this.args.containsKey(Arg.API))
+			if (this.args.containsKey(Arg.EP_API))
 			{
 				outputEndpointApi(job);
 			}
@@ -104,7 +104,7 @@ public class CommandLine implements Runnable
 	private void outputSessionApi(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName gpn = new GProtocolName(this.args.get(Arg.SESSION)[0]);
+		GProtocolName gpn = new GProtocolName(this.args.get(Arg.SESS_API)[0]);
 		GProtocolName fullname = new GProtocolName(jcontext.main, gpn);
 		Map<String, String> map = job.generateSessionApi(fullname);
 		for (String path : map.keySet())
@@ -124,8 +124,8 @@ public class CommandLine implements Runnable
 	private void outputEndpointApi(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName gpn = new GProtocolName(this.args.get(Arg.API)[0]);
-		Role role = new Role(this.args.get(Arg.API)[1]);
+		GProtocolName gpn = new GProtocolName(this.args.get(Arg.EP_API)[0]);
+		Role role = new Role(this.args.get(Arg.EP_API)[1]);
 		GProtocolName fullname = new GProtocolName(jcontext.main, gpn);
 		Map<String, String> classes = job.generateEndpointApi(fullname, role);
 		for (String clazz : classes.keySet())
@@ -166,7 +166,7 @@ public class CommandLine implements Runnable
 		{
 			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(Arg.FSM)));
 		}
-		job.buildFsm(jcontext.getModule(modname));  // Need Module for context (not just the LProtoDecl) -- builds FSMs for all locals in the module
+		job.constructFsms(jcontext.getModule(modname));  // Need Module for context (not just the LProtoDecl) -- builds FSMs for all locals in the module
 	}
 	
 	private static Path parseMainPath(String path)

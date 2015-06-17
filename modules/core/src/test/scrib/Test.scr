@@ -8,19 +8,20 @@
 
 module Test;
 
-//import Test2;
+import Test2;
 
 
 global protocol Foo(role A, role B)
 {
 	choice at A
 	{
+		1() from A to B;
 		2() from A to B;
 	}
 	or
 	{
-		//do Test2.Bar(A, B);
-		1() from A to B;
+		do Test2.Bar(A, B);
+		//1() from A to B;
 	}
 }
 

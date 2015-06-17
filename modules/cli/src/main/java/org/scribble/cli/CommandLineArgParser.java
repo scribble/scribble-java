@@ -21,8 +21,8 @@ public class CommandLineArgParser
 		this.FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.Arg.PATH);
 		this.FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.Arg.PROJECT);
 		this.FLAGS.put(CommandLineArgParser.FSM_FLAG, CommandLine.Arg.FSM);
-		this.FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.Arg.API);
-		this.FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.Arg.SESSION);
+		this.FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.Arg.EP_API);
+		this.FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.Arg.SESS_API);
 		this.FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.Arg.OUTPUT);
 	}
 
