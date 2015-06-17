@@ -5,11 +5,11 @@ package org.scribble.main;
 
 	// FIXME: do-call argument kinding (sig/type args/params), arity, etc
 
-	//.. do projection should filter unused roles -- but scoped subprotocols may need extra name mangling
+	//.. do projection should filter unused subprotocol role params -- but scoped subprotocols may need extra name mangling
 	//.. both projector and graphbuilder are env visitors but not subprotocol visitors now, so swap visitor hierarchy?
 	// dels should be kinded as well?
 
-	// visitchildren shouldn't use check class on visited nodes so strictly, e.g. name disambiguation changes from ambiguousnodes
+	// visitchildren shouldn't use check class on visited nodes so strictly, e.g. name disambiguation changes ambignodes to other nodes
 
 	//.. factor out main module resource loading in front end from main context -- front end should take main argument, check existence, and pass MainContext the abstract resource identifier to load the main
 	//.. ^^ alternatively keep ResourceLocator specific to file systems -- "DirectoryResourceLocator" just uses the import paths
@@ -22,7 +22,6 @@ package org.scribble.main;
 	//.. make headerparamdecl into paramdecl directly, i.e. and then role is a specialised param kind
 	//.. maybe make an UnkindedName superclass of Name, use for e.g. parameters or ambiguous
 
-		//.. sepatate protocol names into global/local -- use generic parameter for name kinds rather than subclasses
 		//.. fix projection env to take projection output type as Parameter
 		//.. fix global/local do delegate context build loop -- use lambda
 		//.. get simple/compound name node and name classes into shape
@@ -40,6 +39,7 @@ package org.scribble.main;
 //... check delegates for local nodes; check reachability visiting for (local) interaction sequence (and delegate)
 
 // Done
+// - separate protocol names into global/local -- use generic parameter for name kinds rather than subclasses
 // - wf-choice: a role should be enabled by the same role in all blocks
 // - get rid of argument instantiation -- renamed, but otherwise structurally the same (unlike name/param decls, arg nodes are not kinded)
 // - refactor simple/compound names to just names; and simple name nodes to be subtypes of compound -- simple/compound distinction only relevant to name nodes (i.e. syntax); type names are all uniform (compound)

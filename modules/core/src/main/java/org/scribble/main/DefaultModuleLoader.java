@@ -26,7 +26,7 @@ import org.scribble.util.Pair;
  * This class provides a default implementation of the module loader interface.
  *
  */
-public class DefaultModuleLoader implements ModuleLoader
+public abstract class DefaultModuleLoader implements ModuleLoader
 {
   // A caching mechanism? -- not currently used for anything meaningful
 	// FIXME: redundant? Modules recorded (and updated) in MainContext
