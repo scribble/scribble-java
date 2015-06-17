@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.visit.SubprotocolVisitor;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.MessageSig;
 import org.scribble.sesstype.Payload;
@@ -20,7 +21,6 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
 import org.scribble.util.MessageIdMap;
-import org.scribble.util.ScribbleException;
 
 public class WellFormedChoiceEnv extends Env
 {

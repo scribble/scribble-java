@@ -11,7 +11,7 @@ import org.scribble.ast.visit.Projector;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.ast.visit.env.Env;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 
 // Mutable for Envs (by visitors) -- make immutable?

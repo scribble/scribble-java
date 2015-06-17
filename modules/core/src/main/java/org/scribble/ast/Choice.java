@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.util.ScribbleException;
 
 //public abstract class Choice<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 public abstract class Choice<K extends ProtocolKind>

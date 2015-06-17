@@ -21,11 +21,11 @@ import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.visit.ContextBuilder;
 import org.scribble.ast.visit.JobContext;
 import org.scribble.ast.visit.Projector;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 public class ModuleDel extends ScribDelBase
 {

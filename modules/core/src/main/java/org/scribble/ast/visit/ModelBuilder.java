@@ -3,8 +3,8 @@ package org.scribble.ast.visit;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.visit.env.ModelEnv;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.util.ScribbleException;
 
 public class ModelBuilder extends EnvVisitor<ModelEnv>
 {

@@ -1,4 +1,4 @@
-package org.scribble.util;
+package org.scribble.main;
 
 // Note: not a runtime ScribbleException
 public class ScribbleRuntimeException extends Exception

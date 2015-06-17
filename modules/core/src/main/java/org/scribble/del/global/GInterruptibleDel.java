@@ -5,7 +5,7 @@ import org.scribble.ast.global.GInterruptible;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.del.CompoundInteractionNodeDel;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 public class GInterruptibleDel extends GCompoundInteractionNodeDel
 {

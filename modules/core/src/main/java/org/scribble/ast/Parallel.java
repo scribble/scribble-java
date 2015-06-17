@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.util.ScribbleException;
 
 //public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
 public abstract class Parallel<K extends ProtocolKind>

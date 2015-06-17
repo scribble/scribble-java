@@ -7,7 +7,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GParallel;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.ast.visit.env.WellFormedChoiceEnv;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 public class GParallelDel extends GCompoundInteractionNodeDel
 {

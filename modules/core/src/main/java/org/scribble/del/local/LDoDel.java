@@ -11,10 +11,10 @@ import org.scribble.ast.visit.FsmConstructor;
 import org.scribble.ast.visit.JobContext;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.ast.visit.env.ReachabilityEnv;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 public class LDoDel extends LSimpleInteractionNodeDel
 {

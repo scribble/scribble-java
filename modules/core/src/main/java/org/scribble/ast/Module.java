@@ -10,13 +10,13 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.del.ScribDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.util.ScribbleException;
 
 
 public class Module extends ScribNodeBase

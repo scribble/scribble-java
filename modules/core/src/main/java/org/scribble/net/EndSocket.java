@@ -1,7 +1,7 @@
 package org.scribble.net;
 
+import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.SessionEndpoint;
-import org.scribble.util.ScribbleRuntimeException;
 
 
 

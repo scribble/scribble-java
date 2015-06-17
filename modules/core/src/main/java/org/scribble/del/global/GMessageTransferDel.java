@@ -22,6 +22,7 @@ import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.ast.visit.env.ModelEnv;
 import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.ast.visit.env.WellFormedChoiceEnv;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
@@ -30,7 +31,6 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 // FIXME: make base MessageTransferDelegate?
 public class GMessageTransferDel extends GSimpleInteractionNodeDel

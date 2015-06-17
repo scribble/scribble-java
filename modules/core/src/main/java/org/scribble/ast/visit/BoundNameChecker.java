@@ -4,10 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 // FIXME: integrate with NameDisambiguator
 @Deprecated

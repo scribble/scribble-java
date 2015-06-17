@@ -7,7 +7,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.ast.visit.env.ReachabilityEnv;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 public class LChoiceDel extends LCompoundInteractionNodeDel
 {

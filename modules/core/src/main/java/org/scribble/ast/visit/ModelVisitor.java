@@ -1,7 +1,7 @@
 package org.scribble.ast.visit;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 // Pattern: node accepts visitor and calls visitor back (standard visitor pattern -- a new operation doesn't affect the model), but then visitor delegates back to node delegate (so routines for handling each node type not centralised in visitor, but decentralised to delegates)
 public abstract class ModelVisitor

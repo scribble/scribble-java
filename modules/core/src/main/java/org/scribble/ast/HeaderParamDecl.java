@@ -2,9 +2,9 @@ package org.scribble.ast;
 
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 
 

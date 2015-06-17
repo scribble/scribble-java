@@ -17,6 +17,7 @@ import org.scribble.ast.ScopedNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ModuleDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.Kind;
@@ -25,7 +26,6 @@ import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
-import org.scribble.util.ScribbleException;
 
 public abstract class SubprotocolVisitor extends ModelVisitor
 {

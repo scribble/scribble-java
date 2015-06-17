@@ -19,13 +19,13 @@ import org.scribble.ast.visit.Job;
 import org.scribble.ast.visit.JobContext;
 import org.scribble.ast.visit.Projector;
 import org.scribble.main.MainContext;
+import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 public class CommandLine implements Runnable
 {

@@ -7,8 +7,8 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.visit.Projector;
 import org.scribble.ast.visit.env.ProjectionEnv;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.util.ScribbleException;
 
 // FIXME: make base MessageTransferDelegate?
 public class GContinueDel extends GSimpleInteractionNodeDel

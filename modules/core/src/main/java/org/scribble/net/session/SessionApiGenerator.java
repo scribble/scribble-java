@@ -9,12 +9,12 @@ import org.scribble.ast.visit.Job;
 import org.scribble.ast.visit.JobContext;
 import org.scribble.ast.visit.MessageIdCollector;
 import org.scribble.del.ModuleDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
-public class SessionGenerator
+public class SessionApiGenerator
 {
 	private final Job job;
 	private final GProtocolName gpn;
@@ -22,7 +22,7 @@ public class SessionGenerator
 	private final Map<MessageId, String> mids = new HashMap<>();
 	private final Map<Role, String> roles = new HashMap<>();
 
-	public SessionGenerator(Job job, GProtocolName gpn) throws ScribbleException
+	public SessionApiGenerator(Job job, GProtocolName gpn) throws ScribbleException
 	{
 		this.job = job;
 		this.gpn = gpn;

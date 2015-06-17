@@ -25,13 +25,13 @@ import org.scribble.ast.visit.env.ModelEnv;
 import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.model.global.ModelState;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
-import org.scribble.util.ScribbleException;
 
 public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 //public class GProtocolDeclDel extends ProtocolDeclDel

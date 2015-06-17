@@ -5,13 +5,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.scribble.ast.Module;
-import org.scribble.model.local.ApiGenerator;
-import org.scribble.net.session.SessionGenerator;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.local.EndpointApiGenerator;
+import org.scribble.net.session.SessionApiGenerator;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B })
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
@@ -157,7 +157,7 @@ public class Job
 	{
 		// FIXME: check gpn is valid
 		//return new SessionGenerator(this, gpn).getSessionClass();
-		SessionGenerator sg = new SessionGenerator(this, gpn);
+		SessionApiGenerator sg = new SessionApiGenerator(this, gpn);
 		/*Set<String> classes = new HashSet<>();
 		classes.add(sg.getSessionClass());
 		//classes.addAll(sg.getOpClasses().values());*/
@@ -174,7 +174,7 @@ public class Job
 			Module mod = this.jcontext.getModule(lpn.getPrefix());
 			buildFsm(mod);
 		}
-		return new ApiGenerator(this, gpn, role).getClasses();  // FIXME: store results?
+		return new EndpointApiGenerator(this, gpn, role).getClasses();  // FIXME: store results?
 	}
 
 	private void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException

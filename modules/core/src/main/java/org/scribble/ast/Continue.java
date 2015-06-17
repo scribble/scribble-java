@@ -2,8 +2,8 @@ package org.scribble.ast;
 
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.util.ScribbleException;
 
 public abstract class Continue<K extends ProtocolKind> extends SimpleInteractionNode<K>
 {

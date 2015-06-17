@@ -2,7 +2,7 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 // For CompoundInteractionNode and ProtocolBlock
 public abstract class CompoundInteractionDel extends ScribDelBase

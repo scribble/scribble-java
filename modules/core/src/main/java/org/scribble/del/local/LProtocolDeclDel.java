@@ -8,11 +8,11 @@ import org.scribble.ast.visit.ContextBuilder;
 import org.scribble.ast.visit.FsmConstructor;
 import org.scribble.ast.visit.JobContext;
 import org.scribble.del.ProtocolDeclDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ScribbleFsm;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 //public class LProtocolDeclDel extends ProtocolDeclDel

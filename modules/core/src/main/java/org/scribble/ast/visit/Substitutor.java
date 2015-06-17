@@ -10,12 +10,12 @@ import org.scribble.ast.name.qualified.DataTypeNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 public class Substitutor extends ModelVisitor
 {

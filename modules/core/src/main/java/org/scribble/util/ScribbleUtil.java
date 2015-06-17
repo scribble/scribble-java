@@ -2,6 +2,8 @@ package org.scribble.util;
 
 import java.util.concurrent.Callable;
 
+import org.scribble.main.RuntimeScribbleException;
+
 public class ScribbleUtil
 {
 	public static <T> T handleLambdaScribbleException(Callable<T> c)

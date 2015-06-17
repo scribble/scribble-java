@@ -3,9 +3,9 @@ package test.http;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
+import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.session.SessionEndpoint;
-import org.scribble.util.ScribbleRuntimeException;
 
 import test.http.Http_C_4.Http_C_4Enum;
 import test.http.message.Body;

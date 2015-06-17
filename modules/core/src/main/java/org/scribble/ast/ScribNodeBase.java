@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.ast.visit.Substitutor;
 import org.scribble.del.ScribDel;
-import org.scribble.util.RuntimeScribbleException;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.RuntimeScribbleException;
+import org.scribble.main.ScribbleException;
 import org.scribble.util.ScribbleUtil;
 
 /**

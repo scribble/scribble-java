@@ -8,7 +8,7 @@ import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.visit.Projector;
 import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.del.ProtocolDefDel;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 public class GProtocolDefDel extends ProtocolDefDel
 {

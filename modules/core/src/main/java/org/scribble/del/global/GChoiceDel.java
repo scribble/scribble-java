@@ -24,12 +24,12 @@ import org.scribble.ast.visit.Projector;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.ast.visit.env.WellFormedChoiceEnv;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
-import org.scribble.util.ScribbleException;
 
 public class GChoiceDel extends GCompoundInteractionNodeDel
 {

@@ -3,8 +3,8 @@ package org.scribble.ast;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.del.ScribDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.MessageSig;
-import org.scribble.util.ScribbleException;
 
 public class MessageSigNode extends ScribNodeBase implements MessageNode
 {

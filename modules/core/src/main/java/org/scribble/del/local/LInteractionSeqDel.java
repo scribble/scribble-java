@@ -11,9 +11,9 @@ import org.scribble.ast.visit.FsmConstructor;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.ast.visit.env.ReachabilityEnv;
 import org.scribble.del.InteractionSeqDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.util.ScribbleException;
 
 
 // FIXME: should be a CompoundInteractionDelegate? -- no: compound interaction delegates for typing contexts (done for block only, not seqs)

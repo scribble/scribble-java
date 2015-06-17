@@ -3,7 +3,7 @@ package org.scribble.ast;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.del.ScribDel;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 
 // Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList)

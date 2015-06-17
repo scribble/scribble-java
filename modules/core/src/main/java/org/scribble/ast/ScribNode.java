@@ -18,7 +18,7 @@ package org.scribble.ast;
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.ast.visit.Substitutor;
 import org.scribble.del.ScribDel;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 /**
  * This is the generic object from which all Scribble model objects

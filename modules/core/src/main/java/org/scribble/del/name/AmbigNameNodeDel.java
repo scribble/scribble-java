@@ -6,11 +6,11 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.ast.visit.NameDisambiguator;
 import org.scribble.del.ScribDelBase;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.AmbigName;
 import org.scribble.sesstype.name.DataType;
-import org.scribble.util.ScribbleException;
 
 
 //public abstract class ModelDelegateBase implements ModelDelegate

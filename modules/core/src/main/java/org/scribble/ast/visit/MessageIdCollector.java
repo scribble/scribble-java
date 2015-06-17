@@ -5,8 +5,8 @@ import java.util.Set;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
-import org.scribble.util.ScribbleException;
 
 public class MessageIdCollector extends SubprotocolVisitor
 {

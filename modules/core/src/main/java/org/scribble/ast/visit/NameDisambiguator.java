@@ -9,10 +9,10 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.del.ModuleDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
 public class NameDisambiguator extends ModelVisitor

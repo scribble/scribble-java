@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleRuntimeException;
 
 public abstract class InitSocket extends ScribSocket implements AutoCloseable
 {

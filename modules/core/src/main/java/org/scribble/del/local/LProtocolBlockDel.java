@@ -4,7 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.del.ProtocolBlockDel;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 
 public class LProtocolBlockDel extends ProtocolBlockDel

@@ -4,7 +4,7 @@ import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.ast.visit.env.WellFormedChoiceEnv;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 // Unlike global/local interaction model nodes that extend the base constructs (choice/recursion/etc) that extend simple/compound,
 // each interaction construct delegate extends base global/local delegates that extend simple/compound

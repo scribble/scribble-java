@@ -6,8 +6,8 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.local.LDoDel;
 import org.scribble.del.local.LInteractionSeqDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.GraphBuilder;
-import org.scribble.util.ScribbleException;
 
 // FIXME: doesn't need to be an EnvVisitor?
 //public class FsmConverter extends EnvVisitor<FsmBuildingEnv>

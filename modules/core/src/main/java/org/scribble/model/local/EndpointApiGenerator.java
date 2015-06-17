@@ -11,7 +11,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.visit.Job;
 import org.scribble.ast.visit.JobContext;
 import org.scribble.ast.visit.Projector;
-import org.scribble.net.session.SessionGenerator;
+import org.scribble.net.session.SessionApiGenerator;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.GProtocolName;
@@ -21,7 +21,7 @@ import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.sesstype.name.Role;
 
-public class ApiGenerator
+public class EndpointApiGenerator
 {
 	private final Job job;
 	private final GProtocolName gpn;
@@ -46,7 +46,7 @@ public class ApiGenerator
 	}
 
 	//public ApiGenerator(Job job, LProtocolName lpn)
-	public ApiGenerator(Job job, GProtocolName gpn, Role role)
+	public EndpointApiGenerator(Job job, GProtocolName gpn, Role role)
 	{
 		this.job = job;
 		this.gpn = gpn;
@@ -101,8 +101,8 @@ public class ApiGenerator
 		String clazz = "";
 		clazz += "package " + getPackageName() + ";\n";
 		clazz += "\n";
+		clazz += "import org.scribble.main.ScribbleRuntimeException;\n";
 		clazz += "import org.scribble.net.session.SessionEndpoint;\n";
-		clazz += "import org.scribble.util.ScribbleRuntimeException;\n";
 		clazz += "\n";
 		clazz += "public class " + className + " extends " + SOCKET_CLASSES.get(SocketType.INIT) + " {\n";
 		clazz += "\tpublic " + className + "(SessionEndpoint se) {\n";
@@ -178,12 +178,12 @@ public class ApiGenerator
 		String imports = "";
 		imports += "import java.io.IOException;\n";
 		imports += "\n";
+		imports += "import org.scribble.main.ScribbleRuntimeException;\n";
 		imports += "import org.scribble.net.Buff;\n";
 		imports += "import org.scribble.net.ScribMessage;\n";
 		imports += "import org.scribble.net.session.SessionEndpoint;\n";
-		imports += "import org.scribble.util.ScribbleRuntimeException;\n";
 		imports += "\n";
-		imports += "import " + SessionGenerator.getPackageName(this.gpn) + "." + SessionGenerator.getSessionClassName(this.gpn) + ";\n";
+		imports += "import " + SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getSessionClassName(this.gpn) + ";\n";
 		//imports += "import org.scribble.util.SessionIncompleteException;\n";
 		/*imports += "\n";
 		imports += "import " + getPackageName() + "." + this.role + ";\n";
@@ -238,7 +238,7 @@ public class ApiGenerator
 					
 					if (a.mid.isOp())
 					{	
-						method += "\tpublic " + next + " send(" + SessionGenerator.getRoleClassName(a.peer) + " role" + ", " + SessionGenerator.getOpClassName(a.mid) + " op";
+						method += "\tpublic " + next + " send(" + SessionApiGenerator.getRoleClassName(a.peer) + " role" + ", " + SessionApiGenerator.getOpClassName(a.mid) + " op";
 						if (!a.payload.isEmpty())
 						{
 							int i = 1;
@@ -265,7 +265,7 @@ public class ApiGenerator
 					else //if (a.mid.isMessageSigName())
 					{	
 						MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-						method += "\tpublic " + next + " send(" + SessionGenerator.getRoleClassName(a.peer) + " role, " + msd.extName + " m";
+						method += "\tpublic " + next + " send(" + SessionApiGenerator.getRoleClassName(a.peer) + " role, " + msd.extName + " m";
 						method += ") throws ScribbleRuntimeException, IOException {\n";
 						//method += "\t\tsuper.writeScribMessage(" + getRole(a.peer) + ", m);\n";
 						method += "\t\tsuper.writeScribMessage(role, m);\n";
@@ -283,7 +283,7 @@ public class ApiGenerator
 				String next = this.classNames.get(succ);
 				if (a.mid.isOp())
 				{
-					method += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
+					method += "\tpublic " + next + " receive(" + SessionApiGenerator.getOpClassName(a.mid) + " op";
 					if (!a.payload.isEmpty())
 					{
 						int i = 1;
@@ -311,7 +311,7 @@ public class ApiGenerator
 				else //if (a.mid.isMessageSigName())
 				{
 					MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-					method += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
+					method += "\tpublic " + next + " receive(" + SessionApiGenerator.getOpClassName(a.mid) + " op";
 					//method += ", Buff<" + msd.extName + "> b";
 					method += ", Buff<? super " + msd.extName + "> b";
 					method += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
@@ -356,7 +356,7 @@ public class ApiGenerator
 					if (a.mid.isOp())
 					{
 						// FIXME: problem if package and protocol have the same name
-						clazz += "\tpublic " + next + " receive(" + SessionGenerator.getPackageName(this.gpn) + "." + SessionGenerator.getOpClassName(a.mid) + " op";
+						clazz += "\tpublic " + next + " receive(" + SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op";
 						//clazz += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
 						if (!a.payload.isEmpty())
 						{
@@ -390,7 +390,7 @@ public class ApiGenerator
 					{
 						MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 						// FIXME: problem if package and protocol have the same name
-						clazz += "\tpublic " + next + " receive(" + SessionGenerator.getPackageName(this.gpn) + "." + SessionGenerator.getOpClassName(a.mid) + " op";
+						clazz += "\tpublic " + next + " receive(" + SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op";
 						//clazz += ", Buff<" + msd.extName + "> b";
 						clazz += ", Buff<? super " + msd.extName + "> b";
 						clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
@@ -414,14 +414,14 @@ public class ApiGenerator
 				method += "\t\t" + this.classNames.get(ps) + "Enum openum;\n";
 				method += "\t\tif (m.op.equals(" + getOp(first.mid) + ")) {\n";
 				//method += "\t\t\treturn " + this.classNames.get(ps) + "Enum." + first.mid.toString() + ";\n";
-				method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionGenerator.getOpClassName(first.mid) + ";\n";
+				method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionApiGenerator.getOpClassName(first.mid) + ";\n";
 				method += "\t\t}\n";
 				for (; as.hasNext(); )
 				{
 					IOAction a = as.next();
 					method += "\t\telse if (m.op.equals(" + getOp(a.mid) + ")) {\n";
 					//method += "\t\t\treturn " + this.classNames.get(ps) + "Enum." + a.mid.toString() + ";\n";
-					method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionGenerator.getOpClassName(a.mid) + ";\n";
+					method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionApiGenerator.getOpClassName(a.mid) + ";\n";
 					method += "\t\t}\n";
 				}
 				method += "\t\telse {\n";
@@ -434,11 +434,11 @@ public class ApiGenerator
 				first = as.next();
 				method += "\n";
 				method += "\tpublic enum " + this.classNames.get(ps) + "Enum implements org.scribble.net.session.OpEnum { ";   // FIXME: should be in methods
-				method += SessionGenerator.getOpClassName(first.mid);
+				method += SessionApiGenerator.getOpClassName(first.mid);
 				for (; as.hasNext(); )
 				{
 					IOAction a = as.next();
-					method += ", " + SessionGenerator.getOpClassName(a.mid);
+					method += ", " + SessionApiGenerator.getOpClassName(a.mid);
 				}
 				method += "; }\n";
 				break;
@@ -454,18 +454,18 @@ public class ApiGenerator
 	private String getPackageName() // Java output package (not Scribble package)
 	{
 		//return this.gpn.getPrefix().toString();
-		return SessionGenerator.getPackageName(this.gpn);
+		return SessionApiGenerator.getPackageName(this.gpn);
 		//return this.gpn.toString();// + "." + this.role;  // role causes clash with Role constant in session class
 	}
 	
 	private String getOp(MessageId mid)
 	{
-		return SessionGenerator.getSessionClassName(gpn) + "." + SessionGenerator.getOpClassName(mid);
+		return SessionApiGenerator.getSessionClassName(gpn) + "." + SessionApiGenerator.getOpClassName(mid);
 	}
 	
 	private String getRole(Role role)
 	{
-		return SessionGenerator.getSessionClassName(gpn) + "." + role.toString();
+		return SessionApiGenerator.getSessionClassName(gpn) + "." + role.toString();
 	}
 	
 	private SocketType getSocketType(ProtocolState ps)
@@ -495,7 +495,7 @@ public class ApiGenerator
 		Map<String, String> map = new HashMap<String, String>();
 		for (String s : this.classes.keySet())
 		{
-			map.put(SessionGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java", this.classes.get(s));
+			map.put(SessionApiGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java", this.classes.get(s));
 		}
 		return map;
 	}

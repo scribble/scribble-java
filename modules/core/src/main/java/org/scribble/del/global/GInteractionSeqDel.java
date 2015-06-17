@@ -22,11 +22,11 @@ import org.scribble.ast.visit.Projector;
 import org.scribble.ast.visit.env.ModelEnv;
 import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.del.InteractionSeqDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 
 // FIXME: should be a CompoundInteractionDelegate? -- no: compound interaction delegates for typing contexts (done for block only, not seqs)

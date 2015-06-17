@@ -2,11 +2,11 @@ package org.scribble.ast.visit;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
-import org.scribble.util.ScribbleException;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
 public class ContextBuilder extends ModelVisitor

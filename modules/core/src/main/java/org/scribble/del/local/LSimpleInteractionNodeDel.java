@@ -4,7 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LSimpleInteractionNode;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.del.SimpleInteractionNodeDel;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 public abstract class LSimpleInteractionNodeDel extends SimpleInteractionNodeDel
 {

@@ -4,9 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 public abstract class HeaderParamDeclList<
 		/*T1 extends HeaderParamDecl<? extends SimpleNameNode<T2>,	T2>,

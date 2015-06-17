@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.del.ScribDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.PayloadType;
-import org.scribble.util.ScribbleException;
 
 public class PayloadElemList extends ScribNodeBase
 {

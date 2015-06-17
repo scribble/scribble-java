@@ -2,10 +2,10 @@ package test.foo;
 
 import java.io.IOException;
 
+import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.ScribServerSocket;
 import org.scribble.net.session.SessionEndpoint;
-import org.scribble.util.ScribbleRuntimeException;
 
 public class MyBC
 {

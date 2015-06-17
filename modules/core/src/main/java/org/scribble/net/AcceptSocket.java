@@ -2,9 +2,9 @@ package org.scribble.net;
 
 import java.io.IOException;
 
+import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleRuntimeException;
 
 public abstract class AcceptSocket extends ScribSocket
 {

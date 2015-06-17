@@ -3,8 +3,8 @@ package org.scribble.ast;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.visit.ModelVisitor;
 import org.scribble.del.ScribDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.ModuleName;
-import org.scribble.util.ScribbleException;
 
 public class ImportModule extends ImportDecl
 {

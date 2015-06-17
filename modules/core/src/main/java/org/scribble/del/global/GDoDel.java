@@ -14,8 +14,8 @@ import org.scribble.ast.visit.Projector;
 import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.ast.visit.env.WellFormedChoiceEnv;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleException;
 
 // FIXME: simple or compound?
 public class GDoDel extends GSimpleInteractionNodeDel

@@ -4,7 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.visit.ModelBuilder;
 import org.scribble.ast.visit.Projector;
 import org.scribble.del.SimpleInteractionNodeDel;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 
 public abstract class GSimpleInteractionNodeDel extends SimpleInteractionNodeDel

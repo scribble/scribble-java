@@ -5,7 +5,7 @@ import org.scribble.ast.local.LCompoundInteractionNode;
 import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.ast.visit.env.ReachabilityEnv;
 import org.scribble.del.CompoundInteractionNodeDel;
-import org.scribble.util.ScribbleException;
+import org.scribble.main.ScribbleException;
 
 // For CompoundInteractionNode and ProtocolBlock
 public class LCompoundInteractionNodeDel extends CompoundInteractionNodeDel

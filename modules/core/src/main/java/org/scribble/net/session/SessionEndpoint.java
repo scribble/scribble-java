@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ScribMessageFormatter;
 import org.scribble.net.SocketWrapper;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.ScribbleRuntimeException;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 public class SessionEndpoint
