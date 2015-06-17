@@ -1,25 +1,25 @@
 package org.scribble.ast.visit.env;
 
-import org.scribble.model.local.ScribbleFsm;
+import org.scribble.model.local.ScribFsm;
 
 @Deprecated
 public class FsmBuildingEnv extends Env
 {
-	private ScribbleFsm fsm;
+	private ScribFsm fsm;
 
 	public FsmBuildingEnv()
 	{
 
 	}
 
-	public FsmBuildingEnv setFsm(ScribbleFsm fsm)
+	public FsmBuildingEnv setFsm(ScribFsm fsm)
 	{
 		FsmBuildingEnv copy = copy();
 		copy.fsm = fsm;
 		return copy;
 	}
 	
-	public ScribbleFsm getFsm()
+	public ScribFsm getFsm()
 	{
 		return this.fsm;
 	}

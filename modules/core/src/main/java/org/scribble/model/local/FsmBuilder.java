@@ -98,10 +98,10 @@ public class FsmBuilder
 		s.addEdge(act, succ);
 	}
 	
-	public ScribbleFsm build()
+	public ScribFsm build()
 	{
 		ProtocolState term = validate();
-		ScribbleFsm f = new ScribbleFsm(this.init, term);
+		ScribFsm f = new ScribFsm(this.init, term);
 		this.init = null;
 		this.states.clear();
 		return f;

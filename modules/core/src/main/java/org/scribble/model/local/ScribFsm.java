@@ -1,12 +1,12 @@
 package org.scribble.model.local;
 
 
-public class ScribbleFsm
+public class ScribFsm
 {
 	public final ProtocolState init;
 	public final ProtocolState term;
 	
-	public ScribbleFsm(ProtocolState init, ProtocolState term)
+	public ScribFsm(ProtocolState init, ProtocolState term)
 	{
 		this.init = init;
 		this.term = term;

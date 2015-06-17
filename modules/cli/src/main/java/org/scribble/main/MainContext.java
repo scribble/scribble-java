@@ -55,7 +55,7 @@ public class MainContext
 		loadAllModules(p);
 	}
 	
-	public Map<ModuleName, Module> getModules()
+	public Map<ModuleName, Module> getParsedModules()
 	{
 		return this.parsed.entrySet().stream().collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue().right));
 	}

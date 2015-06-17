@@ -107,16 +107,16 @@ public class CommandLine implements Runnable
 		GProtocolName gpn = new GProtocolName(this.args.get(Arg.SESSION)[0]);
 		GProtocolName fullname = new GProtocolName(jcontext.main, gpn);
 		Map<String, String> map = job.generateSessionApi(fullname);
-		for (String clazz : map.keySet())
+		for (String path : map.keySet())
 		{
 			if (this.args.containsKey(Arg.OUTPUT))
 			{
 				String dir = this.args.get(Arg.OUTPUT)[0];
-				writeToFile(dir + "/" + clazz, map.get(clazz));
+				writeToFile(dir + "/" + path, map.get(path));
 			}
 			else
 			{
-				System.out.println(map.get(clazz));
+				System.out.println(map.get(path));
 			}
 		}
 	}
@@ -146,7 +146,7 @@ public class CommandLine implements Runnable
 	{
 		//Job job = new Job(impaths, mainpath, cjob.getModules(), cjob.getModules().get(cjob.main));
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
-		return new Job(mc.debug, mc.getModules(), mc.main);
+		return new Job(mc.debug, mc.getParsedModules(), mc.main);
 	}
 
 	private MainContext newMainContext()

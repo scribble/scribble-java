@@ -56,7 +56,7 @@ public class TestWellFormedness {
 			//Job.isWellFormed(imports, filename);
 
 			MainContext mc = newMainContext();
-			Job job = new Job(mc.debug, mc.getModules(), mc.main);
+			Job job = new Job(mc.debug, mc.getParsedModules(), mc.main);
 
 			job.checkWellFormedness();
 			if (hasErrors) fail("Should throw an error.");
