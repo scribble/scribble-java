@@ -60,27 +60,9 @@ public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements Pa
 	}*/
 
 	@Override
-	public boolean isMessageSigNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isMessageSigNameNode()
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isDataTypeNameNode()
 	{
 		return true;
-	}
-
-	@Override
-	public boolean isParamNode()
-	{
-		return false;
 	}
 
 	@Override
@@ -96,33 +78,4 @@ public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements Pa
 	{
 		return toName();
 	}
-
-	/*@Override
-	public PayloadType toArgument()
-	{
-		return toName();
-	}
-
-	public boolean isMessageSignatureNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isPayloadTypeNode()
-	{
-		return true;
-	}
-
-	@Override 
-	public boolean isParameterNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isAmbiguousNode()
-	{
-		return false;
-	}*/
 }

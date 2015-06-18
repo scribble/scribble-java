@@ -27,7 +27,6 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	protected DoArgList<NonRoleArg> reconstruct(List<NonRoleArg> instans)
 	{
 		ScribDel del = del();
-		//NonRoleArgList ail = ModelFactoryImpl.FACTORY.ArgList(instans);
 		NonRoleArgList ail = new NonRoleArgList(instans);
 		ail = (NonRoleArgList) ail.del(del);
 		return ail;
@@ -53,7 +52,6 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 
 	public List<Arg<? extends Kind>> getArguments(Scope scope)
 	{
-		//return this.instans.stream().map((ai) -> ai.arg.toArgument(scope)).collect(Collectors.toList());
 		return this.args.stream().map((ai) -> ai.val.toArg()).collect(Collectors.toList());
 	}
 

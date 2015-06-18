@@ -68,27 +68,9 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 	}
 
 	@Override
-	public boolean isMessageSigNode()
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isMessageSigNameNode()
 	{
 		return true;
-	}
-
-	@Override
-	public boolean isDataTypeNameNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isParamNode()
-	{
-		return false;
 	}
 
 	@Override

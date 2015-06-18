@@ -85,28 +85,4 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements
 		//return new AmbigName(this.identifier);
 		return new AmbigName(getIdentifier());
 	}
-
-	@Override
-	public boolean isMessageSigNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isMessageSigNameNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isDataTypeNameNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isParamNode()
-	{
-		return false;
-	}
 }

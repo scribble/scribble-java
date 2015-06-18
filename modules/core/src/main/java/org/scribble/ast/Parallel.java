@@ -7,39 +7,21 @@ import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 
-//public abstract class Parallel<T extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>
-public abstract class Parallel<K extends ProtocolKind>
-		extends CompoundInteractionNode<K>
+public abstract class Parallel<K extends ProtocolKind> extends CompoundInteractionNode<K>
 {
-	//public final List<T> blocks;
 	public final List<? extends ProtocolBlock<K>> blocks;
 
-	/*protected Parallel(CommonTree ct, List<T> blocks)
-	{
-		this(ct, blocks, null, null);
-	}
-
-	protected Parallel(CommonTree ct, List<T> blocks, CompoundInteractionNodeContext cicontext)
-	{
-		this(ct, blocks, cicontext, null);
-	}*/
-
-	//protected Parallel(List<T> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
-	protected Parallel(List<? extends ProtocolBlock<K>> blocks)//, CompoundInteractionNodeContext cicontext, Env env)
+	protected Parallel(List<? extends ProtocolBlock<K>> blocks)
 	{
 		this.blocks = new LinkedList<>(blocks);
 	}
 
-	//protected abstract Parallel<T> reconstruct(List<T> blocks);
 	protected abstract Parallel<K> reconstruct(List<? extends ProtocolBlock<K>> blocks);
 
 	@Override
-	//public Parallel<T> visitChildren(ModelVisitor nv) throws ScribbleException
 	public Parallel<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		//List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
 		List<? extends ProtocolBlock<K>> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
-		//return new Parallel<>(this.ct, blocks, getContext(), getEnv());
 		return reconstruct(blocks);
 	}
 
@@ -112,7 +94,6 @@ public abstract class Parallel<K extends ProtocolKind>
 	public String toString()
 	{
 		String s = Constants.PAR_KW + " " + this.blocks.get(0);
-		//for (T block : this.blocks.subList(1, this.blocks.size()))
 		for (ProtocolBlock<K> block : this.blocks.subList(1, this.blocks.size()))
 		{
 			s += " " + Constants.AND_KW + " " + block;

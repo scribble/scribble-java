@@ -28,11 +28,10 @@ public interface ScribNode
 {
 	ScribNode accept(AstVisitor nv) throws ScribbleException;
 	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;
-	//ModelNode visitChildrenInSubprotocols(SubprotocolVisitor nv) throws ScribbleException;
 
 	ScribDel del();
 	ScribNode del(ScribDel del);
-	//<T extends ModelNodeBase> T del(T t, ModelDelegate del);
+	//<T extends ScribNode> T del(T t, ScribDel del);
 	
 	ScribNode substituteNames(Substitutor subs);
 }

@@ -5,7 +5,7 @@ import org.scribble.sesstype.name.Name;
 
 
 
-// TODO: factor out stuff from ImportModule and ImportMember into here
+// TODO: factor out stuff from ImportModule and ImportMember into here, e.g. alias/name
 public abstract class ImportDecl<K extends Kind> extends ScribNodeBase//, ModuleMember //implements NameDeclaration 
 {
 	protected ImportDecl()

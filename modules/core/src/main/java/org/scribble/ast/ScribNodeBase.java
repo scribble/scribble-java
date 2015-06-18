@@ -29,7 +29,6 @@ import org.scribble.util.ScribbleUtil;
  * This is the generic object from which all Scribble model objects
  * are derived.
  */
-// Currently name nodes don't have dels (aren't made by node factory)
 public abstract class ScribNodeBase implements ScribNode
 {
 	protected ScribDel del;
@@ -41,7 +40,6 @@ public abstract class ScribNodeBase implements ScribNode
 	@Override
 	public ScribNode accept(AstVisitor nv) throws ScribbleException
 	{
-		//return visitChild(this, nv);  // FIXME: weird to call visitChild with "this" as the child (only done for root visit calls)
 		return nv.visit(null, this);
 	}
 
@@ -55,12 +53,6 @@ public abstract class ScribNodeBase implements ScribNode
 	{
 		return nv.visit(this, child);
 	}
-
-	/*@Override
-	public ModelNode visitChildrenInSubprotocols(SubprotocolVisitor nv) throws ScribbleException
-	{
-		return visitChildren(nv);
-	}*/
 	
 	@Override
 	public final ScribDel del()
@@ -77,16 +69,11 @@ public abstract class ScribNodeBase implements ScribNode
 	}
 
 	/*@Override
-	public final <T extends ModelNodeBase> T del(T n, ModelDelegate del)
+	public final <T extends ScribNode> T del(T n, ScribDel del)
 	{
 		T copy = n.copy();
 		copy.del = del;
 		return copy;
-	}*/
-	
-	/*protected static <T extends ModelNodeBase> T reconstruct(T n)
-	{
-		return castReconstruction(n.del(n.del()), n);  // del setter returns a shallow copy -- which is enough for immutable model nodes
 	}*/
 
 	@Override
@@ -118,7 +105,7 @@ public abstract class ScribNodeBase implements ScribNode
 			visited.add(visitChildWithClassCheck(parent, n, nv));
 		}
 		return visited;*/
-		// Maybe this hack is not worth it?  Better to throw directly as ScribbleException
+		// Maybe this exception hack is not worth it?  Better to throw directly as ScribbleException
 		try
 		{
 			return children.stream()
@@ -135,15 +122,4 @@ public abstract class ScribNodeBase implements ScribNode
 			throw (RuntimeException) cause;
 		}
 	}
-	
-	/*private static <T extends ModelNodeBase> T castReconstruction(ModelNodeBase n, T t)
-	{
-		if (!n.getClass().equals(t.getClass()))
-		{
-			throw new RuntimeException("Cast error: " + n.getClass() + ", " + t.getClass());
-		}
-		@SuppressWarnings("unchecked")
-		T tmp = (T) n;
-		return tmp;
-	}*/
 }

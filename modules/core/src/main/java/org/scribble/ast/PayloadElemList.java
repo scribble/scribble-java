@@ -13,8 +13,6 @@ import org.scribble.sesstype.name.PayloadType;
 
 public class PayloadElemList extends ScribNodeBase
 {
-	//public static final Payload EMPTY_PAYLOAD = new Payload(null, Collections.<PayloadElement> emptyList());
-
 	public final List<PayloadElem> elems;  // FIXME: parameterise on Kind (cf. sesstypes)
 
 	public PayloadElemList(List<PayloadElem> payloadelems)
@@ -22,22 +20,11 @@ public class PayloadElemList extends ScribNodeBase
 		this.elems = new LinkedList<>(payloadelems);
 	}
 	
-	public Payload toPayload()
-	{
-		List<PayloadType<? extends Kind>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
-		return new Payload(pts);
-	}
-
-	/*// Basically a copy without the AST
 	@Override
-	public Payload leaveProjection(Projector proj) //throws ScribbleException
+	protected PayloadElemList copy()
 	{
-		List<PayloadElement> payloadelems = 
-				this.payloadelems.stream().map((pe) -> (PayloadElement) ((ProjectionEnv) pe.getEnv()).getProjection()).collect(Collectors.toList());	
-		Payload projection = new Payload(null, payloadelems);
-		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
-		return this;
-	}*/
+		return new PayloadElemList(this.elems);
+	}
 
 	protected PayloadElemList reconstruct(List<PayloadElem> elems)
 	{
@@ -52,6 +39,12 @@ public class PayloadElemList extends ScribNodeBase
 	{
 		List<PayloadElem> elems = visitChildListWithClassCheck(this, this.elems, nv);
 		return reconstruct(elems);
+	}
+
+	public Payload toPayload()
+	{
+		List<PayloadType<? extends Kind>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
+		return new Payload(pts);
 	}
 
 	public boolean isEmpty()
@@ -72,11 +65,5 @@ public class PayloadElemList extends ScribNodeBase
 			}
 		}
 		return s + ")";
-	}
-
-	@Override
-	protected PayloadElemList copy()
-	{
-		return new PayloadElemList(this.elems);
 	}
 }

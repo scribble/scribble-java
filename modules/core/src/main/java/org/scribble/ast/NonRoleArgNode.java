@@ -12,13 +12,25 @@ public interface NonRoleArgNode extends DoArgNode
 {
 	// Not kinded: point of this interface is don't know which kind the node is -- so use the "is" methods -- cf. AmbigNameNode inherits both sig and data kind
 	// And not all values are names, e.g. message sigs
-	boolean isMessageSigNode();
-	boolean isMessageSigNameNode();
-	boolean isDataTypeNameNode();
-	boolean isParamNode();
+	default boolean isMessageSigNode()
+	{
+		return false;
+	}
+
+	default boolean isMessageSigNameNode()
+	{
+		return false;
+	}
+
+	default boolean isDataTypeNameNode()
+	{
+		return false;
+	}
+
+	default boolean isParamNode()
+	{
+		return false;
+	}
 	
-	// FIXME: data type arguments aren't scoped
-	//Argument<? extends Kind> toArgument(Scope scope);  // Argument shouldn't be a "type object"? (type objects should only be the name kinds? -- Argument is syntax category?) -- need an Argument syntax object for SubprotocolSignature
 	Arg<? extends Kind> toArg();
-	//Argument<K> toArgument();
 }

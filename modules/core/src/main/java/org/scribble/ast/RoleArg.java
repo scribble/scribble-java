@@ -32,35 +32,7 @@ public class RoleArg extends DoArg<RoleNode>
 	@Override
 	public RoleArg project(Role self)
 	{
-		//RoleNode rn = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, this.arg.toName().toString());
 		RoleNode rn = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.val.toName().toString());
-		//return new RoleInstantiation(rn);
 		return AstFactoryImpl.FACTORY.RoleArg(rn);
 	}
-	
-	/*@Override
-	public RoleInstantiation substitute(Substitutor subs) throws ScribbleException
-	{
-		RoleNode arg = subs.substituteRole(this.arg.toName());
-		return new RoleInstantiation(this.ct, arg, this.param);
-	}
-	
-	@Override
-	public boolean hasTargetParameter()
-	{
-		return this.param != null;
-	}
-	
-	@Override
-	public RoleInstantiation collectRoles(RoleCollector rc) throws ScribbleException
-	{
-		//rc.addRole(this.arg.toName());
-		return (RoleInstantiation) super.collectRoles(rc);
-	}* /
-
-	@Override
-	public String toString()
-	{
-		return this.arg.toString();
-	}*/
 }

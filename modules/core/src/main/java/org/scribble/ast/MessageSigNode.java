@@ -46,24 +46,6 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 		return true;
 	}
 
-	@Override
-	public boolean isMessageSigNameNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isDataTypeNameNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isParamNode()
-	{
-		return false;
-	}
-
 	// Make a direct scoped version? (taking scope as argument)
 	@Override
 	public MessageSig toArg()

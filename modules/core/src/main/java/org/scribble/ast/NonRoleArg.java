@@ -29,10 +29,6 @@ public class NonRoleArg extends DoArg<NonRoleArgNode>
 	@Override
 	public NonRoleArg project(Role self)
 	{
-		/*ArgumentNode arg = (ArgumentNode) ((ProjectionEnv) this.arg.del().env()).getProjection();	
-		return new ArgumentInstantiation(arg);*/
-		//ArgumentNode an = new ArgumentNode(this.arg.toName().toString());
-		//return new ArgumentInstantiation(this.arg);  // FIXME: arg needs projection?
-		return AstFactoryImpl.FACTORY.NonRoleArg(this.val);  // FIXME: arg needs projection?
+		return AstFactoryImpl.FACTORY.NonRoleArg(this.val);  // arg needs projection?
 	}
 }

@@ -17,6 +17,17 @@ public abstract class HeaderParamDeclList<K extends Kind> extends ScribNodeBase
 		this.decls = new LinkedList<>(decls);
 	}
 	
+	protected abstract HeaderParamDeclList<K> reconstruct(List<? extends HeaderParamDecl<K>> decls);
+	
+	@Override
+	public HeaderParamDeclList<K> visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		List<HeaderParamDecl<K>> nds = visitChildListWithClassCheck(this, this.decls, nv);
+		return reconstruct(nds);
+	}
+	
+	public abstract HeaderParamDeclList<K> project(Role self);  // FIXME: move to delegate
+	
 	public int length()
 	{
 		return this.decls.size();
@@ -25,17 +36,6 @@ public abstract class HeaderParamDeclList<K extends Kind> extends ScribNodeBase
 	public boolean isEmpty()
 	{
 		return this.decls.isEmpty();
-	}
-	
-	public abstract HeaderParamDeclList<K> project(Role self);  // FIXME: move to delegate
-	
-	protected abstract HeaderParamDeclList<K> reconstruct(List<? extends HeaderParamDecl<K>> decls);
-	
-	@Override
-	public HeaderParamDeclList<K> visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		List<HeaderParamDecl<K>> nds = visitChildListWithClassCheck(this, this.decls, nv);
-		return reconstruct(nds);
 	}
 
 	@Override

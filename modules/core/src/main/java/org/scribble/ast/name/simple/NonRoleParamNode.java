@@ -106,24 +106,6 @@ public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implemen
 	}
 
 	@Override
-	public boolean isMessageSigNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isMessageSigNameNode()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isDataTypeNameNode()
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isParamNode()
 	{
 		return true;

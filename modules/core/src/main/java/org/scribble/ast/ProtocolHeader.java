@@ -9,25 +9,18 @@ import org.scribble.sesstype.name.ProtocolName;
 
 
 // TODO: parameterize on global/local name node and role decl list (i.e. self roles)
-public abstract class ProtocolHeader<K extends ProtocolKind>
-		//extends ModelNodeBase
-		extends NameDeclNode<K>
+public abstract class ProtocolHeader<K extends ProtocolKind> extends NameDeclNode<K>
 {
-	//public final SimpleProtocolNameNode name;
 	public final RoleDeclList roledecls;
 	public final NonRoleParamDeclList paramdecls;
 
-	// Maybe deprecate SimpleProtocolNameNode
-	//protected ProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	protected ProtocolHeader(NameNode<K> name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
-		//this.name = name;
 		super(name);
 		this.roledecls = roledecls;
 		this.paramdecls = paramdecls;
 	}
 	
-	//protected abstract ProtocolHeader<K> reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl);
 	protected abstract ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, NonRoleParamDeclList pdl);
 	
 	@Override
@@ -35,7 +28,6 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 	{
 		RoleDeclList rdl = (RoleDeclList) visitChild(this.roledecls, nv);
 		NonRoleParamDeclList pdl = (NonRoleParamDeclList) visitChild(this.paramdecls, nv);
-		//return reconstruct((SimpleProtocolNameNode) this.name, rdl, pdl);
 		return reconstruct((ProtocolNameNode<K>) this.name, rdl, pdl);
 	}
 
