@@ -1,6 +1,7 @@
 package org.scribble.ast.global;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.Parallel;
@@ -8,30 +9,37 @@ import org.scribble.ast.ProtocolBlock;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
-//public class GlobalParallel extends Parallel<GlobalProtocolBlock> implements CompoundGlobalInteractionNode
 public class GParallel extends Parallel<Global> implements GCompoundInteractionNode
 {
-	//public GlobalParallel(List<GlobalProtocolBlock> blocks)
-	public GParallel(List<? extends ProtocolBlock<Global>> blocks)
+	public GParallel(List<GProtocolBlock> blocks)
 	{
-		//this(t, blocks, null, null);
 		super(blocks);
-	}
-	
-	@Override
-	//protected GlobalParallel reconstruct(List<GlobalProtocolBlock> blocks)
-	protected GParallel reconstruct(List<? extends ProtocolBlock<Global>> blocks)
-	{
-		ScribDel del = del();
-		GParallel gp = new GParallel(blocks);
-		gp = (GParallel) gp.del(del);
-		return gp;
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new GParallel(this.blocks);
+		return new GParallel(getBlocks());
+	}
+	
+	@Override
+	protected GParallel reconstruct(List<? extends ProtocolBlock<Global>> blocks)
+	{
+		ScribDel del = del();
+		GParallel gp = new GParallel(castBlocks(blocks));
+		gp = (GParallel) gp.del(del);
+		return gp;
+	}
+
+	@Override
+	public List<GProtocolBlock> getBlocks()
+	{
+		return castBlocks(this.blocks);
+	}
+	
+	private static List<GProtocolBlock> castBlocks(List<? extends ProtocolBlock<Global>> blocks)
+	{
+		return blocks.stream().map((b) -> (GProtocolBlock) b).collect(Collectors.toList());
 	}
 	
 	/*@Override
@@ -142,15 +150,5 @@ public class GParallel extends Parallel<Global> implements GCompoundInteractionN
 			return null;
 		}
 		return new LocalParallel(null, visited);
-	}*/
-
-	/*@Override
-	public GlobalParallel visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		Parallel<GlobalProtocolBlock> par = super.visitChildren(nv);
-		//List<GlobalProtocolBlock> blocks = GlobalProtocolBlock.toGlobalProtocolBlockList.apply(par.blocks);
-		//List<GlobalProtocolBlock> blocks = par.blocks.stream().map(GlobalProtocolBlock.toGlobalProtocolBlock).collect(Collectors.toList());
-		//return new GlobalParallel(par.ct, par.blocks, par.getContext(), par.getEnv());
-		return reconstruct(par.ct, par.blocks, par.getContext(), par.getEnv());
 	}*/
 }

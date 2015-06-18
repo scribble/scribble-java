@@ -52,7 +52,7 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		proj.pushEnv(new ProjectionEnv(projection));
+		proj.pushEnv(env.setProjection(projection));
 		return (GRecursion) super.leaveProjection(parent, child, proj, gr);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

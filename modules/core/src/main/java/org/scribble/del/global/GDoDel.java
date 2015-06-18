@@ -117,8 +117,8 @@ public class GDoDel extends GSimpleInteractionNodeDel
 		}
 		/*this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		return this;*/
-		proj.popEnv();
-		proj.pushEnv(new ProjectionEnv(projection));
+		ProjectionEnv env = proj.popEnv();
+		proj.pushEnv(env.setProjection(projection));
 		return (GDo) super.leaveProjection(parent, child, proj, gd);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

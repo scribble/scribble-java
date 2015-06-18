@@ -30,6 +30,8 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 		return reconstruct(subj, blocks);
 	}
 	
+	public abstract List<? extends ProtocolBlock<K>> getBlocks();
+	
 	@Override
 	public String toString()
 	{

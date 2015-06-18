@@ -38,7 +38,6 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -74,8 +73,8 @@ public interface AstFactory
 	GInteractionSeq GInteractionSequence(List<GInteractionNode> gis);
 
 	GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	GChoice GChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks);
-	GRecursion GRecursion(RecVarNode recvar, ProtocolBlock<Global> block);
+	GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks);
+	GRecursion GRecursion(RecVarNode recvar, GProtocolBlock block);
 	GContinue GContinue(RecVarNode recvar);
 	GDo GDo(RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto);
 	

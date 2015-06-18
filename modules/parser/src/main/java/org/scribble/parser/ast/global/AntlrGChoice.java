@@ -5,14 +5,12 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
 import org.scribble.parser.util.Util;
-import org.scribble.sesstype.kind.Global;
 
 public class AntlrGChoice
 {
@@ -22,7 +20,7 @@ public class AntlrGChoice
 	public static GChoice parseGChoice(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct));
-		List<ProtocolBlock<Global>> blocks = new LinkedList<>();
+		List<GProtocolBlock> blocks = new LinkedList<>();
 		for (CommonTree block : getBlockChildren(ct))
 		{
 			blocks.add((GProtocolBlock) parser.parse(block));

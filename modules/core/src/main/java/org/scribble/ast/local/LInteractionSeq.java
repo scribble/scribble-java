@@ -1,6 +1,7 @@
 package org.scribble.ast.local;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
@@ -9,7 +10,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class GlobalInteractionSequence extends InteractionSequence<GlobalInteraction>
-public class LInteractionSeq extends InteractionSeq<Local> implements LocalNode
+public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 {
 	//public LocalInteractionSequence(List<LocalInteractionNode> lis)
 	public LInteractionSeq(List<? extends InteractionNode<Local>> lis)
@@ -29,7 +30,18 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LocalNode
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LInteractionSeq(this.actions);
+		return new LInteractionSeq(getNodes());
+	}
+	
+	@Override
+	public List<LInteractionNode> getNodes()
+	{
+		return castNodes(this.actions);
+	}
+	
+	private static List<LInteractionNode> castNodes(List<? extends InteractionNode<Local>> nodes)
+	{
+		return nodes.stream().map((n) -> (LInteractionNode) n).collect(Collectors.toList());
 	}
 
 	/*// Alternative to overriding visit(Children) is to set Env copies on every interaction node and go through the sequence after visiting all children in leave

@@ -38,7 +38,7 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		proj.pushEnv(new ProjectionEnv(projection));
+		proj.pushEnv(env.setProjection(projection));
 		return (GProtocolBlock) popAndSetVisitorEnv(parent, child, proj, gpd);
 	}
 	

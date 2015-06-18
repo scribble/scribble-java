@@ -1,10 +1,11 @@
 package org.scribble.ast.local;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Choice;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.ProtocolBlock;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
@@ -32,6 +33,17 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	protected ScribNodeBase copy()
 	{
 		return new LChoice(this.subj, this.blocks);
+	}
+
+	@Override
+	public List<? extends ProtocolBlock<Local>> getBlocks()
+	{
+		return castBlocks(blocks);
+	}
+	
+	private static List<LProtocolBlock> castBlocks(List<? extends ProtocolBlock<Local>> blocks)
+	{
+		return blocks.stream().map((b) -> (LProtocolBlock) b).collect(Collectors.toList());
 	}
 	
 	/*@Override

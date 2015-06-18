@@ -13,7 +13,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LReceive;
-import org.scribble.ast.local.LocalNode;
+import org.scribble.ast.local.LNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.visit.MessageIdCollector;
 import org.scribble.ast.visit.ModelBuilder;
@@ -74,7 +74,7 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		Role self = proj.peekSelf();
 		Role srcrole = gmt.src.toName();
 		List<Role> destroles = gmt.getDestinationRoles();
-		LocalNode projection = null;
+		LNode projection = null;
 		if (srcrole.equals(self) || destroles.contains(self))
 		{
 			//RoleNode src = new RoleNode(gmt.src.toName().toString());  // FIXME: project by visiting -- or maybe not: projection visiting only for GlobalNode
@@ -108,7 +108,7 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		proj.pushEnv(new ProjectionEnv(projection));
+		proj.pushEnv(env.setProjection(projection));
 		//return gmt;
 		return (GMessageTransfer) super.leaveProjection(parent, child, proj, gmt);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}

@@ -225,7 +225,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		}
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		proj.pushEnv(new ProjectionEnv(projection));
+		proj.pushEnv(env.setProjection(projection));
 		return (GChoice) super.leaveProjection(parent, child, proj, gc);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

@@ -11,12 +11,26 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 
-public class GProtocolHeader extends ProtocolHeader<Global> implements GlobalNode
+public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 {
-	//public GProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	public GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
 		super(name, roledecls, paramdecls);
+	}
+
+	@Override
+	protected ScribNodeBase copy()
+	{
+		return new GProtocolHeader((GProtocolNameNode) this.name, this.roledecls, this.paramdecls);
+	}
+
+	@Override
+	protected GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
+	{
+		ScribDel del = del();
+		GProtocolHeader gph = new GProtocolHeader((GProtocolNameNode) name, rdl, pdl);
+		gph = (GProtocolHeader) gph.del(del);
+		return gph;
 	}
 	
 	@Override
@@ -29,22 +43,5 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GlobalNod
 	public String toString()
 	{
 		return Constants.GLOBAL_KW + " " + super.toString();
-	}
-
-	@Override
-	protected ScribNodeBase copy()
-	{
-		//return new GProtocolHeader((SimpleProtocolNameNode) this.name, this.roledecls, this.paramdecls);
-		return new GProtocolHeader((GProtocolNameNode) this.name, this.roledecls, this.paramdecls);
-	}
-
-	@Override
-	//protected ProtocolHeader reconstruct(SimpleProtocolNameNode name, RoleDeclList rdl, ParamDeclList pdl)
-	protected GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
-	{
-		ScribDel del = del();
-		GProtocolHeader gph = new GProtocolHeader((GProtocolNameNode) name, rdl, pdl);
-		gph = (GProtocolHeader) gph.del(del);
-		return gph;
 	}
 }

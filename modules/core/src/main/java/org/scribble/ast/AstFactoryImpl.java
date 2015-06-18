@@ -229,7 +229,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GChoice GChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks)
+	public GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks)
 	{
 		GChoice gc = new GChoice(subj, blocks);
 		gc = del(gc, new GChoiceDel());
@@ -237,7 +237,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GRecursion GRecursion(RecVarNode recvar, ProtocolBlock<Global> block)
+	public GRecursion GRecursion(RecVarNode recvar, GProtocolBlock block)
 	{
 		GRecursion gr = new GRecursion(recvar, block);
 		gr = del(gr, new GRecursionDel());

@@ -6,7 +6,7 @@ import org.scribble.ast.Interrupt;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 
-public abstract class LInterrupt extends Interrupt implements LocalNode
+public abstract class LInterrupt extends Interrupt implements LNode
 {
 
 	protected LInterrupt(RoleNode src, List<MessageNode> msgs)

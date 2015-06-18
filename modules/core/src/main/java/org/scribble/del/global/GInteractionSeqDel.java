@@ -16,7 +16,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.ast.local.LocalNode;
+import org.scribble.ast.local.LNode;
 import org.scribble.ast.visit.ModelBuilder;
 import org.scribble.ast.visit.Projector;
 import org.scribble.ast.visit.env.ModelEnv;
@@ -55,7 +55,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		//for (GlobalInteractionNode gi : gis.actions)
 		for (InteractionNode<Global> gi : gis.actions)
 		{
-			LocalNode ln = (LocalNode) ((ProjectionEnv) gi.del().env()).getProjection();
+			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
 				lis.addAll(((LInteractionSeq) ln).actions);
@@ -75,7 +75,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSequence(lis);
 		ProjectionEnv env = proj.popEnv();
 		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		proj.pushEnv(new ProjectionEnv(projection));
+		proj.pushEnv(env.setProjection(projection));
 		//return gis;
 		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, proj, gis);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}

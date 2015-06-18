@@ -24,6 +24,8 @@ public abstract class Parallel<K extends ProtocolKind> extends CompoundInteracti
 		List<? extends ProtocolBlock<K>> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
 		return reconstruct(blocks);
 	}
+	
+	public abstract List<? extends ProtocolBlock<K>> getBlocks();
 
 	/*@Override
 	public NodeContextBuilder enterContextBuilding(NodeContextBuilder builder) throws ScribbleException

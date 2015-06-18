@@ -14,7 +14,6 @@ public class AntlrGContinue
 	public static GContinue parseGContinue(ScribbleParser parser, CommonTree ct)
 	{
 		RecVarNode recvar = AntlrSimpleName.toRecVarNode(getRecVarChild(ct));
-		//return new GlobalContinue(recvar);
 		return AstFactoryImpl.FACTORY.GContinue(recvar);
 	}
 

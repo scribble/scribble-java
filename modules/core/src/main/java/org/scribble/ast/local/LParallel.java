@@ -1,10 +1,11 @@
 package org.scribble.ast.local;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
@@ -31,6 +32,17 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	protected ScribNodeBase copy()
 	{
 		return new LParallel(this.blocks);
+	}
+
+	@Override
+	public List<LProtocolBlock> getBlocks()
+	{
+		return castBlocks(this.blocks);
+	}
+	
+	private static List<LProtocolBlock> castBlocks(List<? extends ProtocolBlock<Local>> blocks)
+	{
+		return blocks.stream().map((b) -> (LProtocolBlock) b).collect(Collectors.toList());
 	}
 	
 	/*@Override

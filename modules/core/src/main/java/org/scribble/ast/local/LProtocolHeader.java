@@ -15,7 +15,7 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 
-public class LProtocolHeader extends ProtocolHeader<Local> implements LocalNode
+public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 {
 	//public LProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	public LProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)

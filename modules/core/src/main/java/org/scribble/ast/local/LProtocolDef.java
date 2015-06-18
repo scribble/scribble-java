@@ -6,7 +6,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
 //public class LocalProtocolDefinition extends ProtocolDefinition<LocalProtocolBlock> implements LocalNode
-public class LProtocolDef extends ProtocolDef<Local> implements LocalNode
+public class LProtocolDef extends ProtocolDef<Local> implements LNode
 {
 	//public LocalProtocolDefinition(LocalProtocolBlock block)
 	public LProtocolDef(ProtocolBlock<Local> block)

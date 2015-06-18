@@ -1,5 +1,7 @@
 package org.scribble.main;
 
+	// move roledecllist etc projection to dels
+
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B })
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
 
