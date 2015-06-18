@@ -26,6 +26,6 @@ public abstract class Continue<K extends ProtocolKind> extends SimpleInteraction
 	@Override
 	public String toString()
 	{
-		return Constants.CONTINUE_KW + " " + recvar + ";";
+		return Constants.CONTINUE_KW + " " + this.recvar + ";";
 	}
 }

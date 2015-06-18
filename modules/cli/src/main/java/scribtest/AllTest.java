@@ -47,7 +47,7 @@ public class AllTest {
 	@Test
 	public void tests() throws IOException, InterruptedException, ExecutionException {
 		//JavaProcessBuilder java = Harness.java("scribble2.main.Main");
-		JavaProcessBuilder java = Harness.java("org.scribble2.cli.CommandLine");
+		JavaProcessBuilder java = Harness.java("org.scribble.cli.CommandLine");
 		java.appendProgramArgument(example);
 		ProcessSummary result = ExecUtil.execUntil(TIMEOUT, java.build());
 		String output = result.stderr + "\n" + result.stdout;
