@@ -4,9 +4,9 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.Role;
 
 
-public class NonRoleArg extends DoArg<ArgNode>
+public class NonRoleArg extends DoArg<NonRoleArgNode>
 {
-	public NonRoleArg(ArgNode arg)
+	public NonRoleArg(NonRoleArgNode arg)
 	{
 		super(arg);
 	}
@@ -18,7 +18,7 @@ public class NonRoleArg extends DoArg<ArgNode>
 	}
 
 	@Override
-	protected NonRoleArg reconstruct(ArgNode arg)
+	protected NonRoleArg reconstruct(NonRoleArgNode arg)
 	{
 		ScribDel del = del();
 		NonRoleArg ai = new NonRoleArg(arg);

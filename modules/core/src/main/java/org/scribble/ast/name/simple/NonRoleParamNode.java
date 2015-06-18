@@ -1,6 +1,6 @@
 package org.scribble.ast.name.simple;
 
-import org.scribble.ast.ArgNode;
+import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.ast.visit.Substitutor;
@@ -65,10 +65,10 @@ public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implemen
 	}*/
 
 	@Override
-	public ArgNode substituteNames(Substitutor subs)
+	public NonRoleArgNode substituteNames(Substitutor subs)
 	{
 		Arg<K> arg = toArg();
-		ArgNode an;
+		NonRoleArgNode an;
 		if (this.kind.equals(SigKind.KIND))
 		{
 			an = subs.getArgumentSubstitution(arg);  // FIXME: reconstruct/clone?
@@ -81,7 +81,7 @@ public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implemen
 		{
 			throw new RuntimeException("TODO: " + this);
 		}
-		an = (ArgNode) an.del(del());
+		an = (NonRoleArgNode) an.del(del());
 		return an;
 	}
 	

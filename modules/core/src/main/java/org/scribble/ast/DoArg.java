@@ -5,7 +5,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 
 
-// Cf. NameDeclNode/HeaderParameterDecl
+// Cf. NameDeclNode/HeaderParameterDecl, i.e. wrappers for param names/arg values
 // Simpler than NameDeclNode, doesn't constrain node-type correspondence for names
 public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 //public abstract class DoArgument<K extends Kind> extends ModelNodeBase

@@ -310,7 +310,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public NonRoleArg NonRoleArg(ArgNode arg)
+	public NonRoleArg NonRoleArg(NonRoleArgNode arg)
 	{
 		NonRoleArg ri = new NonRoleArg(arg);
 		ri = del(ri, createDefaultDelegate());

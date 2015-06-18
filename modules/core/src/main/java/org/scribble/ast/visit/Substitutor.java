@@ -2,7 +2,7 @@ package org.scribble.ast.visit;
 
 import java.util.Map;
 
-import org.scribble.ast.ArgNode;
+import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
@@ -21,9 +21,9 @@ public class Substitutor extends AstVisitor
 {
 	private final Map<Role, RoleNode> rolemap;
 	//private final Map<Argument, ArgumentNode> argmap;
-	private final Map<Arg<? extends Kind>, ArgNode> argmap;
+	private final Map<Arg<? extends Kind>, NonRoleArgNode> argmap;
 
-	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Arg<? extends Kind>, ArgNode> argmap)
+	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Arg<? extends Kind>, NonRoleArgNode> argmap)
 	{
 		super(job);
 		this.rolemap = rolemap;
@@ -51,14 +51,14 @@ public class Substitutor extends AstVisitor
 	}*/
 
 	//public ArgumentNode getArgumentSubstitution(Argument arg)
-	public <K extends Kind> ArgNode getArgumentSubstitution(Arg<K> arg)
+	public <K extends Kind> NonRoleArgNode getArgumentSubstitution(Arg<K> arg)
 	{
-		ArgNode an = (ArgNode) this.argmap.get(arg);
+		NonRoleArgNode an = (NonRoleArgNode) this.argmap.get(arg);
 		if (an.isMessageSigNode())
 		{
 			MessageSigNode msn = (MessageSigNode) an;
 			//return new MessageSigNode(msn.op, msn.payload);  // FIXME: use factory
-			return (ArgNode) AstFactoryImpl.FACTORY.MessageSigNode(msn.op, msn.payload);
+			return (NonRoleArgNode) AstFactoryImpl.FACTORY.MessageSigNode(msn.op, msn.payload);
 		}
 		else if (an.isMessageSigNameNode())
 		{

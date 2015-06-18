@@ -100,7 +100,7 @@ public interface AstFactory
 	RoleArgList RoleArgList(List<RoleArg> ris);
 	RoleArg RoleArg(RoleNode role);
 	NonRoleArgList NonRoleArgList(List<NonRoleArg> ais);
-	NonRoleArg NonRoleArg(ArgNode arg);
+	NonRoleArg NonRoleArg(NonRoleArgNode arg);
 
 	// FIXME: instead of enums, take class as generic parameter
 	//SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ArgNode;
+import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleArg;
 import org.scribble.ast.NonRoleArgList;
@@ -28,7 +28,7 @@ public class AntlrNonRoleArgList
 			if (type == AntlrNodeType.MESSAGESIGNATURE)
 			{
 				//as.add((ArgumentInstantiation) parser.parse(a));
-				ArgNode arg = (ArgNode) parser.parse(a);
+				NonRoleArgNode arg = (NonRoleArgNode) parser.parse(a);
 				as.add(AstFactoryImpl.FACTORY.NonRoleArg(arg));
 			}
 			else if (type == AntlrNodeType.AMBIGUOUSNAME)

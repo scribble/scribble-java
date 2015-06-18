@@ -46,7 +46,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 		return this.args.isEmpty();
 	}
 	
-	public List<ArgNode> getArgumentNodes()
+	public List<NonRoleArgNode> getArgumentNodes()
 	{
 		return this.args.stream().map((ai) -> ai.val).collect(Collectors.toList());
 	}
