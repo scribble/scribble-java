@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
@@ -90,7 +90,7 @@ public class Module extends ScribNodeBase
 	}
 	
 	@Override
-	public Module visitChildren(ModelVisitor nv) throws ScribbleException
+	public Module visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		ModuleDecl moddecl = (ModuleDecl) visitChild(this.moddecl, nv);
 		//List<? extends ImportDecl> imports = visitChildListWithClassCheck(this, this.imports, nv);

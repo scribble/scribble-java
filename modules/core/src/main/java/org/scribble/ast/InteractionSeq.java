@@ -2,7 +2,7 @@ package org.scribble.ast;
 
 import java.util.List;
 
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 
@@ -23,7 +23,7 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 	
 	@Override
 	//public InteractionSequence visitChildren(NodeVisitor nv) throws ScribbleException
-	public InteractionSeq<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public InteractionSeq<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		List<? extends InteractionNode<K>> actions = visitChildListWithClassCheck(this, this.actions, nv);  // OK to require all nodes to keep the same class? Maybe better to leave abstract and implement in the global/local subclasses
 		//return new InteractionSequence<T>(this.ct, actions);

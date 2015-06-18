@@ -2,7 +2,7 @@ package org.scribble.ast;
 
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
@@ -31,7 +31,7 @@ public abstract class ProtocolHeader<K extends ProtocolKind>
 	protected abstract ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, NonRoleParamDeclList pdl);
 	
 	@Override
-	public ProtocolHeader<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public ProtocolHeader<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RoleDeclList rdl = (RoleDeclList) visitChild(this.roledecls, nv);
 		NonRoleParamDeclList pdl = (NonRoleParamDeclList) visitChild(this.paramdecls, nv);

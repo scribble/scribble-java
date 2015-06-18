@@ -1,6 +1,6 @@
 package org.scribble.ast;
 
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
@@ -85,7 +85,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind>
 
 	@Override
 	//public AbstractProtocolDecl<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
-	public ProtocolDecl<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public ProtocolDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		/*T1 header = visitChildWithClassCheck(this, this.header, nv);
 		T2 def = visitChildWithClassCheck(this, this.def, nv);*/

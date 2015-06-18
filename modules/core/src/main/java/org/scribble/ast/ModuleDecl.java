@@ -1,7 +1,7 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.name.ModuleName;
@@ -19,7 +19,7 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	}
 
 	@Override
-	public ModuleDecl visitChildren(ModelVisitor nv) throws ScribbleException
+	public ModuleDecl visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		//ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.fullmodname, nv);
 		ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.name, nv);

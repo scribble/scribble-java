@@ -102,14 +102,14 @@ public class Job
 		return new EndpointApiGenerator(this, gpn, role).getClasses(); // filepath -> class source  // FIXME: store results?
 	}
 
-	private void runNodeVisitorPass(Class<? extends ModelVisitor> c) throws ScribbleException
+	private void runNodeVisitorPass(Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		try
 		{
-			Constructor<? extends ModelVisitor> cons = c.getConstructor(Job.class);
+			Constructor<? extends AstVisitor> cons = c.getConstructor(Job.class);
 			for (ModuleName modname : this.jcontext.getFullModuleNames())
 			{
-				ModelVisitor nv = cons.newInstance(this);
+				AstVisitor nv = cons.newInstance(this);
 				Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
 				this.jcontext.replaceModule(visited);
 			}

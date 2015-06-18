@@ -17,7 +17,7 @@ import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.Role;
 
-public class Substitutor extends ModelVisitor
+public class Substitutor extends AstVisitor
 {
 	private final Map<Role, RoleNode> rolemap;
 	//private final Map<Argument, ArgumentNode> argmap;

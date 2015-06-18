@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
@@ -48,7 +48,7 @@ public class PayloadElemList extends ScribNodeBase
 	}
 	
 	@Override
-	public PayloadElemList visitChildren(ModelVisitor nv) throws ScribbleException
+	public PayloadElemList visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		List<PayloadElem> elems = visitChildListWithClassCheck(this, this.elems, nv);
 		return reconstruct(elems);

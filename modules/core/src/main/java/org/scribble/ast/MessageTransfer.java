@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.Role;
@@ -36,7 +36,7 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 	protected abstract MessageTransfer<K> reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
-	public MessageTransfer<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public MessageTransfer<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RoleNode src = (RoleNode) visitChild(this.src, nv);
 		//MessageNode msg = visitMessageNode(nv, this.msg);

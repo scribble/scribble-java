@@ -5,7 +5,7 @@ import java.util.Iterator;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.ast.visit.JobContext;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
@@ -31,7 +31,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	protected abstract Do<K> reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<K> proto);//, SimpleInteractionNodeContext sicontext, Env env);
 
 	@Override
-	public Do<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public Do<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		//ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
 		RoleArgList ril = (RoleArgList) visitChild(this.roles, nv);

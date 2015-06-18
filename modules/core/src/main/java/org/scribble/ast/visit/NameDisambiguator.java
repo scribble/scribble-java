@@ -15,7 +15,7 @@ import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
-public class NameDisambiguator extends ModelVisitor
+public class NameDisambiguator extends AstVisitor
 {
 	private ModuleContext mcontext;  // FIXME: hack -- factor out ContextVisitor
 

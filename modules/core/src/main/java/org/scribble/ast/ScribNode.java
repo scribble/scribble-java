@@ -15,7 +15,7 @@
  */
 package org.scribble.ast;
 
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.ast.visit.Substitutor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
@@ -26,8 +26,8 @@ import org.scribble.main.ScribbleException;
  */
 public interface ScribNode
 {
-	ScribNode accept(ModelVisitor nv) throws ScribbleException;
-	ScribNode visitChildren(ModelVisitor nv) throws ScribbleException;
+	ScribNode accept(AstVisitor nv) throws ScribbleException;
+	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;
 	//ModelNode visitChildrenInSubprotocols(SubprotocolVisitor nv) throws ScribbleException;
 
 	ScribDel del();

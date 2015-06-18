@@ -3,7 +3,7 @@ package org.scribble.ast;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 
@@ -24,7 +24,7 @@ public abstract class DoArgList<T extends DoArg<? extends DoArgNode>> extends Sc
 	public abstract DoArgList<T> project(Role self);
 	
 	@Override
-	public DoArgList<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	public DoArgList<T> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		List<T> nds = visitChildListWithClassCheck(this, this.args, nv);
 		return reconstruct(nds);

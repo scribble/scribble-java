@@ -1,6 +1,6 @@
 package org.scribble.ast;
 
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 
@@ -21,7 +21,7 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 	protected abstract DoArg<T> reconstruct(T arg);
 	
 	@Override
-	public DoArg<T> visitChildren(ModelVisitor nv) throws ScribbleException
+	public DoArg<T> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		//T arg = visitChildWithClassCheck(this, this.arg, nv);
 		@SuppressWarnings("unchecked")

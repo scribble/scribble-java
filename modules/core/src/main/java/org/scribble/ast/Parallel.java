@@ -3,7 +3,7 @@ package org.scribble.ast;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 
@@ -35,7 +35,7 @@ public abstract class Parallel<K extends ProtocolKind>
 
 	@Override
 	//public Parallel<T> visitChildren(ModelVisitor nv) throws ScribbleException
-	public Parallel<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public Parallel<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		//List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
 		List<? extends ProtocolBlock<K>> blocks = visitChildListWithClassCheck(this, this.blocks, nv);

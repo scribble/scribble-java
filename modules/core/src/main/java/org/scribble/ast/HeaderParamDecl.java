@@ -1,7 +1,7 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.NameNode;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Role;
@@ -32,7 +32,7 @@ public abstract class HeaderParamDecl<K extends Kind> extends NameDeclNode<K> //
 	@Override
 	//public HeaderParamDecl<T, T2> visitChildren(ModelVisitor nv) throws ScribbleException
 	//public HeaderParamDecl<T2, K> visitChildren(ModelVisitor nv) throws ScribbleException
-	public HeaderParamDecl<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParamDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		//SimpleNameNode name = (SimpleNameNode) visitChild(this.name, nv);
 		//T name = visitChildWithClassCheck(this, this.name, nv);

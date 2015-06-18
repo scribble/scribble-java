@@ -1,7 +1,7 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 
@@ -113,7 +113,7 @@ public class PayloadElem extends ScribNodeBase
 	}
 
 	@Override
-	public PayloadElem visitChildren(ModelVisitor nv) throws ScribbleException
+	public PayloadElem visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		//PayloadTypeOrParameterNode type = (PayloadTypeOrParameterNode) visitChild((Node) this.type, nv);
 		PayloadElemNameNode name = (PayloadElemNameNode) visitChild(this.name, nv);

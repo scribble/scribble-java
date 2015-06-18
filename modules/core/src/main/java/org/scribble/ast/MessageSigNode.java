@@ -1,7 +1,7 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.simple.OpNode;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.MessageSig;
@@ -61,7 +61,7 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	}
 	
 	@Override
-	public MessageSigNode visitChildren(ModelVisitor nv) throws ScribbleException
+	public MessageSigNode visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		OpNode op = (OpNode) visitChild(this.op, nv);
 		PayloadElemList payload = (PayloadElemList) visitChild(this.payload, nv);

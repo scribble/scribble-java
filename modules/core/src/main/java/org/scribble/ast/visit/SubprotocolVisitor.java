@@ -27,7 +27,7 @@ import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
 
-public abstract class SubprotocolVisitor extends ModelVisitor
+public abstract class SubprotocolVisitor extends AstVisitor
 {
 	//private ModuleDelegate mcontext;  // Factor up to ModelVisitor? (will be null before context building)
 	private ModuleContext mcontext;  // The "root" module context (different than the front-end "main" module)  // Factor up to ModelVisitor? (will be null before context building)

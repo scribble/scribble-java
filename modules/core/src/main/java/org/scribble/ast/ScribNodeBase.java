@@ -18,7 +18,7 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.ast.visit.Substitutor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
@@ -39,19 +39,19 @@ public abstract class ScribNodeBase implements ScribNode
 	protected abstract ScribNodeBase copy();
 	
 	@Override
-	public ScribNode accept(ModelVisitor nv) throws ScribbleException
+	public ScribNode accept(AstVisitor nv) throws ScribbleException
 	{
 		//return visitChild(this, nv);  // FIXME: weird to call visitChild with "this" as the child (only done for root visit calls)
 		return nv.visit(null, this);
 	}
 
 	@Override
-	public ScribNode visitChildren(ModelVisitor nv) throws ScribbleException
+	public ScribNode visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		return this;
 	}
 	
-	protected ScribNode visitChild(ScribNode child, ModelVisitor nv) throws ScribbleException
+	protected ScribNode visitChild(ScribNode child, AstVisitor nv) throws ScribbleException
 	{
 		return nv.visit(this, child);
 	}
@@ -97,7 +97,7 @@ public abstract class ScribNodeBase implements ScribNode
 		
 	// FIXME: remove parent parameter, to make uniform with visitChild
 	// Used when a generic cast would otherwise be needed (non-generic children casts don't need this)
-	protected final static <T extends ScribNode> T visitChildWithClassCheck(ScribNode parent, T child, ModelVisitor nv) throws ScribbleException
+	protected final static <T extends ScribNode> T visitChildWithClassCheck(ScribNode parent, T child, AstVisitor nv) throws ScribbleException
 	{
 		ScribNode visited = ((ScribNodeBase) parent).visitChild(child, nv);
 		if (visited.getClass() != child.getClass())  // Visitor is not allowed to replace the node by a different node type
@@ -109,7 +109,7 @@ public abstract class ScribNodeBase implements ScribNode
 		return t;
 	}
 
-	protected final static <T extends ScribNode> List<T> visitChildListWithClassCheck(ScribNode parent, List<T> children, ModelVisitor nv) throws ScribbleException
+	protected final static <T extends ScribNode> List<T> visitChildListWithClassCheck(ScribNode parent, List<T> children, AstVisitor nv) throws ScribbleException
 	{
 		/*List<T> visited = new LinkedList<>();
 		for (T n : children)

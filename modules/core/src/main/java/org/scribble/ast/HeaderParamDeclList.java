@@ -3,7 +3,7 @@ package org.scribble.ast;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Role;
@@ -47,7 +47,7 @@ public abstract class HeaderParamDeclList<
 	@Override
 	//public HeaderParamDeclList<T1, T2> visitChildren(ModelVisitor nv) throws ScribbleException
 	//public HeaderParamDeclList<T, K> visitChildren(ModelVisitor nv) throws ScribbleException
-	public HeaderParamDeclList<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public HeaderParamDeclList<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		//List<T1> nds = visitChildListWithClassCheck(this, this.decls, nv);
 		//List<HeaderParamDecl<T, K>> nds = visitChildListWithClassCheck(this, this.decls, nv);

@@ -9,7 +9,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
-public class ContextBuilder extends ModelVisitor
+public class ContextBuilder extends AstVisitor
 {
 	// cache of dependencies, cleared on entering each root global protocol
 	// protocol name is full name of global protocol dependencies

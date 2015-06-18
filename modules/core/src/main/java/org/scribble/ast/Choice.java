@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 
@@ -40,7 +40,7 @@ public abstract class Choice<K extends ProtocolKind>
 	
 	@Override
 	//public Choice<T> visitChildren(ModelVisitor nv) throws ScribbleException
-	public Choice<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public Choice<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RoleNode subj = (RoleNode) visitChild(this.subj, nv);
 		//List<T> blocks = visitChildListWithClassCheck(this, this.blocks, nv);

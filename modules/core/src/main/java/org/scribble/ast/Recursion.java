@@ -1,7 +1,7 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.ast.visit.ModelVisitor;
+import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 
@@ -35,7 +35,7 @@ public abstract class Recursion<K extends ProtocolKind>
 
 	@Override
 	//public Recursion<T> visitChildren(ModelVisitor nv) throws ScribbleException
-	public Recursion<K> visitChildren(ModelVisitor nv) throws ScribbleException
+	public Recursion<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RecVarNode recvar = (RecVarNode) visitChild(this.recvar, nv);
 		//T block = visitChildWithClassCheck(this, this.block, nv);
