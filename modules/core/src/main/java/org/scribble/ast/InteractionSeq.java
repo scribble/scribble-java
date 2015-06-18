@@ -7,13 +7,10 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 
 
-//public class InteractionSequence extends AbstractNode
 public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBase
 {
-	//public final List<? extends InteractionNode> actions;
 	public final List<? extends InteractionNode<K>> actions;
 
-	//public InteractionSequence(CommonTree ct, List<? extends InteractionNode> ins)
 	protected InteractionSeq(List<? extends InteractionNode<K>> actions)
 	{
 		this.actions = actions;
@@ -22,11 +19,9 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 	protected abstract InteractionSeq<K> reconstruct(List<? extends InteractionNode<K>> ins);
 	
 	@Override
-	//public InteractionSequence visitChildren(NodeVisitor nv) throws ScribbleException
 	public InteractionSeq<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		List<? extends InteractionNode<K>> actions = visitChildListWithClassCheck(this, this.actions, nv);  // OK to require all nodes to keep the same class? Maybe better to leave abstract and implement in the global/local subclasses
-		//return new InteractionSequence<T>(this.ct, actions);
+		List<? extends InteractionNode<K>> actions = visitChildListWithClassCheck(this, this.actions, nv);
 		return reconstruct(actions);
 	}
 	
@@ -38,13 +33,12 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 	@Override
 	public String toString()
 	{
-		//List<? extends InteractionNode> ins = getSequence();
 		if (this.actions.isEmpty())
 		{
 			return "";
 		}
-		String s = actions.get(0).toString();
-		for (InteractionNode<K> in : actions.subList(1, actions.size()))
+		String s = this.actions.get(0).toString();
+		for (InteractionNode<K> in : this.actions.subList(1, this.actions.size()))
 		{
 			s += "\n" + in;
 		}

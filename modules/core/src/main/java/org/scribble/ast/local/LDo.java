@@ -23,9 +23,10 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	@Override
 	public LProtocolName getTargetFullProtocolName(ModuleContext mcontext)
 	{
-		return mcontext.getFullLocalProtocolName(((LProtocolNameNode) this.proto).toName());
+		//return mcontext.getFullLocalProtocolName(((LProtocolNameNode) this.proto).toName());
+		return (LProtocolName) super.getTargetFullProtocolName(mcontext);
 	}
-
+	
 	@Override
 	//protected Do reconstruct(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	//protected LDo reconstruct(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)

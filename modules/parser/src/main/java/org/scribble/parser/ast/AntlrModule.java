@@ -24,14 +24,14 @@ public class AntlrModule
 	public static Module parseModule(ScribbleParser parser, CommonTree ct)
 	{
 		ModuleDecl md = (ModuleDecl) parser.parse(getModuleDeclChild(ct));
-		List<ImportDecl> ids = new LinkedList<>();
+		List<ImportDecl<? extends Kind>> ids = new LinkedList<>();
 		List<NonProtocolDecl<? extends Kind>> ptds = new LinkedList<>();
 		//List<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 		List<ProtocolDecl<? extends ProtocolKind>>
 				pds = new LinkedList<>();
 		for (CommonTree id : getImportDeclChildren(ct))
 		{
-			ids.add((ImportDecl) parser.parse(id));
+			ids.add((ImportDecl<? extends Kind>) parser.parse(id));
 		}
 		//for (CommonTree ptd : getPayloadTypeDeclChildren(ct))
 		for (CommonTree ptd : getDataTypeDeclChildren(ct))

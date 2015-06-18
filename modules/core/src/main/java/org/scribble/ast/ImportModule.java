@@ -4,16 +4,14 @@ import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.visit.AstVisitor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.name.ModuleName;
 
-public class ImportModule extends ImportDecl
+public class ImportModule extends ImportDecl<ModuleKind>
 {
 	public final ModuleNameNode modname;
-	//public final SimpleProtocolNameNode alias;
 	public ModuleNameNode alias;
 
-	// FIXME: make a no alias constructor
-	//public ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)
 	public ImportModule(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		this.modname = modname;
@@ -26,7 +24,6 @@ public class ImportModule extends ImportDecl
 		return new ImportModule(this.modname, this.alias);
 	}
 	
-	//protected ImportModule reconstruct(ModuleNameNode modname, SimpleProtocolNameNode alias)
 	protected ImportModule reconstruct(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		ScribDel del = del();
@@ -39,16 +36,14 @@ public class ImportModule extends ImportDecl
 	public ImportModule visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		ModuleNameNode modname = (ModuleNameNode) visitChild(this.modname, nv);
-		//SimpleProtocolNameNode alias = null;
-		ModuleNameNode alias = null;
-		if (isAliased())
-		{
-			//alias = (SimpleProtocolNameNode) visitChild(this.alias, nv);
-			alias = visitChildWithClassCheck(this, this.alias, nv);
-			//return new ImportModule(this.ct, modname, alias);
-		}
-		//return new ImportModule(this.ct, modname, null);
+		ModuleNameNode alias = (isAliased()) ? (ModuleNameNode) visitChild(this.alias, nv) : null;
 		return reconstruct(modname, alias);
+	}
+	
+	@Override
+	public boolean isImportModule()
+	{
+		return true;
 	}
 	
 	@Override
@@ -63,10 +58,9 @@ public class ImportModule extends ImportDecl
 		return isAliased() ? getAlias() : this.modname.toName();
 	}*/
 	
-	//@Override
-	public ModuleName getModuleNameAlias()
+	@Override
+	public ModuleName getAlias()
 	{
-		//return new ModuleName(this.alias.identifier);
 		return this.alias.toName();
 	}
 	
@@ -79,11 +73,5 @@ public class ImportModule extends ImportDecl
 			s += " " + Constants.AS_KW + " " + this.alias;
 		}
 		return s + ";";
-	}
-	
-	@Override
-	public boolean isImportModule()
-	{
-		return true;
 	}
 }

@@ -9,37 +9,19 @@ public abstract class Continue<K extends ProtocolKind> extends SimpleInteraction
 {
 	public final RecVarNode recvar;
 
-	/*protected Continue(CommonTree ct, RecursionVarNode lab)
-	{
-		this(ct, lab, null, null);
-	}
-
-	protected Continue(CommonTree ct, RecursionVarNode lab, SimpleInteractionNodeContext sicontext)
-	{
-		this(ct, lab, sicontext, null);
-	}*/
-
-	protected Continue(RecVarNode recvar)//, SimpleInteractionNodeContext sicontext, Env env)
+	protected Continue(RecVarNode recvar)
 	{
 		this.recvar = recvar;
 	}
 
-	protected abstract Continue<K> reconstruct(RecVarNode recvar);//, SimpleInteractionNodeContext sicontext, Env env);
+	protected abstract Continue<K> reconstruct(RecVarNode recvar);
 
 	@Override
 	public Continue<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RecVarNode recvar = (RecVarNode) visitChild(this.recvar, nv);
-		//return new Continue(this.ct, recvar, getContext(), getEnv());
-		return reconstruct(recvar);//, getContext(), getEnv());
+		return reconstruct(recvar);
 	}
-
-	/*@Override
-	public Continue leaveReachabilityCheck(ReachabilityChecker checker) throws ScribbleException
-	{
-		checker.getEnv().leave(this, checker);
-		return this;
-	}*/
 
 	@Override
 	public String toString()

@@ -45,15 +45,10 @@ import org.scribble.sesstype.kind.ProtocolKind;
 
 public interface AstFactory
 {
-	//enum SIMPLE_NAME { AMBIG, OPERATOR, PARAMETER, RECURSIONVAR, ROLE, MODULE, PROTOCOL }
-	//enum QUALIFIED_NAME { MESSAGESIGNATURE, MODULE, PAYLOADTYPE, PROTOCOL }
-	
 	Module Module( 
 			ModuleDecl moddecl,
-			//List<? extends ImportDecl> imports,
-			List<ImportDecl> imports,
+			List<ImportDecl<? extends Kind>> imports,
 			List<NonProtocolDecl<? extends Kind>> data,
-			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos);
 			List<ProtocolDecl<? extends ProtocolKind>> protos);
 	
 	MessageSigNode MessageSigNode(OpNode op, PayloadElemList payload);
@@ -61,40 +56,27 @@ public interface AstFactory
 	PayloadElem PayloadElement(PayloadElemNameNode name);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
-	//ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias);
 	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);
 	
 	MessageSigNameDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias);
 	DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNameNode alias);
 
 	GProtocolDecl GProtocolDecl(GProtocolHeader header, GProtocolDef def);
-	//GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
 	GProtocolHeader GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 
-	//RoleDeclList RoleDeclList(List<RoleDecl> rds);
-	//RoleDeclList RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> rds);
 	RoleDeclList RoleDeclList(List<RoleDecl> rds);
 	RoleDecl RoleDecl(RoleNode namenode);
-	//ParamDeclList ParameterDeclList(List<ParamDecl> pds);
-	//ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds);
-	//ParamDeclList ParameterDeclList(List<HeaderParamDecl<Kind>> pds);
 	NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<Kind>> pds);
-	//ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode);
 	<K extends Kind> NonRoleParamDecl<K> ParamDecl(K kind, NonRoleParamNode<K> namenode);
-	//<K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode);
 	
 	GProtocolDef GProtocolDefinition(GProtocolBlock block);
 	GProtocolBlock GProtocolBlock(GInteractionSeq gis);
 	GInteractionSeq GInteractionSequence(List<GInteractionNode> gis);
 
 	GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	//GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks);
 	GChoice GChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks);
-	//GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block);
 	GRecursion GRecursion(RecVarNode recvar, ProtocolBlock<Global> block);
 	GContinue GContinue(RecVarNode recvar);
-	//GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	//GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	GDo GDo(RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto);
 	
 	RoleArgList RoleArgList(List<RoleArg> ris);
@@ -102,33 +84,23 @@ public interface AstFactory
 	NonRoleArgList NonRoleArgList(List<NonRoleArg> ais);
 	NonRoleArg NonRoleArg(NonRoleArgNode arg);
 
-	// FIXME: instead of enums, take class as generic parameter
-	//SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier);
-	//<K extends Kind> NameNode<? extends Name<K>, K> SimpleNameNode(K kind, String identifier);
 	<K extends Kind> NameNode<K> SimpleNameNode(K kind, String identifier);
-	//QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems);
-	//<K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems);
 	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind, String... elems);
 	
 	AmbigNameNode AmbiguousNameNode(String identifier);
 	<K extends Kind> NonRoleParamNode<K> NonRoleParamNode(K kind, String identifier);
 
 	LProtocolDecl LProtocolDecl(LProtocolHeader header, LProtocolDef def);
-	//LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls);
 	LProtocolHeader LProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
 	LProtocolDef LProtocolDefinition(LProtocolBlock block);
 	LProtocolBlock LProtocolBlock(LInteractionSeq seq);
-	//LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions);
 	LInteractionSeq LInteractionSequence(List<? extends InteractionNode<Local>> actions);
 
 	LSend LSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LReceive LReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	//LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks);
 	LChoice LChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks);
 	LRecursion LRecursion(RecVarNode recvar, LProtocolBlock block);
 	LContinue LContinue(RecVarNode recvar);
-	//LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
-	//LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto);
 	LDo LDo(RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto);
 }

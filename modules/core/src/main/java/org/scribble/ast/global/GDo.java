@@ -1,9 +1,9 @@
 package org.scribble.ast.global;
 
 import org.scribble.ast.Do;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
@@ -23,7 +23,8 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	@Override
 	public GProtocolName getTargetFullProtocolName(ModuleContext mcontext)
 	{
-		return mcontext.getFullGlobalProtocolName(((GProtocolNameNode) this.proto).toName());
+		//return mcontext.getFullGlobalProtocolName(((GProtocolNameNode) this.proto).toName());
+		return (GProtocolName) super.getTargetFullProtocolName(mcontext);
 	}
 
 	@Override

@@ -78,13 +78,13 @@ import org.scribble.sesstype.kind.SigKind;
 
 public class AstFactoryImpl implements AstFactory
 {
-	public static final AstFactory FACTORY = new AstFactoryImpl();  // FIXME: move somewhere else
+	public static final AstFactory FACTORY = new AstFactoryImpl();
 	
 	@Override
 	public MessageSigNode MessageSigNode(OpNode op, PayloadElemList payload)
 	{
 		MessageSigNode msn = new MessageSigNode(op, payload);
-		msn = del(msn, createDefaultDelegate());  // FIXME: does another shallow copy
+		msn = del(msn, createDefaultDelegate());
 		return msn;
 	}
 
@@ -107,14 +107,11 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public Module Module( 
 			ModuleDecl moddecl,
-			//List<? extends ImportDecl> imports,
-			List<ImportDecl> imports,
+			List<ImportDecl<? extends Kind>> imports,
 			List<NonProtocolDecl<? extends Kind>> data,
-			//List<? extends AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>> protos)
 			List<ProtocolDecl<? extends org.scribble.sesstype.kind.ProtocolKind>> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
-		//module = del(module, new ModuleDelegate(module.getFullModuleName()));
 		module = del(module, new ModuleDel());
 		return module;
 	}
@@ -128,11 +125,9 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public ImportModule ImportModule(ModuleNameNode modname, SimpleProtocolNameNode alias)
 	public ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		ImportModule im = new ImportModule(modname, alias);
-		//im = del(im, createDefaultDelegate());
 		im = del(im, new ImportModuleDel());
 		return im;
 	}
@@ -162,7 +157,6 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public GProtocolHeader GlobalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	public GProtocolHeader GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
 		GProtocolHeader gph = new GProtocolHeader(name, roledecls, paramdecls);
@@ -171,8 +165,6 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public RoleDeclList RoleDeclList(List<RoleDecl> rds)
-	//public RoleDeclList RoleDeclList(List<HeaderParamDecl<Role, RoleKind>> rds)
 	public RoleDeclList RoleDeclList(List<RoleDecl> rds)
 	{
 		RoleDeclList rdl = new RoleDeclList(rds);
@@ -189,8 +181,6 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public ParamDeclList ParameterDeclList(List<ParamDecl> pds)
-	//public ParamDeclList ParameterDeclList(List<HeaderParamDecl<Name<Kind>, Kind>> pds)
 	public NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<Kind>> pds)
 	{
 		NonRoleParamDeclList pdl = new NonRoleParamDeclList(pds);
@@ -199,12 +189,9 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public ParamDecl ParameterDecl(org.scribble2.model.ParamDecl.Kind kind, ParameterNode namenode)
 	public <K extends Kind> NonRoleParamDecl<K> ParamDecl(K kind, NonRoleParamNode<K> namenode)
-	//public <K extends Kind> ParamDecl<K> ParameterDecl(ParameterNode<K> namenode)
 	{
 		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(kind, namenode);
-		//ParamDecl<K> pd = new ParamDecl<K>(namenode);
 		pd = del(pd, new ParamDeclDel());
 		return pd;
 	}
@@ -242,7 +229,6 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public GlobalChoice GlobalChoice(RoleNode subj, List<GlobalProtocolBlock> blocks)
 	public GChoice GChoice(RoleNode subj, List<ProtocolBlock<Global>> blocks)
 	{
 		GChoice gc = new GChoice(subj, blocks);
@@ -251,7 +237,6 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public GlobalRecursion GlobalRecursion(RecursionVarNode recvar, GlobalProtocolBlock block)
 	public GRecursion GRecursion(RecVarNode recvar, ProtocolBlock<Global> block)
 	{
 		GRecursion gr = new GRecursion(recvar, block);
@@ -267,21 +252,11 @@ public class AstFactoryImpl implements AstFactory
 		return gc;
 	}
 
-	/*@Override
-	public GlobalDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	{
-		return GlobalDo(null, roleinstans, arginstans, proto);
-	}*/
-
 	@Override
-	//public GlobalDo GlobalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	//public GDo GlobalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	public GDo GDo(RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto)
 	{
-		//GlobalDo gd = new GlobalDo(scope, roleinstans, arginstans, proto);
 		GDo gd = new GDo(roleinstans, arginstans, proto);
-		//gd = del(gd, createDefaultDelegate());  // FIXME
-		gd = del(gd, new GDoDel());  // FIXME
+		gd = del(gd, new GDoDel());
 		return gd;
 	}
 
@@ -318,28 +293,9 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	//public SimpleNameNode SimpleNameNode(SIMPLE_NAME kind, String identifier)
-	//public <K extends Kind> NameNode<? extends Name<K>, K> SimpleNameNode(K kind, String identifier)
 	public <K extends Kind> NameNode<K> SimpleNameNode(K kind, String identifier)
 	{
-		//SimpleNameNode snn;
-		//NameNode<? extends Name<? extends Kind>, ? extends Kind> snn;
 		NameNode<? extends Kind> snn;
-		/*switch(kind)
-		{
-			case AMBIG: 
-			{
-				snn = new AmbiguousNameNode(identifier); 
-				snn = (AmbiguousNameNode) snn.del(new AmbiguousNameDelegate());
-				return snn;
-			}
-			case OPERATOR:     snn = new OperatorNode(identifier);           break;
-			case PARAMETER:    snn = new ParameterNode(identifier);          break;
-			case RECURSIONVAR: snn = new RecursionVarNode(identifier);       break;
-			case ROLE:         snn = new RoleNode(identifier);               break;
-			case PROTOCOL:     snn = new SimpleProtocolNameNode(identifier); break;
-			default: throw new RuntimeException("Shouldn't get in here: " + kind);
-		}*/
 		if (kind.equals(OpKind.KIND))
 		{
 			snn = new OpNode(identifier);
@@ -354,46 +310,17 @@ public class AstFactoryImpl implements AstFactory
 			rn = (RoleNode) del(rn, new RoleNodeDel());
 			return castNameNode(kind, rn);
 		}
-		/*else if (kind.equals(ProtocolKind.KIND))
-		{
-			snn = new SimpleProtocolNameNode(identifier);
-		}*/
 		else
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
-		//return castNameNode(kind, (NameNode<? extends Name<K>, K>) snn.del(createDefaultDelegate()));
 		return castNameNode(kind, del(snn, createDefaultDelegate()));
-	}
-	
-	/*private static <T extends NameNode<? extends Name<? extends Kind>, K>, K extends Kind> T
-			castNameNode(K kind, NameNode<? extends Name<? extends Kind>, ? extends Kind> n)*/
-	private static <T extends NameNode<K>, K extends Kind> T
-			castNameNode(K kind, NameNode<? extends Kind> n)
-	{
-		if (!n.toName().kind.equals(kind))
-		{
-			throw new RuntimeException("Shouldn't get in here: " + kind + ", " + n);
-		}
-		@SuppressWarnings("unchecked")
-		T tmp = (T) n;
-		return tmp;
 	}
 
 	@Override
-	//public QualifiedNameNode QualifiedNameNode(QUALIFIED_NAME kind, String... elems)
-	//public <K extends Kind> QualifiedNameNode<? extends Name<K>, K> QualifiedNameNode(K kind, String... elems)
 	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind, String... elems)
 	{
-		//QualifiedNameNode<? extends Name<? extends Kind>, ? extends Kind> qnn;
 		QualifiedNameNode<? extends Kind> qnn;
-		/*switch(kind)
-		{
-			case MESSAGESIGNATURE: qnn = new MessageSignatureNameNode(elems); break;
-			case MODULE:           qnn = new ModuleNameNode(elems); break;
-			case PROTOCOL:         qnn = new ProtocolNameNode(elems); break;
-			default: throw new RuntimeException("Shouldn't get in here: " + kind);
-		}*/
 		if (kind.equals(ModuleKind.KIND))
 		{
 			qnn = new ModuleNameNode(elems);
@@ -418,13 +345,10 @@ public class AstFactoryImpl implements AstFactory
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind);
 		}
-		return castQualifiedNameNode(kind, del(qnn, createDefaultDelegate()));
+		return castNameNode(kind, del(qnn, createDefaultDelegate()));
 	}
-
-	/*private static <T extends QualifiedNameNode<? extends Name<? extends Kind>, K>, K extends Kind> T
-			castQualifiedNameNode(K kind, QualifiedNameNode<? extends Name<? extends Kind>, ? extends Kind> n)*/
-	private static <T extends QualifiedNameNode<K>, K extends Kind> T
-			castQualifiedNameNode(K kind, QualifiedNameNode<? extends Kind> n)
+	
+	private static <T extends NameNode<K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Kind> n)
 	{
 		if (!n.toName().kind.equals(kind))
 		{
@@ -460,7 +384,6 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public LProtocolHeader LocalProtocolHeader(SimpleProtocolNameNode name, RoleDeclList roledecls, ParamDeclList paramdecls)
 	public LProtocolHeader LProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)
 	{
 		LProtocolHeader lph = new LProtocolHeader(name, roledecls, paramdecls);
@@ -493,7 +416,6 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public LocalInteractionSequence LocalInteractionSequence(List<LocalInteractionNode> actions)
 	public LInteractionSeq LInteractionSequence(List<? extends InteractionNode<Local>> actions)
 	{
 		LInteractionSeq lis = new LInteractionSeq(actions);
@@ -518,7 +440,6 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public LocalChoice LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
 	public LChoice LChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks)
 	{
 		LChoice lc = new LChoice(subj, blocks);
@@ -542,20 +463,10 @@ public class AstFactoryImpl implements AstFactory
 		return lc;
 	}
 
-	/*@Override
-	public LocalDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	{
-		return LocalDo(null, roleinstans, arginstans, proto);
-	}*/
-
 	@Override
-	//public LocalDo LocalDo(ScopeNode scope, RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
-	//public LDo LocalDo(RoleInstantiationList roleinstans, ArgumentInstantiationList arginstans, ProtocolNameNode proto)
 	public LDo LDo(RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto)
 	{
-		//LocalDo ld = new LocalDo(scope, roleinstans, arginstans, proto);
 		LDo ld = new LDo(roleinstans, arginstans, proto);
-		//ld = del(ld, createDefaultDelegate());
 		ld = del(ld, new LDoDel());
 		return ld;
 	}
@@ -568,7 +479,7 @@ public class AstFactoryImpl implements AstFactory
 	@SuppressWarnings("unchecked")
 	private static <T extends ScribNodeBase> T del(T n, ScribDel del)
 	{
-		ScribNodeBase ret = n.del(del);
+		ScribNodeBase ret = n.del(del);  // FIXME: del makes another shallow copy of n
 		if (ret.getClass() != n.getClass())
 		{
 			throw new RuntimeException("Shouldn't get in here: " + ret.getClass() + ", " + n.getClass());

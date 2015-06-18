@@ -18,6 +18,29 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	}
 
 	@Override
+	protected MessageSigNode copy()
+	{
+		return new MessageSigNode(this.op, this.payload);
+	}
+	
+	protected MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
+	{
+		ScribDel del = del();	
+		MessageSigNode msn = new MessageSigNode(op, payload);
+		msn = (MessageSigNode) msn.del(del);
+		return msn;
+	}
+	
+	@Override
+	public MessageSigNode visitChildren(AstVisitor nv) throws ScribbleException
+	{
+		OpNode op = (OpNode) visitChild(this.op, nv);
+		PayloadElemList payload = (PayloadElemList) visitChild(this.payload, nv);
+		return reconstruct(op, payload);
+	}
+	
+
+	@Override
 	public boolean isMessageSigNode()
 	{
 		return true;
@@ -41,72 +64,22 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 		return false;
 	}
 
-	/*// Basically a copy without the AST
+	// Make a direct scoped version? (taking scope as argument)
 	@Override
-	public MessageSignatureNode leaveProjection(Projector proj) //throws ScribbleException
-	{
-		OperatorNode op = new OperatorNode(null, this.op.toName().toString());
-		Payload payload = (Payload) ((ProjectionEnv) this.payload.getEnv()).getProjection();	
-		MessageSignatureNode projection = new MessageSignatureNode(null, op, payload);
-		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
-		return this;
-	}*/
-	
-	protected MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
-	{
-		ScribDel del = del();	
-		MessageSigNode msn = new MessageSigNode(op, payload);
-		msn = (MessageSigNode) msn.del(del);
-		return msn;
-	}
-	
-	@Override
-	public MessageSigNode visitChildren(AstVisitor nv) throws ScribbleException
-	{
-		OpNode op = (OpNode) visitChild(this.op, nv);
-		PayloadElemList payload = (PayloadElemList) visitChild(this.payload, nv);
-		return reconstruct(op, payload);
-	}
-	
-	/*@Override 
-	public Operator getOperator()
-	{
-		return this.op;
-	}*/
-
-	// FIXME: make a direct scoped version (taking scope as argument)
-	@Override
-	//public MessageSignature toArgument(Scope scope)
 	public MessageSig toArg()
 	{
-		/*List<PayloadType<? extends Kind>> types = this.payload.payloadelems.stream().map((pe) -> pe.name.toPayloadTypeOrParameter()).collect(Collectors.toList());
-		return new MessageSignature(this.op.toName(), payload);*/
-		//return new MessageSignature(scope, this.op.toName(), this.payload.toPayload());
 		return new MessageSig(this.op.toName(), this.payload.toPayload());
 	}
 
 	@Override
-	//public MessageSignature toMessage(Scope scope)
 	public MessageSig toMessage()
 	{
 		return toArg();
 	}
 
-	/*@Override
-	public boolean isAmbiguousNode()
-	{
-		return false;
-	}*/
-
 	@Override
 	public String toString()
 	{
 		return this.op.toString() + this.payload.toString();
-	}
-
-	@Override
-	protected MessageSigNode copy()
-	{
-		return new MessageSigNode(this.op, this.payload);
 	}
 }

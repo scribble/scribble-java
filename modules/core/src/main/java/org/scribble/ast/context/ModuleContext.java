@@ -12,6 +12,7 @@ import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.visit.JobContext;
+import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.kind.SigKind;
@@ -169,7 +170,7 @@ public class ModuleContext
 	private void addImportedModules(JobContext jcontext, Module mod)
 	{
 		//Module mod = jcontext.getModule(this.root);  // Not the same as Job main module
-		for (ImportDecl id : mod.imports)
+		for (ImportDecl<? extends Kind> id : mod.imports)
 		{
 			if (id.isImportModule())
 			{
@@ -177,7 +178,7 @@ public class ModuleContext
 				ModuleName fullmodname = im.modname.toName();
 				if (!this.modules.keySet().contains(fullmodname))
 				{
-					ModuleName modname = (im.isAliased()) ? im.getModuleNameAlias() : fullmodname;
+					ModuleName modname = (im.isAliased()) ? im.getAlias() : fullmodname;  // visible name not sufficient?
 					Module m = jcontext.getModule(fullmodname);
 					addModule(m, modname);
 					addImportedModules(jcontext, m);
@@ -270,19 +271,18 @@ public class ModuleContext
 		//throw new RuntimeException("Protocol name not visible: " + visname);
 		throw new RuntimeException("Protocol name not visible: " + visname + ", " + this.globals + ", " + this.locals);
 	}*/
+
 	public <K extends ProtocolKind> ProtocolName<K> getFullProtocolName(ProtocolName<K> visname)
 	{
-		try
-		{
-			return (ProtocolName<K>) getFullGlobalProtocolName((GProtocolName) visname);  // FIXME: hack
-		}
-		catch (Exception x)
-		{
-			return (ProtocolName<K>) getFullLocalProtocolName((LProtocolName) visname);
-		}
+		ProtocolName<? extends ProtocolKind> pn = (visname.kind.equals(Global.KIND))
+				? getFullGlobalProtocolName((GProtocolName) visname)
+				: getFullLocalProtocolName((LProtocolName) visname);
+		@SuppressWarnings("unchecked")
+		ProtocolName<K> tmp = (ProtocolName<K>) pn;
+		return tmp;
 	}
 
-	public GProtocolName getFullGlobalProtocolName(GProtocolName visname)
+	private GProtocolName getFullGlobalProtocolName(GProtocolName visname)
 	{
 		if (!this.globals.containsKey(visname))
 		{
@@ -291,7 +291,7 @@ public class ModuleContext
 		return this.globals.get(visname);
 	}
 
-	public LProtocolName getFullLocalProtocolName(LProtocolName visname)
+	private LProtocolName getFullLocalProtocolName(LProtocolName visname)
 	{
 		if (!this.locals.containsKey(visname))
 		{
@@ -312,5 +312,4 @@ public class ModuleContext
 		ModuleName fullmodname = this.root.getFullModuleName();
 		return new ProtocolName(fullmodname, pd.name.toString());
 	}*/
-
 }

@@ -115,7 +115,7 @@ public class ModuleDel extends ScribDelBase
 
 		//ModuleDecl moddecl = new ModuleDecl(modname);
 		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(modname);
-		List<ImportDecl> imports = new LinkedList<>();  // Need names from do
+		List<ImportDecl<? extends Kind>> imports = new LinkedList<>();  // Need names from do
 		
 		for (GProtocolName gpn : dependencies.keySet())
 		{

@@ -12,21 +12,7 @@ public class Interrupt extends ScribNodeBase//AbstractSimpleInteractionNode
 	public final RoleNode src;
 	public final List<MessageNode> msgs;
 
-	// Role, not RoleNode like MessageTransfer -- wrap inside generic "type info" container?
-	//public final List<Role> dests;  // Empty until set by WellFormednessChecker for GlobalInterrupt (directly parsed for LocalInterrupt)
-
-	/*protected Interrupt(CommonTree ct, RoleNode src, List<MessageNode> msgs)
-	{
-		this(ct, src, msgs, null, null);
-	}
-
-	//public Interrupt(CommonTree ct, RoleNode src, List<MessageNode> msgs)//, List<Role> dests)
-	protected Interrupt(CommonTree ct, RoleNode src, List<MessageNode> msgs, GlobalInterruptContext ncontext)
-	{
-		this(ct, src, msgs, ncontext, null);
-	}*/
-
-	protected Interrupt(RoleNode src, List<MessageNode> msgs)//, GlobalInterruptContext gicontext, Env env)
+	protected Interrupt(RoleNode src, List<MessageNode> msgs)
 	{
 		this.src = src;
 		this.msgs = new LinkedList<>(msgs);

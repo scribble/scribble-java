@@ -6,22 +6,22 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.name.ModuleName;
 
-//public class ModuleDecl extends NameDeclNode<ModuleNameNode, ModuleName>
-//public class ModuleDecl extends NameDeclNode<ModuleName, ModuleKind>
 public class ModuleDecl extends NameDeclNode<ModuleKind>
 {
-	//public final ModuleNameNode fullmodname;
-
 	public ModuleDecl(ModuleNameNode fullmodname)
 	{
 		super(fullmodname);
-		//this.fullmodname = fullmodname;
+	}
+
+	@Override
+	protected ModuleDecl copy()
+	{
+		return new ModuleDecl((ModuleNameNode) this.name);
 	}
 
 	@Override
 	public ModuleDecl visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		//ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.fullmodname, nv);
 		ModuleNameNode fullmodname = (ModuleNameNode) visitChild(this.name, nv);
 		return AstFactoryImpl.FACTORY.ModuleDecl(fullmodname);
 	}
@@ -29,26 +29,17 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	@Override
 	public String toString()
 	{
-		//return Constants.MODULE_KW + " " + this.fullmodname + ";";
 		return Constants.MODULE_KW + " " + this.name + ";";
-	}
-
-	@Override
-	protected ModuleDecl copy()
-	{
-		//return new ModuleDecl(fullmodname);
-		return new ModuleDecl((ModuleNameNode) this.name);
 	}
 
 	@Override
 	public ModuleName getDeclName()
 	{
-		//return this.fullmodname.toName();
-		return (ModuleName) this.name.toName();
+		return getFullModuleName();  // Full or simple? -- currently not consistent with NonProtocolDecl
 	}
 
 	public ModuleName getFullModuleName()
 	{
-		return getDeclName();
+		return (ModuleName) this.name.toName();
 	}
 }

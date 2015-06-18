@@ -10,10 +10,8 @@ import org.scribble.sesstype.name.Role;
 // Cf. HeaderParameterDeclList -- but not kinded, because cannot determine Arg kind directly from node syntax itself (kinding for ModelNodes is to supplement syntactic information, not "typing" work)
 // NonRoleArgNodes can be of mixed kinds, so NonRoleArg used as "wildcard" wrapper
 public abstract class DoArgList<T extends DoArg<? extends DoArgNode>> extends ScribNodeBase  // "? extends InstantiationNode" not enforced here (e.g. can put "? extends ModelNode"), because ultimately any instantiation of this class needs an actual instance of "Instantiation" which has to have a parameter that extends "InstantiationNode"
-//public abstract class DoArgumentList<K extends Kind> extends ModelNodeBase  // "? extends InstantiationNode" not enforced here (e.g. can put "? extends ModelNode"), because ultimately any instantiation of this class needs an actual instance of "Instantiation" which has to have a parameter that extends "InstantiationNode"
 {
 	public final List<T> args;
-	//public final List<DoArgument<K>> doargs;
 
 	public DoArgList(List<T> is)
 	{

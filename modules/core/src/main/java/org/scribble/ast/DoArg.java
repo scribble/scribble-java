@@ -8,10 +8,8 @@ import org.scribble.sesstype.name.Role;
 // Cf. NameDeclNode/HeaderParameterDecl, i.e. wrappers for param names/arg values
 // Simpler than NameDeclNode, doesn't constrain node-type correspondence for names
 public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
-//public abstract class DoArgument<K extends Kind> extends ModelNodeBase
 {
 	public final T val;
-	//public final DoArgumentNode<K> node;
 
 	protected DoArg(T arg)
 	{
@@ -23,9 +21,8 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 	@Override
 	public DoArg<T> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		//T arg = visitChildWithClassCheck(this, this.arg, nv);
 		@SuppressWarnings("unchecked")
-		T arg = (T) this.visitChild(this.val, nv);  // Disambiguation will change AmbiguousNameNodes to 
+		T arg = (T) visitChild(this.val, nv);  // Disambiguation will replace AmbiguousNameNodes
 		return reconstruct(arg);
 	}
 
