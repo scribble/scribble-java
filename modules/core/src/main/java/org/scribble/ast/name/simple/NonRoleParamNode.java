@@ -14,56 +14,22 @@ import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.Substitutor;
 
-//public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
-//public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
-//public class ParamNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements
-public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implements
-		//ArgumentNode 
-		MessageNode, PayloadElemNameNode
+public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode
 {
-	// FIXME: maybe shouldn't be kinded, as just AST node?  or do name/kind disambiguation -- maybe disamb not needed, AmbiguousNameNode --disamb--> kinded Parameter
+	public final K kind;  // AmbiguousNameNode --disamb--> kinded Parameter
 	
-	public final K kind;
-	
-	//public ParameterNode(String identifier)//, Kind kind)
-	public NonRoleParamNode(K kind, String identifier)//, Kind kind)
+	public NonRoleParamNode(K kind, String identifier)
 	{
 		super(identifier);
 		this.kind = kind;
 	}
 
-	/*@Override
-	protected ParameterNode reconstruct(String identifier)
-	{
-		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
-		ParameterNode pn = new ParameterNode(identifier);
-		pn = (ParameterNode) pn.del(del);
-		return pn;
-	}*/
-
 	@Override
 	protected NonRoleParamNode<K> copy()
 	{
-		//return new ParameterNode<>(this.identifier);
-		//return new ParamNode<>(this.kind, this.identifier);
 		return new NonRoleParamNode<>(this.kind, getIdentifier());
 	}
 	
-	/*// Only useful for MessageSignatureDecls -- FIXME: integrate sig decls properly
-	@Override
-	public ParameterNode leaveProjection(Projector proj) //throws ScribbleException
-	{
-		ParameterNode projection = new ParameterNode(null, toName().toString(), this.kind);
-		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
-		return this;
-	}*/
-	
-	/*@Override
-	public ArgumentNode substitute(Substitutor subs)
-	{
-		return subs.getArgumentSubstitution(toName());
-	}*/
-
 	@Override
 	public NonRoleArgNode substituteNames(Substitutor subs)
 	{
@@ -71,11 +37,11 @@ public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implemen
 		NonRoleArgNode an;
 		if (this.kind.equals(SigKind.KIND))
 		{
-			an = subs.getArgumentSubstitution(arg);  // FIXME: reconstruct/clone?
+			an = subs.getArgumentSubstitution(arg);  // Reconstruct/clone?
 		}
 		else if (this.kind.equals(DataTypeKind.KIND))
 		{
-			an = subs.getArgumentSubstitution(arg);  // FIXME: reconstruct/clone?)
+			an = subs.getArgumentSubstitution(arg);  // Reconstruct/clone?)
 		}
 		else
 		{
@@ -86,10 +52,8 @@ public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implemen
 	}
 	
 	@Override
-	//public Parameter toName()
 	public Name<K> toName()
 	{
-		//return new Parameter(null, this.identifier);
 		String id = getIdentifier();
 		if (this.kind.equals(SigKind.KIND))
 		{
@@ -111,30 +75,11 @@ public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implemen
 		return true;
 	}
 
-	/*//@Override
-	public PayloadType toPayloadTypeOrParameter()
-	{
-		//if (this.kind != Kind.TYPE)
-		{
-			throw new RuntimeException("Not a type-kind parameter: " + this);
-		}
-		//return toName();
-	}*/
-	
-	/*@Override
-	public Operator getOperator()
-	{
-		return new Operator(toString());
-	}*/
-
 	@Override
-	//public Parameter toArgument()
-	//public Name<K> toArgument()
 	public Arg<K> toArg()
 	{
-		//return toName();
 		Arg<? extends Kind> arg;
-		if (this.kind.equals(DataTypeKind.KIND))
+		if (this.kind.equals(DataTypeKind.KIND))  // FIXME: payload kind hardcorded to data type kinds
 		{
 			arg = toPayloadType();
 		}
@@ -146,17 +91,17 @@ public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implemen
 		{
 			throw new RuntimeException("Shouldn't get here: " + this);
 		}
-		return (Arg<K>) arg;
+		@SuppressWarnings("unchecked")
+		Arg<K> tmp = (Arg<K>) arg;
+		return tmp;
 	}
 
-	//@Override
-	//public Parameter toMessage()
-	//public Name<K> toMessage()
+	@Override
 	public Message toMessage()
 	{
 		if (!this.kind.equals(SigKind.KIND))
 		{
-			throw new RuntimeException("Shouldn't get in here: " + this);
+			throw new RuntimeException("Not a sig kind parameter: " + this);
 		}
 		return (Message) toName();
 	}
@@ -164,23 +109,39 @@ public class NonRoleParamNode<K extends Kind> extends SimpleNameNode<K> implemen
 	@Override
 	public PayloadType<? extends Kind> toPayloadType()
 	{
-		if (!this.kind.equals(DataTypeKind.KIND))
+		if (!this.kind.equals(DataTypeKind.KIND)) // FIXME: payload kind hardcorded to data type kinds
 		{
-			throw new RuntimeException("Shouldn't get in here: " + this);
+			throw new RuntimeException("Not a payload kind parameter: " + this);
 		}
 		return (DataType) toName();
 	}
 
-	/*@Override
-	public Argument<? extends Kind> toArgument(Scope scope)
+	@Override
+	public boolean equals(Object o)
 	{
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-
-	/*@Override
-	public boolean isAmbiguousNode()
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof NonRoleParamNode))
+		{
+			return false;
+		}
+		NonRoleParamNode<?> n = (NonRoleParamNode<?>) o;
+		return n.canEqual(this) && this.kind.equals(n.kind) && super.equals(o);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
 	{
-		return false;
-	}*/
+		return o instanceof NonRoleParamNode;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 317;
+		hash = 31 * super.hashCode();
+		return hash;
+	}
 }

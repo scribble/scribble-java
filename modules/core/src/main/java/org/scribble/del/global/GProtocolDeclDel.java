@@ -49,7 +49,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		Module main = (Module) parent;
 		
 		GProtocolDecl gpd = (GProtocolDecl) child;
-		GProtocolName gpn = gpd.getFullProtocolName(main);
+		GProtocolName gpn = gpd.getFullMemberName(main);
 		for (Role role : gpd.header.roledecls.getRoles())
 		{
 			builder.addProtocolDependency(role, gpn, role);  // FIXME: is it needed to add self protocol decl?
@@ -152,7 +152,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		//FIXME: it's the "root" we need, not the main
 		Module root = jc.getModule(proj.getModuleContext().root);
 		
-		GProtocolName gpn = ((GProtocolDecl) child).getFullProtocolName(root);
+		GProtocolName gpn = ((GProtocolDecl) child).getFullMemberName(root);
 		
 		Role self = proj.peekSelf();
 		GProtocolDecl gpd = (GProtocolDecl) visited;

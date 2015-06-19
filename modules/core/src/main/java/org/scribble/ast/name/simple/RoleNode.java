@@ -7,8 +7,6 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Substitutor;
 
 
-//public class RoleNode extends SimpleNameNode<Role> implements InstantiationNode //RoleDecl, RoleInstantiation
-//public class RoleNode extends SimpleNameNode<Role, RoleKind> implements InstantiationNode //RoleDecl, RoleInstantiation
 public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //RoleDecl, RoleInstantiation
 {
 	public RoleNode(String identifier)
@@ -16,7 +14,12 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 		super(identifier);
 	}
 
-	//@Override
+	@Override
+	protected RoleNode copy()
+	{
+		return new RoleNode(getIdentifier());
+	}
+
 	private RoleNode reconstruct(String identifier)
 	{
 		ScribDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
@@ -28,20 +31,40 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 	@Override
 	public RoleNode substituteNames(Substitutor subs)
 	{
-		//return subs.getRoleSubstitution(toName());
 		return reconstruct(subs.getRoleSubstitution(toName()).toString());
-	}
-
-	@Override
-	protected RoleNode copy()  // Specified to be internal shallow copy (e.g. used by del)
-	{
-		return new RoleNode(getIdentifier());
-		//return reconstruct(this.identifier);
 	}
 	
 	@Override
 	public Role toName()
 	{
 		return new Role(getIdentifier());
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof RoleNode))
+		{
+			return false;
+		}
+		return ((RoleNode) o).canEqual(this) && super.equals(o);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof RoleNode;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 353;
+		hash = 31 * super.hashCode();
+		return hash;
 	}
 }

@@ -46,7 +46,7 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	}
 
 	@Override
-	public LProtocolName getFullProtocolName(Module mod)
+	public LProtocolName getFullMemberName(Module mod)
 	{
 		ModuleName fullmodname = mod.getFullModuleName();
 		return new LProtocolName(fullmodname, this.header.getDeclName());

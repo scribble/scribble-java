@@ -7,7 +7,7 @@ import org.scribble.sesstype.name.MemberName;
 import org.scribble.visit.AstVisitor;
 
 // FIXME: rename to something better
-public abstract class NonProtocolDecl<K extends Kind> extends NameDeclNode<K>
+public abstract class NonProtocolDecl<K extends Kind> extends NameDeclNode<K> implements ModuleMember
 {
 	public final String schema;
 	public final String extName;

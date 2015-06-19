@@ -6,12 +6,8 @@ import org.scribble.sesstype.name.PackageName;
 
 
 
-
-//public class ModuleNameNode extends QualifiedNameNode<ModuleName>
-//public class ModuleNameNode extends QualifiedNameNode<ModuleName, ModuleKind>
 public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 {
-	//public ModuleNameNodes(PrimitiveNameNode... ns)
 	public ModuleNameNode(String... ns)
 	{
 		super(ns);
@@ -23,74 +19,39 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 		return new ModuleNameNode(this.elems);
 	}
 	
-	/*public ModuleNameNodes(ModuleName mn)
-	{
-		super(decompileName(mn.text));
-		if (mn.text.contains("."))
-		{
-			String[] split = mn.text.substring(0, mn.text.lastIndexOf('.')).split("\\.");
-			LinkedList<PrimitiveNameNode> tmp = new LinkedList<>();
-			for (String s : Arrays.asList(split))
-			{
-				tmp.add(new PrimitiveNameNode(null, s));
-			}
-			this.pn = new PackageNameNodes(tmp);
-			int lastIndexOf = mn.text.lastIndexOf('.' + 1);
-			this.smn = new PrimitiveNameNode(null, lastIndexOf == -1 ? mn.text : mn.text.substring(lastIndexOf));
-		}
-		else
-		{
-			this.pn = new PackageNameNodes(Collections.<PrimitiveNameNode>emptyList());
-			this.smn = new PrimitiveNameNode(null, mn.text);
-		}
-	}
-	
-	private static List<PrimitiveNameNode> decompileName(String text)
-	{
-		List<PrimitiveNameNode> pnns = new LinkedList<>();
-		for (String s : text.split("\\."))
-		{
-			pnns.add(new PrimitiveNameNode(null, s));
-		}
-		return pnns;
-	}*/
-	
-	/*public ModuleName getSimpleModuleName()
-	{
-		return new ModuleName(PackageName.EMPTY_PACKAGENAME, smn);
-	}*/
-	
 	@Override
 	public ModuleName toName()
 	{
-		//return toModuleName(this);
-		//String modname = getLastElement();
 		ModuleName modname = new ModuleName(getLastElement());
-		if (!isPrefixed())
-		{
-			//return new ModuleName(modname);
-			return modname;
-		}
-		PackageName packname = new PackageName(getPrefixElements());
-		return new ModuleName(packname, modname);
+		return isPrefixed()
+				? new ModuleName(new PackageName(getPrefixElements()), modname)
+				: modname;
 	}
-
-	/*public static ModuleName toModuleName(CompoundNameNodes ns)
+	
+	@Override
+	public boolean equals(Object o)
 	{
-		String modname = ns.getLastElement().identifier;
-		if (!ns.isPrefixed())
+		if (this == o)
 		{
-			return new ModuleName(modname);
+			return true;
 		}
-		PackageName packname = new PackageName(CompoundNameNodes.getIdentifiers(ns.getPrefixElements()));
-		return new ModuleName(packname, modname);
-	}*/
-
-	/*private static PrimitiveNameNode[] compileModuleNameNodes(PackageNameNodes pn, PrimitiveNameNode smn)
+		if (!(o instanceof ModuleNameNode))
+		{
+			return false;
+		}
+		return ((ModuleNameNode) o).canEqual(this) && super.equals(o);
+	}
+	
+	public boolean canEqual(Object o)
 	{
-		PrimitiveNameNode[] ns = new PrimitiveNameNode[pn.elems.length + 1];
-		System.arraycopy(pn.elems, 0, ns, 0, pn.elems.length);
-		ns[ns.length - 1] = smn;
-		return ns;
-	}*/
+		return o instanceof ModuleNameNode;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 409;
+		hash = 31 * hash + this.elems.hashCode();
+		return hash;
+	}
 }

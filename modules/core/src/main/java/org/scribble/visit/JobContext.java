@@ -120,7 +120,7 @@ public class JobContext
 
 	private void addProjection(Module mod)
 	{
-		LProtocolName lpn = (LProtocolName) mod.protos.get(0).getFullProtocolName(mod);
+		LProtocolName lpn = (LProtocolName) mod.protos.get(0).getFullMemberName(mod);
 		this.projected.put(lpn, mod);
 	}
 	

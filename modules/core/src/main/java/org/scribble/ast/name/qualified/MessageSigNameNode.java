@@ -3,68 +3,28 @@ package org.scribble.ast.name.qualified;
 import org.scribble.ast.MessageNode;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.MessageSigName;
-import org.scribble.sesstype.name.ModuleName;
 
-//public class MessageSignatureNameNode extends MemberNameNode implements MessageNode
-//public class MessageSignatureNameNode extends SimpleNameNode<MessageSignatureName, SigKind> implements MessageNode
-//public class MessageSigNameNode extends MemberNameNode<MessageSigName, SigKind> implements MessageNode
+
 public class MessageSigNameNode extends MemberNameNode<SigKind> implements MessageNode
 {
-	/*// FIXME: not syntax
-	public final String schema;
-	public final String extName;
-	public final String source;*/
-	
-	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
-	//public MessageSignatureNameNodes(CommonTree ct, String... ns, String schema, String extName, String source)
 	public MessageSigNameNode(String... elems)
-	//public MessageSignatureNameNode(String identifier)
 	{
 		super(elems);
-		//super(identifier);
 	}
 
 	@Override
 	protected MessageSigNameNode copy()
 	{
 		return new MessageSigNameNode(this.elems);
-		//return new MessageSignatureNameNode(this.identifier);
 	}
-
-	/*// Basically a copy without the AST
-	@Override
-	public MessageSignatureNameNodes leaveProjection(Projector proj) //throws ScribbleException
-	{
-		//MessageSignatureNameNodes projection = new MessageSignatureNameNodes(null, getElements(), this.schema, this.extName, this.source);
-		MessageSignatureNameNodes projection = new MessageSignatureNameNodes(null, getElements());
-		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
-		return this;
-	}*/
-
-	/*@Override
-	public MessageNode substituteNames(Substitutor subs)
-	{
-		//return reconstruct(subs.getRoleSubstitution(toName()).toString());
-		
-		System.out.println("b: " + this + ", " + subs.getArgumentSubstitution(toArgument()));
-		
-		return (MessageNode) subs.getArgumentSubstitution(toArgument());  // FIXME: reconstruct/clone?
-	}*/
 	
 	@Override
 	public MessageSigName toName()
 	{
-		//String membname = getLastElement();
 		MessageSigName membname = new MessageSigName(getLastElement());
-		if (!isPrefixed())
-		{
-			//return new MessageSignatureName(membname);
-			return membname;
-		}
-		//ModuleName modname = ModuleNameNodes.toModuleName(getModulePrefix());
-		ModuleName modname = getModuleNamePrefix();
-		return new MessageSigName(modname, membname);
-		//return new MessageSignatureName(Scope.EMPTY_SCOPE, this.identifier);  // HACK?
+		return isPrefixed()
+				? new MessageSigName(getModuleNamePrefix(), membname)
+				: membname;
 	}
 
 	@Override
@@ -74,25 +34,41 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 	}
 
 	@Override
-	//public Message toMessage(Scope scope)  // Difference between toName and toMessage is scope? does that make sense?
 	public MessageSigName toMessage()  // Difference between toName and toMessage is scope? does that make sense?
 	{
-		//return toArgument();
 		return toName();
-		//return new MessageSignatureName(scope, this.identifier);
 	}
 
 	@Override
-	//public Argument<? extends Kind> toArgument(Scope scope)
 	public MessageSigName toArg()
 	{
-		//return toMessage(scope);
 		return toMessage();
 	}
-
-	/*@Override
-	public boolean isAmbiguousNode()
+	
+	@Override
+	public boolean equals(Object o)
 	{
-		return false;
-	}*/
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof MessageSigNameNode))
+		{
+			return false;
+		}
+		return ((MessageSigNameNode) o).canEqual(this) && super.equals(o);
+	}
+	
+	public boolean canEqual(Object o)
+	{
+		return o instanceof MessageSigNameNode;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 421;
+		hash = 31 * hash + this.elems.hashCode();
+		return hash;
+	}
 }

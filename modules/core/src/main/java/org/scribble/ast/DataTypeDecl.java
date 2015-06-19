@@ -5,6 +5,7 @@ import org.scribble.ast.name.qualified.MemberNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.name.DataType;
+import org.scribble.sesstype.name.ModuleName;
 
 public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 {
@@ -38,6 +39,13 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	public DataType getDeclName()
 	{
 		return (DataType) super.getDeclName();
+	}
+
+	@Override
+	public DataType getFullMemberName(Module mod)
+	{
+		ModuleName fullmodname = mod.getFullModuleName();
+		return new DataType(fullmodname, getDeclName());
 	}
 
 	@Override

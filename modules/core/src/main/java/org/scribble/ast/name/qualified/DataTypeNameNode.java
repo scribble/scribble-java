@@ -4,60 +4,28 @@ import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.name.DataType;
-import org.scribble.sesstype.name.ModuleName;
 
-//public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode//, PayloadTypeOrParameterNode
-//public class PayloadTypeNameNode extends MemberNameNode implements PayloadElementNameNode, ArgumentNode
-//public class DataTypeNameNode extends SimpleNameNode<DataType, DataTypeKind> implements PayloadElementNameNode, ArgumentNode
-//public class DataTypeNameNode extends MemberNameNode<DataType, DataTypeKind> implements PayloadElementNameNode//, ArgumentNode
-public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode//, ArgumentNode
+public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
 {
-	//public PayloadTypeNameNodes(PrimitiveNameNode... ns)
 	public DataTypeNameNode(String... elems)
-	//public DataTypeNameNode(String identifier)
 	{
 		super(elems);
-		//super(identifier);
 	}
 
 	@Override
 	protected DataTypeNameNode copy()
 	{
 		return new DataTypeNameNode(this.elems);
-		//return new DataTypeNameNode(this.identifier);
 	}
 
-	/*// Basically a copy without the AST
-	@Override
-	public PayloadTypeNameNode leaveProjection(Projector proj) //throws ScribbleException
-	{
-		PayloadTypeNameNode projection = new PayloadTypeNameNode(null, getElements());
-		this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
-		return this;
-	}*/
-	
 	@Override
 	public DataType toName()
 	{
-		//String membname = getLastElement();
 		DataType membname = new DataType(getLastElement());
-		if (!isPrefixed())
-		{
-			//return new DataType(membname);
-			return membname;
-		}
-		//ModuleName modname = ModuleNameNodes.toModuleName(getModulePrefix());
-		//ModuleName modname = getModulePrefix().toName();
-		ModuleName modname = getModuleNamePrefix();
-		return new DataType(modname, membname);
-		//return new DataType(this.identifier);
+		return isPrefixed()
+				? new DataType(getModuleNamePrefix(), membname)
+		    : membname;
 	}
-
-	/*@Override
-	public PayloadType toPayloadTypeOrParameter()
-	{
-		return toName();
-	}*/
 
 	@Override
 	public boolean isDataTypeNameNode()
@@ -66,16 +34,41 @@ public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements Pa
 	}
 
 	@Override
-	//public Argument<DataTypeKind> toArgument(Scope scope)  // FIXME: shouldn't be scoped
-	public Arg<DataTypeKind> toArg()  // FIXME: shouldn't be scoped
+	public Arg<DataTypeKind> toArg()
 	{
 		return toPayloadType();
 	}
 
 	@Override
-	//public PayloadTypeOrParameter toPayloadTypeOrParameter()
 	public DataType toPayloadType()
 	{
 		return toName();
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof DataTypeNameNode))
+		{
+			return false;
+		}
+		return ((DataTypeNameNode) o).canEqual(this) && super.equals(o);
+	}
+	
+	public boolean canEqual(Object o)
+	{
+		return o instanceof DataTypeNameNode;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 409;
+		hash = 31 * hash + this.elems.hashCode();
+		return hash;
 	}
 }

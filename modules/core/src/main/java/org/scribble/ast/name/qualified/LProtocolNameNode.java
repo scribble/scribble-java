@@ -2,7 +2,6 @@ package org.scribble.ast.name.qualified;
 
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.ModuleName;
 
 
 
@@ -20,19 +19,38 @@ public class LProtocolNameNode extends ProtocolNameNode<Local>
 	}
 	
 	@Override
-	//public ProtocolName<K> toName()
 	public LProtocolName toName()
 	{
-		//String membname = getLastElement();
-		//ProtocolName<K> membname = new ProtocolName<>(null, getLastElement());  // FIXME: global/local
 		LProtocolName membname = new LProtocolName(getLastElement());
-		if (!isPrefixed())
+		return isPrefixed()
+				? new LProtocolName(getModuleNamePrefix(), membname)
+				: membname;
+	}
+		
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
 		{
-			//return new ProtocolName(membname);
-			return membname;
+			return true;
 		}
-		ModuleName modname = getModuleNamePrefix();
-		//return new ProtocolName<>(null, modname, membname);  // FIXME
-		return new LProtocolName(modname, membname);
+		if (!(o instanceof LProtocolNameNode))
+		{
+			return false;
+		}
+		return ((LProtocolNameNode) o).canEqual(this) && super.equals(o);
+	}
+	
+	public boolean canEqual(Object o)
+	{
+		return o instanceof LProtocolNameNode;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 421;
+		hash = 31 * hash + this.elems.hashCode();
+		return hash;
 	}
 }

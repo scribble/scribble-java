@@ -2,7 +2,6 @@ package org.scribble.ast.name.qualified;
 
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.ModuleName;
 
 
 
@@ -20,19 +19,39 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 	}
 	
 	@Override
-	//public ProtocolName<K> toName()
 	public GProtocolName toName()
 	{
-		//String membname = getLastElement();
-		//ProtocolName<K> membname = new ProtocolName<>(null, getLastElement());  // FIXME: global/local
 		GProtocolName membname = new GProtocolName(getLastElement());
-		if (!isPrefixed())
-		{
-			//return new ProtocolName(membname);
-			return membname;
-		}
-		ModuleName modname = getModuleNamePrefix();
-		//return new ProtocolName<>(null, modname, membname);  // FIXME
-		return new GProtocolName(modname, membname);
+		return isPrefixed()
+				? new GProtocolName(getModuleNamePrefix(), membname)
+				: membname;
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof GProtocolNameNode))
+		{
+			return false;
+		}
+		return ((GProtocolNameNode) o).canEqual(this) && super.equals(o);
+	}
+	
+	public boolean canEqual(Object o)
+	{
+		return o instanceof GProtocolNameNode;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 419;
+		hash = 31 * hash + this.elems.hashCode();
+		return hash;
+	}
+
 }

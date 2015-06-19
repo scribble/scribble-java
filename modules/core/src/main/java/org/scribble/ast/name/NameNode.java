@@ -6,32 +6,15 @@ import org.scribble.ast.ScribNodeBase;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Named;
 
-//public abstract class NameNode<T extends IName> extends ModelNodeBase implements Named<T>
-//public abstract class NameNode<T extends Name<K>, K extends Kind> extends ModelNodeBase implements Named<T, K>
+// Kind parameter used for typing help, but NameNodes don't record kind as state (not part of the syntax) -- so kind doesn't affect e.g. equals (i.e. names nodes of different kinds are still only compared syntactically)
 public abstract class NameNode<K extends Kind> extends ScribNodeBase implements Named<K>
 {
-	// Kind parameter used for typing help, but NameNodes don't record kind as state (not part of the syntax) -- so kind doesn't affect e.g. equals (names nodes of different kinds are still only compared syntactically)
-	
-	//public final List<PrimitiveNameNode> names;
 	protected final String[] elems;
 
-	//public CompoundNameNodes(List<PrimitiveNameNode> names)
 	public NameNode(String... elems)
 	{
-		//this.names = new LinkedList<>(names);
 		this.elems = elems;
 	}
-	
-	/*public CompoundNameNodes(String name)
-	{
-		// Factor out
-		List<PrimitiveNameNode> pnns = new LinkedList<>();
-		for (String n : Arrays.asList(name.split("\\.")))
-		{
-			pnns.add(new PrimitiveNameNode(null, n));
-		}
-		this.names = pnns;
-	}*/
 	
 	public String[] getElements()
 	{
@@ -53,34 +36,14 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 		return this.elems.length > 1;
 	}
 	
-	//protected abstract CompoundNameNodes getPrefix();
-	/*protected CompoundNameNodes getPrefix()
-	{
-		return new CompoundNameNodes(getPrefixElements());
-	}*/
-	
-	protected String getLastElement()
-	{
-		return this.elems[this.elems.length - 1];
-	}
-	
 	protected String[] getPrefixElements()
 	{
 		return Arrays.copyOfRange(this.elems, 0, this.elems.length - 1);
 	}
-
-	/*@Override
-	public Name toName()
+	
+	protected String getLastElement()
 	{
-		return new CompoundName(Kind.AMBIGUOUS, toStringArray());
-	}*/
-
-	// FIXME:
-	@Override
-	public String toString()
-	{
-		return toName().toString();
-		//return Arrays.toString(this.elems);
+		return this.elems[this.elems.length - 1];
 	}
 	
 	@Override
@@ -90,13 +53,15 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 		{
 			return true;
 		}
-		if (o == null || this.getClass() != o.getClass())
+		if (!(o instanceof NameNode<?>))
 		{
 			return false;
 		}
-		//return this.elems.equals(((CompoundNameNode) o).elems);
-		return this.elems.equals(NameNode.class.cast(o).elems);
+		NameNode<?> nn = (NameNode<?>) o;
+		return nn.canEqual(this) && this.elems.equals(nn.elems);
 	}
+	
+	public abstract boolean canEqual(Object o);
 	
 	@Override
 	public int hashCode()
@@ -105,24 +70,10 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 		hash = 31 * hash + this.elems.hashCode();
 		return hash;
 	}
-	
-	protected String[] toStringArray()
+
+	@Override
+	public String toString()
 	{
-		String[] names = new String[this.elems.length];
-		for (int i = 0; i < this.elems.length; i++)
-		{
-			names[i] = this.elems[i];
-		}
-		return names;
+		return toName().toString();
 	}
-	
-	/*protected static String[] getIdentifiers(PrimitiveNameNode[] ns)
-	{
-		String[] ids = new String[ns.length];
-		for (int i = 0; i < ns.length; i++)
-		{
-			ids[i] = ns[i].identifier;
-		}
-		return ids;
-	}*/
 }

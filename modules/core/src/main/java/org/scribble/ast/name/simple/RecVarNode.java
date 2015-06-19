@@ -4,9 +4,6 @@ import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 
 
-
-//public class RecursionVarNode extends SimpleNameNode
-//public class RecVarNode extends SimpleNameNode<RecVar, RecVarKind>
 public class RecVarNode extends SimpleNameNode<RecVarKind>
 {
 	public RecVarNode(String identifier)
@@ -14,26 +11,43 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 		super(identifier);
 	}
 
-	/*@Override
-	protected RecursionVarNode reconstruct(String identifier)
-	{
-		ModelDel del = del();  // Default delegate assigned in ModelFactoryImpl for all simple names
-		RecursionVarNode rvn = new RecursionVarNode(identifier);
-		rvn = (RecursionVarNode) rvn.del(del);
-		return rvn;
-	}*/
-
 	@Override
 	protected RecVarNode copy()
 	{
-		//return new RecVarNode(this.identifier);
 		return new RecVarNode(getIdentifier());
 	}
 
 	@Override
 	public RecVar toName()
 	{
-		//return new RecVar(this.identifier);
 		return new RecVar(getIdentifier());
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof RecVarNode))
+		{
+			return false;
+		}
+		return ((RecVarNode) o).canEqual(this) && super.equals(o);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof RecVarNode;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 349;
+		hash = 31 * super.hashCode();
+		return hash;
 	}
 }

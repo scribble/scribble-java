@@ -30,7 +30,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 		Module main = (Module) parent;
 		
 		LProtocolDecl lpd = (LProtocolDecl) child;
-		LProtocolName lpn = lpd.getFullProtocolName(main);
+		LProtocolName lpn = lpd.getFullMemberName(main);
 		for (Role role : lpd.header.roledecls.getRoles())
 		{
 			builder.addProtocolDependency(role, lpn, role);  // FIXME: is it needed to add self protocol decl?
@@ -65,7 +65,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 		//store graphs/fsms in jobcontext; bit like projections, but store in jc here directly, don't wait for ModuleDel
 		ScribFsm fsm = new ScribFsm(conv.builder.getEntry(), conv.builder.getExit());
 		JobContext jc = conv.getJobContext();
-		jc.addFsm(lpd.getFullProtocolName((Module) parent), fsm);
+		jc.addFsm(lpd.getFullMemberName((Module) parent), fsm);
 		return visited;
 	}
 	

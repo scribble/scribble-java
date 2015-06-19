@@ -1,8 +1,8 @@
 package org.scribble.ast.local;
 
 import org.scribble.ast.RoleDecl;
-import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
@@ -21,10 +21,10 @@ public class SelfRoleDecl extends RoleDecl
 	}
 
 	@Override
-	protected RoleDecl reconstruct(NameNode<RoleKind> snn)
+	protected RoleDecl reconstruct(SimpleNameNode<RoleKind> name)
 	{
 		ScribDel del = del();
-		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) snn);
+		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) name);
 		rd = (SelfRoleDecl) rd.del(del);
 		return rd;
 	}

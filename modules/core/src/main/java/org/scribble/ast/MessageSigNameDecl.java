@@ -5,6 +5,7 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.MessageSigName;
+import org.scribble.sesstype.name.ModuleName;
 
 public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 {
@@ -38,6 +39,13 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	public MessageSigName getDeclName()
 	{
 		return (MessageSigName) super.getDeclName();
+	}
+
+	@Override
+	public MessageSigName getFullMemberName(Module mod)
+	{
+		ModuleName fullmodname = mod.getFullModuleName();
+		return new MessageSigName(fullmodname, getDeclName());
 	}
 
 	@Override

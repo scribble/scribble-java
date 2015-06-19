@@ -1,7 +1,7 @@
 package org.scribble.ast;
 
-import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Name;
@@ -22,10 +22,10 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	}
 
 	@Override
-	protected RoleDecl reconstruct(NameNode<RoleKind> namenode)
+	protected RoleDecl reconstruct(SimpleNameNode<RoleKind> name)
 	{
 		ScribDel del = del();
-		RoleDecl rd = new RoleDecl((RoleNode) namenode);
+		RoleDecl rd = new RoleDecl((RoleNode) name);
 		rd = (RoleDecl) rd.del(del);
 		return rd;
 	}

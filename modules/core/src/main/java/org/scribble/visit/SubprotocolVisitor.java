@@ -204,7 +204,7 @@ public abstract class SubprotocolVisitor extends AstVisitor
 		ProtocolName fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());*/
 		//ModuleDelegate mcontext = getModuleContext();
 		ModuleContext mcontext = getModuleContext();
-		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolName(doo.proto.toName());
+		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());
 		List<Role> roleargs = doo.roles.getRoles();
 		List<Arg<? extends Kind>> argargs = doo.args.getArguments(getScope());
 		pushSubprotocolSig(fullname, roleargs, argargs);

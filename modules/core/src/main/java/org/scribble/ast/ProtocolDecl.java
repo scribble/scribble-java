@@ -2,11 +2,10 @@ package org.scribble.ast;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.visit.AstVisitor;
 
 
-public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
+public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase implements ModuleMember
 {
 	// Maybe just use standard pattern, make private with casting getters -- works better (e.g. to use overridden getName)
 	public final ProtocolHeader<K> header;
@@ -31,7 +30,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 	public abstract ProtocolHeader<K> getHeader();
 	public abstract ProtocolDef<K> getDef();
 
-	public abstract ProtocolName<? extends ProtocolKind> getFullProtocolName(Module mod);
+	//public abstract ProtocolName<? extends ProtocolKind> getFullProtocolName(Module mod);
 	
 	public boolean isGlobal()
 	{
