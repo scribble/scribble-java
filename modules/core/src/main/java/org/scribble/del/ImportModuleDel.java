@@ -2,7 +2,7 @@ package org.scribble.del;
 
 import org.scribble.ast.ImportModule;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.visit.Projector;
+import org.scribble.visit.Projector;
 
 public class ImportModuleDel extends ScribDelBase
 {

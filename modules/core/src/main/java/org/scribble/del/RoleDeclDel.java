@@ -2,11 +2,11 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.RoleDecl;
-import org.scribble.ast.visit.NameDisambiguator;
-import org.scribble.ast.visit.WellFormedChoiceChecker;
-import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.WellFormedChoiceEnv;
 
 public class RoleDeclDel extends ScribDelBase
 {

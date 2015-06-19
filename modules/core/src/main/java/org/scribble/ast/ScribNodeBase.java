@@ -18,12 +18,12 @@ package org.scribble.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.visit.AstVisitor;
-import org.scribble.ast.visit.Substitutor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.util.ScribbleUtil;
+import org.scribble.visit.AstVisitor;
+import org.scribble.visit.Substitutor;
 
 /**
  * This is the generic object from which all Scribble model objects

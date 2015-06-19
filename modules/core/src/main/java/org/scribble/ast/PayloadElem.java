@@ -1,9 +1,9 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.AstVisitor;
 
 
 // Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList)

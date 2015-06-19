@@ -15,10 +15,10 @@
  */
 package org.scribble.ast;
 
-import org.scribble.ast.visit.AstVisitor;
-import org.scribble.ast.visit.Substitutor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.AstVisitor;
+import org.scribble.visit.Substitutor;
 
 /**
  * This is the generic object from which all Scribble model objects

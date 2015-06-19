@@ -17,12 +17,6 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.visit.ContextBuilder;
-import org.scribble.ast.visit.JobContext;
-import org.scribble.ast.visit.ModelBuilder;
-import org.scribble.ast.visit.Projector;
-import org.scribble.ast.visit.env.ModelEnv;
-import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
@@ -32,6 +26,12 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
+import org.scribble.visit.ContextBuilder;
+import org.scribble.visit.JobContext;
+import org.scribble.visit.ModelBuilder;
+import org.scribble.visit.Projector;
+import org.scribble.visit.env.ModelEnv;
+import org.scribble.visit.env.ProjectionEnv;
 
 public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 //public class GProtocolDeclDel extends ProtocolDeclDel

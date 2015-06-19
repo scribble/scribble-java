@@ -5,47 +5,31 @@ import org.scribble.ast.ProtocolDef;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
-//public class LocalProtocolDefinition extends ProtocolDefinition<LocalProtocolBlock> implements LocalNode
 public class LProtocolDef extends ProtocolDef<Local> implements LNode
 {
-	//public LocalProtocolDefinition(LocalProtocolBlock block)
-	public LProtocolDef(ProtocolBlock<Local> block)
+	public LProtocolDef(LProtocolBlock block)
 	{
 		super(block);
 	}
 
 	@Override
-	//protected LocalProtocolDefinition reconstruct(LocalProtocolBlock block)
-	protected LProtocolDef reconstruct(ProtocolBlock<Local> block)
+	protected LProtocolDef copy()
 	{
-		ScribDel del = del();
-		LProtocolDef lpd = new LProtocolDef(block);
-		lpd = (LProtocolDef) lpd.del(del);
-		return lpd;
+		return new LProtocolDef(getBlock());
 	}
 
 	@Override
-	protected LProtocolDef copy()
+	protected LProtocolDef reconstruct(ProtocolBlock<Local> block)
 	{
-		return new LProtocolDef(this.block);
+		ScribDel del = del();
+		LProtocolDef lpd = new LProtocolDef((LProtocolBlock) block);
+		lpd = (LProtocolDef) lpd.del(del);
+		return lpd;
 	}
 	
-	/*@Override
-	public LocalProtocolDefinition visitChildren(NodeVisitor nv) throws ScribbleException
+	@Override
+	public LProtocolBlock getBlock()
 	{
-		ProtocolDefinition<LocalProtocolBlock> def = super.visitChildren(nv);
-		return new LocalProtocolDefinition(def.ct, def.block);
-	}*/
-	
-	/*@Override
-	public LocalProtocolDefinition project(Projector proj) throws ScribbleException
-	{
-		LocalProtocolBlock block = (LocalProtocolBlock) proj.visit(this.block); 
-		if (block == null)
-		{
-			LocalInteractionSequence seq = new LocalInteractionSequence(null, Collections.<LocalInteraction>emptyList());
-			block = new LocalProtocolBlock(null, seq);
-		}
-		return new LocalProtocolDefinition(null, block);
-	}*/
+		return (LProtocolBlock) this.block;
+	}
 }

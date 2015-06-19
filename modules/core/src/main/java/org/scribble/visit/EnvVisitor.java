@@ -1,4 +1,4 @@
-package org.scribble.ast.visit;
+package org.scribble.visit;
 
 import java.util.Stack;
 
@@ -9,9 +9,9 @@ import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ProtocolHeader;
-import org.scribble.ast.visit.env.Env;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.visit.env.Env;
 
 public abstract class EnvVisitor<T extends Env> extends SubprotocolVisitor
 {

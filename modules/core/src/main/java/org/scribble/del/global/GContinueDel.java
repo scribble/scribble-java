@@ -5,10 +5,10 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.ast.visit.Projector;
-import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RecVarKind;
+import org.scribble.visit.Projector;
+import org.scribble.visit.env.ProjectionEnv;
 
 public class GContinueDel extends GSimpleInteractionNodeDel
 {

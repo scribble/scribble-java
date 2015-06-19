@@ -8,14 +8,14 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
-import org.scribble.ast.visit.ContextBuilder;
-import org.scribble.ast.visit.JobContext;
-import org.scribble.ast.visit.Projector;
-import org.scribble.ast.visit.WellFormedChoiceChecker;
-import org.scribble.ast.visit.env.ProjectionEnv;
-import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ContextBuilder;
+import org.scribble.visit.JobContext;
+import org.scribble.visit.Projector;
+import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.ProjectionEnv;
+import org.scribble.visit.env.WellFormedChoiceEnv;
 
 // FIXME: simple or compound?
 public class GDoDel extends GSimpleInteractionNodeDel

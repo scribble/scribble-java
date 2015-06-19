@@ -1,4 +1,4 @@
-package org.scribble.ast.visit.env;
+package org.scribble.visit.env;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LNode;

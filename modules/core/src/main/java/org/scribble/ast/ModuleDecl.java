@@ -1,10 +1,10 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.name.ModuleName;
+import org.scribble.visit.AstVisitor;
 
 public class ModuleDecl extends NameDeclNode<ModuleKind>
 {

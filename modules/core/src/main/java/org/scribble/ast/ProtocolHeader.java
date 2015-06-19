@@ -2,10 +2,10 @@ package org.scribble.ast;
 
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.visit.AstVisitor;
 
 
 // TODO: parameterize on global/local name node and role decl list (i.e. self roles)

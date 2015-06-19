@@ -27,4 +27,10 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 		gr = (GRecursion) gr.del(del);
 		return gr;
 	}
+	
+	@Override
+	public GProtocolBlock getBlock()
+	{
+		return (GProtocolBlock) getBlock();
+	}
 }

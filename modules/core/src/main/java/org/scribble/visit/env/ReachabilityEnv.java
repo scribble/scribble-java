@@ -1,4 +1,4 @@
-package org.scribble.ast.visit.env;
+package org.scribble.visit.env;
 
 import java.util.Arrays;
 import java.util.Collections;

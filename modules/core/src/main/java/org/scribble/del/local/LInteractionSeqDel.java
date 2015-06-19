@@ -7,13 +7,13 @@ import java.util.List;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
-import org.scribble.ast.visit.FsmConstructor;
-import org.scribble.ast.visit.ReachabilityChecker;
-import org.scribble.ast.visit.env.ReachabilityEnv;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.kind.Local;
+import org.scribble.visit.FsmConstructor;
+import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.env.ReachabilityEnv;
 
 
 // FIXME: should be a CompoundInteractionDelegate? -- no: compound interaction delegates for typing contexts (done for block only, not seqs)

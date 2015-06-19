@@ -1,10 +1,10 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.qualified.MemberNameNode;
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.MemberName;
+import org.scribble.visit.AstVisitor;
 
 // FIXME: rename to something better
 public abstract class NonProtocolDecl<K extends Kind> extends NameDeclNode<K>

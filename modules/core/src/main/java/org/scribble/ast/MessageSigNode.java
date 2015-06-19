@@ -1,10 +1,10 @@
 package org.scribble.ast;
 
 import org.scribble.ast.name.simple.OpNode;
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.MessageSig;
+import org.scribble.visit.AstVisitor;
 
 public class MessageSigNode extends ScribNodeBase implements MessageNode
 {

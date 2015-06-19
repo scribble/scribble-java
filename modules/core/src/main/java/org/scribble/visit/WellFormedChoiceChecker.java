@@ -1,10 +1,10 @@
-package org.scribble.ast.visit;
+package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.visit.env.WellFormedChoiceEnv;
 
 public class WellFormedChoiceChecker extends EnvVisitor<WellFormedChoiceEnv>
 {

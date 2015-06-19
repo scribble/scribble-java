@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
@@ -18,6 +17,7 @@ import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.visit.AstVisitor;
 
 
 public class Module extends ScribNodeBase

@@ -3,11 +3,11 @@ package org.scribble.del.local;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LReceive;
-import org.scribble.ast.visit.FsmConstructor;
 import org.scribble.model.local.Receive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.FsmConstructor;
 
 
 public class LReceiveDel extends LSimpleInteractionNodeDel

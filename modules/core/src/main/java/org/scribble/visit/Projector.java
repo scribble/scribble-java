@@ -1,4 +1,4 @@
-package org.scribble.ast.visit;
+package org.scribble.visit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,6 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ModuleKind;
@@ -20,6 +19,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.env.ProjectionEnv;
 
 // Uses visitor infrastructure to traverse AST and generate local nodes from global with original nodes unchanged (so does not use normal visitChildren pattern -- env used to pass the working projections)
 // FIXME: uses envs but does not need to be a SubProtocolVisitor -- swap env and subprotocol visitors in hierarchy? Maybe not: e.g. GraphBuilder is a subprotocol visitor but not an env visitor -- maybe not any more, more like projector (uses pre-built dependencies)

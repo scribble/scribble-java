@@ -8,9 +8,6 @@ import java.util.Set;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
-import org.scribble.ast.visit.Job;
-import org.scribble.ast.visit.JobContext;
-import org.scribble.ast.visit.Projector;
 import org.scribble.net.session.SessionApiGenerator;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.DataType;
@@ -20,6 +17,9 @@ import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.Job;
+import org.scribble.visit.JobContext;
+import org.scribble.visit.Projector;
 
 public class EndpointApiGenerator
 {

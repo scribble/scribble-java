@@ -1,4 +1,4 @@
-package org.scribble.ast.visit.env;
+package org.scribble.visit.env;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.visit.SubprotocolVisitor;
-import org.scribble.ast.visit.WellFormedChoiceChecker;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.MessageSig;
@@ -21,6 +19,8 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
 import org.scribble.util.MessageIdMap;
+import org.scribble.visit.SubprotocolVisitor;
+import org.scribble.visit.WellFormedChoiceChecker;
 
 public class WellFormedChoiceEnv extends Env
 {

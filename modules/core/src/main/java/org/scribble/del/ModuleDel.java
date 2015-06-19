@@ -18,14 +18,14 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
-import org.scribble.ast.visit.ContextBuilder;
-import org.scribble.ast.visit.JobContext;
-import org.scribble.ast.visit.Projector;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ContextBuilder;
+import org.scribble.visit.JobContext;
+import org.scribble.visit.Projector;
 
 public class ModuleDel extends ScribDelBase
 {

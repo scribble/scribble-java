@@ -2,9 +2,9 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.NonRoleParamDecl;
-import org.scribble.ast.visit.NameDisambiguator;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
+import org.scribble.visit.NameDisambiguator;
 
 public class ParamDeclDel extends ScribDelBase
 {

@@ -3,9 +3,9 @@ package org.scribble.ast;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.AstVisitor;
 
 // Cf. HeaderParameterDeclList -- but not kinded, because cannot determine Arg kind directly from node syntax itself (kinding for ModelNodes is to supplement syntactic information, not "typing" work)
 // NonRoleArgNodes can be of mixed kinds, so NonRoleArg used as "wildcard" wrapper

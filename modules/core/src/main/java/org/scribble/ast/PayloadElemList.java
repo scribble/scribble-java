@@ -4,12 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.PayloadType;
+import org.scribble.visit.AstVisitor;
 
 public class PayloadElemList extends ScribNodeBase
 {

@@ -1,4 +1,4 @@
-package org.scribble.ast.visit;
+package org.scribble.visit;
 
 import java.util.HashSet;
 import java.util.Set;

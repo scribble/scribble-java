@@ -2,8 +2,8 @@ package org.scribble.del;
 
 import org.scribble.ast.Do;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.visit.ContextBuilder;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.ContextBuilder;
 
 @Deprecated 
 public class DoDel extends SimpleInteractionNodeDel

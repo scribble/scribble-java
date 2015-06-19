@@ -4,15 +4,15 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.context.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.ast.visit.ContextBuilder;
-import org.scribble.ast.visit.FsmConstructor;
-import org.scribble.ast.visit.JobContext;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ScribFsm;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ContextBuilder;
+import org.scribble.visit.FsmConstructor;
+import org.scribble.visit.JobContext;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 //public class LProtocolDeclDel extends ProtocolDeclDel

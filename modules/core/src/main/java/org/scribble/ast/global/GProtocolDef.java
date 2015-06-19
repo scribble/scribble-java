@@ -13,6 +13,12 @@ public class GProtocolDef extends ProtocolDef<Global> implements GNode
 	}
 
 	@Override
+	protected GProtocolDef copy()
+	{
+		return new GProtocolDef(getBlock());
+	}
+
+	@Override
 	protected GProtocolDef reconstruct(ProtocolBlock<Global> block)
 	{
 		ScribDel del = del();
@@ -22,8 +28,8 @@ public class GProtocolDef extends ProtocolDef<Global> implements GNode
 	}
 
 	@Override
-	protected GProtocolDef copy()
+	public GProtocolBlock getBlock()
 	{
-		return new GProtocolDef((GProtocolBlock) this.block);
+		return (GProtocolBlock) this.block;
 	}
 }

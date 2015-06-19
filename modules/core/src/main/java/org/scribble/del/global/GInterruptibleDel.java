@@ -2,10 +2,10 @@ package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInterruptible;
-import org.scribble.ast.visit.WellFormedChoiceChecker;
-import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.del.CompoundInteractionNodeDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.WellFormedChoiceEnv;
 
 public class GInterruptibleDel extends GCompoundInteractionNodeDel
 {

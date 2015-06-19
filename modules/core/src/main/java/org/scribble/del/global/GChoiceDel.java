@@ -20,16 +20,16 @@ import org.scribble.ast.global.GChoice;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.ast.visit.Projector;
-import org.scribble.ast.visit.WellFormedChoiceChecker;
-import org.scribble.ast.visit.env.ProjectionEnv;
-import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
+import org.scribble.visit.Projector;
+import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.ProjectionEnv;
+import org.scribble.visit.env.WellFormedChoiceEnv;
 
 public class GChoiceDel extends GCompoundInteractionNodeDel
 {

@@ -2,11 +2,11 @@ package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
-import org.scribble.ast.visit.FsmConstructor;
-import org.scribble.ast.visit.ReachabilityChecker;
-import org.scribble.ast.visit.env.ReachabilityEnv;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
+import org.scribble.visit.FsmConstructor;
+import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.env.ReachabilityEnv;
 
 public class LContinueDel extends LSimpleInteractionNodeDel
 {

@@ -2,9 +2,9 @@ package org.scribble.del.name;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.ast.visit.NameDisambiguator;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.NameDisambiguator;
 
 
 public class RoleNodeDel extends ScribDelBase

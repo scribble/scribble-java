@@ -1,10 +1,10 @@
 package org.scribble.ast.name.simple;
 
 import org.scribble.ast.DoArgNode;
-import org.scribble.ast.visit.Substitutor;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.Substitutor;
 
 
 //public class RoleNode extends SimpleNameNode<Role> implements InstantiationNode //RoleDecl, RoleInstantiation

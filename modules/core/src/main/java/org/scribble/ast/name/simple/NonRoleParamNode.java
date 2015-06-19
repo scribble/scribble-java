@@ -3,7 +3,6 @@ package org.scribble.ast.name.simple;
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.ast.visit.Substitutor;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.DataTypeKind;
@@ -13,6 +12,7 @@ import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.PayloadType;
+import org.scribble.visit.Substitutor;
 
 //public class ParameterNode extends SimpleNameNode<Parameter> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode
 //public class ParameterNode<K extends Kind> extends SimpleNameNode<Name<K>, K> implements PayloadElementNameNode, MessageNode//, ArgumentInstantiation//, PayloadTypeOrParameterNode

@@ -7,7 +7,6 @@ import org.scribble.ast.name.simple.RoleNode;
 
 public class LThrows extends LInterrupt
 {
-
 	protected LThrows(RoleNode src, List<MessageNode> msgs)
 	{
 		super(src, msgs);

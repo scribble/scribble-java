@@ -10,68 +10,36 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
-//public class LocalChoice extends Choice<LocalProtocolBlock> implements CompoundLocalInteractionNode
 public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 {
-	//public LocalChoice(RoleNode subj, List<LocalProtocolBlock> blocks)
-	public LChoice(RoleNode subj, List<? extends ProtocolBlock<Local>> blocks)
+	public LChoice(RoleNode subj, List<LProtocolBlock> blocks)
 	{
 		super(subj, blocks);
 	}
 
 	@Override
-	//protected LocalChoice reconstruct(RoleNode subj, List<LocalProtocolBlock> blocks)
+	protected ScribNodeBase copy()
+	{
+		return new LChoice(this.subj, getBlocks());
+	}
+
+	@Override
 	protected LChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Local>> blocks)
 	{
 		ScribDel del = del();
-		LChoice lc = new LChoice(subj, blocks);
+		LChoice lc = new LChoice(subj, castBlocks(blocks));
 		lc = (LChoice) lc.del(del);
 		return lc;
 	}
 
 	@Override
-	protected ScribNodeBase copy()
+	public List<LProtocolBlock> getBlocks()
 	{
-		return new LChoice(this.subj, this.blocks);
-	}
-
-	@Override
-	public List<? extends ProtocolBlock<Local>> getBlocks()
-	{
-		return castBlocks(blocks);
+		return castBlocks(this.blocks);
 	}
 	
 	private static List<LProtocolBlock> castBlocks(List<? extends ProtocolBlock<Local>> blocks)
 	{
 		return blocks.stream().map((b) -> (LProtocolBlock) b).collect(Collectors.toList());
 	}
-	
-	/*@Override
-	public LocalChoice leaveContextBuilding(Node parent, NodeContextBuilder builder) throws ScribbleException
-	{
-		Choice<LocalProtocolBlock> cho = super.leaveContextBuilding(parent, builder);
-		return new LocalChoice(cho.ct, cho.subj, cho.blocks, cho.getContext());
-	}
-
-	@Override
-	public LocalChoice leaveWFChoiceCheck(WellFormedChoiceChecker checker) throws ScribbleException
-	{
-		Choice<LocalProtocolBlock> cho = super.leaveWFChoiceCheck(checker);
-		return new LocalChoice(cho.ct, cho.subj, cho.blocks, cho.getContext(), (WellFormedChoiceEnv) cho.getEnv());
-	}
-
-	@Override
-	public LocalChoice visitChildren(NodeVisitor nv) throws ScribbleException
-	{
-		Choice<LocalProtocolBlock> cho = super.visitChildren(nv);
-		//List<LocalProtocolBlock> blocks = GlobalProtocolBlock.toGlobalProtocolBlockList.apply(cho.blocks);
-		//List<LocalProtocolBlock> blocks = cho.blocks.stream().map(GlobalProtocolBlock.toGlobalProtocolBlock).collect(Collectors.toList());
-		return new LocalChoice(cho.ct, cho.subj, cho.blocks, cho.getContext(), cho.getEnv());
-	}*/
-	
-	/*@Override
-	public LocalChoice buildGraph(GraphBuilder builder)
-	{
-		return this;
-	}*/
 }

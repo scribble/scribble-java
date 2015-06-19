@@ -1,4 +1,4 @@
-package org.scribble.ast.visit;
+package org.scribble.visit;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

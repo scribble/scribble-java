@@ -1,8 +1,8 @@
 package org.scribble.ast;
 
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.visit.AstVisitor;
 
 
 public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInteraction

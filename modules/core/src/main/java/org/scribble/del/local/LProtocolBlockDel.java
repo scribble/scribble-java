@@ -2,9 +2,9 @@ package org.scribble.del.local;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.visit.ReachabilityChecker;
 import org.scribble.del.ProtocolBlockDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.ReachabilityChecker;
 
 
 public class LProtocolBlockDel extends ProtocolBlockDel

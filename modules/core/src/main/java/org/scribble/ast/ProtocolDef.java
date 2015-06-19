@@ -1,8 +1,8 @@
 package org.scribble.ast;
 
-import org.scribble.ast.visit.AstVisitor;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.visit.AstVisitor;
 
 
 public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase
@@ -15,6 +15,8 @@ public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase
 	}
 	
 	protected abstract ProtocolDef<K> reconstruct(ProtocolBlock<K> block);
+
+	public abstract ProtocolBlock<K> getBlock();
 	
 	@Override
 	public ProtocolDef<K> visitChildren(AstVisitor nv) throws ScribbleException

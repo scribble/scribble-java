@@ -10,13 +10,13 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.ast.visit.Projector;
-import org.scribble.ast.visit.WellFormedChoiceChecker;
-import org.scribble.ast.visit.env.ProjectionEnv;
-import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RecVarKind;
+import org.scribble.visit.Projector;
+import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.ProjectionEnv;
+import org.scribble.visit.env.WellFormedChoiceEnv;
 
 public class GRecursionDel extends GCompoundInteractionNodeDel
 {

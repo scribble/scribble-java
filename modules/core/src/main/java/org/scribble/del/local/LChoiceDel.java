@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
-import org.scribble.ast.visit.ReachabilityChecker;
-import org.scribble.ast.visit.env.ReachabilityEnv;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.env.ReachabilityEnv;
 
 public class LChoiceDel extends LCompoundInteractionNodeDel
 {

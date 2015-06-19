@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GParallel;
-import org.scribble.ast.visit.WellFormedChoiceChecker;
-import org.scribble.ast.visit.env.WellFormedChoiceEnv;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.WellFormedChoiceEnv;
 
 public class GParallelDel extends GCompoundInteractionNodeDel
 {

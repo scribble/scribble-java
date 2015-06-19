@@ -8,14 +8,14 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.visit.ModelBuilder;
-import org.scribble.ast.visit.Projector;
-import org.scribble.ast.visit.env.ModelEnv;
-import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.del.ProtocolBlockDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ModelBuilder;
+import org.scribble.visit.Projector;
+import org.scribble.visit.env.ModelEnv;
+import org.scribble.visit.env.ProjectionEnv;
 
 
 public class GProtocolBlockDel extends ProtocolBlockDel

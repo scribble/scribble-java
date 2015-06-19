@@ -1,16 +1,16 @@
 package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.visit.ContextBuilder;
-import org.scribble.ast.visit.FsmConstructor;
-import org.scribble.ast.visit.MessageIdCollector;
-import org.scribble.ast.visit.ModelBuilder;
-import org.scribble.ast.visit.NameDisambiguator;
-import org.scribble.ast.visit.Projector;
-import org.scribble.ast.visit.ReachabilityChecker;
-import org.scribble.ast.visit.WellFormedChoiceChecker;
-import org.scribble.ast.visit.env.Env;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.ContextBuilder;
+import org.scribble.visit.FsmConstructor;
+import org.scribble.visit.MessageIdCollector;
+import org.scribble.visit.ModelBuilder;
+import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.Projector;
+import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.Env;
 
 
 // Mutable for Envs (by visitors) -- make immutable?

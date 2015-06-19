@@ -19,7 +19,7 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	@Override
 	protected GProtocolDecl copy()
 	{
-		return new GProtocolDecl((GProtocolHeader) this.header, (GProtocolDef) this.def);
+		return new GProtocolDecl(getHeader(), getDef());
 	}
 
 	@Override
@@ -30,6 +30,18 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 		GProtocolDecl gpd = new GProtocolDecl((GProtocolHeader) header, (GProtocolDef) def);
 		gpd = (GProtocolDecl) gpd.del(del);  // FIXME: does another shallow copy
 		return gpd;
+	}
+
+	@Override
+	public GProtocolHeader getHeader()
+	{
+		return (GProtocolHeader) this.header;
+	}
+
+	@Override
+	public GProtocolDef getDef()
+	{
+		return (GProtocolDef) this.def;
 	}
 
 	@Override

@@ -5,10 +5,10 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDef;
-import org.scribble.ast.visit.Projector;
-import org.scribble.ast.visit.env.ProjectionEnv;
 import org.scribble.del.ProtocolDefDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.Projector;
+import org.scribble.visit.env.ProjectionEnv;
 
 public class GProtocolDefDel extends ProtocolDefDel
 {

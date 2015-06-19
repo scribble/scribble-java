@@ -1,4 +1,4 @@
-package org.scribble.ast.visit;
+package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LDo;

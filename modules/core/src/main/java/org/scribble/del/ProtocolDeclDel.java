@@ -2,9 +2,9 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ProtocolDeclContext;
-import org.scribble.ast.visit.NameDisambiguator;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.visit.NameDisambiguator;
 
 public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBase
 //public abstract class ProtocolDeclDel extends ModelDelBase

@@ -5,14 +5,14 @@ import java.util.Map;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ast.visit.Job;
-import org.scribble.ast.visit.JobContext;
-import org.scribble.ast.visit.MessageIdCollector;
 import org.scribble.del.ModuleDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.Job;
+import org.scribble.visit.JobContext;
+import org.scribble.visit.MessageIdCollector;
 
 public class SessionApiGenerator
 {

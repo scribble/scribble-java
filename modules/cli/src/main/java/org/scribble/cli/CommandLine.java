@@ -15,9 +15,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.ast.visit.Job;
-import org.scribble.ast.visit.JobContext;
-import org.scribble.ast.visit.Projector;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
@@ -26,6 +23,9 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.Job;
+import org.scribble.visit.JobContext;
+import org.scribble.visit.Projector;
 
 public class CommandLine implements Runnable
 {
