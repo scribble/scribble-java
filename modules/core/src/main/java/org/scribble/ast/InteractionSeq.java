@@ -25,7 +25,7 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 		return reconstruct(actions);
 	}
 	
-	public abstract List<? extends InteractionNode<K>> getNodes();
+	public abstract List<? extends InteractionNode<K>> getActions();
 	
 	public boolean isEmpty()
 	{

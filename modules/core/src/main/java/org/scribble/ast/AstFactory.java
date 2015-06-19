@@ -16,6 +16,7 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDo;
+import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
@@ -39,7 +40,6 @@ import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ProtocolKind;
 
 public interface AstFactory
@@ -94,11 +94,11 @@ public interface AstFactory
 	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
 	LProtocolDef LProtocolDefinition(LProtocolBlock block);
 	LProtocolBlock LProtocolBlock(LInteractionSeq seq);
-	LInteractionSeq LInteractionSequence(List<? extends InteractionNode<Local>> actions);
+	LInteractionSeq LInteractionSequence(List<LInteractionNode> actions);
 
 	LSend LSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LReceive LReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LChoice LChoice(RoleNode subj, List<ProtocolBlock<Local>> blocks);
+	LChoice LChoice(RoleNode subj, List<LProtocolBlock> blocks);
 	LRecursion LRecursion(RecVarNode recvar, LProtocolBlock block);
 	LContinue LContinue(RecVarNode recvar);
 	LDo LDo(RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto);

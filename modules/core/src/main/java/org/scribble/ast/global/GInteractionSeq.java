@@ -18,11 +18,11 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	@Override
 	protected GInteractionSeq copy()
 	{
-		return new GInteractionSeq(getNodes());
+		return new GInteractionSeq(getActions());
 	}
 	
 	@Override
-	public List<GInteractionNode> getNodes()
+	public List<GInteractionNode> getActions()
 	{
 		return castNodes(this.actions);
 	}

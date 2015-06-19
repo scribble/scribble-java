@@ -20,7 +20,7 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LInteractionSeq(getNodes());
+		return new LInteractionSeq(getActions());
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	}
 	
 	@Override
-	public List<LInteractionNode> getNodes()
+	public List<LInteractionNode> getActions()
 	{
 		return castNodes(this.actions);
 	}

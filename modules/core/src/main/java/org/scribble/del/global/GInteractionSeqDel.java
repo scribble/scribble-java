@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Continue;
 import org.scribble.ast.InteractionNode;
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.local.LInteractionNode;
@@ -21,7 +21,6 @@ import org.scribble.del.InteractionSeqDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
@@ -50,7 +49,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		//List<LocalInteractionNode> lis = new LinkedList<>();
-		List<InteractionNode<Local>> lis = new LinkedList<>();
+		List<LInteractionNode> lis = new LinkedList<>();
 			//this.actions.stream().map((action) -> (LocalInteraction) ((ProjectionEnv) ((LocalNode) action).getEnv()).getProjection()).collect(Collectors.toList());	
 		//for (GlobalInteractionNode gi : gis.actions)
 		for (InteractionNode<Global> gi : gis.actions)
@@ -58,7 +57,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
-				lis.addAll(((LInteractionSeq) ln).actions);
+				lis.addAll(((LInteractionSeq) ln).getActions());
 			}
 			else if (ln != null)
 			{
