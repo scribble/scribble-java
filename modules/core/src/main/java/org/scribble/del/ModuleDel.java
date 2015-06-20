@@ -75,7 +75,7 @@ public class ModuleDel extends ScribDelBase
 				LProtocolName targetsimpname = Projector.projectSimpleProtocolName(gpn.getSimpleName(), role);
 				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(gpn.getPrefix(), targetsimpname);
 				//if (!targetfullname.getPrefix().equals(modname.toName()))
-				if (!targetmodname.equals(modname.toName()))
+				if (!targetmodname.toName().equals(modname.toName()))  // Self dependency -- each projected local is in its own module now, so can compare module names
 				{
 					imports.add(AstFactoryImpl.FACTORY.ImportModule(targetmodname, null));
 				}
