@@ -15,13 +15,12 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.local.LProtocolDecl;
-import org.scribble.ast.local.LProtocolHeader;
-import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.Projector;
@@ -72,10 +71,11 @@ public class ModuleDel extends ScribDelBase
 		{
 			for (Role role : deps.get(gpn))
 			{
-				LProtocolNameNode targetfullname = Projector.makeProjectedFullNameNode(gpn, role);
-				LProtocolNameNode targetsimpname = Projector.makeProjectedSimpleNameNode(gpn.getSimpleName(), role);
-				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(gpn.getPrefix(), targetsimpname.toName());
-				if (!targetfullname.toName().getPrefix().equals(modname.toName()))
+				//LProtocolName targetfullname = Projector.projectFullProtocolName(gpn, role);
+				LProtocolName targetsimpname = Projector.projectSimpleProtocolName(gpn.getSimpleName(), role);
+				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(gpn.getPrefix(), targetsimpname);
+				//if (!targetfullname.getPrefix().equals(modname.toName()))
+				if (!targetmodname.equals(modname.toName()))
 				{
 					imports.add(AstFactoryImpl.FACTORY.ImportModule(targetmodname, null));
 				}
