@@ -28,22 +28,12 @@ public class LCompoundInteractionNodeDel extends CompoundInteractionNodeDel
 	@Override
 	public ScribNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
-		/*ProjectionEnv env = proj.popEnv();
-		//env = checker.popEnv().merge(env);  // No merge here: merging of child blocks is handled "manually" by the compound interaction nodes
-		//checker.pushEnv(env);
-		setEnv(env);
-		return visited;*
-		en.setEnv(this);
-		checker.setEnv(pop());
-		//en.setEnv(copy());
-		//ReachabilityEnv parent = pop();
-		//parent = parent.merge(en, this);  // No: blocks don't merge themselves into parent, parents take blocks and merge
-		//checker.setEnv(parent);*/
-		ReachabilityEnv env = checker.popEnv();
-		setEnv(env);
-		env = checker.popEnv().mergeContext(env);  // Overrides super method to merge results back into parent context
-		checker.pushEnv(env);
-		//setEnv(env);
+		// Following leaveWFChoiceCheck
+		ReachabilityEnv visited_env = checker.popEnv();
+		ReachabilityEnv parent_env = checker.popEnv();
+		setEnv(visited_env);
+		parent_env = parent_env.mergeContext(visited_env);
+		checker.pushEnv(parent_env);
 		return (LCompoundInteractionNode) visited;
 	}
 
