@@ -27,7 +27,7 @@ import org.scribble.visit.Projector;
 
 public class ModuleDel extends ScribDelBase
 {
-	private ModuleContext context;
+	private ModuleContext mcontext;
 	
 	public ModuleDel()
 	{
@@ -49,8 +49,7 @@ public class ModuleDel extends ScribDelBase
 	@Override
 	public Module leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
-		ModuleDel del = copy();  // FIXME: should be a deep clone in principle
-		del.context = builder.getModuleContext();
+		ModuleDel del = setModuleContext(builder.getModuleContext());
 		return (Module) visited.del(del);
 	}
 
@@ -90,11 +89,18 @@ public class ModuleDel extends ScribDelBase
 	@Override 
 	public String toString()
 	{
-		return (this.context == null) ? null : this.context.toString();  // null before and during context building
+		return (this.mcontext == null) ? null : this.mcontext.toString();  // null before and during context building
+	}
+	
+	protected ModuleDel setModuleContext(ModuleContext mcontext)
+	{
+		ModuleDel copy = copy();  // FIXME: should be a deep clone in principle
+		copy.mcontext = mcontext;
+		return copy;
 	}
 	
 	public ModuleContext getModuleContext()
 	{
-		return this.context;
+		return this.mcontext;
 	}
 }

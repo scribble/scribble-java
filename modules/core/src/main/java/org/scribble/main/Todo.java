@@ -6,6 +6,7 @@ package org.scribble.main;
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
 
 	// FIXME: do-call argument kinding (sig/type args/params), arity, etc
+	// duplicate role decls etc
 
 	//.. do projection should filter unused subprotocol role params -- but scoped subprotocols may need extra name mangling
 	//.. both projector and graphbuilder are env visitors but not subprotocol visitors now, so swap visitor hierarchy?
