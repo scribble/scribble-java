@@ -21,15 +21,4 @@ public class LChoiceDel extends LCompoundInteractionNodeDel
 		checker.pushEnv(merged);
 		return (LChoice) super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
-
-	/*@Override
-	public LChoice leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)
-	{
-		LChoice lc = (LChoice) visited;
-		List<ScribbleFsm> fs = lc.blocks.stream().map((block) -> ((FsmBuildingEnv) block.del().env()).getFsm()).collect(Collectors.toList());
-		ScribbleFsm f = ScribbleFsm.merge(fs);
-		FsmBuildingEnv env = conv.popEnv();
-		conv.pushEnv(env.setFsm(f));
-		return (LChoice) super.leaveFsmConversion(parent, child, conv, lc);
-	}*/
 }

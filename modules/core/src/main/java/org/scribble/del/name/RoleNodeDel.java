@@ -15,7 +15,6 @@ public class RoleNodeDel extends ScribDelBase
 	}
 
 	@Override
-	//public RoleNode leaveBoundNamesCheck(ModelNode parent, ModelNode child, BoundNameChecker checker, ModelNode visited) throws ScribbleException
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		RoleNode rn = (RoleNode) visited;

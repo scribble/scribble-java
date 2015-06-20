@@ -21,10 +21,8 @@ import org.scribble.visit.env.ProjectionEnv;
 public class GProtocolBlockDel extends ProtocolBlockDel
 {
 	@Override
-	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
-		//return (Projector) pushEnv(parent, child, proj);
 		pushVisitorEnv(parent, child, proj);
 	}
 
@@ -33,12 +31,8 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 	{
 		GProtocolBlock gpd = (GProtocolBlock) visited;
 		LInteractionSeq seq = (LInteractionSeq) ((ProjectionEnv) gpd.seq.del().env()).getProjection();	
-		//LocalProtocolBlock projection = ModelFactoryImpl.FACTORY.LocalProtocolBlock(ModelFactoryImpl.FACTORY.LocalInteractionSequence(Collections.emptyList()));
 		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(seq);
-		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
-		ProjectionEnv env = proj.popEnv();
-		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		proj.pushEnv(env.setProjection(projection));
+		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GProtocolBlock) popAndSetVisitorEnv(parent, child, proj, gpd);
 	}
 	
@@ -54,8 +48,7 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		GProtocolBlock gpb = (GProtocolBlock) visited;
 		Set<ModelAction> as = ((ModelEnv) gpb.seq.del().env()).getActions();
 		Map<Role, ModelAction> leaves = ((ModelEnv) gpb.seq.del().env()).getLeaves();
-		ModelEnv env = builder.popEnv();
-		builder.pushEnv(env.setActions(as, leaves));
+		builder.pushEnv(builder.popEnv().setActions(as, leaves));
 		return (GProtocolBlock) popAndSetVisitorEnv(parent, child, builder, gpb);
 	}
 }

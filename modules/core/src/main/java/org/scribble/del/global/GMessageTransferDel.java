@@ -7,13 +7,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.MessageNode;
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.local.LInteractionNode;
-import org.scribble.ast.local.LReceive;
 import org.scribble.ast.local.LNode;
+import org.scribble.ast.local.LReceive;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
@@ -29,7 +29,6 @@ import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WellFormedChoiceChecker;
 import org.scribble.visit.env.ModelEnv;
-import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WellFormedChoiceEnv;
 
 // FIXME: make base MessageTransferDelegate?
@@ -46,13 +45,10 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		GMessageTransfer msgtrans = (GMessageTransfer) visited;
 		
 		Role src = msgtrans.src.toName();
-		//Message msg = msgtrans.msg.toMessage(checker.getScope());
 		Message msg = msgtrans.msg.toMessage();
 		WellFormedChoiceEnv env = checker.popEnv();
 		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
 		{
-			//checker.setEnv(checker.getEnv().addMessageForSubprotocol(checker, src, dest, msg.toScopedMessage(checker.getScope())));
-			//env = env.addMessageForSubprotocol(checker, src, dest, msg.toScopedMessage(checker.getScope()));
 			env = env.addMessageForSubprotocol(checker, src, dest, msg);
 			
 			//System.out.println("1: " + src + ", " + dest + ", " + msg);
@@ -77,15 +73,11 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		LNode projection = null;
 		if (srcrole.equals(self) || destroles.contains(self))
 		{
-			//RoleNode src = new RoleNode(gmt.src.toName().toString());  // FIXME: project by visiting -- or maybe not: projection visiting only for GlobalNode
-			//RoleNode src = (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, gmt.src.toName().toString());
 			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gmt.src.toName().toString());
-			//MessageNode msg = (MessageNode) ((ProjectionEnv) gmt.msg.del().getEnv()).getProjection();
 			MessageNode msg = (MessageNode) gmt.msg;  // FIXME: need namespace prefix update?
 			List<RoleNode> dests =
-					//destroles.stream().map((d) -> new RoleNode(d.toString())).collect(Collectors.toList());
-					//destroles.stream().map((d) -> (RoleNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.ROLE, d.toString())).collect(Collectors.toList());
-					destroles.stream().map((d) -> (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, d.toString())).collect(Collectors.toList());
+					destroles.stream().map((d) ->
+							(RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, d.toString())).collect(Collectors.toList());
 			if (srcrole.equals(self))
 			{
 				projection = AstFactoryImpl.FACTORY.LSend(src, msg, dests);
@@ -105,22 +97,14 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 			}
 		}
 
-		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleContext(), projection));
-		ProjectionEnv env = proj.popEnv();
-		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		proj.pushEnv(env.setProjection(projection));
-		//return gmt;
-		return (GMessageTransfer) super.leaveProjection(parent, child, proj, gmt);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		proj.pushEnv(proj.popEnv().setProjection(projection));
+		return (GMessageTransfer) super.leaveProjection(parent, child, proj, gmt);
 	}
 
 	@Override
 	public ScribNode leaveOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
-		/*if (!gmt.msg.isMessageSigNode())
-		{
-			throw new RuntimeException("Op collection should be run on ground types: " + gmt.msg);  // Ground means non-param -- signames are OK (from sigdecls)
-		}*/
 		if (gmt.msg.isMessageSigNode() || gmt.msg.isMessageSigNameNode())
 		{
 			coll.addMessageId(gmt.msg.toMessage().getId());

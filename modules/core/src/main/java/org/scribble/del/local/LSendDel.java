@@ -16,34 +16,16 @@ public class LSendDel extends LSimpleInteractionNodeDel
 	public LSend leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)
 	{
 		LSend ls = (LSend) visited;
-		/*FsmBuilder b = new FsmBuilder();
-		ProtocolState init = b.makeInit(Collections.emptySet());
-		ProtocolState term = b.newState(Collections.emptySet());
 		if (ls.dests.size() > 1)
 		{
 			throw new RuntimeException("TODO: " + ls);
 		}
 		Role peer = ls.dests.get(0).toName();
 		MessageId mid = ls.msg.toMessage().getId();
-		b.addEdge(init, new Send(peer, mid), term);
-		ScribbleFsm f = b.build();
-		FsmBuildingEnv env = conv.popEnv();
-		conv.pushEnv(env.setFsm(f));*/
-		if (ls.dests.size() > 1)
-		{
-			throw new RuntimeException("TODO: " + ls);
-		}
-		Role peer = ls.dests.get(0).toName();
-		MessageId mid = ls.msg.toMessage().getId();
-		Payload payload;
-		if (ls.msg.isMessageSigNode())  // Hacky?
-		{
-			payload = ((MessageSigNode) ls.msg).payload.toPayload();
-		}
-		else
-		{
-			payload = Payload.EMPTY_PAYLOAD;
-		}
+		Payload payload =
+				ls.msg.isMessageSigNode()  // Hacky?
+					? ((MessageSigNode) ls.msg).payload.toPayload()
+					: Payload.EMPTY_PAYLOAD;
 		conv.builder.addEdge(conv.builder.getEntry(), new Send(peer, mid, payload), conv.builder.getExit());
 		return (LSend) super.leaveFsmConstruction(parent, child, conv, ls);
 	}

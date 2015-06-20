@@ -18,10 +18,8 @@ public class GProtocolDefDel extends ProtocolDefDel
 	}
 
 	@Override
-	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
-		//return (Projector) pushEnv(parent, child, proj);
 		pushVisitorEnv(parent, child, proj);
 	}
 
@@ -30,12 +28,8 @@ public class GProtocolDefDel extends ProtocolDefDel
 	{
 		GProtocolDef gpd = (GProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.block.del().env()).getProjection();	
-		//LocalProtocolDefinition projection = new LocalProtocolDefinition(block);
 		LProtocolDef projection = AstFactoryImpl.FACTORY.LProtocolDefinition(block);
-		//this.setEnv(new ProjectionEnv(proj.getJobContext(), proj.getModuleDelegate(), projection));
-		ProjectionEnv env = proj.popEnv();
-		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		proj.pushEnv(env.setProjection(projection));
+		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GProtocolDef) popAndSetVisitorEnv(parent, child, proj, gpd);
 	}
 }

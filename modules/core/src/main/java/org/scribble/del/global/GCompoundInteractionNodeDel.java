@@ -16,7 +16,7 @@ public abstract class GCompoundInteractionNodeDel extends CompoundInteractionNod
 	@Override
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
-		pushVisitorEnv(parent, child, proj);
+		pushVisitorEnv(parent, child, proj);  // Not necessary to set projection env on enter, could be done on leaving
 	}
 
 	@Override

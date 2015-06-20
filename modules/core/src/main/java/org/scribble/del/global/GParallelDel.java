@@ -12,8 +12,6 @@ import org.scribble.visit.env.WellFormedChoiceEnv;
 public class GParallelDel extends GCompoundInteractionNodeDel
 {
 	@Override
-	//public GlobalParallel leave(Parallel<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>> par,
-	//public GlobalParallel leave(GlobalParallel par, WellFormedChoiceChecker checker)
 	public GParallel leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GParallel par = (GParallel) visited;

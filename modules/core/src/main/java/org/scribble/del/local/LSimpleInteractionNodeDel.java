@@ -14,10 +14,8 @@ public abstract class LSimpleInteractionNodeDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	//public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
 	public void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		//return (ReachabilityChecker) pushEnv(parent, child, checker);
 		pushVisitorEnv(parent, child, checker);
 	}
 
@@ -26,16 +24,4 @@ public abstract class LSimpleInteractionNodeDel extends SimpleInteractionNodeDel
 	{
 		return (LSimpleInteractionNode) popAndSetVisitorEnv(parent, child, checker, visited);
 	}
-
-	/*@Override
-	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv)
-	{
-		pushVisitorEnv(parent, child, conv);
-	}
-
-	@Override
-	public ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)// throws ScribbleException;
-	{
-		return (LSimpleInteractionNode) popAndSetVisitorEnv(parent, child, conv, visited);
-	}*/
 }

@@ -28,30 +28,19 @@ import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
 
-// FIXME: should be a CompoundInteractionDelegate? -- no: compound interaction delegates for typing contexts (done for block only, not seqs)
 public class GInteractionSeqDel extends InteractionSeqDel
 {
 	@Override
-	//public Projector enterProjection(ModelNode parent, ModelNode child, Projector proj) throws ScribbleException
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
-		//return (Projector) pushEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 		pushVisitorEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 	}
 	
 	@Override
 	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
-		/*LocalInteractionSequence projection = new LocalInteractionSequence(Collections.emptyList());
-		ProjectionEnv env = proj.popEnv();
-		proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		return (GlobalInteractionSequence) super.leaveProjection(parent, child, proj, visited);*/
-		
 		GInteractionSeq gis = (GInteractionSeq) visited;
-		//List<LocalInteractionNode> lis = new LinkedList<>();
 		List<LInteractionNode> lis = new LinkedList<>();
-			//this.actions.stream().map((action) -> (LocalInteraction) ((ProjectionEnv) ((LocalNode) action).getEnv()).getProjection()).collect(Collectors.toList());	
-		//for (GlobalInteractionNode gi : gis.actions)
 		for (InteractionNode<Global> gi : gis.actions)
 		{
 			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
@@ -72,11 +61,8 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			}
 		}
 		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSequence(lis);
-		ProjectionEnv env = proj.popEnv();
-		//proj.pushEnv(new ProjectionEnv(env.getJobContext(), env.getModuleDelegate(), projection));
-		proj.pushEnv(env.setProjection(projection));
-		//return gis;
-		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, proj, gis);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		proj.pushEnv(proj.popEnv().setProjection(projection));
+		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, proj, gis);
 	}
 	
 	@Override
@@ -96,16 +82,6 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			ModelEnv env = ((ModelEnv) gi.del().env());
 			Set<ModelAction> as = env.getActions();
 			all.addAll(as);
-			//Map<Role, ModelAction> tmp = ((ModelEnv) gi.del().env()).getLeaves();
-			
-			/*Set<ModelAction> tmp = ((ModelEnv) gi.del().env()).getLeaves().values().stream().filter((a) -> !a.getDependencies().isEmpty()).collect(Collectors.toSet());
-			for (ModelAction a : tmp)	
-			{
-				// FIXME: doesn't support self comm
-				addDepedency(leaves, a, a.src);
-				addDepedency(leaves, a, a.action.peer);
-			}*/
-			
 			if (leaves == null)
 			{
 				leaves = new HashMap<>(env.getLeaves());
@@ -143,19 +119,4 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			leaves.put(a.src, a);
 		}
 	}
-	
-
-	/*private void addDepedency(Map<Role, ModelAction> leaves, ModelAction a, Role r)
-	{
-		if (!leaves.containsKey(r))
-		{
-			leaves.put(r, a);
-		}
-		else
-		{
-			ModelAction dep = leaves.get(r);
-			a.addDependency(dep);
-			leaves.put(r, a);
-		}
-	}*/
 }

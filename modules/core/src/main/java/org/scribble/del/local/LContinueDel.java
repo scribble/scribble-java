@@ -12,15 +12,10 @@ public class LContinueDel extends LSimpleInteractionNodeDel
 {
 	public LContinue leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
-		LContinue lc = (LContinue) visited;
 		// "Entering" the continue here in leave, where we can merge the new state into the parent Env
 		// Generally: if side effecting Env state to be merged into the parent (not just popped and discarded), leave must be overridden to do so
-
+		LContinue lc = (LContinue) visited;
 		ReachabilityEnv env = checker.popEnv().leaveContinue(lc.recvar.toName());
-		/*checker.pushEnv(env);
-		setEnv(env);  // Env recording probably not needed for all LocalInteractionNodes, just the compound ones, like for WF-choice checking
-		env = checker.popEnv().mergeContext(env);
-		checker.pushEnv(env);*/
 		setEnv(env);  // Env recording probably not needed for all LocalInteractionNodes, just the compound ones, like for WF-choice checking
 		checker.pushEnv(checker.popEnv().mergeContext(env));
 		return lc;

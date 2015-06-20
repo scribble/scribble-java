@@ -10,18 +10,15 @@ import org.scribble.visit.env.ReachabilityEnv;
 // For CompoundInteractionNode and ProtocolBlock
 public class LCompoundInteractionNodeDel extends CompoundInteractionNodeDel
 {
-	//public CompoundInteractionDelegate(Env env)
 	public LCompoundInteractionNodeDel()
 	{
-		//super(env);
+
 	}
 
 	// Unlike WF-choice enter/leave for CompoundInteractionNodeDelegate (i.e. both global/local), reachability is limited to local only
 	@Override
-	//public ReachabilityChecker enterReachabilityCheck(ModelNode parent, ModelNode child, ReachabilityChecker checker) throws ScribbleException
 	public void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		//return (ReachabilityChecker) pushEnv(parent, child, checker);
 		pushVisitorEnv(parent, child, checker);
 	}
 
@@ -36,21 +33,4 @@ public class LCompoundInteractionNodeDel extends CompoundInteractionNodeDel
 		checker.pushEnv(parent_env);
 		return (LCompoundInteractionNode) visited;
 	}
-
-	/*@Override
-	public void enterFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv)
-	{
-		pushVisitorEnv(parent, child, conv);
-	}
-
-	@Override
-	public ModelNode leaveFsmConversion(ModelNode parent, ModelNode child, FsmConverter conv, ModelNode visited)
-	{
-		/*FsmBuildingEnv env = conv.popEnv();
-		setEnv(env);
-		env = conv.popEnv().mergeContext(env);  // Overrides super method to merge results back into parent context
-		conv.pushEnv(env);
-		return (LCompoundInteractionNode) visited;* /
-		return popAndSetVisitorEnv(parent, child, conv, visited);
-	}*/
 }
