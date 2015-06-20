@@ -92,7 +92,7 @@ public class Job
 	
 	public Map<String, String> generateEndpointApi(GProtocolName gpn, Role role) throws ScribbleException
 	{
-		LProtocolName lpn = Projector.makeProjectedProtocolNameNode(new GProtocolName(this.jcontext.main, gpn), role).toName();
+		LProtocolName lpn = Projector.makeProjectedFullNameNode(new GProtocolName(this.jcontext.main, gpn), role).toName();
 		if (this.jcontext.getFsm(lpn) == null)  // FIXME: null hack
 		{
 			Module mod = this.jcontext.getModule(lpn.getPrefix());

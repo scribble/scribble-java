@@ -22,7 +22,7 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 	@Override
 	public CompoundInteractionNode<?> leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
-		// "Overrides" base popAndSet to do merging of child context into parent context
+		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
 		WellFormedChoiceEnv visited_env = checker.popEnv();
 		WellFormedChoiceEnv parent_env = checker.popEnv();
 		setEnv(visited_env);

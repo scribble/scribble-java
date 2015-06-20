@@ -110,7 +110,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 			ArgumentInstantiationList arginstans = (ArgumentInstantiationList) ((ProjectionEnv) gd.arginstans.del().env()).getProjection();*/
 			RoleArgList roleinstans = gd.roles.project(self);
 			NonRoleArgList arginstans = gd.args.project(self);
-			LProtocolNameNode target = Projector.makeProjectedProtocolNameNode(gd.getTargetFullProtocolName(proj.getModuleContext()), popped);
+			LProtocolNameNode target = Projector.makeProjectedFullNameNode(gd.getTargetFullProtocolName(proj.getModuleContext()), popped);
 			projection = AstFactoryImpl.FACTORY.LDo(roleinstans, arginstans, target);
 			
 			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking?

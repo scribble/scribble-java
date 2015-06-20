@@ -181,7 +181,7 @@ public class CommandLine implements Runnable
 	
 	private static LProtocolName getProjectedName(JobContext jc, GProtocolName gpn, Role role)
 	{
-		return Projector.makeProjectedProtocolNameNode(new GProtocolName(jc.main, gpn), role).toName();  // FIXME: factor out name projection from name node construction
+		return Projector.makeProjectedFullNameNode(new GProtocolName(jc.main, gpn), role).toName();  // FIXME: factor out name projection from name node construction
 	}
 	
 	private static void writeToFile(String file, String text) throws ScribbleException
