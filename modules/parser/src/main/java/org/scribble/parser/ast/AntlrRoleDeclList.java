@@ -1,7 +1,7 @@
 package org.scribble.parser.ast;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
@@ -14,15 +14,7 @@ public class AntlrRoleDeclList
 {
 	public static RoleDeclList parseRoleDeclList(ScribbleParser parser, CommonTree ct)
 	{
-		//List<RoleDecl> rds = new LinkedList<>();
-		//List<HeaderParamDecl<Role, RoleKind>> rds = new LinkedList<>();
-		//List<HeaderParamDecl<RoleKind>> rds = new LinkedList<>();
-		List<RoleDecl> rds = new LinkedList<>();
-		for (CommonTree pd : getRoleDeclChildren(ct))
-		{
-			rds.add((RoleDecl) parser.parse(pd));
-		}
-		//return new RoleDeclList(rds);
+		List<RoleDecl> rds = getRoleDeclChildren(ct).stream().map((pd) -> (RoleDecl) parser.parse(pd)).collect(Collectors.toList());
 		return AstFactoryImpl.FACTORY.RoleDeclList(rds);
 	}
 

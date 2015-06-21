@@ -13,6 +13,7 @@ import Test2;
 
 global protocol Foo(role A, role B)
 {
+	do Foo1<3()>(A, B);
 	choice at A
 	{
 		1() from A to B;
@@ -23,6 +24,11 @@ global protocol Foo(role A, role B)
 		do Test2.Bar(A, B);
 		//1() from A to B;
 	}
+}
+
+global protocol Foo1<sig M>(role A, role B)
+{
+	M from A to B;
 }
 
 

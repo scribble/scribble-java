@@ -9,6 +9,7 @@ import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.SigKind;
 
 public class AntlrNonRoleParamDecl
@@ -16,14 +17,9 @@ public class AntlrNonRoleParamDecl
 	public static final int KIND_CHILD_INDEX = 0;
 	public static final int NAME_CHILD_INDEX = 1;
 
-	public static NonRoleParamDecl<? extends Kind> parseNonRoleParamDecl(ScribbleParser parser, CommonTree ct)
+	public static NonRoleParamDecl<? extends NonRoleParamKind> parseNonRoleParamDecl(ScribbleParser parser, CommonTree ct)
 	{
 		Kind kind = parseKind(getKindChild(ct));
-		/*//ParameterNode name = AntlrSimpleName.toParameterNode(getNameChild(ct), kind);
-		ParameterNode<? extends Kind> name = AntlrSimpleName.toParameterNode(kind, getNameChild(ct));
-		//return new ParameterDecl(kind, name);
-		return ModelFactoryImpl.FACTORY.ParameterDecl(kind, name);
-		//return ModelFactoryImpl.FACTORY.ParameterDecl(name);*/
 		if (kind.equals(SigKind.KIND))
 		{
 			NonRoleParamNode<SigKind> name = AntlrSimpleName.toParamNode(SigKind.KIND, getNameChild(ct));
@@ -47,12 +43,10 @@ public class AntlrNonRoleParamDecl
 		{
 			case AntlrConstants.KIND_MESSAGESIGNATURE:
 			{
-				//return Kind.SIG;
 				return SigKind.KIND;
 			}
 			case AntlrConstants.KIND_PAYLOADTYPE:
 			{
-				//return Kind.TYPE;
 				return DataTypeKind.KIND;
 			}
 			default:

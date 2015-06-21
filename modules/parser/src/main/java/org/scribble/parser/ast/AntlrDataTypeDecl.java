@@ -22,20 +22,9 @@ public class AntlrDataTypeDecl
 		String extName = AntlrExtIdentifier.getName(tmp2);
 		CommonTree tmp3 = getExtNameChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
-		//SimplePayloadTypeNode alias = AntlrSimpleName.toSimplePayloadTypeNode(getAliasChild(ct));
-		//DataTypeNameNode alias = AntlrQualifiedName.toDataTypeNameNode(getAliasChild(ct));
 		DataTypeNameNode alias = AntlrSimpleName.toDataTypeNameNode(getAliasChild(ct));
-		//return new DataTypeDecl(schema, extName, source, alias);
 		return AstFactoryImpl.FACTORY.DataTypeDecl(schema, extName, source, alias);
 	}
-
-	/*public static PayloadType getFullPayloadTypeName(CommonTree ct)
-	{
-		CommonTree moddecl = AntlrModule.getModuleDeclChild(AntlrPayloadTypeDecl.getModuleParent(ct));
-		ModuleName fullmodname = AntlrQualifiedName.toModuleNameNodes(moddecl).toName();
-		SimplePayloadTypeNode alias = AntlrSimpleName.toSimplePayloadTypeNode(getAliasChild(ct));
-		return new PayloadType(fullmodname + "." + alias.toName());
-	}*/
 
 	public static CommonTree getSchemaChild(CommonTree ct)
 	{

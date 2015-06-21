@@ -23,21 +23,9 @@ public class AntlrMessageSigDecl
 		String extName = AntlrExtIdentifier.getName(tmp2);
 		CommonTree tmp3 = getSourceChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
-		//SimpleMessageSignatureNameNode alias = AntlrSimpleName.toSimpleMessageSignatureNameNode(getAliasChild(ct));
-		//MessageSigNameNode alias = AntlrQualifiedName.toMessageSignatureNameNode(getAliasChild(ct)); -- no: that expects a compound messigname node with elems
-		//MessageSigNameNode alias = (MessageSigNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getAliasChild(ct).getText());
 		MessageSigNameNode alias = AntlrSimpleName.toMessageSigNameNode(getAliasChild(ct));
-		//return new MessageSigDecl(schema, extName, source, alias);
 		return AstFactoryImpl.FACTORY.MessageSigDecl(schema, extName, source, alias);
 	}
-
-	/*public static MessageSignature getFullMessageSignatureName(CommonTree ct)
-	{
-		CommonTree moddecl = AntlrModule.getModuleDeclChild(AntlrMessageSignatureDecl.getModuleParent(ct));
-		ModuleName fullmodname = AntlrQualifiedName.toModuleNameNodes(moddecl).toName();
-		SimpleMessageSignatureNode alias = AntlrSimpleName.toSimpleMessageSignatureNode(getAliasChild(ct));
-		return new MessageSignature(fullmodname + "." + alias.toName());
-	}*/
 
 	public static CommonTree getSchemaChild(CommonTree ct)
 	{

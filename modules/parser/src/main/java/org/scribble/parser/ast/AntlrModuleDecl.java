@@ -12,7 +12,6 @@ public class AntlrModuleDecl
 
 	public static ModuleDecl parseModuleDecl(ScribbleParser parser, CommonTree ct)
 	{
-		//return new ModuleDecl(AntlrQualifiedName.toModuleNameNodes(getModuleNameChild(ct)));
 		return AstFactoryImpl.FACTORY.ModuleDecl(AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct)));
 	}
 

@@ -9,7 +9,7 @@ import org.scribble.parser.AntlrConstants.AntlrNodeType;
 
 public class Util
 {
-	public static List<CommonTree> toCommonTreeList(List<? extends Object> list)
+	public static List<CommonTree> toCommonTreeList(List<?> list)
 	{
 		return list.stream().map((x) -> (CommonTree) x).collect(Collectors.toList());
 	}

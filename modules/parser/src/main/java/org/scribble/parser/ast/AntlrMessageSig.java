@@ -17,7 +17,6 @@ public class AntlrMessageSig
 	{
 		OpNode op = AntlrSimpleName.toOpNode(getOpChild(ct));
 		PayloadElemList payload = (PayloadElemList) parser.parse(getPayloadElemListChild(ct));
-		//return new MessageSignatureNode(op, payload);
 		return AstFactoryImpl.FACTORY.MessageSigNode(op, payload);
 	}
 
@@ -30,9 +29,4 @@ public class AntlrMessageSig
 	{
 		return (CommonTree) ct.getChild(PAYLOAD_CHILD_INDEX);
 	}
-	
-	/*private static boolean hasEmptyOperator(CommonTree ct)
-	{
-		return AntlrSimpleName.getName(getOperatorChild(ct)).equals(EMPTY_OPERATOR);
-	}*/
 }
