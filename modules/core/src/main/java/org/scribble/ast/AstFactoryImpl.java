@@ -69,11 +69,14 @@ import org.scribble.del.name.ParamNodeDel;
 import org.scribble.del.name.RoleNodeDel;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Global;
+import org.scribble.sesstype.kind.ImportKind;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ModuleKind;
-import org.scribble.sesstype.kind.OpKind;
+import org.scribble.sesstype.kind.NonProtocolKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
+import org.scribble.sesstype.kind.OpKind;
+import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.kind.SigKind;
@@ -109,9 +112,9 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public Module Module( 
 			ModuleDecl moddecl,
-			List<ImportDecl<? extends Kind>> imports,
-			List<NonProtocolDecl<? extends Kind>> data,
-			List<ProtocolDecl<? extends org.scribble.sesstype.kind.ProtocolKind>> protos)
+			List<ImportDecl<? extends ImportKind>> imports,
+			List<NonProtocolDecl<? extends NonProtocolKind>> data,
+			List<ProtocolDecl<? extends ProtocolKind>> protos)
 	{
 		Module module = new Module(moddecl, imports, data, protos);
 		module = del(module, new ModuleDel());

@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
 
@@ -50,7 +50,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 		return this.args.stream().map((ai) -> ai.val).collect(Collectors.toList());
 	}
 
-	public List<Arg<? extends Kind>> getArguments(Scope scope)
+	public List<Arg<? extends NonRoleArgKind>> getArguments(Scope scope)
 	{
 		return this.args.stream().map((ai) -> ai.val.toArg()).collect(Collectors.toList());
 	}

@@ -17,7 +17,8 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.ImportKind;
+import org.scribble.sesstype.kind.NonProtocolKind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -65,15 +66,13 @@ public class ModuleDel extends ScribDelBase
 	{
 		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(root.moddecl.getFullModuleName(), lpd.getHeader().getDeclName());
 		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(modname);
-		List<ImportDecl<? extends Kind>> imports = new LinkedList<>();
+		List<ImportDecl<? extends ImportKind>> imports = new LinkedList<>();
 		for (GProtocolName gpn : deps.keySet())
 		{
 			for (Role role : deps.get(gpn))
 			{
-				//LProtocolName targetfullname = Projector.projectFullProtocolName(gpn, role);
 				LProtocolName targetsimpname = Projector.projectSimpleProtocolName(gpn.getSimpleName(), role);
 				ModuleNameNode targetmodname = Projector.makeProjectedModuleNameNode(gpn.getPrefix(), targetsimpname);
-				//if (!targetfullname.getPrefix().equals(modname.toName()))
 				if (!targetmodname.toName().equals(modname.toName()))  // Self dependency -- each projected local is in its own module now, so can compare module names
 				{
 					imports.add(AstFactoryImpl.FACTORY.ImportModule(targetmodname, null));
@@ -81,7 +80,7 @@ public class ModuleDel extends ScribDelBase
 			}
 		}
 		
-		List<NonProtocolDecl<? extends Kind>> data = new LinkedList<>(root.data);  // FIXME: copy?  // FIXME: only project the dependencies
+		List<NonProtocolDecl<? extends NonProtocolKind>> data = new LinkedList<>(root.data);  // FIXME: copy?  // FIXME: only project the dependencies
 		List<ProtocolDecl<? extends ProtocolKind>> protos = Arrays.asList(lpd);
 		return AstFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}

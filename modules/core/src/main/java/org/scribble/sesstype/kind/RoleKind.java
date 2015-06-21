@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class RoleKind extends AbstractKind
+public class RoleKind extends AbstractKind implements ParamKind
 {
 	public static final RoleKind KIND = new RoleKind();
 	

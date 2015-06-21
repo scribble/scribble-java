@@ -2,14 +2,14 @@ package org.scribble.ast;
 
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.ParamKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.AstVisitor;
 
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
 // RoleKind or (NonRole)ParamKind
-public abstract class HeaderParamDecl<K extends Kind> extends NameDeclNode<K>
+public abstract class HeaderParamDecl<K extends ParamKind> extends NameDeclNode<K>
 {
 	protected HeaderParamDecl(SimpleNameNode<K> name)
 	{

@@ -4,15 +4,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.PayloadTypeKind;
 import org.scribble.sesstype.name.PayloadType;
 
 public class Payload
 {
 	public static final Payload EMPTY_PAYLOAD = new Payload(Collections.emptyList());
 	
-	public final List<PayloadType<? extends Kind>> elems;
+	public final List<PayloadType<? extends PayloadTypeKind>> elems;
 	
-	public Payload(List<PayloadType<? extends Kind>> payload)
+	public Payload(List<PayloadType<? extends PayloadTypeKind>> payload)
 	{
 		this.elems = payload;
 	}

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.PayloadTypeKind;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.AstVisitor;
 
@@ -43,7 +43,7 @@ public class PayloadElemList extends ScribNodeBase
 
 	public Payload toPayload()
 	{
-		List<PayloadType<? extends Kind>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
+		List<PayloadType<? extends PayloadTypeKind>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
 		return new Payload(pts);
 	}
 

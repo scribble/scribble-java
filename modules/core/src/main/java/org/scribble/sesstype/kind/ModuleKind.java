@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class ModuleKind extends AbstractKind
+public class ModuleKind extends AbstractKind implements ImportKind
 {
 	public static final ModuleKind KIND = new ModuleKind();
 	

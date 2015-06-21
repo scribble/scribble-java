@@ -5,16 +5,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.ImportDecl;
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ImportDecl;
 import org.scribble.ast.Module;
 import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.ProtocolDecl;
-import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
+import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.util.Util;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.ImportKind;
+import org.scribble.sesstype.kind.NonProtocolKind;
 import org.scribble.sesstype.kind.ProtocolKind;
 
 public class AntlrModule
@@ -24,20 +25,22 @@ public class AntlrModule
 	public static Module parseModule(ScribbleParser parser, CommonTree ct)
 	{
 		ModuleDecl md = (ModuleDecl) parser.parse(getModuleDeclChild(ct));
-		List<ImportDecl<? extends Kind>> ids = new LinkedList<>();
-		List<NonProtocolDecl<? extends Kind>> ptds = new LinkedList<>();
+		List<ImportDecl<? extends ImportKind>> ids = new LinkedList<>();
+		List<NonProtocolDecl<? extends NonProtocolKind>> ptds = new LinkedList<>();
 		//List<AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>>>
 		List<ProtocolDecl<? extends ProtocolKind>>
 				pds = new LinkedList<>();
 		for (CommonTree id : getImportDeclChildren(ct))
 		{
-			ids.add((ImportDecl<? extends Kind>) parser.parse(id));
+			@SuppressWarnings("unchecked")
+			ImportDecl<? extends ImportKind> tmp = (ImportDecl<? extends ImportKind>) parser.parse(id);
+			ids.add(tmp);
 		}
-		//for (CommonTree ptd : getPayloadTypeDeclChildren(ct))
 		for (CommonTree ptd : getDataTypeDeclChildren(ct))
 		{
-			//ptds.add((PayloadTypeDecl) parser.parse(ptd));
-			ptds.add((NonProtocolDecl<? extends Kind>) parser.parse(ptd));
+			@SuppressWarnings("unchecked")
+			NonProtocolDecl<? extends NonProtocolKind> tmp = (NonProtocolDecl<? extends NonProtocolKind>) parser.parse(ptd);
+			ptds.add(tmp);
 		}
 		for (CommonTree pd : getProtocolDeclChildren(ct))
 		{

@@ -1,12 +1,12 @@
 package org.scribble.ast;
 
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.ImportKind;
 import org.scribble.sesstype.name.Name;
 
 
 
 // TODO: factor out stuff from ImportModule and ImportMember into here, e.g. alias/name
-public abstract class ImportDecl<K extends Kind> extends ScribNodeBase//, ModuleMember //implements NameDeclaration 
+public abstract class ImportDecl<K extends ImportKind> extends ScribNodeBase//, ModuleMember //implements NameDeclaration 
 {
 	protected ImportDecl()
 	{

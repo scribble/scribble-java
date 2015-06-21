@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class DataTypeKind extends AbstractKind implements PayloadTypeKind
+public class DataTypeKind extends AbstractKind implements PayloadTypeKind, ImportKind, ModuleMemberKind
 {
 	public static final DataTypeKind KIND = new DataTypeKind();
 	

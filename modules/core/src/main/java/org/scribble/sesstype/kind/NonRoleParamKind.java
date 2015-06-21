@@ -2,7 +2,7 @@ package org.scribble.sesstype.kind;
 
 
 // Non-role params
-public interface NonRoleParamKind extends NonRoleArgKind
+public interface NonRoleParamKind extends NonRoleArgKind, ParamKind
 {
 
 }

@@ -12,9 +12,8 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.Role;
@@ -23,9 +22,9 @@ public class Substitutor extends AstVisitor
 {
 	private final Map<Role, RoleNode> rolemap;
 	//private final Map<Argument, ArgumentNode> argmap;
-	private final Map<Arg<? extends Kind>, NonRoleArgNode> argmap;
+	private final Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap;
 
-	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Arg<? extends Kind>, NonRoleArgNode> argmap)
+	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap)
 	{
 		super(job);
 		this.rolemap = rolemap;
