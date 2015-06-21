@@ -5,11 +5,12 @@ import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.AmbigKind;
+import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.AmbigName;
 import org.scribble.sesstype.name.PayloadType;
 
-// Primitive payload type or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
+// Primitive payload type, MessageSigName or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
 public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements  MessageNode, PayloadElemNameNode
 {
@@ -25,7 +26,7 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements  Message
 	}
 	
 	@Override
-	public Arg<? extends Kind> toArg()
+	public Arg<? extends NonRoleArgKind> toArg()
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
 	}

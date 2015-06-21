@@ -2,7 +2,7 @@ package org.scribble.sesstype.kind;
 
 import java.io.Serializable;
 
-public class OpKind extends Kind implements Serializable
+public class OpKind extends AbstractKind implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -30,6 +30,12 @@ public class OpKind extends Kind implements Serializable
 		{
 			return false;
 		}
-		return true;
+		return ((OpKind) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof OpKind;
 	}
 }

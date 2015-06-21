@@ -1,7 +1,6 @@
 package org.scribble.sesstype.name;
 
 import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.SigKind;
 
 
@@ -34,7 +33,7 @@ public class MessageSigName extends MemberName<SigKind> implements Message, Mess
 	}
 
 	@Override
-	public Kind getKind()
+	public SigKind getKind()
 	{
 		return SigKind.KIND;  // Same as this.kind
 	}

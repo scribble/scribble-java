@@ -1,7 +1,7 @@
 package org.scribble.ast;
 
 import org.scribble.sesstype.Arg;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleArgKind;
 
 
 // sig or payloadtype kinds that can be used as do arg vals, cf. RoleNode
@@ -31,5 +31,5 @@ public interface NonRoleArgNode extends DoArgNode
 		return false;
 	}
 	
-	Arg<? extends Kind> toArg();
+	Arg<? extends NonRoleArgKind> toArg();
 }

@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.Do;
-import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
+import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScopedNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ModuleDel;
@@ -21,6 +21,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.ProtocolName;
@@ -235,7 +236,7 @@ public abstract class SubprotocolVisitor extends AstVisitor
 				pd = getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 		List<Role> roleparams = pd.header.roledecls.getRoles();
 		//List<Parameter> argparams = pd.header.paramdecls.getParameters();
-		List<Name<Kind>> argparams = pd.header.paramdecls.getParameters();
+		List<Name<NonRoleParamKind>> argparams = pd.header.paramdecls.getParameters();
 		
 		Map<Role, RoleNode> rolemap = rolemaps.peek();
 		Map<Arg<? extends Kind>, NonRoleArgNode> argmap = argmaps.peek();
@@ -250,7 +251,7 @@ public abstract class SubprotocolVisitor extends AstVisitor
 		//Map<Argument<? extends Kind>, ArgumentNode> newargmap = argparams.stream().collect(Collectors.toMap((a) -> (Argument<? extends Kind>) a, (a) -> this.argmaps.get(0).get(argargiter.next())));
 		Map<Arg<? extends Kind>, NonRoleArgNode> newargmap = new HashMap<>();
 		Iterator<NonRoleArgNode> foo = doo.args.getArgumentNodes().iterator();
-		for (Name<Kind> p : argparams)
+		for (Name<NonRoleParamKind> p : argparams)
 		{
 			Arg<? extends Kind> tmp = argargiter.next();
 			NonRoleArgNode a;

@@ -8,6 +8,7 @@ import org.scribble.visit.AstVisitor;
 
 
 // Names that are declared in a protocol header (roles and parameters -- not the protocol name though)
+// RoleKind or (NonRole)ParamKind
 public abstract class HeaderParamDecl<K extends Kind> extends NameDeclNode<K>
 {
 	protected HeaderParamDecl(SimpleNameNode<K> name)

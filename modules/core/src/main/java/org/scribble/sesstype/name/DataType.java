@@ -1,7 +1,6 @@
 package org.scribble.sesstype.name;
 
 import org.scribble.sesstype.kind.DataTypeKind;
-import org.scribble.sesstype.kind.Kind;
 
 
 // Potentially qualified/canonical payload type name; not the AST primitive identifier
@@ -25,7 +24,7 @@ public class DataType extends MemberName<DataTypeKind> implements PayloadType<Da
 	}
 
 	@Override
-	public Kind getKind()
+	public DataTypeKind getKind()
 	{
 		return DataTypeKind.KIND;
 	}

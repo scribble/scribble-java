@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class Local extends ProtocolKind
+public class Local extends AbstractKind implements ProtocolKind
 {
 	public static final Local KIND = new Local();
 	
@@ -26,6 +26,12 @@ public class Local extends ProtocolKind
 		{
 			return false;
 		}
-		return true;
+		return ((Local) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof Local;
 	}
 }

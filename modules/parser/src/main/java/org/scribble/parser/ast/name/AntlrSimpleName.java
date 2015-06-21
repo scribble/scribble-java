@@ -13,9 +13,9 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.OpKind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.kind.SigKind;
@@ -77,7 +77,7 @@ public class AntlrSimpleName
 	}*/
 
 	//public static ParameterNode toParameterNode(CommonTree ct, Kind kind)
-	public static <K extends Kind> NonRoleParamNode<K> toParamNode(K kind, CommonTree ct)
+	public static <K extends NonRoleParamKind> NonRoleParamNode<K> toParamNode(K kind, CommonTree ct)
 	{
 		//return new ParameterNode(getName(ct), kind);
 		//return new ParameterNode(getName(ct));

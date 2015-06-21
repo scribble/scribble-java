@@ -5,12 +5,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.del.ModuleDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleArgKind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
 
@@ -29,7 +30,7 @@ public class NameDisambiguator extends AstVisitor
 	//private Map<Name<? extends Kind>, Kind> params = new HashMap<>();
 	private Set<Role> roles = new HashSet<>();
 
-	private Map<String, Kind> params = new HashMap<>();
+	private Map<String, NonRoleParamKind> params = new HashMap<>();
 
 	public NameDisambiguator(Job job)
 	{
@@ -69,7 +70,7 @@ public class NameDisambiguator extends AstVisitor
 	//public void addParameter(Parameter param)
 	//public void addParameter(Parameter param)
 	//public <K extends Kind> void addParameter(Name<K> param, K kind)
-	public void addParameter(Name<? extends Kind> param, Kind kind)
+	public void addParameter(Name<? extends NonRoleParamKind> param, NonRoleParamKind kind)
 	{
 		//this.params.put(param.toString(), param.getKindEnum());
 		//this.params.add(param);
@@ -88,14 +89,14 @@ public class NameDisambiguator extends AstVisitor
 	
 	// name is a simple name (compound names are not ambiguous)
 	//public boolean isBoundParameter(IName name)
-	public boolean isBoundParameter(Name<? extends Kind> name)
+	public boolean isBoundParameter(Name<? extends NonRoleArgKind> name)  // ArgKind allows AmbigNames
 	{
 		return this.params.containsKey(name.toString());
 		//return this.params.containsKey(name);
 	}
 
 	//public KindEnum getParameterKind(IName name)
-	public Kind getParameterKind(Name<? extends Kind> name)
+	public NonRoleParamKind getParameterKind(Name<? extends NonRoleArgKind> name)  // ArgKind allows AmbigNames
 	{
 		return this.params.get(name.toString());
 		//return this.params.get(name);

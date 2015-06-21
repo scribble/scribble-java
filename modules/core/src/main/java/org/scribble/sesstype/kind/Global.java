@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class Global extends ProtocolKind
+public class Global extends AbstractKind implements ProtocolKind
 {
 	public static final Global KIND = new Global();
 	
@@ -26,6 +26,12 @@ public class Global extends ProtocolKind
 		{
 			return false;
 		}
-		return true;
+		return ((Global) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof Global;
 	}
 }

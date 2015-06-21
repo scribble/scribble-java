@@ -40,6 +40,7 @@ import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.ProtocolKind;
 
 public interface AstFactory
@@ -65,8 +66,8 @@ public interface AstFactory
 
 	RoleDeclList RoleDeclList(List<RoleDecl> rds);
 	RoleDecl RoleDecl(RoleNode namenode);
-	NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<Kind>> pds);
-	<K extends Kind> NonRoleParamDecl<K> ParamDecl(K kind, NonRoleParamNode<K> namenode);
+	NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> pds);
+	<K extends NonRoleParamKind> NonRoleParamDecl<K> ParamDecl(K kind, NonRoleParamNode<K> namenode);
 	
 	GProtocolDef GProtocolDefinition(GProtocolBlock block);
 	GProtocolBlock GProtocolBlock(GInteractionSeq gis);
@@ -87,7 +88,7 @@ public interface AstFactory
 	<K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind, String... elems);
 	
 	AmbigNameNode AmbiguousNameNode(String identifier);
-	<K extends Kind> NonRoleParamNode<K> NonRoleParamNode(K kind, String identifier);
+	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(K kind, String identifier);
 
 	LProtocolDecl LProtocolDecl(LProtocolHeader header, LProtocolDef def);
 	LProtocolHeader LProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);

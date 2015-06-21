@@ -1,6 +1,8 @@
 package org.scribble.sesstype.kind;
 
-public class SigKind extends Kind
+
+// Following sesstype.Arg hierarchy
+public class SigKind extends AbstractKind implements NonRoleParamKind//ArgKind
 {
 	public static final SigKind KIND = new SigKind();
 	
@@ -32,6 +34,12 @@ public class SigKind extends Kind
 		{
 			return false;
 		}
-		return true;
+		return ((SigKind) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof SigKind;
 	}
 }

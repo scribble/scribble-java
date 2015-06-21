@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.del.ScribDel;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
 
-public class NonRoleParamDeclList extends HeaderParamDeclList<Kind>
+public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 {
-	public NonRoleParamDeclList(List<NonRoleParamDecl<Kind>> decls)
+	public NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> decls)
 	{
 		super(decls);
 	}
@@ -22,7 +22,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<Kind>
 	}
 
 	@Override
-	protected NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<Kind>> decls)
+	protected NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
 	{
 		ScribDel del = del();
 		NonRoleParamDeclList rdl = new NonRoleParamDeclList(getParamDecls());
@@ -30,9 +30,9 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<Kind>
 		return rdl;
 	}
 
-	public List<NonRoleParamDecl<Kind>> getParamDecls()
+	public List<NonRoleParamDecl<NonRoleParamKind>> getParamDecls()
 	{
-		return this.decls.stream().map((d) -> (NonRoleParamDecl<Kind>) d).collect(Collectors.toList());
+		return this.decls.stream().map((d) -> (NonRoleParamDecl<NonRoleParamKind>) d).collect(Collectors.toList());
 	}
 		
 	// FIXME: move to delegate?
@@ -42,7 +42,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<Kind>
 		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(getParamDecls());
 	}
 
-	public List<Name<Kind>> getParameters()
+	public List<Name<NonRoleParamKind>> getParameters()
 	{
 		return this.decls.stream().map((decl) -> decl.getDeclName()).collect(Collectors.toList());
 	}

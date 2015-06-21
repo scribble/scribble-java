@@ -2,9 +2,9 @@ package org.scribble.visit;
 
 import java.util.Map;
 
-import org.scribble.ast.NonRoleArgNode;
-import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.MessageSigNode;
+import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.qualified.DataTypeNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
@@ -12,8 +12,10 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Arg;
+import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.Role;
 
@@ -51,7 +53,7 @@ public class Substitutor extends AstVisitor
 	}*/
 
 	//public ArgumentNode getArgumentSubstitution(Argument arg)
-	public <K extends Kind> NonRoleArgNode getArgumentSubstitution(Arg<K> arg)
+	public <K extends NonRoleArgKind> NonRoleArgNode getArgumentSubstitution(Arg<K> arg)
 	{
 		NonRoleArgNode an = (NonRoleArgNode) this.argmap.get(arg);
 		if (an.isMessageSigNode())
@@ -73,7 +75,7 @@ public class Substitutor extends AstVisitor
 		else if (an.isParamNode())
 		{
 			//return Substitutor.copyParameterNode((ParameterNode<K>) an);
-			NonRoleParamNode<K> pn = (NonRoleParamNode<K>) an;
+			NonRoleParamNode<NonRoleParamKind> pn = (NonRoleParamNode<NonRoleParamKind>) an;
 			return AstFactoryImpl.FACTORY.NonRoleParamNode(pn.kind, pn.getIdentifier());
 		}
 		else

@@ -73,6 +73,7 @@ import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.kind.OpKind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.kind.SigKind;
@@ -182,7 +183,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<Kind>> pds)
+	public NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> pds)
 	{
 		NonRoleParamDeclList pdl = new NonRoleParamDeclList(pds);
 		pdl = del(pdl, createDefaultDelegate());
@@ -190,7 +191,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public <K extends Kind> NonRoleParamDecl<K> ParamDecl(K kind, NonRoleParamNode<K> namenode)
+	public <K extends NonRoleParamKind> NonRoleParamDecl<K> ParamDecl(K kind, NonRoleParamNode<K> namenode)
 	{
 		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(kind, namenode);
 		pd = del(pd, new ParamDeclDel());
@@ -369,7 +370,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public <K extends Kind> NonRoleParamNode<K> NonRoleParamNode(K kind, String identifier)
+	public <K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(K kind, String identifier)
 	{
 		NonRoleParamNode<K> pn = new NonRoleParamNode<K>(kind, identifier);
 		pn = del(pn, new ParamNodeDel());

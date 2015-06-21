@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class AmbigKind extends Kind
+public class AmbigKind extends AbstractKind implements NonRoleArgKind
 {
 	public static final AmbigKind KIND = new AmbigKind();
 	
@@ -26,6 +26,12 @@ public class AmbigKind extends Kind
 		{
 			return false;
 		}
-		return true;
+		return ((AmbigKind) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof AmbigKind;
 	}
 }

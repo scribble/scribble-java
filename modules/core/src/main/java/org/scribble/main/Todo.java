@@ -1,5 +1,8 @@
 package org.scribble.main;
 
+	// self comm (wf, projection)
+	// multicast (enforce sending same value -- can "compile" to assertions for separate ops)
+
 	// move roledecllist etc projection to dels
 
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B })

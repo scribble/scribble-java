@@ -8,6 +8,8 @@ import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.AstVisitor;
 
+
+// RoleKind or (NonRole)ParamKind
 public abstract class HeaderParamDeclList<K extends Kind> extends ScribNodeBase 
 {
 	public final List<HeaderParamDecl<K>> decls;  // Not List<? extends HeaderParamDecl<T, K>> because ParamDeclList contains mixed kinds

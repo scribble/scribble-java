@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class PackageKind extends Kind
+public class PackageKind extends AbstractKind
 {
 	public static final PackageKind KIND = new PackageKind();
 	
@@ -26,6 +26,12 @@ public class PackageKind extends Kind
 		{
 			return false;
 		}
-		return true;
+		return ((PackageKind) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof PackageKind;
 	}
 }

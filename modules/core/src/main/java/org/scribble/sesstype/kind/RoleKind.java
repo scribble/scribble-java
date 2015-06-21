@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class RoleKind extends Kind
+public class RoleKind extends AbstractKind
 {
 	public static final RoleKind KIND = new RoleKind();
 	
@@ -26,6 +26,12 @@ public class RoleKind extends Kind
 		{
 			return false;
 		}
-		return true;
+		return ((RoleKind) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof RoleKind;
 	}
 }

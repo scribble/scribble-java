@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class ScopeKind extends Kind
+public class ScopeKind extends AbstractKind
 {
 	public static final ScopeKind KIND = new ScopeKind();
 	
@@ -26,6 +26,12 @@ public class ScopeKind extends Kind
 		{
 			return false;
 		}
-		return true;
+		return ((ScopeKind) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof ScopeKind;
 	}
 }

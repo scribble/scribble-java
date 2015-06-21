@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class DataTypeKind extends Kind
+public class DataTypeKind extends AbstractKind implements PayloadTypeKind
 {
 	public static final DataTypeKind KIND = new DataTypeKind();
 	
@@ -26,6 +26,12 @@ public class DataTypeKind extends Kind
 		{
 			return false;
 		}
-		return true;
+		return ((DataTypeKind) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof DataTypeKind;
 	}
 }

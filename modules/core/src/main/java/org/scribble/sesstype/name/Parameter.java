@@ -1,8 +1,7 @@
 package org.scribble.sesstype.name;
 
 import org.scribble.sesstype.Message;
-import org.scribble.sesstype.ScopedMessage;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleArgKind;
 
 
 // A "Scribble generics" parameter -- FIXME: deprecate, parameter is a syntactic category, wrt. typing it should just be a message signature, payload, etc.
@@ -46,7 +45,7 @@ public class Parameter extends SimpleName implements Message//, PayloadType
 	}
 
 	@Override
-	public Kind getKind()
+	public NonRoleArgKind getKind()
 	{
 		// TODO Auto-generated method stub
 		return null;

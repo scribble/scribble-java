@@ -1,6 +1,6 @@
 package org.scribble.sesstype.kind;
 
-public class RecVarKind extends Kind
+public class RecVarKind extends AbstractKind
 {
 	public static final RecVarKind KIND = new RecVarKind();
 	
@@ -26,6 +26,12 @@ public class RecVarKind extends Kind
 		{
 			return false;
 		}
-		return true;
+		return ((RecVarKind) o).canEqual(this);
+	}
+	
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof RecVarKind;
 	}
 }

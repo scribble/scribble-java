@@ -10,7 +10,7 @@ import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.util.Util;
-import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 
 public class AntlrNonRoleParamDeclList
 {
@@ -28,7 +28,7 @@ public class AntlrNonRoleParamDeclList
 				//List<ParamDecl> pds = new LinkedList<>();
 				//List<HeaderParamDecl<Name<Kind>, Kind>> pds = new LinkedList<>();
 				//List<HeaderParamDecl<Kind>> pds = new LinkedList<>();
-				List<NonRoleParamDecl<Kind>> pds = new LinkedList<>();
+				List<NonRoleParamDecl<NonRoleParamKind>> pds = new LinkedList<>();
 				for (CommonTree pd : getParamDeclChildren(ct))
 				{
 					pds.add((NonRoleParamDecl) parser.parse(pd));
