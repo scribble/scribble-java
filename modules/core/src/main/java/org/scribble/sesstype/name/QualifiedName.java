@@ -8,7 +8,6 @@ public abstract class QualifiedName<K extends Kind> extends Name<K>
 {
 	private static final long serialVersionUID = 1L;
 
-	//public QualifiedName(KindEnum kind, String... elems)
 	public QualifiedName(K kind, String... elems)
 	{
 		super(kind, elems);

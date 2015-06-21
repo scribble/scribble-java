@@ -5,25 +5,12 @@ import org.scribble.sesstype.kind.SigKind;
 
 
 // The name of a declared (imported) message signature member
-//public class MessageSignatureName extends MemberName implements Message
-//public class MessageSignatureName extends Name<SigKind> implements Message
 public class MessageSigName extends MemberName<SigKind> implements Message, MessageId
 {
 	private static final long serialVersionUID = 1L;
 	
-	//public final Scope scope;
-
-	/*public MessageSignatureName(ModuleName modname, String membname)
-	{
-		super(KindEnum.TYPE, modname, membname);
-	}*/
-	
-	//public MessageSignatureName(Scope scope, MessageSignatureName simplename)  // FIXME: could make a compound name with scope built into it
 	public MessageSigName(ModuleName modname, MessageSigName simplename)
 	{
-		/*super(SigKind.KIND, simplename);
-		this.scope = scope;*/
-		//super(SigKind.KIND, Name.compileElements(scope.getElements(), simplename.getLastElement()));
 		super(SigKind.KIND, modname, simplename);
 	}
 
@@ -38,13 +25,6 @@ public class MessageSigName extends MemberName<SigKind> implements Message, Mess
 		return SigKind.KIND;  // Same as this.kind
 	}
 
-	/*@Override
-	public Name<? extends Kind> getPrefix()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-
 	@Override
 	public MessageSigName getSimpleName()
 	{
@@ -54,14 +34,7 @@ public class MessageSigName extends MemberName<SigKind> implements Message, Mess
 	@Override 
 	public MessageId getId()
 	{
-		//return getSimpleName();	
 		return this;  // FIXME: should be resolved to a canonical name
-	}
-
-	@Override
-	public boolean isOp()
-	{
-		return false;
 	}
 
 	@Override
@@ -70,28 +43,31 @@ public class MessageSigName extends MemberName<SigKind> implements Message, Mess
 		return true;
 	}
 
-	/*@Override
-	public MessageSignatureName getSimpleName()
+	@Override
+	public boolean equals(Object o)
 	{
-		return new MessageSignatureName(getLastElement());
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof MessageSigName))
+		{
+			return false;
+		}
+		MessageSigName n = (MessageSigName) o;
+		return n.canEqual(this) && super.equals(o);
 	}
 	
-	@Override
-	public boolean isParameter()
+	public boolean canEqual(Object o)
 	{
-		return false;
+		return o instanceof MessageSigName;
 	}
 
 	@Override
-	public ScopedMessage toScopedMessage(Scope scope)
+	public int hashCode()
 	{
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-
-	/*@Override
-	public ScopedMessageSignatureName toScopedMessage(Scope scope)
-	{
-		return new ScopedMessageSignatureName(scope, this.toString());
-	}*/
+		int hash = 2791;
+		hash = 31 * super.hashCode();
+		return hash;
+	}
 }

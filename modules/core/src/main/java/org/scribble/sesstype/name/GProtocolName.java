@@ -22,4 +22,32 @@ public class GProtocolName extends ProtocolName<Global>
 	{
 		return new GProtocolName(getLastElement());
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof GProtocolName))
+		{
+			return false;
+		}
+		GProtocolName n = (GProtocolName) o;
+		return n.canEqual(this) && super.equals(o);
+	}
+	
+	public boolean canEqual(Object o)
+	{
+		return o instanceof GProtocolName;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 2777;
+		hash = 31 * super.hashCode();
+		return hash;
+	}
 }

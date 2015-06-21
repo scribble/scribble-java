@@ -15,25 +15,19 @@ public class ModuleName extends QualifiedName<ModuleKind>
 	
 	protected ModuleName(String... elems)
 	{
-		//super(KindEnum.MODULE, elems);
 		super(ModuleKind.KIND, elems);
 	}
 
-	//public ModuleName(PackageName packname, String modname)
 	public ModuleName(PackageName packname, ModuleName modname)
 	{
-		//super(KindEnum.MODULE, compileModuleName(packname, modname));
 		super(ModuleKind.KIND, compileModuleName(packname, modname));
 	}
 
 	public ModuleName(String modname)
 	{
-		//this(PackageName.EMPTY_PACKAGENAME, modname);
 		super(ModuleKind.KIND, Name.compileElements(PackageName.EMPTY_PACKAGENAME.getElements(), modname));
 	}
 
-	// FIXME: use java.nio.file.Path
-	//public String toPath()
 	public Path toPath()
 	{
 		String[] elems = getElements();
@@ -47,7 +41,6 @@ public class ModuleName extends QualifiedName<ModuleKind>
 	
 	public boolean isSimpleName()
 	{
-		//return !isEmpty() && !isPrefixed();
 		return !isPrefixed();
 	}
 
@@ -67,10 +60,36 @@ public class ModuleName extends QualifiedName<ModuleKind>
 		return getPrefix();
 	}
 	
-	//private static String[] compileModuleName(PackageName packname, String modname)
 	private static String[] compileModuleName(PackageName packname, ModuleName modname)
 	{
-		//return compileElements(packname, modname);
 		return Name.compileElements(packname.getElements(), modname.getLastElement());
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof ModuleName))
+		{
+			return false;
+		}
+		ModuleName n = (ModuleName) o;
+		return n.canEqual(this) && super.equals(o);
+	}
+	
+	public boolean canEqual(Object o)
+	{
+		return o instanceof ModuleName;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 2797;
+		hash = 31 * super.hashCode();
+		return hash;
 	}
 }

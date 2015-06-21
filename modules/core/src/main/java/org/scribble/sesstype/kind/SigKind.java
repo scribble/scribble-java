@@ -11,12 +11,6 @@ public class SigKind extends AbstractKind implements NonRoleParamKind, //ArgKind
 	{
 
 	}
-	
-	/*@Override
-	public String toString()
-	{
-		return "sig";
-	}*/
 
 	@Override
 	public int hashCode()

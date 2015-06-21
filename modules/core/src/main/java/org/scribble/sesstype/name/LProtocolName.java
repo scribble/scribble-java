@@ -22,4 +22,32 @@ public class LProtocolName extends ProtocolName<Local>
 	{
 		return new LProtocolName(getLastElement());
 	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof LProtocolName))
+		{
+			return false;
+		}
+		LProtocolName n = (LProtocolName) o;
+		return n.canEqual(this) && super.equals(o);
+	}
+	
+	public boolean canEqual(Object o)
+	{
+		return o instanceof LProtocolName;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 2789;
+		hash = 31 * super.hashCode();
+		return hash;
+	}
 }

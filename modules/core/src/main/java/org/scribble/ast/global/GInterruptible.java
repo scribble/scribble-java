@@ -3,11 +3,12 @@ package org.scribble.ast.global;
 import java.util.List;
 
 import org.scribble.ast.Interruptible;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.ProtocolBlock;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.SimpleName;
+import org.scribble.sesstype.kind.ScopeKind;
+import org.scribble.sesstype.name.Name;
 
 //public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, GlobalInterrupt> implements GlobalInteractionNode
 public class GInterruptible extends Interruptible<Global> implements GInteractionNode
@@ -42,7 +43,7 @@ public class GInterruptible extends Interruptible<Global> implements GInteractio
 	}
 
 	@Override
-	public SimpleName getScopeElement()
+	public Name<ScopeKind> getScopeElement()
 	{
 		// TODO Auto-generated method stub
 		return null;

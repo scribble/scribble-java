@@ -3,7 +3,6 @@ package org.scribble.sesstype.name;
 import org.scribble.sesstype.kind.ScopeKind;
 
 // Should be a compound name?
-//public class Scope extends Name
 public class Scope extends Name<ScopeKind>
 {
 	private static final long serialVersionUID = 1L;
@@ -13,9 +12,7 @@ public class Scope extends Name<ScopeKind>
 	public static final Scope ROOT_SCOPE = new Scope("__root");
 
 	protected Scope(String... elems)
-	//public Scope(String... elems)  // For runtime sockets
 	{
-		//super(KindEnum.SCOPE, elems);
 		super(ScopeKind.KIND, elems);
 	}
 	
@@ -24,7 +21,6 @@ public class Scope extends Name<ScopeKind>
 		this(new String[] { name });
 	}
 
-	//public Scope(Scope prefix, SimpleName name)
 	public Scope(Scope prefix, Name<ScopeKind> name)
 	{
 		this(compileScope(prefix, name));
@@ -36,14 +32,39 @@ public class Scope extends Name<ScopeKind>
 		return new Scope(getPrefixElements());
 	}
 
-	//public SimpleName getSimpleName()
 	public Scope getSimpleName()
 	{
-		//return new SimpleName(KindEnum.SCOPE, getLastElement());
 		return new Scope(getLastElement());
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof Scope))
+		{
+			return false;
+		}
+		Scope n = (Scope) o;
+		return n.canEqual(this) && super.equals(o);
+	}
 	
-	//private static String[] compileScope(Scope prefix, SimpleName name)
+	public boolean canEqual(Object o)
+	{
+		return o instanceof Scope;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 2833;
+		hash = 31 * super.hashCode();
+		return hash;
+	}
+	
 	private static String[] compileScope(Scope prefix, Name<ScopeKind> name)
 	{
 		String[] tmp = prefix.getElements();

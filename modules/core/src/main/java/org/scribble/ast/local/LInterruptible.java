@@ -3,11 +3,12 @@ package org.scribble.ast.local;
 import java.util.List;
 
 import org.scribble.ast.Interruptible;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.ProtocolBlock;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.SimpleName;
+import org.scribble.sesstype.kind.ScopeKind;
+import org.scribble.sesstype.name.Name;
 
 //public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalInterrupt> implements LocalInteractionNode
 public class LInterruptible extends Interruptible<Local> implements LInteractionNode
@@ -27,7 +28,7 @@ public class LInterruptible extends Interruptible<Local> implements LInteraction
 	}
 
 	@Override
-	public SimpleName getScopeElement()
+	public Name<ScopeKind> getScopeElement()
 	{
 		// TODO Auto-generated method stub
 		return null;
