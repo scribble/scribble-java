@@ -42,7 +42,7 @@ public abstract class SubprotocolVisitor extends ModuleVisitor
 		super(job);
 	}
 	
-	// Doesn't push a subprotocol signature; only records the roles/args -- why? because sigs are based on vals (from the first do), not the root proto params?
+	// Doesn't push a subprotocol signature; only records the roles/args -- why? because sigs are based on vals (from the first do), not the root proto params? -- but it would be fine to use the params?
 	private void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		Map<Role, RoleNode> rolemap =
