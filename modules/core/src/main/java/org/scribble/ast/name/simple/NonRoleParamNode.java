@@ -1,13 +1,14 @@
 package org.scribble.ast.name.simple;
 
 import org.scribble.ast.MessageNode;
+
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.Message;
-import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
@@ -15,9 +16,11 @@ import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.Substitutor;
 
-public class NonRoleParamNode<K extends NonRoleArgKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode
+
+// An unambiguous kinded parameter (ambiguous parameters handled by disambiguation)
+public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode
 {
-	public final K kind;  // AmbiguousNameNode --disamb--> kinded Parameter
+	public final K kind;
 	
 	public NonRoleParamNode(K kind, String identifier)
 	{
@@ -128,7 +131,7 @@ public class NonRoleParamNode<K extends NonRoleArgKind> extends SimpleNameNode<K
 		{
 			return false;
 		}
-		NonRoleParamNode<?> n = (NonRoleParamNode<?>) o;
+		NonRoleParamNode<? extends NonRoleParamKind> n = (NonRoleParamNode<?>) o;
 		return n.canEqual(this) && this.kind.equals(n.kind) && super.equals(o);
 	}
 	

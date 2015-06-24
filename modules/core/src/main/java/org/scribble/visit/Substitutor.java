@@ -21,7 +21,6 @@ import org.scribble.sesstype.name.Role;
 public class Substitutor extends AstVisitor
 {
 	private final Map<Role, RoleNode> rolemap;
-	//private final Map<Argument, ArgumentNode> argmap;
 	private final Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap;
 
 	public Substitutor(Job job, Map<Role, RoleNode> rolemap, Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap)
@@ -32,12 +31,9 @@ public class Substitutor extends AstVisitor
 	}
 	
 	@Override
-	//public ModelNode leave(ModelNode parent, ModelNode child, ModelVisitor nv, ModelNode visited) throws ScribbleException
 	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		//return visited.substituteNames((Substitutor) nv);
 		return visited.substituteNames(this);
-		//return visited.del().substituteNames((Substitutor) nv, visited);
 	}
 
 	public Role getRoleSubstitution(Role role)
@@ -45,20 +41,12 @@ public class Substitutor extends AstVisitor
 		return this.rolemap.get(role).toName();
 	}
 
-	/*public RoleNode getRoleSubstitution(Role role)
-	{
-		RoleNode rn = this.rolemap.get(role);
-		return new RoleNode(rn.toName().toString());
-	}*/
-
-	//public ArgumentNode getArgumentSubstitution(Argument arg)
 	public <K extends NonRoleArgKind> NonRoleArgNode getArgumentSubstitution(Arg<K> arg)
 	{
 		NonRoleArgNode an = (NonRoleArgNode) this.argmap.get(arg);
 		if (an.isMessageSigNode())
 		{
 			MessageSigNode msn = (MessageSigNode) an;
-			//return new MessageSigNode(msn.op, msn.payload);  // FIXME: use factory
 			return (NonRoleArgNode) AstFactoryImpl.FACTORY.MessageSigNode(msn.op, msn.payload);
 		}
 		else if (an.isMessageSigNameNode())
@@ -73,8 +61,7 @@ public class Substitutor extends AstVisitor
 		}
 		else if (an.isParamNode())
 		{
-			//return Substitutor.copyParameterNode((ParameterNode<K>) an);
-			NonRoleParamNode<NonRoleParamKind> pn = (NonRoleParamNode<NonRoleParamKind>) an;
+			NonRoleParamNode<? extends NonRoleParamKind> pn = (NonRoleParamNode<?>) an;
 			return AstFactoryImpl.FACTORY.NonRoleParamNode(pn.kind, pn.getIdentifier());
 		}
 		else
@@ -82,12 +69,4 @@ public class Substitutor extends AstVisitor
 			throw new RuntimeException("TODO: " + arg);
 		}
 	}
-
-	/*private static <K extends Kind> ParameterNode<K> copyParameterNode(ParameterNode<K> an)
-	{
-		ParameterNode<K> pn = an;
-		//return new ParameterNode(null, pn.toName().toString());//, pn.kind);
-		//return (ParameterNode) ModelFactoryImpl.FACTORY.SimpleNameNode(ModelFactory.SIMPLE_NAME.PARAMETER, pn.identifier);
-		return ModelFactoryImpl.FACTORY.ParameterNode(pn.kind, pn.identifier);
-	}*/
 }

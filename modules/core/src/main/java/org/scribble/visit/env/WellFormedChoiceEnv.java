@@ -17,7 +17,6 @@ import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
-import org.scribble.sesstype.name.Scope;
 import org.scribble.util.MessageIdMap;
 import org.scribble.visit.SubprotocolVisitor;
 import org.scribble.visit.WellFormedChoiceChecker;
