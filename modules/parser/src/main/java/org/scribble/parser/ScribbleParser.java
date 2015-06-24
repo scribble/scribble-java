@@ -1,5 +1,9 @@
 package org.scribble.parser;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.antlr.runtime.tree.CommonErrorNode;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.ScribNode;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
@@ -43,6 +47,18 @@ public class ScribbleParser
 
 	public ScribNode parse(CommonTree ct)
 	{
+		if (ct.getChildCount() > 0)  // getChildren returns null instead of empty list 
+		{
+			List<CommonErrorNode> errors = ((List<?>) ct.getChildren()).stream()
+					.filter((c) -> (c instanceof CommonErrorNode))
+					.map((c) -> (CommonErrorNode) c)
+					.collect(Collectors.toList());
+			if (errors.size() > 0)
+			{
+				throw new RuntimeException("Parsing error: " + errors);
+			}
+		}
+		
 		AntlrNodeType type = Util.getAntlrNodeType(ct);
 		switch (type)
 		{

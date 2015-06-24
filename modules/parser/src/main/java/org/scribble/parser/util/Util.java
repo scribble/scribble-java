@@ -80,10 +80,4 @@ public class Util
 			}
 		}
 	}
-
-	/*public static <T1, T2 extends T1> List<T2> listCast(List<? extends T1> list, Function<T1, T2> cast)
-	{
-		//Function<T1, T2> cast = (T1 t1) -> (T2) t1;  // Becomes unchecked cast -- have to supply each specific casting function (or do a manual run-time class check)
-		return list.stream().map(cast).collect(Collectors.toList());
-	}*/
 }

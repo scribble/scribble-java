@@ -17,7 +17,6 @@ public class AntlrGRecursion
 	{
 		RecVarNode recvar = AntlrSimpleName.toRecVarNode(getRecVarChild(ct));
 		GProtocolBlock block = (GProtocolBlock) parser.parse(getBlockChild(ct));
-		//return new GlobalRecursion(lab, block);
 		return AstFactoryImpl.FACTORY.GRecursion(recvar, block);
 	}
 

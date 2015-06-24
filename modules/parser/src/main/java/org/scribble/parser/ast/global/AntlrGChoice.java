@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.global;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
@@ -20,12 +20,8 @@ public class AntlrGChoice
 	public static GChoice parseGChoice(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct));
-		List<GProtocolBlock> blocks = new LinkedList<>();
-		for (CommonTree block : getBlockChildren(ct))
-		{
-			blocks.add((GProtocolBlock) parser.parse(block));
-		}
-		//return new GlobalChoice(subj, blocks);
+		List<GProtocolBlock> blocks =
+				getBlockChildren(ct).stream().map((b) -> (GProtocolBlock) parser.parse(b)).collect(Collectors.toList());
 		return AstFactoryImpl.FACTORY.GChoice(subj, blocks);
 	}
 
@@ -36,7 +32,7 @@ public class AntlrGChoice
 
 	public static List<CommonTree> getBlockChildren(CommonTree ct)
 	{
-		List<? extends Object> children = ct.getChildren();
+		List<?> children = ct.getChildren();
 		return Util.toCommonTreeList(children.subList(BLOCK_CHILDREN_START_INDEX, children.size()));
 	}
 }

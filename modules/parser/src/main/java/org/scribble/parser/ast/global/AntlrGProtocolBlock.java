@@ -13,7 +13,6 @@ public class AntlrGProtocolBlock
 	public static GProtocolBlock parseGProtocolBlock(ScribbleParser parser, CommonTree ct)
 	{
 		GInteractionSeq gis = (GInteractionSeq) parser.parse(getInteractionSequenceChild(ct));
-		//return new GlobalProtocolBlock(gis);
 		return AstFactoryImpl.FACTORY.GProtocolBlock(gis);
 	}
 

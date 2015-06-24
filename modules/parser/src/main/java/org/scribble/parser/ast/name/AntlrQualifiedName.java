@@ -7,6 +7,7 @@ import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
+import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ModuleKind;
@@ -27,32 +28,18 @@ public class AntlrQualifiedName
 	
 	public static ModuleNameNode toModuleNameNode(CommonTree ct)
 	{
-		//return new ModuleNameNode(getElements(ct));
-		//return (ModuleNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MODULE, getElements(ct));
 		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, getElements(ct));
 	}
 
 	public static DataTypeNameNode toDataTypeNameNode(CommonTree ct)
 	{
-		//return new PayloadTypeNameNode(getElements(ct));
-		//return (DataTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PAYLOADTYPE, getElements(ct));
-		//return (DataTypeNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PAYLOADTYPE, getElements(ct));
-		throw new RuntimeException("TODO: " + ct);
+		return (DataTypeNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, getElements(ct));
 	}
 
 	public static MessageSigNameNode toMessageSigNameNode(CommonTree ct)
 	{
-		//return new MessageSignatureNameNode(getElements(ct));
-		//return (MessageSignatureNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.MESSAGESIGNATURE, getElements(ct));
 		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, getElements(ct));
 	}
-
-	/*public static ProtocolNameNode toProtocolNameNode(CommonTree ct)
-	{
-		//return new ProtocolNameNode(getElements(ct));
-		//return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ModelFactory.QUALIFIED_NAME.PROTOCOL, getElements(ct));
-		return (ProtocolNameNode) ModelFactoryImpl.FACTORY.QualifiedNameNode(ProtocolKind.KIND, getElements(ct));
-	}*/
 
 	public static GProtocolNameNode toGProtocolNameNode(CommonTree ct)
 	{

@@ -1,10 +1,9 @@
 package org.scribble.parser.ast.global;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GParallel;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.parser.ScribbleParser;
@@ -14,13 +13,9 @@ public class AntlrGParallel
 {
 	public static GParallel parseGParallel(ScribbleParser parser, CommonTree ct)
 	{
-		List<GProtocolBlock> blocks = new LinkedList<>();
-		for (CommonTree block : getBlockChildren(ct))
-		{
-			blocks.add((GProtocolBlock) parser.parse(block));
-		}
+		List<GProtocolBlock> blocks = 
+				getBlockChildren(ct).stream().map((b) -> (GProtocolBlock) parser.parse(b)).collect(Collectors.toList());
 		return new GParallel(blocks);
-		//return ModelFactoryImpl.FACTORY.G;
 	}
 
 	public static final List<CommonTree> getBlockChildren(CommonTree ct)

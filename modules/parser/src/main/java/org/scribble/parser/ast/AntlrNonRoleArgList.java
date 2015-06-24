@@ -9,9 +9,12 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleArg;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleArgNode;
+import org.scribble.ast.name.qualified.DataTypeNameNode;
+import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
+import org.scribble.parser.ast.name.AntlrQualifiedName;
 import org.scribble.parser.util.Util;
 
 public class AntlrNonRoleArgList
@@ -32,13 +35,35 @@ public class AntlrNonRoleArgList
 			NonRoleArgNode arg = (NonRoleArgNode) parser.parse(ct);
 			return AstFactoryImpl.FACTORY.NonRoleArg(arg);
 		}
-		else if (type == AntlrNodeType.AMBIGUOUSNAME)
-		{
-			return AstFactoryImpl.FACTORY.NonRoleArg(AntlrAmbigName.toAmbigNameNode(ct));
-		}
 		else
 		{
-			throw new RuntimeException("Shouldn't get in here: " + type);
+			/* // Parser isn't working to distinguish simple from qualified names (similarly to PayloadElemList)
+			if (type == AntlrNodeType.AMBIGUOUSNAME)
+			{
+				return AstFactoryImpl.FACTORY.NonRoleArg(AntlrAmbigName.toAmbigNameNode(ct));
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + type);
+			}*/
+			if (type == AntlrNodeType.QUALIFIEDNAME)
+			{
+				if (ct.getChildCount() > 1)
+				{
+					DataTypeNameNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
+					return AstFactoryImpl.FACTORY.NonRoleArg(dt);
+				}
+				else
+				{
+					// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
+					AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct);
+					return AstFactoryImpl.FACTORY.NonRoleArg(an);
+				}
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + ct);
+			}
 		}
 	}
 

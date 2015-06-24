@@ -1,8 +1,8 @@
 package org.scribble.parser.ast.global;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
@@ -15,21 +15,15 @@ public class AntlrGInteractionSequence
 {
 	public static GInteractionSeq parseGInteractionSequence(ScribbleParser parser, CommonTree ct)
 	{
-		List<GInteractionNode> gis = new LinkedList<>();
-		for (CommonTree gi : getInteractionChildren(ct))
-		{
-			gis.add((GInteractionNode) parser.parse(gi));
-		}
-		//return new GlobalInteractionSequence(gis);
+		List<GInteractionNode> gis =
+				getInteractionChildren(ct).stream().map((gi) -> (GInteractionNode) parser.parse(gi)).collect(Collectors.toList());
 		return AstFactoryImpl.FACTORY.GInteractionSequence(gis);
 	}
 
 	public static List<CommonTree> getInteractionChildren(CommonTree ct)
 	{
-		if (ct.getChildCount() == 0)
-		{
-			return Collections.emptyList();
-		}
-		return Util.toCommonTreeList(ct.getChildren());
+		return (ct.getChildCount() == 0)
+				? Collections.emptyList()
+				: Util.toCommonTreeList(ct.getChildren());
 	}
 }

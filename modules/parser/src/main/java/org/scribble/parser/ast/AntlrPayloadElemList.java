@@ -29,6 +29,7 @@ public class AntlrPayloadElemList
 	private static PayloadElem parsePayloadElem(CommonTree ct)
 	{
 		AntlrNodeType type = Util.getAntlrNodeType(ct);
+		/*// Parser isn't working to distinguish simple from qualified names (cf. Scribble.g payloadelement)
 		if (type == AntlrNodeType.QUALIFIEDNAME)
 		{
 			DataTypeNameNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
@@ -39,6 +40,20 @@ public class AntlrPayloadElemList
 			// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
 			AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct);
 			return AstFactoryImpl.FACTORY.PayloadElement(an);
+		}*/
+		if (type == AntlrNodeType.QUALIFIEDNAME)
+		{
+			if (ct.getChildCount() > 1)
+			{
+				DataTypeNameNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
+				return AstFactoryImpl.FACTORY.PayloadElement(dt);
+			}
+			else
+			{
+				// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
+				AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct);
+				return AstFactoryImpl.FACTORY.PayloadElement(an);
+			}
 		}
 		else
 		{

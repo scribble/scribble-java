@@ -3,9 +3,6 @@
  */
 
 
-// If using Eclipse, be aware of Eclipse's "cached" compilation of lexer/parser classes not reflecting changes (need to "push" a recompilation by changing a Java source)
-
-
 grammar Scribble2;
 
 
@@ -148,15 +145,11 @@ tokens
 
 @header
 {
-	//package scribble2.parser;
-	//package org.scribble2.parser.antlr;  // FIXME
 	package org.scribble.parser.antlr;
 }
 
 @lexer::header
 {
-	//package scribble2.parser;
-	//package org.scribble2.parser.antlr;
 	package org.scribble.parser.antlr;
 }
 
@@ -226,7 +219,6 @@ LINE_COMMENT:
 IDENTIFIER:
 	(LETTER | DIGIT | UNDERSCORE)*
 ;
-	//(LETTER | DIGIT) (LETTER | DIGIT | UNDERSCORE)*
 
 fragment SYMBOL:
 	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#'
@@ -234,8 +226,8 @@ fragment SYMBOL:
 	'&' | '?' | '!'	| UNDERSCORE
 ;
 
-// Comes after SYMBOL due to an ANTLR syntax highlighting issue
-// involving quotes.
+// Comes after SYMBOL due to an ANTLR syntax highlighting issue involving
+// quotes.
 // Parser doesn't work without quotes here (e.g. if inlined into parser rules)
 EXTIDENTIFIER:
   '\"' (LETTER | DIGIT | SYMBOL)* '\"'
@@ -314,7 +306,6 @@ module:
 	moduledecl importdecl* datatypedecl* protocoldecl*
 ->
 	^(MODULE moduledecl importdecl* datatypedecl* protocoldecl*)
-	//^(MODULE moduledecl protocoldecl*)
 ;
 
 
@@ -408,28 +399,17 @@ messagesignature:
 ;
 
 payload:
-/*	->
-	^()
-|
-	payloadelement (',' payloadelement)*
-	->
-	^(payloadelement+)*/
-/*	(payloadelement)*
-->
-	^(PAYLOAD payloadelement*)*/
 	payloadelement (',' payloadelement)*
 ->
 	^(PAYLOAD payloadelement+)
 ;
 
-// Payload type names need disambiguation pass
+// Payload type names need disambiguation pass (also do args)
 payloadelement:
-	// qualified payloadtypename subsumes simplename case
-	ambiguousname
-/*	payloadtypename  // this case subsumes the parametername case
-|
-	parametername
-*/
+/*	ambiguousname  // Parser doesn't distinguish simple from qualified properly, even with backtrack
+|*/
+	qualifiedname  // This case subsumes simple names  // FIXME: ambiguousqualifiedname (or ambiguousname should just be qualified)
+//|
 ;
 
 
@@ -450,14 +430,11 @@ globalprotocoldecl:
 	 globalprotocolheader globalprotocoldefinition
 	->
 	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition)
-	//^(GLOBALPROTOCOLDECL globalprotocolheader)
 ;
 
 globalprotocolheader:
 	GLOBALKW PROTOCOLKW simpleprotocolname roledecllist
 	->
-	//simpleprotocolname EMPTY_PARAMETERDECLLIST roledecllist
-	//^(GLOBALPROTOCOLHEADER simpleprotocolname ^() roledecllist)
 	^(GLOBALPROTOCOLHEADER simpleprotocolname ^(PARAMETERDECLLIST) roledecllist)
 |
 	GLOBALKW PROTOCOLKW simpleprotocolname parameterdecllist roledecllist
@@ -548,7 +525,7 @@ globalmessagetransfer:
 message:
 	messagesignature
 |
-	ambiguousname
+	ambiguousname  // FIXME: qualified name
 /*|
 	messagesignaturename  // qualified messagesignaturename subsumes parametername case
 |
@@ -598,7 +575,6 @@ globalparallel:
 globalinterruptible:
 	INTERRUPTIBLEKW globalprotocolblock WITHKW '{' globalinterrupt* '}'
 	->
-	//^(GLOBALINTERRUPTIBLE EMPTY_SCOPENAME globalprotocolblock globalinterrupt*)
 	^(GLOBALINTERRUPTIBLE EMPTY_SCOPENAME globalprotocolblock globalinterrupt*)
 |
 	INTERRUPTIBLEKW scopename globalprotocolblock WITHKW '{' (globalinterrupt)* '}'
@@ -619,24 +595,11 @@ globalinterrupt:
 globaldo:
 	DOKW protocolname roleinstantiationlist ';'
 	->
-	/*//^(GLOBALDO EMPTY_SCOPENAME protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
-	//^(GLOBALDO NO_SCOPE protocolname ^() roleinstantiationlist)*/
-	//^(GLOBALDO NO_SCOPE protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 	^(GLOBALDO protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
 	DOKW protocolname argumentinstantiationlist roleinstantiationlist ';'
 	->
-	////^(GLOBALDO EMPTY_SCOPENAME protocolname argumentinstantiationlist roleinstantiationlist)
-	//^(GLOBALDO NO_SCOPE protocolname argumentinstantiationlist roleinstantiationlist)
 	^(GLOBALDO protocolname argumentinstantiationlist roleinstantiationlist)
-/*|
-	DOKW scopename ':' protocolname roleinstantiationlist ';'
-	->
-	^(GLOBALDO scopename protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
-|
-	DOKW scopename ':' protocolname argumentinstantiationlist roleinstantiationlist ';'
-	->
-	^(GLOBALDO scopename protocolname argumentinstantiationlist roleinstantiationlist)*/
 ;
 
 roleinstantiationlist:
@@ -662,12 +625,10 @@ argumentinstantiation:
 	//message
   // Grammatically same as message, but argument case can also be a payload type
 	messagesignature
-|
-	ambiguousname  // FIXME: can only be simple name
 /*|
-	payloadtypename
+	ambiguousname  // As for payloadelement: parser doesn't distinguish simple from qualified properly, even with backtrack*/
 |
-	parametername  // Overlaps with previous cases*/
+	qualifiedname
 ;
 
 

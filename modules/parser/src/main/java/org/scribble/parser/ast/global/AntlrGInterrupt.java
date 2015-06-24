@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.global;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.MessageNode;
@@ -20,13 +20,9 @@ public class AntlrGInterrupt
 	public static GInterrupt parseGInterrupt(ScribbleParser parser, CommonTree ct)
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
-		List<MessageNode> msgs = new LinkedList<>();
-		for (CommonTree msg : getMessageChildren(ct))
-		{
-			msgs.add(AntlrGMessageTransfer.parseMessage(parser, msg));
-		}
-		//return new GlobalInterrupt(ct, src, msgs, Collections.<Role>emptyList());  // Destination roles set by later pass
-		return new GInterrupt(src, msgs);
+		List<MessageNode> msgs =
+				getMessageChildren(ct).stream().map((msg) -> AntlrGMessageTransfer.parseMessage(parser, msg)).collect(Collectors.toList());
+		return new GInterrupt(src, msgs);  // Destination roles set by later pass
 	}
 
 	public static CommonTree getSourceChild(CommonTree ct)

@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.global;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GInterrupt;
@@ -14,8 +14,6 @@ import org.scribble.parser.util.Util;
 
 public class AntlrGInterruptible
 {
-	//public static final String NO_SCOPE = "NO_SCOPE";
-
 	public static final int SCOPE_CHILD_INDEX = 0;
 	public static final int BLOCK_CHILD_INDEX = 1;
 	public static final int INTERRUPT_CHILDREN_START_INDEX = 2;
@@ -23,12 +21,8 @@ public class AntlrGInterruptible
 	public static GInterruptible parseGInterruptible(ScribbleParser parser, CommonTree ct)
 	{
 		GProtocolBlock block = (GProtocolBlock) parser.parse(getBlockChild(ct));
-		//List<GlobalInterrupt> interrs = new LinkedList<>();
-		List<GInterrupt> interrs = new LinkedList<>();
-		for (CommonTree interr : getInterruptChildren(ct))
-		{
-			interrs.add((GInterrupt) parser.parse(interr));
-		}
+		List<GInterrupt> interrs = 
+			getInterruptChildren(ct).stream().map((interr) -> (GInterrupt) parser.parse(interr)).collect(Collectors.toList());
 		if (isScopeImplicit(ct))
 		{
 			return new GInterruptible(block, interrs);
@@ -54,7 +48,7 @@ public class AntlrGInterruptible
 
 	public static List<CommonTree> getInterruptChildren(CommonTree ct)
 	{
-		List<? extends Object> children = ct.getChildren();
+		List<?> children = ct.getChildren();
 		return Util.toCommonTreeList(children.subList(INTERRUPT_CHILDREN_START_INDEX, children.size()));
 	}
 }

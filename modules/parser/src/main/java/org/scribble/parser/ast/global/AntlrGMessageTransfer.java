@@ -1,17 +1,16 @@
 package org.scribble.parser.ast.global;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.parser.AntlrConstants;
-import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
+import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
 import org.scribble.parser.ast.name.AntlrSimpleName;
@@ -28,68 +27,24 @@ public class AntlrGMessageTransfer
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
-		List<RoleNode> dests = new LinkedList<>();
-		for (CommonTree dest : getDestChildren(ct))
-		{
-			dests.add(AntlrSimpleName.toRoleNode(dest));
-		}
-		//return new GlobalMessageTransfer(src, msg, dests);
+		List<RoleNode> dests = 
+			getDestChildren(ct).stream().map((d) -> AntlrSimpleName.toRoleNode(d)).collect(Collectors.toList());
 		return AstFactoryImpl.FACTORY.GMessageTransfer(src, msg, dests);
 	}
 
 	protected static MessageNode parseMessage(ScribbleParser parser, CommonTree ct)
 	{
-		/*switch (Util.getAntlrNodeType(ct))
-		{
-			case MESSAGESIGNATURE:
-			{
-				return (MessageSignatureNode) parser.parse(ct);
-			}
-			default:
-			{
-				// Must be a parameter
-				return AntlrSimpleName.toParameterNode(ct, Kind.SIG);
-			}
-		}*/
-		/*String type = ct.getToken().getText();  // Hacky? cf. Util.getAntlrNodeType (parameter nodes have no "node type")
-		if (type.equals(AntlrConstants.MESSAGESIGNATURE_NODE_TYPE))*/
 		AntlrNodeType type = Util.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)
 		{
 			return (MessageSigNode) parser.parse(ct);
 		}
-		// Duplicated from AntlrPayloadElement parse
-		/*else if (type.equals(AntlrConstants.QUALIFIEDNAME_NODE_TYPE))  // member name
-		{
-			MessageSignatureNameNode name = AntlrQualifiedName.toMessageSignatureNameNodes(ct);
-			if (name.getElementCount() == 1)  // HACK: parser returns the simple name case as a qualified name
-			{
-				//String tmp = AntlrQualifiedName.getElements(child)[0];
-				String tmp = name.getElements()[0];
-				return new AmbiguousNameNode(tmp);
-			}
-			else
-			{
-				return name;
-			}
-		}*/
 		else //if (type.equals(AntlrConstants.AMBIGUOUSNAME_NODE_TYPE))
-		//if (Util.getAntlrNodeType(ct) == AntlrNodeType.AMBIGUOUSNAME)
 		{
-			// Duplicated from AntlrPayloadElement parse
-			if (ct.getChildCount() == 1)
-			{
-				//return AntlrSimpleName.toAmbiguousNameNode(ct);  // parametername or simple messagesignaturename
-				return AntlrAmbigName.toAmbigNameNode(ct);
-			}
-			else
-			{
-				return AntlrQualifiedName.toMessageSigNameNode(ct);
-			}
+			return (ct.getChildCount() == 1)
+				? AntlrAmbigName.toAmbigNameNode(ct)  // parametername or simple messagesignaturename
+				: AntlrQualifiedName.toMessageSigNameNode(ct);
 		}
-		/*//return AntlrSimpleName.toParameterNode(ct, Kind.SIG);
-		//return AntlrSimpleName.toSimpleMessageSignatureNameNode(ct);
-		return new AmbiguousNameNode(type);*/
 	}
 
 	public static CommonTree getSourceChild(CommonTree ct)

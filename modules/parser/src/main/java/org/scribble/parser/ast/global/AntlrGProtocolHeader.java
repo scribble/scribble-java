@@ -17,12 +17,9 @@ public class AntlrGProtocolHeader
 
 	public static GProtocolHeader parseGProtocolHeader(ScribbleParser parser, CommonTree ct)
 	{
-		//SimpleProtocolNameNode name = AntlrSimpleName.toSimpleProtocolNameNode(getNameChild(ct));
-		//GProtocolNameNode name = AntlrQualifiedName.toGlobalProtocolNameNode(getNameChild(ct));
 		GProtocolNameNode name = AntlrSimpleName.toGProtocolNameNode(getNameChild(ct));
 		RoleDeclList rdl = (RoleDeclList) parser.parse(getRoleDeclListChild(ct));
 		NonRoleParamDeclList pdl = (NonRoleParamDeclList) parser.parse(getParamDeclListChild(ct));
-		//return new GlobalProtocolHeader(name, rdl, pdl);
 		return AstFactoryImpl.FACTORY.GProtocolHeader(name, rdl, pdl);
 	}
 

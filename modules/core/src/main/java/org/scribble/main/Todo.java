@@ -2,6 +2,7 @@ package org.scribble.main;
 
 	// self comm (wf, projection)
 	// multicast (enforce sending same value -- can "compile" to assertions for separate ops)
+	// AntlrNonRoleParamDeclList -- generic typing error
 
 	// move roledecllist etc projection to dels
 
@@ -9,6 +10,7 @@ package org.scribble.main;
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
 
 	// FIXME: do-call argument kinding (sig/type args/params), arity, etc
+	// bound qualified sig/type names (disambiguation check of qualified names, not just ambiguous)
 	// duplicate role decls etc
 
 	//.. do projection should filter unused subprotocol role params -- but scoped subprotocols may need extra name mangling
