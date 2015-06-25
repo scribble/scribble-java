@@ -5,6 +5,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.EnvVisitor;
 import org.scribble.visit.FsmConstructor;
+import org.scribble.visit.InlineProtocolTranslator;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.NameDisambiguator;
@@ -116,6 +117,18 @@ public abstract class ScribDelBase implements ScribDel
 
 	@Override
 	public ScribNode leaveOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
+	{
+		return visited;
+	}
+
+	@Override
+	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
+	{
+		
+	}
+
+	@Override
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

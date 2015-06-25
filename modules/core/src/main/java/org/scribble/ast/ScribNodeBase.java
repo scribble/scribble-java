@@ -84,6 +84,7 @@ public abstract class ScribNodeBase implements ScribNode
 		
 	// FIXME: remove parent parameter, to make uniform with visitChild
 	// Used when a generic cast would otherwise be needed (non-generic children casts don't need this) -- doesn't check any generic parameters, relies on concrete values being instances of non-parameterised types
+	// Subtype constraint on visited could still be too restrictive, e.g. AmbigNameNodeDel (although it doesn't matter there)
 	protected final static <T extends ScribNode> T visitChildWithClassCheck(ScribNode parent, T child, AstVisitor nv) throws ScribbleException
 	{
 		ScribNode visited = ((ScribNodeBase) parent).visitChild(child, nv);
