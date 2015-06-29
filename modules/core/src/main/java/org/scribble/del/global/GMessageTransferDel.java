@@ -24,6 +24,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.InlineProtocolTranslator;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
@@ -99,6 +100,15 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GMessageTransfer) super.leaveProjection(parent, child, proj, gmt);
+	}
+	
+	@Override
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	{
+		GMessageTransfer gmt = (GMessageTransfer) visited;
+		GMessageTransfer inlined = AstFactoryImpl.FACTORY.GMessageTransfer(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (GMessageTransfer) super.leaveInlineProtocolTranslation(parent, child, builder, gmt);
 	}
 
 	@Override

@@ -83,8 +83,7 @@ public abstract class SubprotocolVisitor extends ModuleVisitor
 		if (!isCycle())
 		{
 			ModuleContext mcontext = getModuleContext();
-			ProtocolDecl<? extends ProtocolKind>
-					pd = doo.getTargetProtocolDecl(getJobContext(), mcontext);
+			ProtocolDecl<? extends ProtocolKind> pd = doo.getTargetProtocolDecl(getJobContext(), mcontext);
 			ScribNode seq = applySubstitutions(pd.def.block.seq);  // Visit the seq? -- or visit the interactions in the seq directly? ()
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 		}
@@ -233,7 +232,7 @@ public abstract class SubprotocolVisitor extends ModuleVisitor
 		return false;
 	}
 	
-	private ScribNode applySubstitutions(ScribNode n)
+	protected ScribNode applySubstitutions(ScribNode n)
 	{
 		if (overrideSubstitution())
 		{

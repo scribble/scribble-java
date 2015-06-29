@@ -39,6 +39,9 @@ public class Job
 		/*debugPrintln("\n--- Model building --- ");
 		runNodeVisitorPass(ModelBuilder.class);*/
 
+		debugPrintln("\n--- Subprotocol inlining --- ");
+		runNodeVisitorPass(InlineProtocolTranslator.class);
+
 		debugPrintln("\n--- Well-formed choice check --- ");
 		runNodeVisitorPass(WellFormedChoiceChecker.class);
 

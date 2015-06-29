@@ -5,15 +5,24 @@ import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;
+import org.scribble.ast.global.GInteractionSeq;
+import org.scribble.ast.global.GProtocolBlock;
+import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
+import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.SubprotocolSig;
+import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
+import org.scribble.visit.InlineProtocolTranslator;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.WellFormedChoiceEnv;
 
 public class GDoDel extends GSimpleInteractionNodeDel
@@ -88,5 +97,42 @@ public class GDoDel extends GSimpleInteractionNodeDel
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDo) super.leaveProjection(parent, child, proj, gd);
+	}
+
+	@Override
+	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
+	{
+		super.enterInlineProtocolTranslation(parent, child, builder);
+		if (!builder.isCycle())
+		{
+			SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
+			builder.setRecVar(subsig);
+		}
+	}
+
+	// Only called if cycle
+	public GDo visitForSubprotocolInlining(InlineProtocolTranslator builder, GDo child)
+	{
+		SubprotocolSig subsig = builder.peekStack();
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
+		GContinue inlined = AstFactoryImpl.FACTORY.GContinue(recvar);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return child;
+	}
+	
+	@Override
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	{
+		SubprotocolSig subsig = builder.peekStack();
+		if (!builder.isCycle())
+		{
+			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
+			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) builder.peekEnv()).getTranslation());
+			GProtocolBlock gb = AstFactoryImpl.FACTORY.GProtocolBlock(gis);
+			GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, gb);
+			builder.pushEnv(builder.popEnv().setTranslation(inlined));
+			builder.removeRecVar(subsig);
+		}	
+		return (GDo) super.leaveInlineProtocolTranslation(parent, child, builder, visited);
 	}
 }

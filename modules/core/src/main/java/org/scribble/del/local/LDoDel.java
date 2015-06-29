@@ -58,6 +58,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 		}
 	}
 
+	// Only called if cycle
 	public LDo visitForFsmConversion(FsmConstructor conv, LDo child)
 	{
 		SubprotocolSig subsig = conv.peekStack();
@@ -69,7 +70,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 	public LDo leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)
 	{
 		SubprotocolSig subsig = conv.peekStack();
-		conv.builder.removeSubprotocolEntry(subsig);
+		conv.builder.removeSubprotocolEntry(subsig);  // FIXME: maybe should only do if cycle (cf. GoDelDel#leaveInlineProtocolTranslation)
 		return (LDo) super.leaveFsmConstruction(parent, child, conv, visited);
 	}
 }

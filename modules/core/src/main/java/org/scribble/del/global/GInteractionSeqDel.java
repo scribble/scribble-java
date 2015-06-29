@@ -13,7 +13,9 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Continue;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
+import org.scribble.ast.global.GNode;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LNode;
@@ -22,8 +24,10 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.InlineProtocolTranslator;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
+import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
@@ -63,6 +67,34 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSequence(lis);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, proj, gis);
+	}
+
+	@Override
+	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
+	{
+		pushVisitorEnv(parent, child, builder);
+	}
+	
+	@Override
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	{
+		GInteractionSeq gis = (GInteractionSeq) visited;
+		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();
+		for (GInteractionNode gi : gis.getActions())
+		{
+			GNode inlined = ((InlineProtocolEnv) gi.del().env()).getTranslation();
+			if (inlined instanceof GInteractionSeq)
+			{
+				gins.addAll(((GInteractionSeq) inlined).getActions());
+			}
+			else
+			{
+				gins.add((GInteractionNode) inlined);
+			}
+		}
+		GInteractionSeq inlined = AstFactoryImpl.FACTORY.GInteractionSequence(gins);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, builder, gis);
 	}
 	
 	@Override

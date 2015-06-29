@@ -6,17 +6,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Choice;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.Interruptible;
 import org.scribble.ast.MessageTransfer;
-import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.ScribNode;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.SimpleInteractionNode;
 import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
@@ -26,8 +27,10 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
+import org.scribble.visit.InlineProtocolTranslator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WellFormedChoiceEnv;
 
@@ -197,5 +200,17 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 			}
 		}
 		return subj;
+	}
+
+	@Override
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	{
+		GChoice gc = (GChoice) visited;
+		List<GProtocolBlock> blocks = 
+				gc.blocks.stream().map((b) -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
+		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
+		GChoice inlined = AstFactoryImpl.FACTORY.GChoice(subj, blocks);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (GChoice) super.leaveInlineProtocolTranslation(parent, child, builder, gc);
 	}
 }

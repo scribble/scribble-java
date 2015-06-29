@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
@@ -12,8 +13,10 @@ import org.scribble.del.ProtocolBlockDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.InlineProtocolTranslator;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
+import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
@@ -34,6 +37,22 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(seq);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GProtocolBlock) popAndSetVisitorEnv(parent, child, proj, gpd);
+	}
+
+	@Override
+	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
+	{
+		pushVisitorEnv(parent, child, builder);
+	}
+
+	@Override
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	{
+		GProtocolBlock gpd = (GProtocolBlock) visited;
+		GInteractionSeq seq = (GInteractionSeq) ((InlineProtocolEnv) gpd.seq.del().env()).getTranslation();	
+		GProtocolBlock inlined = AstFactoryImpl.FACTORY.GProtocolBlock(seq);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (GProtocolBlock) popAndSetVisitorEnv(parent, child, builder, gpd);
 	}
 	
 	@Override

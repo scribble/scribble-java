@@ -6,6 +6,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Continue;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
@@ -13,8 +14,10 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RecVarKind;
+import org.scribble.visit.InlineProtocolTranslator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WellFormedChoiceEnv;
 
@@ -46,5 +49,16 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GRecursion) super.leaveProjection(parent, child, proj, gr);
+	}
+
+	@Override
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	{
+		GRecursion gr = (GRecursion) visited;
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
+		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
+		GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (GRecursion) super.leaveInlineProtocolTranslation(parent, child, builder, gr);
 	}
 }
