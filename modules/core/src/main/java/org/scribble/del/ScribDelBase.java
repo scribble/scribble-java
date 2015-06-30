@@ -4,14 +4,15 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.EnvVisitor;
-import org.scribble.visit.FsmConstructor;
-import org.scribble.visit.InlineProtocolTranslator;
+import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
-import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.Env;
 
 
@@ -62,13 +63,13 @@ public abstract class ScribDelBase implements ScribDel
 	}
 
 	@Override
-	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
 	{
 
 	}
 
 	@Override
-	public ScribNode leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
@@ -98,13 +99,13 @@ public abstract class ScribDelBase implements ScribDel
 	}
 
 	@Override
-	public void enterFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv)
+	public void enterFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv)
 	{
 		
 	}
 
 	@Override
-	public ScribNode leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)
+	public ScribNode leaveFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
 	{
 		return visited;
 	}
@@ -122,13 +123,25 @@ public abstract class ScribDelBase implements ScribDel
 	}
 
 	@Override
-	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
+	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 		
 	}
 
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	@Override
+	public void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker) throws ScribbleException
+	{
+		
+	}
+
+	@Override
+	public ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

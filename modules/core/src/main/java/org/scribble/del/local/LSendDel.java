@@ -7,13 +7,13 @@ import org.scribble.model.local.Send;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.FsmConstructor;
+import org.scribble.visit.FsmBuilder;
 
 
 public class LSendDel extends LSimpleInteractionNodeDel
 {
 	@Override
-	public LSend leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)
+	public LSend leaveFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
 	{
 		LSend ls = (LSend) visited;
 		if (ls.dests.size() > 1)
@@ -27,6 +27,6 @@ public class LSendDel extends LSimpleInteractionNodeDel
 					? ((MessageSigNode) ls.msg).payload.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		conv.builder.addEdge(conv.builder.getEntry(), new Send(peer, mid, payload), conv.builder.getExit());
-		return (LSend) super.leaveFsmConstruction(parent, child, conv, ls);
+		return (LSend) super.leaveFsmBuilder(parent, child, conv, ls);
 	}
 }

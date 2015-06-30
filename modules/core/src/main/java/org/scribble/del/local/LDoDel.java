@@ -10,7 +10,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.FsmConstructor;
+import org.scribble.visit.FsmBuilder;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.ReachabilityEnv;
@@ -44,9 +44,9 @@ public class LDoDel extends LSimpleInteractionNodeDel
 	}
 
 	@Override
-	public void enterFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv)
+	public void enterFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv)
 	{
-		super.enterFsmConstruction(parent, child, conv);
+		super.enterFsmBuilder(parent, child, conv);
 		if (!conv.isCycle())
 		{
 			SubprotocolSig subsig = conv.peekStack();  // SubprotocolVisitor has already entered subprotocol
@@ -59,7 +59,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 	}
 
 	// Only called if cycle
-	public LDo visitForFsmConversion(FsmConstructor conv, LDo child)
+	public LDo visitForFsmConversion(FsmBuilder conv, LDo child)
 	{
 		SubprotocolSig subsig = conv.peekStack();
 		conv.builder.setEntry(conv.builder.getSubprotocolEntry(subsig));  // Like continue
@@ -67,10 +67,10 @@ public class LDoDel extends LSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public LDo leaveFsmConstruction(ScribNode parent, ScribNode child, FsmConstructor conv, ScribNode visited)
+	public LDo leaveFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
 	{
 		SubprotocolSig subsig = conv.peekStack();
 		conv.builder.removeSubprotocolEntry(subsig);  // FIXME: maybe should only do if cycle (cf. GoDelDel#leaveInlineProtocolTranslation)
-		return (LDo) super.leaveFsmConstruction(parent, child, conv, visited);
+		return (LDo) super.leaveFsmBuilder(parent, child, conv, visited);
 	}
 }

@@ -24,13 +24,15 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.InlineProtocolTranslator;
+import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
-import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ModelEnv;
-import org.scribble.visit.env.WellFormedChoiceEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
 // FIXME: make base MessageTransferDelegate?
 public class GMessageTransferDel extends GSimpleInteractionNodeDel
@@ -41,13 +43,13 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public GMessageTransfer leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GMessageTransfer leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer msgtrans = (GMessageTransfer) visited;
 		
 		Role src = msgtrans.src.toName();
 		Message msg = msgtrans.msg.toMessage();
-		WellFormedChoiceEnv env = checker.popEnv();
+		WFChoiceEnv env = checker.popEnv();
 		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
 		{
 			env = env.addMessageForSubprotocol(checker, src, dest, msg);
@@ -103,12 +105,35 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		GMessageTransfer inlined = AstFactoryImpl.FACTORY.GMessageTransfer(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (GMessageTransfer) super.leaveInlineProtocolTranslation(parent, child, builder, gmt);
+	}
+
+	@Override
+	public GMessageTransfer leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	{
+		GMessageTransfer msgtrans = (GMessageTransfer) visited;
+		
+		Role src = msgtrans.src.toName();
+		Message msg = msgtrans.msg.toMessage();
+		InlinedWFChoiceEnv env = checker.popEnv();
+		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
+		{
+			env = env.addMessageForSubprotocol(checker, src, dest, msg);
+			
+			//System.out.println("1: " + src + ", " + dest + ", " + msg);
+		}
+		checker.pushEnv(env);
+		
+		if (!checker.peekEnv().isEnabled(src))
+		{
+			throw new ScribbleException("Role not enabled: " + src);
+		}
+		return msgtrans;
 	}
 
 	@Override

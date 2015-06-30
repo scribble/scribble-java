@@ -24,7 +24,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.InlineProtocolTranslator;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -70,13 +70,13 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	}
 
 	@Override
-	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
+	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 		pushVisitorEnv(parent, child, builder);
 	}
 	
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();

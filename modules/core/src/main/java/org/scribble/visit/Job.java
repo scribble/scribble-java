@@ -40,10 +40,13 @@ public class Job
 		runNodeVisitorPass(ModelBuilder.class);*/
 
 		debugPrintln("\n--- Subprotocol inlining --- ");
-		runNodeVisitorPass(InlineProtocolTranslator.class);
+		runNodeVisitorPass(ProtocolDefInliner.class);
 
-		debugPrintln("\n--- Well-formed choice check --- ");
-		runNodeVisitorPass(WellFormedChoiceChecker.class);
+		/*debugPrintln("\n--- Well-formed choice check --- ");
+		runNodeVisitorPass(WFChoiceChecker.class);*/
+
+		debugPrintln("\n--- Inlined well-formed choice check --- ");
+		runNodeVisitorPass(InlinedWFChoiceChecker.class);
 
 		debugPrintln("\n--- Projection --- ");
 		runNodeVisitorPass(Projector.class);
@@ -79,7 +82,7 @@ public class Job
 	public void constructFsms(Module mod) throws ScribbleException  // Need to visit from Module for visitor context
 	{
 		debugPrintln("\n--- FSM construction --- ");
-		mod.accept(new FsmConstructor(this)); 
+		mod.accept(new FsmBuilder(this)); 
 			// Constructs FSMs from all local protocols in this module (projected modules contain a single local protocol)
 			// Subprotocols "inlined" (scoped subprotocols not supported)
 	}

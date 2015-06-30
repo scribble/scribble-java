@@ -16,7 +16,16 @@ type <java> "java.lang.String" from "rt.jar" as String;
 global protocol Foo(role A, role B)
 {
 	1() from A to B;
-	do Bar(A, B);
+	choice at A
+	{
+		//1() from A to B;
+		do Bar(A, B);
+	}
+	or
+	{
+		2() from A to B;
+		3() from A to B;
+	}
 }
 
 global protocol Bar(role A, role B)

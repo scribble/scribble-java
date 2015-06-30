@@ -26,7 +26,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.InlineProtocolTranslator;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
@@ -109,13 +109,13 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	@Override
-	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
+	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 
 	}
 
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		//GProtocolBlock gpb = (GProtocolBlock) ((InlineProtocolEnv) gpd.def.block.del().env()).getTranslation();

@@ -3,7 +3,7 @@ package org.scribble.del.global;
 import org.scribble.ast.ScribNode;
 import org.scribble.del.CompoundInteractionNodeDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.InlineProtocolTranslator;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
 
@@ -27,13 +27,13 @@ public abstract class GCompoundInteractionNodeDel extends CompoundInteractionNod
 	}
 
 	@Override
-	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
+	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 		pushVisitorEnv(parent, child, builder);
 	}
 
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		return popAndSetVisitorEnv(parent, child, builder, visited);
 	}

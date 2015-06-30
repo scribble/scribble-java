@@ -19,9 +19,9 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
 import org.scribble.visit.SubprotocolVisitor;
-import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.WFChoiceChecker;
 
-public class WellFormedChoiceEnv extends Env
+public class WFChoiceEnv extends Env
 {
 	public static final Role DUMMY_ROLE = new Role("__ROLE");
 	public static final Op ROOT_OPERATOR = new Op("__ROOT");
@@ -49,7 +49,7 @@ public class WellFormedChoiceEnv extends Env
 	private Set<SubprotocolSig> recording;
 
 	//public WellFormedChoiceEnv(JobContext jcontext, ModuleDelegate mcontext)
-	public WellFormedChoiceEnv()
+	public WFChoiceEnv()
 	{
 		/*super(jcontext, mcontext);
 		this.initial = new MessageMap<>();
@@ -73,7 +73,7 @@ public class WellFormedChoiceEnv extends Env
 				parent.recording);
 	}*/
 	
-	protected WellFormedChoiceEnv(//JobContext jcontext, ModuleDelegate mcontext, //WellFormedChoiceEnv root, WellFormedChoiceEnv parent,
+	protected WFChoiceEnv(//JobContext jcontext, ModuleDelegate mcontext, //WellFormedChoiceEnv root, WellFormedChoiceEnv parent,
 			/*MessageMap<ScopedMessage> initial, MessageMap<ScopedMessage> initialInterrupts,
 			Map<SubprotocolSignature, MessageMap<ScopedMessage>> subsigs, Set<SubprotocolSignature> recording)*/
 			/*MessageMap<Message> initial, MessageMap<Message> initialInterrupts,
@@ -93,15 +93,15 @@ public class WellFormedChoiceEnv extends Env
 	}
 
 	@Override
-	protected WellFormedChoiceEnv copy()
+	protected WFChoiceEnv copy()
 	{
-		return new WellFormedChoiceEnv(//getJobContext(), getModuleDelegate(), //getProtocolDeclEnv(), getParent(),
+		return new WFChoiceEnv(//getJobContext(), getModuleDelegate(), //getProtocolDeclEnv(), getParent(),
 				this.initial, this.initialInterrupts, this.subsigs, this.recording);
 	}
 	
-	public WellFormedChoiceEnv clear()
+	public WFChoiceEnv clear()
 	{
-		WellFormedChoiceEnv copy = copy();
+		WFChoiceEnv copy = copy();
 		copy.initial.clear();
 		copy.initialInterrupts.clear();
 		return copy;
@@ -109,17 +109,17 @@ public class WellFormedChoiceEnv extends Env
 	
 	//public WellFormedChoiceEnv merge(WellFormedChoiceEnv child)
 	@Override
-	public WellFormedChoiceEnv mergeContext(Env child)
+	public WFChoiceEnv mergeContext(Env child)
 	{
 		return mergeContexts(Arrays.asList(child));
 	}
 
 	@Override
 	//public WellFormedChoiceEnv merge(List<WellFormedChoiceEnv> children)
-	public WellFormedChoiceEnv mergeContexts(List<? extends Env> children)
+	public WFChoiceEnv mergeContexts(List<? extends Env> children)
 	{
-		WellFormedChoiceEnv copy = copy();
-		for (WellFormedChoiceEnv child : castList(children))
+		WFChoiceEnv copy = copy();
+		for (WFChoiceEnv child : castList(children))
 		{
 			merge(this, copy.initial, child.initial);
 			merge(this, copy.initialInterrupts, child.initialInterrupts);
@@ -140,7 +140,7 @@ public class WellFormedChoiceEnv extends Env
 
 	//private static void merge(WellFormedChoiceEnv parent, MessageMap<ScopedMessage> foo, MessageMap<ScopedMessage> child)
 	//private static void merge(WellFormedChoiceEnv parent, MessageMap<Message> foo, MessageMap<Message> child)
-	private static void merge(WellFormedChoiceEnv parent, MessageIdMap foo, MessageIdMap child)
+	private static void merge(WFChoiceEnv parent, MessageIdMap foo, MessageIdMap child)
 	{
 		for (Role dest : child.getLeftKeys())
 		{
@@ -159,35 +159,35 @@ public class WellFormedChoiceEnv extends Env
 		}
 	}
 	
-	public WellFormedChoiceEnv enableRoleForRootProtocolDecl(Role role)
+	public WFChoiceEnv enableRoleForRootProtocolDecl(Role role)
 	{
 		//return addMessage(WellFormedChoiceEnv.DUMMY_ROLE, role, WellFormedChoiceEnv.ROOT_MESSAGESIGNATURE);
-		return addMessage(WellFormedChoiceEnv.DUMMY_ROLE, role, WellFormedChoiceEnv.ROOT_MESSAGESIGNATURE);
+		return addMessage(WFChoiceEnv.DUMMY_ROLE, role, WFChoiceEnv.ROOT_MESSAGESIGNATURE);
 	}
 
-	public WellFormedChoiceEnv enableChoiceSubject(Role role)
+	public WFChoiceEnv enableChoiceSubject(Role role)
 	{
-		return addMessage(WellFormedChoiceEnv.DUMMY_ROLE, role, WellFormedChoiceEnv.SUBJECT_MESSAGESIGNATURE);
+		return addMessage(WFChoiceEnv.DUMMY_ROLE, role, WFChoiceEnv.SUBJECT_MESSAGESIGNATURE);
 	}
 
 	// Rename: more like enable-if-not-already
 	//private WellFormedChoiceEnv addMessage(Role src, Role dest, ScopedMessage msg)
-	private WellFormedChoiceEnv addMessage(Role src, Role dest, Message msg)
+	private WFChoiceEnv addMessage(Role src, Role dest, Message msg)
 	{
-		WellFormedChoiceEnv copy = copy();
+		WFChoiceEnv copy = copy();
 		//addMessages(copy.initial, src, dest, Arrays.asList(msg));
 		addMessages(copy.initial, src, dest, Arrays.asList(msg.getId()));
 		return copy;
 	}
 
 	@Override
-	public WellFormedChoiceEnv enterContext()
+	public WFChoiceEnv enterContext()
 	{
 		/*WellFormedChoiceEnv env = new WellFormedChoiceEnv(this);
 		//env.initial.clear();
 		//env.initialInterrupts.clear();
 		return env;*/
-		return new WellFormedChoiceEnv(//getJobContext(), getModuleDelegate(),
+		return new WFChoiceEnv(//getJobContext(), getModuleDelegate(),
 				this.initial, this.initialInterrupts, 
 				//this.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageMap<>(this.subsigs.get(k)))),
 				this.subsigs.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> new MessageIdMap(this.subsigs.get(k)))),
@@ -207,9 +207,9 @@ public class WellFormedChoiceEnv extends Env
 	}
 
 	//public WellFormedChoiceEnv addInterrupt(Role src, Role dest, ScopedMessage msg)
-	public WellFormedChoiceEnv addInterrupt(Role src, Role dest, Message msg)
+	public WFChoiceEnv addInterrupt(Role src, Role dest, Message msg)
 	{
-		WellFormedChoiceEnv copy = copy();
+		WFChoiceEnv copy = copy();
 		if (!copy.initial.containsLeftKey(dest))
 		{
 			//copy.initialInterrupts.putMessage(dest, src, msg);
@@ -220,9 +220,9 @@ public class WellFormedChoiceEnv extends Env
 
 	// The "main" public routine: "addMessage taking into account subprotocols"
 	//public WellFormedChoiceEnv addMessageForSubprotocol(SubprotocolVisitor spv, Role src, Role dest, ScopedMessage msg)
-	public WellFormedChoiceEnv addMessageForSubprotocol(SubprotocolVisitor spv, Role src, Role dest, Message msg)
+	public WFChoiceEnv addMessageForSubprotocol(SubprotocolVisitor<WFChoiceEnv> spv, Role src, Role dest, Message msg)
 	{
-		WellFormedChoiceEnv copy = copy();
+		WFChoiceEnv copy = copy();
 		if (!spv.isStackEmpty())
 		{
 			//WellFormedChoiceEnv root = this;//getRoot();
@@ -242,9 +242,9 @@ public class WellFormedChoiceEnv extends Env
 
 	//public WellFormedChoiceEnv enterDo(ScopedSubprotocolSignature subsig) throws ScribbleException
 	//public WellFormedChoiceEnv enterDoContext(SubprotocolSignature subsig) throws ScribbleException
-	public WellFormedChoiceEnv enterDoContext(WellFormedChoiceChecker checker) throws ScribbleException
+	public WFChoiceEnv enterDoContext(WFChoiceChecker checker) throws ScribbleException
 	{
-		WellFormedChoiceEnv copy = copy();
+		WFChoiceEnv copy = copy();
 		//SubprotocolSignature subsig = checker.peekStack().sig;
 		//SubprotocolSignature subsig = checker.peekStack().sig;
 		SubprotocolSig subsig = checker.peekStack();
@@ -258,9 +258,9 @@ public class WellFormedChoiceEnv extends Env
 		return copy;
 	}
 
-	public WellFormedChoiceEnv leaveWFChoiceCheck(WellFormedChoiceChecker checker) throws ScribbleException
+	public WFChoiceEnv leaveWFChoiceCheck(WFChoiceChecker checker) throws ScribbleException
 	{
-		WellFormedChoiceEnv copy = copy();
+		WFChoiceEnv copy = copy();
 		//ScopedSubprotocolSignature subsig = checker.peekStack();
 		SubprotocolSig subsig = checker.peekStack();
 		//if (copy.recording.contains(subsig.sig))
@@ -530,8 +530,8 @@ public class WellFormedChoiceEnv extends Env
 		checker.setEnv(copy);
 	}*/
 	
-	private static List<WellFormedChoiceEnv> castList(List<? extends Env> envs)
+	private static List<WFChoiceEnv> castList(List<? extends Env> envs)
 	{
-		return envs.stream().map((e) -> (WellFormedChoiceEnv) e).collect(Collectors.toList());
+		return envs.stream().map((e) -> (WFChoiceEnv) e).collect(Collectors.toList());
 	}
 }

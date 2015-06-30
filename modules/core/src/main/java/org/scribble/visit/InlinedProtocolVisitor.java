@@ -1,14 +1,14 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.env.Env;
 
-public class InlineProtocolVisitor extends ModuleVisitor
+public abstract class InlinedProtocolVisitor<T extends Env> extends EnvVisitor<T>
 {
-	public InlineProtocolVisitor(Job job)
+	public InlinedProtocolVisitor(Job job)
 	{
 		super(job);
 	}
@@ -24,7 +24,7 @@ public class InlineProtocolVisitor extends ModuleVisitor
 	// Subclasses can override this to disable subprotocol visiting
 	protected ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		if (child instanceof GProtocolDecl)
+		if (child instanceof GProtocolDef)
 		{
 			return visitOverrideForGProtocolDef(parent, (GProtocolDef) child);	// parent is InteractionSequence
 		}
@@ -36,21 +36,26 @@ public class InlineProtocolVisitor extends ModuleVisitor
 	
 	private ScribNode visitOverrideForGProtocolDef(ScribNode parent, GProtocolDef gpd) throws ScribbleException
 	{
-		return ((GProtocolDefDel) gpd.del()).getInlinedGProtocolDef().visitChildren(this);
+		GProtocolDef inlined = ((GProtocolDefDel) gpd.del()).getInlinedGProtocolDef();
+		if (inlined == null)
+		{
+			throw new RuntimeException("InlineProtocolVisitor error: " + gpd);
+		}
+		return inlined.visitChildren(this);
 	}
 
 	@Override
-	protected final void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.enter(parent, child);
+		super.envEnter(parent, child);
 		inlinedProtocolEnter(parent, child);
 	}
 
 	@Override
-	protected final ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected final ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		ScribNode n = inlinedProtocolLeave(parent, child, visited);
-		return super.leave(parent, child, n);
+		return super.envLeave(parent, child, n);
 	}
 
 	protected void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException

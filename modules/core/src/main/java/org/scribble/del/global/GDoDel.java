@@ -18,12 +18,12 @@ import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.InlineProtocolTranslator;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
-import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.WellFormedChoiceEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
 public class GDoDel extends GSimpleInteractionNodeDel
 {
@@ -41,15 +41,15 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
 	{
 		checker.pushEnv(checker.peekEnv().enterDoContext(checker));
 	}
 
 	@Override
-	public GDo leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GDo leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
-		WellFormedChoiceEnv env = checker.popEnv();
+		WFChoiceEnv env = checker.popEnv();
 		//if (checker.isCycle())  // Cf. LDoDel, isCycle done inside env.leaveWFChoiceCheck
 		{
 			env = env.leaveWFChoiceCheck(checker);
@@ -100,7 +100,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
+	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 		super.enterInlineProtocolTranslation(parent, child, builder);
 		if (!builder.isCycle())
@@ -111,7 +111,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 
 	// Only called if cycle
-	public GDo visitForSubprotocolInlining(InlineProtocolTranslator builder, GDo child)
+	public GDo visitForSubprotocolInlining(ProtocolDefInliner builder, GDo child)
 	{
 		SubprotocolSig subsig = builder.peekStack();
 		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
@@ -121,7 +121,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		SubprotocolSig subsig = builder.peekStack();
 		if (!builder.isCycle())

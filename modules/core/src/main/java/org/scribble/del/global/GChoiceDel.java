@@ -27,26 +27,28 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
-import org.scribble.visit.InlineProtocolTranslator;
+import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.Projector;
-import org.scribble.visit.WellFormedChoiceChecker;
+import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
+import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ProjectionEnv;
-import org.scribble.visit.env.WellFormedChoiceEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
 public class GChoiceDel extends GCompoundInteractionNodeDel
 {
 	@Override
-	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker) throws ScribbleException
+	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
 	{
-		WellFormedChoiceEnv env = checker.peekEnv().enterContext();
+		WFChoiceEnv env = checker.peekEnv().enterContext();
 		env = env.clear();
 		env = env.enableChoiceSubject(((GChoice) child).subj.toName());
 		checker.pushEnv(env);
 	}
 	
 	@Override
-	public GChoice leaveWFChoiceCheck(ScribNode parent, ScribNode child, WellFormedChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GChoice leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GChoice cho = (GChoice) visited;
 		Role subj = cho.subj.toName();
@@ -57,9 +59,9 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		
 		Map<Role, Set<MessageId>> seen = null;
 		Map<Role, Role> enablers = null;
-		List<WellFormedChoiceEnv> benvs =
-				cho.blocks.stream().map((b) -> (WellFormedChoiceEnv) b.del().env()).collect(Collectors.toList());
-		for (WellFormedChoiceEnv benv : benvs)
+		List<WFChoiceEnv> benvs =
+				cho.blocks.stream().map((b) -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
+		for (WFChoiceEnv benv : benvs)
 		{
 			MessageIdMap enabled = benv.getEnabled();
 			Set<Role> dests = enabled.getLeftKeys();
@@ -122,7 +124,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		
 		// On leaving global choice, we're doing both the merging of block envs into the choice env, and the merging of the choice env to the parent-of-choice env
 		// In principle, for the envLeave we should only be doing the latter (as countpart to enterEnv), but it is much more convenient for the compound-node (choice) to collect all the child block envs and merge here, rather than each individual block env trying to (partially) merge into the parent-choice as they are visited
-		WellFormedChoiceEnv merged = checker.popEnv().mergeContexts(benvs); 
+		WFChoiceEnv merged = checker.popEnv().mergeContexts(benvs); 
 		checker.pushEnv(merged);  // Merges the child block envs into the current choice env; super call below merges this choice env into the parent env of the choice
 		return (GChoice) super.leaveWFChoiceCheck(parent, child, checker, visited);
 	}
@@ -203,7 +205,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
 		List<GProtocolBlock> blocks = 
@@ -212,5 +214,97 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		GChoice inlined = AstFactoryImpl.FACTORY.GChoice(subj, blocks);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (GChoice) super.leaveInlineProtocolTranslation(parent, child, builder, gc);
+	}
+
+	@Override
+	public void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker) throws ScribbleException
+	{
+		InlinedWFChoiceEnv env = checker.peekEnv().enterContext();
+		env = env.clear();
+		env = env.enableChoiceSubject(((GChoice) child).subj.toName());
+		checker.pushEnv(env);
+	}
+
+	@Override
+	public GChoice leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	{
+		GChoice cho = (GChoice) visited;
+		Role subj = cho.subj.toName();
+		if (!checker.peekParentEnv().isEnabled(subj))
+		{
+			throw new ScribbleException("Subject not enabled: " + subj);
+		}
+		
+		Map<Role, Set<MessageId>> seen = null;
+		Map<Role, Role> enablers = null;
+		List<InlinedWFChoiceEnv> benvs =
+				cho.blocks.stream().map((b) -> (InlinedWFChoiceEnv) b.del().env()).collect(Collectors.toList());
+		for (InlinedWFChoiceEnv benv : benvs)
+		{
+			MessageIdMap enabled = benv.getEnabled();
+			Set<Role> dests = enabled.getLeftKeys();
+			dests.remove(subj);
+			if (seen == null)
+			{
+				seen = new HashMap<>();
+				enablers = new HashMap<>();
+				for (Role dest : dests)
+				{
+					seen.put(dest, enabled.getMessages(dest));
+					Set<Role> srcs = enabled.getRightKeys(dest);
+					if (srcs.size() > 1)
+					{
+						throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + srcs);
+					}
+					enablers.put(dest, srcs.iterator().next());
+				}
+			}
+			else
+			{
+				if (dests.isEmpty())
+				{
+					if (!seen.keySet().isEmpty())
+					{
+						throw new ScribbleException("Mismatched role enabling: " + seen.keySet());
+					}
+				}
+				else 
+				{
+					for (Role dest : dests)
+					{
+						if (!seen.containsKey(dest))
+						{
+							throw new ScribbleException("Mismatched role enabling: " + dest);
+						}
+						Set<MessageId> current = seen.get(dest);
+						Set<MessageId> next = enabled.getMessages(dest);
+						for (MessageId msg : next)
+						{
+							if (current.contains(msg))
+							{
+								throw new ScribbleException("Duplicate initial choice message for " + dest + ": " + msg);
+							}
+						}
+						current.addAll(next);
+						checkEnablers(enabled, dest, enablers);
+					}
+					
+					for (Role dest : seen.keySet())
+					{
+						if (!dests.contains(dest))
+						{
+							throw new ScribbleException("Mismatched role enabling: " + dest);
+						}
+						checkEnablers(enabled, dest, enablers);
+					}
+				}
+			}
+		}
+		
+		// On leaving global choice, we're doing both the merging of block envs into the choice env, and the merging of the choice env to the parent-of-choice env
+		// In principle, for the envLeave we should only be doing the latter (as countpart to enterEnv), but it is much more convenient for the compound-node (choice) to collect all the child block envs and merge here, rather than each individual block env trying to (partially) merge into the parent-choice as they are visited
+		InlinedWFChoiceEnv merged = checker.popEnv().mergeContexts(benvs); 
+		checker.pushEnv(merged);  // Merges the child block envs into the current choice env; super call below merges this choice env into the parent env of the choice
+		return (GChoice) super.leaveInlinedWFChoiceCheck(parent, child, checker, visited);
 	}
 }

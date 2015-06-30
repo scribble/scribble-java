@@ -15,11 +15,11 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.InlineProtocolEnv;
 
-public class InlineProtocolTranslator extends SubprotocolVisitor<InlineProtocolEnv>
+public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 {
 	private Map<SubprotocolSig, RecVar> recvars = new HashMap<>();
 	
-	public InlineProtocolTranslator(Job job)
+	public ProtocolDefInliner(Job job)
 	{
 		super(job);
 	}

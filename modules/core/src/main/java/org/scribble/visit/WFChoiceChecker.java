@@ -4,22 +4,22 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.visit.env.WellFormedChoiceEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
-public class WellFormedChoiceChecker extends SubprotocolVisitor<WellFormedChoiceEnv>
+public class WFChoiceChecker extends SubprotocolVisitor<WFChoiceEnv>
 {
-	public WellFormedChoiceChecker(Job job)
+	public WFChoiceChecker(Job job)
 	{
 		super(job);
 	}
 
 	@Override
-	protected WellFormedChoiceEnv makeRootProtocolDeclEnv(
+	protected WFChoiceEnv makeRootProtocolDeclEnv(
 			//AbstractProtocolDecl<? extends ProtocolHeader, ? extends ProtocolDefinition<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>>> pd)
 			ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		//return new WellFormedChoiceEnv(getJobContext(), getModuleDelegate());
-		return new WellFormedChoiceEnv();
+		return new WFChoiceEnv();
 	}
 	
 	@Override

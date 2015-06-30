@@ -12,14 +12,14 @@ import org.scribble.model.local.GraphBuilder;
 // FIXME: doesn't need to be an EnvVisitor?
 //public class FsmConverter extends EnvVisitor<FsmBuildingEnv>
 //public class FsmConverter extends ModelVisitor
-public class FsmConstructor extends NoEnvSubprotocolVisitor  // For "inlining" Do
+public class FsmBuilder extends NoEnvSubprotocolVisitor  // For "inlining" Do
 {
 	//public final FsmBuilder builder = new FsmBuilder();
 	public final GraphBuilder builder = new GraphBuilder();
 
 	//private final Map<RecVar, ProtocolState> labelled = new HashMap<>();
 	
-	public FsmConstructor(Job job)
+	public FsmBuilder(Job job)
 	{
 		super(job);
 	}
@@ -60,13 +60,13 @@ public class FsmConstructor extends NoEnvSubprotocolVisitor  // For "inlining" D
 	protected final void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.subprotocolEnter(parent, child);
-		child.del().enterFsmConstruction(parent, child, this);
+		child.del().enterFsmBuilder(parent, child, this);
 	}
 	
 	@Override
 	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveFsmConstruction(parent, child, this, visited);
+		visited = visited.del().leaveFsmBuilder(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);
 	}
 	
