@@ -8,7 +8,7 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 
-public class MessageIdCollector extends SubprotocolVisitor
+public class MessageIdCollector extends NoEnvSubprotocolVisitor
 {
 	private Set<MessageId> mids = new HashSet<>();
 	

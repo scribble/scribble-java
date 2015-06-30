@@ -9,7 +9,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.ReachabilityEnv;
 
-public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
+public class ReachabilityChecker extends SubprotocolVisitor<ReachabilityEnv>
 {
 	public ReachabilityChecker(Job job)
 	{
@@ -88,23 +88,23 @@ public class ReachabilityChecker extends EnvVisitor<ReachabilityEnv>
 
 	@Override
 	//protected ReachabilityChecker envEnter(ModelNode parent, ModelNode child) throws ScribbleException
-	protected void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		//return child.enterReachabilityCheck(this);
 		/*ReachabilityChecker checker = (ReachabilityChecker) super.envEnter(parent, child);
 		return (ReachabilityChecker) child.del().enterReachabilityCheck(parent, child, checker);*/
-		super.envEnter(parent, child);
+		super.subprotocolEnter(parent, child);
 		child.del().enterReachabilityCheck(parent, child, this);
 	}
 	
 	@Override
 	//protected ModelNode envLeave(ModelNode parent, ModelNode child, EnvVisitor<ReachabilityEnv> nv, ModelNode visited) throws ScribbleException
-	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		//return visited.leaveReachabilityCheck(this);
 		/*visited = visited.del().leaveReachabilityCheck(parent, child, (ReachabilityChecker) nv, visited);
 		return super.envLeave(parent, child, nv, visited);*/
 		visited = visited.del().leaveReachabilityCheck(parent, child, this, visited);
-		return super.envLeave(parent, child, visited);
+		return super.subprotocolLeave(parent, child, visited);
 	}
 }

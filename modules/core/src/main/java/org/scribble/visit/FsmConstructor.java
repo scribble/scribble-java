@@ -12,7 +12,7 @@ import org.scribble.model.local.GraphBuilder;
 // FIXME: doesn't need to be an EnvVisitor?
 //public class FsmConverter extends EnvVisitor<FsmBuildingEnv>
 //public class FsmConverter extends ModelVisitor
-public class FsmConstructor extends SubprotocolVisitor  // For "inlining" Do
+public class FsmConstructor extends NoEnvSubprotocolVisitor  // For "inlining" Do
 {
 	//public final FsmBuilder builder = new FsmBuilder();
 	public final GraphBuilder builder = new GraphBuilder();

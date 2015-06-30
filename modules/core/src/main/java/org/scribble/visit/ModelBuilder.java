@@ -6,7 +6,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.ModelEnv;
 
-public class ModelBuilder extends EnvVisitor<ModelEnv>
+public class ModelBuilder extends SubprotocolVisitor<ModelEnv>
 {
 	public ModelBuilder(Job job)
 	{
@@ -20,14 +20,14 @@ public class ModelBuilder extends EnvVisitor<ModelEnv>
 	}
 	
 	@Override
-	protected void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.envEnter(parent, child);
 		child.del().enterModelBuilding(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveModelBuilding(parent, child, this, visited);
 		return super.envLeave(parent, child, visited);

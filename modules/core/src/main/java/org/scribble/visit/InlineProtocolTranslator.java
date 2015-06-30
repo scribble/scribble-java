@@ -15,7 +15,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.InlineProtocolEnv;
 
-public class InlineProtocolTranslator extends EnvVisitor<InlineProtocolEnv>
+public class InlineProtocolTranslator extends SubprotocolVisitor<InlineProtocolEnv>
 {
 	private Map<SubprotocolSig, RecVar> recvars = new HashMap<>();
 	
@@ -84,17 +84,17 @@ public class InlineProtocolTranslator extends EnvVisitor<InlineProtocolEnv>
 	}
 	
 	@Override
-	protected void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.envEnter(parent, child);
+		super.subprotocolEnter(parent, child);
 		child.del().enterInlineProtocolTranslation(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveInlineProtocolTranslation(parent, child, this, visited);
-		return super.envLeave(parent, child, visited);
+		return super.subprotocolLeave(parent, child, visited);
 	}
 	
 	public Map<SubprotocolSig, RecVar> getRecVars()

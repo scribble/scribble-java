@@ -26,8 +26,9 @@ import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
+import org.scribble.visit.env.Env;
 
-public abstract class SubprotocolVisitor extends ModuleVisitor
+public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 {
 	private List<SubprotocolSig> stack = new LinkedList<>();
 	
@@ -91,9 +92,9 @@ public abstract class SubprotocolVisitor extends ModuleVisitor
 	}
 
 	@Override
-	protected final void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.enter(parent, child);
+		super.envEnter(parent, child);
 
 		if (child instanceof ProtocolDecl)
 		{
@@ -116,7 +117,7 @@ public abstract class SubprotocolVisitor extends ModuleVisitor
 	}
 
 	@Override
-	protected final ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected final ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		ScribNode n = subprotocolLeave(parent, child, visited);
 		if (child instanceof ProtocolDecl)
@@ -132,7 +133,7 @@ public abstract class SubprotocolVisitor extends ModuleVisitor
 		{
 			setScope(getScope().getPrefix());
 		}
-		return super.leave(parent, child, n);
+		return super.envLeave(parent, child, n);
 	}
 
 	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
