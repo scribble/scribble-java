@@ -15,9 +15,23 @@ import org.scribble.visit.env.ProjectionEnv;
 
 public class GProtocolDefDel extends ProtocolDefDel
 {
+	private GProtocolDef inlined = null;
+	
 	public GProtocolDefDel()
 	{
 
+	}
+	
+	public GProtocolDef getInlinedGProtocolDef()
+	{
+		return this.inlined;
+	}
+
+	protected GProtocolDefDel copy()
+	{
+		GProtocolDefDel copy = new GProtocolDefDel();
+		copy.inlined = this.inlined;
+		return copy;
 	}
 
 	@Override
@@ -49,6 +63,12 @@ public class GProtocolDefDel extends ProtocolDefDel
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gpd.block.del().env()).getTranslation();	
 		GProtocolDef inlined = AstFactoryImpl.FACTORY.GProtocolDefinition(block);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+
+		GProtocolDefDel copy = (GProtocolDefDel) copy();
+		copy.inlined = inlined;
+
+		System.out.println("1: " + inlined);
+		
 		return (GProtocolDef) popAndSetVisitorEnv(parent, child, builder, gpd);
 	}
 }

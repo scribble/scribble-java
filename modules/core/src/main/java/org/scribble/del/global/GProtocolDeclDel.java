@@ -30,7 +30,6 @@ import org.scribble.visit.InlineProtocolTranslator;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
-import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
@@ -44,7 +43,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	@Override
 	protected GProtocolDeclDel copy()
 	{
-		return new GProtocolDeclDel();
+		GProtocolDeclDel copy = new GProtocolDeclDel();
+		return copy;
 	}
 
 	@Override
@@ -111,21 +111,24 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	@Override
 	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder) throws ScribbleException
 	{
-		//builder.set
+
 	}
 
 	@Override
 	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, InlineProtocolTranslator builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
-		System.out.println("1: " + ((InlineProtocolEnv) gpd.def.block.del().env()).getTranslation());
-		
+		//GProtocolBlock gpb = (GProtocolBlock) ((InlineProtocolEnv) gpd.def.block.del().env()).getTranslation();
 
-		..store inlined version in gprotocoldel -- need some way for some visitors to go through module into the inlined proto, while other visitors use the original ast
-		-- at least can hack this in as an explicit flag
+		/*GProtocolDeclDel copy = (GProtocolDeclDel) setProtocolDeclContext(getProtocolDeclContext());
+		copy.inlined = gpb;*/
 		
+		//..store inlined version in gprotocoldel -- need some way for some visitors to go through module into the inlined proto, while other visitors use the original ast
+		//-- at least can hack this in as an explicit flag
 		
-		return (GProtocolDecl) visited;
+		//return ((GProtocolDecl) visited).del(copy);
+
+		return gpd;
 	}
 
 	@Override
