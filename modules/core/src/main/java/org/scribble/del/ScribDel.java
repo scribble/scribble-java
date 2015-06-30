@@ -4,6 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
@@ -41,8 +42,11 @@ public interface ScribDel
 	void enterOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll);
 	ScribNode leaveOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited);
 
-	void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException;
-	ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException;
+	void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException;
+	ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException;
+
+	void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException;
+	ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException;
 
 	void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker) throws ScribbleException;
 	ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException;

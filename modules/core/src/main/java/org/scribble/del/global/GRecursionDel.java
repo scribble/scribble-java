@@ -14,6 +14,8 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RecVarKind;
+import org.scribble.sesstype.name.RecVar;
+import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
@@ -54,14 +56,24 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GRecursion gr = (GRecursion) visited;
 		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
 		GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GRecursion) super.leaveInlineProtocolTranslation(parent, child, builder, gr);
+		return (GRecursion) super.leaveProtocolInlining(parent, child, builder, gr);
+	}
+
+	@Override
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	{
+		GRecursion gr = (GRecursion) child;
+		RecVar recvar = gr.recvar.toName();
+		//GInteractionSeq gis = gr.getBlock().getInteractionSeq();  // FIXME: should clone with fresh dels -- though currently the only dels to store persistent state are protocoldecl and gprotocoldef, which are outside of the main session type (protocol body) visiting
+		GProtocolBlock gpb = gr.getBlock();
+		unf.setRecVar(recvar, gpb);
 	}
 
 	@Override

@@ -100,9 +100,9 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
-		super.enterInlineProtocolTranslation(parent, child, builder);
+		super.enterProtocolInlining(parent, child, builder);
 		if (!builder.isCycle())
 		{
 			SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
@@ -121,7 +121,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		SubprotocolSig subsig = builder.peekStack();
 		if (!builder.isCycle())
@@ -133,6 +133,6 @@ public class GDoDel extends GSimpleInteractionNodeDel
 			builder.pushEnv(builder.popEnv().setTranslation(inlined));
 			builder.removeRecVar(subsig);
 		}	
-		return (GDo) super.leaveInlineProtocolTranslation(parent, child, builder, visited);
+		return (GDo) super.leaveProtocolInlining(parent, child, builder, visited);
 	}
 }

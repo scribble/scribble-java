@@ -4,9 +4,9 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.DummyEnv;
 
-public abstract class NoEnvSubprotocolVisitor extends SubprotocolVisitor<DummyEnv>
+public abstract class NoEnvOffsetSubprotocolVisitor extends OffsetSubprotocolVisitor<DummyEnv>
 {
-	public NoEnvSubprotocolVisitor(Job job)
+	public NoEnvOffsetSubprotocolVisitor(Job job)
 	{
 		super(job);
 	}

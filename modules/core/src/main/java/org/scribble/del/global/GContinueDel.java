@@ -23,12 +23,12 @@ public class GContinueDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GContinue gc = (GContinue) visited;
 		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gc.recvar.toName().toString());
 		GContinue inlined = AstFactoryImpl.FACTORY.GContinue(recvar);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GContinue) super.leaveInlineProtocolTranslation(parent, child, builder, gc);
+		return (GContinue) super.leaveProtocolInlining(parent, child, builder, gc);
 	}
 }

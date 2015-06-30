@@ -21,15 +21,16 @@ import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.model.global.ModelState;
+import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
@@ -109,26 +110,16 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	@Override
-	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
-
+		SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
+		builder.setRecVar(subsig);
 	}
 
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
-		GProtocolDecl gpd = (GProtocolDecl) visited;
-		//GProtocolBlock gpb = (GProtocolBlock) ((InlineProtocolEnv) gpd.def.block.del().env()).getTranslation();
-
-		/*GProtocolDeclDel copy = (GProtocolDeclDel) setProtocolDeclContext(getProtocolDeclContext());
-		copy.inlined = gpb;*/
-		
-		//..store inlined version in gprotocoldel -- need some way for some visitors to go through module into the inlined proto, while other visitors use the original ast
-		//-- at least can hack this in as an explicit flag
-		
-		//return ((GProtocolDecl) visited).del(copy);
-
-		return gpd;
+		return visited;
 	}
 
 	@Override

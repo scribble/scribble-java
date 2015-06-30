@@ -40,13 +40,16 @@ public class Job
 		runNodeVisitorPass(ModelBuilder.class);*/
 
 		debugPrintln("\n--- Subprotocol inlining --- ");
-		runNodeVisitorPass(ProtocolDefInliner.class);
+		//runNodeVisitorPass(ProtocolDefInliner.class);
 
-		/*debugPrintln("\n--- Well-formed choice check --- ");
-		runNodeVisitorPass(WFChoiceChecker.class);*/
+		debugPrintln("\n--- Inlined protocol unfolding --- ");
+		//runNodeVisitorPass(InlinedProtocolUnfolder.class);
 
-		debugPrintln("\n--- Inlined well-formed choice check --- ");
-		runNodeVisitorPass(InlinedWFChoiceChecker.class);
+		debugPrintln("\n--- Well-formed choice check --- ");
+		runNodeVisitorPass(WFChoiceChecker.class);
+
+		/*debugPrintln("\n--- Inlined well-formed choice check --- ");
+		runNodeVisitorPass(InlinedWFChoiceChecker.class);*/
 
 		debugPrintln("\n--- Projection --- ");
 		runNodeVisitorPass(Projector.class);

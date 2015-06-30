@@ -18,7 +18,7 @@ import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
-import org.scribble.visit.SubprotocolVisitor;
+import org.scribble.visit.OffsetSubprotocolVisitor;
 import org.scribble.visit.WFChoiceChecker;
 
 public class WFChoiceEnv extends Env
@@ -220,7 +220,7 @@ public class WFChoiceEnv extends Env
 
 	// The "main" public routine: "addMessage taking into account subprotocols"
 	//public WellFormedChoiceEnv addMessageForSubprotocol(SubprotocolVisitor spv, Role src, Role dest, ScopedMessage msg)
-	public WFChoiceEnv addMessageForSubprotocol(SubprotocolVisitor<WFChoiceEnv> spv, Role src, Role dest, Message msg)
+	public WFChoiceEnv addMessageForSubprotocol(OffsetSubprotocolVisitor<WFChoiceEnv> spv, Role src, Role dest, Message msg)
 	{
 		WFChoiceEnv copy = copy();
 		if (!spv.isStackEmpty())

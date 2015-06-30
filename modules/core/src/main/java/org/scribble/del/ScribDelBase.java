@@ -5,6 +5,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.EnvVisitor;
 import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
@@ -123,13 +124,25 @@ public abstract class ScribDelBase implements ScribDel
 	}
 
 	@Override
-	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 		
 	}
 
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	@Override
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	{
+		
+	}
+
+	@Override
+	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

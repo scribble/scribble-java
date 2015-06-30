@@ -105,12 +105,12 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		GMessageTransfer inlined = AstFactoryImpl.FACTORY.GMessageTransfer(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GMessageTransfer) super.leaveInlineProtocolTranslation(parent, child, builder, gmt);
+		return (GMessageTransfer) super.leaveProtocolInlining(parent, child, builder, gmt);
 	}
 
 	@Override

@@ -15,24 +15,39 @@ type <java> "java.lang.String" from "rt.jar" as String;
 
 global protocol Foo(role A, role B)
 {
-	1() from A to B;
 	choice at A
 	{
-		//1() from A to B;
+		1() from A to B;
+		rec X
+		{
+			2() from A to B;
+			3() from A to B;
+			
+			.. FIXME for regular WFC check and then put back inline WFC check
+		}
+	}
+	or
+	{
+		3() from A to B;
+	}
+	/*//1() from A to B;
+	choice at A
+	{
+		1() from A to B;
 		do Bar(A, B);
 	}
 	or
 	{
-		2() from A to B;
+		//2() from A to B;
 		3() from A to B;
-	}
+	}*/
 }
 
 global protocol Bar(role A, role B)
 {
 	2() from A to B;
 	3() from A to B;
-	do Foo(A, B);
+	//do Foo(A, B);
 }
 
 

@@ -87,23 +87,13 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.subprotocolEnter(parent, child);
-		child.del().enterInlineProtocolTranslation(parent, child, this);
+		child.del().enterProtocolInlining(parent, child, this);
 	}
 	
 	@Override
 	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveInlineProtocolTranslation(parent, child, this, visited);
+		visited = visited.del().leaveProtocolInlining(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);
-	}
-	
-	public Map<SubprotocolSig, RecVar> getRecVars()
-	{
-		return this.recvars;
-	}
-	
-	public void addRecVar()
-	{
-		
 	}
 }

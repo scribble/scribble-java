@@ -16,6 +16,8 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 	
 	protected abstract ProtocolBlock<K> reconstruct(InteractionSeq<K> seq);
 
+	public abstract InteractionSeq<K> getInteractionSeq();
+
 	@Override
 	public ProtocolBlock<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{

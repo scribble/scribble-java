@@ -31,6 +31,6 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	@Override
 	public GProtocolBlock getBlock()
 	{
-		return (GProtocolBlock) getBlock();
+		return (GProtocolBlock) this.block;
 	}
 }

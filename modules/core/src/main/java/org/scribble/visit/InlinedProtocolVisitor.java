@@ -21,7 +21,6 @@ public abstract class InlinedProtocolVisitor<T extends Env> extends EnvVisitor<T
 		return leave(parent, child, visited);
 	}
 
-	// Subclasses can override this to disable subprotocol visiting
 	protected ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof GProtocolDef)
@@ -34,6 +33,7 @@ public abstract class InlinedProtocolVisitor<T extends Env> extends EnvVisitor<T
 		}
 	}
 	
+	// N.B. results of visiting inlined version are stored back to inlined field, but original AST is unaffected -- so any Env/Del or AST updates to inlined version do not reflect back onto original AST -- a motivation for the original SubprotocolVisitor approach
 	private ScribNode visitOverrideForGProtocolDef(ScribNode parent, GProtocolDef gpd) throws ScribbleException
 	{
 		GProtocolDef inlined = ((GProtocolDefDel) gpd.del()).getInlinedGProtocolDef();
@@ -41,7 +41,12 @@ public abstract class InlinedProtocolVisitor<T extends Env> extends EnvVisitor<T
 		{
 			throw new RuntimeException("InlineProtocolVisitor error: " + gpd);
 		}
-		return inlined.visitChildren(this);
+		GProtocolDef visited = (GProtocolDef) inlined.visitChildren(this);
+
+		System.out.println("2: " + visited);
+
+		GProtocolDefDel del = (GProtocolDefDel) gpd.del();
+		return gpd.del(del.setInlinedGProtocolDef(visited));
 	}
 
 	@Override

@@ -23,7 +23,7 @@ import org.scribble.visit.env.ProjectionEnv;
 
 // Uses visitor infrastructure to traverse AST and generate local nodes from global with original nodes unchanged (so does not use normal visitChildren pattern -- env used to pass the working projections)
 // uses envs but does not need to be a SubProtocolVisitor -- swap env and subprotocol visitors in hierarchy? Maybe not: e.g. GraphBuilder is a subprotocol visitor but not an env visitor -- maybe not any more, more like projector (uses pre-built dependencies)
-public class Projector extends SubprotocolVisitor<ProjectionEnv>
+public class Projector extends OffsetSubprotocolVisitor<ProjectionEnv>
 {
 	private Stack<Role> selfs = new Stack<>();  // Is a stack needed? roles only pushed from GlobalProtocolDecl, which should be only done once at the root?
 	
@@ -58,7 +58,7 @@ public class Projector extends SubprotocolVisitor<ProjectionEnv>
 	
   // Important: projection should not follow the subprotocol visiting pattern for do's -- projection uses some name mangling, which isn't compatible with subprotocol visitor name maps
 	@Override
-	protected ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitForOffsetSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		return child.visitChildren(this);
 	}
@@ -81,17 +81,17 @@ public class Projector extends SubprotocolVisitor<ProjectionEnv>
 	}
 	
 	@Override
-	protected final void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.subprotocolEnter(parent, child);
+		super.offsetSubprotocolEnter(parent, child);
 		child.del().enterProjection(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveProjection(parent, child, this, visited);
-		return super.subprotocolLeave(parent, child, visited);
+		return super.offsetSubprotocolLeave(parent, child, visited);
 	}
 
 	public void pushSelf(Role self)

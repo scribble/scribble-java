@@ -12,7 +12,7 @@ import org.scribble.model.local.GraphBuilder;
 // FIXME: doesn't need to be an EnvVisitor?
 //public class FsmConverter extends EnvVisitor<FsmBuildingEnv>
 //public class FsmConverter extends ModelVisitor
-public class FsmBuilder extends NoEnvSubprotocolVisitor  // For "inlining" Do
+public class FsmBuilder extends NoEnvOffsetSubprotocolVisitor  // For "inlining" Do
 {
 	//public final FsmBuilder builder = new FsmBuilder();
 	public final GraphBuilder builder = new GraphBuilder();
@@ -26,7 +26,7 @@ public class FsmBuilder extends NoEnvSubprotocolVisitor  // For "inlining" Do
 
 	// Override visitForSubprotocols, not visit, or else enter/exit is lost
 	@Override
-	public ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visitForOffsetSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof LInteractionSeq)
 		{
@@ -38,7 +38,7 @@ public class FsmBuilder extends NoEnvSubprotocolVisitor  // For "inlining" Do
 		}
 		else
 		{
-			return super.visitForSubprotocols(parent, child);
+			return super.visitForOffsetSubprotocols(parent, child);
 		}
 	}
 
@@ -51,23 +51,23 @@ public class FsmBuilder extends NoEnvSubprotocolVisitor  // For "inlining" Do
 	{
 		if (!isCycle())
 		{
-			return (LDo) super.visitForSubprotocols(parent, child);
+			return (LDo) super.visitForOffsetSubprotocols(parent, child);
 		}
 		return ((LDoDel) child.del()).visitForFsmConversion(this, child);  // If cycle, super routine does nothing anyway, so we can just replace with new stuff here
 	}
 
 	@Override
-	protected final void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.subprotocolEnter(parent, child);
+		super.offsetSubprotocolEnter(parent, child);
 		child.del().enterFsmBuilder(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveFsmBuilder(parent, child, this, visited);
-		return super.subprotocolLeave(parent, child, visited);
+		return super.offsetSubprotocolLeave(parent, child, visited);
 	}
 	
 	/*public void addLabelledState(ProtocolState s)

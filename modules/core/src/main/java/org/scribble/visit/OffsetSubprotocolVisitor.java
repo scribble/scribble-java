@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgNode;
-import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScopedNode;
 import org.scribble.ast.ScribNode;
@@ -29,7 +28,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
 import org.scribble.visit.env.Env;
 
-public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
+public abstract class OffsetSubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 {
 	private List<SubprotocolSig> stack = new LinkedList<>();
 	
@@ -39,7 +38,7 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 	
 	private Scope scope = null;
 
-	public SubprotocolVisitor(Job job)
+	public OffsetSubprotocolVisitor(Job job)
 	{
 		super(job);
 	}
@@ -55,25 +54,6 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 						.collect(Collectors.toMap((p) -> (Arg<?>) p.getDeclName(), (p) -> (NonRoleArgNode) p.name));
 		this.rolemaps.push(rolemap);
 		this.argmaps.push(argmap);
-		
-		ModuleContext mcontext = getModuleContext();
-		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolDeclName(pd.header.getDeclName());
-		List<Role> roleargs = pd.header.roledecls.getRoles();
-		List<Arg<? extends NonRoleArgKind>> argargs =
-				pd.header.paramdecls.getParamDecls().stream().map((param) -> paramDeclToArg(param)).collect(Collectors.toList());
-		pushSubprotocolSig(fullname, roleargs, argargs);
-	}
-	
-	private static Arg<? extends NonRoleArgKind> paramDeclToArg(NonRoleParamDecl<NonRoleParamKind> pd)
-	{
-		Name<NonRoleParamKind> n = pd.getDeclName();
-		if (!(n instanceof Arg))
-		{
-			throw new RuntimeException("Shouldn't get in here: " + n);
-		}
-		@SuppressWarnings("unchecked")
-		Arg<? extends NonRoleArgKind> tmp = (Arg<? extends NonRoleArgKind>) n;
-		return tmp;
 	}
 
 	// Most subclasses will override visitForSubprotocols (e.g. ReachabilityChecker, FsmConstructor), but sometimes still want to change whole visit pattern (e.g. Projector)
@@ -81,12 +61,12 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		enter(parent, child);
-		ScribNode visited = visitForSubprotocols(parent, child);
+		ScribNode visited = visitForOffsetSubprotocols(parent, child);
 		return leave(parent, child, visited);
 	}
 
 	// Subclasses can override this to disable subprotocol visiting
-	protected ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitForOffsetSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof Do)
 		{
@@ -119,7 +99,7 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		if (child instanceof ProtocolDecl)
 		{
 			setScope(Scope.ROOT_SCOPE);
-			enterRootProtocolDecl((ProtocolDecl<?>) child);
+			enterRootProtocolDecl((ProtocolDecl<?>) child);  // Doesn't push proto stack, just for root role/arg names
 		}
 		if (child instanceof ScopedNode)
 		{
@@ -133,16 +113,17 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		{
 			enterSubprotocol((Do<?>) child);  // Scope already pushed
 		}
-		subprotocolEnter(parent, child);
+		offsetSubprotocolEnter(parent, child);
 	}
 
 	@Override
 	protected final ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		ScribNode n = subprotocolLeave(parent, child, visited);
+		ScribNode n = offsetSubprotocolLeave(parent, child, visited);
 		if (child instanceof ProtocolDecl)
 		{
-			leaveSubprotocol();
+			this.rolemaps.pop();
+			this.argmaps.pop();
 		}
 		if (child instanceof Do)  // child or visited/n?
 		{
@@ -155,12 +136,12 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		return super.envLeave(parent, child, n);
 	}
 
-	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 
 	}
 
-	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

@@ -205,7 +205,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
 		List<GProtocolBlock> blocks = 
@@ -213,7 +213,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
 		GChoice inlined = AstFactoryImpl.FACTORY.GChoice(subj, blocks);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GChoice) super.leaveInlineProtocolTranslation(parent, child, builder, gc);
+		return (GChoice) super.leaveProtocolInlining(parent, child, builder, gc);
 	}
 
 	@Override

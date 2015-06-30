@@ -70,13 +70,13 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	}
 
 	@Override
-	public void enterInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 		pushVisitorEnv(parent, child, builder);
 	}
 	
 	@Override
-	public ScribNode leaveInlineProtocolTranslation(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();

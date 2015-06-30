@@ -8,7 +8,7 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 
-public class MessageIdCollector extends NoEnvSubprotocolVisitor
+public class MessageIdCollector extends NoEnvOffsetSubprotocolVisitor
 {
 	private Set<MessageId> mids = new HashSet<>();
 	
@@ -29,16 +29,16 @@ public class MessageIdCollector extends NoEnvSubprotocolVisitor
 	}
 
 	@Override
-	protected final void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.subprotocolEnter(parent, child);
+		super.offsetSubprotocolEnter(parent, child);
 		child.del().enterOpCollection(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveOpCollection(parent, child, this, visited);
-		return super.subprotocolLeave(parent, child, visited);
+		return super.offsetSubprotocolLeave(parent, child, visited);
 	}
 }

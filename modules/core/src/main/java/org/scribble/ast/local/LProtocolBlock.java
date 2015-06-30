@@ -7,7 +7,7 @@ import org.scribble.sesstype.kind.Local;
 
 public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 {
-	public LProtocolBlock(InteractionSeq<Local> seq)
+	public LProtocolBlock(LInteractionSeq seq)
 	{
 		super(seq);
 	}
@@ -15,15 +15,21 @@ public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 	@Override
 	protected LProtocolBlock copy()
 	{
-		return new LProtocolBlock(this.seq);
+		return new LProtocolBlock(getInteractionSeq());
 	}
 
 	@Override
 	protected LProtocolBlock reconstruct(InteractionSeq<Local> seq)
 	{
 		ScribDel del = del();
-		LProtocolBlock lpb = new LProtocolBlock(seq);
+		LProtocolBlock lpb = new LProtocolBlock((LInteractionSeq) seq);
 		lpb = (LProtocolBlock) lpb.del(del);
 		return lpb;
+	}
+
+	@Override
+	public LInteractionSeq getInteractionSeq()
+	{
+		return (LInteractionSeq) this.seq;
 	}
 }
