@@ -72,7 +72,7 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 			if (actions.size() > 0 && actions.get(0) instanceof GContinue)
 			{
 				GContinue gc = (GContinue) actions.get(0);
-				//return unf.getRecVar(gc.recvar.toName());
+				return unf.getRecVar(gc.recvar.toName());
 			}
 			// FIXME: if first action is recursion
 			// FIXME: the action check should be role sensitive?

@@ -126,8 +126,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	public GProtocolDecl leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
-		System.out.println("1: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
-		System.out.println("2: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());
+		System.out.println("1a: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
+		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());
 		return gpd;
 	}
 	

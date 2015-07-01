@@ -27,6 +27,8 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 	}
 
 	protected abstract Do<K> reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<K> proto);//, SimpleInteractionNodeContext sicontext, Env env);
+	
+	public abstract ProtocolNameNode<K> getProtocolNameNode();
 
 	@Override
 	public Do<K> visitChildren(AstVisitor nv) throws ScribbleException

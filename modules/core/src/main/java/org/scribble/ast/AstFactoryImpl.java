@@ -35,6 +35,7 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -378,6 +379,14 @@ public class AstFactoryImpl implements AstFactory
 		NonRoleParamNode<K> pn = new NonRoleParamNode<K>(kind, identifier);
 		pn = del(pn, new ParamNodeDel());
 		return pn;
+	}
+
+	@Override
+	public DummyProjectionRoleNode DummyProjectionRoleNode()
+	{
+		DummyProjectionRoleNode dprn = new DummyProjectionRoleNode();
+		dprn = (DummyProjectionRoleNode) dprn.del(createDefaultDelegate());
+		return dprn;
 	}
 
 	@Override

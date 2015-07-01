@@ -33,7 +33,7 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 		GRecursion rec = (GRecursion) visited;
 		WFChoiceEnv merged = checker.popEnv().mergeContext((WFChoiceEnv) rec.block.del().env());
 		checker.pushEnv(merged);
-		return rec;
+		return (GRecursion) super.leaveWFChoiceCheck(parent, child, checker, rec);
 	}
 
 	@Override
@@ -82,6 +82,6 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 		GRecursion rec = (GRecursion) visited;
 		InlinedWFChoiceEnv merged = checker.popEnv().mergeContext((InlinedWFChoiceEnv) rec.block.del().env());
 		checker.pushEnv(merged);
-		return rec;
+		return (GRecursion) super.leaveInlinedWFChoiceCheck(parent, child, checker, rec);
 	}
 }

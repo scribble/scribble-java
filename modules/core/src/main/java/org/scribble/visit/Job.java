@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.scribble.ast.Module;
+import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointApiGenerator;
 import org.scribble.net.session.SessionApiGenerator;
@@ -40,16 +41,16 @@ public class Job
 		runNodeVisitorPass(ModelBuilder.class);*/
 
 		debugPrintln("\n--- Subprotocol inlining --- ");
-		//runNodeVisitorPass(ProtocolDefInliner.class);
+		runNodeVisitorPass(ProtocolDefInliner.class);
 
 		debugPrintln("\n--- Inlined protocol unfolding --- ");
-		//runNodeVisitorPass(InlinedProtocolUnfolder.class);
+		runNodeVisitorPass(InlinedProtocolUnfolder.class);
 
-		debugPrintln("\n--- Well-formed choice check --- ");
-		runNodeVisitorPass(WFChoiceChecker.class);
+		/*debugPrintln("\n--- Well-formed choice check --- ");
+		runNodeVisitorPass(WFChoiceChecker.class);*/
 
-		/*debugPrintln("\n--- Inlined well-formed choice check --- ");
-		runNodeVisitorPass(InlinedWFChoiceChecker.class);*/
+		debugPrintln("\n--- Inlined well-formed choice check --- ");
+		runNodeVisitorPass(InlinedWFChoiceChecker.class);
 
 		debugPrintln("\n--- Projection --- ");
 		runNodeVisitorPass(Projector.class);
@@ -57,6 +58,7 @@ public class Job
 		// No: SubprotocolVisitor is an "inlining" step, it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
 		// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
 		buildProjectionContexts();
+		runNodeVisitorPass(ProjectedChoiceSubjectFixer.class);
 
 		debugPrintln("\n--- Reachability check --- ");
 		runNodeVisitorPass(ReachabilityChecker.class);

@@ -21,7 +21,7 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new GDo(this.roles, this.args, (GProtocolNameNode) this.proto);
+		return new GDo(this.roles, this.args, getProtocolNameNode());
 	}
 
 	@Override
@@ -31,6 +31,12 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 		GDo gd = new GDo(roleinstans, arginstans, (GProtocolNameNode) proto);
 		gd = (GDo) gd.del(del);
 		return gd;
+	}
+
+	@Override
+	public GProtocolNameNode getProtocolNameNode()
+	{
+		return (GProtocolNameNode) this.proto;
 	}
 
 	@Override

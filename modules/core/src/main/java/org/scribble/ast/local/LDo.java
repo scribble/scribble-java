@@ -20,7 +20,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	@Override
 	protected LDo copy()
 	{
-		return new LDo(this.roles, this.args, (LProtocolNameNode) this.proto);
+		return new LDo(this.roles, this.args, getProtocolNameNode());
 	}
 	
 	@Override
@@ -30,6 +30,12 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 		LDo ld = new LDo(roleinstans, arginstans, (LProtocolNameNode) proto);
 		ld = (LDo) ld.del(del);
 		return ld;
+	}
+
+	@Override
+	public LProtocolNameNode getProtocolNameNode()
+	{
+		return (LProtocolNameNode) this.proto;
 	}
 
 	@Override

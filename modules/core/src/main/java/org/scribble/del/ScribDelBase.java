@@ -10,6 +10,7 @@ import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
@@ -83,6 +84,18 @@ public abstract class ScribDelBase implements ScribDel
 	
 	@Override
 	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	@Override
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	{
+		
+	}
+
+	@Override
+	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
 	{
 		return visited;
 	}

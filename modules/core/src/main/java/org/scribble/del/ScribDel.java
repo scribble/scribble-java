@@ -9,6 +9,7 @@ import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
@@ -32,6 +33,9 @@ public interface ScribDel
 
 	void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException;
 	ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException;
+
+	void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer);
+	ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited);
 
 	void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException;
 	ScribNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException;

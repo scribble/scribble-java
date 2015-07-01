@@ -35,6 +35,7 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.qualified.QualifiedNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
+import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -91,6 +92,7 @@ public interface AstFactory
 	
 	AmbigNameNode AmbiguousNameNode(String identifier);
 	<K extends NonRoleParamKind> NonRoleParamNode<K> NonRoleParamNode(K kind, String identifier);
+	DummyProjectionRoleNode DummyProjectionRoleNode();
 
 	LProtocolDecl LProtocolDecl(LProtocolHeader header, LProtocolDef def);
 	LProtocolHeader LProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);

@@ -35,7 +35,7 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 	@Override
 	public String toString()
 	{
-		String s = Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + this.blocks.get(0);
+		String s = Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + " " + this.blocks.get(0);
 		for (ProtocolBlock<K> block : this.blocks.subList(1, this.blocks.size()))
 		{
 			s += " " + Constants.OR_KW + " " + block;

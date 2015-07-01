@@ -53,8 +53,6 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
 		{
 			env = env.addMessageForSubprotocol(checker, src, dest, msg);
-			
-			//System.out.println("1: " + src + ", " + dest + ", " + msg);
 		}
 		checker.pushEnv(env);
 		
@@ -124,8 +122,6 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
 		{
 			env = env.addMessageForSubprotocol(checker, src, dest, msg);
-			
-			//System.out.println("1: " + src + ", " + dest + ", " + msg);
 		}
 		checker.pushEnv(env);
 		
