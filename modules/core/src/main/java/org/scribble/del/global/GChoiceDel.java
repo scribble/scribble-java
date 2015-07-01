@@ -144,77 +144,12 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
 		if (!blocks.get(0).isEmpty())  // WF allows empty (blocks/seq are never null)
 		{
-			//RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getSubject(proj, blocks.get(0)).toString());
 			RoleNode subj = AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
 			projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) super.leaveProjection(parent, child, proj, gc);
 	}
-	
-	/*// Relies on WF rule for same enabler role in all choice blocks
-	private static Role getSubject(EnvVisitor<?> ev, ProtocolBlock<Local> block)
-	{
-		InteractionNode<Local> ln = block.seq.actions.get(0);
-		Role subj;
-		if (ln instanceof SimpleInteractionNode)
-		{
-			// By well-formedness and projection, cannot be RecursionVar, but it can be a (recursive) subprotocol
-			if (ln instanceof MessageTransfer)
-			{
-				subj = ((MessageTransfer<Local>) ln).src.toName();
-			}
-			else if (ln instanceof Do)
-			{
-				LDo ld = (LDo) ln;
-				ModuleContext mc = ev.getModuleContext();
-				JobContext jc = ev.getJobContext();
-				
-				// HACK: we're doing the projections now, so projection info not available yet in context (i.e. local protocols)
-				// So reverse engineering the local names back to global
-				LProtocolName lpn = ld.getProtocolNameNode().toName();
-				String mn = lpn.getPrefix().toString();
-				mn = mn.substring(0, mn.lastIndexOf('_'));
-				mn = mn.substring(0, mn.lastIndexOf('_'));  // FIXME: not sound
-				ModuleName modname = new ModuleName(mn);
-				String pn = lpn.getSimpleName().toString();
-				pn = pn.substring(0, pn.lastIndexOf('_'));
-				GProtocolName gpn = new GProtocolName(modname, new GProtocolName(pn));
-				
-				System.out.println("3: " + gpn);
-				throw new RuntimeException("TODO: " + ln);
-			}
-			else
-			{
-				throw new RuntimeException("TODO: " + ln);
-			}
-		}
-		else //if (ln instanceof CompoundInteractionNode)
-		{
-			// Factor out CompoundBlockedNode?
-			if (ln instanceof Choice)
-			{
-				return getSubject(ev, ((LChoice) ln).blocks.get(0));
-			}
-			else if (ln instanceof Recursion)
-			{
-				return getSubject(ev, ((LRecursion) ln).block);
-			}
-			else if (ln instanceof Parallel)
-			{
-				return getSubject(ev, ((LParallel) ln).blocks.get(0));
-			}
-			else if (ln instanceof Interruptible)
-			{
-				return getSubject(ev, ((LInterruptible) ln).block);
-			}
-			else
-			{
-				throw new RuntimeException("Shouldn't get in here: " + ln);
-			}
-		}
-		return subj;
-	}*/
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
