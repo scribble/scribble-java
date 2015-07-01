@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.scribble.ast.Module;
-import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointApiGenerator;
 import org.scribble.net.session.SessionApiGenerator;

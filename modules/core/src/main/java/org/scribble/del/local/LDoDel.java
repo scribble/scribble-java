@@ -43,7 +43,7 @@ public class LDoDel extends LSimpleInteractionNodeDel
 		return (LDo) visited;
 	}
 
-	@Override
+	/*@Override
 	public void enterFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv)
 	{
 		super.enterFsmBuilder(parent, child, conv);
@@ -52,8 +52,9 @@ public class LDoDel extends LSimpleInteractionNodeDel
 			SubprotocolSig subsig = conv.peekStack();  // SubprotocolVisitor has already entered subprotocol
 			Set<String> labs = new HashSet<>(conv.builder.getEntry().getLabels());
 			labs.add(subsig.toString());
-			ProtocolState s = conv.builder.newState(labs);
-			conv.builder.setEntry(s);
+			/*ProtocolState s = conv.builder.newState(labs);
+			conv.builder.setEntry(s);* /  // No: need to relabel the existing state, not completely replace it
+			ProtocolState s = conv.builder.getEntry();
 			conv.builder.setSubprotocolEntry(subsig);
 		}
 	}
@@ -72,5 +73,5 @@ public class LDoDel extends LSimpleInteractionNodeDel
 		SubprotocolSig subsig = conv.peekStack();
 		conv.builder.removeSubprotocolEntry(subsig);  // FIXME: maybe should only do if cycle (cf. GoDelDel#leaveInlineProtocolTranslation)
 		return (LDo) super.leaveFsmBuilder(parent, child, conv, visited);
-	}
+	}*/
 }

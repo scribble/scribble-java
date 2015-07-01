@@ -1,18 +1,20 @@
 package org.scribble.visit;
 
+import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.del.local.LDoDel;
 import org.scribble.del.local.LInteractionSeqDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.GraphBuilder;
+import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.visit.env.DummyEnv;
 
 // FIXME: doesn't need to be an EnvVisitor?
 //public class FsmConverter extends EnvVisitor<FsmBuildingEnv>
 //public class FsmConverter extends ModelVisitor
-public class FsmBuilder extends NoEnvOffsetSubprotocolVisitor  // For "inlining" Do
+//public class FsmBuilder extends NoEnvOffsetSubprotocolVisitor  // For "inlining" Do
+public class FsmBuilder extends InlinedProtocolVisitor<DummyEnv>
 {
 	//public final FsmBuilder builder = new FsmBuilder();
 	public final GraphBuilder builder = new GraphBuilder();
@@ -26,19 +28,21 @@ public class FsmBuilder extends NoEnvOffsetSubprotocolVisitor  // For "inlining"
 
 	// Override visitForSubprotocols, not visit, or else enter/exit is lost
 	@Override
-	public ScribNode visitForOffsetSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	//public ScribNode visitForOffsetSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	public ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof LInteractionSeq)
 		{
 			return visitOverrideForLInteractionSeq((LProtocolBlock) parent, (LInteractionSeq) child);
 		}
-		else if (child instanceof LDo)
+		/*else if (child instanceof LDo)
 		{
 			return visitOverrideForLDo((LInteractionSeq) parent, (LDo) child);
-		}
+		}*/
 		else
 		{
-			return super.visitForOffsetSubprotocols(parent, child);
+			//return super.visitForOffsetSubprotocols(parent, child);
+			return super.visitInlinedProtocol(parent, child);
 		}
 	}
 
@@ -47,27 +51,37 @@ public class FsmBuilder extends NoEnvOffsetSubprotocolVisitor  // For "inlining"
 		return ((LInteractionSeqDel) child.del()).visitForFsmConversion(this, child);
 	}
 
-	protected LDo visitOverrideForLDo(LInteractionSeq parent, LDo child) throws ScribbleException
+	/*protected LDo visitOverrideForLDo(LInteractionSeq parent, LDo child) throws ScribbleException
 	{
 		if (!isCycle())
 		{
 			return (LDo) super.visitForOffsetSubprotocols(parent, child);
 		}
 		return ((LDoDel) child.del()).visitForFsmConversion(this, child);  // If cycle, super routine does nothing anyway, so we can just replace with new stuff here
-	}
+	}*/
 
 	@Override
-	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	//protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.offsetSubprotocolEnter(parent, child);
+		//super.offsetSubprotocolEnter(parent, child);
+		super.inlinedProtocolEnter(parent, child);
 		child.del().enterFsmBuilder(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	//protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveFsmBuilder(parent, child, this, visited);
-		return super.offsetSubprotocolLeave(parent, child, visited);
+		//return super.offsetSubprotocolLeave(parent, child, visited);
+		return super.inlinedProtocolLeave(parent, child, visited);
+	}
+
+	@Override
+	protected DummyEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	{
+		return DummyEnv.DUMMY;
 	}
 	
 	/*public void addLabelledState(ProtocolState s)

@@ -32,6 +32,12 @@ public class ProtocolState
 		return this.edges;
 	}*/
 	
+	/*// HACK: for subprotocol graph building -- can probably bypass by building the graph from the inlined protocol
+	public void addLabel(String lab)
+	{
+		this.labs.add(lab);
+	}*/
+	
 	protected void addEdge(IOAction a, ProtocolState s)
 	{
 		this.edges.put(a, s);

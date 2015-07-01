@@ -94,6 +94,7 @@ public class LChoiceDel extends LCompoundInteractionNodeDel
 		}
 		return subj;
 	}
+
 	@Override
 	public LChoice leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
