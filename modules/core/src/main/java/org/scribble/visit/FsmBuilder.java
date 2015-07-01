@@ -15,6 +15,7 @@ import org.scribble.visit.env.DummyEnv;
 //public class FsmConverter extends ModelVisitor
 //public class FsmBuilder extends NoEnvOffsetSubprotocolVisitor  // For "inlining" Do
 public class FsmBuilder extends InlinedProtocolVisitor<DummyEnv>
+// Changed from offsetsubprot visitor to inlined visitor to reduce state label acculumation to rec only -- but this introduces a problem in wfc-checking for "unguarded" recursive-do-as-continue in choice blocks
 {
 	//public final FsmBuilder builder = new FsmBuilder();
 	public final GraphBuilder builder = new GraphBuilder();

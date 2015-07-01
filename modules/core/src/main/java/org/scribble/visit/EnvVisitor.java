@@ -23,9 +23,7 @@ public abstract class EnvVisitor<T extends Env> extends ModuleVisitor
 		super.enter(parent, child);
 		if (child instanceof ProtocolDecl)  // Only the root ProtocolDecl is visited: subprotocols visit the body directly
 		{
-			@SuppressWarnings("unchecked")
-			ProtocolDecl<? extends ProtocolKind> pd = 
-					(ProtocolDecl<? extends ProtocolKind>) child;
+			ProtocolDecl<? extends ProtocolKind> pd = (ProtocolDecl<?>) child;
 			pushEnv(makeRootProtocolDeclEnv(pd));
 		}
 		envEnter(parent, child);

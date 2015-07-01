@@ -1,10 +1,10 @@
 package org.scribble.visit.env;
 
-import org.scribble.ast.global.GNode;
+import org.scribble.ast.ScribNode;
 
 public class InlineProtocolEnv extends Env
 {
-	private GNode inlined;
+	private ScribNode inlined;
 	
 	public InlineProtocolEnv()
 	{
@@ -23,14 +23,14 @@ public class InlineProtocolEnv extends Env
 		return copy();
 	}
 	
-	public InlineProtocolEnv setTranslation(GNode inlined)
+	public InlineProtocolEnv setTranslation(ScribNode inlined)
 	{
 		InlineProtocolEnv copy = new InlineProtocolEnv();
 		copy.inlined = inlined;
 		return copy;
 	}
 
-	public GNode getTranslation()
+	public ScribNode getTranslation()
 	{
 		return this.inlined;
 	}

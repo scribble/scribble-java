@@ -121,7 +121,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public GDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		SubprotocolSig subsig = builder.peekStack();
 		if (!builder.isCycle())

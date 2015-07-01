@@ -3,12 +3,15 @@ package org.scribble.visit;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scribble.ast.Do;
+import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GDo;
-import org.scribble.ast.global.GInteractionSeq;
+import org.scribble.ast.local.LDo;
 import org.scribble.del.global.GDoDel;
+import org.scribble.del.local.LDoDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -60,14 +63,14 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	@Override
 	public ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		if (child instanceof GDo)
+		if (child instanceof Do)
 		{
-			return visitOverrideForGDo((GInteractionSeq) parent, (GDo) child);
+			return visitOverrideForDo((InteractionSeq<?>) parent, (Do<?>) child);
 		}
 		return super.visitForSubprotocols(parent, child);
 	}
 
-	protected GDo visitOverrideForGDo(GInteractionSeq parent, GDo child) throws ScribbleException
+	protected Do<?> visitOverrideForDo(InteractionSeq<?> parent, Do<?> child) throws ScribbleException
 	{
 		if (!isCycle())
 		{
@@ -80,7 +83,11 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 			pushEnv(popEnv().setTranslation(((InlineProtocolEnv) seq.del().env()).getTranslation()));
 			return child;
 		}
-		return ((GDoDel) child.del()).visitForSubprotocolInlining(this, child);  // If cycle, super routine does nothing anyway, so we can just replace with new stuff here
+
+		// If cycle, super routine does nothing anyway, so we can just replace with new stuff here
+		return (child instanceof GDo)
+				? ((GDoDel) child.del()).visitForSubprotocolInlining(this, (GDo) child)
+				: ((LDoDel) child.del()).visitForSubprotocolInlining(this, (LDo) child);
 	}
 	
 	@Override

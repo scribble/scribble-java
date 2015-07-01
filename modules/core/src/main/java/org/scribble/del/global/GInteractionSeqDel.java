@@ -15,7 +15,6 @@ import org.scribble.ast.InteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GNode;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LNode;
@@ -24,9 +23,9 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
@@ -64,15 +63,9 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				lis.clear();
 			}
 		}
-		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSequence(lis);
+		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(lis);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, proj, gis);
-	}
-
-	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
-	{
-		pushVisitorEnv(parent, child, builder);
 	}
 	
 	@Override
@@ -82,7 +75,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();
 		for (GInteractionNode gi : gis.getActions())
 		{
-			GNode inlined = ((InlineProtocolEnv) gi.del().env()).getTranslation();
+			ScribNode inlined = ((InlineProtocolEnv) gi.del().env()).getTranslation();
 			if (inlined instanceof GInteractionSeq)
 			{
 				gins.addAll(((GInteractionSeq) inlined).getActions());
@@ -92,7 +85,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				gins.add((GInteractionNode) inlined);
 			}
 		}
-		GInteractionSeq inlined = AstFactoryImpl.FACTORY.GInteractionSequence(gins);
+		GInteractionSeq inlined = AstFactoryImpl.FACTORY.GInteractionSeq(gins);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, builder, gis);
 	}

@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionNode;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.del.InteractionSeqDel;
@@ -12,12 +14,36 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
 
 
 public class LInteractionSeqDel extends InteractionSeqDel
 {
+	@Override
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		LInteractionSeq lis = (LInteractionSeq) visited;
+		List<LInteractionNode> lins = new LinkedList<LInteractionNode>();
+		for (LInteractionNode li : lis.getActions())
+		{
+			ScribNode inlined = ((InlineProtocolEnv) li.del().env()).getTranslation();
+			if (inlined instanceof LInteractionSeq)
+			{
+				lins.addAll(((LInteractionSeq) inlined).getActions());
+			}
+			else
+			{
+				lins.add((LInteractionNode) inlined);
+			}
+		}
+		LInteractionSeq inlined = AstFactoryImpl.FACTORY.LInteractionSeq(lins);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (LInteractionSeq) popAndSetVisitorEnv(parent, child, builder, lis);
+	}
+
 	// Replaces visitChildrenInSubprotocols for LocalInteractionSequence 
 	public LInteractionSeq visitForReachabilityChecking(ReachabilityChecker checker, LInteractionSeq child) throws ScribbleException
 	{

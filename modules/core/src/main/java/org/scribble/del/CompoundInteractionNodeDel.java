@@ -4,6 +4,7 @@ import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedWFChoiceChecker;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.WFChoiceEnv;
@@ -31,6 +32,18 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		parent_env = parent_env.mergeContext(visited_env);
 		checker.pushEnv(parent_env);
 		return (CompoundInteractionNode<?>) visited;
+	}
+
+	@Override
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	{
+		pushVisitorEnv(parent, child, builder);
+	}
+
+	@Override
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		return popAndSetVisitorEnv(parent, child, builder, visited);
 	}
 
 	@Override

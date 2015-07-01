@@ -21,7 +21,6 @@ import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.model.global.ModelState;
-import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -30,7 +29,6 @@ import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
-import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
@@ -107,19 +105,6 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	public GProtocolDeclContext getProtocolDeclContext()
 	{
 		return (GProtocolDeclContext) super.getProtocolDeclContext();
-	}
-
-	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
-	{
-		SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
-		builder.setRecVar(subsig);
-	}
-
-	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
-	{
-		return visited;
 	}
 
 	@Override

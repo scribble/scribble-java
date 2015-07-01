@@ -93,7 +93,7 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 				{
 					LReceive lr = AstFactoryImpl.FACTORY.LReceive(src, msg, dests);
 					List<LInteractionNode> lis = Arrays.asList(new LInteractionNode[]{(LInteractionNode) projection, lr});
-					projection = AstFactoryImpl.FACTORY.LInteractionSequence(lis);
+					projection = AstFactoryImpl.FACTORY.LInteractionSeq(lis);
 				}
 			}
 		}

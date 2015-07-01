@@ -219,7 +219,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GInteractionSeq GInteractionSequence(List<GInteractionNode> actions)
+	public GInteractionSeq GInteractionSeq(List<GInteractionNode> actions)
 	{
 		GInteractionSeq gis = new GInteractionSeq(actions);
 		gis = del(gis, new GInteractionSeqDel());
@@ -430,7 +430,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LInteractionSeq LInteractionSequence(List<LInteractionNode> actions)
+	public LInteractionSeq LInteractionSeq(List<LInteractionNode> actions)
 	{
 		LInteractionSeq lis = new LInteractionSeq(actions);
 		lis = del(lis, new LInteractionSeqDel());

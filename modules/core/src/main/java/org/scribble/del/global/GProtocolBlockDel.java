@@ -1,14 +1,10 @@
 package org.scribble.del.global;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GChoice;
-import org.scribble.ast.global.GContinue;
-import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LInteractionSeq;
@@ -17,7 +13,6 @@ import org.scribble.del.ProtocolBlockDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
@@ -45,12 +40,6 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 	}
 
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
-	{
-		pushVisitorEnv(parent, child, builder);
-	}
-
-	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolBlock gpd = (GProtocolBlock) visited;
@@ -58,26 +47,6 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		GProtocolBlock inlined = AstFactoryImpl.FACTORY.GProtocolBlock(seq);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (GProtocolBlock) popAndSetVisitorEnv(parent, child, builder, gpd);
-	}
-
-	@Override
-	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
-	{
-		GProtocolBlock gpb = (GProtocolBlock) visited;
-		// FIXME: hacky to do this here?
-		if (parent instanceof GChoice)
-		{
-			GInteractionSeq gis = gpb.getInteractionSeq();
-			List<GInteractionNode> actions = gis.getActions();
-			if (actions.size() > 0 && actions.get(0) instanceof GContinue)
-			{
-				GContinue gc = (GContinue) actions.get(0);
-				return unf.getRecVar(gc.recvar.toName());
-			}
-			// FIXME: if first action is recursion
-			// FIXME: the action check should be role sensitive?
-		}
-		return visited;
 	}
 	
 	@Override

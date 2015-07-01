@@ -74,7 +74,7 @@ public interface AstFactory
 	
 	GProtocolDef GProtocolDefinition(GProtocolBlock block);
 	GProtocolBlock GProtocolBlock(GInteractionSeq gis);
-	GInteractionSeq GInteractionSequence(List<GInteractionNode> gis);
+	GInteractionSeq GInteractionSeq(List<GInteractionNode> gis);
 
 	GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks);
@@ -99,7 +99,7 @@ public interface AstFactory
 	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
 	LProtocolDef LProtocolDefinition(LProtocolBlock block);
 	LProtocolBlock LProtocolBlock(LInteractionSeq seq);
-	LInteractionSeq LInteractionSequence(List<LInteractionNode> actions);
+	LInteractionSeq LInteractionSeq(List<LInteractionNode> actions);
 
 	LSend LSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LReceive LReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);

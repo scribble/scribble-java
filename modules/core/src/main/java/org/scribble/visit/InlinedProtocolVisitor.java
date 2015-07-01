@@ -1,8 +1,8 @@
 package org.scribble.visit;
 
+import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GProtocolDef;
-import org.scribble.del.global.GProtocolDefDel;
+import org.scribble.del.ProtocolDefDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.env.Env;
 
@@ -23,9 +23,9 @@ public abstract class InlinedProtocolVisitor<T extends Env> extends EnvVisitor<T
 
 	protected ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		if (child instanceof GProtocolDef)
+		if (child instanceof ProtocolDef)
 		{
-			return visitOverrideForGProtocolDef(parent, (GProtocolDef) child);	// parent is InteractionSequence
+			return visitOverrideForProtocolDef(parent, (ProtocolDef<?>) child);	// parent is InteractionSequence
 		}
 		else
 		{
@@ -34,19 +34,19 @@ public abstract class InlinedProtocolVisitor<T extends Env> extends EnvVisitor<T
 	}
 	
 	// N.B. results of visiting inlined version are stored back to inlined field, but original AST is unaffected -- so any Env/Del or AST updates to inlined version do not reflect back onto original AST -- a motivation for the original SubprotocolVisitor approach
-	private ScribNode visitOverrideForGProtocolDef(ScribNode parent, GProtocolDef gpd) throws ScribbleException
+	private ScribNode visitOverrideForProtocolDef(ScribNode parent, ProtocolDef<?> pd) throws ScribbleException
 	{
-		GProtocolDef inlined = ((GProtocolDefDel) gpd.del()).getInlinedGProtocolDef();
+		ProtocolDef<?> inlined = ((ProtocolDefDel) pd.del()).getInlinedProtocolDef();
 		if (inlined == null)
 		{
-			throw new RuntimeException("InlineProtocolVisitor error: " + gpd);
+			throw new RuntimeException("InlineProtocolVisitor error: " + pd);
 		}
-		GProtocolDef visited = (GProtocolDef) inlined.visitChildren(this);
+		ProtocolDef<?> visited = (ProtocolDef<?>) inlined.visitChildren(this);
 
 		System.out.println("2: " + visited);
 
-		GProtocolDefDel del = (GProtocolDefDel) gpd.del();
-		return gpd.del(del.setInlinedGProtocolDef(visited));
+		ProtocolDefDel del = (ProtocolDefDel) pd.del();
+		return pd.del(del.setInlinedProtocolDef(visited));
 	}
 
 	@Override

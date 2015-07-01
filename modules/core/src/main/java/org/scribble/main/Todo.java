@@ -1,9 +1,15 @@
 package org.scribble.main;
 
+
+	// FIXME: wf-c should in some cases attempt an unfolding on reaching a continue if not satisfied yet -- or do by "recording" cache for recs, as for subprotocolsigs
+	// similar: Changed fsmbuilder from offsetsubprot visitor to inlined visitor to reduce state label acculumation to rec only -- but this introduces a problem in wfc-checking for "unguarded" recursive-do-as-continue in choice blocks -- current offset visitor is also hacked to follow up just "1 level"
+
 	// self comm (wf, projection)
 	// multicast (enforce sending same value -- can "compile" to assertions for separate ops)
 	// AntlrNonRoleParamDeclList -- generic typing error
 
+	// factor out global/local inlining/unfolding better
+	// factor out some global/local del routines from compound/simple classes using default interface methods
 	// move roledecllist etc projection to dels
 
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B })

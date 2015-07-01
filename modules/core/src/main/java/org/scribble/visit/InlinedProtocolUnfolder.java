@@ -3,10 +3,9 @@ package org.scribble.visit;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GNode;
-import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
@@ -14,21 +13,21 @@ import org.scribble.visit.env.InlineProtocolEnv;
 
 public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<InlineProtocolEnv>
 {
-	private Map<RecVar, GProtocolBlock> recvars = new HashMap<>();
+	private Map<RecVar, ProtocolBlock<? extends ProtocolKind>> recvars = new HashMap<>();
 	
 	public InlinedProtocolUnfolder(Job job)
 	{
 		super(job);
 	}
 	
-	public GNode getRecVar(RecVar recvar)
+	public ProtocolBlock<?> getRecVar(RecVar recvar)
 	{
 		return this.recvars.get(recvar);
 	}
 
-	public void setRecVar(RecVar recvar, GProtocolBlock gis)
+	public void setRecVar(RecVar recvar, ProtocolBlock<? extends ProtocolKind> pb)
 	{
-		this.recvars.put(recvar, gis);
+		this.recvars.put(recvar, pb);
 	}
 
 	public void removeRecVar(RecVar recvar)

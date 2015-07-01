@@ -17,7 +17,7 @@ public class AntlrGInteractionSequence
 	{
 		List<GInteractionNode> gis =
 				getInteractionChildren(ct).stream().map((gi) -> (GInteractionNode) parser.parse(gi)).collect(Collectors.toList());
-		return AstFactoryImpl.FACTORY.GInteractionSequence(gis);
+		return AstFactoryImpl.FACTORY.GInteractionSeq(gis);
 	}
 
 	public static List<CommonTree> getInteractionChildren(CommonTree ct)

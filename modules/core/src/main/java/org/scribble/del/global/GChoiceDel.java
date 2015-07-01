@@ -134,6 +134,18 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		}
 		enablers.put(dest, srcs.iterator().next());
 	}
+
+	@Override
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		GChoice gc = (GChoice) visited;
+		List<GProtocolBlock> blocks = 
+				gc.blocks.stream().map((b) -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
+		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
+		GChoice inlined = AstFactoryImpl.FACTORY.GChoice(subj, blocks);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (GChoice) super.leaveProtocolInlining(parent, child, builder, gc);
+	}
 	
 	@Override
 	public GChoice leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
@@ -149,18 +161,6 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) super.leaveProjection(parent, child, proj, gc);
-	}
-
-	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
-	{
-		GChoice gc = (GChoice) visited;
-		List<GProtocolBlock> blocks = 
-				gc.blocks.stream().map((b) -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
-		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
-		GChoice inlined = AstFactoryImpl.FACTORY.GChoice(subj, blocks);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GChoice) super.leaveProtocolInlining(parent, child, builder, gc);
 	}
 
 	@Override

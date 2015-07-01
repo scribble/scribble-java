@@ -42,8 +42,8 @@ public class Job
 		debugPrintln("\n--- Subprotocol inlining --- ");
 		runNodeVisitorPass(ProtocolDefInliner.class);
 
-		debugPrintln("\n--- Inlined protocol unfolding --- ");
-		runNodeVisitorPass(InlinedProtocolUnfolder.class);
+		/*debugPrintln("\n--- Inlined protocol unfolding --- ");
+		runNodeVisitorPass(InlinedProtocolUnfolder.class);*/
 
 		/*debugPrintln("\n--- Well-formed choice check --- ");
 		runNodeVisitorPass(WFChoiceChecker.class);*/
@@ -58,6 +58,7 @@ public class Job
 		// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
 		buildProjectionContexts();
 		runNodeVisitorPass(ProjectedChoiceSubjectFixer.class);
+		inlineProjections();
 
 		debugPrintln("\n--- Reachability check --- ");
 		runNodeVisitorPass(ReachabilityChecker.class);
@@ -76,6 +77,35 @@ public class Job
 				mod = (Module) mod.accept(builder);
 				this.jcontext.replaceModule(mod);
 			}
+		}
+		catch (ScribbleException e)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + e);
+		}
+	}
+
+	// FIXME: factor out with buildProjectionContexts and runNodeVisitorPass
+	private void inlineProjections()
+	{
+		try
+		{
+			Map<LProtocolName, Module> projections = this.jcontext.getProjections();
+			ProtocolDefInliner inliner = new ProtocolDefInliner(this);
+			for (LProtocolName lpn : projections.keySet())
+			{
+				Module mod = projections.get(lpn);
+				mod = (Module) mod.accept(inliner);
+				this.jcontext.replaceModule(mod);
+			}
+
+			/*projections = this.jcontext.getProjections();
+			InlinedProtocolUnfolder unfolder = new InlinedProtocolUnfolder(this);
+			for (LProtocolName lpn : projections.keySet())
+			{
+				Module mod = projections.get(lpn);
+				mod = (Module) mod.accept(unfolder);
+				this.jcontext.replaceModule(mod);
+			}*/
 		}
 		catch (ScribbleException e)
 		{

@@ -29,7 +29,9 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ModuleVisitor;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
 
 public class LChoiceDel extends LCompoundInteractionNodeDel
@@ -93,6 +95,18 @@ public class LChoiceDel extends LCompoundInteractionNodeDel
 			}
 		}
 		return subj;
+	}
+
+	@Override
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		LChoice gc = (LChoice) visited;
+		List<LProtocolBlock> blocks = 
+				gc.blocks.stream().map((b) -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
+		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
+		LChoice inlined = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (LChoice) super.leaveProtocolInlining(parent, child, builder, gc);
 	}
 
 	@Override

@@ -1,18 +1,22 @@
 package org.scribble.del.local;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDo;
+import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProtocolBlock;
+import org.scribble.ast.local.LRecursion;
+import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.SubprotocolSig;
+import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.FsmBuilder;
 import org.scribble.visit.JobContext;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
 
 public class LDoDel extends LSimpleInteractionNodeDel
@@ -28,6 +32,44 @@ public class LDoDel extends LSimpleInteractionNodeDel
 				(r) -> builder.addProtocolDependency(r,
 						ld.getTargetFullProtocolName(builder.getModuleContext()), ld.getTargetRoleParameter(jcontext, mcontext, r)));
 		return ld;
+	}
+
+	// FIXME: some of these can be factored out with GDoDel as default interface methods
+	@Override
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	{
+		super.enterProtocolInlining(parent, child, builder);
+		if (!builder.isCycle())
+		{
+			SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
+			builder.setRecVar(subsig);
+		}
+	}
+
+	// Only called if cycle
+	public LDo visitForSubprotocolInlining(ProtocolDefInliner builder, LDo child)
+	{
+		SubprotocolSig subsig = builder.peekStack();
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
+		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(recvar);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return child;
+	}
+	
+	@Override
+	public LDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		SubprotocolSig subsig = builder.peekStack();
+		if (!builder.isCycle())
+		{
+			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
+			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) builder.peekEnv()).getTranslation());
+			LProtocolBlock gb = AstFactoryImpl.FACTORY.LProtocolBlock(gis);
+			LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(recvar, gb);
+			builder.pushEnv(builder.popEnv().setTranslation(inlined));
+			builder.removeRecVar(subsig);
+		}	
+		return (LDo) super.leaveProtocolInlining(parent, child, builder, visited);
 	}
 
 	@Override
@@ -53,8 +95,9 @@ public class LDoDel extends LSimpleInteractionNodeDel
 			Set<String> labs = new HashSet<>(conv.builder.getEntry().getLabels());
 			labs.add(subsig.toString());
 			/*ProtocolState s = conv.builder.newState(labs);
-			conv.builder.setEntry(s);* /  // No: need to relabel the existing state, not completely replace it
+			conv.builder.setEntry(s);* /  // No: need to relabel the existing state, not completely replace it -- cf. LRecursionDel
 			ProtocolState s = conv.builder.getEntry();
+			...
 			conv.builder.setSubprotocolEntry(subsig);
 		}
 	}
