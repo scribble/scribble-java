@@ -42,8 +42,8 @@ public class Job
 		debugPrintln("\n--- Subprotocol inlining --- ");
 		runNodeVisitorPass(ProtocolDefInliner.class);
 
-		/*debugPrintln("\n--- Inlined protocol unfolding --- ");
-		runNodeVisitorPass(InlinedProtocolUnfolder.class);*/
+		debugPrintln("\n--- Inlined protocol unfolding --- ");
+		runNodeVisitorPass(InlinedProtocolUnfolder.class);
 
 		/*debugPrintln("\n--- Well-formed choice check --- ");
 		runNodeVisitorPass(WFChoiceChecker.class);*/
@@ -98,14 +98,14 @@ public class Job
 				this.jcontext.replaceModule(mod);
 			}
 
-			/*projections = this.jcontext.getProjections();
+			projections = this.jcontext.getProjections();
 			InlinedProtocolUnfolder unfolder = new InlinedProtocolUnfolder(this);
 			for (LProtocolName lpn : projections.keySet())
 			{
 				Module mod = projections.get(lpn);
 				mod = (Module) mod.accept(unfolder);
 				this.jcontext.replaceModule(mod);
-			}*/
+			}
 		}
 		catch (ScribbleException e)
 		{

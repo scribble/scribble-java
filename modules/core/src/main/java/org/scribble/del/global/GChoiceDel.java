@@ -18,6 +18,7 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
+import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
@@ -161,6 +162,19 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) super.leaveProjection(parent, child, proj, gc);
+	}
+
+	@Override
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	{
+		unf.pushChoiceParent();
+	}
+
+	@Override
+	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	{
+		unf.popChoiceParent();
+		return visited;
 	}
 
 	@Override

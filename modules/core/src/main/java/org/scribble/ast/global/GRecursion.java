@@ -20,7 +20,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	}
 
 	@Override
-	protected GRecursion reconstruct(RecVarNode recvar, ProtocolBlock<Global> block)
+	public GRecursion reconstruct(RecVarNode recvar, ProtocolBlock<Global> block)
 	{
 		ScribDel del = del();
 		GRecursion gr = new GRecursion(recvar, (GProtocolBlock) block);

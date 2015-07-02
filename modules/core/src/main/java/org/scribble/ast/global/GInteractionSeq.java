@@ -33,7 +33,7 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	}
 
 	@Override
-	protected GInteractionSeq reconstruct(List<? extends InteractionNode<Global>> ins)
+	public GInteractionSeq reconstruct(List<? extends InteractionNode<Global>> ins)
 	{
 		ScribDel del = del();
 		GInteractionSeq gis = new GInteractionSeq(castNodes(ins));

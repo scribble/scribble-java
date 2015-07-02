@@ -1,5 +1,7 @@
 package org.scribble.main;
 
+	// need public deep clone methods to support syntax manipulations e.g. unfolding (if using pointer equality for ast nodes in the same syntactic position, not just same text value)
+
 	// Inconsistencies? some visitOverride methods override base visit (i.e. including enter/exit) while others just override the visitChildren part
 	// also: sometimes super.visit is used, other times child.accept(this), etc
 

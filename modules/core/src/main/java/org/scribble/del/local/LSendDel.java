@@ -10,6 +10,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 
 
@@ -22,6 +23,12 @@ public class LSendDel extends LSimpleInteractionNodeDel
 		LSend inlined = AstFactoryImpl.FACTORY.LSend(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (LSend) super.leaveProtocolInlining(parent, child, builder, gmt);
+	}
+
+	@Override
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	{
+		unf.unsetChoiceParent();
 	}
 
 	@Override

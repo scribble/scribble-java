@@ -14,7 +14,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	}
 
 	@Override
-	protected LRecursion reconstruct(RecVarNode recvar, ProtocolBlock<Local> block)
+	public LRecursion reconstruct(RecVarNode recvar, ProtocolBlock<Local> block)
 	{
 		ScribDel del = del();
 		LRecursion lr = new LRecursion(recvar, (LProtocolBlock) block);

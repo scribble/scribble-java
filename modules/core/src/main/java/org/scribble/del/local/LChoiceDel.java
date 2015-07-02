@@ -26,6 +26,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ModuleVisitor;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
@@ -107,6 +108,19 @@ public class LChoiceDel extends LCompoundInteractionNodeDel
 		LChoice inlined = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (LChoice) super.leaveProtocolInlining(parent, child, builder, gc);
+	}
+
+	@Override
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	{
+		unf.pushChoiceParent();
+	}
+
+	@Override
+	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	{
+		unf.popChoiceParent();
+		return visited;
 	}
 
 	@Override

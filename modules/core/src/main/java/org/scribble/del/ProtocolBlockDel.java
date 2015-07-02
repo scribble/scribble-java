@@ -1,15 +1,7 @@
 package org.scribble.del;
 
-import java.util.List;
-
-import org.scribble.ast.Choice;
-import org.scribble.ast.Continue;
-import org.scribble.ast.InteractionNode;
-import org.scribble.ast.InteractionSeq;
-import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 
 
@@ -21,7 +13,7 @@ public abstract class ProtocolBlockDel extends CompoundInteractionDel
 		pushVisitorEnv(parent, child, builder);
 	}
 
-	@Override
+	/*@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
 		ProtocolBlock<?> gpb = (ProtocolBlock<?>) visited;
@@ -30,14 +22,14 @@ public abstract class ProtocolBlockDel extends CompoundInteractionDel
 		{
 			InteractionSeq<?> gis = gpb.getInteractionSeq();
 			List<? extends InteractionNode<?>> actions = gis.getActions();
-			if (actions.size() > 0 && actions.get(0) instanceof Continue)
+			//if (actions.size() > 0 && actions.get(0) instanceof Continue)
+			if (actions.size() > 0 && actions.get(0) instanceof Recursion)
 			{
-				Continue<?> gc = (Continue<?>) actions.get(0);
-				return unf.getRecVar(gc.recvar.toName());
+				Recursion<?> gr = (Recursion<?>) actions.get(0);
+				return unf.getRecVar(gr.recvar.toName());
 			}
-			// FIXME: if first action is recursion
 			// FIXME: the action check should be role sensitive?
 		}
 		return visited;
-	}
+	}*/
 }

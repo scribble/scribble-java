@@ -24,6 +24,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
@@ -147,6 +148,12 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 			throw new RuntimeException("Shouldn't get in here: " + gmt.msg);
 		}
 		return visited;
+	}
+
+	@Override
+	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	{
+		unf.unsetChoiceParent();
 	}
 	
 	@Override

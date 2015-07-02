@@ -16,7 +16,8 @@ public abstract class Recursion<K extends ProtocolKind> extends CompoundInteract
 		this.block = block;
 	}
 
-	protected abstract Recursion<K> reconstruct(RecVarNode recvar, ProtocolBlock<K> block);
+	//protected  // HACK: for protocol unfolding
+	public abstract Recursion<K> reconstruct(RecVarNode recvar, ProtocolBlock<K> block);
 	
 	public abstract ProtocolBlock<K> getBlock();
 

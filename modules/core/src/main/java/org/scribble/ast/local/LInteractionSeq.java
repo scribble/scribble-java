@@ -24,7 +24,7 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	}
 
 	@Override
-	protected LInteractionSeq reconstruct(List<? extends InteractionNode<Local>> actions)
+	public LInteractionSeq reconstruct(List<? extends InteractionNode<Local>> actions)
 	{
 		ScribDel del = del();
 		LInteractionSeq lis = new LInteractionSeq(castNodes(actions));

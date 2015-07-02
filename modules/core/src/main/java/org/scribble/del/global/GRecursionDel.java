@@ -73,7 +73,17 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 		RecVar recvar = gr.recvar.toName();
 		//GInteractionSeq gis = gr.getBlock().getInteractionSeq();  // FIXME: should clone with fresh dels -- though currently the only dels to store persistent state are protocoldecl and gprotocoldef, which are outside of the main session type (protocol body) visiting
 		GProtocolBlock gpb = gr.getBlock();
-		unf.setRecVar(recvar, gpb);
+		//unf.setRecVar(recvar, gpb);
+		unf.setRecVar(recvar, gr);
+	}
+
+	@Override
+	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	{
+		GRecursion gr = (GRecursion) visited;
+		RecVar recvar = gr.recvar.toName();
+		unf.removeRecVar(recvar);
+		return gr;
 	}
 
 	@Override
