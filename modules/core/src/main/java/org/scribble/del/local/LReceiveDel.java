@@ -12,6 +12,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.FsmBuilder;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.env.UnfoldingEnv;
 
 
 public class LReceiveDel extends LSimpleInteractionNodeDel
@@ -28,7 +29,9 @@ public class LReceiveDel extends LSimpleInteractionNodeDel
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
-		unf.unsetChoiceParent();
+		UnfoldingEnv env = unf.popEnv();
+		env = env.noUnfold();
+		unf.pushEnv(env);
 	}
 
 	@Override

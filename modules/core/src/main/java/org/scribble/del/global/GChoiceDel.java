@@ -26,6 +26,7 @@ import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ProjectionEnv;
+import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 public class GChoiceDel extends GCompoundInteractionNodeDel
@@ -167,14 +168,20 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
-		unf.pushChoiceParent();
+		UnfoldingEnv env = unf.peekEnv().enterContext();
+		env = env.pushChoiceParent();
+		unf.pushEnv(env);
 	}
 
 	@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
-		unf.popChoiceParent();
-		return visited;
+		GChoice cho = (GChoice) visited;
+		List<UnfoldingEnv> benvs =
+				cho.blocks.stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
+		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
+		unf.pushEnv(merged);
+		return (GChoice) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);
 	}
 
 	@Override

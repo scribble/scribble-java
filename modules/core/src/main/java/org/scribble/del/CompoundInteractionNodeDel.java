@@ -3,10 +3,12 @@ package org.scribble.del;
 import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
+import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 /* Unlike global/local interaction model nodes that extend the base constructs (choice/recursion/etc) that extend simple/compound,
@@ -44,6 +46,18 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		return popAndSetVisitorEnv(parent, child, builder, visited);
+	}
+
+	@Override
+	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	{
+		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
+		UnfoldingEnv visited_env = unf.popEnv();
+		UnfoldingEnv parent_env = unf.popEnv();
+		setEnv(visited_env);
+		parent_env = parent_env.mergeContext(visited_env);
+		unf.pushEnv(parent_env);
+		return (CompoundInteractionNode<?>) visited;
 	}
 
 	@Override

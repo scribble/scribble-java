@@ -23,6 +23,7 @@ import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ProjectionEnv;
+import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 public class GRecursionDel extends GCompoundInteractionNodeDel
@@ -69,6 +70,7 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
+		super.enterInlinedProtocolUnfolding(parent, child, unf);
 		GRecursion gr = (GRecursion) child;
 		RecVar recvar = gr.recvar.toName();
 		//GInteractionSeq gis = gr.getBlock().getInteractionSeq();  // FIXME: should clone with fresh dels -- though currently the only dels to store persistent state are protocoldecl and gprotocoldef, which are outside of the main session type (protocol body) visiting
@@ -80,10 +82,12 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 	@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
-		GRecursion gr = (GRecursion) visited;
-		RecVar recvar = gr.recvar.toName();
+		GRecursion rec = (GRecursion) visited;
+		RecVar recvar = rec.recvar.toName();
 		unf.removeRecVar(recvar);
-		return gr;
+		UnfoldingEnv merged = unf.popEnv().mergeContext((UnfoldingEnv) rec.block.del().env());
+		unf.pushEnv(merged);
+		return (GRecursion) super.leaveInlinedProtocolUnfolding(parent, child, unf, rec);
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public abstract class InteractionSeqDel extends ScribDelBase
 					//visited.addAll((List<InteractionNode<K>>) pb.seq.actions);
 					//visited.add(AstFactoryImpl.FACTORY.);
 					Recursion<K> rec = (Recursion<K>) unf.getRecVar(rv);
-					visited.add(rec.reconstruct(rec.recvar, rec.getBlock()));
+					visited.add(rec.reconstruct(rec.recvar, rec.getBlock()));  // FIXME: clone the block? inlined wf-choice check relies on ast pointer equality
 				}
 				else
 				{

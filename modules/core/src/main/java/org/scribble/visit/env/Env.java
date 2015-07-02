@@ -5,6 +5,7 @@ import java.util.List;
 
 
 // Immutable
+// Could use generic parameter for ? extends Env (e.g. for merge arguments)
 public abstract class Env
 {
 	protected Env()
@@ -22,6 +23,7 @@ public abstract class Env
   // By default: merge just discards the argument(s) -- not all EnvVisitors need to merge (e.g. projection)
 	protected Env mergeContext(Env env)
 	{
+		//return mergeContexts(Arrays.asList(env));
 		return this;
 	}
 

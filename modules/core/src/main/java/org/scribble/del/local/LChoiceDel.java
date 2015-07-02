@@ -34,6 +34,7 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
+import org.scribble.visit.env.UnfoldingEnv;
 
 public class LChoiceDel extends LCompoundInteractionNodeDel
 {
@@ -113,14 +114,20 @@ public class LChoiceDel extends LCompoundInteractionNodeDel
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
-		unf.pushChoiceParent();
+		UnfoldingEnv env = unf.peekEnv().enterContext();
+		env = env.pushChoiceParent();
+		unf.pushEnv(env);
 	}
 
 	@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
-		unf.popChoiceParent();
-		return visited;
+		LChoice cho = (LChoice) visited;
+		List<UnfoldingEnv> benvs =
+				cho.blocks.stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
+		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
+		unf.pushEnv(merged);
+		return (LChoice) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);
 	}
 
 	@Override

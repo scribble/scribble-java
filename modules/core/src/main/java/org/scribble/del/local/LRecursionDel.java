@@ -15,6 +15,7 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
+import org.scribble.visit.env.UnfoldingEnv;
 
 public class LRecursionDel extends LCompoundInteractionNodeDel
 {
@@ -32,21 +33,24 @@ public class LRecursionDel extends LCompoundInteractionNodeDel
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
-		LRecursion gr = (LRecursion) child;
-		RecVar recvar = gr.recvar.toName();
+		super.enterInlinedProtocolUnfolding(parent, child, unf);
+		LRecursion lr = (LRecursion) child;
+		RecVar recvar = lr.recvar.toName();
 		//LInteractionSeq gis = gr.getBlock().getInteractionSeq();  // FIXME: should clone with fresh dels -- though currently the only dels to store persistent state are protocoldecl and gprotocoldef, which are outside of the main session type (protocol body) visiting
-		LProtocolBlock lpb = gr.getBlock();
+		LProtocolBlock lpb = lr.getBlock();
 		//unf.setRecVar(recvar, lpb);
-		unf.setRecVar(recvar, gr);
+		unf.setRecVar(recvar, lr);
 	}
 
 	@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
-		LRecursion gr = (LRecursion) visited;
-		RecVar recvar = gr.recvar.toName();
+		LRecursion rec = (LRecursion) visited;
+		RecVar recvar = rec.recvar.toName();
 		unf.removeRecVar(recvar);
-		return gr;
+		UnfoldingEnv merged = unf.popEnv().mergeContext((UnfoldingEnv) rec.block.del().env());
+		unf.pushEnv(merged);
+		return (LRecursion) super.leaveInlinedProtocolUnfolding(parent, child, unf, rec);
 	}
 
 	@Override

@@ -16,6 +16,28 @@ type <java> "java.lang.String" from "rt.jar" as String;
 {
 	choice at A
 	{
+		1() from A to B;
+	}
+	
+	rec X
+	{
+		choice at A
+		{
+			2() from A to B;
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+		}
+	}
+}*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	choice at A
+	{
 		rec X
 		{
 			//do Bar(A, B);
@@ -26,6 +48,23 @@ type <java> "java.lang.String" from "rt.jar" as String;
 	or
 	{
 		2() from A to B;
+	}
+}*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	rec X {
+		1() from A to B;
+		choice at A {
+			//4() from A to B;
+			rec Y {
+				3() from A to B;
+				continue X;
+			}
+		} or {
+			2() from A to B;
+		}
 	}
 }*/
 
@@ -71,7 +110,7 @@ global protocol Bar(role A, role B)
 }*/
 
 
-global protocol Foo(role A, role B)
+/*global protocol Foo(role A, role B)
 {
 	1() from A to B;
 	choice at A
@@ -104,7 +143,7 @@ global protocol Bar(role A, role B)
 	2() from A to B;
 	3() from A to B;
 	do Foo(A, B);
-}
+}*/
 
 
 /*global protocol Foo(role A, role B)

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionSeq;
@@ -18,34 +17,15 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.env.InlineProtocolEnv;
+import org.scribble.visit.env.UnfoldingEnv;
 
-public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<InlineProtocolEnv>
+public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv>
 {
-	private Stack<Boolean> choiceParents = new Stack<>();
+	//private Stack<Boolean> choiceParents = new Stack<>();
 
 	//private Map<RecVar, ProtocolBlock<?>> recs = new HashMap<>();
 	private Map<RecVar, Recursion<?>> recs = new HashMap<>();
 	private Set<RecVar> todo = new HashSet<>();
-	
-	public void pushChoiceParent()
-	{
-		this.choiceParents.push(true);
-	}
-	
-	public void unsetChoiceParent()
-	{	
-		if (!this.choiceParents.isEmpty())
-		{
-			this.choiceParents.pop();
-			this.choiceParents.push(false);
-		}
-	}
-
-	public void popChoiceParent()
-	{
-		this.choiceParents.pop();
-	}
 	
 	public boolean isTodo(RecVar rv)  // FIXME: rename
 	{
@@ -58,9 +38,11 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<InlineProtoc
 	}
 	
 	@Override
-	protected InlineProtocolEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	//protected InlineProtocolEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	protected UnfoldingEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
 	{
-		return new InlineProtocolEnv();
+		//return new InlineProtocolEnv();
+		return new UnfoldingEnv();
 	}
 
 	@Override
@@ -68,10 +50,11 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<InlineProtoc
 	{
 		if (child instanceof Recursion)
 		{
-			if (!this.choiceParents.isEmpty() && this.choiceParents.peek())
+			//if (!this.choiceParents.isEmpty() && this.choiceParents.peek())
+			if (peekEnv().shouldUnfold())
 			{
 				enter(parent, child);
-				ScribNode visited = foo(child);
+				ScribNode visited = unfold(child);
 				return leave(parent, child, visited);
 			}
 			else
@@ -91,7 +74,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<InlineProtoc
 		}
 	}
 
-	private <K extends ProtocolKind> ScribNode foo(ScribNode child) throws ScribbleException
+	private <K extends ProtocolKind> ScribNode unfold(ScribNode child) throws ScribbleException
 	{
 		Recursion<K> gr = (Recursion<K>) child;
 		RecVar rv = gr.recvar.toName();
@@ -99,8 +82,8 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<InlineProtoc
 		ProtocolBlock<K> pb = gr.block;
 		this.todo.add(rv);
 		RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND,"DUMMY");
-		//ScribNode n = gr.reconstruct(dummy, (ProtocolBlock<K>) pb.accept(this));  // FIXME: returning block -- need to make a dummy global/local recursion (or choice etc) to contain it
-		ScribNode n = gr.reconstruct(dummy, (ProtocolBlock<K>) pb.visitChildren(this));  // FIXME: returning block -- need to make a dummy global/local recursion (or choice etc) to contain it
+		ScribNode n = gr.reconstruct(dummy, (ProtocolBlock<K>) pb.accept(this));  // FIXME: returning block -- need to make a dummy global/local recursion (or choice etc) to contain it
+		//ScribNode n = gr.reconstruct(dummy, (ProtocolBlock<K>) pb.visitChildren(this));  // FIXME: returning block -- need to make a dummy global/local recursion (or choice etc) to contain it
 		this.todo.remove(rv);
 		return n;
 	}

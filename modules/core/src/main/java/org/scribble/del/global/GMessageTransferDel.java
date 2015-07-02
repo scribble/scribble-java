@@ -33,6 +33,7 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ModelEnv;
+import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 // FIXME: make base MessageTransferDelegate?
@@ -124,7 +125,7 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		{
 			env = env.addMessageForSubprotocol(checker, src, dest, msg);
 			
-			System.out.println("a: " + src + ", " + dest + ", " + msg);
+			//System.out.println("a: " + src + ", " + dest + ", " + msg);
 		}
 		checker.pushEnv(env);
 		
@@ -153,7 +154,9 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
-		unf.unsetChoiceParent();
+		UnfoldingEnv env = unf.popEnv();
+		env = env.noUnfold();
+		unf.pushEnv(env);
 	}
 	
 	@Override

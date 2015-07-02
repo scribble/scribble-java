@@ -1,9 +1,16 @@
 package org.scribble.main;
 
 	// need public deep clone methods to support syntax manipulations e.g. unfolding (if using pointer equality for ast nodes in the same syntactic position, not just same text value)
+	// FIXME: currently using public-ified reconstruct of interactionseq and recursion to do cloning for unfolding
+	// FIXMEL: though not a deep clone, e.g. interaction seq reuses original block -- need to make sure dels/envs being treated properly
+
+	// FIXME: factor out global/local inlining/unfolding better
+	// factor out some global/local del routines from compound/simple classes using default interface methods
 
 	// Inconsistencies? some visitOverride methods override base visit (i.e. including enter/exit) while others just override the visitChildren part
 	// also: sometimes super.visit is used, other times child.accept(this), etc
+
+	// move roledecllist etc projection to dels
 
 	// FIXME: wf-c should in some cases attempt an unfolding on reaching a continue if not satisfied yet -- or do by "recording" cache for recs, as for subprotocolsigs
 	// similar: Changed fsmbuilder from offsetsubprot visitor to inlined visitor to reduce state label acculumation to rec only -- but this introduces a problem in wfc-checking for "unguarded" recursive-do-as-continue in choice blocks -- current offset visitor is also hacked to follow up just "1 level"
@@ -11,10 +18,6 @@ package org.scribble.main;
 	// self comm (wf, projection)
 	// multicast (enforce sending same value -- can "compile" to assertions for separate ops)
 	// AntlrNonRoleParamDeclList -- generic typing error
-
-	// factor out global/local inlining/unfolding better
-	// factor out some global/local del routines from compound/simple classes using default interface methods
-	// move roledecllist etc projection to dels
 
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B })
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
