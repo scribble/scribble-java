@@ -13,6 +13,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.Env;
 
+// "Unfolds" each recursion once (by reentering the original rec ast) on reaching a continue -- subclass should manually keep track of when to "stop" visiting, as visiting the "unfolding" will eventually reach the same continue (e.g. an unguarded choice-continue)
 public abstract class UnfoldingVisitor<E extends Env> extends InlinedProtocolVisitor<E>
 {
 	private Map<RecVar, ProtocolBlock<?>> recs = new HashMap<>();

@@ -19,6 +19,8 @@ import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.UnfoldingEnv;
 
+
+// Unfolds recursions "directly under" choices (n.b. not continues -- use UnfoldingVisitor to do that on demand)
 public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv>
 {
 	//private Stack<Boolean> choiceParents = new Stack<>();
