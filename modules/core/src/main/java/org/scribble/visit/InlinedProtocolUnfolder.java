@@ -11,6 +11,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.InlineProtocolEnv;
 
+@Deprecated
 public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<InlineProtocolEnv>
 {
 	private Map<RecVar, ProtocolBlock<? extends ProtocolKind>> recvars = new HashMap<>();

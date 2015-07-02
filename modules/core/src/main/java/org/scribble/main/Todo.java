@@ -1,5 +1,7 @@
 package org.scribble.main;
 
+	// Inconsistencies? some visitOverride methods override base visit (i.e. including enter/exit) while others just override the visitChildren part
+	// also: sometimes super.visit is used, other times child.accept(this), etc
 
 	// FIXME: wf-c should in some cases attempt an unfolding on reaching a continue if not satisfied yet -- or do by "recording" cache for recs, as for subprotocolsigs
 	// similar: Changed fsmbuilder from offsetsubprot visitor to inlined visitor to reduce state label acculumation to rec only -- but this introduces a problem in wfc-checking for "unguarded" recursive-do-as-continue in choice blocks -- current offset visitor is also hacked to follow up just "1 level"
