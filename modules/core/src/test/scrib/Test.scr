@@ -110,7 +110,7 @@ global protocol Bar(role A, role B)
 }*/
 
 
-/*global protocol Foo(role A, role B)
+global protocol Foo(role A, role B)
 {
 	1() from A to B;
 	choice at A
@@ -143,7 +143,7 @@ global protocol Bar(role A, role B)
 	2() from A to B;
 	3() from A to B;
 	do Foo(A, B);
-}*/
+}
 
 
 /*global protocol Foo(role A, role B)

@@ -81,7 +81,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 		//ProtocolBlock<?> pb = getRecVar(rv);
 		ProtocolBlock<K> pb = gr.block;
 		this.todo.add(rv);
-		RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND,"DUMMY");
+		RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND,"__DUMMY");
 		ScribNode n = gr.reconstruct(dummy, (ProtocolBlock<K>) pb.accept(this));  // FIXME: returning block -- need to make a dummy global/local recursion (or choice etc) to contain it
 		//ScribNode n = gr.reconstruct(dummy, (ProtocolBlock<K>) pb.visitChildren(this));  // FIXME: returning block -- need to make a dummy global/local recursion (or choice etc) to contain it
 		this.todo.remove(rv);
