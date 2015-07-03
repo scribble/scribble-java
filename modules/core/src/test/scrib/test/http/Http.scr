@@ -1,97 +1,97 @@
 //Raymond@HZHL3 ~/code/scribble-java/scribble-java
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/test/http/http.scr -session Http -d modules/core/src/test/scrib
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/test/http/http.scr -api Http C -d modules/core/src/test/scrib
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/test/http/Http.scr -session Http -d modules/core/src/test/scrib
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/test/http/Http.scr -api Http C -d modules/core/src/test/scrib
 
 //$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib modules/validation/src/main/java/test/http/Http*.java -d test/doc/http
 
 
-module test.http;
+module test.http.Http;
 
 
 sig <java> "test.http.message.client.RequestLine"
-		from "test.http.message.RequestLine.java"
+		from "test/http/message/RequestLine.java"
 		as REQUESTL;  // GET /~rhu/ HTTP/1.1 
 
 sig <java> "test.http.message.client.Host"
-		from "test.http.message.Host.java"
+		from "test/http/message/Host.java"
 		as HOST;  // host: www.doc.ic.ac.uk
 
 //sig <java> "test.http.message.CRLF" from "test.http.message.CRLF.java" as CRLF;
 
 sig <java> "test.http.message.Body"
-		from "test.http.message.Body.java"
+		from "test/http/message/Body.java"
 		as BODY;
 
 sig <java> "test.http.message.client.UserAgent"
-		from "test.http.message.UserAgent.java"
+		from "test/http/message/UserAgent.java"
 		as USERA;  // User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0
 
 sig <java> "test.http.message.client.Accept"
-		from "test.http.message.Accept.java"
+		from "test/http/message/Accept.java"
 		as ACCEPT;  // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
 
 sig <java> "test.http.message.client.AcceptLanguage"
-		from "test.http.message.AcceptLanguage.java"
+		from "test/http/message/AcceptLanguage.java"
 		as ACCEPTL;  // Accept-Language: en-GB,en;q=0.5
 
 sig <java> "test.http.message.client.AcceptEncoding"
-		from "test.http.message.AcceptEncoding.java"
+		from "test/http/message/AcceptEncoding.java"
 		as ACCEPTE;  // Accept-Encoding: gzip, deflate
 
 sig <java> "test.http.message.client.DoNotTrack"
-		from "test.http.message.DoNotTrack.java"
+		from "test/http/message/DoNotTrack.java"
 		as DNT;  // DNT: 1
 
 sig <java> "test.http.message.client.Connection"
-		from "test.http.message.Connection.java"
+		from "test/http/message/Connection.java"
 		as CONNECTION;  // Connection: keep-alive
 
 sig <java> "test.http.message.server.HttpVersion"
-		from "test.http.message.HttpVersion.java"
+		from "test/http/message/HttpVersion.java"
 		as HTTPV;  // HTTP/1.1 
 
 sig <java> "test.http.message.server._200"
-		from "test.http.message._200.java"
+		from "test/http/message/_200.java"
 		as 200;  // 200 OK
 
 sig <java> "test.http.message.server._404"
-		from "test.http.message._404.java"
+		from "test/http/message/_404.java"
 		as 404;
 
 sig <java> "test.http.message.server.Date"
-		from "test.http.message.Date.java"
+		from "test/http/message/Date.java"
 		as DATE;  // Date: Sun, 24 May 2015 21:04:36 GMT
 
 sig <java> "test.http.message.server.Server"
-		from "test.http.message.Server.java"
+		from "test/http/message/Server.java"
 		as SERVER;  // Server: Apache
 
 sig <java> "test.http.message.server.LastModified"
-		from "test.http.message.LastModified.java"
+		from "test/http/message/LastModified.java"
 		as LASTM;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
 
 sig <java> "test.http.message.server.ETag"
-		from "test.http.message.ETag.java"
+		from "test/http/message/ETag.java"
 		as ETAG;  // ETag: "ac6fa008-559-4a8b95908aec0"
 
 sig <java> "test.http.message.server.AcceptRanges"
-		from "test.http.message.AcceptRanges.java"
+		from "test/http/message/AcceptRanges.java"
 		as ACCEPTR;  // Accept-Ranges: bytes
 
 sig <java> "test.http.message.server.ContentLength"
-		from "test.http.message.ContentLength.java"
+		from "test/http/message/ContentLength.java"
 		as CONTENTL;  // Content-Length: 1369
 
 sig <java> "test.http.message.server.Vary"
-		from "test.http.message.Vary.java"
+		from "test/http/message/Vary.java"
 		as VARY;  // Vary: Accept-Encoding
 
 sig <java> "test.http.message.server.ContentType"
-		from "test.http.message.ContentType.java"
+		from "test/http/message/ContentType.java"
 		as CONTENTT;  // Content-Type: text/html
 
 sig <java> "test.http.message.server.Via"
-		from "test.http.message.Via.java"
+		from "test/http/message/Via.java"
 		as VIA;  // Via: 1.1 www.doc.ic.ac.uk	
 
 

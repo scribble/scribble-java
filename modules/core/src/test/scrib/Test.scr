@@ -113,7 +113,38 @@ global protocol Bar(role A, role B)
 
 global protocol Foo(role A, role B)
 {
-	1() from A to B;
+	//1() from A to B;
+	choice at A
+	{
+		do Bar1(A, B);
+	}
+	or
+	{
+		do Bar2(A, B);
+	}
+	or
+	{
+		5() from A to B;
+	}
+}
+
+global protocol Bar1(role A, role B)
+{
+	2() from A to B;
+	3() from B to A;
+	do Foo(A, B);
+}
+
+global protocol Bar2(role A, role B)
+{
+	4() from A to B;
+	do Bar2(A, B);
+}
+
+
+/*global protocol Foo(role A, role B)
+{
+	//1() from A to B;
 	choice at A
 	{
 		//1() from A to B;
@@ -144,7 +175,7 @@ global protocol Bar(role A, role B)
 	2() from A to B;
 	3() from A to B;
 	do Foo(A, B);
-}
+}*/
 
 
 /*global protocol Foo(role A, role B)

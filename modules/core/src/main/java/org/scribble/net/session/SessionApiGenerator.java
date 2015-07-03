@@ -124,7 +124,8 @@ public class SessionApiGenerator
 	
 	public static String getPackageName(GProtocolName gpn)
 	{
-		return gpn.getPrefix().toString();  // Java output package name (not Scribble package)
+		//return gpn.getPrefix().toString();  // Java output package name (not Scribble package)
+		return gpn.getPrefix().getPrefix().toString();  // Java output package name (not Scribble package)
 	}
 	
 	public static String getSessionClassName(GProtocolName gpn)
