@@ -1,0 +1,40 @@
+module test.nego.Nego1;
+
+type <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;
+
+// C = Consumer, P = Producer
+global protocol Negotiate(role C, role P)
+{
+	propose(SAP) from C to P;
+	rec X
+	{
+		choice at P
+		{
+			accept() from P to C;
+			confirm() from C to P;
+		}
+		or
+		{
+			reject() from P to C;
+		}
+		or
+		{
+			propose(SAP) from P to C;
+			choice at C
+			{
+				accept() from C to P;
+				confirm() from P to C;
+			}
+			or
+			{
+				reject() from C to P;
+			}
+			or
+			{
+				propose(SAP) from C to P;
+				continue X;
+			}
+		}
+	}
+}
+
