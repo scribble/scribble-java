@@ -1,5 +1,6 @@
 package org.scribble.ast.name.simple;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.OpKind;
 import org.scribble.sesstype.name.Op;
 
@@ -17,6 +18,12 @@ public class OpNode extends SimpleNameNode<OpKind>
 	protected OpNode copy()
 	{
 		return new OpNode(getIdentifier());
+	}
+	
+	@Override
+	public OpNode clone()
+	{
+		return (OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, getIdentifier());
 	}
 	
 	@Override

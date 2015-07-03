@@ -1,5 +1,6 @@
 package org.scribble.ast.name.qualified;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.PackageName;
@@ -17,6 +18,12 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 	protected ModuleNameNode copy()
 	{
 		return new ModuleNameNode(this.elems);
+	}
+	
+	@Override
+	public ModuleNameNode clone()
+	{
+		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, this.elems);
 	}
 	
 	@Override

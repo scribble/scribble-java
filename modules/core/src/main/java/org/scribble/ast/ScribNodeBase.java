@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
-import org.scribble.util.ScribbleUtil;
+import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.Substitutor;
 
@@ -36,6 +36,9 @@ public abstract class ScribNodeBase implements ScribNode
 	// Internal shallow copy for (immutable) ModelNodes
 	//@Override
 	protected abstract ScribNodeBase copy();
+	
+	@Override
+	public abstract ScribNodeBase clone();
 	
 	@Override
 	public ScribNode accept(AstVisitor nv) throws ScribbleException
@@ -110,7 +113,7 @@ public abstract class ScribNodeBase implements ScribNode
 		try
 		{
 			return children.stream()
-					.map((n) -> ScribbleUtil.handleLambdaScribbleException(() -> ScribNodeBase.visitChildWithClassCheck(parent, n, nv)))
+					.map((n) -> ScribUtil.handleLambdaScribbleException(() -> ScribNodeBase.visitChildWithClassCheck(parent, n, nv)))
 					.collect(Collectors.toList());
 		}
 		catch (RuntimeScribbleException rse)

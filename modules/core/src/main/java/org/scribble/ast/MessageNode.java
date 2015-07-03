@@ -7,4 +7,6 @@ import org.scribble.sesstype.Message;
 public interface MessageNode extends NonRoleArgNode
 {
 	Message toMessage();
+	
+	MessageNode clone();
 }

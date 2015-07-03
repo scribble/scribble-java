@@ -103,7 +103,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public PayloadElem PayloadElement(PayloadElemNameNode name)
+	public PayloadElem PayloadElem(PayloadElemNameNode name)
 	{
 		PayloadElem pe = new PayloadElem(name);
 		pe = del(pe, createDefaultDelegate());
@@ -139,7 +139,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public MessageSigNameDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias)
+	public MessageSigNameDecl MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode alias)
 	{
 		MessageSigNameDecl msd = new MessageSigNameDecl(schema, extName, source, alias);
 		msd = del(msd, createDefaultDelegate());
@@ -195,7 +195,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public <K extends NonRoleParamKind> NonRoleParamDecl<K> ParamDecl(K kind, NonRoleParamNode<K> namenode)
+	public <K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(K kind, NonRoleParamNode<K> namenode)
 	{
 		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(kind, namenode);
 		pd = del(pd, new ParamDeclDel());
@@ -203,7 +203,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GProtocolDef GProtocolDefinition(GProtocolBlock block)
+	public GProtocolDef GProtocolDef(GProtocolBlock block)
 	{
 		GProtocolDef gpd = new GProtocolDef(block);
 		gpd = del(gpd, new GProtocolDefDel());
@@ -414,7 +414,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LProtocolDef LProtocolDefinition(LProtocolBlock block)
+	public LProtocolDef LProtocolDef(LProtocolBlock block)
 	{
 		LProtocolDef lpd = new LProtocolDef(block);
 		lpd = del(lpd, new LProtocolDefDel());

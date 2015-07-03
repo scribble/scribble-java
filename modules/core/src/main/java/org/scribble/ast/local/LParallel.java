@@ -23,6 +23,13 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	}
 	
 	@Override
+	public LParallel clone()
+	{
+		//List<:ProtocolBlock> blocks = ScribUtil.cloneList(getBlocks());
+		throw new RuntimeException("TODO: " + this);
+	}
+	
+	@Override
 	protected LParallel reconstruct(List<? extends ProtocolBlock<Local>> blocks)
 	{
 		ScribDel del = del();

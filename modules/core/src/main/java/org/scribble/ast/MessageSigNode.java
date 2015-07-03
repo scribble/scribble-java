@@ -9,18 +9,26 @@ import org.scribble.visit.AstVisitor;
 public class MessageSigNode extends ScribNodeBase implements MessageNode
 {
 	public final OpNode op;
-	public final PayloadElemList payload;
+	public final PayloadElemList payloads;
 
 	public MessageSigNode(OpNode op, PayloadElemList payload)
 	{
 		this.op = op;
-		this.payload = payload;
+		this.payloads = payload;
 	}
 
 	@Override
 	protected MessageSigNode copy()
 	{
-		return new MessageSigNode(this.op, this.payload);
+		return new MessageSigNode(this.op, this.payloads);
+	}	
+
+	@Override
+	public MessageSigNode clone()
+	{
+		OpNode op = this.op.clone();
+		PayloadElemList payload = this.payloads.clone();
+		return AstFactoryImpl.FACTORY.MessageSigNode(op, payload);
 	}
 	
 	protected MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
@@ -35,7 +43,7 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	public MessageSigNode visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		OpNode op = (OpNode) visitChild(this.op, nv);
-		PayloadElemList payload = (PayloadElemList) visitChild(this.payload, nv);
+		PayloadElemList payload = (PayloadElemList) visitChild(this.payloads, nv);
 		return reconstruct(op, payload);
 	}
 	
@@ -50,7 +58,7 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	@Override
 	public MessageSig toArg()
 	{
-		return new MessageSig(this.op.toName(), this.payload.toPayload());
+		return new MessageSig(this.op.toName(), this.payloads.toPayload());
 	}
 
 	@Override
@@ -62,6 +70,6 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 	@Override
 	public String toString()
 	{
-		return this.op.toString() + this.payload.toString();
+		return this.op.toString() + this.payloads.toString();
 	}
 }

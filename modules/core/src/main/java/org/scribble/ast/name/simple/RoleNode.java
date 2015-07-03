@@ -1,5 +1,6 @@
 package org.scribble.ast.name.simple;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.DoArgNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
@@ -18,6 +19,12 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 	protected RoleNode copy()
 	{
 		return new RoleNode(getIdentifier());
+	}
+	
+	@Override
+	public RoleNode clone()
+	{
+		return (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, getIdentifier());
 	}
 
 	private RoleNode reconstruct(String identifier)

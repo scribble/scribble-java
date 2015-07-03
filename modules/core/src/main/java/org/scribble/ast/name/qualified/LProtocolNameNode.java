@@ -1,5 +1,6 @@
 package org.scribble.ast.name.qualified;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 
@@ -16,6 +17,12 @@ public class LProtocolNameNode extends ProtocolNameNode<Local>
 	protected LProtocolNameNode copy()
 	{
 		return new LProtocolNameNode(this.elems);
+	}
+	
+	@Override
+	public LProtocolNameNode clone()
+	{
+		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, this.elems);
 	}
 	
 	@Override

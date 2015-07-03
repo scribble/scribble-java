@@ -1,12 +1,13 @@
 package org.scribble.ast.name.simple;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.AmbigKind;
-import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.name.AmbigName;
 import org.scribble.sesstype.name.PayloadType;
 
@@ -23,6 +24,12 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements  Message
 	protected AmbigNameNode copy()
 	{
 		return new AmbigNameNode(getIdentifier());
+	}
+	
+	@Override
+	public AmbigNameNode clone()
+	{
+		return (AmbigNameNode) AstFactoryImpl.FACTORY.AmbiguousNameNode(getIdentifier());
 	}
 	
 	@Override

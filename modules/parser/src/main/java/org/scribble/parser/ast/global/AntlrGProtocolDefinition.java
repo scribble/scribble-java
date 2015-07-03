@@ -13,7 +13,7 @@ public class AntlrGProtocolDefinition
 	public static GProtocolDef parseGProtocolDefinition(ScribbleParser parser, CommonTree ct)
 	{
 		GProtocolBlock gpb = (GProtocolBlock) parser.parse(getBlockChild(ct));
-		return AstFactoryImpl.FACTORY.GProtocolDefinition(gpb);
+		return AstFactoryImpl.FACTORY.GProtocolDef(gpb);
 	}
 
 	public static CommonTree getBlockChild(CommonTree ct)

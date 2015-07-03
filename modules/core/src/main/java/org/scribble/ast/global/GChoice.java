@@ -3,12 +3,14 @@ package org.scribble.ast.global;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
+import org.scribble.util.ScribUtil;
 
 public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 {
@@ -21,6 +23,14 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 	protected ScribNodeBase copy()
 	{
 		return new GChoice(this.subj, getBlocks());
+	}
+	
+	@Override
+	public GChoice clone()
+	{
+		RoleNode subj = this.subj.clone();
+		List<GProtocolBlock> blocks = ScribUtil.cloneList(getBlocks());
+		return AstFactoryImpl.FACTORY.GChoice(subj, blocks);
 	}
 
 	@Override

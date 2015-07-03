@@ -1,5 +1,6 @@
 package org.scribble.ast.name.qualified;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.DataTypeKind;
@@ -16,6 +17,12 @@ public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements Pa
 	protected DataTypeNameNode copy()
 	{
 		return new DataTypeNameNode(this.elems);
+	}
+	
+	@Override
+	public DataTypeNameNode clone()
+	{
+		return (DataTypeNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, this.elems);
 	}
 
 	@Override

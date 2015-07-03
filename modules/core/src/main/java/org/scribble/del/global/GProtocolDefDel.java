@@ -60,7 +60,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 	{
 		GProtocolDef gpd = (GProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.block.del().env()).getProjection();	
-		LProtocolDef projection = AstFactoryImpl.FACTORY.LProtocolDefinition(block);
+		LProtocolDef projection = AstFactoryImpl.FACTORY.LProtocolDef(block);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GProtocolDef) popAndSetVisitorEnv(parent, child, proj, gpd);
 	}
@@ -74,7 +74,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
 		GRecursion rec = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
 		GInteractionSeq gis = AstFactoryImpl.FACTORY.GInteractionSeq(Arrays.asList(rec));
-		GProtocolDef inlined = AstFactoryImpl.FACTORY.GProtocolDefinition(AstFactoryImpl.FACTORY.GProtocolBlock(gis));
+		GProtocolDef inlined = AstFactoryImpl.FACTORY.GProtocolDef(AstFactoryImpl.FACTORY.GProtocolBlock(gis));
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		GProtocolDefDel copy = setInlinedProtocolDef(inlined);
 		

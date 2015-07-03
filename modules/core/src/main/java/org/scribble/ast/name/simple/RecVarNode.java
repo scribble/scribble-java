@@ -1,5 +1,6 @@
 package org.scribble.ast.name.simple;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 
@@ -15,6 +16,12 @@ public class RecVarNode extends SimpleNameNode<RecVarKind>
 	protected RecVarNode copy()
 	{
 		return new RecVarNode(getIdentifier());
+	}
+	
+	@Override
+	public RecVarNode clone()
+	{
+		return (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, getIdentifier());
 	}
 
 	@Override

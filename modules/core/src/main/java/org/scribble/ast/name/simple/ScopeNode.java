@@ -1,5 +1,6 @@
 package org.scribble.ast.name.simple;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.ScopeKind;
 import org.scribble.sesstype.name.Scope;
 
@@ -15,6 +16,12 @@ public class ScopeNode extends SimpleNameNode<ScopeKind>
 	protected ScopeNode copy()
 	{
 		return new ScopeNode(getIdentifier());
+	}
+	
+	@Override
+	public ScopeNode clone()
+	{
+		return (ScopeNode) AstFactoryImpl.FACTORY.SimpleNameNode(ScopeKind.KIND, getIdentifier());
 	}
 
 	@Override

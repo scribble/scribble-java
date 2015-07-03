@@ -19,6 +19,7 @@ import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
 
@@ -45,6 +46,16 @@ public class Module extends ScribNodeBase
 	protected Module copy()
 	{
 		return new Module(this.moddecl, this.imports, this.data, this.protos);
+	}
+	
+	@Override
+	public Module clone()
+	{
+		ModuleDecl moddecl = (ModuleDecl) this.moddecl.clone();
+		List<ImportDecl<?>> imports = ScribUtil.cloneList(this.imports);
+		List<NonProtocolDecl<?>> data = ScribUtil.cloneList(this.data);
+		List<ProtocolDecl<?>> protos = ScribUtil.cloneList(this.protos);
+		return AstFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}
 	
 	protected Module reconstruct(

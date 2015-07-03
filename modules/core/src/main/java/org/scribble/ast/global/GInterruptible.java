@@ -36,24 +36,27 @@ public class GInterruptible extends Interruptible<Global> implements GInteractio
 	}
 
 	@Override
+	protected ScribNodeBase copy()
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+	
+	@Override
+	public GInterruptible clone()
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
 	public boolean isEmptyScope()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	@Override
 	public Name<ScopeKind> getScopeElement()
 	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected ScribNodeBase copy()
-	{
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	/*protected GlobalInterruptible(CommonTree ct, ScopeNode scope, GlobalProtocolBlock block, List<GlobalInterrupt> interrs, CompoundInteractionNodeContext icontext)

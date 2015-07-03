@@ -34,4 +34,6 @@ public interface ScribNode
 	//<T extends ScribNode> T del(T t, ScribDel del);
 	
 	ScribNode substituteNames(Substitutor subs);
+	
+	ScribNode clone();
 }

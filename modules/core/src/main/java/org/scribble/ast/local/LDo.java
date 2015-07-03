@@ -1,5 +1,6 @@
 package org.scribble.ast.local;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
@@ -21,6 +22,15 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	protected LDo copy()
 	{
 		return new LDo(this.roles, this.args, getProtocolNameNode());
+	}
+	
+	@Override
+	public LDo clone()
+	{
+		RoleArgList roles = this.roles.clone();
+		NonRoleArgList args = this.args.clone();
+		LProtocolNameNode proto = this.getProtocolNameNode().clone();
+		return AstFactoryImpl.FACTORY.LDo(roles, args, proto);
 	}
 	
 	@Override

@@ -76,7 +76,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		for (GInteractionNode gi : gis.getActions())
 		{
 			ScribNode inlined = ((InlineProtocolEnv) gi.del().env()).getTranslation();
-			if (inlined instanceof GInteractionSeq)
+			if (inlined instanceof GInteractionSeq)  // A do got inlined
 			{
 				gins.addAll(((GInteractionSeq) inlined).getActions());
 			}

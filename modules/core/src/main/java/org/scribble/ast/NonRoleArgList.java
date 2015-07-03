@@ -8,19 +8,27 @@ import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
+import org.scribble.util.ScribUtil;
 
 
 public class NonRoleArgList extends DoArgList<NonRoleArg>
 {
-	public NonRoleArgList(List<NonRoleArg> instans)
+	public NonRoleArgList(List<NonRoleArg> args)
 	{
-		super(instans);
+		super(args);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
 		return new NonRoleArgList(this.args);
+	}
+	
+	@Override
+	public NonRoleArgList clone()
+	{
+		List<NonRoleArg> args = ScribUtil.cloneList(this.args);
+		return AstFactoryImpl.FACTORY.NonRoleArgList(args);
 	}
 
 	@Override

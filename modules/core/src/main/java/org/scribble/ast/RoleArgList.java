@@ -5,12 +5,13 @@ import java.util.stream.Collectors;
 
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.Role;
+import org.scribble.util.ScribUtil;
 
 public class RoleArgList extends DoArgList<RoleArg>
 {
-	public RoleArgList(List<RoleArg> instans)
+	public RoleArgList(List<RoleArg> roles)
 	{
-		super(instans);
+		super(roles);
 	}
 
 	@Override
@@ -18,12 +19,19 @@ public class RoleArgList extends DoArgList<RoleArg>
 	{
 		return new RoleArgList(this.args);
 	}
+	
+	@Override
+	public RoleArgList clone()
+	{
+		List<RoleArg> roles = ScribUtil.cloneList(this.args);
+		return AstFactoryImpl.FACTORY.RoleArgList(roles);
+	}
 
 	@Override
-	protected RoleArgList reconstruct(List<RoleArg> instans)
+	protected RoleArgList reconstruct(List<RoleArg> roles)
 	{
 		ScribDel del = del();
-		RoleArgList rl = new RoleArgList(instans);
+		RoleArgList rl = new RoleArgList(roles);
 		rl = (RoleArgList) rl.del(del);
 		return rl;
 	}

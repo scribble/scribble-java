@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
+import org.scribble.util.ScribUtil;
 
 public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 {
@@ -18,6 +19,13 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	protected RoleDeclList copy()
 	{
 		return new RoleDeclList(getRoleDecls());
+	}
+	
+	@Override
+	public RoleDeclList clone()
+	{
+		List<RoleDecl> decls = ScribUtil.cloneList(getRoleDecls());
+		return AstFactoryImpl.FACTORY.RoleDeclList(decls);
 	}
 
 	@Override

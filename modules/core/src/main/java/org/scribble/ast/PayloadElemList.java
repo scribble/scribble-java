@@ -9,21 +9,29 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.PayloadTypeKind;
 import org.scribble.sesstype.name.PayloadType;
+import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
 public class PayloadElemList extends ScribNodeBase
 {
 	public final List<PayloadElem> elems;  // FIXME: parameterise on Kind (cf. sesstypes)
 
-	public PayloadElemList(List<PayloadElem> payloadelems)
+	public PayloadElemList(List<PayloadElem> elems)
 	{
-		this.elems = new LinkedList<>(payloadelems);
+		this.elems = new LinkedList<>(elems);
 	}
 	
 	@Override
 	protected PayloadElemList copy()
 	{
 		return new PayloadElemList(this.elems);
+	}
+	
+	@Override
+	public PayloadElemList clone()
+	{
+		List<PayloadElem> elems = ScribUtil.cloneList(this.elems);
+		return AstFactoryImpl.FACTORY.PayloadElemList(elems);
 	}
 
 	protected PayloadElemList reconstruct(List<PayloadElem> elems)

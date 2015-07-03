@@ -1,5 +1,6 @@
 package org.scribble.ast.local;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.del.ScribDel;
@@ -16,6 +17,13 @@ public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 	protected LProtocolBlock copy()
 	{
 		return new LProtocolBlock(getInteractionSeq());
+	}
+	
+	@Override
+	public LProtocolBlock clone()
+	{
+		LInteractionSeq lis = getInteractionSeq().clone();
+		return AstFactoryImpl.FACTORY.LProtocolBlock(lis);
 	}
 
 	@Override

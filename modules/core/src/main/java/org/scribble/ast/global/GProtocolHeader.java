@@ -1,10 +1,11 @@
 package org.scribble.ast.global;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.RoleDeclList;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
@@ -22,6 +23,15 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 	protected ScribNodeBase copy()
 	{
 		return new GProtocolHeader((GProtocolNameNode) this.name, this.roledecls, this.paramdecls);
+	}
+	
+	@Override
+	public GProtocolHeader clone()
+	{
+		GProtocolNameNode name = (GProtocolNameNode) this.name.clone();
+		RoleDeclList roledecls = this.roledecls.clone();
+		NonRoleParamDeclList paramdecls = this.paramdecls.clone();
+		return AstFactoryImpl.FACTORY.GProtocolHeader(name, roledecls, paramdecls);
 	}
 
 	@Override

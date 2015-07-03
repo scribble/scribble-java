@@ -2,12 +2,14 @@ package org.scribble.ast.global;
 
 import java.util.List;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
+import org.scribble.util.ScribUtil;
 
 public class GMessageTransfer extends MessageTransfer<Global> implements GSimpleInteractionNode
 {
@@ -20,6 +22,15 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 	protected GMessageTransfer copy()
 	{
 		return new GMessageTransfer(this.src, this.msg, this.dests);
+	}
+	
+	@Override
+	public GMessageTransfer clone()
+	{
+		RoleNode src = this.src.clone();
+		MessageNode msg = this.msg.clone();
+		List<RoleNode> dests = ScribUtil.cloneList(this.dests);
+		return AstFactoryImpl.FACTORY.GMessageTransfer(src, msg, dests);
 	}
 
 	@Override

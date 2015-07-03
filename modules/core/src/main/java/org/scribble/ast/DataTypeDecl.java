@@ -19,6 +19,13 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	{
 		return new DataTypeDecl(this.schema, this.extName, this.source, (DataTypeNameNode) this.name);
 	}
+	
+	@Override
+	public DataTypeDecl clone()
+	{
+		DataTypeNameNode name = (DataTypeNameNode) this.name.clone();
+		return AstFactoryImpl.FACTORY.DataTypeDecl(this.schema, this.extName, this.source, name);
+	}
 
 	@Override
 	protected DataTypeDecl reconstruct(String schema, String extName, String source, MemberNameNode<DataTypeKind> name)

@@ -1,5 +1,6 @@
 package org.scribble.ast.global;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.del.ScribDel;
@@ -16,6 +17,13 @@ public class GProtocolDef extends ProtocolDef<Global> implements GNode
 	protected GProtocolDef copy()
 	{
 		return new GProtocolDef(getBlock());
+	}
+	
+	@Override
+	public GProtocolDef clone()
+	{
+		GProtocolBlock block = getBlock().clone();
+		return AstFactoryImpl.FACTORY.GProtocolDef(block);
 	}
 
 	@Override

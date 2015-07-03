@@ -1,12 +1,13 @@
 package org.scribble.ast.local;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.NameDeclNode;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolHeader;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
@@ -26,6 +27,15 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 	protected ScribNodeBase copy()
 	{
 		return new LProtocolHeader((LProtocolNameNode) this.name, this.roledecls, this.paramdecls);
+	}
+	
+	@Override
+	public LProtocolHeader clone()
+	{
+		LProtocolNameNode name = (LProtocolNameNode) this.name.clone();
+		RoleDeclList roledecls = this.roledecls.clone();
+		NonRoleParamDeclList paramdecls = this.paramdecls.clone();
+		return AstFactoryImpl.FACTORY.LProtocolHeader(name, roledecls, paramdecls);
 	}
 
 	@Override

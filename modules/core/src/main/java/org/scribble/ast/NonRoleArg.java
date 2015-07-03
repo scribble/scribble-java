@@ -16,6 +16,13 @@ public class NonRoleArg extends DoArg<NonRoleArgNode>
 	{
 		return new NonRoleArg(this.val);
 	}
+	
+	@Override
+	public NonRoleArg clone()
+	{
+		NonRoleArgNode arg = (NonRoleArgNode) this.val.clone();
+		return AstFactoryImpl.FACTORY.NonRoleArg(arg);
+	}
 
 	@Override
 	protected NonRoleArg reconstruct(NonRoleArgNode arg)

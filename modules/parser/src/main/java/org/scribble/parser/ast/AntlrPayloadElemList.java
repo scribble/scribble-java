@@ -46,13 +46,13 @@ public class AntlrPayloadElemList
 			if (ct.getChildCount() > 1)
 			{
 				DataTypeNameNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
-				return AstFactoryImpl.FACTORY.PayloadElement(dt);
+				return AstFactoryImpl.FACTORY.PayloadElem(dt);
 			}
 			else
 			{
 				// Similarly to NonRoleArg: cannot syntactically distinguish right now between SimplePayloadTypeNode and ParameterNode
 				AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct);
-				return AstFactoryImpl.FACTORY.PayloadElement(an);
+				return AstFactoryImpl.FACTORY.PayloadElem(an);
 			}
 		}
 		else

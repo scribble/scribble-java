@@ -1,5 +1,6 @@
 package org.scribble.ast.global;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ProtocolDef;
@@ -20,6 +21,14 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	protected GProtocolDecl copy()
 	{
 		return new GProtocolDecl(getHeader(), getDef());
+	}
+	
+	@Override
+	public GProtocolDecl clone()
+	{
+		GProtocolHeader header = getHeader().clone();
+		GProtocolDef def = getDef().clone();
+		return AstFactoryImpl.FACTORY.GProtocolDecl(header, def);
 	}
 
 	@Override

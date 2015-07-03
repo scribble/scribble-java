@@ -17,28 +17,30 @@ public class LInterruptible extends Interruptible<Local> implements LInteraction
 	protected LInterruptible(ScopeNode scope, ProtocolBlock<Local> block, List<LInterrupt> interrs)
 	{
 		super(scope, block, interrs);
-		// TODO Auto-generated constructor stub
+	}	
+
+	@Override
+	protected ScribNodeBase copy()
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public LInterruptible clone()
+	{
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	@Override
 	public boolean isEmptyScope()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	@Override
 	public Name<ScopeKind> getScopeElement()
 	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected ScribNodeBase copy()
-	{
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	/*public LocalInterruptible(CommonTree ct, ScopeNode scope, LocalProtocolBlock block, LocalThrows thro, List<LocalCatches> cats)

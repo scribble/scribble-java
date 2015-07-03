@@ -1,5 +1,6 @@
 package org.scribble.ast.local;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -14,6 +15,12 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	}
 
 	@Override
+	protected LRecursion copy()
+	{
+		return new LRecursion(this.recvar, getBlock());
+	}
+
+	@Override
 	public LRecursion reconstruct(RecVarNode recvar, ProtocolBlock<Local> block)
 	{
 		ScribDel del = del();
@@ -21,11 +28,13 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 		lr = (LRecursion) lr.del(del);
 		return lr;
 	}
-
+	
 	@Override
-	protected LRecursion copy()
+	public LRecursion clone()
 	{
-		return new LRecursion(this.recvar, getBlock());
+		RecVarNode recvar = this.recvar.clone();
+		LProtocolBlock block = getBlock().clone();
+		return AstFactoryImpl.FACTORY.LRecursion(recvar, block);
 	}
 	
 	@Override

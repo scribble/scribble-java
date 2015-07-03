@@ -18,6 +18,13 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	{
 		return new ModuleDecl((ModuleNameNode) this.name);
 	}
+	
+	@Override
+	public ModuleDecl clone()
+	{
+		ModuleNameNode modname = (ModuleNameNode) this.name.clone();
+		return AstFactoryImpl.FACTORY.ModuleDecl(modname);
+	}
 
 	@Override
 	public ModuleDecl visitChildren(AstVisitor nv) throws ScribbleException

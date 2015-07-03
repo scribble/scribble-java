@@ -7,6 +7,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
+import org.scribble.util.ScribUtil;
 
 public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 {
@@ -19,6 +20,13 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 	protected NonRoleParamDeclList copy()
 	{
 		return new NonRoleParamDeclList(getParamDecls());
+	}
+	
+	@Override
+	public NonRoleParamDeclList clone()
+	{
+		List<NonRoleParamDecl<NonRoleParamKind>> decls = ScribUtil.cloneList(getParamDecls());
+		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(decls);
 	}
 
 	@Override

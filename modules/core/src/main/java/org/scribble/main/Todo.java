@@ -24,7 +24,7 @@ package org.scribble.main;
 
 	// FIXME: do-call argument kinding (sig/type args/params), arity, etc
 	// bound qualified sig/type names (disambiguation check of qualified names, not just ambiguous)
-	// duplicate role decls etc
+	// duplicate protocol/role decls etc
 
 	//.. do projection should filter unused subprotocol role params -- but scoped subprotocols may need extra name mangling
 	//.. both projector and graphbuilder are env visitors but not subprotocol visitors now, so swap visitor hierarchy?

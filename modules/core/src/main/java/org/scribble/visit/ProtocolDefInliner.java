@@ -78,7 +78,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 			// Duplicated from SubprotocolVisitor#visitOverrideFoDo -- FIXME: factor out this facility better
 			ModuleContext mcontext = getModuleContext();
 			ProtocolDecl<? extends ProtocolKind> pd = child.getTargetProtocolDecl(getJobContext(), mcontext);
-			ScribNode seq = applySubstitutions(pd.def.block.seq);
+			ScribNode seq = applySubstitutions(pd.def.block.seq.clone());
 			seq.accept(this);
 			pushEnv(popEnv().setTranslation(((InlineProtocolEnv) seq.del().env()).getTranslation()));
 			return child;

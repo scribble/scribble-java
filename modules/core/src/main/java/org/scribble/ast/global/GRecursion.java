@@ -1,5 +1,6 @@
 package org.scribble.ast.global;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -17,6 +18,14 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	protected GRecursion copy()
 	{
 		return new GRecursion(this.recvar, (GProtocolBlock) this.block);
+	}
+	
+	@Override
+	public GRecursion clone()
+	{
+		RecVarNode recvar = this.recvar.clone();
+		GProtocolBlock block = getBlock().clone();
+		return AstFactoryImpl.FACTORY.GRecursion(recvar, block);
 	}
 
 	@Override

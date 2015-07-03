@@ -1,7 +1,7 @@
 package org.scribble.ast.name.simple;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
-
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.sesstype.Arg;
@@ -32,6 +32,12 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 	protected NonRoleParamNode<K> copy()
 	{
 		return new NonRoleParamNode<>(this.kind, getIdentifier());
+	}
+	
+	@Override
+	public NonRoleParamNode<K> clone()
+	{
+		return AstFactoryImpl.FACTORY.NonRoleParamNode(this.kind, getIdentifier());
 	}
 	
 	@Override

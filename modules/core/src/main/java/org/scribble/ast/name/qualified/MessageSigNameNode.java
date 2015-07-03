@@ -1,5 +1,6 @@
 package org.scribble.ast.name.qualified;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.MessageSigName;
@@ -16,6 +17,12 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 	protected MessageSigNameNode copy()
 	{
 		return new MessageSigNameNode(this.elems);
+	}
+	
+	@Override
+	public MessageSigNameNode clone()
+	{
+		return (MessageSigNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, this.elems);
 	}
 	
 	@Override

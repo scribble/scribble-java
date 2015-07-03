@@ -3,10 +3,12 @@ package org.scribble.ast.global;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
+import org.scribble.util.ScribUtil;
 
 public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 {
@@ -22,14 +24,10 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	}
 	
 	@Override
-	public List<GInteractionNode> getActions()
+	public GInteractionSeq clone()
 	{
-		return castNodes(this.actions);
-	}
-	
-	private static List<GInteractionNode> castNodes(List<? extends InteractionNode<Global>> nodes)
-	{
-		return nodes.stream().map((n) -> (GInteractionNode) n).collect(Collectors.toList());
+		List<GInteractionNode> gis = ScribUtil.cloneList(getActions());
+		return AstFactoryImpl.FACTORY.GInteractionSeq(gis);
 	}
 
 	@Override
@@ -39,5 +37,16 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 		GInteractionSeq gis = new GInteractionSeq(castNodes(ins));
 		gis = (GInteractionSeq) gis.del(del);
 		return gis;
+	}
+	
+	@Override
+	public List<GInteractionNode> getActions()
+	{
+		return castNodes(this.actions);
+	}
+	
+	private static List<GInteractionNode> castNodes(List<? extends InteractionNode<Global>> nodes)
+	{
+		return nodes.stream().map((n) -> (GInteractionNode) n).collect(Collectors.toList());
 	}
 }

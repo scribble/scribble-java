@@ -1,5 +1,6 @@
 package org.scribble.ast.global;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
@@ -14,18 +15,25 @@ public class GContinue extends Continue<Global> implements GSimpleInteractionNod
 	}
 
 	@Override
+	protected GContinue copy()
+	{
+		return new GContinue(this.recvar);
+	}
+	
+	@Override
+	public GContinue clone()
+	{
+		RecVarNode rv = this.recvar.clone();
+		return AstFactoryImpl.FACTORY.GContinue(rv);
+	}
+
+	@Override
 	protected GContinue reconstruct(RecVarNode recvar)
 	{
 		ScribDel del = del();
 		GContinue gc = new GContinue(recvar);//, sicontext, env);
 		gc = (GContinue) gc.del(del);
 		return gc;
-	}
-
-	@Override
-	protected GContinue copy()
-	{
-		return new GContinue(this.recvar);
 	}
 
 	/*protected GlobalContinue(CommonTree ct, RecursionVarNode recvar, SimpleInteractionNodeContext sicontext)

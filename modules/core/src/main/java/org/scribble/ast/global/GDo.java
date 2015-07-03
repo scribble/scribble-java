@@ -1,5 +1,6 @@
 package org.scribble.ast.global;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
@@ -13,9 +14,9 @@ import org.scribble.sesstype.name.GProtocolName;
 
 public class GDo extends Do<Global> implements GSimpleInteractionNode
 {
-	public GDo(RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto)
+	public GDo(RoleArgList roles, NonRoleArgList args, GProtocolNameNode proto)
 	{
-		super(roleinstans, arginstans, proto);
+		super(roles, args, proto);
 	}
 
 	@Override
@@ -23,12 +24,21 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	{
 		return new GDo(this.roles, this.args, getProtocolNameNode());
 	}
+	
+	@Override
+	public GDo clone()
+	{
+		RoleArgList roles = this.roles.clone();
+		NonRoleArgList args = this.args.clone();
+		GProtocolNameNode proto = this.getProtocolNameNode().clone();
+		return AstFactoryImpl.FACTORY.GDo(roles, args, proto);
+	}
 
 	@Override
-	protected GDo reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<Global> proto)
+	protected GDo reconstruct(RoleArgList roles, NonRoleArgList args, ProtocolNameNode<Global> proto)
 	{
 		ScribDel del = del();
-		GDo gd = new GDo(roleinstans, arginstans, (GProtocolNameNode) proto);
+		GDo gd = new GDo(roles, args, (GProtocolNameNode) proto);
 		gd = (GDo) gd.del(del);
 		return gd;
 	}

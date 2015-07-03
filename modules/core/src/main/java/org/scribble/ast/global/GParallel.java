@@ -3,9 +3,9 @@ package org.scribble.ast.global;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
@@ -20,6 +20,13 @@ public class GParallel extends Parallel<Global> implements GCompoundInteractionN
 	protected ScribNodeBase copy()
 	{
 		return new GParallel(getBlocks());
+	}
+	
+	@Override
+	public GParallel clone()
+	{
+		//List<GProtocolBlock> blocks = ScribUtil.cloneList(getBlocks());
+		throw new RuntimeException("TODO: " + this);
 	}
 	
 	@Override

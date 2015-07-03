@@ -22,7 +22,14 @@ public class Interrupt extends ScribNodeBase//AbstractSimpleInteractionNode
 	protected ScribNodeBase copy()
 	{
 		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public Interrupt clone()
+	{
+		// TODO Auto-generated method stub
+		throw new RuntimeException("TODO: " + this);
 	}
 	
 	//protected abstract Interrupt reconstruct(CommonTree ct, RoleNode src, List<MessageNode> msgs, GlobalInterruptContext ncontext, Env env);

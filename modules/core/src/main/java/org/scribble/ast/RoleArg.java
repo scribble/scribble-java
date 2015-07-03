@@ -18,6 +18,13 @@ public class RoleArg extends DoArg<RoleNode>
 	{
 		return new RoleArg(this.val);
 	}	
+	
+	@Override
+	public RoleArg clone()
+	{
+		RoleNode role = this.val.clone();
+		return AstFactoryImpl.FACTORY.RoleArg(role);
+	}
 
 	@Override
 	protected RoleArg reconstruct(RoleNode arg)

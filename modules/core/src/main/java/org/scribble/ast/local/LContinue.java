@@ -1,5 +1,6 @@
 package org.scribble.ast.local;
 
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
@@ -16,6 +17,13 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	protected LContinue copy()
 	{
 		return new LContinue(this.recvar);
+	}
+	
+	@Override
+	public LContinue clone()
+	{
+		RecVarNode rv = this.recvar.clone();
+		return AstFactoryImpl.FACTORY.LContinue(rv);
 	}
 
 	@Override

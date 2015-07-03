@@ -42,7 +42,7 @@ public class LReceiveDel extends LSimpleInteractionNodeDel
 		MessageId mid = lr.msg.toMessage().getId();
 		Payload payload =
 				(lr.msg.isMessageSigNode())  // Hacky?
-					? ((MessageSigNode) lr.msg).payload.toPayload()
+					? ((MessageSigNode) lr.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		conv.builder.addEdge(conv.builder.getEntry(), new Receive(peer, mid, payload), conv.builder.getExit());
 		return (LReceive) super.leaveFsmBuilder(parent, child, conv, lr);

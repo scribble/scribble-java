@@ -24,6 +24,14 @@ public class ImportModule extends ImportDecl<ModuleKind>
 		return new ImportModule(this.modname, this.alias);
 	}
 	
+	@Override
+	public ImportModule clone()
+	{
+		ModuleNameNode name = (ModuleNameNode) this.modname.clone();
+		ModuleNameNode alias = (ModuleNameNode) this.alias.clone();
+		return AstFactoryImpl.FACTORY.ImportModule(name, alias);
+	}
+	
 	protected ImportModule reconstruct(ModuleNameNode modname, ModuleNameNode alias)
 	{
 		ScribDel del = del();

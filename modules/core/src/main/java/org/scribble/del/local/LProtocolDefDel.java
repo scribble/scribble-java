@@ -54,7 +54,7 @@ public class LProtocolDefDel extends ProtocolDefDel
 		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
 		LRecursion rec = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
 		LInteractionSeq lis = AstFactoryImpl.FACTORY.LInteractionSeq(Arrays.asList(rec));
-		LProtocolDef inlined = AstFactoryImpl.FACTORY.LProtocolDefinition(AstFactoryImpl.FACTORY.LProtocolBlock(lis));
+		LProtocolDef inlined = AstFactoryImpl.FACTORY.LProtocolDef(AstFactoryImpl.FACTORY.LProtocolBlock(lis));
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		LProtocolDefDel copy = setInlinedProtocolDef(inlined);
 		

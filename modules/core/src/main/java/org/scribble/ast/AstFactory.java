@@ -56,23 +56,23 @@ public interface AstFactory
 	
 	MessageSigNode MessageSigNode(OpNode op, PayloadElemList payload);
 	PayloadElemList PayloadElemList(List<PayloadElem> payloadelems);
-	PayloadElem PayloadElement(PayloadElemNameNode name);
+	PayloadElem PayloadElem(PayloadElemNameNode name);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
 	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);
 	
-	MessageSigNameDecl MessageSigDecl(String schema, String extName, String source, MessageSigNameNode alias);
-	DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNameNode alias);
+	MessageSigNameDecl MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode name);
+	DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNameNode name);
 
 	GProtocolDecl GProtocolDecl(GProtocolHeader header, GProtocolDef def);
 	GProtocolHeader GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 
 	RoleDeclList RoleDeclList(List<RoleDecl> rds);
-	RoleDecl RoleDecl(RoleNode namenode);
+	RoleDecl RoleDecl(RoleNode role);
 	NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> pds);
-	<K extends NonRoleParamKind> NonRoleParamDecl<K> ParamDecl(K kind, NonRoleParamNode<K> namenode);
+	<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(K kind, NonRoleParamNode<K> name);
 	
-	GProtocolDef GProtocolDefinition(GProtocolBlock block);
+	GProtocolDef GProtocolDef(GProtocolBlock block);
 	GProtocolBlock GProtocolBlock(GInteractionSeq gis);
 	GInteractionSeq GInteractionSeq(List<GInteractionNode> gis);
 
@@ -80,11 +80,11 @@ public interface AstFactory
 	GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks);
 	GRecursion GRecursion(RecVarNode recvar, GProtocolBlock block);
 	GContinue GContinue(RecVarNode recvar);
-	GDo GDo(RoleArgList roleinstans, NonRoleArgList arginstans, GProtocolNameNode proto);
+	GDo GDo(RoleArgList roles, NonRoleArgList args, GProtocolNameNode proto);
 	
-	RoleArgList RoleArgList(List<RoleArg> ris);
+	RoleArgList RoleArgList(List<RoleArg> roles);
 	RoleArg RoleArg(RoleNode role);
-	NonRoleArgList NonRoleArgList(List<NonRoleArg> ais);
+	NonRoleArgList NonRoleArgList(List<NonRoleArg> args);
 	NonRoleArg NonRoleArg(NonRoleArgNode arg);
 
 	<K extends Kind> NameNode<K> SimpleNameNode(K kind, String identifier);
@@ -97,7 +97,7 @@ public interface AstFactory
 	LProtocolDecl LProtocolDecl(LProtocolHeader header, LProtocolDef def);
 	LProtocolHeader LProtocolHeader(LProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 	SelfRoleDecl SelfRoleDecl(RoleNode namenode);
-	LProtocolDef LProtocolDefinition(LProtocolBlock block);
+	LProtocolDef LProtocolDef(LProtocolBlock block);
 	LProtocolBlock LProtocolBlock(LInteractionSeq seq);
 	LInteractionSeq LInteractionSeq(List<LInteractionNode> actions);
 
@@ -106,5 +106,5 @@ public interface AstFactory
 	LChoice LChoice(RoleNode subj, List<LProtocolBlock> blocks);
 	LRecursion LRecursion(RecVarNode recvar, LProtocolBlock block);
 	LContinue LContinue(RecVarNode recvar);
-	LDo LDo(RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto);
+	LDo LDo(RoleArgList roles, NonRoleArgList args, LProtocolNameNode proto);
 }

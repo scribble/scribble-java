@@ -47,7 +47,7 @@ public class Substitutor extends AstVisitor
 		if (an.isMessageSigNode())
 		{
 			MessageSigNode msn = (MessageSigNode) an;
-			return (NonRoleArgNode) AstFactoryImpl.FACTORY.MessageSigNode(msn.op, msn.payload);
+			return (NonRoleArgNode) AstFactoryImpl.FACTORY.MessageSigNode(msn.op, msn.payloads);
 		}
 		else if (an.isMessageSigNameNode())
 		{

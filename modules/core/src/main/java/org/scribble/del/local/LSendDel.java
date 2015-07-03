@@ -46,7 +46,7 @@ public class LSendDel extends LSimpleInteractionNodeDel
 		MessageId mid = ls.msg.toMessage().getId();
 		Payload payload =
 				ls.msg.isMessageSigNode()  // Hacky?
-					? ((MessageSigNode) ls.msg).payload.toPayload()
+					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		conv.builder.addEdge(conv.builder.getEntry(), new Send(peer, mid, payload), conv.builder.getExit());
 		return (LSend) super.leaveFsmBuilder(parent, child, conv, ls);

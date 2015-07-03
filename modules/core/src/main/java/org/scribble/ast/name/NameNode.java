@@ -16,6 +16,9 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 		this.elems = elems;
 	}
 	
+	@Override
+	public abstract NameNode<K> clone();
+	
 	public String[] getElements()
 	{
 		return this.elems;

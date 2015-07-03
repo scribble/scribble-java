@@ -21,6 +21,13 @@ public class PayloadElem extends ScribNodeBase
 	{
 		return new PayloadElem(this.name);
 	}
+	
+	@Override
+	public PayloadElem clone()
+	{
+		PayloadElemNameNode name = (PayloadElemNameNode) this.name.clone();
+		return AstFactoryImpl.FACTORY.PayloadElem(name);
+	}
 
 	protected PayloadElem reconstruct(PayloadElemNameNode name)
 	{

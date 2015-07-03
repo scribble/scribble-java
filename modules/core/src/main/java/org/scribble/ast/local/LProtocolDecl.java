@@ -1,10 +1,11 @@
 package org.scribble.ast.local;
 
-import org.scribble.ast.ScribNodeBase;
+import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ProtocolDef;
 import org.scribble.ast.ProtocolHeader;
+import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
@@ -22,6 +23,14 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	protected ScribNodeBase copy()
 	{
 		return new LProtocolDecl(getHeader(), getDef());
+	}
+	
+	@Override
+	public LProtocolDecl clone()
+	{
+		LProtocolHeader header = getHeader().clone();
+		LProtocolDef def = getDef().clone();
+		return AstFactoryImpl.FACTORY.LProtocolDecl(header, def);
 	}
 	
 	@Override
