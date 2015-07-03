@@ -12,6 +12,24 @@ module Test;
 type <java> "java.lang.String" from "rt.jar" as String;
 
 
+/*global protocol Foo(role A, role B)  // Project for A
+{
+	do Bar1<1(), 2()>(A, B);
+	do Bar1<3(), 4()>(A, B);
+}
+
+global protocol Bar1<sig M1, sig M2>(role A, role B)
+{
+	do Bar2<M1, M2>(A, B, A);
+}
+
+global protocol Bar2<sig M1, sig M2>(role A, role B, role C)
+{
+	M1 from A to B;
+	M2 from B to C;
+}*/
+
+
 /*global protocol Foo(role A, role B)
 {
 	do Bar(A, B);

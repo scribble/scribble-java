@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.ScribNode;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ModuleNameNode;
@@ -75,7 +75,7 @@ public class Projector extends OffsetSubprotocolVisitor<ProjectionEnv>
 			visited = (GProtocolDecl) leave(parent, child, visited);  // projection will not change original global protocol (visited can be discarded)
 			popSelf();
 			
-			//System.out.println("Projected for " + self + ":\n" + projected + "\n");
+			//System.out.println("Projected " + visited.header.name + " for " + self + ":\n" + ((ProjectionEnv) visited.def.del().env()).getProjection() + "\n");
 		}
 		return child;
 	}

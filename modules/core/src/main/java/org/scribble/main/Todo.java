@@ -10,6 +10,8 @@ package org.scribble.main;
 	// Inconsistencies? some visitOverride methods override base visit (i.e. including enter/exit) while others just override the visitChildren part
 	// also: sometimes super.visit is used, other times child.accept(this), etc
 
+	// FIXME: projection as subprotocol visitor (or maybe by some other hack, e.g. check each gdo for special cases) to handle repeat role args e.g. do(A, B, A)
+
 	// move roledecllist etc projection to dels
 
 	// FIXME: wf-c should in some cases attempt an unfolding on reaching a continue if not satisfied yet -- or do by "recording" cache for recs, as for subprotocolsigs
@@ -25,6 +27,7 @@ package org.scribble.main;
 	// FIXME: do-call argument kinding (sig/type args/params), arity, etc
 	// bound qualified sig/type names (disambiguation check of qualified names, not just ambiguous)
 	// duplicate protocol/role decls etc
+	// name collisions? e.g. message sig names and ops (M1 and M1() -- maybe ok)
 
 	//.. do projection should filter unused subprotocol role params -- but scoped subprotocols may need extra name mangling
 	//.. both projector and graphbuilder are env visitors but not subprotocol visitors now, so swap visitor hierarchy?
