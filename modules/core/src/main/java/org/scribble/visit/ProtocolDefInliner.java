@@ -44,6 +44,7 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	
 	private String newRecVarId(SubprotocolSig sig)
 	{
+		// HACK
 		return sig.toString()
 				.replace('.', '_')
 				.replace('<', '_')

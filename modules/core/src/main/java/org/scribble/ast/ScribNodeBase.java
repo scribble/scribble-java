@@ -92,7 +92,8 @@ public abstract class ScribNodeBase implements ScribNode
 	// FIXME: remove parent parameter, to make uniform with visitChild
 	// Used when a generic cast would otherwise be needed (non-generic children casts don't need this) -- doesn't check any generic parameters, relies on concrete values being instances of non-parameterised types
 	// Subtype constraint on visited could still be too restrictive, e.g. AmbigNameNodeDel (although it doesn't matter there), e.g. unfolding continue's into recursion's
-	protected final static <T extends ScribNode> T visitChildWithStrictClassCheck(ScribNode parent, T child, AstVisitor nv) throws ScribbleException
+	protected final static <T extends ScribNode>
+			T visitChildWithStrictClassCheck(ScribNode parent, T child, AstVisitor nv) throws ScribbleException
 	{
 		ScribNode visited = ((ScribNodeBase) parent).visitChild(child, nv);
 		if (!child.getClass().isAssignableFrom(visited.getClass()))  // Same subtyping flexibility as standard cast
@@ -104,7 +105,8 @@ public abstract class ScribNodeBase implements ScribNode
 		return t;
 	}
 
-	protected final static <T extends ScribNode> List<T> visitChildListWithStrictClassCheck(ScribNode parent, List<T> children, AstVisitor nv) throws ScribbleException
+	protected final static <T extends ScribNode>
+			List<T> visitChildListWithStrictClassCheck(ScribNode parent, List<T> children, AstVisitor nv) throws ScribbleException
 	{
 		return visitChildListWith(parent, children, nv,
 				(T t) -> ScribUtil.handleLambdaScribbleException(() -> ScribNodeBase.visitChildWithStrictClassCheck(parent, t, nv)));  // -> T
