@@ -53,6 +53,7 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 		return (GProtocolDef) this.def;
 	}
 
+	// Shouldn't be needed when Eclipse fixed
 	@Override
 	public boolean isGlobal()
 	{

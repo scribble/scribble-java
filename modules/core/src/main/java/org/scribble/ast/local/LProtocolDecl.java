@@ -61,6 +61,7 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 		return new LProtocolName(fullmodname, this.header.getDeclName());
 	}
 	
+	// Shouldn't be needed when Eclipse fixed
 	@Override
 	public boolean isLocal()
 	{

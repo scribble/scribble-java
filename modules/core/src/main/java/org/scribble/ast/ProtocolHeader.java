@@ -9,7 +9,7 @@ import org.scribble.visit.AstVisitor;
 
 
 // TODO: parameterize on global/local name node and role decl list (i.e. self roles)
-public abstract class ProtocolHeader<K extends ProtocolKind> extends NameDeclNode<K>
+public abstract class ProtocolHeader<K extends ProtocolKind> extends NameDeclNode<K> implements ProtocolKindNode<K>
 {
 	public final RoleDeclList roledecls;
 	public final NonRoleParamDeclList paramdecls;

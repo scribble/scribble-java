@@ -1,5 +1,7 @@
 package org.scribble.main;
 
+	// default G/LNode getKind methods won't work properly until Eclipse updated with fix, cf. G/LInteractionSeq
+
 	// FIXME: subprotocol decl header projection to check used roles (integrate with existing 2nd projection pass)
 
 	// need public deep clone methods to support syntax manipulations e.g. unfolding (if using pointer equality for ast nodes in the same syntactic position, not just same text value)
