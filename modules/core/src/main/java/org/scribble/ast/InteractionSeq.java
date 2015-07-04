@@ -16,7 +16,6 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 		this.actions = actions;
 	}
 	
-	// protected  // HACK: for protocol unfolding
 	public abstract InteractionSeq<K> reconstruct(List<? extends InteractionNode<K>> ins);
 	
 	@Override

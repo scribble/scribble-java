@@ -8,4 +8,9 @@ import org.scribble.sesstype.kind.Local;
 public interface LInteractionNode extends InteractionNode<Local>, LNode
 {
 	//Role getSelf();
+
+	default boolean isLocal()
+	{
+		return true;
+	}
 }

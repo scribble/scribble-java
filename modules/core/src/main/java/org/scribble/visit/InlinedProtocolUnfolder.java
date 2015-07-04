@@ -17,6 +17,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
+import org.scribble.util.ScribUtil;
 import org.scribble.visit.env.UnfoldingEnv;
 
 
@@ -26,7 +27,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 	//private Stack<Boolean> choiceParents = new Stack<>();
 
 	//private Map<RecVar, ProtocolBlock<?>> recs = new HashMap<>();
-	private Map<RecVar, Recursion<?>> recs = new HashMap<>();
+	private Map<RecVar, Recursion<?>> recs = new HashMap<>();  // Could parameterise recvars to be global/local
 	private Set<RecVar> todo = new HashSet<>();
 	
 	public boolean isTodo(RecVar rv)  // FIXME: rename
@@ -56,7 +57,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 			if (peekEnv().shouldUnfold())
 			{
 				enter(parent, child);
-				ScribNode visited = unfold(child);
+				ScribNode visited = unfold((Recursion<?>) child);
 				return leave(parent, child, visited);
 			}
 			else
@@ -76,16 +77,15 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 		}
 	}
 
-	private <K extends ProtocolKind> ScribNode unfold(ScribNode child) throws ScribbleException
+	private <K extends ProtocolKind> ScribNode unfold(Recursion<K> rec) throws ScribbleException
 	{
-		Recursion<K> gr = (Recursion<K>) child;
-		RecVar rv = gr.recvar.toName();
+		RecVar rv = rec.recvar.toName();
 		//ProtocolBlock<?> pb = getRecVar(rv);
-		ProtocolBlock<K> pb = gr.block;
+		ProtocolBlock<K> pb = rec.block;
 		this.todo.add(rv);
 		RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND,"__DUMMY");
-		ScribNode n = gr.reconstruct(dummy, (ProtocolBlock<K>) pb.accept(this));  // FIXME: returning block -- need to make a dummy global/local recursion (or choice etc) to contain it
-		//ScribNode n = gr.reconstruct(dummy, (ProtocolBlock<K>) pb.visitChildren(this));  // FIXME: returning block -- need to make a dummy global/local recursion (or choice etc) to contain it
+		ScribNode n = rec.reconstruct(dummy, ScribUtil.checkNodeClass(pb, pb.accept(this)));
+		//ScribNode n = rec.reconstruct(dummy, (ProtocolBlock<K>) pb.visitChildren(this));
 		this.todo.remove(rv);
 		return n;
 	}

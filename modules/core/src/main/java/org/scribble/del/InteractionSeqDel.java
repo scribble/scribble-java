@@ -11,6 +11,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
+import org.scribble.util.ScribUtil;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 
@@ -30,28 +31,24 @@ public abstract class InteractionSeqDel extends ScribDelBase
 		List<InteractionNode<K>> visited = new LinkedList<>();
 		for (InteractionNode<K> in : child.actions)
 		{
-			if (in instanceof Continue<?>)
+			if (in instanceof Continue)
 			{
-				Continue<?> gc = (Continue<?>) in;
-				RecVar rv = gc.recvar.toName();
+				Continue<K> cont = (Continue<K>) in;
+				RecVar rv = cont.recvar.toName();
 				if (unf.isTodo(rv))
 				{
-					//return unf.getRecVar(rv);
-					//ProtocolBlock<?> pb = unf.getRecVar(rv);
-					//visited.addAll((List<InteractionNode<K>>) ((ProtocolBlock<?>) pb.accept(unf)).seq.actions);  // FIXME: clone? or reconstruct inside visit is enough
-					//visited.addAll((List<InteractionNode<K>>) pb.seq.actions);
-					//visited.add(AstFactoryImpl.FACTORY.);
-					Recursion<K> rec = (Recursion<K>) unf.getRecVar(rv);
-					visited.add(rec.reconstruct(rec.recvar, rec.getBlock()));  // FIXME: clone the block? inlined wf-choice check relies on ast pointer equality
+					Recursion<K> rec = (Recursion<K>) unf.getRecVar(rv);  // Could parameterise recvars to be global/local
+					//visited.add(rec.reconstruct(rec.recvar, rec.getBlock()));  // FIXME: clone the block? inlined wf-choice check relies on ast pointer equality
+					visited.add(rec.clone());
 				}
 				else
 				{
-					visited.add((InteractionNode<K>) in.accept(unf));
+					visited.add(ScribUtil.checkNodeClass(in, in.accept(unf)));
 				}
 			}
 			else
 			{
-				visited.add((InteractionNode<K>) in.accept(unf));
+				visited.add(ScribUtil.checkNodeClass(in, in.accept(unf)));
 			}
 		}
 		return child.reconstruct(visited);

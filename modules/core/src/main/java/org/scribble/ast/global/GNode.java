@@ -5,4 +5,9 @@ import org.scribble.ast.ScribNode;
 public interface GNode extends ScribNode
 {
 	//LocalNode project(Projector proj) throws ScribbleException;
+
+	default boolean isGlobal()
+	{
+		return true;
+	}
 }
