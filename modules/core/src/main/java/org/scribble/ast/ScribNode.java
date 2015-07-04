@@ -26,14 +26,15 @@ import org.scribble.visit.Substitutor;
  */
 public interface ScribNode
 {
-	ScribNode accept(AstVisitor nv) throws ScribbleException;
-	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;
+	ScribNode clone();
 
 	ScribDel del();
 	ScribNode del(ScribDel del);
 	//<T extends ScribNode> T del(T t, ScribDel del);
+
+	ScribNode accept(AstVisitor nv) throws ScribbleException;
+	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;
 	
 	ScribNode substituteNames(Substitutor subs);
-	
-	ScribNode clone();
+
 }

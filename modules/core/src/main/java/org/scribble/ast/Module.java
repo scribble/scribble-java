@@ -74,9 +74,9 @@ public class Module extends ScribNodeBase
 	public Module visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		ModuleDecl moddecl = (ModuleDecl) visitChild(this.moddecl, nv);
-		List<ImportDecl<? extends ImportKind>> imports = visitChildListWithClassCheck(this, this.imports, nv);
-		List<NonProtocolDecl<? extends NonProtocolKind>> data = visitChildListWithClassCheck(this, this.data, nv);
-		List<ProtocolDecl<? extends ProtocolKind>> protos = visitChildListWithClassCheck(this, this.protos, nv);
+		List<ImportDecl<? extends ImportKind>> imports = visitChildListWithStrictClassCheck(this, this.imports, nv);
+		List<NonProtocolDecl<? extends NonProtocolKind>> data = visitChildListWithStrictClassCheck(this, this.data, nv);
+		List<ProtocolDecl<? extends ProtocolKind>> protos = visitChildListWithStrictClassCheck(this, this.protos, nv);
 		return reconstruct(moddecl, imports, data, protos);
 	}
 

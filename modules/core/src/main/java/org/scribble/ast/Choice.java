@@ -26,7 +26,7 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 	public Choice<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RoleNode subj = (RoleNode) visitChild(this.subj, nv);
-		List<? extends ProtocolBlock<K>> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
+		List<? extends ProtocolBlock<K>> blocks = visitChildListWithStrictClassCheck(this, this.blocks, nv);
 		return reconstruct(subj, blocks);
 	}
 	

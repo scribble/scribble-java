@@ -5,7 +5,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
 
-public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInteraction
+public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInteraction implements ProtocolKindNode<K>
 {
 	public final InteractionSeq<K> seq;
 
@@ -14,6 +14,9 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 		this.seq = seq;
 	}
 	
+	@Override
+	public abstract ProtocolBlock<K> clone();
+
 	protected abstract ProtocolBlock<K> reconstruct(InteractionSeq<K> seq);
 
 	public abstract InteractionSeq<K> getInteractionSeq();
@@ -21,7 +24,7 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 	@Override
 	public ProtocolBlock<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		InteractionSeq<K> seq = visitChildWithClassCheck(this, this.seq, nv);
+		InteractionSeq<K> seq = visitChildWithStrictClassCheck(this, this.seq, nv);
 		return reconstruct(seq);
 	}
 	

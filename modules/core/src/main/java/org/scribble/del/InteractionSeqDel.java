@@ -1,18 +1,7 @@
 package org.scribble.del;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.scribble.ast.Continue;
-import org.scribble.ast.InteractionNode;
-import org.scribble.ast.InteractionSeq;
-import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.sesstype.name.RecVar;
-import org.scribble.util.ScribUtil;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 
 
@@ -24,12 +13,16 @@ public abstract class InteractionSeqDel extends ScribDelBase
 		pushVisitorEnv(parent, child, builder);
 	}
 
-	//@Override
-	//public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
-	public <K extends ProtocolKind> ScribNode visitForUnfolding(InlinedProtocolUnfolder unf, InteractionSeq<K> child) throws ScribbleException
+	/*@Override
+	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
-		List<InteractionNode<K>> visited = new LinkedList<>();
-		for (InteractionNode<K> in : child.actions)
+		return visitForUnfolding(unf, (InteractionSeq<?>) visited);
+	}*/
+
+	/*private <K extends ProtocolKind> ScribNode visitForUnfolding(InlinedProtocolUnfolder unf, InteractionSeq<K> seq) throws ScribbleException
+	{
+		List<InteractionNode<K>> ins = new LinkedList<>();
+		for (InteractionNode<K> in : seq.actions)
 		{
 			if (in instanceof Continue)
 			{
@@ -37,20 +30,30 @@ public abstract class InteractionSeqDel extends ScribDelBase
 				RecVar rv = cont.recvar.toName();
 				if (unf.isTodo(rv))
 				{
-					Recursion<K> rec = (Recursion<K>) unf.getRecVar(rv);  // Could parameterise recvars to be global/local
-					//visited.add(rec.reconstruct(rec.recvar, rec.getBlock()));  // FIXME: clone the block? inlined wf-choice check relies on ast pointer equality
-					visited.add(rec.clone());
+					Recursion<K> rec = castRecursion(cont, unf.getRecVar(rv));  // Could parameterise recvars to be global/local
+					ins.add(rec.clone());  // original rec is cloned
 				}
 				else
 				{
-					visited.add(ScribUtil.checkNodeClass(in, in.accept(unf)));
+					ins.add(ScribUtil.checkNodeClass(in, in.accept(unf)));
 				}
 			}
 			else
 			{
-				visited.add(ScribUtil.checkNodeClass(in, in.accept(unf)));
+				ins.add(ScribUtil.checkNodeClass(in, in.accept(unf)));
 			}
 		}
-		return child.reconstruct(visited);
+		return seq.reconstruct(ins);  // reconstruct makes sense here, actually reconstructing this seq (keep the same del etc)
 	}
+	
+	private static <K extends ProtocolKind> Recursion<K> castRecursion(Continue<K> cont, Recursion<?> rec)
+	{
+		if ((cont.isGlobal() && !rec.isGlobal()) || (cont.isLocal() && !rec.isLocal()))
+		{
+			throw new RuntimeException("Shouldn't get in here: " + cont);
+		}
+		@SuppressWarnings("unchecked")
+		Recursion<K> tmp = (Recursion<K>) rec;
+		return tmp;
+	}*/
 }

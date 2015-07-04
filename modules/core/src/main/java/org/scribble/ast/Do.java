@@ -36,7 +36,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 		//ScopeNode scope = isScoped() ? (ScopeNode) visitChild(this.scope, nv) : null;
 		RoleArgList ril = (RoleArgList) visitChild(this.roles, nv);
 		NonRoleArgList al = (NonRoleArgList) visitChild(this.args, nv);
-		ProtocolNameNode<K> proto = visitChildWithClassCheck(this, this.proto, nv);
+		ProtocolNameNode<K> proto = visitChildWithStrictClassCheck(this, this.proto, nv);
 		return reconstruct(ril, al, proto);
 	}
 

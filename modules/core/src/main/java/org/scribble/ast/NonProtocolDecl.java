@@ -36,7 +36,7 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind> extends NameDec
 	@Override
 	public NonProtocolDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		MemberNameNode<K> name = (MemberNameNode<K>) visitChildWithClassCheck(this, this.name, nv);
+		MemberNameNode<K> name = (MemberNameNode<K>) visitChildWithStrictClassCheck(this, this.name, nv);
 		return reconstruct(this.schema, this.extName, this.source, name);
 	}
 

@@ -8,6 +8,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.ReachabilityEnv;
@@ -22,6 +23,18 @@ public class LContinueDel extends LSimpleInteractionNodeDel
 		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(recvar);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (LContinue) super.leaveProtocolInlining(parent, child, builder, lc);
+	}
+
+	@Override
+	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	{
+		LContinue gc = (LContinue) visited;
+		RecVar rv = gc.recvar.toName();
+		if (unf.isTodo(rv))
+		{
+			return unf.getRecVar(rv).clone();
+		}
+		return gc;
 	}
 
 	@Override

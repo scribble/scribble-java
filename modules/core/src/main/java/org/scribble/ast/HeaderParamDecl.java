@@ -21,7 +21,7 @@ public abstract class HeaderParamDecl<K extends ParamKind> extends NameDeclNode<
 	@Override
 	public HeaderParamDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		SimpleNameNode<K> name = visitChildWithClassCheck(this, (SimpleNameNode<K>) this.name, nv);
+		SimpleNameNode<K> name = visitChildWithStrictClassCheck(this, (SimpleNameNode<K>) this.name, nv);
 		return reconstruct(name);
 	}
 	

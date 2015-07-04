@@ -21,7 +21,7 @@ public abstract class Parallel<K extends ProtocolKind> extends CompoundInteracti
 	@Override
 	public Parallel<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		List<? extends ProtocolBlock<K>> blocks = visitChildListWithClassCheck(this, this.blocks, nv);
+		List<? extends ProtocolBlock<K>> blocks = visitChildListWithStrictClassCheck(this, this.blocks, nv);
 		return reconstruct(blocks);
 	}
 	

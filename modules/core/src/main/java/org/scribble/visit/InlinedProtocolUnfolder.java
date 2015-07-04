@@ -6,13 +6,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.del.InteractionSeqDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.kind.RecVarKind;
@@ -24,6 +22,8 @@ import org.scribble.visit.env.UnfoldingEnv;
 // Unfolds recursions "directly under" choices (n.b. not continues -- use UnfoldingVisitor to do that on demand)
 public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv>
 {
+	private static final String DUMMY_REC_LABEL = "__";
+	
 	//private Stack<Boolean> choiceParents = new Stack<>();
 
 	//private Map<RecVar, ProtocolBlock<?>> recs = new HashMap<>();
@@ -65,12 +65,12 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 				return super.visit(parent, child);
 			}
 		}
-		else if (child instanceof InteractionSeq)
+		/*else if (child instanceof InteractionSeq)
 		{
 			enter(child, parent);
 			ScribNode n = overrideForInteractionSeq((ProtocolBlock<?>) parent, (InteractionSeq<?>) child);
 			return leave(parent, child, n);
-		}
+		}*/
 		else
 		{
 			return super.visit(parent, child);
@@ -80,20 +80,23 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 	private <K extends ProtocolKind> ScribNode unfold(Recursion<K> rec) throws ScribbleException
 	{
 		RecVar rv = rec.recvar.toName();
-		//ProtocolBlock<?> pb = getRecVar(rv);
-		ProtocolBlock<K> pb = rec.block;
+		//ProtocolBlock<K> pb = rec.block.clone();
+		ProtocolBlock<K> pb = rec.block;  // Clone unnecessary: can keep the original block, apart from any continues to substitute (done in InteractionSeqDel)
 		this.todo.add(rv);
-		RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND,"__DUMMY");
-		ScribNode n = rec.reconstruct(dummy, ScribUtil.checkNodeClass(pb, pb.accept(this)));
-		//ScribNode n = rec.reconstruct(dummy, (ProtocolBlock<K>) pb.visitChildren(this));
+		RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, DUMMY_REC_LABEL);
+		/*ProtocolBlock<K> block = ScribUtil.checkNodeClass(pb, pb.accept(this));
+		Recursion<?> n = (rec.isGlobal())
+				? AstFactoryImpl.FACTORY.GRecursion(dummy, (GProtocolBlock) block)
+				: AstFactoryImpl.FACTORY.LRecursion(dummy, (LProtocolBlock) block);*/
+		ScribNode n = rec.reconstruct(dummy, ScribUtil.checkNodeClass(pb, pb.accept(this)));  // reconstruct makes sense here, actually reconstructing this rec with new label but same block (and keep the same del etc)
 		this.todo.remove(rv);
 		return n;
 	}
 	
-	private ScribNode overrideForInteractionSeq(ProtocolBlock<?> parent, InteractionSeq<?> child) throws ScribbleException
+	/*private ScribNode overrideForInteractionSeq(ProtocolBlock<?> parent, InteractionSeq<?> child) throws ScribbleException
 	{
 		return ((InteractionSeqDel) child.del()).visitForUnfolding(this, child);
-	}
+	}*/
 	
 	@Override
 	protected void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException

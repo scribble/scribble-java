@@ -27,7 +27,7 @@ public abstract class Recursion<K extends ProtocolKind> extends CompoundInteract
 	public Recursion<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		RecVarNode recvar = (RecVarNode) visitChild(this.recvar, nv);
-		ProtocolBlock<K> block = visitChildWithClassCheck(this, this.block, nv);
+		ProtocolBlock<K> block = visitChildWithStrictClassCheck(this, this.block, nv);
 		return reconstruct(recvar, block);
 	}
 

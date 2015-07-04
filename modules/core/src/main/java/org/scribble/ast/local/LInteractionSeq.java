@@ -46,6 +46,12 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	{
 		return castNodes(this.actions);
 	}
+
+	@Override	
+	public boolean isLocal()
+	{
+		return true;
+	}
 	
 	private static List<LInteractionNode> castNodes(List<? extends InteractionNode<Local>> nodes)
 	{
