@@ -7,8 +7,8 @@ import org.scribble.sesstype.kind.Global;
 // Alternatively to interface, use GlobalNode subclass with delegation to "super" base (e.g. Choice) classes
 public interface GInteractionNode extends InteractionNode<Global>, GNode
 {
-	default boolean isGlobal()
+	/*default boolean isGlobal()
 	{
 		return true;
-	}
+	}*/
 }

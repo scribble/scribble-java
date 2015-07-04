@@ -11,7 +11,7 @@ public interface ProtocolKindNode<K extends ProtocolKind> extends ScribNode
 
 	default boolean isLocal()
 	{
-		return true;
+		return false;
 	}
 	
 	K getKind(); 

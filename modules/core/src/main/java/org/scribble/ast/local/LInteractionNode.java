@@ -9,8 +9,8 @@ public interface LInteractionNode extends InteractionNode<Local>, LNode
 {
 	//Role getSelf();
 
-	default boolean isLocal()
+	/*default boolean isLocal()
 	{
 		return true;
-	}
+	}*/
 }

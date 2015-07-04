@@ -45,6 +45,13 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 		return castNodes(this.actions);
 	}
 	
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Global getKind()
+	{
+		return Global.KIND;
+	}
+	
 	private static List<GInteractionNode> castNodes(List<? extends InteractionNode<Global>> nodes)
 	{
 		return nodes.stream().map((n) -> (GInteractionNode) n).collect(Collectors.toList());

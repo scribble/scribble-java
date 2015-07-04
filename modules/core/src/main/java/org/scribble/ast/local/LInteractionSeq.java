@@ -53,6 +53,13 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 		return true;
 	}
 	
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return Local.KIND;
+	}
+	
 	private static List<LInteractionNode> castNodes(List<? extends InteractionNode<Local>> nodes)
 	{
 		return nodes.stream().map((n) -> (LInteractionNode) n).collect(Collectors.toList());

@@ -16,11 +16,10 @@
 package org.scribble.ast;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.scribble.ast.global.GNode;
-import org.scribble.ast.local.LNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
@@ -107,20 +106,18 @@ public abstract class ScribNodeBase implements ScribNode
 		return t;
 	}
 
-	protected final static <T extends ScribNode> List<T> visitChildListWithStrictClassCheck(ScribNode parent, List<T> children, AstVisitor nv) throws ScribbleException
+	protected final static <N extends ScribNode, R extends ScribNode> List<R> visitChildListWith(ScribNode parent, List<N> children, AstVisitor nv, Function<N, R> c) throws ScribbleException
 	{
 		/*List<T> visited = new LinkedList<>();
 		for (T n : children)
 		{
-			visited.add(visitChildWithClassCheck(parent, n, nv));
+			visited.add(c.call());
 		}
 		return visited;*/
 		// Maybe this exception hack is not worth it?  Better to throw directly as ScribbleException
 		try
 		{
-			return children.stream()
-					.map((n) -> ScribUtil.handleLambdaScribbleException(() -> ScribNodeBase.visitChildWithStrictClassCheck(parent, n, nv)))
-					.collect(Collectors.toList());
+			return children.stream().map((n) -> c.apply(n)).collect(Collectors.toList());
 		}
 		catch (RuntimeScribbleException rse)
 		{
@@ -131,6 +128,18 @@ public abstract class ScribNodeBase implements ScribNode
 			}
 			throw (RuntimeException) cause;
 		}
+	}
+
+	protected final static <T extends ScribNode> List<T> visitChildListWithStrictClassCheck(ScribNode parent, List<T> children, AstVisitor nv) throws ScribbleException
+	{
+		return visitChildListWith(parent, children, nv, new Function<T, T>()
+			{
+				@Override
+				public T apply(T t)
+				{
+					return ScribUtil.handleLambdaScribbleException(() -> ScribNodeBase.visitChildWithStrictClassCheck(parent, t, nv));
+				}
+			});
 	}
 	
 	//protected final static <C extends ScribNode> C visitChildWithClassCheck(Class<C> c, ScribNode parent, ScribNode child, AstVisitor nv) throws ScribbleException
@@ -152,29 +161,22 @@ public abstract class ScribNodeBase implements ScribNode
 		ProtocolKindNode<?> n = (ProtocolKindNode<?>) visited;
 		if ((n.isGlobal() && !k.equals(Global.KIND)) || (n.isLocal() && !k.equals(Local.KIND)))
 		{
-			throw new RuntimeException(nv.getClass() + " generic visit error: " + n + ", " + k);
+			throw new RuntimeException(nv.getClass() + " generic visit error: " + n.getClass() + ", " + k);
 		}
 		return f.apply(n);
 	}
 
 	//protected final static <C extends ScribNode> List<C> visitChildListWithClassCheck(Class<C> c, ScribNode parent, List<? extends ScribNode> children, AstVisitor nv) throws ScribbleException
 	//protected final static <T extends ScribNode, T2 extends T, R extends ScribNode> List<R> visitChildListWithCastCheck(Class<T> c, Function<T2, R> f, ScribNode parent, List<? extends ScribNode> children, AstVisitor nv) throws ScribbleException
-	protected final static <T extends ProtocolKindNode<?>, K extends ProtocolKind, R extends ProtocolKindNode<K>> List<R> visitChildListWithCastCheck(Class<T> c, K k, Function<ScribNode, R> f, ScribNode parent, List<? extends ScribNode> children, AstVisitor nv) throws ScribbleException
+	protected final static <T extends ScribNode, T1 extends ProtocolKindNode<?>, K extends ProtocolKind, R extends ProtocolKindNode<K>> List<R> visitChildListWithCastCheck(Class<T1> c, K k, Function<ScribNode, R> f, ScribNode parent, List<T> children, AstVisitor nv) throws ScribbleException
 	{
-		try
-		{
-			return children.stream()
-					.map((n) -> ScribUtil.handleLambdaScribbleException(() -> ScribNodeBase.visitChildWithCastCheck(c, k, f, parent, n, nv)))
-					.collect(Collectors.toList());
-		}
-		catch (RuntimeScribbleException rse)
-		{
-			Throwable cause = rse.getCause();
-			if (cause instanceof ScribbleException)
+		return visitChildListWith(parent, children, nv, new Function<T, R>()
 			{
-				throw (ScribbleException) cause;
-			}
-			throw (RuntimeException) cause;
-		}
+				@Override
+				public R apply(T t)
+				{
+					return ScribUtil.handleLambdaScribbleException(() -> ScribNodeBase.visitChildWithCastCheck(c, k, f, parent, t, nv));
+				}
+			});
 	}
 }
