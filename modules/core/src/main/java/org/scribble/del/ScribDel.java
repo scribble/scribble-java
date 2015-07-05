@@ -17,11 +17,11 @@ import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.Env;
 
 
-// Mutable for pass-specific Envs (by visitors)
+// Mutable for pass-specific Envs (by visitors) -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
 public interface ScribDel
 {
 	Env env();
-	void setEnv(Env env);  // Envs considered transient, not treated immutably (i.e. non defensive setter on del)
+	void setEnv(Env env);  // Non defensive
 
 	/*void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException;
 	ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException;
