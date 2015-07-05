@@ -44,6 +44,13 @@ public class GParallel extends Parallel<Global> implements GCompoundInteractionN
 		return castBlocks(this.blocks);
 	}
 	
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Global getKind()
+	{
+		return GCompoundInteractionNode.super.getKind();
+	}
+	
 	private static List<GProtocolBlock> castBlocks(List<? extends ProtocolBlock<Global>> blocks)
 	{
 		return blocks.stream().map((b) -> (GProtocolBlock) b).collect(Collectors.toList());

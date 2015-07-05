@@ -40,4 +40,11 @@ public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 	{
 		return (LInteractionSeq) this.seq;
 	}
+	
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LNode.super.getKind();
+	}
 }

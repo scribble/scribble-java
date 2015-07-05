@@ -52,14 +52,6 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	}
 
 	@Override
-	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
-	{
-		ModuleContext mc = fixer.getModuleContext();
-		JobContext jc = fixer.getJobContext();
-		return getTargetProtocolDecl(jc, mc).getDef().getBlock().getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer);
-	}
-
-	@Override
 	public LProtocolName getTargetFullProtocolName(ModuleContext mcontext)
 	{
 		return (LProtocolName) super.getTargetFullProtocolName(mcontext);
@@ -69,5 +61,20 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	public LProtocolDecl getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
 	{
 		return (LProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
+	}
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		ModuleContext mc = fixer.getModuleContext();
+		JobContext jc = fixer.getJobContext();
+		return getTargetProtocolDecl(jc, mc).getDef().getBlock().getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer);
+	}
+
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LSimpleInteractionNode.super.getKind();
 	}
 }

@@ -53,17 +53,24 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 		return (GProtocolDef) this.def;
 	}
 
-	// Shouldn't be needed when Eclipse fixed
-	@Override
-	public boolean isGlobal()
-	{
-		return true;
-	}
-
 	@Override
 	public GProtocolName getFullMemberName(Module mod)
 	{
 		ModuleName fullmodname = mod.getFullModuleName();
 		return new GProtocolName(fullmodname, this.header.getDeclName());
+	}
+
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public boolean isGlobal()
+	{
+		return GNode.super.isGlobal();
+	}
+	
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Global getKind()
+	{
+		return GNode.super.getKind();
 	}
 }

@@ -5,14 +5,29 @@ import java.util.List;
 import org.scribble.ast.Interrupt;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.sesstype.kind.Local;
+import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-public abstract class LInterrupt extends Interrupt implements LNode
+public abstract class LInterrupt extends Interrupt implements LSimpleInteractionNode
 {
 
 	protected LInterrupt(RoleNode src, List<MessageNode> msgs)
 	{
 		super(src, msgs);
-		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LSimpleInteractionNode.super.getKind();
 	}
 
 	/*public final List<RoleNode> dests;

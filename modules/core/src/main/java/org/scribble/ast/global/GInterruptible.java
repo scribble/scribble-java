@@ -11,7 +11,7 @@ import org.scribble.sesstype.kind.ScopeKind;
 import org.scribble.sesstype.name.Name;
 
 //public class GlobalInterruptible extends Interruptible<GlobalProtocolBlock, GlobalInterrupt> implements GlobalInteractionNode
-public class GInterruptible extends Interruptible<Global> implements GInteractionNode
+public class GInterruptible extends Interruptible<Global> implements GCompoundInteractionNode
 {
 	/*public static final Function<Interrupt, GlobalInterrupt> toGlobalInterrupt =
 			(Interrupt interr)
@@ -57,6 +57,13 @@ public class GInterruptible extends Interruptible<Global> implements GInteractio
 	public Name<ScopeKind> getScopeElement()
 	{
 		throw new RuntimeException("TODO: " + this);
+	}
+
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Global getKind()
+	{
+		return GCompoundInteractionNode.super.getKind();
 	}
 
 	/*protected GlobalInterruptible(CommonTree ct, ScopeNode scope, GlobalProtocolBlock block, List<GlobalInterrupt> interrs, CompoundInteractionNodeContext icontext)

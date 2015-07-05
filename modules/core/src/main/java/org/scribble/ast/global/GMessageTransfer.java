@@ -42,6 +42,13 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 		return gmt;
 	}
 
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Global getKind()
+	{
+		return GSimpleInteractionNode.super.getKind();
+	}
+
 	@Override
 	public String toString()
 	{

@@ -13,7 +13,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 //public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalInterrupt> implements LocalInteractionNode
-public class LInterruptible extends Interruptible<Local> implements LInteractionNode
+public class LInterruptible extends Interruptible<Local> implements LCompoundInteractionNode
 {
 	//protected LocalInterruptible(ScopeNode scope, LocalProtocolBlock block, List<LocalInterrupt> interrs)
 	protected LInterruptible(ScopeNode scope, ProtocolBlock<Local> block, List<LInterrupt> interrs)
@@ -49,6 +49,13 @@ public class LInterruptible extends Interruptible<Local> implements LInteraction
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
 		throw new RuntimeException("TODO: " + this);
+	}
+
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LCompoundInteractionNode.super.getKind();
 	}
 
 	/*public LocalInterruptible(CommonTree ct, ScopeNode scope, LocalProtocolBlock block, LocalThrows thro, List<LocalCatches> cats)

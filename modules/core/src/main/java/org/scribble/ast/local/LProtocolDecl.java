@@ -61,15 +61,22 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 		return new LProtocolName(fullmodname, this.header.getDeclName());
 	}
 	
-	// Shouldn't be needed when Eclipse fixed
-	@Override
-	public boolean isLocal()
-	{
-		return true;
-	}
-	
 	public Role getSelfRole()
 	{
 		return getHeader().getSelfRole();
+	}
+	
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public boolean isLocal()
+	{
+		return LNode.super.isLocal();
+	}
+	
+	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
+	@Override
+	public Local getKind()
+	{
+		return LNode.super.getKind();
 	}
 }
