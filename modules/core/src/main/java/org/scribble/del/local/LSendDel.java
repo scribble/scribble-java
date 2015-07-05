@@ -35,6 +35,12 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 		unf.pushEnv(env);
 	}
 
+	/*@Override
+	public LSend leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+	{
+		return (LSend) LSimpleInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);
+	}*/
+
 	@Override
 	public LSend leaveFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
 	{

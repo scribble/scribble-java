@@ -1,20 +1,7 @@
 package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.main.ScribbleException;
-import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.EnvVisitor;
-import org.scribble.visit.FsmBuilder;
-import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.InlinedWFChoiceChecker;
-import org.scribble.visit.MessageIdCollector;
-import org.scribble.visit.ModelBuilder;
-import org.scribble.visit.NameDisambiguator;
-import org.scribble.visit.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.Projector;
-import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.ReachabilityChecker;
-import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.Env;
 
 
@@ -42,7 +29,8 @@ public abstract class ScribDelBase implements ScribDel
 		this.env = env;
 	}
 	
-	/*@Override
+	/*// These would require every subclass to re-override to refer explicitly to del defaults as required
+	@Override
 	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 
