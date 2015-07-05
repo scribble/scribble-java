@@ -23,7 +23,6 @@ public class DummyProjectionRoleNode extends RoleNode
 	@Override
 	public DummyProjectionRoleNode substituteNames(Substitutor subs)
 	{
-		//return reconstruct(subs.getRoleSubstitution(toName()).toString());
 		throw new RuntimeException("Shouldn't get in here: " + this);
 	}
 	

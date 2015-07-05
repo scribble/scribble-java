@@ -28,6 +28,8 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
 import org.scribble.visit.env.Env;
 
+
+// FIXME: factor out with SubprotocolVisitor?
 public abstract class OffsetSubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 {
 	private List<SubprotocolSig> stack = new LinkedList<>();
@@ -85,7 +87,8 @@ public abstract class OffsetSubprotocolVisitor<T extends Env> extends EnvVisitor
 		{
 			ModuleContext mcontext = getModuleContext();
 			ProtocolDecl<? extends ProtocolKind> pd = doo.getTargetProtocolDecl(getJobContext(), mcontext);
-			ScribNode seq = applySubstitutions(pd.def.block.seq);  // Visit the seq? -- or visit the interactions in the seq directly? ()
+			// Target is cloned: fresh dels and envs, which will be discarded
+			ScribNode seq = applySubstitutions(pd.def.block.seq.clone());  // Visit the seq? -- or visit the interactions in the seq directly? ()
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 		}
 		return doo;

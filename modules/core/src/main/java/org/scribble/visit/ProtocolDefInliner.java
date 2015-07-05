@@ -76,11 +76,11 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 		if (!isCycle())
 		{
 			//return (GDo) super.visitForSubprotocols(parent, child);
-			// Duplicated from SubprotocolVisitor#visitOverrideFoDo -- FIXME: factor out this facility better
+			// Duplicated from SubprotocolVisitor#visitOverrideFoDo and modified to access discarded env -- FIXME: factor out this facility better
 			ModuleContext mcontext = getModuleContext();
 			ProtocolDecl<? extends ProtocolKind> pd = child.getTargetProtocolDecl(getJobContext(), mcontext);
 			ScribNode seq = applySubstitutions(pd.def.block.seq.clone());
-			seq.accept(this);
+			seq = seq.accept(this);
 			pushEnv(popEnv().setTranslation(((InlineProtocolEnv) seq.del().env()).getTranslation()));
 			return child;
 		}

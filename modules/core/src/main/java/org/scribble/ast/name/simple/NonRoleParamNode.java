@@ -45,18 +45,16 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 	{
 		Arg<K> arg = toArg();
 		NonRoleArgNode an;
-		if (this.kind.equals(SigKind.KIND))
+		if (this.kind.equals(SigKind.KIND) || this.kind.equals(DataTypeKind.KIND))
+		//if (this.kind instanceof NonRoleParamKind)  // Would additionally include other payloadtype kinds 
 		{
-			an = subs.getArgumentSubstitution(arg);  // Reconstruct/clone?
-		}
-		else if (this.kind.equals(DataTypeKind.KIND))
-		{
-			an = subs.getArgumentSubstitution(arg);  // Reconstruct/clone?)
+			an = subs.getArgumentSubstitution(arg);  // getArgumentSubstitution returns a clone
 		}
 		else
 		{
 			throw new RuntimeException("TODO: " + this);
 		}
+		// Effectively a reconstruct: use the dels/envs made by the subprotocolvisitor cloning, cf. RoleNode
 		an = (NonRoleArgNode) an.del(del());
 		return an;
 	}

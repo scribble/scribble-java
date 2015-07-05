@@ -29,6 +29,8 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
 import org.scribble.visit.env.Env;
 
+
+// FIXME: factor out with OffsetSubprotocolVisitor?
 public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 {
 	private List<SubprotocolSig> stack = new LinkedList<>();
@@ -44,7 +46,7 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		super(job);
 	}
 	
-	// Doesn't push a subprotocol signature; only records the roles/args -- why? because sigs are based on vals (from the first do), not the root proto params? -- but it would be fine to use the params?
+	// Pushes a subprotocol signature
 	private void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		Map<Role, RoleNode> rolemap =
@@ -105,7 +107,8 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		{
 			ModuleContext mcontext = getModuleContext();
 			ProtocolDecl<? extends ProtocolKind> pd = doo.getTargetProtocolDecl(getJobContext(), mcontext);
-			ScribNode seq = applySubstitutions(pd.def.block.seq);  // Visit the seq? -- or visit the interactions in the seq directly? ()
+			// Target is cloned: fresh dels and envs, which will be discarded
+			ScribNode seq = applySubstitutions(pd.def.block.seq.clone());  // Visit the seq? -- or visit the interactions in the seq directly? ()
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 		}
 		return doo;
