@@ -13,6 +13,7 @@ import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.ChoiceDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
@@ -29,7 +30,7 @@ import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
-public class GChoiceDel extends GCompoundInteractionNodeDel
+public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 {
 	@Override
 	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
@@ -162,7 +163,7 @@ public class GChoiceDel extends GCompoundInteractionNodeDel
 			projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GChoice) super.leaveProjection(parent, child, proj, gc);
+		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
 	}
 
 	@Override

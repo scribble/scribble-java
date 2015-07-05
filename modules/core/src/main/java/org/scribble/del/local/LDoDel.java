@@ -9,6 +9,7 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
+import org.scribble.del.DoDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
@@ -19,7 +20,8 @@ import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
 
-public class LDoDel extends LSimpleInteractionNodeDel
+//public class LDoDel extends LSimpleInteractionNodeDel
+public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 {
 	// Would like to factor out with GlobalDoDelegate, but global/local interaction node delegates extend from simple/compound base
 	@Override

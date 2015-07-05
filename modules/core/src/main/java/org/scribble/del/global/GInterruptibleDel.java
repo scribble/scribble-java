@@ -1,13 +1,8 @@
 package org.scribble.del.global;
 
-import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GInterruptible;
-import org.scribble.del.CompoundInteractionNodeDel;
-import org.scribble.main.ScribbleException;
-import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.del.InterruptibleDel;
 
-public class GInterruptibleDel extends GCompoundInteractionNodeDel
+public class GInterruptibleDel extends InterruptibleDel implements GCompoundInteractionNodeDel
 {
 	/*@Override
 	//public void leave(Interruptible<? extends ProtocolBlock<? extends InteractionSequence<? extends InteractionNode>>, ? extends Interrupt> intt, WellFormedChoiceChecker checker)

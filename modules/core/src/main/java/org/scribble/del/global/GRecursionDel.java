@@ -11,6 +11,7 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
+import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RecVarKind;
@@ -26,7 +27,7 @@ import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
-public class GRecursionDel extends GCompoundInteractionNodeDel
+public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
 {
 	@Override
 	public GRecursion leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
@@ -53,7 +54,7 @@ public class GRecursionDel extends GCompoundInteractionNodeDel
 			}
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GRecursion) super.leaveProjection(parent, child, proj, gr);
+		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
 	}
 
 	@Override

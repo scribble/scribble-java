@@ -13,19 +13,20 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.simple.RecVarNode;
+import org.scribble.del.DoDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
-public class GDoDel extends GSimpleInteractionNodeDel
+public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 {
 	// Would like to factor out with LocalDoDelegate, but global/local interaction node delegates extend from simple/compound base
 	@Override
@@ -62,7 +63,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 	@Override
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
-		super.enterProjection(parent, child, proj);
+		GSimpleInteractionNodeDel.super.enterProjection(parent, child, proj);
 
 		GDo gd = (GDo) child;
 		Role self = proj.peekSelf();
@@ -96,7 +97,7 @@ public class GDoDel extends GSimpleInteractionNodeDel
 			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking?
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GDo) super.leaveProjection(parent, child, proj, gd);
+		return (GDo) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
 	}
 
 	@Override

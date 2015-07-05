@@ -49,7 +49,8 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	@Override
 	public Global getKind()
 	{
-		return Global.KIND;
+		//return Global.KIND;
+		return GNode.super.getKind();
 	}
 	
 	private static List<GInteractionNode> castNodes(List<? extends InteractionNode<Global>> nodes)

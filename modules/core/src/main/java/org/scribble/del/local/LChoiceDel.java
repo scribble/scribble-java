@@ -22,6 +22,7 @@ import org.scribble.ast.local.LParallel;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.ChoiceDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RoleKind;
@@ -36,7 +37,7 @@ import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 
-public class LChoiceDel extends LCompoundInteractionNodeDel
+public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 {
 	@Override
 	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
@@ -138,6 +139,6 @@ public class LChoiceDel extends LCompoundInteractionNodeDel
 				cho.blocks.stream().map((b) -> (ReachabilityEnv) b.del().env()).collect(Collectors.toList());
 		ReachabilityEnv merged = checker.popEnv().mergeForChoice(benvs);
 		checker.pushEnv(merged);
-		return (LChoice) super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		return (LChoice) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

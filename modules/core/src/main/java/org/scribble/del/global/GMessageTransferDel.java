@@ -15,6 +15,7 @@ import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LNode;
 import org.scribble.ast.local.LReceive;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.model.local.Receive;
@@ -37,7 +38,7 @@ import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 // FIXME: make base MessageTransferDelegate?
-public class GMessageTransferDel extends GSimpleInteractionNodeDel
+public class GMessageTransferDel extends MessageTransferDel implements GSimpleInteractionNodeDel
 {
 	public GMessageTransferDel()
 	{
@@ -66,7 +67,8 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 	}
 
 	@Override
-	public GMessageTransfer leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
+	//public GMessageTransfer leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
+	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 
@@ -101,7 +103,7 @@ public class GMessageTransferDel extends GSimpleInteractionNodeDel
 		}
 
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GMessageTransfer) super.leaveProjection(parent, child, proj, gmt);
+		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gmt);
 	}
 	
 	@Override

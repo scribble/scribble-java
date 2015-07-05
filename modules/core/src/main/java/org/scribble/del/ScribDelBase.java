@@ -35,13 +35,14 @@ public abstract class ScribDelBase implements ScribDel
 	}
 	
 	// "setEnv" rather than "env" as a non-defensive setter (cf. ModelNodeBase#del)
-	//@Override
-	protected void setEnv(Env env)
+	@Override
+	//protected void setEnv(Env env)
+	public void setEnv(Env env)
 	{
 		this.env = env;
 	}
 	
-	@Override
+	/*@Override
 	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 
@@ -182,16 +183,18 @@ public abstract class ScribDelBase implements ScribDel
 	public ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		return visited;
-	}
+	}*/
 	
 	//protected static <T extends Env> void pushVisitorEnv(ScribDel del, ScribNode parent, ScribNode child, EnvVisitor<T> ev)
-	protected static <T extends Env> void pushVisitorEnv(ScribDel del, EnvVisitor<T> ev)
+	//protected static <T extends Env> void pushVisitorEnv(ScribDel del, EnvVisitor<T> ev)
+	public static <T extends Env> void pushVisitorEnv(ScribDel del, EnvVisitor<T> ev)
 	{
 		T env = castEnv(ev, ev.peekEnv().enterContext());  // By default: copy
 		ev.pushEnv(env);
 	}
 	
-	protected static <T1 extends Env, T2 extends ScribNode>
+	//protected static <T1 extends Env, T2 extends ScribNode>
+	public static <T1 extends Env, T2 extends ScribNode>
 			//T2 popAndSetVisitorEnv(ScribDel del, ScribNode parent, ScribNode child, EnvVisitor<T1> ev, T2 visited)
 			T2 popAndSetVisitorEnv(ScribDel del, EnvVisitor<T1> ev, T2 visited)
 	{

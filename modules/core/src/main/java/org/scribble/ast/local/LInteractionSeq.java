@@ -57,7 +57,8 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	@Override
 	public Local getKind()
 	{
-		return Local.KIND;
+		//return Local.KIND;
+		return LNode.super.getKind();
 	}
 	
 	private static List<LInteractionNode> castNodes(List<? extends InteractionNode<Local>> nodes)

@@ -4,6 +4,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LSend;
+import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.Send;
 import org.scribble.sesstype.Payload;
@@ -15,7 +16,7 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.UnfoldingEnv;
 
 
-public class LSendDel extends LSimpleInteractionNodeDel
+public class LSendDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException

@@ -21,8 +21,9 @@ import org.scribble.visit.env.Env;
 public interface ScribDel
 {
 	Env env();
+	void setEnv(Env env);  // Envs considered transient, not treated immutably (i.e. non defensive setter on del)
 
-	void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException;
+	/*void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException;
 	ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException;
 
 	void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException;
@@ -56,5 +57,125 @@ public interface ScribDel
 	ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException;
 
 	void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException;
-	ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException;
+	ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException;*/
+
+	default void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
+	{
+
+	}
+
+	default ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
+	{
+
+	}
+
+	default ScribNode leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
+	{
+
+	}
+
+	default ScribNode leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
+	{
+
+	}
+	
+	default ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	{
+		
+	}
+
+	default ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
+	{
+		return visited;
+	}
+
+	default void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
+	{
+
+	}
+	
+	default ScribNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv)
+	{
+		
+	}
+
+	default ScribNode leaveFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	{
+		return visited;
+	}
+
+	default void enterOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll)
+	{
+		
+	}
+
+	default ScribNode leaveOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
+	{
+		return visited;
+	}
+
+	default void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
 }

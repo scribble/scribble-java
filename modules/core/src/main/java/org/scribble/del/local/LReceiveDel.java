@@ -4,6 +4,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LReceive;
+import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.Receive;
 import org.scribble.sesstype.Payload;
@@ -15,10 +16,10 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.UnfoldingEnv;
 
 
-public class LReceiveDel extends LSimpleInteractionNodeDel
+public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public LReceive leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		LReceive gmt = (LReceive) visited;
 		LReceive inlined = AstFactoryImpl.FACTORY.LReceive(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
