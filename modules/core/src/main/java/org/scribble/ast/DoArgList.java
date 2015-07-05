@@ -25,7 +25,7 @@ public abstract class DoArgList<T extends DoArg<? extends DoArgNode>> extends Sc
 	@Override
 	public DoArgList<T> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		List<T> nds = visitChildListWithStrictClassCheck(this, this.args, nv);
+		List<T> nds = visitChildListWithClassEqualityCheck(this, this.args, nv);
 		return reconstruct(nds);
 	}
 

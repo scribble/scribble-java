@@ -30,7 +30,6 @@ public interface ScribNode
 
 	ScribDel del();
 	ScribNode del(ScribDel del);
-	//<T extends ScribNode> T del(T t, ScribDel del);
 
 	ScribNode accept(AstVisitor nv) throws ScribbleException;
 	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;

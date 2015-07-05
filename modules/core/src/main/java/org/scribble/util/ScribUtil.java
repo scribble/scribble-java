@@ -10,20 +10,34 @@ import org.scribble.main.RuntimeScribbleException;
 public class ScribUtil
 {
 	// Strict class equality, cf. ScribNodeBase#visitChildWithClassCheck
-	public static <N extends ScribNode> N checkNodeClass(N n, ScribNode sn)
+	// C should be a ground class type
+	// Maybe pointless (in terms of formal guarantees) to use equality instead of assignable
+	public static <C extends ScribNode> C checkNodeClassEquality(C c, ScribNode n)
 	{
-		if (!n.getClass().equals(sn.getClass()))
+		if (!c.getClass().equals(n.getClass()))
 		{
-			throw new RuntimeException("Node class cast error: " + n.getClass() + ", " + sn.getClass());
+			throw new RuntimeException("Node class not equal: " + c.getClass() + ", " + n.getClass());
 		}
 		@SuppressWarnings("unchecked")
-		N tmp = (N) sn;
+		C tmp = (C) n;
+		return tmp;
+	}
+
+	// C should be a ground class type
+	public static <C extends ScribNode> C castNodeByClass(C cast, ScribNode n)
+	{
+		if (!cast.getClass().isAssignableFrom(n.getClass()))
+		{
+			throw new RuntimeException("Node class cast error: " + cast.getClass() + ", " + n.getClass());
+		}
+		@SuppressWarnings("unchecked")
+		C tmp = (C) n;
 		return tmp;
 	}
 	
 	public static <N extends ScribNode> List<N> cloneList(List<N> ns)
 	{
-		return ns.stream().map((n) -> checkNodeClass(n, n.clone())).collect(Collectors.toList());
+		return ns.stream().map((n) -> checkNodeClassEquality(n, n.clone())).collect(Collectors.toList());
 	}
 	
 	public static <T> T handleLambdaScribbleException(Callable<T> c)

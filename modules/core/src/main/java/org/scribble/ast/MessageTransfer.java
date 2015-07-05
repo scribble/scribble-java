@@ -31,7 +31,7 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 	{
 		RoleNode src = (RoleNode) visitChild(this.src, nv);
 		MessageNode msg = (MessageNode) visitChild(this.msg, nv);
-		List<RoleNode> dests = visitChildListWithStrictClassCheck(this, this.dests, nv);
+		List<RoleNode> dests = visitChildListWithClassEqualityCheck(this, this.dests, nv);
 		return reconstruct(src, msg, dests);
 	}
 	

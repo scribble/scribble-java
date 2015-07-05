@@ -45,7 +45,7 @@ public class PayloadElemList extends ScribNodeBase
 	@Override
 	public PayloadElemList visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		List<PayloadElem> elems = visitChildListWithStrictClassCheck(this, this.elems, nv);
+		List<PayloadElem> elems = visitChildListWithClassEqualityCheck(this, this.elems, nv);
 		return reconstruct(elems);
 	}
 

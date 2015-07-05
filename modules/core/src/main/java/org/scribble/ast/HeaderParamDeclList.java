@@ -24,7 +24,7 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 	@Override
 	public HeaderParamDeclList<? extends K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		List<? extends HeaderParamDecl<K>> nds = visitChildListWithStrictClassCheck(this, this.decls, nv);
+		List<? extends HeaderParamDecl<K>> nds = visitChildListWithClassEqualityCheck(this, this.decls, nv);
 		return reconstruct(nds);
 	}
 	

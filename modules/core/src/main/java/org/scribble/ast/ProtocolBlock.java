@@ -24,7 +24,7 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 	@Override
 	public ProtocolBlock<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		InteractionSeq<K> seq = visitChildWithStrictClassCheck(this, this.seq, nv);
+		InteractionSeq<K> seq = visitChildWithClassEqualityCheck(this, this.seq, nv);
 		return reconstruct(seq);
 	}
 	

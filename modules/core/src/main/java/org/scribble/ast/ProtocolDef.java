@@ -21,7 +21,7 @@ public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase 
 	@Override
 	public ProtocolDef<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
-		ProtocolBlock<K> block = visitChildWithStrictClassCheck(this, this.block, nv);
+		ProtocolBlock<K> block = visitChildWithClassEqualityCheck(this, this.block, nv);
 		return reconstruct(block);
 	}
 
