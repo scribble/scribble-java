@@ -10,7 +10,8 @@ public abstract class InteractionSeqDel extends ScribDelBase
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
-		pushVisitorEnv(parent, child, builder);
+		//pushVisitorEnv(parent, child, builder);
+		pushVisitorEnv(this, builder);
 	}
 
 	/*@Override

@@ -184,18 +184,20 @@ public abstract class ScribDelBase implements ScribDel
 		return visited;
 	}
 	
-	protected <T extends Env> void pushVisitorEnv(ScribNode parent, ScribNode child, EnvVisitor<T> ev)
+	//protected static <T extends Env> void pushVisitorEnv(ScribDel del, ScribNode parent, ScribNode child, EnvVisitor<T> ev)
+	protected static <T extends Env> void pushVisitorEnv(ScribDel del, EnvVisitor<T> ev)
 	{
 		T env = castEnv(ev, ev.peekEnv().enterContext());  // By default: copy
 		ev.pushEnv(env);
 	}
 	
-	protected <T1 extends Env, T2 extends ScribNode>
-			T2 popAndSetVisitorEnv(ScribNode parent, ScribNode child, EnvVisitor<T1> ev, T2 visited)
+	protected static <T1 extends Env, T2 extends ScribNode>
+			//T2 popAndSetVisitorEnv(ScribDel del, ScribNode parent, ScribNode child, EnvVisitor<T1> ev, T2 visited)
+			T2 popAndSetVisitorEnv(ScribDel del, EnvVisitor<T1> ev, T2 visited)
 	{
 		// No merge here: merging of child contexts into parent context is handled "manually" for each pass and (compound) interaction node as needed (e.g. WF-choice and reachability)
 		T1 env = ev.popEnv();
-		setEnv(env);
+		((ScribDelBase) del).setEnv(env);
 		return visited;
 	}
 	

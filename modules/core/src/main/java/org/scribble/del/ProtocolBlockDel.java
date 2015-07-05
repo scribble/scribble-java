@@ -10,7 +10,8 @@ public abstract class ProtocolBlockDel extends CompoundInteractionDel
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
-		pushVisitorEnv(parent, child, builder);
+		//pushVisitorEnv(parent, child, builder);
+		pushVisitorEnv(this, builder);
 	}
 
 	/*@Override

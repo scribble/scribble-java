@@ -14,15 +14,6 @@ import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 
 
-/*.. refactor global/local simple/compound dels
-.. refactor jobs (inlining/unfolding)
-.. public reconstructs
-.. relax strictclasscheck visits
-.. tidy up inlinedwfchoice check in gchoicedel
-.. refactor inlined/unfolding visitor and del names
-.. role filtering for do-projection in 2nd projection pass*/
-
-
 // A "compiler job" that supports operations comprising one or more visitor passes over the AST
 public class Job
 {

@@ -16,12 +16,14 @@ public abstract class LSimpleInteractionNodeDel extends SimpleInteractionNodeDel
 	@Override
 	public void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		pushVisitorEnv(parent, child, checker);
+		//pushVisitorEnv(parent, child, checker);
+		pushVisitorEnv(this, checker);
 	}
 
 	@Override
 	public LSimpleInteractionNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
-		return (LSimpleInteractionNode) popAndSetVisitorEnv(parent, child, checker, visited);
+		//return (LSimpleInteractionNode) popAndSetVisitorEnv(parent, child, checker, visited);
+		return (LSimpleInteractionNode) popAndSetVisitorEnv(this, checker, visited);
 	}
 }

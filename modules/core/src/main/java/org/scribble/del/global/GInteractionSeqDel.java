@@ -36,7 +36,8 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	@Override
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
-		pushVisitorEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
+		//pushVisitorEnv(parent, child, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
+		pushVisitorEnv(this, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 	}
 	
 	@Override
@@ -65,7 +66,8 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		}
 		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(lis);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, proj, gis);
+		//return (GInteractionSeq) popAndSetVisitorEnv(parent, child, proj, gis);
+		return (GInteractionSeq) popAndSetVisitorEnv(this, proj, gis);
 	}
 	
 	@Override
@@ -87,13 +89,15 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		}
 		GInteractionSeq inlined = AstFactoryImpl.FACTORY.GInteractionSeq(gins);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GInteractionSeq) popAndSetVisitorEnv(parent, child, builder, gis);
+		//return (GInteractionSeq) popAndSetVisitorEnv(parent, child, builder, gis);
+		return (GInteractionSeq) popAndSetVisitorEnv(this, builder, gis);
 	}
 	
 	@Override
 	public void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
 	{
-		pushVisitorEnv(parent, child, builder);
+		//pushVisitorEnv(parent, child, builder);
+		pushVisitorEnv(this, builder);
 	}
 
 	@Override
@@ -122,7 +126,8 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		ModelEnv env = builder.popEnv();
 		env = env.setActions(all, leaves);
 		builder.pushEnv(env);
-		GInteractionSeq tmp = (GInteractionSeq) popAndSetVisitorEnv(parent, child, builder, visited);
+		//GInteractionSeq tmp = (GInteractionSeq) popAndSetVisitorEnv(parent, child, builder, visited);
+		GInteractionSeq tmp = (GInteractionSeq) popAndSetVisitorEnv(this, builder, visited);
 		return tmp;
 	}
 	

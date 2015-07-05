@@ -36,5 +36,4 @@ public interface ScribNode
 	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;
 	
 	ScribNode substituteNames(Substitutor subs);
-
 }

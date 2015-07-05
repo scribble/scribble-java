@@ -41,7 +41,8 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		}
 		LInteractionSeq inlined = AstFactoryImpl.FACTORY.LInteractionSeq(lins);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (LInteractionSeq) popAndSetVisitorEnv(parent, child, builder, lis);
+		//return (LInteractionSeq) popAndSetVisitorEnv(parent, child, builder, lis);
+		return (LInteractionSeq) popAndSetVisitorEnv(this, builder, lis);
 	}
 
 	// Replaces visitChildrenInSubprotocols for LocalInteractionSequence 

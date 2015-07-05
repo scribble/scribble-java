@@ -19,7 +19,8 @@ public class LCompoundInteractionNodeDel extends CompoundInteractionNodeDel
 	@Override
 	public void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		pushVisitorEnv(parent, child, checker);
+		//pushVisitorEnv(parent, child, checker);
+		pushVisitorEnv(this, checker);
 	}
 
 	@Override

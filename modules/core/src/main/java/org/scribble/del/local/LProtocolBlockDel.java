@@ -20,18 +20,21 @@ public class LProtocolBlockDel extends ProtocolBlockDel
 		LInteractionSeq seq = (LInteractionSeq) ((InlineProtocolEnv) gpd.seq.del().env()).getTranslation();	
 		LProtocolBlock inlined = AstFactoryImpl.FACTORY.LProtocolBlock(seq);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (LProtocolBlock) popAndSetVisitorEnv(parent, child, builder, gpd);
+		//return (LProtocolBlock) popAndSetVisitorEnv(parent, child, builder, gpd);
+		return (LProtocolBlock) popAndSetVisitorEnv(this, builder, gpd);
 	}
 
 	@Override
 	public void enterReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker) throws ScribbleException
 	{
-		pushVisitorEnv(parent, child, checker);
+		//pushVisitorEnv(parent, child, checker);
+		pushVisitorEnv(this, checker);
 	}
 
 	@Override
 	public LProtocolBlock leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
-		return (LProtocolBlock) popAndSetVisitorEnv(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		//return (LProtocolBlock) popAndSetVisitorEnv(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
+		return (LProtocolBlock) popAndSetVisitorEnv(this, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }

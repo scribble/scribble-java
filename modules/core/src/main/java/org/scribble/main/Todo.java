@@ -1,5 +1,16 @@
 package org.scribble.main;
 
+
+/*.. refactor global/local simple/compound dels
+.. refactor jobs (inlining/unfolding)
+.. public reconstructs
+.. relax strictclasscheck visits
+.. tidy up inlinedwfchoice check in gchoicedel
+.. refactor inlined/unfolding visitor and del names
+.. role filtering for do-projection in 2nd projection pass
+.. generalise dependencies for duplicate-role projection*/
+
+
 	// default G/LNode getKind methods won't work properly until Eclipse updated with fix, cf. G/LInteractionSeq
 
 	// FIXME: subprotocol decl header projection to check used roles (integrate with existing 2nd projection pass)

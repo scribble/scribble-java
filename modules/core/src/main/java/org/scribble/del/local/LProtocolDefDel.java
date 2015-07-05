@@ -60,6 +60,7 @@ public class LProtocolDefDel extends ProtocolDefDel
 		
 		System.out.println("1: " + inlined);
 		
-		return (LProtocolDef) popAndSetVisitorEnv(parent, child, builder, (LProtocolDef) lpd.del(copy));
+		//return (LProtocolDef) popAndSetVisitorEnv(parent, child, builder, (LProtocolDef) lpd.del(copy));
+		return (LProtocolDef) popAndSetVisitorEnv(this, builder, (LProtocolDef) lpd.del(copy));
 	}
 }
