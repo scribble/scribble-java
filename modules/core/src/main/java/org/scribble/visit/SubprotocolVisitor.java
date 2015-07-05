@@ -30,14 +30,14 @@ import org.scribble.sesstype.name.Scope;
 import org.scribble.visit.env.Env;
 
 
-// FIXME: factor out with OffsetSubprotocolVisitor?
+// FIXME: factor out role/argmap access methods with OffsetSubprotocolVisitor
 public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 {
-	private List<SubprotocolSig> stack = new LinkedList<>();
+	protected List<SubprotocolSig> stack = new LinkedList<>();
 	
 	// name in the current protocoldecl scope -> the original name node in the root protocol decl
-	private Stack<Map<Role, RoleNode>> rolemaps = new Stack<>();
-	private Stack<Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode>> argmaps = new Stack<>();
+	protected Stack<Map<Role, RoleNode>> rolemaps = new Stack<>();
+	protected Stack<Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode>> argmaps = new Stack<>();
 	
 	private Scope scope = null;
 
@@ -47,7 +47,7 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 	}
 	
 	// Pushes a subprotocol signature
-	private void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolKind> pd)
+	protected void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		Map<Role, RoleNode> rolemap =
 				pd.header.roledecls.getRoleDecls().stream()
@@ -145,7 +145,7 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		ScribNode n = subprotocolLeave(parent, child, visited);
 		if (child instanceof ProtocolDecl)
 		{
-			leaveSubprotocol();
+			envLeaveProtocolDeclOverride(parent, child, visited);
 		}
 		if (child instanceof Do)  // child or visited/n?
 		{
@@ -156,6 +156,12 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 			setScope(getScope().getPrefix());
 		}
 		return super.envLeave(parent, child, n);
+	}
+	
+	// Hack for OffsetSubprotocolVisitor
+	protected void envLeaveProtocolDeclOverride(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	{
+		leaveSubprotocol();
 	}
 
 	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
@@ -221,7 +227,7 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		this.argmaps.push(newargmap);
 	}
 
-	private void leaveSubprotocol()
+	protected void leaveSubprotocol()
 	{
 		this.stack.remove(this.stack.size() - 1);
 		this.rolemaps.pop();

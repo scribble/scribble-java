@@ -17,8 +17,7 @@ package org.scribble.main;
 	// FIXME: subprotocol decl header projection to check used roles (integrate with existing 2nd projection pass)
 
 	// need public deep clone methods to support syntax manipulations e.g. unfolding (if using pointer equality for ast nodes in the same syntactic position, not just same text value)
-	// FIXME: currently using public-ified reconstruct of interactionseq and recursion to do cloning for unfolding
-	// FIXMEL: though not a deep clone, e.g. interaction seq reuses original block -- need to make sure dels/envs being treated properly
+	// FIXME: currently using public-ified reconstruct of interactionseq and recursion to do cloning for unfolding -- not a deep clone though, e.g. interaction seq reuses original block -- need to make sure dels/envs being treated properly
 
 	// FIXME: factor out global/local inlining/unfolding better
 	// factor out some global/local del routines from compound/simple classes using default interface methods

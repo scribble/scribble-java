@@ -12,6 +12,89 @@ module Test;
 type <java> "java.lang.String" from "rt.jar" as String;
 
 
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		//1() from A to B;
+		do Bar(A, B);
+		//1() from A to B;
+		//do Foo(A, B);
+	}
+	or
+	{
+		//5() from A to B;
+		do Bar2(A, B);
+	}
+	or
+	{
+		//2() from A to B;
+		4() from A to B;
+	}
+}
+
+global protocol Bar2(role A, role B)
+{
+	5() from A to B;
+	do Bar2(A, B);
+}
+
+global protocol Bar(role A, role B)
+{
+	2() from A to B;
+	3() from A to B;
+	do Foo(A, B);
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Foo(A, B);
+		//3() from A to B;
+	} or {
+		2() from A to B;
+		3() from A to B;
+	}
+	//3() from A to B;
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	rec Z
+	{
+		choice at A
+		{
+			rec X
+			{
+				1() from A to B;
+				continue X;
+				//3() from A to B;
+			}
+			//3() from A to B;
+		}
+		or
+		{
+			rec Y
+			{
+				2() from A to B;
+				//continue Y;
+				//continue Z;
+			}
+		}
+		//3() from A to B;
+	}
+	3() from A to B;
+}
+//*/
+
+
 /*global protocol Foo(role A, role B)  // Project for A
 {
 	do Bar1<1(), 2()>(A, B);
@@ -179,43 +262,6 @@ global protocol Bar2(role A, role B)
 {
 	4() from A to B;
 	do Bar2(A, B);
-}
-//*/
-
-
-global protocol Foo(role A, role B)
-{
-	1() from A to B;
-	choice at A
-	{
-		//1() from A to B;
-		do Bar(A, B);
-		//1() from A to B;
-		//do Foo(A, B);
-	}
-	or
-	{
-		//5() from A to B;
-		do Bar2(A, B);
-	}
-	or
-	{
-		//2() from A to B;
-		4() from A to B;
-	}
-}
-
-global protocol Bar2(role A, role B)
-{
-	5() from A to B;
-	do Bar2(A, B);
-}
-
-global protocol Bar(role A, role B)
-{
-	2() from A to B;
-	3() from A to B;
-	do Foo(A, B);
 }
 //*/
 
