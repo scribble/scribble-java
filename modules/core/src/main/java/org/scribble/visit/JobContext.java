@@ -67,7 +67,8 @@ public class JobContext
 	
 	private boolean isProjectedModule(ModuleName fullname)
 	{
-		return this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullname)).count() > 0;
+		//return this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullname)).count() > 0;
+		return getProjectedFullModuleNames().contains(fullname);
 	}
 
 	public Module getModule(ModuleName fullname)
