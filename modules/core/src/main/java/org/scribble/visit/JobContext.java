@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.model.local.ScribFsm;
@@ -33,59 +34,74 @@ public class JobContext
 	}
 	
 	// Used by Job for pass running, includes projections (e.g. for reachability checking)
+	// Safer to get module names and require user to re-fetch the module by the getter each time (after replacing), to make sure the latest is used
 	public Set<ModuleName> getFullModuleNames()
 	{
 		Set<ModuleName> modnames = new HashSet<>();
-		modnames.addAll(this.parsed.keySet());
-		this.projected.keySet().stream().forEach((lpn) -> modnames.add(lpn.getPrefix()));
+		modnames.addAll(getParsedFullModuleNames());
+		modnames.addAll(getProjectedFullModuleNames());
 		return modnames;
 	}
 
-	public boolean hasModule(ModuleName fullmodname)
+	public Set<ModuleName> getParsedFullModuleNames()
 	{
-		return isParsedModule(fullmodname) || isProjectedModule(fullmodname);
-	}
-	
-	private boolean isParsedModule(ModuleName fullmodname)
-	{
-		return this.parsed.containsKey(fullmodname);
-	}
-	
-	private boolean isProjectedModule(ModuleName fullmodname)
-	{
-		return this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullmodname)).count() > 0;
+		Set<ModuleName> modnames = new HashSet<>();
+		modnames.addAll(this.parsed.keySet());
+		return modnames;
 	}
 
-	public Module getModule(ModuleName fullmodname)
+	public Set<ModuleName> getProjectedFullModuleNames()
 	{
-		if (this.parsed.containsKey(fullmodname))
+		return this.projected.keySet().stream().map((lpn) -> lpn.getPrefix()).collect(Collectors.toSet());
+	}
+
+	public boolean hasModule(ModuleName fullname)
+	{
+		return isParsedModule(fullname) || isProjectedModule(fullname);
+	}
+	
+	private boolean isParsedModule(ModuleName fullname)
+	{
+		return this.parsed.containsKey(fullname);
+	}
+	
+	private boolean isProjectedModule(ModuleName fullname)
+	{
+		return this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullname)).count() > 0;
+	}
+
+	public Module getModule(ModuleName fullname)
+	{
+		if (isParsedModule(fullname))
 		{
-			return this.parsed.get(fullmodname);
+			return this.parsed.get(fullname);
 		}
-		for (LProtocolName lpn : this.projected.keySet())
+		else if (isProjectedModule(fullname))
 		{
-			if (lpn.getPrefix().equals(fullmodname))
-			{
-				return this.projected.get(lpn);
-			}
+			//return this.projected.get(fullname);
+			return this.projected.get(
+					this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullname)).collect(Collectors.toList()).get(0));
 		}
-		throw new RuntimeException("Unknown module: " + fullmodname);
+		else
+		{
+			throw new RuntimeException("Unknown module: " + fullname);
+		}
 	}
 
 	protected void replaceModule(Module module)
 	{
-		ModuleName fullmodname = module.getFullModuleName(); 
-		if (isParsedModule(fullmodname))
+		ModuleName fullname = module.getFullModuleName(); 
+		if (isParsedModule(fullname))
 		{
-			this.parsed.put(fullmodname, module);
+			this.parsed.put(fullname, module);
 		}
-		else if (isProjectedModule(fullmodname))
+		else if (isProjectedModule(fullname))
 		{
 			addProjection(module);
 		}
 		else
 		{
-			throw new RuntimeException("Unknown module: " + fullmodname);
+			throw new RuntimeException("Unknown module: " + fullname);
 		}
 	}
 	
@@ -124,9 +140,16 @@ public class JobContext
 		this.projected.put(lpn, mod);
 	}
 	
-	public Map<LProtocolName, Module> getProjections()
+	/*public Map<LProtocolName, Module> getProjections()
 	{
 		return this.projected;
+	}*/
+	
+	//public Map<LProtocolName, Module> getProjection(GProtocolName fullname, Role role)
+	public Module getProjection(GProtocolName fullname, Role role)
+	{
+		//return this.projected;
+		return this.projected.get(Projector.projectFullProtocolName(fullname, role));
 	}
 	
 	public void addFsm(LProtocolName lpn, ScribFsm fsm)
@@ -135,8 +158,10 @@ public class JobContext
 	}
 	
 	public ScribFsm getFsm(LProtocolName lpn)
+	//public ScribFsm getFsm(GProtocolName fullname, Role role)
 	{
 		return this.fsms.get(lpn);
+		//return this.fsms.get(Projector.projectFullProtocolName(fullname, role));
 	}
 	
 	public Module getMainModule()

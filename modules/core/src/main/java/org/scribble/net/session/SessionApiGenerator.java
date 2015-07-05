@@ -17,15 +17,15 @@ import org.scribble.visit.MessageIdCollector;
 public class SessionApiGenerator
 {
 	private final Job job;
-	private final GProtocolName gpn;
+	private final GProtocolName gpn;  // full name
 	private final String clazz;
 	private final Map<MessageId, String> mids = new HashMap<>();
 	private final Map<Role, String> roles = new HashMap<>();
 
-	public SessionApiGenerator(Job job, GProtocolName gpn) throws ScribbleException
+	public SessionApiGenerator(Job job, GProtocolName fullname) throws ScribbleException
 	{
 		this.job = job;
-		this.gpn = gpn;
+		this.gpn = fullname;
 
 		generateOps();
 		generateRoles();

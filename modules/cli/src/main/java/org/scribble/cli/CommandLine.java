@@ -80,25 +80,33 @@ public class CommandLine implements Runnable
 	private void outputProjection(Job job)
 	{
 		JobContext jcontext = job.getContext();
-		Map<LProtocolName, Module> projs = jcontext.getProjections();
+		//Map<LProtocolName, Module> projs = jcontext.getProjections();
 		GProtocolName gpn = new GProtocolName(this.args.get(Arg.PROJECT)[0]);
 		Role role = new Role(this.args.get(Arg.PROJECT)[1]);
-		LProtocolName proto = getProjectedName(jcontext, gpn, role);
+		/*LProtocolName proto = getProjectedName(jcontext, gpn, role);
 		if (!projs.containsKey(proto))
 		{
 			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));
 		}
-		System.out.println(projs.get(proto));
+		System.out.println(projs.get(proto));*/
+		Module proj = jcontext.getProjection(gpn, role);
+		if (proj == null)
+		{
+			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));
+		}
+		System.out.println(proj);
 	}
 
 	private void outputFsm(Job job) throws ScribbleException
 	{
 		JobContext jc = job.getContext();
-		GProtocolName gpn = new GProtocolName(this.args.get(Arg.FSM)[0]);
+		GProtocolName simpname = new GProtocolName(this.args.get(Arg.FSM)[0]);
 		Role role = new Role(this.args.get(Arg.FSM)[1]);
-		LProtocolName lpn = getProjectedName(jc, gpn, role);
+		LProtocolName lpn = getProjectedName(jc, simpname, role);
 		buildFsm(job, lpn);
 		System.out.println(jc.getFsm(lpn));
+		/*buildFsm(job, simplename, role);
+		System.out.println(jc.getFsm(simplename, role));*/
 	}
 	
 	private void outputSessionApi(Job job) throws ScribbleException
@@ -159,14 +167,16 @@ public class CommandLine implements Runnable
 	}
 
 	private void buildFsm(Job job, LProtocolName lpn) throws ScribbleException
+	//private void buildFsm(Job job, GProtocolName simplename, Role role) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
 		ModuleName modname = lpn.getPrefix();
+		//ModuleName modname = getProjectedName(jcontext, simplename, role).getPrefix();
 		if (!jcontext.hasModule(modname))  // Move into Job?  But this is a check on the CL args
 		{
 			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(Arg.FSM)));
 		}
-		job.constructFsms(jcontext.getModule(modname));  // Need Module for context (not just the LProtoDecl) -- builds FSMs for all locals in the module
+		job.buildFsms(jcontext.getModule(modname));  // Need Module for context (not just the LProtoDecl) -- builds FSMs for all locals in the module
 	}
 	
 	private static Path parseMainPath(String path)
@@ -179,9 +189,9 @@ public class CommandLine implements Runnable
 		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
 	}
 	
-	private static LProtocolName getProjectedName(JobContext jc, GProtocolName gpn, Role role)
+	private static LProtocolName getProjectedName(JobContext jc, GProtocolName simpname, Role role)
 	{
-		return Projector.makeProjectedFullNameNode(new GProtocolName(jc.main, gpn), role).toName();  // FIXME: factor out name projection from name node construction
+		return Projector.makeProjectedFullNameNode(new GProtocolName(jc.main, simpname), role).toName();  // FIXME: factor out name projection from name node construction
 	}
 	
 	private static void writeToFile(String file, String text) throws ScribbleException

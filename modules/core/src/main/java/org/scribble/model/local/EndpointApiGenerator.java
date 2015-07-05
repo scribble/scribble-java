@@ -24,7 +24,7 @@ import org.scribble.visit.Projector;
 public class EndpointApiGenerator
 {
 	private final Job job;
-	private final GProtocolName gpn;
+	private final GProtocolName gpn;  // full name
 	private final Role role;
 	private final LProtocolName lpn;
 
@@ -46,14 +46,17 @@ public class EndpointApiGenerator
 	}
 
 	//public ApiGenerator(Job job, LProtocolName lpn)
-	public EndpointApiGenerator(Job job, GProtocolName gpn, Role role)
+	//public EndpointApiGenerator(Job job, GProtocolName gpn, Role role)
+	public EndpointApiGenerator(Job job, GProtocolName fullname, Role role)
 	{
 		this.job = job;
-		this.gpn = gpn;
+		this.gpn = fullname;
 		this.role = role;
-		this.lpn = Projector.makeProjectedFullNameNode(new GProtocolName(this.job.getContext().main, gpn), role).toName();
+		//this.lpn = Projector.makeProjectedFullNameNode(new GProtocolName(this.job.getContext().main, gpn), role).toName();
+		this.lpn = Projector.projectFullProtocolName(fullname, role);
 
 		ProtocolState init = job.getContext().getFsm(lpn).init;
+		//ProtocolState init = job.getContext().getFsm(fullname, role).init;
 		generateClassNames(init);
 		/*for (ProtocolState ps : classNames.keySet())
 		{
