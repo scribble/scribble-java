@@ -15,9 +15,10 @@ import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 
 
-// A "compiler job" that supports operations comprising one or more visitor passes over the AST
+// A "compiler job" front-end that supports operations comprising one or more visitor passes over the AST
 public class Job
 {
+	// FIXME: verbose/debug printing parameter: should be in MainContext, but currently cannot access that class directly from here
 	public final boolean debug;
 	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
@@ -31,43 +32,25 @@ public class Job
 
 	public void checkWellFormedness() throws ScribbleException
 	{
-		debugPrintln("\n--- Context building --- ");
 		runVisitorPassOnAllModules(ContextBuilder.class);
-
-		debugPrintln("\n--- Name disambigiation --- ");  // FIXME: verbose/debug printing parameter: should be in MainContext, but currently cannot access that class directly from here
 		runVisitorPassOnAllModules(NameDisambiguator.class);
-		
-		/*debugPrintln("\n--- Model building --- ");
-		runNodeVisitorPass(ModelBuilder.class);*/
-
-		debugPrintln("\n--- Subprotocol inlining --- ");
+		//runNodeVisitorPass(ModelBuilder.class);
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
-
-		debugPrintln("\n--- Inlined protocol unfolding --- ");
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
-
-		/*debugPrintln("\n--- Well-formed choice check --- ");
-		runNodeVisitorPass(WFChoiceChecker.class);*/
-
-		debugPrintln("\n--- Inlined well-formed choice check --- ");
+		//runNodeVisitorPass(WFChoiceChecker.class);
 		runVisitorPassOnAllModules(InlinedWFChoiceChecker.class);
-
-		debugPrintln("\n--- Projection --- ");
 		runProjectionPasses();
-
-		debugPrintln("\n--- Reachability check --- ");
 		runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}
 
-	// FIXME: factor out with buildProjectionContexts and runNodeVisitorPass
 	private void runProjectionPasses() throws ScribbleException
 	{
 		runVisitorPassOnAllModules(Projector.class);
-		//this.jcontext.buildProjectionContexts();  // Hacky? -- due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
-		// No: SubprotocolVisitor is an "inlining" step, it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
+		// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
+		// SubprotocolVisitor it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
 		// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
 		runVisitorPassOnProjectedModules(ContextBuilder.class);  // To be done as a barrier pass after projection done on all Modules
-		runVisitorPassOnAllModules(ProjectedChoiceSubjectFixer.class);
+		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);
 		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}
@@ -104,11 +87,13 @@ public class Job
 
 	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
+		debugPrintln("\n--- Running " + c + " on all modules:");
 		runVisitorPass(this.jcontext.getFullModuleNames(), c);
 	}
 
 	private void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
+		debugPrintln("\n--- Running " + c + " on projected modules:");
 		runVisitorPass(this.jcontext.getProjectedFullModuleNames(), c);
 	}
 
