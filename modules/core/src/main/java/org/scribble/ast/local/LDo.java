@@ -10,6 +10,9 @@ import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
+import org.scribble.sesstype.name.Role;
+import org.scribble.visit.JobContext;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 public class LDo extends Do<Local> implements LSimpleInteractionNode
 {
@@ -49,8 +52,22 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	}
 
 	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		ModuleContext mc = fixer.getModuleContext();
+		JobContext jc = fixer.getJobContext();
+		return getTargetProtocolDecl(jc, mc).getDef().getBlock().getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer);
+	}
+
+	@Override
 	public LProtocolName getTargetFullProtocolName(ModuleContext mcontext)
 	{
 		return (LProtocolName) super.getTargetFullProtocolName(mcontext);
+	}
+
+	@Override
+	public LProtocolDecl getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
+	{
+		return (LProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
 	}
 }

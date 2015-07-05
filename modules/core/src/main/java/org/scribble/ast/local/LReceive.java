@@ -10,7 +10,9 @@ import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
+import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 public class LReceive extends MessageTransfer<Local> implements LSimpleInteractionNode
 {
@@ -41,6 +43,12 @@ public class LReceive extends MessageTransfer<Local> implements LSimpleInteracti
 		LReceive lr = new LReceive(src, msg, dests);
 		lr = (LReceive) lr.del(del);
 		return lr;
+	}
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		return this.src.toName();
 	}
 
 	@Override

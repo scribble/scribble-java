@@ -34,5 +34,8 @@ public interface ScribNode
 	ScribNode accept(AstVisitor nv) throws ScribbleException;
 	ScribNode visitChildren(AstVisitor nv) throws ScribbleException;
 	
+	// Simple operations, not worth doing del enter/leave pattern for
+	// Rely on visitChildren reconstruction pattern to do recursive reconstruction
 	ScribNode substituteNames(Substitutor subs);
+	// Cf. LInteractionNode.inferLocalChoiceSubject
 }

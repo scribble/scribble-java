@@ -5,6 +5,8 @@ import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
+import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 {
@@ -33,5 +35,11 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 		LContinue lc = new LContinue(recvar);
 		lc = (LContinue) lc.del(del);
 		return lc;
+	}
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		throw new RuntimeException("Shouldn't get in here: " + this);
 	}
 }

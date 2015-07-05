@@ -10,7 +10,9 @@ import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
+import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 public class LSend extends MessageTransfer<Local> implements LSimpleInteractionNode
 {
@@ -88,6 +90,12 @@ public class LSend extends MessageTransfer<Local> implements LSimpleInteractionN
 		MessageTransfer mt = super.visitChildren(nv);
 		return new LocalSend(mt.ct, mt.src, mt.msg, mt.dests);
 	}*/
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		return this.src.toName();
+	}
 
 	@Override
 	public String toString()

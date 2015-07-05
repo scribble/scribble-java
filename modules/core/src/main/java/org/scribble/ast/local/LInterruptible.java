@@ -9,6 +9,8 @@ import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ScopeKind;
 import org.scribble.sesstype.name.Name;
+import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 //public class LocalInterruptible extends Interruptible<LocalProtocolBlock, LocalInterrupt> implements LocalInteractionNode
 public class LInterruptible extends Interruptible<Local> implements LInteractionNode
@@ -39,6 +41,12 @@ public class LInterruptible extends Interruptible<Local> implements LInteraction
 
 	@Override
 	public Name<ScopeKind> getScopeElement()
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
 		throw new RuntimeException("TODO: " + this);
 	}

@@ -6,6 +6,8 @@ import org.scribble.ast.Recursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
+import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 public class LRecursion extends Recursion<Local> implements LCompoundInteractionNode
 {
@@ -41,5 +43,11 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	public LProtocolBlock getBlock()
 	{
 		return (LProtocolBlock) this.block;
+	}
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		return getBlock().getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer);
 	}
 }

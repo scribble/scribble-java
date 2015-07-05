@@ -11,6 +11,7 @@ import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.visit.JobContext;
 
 public class GDo extends Do<Global> implements GSimpleInteractionNode
 {
@@ -53,5 +54,11 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	public GProtocolName getTargetFullProtocolName(ModuleContext mcontext)
 	{
 		return (GProtocolName) super.getTargetFullProtocolName(mcontext);
+	}
+
+	@Override
+	public GProtocolDecl getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
+	{
+		return (GProtocolDecl) super.getTargetProtocolDecl(jcontext, mcontext);
 	}
 }

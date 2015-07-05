@@ -6,13 +6,6 @@ import org.scribble.sesstype.kind.Local;
 
 public interface LNode extends ProtocolKindNode<Local>
 {
-	//LocalNode project(Projector proj) throws ScribbleException;
-
-	/*default boolean isGlobal()
-	{
-		return false;
-	}*/
-
 	@Override
 	default boolean isLocal()
 	{
@@ -24,4 +17,5 @@ public interface LNode extends ProtocolKindNode<Local>
 	{
 		return Local.KIND;
 	}
+
 }

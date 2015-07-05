@@ -8,6 +8,8 @@ import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
+import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 public class LParallel extends Parallel<Local> implements LCompoundInteractionNode
 {
@@ -42,6 +44,12 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	public List<LProtocolBlock> getBlocks()
 	{
 		return castBlocks(this.blocks);
+	}
+
+	@Override
+	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
+	{
+		return getBlocks().get(0).getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer);
 	}
 	
 	private static List<LProtocolBlock> castBlocks(List<? extends ProtocolBlock<Local>> blocks)

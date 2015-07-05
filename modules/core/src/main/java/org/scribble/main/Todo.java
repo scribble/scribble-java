@@ -8,7 +8,8 @@ package org.scribble.main;
 .. tidy up inlinedwfchoice check in gchoicedel
 .. refactor inlined/unfolding visitor and del names
 .. role filtering for do-projection in 2nd projection pass
-.. generalise dependencies for duplicate-role projection*/
+.. generalise dependencies for duplicate-role projection
+.. offset/subprotocol visitor factoring*/
 
 
 	// default G/LNode getKind methods won't work properly until Eclipse updated with fix, cf. G/LInteractionSeq
