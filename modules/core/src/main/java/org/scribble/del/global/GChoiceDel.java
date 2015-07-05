@@ -19,7 +19,6 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
@@ -27,7 +26,6 @@ import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ProjectionEnv;
-import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
@@ -166,7 +164,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
 	}
 
-	@Override
+	/*@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.peekEnv().enterContext();
@@ -174,7 +172,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		unf.pushEnv(env);
 	}
 
-	@Override
+	/*@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
 		GChoice cho = (GChoice) visited;
@@ -183,7 +181,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
 		unf.pushEnv(merged);
 		return (GChoice) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);
-	}
+	}*/
 
 	@Override
 	public void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker) throws ScribbleException

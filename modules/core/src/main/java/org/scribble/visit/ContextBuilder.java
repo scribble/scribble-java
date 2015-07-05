@@ -49,12 +49,12 @@ public class ContextBuilder extends AstVisitor
 		this.ldeps = new DependencyMap<>();
 	}
 
-	public void addProtocolDependency(Role self, GProtocolName gpn, Role role)
+	public void addGlobalProtocolDependency(Role self, GProtocolName gpn, Role role)
 	{
 		this.gdeps.addProtocolDependency(self, gpn, role);
 	}
 
-	public void addProtocolDependency(Role self, LProtocolName lpn, Role role)
+	public void addLocalProtocolDependency(Role self, LProtocolName lpn, Role role)
 	{
 		this.ldeps.addProtocolDependency(self, lpn, role);
 	}

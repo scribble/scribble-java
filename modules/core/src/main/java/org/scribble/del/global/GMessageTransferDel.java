@@ -25,7 +25,6 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
@@ -34,7 +33,6 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ModelEnv;
-import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 // FIXME: make base MessageTransferDelegate?
@@ -153,13 +151,13 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		return visited;
 	}
 
-	@Override
+	/*@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.popEnv();
 		env = env.noUnfold();
 		unf.pushEnv(env);
-	}
+	}*/
 	
 	@Override
 	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
@@ -184,6 +182,6 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		leaves.put(dest, receive);
 		env = env.setActions(actions, leaves);
 		builder.pushEnv(env);
-		return (GMessageTransfer) super.leaveModelBuilding(parent, child, builder, visited);
+		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveModelBuilding(parent, child, builder, visited);
 	}
 }

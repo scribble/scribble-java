@@ -11,6 +11,7 @@ import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ProtocolDefDel;
+import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -61,6 +62,6 @@ public class LProtocolDefDel extends ProtocolDefDel
 		System.out.println("1: " + inlined);
 		
 		//return (LProtocolDef) popAndSetVisitorEnv(parent, child, builder, (LProtocolDef) lpd.del(copy));
-		return (LProtocolDef) popAndSetVisitorEnv(this, builder, (LProtocolDef) lpd.del(copy));
+		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, builder, (LProtocolDef) lpd.del(copy));
 	}
 }

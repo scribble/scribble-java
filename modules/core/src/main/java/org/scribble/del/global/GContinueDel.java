@@ -8,8 +8,6 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 
@@ -35,7 +33,7 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 		return (GContinue) super.leaveProtocolInlining(parent, child, builder, gc);
 	}
 
-	@Override
+	/*@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
 		GContinue gc = (GContinue) visited;
@@ -45,5 +43,5 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 			return unf.getRecVar(rv).clone();
 		}
 		return gc;
-	}
+	}*/
 }

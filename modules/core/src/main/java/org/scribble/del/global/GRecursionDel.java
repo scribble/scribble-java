@@ -15,8 +15,6 @@ import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RecVarKind;
-import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
@@ -24,7 +22,6 @@ import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ProjectionEnv;
-import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
@@ -68,7 +65,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		return (GRecursion) super.leaveProtocolInlining(parent, child, builder, gr);
 	}
 
-	@Override
+	/*@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		super.enterInlinedProtocolUnfolding(parent, child, unf);
@@ -89,7 +86,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		UnfoldingEnv merged = unf.popEnv().mergeContext((UnfoldingEnv) rec.block.del().env());
 		unf.pushEnv(merged);
 		return (GRecursion) super.leaveInlinedProtocolUnfolding(parent, child, unf, rec);
-	}
+	}*/
 
 	@Override
 	public GRecursion leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException

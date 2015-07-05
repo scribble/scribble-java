@@ -13,6 +13,7 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDef;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ProtocolDefDel;
+import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -53,7 +54,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
 		//pushVisitorEnv(parent, child, proj);
-		pushVisitorEnv(this, proj);
+		ScribDelBase.pushVisitorEnv(this, proj);
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class GProtocolDefDel extends ProtocolDefDel
 		LProtocolDef projection = AstFactoryImpl.FACTORY.LProtocolDef(block);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		//return (GProtocolDef) popAndSetVisitorEnv(parent, child, proj, gpd);
-		return (GProtocolDef) popAndSetVisitorEnv(this, proj, gpd);
+		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, proj, gpd);
 	}
 
 	@Override
@@ -83,6 +84,6 @@ public class GProtocolDefDel extends ProtocolDefDel
 		System.out.println("1: " + inlined);
 		
 		//return (GProtocolDef) popAndSetVisitorEnv(parent, child, builder, (GProtocolDef) gpd.del(copy));
-		return (GProtocolDef) popAndSetVisitorEnv(this, builder, (GProtocolDef) gpd.del(copy));
+		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, builder, (GProtocolDef) gpd.del(copy));
 	}
 }

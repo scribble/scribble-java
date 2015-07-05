@@ -4,7 +4,6 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
@@ -17,9 +16,10 @@ import org.scribble.del.DoDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
+import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
@@ -28,7 +28,7 @@ import org.scribble.visit.env.WFChoiceEnv;
 
 public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 {
-	// Would like to factor out with LocalDoDelegate, but global/local interaction node delegates extend from simple/compound base
+	/*// Would like to factor out with LocalDoDelegate, but global/local interaction node delegates extend from simple/compound base
 	@Override
 	public GDo leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
@@ -39,6 +39,12 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 				(r) -> builder.addProtocolDependency(r, 
 						gd.getTargetFullProtocolName(builder.getModuleContext()), gd.getTargetRoleParameter(jcontext, mcontext, r)));
 		return gd;
+	}*/
+
+	@Override
+	protected void addProtocolDependency(ContextBuilder builder, Role self, ProtocolName<?> proto, Role target)
+	{
+		builder.addGlobalProtocolDependency(self, (GProtocolName) proto, target);
 	}
 
 	@Override
@@ -100,7 +106,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		return (GDo) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
 	}
 
-	@Override
+	/*@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 		super.enterProtocolInlining(parent, child, builder);
@@ -109,7 +115,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 			SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
 			builder.setRecVar(subsig);
 		}
-	}
+	}*/
 
 	// Only called if cycle
 	public GDo visitForSubprotocolInlining(ProtocolDefInliner builder, GDo child)

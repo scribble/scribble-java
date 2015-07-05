@@ -27,7 +27,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ModuleVisitor;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
@@ -35,7 +34,6 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
-import org.scribble.visit.env.UnfoldingEnv;
 
 public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 {
@@ -112,7 +110,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		return (LChoice) super.leaveProtocolInlining(parent, child, builder, gc);
 	}
 
-	@Override
+	/*@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.peekEnv().enterContext();
@@ -129,7 +127,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
 		unf.pushEnv(merged);
 		return (LChoice) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);
-	}
+	}*/
 
 	@Override
 	public LChoice leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException

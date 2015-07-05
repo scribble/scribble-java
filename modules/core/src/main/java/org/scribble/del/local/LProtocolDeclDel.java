@@ -9,6 +9,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ScribFsm;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
+import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.FsmBuilder;
 import org.scribble.visit.JobContext;
@@ -26,7 +28,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 		return new LProtocolDeclDel();
 	}
 
-	@Override
+	/*@Override
 	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
 	{
 		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
@@ -35,7 +37,13 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 		LProtocolDecl lpd = (LProtocolDecl) child;
 		LProtocolName lpn = lpd.getFullMemberName(main);
 		lpd.header.roledecls.getRoles().stream().forEach(
-				(r) -> builder.addProtocolDependency(r, lpn, r));  // Is it needed to add self protocol decl?
+				(r) -> builder.addLocalProtocolDependency(r, lpn, r));  // Is it needed to add self protocol decl?
+	}*/
+
+	@Override
+	protected void addSelfDependency(ContextBuilder builder, ProtocolName<?> proto, Role role)
+	{
+		builder.addLocalProtocolDependency(role, (LProtocolName) proto, role);
 	}
 	
 	@Override

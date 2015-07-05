@@ -2,7 +2,6 @@ package org.scribble.del.local;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionSeq;
@@ -13,8 +12,10 @@ import org.scribble.del.DoDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
+import org.scribble.sesstype.name.LProtocolName;
+import org.scribble.sesstype.name.ProtocolName;
+import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.JobContext;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -23,7 +24,7 @@ import org.scribble.visit.env.ReachabilityEnv;
 //public class LDoDel extends LSimpleInteractionNodeDel
 public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 {
-	// Would like to factor out with GlobalDoDelegate, but global/local interaction node delegates extend from simple/compound base
+	/*// Would like to factor out with GlobalDoDelegate, but global/local interaction node delegates extend from simple/compound base
 	@Override
 	public LDo leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
@@ -34,10 +35,15 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 				(r) -> builder.addProtocolDependency(r,
 						ld.getTargetFullProtocolName(builder.getModuleContext()), ld.getTargetRoleParameter(jcontext, mcontext, r)));
 		return ld;
+	}*/
+
+	@Override
+	protected void addProtocolDependency(ContextBuilder builder, Role self, ProtocolName<?> proto, Role target)
+	{
+		builder.addLocalProtocolDependency(self, (LProtocolName) proto, target);
 	}
 
-	// FIXME: some of these can be factored out with GDoDel as default interface methods
-	@Override
+	/*@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 		super.enterProtocolInlining(parent, child, builder);
@@ -46,7 +52,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 			SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
 			builder.setRecVar(subsig);
 		}
-	}
+	}*/
 
 	// Only called if cycle
 	public LDo visitForSubprotocolInlining(ProtocolDefInliner builder, LDo child)

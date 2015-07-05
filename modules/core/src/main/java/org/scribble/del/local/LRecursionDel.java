@@ -11,12 +11,10 @@ import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.FsmBuilder;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
-import org.scribble.visit.env.UnfoldingEnv;
 
 public class LRecursionDel extends RecursionDel implements LCompoundInteractionNodeDel
 {
@@ -31,7 +29,7 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		return (LRecursion) super.leaveProtocolInlining(parent, child, builder, gr);
 	}
 
-	@Override
+	/*@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		super.enterInlinedProtocolUnfolding(parent, child, unf);
@@ -52,7 +50,7 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		UnfoldingEnv merged = unf.popEnv().mergeContext((UnfoldingEnv) rec.block.del().env());
 		unf.pushEnv(merged);
 		return (LRecursion) super.leaveInlinedProtocolUnfolding(parent, child, unf, rec);
-	}
+	}*/
 
 	@Override
 	public LRecursion leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException

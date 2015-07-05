@@ -11,9 +11,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.FsmBuilder;
-import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.env.UnfoldingEnv;
 
 
 public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
@@ -27,13 +25,13 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 		return (LReceive) super.leaveProtocolInlining(parent, child, builder, gmt);
 	}
 
-	@Override
+	/*@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.popEnv();
 		env = env.noUnfold();
 		unf.pushEnv(env);
-	}
+	}*/
 
 	/*@Override
 	public LReceive leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException

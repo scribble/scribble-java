@@ -23,6 +23,7 @@ import org.scribble.model.global.ModelAction;
 import org.scribble.model.global.ModelState;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
 import org.scribble.visit.ContextBuilder;
@@ -46,7 +47,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return copy;
 	}
 
-	@Override
+	/*@Override
 	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
 	{
 		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
@@ -55,7 +56,13 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		GProtocolName gpn = gpd.getFullMemberName(main);
 		gpd.header.roledecls.getRoles().stream().forEach(
-				(r) -> builder.addProtocolDependency(r, gpn, r));  // Is it needed to add self protocol decl?
+				(r) -> builder.addGlobalProtocolDependency(r, gpn, r));  // Is it needed to add self protocol decl?
+	}*/
+
+	@Override
+	protected void addSelfDependency(ContextBuilder builder, ProtocolName<?> proto, Role role)
+	{
+		builder.addGlobalProtocolDependency(role, (GProtocolName) proto, role);
 	}
 	
 	@Override
