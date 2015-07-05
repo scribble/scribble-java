@@ -7,10 +7,4 @@ public class ImportModuleDel extends ScribDelBase
 	{
 
 	}
-
-	/*@Override
-	public ImportModule leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited)
-	{
-		return (ImportModule) visited;
-	}*/
 }

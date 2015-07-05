@@ -28,18 +28,6 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 		return new LProtocolDeclDel();
 	}
 
-	/*@Override
-	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
-	{
-		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
-
-		Module main = (Module) parent;
-		LProtocolDecl lpd = (LProtocolDecl) child;
-		LProtocolName lpn = lpd.getFullMemberName(main);
-		lpd.header.roledecls.getRoles().stream().forEach(
-				(r) -> builder.addLocalProtocolDependency(r, lpn, r));  // Is it needed to add self protocol decl?
-	}*/
-
 	@Override
 	protected void addSelfDependency(ContextBuilder builder, ProtocolName<?> proto, Role role)
 	{
@@ -56,13 +44,13 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	public void enterFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv)
+	public void enterFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv)
 	{
 		conv.builder.reset();
 	}
 
 	@Override
-	public ScribNode leaveFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	public ScribNode leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
 		ScribFsm fsm = new ScribFsm(conv.builder.getEntry(), conv.builder.getExit());

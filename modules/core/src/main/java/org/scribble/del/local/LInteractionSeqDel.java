@@ -10,6 +10,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.del.InteractionSeqDel;
+import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.kind.Local;
@@ -41,8 +42,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		}
 		LInteractionSeq inlined = AstFactoryImpl.FACTORY.LInteractionSeq(lins);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		//return (LInteractionSeq) popAndSetVisitorEnv(parent, child, builder, lis);
-		return (LInteractionSeq) popAndSetVisitorEnv(this, builder, lis);
+		return (LInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, builder, lis);
 	}
 
 	// Replaces visitChildrenInSubprotocols for LocalInteractionSequence 

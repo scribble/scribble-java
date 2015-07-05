@@ -47,18 +47,6 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return copy;
 	}
 
-	/*@Override
-	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
-	{
-		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
-		
-		Module main = (Module) parent;
-		GProtocolDecl gpd = (GProtocolDecl) child;
-		GProtocolName gpn = gpd.getFullMemberName(main);
-		gpd.header.roledecls.getRoles().stream().forEach(
-				(r) -> builder.addGlobalProtocolDependency(r, gpn, r));  // Is it needed to add self protocol decl?
-	}*/
-
 	@Override
 	protected void addSelfDependency(ContextBuilder builder, ProtocolName<?> proto, Role role)
 	{

@@ -39,15 +39,13 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
-		//pushVisitorEnv(parent, child, builder);
-		pushVisitorEnv(this, builder);
+		ScribDelBase.pushVisitorEnv(this, builder);
 	}
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
-		//return popAndSetVisitorEnv(parent, child, builder, visited);
-		return popAndSetVisitorEnv(this, builder, visited);
+		return ScribDelBase.popAndSetVisitorEnv(this, builder, visited);
 	}
 
 	@Override

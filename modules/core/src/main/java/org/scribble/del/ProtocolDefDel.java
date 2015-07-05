@@ -12,6 +12,12 @@ public abstract class ProtocolDefDel extends ScribDelBase
 	protected ProtocolDef<? extends ProtocolKind> inlined = null;
 
 	protected abstract ProtocolDefDel copy();
+
+	@Override
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	{
+		ScribDelBase.pushVisitorEnv(this, builder);
+	}
 	
 	public ProtocolDef<? extends ProtocolKind> getInlinedProtocolDef()
 	{
@@ -23,12 +29,5 @@ public abstract class ProtocolDefDel extends ScribDelBase
 		ProtocolDefDel copy = copy();
 		copy.inlined = inlined;
 		return copy;
-	}
-
-	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
-	{
-		//pushVisitorEnv(parent, child, builder);
-		pushVisitorEnv(this, builder);
 	}
 }

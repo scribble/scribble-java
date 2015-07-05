@@ -28,19 +28,6 @@ import org.scribble.visit.env.WFChoiceEnv;
 
 public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 {
-	/*// Would like to factor out with LocalDoDelegate, but global/local interaction node delegates extend from simple/compound base
-	@Override
-	public GDo leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		JobContext jcontext = builder.getJobContext();
-		ModuleContext mcontext = builder.getModuleContext();
-		GDo gd = (GDo) visited;
-		gd.roles.getRoles().stream().forEach(
-				(r) -> builder.addProtocolDependency(r, 
-						gd.getTargetFullProtocolName(builder.getModuleContext()), gd.getTargetRoleParameter(jcontext, mcontext, r)));
-		return gd;
-	}*/
-
 	@Override
 	protected void addProtocolDependency(ContextBuilder builder, Role self, ProtocolName<?> proto, Role target)
 	{
@@ -105,17 +92,6 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDo) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
 	}
-
-	/*@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
-	{
-		super.enterProtocolInlining(parent, child, builder);
-		if (!builder.isCycle())
-		{
-			SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
-			builder.setRecVar(subsig);
-		}
-	}*/
 
 	// Only called if cycle
 	public GDo visitForSubprotocolInlining(ProtocolDefInliner builder, GDo child)

@@ -5,6 +5,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.NameDisambiguator;
 
+
 public class ParamDeclDel extends ScribDelBase
 {
 	@Override
@@ -13,12 +14,4 @@ public class ParamDeclDel extends ScribDelBase
 		NonRoleParamDecl<?> pd = (NonRoleParamDecl<?>) child;
 		disamb.addParameter(pd.getDeclName(), pd.kind);
 	}
-	
-	/*private static NonRoleParamDecl<? extends Kind> cast(ScribNode child)
-	{
-		NonRoleParamDecl.class.cast(child);
-		@SuppressWarnings("unchecked")
-		NonRoleParamDecl<? extends Kind> tmp = (NonRoleParamDecl<? extends Kind>) child;
-		return tmp;
-	}*/
 }

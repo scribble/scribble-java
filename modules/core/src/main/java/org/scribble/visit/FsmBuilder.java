@@ -67,14 +67,14 @@ public class FsmBuilder extends InlinedProtocolVisitor<DummyEnv>
 	{
 		//super.offsetSubprotocolEnter(parent, child);
 		super.inlinedProtocolEnter(parent, child);
-		child.del().enterFsmBuilder(parent, child, this);
+		child.del().enterFsmBuilding(parent, child, this);
 	}
 	
 	@Override
 	//protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveFsmBuilder(parent, child, this, visited);
+		visited = visited.del().leaveFsmBuilding(parent, child, this, visited);
 		//return super.offsetSubprotocolLeave(parent, child, visited);
 		return super.inlinedProtocolLeave(parent, child, visited);
 	}

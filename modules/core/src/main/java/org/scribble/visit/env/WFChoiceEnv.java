@@ -21,6 +21,7 @@ import org.scribble.util.MessageIdMap;
 import org.scribble.visit.OffsetSubprotocolVisitor;
 import org.scribble.visit.WFChoiceChecker;
 
+@Deprecated
 public class WFChoiceEnv extends Env
 {
 	public static final Role DUMMY_ROLE = new Role("__ROLE");

@@ -10,6 +10,7 @@ import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.ProtocolBlockDel;
+import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.name.Role;
@@ -26,8 +27,7 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 	@Override
 	public void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
-		//pushVisitorEnv(parent, child, proj);
-		pushVisitorEnv(this, proj);
+		ScribDelBase.pushVisitorEnv(this, proj);
 	}
 
 	@Override
@@ -37,8 +37,7 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		LInteractionSeq seq = (LInteractionSeq) ((ProjectionEnv) gpd.seq.del().env()).getProjection();	
 		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(seq);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		//return (GProtocolBlock) popAndSetVisitorEnv(parent, child, proj, gpd);
-		return (GProtocolBlock) popAndSetVisitorEnv(this, proj, gpd);
+		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, proj, gpd);
 	}
 
 	@Override
@@ -48,15 +47,13 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		GInteractionSeq seq = (GInteractionSeq) ((InlineProtocolEnv) gpd.seq.del().env()).getTranslation();	
 		GProtocolBlock inlined = AstFactoryImpl.FACTORY.GProtocolBlock(seq);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		//return (GProtocolBlock) popAndSetVisitorEnv(parent, child, builder, gpd);
-		return (GProtocolBlock) popAndSetVisitorEnv(this, builder, gpd);
+		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, builder, gpd);
 	}
 	
 	@Override
 	public void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
 	{
-		//pushVisitorEnv(parent, child, builder);
-		pushVisitorEnv(this, builder);
+		ScribDelBase.pushVisitorEnv(this, builder);
 	}
 
 	@Override
@@ -66,7 +63,6 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		Set<ModelAction> as = ((ModelEnv) gpb.seq.del().env()).getActions();
 		Map<Role, ModelAction> leaves = ((ModelEnv) gpb.seq.del().env()).getLeaves();
 		builder.pushEnv(builder.popEnv().setActions(as, leaves));
-		//return (GProtocolBlock) popAndSetVisitorEnv(parent, child, builder, gpb);
-		return (GProtocolBlock) popAndSetVisitorEnv(this, builder, gpb);
+		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, builder, gpb);
 	}
 }

@@ -64,7 +64,6 @@ public class GProtocolDefDel extends ProtocolDefDel
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gpd.block.del().env()).getProjection();	
 		LProtocolDef projection = AstFactoryImpl.FACTORY.LProtocolDef(block);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		//return (GProtocolDef) popAndSetVisitorEnv(parent, child, proj, gpd);
 		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, proj, gpd);
 	}
 
@@ -83,7 +82,6 @@ public class GProtocolDefDel extends ProtocolDefDel
 		
 		System.out.println("1: " + inlined);
 		
-		//return (GProtocolDef) popAndSetVisitorEnv(parent, child, builder, (GProtocolDef) gpd.del(copy));
 		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, builder, (GProtocolDef) gpd.del(copy));
 	}
 }

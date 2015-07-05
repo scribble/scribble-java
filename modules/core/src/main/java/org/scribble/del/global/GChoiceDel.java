@@ -164,25 +164,6 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
 	}
 
-	/*@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
-	{
-		UnfoldingEnv env = unf.peekEnv().enterContext();
-		env = env.pushChoiceParent();
-		unf.pushEnv(env);
-	}
-
-	/*@Override
-	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
-	{
-		GChoice cho = (GChoice) visited;
-		List<UnfoldingEnv> benvs =
-				cho.blocks.stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
-		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
-		unf.pushEnv(merged);
-		return (GChoice) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);
-	}*/
-
 	@Override
 	public void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker) throws ScribbleException
 	{

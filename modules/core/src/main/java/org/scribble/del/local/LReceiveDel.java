@@ -25,22 +25,8 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 		return (LReceive) super.leaveProtocolInlining(parent, child, builder, gmt);
 	}
 
-	/*@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
-	{
-		UnfoldingEnv env = unf.popEnv();
-		env = env.noUnfold();
-		unf.pushEnv(env);
-	}*/
-
-	/*@Override
-	public LReceive leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
-	{
-		return (LReceive) LSimpleInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);
-	}*/
-
 	@Override
-	public LReceive leaveFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	public LReceive leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
 	{
 		LReceive lr = (LReceive) visited;
 		Role peer = lr.src.toName();
@@ -50,6 +36,6 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 					? ((MessageSigNode) lr.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		conv.builder.addEdge(conv.builder.getEntry(), new Receive(peer, mid, payload), conv.builder.getExit());
-		return (LReceive) super.leaveFsmBuilder(parent, child, conv, lr);
+		return (LReceive) super.leaveFsmBuilding(parent, child, conv, lr);
 	}
 }

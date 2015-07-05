@@ -47,6 +47,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		return projection;
 	}
 
+	// FIXME: refactor into AstNode
 	// Relies on WF rule for same enabler role in all choice blocks
 	private static Role getSubject(ModuleVisitor mv, ProtocolBlock<Local> block)
 	{
@@ -109,25 +110,6 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (LChoice) super.leaveProtocolInlining(parent, child, builder, gc);
 	}
-
-	/*@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
-	{
-		UnfoldingEnv env = unf.peekEnv().enterContext();
-		env = env.pushChoiceParent();
-		unf.pushEnv(env);
-	}
-
-	@Override
-	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
-	{
-		LChoice cho = (LChoice) visited;
-		List<UnfoldingEnv> benvs =
-				cho.blocks.stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
-		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
-		unf.pushEnv(merged);
-		return (LChoice) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);
-	}*/
 
 	@Override
 	public LChoice leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException

@@ -91,15 +91,15 @@ public class ModuleDel extends ScribDelBase
 		return (this.mcontext == null) ? null : this.mcontext.toString();  // null before and during context building
 	}
 	
+	public ModuleContext getModuleContext()
+	{
+		return this.mcontext;
+	}
+	
 	protected ModuleDel setModuleContext(ModuleContext mcontext)
 	{
 		ModuleDel copy = copy();  // FIXME: should be a deep clone in principle
 		copy.mcontext = mcontext;
 		return copy;
-	}
-	
-	public ModuleContext getModuleContext()
-	{
-		return this.mcontext;
 	}
 }

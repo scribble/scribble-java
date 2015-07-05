@@ -6,6 +6,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.WFChoiceEnv;
 
+@Deprecated
 public class WFChoiceChecker extends OffsetSubprotocolVisitor<WFChoiceEnv>
 {
 	public WFChoiceChecker(Job job)

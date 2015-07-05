@@ -13,7 +13,6 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.ReachabilityEnv;
 
-//public class LContinueDel extends LSimpleInteractionNodeDel
 public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeDel
 {
 	@Override
@@ -25,18 +24,6 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (LContinue) super.leaveProtocolInlining(parent, child, builder, lc);
 	}
-
-	/*@Override
-	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
-	{
-		LContinue lc = (LContinue) visited;
-		RecVar rv = lc.recvar.toName();
-		if (unf.isTodo(rv))
-		{
-			return unf.getRecVar(rv).clone();
-		}
-		return lc;
-	}*/
 
 	@Override
 	public LContinue leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
@@ -51,11 +38,11 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 	}
 
 	@Override
-	public LContinue leaveFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	public LContinue leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.recvar.toName();
 		conv.builder.setEntry(conv.builder.getRecursionEntry(rv));
-		return (LContinue) super.leaveFsmBuilder(parent, child, conv, lr);
+		return (LContinue) super.leaveFsmBuilding(parent, child, conv, lr);
 	}
 }

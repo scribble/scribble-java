@@ -11,6 +11,7 @@ import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 
+
 public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeDel
 {
 	@Override
@@ -32,16 +33,4 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (GContinue) super.leaveProtocolInlining(parent, child, builder, gc);
 	}
-
-	/*@Override
-	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
-	{
-		GContinue gc = (GContinue) visited;
-		RecVar rv = gc.recvar.toName();
-		if (unf.isTodo(rv))
-		{
-			return unf.getRecVar(rv).clone();
-		}
-		return gc;
-	}*/
 }

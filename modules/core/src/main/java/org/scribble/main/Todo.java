@@ -32,7 +32,7 @@ package org.scribble.main;
 	// FIXME: wf-c should in some cases attempt an unfolding on reaching a continue if not satisfied yet -- or do by "recording" cache for recs, as for subprotocolsigs
 	// similar: Changed fsmbuilder from offsetsubprot visitor to inlined visitor to reduce state label acculumation to rec only -- but this introduces a problem in wfc-checking for "unguarded" recursive-do-as-continue in choice blocks -- current offset visitor is also hacked to follow up just "1 level"
 
-	// could paramterise recvar to be global/local
+	// could parameterise recvar to be global/local
 
 	// self comm (wf, projection)
 	// multicast (enforce sending same value -- can "compile" to assertions for separate ops)

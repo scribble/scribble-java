@@ -59,15 +59,15 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 		return visited;
 	}
 	
+	public ProtocolDeclContext<K> getProtocolDeclContext()
+	{
+		return this.pdcontext;
+	}
+	
 	protected ProtocolDeclDel<K> setProtocolDeclContext(ProtocolDeclContext<K> pdcontext)
 	{
 		ProtocolDeclDel<K> copy = copy();  // FIXME: should be a deep clone in principle -- but if any other children are immutable, they can be shared
 		copy.pdcontext = pdcontext;
 		return copy;
-	}
-	
-	public ProtocolDeclContext<K> getProtocolDeclContext()
-	{
-		return this.pdcontext;
 	}
 }

@@ -65,29 +65,6 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		return (GRecursion) super.leaveProtocolInlining(parent, child, builder, gr);
 	}
 
-	/*@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
-	{
-		super.enterInlinedProtocolUnfolding(parent, child, unf);
-		GRecursion gr = (GRecursion) child;
-		RecVar recvar = gr.recvar.toName();
-		//GInteractionSeq gis = gr.getBlock().getInteractionSeq();  // FIXME: should clone with fresh dels -- though currently the only dels to store persistent state are protocoldecl and gprotocoldef, which are outside of the main session type (protocol body) visiting
-		GProtocolBlock gpb = gr.getBlock();
-		//unf.setRecVar(recvar, gpb);
-		unf.setRecVar(recvar, gr);
-	}
-
-	@Override
-	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
-	{
-		GRecursion rec = (GRecursion) visited;
-		RecVar recvar = rec.recvar.toName();
-		unf.removeRecVar(recvar);
-		UnfoldingEnv merged = unf.popEnv().mergeContext((UnfoldingEnv) rec.block.del().env());
-		unf.pushEnv(merged);
-		return (GRecursion) super.leaveInlinedProtocolUnfolding(parent, child, unf, rec);
-	}*/
-
 	@Override
 	public GRecursion leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{

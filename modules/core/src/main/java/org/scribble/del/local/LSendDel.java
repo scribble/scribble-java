@@ -25,22 +25,8 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 		return (LSend) super.leaveProtocolInlining(parent, child, builder, gmt);
 	}
 
-	/*@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
-	{
-		UnfoldingEnv env = unf.popEnv();
-		env = env.noUnfold();
-		unf.pushEnv(env);
-	}*/
-
-	/*@Override
-	public LSend leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
-	{
-		return (LSend) LSimpleInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);
-	}*/
-
 	@Override
-	public LSend leaveFsmBuilder(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	public LSend leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
 	{
 		LSend ls = (LSend) visited;
 		if (ls.dests.size() > 1)
@@ -54,6 +40,6 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		conv.builder.addEdge(conv.builder.getEntry(), new Send(peer, mid, payload), conv.builder.getExit());
-		return (LSend) super.leaveFsmBuilder(parent, child, conv, ls);
+		return (LSend) super.leaveFsmBuilding(parent, child, conv, ls);
 	}
 }

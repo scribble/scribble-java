@@ -35,6 +35,7 @@ import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
+
 // FIXME: make base MessageTransferDelegate?
 public class GMessageTransferDel extends MessageTransferDel implements GSimpleInteractionNodeDel
 {
@@ -150,14 +151,6 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		}
 		return visited;
 	}
-
-	/*@Override
-	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
-	{
-		UnfoldingEnv env = unf.popEnv();
-		env = env.noUnfold();
-		unf.pushEnv(env);
-	}*/
 	
 	@Override
 	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
