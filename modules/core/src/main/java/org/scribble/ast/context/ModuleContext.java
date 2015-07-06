@@ -195,7 +195,7 @@ public class ModuleContext
 
 	public <K extends ProtocolKind> ProtocolName<K> getFullProtocolDeclName(ProtocolName<K> visname)
 	{
-		ProtocolName<? extends ProtocolKind> pn = (visname.kind.equals(Global.KIND))
+		ProtocolName<? extends ProtocolKind> pn = (visname.getKind().equals(Global.KIND))
 				? getFullGProtocolDeclName((GProtocolName) visname)
 				: getFullLProtocolDeclName((LProtocolName) visname);
 		@SuppressWarnings("unchecked")

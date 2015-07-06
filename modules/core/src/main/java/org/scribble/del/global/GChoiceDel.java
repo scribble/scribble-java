@@ -49,7 +49,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 			throw new ScribbleException("Subject not enabled: " + subj);
 		}
 		
-		Map<Role, Set<MessageId>> seen = null;
+		Map<Role, Set<MessageId<?>>> seen = null;
 		Map<Role, Role> enablers = null;
 		List<WFChoiceEnv> benvs =
 				cho.blocks.stream().map((b) -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
@@ -89,9 +89,9 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 						{
 							throw new ScribbleException("Mismatched role enabling: " + dest);
 						}
-						Set<MessageId> current = seen.get(dest);
-						Set<MessageId> next = enabled.getMessages(dest);
-						for (MessageId msg : next)
+						Set<MessageId<?>> current = seen.get(dest);
+						Set<MessageId<?>> next = enabled.getMessages(dest);
+						for (MessageId<?> msg : next)
 						{
 							if (current.contains(msg))
 							{
@@ -183,7 +183,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 			throw new ScribbleException("Subject not enabled: " + subj);
 		}
 		
-		Map<Role, Set<MessageId>> seen = null;
+		Map<Role, Set<MessageId<?>>> seen = null;
 		Map<Role, Role> enablers = null;
 		List<InlinedWFChoiceEnv> benvs =
 				cho.blocks.stream().map((b) -> (InlinedWFChoiceEnv) b.del().env()).collect(Collectors.toList());
@@ -224,9 +224,9 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 						{
 							throw new ScribbleException("Mismatched role enabling: " + dest);
 						}
-						Set<MessageId> current = seen.get(dest);
-						Set<MessageId> next = enabled.getMessages(dest);
-						for (MessageId msg : next)
+						Set<MessageId<?>> current = seen.get(dest);
+						Set<MessageId<?>> next = enabled.getMessages(dest);
+						for (MessageId<?> msg : next)
 						{
 							if (current.contains(msg))
 							{

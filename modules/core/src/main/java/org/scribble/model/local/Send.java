@@ -6,7 +6,7 @@ import org.scribble.sesstype.name.Role;
 
 public class Send extends IOAction
 {
-	public Send(Role peer, MessageId mid, Payload payload)
+	public Send(Role peer, MessageId<?> mid, Payload payload)
 	{
 		super(peer, mid, payload);
 	}

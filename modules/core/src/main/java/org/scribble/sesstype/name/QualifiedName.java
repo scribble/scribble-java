@@ -4,7 +4,7 @@ import org.scribble.sesstype.kind.Kind;
 
 
 
-public abstract class QualifiedName<K extends Kind> extends Name<K>
+public abstract class QualifiedName<K extends Kind> extends AbstractName<K>
 {
 	private static final long serialVersionUID = 1L;
 

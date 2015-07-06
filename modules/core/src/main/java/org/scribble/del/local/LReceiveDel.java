@@ -30,7 +30,7 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 	{
 		LReceive lr = (LReceive) visited;
 		Role peer = lr.src.toName();
-		MessageId mid = lr.msg.toMessage().getId();
+		MessageId<?> mid = lr.msg.toMessage().getId();
 		Payload payload =
 				(lr.msg.isMessageSigNode())  // Hacky?
 					? ((MessageSigNode) lr.msg).payloads.toPayload()

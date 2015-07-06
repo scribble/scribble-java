@@ -6,7 +6,7 @@ public interface Kind
 {
 	public static <K extends Kind> Name<K> castName(K kind, Name<? extends Kind> name)
 	{
-		kind.getClass().cast(name.kind);
+		kind.getClass().cast(name.getKind());
 		@SuppressWarnings("unchecked")
 		Name<K> tmp = (Name<K>) name;
 		return tmp;

@@ -1,6 +1,9 @@
 package org.scribble.sesstype.name;
 
-public interface MessageId
+import org.scribble.sesstype.kind.MessageIdKind;
+
+
+public interface MessageId<M extends MessageIdKind> extends Name<M>
 {
 	default boolean isOp()
 	{

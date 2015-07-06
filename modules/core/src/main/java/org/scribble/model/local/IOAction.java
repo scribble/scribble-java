@@ -7,10 +7,10 @@ import org.scribble.sesstype.name.Role;
 public abstract class IOAction
 {
 	public final Role peer;
-	public final MessageId mid;
+	public final MessageId<?> mid;
 	public final Payload payload;
 	
-	public IOAction(Role peer, MessageId mid, Payload payload)
+	public IOAction(Role peer, MessageId<?> mid, Payload payload)
 	{
 		this.peer = peer;
 		this.mid = mid;

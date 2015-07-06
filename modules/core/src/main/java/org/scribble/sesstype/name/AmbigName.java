@@ -2,7 +2,7 @@ package org.scribble.sesstype.name;
 
 import org.scribble.sesstype.kind.AmbigKind;
 
-public class AmbigName extends Name<AmbigKind>
+public class AmbigName extends AbstractName<AmbigKind>
 {
 	private static final long serialVersionUID = 1L;
 	

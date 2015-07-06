@@ -15,7 +15,7 @@ public class MessageIdMap
 {
 	// dest -> (src -> mids)
 	//private Map<Role, Map<Role, Set<T>>> map = new HashMap<>();
-	private Map<Role, Map<Role, Set<MessageId>>> map = new HashMap<>();
+	private Map<Role, Map<Role, Set<MessageId<?>>>> map = new HashMap<>();
 	
 	//public final Set<Role> sources = map.keySet();
 
@@ -48,14 +48,14 @@ public class MessageIdMap
 	}
 
 	//public void putMessage(Role left, Role right, T msg)
-	public void putMessage(Role left, Role right, MessageId msg)
+	public void putMessage(Role left, Role right, MessageId<?> msg)
 	{
 		addRolePair(left, right);
 		this.map.get(left).get(right).add(msg);
 	}
 
 	//public void putMessages(Role left, Role right, Set<T> msgs)
-	public void putMessages(Role left, Role right, Set<MessageId> msgs)
+	public void putMessages(Role left, Role right, Set<MessageId<?>> msgs)
 	{
 		addRolePair(left, right);
 		this.map.get(left).get(right).addAll(msgs);
@@ -89,16 +89,16 @@ public class MessageIdMap
 	}
 	
 	//public Set<T> getMessages(Role left, Role right)
-	public Set<MessageId> getMessages(Role left, Role right)
+	public Set<MessageId<?>> getMessages(Role left, Role right)
 	{
 		return this.map.get(left).get(right);
 	}
 
 	//public Set<T> getMessages(Role left)
-	public Set<MessageId> getMessages(Role left)
+	public Set<MessageId<?>> getMessages(Role left)
 	{
 		//Set<T> tmp = new HashSet<>();
-		Set<MessageId> tmp = new HashSet<>();
+		Set<MessageId<?>> tmp = new HashSet<>();
 		getRightKeys(left).forEach((right) -> tmp.addAll(getMessages(left, right)));
 		return tmp;
 	}
@@ -124,7 +124,7 @@ public class MessageIdMap
 		if (!this.map.containsKey(left))
 		{
 			//Map<Role, Set<T>> map = new HashMap<>();
-			Map<Role, Set<MessageId>> map = new HashMap<>();
+			Map<Role, Set<MessageId<?>>> map = new HashMap<>();
 			this.map.put(left, map);
 			map.put(right, new HashSet<>());
 		}

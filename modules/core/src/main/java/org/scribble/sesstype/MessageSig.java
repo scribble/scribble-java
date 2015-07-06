@@ -1,5 +1,6 @@
 package org.scribble.sesstype;
 
+import org.scribble.sesstype.kind.OpKind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Op;
@@ -22,7 +23,7 @@ public class MessageSig implements Message
 	}
 
 	@Override
-	public MessageId getId()
+	public MessageId<OpKind> getId()
 	{
 		return this.op;
 	}

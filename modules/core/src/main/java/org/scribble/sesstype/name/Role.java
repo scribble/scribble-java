@@ -3,7 +3,7 @@ package org.scribble.sesstype.name;
 import org.scribble.sesstype.kind.RoleKind;
 
 
-public class Role extends Name<RoleKind>
+public class Role extends AbstractName<RoleKind>
 {
 	public static final Role EMPTY_ROLE = new Role();
 

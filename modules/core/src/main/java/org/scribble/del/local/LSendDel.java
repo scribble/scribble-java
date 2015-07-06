@@ -34,7 +34,7 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 			throw new RuntimeException("TODO: " + ls);
 		}
 		Role peer = ls.dests.get(0).toName();
-		MessageId mid = ls.msg.toMessage().getId();
+		MessageId<?> mid = ls.msg.toMessage().getId();
 		Payload payload =
 				ls.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) ls.msg).payloads.toPayload()

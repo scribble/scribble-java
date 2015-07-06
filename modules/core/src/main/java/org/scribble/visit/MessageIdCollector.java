@@ -1,44 +1,29 @@
 package org.scribble.visit;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 
-public class MessageIdCollector extends NoEnvOffsetSubprotocolVisitor
+
+public class MessageIdCollector extends NameCollector<MessageId<?>>
 {
-	private Set<MessageId> mids = new HashSet<>();
-	
 	public MessageIdCollector(Job job, ModuleContext mcontext)
 	{
-		super(job);
-		setModuleContext(mcontext);
-	}
-	
-	public void addMessageId(MessageId mid)
-	{
-		this.mids.add(mid);
-	}
-	
-	public Set<MessageId> getMessageIds()
-	{
-		return this.mids;
+		super(job, mcontext);
 	}
 
 	@Override
 	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.offsetSubprotocolEnter(parent, child);
-		child.del().enterOpCollection(parent, child, this);
+		child.del().enterMessageIdCollection(parent, child, this);
 	}
 	
 	@Override
 	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveOpCollection(parent, child, this, visited);
+		visited = visited.del().leaveMessageIdCollection(parent, child, this, visited);
 		return super.offsetSubprotocolLeave(parent, child, visited);
 	}
 }

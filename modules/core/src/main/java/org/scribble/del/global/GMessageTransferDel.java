@@ -26,7 +26,6 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.InlinedWFChoiceChecker;
-import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
@@ -136,21 +135,6 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		}
 		return msgtrans;
 	}
-
-	@Override
-	public ScribNode leaveOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
-	{
-		GMessageTransfer gmt = (GMessageTransfer) visited;
-		if (gmt.msg.isMessageSigNode() || gmt.msg.isMessageSigNameNode())
-		{
-			coll.addMessageId(gmt.msg.toMessage().getId());
-		}
-		else
-		{
-			throw new RuntimeException("Shouldn't get in here: " + gmt.msg);
-		}
-		return visited;
-	}
 	
 	@Override
 	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
@@ -165,7 +149,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		}
 		Role src = gmt.src.toName();
 		Role dest = gmt.dests.get(0).toName();
-		MessageId mid = gmt.msg.toMessage().getId();
+		MessageId<?> mid = gmt.msg.toMessage().getId();
 		ModelAction send = new ModelAction(src, new Send(dest, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
 		ModelAction receive = new ModelAction(dest, new Receive(src, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
 		receive.addDependency(send);

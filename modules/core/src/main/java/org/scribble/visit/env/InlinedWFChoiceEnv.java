@@ -119,7 +119,7 @@ public class InlinedWFChoiceEnv extends Env
 
 	// FIXME: List/Set argument
 	// Means: record message as initial enabling message if dest not already enabled
-	private static void addMessages(MessageIdMap map, Role src, Role dest, List<MessageId> msgs)
+	private static void addMessages(MessageIdMap map, Role src, Role dest, List<MessageId<?>> msgs)
 	{
 		if (!map.containsLeftKey(dest))  // FIXME: factor out isEnabled
 		{

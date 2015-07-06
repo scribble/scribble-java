@@ -356,7 +356,7 @@ public class AstFactoryImpl implements AstFactory
 	
 	private static <T extends NameNode<K>, K extends Kind> T castNameNode(K kind, NameNode<? extends Kind> n)
 	{
-		if (!n.toName().kind.equals(kind))
+		if (!n.toName().getKind().equals(kind))
 		{
 			throw new RuntimeException("Shouldn't get in here: " + kind + ", " + n);
 		}

@@ -2,7 +2,7 @@ package org.scribble.sesstype.name;
 
 import org.scribble.sesstype.kind.OpKind;
 
-public class Op extends Name<OpKind> implements MessageId
+public class Op extends AbstractName<OpKind> implements MessageId<OpKind>
 {
 	private static final long serialVersionUID = 1L;
 	

@@ -19,7 +19,7 @@ public class SessionApiGenerator
 	private final Job job;
 	private final GProtocolName gpn;  // full name
 	private final String clazz;
-	private final Map<MessageId, String> mids = new HashMap<>();
+	private final Map<MessageId<?>, String> mids = new HashMap<>();
 	private final Map<Role, String> roles = new HashMap<>();
 
 	public SessionApiGenerator(Job job, GProtocolName fullname) throws ScribbleException
@@ -40,13 +40,13 @@ public class SessionApiGenerator
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(sn);
 		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
-		for (MessageId mid : coll.getMessageIds())
+		for (MessageId<?> mid : coll.getNames())
 		{
 			this.mids.put(mid, generateOpClass(mid));
 		}
 	}
 	
-	private String generateOpClass(MessageId mid)
+	private String generateOpClass(MessageId<?> mid)
 	{
 		String s = getOpClassName(mid);
 
@@ -66,7 +66,7 @@ public class SessionApiGenerator
 		return clazz;
 	}
 	
-	public static String getOpClassName(MessageId mid)
+	public static String getOpClassName(MessageId<?> mid)
 	{
 		String s = mid.toString();
 		if (s.isEmpty() || s.charAt(0) < 65)
@@ -117,7 +117,7 @@ public class SessionApiGenerator
 		return map;
 	}
 
-	public Map<MessageId, String> getOpClasses()
+	public Map<MessageId<?>, String> getOpClasses()
 	{
 		return this.mids;
 	}
@@ -162,7 +162,7 @@ public class SessionApiGenerator
 			clazz += generateRole(role);
 		}
 		clazz += "\n";
-		for (MessageId mid : this.mids.keySet())
+		for (MessageId<?> mid : this.mids.keySet())
 		{
 			clazz += generateOp(mid);
 		}
@@ -191,7 +191,7 @@ public class SessionApiGenerator
 		return "\tpublic static final " + rc + " " + rc + " = new " + rc + "();\n";
 	}
 	
-	private String generateOp(MessageId mid)
+	private String generateOp(MessageId<?> mid)
 	{
 		String s = getOpClassName(mid);
 		return "\tpublic static final " + s + " " + s + " = new " + s + "();\n";

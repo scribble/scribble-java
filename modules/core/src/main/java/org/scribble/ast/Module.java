@@ -161,7 +161,7 @@ public class Module extends ScribNodeBase
 	{
 		List<ProtocolDecl<? extends ProtocolKind>> filtered = pds.stream()
 				.filter((pd) -> pd.header.getDeclName().equals(simpname))
-				.filter((pd) -> (simpname.kind.equals(Global.KIND)) ? pd.isGlobal() : pd.isLocal())
+				.filter((pd) -> (simpname.getKind().equals(Global.KIND)) ? pd.isGlobal() : pd.isLocal())
 				.collect(Collectors.toList());
 		if (filtered.size() != 1)
 		{

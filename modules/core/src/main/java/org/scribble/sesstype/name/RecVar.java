@@ -2,7 +2,7 @@ package org.scribble.sesstype.name;
 
 import org.scribble.sesstype.kind.RecVarKind;
 
-public class RecVar extends Name<RecVarKind>
+public class RecVar extends AbstractName<RecVarKind>
 {
 	private static final long serialVersionUID = 1L;
 

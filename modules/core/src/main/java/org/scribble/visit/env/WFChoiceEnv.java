@@ -199,7 +199,7 @@ public class WFChoiceEnv extends Env
 	// Means: record message as initial enabling message if dest not already enabled
 	//private static void addMessages(MessageMap<ScopedMessage> map, Role src, Role dest, List<ScopedMessage> msgs)
 	//private static void addMessages(MessageMap<Message> map, Role src, Role dest, List<Message> msgs)
-	private static void addMessages(MessageIdMap map, Role src, Role dest, List<MessageId> msgs)
+	private static void addMessages(MessageIdMap map, Role src, Role dest, List<MessageId<?>> msgs)
 	{
 		if (!map.containsLeftKey(dest))  // FIXME: factor out isEnabled
 		{
@@ -324,10 +324,10 @@ public class WFChoiceEnv extends Env
 				//enabled.getMessages(dest, src).stream().map((sm) -> new ScopedMessageSignature(scope, sm.op, sm.payload)).collect(Collectors.toList());
 				//List<ScopedMessage> sms = new LinkedList<>();
 				//List<Message> sms = new LinkedList<>();
-				List<MessageId> sms = new LinkedList<>();
+				List<MessageId<?>> sms = new LinkedList<>();
 				//for (ScopedMessage sm : enabled.getMessages(dest, src))
 				//for (Message sm : enabled.getMessages(dest, src))
-				for (MessageId sm : enabled.getMessages(dest, src))
+				for (MessageId<?> sm : enabled.getMessages(dest, src))
 				{
 					/*if (sm.isParameter())
 					{

@@ -3,7 +3,7 @@ package org.scribble.sesstype.name;
 import org.scribble.sesstype.kind.ScopeKind;
 
 // Should be a compound name?
-public class Scope extends Name<ScopeKind>
+public class Scope extends AbstractName<ScopeKind>
 {
 	private static final long serialVersionUID = 1L;
 

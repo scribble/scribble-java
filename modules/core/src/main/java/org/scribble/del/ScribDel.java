@@ -55,6 +55,36 @@ public interface ScribDel
 		return visited;
 	}
 
+	default ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker) throws ScribbleException
+	{
+		
+	}
+
+	default void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
 	default void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{
 
@@ -95,42 +125,12 @@ public interface ScribDel
 		return visited;
 	}
 
-	default void enterOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll)
+	default void enterMessageIdCollection(ScribNode parent, ScribNode child, MessageIdCollector coll)
 	{
 		
 	}
 
-	default ScribNode leaveOpCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
-	{
-		return visited;
-	}
-
-	default void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}
-
-	default void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}
-
-	default void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	default ScribNode leaveMessageIdCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
 	{
 		return visited;
 	}

@@ -2,7 +2,7 @@ package org.scribble.sesstype.kind;
 
 import java.io.Serializable;
 
-public class OpKind extends AbstractKind implements Serializable
+public class OpKind extends AbstractKind implements MessageIdKind, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
