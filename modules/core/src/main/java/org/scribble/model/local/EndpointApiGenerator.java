@@ -55,8 +55,8 @@ public class EndpointApiGenerator
 		//this.lpn = Projector.makeProjectedFullNameNode(new GProtocolName(this.job.getContext().main, gpn), role).toName();
 		this.lpn = Projector.projectFullProtocolName(fullname, role);
 
-		ProtocolState init = job.getContext().getFsm(lpn).init;
-		//ProtocolState init = job.getContext().getFsm(fullname, role).init;
+		//ProtocolState init = job.getContext().getFsm(lpn).init;
+		ProtocolState init = job.getContext().getFsm(fullname, role).init;
 		generateClassNames(init);
 		/*for (ProtocolState ps : classNames.keySet())
 		{

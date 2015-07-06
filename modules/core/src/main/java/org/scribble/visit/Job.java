@@ -10,7 +10,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointApiGenerator;
 import org.scribble.net.session.SessionApiGenerator;
 import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 
@@ -55,10 +54,15 @@ public class Job
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}
 	
-	public void buildFsms(Module mod) throws ScribbleException  // Need to visit from Module for visitor context
+	/*..FIX build/generate... arguments and debugprintlns (they aren't visitors, but should factor)
+	.. commandline full/simpnames
+	.. jobcontext getfsm args*/
+
+	//public void buildFsms(Module mod) throws ScribbleException  // Need to visit from Module for visitor context
+	public void buildFsms(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context
 	{
 		debugPrintln("\n--- FSM construction --- ");
-		mod.accept(new FsmBuilder(this)); 
+		this.jcontext.getProjection(fullname, role).accept(new FsmBuilder(this)); 
 			// Constructs FSMs from all local protocols in this module (projected modules contain a single local protocol)
 			// Subprotocols "inlined" (scoped subprotocols not supported)
 	}
@@ -75,11 +79,13 @@ public class Job
 	public Map<String, String> generateEndpointApi(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		//LProtocolName lpn = Projector.makeProjectedFullNameNode(new GProtocolName(this.jcontext.main, fullname), role).toName();
-		LProtocolName lpn = Projector.makeProjectedFullNameNode(fullname, role).toName();
-		if (this.jcontext.getFsm(lpn) == null)  // FIXME: null hack
+		//LProtocolName lpn = Projector.makeProjectedFullNameNode(fullname, role).toName();
+		//if (this.jcontext.getFsm(lpn) == null)  // FIXME: null hack
+		if (this.jcontext.getFsm(fullname, role) == null)  // FIXME: null hack
 		{
-			Module mod = this.jcontext.getModule(lpn.getPrefix());
-			buildFsms(mod);
+			/*Module mod = this.jcontext.getModule(lpn.getPrefix());
+			buildFsms(mod);*/
+			buildFsms(fullname, role);
 		}
 		debugPrintln("\n--- Endpoint API generation --- ");
 		return new EndpointApiGenerator(this, fullname, role).getClasses(); // filepath -> class source  // FIXME: store results?

@@ -15,13 +15,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Job;
 import org.scribble.visit.JobContext;
@@ -102,9 +102,12 @@ public class CommandLine implements Runnable
 		JobContext jc = job.getContext();
 		GProtocolName simpname = new GProtocolName(this.args.get(Arg.FSM)[0]);
 		Role role = new Role(this.args.get(Arg.FSM)[1]);
-		LProtocolName lpn = getProjectedName(jc, simpname, role);
-		buildFsm(job, lpn);
-		System.out.println(jc.getFsm(lpn));
+		//LProtocolName lpn = getProjectedName(jc, simpname, role);
+		//buildFsm(job, lpn);
+		GProtocolName fullname = new GProtocolName(jc.main, simpname);
+		buildFsm(job, fullname, role);
+		//System.out.println(jc.getFsm(lpn));
+		System.out.println(jc.getFsm(fullname, role));
 		/*buildFsm(job, simplename, role);
 		System.out.println(jc.getFsm(simplename, role));*/
 	}
@@ -166,17 +169,19 @@ public class CommandLine implements Runnable
 		return new MainContext(debug, locator, mainpath);
 	}
 
-	private void buildFsm(Job job, LProtocolName lpn) throws ScribbleException
-	//private void buildFsm(Job job, GProtocolName simplename, Role role) throws ScribbleException
+	//private void buildFsm(Job job, LProtocolName lpn) throws ScribbleException
+	//private void buildFsm(Job job, LProtocolName lpn) throws ScribbleException
+	private void buildFsm(Job job, GProtocolName fullname, Role role) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		ModuleName modname = lpn.getPrefix();
-		//ModuleName modname = getProjectedName(jcontext, simplename, role).getPrefix();
-		if (!jcontext.hasModule(modname))  // Move into Job?  But this is a check on the CL args
+		// Move into Job?  But this is a check on the CL args
+		//job.buildFsms(jcontext.getModule(modname));  // Need Module for context (not just the LProtoDecl) -- builds FSMs for all locals in the module
+		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
+		if (gpd == null || !gpd.header.roledecls.getRoles().contains(role))
 		{
 			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(Arg.FSM)));
 		}
-		job.buildFsms(jcontext.getModule(modname));  // Need Module for context (not just the LProtoDecl) -- builds FSMs for all locals in the module
+		job.buildFsms(fullname, role);
 	}
 	
 	private static Path parseMainPath(String path)

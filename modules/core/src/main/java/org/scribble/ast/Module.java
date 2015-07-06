@@ -105,29 +105,29 @@ public class Module extends ScribNodeBase
 	}
 
 	// ptn simple alias name
-	public DataTypeDecl getDataTypeDecl(DataType ptn)  // Simple name (as for getProtocolDecl)
+	public DataTypeDecl getDataTypeDecl(DataType simpname)  // Simple name (as for getProtocolDecl)
 	{
 		for (NonProtocolDecl<? extends Kind> dtd : this.data)
 		{
-			if (dtd.isDataTypeDecl() && dtd.getDeclName().equals(ptn))
+			if (dtd.isDataTypeDecl() && dtd.getDeclName().equals(simpname))
 			{
 				return (DataTypeDecl) dtd;
 			}
 		}
-		throw new RuntimeException("Data type not found: " + ptn);
+		throw new RuntimeException("Data type not found: " + simpname);
 	}
 
 	// msn simple alias name
-	public MessageSigNameDecl getMessageSigDecl(MessageSigName msn)
+	public MessageSigNameDecl getMessageSigDecl(MessageSigName simpname)
 	{
 		for (NonProtocolDecl<? extends Kind> dtd : this.data)
 		{
-			if (dtd instanceof MessageSigNameDecl && dtd.getDeclName().equals(msn))
+			if (dtd instanceof MessageSigNameDecl && dtd.getDeclName().equals(simpname))
 			{
 				return (MessageSigNameDecl) dtd;
 			}
 		}
-		throw new RuntimeException("Message signature not found: " + msn);
+		throw new RuntimeException("Message signature not found: " + simpname);
 	}
 	
 	public List<GProtocolDecl> getGlobalProtocolDecls()
@@ -150,22 +150,22 @@ public class Module extends ScribNodeBase
 	
 	// pn is simple name
   // separate into global/local?
-	public <K extends ProtocolKind> ProtocolDecl<K> getProtocolDecl(ProtocolName<K> pn)
+	public <K extends ProtocolKind> ProtocolDecl<K> getProtocolDecl(ProtocolName<K> simpname)
 	{
-		return getProtocolDecl(this.protos, pn);
+		return getProtocolDecl(this.protos, simpname);
 	}
 
 	// pn is simple name
 	private static <K extends ProtocolKind>
-			ProtocolDecl<K> getProtocolDecl(List<ProtocolDecl<? extends ProtocolKind>> pds, ProtocolName<K> pn)
+			ProtocolDecl<K> getProtocolDecl(List<ProtocolDecl<? extends ProtocolKind>> pds, ProtocolName<K> simpname)
 	{
 		List<ProtocolDecl<? extends ProtocolKind>> filtered = pds.stream()
-				.filter((pd) -> pd.header.getDeclName().equals(pn))
-				.filter((pd) -> (pn.kind.equals(Global.KIND)) ? pd.isGlobal() : pd.isLocal())
+				.filter((pd) -> pd.header.getDeclName().equals(simpname))
+				.filter((pd) -> (simpname.kind.equals(Global.KIND)) ? pd.isGlobal() : pd.isLocal())
 				.collect(Collectors.toList());
 		if (filtered.size() != 1)
 		{
-			throw new RuntimeException("Protocol not found: " + pn);
+			throw new RuntimeException("Protocol not found: " + simpname);
 		}
 		@SuppressWarnings("unchecked")
 		ProtocolDecl<K> res = (ProtocolDecl<K>) filtered.get(0);

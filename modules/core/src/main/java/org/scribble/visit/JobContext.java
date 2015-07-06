@@ -55,10 +55,10 @@ public class JobContext
 		return this.projected.keySet().stream().map((lpn) -> lpn.getPrefix()).collect(Collectors.toSet());
 	}
 
-	public boolean hasModule(ModuleName fullname)
+	/*public boolean hasModule(ModuleName fullname)
 	{
 		return isParsedModule(fullname) || isProjectedModule(fullname);
-	}
+	}*/
 	
 	private boolean isParsedModule(ModuleName fullname)
 	{
@@ -158,11 +158,11 @@ public class JobContext
 		this.fsms.put(lpn, fsm);
 	}
 	
-	public ScribFsm getFsm(LProtocolName lpn)
-	//public ScribFsm getFsm(GProtocolName fullname, Role role)
+	//public ScribFsm getFsm(LProtocolName lpn)
+	public ScribFsm getFsm(GProtocolName fullname, Role role)
 	{
-		return this.fsms.get(lpn);
-		//return this.fsms.get(Projector.projectFullProtocolName(fullname, role));
+		//return this.fsms.get(lpn);
+		return this.fsms.get(Projector.projectFullProtocolName(fullname, role));
 	}
 	
 	public Module getMainModule()
