@@ -79,9 +79,6 @@ public class GProtocolDefDel extends ProtocolDefDel
 		GProtocolDef inlined = AstFactoryImpl.FACTORY.GProtocolDef(AstFactoryImpl.FACTORY.GProtocolBlock(gis));
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		GProtocolDefDel copy = setInlinedProtocolDef(inlined);
-		
-		System.out.println("1: " + inlined);
-		
 		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, builder, (GProtocolDef) gpd.del(copy));
 	}
 }

@@ -12,20 +12,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
+import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.sesstype.name.GProtocolName;
-import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.util.ScribUtil;
 import org.scribble.visit.Job;
 import org.scribble.visit.JobContext;
-import org.scribble.visit.Projector;
 
 public class CommandLine implements Runnable
 {
@@ -80,82 +81,70 @@ public class CommandLine implements Runnable
 	private void outputProjection(Job job)
 	{
 		JobContext jcontext = job.getContext();
-		//Map<LProtocolName, Module> projs = jcontext.getProjections();
-		GProtocolName gpn = new GProtocolName(this.args.get(Arg.PROJECT)[0]);
-		Role role = new Role(this.args.get(Arg.PROJECT)[1]);
-		/*LProtocolName proto = getProjectedName(jcontext, gpn, role);
-		if (!projs.containsKey(proto))
-		{
-			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));
-		}
-		System.out.println(projs.get(proto));*/
-		Module proj = jcontext.getProjection(gpn, role);
-		if (proj == null)
-		{
-			throw new RuntimeException("Bad projection args: " + Arrays.toString(this.args.get(Arg.PROJECT)));
-		}
+		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.PROJECT)[0]);
+		Role role = checkRoleArg(jcontext, fullname, this.args.get(Arg.PROJECT)[1]);
+		Module proj = jcontext.getProjection(fullname, role);
 		System.out.println(proj);
 	}
 
 	private void outputFsm(Job job) throws ScribbleException
 	{
-		JobContext jc = job.getContext();
-		GProtocolName simpname = new GProtocolName(this.args.get(Arg.FSM)[0]);
-		Role role = new Role(this.args.get(Arg.FSM)[1]);
-		//LProtocolName lpn = getProjectedName(jc, simpname, role);
-		//buildFsm(job, lpn);
-		GProtocolName fullname = new GProtocolName(jc.main, simpname);
+		JobContext jcontext = job.getContext();
+		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.FSM)[0]);
+		Role role = checkRoleArg(jcontext, fullname, this.args.get(Arg.FSM)[1]);
 		buildFsm(job, fullname, role);
-		//System.out.println(jc.getFsm(lpn));
-		System.out.println(jc.getFsm(fullname, role));
-		/*buildFsm(job, simplename, role);
-		System.out.println(jc.getFsm(simplename, role));*/
+		System.out.println(jcontext.getFsm(fullname, role));
 	}
 	
 	private void outputSessionApi(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName gpn = new GProtocolName(this.args.get(Arg.SESS_API)[0]);
-		GProtocolName fullname = new GProtocolName(jcontext.main, gpn);
-		Map<String, String> map = job.generateSessionApi(fullname);
-		for (String path : map.keySet())
-		{
-			if (this.args.containsKey(Arg.OUTPUT))
-			{
-				String dir = this.args.get(Arg.OUTPUT)[0];
-				writeToFile(dir + "/" + path, map.get(path));
-			}
-			else
-			{
-				System.out.println(path + ":\n" + map.get(path));
-			}
-		}
+		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.SESS_API)[0]);
+		Map<String, String> classes = job.generateSessionApi(fullname);
+		outputClasses(classes);
 	}
 
 	private void outputEndpointApi(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName gpn = new GProtocolName(this.args.get(Arg.EP_API)[0]);
-		Role role = new Role(this.args.get(Arg.EP_API)[1]);
-		GProtocolName fullname = new GProtocolName(jcontext.main, gpn);
+		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.EP_API)[0]);
+		Role role = checkRoleArg(jcontext, fullname, this.args.get(Arg.EP_API)[1]);
 		Map<String, String> classes = job.generateEndpointApi(fullname, role);
-		for (String path : classes.keySet())
+		outputClasses(classes);
+	}
+
+	// filepath -> class source
+	private void outputClasses(Map<String, String> classes) throws ScribbleException
+	{
+		Function<String, Void> f;
+		if (this.args.containsKey(Arg.OUTPUT))
 		{
-			if (this.args.containsKey(Arg.OUTPUT))
-			{
-				String dir = this.args.get(Arg.OUTPUT)[0];
-				writeToFile(dir + "/" + path, classes.get(path));
-			}
-			else
-			{
-				System.out.println(path + ":\n" + classes.get(path));
-			}
+			String dir = this.args.get(Arg.OUTPUT)[0];
+			f = (path) -> { ScribUtil.handleLambdaScribbleException(() ->
+					{
+							writeToFile(dir + "/" + path, classes.get(path)); return null; 
+					}); return null; };
 		}
+		else
+		{
+			f = (path) -> { System.out.println(path + ":\n" + classes.get(path)); return null; };
+		}
+		classes.keySet().stream().map(f);
+	}
+
+	private void buildFsm(Job job, GProtocolName fullname, Role role) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
+		if (gpd == null || !gpd.header.roledecls.getRoles().contains(role))
+		{
+			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(Arg.FSM)));
+		}
+		job.buildFsms(fullname, role);
 	}
 	
 	private Job newJob(MainContext mc)
 	{
-		//Job job = new Job(impaths, mainpath, cjob.getModules(), cjob.getModules().get(cjob.main));
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
 		return new Job(mc.debug, mc.getParsedModules(), mc.main);
 	}
@@ -168,21 +157,6 @@ public class CommandLine implements Runnable
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		return new MainContext(debug, locator, mainpath);
 	}
-
-	//private void buildFsm(Job job, LProtocolName lpn) throws ScribbleException
-	//private void buildFsm(Job job, LProtocolName lpn) throws ScribbleException
-	private void buildFsm(Job job, GProtocolName fullname, Role role) throws ScribbleException
-	{
-		JobContext jcontext = job.getContext();
-		// Move into Job?  But this is a check on the CL args
-		//job.buildFsms(jcontext.getModule(modname));  // Need Module for context (not just the LProtoDecl) -- builds FSMs for all locals in the module
-		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
-		if (gpd == null || !gpd.header.roledecls.getRoles().contains(role))
-		{
-			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(Arg.FSM)));
-		}
-		job.buildFsms(fullname, role);
-	}
 	
 	private static Path parseMainPath(String path)
 	{
@@ -192,11 +166,6 @@ public class CommandLine implements Runnable
 	private static List<Path> parseImportPaths(String paths)
 	{
 		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
-	}
-	
-	private static LProtocolName getProjectedName(JobContext jc, GProtocolName simpname, Role role)
-	{
-		return Projector.makeProjectedFullNameNode(new GProtocolName(jc.main, simpname), role).toName();  // FIXME: factor out name projection from name node construction
 	}
 	
 	private static void writeToFile(String file, String text) throws ScribbleException
@@ -209,5 +178,27 @@ public class CommandLine implements Runnable
 		{
 			throw new ScribbleException(e);
 		}
+	}
+	
+	private static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname)
+	{
+		GProtocolName simpgpn = new GProtocolName(simpname);
+		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(simpgpn);
+		if (pd == null || !pd.isGlobal())
+		{
+			throw new RuntimeException("Global protocol not found: " + simpname);
+		}
+		return new GProtocolName(jcontext.main, simpgpn);
+	}
+	
+	private static Role checkRoleArg(JobContext jcontext, GProtocolName fullname, String rolename)
+	{
+		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
+		Role role = new Role(rolename);
+		if (!pd.header.roledecls.getRoles().contains(role))
+		{
+			throw new RuntimeException("Role not declared for " + fullname + ": " + role);
+		}
+		return role;
 	}
 }

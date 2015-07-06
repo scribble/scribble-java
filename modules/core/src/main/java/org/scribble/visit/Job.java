@@ -54,23 +54,18 @@ public class Job
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}
 	
-	/*..FIX build/generate... arguments and debugprintlns (they aren't visitors, but should factor)
-	.. commandline full/simpnames
-	.. jobcontext getfsm args*/
-
-	//public void buildFsms(Module mod) throws ScribbleException  // Need to visit from Module for visitor context
 	public void buildFsms(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context
 	{
-		debugPrintln("\n--- FSM construction --- ");
+		debugPrintPass("Running " + FsmBuilder.class + " for " + fullname + "@" + role);
+		// Visit Module for context (not just the protodecl) -- builds FSMs for all locals in the module
 		this.jcontext.getProjection(fullname, role).accept(new FsmBuilder(this)); 
-			// Constructs FSMs from all local protocols in this module (projected modules contain a single local protocol)
-			// Subprotocols "inlined" (scoped subprotocols not supported)
+			// Builds FSMs for all local protocols in this module as root (though each projected module contains a single local protocol)
+			// Subprotocols "inlined" by FsmBuilder (scoped subprotocols not supported)
 	}
 	
 	public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
 	{
-		debugPrintln("\n--- Session API generation --- ");
-		// FIXME: check gpn is valid
+		debugPrintPass("Running " + SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this, fullname);
 		Map<String, String> map = sg.getSessionClass();  // filepath -> class source
 		return map;
@@ -78,28 +73,23 @@ public class Job
 	
 	public Map<String, String> generateEndpointApi(GProtocolName fullname, Role role) throws ScribbleException
 	{
-		//LProtocolName lpn = Projector.makeProjectedFullNameNode(new GProtocolName(this.jcontext.main, fullname), role).toName();
-		//LProtocolName lpn = Projector.makeProjectedFullNameNode(fullname, role).toName();
-		//if (this.jcontext.getFsm(lpn) == null)  // FIXME: null hack
-		if (this.jcontext.getFsm(fullname, role) == null)  // FIXME: null hack
+		if (this.jcontext.getFsm(fullname, role) == null)
 		{
-			/*Module mod = this.jcontext.getModule(lpn.getPrefix());
-			buildFsms(mod);*/
 			buildFsms(fullname, role);
 		}
-		debugPrintln("\n--- Endpoint API generation --- ");
-		return new EndpointApiGenerator(this, fullname, role).getClasses(); // filepath -> class source  // FIXME: store results?
+		debugPrintPass("Running " + EndpointApiGenerator.class + " for " + fullname + "@" + role);
+		return new EndpointApiGenerator(this, fullname, role).getClasses(); // filepath -> class source  // Store results?
 	}
 
 	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
-		debugPrintln("\n--- Running " + c + " on all modules:");
+		debugPrintPass("Running " + c + " on all modules:");
 		runVisitorPass(this.jcontext.getFullModuleNames(), c);
 	}
 
 	private void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
-		debugPrintln("\n--- Running " + c + " on projected modules:");
+		debugPrintPass("Running " + c + " on projected modules:");
 		runVisitorPass(this.jcontext.getProjectedFullModuleNames(), c);
 	}
 
@@ -134,5 +124,10 @@ public class Job
 		{
 			System.out.println(s);
 		}
+	}
+	
+	private void debugPrintPass(String s)
+	{
+		debugPrintln("\n[DEBUG] " + s);
 	}
 }

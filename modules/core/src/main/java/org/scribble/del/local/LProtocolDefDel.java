@@ -58,9 +58,6 @@ public class LProtocolDefDel extends ProtocolDefDel
 		LProtocolDef inlined = AstFactoryImpl.FACTORY.LProtocolDef(AstFactoryImpl.FACTORY.LProtocolBlock(lis));
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		LProtocolDefDel copy = setInlinedProtocolDef(inlined);
-		
-		System.out.println("1: " + inlined);
-		
 		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, builder, (LProtocolDef) lpd.del(copy));
 	}
 }

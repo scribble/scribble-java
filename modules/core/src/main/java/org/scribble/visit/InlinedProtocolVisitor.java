@@ -42,9 +42,6 @@ public abstract class InlinedProtocolVisitor<T extends Env> extends EnvVisitor<T
 			throw new RuntimeException("InlineProtocolVisitor error: " + pd);
 		}
 		ProtocolDef<?> visited = (ProtocolDef<?>) inlined.visitChildren(this);
-
-		System.out.println("2: " + visited);
-
 		ProtocolDefDel del = (ProtocolDefDel) pd.del();
 		return pd.del(del.setInlinedProtocolDef(visited));
 	}
