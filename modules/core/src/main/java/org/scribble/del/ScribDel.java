@@ -10,9 +10,11 @@ import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.ProjectedRoleDeclFixer;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.RoleCollector;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.Env;
 
@@ -100,7 +102,17 @@ public interface ScribDel
 		
 	}
 
-	default ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
+	default ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer)
+	{
+		
+	}
+
+	default ScribNode leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
@@ -121,6 +133,16 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	{
+		return visited;
+	}
+
+	default void enterRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll)
+	{
+		
+	}
+
+	default ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited)
 	{
 		return visited;
 	}

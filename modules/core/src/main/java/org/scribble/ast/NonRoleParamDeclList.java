@@ -30,7 +30,7 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 	}
 
 	@Override
-	protected NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
+	public NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
 	{
 		ScribDel del = del();
 		NonRoleParamDeclList rdl = new NonRoleParamDeclList(getParamDecls());

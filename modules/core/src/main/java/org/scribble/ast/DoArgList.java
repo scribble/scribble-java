@@ -18,7 +18,7 @@ public abstract class DoArgList<T extends DoArg<? extends DoArgNode>> extends Sc
 		this.args = new LinkedList<>(is);
 	}
 	
-	protected abstract DoArgList<T> reconstruct(List<T> instans);
+	public abstract DoArgList<T> reconstruct(List<T> instans);
 	
 	public abstract DoArgList<T> project(Role self);
 	

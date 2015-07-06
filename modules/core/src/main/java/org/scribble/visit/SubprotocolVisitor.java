@@ -180,7 +180,7 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		ModuleContext mcontext = getModuleContext();
 		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());
 		List<Role> roleargs = doo.roles.getRoles();
-		List<Arg<? extends NonRoleArgKind>> argargs = doo.args.getArguments(getScope());
+		List<Arg<? extends NonRoleArgKind>> argargs = doo.args.getArguments();
 		pushSubprotocolSig(fullname, roleargs, argargs);
 		pushNameMaps(fullname, doo, roleargs, argargs);
 	}

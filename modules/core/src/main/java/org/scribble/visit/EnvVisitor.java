@@ -8,6 +8,9 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.Env;
 
+
+// By default, EnvVisitor only manipulates internal Env stack -- so AST/dels not affected
+// Attaching Envs to Dels has to be done manually by each pass
 public abstract class EnvVisitor<T extends Env> extends ModuleVisitor
 {
 	private Stack<T> envs = new Stack<T>();

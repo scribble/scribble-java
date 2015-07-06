@@ -33,6 +33,7 @@ public class Job
 	{
 		runVisitorPassOnAllModules(ContextBuilder.class);
 		runVisitorPassOnAllModules(NameDisambiguator.class);
+		runVisitorPassOnAllModules(RoleCollector.class);
 		//runNodeVisitorPass(ModelBuilder.class);
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
@@ -48,8 +49,10 @@ public class Job
 		// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
 		// SubprotocolVisitor it doesn't visit the target Module/ProtocolDecls -- that's why the old Projector maintained its own dependencies and created the projection modules after leaving a Do separately from SubprotocolVisiting
 		// So Projection should not be an "inlining" SubprotocolVisitor, it would need to be more a "DependencyVisitor"
-		runVisitorPassOnProjectedModules(ContextBuilder.class);  // To be done as a barrier pass after projection done on all Modules
-		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);
+		runVisitorPassOnProjectedModules(ContextBuilder.class);  // To be done as a barrier pass after projection done on all Modules -- N.B. Module context building, no other validation (so "fixing" can be done in following passes) 
+		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes to fix DUMMY role occurrences
+		runVisitorPassOnProjectedModules(RoleCollector.class);
+		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version
 		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}

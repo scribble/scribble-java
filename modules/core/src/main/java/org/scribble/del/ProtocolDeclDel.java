@@ -13,6 +13,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.RoleCollector;
 
 public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBase
 {
@@ -51,6 +52,16 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 	{
 		SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
 		builder.setRecVar(subsig);
+	}
+
+
+	@Override
+	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited)
+	{
+		ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
+		// Needs ContextBuilder to have built the context already
+		ProtocolDeclDel<K> del = setProtocolDeclContext(getProtocolDeclContext().setRoleOccurrences(coll.getNames()));
+		return pd.del(del);
 	}
 
 	@Override

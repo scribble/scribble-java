@@ -76,7 +76,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return gpd;
 	}
 	
-	private LProtocolDecl project(Projector proj, GProtocolDecl gpd)
+	private LProtocolDecl project(Projector proj, GProtocolDecl gpd) throws ScribbleException
 	{
 		Role self = proj.peekSelf();
 		LProtocolDef def = (LProtocolDef) ((ProjectionEnv) gpd.def.del().env()).getProjection();

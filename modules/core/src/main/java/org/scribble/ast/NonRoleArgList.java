@@ -7,7 +7,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.name.Role;
-import org.scribble.sesstype.name.Scope;
 import org.scribble.util.ScribUtil;
 
 
@@ -32,7 +31,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	}
 
 	@Override
-	protected DoArgList<NonRoleArg> reconstruct(List<NonRoleArg> instans)
+	public DoArgList<NonRoleArg> reconstruct(List<NonRoleArg> instans)
 	{
 		ScribDel del = del();
 		NonRoleArgList ail = new NonRoleArgList(instans);
@@ -58,7 +57,7 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 		return this.args.stream().map((ai) -> ai.val).collect(Collectors.toList());
 	}
 
-	public List<Arg<? extends NonRoleArgKind>> getArguments(Scope scope)
+	public List<Arg<? extends NonRoleArgKind>> getArguments()
 	{
 		return this.args.stream().map((ai) -> ai.val.toArg()).collect(Collectors.toList());
 	}

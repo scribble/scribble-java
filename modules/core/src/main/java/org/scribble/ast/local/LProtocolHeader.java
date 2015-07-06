@@ -26,20 +26,20 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LProtocolHeader((LProtocolNameNode) this.name, this.roledecls, this.paramdecls);
+		return new LProtocolHeader(getNameNode(), this.roledecls, this.paramdecls);
 	}
 	
 	@Override
 	public LProtocolHeader clone()
 	{
-		LProtocolNameNode name = (LProtocolNameNode) this.name.clone();
+		LProtocolNameNode name = getNameNode().clone();
 		RoleDeclList roledecls = this.roledecls.clone();
 		NonRoleParamDeclList paramdecls = this.paramdecls.clone();
 		return AstFactoryImpl.FACTORY.LProtocolHeader(name, roledecls, paramdecls);
 	}
 
 	@Override
-	protected LProtocolHeader reconstruct(ProtocolNameNode<Local> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
+	public LProtocolHeader reconstruct(ProtocolNameNode<Local> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
 	{
 		ScribDel del = del();
 		LProtocolHeader gph = new LProtocolHeader((LProtocolNameNode) name, rdl, pdl);
@@ -59,6 +59,12 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 		}
 		throw new RuntimeException("Shouldn't get here: " + this.roledecls);
 	}
+
+	@Override
+	public LProtocolNameNode getNameNode()
+	{
+		return (LProtocolNameNode) this.name;
+	}
 	
 	@Override
 	public LProtocolName getDeclName()
@@ -76,6 +82,6 @@ public class LProtocolHeader extends ProtocolHeader<Local> implements LNode
 	@Override
 	public String toString()
 	{
-		return Constants.GLOBAL_KW + " " + super.toString();
+		return Constants.LOCAL_KW + " " + super.toString();
 	}
 }

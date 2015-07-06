@@ -6,6 +6,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.MessageIdCollector;
+import org.scribble.visit.RoleCollector;
 import org.scribble.visit.env.UnfoldingEnv;
 
 public abstract class MessageTransferDel extends SimpleInteractionNodeDel
@@ -24,16 +25,25 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
+	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited)
+	{
+		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
+		coll.addName(mt.src.toName());
+		mt.dests.stream().forEach((rd) -> coll.addName(rd.toName()));
+		return visited;
+	}
+
+	@Override
 	public ScribNode leaveMessageIdCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
 	{
-		MessageTransfer<?> gmt = (MessageTransfer<?>) visited;
-		if (gmt.msg.isMessageSigNode() || gmt.msg.isMessageSigNameNode())
+		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
+		if (mt.msg.isMessageSigNode() || mt.msg.isMessageSigNameNode())
 		{
-			coll.addName((MessageId<?>) gmt.msg.toMessage().getId());
+			coll.addName((MessageId<?>) mt.msg.toMessage().getId());
 		}
 		else
 		{
-			throw new RuntimeException("Shouldn't get in here: " + gmt.msg);
+			throw new RuntimeException("Shouldn't get in here: " + mt.msg);
 		}
 		return visited;
 	}

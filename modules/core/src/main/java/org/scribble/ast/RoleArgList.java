@@ -28,7 +28,7 @@ public class RoleArgList extends DoArgList<RoleArg>
 	}
 
 	@Override
-	protected RoleArgList reconstruct(List<RoleArg> roles)
+	public RoleArgList reconstruct(List<RoleArg> roles)
 	{
 		ScribDel del = del();
 		RoleArgList rl = new RoleArgList(roles);

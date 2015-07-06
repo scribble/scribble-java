@@ -29,7 +29,7 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	}
 
 	@Override
-	protected HeaderParamDeclList<RoleKind> reconstruct(List<? extends HeaderParamDecl<RoleKind>> decls)
+	public HeaderParamDeclList<RoleKind> reconstruct(List<? extends HeaderParamDecl<RoleKind>> decls)
 	{
 		ScribDel del = del();
 		RoleDeclList rdl = new RoleDeclList(getRoleDecls());

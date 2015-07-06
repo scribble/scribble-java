@@ -7,20 +7,27 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.Name;
 
+
 public abstract class NameCollector<N extends Name<? extends Kind>> extends NoEnvOffsetSubprotocolVisitor
 {
 	private Set<N> names = new HashSet<>();
 	
-	// Takes ModuleContext, so no need to visit from Module as root
+	public NameCollector(Job job)
+	{
+		super(job);
+	}
+
+	// Can takes ModuleContext here, so no need to visit from Module as root -- maybe factor this facility out
+	// though has to enter at least at protocoldecl for subprotocol visitor root sig pushing
 	public NameCollector(Job job, ModuleContext mcontext)
 	{
 		super(job);
 		setModuleContext(mcontext);
 	}
 	
-	public void addName(N mid)
+	public void addName(N name)
 	{
-		this.names.add(mid);
+		this.names.add(name);
 	}
 	
 	public Set<N> getNames()

@@ -19,7 +19,7 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 		this.decls = new LinkedList<>(decls);
 	}
 	
-	protected abstract HeaderParamDeclList<K> reconstruct(List<? extends HeaderParamDecl<K>> decls);
+	public abstract HeaderParamDeclList<K> reconstruct(List<? extends HeaderParamDecl<K>> decls);
 	
 	@Override
 	public HeaderParamDeclList<? extends K> visitChildren(AstVisitor nv) throws ScribbleException

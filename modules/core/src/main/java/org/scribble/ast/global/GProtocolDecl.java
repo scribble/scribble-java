@@ -32,7 +32,7 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	}
 
 	@Override
-	protected GProtocolDecl reconstruct(ProtocolHeader<Global> header, ProtocolDef<Global> def)
+	public GProtocolDecl reconstruct(ProtocolHeader<Global> header, ProtocolDef<Global> def)
 	{
 		
 		ScribDel del = del();

@@ -37,10 +37,10 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	}
 	
 	@Override
-	protected LDo reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<Local> proto)
+	public LDo reconstruct(RoleArgList roles, NonRoleArgList args, ProtocolNameNode<Local> proto)
 	{
 		ScribDel del = del();
-		LDo ld = new LDo(roleinstans, arginstans, (LProtocolNameNode) proto);
+		LDo ld = new LDo(roles, args, (LProtocolNameNode) proto);
 		ld = (LDo) ld.del(del);
 		return ld;
 	}

@@ -21,7 +21,7 @@ public abstract class ProtocolHeader<K extends ProtocolKind> extends NameDeclNod
 		this.paramdecls = paramdecls;
 	}
 	
-	protected abstract ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, NonRoleParamDeclList pdl);
+	public abstract ProtocolHeader<K> reconstruct(ProtocolNameNode<K> name, RoleDeclList rdl, NonRoleParamDeclList pdl);
 	
 	@Override
 	public ProtocolHeader<K> visitChildren(AstVisitor nv) throws ScribbleException
@@ -35,6 +35,8 @@ public abstract class ProtocolHeader<K extends ProtocolKind> extends NameDeclNod
 	{
 		return this.paramdecls.isEmpty();
 	}
+	
+	public abstract ProtocolNameNode<K> getNameNode();
 	
 	@Override
 	public ProtocolName<K> getDeclName()

@@ -34,7 +34,7 @@ public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 	}
 	
 	@Override
-	protected LProtocolDecl reconstruct(ProtocolHeader<Local> header, ProtocolDef<Local> def)
+	public LProtocolDecl reconstruct(ProtocolHeader<Local> header, ProtocolDef<Local> def)
 	{
 		ScribDel del = del();
 		LProtocolDecl lpd = new LProtocolDecl((LProtocolHeader) header, (LProtocolDef) def);

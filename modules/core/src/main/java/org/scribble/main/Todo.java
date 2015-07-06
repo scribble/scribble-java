@@ -2,7 +2,6 @@ package org.scribble.main;
 
 
 /*
-.. role filtering for do-projection in 2nd projection pass
 .. tidy up inlinedwfchoice check in gchoicedel
 
 .. public reconstructs
@@ -14,7 +13,8 @@ package org.scribble.main;
 
 	// default G/LNode getKind methods won't work properly until Eclipse updated with fix, cf. G/LInteractionSeq
 
-	// FIXME: subprotocol decl header projection to check used roles (integrate with existing 2nd projection pass)
+	// FIXME: protocoldecl header to check used roles (so projection roledecl filtering doesn't give empty roledecllist)
+	// FIXME: parameter filtering along with roles?
 
 	// need public deep clone methods to support syntax manipulations e.g. unfolding (if using pointer equality for ast nodes in the same syntactic position, not just same text value)
 	// FIXME: currently using public-ified reconstruct of interactionseq and recursion to do cloning for unfolding -- not a deep clone though, e.g. interaction seq reuses original block -- need to make sure dels/envs being treated properly
@@ -80,6 +80,7 @@ package org.scribble.main;
 //... check delegates for local nodes; check reachability visiting for (local) interaction sequence (and delegate)
 
 // Done
+//.. role filtering for protocoldecl/do-projection in 2nd projection pass
 //.. refactor global/local simple/compound dels
 //.. refactor jobs (inlining/unfolding)
 //.. offset/subprotocol visitor factoring

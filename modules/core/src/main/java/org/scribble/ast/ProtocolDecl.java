@@ -17,7 +17,7 @@ public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase
 		this.def = def;
 	}
 
-	protected abstract ProtocolDecl<K> reconstruct(ProtocolHeader<K> header, ProtocolDef<K> def);//, ProtocolDeclContext pdcontext, Env env);
+	public abstract ProtocolDecl<K> reconstruct(ProtocolHeader<K> header, ProtocolDef<K> def);//, ProtocolDeclContext pdcontext, Env env);
 
 	@Override
 	public ProtocolDecl<K> visitChildren(AstVisitor nv) throws ScribbleException

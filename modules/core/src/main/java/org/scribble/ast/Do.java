@@ -26,7 +26,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 		this.proto = proto;
 	}
 
-	protected abstract Do<K> reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<K> proto);//, SimpleInteractionNodeContext sicontext, Env env);
+	public abstract Do<K> reconstruct(RoleArgList roleinstans, NonRoleArgList arginstans, ProtocolNameNode<K> proto);
 	
 	public abstract ProtocolNameNode<K> getProtocolNameNode();
 

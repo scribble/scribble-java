@@ -22,25 +22,31 @@ public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new GProtocolHeader((GProtocolNameNode) this.name, this.roledecls, this.paramdecls);
+		return new GProtocolHeader(getNameNode(), this.roledecls, this.paramdecls);
 	}
 	
 	@Override
 	public GProtocolHeader clone()
 	{
-		GProtocolNameNode name = (GProtocolNameNode) this.name.clone();
+		GProtocolNameNode name = getNameNode().clone();
 		RoleDeclList roledecls = this.roledecls.clone();
 		NonRoleParamDeclList paramdecls = this.paramdecls.clone();
 		return AstFactoryImpl.FACTORY.GProtocolHeader(name, roledecls, paramdecls);
 	}
 
 	@Override
-	protected GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
+	public GProtocolHeader reconstruct(ProtocolNameNode<Global> name, RoleDeclList rdl, NonRoleParamDeclList pdl)
 	{
 		ScribDel del = del();
 		GProtocolHeader gph = new GProtocolHeader((GProtocolNameNode) name, rdl, pdl);
 		gph = (GProtocolHeader) gph.del(del);
 		return gph;
+	}
+
+	@Override
+	public GProtocolNameNode getNameNode()
+	{
+		return (GProtocolNameNode) this.name;
 	}
 	
 	@Override

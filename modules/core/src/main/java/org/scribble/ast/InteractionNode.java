@@ -6,13 +6,5 @@ import org.scribble.sesstype.kind.ProtocolKind;
 // Make a compound interaction subclass for choice/parallel etc?
 public interface InteractionNode<K extends ProtocolKind> extends ProtocolKindNode<K>
 {
-	/*default boolean isGlobal()
-	{
-		return false;
-	}
-
-	default boolean isLocal()
-	{
-		return false;
-	}*/
+	//Set<MessageId<?>> collectMessageIds();  // Not worth implementing this homomorphically for every case except MessageTransfer, better to use visitChildren pattern
 }

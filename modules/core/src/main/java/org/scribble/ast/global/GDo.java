@@ -36,7 +36,7 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	}
 
 	@Override
-	protected GDo reconstruct(RoleArgList roles, NonRoleArgList args, ProtocolNameNode<Global> proto)
+	public GDo reconstruct(RoleArgList roles, NonRoleArgList args, ProtocolNameNode<Global> proto)
 	{
 		ScribDel del = del();
 		GDo gd = new GDo(roles, args, (GProtocolNameNode) proto);
