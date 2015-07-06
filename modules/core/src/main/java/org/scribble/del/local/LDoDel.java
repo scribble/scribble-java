@@ -80,6 +80,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		
 		// FIXME: factor out map making with SubprotocolVisitor
 		// do role args are currently as inherited from the global type -- so need to derive role map against the global protocol header
+		// Doing it off the global roldecls allows this to be done in one pass, but would probably be easier to split into two (e.g. 1st cache the proposed changes, 2nd write all changes -- the problem with a single pass is e.g. looking up the localdecl info while localdecls are being rewritten during the pass)
 		Iterator<Role> roleargs = ld.roles.args.stream().map((ra) -> ra.val.toName()).collect(Collectors.toList()).iterator();
 		
 		// FIXME: "inverse projection" back to global protocol name -- maybe factor out modulename parsing part to SessionTypeFactory
