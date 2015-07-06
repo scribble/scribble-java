@@ -1,15 +1,15 @@
 package org.scribble.main;
 
 
-/*.. refactor global/local simple/compound dels
-.. refactor jobs (inlining/unfolding)
+/*
+.. role filtering for do-projection in 2nd projection pass
+.. tidy up inlinedwfchoice check in gchoicedel
+
 .. public reconstructs
 .. relax strictclasscheck visits
-.. tidy up inlinedwfchoice check in gchoicedel
 .. refactor inlined/unfolding visitor and del names
-.. role filtering for do-projection in 2nd projection pass
 .. generalise dependencies for duplicate-role projection
-.. offset/subprotocol visitor factoring*/
+//*/
 
 
 	// default G/LNode getKind methods won't work properly until Eclipse updated with fix, cf. G/LInteractionSeq
@@ -80,6 +80,9 @@ package org.scribble.main;
 //... check delegates for local nodes; check reachability visiting for (local) interaction sequence (and delegate)
 
 // Done
+//.. refactor global/local simple/compound dels
+//.. refactor jobs (inlining/unfolding)
+//.. offset/subprotocol visitor factoring
 // - separate protocol names into global/local -- use generic parameter for name kinds rather than subclasses
 // - wf-choice: a role should be enabled by the same role in all blocks
 // - get rid of argument instantiation -- renamed, but otherwise structurally the same (unlike name/param decls, arg nodes are not kinded)
