@@ -5,7 +5,7 @@ package org.scribble.main;
 .. tidy up inlinedwfchoice check in gchoicedel
 
 .. fix ldodel projection role fix gproto name hack
-.. public reconstructs
+.. public reconstructs; copy del assignment
 .. relax strictclasscheck visits
 .. refactor inlined/unfolding visitor and del names
 .. generalise dependencies for duplicate-role projection

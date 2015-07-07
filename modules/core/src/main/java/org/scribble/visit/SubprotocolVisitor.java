@@ -296,9 +296,9 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 			{
 				argnode = nonroleargnodes.next();  // The argnode correspoding to the current arg
 			}
-
 			newmap.put((Arg<?>) param, argnode);
 		}
+
 		return newmap;
 	}
 	
