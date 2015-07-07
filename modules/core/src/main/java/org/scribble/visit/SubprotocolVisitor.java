@@ -278,10 +278,11 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 	protected static Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode>
 			makeNonRoleSubsMap(Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> root, NonRoleArgList nral, NonRoleParamDeclList nrpdl)
 	{
+		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> newmap = new HashMap<>();
+
 		// Using arg and argnode views of the arglist
 		Iterator<Arg<? extends NonRoleArgKind>> nonroleargs = nral.getArguments().iterator();
 		Iterator<NonRoleArgNode> nonroleargnodes = nral.getArgumentNodes().iterator();
-		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> newnonroleargmap = new HashMap<>();
 		for (Name<NonRoleParamKind> param : nrpdl.getParameters())
 		{
 			Arg<?> arg = nonroleargs.next();
@@ -295,9 +296,10 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 			{
 				argnode = nonroleargnodes.next();  // The argnode correspoding to the current arg
 			}
-			newnonroleargmap.put((Arg<?>) param, argnode);
+
+			newmap.put((Arg<?>) param, argnode);
 		}
-		return newnonroleargmap;
+		return newmap;
 	}
 	
 	private static Arg<? extends NonRoleArgKind> paramDeclToArg(NonRoleParamDecl<NonRoleParamKind> pd)

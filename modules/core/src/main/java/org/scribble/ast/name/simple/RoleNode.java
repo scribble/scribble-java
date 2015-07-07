@@ -38,7 +38,7 @@ public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //Ro
 	@Override
 	public RoleNode substituteNames(Substitutor subs)
 	{
-		// Reconstruct: subprotocolvisitor uses a clone, here rename the clone but keep the fresh dels/envs
+		// Reconstruct: subprotocolvisitor uses a fullycloned body (and getRoleSubstitution also returns a clone) -- here rename the clone but keep the fresh dels/envs
 		return reconstruct(subs.getRoleSubstitution(toName()).toName().toString());
 	}
 	

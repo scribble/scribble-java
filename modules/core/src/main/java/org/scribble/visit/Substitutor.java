@@ -12,6 +12,8 @@ import org.scribble.sesstype.name.Role;
 
 public class Substitutor extends AstVisitor
 {
+	// name in the current protocoldecl scope -> the original name node in the root protocol decl
+	// Applications of the maps (i.e. substitution) should reconstruct/clone the original nodes
 	private final Map<Role, RoleNode> rolemap;
 	private final Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap;
 
@@ -30,7 +32,7 @@ public class Substitutor extends AstVisitor
 
 	public RoleNode getRoleSubstitution(Role role)
 	{
-		return this.rolemap.get(role);
+		return this.rolemap.get(role).clone();
 	}
 
 	public NonRoleArgNode getArgumentSubstitution(Arg<? extends NonRoleArgKind> arg)
