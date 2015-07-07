@@ -1,6 +1,7 @@
 package org.scribble.del.global;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,7 @@ import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
@@ -61,94 +63,65 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 			throw new ScribbleException("Subject not enabled: " + subj);
 		}
 		
-		Map<Role, Set<MessageId<?>>> seen = null;
-		Map<Role, Role> enablers = null;
-		List<InlinedWFChoiceEnv> benvs =
+		// Enabled senders checked in GMessageTransferDel
+		List<InlinedWFChoiceEnv> all =
 				cho.blocks.stream().map((b) -> (InlinedWFChoiceEnv) b.del().env()).collect(Collectors.toList());
-		for (InlinedWFChoiceEnv benv : benvs)
+		if (all.size() > 1)
 		{
-			MessageIdMap enabled = benv.getEnabled();
-			Set<Role> dests = enabled.getLeftKeys();
-			dests.remove(subj);
-			if (seen == null)
+			try
 			{
-				seen = new HashMap<>();
-				enablers = new HashMap<>();
+				InlinedWFChoiceEnv benv0 = all.get(0);
+				List<InlinedWFChoiceEnv> benvs = all.subList(1, all.size());
+				
+				// Same roles enabled in every block
+				Set<Role> dests = benv0.getEnabled().getDestinations();
+				benvs.stream().map((e) -> e.getEnabled().getDestinations()).forEach((rs) ->
+						{
+							if (!dests.equals(rs))
+							{
+								throw new RuntimeScribbleException("Mismatched enabled roles: " + dests + ", " + rs);
+							}
+						});
+				
+				// Same enabler(s) for each enabled role
+				dests.remove(subj);
 				for (Role dest : dests)
 				{
-					seen.put(dest, enabled.getMessages(dest));
-					Set<Role> srcs = enabled.getRightKeys(dest);
-					if (srcs.size() > 1)
-					{
-						throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + srcs);
-					}
-					enablers.put(dest, srcs.iterator().next());
+					Set<Role> srcs = benv0.getEnabled().getSources(dest);  // Always singleton?
+					benvs.stream().map((e) -> e.getEnabled().getSources(dest)).forEach((rs) ->
+							{
+								if (!srcs.equals(rs))
+								{
+									throw new RuntimeScribbleException("Mismatched enabler roles for " + dest + ": " + srcs + ", " + rs);
+								}
+							});
+				
+					// Distinct enabling messages
+					Set<MessageId<?>> mids = benv0.getEnabled().getMessages(dest);
+					benvs.stream().map((e) -> e.getEnabled().getMessages(dest)).forEach((ms) ->
+							{
+								Set<MessageId<?>> tmp = new HashSet<MessageId<?>>(ms);
+								tmp.retainAll(mids);
+								if (!tmp.isEmpty())
+								{
+									throw new RuntimeScribbleException("Non disjoint enabling messages for " + dest + ": " + mids + ", " + ms);
+								}
+								mids.addAll(ms);
+							});
 				}
 			}
-			else
+			catch (RuntimeScribbleException rse)
 			{
-				if (dests.isEmpty())
-				{
-					if (!seen.keySet().isEmpty())
-					{
-						throw new ScribbleException("Mismatched role enabling: " + seen.keySet());
-					}
-				}
-				else 
-				{
-					for (Role dest : dests)
-					{
-						if (!seen.containsKey(dest))
-						{
-							throw new ScribbleException("Mismatched role enabling: " + dest);
-						}
-						Set<MessageId<?>> current = seen.get(dest);
-						Set<MessageId<?>> next = enabled.getMessages(dest);
-						for (MessageId<?> msg : next)
-						{
-							if (current.contains(msg))
-							{
-								throw new ScribbleException("Duplicate initial choice message for " + dest + ": " + msg);
-							}
-						}
-						current.addAll(next);
-						checkEnablers(enabled, dest, enablers);
-					}
-					
-					for (Role dest : seen.keySet())
-					{
-						if (!dests.contains(dest))
-						{
-							throw new ScribbleException("Mismatched role enabling: " + dest);
-						}
-						checkEnablers(enabled, dest, enablers);
-					}
-				}
+				throw new ScribbleException(rse);
 			}
 		}
 		
 		// On leaving global choice, we're doing both the merging of block envs into the choice env, and the merging of the choice env to the parent-of-choice env
 		// In principle, for the envLeave we should only be doing the latter (as countpart to enterEnv), but it is much more convenient for the compound-node (choice) to collect all the child block envs and merge here, rather than each individual block env trying to (partially) merge into the parent-choice as they are visited
-		InlinedWFChoiceEnv merged = checker.popEnv().mergeContexts(benvs); 
+		InlinedWFChoiceEnv merged = checker.popEnv().mergeContexts(all); 
 		checker.pushEnv(merged);  // Merges the child block envs into the current choice env; super call below merges this choice env into the parent env of the choice
 		return (GChoice) super.leaveInlinedWFChoiceCheck(parent, child, checker, visited);
 	}
-
-	// FIXME: factor better
-	private void checkEnablers(MessageIdMap enabled, Role dest, Map<Role, Role> enablers) throws ScribbleException
-	{
-		Set<Role> srcs = enabled.getRightKeys(dest);
-		if (srcs.size() > 1)
-		{
-			throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + srcs);
-		}
-		if (!enablers.get(dest).equals(srcs.iterator().next()))
-		{
-			throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + enablers.get(dest) + ", " + srcs);
-		}
-		enablers.put(dest, srcs.iterator().next());
-	}
-
 	
 	@Override
 	public GChoice leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
@@ -192,7 +165,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		for (WFChoiceEnv benv : benvs)
 		{
 			MessageIdMap enabled = benv.getEnabled();
-			Set<Role> dests = enabled.getLeftKeys();
+			Set<Role> dests = enabled.getDestinations();
 			dests.remove(subj);
 			if (seen == null)
 			{
@@ -201,7 +174,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 				for (Role dest : dests)
 				{
 					seen.put(dest, enabled.getMessages(dest));
-					Set<Role> srcs = enabled.getRightKeys(dest);
+					Set<Role> srcs = enabled.getSources(dest);
 					if (srcs.size() > 1)
 					{
 						throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + srcs);
@@ -256,5 +229,20 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		WFChoiceEnv merged = checker.popEnv().mergeContexts(benvs); 
 		checker.pushEnv(merged);  // Merges the child block envs into the current choice env; super call below merges this choice env into the parent env of the choice
 		return (GChoice) super.leaveWFChoiceCheck(parent, child, checker, visited);
+	}
+
+	// FIXME: factor better
+	private void checkEnablers(MessageIdMap enabled, Role dest, Map<Role, Role> enablers) throws ScribbleException
+	{
+		Set<Role> srcs = enabled.getSources(dest);
+		if (srcs.size() > 1)
+		{
+			throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + srcs);
+		}
+		if (!enablers.get(dest).equals(srcs.iterator().next()))
+		{
+			throw new ScribbleException("Inconsistent enabler role for " + dest + ": " + enablers.get(dest) + ", " + srcs);
+		}
+		enablers.put(dest, srcs.iterator().next());
 	}
 }

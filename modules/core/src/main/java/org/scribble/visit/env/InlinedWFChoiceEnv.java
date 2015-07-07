@@ -12,7 +12,6 @@ import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
-import org.scribble.visit.InlinedProtocolVisitor;
 
 
 public class InlinedWFChoiceEnv extends Env
@@ -83,9 +82,9 @@ public class InlinedWFChoiceEnv extends Env
 
 	private static void merge(InlinedWFChoiceEnv parent, MessageIdMap foo, MessageIdMap child)
 	{
-		for (Role dest : child.getLeftKeys())
+		for (Role dest : child.getDestinations())
 		{
-			for (Role src : child.getRightKeys(dest))
+			for (Role src : child.getSources(dest))
 			{
 				if (!parent.isEnabled(dest))
 				{
@@ -106,16 +105,8 @@ public class InlinedWFChoiceEnv extends Env
 	}
 
 	// The "main" public routine
-	// FIXME: subprotocol aspect not needed now
-	public InlinedWFChoiceEnv addMessageForSubprotocol(InlinedProtocolVisitor<InlinedWFChoiceEnv> spv, Role src, Role dest, Message msg)
-	{
-		InlinedWFChoiceEnv copy = copy();
-		addMessages(copy.initial, src, dest, Arrays.asList(msg.getId()));
-		return copy;
-	}
-
 	// Rename: more like enable-if-not-already
-	private InlinedWFChoiceEnv addMessage(Role src, Role dest, Message msg)
+	public InlinedWFChoiceEnv addMessage(Role src, Role dest, Message msg)
 	{
 		InlinedWFChoiceEnv copy = copy();
 		addMessages(copy.initial, src, dest, Arrays.asList(msg.getId()));
@@ -126,7 +117,7 @@ public class InlinedWFChoiceEnv extends Env
 	// Means: record message as initial enabling message if dest not already enabled
 	private static void addMessages(MessageIdMap map, Role src, Role dest, List<MessageId<?>> msgs)
 	{
-		if (!map.containsLeftKey(dest))  // FIXME: factor out isEnabled
+		if (!map.containsDestination(dest))  // FIXME: factor out isEnabled
 		{
 			map.putMessages(dest, src, new HashSet<>(msgs));
 		}
@@ -144,7 +135,7 @@ public class InlinedWFChoiceEnv extends Env
 	
 	public boolean isEnabled(Role role)
 	{
-		return this.initial.containsLeftKey(role);
+		return this.initial.containsDestination(role);
 	}
 
 	public MessageIdMap getEnabled()

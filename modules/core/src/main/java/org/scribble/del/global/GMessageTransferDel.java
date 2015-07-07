@@ -58,20 +58,19 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		GMessageTransfer msgtrans = (GMessageTransfer) visited;
 		
 		Role src = msgtrans.src.toName();
-		Message msg = msgtrans.msg.toMessage();
-		InlinedWFChoiceEnv env = checker.popEnv();
-		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
-		{
-			env = env.addMessageForSubprotocol(checker, src, dest, msg);
-			
-			//System.out.println("a: " + src + ", " + dest + ", " + msg);
-		}
-		checker.pushEnv(env);
-		
 		if (!checker.peekEnv().isEnabled(src))
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
+		Message msg = msgtrans.msg.toMessage();
+		InlinedWFChoiceEnv env = checker.popEnv();
+		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
+		{
+			env = env.addMessage(src, dest, msg);
+			
+			//System.out.println("a: " + src + ", " + dest + ", " + msg);
+		}
+		checker.pushEnv(env);
 		return msgtrans;
 	}
 

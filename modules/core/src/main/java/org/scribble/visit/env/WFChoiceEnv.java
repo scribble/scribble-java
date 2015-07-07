@@ -143,9 +143,9 @@ public class WFChoiceEnv extends Env
 	//private static void merge(WellFormedChoiceEnv parent, MessageMap<Message> foo, MessageMap<Message> child)
 	private static void merge(WFChoiceEnv parent, MessageIdMap foo, MessageIdMap child)
 	{
-		for (Role dest : child.getLeftKeys())
+		for (Role dest : child.getDestinations())
 		{
-			for (Role src : child.getRightKeys(dest))
+			for (Role src : child.getSources(dest))
 			{
 				/*for (ScopedMessage msg : child.getMessages(dest, src))
 				{
@@ -201,7 +201,7 @@ public class WFChoiceEnv extends Env
 	//private static void addMessages(MessageMap<Message> map, Role src, Role dest, List<Message> msgs)
 	private static void addMessages(MessageIdMap map, Role src, Role dest, List<MessageId<?>> msgs)
 	{
-		if (!map.containsLeftKey(dest))  // FIXME: factor out isEnabled
+		if (!map.containsDestination(dest))  // FIXME: factor out isEnabled
 		{
 			map.putMessages(dest, src, new HashSet<>(msgs));
 		}
@@ -211,7 +211,7 @@ public class WFChoiceEnv extends Env
 	public WFChoiceEnv addInterrupt(Role src, Role dest, Message msg)
 	{
 		WFChoiceEnv copy = copy();
-		if (!copy.initial.containsLeftKey(dest))
+		if (!copy.initial.containsDestination(dest))
 		{
 			//copy.initialInterrupts.putMessage(dest, src, msg);
 			copy.initialInterrupts.putMessage(dest, src, msg.getId());
@@ -316,9 +316,9 @@ public class WFChoiceEnv extends Env
 		//MessageMap<ScopedMessage> enabled = this.subsigs.get(subsig);
 		//MessageMap<Message> enabled = this.subsigs.get(subsig);
 		MessageIdMap enabled = this.subsigs.get(subsig);
-		for (Role dest : enabled.getLeftKeys())
+		for (Role dest : enabled.getDestinations())
 		{
-			for (Role src : enabled.getRightKeys(dest))
+			for (Role src : enabled.getSources(dest))
 			{
 				// Take do-scopes into account
 				//enabled.getMessages(dest, src).stream().map((sm) -> new ScopedMessageSignature(scope, sm.op, sm.payload)).collect(Collectors.toList());
@@ -348,7 +348,7 @@ public class WFChoiceEnv extends Env
 	
 	public boolean isEnabled(Role role)
 	{
-		return this.initial.containsLeftKey(role);
+		return this.initial.containsDestination(role);
 	}
 
 	//public MessageMap<ScopedMessage> getEnabled()
@@ -365,7 +365,7 @@ public class WFChoiceEnv extends Env
 	// FIXME: move to basic name checking pass (not WF choice)
 	public boolean isRoleBound(Role role)
 	{
-		return this.initial.containsLeftKey(role);  // FIXME: this.initial only contains enabled, not declared
+		return this.initial.containsDestination(role);  // FIXME: this.initial only contains enabled, not declared
 	}
 
 	@Override

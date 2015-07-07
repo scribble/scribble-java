@@ -10,127 +10,115 @@ import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
 // Mutable
-//public class MessageMap<T extends Message>
 public class MessageIdMap
 {
 	// dest -> (src -> mids)
-	//private Map<Role, Map<Role, Set<T>>> map = new HashMap<>();
 	private Map<Role, Map<Role, Set<MessageId<?>>>> map = new HashMap<>();
 	
-	//public final Set<Role> sources = map.keySet();
-
 	public MessageIdMap()
 	{
+
 	}
 
-	//public MessageMap(MessageMap<T> map)
 	public MessageIdMap(MessageIdMap map)
 	{
-		for (Role left : map.getLeftKeys())
+		for (Role dest : map.getDestinations())
 		{
-			for (Role right : map.map.get(left).keySet())
+			for (Role src : map.map.get(dest).keySet())
 			{
-				putMessages(left, right, map.getMessages(left, right));
+				putMessages(dest, src, map.getMessages(dest, src));
 			}
 		}
 	}
 	
-	//public void merge(MessageMap<T> map)
 	public void merge(MessageIdMap map)
 	{
-		for (Role left : map.getLeftKeys())
+		for (Role dest : map.getDestinations())
 		{
-			for (Role right : map.getRightKeys(left))
+			for (Role src : map.getSources(dest))
 			{
-				putMessages(left, right, map.getMessages(left, right));
+				putMessages(dest, src, map.getMessages(dest, src));
 			}
 		}
 	}
 
-	//public void putMessage(Role left, Role right, T msg)
-	public void putMessage(Role left, Role right, MessageId<?> msg)
+	public void putMessage(Role dest, Role src, MessageId<?> msg)
 	{
-		addRolePair(left, right);
-		this.map.get(left).get(right).add(msg);
+		addRolePair(dest, src);
+		this.map.get(dest).get(src).add(msg);
 	}
 
-	//public void putMessages(Role left, Role right, Set<T> msgs)
-	public void putMessages(Role left, Role right, Set<MessageId<?>> msgs)
+	public void putMessages(Role dest, Role src, Set<MessageId<?>> msgs)
 	{
-		addRolePair(left, right);
-		this.map.get(left).get(right).addAll(msgs);
+		addRolePair(dest, src);
+		this.map.get(dest).get(src).addAll(msgs);
 	}
 	
-	public Set<Role> getLeftKeys()
+	public Set<Role> getDestinations()
 	{
 		return this.map.keySet();
 	}
 
-	public boolean containsLeftKey(Role left)
+	public boolean containsDestination(Role dest)
 	{
-		return this.map.containsKey(left);
+		return this.map.containsKey(dest);
 	}
 
-	/*public boolean containsRightKey(Role right)
+	/*public boolean containsSource(Role src)
 	{
-		return getAllRightKeys().contains(right);
+		return getAllSources().contains(src);
 	}*/
 	
-	public Set<Role> getRightKeys(Role left)
+	public Set<Role> getSources(Role dest)
 	{
-		return this.map.get(left).keySet();
+		return this.map.get(dest).keySet();
 	}
 	
-	public Set<Role> getAllRightKeys()
+	public Set<Role> getAllSources()
 	{
-		Set<Role> rights = new HashSet<>();
-		this.map.keySet().forEach((left) -> rights.addAll(this.map.get(left).keySet()));
-		return rights;
+		Set<Role> srcs = new HashSet<>();
+		this.map.keySet().forEach((dest) -> srcs.addAll(this.map.get(dest).keySet()));
+		return srcs;
 	}
 	
-	//public Set<T> getMessages(Role left, Role right)
-	public Set<MessageId<?>> getMessages(Role left, Role right)
+	public Set<MessageId<?>> getMessages(Role dest, Role src)
 	{
-		return this.map.get(left).get(right);
+		return this.map.get(dest).get(src);
 	}
 
-	//public Set<T> getMessages(Role left)
-	public Set<MessageId<?>> getMessages(Role left)
+	public Set<MessageId<?>> getMessages(Role dest)
 	{
-		//Set<T> tmp = new HashSet<>();
 		Set<MessageId<?>> tmp = new HashSet<>();
-		getRightKeys(left).forEach((right) -> tmp.addAll(getMessages(left, right)));
+		getSources(dest).forEach((src) -> tmp.addAll(getMessages(dest, src)));
 		return tmp;
 	}
 
-	public boolean containsRolePair(Role left, Role right)
+	public boolean containsRolePair(Role dest, Role src)
 	{
-		return this.map.keySet().contains(left) && this.map.get(left).containsKey(right);
+		return this.map.keySet().contains(dest) && this.map.get(dest).containsKey(src);
 	}
 
-	public boolean containsMessageSignature(Role left, Role right, Message msg)
+	public boolean containsMessageSignature(Role dest, Role src, Message msg)
 	{
-		return containsRolePair(left, right) && getMessages(left, right).contains(msg);
+		return containsRolePair(dest, src) && getMessages(dest, src).contains(msg);
 	}
 	
-	//public void clearAll()
 	public void clear()
 	{
 		this.map.clear();
 	}
 	
-	private void addRolePair(Role left, Role right)
+	private void addRolePair(Role dest, Role src)
 	{
-		if (!this.map.containsKey(left))
+		if (!this.map.containsKey(dest))
 		{
-			//Map<Role, Set<T>> map = new HashMap<>();
 			Map<Role, Set<MessageId<?>>> map = new HashMap<>();
-			this.map.put(left, map);
-			map.put(right, new HashSet<>());
+			this.map.put(dest, map);
+			map.put(src, new HashSet<>());
 		}
-		else if (!this.map.get(left).containsKey(right))
+		else if (!this.map.get(dest).containsKey(src))
 		{
-			this.map.get(left).put(right, new HashSet<>());
+			this.map.get(dest).put(src, new HashSet<>());
 		}
 	}
 	
