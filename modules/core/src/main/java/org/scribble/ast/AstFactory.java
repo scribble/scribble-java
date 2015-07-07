@@ -40,21 +40,14 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.sesstype.kind.ImportKind;
 import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.NonProtocolKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
-import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 public interface AstFactory
 {
-	Module Module( 
-			ModuleDecl moddecl,
-			List<ImportDecl<? extends ImportKind>> imports,
-			List<NonProtocolDecl<? extends NonProtocolKind>> data,
-			List<ProtocolDecl<? extends ProtocolKind>> protos);
+	Module Module(ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos);
 	
 	MessageSigNode MessageSigNode(OpNode op, PayloadElemList payload);
 	PayloadElemList PayloadElemList(List<PayloadElem> payloadelems);

@@ -461,7 +461,7 @@ public class EndpointApiGenerator
 		//return this.gpn.toString();// + "." + this.role;  // role causes clash with Role constant in session class
 	}
 	
-	private String getOp(MessageId mid)
+	private String getOp(MessageId<?> mid)
 	{
 		return SessionApiGenerator.getSessionClassName(gpn) + "." + SessionApiGenerator.getOpClassName(mid);
 	}

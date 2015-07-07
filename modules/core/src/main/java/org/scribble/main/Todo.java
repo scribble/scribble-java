@@ -2,7 +2,7 @@ package org.scribble.main;
 
 
 /*
-.. public reconstructs; copy del assignment -- no
+.. public reconstructs; copy del assignment; remove unnecessary wildcard bounds (and sort out mixed collections under wildcards? -- where it runtime type checking gets involved) -- no to copy del assignment
 .. relax strictclasscheck visits
 .. refactor inlined/unfolding visitor and del names
 .. generalise dependencies for duplicate-role projection
@@ -36,7 +36,7 @@ package org.scribble.main;
 
 	// self comm (wf, projection)
 	// multicast (enforce sending same value -- can "compile" to assertions for separate ops)
-	// AntlrNonRoleParamDeclList -- generic typing error
+	// AntlrNonRoleParamDeclList -- generic typing error -- generally fix nonroleparam decl/list/... related generic typing (mixed types under a wildcard)
 
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B })
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)

@@ -85,7 +85,7 @@ public class MainContext
 	private void loadAllModules(Pair<Resource, Module> module)
 	{
 		this.parsed.put(module.right.getFullModuleName(), module);
-		for (ImportDecl id : module.right.imports)
+		for (ImportDecl<?> id : module.right.imports)
 		{
 			if (id.isImportModule())
 			{
