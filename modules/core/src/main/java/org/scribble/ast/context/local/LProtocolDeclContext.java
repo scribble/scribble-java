@@ -1,12 +1,14 @@
-package org.scribble.ast.context;
+package org.scribble.ast.context.local;
 
 import java.util.Collections;
 import java.util.Set;
 
+import org.scribble.ast.context.ProtocolDeclContext;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
+
 
 public class LProtocolDeclContext extends ProtocolDeclContext<Local>
 {
@@ -14,6 +16,7 @@ public class LProtocolDeclContext extends ProtocolDeclContext<Local>
 	// protocol name is full name of global protocol dependencies
 	private final DependencyMap<LProtocolName> deps;  // All the potential dependencies from this protocol decl as the root
 	
+	// FIXME: dep map setter
 	public LProtocolDeclContext(DependencyMap<LProtocolName> deps)
 	{
 		this(Collections.emptySet(), deps);

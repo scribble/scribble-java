@@ -1,6 +1,5 @@
 package org.scribble.del.local;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.RoleArg;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDo;
@@ -26,8 +24,6 @@ import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
-import org.scribble.sesstype.name.ModuleName;
-import org.scribble.sesstype.name.PackageName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
@@ -72,6 +68,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		return (LDo) super.leaveProtocolInlining(parent, child, builder, visited);
 	}
 
+	// Pre: this pass is only run on projections (LProjectionDeclDel has source global protocol info)
 	@Override
 	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
 	{
@@ -81,32 +78,14 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		// FIXME: factor out map making with SubprotocolVisitor
 		// do role args are currently as inherited from the global type -- so need to derive role map against the global protocol header
 		// Doing it off the global roldecls allows this to be done in one pass, but would probably be easier to split into two (e.g. 1st cache the proposed changes, 2nd write all changes -- the problem with a single pass is e.g. looking up the localdecl info while localdecls are being rewritten during the pass)
-		Iterator<Role> roleargs = ld.roles.args.stream().map((ra) -> ra.val.toName()).collect(Collectors.toList()).iterator();
-		
-		// FIXME: "inverse projection" back to global protocol name -- maybe factor out modulename parsing part to SessionTypeFactory
 		JobContext jcontext = fixer.getJobContext();
-		ModuleContext mcontext = fixer.getModuleContext();
-		String mname = ld.getTargetFullProtocolName(mcontext).getPrefix().toString();
-		mname = mname.substring(0, mname.lastIndexOf('_'));  // FIXME: not sound
-		mname = mname.substring(0, mname.lastIndexOf('_'));
-		String simppn = ld.getTargetFullProtocolName(mcontext).getLastElement();
-		simppn = simppn.substring(0, simppn.lastIndexOf('_'));
-		ModuleName modname;
-		if (mname.indexOf('.') == -1)
-		{
-			modname = new ModuleName(mname);
-		}
-		else
-		{
-			String[] elems = mname.split("\\.");
-			PackageName packname = new PackageName(Arrays.copyOf(elems, elems.length - 1));
-			modname = new ModuleName(packname, new ModuleName(elems[elems.length - 1]));
-		}
-		GProtocolDecl gpd = (GProtocolDecl) jcontext.getModule(modname).getProtocolDecl(new GProtocolName(simppn));
-		
+		Iterator<Role> roleargs = ld.roles.args.stream().map((ra) -> ra.val.toName()).collect(Collectors.toList()).iterator();
+		GProtocolName source = ((LProjectionDeclDel) lpd.del()).getSourceProtocol();
+		GProtocolDecl gpd = (GProtocolDecl) jcontext.getModule(source.getPrefix()).getProtocolDecl(source.getSimpleName());
 		Map<Role, Role> rolemap = gpd.header.roledecls.getRoles().stream().collect(Collectors.toMap((r) -> r, (r) -> roleargs.next()));
 		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences()
 				.stream().map((r) -> rolemap.get(r)).collect(Collectors.toSet());
+
 		List<RoleArg> ras = ld.roles.args.stream().filter((ra) -> occs.contains(ra.val.toName())).collect(Collectors.toList());
 		RoleArgList roles = ld.roles.reconstruct(ras);
 		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, ld.reconstruct(roles, ld.args, ld.getProtocolNameNode()));

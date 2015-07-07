@@ -4,6 +4,7 @@ package org.scribble.main;
 /*
 .. tidy up inlinedwfchoice check in gchoicedel
 
+.. fix ldodel projection role fix gproto name hack
 .. public reconstructs
 .. relax strictclasscheck visits
 .. refactor inlined/unfolding visitor and del names

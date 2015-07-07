@@ -59,6 +59,7 @@ import org.scribble.del.local.LChoiceDel;
 import org.scribble.del.local.LContinueDel;
 import org.scribble.del.local.LDoDel;
 import org.scribble.del.local.LInteractionSeqDel;
+import org.scribble.del.local.LProjectionDeclDel;
 import org.scribble.del.local.LProtocolBlockDel;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.del.local.LProtocolDefDel;
@@ -81,6 +82,8 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.kind.SigKind;
+import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.Role;
 
 public class AstFactoryImpl implements AstFactory
 {
@@ -490,14 +493,24 @@ public class AstFactoryImpl implements AstFactory
 		return new DefaultModelDel();
 	}
 	
-	@SuppressWarnings("unchecked")
+	// FIXME: factor out
+	//@SuppressWarnings("unchecked")
 	private static <T extends ScribNodeBase> T del(T n, ScribDel del)
 	{
-		ScribNodeBase ret = n.del(del);  // FIXME: del makes another shallow copy of n
+		/*ScribNodeBase ret = n.del(del);  // FIXME: del makes another shallow copy of n
 		if (ret.getClass() != n.getClass())
 		{
 			throw new RuntimeException("Shouldn't get in here: " + ret.getClass() + ", " + n.getClass());
 		}
-		return (T) ret;
+		return (T) ret;*/
+		return ScribNodeBase.del(n, del);
+	}
+
+	@Override
+	public LProtocolDecl LProjectionDecl(LProtocolHeader header, LProtocolDef def, GProtocolName fullname, Role self)  // del extends that of LProtocolDecl 
+	{
+		LProtocolDecl lpd = new LProtocolDecl(header, def);
+		lpd = ScribNodeBase.del(lpd, new LProjectionDeclDel(fullname, self));
+		return lpd;
 	}
 }

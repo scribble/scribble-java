@@ -37,12 +37,26 @@ public abstract class ScribNodeBase implements ScribNode
 {
 	protected ScribDel del;
 
-	// Internal shallow copy for (immutable) ModelNodes
+	// Internal shallow copy for (immutable) ModelNodes -- should keep the original del (though is overwrittern when used by the del setter)
 	//@Override
 	protected abstract ScribNodeBase copy();
 	
 	@Override
 	public abstract ScribNodeBase clone();
+	
+	@Override
+	public final ScribDel del()
+	{
+		return this.del;
+	}
+	
+	@Override
+	public final ScribNodeBase del(ScribDel del)
+	{
+		ScribNodeBase copy = copy();
+		copy.del = del;
+		return copy;
+	}
 	
 	@Override
 	public ScribNode accept(AstVisitor nv) throws ScribbleException
@@ -59,20 +73,6 @@ public abstract class ScribNodeBase implements ScribNode
 	protected ScribNode visitChild(ScribNode child, AstVisitor nv) throws ScribbleException
 	{
 		return nv.visit(this, child);
-	}
-	
-	@Override
-	public final ScribDel del()
-	{
-		return this.del;
-	}
-	
-	@Override
-	public final ScribNodeBase del(ScribDel del)
-	{
-		ScribNodeBase copy = copy();
-		copy.del = del;
-		return copy;
 	}
 
 	public static final <T extends ScribNode> T del(T n, ScribDel del)

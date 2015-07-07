@@ -10,7 +10,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.GProtocolDeclContext;
+import org.scribble.ast.context.global.GProtocolDeclContext;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolDef;
@@ -86,7 +86,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		RoleDeclList roledecls = gpd.header.roledecls.project(self);
 		NonRoleParamDeclList paramdecls = gpd.header.paramdecls.project(self);
 		LProtocolHeader lph = AstFactoryImpl.FACTORY.LProtocolHeader(pn, roledecls, paramdecls);
-		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProtocolDecl(lph, def);
+		//LProtocolDecl projected = AstFactoryImpl.FACTORY.LProtocolDecl(lph, def);
+		GProtocolName gpn = gpd.getFullMemberName(proj.getJobContext().getModule(proj.getModuleContext().root));
+		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProjectionDecl(lph, def, gpn, proj.peekSelf());
 		return projected;
 	}
 

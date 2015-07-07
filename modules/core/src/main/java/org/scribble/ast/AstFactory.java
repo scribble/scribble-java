@@ -45,6 +45,8 @@ import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.NonProtocolKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.ProtocolKind;
+import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.Role;
 
 public interface AstFactory
 {
@@ -107,4 +109,6 @@ public interface AstFactory
 	LRecursion LRecursion(RecVarNode recvar, LProtocolBlock block);
 	LContinue LContinue(RecVarNode recvar);
 	LDo LDo(RoleArgList roles, NonRoleArgList args, LProtocolNameNode proto);
+
+	LProtocolDecl LProjectionDecl(LProtocolHeader header, LProtocolDef def, GProtocolName fullname, Role self);  // del extends that of LProtocolDecl 
 }

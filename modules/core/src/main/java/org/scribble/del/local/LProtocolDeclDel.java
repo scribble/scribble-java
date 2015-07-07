@@ -9,7 +9,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.LProtocolDeclContext;
+import org.scribble.ast.context.local.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LProtocolHeader;
 import org.scribble.del.ProtocolDeclDel;
@@ -46,10 +46,10 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	@Override
 	public LProtocolDecl leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
-		LProtocolDecl gpd = (LProtocolDecl) visited;
-		LProtocolDeclContext gcontext = new LProtocolDeclContext(builder.getLocalProtocolDependencyMap());
-		LProtocolDeclDel del = (LProtocolDeclDel) setProtocolDeclContext(gcontext);
-		return (LProtocolDecl) gpd.del(del);
+		LProtocolDecl lpd = (LProtocolDecl) visited;
+		LProtocolDeclContext lcontext = new LProtocolDeclContext(builder.getLocalProtocolDependencyMap());
+		LProtocolDeclDel del = (LProtocolDeclDel) setProtocolDeclContext(lcontext);
+		return (LProtocolDecl) lpd.del(del);
 	}
 
 	@Override
