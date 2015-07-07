@@ -9,9 +9,13 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Do;
+import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.NonRoleParamDecl;
+import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.RoleArgList;
+import org.scribble.ast.RoleDeclList;
 import org.scribble.ast.ScopedNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
@@ -19,7 +23,6 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.SubprotocolSig;
-import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -47,35 +50,19 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 	}
 	
 	// Pushes a subprotocol signature
-	protected void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolKind> pd)
+	protected void enterRootProtocolDecl(ProtocolDecl<?> pd)
 	{
-		Map<Role, RoleNode> rolemap =
-				pd.header.roledecls.getRoleDecls().stream()
-						.collect(Collectors.toMap((r) -> r.getDeclName(), (r) -> (RoleNode) r.name));
-		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap =
-				pd.header.paramdecls.getParamDecls().stream()
-						.collect(Collectors.toMap((p) -> (Arg<?>) p.getDeclName(), (p) -> (NonRoleArgNode) p.name));
+		Map<Role, RoleNode> rolemap = makeRootRoleSubsMap(pd.header.roledecls);
+		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap = makeRootNonRoleSubsMap(pd.header.paramdecls);
 		this.rolemaps.push(rolemap);
 		this.argmaps.push(argmap);
 		
 		ModuleContext mcontext = getModuleContext();
-		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolDeclName(pd.header.getDeclName());
+		ProtocolName<?> fullname = mcontext.getFullProtocolDeclName(pd.header.getDeclName());
 		List<Role> roleargs = pd.header.roledecls.getRoles();
-		List<Arg<? extends NonRoleArgKind>> argargs =
+		List<Arg<? extends NonRoleArgKind>> nonroleargs =
 				pd.header.paramdecls.getParamDecls().stream().map((param) -> paramDeclToArg(param)).collect(Collectors.toList());
-		pushSubprotocolSig(fullname, roleargs, argargs);
-	}
-	
-	private static Arg<? extends NonRoleArgKind> paramDeclToArg(NonRoleParamDecl<NonRoleParamKind> pd)
-	{
-		Name<NonRoleParamKind> n = pd.getDeclName();
-		if (!(n instanceof Arg))
-		{
-			throw new RuntimeException("Shouldn't get in here: " + n);
-		}
-		@SuppressWarnings("unchecked")
-		Arg<? extends NonRoleArgKind> tmp = (Arg<? extends NonRoleArgKind>) n;
-		return tmp;
+		pushSubprotocolSig(fullname, roleargs, nonroleargs);
 	}
 
 	// Most subclasses will override visitForSubprotocols (e.g. ReachabilityChecker, FsmConstructor), but sometimes still want to change whole visit pattern (e.g. Projector)
@@ -101,7 +88,7 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 	}
 	
 	// The Do node itself is no longer visited -- FIXME: projection needs to visit it -- no: that's in enter/leave, visited means "visit children"
-	private Do<? extends ProtocolKind> visitOverrideForDo(ScribNode parent, Do<? extends ProtocolKind> doo) throws ScribbleException
+	private Do<?> visitOverrideForDo(ScribNode parent, Do<?> doo) throws ScribbleException
 	{
 		if (!isCycle())
 		{
@@ -112,6 +99,27 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 		}
 		return doo;
+	}
+	
+	protected boolean overrideSubstitution()
+	{
+		return false;
+	}
+	
+	protected ScribNode applySubstitutions(ScribNode n)
+	{
+		if (overrideSubstitution())
+		{
+			return n;
+		}
+		try
+		{
+			return n.accept(new Substitutor(getJob(), this.rolemaps.peek(), this.argmaps.peek()));
+		}
+		catch (ScribbleException e)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + n);
+		}
 	}
 
 	@Override
@@ -174,64 +182,32 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		return visited;
 	}
 
-	// proto is full name
-	private void enterSubprotocol(Do<? extends ProtocolKind> doo)
+	private void enterSubprotocol(Do<?> doo)
 	{
-		ModuleContext mcontext = getModuleContext();
-		ProtocolName<? extends ProtocolKind> fullname = mcontext.getFullProtocolDeclName(doo.proto.toName());
-		List<Role> roleargs = doo.roles.getRoles();
-		List<Arg<? extends NonRoleArgKind>> argargs = doo.args.getArguments();
-		pushSubprotocolSig(fullname, roleargs, argargs);
-		pushNameMaps(fullname, doo, roleargs, argargs);
-	}
-	
-	private void pushSubprotocolSig(ProtocolName<? extends ProtocolKind> fullname, List<Role> roleargs, List<Arg<? extends NonRoleArgKind>> argargs)
-	{
-		List<Role> roles = new LinkedList<>(roleargs);
-		List<Arg<? extends Kind>> args = new LinkedList<>(argargs);
-		SubprotocolSig ssubsig = new SubprotocolSig(fullname, roles, args);
-		this.stack.add(ssubsig);
-	}
-	
-	// FIXME: doo param hack
-	private void pushNameMaps(ProtocolName<? extends ProtocolKind> fullname, Do<? extends ProtocolKind> doo, List<Role> roleargs, List<Arg<? extends NonRoleArgKind>> argargs)
-	{
-		ProtocolDecl<? extends ProtocolKind>
-				pd = getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
-		List<Role> roleparams = pd.header.roledecls.getRoles();
-		List<Name<NonRoleParamKind>> argparams = pd.header.paramdecls.getParameters();
-		
-		Iterator<Role> roleargiter = roleargs.iterator();
-		Iterator<Arg<? extends NonRoleArgKind>> argargiter = argargs.iterator();
-		Map<Role, RoleNode> newrolemap =
-				roleparams.stream()
-				.collect(Collectors.toMap((r) -> r, (r) -> this.rolemaps.get(0).get(roleargiter.next())));
-		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> newargmap = new HashMap<>();
-		Iterator<NonRoleArgNode> foo = doo.args.getArgumentNodes().iterator();
-		for (Name<NonRoleParamKind> p : argparams)
-		{
-			Arg<? extends Kind> tmp = argargiter.next();
-			NonRoleArgNode a;
-			if (this.argmaps.get(0).containsKey(tmp))
-			{
-				a = this.argmaps.get(0).get(tmp);
-				foo.next();
-			}
-			else
-			{
-				a = foo.next();
-			}
-			newargmap.put((Arg<?>) p, a);
-		}
-		this.rolemaps.push(newrolemap);
-		this.argmaps.push(newargmap);
+		ProtocolName<?> fullname = getModuleContext().getFullProtocolDeclName(doo.proto.toName());
+		pushSubprotocolSig(fullname, doo.roles.getRoles(), doo.args.getArguments());
+		pushNameMaps(fullname, doo);
 	}
 
-	protected void leaveSubprotocol()
+	// Also esed for leaving root protocoldecl, for convenience
+	private void leaveSubprotocol()
 	{
 		this.stack.remove(this.stack.size() - 1);
 		this.rolemaps.pop();
 		this.argmaps.pop();
+	}
+	
+	private void pushSubprotocolSig(ProtocolName<?> fullname, List<Role> roleargs, List<Arg<? extends NonRoleArgKind>> nonroleargs)
+	{
+		SubprotocolSig subsig = new SubprotocolSig(fullname, roleargs, nonroleargs);
+		this.stack.add(subsig);
+	}
+	
+	private void pushNameMaps(ProtocolName<?> fullname, Do<?> doo)
+	{
+		ProtocolDecl<?> pd = getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+		this.rolemaps.push(makeRoleSubsMap(this.rolemaps.get(0), doo.roles, pd.header.roledecls));
+		this.argmaps.push(makeNonRoleSubsMap(this.argmaps.get(0), doo.args, pd.header.paramdecls));
 	}
 	
 	public boolean isCycle()
@@ -256,27 +232,6 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		return -1;
 	}
 	
-	protected boolean overrideSubstitution()
-	{
-		return false;
-	}
-	
-	protected ScribNode applySubstitutions(ScribNode n)
-	{
-		if (overrideSubstitution())
-		{
-			return n;
-		}
-		try
-		{
-			return n.accept(new Substitutor(getJob(), this.rolemaps.peek(), this.argmaps.peek()));
-		}
-		catch (ScribbleException e)
-		{
-			throw new RuntimeException("Shouldn't get in here: " + n);
-		}
-	}
-	
 	public List<SubprotocolSig> getStack()
 	{
 		return this.stack;
@@ -287,7 +242,6 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		return this.stack.isEmpty();
 	}
 
-	// FIXME: returning scoped sigs, from which sometimes just the unscoped part is needed (e.g. WF choice checking), is a tricky interface
 	public SubprotocolSig peekStack()
 	{
 		return this.stack.get(this.stack.size() - 1);
@@ -301,5 +255,60 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 	protected void setScope(Scope scope)
 	{
 		this.scope = scope;
+	}
+	
+	protected static Map<Role, RoleNode> makeRootRoleSubsMap(RoleDeclList rdl)
+	{
+		return rdl.getRoleDecls().stream()
+				.collect(Collectors.toMap((r) -> r.getDeclName(), (r) -> (RoleNode) r.name));
+	}
+	
+	protected static Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> makeRootNonRoleSubsMap(NonRoleParamDeclList pdl)
+	{
+		return pdl.getParamDecls().stream()
+						.collect(Collectors.toMap((p) -> (Arg<?>) p.getDeclName(), (p) -> (NonRoleArgNode) p.name));
+	}
+
+	protected static Map<Role, RoleNode> makeRoleSubsMap(Map<Role, RoleNode> root, RoleArgList ral, RoleDeclList rdl)
+	{
+		Iterator<Role> roleargs = ral.getRoles().iterator();
+		return rdl.getRoles().stream().collect(Collectors.toMap((r) -> r, (r) -> root.get(roleargs.next())));
+	}
+
+	protected static Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode>
+			makeNonRoleSubsMap(Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> root, NonRoleArgList nral, NonRoleParamDeclList nrpdl)
+	{
+		// Using arg and argnode views of the arglist
+		Iterator<Arg<? extends NonRoleArgKind>> nonroleargs = nral.getArguments().iterator();
+		Iterator<NonRoleArgNode> nonroleargnodes = nral.getArgumentNodes().iterator();
+		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> newnonroleargmap = new HashMap<>();
+		for (Name<NonRoleParamKind> param : nrpdl.getParameters())
+		{
+			Arg<?> arg = nonroleargs.next();
+			NonRoleArgNode argnode;
+			if (root.containsKey(arg))  // A root param propagated through to here as an arg: get the root argnode
+			{
+				argnode = root.get(arg);
+				nonroleargnodes.next();
+			}
+			else
+			{
+				argnode = nonroleargnodes.next();  // The argnode correspoding to the current arg
+			}
+			newnonroleargmap.put((Arg<?>) param, argnode);
+		}
+		return newnonroleargmap;
+	}
+	
+	private static Arg<? extends NonRoleArgKind> paramDeclToArg(NonRoleParamDecl<NonRoleParamKind> pd)
+	{
+		Name<NonRoleParamKind> n = pd.getDeclName();
+		if (!(n instanceof Arg))
+		{
+			throw new RuntimeException("Shouldn't get in here: " + n);
+		}
+		@SuppressWarnings("unchecked")
+		Arg<? extends NonRoleArgKind> tmp = (Arg<? extends NonRoleArgKind>) n;
+		return tmp;
 	}
 }

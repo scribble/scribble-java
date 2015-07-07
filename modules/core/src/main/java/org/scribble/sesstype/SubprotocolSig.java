@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble.sesstype.kind.Kind;
+import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -16,7 +17,7 @@ public class SubprotocolSig
 	public List<Arg<? extends Kind>> args;
 
 	//public SubprotocolSignature(ProtocolName fmn, Scope scope, List<Role> roles, List<Argument<? extends Kind>> args)
-	public SubprotocolSig(ProtocolName<? extends ProtocolKind> fmn, List<Role> roles, List<Arg<? extends Kind>> args)
+	public SubprotocolSig(ProtocolName<? extends ProtocolKind> fmn, List<Role> roles, List<Arg<? extends NonRoleArgKind>> args)
 	{
 		this.fmn = fmn;
 		//this.scope = scope;

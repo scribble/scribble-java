@@ -1,7 +1,6 @@
 package org.scribble.visit;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.ProtocolDecl;
@@ -28,12 +27,8 @@ public abstract class OffsetSubprotocolVisitor<T extends Env> extends Subprotoco
 	@Override
 	protected void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolKind> pd)
 	{
-		Map<Role, RoleNode> rolemap =
-				pd.header.roledecls.getRoleDecls().stream()
-						.collect(Collectors.toMap((r) -> r.getDeclName(), (r) -> (RoleNode) r.name));
-		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap =
-				pd.header.paramdecls.getParamDecls().stream()
-						.collect(Collectors.toMap((p) -> (Arg<?>) p.getDeclName(), (p) -> (NonRoleArgNode) p.name));
+		Map<Role, RoleNode> rolemap = makeRootRoleSubsMap(pd.header.roledecls);
+		Map<Arg<? extends NonRoleArgKind>, NonRoleArgNode> argmap = makeRootNonRoleSubsMap(pd.header.paramdecls);
 		this.rolemaps.push(rolemap);
 		this.argmaps.push(argmap);
 	}
