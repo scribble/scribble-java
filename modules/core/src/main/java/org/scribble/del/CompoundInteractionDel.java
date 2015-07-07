@@ -6,6 +6,7 @@ import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.WFChoiceChecker;
 
+
 // For CompoundInteractionNode and ProtocolBlock
 public abstract class CompoundInteractionDel extends ScribDelBase
 {

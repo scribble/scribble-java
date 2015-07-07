@@ -7,6 +7,7 @@ import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.ReachabilityChecker;
 
+
 public interface LInteractionNodeDel extends InteractionNodeDel
 {
 	// Unlike WF-choice enter/leave for CompoundInteractionNodeDelegate (i.e. both global/local), reachability is limited to local only

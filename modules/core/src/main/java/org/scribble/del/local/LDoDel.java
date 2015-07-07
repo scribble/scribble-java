@@ -98,7 +98,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		ReachabilityEnv env = checker.popEnv();
 		if (checker.isCycle())
 		{
-			env = env.leaveRecursiveDo();
+			env = env.leaveSubprotocolCycle();
 		}
 		setEnv(env);
 		checker.pushEnv(checker.popEnv().mergeContext(env));

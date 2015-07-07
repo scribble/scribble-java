@@ -123,7 +123,8 @@ public class ReachabilityEnv extends Env
 		return copy;
 	}
 
-	public ReachabilityEnv leaveRecursiveDo()
+	// Called on leaving a recursive do-chain
+	public ReachabilityEnv leaveSubprotocolCycle()
 	{
 		ReachabilityEnv copy = copy();
 		copy.doExitable = false;
