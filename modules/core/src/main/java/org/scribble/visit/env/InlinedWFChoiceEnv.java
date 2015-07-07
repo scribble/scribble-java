@@ -14,6 +14,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
 import org.scribble.visit.InlinedProtocolVisitor;
 
+
 public class InlinedWFChoiceEnv extends Env
 {
 	private static final Role DUMMY_ROLE = new Role("__ROLE");
@@ -25,37 +26,41 @@ public class InlinedWFChoiceEnv extends Env
 	
 	// dest -> src -> msg
 	private MessageIdMap initial;  // message transfers recorded here in block envs
-	private MessageIdMap initialInterrupts;  //  interrupts recorded here in interruptible env
+	//private MessageIdMap initialInterrupts;  //  interrupts recorded here in interruptible env
 	
 	public InlinedWFChoiceEnv()
 	{
-		this(new MessageIdMap(), new MessageIdMap());
+		//this(new MessageIdMap(), new MessageIdMap());
+		this(new MessageIdMap());
 	}
 	
-	protected InlinedWFChoiceEnv(MessageIdMap initial, MessageIdMap initialInterrupts)
+	//protected InlinedWFChoiceEnv(MessageIdMap initial, MessageIdMap initialInterrupts)
+	protected InlinedWFChoiceEnv(MessageIdMap initial)
 	{
 		this.initial = new MessageIdMap(initial);
-		this.initialInterrupts = new MessageIdMap(initialInterrupts);
+		//this.initialInterrupts = new MessageIdMap(initialInterrupts);
 	}
 
 	@Override
 	protected InlinedWFChoiceEnv copy()
 	{
-		return new InlinedWFChoiceEnv(this.initial, this.initialInterrupts);
+		//return new InlinedWFChoiceEnv(this.initial, this.initialInterrupts);
+		return new InlinedWFChoiceEnv(this.initial);
 	}
 	
 	public InlinedWFChoiceEnv clear()
 	{
 		InlinedWFChoiceEnv copy = copy();
 		copy.initial.clear();
-		copy.initialInterrupts.clear();
+		//copy.initialInterrupts.clear();
 		return copy;
 	}
 
 	@Override
 	public InlinedWFChoiceEnv enterContext()
 	{
-		return new InlinedWFChoiceEnv(this.initial, this.initialInterrupts);
+		//return new InlinedWFChoiceEnv(this.initial, this.initialInterrupts);
+		return new InlinedWFChoiceEnv(this.initial);
 	}
 	
 	@Override
@@ -71,7 +76,7 @@ public class InlinedWFChoiceEnv extends Env
 		for (InlinedWFChoiceEnv child : castList(children))
 		{
 			merge(this, copy.initial, child.initial);
-			merge(this, copy.initialInterrupts, child.initialInterrupts);
+			//merge(this, copy.initialInterrupts, child.initialInterrupts);
 		}
 		return copy;
 	}
@@ -127,7 +132,7 @@ public class InlinedWFChoiceEnv extends Env
 		}
 	}
 
-	public InlinedWFChoiceEnv addInterrupt(Role src, Role dest, Message msg)
+	/*public InlinedWFChoiceEnv addInterrupt(Role src, Role dest, Message msg)
 	{
 		InlinedWFChoiceEnv copy = copy();
 		if (!copy.initial.containsLeftKey(dest))
@@ -135,7 +140,7 @@ public class InlinedWFChoiceEnv extends Env
 			copy.initialInterrupts.putMessage(dest, src, msg.getId());
 		}
 		return copy;
-	}
+	}*/
 	
 	public boolean isEnabled(Role role)
 	{
@@ -145,20 +150,15 @@ public class InlinedWFChoiceEnv extends Env
 	public MessageIdMap getEnabled()
 	{
 		MessageIdMap tmp = new MessageIdMap(this.initial);
-		tmp.merge(this.initialInterrupts);
+		//tmp.merge(this.initialInterrupts);
 		return tmp;
-	}
-	
-	// FIXME: move to basic name checking pass (not WF choice)
-	public boolean isRoleBound(Role role)
-	{
-		return this.initial.containsLeftKey(role);  // FIXME: this.initial only contains enabled, not declared
 	}
 
 	@Override
 	public String toString()
 	{
-		return "initial=" + this.initial.toString() + ", initialInterrupts=" + this.initialInterrupts.toString();
+		//return "initial=" + this.initial.toString() + ", initialInterrupts=" + this.initialInterrupts.toString();
+		return "initial=" + this.initial.toString();
 	}
 	
 	private static List<InlinedWFChoiceEnv> castList(List<? extends Env> envs)

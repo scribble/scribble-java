@@ -27,12 +27,23 @@ import org.scribble.visit.env.WFChoiceEnv;
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
 {
 	@Override
-	public GRecursion leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		GRecursion gr = (GRecursion) visited;
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
+		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
+		GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (GRecursion) super.leaveProtocolInlining(parent, child, builder, gr);
+	}
+
+	@Override
+	public GRecursion leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GRecursion rec = (GRecursion) visited;
-		WFChoiceEnv merged = checker.popEnv().mergeContext((WFChoiceEnv) rec.block.del().env());
+		InlinedWFChoiceEnv merged = checker.popEnv().mergeContext((InlinedWFChoiceEnv) rec.block.del().env());
 		checker.pushEnv(merged);
-		return (GRecursion) super.leaveWFChoiceCheck(parent, child, checker, rec);
+		return (GRecursion) super.leaveInlinedWFChoiceCheck(parent, child, checker, rec);
 	}
 
 	@Override
@@ -55,22 +66,11 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
-	{
-		GRecursion gr = (GRecursion) visited;
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
-		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
-		GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GRecursion) super.leaveProtocolInlining(parent, child, builder, gr);
-	}
-
-	@Override
-	public GRecursion leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GRecursion leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GRecursion rec = (GRecursion) visited;
-		InlinedWFChoiceEnv merged = checker.popEnv().mergeContext((InlinedWFChoiceEnv) rec.block.del().env());
+		WFChoiceEnv merged = checker.popEnv().mergeContext((WFChoiceEnv) rec.block.del().env());
 		checker.pushEnv(merged);
-		return (GRecursion) super.leaveInlinedWFChoiceCheck(parent, child, checker, rec);
+		return (GRecursion) super.leaveWFChoiceCheck(parent, child, checker, rec);
 	}
 }

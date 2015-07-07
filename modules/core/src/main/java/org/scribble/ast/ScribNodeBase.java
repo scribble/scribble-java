@@ -37,8 +37,8 @@ public abstract class ScribNodeBase implements ScribNode
 {
 	protected ScribDel del;
 
-	// Internal shallow copy for (immutable) ModelNodes -- should keep the original del (though is overwrittern when used by the del setter)
-	//@Override
+	// Internal shallow copy for (immutable) ModelNodes -- does not keep the del (copy is used internally for del setter, and keeping the del needs knowledge of super fields) 
+	// Generally copy is only for shallow copy of object and "immediate" fields (not super fields), cf. ProtocolDecl, ProtocolDeclContext, etc
 	protected abstract ScribNodeBase copy();
 	
 	@Override

@@ -28,29 +28,37 @@ import org.scribble.visit.env.WFChoiceEnv;
 
 public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 {
+	// Part of context building
 	@Override
 	protected void addProtocolDependency(ContextBuilder builder, Role self, ProtocolName<?> proto, Role target)
 	{
 		builder.addGlobalProtocolDependency(self, (GProtocolName) proto, target);
 	}
 
-	@Override
-	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
+	// Only called if cycle
+	public GDo visitForSubprotocolInlining(ProtocolDefInliner builder, GDo child)
 	{
-		checker.pushEnv(checker.peekEnv().enterDoContext(checker));
+		SubprotocolSig subsig = builder.peekStack();
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
+		GContinue inlined = AstFactoryImpl.FACTORY.GContinue(recvar);
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return child;
 	}
-
+	
 	@Override
-	public GDo leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
-		WFChoiceEnv env = checker.popEnv();
-		//if (checker.isCycle())  // Cf. LDoDel, isCycle done inside env.leaveWFChoiceCheck
+		SubprotocolSig subsig = builder.peekStack();
+		if (!builder.isCycle())
 		{
-			env = env.leaveWFChoiceCheck(checker);
-		}
-		setEnv(env);
-		checker.pushEnv(checker.popEnv().mergeContext(env));
-		return (GDo) visited;
+			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
+			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) builder.peekEnv()).getTranslation());
+			GProtocolBlock gb = AstFactoryImpl.FACTORY.GProtocolBlock(gis);
+			GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, gb);
+			builder.pushEnv(builder.popEnv().setTranslation(inlined));
+			builder.removeRecVar(subsig);
+		}	
+		return (GDo) super.leaveProtocolInlining(parent, child, builder, visited);
 	}
 
 	@Override
@@ -93,29 +101,22 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		return (GDo) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
 	}
 
-	// Only called if cycle
-	public GDo visitForSubprotocolInlining(ProtocolDefInliner builder, GDo child)
-	{
-		SubprotocolSig subsig = builder.peekStack();
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
-		GContinue inlined = AstFactoryImpl.FACTORY.GContinue(recvar);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return child;
-	}
-	
 	@Override
-	public GDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
 	{
-		SubprotocolSig subsig = builder.peekStack();
-		if (!builder.isCycle())
+		checker.pushEnv(checker.peekEnv().enterDoContext(checker));
+	}
+
+	@Override
+	public GDo leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	{
+		WFChoiceEnv env = checker.popEnv();
+		//if (checker.isCycle())  // Cf. LDoDel, isCycle done inside env.leaveWFChoiceCheck
 		{
-			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
-			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) builder.peekEnv()).getTranslation());
-			GProtocolBlock gb = AstFactoryImpl.FACTORY.GProtocolBlock(gis);
-			GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, gb);
-			builder.pushEnv(builder.popEnv().setTranslation(inlined));
-			builder.removeRecVar(subsig);
-		}	
-		return (GDo) super.leaveProtocolInlining(parent, child, builder, visited);
+			env = env.leaveWFChoiceCheck(checker);
+		}
+		setEnv(env);
+		checker.pushEnv(checker.popEnv().mergeContext(env));
+		return (GDo) visited;
 	}
 }

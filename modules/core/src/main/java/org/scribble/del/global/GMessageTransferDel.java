@@ -42,18 +42,29 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	{
 		
 	}
+	
+	@Override
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		GMessageTransfer gmt = (GMessageTransfer) visited;
+		GMessageTransfer inlined = AstFactoryImpl.FACTORY.GMessageTransfer(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (GMessageTransfer) super.leaveProtocolInlining(parent, child, builder, gmt);
+	}
 
 	@Override
-	public GMessageTransfer leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GMessageTransfer leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer msgtrans = (GMessageTransfer) visited;
 		
 		Role src = msgtrans.src.toName();
 		Message msg = msgtrans.msg.toMessage();
-		WFChoiceEnv env = checker.popEnv();
+		InlinedWFChoiceEnv env = checker.popEnv();
 		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
 		{
 			env = env.addMessageForSubprotocol(checker, src, dest, msg);
+			
+			//System.out.println("a: " + src + ", " + dest + ", " + msg);
 		}
 		checker.pushEnv(env);
 		
@@ -105,38 +116,6 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	}
 	
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
-	{
-		GMessageTransfer gmt = (GMessageTransfer) visited;
-		GMessageTransfer inlined = AstFactoryImpl.FACTORY.GMessageTransfer(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GMessageTransfer) super.leaveProtocolInlining(parent, child, builder, gmt);
-	}
-
-	@Override
-	public GMessageTransfer leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
-	{
-		GMessageTransfer msgtrans = (GMessageTransfer) visited;
-		
-		Role src = msgtrans.src.toName();
-		Message msg = msgtrans.msg.toMessage();
-		InlinedWFChoiceEnv env = checker.popEnv();
-		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
-		{
-			env = env.addMessageForSubprotocol(checker, src, dest, msg);
-			
-			//System.out.println("a: " + src + ", " + dest + ", " + msg);
-		}
-		checker.pushEnv(env);
-		
-		if (!checker.peekEnv().isEnabled(src))
-		{
-			throw new ScribbleException("Role not enabled: " + src);
-		}
-		return msgtrans;
-	}
-	
-	@Override
 	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
@@ -160,5 +139,26 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		env = env.setActions(actions, leaves);
 		builder.pushEnv(env);
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveModelBuilding(parent, child, builder, visited);
+	}
+
+	@Override
+	public GMessageTransfer leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	{
+		GMessageTransfer msgtrans = (GMessageTransfer) visited;
+		
+		Role src = msgtrans.src.toName();
+		Message msg = msgtrans.msg.toMessage();
+		WFChoiceEnv env = checker.popEnv();
+		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
+		{
+			env = env.addMessageForSubprotocol(checker, src, dest, msg);
+		}
+		checker.pushEnv(env);
+		
+		if (!checker.peekEnv().isEnabled(src))
+		{
+			throw new ScribbleException("Role not enabled: " + src);
+		}
+		return msgtrans;
 	}
 }

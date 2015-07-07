@@ -36,6 +36,7 @@ import org.scribble.visit.env.ReachabilityEnv;
 
 public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 {
+	// Part of context building
 	@Override
 	protected void addProtocolDependency(ContextBuilder builder, Role self, ProtocolName<?> proto, Role target)
 	{

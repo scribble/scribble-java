@@ -4,7 +4,6 @@ package org.scribble.main;
 /*
 .. tidy up inlinedwfchoice check in gchoicedel
 
-.. fix ldodel projection role fix gproto name hack
 .. public reconstructs; copy del assignment
 .. relax strictclasscheck visits
 .. refactor inlined/unfolding visitor and del names
@@ -83,6 +82,7 @@ package org.scribble.main;
 //... check delegates for local nodes; check reachability visiting for (local) interaction sequence (and delegate)
 
 // Done
+//.. fix ldodel projection role fix gproto name hack -- Lprojectiondecl subclass records source gprotocol (and self role)
 //.. role filtering for protocoldecl/do-projection in 2nd projection pass
 //.. refactor global/local simple/compound dels
 //.. refactor jobs (inlining/unfolding)

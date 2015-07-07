@@ -52,9 +52,9 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
 		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
-		UnfoldingEnv visited_env = unf.popEnv();
-		UnfoldingEnv parent_env = unf.popEnv();
+		UnfoldingEnv visited_env = unf.popEnv();  // popAndSet current
 		setEnv(visited_env);
+		UnfoldingEnv parent_env = unf.popEnv();  // pop-merge-push parent
 		parent_env = parent_env.mergeContext(visited_env);
 		unf.pushEnv(parent_env);
 		return (CompoundInteractionNode<?>) visited;
@@ -63,9 +63,9 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 	@Override
 	public CompoundInteractionNode<?> leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
-		InlinedWFChoiceEnv visited_env = checker.popEnv();
-		InlinedWFChoiceEnv parent_env = checker.popEnv();
+		InlinedWFChoiceEnv visited_env = checker.popEnv();  // popAndSet current
 		setEnv(visited_env);
+		InlinedWFChoiceEnv parent_env = checker.popEnv();  // pop-merge-push parent
 		parent_env = parent_env.mergeContext(visited_env);
 		checker.pushEnv(parent_env);
 		return (CompoundInteractionNode<?>) visited;

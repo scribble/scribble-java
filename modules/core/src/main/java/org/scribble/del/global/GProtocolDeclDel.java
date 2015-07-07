@@ -43,8 +43,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	@Override
 	protected GProtocolDeclDel copy()
 	{
-		GProtocolDeclDel copy = new GProtocolDeclDel();
-		return copy;
+		return new GProtocolDeclDel();
 	}
 
 	@Override

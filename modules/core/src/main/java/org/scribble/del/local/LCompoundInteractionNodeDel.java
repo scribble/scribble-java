@@ -15,8 +15,8 @@ public interface LCompoundInteractionNodeDel extends LInteractionNodeDel
 	{
 		// Following CompoundInteractionNodeDel#leaveInlinedProtocolUnfolding/leaveWFChoiceCheck
 		ReachabilityEnv visited_env = checker.popEnv();
-		ReachabilityEnv parent_env = checker.popEnv();
 		setEnv(visited_env);
+		ReachabilityEnv parent_env = checker.popEnv();
 		parent_env = parent_env.mergeContext(visited_env);
 		checker.pushEnv(parent_env);
 		return (LCompoundInteractionNode) visited;
