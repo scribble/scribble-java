@@ -86,9 +86,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		RoleDeclList roledecls = gpd.header.roledecls.project(self);
 		NonRoleParamDeclList paramdecls = gpd.header.paramdecls.project(self);
 		LProtocolHeader lph = AstFactoryImpl.FACTORY.LProtocolHeader(pn, roledecls, paramdecls);
-		//LProtocolDecl projected = AstFactoryImpl.FACTORY.LProtocolDecl(lph, def);
 		GProtocolName gpn = gpd.getFullMemberName(proj.getJobContext().getModule(proj.getModuleContext().root));
-		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProjectionDecl(lph, def, gpn, proj.peekSelf());
+		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProjectionDecl(gpn, proj.peekSelf(), lph, def);
 		return projected;
 	}
 

@@ -14,6 +14,8 @@ package org.scribble.main;
 
 	// default G/LNode getKind methods won't work properly until Eclipse updated with fix, cf. G/LInteractionSeq
 
+	// make all protected ast node fields private? make all field accesses by getters?
+
 	// FIXME: protocoldecl header to check used roles (so projection roledecl filtering doesn't give empty roledecllist)
 	// FIXME: parameter filtering along with roles?
 

@@ -1,5 +1,6 @@
 package org.scribble.visit.env;
 
+
 public class DummyEnv extends Env
 {
 	public static final DummyEnv DUMMY = new DummyEnv();

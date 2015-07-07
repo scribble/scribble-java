@@ -507,7 +507,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public LProtocolDecl LProjectionDecl(LProtocolHeader header, LProtocolDef def, GProtocolName fullname, Role self)  // del extends that of LProtocolDecl 
+	public LProtocolDecl LProjectionDecl(GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def)  // del extends that of LProtocolDecl 
 	{
 		LProtocolDecl lpd = new LProtocolDecl(header, def);
 		lpd = ScribNodeBase.del(lpd, new LProjectionDeclDel(fullname, self));

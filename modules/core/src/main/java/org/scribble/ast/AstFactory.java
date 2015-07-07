@@ -110,5 +110,5 @@ public interface AstFactory
 	LContinue LContinue(RecVarNode recvar);
 	LDo LDo(RoleArgList roles, NonRoleArgList args, LProtocolNameNode proto);
 
-	LProtocolDecl LProjectionDecl(LProtocolHeader header, LProtocolDef def, GProtocolName fullname, Role self);  // del extends that of LProtocolDecl 
+	LProtocolDecl LProjectionDecl(GProtocolName fullname, Role self, LProtocolHeader header, LProtocolDef def);  // del extends that of LProtocolDecl 
 }
