@@ -28,6 +28,11 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 		return reconstruct(nds);
 	}
 	
+	public List<? extends HeaderParamDecl<K>> getDecls()
+	{
+		return this.decls;
+	}
+	
 	public abstract HeaderParamDeclList<K> project(Role self);  // FIXME: move to delegate
 	
 	public int length()

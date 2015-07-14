@@ -20,13 +20,13 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 	@Override
 	protected NonRoleParamDeclList copy()
 	{
-		return new NonRoleParamDeclList(getParamDecls());
+		return new NonRoleParamDeclList(getDecls());
 	}
 	
 	@Override
 	public NonRoleParamDeclList clone()
 	{
-		List<NonRoleParamDecl<NonRoleParamKind>> decls = ScribUtil.cloneList(getParamDecls());
+		List<NonRoleParamDecl<NonRoleParamKind>> decls = ScribUtil.cloneList(getDecls());
 		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(decls);
 	}
 
@@ -34,26 +34,27 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 	public NonRoleParamDeclList reconstruct(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
 	{
 		ScribDel del = del();
-		NonRoleParamDeclList rdl = new NonRoleParamDeclList(getParamDecls());
+		NonRoleParamDeclList rdl = new NonRoleParamDeclList(castParamDecls(decls));
 		rdl = (NonRoleParamDeclList) rdl.del(del);
 		return rdl;
 	}
 
-	public List<NonRoleParamDecl<NonRoleParamKind>> getParamDecls()
+	@Override
+	public List<NonRoleParamDecl<NonRoleParamKind>> getDecls()
 	{
-		return this.decls.stream().map((d) -> (NonRoleParamDecl<NonRoleParamKind>) d).collect(Collectors.toList());
+		return castParamDecls(super.getDecls());
+	}
+
+	public List<Name<NonRoleParamKind>> getParameters()
+	{
+		return getDecls().stream().map((decl) -> decl.getDeclName()).collect(Collectors.toList());
 	}
 		
 	// FIXME: move to delegate?
 	@Override
 	public NonRoleParamDeclList project(Role self)
 	{
-		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(getParamDecls());
-	}
-
-	public List<Name<NonRoleParamKind>> getParameters()
-	{
-		return this.decls.stream().map((decl) -> decl.getDeclName()).collect(Collectors.toList());
+		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(getDecls());
 	}
 
 	@Override
@@ -62,5 +63,10 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 		return (isEmpty())
 				? ""
 				: "<" + super.toString() + ">";
+	}
+	
+	private static List<NonRoleParamDecl<NonRoleParamKind>> castParamDecls(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
+	{
+		return decls.stream().map((d) -> (NonRoleParamDecl<NonRoleParamKind>) d).collect(Collectors.toList());
 	}
 }

@@ -7,6 +7,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
+
 public class GRecursion extends Recursion<Global> implements GCompoundInteractionNode
 {
 	public GRecursion(RecVarNode recvar, GProtocolBlock block)
@@ -17,7 +18,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	@Override
 	protected GRecursion copy()
 	{
-		return new GRecursion(this.recvar, (GProtocolBlock) this.block);
+		return new GRecursion(this.recvar, getBlock());
 	}
 	
 	@Override

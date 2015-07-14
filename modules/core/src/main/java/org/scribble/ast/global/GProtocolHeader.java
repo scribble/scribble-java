@@ -12,6 +12,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 
+
 public class GProtocolHeader extends ProtocolHeader<Global> implements GNode
 {
 	public GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls)

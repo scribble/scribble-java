@@ -8,6 +8,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
+
 public abstract class Choice<K extends ProtocolKind> extends CompoundInteractionNode<K>
 {
 	public final RoleNode subj;
@@ -20,7 +21,7 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 		this.blocks = new LinkedList<>(blocks);
 	}
 	
-	protected abstract Choice<K> reconstruct(RoleNode subj, List<? extends ProtocolBlock<K>> blocks);
+	public abstract Choice<K> reconstruct(RoleNode subj, List<? extends ProtocolBlock<K>> blocks);
 	
 	@Override
 	public Choice<K> visitChildren(AstVisitor nv) throws ScribbleException

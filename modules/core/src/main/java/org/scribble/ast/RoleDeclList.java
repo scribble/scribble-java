@@ -18,13 +18,13 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	@Override
 	protected RoleDeclList copy()
 	{
-		return new RoleDeclList(getRoleDecls());
+		return new RoleDeclList(getDecls());
 	}
 	
 	@Override
 	public RoleDeclList clone()
 	{
-		List<RoleDecl> decls = ScribUtil.cloneList(getRoleDecls());
+		List<RoleDecl> decls = ScribUtil.cloneList(getDecls());
 		return AstFactoryImpl.FACTORY.RoleDeclList(decls);
 	}
 
@@ -32,31 +32,37 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	public HeaderParamDeclList<RoleKind> reconstruct(List<? extends HeaderParamDecl<RoleKind>> decls)
 	{
 		ScribDel del = del();
-		RoleDeclList rdl = new RoleDeclList(getRoleDecls());
+		RoleDeclList rdl = new RoleDeclList(castRoleDecls(decls));
 		rdl = (RoleDeclList) rdl.del(del);
 		return rdl;
 	}
-
-	// FIXME: move to delegate?
-	@Override
-	public RoleDeclList project(Role self)
-	{
-		return AstFactoryImpl.FACTORY.RoleDeclList(getRoleDecls());
-	}
 	
-	public List<RoleDecl> getRoleDecls()
+	@Override
+	public List<RoleDecl> getDecls()
 	{
-		return this.decls.stream().map((rd) -> (RoleDecl) rd).collect(Collectors.toList());
+		return castRoleDecls(super.getDecls());
 	}
 
 	public List<Role> getRoles()
 	{
-		return this.decls.stream().map((rd) -> ((RoleDecl) rd).getDeclName()).collect(Collectors.toList());
+		return getDecls().stream().map((decl) -> decl.getDeclName()).collect(Collectors.toList());
+	}
+
+	// Move to del?
+	@Override
+	public RoleDeclList project(Role self)
+	{
+		return AstFactoryImpl.FACTORY.RoleDeclList(getDecls());
 	}
 
 	@Override
 	public String toString()
 	{
 		return "(" + super.toString() + ")";
+	}
+	
+	private static List<RoleDecl> castRoleDecls(List<? extends HeaderParamDecl<RoleKind>> decls)
+	{
+		return decls.stream().map((d) -> (RoleDecl) d).collect(Collectors.toList());
 	}
 }

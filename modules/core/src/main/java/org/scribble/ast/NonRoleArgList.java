@@ -10,6 +10,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
 
 
+// Cf. NonRoleParamDeclList
 public class NonRoleArgList extends DoArgList<NonRoleArg>
 {
 	public NonRoleArgList(List<NonRoleArg> args)

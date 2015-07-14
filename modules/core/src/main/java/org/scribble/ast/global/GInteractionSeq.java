@@ -10,6 +10,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.util.ScribUtil;
 
+
 public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 {
 	public GInteractionSeq(List<GInteractionNode> actions)

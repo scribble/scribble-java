@@ -26,7 +26,7 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 	}
 	
 	@Override
-	protected NonRoleParamDecl<K> reconstruct(SimpleNameNode<K> name)
+	public NonRoleParamDecl<K> reconstruct(SimpleNameNode<K> name)
 	{
 		ScribDel del = del();
 		NonRoleParamDecl<K> pd = new NonRoleParamDecl<>(this.kind, (NonRoleParamNode<K>) this.name);

@@ -6,6 +6,7 @@ import org.scribble.ast.ProtocolBlock;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 
+
 public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 {
 	public LProtocolBlock(LInteractionSeq seq)
@@ -27,7 +28,7 @@ public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 	}
 
 	@Override
-	protected LProtocolBlock reconstruct(InteractionSeq<Local> seq)
+	public LProtocolBlock reconstruct(InteractionSeq<Local> seq)
 	{
 		ScribDel del = del();
 		LProtocolBlock lpb = new LProtocolBlock((LInteractionSeq) seq);

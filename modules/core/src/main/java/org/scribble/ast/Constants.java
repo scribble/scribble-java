@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+
 // FIXME: cannot use AntlrConstants from org.scribble.parser due to Maven dependency restrictions
 public class Constants
 {

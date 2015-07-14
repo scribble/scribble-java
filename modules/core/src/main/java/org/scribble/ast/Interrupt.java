@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.scribble.ast.name.simple.RoleNode;
 
+
 // Maybe factor out a base class with MessageTransfer (the list of dest roles has a different meaning though)
 // Can't use abstract/reconstruct pattern, LocalInterrupt has different arguments -- add dummy dests field here to make reconstruct work?
 public class Interrupt extends ScribNodeBase//AbstractSimpleInteractionNode

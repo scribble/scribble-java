@@ -58,7 +58,7 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 		LProtocolDecl lpd = (LProtocolDecl) visited;
 		// FIXME: ensure all role params are used, to avoid empty roledecllist
 		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences();
-		List<RoleDecl> rds = lpd.header.roledecls.getRoleDecls().stream().filter((rd) -> 
+		List<RoleDecl> rds = lpd.header.roledecls.getDecls().stream().filter((rd) -> 
 				occs.contains(rd.getDeclName())).collect(Collectors.toList());
 		RoleDeclList rdl = AstFactoryImpl.FACTORY.RoleDeclList(rds);
 		LProtocolHeader header = lpd.getHeader().reconstruct(lpd.getHeader().getNameNode(), rdl, lpd.header.paramdecls);

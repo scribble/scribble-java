@@ -8,6 +8,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
+
 public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 {
 	public LContinue(RecVarNode recvar)
@@ -29,7 +30,7 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	}
 
 	@Override
-	protected LContinue reconstruct(RecVarNode recvar)
+	public LContinue reconstruct(RecVarNode recvar)
 	{
 		ScribDel del = del();
 		LContinue lc = new LContinue(recvar);

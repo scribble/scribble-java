@@ -9,4 +9,6 @@ public interface MessageNode extends NonRoleArgNode
 	Message toMessage();
 	
 	MessageNode clone();
+
+	//Arg<? extends SigKind> toArg();  // Not possible due to "diamond" with PayloadElemNameNode at AmbigNameNode
 }

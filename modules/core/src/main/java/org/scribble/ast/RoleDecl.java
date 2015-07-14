@@ -29,7 +29,7 @@ public class RoleDecl extends HeaderParamDecl<RoleKind>
 	}
 
 	@Override
-	protected RoleDecl reconstruct(SimpleNameNode<RoleKind> name)
+	public RoleDecl reconstruct(SimpleNameNode<RoleKind> name)
 	{
 		ScribDel del = del();
 		RoleDecl rd = new RoleDecl((RoleNode) name);

@@ -7,6 +7,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
+
 public abstract class Parallel<K extends ProtocolKind> extends CompoundInteractionNode<K>
 {
 	public final List<? extends ProtocolBlock<K>> blocks;
@@ -16,7 +17,7 @@ public abstract class Parallel<K extends ProtocolKind> extends CompoundInteracti
 		this.blocks = new LinkedList<>(blocks);
 	}
 
-	protected abstract Parallel<K> reconstruct(List<? extends ProtocolBlock<K>> blocks);
+	public abstract Parallel<K> reconstruct(List<? extends ProtocolBlock<K>> blocks);
 
 	@Override
 	public Parallel<K> visitChildren(AstVisitor nv) throws ScribbleException

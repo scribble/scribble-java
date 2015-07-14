@@ -12,7 +12,7 @@ import org.scribble.sesstype.name.ModuleName;
 
 public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 {
-	public GProtocolDecl(GProtocolHeader header, GProtocolDef def)  // Refactor all G/L concrete Node classes to not use generic parameters, but the corresponding concrete classes, like this
+	public GProtocolDecl(GProtocolHeader header, GProtocolDef def)
 	{
 		super(header, def);
 	}

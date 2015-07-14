@@ -12,6 +12,7 @@ import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 
+
 public class LProtocolDecl extends ProtocolDecl<Local> implements LNode
 {
 	public LProtocolDecl(LProtocolHeader header, LProtocolDef def)

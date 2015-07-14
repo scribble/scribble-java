@@ -7,6 +7,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 
+
 public class SelfRoleDecl extends RoleDecl
 {
 	public SelfRoleDecl(RoleNode rn)
@@ -21,7 +22,7 @@ public class SelfRoleDecl extends RoleDecl
 	}
 
 	@Override
-	protected RoleDecl reconstruct(SimpleNameNode<RoleKind> name)
+	public RoleDecl reconstruct(SimpleNameNode<RoleKind> name)
 	{
 		ScribDel del = del();
 		SelfRoleDecl rd = new SelfRoleDecl((RoleNode) name);

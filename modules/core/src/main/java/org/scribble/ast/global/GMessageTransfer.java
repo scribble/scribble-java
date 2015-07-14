@@ -11,6 +11,7 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.util.ScribUtil;
 
+
 public class GMessageTransfer extends MessageTransfer<Global> implements GSimpleInteractionNode
 {
 	public GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
@@ -34,7 +35,7 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 	}
 
 	@Override
-	protected GMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public GMessageTransfer reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		ScribDel del = del();
 		GMessageTransfer gmt = new GMessageTransfer(src, msg, dests);

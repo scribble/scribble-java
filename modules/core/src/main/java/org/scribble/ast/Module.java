@@ -11,9 +11,7 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.kind.ImportKind;
 import org.scribble.sesstype.kind.Kind;
-import org.scribble.sesstype.kind.NonProtocolKind;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
@@ -26,15 +24,12 @@ import org.scribble.visit.AstVisitor;
 public class Module extends ScribNodeBase
 {
 	public final ModuleDecl moddecl;
-	public final List<ImportDecl<? extends ImportKind>> imports;
-	public final List<NonProtocolDecl<? extends NonProtocolKind>> data;
-	public final List<ProtocolDecl<? extends ProtocolKind>> protos;
+	// Using (implicitly bounded) nested wildcards for mixed element lists (better practice to use separate lists?)
+	public final List<ImportDecl<?>> imports;
+	public final List<NonProtocolDecl<?>> data;
+	public final List<ProtocolDecl<?>> protos;
 	
-	public Module( 
-			ModuleDecl moddecl,
-			List<ImportDecl<? extends ImportKind>> imports,
-			List<NonProtocolDecl<? extends NonProtocolKind>> data,
-			List<ProtocolDecl<? extends ProtocolKind>> protos)
+	public Module(ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos)
 	{
 		this.moddecl = moddecl;
 		this.imports = new LinkedList<>(imports);
@@ -58,11 +53,7 @@ public class Module extends ScribNodeBase
 		return AstFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}
 	
-	protected Module reconstruct(
-			ModuleDecl moddecl,
-			List<ImportDecl<? extends ImportKind>> imports,
-			List<NonProtocolDecl<? extends NonProtocolKind>> data,
-			List<ProtocolDecl<? extends ProtocolKind>> protos)
+	public Module reconstruct(ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos)
 	{
 		ScribDel del = del();
 		Module m = new Module(moddecl, imports, data, protos);
@@ -74,9 +65,10 @@ public class Module extends ScribNodeBase
 	public Module visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		ModuleDecl moddecl = (ModuleDecl) visitChild(this.moddecl, nv);
-		List<ImportDecl<? extends ImportKind>> imports = visitChildListWithClassEqualityCheck(this, this.imports, nv);
-		List<NonProtocolDecl<? extends NonProtocolKind>> data = visitChildListWithClassEqualityCheck(this, this.data, nv);
-		List<ProtocolDecl<? extends ProtocolKind>> protos = visitChildListWithClassEqualityCheck(this, this.protos, nv);
+		// class equality check probably too restrictive
+		List<ImportDecl<?>> imports = ScribNodeBase.visitChildListWithClassEqualityCheck(this, this.imports, nv);
+		List<NonProtocolDecl<?>> data = ScribNodeBase.visitChildListWithClassEqualityCheck(this, this.data, nv);
+		List<ProtocolDecl<?>> protos = ScribNodeBase.visitChildListWithClassEqualityCheck(this, this.protos, nv);
 		return reconstruct(moddecl, imports, data, protos);
 	}
 
@@ -120,7 +112,7 @@ public class Module extends ScribNodeBase
 	// msn simple alias name
 	public MessageSigNameDecl getMessageSigDecl(MessageSigName simpname)
 	{
-		for (NonProtocolDecl<? extends Kind> dtd : this.data)
+		for (NonProtocolDecl<?> dtd : this.data)
 		{
 			if (dtd instanceof MessageSigNameDecl && dtd.getDeclName().equals(simpname))
 			{
@@ -140,10 +132,8 @@ public class Module extends ScribNodeBase
 		return getProtocolDecls(IS_LOCALPROTOCOLDECL, TO_LOCALPROTOCOLDECL);
 	}
 
-	private <T extends ProtocolDecl<? extends ProtocolKind>>
-			List<T> getProtocolDecls(
-					Predicate<ProtocolDecl<? extends ProtocolKind>> filter,
-					Function<ProtocolDecl<? extends ProtocolKind>, T> cast)
+	private <T extends ProtocolDecl<?>>
+		List<T> getProtocolDecls(Predicate<ProtocolDecl<?>> filter, Function<ProtocolDecl<?>, T> cast)
 	{
 		return this.protos.stream().filter(filter).map(cast).collect(Collectors.toList());
 	}
@@ -157,9 +147,9 @@ public class Module extends ScribNodeBase
 
 	// pn is simple name
 	private static <K extends ProtocolKind>
-			ProtocolDecl<K> getProtocolDecl(List<ProtocolDecl<? extends ProtocolKind>> pds, ProtocolName<K> simpname)
+			ProtocolDecl<K> getProtocolDecl(List<ProtocolDecl<?>> pds, ProtocolName<K> simpname)
 	{
-		List<ProtocolDecl<? extends ProtocolKind>> filtered = pds.stream()
+		List<ProtocolDecl<?>> filtered = pds.stream()
 				.filter((pd) -> pd.header.getDeclName().equals(simpname))
 				.filter((pd) -> (simpname.getKind().equals(Global.KIND)) ? pd.isGlobal() : pd.isLocal())
 				.collect(Collectors.toList());
@@ -172,15 +162,11 @@ public class Module extends ScribNodeBase
 		return res;
 	}
 
-	private static final Predicate<ProtocolDecl<? extends ProtocolKind>>
-			IS_GLOBALPROTOCOLDECL = (pd) -> pd.isGlobal();
+	private static final Predicate<ProtocolDecl<?>> IS_GLOBALPROTOCOLDECL = (pd) -> pd.isGlobal();
 
-	private static final Predicate<ProtocolDecl<? extends ProtocolKind>>
-			IS_LOCALPROTOCOLDECL = (pd) -> pd.isLocal();
+	private static final Predicate<ProtocolDecl<?>> IS_LOCALPROTOCOLDECL = (pd) -> pd.isLocal();
 
-	private static final Function <ProtocolDecl<? extends ProtocolKind>, GProtocolDecl>
-			TO_GLOBALPROTOCOLDECL = (pd) -> (GProtocolDecl) pd;
+	private static final Function <ProtocolDecl<?>, GProtocolDecl> TO_GLOBALPROTOCOLDECL = (pd) -> (GProtocolDecl) pd;
 
-	private static final Function <ProtocolDecl<? extends ProtocolKind>, LProtocolDecl>
-			TO_LOCALPROTOCOLDECL = (pd) -> (LProtocolDecl) pd;
+	private static final Function <ProtocolDecl<?>, LProtocolDecl> TO_LOCALPROTOCOLDECL = (pd) -> (LProtocolDecl) pd;
 }

@@ -36,7 +36,7 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	}
 
 	@Override
-	protected LChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Local>> blocks)
+	public LChoice reconstruct(RoleNode subj, List<? extends ProtocolBlock<Local>> blocks)
 	{
 		ScribDel del = del();
 		LChoice lc = new LChoice(subj, castBlocks(blocks));

@@ -24,7 +24,7 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 		this.dests = new LinkedList<>(dests);
 	}
 
-	protected abstract MessageTransfer<K> reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests);
+	public abstract MessageTransfer<K> reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests);
 
 	@Override
 	public MessageTransfer<K> visitChildren(AstVisitor nv) throws ScribbleException

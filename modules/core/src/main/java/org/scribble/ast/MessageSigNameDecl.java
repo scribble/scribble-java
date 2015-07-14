@@ -7,6 +7,7 @@ import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.ModuleName;
 
+
 public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 {
 	public MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode name)
@@ -17,18 +18,18 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	@Override
 	protected MessageSigNameDecl copy()
 	{
-		return new MessageSigNameDecl(this.schema, this.extName, this.source, (MessageSigNameNode) this.name);
+		return new MessageSigNameDecl(this.schema, this.extName, this.source, getNameNode());
 	}
 	
 	@Override
 	public MessageSigNameDecl clone()
 	{
 		MessageSigNameNode name = (MessageSigNameNode) this.name.clone();
-		return AstFactoryImpl.FACTORY.MessageSigNameDecl(schema, extName, source, name);
+		return AstFactoryImpl.FACTORY.MessageSigNameDecl(this.schema, this.extName, this.source, name);
 	}
 
 	@Override
-	protected MessageSigNameDecl reconstruct(String schema, String extName, String source, MemberNameNode<SigKind> name)
+	public MessageSigNameDecl reconstruct(String schema, String extName, String source, MemberNameNode<SigKind> name)
 	{
 		ScribDel del = del();
 		MessageSigNameDecl msnd = new MessageSigNameDecl(schema, extName, source, (MessageSigNameNode) name);
@@ -40,6 +41,12 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	public boolean isMessageSigDecl()
 	{
 		return true;
+	}
+
+	@Override
+	public MessageSigNameNode getNameNode()
+	{
+		return (MessageSigNameNode) super.getNameNode();
 	}
 
 	@Override

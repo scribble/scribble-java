@@ -14,6 +14,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
+
 public class LReceive extends MessageTransfer<Local> implements LSimpleInteractionNode
 {
 	public LReceive(RoleNode src, MessageNode msg, List<RoleNode> dests)
@@ -37,7 +38,7 @@ public class LReceive extends MessageTransfer<Local> implements LSimpleInteracti
 	}
 
 	@Override
-	protected LReceive reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
+	public LReceive reconstruct(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
 		ScribDel del = del();
 		LReceive lr = new LReceive(src, msg, dests);

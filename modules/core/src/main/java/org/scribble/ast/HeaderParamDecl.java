@@ -16,7 +16,7 @@ public abstract class HeaderParamDecl<K extends ParamKind> extends NameDeclNode<
 		super(name);
 	}
 
-	protected abstract HeaderParamDecl<K> reconstruct(SimpleNameNode<K> name);
+	public abstract HeaderParamDecl<K> reconstruct(SimpleNameNode<K> name);
 	
 	@Override
 	public HeaderParamDecl<K> visitChildren(AstVisitor nv) throws ScribbleException
@@ -25,7 +25,7 @@ public abstract class HeaderParamDecl<K extends ParamKind> extends NameDeclNode<
 		return reconstruct(name);
 	}
 	
-	public abstract HeaderParamDecl<K> project(Role self);  // FIXME: move to delegate
+	public abstract HeaderParamDecl<K> project(Role self);  // Move to delegate?
 
 	public abstract String getKeyword();
 	

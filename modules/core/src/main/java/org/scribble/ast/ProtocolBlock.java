@@ -17,7 +17,7 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 	@Override
 	public abstract ProtocolBlock<K> clone();
 
-	protected abstract ProtocolBlock<K> reconstruct(InteractionSeq<K> seq);
+	public abstract ProtocolBlock<K> reconstruct(InteractionSeq<K> seq);
 
 	public abstract InteractionSeq<K> getInteractionSeq();
 

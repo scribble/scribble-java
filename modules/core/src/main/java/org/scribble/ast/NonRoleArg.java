@@ -14,18 +14,18 @@ public class NonRoleArg extends DoArg<NonRoleArgNode>
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new NonRoleArg(this.val);
+		return new NonRoleArg(getVal());
 	}
 	
 	@Override
 	public NonRoleArg clone()
 	{
-		NonRoleArgNode arg = (NonRoleArgNode) this.val.clone();
+		NonRoleArgNode arg = (NonRoleArgNode) getVal().clone();
 		return AstFactoryImpl.FACTORY.NonRoleArg(arg);
 	}
 
 	@Override
-	protected NonRoleArg reconstruct(NonRoleArgNode arg)
+	public NonRoleArg reconstruct(NonRoleArgNode arg)
 	{
 		ScribDel del = del();
 		NonRoleArg ai = new NonRoleArg(arg);
@@ -34,8 +34,14 @@ public class NonRoleArg extends DoArg<NonRoleArgNode>
 	}
 	
 	@Override
+	public NonRoleArgNode getVal()
+	{
+		return (NonRoleArgNode) super.getVal();
+	}
+	
+	@Override
 	public NonRoleArg project(Role self)
 	{
-		return AstFactoryImpl.FACTORY.NonRoleArg(this.val);  // arg needs projection?
+		return AstFactoryImpl.FACTORY.NonRoleArg(getVal());  // arg needs projection?
 	}
 }

@@ -17,7 +17,7 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new DataTypeDecl(this.schema, this.extName, this.source, (DataTypeNameNode) this.name);
+		return new DataTypeDecl(this.schema, this.extName, this.source, getNameNode());
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	}
 
 	@Override
-	protected DataTypeDecl reconstruct(String schema, String extName, String source, MemberNameNode<DataTypeKind> name)
+	public DataTypeDecl reconstruct(String schema, String extName, String source, MemberNameNode<DataTypeKind> name)
 	{
 		ScribDel del = del();
 		DataTypeDecl dtd = new DataTypeDecl(schema, extName, source, (DataTypeNameNode) name);
@@ -40,6 +40,12 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	public boolean isDataTypeDecl()
 	{
 		return true;
+	}
+
+	@Override
+	public DataTypeNameNode getNameNode()
+	{
+		return (DataTypeNameNode) super.getNameNode();
 	}
 
 	@Override

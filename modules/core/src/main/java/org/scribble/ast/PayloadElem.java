@@ -29,7 +29,7 @@ public class PayloadElem extends ScribNodeBase
 		return AstFactoryImpl.FACTORY.PayloadElem(name);
 	}
 
-	protected PayloadElem reconstruct(PayloadElemNameNode name)
+	public PayloadElem reconstruct(PayloadElemNameNode name)
 	{
 		ScribDel del = del();
 		PayloadElem elem = new PayloadElem(name);

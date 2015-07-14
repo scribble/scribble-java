@@ -5,6 +5,7 @@ import java.util.List;
 import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.ProtocolKind;
 
+
 public abstract class Interruptible<K extends ProtocolKind> extends CompoundInteractionNode<K> implements ScopedNode
 {
 	public final ScopeNode scope;

@@ -5,6 +5,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
+
 public abstract class Continue<K extends ProtocolKind> extends SimpleInteractionNode<K>
 {
 	public final RecVarNode recvar;
@@ -14,7 +15,7 @@ public abstract class Continue<K extends ProtocolKind> extends SimpleInteraction
 		this.recvar = recvar;
 	}
 
-	protected abstract Continue<K> reconstruct(RecVarNode recvar);
+	public abstract Continue<K> reconstruct(RecVarNode recvar);
 
 	@Override
 	public Continue<K> visitChildren(AstVisitor nv) throws ScribbleException

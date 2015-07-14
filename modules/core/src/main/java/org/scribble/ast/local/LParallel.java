@@ -11,6 +11,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
+
 public class LParallel extends Parallel<Local> implements LCompoundInteractionNode
 {
 	public LParallel(List<LProtocolBlock> blocks)
@@ -32,7 +33,7 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	}
 	
 	@Override
-	protected LParallel reconstruct(List<? extends ProtocolBlock<Local>> blocks)
+	public LParallel reconstruct(List<? extends ProtocolBlock<Local>> blocks)
 	{
 		ScribDel del = del();
 		LParallel lp = new LParallel(castBlocks(blocks));

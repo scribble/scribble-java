@@ -6,6 +6,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.MessageSig;
 import org.scribble.visit.AstVisitor;
 
+
 public class MessageSigNode extends ScribNodeBase implements MessageNode
 {
 	public final OpNode op;
@@ -31,7 +32,7 @@ public class MessageSigNode extends ScribNodeBase implements MessageNode
 		return AstFactoryImpl.FACTORY.MessageSigNode(op, payload);
 	}
 	
-	protected MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
+	public MessageSigNode reconstruct(OpNode op, PayloadElemList payload)
 	{
 		ScribDel del = del();	
 		MessageSigNode msn = new MessageSigNode(op, payload);

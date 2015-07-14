@@ -45,6 +45,7 @@ import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
+
 public interface AstFactory
 {
 	Module Module(ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos);

@@ -16,23 +16,29 @@ public class RoleArg extends DoArg<RoleNode>
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new RoleArg(this.val);
+		return new RoleArg(getVal());
 	}	
 	
 	@Override
 	public RoleArg clone()
 	{
-		RoleNode role = this.val.clone();
+		RoleNode role = getVal().clone();
 		return AstFactoryImpl.FACTORY.RoleArg(role);
 	}
 
 	@Override
-	protected RoleArg reconstruct(RoleNode arg)
+	public RoleArg reconstruct(RoleNode arg)
 	{
 		ScribDel del = del();
 		RoleArg ri = new RoleArg(arg);
 		ri = (RoleArg) ri.del(del);
 		return ri;
+	}
+	
+	@Override
+	public RoleNode getVal()
+	{
+		return (RoleNode) super.getVal();
 	}
 	
 	// FIXME: move to delegate?

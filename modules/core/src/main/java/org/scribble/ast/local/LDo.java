@@ -14,6 +14,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
+
 public class LDo extends Do<Local> implements LSimpleInteractionNode
 {
 	public LDo(RoleArgList roleinstans, NonRoleArgList arginstans, LProtocolNameNode proto)

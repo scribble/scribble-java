@@ -20,8 +20,6 @@ public abstract class Recursion<K extends ProtocolKind> extends CompoundInteract
 	
 	@Override
 	public abstract Recursion<K> clone();
-	
-	public abstract ProtocolBlock<K> getBlock();
 
 	@Override
 	public Recursion<K> visitChildren(AstVisitor nv) throws ScribbleException
@@ -30,6 +28,8 @@ public abstract class Recursion<K extends ProtocolKind> extends CompoundInteract
 		ProtocolBlock<K> block = visitChildWithClassEqualityCheck(this, this.block, nv);
 		return reconstruct(recvar, block);
 	}
+	
+	public abstract ProtocolBlock<K> getBlock();
 
 	@Override
 	public String toString()

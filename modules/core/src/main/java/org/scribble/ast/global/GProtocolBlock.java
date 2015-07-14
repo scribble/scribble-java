@@ -6,6 +6,7 @@ import org.scribble.ast.ProtocolBlock;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
+
 public class GProtocolBlock extends ProtocolBlock<Global> implements GNode
 {
 	public GProtocolBlock(GInteractionSeq seq)
@@ -27,7 +28,7 @@ public class GProtocolBlock extends ProtocolBlock<Global> implements GNode
 	}
 
 	@Override
-	protected GProtocolBlock reconstruct(InteractionSeq<Global> seq)
+	public GProtocolBlock reconstruct(InteractionSeq<Global> seq)
 	{
 		ScribDel del = del();
 		GProtocolBlock gpb = new GProtocolBlock((GInteractionSeq) seq);

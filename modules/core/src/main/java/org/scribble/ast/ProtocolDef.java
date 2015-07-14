@@ -14,7 +14,7 @@ public abstract class ProtocolDef<K extends ProtocolKind> extends ScribNodeBase 
 		this.block = block;
 	}
 	
-	protected abstract ProtocolDef<K> reconstruct(ProtocolBlock<K> block);
+	public abstract ProtocolDef<K> reconstruct(ProtocolBlock<K> block);
 
 	public abstract ProtocolBlock<K> getBlock();
 	

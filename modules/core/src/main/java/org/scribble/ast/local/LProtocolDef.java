@@ -27,7 +27,7 @@ public class LProtocolDef extends ProtocolDef<Local> implements LNode
 	}
 
 	@Override
-	protected LProtocolDef reconstruct(ProtocolBlock<Local> block)
+	public LProtocolDef reconstruct(ProtocolBlock<Local> block)
 	{
 		ScribDel del = del();
 		LProtocolDef lpd = new LProtocolDef((LProtocolBlock) block);

@@ -16,14 +16,24 @@ public abstract class DoArg<T extends DoArgNode> extends ScribNodeBase
 		this.val = arg;
 	}
 
-	protected abstract DoArg<T> reconstruct(T arg);
+	public abstract DoArg<T> reconstruct(T arg);
 	
 	@Override
 	public DoArg<T> visitChildren(AstVisitor nv) throws ScribbleException
 	{
+		ScribNode visited = visitChild(this.val, nv);  // Disambiguation will replace AmbiguousNameNodes*/
+		if (!(visited instanceof DoArgNode))
+		{
+			throw new RuntimeException("Shouldn't get in here: " + visited);
+		}
 		@SuppressWarnings("unchecked")
-		T arg = (T) visitChild(this.val, nv);  // Disambiguation will replace AmbiguousNameNodes
+		T arg = (T) visited;
 		return reconstruct(arg);
+	}
+	
+	public T getVal()
+	{
+		return this.val;
 	}
 
 	public abstract DoArg<T> project(Role self);
