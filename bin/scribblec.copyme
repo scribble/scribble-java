@@ -11,7 +11,7 @@ DIR=`dirname "$0"`/..
 usage() {
   echo scribblec:
   cat <<EOF
-  -?  --help                                     display this information
+  -h  --help                                     display this information
   --verbose                                      echo the python command
   -ip [path]                                     Scribble import path
   -project [simple global protocol name] [role]  project protocol
@@ -39,22 +39,25 @@ ARGS=
 CLASSPATH=$DIR'/modules/cli/target/classes/:'$DIR'/modules/core/target/classes:'$DIR'/modules/parser/target/classes:'$ANTLR
 CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 
+usage=0
+verbose=0
+
 while true; do
     case "$1" in
         "")
             break
             ;;
-        --verbose)
-            verbose=1
-            shift
-            ;;
-        -?)
+        -h)
             usage=1
             break
             ;;
         --help)
             usage=1
             break
+            ;;
+        --verbose)
+            verbose=1
+            shift
             ;;
         *)
             ARGS="$ARGS '$1'"
