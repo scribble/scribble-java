@@ -22,17 +22,17 @@ public class InlineProtocolEnv extends Env
 	{
 		return copy();
 	}
+
+	public ScribNode getTranslation()
+	{
+		return this.inlined;
+	}
 	
 	public InlineProtocolEnv setTranslation(ScribNode inlined)
 	{
 		InlineProtocolEnv copy = new InlineProtocolEnv();
 		copy.inlined = inlined;
 		return copy;
-	}
-
-	public ScribNode getTranslation()
-	{
-		return this.inlined;
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		// "Entering" the continue here in leave, where we can merge the new state into the parent Env
 		// Generally: if side effecting Env state to be merged into the parent (not just popped and discarded), leave must be overridden to do so
 		LContinue lc = (LContinue) visited;
-		ReachabilityEnv env = checker.popEnv().leaveContinue(lc.recvar.toName());
+		ReachabilityEnv env = checker.popEnv().addContinueLabel(lc.recvar.toName());
 		setEnv(env);  // Env recording probably not needed for all LocalInteractionNodes, just the compound ones, like for WF-choice checking
 		checker.pushEnv(checker.popEnv().mergeContext(env));
 		return lc;

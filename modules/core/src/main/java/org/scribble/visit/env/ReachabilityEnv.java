@@ -11,29 +11,25 @@ import org.scribble.sesstype.name.RecVar;
 
 public class ReachabilityEnv extends Env
 {
-	private final Set<RecVar> contlabs;  // Used to check non-tail recursion (in the presence of sequencing)
-	private boolean contExitable;  // false after a continue; true if choice has an exit (false inherited for all other constructs)
+	private boolean seqable; 
+			// For checking bad sequencing of unreachable code: false after a continue; true if choice has an exit (false inherited for all other constructs)
+	private final Set<RecVar> contlabs;  // For checking "reachable code" satisfies tail recursion (in the presence of sequencing)
 	
 	public ReachabilityEnv()
 	{
-		this(Collections.emptySet(), true);
+		this(true, Collections.emptySet());
 	}
 	
-	protected ReachabilityEnv(Set<RecVar> contlabs, boolean contExitable)
+	protected ReachabilityEnv(boolean seqable, Set<RecVar> contlabs)
 	{
 		this.contlabs = new HashSet<RecVar>(contlabs);
-		this.contExitable = contExitable;
-	}
-	
-	public boolean isExitable()
-	{
-		return this.contlabs.isEmpty() && this.contExitable;
+		this.seqable = seqable;
 	}
 
 	@Override
 	public ReachabilityEnv copy()
 	{
-		return new ReachabilityEnv(this.contlabs, this.contExitable);
+		return new ReachabilityEnv(this.seqable, this.contlabs);
 	}
 
 	@Override
@@ -42,13 +38,14 @@ public class ReachabilityEnv extends Env
 		return copy();
 	}
 
+  // Should not be used for single block choice 
 	@Override
 	public ReachabilityEnv mergeContext(Env child)
 	{
-		return mergeContexts(Arrays.asList((ReachabilityEnv) child));  // Should not be used for single block choice 
+		return mergeContexts(Arrays.asList((ReachabilityEnv) child));
 	}
 
-	// Shouldn't be used for Choice
+	// Should not be used for Choice
 	@Override
 	public ReachabilityEnv mergeContexts(List<? extends Env> children)
 	{
@@ -64,19 +61,25 @@ public class ReachabilityEnv extends Env
 	private ReachabilityEnv merge(boolean isChoice, List<ReachabilityEnv> children)
 	{
 		ReachabilityEnv copy = copy();
-		children.stream().forEach((e) -> copy.contlabs.addAll(e.contlabs));
-		copy.contExitable =
+		copy.seqable =
 				(isChoice)
-					? children.stream().filter((e) -> e.contExitable).count() > 0
-					: children.stream().filter((e) -> !e.contExitable).count() == 0;
+					? children.stream().filter((e) -> e.seqable).count() > 0
+					: children.stream().filter((e) -> !e.seqable).count() == 0;
+		children.stream().forEach((e) -> copy.contlabs.addAll(e.contlabs));
 		return copy;
 	}
 	
-	public ReachabilityEnv leaveContinue(RecVar recvar)
+	// i.e. control flow has the potential to exit from this context
+	public boolean isSequenceable()
+	{
+		return this.seqable && this.contlabs.isEmpty();
+	}
+	
+	public ReachabilityEnv addContinueLabel(RecVar recvar)
 	{
 		ReachabilityEnv copy = copy();
+		copy.seqable = false;
 		copy.contlabs.add(recvar);
-		copy.contExitable = false;
 		return copy;
 	}
 	

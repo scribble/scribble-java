@@ -51,7 +51,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		for (InteractionNode<Local> li : child.getInteractions())
 		{
 			ReachabilityEnv re = checker.peekEnv();
-			if (!re.isExitable())
+			if (!re.isSequenceable())
 			{
 				throw new ScribbleException("Bad sequence to: " + li);
 			}
