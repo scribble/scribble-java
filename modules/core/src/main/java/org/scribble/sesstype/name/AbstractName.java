@@ -27,6 +27,12 @@ public abstract class AbstractName<K extends Kind> implements Name<K>
 	}
 
 	@Override
+	public int getElementCount()
+	{
+		return this.elems.length;
+	}
+
+	@Override
 	public boolean isEmpty()
 	{
 		return this.elems.length == 0;
@@ -37,30 +43,23 @@ public abstract class AbstractName<K extends Kind> implements Name<K>
 	{
 		return this.elems.length > 1;
 	}
+
+	@Override
+	public String[] getElements()
+	{
+		return Arrays.copyOf(this.elems, this.elems.length);
+	}
+	@Override
+	public String[] getPrefixElements()
+	{
+		return Arrays.copyOfRange(this.elems, 0, this.elems.length - 1);
+	}
 	
 	// Not SimpleName so that e.g. ModuleName can return a simple ModuleName
 	@Override
 	public String getLastElement()
 	{
 		return this.elems[this.elems.length - 1];
-	}
-
-	@Override
-	public int getElementCount()
-	{
-		return this.elems.length;
-	}
-	
-	@Override
-	public String[] getElements()
-	{
-		return this.elems;
-	}
-
-	@Override
-	public String[] getPrefixElements()
-	{
-		return Arrays.copyOfRange(this.elems, 0, this.elems.length - 1);
 	}
 
 	@Override

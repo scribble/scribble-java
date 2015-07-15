@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -31,7 +32,7 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 	
 	public List<? extends InteractionNode<K>> getInteractions()
 	{
-		return this.inters;
+		return Collections.unmodifiableList(this.inters);
 	}
 	
 	public boolean isEmpty()

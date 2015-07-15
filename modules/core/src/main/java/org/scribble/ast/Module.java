@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -25,9 +26,9 @@ public class Module extends ScribNodeBase
 	public final ModuleDecl moddecl;
 
 	// Using (implicitly bounded) nested wildcards for mixed element lists (better practice to use separate lists?)
-	public final List<ImportDecl<?>> imports;
-	public final List<NonProtocolDecl<?>> data;
-	public final List<ProtocolDecl<?>> protos;
+	private final List<ImportDecl<?>> imports;
+	private final List<NonProtocolDecl<?>> data;
+	private final List<ProtocolDecl<?>> protos;
 	
 	public Module(ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos)
 	{
@@ -120,6 +121,21 @@ public class Module extends ScribNodeBase
 			}
 		}
 		throw new RuntimeException("Message signature not found: " + simpname);
+	}
+	
+	public List<ImportDecl<?>> getImportDecls()
+	{
+		return Collections.unmodifiableList(this.imports);
+	}
+
+	public List<NonProtocolDecl<?>> getNonProtocolDecls()
+	{
+		return Collections.unmodifiableList(this.data);
+	}
+	
+	public List<ProtocolDecl<?>> getProtocolDecls()
+	{
+		return Collections.unmodifiableList(this.protos);
 	}
 	
 	public List<GProtocolDecl> getGlobalProtocolDecls()

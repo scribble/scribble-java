@@ -21,7 +21,7 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 	
 	public String[] getElements()
 	{
-		return this.elems;
+		return Arrays.copyOf(this.elems, this.elems.length);
 	}
 
 	public int getElementCount()

@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	
 	public List<T> getDoArgs()
 	{
-		return this.args;
+		return Collections.unmodifiableList(this.args);
 	}
 
 	public int length()

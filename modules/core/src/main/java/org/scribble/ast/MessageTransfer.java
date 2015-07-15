@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 	
 	public List<RoleNode> getDestinations()
 	{
-		return this.dests;
+		return Collections.unmodifiableList(this.dests);
 	}
 	
 	public List<Role> getDestinationRoles()

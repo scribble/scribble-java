@@ -59,7 +59,7 @@ public class ModuleContext
 	private void addModule(Module mod, ModuleName vismodname)
 	{
 		this.modules.put(vismodname, mod.getFullModuleName());
-		for (NonProtocolDecl<? extends Kind> npd : mod.data)
+		for (NonProtocolDecl<? extends Kind> npd : mod.getNonProtocolDecls())
 		{
 			if (npd.isDataTypeDecl())
 			{
@@ -86,7 +86,7 @@ public class ModuleContext
 	{
 		ModuleName fullmodname = mod.getFullModuleName();
 		ModuleName simplemodname = fullmodname.getSimpleName();
-		for (NonProtocolDecl<? extends Kind> npd : mod.data)
+		for (NonProtocolDecl<?> npd : mod.getNonProtocolDecls())
 		{
 			if (npd.isDataTypeDecl())
 			{
@@ -132,7 +132,7 @@ public class ModuleContext
 	// Could move to ImportModule but would need a defensive copy setter, or cache info in builder and create on leave
 	private void addImportedModules(JobContext jcontext, Module mod)
 	{
-		for (ImportDecl<? extends Kind> id : mod.imports)
+		for (ImportDecl<?> id : mod.getImportDecls())
 		{
 			if (id.isImportModule())
 			{

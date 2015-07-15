@@ -1,6 +1,7 @@
 package org.scribble.ast.context;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public abstract class ProtocolDeclContext<K extends ProtocolKind>
 	
 	public Set<Role> getRoleOccurrences()
 	{
-		return this.roles;
+		return Collections.unmodifiableSet(this.roles);
 	}
 
 	public ProtocolDeclContext<K> setRoleOccurrences(Collection<Role> roles)
@@ -40,6 +41,7 @@ public abstract class ProtocolDeclContext<K extends ProtocolKind>
 
 	public DependencyMap<? extends ProtocolName<K>> getDependencyMap()
 	{
+		// FIXME: returned deps view is mutable -- context should be immutable for del to be immutable
 		return this.deps;
 	}
 

@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 	
 	public List<? extends HeaderParamDecl<K>> getDecls()
 	{
-		return this.decls;
+		return Collections.unmodifiableList(this.decls);
 	}
 	
 	public abstract HeaderParamDeclList<K> project(Role self);  // FIXME: move to delegate

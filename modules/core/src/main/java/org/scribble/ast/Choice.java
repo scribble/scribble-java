@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 	
 	public List<? extends ProtocolBlock<K>> getBlocks()
 	{
-		return this.blocks;
+		return Collections.unmodifiableList(this.blocks);
 	}
 	
 	@Override

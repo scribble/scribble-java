@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,14 +8,13 @@ import java.util.stream.Collectors;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.kind.PayloadTypeKind;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
 public class PayloadElemList extends ScribNodeBase
 {
-	public final List<PayloadElem> elems;  // FIXME: parameterise on Kind (cf. sesstypes)
+	private final List<PayloadElem> elems;  // FIXME: parameterise on Kind (cf. sesstypes)
 
 	public PayloadElemList(List<PayloadElem> elems)
 	{
@@ -48,10 +48,15 @@ public class PayloadElemList extends ScribNodeBase
 		List<PayloadElem> elems = visitChildListWithClassEqualityCheck(this, this.elems, nv);
 		return reconstruct(elems);
 	}
+	
+	public List<PayloadElem> getElements()
+	{
+		return Collections.unmodifiableList(this.elems);
+	}
 
 	public Payload toPayload()
 	{
-		List<PayloadType<? extends PayloadTypeKind>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
+		List<PayloadType<?>> pts = this.elems.stream().map((pe) -> pe.name.toPayloadType()).collect(Collectors.toList());
 		return new Payload(pts);
 	}
 

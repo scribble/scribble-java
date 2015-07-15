@@ -17,9 +17,6 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.ImportKind;
-import org.scribble.sesstype.kind.NonProtocolKind;
-import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -66,7 +63,7 @@ public class ModuleDel extends ScribDelBase
 	{
 		ModuleNameNode modname = Projector.makeProjectedModuleNameNode(root.moddecl.getFullModuleName(), lpd.getHeader().getDeclName());
 		ModuleDecl moddecl = AstFactoryImpl.FACTORY.ModuleDecl(modname);
-		List<ImportDecl<? extends ImportKind>> imports = new LinkedList<>();
+		List<ImportDecl<?>> imports = new LinkedList<>();
 		for (GProtocolName gpn : deps.keySet())
 		{
 			for (Role role : deps.get(gpn))
@@ -80,8 +77,8 @@ public class ModuleDel extends ScribDelBase
 			}
 		}
 		
-		List<NonProtocolDecl<? extends NonProtocolKind>> data = new LinkedList<>(root.data);  // FIXME: copy?  // FIXME: only project the dependencies
-		List<ProtocolDecl<? extends ProtocolKind>> protos = Arrays.asList(lpd);
+		List<NonProtocolDecl<?>> data = new LinkedList<>(root.getNonProtocolDecls());  // FIXME: copy?  // FIXME: only project the dependencies
+		List<ProtocolDecl<?>> protos = Arrays.asList(lpd);
 		return AstFactoryImpl.FACTORY.Module(moddecl, imports, data, protos);
 	}
 	

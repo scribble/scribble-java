@@ -9,12 +9,14 @@ import org.scribble.sesstype.kind.Kind;
 public interface Name<K extends Kind> extends Serializable
 {
 	public K getKind();
+
+	public int getElementCount();
 	public boolean isEmpty();
 	public boolean isPrefixed();
-	public String getLastElement();
-	public int getElementCount();
+
 	public String[] getElements();
 	public String[] getPrefixElements();
+	public String getLastElement();
 
 	static String[] compileElements(String[] cn, String n)
 	{
