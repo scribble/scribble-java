@@ -22,7 +22,7 @@ import org.scribble.visit.OffsetSubprotocolVisitor;
 import org.scribble.visit.WFChoiceChecker;
 
 @Deprecated
-public class WFChoiceEnv extends Env
+public class WFChoiceEnv extends Env<WFChoiceEnv>
 {
 	public static final Role DUMMY_ROLE = new Role("__ROLE");
 	public static final Op ROOT_OPERATOR = new Op("__ROOT");
@@ -110,14 +110,15 @@ public class WFChoiceEnv extends Env
 	
 	//public WellFormedChoiceEnv merge(WellFormedChoiceEnv child)
 	@Override
-	public WFChoiceEnv mergeContext(Env child)
+	public WFChoiceEnv mergeContext(WFChoiceEnv child)
 	{
 		return mergeContexts(Arrays.asList(child));
 	}
 
 	@Override
 	//public WellFormedChoiceEnv merge(List<WellFormedChoiceEnv> children)
-	public WFChoiceEnv mergeContexts(List<? extends Env> children)
+	//public WFChoiceEnv mergeContexts(List<? extends Env> children)
+	public WFChoiceEnv mergeContexts(List<WFChoiceEnv> children)
 	{
 		WFChoiceEnv copy = copy();
 		for (WFChoiceEnv child : castList(children))

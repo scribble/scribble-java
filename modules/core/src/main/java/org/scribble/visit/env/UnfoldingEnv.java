@@ -2,9 +2,8 @@ package org.scribble.visit.env;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class UnfoldingEnv extends InlineProtocolEnv
+public class UnfoldingEnv extends  Env<UnfoldingEnv>
 {
 	private boolean shouldUnfold;
 	
@@ -31,16 +30,16 @@ public class UnfoldingEnv extends InlineProtocolEnv
 	}
 
 	@Override
-	public UnfoldingEnv mergeContext(Env env)
+	public UnfoldingEnv mergeContext(UnfoldingEnv env)
 	{
 		return mergeContexts(Arrays.asList(env));
 	}
 
 	@Override
-	public UnfoldingEnv mergeContexts(List<? extends Env> envs)
+	public UnfoldingEnv mergeContexts(List<UnfoldingEnv> envs)
 	{
 		UnfoldingEnv copy = copy();
-		boolean merge = (castList(envs).stream().filter((e) -> e.shouldUnfold).count() > 0);
+		boolean merge = (envs.stream().filter((e) -> e.shouldUnfold).count() > 0);
 		copy.shouldUnfold = merge;
 		return copy;
 	}
@@ -68,10 +67,5 @@ public class UnfoldingEnv extends InlineProtocolEnv
 	public String toString()
 	{
 		return super.toString() + ": " + this.shouldUnfold;
-	}
-	
-	private static List<UnfoldingEnv> castList(List<? extends Env> envs)
-	{
-		return envs.stream().map((e) -> (UnfoldingEnv) e).collect(Collectors.toList());
 	}
 }

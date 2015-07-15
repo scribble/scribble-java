@@ -1,6 +1,6 @@
 package org.scribble.visit.env;
 
-public class DummyEnv extends Env
+public class DummyEnv extends Env<DummyEnv>
 {
 	public static final DummyEnv DUMMY = new DummyEnv();
 
@@ -10,13 +10,13 @@ public class DummyEnv extends Env
 	}
 
 	@Override
-	protected Env copy()
+	protected DummyEnv copy()
 	{
 		return this;
 	}
 
 	@Override
-	public Env enterContext()
+	public DummyEnv enterContext()
 	{
 		return this;
 	}

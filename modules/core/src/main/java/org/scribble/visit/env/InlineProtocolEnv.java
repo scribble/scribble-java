@@ -2,7 +2,7 @@ package org.scribble.visit.env;
 
 import org.scribble.ast.ScribNode;
 
-public class InlineProtocolEnv extends Env
+public class InlineProtocolEnv extends Env<InlineProtocolEnv>
 {
 	private ScribNode inlined;
 	
@@ -12,13 +12,13 @@ public class InlineProtocolEnv extends Env
 	}
 
 	@Override
-	protected Env copy()
+	protected InlineProtocolEnv copy()
 	{
 		return new InlineProtocolEnv();
 	}
 
 	@Override
-	public Env enterContext()
+	public InlineProtocolEnv enterContext()
 	{
 		return copy();
 	}

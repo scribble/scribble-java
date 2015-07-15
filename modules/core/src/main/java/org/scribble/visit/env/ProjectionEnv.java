@@ -4,7 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LNode;
 
 // Could make projection type a class parameter
-public class ProjectionEnv extends Env
+public class ProjectionEnv extends Env<ProjectionEnv>
 {
 	private ScribNode projection;  // Make local  // FIXME: need to generalise for do projection (target protocol as well as the do)
 	

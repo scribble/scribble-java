@@ -10,7 +10,7 @@ import java.util.Set;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.name.Role;
 
-public class ModelEnv extends Env
+public class ModelEnv extends Env<ModelEnv>
 {
 	private Set<ModelAction> actions;
 	private Map<Role, ModelAction> leaves;
@@ -34,7 +34,7 @@ public class ModelEnv extends Env
 	}
 
 	@Override
-	public Env enterContext()
+	public ModelEnv enterContext()
 	{
 		return copy();
 	}

@@ -6,7 +6,7 @@ import org.scribble.del.ProtocolDefDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.env.Env;
 
-public abstract class InlinedProtocolVisitor<T extends Env> extends EnvVisitor<T>
+public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 {
 	public InlinedProtocolVisitor(Job job)
 	{

@@ -19,10 +19,11 @@ import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.Env;
 
 // Immutable except for pass-specific Envs (by visitors) only -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
+// Parameterise by AstNode type?  Would inhibit del sharing between types (but that's not currently needed)
 public interface ScribDel
 {
-	Env env();
-	void setEnv(Env env);  // Non defensive
+	Env<?> env();
+	void setEnv(Env<?> env);  // Non defensive
 
 	default void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
 	{

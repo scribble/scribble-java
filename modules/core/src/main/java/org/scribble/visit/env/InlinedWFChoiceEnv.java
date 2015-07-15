@@ -3,7 +3,6 @@ package org.scribble.visit.env;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.MessageSig;
@@ -13,7 +12,7 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
 
-public class InlinedWFChoiceEnv extends Env
+public class InlinedWFChoiceEnv extends Env<InlinedWFChoiceEnv>
 {
 	private static final Role DUMMY_ROLE = new Role("__ROLE");
 	private static final Op ROOT_OPERATOR = new Op("__ROOT");
@@ -62,16 +61,16 @@ public class InlinedWFChoiceEnv extends Env
 	}
 	
 	@Override
-	public InlinedWFChoiceEnv mergeContext(Env child)
+	public InlinedWFChoiceEnv mergeContext(InlinedWFChoiceEnv child)
 	{
 		return mergeContexts(Arrays.asList(child));
 	}
 
 	@Override
-	public InlinedWFChoiceEnv mergeContexts(List<? extends Env> children)
+	public InlinedWFChoiceEnv mergeContexts(List<InlinedWFChoiceEnv> children)
 	{
 		InlinedWFChoiceEnv copy = copy();
-		for (InlinedWFChoiceEnv child : castList(children))
+		for (InlinedWFChoiceEnv child : children)
 		{
 			merge(this, copy.initial, child.initial);
 			//merge(this, copy.initialInterrupts, child.initialInterrupts);
@@ -149,10 +148,5 @@ public class InlinedWFChoiceEnv extends Env
 	{
 		//return "initial=" + this.initial.toString() + ", initialInterrupts=" + this.initialInterrupts.toString();
 		return "initial=" + this.initial.toString();
-	}
-	
-	private static List<InlinedWFChoiceEnv> castList(List<? extends Env> envs)
-	{
-		return envs.stream().map((e) -> (InlinedWFChoiceEnv) e).collect(Collectors.toList());
 	}
 }

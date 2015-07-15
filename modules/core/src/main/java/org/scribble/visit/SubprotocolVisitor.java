@@ -32,7 +32,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
 import org.scribble.visit.env.Env;
 
-public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
+public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 {
 	protected List<SubprotocolSig> stack = new LinkedList<>();
 	

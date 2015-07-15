@@ -5,11 +5,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.sesstype.name.RecVar;
 
-public class ReachabilityEnv extends Env
+public class ReachabilityEnv extends Env<ReachabilityEnv>
 {
 	private boolean seqable; 
 			// For checking bad sequencing of unreachable code: false after a continue; true if choice has an exit (false inherited for all other constructs)
@@ -40,16 +39,16 @@ public class ReachabilityEnv extends Env
 
   // Should not be used for single block choice 
 	@Override
-	public ReachabilityEnv mergeContext(Env child)
+	public ReachabilityEnv mergeContext(ReachabilityEnv child)
 	{
-		return mergeContexts(Arrays.asList((ReachabilityEnv) child));
+		return mergeContexts(Arrays.asList(child));
 	}
 
 	// Should not be used for Choice
 	@Override
-	public ReachabilityEnv mergeContexts(List<? extends Env> children)
+	public ReachabilityEnv mergeContexts(List<ReachabilityEnv> children)
 	{
-		return merge(false, castList(children));
+		return merge(false, children);
 	}
 
 	public ReachabilityEnv mergeForChoice(List<ReachabilityEnv> children)
@@ -88,10 +87,5 @@ public class ReachabilityEnv extends Env
 		ReachabilityEnv copy = copy();
 		copy.contlabs.remove(recvar);
 		return copy;
-	}
-	
-	private static List<ReachabilityEnv> castList(List<? extends Env> envs)
-	{
-		return envs.stream().map((e) -> (ReachabilityEnv) e).collect(Collectors.toList());
 	}
 }
