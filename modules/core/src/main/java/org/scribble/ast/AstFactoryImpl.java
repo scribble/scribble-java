@@ -40,7 +40,7 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.DefaultModelDel;
+import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ParamDeclDel;
@@ -484,7 +484,7 @@ public class AstFactoryImpl implements AstFactory
 
 	private ScribDel createDefaultDelegate()
 	{
-		return new DefaultModelDel();
+		return new DefaultDel();
 	}
 	
 	// FIXME: factor out
