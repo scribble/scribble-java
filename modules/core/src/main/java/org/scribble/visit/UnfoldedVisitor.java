@@ -14,12 +14,12 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.Env;
 
 // "Unfolds" each recursion once (by reentering the original rec ast) on reaching a continue -- subclass should manually keep track of when to "stop" visiting, as visiting the "unfolding" will eventually reach the same continue (e.g. an unguarded choice-continue)
-public abstract class UnfoldingVisitor<E extends Env> extends InlinedProtocolVisitor<E>
+public abstract class UnfoldedVisitor<E extends Env> extends InlinedProtocolVisitor<E>
 {
 	private Map<RecVar, ProtocolBlock<?>> recs = new HashMap<>();
 	private Set<RecVar> unfolded = new HashSet<>();  // FIXME: recvar shadowing -- Set<Stack<RecVar>>
 	
-	public UnfoldingVisitor(Job job)
+	public UnfoldedVisitor(Job job)
 	{
 		super(job);
 	}
@@ -28,11 +28,11 @@ public abstract class UnfoldingVisitor<E extends Env> extends InlinedProtocolVis
 	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		enter(parent, child);
-		ScribNode visited = visitForUnfolding(parent, child);
+		ScribNode visited = visitForUnfolded(parent, child);
 		return leave(parent, child, visited);
 	}
 
-	protected ScribNode visitForUnfolding(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitForUnfolded(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof Continue)
 		{
@@ -64,13 +64,13 @@ public abstract class UnfoldingVisitor<E extends Env> extends InlinedProtocolVis
 				this.recs.put(rv, rec.block);
 			}
 		}
-		unfoldingEnter(parent, child);
+		unfoldedEnter(parent, child);
 	}
 	
 	@Override
 	protected final ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		ScribNode n = unfoldingLeave(parent, child, visited);
+		ScribNode n = unfoldedLeave(parent, child, visited);
 		if (child instanceof Recursion)
 		{
 			Recursion<?> rec = (Recursion<?>) child;
@@ -83,12 +83,12 @@ public abstract class UnfoldingVisitor<E extends Env> extends InlinedProtocolVis
 		return super.inlinedProtocolLeave(parent, child, n);
 	}
 
-	protected void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void unfoldedEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		
 	}
 
-	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode unfoldedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
