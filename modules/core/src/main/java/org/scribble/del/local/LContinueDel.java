@@ -5,7 +5,7 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.FsmGenerator;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.ReachabilityEnv;
 
@@ -24,11 +24,11 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 	}
 
 	@Override
-	public LContinue leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	public LContinue leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv, ScribNode visited)
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.recvar.toName();
 		conv.builder.setEntry(conv.builder.getRecursionEntry(rv));
-		return (LContinue) super.leaveFsmBuilding(parent, child, conv, lr);
+		return (LContinue) super.leaveFsmGeneration(parent, child, conv, lr);
 	}
 }

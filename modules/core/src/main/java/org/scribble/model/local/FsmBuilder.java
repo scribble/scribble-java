@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.scribble.sesstype.name.RecVar;
 
+@Deprecated
 public class FsmBuilder
 {
 	private ProtocolState init = null;

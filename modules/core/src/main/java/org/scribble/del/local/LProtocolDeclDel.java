@@ -12,7 +12,7 @@ import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.FsmGenerator;
 import org.scribble.visit.JobContext;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
@@ -44,13 +44,13 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	public void enterFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv)
+	public void enterFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv)
 	{
 		conv.builder.reset();
 	}
 
 	@Override
-	public ScribNode leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	public ScribNode leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv, ScribNode visited)
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
 		ScribFsm fsm = new ScribFsm(conv.builder.getEntry(), conv.builder.getExit());

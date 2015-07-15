@@ -3,7 +3,7 @@ package org.scribble.del;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.FsmGenerator;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
@@ -126,12 +126,12 @@ public interface ScribDel
 		return visited;
 	}
 
-	default void enterFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv)
+	default void enterFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator fsmgen)
 	{
 		
 	}
 
-	default ScribNode leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	default ScribNode leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator fsmgen, ScribNode visited)
 	{
 		return visited;
 	}

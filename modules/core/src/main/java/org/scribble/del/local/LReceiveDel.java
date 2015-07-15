@@ -8,12 +8,12 @@ import org.scribble.model.local.Receive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.FsmGenerator;
 
 public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LReceive leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	public LReceive leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv, ScribNode visited)
 	{
 		LReceive lr = (LReceive) visited;
 		Role peer = lr.src.toName();
@@ -23,6 +23,6 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 					? ((MessageSigNode) lr.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		conv.builder.addEdge(conv.builder.getEntry(), new Receive(peer, mid, payload), conv.builder.getExit());
-		return (LReceive) super.leaveFsmBuilding(parent, child, conv, lr);
+		return (LReceive) super.leaveFsmGeneration(parent, child, conv, lr);
 	}
 }

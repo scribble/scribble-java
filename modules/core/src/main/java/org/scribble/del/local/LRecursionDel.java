@@ -9,7 +9,7 @@ import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.FsmGenerator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -39,9 +39,9 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	}
 	
 	@Override
-	public void enterFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv)
+	public void enterFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv)
 	{
-		super.enterFsmBuilding(parent, child, conv);
+		super.enterFsmGeneration(parent, child, conv);
 		LRecursion lr = (LRecursion) child;
 		RecVar rv = lr.recvar.toName();
 		// Update existing state, not replace it -- cf. LDoDel
@@ -51,11 +51,11 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	}
 
 	@Override
-	public LRecursion leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	public LRecursion leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv, ScribNode visited)
 	{
 		LRecursion lr = (LRecursion) visited;
 		RecVar rv = lr.recvar.toName();
 		conv.builder.removeRecursionEntry(rv);
-		return (LRecursion) super.leaveFsmBuilding(parent, child, conv, lr);
+		return (LRecursion) super.leaveFsmGeneration(parent, child, conv, lr);
 	}
 }

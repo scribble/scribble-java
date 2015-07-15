@@ -8,11 +8,11 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.local.GraphBuilder;
 
 // Changed from offsetsubprot visitor to inlined visitor to reduce state label accumulation to rec only -- then, wfc-checking for "unguarded" recursive-do-as-continue in choice blocks handled by unfolding inlineds
-public class FsmBuilder extends NoEnvInlinedProtocolVisitor
+public class FsmGenerator extends NoEnvInlinedProtocolVisitor
 {
 	public final GraphBuilder builder = new GraphBuilder();
 	
-	public FsmBuilder(Job job)
+	public FsmGenerator(Job job)
 	{
 		super(job);
 	}
@@ -40,13 +40,13 @@ public class FsmBuilder extends NoEnvInlinedProtocolVisitor
 	protected final void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.inlinedProtocolEnter(parent, child);
-		child.del().enterFsmBuilding(parent, child, this);
+		child.del().enterFsmGeneration(parent, child, this);
 	}
 	
 	@Override
 	protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveFsmBuilding(parent, child, this, visited);
+		visited = visited.del().leaveFsmGeneration(parent, child, this, visited);
 		return super.inlinedProtocolLeave(parent, child, visited);
 	}
 }

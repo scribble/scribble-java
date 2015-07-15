@@ -14,7 +14,7 @@ import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.FsmGenerator;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -60,7 +60,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		return child;
 	}
 
-	public LInteractionSeq visitForFsmConversion(FsmBuilder conv, LInteractionSeq child)
+	public LInteractionSeq visitForFsmConversion(FsmGenerator conv, LInteractionSeq child)
 	{
 		ProtocolState entry = conv.builder.getEntry();
 		ProtocolState exit = conv.builder.getExit();

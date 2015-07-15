@@ -11,12 +11,12 @@ import org.scribble.model.local.Send;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.FsmBuilder;
+import org.scribble.visit.FsmGenerator;
 
 public class LSendDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LSend leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
+	public LSend leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv, ScribNode visited)
 	{
 		LSend ls = (LSend) visited;
 		List<RoleNode> dests = ls.getDestinations();
@@ -31,6 +31,6 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		conv.builder.addEdge(conv.builder.getEntry(), new Send(peer, mid, payload), conv.builder.getExit());
-		return (LSend) super.leaveFsmBuilding(parent, child, conv, ls);
+		return (LSend) super.leaveFsmGeneration(parent, child, conv, ls);
 	}
 }

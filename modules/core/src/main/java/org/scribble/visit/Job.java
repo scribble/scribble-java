@@ -59,9 +59,9 @@ public class Job
 	
 	public void buildFsms(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context
 	{
-		debugPrintPass("Running " + FsmBuilder.class + " for " + fullname + "@" + role);
+		debugPrintPass("Running " + FsmGenerator.class + " for " + fullname + "@" + role);
 		// Visit Module for context (not just the protodecl) -- builds FSMs for all locals in the module
-		this.jcontext.getProjection(fullname, role).accept(new FsmBuilder(this)); 
+		this.jcontext.getProjection(fullname, role).accept(new FsmGenerator(this)); 
 			// Builds FSMs for all local protocols in this module as root (though each projected module contains a single local protocol)
 			// Subprotocols "inlined" by FsmBuilder (scoped subprotocols not supported)
 	}
