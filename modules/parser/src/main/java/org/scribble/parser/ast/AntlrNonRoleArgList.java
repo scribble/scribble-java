@@ -15,7 +15,7 @@ import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 
 public class AntlrNonRoleArgList
 {
@@ -29,7 +29,7 @@ public class AntlrNonRoleArgList
 	// Not in own class because not called by ScribbleParser -- called directly from above
 	private static NonRoleArg parseNonRoleArg(ScribbleParser parser, CommonTree ct)
 	{
-		AntlrNodeType type = Util.getAntlrNodeType(ct);
+		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)
 		{
 			NonRoleArgNode arg = (NonRoleArgNode) parser.parse(ct);
@@ -71,6 +71,6 @@ public class AntlrNonRoleArgList
 	{
 		return (ct.getChildCount() == 0)
 				? Collections.emptyList()
-				: Util.toCommonTreeList(ct.getChildren());
+				: ScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

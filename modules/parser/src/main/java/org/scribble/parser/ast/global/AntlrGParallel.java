@@ -7,7 +7,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GParallel;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.parser.ScribbleParser;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 
 public class AntlrGParallel
 {
@@ -20,6 +20,6 @@ public class AntlrGParallel
 
 	public static final List<CommonTree> getBlockChildren(CommonTree ct)
 	{
-		return Util.toCommonTreeList(ct.getChildren());
+		return ScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

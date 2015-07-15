@@ -9,7 +9,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.parser.ScribbleParser;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 
 public class AntlrNonRoleParamDeclList
@@ -19,7 +19,10 @@ public class AntlrNonRoleParamDeclList
 		List<NonRoleParamDecl<NonRoleParamKind>> pds = new LinkedList<>();
 		for (CommonTree pd : getParamDeclChildren(ct))
 		{
-			pds.add((NonRoleParamDecl<NonRoleParamKind>) parser.parse(pd));  // FIXME: ? extends NonRoleParamKind
+			NonRoleParamDecl<? extends NonRoleParamKind> parsed = (NonRoleParamDecl<?>) parser.parse(pd);
+			@SuppressWarnings("unchecked")  // OK: the node is immutable -- will never "rewrite" the generic value (the kind) in it
+			NonRoleParamDecl<NonRoleParamKind> tmp = (NonRoleParamDecl<NonRoleParamKind>) parsed;
+			pds.add(tmp);
 		}
 		return AstFactoryImpl.FACTORY.NonRoleParamDeclList(pds);
 	}
@@ -28,6 +31,6 @@ public class AntlrNonRoleParamDeclList
 	{
 		return (ct.getChildCount() == 0)
 				? Collections.emptyList()
-				: Util.toCommonTreeList(ct.getChildren());
+				: ScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

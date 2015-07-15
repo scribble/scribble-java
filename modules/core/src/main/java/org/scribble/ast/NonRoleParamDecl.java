@@ -28,7 +28,7 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 	public NonRoleParamDecl<K> reconstruct(SimpleNameNode<K> name)
 	{
 		ScribDel del = del();
-		NonRoleParamDecl<K> pd = new NonRoleParamDecl<>(this.kind, (NonRoleParamNode<K>) this.name);
+		NonRoleParamDecl<K> pd = new NonRoleParamDecl<>(this.kind, (NonRoleParamNode<K>) name);
 		@SuppressWarnings("unchecked")
 		NonRoleParamDecl<K> tmp = (NonRoleParamDecl<K>) pd.del(del);
 		return tmp;

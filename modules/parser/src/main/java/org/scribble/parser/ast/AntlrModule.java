@@ -14,7 +14,7 @@ import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ScribbleParser;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 
 public class AntlrModule
 {
@@ -67,8 +67,8 @@ public class AntlrModule
 	private static List<CommonTree> filterChildren(CommonTree ct, AntlrNodeType... types)
 	{
 		List<AntlrNodeType> tmp = Arrays.asList(types);
-		List<CommonTree> children = Util.toCommonTreeList(ct.getChildren());
+		List<CommonTree> children = ScribParserUtil.toCommonTreeList(ct.getChildren());
 		return children.subList(1, children.size()).stream()
-				.filter((c) -> tmp.contains(Util.getAntlrNodeType(c))).collect(Collectors.toList());
+				.filter((c) -> tmp.contains(ScribParserUtil.getAntlrNodeType(c))).collect(Collectors.toList());
 	}
 }

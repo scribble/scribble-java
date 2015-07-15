@@ -7,7 +7,7 @@ import org.scribble.ast.name.qualified.MessageSigNameNode;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
 
-// FIXME: factor out with AntlrPayloadTypeDecl
+// FIXME: factor out with AntlrDataTypeDecl
 public class AntlrMessageSigDecl
 {
 	public static final int SCHEMA_CHILD_INDEX = 0;

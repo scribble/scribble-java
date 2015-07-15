@@ -257,10 +257,9 @@ public class EndpointApiGenerator
 						method += "\t\tsuper.writeScribMessage(role, new ScribMessage(" + opref;
 						if (!a.payload.isEmpty())
 						{
-							int i = 1;
-							for (PayloadType<? extends Kind> pt : a.payload.elems)
+							for (int i = 1; i <= a.payload.elems.size(); i++)
 							{
-								method += ", arg" + i++;
+								method += ", arg" + i;
 							}
 						}
 						method += "));\n";

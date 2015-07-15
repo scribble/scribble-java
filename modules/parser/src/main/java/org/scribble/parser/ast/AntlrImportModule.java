@@ -17,9 +17,10 @@ public class AntlrImportModule
 	public static ImportModule parseImportModule(ScribbleParser parser, CommonTree ct)
 	{
 		ModuleNameNode fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
-		ModuleNameNode alias = (hasAlias(ct))
-				? AntlrQualifiedName.toModuleNameNode(getAliasChild(ct))
-				: null;
+		ModuleNameNode alias =
+				(hasAlias(ct))
+					? AntlrQualifiedName.toModuleNameNode(getAliasChild(ct))
+					: null;
 		return AstFactoryImpl.FACTORY.ImportModule(fmn, alias);
 	}
 

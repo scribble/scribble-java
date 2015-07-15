@@ -9,7 +9,7 @@ import org.scribble.ast.global.GInterrupt;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 
 
 public class AntlrGInterrupt
@@ -32,6 +32,6 @@ public class AntlrGInterrupt
 
 	public static List<CommonTree> getMessageChildren(CommonTree ct)
 	{
-		return Util.toCommonTreeList(ct.getChildren().subList(MESSAGE_CHILDREN_START_INDEX, ct.getChildCount()));
+		return ScribParserUtil.toCommonTreeList(ct.getChildren().subList(MESSAGE_CHILDREN_START_INDEX, ct.getChildCount()));
 	}
 }

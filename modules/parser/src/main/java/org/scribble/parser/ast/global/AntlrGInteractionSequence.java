@@ -9,7 +9,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.parser.ScribbleParser;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 
 public class AntlrGInteractionSequence
 {
@@ -24,6 +24,6 @@ public class AntlrGInteractionSequence
 	{
 		return (ct.getChildCount() == 0)
 				? Collections.emptyList()
-				: Util.toCommonTreeList(ct.getChildren());
+				: ScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

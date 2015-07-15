@@ -11,7 +11,6 @@ import org.scribble.main.resource.Resource;
 import org.scribble.parser.antlr.Scribble2Lexer;
 import org.scribble.parser.antlr.Scribble2Parser;
 
-
 // Resource -> ANTLR CommonTree
 // Parses Resources into ANTLR CommonTrees
 // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is the higher-level operation of "parsing" CommonTrees into ScribNodes

@@ -32,7 +32,7 @@ public class RoleDeclList extends HeaderParamDeclList<RoleKind>
 	public HeaderParamDeclList<RoleKind> reconstruct(List<? extends HeaderParamDecl<RoleKind>> decls)
 	{
 		ScribDel del = del();
-		RoleDeclList rdl = new RoleDeclList(castRoleDecls(decls));
+		RoleDeclList rdl = AstFactoryImpl.FACTORY.RoleDeclList(castRoleDecls(decls));
 		rdl = (RoleDeclList) rdl.del(del);
 		return rdl;
 	}

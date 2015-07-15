@@ -14,7 +14,7 @@ import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 
 public class AntlrPayloadElemList
 {
@@ -28,7 +28,7 @@ public class AntlrPayloadElemList
 
 	private static PayloadElem parsePayloadElem(CommonTree ct)
 	{
-		AntlrNodeType type = Util.getAntlrNodeType(ct);
+		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		/*// Parser isn't working to distinguish simple from qualified names (cf. Scribble.g payloadelement)
 		if (type == AntlrNodeType.QUALIFIEDNAME)
 		{
@@ -65,6 +65,6 @@ public class AntlrPayloadElemList
 	{
 		return (ct.getChildCount() == 0)
 				? Collections.emptyList()
-				: Util.toCommonTreeList(ct.getChildren());
+				: ScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

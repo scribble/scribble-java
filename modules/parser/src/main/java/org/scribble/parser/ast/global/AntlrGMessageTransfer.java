@@ -14,8 +14,7 @@ import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
 import org.scribble.parser.ast.name.AntlrSimpleName;
-import org.scribble.parser.util.Util;
-
+import org.scribble.parser.util.ScribParserUtil;
 
 public class AntlrGMessageTransfer
 {
@@ -34,7 +33,7 @@ public class AntlrGMessageTransfer
 
 	protected static MessageNode parseMessage(ScribbleParser parser, CommonTree ct)
 	{
-		AntlrNodeType type = Util.getAntlrNodeType(ct);
+		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)
 		{
 			return (MessageSigNode) parser.parse(ct);
@@ -59,6 +58,6 @@ public class AntlrGMessageTransfer
 
 	public static List<CommonTree> getDestChildren(CommonTree ct)
 	{
-		return Util.toCommonTreeList(ct.getChildren().subList(DESTINATION_CHILDREN_START_INDEX, ct.getChildCount()));
+		return ScribParserUtil.toCommonTreeList(ct.getChildren().subList(DESTINATION_CHILDREN_START_INDEX, ct.getChildCount()));
 	}
 }

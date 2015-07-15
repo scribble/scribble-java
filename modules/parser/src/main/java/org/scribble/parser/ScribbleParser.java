@@ -34,7 +34,7 @@ import org.scribble.parser.ast.global.AntlrGProtocolDecl;
 import org.scribble.parser.ast.global.AntlrGProtocolDefinition;
 import org.scribble.parser.ast.global.AntlrGProtocolHeader;
 import org.scribble.parser.ast.global.AntlrGRecursion;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 
 // ANTLR CommonTree -> ScribNode
 // Parses ANTLR nodes into ScribNodes using the parser.ast.Antlr[...] helper classes
@@ -59,7 +59,7 @@ public class ScribbleParser
 			}
 		}
 		
-		AntlrNodeType type = Util.getAntlrNodeType(ct);
+		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		switch (type)
 		{
 			case MODULE: 

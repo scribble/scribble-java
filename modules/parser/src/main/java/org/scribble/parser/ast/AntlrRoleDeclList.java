@@ -8,7 +8,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.RoleDecl;
 import org.scribble.ast.RoleDeclList;
 import org.scribble.parser.ScribbleParser;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 
 public class AntlrRoleDeclList
 {
@@ -20,6 +20,6 @@ public class AntlrRoleDeclList
 
 	public static List<CommonTree> getRoleDeclChildren(CommonTree ct)
 	{
-		return Util.toCommonTreeList(ct.getChildren());
+		return ScribParserUtil.toCommonTreeList(ct.getChildren());
 	}
 }

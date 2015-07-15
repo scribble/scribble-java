@@ -10,7 +10,7 @@ import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.parser.ScribbleParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
-import org.scribble.parser.util.Util;
+import org.scribble.parser.util.ScribParserUtil;
 
 public class AntlrGChoice
 {
@@ -33,6 +33,6 @@ public class AntlrGChoice
 	public static List<CommonTree> getBlockChildren(CommonTree ct)
 	{
 		List<?> children = ct.getChildren();
-		return Util.toCommonTreeList(children.subList(BLOCK_CHILDREN_START_INDEX, children.size()));
+		return ScribParserUtil.toCommonTreeList(children.subList(BLOCK_CHILDREN_START_INDEX, children.size()));
 	}
 }

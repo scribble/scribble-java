@@ -7,7 +7,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.parser.AntlrConstants;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
 
-public class Util
+public class ScribParserUtil
 {
 	public static List<CommonTree> toCommonTreeList(List<?> list)
 	{
