@@ -14,15 +14,12 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ProjectionEnv;
-import org.scribble.visit.env.WFChoiceEnv;
 
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
 {
@@ -63,14 +60,5 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
-	}
-
-	@Override
-	public GRecursion leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
-	{
-		GRecursion rec = (GRecursion) visited;
-		WFChoiceEnv merged = checker.popEnv().mergeContext((WFChoiceEnv) rec.block.del().env());
-		checker.pushEnv(merged);
-		return (GRecursion) super.leaveWFChoiceCheck(parent, child, checker, rec);
 	}
 }

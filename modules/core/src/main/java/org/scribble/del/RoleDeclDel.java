@@ -6,7 +6,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.NameDisambiguator;
-import org.scribble.visit.WFChoiceChecker;
 
 public class RoleDeclDel extends ScribDelBase
 {
@@ -15,15 +14,6 @@ public class RoleDeclDel extends ScribDelBase
 	{
 		RoleDecl rd = (RoleDecl) child;
 		disamb.addRole(rd.getDeclName());
-	}
-
-	@Override
-	public RoleDecl leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
-	{
-		RoleDecl rd = (RoleDecl) visited;
-		Role role = rd.getDeclName();
-		checker.pushEnv(checker.popEnv().enableRoleForRootProtocolDecl(role));
-		return (RoleDecl) super.leaveWFChoiceCheck(parent, child, checker, rd);
 	}
 
 	@Override

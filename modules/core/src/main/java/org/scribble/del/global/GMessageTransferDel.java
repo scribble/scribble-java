@@ -28,10 +28,8 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
-import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ModelEnv;
-import org.scribble.visit.env.WFChoiceEnv;
 
 // FIXME: make base MessageTransferDelegate?
 public class GMessageTransferDel extends MessageTransferDel implements GSimpleInteractionNodeDel
@@ -127,26 +125,5 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		env = env.setActions(actions, leaves);
 		builder.pushEnv(env);
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveModelBuilding(parent, child, builder, visited);
-	}
-
-	@Override
-	public GMessageTransfer leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
-	{
-		GMessageTransfer msgtrans = (GMessageTransfer) visited;
-		
-		Role src = msgtrans.src.toName();
-		Message msg = msgtrans.msg.toMessage();
-		WFChoiceEnv env = checker.popEnv();
-		for (Role dest : msgtrans.getDestinations().stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
-		{
-			env = env.addMessageForSubprotocol(checker, src, dest, msg);
-		}
-		checker.pushEnv(env);
-		
-		if (!checker.peekEnv().isEnabled(src))
-		{
-			throw new ScribbleException("Role not enabled: " + src);
-		}
-		return msgtrans;
 	}
 }

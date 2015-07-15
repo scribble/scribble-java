@@ -22,9 +22,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.WFChoiceEnv;
 
 public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 {
@@ -99,24 +97,5 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDo) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
-	}
-
-	@Override
-	public void enterWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
-	{
-		checker.pushEnv(checker.peekEnv().enterDoContext(checker));
-	}
-
-	@Override
-	public GDo leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
-	{
-		WFChoiceEnv env = checker.popEnv();
-		//if (checker.isCycle())  // Cf. LDoDel, isCycle done inside env.leaveWFChoiceCheck
-		{
-			env = env.leaveWFChoiceCheck(checker);
-		}
-		setEnv(env);
-		checker.pushEnv(checker.popEnv().mergeContext(env));
-		return (GDo) visited;
 	}
 }

@@ -15,7 +15,6 @@ import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.RoleCollector;
-import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.Env;
 
 // Immutable except for pass-specific Envs (by visitors) only -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
@@ -41,18 +40,6 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}
-
-	@Deprecated
-	default void enterWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker) throws ScribbleException
-	{
-
-	}
-
-	@Deprecated
-	default ScribNode leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

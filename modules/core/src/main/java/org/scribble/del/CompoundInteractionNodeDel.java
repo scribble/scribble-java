@@ -6,10 +6,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.UnfoldingEnv;
-import org.scribble.visit.env.WFChoiceEnv;
 
 public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel implements InteractionNodeDel
 {
@@ -48,18 +46,6 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		InlinedWFChoiceEnv visited_env = checker.popEnv();  // popAndSet current
 		setEnv(visited_env);
 		InlinedWFChoiceEnv parent_env = checker.popEnv();  // pop-merge-push parent
-		parent_env = parent_env.mergeContext(visited_env);
-		checker.pushEnv(parent_env);
-		return (CompoundInteractionNode<?>) visited;
-	}
-
-	@Override
-	public CompoundInteractionNode<?> leaveWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
-	{
-		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
-		WFChoiceEnv visited_env = checker.popEnv();
-		WFChoiceEnv parent_env = checker.popEnv();
-		setEnv(visited_env);
 		parent_env = parent_env.mergeContext(visited_env);
 		checker.pushEnv(parent_env);
 		return (CompoundInteractionNode<?>) visited;
