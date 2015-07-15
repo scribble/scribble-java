@@ -12,7 +12,7 @@ import Test2;
 type <java> "java.lang.String" from "rt.jar" as String;
 
 
-/*
+///*
 global protocol Foo(role A, role B)
 {
 	do Test2.Test2Proto(A, B);
@@ -87,7 +87,22 @@ global protocol Bar(role D, role E, role F)
 //*/
 
 
-///*
+/*
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	do Bar(A, B);
+	2() from A to B;
+}
+
+global protocol Bar(role A, role B)  // FIXME: bad unused role decls (wrt. subprotocol collected role occurrences)
+{
+	//3() from A to B;
+}
+//*/
+
+
+/*
 global protocol Foo(role A, role B)
 {
 	choice at A

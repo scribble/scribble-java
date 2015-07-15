@@ -6,7 +6,7 @@ import java.util.Set;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.sesstype.name.Name;
 
-// Make SubprotocolVisitor?
+// Make SubprotocolVisitor? -- should be at least SubprotocolVisitor for get all occurrences up to recursive subprotocols (e.g. role occurrences for protocoldeclcontext)
 public abstract class NameCollector<N extends Name<?>> extends NoEnvOffsetSubprotocolVisitor
 {
 	private Set<N> names = new HashSet<>();
