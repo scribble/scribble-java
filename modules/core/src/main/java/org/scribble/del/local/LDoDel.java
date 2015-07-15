@@ -30,9 +30,7 @@ import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ProjectedRoleDeclFixer;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ReachabilityEnv;
 
 public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 {
@@ -93,19 +91,5 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		List<RoleArg> ras = ld.roles.getDoArgs().stream().filter((ra) -> occs.contains(ra.val.toName())).collect(Collectors.toList());
 		RoleArgList roles = ld.roles.reconstruct(ras);
 		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, ld.reconstruct(roles, ld.args, ld.getProtocolNameNode()));
-	}
-
-	@Override
-	public LDo
-			leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
-	{
-		ReachabilityEnv env = checker.popEnv();
-		if (checker.isCycle())
-		{
-			env = env.leaveSubprotocolCycle();
-		}
-		setEnv(env);
-		checker.pushEnv(checker.popEnv().mergeContext(env));
-		return (LDo) visited;
 	}
 }
