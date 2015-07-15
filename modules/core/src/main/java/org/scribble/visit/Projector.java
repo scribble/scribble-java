@@ -29,7 +29,7 @@ public class Projector extends SubprotocolVisitor<ProjectionEnv>
 {
 	private Stack<Role> selfs = new Stack<>();  // Is a stack needed? roles only pushed from GlobalProtocolDecl, which should be only done once at the root?
 	
-	// first protocol name is full global protocol name, second is full local projection names
+	// protocol name is full global protocol name
 	private Map<GProtocolName, Map<Role, Module>> projections = new HashMap<>();
 	
 	public Projector(Job job)
