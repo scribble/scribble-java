@@ -13,7 +13,6 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.visit.JobContext;
 
-
 public class GDo extends Do<Global> implements GSimpleInteractionNode
 {
 	public GDo(RoleArgList roles, NonRoleArgList args, GProtocolNameNode proto)

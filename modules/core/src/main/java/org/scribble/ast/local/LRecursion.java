@@ -9,7 +9,6 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-
 public class LRecursion extends Recursion<Local> implements LCompoundInteractionNode
 {
 	public LRecursion(RecVarNode recvar, LProtocolBlock block)

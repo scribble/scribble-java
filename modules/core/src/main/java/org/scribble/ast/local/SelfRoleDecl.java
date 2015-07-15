@@ -7,7 +7,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 
-
 public class SelfRoleDecl extends RoleDecl
 {
 	public SelfRoleDecl(RoleNode rn)

@@ -11,7 +11,6 @@ import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 public abstract class LInterrupt extends Interrupt implements LSimpleInteractionNode
 {
-
 	protected LInterrupt(RoleNode src, List<MessageNode> msgs)
 	{
 		super(src, msgs);

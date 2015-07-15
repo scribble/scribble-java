@@ -5,7 +5,6 @@ import java.util.List;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
 
-
 public class LCatches extends LInterrupt
 {
 	protected LCatches(RoleNode src, List<MessageNode> msgs)
