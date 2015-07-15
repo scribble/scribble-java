@@ -11,6 +11,10 @@ package org.scribble.main;
 	//.. do call type checking as well as basic name binding
 	// name collisions? e.g. message sig names and ops (M1 and M1() -- maybe ok)
 
+	//.. guarded recursive subprotocols -- guarded recursion vars not needed? handled by projection -- subprotocols need unused roledecl check
+	//.. generalise dependencies for duplicate-role projection
+	//.. do projection should filter unused subprotocol role params -- also non role params? -- but scoped subprotocols may need extra name mangling
+
 	// move roledecllist etc projection to dels
 	// could parameterise recvar to be global/local
 
@@ -18,10 +22,6 @@ package org.scribble.main;
 	// multicast (enforce sending same value -- can "compile" to assertions for separate ops)
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B }) -- separate par from unordered
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
-
-	//.. guarded recursive subprotocols -- guarded recursion vars not needed? handled by projection -- subprotocols need unused roledecl check
-	//.. generalise dependencies for duplicate-role projection
-	//.. do projection should filter unused subprotocol role params -- also non role params? -- but scoped subprotocols may need extra name mangling
 
 	//.. fix projection env to take projection output type as Parameter
 	// dels should be kinded as well? -- maybe by node type? or too restrictive
