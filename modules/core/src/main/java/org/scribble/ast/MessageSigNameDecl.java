@@ -7,7 +7,6 @@ import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.ModuleName;
 
-
 public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 {
 	public MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode name)

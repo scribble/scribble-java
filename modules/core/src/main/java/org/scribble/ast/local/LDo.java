@@ -69,7 +69,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	{
 		ModuleContext mc = fixer.getModuleContext();
 		JobContext jc = fixer.getJobContext();
-		return getTargetProtocolDecl(jc, mc).getDef().getBlock().getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer);
+		return getTargetProtocolDecl(jc, mc).getDef().getBlock().getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

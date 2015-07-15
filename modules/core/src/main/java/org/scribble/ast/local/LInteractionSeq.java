@@ -11,7 +11,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.util.ScribUtil;
 
-
 public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 {
 	public LInteractionSeq(List<LInteractionNode> lis)
@@ -22,13 +21,13 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LInteractionSeq(getActions());
+		return new LInteractionSeq(getInteractions());
 	}
 	
 	@Override
 	public LInteractionSeq clone()
 	{
-		List<LInteractionNode> lis = ScribUtil.cloneList(getActions());
+		List<LInteractionNode> lis = ScribUtil.cloneList(getInteractions());
 		return AstFactoryImpl.FACTORY.LInteractionSeq(lis);
 	}
 
@@ -42,9 +41,9 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 	}
 	
 	@Override
-	public List<LInteractionNode> getActions()
+	public List<LInteractionNode> getInteractions()
 	{
-		return castNodes(this.actions);
+		return castNodes(super.getInteractions());
 	}
 
 	@Override	
@@ -53,15 +52,15 @@ public class LInteractionSeq extends InteractionSeq<Local> implements LNode
 		return true;
 	}
 	
+	private static List<LInteractionNode> castNodes(List<? extends InteractionNode<Local>> nodes)
+	{
+		return nodes.stream().map((n) -> (LInteractionNode) n).collect(Collectors.toList());
+	}
+	
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
 	@Override
 	public Local getKind()
 	{
 		return LNode.super.getKind();
-	}
-	
-	private static List<LInteractionNode> castNodes(List<? extends InteractionNode<Local>> nodes)
-	{
-		return nodes.stream().map((n) -> (LInteractionNode) n).collect(Collectors.toList());
 	}
 }

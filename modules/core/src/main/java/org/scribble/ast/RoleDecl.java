@@ -7,7 +7,6 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
 
-
 public class RoleDecl extends HeaderParamDecl<RoleKind>
 {
 	public RoleDecl(RoleNode name)

@@ -9,7 +9,6 @@ import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
 
-
 // Cf. NonRoleParamDeclList
 public class NonRoleArgList extends DoArgList<NonRoleArg>
 {
@@ -21,13 +20,13 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new NonRoleArgList(this.args);
+		return new NonRoleArgList(getDoArgs());
 	}
 	
 	@Override
 	public NonRoleArgList clone()
 	{
-		List<NonRoleArg> args = ScribUtil.cloneList(this.args);
+		List<NonRoleArg> args = ScribUtil.cloneList(getDoArgs());
 		return AstFactoryImpl.FACTORY.NonRoleArgList(args);
 	}
 
@@ -44,23 +43,23 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	public NonRoleArgList project(Role self)
 	{
 		List<NonRoleArg> instans =
-				this.args.stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
+				getDoArgs().stream().map((ai) -> ai.project(self)).collect(Collectors.toList());	
 		return AstFactoryImpl.FACTORY.NonRoleArgList(instans);
 	}
 	
 	public boolean isEmpty()
 	{
-		return this.args.isEmpty();
+		return getDoArgs().isEmpty();
 	}
 	
 	public List<NonRoleArgNode> getArgumentNodes()
 	{
-		return this.args.stream().map((ai) -> ai.val).collect(Collectors.toList());
+		return getDoArgs().stream().map((ai) -> ai.val).collect(Collectors.toList());
 	}
 
 	public List<Arg<? extends NonRoleArgKind>> getArguments()
 	{
-		return this.args.stream().map((ai) -> ai.val.toArg()).collect(Collectors.toList());
+		return getDoArgs().stream().map((ai) -> ai.val.toArg()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -70,11 +69,13 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 		{
 			return "";
 		}
-		String s = "<" + this.args.get(0);
-		for (NonRoleArg a : this.args.subList(1, this.args.size()))
-		{
-			s += ", " + a;
-		}
-		return s + ">";
+		List<NonRoleArg> args = getDoArgs();
+		StringBuilder sb = new StringBuilder("<" + args.get(0));
+		args.subList(1, args.size()).stream().forEach((a) -> 
+				{
+					sb.append(", " + a);
+				});
+		sb.append(">");
+		return sb.toString();
 	}
 }

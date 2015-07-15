@@ -181,11 +181,13 @@ public class GInterrupt extends Interrupt implements GSimpleInteractionNode
 	@Override
 	public String toString()
 	{
-		String s = this.msgs.get(0).toString();
-		for (MessageNode msg : this.msgs.subList(1, this.msgs.size()))
-		{
-			s += ", " + msg;
-		}
-		return s + " " + Constants.BY_KW + " " + this.src + ";";
+		List<MessageNode> msgs = this.getMessages();
+		StringBuilder sb = new StringBuilder(msgs.get(0).toString());
+		msgs.subList(1, msgs.size()).stream().forEach((msg) ->
+				{
+					sb.append(", " + msg);
+				});
+		sb.append(" " + Constants.BY_KW + " " + this.src + ";");
+		return sb.toString();
 	}
 }

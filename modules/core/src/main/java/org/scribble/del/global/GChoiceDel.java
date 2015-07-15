@@ -37,7 +37,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	{
 		GChoice gc = (GChoice) visited;
 		List<GProtocolBlock> blocks = 
-				gc.blocks.stream().map((b) -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
+				gc.getBlocks().stream().map((b) -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
 		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
 		GChoice inlined = AstFactoryImpl.FACTORY.GChoice(subj, blocks);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
@@ -65,7 +65,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		
 		// Enabled senders checked in GMessageTransferDel
 		List<InlinedWFChoiceEnv> all =
-				cho.blocks.stream().map((b) -> (InlinedWFChoiceEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlocks().stream().map((b) -> (InlinedWFChoiceEnv) b.del().env()).collect(Collectors.toList());
 		if (all.size() > 1)
 		{
 			try
@@ -128,7 +128,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	{
 		GChoice gc = (GChoice) visited;
 		List<LProtocolBlock> blocks = 
-				gc.blocks.stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());	
+				gc.getBlocks().stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());	
 		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
 		if (!blocks.get(0).isEmpty())  // WF allows empty (blocks/seq are never null)
 		{
@@ -161,7 +161,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		Map<Role, Set<MessageId<?>>> seen = null;
 		Map<Role, Role> enablers = null;
 		List<WFChoiceEnv> benvs =
-				cho.blocks.stream().map((b) -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlocks().stream().map((b) -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
 		for (WFChoiceEnv benv : benvs)
 		{
 			MessageIdMap enabled = benv.getEnabled();

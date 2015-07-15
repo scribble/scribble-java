@@ -12,7 +12,7 @@ import org.scribble.visit.AstVisitor;
 // RoleKind or (NonRole)ParamKind
 public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNodeBase 
 {
-	public final List<? extends HeaderParamDecl<K>> decls;
+	private final List<? extends HeaderParamDecl<K>> decls;
 	
 	protected HeaderParamDeclList(List<? extends HeaderParamDecl<K>> decls)
 	{
@@ -52,11 +52,11 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 		{
 			return "";
 		}
-		String s = decls.get(0).toString();
-		for (HeaderParamDecl<K> nd : this.decls.subList(1, this.decls.size()))
-		{
-			s += ", " + nd;
-		}
-		return s;
+		StringBuilder sb = new StringBuilder(this.decls.get(0).toString());
+		this.decls.subList(1, this.decls.size()).stream().forEach((nd) ->
+				{
+					sb.append(", " + nd);
+				});
+		return sb.toString();
 	}
 }

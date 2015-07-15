@@ -25,7 +25,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = lc.getBlocks();
 		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND,
-				blocks.get(0).getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer).toString());
+				blocks.get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer).toString());
 		LChoice projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 		return projection;
 	}
@@ -35,7 +35,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	{
 		LChoice gc = (LChoice) visited;
 		List<LProtocolBlock> blocks = 
-				gc.blocks.stream().map((b) -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
+				gc.getBlocks().stream().map((b) -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
 		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
 		LChoice inlined = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
@@ -47,7 +47,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	{
 		LChoice cho = (LChoice) visited;
 		List<ReachabilityEnv> benvs =
-				cho.blocks.stream().map((b) -> (ReachabilityEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlocks().stream().map((b) -> (ReachabilityEnv) b.del().env()).collect(Collectors.toList());
 		ReachabilityEnv merged = checker.popEnv().mergeForChoice(benvs);
 		checker.pushEnv(merged);
 		return (LChoice) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env

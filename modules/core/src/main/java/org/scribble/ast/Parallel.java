@@ -7,10 +7,9 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-
 public abstract class Parallel<K extends ProtocolKind> extends CompoundInteractionNode<K>
 {
-	public final List<? extends ProtocolBlock<K>> blocks;
+	private final List<? extends ProtocolBlock<K>> blocks;
 
 	protected Parallel(List<? extends ProtocolBlock<K>> blocks)
 	{
@@ -26,7 +25,10 @@ public abstract class Parallel<K extends ProtocolKind> extends CompoundInteracti
 		return reconstruct(blocks);
 	}
 	
-	public abstract List<? extends ProtocolBlock<K>> getBlocks();
+	public List<? extends ProtocolBlock<K>> getBlocks()
+	{
+		return this.blocks;
+	}
 
 	/*@Override
 	public NodeContextBuilder enterContextBuilding(NodeContextBuilder builder) throws ScribbleException
@@ -96,11 +98,11 @@ public abstract class Parallel<K extends ProtocolKind> extends CompoundInteracti
 	@Override
 	public String toString()
 	{
-		String s = Constants.PAR_KW + " " + this.blocks.get(0);
-		for (ProtocolBlock<K> block : this.blocks.subList(1, this.blocks.size()))
-		{
-			s += " " + Constants.AND_KW + " " + block;
-		}
-		return s;
+		StringBuilder sb = new StringBuilder(Constants.PAR_KW + " " + this.blocks.get(0));
+		this.blocks.subList(1, this.blocks.size()).stream().forEach((block) ->
+				{
+					sb.append(" " + Constants.AND_KW + " " + block);
+				});
+		return sb.toString();
 	}
 }

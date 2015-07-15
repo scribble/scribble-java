@@ -11,7 +11,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.util.ScribUtil;
 
-
 public class GMessageTransfer extends MessageTransfer<Global> implements GSimpleInteractionNode
 {
 	public GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
@@ -22,7 +21,7 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 	@Override
 	protected GMessageTransfer copy()
 	{
-		return new GMessageTransfer(this.src, this.msg, this.dests);
+		return new GMessageTransfer(this.src, this.msg, getDestinations());
 	}
 	
 	@Override
@@ -30,7 +29,7 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 	{
 		RoleNode src = this.src.clone();
 		MessageNode msg = this.msg.clone();
-		List<RoleNode> dests = ScribUtil.cloneList(this.dests);
+		List<RoleNode> dests = ScribUtil.cloneList(getDestinations());
 		return AstFactoryImpl.FACTORY.GMessageTransfer(src, msg, dests);
 	}
 
@@ -53,11 +52,14 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 	@Override
 	public String toString()
 	{
-		String s = this.msg + " " + Constants.FROM_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dests.get(0);
-		for (RoleNode dest : this.dests.subList(1, this.dests.size()))
-		{
-			s += ", " + dest;
-		}
-		return s + ";";
+		List<RoleNode> dests = getDestinations();
+		StringBuilder sb = new StringBuilder(this.msg + " " + Constants.FROM_KW + " " + this.src + " " + Constants.TO_KW + " ");
+		sb.append(dests.get(0));
+		dests.subList(1, dests.size()).stream().forEach((dest) ->
+				{
+					sb.append(", " + dest);
+				});
+		sb.append(";");
+		return sb.toString();
 	}
 }

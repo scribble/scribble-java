@@ -34,7 +34,6 @@ import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
-
 // FIXME: make base MessageTransferDelegate?
 public class GMessageTransferDel extends MessageTransferDel implements GSimpleInteractionNodeDel
 {
@@ -47,7 +46,8 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
-		GMessageTransfer inlined = AstFactoryImpl.FACTORY.GMessageTransfer(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
+		//GMessageTransfer inlined = AstFactoryImpl.FACTORY.GMessageTransfer(gmt.src, gmt.msg, gmt.getDestinations());  // FIXME: clone
+		GMessageTransfer inlined = gmt.clone();
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (GMessageTransfer) super.leaveProtocolInlining(parent, child, builder, gmt);
 	}
@@ -64,7 +64,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		}
 		Message msg = msgtrans.msg.toMessage();
 		InlinedWFChoiceEnv env = checker.popEnv();
-		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
+		for (Role dest : msgtrans.getDestinations().stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
 		{
 			env = env.addMessage(src, dest, msg);
 			
@@ -121,12 +121,12 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		ModelEnv env = builder.popEnv();
 		Set<ModelAction> actions = env.getActions();
 		Map<Role, ModelAction> leaves = new HashMap<>();
-		if (gmt.dests.size() > 1)
+		if (gmt.getDestinations().size() > 1)
 		{
 			throw new RuntimeException("TODO: " + gmt);
 		}
 		Role src = gmt.src.toName();
-		Role dest = gmt.dests.get(0).toName();
+		Role dest = gmt.getDestinations().get(0).toName();
 		MessageId<?> mid = gmt.msg.toMessage().getId();
 		ModelAction send = new ModelAction(src, new Send(dest, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
 		ModelAction receive = new ModelAction(dest, new Receive(src, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
@@ -148,7 +148,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		Role src = msgtrans.src.toName();
 		Message msg = msgtrans.msg.toMessage();
 		WFChoiceEnv env = checker.popEnv();
-		for (Role dest : msgtrans.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
+		for (Role dest : msgtrans.getDestinations().stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
 		{
 			env = env.addMessageForSubprotocol(checker, src, dest, msg);
 		}

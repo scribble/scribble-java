@@ -11,7 +11,6 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-
 public class LParallel extends Parallel<Local> implements LCompoundInteractionNode
 {
 	public LParallel(List<LProtocolBlock> blocks)
@@ -44,13 +43,13 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	@Override
 	public List<LProtocolBlock> getBlocks()
 	{
-		return castBlocks(this.blocks);
+		return castBlocks(super.getBlocks());
 	}
 
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		return getBlocks().get(0).getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer);
+		return getBlocks().get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

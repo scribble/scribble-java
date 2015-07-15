@@ -7,12 +7,12 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.AstVisitor;
 
-
 // Cf. HeaderParameterDeclList -- but not kinded, because cannot determine Arg kind directly from node syntax itself (kinding for ModelNodes is to supplement syntactic information, not "typing" work)
 // DoArgList (NonRoleArgList) can be of mixed kinds, so DoArg (NonRoleArg) used as "wildcard" wrapper
-public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase  // "? extends InstantiationNode" not enforced here (e.g. can put "? extends ModelNode"), because ultimately any instantiation of this class needs an actual instance of "Instantiation" which has to have a parameter that extends "InstantiationNode"
+// "? extends InstantiationNode" not enforced here (e.g. can put "? extends ModelNode"), because ultimately any instantiation of this class needs an actual instance of "Instantiation" which has to have a parameter that extends "InstantiationNode"
+public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase  
 {
-	public final List<T> args;
+	private final List<T> args;
 
 	public DoArgList(List<T> is)
 	{
@@ -28,6 +28,11 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase  // "?
 	{
 		List<T> nds = visitChildListWithClassEqualityCheck(this, this.args, nv);
 		return reconstruct(nds);
+	}
+	
+	public List<T> getDoArgs()
+	{
+		return this.args;
 	}
 
 	public int length()

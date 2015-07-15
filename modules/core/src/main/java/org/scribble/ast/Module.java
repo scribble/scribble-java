@@ -20,10 +20,10 @@ import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
-
 public class Module extends ScribNodeBase
 {
 	public final ModuleDecl moddecl;
+
 	// Using (implicitly bounded) nested wildcards for mixed element lists (better practice to use separate lists?)
 	public final List<ImportDecl<?>> imports;
 	public final List<NonProtocolDecl<?>> data;

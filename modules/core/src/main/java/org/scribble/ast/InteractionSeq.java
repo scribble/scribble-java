@@ -7,14 +7,16 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-
 public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBase implements ProtocolKindNode<K>
 {
-	public final List<? extends InteractionNode<K>> actions;
+	private final List<? extends InteractionNode<K>> inters;
+	
+	@SuppressWarnings("unchecked")
+	private final Function<ScribNode, InteractionNode<K>> cast = (n) -> (InteractionNode<K>) n;
 
-	protected InteractionSeq(List<? extends InteractionNode<K>> actions)
+	protected InteractionSeq(List<? extends InteractionNode<K>> inters)
 	{
-		this.actions = actions;
+		this.inters = inters;
 	}
 	
 	public abstract InteractionSeq<K> reconstruct(List<? extends InteractionNode<K>> ins);
@@ -23,32 +25,32 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 	public ScribNode visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		//List<? extends InteractionNode<K>> actions = visitChildListWithStrictClassCheck(this, this.actions, nv);
-		List<InteractionNode<K>> actions = visitChildListWithCastCheck(this, this.actions, nv, InteractionNode.class, getKind(), this.cast);
+		List<InteractionNode<K>> actions = visitChildListWithCastCheck(this, this.inters, nv, InteractionNode.class, getKind(), this.cast);
 		return reconstruct(actions);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private Function<ScribNode, InteractionNode<K>> cast = (n) -> (InteractionNode<K>) n;
-	
-	public abstract List<? extends InteractionNode<K>> getActions();
+	public List<? extends InteractionNode<K>> getInteractions()
+	{
+		return this.inters;
+	}
 	
 	public boolean isEmpty()
 	{
-		return this.actions.isEmpty();
+		return this.inters.isEmpty();
 	}
 	
 	@Override
 	public String toString()
 	{
-		if (this.actions.isEmpty())
+		if (this.inters.isEmpty())
 		{
 			return "";
 		}
-		String s = this.actions.get(0).toString();
-		for (InteractionNode<K> in : this.actions.subList(1, this.actions.size()))
-		{
-			s += "\n" + in;
-		}
-		return s;
+		StringBuilder sb = new StringBuilder(this.inters.get(0).toString());
+		this.inters.subList(1, this.inters.size()).stream().forEach((in) ->
+				{
+					sb.append("\n" + in);
+				});
+		return sb.toString();
 	}
 }

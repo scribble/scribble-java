@@ -29,7 +29,7 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 	{
 		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
 		coll.addName(mt.src.toName());
-		mt.dests.stream().forEach((rd) -> coll.addName(rd.toName()));
+		mt.getDestinationRoles().stream().forEach((rd) -> coll.addName(rd));
 		return visited;
 	}
 

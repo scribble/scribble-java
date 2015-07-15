@@ -3,7 +3,6 @@ package org.scribble.ast;
 import org.scribble.sesstype.kind.ScopeKind;
 import org.scribble.sesstype.name.Name;
 
-
 // FIXME: move to types? uniform with Named
 public interface ScopedNode
 {

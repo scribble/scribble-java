@@ -5,7 +5,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 
-
 public class RoleArg extends DoArg<RoleNode>
 {
 	public RoleArg(RoleNode arg)

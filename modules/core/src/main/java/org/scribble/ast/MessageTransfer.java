@@ -10,12 +10,11 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.AstVisitor;
 
-
 public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInteractionNode<K>
 {
 	public final RoleNode src;
 	public final MessageNode msg;
-	public final List<RoleNode> dests;
+	private final List<RoleNode> dests;
 
 	protected MessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)
 	{
@@ -33,6 +32,11 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 		MessageNode msg = (MessageNode) visitChild(this.msg, nv);
 		List<RoleNode> dests = visitChildListWithClassEqualityCheck(this, this.dests, nv);
 		return reconstruct(src, msg, dests);
+	}
+	
+	public List<RoleNode> getDestinations()
+	{
+		return this.dests;
 	}
 	
 	public List<Role> getDestinationRoles()

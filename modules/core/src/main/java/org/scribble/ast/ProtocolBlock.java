@@ -4,7 +4,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-
 public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInteraction implements ProtocolKindNode<K>
 {
 	public final InteractionSeq<K> seq;

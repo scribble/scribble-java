@@ -28,12 +28,12 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	{
 		LInteractionSeq lis = (LInteractionSeq) visited;
 		List<LInteractionNode> lins = new LinkedList<LInteractionNode>();
-		for (LInteractionNode li : lis.getActions())
+		for (LInteractionNode li : lis.getInteractions())
 		{
 			ScribNode inlined = ((InlineProtocolEnv) li.del().env()).getTranslation();
 			if (inlined instanceof LInteractionSeq)
 			{
-				lins.addAll(((LInteractionSeq) inlined).getActions());
+				lins.addAll(((LInteractionSeq) inlined).getInteractions());
 			}
 			else
 			{
@@ -49,7 +49,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	public LInteractionSeq visitForReachabilityChecking(ReachabilityChecker checker, LInteractionSeq child) throws ScribbleException
 	{
 		List<LInteractionNode> visited = new LinkedList<>();
-		for (InteractionNode<Local> li : child.actions)
+		for (InteractionNode<Local> li : child.getInteractions())
 		{
 			ReachabilityEnv re = checker.peekEnv();
 			if (!re.isExitable())
@@ -65,7 +65,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	{
 		ProtocolState entry = conv.builder.getEntry();
 		ProtocolState exit = conv.builder.getExit();
-		for (int i = child.actions.size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
+		for (int i = child.getInteractions().size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
 		{
 			try
 			{
@@ -73,13 +73,13 @@ public class LInteractionSeqDel extends InteractionSeqDel
 				{
 					ProtocolState tmp = conv.builder.newState(Collections.emptySet());
 					conv.builder.setEntry(tmp);
-					child.actions.get(i).accept(conv);
+					child.getInteractions().get(i).accept(conv);
 					conv.builder.setExit(conv.builder.getEntry());  // entry may not be tmp, entry/exit can be modified, e.g. continue
 				}
 				else
 				{
 					conv.builder.setEntry(entry);
-					child.actions.get(i).accept(conv);
+					child.getInteractions().get(i).accept(conv);
 				}
 			}
 			catch (ScribbleException e)

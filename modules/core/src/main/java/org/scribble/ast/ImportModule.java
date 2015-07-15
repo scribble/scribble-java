@@ -7,11 +7,10 @@ import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.visit.AstVisitor;
 
-
 public class ImportModule extends ImportDecl<ModuleKind>
 {
 	public final ModuleNameNode modname;
-	public ModuleNameNode alias;  // Factor up to ImportDecl
+	public final ModuleNameNode alias;  // Factor up to ImportDecl
 
 	public ImportModule(ModuleNameNode modname, ModuleNameNode alias)
 	{

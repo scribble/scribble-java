@@ -8,11 +8,11 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-
 public abstract class Choice<K extends ProtocolKind> extends CompoundInteractionNode<K>
 {
 	public final RoleNode subj;
-	public final List<? extends ProtocolBlock<K>> blocks;  // Factor up? And specialise to singleton for Recursion/Interruptible? Maybe too artificial -- could separate unaryblocked and multiblocked compound ops?
+	private final List<? extends ProtocolBlock<K>> blocks;  
+			// Factor up? And specialise to singleton for Recursion/Interruptible? Maybe too artificial -- could separate unaryblocked and multiblocked compound ops?
 
 	protected Choice(RoleNode subj, List<? extends ProtocolBlock<K>> blocks)
 	{
@@ -31,16 +31,21 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 		return reconstruct(subj, blocks);
 	}
 	
-	public abstract List<? extends ProtocolBlock<K>> getBlocks();
+	public List<? extends ProtocolBlock<K>> getBlocks()
+	{
+		return this.blocks;
+	}
 	
 	@Override
 	public String toString()
 	{
-		String s = Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + " " + this.blocks.get(0);
-		for (ProtocolBlock<K> block : this.blocks.subList(1, this.blocks.size()))
-		{
-			s += " " + Constants.OR_KW + " " + block;
-		}
-		return s;
+		StringBuilder 
+		sb = new StringBuilder();
+		sb.append(Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + " " + this.blocks.get(0));
+		this.blocks.subList(1, this.blocks.size()).stream().forEach((b) -> 		
+				{
+					sb.append(" " + Constants.OR_KW + " " + b);
+				});
+		return sb.toString();
 	}
 }

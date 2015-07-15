@@ -17,13 +17,13 @@ public class RoleArgList extends DoArgList<RoleArg>
 	@Override
 	protected RoleArgList copy()
 	{
-		return new RoleArgList(this.args);
+		return new RoleArgList(getDoArgs());
 	}
 	
 	@Override
 	public RoleArgList clone()
 	{
-		List<RoleArg> roles = ScribUtil.cloneList(this.args);
+		List<RoleArg> roles = ScribUtil.cloneList(getDoArgs());
 		return AstFactoryImpl.FACTORY.RoleArgList(roles);
 	}
 
@@ -41,24 +41,26 @@ public class RoleArgList extends DoArgList<RoleArg>
 	public RoleArgList project(Role self)
 	{
 		List<RoleArg> instans =
-				this.args.stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
+				getDoArgs().stream().map((ri) -> ri.project(self)).collect(Collectors.toList());	
 		return AstFactoryImpl.FACTORY.RoleArgList(instans);
 	}
 
 	// The role arguments
 	public List<Role> getRoles()
 	{
-		return this.args.stream().map((ri) -> ri.val.toName()).collect(Collectors.toList());
+		return getDoArgs().stream().map((ri) -> ri.val.toName()).collect(Collectors.toList());
 	}
 
 	@Override
 	public String toString()
 	{
-		String s = "(" + this.args.get(0);
-		for (RoleArg ri : this.args.subList(1, this.args.size()))
-		{
-			s += ", " + ri;
-		}
-		return s + ")";
+		List<RoleArg> args = getDoArgs();
+		StringBuilder sb = new StringBuilder("(" + args.get(0));
+		args.subList(1, args.size()).stream().forEach((ri) -> 
+				{
+					sb.append(", " + ri);
+				});
+		sb.append(")");
+		return sb.toString();
 	}
 }

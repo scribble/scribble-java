@@ -49,7 +49,7 @@ public class LRecursion extends Recursion<Local> implements LCompoundInteraction
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		return getBlock().getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer);
+		return getBlock().getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

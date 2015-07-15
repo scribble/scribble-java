@@ -5,7 +5,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.AstVisitor;
 
-
 // Not in grammar file -- but cf. DoArg (and PayloadElemList cf. DoArgList)
 public class PayloadElem extends ScribNodeBase
 {

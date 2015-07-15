@@ -6,7 +6,6 @@ import org.scribble.sesstype.kind.NonProtocolKind;
 import org.scribble.sesstype.name.MemberName;
 import org.scribble.visit.AstVisitor;
 
-
 // Rename to something better
 public abstract class NonProtocolDecl<K extends NonProtocolKind> extends NameDeclNode<K> implements ModuleMember
 {

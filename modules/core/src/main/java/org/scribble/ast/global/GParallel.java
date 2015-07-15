@@ -9,7 +9,6 @@ import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
-
 public class GParallel extends Parallel<Global> implements GCompoundInteractionNode
 {
 	public GParallel(List<GProtocolBlock> blocks)
@@ -42,7 +41,7 @@ public class GParallel extends Parallel<Global> implements GCompoundInteractionN
 	@Override
 	public List<GProtocolBlock> getBlocks()
 	{
-		return castBlocks(this.blocks);
+		return castBlocks(super.getBlocks());
 	}
 	
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

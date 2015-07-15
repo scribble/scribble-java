@@ -12,7 +12,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.util.ScribUtil;
 
-
 public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 {
 	public GChoice(RoleNode subj, List<GProtocolBlock> blocks)
@@ -46,7 +45,7 @@ public class GChoice extends Choice<Global> implements GCompoundInteractionNode
 	@Override
 	public List<GProtocolBlock> getBlocks()
 	{
-		return castBlocks(this.blocks);
+		return castBlocks(super.getBlocks());
 	}
 	
 	private static List<GProtocolBlock> castBlocks(List<? extends ProtocolBlock<Global>> blocks)

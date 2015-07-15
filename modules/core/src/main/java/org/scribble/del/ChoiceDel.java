@@ -29,7 +29,7 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 	{
 		Choice<?> cho = (Choice<?>) visited;
 		List<UnfoldingEnv> benvs =
-				cho.blocks.stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
+				cho.getBlocks().stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
 		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
 		unf.pushEnv(merged);
 		return (Choice<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);

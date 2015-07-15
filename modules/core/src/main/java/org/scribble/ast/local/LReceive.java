@@ -25,7 +25,7 @@ public class LReceive extends MessageTransfer<Local> implements LSimpleInteracti
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LReceive(this.src, this.msg, this.dests);
+		return new LReceive(this.src, this.msg, getDestinations());
 	}
 	
 	@Override
@@ -33,7 +33,7 @@ public class LReceive extends MessageTransfer<Local> implements LSimpleInteracti
 	{
 		RoleNode src = this.src.clone();
 		MessageNode msg = this.msg.clone();
-		List<RoleNode> dests = ScribUtil.cloneList(this.dests);
+		List<RoleNode> dests = ScribUtil.cloneList(getDestinations());
 		return AstFactoryImpl.FACTORY.LReceive(src, msg, dests);
 	}
 

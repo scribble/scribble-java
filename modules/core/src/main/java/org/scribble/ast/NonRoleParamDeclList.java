@@ -9,7 +9,6 @@ import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
 
-
 public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 {
 	public NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> decls)

@@ -1,6 +1,5 @@
 package org.scribble.del.local;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LReceive;
@@ -13,16 +12,16 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.FsmBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 
-
 public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
 	public LReceive leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
-		LReceive gmt = (LReceive) visited;
-		LReceive inlined = AstFactoryImpl.FACTORY.LReceive(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
+		LReceive lr = (LReceive) visited;
+		//LReceive inlined = AstFactoryImpl.FACTORY.LReceive(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
+		LReceive inlined = lr.clone();
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (LReceive) super.leaveProtocolInlining(parent, child, builder, gmt);
+		return (LReceive) super.leaveProtocolInlining(parent, child, builder, lr);
 	}
 
 	@Override

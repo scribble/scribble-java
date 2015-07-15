@@ -47,13 +47,13 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	@Override
 	public List<LProtocolBlock> getBlocks()
 	{
-		return castBlocks(this.blocks);
+		return castBlocks(super.getBlocks());
 	}
 
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		return getBlocks().get(0).getInteractionSeq().getActions().get(0).inferLocalChoiceSubject(fixer);
+		return getBlocks().get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

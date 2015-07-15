@@ -10,7 +10,6 @@ import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.util.ScribUtil;
 
-
 public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 {
 	public GInteractionSeq(List<GInteractionNode> actions)
@@ -21,13 +20,13 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	@Override
 	protected GInteractionSeq copy()
 	{
-		return new GInteractionSeq(getActions());
+		return new GInteractionSeq(getInteractions());
 	}
 	
 	@Override
 	public GInteractionSeq clone()
 	{
-		List<GInteractionNode> gis = ScribUtil.cloneList(getActions());
+		List<GInteractionNode> gis = ScribUtil.cloneList(getInteractions());
 		return AstFactoryImpl.FACTORY.GInteractionSeq(gis);
 	}
 
@@ -41,9 +40,14 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	}
 	
 	@Override
-	public List<GInteractionNode> getActions()
+	public List<GInteractionNode> getInteractions()
 	{
-		return castNodes(this.actions);
+		return castNodes(super.getInteractions());
+	}
+	
+	private static List<GInteractionNode> castNodes(List<? extends InteractionNode<Global>> nodes)
+	{
+		return nodes.stream().map((n) -> (GInteractionNode) n).collect(Collectors.toList());
 	}
 	
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
@@ -51,10 +55,5 @@ public class GInteractionSeq extends InteractionSeq<Global> implements GNode
 	public Global getKind()
 	{
 		return GNode.super.getKind();
-	}
-	
-	private static List<GInteractionNode> castNodes(List<? extends InteractionNode<Global>> nodes)
-	{
-		return nodes.stream().map((n) -> (GInteractionNode) n).collect(Collectors.toList());
 	}
 }

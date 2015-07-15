@@ -8,7 +8,6 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-
 public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 {
 	public LContinue(RecVarNode recvar)

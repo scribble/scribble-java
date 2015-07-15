@@ -31,7 +31,6 @@ import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
-
 public class GInteractionSeqDel extends InteractionSeqDel
 {
 	@Override
@@ -39,12 +38,12 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();
-		for (GInteractionNode gi : gis.getActions())
+		for (GInteractionNode gi : gis.getInteractions())
 		{
 			ScribNode inlined = ((InlineProtocolEnv) gi.del().env()).getTranslation();
 			if (inlined instanceof GInteractionSeq)  // A do got inlined
 			{
-				gins.addAll(((GInteractionSeq) inlined).getActions());
+				gins.addAll(((GInteractionSeq) inlined).getInteractions());
 			}
 			else
 			{
@@ -67,12 +66,12 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<LInteractionNode> lis = new LinkedList<>();
-		for (InteractionNode<Global> gi : gis.actions)
+		for (InteractionNode<Global> gi : gis.getInteractions())
 		{
 			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
-				lis.addAll(((LInteractionSeq) ln).getActions());
+				lis.addAll(((LInteractionSeq) ln).getInteractions());
 			}
 			else if (ln != null)
 			{
@@ -103,7 +102,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		Set<ModelAction> all = new HashSet<>();
 		Map<Role, ModelAction> leaves = null;
-		for (InteractionNode<Global> gi : gis.actions)
+		for (InteractionNode<Global> gi : gis.getInteractions())
 		{
 			ModelEnv env = ((ModelEnv) gi.del().env());
 			Set<ModelAction> as = env.getActions();

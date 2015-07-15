@@ -6,7 +6,6 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 
-
 public class GContinue extends Continue<Global> implements GSimpleInteractionNode
 {
 	public GContinue(RecVarNode recvar)

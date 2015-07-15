@@ -6,7 +6,6 @@ import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.visit.AstVisitor;
 
-
 public class ModuleDecl extends NameDeclNode<ModuleKind>
 {
 	public ModuleDecl(ModuleNameNode fullmodname)

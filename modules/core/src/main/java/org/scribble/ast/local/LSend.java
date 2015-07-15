@@ -14,7 +14,6 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-
 public class LSend extends MessageTransfer<Local> implements LSimpleInteractionNode
 {
 	public LSend(RoleNode src, MessageNode msg, List<RoleNode> dests)
@@ -25,7 +24,7 @@ public class LSend extends MessageTransfer<Local> implements LSimpleInteractionN
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LSend(this.src, this.msg, this.dests);
+		return new LSend(this.src, this.msg, getDestinations());
 	}
 	
 	@Override
@@ -33,7 +32,7 @@ public class LSend extends MessageTransfer<Local> implements LSimpleInteractionN
 	{
 		RoleNode src = this.src.clone();
 		MessageNode msg = this.msg.clone();
-		List<RoleNode> dests = ScribUtil.cloneList(this.dests);
+		List<RoleNode> dests = ScribUtil.cloneList(getDestinations());
 		return AstFactoryImpl.FACTORY.LSend(src, msg, dests);
 	}
 
@@ -62,11 +61,13 @@ public class LSend extends MessageTransfer<Local> implements LSimpleInteractionN
 	@Override
 	public String toString()
 	{
-		String s = this.msg + " " + Constants.TO_KW + " " + this.dests.get(0);
-		for (RoleNode dest : this.dests.subList(1, this.dests.size()))
-		{
-			s += ", " + dest;
-		}
-		return s + ";";
+		List<RoleNode> dests = getDestinations();
+		StringBuilder sb = new StringBuilder(this.msg + " " + Constants.TO_KW + " " + dests.get(0));
+		dests.subList(1, dests.size()).stream().forEach((dest) ->
+				{
+					sb.append(", " + dest);
+				});
+		sb.append(";");
+		return sb.toString();
 	}
 }

@@ -7,7 +7,6 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.visit.AstVisitor;
 
-
 // TODO: parameterize on global/local name node and role decl list (i.e. self roles)
 public abstract class ProtocolHeader<K extends ProtocolKind> extends NameDeclNode<K> implements ProtocolKindNode<K>
 {

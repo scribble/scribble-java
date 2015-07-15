@@ -4,7 +4,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.AstVisitor;
 
-
 public abstract class ProtocolDecl<K extends ProtocolKind> extends ScribNodeBase implements ModuleMember, ProtocolKindNode<K>
 {
 	// Maybe just use standard pattern, make private with casting getters -- works better (e.g. to use overridden getName)

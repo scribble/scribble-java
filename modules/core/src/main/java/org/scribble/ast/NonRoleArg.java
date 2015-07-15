@@ -3,7 +3,6 @@ package org.scribble.ast;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.name.Role;
 
-
 public class NonRoleArg extends DoArg<NonRoleArgNode>
 {
 	public NonRoleArg(NonRoleArgNode arg)

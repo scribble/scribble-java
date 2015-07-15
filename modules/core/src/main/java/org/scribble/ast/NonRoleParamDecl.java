@@ -7,7 +7,6 @@ import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.Role;
 
-
 public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDecl<K>
 {
 	public final K kind;

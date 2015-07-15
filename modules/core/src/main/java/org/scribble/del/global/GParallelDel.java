@@ -17,7 +17,7 @@ public class GParallelDel extends ParallelDel implements GCompoundInteractionNod
 	{
 		GParallel par = (GParallel) visited;
 		List<WFChoiceEnv> benvs =
-				par.blocks.stream().map((b) -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
+				par.getBlocks().stream().map((b) -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
 		checker.pushEnv(checker.popEnv().mergeContexts(benvs));
 		return par;
 	}
