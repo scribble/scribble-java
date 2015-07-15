@@ -54,6 +54,11 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 		builder.setRecVar(subsig);
 	}
 
+	@Override
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
 
 	@Override
 	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited)
@@ -62,12 +67,6 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 		// Needs ContextBuilder to have built the context already
 		ProtocolDeclDel<K> del = setProtocolDeclContext(getProtocolDeclContext().setRoleOccurrences(coll.getNames()));
 		return pd.del(del);
-	}
-
-	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
-	{
-		return visited;
 	}
 	
 	public ProtocolDeclContext<K> getProtocolDeclContext()

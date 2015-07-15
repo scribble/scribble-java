@@ -18,12 +18,12 @@ public abstract class ProtocolDefDel extends ScribDelBase
 		ScribDelBase.pushVisitorEnv(this, builder);
 	}
 	
-	public ProtocolDef<? extends ProtocolKind> getInlinedProtocolDef()
+	public ProtocolDef<?> getInlinedProtocolDef()
 	{
 		return this.inlined;
 	}
 
-	public ProtocolDefDel setInlinedProtocolDef(ProtocolDef<? extends ProtocolKind> inlined)
+	public ProtocolDefDel setInlinedProtocolDef(ProtocolDef<?> inlined)
 	{
 		ProtocolDefDel copy = copy();
 		copy.inlined = inlined;

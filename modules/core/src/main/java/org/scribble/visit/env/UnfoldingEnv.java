@@ -3,7 +3,7 @@ package org.scribble.visit.env;
 import java.util.Arrays;
 import java.util.List;
 
-public class UnfoldingEnv extends  Env<UnfoldingEnv>
+public class UnfoldingEnv extends Env<UnfoldingEnv>
 {
 	private boolean shouldUnfold;
 	

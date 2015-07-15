@@ -11,6 +11,7 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.name.simple.RecVarNode;
+import org.scribble.del.ProtocolDefDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.kind.RecVarKind;
@@ -60,10 +61,19 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 		}
 		else
 		{
-			return super.visit(parent, child);
+			ScribNode visited = super.visit(parent, child);
+			if (visited instanceof ProtocolDecl<?>)
+			{
+				ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
+				getJob().debugPrintln("\n[DEBUG] Unfolded inlined protocol "
+							+ pd.getFullMemberName(getJobContext().getModule(getModuleContext().root)) + ":\n"
+							+ ((ProtocolDefDel) pd.def.del()).getInlinedProtocolDef());
+			}
+			return visited;
 		}
 	}
 
+	// Not doing the actual unfolding here: replace the rec with a dummy (i.e. alpha the original rec to another unused lab) and will do any actual unfolding inside the recursive child accept (upon Continue)
 	private <K extends ProtocolKind> ScribNode unfold(Recursion<K> rec) throws ScribbleException
 	{
 		RecVar rv = rec.recvar.toName();
