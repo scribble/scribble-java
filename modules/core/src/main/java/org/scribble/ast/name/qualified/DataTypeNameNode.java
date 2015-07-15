@@ -66,6 +66,7 @@ public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements Pa
 		return ((DataTypeNameNode) o).canEqual(this) && super.equals(o);
 	}
 	
+	@Override
 	public boolean canEqual(Object o)
 	{
 		return o instanceof DataTypeNameNode;

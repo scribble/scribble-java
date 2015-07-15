@@ -6,7 +6,6 @@ import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.PackageName;
 
-
 public abstract class MemberNameNode<K extends Kind> extends QualifiedNameNode<K>
 {
 	public MemberNameNode(String... ns)

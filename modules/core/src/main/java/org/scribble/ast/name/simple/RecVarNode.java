@@ -4,7 +4,6 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 
-
 public class RecVarNode extends SimpleNameNode<RecVarKind>
 {
 	public RecVarNode(String identifier)

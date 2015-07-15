@@ -4,8 +4,6 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 
-
-
 public class LProtocolNameNode extends ProtocolNameNode<Local>
 {
 	public LProtocolNameNode(String... ns)
@@ -48,6 +46,7 @@ public class LProtocolNameNode extends ProtocolNameNode<Local>
 		return ((LProtocolNameNode) o).canEqual(this) && super.equals(o);
 	}
 	
+	@Override
 	public boolean canEqual(Object o)
 	{
 		return o instanceof LProtocolNameNode;

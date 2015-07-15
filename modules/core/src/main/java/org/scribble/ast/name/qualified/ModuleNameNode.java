@@ -5,8 +5,6 @@ import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.PackageName;
 
-
-
 public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 {
 	public ModuleNameNode(String... ns)
@@ -49,6 +47,7 @@ public class ModuleNameNode extends QualifiedNameNode<ModuleKind>
 		return ((ModuleNameNode) o).canEqual(this) && super.equals(o);
 	}
 	
+	@Override
 	public boolean canEqual(Object o)
 	{
 		return o instanceof ModuleNameNode;

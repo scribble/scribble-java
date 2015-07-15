@@ -3,7 +3,6 @@ package org.scribble.ast.name.simple;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Substitutor;
 
-
 // For local choice subjects
 public class DummyProjectionRoleNode extends RoleNode
 {

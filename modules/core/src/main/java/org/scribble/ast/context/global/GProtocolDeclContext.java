@@ -9,7 +9,6 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
 
-
 public class GProtocolDeclContext extends ProtocolDeclContext<Global>
 {
 	// cache of dependencies, cleared on entering each root global protocol

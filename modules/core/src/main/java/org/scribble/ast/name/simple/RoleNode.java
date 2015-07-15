@@ -7,7 +7,6 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Substitutor;
 
-
 public class RoleNode extends SimpleNameNode<RoleKind> implements DoArgNode //RoleDecl, RoleInstantiation
 {
 	public RoleNode(String identifier)

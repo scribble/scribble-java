@@ -4,7 +4,6 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.ScopeKind;
 import org.scribble.sesstype.name.Scope;
 
-
 public class ScopeNode extends SimpleNameNode<ScopeKind>
 {
 	public ScopeNode(String identifier)

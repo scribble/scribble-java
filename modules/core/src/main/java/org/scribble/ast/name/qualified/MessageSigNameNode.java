@@ -5,7 +5,6 @@ import org.scribble.ast.MessageNode;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.MessageSigName;
 
-
 public class MessageSigNameNode extends MemberNameNode<SigKind> implements MessageNode
 {
 	public MessageSigNameNode(String... elems)
@@ -66,6 +65,7 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 		return ((MessageSigNameNode) o).canEqual(this) && super.equals(o);
 	}
 	
+	@Override
 	public boolean canEqual(Object o)
 	{
 		return o instanceof MessageSigNameNode;

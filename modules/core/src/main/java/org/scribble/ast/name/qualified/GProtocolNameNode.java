@@ -4,8 +4,6 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 
-
-
 public class GProtocolNameNode extends ProtocolNameNode<Global>
 {
 	public GProtocolNameNode(String... ns)
@@ -48,6 +46,7 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 		return ((GProtocolNameNode) o).canEqual(this) && super.equals(o);
 	}
 	
+	@Override
 	public boolean canEqual(Object o)
 	{
 		return o instanceof GProtocolNameNode;

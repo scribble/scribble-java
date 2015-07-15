@@ -9,7 +9,6 @@ import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.DependencyMap;
 
-
 public class LProtocolDeclContext extends ProtocolDeclContext<Local>
 {
 	// cache of dependencies, cleared on entering each root global protocol

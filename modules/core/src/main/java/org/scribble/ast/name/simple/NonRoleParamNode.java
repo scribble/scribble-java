@@ -16,7 +16,6 @@ import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.Substitutor;
 
-
 // An unambiguous kinded parameter (ambiguous parameters handled by disambiguation)
 public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode
 {
