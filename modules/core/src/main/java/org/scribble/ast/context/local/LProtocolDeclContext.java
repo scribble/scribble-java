@@ -5,38 +5,29 @@ import java.util.Set;
 
 import org.scribble.ast.context.ProtocolDeclContext;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.DependencyMap;
 
 public class LProtocolDeclContext extends ProtocolDeclContext<Local>
 {
-	// cache of dependencies, cleared on entering each root global protocol
-	// protocol name is full name of global protocol dependencies
-	private final DependencyMap<LProtocolName> deps;  // All the potential dependencies from this protocol decl as the root
-	
-	// Use dep map setter instead?
-	public LProtocolDeclContext(DependencyMap<LProtocolName> deps)
+	protected LProtocolDeclContext(Set<Role> roles, LDependencyMap deps)
+	{
+		super(roles, deps);
+	}
+
+	public LProtocolDeclContext(LDependencyMap deps)
 	{
 		this(Collections.emptySet(), deps);
 	}
-
-	protected LProtocolDeclContext(Set<Role> roles, DependencyMap<LProtocolName> deps)
-	{
-		super(roles);
-		this.deps = new DependencyMap<>(deps);
-	}
 	
 	@Override
-	public LProtocolDeclContext copy()
+	protected LProtocolDeclContext copy()
 	{
 		return new LProtocolDeclContext(getRoleOccurrences(), getDependencyMap());
 	}
 	
 	@Override
-	public DependencyMap<LProtocolName> getDependencyMap()
+	public LDependencyMap getDependencyMap()
 	{
-		return this.deps;
+		return (LDependencyMap) super.getDependencyMap();
 	}
 }
-

@@ -7,17 +7,22 @@ import java.util.Set;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.DependencyMap;
 
 public abstract class ProtocolDeclContext<K extends ProtocolKind>
 {
 	private Set<Role> roles;
+
+	// cache of dependencies, cleared on entering each root global protocol
+	// protocol name is full name of global/local protocol dependencies
+	private DependencyMap<? extends ProtocolName<K>> deps;  // All the potential dependencies from this protocol decl as the root
 	
-	protected ProtocolDeclContext(Set<Role> roles)
+	protected ProtocolDeclContext(Set<Role> roles, DependencyMap<? extends ProtocolName<K>> deps)
 	{
 		this.roles = new HashSet<>(roles);
+		this.deps = deps.clone();
 	}
 	
+	// Subclass constructor should use the above copy constructor
 	protected abstract ProtocolDeclContext<K> copy();
 	
 	public Set<Role> getRoleOccurrences()
@@ -29,8 +34,21 @@ public abstract class ProtocolDeclContext<K extends ProtocolKind>
 	{
 		ProtocolDeclContext<K> copy = copy();
 		copy.roles = new HashSet<>(roles);
+		copy.deps = this.deps.clone();
 		return copy;
 	}
 
-	public abstract DependencyMap<? extends ProtocolName<K>> getDependencyMap();
+	public DependencyMap<? extends ProtocolName<K>> getDependencyMap()
+	{
+		return this.deps;
+	}
+
+	/*// Not needed: protocoldeclcontext always has dependencymap on first creation, by context building
+	 public ProtocolDeclContext<K> setDependencyMap(DependencyMap<? extends ProtocolName<K>> deps)
+	{
+		ProtocolDeclContext<K> copy = copy();
+		copy.roles = new HashSet<>(this.roles);
+		copy.deps = new DependencyMap<>(deps);
+		return copy;
+	}*/
 }

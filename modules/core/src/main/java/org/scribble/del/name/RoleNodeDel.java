@@ -6,7 +6,6 @@ import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.NameDisambiguator;
 
-
 public class RoleNodeDel extends ScribDelBase
 {
 	public RoleNodeDel()

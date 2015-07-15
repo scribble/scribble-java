@@ -2,17 +2,18 @@ package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.context.global.GDependencyMap;
+import org.scribble.ast.context.local.LDependencyMap;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.util.DependencyMap;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
 public class ContextBuilder extends AstVisitor
 {
-	private DependencyMap<GProtocolName> gdeps;
-	private DependencyMap<LProtocolName> ldeps;
+	private GDependencyMap gdeps;
+	private LDependencyMap ldeps;
 
 	private ModuleContext mcontext;  // The "root" Module context (not the "main" module)
 	
@@ -45,8 +46,8 @@ public class ContextBuilder extends AstVisitor
 	
 	public void clearProtocolDependencies()
 	{
-		this.gdeps = new DependencyMap<>();
-		this.ldeps = new DependencyMap<>();
+		this.gdeps = new GDependencyMap();
+		this.ldeps = new LDependencyMap();
 	}
 
 	public void addGlobalProtocolDependency(Role self, GProtocolName gpn, Role role)
@@ -59,12 +60,12 @@ public class ContextBuilder extends AstVisitor
 		this.ldeps.addProtocolDependency(self, lpn, role);
 	}
 
-	public DependencyMap<GProtocolName> getGlobalProtocolDependencyMap()
+	public GDependencyMap getGlobalProtocolDependencyMap()
 	{
 		return this.gdeps;
 	}
 
-	public DependencyMap<LProtocolName> getLocalProtocolDependencyMap()
+	public LDependencyMap getLocalProtocolDependencyMap()
 	{
 		return this.ldeps;
 	}

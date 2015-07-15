@@ -1,4 +1,4 @@
-package org.scribble.util;
+package org.scribble.ast.context;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 
+// Mutable
 // Used for two purposes: one to encapsulate Map structure and add method for ContextBuilder; second to allow overriding the generic types in ProtocolDeclContext (cf. nested Map generics)
-public class DependencyMap<N extends ProtocolName<? extends ProtocolKind>>  // Maybe better to parameterise on Kind only?
+public abstract class DependencyMap<N extends ProtocolName<?>>  // Maybe better to parameterise on Kind only?
 {
 	private final Map<Role, Map<N, Set<Role>>> deps = new HashMap<>();  // All the potential dependencies from this protocol decl as the root
 
@@ -20,7 +20,7 @@ public class DependencyMap<N extends ProtocolName<? extends ProtocolKind>>  // M
 
 	}
 
-	public DependencyMap(DependencyMap<N> deps)
+	protected DependencyMap(DependencyMap<N> deps)
 	{
 		for (Role r : deps.deps.keySet())  // FIXME: optimise
 		{
@@ -34,6 +34,8 @@ public class DependencyMap<N extends ProtocolName<? extends ProtocolKind>>  // M
 			}
 		}
 	}
+	
+	public abstract DependencyMap<N> clone();
 
 	public void addProtocolDependency(Role self, N pn, Role role)
 	{
