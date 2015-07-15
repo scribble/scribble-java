@@ -121,6 +121,11 @@ public class Job
 		return this.jcontext;
 	}
 	
+	public boolean isDebug()
+	{
+		return this.debug;
+	}
+	
 	public void debugPrintln(String s)
 	{
 		if (this.debug)

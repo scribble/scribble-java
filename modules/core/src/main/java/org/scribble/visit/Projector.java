@@ -24,7 +24,8 @@ import org.scribble.visit.env.ProjectionEnv;
 // FIXME: shouldn't be offset visitor -- currently does not match fsm builder
 // Uses visitor infrastructure to traverse AST and generate local nodes from global with original nodes unchanged (so does not use normal visitChildren pattern -- env used to pass the working projections)
 // uses envs but does not need to be a SubProtocolVisitor -- swap env and subprotocol visitors in hierarchy? Maybe not: e.g. GraphBuilder is a subprotocol visitor but not an env visitor -- maybe not any more, more like projector (uses pre-built dependencies)
-public class Projector extends OffsetSubprotocolVisitor<ProjectionEnv>
+//public class Projector extends OffsetSubprotocolVisitor<ProjectionEnv>
+public class Projector extends SubprotocolVisitor<ProjectionEnv>
 {
 	private Stack<Role> selfs = new Stack<>();  // Is a stack needed? roles only pushed from GlobalProtocolDecl, which should be only done once at the root?
 	
@@ -59,7 +60,8 @@ public class Projector extends OffsetSubprotocolVisitor<ProjectionEnv>
 	
   // Important: projection should not follow the subprotocol visiting pattern for do's -- projection uses some name mangling, which isn't compatible with subprotocol visitor name maps
 	@Override
-	protected ScribNode visitForOffsetSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	//protected ScribNode visitForOffsetSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitForSubprotocols(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		return child.visitChildren(this);
 	}
@@ -80,17 +82,21 @@ public class Projector extends OffsetSubprotocolVisitor<ProjectionEnv>
 	}
 	
 	@Override
-	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	//protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.offsetSubprotocolEnter(parent, child);
+		//super.offsetSubprotocolEnter(parent, child);
+		super.subprotocolEnter(parent, child);
 		child.del().enterProjection(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	//protected ScribNode offsetSubprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveProjection(parent, child, this, visited);
-		return super.offsetSubprotocolLeave(parent, child, visited);
+		//return super.offsetSubprotocolLeave(parent, child, visited);
+		return super.subprotocolLeave(parent, child, visited);
 	}
 
 	public void pushSelf(Role self)

@@ -74,9 +74,6 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
 		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);
 		proj.addProjection(gpd.getFullMemberName(root), self, projected);
-
-		proj.getJob().debugPrintln("\n[DEBUG] Projected " + gpd.header.name + " for " + self + ":\n" + lpd);
-
 		return gpd;
 	}
 	
@@ -93,18 +90,6 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		GProtocolName gpn = gpd.getFullMemberName(proj.getJobContext().getModule(proj.getModuleContext().root));
 		LProtocolDecl projected = AstFactoryImpl.FACTORY.LProjectionDecl(gpn, proj.peekSelf(), lph, def);
 		return projected;
-	}
-
-	public Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
-	{
-		DependencyMap<GProtocolName> deps = getProtocolDeclContext().getDependencyMap();
-		return deps.getDependencies().get(self);
-	}
-	
-	@Override
-	public GProtocolDeclContext getProtocolDeclContext()
-	{
-		return (GProtocolDeclContext) super.getProtocolDeclContext();
 	}
 
 	@Override
@@ -149,5 +134,17 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 			}
 			parseModel(rtmp, next, etmp);
 		}
+	}
+
+	public Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
+	{
+		DependencyMap<GProtocolName> deps = getProtocolDeclContext().getDependencyMap();
+		return deps.getDependencies().get(self);
+	}
+	
+	@Override
+	public GProtocolDeclContext getProtocolDeclContext()
+	{
+		return (GProtocolDeclContext) super.getProtocolDeclContext();
 	}
 }

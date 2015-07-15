@@ -1,7 +1,19 @@
 package org.scribble.del.local;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.RoleDecl;
+import org.scribble.ast.RoleDeclList;
+import org.scribble.ast.ScribNode;
+import org.scribble.ast.local.LProtocolDecl;
+import org.scribble.ast.local.LProtocolHeader;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ProjectedRoleDeclFixer;
 
 public class LProjectionDeclDel extends LProtocolDeclDel
 {
@@ -15,6 +27,29 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 		this.self = self;
 	}
 	
+	@Override
+	protected LProtocolDeclDel copy()
+	{
+		return new LProjectionDeclDel(this.fullname, this.self);
+	}
+
+	@Override
+	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
+	{
+		LProtocolDecl lpd = (LProtocolDecl) visited;
+		// FIXME: ensure all role params are used, to avoid empty roledecllist
+		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences();
+		List<RoleDecl> rds = lpd.header.roledecls.getDecls().stream().filter((rd) -> 
+				occs.contains(rd.getDeclName())).collect(Collectors.toList());
+		RoleDeclList rdl = AstFactoryImpl.FACTORY.RoleDeclList(rds);
+		LProtocolHeader header = lpd.getHeader().reconstruct(lpd.getHeader().getNameNode(), rdl, lpd.header.paramdecls);
+		LProtocolDecl fixed = lpd.reconstruct(header, lpd.def);
+		
+		fixer.getJob().debugPrintln("\n[DEBUG] Projected " + getSourceProtocol() + " for " + getSelfRole() + ":\n" + fixed);
+		
+		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, fixed);
+	}
+	
 	public GProtocolName getSourceProtocol()
 	{
 		return this.fullname;
@@ -25,25 +60,4 @@ public class LProjectionDeclDel extends LProtocolDeclDel
 	{
 		return this.self;
 	}
-	
-	@Override
-	protected LProtocolDeclDel copy()
-	{
-		return new LProjectionDeclDel(this.fullname, this.self);
-	}
-	
-	/*@Override
-	public LProtocolDecl leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
-	{
-		LProtocolDecl lpd = (LProtocolDecl) visited;
-		LProtocolDeclContext gcontext = new LProjectionDeclContext(builder.getLocalProtocolDependencyMap(), );
-		LProjectionDeclDel del = (LProjectionDeclDel) setProtocolDeclContext(gcontext);
-		return (LProtocolDecl) lpd.del(del);
-	}
-	
-	@Override
-	public LProjectionDeclContext getProtocolDeclContext()
-	{
-		return (LProjectionDeclContext) super.getProtocolDeclContext();
-	}*/
 }

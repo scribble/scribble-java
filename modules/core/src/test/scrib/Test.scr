@@ -12,6 +12,7 @@ import Test2;
 type <java> "java.lang.String" from "rt.jar" as String;
 
 
+///*
 global protocol Foo(role A, role B)
 {
 	do Test2.Bar(A, B);
@@ -50,7 +51,8 @@ global protocol Bar(role A, role B)
 //*/
 
 
-/*global protocol Foo(role A, role B)
+/*
+global protocol Foo(role A, role B)
 {
 	1() from A to B;
 	choice at A
@@ -70,7 +72,8 @@ global protocol Bar(role A, role B)
 //*/
 
 
-/*global protocol Foo(role A, role B, role C)
+/*
+global protocol Foo(role A, role B, role C)
 {
 	1() from A to B;
 	do Bar(A, B, C);
@@ -84,7 +87,8 @@ global protocol Bar(role D, role E, role F)
 //*/
 
 
-/*global protocol Foo(role A, role B)
+/*
+global protocol Foo(role A, role B)
 {
 	choice at A
 	{

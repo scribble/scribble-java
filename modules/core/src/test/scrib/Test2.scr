@@ -5,7 +5,7 @@ module Test2;
 
 import Test;
 
-global protocol Bar(role C, role D)
+global protocol Test2Prot(role C, role D)
 {
 	//1() from C to D;
 	aaa() from C to D;
