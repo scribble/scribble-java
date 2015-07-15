@@ -53,7 +53,8 @@ public class CommandLineArgParser
 			{
 				if (this.parsed.containsKey(CommandLine.Arg.MAIN))
 				{
-					throw new RuntimeException("Bad argument: " + arg);
+					// Could be the second bad argument -- we didn't validating the value of the main arg
+					throw new RuntimeException("Duplicate main module arg: " + arg);
 				}
 				parseMain(i);
 			}
@@ -85,13 +86,13 @@ public class CommandLineArgParser
 			{
 				return parseFsm(i);
 			}
-			case CommandLineArgParser.API_FLAG:
-			{
-				return parseApi(i);
-			}
 			case CommandLineArgParser.SESSION_FLAG:
 			{
 				return parseSession(i);
+			}
+			case CommandLineArgParser.API_FLAG:
+			{
+				return parseApi(i);
 			}
 			case CommandLineArgParser.OUTPUT_FLAG:
 			{
@@ -157,17 +158,6 @@ public class CommandLineArgParser
 		return i;
 	}
 
-	private int parseOutput(int i)  // Almost same as parseProject
-	{
-		if ((i + 1) >= this.args.length)
-		{
-			throw new RuntimeException("Missing directory argument");
-		}
-		String dir = this.args[++i];
-		this.parsed.put(this.FLAGS.get(CommandLineArgParser.OUTPUT_FLAG), new String[] { dir } );
-		return i;
-	}
-
 	private int parseSession(int i)  // Almost same as parseProject
 	{
 		if ((i + 1) >= this.args.length)
@@ -188,6 +178,17 @@ public class CommandLineArgParser
 		String proto = this.args[++i];
 		String role = this.args[++i];
 		this.parsed.put(this.FLAGS.get(CommandLineArgParser.API_FLAG), new String[] { proto, role } );
+		return i;
+	}
+
+	private int parseOutput(int i)  // Almost same as parseProject
+	{
+		if ((i + 1) >= this.args.length)
+		{
+			throw new RuntimeException("Missing directory argument");
+		}
+		String dir = this.args[++i];
+		this.parsed.put(this.FLAGS.get(CommandLineArgParser.OUTPUT_FLAG), new String[] { dir } );
 		return i;
 	}
 
