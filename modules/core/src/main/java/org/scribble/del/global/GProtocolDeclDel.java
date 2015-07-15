@@ -74,6 +74,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
 		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);
 		proj.addProjection(gpd.getFullMemberName(root), self, projected);
+
+		proj.getJob().debugPrintln("\n[DEBUG] Projected " + gpd.header.name + " for " + self + ":\n" + lpd);
+
 		return gpd;
 	}
 	

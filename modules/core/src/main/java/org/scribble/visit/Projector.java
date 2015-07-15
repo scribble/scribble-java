@@ -21,6 +21,7 @@ import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.env.ProjectionEnv;
 
+// FIXME: shouldn't be offset visitor -- currently does not match fsm builder
 // Uses visitor infrastructure to traverse AST and generate local nodes from global with original nodes unchanged (so does not use normal visitChildren pattern -- env used to pass the working projections)
 // uses envs but does not need to be a SubProtocolVisitor -- swap env and subprotocol visitors in hierarchy? Maybe not: e.g. GraphBuilder is a subprotocol visitor but not an env visitor -- maybe not any more, more like projector (uses pre-built dependencies)
 public class Projector extends OffsetSubprotocolVisitor<ProjectionEnv>
@@ -74,8 +75,6 @@ public class Projector extends OffsetSubprotocolVisitor<ProjectionEnv>
 			GProtocolDecl visited = (GProtocolDecl) child.visitChildren(this);  // enter/leave around visitChildren for this GlobalProtocolDecl done above -- cf. SubprotocolVisitor.visit
 			visited = (GProtocolDecl) leave(parent, child, visited);  // projection will not change original global protocol (visited can be discarded)
 			popSelf();
-			
-			//System.out.println("Projected " + visited.header.name + " for " + self + ":\n" + ((ProjectionEnv) visited.def.del().env()).getProjection() + "\n");
 		}
 		return child;
 	}

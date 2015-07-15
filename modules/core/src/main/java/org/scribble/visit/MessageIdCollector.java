@@ -5,7 +5,6 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 
-
 public class MessageIdCollector extends NameCollector<MessageId<?>>
 {
 	public MessageIdCollector(Job job, ModuleContext mcontext)

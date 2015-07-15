@@ -11,7 +11,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 
-//public class InlinedWFChoiceChecker extends InlinedProtocolVisitor<InlinedWFChoiceEnv>
 public class InlinedWFChoiceChecker extends UnfoldingVisitor<InlinedWFChoiceEnv>
 {
 	private Set<Choice<?>> visited = new HashSet<>();	
@@ -34,8 +33,6 @@ public class InlinedWFChoiceChecker extends UnfoldingVisitor<InlinedWFChoiceEnv>
 		}
 	}
 
-	//@Override
-	//protected ScribNode visitForUnfolding(ScribNode parent, ScribNode child) throws ScribbleException
 	private ScribNode visitOverrideForChoice(InteractionSeq<?> parent, Choice<?> child) throws ScribbleException
 	{
 		if (child instanceof Choice<?>)
@@ -67,16 +64,13 @@ public class InlinedWFChoiceChecker extends UnfoldingVisitor<InlinedWFChoiceEnv>
 	}
 	
 	@Override
-	//protected void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	protected void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		//super.inlinedProtocolEnter(parent, child);
 		super.unfoldingEnter(parent, child);
 		child.del().enterInlinedWFChoiceCheck(parent, child, this);
 	}
 	
 	@Override
-	//protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveInlinedWFChoiceCheck(parent, child, this, visited);

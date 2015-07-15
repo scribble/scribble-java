@@ -32,8 +32,6 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.sesstype.name.Scope;
 import org.scribble.visit.env.Env;
 
-
-// FIXME: factor out role/argmap access methods with OffsetSubprotocolVisitor
 public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 {
 	protected List<SubprotocolSig> stack = new LinkedList<>();
@@ -83,7 +81,8 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 		}
 		else
 		{
-			return child.visitChildren(this);  // The base (super) behaviour (could factor it out in ModelVisitor as its own visitor method)
+			return child.visitChildren(this); 
+					// The base (super) behaviour (could factor it out in ModelVisitor as its own visitor method)
 		}
 	}
 	
@@ -95,7 +94,7 @@ public abstract class SubprotocolVisitor<T extends Env> extends EnvVisitor<T>
 			ModuleContext mcontext = getModuleContext();
 			ProtocolDecl<? extends ProtocolKind> pd = doo.getTargetProtocolDecl(getJobContext(), mcontext);
 			// Target is cloned: fresh dels and envs, which will be discarded
-			ScribNode seq = applySubstitutions(pd.def.block.seq.clone());  // Visit the seq? -- or visit the interactions in the seq directly? ()
+			ScribNode seq = applySubstitutions(pd.def.block.seq.clone());  // Visit the seq? -- or visit the interactions in the seq directly?
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 		}
 		return doo;

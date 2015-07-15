@@ -7,14 +7,14 @@
 
 module Test;
 
-//import Test2;
+import Test2;
 
 type <java> "java.lang.String" from "rt.jar" as String;
 
 
 global protocol Foo(role A, role B)
 {
-	//do Test2.Bar(A, B);
+	do Test2.Bar(A, B);
 	1() from A to B;
 	choice at A
 	{

@@ -8,11 +8,11 @@ import java.util.Map;
 public class CommandLineArgParser
 {
 	public static final String VERBOSE_FLAG = "-V";
-	public static final String PATH_FLAG = "-path";
+	public static final String PATH_FLAG = "-ip";
 	public static final String PROJECT_FLAG = "-project";
 	public static final String FSM_FLAG = "-fsm";
-	public static final String API_FLAG = "-api";
 	public static final String SESSION_FLAG = "-session";
+	public static final String API_FLAG = "-api";
 	public static final String OUTPUT_FLAG = "-d";
 	
 	private final Map<String, CommandLine.Arg> FLAGS = new HashMap<>();
@@ -21,8 +21,8 @@ public class CommandLineArgParser
 		this.FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.Arg.PATH);
 		this.FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.Arg.PROJECT);
 		this.FLAGS.put(CommandLineArgParser.FSM_FLAG, CommandLine.Arg.FSM);
-		this.FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.Arg.EP_API);
 		this.FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.Arg.SESS_API);
+		this.FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.Arg.EP_API);
 		this.FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.Arg.OUTPUT);
 	}
 
@@ -53,7 +53,7 @@ public class CommandLineArgParser
 			{
 				if (this.parsed.containsKey(CommandLine.Arg.MAIN))
 				{
-					throw new RuntimeException("Bad: " + arg);
+					throw new RuntimeException("Bad argument: " + arg);
 				}
 				parseMain(i);
 			}

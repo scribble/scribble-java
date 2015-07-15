@@ -21,7 +21,6 @@ public abstract class ModuleVisitor extends AstVisitor
 	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.enter(parent, child);
-
 		if (child instanceof Module)  // Factor out?
 		{
 			setModuleContext(((ModuleDel) ((Module) child).del()).getModuleContext());

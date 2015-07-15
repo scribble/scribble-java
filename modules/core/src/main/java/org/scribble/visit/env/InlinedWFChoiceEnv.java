@@ -13,7 +13,6 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
 
-
 public class InlinedWFChoiceEnv extends Env
 {
 	private static final Role DUMMY_ROLE = new Role("__ROLE");

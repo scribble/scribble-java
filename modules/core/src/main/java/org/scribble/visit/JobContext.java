@@ -79,7 +79,6 @@ public class JobContext
 		}
 		else if (isProjectedModule(fullname))
 		{
-			//return this.projected.get(fullname);
 			return this.projected.get(
 					this.projected.keySet().stream().filter((lpn) -> lpn.getPrefix().equals(fullname)).collect(Collectors.toList()).get(0));
 		}
@@ -141,15 +140,8 @@ public class JobContext
 		this.projected.put(lpn, mod);
 	}
 	
-	/*public Map<LProtocolName, Module> getProjections()
-	{
-		return this.projected;
-	}*/
-	
-	//public Map<LProtocolName, Module> getProjection(GProtocolName fullname, Role role)
 	public Module getProjection(GProtocolName fullname, Role role)
 	{
-		//return this.projected;
 		return this.projected.get(Projector.projectFullProtocolName(fullname, role));
 	}
 	
@@ -158,10 +150,8 @@ public class JobContext
 		this.fsms.put(lpn, fsm);
 	}
 	
-	//public ScribFsm getFsm(LProtocolName lpn)
 	public ScribFsm getFsm(GProtocolName fullname, Role role)
 	{
-		//return this.fsms.get(lpn);
 		return this.fsms.get(Projector.projectFullProtocolName(fullname, role));
 	}
 	

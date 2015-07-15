@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 public class UnfoldingEnv extends InlineProtocolEnv
 {
-	//private Deque<Boolean> choiceParents = new LinkedList<>();
 	private boolean shouldUnfold;
 	
 	public UnfoldingEnv()
@@ -14,17 +13,14 @@ public class UnfoldingEnv extends InlineProtocolEnv
 		this.shouldUnfold = false;
 	}
 
-	//protected UnfoldingEnv(Deque<Boolean> choiceParents)
 	protected UnfoldingEnv(boolean shouldUnfold)
 	{
-		//this.choiceParents = new LinkedList<>(choiceParents);
 		this.shouldUnfold = shouldUnfold;
 	}
 
 	@Override
 	protected UnfoldingEnv copy()
 	{
-		//return new UnfoldingEnv(this.choiceParents);
 		return new UnfoldingEnv(this.shouldUnfold);
 	}
 
@@ -44,23 +40,18 @@ public class UnfoldingEnv extends InlineProtocolEnv
 	public UnfoldingEnv mergeContexts(List<? extends Env> envs)
 	{
 		UnfoldingEnv copy = copy();
-		//boolean merge = (castList(envs).stream().filter((e) -> e.choiceParents.peek()).count() > 0);
 		boolean merge = (castList(envs).stream().filter((e) -> e.shouldUnfold).count() > 0);
-		/*copy.choiceParents.pop();
-		copy.choiceParents.push(merge);*/
 		copy.shouldUnfold = merge;
 		return copy;
 	}
 
 	public boolean shouldUnfold()
 	{
-		//return !this.choiceParents.isEmpty() && this.choiceParents.peek();
 		return this.shouldUnfold;
 	}
 
 	public UnfoldingEnv pushChoiceParent()
 	{
-		//this.choiceParents.push(true);
 		UnfoldingEnv copy = copy();
 		copy.shouldUnfold = true;
 		return copy;
@@ -68,20 +59,10 @@ public class UnfoldingEnv extends InlineProtocolEnv
 	
 	public UnfoldingEnv noUnfold()
 	{	
-		/*if (!this.choiceParents.isEmpty())
-		{
-			this.choiceParents.pop();
-			this.choiceParents.push(false);
-		}*/
 		UnfoldingEnv copy = copy();
 		copy.shouldUnfold = false;
 		return copy;
 	}
-
-	/*public void popChoiceParent()
-	{
-		this.choiceParents.pop();
-	}*/
 	
 	@Override
 	public String toString()

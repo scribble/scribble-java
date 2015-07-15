@@ -2,8 +2,6 @@ package org.scribble.visit.env;
 
 import java.util.List;
 
-
-
 // Immutable
 // Could use generic parameter for ? extends Env (e.g. for merge arguments)
 public abstract class Env

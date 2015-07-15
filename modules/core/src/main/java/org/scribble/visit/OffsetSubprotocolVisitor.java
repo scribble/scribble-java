@@ -13,7 +13,6 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.env.Env;
 
-
 // Can probably be fully replaced by SubprotocolVisitor
 // Projector, ReachabilityChecker, etc don't need to be offset visitors
 public abstract class OffsetSubprotocolVisitor<T extends Env> extends SubprotocolVisitor<T>

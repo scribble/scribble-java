@@ -29,7 +29,8 @@ public abstract class InlinedProtocolVisitor<T extends Env> extends EnvVisitor<T
 		}
 		else
 		{
-			return child.visitChildren(this);  // The base (super) behaviour (could factor it out in ModelVisitor as its own visitor method) -- not super.visit because that does enter/exit
+			return child.visitChildren(this);
+					// The base (super) behaviour (could factor it out in ModelVisitor as its own visitor method) -- not super.visit because that does enter/exit
 		}
 	}
 	

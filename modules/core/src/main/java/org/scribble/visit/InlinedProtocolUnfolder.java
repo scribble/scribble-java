@@ -18,7 +18,6 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.env.UnfoldingEnv;
 
-
 // Unfolds recursions "directly under" choices (n.b. not continues -- use UnfoldingVisitor to do that on demand)
 public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv>
 {
@@ -68,10 +67,12 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 	private <K extends ProtocolKind> ScribNode unfold(Recursion<K> rec) throws ScribbleException
 	{
 		RecVar rv = rec.recvar.toName();
-		ProtocolBlock<K> pb = rec.block;  // Clone unnecessary: can keep the original block, apart from any continues to substitute (done in InteractionSeqDel)
+		ProtocolBlock<K> pb = rec.block;
+				// Clone unnecessary: can keep the original block, apart from any continues to substitute (done in InteractionSeqDel)
 		this.todo.add(rv);
 		RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, DUMMY_REC_LABEL);
-		ScribNode n = rec.reconstruct(dummy, ScribUtil.checkNodeClassEquality(pb, pb.accept(this)));  // reconstruct makes sense here, actually reconstructing this rec with new label but same block (and keep the same del etc)
+		ScribNode n = rec.reconstruct(dummy, ScribUtil.checkNodeClassEquality(pb, pb.accept(this))); 
+				// reconstruct makes sense here, actually reconstructing this rec with new label but same block (and keep the same del etc)
 		this.todo.remove(rv);
 		return n;
 	}
