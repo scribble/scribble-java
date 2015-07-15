@@ -33,18 +33,6 @@ public class LProtocolDefDel extends ProtocolDefDel
 		copy.inlined = this.inlined;
 		return copy;
 	}
-	
-	@Override
-	public LProtocolDef getInlinedProtocolDef()
-	{
-		return (LProtocolDef) super.getInlinedProtocolDef();
-	}
-
-	@Override
-	public LProtocolDefDel setInlinedProtocolDef(ProtocolDef<? extends ProtocolKind> inlined)
-	{
-		return (LProtocolDefDel) super.setInlinedProtocolDef(inlined);
-	}
 
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
@@ -59,5 +47,17 @@ public class LProtocolDefDel extends ProtocolDefDel
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		LProtocolDefDel copy = setInlinedProtocolDef(inlined);
 		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, builder, (LProtocolDef) lpd.del(copy));
+	}
+	
+	@Override
+	public LProtocolDef getInlinedProtocolDef()
+	{
+		return (LProtocolDef) super.getInlinedProtocolDef();
+	}
+
+	@Override
+	public LProtocolDefDel setInlinedProtocolDef(ProtocolDef<? extends ProtocolKind> inlined)
+	{
+		return (LProtocolDefDel) super.setInlinedProtocolDef(inlined);
 	}
 }

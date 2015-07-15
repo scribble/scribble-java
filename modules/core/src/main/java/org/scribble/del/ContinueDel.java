@@ -5,12 +5,22 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.InlinedProtocolUnfolder;
+import org.scribble.visit.ProtocolDefInliner;
 
 public abstract class ContinueDel extends SimpleInteractionNodeDel
 {
 	public ContinueDel()
 	{
 
+	}
+
+	@Override
+	public Continue<?> leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		Continue<?> lc = (Continue<?>) visited;
+		Continue<?> inlined = (Continue<?>) lc.clone();
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (Continue<?>) super.leaveProtocolInlining(parent, child, builder, lc);
 	}
 
 	@Override

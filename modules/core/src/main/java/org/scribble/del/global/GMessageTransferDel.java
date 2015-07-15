@@ -28,7 +28,6 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.ModelBuilder;
 import org.scribble.visit.Projector;
-import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ModelEnv;
@@ -40,16 +39,6 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	public GMessageTransferDel()
 	{
 		
-	}
-	
-	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
-	{
-		GMessageTransfer gmt = (GMessageTransfer) visited;
-		//GMessageTransfer inlined = AstFactoryImpl.FACTORY.GMessageTransfer(gmt.src, gmt.msg, gmt.getDestinations());  // FIXME: clone
-		GMessageTransfer inlined = gmt.clone();
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GMessageTransfer) super.leaveProtocolInlining(parent, child, builder, gmt);
 	}
 
 	@Override

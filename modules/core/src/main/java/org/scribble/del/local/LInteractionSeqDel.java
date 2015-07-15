@@ -20,7 +20,6 @@ import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
 
-
 public class LInteractionSeqDel extends InteractionSeqDel
 {
 	@Override
@@ -65,9 +64,9 @@ public class LInteractionSeqDel extends InteractionSeqDel
 	{
 		ProtocolState entry = conv.builder.getEntry();
 		ProtocolState exit = conv.builder.getExit();
-		for (int i = child.getInteractions().size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
+		try
 		{
-			try
+			for (int i = child.getInteractions().size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
 			{
 				if (i > 0)
 				{
@@ -82,10 +81,10 @@ public class LInteractionSeqDel extends InteractionSeqDel
 					child.getInteractions().get(i).accept(conv);
 				}
 			}
-			catch (ScribbleException e)
-			{
-				throw new RuntimeException("Shouldn't get in here: " + e);
-			}
+		}
+		catch (ScribbleException e)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + e);
 		}
 		conv.builder.setExit(exit);
 		return child;	

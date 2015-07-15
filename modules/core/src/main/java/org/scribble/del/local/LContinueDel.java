@@ -1,30 +1,16 @@
 package org.scribble.del.local;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
-import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.FsmBuilder;
-import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.ReachabilityEnv;
 
 public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeDel
 {
-	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
-	{
-		LContinue lc = (LContinue) visited;
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, lc.recvar.toName().toString());
-		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(recvar);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (LContinue) super.leaveProtocolInlining(parent, child, builder, lc);
-	}
-
 	@Override
 	public LContinue leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{

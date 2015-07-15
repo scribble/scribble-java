@@ -6,6 +6,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.MessageIdCollector;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.RoleCollector;
 import org.scribble.visit.env.UnfoldingEnv;
 
@@ -14,6 +15,15 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 	public MessageTransferDel()
 	{
 
+	}
+
+	@Override
+	public MessageTransfer<?> leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	{
+		MessageTransfer<?> lr = (MessageTransfer<?>) visited;
+		MessageTransfer<?> inlined = (MessageTransfer<?>) lr.clone();
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		return (MessageTransfer<?>) super.leaveProtocolInlining(parent, child, builder, lr);
 	}
 
 	@Override

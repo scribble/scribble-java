@@ -11,7 +11,6 @@ import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
-
 public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel implements InteractionNodeDel
 {
 	public CompoundInteractionNodeDel()

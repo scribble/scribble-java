@@ -7,26 +7,14 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.MessageTransferDel;
-import org.scribble.main.ScribbleException;
 import org.scribble.model.local.Send;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.FsmBuilder;
-import org.scribble.visit.ProtocolDefInliner;
 
 public class LSendDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
-	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
-	{
-		LSend ls = (LSend) visited;
-		//LSend inlined = AstFactoryImpl.FACTORY.LSend(gmt.src, gmt.msg, gmt.dests);  // FIXME: clone
-		LSend inlined = ls.clone();
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (LSend) super.leaveProtocolInlining(parent, child, builder, ls);
-	}
-
 	@Override
 	public LSend leaveFsmBuilding(ScribNode parent, ScribNode child, FsmBuilder conv, ScribNode visited)
 	{

@@ -11,7 +11,6 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 
-
 public class LProtocolBlockDel extends ProtocolBlockDel
 {
 	@Override

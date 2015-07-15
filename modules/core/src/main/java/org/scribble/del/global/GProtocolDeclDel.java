@@ -53,7 +53,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 	
 	@Override
-	public GProtocolDecl leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
+	public GProtocolDecl
+			leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		GProtocolDeclContext gcontext = new GProtocolDeclContext(builder.getGlobalProtocolDependencyMap());
@@ -62,7 +63,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	@Override
-	public GProtocolDecl leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public GProtocolDecl
+			leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		JobContext jc = proj.getJobContext();
 		Module root = jc.getModule(proj.getModuleContext().root);

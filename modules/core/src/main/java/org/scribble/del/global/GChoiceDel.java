@@ -17,7 +17,6 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
@@ -38,7 +37,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		GChoice gc = (GChoice) visited;
 		List<GProtocolBlock> blocks = 
 				gc.getBlocks().stream().map((b) -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
-		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gc.subj.toName().toString());
+		RoleNode subj = gc.subj.clone();
 		GChoice inlined = AstFactoryImpl.FACTORY.GChoice(subj, blocks);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return (GChoice) super.leaveProtocolInlining(parent, child, builder, gc);

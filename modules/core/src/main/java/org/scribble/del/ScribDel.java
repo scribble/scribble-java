@@ -18,8 +18,7 @@ import org.scribble.visit.RoleCollector;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.Env;
 
-
-// Mutable for pass-specific Envs (by visitors) -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
+// Immutable except for pass-specific Envs (by visitors) only -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
 public interface ScribDel
 {
 	Env env();

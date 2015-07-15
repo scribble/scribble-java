@@ -54,7 +54,8 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public LDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public LDo
+			leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		SubprotocolSig subsig = builder.peekStack();
 		if (!builder.isCycle())
@@ -71,7 +72,8 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 
 	// Pre: this pass is only run on projections (LProjectionDeclDel has source global protocol info)
 	@Override
-	public ScribNode leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
+	public ScribNode
+			leaveProjectedRoleDeclFixing(ScribNode parent, ScribNode child, ProjectedRoleDeclFixer fixer, ScribNode visited) throws ScribbleException
 	{
 		LDo ld = (LDo) visited;
 		LProtocolDecl lpd = ld.getTargetProtocolDecl(fixer.getJobContext(), fixer.getModuleContext());
@@ -83,9 +85,10 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		GProtocolName source = ((LProjectionDeclDel) lpd.del()).getSourceProtocol();
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getModule(source.getPrefix()).getProtocolDecl(source.getSimpleName());
 		Iterator<RoleArg> roleargs = ld.roles.getDoArgs().iterator();
-		Map<Role, Role> rolemap = gpd.header.roledecls.getRoles().stream().collect(Collectors.toMap((r) -> r, (r) -> roleargs.next().val.toName()));
-		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences()
-				.stream().map((r) -> rolemap.get(r)).collect(Collectors.toSet());
+		Map<Role, Role> rolemap = gpd.header.roledecls.getRoles().stream().collect(
+				Collectors.toMap((r) -> r, (r) -> roleargs.next().val.toName()));
+		Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences().stream().map(
+				(r) -> rolemap.get(r)).collect(Collectors.toSet());
 
 		List<RoleArg> ras = ld.roles.getDoArgs().stream().filter((ra) -> occs.contains(ra.val.toName())).collect(Collectors.toList());
 		RoleArgList roles = ld.roles.reconstruct(ras);
@@ -93,7 +96,8 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	}
 
 	@Override
-	public LDo leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
+	public LDo
+			leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{
 		ReachabilityEnv env = checker.popEnv();
 		if (checker.isCycle())

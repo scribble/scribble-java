@@ -16,7 +16,6 @@ import org.scribble.del.ProtocolDefDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
-import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
@@ -37,17 +36,20 @@ public class GProtocolDefDel extends ProtocolDefDel
 		copy.inlined = this.inlined;
 		return copy;
 	}
-	
-	@Override
-	public GProtocolDef getInlinedProtocolDef()
-	{
-		return (GProtocolDef) super.getInlinedProtocolDef();
-	}
 
 	@Override
-	public GProtocolDefDel setInlinedProtocolDef(ProtocolDef<? extends ProtocolKind> inlined)
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
-		return (GProtocolDefDel) super.setInlinedProtocolDef(inlined);
+		SubprotocolSig subsig = builder.peekStack();
+		GProtocolDef gpd = (GProtocolDef) visited;
+		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gpd.block.del().env()).getTranslation();	
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
+		GRecursion rec = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
+		GInteractionSeq gis = AstFactoryImpl.FACTORY.GInteractionSeq(Arrays.asList(rec));
+		GProtocolDef inlined = AstFactoryImpl.FACTORY.GProtocolDef(AstFactoryImpl.FACTORY.GProtocolBlock(gis));
+		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		GProtocolDefDel copy = setInlinedProtocolDef(inlined);
+		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, builder, (GProtocolDef) gpd.del(copy));
 	}
 
 	@Override
@@ -66,19 +68,16 @@ public class GProtocolDefDel extends ProtocolDefDel
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, proj, gpd);
 	}
+	
+	@Override
+	public GProtocolDef getInlinedProtocolDef()
+	{
+		return (GProtocolDef) super.getInlinedProtocolDef();
+	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public GProtocolDefDel setInlinedProtocolDef(ProtocolDef<?> inlined)
 	{
-		SubprotocolSig subsig = builder.peekStack();
-		GProtocolDef gpd = (GProtocolDef) visited;
-		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gpd.block.del().env()).getTranslation();	
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
-		GRecursion rec = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
-		GInteractionSeq gis = AstFactoryImpl.FACTORY.GInteractionSeq(Arrays.asList(rec));
-		GProtocolDef inlined = AstFactoryImpl.FACTORY.GProtocolDef(AstFactoryImpl.FACTORY.GProtocolBlock(gis));
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		GProtocolDefDel copy = setInlinedProtocolDef(inlined);
-		return (GProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, builder, (GProtocolDef) gpd.del(copy));
+		return (GProtocolDefDel) super.setInlinedProtocolDef(inlined);
 	}
 }

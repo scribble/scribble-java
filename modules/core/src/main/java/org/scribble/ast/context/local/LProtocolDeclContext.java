@@ -15,7 +15,7 @@ public class LProtocolDeclContext extends ProtocolDeclContext<Local>
 	// protocol name is full name of global protocol dependencies
 	private final DependencyMap<LProtocolName> deps;  // All the potential dependencies from this protocol decl as the root
 	
-	// FIXME: dep map setter
+	// Use dep map setter instead?
 	public LProtocolDeclContext(DependencyMap<LProtocolName> deps)
 	{
 		this(Collections.emptySet(), deps);

@@ -8,7 +8,6 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.ProtocolState;
-import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.FsmBuilder;
 import org.scribble.visit.ProtocolDefInliner;
@@ -22,7 +21,7 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		LRecursion gr = (LRecursion) visited;
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
+		RecVarNode recvar = gr.recvar.clone();
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
 		LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));

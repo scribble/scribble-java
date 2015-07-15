@@ -6,7 +6,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.ProtocolDefInliner;
 
-
 public abstract class ProtocolDefDel extends ScribDelBase
 {
 	protected ProtocolDef<? extends ProtocolKind> inlined = null;

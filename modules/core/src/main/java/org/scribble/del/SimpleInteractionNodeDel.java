@@ -4,7 +4,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.ProtocolDefInliner;
 
-
 public abstract class SimpleInteractionNodeDel extends ScribDelBase implements InteractionNodeDel
 {
 	@Override

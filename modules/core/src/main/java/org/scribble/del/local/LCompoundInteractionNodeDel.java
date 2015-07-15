@@ -6,10 +6,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.ReachabilityEnv;
 
-
 public interface LCompoundInteractionNodeDel extends LInteractionNodeDel
 {
-
 	@Override
 	default LCompoundInteractionNode leaveReachabilityCheck(ScribNode parent, ScribNode child, ReachabilityChecker checker, ScribNode visited) throws ScribbleException
 	{

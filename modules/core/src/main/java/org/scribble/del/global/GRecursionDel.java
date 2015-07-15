@@ -30,7 +30,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
 	{
 		GRecursion gr = (GRecursion) visited;
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
+		RecVarNode recvar = gr.recvar.clone();
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
 		GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
@@ -50,7 +50,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 	public GRecursion leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GRecursion gr = (GRecursion) visited;
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, gr.recvar.toName().toString());
+		RecVarNode recvar = gr.recvar.clone();
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection();	
 		LRecursion projection = null;
 		if (!block.isEmpty())

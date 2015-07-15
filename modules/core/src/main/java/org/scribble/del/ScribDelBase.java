@@ -4,7 +4,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.visit.EnvVisitor;
 import org.scribble.visit.env.Env;
 
-
 // Mutable for pass-specific Envs (by visitors)
 public abstract class ScribDelBase implements ScribDel
 {

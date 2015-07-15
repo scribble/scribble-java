@@ -21,7 +21,6 @@ import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
-
 public class GProtocolBlockDel extends ProtocolBlockDel
 {
 	@Override
