@@ -1,4 +1,0 @@
-module scribble.examples.ImportDefinitions;
-
-type <xsd> "{http://www.acme.com/financial}PlaceOrder" from "http://www.acme.com/schemas/Order.xsd" as PlaceOrder;
-type <xsd> "{http://www.acme.com/financial}Receipt" from "http://www.acme.com/schemas/Customer.xsd" as Receipt;
