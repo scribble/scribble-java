@@ -20,43 +20,43 @@ public class AdderClient
 		Buff<Integer> i2 = new Buff<>(2);
 		
 		Adder adder = new Adder();
-		SessionEndpoint se = adder.project(Adder.AddClient, new ObjectStreamFormatter());
+		SessionEndpoint se = adder.project(Adder.C, new ObjectStreamFormatter());
 		
-		try (Adder_AddClient_0 s0 = new Adder_AddClient_0(se))
+		try (Adder_C_0 s0 = new Adder_C_0(se))
 		{
-			s0.connect(Adder.AddServer, "localhost", 8888);
-			Adder_AddClient_1 s1 = s0.init();
+			s0.connect(Adder.S, "localhost", 8888);
+			Adder_C_1 s1 = s0.init();
 
-			s1.send(Adder.AddServer, Adder.ADD, i1.val, i1.val)
+			s1.send(Adder.S, Adder.ADD, i1.val, i1.val)
 			  .receive(Adder.RES, i1)
-				.send(Adder.AddServer, Adder.ADD, i1.val, i1.val)
+				.send(Adder.S, Adder.ADD, i1.val, i1.val)
 			  .receive(Adder.RES, i1)
-			  .send(Adder.AddServer, Adder.BYE)
+			  .send(Adder.S, Adder.BYE)
 			  .end();
 			
 			/*while (i1.val < 100)
 			{
-				s1 = s1.send(Adder.AddServer, Adder.ADD, i1.val, i1.val).receive(Adder.RES, i1);
+				s1 = s1.send(Adder.S, Adder.ADD, i1.val, i1.val).receive(Adder.RES, i1);
 			}
-			s1.send(Adder.AddServer, Adder.BYE)
+			s1.send(Adder.S, Adder.BYE)
 				.end();*/
 
-			//fib(i1, i2, s1).end();*/
+			//fib(i1, i2, s1).end();
 			
 			System.out.println("Client: " + i1.val);
 		}
 	}
 
-	/*private static Adder_AddClient_3 fib(Buff<Integer> i1, Buff<Integer> i2, Adder_AddClient_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	/*private static Adder_C_3 fib(Buff<Integer> i1, Buff<Integer> i2, Adder_C_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		return (i1.val < 100)
 				? fib(i1, i2,
-											side(i1, i2, s1.send(Adder.AddServer, Adder.ADD, i1.val, i2.val)).receive(Adder.RES, i2)
+											side(i1, i2, s1.send(Adder.S, Adder.ADD, i1.val, i2.val)).receive(Adder.RES, i2)
 							)
-				: s1.send(Adder.AddServer, Adder.BYE);
+				: s1.send(Adder.S, Adder.BYE);
 	}
 	
-	private static Adder_AddClient_2 side(Buff<Integer> i1, Buff<Integer> i2, Adder_AddClient_2 s2)
+	private static Adder_C_2 side(Buff<Integer> i1, Buff<Integer> i2, Adder_C_2 s2)
 	{
 		i1.val = i2.val;
 		System.out.print(i1.val + " ");

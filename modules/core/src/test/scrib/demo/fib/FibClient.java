@@ -20,25 +20,25 @@ public class FibClient
 		Buff<Integer> i2 = new Buff<>(1);
 		
 		Adder adder = new Adder();
-		SessionEndpoint se = adder.project(Adder.AddClient, new ObjectStreamFormatter());
+		SessionEndpoint se = adder.project(Adder.C, new ObjectStreamFormatter());
 		
-		try (Adder_AddClient_0 s0 = new Adder_AddClient_0(se))
+		try (Adder_C_0 s0 = new Adder_C_0(se))
 		{
-			s0.connect(Adder.AddServer, "localhost", 8888);
-			Adder_AddClient_1 s1 = s0.init();
+			s0.connect(Adder.S, "localhost", 8888);
+			Adder_C_1 s1 = s0.init();
 
 			fib(s1, i1, i2, 0).end();
 		}
 	}
 
-	private static Adder_AddClient_3 fib(Adder_AddClient_1 s1, Buff<Integer> i1, Buff<Integer> i2, int i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	private static Adder_C_3 fib(Adder_C_1 s1, Buff<Integer> i1, Buff<Integer> i2, int i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
 	{
 		return (i < 20)
-			? fib(side(s1.send(Adder.AddServer, Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
-			: s1.send(Adder.AddServer, Adder.BYE);
+			? fib(side(s1.send(Adder.S, Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
+			: s1.send(Adder.S, Adder.BYE);
 	}
 	
-	private static Adder_AddClient_2 side(Adder_AddClient_2 s2, Buff<Integer> i1, Buff<Integer> i2)
+	private static Adder_C_2 side(Adder_C_2 s2, Buff<Integer> i1, Buff<Integer> i2)
 	{
 		System.out.print(i1.val + " ");
 		i1.val = i2.val;
