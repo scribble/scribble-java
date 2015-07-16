@@ -3,7 +3,7 @@
  */
 
 
-grammar Scribble2;
+grammar Scribble;
 
 
 options
@@ -13,6 +13,7 @@ options
 	ASTLabelType = CommonTree;
 	backtrack = true;  // backtracking disabled by default? Is it bad to require this option?
 	//memoize = true;
+
 }
 
 

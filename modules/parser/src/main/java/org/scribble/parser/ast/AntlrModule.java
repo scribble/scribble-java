@@ -13,14 +13,14 @@ import org.scribble.ast.ModuleDecl;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribParser;
 import org.scribble.parser.util.ScribParserUtil;
 
 public class AntlrModule
 {
 	public static final int MODULEDECL_CHILD_INDEX = 0;
 
-	public static Module parseModule(ScribbleParser parser, CommonTree ct)
+	public static Module parseModule(ScribParser parser, CommonTree ct)
 	{
 		ModuleDecl md = (ModuleDecl) parser.parse(getModuleDeclChild(ct));
 		List<ImportDecl<?>> ids = new LinkedList<>();

@@ -4,13 +4,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GInteractionSeq;
 import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribParser;
 
 public class AntlrGProtocolBlock
 {
 	public static final int INTERACTIONSEQUENCE_CHILD_INDEX = 0;
 
-	public static GProtocolBlock parseGProtocolBlock(ScribbleParser parser, CommonTree ct)
+	public static GProtocolBlock parseGProtocolBlock(ScribParser parser, CommonTree ct)
 	{
 		GInteractionSeq gis = (GInteractionSeq) parser.parse(getInteractionSequenceChild(ct));
 		return AstFactoryImpl.FACTORY.GProtocolBlock(gis);

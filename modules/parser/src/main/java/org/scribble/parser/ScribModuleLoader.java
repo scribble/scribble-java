@@ -26,13 +26,13 @@ import org.scribble.util.Pair;
 // loading = ModuleName -> Module
 //   ModuleName --> Path --ResourceLocator--> Resource --AntlrParser--> ANTLR --ScribParser--> ScribNode
 // FIXME: should be in core org.scribble.main -- here due to Maven dependency restrictions
-public class ScribbleModuleLoader extends DefaultModuleLoader //implements ModuleLoader
+public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLoader
 {
 	private ResourceLocator locator;
 	private AntlrParser antlr;
-	private ScribbleParser parser;
+	private ScribParser parser;
 	
-	public ScribbleModuleLoader(ResourceLocator locator, AntlrParser antlr, ScribbleParser parser)
+	public ScribModuleLoader(ResourceLocator locator, AntlrParser antlr, ScribParser parser)
 	{
 		this.locator = locator;
 		this.antlr = antlr;

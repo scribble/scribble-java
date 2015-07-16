@@ -12,7 +12,7 @@ import org.scribble.ast.NonRoleArgNode;
 import org.scribble.ast.name.qualified.DataTypeNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
 import org.scribble.parser.util.ScribParserUtil;
@@ -20,14 +20,14 @@ import org.scribble.parser.util.ScribParserUtil;
 public class AntlrNonRoleArgList
 {
 	// Similar to AntlrPayloadElemList
-	public static NonRoleArgList parseNonRoleArgList(ScribbleParser parser, CommonTree ct)
+	public static NonRoleArgList parseNonRoleArgList(ScribParser parser, CommonTree ct)
 	{
 		List<NonRoleArg> as = getArgumentChildren(ct).stream().map((a) -> parseNonRoleArg(parser, a)).collect(Collectors.toList());
 		return AstFactoryImpl.FACTORY.NonRoleArgList(as);
 	}
 
 	// Not in own class because not called by ScribbleParser -- called directly from above
-	private static NonRoleArg parseNonRoleArg(ScribbleParser parser, CommonTree ct)
+	private static NonRoleArg parseNonRoleArg(ScribParser parser, CommonTree ct)
 	{
 		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)

@@ -11,7 +11,7 @@ import org.scribble.ast.PayloadElemList;
 import org.scribble.ast.name.qualified.DataTypeNameNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
 import org.scribble.parser.util.ScribParserUtil;
@@ -19,7 +19,7 @@ import org.scribble.parser.util.ScribParserUtil;
 public class AntlrPayloadElemList
 {
 	// Cf. AntlrNonRoleArgList
-	public static PayloadElemList parsePayloadElemList(ScribbleParser parser, CommonTree ct)
+	public static PayloadElemList parsePayloadElemList(ScribParser parser, CommonTree ct)
 	{
 		// As in AntlrNonRoleArgList, i.e. payloadelem (NonRoleArg) not directly parsed -- cf. rolearg and nonroleparamdecl, which are directly parsed (not consistent), due to amibgious names
 		List<PayloadElem> pes = getPayloadElements(ct).stream().map((pe) -> parsePayloadElem(pe)).collect(Collectors.toList());
