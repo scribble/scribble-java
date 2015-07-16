@@ -8,7 +8,7 @@ import org.scribble.ast.global.GInterrupt;
 import org.scribble.ast.global.GInterruptible;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.simple.ScopeNode;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
 import org.scribble.parser.util.ScribParserUtil;
 
@@ -18,7 +18,7 @@ public class AntlrGInterruptible
 	public static final int BLOCK_CHILD_INDEX = 1;
 	public static final int INTERRUPT_CHILDREN_START_INDEX = 2;
 
-	public static GInterruptible parseGInterruptible(ScribbleParser parser, CommonTree ct)
+	public static GInterruptible parseGInterruptible(ScribParser parser, CommonTree ct)
 	{
 		GProtocolBlock block = (GProtocolBlock) parser.parse(getBlockChild(ct));
 		List<GInterrupt> interrs = 

@@ -5,7 +5,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.parser.AntlrConstants;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Kind;
@@ -17,7 +17,7 @@ public class AntlrNonRoleParamDecl
 	public static final int KIND_CHILD_INDEX = 0;
 	public static final int NAME_CHILD_INDEX = 1;
 
-	public static NonRoleParamDecl<? extends NonRoleParamKind> parseNonRoleParamDecl(ScribbleParser parser, CommonTree ct)
+	public static NonRoleParamDecl<? extends NonRoleParamKind> parseNonRoleParamDecl(ScribParser parser, CommonTree ct)
 	{
 		Kind kind = parseKind(getKindChild(ct));
 		if (kind.equals(SigKind.KIND))

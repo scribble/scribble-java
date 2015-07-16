@@ -10,7 +10,7 @@ import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrAmbigName;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
 import org.scribble.parser.ast.name.AntlrSimpleName;
@@ -22,7 +22,7 @@ public class AntlrGMessageTransfer
 	public static final int SOURCE_CHILD_INDEX = 1;
 	public static final int DESTINATION_CHILDREN_START_INDEX = 2;
 
-	public static GMessageTransfer parseGMessageTransfer(ScribbleParser parser, CommonTree ct)
+	public static GMessageTransfer parseGMessageTransfer(ScribParser parser, CommonTree ct)
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
@@ -31,7 +31,7 @@ public class AntlrGMessageTransfer
 		return AstFactoryImpl.FACTORY.GMessageTransfer(src, msg, dests);
 	}
 
-	protected static MessageNode parseMessage(ScribbleParser parser, CommonTree ct)
+	protected static MessageNode parseMessage(ScribParser parser, CommonTree ct)
 	{
 		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)

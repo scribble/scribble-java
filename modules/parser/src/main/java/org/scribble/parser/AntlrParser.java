@@ -8,8 +8,8 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.main.resource.Resource;
-import org.scribble.parser.antlr.Scribble2Lexer;
-import org.scribble.parser.antlr.Scribble2Parser;
+import org.scribble.parser.antlr.ScribbleLexer;
+import org.scribble.parser.antlr.ScribbleParser;
 
 // Resource -> ANTLR CommonTree
 // Parses Resources into ANTLR CommonTrees
@@ -26,8 +26,8 @@ public class AntlrParser
 		try
 		{
 			String input = new String(readResource(res));
-			Scribble2Lexer lex = new Scribble2Lexer(new ANTLRStringStream(input));
-			Scribble2Parser parser = new Scribble2Parser(new CommonTokenStream(lex));
+			ScribbleLexer lex = new ScribbleLexer(new ANTLRStringStream(input));
+			ScribbleParser parser = new ScribbleParser(new CommonTokenStream(lex));
 			return (CommonTree) parser.module().getTree();
 		}
 		catch (RecognitionException e)

@@ -8,13 +8,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribParser;
 import org.scribble.parser.util.ScribParserUtil;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 
 public class AntlrNonRoleParamDeclList
 {
-	public static NonRoleParamDeclList parseNonRoleParamDeclList(ScribbleParser parser, CommonTree ct)
+	public static NonRoleParamDeclList parseNonRoleParamDeclList(ScribParser parser, CommonTree ct)
 	{
 		List<NonRoleParamDecl<NonRoleParamKind>> pds = new LinkedList<>();
 		for (CommonTree pd : getParamDeclChildren(ct))

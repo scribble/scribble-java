@@ -13,8 +13,8 @@ import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.parser.AntlrParser;
-import org.scribble.parser.ScribbleModuleLoader;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribModuleLoader;
+import org.scribble.parser.ScribParser;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.util.Pair;
 
@@ -31,10 +31,10 @@ public class MainContext
 
 	// Only "manually" used here for loading main module (which should be factored out to front end) -- otherwise, only used within loader
 	private final AntlrParser antlrParser;  // Not encapsulated inside ScribbleParser, because ScribbleParser's main function is to "parse" ANTLR CommonTrees into ModelNodes
-	private final ScribbleParser scribParser;
+	private final ScribParser scribParser;
 
 	private final ResourceLocator locator;  // Path -> Resource
-	private final ScribbleModuleLoader loader;  // sesstype.ModuleName -> Pair<Resource, Module>
+	private final ScribModuleLoader loader;  // sesstype.ModuleName -> Pair<Resource, Module>
 
 	// ModuleName keys are full module names -- parsed are the modules read from file, distinguished from the generated projection modules
 	// Resource recorded for source path
@@ -45,9 +45,9 @@ public class MainContext
 	{
 		this.debug = debug;
 		this.antlrParser = new AntlrParser();
-		this.scribParser = new ScribbleParser();
+		this.scribParser = new ScribParser();
 		this.locator = locator; 
-		this.loader = new ScribbleModuleLoader(this.locator, this.antlrParser, this.scribParser);
+		this.loader = new ScribModuleLoader(this.locator, this.antlrParser, this.scribParser);
 
 		Pair<Resource, Module> p = loadMainModule(mainpath);
 		this.main = p.right.getFullModuleName();

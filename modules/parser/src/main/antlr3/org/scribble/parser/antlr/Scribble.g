@@ -3,7 +3,7 @@
  */
 
 
-grammar Scribble2;
+grammar Scribble;
 
 
 options

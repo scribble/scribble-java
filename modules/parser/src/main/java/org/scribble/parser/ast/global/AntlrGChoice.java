@@ -8,7 +8,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.parser.ScribbleParser;
+import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
 import org.scribble.parser.util.ScribParserUtil;
 
@@ -17,7 +17,7 @@ public class AntlrGChoice
 	public static final int SUBJECT_CHILD_INDEX = 0;
 	public static final int BLOCK_CHILDREN_START_INDEX = 1;
 	
-	public static GChoice parseGChoice(ScribbleParser parser, CommonTree ct)
+	public static GChoice parseGChoice(ScribParser parser, CommonTree ct)
 	{
 		RoleNode subj = AntlrSimpleName.toRoleNode(getSubjectChild(ct));
 		List<GProtocolBlock> blocks =

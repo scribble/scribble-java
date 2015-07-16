@@ -38,9 +38,9 @@ import org.scribble.parser.util.ScribParserUtil;
 
 // ANTLR CommonTree -> ScribNode
 // Parses ANTLR nodes into ScribNodes using the parser.ast.Antlr[...] helper classes
-public class ScribbleParser
+public class ScribParser
 {
-	public ScribbleParser()
+	public ScribParser()
 	{
 
 	}
