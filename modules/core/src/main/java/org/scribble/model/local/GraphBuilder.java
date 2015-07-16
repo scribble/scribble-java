@@ -8,21 +8,18 @@ import java.util.Set;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.name.RecVar;
 
-// If not used as a standalone library, then integrate into FsmConverter
+// Helper class for EndpointGraphBuilder -- can access the protected setters of EndpointState
 public class GraphBuilder
 {
-	//private final Map<LProtocolName, ProtocolState> graphs = new HashMap<>();  // Move to FsmConverter probably
-	
-	private final Map<RecVar, ProtocolState> recvars = new HashMap<>();
-	private final Map<SubprotocolSig, ProtocolState> subprotos = new HashMap<>();  // Not scoped sigs
+	private final Map<RecVar, EndpointState> recvars = new HashMap<>();
+	private final Map<SubprotocolSig, EndpointState> subprotos = new HashMap<>();  // Not scoped sigs
 
-	private ProtocolState entry;
-	private ProtocolState exit;
+	private EndpointState entry;
+	private EndpointState exit;
 	
 	public GraphBuilder()
 	{
-		//this.entry = root;
-		//this.exit = term;
+
 	}
 	
 	public void reset()
@@ -32,36 +29,29 @@ public class GraphBuilder
 		this.exit = newState(Collections.emptySet());
 	}
 	
-	/*public void addGraph(LProtocolName pn, ProtocolState root)
+	public EndpointState newState(Set<RecVar> labs)
 	{
-		this.graphs.put(pn, root);
+		return new EndpointState(labs);
 	}
 	
-	public Map<LProtocolName, ProtocolState> getGraphs()
+	/*public void addEntryLabel(RecVar lab)
 	{
-		return this.graphs;
+		this.entry.addLabel(lab);
 	}*/
-	
-	//public ProtocolState newState(Set<RecVar> labs)
-	public ProtocolState newState(Set<String> labs)
-	{
-		ProtocolState s = new ProtocolState(labs);
-		//this.states.add(s);
-		return s;
-	}
-	
-	public void addEdge(ProtocolState s, IOAction a, ProtocolState succ)
+
+	public void addEdge(EndpointState s, IOAction a, EndpointState succ)
 	{
 		s.addEdge(a, succ);
 	}
 
-	public ProtocolState getRecursionEntry(RecVar recvar)
+	public EndpointState getRecursionEntry(RecVar recvar)
 	{
 		return this.recvars.get(recvar);
 	}	
 	
 	public void setRecursionEntry(RecVar recvar)
 	{
+		this.entry.addLabel(recvar);
 		this.recvars.put(recvar, this.entry);
 	}	
 
@@ -70,7 +60,7 @@ public class GraphBuilder
 		this.recvars.remove(recvar);
 	}	
 	
-	public ProtocolState getSubprotocolEntry(SubprotocolSig subsig)
+	public EndpointState getSubprotocolEntry(SubprotocolSig subsig)
 	{
 		return this.subprotos.get(subsig);
 	}
@@ -85,22 +75,22 @@ public class GraphBuilder
 		this.subprotos.remove(subsig);
 	}
 	
-	public ProtocolState getEntry()
+	public EndpointState getEntry()
 	{
 		return this.entry;
 	}
 
-	public void setEntry(ProtocolState entry)
+	public void setEntry(EndpointState entry)
 	{
 		this.entry = entry;
 	}
 
-	public ProtocolState getExit()
+	public EndpointState getExit()
 	{
 		return this.exit;
 	}
 
-	public void setExit(ProtocolState exit)
+	public void setExit(EndpointState exit)
 	{
 		this.exit = exit;
 	}

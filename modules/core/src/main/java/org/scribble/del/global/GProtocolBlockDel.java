@@ -14,7 +14,7 @@ import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ModelBuilder;
+import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -50,13 +50,13 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 	}
 	
 	@Override
-	public void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
+	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
 	{
 		ScribDelBase.pushVisitorEnv(this, builder);
 	}
 
 	@Override
-	public GProtocolBlock leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
+	public GProtocolBlock leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolBlock gpb = (GProtocolBlock) visited;
 		Set<ModelAction> as = ((ModelEnv) gpb.seq.del().env()).getActions();

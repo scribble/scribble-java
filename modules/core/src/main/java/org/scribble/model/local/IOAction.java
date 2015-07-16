@@ -46,7 +46,10 @@ public abstract class IOAction
 		{
 			return false;
 		}
-		IOAction ca = (IOAction) o;
-		return this.peer.equals(ca.peer) && this.mid.equals(ca.mid) && this.payload.equals(ca.payload);
+		IOAction a = (IOAction) o;
+		return a.canEqual(this) && 
+				this.peer.equals(a.peer) && this.mid.equals(a.mid) && this.payload.equals(a.payload);
 	}
+	
+	public abstract boolean canEqual(Object o);
 }

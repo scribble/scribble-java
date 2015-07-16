@@ -6,9 +6,9 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.ModelEnv;
 
-public class ModelBuilder extends OffsetSubprotocolVisitor<ModelEnv>
+public class GlobalModelBuilder extends OffsetSubprotocolVisitor<ModelEnv>
 {
-	public ModelBuilder(Job job)
+	public GlobalModelBuilder(Job job)
 	{
 		super(job);
 	}

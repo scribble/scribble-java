@@ -1,4 +1,4 @@
-package org.scribble.net.session;
+package org.scribble.codegen;
 
 import java.util.HashMap;
 import java.util.Map;

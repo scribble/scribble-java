@@ -12,9 +12,9 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.ProtocolState;
+import org.scribble.model.local.EndpointState;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.visit.FsmGenerator;
+import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -60,17 +60,17 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		return child;
 	}
 
-	public LInteractionSeq visitForFsmConversion(FsmGenerator conv, LInteractionSeq child)
+	public LInteractionSeq visitForFsmConversion(EndpointGraphBuilder conv, LInteractionSeq child)
 	{
-		ProtocolState entry = conv.builder.getEntry();
-		ProtocolState exit = conv.builder.getExit();
+		EndpointState entry = conv.builder.getEntry();
+		EndpointState exit = conv.builder.getExit();
 		try
 		{
 			for (int i = child.getInteractions().size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
 			{
 				if (i > 0)
 				{
-					ProtocolState tmp = conv.builder.newState(Collections.emptySet());
+					EndpointState tmp = conv.builder.newState(Collections.emptySet());
 					conv.builder.setEntry(tmp);
 					child.getInteractions().get(i).accept(conv);
 					conv.builder.setExit(conv.builder.getEntry());  // entry may not be tmp, entry/exit can be modified, e.g. continue

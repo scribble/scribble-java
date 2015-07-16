@@ -30,7 +30,13 @@ public class Send extends IOAction
 		{
 			return false;
 		}
-		return super.equals(o);
+		return ((Send) o).canEqual(this) && super.equals(o);
+	}
+
+	@Override
+	public boolean canEqual(Object o)
+	{
+		return o instanceof Send;
 	}
 
 	@Override

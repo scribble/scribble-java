@@ -93,7 +93,7 @@ public class CommandLine implements Runnable
 		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.FSM)[0]);
 		Role role = checkRoleArg(jcontext, fullname, this.args.get(Arg.FSM)[1]);
 		buildFsm(job, fullname, role);
-		System.out.println(jcontext.getFsm(fullname, role));
+		System.out.println(jcontext.getEndointGraph(fullname, role));
 	}
 	
 	private void outputSessionApi(Job job) throws ScribbleException

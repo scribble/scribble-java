@@ -28,7 +28,7 @@ import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.JobContext;
-import org.scribble.visit.ModelBuilder;
+import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
@@ -93,7 +93,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	@Override
-	public GProtocolDecl leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
+	public GProtocolDecl leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		System.out.println("1a: " + ((ModelEnv) gpd.def.block.del().env()).getActions());

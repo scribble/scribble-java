@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.model.local.ScribFsm;
+import org.scribble.model.local.EndpointGraph;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
@@ -25,7 +25,7 @@ public class JobContext
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
 
-	private final Map<LProtocolName, ScribFsm> fsms = new HashMap<>();
+	private final Map<LProtocolName, EndpointGraph> graphs = new HashMap<>();
 	
 	public JobContext(Map<ModuleName, Module> parsed, ModuleName main)
 	{
@@ -145,14 +145,14 @@ public class JobContext
 		return this.projected.get(Projector.projectFullProtocolName(fullname, role));
 	}
 	
-	public void addFsm(LProtocolName lpn, ScribFsm fsm)
+	public void addEndpointGraph(LProtocolName lpn, EndpointGraph graph)
 	{
-		this.fsms.put(lpn, fsm);
+		this.graphs.put(lpn, graph);
 	}
 	
-	public ScribFsm getFsm(GProtocolName fullname, Role role)
+	public EndpointGraph getEndointGraph(GProtocolName fullname, Role role)
 	{
-		return this.fsms.get(Projector.projectFullProtocolName(fullname, role));
+		return this.graphs.get(Projector.projectFullProtocolName(fullname, role));
 	}
 	
 	public Module getMainModule()

@@ -26,7 +26,7 @@ import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.InlinedWFChoiceChecker;
-import org.scribble.visit.ModelBuilder;
+import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 import org.scribble.visit.env.ModelEnv;
@@ -102,7 +102,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	}
 	
 	@Override
-	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
+	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		ModelEnv env = builder.popEnv();

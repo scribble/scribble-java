@@ -30,7 +30,12 @@ public class Receive extends IOAction
 		{
 			return false;
 		}
-		return super.equals(o);
+		return ((Receive) o).canEqual(this) && super.equals(o);
+	}
+
+	public boolean canEqual(Object o)
+	{
+		return o instanceof Receive;
 	}
 
 	@Override

@@ -11,12 +11,12 @@ import org.scribble.model.local.Send;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.FsmGenerator;
+import org.scribble.visit.EndpointGraphBuilder;
 
 public class LSendDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LSend leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv, ScribNode visited)
+	public LSend leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		LSend ls = (LSend) visited;
 		List<RoleNode> dests = ls.getDestinations();
@@ -26,11 +26,10 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 		}
 		Role peer = dests.get(0).toName();
 		MessageId<?> mid = ls.msg.toMessage().getId();
-		Payload payload =
-				ls.msg.isMessageSigNode()  // Hacky?
+		Payload payload = ls.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		conv.builder.addEdge(conv.builder.getEntry(), new Send(peer, mid, payload), conv.builder.getExit());
-		return (LSend) super.leaveFsmGeneration(parent, child, conv, ls);
+		graph.builder.addEdge(graph.builder.getEntry(), new Send(peer, mid, payload), graph.builder.getExit());
+		return (LSend) super.leaveGraphBuilding(parent, child, graph, ls);
 	}
 }

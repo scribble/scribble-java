@@ -6,13 +6,13 @@ import org.scribble.ast.context.local.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.ScribFsm;
+import org.scribble.model.local.EndpointGraph;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.FsmGenerator;
+import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.JobContext;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
@@ -44,18 +44,18 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	public void enterFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv)
+	public void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
 	{
-		conv.builder.reset();
+		graph.builder.reset();
 	}
 
 	@Override
-	public ScribNode leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv, ScribNode visited)
+	public ScribNode leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
-		ScribFsm fsm = new ScribFsm(conv.builder.getEntry(), conv.builder.getExit());
-		JobContext jc = conv.getJobContext();
-		jc.addFsm(lpd.getFullMemberName((Module) parent), fsm);
+		EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+		JobContext jc = graph.getJobContext();
+		jc.addEndpointGraph(lpd.getFullMemberName((Module) parent), fsm);
 		return visited;
 	}
 	

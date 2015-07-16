@@ -7,9 +7,8 @@ import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.ProtocolState;
 import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.FsmGenerator;
+import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -39,23 +38,22 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	}
 	
 	@Override
-	public void enterFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv)
+	public void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
 	{
-		super.enterFsmGeneration(parent, child, conv);
+		super.enterGraphBuilding(parent, child, graph);
 		LRecursion lr = (LRecursion) child;
 		RecVar rv = lr.recvar.toName();
 		// Update existing state, not replace it -- cf. LDoDel
-		ProtocolState s = conv.builder.getEntry();
-		s.addLabel(rv.toString());
-		conv.builder.setRecursionEntry(rv);
+		//conv.builder.addEntryLabel(rv);
+		graph.builder.setRecursionEntry(rv);
 	}
 
 	@Override
-	public LRecursion leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator conv, ScribNode visited)
+	public LRecursion leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		LRecursion lr = (LRecursion) visited;
 		RecVar rv = lr.recvar.toName();
-		conv.builder.removeRecursionEntry(rv);
-		return (LRecursion) super.leaveFsmGeneration(parent, child, conv, lr);
+		graph.builder.removeRecursionEntry(rv);
+		return (LRecursion) super.leaveGraphBuilding(parent, child, graph, lr);
 	}
 }

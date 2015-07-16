@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.Module;
+import org.scribble.codegen.EndpointApiGenerator;
+import org.scribble.codegen.SessionApiGenerator;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.EndpointApiGenerator;
-import org.scribble.net.session.SessionApiGenerator;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
@@ -59,9 +59,9 @@ public class Job
 	
 	public void buildFsms(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context
 	{
-		debugPrintPass("Running " + FsmGenerator.class + " for " + fullname + "@" + role);
+		debugPrintPass("Running " + EndpointGraphBuilder.class + " for " + fullname + "@" + role);
 		// Visit Module for context (not just the protodecl) -- builds FSMs for all locals in the module
-		this.jcontext.getProjection(fullname, role).accept(new FsmGenerator(this)); 
+		this.jcontext.getProjection(fullname, role).accept(new EndpointGraphBuilder(this)); 
 			// Builds FSMs for all local protocols in this module as root (though each projected module contains a single local protocol)
 			// Subprotocols "inlined" by FsmBuilder (scoped subprotocols not supported)
 	}
@@ -76,7 +76,7 @@ public class Job
 	
 	public Map<String, String> generateEndpointApi(GProtocolName fullname, Role role) throws ScribbleException
 	{
-		if (this.jcontext.getFsm(fullname, role) == null)
+		if (this.jcontext.getEndointGraph(fullname, role) == null)
 		{
 			buildFsms(fullname, role);
 		}

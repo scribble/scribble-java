@@ -3,11 +3,11 @@ package org.scribble.del;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.FsmGenerator;
+import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.InlinedWFChoiceChecker;
 import org.scribble.visit.MessageIdCollector;
-import org.scribble.visit.ModelBuilder;
+import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProjectedRoleDeclFixer;
@@ -114,12 +114,12 @@ public interface ScribDel
 		return visited;
 	}
 
-	default void enterFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator fsmgen)
+	default void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
 	{
 		
 	}
 
-	default ScribNode leaveFsmGeneration(ScribNode parent, ScribNode child, FsmGenerator fsmgen, ScribNode visited)
+	default ScribNode leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		return visited;
 	}
@@ -144,12 +144,12 @@ public interface ScribDel
 		return visited;
 	}
 
-	default void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
+	default void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
 	{
 		
 	}
 
-	default ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
+	default ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

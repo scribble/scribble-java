@@ -1,4 +1,4 @@
-package org.scribble.model.local;
+package org.scribble.codegen;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,7 +8,10 @@ import java.util.Set;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
-import org.scribble.net.session.SessionApiGenerator;
+import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.IOAction;
+import org.scribble.model.local.Receive;
+import org.scribble.model.local.Send;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.GProtocolName;
@@ -29,7 +32,7 @@ public class EndpointApiGenerator
 	private final LProtocolName lpn;
 
 	private int counter = 1;
-	Map<ProtocolState, String> classNames = new HashMap<>();
+	Map<EndpointState, String> classNames = new HashMap<>();
 	private String root = null;
 	private Map<String, String> classes = new HashMap<>();  // class name -> class source
 	
@@ -56,7 +59,7 @@ public class EndpointApiGenerator
 		this.lpn = Projector.projectFullProtocolName(fullname, role);
 
 		//ProtocolState init = job.getContext().getFsm(lpn).init;
-		ProtocolState init = job.getContext().getFsm(fullname, role).init;
+		EndpointState init = job.getContext().getEndointGraph(fullname, role).init;
 		generateClassNames(init);
 		/*for (ProtocolState ps : classNames.keySet())
 		{
@@ -65,7 +68,7 @@ public class EndpointApiGenerator
 		generateClasses(init);
 	}
 	
-	private void generateClassNames(ProtocolState ps)
+	private void generateClassNames(EndpointState ps)
 	{
 		if (this.classNames.containsKey(ps))// || ps.isTerminal())
 		{
@@ -77,13 +80,13 @@ public class EndpointApiGenerator
 		{
 			this.root = c;
 		}
-		for (ProtocolState succ : ps.getSuccessors())
+		for (EndpointState succ : ps.getSuccessors())
 		{
 			generateClassNames(succ);
 		}
 	}
 
-	private void generateClasses(ProtocolState ps)
+	private void generateClasses(EndpointState ps)
 	{
 		String className = this.classNames.get(ps);
 		if (this.classes.containsKey(className))
@@ -91,7 +94,7 @@ public class EndpointApiGenerator
 			return;
 		}
 		this.classes.put(className, generateClass(ps));
-		for (ProtocolState succ : ps.getSuccessors())
+		for (EndpointState succ : ps.getSuccessors())
 		{
 			generateClasses(succ);
 		}
@@ -122,7 +125,7 @@ public class EndpointApiGenerator
 		return clazz;
 	}
 
-	private String generateClass(ProtocolState ps)
+	private String generateClass(EndpointState ps)
 	{
 		String className = this.classNames.get(ps);
 		String clazz = "";
@@ -176,7 +179,7 @@ public class EndpointApiGenerator
 		return clazz;
 	}*/
 	
-	private String generateImports(ProtocolState ps)
+	private String generateImports(EndpointState ps)
 	{
 		String imports = "";
 		imports += "import java.io.IOException;\n";
@@ -216,7 +219,7 @@ public class EndpointApiGenerator
 	}
 	
 	//private String generateMethod(IOAction a, ProtocolState succ)
-	private String generateMethods(ProtocolState ps)
+	private String generateMethods(EndpointState ps)
 	{
 		if (ps.isTerminal())  // Shouldn't get in here
 		{
@@ -234,7 +237,7 @@ public class EndpointApiGenerator
 			{
 				for (IOAction a : ps.getAcceptable())  // Scribble ensures all a are input or all are output
 				{
-					ProtocolState succ = ps.accept(a);
+					EndpointState succ = ps.accept(a);
 					//String next = (succ.isTerminal()) ? SOCKET_CLASSES.get(SocketType.END) : this.classNames.get(succ);
 					String next = this.classNames.get(succ);
 					String opref = getOp(a.mid);
@@ -280,7 +283,7 @@ public class EndpointApiGenerator
 			case RECEIVE:
 			{
 				IOAction a = ps.getAcceptable().iterator().next();
-				ProtocolState succ = ps.accept(a);
+				EndpointState succ = ps.accept(a);
 				//String next = (succ.isTerminal()) ? SOCKET_CLASSES.get(SocketType.END) : this.classNames.get(succ);
 				String next = this.classNames.get(succ);
 				if (a.mid.isOp())
@@ -353,7 +356,7 @@ public class EndpointApiGenerator
 				clazz += "\n\n";
 				for (IOAction a : ps.getAcceptable())
 				{
-					ProtocolState succ = ps.accept(a);
+					EndpointState succ = ps.accept(a);
 					String next = this.classNames.get(succ);
 					if (a.mid.isOp())
 					{
@@ -470,7 +473,7 @@ public class EndpointApiGenerator
 		return SessionApiGenerator.getSessionClassName(gpn) + "." + role.toString();
 	}
 	
-	private SocketType getSocketType(ProtocolState ps)
+	private SocketType getSocketType(EndpointState ps)
 	{
 		if (ps.isTerminal())
 		{

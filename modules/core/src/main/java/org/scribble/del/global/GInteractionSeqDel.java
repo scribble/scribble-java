@@ -24,7 +24,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.global.ModelAction;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ModelBuilder;
+import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -91,13 +91,13 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	}
 	
 	@Override
-	public void enterModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder) throws ScribbleException
+	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
 	{
 		ScribDelBase.pushVisitorEnv(this, builder);
 	}
 
 	@Override
-	public GInteractionSeq leaveModelBuilding(ScribNode parent, ScribNode child, ModelBuilder builder, ScribNode visited) throws ScribbleException
+	public GInteractionSeq leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		Set<ModelAction> all = new HashSet<>();
