@@ -1,7 +1,7 @@
 //$ java -cp bin';'lib/antlr-3.5.2-complete.jar';'parser scribble.main.Tool test/src/betty/sub/Sub.scr -dot betty.sub.Sub.Proto S1 | dot -Tpng > test.png
 
 
-module test.rpc.RPC;
+module demo.rpc.RPC;
 
 
 global protocol Proto(role C, role S1, role S2, role S3)

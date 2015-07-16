@@ -1,4 +1,4 @@
-module test.nego.Nego2;
+module demo.nego.Nego2;
 
 type <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;
 

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
@@ -92,7 +92,7 @@ public class CommandLine implements Runnable
 		JobContext jcontext = job.getContext();
 		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.FSM)[0]);
 		Role role = checkRoleArg(jcontext, fullname, this.args.get(Arg.FSM)[1]);
-		buildFsm(job, fullname, role);
+		buildEndointGraph(job, fullname, role);
 		System.out.println(jcontext.getEndointGraph(fullname, role));
 	}
 	
@@ -116,23 +116,23 @@ public class CommandLine implements Runnable
 	// filepath -> class source
 	private void outputClasses(Map<String, String> classes) throws ScribbleException
 	{
-		Function<String, Void> f;
+		Consumer<String> f;
 		if (this.args.containsKey(Arg.OUTPUT))
 		{
 			String dir = this.args.get(Arg.OUTPUT)[0];
 			f = (path) -> { ScribUtil.handleLambdaScribbleException(() ->
-					{
-							writeToFile(dir + "/" + path, classes.get(path)); return null; 
-					}); return null; };
+							{
+								writeToFile(dir + "/" + path, classes.get(path)); return null; 
+							}); };
 		}
 		else
 		{
-			f = (path) -> { System.out.println(path + ":\n" + classes.get(path)); return null; };
+			f = (path) -> { System.out.println(path + ":\n" + classes.get(path)); };
 		}
-		classes.keySet().stream().map(f);
+		classes.keySet().stream().forEach(f);
 	}
 
-	private void buildFsm(Job job, GProtocolName fullname, Role role) throws ScribbleException
+	private void buildEndointGraph(Job job, GProtocolName fullname, Role role) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
