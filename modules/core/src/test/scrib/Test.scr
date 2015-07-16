@@ -1,0 +1,643 @@
+//Raymond@HZHL3 ~/code/scribble-java/scribble-java
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/validation/src/test/scrib/src/ -validate Test
+
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/Test.scr
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr
+
+
+module Test;
+
+import Test2;
+
+type <java> "java.lang.String" from "rt.jar" as String;
+
+
+///*
+global protocol Foo(role A, role B)
+{
+	do Test2.Test2Proto(A, B);
+	1() from A to B;
+	choice at A
+	{
+		//1() from A to B;
+		do Bar(A, B);
+		//1() from A to B;
+		//do Foo(A, B);
+	}
+	or
+	{
+		//5() from A to B;
+		do Bar2(A, B);
+	}
+	or
+	{
+		//2() from A to B;
+		4() from A to B;
+	}
+}
+
+global protocol Bar2(role A, role B)
+{
+	5() from A to B;
+	do Bar2(A, B);
+}
+
+global protocol Bar(role A, role B)
+{
+	2() from A to B;
+	3() from A to B;
+	do Foo(A, B);
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		2() from A to B;
+	}
+	or
+	{
+		do Bar(A, B);
+	}
+}
+
+global protocol Bar(role A, role B)
+{
+	do Foo(A, B);
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B, role C)
+{
+	1() from A to B;
+	do Bar(A, B, C);
+}
+
+global protocol Bar(role D, role E, role F)
+{
+	2() from D to F;
+	do Foo(D, E, F);
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	do Bar(A, B);
+	2() from A to B;
+}
+
+global protocol Bar(role A, role B)  // FIXME: bad unused role decls (wrt. subprotocol collected role occurrences)
+{
+	//3() from A to B;
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Foo(A, B);
+		//do Bar(A, B);
+		//2() from A to B;
+	}
+	or
+	{
+		do Bar(A, B);
+		//3() from A to B;
+	}
+	//4() from A to B;
+}
+
+global protocol Bar(role C, role D)
+{
+	5() from C to D;
+	do Bar(C, D);
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Foo(A, B);
+		//3() from A to B;
+	} or {
+		2() from A to B;
+		3() from A to B;
+	}
+	//3() from A to B;
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B)
+{
+	rec Z
+	{
+		choice at A
+		{
+			rec X
+			{
+				1() from A to B;
+				continue X;
+				//3() from A to B;
+			}
+			//3() from A to B;
+		}
+		or
+		{
+			rec Y
+			{
+				2() from A to B;
+				//continue Y;
+				//continue Z;
+			}
+		}
+		//3() from A to B;
+	}
+	3() from A to B;
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)  // Project for A
+{
+	do Bar1<1(), 2()>(A, B);
+	do Bar1<3(), 4()>(A, B);
+}
+
+global protocol Bar1<sig M1, sig M2>(role A, role B)
+{
+	do Bar2<M1, M2>(A, B, A);
+}
+
+global protocol Bar2<sig M1, sig M2>(role A, role B, role C)
+{
+	M1 from A to B;
+	M2 from B to C;
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	do Bar(A, B);
+}
+
+global protocol Bar(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Bar(B, A);
+	}
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	
+	rec X
+	{
+		choice at A
+		{
+			2() from A to B;
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		rec X
+		{
+			//do Bar(A, B);
+			1() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	rec X {
+		1() from A to B;
+		choice at A {
+			//4() from A to B;
+			rec Y {
+				3() from A to B;
+				continue X;
+			}
+		} or {
+			2() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		do Bar(A, B);
+	}
+	or
+	{
+		//1() from A to B;
+		2() from A to B;
+	}
+}
+
+global protocol Bar(role A, role B)
+{
+	do Foo(A, B);
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		//2() from A to B;
+		do Bar(A, B);
+	}
+	or
+	{
+		//1() from A to B;
+		2() from A to B;
+	}
+}
+
+global protocol Bar(role A, role B)
+{
+	//3() from A to B;
+	do Foo(A, B);
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	//1() from A to B;
+	choice at A
+	{
+		do Bar1(A, B);
+	}
+	or
+	{
+		do Bar2(A, B);
+	}
+	or
+	{
+		5() from A to B;
+	}
+}
+
+global protocol Bar1(role A, role B)
+{
+	2() from A to B;
+	3() from B to A;
+	do Foo(A, B);
+}
+
+global protocol Bar2(role A, role B)
+{
+	4() from A to B;
+	do Bar2(A, B);
+}
+//*/
+
+
+/*global protocol Foo(role A, role B)
+{
+	//do Foo1<Test.String2>(A, B);
+	do Foo1<String>(A, B);
+	choice at A
+	{
+		1(String) from A to B;
+		2() from A to B;
+	}
+	or
+	{
+		do Test2.Bar(A, B);
+		//1() from A to B;
+	}
+}
+
+global protocol Foo1<type T>(role A, role B)
+{
+	(T) from A to B;
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B)
+{
+	2() from A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		do Foo2(A, B);
+	}
+}
+
+global protocol Foo2(role A, role B)
+{
+	do Foo3(A, B);
+}
+
+global protocol Foo3(role A, role B)
+{
+	do Foo(A, B);
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B)
+{
+	/*1() from A to B;
+	2() from B to A;* /
+	choice at B
+	{
+		1a() from B to A;
+		//1b() from A to B;
+	}
+	or
+	{
+		2a() from B to A;
+		//2b() from A to B;
+	}
+	/*rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			2() from B to A;
+			continue X;
+		}
+		or
+			2() from A to B;
+		}
+	}* /
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	choice at A
+	{
+		2() from A to B;
+		do Bar(A, B);
+	}
+	or
+	{
+		4() from A to B;
+	}
+}
+
+global protocol Bar(role A, role B)
+{
+	3() from B to A;
+	do Foo(B, A);
+}
+//*/
+
+/*
+global protocol Foo(role A, role B)
+{
+	0() from A to B;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			2() from B to A;
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+		}
+	}
+	4() from A to B;
+}
+//*/
+
+
+/*
+global protocol Foo(role A, role B)
+{
+	0() from A to B;
+	choice at A
+	{
+		1a() from A to B;
+	}
+	or
+	{
+		2a() from A to B;
+		2b() from B to A;
+	}
+	3() from B to A;
+}
+//*/
+
+/*
+global protocol Foo(role A, role B)
+{
+	rec X
+	{
+		continue X;
+	}
+}
+//*/
+
+
+/*
+sig <java> "foo" from "bar" as M1;
+
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		M1 from A to B;
+	}
+	or
+	{
+		//do Foo(A, B);  // Not guarded -- FSM translation would be weird
+		//do Bar<M1>(A, B);
+		do Bar<1()>(A, B);
+	}
+}
+
+global protocol Bar<sig M>(role A, role B)
+{
+	M from A to B;
+}
+//*/
+
+
+/*
+sig <java> "foo" from "bar" as M1;
+
+global protocol Foo<sig M>(role A, role B)
+{
+	() from A to B;
+	M from A to B;
+	M1 from A to B;
+	//M2 from A to B;
+}
+//*/
+
+
+/*
+global protocol Foo<sig M2>(role A, role B)
+{
+	choice at A
+	{
+		//1() from A to B;
+		//do Bar<1()>(A, B);
+		//do Bar<2()>(A, B);
+		M2 from A to B;
+	}
+	or
+	{
+		//M2 from A to B;
+		//1() from A to B;
+		//do Bar<M2>(A, B);
+		do Bar<1()>(A, B);
+	}
+}
+
+global protocol Bar<sig M3>(role C, role D)
+{
+	M3 from C to D;
+}
+//*/
+
+/*
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	do Test2.Bar(A, B);
+	//3() from A to B;
+}
+//*/
+
+/*
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		do Test2.Bar(A, B);
+		//do Bar(A, B);
+	}
+}
+
+global protocol Bar(role C, role D)
+{
+	//1() from C to D;
+	2() from C to D;
+}
+//*/
+
+/*
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		//1() from A to B;
+		2() from A to B;
+	}
+}
+//*/
+
+/*global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	do Foo(A, B);
+	//3() from A to B;
+}
+
+global protocol Bar(role C, role D)
+{
+	2() from C to D;
+	do Foo(C, D);
+	//2() from C to D;
+}*/
+
+/*
+global protocol MyProto(role A, role B, role C, role D)
+{
+	rec X {
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+			//1() from A to B;
+		}
+		or
+		{
+			//1() from A to B;
+			2() from A to B;
+			continue X;
+		}
+	}
+	//3() from A to B;
+	4() from C to D;
+}
+//*/

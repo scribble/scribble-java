@@ -8,3 +8,12 @@ tools/eclipse/plugins/org.scribble.*/bin/
 .settings/
 .DS_Store
 *~
+*.swp
+modules/core/src/test/scrib/demo/http/Http.java
+modules/core/src/test/scrib/demo/http/Http_*
+modules/core/src/test/scrib/demo/fib/Adder.java
+modules/core/src/test/scrib/demo/fib/Adder_*
+modules/core/src/test/scrib/test/foo/Foo.java
+modules/core/src/test/scrib/test/foo/Foo_*
+bin/scribblec
+
