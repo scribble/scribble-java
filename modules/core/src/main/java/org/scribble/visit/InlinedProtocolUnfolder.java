@@ -78,7 +78,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 	{
 		RecVar rv = rec.recvar.toName();
 		ProtocolBlock<K> pb = rec.block;
-				// Clone unnecessary: can keep the original block, apart from any continues to substitute (done in InteractionSeqDel)
+				// Clone unnecessary: can visit the original block, apart from any continues to substitute (done in InteractionSeqDel)
 		this.todo.add(rv);
 		RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, DUMMY_REC_LABEL);
 		ScribNode n = rec.reconstruct(dummy, ScribUtil.checkNodeClassEquality(pb, pb.accept(this))); 
