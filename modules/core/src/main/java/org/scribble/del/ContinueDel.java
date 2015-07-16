@@ -15,12 +15,12 @@ public abstract class ContinueDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	public Continue<?> leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public Continue<?> leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		Continue<?> lc = (Continue<?>) visited;
 		Continue<?> inlined = (Continue<?>) lc.clone();
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (Continue<?>) super.leaveProtocolInlining(parent, child, builder, lc);
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
+		return (Continue<?>) super.leaveProtocolInlining(parent, child, inl, lc);
 	}
 
 	@Override

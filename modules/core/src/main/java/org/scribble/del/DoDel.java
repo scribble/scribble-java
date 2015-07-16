@@ -32,13 +32,13 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 	protected abstract void addProtocolDependency(ContextBuilder builder, Role self, ProtocolName<?> proto, Role target);
 
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
 	{
-		super.enterProtocolInlining(parent, child, builder);
-		if (!builder.isCycle())
+		super.enterProtocolInlining(parent, child, inl);
+		if (!inl.isCycle())
 		{
-			SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
-			builder.setRecVar(subsig);
+			SubprotocolSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
+			inl.setRecVar(subsig);
 		}
 	}
 }

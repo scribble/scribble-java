@@ -34,7 +34,7 @@ import org.scribble.visit.env.ProjectionEnv;
 public class GInteractionSeqDel extends InteractionSeqDel
 {
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<GInteractionNode> gins = new LinkedList<GInteractionNode>();
@@ -51,8 +51,8 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			}
 		}
 		GInteractionSeq inlined = AstFactoryImpl.FACTORY.GInteractionSeq(gins);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, builder, gis);
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
+		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, inl, gis);
 	}
 
 	@Override

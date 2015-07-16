@@ -24,14 +24,14 @@ import org.scribble.visit.env.ProjectionEnv;
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
 {
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GRecursion gr = (GRecursion) visited;
 		RecVarNode recvar = gr.recvar.clone();
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
 		GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GRecursion) super.leaveProtocolInlining(parent, child, builder, gr);
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
+		return (GRecursion) super.leaveProtocolInlining(parent, child, inl, gr);
 	}
 
 	@Override

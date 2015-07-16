@@ -44,7 +44,12 @@ public interface ScribDel
 		return visited;
 	}
 
-	default ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	default void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
@@ -60,11 +65,6 @@ public interface ScribDel
 	}
 
 	default void enterInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker) throws ScribbleException
-	{
-		
-	}
-
-	default void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
 	{
 		
 	}

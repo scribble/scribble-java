@@ -7,8 +7,8 @@ import org.scribble.visit.ProtocolDefInliner;
 public abstract class ProtocolBlockDel extends CompoundInteractionDel
 {
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
 	{
-		ScribDelBase.pushVisitorEnv(this, builder);
+		ScribDelBase.pushVisitorEnv(this, inl);
 	}
 }

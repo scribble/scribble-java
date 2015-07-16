@@ -23,7 +23,7 @@ import org.scribble.visit.env.ReachabilityEnv;
 public class LInteractionSeqDel extends InteractionSeqDel
 {
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		LInteractionSeq lis = (LInteractionSeq) visited;
 		List<LInteractionNode> lins = new LinkedList<LInteractionNode>();
@@ -40,8 +40,8 @@ public class LInteractionSeqDel extends InteractionSeqDel
 			}
 		}
 		LInteractionSeq inlined = AstFactoryImpl.FACTORY.LInteractionSeq(lins);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (LInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, builder, lis);
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
+		return (LInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, inl, lis);
 	}
 
 	// Replaces visitChildrenInSubprotocols for LocalInteractionSequence 

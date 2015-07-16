@@ -31,15 +31,15 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = 
 				lc.getBlocks().stream().map((b) -> (LProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
 		RoleNode subj = lc.subj.clone();
 		LChoice inlined = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (LChoice) super.leaveProtocolInlining(parent, child, builder, lc);
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
+		return (LChoice) super.leaveProtocolInlining(parent, child, inl, lc);
 	}
 
 	@Override

@@ -35,18 +35,18 @@ public class LProtocolDefDel extends ProtocolDefDel
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
-		SubprotocolSig subsig = builder.peekStack();
+		SubprotocolSig subsig = inl.peekStack();
 		LProtocolDef lpd = (LProtocolDef) visited;
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) lpd.block.del().env()).getTranslation();	
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, inl.getRecVar(subsig).toString());
 		LRecursion rec = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
 		LInteractionSeq lis = AstFactoryImpl.FACTORY.LInteractionSeq(Arrays.asList(rec));
 		LProtocolDef inlined = AstFactoryImpl.FACTORY.LProtocolDef(AstFactoryImpl.FACTORY.LProtocolBlock(lis));
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		LProtocolDefDel copy = setInlinedProtocolDef(inlined);
-		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, builder, (LProtocolDef) lpd.del(copy));
+		return (LProtocolDef) ScribDelBase.popAndSetVisitorEnv(this, inl, (LProtocolDef) lpd.del(copy));
 	}
 	
 	@Override

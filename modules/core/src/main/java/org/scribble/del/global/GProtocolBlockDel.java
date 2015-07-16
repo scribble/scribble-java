@@ -30,13 +30,13 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GProtocolBlock gpd = (GProtocolBlock) visited;
 		GInteractionSeq seq = (GInteractionSeq) ((InlineProtocolEnv) gpd.seq.del().env()).getTranslation();	
 		GProtocolBlock inlined = AstFactoryImpl.FACTORY.GProtocolBlock(seq);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, builder, gpd);
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
+		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, inl, gpd);
 	}
 
 	@Override

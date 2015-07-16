@@ -44,19 +44,19 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public GDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public GDo leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
-		SubprotocolSig subsig = builder.peekStack();
-		if (!builder.isCycle())
+		SubprotocolSig subsig = inl.peekStack();
+		if (!inl.isCycle())
 		{
-			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
-			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) builder.peekEnv()).getTranslation());
+			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, inl.getRecVar(subsig).toString());
+			GInteractionSeq gis = (GInteractionSeq) (((InlineProtocolEnv) inl.peekEnv()).getTranslation());
 			GProtocolBlock gb = AstFactoryImpl.FACTORY.GProtocolBlock(gis);
 			GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, gb);
-			builder.pushEnv(builder.popEnv().setTranslation(inlined));
-			builder.removeRecVar(subsig);
+			inl.pushEnv(inl.popEnv().setTranslation(inlined));
+			inl.removeRecVar(subsig);
 		}	
-		return (GDo) super.leaveProtocolInlining(parent, child, builder, visited);
+		return (GDo) super.leaveProtocolInlining(parent, child, inl, visited);
 	}
 
 	@Override

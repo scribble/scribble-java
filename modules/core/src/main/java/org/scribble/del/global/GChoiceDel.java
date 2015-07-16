@@ -27,15 +27,15 @@ import org.scribble.visit.env.ProjectionEnv;
 public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 {
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
 		List<GProtocolBlock> blocks = 
 				gc.getBlocks().stream().map((b) -> (GProtocolBlock) ((InlineProtocolEnv) b.del().env()).getTranslation()).collect(Collectors.toList());	
 		RoleNode subj = gc.subj.clone();
 		GChoice inlined = AstFactoryImpl.FACTORY.GChoice(subj, blocks);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (GChoice) super.leaveProtocolInlining(parent, child, builder, gc);
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
+		return (GChoice) super.leaveProtocolInlining(parent, child, inl, gc);
 	}
 
 	@Override

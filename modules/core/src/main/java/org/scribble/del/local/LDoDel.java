@@ -53,19 +53,19 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	
 	@Override
 	public LDo
-			leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+			leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
-		SubprotocolSig subsig = builder.peekStack();
-		if (!builder.isCycle())
+		SubprotocolSig subsig = inl.peekStack();
+		if (!inl.isCycle())
 		{
-			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
-			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) builder.peekEnv()).getTranslation());
+			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, inl.getRecVar(subsig).toString());
+			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) inl.peekEnv()).getTranslation());
 			LProtocolBlock gb = AstFactoryImpl.FACTORY.LProtocolBlock(gis);
 			LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(recvar, gb);
-			builder.pushEnv(builder.popEnv().setTranslation(inlined));
-			builder.removeRecVar(subsig);
+			inl.pushEnv(inl.popEnv().setTranslation(inlined));
+			inl.removeRecVar(subsig);
 		}	
-		return (LDo) super.leaveProtocolInlining(parent, child, builder, visited);
+		return (LDo) super.leaveProtocolInlining(parent, child, inl, visited);
 	}
 
 	// Pre: this pass is only run on projections (LProjectionDeclDel has source global protocol info)

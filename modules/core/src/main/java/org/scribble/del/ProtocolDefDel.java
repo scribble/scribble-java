@@ -13,9 +13,9 @@ public abstract class ProtocolDefDel extends ScribDelBase
 	protected abstract ProtocolDefDel copy();
 
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
 	{
-		ScribDelBase.pushVisitorEnv(this, builder);
+		ScribDelBase.pushVisitorEnv(this, inl);
 	}
 	
 	public ProtocolDef<?> getInlinedProtocolDef()

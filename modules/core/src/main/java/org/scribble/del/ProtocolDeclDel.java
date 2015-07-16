@@ -48,14 +48,14 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 	}
 
 	@Override
-	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder) throws ScribbleException
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
 	{
-		SubprotocolSig subsig = builder.peekStack();  // SubprotocolVisitor has already entered subprotocol
-		builder.setRecVar(subsig);
+		SubprotocolSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
+		inl.setRecVar(subsig);
 	}
 
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

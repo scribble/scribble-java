@@ -17,14 +17,14 @@ import org.scribble.visit.env.ReachabilityEnv;
 public class LRecursionDel extends RecursionDel implements LCompoundInteractionNodeDel
 {
 	@Override
-	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner builder, ScribNode visited) throws ScribbleException
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		LRecursion gr = (LRecursion) visited;
 		RecVarNode recvar = gr.recvar.clone();
 		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
 		LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
-		builder.pushEnv(builder.popEnv().setTranslation(inlined));
-		return (LRecursion) super.leaveProtocolInlining(parent, child, builder, gr);
+		inl.pushEnv(inl.popEnv().setTranslation(inlined));
+		return (LRecursion) super.leaveProtocolInlining(parent, child, inl, gr);
 	}
 
 	@Override
