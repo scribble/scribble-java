@@ -1,9 +1,0 @@
-module scribble.examples.RequestResponse;
-
-type <xsd> "{http://scribble.org/example}OrderRequest" from "http://scribble.org/schema/Example.xsd" as OrderRequest;
-type <xsd> "{http://scribble.org/example}OrderResponse" from "http://scribble.org/schema/Example.xsd" as OrderResponse;
-
-local protocol First at Buyer (role Buyer, role Seller) {
-	buy(OrderRequest) to Seller;
-	buy(OrderResponse) from Seller;
-}
