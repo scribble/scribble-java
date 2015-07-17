@@ -1,0 +1,26 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import14.scr
+
+module parsing.imports.Import14;
+
+import parsing.imports.pack1.Pack14;
+
+
+global protocol Import14(role A, role B)
+{
+	choice at A
+	{
+		do parsing.imports.pack1.Pack14.Pack14<l1()>(A as C, B as D);
+	}
+	or
+	{
+		do Import14Aux<l2()>(A as A, B as B);
+		//do Import14Aux<l1()>(A as A, B as B);
+	}
+}
+
+global protocol Import14Aux<sig X>(role A, role B)
+{
+	X from A to B;
+}
+

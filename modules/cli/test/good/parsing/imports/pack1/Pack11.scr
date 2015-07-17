@@ -1,0 +1,15 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/pack1/Pack11.scr
+
+module parsing.imports.pack1.Pack11;
+
+import parsing.imports.pack2.Pack11;
+//import parsing.imports.Import11;  // OK
+
+
+global protocol Pack11(role C, role D)
+{
+	do parsing.imports.pack2.Pack11.Pack11(C as C, D as D);
+	//do parsing.imports.Import11.Import11Aux(C as E, D as F);  // OK
+}
+
