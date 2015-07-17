@@ -1,7 +1,7 @@
 module parsing.gparsing.gdo.Do13a;
 
 
-// FIXME:
+// FIXME: similar to Do23a -- should be bad (roles not used)
 global protocol Do13a(role A, role B)
 {
 	//l1() from A to B;  // Uncomment is OK
