@@ -1,16 +1,16 @@
 //Raymond@HZHL2 ~/code/python/scribble-tools
 //$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import11.scr
 
-module parsing.imports.Import11;
+module good.parsing.imports.Import11;
 
-import parsing.imports.pack1.Pack11;
+import good.parsing.imports.pack1.Pack11;
 
 
 global protocol Import11(role A, role B)
 {
 	choice at A
 	{
-		do parsing.imports.pack1.Pack11.Pack11(A, B);
+		do good.parsing.imports.pack1.Pack11.Pack11(A, B);
 	}
 	or
 	{

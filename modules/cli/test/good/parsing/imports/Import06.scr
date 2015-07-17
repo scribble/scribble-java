@@ -3,7 +3,7 @@
 
 // Good for testing for potential loops in recursive imports when a module is bad
 
-module parsing.imports.Import06;
+module good.parsing.imports.Import06;
 
-import parsing.imports.Import06;
+import good.parsing.imports.Import06;
 

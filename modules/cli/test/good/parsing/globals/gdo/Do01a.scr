@@ -1,10 +1,10 @@
-module parsing.globals.gdo.Do01a;
+module good.parsing.globals.gdo.Do01a;
 
 
 global protocol Do1a(role A, role B)
 {
 	do Do1aux(A, B);
-	//do parsing.globals.gdo.Do01a.Do1aux(A, B);  // Uncomment is OK
+	//do good.parsing.globals.gdo.Do01a.Do1aux(A, B);  // Uncomment is OK
 	//do X: Do1aux(A, B);  // Uncomment is OK  // TODO
 	//do Do1aux(A, B);  // Uncomment is bad
 	//do Do1aux(A, A);  // Uncomment is bad

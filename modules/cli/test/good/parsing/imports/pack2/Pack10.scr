@@ -1,7 +1,7 @@
 //Raymond@HZHL2 ~/code/python/scribble-tools
 //$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py test/base/impourt/pack2/Pack10.scr
 
-module parsing.imports.pack2.Pack10;
+module good.parsing.imports.pack2.Pack10;
 
 global protocol Pack10(role C, role D)
 {

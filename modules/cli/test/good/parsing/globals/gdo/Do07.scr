@@ -1,4 +1,4 @@
-module parsing.globals.gdo.Do07;
+module good.parsing.globals.gdo.Do07;
 
 
 type <blah> "MyExternalType" from "MyExternalType.blah" as MyType;

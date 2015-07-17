@@ -1,4 +1,4 @@
-module parsing.globals.gdo.Do03;
+module good.parsing.globals.gdo.Do03;
 
 
 global protocol Do3(role A, role B)

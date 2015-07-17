@@ -1,4 +1,4 @@
-module parsing.globals.gdo.Do06b;
+module good.parsing.globals.gdo.Do06b;
 
 
 type <java> "java.lang.String" from "rt.jar" as String;

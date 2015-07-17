@@ -1,4 +1,4 @@
-module parsing.gparsing.gdo.Do12a;
+module good.parsing.globals.gdo.Do12a;
 
 
 global protocol Do12a(role A, role B)

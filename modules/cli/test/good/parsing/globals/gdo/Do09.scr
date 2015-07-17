@@ -1,4 +1,4 @@
-module parsing.globals.gdo.Do09;
+module good.parsing.globals.gdo.Do09;
 
 
 global protocol Do9(role A, role B)

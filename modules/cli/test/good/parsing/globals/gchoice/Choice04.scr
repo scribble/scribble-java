@@ -1,4 +1,4 @@
-module parsing.globals.gchoice.Choice04;
+module good.parsing.globals.gchoice.Choice04;
 
 global protocol Choice4(role A, role B)
 {

@@ -1,7 +1,7 @@
 //Raymond@HZHL2 ~/code/python/scribble-tools
 //$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py test/base/impourt/pack1/Pack8.scr
 
-module parsing.imports.pack1.Pack08;
+module good.parsing.imports.pack1.Pack08;
 
 
 global protocol Pack8(role C, role D)

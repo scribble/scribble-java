@@ -1,4 +1,4 @@
-module parsing.globals.gdo.Do04c;
+module good.parsing.globals.gdo.Do04c;
 
 
 global protocol Do4c(role A, role B)

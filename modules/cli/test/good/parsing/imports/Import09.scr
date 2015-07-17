@@ -1,16 +1,16 @@
 //Raymond@HZHL2 ~/code/python/scribble-tools
 //$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import9.scr
 
-module parsing.imports.Import09;
+module good.parsing.imports.Import09;
 
-import parsing.imports.pack1.Pack09;
+import good.parsing.imports.pack1.Pack09;
 
 
 global protocol Import9(role A, role B)
 {
 	choice at A
 	{
-		do parsing.imports.pack1.Pack09.Pack9(A, B);
+		do good.parsing.imports.pack1.Pack09.Pack9(A, B);
 	}
 	or
 	{

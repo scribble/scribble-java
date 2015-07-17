@@ -1,4 +1,4 @@
-module parsing.globals.gdo.Do27;
+module good.parsing.globals.gdo.Do27;
 
 
 global protocol Do27(role A, role B)

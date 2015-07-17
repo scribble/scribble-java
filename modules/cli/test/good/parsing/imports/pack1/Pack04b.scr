@@ -1,9 +1,9 @@
 //Raymond@HZHL2 ~/code/python/scribble-tools
 //$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py test/base/impourt/pack1/Pack4b.scr
 
-module parsing.imports.pack1.Pack04b;
+module good.parsing.imports.pack1.Pack04b;
 
-import parsing.imports.pack1.Pack04a;
+import good.parsing.imports.pack1.Pack04a;
 
 
 global protocol Pack4(role A, role B)

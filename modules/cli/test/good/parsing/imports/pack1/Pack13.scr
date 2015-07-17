@@ -1,14 +1,14 @@
 //Raymond@HZHL2 ~/code/python/scribble-tools
 //$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/pack1/Pack13.scr
 
-module parsing.imports.pack1.Pack13;
+module good.parsing.imports.pack1.Pack13;
 
-import parsing.imports.Import13;
+import good.parsing.imports.Import13;
 
 
 global protocol Pack13(role C, role D)
 {
-	do parsing.imports.Import13.Import13Aux<l1()>(C, D);
+	do good.parsing.imports.Import13.Import13Aux<l1()>(C, D);
 	//do Import13Aux<l1()>(C, D);
 	//do ImportAux<l3()>(C, D);  // Uncomment is OK (with below declaration)
 }
