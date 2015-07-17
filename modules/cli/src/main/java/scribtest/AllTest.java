@@ -31,7 +31,7 @@ public class AllTest {
 		this.hasErrors = hasErrors;
 	}
 
-	@Parameters()//name = "{0}")
+	@Parameters(name = "{0}")
 	public static Collection<Object[]> data() {
 		List<Object[]> result = new ArrayList<>();
 		Harness harness = new Harness();
