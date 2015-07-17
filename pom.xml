@@ -45,7 +45,7 @@
 		<antlr.version>3.2</antlr.version>
 		<log4j.version>1.2.14</log4j.version>
 		<jackson.version>1.9.9</jackson.version>
-		<junit.version>4.7</junit.version>
+		<junit.version>4.11</junit.version>
 	</properties>
 
 	<modules>
