@@ -50,7 +50,7 @@ public class AllTest {
 		JavaProcessBuilder java = Harness.java("org.scribble.cli.CommandLine");
 		java.appendProgramArgument(example);
 		java.appendProgramArgument("-ip");
-		java.appendProgramArgument("test\\good");  // Doesn't work if combine with above as a "single" argument with a space
+		java.appendProgramArgument("test");  // Doesn't work if combine with above as a "single" argument with a space
 		ProcessSummary result = ExecUtil.execUntil(TIMEOUT, java.build());
 		String output = result.stderr + "\n" + result.stdout;
 		String message = java.toString() + "\n";
