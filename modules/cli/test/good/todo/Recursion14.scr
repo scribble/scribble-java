@@ -1,0 +1,23 @@
+module parsing.globals.grecursion.Recursion14;
+
+
+global protocol Recursion14(role A, role B)
+{
+	rec X
+	{
+		l1() from A to B;
+		/*// TODO:
+		do Y: base.recursion.Recursion14.Recursion14a(A, B);
+		//do X: base.recursion.Recursion14.Recursion14a(A, B); // Uncomment OK if above line is commented
+		//do base.recursion.Recursion14.Recursion14a(A, B);  // Uncomment bad, even if above two lines are commented*/
+	}
+}
+
+global protocol Recursion14a(role A, role B)
+{
+	rec X
+	{
+		l1() from A to B;
+		continue X;
+	}
+}
