@@ -6,6 +6,7 @@ import org.scribble.ast.name.qualified.DataTypeNameNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
+import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -14,6 +15,7 @@ import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.Local;
+import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.OpKind;
 import org.scribble.sesstype.kind.RecVarKind;
@@ -24,6 +26,11 @@ public class AntlrSimpleName
 {
 	private static final String ANTLR_EMPTY_OPERATOR = "EMPTY_OPERATOR";
 	//private static final String ANTLR_NO_SCOPE = "NO_SCOPE";
+
+	public static ModuleNameNode toModuleNameNode(CommonTree ct)
+	{
+		return (ModuleNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, getName(ct));  // Cannot use SimpleNameNode because qualified uses the node's elements, not the node's text itself
+	}
 
 	public static GProtocolNameNode toGProtocolNameNode(CommonTree ct)
 	{

@@ -13,4 +13,3 @@ global protocol Import16(role A, role B)
 	do Pack16.Pack16(A, B);
 	do Foo.Pack16(A, B);
 }
-

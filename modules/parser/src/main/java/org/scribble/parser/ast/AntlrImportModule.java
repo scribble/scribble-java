@@ -6,6 +6,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.name.qualified.ModuleNameNode;
 import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
+import org.scribble.parser.ast.name.AntlrSimpleName;
 
 public class AntlrImportModule
 {
@@ -17,10 +18,9 @@ public class AntlrImportModule
 	public static ImportModule parseImportModule(ScribParser parser, CommonTree ct)
 	{
 		ModuleNameNode fmn = AntlrQualifiedName.toModuleNameNode(getModuleNameChild(ct));
-		ModuleNameNode alias =
-				(hasAlias(ct))
-					? AntlrQualifiedName.toModuleNameNode(getAliasChild(ct))
-					: null;
+		ModuleNameNode alias = (hasAlias(ct))
+				? AntlrSimpleName.toModuleNameNode(getAliasChild(ct))
+				: null;
 		return AstFactoryImpl.FACTORY.ImportModule(fmn, alias);
 	}
 
