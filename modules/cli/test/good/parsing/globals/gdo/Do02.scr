@@ -3,7 +3,7 @@ module parsing.globals.gdo.Do02;
 
 global protocol Do2(role A, role B)
 {
-	do Do2a(B as A, A as B);
+	do Do2a(B, A);
 }
 
 global protocol Do2a(role A, role B)

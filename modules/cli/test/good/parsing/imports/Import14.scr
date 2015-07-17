@@ -10,12 +10,12 @@ global protocol Import14(role A, role B)
 {
 	choice at A
 	{
-		do parsing.imports.pack1.Pack14.Pack14<l1()>(A as C, B as D);
+		do parsing.imports.pack1.Pack14.Pack14<l1()>(A, B);
 	}
 	or
 	{
-		do Import14Aux<l2()>(A as A, B as B);
-		//do Import14Aux<l1()>(A as A, B as B);
+		do Import14Aux<l2()>(A, B);
+		//do Import14Aux<l1()>(A, B);
 	}
 }
 

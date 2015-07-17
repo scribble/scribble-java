@@ -8,6 +8,6 @@ import parsing.imports.Import11;
 
 global protocol Pack11(role C, role D)
 {
-	do parsing.imports.Import11.Import11Aux(C as E, D as F);
+	do parsing.imports.Import11.Import11Aux(C, D);
 }
 

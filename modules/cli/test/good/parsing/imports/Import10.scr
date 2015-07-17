@@ -11,15 +11,15 @@ global protocol Import10(role A, role B)
 {
 	choice at A
 	{
-		do parsing.imports.pack1.Pack10.Pack10(A as C, B as D);
+		do parsing.imports.pack1.Pack10.Pack10(A, B);
 	}
 	or
 	{
-		do parsing.imports.pack2.Pack10.Pack10(A as C, B as D);
+		do parsing.imports.pack2.Pack10.Pack10(A, B);
 	}
 	or
 	{
-		do Pack10(A as C, B as D);
+		do Pack10(A, B);
 	}
 }
 

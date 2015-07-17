@@ -9,7 +9,7 @@ import parsing.imports.pack2.Pack11;
 
 global protocol Pack11(role C, role D)
 {
-	do parsing.imports.pack2.Pack11.Pack11(C as C, D as D);
-	//do parsing.imports.Import11.Import11Aux(C as E, D as F);  // OK
+	do parsing.imports.pack2.Pack11.Pack11(C, D);
+	//do parsing.imports.Import11.Import11Aux(C, D);  // OK
 }
 

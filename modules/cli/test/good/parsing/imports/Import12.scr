@@ -8,8 +8,8 @@ import parsing.imports.pack1.Pack12;
 
 global protocol Import12(role A, role B)
 {
-	do parsing.imports.pack1.Pack12.Pack12<l1()>(A as C, B as D);
-	//do parsing.imports.pack1.Pack12.Pack12<l1() as X>(A as C, B as D); // Uncomment is OK
-	//do parsing.imports.pack1.Pack12.Pack12<l1() as Y>(A as C, B as D);
+	do parsing.imports.pack1.Pack12.Pack12<l1()>(A, B);
+	//do parsing.imports.pack1.Pack12.Pack12<l1() as X>(A, B); // Uncomment is OK
+	//do parsing.imports.pack1.Pack12.Pack12<l1() as Y>(A, B);
 }
 

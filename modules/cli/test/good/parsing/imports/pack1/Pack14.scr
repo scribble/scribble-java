@@ -8,6 +8,6 @@ import parsing.imports.Import14;
 
 global protocol Pack14<sig X>(role C, role D)
 {
-	do parsing.imports.Import14.Import14Aux<X>(C as A, D as B);
+	do parsing.imports.Import14.Import14Aux<X>(C, D);
 }
 
