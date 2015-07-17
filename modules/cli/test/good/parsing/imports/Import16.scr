@@ -7,7 +7,6 @@ import parsing.imports.pack1.Pack16 as Pack16;
 import parsing.imports.pack1.Pack16 as Foo;
 
 
-// FIXME:
 global protocol Import16(role A, role B)
 {
 	do Pack16.Pack16(A, B);
