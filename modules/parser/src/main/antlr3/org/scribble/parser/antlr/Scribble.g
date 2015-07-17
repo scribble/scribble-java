@@ -1,5 +1,6 @@
 /*
- * $ java -cp ../../eclipse-luna/scribble-java-research/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o test modules/parser/src/main/antlr3/org/scribble/parser/antlr/Scribble2.g
+ * > scribble-java
+ * $ java -cp modules/parser/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o modules/parser/target/generated-sources/antlr3 modules/parser/src/main/antlr3/org/scribble/parser/antlr/Scribble.g
  */
 
 
