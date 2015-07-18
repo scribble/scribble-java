@@ -4,9 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
@@ -33,15 +31,8 @@ public class AllTest {
 
 	@Parameters(name = "{0}")
 	public static Collection<Object[]> data() {
-		List<Object[]> result = new ArrayList<>();
 		Harness harness = new Harness();
-		for (String file : harness.getGoodExamples()) {
-			result.add(new Object[] { file, false });
-		}
-		for (String file : harness.getBadExamples()) {
-			result.add(new Object[] { file, true });
-		}
-		return result;
+		return harness.getAllExamples();
 	}
 
 	@Test
