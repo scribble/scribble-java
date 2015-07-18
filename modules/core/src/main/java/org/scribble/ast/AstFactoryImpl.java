@@ -68,6 +68,7 @@ import org.scribble.del.local.LRecursionDel;
 import org.scribble.del.local.LSendDel;
 import org.scribble.del.name.AmbigNameNodeDel;
 import org.scribble.del.name.ParamNodeDel;
+import org.scribble.del.name.RecVarNodeDel;
 import org.scribble.del.name.RoleNodeDel;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.Global;
@@ -298,20 +299,22 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public <K extends Kind> NameNode<K> SimpleNameNode(K kind, String identifier)
 	{
-		NameNode<? extends Kind> snn;
-		if (kind.equals(OpKind.KIND))
+		if (kind.equals(RecVarKind.KIND))
 		{
-			snn = new OpNode(identifier);
-		}
-		else if (kind.equals(RecVarKind.KIND))
-		{
-			snn = new RecVarNode(identifier);
+			RecVarNode rv = new RecVarNode(identifier);
+			rv = (RecVarNode) del(rv, new RecVarNodeDel());
+			return castNameNode(kind, rv);
 		}
 		else if (kind.equals(RoleKind.KIND))
 		{
 			RoleNode rn = new RoleNode(identifier);
 			rn = (RoleNode) del(rn, new RoleNodeDel());
 			return castNameNode(kind, rn);
+		}
+		NameNode<? extends Kind> snn;
+		if (kind.equals(OpKind.KIND))
+		{
+			snn = new OpNode(identifier);
 		}
 		else
 		{

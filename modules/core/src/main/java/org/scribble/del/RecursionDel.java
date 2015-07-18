@@ -22,7 +22,7 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 		RecVar rv = rec.recvar.toName();
 		/*if (disamb.isBoundRecVar(rv))
 		{
-			throw new ScribbleException("RecVar shadowing not currently allowed: " + rv); 
+			throw new ScribbleException("Rec variable shadowing not currently allowed: " + rv); 
 					// Inconsistent to disallow due to subprotocols and that NameDisambiguator is not an inlined or subprotocol visitor
 		}*/
 		disamb.addRecVar(rv);

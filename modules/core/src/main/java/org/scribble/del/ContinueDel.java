@@ -5,7 +5,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.ProtocolDefInliner;
 
 public abstract class ContinueDel extends SimpleInteractionNodeDel
@@ -13,18 +12,6 @@ public abstract class ContinueDel extends SimpleInteractionNodeDel
 	public ContinueDel()
 	{
 
-	}
-
-	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
-	{
-		Continue<?> c = (Continue<?>) visited;
-		RecVar rv = c.recvar.toName();
-		if (!disamb.isBoundRecVar(rv))
-		{
-			throw new ScribbleException("RecVar not bound: " + rv);
-		}
-		return c;
 	}
 
 	@Override
