@@ -3,6 +3,7 @@ package org.scribble.ast;
 import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.SimpleNameNode;
 import org.scribble.del.ScribDel;
+import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.SigKind;
 import org.scribble.sesstype.name.Role;
@@ -54,9 +55,9 @@ public class NonRoleParamDecl<K extends NonRoleParamKind> extends HeaderParamDec
 		{
 			return Constants.SIG_KW;
 		}
-		else if (this.kind.equals(SigKind.KIND))
+		else if (this.kind.equals(DataTypeKind.KIND))
 		{
-			return Constants.SIG_KW;
+			return Constants.TYPE_KW;
 		}
 		else
 		{

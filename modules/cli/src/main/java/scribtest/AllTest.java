@@ -31,16 +31,16 @@ public class AllTest {
 		this.hasErrors = hasErrors;
 	}
 
-	@Parameters()//name = "{0}")
+	@Parameters(name = "{0}")
 	public static Collection<Object[]> data() {
 		List<Object[]> result = new ArrayList<>();
 		Harness harness = new Harness();
 		for (String file : harness.getGoodExamples()) {
 			result.add(new Object[] { file, false });
 		}
-		/*for (String file : harness.getBadExamples()) {
+		for (String file : harness.getBadExamples()) {
 			result.add(new Object[] { file, true });
-		}*/
+		}
 		return result;
 	}
 
@@ -49,6 +49,8 @@ public class AllTest {
 		//JavaProcessBuilder java = Harness.java("scribble2.main.Main");
 		JavaProcessBuilder java = Harness.java("org.scribble.cli.CommandLine");
 		java.appendProgramArgument(example);
+		java.appendProgramArgument("-ip");
+		java.appendProgramArgument("test");  // Doesn't work if combine with above as a "single" argument with a space
 		ProcessSummary result = ExecUtil.execUntil(TIMEOUT, java.build());
 		String output = result.stderr + "\n" + result.stdout;
 		String message = java.toString() + "\n";

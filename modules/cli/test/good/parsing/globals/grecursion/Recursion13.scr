@@ -1,0 +1,18 @@
+module parsing.globals.grecursion.Recursion13;
+
+
+global protocol Recursion13(role A, role B)
+{
+	rec X
+	{
+		l1() from A to B;
+		do parsing.globals.grecursion.Recursion13.Recursion13a(A, B);
+		continue X;
+	}
+}
+
+global protocol Recursion13a(role A, role B)
+{
+	l1() from A to B;
+}
+

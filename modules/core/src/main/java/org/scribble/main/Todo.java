@@ -9,12 +9,13 @@ package org.scribble.main;
 	// bound qualified sig/type names (disambiguation check of qualified names, not just ambiguous)
 	// duplicate protocol/role decls etc
 	//.. do call type checking as well as basic name binding
-	// name collisions? e.g. message sig names and ops (M1 and M1() -- maybe ok)
+	// name collisions? e.g. message sig names and ops (M1 and M1() -- maybe ok) -- is rec var shadowing ok? (currently inconsistent to disallow due to shadowed recs in subprotocols and NameDisambiguator is not an inlined or subprotocol visitor)
 
 	//.. guarded recursive subprotocols -- guarded recursion vars not needed? handled by projection -- subprotocols need unused roledecl check
 	//.. generalise dependencies for duplicate-role projection
 	//.. do projection should filter unused subprotocol role params -- also non role params? -- but scoped subprotocols may need extra name mangling
 
+	// pointer equality for testing if AST subtrees already visited in e.g. InlinedWFChoiceChecker (and thus UnfoldingVisitor) maybe not good
 	// move roledecllist etc projection to dels
 	// could parameterise recvar to be global/local
 

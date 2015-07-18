@@ -59,6 +59,7 @@ public interface ScribDel
 		
 	}
 
+	// These are for "choice-rec" unfolding, i.e. InlinedProtocolUnfolder -- cf. UnfoldingVisitor, which does continue unfolding by revisiting a clone of the rec body
 	default ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
 		return visited;
