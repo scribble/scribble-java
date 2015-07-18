@@ -14,7 +14,7 @@ public class RoleNodeDel extends ScribDelBase
 	}
 
 	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	public RoleNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		RoleNode rn = (RoleNode) visited;
 		if (!disamb.isBoundRole(rn.toName()))
