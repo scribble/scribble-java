@@ -1,7 +1,5 @@
 package org.scribble.parser.ast.name;
 
-import java.util.Arrays;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.name.qualified.DataTypeNameNode;
