@@ -8,7 +8,7 @@ import org.scribble.del.local.LInteractionSeqDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.env.ReachabilityEnv;
 
-public class ReachabilityChecker extends UnfoldedVisitor<ReachabilityEnv>
+public class ReachabilityChecker extends UnfoldingVisitor<ReachabilityEnv>
 {
 	public ReachabilityChecker(Job job)
 	{
@@ -24,7 +24,7 @@ public class ReachabilityChecker extends UnfoldedVisitor<ReachabilityEnv>
 
 	// Following Projector visit pattern -- for overriding base enter/visit/leave pattern
 	@Override
-	protected ScribNode visitForUnfolded(ScribNode parent, ScribNode child) throws ScribbleException
+	protected ScribNode visitForUnfolding(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof LInteractionSeq)
 		{
@@ -32,7 +32,7 @@ public class ReachabilityChecker extends UnfoldedVisitor<ReachabilityEnv>
 		}
 		else
 		{
-			return super.visitForUnfolded(parent, child);
+			return super.visitForUnfolding(parent, child);
 		}
 	}
 
@@ -42,16 +42,16 @@ public class ReachabilityChecker extends UnfoldedVisitor<ReachabilityEnv>
 	}
 
 	@Override
-	protected void unfoldedEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.unfoldedEnter(parent, child);
+		super.unfoldingEnter(parent, child);
 		child.del().enterReachabilityCheck(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode unfoldedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveReachabilityCheck(parent, child, this, visited);
-		return super.unfoldedLeave(parent, child, visited);
+		return super.unfoldingLeave(parent, child, visited);
 	}
 }

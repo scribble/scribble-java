@@ -7,12 +7,11 @@
 
 module Test;
 
+/*
 import Test2;
 
 type <java> "java.lang.String" from "rt.jar" as String;
 
-
-///*
 global protocol Foo(role A, role B)
 {
 	do Test2.Test2Proto(A, B);
@@ -50,6 +49,33 @@ global protocol Bar(role A, role B)
 }
 //*/
 
+
+global protocol Foo(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+}
+
+
+/*
+import Test2 as Bar;
+
+global protocol Foo(role A, role B)
+{
+	//do Test2.Test2Proto(A, B);
+	do Bar.Test2Proto(A, B);
+}
+//*/
 
 /*
 global protocol Foo(role A, role B)

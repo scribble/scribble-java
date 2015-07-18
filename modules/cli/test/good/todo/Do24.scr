@@ -1,0 +1,24 @@
+module good.parsing.globals.gdo.Do24;
+
+
+global protocol Do24(role A, role B)
+{
+	/*// TODO
+	interruptible 
+	{
+		l1() from A to B;
+		do Do24a(A, B);
+		//do Do24(A, B);  // Uncomment bad
+	}
+	with
+	{
+		
+	}*/
+}
+
+global protocol Do24a(role C, role D)
+{
+	l1() from C to D;
+	do Do24a(C, D);
+	//do Do24(C, D);  // Uncomment bad even if above line is commented
+}

@@ -1,0 +1,9 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import6.scr
+
+// Good for testing for potential loops in recursive imports when a module is bad
+
+module good.parsing.imports.Import06;
+
+import good.parsing.imports.Import06;
+

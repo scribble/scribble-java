@@ -43,7 +43,7 @@ public class TestWellFormedness {
 		this.hasErrors = hasErrors;
 	}
 
-	//@Parameters(name = "{0} bad={1}")
+	@Parameters(name = "{0} bad={1}")
 	public static Collection<Object[]> data() {
 		Harness harness = new Harness();
 		return harness.getAllExamples();

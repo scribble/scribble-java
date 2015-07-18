@@ -19,6 +19,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.MainContext;
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
@@ -28,6 +29,7 @@ import org.scribble.util.ScribUtil;
 import org.scribble.visit.Job;
 import org.scribble.visit.JobContext;
 
+// Maybe no point to be a Runnable
 public class CommandLine implements Runnable
 {
 	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, EP_API, OUTPUT }
@@ -72,9 +74,9 @@ public class CommandLine implements Runnable
 				outputEndpointApi(job);
 			}
 		}
-		catch (ScribbleException e)
+		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeScribbleException(e);
 		}
 	}
 	
