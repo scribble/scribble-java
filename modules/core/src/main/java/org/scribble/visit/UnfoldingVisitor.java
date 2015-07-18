@@ -15,7 +15,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.Env;
 
-// "Lazily unfolds" each recursion once (by reentering the original rec ast) on reaching a continue -- subclass should manually keep track of when to "stop" visiting, as visiting the "unfolding" will eventually reach the same continue (e.g. an unguarded choice-continue)
+// "Lazily unfolds" each recursion once (by reentering the original rec ast) on reaching a continue
+// N.B. so subclass should manually keep track of when to cut off visiting, as visiting the "unfolding" will eventually reach the same continue (e.g. an unguarded choice-continue) -- currently using pointer equality in e.g. InlinedWFChoice to cut off traversal on reaching the "same" choice again
 public abstract class UnfoldingVisitor<E extends Env<?>> extends InlinedProtocolVisitor<E>
 {
 	private Map<RecVar, Deque<ProtocolBlock<?>>> recs = new HashMap<>();  
@@ -45,10 +46,12 @@ public abstract class UnfoldingVisitor<E extends Env<?>> extends InlinedProtocol
 			if (!this.unfolded.contains(rv))
 			{
 				this.unfolded.add(rv);
-				// N.B. visiting the seq child of the block, to continue visiting under the existing env contexts; also visitChildren, not accept (so not doing enter/exit for the seq)
+				// Visiting the children of the seq of the block so as to visit *under the existing env contexts* (i.e. the top Visitor Env)
+				// N.B. not visiting a clone because subclasses currently using pointer equality to cut off traversal inside the unfolding (e.g. InlinedWFChoiceChecker)
+				// Also visitChildren, not accept (so not doing enter/exit for the seq)
 				// Also not returning the seq, just the original continue (cf. do visiting)
-				//this.recs.get(rv).seq.visitChildren(this);  // FIXME: ok to visit the same AST? any problems with dels/envs? -- maybe do proper equals/hashCode for AST classes
-				this.recs.get(rv).peek().seq.clone().visitChildren(this);  // Better to visit a clone?
+				//this.recs.get(rv).peek().seq.clone().visitChildren(this);  // No: e.g. InlinedWFChoiceChecker uses pointer equality to check if Choice already visited
+				this.recs.get(rv).peek().seq.visitChildren(this);  // FIXME: ok to visit the same AST? any problems with dels/envs? -- maybe do proper equals/hashCode for AST classes
 				this.unfolded.remove(rv);
 				return cont;
 			}

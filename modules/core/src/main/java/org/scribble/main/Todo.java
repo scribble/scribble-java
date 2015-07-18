@@ -15,6 +15,7 @@ package org.scribble.main;
 	//.. generalise dependencies for duplicate-role projection
 	//.. do projection should filter unused subprotocol role params -- also non role params? -- but scoped subprotocols may need extra name mangling
 
+	// pointer equality for testing if AST subtrees already visited in e.g. InlinedWFChoiceChecker (and thus UnfoldingVisitor) maybe not good
 	// move roledecllist etc projection to dels
 	// could parameterise recvar to be global/local
 

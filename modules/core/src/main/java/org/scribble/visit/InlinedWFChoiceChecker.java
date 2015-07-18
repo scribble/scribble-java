@@ -13,6 +13,9 @@ import org.scribble.visit.env.InlinedWFChoiceEnv;
 
 public class InlinedWFChoiceChecker extends UnfoldingVisitor<InlinedWFChoiceEnv>
 {
+	// N.B. using pointer equality for checking if choice previously visited
+	// So UnfoldingVisitor cannot visit a clone
+	// equals method identity not suitable unless Ast nodes record additional info like syntactic position
 	private Set<Choice<?>> visited = new HashSet<>();	
 	
 	public InlinedWFChoiceChecker(Job job)
