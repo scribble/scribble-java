@@ -38,9 +38,9 @@ public class AllTest {
 		for (String file : harness.getGoodExamples()) {
 			result.add(new Object[] { file, false });
 		}
-		/*for (String file : harness.getBadExamples()) {
+		for (String file : harness.getBadExamples()) {
 			result.add(new Object[] { file, true });
-		}*/
+		}
 		return result;
 	}
 
