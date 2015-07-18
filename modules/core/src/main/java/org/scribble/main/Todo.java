@@ -9,7 +9,7 @@ package org.scribble.main;
 	// bound qualified sig/type names (disambiguation check of qualified names, not just ambiguous)
 	// duplicate protocol/role decls etc
 	//.. do call type checking as well as basic name binding
-	// name collisions? e.g. message sig names and ops (M1 and M1() -- maybe ok)
+	// name collisions? e.g. message sig names and ops (M1 and M1() -- maybe ok) -- is rec var shadowing ok?
 
 	//.. guarded recursive subprotocols -- guarded recursion vars not needed? handled by projection -- subprotocols need unused roledecl check
 	//.. generalise dependencies for duplicate-role projection
