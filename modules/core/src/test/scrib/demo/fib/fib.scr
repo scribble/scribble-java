@@ -4,12 +4,13 @@
 
 //$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/validation/src/main/java/Test modules/validation/src/main/java/test/fib/Adder*.java -d test/doc/fib
 
-//$ bin/scribblec modules/core/src/test/scrib/demo/fib/Fib.scr -session Adder -api Adder C -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib -V
-
+//$ bin/scribblec modules/core/src/test/scrib/demo/fib/Fib.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib -session Adder -api Adder C -V
 
 module demo.fib.Fib;
 
+
 type <java> "java.lang.Integer" from "rt.jar" as Integer;
+
 
 global protocol Adder(role C, role S)
 {
