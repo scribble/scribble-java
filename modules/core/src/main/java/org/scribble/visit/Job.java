@@ -70,7 +70,7 @@ public class Job
 	{
 		debugPrintPass("Running " + SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this, fullname);
-		Map<String, String> map = sg.getSessionClass();  // filepath -> class source
+		Map<String, String> map = sg.generateSessionClass();  // filepath -> class source
 		return map;
 	}
 	
