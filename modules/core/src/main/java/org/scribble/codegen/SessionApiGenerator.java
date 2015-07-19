@@ -15,6 +15,16 @@ import org.scribble.visit.MessageIdCollector;
 
 public class SessionApiGenerator
 {
+	public static final String GPROTOCOLNAME_CLASS = "org.scribble.sesstype.name.GProtocolName";
+	public static final String OP_CLASS = "org.scribble.sesstype.name.Op";
+	public static final String ROLE_CLASS = "org.scribble.sesstype.name.Role";
+	public static final String SESSION_CLASS = "org.scribble.net.session.Session";
+	public static final String SESSIONTYPEFACTORY_CLASS = "org.scribble.sesstype.SessionTypeFactory";
+
+	private static final String IMPATH_FIELD = "IMPATH";
+	private static final String SOURCE_FIELD = "SOURCE";
+	private static final String PROTO_FIELD = "PROTO";
+
 	private final Job job;
 	private final GProtocolName gpn;  // full name
 
@@ -56,37 +66,36 @@ public class SessionApiGenerator
 		
 		this.cb.setName(simpname);
 		this.cb.setPackage(packname);
-
-		this.cb.addImports(
-				"java.util.LinkedList", "java.util.List", "org.scribble.net.session.Session",
-				"org.scribble.sesstype.name.GProtocolName", "org.scribble.sesstype.name.Op",
-				"org.scribble.sesstype.name.Role", "org.scribble.sesstype.SessionTypeFactory");
-
-		this.cb.addModifiers("public");
-		this.cb.setSuperClass("Session");
+		this.cb.addImports("java.util.LinkedList", "java.util.List");
+		this.cb.addModifiers(ClassBuilder.PUBLIC);
+		this.cb.setSuperClass(SessionApiGenerator.SESSION_CLASS);
 		
-		FieldBuilder fb1 = this.cb.newField("impath");
+		FieldBuilder fb1 = this.cb.newField(SessionApiGenerator.IMPATH_FIELD);
 		fb1.setType("List<String>");
-		fb1.addModifiers("public", "static", "final");
+		fb1.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
 		fb1.setExpression("new LinkedList<>()");
 
-		FieldBuilder fb2 = this.cb.newField("source");
+		FieldBuilder fb2 = this.cb.newField(SessionApiGenerator.SOURCE_FIELD);
 		fb2.setType("String");
-		fb2.addModifiers("public", "static", "final");
+		fb2.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
 		fb2.setExpression("\"getSource\"");
 
-		FieldBuilder fb3 = this.cb.newField("proto");
-		fb3.setType("GProtocolName");
-		fb3.addModifiers("public", "static", "final");
-		fb3.setExpression("SessionTypeFactory.parseGlobalProtocolName(\"" + gpn + "\")");
+		FieldBuilder fb3 = this.cb.newField(SessionApiGenerator.PROTO_FIELD);
+		fb3.setType(SessionApiGenerator.GPROTOCOLNAME_CLASS);
+		fb3.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
+		fb3.setExpression(SessionApiGenerator.SESSIONTYPEFACTORY_CLASS
+				+ ".parseGlobalProtocolName(\"" + gpn + "\")");
 
 		this.roles.keySet().stream().forEach((r) -> addRoleField(this.cb, r));
 		this.mids.keySet().stream().forEach((mid) -> addOpField(this.cb, mid));
 
 		MethodBuilder ctor = this.cb.newConstructor();
-		ctor.addModifiers("public");
+		ctor.addModifiers(ClassBuilder.PUBLIC);
 		ctor.setName(simpname);
-		ctor.addBodyLine("super(" + simpname + ".impath, " + simpname + ".source, " + simpname + ".proto);");
+		ctor.addBodyLine(ClassBuilder.SUPER + "("
+				+ simpname + "." + SessionApiGenerator.IMPATH_FIELD + ", "
+				+ simpname + "." + SessionApiGenerator.SOURCE_FIELD + ", "
+				+ simpname + "." + SessionApiGenerator.PROTO_FIELD + ");");
 	}
 
 	private static void addRoleField(ClassBuilder cb, Role role)
@@ -103,8 +112,8 @@ public class SessionApiGenerator
 	{
 		FieldBuilder fb = cb.newField(type);
 		fb.setType(type);
-		fb.addModifiers("public", "static", "final");
-		fb.setExpression("new " + type + "()");
+		fb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
+		fb.setExpression(ClassBuilder.NEW + " " + type + "()");
 	}
 	
 	private void constructOpClasses() throws ScribbleException
@@ -125,16 +134,16 @@ public class SessionApiGenerator
 		gpd.header.roledecls.getRoles().stream().forEach((r) -> this.roles.put(r, constructRoleClass(r))); 
 	}
 	
-	private static ClassBuilder constructOpClass(MessageId<?> mid)
-	{
-		return constructSingletonClass("Op", getOpClassName(mid));
-	}
-	
 	private static ClassBuilder constructRoleClass(Role r)
 	{
-		return constructSingletonClass("Role", getRoleClassName(r));
+		return constructSingletonClass(SessionApiGenerator.ROLE_CLASS, getRoleClassName(r));
 	}
 
+	private static ClassBuilder constructOpClass(MessageId<?> mid)
+	{
+		return constructSingletonClass(SessionApiGenerator.OP_CLASS, getOpClassName(mid));
+	}
+	
 	private static ClassBuilder constructSingletonClass(String superc, String name)
 	{
 		ClassBuilder cb = new ClassBuilder();
@@ -142,13 +151,13 @@ public class SessionApiGenerator
 		cb.setSuperClass(superc);
 
 		FieldBuilder fb = cb.newField("serialVersionUID");
-		fb.addModifiers("private", "static", "final");
+		fb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
 		fb.setType("long");
 		fb.setExpression("1L");
 		
 		MethodBuilder mb = cb.newConstructor();
-		mb.addModifiers("protected");
-		mb.addBodyLine("super(\"" + name + "\");");
+		mb.addModifiers(ClassBuilder.PROTECTED);
+		mb.addBodyLine(ClassBuilder.SUPER + "(\"" + name + "\");");
 
 		return cb;
 	}
@@ -171,6 +180,6 @@ public class SessionApiGenerator
 	public static String getOpClassName(MessageId<?> mid)
 	{
 		String s = mid.toString();
-		return (s.isEmpty() || s.charAt(0) < 65) ? "_" + s : s;
+		return (s.isEmpty() || s.charAt(0) < 65) ? "_" + s : s;  // Hacky?
 	}
 }

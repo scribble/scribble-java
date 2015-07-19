@@ -9,6 +9,13 @@ import java.util.stream.Collectors;
 
 public class ClassBuilder
 {
+	public static final String FINAL = "final";
+	public static final String NEW = "new";
+	public static final String PROTECTED = "protected";
+	public static final String PUBLIC = "public";
+	public static final String STATIC = "static";
+	public static final String SUPER = "super";
+	
 	private String packname;  // null for non- top-level class
 	private String name;
 	private String superc;  // null if none explicit
@@ -119,7 +126,6 @@ public class ClassBuilder
 		{
 			clazz += "\n";
 			clazz += this.fields.values().stream().map((fb) -> fb.generate()).collect(Collectors.joining("\n"));
-			clazz += ";";
 		}
 		if (this.ctors.size() > 0)
 		{
@@ -252,4 +258,3 @@ class MethodBuilder
 		return meth;
 	}
 }
-
