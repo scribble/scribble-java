@@ -43,12 +43,10 @@ public class EndpointApiGenerator
 	private final LProtocolName lpn;
 
 	private int counter = 1;
-	Map<EndpointState, String> classNames = new HashMap<>();
+
 	private String root = null;
-	//private Map<String, String> classes = new HashMap<>();  // class name -> class source
+	Map<EndpointState, String> classNames = new HashMap<>();
 	private Map<String, ClassBuilder> classes = new HashMap<>();  // class name key
-	
-	//private enum SocketType { SEND, RECEIVE, BRANCH, END, INIT }
 
 	public EndpointApiGenerator(Job job, GProtocolName fullname, Role role)
 	{
@@ -85,7 +83,7 @@ public class EndpointApiGenerator
 			constructClasses(succ);
 		}
 
-		// Depends on the above being done first
+		// Depends on the above being done first (for this.root)
 		String init = this.lpn.getSimpleName().toString() + "_" + 0;  // FIXME: factor out with newClassName
 		this.classes.put(init, constructInitClass(init));
 	}
@@ -202,6 +200,7 @@ public class EndpointApiGenerator
 						mb.addParameters(dtd.extName + " arg" + i++);
 					}
 				}
+
 				String ln = ClassBuilder.SUPER + ".writeScribMessage(role, "
                     		+ ClassBuilder.NEW + " " + SCRIBMESSAGE_CLASS + "(" + opref;
 				if (!a.payload.isEmpty())
@@ -210,7 +209,6 @@ public class EndpointApiGenerator
 					      		.mapToObj((i) -> "arg" + i).collect(Collectors.joining(", "));
 				}
 				ln += "));\n";
-
 				mb.addBodyLine(ln);
 			}
 			else //if (a.mid.isMessageSigName())
@@ -249,6 +247,7 @@ public class EndpointApiGenerator
 					mb.addParameters(BUFF_CLASS + "<? " + ClassBuilder.SUPER + " " + dtd.extName + "> arg" + i++);
 				}
 			}
+
 			mb.addBodyLine(SCRIBMESSAGE_CLASS + " m = " + ClassBuilder.SUPER + ".readScribMessage(" + getRole(a.peer) + ");");
 			if (!a.payload.isEmpty())
 			{
@@ -296,7 +295,7 @@ public class EndpointApiGenerator
 			first = false;
 		}
 		mb.addBodyLine("else {");
-		mb.addBodyLine(1, "throw new RuntimeException(\"Won't get here: \" + m.op);");
+		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " RuntimeException(\"Won't get here: \" + m.op);");
 		mb.addBodyLine("}");
 		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + next + "(this.ep, openum, m);");
 		
@@ -383,12 +382,14 @@ public class EndpointApiGenerator
 
 				mb.addBodyLine(ClassBuilder.SUPER + ".use();");
 				mb.addBodyLine("if (!this.m.op.equals(" + getOp(a.mid) + ")) {");
-				mb.addBodyLine("1, throw new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);");
+				mb.addBodyLine("1, throw " + ClassBuilder.NEW + " "
+							+ SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + this.m.op);");
 				mb.addBodyLine("}");
 				mb.addBodyLine("b.val = (" + msd.extName + ") m;");
 			}
 			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + next + "(this.ep);\n");
 		}
+
 		this.classes.put(name, cb);
 		return name;
 	}

@@ -29,6 +29,7 @@ public class ClassBuilder
 	private final List<MethodBuilder> ctors = new LinkedList<>();
 	private final List<MethodBuilder> methods = new LinkedList<>();
 	private final List<EnumBuilder> enums = new LinkedList<>();
+	// TODO classes -- check suitable modifiers etc on generation
 
 	public ClassBuilder()
 	{
@@ -240,7 +241,6 @@ class MethodBuilder
 	}
 	
 	// Each par is the String: type + " " + name
-  // Unsafe as public for constructors
 	public void addParameters(String... par)
 	{
 		this.pars.addAll(Arrays.asList(par));
