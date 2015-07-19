@@ -1,0 +1,22 @@
+module good.parsing.globals.gdo.Do20;
+
+
+global protocol Do20(role A, role B)
+{
+	do Do20Aux<l1(), l2()>(A, B);
+}
+
+global protocol Do20Aux<sig X, sig Y>(role C, role D)
+{
+	/*// TODO
+	interruptible
+	{
+		X from C to D;
+	}
+	with
+	{
+		//Y by C;  // FIXME: interrupt parameter
+		l2() by C;
+	}*/
+}
+

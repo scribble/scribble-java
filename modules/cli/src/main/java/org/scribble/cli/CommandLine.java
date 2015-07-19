@@ -36,7 +36,7 @@ public class CommandLine implements Runnable
 	
 	private final Map<Arg, String[]> args;  // Maps each flag to list of associated argument values
 	
-	public CommandLine(String[] args)
+	public CommandLine(String... args)
 	{
 		this.args = new CommandLineArgParser(args).getArgs();
 		if (!this.args.containsKey(Arg.MAIN))

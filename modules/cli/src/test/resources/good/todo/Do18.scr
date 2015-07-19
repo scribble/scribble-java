@@ -1,0 +1,22 @@
+module good.parsing.globals.gdo.Do18;
+
+
+global protocol Do18(role A, role B)
+{
+	do Do18a<l1(), l2()>(A, B);
+	//do Do18a<l1(), l1()>(A, B);  // Uncomment is bad
+}
+
+global protocol Do18a<sig X, sig Y>(role C, role D)
+{
+	/*// TODO
+	par
+	{
+		X from C to D;
+	}
+	and
+	{
+		Y from C to D;
+	}*/
+}
+
