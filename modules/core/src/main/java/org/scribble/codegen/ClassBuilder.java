@@ -19,6 +19,7 @@ public class ClassBuilder
 	private String packname;  // null for non- top-level class
 	private String name;
 	private String superc;  // null if none explicit
+	private final List<String> ifaces = new LinkedList<String>();
 
 	private final List<String> imports = new LinkedList<String>();
 	private final List<String> mods = new LinkedList<String>();
@@ -27,6 +28,7 @@ public class ClassBuilder
 	private final List<FieldBuilder> fields = new LinkedList<>();
 	private final List<MethodBuilder> ctors = new LinkedList<>();
 	private final List<MethodBuilder> methods = new LinkedList<>();
+	private final List<EnumBuilder> enums = new LinkedList<>();
 
 	public ClassBuilder()
 	{
@@ -41,6 +43,11 @@ public class ClassBuilder
 	public void setSuperClass(String superc)
 	{
 		this.superc = superc;
+	}
+	
+	public void addInterfaces(String... ifaces)
+	{
+		this.ifaces.addAll(Arrays.asList(ifaces));
 	}
 	
 	public void addImports(String... imports)
@@ -84,6 +91,14 @@ public class ClassBuilder
 		return mb;
 	}
 	
+	public EnumBuilder newEnum(String name)
+	{
+		EnumBuilder eb = new EnumBuilder();
+		eb.setName(name);
+		this.enums.add(eb);
+		return eb;
+	}
+	
 	public String generate()
 	{
 		String clazz = "";
@@ -111,7 +126,17 @@ public class ClassBuilder
 		{
 			clazz += " extends " + this.superc;
 		}
+		if (!this.ifaces.isEmpty())
+		{
+			clazz += " implements ";
+			clazz += this.ifaces.stream().collect(Collectors.joining(", "));
+		}
 		clazz += " {";
+		if (!this.enums.isEmpty())
+		{
+			clazz += "\n";
+			clazz += this.enums.stream().map((fb) -> fb.generate()).collect(Collectors.joining("\n"));
+		}
 		if (!this.fields.isEmpty())
 		{
 			clazz += "\n";
@@ -134,14 +159,20 @@ public class ClassBuilder
 
 class FieldBuilder
 {
+	private String name;
+
 	private List<String> mods = new LinkedList<>();
 	private String type;
-	private String name;
 	private String expr;  // null if none
 
-	public FieldBuilder()
+	protected FieldBuilder()
 	{
 		
+	}
+	
+	protected void setName(String name)
+	{
+		this.name = name;
 	}
 	
 	public void addModifiers(String... mods)
@@ -152,11 +183,6 @@ class FieldBuilder
 	public void setType(String type)
 	{
 		this.type = type;
-	}
-	
-	protected void setName(String name)
-	{
-		this.name = name;
 	}
 	
 	protected void setExpression(String val)
@@ -185,16 +211,22 @@ class FieldBuilder
 
 class MethodBuilder
 {
+	private String name;
+
 	private List<String> mods = new LinkedList<>();
 	private String ret;  // null for constructor -- void must be set explicitly
-	private String name;
 	private List<String> pars = new LinkedList<>();
 	private List<String> exceptions = new LinkedList<>();
 	private List<String> body = new LinkedList<>();
 
-	public MethodBuilder()
+	protected MethodBuilder()
 	{
 		
+	}
+	
+	protected void setName(String name)
+	{
+		this.name = name;
 	}
 	
 	public void addModifiers(String... mods)
@@ -205,11 +237,6 @@ class MethodBuilder
 	public void setReturn(String ret)
 	{
 		this.ret = ret;
-	}
-	
-	protected void setName(String name)
-	{
-		this.name = name;
 	}
 	
 	// Each par is the String: type + " " + name
@@ -266,5 +293,59 @@ class MethodBuilder
 		}
 		meth += "\n\t}";
 		return meth;
+	}
+}
+
+class EnumBuilder
+{
+	private String name;
+
+	private List<String> mods = new LinkedList<>();
+	private final List<String> ifaces = new LinkedList<String>();
+	private final List<String> vals = new LinkedList<String>();
+
+	protected EnumBuilder()
+	{
+		
+	}
+	
+	protected void setName(String name)
+	{
+		this.name = name;
+	}
+	
+	public void addModifiers(String... mods)
+	{
+		this.mods.addAll(Arrays.asList(mods));
+	}
+	
+	public void addInterfaces(String... ifaces)
+	{
+		this.ifaces.addAll(Arrays.asList(ifaces));
+	}
+	
+	public void addValues(String... vals)
+	{
+		this.vals.addAll(Arrays.asList(vals));
+	}
+	
+	public String generate()
+	{
+		String enun = "";
+		if (!this.mods.isEmpty())
+		{
+			enun += this.mods.stream().collect(Collectors.joining(" "));
+			enun += " ";
+		}
+		enun += "enum " + this.name;
+		if (!this.ifaces.isEmpty())
+		{
+			enun += " implements ";
+			enun += this.ifaces.stream().collect(Collectors.joining(", "));
+		}
+		enun += " {\n";
+		enun += "\t" + this.vals.stream().collect(Collectors.joining(", "));
+		enun += "\n}";
+		return enun;
 	}
 }

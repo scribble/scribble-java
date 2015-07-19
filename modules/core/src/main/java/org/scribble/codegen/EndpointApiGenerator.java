@@ -1,7 +1,6 @@
 package org.scribble.codegen;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
-import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -32,6 +30,7 @@ public class EndpointApiGenerator
 	public static final String SCRIBMESSAGE_CLASS = "org.scribble.net.ScribMessage";
 	public static final String SCRIBBLERUNTIMEEXCEPTION_CLASS = "org.scribble.main.ScribbleRuntimeException";
 	public static final String BUFF_CLASS = "org.scribble.net.Buff";
+	public static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
 
 	public static final String INITSOCKET_CLASS = "org.scribble.net.InitSocket";
 	public static final String SENDSOCKET_CLASS = "org.scribble.net.SendSocket";
@@ -41,7 +40,6 @@ public class EndpointApiGenerator
 	
 	private final Job job;
 	private final GProtocolName gpn;  // full name
-	private final Role role;
 	private final LProtocolName lpn;
 
 	private int counter = 1;
@@ -56,12 +54,22 @@ public class EndpointApiGenerator
 	{
 		this.job = job;
 		this.gpn = fullname;
-		this.role = role;
 		this.lpn = Projector.projectFullProtocolName(fullname, role);
 
 		EndpointState init = job.getContext().getEndointGraph(fullname, role).init;
 		generateClassNames(init);
 		constructClasses(init);
+	}
+	
+	public Map<String, String> generateClasses()
+	{
+		Map<String, String> map = new HashMap<String, String>();
+		for (String s : this.classes.keySet())
+		{
+			String path = SessionApiGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java";
+			map.put(path, this.classes.get(s).generate());
+		}
+		return map;
 	}
 
 	private void constructClasses(EndpointState ps)
@@ -96,9 +104,10 @@ public class EndpointApiGenerator
 		
 		MethodBuilder mb2 = cb.newMethod("init");
 		mb2.setReturn(this.root);
-		mb1.addModifiers(ClassBuilder.PUBLIC);
-		mb1.addBodyLine(ClassBuilder.SUPER + ".use();");
-		mb1.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(this.ep);");
+		mb2.addModifiers(ClassBuilder.PUBLIC);
+		mb2.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
+		mb2.addBodyLine(ClassBuilder.SUPER + ".use();");  // Factor out
+		mb2.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(this.ep);");
 
 		return cb;
 	}
@@ -237,7 +246,7 @@ public class EndpointApiGenerator
 				for (PayloadType<?> pt : a.payload.elems)
 				{
 					DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt); // TODO: if not DataType  // FIXME: maybe not main
-					mb.addParameters(BUFF_CLASS + "<? super " + dtd.extName + "> arg" + i++);
+					mb.addParameters(BUFF_CLASS + "<? " + ClassBuilder.SUPER + " " + dtd.extName + "> arg" + i++);
 				}
 			}
 			mb.addBodyLine(SCRIBMESSAGE_CLASS + " m = " + ClassBuilder.SUPER + ".readScribMessage(" + getRole(a.peer) + ");");
@@ -266,58 +275,102 @@ public class EndpointApiGenerator
 	{
 		JobContext jc = this.job.getContext();
 		Module main = jc.getMainModule();
-		// FIXME: factor out
-		String tmp = newClassName();
-		String clazz = "";
-		clazz += "package " + getPackageName() + ";\n";
-		clazz += "\n";
-		clazz += makeImports(ps);
-		clazz += "\n";
-		clazz += "public class " + tmp + " extends " + SOCKET_CLASSES.get(SocketType.RECEIVE) + " {\n";
-		clazz += "\n";
-		clazz += "\tpublic final " + this.classNames.get(ps) + "." + this.classNames.get(ps) + "Enum op;\n";
-		clazz += "\tprivate final ScribMessage m;\n";
-		//clazz += generateConstructor(tmp);
-		clazz += "\tprotected " + tmp + "(SessionEndpoint se, " + this.classNames.get(ps) + "." + this.classNames.get(ps) + "Enum op, ScribMessage m) {\n";
-		clazz += "\t\tsuper(se);\n";
-		clazz += "\t\tthis.op = op;\n";
-		clazz += "\t\tthis.m = m;\n";
-		clazz += "\t}";
-		clazz += "\n\n";
+
+		String next = constructBranchReceiveClass(ps, main);
+		
+		MethodBuilder mb = cb.newMethod("branch");
+		mb.setReturn(next);
+		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
+		
+		Role peer = ps.getAcceptable().iterator().next().peer;
+		mb.addBodyLine(SCRIBMESSAGE_CLASS + " m = " + ClassBuilder.SUPER + ".readScribMessage(" + getRole(peer) + ");");
+		mb.addBodyLine(this.classNames.get(ps) + "Enum openum;");
+
+		boolean first = true;
+		for (IOAction a : ps.getAcceptable())
+		{
+			mb.addBodyLine(((first) ? "" : "else ") + "if (m.op.equals(" + getOp(a.mid) + ")) {");
+			mb.addBodyLine(1, "openum = " + this.classNames.get(ps) + "Enum." + SessionApiGenerator.getOpClassName(a.mid) + ";");
+			mb.addBodyLine("}");
+			first = false;
+		}
+		mb.addBodyLine("else {");
+		mb.addBodyLine(1, "throw new RuntimeException(\"Won't get here: \" + m.op);");
+		mb.addBodyLine("}");
+		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + next + "(this.ep, openum, m);");
+		
+		EnumBuilder eb = cb.newEnum(this.classNames.get(ps) + "Enum");
+		eb.addModifiers(ClassBuilder.PUBLIC);
+		eb.addInterfaces(OPENUM_INTERFACE);
+
+		ps.getAcceptable().stream().forEach((a) ->
+				eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+	}
+
+	// FIXME: factor with regular receive
+	private String constructBranchReceiveClass(EndpointState ps, Module main)
+	{
+		String name = newClassName();
+		
+		ClassBuilder cb = new ClassBuilder();
+		cb.setName(name);
+		cb.setPackage(getPackageName());
+		makeImports(cb, ps);
+		cb.addModifiers(ClassBuilder.PUBLIC);
+		cb.setSuperClass(RECEIVESOCKET_CLASS);
+		
+		FieldBuilder fb1 = cb.newField("op");
+		fb1.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
+		fb1.setType(this.classNames.get(ps) + "." + this.classNames.get(ps) + "Enum");
+		
+		FieldBuilder fb2 = cb.newField("m");
+		fb2.addModifiers(ClassBuilder.PRIVATE, ClassBuilder.FINAL);
+		fb2.setType(SCRIBMESSAGE_CLASS);
+		
+		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + " se ",
+				this.classNames.get(ps) + "." + this.classNames.get(ps) + "Enum op", SCRIBMESSAGE_CLASS + " m");
+		ctor.addModifiers(ClassBuilder.PROTECTED);
+		ctor.addBodyLine(ClassBuilder.SUPER + "(se);");
+		ctor.addBodyLine("this.op = op;");
+		ctor.addBodyLine("this.m = m;");
+
 		for (IOAction a : ps.getAcceptable())
 		{
 			EndpointState succ = ps.accept(a);
 			String next = this.classNames.get(succ);
+			
+			MethodBuilder mb = cb.newMethod("receive");
+			mb.setReturn(next);
+			mb.addModifiers(ClassBuilder.PUBLIC);
+			mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
+			
 			if (a.mid.isOp())
 			{
 				// FIXME: problem if package and protocol have the same name
-				clazz += "\tpublic " + next + " receive(" + SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op";
-				//clazz += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
+				mb.addParameters(SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op");
 				if (!a.payload.isEmpty())
 				{
 					int i = 1;
-					for (PayloadType<? extends Kind> pt : a.payload.elems)
+					for (PayloadType<?> pt : a.payload.elems)
 					{
-						DataType dt = (DataType) pt;  // TODO: if not DataType
-						DataTypeDecl dtd = main.getDataTypeDecl(dt);
-						//clazz += ", Buff<" + dtd.extName + "> arg" + i++;
-						clazz += ", Buff<? super " + dtd.extName + "> arg" + i++;
+						DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
+						mb.addParameters(BUFF_CLASS + "<? " + ClassBuilder.SUPER + " " + dtd.extName + "> arg" + i++);
 					}
 				}
-				clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-				//clazz += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
-				clazz += "\t\tsuper.use();\n";
-				clazz += "\t\tif (!this.m.op.equals(" + getOp(a.mid) + ")) {\n";
-				clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);\n";
-				clazz += "\t\t}\n";
+
+				mb.addBodyLine(ClassBuilder.SUPER + ".use();");
+				mb.addBodyLine("if (!this.m.op.equals(" + getOp(a.mid) + ")) {");
+				mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " "
+							+ SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + this.m.op);");
+				mb.addBodyLine("}");
 				if (!a.payload.isEmpty())
 				{
 					int i = 1;
-					for (PayloadType<? extends Kind> pt : a.payload.elems)
+					for (PayloadType<?> pt : a.payload.elems)
 					{
-						DataType dt = (DataType) pt;  // TODO: if not DataType
-						DataTypeDecl dtd = main.getDataTypeDecl(dt);
-						clazz += "\t\targ" + i + ".val = (" + dtd.extName + ") m.payload[" + (i++ - 1) +"];\n";
+						DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
+						mb.addBodyLine("arg" + i + ".val = (" + dtd.extName + ") m.payload[" + (i++ - 1) +"];");
 					}
 				}
 			}
@@ -325,58 +378,19 @@ public class EndpointApiGenerator
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 				// FIXME: problem if package and protocol have the same name
-				clazz += "\tpublic " + next + " receive(" + SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op";
-				//clazz += ", Buff<" + msd.extName + "> b";
-				clazz += ", Buff<? super " + msd.extName + "> b";
-				clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-				clazz += "\t\tsuper.use();\n";
-				clazz += "\t\tif (!this.m.op.equals(" + getOp(a.mid) + ")) {\n";
-				clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);\n";
-				clazz += "\t\t}\n";
-				clazz += "\t\tb.val = (" + msd.extName + ") m;\n";
-			}
-			clazz += "\t\treturn new " + next + "(this.ep);\n";
-			clazz += "\t}\n";
-		}
-		clazz += "}";
-		this.classes.put(tmp, clazz);
-		
-		Iterator<IOAction> as = ps.getAcceptable().iterator();
-		IOAction first = as.next();
-		String next = tmp;
-		method += "\tpublic " + next + " branch() throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-		method += "\t\tScribMessage m = super.readScribMessage(" + getRole(first.peer) + ");\n";
-		method += "\t\t" + this.classNames.get(ps) + "Enum openum;\n";
-		method += "\t\tif (m.op.equals(" + getOp(first.mid) + ")) {\n";
-		//method += "\t\t\treturn " + this.classNames.get(ps) + "Enum." + first.mid.toString() + ";\n";
-		method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionApiGenerator.getOpClassName(first.mid) + ";\n";
-		method += "\t\t}\n";
-		for (; as.hasNext(); )
-		{
-			IOAction a = as.next();
-			method += "\t\telse if (m.op.equals(" + getOp(a.mid) + ")) {\n";
-			//method += "\t\t\treturn " + this.classNames.get(ps) + "Enum." + a.mid.toString() + ";\n";
-			method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionApiGenerator.getOpClassName(a.mid) + ";\n";
-			method += "\t\t}\n";
-		}
-		method += "\t\telse {\n";
-		method += "\t\t\tthrow new RuntimeException(\"Won't get here: \" + m.op);\n";
-		method += "\t\t}\n";
-		method += "\t\treturn new " + next + "(this.ep, openum, m);\n";
-		method += "\t}\n";
+				mb.addParameters(SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op");
+				mb.addParameters(BUFF_CLASS + "<? " + ClassBuilder.SUPER + " " + msd.extName + "> b");
 
-		as = ps.getAcceptable().iterator();
-		first = as.next();
-		method += "\n";
-		method += "\tpublic enum " + this.classNames.get(ps) + "Enum implements org.scribble.net.session.OpEnum { ";   // FIXME: should be in methods
-		method += SessionApiGenerator.getOpClassName(first.mid);
-		for (; as.hasNext(); )
-		{
-			IOAction a = as.next();
-			method += ", " + SessionApiGenerator.getOpClassName(a.mid);
+				mb.addBodyLine(ClassBuilder.SUPER + ".use();");
+				mb.addBodyLine("if (!this.m.op.equals(" + getOp(a.mid) + ")) {");
+				mb.addBodyLine("1, throw new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);");
+				mb.addBodyLine("}");
+				mb.addBodyLine("b.val = (" + msd.extName + ") m;");
+			}
+			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + next + "(this.ep);\n");
 		}
-		method += "; }\n";
-		return method;
+		this.classes.put(name, cb);
+		return name;
 	}
 
 	private String getPackageName() // Java output package (not Scribble package)
@@ -388,12 +402,12 @@ public class EndpointApiGenerator
 	
 	private String getOp(MessageId<?> mid)
 	{
-		return SessionApiGenerator.getSessionClassName(gpn) + "." + SessionApiGenerator.getOpClassName(mid);
+		return SessionApiGenerator.getSessionClassName(this.gpn) + "." + SessionApiGenerator.getOpClassName(mid);
 	}
 	
 	private String getRole(Role role)
 	{
-		return SessionApiGenerator.getSessionClassName(gpn) + "." + role.toString();
+		return SessionApiGenerator.getSessionClassName(this.gpn) + "." + role.toString();
 	}
 	
 	private String getSocketClass(EndpointState ps)
@@ -418,32 +432,6 @@ public class EndpointApiGenerator
 		}
 	}
 	
-	public Map<String, String> getClasses()
-	{
-		Map<String, String> map = new HashMap<String, String>();
-		for (String s : this.classes.keySet())
-		{
-			map.put(SessionApiGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java", this.classes.get(s).generate());
-		}
-		return map;
-	}
-	
-	private String newClassName()
-	{
-		String sn = this.lpn.getSimpleName().toString();
-		return sn + "_" + nextCount();
-	}
-	
-	private int nextCount()
-	{
-		return this.counter++;
-	}
-	
-	/*private String getSessionIncompleteExceptionName()
-	{
-		return this.gpn.toString().replace('.', '_') + "_" + this.role + "IncompleteException";
-	}*/
-	
 	private void generateClassNames(EndpointState ps)
 	{
 		if (this.classNames.containsKey(ps))// || ps.isTerminal())
@@ -460,5 +448,16 @@ public class EndpointApiGenerator
 		{
 			generateClassNames(succ);
 		}
+	}
+	
+	private String newClassName()
+	{
+		String sn = this.lpn.getSimpleName().toString();
+		return sn + "_" + nextCount();
+	}
+	
+	private int nextCount()
+	{
+		return this.counter++;
 	}
 }
