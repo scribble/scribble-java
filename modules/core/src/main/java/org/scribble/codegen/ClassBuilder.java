@@ -1,18 +1,18 @@
 package org.scribble.codegen;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ClassBuilder
 {
 	public static final String FINAL = "final";
 	public static final String NEW = "new";
+	public static final String PRIVATE = "private";
 	public static final String PROTECTED = "protected";
 	public static final String PUBLIC = "public";
+	public static final String RETURN = "return";
 	public static final String STATIC = "static";
 	public static final String SUPER = "super";
 	
@@ -24,9 +24,9 @@ public class ClassBuilder
 	private final List<String> mods = new LinkedList<String>();
 	
 	// Maybe generalise as members (e.g. for classes)
-	private final Map<String, FieldBuilder> fields = new HashMap<>();
-	private final Map<List<String>, MethodBuilder> ctors = new HashMap<>();
-	private final Map<String, MethodBuilder> methods = new HashMap<>();
+	private final List<FieldBuilder> fields = new LinkedList<>();
+	private final List<MethodBuilder> ctors = new LinkedList<>();
+	private final List<MethodBuilder> methods = new LinkedList<>();
 
 	public ClassBuilder()
 	{
@@ -62,7 +62,7 @@ public class ClassBuilder
 	{
 		FieldBuilder fb = new FieldBuilder();
 		fb.setName(name);
-		this.fields.put(name, fb);
+		this.fields.add(fb);
 		return fb;
 	}
 	
@@ -72,27 +72,17 @@ public class ClassBuilder
 		MethodBuilder mb = new MethodBuilder();
 		mb.setName(this.name);
 		mb.addParameters(pars);
-		this.ctors.put(Arrays.asList(pars), mb);
+		this.ctors.add(mb);
 		return mb;
 	}
-	
-	/*public MethodBuilder getConstructor(List<String> pars)
-	{
-		return this.methods.getConstructor(pars);
-	}*/
 	
 	public MethodBuilder newMethod(String name)
 	{
 		MethodBuilder mb = new MethodBuilder();
 		mb.setName(name);
-		this.methods.put(name, mb);
+		this.methods.add(mb);
 		return mb;
 	}
-	
-	/*public MethodBuilder getMethod(String name)
-	{
-		return this.methods.getMethod(name);
-	}*/
 	
 	public String generate()
 	{
@@ -101,17 +91,17 @@ public class ClassBuilder
 		{
 			clazz += "package " + packname + ";";
 		}
-		if (this.imports.size() > 0)
+		if (!this.imports.isEmpty())
 		{
 			clazz += "\n\nimport ";
 			clazz += this.imports.stream().collect(Collectors.joining(";\nimport "));
 			clazz += ";";
 		}
-		if (this.packname != null || this.imports.size() > 0)
+		if (this.packname != null || !this.imports.isEmpty())
 		{
 			clazz += "\n\n";
 		}
-		if (this.mods.size() > 0)
+		if (!this.mods.isEmpty())
 		{
 			clazz += this.mods.stream().collect(Collectors.joining(" "));
 			clazz += " ";
@@ -122,20 +112,20 @@ public class ClassBuilder
 			clazz += " extends " + this.superc;
 		}
 		clazz += " {";
-		if (this.fields.size() > 0)
+		if (!this.fields.isEmpty())
 		{
 			clazz += "\n";
-			clazz += this.fields.values().stream().map((fb) -> fb.generate()).collect(Collectors.joining("\n"));
+			clazz += this.fields.stream().map((fb) -> fb.generate()).collect(Collectors.joining("\n"));
 		}
-		if (this.ctors.size() > 0)
+		if (!this.ctors.isEmpty())
 		{
 			clazz += "\n\n";
-			clazz += this.ctors.values().stream().map((mb) -> mb.generate()).collect(Collectors.joining("\n\n"));
+			clazz += this.ctors.stream().map((mb) -> mb.generate()).collect(Collectors.joining("\n\n"));
 		}
-		if (this.methods.size() > 0)
+		if (!this.methods.isEmpty())
 		{
 			clazz += "\n\n";
-			clazz += this.methods.values().stream().map((mb) -> mb.generate()).collect(Collectors.joining("\n\n"));
+			clazz += this.methods.stream().map((mb) -> mb.generate()).collect(Collectors.joining("\n\n"));
 		}
 		clazz += "\n}";
 		return clazz;
@@ -178,7 +168,7 @@ class FieldBuilder
 	{
 		String field = "";
 		field += "\t";
-		if (this.mods.size() > 0)
+		if (!this.mods.isEmpty())
 		{
 			field += this.mods.stream().collect(Collectors.joining(" "));
 			field += " ";
@@ -199,6 +189,7 @@ class MethodBuilder
 	private String ret;  // null for constructor -- void must be set explicitly
 	private String name;
 	private List<String> pars = new LinkedList<>();
+	private List<String> exceptions = new LinkedList<>();
 	private List<String> body = new LinkedList<>();
 
 	public MethodBuilder()
@@ -227,9 +218,23 @@ class MethodBuilder
 	{
 		this.pars.addAll(Arrays.asList(par));
 	}
+
+	public void addExceptions(String... exceptions)
+	{
+		this.exceptions.addAll(Arrays.asList(exceptions));
+	}
 	
 	public void addBodyLine(String ln)
 	{
+		this.body.add(ln);
+	}
+
+	public void addBodyLine(int i, String ln)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			ln = "\t" + ln;
+		}
 		this.body.add(ln);
 	}
 	
@@ -237,7 +242,7 @@ class MethodBuilder
 	{
 		String meth = "";
 		meth += "\t";
-		if (this.mods.size() > 0)
+		if (!this.mods.isEmpty())
 		{
 			meth += this.mods.stream().collect(Collectors.joining(" "));
 			meth += " ";
@@ -248,8 +253,13 @@ class MethodBuilder
 		}
 		meth += name + "(";
 		meth += this.pars.stream().collect(Collectors.joining(", "));
-		meth += (") {\n");
-		if (this.body.size() > 0)
+		meth += ")";
+		if (!this.exceptions.isEmpty())
+		{
+			meth += " throws " + this.exceptions.stream().collect(Collectors.joining(", "));
+		}
+		meth += " {\n";
+		if (!this.body.isEmpty())
 		{
 			meth += "\t\t";
 			meth += this.body.stream().collect(Collectors.joining("\n\t\t"));

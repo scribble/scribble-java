@@ -144,20 +144,20 @@ public class SessionApiGenerator
 		return constructSingletonClass(SessionApiGenerator.OP_CLASS, getOpClassName(mid));
 	}
 	
-	private static ClassBuilder constructSingletonClass(String superc, String name)
+	private static ClassBuilder constructSingletonClass(String superc, String type)
 	{
 		ClassBuilder cb = new ClassBuilder();
-		cb.setName(name);
+		cb.setName(type);
 		cb.setSuperClass(superc);
 
 		FieldBuilder fb = cb.newField("serialVersionUID");
-		fb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
+		fb.addModifiers(ClassBuilder.PRIVATE, ClassBuilder.STATIC, ClassBuilder.FINAL);
 		fb.setType("long");
 		fb.setExpression("1L");
 		
 		MethodBuilder mb = cb.newConstructor();
 		mb.addModifiers(ClassBuilder.PROTECTED);
-		mb.addBodyLine(ClassBuilder.SUPER + "(\"" + name + "\");");
+		mb.addBodyLine(ClassBuilder.SUPER + "(\"" + type + "\");");
 
 		return cb;
 	}
