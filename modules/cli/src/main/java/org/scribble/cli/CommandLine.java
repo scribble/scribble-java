@@ -155,7 +155,9 @@ public class CommandLine implements Runnable
 	{
 		boolean debug = this.args.containsKey(Arg.VERBOSE);
 		Path mainpath = CommandLine.parseMainPath(this.args.get(Arg.MAIN)[0]);
-		List<Path> impaths = this.args.containsKey(Arg.PATH) ? CommandLine.parseImportPaths(this.args.get(Arg.PATH)[0]) : Collections.emptyList();
+		List<Path> impaths = this.args.containsKey(Arg.PATH)
+				? CommandLine.parseImportPaths(this.args.get(Arg.PATH)[0])
+				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		return new MainContext(debug, locator, mainpath);
 	}

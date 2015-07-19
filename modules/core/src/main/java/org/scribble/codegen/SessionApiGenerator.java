@@ -2,6 +2,7 @@ package org.scribble.codegen;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -18,18 +19,91 @@ public class SessionApiGenerator
 {
 	private final Job job;
 	private final GProtocolName gpn;  // full name
-	private final String clazz;
+	//private final String clazz;
 	private final Map<MessageId<?>, String> mids = new HashMap<>();
 	private final Map<Role, String> roles = new HashMap<>();
+	
+	private final Map<String, ClassBuilder> classes = new HashMap<>();
 
 	public SessionApiGenerator(Job job, GProtocolName fullname) throws ScribbleException
 	{
 		this.job = job;
 		this.gpn = fullname;
+		
+		ClassBuilder cb = new ClassBuilder();
+		String packname = getPackageName(this.gpn);
+		String simpname = getSessionClassName(this.gpn);
+		String typename = packname + "." + simpname;
+		cb.setName(simpname);
+		this.classes.put(typename, cb);
 
-		generateOps();
 		generateRoles();
-		this.clazz = generate();
+		generateOps();
+		//this.clazz = generate();
+		construct();
+	}
+	
+	private void construct()
+	{
+		JobContext jc = this.job.getContext();
+		GProtocolDecl gpd = (GProtocolDecl) jc.getModule(gpn.getPrefix()).getProtocolDecl(this.gpn.getSimpleName());
+		String packname = getPackageName(this.gpn);
+		String simpname = getSessionClassName(this.gpn);
+		String fullname = packname + "." + simpname;  // Factor out with constructor
+		
+		ClassBuilder cb = this.classes.get(fullname);
+		
+		cb.setPackage(packname);
+
+		cb.addImports(
+				"java.util.LinkedList", "java.util.List", "org.scribble.net.session.Session",
+				"org.scribble.sesstype.name.GProtocolName", "org.scribble.sesstype.name.Op",
+				"org.scribble.sesstype.name.Role", "org.scribble.sesstype.SessionTypeFactory");
+
+		cb.addModifiers("public");
+		cb.setSuperClass("Session");
+		
+		FieldBuilder fb1 = cb.newField("impath");
+		fb1.setType("List<String>");
+		fb1.addModifiers("public", "static", "final");
+		fb1.setExpression("new LinkedList<>()");
+
+		FieldBuilder fb2 = cb.newField("source");
+		fb2.setType("String");
+		fb2.addModifiers("public", "static", "final");
+		fb2.setExpression("\"getSource\"");
+
+		FieldBuilder fb3 = cb.newField("proto");
+		fb3.setType("GProtocolName");
+		fb3.addModifiers("public", "static", "final");
+		fb3.setExpression("SessionTypeFactory.parseGlobalProtocolName(\"" + gpn + "\")");
+
+		for (Role role : gpd.header.roledecls.getRoles())
+		{
+			generateRole(cb, role);
+		}
+
+		for (MessageId<?> mid : this.mids.keySet())
+		{
+			generateOp(cb, mid);
+		}
+
+		MethodBuilder ctor = cb.newConstructor();
+		ctor.addModifiers("public");
+		ctor.setName(simpname);
+		ctor.addBodyLine("super(" + simpname + ".impath, " + simpname + ".source, " + simpname + ".proto);");
+
+		/*for (String rc : this.roles.values())
+		{
+			clazz += "\n\n";
+			clazz += rc;
+		}
+		for (String s : this.mids.values())
+		{
+			clazz += "\n\n";
+			clazz += s;
+		}*/
+		//return cb.generate();
 	}
 	
 	private void generateOps() throws ScribbleException
@@ -42,28 +116,28 @@ public class SessionApiGenerator
 		gpd.accept(coll);
 		for (MessageId<?> mid : coll.getNames())
 		{
-			this.mids.put(mid, generateOpClass(mid));
+			//this.mids.put(mid, generateOpClass(mid));
+			this.mids.put(mid, null);
+			generateOpClass(mid);
 		}
 	}
 	
-	private String generateOpClass(MessageId<?> mid)
+	private void generateOpClass(MessageId<?> mid)
 	{
-		String s = getOpClassName(mid);
+		ClassBuilder cb = new ClassBuilder();
+		String name = getOpClassName(mid);
+		cb.setName(name);
+		cb.setSuperClass("Op");
+		this.classes.put(name, cb);
 
-		String clazz = "";
-		//clazz += "package " + getPackageName(gpn) + ";\n";
-		//clazz += "\n";
-		//clazz += "import org.scribble.sesstype.name.Op;\n";
-		//clazz += "\n";
-		//clazz += "public class " + s + " extends Op {\n";
-		clazz += "class " + s + " extends Op {\n";
-		clazz += "\tprivate static final long serialVersionUID = 1L;\n";
-		clazz += "\n";
-		clazz += "\tprotected " + s + "() {\n";
-		clazz += "\t\tsuper(\"" + mid + "\");\n";
-		clazz += "\t}\n";
-		clazz += "}";
-		return clazz;
+		FieldBuilder fb = cb.newField("serialVersionUID");
+		fb.addModifiers("private", "static", "final");
+		fb.setType("long");
+		fb.setExpression("1L");
+		
+		MethodBuilder mb = cb.newConstructor();
+		mb.addModifiers("protected");
+		mb.addBodyLine("super(\"" + mid + "\");");
 	}
 	
 	public static String getOpClassName(MessageId<?> mid)
@@ -84,23 +158,27 @@ public class SessionApiGenerator
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(sn);
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
-			this.roles.put(r, generateRoleClass(r));
+			//this.roles.put(r, generateRoleClass(r));
+			generateRoleClass(r);
 		}
 	}
 	
-	private String generateRoleClass(Role r)
+	private void generateRoleClass(Role r)
 	{
-		String s = getRoleClassName(r);
+		ClassBuilder cb = new ClassBuilder();
+		String name = getRoleClassName(r);
+		cb.setName(name);
+		cb.setSuperClass("Role");
+		this.classes.put(name, cb);
 
-		String clazz = "";
-		clazz += "class " + s + " extends Role {\n";
-		clazz += "\tprivate static final long serialVersionUID = 1L;\n";
-		clazz += "\n";
-		clazz += "\tprotected " + s + "() {\n";
-		clazz += "\t\tsuper(\"" + r + "\");\n";
-		clazz += "\t}\n";
-		clazz += "}";
-		return clazz;
+		FieldBuilder fb = cb.newField("serialVersionUID");
+		fb.addModifiers("private", "static", "final");
+		fb.setType("long");
+		fb.setExpression("1L");
+		
+		MethodBuilder mb = cb.newConstructor();
+		mb.addModifiers("protected");
+		mb.addBodyLine("super(\"" + r + "\");");
 	}
 
 	public static String getRoleClassName(Role r)
@@ -111,9 +189,29 @@ public class SessionApiGenerator
 	//public String getSessionClass()
 	public Map<String, String> getSessionClass()
 	{
-		String path = getPackageName(this.gpn).replace('.', '/') + "/" + getSessionClassName(this.gpn) + ".java";
+		String simpname = getSessionClassName(this.gpn);
+		String fullname = getPackageName(this.gpn) + "." + simpname;
+		String path = getPackageName(this.gpn).replace('.', '/') + "/" + simpname + ".java";
 		Map<String, String> map = new HashMap<>();
-		map.put(path, this.clazz);
+		
+		String res = this.classes.get(fullname).generate();
+		//res += "\n\n" + this.classes.keySet().stream()
+				/*.collect(Collector.of(
+					StringBuilder::new, 
+					(sb, s) -> { if (!s.equals(fullname)) { sb.append(this.classes.get(s).generate()).append("\n\n"); } },
+					StringBuilder::append,
+					StringBuilder::toString));*/
+				/*.filter((k) -> !k.equals(fullname))
+				  .map((k) -> this.classes.get(k).generate()).collect(Collectors.joining("\n\n"));*/
+		for (Entry<String, ClassBuilder> e : this.classes.entrySet())
+		{
+			if (!e.getKey().equals(fullname))
+			{
+				res += "\n\n" + e.getValue().generate();
+			}
+		}
+		
+		map.put(path, res);
 		return map;
 	}
 
@@ -132,68 +230,25 @@ public class SessionApiGenerator
 	{
 		return gpn.getSimpleName().toString();
 	}
-	
-	private String generate()
-	{
-		JobContext jc = this.job.getContext();
-		GProtocolDecl gpd = (GProtocolDecl) jc.getModule(gpn.getPrefix()).getProtocolDecl(this.gpn.getSimpleName());
-		String packn = getPackageName(this.gpn);
-		String sn = getSessionClassName(this.gpn);
 
-		String clazz = "";
-		clazz += "package " + packn + ";\n";
-		clazz += "\n";
-		clazz += "import java.util.LinkedList;\n";
-		clazz += "import java.util.List;\n";
-		clazz += "\n";
-		clazz += "import org.scribble.net.session.Session;\n";
-		clazz += "import org.scribble.sesstype.name.GProtocolName;\n";
-		clazz += "import org.scribble.sesstype.name.Op;\n";
-		clazz += "import org.scribble.sesstype.name.Role;\n";
-		clazz += "import org.scribble.sesstype.SessionTypeFactory;\n";
-		clazz += "\n";
-		clazz += "public class " + sn + " extends Session {\n";
-		clazz += "\tpublic static final List<String> impath = new LinkedList<>();\n";
-		clazz += "\tpublic static final String source = \"" + "getSource" + "\";\n";
-		clazz += "\tpublic static final GProtocolName proto = SessionTypeFactory.parseGlobalProtocolName(\"" + gpn + "\");\n";
-		clazz += "\n";
-		for (Role role : gpd.header.roledecls.getRoles())
-		{
-			clazz += generateRole(role);
-		}
-		clazz += "\n";
-		for (MessageId<?> mid : this.mids.keySet())
-		{
-			clazz += generateOp(mid);
-		}
-		clazz += "\n";
-		clazz += "\tpublic " + sn +"() {\n";
-		clazz += "\t\tsuper(" + sn + ".impath, " + sn + ".source, " + sn + ".proto);\n";
-		clazz += "\t}\n";
-		clazz += "}";//\n";
-		for (String rc : this.roles.values())
-		{
-			clazz += "\n\n";
-			clazz += rc;
-		}
-		for (String s : this.mids.values())
-		{
-			clazz += "\n\n";
-			clazz += s;
-		}
-		return clazz;
-	}
-
-	private String generateRole(Role role)
+	private void generateRole(ClassBuilder cb, Role role)
 	{
 		//return "\tpublic static final Role " + role + " = new Role(\"" + role + "\");\n";
 		String rc = getRoleClassName(role);
-		return "\tpublic static final " + rc + " " + rc + " = new " + rc + "();\n";
+		//return "\tpublic static final " + rc + " " + rc + " = new " + rc + "();\n";
+		FieldBuilder fb = cb.newField(rc);
+		fb.setType(rc);
+		fb.addModifiers("public", "static", "final");
+		fb.setExpression("new " + rc + "()");
 	}
 	
-	private String generateOp(MessageId<?> mid)
+	private void generateOp(ClassBuilder cb, MessageId<?> mid)
 	{
-		String s = getOpClassName(mid);
-		return "\tpublic static final " + s + " " + s + " = new " + s + "();\n";
+		String oc = getOpClassName(mid);
+		//return "\tpublic static final " + s + " " + s + " = new " + s + "();\n";
+		FieldBuilder fb = cb.newField(oc);
+		fb.setType(oc);
+		fb.addModifiers("public", "static", "final");
+		fb.setExpression("new " + oc + "()");
 	}
 }

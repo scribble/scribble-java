@@ -9,22 +9,31 @@ import java.util.stream.Collectors;
 
 public class ClassBuilder
 {
-	private String packname;
-	private List<String> imports;
-	private List<String> mods;
+	private String packname;  // null for non- top-level class
 	private String name;
-	private Map<String, FieldBuilder> fields = new HashMap<>();
-	private Map<List<String>, MethodBuilder> ctors = new HashMap<>();
-	private Map<String, MethodBuilder> methods = new HashMap<>();
+	private String superc;  // null if none explicit
+
+	private final List<String> imports = new LinkedList<String>();
+	private final List<String> mods = new LinkedList<String>();
+	
+	// Maybe generalise as members (e.g. for classes)
+	private final Map<String, FieldBuilder> fields = new HashMap<>();
+	private final Map<List<String>, MethodBuilder> ctors = new HashMap<>();
+	private final Map<String, MethodBuilder> methods = new HashMap<>();
 
 	public ClassBuilder()
 	{
 		
 	}
 	
-	public void setPackageName(String packname)
+	public void setPackage(String packname)
 	{
-		
+		this.packname = packname;
+	}
+
+	public void setSuperClass(String superc)
+	{
+		this.superc = superc;
 	}
 	
 	public void addImports(String... imports)
@@ -50,6 +59,7 @@ public class ClassBuilder
 		return fb;
 	}
 	
+	// Each par is the String: type + " " + name -- cf. MethodBuilder
 	public MethodBuilder newConstructor(String... pars)
 	{
 		MethodBuilder mb = new MethodBuilder();
@@ -59,9 +69,9 @@ public class ClassBuilder
 		return mb;
 	}
 	
-	/*public MethodBuilder getConstructor(String name)
+	/*public MethodBuilder getConstructor(List<String> pars)
 	{
-		return this.methods.getConstructor(name);
+		return this.methods.getConstructor(pars);
 	}*/
 	
 	public MethodBuilder newMethod(String name)
@@ -80,20 +90,37 @@ public class ClassBuilder
 	public String generate()
 	{
 		String clazz = "";
-		clazz += "package " + packname + ";";
+		if (this.packname != null)
+		{
+			clazz += "package " + packname + ";";
+		}
 		if (this.imports.size() > 0)
 		{
-			clazz += "\n\n";
-			clazz += this.imports.stream().collect(Collectors.joining(";\n"));
+			clazz += "\n\nimport ";
+			clazz += this.imports.stream().collect(Collectors.joining(";\nimport "));
 			clazz += ";";
 		}
-		clazz += "\n\n";
+		if (this.packname != null || this.imports.size() > 0)
+		{
+			clazz += "\n\n";
+		}
 		if (this.mods.size() > 0)
 		{
 			clazz += this.mods.stream().collect(Collectors.joining(" "));
 			clazz += " ";
 		}
-		clazz += "class " + this.name + " {";
+		clazz += "class " + this.name;
+		if (this.superc != null)
+		{
+			clazz += " extends " + this.superc;
+		}
+		clazz += " {";
+		if (this.fields.size() > 0)
+		{
+			clazz += "\n";
+			clazz += this.fields.values().stream().map((fb) -> fb.generate()).collect(Collectors.joining("\n"));
+			clazz += ";";
+		}
 		if (this.ctors.size() > 0)
 		{
 			clazz += "\n\n";
@@ -114,7 +141,7 @@ class FieldBuilder
 	private List<String> mods = new LinkedList<>();
 	private String type;
 	private String name;
-	private String expr;
+	private String expr;  // null if none
 
 	public FieldBuilder()
 	{
@@ -138,7 +165,7 @@ class FieldBuilder
 	
 	protected void setExpression(String val)
 	{
-		this.name = val;
+		this.expr = val;
 	}
 
 	public String generate()
@@ -150,10 +177,10 @@ class FieldBuilder
 			field += this.mods.stream().collect(Collectors.joining(" "));
 			field += " ";
 		}
-		field += this.type + " " + name;
+		field += this.type + " " + this.name;
 		if (this.expr != null)
 		{
-			field += " = " + expr;
+			field += " = " + this.expr;
 		}
 		field += ";";
 		return field;
@@ -163,7 +190,7 @@ class FieldBuilder
 class MethodBuilder
 {
 	private List<String> mods = new LinkedList<>();
-	private String ret;
+	private String ret;  // null for constructor -- void must be set explicitly
 	private String name;
 	private List<String> pars = new LinkedList<>();
 	private List<String> body = new LinkedList<>();
@@ -188,7 +215,9 @@ class MethodBuilder
 		this.name = name;
 	}
 	
-	public void addParameters(String... par)  // Unsafe as public for constructors
+	// Each par is the String: type + " " + name
+  // Unsafe as public for constructors
+	public void addParameters(String... par)
 	{
 		this.pars.addAll(Arrays.asList(par));
 	}
@@ -207,8 +236,11 @@ class MethodBuilder
 			meth += this.mods.stream().collect(Collectors.joining(" "));
 			meth += " ";
 		}
-		meth += ((this.ret != null) ? this.ret : "void");
-		meth += " " + name + "(";
+		if (this.ret != null)
+		{
+			meth += this.ret + " ";
+		}
+		meth += name + "(";
 		meth += this.pars.stream().collect(Collectors.joining(", "));
 		meth += (") {\n");
 		if (this.body.size() > 0)
