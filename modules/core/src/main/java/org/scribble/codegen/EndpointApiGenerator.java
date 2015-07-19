@@ -263,7 +263,7 @@ public class EndpointApiGenerator
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			mb.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " op");
-			mb.addParameters("Buff<? super " + msd.extName + "> b");
+			mb.addParameters(BUFF_CLASS + "<? " + ClassBuilder.SUPER + " " + msd.extName + "> b");
 			mb.addBodyLine(SCRIBMESSAGE_CLASS + " m = " + ClassBuilder.SUPER + ".readScribMessage(" + getRole(a.peer) + ");");
 			mb.addBodyLine("b.val = (" + msd.extName + ") m;");
 		}
@@ -382,7 +382,7 @@ public class EndpointApiGenerator
 
 				mb.addBodyLine(ClassBuilder.SUPER + ".use();");
 				mb.addBodyLine("if (!this.m.op.equals(" + getOp(a.mid) + ")) {");
-				mb.addBodyLine("1, throw " + ClassBuilder.NEW + " "
+				mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " "
 							+ SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + this.m.op);");
 				mb.addBodyLine("}");
 				mb.addBodyLine("b.val = (" + msd.extName + ") m;");
