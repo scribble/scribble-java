@@ -100,6 +100,11 @@ public class ClassBuilder
 		return eb;
 	}
 	
+	protected List<MethodBuilder> getConstructors()
+	{
+		return this.ctors;
+	}
+	
 	public String generate()
 	{
 		String clazz = "";
