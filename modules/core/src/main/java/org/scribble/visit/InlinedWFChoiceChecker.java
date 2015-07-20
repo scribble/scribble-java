@@ -11,6 +11,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.InlinedWFChoiceEnv;
 
+// FIXME: rename to WFChoiceChecker
 public class InlinedWFChoiceChecker extends UnfoldingVisitor<InlinedWFChoiceEnv>
 {
 	// N.B. using pointer equality for checking if choice previously visited

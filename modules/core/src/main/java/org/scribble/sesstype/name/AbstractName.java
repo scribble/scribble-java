@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import org.scribble.sesstype.kind.Kind;
 
-
 public abstract class AbstractName<K extends Kind> implements Name<K>
 {
 	private static final long serialVersionUID = 1L;
@@ -112,6 +111,7 @@ public abstract class AbstractName<K extends Kind> implements Name<K>
 	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
 		this.kind = (K) in.readObject();
+		//this.kind = readKind();  // TODO: protected abstract -- will this work?
 		this.elems = (String[]) in.readObject();
 	}
 }

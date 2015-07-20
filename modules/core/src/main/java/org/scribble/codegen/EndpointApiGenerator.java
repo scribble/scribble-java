@@ -1,9 +1,11 @@
 package org.scribble.codegen;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
@@ -12,7 +14,6 @@ import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
-import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -26,46 +27,462 @@ import org.scribble.visit.Projector;
 
 public class EndpointApiGenerator
 {
+	public static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
+	public static final String SCRIBMESSAGE_CLASS = "org.scribble.net.ScribMessage";
+	public static final String SCRIBBLERUNTIMEEXCEPTION_CLASS = "org.scribble.main.ScribbleRuntimeException";
+	public static final String BUFF_CLASS = "org.scribble.net.Buff";
+	public static final String BUFF_VAL = "val";
+	public static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
+
+	public static final String INITSOCKET_CLASS = "org.scribble.net.InitSocket";
+	public static final String SENDSOCKET_CLASS = "org.scribble.net.SendSocket";
+	public static final String RECEIVESOCKET_CLASS = "org.scribble.net.ReceiveSocket";
+	public static final String BRANCHSOCKET_CLASS = "org.scribble.net.BranchSocket";
+	public static final String ENDSOCKET_CLASS = "org.scribble.net.EndSocket";
+	
+	private static final String SCRIBSOCKET_EP_FIELD = ClassBuilder.THIS + ".ep";
+	
 	private final Job job;
 	private final GProtocolName gpn;  // full name
-	private final Role role;
 	private final LProtocolName lpn;
 
 	private int counter = 1;
-	Map<EndpointState, String> classNames = new HashMap<>();
+
 	private String root = null;
-	private Map<String, String> classes = new HashMap<>();  // class name -> class source
-	
-	private enum SocketType { SEND, RECEIVE, BRANCH, END, INIT }
-	private final Map<SocketType, String> SOCKET_CLASSES;
+	Map<EndpointState, String> classNames = new HashMap<>();
+	private Map<String, ClassBuilder> classes = new HashMap<>();  // class name key
 
-	{
-		SOCKET_CLASSES = new HashMap<>();
-		SOCKET_CLASSES.put(SocketType.SEND, "org.scribble.net.SendSocket");
-		SOCKET_CLASSES.put(SocketType.RECEIVE, "org.scribble.net.ReceiveSocket");
-		SOCKET_CLASSES.put(SocketType.BRANCH, "org.scribble.net.BranchSocket");
-		SOCKET_CLASSES.put(SocketType.END, "org.scribble.net.EndSocket");
-		SOCKET_CLASSES.put(SocketType.INIT, "org.scribble.net.InitSocket");
-	}
-
-	//public ApiGenerator(Job job, LProtocolName lpn)
-	//public EndpointApiGenerator(Job job, GProtocolName gpn, Role role)
 	public EndpointApiGenerator(Job job, GProtocolName fullname, Role role)
 	{
 		this.job = job;
 		this.gpn = fullname;
-		this.role = role;
-		//this.lpn = Projector.makeProjectedFullNameNode(new GProtocolName(this.job.getContext().main, gpn), role).toName();
 		this.lpn = Projector.projectFullProtocolName(fullname, role);
 
-		//ProtocolState init = job.getContext().getFsm(lpn).init;
 		EndpointState init = job.getContext().getEndointGraph(fullname, role).init;
 		generateClassNames(init);
-		/*for (ProtocolState ps : classNames.keySet())
+		constructClasses(init);
+	}
+	
+	public Map<String, String> generateClasses()
+	{
+		Map<String, String> map = new HashMap<String, String>();
+		for (String s : this.classes.keySet())
 		{
-			generateClass(ps);
-		}*/
-		generateClasses(init);
+			String path = SessionApiGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java";
+			map.put(path, this.classes.get(s).generate());
+		}
+		return map;
+	}
+
+	private void constructClasses(EndpointState ps)
+	{
+		String className = this.classNames.get(ps);
+		if (this.classes.containsKey(className))
+		{
+			return;
+		}
+		this.classes.put(className, constructClass(getSocketClass(ps), this.classNames.get(ps), ps));
+		for (EndpointState succ : ps.getSuccessors())
+		{
+			constructClasses(succ);
+		}
+
+		// Depends on the above being done first (for this.root)
+		String init = this.lpn.getSimpleName().toString() + "_" + 0;  // FIXME: factor out with newClassName
+		this.classes.put(init, constructInitClass(init));
+	}
+
+	private ClassBuilder constructInitClass(String className)
+	{
+		final String SESSIONENDPOINT_PARAM = "se";
+
+		ClassBuilder cb = new ClassBuilder();
+		cb.setName(className);
+		cb.setPackage(getPackageName());
+		cb.setSuperClass(INITSOCKET_CLASS);
+		cb.addModifiers(ClassBuilder.PUBLIC);
+		
+		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + " " + SESSIONENDPOINT_PARAM);
+		ctor.addModifiers(ClassBuilder.PUBLIC);
+		ctor.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		
+		MethodBuilder mb = cb.newMethod("init");
+		mb.setReturn(this.root);
+		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
+		mb.addBodyLine(ClassBuilder.SUPER + ".use();");  // Factor out
+		mb.addBodyLine(ClassBuilder.RETURN + " "
+					+ ClassBuilder.NEW + " " + this.root + "(" + SCRIBSOCKET_EP_FIELD + ");");
+
+		return cb;
+	}
+
+	private ClassBuilder constructClass(String superc, String className, EndpointState ps)
+	{
+		ClassBuilder cb = constructClassExceptMethods(superc, className, ps);
+		if (!ps.isTerminal())
+		{
+			makeMethods(cb, ps);
+		}
+		return cb;
+	}
+
+	private ClassBuilder constructClassExceptMethods(String superc, String className, EndpointState ps)
+	{
+		ClassBuilder cb = new ClassBuilder();
+		cb.setName(className);
+		cb.setPackage(getPackageName());
+		cb.addModifiers(ClassBuilder.PUBLIC);
+		cb.setSuperClass(superc);
+		makeImports(cb, ps);
+		makeConstructor(cb, className);
+		return cb;
+	}
+
+	private void makeImports(ClassBuilder cb, EndpointState ps)
+	{
+		cb.addImports("java.io.IOException");
+		cb.addImports(SessionApiGenerator.getPackageName(this.gpn) + "."
+					+ SessionApiGenerator.getSessionClassName(this.gpn));
+	}
+	
+	private MethodBuilder makeConstructor(ClassBuilder cb, String className)
+	{
+		final String SESSIONENDPOINT_PARAM = "se";
+
+		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + " " + SESSIONENDPOINT_PARAM);
+		ctor.addModifiers(ClassBuilder.PROTECTED);
+		ctor.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		return ctor;
+	}
+	
+	private void makeMethods(ClassBuilder cb, EndpointState ps)
+	{
+		String st = getSocketClass(ps);
+		switch (st)
+		{
+			case SENDSOCKET_CLASS:
+			{
+				makeSend(cb, ps);
+				break;
+			}
+			case RECEIVESOCKET_CLASS:
+			{
+				makeReceive(cb, ps);
+				break;
+			}
+			case BRANCHSOCKET_CLASS:
+			{
+				makeBranch(cb, ps);
+				break;
+			}
+			default:
+			{
+				throw new RuntimeException("TODO: " + st);
+			}
+		}
+	}
+
+	private void makeSend(ClassBuilder cb, EndpointState ps)
+	{
+		final String ROLE_PARAM = "role";
+		final String ARG_PREFIX = "arg";
+
+		JobContext jc = this.job.getContext();
+		Module main = jc.getMainModule();
+
+		for (IOAction a : ps.getAcceptable())  // Scribble ensures all a are input or all are output
+		{
+			EndpointState succ = ps.accept(a);
+			String next = this.classNames.get(succ);
+			
+			MethodBuilder mb = cb.newMethod("send");
+			mb.setReturn(next);
+			mb.addModifiers(ClassBuilder.PUBLIC);
+			mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
+			
+			if (a.mid.isOp())
+			{	
+				String opref = getPrefixedOpClassName(a.mid);
+				List<String> args = new LinkedList<>();
+
+				mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM);
+				mb.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " op");  // Not used in body
+				if (!a.payload.isEmpty())
+				{
+					int i = 1;
+					for (PayloadType<?> pt : a.payload.elems)
+					{
+						DataType dt = (DataType) pt;  // TODO: if not DataType
+						DataTypeDecl dtd = main.getDataTypeDecl(dt);  // FIXME: might not belong to main module
+						String arg = ARG_PREFIX + i++;
+						args.add(arg);
+						mb.addParameters(dtd.extName + " " + arg);
+					}
+				}
+
+				String body = ClassBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", "
+                    		+ ClassBuilder.NEW + " " + SCRIBMESSAGE_CLASS + "(" + opref;
+				if (!a.payload.isEmpty())
+				{
+					body += ", " + args.stream().collect(Collectors.joining(", "));
+				}
+				body += "));\n";
+				mb.addBodyLine(body);
+			}
+			else //if (a.mid.isMessageSigName())
+			{	
+				final String MESSAGE_PARAM = "m";
+
+				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, 
+						msd.extName + " " + MESSAGE_PARAM);
+				mb.addBodyLine(ClassBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM 
+						+ ", " + MESSAGE_PARAM + ");");
+			}
+			mb.addBodyLine(ClassBuilder.RETURN + " "
+						+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_EP_FIELD + ");");
+		}
+	}
+
+	private void makeReceive(ClassBuilder cb, EndpointState ps)
+	{
+		final String OP_PARAM = "op";
+		final String MESSAGE_PARAM = "m";
+		final String ARG_PREFIX = "arg";
+
+		JobContext jc = this.job.getContext();
+		Module main = jc.getMainModule();
+
+		IOAction a = ps.getAcceptable().iterator().next();
+		EndpointState succ = ps.accept(a);
+		String next = this.classNames.get(succ);
+
+		MethodBuilder mb = makeReceiveBlurb(cb, next);
+		if (a.mid.isOp())
+		{
+			addReceiveOpParams(main, a, mb, OP_PARAM, ARG_PREFIX);
+			mb.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_PARAM + " = "
+						+ ClassBuilder.SUPER + ".readScribMessage(" + getPrefixedRoleClassName(a.peer) + ");");
+			addReceiveOpPayloadIntoBuffs(main, a, mb, MESSAGE_PARAM, ARG_PREFIX);
+		}
+		else //if (a.mid.isMessageSigName())
+		{
+			final String MESSAGE_VAR = MESSAGE_PARAM;
+
+			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			addReceiveMessageSigNameParams(a, mb, msd, OP_PARAM, ARG_PREFIX);
+			mb.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
+						+ ClassBuilder.SUPER + ".readScribMessage(" + getPrefixedRoleClassName(a.peer) + ");");
+			mb.addBodyLine(ARG_PREFIX + "." + BUFF_VAL + " = (" + msd.extName + ") " + MESSAGE_VAR + ";");
+		}
+		mb.addBodyLine(ClassBuilder.RETURN + " "
+				+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_EP_FIELD + ");");
+	}
+
+	private static MethodBuilder makeReceiveBlurb(ClassBuilder cb, String next)
+	{
+		MethodBuilder mb = cb.newMethod("receive");
+		mb.setReturn(next);
+		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
+		return mb;
+	}
+
+	private static void addReceiveOpParams(
+			Module main, IOAction a, MethodBuilder mb, String opParam, String argPrefix)
+	{
+		// FIXME: problem if package and protocol have the same name
+		//mb.addParameters(SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op");
+		mb.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + opParam);
+		if (!a.payload.isEmpty())
+		{
+			String buffSuper = BUFF_CLASS + "<? " + ClassBuilder.SUPER + " ";
+			int i = 1;
+			for (PayloadType<?> pt : a.payload.elems)
+			{
+				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
+				mb.addParameters(buffSuper + dtd.extName + "> " + argPrefix + i++);
+			}
+		}
+	}
+
+	private static void addReceiveOpPayloadIntoBuffs(
+			Module main, IOAction a, MethodBuilder mb, String messageParam, String argPrefix)
+	{
+		final String SCRIBMESSAGE_PAYLOAD_FIELD = "payload";
+
+		if (!a.payload.isEmpty())
+		{
+			int i = 1;
+			for (PayloadType<?> pt : a.payload.elems)  // Could factor out this loop with addReceiveOpParams (as for send)
+			{
+				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
+				mb.addBodyLine(argPrefix + i + "." + BUFF_VAL + " = (" + dtd.extName + ") "
+							+ messageParam + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + (i++ - 1) +"];");
+			}
+		}
+	}
+
+	private static void addReceiveMessageSigNameParams(
+			IOAction a, MethodBuilder mb, MessageSigNameDecl msd, String opParam, String argPrefix)
+	{
+		// FIXME: problem if package and protocol have the same name
+		//mb.addParameters(SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op");
+		mb.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + opParam);
+		mb.addParameters(BUFF_CLASS + "<? " + ClassBuilder.SUPER + " " + msd.extName + "> " + argPrefix);
+	}
+	
+	private void makeBranch(ClassBuilder cb, EndpointState ps)
+	{
+		final String MESSAGE_VAR = "m";
+		final String SCRIBMESSAGE_OP_FIELD = "op";
+		final String OPENUM_VAR = "openum";
+		final String OP = MESSAGE_VAR + "." + SCRIBMESSAGE_OP_FIELD;
+
+		JobContext jc = this.job.getContext();
+		Module main = jc.getMainModule();
+
+		String next = constructBranchReceiveClass(ps, main);
+		String enumClass = this.classNames.get(ps) + "Enum";
+		
+		MethodBuilder mb = cb.newMethod("branch");
+		mb.setReturn(next);
+		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
+		
+		Role peer = ps.getAcceptable().iterator().next().peer;
+		mb.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
+				+ ClassBuilder.SUPER + ".readScribMessage(" + getPrefixedRoleClassName(peer) + ");");
+		mb.addBodyLine(enumClass + " " + OPENUM_VAR + ";");
+
+		boolean first = true;
+		for (IOAction a : ps.getAcceptable())
+		{
+			mb.addBodyLine(((first) ? "" : "else ") + "if (" + OP + ".equals(" + getPrefixedOpClassName(a.mid) + ")) {");
+			mb.addBodyLine(1, OPENUM_VAR + " = "
+					+ enumClass + "." + SessionApiGenerator.getOpClassName(a.mid) + ";");
+			mb.addBodyLine("}");
+			first = false;
+		}
+		mb.addBodyLine("else {");
+		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
+		mb.addBodyLine("}");
+		mb.addBodyLine(ClassBuilder.RETURN + " "
+				+ ClassBuilder.NEW + " " + next + "(this.ep, " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");
+		
+		EnumBuilder eb = cb.newEnum(enumClass);
+		eb.addModifiers(ClassBuilder.PUBLIC);
+		eb.addInterfaces(OPENUM_INTERFACE);
+
+		ps.getAcceptable().stream().forEach((a) ->
+				eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+	}
+
+	// FIXME: factor with regular receive
+	private String constructBranchReceiveClass(EndpointState ps, Module main)
+	{
+		final String OP_FIELD = "op";
+		final String OP_PARAM = OP_FIELD;
+		final String MESSAGE_FIELD = "m";
+		final String MESSAGE_PARAM = MESSAGE_FIELD;
+		final String ARG_PREFIX = "arg";
+
+		String branchName = this.classNames.get(ps);
+		String enumClass = branchName + "Enum";
+		String className = newClassName();
+		ClassBuilder cb = constructClassExceptMethods(RECEIVESOCKET_CLASS, className, ps);
+		
+		MethodBuilder ctor = cb.getConstructors().iterator().next();
+		ctor.addParameters(branchName + "." + enumClass + " " + OP_PARAM,
+				SCRIBMESSAGE_CLASS + " " + MESSAGE_PARAM);
+		ctor.addBodyLine(ClassBuilder.THIS + "." + OP_FIELD + " = " + OP_PARAM + ";");
+		ctor.addBodyLine(ClassBuilder.THIS + "." + MESSAGE_FIELD + " = " + MESSAGE_PARAM + ";");
+
+		FieldBuilder fb1 = cb.newField(OP_FIELD);
+		fb1.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
+		fb1.setType(this.classNames.get(ps) + "." + enumClass);
+		
+		FieldBuilder fb2 = cb.newField(MESSAGE_FIELD);
+		fb2.addModifiers(ClassBuilder.PRIVATE, ClassBuilder.FINAL);
+		fb2.setType(SCRIBMESSAGE_CLASS);
+
+		for (IOAction a : ps.getAcceptable())
+		{
+			EndpointState succ = ps.accept(a);
+			String next = this.classNames.get(succ);
+			
+			MethodBuilder mb = makeReceiveBlurb(cb, next);
+			if (a.mid.isOp())
+			{
+				addReceiveOpParams(main, a, mb, OP_PARAM, ARG_PREFIX);
+				mb.addBodyLine(ClassBuilder.SUPER + ".use();");
+				addBranchCheck(getPrefixedOpClassName(a.mid), mb, MESSAGE_FIELD);
+				addReceiveOpPayloadIntoBuffs(main, a, mb, MESSAGE_PARAM, ARG_PREFIX);
+			}
+			else //if (a.mid.isMessageSigName())
+			{
+				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				addReceiveMessageSigNameParams(a, mb, msd, OP_PARAM, ARG_PREFIX);
+				mb.addBodyLine(ClassBuilder.SUPER + ".use();");
+				addBranchCheck(getPrefixedOpClassName(a.mid), mb, MESSAGE_FIELD);
+				mb.addBodyLine(ARG_PREFIX + "." + BUFF_VAL+ " = (" + msd.extName + ") " + MESSAGE_FIELD + ";");
+			}
+			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + next + "(this.ep);\n");
+		}
+
+		this.classes.put(className, cb);
+		return className;
+	}
+
+	private static void addBranchCheck(String opClassName, MethodBuilder mb, String messageField)
+	{
+		final String SCRIBMESSAGE_OP_FIELD = "op";
+
+		String op = ClassBuilder.THIS + "." + messageField + "." + SCRIBMESSAGE_OP_FIELD;
+		mb.addBodyLine("if (!" + op + ".equals(" + opClassName + ")) {");
+		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " "
+					+ SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");
+		mb.addBodyLine("}");
+	}
+
+	private String getPackageName() // Java output package (not Scribble package)
+	{
+		return SessionApiGenerator.getPackageName(this.gpn);
+	}
+	
+	// Not fully qualified, just session class prefix
+	private String getPrefixedOpClassName(MessageId<?> mid)
+	{
+		return SessionApiGenerator.getSessionClassName(this.gpn) + "." + SessionApiGenerator.getOpClassName(mid);
+	}
+	
+	// Not fully qualified, just session class prefix
+	private String getPrefixedRoleClassName(Role role)
+	{
+		return SessionApiGenerator.getSessionClassName(this.gpn) + "." + role.toString();
+	}
+	
+	private String getSocketClass(EndpointState ps)
+	{
+		if (ps.isTerminal())
+		{
+			return ENDSOCKET_CLASS;
+		}
+		Set<IOAction> as = ps.getAcceptable();
+		IOAction a = as.iterator().next();
+		if (a instanceof Send)
+		{
+			return SENDSOCKET_CLASS;
+		}
+		else if (a instanceof Receive)
+		{
+			return (as.size() > 1) ? BRANCHSOCKET_CLASS : RECEIVESOCKET_CLASS;
+		}
+		else
+		{
+			throw new RuntimeException("TODO");
+		}
 	}
 	
 	private void generateClassNames(EndpointState ps)
@@ -85,425 +502,6 @@ public class EndpointApiGenerator
 			generateClassNames(succ);
 		}
 	}
-
-	private void generateClasses(EndpointState ps)
-	{
-		String className = this.classNames.get(ps);
-		if (this.classes.containsKey(className))
-		{
-			return;
-		}
-		this.classes.put(className, generateClass(ps));
-		for (EndpointState succ : ps.getSuccessors())
-		{
-			generateClasses(succ);
-		}
-		String init = this.lpn.getSimpleName().toString() + "_" + 0;  // FIXME: factor out with newClassName
-		this.classes.put(init, generateInitClass(init));
-	}
-
-	private String generateInitClass(String className)
-	{
-		String clazz = "";
-		clazz += "package " + getPackageName() + ";\n";
-		clazz += "\n";
-		clazz += "import org.scribble.main.ScribbleRuntimeException;\n";
-		clazz += "import org.scribble.net.session.SessionEndpoint;\n";
-		clazz += "\n";
-		clazz += "public class " + className + " extends " + SOCKET_CLASSES.get(SocketType.INIT) + " {\n";
-		clazz += "\tpublic " + className + "(SessionEndpoint se) {\n";
-		clazz += "\t\tsuper(se);\n";
-		clazz += "\t}";
-		clazz += "\n\n";
-		
-		clazz += "\tpublic " + this.root + " init() throws ScribbleRuntimeException {\n";
-		clazz += "\t\tsuper.use();\n";
-		clazz += "\t\treturn new " + this.root + "(this.ep);\n";
-		clazz += "\t}\n";
-		
-		clazz += "}\n";
-		return clazz;
-	}
-
-	private String generateClass(EndpointState ps)
-	{
-		String className = this.classNames.get(ps);
-		String clazz = "";
-		clazz += "package " + getPackageName() + ";\n";
-		clazz += "\n";
-		clazz += generateImports(ps);
-		clazz += "\n";
-		clazz += "public class " + className + " extends " + SOCKET_CLASSES.get(getSocketType(ps)) + " {\n";
-		clazz += generateConstructor(className);
-		clazz += "\n\n";
-		clazz += generateMethods(ps);
-		clazz += "}\n";
-		return clazz;
-	}
-
-	/*private String generateClass(ProtocolState ps)
-	{
-		String className = this.classNames.get(ps);
-		String clazz = "";
-		clazz += "package " + getPackageName() + ";\n";
-		clazz += "\n";
-		clazz += generateImports(ps);
-		clazz += "\n";
-		clazz += "public class " + className + " extends " + SOCKET_CLASSES.get(getSocketType(ps)) + " {\n";
-		clazz += generateConstructor(className);
-		clazz += "\n\n";
-		//for (IOAction a : ps.getAcceptable())
-		{
-			// Scribble ensures all a are input or all are output
-			//clazz += generateMethod(a, ps.accept(a));
-			clazz += generateMethods(ps);
-		}
-		/*if (className.equals(this.root))
-		{
-			clazz += "\n";
-			clazz += "\t@Override\n";
-			clazz += "\tpublic void close() {\n";
-			clazz += "\t\tif (!this.ep.isCompleted()) {\n";
-			clazz += "\t\t\tthrow new " + getSessionIncompleteExceptionName() + "();\n";
-			clazz += "\t\t}\n";
-			clazz += "\t}\n";
-		}* /
-		clazz += "}\n";
-		/*if (className.equals(this.root))
-		{
-			clazz += "\n";
-			clazz += "class " + getSessionIncompleteExceptionName() + " extends SessionIncompleteException {\n";
-			clazz += "\tprivate static final long serialVersionUID = 1L;\n";
-			clazz += "}";
-		}* /
-		return clazz;
-	}*/
-	
-	private String generateImports(EndpointState ps)
-	{
-		String imports = "";
-		imports += "import java.io.IOException;\n";
-		imports += "\n";
-		imports += "import org.scribble.main.ScribbleRuntimeException;\n";
-		imports += "import org.scribble.net.Buff;\n";
-		imports += "import org.scribble.net.ScribMessage;\n";
-		imports += "import org.scribble.net.session.SessionEndpoint;\n";
-		imports += "\n";
-		imports += "import " + SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getSessionClassName(this.gpn) + ";\n";
-		//imports += "import org.scribble.util.SessionIncompleteException;\n";
-		/*imports += "\n";
-		imports += "import " + getPackageName() + "." + this.role + ";\n";
-		for (IOAction a : ps.getAcceptable())
-		{
-			imports += "import " + getPackageName() + "." + SessionGenerator.getOpClassName((Op) a.mid) + ";\n";
-			imports += "import " + getPackageName() + "." + a.peer + ";\n";
-		}*/
-		return imports;
-	}
-	
-	private String generateConstructor(String className)
-	{
-		String cons = "";
-		/*if (this.root.equals(className))
-		{
-			cons += "\tpublic ";
-		}
-		else*/
-		{
-			cons += "\tprotected ";
-		}
-		cons += className + "(SessionEndpoint se) {\n";
-		cons += "\t\tsuper(se);\n";
-		cons += "\t}";
-		return cons;
-	}
-	
-	//private String generateMethod(IOAction a, ProtocolState succ)
-	private String generateMethods(EndpointState ps)
-	{
-		if (ps.isTerminal())  // Shouldn't get in here
-		{
-			return "";
-		}
-
-		JobContext jc = this.job.getContext();
-		Module main = jc.getMainModule();
-
-		String method = "";
-		SocketType st = getSocketType(ps);
-		switch (st)
-		{
-			case SEND:
-			{
-				for (IOAction a : ps.getAcceptable())  // Scribble ensures all a are input or all are output
-				{
-					EndpointState succ = ps.accept(a);
-					//String next = (succ.isTerminal()) ? SOCKET_CLASSES.get(SocketType.END) : this.classNames.get(succ);
-					String next = this.classNames.get(succ);
-					String opref = getOp(a.mid);
-					
-					if (a.mid.isOp())
-					{	
-						method += "\tpublic " + next + " send(" + SessionApiGenerator.getRoleClassName(a.peer) + " role" + ", " + SessionApiGenerator.getOpClassName(a.mid) + " op";
-						if (!a.payload.isEmpty())
-						{
-							int i = 1;
-							for (PayloadType<? extends Kind> pt : a.payload.elems)
-							{
-								DataType dt = (DataType) pt;  // TODO: if not DataType
-								DataTypeDecl dtd = main.getDataTypeDecl(dt);  // FIXME: might not belong to main module
-								method += ", " + dtd.extName + " arg" + i++;
-							}
-						}
-						method += ") throws ScribbleRuntimeException, IOException {\n";
-						//method += "\t\tsuper.writeScribMessage(" + getRole(a.peer) + ", new ScribMessage(" + opref;
-						method += "\t\tsuper.writeScribMessage(role, new ScribMessage(" + opref;
-						if (!a.payload.isEmpty())
-						{
-							for (int i = 1; i <= a.payload.elems.size(); i++)
-							{
-								method += ", arg" + i;
-							}
-						}
-						method += "));\n";
-					}
-					else //if (a.mid.isMessageSigName())
-					{	
-						MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-						method += "\tpublic " + next + " send(" + SessionApiGenerator.getRoleClassName(a.peer) + " role, " + msd.extName + " m";
-						method += ") throws ScribbleRuntimeException, IOException {\n";
-						//method += "\t\tsuper.writeScribMessage(" + getRole(a.peer) + ", m);\n";
-						method += "\t\tsuper.writeScribMessage(role, m);\n";
-					}
-					method += "\t\treturn new " + next + "(this.ep);\n";
-					method += "\t}\n";
-				}
-				break;
-			}
-			case RECEIVE:
-			{
-				IOAction a = ps.getAcceptable().iterator().next();
-				EndpointState succ = ps.accept(a);
-				//String next = (succ.isTerminal()) ? SOCKET_CLASSES.get(SocketType.END) : this.classNames.get(succ);
-				String next = this.classNames.get(succ);
-				if (a.mid.isOp())
-				{
-					method += "\tpublic " + next + " receive(" + SessionApiGenerator.getOpClassName(a.mid) + " op";
-					if (!a.payload.isEmpty())
-					{
-						int i = 1;
-						for (PayloadType<? extends Kind> pt : a.payload.elems)
-						{
-							DataType dt = (DataType) pt;  // TODO: if not DataType
-							DataTypeDecl dtd = main.getDataTypeDecl(dt);
-							//method += ", Buff<" + dtd.extName + "> arg" + i++;
-							method += ", Buff<? super " + dtd.extName + "> arg" + i++;
-						}
-					}
-					method += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-					method += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
-					if (!a.payload.isEmpty())
-					{
-						int i = 1;
-						for (PayloadType<? extends Kind> pt : a.payload.elems)
-						{
-							DataType dt = (DataType) pt;  // TODO: if not DataType
-							DataTypeDecl dtd = main.getDataTypeDecl(dt);
-							method += "\t\targ" + i + ".val = (" + dtd.extName + ") m.payload[" + (i++ - 1) +"];\n";
-						}
-					}
-				}
-				else //if (a.mid.isMessageSigName())
-				{
-					MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-					method += "\tpublic " + next + " receive(" + SessionApiGenerator.getOpClassName(a.mid) + " op";
-					//method += ", Buff<" + msd.extName + "> b";
-					method += ", Buff<? super " + msd.extName + "> b";
-					method += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-					method += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
-					method += "\t\tb.val = (" + msd.extName + ") m;\n";
-				}
-				method += "\t\treturn new " + next + "(this.ep);\n";
-				method += "\t}\n";
-				break;
-			}
-			case BRANCH:
-			{
-				//throw new RuntimeException("TODO: " + st);
-				
-				/*Map<IOAction, String> tmp = new HashMap<>();
-				for (IOAction a : ps.getAcceptable())
-				{
-					tmp.put(a, newClassName());
-				}*/
-				// FIXME: factor out
-				String tmp = newClassName();
-				String clazz = "";
-				clazz += "package " + getPackageName() + ";\n";
-				clazz += "\n";
-				clazz += generateImports(ps);
-				clazz += "\n";
-				clazz += "public class " + tmp + " extends " + SOCKET_CLASSES.get(SocketType.RECEIVE) + " {\n";
-				clazz += "\n";
-				clazz += "\tpublic final " + this.classNames.get(ps) + "." + this.classNames.get(ps) + "Enum op;\n";
-				clazz += "\tprivate final ScribMessage m;\n";
-				//clazz += generateConstructor(tmp);
-				clazz += "\tprotected " + tmp + "(SessionEndpoint se, " + this.classNames.get(ps) + "." + this.classNames.get(ps) + "Enum op, ScribMessage m) {\n";
-				clazz += "\t\tsuper(se);\n";
-				clazz += "\t\tthis.op = op;\n";
-				clazz += "\t\tthis.m = m;\n";
-				clazz += "\t}";
-				clazz += "\n\n";
-				for (IOAction a : ps.getAcceptable())
-				{
-					EndpointState succ = ps.accept(a);
-					String next = this.classNames.get(succ);
-					if (a.mid.isOp())
-					{
-						// FIXME: problem if package and protocol have the same name
-						clazz += "\tpublic " + next + " receive(" + SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op";
-						//clazz += "\tpublic " + next + " receive(" + SessionGenerator.getOpClassName(a.mid) + " op";
-						if (!a.payload.isEmpty())
-						{
-							int i = 1;
-							for (PayloadType<? extends Kind> pt : a.payload.elems)
-							{
-								DataType dt = (DataType) pt;  // TODO: if not DataType
-								DataTypeDecl dtd = main.getDataTypeDecl(dt);
-								//clazz += ", Buff<" + dtd.extName + "> arg" + i++;
-								clazz += ", Buff<? super " + dtd.extName + "> arg" + i++;
-							}
-						}
-						clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-						//clazz += "\t\tScribMessage m = super.readScribMessage(" + getRole(a.peer) + ");\n";
-						clazz += "\t\tsuper.use();\n";
-						clazz += "\t\tif (!this.m.op.equals(" + getOp(a.mid) + ")) {\n";
-						clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);\n";
-						clazz += "\t\t}\n";
-						if (!a.payload.isEmpty())
-						{
-							int i = 1;
-							for (PayloadType<? extends Kind> pt : a.payload.elems)
-							{
-								DataType dt = (DataType) pt;  // TODO: if not DataType
-								DataTypeDecl dtd = main.getDataTypeDecl(dt);
-								clazz += "\t\targ" + i + ".val = (" + dtd.extName + ") m.payload[" + (i++ - 1) +"];\n";
-							}
-						}
-					}
-					else //if (a.mid.isMessageSigName())
-					{
-						MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-						// FIXME: problem if package and protocol have the same name
-						clazz += "\tpublic " + next + " receive(" + SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getOpClassName(a.mid) + " op";
-						//clazz += ", Buff<" + msd.extName + "> b";
-						clazz += ", Buff<? super " + msd.extName + "> b";
-						clazz += ") throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-						clazz += "\t\tsuper.use();\n";
-						clazz += "\t\tif (!this.m.op.equals(" + getOp(a.mid) + ")) {\n";
-						clazz += "\t\t\tthrow new ScribbleRuntimeException(\"Wrong branch, received: \" + this.m.op);\n";
-						clazz += "\t\t}\n";
-						clazz += "\t\tb.val = (" + msd.extName + ") m;\n";
-					}
-					clazz += "\t\treturn new " + next + "(this.ep);\n";
-					clazz += "\t}\n";
-				}
-				clazz += "}";
-				this.classes.put(tmp, clazz);
-				
-				Iterator<IOAction> as = ps.getAcceptable().iterator();
-				IOAction first = as.next();
-				String next = tmp;
-				method += "\tpublic " + next + " branch() throws ScribbleRuntimeException, IOException, ClassNotFoundException {\n";
-				method += "\t\tScribMessage m = super.readScribMessage(" + getRole(first.peer) + ");\n";
-				method += "\t\t" + this.classNames.get(ps) + "Enum openum;\n";
-				method += "\t\tif (m.op.equals(" + getOp(first.mid) + ")) {\n";
-				//method += "\t\t\treturn " + this.classNames.get(ps) + "Enum." + first.mid.toString() + ";\n";
-				method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionApiGenerator.getOpClassName(first.mid) + ";\n";
-				method += "\t\t}\n";
-				for (; as.hasNext(); )
-				{
-					IOAction a = as.next();
-					method += "\t\telse if (m.op.equals(" + getOp(a.mid) + ")) {\n";
-					//method += "\t\t\treturn " + this.classNames.get(ps) + "Enum." + a.mid.toString() + ";\n";
-					method += "\t\t\topenum = " + this.classNames.get(ps) + "Enum." + SessionApiGenerator.getOpClassName(a.mid) + ";\n";
-					method += "\t\t}\n";
-				}
-				method += "\t\telse {\n";
-				method += "\t\t\tthrow new RuntimeException(\"Won't get here: \" + m.op);\n";
-				method += "\t\t}\n";
-				method += "\t\treturn new " + next + "(this.ep, openum, m);\n";
-				method += "\t}\n";
-
-				as = ps.getAcceptable().iterator();
-				first = as.next();
-				method += "\n";
-				method += "\tpublic enum " + this.classNames.get(ps) + "Enum implements org.scribble.net.session.OpEnum { ";   // FIXME: should be in methods
-				method += SessionApiGenerator.getOpClassName(first.mid);
-				for (; as.hasNext(); )
-				{
-					IOAction a = as.next();
-					method += ", " + SessionApiGenerator.getOpClassName(a.mid);
-				}
-				method += "; }\n";
-				break;
-			}
-			default:
-			{
-				throw new RuntimeException("TODO: " + st);
-			}
-		}
-		return method;
-	}
-	
-	private String getPackageName() // Java output package (not Scribble package)
-	{
-		//return this.gpn.getPrefix().toString();
-		return SessionApiGenerator.getPackageName(this.gpn);
-		//return this.gpn.toString();// + "." + this.role;  // role causes clash with Role constant in session class
-	}
-	
-	private String getOp(MessageId<?> mid)
-	{
-		return SessionApiGenerator.getSessionClassName(gpn) + "." + SessionApiGenerator.getOpClassName(mid);
-	}
-	
-	private String getRole(Role role)
-	{
-		return SessionApiGenerator.getSessionClassName(gpn) + "." + role.toString();
-	}
-	
-	private SocketType getSocketType(EndpointState ps)
-	{
-		if (ps.isTerminal())
-		{
-			return SocketType.END;
-		}
-		Set<IOAction> as = ps.getAcceptable();
-		IOAction a = as.iterator().next();
-		if (a instanceof Send)
-		{
-			return SocketType.SEND;
-		}
-		else if (a instanceof Receive)
-		{
-			return (as.size() > 1) ? SocketType.BRANCH : SocketType.RECEIVE;
-		}
-		else
-		{
-			throw new RuntimeException("TODO");
-		}
-	}
-	
-	public Map<String, String> getClasses()
-	{
-		Map<String, String> map = new HashMap<String, String>();
-		for (String s : this.classes.keySet())
-		{
-			map.put(SessionApiGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java", this.classes.get(s));
-		}
-		return map;
-	}
 	
 	private String newClassName()
 	{
@@ -515,9 +513,4 @@ public class EndpointApiGenerator
 	{
 		return this.counter++;
 	}
-	
-	/*private String getSessionIncompleteExceptionName()
-	{
-		return this.gpn.toString().replace('.', '_') + "_" + this.role + "IncompleteException";
-	}*/
 }

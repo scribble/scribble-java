@@ -15,5 +15,7 @@ modules/core/src/test/scrib/demo/fib/Adder.java
 modules/core/src/test/scrib/demo/fib/Adder_*
 modules/core/src/test/scrib/test/foo/Foo.java
 modules/core/src/test/scrib/test/foo/Foo_*
+modules/core/src/test/scrib/test/test1/Proto1.java
+modules/core/src/test/scrib/test/test1/Proto1_*
 bin/scribblec
 
