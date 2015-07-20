@@ -1,0 +1,20 @@
+module good.parsing.globals.grecursion.Recursion08;
+
+
+global protocol Recursion8(role A, role B)
+{
+	rec X
+	{
+		/*// TODO:
+		par
+		{
+			l1() from A to B;
+		}
+		and
+		{
+			l2() from A to B;
+		}*/
+		continue X;
+	}
+}
+

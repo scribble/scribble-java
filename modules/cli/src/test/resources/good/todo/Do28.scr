@@ -1,0 +1,20 @@
+module good.parsing.globals.gdo.Do28;
+
+
+global protocol Do28(role A, role B)
+{
+	choice at A
+	{
+		m1() from A to B;
+	}
+	or
+	{
+		//do Do28a(A, B);  // Uncomment bad
+		do X: Do28a(A, B);  // TODO
+	}
+}
+
+global protocol Do28a(role C, role D)
+{
+	m1() from C to D;
+}

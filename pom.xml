@@ -42,52 +42,50 @@
 	<properties>
 		<project.organization.name>Scribble.org</project.organization.name>
 		<project.inceptionYear>2008</project.inceptionYear>
-		<antlr.version>3.2</antlr.version>
+		<antlr.version>3.4</antlr.version>
 		<log4j.version>1.2.14</log4j.version>
 		<jackson.version>1.9.9</jackson.version>
 		<junit.version>4.11</junit.version>
+		
+		<version.commons-io>2.4</version.commons-io>
+
+		<!-- maven-compiler-plugin -->
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+
 	</properties>
 
 	<modules>
-		<module>build</module>
-		<module>modules</module>
-		<module>extensions</module>
-		<module>docs</module>
-		<module>tools</module>
+		<module>modules/core</module>
+		<module>modules/parser</module>
+		<module>modules/cli</module>
+		<module>dist</module>
 	</modules>
   
 	<dependencyManagement>
 		<dependencies> 
-		    <dependency>
-			    <groupId>org.scribble</groupId>
-			    <artifactId>scribble-core</artifactId>
-                <version>${project.version}</version>
-		    </dependency>
-		    <dependency>
-			    <groupId>org.scribble</groupId>
-			    <artifactId>scribble-parser</artifactId>
-                <version>${project.version}</version>
-		    </dependency>
-
-		    <dependency>
-			    <groupId>org.scribble.docs</groupId>
-			    <artifactId>scribble-userguide</artifactId>
-                <type>jdocbook</type>
+			<dependency>
+				<groupId>org.scribble</groupId>
+				<artifactId>scribble-core</artifactId>
 				<version>${project.version}</version>
-		    </dependency>
-		    <dependency>
-			    <groupId>org.scribble.docs</groupId>
-			    <artifactId>scribble-developerguide</artifactId>
-                <type>jdocbook</type>
+			</dependency>
+			<dependency>
+				<groupId>org.scribble</groupId>
+				<artifactId>scribble-parser</artifactId>
 				<version>${project.version}</version>
-		    </dependency>
-		    <dependency>
-			    <groupId>org.scribble.docs</groupId>
-			    <artifactId>javadoc</artifactId>
-                <type>javadoc</type>
-                <version>${project.version}</version>
-		    </dependency>
+			</dependency>
+			<dependency>
+				<groupId>org.scribble</groupId>
+				<artifactId>scribble-cli</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${version.commons-io}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>
@@ -153,15 +151,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<showDeprecation>false</showDeprecation>
-					<showWarnings>false</showWarnings>
-					<optimize>true</optimize>
-					<compilerArgument>-verbose</compilerArgument>
-				</configuration>
+				<version>3.2</version>
 			</plugin>
 			<!-- Produce source jars during the 'verify' phase -->
 			<plugin>

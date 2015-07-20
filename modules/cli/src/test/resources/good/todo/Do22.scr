@@ -1,0 +1,22 @@
+module good.parsing.globals.gdo.Do22;
+
+
+// Maybe subsumed by Do12
+global protocol Do22(role A, role B)
+{
+	choice at A
+	{
+		do X: Do22a(A, B);  // TODO
+		//do Do22a(A, B);  // Uncomment not OK if above line is commented
+	}
+	or
+	{
+		l1() from A to B;
+	}
+}
+
+global protocol Do22a(role C, role D)
+{
+	l1() from C to D;
+}
+

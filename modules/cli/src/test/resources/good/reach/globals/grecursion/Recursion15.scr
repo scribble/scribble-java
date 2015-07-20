@@ -1,0 +1,19 @@
+module bad.reach.globals.grecursion.Recursion15;
+
+
+global protocol Recursion15(role A, role B)
+{
+	rec X
+	{
+		m() from A to B;
+		choice at A
+		{
+			//m1() from A to B;
+			continue X;
+		}
+		or
+		{
+			m2() from A to B;
+		}
+	}
+}
