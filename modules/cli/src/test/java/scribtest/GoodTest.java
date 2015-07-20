@@ -1,6 +1,5 @@
 package scribtest;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-// Needs -Ddir=[test root dir] system property -- Eclipse VM arg: -Ddir=${selected_resource_loc} 
+// Needs -Dtest.dir=[test root dir] system property -- Eclipse VM arg: -Dtest.dir=${selected_resource_loc} 
 @RunWith(value = Parameterized.class)
 public class GoodTest extends AllTest
 {
@@ -25,8 +24,7 @@ public class GoodTest extends AllTest
 		List<Object[]> result = new ArrayList<>();
 		Harness harness = new Harness();
 
-		URL url=ClassLoader.getSystemResource("good");
-		String dir = url.getFile();
+		String dir = System.getProperty("test.dir");
 		
 		for (String file : harness.getExamples(dir))
 		{

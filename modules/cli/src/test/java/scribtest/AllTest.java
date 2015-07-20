@@ -64,10 +64,16 @@ public class AllTest {
 		
 		try {
 			// TODO: For now just locate classpath for resources - later maybe directly execute job
-			URL url=ClassLoader.getSystemResource("good");
-			String dir = url.getFile().substring(0, url.getFile().length()-5);
-
-			CommandLine cl=new CommandLine(example, "-ip", dir);
+			URL url = ClassLoader.getSystemResource("good");
+			String dir = url.getFile().substring(0, url.getFile().length()-("/good".length()));
+			
+			if (File.separator.equals("\\"))  // HACK: Windows
+			{
+				dir = dir.substring(1);
+				dir = dir.replace("/", "\\");
+			}
+			
+			CommandLine cl = new CommandLine(example, "-ip", dir);
 			cl.run();
 			assertFalse("Expecting exception", hasErrors);
 		} catch (RuntimeScribbleException e) {

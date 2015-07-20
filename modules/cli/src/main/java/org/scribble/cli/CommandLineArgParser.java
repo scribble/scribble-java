@@ -212,7 +212,7 @@ public class CommandLineArgParser
 
 	private static boolean validatePaths(String paths)
 	{
-		for (String path : paths.split(":"))
+		for (String path : paths.split(File.pathSeparator))
 		{
 			if (!new File(path).isDirectory())
 			{
