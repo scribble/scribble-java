@@ -15,22 +15,23 @@ public class ClassBuilder
 	public static final String RETURN = "return";
 	public static final String STATIC = "static";
 	public static final String SUPER = "super";
+	public static final String THIS = "this";
 	
 	private String packname;  // null for non- top-level class
+	private final List<String> imports = new LinkedList<String>();
+	private final List<String> mods = new LinkedList<String>();
+
 	private String name;
 	private String superc;  // null if none explicit
 	private final List<String> ifaces = new LinkedList<String>();
-
-	private final List<String> imports = new LinkedList<String>();
-	private final List<String> mods = new LinkedList<String>();
 	
-	// Maybe generalise as members (e.g. for classes)
 	private final List<FieldBuilder> fields = new LinkedList<>();
 	private final List<MethodBuilder> ctors = new LinkedList<>();
 	private final List<MethodBuilder> methods = new LinkedList<>();
 	private final List<EnumBuilder> enums = new LinkedList<>();
-	// TODO classes -- check suitable modifiers etc on generation
+	private final List<ClassBuilder> classes = new LinkedList<>();
 
+	// No name par because so far useful to start constructing before setting the name
 	public ClassBuilder()
 	{
 		
@@ -39,16 +40,6 @@ public class ClassBuilder
 	public void setPackage(String packname)
 	{
 		this.packname = packname;
-	}
-
-	public void setSuperClass(String superc)
-	{
-		this.superc = superc;
-	}
-	
-	public void addInterfaces(String... ifaces)
-	{
-		this.ifaces.addAll(Arrays.asList(ifaces));
 	}
 	
 	public void addImports(String... imports)
@@ -64,6 +55,16 @@ public class ClassBuilder
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public void setSuperClass(String superc)
+	{
+		this.superc = superc;
+	}
+	
+	public void addInterfaces(String... ifaces)
+	{
+		this.ifaces.addAll(Arrays.asList(ifaces));
 	}
 	
 	public FieldBuilder newField(String name)
@@ -100,11 +101,19 @@ public class ClassBuilder
 		return eb;
 	}
 	
+	public ClassBuilder newClass()
+	{
+		ClassBuilder cb = new ClassBuilder();
+		this.classes.add(cb);
+		return cb;
+	}
+	
 	protected List<MethodBuilder> getConstructors()
 	{
 		return this.ctors;
 	}
 	
+	// No validation here: javac is for that
 	public String generate()
 	{
 		String clazz = "";
@@ -141,7 +150,7 @@ public class ClassBuilder
 		if (!this.enums.isEmpty())
 		{
 			clazz += "\n";
-			clazz += this.enums.stream().map((fb) -> fb.generate()).collect(Collectors.joining("\n"));
+			clazz += this.enums.stream().map((eb) -> eb.generate()).collect(Collectors.joining("\n"));
 		}
 		if (!this.fields.isEmpty())
 		{
@@ -159,6 +168,11 @@ public class ClassBuilder
 			clazz += this.methods.stream().map((mb) -> mb.generate()).collect(Collectors.joining("\n\n"));
 		}
 		clazz += "\n}";
+		if (!this.classes.isEmpty())
+		{
+			clazz += "\n\n";
+			clazz += this.classes.stream().map((cb) -> cb.generate()).collect(Collectors.joining("\n\n"));
+		}
 		return clazz;
 	}
 }

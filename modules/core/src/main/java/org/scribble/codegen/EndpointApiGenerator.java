@@ -40,7 +40,7 @@ public class EndpointApiGenerator
 	public static final String BRANCHSOCKET_CLASS = "org.scribble.net.BranchSocket";
 	public static final String ENDSOCKET_CLASS = "org.scribble.net.EndSocket";
 	
-	private static final String SCRIBSOCKET_EP_FIELD = "this.ep";
+	private static final String SCRIBSOCKET_EP_FIELD = ClassBuilder.THIS + ".ep";
 	
 	private final Job job;
 	private final GProtocolName gpn;  // full name
@@ -396,8 +396,8 @@ public class EndpointApiGenerator
 		MethodBuilder ctor = cb.getConstructors().iterator().next();
 		ctor.addParameters(branchName + "." + enumClass + " " + OP_PARAM,
 				SCRIBMESSAGE_CLASS + " " + MESSAGE_PARAM);
-		ctor.addBodyLine("this." + OP_FIELD + " = " + OP_PARAM + ";");
-		ctor.addBodyLine("this." + MESSAGE_FIELD + " = " + MESSAGE_PARAM + ";");
+		ctor.addBodyLine(ClassBuilder.THIS + "." + OP_FIELD + " = " + OP_PARAM + ";");
+		ctor.addBodyLine(ClassBuilder.THIS + "." + MESSAGE_FIELD + " = " + MESSAGE_PARAM + ";");
 
 		FieldBuilder fb1 = cb.newField(OP_FIELD);
 		fb1.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
@@ -439,7 +439,7 @@ public class EndpointApiGenerator
 	{
 		final String SCRIBMESSAGE_OP_FIELD = "op";
 
-		String op = "this." + messageField + "." + SCRIBMESSAGE_OP_FIELD;
+		String op = ClassBuilder.THIS + "." + messageField + "." + SCRIBMESSAGE_OP_FIELD;
 		mb.addBodyLine("if (!" + op + ".equals(" + opClassName + ")) {");
 		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " "
 					+ SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");

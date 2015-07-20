@@ -1,7 +1,9 @@
 package org.scribble.codegen;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -29,8 +31,8 @@ public class SessionApiGenerator
 	private final GProtocolName gpn;  // full name
 
 	private final ClassBuilder cb = new ClassBuilder();
-	private final Map<Role, ClassBuilder> roles = new HashMap<>();
-	private final Map<MessageId<?>, ClassBuilder> mids = new HashMap<>();
+	private final Set<Role> roles = new HashSet<>();
+	private final Set<MessageId<?>> mids = new HashSet<>();
 
 	public SessionApiGenerator(Job job, GProtocolName fullname) throws ScribbleException
 	{
@@ -47,8 +49,8 @@ public class SessionApiGenerator
 		String simpname = getSessionClassName(this.gpn);
 		String path = getPackageName(this.gpn).replace('.', '/') + "/" + simpname + ".java";
 		StringBuilder sb = new StringBuilder(this.cb.generate());
-		this.roles.values().forEach((cb) -> sb.append("\n\n").append(cb.generate()) );
-		this.mids.values().forEach((cb) -> sb.append("\n\n").append(cb.generate()) );
+		//this.roles.values().forEach((cb) -> sb.append("\n\n").append(cb.generate()) );
+		//this.mids.values().forEach((cb) -> sb.append("\n\n").append(cb.generate()) );
 		Map<String, String> map = new HashMap<>();
 		map.put(path, sb.toString());
 		return map;
@@ -86,8 +88,8 @@ public class SessionApiGenerator
 		fb3.setExpression(SessionApiGenerator.SESSIONTYPEFACTORY_CLASS
 				+ ".parseGlobalProtocolName(\"" + gpn + "\")");
 
-		this.roles.keySet().stream().forEach((r) -> addRoleField(this.cb, r));
-		this.mids.keySet().stream().forEach((mid) -> addOpField(this.cb, mid));
+		this.roles.stream().forEach((r) -> addRoleField(this.cb, r));
+		this.mids.stream().forEach((mid) -> addOpField(this.cb, mid));
 
 		MethodBuilder ctor = this.cb.newConstructor();
 		ctor.addModifiers(ClassBuilder.PUBLIC);
@@ -123,7 +125,11 @@ public class SessionApiGenerator
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
 		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
-		coll.getNames().stream().forEach((mid) -> this.mids.put(mid, constructOpClass(mid)));
+		for (MessageId<?> mid : coll.getNames())
+		{
+			constructOpClass(this.cb.newClass(), mid);
+			this.mids.add(mid);
+		}
 	}
 
 	private void constructRoleClasses() throws ScribbleException
@@ -131,22 +137,25 @@ public class SessionApiGenerator
 		Module mod = this.job.getContext().getModule(gpn.getPrefix());
 		GProtocolName simpname = gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
-		gpd.header.roledecls.getRoles().stream().forEach((r) -> this.roles.put(r, constructRoleClass(r))); 
+		for (Role r : gpd.header.roledecls.getRoles())
+		{
+			constructRoleClass(this.cb.newClass(), r);
+			this.roles.add(r);
+		}
 	}
 	
-	private static ClassBuilder constructRoleClass(Role r)
+	private static ClassBuilder constructRoleClass(ClassBuilder cb, Role r)
 	{
-		return constructSingletonClass(SessionApiGenerator.ROLE_CLASS, getRoleClassName(r));
+		return constructSingletonClass(cb, SessionApiGenerator.ROLE_CLASS, getRoleClassName(r));
 	}
 
-	private static ClassBuilder constructOpClass(MessageId<?> mid)
+	private static ClassBuilder constructOpClass(ClassBuilder cb, MessageId<?> mid)
 	{
-		return constructSingletonClass(SessionApiGenerator.OP_CLASS, getOpClassName(mid));
+		return constructSingletonClass(cb, SessionApiGenerator.OP_CLASS, getOpClassName(mid));
 	}
 	
-	private static ClassBuilder constructSingletonClass(String superc, String type)
+	private static ClassBuilder constructSingletonClass(ClassBuilder cb, String superc, String type)
 	{
-		ClassBuilder cb = new ClassBuilder();
 		cb.setName(type);
 		cb.setSuperClass(superc);
 
