@@ -1,6 +1,7 @@
 package org.scribble.ast.global;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Constants;
 import org.scribble.ast.Interrupt;
@@ -181,13 +182,7 @@ public class GInterrupt extends Interrupt implements GSimpleInteractionNode
 	@Override
 	public String toString()
 	{
-		List<MessageNode> msgs = this.getMessages();
-		StringBuilder sb = new StringBuilder(msgs.get(0).toString());
-		msgs.subList(1, msgs.size()).stream().forEach((msg) ->
-				{
-					sb.append(", " + msg);
-				});
-		sb.append(" " + Constants.BY_KW + " " + this.src + ";");
-		return sb.toString();
+		return this.getMessages().stream().map((msg) -> msg.toString()).collect(Collectors.joining(", "))
+				+ " " + Constants.BY_KW + " " + this.src + ";";
 	}
 }

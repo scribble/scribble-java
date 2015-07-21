@@ -1,6 +1,7 @@
 package org.scribble.ast.local;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
@@ -61,13 +62,7 @@ public class LSend extends MessageTransfer<Local> implements LSimpleInteractionN
 	@Override
 	public String toString()
 	{
-		List<RoleNode> dests = getDestinations();
-		StringBuilder sb = new StringBuilder(this.msg + " " + Constants.TO_KW + " " + dests.get(0));
-		dests.subList(1, dests.size()).stream().forEach((dest) ->
-				{
-					sb.append(", " + dest);
-				});
-		sb.append(";");
-		return sb.toString();
+		return this.msg + " " + Constants.TO_KW + " "
+					+ getDestinations().stream().map((dest) -> dest.toString()).collect(Collectors.joining(", ")) + ";";
 	}
 }

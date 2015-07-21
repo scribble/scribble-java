@@ -25,10 +25,10 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.InlinedWFChoiceChecker;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
-import org.scribble.visit.env.InlinedWFChoiceEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 import org.scribble.visit.env.ModelEnv;
 
 // FIXME: make base MessageTransferDelegate?
@@ -40,7 +40,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	}
 
 	@Override
-	public GMessageTransfer leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GMessageTransfer leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer msgtrans = (GMessageTransfer) visited;
 		
@@ -50,7 +50,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 			throw new ScribbleException("Role not enabled: " + src);
 		}
 		Message msg = msgtrans.msg.toMessage();
-		InlinedWFChoiceEnv env = checker.popEnv();
+		WFChoiceEnv env = checker.popEnv();
 		for (Role dest : msgtrans.getDestinations().stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
 		{
 			env = env.addMessage(src, dest, msg);

@@ -44,4 +44,7 @@ public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInte
 	{
 		return this.dests.stream().map((rn) -> rn.toName()).collect(Collectors.toList());
 	}
+	
+	@Override
+	public abstract String toString();
 }

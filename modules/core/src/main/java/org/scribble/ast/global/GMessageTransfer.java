@@ -1,6 +1,7 @@
 package org.scribble.ast.global;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
@@ -52,14 +53,7 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 	@Override
 	public String toString()
 	{
-		List<RoleNode> dests = getDestinations();
-		StringBuilder sb = new StringBuilder(this.msg + " " + Constants.FROM_KW + " " + this.src + " " + Constants.TO_KW + " ");
-		sb.append(dests.get(0));
-		dests.subList(1, dests.size()).stream().forEach((dest) ->
-				{
-					sb.append(", " + dest);
-				});
-		sb.append(";");
-		return sb.toString();
+		return this.msg + " " + Constants.FROM_KW + " " + this.src + " " + Constants.TO_KW + " "
+					+ getDestinations().stream().map((dest) -> dest.toString()).collect(Collectors.joining(", ")) + ";";
 	}
 }

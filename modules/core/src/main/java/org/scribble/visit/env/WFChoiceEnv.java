@@ -12,7 +12,7 @@ import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.MessageIdMap;
 
-public class InlinedWFChoiceEnv extends Env<InlinedWFChoiceEnv>
+public class WFChoiceEnv extends Env<WFChoiceEnv>
 {
 	private static final Role DUMMY_ROLE = new Role("__ROLE");
 	private static final Op ROOT_OPERATOR = new Op("__ROOT");
@@ -25,52 +25,52 @@ public class InlinedWFChoiceEnv extends Env<InlinedWFChoiceEnv>
 	private MessageIdMap initial;  // message transfers recorded here in block envs
 	//private MessageIdMap initialInterrupts;  //  interrupts recorded here in interruptible env
 	
-	public InlinedWFChoiceEnv()
+	public WFChoiceEnv()
 	{
 		//this(new MessageIdMap(), new MessageIdMap());
 		this(new MessageIdMap());
 	}
 	
 	//protected InlinedWFChoiceEnv(MessageIdMap initial, MessageIdMap initialInterrupts)
-	protected InlinedWFChoiceEnv(MessageIdMap initial)
+	protected WFChoiceEnv(MessageIdMap initial)
 	{
 		this.initial = new MessageIdMap(initial);
 		//this.initialInterrupts = new MessageIdMap(initialInterrupts);
 	}
 
 	@Override
-	protected InlinedWFChoiceEnv copy()
+	protected WFChoiceEnv copy()
 	{
 		//return new InlinedWFChoiceEnv(this.initial, this.initialInterrupts);
-		return new InlinedWFChoiceEnv(this.initial);
+		return new WFChoiceEnv(this.initial);
 	}
 	
-	public InlinedWFChoiceEnv clear()
+	public WFChoiceEnv clear()
 	{
-		InlinedWFChoiceEnv copy = copy();
+		WFChoiceEnv copy = copy();
 		copy.initial.clear();
 		//copy.initialInterrupts.clear();
 		return copy;
 	}
 
 	@Override
-	public InlinedWFChoiceEnv enterContext()
+	public WFChoiceEnv enterContext()
 	{
 		//return new InlinedWFChoiceEnv(this.initial, this.initialInterrupts);
-		return new InlinedWFChoiceEnv(this.initial);
+		return new WFChoiceEnv(this.initial);
 	}
 	
 	@Override
-	public InlinedWFChoiceEnv mergeContext(InlinedWFChoiceEnv child)
+	public WFChoiceEnv mergeContext(WFChoiceEnv child)
 	{
 		return mergeContexts(Arrays.asList(child));
 	}
 
 	@Override
-	public InlinedWFChoiceEnv mergeContexts(List<InlinedWFChoiceEnv> children)
+	public WFChoiceEnv mergeContexts(List<WFChoiceEnv> children)
 	{
-		InlinedWFChoiceEnv copy = copy();
-		for (InlinedWFChoiceEnv child : children)
+		WFChoiceEnv copy = copy();
+		for (WFChoiceEnv child : children)
 		{
 			merge(this, copy.initial, child.initial);
 			//merge(this, copy.initialInterrupts, child.initialInterrupts);
@@ -78,7 +78,7 @@ public class InlinedWFChoiceEnv extends Env<InlinedWFChoiceEnv>
 		return copy;
 	}
 
-	private static void merge(InlinedWFChoiceEnv parent, MessageIdMap foo, MessageIdMap child)
+	private static void merge(WFChoiceEnv parent, MessageIdMap foo, MessageIdMap child)
 	{
 		for (Role dest : child.getDestinations())
 		{
@@ -92,21 +92,21 @@ public class InlinedWFChoiceEnv extends Env<InlinedWFChoiceEnv>
 		}
 	}
 	
-	public InlinedWFChoiceEnv enableRoleForRootProtocolDecl(Role role)
+	public WFChoiceEnv enableRoleForRootProtocolDecl(Role role)
 	{
-		return addMessage(InlinedWFChoiceEnv.DUMMY_ROLE, role, InlinedWFChoiceEnv.ROOT_MESSAGESIGNATURE);
+		return addMessage(WFChoiceEnv.DUMMY_ROLE, role, WFChoiceEnv.ROOT_MESSAGESIGNATURE);
 	}
 
-	public InlinedWFChoiceEnv enableChoiceSubject(Role role)
+	public WFChoiceEnv enableChoiceSubject(Role role)
 	{
-		return addMessage(InlinedWFChoiceEnv.DUMMY_ROLE, role, InlinedWFChoiceEnv.SUBJECT_MESSAGESIGNATURE);
+		return addMessage(WFChoiceEnv.DUMMY_ROLE, role, WFChoiceEnv.SUBJECT_MESSAGESIGNATURE);
 	}
 
 	// The "main" public routine
 	// Rename: more like enable-if-not-already
-	public InlinedWFChoiceEnv addMessage(Role src, Role dest, Message msg)
+	public WFChoiceEnv addMessage(Role src, Role dest, Message msg)
 	{
-		InlinedWFChoiceEnv copy = copy();
+		WFChoiceEnv copy = copy();
 		addMessages(copy.initial, src, dest, Arrays.asList(msg.getId()));
 		return copy;
 	}
