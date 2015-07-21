@@ -7,7 +7,12 @@
 
 module Test;
 
-///*
+global protocol Foo(role A, role B)
+{
+	
+}
+
+/*
 import Test2;
 
 type <java> "java.lang.String" from "rt.jar" as String;

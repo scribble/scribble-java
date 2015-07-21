@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ParamKind;
@@ -46,18 +47,10 @@ public abstract class HeaderParamDeclList<K extends ParamKind> extends ScribNode
 		return this.decls.isEmpty();
 	}
 
+	// Without enclosing braces -- added by subclasses
 	@Override
 	public String toString()
 	{
-		if (isEmpty())
-		{
-			return "";
-		}
-		StringBuilder sb = new StringBuilder(this.decls.get(0).toString());
-		this.decls.subList(1, this.decls.size()).stream().forEach((nd) ->
-				{
-					sb.append(", " + nd);
-				});
-		return sb.toString();
+		return this.decls.stream().map((nd) -> nd.toString()).collect(Collectors.joining(", "));
 	}
 }
