@@ -32,7 +32,7 @@ public class Job
 	{
 		runContextBuildingPasses();
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
-		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
+		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);  // Maybe consider as context building
 		//runNodeVisitorPass(GlobalModelBuilder.class);  // Incomplete
 		runVisitorPassOnAllModules(WFChoiceChecker.class);
 		runProjectionPasses();

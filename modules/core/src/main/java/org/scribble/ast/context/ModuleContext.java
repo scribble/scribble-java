@@ -140,6 +140,7 @@ public class ModuleContext
 				ModuleName fullmodname = im.modname.toName();
 				if (!this.modules.keySet().contains(fullmodname))
 				{
+					// FIXME: simple names should visible from local imports only, not transitively
 					ModuleName modname = (im.isAliased()) ? im.getAlias() : fullmodname;  // visible name not sufficient?
 					Module m = jcontext.getModule(fullmodname);
 					addModule(m, modname);

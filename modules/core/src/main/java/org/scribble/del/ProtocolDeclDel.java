@@ -25,6 +25,13 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 	}
 	
 	protected abstract ProtocolDeclDel<K> copy();
+		
+	@Override
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	{
+		disamb.clear();
+		return visited;
+	}
 
 	@Override
 	public void enterProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder) throws ScribbleException
@@ -39,13 +46,6 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 	}
 	
 	protected abstract void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role);
-	
-	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
-	{
-		disamb.clear();
-		return visited;
-	}
 
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
