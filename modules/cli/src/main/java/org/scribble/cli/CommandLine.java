@@ -32,14 +32,14 @@ import org.scribble.visit.JobContext;
 // Maybe no point to be a Runnable
 public class CommandLine implements Runnable
 {
-	protected enum Arg { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, EP_API, OUTPUT }
+	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, EP_API, OUTPUT }
 	
-	private final Map<Arg, String[]> args;  // Maps each flag to list of associated argument values
+	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 	
 	public CommandLine(String... args)
 	{
 		this.args = new CommandLineArgParser(args).getArgs();
-		if (!this.args.containsKey(Arg.MAIN))
+		if (!this.args.containsKey(ArgFlag.MAIN))
 		{
 			throw new RuntimeException("No main module has been specified\r\n");
 		}
@@ -57,19 +57,19 @@ public class CommandLine implements Runnable
 		try
 		{
 			job.checkWellFormedness();
-			if (this.args.containsKey(Arg.PROJECT))
+			if (this.args.containsKey(ArgFlag.PROJECT))
 			{
 				outputProjection(job);
 			}
-			if (this.args.containsKey(Arg.FSM))
+			if (this.args.containsKey(ArgFlag.FSM))
 			{
 				outputFsm(job);
 			}
-			if (this.args.containsKey(Arg.SESS_API))
+			if (this.args.containsKey(ArgFlag.SESS_API))
 			{
 				outputSessionApi(job);
 			}
-			if (this.args.containsKey(Arg.EP_API))
+			if (this.args.containsKey(ArgFlag.EP_API))
 			{
 				outputEndpointApi(job);
 			}
@@ -83,8 +83,8 @@ public class CommandLine implements Runnable
 	private void outputProjection(Job job)
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.PROJECT)[0]);
-		Role role = checkRoleArg(jcontext, fullname, this.args.get(Arg.PROJECT)[1]);
+		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.PROJECT)[0]);
+		Role role = checkRoleArg(jcontext, fullname, this.args.get(ArgFlag.PROJECT)[1]);
 		Module proj = jcontext.getProjection(fullname, role);
 		System.out.println(proj);
 	}
@@ -92,8 +92,8 @@ public class CommandLine implements Runnable
 	private void outputFsm(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.FSM)[0]);
-		Role role = checkRoleArg(jcontext, fullname, this.args.get(Arg.FSM)[1]);
+		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.FSM)[0]);
+		Role role = checkRoleArg(jcontext, fullname, this.args.get(ArgFlag.FSM)[1]);
 		buildEndointGraph(job, fullname, role);
 		System.out.println(jcontext.getEndointGraph(fullname, role));
 	}
@@ -101,7 +101,7 @@ public class CommandLine implements Runnable
 	private void outputSessionApi(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.SESS_API)[0]);
+		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.SESS_API)[0]);
 		Map<String, String> classes = job.generateSessionApi(fullname);
 		outputClasses(classes);
 	}
@@ -109,8 +109,8 @@ public class CommandLine implements Runnable
 	private void outputEndpointApi(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(Arg.EP_API)[0]);
-		Role role = checkRoleArg(jcontext, fullname, this.args.get(Arg.EP_API)[1]);
+		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.EP_API)[0]);
+		Role role = checkRoleArg(jcontext, fullname, this.args.get(ArgFlag.EP_API)[1]);
 		Map<String, String> classes = job.generateEndpointApi(fullname, role);
 		outputClasses(classes);
 	}
@@ -119,9 +119,9 @@ public class CommandLine implements Runnable
 	private void outputClasses(Map<String, String> classes) throws ScribbleException
 	{
 		Consumer<String> f;
-		if (this.args.containsKey(Arg.OUTPUT))
+		if (this.args.containsKey(ArgFlag.OUTPUT))
 		{
-			String dir = this.args.get(Arg.OUTPUT)[0];
+			String dir = this.args.get(ArgFlag.OUTPUT)[0];
 			f = (path) -> { ScribUtil.handleLambdaScribbleException(() ->
 							{
 								writeToFile(dir + "/" + path, classes.get(path)); return null; 
@@ -140,7 +140,7 @@ public class CommandLine implements Runnable
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
 		if (gpd == null || !gpd.header.roledecls.getRoles().contains(role))
 		{
-			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(Arg.FSM)));
+			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
 		}
 		job.buildFsms(fullname, role);
 	}
@@ -153,10 +153,10 @@ public class CommandLine implements Runnable
 
 	private MainContext newMainContext()
 	{
-		boolean debug = this.args.containsKey(Arg.VERBOSE);
-		Path mainpath = CommandLine.parseMainPath(this.args.get(Arg.MAIN)[0]);
-		List<Path> impaths = this.args.containsKey(Arg.PATH)
-				? CommandLine.parseImportPaths(this.args.get(Arg.PATH)[0])
+		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);
+		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN)[0]);
+		List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
+				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		return new MainContext(debug, locator, mainpath);

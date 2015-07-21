@@ -53,7 +53,7 @@ public class TestWellFormedness {
 		URL url=ClassLoader.getSystemResource("good");
 		String dir = url.getFile();
 		
-		for (String file : harness.getExamples(dir))
+		for (String file : harness.findTests(dir))
 		{
 			result.add(new Object[] { file, false });
 		}
@@ -61,7 +61,7 @@ public class TestWellFormedness {
 		url=ClassLoader.getSystemResource("bad");
 		dir = url.getFile();
 		
-		for (String file : harness.getExamples(dir))
+		for (String file : harness.findTests(dir))
 		{
 			result.add(new Object[] { file, true });
 		}

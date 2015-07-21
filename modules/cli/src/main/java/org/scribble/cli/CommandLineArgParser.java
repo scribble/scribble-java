@@ -15,19 +15,19 @@ public class CommandLineArgParser
 	public static final String API_FLAG = "-api";
 	public static final String OUTPUT_FLAG = "-d";
 	
-	private final Map<String, CommandLine.Arg> FLAGS = new HashMap<>();
+	private final Map<String, CommandLine.ArgFlag> FLAGS = new HashMap<>();
 	{
-		this.FLAGS.put(CommandLineArgParser.VERBOSE_FLAG, CommandLine.Arg.VERBOSE);
-		this.FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.Arg.PATH);
-		this.FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.Arg.PROJECT);
-		this.FLAGS.put(CommandLineArgParser.FSM_FLAG, CommandLine.Arg.FSM);
-		this.FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.Arg.SESS_API);
-		this.FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.Arg.EP_API);
-		this.FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.Arg.OUTPUT);
+		this.FLAGS.put(CommandLineArgParser.VERBOSE_FLAG, CommandLine.ArgFlag.VERBOSE);
+		this.FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.ArgFlag.PATH);
+		this.FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.ArgFlag.PROJECT);
+		this.FLAGS.put(CommandLineArgParser.FSM_FLAG, CommandLine.ArgFlag.FSM);
+		this.FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.ArgFlag.SESS_API);
+		this.FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
+		this.FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.ArgFlag.OUTPUT);
 	}
 
 	private final String[] args;
-	private final Map<CommandLine.Arg, String[]> parsed = new HashMap<>();
+	private final Map<CommandLine.ArgFlag, String[]> parsed = new HashMap<>();
 	
 	public CommandLineArgParser(String[] args)
 	{
@@ -35,7 +35,7 @@ public class CommandLineArgParser
 		parseArgs();
 	}		
 	
-	public Map<CommandLine.Arg, String[]> getArgs()
+	public Map<CommandLine.ArgFlag, String[]> getArgs()
 	{
 		return this.parsed;
 	}
@@ -51,7 +51,7 @@ public class CommandLineArgParser
 			}
 			else
 			{
-				if (this.parsed.containsKey(CommandLine.Arg.MAIN))
+				if (this.parsed.containsKey(CommandLine.ArgFlag.MAIN))
 				{
 					// Could be the second bad argument -- we didn't validating the value of the main arg
 					throw new RuntimeException("Duplicate main module arg: " + arg);
@@ -71,7 +71,7 @@ public class CommandLineArgParser
 		{
 			case CommandLineArgParser.VERBOSE_FLAG:
 			{
-				this.parsed.put(CommandLine.Arg.VERBOSE, new String[0]);
+				this.parsed.put(CommandLine.ArgFlag.VERBOSE, new String[0]);
 				return i;
 			}
 			case CommandLineArgParser.PATH_FLAG:
@@ -112,7 +112,7 @@ public class CommandLineArgParser
 		{
 			throw new RuntimeException("Bad: " + main);
 		}
-		this.parsed.put(CommandLine.Arg.MAIN, new String[] { main } );
+		this.parsed.put(CommandLine.ArgFlag.MAIN, new String[] { main } );
 	}
 
 	private int parsePath(int i)
