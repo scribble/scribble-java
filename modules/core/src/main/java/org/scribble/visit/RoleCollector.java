@@ -5,6 +5,7 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 
+// Second pass for ProtocolDeclContext building
 public class RoleCollector extends NameCollector<Role>
 {
 	public RoleCollector(Job job)

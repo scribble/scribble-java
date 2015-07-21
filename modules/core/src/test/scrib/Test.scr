@@ -50,17 +50,37 @@ global protocol Bar(role A, role B)
 //*/
 
 
-global protocol Foo(role A, role B, role C)
+/*global protocol Foo(role A, role B, role C)
 {
 	1() from A to B;
 	1() from A to C;
 	do Bar(A, B, C);
 }
 
+global protocol Bar(role D, role E)
+{
+	2() from D to E;
+}
+
+global protocol Foo(role A, role B)
+{
+	do Bar(A, A);
+}
+
 global protocol Bar(role C, role D)
 {
 	1() from C to D;
 }
+
+global protocol Foo(role A, role A)
+{
+	1() from A to A;
+}
+
+.. disallow mcast
+.. disallow self comm
+.. gchoice
+.. add roledecllist and rolearglist disamb tests*/
 
 
 /*

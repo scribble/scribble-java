@@ -43,8 +43,11 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
-import org.scribble.del.ParamDeclDel;
+import org.scribble.del.NonRoleParamDeclDel;
+import org.scribble.del.NonRoleParamDeclListDel;
+import org.scribble.del.RoleArgListDel;
 import org.scribble.del.RoleDeclDel;
+import org.scribble.del.RoleDeclListDel;
 import org.scribble.del.ScribDel;
 import org.scribble.del.global.GChoiceDel;
 import org.scribble.del.global.GContinueDel;
@@ -172,7 +175,7 @@ public class AstFactoryImpl implements AstFactory
 	public RoleDeclList RoleDeclList(List<RoleDecl> rds)
 	{
 		RoleDeclList rdl = new RoleDeclList(rds);
-		rdl = del(rdl, createDefaultDelegate());
+		rdl = del(rdl, new RoleDeclListDel());
 		return rdl;
 	}
 
@@ -188,7 +191,7 @@ public class AstFactoryImpl implements AstFactory
 	public NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> pds)
 	{
 		NonRoleParamDeclList pdl = new NonRoleParamDeclList(pds);
-		pdl = del(pdl, createDefaultDelegate());
+		pdl = del(pdl, new NonRoleParamDeclListDel());
 		return pdl;
 	}
 
@@ -196,7 +199,7 @@ public class AstFactoryImpl implements AstFactory
 	public <K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(K kind, NonRoleParamNode<K> namenode)
 	{
 		NonRoleParamDecl<K> pd = new NonRoleParamDecl<K>(kind, namenode);
-		pd = del(pd, new ParamDeclDel());
+		pd = del(pd, new NonRoleParamDeclDel());
 		return pd;
 	}
 
@@ -268,7 +271,7 @@ public class AstFactoryImpl implements AstFactory
 	public RoleArgList RoleArgList(List<RoleArg> ris)
 	{
 		RoleArgList rdl = new RoleArgList(ris);
-		rdl = del(rdl, createDefaultDelegate());
+		rdl = del(rdl, new RoleArgListDel());
 		return rdl;
 	}
 

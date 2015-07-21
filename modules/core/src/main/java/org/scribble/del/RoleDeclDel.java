@@ -13,7 +13,7 @@ public class RoleDeclDel extends ScribDelBase
 	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 		RoleDecl rd = (RoleDecl) child;
-		disamb.addRole(rd.getDeclName());
+		disamb.addRole(rd.getDeclName());  // Could check distinct here, but doing it uniformly in HeaderParamDeclListDel
 	}
 
 	@Override

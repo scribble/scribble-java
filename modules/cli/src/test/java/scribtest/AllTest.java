@@ -27,7 +27,7 @@ public class AllTest
 	protected static final boolean GOOD_TEST = false;  // !isBadTest
 	protected static final boolean BAD_TEST = true;
 
-	// under test/ (or target/test-classes/)
+	// under test..or..src/test/resources (or target/test-classes/)
 	protected static final String GOOD_ROOT = "good";
 	protected static final String BAD_ROOT = "bad";
 	

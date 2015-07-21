@@ -94,6 +94,8 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 					Set<MessageId<?>> mids = benv0.getEnabled().getMessages(dest);
 					benvs.stream().map((e) -> e.getEnabled().getMessages(dest)).forEach((ms) ->
 							{
+								// FIXME: only tests first disjoint with others
+								// FIXME: Colections.disjoint
 								Set<MessageId<?>> tmp = new HashSet<MessageId<?>>(ms);
 								tmp.retainAll(mids);
 								if (!tmp.isEmpty())
