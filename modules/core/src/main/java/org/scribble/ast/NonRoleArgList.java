@@ -65,17 +65,6 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	@Override
 	public String toString()
 	{
-		if (isEmpty())
-		{
-			return "";
-		}
-		List<NonRoleArg> args = getDoArgs();
-		StringBuilder sb = new StringBuilder("<" + args.get(0));
-		args.subList(1, args.size()).stream().forEach((a) -> 
-				{
-					sb.append(", " + a);
-				});
-		sb.append(">");
-		return sb.toString();
+		return "<" + getDoArgs().stream().map((a) -> a.toString()).collect(Collectors.joining(", " )) + ">";
 	}
 }

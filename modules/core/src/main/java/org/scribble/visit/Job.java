@@ -38,7 +38,7 @@ public class Job
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
 		//runNodeVisitorPass(WFChoiceChecker.class);
-		runVisitorPassOnAllModules(InlinedWFChoiceChecker.class);
+		runVisitorPassOnAllModules(WFChoiceChecker.class);
 		runProjectionPasses();
 		runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}

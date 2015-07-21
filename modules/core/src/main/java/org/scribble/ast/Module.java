@@ -166,8 +166,8 @@ public class Module extends ScribNodeBase
 			ProtocolDecl<K> getProtocolDecl(List<ProtocolDecl<?>> pds, ProtocolName<K> simpname)
 	{
 		List<ProtocolDecl<?>> filtered = pds.stream()
-				.filter((pd) -> pd.header.getDeclName().equals(simpname))
-				.filter((pd) -> (simpname.getKind().equals(Global.KIND)) ? pd.isGlobal() : pd.isLocal())
+				.filter((pd) -> pd.header.getDeclName().equals(simpname)
+						&& (simpname.getKind().equals(Global.KIND)) ? pd.isGlobal() : pd.isLocal())
 				.collect(Collectors.toList());
 		if (filtered.size() != 1)
 		{

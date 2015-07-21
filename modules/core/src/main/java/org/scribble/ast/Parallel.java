@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -99,11 +100,8 @@ public abstract class Parallel<K extends ProtocolKind> extends CompoundInteracti
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder(Constants.PAR_KW + " " + this.blocks.get(0));
-		this.blocks.subList(1, this.blocks.size()).stream().forEach((block) ->
-				{
-					sb.append(" " + Constants.AND_KW + " " + block);
-				});
-		return sb.toString();
+		String sep = " " + Constants.AND_KW + " ";
+		return Constants.PAR_KW + " "
+					+ this.blocks.stream().map((block) -> block.toString()).collect(Collectors.joining(sep));
 	}
 }

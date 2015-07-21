@@ -1,6 +1,7 @@
 package org.scribble.ast;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -103,13 +104,10 @@ public abstract class Interruptible<K extends ProtocolKind> extends CompoundInte
 		String s = Constants.INTERRUPTIBLE_KW + " ";
 		if (!isScopeNodeImplicit())
 		{
-			s += this.scope + " ";
+			s += this.scope + ": ";
 		}
-		s += this.block + " " + Constants.WITH_KW + " {";
-		for (Interrupt interr : this.interrs)
-		{
-			s += "\n" + interr;
-		}
-		return s + "\n}";
+		s += this.block + " " + Constants.WITH_KW + " {\n";
+		s += this.interrs.stream().map((i) -> i.toString()).collect(Collectors.joining("\n")) + "\n";
+		return s + "}";
 	}
 }

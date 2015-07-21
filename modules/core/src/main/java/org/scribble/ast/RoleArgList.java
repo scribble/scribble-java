@@ -36,7 +36,7 @@ public class RoleArgList extends DoArgList<RoleArg>
 		return rl;
 	}
 
-	// FIXME: move to delegate?
+	// Move to delegate?
 	@Override
 	public RoleArgList project(Role self)
 	{
@@ -54,13 +54,6 @@ public class RoleArgList extends DoArgList<RoleArg>
 	@Override
 	public String toString()
 	{
-		List<RoleArg> args = getDoArgs();
-		StringBuilder sb = new StringBuilder("(" + args.get(0));
-		args.subList(1, args.size()).stream().forEach((ri) -> 
-				{
-					sb.append(", " + ri);
-				});
-		sb.append(")");
-		return sb.toString();
+		return "(" + getDoArgs().stream().map((a) -> a.toString()).collect(Collectors.joining(", ")) + ")";
 	}
 }

@@ -75,7 +75,7 @@ public class ImportModule extends ImportDecl<ModuleKind>
 	@Override
 	public String toString()
 	{
-		String s = Constants.IMPORT_KW + " " + modname;
+		String s = Constants.IMPORT_KW + " " + this.modname;
 		if (isAliased())
 		{
 			s += " " + Constants.AS_KW + " " + this.alias;

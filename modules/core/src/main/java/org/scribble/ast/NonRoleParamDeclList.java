@@ -66,7 +66,8 @@ public class NonRoleParamDeclList extends HeaderParamDeclList<NonRoleParamKind>
 				: "<" + super.toString() + ">";
 	}
 	
-	private static List<NonRoleParamDecl<NonRoleParamKind>> castParamDecls(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
+	private static List<NonRoleParamDecl<NonRoleParamKind>>
+			castParamDecls(List<? extends HeaderParamDecl<NonRoleParamKind>> decls)
 	{
 		return decls.stream().map((d) -> (NonRoleParamDecl<NonRoleParamKind>) d).collect(Collectors.toList());
 	}

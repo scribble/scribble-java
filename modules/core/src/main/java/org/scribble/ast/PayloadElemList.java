@@ -68,16 +68,6 @@ public class PayloadElemList extends ScribNodeBase
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder("(");
-		if (!isEmpty())
-		{
-			sb.append(this.elems.get(0).toString());
-			this.elems.subList(1, this.elems.size()).stream().forEach((pe) ->
-					{
-						sb.append(", " + pe);
-					});
-		}
-		sb.append(")");
-		return sb.toString();
+		return "(" + this.elems.stream().map((pe) -> pe.toString()).collect(Collectors.joining(", " )) + ")";
 	}
 }

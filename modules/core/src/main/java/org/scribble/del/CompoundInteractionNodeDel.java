@@ -4,9 +4,9 @@ import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.InlinedWFChoiceChecker;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.env.InlinedWFChoiceEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 
 public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel implements InteractionNodeDel
@@ -41,11 +41,11 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 	}
 
 	@Override
-	public CompoundInteractionNode<?> leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public CompoundInteractionNode<?> leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
-		InlinedWFChoiceEnv visited_env = checker.popEnv();  // popAndSet current
+		WFChoiceEnv visited_env = checker.popEnv();  // popAndSet current
 		setEnv(visited_env);
-		InlinedWFChoiceEnv parent_env = checker.popEnv();  // pop-merge-push parent
+		WFChoiceEnv parent_env = checker.popEnv();  // pop-merge-push parent
 		parent_env = parent_env.mergeContext(visited_env);
 		checker.pushEnv(parent_env);
 		return (CompoundInteractionNode<?>) visited;

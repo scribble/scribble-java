@@ -9,17 +9,16 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.visit.env.InlinedWFChoiceEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
-// FIXME: rename to WFChoiceChecker
-public class InlinedWFChoiceChecker extends UnfoldingVisitor<InlinedWFChoiceEnv>
+public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 {
 	// N.B. using pointer equality for checking if choice previously visited
 	// So UnfoldingVisitor cannot visit a clone
 	// equals method identity not suitable unless Ast nodes record additional info like syntactic position
 	private Set<Choice<?>> visited = new HashSet<>();	
 	
-	public InlinedWFChoiceChecker(Job job)
+	public WFChoiceChecker(Job job)
 	{
 		super(job);
 	}
@@ -62,9 +61,9 @@ public class InlinedWFChoiceChecker extends UnfoldingVisitor<InlinedWFChoiceEnv>
 	}
 
 	@Override
-	protected InlinedWFChoiceEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	protected WFChoiceEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
 	{
-		return new InlinedWFChoiceEnv();
+		return new WFChoiceEnv();
 	}
 	
 	@Override

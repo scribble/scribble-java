@@ -4,7 +4,7 @@ import org.scribble.ast.RoleDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.InlinedWFChoiceChecker;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.NameDisambiguator;
 
 public class RoleDeclDel extends ScribDelBase
@@ -17,7 +17,7 @@ public class RoleDeclDel extends ScribDelBase
 	}
 
 	@Override
-	public RoleDecl leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, InlinedWFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public RoleDecl leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		RoleDecl rd = (RoleDecl) visited;
 		Role role = rd.getDeclName();

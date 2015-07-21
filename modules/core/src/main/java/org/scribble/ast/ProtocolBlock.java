@@ -35,6 +35,6 @@ public abstract class ProtocolBlock<K extends ProtocolKind> extends CompoundInte
 	@Override
 	public String toString()
 	{
-		return "{\n" + this.seq + "\n}";
+		return "{\n" + this.seq + "\n}";  // Empty block will contain an blank line
 	}
 }

@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -43,15 +44,6 @@ public abstract class InteractionSeq<K extends ProtocolKind> extends ScribNodeBa
 	@Override
 	public String toString()
 	{
-		if (this.inters.isEmpty())
-		{
-			return "";
-		}
-		StringBuilder sb = new StringBuilder(this.inters.get(0).toString());
-		this.inters.subList(1, this.inters.size()).stream().forEach((in) ->
-				{
-					sb.append("\n" + in);
-				});
-		return sb.toString();
+		return this.inters.stream().map((i) -> i.toString()).collect(Collectors.joining("\n"));
 	}
 }
