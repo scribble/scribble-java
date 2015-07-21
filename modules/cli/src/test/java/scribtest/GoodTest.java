@@ -18,6 +18,7 @@ public class GoodTest extends AllTest
 		super(example, isBadTest);
 	}
 
+	// root is used as a default if the test.dir arg is not given
 	protected static Collection<Object[]> checkTestDirArg(boolean isBadTest, String root)
 	{
 		String dir = System.getProperty(TEST_DIR_FLAG);
