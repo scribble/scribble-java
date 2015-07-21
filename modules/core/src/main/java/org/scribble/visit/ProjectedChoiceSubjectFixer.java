@@ -3,7 +3,7 @@ package org.scribble.visit;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 
-public class ProjectedChoiceSubjectFixer extends ModuleVisitor
+public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 {
 	public ProjectedChoiceSubjectFixer(Job job)
 	{

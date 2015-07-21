@@ -11,9 +11,9 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.JobContext;
+import org.scribble.visit.ProtocolDeclContextBuilder;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 {
@@ -29,13 +29,13 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	protected void addSelfDependency(ContextBuilder builder, ProtocolName<?> proto, Role role)
+	protected void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role)
 	{
 		builder.addLocalProtocolDependency(role, (LProtocolName) proto, role);
 	}
 	
 	@Override
-	public LProtocolDecl leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
+	public LProtocolDecl leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
 		LProtocolDeclContext lcontext = new LProtocolDeclContext(builder.getLocalProtocolDependencyMap());

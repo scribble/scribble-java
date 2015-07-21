@@ -7,9 +7,7 @@
 
 module Test;
 
-import Test2;
-
-///*
+/*
 import Test2;
 
 type <java> "java.lang.String" from "rt.jar" as String;
@@ -50,6 +48,20 @@ global protocol Bar(role A, role B)
 	do Foo(A, B);
 }
 //*/
+
+
+global protocol Foo(role A, role B, role C)
+{
+	1() from A to B;
+	1() from A to C;
+	do Bar(A, B, C);
+}
+
+global protocol Bar(role C, role D)
+{
+	1() from C to D;
+}
+
 
 /*
 import Test2 as Bar;

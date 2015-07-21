@@ -20,7 +20,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ContextBuilder;
+import org.scribble.visit.ModuleContextBuilder;
 import org.scribble.visit.Projector;
 
 public class ModuleDel extends ScribDelBase
@@ -38,14 +38,14 @@ public class ModuleDel extends ScribDelBase
 	}
 
 	@Override
-	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder)
+	public void enterModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder)
 	{
 		builder.setModuleContext(new ModuleContext(builder.getJobContext(), (Module) child));
 	}
 
 	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)
 	@Override
-	public Module leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
+	public Module leaveModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		ModuleDel del = setModuleContext(builder.getModuleContext());
 		return (Module) visited.del(del);

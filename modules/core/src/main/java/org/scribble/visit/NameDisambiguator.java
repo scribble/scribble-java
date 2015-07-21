@@ -14,7 +14,7 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
-public class NameDisambiguator extends ModuleVisitor
+public class NameDisambiguator extends ModuleContextVisitor
 {
   // For implicit scope generation: reset per ProtocolDecl
 	//private int counter = 1;

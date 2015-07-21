@@ -28,8 +28,8 @@ public class AllTest
 	protected static final boolean BAD_TEST = true;
 
 	// under test/ (or target/test-classes/)
-	public static final String GOOD_ROOT = "good";
-	public static final String BAD_ROOT = "bad";
+	protected static final String GOOD_ROOT = "good";
+	protected static final String BAD_ROOT = "bad";
 	
 	private final String example;
 	private final boolean isBadTest;
@@ -76,7 +76,7 @@ public class AllTest
 			new CommandLine(this.example, CommandLineArgParser.PATH_FLAG, dir).run();
 			Assert.assertFalse("Expecting exception", this.isBadTest);
 		}
-		catch (RuntimeScribbleException e)
+		catch (RuntimeScribbleException e)  // Runtime because CommandLine is currently a Runnable (maybe shouldn't be; throw regular ScribbleException)
 		{
 			Assert.assertTrue("Unexpected exception '" + e.getCause().getMessage() + "'", this.isBadTest);
 		}

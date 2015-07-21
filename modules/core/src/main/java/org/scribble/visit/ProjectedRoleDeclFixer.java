@@ -3,7 +3,7 @@ package org.scribble.visit;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 
-public class ProjectedRoleDeclFixer extends ModuleVisitor
+public class ProjectedRoleDeclFixer extends ModuleContextVisitor
 {
 	public ProjectedRoleDeclFixer(Job job)
 	{

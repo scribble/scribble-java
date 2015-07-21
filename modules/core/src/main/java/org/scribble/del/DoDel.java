@@ -7,8 +7,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.JobContext;
+import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 
 public abstract class DoDel extends SimpleInteractionNodeDel
@@ -19,7 +19,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 	}
 
 	@Override
-	public Do<?> leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
+	public Do<?> leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		JobContext jcontext = builder.getJobContext();
 		ModuleContext mcontext = builder.getModuleContext();
@@ -29,7 +29,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		return doo;
 	}
 
-	protected abstract void addProtocolDependency(ContextBuilder builder, Role self, ProtocolName<?> proto, Role target);
+	protected abstract void addProtocolDependency(ProtocolDeclContextBuilder builder, Role self, ProtocolName<?> proto, Role target);
 
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
