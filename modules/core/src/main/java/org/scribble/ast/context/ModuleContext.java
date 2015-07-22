@@ -58,8 +58,7 @@ public class ModuleContext
 		if (!fullname.equals(simpname))
 		{
 			addModule(this.visible, root, simpname);  
-					// Adds simple name of root as visible
-					// Adds members qualified by simple name
+					// Adds simple name of root as visible, and members qualified by simple name
 		}
 		addVisible(jcontext, root);  
 				// Adds imports and members by their "direct" names (unqualified, except for no-alias imports)

@@ -5,7 +5,7 @@ package org.scribble.main;
 .. disallow self comm
 .. check role decl used
 .. moduledecl as namedecl
-.. test mvn
+.. test mvn install
 .. fix script
 .. individual test ignores (cf. whole directory) -- good for package testing
 */
