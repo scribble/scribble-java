@@ -26,9 +26,9 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ProjectedRoleDeclFixer;
+import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
 
@@ -36,7 +36,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 {
 	// Part of context building
 	@Override
-	protected void addProtocolDependency(ContextBuilder builder, Role self, ProtocolName<?> proto, Role target)
+	protected void addProtocolDependency(ProtocolDeclContextBuilder builder, Role self, ProtocolName<?> proto, Role target)
 	{
 		builder.addLocalProtocolDependency(self, (LProtocolName) proto, target);
 	}

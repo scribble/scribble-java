@@ -26,10 +26,10 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ContextBuilder;
-import org.scribble.visit.JobContext;
 import org.scribble.visit.GlobalModelBuilder;
+import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
+import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
@@ -47,14 +47,14 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	@Override
-	protected void addSelfDependency(ContextBuilder builder, ProtocolName<?> proto, Role role)
+	protected void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role)
 	{
 		builder.addGlobalProtocolDependency(role, (GProtocolName) proto, role);
 	}
 	
 	@Override
 	public GProtocolDecl
-			leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
+			leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		GProtocolDeclContext gcontext = new GProtocolDeclContext(builder.getGlobalProtocolDependencyMap());

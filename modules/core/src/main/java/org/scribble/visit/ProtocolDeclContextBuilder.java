@@ -1,7 +1,6 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.context.global.GDependencyMap;
 import org.scribble.ast.context.local.LDependencyMap;
 import org.scribble.main.ScribbleException;
@@ -10,14 +9,12 @@ import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
-public class ContextBuilder extends AstVisitor
+public class ProtocolDeclContextBuilder extends ModuleContextVisitor
 {
 	private GDependencyMap gdeps;
 	private LDependencyMap ldeps;
-
-	private ModuleContext mcontext;  // The "root" Module context (not the "main" module)
 	
-	public ContextBuilder(Job job)
+	public ProtocolDeclContextBuilder(Job job)
 	{
 		super(job);
 	}
@@ -25,23 +22,15 @@ public class ContextBuilder extends AstVisitor
 	@Override
 	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		child.del().enterContextBuilding(parent, child, this);
+		super.enter(parent, child);
+		child.del().enterProtocolDeclContextBuilding(parent, child, this);
 	}
 
 	@Override
 	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		return visited.del().leaveContextBuilding(parent, child, this, visited);
-	}
-	
-	public void setModuleContext(ModuleContext mcontext)
-	{
-		this.mcontext = mcontext;
-	}
-	
-	public ModuleContext getModuleContext()
-	{
-		return this.mcontext;
+		visited = visited.del().leaveProtocolDeclContextBuilding(parent, child, this, visited);
+		return super.leave(parent, child, visited);
 	}
 	
 	public void clearProtocolDependencies()

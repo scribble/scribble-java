@@ -11,6 +11,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.NonProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolDecl;
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.ProtocolKind;
@@ -24,113 +25,80 @@ import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.visit.JobContext;
 
-// Context information specific to each module
+// Context information specific to each module as a root (wrt. to visitor passes)
 public class ModuleContext
 {
 	public final ModuleName root;
 
-	// visible names -> fully qualified names
+  // All transitive name dependencies of this module: all names fully qualified
+	// The ScribNames maps are basically just used as sets (identity map)
+	// Cf. ProtocolDeclContext protocol dependencies from protocoldecl as root
+	private final ScribNames deps = new ScribNames();
+
 	// The modules and member names that are visible from this Module -- mapped to "cannonical" (fully qualified) names
-	private final Map<ModuleName, ModuleName> modules;
-	private final Map<DataType, DataType> data;
-	private final Map<MessageSigName, MessageSigName> sigs;
-	private final Map<GProtocolName, GProtocolName> globals;
-	private final Map<LProtocolName, LProtocolName> locals;
+	// visible names -> fully qualified names
+  // Directly visible names from this module
+	private final ScribNames visible = new ScribNames();
 
-	// Made by ContextBuilder
+	// Made by ModuleContextBuilder
 	// ModuleContext is the root context
-	public ModuleContext(JobContext jcontext, Module root)
+	public ModuleContext(JobContext jcontext, Module root) throws ScribbleException
 	{
-		ModuleName fullmodname = root.getFullModuleName(); 
+		ModuleName fullname = root.getFullModuleName(); 
+		ModuleName simpname = root.moddecl.getDeclName();
 
-		this.root = fullmodname;
-		this.modules = new HashMap<>();
-		this.data = new HashMap<>();
-		this.sigs = new HashMap<>();
-		this.globals = new HashMap<>();
-		this.locals = new HashMap<>();
+		this.root = fullname;
 		
-		addModule(root, fullmodname);
-		addLocalMembers(root);
-		addImportedModules(jcontext, jcontext.getModule(this.root));
+		// All transitive dependencies (for inlined and subprotocol visiting)
+		addModule(this.deps, root, fullname);
+		addImportDependencies(this.deps, jcontext, jcontext.getModule(this.root));
+
+		// Names directly visible from this module
+		addModule(this.visible, root, fullname);
+		if (!fullname.equals(simpname))
+		{
+			addModule(this.visible, root, simpname);  
+					// Adds simple name of root as visible
+					// Adds members qualified by simple name
+		}
+		addVisible(jcontext, root);  
+				// Adds imports and members by their "direct" names (unqualified, except for no-alias imports)
 	}
 
-	// vismodname can be the full module name or the import alias
-	private void addModule(Module mod, ModuleName vismodname)
+	// Register mod under name modname, modname could be the full module name or an import alias
+	// Adds member names qualified by mod
+	private static void addModule(ScribNames names, Module mod, ModuleName modname) throws ScribbleException
 	{
-		this.modules.put(vismodname, mod.getFullModuleName());
-		for (NonProtocolDecl<? extends Kind> npd : mod.getNonProtocolDecls())
-		{
-			if (npd.isDataTypeDecl())
-			{
-				DataTypeDecl dtd = (DataTypeDecl) npd;
-				this.data.put(new DataType(vismodname, dtd.getDeclName()), dtd.getFullMemberName(mod));
-			}
-			else //if (dtd instanceof MessageSignatureDecl)
-			{
-				MessageSigNameDecl msnd = (MessageSigNameDecl) npd;
-				this.sigs.put(msnd.getDeclName(), msnd.getFullMemberName(mod));
-			}
-		}
-		for (GProtocolDecl gpd : mod.getGlobalProtocolDecls())
-		{
-			this.globals.put(new GProtocolName(vismodname, gpd.getHeader().getDeclName()), gpd.getFullMemberName(mod));
-		}
-		for (LProtocolDecl lpd : mod.getLocalProtocolDecls())
-		{
-			this.locals.put(new LProtocolName(vismodname, lpd.getHeader().getDeclName()), lpd.getFullMemberName(mod));
-		}
-	}
-	
-	private void addLocalMembers(Module mod)
-	{
-		ModuleName fullmodname = mod.getFullModuleName();
-		ModuleName simplemodname = fullmodname.getSimpleName();
+		names.modules.put(modname, mod.getFullModuleName());
 		for (NonProtocolDecl<?> npd : mod.getNonProtocolDecls())
 		{
 			if (npd.isDataTypeDecl())
 			{
 				DataTypeDecl dtd = (DataTypeDecl) npd;
-				DataType fullname = dtd.getFullMemberName(mod);
-				DataType simplename = dtd.getDeclName();
-				DataType selfname = new DataType(simplemodname, simplename);
-				this.data.put(simplename, fullname);
-				this.data.put(selfname, fullname);
+				DataType qualif = new DataType(modname, dtd.getDeclName());
+				names.data.put(qualif, dtd.getFullMemberName(mod));
 			}
-			else if (npd.isMessageSigDecl())
+			else //if (npd.isMessageSigNameDecl())
 			{
 				MessageSigNameDecl msnd = (MessageSigNameDecl) npd;
-				MessageSigName fullname = msnd.getFullMemberName(mod);
-				MessageSigName simplename = msnd.getDeclName();
-				MessageSigName selfname = new MessageSigName(simplemodname, simplename);
-				this.sigs.put(simplename, fullname);
-				this.sigs.put(selfname, fullname);
-			}
-			else
-			{
-				throw new RuntimeException("Shouldn't get in here: " + npd);
+				MessageSigName qualif = new MessageSigName(modname, msnd.getDeclName());
+				names.sigs.put(qualif, msnd.getFullMemberName(mod));
 			}
 		}
 		for (GProtocolDecl gpd : mod.getGlobalProtocolDecls())
 		{
-			GProtocolName fullname = gpd.getFullMemberName(mod);
-			GProtocolName simplename = gpd.getHeader().getDeclName();
-			GProtocolName selfname = new GProtocolName(simplemodname, simplename);
-			this.globals.put(simplename, fullname);
-			this.globals.put(selfname, fullname);
+			GProtocolName qualif = new GProtocolName(modname, gpd.getHeader().getDeclName());
+			names.globals.put(qualif, gpd.getFullMemberName(mod));
 		}
 		for (LProtocolDecl lpd : mod.getLocalProtocolDecls())
 		{
-			LProtocolName fullname = lpd.getFullMemberName(mod);
-			LProtocolName simplename = lpd.getHeader().getDeclName();
-			LProtocolName selfname = new LProtocolName(simplemodname, simplename);
-			this.locals.put(simplename, fullname);
-			this.locals.put(selfname, fullname);
+			LProtocolName qualif = new LProtocolName(modname, lpd.getHeader().getDeclName());
+			names.locals.put(qualif, lpd.getFullMemberName(mod));
 		}
 	}
 	
 	// Could move to ImportModule but would need a defensive copy setter, or cache info in builder and create on leave
-	private void addImportedModules(JobContext jcontext, Module mod)
+	private static void addImportDependencies(ScribNames names, JobContext jcontext, Module mod) throws ScribbleException
 	{
 		for (ImportDecl<?> id : mod.getImportDecls())
 		{
@@ -138,12 +106,11 @@ public class ModuleContext
 			{
 				ImportModule im = (ImportModule) id;
 				ModuleName fullmodname = im.modname.toName();
-				if (!this.modules.keySet().contains(fullmodname))
+				if (!names.modules.containsKey(fullmodname))
 				{
-					ModuleName modname = (im.isAliased()) ? im.getAlias() : fullmodname;  // visible name not sufficient?
-					Module m = jcontext.getModule(fullmodname);
-					addModule(m, modname);
-					addImportedModules(jcontext, m);
+					Module imported = jcontext.getModule(fullmodname);
+					addModule(names, imported, fullmodname);  // Unlike for visible, only doing full names here
+					addImportDependencies(names, jcontext, imported);
 				}
 			}
 			else
@@ -153,78 +120,139 @@ public class ModuleContext
 		}
 	}
 
-	/*public boolean isModuleVisible(ModuleName modname)
+	// Adds "local" imports by alias or full name
+	// Adds "local" members by simple names
+	private void addVisible(JobContext jcontext, Module root) throws ScribbleException
 	{
-		return this.modules.keySet().contains(modname);
+		// Unlike for deps, visible is not done transitively
+		for (ImportDecl<?> id : root.getImportDecls())
+		{
+			if (id.isImportModule())
+			{
+				ImportModule im = (ImportModule) id;
+				ModuleName fullname = im.modname.toName();
+				ModuleName visname = (im.isAliased()) ? im.getAlias() : fullname;  // getVisibleName doesn't use fullname
+				if (!this.visible.modules.containsKey(visname))
+				{
+					Module imported = jcontext.getModule(fullname);
+					addModule(this.visible, imported, visname);  
+				}
+			}
+			else
+			{
+				throw new RuntimeException("TODO: " + id);
+			}
+		}
+		
+		for (NonProtocolDecl<?> npd : root.getNonProtocolDecls())
+		{
+			if (npd.isDataTypeDecl())
+			{
+				DataTypeDecl dtd = (DataTypeDecl) npd;
+				DataType visname = new DataType(dtd.getDeclName().toString());
+				this.visible.data.put(visname, dtd.getFullMemberName(root));
+			}
+			else //if (npd.isMessageSigNameDecl())
+			{
+				MessageSigNameDecl msnd = (MessageSigNameDecl) npd;
+				MessageSigName visname = new MessageSigName(msnd.getDeclName().toString());
+				this.visible.sigs.put(visname, msnd.getFullMemberName(root));
+			}
+		}
+		for (GProtocolDecl gpd : root.getGlobalProtocolDecls())
+		{
+			GProtocolName visname = new GProtocolName(gpd.getHeader().getDeclName().toString());
+			this.visible.globals.put(visname, gpd.getFullMemberName(root));
+		}
+		for (LProtocolDecl lpd : root.getLocalProtocolDecls())
+		{
+			LProtocolName visname = new LProtocolName(lpd.getHeader().getDeclName().toString());
+			this.visible.locals.put(visname, lpd.getFullMemberName(root));
+		}
+	}
+
+	/*public boolean isDataTypeDependency(DataType typename)
+	{
+		return this.deps.data.keySet().contains(typename);
+	}
+
+	public boolean isMessageSigNameDependency(Name<? extends SigKind> signame)
+	{
+		return this.deps.sigs.containsKey(signame);
 	}*/
+
+	// Redundant: proto should already be full name by namedisamb (and this.deps only stores full names)
+	// Refactored as a "check" for now
+	//public <K extends ProtocolKind> ProtocolName<K> getProtocolDeclDependencyFullName(ProtocolName<K> proto)
+	public <K extends ProtocolKind> ProtocolName<K> checkProtocolDeclDependencyFullName(ProtocolName<K> proto)
+	{
+		return getProtocolDeclFullName(this.deps, proto);
+	}
 
 	public boolean isDataTypeVisible(DataType typename)
 	{
-		return this.data.keySet().contains(typename);
+		return this.visible.data.keySet().contains(typename);
 	}
 
 	public boolean isMessageSigNameVisible(Name<? extends SigKind> signame)
 	{
-		return this.sigs.containsKey(signame);
-	}
-
-	/*public boolean isGlobalProtocolVisible(ProtocolName proto)
-	{
-		return this.globals.keySet().contains(proto);
-	}
-
-	public boolean isLocalProtocolVisible(ProtocolName proto)
-	{
-		return this.locals.keySet().contains(proto);
+		return this.visible.sigs.containsKey(signame);
 	}
 	
-	public ModuleName getFullModuleName(ModuleName visname)
+	public DataType getVisibleDataTypeFullName(DataType visname)
 	{
-		return ModuleContext.getFullName(this.modules, visname);
+		return getFullName(this.visible.data, visname);
 	}
 	
-	public PayloadType getFullPayloadTypeName(PayloadType visname)
+	public MessageSigName getVisibleMessageSigNameFullName(MessageSigName visname)
 	{
-		return ModuleContext.getFullName(this.types, visname);
+		return getFullName(this.visible.sigs, visname);
+	}
+	
+	public <K extends ProtocolKind> ProtocolName<K> getVisibleProtocolDeclFullName(ProtocolName<K> visname)
+	{
+		return getProtocolDeclFullName(this.visible, visname);
 	}
 
-	public MessageSignatureName getFullMessageSignatureName(MessageSignatureName visname)
+	public static <K extends ProtocolKind> ProtocolName<K> getProtocolDeclFullName(ScribNames names, ProtocolName<K> proto)
 	{
-		return ModuleContext.getFullName(this.sigs, visname);
-	}*/
-
-	public <K extends ProtocolKind> ProtocolName<K> getFullProtocolDeclName(ProtocolName<K> visname)
-	{
-		ProtocolName<? extends ProtocolKind> pn = (visname.getKind().equals(Global.KIND))
-				? getFullGProtocolDeclName((GProtocolName) visname)
-				: getFullLProtocolDeclName((LProtocolName) visname);
+		ProtocolName<? extends ProtocolKind> pn = (proto.getKind().equals(Global.KIND))
+				? getFullName(names.globals, (GProtocolName) proto)
+				: getFullName(names.locals, (LProtocolName) proto);
 		@SuppressWarnings("unchecked")
 		ProtocolName<K> tmp = (ProtocolName<K>) pn;
 		return tmp;
-	}
-
-	private GProtocolName getFullGProtocolDeclName(GProtocolName visname)
-	{
-		return getFullName(this.globals, visname);
-	}
-
-	private LProtocolName getFullLProtocolDeclName(LProtocolName visname)
-	{
-		return getFullName(this.locals, visname);
 	}
 
 	private static <T extends Name<K>, K extends Kind> T getFullName(Map<T, T> map, T visname)
 	{
 		if (!map.containsKey(visname))
 		{
-			throw new RuntimeException("Name not visible: " + visname);
+			throw new RuntimeException("Unknown name: " + visname);
 		}
 		return map.get(visname);
 	}
-	
+
 	@Override 
 	public String toString()
 	{
-		return "[modules=" + this.modules + ", types=" + this.data + ", sigs=" + this.sigs + ", globals=" + this.globals + ", locals=" + this.locals;
+		return "[deps=" + this.deps + ", visible=" + this.visible + "]";
 	}
 }
+
+class ScribNames
+{
+	// names -> fully qualified names
+	protected final Map<ModuleName, ModuleName> modules = new HashMap<>();
+	protected final Map<DataType, DataType> data = new HashMap<>();
+	protected final Map<MessageSigName, MessageSigName> sigs = new HashMap<>();
+	protected final Map<GProtocolName, GProtocolName> globals = new HashMap<>();
+	protected final Map<LProtocolName, LProtocolName> locals = new HashMap<>();
+	
+	@Override
+	public String toString()
+	{
+		return "(modules=" + this.modules + ", types=" + this.data + ", sigs=" + this.sigs
+				+ ", globals=" + this.globals + ", locals=" + this.locals + ")";
+	}
+}	

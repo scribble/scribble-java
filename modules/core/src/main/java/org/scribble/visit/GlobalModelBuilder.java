@@ -6,6 +6,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.ModelEnv;
 
+// This pass is incomplete -- do not use yet
 public class GlobalModelBuilder extends OffsetSubprotocolVisitor<ModelEnv>
 {
 	public GlobalModelBuilder(Job job)

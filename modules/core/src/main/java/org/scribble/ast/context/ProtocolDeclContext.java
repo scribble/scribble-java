@@ -15,7 +15,8 @@ public abstract class ProtocolDeclContext<K extends ProtocolKind>
 
 	// cache of dependencies, cleared on entering each root global protocol
 	// protocol name is full name of global/local protocol dependencies
-	private DependencyMap<? extends ProtocolName<K>> deps;  // All the potential dependencies from this protocol decl as the root
+	private DependencyMap<? extends ProtocolName<K>> deps;  
+			// All the potential protocol dependencies from this *protocoldecl* as the root -- cf. ModuleContext deps from Module root
 	
 	protected ProtocolDeclContext(Set<Role> roles, DependencyMap<? extends ProtocolName<K>> deps)
 	{

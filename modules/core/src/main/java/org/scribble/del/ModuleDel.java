@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ImportDecl;
@@ -20,7 +21,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ContextBuilder;
+import org.scribble.visit.ModuleContextBuilder;
+import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
 
 public class ModuleDel extends ScribDelBase
@@ -38,17 +40,39 @@ public class ModuleDel extends ScribDelBase
 	}
 
 	@Override
-	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder)
+	public void enterModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder) throws ScribbleException
 	{
 		builder.setModuleContext(new ModuleContext(builder.getJobContext(), (Module) child));
 	}
 
 	// Maybe better to create on enter, so can be used during the context build pass (Context would need to be "cached" in the visitor to be accessed)
 	@Override
-	public Module leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
+	public Module leaveModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		ModuleDel del = setModuleContext(builder.getModuleContext());
 		return (Module) visited.del(del);
+	}
+		
+	@Override
+	public Module leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	{
+		Module mod = (Module) visited;
+		// Imports checked in ModuleContext -- that is built before disamb is run
+		List<NonProtocolDecl<?>> npds = mod.getNonProtocolDecls();
+		List<String> npdnames = npds.stream().map((npd) -> npd.getDeclName().toString()).collect(Collectors.toList()); 
+				// Have to use Strings, as can be different kinds (datatype, sig)
+		if (npds.size() != npdnames.stream().distinct().count())
+		{
+			throw new ScribbleException("Duplicate non-protocol decls: " + npdnames);
+		}
+		List<ProtocolDecl<?>> pds = mod.getProtocolDecls();
+		List<String> pdnames = pds.stream().map((pd) -> pd.header.getDeclName().toString()).collect(Collectors.toList());
+				// Have to use Strings, as can be different kinds (global, local)
+		if (pds.size() != pdnames.stream().distinct().count())
+		{
+			throw new ScribbleException("Duplicate protocol decls: " + pdnames);  // Global and locals also required to be distinct
+		}
+		return mod;
 	}
 
 	@Override

@@ -10,8 +10,8 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.MemberName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.RoleCollector;
 
@@ -25,9 +25,16 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 	}
 	
 	protected abstract ProtocolDeclDel<K> copy();
+		
+	@Override
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	{
+		disamb.clear();
+		return visited;
+	}
 
 	@Override
-	public void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
+	public void enterProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder) throws ScribbleException
 	{
 		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
 
@@ -38,14 +45,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 		lpd.header.roledecls.getRoles().stream().forEach((r) -> addSelfDependency(builder, (ProtocolName<?>) lpn, r));
 	}
 	
-	protected abstract void addSelfDependency(ContextBuilder builder, ProtocolName<?> proto, Role role);
-	
-	@Override
-	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
-	{
-		disamb.clear();
-		return visited;
-	}
+	protected abstract void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role);
 
 	@Override
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException

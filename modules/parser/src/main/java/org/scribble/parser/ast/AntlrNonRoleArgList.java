@@ -9,7 +9,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.NonRoleArg;
 import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.NonRoleArgNode;
-import org.scribble.ast.name.qualified.DataTypeNameNode;
+import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ScribParser;
@@ -50,7 +50,7 @@ public class AntlrNonRoleArgList
 			{
 				if (ct.getChildCount() > 1)
 				{
-					DataTypeNameNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
+					DataTypeNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
 					return AstFactoryImpl.FACTORY.NonRoleArg(dt);
 				}
 				else

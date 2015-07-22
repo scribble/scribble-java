@@ -2,19 +2,20 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.ContextBuilder;
 import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.GlobalModelBuilder;
+import org.scribble.visit.InlinedProtocolUnfolder;
+import org.scribble.visit.MessageIdCollector;
+import org.scribble.visit.ModuleContextBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProjectedRoleDeclFixer;
 import org.scribble.visit.Projector;
+import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.RoleCollector;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.Env;
 
 // Immutable except for pass-specific Envs (by visitors) only -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
@@ -23,6 +24,16 @@ public interface ScribDel
 {
 	Env<?> env();
 	void setEnv(Env<?> env);  // Non defensive
+
+	default void enterModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder) throws ScribbleException
+	{
+
+	}
+
+	default ScribNode leaveModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
 
 	default void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
 	{
@@ -34,12 +45,12 @@ public interface ScribDel
 		return visited;
 	}
 
-	default void enterContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder) throws ScribbleException
+	default void enterProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder) throws ScribbleException
 	{
 
 	}
 
-	default ScribNode leaveContextBuilding(ScribNode parent, ScribNode child, ContextBuilder builder, ScribNode visited) throws ScribbleException
+	default ScribNode leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

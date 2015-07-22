@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.main.ScribbleException;
@@ -40,13 +41,8 @@ public abstract class Choice<K extends ProtocolKind> extends CompoundInteraction
 	@Override
 	public String toString()
 	{
-		StringBuilder 
-		sb = new StringBuilder();
-		sb.append(Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + " " + this.blocks.get(0));
-		this.blocks.subList(1, this.blocks.size()).stream().forEach((b) -> 		
-				{
-					sb.append(" " + Constants.OR_KW + " " + b);
-				});
-		return sb.toString();
+		String sep = " " + Constants.OR_KW + " ";
+		return Constants.CHOICE_KW + " " + Constants.AT_KW + " " + this.subj + " "
+				+ this.blocks.stream().map((b) -> b.toString()).collect(Collectors.joining(sep));
 	}
 }

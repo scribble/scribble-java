@@ -36,7 +36,7 @@ public abstract class NonProtocolDecl<K extends NonProtocolKind> extends NameDec
 		return false;
 	}
 
-	public boolean isMessageSigDecl()
+	public boolean isMessageSigNameDecl()
 	{
 		return false;
 	}

@@ -8,11 +8,11 @@ import org.scribble.main.ScribbleException;
 
 
 // Maybe ModuleContextVisitor
-public abstract class ModuleVisitor extends AstVisitor
+public abstract class ModuleContextVisitor extends AstVisitor
 {
 	private ModuleContext mcontext;  // The "root" module context (different than the front-end "main" module)  // Factor up to ModelVisitor? (will be null before context building)
 
-	public ModuleVisitor(Job job)
+	public ModuleContextVisitor(Job job)
 	{
 		super(job);
 	}

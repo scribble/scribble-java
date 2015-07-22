@@ -56,7 +56,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		this.argmaps.push(argmap);
 		
 		ModuleContext mcontext = getModuleContext();
-		ProtocolName<?> fullname = mcontext.getFullProtocolDeclName(pd.header.getDeclName());
+		ProtocolName<?> fullname = mcontext.getVisibleProtocolDeclFullName(pd.header.getDeclName());
 		List<Role> roleargs = pd.header.roledecls.getRoles();
 		List<Arg<? extends NonRoleArgKind>> nonroleargs =
 				pd.header.paramdecls.getDecls().stream().map((param) -> paramDeclToArg(param)).collect(Collectors.toList());
@@ -183,12 +183,13 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 
 	private void enterSubprotocol(Do<?> doo)
 	{
-		ProtocolName<?> fullname = getModuleContext().getFullProtocolDeclName(doo.proto.toName());
+		ProtocolName<?> fullname = getModuleContext().checkProtocolDeclDependencyFullName(doo.proto.toName());
+			// namedisamb should already have converted proto to the fullname -- in order for inlining to work
 		pushSubprotocolSig(fullname, doo.roles.getRoles(), doo.args.getArguments());
 		pushNameMaps(fullname, doo);
 	}
 
-	// Also esed for leaving root protocoldecl, for convenience
+	// Also used for leaving root protocoldecl, for convenience
 	private void leaveSubprotocol()
 	{
 		this.stack.remove(this.stack.size() - 1);
