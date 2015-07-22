@@ -37,7 +37,7 @@ public class MessageSigNameDecl extends NonProtocolDecl<SigKind>
 	}
 	
 	@Override
-	public boolean isMessageSigDecl()
+	public boolean isMessageSigNameDecl()
 	{
 		return true;
 	}

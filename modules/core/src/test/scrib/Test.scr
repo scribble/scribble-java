@@ -7,6 +7,39 @@
 
 module Test;
 
+//import Test2 as Test;
+//import Test2 as Test;
+import Test2;
+import test3.Test3 as Test4;
+//import test3.Test3 as Test3;
+
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	do Test2.Test2Proto(A, B);
+	do Test4.Test3Proto(A, B);
+}
+
+
+/*
+module Test;
+
+import Test;  // Good because doesn't reload already loaded?
+//
+ 
+ 
+module Test;
+
+import Test as Test;  // Good
+//
+
+
+module Test;
+
+import Test2 as Test;
+*/
+
+
 /*
 import Test2;
 

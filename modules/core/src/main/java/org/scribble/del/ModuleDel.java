@@ -40,7 +40,7 @@ public class ModuleDel extends ScribDelBase
 	}
 
 	@Override
-	public void enterModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder)
+	public void enterModuleContextBuilding(ScribNode parent, ScribNode child, ModuleContextBuilder builder) throws ScribbleException
 	{
 		builder.setModuleContext(new ModuleContext(builder.getJobContext(), (Module) child));
 	}
