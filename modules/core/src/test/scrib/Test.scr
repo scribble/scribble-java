@@ -151,6 +151,8 @@ sig <java> "java.lang.String" from "rt.jar" as String;
 .. add roledecllist and rolearglist disamb tests
 .. check role decl used
 .. moduledecl as namedecl
+.. test mvn
+.. fix script
 */
 
 

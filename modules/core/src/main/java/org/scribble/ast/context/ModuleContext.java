@@ -51,7 +51,7 @@ public class ModuleContext
 		
 		// All transitive dependencies (for inlined and subprotocol visiting)
 		addModule(this.deps, root, fullname);
-		addImportDependencies(this.deps, jcontext, jcontext.getModule(this.root));
+		addImportDependencies(jcontext, root);
 
 		// Names directly visible from this module
 		addModule(this.visible, root, fullname);
@@ -98,7 +98,7 @@ public class ModuleContext
 	}
 	
 	// Could move to ImportModule but would need a defensive copy setter, or cache info in builder and create on leave
-	private static void addImportDependencies(ScribNames names, JobContext jcontext, Module mod) throws ScribbleException
+	private void addImportDependencies(JobContext jcontext, Module mod) throws ScribbleException
 	{
 		for (ImportDecl<?> id : mod.getImportDecls())
 		{
@@ -106,11 +106,11 @@ public class ModuleContext
 			{
 				ImportModule im = (ImportModule) id;
 				ModuleName fullmodname = im.modname.toName();
-				if (!names.modules.containsKey(fullmodname))
+				if (!this.deps.modules.containsKey(fullmodname))
 				{
 					Module imported = jcontext.getModule(fullmodname);
-					addModule(names, imported, fullmodname);  // Unlike for visible, only doing full names here
-					addImportDependencies(names, jcontext, imported);
+					addModule(this.deps, imported, fullmodname);  // Unlike for visible, only doing full names here
+					addImportDependencies(jcontext, imported);
 				}
 			}
 			else
