@@ -1,0 +1,7 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import17.scr
+
+module bad.parsing.imports.Import17;
+
+
+import bad.parsing.imports.Import17;  // Old: OK because full name is a "compound" name -- old: if simple and full names coincide for a module, self import is not OK

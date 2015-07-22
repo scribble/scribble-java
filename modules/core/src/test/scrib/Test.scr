@@ -7,42 +7,8 @@
 
 module Test;
 
+
 ///*
-//import Test2 as Test;
-//import Test2 as Test;
-import Test2;
-import test3.Test3 as Test4;  // <-
-//import test3.Test3 as Test3;
-
-global protocol Foo(role A, role B)
-{
-	1() from A to B;
-	do Test2.Test2Proto(A, B);
-	do Test4.Test3Proto(A, B);
-}
-//*/
-
-
-/*
-module Test;
-
-import Test;  // Good because doesn't reload already loaded?
-//
- 
- 
-module Test;
-
-import Test as Test;  // Good
-//
-
-
-module Test;
-
-import Test2 as Test;
-*/
-
-
-/*
 import Test2;
 
 type <java> "java.lang.String" from "rt.jar" as String;
@@ -85,72 +51,39 @@ global protocol Bar(role A, role B)
 //*/
 
 
-/*global protocol Foo(role A, role B, role C)
+/*
+//import Test2 as Test;
+//import Test2 as Test;
+import Test2;
+import test3.Test3 as Test4;  // <-
+//import test3.Test3 as Test3;
+
+global protocol Foo(role A, role B)
 {
 	1() from A to B;
-	1() from A to C;
-	do Bar(A, B, C);
+	do Test2.Test2Proto1(A, B);
+	do Test4.Test3Proto(A, B);
 }
+//*/
 
-global protocol Bar(role D, role E)
-{
-	2() from D to E;
-}
+
+/*  // Simple name coincides with full name
+
+module Test;
+
+import Test;
+//
+ 
+ 
+module Test;
+
+import Test as Test;
 //
 
-global protocol Foo(role A, role B)
-{
-	do Bar(A, A);
-}
 
-global protocol Bar(role C, role D)
-{
-	1() from C to D;
-}
-//
- * 
-global protocol Foo(role A, role A)
-{
-	1() from A to A;
-}
-//
-  
-global protocol Foo(role A, role B)
-{
-	
-}
+module Test;
 
-global protocol Foo(role A, role B)
-{
-	
-}
-//
-
-global protocol Foo(role A, role B)
-{
-	
-}
-
-local protocol Foo(role A, role B) // TODO: local not parsed
-{
-	
-}
-//
-
-type <java> "java.lang.String" from "rt.jar" as String;
-type <java> "java.lang.String" from "rt.jar" as String;
-//
-
-type <java> "java.lang.String" from "rt.jar" as String;
-sig <java> "java.lang.String" from "rt.jar" as String;
-//
-
-.. disallow mcast
-.. disallow self comm
-.. gchoice disjoint, add test
-.. add roledecllist and rolearglist disamb tests
-.. check role decl used
-.. moduledecl as namedecl
+import Test2 as Test;
 */
 
 

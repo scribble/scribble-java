@@ -1,6 +1,6 @@
 package org.scribble.del.global;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,12 +17,12 @@ import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.WFChoiceEnv;
 import org.scribble.visit.env.ProjectionEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
 public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 {
@@ -94,10 +94,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 					Set<MessageId<?>> mids = benv0.getEnabled().getMessages(dest);
 					benvs.stream().map((e) -> e.getEnabled().getMessages(dest)).forEach((ms) ->
 							{
-								// FIXME: use Collections.disjoint
-								Set<MessageId<?>> tmp = new HashSet<MessageId<?>>(ms);
-								tmp.retainAll(mids);
-								if (!tmp.isEmpty())
+								if (!Collections.disjoint(mids, ms))
 								{
 									throw new RuntimeScribbleException("Non disjoint enabling messages for " + dest + ": " + mids + ", " + ms);
 								}
