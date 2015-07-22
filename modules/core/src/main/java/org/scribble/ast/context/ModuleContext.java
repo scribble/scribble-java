@@ -132,11 +132,12 @@ public class ModuleContext
 				ImportModule im = (ImportModule) id;
 				ModuleName fullname = im.modname.toName();
 				ModuleName visname = (im.isAliased()) ? im.getAlias() : fullname;  // getVisibleName doesn't use fullname
-				if (!this.visible.modules.containsKey(visname))
+				if (this.visible.modules.containsKey(visname))
 				{
-					Module imported = jcontext.getModule(fullname);
-					addModule(this.visible, imported, visname);  
+					throw new ScribbleException("Duplicate visible module name: " + visname);
 				}
+				Module imported = jcontext.getModule(fullname);
+				addModule(this.visible, imported, visname);  
 			}
 			else
 			{

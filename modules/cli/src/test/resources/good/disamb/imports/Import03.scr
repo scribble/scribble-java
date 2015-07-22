@@ -1,0 +1,4 @@
+module good.disamb.imports.Import03;
+
+
+import good.disamb.imports.Import03 as Import03;  // Good
