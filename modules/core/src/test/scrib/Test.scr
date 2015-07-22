@@ -7,10 +7,11 @@
 
 module Test;
 
+///*
 //import Test2 as Test;
 //import Test2 as Test;
 import Test2;
-import test3.Test3 as Test4;
+import test3.Test3 as Test4;  // <-
 //import test3.Test3 as Test3;
 
 global protocol Foo(role A, role B)
@@ -19,6 +20,7 @@ global protocol Foo(role A, role B)
 	do Test2.Test2Proto(A, B);
 	do Test4.Test3Proto(A, B);
 }
+//*/
 
 
 /*
@@ -147,7 +149,9 @@ sig <java> "java.lang.String" from "rt.jar" as String;
 .. disallow self comm
 .. gchoice disjoint, add test
 .. add roledecllist and rolearglist disamb tests
-.. check role decl used*/
+.. check role decl used
+.. moduledecl as namedecl
+*/
 
 
 /*global protocol Foo(role A, role B, role C)

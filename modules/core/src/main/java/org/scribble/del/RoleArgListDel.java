@@ -36,7 +36,7 @@ public class RoleArgListDel extends ScribDelBase
 		JobContext jc = disamb.getJobContext();
 		ModuleContext mc = disamb.getModuleContext();
 		Do<?> doo = (Do<?>) parent;
-		ProtocolName<?> fullname = doo.getTargetFullProtocolName(mc);
+		ProtocolName<?> fullname = mc.getFullProtocolDeclNameFromVisible(doo.proto.toName());  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
 		ProtocolDecl<?> pd = jc.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 		if (pd.header.roledecls.getRoles().size() != roles.size())
 		{

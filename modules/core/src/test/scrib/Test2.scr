@@ -6,6 +6,7 @@ module Test2;
 //import Test;
 import test3.Test3 as Test3;  // FIXME: shouldn't be (directly) visible from Test as Test
 import Test4;
+import Test4 as T4;
 
 global protocol Test2Proto(role C, role D)
 {
@@ -18,6 +19,7 @@ global protocol Test2Proto(role C, role D)
 	//3() from C to D;
 	do Test3.Test3Proto(C, D);
 	do Test4.Test4Proto(C, D);
+	do T4.Test4Proto(C, D);
 }
 
 /*global protocol Foo(role A, role B, role C)

@@ -2,7 +2,7 @@ package org.scribble.parser.ast.name;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.name.qualified.DataTypeNameNode;
+import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
@@ -42,9 +42,9 @@ public class AntlrSimpleName
 		return (LProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, getName(ct));
 	}
 
-	public static DataTypeNameNode toDataTypeNameNode(CommonTree ct)
+	public static DataTypeNode toDataTypeNameNode(CommonTree ct)
 	{
-		return (DataTypeNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, getName(ct));
+		return (DataTypeNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, getName(ct));
 	}
 
 	public static MessageSigNameNode toMessageSigNameNode(CommonTree ct)

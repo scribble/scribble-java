@@ -1,6 +1,6 @@
 package org.scribble.ast;
 
-import org.scribble.ast.name.qualified.DataTypeNameNode;
+import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.MemberNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.DataTypeKind;
@@ -9,7 +9,7 @@ import org.scribble.sesstype.name.ModuleName;
 
 public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 {
-	public DataTypeDecl(String schema, String extName, String source, DataTypeNameNode name)
+	public DataTypeDecl(String schema, String extName, String source, DataTypeNode name)
 	{
 		super(schema, extName, source, name);
 	}
@@ -23,7 +23,7 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	@Override
 	public DataTypeDecl clone()
 	{
-		DataTypeNameNode name = (DataTypeNameNode) this.name.clone();
+		DataTypeNode name = (DataTypeNode) this.name.clone();
 		return AstFactoryImpl.FACTORY.DataTypeDecl(this.schema, this.extName, this.source, name);
 	}
 
@@ -31,7 +31,7 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	public DataTypeDecl reconstruct(String schema, String extName, String source, MemberNameNode<DataTypeKind> name)
 	{
 		ScribDel del = del();
-		DataTypeDecl dtd = new DataTypeDecl(schema, extName, source, (DataTypeNameNode) name);
+		DataTypeDecl dtd = new DataTypeDecl(schema, extName, source, (DataTypeNode) name);
 		dtd = (DataTypeDecl) dtd.del(del);
 		return dtd;
 	}
@@ -43,9 +43,9 @@ public class DataTypeDecl extends NonProtocolDecl<DataTypeKind>
 	}
 
 	@Override
-	public DataTypeNameNode getNameNode()
+	public DataTypeNode getNameNode()
 	{
-		return (DataTypeNameNode) super.getNameNode();
+		return (DataTypeNode) super.getNameNode();
 	}
 
 	@Override

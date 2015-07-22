@@ -6,23 +6,23 @@ import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.name.DataType;
 
-public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
+public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
 {
-	public DataTypeNameNode(String... elems)
+	public DataTypeNode(String... elems)
 	{
 		super(elems);
 	}
 
 	@Override
-	protected DataTypeNameNode copy()
+	protected DataTypeNode copy()
 	{
-		return new DataTypeNameNode(this.elems);
+		return new DataTypeNode(this.elems);
 	}
 	
 	@Override
-	public DataTypeNameNode clone()
+	public DataTypeNode clone()
 	{
-		return (DataTypeNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, this.elems);
+		return (DataTypeNode) AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, this.elems);
 	}
 
 	@Override
@@ -59,17 +59,17 @@ public class DataTypeNameNode extends MemberNameNode<DataTypeKind> implements Pa
 		{
 			return true;
 		}
-		if (!(o instanceof DataTypeNameNode))
+		if (!(o instanceof DataTypeNode))
 		{
 			return false;
 		}
-		return ((DataTypeNameNode) o).canEqual(this) && super.equals(o);
+		return ((DataTypeNode) o).canEqual(this) && super.equals(o);
 	}
 	
 	@Override
 	public boolean canEqual(Object o)
 	{
-		return o instanceof DataTypeNameNode;
+		return o instanceof DataTypeNode;
 	}
 	
 	@Override

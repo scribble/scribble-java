@@ -3,7 +3,7 @@ package org.scribble.parser.ast;
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.name.qualified.DataTypeNameNode;
+import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
 
@@ -22,7 +22,7 @@ public class AntlrDataTypeDecl
 		String extName = AntlrExtIdentifier.getName(tmp2);
 		CommonTree tmp3 = getExtNameChild(ct);
 		String source = AntlrExtIdentifier.getName(tmp3);
-		DataTypeNameNode alias = AntlrSimpleName.toDataTypeNameNode(getAliasChild(ct));
+		DataTypeNode alias = AntlrSimpleName.toDataTypeNameNode(getAliasChild(ct));
 		return AstFactoryImpl.FACTORY.DataTypeDecl(schema, extName, source, alias);
 	}
 

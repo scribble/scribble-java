@@ -25,20 +25,20 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
-		// FIXME: disamb other member names to full
 		return leaveDisambiguationAux(parent, child, disamb, visited);
 	}
 	
+	// Not done in G/LProtocolNameNodeDel because it's only for do-targets that this is needed (cf. ProtocolHeader)
 	private <K extends ProtocolKind> ScribNode leaveDisambiguationAux(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
+		@SuppressWarnings("unchecked")  // Doesn't matter what K is, just need to propagate it down
 		Do<K> doo = (Do<K>) visited;
-
 		ModuleContext mc = disamb.getModuleContext();
-		ProtocolName<K> fullname = doo.getTargetFullProtocolName(mc);
-		ProtocolNameNode<K> proto = (ProtocolNameNode<K>) AstFactoryImpl.FACTORY.QualifiedNameNode(fullname.getKind(), fullname.getElements());
-		doo = doo.reconstruct(doo.roles, doo.args, proto);
-
-		return doo;
+		ProtocolName<K> fullname = mc.getFullProtocolDeclNameFromVisible(doo.proto.toName());
+		ProtocolNameNode<K> pnn = (ProtocolNameNode<K>)
+				AstFactoryImpl.FACTORY.QualifiedNameNode(fullname.getKind(), fullname.getElements()); 
+						// Didn't keep original namenode del
+		return doo.reconstruct(doo.roles, doo.args, pnn);
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.PayloadElemList;
-import org.scribble.ast.name.qualified.DataTypeNameNode;
+import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.simple.AmbigNameNode;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ScribParser;
@@ -45,7 +45,7 @@ public class AntlrPayloadElemList
 		{
 			if (ct.getChildCount() > 1)
 			{
-				DataTypeNameNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
+				DataTypeNode dt = AntlrQualifiedName.toDataTypeNameNode(ct);
 				return AstFactoryImpl.FACTORY.PayloadElem(dt);
 			}
 			else

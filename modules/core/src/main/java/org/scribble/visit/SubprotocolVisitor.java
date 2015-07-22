@@ -56,7 +56,8 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		this.argmaps.push(argmap);
 		
 		ModuleContext mcontext = getModuleContext();
-		ProtocolName<?> fullname = mcontext.getFullProtocolDeclName(pd.header.getDeclName());
+		//ProtocolName<?> fullname = mcontext.getFullProtocolDeclName(pd.header.getDeclName());
+		ProtocolName<?> fullname = mcontext.getFullProtocolDeclNameFromVisible(pd.header.getDeclName());
 		List<Role> roleargs = pd.header.roledecls.getRoles();
 		List<Arg<? extends NonRoleArgKind>> nonroleargs =
 				pd.header.paramdecls.getDecls().stream().map((param) -> paramDeclToArg(param)).collect(Collectors.toList());
@@ -183,7 +184,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 
 	private void enterSubprotocol(Do<?> doo)
 	{
-		ProtocolName<?> fullname = getModuleContext().getFullProtocolDeclName(doo.proto.toName());
+		ProtocolName<?> fullname = getModuleContext().getFullProtocolDeclNameFromDeps(doo.proto.toName());
 		pushSubprotocolSig(fullname, doo.roles.getRoles(), doo.args.getArguments());
 		pushNameMaps(fullname, doo);
 	}

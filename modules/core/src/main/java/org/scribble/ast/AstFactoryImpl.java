@@ -28,7 +28,7 @@ import org.scribble.ast.local.LSend;
 import org.scribble.ast.local.SelfRoleDecl;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.ast.name.qualified.DataTypeNameNode;
+import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
@@ -70,6 +70,8 @@ import org.scribble.del.local.LReceiveDel;
 import org.scribble.del.local.LRecursionDel;
 import org.scribble.del.local.LSendDel;
 import org.scribble.del.name.AmbigNameNodeDel;
+import org.scribble.del.name.DataTypeNodeDel;
+import org.scribble.del.name.MessageSigNameNodeDel;
 import org.scribble.del.name.ParamNodeDel;
 import org.scribble.del.name.RecVarNodeDel;
 import org.scribble.del.name.RoleNodeDel;
@@ -148,7 +150,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNameNode alias)
+	public DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNode alias)
 	{
 		DataTypeDecl dtd = new DataTypeDecl(schema, extName, source, alias);
 		dtd = del(dtd, createDefaultDelegate());
@@ -302,19 +304,22 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public <K extends Kind> NameNode<K> SimpleNameNode(K kind, String identifier)
 	{
+		NameNode<? extends Kind> snn = null;
 		if (kind.equals(RecVarKind.KIND))
 		{
-			RecVarNode rv = new RecVarNode(identifier);
-			rv = (RecVarNode) del(rv, new RecVarNodeDel());
-			return castNameNode(kind, rv);
+			snn = new RecVarNode(identifier);
+			snn = del(snn, new RecVarNodeDel());
 		}
 		else if (kind.equals(RoleKind.KIND))
 		{
-			RoleNode rn = new RoleNode(identifier);
-			rn = (RoleNode) del(rn, new RoleNodeDel());
-			return castNameNode(kind, rn);
+			snn = new RoleNode(identifier);
+			snn = del(snn, new RoleNodeDel());
 		}
-		NameNode<? extends Kind> snn;
+		if (snn != null)
+		{
+			return castNameNode(kind, snn);
+		}
+
 		if (kind.equals(OpKind.KIND))
 		{
 			snn = new OpNode(identifier);
@@ -329,7 +334,22 @@ public class AstFactoryImpl implements AstFactory
 	@Override
 	public <K extends Kind> QualifiedNameNode<K> QualifiedNameNode(K kind, String... elems)
 	{
-		QualifiedNameNode<? extends Kind> qnn;
+		QualifiedNameNode<? extends Kind> qnn = null;
+		if (kind.equals(SigKind.KIND))
+		{
+			qnn = new MessageSigNameNode(elems);
+			qnn = del(qnn, new MessageSigNameNodeDel());
+		}
+		else if (kind.equals(DataTypeKind.KIND))
+		{
+			qnn = new DataTypeNode(elems);
+			qnn = del(qnn, new DataTypeNodeDel());
+		}
+		if (qnn != null)
+		{
+			return castNameNode(kind, qnn);
+		}
+
 		if (kind.equals(ModuleKind.KIND))
 		{
 			qnn = new ModuleNameNode(elems);
@@ -341,14 +361,6 @@ public class AstFactoryImpl implements AstFactory
 		else if (kind.equals(Local.KIND))
 		{
 			qnn = new LProtocolNameNode(elems);
-		}
-		else if (kind.equals(SigKind.KIND))
-		{
-			qnn = new MessageSigNameNode(elems);
-		}
-		else if (kind.equals(DataTypeKind.KIND))
-		{
-			qnn = new DataTypeNameNode(elems);
 		}
 		else
 		{

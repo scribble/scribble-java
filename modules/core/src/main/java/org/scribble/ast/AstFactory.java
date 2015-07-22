@@ -28,7 +28,7 @@ import org.scribble.ast.local.LSend;
 import org.scribble.ast.local.SelfRoleDecl;
 import org.scribble.ast.name.NameNode;
 import org.scribble.ast.name.PayloadElemNameNode;
-import org.scribble.ast.name.qualified.DataTypeNameNode;
+import org.scribble.ast.name.qualified.DataTypeNode;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.MessageSigNameNode;
@@ -58,7 +58,7 @@ public interface AstFactory
 	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);
 	
 	MessageSigNameDecl MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode name);
-	DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNameNode name);
+	DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNode name);
 
 	GProtocolDecl GProtocolDecl(GProtocolHeader header, GProtocolDef def);
 	GProtocolHeader GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
