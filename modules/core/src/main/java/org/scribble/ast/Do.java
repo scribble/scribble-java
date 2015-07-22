@@ -42,7 +42,7 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 
 	public ProtocolName<K> getTargetFullProtocolName(ModuleContext mcontext)
 	{
-		return mcontext.getFullProtocolDeclNameFromDeps(this.proto.toName());
+		return mcontext.checkProtocolDeclDependencyFullName(this.proto.toName());
 	}
 	
 	public ProtocolDecl<K> getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
