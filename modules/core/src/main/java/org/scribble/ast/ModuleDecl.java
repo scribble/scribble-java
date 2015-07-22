@@ -42,8 +42,8 @@ public class ModuleDecl extends NameDeclNode<ModuleKind>
 	@Override
 	public ModuleName getDeclName()
 	{
-		//return getFullModuleName();  // FIXME: full or simple? -- full not consistent with NonProtocolDecl and ProtocolDecl
-		return new ModuleName(this.name.toName().toString());  // FIXME: make into a NameDeclNode
+		//return (ModuleName) super.getDeclName();  // Would return full name
+		return ((ModuleName) super.getDeclName()).getSimpleName();  // Uniform with other NameDeclNodes wrt. returning simple name
 	}
 
 	public ModuleName getFullModuleName()

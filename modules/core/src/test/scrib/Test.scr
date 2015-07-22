@@ -8,7 +8,7 @@
 module Test;
 
 
-/*
+///*
 import Test2;
 
 type <java> "java.lang.String" from "rt.jar" as String;
@@ -61,7 +61,7 @@ import test3.Test3 as Test4;  // <-
 global protocol Foo(role A, role B)
 {
 	1() from A to B;
-	do Test2.Test2Proto(A, B);
+	do Test2.Test2Proto1(A, B);
 	do Test4.Test3Proto(A, B);
 }
 //*/
