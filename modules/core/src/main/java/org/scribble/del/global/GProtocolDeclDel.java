@@ -1,6 +1,7 @@
 package org.scribble.del.global;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDeclContextBuilder;
+import org.scribble.visit.RoleCollector;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
@@ -60,6 +62,25 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		GProtocolDeclContext gcontext = new GProtocolDeclContext(builder.getGlobalProtocolDependencyMap());
 		GProtocolDeclDel del = (GProtocolDeclDel) setProtocolDeclContext(gcontext);
 		return (GProtocolDecl) gpd.del(del);
+	}
+
+	@Override
+	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited) throws ScribbleException
+	{
+		GProtocolDecl gpd = (GProtocolDecl) visited;
+
+		// Need to do here (e.g. RoleDeclList too early, def not visited yet)
+		// Currently only done for global, local does roledecl fixing after role collection -- should separate this check to a later pass after context building
+		// Maybe relax to check only occs.size() > 1
+		List<Role> decls = gpd.header.roledecls.getRoles();
+		Set<Role> occs = coll.getNames();
+		if (occs.size() != decls.size()) 
+		{
+			decls.removeAll(occs);
+			throw new ScribbleException("Unused role decl(s) in " + gpd.header.name + ": " + decls);
+		}
+
+		return super.leaveRoleCollection(parent, child, coll, gpd);
 	}
 
 	@Override

@@ -135,6 +135,7 @@ global protocol Bar(role A, role B)
 
 
 /*
+// Test unused roledecl filtering in projections
 global protocol Foo(role A, role B, role C)
 {
 	1() from A to B;

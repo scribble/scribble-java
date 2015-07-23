@@ -25,13 +25,13 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.GlobalModelBuilder;
+import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.ModelEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
-// FIXME: make base MessageTransferDelegate?
 public class GMessageTransferDel extends MessageTransferDel implements GSimpleInteractionNodeDel
 {
 	public GMessageTransferDel()
@@ -40,25 +40,38 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	}
 
 	@Override
+	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	{
+		GMessageTransfer gmt = (GMessageTransfer) visited;
+		Role src = gmt.src.toName();
+		List<Role> dests = gmt.getDestinationRoles();
+		if (dests.contains(src))
+		{
+			throw new ScribbleException("TODO: " + gmt);
+		}
+		return gmt;
+	}
+
+	@Override
 	public GMessageTransfer leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
-		GMessageTransfer msgtrans = (GMessageTransfer) visited;
+		GMessageTransfer gmt = (GMessageTransfer) visited;
 		
-		Role src = msgtrans.src.toName();
+		Role src = gmt.src.toName();
 		if (!checker.peekEnv().isEnabled(src))
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
-		Message msg = msgtrans.msg.toMessage();
+		Message msg = gmt.msg.toMessage();
 		WFChoiceEnv env = checker.popEnv();
-		for (Role dest : msgtrans.getDestinations().stream().map((rn) -> rn.toName()).collect(Collectors.toList()))
+		for (Role dest : gmt.getDestinationRoles())
 		{
 			env = env.addMessage(src, dest, msg);
 			
 			//System.out.println("a: " + src + ", " + dest + ", " + msg);
 		}
 		checker.pushEnv(env);
-		return msgtrans;
+		return gmt;
 	}
 
 	@Override

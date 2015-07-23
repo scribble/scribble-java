@@ -4,16 +4,14 @@ package org.scribble.main;
 /*
 .. disallow self comm
 .. check role decl used
-.. moduledecl as namedecl
 .. test mvn install
 .. fix script
 .. individual test ignores (cf. whole directory) -- good for package testing
 */
 
-
 	// default G/LNode getKind methods won't work properly until Eclipse updated with fix, cf. G/LInteractionSeq
 
-	// FIXME: protocoldecl header to check used roles (so projection roledecl filtering doesn't give empty roledecllist) -- should be checked wrt. role occurrences obtained from subprotocol visiting
+	// FIXME: protocoldecl header to check used roles (so projection roledecl filtering doesn't give empty roledecllist -- relax to check only that at least 1 or 2 roles are used?) -- should be checked wrt. role occurrences obtained from subprotocol visiting
 	// FIXME: parameter checking along with roles?
 	// FIXME: check do-call argument kinding (sig/type args/params), arity, etc
 	// bound qualified sig/type names (disambiguation check of qualified names, not just ambiguous)
@@ -38,6 +36,7 @@ package org.scribble.main;
 	// dels should be kinded as well? -- maybe by node type? or too restrictive
 
 	// some import/package name issues aren't tested in test suite because never in root package (issues when full and simple name coincide) 
+	// roldedecl used validation only checked for global; projection runs roledecl fixing after role collection (although check should be redundant after projection roledecl fixing?) -- maybe separate roledecl validation to follow after context building
 
 	// Inconsistencies? some visitOverride methods override base visit (i.e. including enter/exit) while others just override the visitChildren part
 	// also: sometimes super.visit is used, other times child.accept(this), etc

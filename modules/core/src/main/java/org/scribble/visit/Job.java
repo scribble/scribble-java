@@ -31,9 +31,6 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
-		runVisitorPassOnAllModules(ProtocolDefInliner.class);
-		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);  // Maybe consider as context building
-		//runNodeVisitorPass(GlobalModelBuilder.class);  // Incomplete
 		runVisitorPassOnAllModules(WFChoiceChecker.class);
 		runProjectionPasses();
 		runVisitorPassOnAllModules(ReachabilityChecker.class);
@@ -45,6 +42,9 @@ public class Job
 		runVisitorPassOnAllModules(NameDisambiguator.class);  // Includes validating names used in subprotocol calls..
 		runVisitorPassOnAllModules(ProtocolDeclContextBuilder.class);   //..which this pass depends on.  This pass basically builds protocol dependency info
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
+		runVisitorPassOnAllModules(ProtocolDefInliner.class);
+		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
+		//runNodeVisitorPass(GlobalModelBuilder.class);  // Incomplete
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
@@ -54,8 +54,6 @@ public class Job
 	{
 		runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
-		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
-		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}
 
   // To be done as a barrier pass after projection done on all Modules -- N.B. Module context building, no other validation (so "fixing" can be done in following passes) 
@@ -67,6 +65,8 @@ public class Job
 		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes to fix DUMMY role occurrences
 		runVisitorPassOnProjectedModules(RoleCollector.class);
 		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version
+		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
+		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}
 	
 	public void buildFsms(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context

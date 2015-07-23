@@ -33,4 +33,9 @@ public abstract class NameCollector<N extends Name<?>> extends NoEnvOffsetSubpro
 	{
 		return this.names;
 	}
+	
+	public void clear()
+	{
+		this.names.clear();
+	}
 }

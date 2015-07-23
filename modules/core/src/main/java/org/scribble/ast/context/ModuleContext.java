@@ -181,8 +181,8 @@ public class ModuleContext
 		return this.deps.sigs.containsKey(signame);
 	}*/
 
-	// Redundant: proto should already be full name by namedisamb (and this.deps only stores full names)
-	// Refactored as a "check" for now
+	// FIXME: deprecate -- now redundant: proto should already be full name by namedisamb (and this.deps only stores full names)
+	// Refactored as a "check" for now (although still redundant, not actually checking anything)
 	//public <K extends ProtocolKind> ProtocolName<K> getProtocolDeclDependencyFullName(ProtocolName<K> proto)
 	public <K extends ProtocolKind> ProtocolName<K> checkProtocolDeclDependencyFullName(ProtocolName<K> proto)
 	{
