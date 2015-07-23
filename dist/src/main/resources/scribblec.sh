@@ -1,11 +1,14 @@
 #!/bin/sh
 
-# TODO: antlr 3.2 jar location
+# Directory containing Scribble jars
+LIB=lib
+
+# antlr 3.2 location (if no lib jar)
 ANTLR=
-# e.g. '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar'
+	# e.g. '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar'
 
 PRG=`basename "$0"`
-DIR=`dirname "$0"`/..
+DIR=`dirname "$0"`
 #BASEDIR=$(dirname $0)
 
 usage() {
@@ -36,7 +39,17 @@ fixpath() {
 
 ARGS=
 
-CLASSPATH=$DIR'/modules/cli/target/classes/:'$DIR'/modules/core/target/classes:'$DIR'/modules/parser/target/classes:'$ANTLR
+CLASSPATH=$DIR'/modules/cli/target/classes/'
+CLASSPATH=$CLASSPATH':'$DIR'/modules/core/target/classes'
+CLASSPATH=$CLASSPATH':'$DIR'/modules/parser/target/classes'
+CLASSPATH=$CLASSPATH':'$ANTLR
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/antlr-runtime.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/commons-io.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-cli.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-core.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/scribble-parser.jar'
+CLASSPATH=$CLASSPATH':'$DIR'/'$LIB'/stringtemplate.jar'
 CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 
 usage=0
