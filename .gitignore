@@ -17,5 +17,5 @@ modules/core/src/test/scrib/test/foo/Foo.java
 modules/core/src/test/scrib/test/foo/Foo_*
 modules/core/src/test/scrib/test/test1/Proto1.java
 modules/core/src/test/scrib/test/test1/Proto1_*
-bin/scribblec
+bin/scribblec.sh
 
