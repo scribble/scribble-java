@@ -1,7 +1,6 @@
-module good.parsing.globals.gdo.Do13a;
+module bad.disamb.protocoldecl.Do13a;
 
 
-// FIXME: similar to Do23a -- should be bad (roles not used)
 global protocol Do13a(role A, role B)
 {
 	//l1() from A to B;  // Uncomment is OK

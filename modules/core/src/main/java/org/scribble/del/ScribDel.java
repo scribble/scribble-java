@@ -141,7 +141,7 @@ public interface ScribDel
 		
 	}
 
-	default ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited)
+	default ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

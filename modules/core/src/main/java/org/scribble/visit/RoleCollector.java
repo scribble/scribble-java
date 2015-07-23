@@ -1,5 +1,6 @@
 package org.scribble.visit;
 
+import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.main.ScribbleException;
@@ -22,6 +23,10 @@ public class RoleCollector extends NameCollector<Role>
 	protected final void offsetSubprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.offsetSubprotocolEnter(parent, child);
+		if (child instanceof ProtocolDecl<?>)
+		{
+			super.clear();
+		}
 		child.del().enterRoleCollection(parent, child, this);
 	}
 	

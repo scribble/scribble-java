@@ -1,11 +1,10 @@
-module good.parsing.globals.gdo.Do23a;
+module bad.disamb.protocoldecl.Do23a;
 
 
 type <java> "java.lang.String" from "rt.jar" as String;
 
 
-// Overlaps with Do25
-// FIXME: similar to Do13a -- should be bad (roles not used)
+// Overlaps with Do25?
 global protocol Do23a(role A, role B)
 {
 	do Do23aux<String>(A, B);
@@ -21,4 +20,3 @@ global protocol Do23a2<sig X>(role E, role F)
 {
 	//X from E to F;  // Uncomment OK
 }
-

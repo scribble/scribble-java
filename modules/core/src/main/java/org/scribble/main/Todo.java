@@ -4,7 +4,6 @@ package org.scribble.main;
 /*
 .. disallow self comm
 .. check role decl used
-.. moduledecl as namedecl
 .. test mvn install
 .. fix script
 .. individual test ignores (cf. whole directory) -- good for package testing
@@ -38,6 +37,7 @@ package org.scribble.main;
 	// dels should be kinded as well? -- maybe by node type? or too restrictive
 
 	// some import/package name issues aren't tested in test suite because never in root package (issues when full and simple name coincide) 
+	// roldedecl used validation only checked for global; projection runs roledecl fixing after role collection -- maybe separate roledecl validation to follow after context building
 
 	// Inconsistencies? some visitOverride methods override base visit (i.e. including enter/exit) while others just override the visitChildren part
 	// also: sometimes super.visit is used, other times child.accept(this), etc

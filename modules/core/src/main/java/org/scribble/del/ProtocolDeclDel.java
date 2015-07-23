@@ -1,5 +1,7 @@
 package org.scribble.del;
 
+import java.util.Set;
+
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
@@ -61,11 +63,12 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 	}
 
 	@Override
-	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited)
+	public ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited) throws ScribbleException
 	{
 		ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
-		// Needs ContextBuilder to have built the context already
-		ProtocolDeclDel<K> del = setProtocolDeclContext(getProtocolDeclContext().setRoleOccurrences(coll.getNames()));
+		Set<Role> occs = coll.getNames();
+		// Needs ProtocolDeclContextBuilder to have built the context already
+		ProtocolDeclDel<K> del = setProtocolDeclContext(getProtocolDeclContext().setRoleOccurrences(occs));
 		return pd.del(del);
 	}
 	
