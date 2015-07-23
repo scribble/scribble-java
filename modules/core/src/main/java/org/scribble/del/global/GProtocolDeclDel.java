@@ -71,9 +71,10 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 
 		// Need to do here (e.g. RoleDeclList too early, def not visited yet)
 		// Currently only done for global, local does roledecl fixing after role collection -- should separate this check to a later pass after context building
+		// Maybe relax to check only occs.size() > 1
 		List<Role> decls = gpd.header.roledecls.getRoles();
 		Set<Role> occs = coll.getNames();
-		if (occs.size() != decls.size())
+		if (occs.size() != decls.size()) 
 		{
 			decls.removeAll(occs);
 			throw new ScribbleException("Unused role decl(s) in " + gpd.header.name + ": " + decls);
