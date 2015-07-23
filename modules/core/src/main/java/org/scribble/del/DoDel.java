@@ -25,12 +25,14 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
-		return leaveDisambiguationAux(parent, child, disamb, visited);
+		return leaveDisambiguationAux(parent, child, disamb, visited);  // To introduce type parameter
 	}
 	
 	// Convert all visible names to full names for protocol inlining: otherwise could get clashes if directly inlining external visible names under the root modulecontext
 	// Not done in G/LProtocolNameNodeDel because it's only for do-targets that this is needed (cf. ProtocolHeader)
-	private <K extends ProtocolKind> ScribNode leaveDisambiguationAux(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	private <K extends ProtocolKind> ScribNode
+			leaveDisambiguationAux(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited)
+					throws ScribbleException
 	{
 		@SuppressWarnings("unchecked")  // Doesn't matter what K is, just need to propagate it down
 		Do<K> doo = (Do<K>) visited;

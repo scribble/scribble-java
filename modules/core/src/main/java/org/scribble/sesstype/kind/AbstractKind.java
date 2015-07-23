@@ -15,6 +15,7 @@ public abstract class AbstractKind implements Kind
 	@Override
 	public String toString()
 	{
-		return this.getClass().toString();
+		String s = this.getClass().toString();
+		return s.substring("class org.sribble.sesstype.kind.".length() + 1, s.length());
 	}
 }

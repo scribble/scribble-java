@@ -40,6 +40,8 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 		return reconstruct(ril, al, proto);
 	}
 
+	// FIXME: deprecate -- now redundant because NameDisambiguator converts all targets to full names
+	// To get full name from original target name, use mcontext visible names (e.g. in or before name disambiguation pass)
 	public ProtocolName<K> getTargetFullProtocolName(ModuleContext mcontext)
 	{
 		return mcontext.checkProtocolDeclDependencyFullName(this.proto.toName());

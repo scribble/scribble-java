@@ -43,6 +43,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
+import org.scribble.del.NonRoleArgListDel;
 import org.scribble.del.NonRoleParamDeclDel;
 import org.scribble.del.NonRoleParamDeclListDel;
 import org.scribble.del.RoleArgListDel;
@@ -289,7 +290,7 @@ public class AstFactoryImpl implements AstFactory
 	public NonRoleArgList NonRoleArgList(List<NonRoleArg> ais)
 	{
 		NonRoleArgList rdl = new NonRoleArgList(ais);
-		rdl = del(rdl, createDefaultDelegate());
+		rdl = del(rdl, new NonRoleArgListDel());
 		return rdl;
 	}
 

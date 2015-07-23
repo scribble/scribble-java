@@ -1,4 +1,4 @@
-module bad.disamb.headerparamdecllist.HeaderParamDeclList01;
+module bad.disamb.doarglist.DoArgList01;
 
 
 global protocol Foo(role A, role B, role C)
