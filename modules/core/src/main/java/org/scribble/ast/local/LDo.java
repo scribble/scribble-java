@@ -52,9 +52,9 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	}
 
 	@Override
-	public LProtocolName getTargetFullProtocolName(ModuleContext mcontext)
+	public LProtocolName getTargetProtocolDeclFullName(ModuleContext mcontext)
 	{
-		return (LProtocolName) super.getTargetFullProtocolName(mcontext);
+		return (LProtocolName) super.getTargetProtocolDeclFullName(mcontext);
 	}
 
 	@Override

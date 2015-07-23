@@ -9,6 +9,7 @@ import org.scribble.ast.NonRoleParamDecl;
 import org.scribble.ast.NonRoleParamDeclList;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
@@ -35,18 +36,25 @@ public class NonRoleArgListDel extends DoArgListDel
 		{
 			NonRoleParamKind kind = param.kind;
 			NonRoleArg arg = args.next();
-			if (kind.equals(SigKind.KIND))
+			if (arg.val.isParamNode())
 			{
-				if (!arg.val.isMessageSigNameNode() && !arg.val.isMessageSigNameNode())
+				if (!((NonRoleParamNode<?>) arg.val).kind.equals(kind))
 				{
-					throw new RuntimeException("Bad arg " + arg + " for param kind: " + kind);
+					throw new ScribbleException("Bad arg " + arg + " for param kind: " + kind);
+				}
+			}
+			else if (kind.equals(SigKind.KIND))
+			{
+				if (!arg.val.isMessageSigNode() && !arg.val.isMessageSigNameNode())
+				{
+					throw new ScribbleException("Bad arg " + arg + " for param kind: " + kind);
 				}
 			}
 			else if (kind.equals(DataTypeKind.KIND))
 			{
 				if (!arg.val.isDataTypeNameNode())
 				{
-					throw new RuntimeException("Bad arg " + arg + " for param kind: " + kind);
+					throw new ScribbleException("Bad arg " + arg + " for param kind: " + kind);
 				}
 			}
 			else

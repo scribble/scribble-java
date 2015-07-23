@@ -40,16 +40,19 @@ public abstract class Do<K extends ProtocolKind> extends SimpleInteractionNode<K
 		return reconstruct(ril, al, proto);
 	}
 
-	// FIXME: deprecate -- now redundant because NameDisambiguator converts all targets to full names
+	// FIXME: mcontext now redundant because NameDisambiguator converts all targets to full names
 	// To get full name from original target name, use mcontext visible names (e.g. in or before name disambiguation pass)
-	public ProtocolName<K> getTargetFullProtocolName(ModuleContext mcontext)
+	// This is still useful for subclass casting to G/LProtocolName
+	public ProtocolName<K> getTargetProtocolDeclFullName(ModuleContext mcontext)
 	{
-		return mcontext.checkProtocolDeclDependencyFullName(this.proto.toName());
+		//return mcontext.checkProtocolDeclDependencyFullName(this.proto.toName());
+		return this.proto.toName();  // Pre: use after name disambiguation (maybe drop FullName suffix)
 	}
 	
+	// mcontext redundant because redundant for getTargetProtocolDeclFullName
 	public ProtocolDecl<K> getTargetProtocolDecl(JobContext jcontext, ModuleContext mcontext)
 	{
-		ProtocolName<K> fullname = getTargetFullProtocolName(mcontext);
+		ProtocolName<K> fullname = getTargetProtocolDeclFullName(mcontext);
 		return jcontext.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 	}
 	

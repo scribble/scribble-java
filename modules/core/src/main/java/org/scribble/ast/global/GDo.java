@@ -51,9 +51,9 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	}
 
 	@Override
-	public GProtocolName getTargetFullProtocolName(ModuleContext mcontext)
+	public GProtocolName getTargetProtocolDeclFullName(ModuleContext mcontext)
 	{
-		return (GProtocolName) super.getTargetFullProtocolName(mcontext);
+		return (GProtocolName) super.getTargetProtocolDeclFullName(mcontext);
 	}
 
 	@Override

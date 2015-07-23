@@ -50,7 +50,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		JobContext jcontext = builder.getJobContext();
 		ModuleContext mcontext = builder.getModuleContext();
 		Do<?> doo = (Do<?>) visited;
-		ProtocolName<?> pn = doo.getTargetFullProtocolName(builder.getModuleContext());
+		ProtocolName<?> pn = doo.proto.toName();  // leaveDisambiguation has fully qualified the target name
 		doo.roles.getRoles().stream().forEach((r) -> addProtocolDependency(builder, r, pn, doo.getTargetRoleParameter(jcontext, mcontext, r)));
 		return doo;
 	}
