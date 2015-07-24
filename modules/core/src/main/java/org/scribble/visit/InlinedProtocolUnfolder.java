@@ -19,22 +19,30 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.env.UnfoldingEnv;
 
-// Unfolds recursions "directly under" choices (n.b. not continues -- use UnfoldingVisitor to do that on demand)
+// Statically unfolds unguarded recursions and continues "directly under" choices
+// N.B. cf. UnfoldingVisitor "lazily" unfolds every rec once on demand
 public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv>
 {
 	private static final String DUMMY_REC_LABEL = "__";
 	
 	private Map<RecVar, Recursion<?>> recs = new HashMap<>();  // Could parameterise recvars to be global/local
-	private Set<RecVar> todo = new HashSet<>();
-	
-	public boolean isTodo(RecVar rv)  // FIXME: rename
-	{
-		return this.todo.contains(rv);
-	}
+	private Set<RecVar> recsToUnfold = new HashSet<>();
 	
 	public InlinedProtocolUnfolder(Job job)
 	{
 		super(job);
+	}
+	
+	public boolean shouldUnfoldForUnguardedRec(RecVar rv)
+	{
+		return this.recsToUnfold.contains(rv);
+	}
+	
+	// Unguarded continues directly under choices need to be unfolded to make current graph building work (continue side effects GraphBuilder state to re-set entry to rec state -- which makes output dependent on choice block order, and can attach subsequent choice paths onto the rec state instead of the original choice state)
+	// Maybe fix this problem inside graph building rather than unfolding here (this unfolding is conservative -- not always needed for every unguarded continue) -- depends if it helps any other inlined passes?
+	public boolean isContinueUnguarded(RecVar rv)
+	{
+		return peekEnv().shouldUnfold();
 	}
 	
 	@Override
@@ -79,11 +87,11 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 		RecVar rv = rec.recvar.toName();
 		ProtocolBlock<K> pb = rec.block;
 				// Clone unnecessary: can visit the original block, apart from any continues to substitute (done in InteractionSeqDel)
-		this.todo.add(rv);
+		this.recsToUnfold.add(rv);
 		RecVarNode dummy = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, DUMMY_REC_LABEL);
 		ScribNode n = rec.reconstruct(dummy, ScribUtil.checkNodeClassEquality(pb, pb.accept(this))); 
 				// reconstruct makes sense here, actually reconstructing this rec with new label but same block (and keep the same del etc)
-		this.todo.remove(rv);
+		this.recsToUnfold.remove(rv);
 		return n;
 	}
 	
