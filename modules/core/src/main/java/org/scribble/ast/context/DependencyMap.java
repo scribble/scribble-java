@@ -13,6 +13,7 @@ import org.scribble.sesstype.name.Role;
 // Used for two purposes: one to encapsulate Map structure and add method for ContextBuilder; second to allow overriding the generic types in ProtocolDeclContext (cf. nested Map generics)
 public abstract class DependencyMap<N extends ProtocolName<?>>  // Maybe better to parameterise on Kind only?
 {
+	// self -> (proto -> target) -- the self role in this proto, depends on the proto, for the role param target
 	private final Map<Role, Map<N, Set<Role>>> deps = new HashMap<>();  // All the potential dependencies from this protocol decl as the root
 
 	public DependencyMap()
@@ -37,7 +38,7 @@ public abstract class DependencyMap<N extends ProtocolName<?>>  // Maybe better 
 	
 	public abstract DependencyMap<N> clone();
 
-	public void addProtocolDependency(Role self, N pn, Role role)
+	public void addProtocolDependency(Role self, N pn, Role target)
 	{
 		Map<N, Set<Role>> tmp1 = this.deps.get(self);
 		if (tmp1 == null)
@@ -52,7 +53,7 @@ public abstract class DependencyMap<N extends ProtocolName<?>>  // Maybe better 
 			tmp2 = new HashSet<>();
 			tmp1.put(pn, tmp2);
 		}
-		tmp2.add(role);
+		tmp2.add(target);
 	}
 	
 	public Map<Role, Map<N, Set<Role>>> getDependencies()

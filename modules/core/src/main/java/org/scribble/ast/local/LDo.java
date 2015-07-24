@@ -1,5 +1,7 @@
 package org.scribble.ast.local;
 
+import java.util.Iterator;
+
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Do;
 import org.scribble.ast.NonRoleArgList;
@@ -68,7 +70,19 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	{
 		ModuleContext mc = fixer.getModuleContext();
 		JobContext jc = fixer.getJobContext();
-		return getTargetProtocolDecl(jc, mc).getDef().getBlock().getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
+		
+		Role subj = getTargetProtocolDecl(jc, mc).getDef().getBlock()
+				.getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
+		Iterator<Role> roleargs = this.roles.getRoles().iterator();
+		for (Role decl : getTargetProtocolDecl(jc, mc).header.roledecls.getRoles())
+		{
+			Role arg = roleargs.next();
+			if (decl.equals(subj))
+			{
+				return arg;
+			}
+		}
+		throw new RuntimeException("Shouldn't get here: " + this);
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

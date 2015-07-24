@@ -65,6 +65,8 @@ public class NonRoleArgList extends DoArgList<NonRoleArg>
 	@Override
 	public String toString()
 	{
-		return "<" + getDoArgs().stream().map((a) -> a.toString()).collect(Collectors.joining(", " )) + ">";
+		return (getDoArgs().isEmpty())
+				? ""
+				: "<" + super.toString() + ">";
 	}
 }

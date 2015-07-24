@@ -4,12 +4,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.codegen.EndpointApiGenerator;
 import org.scribble.codegen.SessionApiGenerator;
+import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 
@@ -61,15 +64,29 @@ public class Job
 	private void runProjectionContextBuildingPasses() throws ScribbleException
 	{
 		runVisitorPassOnProjectedModules(ModuleContextBuilder.class);
-		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);
 		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes to fix DUMMY role occurrences
+		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);
 		runVisitorPassOnProjectedModules(RoleCollector.class);
 		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version
 		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
 	}
+
+	// Pre: checkWellFormedness 
+	// Returns: full proto name -> Module
+	public Map<LProtocolName, Module> getProjections(GProtocolName fullname, Role role)
+	{
+		Module root = this.jcontext.getProjection(fullname, role);
+		Map<LProtocolName, Set<Role>> dependencies =
+				((LProtocolDeclDel) root.getLocalProtocolDecls().get(0).del())
+						.getProtocolDeclContext().getDependencyMap().getDependencies().get(role);
+		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
+		return dependencies.keySet().stream().collect(
+				Collectors.toMap((lpn) -> lpn, (lpn) -> this.jcontext.getModule(lpn.getPrefix())));
+	}
 	
-	public void buildFsms(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context
+  // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
+	public void buildGraph(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context
 	{
 		debugPrintPass("Running " + EndpointGraphBuilder.class + " for " + fullname + "@" + role);
 		// Visit Module for context (not just the protodecl) -- builds FSMs for all locals in the module
@@ -77,7 +94,7 @@ public class Job
 			// Builds FSMs for all local protocols in this module as root (though each projected module contains a single local protocol)
 			// Subprotocols "inlined" by FsmBuilder (scoped subprotocols not supported)
 	}
-	
+
 	public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
 	{
 		debugPrintPass("Running " + SessionApiGenerator.class + " for " + fullname);
@@ -88,9 +105,9 @@ public class Job
 	
 	public Map<String, String> generateEndpointApi(GProtocolName fullname, Role role) throws ScribbleException
 	{
-		if (this.jcontext.getEndointGraph(fullname, role) == null)
+		if (this.jcontext.getEndpointGraph(fullname, role) == null)
 		{
-			buildFsms(fullname, role);
+			buildGraph(fullname, role);
 		}
 		debugPrintPass("Running " + EndpointApiGenerator.class + " for " + fullname + "@" + role);
 		return new EndpointApiGenerator(this, fullname, role).generateClasses(); // filepath -> class source  // Store results?

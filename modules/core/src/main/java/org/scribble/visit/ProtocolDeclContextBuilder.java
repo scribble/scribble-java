@@ -8,8 +8,8 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 
-// Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
-public class ProtocolDeclContextBuilder extends ModuleContextVisitor
+// Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names -- no: old?
+public class ProtocolDeclContextBuilder extends NoEnvSubprotocolVisitor  // For transitive dependency collection (cf. NameCollector)
 {
 	private GDependencyMap gdeps;
 	private LDependencyMap ldeps;
@@ -20,17 +20,17 @@ public class ProtocolDeclContextBuilder extends ModuleContextVisitor
 	}
 
 	@Override
-	protected void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.enter(parent, child);
+		super.subprotocolEnter(parent, child);
 		child.del().enterProtocolDeclContextBuilding(parent, child, this);
 	}
 
 	@Override
-	protected ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveProtocolDeclContextBuilding(parent, child, this, visited);
-		return super.leave(parent, child, visited);
+		return super.subprotocolLeave(parent, child, visited);
 	}
 	
 	public void clearProtocolDependencies()
@@ -39,14 +39,14 @@ public class ProtocolDeclContextBuilder extends ModuleContextVisitor
 		this.ldeps = new LDependencyMap();
 	}
 
-	public void addGlobalProtocolDependency(Role self, GProtocolName gpn, Role role)
+	public void addGlobalProtocolDependency(Role self, GProtocolName gpn, Role target)
 	{
-		this.gdeps.addProtocolDependency(self, gpn, role);
+		this.gdeps.addProtocolDependency(self, gpn, target);
 	}
 
-	public void addLocalProtocolDependency(Role self, LProtocolName lpn, Role role)
+	public void addLocalProtocolDependency(Role self, LProtocolName lpn, Role target)
 	{
-		this.ldeps.addProtocolDependency(self, lpn, role);
+		this.ldeps.addProtocolDependency(self, lpn, target);
 	}
 
 	public GDependencyMap getGlobalProtocolDependencyMap()

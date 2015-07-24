@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
@@ -39,5 +40,12 @@ public abstract class DoArgList<T extends DoArg<?>> extends ScribNodeBase
 	public int length()
 	{
 		return this.args.size();
+	}
+	
+	// Like HeaderParamDeclList, without enclosing braces -- added by subclasses
+	@Override
+	public String toString()
+	{
+		return this.args.stream().map((a) -> a.toString()).collect(Collectors.joining(", "));
 	}
 }
