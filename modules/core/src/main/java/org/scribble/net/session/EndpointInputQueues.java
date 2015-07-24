@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Role;
@@ -13,21 +14,34 @@ public class EndpointInputQueues
 {
 	private final Map<Role, List<ScribMessage>> queues = new HashMap<>();
 	//private final List<Object> list = new LinkedList<>();
+	
+	private final Map<Role, Integer> counts = new HashMap<>();
+	private final Map<Role, Integer> tickets = new HashMap<>();
 
 	public EndpointInputQueues()
 	{
 
 	}
 	
+	public synchronized int getTicket(Role peer)
+	{
+		int next = this.tickets.get(peer) + 1;
+		this.tickets.put(peer, next);
+		return next;
+	}
+	
 	public synchronized void register(Role peer)
 	{
 		this.queues.put(peer, new LinkedList<>());
+		this.counts.put(peer, 0);
+		this.tickets.put(peer, 0);
 	}
 
-	public synchronized void enqueue(Role src, ScribMessage o)
+	public synchronized void enqueue(Role peer, ScribMessage o)
 	{
-		this.queues.get(src).add(o);
+		this.queues.get(peer).add(o);
 		//this.list.add(o);
+		this.counts.put(peer, this.counts.get(peer) + 1);
 		this.notifyAll();  // FIXME: notify just for each peer
 	}
 	
@@ -40,24 +54,34 @@ public class EndpointInputQueues
 	{
 		return this.queues.get(src).get(0);
 	}*/
-
-	public synchronized ScribMessage dequeue(Role src) throws IOException
+	
+	public synchronized CompletableFuture<ScribMessage> getFuture(Role peer)
 	{
-		List<ScribMessage> queue = this.queues.get(src);
-		while (queue.isEmpty())
+		// FIXME: exception handling
+		return CompletableFuture.supplyAsync(() -> { try { return dequeue(peer, getTicket(peer)); } catch(IOException e) { throw new RuntimeException(e); } });
+	}
+
+	protected synchronized ScribMessage dequeue(Role peer, int ticket) throws IOException
+	{
+		try
 		{
-			try
+			while (this.counts.get(peer) < ticket)
 			{
 				wait();
 			}
-			catch (InterruptedException e)
+			List<ScribMessage> queue = this.queues.get(peer);
+			while (queue.isEmpty())
 			{
-				throw new IOException(e);
+				wait();
 			}
+			ScribMessage m = queue.remove(0);
+			//this.list.remove(o);
+			return m;
 		}
-		ScribMessage m = queue.remove(0);
-		//this.list.remove(o);
-		return m;
+		catch (InterruptedException e)
+		{
+			throw new IOException(e);
+		}
 	}
 
 	/*public boolean isEmpty()

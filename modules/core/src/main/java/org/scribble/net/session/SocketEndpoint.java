@@ -109,6 +109,7 @@ class ReceiverThread extends Thread
 			}
 			finally
 			{
+				// FIXME:
 				/*if (this.fail != null)
 				{
 					queues.signalException(this.peer, this.fail);

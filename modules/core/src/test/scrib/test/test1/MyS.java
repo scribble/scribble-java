@@ -1,6 +1,7 @@
 package test.test1;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
@@ -26,32 +27,18 @@ public class MyS
 
 				try (Proto1_S_0 s0 = init)
 				{
-					X(s0.init(), i1, i2).end();
+					Proto1_S_1 s1 = s0.init();
+					
+					s1.receive(Proto1._1)
+					  .send(Proto1.C, Proto1._2)
+					  .send(Proto1.C, Proto1._3)
+					  .send(Proto1.C, Proto1._4)
+					  .receive(Proto1._5);
 				}
-				catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
+				catch (ScribbleRuntimeException | IOException | ClassNotFoundException | ExecutionException | InterruptedException e)
 				{
 					e.printStackTrace();
 				}
-			}
-		}
-	}
-	
-	private static Proto1_S_3 X(Proto1_S_1 s1, Buff<Integer> i1, Buff<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException
-	{
-		Proto1_S_4 s4 = s1.branch();
-		switch (s4.op)
-		{
-			case BYE:
-			{
-				return s4.receive(Proto1.BYE);
-			}
-			case ADD:
-			{
-				return X(s4.receive(Proto1.ADD, i1, i2).send(Proto1.C, Proto1.RES, i1.val + i2.val), i1, i2);
-			}
-			default:
-			{
-				throw new RuntimeException("Won't get here: ");
 			}
 		}
 	}

@@ -33,12 +33,12 @@ public class EndpointApiGenerator
 	public static final String BUFF_CLASS = "org.scribble.net.Buff";
 	public static final String BUFF_VAL = "val";
 	public static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
+	public static final String SCRIBFUTURE_CLASS = "org.scribble.net.ScribFuture";
 
-	public static final String INITSOCKET_CLASS = "org.scribble.net.InitSocket";
-	public static final String SENDSOCKET_CLASS = "org.scribble.net.SendSocket";
-	public static final String RECEIVESOCKET_CLASS = "org.scribble.net.ReceiveSocket";
-	public static final String BRANCHSOCKET_CLASS = "org.scribble.net.BranchSocket";
-	public static final String ENDSOCKET_CLASS = "org.scribble.net.EndSocket";
+	public static final String INITSOCKET_CLASS = "org.scribble.net.scribsock.InitSocket";
+	public static final String SENDSOCKET_CLASS = "org.scribble.net.scribsock.SendSocket";
+	public static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
+	public static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
 	
 	private static final String SCRIBSOCKET_EP_FIELD = ClassBuilder.THIS + ".ep";
 	
@@ -146,6 +146,8 @@ public class EndpointApiGenerator
 	private void makeImports(ClassBuilder cb, EndpointState ps)
 	{
 		cb.addImports("java.io.IOException");
+		cb.addImports("java.util.concurrent.CompletableFuture");
+		cb.addImports("java.util.concurrent.ExecutionException");
 		cb.addImports(SessionApiGenerator.getPackageName(this.gpn) + "."
 					+ SessionApiGenerator.getSessionClassName(this.gpn));
 	}
@@ -226,12 +228,12 @@ public class EndpointApiGenerator
 				}
 
 				String body = ClassBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", "
-                    		+ ClassBuilder.NEW + " " + SCRIBMESSAGE_CLASS + "(" + opref;
+                    		+ opref;
 				if (!a.payload.isEmpty())
 				{
 					body += ", " + args.stream().collect(Collectors.joining(", "));
 				}
-				body += "));\n";
+				body += ");\n";
 				mb.addBodyLine(body);
 			}
 			else //if (a.mid.isMessageSigName())
@@ -244,8 +246,21 @@ public class EndpointApiGenerator
 				mb.addBodyLine(ClassBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM 
 						+ ", " + MESSAGE_PARAM + ");");
 			}
+			makeReturnNextSocket(mb, next);
+		}
+	}
+	
+	private static void makeReturnNextSocket(MethodBuilder mb, String nextClass)
+	{
+		if (nextClass.equals("void"))  // FIXME: factor out
+		{
+			mb.addBodyLine(SCRIBSOCKET_EP_FIELD + ".setCompleted();");  // Do before the IO action? in case of exception?
+			mb.addBodyLine(ClassBuilder.RETURN + ";");
+		}
+		else
+		{
 			mb.addBodyLine(ClassBuilder.RETURN + " "
-						+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_EP_FIELD + ");");
+						+ ClassBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_EP_FIELD + ");");
 		}
 	}
 
@@ -280,10 +295,22 @@ public class EndpointApiGenerator
 						+ ClassBuilder.SUPER + ".readScribMessage(" + getPrefixedRoleClassName(a.peer) + ");");
 			mb1.addBodyLine(ARG_PREFIX + "." + BUFF_VAL + " = (" + msd.extName + ") " + MESSAGE_VAR + ";");
 		}
-		mb1.addBodyLine(ClassBuilder.RETURN + " "
-				+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_EP_FIELD + ");");
+		makeReturnNextSocket(mb1, next);
 		
-		MethodBuilder mb2 = cb.newMethod("...future..."); 
+		MethodBuilder mb2 = cb.newMethod("async"); 
+		mb2.addModifiers(ClassBuilder.PUBLIC);
+		if (next.equals("void"))
+		{
+			mb2.setReturn("CompletableFuture<" + SCRIBMESSAGE_CLASS + ">");
+			mb2.addBodyLine(SCRIBSOCKET_EP_FIELD + ".setCompleted();");
+			mb2.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
+		}
+		else
+		{
+			mb2.setReturn(SCRIBFUTURE_CLASS + "<" + next + ">");  // FIXME: factor out
+			mb2.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER
+					+ ".getFuture(" + getPrefixedRoleClassName(a.peer) + ", " + ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_EP_FIELD + "));");
+		}
 		
 		//HERE:... (bounded) receive thread and input action indexing ... gc for unneeded messages? weak references...
 	}
@@ -293,7 +320,7 @@ public class EndpointApiGenerator
 		MethodBuilder mb = cb.newMethod("receive");
 		mb.setReturn(next);
 		mb.addModifiers(ClassBuilder.PUBLIC);
-		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException, ExecutionException, InterruptedException");
 		return mb;
 	}
 
@@ -495,8 +522,13 @@ public class EndpointApiGenerator
 	
 	private void generateClassNames(EndpointState ps)
 	{
-		if (this.classNames.containsKey(ps) || ps.isTerminal())
+		if (this.classNames.containsKey(ps))
 		{
+			return;
+		}
+		if (ps.isTerminal())
+		{
+			this.classNames.put(ps, "void");
 			return;
 		}
 		String c = newClassName();
