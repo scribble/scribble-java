@@ -80,6 +80,7 @@ public class CommandLine implements Runnable
 		}
 	}
 	
+	// FIXME: output all relevant projections
 	private void outputProjection(Job job)
 	{
 		JobContext jcontext = job.getContext();
@@ -89,6 +90,7 @@ public class CommandLine implements Runnable
 		System.out.println(proj);
 	}
 
+	// FIXME: output all relevant Graphs
 	private void outputFsm(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();

@@ -1,4 +1,4 @@
-package org.scribble.net;
+package org.scribble.net.scribsock;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -6,9 +6,10 @@ import java.net.UnknownHostException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketWrapper;
 import org.scribble.sesstype.name.Role;
 
-public abstract class InitSocket extends ScribSocket implements AutoCloseable
+public abstract class InitSocket extends LinearSocket implements AutoCloseable
 {
 	protected InitSocket(SessionEndpoint ep)
 	{
@@ -17,6 +18,7 @@ public abstract class InitSocket extends ScribSocket implements AutoCloseable
 
 	public void connect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
+		// Can connect unlimited, as long as not already used via init
 		if (isUsed())
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());

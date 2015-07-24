@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.ScribServerSocket;
+import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.session.SessionEndpoint;
 
 public class MyBC

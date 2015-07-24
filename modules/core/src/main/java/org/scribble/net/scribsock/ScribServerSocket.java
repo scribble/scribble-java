@@ -1,7 +1,9 @@
-package org.scribble.net;
+package org.scribble.net.scribsock;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+
+import org.scribble.net.session.SocketWrapper;
 
 public class ScribServerSocket implements AutoCloseable
 {

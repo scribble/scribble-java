@@ -41,6 +41,7 @@ public class Session
 	//public SessionEndpointOld toEndpoint(Principal p) throws ScribbleException, IOException
 	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleRuntimeException//, IOException
 	{
+		// FIXME: check valid role
 		if (this.endpoints.containsKey(role))
 		{
 			throw new ScribbleRuntimeException("Session endpoint already created for: " + role);

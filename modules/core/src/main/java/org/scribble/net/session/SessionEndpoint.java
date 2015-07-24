@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ScribMessageFormatter;
-import org.scribble.net.SocketWrapper;
 import org.scribble.sesstype.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
@@ -19,13 +18,12 @@ public class SessionEndpoint
 	
 	private boolean complete = false;
 
-	//private final Map<Role, Principal> remroles = new HashMap<Role, Principal>();  // Doesn't include self
-	private final Map<Role, SocketWrapper> sockets = new HashMap<Role, SocketWrapper>();   // Includes SelfSocketEndpoint
+	private final Map<Role, SocketEndpoint> socks = new HashMap<>();   // Includes SelfSocketEndpoint
+	private final EndpointInputQueues queues = new EndpointInputQueues();
 
 	//protected final LocalProtocolDecl root;
 	//public final Monitor monitor;
 
-	//protected SessionEndpoint(Session sess, Principal self) throws ScribbleException, IOException
 	protected SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf) //throws ScribbleException, IOException
 	{
 		this.sess = sess;
@@ -37,7 +35,6 @@ public class SessionEndpoint
 		//this.monitor = createMonitor(sess.impath, sess.source, sess.proto, self);
 	}
 	
-	//protected void setCompleted()
 	public void setCompleted()
 	{
 		this.complete = true;	
@@ -49,14 +46,9 @@ public class SessionEndpoint
 	}
 
 	// Only for remote endpoints (self SocketEndpoint is done in above constructor; but not recorded in role-principal map)
-	//public void register(Principal remote, SocketWrapper sw) //throws IOException
-	public void register(Role role, SocketWrapper sw) //throws IOException
+	public void register(Role peer, SocketWrapper sw) //throws IOException
 	{
-		/*this.remroles.put(remote.role, remote);
-		this.sockets.put(remote.role, new SocketEndpoint(remote.role, this.inputq, sw));*/
-		//this.sockets.put(remote.role, new SocketEndpoint(sw));
-		//this.sockets.put(role, new SocketEndpoint(sw));
-		this.sockets.put(role, sw);
+		this.socks.put(peer, new SocketEndpoint(this, peer, sw));
 	}
 	
 	/*public Set<Role> getRemoteRoles()
@@ -69,20 +61,23 @@ public class SessionEndpoint
 		return this.remroles.get(role);
 	}*/
 	
-	//public SocketEndpoint getSocketEndpoint(Role role)
-	public SocketWrapper getSocketWrapper(Role role) throws ScribbleRuntimeException
+	public SocketEndpoint getSocketEndpoint(Role role) throws ScribbleRuntimeException
 	{
-		if (!this.sockets.containsKey(role))
+		if (!this.socks.containsKey(role))
 		{
 			throw new ScribbleRuntimeException(this.self + " is not connected to: " + role);
 		}
-		return this.sockets.get(role);
+		return this.socks.get(role);
+	}
+	
+	public EndpointInputQueues getInputQueues()
+	{
+		return this.queues;
 	}
 	
 	public void close()
 	{
-		//for (SocketEndpoint se : this.sockets.values())
-		for (SocketWrapper se : this.sockets.values())
+		for (SocketEndpoint se : this.socks.values())
 		{
 			try
 			{

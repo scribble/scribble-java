@@ -1,4 +1,4 @@
-package org.scribble.codegen;
+package org.scribble.codegen.java;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -76,6 +76,10 @@ public class EndpointApiGenerator
 
 	private void constructClasses(EndpointState ps)
 	{
+		if (ps.isTerminal())
+		{
+			return;
+		}
 		String className = this.classNames.get(ps);
 		if (this.classes.containsKey(className))
 		{
@@ -120,7 +124,7 @@ public class EndpointApiGenerator
 	private ClassBuilder constructClass(String superc, String className, EndpointState ps)
 	{
 		ClassBuilder cb = constructClassExceptMethods(superc, className, ps);
-		if (!ps.isTerminal())
+		//if (!ps.isTerminal())
 		{
 			makeMethods(cb, ps);
 		}
@@ -258,26 +262,30 @@ public class EndpointApiGenerator
 		EndpointState succ = ps.accept(a);
 		String next = this.classNames.get(succ);
 
-		MethodBuilder mb = makeReceiveBlurb(cb, next);
+		MethodBuilder mb1 = makeReceiveBlurb(cb, next);
 		if (a.mid.isOp())
 		{
-			addReceiveOpParams(main, a, mb, OP_PARAM, ARG_PREFIX);
-			mb.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_PARAM + " = "
+			addReceiveOpParams(main, a, mb1, OP_PARAM, ARG_PREFIX);
+			mb1.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_PARAM + " = "
 						+ ClassBuilder.SUPER + ".readScribMessage(" + getPrefixedRoleClassName(a.peer) + ");");
-			addReceiveOpPayloadIntoBuffs(main, a, mb, MESSAGE_PARAM, ARG_PREFIX);
+			addReceiveOpPayloadIntoBuffs(main, a, mb1, MESSAGE_PARAM, ARG_PREFIX);
 		}
 		else //if (a.mid.isMessageSigName())
 		{
 			final String MESSAGE_VAR = MESSAGE_PARAM;
 
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-			addReceiveMessageSigNameParams(a, mb, msd, OP_PARAM, ARG_PREFIX);
-			mb.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
+			addReceiveMessageSigNameParams(a, mb1, msd, OP_PARAM, ARG_PREFIX);
+			mb1.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 						+ ClassBuilder.SUPER + ".readScribMessage(" + getPrefixedRoleClassName(a.peer) + ");");
-			mb.addBodyLine(ARG_PREFIX + "." + BUFF_VAL + " = (" + msd.extName + ") " + MESSAGE_VAR + ";");
+			mb1.addBodyLine(ARG_PREFIX + "." + BUFF_VAL + " = (" + msd.extName + ") " + MESSAGE_VAR + ";");
 		}
-		mb.addBodyLine(ClassBuilder.RETURN + " "
+		mb1.addBodyLine(ClassBuilder.RETURN + " "
 				+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_EP_FIELD + ");");
+		
+		MethodBuilder mb2 = cb.newMethod("...future..."); 
+		
+		//HERE:... (bounded) receive thread and input action indexing ... gc for unneeded messages? weak references...
 	}
 
 	private static MethodBuilder makeReceiveBlurb(ClassBuilder cb, String next)
@@ -465,10 +473,10 @@ public class EndpointApiGenerator
 	
 	private String getSocketClass(EndpointState ps)
 	{
-		if (ps.isTerminal())
+		/*if (ps.isTerminal())
 		{
 			return ENDSOCKET_CLASS;
-		}
+		}*/
 		Set<IOAction> as = ps.getAcceptable();
 		IOAction a = as.iterator().next();
 		if (a instanceof Send)
@@ -487,7 +495,7 @@ public class EndpointApiGenerator
 	
 	private void generateClassNames(EndpointState ps)
 	{
-		if (this.classNames.containsKey(ps))// || ps.isTerminal())
+		if (this.classNames.containsKey(ps) || ps.isTerminal())
 		{
 			return;
 		}

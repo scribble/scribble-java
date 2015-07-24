@@ -1,15 +1,16 @@
-package org.scribble.net;
+package org.scribble.net.session;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+// FIXME: should be IO wrapper: should abstract sockets, shared memory, RMI, AMQP, etc etc
 public class SocketWrapper
 {
-	public final Socket sock;
-	public final DataOutputStream dos;
-	public final DataInputStream dis;
+	protected final Socket sock;
+	protected final DataOutputStream dos;
+	protected final DataInputStream dis;
 
 	public SocketWrapper(Socket s) throws IOException
 	{

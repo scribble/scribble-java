@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.Module;
-import org.scribble.codegen.EndpointApiGenerator;
-import org.scribble.codegen.SessionApiGenerator;
+import org.scribble.codegen.java.EndpointApiGenerator;
+import org.scribble.codegen.java.SessionApiGenerator;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ModuleName;

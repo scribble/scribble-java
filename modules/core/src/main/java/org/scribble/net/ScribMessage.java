@@ -8,6 +8,7 @@ public class ScribMessage implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
+	// add msg source
 	public final Op op;
 	public final Object[] payload;
 

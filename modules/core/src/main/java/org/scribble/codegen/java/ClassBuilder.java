@@ -1,4 +1,4 @@
-package org.scribble.codegen;
+package org.scribble.codegen.java;
 
 import java.util.Arrays;
 import java.util.LinkedList;
