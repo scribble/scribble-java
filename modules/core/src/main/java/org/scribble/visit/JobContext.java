@@ -150,7 +150,7 @@ public class JobContext
 		this.graphs.put(lpn, graph);
 	}
 	
-	public EndpointGraph getEndointGraph(GProtocolName fullname, Role role)
+	public EndpointGraph getEndpointGraph(GProtocolName fullname, Role role)
 	{
 		return this.graphs.get(Projector.projectFullProtocolName(fullname, role));
 	}

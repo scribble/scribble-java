@@ -35,6 +35,12 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 	
 	@Override
+	public void enterProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder) throws ScribbleException
+	{
+		super.enterProtocolDeclContextBuilding(parent, child, builder);
+	}
+
+	@Override
 	public LProtocolDecl leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;

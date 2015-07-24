@@ -28,7 +28,11 @@ public abstract class ContinueDel extends SimpleInteractionNodeDel
 	{
 		Continue<?> cont = (Continue<?>) visited;
 		RecVar rv = cont.recvar.toName();
-		if (unf.isTodo(rv))
+		if (unf.isContinueUnguarded(rv))  // Without this, graph building becomes sensitive to the order of choice blocks (specifically, the relative position were the side effect (re-set entry to rec state) of an unguarded continue is performed)
+		{
+			return unf.getRecVar(rv).clone();
+		}
+		else if (unf.shouldUnfoldForUnguardedRec(rv))
 		{
 			return unf.getRecVar(rv).clone();
 		}

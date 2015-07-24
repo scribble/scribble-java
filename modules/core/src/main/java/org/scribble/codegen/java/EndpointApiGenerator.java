@@ -58,7 +58,7 @@ public class EndpointApiGenerator
 		this.gpn = fullname;
 		this.lpn = Projector.projectFullProtocolName(fullname, role);
 
-		EndpointState init = job.getContext().getEndointGraph(fullname, role).init;
+		EndpointState init = job.getContext().getEndpointGraph(fullname, role).init;
 		generateClassNames(init);
 		constructClasses(init);
 	}

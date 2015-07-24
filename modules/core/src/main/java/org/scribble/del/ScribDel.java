@@ -55,6 +55,16 @@ public interface ScribDel
 		return visited;
 	}
 
+	default void enterRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll)
+	{
+		
+	}
+
+	default ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
 	default void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
 	{
 		
@@ -132,16 +142,6 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
-	{
-		return visited;
-	}
-
-	default void enterRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll)
-	{
-		
-	}
-
-	default ScribNode leaveRoleCollection(ScribNode parent, ScribNode child, RoleCollector coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
