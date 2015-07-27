@@ -17,10 +17,14 @@ public abstract class SendSocket extends LinearSocket
 
 	protected void writeScribMessage(Role peer, Op op, Object... payload) throws IOException, ScribbleRuntimeException
 	{
+		writeScribMessage(peer, new ScribMessage(op, payload));
+	}
+
+	protected void writeScribMessage(Role peer, ScribMessage msg) throws IOException, ScribbleRuntimeException
+	{
 		//System.out.println("Write: " + msg);
 
 		use();
-		ScribMessage msg = new ScribMessage(op, payload);
 		this.ep.getSocketEndpoint(peer).writeMessageAndFlush(msg);
 	}
 }

@@ -25,6 +25,7 @@ global protocol Adder(role C, role S)
 		or
 		{
 			BYE() from C to S;
+			BYE() from S to C;
 		}
 	}
 }

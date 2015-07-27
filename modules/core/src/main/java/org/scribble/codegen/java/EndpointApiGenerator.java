@@ -358,14 +358,7 @@ public class EndpointApiGenerator
 					+ ".getFuture(" + getPrefixedRoleClassName(a.peer) + ", " + ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_EP_FIELD + "));");
 		}*/
 		mb2.setReturn(next);
-		if (a.mid.isOp())
-		{
-			mb2.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
-		}
-		else
-		{
-			throw new RuntimeException("TODO: " + a.mid);
-		}
+		mb2.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
 		mb2.addParameters(BUFF_CLASS + "<" + fname + "> " + ARG_PREFIX);  // FIXME: exactly 1 payload
 		//mb2.addBodyLine(ARG_PREFIX + ".val = " + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
 		String ln = ARG_PREFIX + ".val = " + ClassBuilder.NEW + " " + fname + "(" + ClassBuilder.SUPER + ".getFutureAux(" + getPrefixedRoleClassName(a.peer) + "));";
@@ -385,15 +378,8 @@ public class EndpointApiGenerator
 		mb3.setReturn(next);
 		if (!next.equals("void"))
 		{
-			if (a.mid.isOp())
-			{
-				mb3.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
-				mb3.addBodyLine(ClassBuilder.RETURN + " async(" + OP_PARAM + ", " + ClassBuilder.NEW + " " + BUFF_CLASS + "<>());");
-			}
-			else
-			{
-				throw new RuntimeException("TODO: " + a.mid);
-			}
+			mb3.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
+			mb3.addBodyLine(ClassBuilder.RETURN + " async(" + OP_PARAM + ", " + ClassBuilder.NEW + " " + BUFF_CLASS + "<>());");
 		}
 		
 		//HERE:... (bounded) receive thread and input action indexing ... gc for unneeded messages? weak references...
@@ -549,10 +535,7 @@ public class EndpointApiGenerator
 				addBranchCheck(getPrefixedOpClassName(a.mid), mb1, MESSAGE_FIELD);
 				mb1.addBodyLine(ARG_PREFIX + "." + BUFF_VAL+ " = (" + msd.extName + ") " + MESSAGE_FIELD + ";");
 			}
-			if (!next.equals("void"))
-			{
-				mb1.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + next + "(this.ep);\n");
-			}
+			makeReturnNextSocket(mb1, next);
 
 			if (!a.payload.isEmpty())
 			{

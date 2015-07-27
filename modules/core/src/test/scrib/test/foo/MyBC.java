@@ -1,6 +1,7 @@
 package test.foo;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
@@ -34,23 +35,23 @@ public class MyBC
 						{
 							Foo_B_1 s1_B = s0_B.init();
 
-							Foo_B_3 s3_B = s1_B.branch();
-							switch (s3_B.op)
+							Foo_B_2 s2_B = s1_B.branch();
+							switch (s2_B.op)
 							{
 								case _1:
 								{
-									s3_B.receive(Foo._1).end();;
+									s2_B.receive(Foo._1);
 									System.out.println("B first!");
 									break;
 								}
 								case _2:
 								{
-									s3_B.receive(Foo._2).end();;
+									s2_B.receive(Foo._2);
 									break;
 								}
 							}
 						}
-						catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
+						catch (ScribbleRuntimeException | IOException | ClassNotFoundException | ExecutionException | InterruptedException e)
 						{
 							e.printStackTrace();
 						}
@@ -65,23 +66,23 @@ public class MyBC
 						{
 							Foo_C_1 s1_C = s0_C.init();
 
-							Foo_C_3 s3_C = s1_C.branch();
-							switch (s3_C.op)
+							Foo_C_2 s2_C = s1_C.branch();
+							switch (s2_C.op)
 							{
 								case _1:
 								{
-									s3_C.receive(Foo._1).end();;
+									s2_C.receive(Foo._1);
 									System.out.println("C first!");
 									break;
 								}
 								case _2:
 								{
-									s3_C.receive(Foo._2).end();;
+									s2_C.receive(Foo._2);
 									break;
 								}
 							}
 						}
-						catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
+						catch (ScribbleRuntimeException | IOException | ClassNotFoundException | ExecutionException | InterruptedException e)
 						{
 							e.printStackTrace();
 						}
