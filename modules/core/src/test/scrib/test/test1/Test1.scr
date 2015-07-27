@@ -8,6 +8,9 @@ type <java> "java.lang.Integer" from "rt.jar" as Integer;
 
 global protocol Proto1(role C, role S)
 {
+	// - make linear interface for sending/receiving
+	// - lazy send for lazy eval (lazy effects wrapped up in monad)
+	
 	choice at S
 	{
 		4(Integer, Integer) from S to C;

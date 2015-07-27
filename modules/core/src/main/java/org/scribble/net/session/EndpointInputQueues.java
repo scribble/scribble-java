@@ -47,8 +47,6 @@ public class EndpointInputQueues
 	
 	public synchronized boolean isEmpty(Role peer)
 	{
-		System.out.println("a: " + peer + ", " + this.queues);
-		
 		return this.queues.get(peer).isEmpty();
 	}
 

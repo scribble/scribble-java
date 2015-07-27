@@ -40,9 +40,9 @@ public abstract class InitSocket extends LinearSocket implements AutoCloseable
 	@Override
 	public void close() throws ScribbleRuntimeException
 	{
+		this.ep.close();
 		if (!this.ep.isCompleted())  // Subsumes use -- must be used for sess to be completed
 		{
-			this.ep.close();
 			throw new ScribbleRuntimeException("Session not completed: " + this.ep.self);
 		}
 	}

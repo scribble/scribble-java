@@ -52,7 +52,7 @@ public class MyC
 					  .async(Proto1._2, b)
 					  .send(Proto1.S, Proto1._3, b.val.sync().pay1);
 
-					System.out.println("C4: " + b.val.sync().pay1);
+					System.out.println("C4: " + done + ", " + b.val.sync().pay1);
 
 					break;
 				}
