@@ -298,6 +298,11 @@ public class EndpointApiGenerator
 		}
 		makeReturnNextSocket(mb1, next);
 		
+		MethodBuilder mb4 = cb.newMethod("isDone");
+		mb4.addModifiers(ClassBuilder.PUBLIC);
+		mb4.setReturn("boolean");
+		mb4.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER + ".isDone(" + getPrefixedRoleClassName(a.peer) + ");");
+		
 		ClassBuilder future = cb.newClass();
 		cb.addImports("java.util.concurrent.CompletableFuture");  // cb, not future
 		String fname = "Future_" + cb.getName();  // FIXME: fresh
@@ -339,7 +344,7 @@ public class EndpointApiGenerator
 		MethodBuilder mb2 = cb.newMethod("async"); 
 		mb2.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb2.addBodyLine(ClassBuilder.SUPER + ".use();");
-		mb2.addModifiers(ClassBuilder.PUBLIC);
+		mb2.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.SYNCHRONIZED);
 		/*if (next.equals("void"))
 		{
 			mb2.setReturn("CompletableFuture<" + SCRIBMESSAGE_CLASS + ">");

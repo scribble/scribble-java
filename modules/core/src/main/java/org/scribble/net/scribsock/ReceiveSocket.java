@@ -5,7 +5,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.ScribFuture;
 import org.scribble.net.ScribMessage;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
@@ -28,7 +27,7 @@ public abstract class ReceiveSocket extends AffineSocket
 		return m;
 	}
 	
-	public boolean canReceiveFrom(Role peer)
+	protected boolean isDone(Role peer)
 	{
 		return !this.ep.getInputQueues().isEmpty(peer);
 	}

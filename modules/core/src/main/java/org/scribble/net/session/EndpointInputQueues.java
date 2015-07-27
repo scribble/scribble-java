@@ -45,9 +45,11 @@ public class EndpointInputQueues
 		this.notifyAll();  // FIXME: notify just for each peer
 	}
 	
-	public synchronized boolean isEmpty(Role src)
+	public synchronized boolean isEmpty(Role peer)
 	{
-		return this.queues.get(src).isEmpty();
+		System.out.println("a: " + peer + ", " + this.queues);
+		
+		return this.queues.get(peer).isEmpty();
 	}
 
 	/*public synchronized Object peek(Role src)

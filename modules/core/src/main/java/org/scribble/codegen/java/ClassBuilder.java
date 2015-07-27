@@ -15,6 +15,7 @@ public class ClassBuilder
 	public static final String RETURN = "return";
 	public static final String STATIC = "static";
 	public static final String SUPER = "super";
+	public static final String SYNCHRONIZED = "synchronized";
 	public static final String THIS = "this";
 	
 	private String packname;  // null for non- top-level class

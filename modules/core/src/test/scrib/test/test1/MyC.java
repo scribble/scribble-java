@@ -35,11 +35,20 @@ public class MyC
 			{
 				case _4:
 				{
-					Buff<Future_Proto1_C_4> b = new Buff<>();
-
 					Proto1_C_2 s2 = s6.receive(Proto1._4);
-					s2.async(Proto1._5)
-					  .send(Proto1.S, Proto1._1, 999)
+					boolean done = s2.isDone();
+					Proto1_C_3 s3;
+					if (done)
+					{
+						s3 = s2.receive(Proto1._5);
+					}
+					else
+					{
+						s3 = s2.async(Proto1._5);
+					}
+
+					Buff<Future_Proto1_C_4> b = new Buff<>();
+					s3.send(Proto1.S, Proto1._1, 999)
 					  .async(Proto1._2, b)
 					  .send(Proto1.S, Proto1._3, b.val.sync().pay1);
 

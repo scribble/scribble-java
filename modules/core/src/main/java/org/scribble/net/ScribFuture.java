@@ -13,10 +13,16 @@ public abstract class ScribFuture //implements Future<P>
 	{
 		this.future = future;
 	}
-
-	protected ScribMessage get() throws InterruptedException, ExecutionException
+	
+	// Not synch: can return false while get is blocked
+	public boolean isDone()
 	{
-		if (this.m != null)
+		return this.m != null;
+	}
+
+	protected synchronized ScribMessage get() throws InterruptedException, ExecutionException
+	{
+		if (isDone())
 		{
 			return this.m;
 		}
