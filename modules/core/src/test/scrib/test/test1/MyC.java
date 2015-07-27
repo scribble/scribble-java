@@ -34,7 +34,7 @@ public class MyC
 			Buff<ScribMessage> b4 = new Buff<>();
 			
 			s1.send(Proto1.S, Proto1._1)
-			  .async()  .. should take Buff<ScribFuture> as arg -- next is not needed
+			  .async()  .. should take Buff<ScribFuture> as arg for message and return next state -- next method is not needed
 			  .next(b2)
 			  .async()
 			  .next(b3)
