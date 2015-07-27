@@ -41,18 +41,10 @@ public class Client
 	public void run() throws ScribbleRuntimeException
 	{
 		Buff<HttpVersion> b_vers = new Buff<>();
-		Buff<AcceptRanges> b_acc = new Buff<>();
 		Buff<ContentLength> b_clen = new Buff<>();
 		Buff<ContentType> b_ctype = new Buff<>();
 		Buff<Body> b_body = new Buff<>();
-		Buff<Date> b_date = new Buff<>();
-		Buff<ETag> b_etag = new Buff<>();
-		Buff<LastModified> b_lastm = new Buff<>();
 		Buff<Server> b_serv = new Buff<>();
-		Buff<Vary> b_vary = new Buff<>();
-		Buff<Via> b_via = new Buff<>();
-		Buff<_200> b_200 = new Buff<>();
-		Buff<_404> b_404 = new Buff<>();
 		
 		Caller c = new Caller();
 		
@@ -75,8 +67,8 @@ public class Client
 					  .receive(Http.HTTPV, b_vers)
 					  .branch();
 			Http_C_5 s5 = 
-					  (s6.op == Http_C_4Enum._200) ? s6.receive(Http._200, b_200)
-					: (s6.op == Http_C_4Enum._404) ? s6.receive(Http._404, b_404)
+					  (s6.op == Http_C_4Enum._200) ? s6.receive(Http._200)
+					: (s6.op == Http_C_4Enum._404) ? s6.receive(Http._404)
 					: c.call(() -> { throw new RuntimeException("Unknown status code: " + s6.op); });
 
 			Y: while (true)
@@ -86,7 +78,7 @@ public class Client
 				{
 					case ACCEPTR:
 					{
-						s5 = s7.receive(Http.ACCEPTR, b_acc);
+						s5 = s7.receive(Http.ACCEPTR);
 						break;
 					}
 					case BODY:
@@ -107,17 +99,17 @@ public class Client
 					}
 					case DATE:
 					{
-						s5 = s7.receive(Http.DATE, b_date);
+						s5 = s7.receive(Http.DATE);
 						break;
 					}
 					case ETAG:
 					{
-						s5 = s7.receive(Http.ETAG, b_etag);
+						s5 = s7.receive(Http.ETAG);
 						break;
 					}
 					case LASTM:
 					{
-						s5 = s7.receive(Http.LASTM, b_lastm);
+						s5 = s7.receive(Http.LASTM);
 						break;
 					}
 					case SERVER:
@@ -127,12 +119,12 @@ public class Client
 					}
 					case VARY:
 					{
-						s5 = s7.receive(Http.VARY, b_vary);
+						s5 = s7.receive(Http.VARY);
 						break;
 					}
 					case VIA:
 					{
-						s5  = s7.receive(Http.VIA, b_via);
+						s5  = s7.receive(Http.VIA);
 						break;
 					}
 				}

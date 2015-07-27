@@ -360,7 +360,7 @@ public class EndpointApiGenerator
 		mb2.setReturn(next);
 		mb2.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
 
-		mb2.addParameters(BUFF_CLASS + "<" + fname + "> " + ARG_PREFIX);  .. FIXME: no future buff if no args (and no need for separate no-arg async below)
+		mb2.addParameters(BUFF_CLASS + "<" + fname + "> " + ARG_PREFIX);  //.. FIXME: no future buff if no args (and no need for separate no-arg async below)
 
 		//mb2.addBodyLine(ARG_PREFIX + ".val = " + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
 		String ln = ARG_PREFIX + ".val = " + ClassBuilder.NEW + " " + fname + "(" + ClassBuilder.SUPER + ".getFutureAux(" + getPrefixedRoleClassName(a.peer) + "));";
@@ -539,7 +539,7 @@ public class EndpointApiGenerator
 			}
 			makeReturnNextSocket(mb1, next);
 
-			if (!a.payload.isEmpty())
+			if (!a.payload.isEmpty() || a.mid.isMessageSigName())
 			{
 				MethodBuilder mb2 = makeReceiveBlurb(cb, next);
 				mb2.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
