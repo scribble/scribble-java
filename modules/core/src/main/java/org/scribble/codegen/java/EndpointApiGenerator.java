@@ -25,6 +25,7 @@ import org.scribble.visit.Job;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 
+// FIXME: replace dynamically created garbage Buffs with a single static one
 public class EndpointApiGenerator
 {
 	public static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
@@ -297,9 +298,49 @@ public class EndpointApiGenerator
 		}
 		makeReturnNextSocket(mb1, next);
 		
+		ClassBuilder future = cb.newClass();
+		cb.addImports("java.util.concurrent.CompletableFuture");  // cb, not future
+		String fname = "Future_" + cb.getName();  // FIXME: fresh
+		future.setName(fname);
+		future.setSuperClass(SCRIBFUTURE_CLASS);
+		if (!a.payload.isEmpty())
+		{
+			int i = 1;
+			for (PayloadType<?> pt : a.payload.elems)
+			{
+				String type = main.getDataTypeDecl((DataType) pt).extName;
+				FieldBuilder f = future.newField("pay" + i);
+				f.setType(type);
+				f.addModifiers(ClassBuilder.PUBLIC);
+				i++;
+			}
+		}
+		final String FUTURE_PARAM = "fut";
+		MethodBuilder cons = future.newConstructor("CompletableFuture<" + SCRIBMESSAGE_CLASS + "> " + FUTURE_PARAM);
+		cons.addModifiers(ClassBuilder.PROTECTED);
+		cons.addBodyLine(ClassBuilder.SUPER + "(" + FUTURE_PARAM + ");");
+		MethodBuilder sync = future.newMethod("sync");
+		sync.addExceptions("ExecutionException", "InterruptedException");
+		sync.addModifiers(ClassBuilder.PUBLIC);
+		sync.setReturn(fname);
+		sync.addBodyLine(SCRIBMESSAGE_CLASS + " m = " + ClassBuilder.SUPER + ".get();");
+		if (!a.payload.isEmpty())
+		{
+			int i = 1;
+			for (PayloadType<?> pt : a.payload.elems)
+			{
+				String type = main.getDataTypeDecl((DataType) pt).extName;
+				sync.addBodyLine(ClassBuilder.THIS + "." + "pay" + i + " = (" + type + ") m.payload[" + (i - 1) + "];");
+			}
+			i++;
+		}
+		sync.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.THIS + ";");
+		
 		MethodBuilder mb2 = cb.newMethod("async"); 
+		mb2.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
+		mb2.addBodyLine(ClassBuilder.SUPER + ".use();");
 		mb2.addModifiers(ClassBuilder.PUBLIC);
-		if (next.equals("void"))
+		/*if (next.equals("void"))
 		{
 			mb2.setReturn("CompletableFuture<" + SCRIBMESSAGE_CLASS + ">");
 			mb2.addBodyLine(SCRIBSOCKET_EP_FIELD + ".setCompleted();");
@@ -310,6 +351,44 @@ public class EndpointApiGenerator
 			mb2.setReturn(SCRIBFUTURE_CLASS + "<" + next + ">");  // FIXME: factor out
 			mb2.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER
 					+ ".getFuture(" + getPrefixedRoleClassName(a.peer) + ", " + ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_EP_FIELD + "));");
+		}*/
+		mb2.setReturn(next);
+		if (a.mid.isOp())
+		{
+			mb2.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
+		}
+		else
+		{
+			throw new RuntimeException("TODO: " + a.mid);
+		}
+		mb2.addParameters(BUFF_CLASS + "<" + fname + "> " + ARG_PREFIX);  // FIXME: exactly 1 payload
+		//mb2.addBodyLine(ARG_PREFIX + ".val = " + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
+		String ln = ARG_PREFIX + ".val = " + ClassBuilder.NEW + " " + fname + "(" + ClassBuilder.SUPER + ".getFutureAux(" + getPrefixedRoleClassName(a.peer) + "));";
+		mb2.addBodyLine(ln);
+		if (next.equals("void"))
+		{
+			mb2.addBodyLine(SCRIBSOCKET_EP_FIELD + ".setCompleted();");
+		}
+		else
+		{
+			makeReturnNextSocket(mb2, next);
+		}
+
+		MethodBuilder mb3 = cb.newMethod("async"); 
+		mb3.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
+		mb3.addModifiers(ClassBuilder.PUBLIC);
+		mb3.setReturn(next);
+		if (!next.equals("void"))
+		{
+			if (a.mid.isOp())
+			{
+				mb3.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
+				mb3.addBodyLine(ClassBuilder.RETURN + " async(" + OP_PARAM + ", " + ClassBuilder.NEW + " " + BUFF_CLASS + "<>());");
+			}
+			else
+			{
+				throw new RuntimeException("TODO: " + a.mid);
+			}
 		}
 		
 		//HERE:... (bounded) receive thread and input action indexing ... gc for unneeded messages? weak references...
@@ -380,11 +459,13 @@ public class EndpointApiGenerator
 
 		String next = constructBranchReceiveClass(ps, main);
 		String enumClass = this.classNames.get(ps) + "Enum";
+
+		cb.addImports("java.util.concurrent.ExecutionException");
 		
 		MethodBuilder mb = cb.newMethod("branch");
 		mb.setReturn(next);
 		mb.addModifiers(ClassBuilder.PUBLIC);
-		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException", "ExecutionException", "InterruptedException");
 		
 		Role peer = ps.getAcceptable().iterator().next().peer;
 		mb.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
@@ -447,23 +528,44 @@ public class EndpointApiGenerator
 			EndpointState succ = ps.accept(a);
 			String next = this.classNames.get(succ);
 			
-			MethodBuilder mb = makeReceiveBlurb(cb, next);
+			MethodBuilder mb1 = makeReceiveBlurb(cb, next);
 			if (a.mid.isOp())
 			{
-				addReceiveOpParams(main, a, mb, OP_PARAM, ARG_PREFIX);
-				mb.addBodyLine(ClassBuilder.SUPER + ".use();");
-				addBranchCheck(getPrefixedOpClassName(a.mid), mb, MESSAGE_FIELD);
-				addReceiveOpPayloadIntoBuffs(main, a, mb, MESSAGE_PARAM, ARG_PREFIX);
+				addReceiveOpParams(main, a, mb1, OP_PARAM, ARG_PREFIX);
+				mb1.addBodyLine(ClassBuilder.SUPER + ".use();");
+				addBranchCheck(getPrefixedOpClassName(a.mid), mb1, MESSAGE_FIELD);
+				addReceiveOpPayloadIntoBuffs(main, a, mb1, MESSAGE_PARAM, ARG_PREFIX);
 			}
 			else //if (a.mid.isMessageSigName())
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				addReceiveMessageSigNameParams(a, mb, msd, OP_PARAM, ARG_PREFIX);
-				mb.addBodyLine(ClassBuilder.SUPER + ".use();");
-				addBranchCheck(getPrefixedOpClassName(a.mid), mb, MESSAGE_FIELD);
-				mb.addBodyLine(ARG_PREFIX + "." + BUFF_VAL+ " = (" + msd.extName + ") " + MESSAGE_FIELD + ";");
+				addReceiveMessageSigNameParams(a, mb1, msd, OP_PARAM, ARG_PREFIX);
+				mb1.addBodyLine(ClassBuilder.SUPER + ".use();");
+				addBranchCheck(getPrefixedOpClassName(a.mid), mb1, MESSAGE_FIELD);
+				mb1.addBodyLine(ARG_PREFIX + "." + BUFF_VAL+ " = (" + msd.extName + ") " + MESSAGE_FIELD + ";");
 			}
-			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + next + "(this.ep);\n");
+			if (!next.equals("void"))
+			{
+				mb1.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + next + "(this.ep);\n");
+			}
+
+			if (!a.payload.isEmpty())
+			{
+				MethodBuilder mb2 = makeReceiveBlurb(cb, next);
+				mb2.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
+				String ln = (next.equals("void")) ? "" : ClassBuilder.RETURN + " ";
+				if (a.mid.isOp())
+				{
+					ln += " receive(" + OP_PARAM + ", "
+							+ a.payload.elems.stream().map((e) -> ClassBuilder.NEW + " " + BUFF_CLASS + "<>()").collect(Collectors.joining(", "))
+							+ ");";
+				}
+				else
+				{
+					ln += " receive(" + OP_PARAM + ", " + ClassBuilder.NEW + " " + BUFF_CLASS + "<>());";
+				}
+				mb2.addBodyLine(ln);
+			}
 		}
 
 		this.classes.put(className, cb);

@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
+import org.scribble.net.ScribFuture;
 import org.scribble.net.ScribMessage;
 import org.scribble.net.session.SessionEndpoint;
 
@@ -29,22 +30,30 @@ public class MyC
 			s0.connect(Proto1.S, "localhost", 8888);
 			Proto1_C_1 s1 = s0.init();
 			
-			Buff<ScribMessage> b2 = new Buff<>();
-			Buff<ScribMessage> b3 = new Buff<>();
-			Buff<ScribMessage> b4 = new Buff<>();
-			
-			s1.send(Proto1.S, Proto1._1)
-			  .async()  .. should take Buff<ScribFuture> as arg for message and return next state -- next method is not needed
-			  .next(b2)
-			  .async()
-			  .next(b3)
-			  .async()
-			  .next(b4)
-			  .send(Proto1.S, Proto1._5);
+			Proto1_C_6 s6 = s1.branch();
+			switch (s6.op)
+			{
+				case _4:
+				{
+					Buff<Future_Proto1_C_4> b = new Buff<>();
 
-			System.out.println("b2: " + b2.val);
-			System.out.println("b3: " + b3.val);
-			System.out.println("b4: " + b4.val);
+					Proto1_C_2 s2 = s6.receive(Proto1._4);
+					s2.async(Proto1._5)
+					  .send(Proto1.S, Proto1._1, 999)
+					  .async(Proto1._2, b)
+					  .send(Proto1.S, Proto1._3, b.val.sync().pay1);
+
+					System.out.println("C4: " + b.val.sync().pay1);
+
+					break;
+				}
+				case _6:
+				{
+					s6.receive(Proto1._6, i1);
+					System.out.println("C6: " + i1);
+				}
+			}
+			
 			
 			//System.out.println("Client: " + i1.val);
 		}

@@ -2,54 +2,42 @@ package org.scribble.net;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import org.scribble.net.scribsock.ScribSocket;
-
-public class ScribFuture<C extends ScribSocket> implements Future<ScribMessage>
+// P is payload type as an array
+public abstract class ScribFuture //implements Future<P>
 {
 	private CompletableFuture<ScribMessage> future;
-	private C next;
+	private ScribMessage m;
 	
-	public ScribFuture(CompletableFuture<ScribMessage> future, C next)
+	public ScribFuture(CompletableFuture<ScribMessage> future)
 	{
 		this.future = future;
-		this.next = next;
-	}
-	
-	public C next()
-	{
-		// FIXME: future done?
-		C tmp = next;
-		this.next = null;
-		return tmp;
 	}
 
-	public C next(Buff<ScribMessage> buff) throws InterruptedException, ExecutionException
+	protected ScribMessage get() throws InterruptedException, ExecutionException
 	{
-		buff.val = get();	
-		return next();
+		if (this.m != null)
+		{
+			return this.m;
+		}
+		this.m = this.future.get();
+		return this.m;
+	}
+	
+	public abstract ScribFuture sync() throws ExecutionException, InterruptedException;
+
+	/*@Override
+	public P get(long timeout, TimeUnit unit)
+			throws InterruptedException, ExecutionException, TimeoutException
+	{
+		ScribMessage m = this.future.get(timeout, unit);
+		return (P) m.payload.clone()[0];  // FIXME: exactly one payload
 	}
 
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning)
 	{
 		return this.future.cancel(mayInterruptIfRunning);
-	}
-
-	@Override
-	public ScribMessage get() throws InterruptedException, ExecutionException
-	{
-		return this.future.get();
-	}
-
-	@Override
-	public ScribMessage get(long timeout, TimeUnit unit)
-			throws InterruptedException, ExecutionException, TimeoutException
-	{
-		return this.future.get(timeout, unit);
 	}
 
 	@Override
@@ -62,5 +50,5 @@ public class ScribFuture<C extends ScribSocket> implements Future<ScribMessage>
 	public boolean isDone()
 	{
 		return this.future.isDone();
-	}
+	}*/
 }

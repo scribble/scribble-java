@@ -57,6 +57,7 @@ public class EndpointInputQueues
 	
 	public synchronized CompletableFuture<ScribMessage> getFuture(Role peer)
 	{
+		// FIXME: cast
 		// FIXME: exception handling
 		return CompletableFuture.supplyAsync(() -> { try { return dequeue(peer, getTicket(peer)); } catch(IOException e) { throw new RuntimeException(e); } });
 	}

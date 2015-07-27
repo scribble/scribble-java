@@ -24,6 +24,7 @@ public class ClassBuilder
 	private String name;
 	private String superc;  // null if none explicit
 	private final List<String> ifaces = new LinkedList<String>();
+	private final List<String> params = new LinkedList<String>();
 	
 	private final List<FieldBuilder> fields = new LinkedList<>();
 	private final List<MethodBuilder> ctors = new LinkedList<>();
@@ -35,6 +36,11 @@ public class ClassBuilder
 	public ClassBuilder()
 	{
 		
+	}
+	
+	public String getName()
+	{
+		return this.name;
 	}
 	
 	public void setPackage(String packname)
@@ -65,6 +71,11 @@ public class ClassBuilder
 	public void addInterfaces(String... ifaces)
 	{
 		this.ifaces.addAll(Arrays.asList(ifaces));
+	}
+	
+	public void addParameters(String... params)
+	{
+		this.params.addAll(Arrays.asList(params));
 	}
 	
 	public FieldBuilder newField(String name)
@@ -137,6 +148,10 @@ public class ClassBuilder
 			clazz += " ";
 		}
 		clazz += "class " + this.name;
+		if (!this.params.isEmpty())
+		{
+			clazz += "<" + this.params.stream().collect(Collectors.joining(", ")) + ">";
+		}
 		if (this.superc != null)
 		{
 			clazz += " extends " + this.superc;

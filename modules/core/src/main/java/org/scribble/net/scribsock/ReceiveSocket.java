@@ -21,7 +21,7 @@ public abstract class ReceiveSocket extends AffineSocket
 	{
 		use();
 		//ScribMessage m = this.ep.smf.readMessage(this.ep.getSocketEndpoint(role).dis);
-		ScribMessage m = getFuture(peer).get();
+		ScribMessage m = getFutureAux(peer).get();
 
 		//System.out.println("Read: " + m);
 
@@ -33,13 +33,13 @@ public abstract class ReceiveSocket extends AffineSocket
 		return !this.ep.getInputQueues().isEmpty(peer);
 	}
 	
-	protected CompletableFuture<ScribMessage> getFuture(Role peer)
+	protected CompletableFuture<ScribMessage> getFutureAux(Role peer)
 	{
 		return this.ep.getInputQueues().getFuture(peer);
 	}
 
-	protected <C extends ScribSocket> ScribFuture<C> getFuture(Role peer, C next)
+	/*protected <T> ScribFuture<T> getFuture(Role peer)
 	{
-		return new ScribFuture<>(getFuture(peer), next);
-	}
+		return new ScribFuture<T>(this.getFutureAux(peer));
+	}*/
 }

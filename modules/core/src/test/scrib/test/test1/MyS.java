@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
+import org.scribble.net.ScribFuture;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.session.SessionEndpoint;
 
@@ -29,13 +30,14 @@ public class MyS
 				{
 					Proto1_S_1 s1 = s0.init();
 					
-					s1.receive(Proto1._1)
-					  .send(Proto1.C, Proto1._2)
-					  .send(Proto1.C, Proto1._3)
-					  .send(Proto1.C, Proto1._4)
-					  .receive(Proto1._5);
+					//s1.async(b).send(Proto1.C, Proto1._2, b.val.get());
+					Proto1_S_2 s2 = s1.send(Proto1.C, Proto1._4, 4, 5);
+					
+					Thread.sleep(3000);
+					
+					s2.send(Proto1.C, Proto1._5).receive(Proto1._1, i1).send(Proto1.C, Proto1._2, i1.val).receive(Proto1._3, i1);
 				}
-				catch (ScribbleRuntimeException | IOException | ClassNotFoundException | ExecutionException | InterruptedException e)
+				catch (ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{
 					e.printStackTrace();
 				}
