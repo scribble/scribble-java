@@ -35,7 +35,7 @@ public class MyS
 					
 					Thread.sleep(2000);
 					
-					s2.send(Proto1.C, Proto1._5).receive(Proto1._1, i1).send(Proto1.C, Proto1._2, i1.val).receive(Proto1._3, i1);
+					s2.send(Proto1.C, Proto1._5).receive(Proto1._1, i1).send(Proto1.C, Proto1._2, i1.val, i1.val).receive(Proto1._3, i1);
 				}
 				catch (ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{

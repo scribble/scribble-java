@@ -51,7 +51,7 @@ public class MyC
 					s3.send(Proto1.S, Proto1._1, 999)
 					  .async(Proto1._2, b)
 					  .send(Proto1.S, Proto1._3, b.val.sync().pay1);
-					System.out.println("C4: " + done + ", " + b.val.sync().pay1);
+					System.out.println("C4: " + done + ", " + b.val.pay1 + ", " + b.val.pay2);
 					break;
 				}
 				case _6:

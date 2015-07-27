@@ -17,7 +17,7 @@ global protocol Proto1(role C, role S)
 		4(Integer, Integer) from S to C;
 		5() from S to C;
 		1(Integer) from C to S;
-		2(Integer) from S to C;
+		2(Integer, Integer) from S to C;
 		3(Integer) from C to S;
 	}
 	or

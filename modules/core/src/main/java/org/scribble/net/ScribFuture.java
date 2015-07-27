@@ -27,6 +27,9 @@ public abstract class ScribFuture //implements Future<P>
 			return this.m;
 		}
 		this.m = this.future.get();
+
+		//System.out.println("Got: " + m);
+		
 		return this.m;
 	}
 	

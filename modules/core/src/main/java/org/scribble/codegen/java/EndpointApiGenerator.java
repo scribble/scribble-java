@@ -336,8 +336,8 @@ public class EndpointApiGenerator
 			{
 				String type = main.getDataTypeDecl((DataType) pt).extName;
 				sync.addBodyLine(ClassBuilder.THIS + "." + "pay" + i + " = (" + type + ") m.payload[" + (i - 1) + "];");
+				i++;
 			}
-			i++;
 		}
 		sync.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.THIS + ";");
 		
@@ -360,7 +360,7 @@ public class EndpointApiGenerator
 		mb2.setReturn(next);
 		mb2.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
 
-		mb2.addParameters(BUFF_CLASS + "<" + fname + "> " + ARG_PREFIX);  //.. FIXME: no future buff if no args (and no need for separate no-arg async below)
+		mb2.addParameters(BUFF_CLASS + "<" + fname + "> " + ARG_PREFIX);  //.. HERE: no future-buff if no args (and no need for separate no-arg async below)
 
 		//mb2.addBodyLine(ARG_PREFIX + ".val = " + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
 		String ln = ARG_PREFIX + ".val = " + ClassBuilder.NEW + " " + fname + "(" + ClassBuilder.SUPER + ".getFutureAux(" + getPrefixedRoleClassName(a.peer) + "));";
