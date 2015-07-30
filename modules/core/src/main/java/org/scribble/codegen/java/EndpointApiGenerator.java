@@ -442,8 +442,7 @@ public class EndpointApiGenerator
 		final String OPENUM_VAR = "openum";
 		final String OP = MESSAGE_VAR + "." + SCRIBMESSAGE_OP_FIELD;
 
-		JobContext jc = this.job.getContext();
-		Module main = jc.getMainModule();
+		Module main = this.job.getContext().getMainModule();
 
 		String next = constructBranchReceiveClass(ps, main);
 		String enumClass = this.classNames.get(ps) + "Enum";
@@ -486,6 +485,8 @@ public class EndpointApiGenerator
 	// FIXME: factor with regular receive
 	private String constructBranchReceiveClass(EndpointState curr, Module main)
 	{
+		
+		.. HERE: factor out
 		final String OP_FIELD = "op";
 		final String OP_PARAM = OP_FIELD;
 		final String MESSAGE_FIELD = "m";
@@ -503,11 +504,11 @@ public class EndpointApiGenerator
 		ctor.addBodyLine(ClassBuilder.THIS + "." + OP_FIELD + " = " + OP_PARAM + ";");
 		ctor.addBodyLine(ClassBuilder.THIS + "." + MESSAGE_FIELD + " = " + MESSAGE_PARAM + ";");
 
-		FieldBuilder fb1 = cb.newField(OP_FIELD);
+		FieldBuilder fb1 = cb.newField(OP_FIELD);  // The op enum, for convenient switch/if/etc by user (correctly derived by code generation from the received ScribMessage)
 		fb1.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
 		fb1.setType(enumClassName);
 		
-		FieldBuilder fb2 = cb.newField(MESSAGE_FIELD);
+		FieldBuilder fb2 = cb.newField(MESSAGE_FIELD);  // The received ScribMessage (branch-check checks the user-selected receive op against the ScribMessage op)
 		fb2.addModifiers(ClassBuilder.PRIVATE, ClassBuilder.FINAL);
 		fb2.setType(SCRIBMESSAGE_CLASS);
 
@@ -527,30 +528,30 @@ public class EndpointApiGenerator
 
 	private void addBranchReceiveReceiveMethod(Module main, final String MESSAGE_FIELD, final String ARG_PREFIX, ClassBuilder cb, IOAction a, String nextClass, String opClass)
 	{
-		MethodBuilder mb1 = makeReceiveHeader(cb, nextClass, opClass);
+		MethodBuilder mb = makeReceiveHeader(cb, nextClass, opClass);
 		if (a.mid.isOp())
 		{
-			addReceiveOpParams(mb1, main, a);
-			mb1.addBodyLine(ClassBuilder.SUPER + ".use();");
-			addBranchCheck(getPrefixedOpClassName(a.mid), mb1, MESSAGE_FIELD);
-			addPayloadBuffSetters(main, a, mb1);
+			addReceiveOpParams(mb, main, a);
+			mb.addBodyLine(ClassBuilder.SUPER + ".use();");
+			addBranchCheck(getPrefixedOpClassName(a.mid), mb, MESSAGE_FIELD);
+			addPayloadBuffSetters(main, a, mb);
 		}
 		else //if (a.mid.isMessageSigName())
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-			addReceiveMessageSigNameParams(mb1, a, msd);
-			mb1.addBodyLine(ClassBuilder.SUPER + ".use();");
-			addBranchCheck(getPrefixedOpClassName(a.mid), mb1, MESSAGE_FIELD);
-			mb1.addBodyLine(ARG_PREFIX + "." + BUFF_VAL+ " = (" + msd.extName + ") " + MESSAGE_FIELD + ";");
+			addReceiveMessageSigNameParams(mb, a, msd);
+			mb.addBodyLine(ClassBuilder.SUPER + ".use();");
+			addBranchCheck(getPrefixedOpClassName(a.mid), mb, MESSAGE_FIELD);
+			mb.addBodyLine(ARG_PREFIX + "." + BUFF_VAL+ " = (" + msd.extName + ") " + MESSAGE_FIELD + ";");
 		}
-		makeReturnNextSocket(mb1, nextClass);
+		makeReturnNextSocket(mb, nextClass);
 	}
 
 	private static void addBranchReceiveReceiveDiscardMethod(Module main, final String OP_PARAM, ClassBuilder cb, IOAction a, String nextClass, String opClass)
 	{
 		if (!a.payload.isEmpty() || a.mid.isMessageSigName())
 		{
-			MethodBuilder mb2 = makeReceiveHeader(cb, nextClass, opClass);
+			MethodBuilder mb = makeReceiveHeader(cb, nextClass, opClass);
 			String ln = (isTerminalClassName(nextClass)) ? "" : ClassBuilder.RETURN + " ";
 			if (a.mid.isOp())
 			{
@@ -562,14 +563,8 @@ public class EndpointApiGenerator
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // Factor out? (send/receive/branchreceive/...)
 				ln += "receive(" + OP_PARAM + ", " + getGarbageBuff(msd.extName) + ");";
 			}
-			mb2.addBodyLine(ln);
+			mb.addBodyLine(ln);
 		}
-	}
-	
-	private static String getGarbageBuff(String futureClass)
-	{
-		//return ClassBuilder.NEW + " " + BUFF_CLASS + "<>()";  // Makes a trash Buff every time, but clean -- would be more efficient to generate the code to spawn the future without buff-ing it (partly duplicate of the normal receive generated code) 
-		return "(" + BUFF_CLASS + "<" + futureClass + ">) this.ep.gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
 	}
 
 	private static void addBranchCheck(String opClassName, MethodBuilder mb, String messageField)
@@ -582,6 +577,12 @@ public class EndpointApiGenerator
 					+ SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");
 		mb.addBodyLine("}");
 	}
+	
+	private static String getGarbageBuff(String futureClass)
+	{
+		//return ClassBuilder.NEW + " " + BUFF_CLASS + "<>()";  // Makes a trash Buff every time, but clean -- would be more efficient to generate the code to spawn the future without buff-ing it (partly duplicate of the normal receive generated code) 
+		return "(" + BUFF_CLASS + "<" + futureClass + ">) this.ep.gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
+	}
 
 	private String getPackageName() // Java output package (not Scribble package)
 	{
@@ -589,14 +590,14 @@ public class EndpointApiGenerator
 	}
 	
 	// Not fully qualified, just session class prefix
-	// Actually used to target the constant singleton value of this type (same "name")
+	// Actually used to target the constant singleton value of this type (same "name" as the class)
 	private String getPrefixedRoleClassName(Role role)
 	{
 		return SessionApiGenerator.getSessionClassName(this.gpn) + "." + role.toString();
 	}
 	
 	// Not fully qualified, just session class prefix
-	// Actually used to target the constant singleton value of this type (same "name")
+	// Actually used to target the constant singleton value of this type (same "name" as the class)
 	private String getPrefixedOpClassName(MessageId<?> mid)
 	{
 		return SessionApiGenerator.getSessionClassName(this.gpn) + "." + SessionApiGenerator.getOpClassName(mid);
