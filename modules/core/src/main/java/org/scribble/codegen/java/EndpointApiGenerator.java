@@ -131,24 +131,24 @@ public class EndpointApiGenerator
 
 	private ClassBuilder constructClass(String superc, String className, EndpointState curr)
 	{
-		ClassBuilder cb = constructClassExceptMethods(superc, className, curr);
+		ClassBuilder cb = constructClassExceptMethods(superc, className);
 		addMethods(cb, curr);
 		return cb;
 	}
 
-	private ClassBuilder constructClassExceptMethods(String superc, String className, EndpointState curr)
+	private ClassBuilder constructClassExceptMethods(String superc, String className)
 	{
 		ClassBuilder cb = new ClassBuilder();
 		cb.setName(className);
 		cb.setPackage(getPackageName());
 		cb.addModifiers(ClassBuilder.PUBLIC);
 		cb.setSuperClass(superc);
-		addImports(cb, curr);
+		addImports(cb);
 		addConstructor(cb, className);
 		return cb;
 	}
 
-	private void addImports(ClassBuilder cb, EndpointState ps)
+	private void addImports(ClassBuilder cb)
 	{
 		cb.addImports("java.io.IOException");
 		cb.addImports("java.util.concurrent.CompletableFuture");
@@ -484,7 +484,7 @@ public class EndpointApiGenerator
 	}
 
 	// FIXME: factor with regular receive
-	private String constructBranchReceiveClass(EndpointState ps, Module main)
+	private String constructBranchReceiveClass(EndpointState curr, Module main)
 	{
 		final String OP_FIELD = "op";
 		final String OP_PARAM = OP_FIELD;
@@ -492,28 +492,28 @@ public class EndpointApiGenerator
 		final String MESSAGE_PARAM = MESSAGE_FIELD;
 		final String ARG_PREFIX = "arg";
 
-		String branchName = this.classNames.get(ps);
-		String enumClass = branchName + "Enum";
-		String className = newClassName();
-		ClassBuilder cb = constructClassExceptMethods(BRANCHRECEIVESOCKET_CLASS, className, ps);
+		String branchName = this.classNames.get(curr);  // Name of "parent" branch class (curr state is the branch state)
+		String enumClassName = branchName + "." + branchName + "Enum";
+		String className = newClassName();  // Name of branch-receive class
+
+		ClassBuilder cb = constructClassExceptMethods(BRANCHRECEIVESOCKET_CLASS, className);
 		
 		MethodBuilder ctor = cb.getConstructors().iterator().next();
-		ctor.addParameters(branchName + "." + enumClass + " " + OP_PARAM,
-				SCRIBMESSAGE_CLASS + " " + MESSAGE_PARAM);
+		ctor.addParameters(enumClassName + " " + OP_PARAM, SCRIBMESSAGE_CLASS + " " + MESSAGE_PARAM);
 		ctor.addBodyLine(ClassBuilder.THIS + "." + OP_FIELD + " = " + OP_PARAM + ";");
 		ctor.addBodyLine(ClassBuilder.THIS + "." + MESSAGE_FIELD + " = " + MESSAGE_PARAM + ";");
 
 		FieldBuilder fb1 = cb.newField(OP_FIELD);
 		fb1.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
-		fb1.setType(this.classNames.get(ps) + "." + enumClass);
+		fb1.setType(enumClassName);
 		
 		FieldBuilder fb2 = cb.newField(MESSAGE_FIELD);
 		fb2.addModifiers(ClassBuilder.PRIVATE, ClassBuilder.FINAL);
 		fb2.setType(SCRIBMESSAGE_CLASS);
 
-		for (IOAction a : ps.getAcceptable())
+		for (IOAction a : curr.getAcceptable())
 		{
-			EndpointState succ = ps.accept(a);
+			EndpointState succ = curr.accept(a);
 			String nextClass = this.classNames.get(succ);
 			String opClass = SessionApiGenerator.getOpClassName(a.mid);
 
