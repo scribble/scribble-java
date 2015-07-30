@@ -19,9 +19,6 @@ public class MyC
 {
 	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Buff<Integer> i1 = new Buff<>(1);
-		Buff<Integer> i2 = new Buff<>(1);
-		
 		Proto1 adder = new Proto1();
 		SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
 		
@@ -29,47 +26,26 @@ public class MyC
 		{
 			s0.connect(Proto1.S, "localhost", 8888);
 			Proto1_C_1 s1 = s0.init();
-			
-			Proto1_C_6 s6 = s1.branch();
-			switch (s6.op)
-			{
-				case _4:
-				{
-					Proto1_C_2 s2 = s6.receive(Proto1._4);
-					boolean done = s2.isDone();
-					Proto1_C_3 s3;
-					if (done)
-					{
-						s3 = s2.receive(Proto1._5);
-					}
-					else
-					{
-						s3 = s2.async(Proto1._5);
-					}
 
-					Buff<Future_Proto1_C_4> b = new Buff<>();
-					s3.send(Proto1.S, Proto1._1, 999)
-					  .async(Proto1._2, b)
-					  .send(Proto1.S, Proto1._3, b.val.sync().pay1);
-					System.out.println("C4: " + done + ", " + b.val.pay1 + ", " + b.val.pay2);
-					break;
-				}
-				case _6:
-				{
-					s6.receive(Proto1._6, i1);
-					System.out.println("C6: " + i1);
-					break;
-				}
-			}
+			Buff<Future_Proto1_C_1> b1 = new Buff<>();
+			Buff<Future_Proto1_C_2> b2 = new Buff<>();
+
+			s1.async(Proto1._1, b1)
+			  .async(Proto1._2, b2)
+			  .send(Proto1.S, Proto1._3, 3);
 			
-			//System.out.println("Client: " + i1.val);
+			System.out.println("Client 1: ");
+			System.out.println("Client 2: " + b2.val.sync().pay1);
+			
+			b1.val.sync();
+
+			System.out.println("Client 3: ");
 		}
 	}
 
-	/*private static Proto1_C_3 side(Buff<Integer> i1, Buff<Integer> i2, Proto1_C_3 s3)
+	private static Proto1_C_5 side(Proto1_C_5 s5, Future_Proto1_C_4 f)
 	{
-		System.out.print(i1.val + " ");
-		i1.val = i2.val;
-		return s3;
-	}*/
+		System.out.println("s5: " + f.isDone());
+		return s5;
+	}
 }

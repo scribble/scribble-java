@@ -359,11 +359,9 @@ public class EndpointApiGenerator
 		}*/
 		mb2.setReturn(next);
 		mb2.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
-
-		mb2.addParameters(BUFF_CLASS + "<" + fname + "> " + ARG_PREFIX);  //.. HERE: no future-buff if no args (and no need for separate no-arg async below)
-
+		mb2.addParameters(BUFF_CLASS + "<" + fname + "> " + ARG_PREFIX);  // Option for future buf even if no payload, for sync action
 		//mb2.addBodyLine(ARG_PREFIX + ".val = " + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
-		String ln = ARG_PREFIX + ".val = " + ClassBuilder.NEW + " " + fname + "(" + ClassBuilder.SUPER + ".getFutureAux(" + getPrefixedRoleClassName(a.peer) + "));";
+		String ln = ARG_PREFIX + ".val = " + ClassBuilder.NEW + " " + fname + "(" + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + "));";
 		mb2.addBodyLine(ln);
 		if (next.equals("void"))
 		{

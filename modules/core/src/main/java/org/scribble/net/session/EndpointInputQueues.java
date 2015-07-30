@@ -12,11 +12,13 @@ import org.scribble.sesstype.name.Role;
 
 public class EndpointInputQueues
 {
+	// FIXME: factor out individual queues (with counts and queues)
+	
 	private final Map<Role, List<ScribMessage>> queues = new HashMap<>();
 	//private final List<Object> list = new LinkedList<>();
 	
-	private final Map<Role, Integer> counts = new HashMap<>();
-	private final Map<Role, Integer> tickets = new HashMap<>();
+	private final Map<Role, Integer> counts = new HashMap<>();  // How many ScribMessages read so far
+	private final Map<Role, Integer> tickets = new HashMap<>();  // Index of the next expected ScribMessage
 
 	public EndpointInputQueues()
 	{
@@ -55,10 +57,10 @@ public class EndpointInputQueues
 		return this.queues.get(src).get(0);
 	}*/
 	
+	// Default CompletableFuture executed by common forkjoin pool -- so all messages that are received/async'd will eventually be pulled from the queue (no manual GC necessary)
 	public synchronized CompletableFuture<ScribMessage> getFuture(Role peer)
 	{
-		// FIXME: cast
-		// FIXME: exception handling
+		// FIXME: better exception handling (do via Future interface?)
 		return CompletableFuture.supplyAsync(() -> { try { return dequeue(peer, getTicket(peer)); } catch(IOException e) { throw new RuntimeException(e); } });
 	}
 
