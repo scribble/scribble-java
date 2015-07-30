@@ -30,10 +30,11 @@ public class MyS
 				{
 					Proto1_S_1 s1 = s0.init();
 					
+					Proto1_S_4 s4 = s1.send(Proto1.C, Proto1._1, 1);
+
 					Thread.sleep(2000);
 
-					s1.send(Proto1.C, Proto1._1)
-					  .send(Proto1.C, Proto1._2, 2)
+					s4.send(Proto1.C, Proto1._2, 2)
 					  .receive(Proto1._3, new Buff<>());
 				}
 				catch (ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)

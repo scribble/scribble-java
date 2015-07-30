@@ -25,7 +25,6 @@ import org.scribble.visit.Job;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 
-// FIXME: replace dynamically created garbage Buffs with a single static one
 public class EndpointApiGenerator
 {
 	public static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
@@ -305,8 +304,8 @@ public class EndpointApiGenerator
 		
 		ClassBuilder future = cb.newClass();
 		cb.addImports("java.util.concurrent.CompletableFuture");  // cb, not future
-		String fname = "Future_" + cb.getName();  // FIXME: fresh
-		future.setName(fname);
+		String futureClass = "Future_" + cb.getName();  // FIXME: fresh
+		future.setName(futureClass);
 		future.setSuperClass(SCRIBFUTURE_CLASS);
 		if (!a.payload.isEmpty())
 		{
@@ -327,7 +326,7 @@ public class EndpointApiGenerator
 		MethodBuilder sync = future.newMethod("sync");
 		sync.addExceptions("ExecutionException", "InterruptedException");
 		sync.addModifiers(ClassBuilder.PUBLIC);
-		sync.setReturn(fname);
+		sync.setReturn(futureClass);
 		sync.addBodyLine(SCRIBMESSAGE_CLASS + " m = " + ClassBuilder.SUPER + ".get();");
 		if (!a.payload.isEmpty())
 		{
@@ -359,9 +358,9 @@ public class EndpointApiGenerator
 		}*/
 		mb2.setReturn(next);
 		mb2.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
-		mb2.addParameters(BUFF_CLASS + "<" + fname + "> " + ARG_PREFIX);  // Option for future buf even if no payload, for sync action
+		mb2.addParameters(BUFF_CLASS + "<" + futureClass + "> " + ARG_PREFIX);  // Option for future buf even if no payload, for sync action
 		//mb2.addBodyLine(ARG_PREFIX + ".val = " + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
-		String ln = ARG_PREFIX + ".val = " + ClassBuilder.NEW + " " + fname + "(" + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + "));";
+		String ln = ARG_PREFIX + ".val = " + ClassBuilder.NEW + " " + futureClass + "(" + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + "));";
 		mb2.addBodyLine(ln);
 		if (next.equals("void"))
 		{
@@ -379,7 +378,7 @@ public class EndpointApiGenerator
 		if (!next.equals("void"))
 		{
 			mb3.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " " + OP_PARAM);
-			mb3.addBodyLine(ClassBuilder.RETURN + " async(" + OP_PARAM + ", " + ClassBuilder.NEW + " " + BUFF_CLASS + "<>());");
+			mb3.addBodyLine(ClassBuilder.RETURN + " async(" + OP_PARAM + ", " + getGarbageBuff(futureClass) + ");");
 		}
 		
 		//HERE:... (bounded) receive thread and input action indexing ... gc for unneeded messages? weak references...
@@ -544,13 +543,13 @@ public class EndpointApiGenerator
 				String ln = (next.equals("void")) ? "" : ClassBuilder.RETURN + " ";
 				if (a.mid.isOp())
 				{
-					ln += " receive(" + OP_PARAM + ", "
-							+ a.payload.elems.stream().map((e) -> ClassBuilder.NEW + " " + BUFF_CLASS + "<>()").collect(Collectors.joining(", "))
+					ln += "receive(" + OP_PARAM + ", "
+							+ a.payload.elems.stream().map((pt) -> getGarbageBuff(main.getDataTypeDecl(((DataType) pt)).extName)).collect(Collectors.joining(", "))
 							+ ");";
 				}
 				else
 				{
-					ln += " receive(" + OP_PARAM + ", " + ClassBuilder.NEW + " " + BUFF_CLASS + "<>());";
+					ln += "receive(" + OP_PARAM + ", " + getGarbageBuff(main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName()).toString()) + ");";
 				}
 				mb2.addBodyLine(ln);
 			}
@@ -558,6 +557,12 @@ public class EndpointApiGenerator
 
 		this.classes.put(className, cb);
 		return className;
+	}
+	
+	private static String getGarbageBuff(String futureClass)
+	{
+		//return ClassBuilder.NEW + " " + BUFF_CLASS + "<>()";  // Makes a trash Buff every time, but clean -- would be more efficient to generate the code to spawn the future without buff-ing it (partly duplicate of the normal receive generated code) 
+		return "(" + BUFF_CLASS + "<" + futureClass + ">) this.ep.gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
 	}
 
 	private static void addBranchCheck(String opClassName, MethodBuilder mb, String messageField)

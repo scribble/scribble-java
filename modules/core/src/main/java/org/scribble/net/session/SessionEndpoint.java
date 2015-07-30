@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.Buff;
 import org.scribble.net.ScribMessageFormatter;
 import org.scribble.sesstype.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 public class SessionEndpoint
 {
+	public final Buff<?> gc = new Buff<>();
+
 	public final Session sess;
 	//public final Principal self;
 	public final Role self;

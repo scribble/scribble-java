@@ -10,8 +10,6 @@ import java.util.concurrent.ExecutionException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.ScribFuture;
-import org.scribble.net.ScribMessage;
 import org.scribble.net.session.SessionEndpoint;
 
 
@@ -27,17 +25,32 @@ public class MyC
 			s0.connect(Proto1.S, "localhost", 8888);
 			Proto1_C_1 s1 = s0.init();
 
-			Buff<Future_Proto1_C_1> b1 = new Buff<>();
-			Buff<Future_Proto1_C_2> b2 = new Buff<>();
+			Proto1_C_6 s6 = s1.branch();
+			switch (s6.op)
+			{
+				case _1:
+				{
+					Buff<Integer> b1 = new Buff<>();
+					Buff<Future_Proto1_C_4> b2 = new Buff<>();
 
-			s1.async(Proto1._1, b1)
-			  .async(Proto1._2, b2)
-			  .send(Proto1.S, Proto1._3, 3);
+					s6.receive(Proto1._1, b1)
+					  .async(Proto1._2, b2)
+					  .send(Proto1.S, Proto1._3, 3);
 			
-			System.out.println("Client 1: ");
-			System.out.println("Client 2: " + b2.val.sync().pay1);
+					System.out.println("Client 1: ");
+					System.out.println("Client 2: " + b2.val.sync().pay1);
+
+					break;
+				}
+				case _4:
+				{
+					s6.receive(Proto1._4)
+					  .async(Proto1._5)
+					  .receive(Proto1._6);
 			
-			b1.val.sync();
+					break;
+				}
+			}
 
 			System.out.println("Client 3: ");
 		}
