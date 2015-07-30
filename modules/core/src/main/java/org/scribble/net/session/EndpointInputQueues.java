@@ -12,7 +12,7 @@ import org.scribble.sesstype.name.Role;
 
 public class EndpointInputQueues
 {
-	// FIXME: factor out individual queues (with counts and queues)
+	// FIXME: factor out individual role queues (with counts and tickets, and bounded cache size?)
 	
 	private final Map<Role, List<ScribMessage>> queues = new HashMap<>();
 	//private final List<Object> list = new LinkedList<>();

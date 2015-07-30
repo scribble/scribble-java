@@ -17,6 +17,7 @@ public class ClassBuilder
 	public static final String SUPER = "super";
 	public static final String SYNCHRONIZED = "synchronized";
 	public static final String THIS = "this";
+	public static final String VOID = "void";
 	
 	private String packname;  // null for non- top-level class
 	private final List<String> imports = new LinkedList<String>();

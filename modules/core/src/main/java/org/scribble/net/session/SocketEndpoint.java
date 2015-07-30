@@ -87,7 +87,7 @@ class ReceiverThread extends Thread
 		{
 			while (true)
 			{
-				queues.enqueue(this.peer, this.ep.smf.readMessage(this.dis));
+				queues.enqueue(this.peer, this.ep.smf.readMessage(this.dis));  // FIXME: bounded buffer? (endpoint queue property?)
 			}
 		}
 		catch (IOException e)
