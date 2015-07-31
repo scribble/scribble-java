@@ -69,7 +69,7 @@ class ReceiverThread extends Thread
 	private final Role peer;
 	private final DataInputStream dis;
 
-	private Exception fail;
+	private Throwable fail;
 
 	public ReceiverThread(SessionEndpoint ep, Role peer, DataInputStream dis)
 	{
@@ -109,12 +109,10 @@ class ReceiverThread extends Thread
 			}
 			finally
 			{
-				// FIXME:
-				/*if (this.fail != null)
+				if (this.fail != null)
 				{
-					queues.signalException(this.peer, this.fail);
+					queues.interrupt(this.peer, this.fail);
 				}
-				queues.signalReceiverThreadTermination(this.peer);*/
 			}
 		}
 	}

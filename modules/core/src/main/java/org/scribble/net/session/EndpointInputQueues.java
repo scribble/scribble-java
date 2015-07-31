@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+
+import org.scribble.main.RuntimeScribbleException;
+import org.scribble.net.ScribInterrupt;
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Role;
 
@@ -44,7 +47,12 @@ public class EndpointInputQueues
 		this.queues.get(peer).add(o);
 		//this.list.add(o);
 		this.counts.put(peer, this.counts.get(peer) + 1);
-		this.notifyAll();  // FIXME: notify just for each peer
+		notifyAll();  // FIXME: notify just for each peer
+	}
+	
+	public synchronized void interrupt(Role peer, Throwable t)
+	{
+		enqueue(peer, new ScribInterrupt(t));
 	}
 	
 	public synchronized boolean isEmpty(Role peer)
@@ -61,7 +69,22 @@ public class EndpointInputQueues
 	public synchronized CompletableFuture<ScribMessage> getFuture(Role peer)
 	{
 		// FIXME: better exception handling (do via Future interface?)
-		return CompletableFuture.supplyAsync(() -> { try { return dequeue(peer, getTicket(peer)); } catch(IOException e) { throw new RuntimeException(e); } });
+		return CompletableFuture.supplyAsync(() ->
+				{
+					try
+					{
+						ScribMessage m = dequeue(peer, getTicket(peer));
+						if (m instanceof ScribInterrupt)  // FIXME: hacked in
+						{
+							throw new RuntimeScribbleException((Throwable) ((ScribInterrupt) m).payload[0]);
+						}
+						return m;
+					}
+					catch(IOException e)
+					{
+						throw new RuntimeScribbleException(e);
+					}
+				});
 	}
 
 	protected synchronized ScribMessage dequeue(Role peer, int ticket) throws IOException

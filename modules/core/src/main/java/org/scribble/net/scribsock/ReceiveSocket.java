@@ -21,7 +21,7 @@ public abstract class ReceiveSocket extends LinearSocket
 	protected ScribMessage readScribMessage(Role peer) throws ClassNotFoundException, IOException, ScribbleRuntimeException, InterruptedException, ExecutionException
 	{
 		//ScribMessage m = this.ep.smf.readMessage(this.ep.getSocketEndpoint(role).dis);
-		ScribMessage m = getFuture(peer).get();
+		ScribMessage m = getFuture(peer).get();  // The Future converts the RuntimeScribbleException wrapper for the underlying IOException into an ExecutionException
 
 		//System.out.println("Read: " + m);
 
