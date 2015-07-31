@@ -316,7 +316,7 @@ public class EndpointApiGenerator
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addParameters(opClass + " " + RECEIVE_OP_PARAM);
 		mb.addParameters(BUFF_CLASS + "<" + futureClass + "> " + RECEIVE_ARG_PREFIX);  // Method for future-buf even if no payload, for sync action
-		mb.addBodyLine(ClassBuilder.SUPER + ".use();");
+		//mb.addBodyLine(ClassBuilder.SUPER + ".use();");
 		//mb2.addBodyLine(ARG_PREFIX + ".val = " + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
 		mb.addBodyLine(RECEIVE_ARG_PREFIX + "." + BUFF_VAL + " = "
 					+ ClassBuilder.NEW + " " + futureClass + "(" + ClassBuilder.SUPER + ".getFuture(" + getSessionApiRoleConstant(a.peer) + "));");

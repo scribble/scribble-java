@@ -27,7 +27,7 @@ public abstract class LinearSocket extends ScribSocket
 		this.used = true;
 	}
 
-	// Only triggered by autoclose or explicit close, i.e. not called directly by user
+	/*// Only triggered by autoclose or explicit close, i.e. not called directly by user
 	protected synchronized void close() throws ScribbleRuntimeException
 	{
 		if (!this.used)
@@ -35,5 +35,5 @@ public abstract class LinearSocket extends ScribSocket
 			this.ep.close();
 			throw new ScribbleRuntimeException("Socket resource not used: " + this.getClass());
 		}
-	}
+	}*/
 }

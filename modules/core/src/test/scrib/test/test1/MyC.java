@@ -34,8 +34,8 @@ public class MyC
 					Buff<Future_Proto1_C_4> b2 = new Buff<>();
 
 					s6.receive(Proto1._1, b1)
-					  .async(Proto1._2, b2)
-					  .send(Proto1.S, Proto1._3, 3);
+					  .async(Proto1._2, b2);
+					  //.send(Proto1.S, Proto1._3, 3);
 			
 					System.out.println("Client 1: ");
 					System.out.println("Client 2: " + b2.val.sync().pay1);

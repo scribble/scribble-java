@@ -9,8 +9,10 @@ import org.scribble.net.ScribMessage;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
-public abstract class ReceiveSocket extends AffineSocket
+public abstract class ReceiveSocket extends LinearSocket
 {
+	private CompletableFuture<ScribMessage> fut;
+
 	protected ReceiveSocket(SessionEndpoint ep)
 	{
 		super(ep);
@@ -18,7 +20,6 @@ public abstract class ReceiveSocket extends AffineSocket
 
 	protected ScribMessage readScribMessage(Role peer) throws ClassNotFoundException, IOException, ScribbleRuntimeException, InterruptedException, ExecutionException
 	{
-		use();
 		//ScribMessage m = this.ep.smf.readMessage(this.ep.getSocketEndpoint(role).dis);
 		ScribMessage m = getFuture(peer).get();
 
@@ -29,11 +30,14 @@ public abstract class ReceiveSocket extends AffineSocket
 	
 	protected boolean isDone(Role peer)
 	{
-		return !this.ep.getInputQueues().isEmpty(peer);
+		//return !this.ep.getInputQueues().isEmpty(peer);
+		return (this.fut == null) || (this.fut.isDone());
 	}
 	
-	protected CompletableFuture<ScribMessage> getFuture(Role peer)
+	protected CompletableFuture<ScribMessage> getFuture(Role peer) throws ScribbleRuntimeException
 	{
-		return this.ep.getInputQueues().getFuture(peer);
+		use();
+		this.fut = this.ep.getInputQueues().getFuture(peer);
+		return this.fut;
 	}
 }
