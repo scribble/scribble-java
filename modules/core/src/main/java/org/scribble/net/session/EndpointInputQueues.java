@@ -68,7 +68,7 @@ public class EndpointInputQueues
 	// Default CompletableFuture executed by common forkjoin pool -- so all messages that are received/async'd will eventually be pulled from the queue (no manual GC necessary)
 	public synchronized CompletableFuture<ScribMessage> getFuture(Role peer)
 	{
-		// FIXME: better exception handling (do via Future interface?)
+		// FIXME: better exception handling (integrate with Future interface?)
 		return CompletableFuture.supplyAsync(() ->
 				{
 					try
