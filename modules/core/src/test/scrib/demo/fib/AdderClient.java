@@ -5,6 +5,7 @@ package demo.fib;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
@@ -14,7 +15,7 @@ import org.scribble.net.session.SessionEndpoint;
 
 public class AdderClient
 {
-	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException
+	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		Buff<Integer> i1 = new Buff<>(1);
 		Buff<Integer> i2 = new Buff<>(2);
@@ -32,7 +33,7 @@ public class AdderClient
 				.send(Adder.S, Adder.ADD, i1.val, i1.val)
 			  .receive(Adder.RES, i1)
 			  .send(Adder.S, Adder.BYE)
-			  .end();
+			  .receive(Adder.BYE);
 			
 			/*while (i1.val < 100)
 			{

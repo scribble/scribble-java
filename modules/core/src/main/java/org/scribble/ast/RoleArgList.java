@@ -54,6 +54,6 @@ public class RoleArgList extends DoArgList<RoleArg>
 	@Override
 	public String toString()
 	{
-		return "(" + getDoArgs().stream().map((a) -> a.toString()).collect(Collectors.joining(", ")) + ")";
+		return "(" + super.toString() + ")";
 	}
 }

@@ -1,4 +1,4 @@
-package org.scribble.codegen;
+package org.scribble.codegen.java;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -15,7 +15,9 @@ public class ClassBuilder
 	public static final String RETURN = "return";
 	public static final String STATIC = "static";
 	public static final String SUPER = "super";
+	public static final String SYNCHRONIZED = "synchronized";
 	public static final String THIS = "this";
+	public static final String VOID = "void";
 	
 	private String packname;  // null for non- top-level class
 	private final List<String> imports = new LinkedList<String>();
@@ -24,6 +26,7 @@ public class ClassBuilder
 	private String name;
 	private String superc;  // null if none explicit
 	private final List<String> ifaces = new LinkedList<String>();
+	private final List<String> params = new LinkedList<String>();
 	
 	private final List<FieldBuilder> fields = new LinkedList<>();
 	private final List<MethodBuilder> ctors = new LinkedList<>();
@@ -35,6 +38,11 @@ public class ClassBuilder
 	public ClassBuilder()
 	{
 		
+	}
+	
+	public String getName()
+	{
+		return this.name;
 	}
 	
 	public void setPackage(String packname)
@@ -65,6 +73,11 @@ public class ClassBuilder
 	public void addInterfaces(String... ifaces)
 	{
 		this.ifaces.addAll(Arrays.asList(ifaces));
+	}
+	
+	public void addParameters(String... params)
+	{
+		this.params.addAll(Arrays.asList(params));
 	}
 	
 	public FieldBuilder newField(String name)
@@ -137,6 +150,10 @@ public class ClassBuilder
 			clazz += " ";
 		}
 		clazz += "class " + this.name;
+		if (!this.params.isEmpty())
+		{
+			clazz += "<" + this.params.stream().collect(Collectors.joining(", ")) + ">";
+		}
 		if (this.superc != null)
 		{
 			clazz += " extends " + this.superc;

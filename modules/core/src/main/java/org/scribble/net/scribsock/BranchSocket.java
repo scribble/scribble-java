@@ -1,4 +1,4 @@
-package org.scribble.net;
+package org.scribble.net.scribsock;
 
 import org.scribble.net.session.SessionEndpoint;
 

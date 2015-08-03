@@ -1,4 +1,4 @@
-package org.scribble.net;
+package org.scribble.net.scribsock;
 
 import java.io.IOException;
 
@@ -13,9 +13,9 @@ public abstract class AcceptSocket extends ScribSocket
 		super(ep);
 	}
 
-	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
+	/*public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
 	{
 		use();
 		this.ep.register(role, ss.accept());
-	}
+	}*/
 }

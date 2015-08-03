@@ -5,6 +5,7 @@ package test.test1;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
@@ -14,11 +15,8 @@ import org.scribble.net.session.SessionEndpoint;
 
 public class MyC
 {
-	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException
+	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Buff<Integer> i1 = new Buff<>(1);
-		Buff<Integer> i2 = new Buff<>(1);
-		
 		Proto1 adder = new Proto1();
 		SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
 		
@@ -26,20 +24,41 @@ public class MyC
 		{
 			s0.connect(Proto1.S, "localhost", 8888);
 			Proto1_C_1 s1 = s0.init();
+
+			Proto1_C_6 s6 = s1.branch();
+			switch (s6.op)
+			{
+				case _1:
+				{
+					Buff<Integer> b1 = new Buff<>();
+					Buff<Future_Proto1_C_4> b2 = new Buff<>();
+
+					s6.receive(Proto1._1, b1)
+					  .async(Proto1._2, b2)
+					  .send(Proto1.S, Proto1._3, 3);
 			
-			s1.send(Proto1.S, Proto1.ADD, i1.val, i2.val)
-			  .receive(Proto1.RES, i1)
-			  .send(Proto1.S, Proto1.BYE)
-			  .end();
+					System.out.println("Client 1: ");
+					System.out.println("Client 2: " + b2.val.sync().pay1);
+
+					break;
+				}
+				case _4:
+				{
+					s6.receive(Proto1._4)
+					  .async(Proto1._5)
+					  .receive(Proto1._6);
 			
-			System.out.println("Client: " + i1.val);
+					break;
+				}
+			}
+
+			System.out.println("Client 3: ");
 		}
 	}
 
-	/*private static Proto1_C_3 side(Buff<Integer> i1, Buff<Integer> i2, Proto1_C_3 s3)
+	private static Proto1_C_5 side(Proto1_C_5 s5, Future_Proto1_C_4 f)
 	{
-		System.out.print(i1.val + " ");
-		i1.val = i2.val;
-		return s3;
-	}*/
+		System.out.println("s5: " + f.isDone());
+		return s5;
+	}
 }

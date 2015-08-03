@@ -1,4 +1,4 @@
-package org.scribble.net;
+package org.scribble.net.scribsock;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -15,10 +15,10 @@ public abstract class ConnectSocket extends ScribSocket
 		super(ep);
 	}
 
-	public void connect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	/*public void connect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		use();
 		Socket s = new Socket(host, port);
 		this.ep.register(role, new SocketWrapper(s));
-	}
+	}*/
 }

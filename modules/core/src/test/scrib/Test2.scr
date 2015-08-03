@@ -6,7 +6,7 @@ module Test2;
 
 global protocol Test2Proto(role C, role D)
 {
-	2() from C to D;
+	Test2() from C to D;
 }
 
 

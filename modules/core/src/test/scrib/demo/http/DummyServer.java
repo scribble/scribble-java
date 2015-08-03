@@ -1,10 +1,11 @@
 package demo.http;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
-import org.scribble.net.ScribServerSocket;
+import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.session.SessionEndpoint;
 
 import demo.http.message.Body;
@@ -58,60 +59,59 @@ public class DummyServer
 					
 					X: while (true)
 					{
-						Http_S_7 s7 = s2.branch();
-						switch (s7.op)
+						Http_S_6 s6 = s2.branch();
+						switch (s6.op)
 						{
 							case ACCEPT:
 							{
-								s2 = s7.receive(Http.ACCEPT, b_acc);
+								s2 = s6.receive(Http.ACCEPT, b_acc);
 								break;
 							}
 							case ACCEPTE:
 							{
-								s2 = s7.receive(Http.ACCEPTE, b_acce);
+								s2 = s6.receive(Http.ACCEPTE, b_acce);
 								break;
 							}
 							case ACCEPTL:
 							{
-								s2 = s7.receive(Http.ACCEPTL, b_accl);
+								s2 = s6.receive(Http.ACCEPTL, b_accl);
 								break;
 							}
 							case BODY:
 							{
 								String body = "";
 								//String body = "<html><body>Hello</body></html>";
-								s7.receive(Http.BODY, b_body)
+								s6.receive(Http.BODY, b_body)
 									.send(Http.C, new HttpVersion("1.1"))
 									.send(Http.C, new _200("OK"))
 									.send(Http.C, new ContentLength(body.length()))
-									.send(Http.C, new Body(body))
-									.end();
+									.send(Http.C, new Body(body));
 								break X;
 							}
 							case CONNECTION:
 							{
-								s2 = s7.receive(Http.CONNECTION, b_conn);
+								s2 = s6.receive(Http.CONNECTION, b_conn);
 								break;
 							}
 							case DNT:
 							{
-								s2 = s7.receive(Http.DNT, b_dnt);
+								s2 = s6.receive(Http.DNT, b_dnt);
 								break;
 							}
 							case HOST:
 							{
-								s2 = s7.receive(Http.HOST, b_host);
+								s2 = s6.receive(Http.HOST, b_host);
 								break;
 							}
 							case USERA:
 							{
-								s2 = s7.receive(Http.USERA, b_usera);
+								s2 = s6.receive(Http.USERA, b_usera);
 								break;
 							}
 						}
 					}
 				}
-				catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
+				catch (IOException | ClassNotFoundException | ScribbleRuntimeException | ExecutionException | InterruptedException e)
 				{
 					e.printStackTrace();
 				}

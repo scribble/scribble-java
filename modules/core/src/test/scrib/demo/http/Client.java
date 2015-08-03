@@ -2,6 +2,7 @@ package demo.http;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
@@ -40,18 +41,10 @@ public class Client
 	public void run() throws ScribbleRuntimeException
 	{
 		Buff<HttpVersion> b_vers = new Buff<>();
-		Buff<AcceptRanges> b_acc = new Buff<>();
 		Buff<ContentLength> b_clen = new Buff<>();
 		Buff<ContentType> b_ctype = new Buff<>();
 		Buff<Body> b_body = new Buff<>();
-		Buff<Date> b_date = new Buff<>();
-		Buff<ETag> b_etag = new Buff<>();
-		Buff<LastModified> b_lastm = new Buff<>();
 		Buff<Server> b_serv = new Buff<>();
-		Buff<Vary> b_vary = new Buff<>();
-		Buff<Via> b_via = new Buff<>();
-		Buff<_200> b_200 = new Buff<>();
-		Buff<_404> b_404 = new Buff<>();
 		
 		Caller c = new Caller();
 		
@@ -67,78 +60,77 @@ public class Client
 		{
 			init.connect(Http.S, host, port);
 			Http_C_1 s1 = init.init();
-			Http_C_7 s7 =
+			Http_C_6 s6 =
 					s1.send(Http.S, new RequestLine("/~rhu/", "1.1"))
 					  .send(Http.S, new Host(host))
 					  .send(Http.S, new Body(""))
 					  .receive(Http.HTTPV, b_vers)
 					  .branch();
 			Http_C_5 s5 = 
-					  (s7.op == Http_C_4Enum._200) ? s7.receive(Http._200, b_200)
-					: (s7.op == Http_C_4Enum._404) ? s7.receive(Http._404, b_404)
-					: c.call(() -> { throw new RuntimeException("Unknown status code: " + s7.op); });
+					  (s6.op == Http_C_4Enum._200) ? s6.receive(Http._200)
+					: (s6.op == Http_C_4Enum._404) ? s6.receive(Http._404)
+					: c.call(() -> { throw new RuntimeException("Unknown status code: " + s6.op); });
 
 			Y: while (true)
 			{
-				Http_C_8 s8 = s5.branch();
-				switch (s8.op)
+				Http_C_7 s7 = s5.branch();
+				switch (s7.op)
 				{
 					case ACCEPTR:
 					{
-						s5 = s8.receive(Http.ACCEPTR, b_acc);
+						s5 = s7.receive(Http.ACCEPTR);
 						break;
 					}
 					case BODY:
 					{
-						s8.receive(Http.BODY, b_body)
-						  .end();
+						s7.receive(Http.BODY, b_body);
 						System.out.println(b_body.val.getBody());
 						break Y;
 					}
 					case CONTENTL:
 					{
-						s5 = s8.receive(Http.CONTENTL, b_clen);
+						s5 = s7.receive(Http.CONTENTL, b_clen);
 						break;
 					}
 					case CONTENTT:
 					{
-						s5 = s8.receive(Http.CONTENTT, b_ctype);
+						s5 = s7.receive(Http.CONTENTT, b_ctype);
 						break;
 					}
 					case DATE:
 					{
-						s5 = s8.receive(Http.DATE, b_date);
+						s5 = s7.receive(Http.DATE);
 						break;
 					}
 					case ETAG:
 					{
-						s5 = s8.receive(Http.ETAG, b_etag);
+						s5 = s7.receive(Http.ETAG);
 						break;
 					}
 					case LASTM:
 					{
-						s5 = s8.receive(Http.LASTM, b_lastm);
+						s5 = s7.receive(Http.LASTM);
 						break;
 					}
 					case SERVER:
 					{
-						s5 = s8.receive(Http.SERVER, b_serv);
+						s5 = s7.receive(Http.SERVER, b_serv);
 						break;
 					}
 					case VARY:
 					{
-						s5 = s8.receive(Http.VARY, b_vary);
+						s5 = s7.receive(Http.VARY);
 						break;
 					}
 					case VIA:
 					{
-						s5  = s8.receive(Http.VIA, b_via);
+						s5  = s7.receive(Http.VIA);
 						break;
 					}
 				}
 			}
 		}
-		catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
+		catch (IOException | ClassNotFoundException | ScribbleRuntimeException | ExecutionException | InterruptedException e)
 		{
 			e.printStackTrace();
 		}

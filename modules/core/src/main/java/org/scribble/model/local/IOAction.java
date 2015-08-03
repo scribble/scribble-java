@@ -8,7 +8,7 @@ public abstract class IOAction
 {
 	public final Role peer;
 	public final MessageId<?> mid;
-	public final Payload payload;
+	public final Payload payload;  // Empty for MessageSigNames
 	
 	public IOAction(Role peer, MessageId<?> mid, Payload payload)
 	{

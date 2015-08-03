@@ -24,6 +24,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.Job;
@@ -59,11 +60,11 @@ public class CommandLine implements Runnable
 			job.checkWellFormedness();
 			if (this.args.containsKey(ArgFlag.PROJECT))
 			{
-				outputProjection(job);
+				outputProjections(job);
 			}
 			if (this.args.containsKey(ArgFlag.FSM))
 			{
-				outputFsm(job);
+				outputGraph(job);
 			}
 			if (this.args.containsKey(ArgFlag.SESS_API))
 			{
@@ -80,22 +81,23 @@ public class CommandLine implements Runnable
 		}
 	}
 	
-	private void outputProjection(Job job)
+	// FIXME: option to write to file, like classes
+	private void outputProjections(Job job)
 	{
 		JobContext jcontext = job.getContext();
 		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.PROJECT)[0]);
 		Role role = checkRoleArg(jcontext, fullname, this.args.get(ArgFlag.PROJECT)[1]);
-		Module proj = jcontext.getProjection(fullname, role);
-		System.out.println(proj);
+		Map<LProtocolName, Module> projections = job.getProjections(fullname, role);
+		System.out.println("\n" + projections.values().stream().map((p) -> p.toString()).collect(Collectors.joining("\n\n")));
 	}
 
-	private void outputFsm(Job job) throws ScribbleException
+	private void outputGraph(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
 		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.FSM)[0]);
 		Role role = checkRoleArg(jcontext, fullname, this.args.get(ArgFlag.FSM)[1]);
 		buildEndointGraph(job, fullname, role);
-		System.out.println(jcontext.getEndointGraph(fullname, role));
+		System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
 	}
 	
 	private void outputSessionApi(Job job) throws ScribbleException
@@ -134,6 +136,7 @@ public class CommandLine implements Runnable
 		classes.keySet().stream().forEach(f);
 	}
 
+  // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
 	private void buildEndointGraph(Job job, GProtocolName fullname, Role role) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
@@ -142,7 +145,7 @@ public class CommandLine implements Runnable
 		{
 			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
 		}
-		job.buildFsms(fullname, role);
+		job.buildGraph(fullname, role);
 	}
 	
 	private Job newJob(MainContext mc)

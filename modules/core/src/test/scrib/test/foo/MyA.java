@@ -22,9 +22,9 @@ public class MyA
 			s0.connect(Foo.C, "localhost", 9999);
 			Foo_A_1 s1 = s0.init();
 			
-			s1.send(Foo.C, Foo._1)
-			  .send(Foo.B, Foo._2)
-			  .end();
+			s1
+			  .send(Foo.C, Foo._1)
+			  .send(Foo.B, Foo._2);
 		}
 	}
 }

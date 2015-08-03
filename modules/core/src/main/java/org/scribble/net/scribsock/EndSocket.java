@@ -1,11 +1,10 @@
-package org.scribble.net;
+package org.scribble.net.scribsock;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.SessionEndpoint;
 
-
-
-public abstract class EndSocket extends ScribSocket
+@Deprecated
+public abstract class EndSocket extends LinearSocket
 {
 	//private boolean closed = false;
 
