@@ -12,6 +12,11 @@ public class SocketEndpoint
 	private final SessionEndpoint ep;
 	//private final Role peer;
 	private final SocketWrapper sw;
+	
+	public SocketWrapper getSocketWrapper()
+	{
+		return this.sw;
+	}
 
 	private final ReceiverThread receiver;
 
@@ -87,7 +92,8 @@ class ReceiverThread extends Thread
 		{
 			while (true)
 			{
-				queues.enqueue(this.peer, this.ep.smf.readMessage(this.dis));  // FIXME: bounded buffer? (endpoint queue property?)
+				ScribMessage m = this.ep.smf.readMessage(this.dis);
+				queues.enqueue(this.peer, m);  // FIXME: bounded buffer? (endpoint queue property?)
 			}
 		}
 		catch (IOException e)

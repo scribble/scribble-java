@@ -11,7 +11,12 @@ public class SocketWrapper
 	protected final Socket sock;
 	protected final DataOutputStream dos;
 	protected final DataInputStream dis;
-
+	
+	public Socket getSocket()
+	{
+		return this.sock;
+	}
+	
 	public SocketWrapper(Socket s) throws IOException
 	{
 		this.sock = s;

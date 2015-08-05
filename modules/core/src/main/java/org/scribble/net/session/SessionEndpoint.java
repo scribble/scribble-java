@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.net.Buff;
 import org.scribble.net.ScribMessageFormatter;
 import org.scribble.sesstype.name.Role;
@@ -64,11 +64,11 @@ public class SessionEndpoint
 		return this.remroles.get(role);
 	}*/
 	
-	public SocketEndpoint getSocketEndpoint(Role role) throws ScribbleRuntimeException
+	public SocketEndpoint getSocketEndpoint(Role role)
 	{
 		if (!this.socks.containsKey(role))
 		{
-			throw new ScribbleRuntimeException(this.self + " is not connected to: " + role);
+			throw new RuntimeScribbleException(this.self + " is not connected to: " + role);
 		}
 		return this.socks.get(role);
 	}

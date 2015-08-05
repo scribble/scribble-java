@@ -52,7 +52,7 @@ public abstract class HttpMessage extends ScribMessage
 
 	public byte[] toBytes()
 	{
-		return (getOpString(op) + getBody() + HttpMessage.CRLF).getBytes(HttpMessageFormatter.cs);  // Can give "utf-8" as arg directly
+		return (getOpString(this.op) + getBody() + HttpMessage.CRLF).getBytes(HttpMessageFormatter.cs);  // Can give "utf-8" as arg directly
 	}
 	
 	@Override
