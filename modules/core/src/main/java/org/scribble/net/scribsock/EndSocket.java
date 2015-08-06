@@ -16,8 +16,8 @@ public abstract class EndSocket extends LinearSocket
 	public void end() throws ScribbleRuntimeException
 	{
 		super.use();
-		this.ep.setCompleted();
-		this.ep.close();
+		this.se.setCompleted();
+		this.se.close();
 		//this.closed = true;
 	}
 	

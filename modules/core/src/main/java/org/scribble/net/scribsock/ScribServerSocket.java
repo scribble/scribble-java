@@ -1,24 +1,45 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
-import java.net.ServerSocket;
+import java.net.InetSocketAddress;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 
-import org.scribble.net.session.SocketWrapper;
+import org.scribble.main.ScribbleRuntimeException;
 
 public class ScribServerSocket implements AutoCloseable
 {
+	private boolean reg = false;
 	//private int port;
-	private ServerSocket ss;
+	//private ServerSocket ss;
+	private ServerSocketChannel ss;
 	
 	public ScribServerSocket(int port) throws IOException
 	{
 		//this.port = port;
-		this.ss = new ServerSocket(port);
+		//this.ss = new ServerSocket(port);
+		this.ss = ServerSocketChannel.open();
+		this.ss.socket().bind(new InetSocketAddress(port));
+	}
+	
+	public ServerSocketChannel getServerSocketChannel()
+	{
+		return this.ss;
 	}
 
-	protected SocketWrapper accept() throws IOException
+	protected SocketChannel accept() throws IOException
 	{
-		return new SocketWrapper(this.ss.accept());
+		//return new SocketWrapper(this.ss.accept());
+		return ss.accept();
+	}
+	
+	public synchronized void setRegistered() throws ScribbleRuntimeException
+	{
+		if (this.reg)
+		{
+			throw new ScribbleRuntimeException("Server socket already registered.");
+		}
+		this.reg = true;
 	}
 
 	@Override
@@ -30,7 +51,8 @@ public class ScribServerSocket implements AutoCloseable
 		}
 		catch (IOException e)
 		{
-			// FIXME:
+			// FIXME
+			e.printStackTrace();
 		}
 	}
 }

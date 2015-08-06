@@ -3,11 +3,6 @@
 
 package test.test1;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.concurrent.ExecutionException;
-
-import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
@@ -15,16 +10,26 @@ import org.scribble.net.session.SessionEndpoint;
 
 public class MyC
 {
-	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	public static void main(String[] args) throws Exception
 	{
 		Proto1 adder = new Proto1();
+		//SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
 		SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
 		
 		try (Proto1_C_0 s0 = new Proto1_C_0(se))
 		{
+			System.out.println("c0: ");
+
 			s0.connect(Proto1.S, "localhost", 8888);
+			
+			System.out.println("c1: ");
+
 			Proto1_C_1 s1 = s0.init();
 
+			System.out.println("c2: ");
+			
+			//s1.receive(Proto1._1).send(Proto1.S, Proto1._2);
+			
 			Proto1_C_6 s6 = s1.branch();
 			switch (s6.op)
 			{
@@ -54,11 +59,5 @@ public class MyC
 
 			System.out.println("Client 3: ");
 		}
-	}
-
-	private static Proto1_C_5 side(Proto1_C_5 s5, Future_Proto1_C_4 f)
-	{
-		System.out.println("s5: " + f.isDone());
-		return s5;
 	}
 }

@@ -1,12 +1,12 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.channels.SocketChannel;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.SessionEndpoint;
-import org.scribble.net.session.SocketWrapper;
 import org.scribble.sesstype.name.Role;
 
 // Establishing transport connections handled in here and wrapped up in SocketWrapper
@@ -24,8 +24,10 @@ public abstract class InitSocket extends LinearSocket implements AutoCloseable
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
 		}
-		Socket s = new Socket(host, port);
-		this.ep.register(role, new SocketWrapper(s));
+		/*Socket s = new Socket(host, port);
+		this.ep.register(role, new SocketWrapper(s));*/
+		SocketChannel s = SocketChannel.open(new InetSocketAddress(host, port));
+		this.se.register(role, s);
 	}
 
 	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
@@ -34,16 +36,23 @@ public abstract class InitSocket extends LinearSocket implements AutoCloseable
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
 		}
-		this.ep.register(role, ss.accept());
+		//this.ep.register(role, ss.accept());
+		this.se.register(role, this.se.getServerSocket().accept());
 	}
 	
 	@Override
 	public void close() throws ScribbleRuntimeException
 	{
-		this.ep.close();
-		if (!this.ep.isCompleted())  // Subsumes use -- must be used for sess to be completed
+		try
 		{
-			throw new ScribbleRuntimeException("Session not completed: " + this.ep.self);
+			this.se.close();
+		}
+		finally
+		{
+			if (!this.se.isCompleted())  // Subsumes use -- must be used for sess to be completed
+			{
+				throw new ScribbleRuntimeException("Session not completed: " + this.se.self);
+			}
 		}
 	}
 }

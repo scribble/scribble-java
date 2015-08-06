@@ -1,5 +1,6 @@
 package org.scribble.net.session;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Random;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ScribMessageFormatter;
+import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
@@ -39,14 +41,25 @@ public class Session
 	}
 
 	//public SessionEndpointOld toEndpoint(Principal p) throws ScribbleException, IOException
-	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleRuntimeException//, IOException
+	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	{
+		if (this.endpoints.containsKey(role))
+		{
+			throw new ScribbleRuntimeException("Session endpoint already created for: " + role);
+		}
+		SessionEndpoint ep = new SessionEndpoint(this, role, smf);
+		this.endpoints.put(role, ep);
+		return ep;
+	}
+
+	public SessionEndpoint project(Role role, ScribServerSocket ss, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
 	{
 		// FIXME: check valid role
 		if (this.endpoints.containsKey(role))
 		{
 			throw new ScribbleRuntimeException("Session endpoint already created for: " + role);
 		}
-		SessionEndpoint ep = new SessionEndpoint(this, role, smf);
+		SessionEndpoint ep = new SessionEndpoint(this, role, ss, smf);
 		this.endpoints.put(role, ep);
 		return ep;
 	}

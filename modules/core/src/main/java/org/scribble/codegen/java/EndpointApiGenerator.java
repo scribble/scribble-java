@@ -41,7 +41,7 @@ public class EndpointApiGenerator
 	private static final String BRANCHRECEIVESOCKET_CLASS = "org.scribble.net.scribsock.BranchReceiveSocket";
 	
 	private static final String BUFF_VAL = "val";
-	private static final String SCRIBSOCKET_EP_FIELD = ClassBuilder.THIS + ".ep";
+	private static final String SCRIBSOCKET_SE_FIELD = ClassBuilder.THIS + ".se";
 	private static final String SCRIBMESSAGE_OP_FIELD = "op";
 	private static final String SCRIBMESSAGE_PAYLOAD_FIELD = "payload";
 
@@ -129,6 +129,7 @@ public class EndpointApiGenerator
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addBodyLine(ClassBuilder.SUPER + ".use();");  // Factor out
+		mb.addBodyLine(SCRIBSOCKET_SE_FIELD + ".init();");  // Factor out
 		//mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SCRIBSOCKET_EP_FIELD + ");");
 		addReturnNextSocket(mb, this.root);
 
@@ -256,12 +257,12 @@ public class EndpointApiGenerator
 	{
 		if (isTerminalClassName(nextClass))
 		{
-			mb.addBodyLine(SCRIBSOCKET_EP_FIELD + ".setCompleted();");  // Do before the IO action? in case of exception?
+			mb.addBodyLine(SCRIBSOCKET_SE_FIELD + ".setCompleted();");  // Do before the IO action? in case of exception?
 			mb.addBodyLine(ClassBuilder.RETURN + ";");
 		}
 		else
 		{
-			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_EP_FIELD + ");");
+			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ");");
 		}
 	}
 
@@ -568,7 +569,7 @@ public class EndpointApiGenerator
 	private static String getGarbageBuff(String futureClass)
 	{
 		//return ClassBuilder.NEW + " " + BUFF_CLASS + "<>()";  // Makes a trash Buff every time, but clean -- would be more efficient to generate the code to spawn the future without buff-ing it (partly duplicate of the normal receive generated code) 
-		return "(" + BUFF_CLASS + "<" + futureClass + ">) this.ep.gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
+		return "(" + BUFF_CLASS + "<" + futureClass + ">) " + SCRIBSOCKET_SE_FIELD + ".gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
 	}
 
 	private String getPackageName() // Java output package (not Scribble package)
