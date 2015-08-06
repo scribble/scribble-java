@@ -19,7 +19,7 @@ public class MyS
 			Buff<Integer> i1 = new Buff<>();
 			Buff<Integer> i2 = new Buff<>();
 
-			//while (true)
+			while (true)
 			{
 				Proto1 foo = new Proto1();
 				SessionEndpoint se = foo.project(Proto1.S, ss, new ObjectStreamFormatter());

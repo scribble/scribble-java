@@ -125,8 +125,8 @@ public class SessionEndpoint
 	
 	public void close()
 	{
-		// FIXME: unreg server sockets to be reuasable later
 		this.sel.close();
+		this.ss.values().stream().forEach((ss) -> ss.unbind());
 	}
 
 	public ServerSocketChannel getServerSocket()

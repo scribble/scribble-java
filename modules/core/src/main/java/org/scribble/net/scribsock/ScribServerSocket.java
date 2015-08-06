@@ -33,13 +33,18 @@ public class ScribServerSocket implements AutoCloseable
 		return ss.accept();
 	}
 	
-	public synchronized void setRegistered() throws ScribbleRuntimeException
+	public synchronized void bind() throws ScribbleRuntimeException
 	{
 		if (this.reg)
 		{
 			throw new ScribbleRuntimeException("Server socket already registered.");
 		}
 		this.reg = true;
+	}
+	
+	public synchronized void unbind()
+	{
+		this.reg = false;
 	}
 
 	@Override
