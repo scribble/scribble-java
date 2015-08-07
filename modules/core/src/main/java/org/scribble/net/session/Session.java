@@ -41,15 +41,22 @@ public class Session
 	}
 
 	//public SessionEndpointOld toEndpoint(Principal p) throws ScribbleException, IOException
-	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleRuntimeException
 	{
 		if (this.endpoints.containsKey(role))
 		{
 			throw new ScribbleRuntimeException("Session endpoint already created for: " + role);
 		}
-		SessionEndpoint ep = new SessionEndpoint(this, role, smf);
-		this.endpoints.put(role, ep);
-		return ep;
+		try
+		{
+			SessionEndpoint ep = new SessionEndpoint(this, role, smf);
+			this.endpoints.put(role, ep);
+			return ep;
+		}
+		catch (IOException e)
+		{
+			throw new ScribbleRuntimeException(e);
+		}
 	}
 
 	public SessionEndpoint project(Role role, ScribServerSocket ss, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
