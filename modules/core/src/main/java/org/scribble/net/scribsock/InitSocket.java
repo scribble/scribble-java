@@ -1,33 +1,43 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.nio.channels.SocketChannel;
+import java.util.concurrent.Callable;
 
 import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.BinaryChannelEndpoint;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
 // Establishing transport connections handled in here and wrapped up in SocketWrapper
 public abstract class InitSocket extends LinearSocket implements AutoCloseable
 {
-	protected InitSocket(SessionEndpoint ep)
+	protected InitSocket(SessionEndpoint se)
 	{
-		super(ep);
+		super(se);
 	}
 
-	public void connect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	public void connect(Callable<? extends BinaryChannelEndpoint> cons, Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		// Can connect unlimited, as long as not already used via init
 		if (isUsed())
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
 		}
-		/*Socket s = new Socket(host, port);
-		this.ep.register(role, new SocketWrapper(s));*/
-		SocketChannel s = SocketChannel.open(new InetSocketAddress(host, port));
-		this.se.register(role, s);
+		try
+		{
+			BinaryChannelEndpoint c = cons.call();
+			c.initClient(se, host, port);
+			this.se.register(role, c);
+		}
+		catch (Exception e)
+		{
+			if (e instanceof IOException)
+			{
+				throw (IOException) e;
+			}
+			throw new IOException(e);
+		}
 	}
 
 	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
@@ -36,8 +46,7 @@ public abstract class InitSocket extends LinearSocket implements AutoCloseable
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
 		}
-		//this.ep.register(role, ss.accept());
-		this.se.register(role, this.se.getServerSocket().accept());
+		this.se.register(role, this.se.getServerSocket().accept(this.se));
 	}
 	
 	@Override

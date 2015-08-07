@@ -1,20 +1,19 @@
 package test.test1;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.ScribFuture;
 import org.scribble.net.scribsock.ScribServerSocket;
+import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
 public class MyS
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException
 	{
-		try (ScribServerSocket ss = new ScribServerSocket(8888))
+		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
 			Buff<Integer> i1 = new Buff<>();
 			Buff<Integer> i2 = new Buff<>();

@@ -1,6 +1,7 @@
 package org.scribble.net.session;
 
 import java.io.IOException;
+import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -11,7 +12,7 @@ import org.scribble.net.ScribMessage;
 
 public abstract class BinaryChannelEndpoint
 {
-	protected final SessionEndpoint se;
+	protected SessionEndpoint se;
 
 	//private final SocketChannel;
 	protected final List<ScribMessage> msgs = new LinkedList<>();
@@ -21,16 +22,34 @@ public abstract class BinaryChannelEndpoint
 	private int count = 0;  // How many ScribMessages read so far
 	private int ticket = 0;  // Index of the next expected ScribMessage
 	
-	public synchronized int getTicket()
+	private AbstractSelectableChannel c;
+	
+	// Server side
+	protected BinaryChannelEndpoint(SessionEndpoint se, AbstractSelectableChannel c) throws IOException
 	{
-		return ++this.ticket;
+		init(se, c);
 	}
 
-	public BinaryChannelEndpoint(SessionEndpoint se)
+	// Client side
+	protected BinaryChannelEndpoint()
+	{
+		
+	}
+	
+	public abstract void initClient(SessionEndpoint se, String host, int port) throws IOException;
+	
+	protected void init(SessionEndpoint se, AbstractSelectableChannel c) throws IOException
 	{
 		this.se = se;
+		this.c = c;
+		this.c.configureBlocking(false);
 	}
-
+	
+	public AbstractSelectableChannel getSelectableChannel()  // For asynchrony (via nio Selector) -- maybe implement/extend instead
+	{
+		return this.c;
+	}
+	
 	public void write(ScribMessage m) throws IOException
 	{
 		writeBytes(this.se.smf.toBytes(m));
@@ -97,5 +116,10 @@ public abstract class BinaryChannelEndpoint
 	{
 		this.isClosed = true;
 		notify();
+	}
+	
+	public synchronized int getTicket()
+	{
+		return ++this.ticket;
 	}
 }

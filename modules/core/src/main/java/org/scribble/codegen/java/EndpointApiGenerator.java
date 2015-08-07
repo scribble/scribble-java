@@ -129,8 +129,7 @@ public class EndpointApiGenerator
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addBodyLine(ClassBuilder.SUPER + ".use();");  // Factor out
-		mb.addBodyLine(SCRIBSOCKET_SE_FIELD + ".init();");  // Factor out
-		//mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SCRIBSOCKET_EP_FIELD + ");");
+		//mb.addBodyLine(SCRIBSOCKET_SE_FIELD + ".init();");  // Factor out
 		addReturnNextSocket(mb, this.root);
 
 		return cb;
@@ -473,7 +472,7 @@ public class EndpointApiGenerator
 		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb.addBodyLine("}");
 		mb.addBodyLine(ClassBuilder.RETURN + " "
-				+ ClassBuilder.NEW + " " + next + "(this.ep, " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");
+				+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_SE_FIELD + ", " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");
 		
 		EnumBuilder eb = cb.newEnum(enumClass);
 		eb.addModifiers(ClassBuilder.PUBLIC);

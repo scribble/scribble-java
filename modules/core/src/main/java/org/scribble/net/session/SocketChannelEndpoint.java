@@ -1,6 +1,7 @@
 package org.scribble.net.session;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
@@ -8,28 +9,54 @@ import org.scribble.net.ScribMessage;
 
 public class SocketChannelEndpoint extends BinaryChannelEndpoint
 {
-	private final SocketChannel s;
+	//private final SocketChannel s;
 	
-	private final ByteBuffer bb = ByteBuffer.allocate(1024);  // FIXME: size
-
-	public SocketChannelEndpoint(SessionEndpoint ep, SocketChannel s)
+	private final ByteBuffer bb = ByteBuffer.allocate(16921);  // FIXME: size
+	
+	// Server side
+	public SocketChannelEndpoint(SessionEndpoint se, SocketChannel s) throws IOException
 	{
-		super(ep);
-		this.s = s;
+		super(se, s);
+	}
+
+	//public SocketChannelEndpoint(SessionEndpoint se, SocketChannel s) throws IOException
+	public SocketChannelEndpoint() //throws IOException
+	{
+		
+	}
+	
+	@Override
+	public void initClient(SessionEndpoint se, String host, int port) throws IOException
+	{
+		SocketChannel s = SocketChannel.open(new InetSocketAddress(host, port));
+		super.init(se, s);
+	}
+	
+	/*public static SocketChannelEndpoint connect(SessionEndpoint se, String host, int port) throws IOException
+	{
+		SocketChannelEndpoint c = new SocketChannelEndpoint();
+		c.init(se, SocketChannel.open(new InetSocketAddress(host, port)));
+		return c;
+	}*/
+
+	@Override
+	public SocketChannel getSelectableChannel()
+	{
+		return (SocketChannel) super.getSelectableChannel();
 	}
 	
 	public void writeBytes(byte[] bs) throws IOException
 	{
-		this.s.write(ByteBuffer.wrap(bs));
+		getSelectableChannel().write(ByteBuffer.wrap(bs));
 		// flush not supported -- async: manually check if written yet if needed
 	}
 
 	@Override
 	public synchronized void readBytes() throws IOException, ClassNotFoundException
 	{
-		this.s.read(this.bb);  // Pre: bb in write mode
+		getSelectableChannel().read(this.bb);  // Pre: bb:put
 				// FIXME: what if bb is full?
-		ScribMessage m = this.se.smf.fromBytes(this.bb);  // Post: bb in write mode
+		ScribMessage m = this.se.smf.fromBytes(this.bb);  // Post: bb:put
 		if (m != null)
 		{
 			enqueue(m);
@@ -42,11 +69,12 @@ public class SocketChannelEndpoint extends BinaryChannelEndpoint
 		try
 		{
 			super.close();
-			this.s.close();
+			getSelectableChannel().close();
 		}
 		catch (IOException e)
 		{
 			// FIXME: (BinaryChannelEndpoint read will throw exception)
+			e.printStackTrace();
 		}
 	}
 }

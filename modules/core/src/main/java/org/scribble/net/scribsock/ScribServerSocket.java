@@ -1,37 +1,23 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
 
 import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.BinaryChannelEndpoint;
+import org.scribble.net.session.SessionEndpoint;
 
-public class ScribServerSocket implements AutoCloseable
+public abstract class ScribServerSocket implements AutoCloseable
 {
+	public final int port;
+
 	private boolean reg = false;
-	//private int port;
-	//private ServerSocket ss;
-	private ServerSocketChannel ss;
 	
 	public ScribServerSocket(int port) throws IOException
 	{
-		//this.port = port;
-		//this.ss = new ServerSocket(port);
-		this.ss = ServerSocketChannel.open();
-		this.ss.socket().bind(new InetSocketAddress(port));
+		this.port = port;
 	}
 	
-	public ServerSocketChannel getServerSocketChannel()
-	{
-		return this.ss;
-	}
-
-	protected SocketChannel accept() throws IOException
-	{
-		//return new SocketWrapper(this.ss.accept());
-		return ss.accept();
-	}
+	protected abstract BinaryChannelEndpoint accept(SessionEndpoint se) throws IOException;  // synchronize
 	
 	public synchronized void bind() throws ScribbleRuntimeException
 	{
@@ -48,16 +34,5 @@ public class ScribServerSocket implements AutoCloseable
 	}
 
 	@Override
-	public void close()
-	{
-		try
-		{
-			this.ss.close();
-		}
-		catch (IOException e)
-		{
-			// FIXME
-			e.printStackTrace();
-		}
-	}
+	public abstract void close();
 }

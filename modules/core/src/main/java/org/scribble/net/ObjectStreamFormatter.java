@@ -55,9 +55,6 @@ public class ObjectStreamFormatter implements ScribMessageFormatter
 		byte[] bs = new byte[header.length + body.length];
 		System.arraycopy(header, 0, bs, 0, header.length);
 		System.arraycopy(body, 0, bs, 4, body.length);
-		
-		System.out.println("w1: " + ByteBuffer.wrap(header).getInt() + ", " + ByteBuffer.wrap(Arrays.copyOf(bs, 4)).getInt());
-		
 		return bs;
 	}
 
@@ -73,9 +70,6 @@ public class ObjectStreamFormatter implements ScribMessageFormatter
 		}
 		byte[] header = Arrays.copyOf(bb.array(), 4);
 		int size = ByteBuffer.wrap(header).getInt();
-
-		System.out.println("r1: " + size);
-
 		if (bb.remaining() < (4 + size))
 		{
 			bb.flip();
@@ -86,9 +80,6 @@ public class ObjectStreamFormatter implements ScribMessageFormatter
 		bb.get(bs);
 		ScribMessage m = deserialize(bs);
 		bb.compact();  // Post: bb in write mode
-
-		System.out.println("r2: " + m);
-
 		return m;
 	}
 

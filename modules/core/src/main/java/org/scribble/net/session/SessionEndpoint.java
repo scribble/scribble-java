@@ -2,9 +2,6 @@ package org.scribble.net.session;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,45 +20,24 @@ public class SessionEndpoint
 
 	public final Session sess;
 	public final Role self;
-	//public final int port;  // Session abstraction maps role and abstract port to concrete port
 	public final ScribMessageFormatter smf;
-	
-	//public ScribServerSocket ss;
-	private Map<Role, ScribServerSocket> ss = new HashMap<>();
 
 	private boolean complete = false;
 	
-	Map<Role, BinaryChannelEndpoint> chans = new HashMap<>();
+	protected final Map<Role, ScribServerSocket> servs = new HashMap<>();
+	protected final Map<Role, BinaryChannelEndpoint> chans = new HashMap<>();
 	
 	protected Set<Role> getPeers()
 	{
 		return this.chans.keySet();
 	}
 	
-	private boolean init = false;
-	//boolean closed = false;
-	
 	private final ScribInputSelector sel;
-	
-	public synchronized void init()
-	{
-		this.init = true;
-		notify();
-	}
-	
-	protected synchronized void waitForInit() throws InterruptedException
-	{
-		while(!this.init)
-		{
-			wait();
-		}
-	}
 	
 	public SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf) throws IOException
 	{
 		this.sess = sess;
 		this.self = self;
-		//this.port = port;
 		this.smf = smf;
 		
 		this.sel = new ScribInputSelector(this);
@@ -78,14 +54,7 @@ public class SessionEndpoint
 	public synchronized void register(Role self, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
 	{
 		this.sel.pause();
-		ServerSocketChannel c = ss.getServerSocketChannel();
-		/*c.configureBlocking(false);
-		SelectionKey key = c.register(this.sel, SelectionKey.OP_ACCEPT);
-		key.attach(self);
-		ss.setRegistered();
-		this.ss = ss;*/
-		//resumeSelector();
-		this.ss.put(self, ss);
+		this.servs.put(self, ss);
 		this.sel.unpause();
 	}
 
@@ -94,13 +63,12 @@ public class SessionEndpoint
 		throw new RuntimeException("TODO: " + host + ", " + port);
 	}
 	
-	public synchronized void register(Role peer, AbstractSelectableChannel c) throws IOException
+	public synchronized void register(Role peer, BinaryChannelEndpoint c) throws IOException
 	{
-		c.configureBlocking(false);
 		this.sel.pause();
-		SelectionKey key = this.sel.register(c);
+		SelectionKey key = this.sel.register(c.getSelectableChannel());
 		key.attach(peer);
-		this.chans.put(peer, new SocketChannelEndpoint(this, (SocketChannel) c));
+		this.chans.put(peer, c);
 		this.sel.unpause();
 	}
 
@@ -126,17 +94,17 @@ public class SessionEndpoint
 	public void close()
 	{
 		this.sel.close();
-		this.ss.values().stream().forEach((ss) -> ss.unbind());
+		this.servs.values().stream().forEach((ss) -> ss.unbind());
 	}
 
-	public ServerSocketChannel getServerSocket()
+	public ScribServerSocket getServerSocket()
 	{
-		ScribServerSocket ss = this.ss.get(this.self);
+		ScribServerSocket ss = this.servs.get(this.self);
 		if (ss == null)
 		{
 			throw new RuntimeScribbleException("No server registered.");
 		}
-		return ss.getServerSocketChannel();
+		return ss;
 	}
 	 
 	/*public final Session sess;

@@ -6,6 +6,7 @@ package test.test1;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
 
 
 public class MyC
@@ -20,7 +21,7 @@ public class MyC
 		{
 			System.out.println("c0: ");
 
-			s0.connect(Proto1.S, "localhost", 8888);
+			s0.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
 			
 			System.out.println("c1: ");
 
