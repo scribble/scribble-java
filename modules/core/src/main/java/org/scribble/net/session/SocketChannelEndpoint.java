@@ -19,8 +19,8 @@ public class SocketChannelEndpoint extends BinaryChannelEndpoint
 		super(se, s);
 	}
 
-	//public SocketChannelEndpoint(SessionEndpoint se, SocketChannel s) throws IOException
-	public SocketChannelEndpoint() //throws IOException
+	// Client side
+	public SocketChannelEndpoint()
 	{
 		
 	}
@@ -31,13 +31,6 @@ public class SocketChannelEndpoint extends BinaryChannelEndpoint
 		SocketChannel s = SocketChannel.open(new InetSocketAddress(host, port));
 		super.init(se, s);
 	}
-	
-	/*public static SocketChannelEndpoint connect(SessionEndpoint se, String host, int port) throws IOException
-	{
-		SocketChannelEndpoint c = new SocketChannelEndpoint();
-		c.init(se, SocketChannel.open(new InetSocketAddress(host, port)));
-		return c;
-	}*/
 
 	@Override
 	public SocketChannel getSelectableChannel()

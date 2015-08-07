@@ -61,7 +61,7 @@ public class ObjectStreamFormatter implements ScribMessageFormatter
 	@Override
 	public ScribMessage fromBytes(ByteBuffer bb) throws IOException, ClassNotFoundException
 	{
-		// Pre: bb in write mode
+		// Pre: bb:put
 		bb.flip();
 		if (bb.remaining() <= 4)
 		{
@@ -79,7 +79,7 @@ public class ObjectStreamFormatter implements ScribMessageFormatter
 		byte[] bs = new byte[size];
 		bb.get(bs);
 		ScribMessage m = deserialize(bs);
-		bb.compact();  // Post: bb in write mode
+		bb.compact();  // Post: bb:put
 		return m;
 	}
 
