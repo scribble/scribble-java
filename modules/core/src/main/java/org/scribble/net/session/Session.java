@@ -40,6 +40,7 @@ public class Session
 		this(getFreshId(), importPath, source, proto);
 	}
 
+	// Client side
 	//public SessionEndpointOld toEndpoint(Principal p) throws ScribbleException, IOException
 	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleRuntimeException
 	{
@@ -59,6 +60,7 @@ public class Session
 		}
 	}
 
+	// Server side
 	public SessionEndpoint project(Role role, ScribServerSocket ss, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
 	{
 		// FIXME: check valid role
