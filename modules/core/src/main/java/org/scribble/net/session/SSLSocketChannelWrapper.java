@@ -27,22 +27,28 @@ public class SSLSocketChannelWrapper extends BinaryChannelWrapper
 	
 	public SSLSocketChannelWrapper(SocketChannelEndpoint s) throws IOException, NoSuchAlgorithmException, KeyManagementException
 	{
-		super(s);
-
 		SSLContext sslContext = SSLContext.getInstance("TLS");
 		sslContext.init(null, null, null);
 		InetSocketAddress addr = ((InetSocketAddress) s.getSelectableChannel().getRemoteAddress());
-		SSLEngine engine = sslContext.createSSLEngine(addr.getHostName(), addr.getPort());
-		engine.setUseClientMode(true);
-		SSLSession session = engine.getSession();
+		this.engine = sslContext.createSSLEngine(addr.getHostName(), addr.getPort());
+	}
 
+	@Override
+	public void clientHandshake() throws IOException
+	{
+		this.engine.setUseClientMode(true);
+		SSLSession session = this.engine.getSession();
 		this.myAppData = ByteBuffer.allocate(session.getApplicationBufferSize()); // 16916
 		this.myNetData = ByteBuffer.allocate(session.getPacketBufferSize()); // 16921
-
 		//this.peerAppData = ByteBuffer.allocate(16916);  // Hacked constant
 		//this.peerNetData = ByteBuffer.allocate(session.getPacketBufferSize());
-		
-		doHandshake(s.getSelectableChannel(), engine, myNetData);
+		doHandshake(getSelectableChannel(), this.engine, this.myNetData);
+	}
+	
+	@Override
+	public void serverHandshake()
+	{
+		throw new RuntimeException("TODO");
 	}
 	
 	@Override
@@ -67,16 +73,16 @@ public class SSLSocketChannelWrapper extends BinaryChannelWrapper
 	@Override
 	public byte[] wrap(byte[] bs) throws IOException
 	{
-		myAppData.put(bs);
-		myAppData.flip();
-		myNetData.clear();
-		while (myAppData.hasRemaining())
+		this.myAppData.put(bs);
+		this.myAppData.flip();
+		this.myNetData.clear();
+		while (this.myAppData.hasRemaining())
 		{
-			SSLEngineResult res = engine.wrap(myAppData, myNetData);
+			SSLEngineResult res = this.engine.wrap(this.myAppData, this.myNetData);
 			if (res.getStatus() == SSLEngineResult.Status.OK)
 			{
-				myAppData.compact();
-				myAppData.flip();
+				this.myAppData.compact();
+				this.myAppData.flip();
 			}
 			else
 			{
@@ -84,10 +90,10 @@ public class SSLSocketChannelWrapper extends BinaryChannelWrapper
 				throw new RuntimeException("TODO: " + res.getStatus());
 			}
 		}
-		myAppData.compact();  // Should be same as clear here (i.e. empty)
-		myNetData.flip();
-		byte[] res = new byte[myNetData.remaining()];
-		System.arraycopy(myNetData.array(), myNetData.position(), res, 0, res.length);
+		this.myAppData.compact();  // Should be same as clear here (i.e. empty)
+		this.myNetData.flip();
+		byte[] res = new byte[this.myNetData.remaining()];
+		System.arraycopy(this.myNetData.array(), this.myNetData.position(), res, 0, res.length);
 		return res;
 	}
 
@@ -209,27 +215,27 @@ public class SSLSocketChannelWrapper extends BinaryChannelWrapper
 		}
 	}
 
-	private void doShutdown(SSLEngine engine, SocketChannel s, ByteBuffer myNetData) throws SSLException, IOException
+	private void doShutdown() throws SSLException, IOException
 	{
-		engine.closeOutbound();
-		myNetData.clear();
-		while (!engine.isOutboundDone())
+		SocketChannel s = getSelectableChannel();
+		this.engine.closeOutbound();
+		while (!this.engine.isOutboundDone())
 		{
-			SSLEngineResult res = engine.wrap(EMPTY, myNetData);
+			SSLEngineResult res = this.engine.wrap(EMPTY, myNetData);
 			if (res.getStatus() != SSLEngineResult.Status.CLOSED)  // FIXME: is this the correct state to check for? or OK? (or both)
 			{
 				throw new RuntimeException("TODO: " + res.getStatus());
 			}
-			myNetData.flip();
-			while (myNetData.hasRemaining())
+			this.myNetData.flip();
+			while (this.myNetData.hasRemaining())
 			{
-				int num1 = s.write(myNetData);
+				int num1 = s.write(this.myNetData);
 				if (num1 == -1)
 				{
 					throw new RuntimeException("TODO: ");
 				}
-				myNetData.compact();
-				myNetData.flip();
+				this.myNetData.compact();
+				this.myNetData.flip();
 			}
 		}
 
@@ -239,13 +245,7 @@ public class SSLSocketChannelWrapper extends BinaryChannelWrapper
 	@Override
 	public synchronized void close() throws IOException
 	{
-		doShutdown(this.engine, getSelectableChannel(), this.myNetData);
+		doShutdown();
 		super.close();
-	}
-
-	@Override
-	public void initClient(SessionEndpoint se, String host, int port) throws IOException
-	{
-		throw new RuntimeException("TODO");
 	}
 }

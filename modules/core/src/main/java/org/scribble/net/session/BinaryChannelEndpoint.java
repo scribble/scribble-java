@@ -25,16 +25,7 @@ public abstract class BinaryChannelEndpoint
 	
 	private AbstractSelectableChannel c;
 	private ByteBuffer bb;
-	
-	protected BinaryChannelEndpoint(BinaryChannelEndpoint c)
-	{
-		//this.msgs.addAll(c.msgs);  // Guaranteed to be empty/0 for reconnect?
-		//this.count = c.count;
-		//this.ticket = c.ticket;
-		this.c = c.c;
-		this.bb = c.bb;
-	}
-	
+
 	// Server side
 	protected BinaryChannelEndpoint(SessionEndpoint se, AbstractSelectableChannel c) throws IOException
 	{
@@ -55,6 +46,16 @@ public abstract class BinaryChannelEndpoint
 		this.se = se;
 		this.c = c;
 		this.c.configureBlocking(false);
+	}
+
+	//protected BinaryChannelEndpoint(BinaryChannelEndpoint c)
+	public void wrapChannel(BinaryChannelEndpoint c)
+	{
+		//this.msgs.addAll(c.msgs);  // Guaranteed to be empty/0 for reconnect?
+		//this.count = c.count;
+		//this.ticket = c.ticket;
+		this.c = c.c;
+		this.bb = c.bb;
 	}
 	
 	public AbstractSelectableChannel getSelectableChannel()  // For asynchrony (via nio Selector) -- maybe implement/extend instead

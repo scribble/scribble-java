@@ -8,10 +8,19 @@ public abstract class BinaryChannelWrapper extends BinaryChannelEndpoint
 	// Use this in readUnwrappedBytesIntoBuffer (super.getBuffer used for read-but-still-wrapped -- decoded into here by unwrap)
 	private final ByteBuffer wrapped = ByteBuffer.allocate(16921);  // FIXME: size  // Use put mode as default
 	
-	protected BinaryChannelWrapper(BinaryChannelEndpoint c) throws IOException
+	protected BinaryChannelWrapper() throws IOException
 	{
-		super(c);
+
 	}
+
+	@Override
+	public void initClient(SessionEndpoint se, String host, int port) throws IOException
+	{
+		throw new RuntimeException("Shouldn't get in here: ");
+	}
+	
+	public abstract void clientHandshake() throws IOException; // FIXME: name
+	public abstract void serverHandshake() throws IOException; // FIXME: name
 
 	public abstract byte[] wrap(byte[] bs) throws IOException;
 	public abstract void unwrap() throws IOException;  // Decode from this.wrapped (this.getUnwrapped()) into this.bb

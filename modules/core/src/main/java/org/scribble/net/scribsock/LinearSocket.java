@@ -1,7 +1,12 @@
 package org.scribble.net.scribsock;
 
+import java.io.IOException;
+import java.util.concurrent.Callable;
+
 import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.BinaryChannelWrapper;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.sesstype.name.Role;
 
 // Not AutoClosable -- leave that to InitSocket
 public abstract class LinearSocket extends ScribSocket
@@ -26,6 +31,30 @@ public abstract class LinearSocket extends ScribSocket
 			throw new ScribbleRuntimeException("Linear socket resource already used: " + this.getClass());
 		}
 		this.used = true;
+	}
+	
+	protected void wrapClient(Callable<? extends BinaryChannelWrapper> cons, Role peer) throws IOException, ScribbleRuntimeException 
+	{
+		use();
+		try
+		{
+			BinaryChannelWrapper w = cons.call();
+			w.wrapChannel(this.se.getChannelEndpoint(peer));
+			w.clientHandshake();
+		}
+		catch (Exception e)
+		{
+			if (e instanceof IOException)
+			{
+				throw (IOException) e;
+			}
+			throw new IOException(e);
+		}
+	}
+
+	protected void wrapServer() 
+	{
+		throw new RuntimeException("TODO");
 	}
 
 	/*// Only triggered by autoclose or explicit close, i.e. not called directly by user

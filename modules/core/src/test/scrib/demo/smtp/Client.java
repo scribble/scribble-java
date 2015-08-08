@@ -3,11 +3,11 @@ package demo.smtp;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.smtp.message.SmtpMessageFormatter;
 import demo.smtp.message.client.Ehlo;
 import demo.smtp.message.client.Quit;
-import demo.smtp.message.client.StartTls;
 
 public class Client
 {
@@ -33,7 +33,7 @@ public class Client
 		
 		try (SMTP_C_0 init = new SMTP_C_0(se))
 		{
-			init.connect(SMTP.S, host, port);
+			init.connect(SocketChannelEndpoint::new, SMTP.S, host, port);
 			SMTP_C_1 s1 = init.init();
 
 			/*Buff<demo.smtp.message.server._220> b220 = new Buff<>();
