@@ -53,8 +53,7 @@ public class ScribInputSelector extends Thread
 					if (key.isReadable())
 					{
 						Role peer = (Role) key.attachment();
-						BinaryChannelEndpoint c = this.se.chans.get(peer);
-						c.readBytes();
+						this.se.chans.get(peer).readAndEnqueueMessage();
 					}
 					else
 					{

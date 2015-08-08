@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
 import org.scribble.util.Caller;
 
 import demo.http.Http_C_4.Http_C_4Enum;
@@ -48,8 +49,10 @@ public class Client
 		
 		try (Http_C_0 init = new Http_C_0(se))
 		{
-			init.connect(Http.S, host, port);
+			init.connect(SocketChannelEndpoint::new, Http.S, host, port);
+			
 			Http_C_1 s1 = init.init();
+
 			Http_C_6 s6 =
 					s1.send(Http.S, new RequestLine("/~rhu/", "1.1"))
 					  .send(Http.S, new Host(host))

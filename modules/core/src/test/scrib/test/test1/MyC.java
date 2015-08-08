@@ -20,6 +20,11 @@ public class MyC
 		try (Proto1_C_0 s0 = new Proto1_C_0(se))
 		{
 			System.out.println("c0: ");
+			
+			//.. fix existing http
+			//.. add reconnect and do smtp
+			//.. add explicit connects
+			//.. redo smtp
 
 			s0.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
 			

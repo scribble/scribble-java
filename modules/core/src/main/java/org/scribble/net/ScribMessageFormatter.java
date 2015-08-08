@@ -14,5 +14,8 @@ public interface ScribMessageFormatter
 	ScribMessage readMessage(DataInputStream dis) throws IOException;
 	
 	byte[] toBytes(ScribMessage m) throws IOException;
+
+  // Pre and post: bb:put (maybe get would be more intuitive, but Buffers work better with put as default)
+	// Returns null if not enough data (FIXME?)
 	ScribMessage fromBytes(ByteBuffer bb) throws IOException, ClassNotFoundException;
 }

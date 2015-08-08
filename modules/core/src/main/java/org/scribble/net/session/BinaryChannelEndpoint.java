@@ -1,6 +1,7 @@
 package org.scribble.net.session;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ public abstract class BinaryChannelEndpoint
 	private int ticket = 0;  // Index of the next expected ScribMessage
 	
 	private AbstractSelectableChannel c;
+	private final ByteBuffer bb = ByteBuffer.allocate(16921);  // FIXME: size  // Use put mode as default
 	
 	// Server side
 	protected BinaryChannelEndpoint(SessionEndpoint se, AbstractSelectableChannel c) throws IOException
@@ -110,7 +112,17 @@ public abstract class BinaryChannelEndpoint
 	}
 
 	public abstract void writeBytes(byte[] bs) throws IOException;
-	public abstract void readBytes() throws IOException, ClassNotFoundException;  // synchronized (against read)  // bytes ready for reading: try to deserialize and then enqueue, or else cache for later
+	protected abstract void readBytesIntoBuffer() throws IOException;  // synchronized (against read)  // bytes ready for reading: try to deserialize and then enqueue, or else cache for later
+	
+	public synchronized void readAndEnqueueMessage() throws ClassNotFoundException, IOException  // Here for synchronization
+	{
+		readBytesIntoBuffer();
+		ScribMessage m;
+		while ((m = this.se.smf.fromBytes(this.bb)) != null)
+		{
+			enqueue(m);
+		}
+	}
 	
 	public synchronized void close() throws IOException
 	{
@@ -121,5 +133,11 @@ public abstract class BinaryChannelEndpoint
 	public synchronized int getTicket()
 	{
 		return ++this.ticket;
+	}
+	
+	// post: bb:put
+	public ByteBuffer getBuffer()
+	{
+		return this.bb;
 	}
 }

@@ -5,13 +5,11 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
-import org.scribble.net.ScribMessage;
-
 public class SocketChannelEndpoint extends BinaryChannelEndpoint
 {
 	//private final SocketChannel s;
 	
-	private final ByteBuffer bb = ByteBuffer.allocate(16921);  // FIXME: size
+	//private final ByteBuffer bb = ByteBuffer.allocate(16921);  // FIXME: size
 	
 	// Server side
 	public SocketChannelEndpoint(SessionEndpoint se, SocketChannel s) throws IOException
@@ -40,20 +38,23 @@ public class SocketChannelEndpoint extends BinaryChannelEndpoint
 	
 	public void writeBytes(byte[] bs) throws IOException
 	{
-		getSelectableChannel().write(ByteBuffer.wrap(bs));
+		getSelectableChannel().write(ByteBuffer.wrap(bs));  // Currently does not depend on SocketChannel
 		// flush not supported -- async: manually check if written yet if needed
 	}
 
 	@Override
-	public synchronized void readBytes() throws IOException, ClassNotFoundException
+	public synchronized void readBytesIntoBuffer() throws IOException
 	{
-		getSelectableChannel().read(this.bb);  // Pre: bb:put
+		/*getSelectableChannel().read(this.bb);  // Pre: bb:put
 				// FIXME: what if bb is full?
 		ScribMessage m = this.se.smf.fromBytes(this.bb);  // Post: bb:put
 		if (m != null)
 		{
 			enqueue(m);
-		}
+		}*/
+		ByteBuffer bb = (ByteBuffer) getBuffer();
+		getSelectableChannel().read(bb);  // Currently does not depend on SocketChannel
+		//bb.compact();  // Post: bb:put
 	}
 	
 	@Override
