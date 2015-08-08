@@ -72,6 +72,21 @@ public class SessionEndpoint
 		this.sel.unpause();
 	}
 
+	/*public synchronized void reregister(Role peer, BinaryChannelEndpoint c) throws IOException
+	{
+		this.sel.pause();
+		SelectionKey old = getChannelEndpoint(peer).getSelectableChannel().keyFor(this.sel.getSelector());
+		if (old == null)
+		{
+			throw new RuntimeException("Endpoint not yet registered for: " + peer);
+		}
+		old.cancel();
+		SelectionKey key = this.sel.register(c.getSelectableChannel());
+		key.attach(peer);
+		this.chans.put(peer, c);
+		this.sel.unpause();
+	}*/
+
 	public BinaryChannelEndpoint getChannelEndpoint(Role role)
 	{
 		if (!this.chans.containsKey(role))

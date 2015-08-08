@@ -24,18 +24,28 @@ public abstract class BinaryChannelEndpoint
 	private int ticket = 0;  // Index of the next expected ScribMessage
 	
 	private AbstractSelectableChannel c;
-	private final ByteBuffer bb = ByteBuffer.allocate(16921);  // FIXME: size  // Use put mode as default
+	private ByteBuffer bb;
+	
+	protected BinaryChannelEndpoint(BinaryChannelEndpoint c)
+	{
+		//this.msgs.addAll(c.msgs);  // Guaranteed to be empty/0 for reconnect?
+		//this.count = c.count;
+		//this.ticket = c.ticket;
+		this.c = c.c;
+		this.bb = c.bb;
+	}
 	
 	// Server side
 	protected BinaryChannelEndpoint(SessionEndpoint se, AbstractSelectableChannel c) throws IOException
 	{
+		this.bb = ByteBuffer.allocate(16921);  // FIXME: size  // Use put mode as default
 		init(se, c);
 	}
 
 	// Client side
 	protected BinaryChannelEndpoint()
 	{
-		
+		this.bb = ByteBuffer.allocate(16921);  // FIXME: size  // Use put mode as default
 	}
 	
 	public abstract void initClient(SessionEndpoint se, String host, int port) throws IOException;

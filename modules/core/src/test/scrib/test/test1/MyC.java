@@ -21,7 +21,6 @@ public class MyC
 		{
 			System.out.println("c0: ");
 			
-			//.. fix existing http
 			//.. add reconnect and do smtp
 			//.. add explicit connects
 			//.. redo smtp

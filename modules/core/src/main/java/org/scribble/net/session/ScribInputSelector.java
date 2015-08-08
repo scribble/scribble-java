@@ -81,6 +81,11 @@ public class ScribInputSelector extends Thread
 		}
 	}
 	
+	protected Selector getSelector()
+	{
+		return this.sel;
+	}
+	
 	// synchronize?
 	protected SelectionKey register(AbstractSelectableChannel c) throws ClosedChannelException
 	{
