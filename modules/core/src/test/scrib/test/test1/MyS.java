@@ -27,7 +27,7 @@ public class MyS
 				System.out.println("s1: ");
 				Proto1_S_0 init = new Proto1_S_0(se);
 				System.out.println("s2: ");
-				init.accept(null, Proto1.C);
+				init.accept(Proto1.C);
 				System.out.println("s3: ");
 
 				try (Proto1_S_0 s0 = init)

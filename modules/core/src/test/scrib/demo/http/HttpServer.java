@@ -6,7 +6,9 @@ import java.util.concurrent.ExecutionException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.scribsock.ScribServerSocket;
+import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.http.message.Body;
 import demo.http.message.HttpMessageFormatter;
@@ -22,9 +24,9 @@ import demo.http.message.server.ContentLength;
 import demo.http.message.server.HttpVersion;
 import demo.http.message.server._200;
 
-public class DummyServer
+public class HttpServer
 {
-	public DummyServer()
+	public HttpServer()
 	{
 
 	}
@@ -41,14 +43,14 @@ public class DummyServer
 		Buff<Connection> b_conn = new Buff<>();
 		Buff<Body> b_body = new Buff<>();
 		
-		try (ScribServerSocket ss = new ScribServerSocket(8080))
+		try (ScribServerSocket ss = new SocketChannelServer(8080))
 		{
 			while (true)	
 			{
 				Http http = new Http();
-				SessionEndpoint se = http.project(Http.C, new HttpMessageFormatter());
+				SessionEndpoint se = http.project(Http.C, ss, new HttpMessageFormatter());
 				Http_S_0 init = new Http_S_0(se);
-				init.accept(ss, Http.C);
+				init.accept(Http.C);
 
 				try (Http_S_0 s0 = init)
 				{

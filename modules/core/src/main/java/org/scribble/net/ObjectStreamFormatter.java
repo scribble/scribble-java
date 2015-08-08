@@ -65,14 +65,14 @@ public class ObjectStreamFormatter implements ScribMessageFormatter
 		bb.flip();
 		if (bb.remaining() <= 4)
 		{
-			bb.flip();
+			bb.compact();
 			return null;
 		}
 		byte[] header = Arrays.copyOf(bb.array(), 4);
 		int size = ByteBuffer.wrap(header).getInt();
 		if (bb.remaining() < (4 + size))
 		{
-			bb.flip();
+			bb.compact();
 			return null;
 		}
 		bb.position(bb.position() + 4);  // position is always 0 here?

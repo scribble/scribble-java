@@ -40,13 +40,19 @@ public abstract class InitSocket extends LinearSocket implements AutoCloseable
 		}
 	}
 
+	@Deprecated
 	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
+	{
+		accept(null, role);
+	}
+
+	public void accept(Role role) throws IOException, ScribbleRuntimeException
 	{
 		if (isUsed())
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
 		}
-		this.se.register(role, this.se.getServerSocket().accept(this.se));
+		this.se.register(role, this.se.getSelfServerSocket().accept(this.se));
 	}
 	
 	@Override

@@ -19,16 +19,16 @@ import demo.http.message.server.ContentType;
 import demo.http.message.server.HttpVersion;
 import demo.http.message.server.Server;
 
-public class Client
+public class HttpClient
 {
-	public Client() throws ScribbleRuntimeException
+	public HttpClient() throws ScribbleRuntimeException
 	{
 		run();
 	}
 
 	public static void main(String[] args) throws ScribbleRuntimeException
 	{
-		new Client();
+		new HttpClient();
 	}
 
 	public void run() throws ScribbleRuntimeException

@@ -114,7 +114,7 @@ public abstract class BinaryChannelEndpoint
 	public abstract void writeBytes(byte[] bs) throws IOException;
 	protected abstract void readBytesIntoBuffer() throws IOException;  // synchronized (against read)  // bytes ready for reading: try to deserialize and then enqueue, or else cache for later
 	
-	public synchronized void readAndEnqueueMessage() throws ClassNotFoundException, IOException  // Here for synchronization
+	public synchronized void readAndEnqueueMessages() throws ClassNotFoundException, IOException  // Here for synchronisation
 	{
 		readBytesIntoBuffer();
 		ScribMessage m;

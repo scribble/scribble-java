@@ -53,7 +53,7 @@ public class ScribInputSelector extends Thread
 					if (key.isReadable())
 					{
 						Role peer = (Role) key.attachment();
-						this.se.chans.get(peer).readAndEnqueueMessage();
+						this.se.chans.get(peer).readAndEnqueueMessages();  // Read as many message as possible as selector only woken up by actual I/O
 					}
 					else
 					{

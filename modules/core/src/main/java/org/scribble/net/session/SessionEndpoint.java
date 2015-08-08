@@ -97,7 +97,7 @@ public class SessionEndpoint
 		this.servs.values().stream().forEach((ss) -> ss.unbind());
 	}
 
-	public ScribServerSocket getServerSocket()
+	public ScribServerSocket getSelfServerSocket()
 	{
 		ScribServerSocket ss = this.servs.get(this.self);
 		if (ss == null)
