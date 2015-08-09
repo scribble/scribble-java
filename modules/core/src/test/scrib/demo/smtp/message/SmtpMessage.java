@@ -19,7 +19,7 @@ public abstract class SmtpMessage extends ScribMessage
 
 	public static final String EHLO = "ehlo";
 	public static final String STARTTLS = "starttls";
-	public static final String AUTH = "auth";
+	public static final String AUTH = "auth plain";
 	public static final String MAIL = "mail";
 	public static final String RCPT = "rcpt";
 	public static final String SUBJECT = "subject";

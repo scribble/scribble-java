@@ -2,6 +2,7 @@ package org.scribble.net.session;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,12 +28,12 @@ public class SessionEndpoint
 	protected final Map<Role, ScribServerSocket> servs = new HashMap<>();
 	protected final Map<Role, BinaryChannelEndpoint> chans = new HashMap<>();
 	
-	protected Set<Role> getPeers()
-	{
-		return this.chans.keySet();
-	}
-	
 	private final ScribInputSelector sel;
+	
+	public ScribInputSelector getSelector()
+	{
+		return this.sel;
+	}
 	
 	public SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf) throws IOException
 	{
@@ -72,9 +73,10 @@ public class SessionEndpoint
 		this.sel.unpause();
 	}
 
-	/*public synchronized void reregister(Role peer, BinaryChannelEndpoint c) throws IOException
+	// w is uninitialised (need to use wrapChannel)
+	public synchronized void reregister(Role peer, BinaryChannelWrapper w) throws IOException, GeneralSecurityException
 	{
-		this.sel.pause();
+		/*this.sel.pause();
 		SelectionKey old = getChannelEndpoint(peer).getSelectableChannel().keyFor(this.sel.getSelector());
 		if (old == null)
 		{
@@ -84,8 +86,16 @@ public class SessionEndpoint
 		SelectionKey key = this.sel.register(c.getSelectableChannel());
 		key.attach(peer);
 		this.chans.put(peer, c);
+		this.sel.unpause();*/
+		
+		this.sel.pause();
+		// FIXME: consume all pending messages/futures first? or ok to leave data in existing bb -- or only permit in states where bb is empty?
+		// Underlying selectable channel is the same, so no need to cancel key and re-reg -- OK to assume in general?
+		w.wrapChannel(getChannelEndpoint(peer));
+		w.clientHandshake();
+		this.chans.put(peer, w);
 		this.sel.unpause();
-	}*/
+	}
 
 	public BinaryChannelEndpoint getChannelEndpoint(Role role)
 	{
@@ -120,6 +130,11 @@ public class SessionEndpoint
 			throw new RuntimeScribbleException("No server registered.");
 		}
 		return ss;
+	}
+	
+	protected Set<Role> getPeers()
+	{
+		return this.chans.keySet();
 	}
 	 
 	/*public final Session sess;

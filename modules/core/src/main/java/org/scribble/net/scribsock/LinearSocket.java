@@ -33,14 +33,17 @@ public abstract class LinearSocket extends ScribSocket
 		this.used = true;
 	}
 	
-	protected void wrapClient(Callable<? extends BinaryChannelWrapper> cons, Role peer) throws IOException, ScribbleRuntimeException 
+	//protected  // FIXME: generate API operation
+	public void wrapClient(Callable<? extends BinaryChannelWrapper> cons, Role peer) throws IOException, ScribbleRuntimeException 
 	{
-		use();
+		//use();  // FIXME: should be use for proper API operation
+		if (this.used)
+		{
+			throw new ScribbleRuntimeException("Linear socket resource already used: " + this.getClass());
+		}
 		try
 		{
-			BinaryChannelWrapper w = cons.call();
-			w.wrapChannel(this.se.getChannelEndpoint(peer));
-			w.clientHandshake();
+			this.se.reregister(peer, cons.call());
 		}
 		catch (Exception e)
 		{

@@ -14,6 +14,10 @@ import org.scribble.net.ScribMessage;
 public abstract class BinaryChannelEndpoint
 {
 	protected SessionEndpoint se;
+	
+	//protected BinaryChannelEndpoint parent;
+	private AbstractSelectableChannel c;
+	private ByteBuffer bb;
 
 	//private final SocketChannel;
 	protected final List<ScribMessage> msgs = new LinkedList<>();
@@ -22,9 +26,6 @@ public abstract class BinaryChannelEndpoint
 
 	private int count = 0;  // How many ScribMessages read so far
 	private int ticket = 0;  // Index of the next expected ScribMessage
-	
-	private AbstractSelectableChannel c;
-	private ByteBuffer bb;
 
 	// Server side
 	protected BinaryChannelEndpoint(SessionEndpoint se, AbstractSelectableChannel c) throws IOException
@@ -51,11 +52,17 @@ public abstract class BinaryChannelEndpoint
 	//protected BinaryChannelEndpoint(BinaryChannelEndpoint c)
 	public void wrapChannel(BinaryChannelEndpoint c)
 	{
+		this.se = c.se;
 		//this.msgs.addAll(c.msgs);  // Guaranteed to be empty/0 for reconnect?
 		//this.count = c.count;
 		//this.ticket = c.ticket;
+		//this.parent = c;
 		this.c = c.c;
 		this.bb = c.bb;
+		
+		//FIXME: complete all pending futures on parent chan -- no: not enough by itself, that is just reading the already-deserialized cache
+		//FIXME: pull all pending data out of parent chan (due to selector not handling it yet -- in send states, we just need to clear all expected messages up to this point)
+		//  -- so that wrapper handshake is starting clean
 	}
 	
 	public AbstractSelectableChannel getSelectableChannel()  // For asynchrony (via nio Selector) -- maybe implement/extend instead

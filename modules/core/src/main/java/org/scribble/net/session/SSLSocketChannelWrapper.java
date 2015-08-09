@@ -25,29 +25,37 @@ public class SSLSocketChannelWrapper extends BinaryChannelWrapper
 	//private ByteBuffer peerAppData = ByteBuffer.allocate(16916);  // Hacked constant
 	//private ByteBuffer peerNetData;
 	
-	public SSLSocketChannelWrapper(SocketChannelEndpoint s) throws IOException, NoSuchAlgorithmException, KeyManagementException
+	public SSLSocketChannelWrapper()
+	{
+
+	}
+
+	private void init(InetSocketAddress addr) throws NoSuchAlgorithmException, KeyManagementException
 	{
 		SSLContext sslContext = SSLContext.getInstance("TLS");
 		sslContext.init(null, null, null);
-		InetSocketAddress addr = ((InetSocketAddress) s.getSelectableChannel().getRemoteAddress());
 		this.engine = sslContext.createSSLEngine(addr.getHostName(), addr.getPort());
 	}
 
 	@Override
-	public void clientHandshake() throws IOException
+	public void clientHandshake() throws IOException, KeyManagementException, NoSuchAlgorithmException
 	{
+		SocketChannel s = getSelectableChannel();
+		init((InetSocketAddress) s.getRemoteAddress());
 		this.engine.setUseClientMode(true);
 		SSLSession session = this.engine.getSession();
 		this.myAppData = ByteBuffer.allocate(session.getApplicationBufferSize()); // 16916
 		this.myNetData = ByteBuffer.allocate(session.getPacketBufferSize()); // 16921
 		//this.peerAppData = ByteBuffer.allocate(16916);  // Hacked constant
 		//this.peerNetData = ByteBuffer.allocate(session.getPacketBufferSize());
-		doHandshake(getSelectableChannel(), this.engine, this.myNetData);
+		doHandshake(s, this.engine, this.myNetData);
 	}
 	
 	@Override
-	public void serverHandshake()
+	public void serverHandshake() throws IOException, KeyManagementException, NoSuchAlgorithmException
 	{
+		SocketChannel s = getSelectableChannel();
+		init((InetSocketAddress) s.getRemoteAddress());
 		throw new RuntimeException("TODO");
 	}
 	
@@ -219,6 +227,7 @@ public class SSLSocketChannelWrapper extends BinaryChannelWrapper
 	{
 		SocketChannel s = getSelectableChannel();
 		this.engine.closeOutbound();
+		myNetData.clear();
 		while (!this.engine.isOutboundDone())
 		{
 			SSLEngineResult res = this.engine.wrap(EMPTY, myNetData);

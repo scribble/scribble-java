@@ -39,29 +39,29 @@ public class ScribInputSelector extends Thread
 				{
 					return;
 				}
-				synchronized (this)
+				synchronized (this)  // sync'd with pause, unpause
 				{
 					while (paused)
 					{
 						wait();
 					}
-				
-				Set<SelectionKey> keys = this.sel.selectedKeys();
-				for (SelectionKey key : keys)
-				{
-					//SocketChannel s = (SocketChannel) key.channel();
-					if (key.isReadable())
+						
+					Set<SelectionKey> keys = this.sel.selectedKeys();
+					for (SelectionKey key : keys)
 					{
-						Role peer = (Role) key.attachment();
-						this.se.chans.get(peer).readAndEnqueueMessages();  // Read as many message as possible as selector only woken up by actual I/O
-					}
-					else
-					{
-						throw new RuntimeException("TODO: " + key);
+						//SocketChannel s = (SocketChannel) key.channel();
+						if (key.isReadable())
+						{
+							Role peer = (Role) key.attachment();
+							this.se.chans.get(peer).readAndEnqueueMessages();  // Read as many message as possible as selector only woken up by actual I/O
+						}
+						else
+						{
+							throw new RuntimeException("TODO: " + key);
+						}
 					}
 				}
 			}
-				}
 		}
 		catch (Exception e)
 		{
@@ -92,6 +92,12 @@ public class ScribInputSelector extends Thread
 		return c.register(this.sel, SelectionKey.OP_READ);
 	}
 	
+	// process all keys and keep doing until all pending futures have completed -- i.e. all reads done up to this send state (currently wrap assumed to in send state only)
+	protected synchronized void clear()
+	{
+		
+	}
+	
 	protected synchronized void pause()	
 	{
 		this.paused = true;
@@ -107,6 +113,7 @@ public class ScribInputSelector extends Thread
 	protected synchronized void close()
 	{
 		this.closed = true;
+		this.paused = false;
 		//for (BinaryChannelEndpoint c : this.se.chans.values())
 		for (Role peer : this.se.getPeers())
 		{
