@@ -62,21 +62,25 @@ public class SmtpClient
 	private SMTP_C_10 doAuth(SMTP_C_8 s8) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		SMTP_C_19 s19 = s8.send(SMTP.S, new Auth(getAuthPlain())).branch();
-		
+		Buff<Object> b = new Buff<>();
 		switch (s19.op)
 		{
 			case _235:
-				Buff<demo.smtp.message.server._235> b235 = new Buff<>();
-				SMTP_C_10 s10 = s19.receive(SMTP._235, b235);
-				System.out.print("Auth: " + b235.val);
+			{
+				SMTP_C_10 s10 = s19.receive(SMTP._235, b);
+				System.out.print("Auth: " + b.val);
 				return s10;
+			}
 			case _535:
-				Buff<demo.smtp.message.server._535> b535 = new Buff<>();
-				s19.receive(SMTP._535, b535).send(SMTP.S, new Quit());
-					System.out.print("Auth: " + b535.val);
+			{
+				s19.receive(SMTP._535, b).send(SMTP.S, new Quit());
+				System.out.print("Auth: " + b.val);
 				System.exit(0);
+			}
 			default:
+			{
 				throw new RuntimeException("Shouldn't get in here: " + s19.op);
+			}
 		}
 	}
 
@@ -84,6 +88,7 @@ public class SmtpClient
 	private SMTP_C_8 doEhlo(SMTP_C_6 s6) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		SMTP_C_7 s7 = s6.send(SMTP.S, new Ehlo("testing2"));
+		Buff<Object> b = new Buff<>();
 		while (true)
 		{	
 			SMTP_C_18 s18 = s7.branch();
@@ -91,16 +96,14 @@ public class SmtpClient
 			{
 				case _250:
 				{
-					Buff<demo.smtp.message.server._250> b250 = new Buff<>();
-					SMTP_C_8 s8 = s18.receive(SMTP._250, b250);
-					System.out.print("Ehlo: " + b250.val);
+					SMTP_C_8 s8 = s18.receive(SMTP._250, b);
+					System.out.print("Ehlo: " + b.val);
 					return s8;
 				}
 				case _250_:
 				{
-					Buff<demo.smtp.message.server._250_> b250_ = new Buff<>();
-					s7 = s18.receive(SMTP._250_, b250_);
-					System.out.print("Ehlo: " + b250_.val);
+					s7 = s18.receive(SMTP._250_, b);
+					System.out.print("Ehlo: " + b.val);
 					break;
 				}
 			}
@@ -119,6 +122,7 @@ public class SmtpClient
 	private SMTP_C_4 doEhlo(SMTP_C_2 s2) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		SMTP_C_3 s3 = s2.send(SMTP.S, new Ehlo("testing1"));
+		Buff<Object> b = new Buff<>();
 		while (true)
 		{	
 			SMTP_C_17 s17 = s3.branch();
@@ -126,16 +130,14 @@ public class SmtpClient
 			{
 				case _250:
 				{
-					Buff<demo.smtp.message.server._250> b250 = new Buff<>();
-					SMTP_C_4 s4 = s17.receive(SMTP._250, b250);
-					System.out.print("Ehlo: " + b250.val);
+					SMTP_C_4 s4 = s17.receive(SMTP._250, b);
+					System.out.print("Ehlo: " + b.val);
 					return s4;
 				}
 				case _250_:
 				{
-					Buff<demo.smtp.message.server._250_> b250_ = new Buff<>();
-					s3 = s17.receive(SMTP._250_, b250_);
-					System.out.print("Ehlo: " + b250_.val);
+					s3 = s17.receive(SMTP._250_, b);
+					System.out.print("Ehlo: " + b.val);
 					break;
 				}
 			}
