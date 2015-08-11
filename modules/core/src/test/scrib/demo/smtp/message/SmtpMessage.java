@@ -12,6 +12,7 @@ public abstract class SmtpMessage extends ScribMessage
 {
 	public static final String _220 = "220";
 	public static final String _250 = "250";
+	public static final String _250_ = "250-";
 	public static final String _235 = "235";
 	public static final String _535 = "535";
 	public static final String _501 = "501";
@@ -65,7 +66,7 @@ public abstract class SmtpMessage extends ScribMessage
 		return
 					(op.equals(SMTP._220)) ? SmtpMessage._220
 				: (op.equals(SMTP._250)) ? SmtpMessage._250
-				: (op.equals(SMTP._250_)) ? SmtpMessage._250
+				: (op.equals(SMTP._250_)) ? SmtpMessage._250_
 				: (op.equals(SMTP._235)) ? SmtpMessage._235
 				: (op.equals(SMTP._535)) ? SmtpMessage._535
 				: (op.equals(SMTP._501)) ? SmtpMessage._501
