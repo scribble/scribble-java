@@ -68,7 +68,7 @@ public class SmtpClient
 					s12 = s20.receive(SMTP._250);
 					break;
 				}
-				case _501:
+				case _501:  // FIXME: "functional interface" for quit states
 				{
 					s20.receive(SMTP._501).send(SMTP.S, new Quit());
 					System.exit(0);
