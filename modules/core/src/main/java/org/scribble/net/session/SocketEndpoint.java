@@ -7,6 +7,7 @@ import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Role;
 
 // Read/write Objects on the binary connection to an endpoint in the session
+@Deprecated
 public class SocketEndpoint
 {
 	private final SessionEndpoint ep;
@@ -82,12 +83,12 @@ class ReceiverThread extends Thread
 		this.peer = peer;
 		this.dis = dis;
 
-		ep.getInputQueues().register(peer);
+		//ep.getInputQueues().register(peer);
 	}
 
 	public void run()
 	{
-		EndpointInputQueues queues = this.ep.getInputQueues();
+		EndpointInputQueues queues = null;//this.ep.getInputQueues();
 		try
 		{
 			while (true)

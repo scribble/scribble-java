@@ -1,15 +1,11 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
+import java.util.concurrent.Callable;
 
 import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.BinaryChannelWrapper;
 import org.scribble.net.session.SessionEndpoint;
-import org.scribble.net.session.SocketWrapper;
 import org.scribble.sesstype.name.Role;
 
 // Not AutoClosable -- leave that to InitSocket
@@ -36,6 +32,33 @@ public abstract class LinearSocket extends ScribSocket
 		}
 		this.used = true;
 	}
+	
+	//protected  // FIXME: generate API operation
+	public void wrapClient(Callable<? extends BinaryChannelWrapper> cons, Role peer) throws IOException, ScribbleRuntimeException 
+	{
+		//use();  // FIXME: should be use for proper API operation
+		if (this.used)
+		{
+			throw new ScribbleRuntimeException("Linear socket resource already used: " + this.getClass());
+		}
+		try
+		{
+			this.se.reregister(peer, cons.call());
+		}
+		catch (Exception e)
+		{
+			if (e instanceof IOException)
+			{
+				throw (IOException) e;
+			}
+			throw new IOException(e);
+		}
+	}
+
+	protected void wrapServer() 
+	{
+		throw new RuntimeException("TODO");
+	}
 
 	/*// Only triggered by autoclose or explicit close, i.e. not called directly by user
 	protected synchronized void close() throws ScribbleRuntimeException
@@ -47,7 +70,7 @@ public abstract class LinearSocket extends ScribSocket
 		}
 	}*/
 
-	// FIXME: factor out transport parameter
+	/*// FIXME: factor out transport parameter
 	// FIXME: close old socket -- handle old receive thread (consider messsages still arriving -- maybe only support reconnect for states where this is not possible)
 	// FIXME: synch new receive thread with old one if messages are allowed to still arrive on old one
 	public void reconnect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
@@ -61,5 +84,5 @@ public abstract class LinearSocket extends ScribSocket
 		Socket s1 = this.ep.getSocketEndpoint(role).getSocketWrapper().getSocket();  // FIXME: check already connected
 		SSLSocket s2 = (SSLSocket) fact.createSocket(s1, s1.getInetAddress().getHostAddress(), s1.getPort(), true);
 		this.ep.register(role, new SocketWrapper(s2));  // Replaces old SocketEndpoint  // FIXME: tidy up
-	}
+	}*/
 }

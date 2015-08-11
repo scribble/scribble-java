@@ -1,36 +1,38 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 
-import org.scribble.net.session.SocketWrapper;
+import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.BinaryChannelEndpoint;
+import org.scribble.net.session.SessionEndpoint;
 
-public class ScribServerSocket implements AutoCloseable
+public abstract class ScribServerSocket implements AutoCloseable
 {
-	//private int port;
-	private ServerSocket ss;
+	public final int port;
+
+	private boolean reg = false;
 	
 	public ScribServerSocket(int port) throws IOException
 	{
-		//this.port = port;
-		this.ss = new ServerSocket(port);
+		this.port = port;
 	}
-
-	protected SocketWrapper accept() throws IOException
+	
+	protected abstract BinaryChannelEndpoint accept(SessionEndpoint se) throws IOException;  // synchronize
+	
+	public synchronized void bind() throws ScribbleRuntimeException
 	{
-		return new SocketWrapper(this.ss.accept());
+		if (this.reg)
+		{
+			throw new ScribbleRuntimeException("Server socket already registered.");
+		}
+		this.reg = true;
+	}
+	
+	public synchronized void unbind()
+	{
+		this.reg = false;
 	}
 
 	@Override
-	public void close()
-	{
-		try
-		{
-			this.ss.close();
-		}
-		catch (IOException e)
-		{
-			// FIXME:
-		}
-	}
+	public abstract void close();
 }
