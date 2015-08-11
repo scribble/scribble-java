@@ -406,16 +406,19 @@ public class EndpointApiGenerator
 		future.setName(futureClass);
 		future.setSuperClass(SCRIBFUTURE_CLASS);
 		List<String> types = new LinkedList<>(); 
-		if (!a.payload.isEmpty())
+		if (a.mid.isOp())
 		{
-			int i = 1;
-			for (PayloadType<?> pt : a.payload.elems)
+			if (!a.payload.isEmpty())
 			{
-				String type = main.getDataTypeDecl((DataType) pt).extName;
-				types.add(type);
-				FieldBuilder f = future.newField("pay" + i++);
-				f.setType(type);
-				f.addModifiers(ClassBuilder.PUBLIC);
+				int i = 1;
+				for (PayloadType<?> pt : a.payload.elems)
+				{
+					String type = main.getDataTypeDecl((DataType) pt).extName;
+					types.add(type);
+					FieldBuilder f = future.newField("pay" + i++);
+					f.setType(type);
+					f.addModifiers(ClassBuilder.PUBLIC);
+				}
 			}
 		}
 		else
@@ -436,13 +439,16 @@ public class EndpointApiGenerator
 		sync.setReturn(futureClass);
 		sync.addExceptions("ExecutionException", "InterruptedException");
 		sync.addBodyLine(SCRIBMESSAGE_CLASS + " m = " + ClassBuilder.SUPER + ".get();");
-		if (!a.payload.isEmpty())
+		if (a.mid.isOp())
 		{
-			int i = 1;
-			for (String type : types)
+			if (!a.payload.isEmpty())
 			{
-				sync.addBodyLine(ClassBuilder.THIS + "." + "pay" + i + " = (" + type + ") m.payload[" + (i - 1) + "];");
-				i++;
+				int i = 1;
+				for (String type : types)
+				{
+					sync.addBodyLine(ClassBuilder.THIS + "." + "pay" + i + " = (" + type + ") m.payload[" + (i - 1) + "];");
+					i++;
+				}
 			}
 		}
 		else

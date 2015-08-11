@@ -11,6 +11,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
 
 
 public class FibClient
@@ -25,7 +26,7 @@ public class FibClient
 		
 		try (Adder_C_0 s0 = new Adder_C_0(se))
 		{
-			s0.connect(Adder.S, "localhost", 8888);
+			s0.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
 			Adder_C_1 s1 = s0.init();
 
 			fib(s1, i1, i2, 0).receive(Adder.BYE);

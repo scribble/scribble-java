@@ -18,7 +18,7 @@ import demo.smtp.message.server._354;
 import demo.smtp.message.server._501;
 import demo.smtp.message.server._535;
 
-// Currently client-oriented?
+// Currently supports only client-side reading, not server-side
 public class SmtpMessageFormatter implements ScribMessageFormatter
 {
 	//.. fix formatting
@@ -91,11 +91,12 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 				default:  throw new RuntimeException("Unknown status code " + code + ": " + body);
 			}
 		}
-		/*else if (front.startsWith(HttpMessage.GET))
+		/*else if (front.startsWith(HttpMessage.GET))  // TODO: server-side (EHLO, STARTTLS, etc)
 		{
 		}*/
 		else
 		{
+			// TODO: server-side (MAIL FROM:, RCPT TO:, etc)
 			String line = front + readLine(bb, pos + 4);
 			bb.compact();
 			if (line == null)

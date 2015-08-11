@@ -81,7 +81,7 @@ public class SmtpClient
 			   .send(SMTP.S, new Subject("test"))
 			   .send(SMTP.S, new DataLine("body"))
 			   .send(SMTP.S, new EndOfData())
-			   .receive(SMTP._250, new Buff<>())  // Sync needed for session to be successful?
+			   .receive(SMTP._250, new Buff<>())  // Final sync needed for session to be successful?
 			   .send(SMTP.S, new Quit());
 		}
 		catch (Exception e)
