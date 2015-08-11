@@ -11,6 +11,8 @@ tools/eclipse/plugins/org.scribble.*/bin/
 *.swp
 modules/core/src/test/scrib/demo/http/Http.java
 modules/core/src/test/scrib/demo/http/Http_*
+modules/core/src/test/scrib/demo/smtp/Smtp.java
+modules/core/src/test/scrib/demo/smtp/Smtp_*
 modules/core/src/test/scrib/demo/fib/Adder.java
 modules/core/src/test/scrib/demo/fib/Adder_*
 modules/core/src/test/scrib/test/foo/Foo.java

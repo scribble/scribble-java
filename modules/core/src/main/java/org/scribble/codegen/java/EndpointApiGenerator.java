@@ -2,6 +2,7 @@ package org.scribble.codegen.java;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,9 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Job;
 import org.scribble.visit.Projector;
 
+// TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
+// TODO: "functional state interfaces", e.g. for smtp ehlo and quit actions
+// FIXME: selector(?) hanging on runtimeexception (from message formatter)
 public class EndpointApiGenerator
 {
 	private static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
@@ -41,7 +45,7 @@ public class EndpointApiGenerator
 	private static final String BRANCHRECEIVESOCKET_CLASS = "org.scribble.net.scribsock.BranchReceiveSocket";
 	
 	private static final String BUFF_VAL = "val";
-	private static final String SCRIBSOCKET_EP_FIELD = ClassBuilder.THIS + ".ep";
+	private static final String SCRIBSOCKET_SE_FIELD = ClassBuilder.THIS + ".se";
 	private static final String SCRIBMESSAGE_OP_FIELD = "op";
 	private static final String SCRIBMESSAGE_PAYLOAD_FIELD = "payload";
 
@@ -129,7 +133,7 @@ public class EndpointApiGenerator
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addBodyLine(ClassBuilder.SUPER + ".use();");  // Factor out
-		//mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SCRIBSOCKET_EP_FIELD + ");");
+		//mb.addBodyLine(SCRIBSOCKET_SE_FIELD + ".init();");  // Factor out
 		addReturnNextSocket(mb, this.root);
 
 		return cb;
@@ -256,12 +260,12 @@ public class EndpointApiGenerator
 	{
 		if (isTerminalClassName(nextClass))
 		{
-			mb.addBodyLine(SCRIBSOCKET_EP_FIELD + ".setCompleted();");  // Do before the IO action? in case of exception?
+			mb.addBodyLine(SCRIBSOCKET_SE_FIELD + ".setCompleted();");  // Do before the IO action? in case of exception?
 			mb.addBodyLine(ClassBuilder.RETURN + ";");
 		}
 		else
 		{
-			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_EP_FIELD + ");");
+			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ");");
 		}
 	}
 
@@ -401,16 +405,29 @@ public class EndpointApiGenerator
 		ClassBuilder future = cb.newClass();
 		future.setName(futureClass);
 		future.setSuperClass(SCRIBFUTURE_CLASS);
-		if (!a.payload.isEmpty())
+		List<String> types = new LinkedList<>(); 
+		if (a.mid.isOp())
 		{
-			int i = 1;
-			for (PayloadType<?> pt : a.payload.elems)
+			if (!a.payload.isEmpty())
 			{
-				String type = main.getDataTypeDecl((DataType) pt).extName;
-				FieldBuilder f = future.newField("pay" + i++);
-				f.setType(type);
-				f.addModifiers(ClassBuilder.PUBLIC);
+				int i = 1;
+				for (PayloadType<?> pt : a.payload.elems)
+				{
+					String type = main.getDataTypeDecl((DataType) pt).extName;
+					types.add(type);
+					FieldBuilder f = future.newField("pay" + i++);
+					f.setType(type);
+					f.addModifiers(ClassBuilder.PUBLIC);
+				}
 			}
+		}
+		else
+		{
+			String type = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName()).extName;
+			types.add(type);
+			FieldBuilder f = future.newField("msg");
+			f.setType(type);
+			f.addModifiers(ClassBuilder.PUBLIC);
 		}
 
 		MethodBuilder cons = future.newConstructor("CompletableFuture<" + SCRIBMESSAGE_CLASS + "> " + FUTURE_PARAM);
@@ -422,15 +439,21 @@ public class EndpointApiGenerator
 		sync.setReturn(futureClass);
 		sync.addExceptions("ExecutionException", "InterruptedException");
 		sync.addBodyLine(SCRIBMESSAGE_CLASS + " m = " + ClassBuilder.SUPER + ".get();");
-		if (!a.payload.isEmpty())
+		if (a.mid.isOp())
 		{
-			int i = 1;
-			for (PayloadType<?> pt : a.payload.elems)
+			if (!a.payload.isEmpty())
 			{
-				String type = main.getDataTypeDecl((DataType) pt).extName;
-				sync.addBodyLine(ClassBuilder.THIS + "." + "pay" + i + " = (" + type + ") m.payload[" + (i - 1) + "];");
-				i++;
+				int i = 1;
+				for (String type : types)
+				{
+					sync.addBodyLine(ClassBuilder.THIS + "." + "pay" + i + " = (" + type + ") m.payload[" + (i - 1) + "];");
+					i++;
+				}
 			}
+		}
+		else
+		{
+			sync.addBodyLine(ClassBuilder.THIS + "." + "msg" + " = (" + types.get(0) + ") m;");
 		}
 		sync.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.THIS + ";");
 
@@ -472,7 +495,7 @@ public class EndpointApiGenerator
 		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb.addBodyLine("}");
 		mb.addBodyLine(ClassBuilder.RETURN + " "
-				+ ClassBuilder.NEW + " " + next + "(this.ep, " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");
+				+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_SE_FIELD + ", " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");
 		
 		EnumBuilder eb = cb.newEnum(enumClass);
 		eb.addModifiers(ClassBuilder.PUBLIC);
@@ -568,7 +591,7 @@ public class EndpointApiGenerator
 	private static String getGarbageBuff(String futureClass)
 	{
 		//return ClassBuilder.NEW + " " + BUFF_CLASS + "<>()";  // Makes a trash Buff every time, but clean -- would be more efficient to generate the code to spawn the future without buff-ing it (partly duplicate of the normal receive generated code) 
-		return "(" + BUFF_CLASS + "<" + futureClass + ">) this.ep.gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
+		return "(" + BUFF_CLASS + "<" + futureClass + ">) " + SCRIBSOCKET_SE_FIELD + ".gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
 	}
 
 	private String getPackageName() // Java output package (not Scribble package)

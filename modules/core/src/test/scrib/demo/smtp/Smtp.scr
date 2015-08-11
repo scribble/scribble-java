@@ -1,0 +1,197 @@
+module demo.smtp.Smtp;
+
+sig <java> "demo.smtp.message.server._220"
+		from "demo/smtp/message/server/_220.java" as 220;
+sig <java> "demo.smtp.message.server._250"
+		from "demo/smtp/message/server/_250.java" as 250;
+sig <java> "demo.smtp.message.server._250_"
+		from "demo/smtp/message/server/_250_.java" as 250_;
+sig <java> "demo.smtp.message.server._235"
+		from "demo/smtp/message/server/_235.java" as 235;
+sig <java> "demo.smtp.message.server._535"
+		from "demo/smtp/message/server/_535.java" as 535;
+sig <java> "demo.smtp.message.server._501"
+		from "demo/smtp/message/server/_501.java" as 501;
+sig <java> "demo.smtp.message.server._354"
+		from "demo/smtp/message/server/_354.java" as 354;
+
+sig <java> "demo.smtp.message.client.Ehlo"
+		from "demo/smtp/message/client/Ehlo.java" as EHLO;
+sig <java> "demo.smtp.message.client.StartTls"
+		from "demo/smtp/message/client/StartTls.java" as STARTTLS;
+sig <java> "demo.smtp.message.client.Auth"
+		from "demo/smtp/message/client/Auth.java" as AUTH;
+sig <java> "demo.smtp.message.client.Mail"
+		from "demo/smtp/message/client/Mail.java" as MAIL;
+sig <java> "demo.smtp.message.client.Rcpt"
+		from "demo/smtp/message/client/Rcpt.java" as RCPT;
+sig <java> "demo.smtp.message.client.Subject"
+		from "demo/smtp/message/client/Subject.java" as SUBJECT;
+sig <java> "demo.smtp.message.client.DataLine"
+		from "demo/smtp/message/client/DataLine.java" as DATALINE;
+sig <java> "demo.smtp.message.client.Data"
+		from "demo/smtp/message/client/Data.java" as DATA;
+sig <java> "demo.smtp.message.client.EndOfData"
+		from "demo/smtp/message/client/EndOfData.java" as ATAD;
+sig <java> "demo.smtp.message.client.Quit"
+		from "demo/smtp/message/client/Quit.java" as QUIT;
+
+global protocol SMTP(role S, role C)
+{
+	220 from S to C;
+	do EHLO(S, C);
+}
+
+global protocol EHLO(role S, role C)
+{
+	choice at C
+	{
+		EHLO from C to S;
+		rec X
+		{
+			choice at S
+			{
+				250_ from S to C;
+				continue X;
+			}
+			or
+			{
+				250 from S to C;
+				do STARTTLS(S, C);
+			}
+		}
+	}
+	or
+	{
+		QUIT from C to S;
+	}
+}
+
+global protocol STARTTLS(role S, role C)
+{
+	choice at C
+	{
+		// Do TLS handshake: level below the application level protocol (like normal TCP handshake)
+		STARTTLS from C to S;
+		220 from S to C;
+		do SecureEHLO(S, C);
+	}
+	or
+	{
+		QUIT from C to S;
+	}
+}
+
+global protocol SecureEHLO(role S, role C)
+{
+	choice at C
+	{
+		EHLO from C to S;
+		rec X
+		{
+			choice at S
+			{
+				250_ from S to C;
+				continue X;
+			}
+			or
+			{
+				250 from S to C;
+				do AUTH(S, C);
+			}
+		}
+	}
+	or
+	{
+		QUIT from C to S;
+	}
+}
+
+global protocol AUTH(role S, role C)
+{
+	rec Y
+	{
+		choice at C
+		{
+			AUTH from C to S;
+			choice at S
+			{
+				235 from S to C;
+				do MAIL(S, C);
+			}
+			or
+			{
+				535 from S to C;
+				continue Y;
+			}
+			//.. 501 Invalid base64 DATA 
+		}
+		or
+		{
+			QUIT from C to S;
+		}
+	}
+}
+
+global protocol MAIL(role S, role C)
+{
+	rec Z1
+	{
+		choice at C
+		{
+			MAIL from C to S; //MAIL from:<a@b.com>
+			choice at S
+			{
+				501 from S to C;
+				continue Z1;
+			}
+			or
+			{
+				250 from S to C;
+				
+				rec Z2
+				{
+					choice at C
+					{
+						RCPT from C to S; //RCPT to:<c@d.com>
+						choice at S
+						{
+							250 from S to C;
+							continue Z2;
+						}
+					}
+					or
+					{
+						DATA from C to S;
+						354 from S to C;
+						//too from C to S; //to:<you>
+						//froom from C to S; //from:<me>
+						rec Z3
+						{
+							choice at C
+							{
+								DATALINE from C to S;
+								continue Z3;
+							}
+							or
+							{
+								SUBJECT from C to S; //SUBJECT:<my SUBJECT>
+								continue Z3;
+							}
+							or
+							{
+								ATAD from C to S; // CRLF.CRLF
+								250 from S to C;
+								continue Z1;
+							}
+						}	
+					}
+				}
+			}
+		}
+		or
+		{
+			QUIT from C to S;
+		}
+	}
+}

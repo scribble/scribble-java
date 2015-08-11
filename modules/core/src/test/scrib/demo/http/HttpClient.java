@@ -1,41 +1,34 @@
 package demo.http;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
+import org.scribble.util.Caller;
 
 import demo.http.Http_C_4.Http_C_4Enum;
 import demo.http.message.Body;
 import demo.http.message.HttpMessageFormatter;
 import demo.http.message.client.Host;
 import demo.http.message.client.RequestLine;
-import demo.http.message.server.AcceptRanges;
 import demo.http.message.server.ContentLength;
 import demo.http.message.server.ContentType;
-import demo.http.message.server.Date;
-import demo.http.message.server.ETag;
 import demo.http.message.server.HttpVersion;
-import demo.http.message.server.LastModified;
 import demo.http.message.server.Server;
-import demo.http.message.server.Vary;
-import demo.http.message.server.Via;
-import demo.http.message.server._200;
-import demo.http.message.server._404;
 
-public class Client
+public class HttpClient
 {
-	public Client() throws ScribbleRuntimeException
+	public HttpClient() throws ScribbleRuntimeException
 	{
 		run();
 	}
 
 	public static void main(String[] args) throws ScribbleRuntimeException
 	{
-		new Client();
+		new HttpClient();
 	}
 
 	public void run() throws ScribbleRuntimeException
@@ -45,8 +38,6 @@ public class Client
 		Buff<ContentType> b_ctype = new Buff<>();
 		Buff<Body> b_body = new Buff<>();
 		Buff<Server> b_serv = new Buff<>();
-		
-		Caller c = new Caller();
 		
 		Http http = new Http();
 		SessionEndpoint se = http.project(Http.C, new HttpMessageFormatter());
@@ -58,8 +49,10 @@ public class Client
 		
 		try (Http_C_0 init = new Http_C_0(se))
 		{
-			init.connect(Http.S, host, port);
+			init.connect(SocketChannelEndpoint::new, Http.S, host, port);
+			
 			Http_C_1 s1 = init.init();
+
 			Http_C_6 s6 =
 					s1.send(Http.S, new RequestLine("/~rhu/", "1.1"))
 					  .send(Http.S, new Host(host))
@@ -69,7 +62,7 @@ public class Client
 			Http_C_5 s5 = 
 					  (s6.op == Http_C_4Enum._200) ? s6.receive(Http._200)
 					: (s6.op == Http_C_4Enum._404) ? s6.receive(Http._404)
-					: c.call(() -> { throw new RuntimeException("Unknown status code: " + s6.op); });
+					: new Caller().call(() -> { throw new RuntimeException("Unknown status code: " + s6.op); });
 
 			Y: while (true)
 			{
@@ -133,21 +126,6 @@ public class Client
 		catch (IOException | ClassNotFoundException | ScribbleRuntimeException | ExecutionException | InterruptedException e)
 		{
 			e.printStackTrace();
-		}
-	}
-	
-	class Caller
-	{
-		public <T> T call(Callable<T> c)
-		{
-			try
-			{
-				return c.call();
-			}
-			catch (Exception e)
-			{
-				throw new RuntimeException(e);
-			}
 		}
 	}
 }

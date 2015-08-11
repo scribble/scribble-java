@@ -6,26 +6,27 @@ import java.util.concurrent.ExecutionException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
+import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
 public class MyBC
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException
 	{
-		try (ScribServerSocket ss_B = new ScribServerSocket(8888);
-				 ScribServerSocket ss_C = new ScribServerSocket(9999))
+		try (ScribServerSocket ss_B = new SocketChannelServer(8888);
+				 ScribServerSocket ss_C = new SocketChannelServer(9999))
 		{
 			//Buff<String> s = new Buff<>();
 
 			while (true)
 			{
 				Foo foo = new Foo();
-				SessionEndpoint se_B = foo.project(Foo.B, new ObjectStreamFormatter());
-				SessionEndpoint se_C = foo.project(Foo.C, new ObjectStreamFormatter());
+				SessionEndpoint se_B = foo.project(Foo.B, ss_B, new ObjectStreamFormatter());
+				SessionEndpoint se_C = foo.project(Foo.C, ss_C, new ObjectStreamFormatter());
 				Foo_B_0 init_B = new Foo_B_0(se_B);
 				Foo_C_0 init_C = new Foo_C_0(se_C);
-				init_B.accept(ss_B, Foo.A);
-				init_C.accept(ss_C, Foo.A);
+				init_B.accept(Foo.A);
+				init_C.accept(Foo.A);
 				
 				new Thread()
 				{

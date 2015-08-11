@@ -1,49 +1,73 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
 
 import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.BinaryChannelEndpoint;
 import org.scribble.net.session.SessionEndpoint;
-import org.scribble.net.session.SocketWrapper;
 import org.scribble.sesstype.name.Role;
 
 // Establishing transport connections handled in here and wrapped up in SocketWrapper
 public abstract class InitSocket extends LinearSocket implements AutoCloseable
 {
-	protected InitSocket(SessionEndpoint ep)
+	protected InitSocket(SessionEndpoint se)
 	{
-		super(ep);
+		super(se);
 	}
 
-	public void connect(Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	public void connect(Callable<? extends BinaryChannelEndpoint> cons, Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		// Can connect unlimited, as long as not already used via init
 		if (isUsed())
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
 		}
-		Socket s = new Socket(host, port);
-		this.ep.register(role, new SocketWrapper(s));
+		try
+		{
+			BinaryChannelEndpoint c = cons.call();
+			c.initClient(se, host, port);
+			this.se.register(role, c);
+		}
+		catch (Exception e)
+		{
+			if (e instanceof IOException)
+			{
+				throw (IOException) e;
+			}
+			throw new IOException(e);
+		}
 	}
 
+	@Deprecated
 	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
+	{
+		accept(null, role);
+	}
+
+	public void accept(Role role) throws IOException, ScribbleRuntimeException
 	{
 		if (isUsed())
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
 		}
-		this.ep.register(role, ss.accept());
+		this.se.register(role, this.se.getSelfServerSocket().accept(this.se));
 	}
 	
 	@Override
 	public void close() throws ScribbleRuntimeException
 	{
-		this.ep.close();
-		if (!this.ep.isCompleted())  // Subsumes use -- must be used for sess to be completed
+		try
 		{
-			throw new ScribbleRuntimeException("Session not completed: " + this.ep.self);
+			this.se.close();
+		}
+		finally
+		{
+			if (!this.se.isCompleted())  // Subsumes use -- must be used for sess to be completed
+			{
+				throw new ScribbleRuntimeException("Session not completed: " + this.se.self);
+			}
 		}
 	}
 }
