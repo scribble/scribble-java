@@ -28,7 +28,9 @@ import org.scribble.visit.Projector;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
 // TODO: "functional state interfaces", e.g. for smtp ehlo and quit actions
+
 // FIXME: selector(?) hanging on runtimeexception (from message formatter)
+// FIXME: consume futures before wrap/reconnect
 public class EndpointApiGenerator
 {
 	private static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
