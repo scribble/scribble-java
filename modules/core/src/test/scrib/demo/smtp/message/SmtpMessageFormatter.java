@@ -88,7 +88,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 				case 535: return new _535(body);
 				case 501: return new _501(body);
 				case 354: return new _354(body);
-				default:  throw new RuntimeException("Unknown status code: " + code);
+				default:  throw new RuntimeException("Unknown status code " + code + ": " + body);
 			}
 		}
 		/*else if (front.startsWith(HttpMessage.GET))

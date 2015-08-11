@@ -2,6 +2,7 @@ package org.scribble.codegen.java;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,9 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Job;
 import org.scribble.visit.Projector;
 
+// TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
+// TODO: "functional state interfaces", e.g. for smtp ehlo and quit actions
+// FIXME: selector(?) hanging on runtimeexception (from message formatter)
 public class EndpointApiGenerator
 {
 	private static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
@@ -401,16 +405,26 @@ public class EndpointApiGenerator
 		ClassBuilder future = cb.newClass();
 		future.setName(futureClass);
 		future.setSuperClass(SCRIBFUTURE_CLASS);
+		List<String> types = new LinkedList<>(); 
 		if (!a.payload.isEmpty())
 		{
 			int i = 1;
 			for (PayloadType<?> pt : a.payload.elems)
 			{
 				String type = main.getDataTypeDecl((DataType) pt).extName;
+				types.add(type);
 				FieldBuilder f = future.newField("pay" + i++);
 				f.setType(type);
 				f.addModifiers(ClassBuilder.PUBLIC);
 			}
+		}
+		else
+		{
+			String type = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName()).extName;
+			types.add(type);
+			FieldBuilder f = future.newField("msg");
+			f.setType(type);
+			f.addModifiers(ClassBuilder.PUBLIC);
 		}
 
 		MethodBuilder cons = future.newConstructor("CompletableFuture<" + SCRIBMESSAGE_CLASS + "> " + FUTURE_PARAM);
@@ -425,12 +439,15 @@ public class EndpointApiGenerator
 		if (!a.payload.isEmpty())
 		{
 			int i = 1;
-			for (PayloadType<?> pt : a.payload.elems)
+			for (String type : types)
 			{
-				String type = main.getDataTypeDecl((DataType) pt).extName;
 				sync.addBodyLine(ClassBuilder.THIS + "." + "pay" + i + " = (" + type + ") m.payload[" + (i - 1) + "];");
 				i++;
 			}
+		}
+		else
+		{
+			sync.addBodyLine(ClassBuilder.THIS + "." + "msg" + " = (" + types.get(0) + ") m;");
 		}
 		sync.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.THIS + ";");
 

@@ -2,6 +2,7 @@ package demo.smtp.message.client;
 
 import org.scribble.sesstype.name.Op;
 
+import demo.smtp.SMTP;
 import demo.smtp.message.SmtpMessage;
 import demo.smtp.message.SmtpMessageFormatter;
 
@@ -12,12 +13,12 @@ public class DataLine extends SmtpMessage
 
 	public DataLine()
 	{
-		super(Op.EMPTY_OPERATOR);
+		super(SMTP.DATALINE);
 	}
 
 	public DataLine(String body)
 	{
-		super(Op.EMPTY_OPERATOR, body);
+		super(SMTP.DATALINE, body);
 		if (body.equals("."))
 		{
 			throw new RuntimeException("Illegal body: " + body);
