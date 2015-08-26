@@ -52,7 +52,10 @@ public class SessionEndpoint
 		register(self, ss);
 	}
 	
-	public synchronized void register(Role self, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
+	// FIXME: allowing multiple serversocks to be registered, but it just overrides the self entry (already set by constructor) -- server socks not identified with peer (or protocol state)
+	// -- and InitSocket accept always uses the self server sock
+	//public synchronized void register(Role self, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
+	protected synchronized void register(Role self, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
 	{
 		this.sel.pause();
 		this.servs.put(self, ss);

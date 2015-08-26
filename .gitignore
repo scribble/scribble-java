@@ -15,6 +15,8 @@ modules/core/src/test/scrib/demo/smtp/Smtp.java
 modules/core/src/test/scrib/demo/smtp/Smtp_*
 modules/core/src/test/scrib/demo/fib/Adder.java
 modules/core/src/test/scrib/demo/fib/Adder_*
+modules/core/src/test/scrib/demo/travel/Booking.java
+modules/core/src/test/scrib/demo/travel/Booking_*
 modules/core/src/test/scrib/test/foo/Foo.java
 modules/core/src/test/scrib/test/foo/Foo_*
 modules/core/src/test/scrib/test/test1/Proto1.java

@@ -15,6 +15,7 @@ import Test2;
 type <java> "java.lang.String" from "rt.jar" as String;
 
 
+///*
 global protocol Foo(role A, role B)
 {
 	do Test2.Test2Proto(A, B);
@@ -43,6 +44,7 @@ global protocol Bar1(role C, role D)
 	2() from C to D;
 	3() from C to D;
 	do Foo(C, D);
+	//do Foo(D, C);
 }
 
 global protocol Bar2(role C, role D)

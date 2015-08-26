@@ -21,7 +21,7 @@ public class SocketChannelServer extends ScribServerSocket
 	@Override
 	protected synchronized SocketChannelEndpoint accept(SessionEndpoint se) throws IOException
 	{
-		return new SocketChannelEndpoint(se, ss.accept());
+		return new SocketChannelEndpoint(se, this.ss.accept());
 	}
 
 	@Override

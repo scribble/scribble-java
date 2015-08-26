@@ -1,7 +1,11 @@
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr -session Foo -d modules/validation/src/main/java
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr -api Foo A -d modules/validation/src/main/java
 
-package test.test1;
+package demo.travel;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
@@ -9,60 +13,43 @@ import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 
-public class MyC
+public class Client
 {
 	public static void main(String[] args) throws Exception
 	{
-		Proto1 adder = new Proto1();
-		//SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
-		SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
-		
-		try (Proto1_C_0 s0 = new Proto1_C_0(se))
+		int MAX = 500;
+		List<String> queries = IntStream.range(97, 122).mapToObj((i) -> new Character((char) i).toString()).collect(Collectors.toList());
+
+		Booking booking = new Booking();
+		SessionEndpoint C = booking.project(Booking.C, new ObjectStreamFormatter());
+
+		try (Booking_C_0 s0 = new Booking_C_0(C))
 		{
-			System.out.println("c0: ");
-			
-			//.. add reconnect and do smtp
-			//.. add explicit connects
-			//.. redo smtp
-
-			s0.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
-			
-			System.out.println("c1: ");
-
-			Proto1_C_1 s1 = s0.init();
-
-			System.out.println("c2: ");
-			
-			//s1.receive(Proto1._1).send(Proto1.S, Proto1._2);
-			
-			Proto1_C_6 s6 = s1.branch();  // FIXME: change generated name to e.g. Proto_C_1_Branch (it's not really a distinct state)
-			switch (s6.op)
+			s0.connect(SocketChannelEndpoint::new, Booking.A, "localhost", 8888);
+			s0.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 9999);
+			Booking_C_1 s1 = s0.init();
+			Buff<Integer> quote = new Buff<>();
+			for (int i = 0; ; i++)
 			{
-				case _1:
+				if (i >= queries.size())
 				{
-					Buff<Integer> b1 = new Buff<>();
-					Buff<Future_Proto1_C_4> b2 = new Buff<>();
-
-					s6.receive(Proto1._1, b1)
-					  .async(Proto1._2, b2)
-					  .send(Proto1.S, Proto1._3, 3);
-			
-					System.out.println("Client 1: ");
-					System.out.println("Client 2: " + b2.val.sync().pay1);
-
-					break;
+					s1.send(Booking.A, Booking.No);
 				}
-				case _4:
+				System.out.println("Querying: " + queries.get(i));
+				s1 = s1.send(Booking.A, Booking.Query, queries.get(i))
+				       .receive(Booking.Quote, quote);
+				System.out.println("Quoted: " + quote.val);
+				if (quote.val < MAX)
 				{
-					s6.receive(Proto1._4)
-					  .async(Proto1._5)
-					  .receive(Proto1._6);
-			
 					break;
 				}
 			}
+			System.out.println("Yes: ");
+			s1.send(Booking.A, Booking.Yes)
+			  .send(Booking.S, Booking.Payment, "...")
+			  .receive(Booking.Ack);
 
-			System.out.println("Client 3: ");
+			System.out.println("End: ");
 		}
 	}
 }

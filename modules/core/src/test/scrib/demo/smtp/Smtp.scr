@@ -71,9 +71,9 @@ global protocol STARTTLS(role S, role C)
 {
 	choice at C
 	{
-		// Do TLS handshake: level below the application level protocol (like normal TCP handshake)
 		STARTTLS from C to S;
 		220 from S to C;
+		// Do TLS handshake here: level below the application level protocol (like normal TCP handshake)
 		do SecureEHLO(S, C);
 	}
 	or
