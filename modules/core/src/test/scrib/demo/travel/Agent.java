@@ -26,32 +26,39 @@ public class Agent
 				Booking_A_0 init = new Booking_A_0(A);
 				init.accept(Booking.C);
 				//init.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 8889);
+				
+				Thread.sleep(1000);  // FIXME:
+				
 				init.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 9999);
 				try (Booking_A_0 s0 = init)
 				{
 					Booking_A_1 s1 = s0.init();
-					Booking_A_6 s6;
+					Booking_A_7 s7;
 					X: while (true)
 					{
-						s6 = s1.branch();
-						switch (s6.op)
+						s7 = s1.branch();
+						switch (s7.op)
 						{
 							case Query:
-								s1 = s6.receive(Booking.Query)
+								s1 = s7.receive(Booking.Query)
 								       .send(Booking.C, Booking.Quote, quote -= 100)
 								       .send(Booking.S, Booking._);
 								break;
 							case No:
-								s6.receive(Booking.No)
-								  .send(Booking.S, Booking.No);
+								s7.receive(Booking.No)
+								  .send(Booking.S, Booking.No)
+								  .receive(Booking.Bye);
 								break X;
 							case Yes:
 								System.out.println("Yes: ");
-								Booking_A_2 s2 = s6.receive(Booking.Yes);
-								s2.send(Booking.S, Booking.Yes);
+								s7.receive(Booking.Yes)
+								  .send(Booking.S, Booking.Yes)
+								  .receive(Booking.Bye);
 								break X;
 						}
 					}
+
+					System.out.println("Done:");
 				}
 				catch (Exception e)
 				{

@@ -50,6 +50,8 @@ public class Seller
 								break X;
 						}
 					}
+					
+					System.out.println("Done:");
 				}
 				catch (Exception e)
 				{

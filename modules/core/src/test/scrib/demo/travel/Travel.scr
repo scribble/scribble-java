@@ -18,14 +18,18 @@ global protocol Booking(role C, role A, role S)
 	}
 	or
 	{
-		Yes() from C to A;
-		Yes() from A to S;
-		Payment(String) from C to S;
-		Ack() from S to C;
-	}
-	or
-	{
-		No() from C to A;
-		No() from A to S;
+		choice at C
+		{
+			Yes() from C to A;
+			Yes() from A to S;
+			Payment(String) from C to S;
+			Ack() from S to C;
+		}
+		or
+		{
+			No() from C to A;
+			No() from A to S;
+		}
+		Bye() from C to A;
 	}
 }
