@@ -18,63 +18,88 @@ public class Client
 {
 	static int MAX = 500;
 	static List<String> QUERIES = IntStream.range(97, 122).mapToObj((i) -> new Character((char) i).toString()).collect(Collectors.toList());
-	static Buff<Integer> QUOTE = new Buff<>();
 
 	public static void main(String[] args) throws Exception
 	{
 		Booking booking = new Booking();
 		SessionEndpoint C = booking.project(Booking.C, new ObjectStreamFormatter());
 
+		Booking_C_3 s3;
 		try (Booking_C_0 s0 = new Booking_C_0(C))
 		{
 			s0.connect(SocketChannelEndpoint::new, Booking.A, "localhost", 8888);
 			s0.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 9999);
 			Booking_C_1 s1 = s0.init();
 
-			//foo1(s1);
-			foo2(s1, 0, QUOTE).send(Booking.A, Booking.Bye);
+			Buff<Integer> quote = new Buff<>();
+
+			for (int i = 0; ; i++)
+			{
+				if (i >= QUERIES.size())
+				{
+					s3 = s1.send(Booking.A, Booking.No);
+					break;
+				}
+				System.out.println("Querying: " + QUERIES.get(i));
+				s1 = s1.send(Booking.A, Booking.Query, QUERIES.get(i))
+							 .receive(Booking.Quote, quote);
+				System.out.println("Quoted: " + quote.val);
+				if (quote.val <= MAX)
+				{
+					System.out.println("Yes: ");
+					s3 = s1.send(Booking.A, Booking.Yes)
+						     .send(Booking.S, Booking.Payment, "...")
+						     .receive(Booking.Ack);
+					break;
+				}
+			}
+			s3.send(Booking.A, Booking.Bye);
+
+			//foo(s1, quote);
+			//doQuery(s1, 0, quote).send(Booking.A, Booking.Bye);
 
 			System.out.println("End: ");
 		}
 	}
 
-	private static void foo1(Booking_C_1 s1) throws Exception
+	private static void foo(Booking_C_1 s1, Buff<Integer> buf) throws Exception
 	{
-		for (int i = 0; ; i++)
+		for (int i = 0; i < QUERIES.size(); i++)  // Stream.forEach not suitable due to Exceptions
 		{
-			if (i >= QUERIES.size())
-			{
-				s1.send(Booking.A, Booking.No);
-			}
 			System.out.println("Querying: " + QUERIES.get(i));
 			s1 = s1.send(Booking.A, Booking.Query, QUERIES.get(i))
-			       .receive(Booking.Quote, QUOTE);
-			System.out.println("Quoted: " + QUOTE.val);
-			if (QUOTE.val <= MAX)
+			       .receive(Booking.Quote, buf);
+			System.out.println("Quoted: " + buf.val);
+			if (buf.val <= MAX)
 			{
-				break;
+				System.out.println("Yes: ");
+				s1.send(Booking.A, Booking.Yes)
+					.send(Booking.S, Booking.Payment, "...")
+					.receive(Booking.Ack)
+					.send(Booking.A, Booking.Bye);
+				return;
 			}
 		}
-		System.out.println("Yes: ");
-		s1.send(Booking.A, Booking.Yes)
-		  .send(Booking.S, Booking.Payment, "...")
-		  .receive(Booking.Ack)
-			.send(Booking.A, Booking.Bye);
+		s1.send(Booking.A, Booking.No).send(Booking.A, Booking.Bye);
 	}
 	
-	private static Booking_C_3 foo2(Booking_C_1 s1, int i, Buff<Integer> buff) throws Exception
+	private static Booking_C_3 doQuery(Booking_C_1 s1, int i, Buff<Integer> buf) throws Exception
 	{
 		return (i >= QUERIES.size())
 				? s1.send(Booking.A, Booking.No) 
 				//: foo3(s1.send(Booking.A, Booking.Query, println(QUERIES.get(i), QUERIES.get(i))).receive(Booking.Quote, QUOTE), i, println(QUOTE.val, Integer.toString(QUOTE.val)));
-				: foo3(s1.send(Booking.A, Booking.Query, QUERIES.get(i)).receive(Booking.Quote, buff), i, buff);
+				: checkMax(s1.send(Booking.A, Booking.Query, QUERIES.get(i))
+						         .receive(Booking.Quote, buf)
+					        , i, buf);
 	}
 
-	private static Booking_C_3 foo3(Booking_C_1 s1, int i, Buff<Integer> buff) throws Exception
+	private static Booking_C_3 checkMax(Booking_C_1 s1, int i, Buff<Integer> buf) throws Exception
 	{
-		return (buff.val <= MAX)
-				? s1.send(Booking.A, Booking.Yes).send(Booking.S, Booking.Payment, "...").receive(Booking.Ack)
-				: foo2(s1, i + 1, buff);
+		return (buf.val <= MAX)
+				? s1.send(Booking.A, Booking.Yes)
+						.send(Booking.S, Booking.Payment, "...")
+						.receive(Booking.Ack)
+				: doQuery(s1, i + 1, buf);
 	}
 
 	private static <T> T println(T t, String m)
