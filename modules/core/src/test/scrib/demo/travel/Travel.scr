@@ -13,7 +13,7 @@ global protocol Booking(role C, role A, role S)
 	{
 		Query(String) from C to A;
 		Quote(Int) from A to C;
-		//() from A to S;   // Dummy
+		() from A to S;   // Dummy
 		do Booking(C, A, S);
 	}
 	or
