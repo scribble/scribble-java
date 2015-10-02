@@ -1,18 +1,20 @@
 package demo.fib;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.ScribServerSocket;
+import org.scribble.net.scribsock.ScribServerSocket;
+import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
 public class AdderServer
 {
-	public static void main(String[] args) throws IOException, ScribbleRuntimeException
+	public static void main(String[] args) throws IOException, ScribbleRuntimeException, ExecutionException, InterruptedException
 	{
-		try (ScribServerSocket ss = new ScribServerSocket(8888))
+		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
 			Buff<Integer> i1 = new Buff<>();
 			Buff<Integer> i2 = new Buff<>();
@@ -20,13 +22,13 @@ public class AdderServer
 			while (true)
 			{
 				Adder foo = new Adder();
-				SessionEndpoint se = foo.project(Adder.S, new ObjectStreamFormatter());
+				SessionEndpoint se = foo.project(Adder.S, ss, new ObjectStreamFormatter());
 				Adder_S_0 init = new Adder_S_0(se);
-				init.accept(ss, Adder.C);
+				init.accept(Adder.C);
 
 				try (Adder_S_0 s0 = init)
 				{
-					X(s0.init(), i1, i2).end();
+					X(s0.init(), i1, i2).send(Adder.C, Adder.BYE);
 				}
 				catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
 				{
@@ -36,7 +38,7 @@ public class AdderServer
 		}
 	}
 	
-	private static Adder_S_3 X(Adder_S_1 s1, Buff<Integer> i1, Buff<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	private static Adder_S_3 X(Adder_S_1 s1, Buff<Integer> i1, Buff<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException, ExecutionException, InterruptedException
 	{
 		Adder_S_4 s4 = s1.branch();
 		switch (s4.op)

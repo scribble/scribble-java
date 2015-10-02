@@ -5,6 +5,7 @@ package test.foo;
 
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
 
 
 public class MyA
@@ -18,13 +19,13 @@ public class MyA
 		
 		try (Foo_A_0 s0 = new Foo_A_0(se))
 		{
-			s0.connect(Foo.B, "localhost", 8888);
-			s0.connect(Foo.C, "localhost", 9999);
+			s0.connect(SocketChannelEndpoint::new, Foo.B, "localhost", 8888);
+			s0.connect(SocketChannelEndpoint::new, Foo.C, "localhost", 9999);
 			Foo_A_1 s1 = s0.init();
 			
-			s1.send(Foo.C, Foo._1)
-			  .send(Foo.B, Foo._2)
-			  .end();
+			s1
+			  //.send(Foo.C, Foo._1).send(Foo.B, Foo._2);
+			  .send(Foo.B, Foo._1).send(Foo.C, Foo._2);
 		}
 	}
 }

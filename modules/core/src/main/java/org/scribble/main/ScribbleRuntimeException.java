@@ -9,4 +9,9 @@ public class ScribbleRuntimeException extends Exception
 	{
 		super(s);
 	}
+	
+	public ScribbleRuntimeException(Throwable t)
+	{
+		super(t);
+	}
 }

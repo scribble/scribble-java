@@ -31,6 +31,7 @@ package org.scribble.main;
 	// multicast (enforce sending same value -- can "compile" to assertions for separate ops)
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B }) -- separate par from unordered
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
+	// api gen: explicit end for implicit skipping tail inputs but without failing the sender due to closing the transport -- actually, disable async for term-leading states? -- or perhaps implicit in using-close
 
 	//.. fix projection env to take projection output type as Parameter
 	// dels should be kinded as well? -- maybe by node type? or too restrictive

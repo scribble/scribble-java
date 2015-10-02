@@ -3,43 +3,66 @@
 
 package test.test1;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
-import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
 
 
 public class MyC
 {
-	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException
+	public static void main(String[] args) throws Exception
 	{
-		Buff<Integer> i1 = new Buff<>(1);
-		Buff<Integer> i2 = new Buff<>(1);
-		
 		Proto1 adder = new Proto1();
+		//SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
 		SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
 		
 		try (Proto1_C_0 s0 = new Proto1_C_0(se))
 		{
-			s0.connect(Proto1.S, "localhost", 8888);
+			System.out.println("c0: ");
+			
+			//.. add reconnect and do smtp
+			//.. add explicit connects
+			//.. redo smtp
+
+			s0.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
+			
+			System.out.println("c1: ");
+
 			Proto1_C_1 s1 = s0.init();
+
+			System.out.println("c2: ");
 			
-			s1.send(Proto1.S, Proto1.ADD, i1.val, i2.val)
-			  .receive(Proto1.RES, i1)
-			  .send(Proto1.S, Proto1.BYE)
-			  .end();
+			//s1.receive(Proto1._1).send(Proto1.S, Proto1._2);
 			
-			System.out.println("Client: " + i1.val);
+			Proto1_C_6 s6 = s1.branch();  // FIXME: change generated name to e.g. Proto_C_1_Branch (it's not really a distinct state)
+			switch (s6.op)
+			{
+				case _1:
+				{
+					Buff<Integer> b1 = new Buff<>();
+					Buff<Future_Proto1_C_4> b2 = new Buff<>();
+
+					s6.receive(Proto1._1, b1)
+					  .async(Proto1._2, b2)
+					  .send(Proto1.S, Proto1._3, 3);
+			
+					System.out.println("Client 1: ");
+					System.out.println("Client 2: " + b2.val.sync().pay1);
+
+					break;
+				}
+				case _4:
+				{
+					s6.receive(Proto1._4)
+					  .async(Proto1._5)
+					  .receive(Proto1._6);
+			
+					break;
+				}
+			}
+
+			System.out.println("Client 3: ");
 		}
 	}
-
-	/*private static Proto1_C_3 side(Buff<Integer> i1, Buff<Integer> i2, Proto1_C_3 s3)
-	{
-		System.out.print(i1.val + " ");
-		i1.val = i2.val;
-		return s3;
-	}*/
 }

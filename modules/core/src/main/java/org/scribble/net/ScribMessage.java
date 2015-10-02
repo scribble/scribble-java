@@ -1,6 +1,8 @@
 package org.scribble.net;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.scribble.sesstype.name.Op;
 
@@ -8,6 +10,7 @@ public class ScribMessage implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
+	// add msg source
 	public final Op op;
 	public final Object[] payload;
 
@@ -60,8 +63,13 @@ public class ScribMessage implements Serializable
 		{
 			return false;
 		}
-		ScribMessage body = (ScribMessage) o;
-		return this.op.equals(body.op) && this.payload.equals(body.payload);
+		ScribMessage m = (ScribMessage) o;
+		return m.canEqual(this) && this.op.equals(m.op) && this.payload.equals(m.payload);
+	}
+	
+	public boolean canEqual(Object o)
+	{
+		return o instanceof ScribMessage;
 	}
 	
 	@Override
@@ -70,11 +78,7 @@ public class ScribMessage implements Serializable
 		String s = this.op + "(";
 		if (this.payload.length > 0)
 		{
-			s += this.payload[0];
-			for (int i = 1; i < this.payload.length; i++)
-			{
-				s += ", " + this.payload[i];
-			}
+			s += Arrays.asList(this.payload).stream().map((o) -> o.toString()).collect(Collectors.joining(", "));
 		}
 		return s + ")";
 	}
