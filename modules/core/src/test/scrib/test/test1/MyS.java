@@ -44,18 +44,18 @@ public class MyS
 class Handler implements Proto1_S_2_Handler
 {
 	@Override
-	public void receive(_3 op) throws ScribbleRuntimeException, IOException
+	public void receive(_4 op) throws ScribbleRuntimeException, IOException
 	{
 		System.out.println("Done");
 	}
 
 	@Override
-	public void receive(Proto1_S_1 schan, _2 op) throws ScribbleRuntimeException, IOException
+	public void receive(Proto1_S_3 schan, _2 op) throws ScribbleRuntimeException, IOException
 	{
 		System.out.println("Redo");
 		try
 		{
-			schan.receive(Proto1.C, Proto1._1).branch(Proto1.C, this);
+			schan.send(Proto1.C, Proto1._3, 456).async(Proto1.C, Proto1._1).branch(Proto1.C, this);
 		}
 		catch (ClassNotFoundException | ExecutionException | InterruptedException e)
 		{

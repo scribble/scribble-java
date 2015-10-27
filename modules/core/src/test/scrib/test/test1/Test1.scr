@@ -5,6 +5,8 @@
 
 module test.test1.Test1;
 
+type <java> "java.lang.Integer" from "rt.jar" as Integer;
+
 global protocol Proto1(role C, role S)
 {
 	rec X
@@ -12,12 +14,13 @@ global protocol Proto1(role C, role S)
 		1() from C to S;
 		choice at C
 		{
-			2() from C to S;
+			2(Integer) from C to S;
+			3(Integer) from S to C;
 			continue X;
 		}
 		or
 		{
-			3() from C to S;
+			4() from C to S;
 		}
 	}
 }

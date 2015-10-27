@@ -350,10 +350,12 @@ public class EndpointApiGenerator
   // [nextClass] async([opClass] op) -- wrapper for makeAsyncMethod
 	private void makeAsyncDiscardMethod(ClassBuilder cb, IOAction a, String nextClass, String opClass, String futureClass)
 	{
+		final String ROLE_PARAM = "role";
+		
 		MethodBuilder mb = cb.newMethod("async"); 
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.setReturn(nextClass);
-		mb.addParameters(opClass + " " + RECEIVE_OP_PARAM);
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + RECEIVE_OP_PARAM);
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		if (!isTerminalClassName(nextClass))
 		{
@@ -650,21 +652,22 @@ public class EndpointApiGenerator
 		addReturnNextSocket(mb, nextClass);
 	}
 
-	private static void addBranchReceiveReceiveDiscardMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
+	private void addBranchReceiveReceiveDiscardMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
 		if (!a.payload.isEmpty() || a.mid.isMessageSigName())
 		{
 			MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
 			String ln = (isTerminalClassName(nextClass)) ? "" : ClassBuilder.RETURN + " ";
+			ln += "receive(" + getSessionApiRoleConstant(a.peer) + ", " + BRANCHRECEIVE_OP_PARAM + ", ";
 			if (a.mid.isOp())
 			{
-				ln += "receive(" + BRANCHRECEIVE_OP_PARAM + ", " + a.payload.elems.stream()
-						.map((pt) -> getGarbageBuff(main.getDataTypeDecl(((DataType) pt)).extName)).collect(Collectors.joining(", ")) + ");";
+				ln += a.payload.elems.stream()
+							 .map((pt) -> getGarbageBuff(main.getDataTypeDecl(((DataType) pt)).extName)).collect(Collectors.joining(", ")) + ");";
 			}
 			else
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // Factor out? (send/receive/branchreceive/...)
-				ln += "receive(" + BRANCHRECEIVE_OP_PARAM + ", " + getGarbageBuff(msd.extName) + ");";
+				ln += getGarbageBuff(msd.extName) + ");";
 			}
 			mb.addBodyLine(ln);
 		}
