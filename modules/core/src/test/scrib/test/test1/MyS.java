@@ -52,6 +52,7 @@ class Handler implements Proto1_S_2_IBranch
 	@Override
 	public void receive(Proto1_S_1 schan, _2 op) throws ScribbleRuntimeException, IOException
 	{
+		System.out.println("Redo");
 		try
 		{
 			schan.receive(Proto1._1).branch(this);

@@ -511,7 +511,7 @@ public class EndpointApiGenerator
 		curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
 		
 
-		String ifname = cb.getName() + "_IBranch";
+		String ifname = cb.getName() + "_Handler";
 		MethodBuilder mb2 = cb.newMethod("branch");
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
 		mb2.addParameters(ifname + " branch");
@@ -533,6 +533,10 @@ public class EndpointApiGenerator
 				mb2.addBodyLine("else");
 			}
 			mb2.addBodyLine("if (" + MESSAGE_VAR + "." + SCRIBMESSAGE_OP_FIELD + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
+			if (succ.isTerminal())
+			{
+				mb2.addBodyLine(SCRIBSOCKET_SE_FIELD + ".setCompleted();");
+			}
 			String ln = "branch.receive(";
 			if (!succ.isTerminal())
 			{
@@ -540,10 +544,6 @@ public class EndpointApiGenerator
 			}
 			ln += getSessionApiOpConstant(a.mid) + ");";
 			mb2.addBodyLine(ln);
-			if (succ.isTerminal())
-			{
-				mb2.addBodyLine(SCRIBSOCKET_SE_FIELD + ".setCompleted();");
-			}
 			mb2.addBodyLine("}");
 		}
 
@@ -587,7 +587,8 @@ public class EndpointApiGenerator
 	{
 		String branchName = this.classNames.get(curr);  // Name of "parent" branch class (curr state is the branch state)
 		String enumClassName = branchName + "." + branchName + "Enum";
-		String className = newClassName();  // Name of branch-receive class
+		//String className = newClassName();  // Name of branch-receive class
+		String className = branchName + "_Cases";
 
 		ClassBuilder cb = constructClassExceptMethods(BRANCHRECEIVESOCKET_CLASS, className);
 		
