@@ -126,7 +126,12 @@ public class CommandLine implements Runnable
 			String dir = this.args.get(ArgFlag.OUTPUT)[0];
 			f = (path) -> { ScribUtil.handleLambdaScribbleException(() ->
 							{
-								writeToFile(dir + "/" + path, classes.get(path)); return null; 
+								String tmp = dir + "/" + path;
+								if (this.args.containsKey(ArgFlag.VERBOSE))
+								{
+									System.out.println("\n[DEBUG] Writing to: " + tmp);
+								}
+								writeToFile(tmp, classes.get(path)); return null; 
 							}); };
 		}
 		else

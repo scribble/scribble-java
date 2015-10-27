@@ -2,12 +2,21 @@
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/demo/scrib/demo/http/Http.scr -session Http -d modules/core/src/test/scrib
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/demo/scrib/demo/http/Http.scr -api Http C -d modules/core/src/test/scrib
 
+//$ bin/scribblec.sh modules/core/src/test/scrib/demo/http/Http.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -session Http -api Http C -V
 //$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib modules/core/src/test/scrib/demo/http/Http*.java -d test/doc/http
-
-//$ bin/scribblec modules/core/src/test/scrib/demo/http/Http.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -session Http -api Http C -V
 
 module demo.http.Http;
 
+/*HTTP/1.1 200 OK
+Date: Sat, 08 Aug 2015 17:14:53 GMT
+Server: Apache
+Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
+ETag: "ac6fa008-559-4a8b95908aec0"
+Accept-Ranges: bytes
+Content-Length: 1369
+Vary: Accept-Encoding
+Content-Type: text/html
+Via: 1.1 www.doc.ic.ac.uk*/
 
 sig <java> "demo.http.message.client.RequestLine"
 		from "demo/http/message/RequestLine.java"

@@ -6,12 +6,13 @@ import java.io.IOException;
 import java.net.Socket;
 
 // FIXME: should be IO wrapper: should abstract sockets, shared memory, RMI, AMQP, etc etc
+@Deprecated
 public class SocketWrapper
 {
 	protected final Socket sock;
 	protected final DataOutputStream dos;
 	protected final DataInputStream dis;
-
+	
 	public SocketWrapper(Socket s) throws IOException
 	{
 		this.sock = s;
@@ -36,5 +37,10 @@ public class SocketWrapper
 				this.sock.close();
 			}
 		}
+	}
+	
+	public Socket getSocket()
+	{
+		return this.sock;
 	}
 }

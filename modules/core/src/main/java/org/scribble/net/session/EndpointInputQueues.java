@@ -13,6 +13,7 @@ import org.scribble.net.ScribInterrupt;
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Role;
 
+@Deprecated
 public class EndpointInputQueues
 {
 	// FIXME: factor out individual role queues (with counts and tickets, and bounded cache size?)

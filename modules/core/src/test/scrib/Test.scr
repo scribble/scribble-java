@@ -8,13 +8,219 @@
 module Test;
 
 
-///*
+global protocol Tele(role A, role S, role B)
+{
+	//rec Idle // this is actually end of session
+	{
+		ac() from A to S;
+		interruptible at A
+		{
+			rec Checking
+			{
+				checkb() from S to B;
+				choice at B
+				{
+					available from B to S;
+					ringa from S to A;
+					choice at A
+					{
+						answera from A to S;
+						ringb from S to B;
+						choice at B
+						{
+							answerb from B to S;
+							connect from S to A;
+						}
+						or
+						{
+							busyb from B to S;
+							busytonea from S to A;
+							continue Checking;
+						}
+					}
+					or
+					{
+						noanswera from A to S;
+						// ... B missing
+						//continue Idle;
+					}
+				}
+				or
+				{
+					busyb from B to S;
+					// ... A missing
+					continue Checking;
+				}
+			}
+		}
+		with
+		{
+			hangupa by A; // to S; stopringb to B;
+		}
+
+		onhook from A to S;
+		//continue Idle;
+	}
+}
+
+
+/*
+global protocol Foo(role C, role S)
+{
+	rec XXX
+	{
+		choice at C
+		{
+			1() from C to S;
+		}
+		or
+		{
+			LIST() from C to S;
+			choice at S
+			{
+				OK() from S to C;
+				rec summary_choice_list
+				{
+					choice at S
+					{
+						DOT() from S to C;
+					}
+					or
+					{
+						SUM() from S to C;
+						continue summary_choice_list;
+					}
+				}
+			}
+			or
+			{
+				ERR() from S to C;
+			}
+			continue XXX;
+		}
+	}
+}
+//*//
+
+
+/*
+// A = switching system agent, PA = calling part, PB = called party
+global protocol AutomaticCallback(role PA, role A, role PB) {
+	// idle state at PA
+	ac() from PA to A; // waiting state at PA
+	rec CHECKING
+	{
+		checkb() from A to PB;
+		choice at PB
+		{
+			busyb() from PB to A;
+			continue CHECKING;
+		}
+		or
+		{
+			available() from PB to A;
+			ringa() from A to PA; //state?
+			choice at PA
+			{
+				answera() from PA to A;
+				// calling state at PA -- PA and PB are customers
+				ringb() from A to PB;
+				interruptible
+				{
+					choice at PB
+					{
+						answerb() from PB to A;
+						connect() from A to PA;
+					}
+					or
+					{
+						busyb() from PB to A;
+						busytonea() from A to PA;
+						choice at PA
+						{
+							hangupa() from PA to A;
+							stopringb() from A to PB;
+							//end
+						}
+						or
+						{
+							continue CHECKING;
+						}
+					}
+				}
+				with
+				{
+					hangupa() by PA;
+				}
+			}
+			or
+			{
+				noanswera() from PA to A; //idle state at PA
+				//onhooka from PA to ??????
+				//end
+			}
+		}
+	}
+}
+//*/
+
+
+/*global protocol AutomaticCallback(role PA, role A, role PB)
+{
+	ac() from PA to A;
+	rec CHECKING
+	{
+		checkb() from A to PB;
+		choice at PB
+		{
+			busyb() from PB to A;
+			continue CHECKING;
+		}
+		or
+		{
+			available() from PB to A;
+			ringa() from A to PA;
+			choice at PA
+			{
+				answera() from PA to A;
+				// calling state at PA -- PA and PB are customers
+				ringb() from A to PB;
+				choice at PB
+				{
+					answerb() from PB to A;
+					connect() from A to PA;
+
+					...hangupa() from PA to A;...
+
+					stopringb() from A to PB;
+					//end
+				}
+				or
+				{
+					busyb() from PB to A;
+					busytonea() from A to PA;
+					continue CHECKING;
+				}
+			}
+			or
+			{
+				noanswera() from PA to A;
+				//end
+			}
+		}
+	}
+}
+//*/
+
+
+/*
 import Test2;
 
-
 type <java> "java.lang.String" from "rt.jar" as String;
+*/
 
 
+/*
 global protocol Foo(role A, role B)
 {
 	do Test2.Test2Proto(A, B);
@@ -43,6 +249,7 @@ global protocol Bar1(role C, role D)
 	2() from C to D;
 	3() from C to D;
 	do Foo(C, D);
+	//do Foo(D, C);
 }
 
 global protocol Bar2(role C, role D)

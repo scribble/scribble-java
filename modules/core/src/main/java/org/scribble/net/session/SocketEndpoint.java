@@ -7,11 +7,17 @@ import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Role;
 
 // Read/write Objects on the binary connection to an endpoint in the session
+@Deprecated
 public class SocketEndpoint
 {
 	private final SessionEndpoint ep;
 	//private final Role peer;
 	private final SocketWrapper sw;
+	
+	public SocketWrapper getSocketWrapper()
+	{
+		return this.sw;
+	}
 
 	private final ReceiverThread receiver;
 
@@ -77,17 +83,18 @@ class ReceiverThread extends Thread
 		this.peer = peer;
 		this.dis = dis;
 
-		ep.getInputQueues().register(peer);
+		//ep.getInputQueues().register(peer);
 	}
 
 	public void run()
 	{
-		EndpointInputQueues queues = this.ep.getInputQueues();
+		EndpointInputQueues queues = null;//this.ep.getInputQueues();
 		try
 		{
 			while (true)
 			{
-				queues.enqueue(this.peer, this.ep.smf.readMessage(this.dis));  // FIXME: bounded buffer? (endpoint queue property?)
+				ScribMessage m = this.ep.smf.readMessage(this.dis);
+				queues.enqueue(this.peer, m);  // FIXME: bounded buffer? (endpoint queue property?)
 			}
 		}
 		catch (IOException e)

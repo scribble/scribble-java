@@ -13,9 +13,9 @@ public abstract class ReceiveSocket extends LinearSocket
 {
 	private CompletableFuture<ScribMessage> fut;
 
-	protected ReceiveSocket(SessionEndpoint ep)
+	protected ReceiveSocket(SessionEndpoint se)
 	{
-		super(ep);
+		super(se);
 	}
 
 	protected ScribMessage readScribMessage(Role peer) throws ClassNotFoundException, IOException, ScribbleRuntimeException, InterruptedException, ExecutionException
@@ -37,7 +37,7 @@ public abstract class ReceiveSocket extends LinearSocket
 	protected CompletableFuture<ScribMessage> getFuture(Role peer) throws ScribbleRuntimeException
 	{
 		use();
-		this.fut = this.ep.getInputQueues().getFuture(peer);
-		return this.fut;
+		//this.fut = this.ep.getInputQueues().getFuture(peer);
+		return this.se.getChannelEndpoint(peer).getFuture();
 	}
 }

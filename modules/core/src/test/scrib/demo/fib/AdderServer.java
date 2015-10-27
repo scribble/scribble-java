@@ -7,13 +7,14 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
+import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
 public class AdderServer
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException, ExecutionException, InterruptedException
 	{
-		try (ScribServerSocket ss = new ScribServerSocket(8888))
+		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
 			Buff<Integer> i1 = new Buff<>();
 			Buff<Integer> i2 = new Buff<>();
@@ -21,9 +22,9 @@ public class AdderServer
 			while (true)
 			{
 				Adder foo = new Adder();
-				SessionEndpoint se = foo.project(Adder.S, new ObjectStreamFormatter());
+				SessionEndpoint se = foo.project(Adder.S, ss, new ObjectStreamFormatter());
 				Adder_S_0 init = new Adder_S_0(se);
-				init.accept(ss, Adder.C);
+				init.accept(Adder.C);
 
 				try (Adder_S_0 s0 = init)
 				{

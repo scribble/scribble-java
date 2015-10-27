@@ -5,29 +5,32 @@ package demo.fib;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
+
+import static demo.fib.Adder.*;
 
 
 public class MyC
 {
-	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException
+	public static void main(String[] args) throws Exception
 	{
-		Buff<Integer> i1 = new Buff<>(1);
-		Buff<Integer> i2 = new Buff<>(1);
-		
 		Adder adder = new Adder();
 		SessionEndpoint se = adder.project(Adder.C, new ObjectStreamFormatter());
 		
 		try (Adder_C_0 s0 = new Adder_C_0(se))
 		{
-			s0.connect(Adder.S, "localhost", 8888);
+			s0.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
 			Adder_C_1 s1 = s0.init();
 			
-			System.out.println("Client: " + i1.val);
+			//Buff<Integer> buf = new Buff<>(1);
+			
+			//System.out.println("Client: " + buf.val);
 		}
 	}
 

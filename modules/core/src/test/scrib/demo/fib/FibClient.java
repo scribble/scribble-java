@@ -11,6 +11,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
 
 
 public class FibClient
@@ -25,7 +26,7 @@ public class FibClient
 		
 		try (Adder_C_0 s0 = new Adder_C_0(se))
 		{
-			s0.connect(Adder.S, "localhost", 8888);
+			s0.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
 			Adder_C_1 s1 = s0.init();
 
 			fib(s1, i1, i2, 0).receive(Adder.BYE);
@@ -35,14 +36,15 @@ public class FibClient
 	private static Adder_C_3 fib(Adder_C_1 s1, Buff<Integer> i1, Buff<Integer> i2, int i) throws ClassNotFoundException, ScribbleRuntimeException, IOException, ExecutionException, InterruptedException
 	{
 		return (i < 20)
-			? fib(side(s1.send(Adder.S, Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
+			//? fib(side(s1.send(Adder.S, Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
+			? fib(side(s1.send(Adder.S, Adder.ADD, i1.val, i1.val = i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
 			: s1.send(Adder.S, Adder.BYE);
 	}
 	
 	private static Adder_C_2 side(Adder_C_2 s2, Buff<Integer> i1, Buff<Integer> i2)
 	{
 		System.out.print(i1.val + " ");
-		i1.val = i2.val;
+		//i1.val = i2.val;
 		return s2;
 	}
 }
