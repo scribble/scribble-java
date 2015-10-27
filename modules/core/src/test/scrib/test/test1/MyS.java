@@ -30,7 +30,7 @@ public class MyS
 				{
 					Proto1_S_1 s1 = s0.init();
 
-					s1.receive(Proto1._1).branch(new Handler());
+					s1.receive(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{
@@ -41,7 +41,7 @@ public class MyS
 	}
 }
 
-class Handler implements Proto1_S_2_IBranch
+class Handler implements Proto1_S_2_Handler
 {
 	@Override
 	public void receive(_3 op) throws ScribbleRuntimeException, IOException
@@ -55,7 +55,7 @@ class Handler implements Proto1_S_2_IBranch
 		System.out.println("Redo");
 		try
 		{
-			schan.receive(Proto1._1).branch(this);
+			schan.receive(Proto1.C, Proto1._1).branch(Proto1.C, this);
 		}
 		catch (ClassNotFoundException | ExecutionException | InterruptedException e)
 		{

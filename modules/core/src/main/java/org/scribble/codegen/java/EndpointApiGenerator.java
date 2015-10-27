@@ -299,7 +299,7 @@ public class EndpointApiGenerator
   // [nextClass] receive([opClass] op, Buff<? super T> arg, ...)
 	private void makeReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
-		MethodBuilder mb = makeReceiveHeader(cb, nextClass, opClass);
+		MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
 		if (a.mid.isOp())
 		{
 			addReceiveOpParams(mb, main, a);
@@ -321,11 +321,14 @@ public class EndpointApiGenerator
   // [nextClass] async([opClass] op, Buff<futureClass> arg)
 	private void makeAsyncMethod(ClassBuilder cb, IOAction a, String nextClass, String opClass, String futureClass)
 	{
+		final String ROLE_PARAM = "role";
+		
 		MethodBuilder mb = cb.newMethod("async"); 
 		// Blurb stuff similar to makeReceiveHeader
 		mb.addModifiers(ClassBuilder.PUBLIC);//, ClassBuilder.SYNCHRONIZED);
 		mb.setReturn(nextClass);
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM);
 		mb.addParameters(opClass + " " + RECEIVE_OP_PARAM);
 		mb.addParameters(BUFF_CLASS + "<" + futureClass + "> " + RECEIVE_ARG_PREFIX);  // Method for future-buf even if no payload, for sync action
 		//mb.addBodyLine(ClassBuilder.SUPER + ".use();");
@@ -345,7 +348,7 @@ public class EndpointApiGenerator
 	}
 
   // [nextClass] async([opClass] op) -- wrapper for makeAsyncMethod
-	private static void makeAsyncDiscardMethod(ClassBuilder cb, IOAction a, String nextClass, String opClass, String futureClass)
+	private void makeAsyncDiscardMethod(ClassBuilder cb, IOAction a, String nextClass, String opClass, String futureClass)
 	{
 		MethodBuilder mb = cb.newMethod("async"); 
 		mb.addModifiers(ClassBuilder.PUBLIC);
@@ -354,16 +357,18 @@ public class EndpointApiGenerator
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		if (!isTerminalClassName(nextClass))
 		{
-			mb.addBodyLine(ClassBuilder.RETURN + " async(" + RECEIVE_OP_PARAM + ", " + getGarbageBuff(futureClass) + ");");
+			mb.addBodyLine(ClassBuilder.RETURN + " async(" + getSessionApiRoleConstant(a.peer) + ", " + RECEIVE_OP_PARAM + ", " + getGarbageBuff(futureClass) + ");");
 		}
 	}
 
-	private static MethodBuilder makeReceiveHeader(ClassBuilder cb, String next, String opClass)
+	private static MethodBuilder makeReceiveHeader(ClassBuilder cb, String next, Role peer, String opClass)
 	{
+		final String ROLE_PARAM = "role";
+
 		MethodBuilder mb = cb.newMethod("receive");
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.setReturn(next);
-		mb.addParameters(opClass + " " + RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
+		mb.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM, opClass + " " + RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException, ExecutionException, InterruptedException");
 		return mb;
 	}
@@ -470,6 +475,7 @@ public class EndpointApiGenerator
 	
 	private void addBranchMethod(ClassBuilder cb, EndpointState curr)
 	{
+		final String ROLE_PARAM = "role";
 		final String MESSAGE_VAR = "m";
 		final String OPENUM_VAR = "openum";
 		final String OP = MESSAGE_VAR + "." + SCRIBMESSAGE_OP_FIELD;
@@ -483,6 +489,7 @@ public class EndpointApiGenerator
 		
 		MethodBuilder mb = cb.newMethod("branch");
 		mb.setReturn(next);
+		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getAcceptable().iterator().next().peer) + " " + ROLE_PARAM);
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException", "ExecutionException", "InterruptedException");
 		
@@ -511,8 +518,10 @@ public class EndpointApiGenerator
 		curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
 		
 
+		// Handler branch method
 		String ifname = cb.getName() + "_Handler";
 		MethodBuilder mb2 = cb.newMethod("branch");
+		mb2.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
 		mb2.addParameters(ifname + " branch");
 		mb2.setReturn(ClassBuilder.VOID);
@@ -547,6 +556,7 @@ public class EndpointApiGenerator
 			mb2.addBodyLine("}");
 		}
 
+		// Handler interface
 		InterfaceBuilder ib = new InterfaceBuilder();
 		ib.setPackage(getPackageName());
 		ib.addImports("java.io.IOException");
@@ -565,7 +575,7 @@ public class EndpointApiGenerator
 			//if (!nextClass.equals(ClassBuilder.VOID))
 			if (!succ.isTerminal())
 			{
-				mb3.addParameters(nextClass + " state");
+				mb3.addParameters(nextClass + " schan");
 			}
 			mb3.addParameters(opClass + " " + RECEIVE_OP_PARAM);  // More params added below
 
@@ -621,7 +631,7 @@ public class EndpointApiGenerator
 
 	private void addBranchReceiveReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
-		MethodBuilder mb = makeReceiveHeader(cb, nextClass, opClass);
+		MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
 		if (a.mid.isOp())
 		{
 			addReceiveOpParams(mb, main, a);
@@ -644,7 +654,7 @@ public class EndpointApiGenerator
 	{
 		if (!a.payload.isEmpty() || a.mid.isMessageSigName())
 		{
-			MethodBuilder mb = makeReceiveHeader(cb, nextClass, opClass);
+			MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
 			String ln = (isTerminalClassName(nextClass)) ? "" : ClassBuilder.RETURN + " ";
 			if (a.mid.isOp())
 			{
