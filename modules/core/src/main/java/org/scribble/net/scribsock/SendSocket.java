@@ -25,8 +25,6 @@ public abstract class SendSocket extends LinearSocket
 
 	protected void writeScribMessage(Role peer, ScribMessage msg) throws IOException, ScribbleRuntimeException
 	{
-		//System.out.println("Write: " + msg);
-
 		use();
 		/*SocketEndpoint se = this.ep.getSocketEndpoint(peer);
 		se.writeMessageAndFlush(msg);*/

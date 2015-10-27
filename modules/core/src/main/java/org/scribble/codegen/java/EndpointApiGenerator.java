@@ -70,6 +70,7 @@ public class EndpointApiGenerator
 	private String root = null;
 	Map<EndpointState, String> classNames = new HashMap<>();
 	private Map<String, ClassBuilder> classes = new HashMap<>();  // class name key
+	private Map<String, InterfaceBuilder> ifaces = new HashMap<>();  // FIXME: integrate with above
 
 	public EndpointApiGenerator(Job job, GProtocolName fullname, Role role)
 	{
@@ -89,6 +90,11 @@ public class EndpointApiGenerator
 		{
 			String path = SessionApiGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java";
 			map.put(path, this.classes.get(s).generate());
+		}
+		for (String s : this.ifaces.keySet())
+		{
+			String path = SessionApiGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java";
+			map.put(path, this.ifaces.get(s).generate());
 		}
 		return map;
 	}
@@ -462,7 +468,7 @@ public class EndpointApiGenerator
 		return futureClass;
 	}
 	
-	private void addBranchMethod(ClassBuilder cb, EndpointState ps)
+	private void addBranchMethod(ClassBuilder cb, EndpointState curr)
 	{
 		final String MESSAGE_VAR = "m";
 		final String OPENUM_VAR = "openum";
@@ -470,8 +476,8 @@ public class EndpointApiGenerator
 
 		Module main = this.job.getContext().getMainModule();
 
-		String next = constructBranchReceiveClass(ps, main);
-		String enumClass = this.classNames.get(ps) + "Enum";
+		String next = constructBranchReceiveClass(curr, main);
+		String enumClass = this.classNames.get(curr) + "Enum";
 
 		cb.addImports("java.util.concurrent.ExecutionException");
 		
@@ -480,12 +486,12 @@ public class EndpointApiGenerator
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException", "ExecutionException", "InterruptedException");
 		
-		Role peer = ps.getAcceptable().iterator().next().peer;
+		Role peer = curr.getAcceptable().iterator().next().peer;
 		mb.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		mb.addBodyLine(enumClass + " " + OPENUM_VAR + ";");
 		boolean first = true;
-		for (IOAction a : ps.getAcceptable())
+		for (IOAction a : curr.getAcceptable())
 		{
 			mb.addBodyLine(((first) ? "" : "else ") + "if (" + OP + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
 			mb.addBodyLine(1, OPENUM_VAR + " = "
@@ -502,7 +508,78 @@ public class EndpointApiGenerator
 		EnumBuilder eb = cb.newEnum(enumClass);
 		eb.addModifiers(ClassBuilder.PUBLIC);
 		eb.addInterfaces(OPENUM_INTERFACE);
-		ps.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+		curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+		
+
+		String ifname = cb.getName() + "_IBranch";
+		MethodBuilder mb2 = cb.newMethod("branch");
+		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
+		mb2.addParameters(ifname + " branch");
+		mb2.setReturn(ClassBuilder.VOID);
+		mb2.addModifiers(ClassBuilder.PUBLIC);
+		mb2.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException", "ExecutionException", "InterruptedException");
+		mb2.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
+				+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
+		first = true;
+		for (IOAction a : curr.getAcceptable())
+		{
+			EndpointState succ = curr.accept(a);
+			if (first)
+			{
+				first = false;
+			}
+			else
+			{
+				mb2.addBodyLine("else");
+			}
+			mb2.addBodyLine("if (" + MESSAGE_VAR + "." + SCRIBMESSAGE_OP_FIELD + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
+			String ln = "branch.receive(";
+			if (!succ.isTerminal())
+			{
+				 ln += "new " + this.classNames.get(succ) + "(" + SCRIBSOCKET_SE_FIELD + "), ";
+			}
+			ln += getSessionApiOpConstant(a.mid) + ");";
+			mb2.addBodyLine(ln);
+			if (succ.isTerminal())
+			{
+				mb2.addBodyLine(SCRIBSOCKET_SE_FIELD + ".setCompleted();");
+			}
+			mb2.addBodyLine("}");
+		}
+
+		InterfaceBuilder ib = new InterfaceBuilder();
+		ib.setPackage(getPackageName());
+		ib.addImports("java.io.IOException");
+		ib.setName(ifname);
+		ib.addModifiers(InterfaceBuilder.PUBLIC);
+		for (IOAction a : curr.getAcceptable())
+		{
+			EndpointState succ = curr.accept(a);
+			String nextClass = this.classNames.get(succ);
+			String opClass = SessionApiGenerator.getOpClassName(a.mid);
+
+			MethodBuilder mb3 = ib.newMethod("receive");
+			mb3.addModifiers(ClassBuilder.PUBLIC);
+			mb3.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
+			mb3.setReturn(InterfaceBuilder.VOID);
+			//if (!nextClass.equals(ClassBuilder.VOID))
+			if (!succ.isTerminal())
+			{
+				mb3.addParameters(nextClass + " state");
+			}
+			mb3.addParameters(opClass + " " + RECEIVE_OP_PARAM);  // More params added below
+
+			if (a.mid.isOp())
+			{	
+				addReceiveOpParams(mb, main, a);
+			}
+			else //if (a.mid.isMessageSigName())
+			{
+				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				addReceiveMessageSigNameParams(mb, a, msd);
+			}
+		}
+		this.ifaces.put(ifname, ib);
 	}
 
 	// FIXME: factor with regular receive

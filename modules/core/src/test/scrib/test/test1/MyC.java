@@ -3,7 +3,6 @@
 
 package test.test1;
 
-import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
@@ -14,55 +13,21 @@ public class MyC
 	public static void main(String[] args) throws Exception
 	{
 		Proto1 adder = new Proto1();
-		//SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
 		SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
 		
 		try (Proto1_C_0 s0 = new Proto1_C_0(se))
 		{
-			System.out.println("c0: ");
-			
-			//.. add reconnect and do smtp
-			//.. add explicit connects
-			//.. redo smtp
-
 			s0.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
-			
-			System.out.println("c1: ");
-
 			Proto1_C_1 s1 = s0.init();
-
-			System.out.println("c2: ");
 			
-			//s1.receive(Proto1._1).send(Proto1.S, Proto1._2);
-			
-			Proto1_C_6 s6 = s1.branch();  // FIXME: change generated name to e.g. Proto_C_1_Branch (it's not really a distinct state)
-			switch (s6.op)
+			Proto1_C_2 s2 = s1.send(Proto1.S, Proto1._1);
+			for (int i = 0; i < 3; i++)
 			{
-				case _1:
-				{
-					Buff<Integer> b1 = new Buff<>();
-					Buff<Future_Proto1_C_4> b2 = new Buff<>();
-
-					s6.receive(Proto1._1, b1)
-					  .async(Proto1._2, b2)
-					  .send(Proto1.S, Proto1._3, 3);
-			
-					System.out.println("Client 1: ");
-					System.out.println("Client 2: " + b2.val.sync().pay1);
-
-					break;
-				}
-				case _4:
-				{
-					s6.receive(Proto1._4)
-					  .async(Proto1._5)
-					  .receive(Proto1._6);
-			
-					break;
-				}
+				s2 = 
+					s2.send(Proto1.S, Proto1._2)
+					  .send(Proto1.S, Proto1._1);
 			}
-
-			System.out.println("Client 3: ");
+			s2.send(Proto1.S, Proto1._3);
 		}
 	}
 }
