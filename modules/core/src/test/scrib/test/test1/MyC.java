@@ -30,6 +30,15 @@ public class MyC
 					  .send(Proto1.S, Proto1._1);
 			}
 			s2.send(Proto1.S, Proto1._4).end();
+
+			/*for (int i = 0; i < 3; i++)
+			{
+				s1 =
+					s1.send(Proto1.S, Proto1._1)
+					  .send(Proto1.S, Proto1._2, 123)
+					  .receive(Proto1.S, Proto1._3, new Buff<>());
+			}
+			s1.send(Proto1.S, Proto1._1).send(Proto1.S, Proto1._4).end();*/
 		}
 	}
 }

@@ -32,14 +32,11 @@ public class MyS
 					Proto1_S_1 s1 = s0.init();
 
 					s1.receive(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
-					System.out.println("1");
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{
-					System.out.println("2");
 					e.printStackTrace();
 				}
-				System.out.println("3");
 			}
 		}
 	}
@@ -51,7 +48,7 @@ class Handler implements Proto1_S_2_Handler
 	public void receive(EndSocket schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
 		System.out.println("Done");
-		//schan.end();
+		schan.end();
 	}
 
 	@Override
@@ -60,7 +57,10 @@ class Handler implements Proto1_S_2_Handler
 		System.out.println("Redo: " + b.val);
 		try
 		{
-			schan.send(Proto1.C, Proto1._3, 456).async(Proto1.C, Proto1._1).branch(Proto1.C, this);
+			Buff<Future_Proto1_S_1> f = new Buff<>();
+			Proto1_S_2 async = schan.send(Proto1.C, Proto1._3, 456).async(Proto1.C, Proto1._1, f);
+			//f.val.sync();
+			async.branch(Proto1.C, this);
 		}
 		catch (ClassNotFoundException | ExecutionException | InterruptedException e)
 		{

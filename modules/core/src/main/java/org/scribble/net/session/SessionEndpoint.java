@@ -124,7 +124,6 @@ public class SessionEndpoint
 	{
 		if (!this.closed)
 		{
-			System.out.println("Closing");
 			this.closed = true;
 			this.sel.close();
 			this.servs.values().stream().forEach((ss) -> ss.unbind());
