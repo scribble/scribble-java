@@ -29,7 +29,7 @@ public class MyC
 					  .receive(Proto1.S, Proto1._3, new Buff<>())
 					  .send(Proto1.S, Proto1._1);
 			}
-			s2.send(Proto1.S, Proto1._4);
+			s2.send(Proto1.S, Proto1._4).end();
 		}
 	}
 }

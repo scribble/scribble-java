@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
+import org.scribble.net.scribsock.EndSocket;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
@@ -31,11 +32,14 @@ public class MyS
 					Proto1_S_1 s1 = s0.init();
 
 					s1.receive(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
+					System.out.println("1");
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{
+					System.out.println("2");
 					e.printStackTrace();
 				}
+				System.out.println("3");
 			}
 		}
 	}
@@ -44,15 +48,16 @@ public class MyS
 class Handler implements Proto1_S_2_Handler
 {
 	@Override
-	public void receive(_4 op) throws ScribbleRuntimeException, IOException
+	public void receive(EndSocket schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
 		System.out.println("Done");
+		//schan.end();
 	}
 
 	@Override
-	public void receive(Proto1_S_3 schan, _2 op) throws ScribbleRuntimeException, IOException
+	public void receive(Proto1_S_3 schan, _2 op, Buff<? super Integer> b) throws ScribbleRuntimeException, IOException
 	{
-		System.out.println("Redo");
+		System.out.println("Redo: " + b.val);
 		try
 		{
 			schan.send(Proto1.C, Proto1._3, 456).async(Proto1.C, Proto1._1).branch(Proto1.C, this);

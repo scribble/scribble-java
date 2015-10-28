@@ -3,20 +3,21 @@ package org.scribble.net.scribsock;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.SessionEndpoint;
 
-@Deprecated
-public abstract class EndSocket extends LinearSocket
+public class EndSocket extends ScribSocket
 {
-	//private boolean closed = false;
-
-	protected EndSocket(SessionEndpoint ep)
+	public EndSocket(SessionEndpoint se)
 	{
-		super(ep);
+		super(se);
 	}
 
 	public void end() throws ScribbleRuntimeException
 	{
-		super.use();
-		this.se.setCompleted();
+		/*super.use();
+		this.se.setCompleted();*/
+		if (!this.se.isCompleted())
+		{
+			throw new ScribbleRuntimeException("Session not completed: " + this.se);
+		}
 		this.se.close();
 		//this.closed = true;
 	}

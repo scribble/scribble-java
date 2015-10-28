@@ -24,6 +24,7 @@ public class SessionEndpoint
 	public final ScribMessageFormatter smf;
 
 	private boolean complete = false;
+	private boolean closed = false;
 	
 	protected final Map<Role, ScribServerSocket> servs = new HashMap<>();
 	protected final Map<Role, BinaryChannelEndpoint> chans = new HashMap<>();
@@ -119,10 +120,15 @@ public class SessionEndpoint
 		return this.complete;
 	}
 	
-	public void close()
+	public synchronized void close()
 	{
-		this.sel.close();
-		this.servs.values().stream().forEach((ss) -> ss.unbind());
+		if (!this.closed)
+		{
+			System.out.println("Closing");
+			this.closed = true;
+			this.sel.close();
+			this.servs.values().stream().forEach((ss) -> ss.unbind());
+		}
 	}
 
 	public ScribServerSocket getSelfServerSocket()

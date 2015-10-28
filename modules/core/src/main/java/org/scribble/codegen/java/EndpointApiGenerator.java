@@ -45,6 +45,7 @@ public class EndpointApiGenerator
 	private static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
 	private static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
 	private static final String BRANCHRECEIVESOCKET_CLASS = "org.scribble.net.scribsock.BranchReceiveSocket";
+	private static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
 	
 	private static final String BUFF_VAL = "val";
 	private static final String SCRIBSOCKET_SE_FIELD = ClassBuilder.THIS + ".se";
@@ -269,9 +270,10 @@ public class EndpointApiGenerator
 		if (isTerminalClassName(nextClass))
 		{
 			mb.addBodyLine(SCRIBSOCKET_SE_FIELD + ".setCompleted();");  // Do before the IO action? in case of exception?
-			mb.addBodyLine(ClassBuilder.RETURN + ";");
+			//mb.addBodyLine(ClassBuilder.RETURN + ";");
+			//mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + ENDSOCKET_CLASS + "(" + SCRIBSOCKET_SE_FIELD + ");");
 		}
-		else
+		//else
 		{
 			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ");");
 		}
@@ -546,17 +548,42 @@ public class EndpointApiGenerator
 			mb2.addBodyLine("if (" + MESSAGE_VAR + "." + SCRIBMESSAGE_OP_FIELD + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
 			if (succ.isTerminal())
 			{
-				mb2.addBodyLine(SCRIBSOCKET_SE_FIELD + ".setCompleted();");
+				mb2.addBodyLine(1, SCRIBSOCKET_SE_FIELD + ".setCompleted();");
 			}
 			String ln = "branch.receive(";
-			if (!succ.isTerminal())
+			//if (!succ.isTerminal())
 			{
 				 ln += "new " + this.classNames.get(succ) + "(" + SCRIBSOCKET_SE_FIELD + "), ";
 			}
-			ln += getSessionApiOpConstant(a.mid) + ");";
-			mb2.addBodyLine(ln);
+			ln += getSessionApiOpConstant(a.mid);
+					
+			// Based on receive parameters
+			if (a.mid.isOp())
+			{
+				if (!a.payload.isEmpty())
+				{
+					String buffSuper = ClassBuilder.NEW + " " + BUFF_CLASS + "<>(";
+					int i = 0;
+					for (PayloadType<?> pt : a.payload.elems)
+					{
+						DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
+						ln += ", " + buffSuper + "(" + dtd.extName + ") " + RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[" + i++ + "])";
+					}
+				}
+			}
+			else
+			{
+				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+				ln += ClassBuilder.NEW + " " + BUFF_CLASS + "<>((" + msd + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
+			}
+				
+			ln += ");";
+			mb2.addBodyLine(1, ln);
 			mb2.addBodyLine("}");
 		}
+		mb2.addBodyLine("else {");
+		mb2.addBodyLine(1, "throw " + ClassBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
+		mb2.addBodyLine("}");
 
 		// Handler interface
 		InterfaceBuilder ib = new InterfaceBuilder();
@@ -572,10 +599,10 @@ public class EndpointApiGenerator
 
 			MethodBuilder mb3 = ib.newMethod("receive");
 			mb3.addModifiers(ClassBuilder.PUBLIC);
-			mb3.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
 			mb3.setReturn(InterfaceBuilder.VOID);
+			mb3.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
 			//if (!nextClass.equals(ClassBuilder.VOID))
-			if (!succ.isTerminal())
+			//if (!succ.isTerminal())
 			{
 				mb3.addParameters(nextClass + " schan");
 			}
@@ -583,12 +610,12 @@ public class EndpointApiGenerator
 
 			if (a.mid.isOp())
 			{	
-				addReceiveOpParams(mb, main, a);
+				addReceiveOpParams(mb3, main, a);
 			}
 			else //if (a.mid.isMessageSigName())
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				addReceiveMessageSigNameParams(mb, a, msd);
+				addReceiveMessageSigNameParams(mb3, a, msd);
 			}
 		}
 		this.ifaces.put(ifname, ib);
@@ -736,7 +763,8 @@ public class EndpointApiGenerator
 		}
 		if (ps.isTerminal())  // Terminal states inlined implicitly into terminal actions by returning void (instead of explicit terminal state)
 		{
-			this.classNames.put(ps, ClassBuilder.VOID);
+			//this.classNames.put(ps, ClassBuilder.VOID);
+			this.classNames.put(ps, ENDSOCKET_CLASS);
 			return;
 		}
 		String c = newClassName();
@@ -759,7 +787,8 @@ public class EndpointApiGenerator
 	
 	private static boolean isTerminalClassName(String n)
 	{
-		return n.equals(ClassBuilder.VOID);
+		//return n.equals(ClassBuilder.VOID);
+		return n.equals(ENDSOCKET_CLASS);
 	}
 	
 	private int nextCount()
