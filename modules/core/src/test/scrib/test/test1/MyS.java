@@ -23,7 +23,7 @@ public class MyS
 			while (true)
 			{
 				Proto1 foo = new Proto1();
-				SessionEndpoint se = foo.project(Proto1.S, ss, new ObjectStreamFormatter());
+				SessionEndpoint se = foo.project(Proto1.S, new ObjectStreamFormatter(), ss);
 				Proto1_S_0 init = new Proto1_S_0(se);
 				init.accept(Proto1.C);
 

@@ -27,17 +27,17 @@ import demo.smtp.message.client.Subject;
 
 public class SmtpClient
 {
-	public SmtpClient() throws ScribbleRuntimeException
+	public SmtpClient() throws ScribbleRuntimeException, IOException
 	{
 		run();
 	}
 
-	public static void main(String[] args) throws ScribbleRuntimeException
+	public static void main(String[] args) throws Exception
 	{
 		new SmtpClient();
 	}
 
-	public void run() throws ScribbleRuntimeException
+	public void run() throws ScribbleRuntimeException, IOException
 	{
 		SMTP smtp = new SMTP();
 		SessionEndpoint se = smtp.project(SMTP.C, new SmtpMessageFormatter());

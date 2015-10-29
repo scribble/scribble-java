@@ -15,7 +15,8 @@ import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.sesstype.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
-public class SessionEndpoint
+//.. initiator and joiner endpoints
+public class SessionEndpoint<R extends Role>
 {
 	public final Buff<?> gc = new Buff<>();
 
@@ -47,7 +48,7 @@ public class SessionEndpoint
 	}
 
 	// FIXME: generalise roles and server socks for endpoints playing multiple roles
-	public SessionEndpoint(Session sess, Role self, ScribServerSocket ss, ScribMessageFormatter smf) throws IOException, ScribbleRuntimeException
+	public SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
 	{
 		this(sess, self, smf);
 		register(self, ss);

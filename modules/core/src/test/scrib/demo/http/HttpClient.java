@@ -21,17 +21,17 @@ import demo.http.message.server.Server;
 
 public class HttpClient
 {
-	public HttpClient() throws ScribbleRuntimeException
+	public HttpClient() throws ScribbleRuntimeException, IOException
 	{
 		run();
 	}
 
-	public static void main(String[] args) throws ScribbleRuntimeException
+	public static void main(String[] args) throws Exception
 	{
 		new HttpClient();
 	}
 
-	public void run() throws ScribbleRuntimeException
+	public void run() throws ScribbleRuntimeException, IOException
 	{
 		Buff<HttpVersion> b_vers = new Buff<>();
 		Buff<ContentLength> b_clen = new Buff<>();

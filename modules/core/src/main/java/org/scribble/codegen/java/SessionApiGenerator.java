@@ -36,8 +36,6 @@ public class SessionApiGenerator
 	
 	private final Map<String, ClassBuilder> classes = new HashMap<>();  // All classes in same package, for protected constructor access
 	
-	//.. FIXME: singleton constants in subpackages, constant references from session class -- work out scrib package/module correspondence with java package/classes
-
 	public SessionApiGenerator(Job job, GProtocolName fullname) throws ScribbleException
 	{
 		this.job = job;

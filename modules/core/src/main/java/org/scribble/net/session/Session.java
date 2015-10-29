@@ -40,9 +40,9 @@ public class Session
 		this(getFreshId(), importPath, source, proto);
 	}
 
-	// Client side
+	/*// Client side
 	//public SessionEndpointOld toEndpoint(Principal p) throws ScribbleException, IOException
-	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleRuntimeException
+	public <R extends Role> SessionEndpoint<R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException
 	{
 		if (this.endpoints.containsKey(role))
 		{
@@ -50,7 +50,7 @@ public class Session
 		}
 		try
 		{
-			SessionEndpoint ep = new SessionEndpoint(this, role, smf);
+			SessionEndpoint<R> ep = new SessionEndpoint<>(this, role, smf);
 			this.endpoints.put(role, ep);
 			return ep;
 		}
@@ -58,17 +58,23 @@ public class Session
 		{
 			throw new ScribbleRuntimeException(e);
 		}
+	}*/
+	public <R extends Role> SessionEndpoint<R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	{
+		return project(role, smf, null);
 	}
 
 	// Server side
-	public SessionEndpoint project(Role role, ScribServerSocket ss, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	public <R extends Role> SessionEndpoint<R> project(R role, ScribMessageFormatter smf, ScribServerSocket ss) throws ScribbleRuntimeException, IOException
 	{
 		// FIXME: check valid role
 		if (this.endpoints.containsKey(role))
 		{
 			throw new ScribbleRuntimeException("Session endpoint already created for: " + role);
 		}
-		SessionEndpoint ep = new SessionEndpoint(this, role, ss, smf);
+		SessionEndpoint<R> ep = (ss == null)
+				? new SessionEndpoint<>(this, role, smf)
+				: new SessionEndpoint<>(this, role, smf, ss);
 		this.endpoints.put(role, ep);
 		return ep;
 	}

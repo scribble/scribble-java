@@ -44,7 +44,7 @@ public class EndpointApiGenerator
 	private static final String SENDSOCKET_CLASS = "org.scribble.net.scribsock.SendSocket";
 	private static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
 	private static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
-	private static final String BRANCHRECEIVESOCKET_CLASS = "org.scribble.net.scribsock.BranchReceiveSocket";
+	private static final String CASESOCKET_CLASS = "org.scribble.net.scribsock.CaseSocket";
 	private static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
 	
 	private static final String BUFF_VAL = "val";
@@ -56,11 +56,11 @@ public class EndpointApiGenerator
 	private static final String RECEIVE_MESSAGE_PARAM = "m";
 	private static final String RECEIVE_ARG_PREFIX = "arg";
 
-	private static final String BRANCHRECEIVE_OP_FIELD = "op";
-	private static final String BRANCHRECEIVE_OP_PARAM = BRANCHRECEIVE_OP_FIELD;
-	private static final String BRANCHRECEIVE_MESSAGE_FIELD = "m";
-	private static final String BRANCHRECEIVE_MESSAGE_PARAM = BRANCHRECEIVE_MESSAGE_FIELD;
-	private static final String BRANCHRECEIVE_ARG_PREFIX = "arg";
+	private static final String CASE_OP_FIELD = "op";
+	private static final String CASE_OP_PARAM = CASE_OP_FIELD;
+	private static final String CASE_MESSAGE_FIELD = "m";
+	private static final String CASE_MESSAGE_PARAM = CASE_MESSAGE_FIELD;
+	private static final String CASE_ARG_PREFIX = "arg";
 	
 	private final Job job;
 	private final GProtocolName gpn;  // full name
@@ -486,7 +486,7 @@ public class EndpointApiGenerator
 
 		Module main = this.job.getContext().getMainModule();
 
-		String next = constructBranchReceiveClass(curr, main);
+		String next = constructCaseClass(curr, main);
 		String enumClass = this.classNames.get(curr) + "Enum";
 
 		cb.addImports("java.util.concurrent.ExecutionException");
@@ -622,25 +622,25 @@ public class EndpointApiGenerator
 	}
 
 	// FIXME: factor with regular receive
-	private String constructBranchReceiveClass(EndpointState curr, Module main)
+	private String constructCaseClass(EndpointState curr, Module main)
 	{
 		String branchName = this.classNames.get(curr);  // Name of "parent" branch class (curr state is the branch state)
 		String enumClassName = branchName + "." + branchName + "Enum";
 		//String className = newClassName();  // Name of branch-receive class
 		String className = branchName + "_Cases";
 
-		ClassBuilder cb = constructClassExceptMethods(BRANCHRECEIVESOCKET_CLASS, className);
+		ClassBuilder cb = constructClassExceptMethods(CASESOCKET_CLASS, className);
 		
 		MethodBuilder ctor = cb.getConstructors().iterator().next();
-		ctor.addParameters(enumClassName + " " + BRANCHRECEIVE_OP_PARAM, SCRIBMESSAGE_CLASS + " " + BRANCHRECEIVE_MESSAGE_PARAM);
-		ctor.addBodyLine(ClassBuilder.THIS + "." + BRANCHRECEIVE_OP_FIELD + " = " + BRANCHRECEIVE_OP_PARAM + ";");
-		ctor.addBodyLine(ClassBuilder.THIS + "." + BRANCHRECEIVE_MESSAGE_FIELD + " = " + BRANCHRECEIVE_MESSAGE_PARAM + ";");
+		ctor.addParameters(enumClassName + " " + CASE_OP_PARAM, SCRIBMESSAGE_CLASS + " " + CASE_MESSAGE_PARAM);
+		ctor.addBodyLine(ClassBuilder.THIS + "." + CASE_OP_FIELD + " = " + CASE_OP_PARAM + ";");
+		ctor.addBodyLine(ClassBuilder.THIS + "." + CASE_MESSAGE_FIELD + " = " + CASE_MESSAGE_PARAM + ";");
 
-		FieldBuilder fb1 = cb.newField(BRANCHRECEIVE_OP_FIELD);  // The op enum, for convenient switch/if/etc by user (correctly derived by code generation from the received ScribMessage)
+		FieldBuilder fb1 = cb.newField(CASE_OP_FIELD);  // The op enum, for convenient switch/if/etc by user (correctly derived by code generation from the received ScribMessage)
 		fb1.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
 		fb1.setType(enumClassName);
 		
-		FieldBuilder fb2 = cb.newField(BRANCHRECEIVE_MESSAGE_FIELD);  // The received ScribMessage (branch-check checks the user-selected receive op against the ScribMessage op)
+		FieldBuilder fb2 = cb.newField(CASE_MESSAGE_FIELD);  // The received ScribMessage (branch-check checks the user-selected receive op against the ScribMessage op)
 		fb2.addModifiers(ClassBuilder.PRIVATE, ClassBuilder.FINAL);
 		fb2.setType(SCRIBMESSAGE_CLASS);
 
@@ -650,22 +650,22 @@ public class EndpointApiGenerator
 			String nextClass = this.classNames.get(succ);
 			String opClass = SessionApiGenerator.getOpClassName(a.mid);
 
-			addBranchReceiveReceiveMethod(cb, main, a, nextClass, opClass);
-			addBranchReceiveReceiveDiscardMethod(cb, main, a, nextClass, opClass);
+			addCaseReceiveMethod(cb, main, a, nextClass, opClass);
+			addCaseReceiveDiscardMethod(cb, main, a, nextClass, opClass);
 		}
 
 		this.classes.put(className, cb);
 		return className;
 	}
 
-	private void addBranchReceiveReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
+	private void addCaseReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
 		MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
 		if (a.mid.isOp())
 		{
 			addReceiveOpParams(mb, main, a);
 			mb.addBodyLine(ClassBuilder.SUPER + ".use();");
-			addBranchCheck(getSessionApiOpConstant(a.mid), mb, BRANCHRECEIVE_MESSAGE_FIELD);
+			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
 			addPayloadBuffSetters(main, a, mb);
 		}
 		else //if (a.mid.isMessageSigName())
@@ -673,19 +673,19 @@ public class EndpointApiGenerator
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			addReceiveMessageSigNameParams(mb, a, msd);
 			mb.addBodyLine(ClassBuilder.SUPER + ".use();");
-			addBranchCheck(getSessionApiOpConstant(a.mid), mb, BRANCHRECEIVE_MESSAGE_FIELD);
-			mb.addBodyLine(BRANCHRECEIVE_ARG_PREFIX + "." + BUFF_VAL+ " = (" + msd.extName + ") " + BRANCHRECEIVE_MESSAGE_FIELD + ";");
+			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
+			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL+ " = (" + msd.extName + ") " + CASE_MESSAGE_FIELD + ";");
 		}
 		addReturnNextSocket(mb, nextClass);
 	}
 
-	private void addBranchReceiveReceiveDiscardMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
+	private void addCaseReceiveDiscardMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
 		if (!a.payload.isEmpty() || a.mid.isMessageSigName())
 		{
 			MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
 			String ln = (isTerminalClassName(nextClass)) ? "" : ClassBuilder.RETURN + " ";
-			ln += "receive(" + getSessionApiRoleConstant(a.peer) + ", " + BRANCHRECEIVE_OP_PARAM + ", ";
+			ln += "receive(" + getSessionApiRoleConstant(a.peer) + ", " + CASE_OP_PARAM + ", ";
 			if (a.mid.isOp())
 			{
 				ln += a.payload.elems.stream()

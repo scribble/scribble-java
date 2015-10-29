@@ -11,13 +11,13 @@ import org.scribble.sesstype.name.Role;
 
 public class ScribInputSelector extends Thread
 {
-	private SessionEndpoint se;
+	private SessionEndpoint<? extends Role> se;  // FIXME
 	private final Selector sel;
 
 	private volatile boolean paused = false;
 	private volatile boolean closed = false;
 
-	public ScribInputSelector(SessionEndpoint se) throws IOException
+	public ScribInputSelector(SessionEndpoint<? extends Role> se) throws IOException
 	{
 		this.se = se;
 		this.sel = Selector.open();

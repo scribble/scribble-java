@@ -21,7 +21,7 @@ public class Agent
 				int quote = 1000;
 
 				Booking booking = new Booking();
-				SessionEndpoint A = booking.project(Booking.A, ss, new ObjectStreamFormatter());
+				SessionEndpoint A = booking.project(Booking.A, new ObjectStreamFormatter(), ss);
 				
 				Booking_A_0 init = new Booking_A_0(A);
 				init.accept(Booking.C);

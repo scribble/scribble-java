@@ -48,7 +48,7 @@ public class HttpServer
 			while (true)	
 			{
 				Http http = new Http();
-				SessionEndpoint se = http.project(Http.C, ss, new HttpMessageFormatter());
+				SessionEndpoint se = http.project(Http.C, new HttpMessageFormatter(), ss);
 				Http_S_0 init = new Http_S_0(se);
 				init.accept(Http.C);
 

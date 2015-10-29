@@ -22,7 +22,7 @@ public class AdderServer
 			while (true)
 			{
 				Adder foo = new Adder();
-				SessionEndpoint se = foo.project(Adder.S, ss, new ObjectStreamFormatter());
+				SessionEndpoint se = foo.project(Adder.S, new ObjectStreamFormatter(), ss);
 				Adder_S_0 init = new Adder_S_0(se);
 				init.accept(Adder.C);
 

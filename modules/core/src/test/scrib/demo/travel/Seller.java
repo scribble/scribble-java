@@ -20,7 +20,7 @@ public class Seller
 			while (true)
 			{
 				Booking booking = new Booking();
-				SessionEndpoint S = booking.project(Booking.C, ss_C, new ObjectStreamFormatter());
+				SessionEndpoint S = booking.project(Booking.C, new ObjectStreamFormatter(), ss_C);
 				//S.register(Booking.A, ss_A);
 				
 				Booking_S_0 init = new Booking_S_0(S);
