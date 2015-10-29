@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
@@ -31,7 +31,7 @@ public class Client
 			s0.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 9999);
 			Booking_C_1 s1 = s0.init();
 
-			Buff<Integer> quote = new Buff<>();
+			Buf<Integer> quote = new Buf<>();
 
 			for (int i = 0; ; i++)
 			{
@@ -62,7 +62,7 @@ public class Client
 		}
 	}
 
-	private static void foo(Booking_C_1 s1, Buff<Integer> buf) throws Exception
+	private static void foo(Booking_C_1 s1, Buf<Integer> buf) throws Exception
 	{
 		for (int i = 0; i < QUERIES.size(); i++)  // Stream.forEach not suitable due to Exceptions
 		{
@@ -83,7 +83,7 @@ public class Client
 		s1.send(Booking.A, Booking.No).send(Booking.A, Booking.Bye);
 	}
 	
-	private static Booking_C_3 doQuery(Booking_C_1 s1, int i, Buff<Integer> buf) throws Exception
+	private static Booking_C_3 doQuery(Booking_C_1 s1, int i, Buf<Integer> buf) throws Exception
 	{
 		return (i >= QUERIES.size())
 				? s1.send(Booking.A, Booking.No) 
@@ -93,7 +93,7 @@ public class Client
 					        , i, buf);
 	}
 
-	private static Booking_C_3 checkMax(Booking_C_1 s1, int i, Buff<Integer> buf) throws Exception
+	private static Booking_C_3 checkMax(Booking_C_1 s1, int i, Buf<Integer> buf) throws Exception
 	{
 		return (buf.val <= MAX)
 				? s1.send(Booking.A, Booking.Yes)

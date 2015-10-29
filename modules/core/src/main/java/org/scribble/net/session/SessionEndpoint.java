@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ScribMessageFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.sesstype.name.Role;
@@ -18,7 +18,7 @@ import org.scribble.sesstype.name.Role;
 //.. initiator and joiner endpoints
 public class SessionEndpoint<R extends Role>
 {
-	public final Buff<?> gc = new Buff<>();
+	public final Buf<?> gc = new Buf<>();
 
 	public final Session sess;
 	public final Role self;

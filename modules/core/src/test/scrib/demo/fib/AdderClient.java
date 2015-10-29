@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
@@ -18,8 +18,8 @@ public class AdderClient
 {
 	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Buff<Integer> i1 = new Buff<>(1);
-		Buff<Integer> i2 = new Buff<>(2);
+		Buf<Integer> i1 = new Buf<>(1);
+		Buf<Integer> i2 = new Buf<>(2);
 		
 		Adder adder = new Adder();
 		SessionEndpoint se = adder.project(Adder.C, new ObjectStreamFormatter());

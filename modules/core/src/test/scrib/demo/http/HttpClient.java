@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 import org.scribble.util.Caller;
@@ -33,11 +33,11 @@ public class HttpClient
 
 	public void run() throws ScribbleRuntimeException, IOException
 	{
-		Buff<HttpVersion> b_vers = new Buff<>();
-		Buff<ContentLength> b_clen = new Buff<>();
-		Buff<ContentType> b_ctype = new Buff<>();
-		Buff<Body> b_body = new Buff<>();
-		Buff<Server> b_serv = new Buff<>();
+		Buf<HttpVersion> b_vers = new Buf<>();
+		Buf<ContentLength> b_clen = new Buf<>();
+		Buf<ContentType> b_ctype = new Buf<>();
+		Buf<Body> b_body = new Buf<>();
+		Buf<Server> b_serv = new Buf<>();
 		
 		Http http = new Http();
 		SessionEndpoint se = http.project(Http.C, new HttpMessageFormatter());

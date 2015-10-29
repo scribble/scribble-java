@@ -3,7 +3,7 @@
 
 package test.test1;
 
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
@@ -26,7 +26,7 @@ public class MyC
 			{
 				s2 = 
 					s2.send(Proto1.S, Proto1._2, 123)
-					  .receive(Proto1.S, Proto1._3, new Buff<>())
+					  .receive(Proto1.S, Proto1._3, new Buf<>())
 					  .send(Proto1.S, Proto1._1);
 			}
 			s2.send(Proto1.S, Proto1._4).end();

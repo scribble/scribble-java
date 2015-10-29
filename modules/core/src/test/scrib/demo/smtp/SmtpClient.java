@@ -7,7 +7,7 @@ import java.util.Base64;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.session.SSLSocketChannelWrapper;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
@@ -50,7 +50,7 @@ public class SmtpClient
 			init.connect(SocketChannelEndpoint::new, SMTP.S, host, port);
 			SMTP_C_1 s1 = init.init();
 			
-			Buff<Future_SMTP_C_1> b220 = new Buff<>();
+			Buf<Future_SMTP_C_1> b220 = new Buf<>();
 			SMTP_C_2 s2 = s1.async(SMTP._220, b220);
 			System.out.print("Greeting: " + b220.val.sync().msg);
 
@@ -81,7 +81,7 @@ public class SmtpClient
 			   .send(SMTP.S, new Subject("test"))
 			   .send(SMTP.S, new DataLine("body"))
 			   .send(SMTP.S, new EndOfData())
-			   .receive(SMTP._250, new Buff<>())  // Final sync needed for session to be successful?
+			   .receive(SMTP._250, new Buf<>())  // Final sync needed for session to be successful?
 			   .send(SMTP.S, new Quit());
 		}
 		catch (Exception e)
@@ -97,7 +97,7 @@ public class SmtpClient
 	private SMTP_C_4 doEhlo(SMTP_C_2 s2) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		SMTP_C_3 s3 = s2.send(SMTP.S, new Ehlo("testing1"));
-		Buff<Object> b = new Buff<>();
+		Buf<Object> b = new Buf<>();
 		while (true)
 		{	
 			SMTP_C_17 s17 = s3.branch();
@@ -121,7 +121,7 @@ public class SmtpClient
 
 	private SMTP_C_6 doStartTls(SMTP_C_4 s4) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Buff<Object> b = new Buff<>();
+		Buf<Object> b = new Buf<>();
 		SMTP_C_6 s6 = s4.send(SMTP.S, new StartTls()).receive(SMTP._220, b);
 		System.out.print("StartTLS: " + b.val);
 		s6.wrapClient(SSLSocketChannelWrapper::new, SMTP.S);
@@ -132,7 +132,7 @@ public class SmtpClient
 	private SMTP_C_8 doEhlo(SMTP_C_6 s6) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		SMTP_C_7 s7 = s6.send(SMTP.S, new Ehlo("testing2"));
-		Buff<Object> b = new Buff<>();
+		Buf<Object> b = new Buf<>();
 		while (true)
 		{	
 			SMTP_C_18 s18 = s7.branch();
@@ -157,7 +157,7 @@ public class SmtpClient
 	private SMTP_C_10 doAuth(SMTP_C_8 s8) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		SMTP_C_19 s19 = s8.send(SMTP.S, new Auth(getAuthPlain())).branch();
-		Buff<Object> b = new Buff<>();
+		Buf<Object> b = new Buf<>();
 		switch (s19.op)
 		{
 			case _235:

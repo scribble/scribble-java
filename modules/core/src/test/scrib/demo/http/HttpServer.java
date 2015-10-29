@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
@@ -33,15 +33,15 @@ public class HttpServer
 
 	public static void main(String[] args) throws ScribbleRuntimeException, IOException
 	{
-		Buff<RequestLine> b_reql = new Buff<>();
-		Buff<Host> b_host = new Buff<>();
-		Buff<UserAgent> b_usera = new Buff<>();
-		Buff<Accept> b_acc = new Buff<>();
-		Buff<AcceptLanguage> b_accl = new Buff<>();
-		Buff<AcceptEncoding> b_acce = new Buff<>();
-		Buff<DoNotTrack> b_dnt = new Buff<>();
-		Buff<Connection> b_conn = new Buff<>();
-		Buff<Body> b_body = new Buff<>();
+		Buf<RequestLine> b_reql = new Buf<>();
+		Buf<Host> b_host = new Buf<>();
+		Buf<UserAgent> b_usera = new Buf<>();
+		Buf<Accept> b_acc = new Buf<>();
+		Buf<AcceptLanguage> b_accl = new Buf<>();
+		Buf<AcceptEncoding> b_acce = new Buf<>();
+		Buf<DoNotTrack> b_dnt = new Buf<>();
+		Buf<Connection> b_conn = new Buf<>();
+		Buf<Body> b_body = new Buf<>();
 		
 		try (ScribServerSocket ss = new SocketChannelServer(8080))
 		{

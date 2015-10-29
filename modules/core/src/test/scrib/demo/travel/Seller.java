@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
@@ -26,7 +26,7 @@ public class Seller
 				Booking_S_0 init = new Booking_S_0(S);
 				init.accept(Booking.C);
 				init.accept(Booking.A);
-				Buff<String> payment = new Buff<>();
+				Buf<String> payment = new Buf<>();
 				try (Booking_S_0 s0 = init)
 				{
 					Booking_S_1 s1 = s0.init();

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
@@ -16,8 +16,8 @@ public class AdderServer
 	{
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
-			Buff<Integer> i1 = new Buff<>();
-			Buff<Integer> i2 = new Buff<>();
+			Buf<Integer> i1 = new Buf<>();
+			Buf<Integer> i2 = new Buf<>();
 
 			while (true)
 			{
@@ -38,7 +38,7 @@ public class AdderServer
 		}
 	}
 	
-	private static Adder_S_3 X(Adder_S_1 s1, Buff<Integer> i1, Buff<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException, ExecutionException, InterruptedException
+	private static Adder_S_3 X(Adder_S_1 s1, Buf<Integer> i1, Buf<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException, ExecutionException, InterruptedException
 	{
 		Adder_S_4 s4 = s1.branch();
 		switch (s4.op)
