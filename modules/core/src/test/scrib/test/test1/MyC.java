@@ -14,7 +14,7 @@ public class MyC
 	public static void main(String[] args) throws Exception
 	{
 		Proto1 adder = new Proto1();
-		SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
+		SessionEndpoint<C> se = adder.project(Proto1.C, new ObjectStreamFormatter());
 		
 		try (Proto1_C_0 s0 = new Proto1_C_0(se))
 		{

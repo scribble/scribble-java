@@ -80,7 +80,8 @@ public class SessionApiGenerator
 		
 		this.cb.setName(simpname);
 		this.cb.setPackage(packname);
-		this.cb.addImports("java.util.LinkedList", "java.util.List");
+		this.cb.addImports("java.io.IOException", "java.util.LinkedList", "java.util.List");
+		this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
 		this.cb.addModifiers(ClassBuilder.PUBLIC);
 		this.cb.setSuperClass(SessionApiGenerator.SESSION_CLASS);
 		
@@ -105,11 +106,22 @@ public class SessionApiGenerator
 
 		MethodBuilder ctor = this.cb.newConstructor();
 		ctor.addModifiers(ClassBuilder.PUBLIC);
-		ctor.setName(simpname);
+		ctor.setName(simpname);  // ?
 		ctor.addBodyLine(ClassBuilder.SUPER + "("
 				+ simpname + "." + SessionApiGenerator.IMPATH_FIELD + ", "
 				+ simpname + "." + SessionApiGenerator.SOURCE_FIELD + ", "
 				+ simpname + "." + SessionApiGenerator.PROTO_FIELD + ");");
+		
+		for (Role r : this.roles)
+		{
+			String classname = getRoleClassName(r);
+			MethodBuilder mb = this.cb.newMethod("project");
+			mb.addModifiers(ClassBuilder.PUBLIC);
+			mb.setReturn("SessionEndpoint<" + classname + ">");
+			mb.addParameters(classname + " role", "ScribMessageFormatter smf");
+			mb.addExceptions("ScribbleRuntimeException", "IOException");
+			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER + ".project(role, smf);");
+		}
 	}
 
 	private void addRoleField(ClassBuilder cb, Role role)

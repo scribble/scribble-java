@@ -23,9 +23,11 @@ public class MyS
 			while (true)
 			{
 				Proto1 foo = new Proto1();
-				SessionEndpoint se = foo.project(Proto1.S, new ObjectStreamFormatter(), ss);
+				//SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter(), ss);
+				SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter());
 				Proto1_S_0 init = new Proto1_S_0(se);
-				init.accept(Proto1.C);
+				//init.accept(Proto1.C);
+				init.accept(ss, Proto1.C);
 
 				try (Proto1_S_0 s0 = init)
 				{
@@ -45,7 +47,7 @@ public class MyS
 class Handler implements Proto1_S_2_Handler
 {
 	@Override
-	public void receive(EndSocket schan, _4 op) throws ScribbleRuntimeException, IOException
+	public void receive(EndSocket<S> schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
 		System.out.println("Done");
 		schan.end();

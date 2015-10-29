@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.scribble.main.RuntimeScribbleException;
-import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.ScribMessageFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
@@ -27,7 +26,8 @@ public class SessionEndpoint<R extends Role>
 	private boolean complete = false;
 	private boolean closed = false;
 	
-	protected final Map<Role, ScribServerSocket> servs = new HashMap<>();
+	protected final Map<Role, ScribServerSocket> servs = new HashMap<>();  // For multi-role endpoints?  // Or currently only self is used as a key, but should be peer roles instead? 
+	// Generally, think was in the middle of refactoring for explicit connections
 	protected final Map<Role, BinaryChannelEndpoint> chans = new HashMap<>();
 	
 	private final ScribInputSelector sel;
@@ -47,27 +47,31 @@ public class SessionEndpoint<R extends Role>
 		this.sel.start();
 	}
 
-	// FIXME: generalise roles and server socks for endpoints playing multiple roles
+	/*// FIXME: generalise roles and server socks for endpoints playing multiple roles
 	public SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
 	{
 		this(sess, self, smf);
-		register(self, ss);
+		//register(self, ss);
+		this.sel.pause();
+		this.servs.put(self, ss);
+		this.sel.unpause();
 	}
 	
 	// FIXME: allowing multiple serversocks to be registered, but it just overrides the self entry (already set by constructor) -- server socks not identified with peer (or protocol state)
 	// -- and InitSocket accept always uses the self server sock
 	//public synchronized void register(Role self, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
+	// TODO: was refactoring for explicit connections
 	protected synchronized void register(Role self, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
 	{
 		this.sel.pause();
 		this.servs.put(self, ss);
 		this.sel.unpause();
-	}
+	}*/
 
-	public synchronized void register(Role peer, String host, int port) throws IOException
+	/*public synchronized void register(Role peer, String host, int port) throws IOException
 	{
 		throw new RuntimeException("TODO: " + host + ", " + port);
-	}
+	}*/
 	
 	public synchronized void register(Role peer, BinaryChannelEndpoint c) throws IOException
 	{

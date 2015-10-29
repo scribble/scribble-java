@@ -33,10 +33,12 @@ import org.scribble.visit.Projector;
 // FIXME: consume futures before wrap/reconnect
 public class EndpointApiGenerator
 {
+	private static final String ROLE_CLASS = "org.scribble.sesstype.name.Role";
+
 	private static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
 	private static final String SCRIBMESSAGE_CLASS = "org.scribble.net.ScribMessage";
 	private static final String SCRIBBLERUNTIMEEXCEPTION_CLASS = "org.scribble.main.ScribbleRuntimeException";
-	private static final String BUFF_CLASS = "org.scribble.net.Buff";
+	private static final String BUFF_CLASS = "org.scribble.net.Buf";
 	private static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
 	private static final String SCRIBFUTURE_CLASS = "org.scribble.net.ScribFuture";
 
@@ -64,6 +66,7 @@ public class EndpointApiGenerator
 	
 	private final Job job;
 	private final GProtocolName gpn;  // full name
+	private final Role self;
 	private final LProtocolName lpn;
 
 	private int counter = 1;
@@ -73,13 +76,14 @@ public class EndpointApiGenerator
 	private Map<String, ClassBuilder> classes = new HashMap<>();  // class name key
 	private Map<String, InterfaceBuilder> ifaces = new HashMap<>();  // FIXME: integrate with above
 
-	public EndpointApiGenerator(Job job, GProtocolName fullname, Role role)
+	public EndpointApiGenerator(Job job, GProtocolName fullname, Role self)
 	{
 		this.job = job;
 		this.gpn = fullname;
-		this.lpn = Projector.projectFullProtocolName(fullname, role);
+		this.self = self;
+		this.lpn = Projector.projectFullProtocolName(fullname, self);
 
-		EndpointState init = job.getContext().getEndpointGraph(fullname, role).init;
+		EndpointState init = job.getContext().getEndpointGraph(fullname, self).init;
 		generateClassNames(init);
 		constructClasses(init);
 	}
@@ -126,14 +130,15 @@ public class EndpointApiGenerator
 	private ClassBuilder constructInitClass(String className)
 	{
 		final String SESSIONENDPOINT_PARAM = "se";
+		String role = SessionApiGenerator.getRoleClassName(this.self);
 
 		ClassBuilder cb = new ClassBuilder();
 		cb.setName(className);
 		cb.setPackage(getPackageName());
-		cb.setSuperClass(INITSOCKET_CLASS);
+		cb.setSuperClass(INITSOCKET_CLASS + "<" + role + ">");
 		cb.addModifiers(ClassBuilder.PUBLIC);
 		
-		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + " " + SESSIONENDPOINT_PARAM);
+		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + role + "> " + SESSIONENDPOINT_PARAM);
 		ctor.addModifiers(ClassBuilder.PUBLIC);
 		ctor.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		
@@ -161,7 +166,7 @@ public class EndpointApiGenerator
 		cb.setName(className);
 		cb.setPackage(getPackageName());
 		cb.addModifiers(ClassBuilder.PUBLIC);
-		cb.setSuperClass(superc);
+		cb.setSuperClass(superc + "<" + SessionApiGenerator.getRoleClassName(this.self) + ">");
 		addImports(cb);
 		addConstructor(cb, className);
 		return cb;
@@ -179,7 +184,7 @@ public class EndpointApiGenerator
 	{
 		final String SESSIONENDPOINT_PARAM = "se";
 
-		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + " " + SESSIONENDPOINT_PARAM);
+		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + SessionApiGenerator.getRoleClassName(this.self) + "> " + SESSIONENDPOINT_PARAM);
 		ctor.addModifiers(ClassBuilder.PROTECTED);
 		ctor.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		return ctor;
@@ -365,7 +370,7 @@ public class EndpointApiGenerator
 		}
 	}
 
-	private static MethodBuilder makeReceiveHeader(ClassBuilder cb, String next, Role peer, String opClass)
+	private MethodBuilder makeReceiveHeader(ClassBuilder cb, String next, Role peer, String opClass)
 	{
 		final String ROLE_PARAM = "role";
 
@@ -553,7 +558,7 @@ public class EndpointApiGenerator
 			String ln = "branch.receive(";
 			//if (!succ.isTerminal())
 			{
-				 ln += "new " + this.classNames.get(succ) + "(" + SCRIBSOCKET_SE_FIELD + "), ";
+				 ln += ClassBuilder.NEW + " " + this.classNames.get(succ) + "(" + SCRIBSOCKET_SE_FIELD + "), ";
 			}
 			ln += getSessionApiOpConstant(a.mid);
 					
@@ -604,7 +609,7 @@ public class EndpointApiGenerator
 			//if (!nextClass.equals(ClassBuilder.VOID))
 			//if (!succ.isTerminal())
 			{
-				mb3.addParameters(nextClass + " schan");
+				mb3.addParameters(nextClass + (succ.isTerminal() ? "<" + self + ">" : "") + " schan");
 			}
 			mb3.addParameters(opClass + " " + RECEIVE_OP_PARAM);  // More params added below
 

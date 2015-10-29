@@ -9,11 +9,11 @@ import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
 // Not AutoClosable -- leave that to InitSocket
-public abstract class LinearSocket extends ScribSocket
+public abstract class LinearSocket<R extends Role> extends ScribSocket<R>
 {
 	private boolean used = false;
 	
-	protected LinearSocket(SessionEndpoint ep)
+	protected LinearSocket(SessionEndpoint<R> ep)
 	{
 		super(ep);
 	}

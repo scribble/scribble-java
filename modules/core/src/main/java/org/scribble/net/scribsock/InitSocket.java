@@ -10,9 +10,9 @@ import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
 // Establishing transport connections handled in here and wrapped up in SocketWrapper
-public abstract class InitSocket extends LinearSocket implements AutoCloseable
+public abstract class InitSocket<R extends Role> extends LinearSocket<R> implements AutoCloseable
 {
-	protected InitSocket(SessionEndpoint se)
+	protected InitSocket(SessionEndpoint<R> se)
 	{
 		super(se);
 	}
@@ -40,12 +40,17 @@ public abstract class InitSocket extends LinearSocket implements AutoCloseable
 		}
 	}
 
-	@Deprecated
 	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
 	{
-		accept(null, role);
+		//accept(null, role);
+		if (isUsed())
+		{
+			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
+		}
+		this.se.register(role, ss.accept(this.se));  // FIXME: serv map in SessionEndpoint not currently used
 	}
 
+	@Deprecated
 	public void accept(Role role) throws IOException, ScribbleRuntimeException
 	{
 		if (isUsed())

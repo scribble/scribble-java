@@ -1,19 +1,16 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.concurrent.Callable;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ScribMessage;
-import org.scribble.net.session.BinaryChannelEndpoint;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public abstract class SendSocket extends LinearSocket
+public abstract class SendSocket<R extends Role> extends LinearSocket<R>
 {
-	protected SendSocket(SessionEndpoint ep)
+	protected SendSocket(SessionEndpoint<R> ep)
 	{
 		super(ep);
 	}

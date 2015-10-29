@@ -9,11 +9,11 @@ import org.scribble.net.ScribMessage;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
-public abstract class ReceiveSocket extends LinearSocket
+public abstract class ReceiveSocket<R extends Role> extends LinearSocket<R>
 {
 	private CompletableFuture<ScribMessage> fut;
 
-	protected ReceiveSocket(SessionEndpoint se)
+	protected ReceiveSocket(SessionEndpoint<R> se)
 	{
 		super(se);
 	}

@@ -2,10 +2,11 @@ package org.scribble.net.scribsock;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.sesstype.name.Role;
 
-public class EndSocket extends ScribSocket
+public class EndSocket<R extends Role> extends ScribSocket<R>
 {
-	public EndSocket(SessionEndpoint se)
+	public EndSocket(SessionEndpoint<R> se)
 	{
 		super(se);
 	}
