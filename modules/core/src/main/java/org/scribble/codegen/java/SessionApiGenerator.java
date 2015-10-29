@@ -33,6 +33,10 @@ public class SessionApiGenerator
 	private final ClassBuilder cb = new ClassBuilder();
 	private final Set<Role> roles = new HashSet<>();
 	private final Set<MessageId<?>> mids = new HashSet<>();
+	
+	private final Map<String, ClassBuilder> classes = new HashMap<>();  // All classes in same package, for protected constructor access
+	
+	//.. FIXME: singleton constants in subpackages, constant references from session class -- work out scrib package/module correspondence with java package/classes
 
 	public SessionApiGenerator(Job job, GProtocolName fullname) throws ScribbleException
 	{
@@ -44,16 +48,26 @@ public class SessionApiGenerator
 		constructSessionClass();  // Depends on the above two being done first
 	}
 	
+	// relative path -> output text
 	public Map<String, String> generateSessionClass()
 	{
 		String simpname = getSessionClassName(this.gpn);
-		String path = getPackageName(this.gpn).replace('.', '/') + "/" + simpname + ".java";
+		//String path = getPackageName(this.gpn).replace('.', '/') + "/" + simpname + ".java";
+		String path = makePath(this.gpn, simpname);
 		StringBuilder sb = new StringBuilder(this.cb.generate());
 		//this.roles.values().forEach((cb) -> sb.append("\n\n").append(cb.generate()) );
 		//this.mids.values().forEach((cb) -> sb.append("\n\n").append(cb.generate()) );
 		Map<String, String> map = new HashMap<>();
 		map.put(path, sb.toString());
+		
+		this.classes.keySet().stream().forEach((n) -> map.put(n, this.classes.get(n).generate()));
+		
 		return map;
+	}
+
+	private static String makePath(GProtocolName gpn, String simpname)
+	{
+		return getPackageName(gpn).replace('.', '/') + "/" + simpname + ".java";
 	}
 
 	/*public Map<MessageId<?>, String> getOpClasses()
@@ -100,63 +114,68 @@ public class SessionApiGenerator
 				+ simpname + "." + SessionApiGenerator.PROTO_FIELD + ");");
 	}
 
-	private static void addRoleField(ClassBuilder cb, Role role)
+	private void addRoleField(ClassBuilder cb, Role role)
 	{
 		addSingletonConstant(cb, getRoleClassName(role));
 	}
 	
-	private static void addOpField(ClassBuilder cb, MessageId<?> mid)
+	private void addOpField(ClassBuilder cb, MessageId<?> mid)
 	{
 		addSingletonConstant(cb, getOpClassName(mid));
 	}
 	
-	private static void addSingletonConstant(ClassBuilder cb, String type)
+	private void addSingletonConstant(ClassBuilder cb, String type)
 	{
 		FieldBuilder fb = cb.newField(type);
 		fb.setType(type);
 		fb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
-		fb.setExpression(ClassBuilder.NEW + " " + type + "()");
+		//fb.setExpression(ClassBuilder.NEW + " " + type + "()");
+		fb.setExpression(getPackageName(this.gpn) + "." + type + "." + type);  // Currently requires source Scribble to be in a package that is not the root -- can fix by generating to a subpackage based on Module and/or protocol
 	}
 	
 	private void constructOpClasses() throws ScribbleException
 	{
-		Module mod = this.job.getContext().getModule(gpn.getPrefix());
-		GProtocolName simpname = gpn.getSimpleName();
+		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
+		GProtocolName simpname = this.gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
 		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
 		for (MessageId<?> mid : coll.getNames())
 		{
-			constructOpClass(this.cb.newClass(), mid);
+			//constructOpClass(this.cb.newClass(), mid);
+			constructOpClass(new ClassBuilder(), getPackageName(this.gpn), mid);
 			this.mids.add(mid);
 		}
 	}
 
 	private void constructRoleClasses() throws ScribbleException
 	{
-		Module mod = this.job.getContext().getModule(gpn.getPrefix());
-		GProtocolName simpname = gpn.getSimpleName();
+		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
+		GProtocolName simpname = this.gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
-			constructRoleClass(this.cb.newClass(), r);
+			//constructRoleClass(this.cb.newClass(), r);
+			constructRoleClass(new ClassBuilder(), getPackageName(this.gpn), r);
 			this.roles.add(r);
 		}
 	}
 	
-	private static ClassBuilder constructRoleClass(ClassBuilder cb, Role r)
+	private ClassBuilder constructRoleClass(ClassBuilder cb, String pack, Role r)
 	{
-		return constructSingletonClass(cb, SessionApiGenerator.ROLE_CLASS, getRoleClassName(r));
+		return constructSingletonClass(cb, pack, SessionApiGenerator.ROLE_CLASS, getRoleClassName(r));
 	}
 
-	private static ClassBuilder constructOpClass(ClassBuilder cb, MessageId<?> mid)
+	private ClassBuilder constructOpClass(ClassBuilder cb, String pack, MessageId<?> mid)
 	{
-		return constructSingletonClass(cb, SessionApiGenerator.OP_CLASS, getOpClassName(mid));
+		return constructSingletonClass(cb, pack, SessionApiGenerator.OP_CLASS, getOpClassName(mid));
 	}
 	
-	private static ClassBuilder constructSingletonClass(ClassBuilder cb, String superc, String type)
+	private ClassBuilder constructSingletonClass(ClassBuilder cb, String pack, String superc, String type)
 	{
 		cb.setName(type);
+		cb.addModifiers(ClassBuilder.PUBLIC);
+		cb.setPackage(pack);
 		cb.setSuperClass(superc);
 
 		FieldBuilder fb = cb.newField("serialVersionUID");
@@ -164,10 +183,16 @@ public class SessionApiGenerator
 		fb.setType("long");
 		fb.setExpression("1L");
 		
+		FieldBuilder fb2 = cb.newField(type);
+		fb2.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
+		fb2.setType(type);
+		fb2.setExpression(ClassBuilder.NEW + " " + type + "()");
+		
 		MethodBuilder mb = cb.newConstructor();
-		mb.addModifiers(ClassBuilder.PROTECTED);
+		mb.addModifiers(ClassBuilder.PRIVATE);
 		mb.addBodyLine(ClassBuilder.SUPER + "(\"" + type + "\");");
 
+		this.classes.put(pack.replace('.', '/') + "/" + type + ".java", cb);
 		return cb;
 	}
 	

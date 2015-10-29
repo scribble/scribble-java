@@ -31,7 +31,7 @@ public class MyS
 				{
 					Proto1_S_1 s1 = s0.init();
 
-					s1.receive(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
+					s1.async(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{
@@ -57,10 +57,7 @@ class Handler implements Proto1_S_2_Handler
 		System.out.println("Redo: " + b.val);
 		try
 		{
-			Buff<Future_Proto1_S_1> f = new Buff<>();
-			Proto1_S_2 async = schan.send(Proto1.C, Proto1._3, 456).async(Proto1.C, Proto1._1, f);
-			//f.val.sync();
-			async.branch(Proto1.C, this);
+			schan.send(Proto1.C, Proto1._3, 456).async(Proto1.C, Proto1._1).branch(Proto1.C, this);
 		}
 		catch (ClassNotFoundException | ExecutionException | InterruptedException e)
 		{
