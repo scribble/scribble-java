@@ -8,7 +8,6 @@ import java.util.Random;
 
 import org.scribble.main.ScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.ScribMessageFormatter;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 

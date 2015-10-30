@@ -1,7 +1,6 @@
 package test.foo;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
@@ -47,7 +46,7 @@ public class MyBC
 								}
 							}
 						}
-						catch (ScribbleRuntimeException | IOException | ClassNotFoundException | ExecutionException | InterruptedException e)
+						catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
 						{
 							e.printStackTrace();
 						}
@@ -79,7 +78,7 @@ public class MyBC
 								}
 							}
 						}
-						catch (ScribbleRuntimeException | IOException | ClassNotFoundException | ExecutionException | InterruptedException e)
+						catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
 						{
 							e.printStackTrace();
 						}

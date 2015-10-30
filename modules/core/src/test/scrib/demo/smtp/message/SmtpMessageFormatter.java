@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;

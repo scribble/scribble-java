@@ -1,7 +1,5 @@
 package demo.smtp.message;
 
-import java.nio.charset.Charset;
-
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 import org.scribble.util.Caller;
