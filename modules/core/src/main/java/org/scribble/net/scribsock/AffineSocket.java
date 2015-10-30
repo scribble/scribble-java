@@ -1,12 +1,13 @@
 package org.scribble.net.scribsock;
 
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.sesstype.name.Role;
 
 @Deprecated
-public abstract class AffineSocket extends LinearSocket
+public abstract class AffineSocket<S extends Session, R extends Role> extends LinearSocket<S, R>
 {
-	protected AffineSocket(SessionEndpoint ep)
+	protected AffineSocket(SessionEndpoint<S, R> ep)
 	{
 		super(ep);
 	}

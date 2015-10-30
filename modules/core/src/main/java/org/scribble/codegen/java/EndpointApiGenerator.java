@@ -33,7 +33,7 @@ import org.scribble.visit.Projector;
 // FIXME: consume futures before wrap/reconnect
 public class EndpointApiGenerator
 {
-	private static final String ROLE_CLASS = "org.scribble.sesstype.name.Role";
+	//private static final String ROLE_CLASS = "org.scribble.sesstype.name.Role";
 
 	private static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
 	private static final String SCRIBMESSAGE_CLASS = "org.scribble.net.ScribMessage";
@@ -42,7 +42,7 @@ public class EndpointApiGenerator
 	private static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
 	private static final String SCRIBFUTURE_CLASS = "org.scribble.net.ScribFuture";
 
-	private static final String INITSOCKET_CLASS = "org.scribble.net.scribsock.InitSocket";
+	//private static final String INITSOCKET_CLASS = "org.scribble.net.scribsock.InitSocket";
 	private static final String SENDSOCKET_CLASS = "org.scribble.net.scribsock.SendSocket";
 	private static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
 	private static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
@@ -688,7 +688,7 @@ public class EndpointApiGenerator
 
 	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, String next, Role peer, String opClass)
 	{
-		final String ROLE_PARAM = "role";
+		//final String ROLE_PARAM = "role";
 
 		MethodBuilder mb = cb.newMethod("receive");
 		mb.addModifiers(ClassBuilder.PUBLIC);

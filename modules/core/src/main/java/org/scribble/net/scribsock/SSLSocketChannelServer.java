@@ -1,7 +1,6 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 
 import org.scribble.net.session.SessionEndpoint;
