@@ -80,8 +80,8 @@ public class SessionApiGenerator
 		
 		this.cb.setName(simpname);
 		this.cb.setPackage(packname);
-		this.cb.addImports("java.io.IOException", "java.util.LinkedList", "java.util.List");
-		this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
+		this.cb.addImports(/*"java.io.IOException", */"java.util.LinkedList", "java.util.List");
+		//this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
 		this.cb.addModifiers(ClassBuilder.PUBLIC);
 		this.cb.setSuperClass(SessionApiGenerator.SESSION_CLASS);
 		
@@ -112,16 +112,16 @@ public class SessionApiGenerator
 				+ simpname + "." + SessionApiGenerator.SOURCE_FIELD + ", "
 				+ simpname + "." + SessionApiGenerator.PROTO_FIELD + ");");
 		
-		for (Role r : this.roles)
+		/*for (Role r : this.roles)
 		{
 			String role = getRoleClassName(r);
-			MethodBuilder mb = this.cb.newMethod("project");
+			MethodBuilder mb = this.cb.newMethod("project");  // No: use new on SessionEndpoint directly for Eclipse resource leak warning
 			mb.addModifiers(ClassBuilder.PUBLIC);
 			mb.setReturn("SessionEndpoint<" + simpname + ", " + role + ">");
 			mb.addParameters(role + " role", "ScribMessageFormatter smf");
 			mb.addExceptions("ScribbleRuntimeException", "IOException");
 			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER + ".project(role, smf);");
-		}
+		}*/
 	}
 
 	private void addRoleField(ClassBuilder cb, Role role)

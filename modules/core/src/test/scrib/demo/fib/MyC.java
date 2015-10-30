@@ -21,12 +21,11 @@ public class MyC
 	public static void main(String[] args) throws Exception
 	{
 		Adder adder = new Adder();
-		SessionEndpoint se = adder.project(Adder.C, new ObjectStreamFormatter());
-		
-		try (Adder_C_0 s0 = new Adder_C_0(se))
+		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
 		{
-			s0.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
-			Adder_C_1 s1 = s0.init();
+			se.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
+
+			Adder_C_1 s1 = new Adder_C_1(se);
 			
 			//Buff<Integer> buf = new Buff<>(1);
 			

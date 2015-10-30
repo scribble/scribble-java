@@ -22,13 +22,11 @@ public class AdderServer
 			while (true)
 			{
 				Adder foo = new Adder();
-				SessionEndpoint se = foo.project(Adder.S, new ObjectStreamFormatter(), ss);
-				Adder_S_0 init = new Adder_S_0(se);
-				init.accept(Adder.C);
-
-				try (Adder_S_0 s0 = init)
+				try (SessionEndpoint<Adder, S> se = new SessionEndpoint<>(foo, Adder.S, new ObjectStreamFormatter()))
 				{
-					X(s0.init(), i1, i2).send(Adder.C, Adder.BYE);
+					se.accept(ss, Adder.C);
+
+					X(new Adder_S_1(se), i1, i2).send(Adder.C, Adder.BYE);
 				}
 				catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
 				{
@@ -40,7 +38,7 @@ public class AdderServer
 	
 	private static Adder_S_3 X(Adder_S_1 s1, Buf<Integer> i1, Buf<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException, ExecutionException, InterruptedException
 	{
-		Adder_S_4 s4 = s1.branch();
+		Adder_S_1_Cases s4 = s1.branch(Adder.C);
 		switch (s4.op)
 		{
 			case BYE:

@@ -22,14 +22,13 @@ public class FibClient
 		Buf<Integer> i2 = new Buf<>(1);
 		
 		Adder adder = new Adder();
-		SessionEndpoint se = adder.project(Adder.C, new ObjectStreamFormatter());
-		
-		try (Adder_C_0 s0 = new Adder_C_0(se))
+		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
 		{
-			s0.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
-			Adder_C_1 s1 = s0.init();
+			se.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
 
-			fib(s1, i1, i2, 0).receive(Adder.BYE);
+			Adder_C_1 s1 = new Adder_C_1(se);
+
+			fib(s1, i1, i2, 0).receive(Adder.S, Adder.BYE);
 		}
 	}
 
@@ -37,7 +36,7 @@ public class FibClient
 	{
 		return (i < 20)
 			//? fib(side(s1.send(Adder.S, Adder.ADD, i1.val, i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
-			? fib(side(s1.send(Adder.S, Adder.ADD, i1.val, i1.val = i2.val), i1, i2).receive(Adder.RES, i2), i1, i2, i + 1)
+			? fib(side(s1.send(Adder.S, Adder.ADD, i1.val, i1.val = i2.val), i1, i2).receive(Adder.S, Adder.RES, i2), i1, i2, i + 1)
 			: s1.send(Adder.S, Adder.BYE);
 	}
 	

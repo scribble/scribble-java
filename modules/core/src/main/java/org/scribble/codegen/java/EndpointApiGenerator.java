@@ -382,10 +382,7 @@ public class EndpointApiGenerator
 		mb.setReturn(nextClass + (isTerminalClassName(nextClass) ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">" : ""));
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + RECEIVE_OP_PARAM);
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
-		if (!isTerminalClassName(nextClass))
-		{
-			mb.addBodyLine(ClassBuilder.RETURN + " async(" + getSessionApiRoleConstant(a.peer) + ", " + RECEIVE_OP_PARAM + ", " + getGarbageBuff(futureClass) + ");");
-		}
+		mb.addBodyLine(ClassBuilder.RETURN + " async(" + getSessionApiRoleConstant(a.peer) + ", " + RECEIVE_OP_PARAM + ", " + getGarbageBuff(futureClass) + ");");
 	}
 
 	private MethodBuilder makeReceiveHeader(ClassBuilder cb, String next, Role peer, String opClass)
@@ -684,9 +681,21 @@ public class EndpointApiGenerator
 		return className;
 	}
 
+	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, String next, Role peer, String opClass)
+	{
+		final String ROLE_PARAM = "role";
+
+		MethodBuilder mb = cb.newMethod("receive");
+		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.setReturn(next + (isTerminalClassName(next) ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">" : ""));
+		mb.addParameters(opClass + " " + RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException, ExecutionException, InterruptedException");
+		return mb;
+	}
+
 	private void addCaseReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
-		MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
+		MethodBuilder mb = makeCaseReceiveHeader(cb, nextClass, a.peer, opClass);
 		if (a.mid.isOp())
 		{
 			addReceiveOpParams(mb, main, a);
@@ -707,9 +716,9 @@ public class EndpointApiGenerator
 
 	private void addCaseReceiveDiscardMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
-		MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
+		MethodBuilder mb = makeCaseReceiveHeader(cb, nextClass, a.peer, opClass);
 		String ln = (isTerminalClassName(nextClass)) ? "" : ClassBuilder.RETURN + " ";
-		ln += "receive(" + getSessionApiRoleConstant(a.peer) + ", " + CASE_OP_PARAM + ", ";
+		ln += "receive(" + CASE_OP_PARAM + ", ";
 		if (a.mid.isOp())
 		{
 			ln += a.payload.elems.stream()
