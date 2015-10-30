@@ -250,6 +250,7 @@ class MethodBuilder
 {
 	private String name;
 
+	private List<String> annots = new LinkedList<>();
 	private List<String> mods = new LinkedList<>();
 	private String ret;  // null for constructor -- void must be set explicitly
 	private List<String> pars = new LinkedList<>();
@@ -264,6 +265,11 @@ class MethodBuilder
 	protected void setName(String name)
 	{
 		this.name = name;
+	}
+	
+	public void addAnnotations(String... mods)
+	{
+		this.annots.addAll(Arrays.asList(mods));
 	}
 	
 	public void addModifiers(String... mods)
@@ -304,6 +310,11 @@ class MethodBuilder
 	public String generate()
 	{
 		String meth = "";
+		if (!this.annots.isEmpty())
+		{
+			meth += "\t";
+			meth += this.annots.stream().collect(Collectors.joining("\n\t")) + "\n";
+		}
 		meth += "\t";
 		if (!this.mods.isEmpty())
 		{

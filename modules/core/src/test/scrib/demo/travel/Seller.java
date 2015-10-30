@@ -20,7 +20,7 @@ public class Seller
 			while (true)
 			{
 				Booking booking = new Booking();
-				try (SessionEndpoint<Booking, S> se = new SessionEndpoint<>(booking, Booking.C, new ObjectStreamFormatter()))
+				try (SessionEndpoint<Booking, S> se = new SessionEndpoint<>(booking, Booking.S, new ObjectStreamFormatter()))
 				{
 					//S.register(Booking.A, ss_A);
 				

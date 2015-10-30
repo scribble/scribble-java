@@ -24,7 +24,7 @@ public class MyS
 			{
 				Proto1 foo = new Proto1();
 				//SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter(), ss);
-				try (SessionEndpoint<Proto1, S> se = foo.project(Proto1.S, new ObjectStreamFormatter()))
+				try (SessionEndpoint<Proto1, S> se = new SessionEndpoint<>(foo, Proto1.S, new ObjectStreamFormatter()))
 				{
 					se.accept(ss, Proto1.C);
 

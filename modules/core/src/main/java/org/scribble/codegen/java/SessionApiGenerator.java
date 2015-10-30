@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -80,9 +81,10 @@ public class SessionApiGenerator
 		
 		this.cb.setName(simpname);
 		this.cb.setPackage(packname);
-		this.cb.addImports(/*"java.io.IOException", */"java.util.LinkedList", "java.util.List");
+		this.cb.addImports(/*"java.io.IOException", */"java.util.Arrays", "java.util.Collections", "java.util.LinkedList", "java.util.List");
 		//this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
-		this.cb.addModifiers(ClassBuilder.PUBLIC);
+		this.cb.addImports("org.scribble.sesstype.name.Role");
+		this.cb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
 		this.cb.setSuperClass(SessionApiGenerator.SESSION_CLASS);
 		
 		FieldBuilder fb1 = this.cb.newField(SessionApiGenerator.IMPATH_FIELD);
@@ -112,6 +114,14 @@ public class SessionApiGenerator
 				+ simpname + "." + SessionApiGenerator.SOURCE_FIELD + ", "
 				+ simpname + "." + SessionApiGenerator.PROTO_FIELD + ");");
 		
+		FieldBuilder fb4 = this.cb.newField("ROLES");
+		fb4.setType("List<Role>");
+		fb4.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
+		String roles = "Collections.unmodifiableList(Arrays.asList(new Role[] {";
+		roles += this.roles.stream().map((r) -> r.toString()).collect(Collectors.joining(", "));
+		roles += "}))";
+		fb4.setExpression(roles);
+		
 		/*for (Role r : this.roles)
 		{
 			String role = getRoleClassName(r);
@@ -122,6 +132,13 @@ public class SessionApiGenerator
 			mb.addExceptions("ScribbleRuntimeException", "IOException");
 			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER + ".project(role, smf);");
 		}*/
+
+		MethodBuilder mb = this.cb.newMethod("getRoles");
+		mb.addAnnotations("@Override");
+		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.setReturn("List<Role>");
+		mb.addParameters();
+		mb.addBodyLine(ClassBuilder.RETURN + " " + simpname + ".ROLES;");
 	}
 
 	private void addRoleField(ClassBuilder cb, Role role)

@@ -47,7 +47,7 @@ public class HttpServer
 			while (true)	
 			{
 				Http http = new Http();
-				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, Http.C, new HttpMessageFormatter()))
+				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, Http.S, new HttpMessageFormatter()))
 				{
 					se.accept(ss, Http.C);
 				

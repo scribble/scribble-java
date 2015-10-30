@@ -12,7 +12,7 @@ import org.scribble.net.ScribMessageFormatter;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-public class Session
+public abstract class Session
 {
 	private static final Map<Integer, Session> sessions = new HashMap<Integer, Session>();
 
@@ -58,16 +58,20 @@ public class Session
 			throw new ScribbleRuntimeException(e);
 		}
 	}*/
-	protected <P extends Session, R extends Role> SessionEndpoint<P, R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	//protected <P extends Session, R extends Role> SessionEndpoint<P, R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	protected void project(SessionEndpoint<?, ?> se) throws ScribbleRuntimeException, IOException
 	{
-		// FIXME: check valid role
-		if (this.endpoints.containsKey(role))
+		if (!getRoles().contains(se.self))
 		{
-			throw new ScribbleRuntimeException("Session endpoint already created for: " + role);
+			throw new ScribbleRuntimeException("Invalid role: " + se.self);
 		}
-		SessionEndpoint<P, R> ep = new SessionEndpoint<>(this, role, smf);
-		this.endpoints.put(role, ep);
-		return ep;
+		if (this.endpoints.containsKey(se.self))
+		{
+			throw new ScribbleRuntimeException("Session endpoint already created for: " + se.self);
+		}
+		//SessionEndpoint<P, R> ep = new SessionEndpoint<>(this, role, smf);
+		this.endpoints.put(se.self, se);
+		//return ep;
 	}
 
 	/*// Server side
@@ -102,14 +106,14 @@ public class Session
 	}
 
 	//public SessionEndpoint getEndpoint(Role role) throws ScribbleException
-	public <P extends Session, R extends Role> SessionEndpoint<P, R> getEndpoint(R role) throws ScribbleException
+	public <S extends Session, R extends Role> SessionEndpoint<S, R> getEndpoint(R role) throws ScribbleException
 	{
 		if (!this.endpoints.containsKey(role))
 		{
 			throw new ScribbleException("No endpoint for: " + role);
 		}
 		@SuppressWarnings("unchecked")
-		SessionEndpoint<P, R> cast = (SessionEndpoint<P, R>) this.endpoints.get(role);  // FIXME:
+		SessionEndpoint<S, R> cast = (SessionEndpoint<S, R>) this.endpoints.get(role);  // FIXME:
 		return cast;
 	}
 	
@@ -143,4 +147,6 @@ public class Session
 	{
 		Session.sessions.remove(this.id);
 	}
+	
+	public abstract List<Role> getRoles();
 }

@@ -13,7 +13,7 @@ public class MyC
 	public static void main(String[] args) throws Exception
 	{
 		Proto1 adder = new Proto1();
-		try (SessionEndpoint<Proto1, C> se = adder.project(Proto1.C, new ObjectStreamFormatter()))
+		try (SessionEndpoint<Proto1, C> se = new SessionEndpoint<>(adder, Proto1.C, new ObjectStreamFormatter()))
 		{
 			se.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
 

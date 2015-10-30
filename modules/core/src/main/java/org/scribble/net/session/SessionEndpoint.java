@@ -18,7 +18,7 @@ import org.scribble.sesstype.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 //.. initiator and joiner endpoints
-public class SessionEndpoint<P extends Session, R extends Role> implements AutoCloseable
+public class SessionEndpoint<S extends Session, R extends Role> implements AutoCloseable
 {
 	public final Buf<?> gc = new Buf<>();
 
@@ -42,11 +42,13 @@ public class SessionEndpoint<P extends Session, R extends Role> implements AutoC
 		return this.sel;
 	}
 	
-	public SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf) throws IOException
+	public SessionEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribbleRuntimeException
 	{
 		this.sess = sess;
 		this.self = self;
 		this.smf = smf;
+		
+		sess.project(this);
 		
 		this.sel = new ScribInputSelector(this);
 		this.sel.start();
@@ -174,6 +176,10 @@ public class SessionEndpoint<P extends Session, R extends Role> implements AutoC
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
 		}
+		if (this.chans.containsKey(role))
+		{
+			throw new ScribbleRuntimeException("Already connected to: " + role);
+		}
 		try
 		{
 			BinaryChannelEndpoint c = cons.call();
@@ -195,6 +201,10 @@ public class SessionEndpoint<P extends Session, R extends Role> implements AutoC
 		if (this.init)
 		{
 			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
+		}
+		if (this.chans.containsKey(role))
+		{
+			throw new ScribbleRuntimeException("Already connected to: " + role);
 		}
 		register(role, ss.accept(this));  // FIXME: serv map in SessionEndpoint not currently used
 	}
