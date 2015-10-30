@@ -122,11 +122,11 @@ public class EndpointApiGenerator
 		}
 
 		// Depends on the above being done first (for this.root)
-		String init = this.lpn.getSimpleName().toString() + "_" + 0;  // FIXME: factor out with newClassName
-		this.classes.put(init, constructInitClass(init));
+		/*String init = this.lpn.getSimpleName().toString() + "_" + 0;  // FIXME: factor out with newClassName
+		this.classes.put(init, constructInitClass(init));*/
 	}
 
-	// Pre: not a terminal state (i.e. className is not void)
+	/*// Pre: not a terminal state (i.e. className is not void)
 	private ClassBuilder constructInitClass(String className)
 	{
 		final String SESSIONENDPOINT_PARAM = "se";
@@ -151,7 +151,7 @@ public class EndpointApiGenerator
 		addReturnNextSocket(mb, this.root);
 
 		return cb;
-	}
+	}*/
 
 	private ClassBuilder constructClass(String superc, String className, EndpointState curr)
 	{
@@ -187,6 +187,16 @@ public class EndpointApiGenerator
 		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + SessionApiGenerator.getRoleClassName(this.self) + "> " + SESSIONENDPOINT_PARAM);
 		ctor.addModifiers(ClassBuilder.PROTECTED);
 		ctor.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		if (this.root.equals(className))
+		{
+			MethodBuilder mb = cb.newMethod("init");
+			mb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC);
+			mb.setReturn(this.root);
+			mb.addParameters(SESSIONENDPOINT_CLASS + "<" + SessionApiGenerator.getRoleClassName(this.self) + "> " + SESSIONENDPOINT_PARAM);
+			mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
+			mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
+			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");
+		}
 		return ctor;
 	}
 	

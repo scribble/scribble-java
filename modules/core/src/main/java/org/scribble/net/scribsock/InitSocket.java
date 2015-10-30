@@ -10,6 +10,7 @@ import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
 // Establishing transport connections handled in here and wrapped up in SocketWrapper
+@Deprecated
 public abstract class InitSocket<R extends Role> extends LinearSocket<R> implements AutoCloseable
 {
 	protected InitSocket(SessionEndpoint<R> se)

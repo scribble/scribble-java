@@ -1,13 +1,16 @@
 package org.scribble.net.session;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.channels.SelectionKey;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.scribble.main.RuntimeScribbleException;
+import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.ScribMessageFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
@@ -15,7 +18,7 @@ import org.scribble.sesstype.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 //.. initiator and joiner endpoints
-public class SessionEndpoint<R extends Role>
+public class SessionEndpoint<R extends Role> implements AutoCloseable
 {
 	public final Buf<?> gc = new Buf<>();
 
@@ -23,6 +26,8 @@ public class SessionEndpoint<R extends Role>
 	public final Role self;
 	public final ScribMessageFormatter smf;
 
+	private boolean init = false;
+	//private boolean bound = false;
 	private boolean complete = false;
 	private boolean closed = false;
 	
@@ -125,13 +130,24 @@ public class SessionEndpoint<R extends Role>
 		return this.complete;
 	}
 	
-	public synchronized void close()
+	@Override
+	public synchronized void close() throws ScribbleRuntimeException
 	{
 		if (!this.closed)
 		{
-			this.closed = true;
-			this.sel.close();
-			this.servs.values().stream().forEach((ss) -> ss.unbind());
+			try
+			{
+				this.closed = true;
+				this.sel.close();
+				this.servs.values().stream().forEach((ss) -> ss.unbind());
+			}
+			finally
+			{
+				if (!isCompleted())  // Subsumes use -- must be used for sess to be completed
+				{
+					throw new ScribbleRuntimeException("Session not completed: " + this.self);
+				}
+			}
 		}
 	}
 
@@ -149,7 +165,67 @@ public class SessionEndpoint<R extends Role>
 	{
 		return this.chans.keySet();
 	}
+	
+
+	public void connect(Callable<? extends BinaryChannelEndpoint> cons, Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	{
+		// Can connect unlimited, as long as not already used via init
+		if (this.init)
+		{
+			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
+		}
+		try
+		{
+			BinaryChannelEndpoint c = cons.call();
+			c.initClient(this, host, port);
+			register(role, c);
+		}
+		catch (Exception e)
+		{
+			if (e instanceof IOException)
+			{
+				throw (IOException) e;
+			}
+			throw new IOException(e);
+		}
+	}
+
+	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
+	{
+		if (this.init)
+		{
+			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
+		}
+		register(role, ss.accept(this));  // FIXME: serv map in SessionEndpoint not currently used
+	}
+	
+	/*public void init()
+	{
+		this.initialised = true;
+	}*/
+	
+	/*protected boolean isInitialised()
+	{
+		return this.initialised;
+	}*/
+	
+	//public void bind() throws ScribbleRuntimeException
+	public void init() throws ScribbleRuntimeException
+	{
+		/*if (this.bound)
+		{
+			throw new ScribbleRuntimeException("Session endpoint already bound.");
+		}*/
+		//if (!this.initialised)
+		if (this.init)
+		{
+			throw new ScribbleRuntimeException("Session endpoint already initialised.");
+		}
+		//this.bound = true;
+		this.init = true;
+	}
 	 
+
 	/*public final Session sess;
 	//public final Principal self;
 	public final Role self;

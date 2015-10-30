@@ -24,16 +24,11 @@ public class MyS
 			{
 				Proto1 foo = new Proto1();
 				//SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter(), ss);
-				SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter());
-				Proto1_S_0 init = new Proto1_S_0(se);
-				//init.accept(Proto1.C);
-				init.accept(ss, Proto1.C);
-
-				try (Proto1_S_0 s0 = init)
+				try (SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter()))
 				{
-					Proto1_S_1 s1 = s0.init();
+					se.accept(ss, Proto1.C);
 
-					s1.async(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
+					Proto1_S_1.init(se).async(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{

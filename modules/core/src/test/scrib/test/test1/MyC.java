@@ -14,14 +14,11 @@ public class MyC
 	public static void main(String[] args) throws Exception
 	{
 		Proto1 adder = new Proto1();
-		SessionEndpoint<C> se = adder.project(Proto1.C, new ObjectStreamFormatter());
-		
-		try (Proto1_C_0 s0 = new Proto1_C_0(se))
+		try (SessionEndpoint<C> se = adder.project(Proto1.C, new ObjectStreamFormatter()))
 		{
-			s0.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
-			Proto1_C_1 s1 = s0.init();
-			
-			Proto1_C_2 s2 = s1.send(Proto1.S, Proto1._1);
+			se.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
+
+			Proto1_C_2 s2 = Proto1_C_1.init(se).send(Proto1.S, Proto1._1);
 			for (int i = 0; i < 3; i++)
 			{
 				s2 = 
