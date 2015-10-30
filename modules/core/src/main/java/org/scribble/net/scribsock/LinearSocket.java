@@ -5,15 +5,16 @@ import java.util.concurrent.Callable;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.BinaryChannelWrapper;
+import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
 // Not AutoClosable -- leave that to InitSocket
-public abstract class LinearSocket<R extends Role> extends ScribSocket<R>
+public abstract class LinearSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
 {
 	private boolean used = false;
 	
-	protected LinearSocket(SessionEndpoint<R> ep)
+	protected LinearSocket(SessionEndpoint<S, R> ep)
 	{
 		super(ep);
 	}

@@ -22,7 +22,7 @@ public class Session
 	public final String modpath;
 	public final GProtocolName proto;
 	
-	private final Map<Role, SessionEndpoint<?>> endpoints = new HashMap<>();  // Only for local endpoints
+	private final Map<Role, SessionEndpoint<?, ?>> endpoints = new HashMap<>();  // Only for local endpoints
 
 	public Session(int id, List<String> impath, String modpath, GProtocolName proto)
 	{
@@ -58,14 +58,14 @@ public class Session
 			throw new ScribbleRuntimeException(e);
 		}
 	}*/
-	protected <R extends Role> SessionEndpoint<R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	protected <P extends Session, R extends Role> SessionEndpoint<P, R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
 	{
 		// FIXME: check valid role
 		if (this.endpoints.containsKey(role))
 		{
 			throw new ScribbleRuntimeException("Session endpoint already created for: " + role);
 		}
-		SessionEndpoint<R> ep = new SessionEndpoint<>(this, role, smf);
+		SessionEndpoint<P, R> ep = new SessionEndpoint<>(this, role, smf);
 		this.endpoints.put(role, ep);
 		return ep;
 	}
@@ -102,14 +102,14 @@ public class Session
 	}
 
 	//public SessionEndpoint getEndpoint(Role role) throws ScribbleException
-	public <R extends Role> SessionEndpoint<R> getEndpoint(R role) throws ScribbleException
+	public <P extends Session, R extends Role> SessionEndpoint<P, R> getEndpoint(R role) throws ScribbleException
 	{
 		if (!this.endpoints.containsKey(role))
 		{
 			throw new ScribbleException("No endpoint for: " + role);
 		}
 		@SuppressWarnings("unchecked")
-		SessionEndpoint<R> cast = (SessionEndpoint<R>) this.endpoints.get(role);  // FIXME:
+		SessionEndpoint<P, R> cast = (SessionEndpoint<P, R>) this.endpoints.get(role);  // FIXME:
 		return cast;
 	}
 	

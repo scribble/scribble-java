@@ -114,11 +114,11 @@ public class SessionApiGenerator
 		
 		for (Role r : this.roles)
 		{
-			String classname = getRoleClassName(r);
+			String role = getRoleClassName(r);
 			MethodBuilder mb = this.cb.newMethod("project");
 			mb.addModifiers(ClassBuilder.PUBLIC);
-			mb.setReturn("SessionEndpoint<" + classname + ">");
-			mb.addParameters(classname + " role", "ScribMessageFormatter smf");
+			mb.setReturn("SessionEndpoint<" + simpname + ", " + role + ">");
+			mb.addParameters(role + " role", "ScribMessageFormatter smf");
 			mb.addExceptions("ScribbleRuntimeException", "IOException");
 			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER + ".project(role, smf);");
 		}

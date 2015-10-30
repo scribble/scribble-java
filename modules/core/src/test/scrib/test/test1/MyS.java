@@ -24,11 +24,11 @@ public class MyS
 			{
 				Proto1 foo = new Proto1();
 				//SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter(), ss);
-				try (SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter()))
+				try (SessionEndpoint<Proto1, S> se = foo.project(Proto1.S, new ObjectStreamFormatter()))
 				{
 					se.accept(ss, Proto1.C);
 
-					Proto1_S_1.init(se).async(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
+					new Proto1_S_1(se).async(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{
@@ -42,7 +42,7 @@ public class MyS
 class Handler implements Proto1_S_2_Handler
 {
 	@Override
-	public void receive(EndSocket<S> schan, _4 op) throws ScribbleRuntimeException, IOException
+	public void receive(EndSocket<Proto1, S> schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
 		System.out.println("Done");
 		schan.end();

@@ -18,7 +18,7 @@ import org.scribble.sesstype.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 //.. initiator and joiner endpoints
-public class SessionEndpoint<R extends Role> implements AutoCloseable
+public class SessionEndpoint<P extends Session, R extends Role> implements AutoCloseable
 {
 	public final Buf<?> gc = new Buf<>();
 

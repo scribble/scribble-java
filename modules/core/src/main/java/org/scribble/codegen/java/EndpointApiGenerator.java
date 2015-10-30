@@ -165,8 +165,8 @@ public class EndpointApiGenerator
 		ClassBuilder cb = new ClassBuilder();
 		cb.setName(className);
 		cb.setPackage(getPackageName());
-		cb.addModifiers(ClassBuilder.PUBLIC);
-		cb.setSuperClass(superc + "<" + SessionApiGenerator.getRoleClassName(this.self) + ">");
+		cb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
+		cb.setSuperClass(superc + "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">");
 		addImports(cb);
 		addConstructor(cb, className);
 		return cb;
@@ -183,19 +183,26 @@ public class EndpointApiGenerator
 	private MethodBuilder addConstructor(ClassBuilder cb, String className)
 	{
 		final String SESSIONENDPOINT_PARAM = "se";
+		String sess = SessionApiGenerator.getSessionClassName(this.gpn);
+		String role = SessionApiGenerator.getRoleClassName(this.self);
 
-		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + SessionApiGenerator.getRoleClassName(this.self) + "> " + SESSIONENDPOINT_PARAM);
+		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM, "boolean dummy");
 		ctor.addModifiers(ClassBuilder.PROTECTED);
 		ctor.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		if (this.root.equals(className))
 		{
-			MethodBuilder mb = cb.newMethod("init");
+			/*MethodBuilder mb = cb.newMethod("init");
 			mb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC);
 			mb.setReturn(this.root);
-			mb.addParameters(SESSIONENDPOINT_CLASS + "<" + SessionApiGenerator.getRoleClassName(this.self) + "> " + SESSIONENDPOINT_PARAM);
+			mb.addParameters(SESSIONENDPOINT_CLASS + "<" + role + "> " + SESSIONENDPOINT_PARAM);
 			mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 			mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
-			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");
+			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
+			MethodBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
+			ctor2.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
+			ctor2.addModifiers(ClassBuilder.PUBLIC);
+			ctor2.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+			ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 		}
 		return ctor;
 	}
@@ -236,11 +243,12 @@ public class EndpointApiGenerator
 		Module main = this.job.getContext().getMainModule();
 		for (IOAction a : curr.getAcceptable())  // Scribble ensures all a are input or all are output
 		{
-			String nextClass = this.classNames.get(curr.accept(a));
+			EndpointState succ = curr.accept(a);
+			String nextClass = this.classNames.get(succ);
 			
 			MethodBuilder mb = cb.newMethod("send");
 			mb.addModifiers(ClassBuilder.PUBLIC);
-			mb.setReturn(nextClass);
+			mb.setReturn(nextClass + (succ.isTerminal() ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">" : ""));
 			mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM);  // More params added below
 			mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
 			
@@ -290,7 +298,7 @@ public class EndpointApiGenerator
 		}
 		//else
 		{
-			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ");");
+			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + nextClass + (isTerminalClassName(nextClass) ? "<>" : "") + "(" + SCRIBSOCKET_SE_FIELD + ", true);");
 		}
 	}
 
@@ -343,7 +351,7 @@ public class EndpointApiGenerator
 		MethodBuilder mb = cb.newMethod("async"); 
 		// Blurb stuff similar to makeReceiveHeader
 		mb.addModifiers(ClassBuilder.PUBLIC);//, ClassBuilder.SYNCHRONIZED);
-		mb.setReturn(nextClass);
+		mb.setReturn(nextClass  + (isTerminalClassName(nextClass) ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">" : ""));
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM);
 		mb.addParameters(opClass + " " + RECEIVE_OP_PARAM);
@@ -371,7 +379,7 @@ public class EndpointApiGenerator
 		
 		MethodBuilder mb = cb.newMethod("async"); 
 		mb.addModifiers(ClassBuilder.PUBLIC);
-		mb.setReturn(nextClass);
+		mb.setReturn(nextClass + (isTerminalClassName(nextClass) ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">" : ""));
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + RECEIVE_OP_PARAM);
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		if (!isTerminalClassName(nextClass))
@@ -386,7 +394,7 @@ public class EndpointApiGenerator
 
 		MethodBuilder mb = cb.newMethod("receive");
 		mb.addModifiers(ClassBuilder.PUBLIC);
-		mb.setReturn(next);
+		mb.setReturn(next + (isTerminalClassName(next) ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">" : ""));
 		mb.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM, opClass + " " + RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException, ExecutionException, InterruptedException");
 		return mb;
@@ -529,7 +537,7 @@ public class EndpointApiGenerator
 		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb.addBodyLine("}");
 		mb.addBodyLine(ClassBuilder.RETURN + " "
-				+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_SE_FIELD + ", " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");
+				+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_SE_FIELD + ", true, " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");  // FIXME: dummy boolean not needed
 		
 		EnumBuilder eb = cb.newEnum(enumClass);
 		eb.addModifiers(ClassBuilder.PUBLIC);
@@ -568,7 +576,7 @@ public class EndpointApiGenerator
 			String ln = "branch.receive(";
 			//if (!succ.isTerminal())
 			{
-				 ln += ClassBuilder.NEW + " " + this.classNames.get(succ) + "(" + SCRIBSOCKET_SE_FIELD + "), ";
+				 ln += ClassBuilder.NEW + " " + this.classNames.get(succ) + (succ.isTerminal() ? "<>" : "") + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
 			}
 			ln += getSessionApiOpConstant(a.mid);
 					
@@ -619,7 +627,7 @@ public class EndpointApiGenerator
 			//if (!nextClass.equals(ClassBuilder.VOID))
 			//if (!succ.isTerminal())
 			{
-				mb3.addParameters(nextClass + (succ.isTerminal() ? "<" + self + ">" : "") + " schan");
+				mb3.addParameters(nextClass + (succ.isTerminal() ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + self + ">" : "") + " schan");
 			}
 			mb3.addParameters(opClass + " " + RECEIVE_OP_PARAM);  // More params added below
 
@@ -666,7 +674,10 @@ public class EndpointApiGenerator
 			String opClass = SessionApiGenerator.getOpClassName(a.mid);
 
 			addCaseReceiveMethod(cb, main, a, nextClass, opClass);
-			addCaseReceiveDiscardMethod(cb, main, a, nextClass, opClass);
+			if (!a.payload.isEmpty() || a.mid.isMessageSigName())
+			{
+				addCaseReceiveDiscardMethod(cb, main, a, nextClass, opClass);
+			}
 		}
 
 		this.classes.put(className, cb);
@@ -696,23 +707,20 @@ public class EndpointApiGenerator
 
 	private void addCaseReceiveDiscardMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
-		if (!a.payload.isEmpty() || a.mid.isMessageSigName())
+		MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
+		String ln = (isTerminalClassName(nextClass)) ? "" : ClassBuilder.RETURN + " ";
+		ln += "receive(" + getSessionApiRoleConstant(a.peer) + ", " + CASE_OP_PARAM + ", ";
+		if (a.mid.isOp())
 		{
-			MethodBuilder mb = makeReceiveHeader(cb, nextClass, a.peer, opClass);
-			String ln = (isTerminalClassName(nextClass)) ? "" : ClassBuilder.RETURN + " ";
-			ln += "receive(" + getSessionApiRoleConstant(a.peer) + ", " + CASE_OP_PARAM + ", ";
-			if (a.mid.isOp())
-			{
-				ln += a.payload.elems.stream()
-							 .map((pt) -> getGarbageBuff(main.getDataTypeDecl(((DataType) pt)).extName)).collect(Collectors.joining(", ")) + ");";
-			}
-			else
-			{
-				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // Factor out? (send/receive/branchreceive/...)
-				ln += getGarbageBuff(msd.extName) + ");";
-			}
-			mb.addBodyLine(ln);
+			ln += a.payload.elems.stream()
+						 .map((pt) -> getGarbageBuff(main.getDataTypeDecl(((DataType) pt)).extName)).collect(Collectors.joining(", ")) + ");";
 		}
+		else
+		{
+			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // Factor out? (send/receive/branchreceive/...)
+			ln += getGarbageBuff(msd.extName) + ");";
+		}
+		mb.addBodyLine(ln);
 	}
 
 	private static void addBranchCheck(String opClassName, MethodBuilder mb, String messageField)

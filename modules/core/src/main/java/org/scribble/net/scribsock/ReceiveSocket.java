@@ -6,14 +6,15 @@ import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ScribMessage;
+import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
-public abstract class ReceiveSocket<R extends Role> extends LinearSocket<R>
+public abstract class ReceiveSocket<S extends Session, R extends Role> extends LinearSocket<S, R>
 {
 	private CompletableFuture<ScribMessage> fut;
 
-	protected ReceiveSocket(SessionEndpoint<R> se)
+	protected ReceiveSocket(SessionEndpoint<S, R> se)
 	{
 		super(se);
 	}
