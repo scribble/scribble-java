@@ -9,17 +9,11 @@ tools/eclipse/plugins/org.scribble.*/bin/
 .DS_Store
 *~
 *.swp
-modules/core/src/test/scrib/demo/http/Http.java
-modules/core/src/test/scrib/demo/http/Http_*
-modules/core/src/test/scrib/demo/smtp/Smtp.java
-modules/core/src/test/scrib/demo/smtp/Smtp_*
-modules/core/src/test/scrib/demo/fib/Adder.java
-modules/core/src/test/scrib/demo/fib/Adder_*
-modules/core/src/test/scrib/demo/travel/Booking.java
-modules/core/src/test/scrib/demo/travel/Booking_*
-modules/core/src/test/scrib/test/foo/Foo.java
-modules/core/src/test/scrib/test/foo/Foo_*
-modules/core/src/test/scrib/test/test1/Proto1.java
-modules/core/src/test/scrib/test/test1/Proto1_*
+modules/core/src/test/scrib/demo/http/*.java
+modules/core/src/test/scrib/demo/smtp/*.java
+modules/core/src/test/scrib/demo/fib/*.java
+modules/core/src/test/scrib/demo/travel/*.java
+modules/core/src/test/scrib/test/foo/*.java
+modules/core/src/test/scrib/test/test1/*.java
 bin/scribblec.sh
 

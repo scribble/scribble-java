@@ -33,7 +33,7 @@ public abstract class ScribFuture //implements Future<P>
 		return this.m;
 	}
 	
-	public abstract ScribFuture sync() throws ExecutionException, InterruptedException;
+	public abstract ScribFuture sync() throws ExecutionException, InterruptedException;  // sync returns the Future (cf. get returns the val)
 
 	/*@Override
 	public P get(long timeout, TimeUnit unit)
