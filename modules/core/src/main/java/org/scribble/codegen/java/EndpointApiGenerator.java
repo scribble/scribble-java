@@ -594,7 +594,7 @@ public class EndpointApiGenerator
 			else
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				ln += ClassBuilder.NEW + " " + BUFF_CLASS + "<>((" + msd + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
+				ln += ", " + ClassBuilder.NEW + " " + BUFF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
 			}
 				
 			ln += ");";
@@ -717,7 +717,7 @@ public class EndpointApiGenerator
 	private void addCaseReceiveDiscardMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
 		MethodBuilder mb = makeCaseReceiveHeader(cb, nextClass, a.peer, opClass);
-		String ln = (isTerminalClassName(nextClass)) ? "" : ClassBuilder.RETURN + " ";
+		String ln = ClassBuilder.RETURN + " ";
 		ln += "receive(" + CASE_OP_PARAM + ", ";
 		if (a.mid.isOp())
 		{

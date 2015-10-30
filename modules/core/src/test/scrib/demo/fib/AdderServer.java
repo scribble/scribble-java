@@ -38,16 +38,16 @@ public class AdderServer
 	
 	private static Adder_S_3 X(Adder_S_1 s1, Buf<Integer> i1, Buf<Integer> i2) throws ClassNotFoundException, ScribbleRuntimeException, IOException, ExecutionException, InterruptedException
 	{
-		Adder_S_1_Cases s4 = s1.branch(Adder.C);
-		switch (s4.op)
+		Adder_S_1_Cases cases = s1.branch(Adder.C);
+		switch (cases.op)
 		{
 			case BYE:
 			{
-				return s4.receive(Adder.BYE);
+				return cases.receive(Adder.BYE);
 			}
 			case ADD:
 			{
-				return X(s4.receive(Adder.ADD, i1, i2).send(Adder.C, Adder.RES, i1.val + i2.val), i1, i2);
+				return X(cases.receive(Adder.ADD, i1, i2).send(Adder.C, Adder.RES, i1.val + i2.val), i1, i2);
 			}
 			default:
 			{
