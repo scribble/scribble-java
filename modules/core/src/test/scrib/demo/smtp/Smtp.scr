@@ -1,3 +1,6 @@
+//$ bin/scribblec.sh modules/core/src/test/scrib/demo/smtp/Smtp.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -session SMTP -api SMTP C -V
+
+
 module demo.smtp.Smtp;
 
 sig <java> "demo.smtp.message.server._220"

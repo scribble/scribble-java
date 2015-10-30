@@ -8,8 +8,9 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
+import org.scribble.net.scribsock.EndSocket;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
@@ -18,29 +19,28 @@ public class AdderClient
 {
 	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Buff<Integer> i1 = new Buff<>(1);
-		Buff<Integer> i2 = new Buff<>(2);
-		
+		Buf<Integer> i1 = new Buf<>(1);
+		Buf<Integer> i2 = new Buf<>(2);
+
 		Adder adder = new Adder();
-		SessionEndpoint se = adder.project(Adder.C, new ObjectStreamFormatter());
-		
-		try (Adder_C_0 s0 = new Adder_C_0(se))
-		{
-			s0.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
-			Adder_C_1 s1 = s0.init();
+		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
+		{	
+			se.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
+
+			Adder_C_1 s1 = new Adder_C_1(se);
 
 			s1.send(Adder.S, Adder.ADD, i1.val, i1.val)
-			  .receive(Adder.RES, i1)
+				.receive(Adder.S, Adder.RES, i1)
 				.send(Adder.S, Adder.ADD, i1.val, i1.val)
-			  .receive(Adder.RES, i1)
-			  .send(Adder.S, Adder.BYE)
-			  .receive(Adder.BYE);
+				.receive(Adder.S, Adder.RES, i1)
+				.send(Adder.S, Adder.BYE)
+				.receive(Adder.S, Adder.BYE);
 			
 			/*while (i1.val < 100)
 			{
-				s1 = s1.send(Adder.S, Adder.ADD, i1.val, i1.val).receive(Adder.RES, i1);
+				s1 = s1.send(Adder.S, Adder.ADD, i1.val, i1.val).receive(Adder.S, Adder.RES, i1);
 			}
-			s1.send(Adder.S, Adder.BYE)
+			s1.send(Adder.S, Adder.BYE).receive(Adder.S, Adder.BYE)
 				.end();*/
 
 			//fib(i1, i2, s1).end();
@@ -49,16 +49,16 @@ public class AdderClient
 		}
 	}
 
-	/*private static Adder_C_3 fib(Buff<Integer> i1, Buff<Integer> i2, Adder_C_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	/*private static EndSocket<Adder, C> fib(Buf<Integer> i1, Buf<Integer> i2, Adder_C_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		return (i1.val < 100)
 				? fib(i1, i2,
-											side(i1, i2, s1.send(Adder.S, Adder.ADD, i1.val, i2.val)).receive(Adder.RES, i2)
-							)
-				: s1.send(Adder.S, Adder.BYE);
+							side(i1, i2, s1.send(Adder.S, Adder.ADD, i1.val, i2.val)).receive(Adder.S, Adder.RES, i2)
+					   )
+				: s1.send(Adder.S, Adder.BYE).receive(Adder.S, Adder.BYE);
 	}
 	
-	private static Adder_C_2 side(Buff<Integer> i1, Buff<Integer> i2, Adder_C_2 s2)
+	private static Adder_C_2 side(Buf<Integer> i1, Buf<Integer> i2, Adder_C_2 s2)
 	{
 		i1.val = i2.val;
 		System.out.print(i1.val + " ");

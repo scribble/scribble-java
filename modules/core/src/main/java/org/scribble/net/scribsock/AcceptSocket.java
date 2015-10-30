@@ -6,6 +6,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
+@Deprecated  // For now
 public abstract class AcceptSocket extends ScribSocket
 {
 	protected AcceptSocket(SessionEndpoint ep)

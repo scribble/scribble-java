@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
+import org.scribble.net.scribsock.EndSocket;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
@@ -16,21 +17,18 @@ public class MyS
 	{
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
-			Buff<Integer> i1 = new Buff<>();
-			Buff<Integer> i2 = new Buff<>();
+			Buf<Integer> i1 = new Buf<>();
+			Buf<Integer> i2 = new Buf<>();
 
 			while (true)
 			{
 				Proto1 foo = new Proto1();
-				SessionEndpoint se = foo.project(Proto1.S, ss, new ObjectStreamFormatter());
-				Proto1_S_0 init = new Proto1_S_0(se);
-				init.accept(Proto1.C);
-
-				try (Proto1_S_0 s0 = init)
+				//SessionEndpoint<S> se = foo.project(Proto1.S, new ObjectStreamFormatter(), ss);
+				try (SessionEndpoint<Proto1, S> se = new SessionEndpoint<>(foo, Proto1.S, new ObjectStreamFormatter()))
 				{
-					Proto1_S_1 s1 = s0.init();
+					se.accept(ss, Proto1.C);
 
-					s1.receive(Proto1._1).branch(new Handler());
+					new Proto1_S_1(se).async(Proto1.C, Proto1._1).branch(Proto1.C, new Handler());
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{
@@ -41,23 +39,24 @@ public class MyS
 	}
 }
 
-class Handler implements Proto1_S_2_IBranch
+class Handler implements Proto1_S_2_Handler
 {
 	@Override
-	public void receive(_3 op) throws ScribbleRuntimeException, IOException
+	public void receive(EndSocket<Proto1, S> schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
 		System.out.println("Done");
+		schan.end();
 	}
 
 	@Override
-	public void receive(Proto1_S_1 schan, _2 op) throws ScribbleRuntimeException, IOException
+	public void receive(Proto1_S_3 schan, _2 op, Buf<? super Integer> b) throws ScribbleRuntimeException, IOException
 	{
-		System.out.println("Redo");
+		System.out.println("Redo: " + b.val);
 		try
 		{
-			schan.receive(Proto1._1).branch(this);
+			schan.send(Proto1.C, Proto1._3, 456).async(Proto1.C, Proto1._1).branch(Proto1.C, this);
 		}
-		catch (ClassNotFoundException | ExecutionException | InterruptedException e)
+		catch (ClassNotFoundException e)
 		{
 			throw new IOException(e);
 		}

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
@@ -33,7 +34,9 @@ public class SessionApiGenerator
 	private final ClassBuilder cb = new ClassBuilder();
 	private final Set<Role> roles = new HashSet<>();
 	private final Set<MessageId<?>> mids = new HashSet<>();
-
+	
+	private final Map<String, ClassBuilder> classes = new HashMap<>();  // All classes in same package, for protected constructor access
+	
 	public SessionApiGenerator(Job job, GProtocolName fullname) throws ScribbleException
 	{
 		this.job = job;
@@ -44,16 +47,26 @@ public class SessionApiGenerator
 		constructSessionClass();  // Depends on the above two being done first
 	}
 	
+	// relative path -> output text
 	public Map<String, String> generateSessionClass()
 	{
 		String simpname = getSessionClassName(this.gpn);
-		String path = getPackageName(this.gpn).replace('.', '/') + "/" + simpname + ".java";
+		//String path = getPackageName(this.gpn).replace('.', '/') + "/" + simpname + ".java";
+		String path = makePath(this.gpn, simpname);
 		StringBuilder sb = new StringBuilder(this.cb.generate());
 		//this.roles.values().forEach((cb) -> sb.append("\n\n").append(cb.generate()) );
 		//this.mids.values().forEach((cb) -> sb.append("\n\n").append(cb.generate()) );
 		Map<String, String> map = new HashMap<>();
 		map.put(path, sb.toString());
+		
+		this.classes.keySet().stream().forEach((n) -> map.put(n, this.classes.get(n).generate()));
+		
 		return map;
+	}
+
+	private static String makePath(GProtocolName gpn, String simpname)
+	{
+		return getPackageName(gpn).replace('.', '/') + "/" + simpname + ".java";
 	}
 
 	/*public Map<MessageId<?>, String> getOpClasses()
@@ -68,8 +81,10 @@ public class SessionApiGenerator
 		
 		this.cb.setName(simpname);
 		this.cb.setPackage(packname);
-		this.cb.addImports("java.util.LinkedList", "java.util.List");
-		this.cb.addModifiers(ClassBuilder.PUBLIC);
+		this.cb.addImports(/*"java.io.IOException", */"java.util.Arrays", "java.util.Collections", "java.util.LinkedList", "java.util.List");
+		//this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
+		this.cb.addImports("org.scribble.sesstype.name.Role");
+		this.cb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
 		this.cb.setSuperClass(SessionApiGenerator.SESSION_CLASS);
 		
 		FieldBuilder fb1 = this.cb.newField(SessionApiGenerator.IMPATH_FIELD);
@@ -93,70 +108,101 @@ public class SessionApiGenerator
 
 		MethodBuilder ctor = this.cb.newConstructor();
 		ctor.addModifiers(ClassBuilder.PUBLIC);
-		ctor.setName(simpname);
+		ctor.setName(simpname);  // ?
 		ctor.addBodyLine(ClassBuilder.SUPER + "("
 				+ simpname + "." + SessionApiGenerator.IMPATH_FIELD + ", "
 				+ simpname + "." + SessionApiGenerator.SOURCE_FIELD + ", "
 				+ simpname + "." + SessionApiGenerator.PROTO_FIELD + ");");
+		
+		FieldBuilder fb4 = this.cb.newField("ROLES");
+		fb4.setType("List<Role>");
+		fb4.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
+		String roles = "Collections.unmodifiableList(Arrays.asList(new Role[] {";
+		roles += this.roles.stream().map((r) -> r.toString()).collect(Collectors.joining(", "));
+		roles += "}))";
+		fb4.setExpression(roles);
+		
+		/*for (Role r : this.roles)
+		{
+			String role = getRoleClassName(r);
+			MethodBuilder mb = this.cb.newMethod("project");  // No: use new on SessionEndpoint directly for Eclipse resource leak warning
+			mb.addModifiers(ClassBuilder.PUBLIC);
+			mb.setReturn("SessionEndpoint<" + simpname + ", " + role + ">");
+			mb.addParameters(role + " role", "ScribMessageFormatter smf");
+			mb.addExceptions("ScribbleRuntimeException", "IOException");
+			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER + ".project(role, smf);");
+		}*/
+
+		MethodBuilder mb = this.cb.newMethod("getRoles");
+		mb.addAnnotations("@Override");
+		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.setReturn("List<Role>");
+		mb.addParameters();
+		mb.addBodyLine(ClassBuilder.RETURN + " " + simpname + ".ROLES;");
 	}
 
-	private static void addRoleField(ClassBuilder cb, Role role)
+	private void addRoleField(ClassBuilder cb, Role role)
 	{
 		addSingletonConstant(cb, getRoleClassName(role));
 	}
 	
-	private static void addOpField(ClassBuilder cb, MessageId<?> mid)
+	private void addOpField(ClassBuilder cb, MessageId<?> mid)
 	{
 		addSingletonConstant(cb, getOpClassName(mid));
 	}
 	
-	private static void addSingletonConstant(ClassBuilder cb, String type)
+	private void addSingletonConstant(ClassBuilder cb, String type)
 	{
 		FieldBuilder fb = cb.newField(type);
 		fb.setType(type);
 		fb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
-		fb.setExpression(ClassBuilder.NEW + " " + type + "()");
+		//fb.setExpression(ClassBuilder.NEW + " " + type + "()");
+		fb.setExpression(getPackageName(this.gpn) + "." + type + "." + type);  // Currently requires source Scribble to be in a package that is not the root -- can fix by generating to a subpackage based on Module and/or protocol
 	}
 	
 	private void constructOpClasses() throws ScribbleException
 	{
-		Module mod = this.job.getContext().getModule(gpn.getPrefix());
-		GProtocolName simpname = gpn.getSimpleName();
+		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
+		GProtocolName simpname = this.gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
 		MessageIdCollector coll = new MessageIdCollector(this.job, ((ModuleDel) mod.del()).getModuleContext());
 		gpd.accept(coll);
 		for (MessageId<?> mid : coll.getNames())
 		{
-			constructOpClass(this.cb.newClass(), mid);
+			//constructOpClass(this.cb.newClass(), mid);
+			constructOpClass(new ClassBuilder(), getPackageName(this.gpn), mid);
 			this.mids.add(mid);
 		}
 	}
 
 	private void constructRoleClasses() throws ScribbleException
 	{
-		Module mod = this.job.getContext().getModule(gpn.getPrefix());
-		GProtocolName simpname = gpn.getSimpleName();
+		Module mod = this.job.getContext().getModule(this.gpn.getPrefix());
+		GProtocolName simpname = this.gpn.getSimpleName();
 		GProtocolDecl gpd = (GProtocolDecl) mod.getProtocolDecl(simpname);
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
-			constructRoleClass(this.cb.newClass(), r);
+			//constructRoleClass(this.cb.newClass(), r);
+			constructRoleClass(new ClassBuilder(), getPackageName(this.gpn), r);
 			this.roles.add(r);
 		}
 	}
 	
-	private static ClassBuilder constructRoleClass(ClassBuilder cb, Role r)
+	private ClassBuilder constructRoleClass(ClassBuilder cb, String pack, Role r)
 	{
-		return constructSingletonClass(cb, SessionApiGenerator.ROLE_CLASS, getRoleClassName(r));
+		return constructSingletonClass(cb, pack, SessionApiGenerator.ROLE_CLASS, getRoleClassName(r));
 	}
 
-	private static ClassBuilder constructOpClass(ClassBuilder cb, MessageId<?> mid)
+	private ClassBuilder constructOpClass(ClassBuilder cb, String pack, MessageId<?> mid)
 	{
-		return constructSingletonClass(cb, SessionApiGenerator.OP_CLASS, getOpClassName(mid));
+		return constructSingletonClass(cb, pack, SessionApiGenerator.OP_CLASS, getOpClassName(mid));
 	}
 	
-	private static ClassBuilder constructSingletonClass(ClassBuilder cb, String superc, String type)
+	private ClassBuilder constructSingletonClass(ClassBuilder cb, String pack, String superc, String type)
 	{
 		cb.setName(type);
+		cb.addModifiers(ClassBuilder.PUBLIC);
+		cb.setPackage(pack);
 		cb.setSuperClass(superc);
 
 		FieldBuilder fb = cb.newField("serialVersionUID");
@@ -164,10 +210,16 @@ public class SessionApiGenerator
 		fb.setType("long");
 		fb.setExpression("1L");
 		
+		FieldBuilder fb2 = cb.newField(type);
+		fb2.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
+		fb2.setType(type);
+		fb2.setExpression(ClassBuilder.NEW + " " + type + "()");
+		
 		MethodBuilder mb = cb.newConstructor();
-		mb.addModifiers(ClassBuilder.PROTECTED);
+		mb.addModifiers(ClassBuilder.PRIVATE);
 		mb.addBodyLine(ClassBuilder.SUPER + "(\"" + type + "\");");
 
+		this.classes.put(pack.replace('.', '/') + "/" + type + ".java", cb);
 		return cb;
 	}
 	

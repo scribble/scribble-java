@@ -9,11 +9,10 @@ import java.util.Random;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ScribMessageFormatter;
-import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-public class Session
+public abstract class Session
 {
 	private static final Map<Integer, Session> sessions = new HashMap<Integer, Session>();
 
@@ -23,7 +22,7 @@ public class Session
 	public final String modpath;
 	public final GProtocolName proto;
 	
-	private final Map<Role, SessionEndpoint> endpoints = new HashMap<>();  // Only for local endpoints
+	private final Map<Role, SessionEndpoint<?, ?>> endpoints = new HashMap<>();  // Only for local endpoints
 
 	public Session(int id, List<String> impath, String modpath, GProtocolName proto)
 	{
@@ -40,9 +39,9 @@ public class Session
 		this(getFreshId(), importPath, source, proto);
 	}
 
-	// Client side
+	/*// Client side
 	//public SessionEndpointOld toEndpoint(Principal p) throws ScribbleException, IOException
-	public SessionEndpoint project(Role role, ScribMessageFormatter smf) throws ScribbleRuntimeException
+	public <R extends Role> SessionEndpoint<R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException
 	{
 		if (this.endpoints.containsKey(role))
 		{
@@ -50,7 +49,7 @@ public class Session
 		}
 		try
 		{
-			SessionEndpoint ep = new SessionEndpoint(this, role, smf);
+			SessionEndpoint<R> ep = new SessionEndpoint<>(this, role, smf);
 			this.endpoints.put(role, ep);
 			return ep;
 		}
@@ -58,20 +57,37 @@ public class Session
 		{
 			throw new ScribbleRuntimeException(e);
 		}
+	}*/
+	//protected <P extends Session, R extends Role> SessionEndpoint<P, R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	protected void project(SessionEndpoint<?, ?> se) throws ScribbleRuntimeException, IOException
+	{
+		if (!getRoles().contains(se.self))
+		{
+			throw new ScribbleRuntimeException("Invalid role: " + se.self);
+		}
+		if (this.endpoints.containsKey(se.self))
+		{
+			throw new ScribbleRuntimeException("Session endpoint already created for: " + se.self);
+		}
+		//SessionEndpoint<P, R> ep = new SessionEndpoint<>(this, role, smf);
+		this.endpoints.put(se.self, se);
+		//return ep;
 	}
 
-	// Server side
-	public SessionEndpoint project(Role role, ScribServerSocket ss, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	/*// Server side
+	protected <R extends Role> SessionEndpoint<R> project(R role, ScribMessageFormatter smf, ScribServerSocket ss) throws ScribbleRuntimeException, IOException
 	{
 		// FIXME: check valid role
 		if (this.endpoints.containsKey(role))
 		{
 			throw new ScribbleRuntimeException("Session endpoint already created for: " + role);
 		}
-		SessionEndpoint ep = new SessionEndpoint(this, role, ss, smf);
+		SessionEndpoint<R> ep = (ss == null)
+				? new SessionEndpoint<>(this, role, smf)
+				: new SessionEndpoint<>(this, role, smf, ss);
 		this.endpoints.put(role, ep);
 		return ep;
-	}
+	}*/
 
 	/*public SessionEndpointOld project(Principal p) throws ScribbleException, IOException
 	{
@@ -89,13 +105,16 @@ public class Session
 		return this.endpoints.containsKey(role);
 	}
 
-	public SessionEndpoint getEndpoint(Role role) throws ScribbleException
+	//public SessionEndpoint getEndpoint(Role role) throws ScribbleException
+	public <S extends Session, R extends Role> SessionEndpoint<S, R> getEndpoint(R role) throws ScribbleException
 	{
 		if (!this.endpoints.containsKey(role))
 		{
 			throw new ScribbleException("No endpoint for: " + role);
 		}
-		return this.endpoints.get(role);
+		@SuppressWarnings("unchecked")
+		SessionEndpoint<S, R> cast = (SessionEndpoint<S, R>) this.endpoints.get(role);  // FIXME:
+		return cast;
 	}
 	
 	/*public static boolean hasSession(int id)
@@ -128,4 +147,6 @@ public class Session
 	{
 		Session.sessions.remove(this.id);
 	}
+	
+	public abstract List<Role> getRoles();
 }

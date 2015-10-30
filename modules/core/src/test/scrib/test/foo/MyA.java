@@ -15,17 +15,15 @@ public class MyA
 		//Buff<Integer> i1 = new Buff<>(0);
 		
 		Foo foo = new Foo();
-		SessionEndpoint se = foo.project(Foo.A, new ObjectStreamFormatter());
-		
-		try (Foo_A_0 s0 = new Foo_A_0(se))
+		try (SessionEndpoint<Foo, A> se = new SessionEndpoint<>(foo, Foo.A, new ObjectStreamFormatter()))
 		{
-			s0.connect(SocketChannelEndpoint::new, Foo.B, "localhost", 8888);
-			s0.connect(SocketChannelEndpoint::new, Foo.C, "localhost", 9999);
-			Foo_A_1 s1 = s0.init();
-			
+			se.connect(SocketChannelEndpoint::new, Foo.B, "localhost", 8888);
+			se.connect(SocketChannelEndpoint::new, Foo.C, "localhost", 9999);
+
+			Foo_A_1 s1 = new Foo_A_1(se);
 			s1
-			  //.send(Foo.C, Foo._1).send(Foo.B, Foo._2);
-			  .send(Foo.B, Foo._1).send(Foo.C, Foo._2);
+			  .send(Foo.C, Foo._1).send(Foo.B, Foo._2);
+			  //.send(Foo.B, Foo._1).send(Foo.C, Foo._2);
 		}
 	}
 }

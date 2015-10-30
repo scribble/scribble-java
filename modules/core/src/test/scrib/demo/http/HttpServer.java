@@ -1,14 +1,12 @@
 package demo.http;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
-import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.http.message.Body;
 import demo.http.message.HttpMessageFormatter;
@@ -33,57 +31,55 @@ public class HttpServer
 
 	public static void main(String[] args) throws ScribbleRuntimeException, IOException
 	{
-		Buff<RequestLine> b_reql = new Buff<>();
-		Buff<Host> b_host = new Buff<>();
-		Buff<UserAgent> b_usera = new Buff<>();
-		Buff<Accept> b_acc = new Buff<>();
-		Buff<AcceptLanguage> b_accl = new Buff<>();
-		Buff<AcceptEncoding> b_acce = new Buff<>();
-		Buff<DoNotTrack> b_dnt = new Buff<>();
-		Buff<Connection> b_conn = new Buff<>();
-		Buff<Body> b_body = new Buff<>();
+		Buf<RequestLine> b_reql = new Buf<>();
+		Buf<Host> b_host = new Buf<>();
+		Buf<UserAgent> b_usera = new Buf<>();
+		Buf<Accept> b_acc = new Buf<>();
+		Buf<AcceptLanguage> b_accl = new Buf<>();
+		Buf<AcceptEncoding> b_acce = new Buf<>();
+		Buf<DoNotTrack> b_dnt = new Buf<>();
+		Buf<Connection> b_conn = new Buf<>();
+		Buf<Body> b_body = new Buf<>();
 		
 		try (ScribServerSocket ss = new SocketChannelServer(8080))
 		{
 			while (true)	
 			{
 				Http http = new Http();
-				SessionEndpoint se = http.project(Http.C, ss, new HttpMessageFormatter());
-				Http_S_0 init = new Http_S_0(se);
-				init.accept(Http.C);
-
-				try (Http_S_0 s0 = init)
+				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, Http.S, new HttpMessageFormatter()))
 				{
-					Http_S_1 s1 = s0.init();
-					Http_S_2 s2 = s1.receive(Http.REQUESTL, b_reql);
+					se.accept(ss, Http.C);
+				
+					Http_S_1 s1 = new Http_S_1(se);
+					Http_S_2 s2 = s1.receive(Http.C, Http.REQUESTL, b_reql);
 					
 					System.out.println("Requested: " + b_reql.val);
 					
 					X: while (true)
 					{
-						Http_S_6 s6 = s2.branch();
-						switch (s6.op)
+						Http_S_2_Cases s2cases = s2.branch(Http.C);
+						switch (s2cases.op)
 						{
 							case ACCEPT:
 							{
-								s2 = s6.receive(Http.ACCEPT, b_acc);
+								s2 = s2cases.receive(Http.ACCEPT, b_acc);
 								break;
 							}
 							case ACCEPTE:
 							{
-								s2 = s6.receive(Http.ACCEPTE, b_acce);
+								s2 = s2cases.receive(Http.ACCEPTE, b_acce);
 								break;
 							}
 							case ACCEPTL:
 							{
-								s2 = s6.receive(Http.ACCEPTL, b_accl);
+								s2 = s2cases.receive(Http.ACCEPTL, b_accl);
 								break;
 							}
 							case BODY:
 							{
 								//String body = "";
 								String body = "<html><body>Hello</body></html>";
-								s6.receive(Http.BODY, b_body)
+								s2cases.receive(Http.BODY, b_body)
 									.send(Http.C, new HttpVersion("1.1"))
 									.send(Http.C, new _200("OK"))
 									.send(Http.C, new ContentLength(body.length()))
@@ -92,28 +88,28 @@ public class HttpServer
 							}
 							case CONNECTION:
 							{
-								s2 = s6.receive(Http.CONNECTION, b_conn);
+								s2 = s2cases.receive(Http.CONNECTION, b_conn);
 								break;
 							}
 							case DNT:
 							{
-								s2 = s6.receive(Http.DNT, b_dnt);
+								s2 = s2cases.receive(Http.DNT, b_dnt);
 								break;
 							}
 							case HOST:
 							{
-								s2 = s6.receive(Http.HOST, b_host);
+								s2 = s2cases.receive(Http.HOST, b_host);
 								break;
 							}
 							case USERA:
 							{
-								s2 = s6.receive(Http.USERA, b_usera);
+								s2 = s2cases.receive(Http.USERA, b_usera);
 								break;
 							}
 						}
 					}
 				}
-				catch (IOException | ClassNotFoundException | ScribbleRuntimeException | ExecutionException | InterruptedException e)
+				catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
 				{
 					e.printStackTrace();
 				}

@@ -24,8 +24,10 @@ public abstract class BinaryChannelEndpoint
 	
 	private boolean isClosed = false;
 
-	private int count = 0;  // How many ScribMessages read so far
+	private int count = 0;  // How many ScribMessages read so far  // volatile?
 	private int ticket = 0;  // Index of the next expected ScribMessage
+	
+	//private final List<CompletableFuture<ScribMessage>> pending = new LinkedList<>();
 
 	// Server side
 	protected BinaryChannelEndpoint(SessionEndpoint se, AbstractSelectableChannel c) throws IOException
@@ -79,11 +81,12 @@ public abstract class BinaryChannelEndpoint
 	public synchronized CompletableFuture<ScribMessage> getFuture()
 	{
 		// FIXME: better exception handling (integrate with Future interface?)
+		final int ticket = getTicket();
 		return CompletableFuture.supplyAsync(() ->
 				{
 					try
 					{
-						ScribMessage m = read(getTicket());
+						ScribMessage m = read(ticket);
 						if (m instanceof ScribInterrupt)  // FIXME: hacked in
 						{
 							throw new RuntimeScribbleException((Throwable) ((ScribInterrupt) m).payload[0]);
@@ -101,7 +104,7 @@ public abstract class BinaryChannelEndpoint
 	{
 		try
 		{
-			while (this.count < ticket && !this.isClosed)
+			while (this.count < ticket && !this.isClosed)  // "Chain" futures directly? i.e. each future syncs on predecessor?
 			{
 				wait();
 			}
@@ -114,7 +117,9 @@ public abstract class BinaryChannelEndpoint
 				throw new IOException("Channel closed");
 			}
 			this.count++;
-			return this.msgs.remove(0);
+			ScribMessage m = this.msgs.remove(0);
+			notifyAll();  // A later future might have gone first and blocked, so wake up (with the message already enqueued, so no notify coming from there)  // finally?
+			return m;
 		}
 		catch (InterruptedException e)
 		{
@@ -125,8 +130,8 @@ public abstract class BinaryChannelEndpoint
 	protected synchronized void enqueue(ScribMessage m)
 	{
 		this.msgs.add(m);
-		this.count++;
-		notify();
+		//this.count++;
+		notifyAll();
 	}
 
 	public abstract void writeBytes(byte[] bs) throws IOException;
@@ -145,12 +150,13 @@ public abstract class BinaryChannelEndpoint
 	public synchronized void close() throws IOException
 	{
 		this.isClosed = true;
-		notify();
+		notifyAll();
 	}
 	
 	public synchronized int getTicket()
 	{
-		return ++this.ticket;
+		//return ++this.ticket;
+		return this.ticket++;
 	}
 	
 	// post: bb:put

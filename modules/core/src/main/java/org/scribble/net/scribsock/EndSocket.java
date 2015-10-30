@@ -1,22 +1,25 @@
 package org.scribble.net.scribsock;
 
 import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.sesstype.name.Role;
 
-@Deprecated
-public abstract class EndSocket extends LinearSocket
+public class EndSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
 {
-	//private boolean closed = false;
-
-	protected EndSocket(SessionEndpoint ep)
+	public EndSocket(SessionEndpoint<S, R> se, boolean dummy)
 	{
-		super(ep);
+		super(se);
 	}
 
 	public void end() throws ScribbleRuntimeException
 	{
-		super.use();
-		this.se.setCompleted();
+		/*super.use();
+		this.se.setCompleted();*/
+		if (!this.se.isCompleted())
+		{
+			throw new ScribbleRuntimeException("Session not completed: " + this.se);
+		}
 		this.se.close();
 		//this.closed = true;
 	}
