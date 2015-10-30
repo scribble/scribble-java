@@ -1,7 +1,6 @@
 package demo.http;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
@@ -121,7 +120,7 @@ public class HttpClient
 				}
 			}
 		}
-		catch (IOException | ClassNotFoundException | ScribbleRuntimeException | ExecutionException | InterruptedException e)
+		catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
 		{
 			e.printStackTrace();
 		}

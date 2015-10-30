@@ -19,14 +19,26 @@ public abstract class ReceiveSocket<S extends Session, R extends Role> extends L
 		super(se);
 	}
 
-	protected ScribMessage readScribMessage(Role peer) throws ClassNotFoundException, IOException, ScribbleRuntimeException, InterruptedException, ExecutionException
+	protected ScribMessage readScribMessage(Role peer) throws ClassNotFoundException, IOException, ScribbleRuntimeException
 	{
-		//ScribMessage m = this.ep.smf.readMessage(this.ep.getSocketEndpoint(role).dis);
-		ScribMessage m = getFuture(peer).get();  // The Future converts the RuntimeScribbleException wrapper for the underlying IOException into an ExecutionException
+		try
+		{
+			//ScribMessage m = this.ep.smf.readMessage(this.ep.getSocketEndpoint(role).dis);
+			ScribMessage m = getFuture(peer).get();
 
-		//System.out.println("Read: " + m);
+			//System.out.println("Read: " + m);
 
-		return m;
+			return m;
+		}
+		catch (InterruptedException e)
+		{
+			throw new IOException(e);
+		}
+		catch (ExecutionException e)
+		{	
+			// The Future converts the RuntimeScribbleException wrapper for the underlying IOException into an ExecutionException
+			throw new IOException(e);
+		}
 	}
 	
 	protected boolean isDone(Role peer)

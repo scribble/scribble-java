@@ -56,7 +56,7 @@ class Handler implements Proto1_S_2_Handler
 		{
 			schan.send(Proto1.C, Proto1._3, 456).async(Proto1.C, Proto1._1).branch(Proto1.C, this);
 		}
-		catch (ClassNotFoundException | ExecutionException | InterruptedException e)
+		catch (ClassNotFoundException e)
 		{
 			throw new IOException(e);
 		}

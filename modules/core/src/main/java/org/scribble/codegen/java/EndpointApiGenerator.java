@@ -175,8 +175,6 @@ public class EndpointApiGenerator
 	private void addImports(ClassBuilder cb)
 	{
 		cb.addImports("java.io.IOException");
-		cb.addImports("java.util.concurrent.CompletableFuture");
-		cb.addImports("java.util.concurrent.ExecutionException");
 		cb.addImports(SessionApiGenerator.getPackageName(this.gpn) + "." + SessionApiGenerator.getSessionClassName(this.gpn));
 	}
 	
@@ -328,8 +326,9 @@ public class EndpointApiGenerator
 		if (a.mid.isOp())
 		{
 			addReceiveOpParams(mb, main, a);
-			mb.addBodyLine(SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = "
-						+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.peer) + ");");
+			String ln = a.payload.isEmpty() ? "" : SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = ";
+			ln += ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.peer) + ");";
+			mb.addBodyLine(ln);
 			addPayloadBuffSetters(main, a, mb);
 		}
 		else //if (a.mid.isMessageSigName())
@@ -378,6 +377,7 @@ public class EndpointApiGenerator
 		final String ROLE_PARAM = "role";
 		
 		MethodBuilder mb = cb.newMethod("async"); 
+		mb.addAnnotations("@SuppressWarnings(\"unchecked\")");
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.setReturn(nextClass + (isTerminalClassName(nextClass) ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">" : ""));
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + RECEIVE_OP_PARAM);
@@ -393,7 +393,8 @@ public class EndpointApiGenerator
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.setReturn(next + (isTerminalClassName(next) ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">" : ""));
 		mb.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM, opClass + " " + RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
-		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException, ExecutionException, InterruptedException");
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
+		//, "ExecutionException", "InterruptedException");
 		return mb;
 	}
 
@@ -438,6 +439,7 @@ public class EndpointApiGenerator
 		String futureClass = "Future_" + cb.getName();  // Fresh enough? need only one future class per receive (unary receive)
 
 		cb.addImports("java.util.concurrent.CompletableFuture");  // "parent" cb, not the future class
+		//cb.addImports("java.util.concurrent.ExecutionException");
 
 		ClassBuilder future = cb.newClass();
 		future.setName(futureClass);
@@ -474,8 +476,11 @@ public class EndpointApiGenerator
 		MethodBuilder sync = future.newMethod("sync");
 		sync.addModifiers(ClassBuilder.PUBLIC);
 		sync.setReturn(futureClass);
-		sync.addExceptions("ExecutionException", "InterruptedException");
-		sync.addBodyLine(SCRIBMESSAGE_CLASS + " m = " + ClassBuilder.SUPER + ".get();");
+		//sync.addExceptions("ExecutionException", "InterruptedException");
+		sync.addExceptions("IOException");
+		String ln = (a.mid.isOp() && a.payload.isEmpty()) ? "" : SCRIBMESSAGE_CLASS + " m = ";
+		ln += ClassBuilder.SUPER + ".get();";
+		sync.addBodyLine(ln);
 		if (a.mid.isOp())
 		{
 			if (!a.payload.isEmpty())
@@ -509,13 +514,13 @@ public class EndpointApiGenerator
 		String next = constructCaseClass(curr, main);
 		String enumClass = this.classNames.get(curr) + "Enum";
 
-		cb.addImports("java.util.concurrent.ExecutionException");
+		//cb.addImports("java.util.concurrent.ExecutionException");
 		
 		MethodBuilder mb = cb.newMethod("branch");
 		mb.setReturn(next);
 		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getAcceptable().iterator().next().peer) + " " + ROLE_PARAM);
 		mb.addModifiers(ClassBuilder.PUBLIC);
-		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException", "ExecutionException", "InterruptedException");
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		
 		Role peer = curr.getAcceptable().iterator().next().peer;
 		mb.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
@@ -550,7 +555,7 @@ public class EndpointApiGenerator
 		mb2.addParameters(ifname + " branch");
 		mb2.setReturn(ClassBuilder.VOID);
 		mb2.addModifiers(ClassBuilder.PUBLIC);
-		mb2.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException", "ExecutionException", "InterruptedException");
+		mb2.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		mb2.addBodyLine(SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
@@ -689,7 +694,7 @@ public class EndpointApiGenerator
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		mb.setReturn(next + (isTerminalClassName(next) ? "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">" : ""));
 		mb.addParameters(opClass + " " + RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
-		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException, ExecutionException, InterruptedException");
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		return mb;
 	}
 
@@ -717,6 +722,7 @@ public class EndpointApiGenerator
 	private void addCaseReceiveDiscardMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
 	{
 		MethodBuilder mb = makeCaseReceiveHeader(cb, nextClass, a.peer, opClass);
+		mb.addAnnotations("@SuppressWarnings(\"unchecked\")");
 		String ln = ClassBuilder.RETURN + " ";
 		ln += "receive(" + CASE_OP_PARAM + ", ";
 		if (a.mid.isOp())
