@@ -8,7 +8,6 @@ import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-
 public class MyC
 {
 	public static void main(String[] args) throws Exception
