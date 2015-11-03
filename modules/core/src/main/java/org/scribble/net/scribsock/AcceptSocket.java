@@ -1,15 +1,13 @@
 package org.scribble.net.scribsock;
 
-import java.io.IOException;
-
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
 @Deprecated  // For now
-public abstract class AcceptSocket extends ScribSocket
+public abstract class AcceptSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
 {
-	protected AcceptSocket(SessionEndpoint ep)
+	protected AcceptSocket(SessionEndpoint<S, R> ep)
 	{
 		super(ep);
 	}

@@ -1,6 +1,7 @@
 package org.scribble.codegen.java;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,13 +21,13 @@ public class ClassBuilder
 	public static final String VOID = "void";
 	
 	private String packname;  // null for non- top-level class
-	private final List<String> imports = new LinkedList<String>();
-	private final List<String> mods = new LinkedList<String>();
+	private final LinkedHashSet<String> imports = new LinkedHashSet<>();
+	private final List<String> mods = new LinkedList<>();
 
 	private String name;
 	private String superc;  // null if none explicit
-	private final List<String> ifaces = new LinkedList<String>();
-	private final List<String> params = new LinkedList<String>();
+	private final List<String> ifaces = new LinkedList<>();
+	private final List<String> params = new LinkedList<>();
 	
 	private final List<FieldBuilder> fields = new LinkedList<>();
 	private final List<MethodBuilder> ctors = new LinkedList<>();
@@ -191,234 +192,5 @@ public class ClassBuilder
 			clazz += this.classes.stream().map((cb) -> cb.generate()).collect(Collectors.joining("\n\n"));
 		}
 		return clazz;
-	}
-}
-
-class FieldBuilder
-{
-	private String name;
-
-	private List<String> mods = new LinkedList<>();
-	private String type;
-	private String expr;  // null if none
-
-	protected FieldBuilder()
-	{
-		
-	}
-	
-	protected void setName(String name)
-	{
-		this.name = name;
-	}
-	
-	public void addModifiers(String... mods)
-	{
-		this.mods.addAll(Arrays.asList(mods));
-	}
-	
-	public void setType(String type)
-	{
-		this.type = type;
-	}
-	
-	protected void setExpression(String val)
-	{
-		this.expr = val;
-	}
-
-	public String generate()
-	{
-		String field = "";
-		field += "\t";
-		if (!this.mods.isEmpty())
-		{
-			field += this.mods.stream().collect(Collectors.joining(" "));
-			field += " ";
-		}
-		field += this.type + " " + this.name;
-		if (this.expr != null)
-		{
-			field += " = " + this.expr;
-		}
-		field += ";";
-		return field;
-	}
-}
-
-class MethodBuilder
-{
-	private String name;
-
-	private List<String> annots = new LinkedList<>();
-	private List<String> mods = new LinkedList<>();
-	private String ret;  // null for constructor -- void must be set explicitly
-	private List<String> pars = new LinkedList<>();
-	private List<String> exceptions = new LinkedList<>();
-	private List<String> body = new LinkedList<>();
-
-	protected MethodBuilder()
-	{
-		
-	}
-	
-	protected void setName(String name)
-	{
-		this.name = name;
-	}
-	
-	public void addAnnotations(String... mods)
-	{
-		this.annots.addAll(Arrays.asList(mods));
-	}
-	
-	public void addModifiers(String... mods)
-	{
-		this.mods.addAll(Arrays.asList(mods));
-	}
-	
-	public void setReturn(String ret)
-	{
-		this.ret = ret;
-	}
-	
-	// Each par is the String: type + " " + name
-	public void addParameters(String... par)
-	{
-		this.pars.addAll(Arrays.asList(par));
-	}
-
-	public void addExceptions(String... exceptions)
-	{
-		this.exceptions.addAll(Arrays.asList(exceptions));
-	}
-	
-	public void addBodyLine(String ln)
-	{
-		this.body.add(ln);
-	}
-
-	public void addBodyLine(int i, String ln)
-	{
-		for (int j = 0; j < i; j++)
-		{
-			ln = "\t" + ln;
-		}
-		this.body.add(ln);
-	}
-	
-	public String generate()
-	{
-		String meth = "";
-		if (!this.annots.isEmpty())
-		{
-			meth += "\t";
-			meth += this.annots.stream().collect(Collectors.joining("\n\t")) + "\n";
-		}
-		meth += "\t";
-		if (!this.mods.isEmpty())
-		{
-			meth += this.mods.stream().collect(Collectors.joining(" "));
-			meth += " ";
-		}
-		if (this.ret != null)
-		{
-			meth += this.ret + " ";
-		}
-		meth += name + "(";
-		meth += this.pars.stream().collect(Collectors.joining(", "));
-		meth += ")";
-		if (!this.exceptions.isEmpty())
-		{
-			meth += " throws " + this.exceptions.stream().collect(Collectors.joining(", "));
-		}
-		meth += " {\n";
-		if (!this.body.isEmpty())
-		{
-			meth += "\t\t";
-			meth += this.body.stream().collect(Collectors.joining("\n\t\t"));
-		}
-		meth += "\n\t}";
-		return meth;
-	}
-}
-
-class AbstractMethodBuilder extends MethodBuilder
-{
-	protected AbstractMethodBuilder()
-	{
-		
-	}
-
-	@Override
-	public void addBodyLine(String ln)
-	{
-		throw new RuntimeException("Invalid for abstract method: " + ln);
-	}
-
-	@Override
-	public void addBodyLine(int i, String ln)
-	{
-		throw new RuntimeException("Invalid for abstract method: " + ln);
-	}
-	
-	public String generate()
-	{
-		String meth = super.generate();
-		return meth.substring(0, meth.indexOf('{')) + ";";
-	}
-}
-
-class EnumBuilder
-{
-	private String name;
-
-	private List<String> mods = new LinkedList<>();
-	private final List<String> ifaces = new LinkedList<String>();
-	private final List<String> vals = new LinkedList<String>();
-
-	protected EnumBuilder()
-	{
-		
-	}
-	
-	protected void setName(String name)
-	{
-		this.name = name;
-	}
-	
-	public void addModifiers(String... mods)
-	{
-		this.mods.addAll(Arrays.asList(mods));
-	}
-	
-	public void addInterfaces(String... ifaces)
-	{
-		this.ifaces.addAll(Arrays.asList(ifaces));
-	}
-	
-	public void addValues(String... vals)
-	{
-		this.vals.addAll(Arrays.asList(vals));
-	}
-	
-	public String generate()
-	{
-		String enun = "";
-		if (!this.mods.isEmpty())
-		{
-			enun += this.mods.stream().collect(Collectors.joining(" "));
-			enun += " ";
-		}
-		enun += "enum " + this.name;
-		if (!this.ifaces.isEmpty())
-		{
-			enun += " implements ";
-			enun += this.ifaces.stream().collect(Collectors.joining(", "));
-		}
-		enun += " {\n";
-		enun += "\t" + this.vals.stream().collect(Collectors.joining(", "));
-		enun += "\n}";
-		return enun;
 	}
 }

@@ -1,6 +1,6 @@
 package demo.http.message;
 
-import demo.http.Http;
+import demo.http.Http.Http.Http;
 
 public class Body extends HttpMessage
 {

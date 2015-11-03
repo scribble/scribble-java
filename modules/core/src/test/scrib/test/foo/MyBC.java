@@ -1,13 +1,20 @@
 package test.foo;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
+
+import test.foo.Foo.Foo.Foo;
+import test.foo.Foo.Foo.channels.B.Foo_B_1;
+import test.foo.Foo.Foo.channels.B.Foo_B_1_Cases;
+import test.foo.Foo.Foo.channels.C.Foo_C_1;
+import test.foo.Foo.Foo.channels.C.Foo_C_1_Cases;
+import test.foo.Foo.Foo.roles.B;
+import test.foo.Foo.Foo.roles.C;
 
 public class MyBC
 {
@@ -47,7 +54,7 @@ public class MyBC
 								}
 							}
 						}
-						catch (ScribbleRuntimeException | IOException | ClassNotFoundException | ExecutionException | InterruptedException e)
+						catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
 						{
 							e.printStackTrace();
 						}
@@ -79,7 +86,7 @@ public class MyBC
 								}
 							}
 						}
-						catch (ScribbleRuntimeException | IOException | ClassNotFoundException | ExecutionException | InterruptedException e)
+						catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
 						{
 							e.printStackTrace();
 						}

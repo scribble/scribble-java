@@ -12,6 +12,11 @@ import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
+import demo.travel.Travel.Booking.Booking;
+import demo.travel.Travel.Booking.channels.C.Booking_C_1;
+import demo.travel.Travel.Booking.channels.C.Booking_C_5;
+import demo.travel.Travel.Booking.roles.C;
+
 
 public class Client
 {
@@ -28,7 +33,7 @@ public class Client
 			Booking_C_1 s1 = new Booking_C_1(se);
 
 			Buf<Integer> quote = new Buf<>();
-			Booking_C_3 s3;
+			Booking_C_5 s3;
 			for (int i = 0; ; i++)
 			{
 				if (i >= QUERIES.size())
@@ -79,7 +84,7 @@ public class Client
 		s1.send(Booking.A, Booking.No).send(Booking.A, Booking.Bye);
 	}
 	
-	private static Booking_C_3 doQuery(Booking_C_1 s1, int i, Buf<Integer> buf) throws Exception
+	private static Booking_C_5 doQuery(Booking_C_1 s1, int i, Buf<Integer> buf) throws Exception
 	{
 		return (i >= QUERIES.size())
 				? s1.send(Booking.A, Booking.No) 
@@ -89,7 +94,7 @@ public class Client
 					        , i, buf);
 	}
 
-	private static Booking_C_3 checkMax(Booking_C_1 s1, int i, Buf<Integer> buf) throws Exception
+	private static Booking_C_5 checkMax(Booking_C_1 s1, int i, Buf<Integer> buf) throws Exception
 	{
 		return (buf.val <= MAX)
 				? s1.send(Booking.A, Booking.Yes)

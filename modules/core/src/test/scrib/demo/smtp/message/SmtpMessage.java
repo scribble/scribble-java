@@ -1,12 +1,10 @@
 package demo.smtp.message;
 
-import java.nio.charset.Charset;
-
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 import org.scribble.util.Caller;
 
-import demo.smtp.SMTP;
+import demo.smtp.Smtp.SMTP.SMTP;
 
 public abstract class SmtpMessage extends ScribMessage
 {

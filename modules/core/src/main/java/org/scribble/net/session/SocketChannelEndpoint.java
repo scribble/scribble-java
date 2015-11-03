@@ -12,7 +12,7 @@ public class SocketChannelEndpoint extends BinaryChannelEndpoint
 	//private final ByteBuffer bb = ByteBuffer.allocate(16921);  // FIXME: size
 	
 	// Server side
-	public SocketChannelEndpoint(SessionEndpoint se, SocketChannel s) throws IOException
+	public SocketChannelEndpoint(SessionEndpoint<?, ?> se, SocketChannel s) throws IOException
 	{
 		super(se, s);
 	}
@@ -24,7 +24,7 @@ public class SocketChannelEndpoint extends BinaryChannelEndpoint
 	}
 	
 	@Override
-	public void initClient(SessionEndpoint se, String host, int port) throws IOException
+	public void initClient(SessionEndpoint<?, ?> se, String host, int port) throws IOException
 	{
 		SocketChannel s = SocketChannel.open(new InetSocketAddress(host, port));
 		super.init(se, s);

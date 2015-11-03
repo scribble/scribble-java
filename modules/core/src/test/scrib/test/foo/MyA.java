@@ -7,6 +7,10 @@ import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
+import test.foo.Foo.Foo.Foo;
+import test.foo.Foo.Foo.channels.A.Foo_A_1;
+import test.foo.Foo.Foo.roles.A;
+
 
 public class MyA
 {
@@ -22,8 +26,8 @@ public class MyA
 
 			Foo_A_1 s1 = new Foo_A_1(se);
 			s1
-			  .send(Foo.C, Foo._1).send(Foo.B, Foo._2);
-			  //.send(Foo.B, Foo._1).send(Foo.C, Foo._2);
+			  //.send(Foo.C, Foo._1).send(Foo.B, Foo._2);
+			  .send(Foo.B, Foo._1).send(Foo.C, Foo._2);
 		}
 	}
 }

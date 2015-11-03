@@ -1,8 +1,11 @@
 package org.scribble.cli;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.scribble.cli.CommandLine.ArgFlag;
 
 // String[] -> Map<CommandLine.Arg, String[]> -- Map array values are the arguments associated to each CommandLine.Arg
 public class CommandLineArgParser
@@ -12,18 +15,30 @@ public class CommandLineArgParser
 	public static final String PROJECT_FLAG = "-project";
 	public static final String FSM_FLAG = "-fsm";
 	public static final String SESSION_FLAG = "-session";
+	public static final String STATECHAN_FLAG = "-statechan";
 	public static final String API_FLAG = "-api";
 	public static final String OUTPUT_FLAG = "-d";
 	
-	private final Map<String, CommandLine.ArgFlag> FLAGS = new HashMap<>();
+	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
-		this.FLAGS.put(CommandLineArgParser.VERBOSE_FLAG, CommandLine.ArgFlag.VERBOSE);
-		this.FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.ArgFlag.PATH);
-		this.FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.ArgFlag.PROJECT);
-		this.FLAGS.put(CommandLineArgParser.FSM_FLAG, CommandLine.ArgFlag.FSM);
-		this.FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.ArgFlag.SESS_API);
-		this.FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
-		this.FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.ArgFlag.OUTPUT);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.VERBOSE_FLAG, CommandLine.ArgFlag.VERBOSE);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.ArgFlag.PATH);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.ArgFlag.OUTPUT);
+	}
+
+	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
+	{
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.ArgFlag.PROJECT);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.FSM_FLAG, CommandLine.ArgFlag.FSM);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.ArgFlag.SESS_API);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.STATECHAN_FLAG, CommandLine.ArgFlag.SCHAN_API);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
+	}
+
+	private static final Map<String, CommandLine.ArgFlag> FLAGS = new HashMap<>();
+	{
+		CommandLineArgParser.FLAGS.putAll(CommandLineArgParser.UNIQUE_FLAGS);
+		CommandLineArgParser.FLAGS.putAll(CommandLineArgParser.NON_UNIQUE_FLAGS);
 	}
 
 	private final String[] args;
@@ -45,7 +60,7 @@ public class CommandLineArgParser
 		for (int i = 0; i < this.args.length; i++)
 		{
 			String arg = args[i];
-			if (this.FLAGS.containsKey(arg))
+			if (CommandLineArgParser.FLAGS.containsKey(arg))
 			{
 				i = this.parseFlag(i);
 			}
@@ -90,6 +105,10 @@ public class CommandLineArgParser
 			{
 				return parseSession(i);
 			}
+			case CommandLineArgParser.STATECHAN_FLAG:
+			{
+				return parseStateChannels(i);
+			}
 			case CommandLineArgParser.API_FLAG:
 			{
 				return parseApi(i);
@@ -126,7 +145,7 @@ public class CommandLineArgParser
 		{
 			throw new RuntimeException("Module path '"+ path +"' is not valid\r\n");
 		}
-		this.parsed.put(this.FLAGS.get(CommandLineArgParser.PATH_FLAG), new String[] { path });
+		this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PATH_FLAG), new String[] { path });
 		return i;
 	}
 	
@@ -142,11 +161,11 @@ public class CommandLineArgParser
 		{
 			throw new RuntimeException("Protocol name '"+ proto +"' is not valid\r\n");
 		}*/
-		this.parsed.put(this.FLAGS.get(CommandLineArgParser.PROJECT_FLAG), new String[] { proto, role } );
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PROJECT_FLAG), proto, role);
 		return i;
 	}
 	
-	private int parseFsm(int i)  // Almost same as parseProject -- could factor out, but code less clear and more awkard error reporting
+	private int parseFsm(int i)  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
 	{
 		if ((i + 2) >= this.args.length)
 		{
@@ -154,7 +173,7 @@ public class CommandLineArgParser
 		}
 		String proto = this.args[++i];
 		String role = this.args[++i];
-		this.parsed.put(this.FLAGS.get(CommandLineArgParser.FSM_FLAG), new String[] { proto, role } );
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.FSM_FLAG), proto, role);
 		return i;
 	}
 
@@ -165,7 +184,19 @@ public class CommandLineArgParser
 			throw new RuntimeException("Missing protocol argument");
 		}
 		String proto = this.args[++i];
-		this.parsed.put(this.FLAGS.get(CommandLineArgParser.SESSION_FLAG), new String[] { proto } );
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.SESSION_FLAG), proto);
+		return i;
+	}
+
+	private int parseStateChannels(int i)  // Almost same as parseProject
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new RuntimeException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.STATECHAN_FLAG), proto, role);
 		return i;
 	}
 
@@ -177,7 +208,7 @@ public class CommandLineArgParser
 		}
 		String proto = this.args[++i];
 		String role = this.args[++i];
-		this.parsed.put(this.FLAGS.get(CommandLineArgParser.API_FLAG), new String[] { proto, role } );
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.API_FLAG), proto, role);
 		return i;
 	}
 
@@ -188,8 +219,25 @@ public class CommandLineArgParser
 			throw new RuntimeException("Missing directory argument");
 		}
 		String dir = this.args[++i];
-		this.parsed.put(this.FLAGS.get(CommandLineArgParser.OUTPUT_FLAG), new String[] { dir } );
+		this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.OUTPUT_FLAG), new String[] { dir } );
 		return i;
+	}
+	
+	private void concatArgs(ArgFlag flag, String... toAdd)
+	{
+		String[] args = this.parsed.get(flag);
+		if (args == null)
+		{
+			args = Arrays.copyOf(toAdd, toAdd.length);
+		}
+		else
+		{
+			String[] tmp = new String[args.length + toAdd.length];
+			System.arraycopy(args, 0, tmp, 0, args.length);
+			System.arraycopy(toAdd, 0, tmp, args.length, toAdd.length);
+			args = tmp;
+		}
+		this.parsed.put(flag, args);
 	}
 
 	private static boolean validateModuleName(String module)
