@@ -34,6 +34,12 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		super.addImports();
 		this.cb.addImports(getOpsPackageName() + ".*");
 	}
+	
+	@Override
+	protected void addInitialStateConstructor()
+	{
+		return;
+	}
 
 	//private String constructCaseClass(EndpointState curr, Module main)
 	@Override

@@ -8,6 +8,14 @@ import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
+import test.foo.Foo.Foo.Foo;
+import test.foo.Foo.Foo.channels.B.Foo_B_1;
+import test.foo.Foo.Foo.channels.B.Foo_B_1_Cases;
+import test.foo.Foo.Foo.channels.C.Foo_C_1;
+import test.foo.Foo.Foo.channels.C.Foo_C_1_Cases;
+import test.foo.Foo.Foo.roles.B;
+import test.foo.Foo.Foo.roles.C;
+
 public class MyBC
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException, InterruptedException

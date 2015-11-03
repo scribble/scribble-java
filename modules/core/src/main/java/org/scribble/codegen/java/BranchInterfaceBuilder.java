@@ -14,7 +14,7 @@ public class BranchInterfaceBuilder
 	private final ClassBuilder cb;
 	private final EndpointState curr;
 
-	// Pre: cb is the BRanchSocketBuilder
+	// Pre: cb is the BrranchSocketBuilder
 	public BranchInterfaceBuilder(StateChannelApiGenerator apigen, ClassBuilder cb, EndpointState curr)
 	{
 		this.apigen = apigen;
@@ -31,8 +31,7 @@ public class BranchInterfaceBuilder
 		InterfaceBuilder ib = new InterfaceBuilder();
 		ib.setPackage(SessionApiGenerator.getStateChannelPackageName(gpn, this.apigen.getSelf()));  // FIXME: factor out with ScribSocketBuilder
 		ib.addImports("java.io.IOException");
-		ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
-		ib.addImports(SessionApiGenerator.getRolesPackageName(this.apigen.getGProtocolName()) + ".*", SessionApiGenerator.getOpsPackageName(this.apigen.getGProtocolName()) + ".*");  // FIXME: factor out with ScribSocketBuilder
+		ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
 		ib.setName(getBranchInterfaceName(cb));
 		ib.addModifiers(InterfaceBuilder.PUBLIC);
 		for (IOAction a : curr.getAcceptable())
@@ -48,6 +47,9 @@ public class BranchInterfaceBuilder
 			//if (!nextClass.equals(ClassBuilder.VOID))
 			if (succ.isTerminal())
 			{
+				// FIXME: repeated
+				ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
+				ib.addImports(SessionApiGenerator.getRolesPackageName(this.apigen.getGProtocolName()) + ".*");
 				mb3.addParameters(ScribSocketBuilder.ENDSOCKET_CLASS + "<" + SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + ", " + this.apigen.getSelf() + ">" + " schan");  // FIXME: factor out
 			}
 			else

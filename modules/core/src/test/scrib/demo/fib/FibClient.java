@@ -13,6 +13,11 @@ import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
+import demo.fib.Fib.Adder.Adder;
+import demo.fib.Fib.Adder.channels.C.Adder_C_1;
+import demo.fib.Fib.Adder.channels.C.Adder_C_2;
+import demo.fib.Fib.Adder.channels.C.Adder_C_3;
+import demo.fib.Fib.Adder.roles.C;
 
 public class FibClient
 {

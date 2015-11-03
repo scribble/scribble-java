@@ -6,6 +6,7 @@ import java.util.List;
 import org.scribble.ast.Module;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
+import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 
@@ -33,13 +34,21 @@ public class InputFutureBuilder
 	{
 		final String FUTURE_PARAM = "fut";
 		Module main = this.apigen.getMainModule();
+		GProtocolName gpn = this.apigen.getGProtocolName();
 
-		String futureClass = "Future_" + cb.getName();  // Fresh enough? need only one future class per receive (unary receive)
+		String futureClass = cb.getName() + "_Future";  // Fresh enough? need only one future class per receive (unary receive)
 
-		cb.addImports("java.util.concurrent.CompletableFuture");  // "parent" cb, not the future class
+		//cb.addImports("java.util.concurrent.CompletableFuture");  // "parent" cb, not the future class
 		//cb.addImports("java.util.concurrent.ExecutionException");
 
-		ClassBuilder future = cb.newClass();  // FIXME: inner class
+		//ClassBuilder future = cb.newClass();  // FIXME: inner class
+		// Duplicated from BranchInterfaceBuilder -- FIXME: factor out
+		ClassBuilder future = new ClassBuilder();
+		future.setPackage(SessionApiGenerator.getStateChannelPackageName(gpn, this.apigen.getSelf()));  // FIXME: factor out with ScribSocketBuilder
+		future.addImports("java.io.IOException");
+		future.addImports("java.util.concurrent.CompletableFuture");  // "parent" cb, not the future class
+		future.addModifiers(InterfaceBuilder.PUBLIC);
+
 		future.setName(futureClass);
 		future.setSuperClass(SCRIBFUTURE_CLASS);
 		List<String> types = new LinkedList<>(); 

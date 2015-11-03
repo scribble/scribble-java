@@ -31,7 +31,6 @@ public class SendSocketBuilder extends ScribSocketBuilder
 	protected void addImports()
 	{
 		super.addImports();
-		this.cb.addImports(getOpsPackageName() + ".*");
 	}
 
 	// A method for each successor state
@@ -55,6 +54,8 @@ public class SendSocketBuilder extends ScribSocketBuilder
 			
 			if (a.mid.isOp())
 			{	
+				this.cb.addImports(getOpsPackageName() + ".*");  // FIXME: repeated
+
 				List<String> args =
 						IntStream.range(0, a.payload.elems.size()).mapToObj((i) -> ARG_PREFIX + i++).collect(Collectors.toList());
 				mb.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " op");  // opClass -- op param not actually used in body

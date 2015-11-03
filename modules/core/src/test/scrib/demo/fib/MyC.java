@@ -13,7 +13,10 @@ import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import static demo.fib.Adder.*;
+import demo.fib.Fib.Adder.*;
+import demo.fib.Fib.Adder.roles.*;
+import demo.fib.Fib.Adder.ops.*;
+import demo.fib.Fib.Adder.channels.C.*;
 
 
 public class MyC

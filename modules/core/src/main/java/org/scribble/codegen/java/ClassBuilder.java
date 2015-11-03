@@ -1,6 +1,7 @@
 package org.scribble.codegen.java;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,13 +21,13 @@ public class ClassBuilder
 	public static final String VOID = "void";
 	
 	private String packname;  // null for non- top-level class
-	private final List<String> imports = new LinkedList<String>();
-	private final List<String> mods = new LinkedList<String>();
+	private final LinkedHashSet<String> imports = new LinkedHashSet<>();
+	private final List<String> mods = new LinkedList<>();
 
 	private String name;
 	private String superc;  // null if none explicit
-	private final List<String> ifaces = new LinkedList<String>();
-	private final List<String> params = new LinkedList<String>();
+	private final List<String> ifaces = new LinkedList<>();
+	private final List<String> params = new LinkedList<>();
 	
 	private final List<FieldBuilder> fields = new LinkedList<>();
 	private final List<MethodBuilder> ctors = new LinkedList<>();

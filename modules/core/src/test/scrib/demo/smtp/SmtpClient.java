@@ -15,7 +15,22 @@ import org.scribble.net.session.SSLSocketChannelWrapper;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.smtp.SMTP_C_11.SMTP_C_11Enum;
+import demo.smtp.Smtp.SMTP.SMTP;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_1;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_10;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_11_Cases;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_12;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_1_Future;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_2;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_3;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_3_Cases;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_4;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_6;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_7;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_7_Cases;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_8;
+import demo.smtp.Smtp.SMTP.channels.C.SMTP_C_9_Cases;
+import demo.smtp.Smtp.SMTP.roles.C;
 import demo.smtp.message.SmtpMessageFormatter;
 import demo.smtp.message.client.Auth;
 import demo.smtp.message.client.Data;
@@ -52,7 +67,7 @@ public class SmtpClient
 
 			SMTP_C_1 s1 = new SMTP_C_1(se);
 			
-			Buf<Future_SMTP_C_1> b220 = new Buf<>();
+			Buf<SMTP_C_1_Future> b220 = new Buf<>();
 			SMTP_C_2 s2 = s1.async(SMTP.S, SMTP._220, b220);
 			System.out.print("Greeting: " + b220.val.sync().msg);
 

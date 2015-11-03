@@ -3,7 +3,7 @@ package demo.http.message;
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 
-import demo.http.Http;
+import demo.http.Http.Http.Http;
 
 // Unlike ScribMessage, HttpMessage is not actually "sent", but we use it as the base class since the socket API takes ScribMessages
 public abstract class HttpMessage extends ScribMessage

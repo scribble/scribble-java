@@ -1,6 +1,6 @@
 package demo.smtp.message.server;
 
-import demo.smtp.SMTP;
+import demo.smtp.Smtp.SMTP.SMTP;
 import demo.smtp.message.SmtpMessage;
 
 public class _250 extends SmtpMessage

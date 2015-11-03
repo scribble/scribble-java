@@ -8,7 +8,13 @@ import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 import org.scribble.util.Caller;
 
-import demo.http.Http_C_4.Http_C_4Enum;
+import demo.http.Http.Http.Http;
+import demo.http.Http.Http.channels.C.Http_C_1;
+import demo.http.Http.Http.channels.C.Http_C_4.Http_C_4_Enum;
+import demo.http.Http.Http.channels.C.Http_C_4_Cases;
+import demo.http.Http.Http.channels.C.Http_C_5;
+import demo.http.Http.Http.channels.C.Http_C_5_Cases;
+import demo.http.Http.Http.roles.C;
 import demo.http.message.Body;
 import demo.http.message.HttpMessageFormatter;
 import demo.http.message.client.Host;
@@ -41,10 +47,8 @@ public class HttpClient
 		Http http = new Http();
 		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, Http.C, new HttpMessageFormatter()))
 		{
-			String host = "www.doc.ic.ac.uk";
-			int port = 80;
-			//String host = "localhost";
-			//int port = 8080;
+			String host = "www.doc.ic.ac.uk"; int port = 80;
+			//String host = "localhost"; int port = 8080;
 		
 			se.connect(SocketChannelEndpoint::new, Http.S, host, port);
 			
@@ -57,8 +61,8 @@ public class HttpClient
 					  .receive(Http.S, Http.HTTPV, b_vers)
 					  .branch(Http.S);
 			Http_C_5 s5 = 
-					  (s4.op == Http_C_4Enum._200) ? s4.receive(Http._200)
-					: (s4.op == Http_C_4Enum._404) ? s4.receive(Http._404)
+					  (s4.op == Http_C_4_Enum._200) ? s4.receive(Http._200)
+					: (s4.op == Http_C_4_Enum._404) ? s4.receive(Http._404)
 					: new Caller().call(() -> { throw new RuntimeException("Unknown status code: " + s4.op); });
 
 			Y: while (true)

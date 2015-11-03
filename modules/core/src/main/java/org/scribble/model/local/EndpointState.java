@@ -2,10 +2,9 @@ package org.scribble.model.local;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -19,13 +18,13 @@ public class EndpointState
 	public final int id;
 
 	private final Set<RecVar> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
-	private final Map<IOAction, EndpointState> edges;
+	private final LinkedHashMap<IOAction, EndpointState> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)
 	
 	protected EndpointState(Set<RecVar> labs)
 	{
 		this.id = EndpointState.count++;
 		this.labs = new HashSet<>(labs);
-		this.edges = new HashMap<>();
+		this.edges = new LinkedHashMap<>();
 	}
 	
 	protected void addLabel(RecVar lab)

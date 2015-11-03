@@ -1,6 +1,6 @@
 package demo.smtp.message.client;
 
-import demo.smtp.SMTP;
+import demo.smtp.Smtp.SMTP.SMTP;
 import demo.smtp.message.SmtpMessage;
 import demo.smtp.message.SmtpMessageFormatter;
 

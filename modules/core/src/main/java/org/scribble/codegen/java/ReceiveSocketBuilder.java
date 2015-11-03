@@ -42,7 +42,8 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
 		EndpointState succ = curr.accept(a);
 		ClassBuilder futureClass = new InputFutureBuilder(this.apigen, this.cb, a).build();  // Wraps all payload elements as fields (set by future completion)
-		// FIXME: problem if package and protocol have the same name
+		// FIXME: problem if package and protocol have the same name -- still?
+		this.apigen.addClass(futureClass);
 
 		makeReceiveMethod(main, a, succ);  // [nextClass] receive([opClass] op, Buff<? super T> arg, ...)
 		makeAsyncMethod(a, succ, futureClass.getName());  // [nextClass] async([opClass] op, Buff<futureClass> arg)

@@ -91,22 +91,32 @@ public abstract class ScribSocketBuilder
 		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM, "boolean dummy");
 		ctor.addModifiers(ClassBuilder.PROTECTED);
 		ctor.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		
 		if (this.curr.equals(this.apigen.getInitialState()))
 		{
-			/*MethodBuilder mb = cb.newMethod("init");
-			mb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC);
-			mb.setReturn(this.root);
-			mb.addParameters(SESSIONENDPOINT_CLASS + "<" + role + "> " + SESSIONENDPOINT_PARAM);
-			mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
-			mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
-			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
-			MethodBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
-			ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
-			ctor2.addModifiers(ClassBuilder.PUBLIC);
-			ctor2.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
-			ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
+			addInitialStateConstructor();
 		}
+		
 		return ctor;
+	}
+
+	protected void addInitialStateConstructor()
+	{
+		final String SESSIONENDPOINT_PARAM = "se";
+		String sess = getSessionClassName();
+		String role = getSelfClassName();
+		/*MethodBuilder mb = cb.newMethod("init");
+		mb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC);
+		mb.setReturn(this.root);
+		mb.addParameters(SESSIONENDPOINT_CLASS + "<" + role + "> " + SESSIONENDPOINT_PARAM);
+		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
+		mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
+		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
+		MethodBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
+		ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
+		ctor2.addModifiers(ClassBuilder.PUBLIC);
+		ctor2.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 	}
 	
 	protected abstract void addMethods();
