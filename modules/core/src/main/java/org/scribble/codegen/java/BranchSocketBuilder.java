@@ -12,7 +12,7 @@ import org.scribble.sesstype.name.Role;
 
 public class BranchSocketBuilder extends ScribSocketBuilder
 {
-	public BranchSocketBuilder(EndpointApiGenerator apigen, EndpointState curr)
+	public BranchSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen, curr);
 	}
@@ -30,7 +30,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		final String ROLE_PARAM = "role";
 		final String MESSAGE_VAR = "m";
 		final String OPENUM_VAR = "openum";
-		final String OP = MESSAGE_VAR + "." + EndpointApiGenerator.SCRIBMESSAGE_OP_FIELD;
+		final String OP = MESSAGE_VAR + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD;
 
 		Module main = this.apigen.getMainModule();
 
@@ -45,10 +45,10 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		mb.setReturn(next);
 		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getAcceptable().iterator().next().peer) + " " + ROLE_PARAM);
 		mb.addModifiers(ClassBuilder.PUBLIC);
-		mb.addExceptions(EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		
 		Role peer = curr.getAcceptable().iterator().next().peer;
-		mb.addBodyLine(EndpointApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
+		mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		mb.addBodyLine(enumClass + " " + OPENUM_VAR + ";");
 		boolean first = true;
@@ -80,8 +80,8 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		mb2.addParameters(ifname + " branch");
 		mb2.setReturn(ClassBuilder.VOID);
 		mb2.addModifiers(ClassBuilder.PUBLIC);
-		mb2.addExceptions(EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
-		mb2.addBodyLine(EndpointApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
+		mb2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+		mb2.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
 		for (IOAction a : curr.getAcceptable())
@@ -95,7 +95,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 			{
 				mb2.addBodyLine("else");
 			}
-			mb2.addBodyLine("if (" + MESSAGE_VAR + "." + EndpointApiGenerator.SCRIBMESSAGE_OP_FIELD + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
+			mb2.addBodyLine("if (" + MESSAGE_VAR + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
 			if (succ.isTerminal())
 			{
 				mb2.addBodyLine(1, SCRIBSOCKET_SE_FIELD + ".setCompleted();");
@@ -138,7 +138,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		this.apigen.addInterface(new BranchInterfaceBuilder(this.apigen, this.cb, this.curr).build());
 	}
 
-	protected static String getBranchEnumClassName(EndpointApiGenerator apigen, EndpointState curr)
+	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		return apigen.getSocketClassName(curr) + "_Enum";
 	}

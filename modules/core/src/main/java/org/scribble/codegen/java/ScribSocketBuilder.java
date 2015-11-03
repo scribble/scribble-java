@@ -30,13 +30,13 @@ public abstract class ScribSocketBuilder
 	protected static final String CASE_MESSAGE_PARAM = CASE_MESSAGE_FIELD;
 	protected static final String CASE_ARG_PREFIX = "arg";
 	
-	protected final EndpointApiGenerator apigen;
+	protected final StateChannelApiGenerator apigen;
 	protected final EndpointState curr;
 	protected final String className;
 
 	protected final ClassBuilder cb = new ClassBuilder();
 	
-	public ScribSocketBuilder(EndpointApiGenerator apigen, EndpointState curr)
+	public ScribSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		this.apigen = apigen;
 		this.curr = curr;
@@ -98,7 +98,7 @@ public abstract class ScribSocketBuilder
 			mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 			mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
 			MethodBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
-			ctor2.addExceptions(EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
+			ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
 			ctor2.addModifiers(ClassBuilder.PUBLIC);
 			ctor2.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 			ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");

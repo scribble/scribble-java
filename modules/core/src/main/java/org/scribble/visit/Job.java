@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.EndpointApiGenerator;
+import org.scribble.codegen.java.StateChannelApiGenerator;
 import org.scribble.codegen.java.SessionApiGenerator;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.main.ScribbleException;
@@ -109,8 +109,8 @@ public class Job
 		{
 			buildGraph(fullname, role);
 		}
-		debugPrintPass("Running " + EndpointApiGenerator.class + " for " + fullname + "@" + role);
-		return new EndpointApiGenerator(this, fullname, role).generateClasses(); // filepath -> class source  // Store results?
+		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + role);
+		return new StateChannelApiGenerator(this, fullname, role).generateClasses(); // filepath -> class source  // Store results?
 	}
 
 	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException

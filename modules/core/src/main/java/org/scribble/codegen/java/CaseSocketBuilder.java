@@ -11,7 +11,7 @@ import org.scribble.sesstype.name.MessageSigName;
 
 public class CaseSocketBuilder extends ScribSocketBuilder
 {
-	public CaseSocketBuilder(EndpointApiGenerator apigen, EndpointState curr)
+	public CaseSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen, curr);
 	}
@@ -37,7 +37,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		//String className = newClassName();  // Name of branch-receive class
 
 		MethodBuilder ctor = cb.getConstructors().iterator().next();
-		ctor.addParameters(enumClassName + " " + CASE_OP_PARAM, EndpointApiGenerator.SCRIBMESSAGE_CLASS + " " + CASE_MESSAGE_PARAM);
+		ctor.addParameters(enumClassName + " " + CASE_OP_PARAM, StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + CASE_MESSAGE_PARAM);
 		ctor.addBodyLine(ClassBuilder.THIS + "." + CASE_OP_FIELD + " = " + CASE_OP_PARAM + ";");
 		ctor.addBodyLine(ClassBuilder.THIS + "." + CASE_MESSAGE_FIELD + " = " + CASE_MESSAGE_PARAM + ";");
 
@@ -47,7 +47,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		
 		FieldBuilder fb2 = cb.newField(CASE_MESSAGE_FIELD);  // The received ScribMessage (branch-check checks the user-selected receive op against the ScribMessage op)
 		fb2.addModifiers(ClassBuilder.PRIVATE, ClassBuilder.FINAL);
-		fb2.setType(EndpointApiGenerator.SCRIBMESSAGE_CLASS);
+		fb2.setType(StateChannelApiGenerator.SCRIBMESSAGE_CLASS);
 
 		for (IOAction a : curr.getAcceptable())
 		{
@@ -70,8 +70,8 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		MethodBuilder mb = cb.newMethod("receive");
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		setNextSocketReturnType(mb, succ);
-		mb.addParameters(opClass + " " + EndpointApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
-		mb.addExceptions(EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		return mb;
 	}
 
@@ -121,9 +121,9 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 
 	private static void addBranchCheck(String opClassName, MethodBuilder mb, String messageField)
 	{
-		String op = ClassBuilder.THIS + "." + messageField + "." + EndpointApiGenerator.SCRIBMESSAGE_OP_FIELD;
+		String op = ClassBuilder.THIS + "." + messageField + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD;
 		mb.addBodyLine("if (!" + op + ".equals(" + opClassName + ")) {");
-		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " " + EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");
+		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " " + StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");
 		mb.addBodyLine("}");
 	}
 }

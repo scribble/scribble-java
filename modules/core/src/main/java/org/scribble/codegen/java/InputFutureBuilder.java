@@ -13,7 +13,7 @@ public class InputFutureBuilder
 {
 	protected static final String SCRIBFUTURE_CLASS = "org.scribble.net.ScribFuture";
 
-	protected final EndpointApiGenerator apigen;
+	protected final StateChannelApiGenerator apigen;
 	//protected final EndpointState curr;
 	//protected final String className;
 
@@ -21,7 +21,7 @@ public class InputFutureBuilder
 	private final IOAction a;
 
 	// Pre: cb is ReceiveSocketBuilder
-	public InputFutureBuilder(EndpointApiGenerator apigen, ClassBuilder cb, IOAction a)
+	public InputFutureBuilder(StateChannelApiGenerator apigen, ClassBuilder cb, IOAction a)
 	{
 		this.apigen = apigen;
 		//this.curr = curr;
@@ -67,7 +67,7 @@ public class InputFutureBuilder
 			f.addModifiers(ClassBuilder.PUBLIC);
 		}
 
-		MethodBuilder cons = future.newConstructor("CompletableFuture<" + EndpointApiGenerator.SCRIBMESSAGE_CLASS + "> " + FUTURE_PARAM);
+		MethodBuilder cons = future.newConstructor("CompletableFuture<" + StateChannelApiGenerator.SCRIBMESSAGE_CLASS + "> " + FUTURE_PARAM);
 		cons.addModifiers(ClassBuilder.PROTECTED);
 		cons.addBodyLine(ClassBuilder.SUPER + "(" + FUTURE_PARAM + ");");
 
@@ -76,7 +76,7 @@ public class InputFutureBuilder
 		sync.setReturn(futureClass);
 		//sync.addExceptions("ExecutionException", "InterruptedException");
 		sync.addExceptions("IOException");
-		String ln = (a.mid.isOp() && a.payload.isEmpty()) ? "" : EndpointApiGenerator.SCRIBMESSAGE_CLASS + " m = ";
+		String ln = (a.mid.isOp() && a.payload.isEmpty()) ? "" : StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " m = ";
 		ln += ClassBuilder.SUPER + ".get();";
 		sync.addBodyLine(ln);
 		if (a.mid.isOp())

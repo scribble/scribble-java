@@ -16,7 +16,7 @@ import org.scribble.sesstype.name.PayloadType;
 
 public class SendSocketBuilder extends ScribSocketBuilder
 {
-	public SendSocketBuilder(EndpointApiGenerator apigen, EndpointState curr)
+	public SendSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen, curr);
 	}
@@ -44,7 +44,7 @@ public class SendSocketBuilder extends ScribSocketBuilder
 			mb.addModifiers(ClassBuilder.PUBLIC);
 			setNextSocketReturnType(mb, succ);
 			mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM);  // More params added below
-			mb.addExceptions(EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
+			mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
 			
 			if (a.mid.isOp())
 			{	

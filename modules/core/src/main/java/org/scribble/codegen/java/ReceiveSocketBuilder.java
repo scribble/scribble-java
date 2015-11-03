@@ -11,7 +11,7 @@ import org.scribble.sesstype.name.PayloadType;
 
 public class ReceiveSocketBuilder extends ScribSocketBuilder
 {
-	public ReceiveSocketBuilder(EndpointApiGenerator apigen, EndpointState curr)
+	public ReceiveSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen, curr);
 	}
@@ -51,7 +51,7 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		if (a.mid.isOp())
 		{
 			addReceiveOpParams(mb, main, a);
-			String ln = a.payload.isEmpty() ? "" : EndpointApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = ";
+			String ln = a.payload.isEmpty() ? "" : StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = ";
 			ln += ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.peer) + ");";
 			mb.addBodyLine(ln);
 			addPayloadBuffSetters(main, a, mb);
@@ -60,7 +60,7 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			addReceiveMessageSigNameParams(mb, a, msd);
-			mb.addBodyLine(EndpointApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = "
+			mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = "
 						+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.peer) + ");");
 			mb.addBodyLine(RECEIVE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + RECEIVE_MESSAGE_PARAM + ";");
 		}
@@ -75,8 +75,8 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		MethodBuilder mb = cb.newMethod("receive");
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		setNextSocketReturnType(mb, succ);
-		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + EndpointApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
-		mb.addExceptions(EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
 		//, "ExecutionException", "InterruptedException");
 		return mb;
 	}
@@ -91,9 +91,9 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		// Blurb stuff similar to makeReceiveHeader
 		mb.addModifiers(ClassBuilder.PUBLIC);//, ClassBuilder.SYNCHRONIZED);
 		setNextSocketReturnType(mb, succ);
-		mb.addExceptions(EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM);
-		mb.addParameters(opClass + " " + EndpointApiGenerator.RECEIVE_OP_PARAM);
+		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);
 		mb.addParameters(BUFF_CLASS + "<" + futureClass + "> " + RECEIVE_ARG_PREFIX);  // Method for future-buf even if no payload, for sync action
 		//mb.addBodyLine(ClassBuilder.SUPER + ".use();");
 		//mb2.addBodyLine(ARG_PREFIX + ".val = " + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
@@ -112,9 +112,9 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		mb.addAnnotations("@SuppressWarnings(\"unchecked\")");  // To cast the generic garbage buf
 		mb.addModifiers(ClassBuilder.PUBLIC);
 		setNextSocketReturnType(mb, succ);
-		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + EndpointApiGenerator.RECEIVE_OP_PARAM);
-		mb.addExceptions(EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
-		mb.addBodyLine(ClassBuilder.RETURN + " async(" + getSessionApiRoleConstant(a.peer) + ", " + EndpointApiGenerator.RECEIVE_OP_PARAM + ", " + getGarbageBuf(futureClass) + ");");
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
+		mb.addBodyLine(ClassBuilder.RETURN + " async(" + getSessionApiRoleConstant(a.peer) + ", " + StateChannelApiGenerator.RECEIVE_OP_PARAM + ", " + getGarbageBuf(futureClass) + ");");
 	}
 
   // boolean isDone()

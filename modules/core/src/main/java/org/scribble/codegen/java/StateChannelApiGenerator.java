@@ -20,7 +20,7 @@ import org.scribble.visit.Projector;
 
 // FIXME: selector(?) hanging on runtimeexception (from message formatter)
 // FIXME: consume futures before wrap/reconnect
-public class EndpointApiGenerator
+public class StateChannelApiGenerator
 {
 	protected static final String SCRIBMESSAGE_CLASS = "org.scribble.net.ScribMessage";
 	protected static final String SCRIBBLERUNTIMEEXCEPTION_CLASS = "org.scribble.main.ScribbleRuntimeException";
@@ -42,7 +42,7 @@ public class EndpointApiGenerator
 	protected static final String RECEIVE_OP_PARAM = "op";
 	protected static final String SCRIBMESSAGE_OP_FIELD = "op";
 
-	public EndpointApiGenerator(Job job, GProtocolName fullname, Role self)
+	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self)
 	{
 		this.job = job;
 		this.gpn = fullname;

@@ -9,12 +9,12 @@ import org.scribble.sesstype.name.MessageSigName;
 // Factor out
 public class BranchInterfaceBuilder
 {
-	protected final EndpointApiGenerator apigen;
+	protected final StateChannelApiGenerator apigen;
 	private final ClassBuilder cb;
 	private final EndpointState curr;
 
 	// Pre: cb is the BRanchSocketBuilder
-	public BranchInterfaceBuilder(EndpointApiGenerator apigen, ClassBuilder cb, EndpointState curr)
+	public BranchInterfaceBuilder(StateChannelApiGenerator apigen, ClassBuilder cb, EndpointState curr)
 	{
 		this.apigen = apigen;
 		this.cb = cb;
@@ -40,7 +40,7 @@ public class BranchInterfaceBuilder
 			MethodBuilder mb3 = ib.newMethod("receive");
 			mb3.addModifiers(ClassBuilder.PUBLIC);
 			mb3.setReturn(InterfaceBuilder.VOID);
-			mb3.addExceptions(EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
+			mb3.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
 			//if (!nextClass.equals(ClassBuilder.VOID))
 			if (succ.isTerminal())
 			{
@@ -50,7 +50,7 @@ public class BranchInterfaceBuilder
 			{
 				mb3.addParameters(nextClass + " schan");  // FIXME: factor out
 			}
-			mb3.addParameters(opClass + " " + EndpointApiGenerator.RECEIVE_OP_PARAM);  // More params added below
+			mb3.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params added below
 
 			if (a.mid.isOp())
 			{	
