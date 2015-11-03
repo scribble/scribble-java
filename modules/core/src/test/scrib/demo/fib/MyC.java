@@ -3,20 +3,13 @@
 
 package demo.fib;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.concurrent.ExecutionException;
-
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.fib.Fib.Adder.*;
-import demo.fib.Fib.Adder.roles.*;
-import demo.fib.Fib.Adder.ops.*;
-import demo.fib.Fib.Adder.channels.C.*;
+import demo.fib.Fib.Adder.Adder;
+import demo.fib.Fib.Adder.channels.C.Adder_C_1;
+import demo.fib.Fib.Adder.roles.C;
 
 
 public class MyC

@@ -42,7 +42,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 	public ScribMessage fromBytes(ByteBuffer bb) throws IOException, ClassNotFoundException
 	{
 		bb.flip();
-		byte[] bs = new byte[2];
+		//byte[] bs = new byte[2];
 		int rem = bb.remaining();
 		if (rem < 2)
 		{
@@ -98,10 +98,10 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 			// TODO: server-side (MAIL FROM:, RCPT TO:, etc)
 			String line = front + readLine(bb, pos + 4);
 			bb.compact();
-			if (line == null)
+			/*if (line == null)  // deadcode
 			{
 				return null;
-			}
+			}*/
 			throw new RuntimeException("Cannot parse message: " + line);
 		}
 	}

@@ -63,7 +63,7 @@ public class Client
 		}
 	}
 
-	private static void foo(Booking_C_1 s1, Buf<Integer> buf) throws Exception
+	/*private static void foo(Booking_C_1 s1, Buf<Integer> buf) throws Exception
 	{
 		for (int i = 0; i < QUERIES.size(); i++)  // Stream.forEach not suitable due to Exceptions
 		{
@@ -82,7 +82,7 @@ public class Client
 			}
 		}
 		s1.send(Booking.A, Booking.No).send(Booking.A, Booking.Bye);
-	}
+	}*/
 	
 	private static Booking_C_5 doQuery(Booking_C_1 s1, int i, Buf<Integer> buf) throws Exception
 	{
@@ -103,11 +103,11 @@ public class Client
 				: doQuery(s1, i + 1, buf);
 	}
 
-	private static <T> T println(T t, String m)
+	/*private static <T> T println(T t, String m)
 	{
 		System.out.println(m);
 		return t;
-	}
+	}*/
 
 	/*static Optional<Integer> opt;
 	private static Booking_C_1 foo2(Booking_C_1 s1, int i) throws Exception

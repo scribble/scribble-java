@@ -23,7 +23,7 @@ public class AdderClient
 	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		Buf<Integer> i1 = new Buf<>(1);
-		Buf<Integer> i2 = new Buf<>(2);
+		//Buf<Integer> i2 = new Buf<>(2);
 
 		Adder adder = new Adder();
 		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))

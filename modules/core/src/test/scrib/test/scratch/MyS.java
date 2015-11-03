@@ -24,8 +24,8 @@ public class MyS
 	{
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
-			Buf<Integer> i1 = new Buf<>();
-			Buf<Integer> i2 = new Buf<>();
+			//Buf<Integer> i1 = new Buf<>();
+			//Buf<Integer> i2 = new Buf<>();
 
 			while (true)
 			{
