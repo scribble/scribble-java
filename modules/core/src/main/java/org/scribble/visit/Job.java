@@ -112,7 +112,7 @@ public class Job
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + role);
 		return new StateChannelApiGenerator(this, fullname, role).generateClasses(); // filepath -> class source  // Store results?
 	}
-
+	
 	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on all modules:");

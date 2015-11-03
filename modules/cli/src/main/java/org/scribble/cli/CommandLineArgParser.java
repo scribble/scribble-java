@@ -15,6 +15,7 @@ public class CommandLineArgParser
 	public static final String PROJECT_FLAG = "-project";
 	public static final String FSM_FLAG = "-fsm";
 	public static final String SESSION_FLAG = "-session";
+	public static final String STATECHAN_FLAG = "-statechan";
 	public static final String API_FLAG = "-api";
 	public static final String OUTPUT_FLAG = "-d";
 	
@@ -30,6 +31,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.ArgFlag.PROJECT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.FSM_FLAG, CommandLine.ArgFlag.FSM);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.ArgFlag.SESS_API);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.STATECHAN_FLAG, CommandLine.ArgFlag.SCHAN_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
 	}
 
@@ -103,6 +105,10 @@ public class CommandLineArgParser
 			{
 				return parseSession(i);
 			}
+			case CommandLineArgParser.STATECHAN_FLAG:
+			{
+				return parseStateChannels(i);
+			}
 			case CommandLineArgParser.API_FLAG:
 			{
 				return parseApi(i);
@@ -159,7 +165,7 @@ public class CommandLineArgParser
 		return i;
 	}
 	
-	private int parseFsm(int i)  // Almost same as parseProject -- could factor out, but code less clear and more awkard error reporting
+	private int parseFsm(int i)  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
 	{
 		if ((i + 2) >= this.args.length)
 		{
@@ -179,6 +185,18 @@ public class CommandLineArgParser
 		}
 		String proto = this.args[++i];
 		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.SESSION_FLAG), proto);
+		return i;
+	}
+
+	private int parseStateChannels(int i)  // Almost same as parseProject
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new RuntimeException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.STATECHAN_FLAG), proto, role);
 		return i;
 	}
 

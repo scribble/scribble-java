@@ -33,7 +33,7 @@ import org.scribble.visit.JobContext;
 // Maybe no point to be a Runnable
 public class CommandLine implements Runnable
 {
-	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, EP_API, OUTPUT }
+	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, SCHAN_API, EP_API, OUTPUT }
 	
 	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 	
@@ -69,6 +69,10 @@ public class CommandLine implements Runnable
 			if (this.args.containsKey(ArgFlag.SESS_API))
 			{
 				outputSessionApi(job);
+			}
+			if (this.args.containsKey(ArgFlag.SCHAN_API))
+			{
+				outputStateChannelApi(job);
 			}
 			if (this.args.containsKey(ArgFlag.EP_API))
 			{
@@ -119,6 +123,19 @@ public class CommandLine implements Runnable
 			outputClasses(classes);
 		}
 	}
+	
+	private void outputStateChannelApi(Job job) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.SCHAN_API);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<String, String> classes = job.generateStateChannelApi(fullname, role);
+			outputClasses(classes);
+		}
+	}
 
 	private void outputEndpointApi(Job job) throws ScribbleException
 	{
@@ -127,9 +144,11 @@ public class CommandLine implements Runnable
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Map<String, String> sessClasses = job.generateSessionApi(fullname);
+			outputClasses(sessClasses);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			Map<String, String> classes = job.generateStateChannelApi(fullname, role);
-			outputClasses(classes);
+			Map<String, String> scClasses = job.generateStateChannelApi(fullname, role);
+			outputClasses(scClasses);
 		}
 	}
 
