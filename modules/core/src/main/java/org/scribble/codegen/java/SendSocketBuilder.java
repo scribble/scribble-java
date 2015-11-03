@@ -27,6 +27,13 @@ public class SendSocketBuilder extends ScribSocketBuilder
 		return SENDSOCKET_CLASS + "<" + getSessionClassName() + ", " + getSelfClassName() + ">";
 	}
 
+	@Override
+	protected void addImports()
+	{
+		super.addImports();
+		this.cb.addImports(getOpsPackageName() + ".*");
+	}
+
 	// A method for each successor state
 	//private void addSendMethods(ClassBuilder cb, EndpointState curr)
 	@Override

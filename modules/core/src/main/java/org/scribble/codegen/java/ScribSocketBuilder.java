@@ -63,7 +63,8 @@ public abstract class ScribSocketBuilder
 	protected void constructClassExceptMethods()
 	{
 		this.cb.setName(this.className);
-		this.cb.setPackage(getPackageName());
+		//this.cb.setPackage(getSessionPackageName());
+		this.cb.setPackage(getStateChannelPackageName());
 		this.cb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
 		//cb.setSuperClass(superc + "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">");
 		this.cb.setSuperClass(getSuperClassType());
@@ -76,7 +77,9 @@ public abstract class ScribSocketBuilder
 	protected void addImports()
 	{
 		this.cb.addImports("java.io.IOException");
-		this.cb.addImports(getPackageName() + "." + getSessionClassName());
+		//this.cb.addImports(getSessionPackageName() + "." + getSessionClassName());
+		this.cb.addImports(getEndpointApiRootPackageName() + ".*");
+		this.cb.addImports(getRolesPackageName() + ".*");
 	}
 	
 	protected MethodBuilder addConstructor()
@@ -168,9 +171,27 @@ public abstract class ScribSocketBuilder
 		return SessionApiGenerator.getRoleClassName(this.apigen.getSelf());
 	}
 
-	protected String getPackageName()
+	protected String getEndpointApiRootPackageName()
 	{
-		return SessionApiGenerator.getPackageName(this.apigen.getGProtocolName());
+		/*GProtocolName gpn = this.apigen.getGProtocolName();
+		return SessionApiGenerator.getSessionApiPackageName(this.apigen.getGProtocolName()) + ".api" + gpn.getSimpleName();*/
+		return SessionApiGenerator.getEndpointApiRootPackageName(this.apigen.getGProtocolName());
+	}
+
+	protected String getRolesPackageName()
+	{
+		return SessionApiGenerator.getRolesPackageName(this.apigen.getGProtocolName());
+	}
+
+	protected String getOpsPackageName()
+	{
+		return SessionApiGenerator.getOpsPackageName(this.apigen.getGProtocolName());
+	}
+
+	protected String getStateChannelPackageName()
+	{
+		//return getSessionPackageName() + ".channels." + this.apigen.getSelf();
+		return SessionApiGenerator.getStateChannelPackageName(this.apigen.getGProtocolName(), this.apigen.getSelf());
 	}
 	
 	/*private static boolean isTerminalClassName(String n)

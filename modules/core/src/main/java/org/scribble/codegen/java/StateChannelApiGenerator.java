@@ -54,17 +54,20 @@ public class StateChannelApiGenerator
 		constructClasses(this.init);
 	}
 	
+	// Return: key (package and Java class file path) -> val (Java class source) 
 	public Map<String, String> generateClasses()
 	{
 		Map<String, String> map = new HashMap<String, String>();
+			// FIXME: factor out with ScribSocketBuilder.getPackageName
+		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.gpn).replace('.', '/') + "/channels/" + this.self + "/" ;
 		for (String s : this.classes.keySet())
 		{
-			String path = SessionApiGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java";
+			String path = prefix + s + ".java";
 			map.put(path, this.classes.get(s).generate());
 		}
 		for (String s : this.ifaces.keySet())  // FIXME: integrate
 		{
-			String path = SessionApiGenerator.getPackageName(this.gpn).replace('.', '/') + '/' + s + ".java";
+			String path = prefix + s + ".java";
 			map.put(path, this.ifaces.get(s).generate());
 		}
 		return map;
@@ -161,7 +164,7 @@ public class StateChannelApiGenerator
 		return this.job.getContext().getMainModule();
 	}
 	
-	//FIXME HACK
+	// FIXME HACK
 	protected void addClass(ClassBuilder cb)
 	{
 		this.classes.put(cb.getName(), cb);

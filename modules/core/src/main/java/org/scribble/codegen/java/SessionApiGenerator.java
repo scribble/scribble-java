@@ -66,7 +66,7 @@ public class SessionApiGenerator
 
 	private static String makePath(GProtocolName gpn, String simpname)
 	{
-		return getPackageName(gpn).replace('.', '/') + "/" + simpname + ".java";
+		return getEndpointApiRootPackageName(gpn).replace('.', '/') + "/" + simpname + ".java";
 	}
 
 	/*public Map<MessageId<?>, String> getOpClasses()
@@ -76,7 +76,7 @@ public class SessionApiGenerator
 	
 	private void constructSessionClass()
 	{
-		String packname = getPackageName(this.gpn);
+		String packname = getEndpointApiRootPackageName(this.gpn);
 		String simpname = getSessionClassName(this.gpn);
 		
 		this.cb.setName(simpname);
@@ -84,6 +84,7 @@ public class SessionApiGenerator
 		this.cb.addImports(/*"java.io.IOException", */"java.util.Arrays", "java.util.Collections", "java.util.LinkedList", "java.util.List");
 		//this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
 		this.cb.addImports("org.scribble.sesstype.name.Role");
+		this.cb.addImports(getRolesPackageName(this.gpn) + ".*", getOpsPackageName(this.gpn) + ".*");
 		this.cb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
 		this.cb.setSuperClass(SessionApiGenerator.SESSION_CLASS);
 		
@@ -143,21 +144,21 @@ public class SessionApiGenerator
 
 	private void addRoleField(ClassBuilder cb, Role role)
 	{
-		addSingletonConstant(cb, getRoleClassName(role));
+		addSingletonConstant(cb, "roles", getRoleClassName(role));  // FIXME: factor out 
 	}
 	
 	private void addOpField(ClassBuilder cb, MessageId<?> mid)
 	{
-		addSingletonConstant(cb, getOpClassName(mid));
+		addSingletonConstant(cb, "ops", getOpClassName(mid));  // FIXME: factor out 
 	}
 	
-	private void addSingletonConstant(ClassBuilder cb, String type)
+	private void addSingletonConstant(ClassBuilder cb, String subpack, String type)
 	{
 		FieldBuilder fb = cb.newField(type);
 		fb.setType(type);
 		fb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.STATIC, ClassBuilder.FINAL);
 		//fb.setExpression(ClassBuilder.NEW + " " + type + "()");
-		fb.setExpression(getPackageName(this.gpn) + "." + type + "." + type);  // Currently requires source Scribble to be in a package that is not the root -- can fix by generating to a subpackage based on Module and/or protocol
+		fb.setExpression(getEndpointApiRootPackageName(this.gpn) + "." + subpack + "." + type + "." + type);  // Currently requires source Scribble to be in a package that is not the root -- can fix by generating to a subpackage based on Module and/or protocol
 	}
 	
 	private void constructOpClasses() throws ScribbleException
@@ -170,7 +171,8 @@ public class SessionApiGenerator
 		for (MessageId<?> mid : coll.getNames())
 		{
 			//constructOpClass(this.cb.newClass(), mid);
-			constructOpClass(new ClassBuilder(), getPackageName(this.gpn), mid);
+			//constructOpClass(new ClassBuilder(), getEndpointApiRootPackageName(this.gpn), mid);
+			constructOpClass(new ClassBuilder(), getOpsPackageName(this.gpn), mid);
 			this.mids.add(mid);
 		}
 	}
@@ -183,7 +185,8 @@ public class SessionApiGenerator
 		for (Role r : gpd.header.roledecls.getRoles())
 		{
 			//constructRoleClass(this.cb.newClass(), r);
-			constructRoleClass(new ClassBuilder(), getPackageName(this.gpn), r);
+			//constructRoleClass(new ClassBuilder(), getEndpointApiRootPackageName(this.gpn), r);
+			constructRoleClass(new ClassBuilder(), getRolesPackageName(this.gpn), r);
 			this.roles.add(r);
 		}
 	}
@@ -230,9 +233,27 @@ public class SessionApiGenerator
 	}
 
 	// Returns the Java output package: currently the Scribble package excluding the Module
-	public static String getPackageName(GProtocolName gpn)
+	public static String getEndpointApiRootPackageName(GProtocolName gpn)
 	{
-		return gpn.getPrefix().getPrefix().toString();  // Java output package name (not Scribble package)
+		//return gpn.getPrefix().getPrefix().toString();  // Java output package name (not Scribble package)
+		// FIXME: factor out with StateChannelApiGenerator.generateClasses
+		//return gpn.getPrefix().getPrefix().toString() + "." + gpn.getSimpleName();  // Java output package name (not Scribble package)
+		return gpn.toString();
+	}
+
+	protected static String getRolesPackageName(GProtocolName gpn)
+	{
+		return getEndpointApiRootPackageName(gpn) + ".roles";
+	}
+
+	protected static String getOpsPackageName(GProtocolName gpn)
+	{
+		return getEndpointApiRootPackageName(gpn) + ".ops";
+	}
+
+	protected static String getStateChannelPackageName(GProtocolName gpn, Role self)
+	{
+		return getEndpointApiRootPackageName(gpn) + ".channels." + self;
 	}
 	
 	// Returns the simple Role Class name

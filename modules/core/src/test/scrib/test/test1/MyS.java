@@ -10,6 +10,14 @@ import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
+import test.test1.Test1.Proto1.Proto1;
+import test.test1.Test1.Proto1.channels.S.Proto1_S_1;
+import test.test1.Test1.Proto1.channels.S.Proto1_S_2_Handler;
+import test.test1.Test1.Proto1.channels.S.Proto1_S_3;
+import test.test1.Test1.Proto1.ops._2;
+import test.test1.Test1.Proto1.ops._4;
+import test.test1.Test1.Proto1.roles.S;
+
 public class MyS
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException

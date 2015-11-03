@@ -22,6 +22,13 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		return RECEIVESOCKET_CLASS + "<" + getSessionClassName() + ", " + getSelfClassName() + ">";
 	}
 
+	@Override
+	protected void addImports()
+	{
+		super.addImports();
+		this.cb.addImports(getOpsPackageName() + ".*");
+	}
+
 	// Single receive (unary branch -- singleton next state)
 	// But generates a set of methods related to this input (regular receive, async with future, async with discard, arrived polling) -- TODO: call-back
 	// FIXME: most general async would also allow whole input-only compound statements (choice, recursion) to be bypassed

@@ -4,6 +4,7 @@ import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
+import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 
 // Factor out
@@ -24,11 +25,14 @@ public class BranchInterfaceBuilder
 	protected InterfaceBuilder build()
 	{
 		Module main = this.apigen.getMainModule();
+		GProtocolName gpn = this.apigen.getGProtocolName();
 
 		// Handler interface
 		InterfaceBuilder ib = new InterfaceBuilder();
-		ib.setPackage(SessionApiGenerator.getPackageName(this.apigen.getGProtocolName()));  // FIXME: factor out
+		ib.setPackage(SessionApiGenerator.getStateChannelPackageName(gpn, this.apigen.getSelf()));  // FIXME: factor out with ScribSocketBuilder
 		ib.addImports("java.io.IOException");
+		ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
+		ib.addImports(SessionApiGenerator.getRolesPackageName(this.apigen.getGProtocolName()) + ".*", SessionApiGenerator.getOpsPackageName(this.apigen.getGProtocolName()) + ".*");  // FIXME: factor out with ScribSocketBuilder
 		ib.setName(getBranchInterfaceName(cb));
 		ib.addModifiers(InterfaceBuilder.PUBLIC);
 		for (IOAction a : curr.getAcceptable())

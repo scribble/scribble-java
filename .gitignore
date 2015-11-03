@@ -14,6 +14,6 @@ modules/core/src/test/scrib/demo/smtp/*.java
 modules/core/src/test/scrib/demo/fib/*.java
 modules/core/src/test/scrib/demo/travel/*.java
 modules/core/src/test/scrib/test/foo/*.java
-modules/core/src/test/scrib/test/test1/*.java
+modules/core/src/test/scrib/test/test1/Test1
 bin/scribblec.sh
 

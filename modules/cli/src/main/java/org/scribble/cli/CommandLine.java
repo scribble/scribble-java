@@ -1,11 +1,8 @@
 package org.scribble.cli;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -215,9 +212,12 @@ public class CommandLine implements Runnable
 		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
 	}
 	
-	private static void writeToFile(String file, String text) throws ScribbleException
+	private static void writeToFile(String path, String text) throws ScribbleException
 	{
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8")))
+		File file = new File(path);
+		file.getParentFile().mkdirs();
+		//try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8")))  // Doesn't create missing directories
+		try (FileWriter writer = new FileWriter(file))
 		{
 			writer.write(text);
 		}
