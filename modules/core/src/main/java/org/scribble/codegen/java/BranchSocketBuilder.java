@@ -137,12 +137,4 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		
 		this.apigen.addInterface(new BranchInterfaceBuilder(this.apigen, this.cb, this.curr).build());
 	}
-
-	private static void addBranchCheck(String opClassName, MethodBuilder mb, String messageField)
-	{
-		String op = ClassBuilder.THIS + "." + messageField + "." + EndpointApiGenerator.SCRIBMESSAGE_OP_FIELD;
-		mb.addBodyLine("if (!" + op + ".equals(" + opClassName + ")) {");
-		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " " + EndpointApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");
-		mb.addBodyLine("}");
-	}
 }

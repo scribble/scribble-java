@@ -33,7 +33,7 @@ public class EndpointApiGenerator
 	private int counter = 1;
 
 	private final EndpointState init;
-	private final String root;
+	//private final String root;
 
 	private Map<EndpointState, String> classNames = new HashMap<>();  // Doesn't include terminal states
 
@@ -50,7 +50,7 @@ public class EndpointApiGenerator
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
 		this.init = job.getContext().getEndpointGraph(fullname, self).init;
 		generateClassNames(this.init);
-		this.root = this.classNames.get(this.init);
+		//this.root = this.classNames.get(this.init);
 		constructClasses(this.init);
 	}
 	
