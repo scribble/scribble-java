@@ -223,21 +223,25 @@ public class SessionApiGenerator
 		return cb;
 	}
 	
+	// Returns the simple Session Class name
 	public static String getSessionClassName(GProtocolName gpn)
 	{
 		return gpn.getSimpleName().toString();
 	}
 
+	// Returns the Java output package: currently the Scribble package excluding the Module
 	public static String getPackageName(GProtocolName gpn)
 	{
 		return gpn.getPrefix().getPrefix().toString();  // Java output package name (not Scribble package)
 	}
 	
+	// Returns the simple Role Class name
 	public static String getRoleClassName(Role r)
 	{
 		return r.toString();
 	}
 	
+	// Returns the simple Op Class name: names starting with a digit are prefixed by '_'
 	public static String getOpClassName(MessageId<?> mid)
 	{
 		String s = mid.toString();
