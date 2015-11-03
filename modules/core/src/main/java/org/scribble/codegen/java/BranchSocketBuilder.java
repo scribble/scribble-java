@@ -37,7 +37,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		//String next = constructCaseClass(curr, main);
 		ClassBuilder caseclass = new CaseSocketBuilder(apigen, curr).build();
 		String next = caseclass.getName();
-		String enumClass = this.apigen.getSocketClassName(curr) + "Enum";
+		String enumClass = getBranchEnumClassName(this.apigen, this.curr);
 
 		//cb.addImports("java.util.concurrent.ExecutionException");
 		
@@ -136,5 +136,10 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		mb2.addBodyLine("}");
 		
 		this.apigen.addInterface(new BranchInterfaceBuilder(this.apigen, this.cb, this.curr).build());
+	}
+
+	protected static String getBranchEnumClassName(EndpointApiGenerator apigen, EndpointState curr)
+	{
+		return apigen.getSocketClassName(curr) + "_Enum";
 	}
 }

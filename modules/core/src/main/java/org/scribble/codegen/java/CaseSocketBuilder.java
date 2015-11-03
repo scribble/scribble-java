@@ -33,7 +33,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 	protected void addMethods()
 	{
 		String branchName = this.apigen.getSocketClassName(curr);  // Name of "parent" branch class (curr state is the branch state)
-		String enumClassName = branchName + "." + branchName + "Enum";
+		String enumClassName = branchName + "." + BranchSocketBuilder.getBranchEnumClassName(this.apigen, this.curr);
 		//String className = newClassName();  // Name of branch-receive class
 
 		MethodBuilder ctor = cb.getConstructors().iterator().next();
