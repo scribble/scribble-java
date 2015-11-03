@@ -103,7 +103,7 @@ public class Job
 		return map;
 	}
 	
-	public Map<String, String> generateEndpointApi(GProtocolName fullname, Role role) throws ScribbleException
+	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		if (this.jcontext.getEndpointGraph(fullname, role) == null)
 		{

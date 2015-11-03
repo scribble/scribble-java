@@ -85,36 +85,52 @@ public class CommandLine implements Runnable
 	private void outputProjections(Job job)
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.PROJECT)[0]);
-		Role role = checkRoleArg(jcontext, fullname, this.args.get(ArgFlag.PROJECT)[1]);
-		Map<LProtocolName, Module> projections = job.getProjections(fullname, role);
-		System.out.println("\n" + projections.values().stream().map((p) -> p.toString()).collect(Collectors.joining("\n\n")));
+		String[] args = this.args.get(ArgFlag.PROJECT);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<LProtocolName, Module> projections = job.getProjections(fullname, role);
+			System.out.println("\n" + projections.values().stream().map((p) -> p.toString()).collect(Collectors.joining("\n\n")));
+		}
 	}
 
 	private void outputGraph(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.FSM)[0]);
-		Role role = checkRoleArg(jcontext, fullname, this.args.get(ArgFlag.FSM)[1]);
-		buildEndointGraph(job, fullname, role);
-		System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
+		String[] args = this.args.get(ArgFlag.FSM);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			buildEndointGraph(job, fullname, role);
+			System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
+		}
 	}
 	
 	private void outputSessionApi(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.SESS_API)[0]);
-		Map<String, String> classes = job.generateSessionApi(fullname);
-		outputClasses(classes);
+		String[] args = this.args.get(ArgFlag.SESS_API);
+		for (String fullname : args)
+		{
+			GProtocolName gpn = checkGlobalProtocolArg(jcontext, fullname);
+			Map<String, String> classes = job.generateSessionApi(gpn);
+			outputClasses(classes);
+		}
 	}
 
 	private void outputEndpointApi(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
-		GProtocolName fullname = checkGlobalProtocolArg(jcontext, this.args.get(ArgFlag.EP_API)[0]);
-		Role role = checkRoleArg(jcontext, fullname, this.args.get(ArgFlag.EP_API)[1]);
-		Map<String, String> classes = job.generateEndpointApi(fullname, role);
-		outputClasses(classes);
+		String[] args = this.args.get(ArgFlag.EP_API);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<String, String> classes = job.generateStateChannelApi(fullname, role);
+			outputClasses(classes);
+		}
 	}
 
 	// filepath -> class source
