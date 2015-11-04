@@ -8,10 +8,10 @@ import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import test.scratch.Scratch1.Proto1.Proto1;
-import test.scratch.Scratch1.Proto1.channels.C.Proto1_C_1;
-import test.scratch.Scratch1.Proto1.channels.C.Proto1_C_2;
-import test.scratch.Scratch1.Proto1.roles.C;
+import scratch.Scratch1.Proto1.Proto1;
+import scratch.Scratch1.Proto1.channels.C.Proto1_C_1;
+import scratch.Scratch1.Proto1.channels.C.Proto1_C_2;
+import scratch.Scratch1.Proto1.roles.C;
 
 
 public class MyC

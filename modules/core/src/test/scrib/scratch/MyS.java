@@ -10,13 +10,13 @@ import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
-import test.scratch.Scratch1.Proto1.Proto1;
-import test.scratch.Scratch1.Proto1.channels.S.Proto1_S_1;
-import test.scratch.Scratch1.Proto1.channels.S.Proto1_S_2_Handler;
-import test.scratch.Scratch1.Proto1.channels.S.Proto1_S_3;
-import test.scratch.Scratch1.Proto1.ops._2;
-import test.scratch.Scratch1.Proto1.ops._4;
-import test.scratch.Scratch1.Proto1.roles.S;
+import scratch.Scratch1.Proto1.Proto1;
+import scratch.Scratch1.Proto1.channels.S.Proto1_S_1;
+import scratch.Scratch1.Proto1.channels.S.Proto1_S_2_Handler;
+import scratch.Scratch1.Proto1.channels.S.Proto1_S_3;
+import scratch.Scratch1.Proto1.ops._2;
+import scratch.Scratch1.Proto1.ops._4;
+import scratch.Scratch1.Proto1.roles.S;
 
 public class MyS
 {
