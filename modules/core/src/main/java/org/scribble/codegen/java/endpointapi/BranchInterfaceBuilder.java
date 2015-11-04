@@ -3,30 +3,29 @@ package org.scribble.codegen.java.endpointapi;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
-import org.scribble.codegen.java.util.Builder;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 
 // Factor out
-public class BranchInterfaceBuilder
+public class BranchInterfaceBuilder extends AuxApiClassBuilder
 {
-	protected final StateChannelApiGenerator apigen;
-	private final ClassBuilder cb;
 	private final EndpointState curr;
 
 	// Pre: cb is the BrranchSocketBuilder
-	public BranchInterfaceBuilder(StateChannelApiGenerator apigen, ClassBuilder cb, EndpointState curr)
+	public BranchInterfaceBuilder(StateChannelApiGenerator apigen, ClassBuilder parent, EndpointState curr)
 	{
-		this.apigen = apigen;
-		this.cb = cb;
+		super(apigen, parent);
 		this.curr = curr;
 	}
 
-	protected InterfaceBuilder build()
+	@Override
+	public InterfaceBuilder build()
 	{
 		Module main = this.apigen.getMainModule();
 		GProtocolName gpn = this.apigen.getGProtocolName();
@@ -36,7 +35,7 @@ public class BranchInterfaceBuilder
 		ib.setPackage(SessionApiGenerator.getStateChannelPackageName(gpn, this.apigen.getSelf()));  // FIXME: factor out with ScribSocketBuilder
 		ib.addImports("java.io.IOException");
 		ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
-		ib.setName(getBranchInterfaceName(cb));
+		ib.setName(getBranchInterfaceName(parent));
 		ib.addModifiers(InterfaceBuilder.PUBLIC);
 		for (IOAction a : curr.getAcceptable())
 		{
@@ -45,7 +44,7 @@ public class BranchInterfaceBuilder
 			String opClass = SessionApiGenerator.getOpClassName(a.mid);
 
 			AbstractMethodBuilder mb3 = ib.newAbstractMethod("receive");
-			mb3.addModifiers(Builder.PUBLIC);
+			mb3.addModifiers(JavaBuilder.PUBLIC);
 			mb3.setReturn(InterfaceBuilder.VOID);
 			mb3.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
 			//if (!nextClass.equals(ClassBuilder.VOID))
@@ -77,7 +76,7 @@ public class BranchInterfaceBuilder
 	}
 
 	// Pre: cb is the BranchSocketBuilder
-	protected static String getBranchInterfaceName(ClassBuilder cb)
+	protected static String getBranchInterfaceName(TypeBuilder cb)
 	{
 		return cb.getName() + "_Handler";
 	}

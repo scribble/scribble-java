@@ -1,6 +1,6 @@
 package org.scribble.codegen.java.util;
 
-public abstract class Builder
+public abstract class JavaBuilder
 {
 	public static final String ABSTRACT = "abstract";
 	public static final String VOID = "void";
@@ -17,12 +17,12 @@ public abstract class Builder
 
 	protected String name;
 
-	public Builder()
+	public JavaBuilder()
 	{
 
 	}
 
-	public Builder(String name)
+	public JavaBuilder(String name)
 	{
 		this.name = name;
 	}

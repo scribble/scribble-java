@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.util.Builder;
+import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
@@ -49,7 +49,7 @@ public class SendSocketBuilder extends ScribSocketBuilder
 			EndpointState succ = curr.accept(a);
 			
 			MethodBuilder mb = this.cb.newMethod("send");
-			mb.addModifiers(Builder.PUBLIC);
+			mb.addModifiers(JavaBuilder.PUBLIC);
 			setNextSocketReturnType(mb, succ);
 			mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM);  // More params added below
 			mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
@@ -71,7 +71,7 @@ public class SendSocketBuilder extends ScribSocketBuilder
 					}
 				}
 
-				String body = Builder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", " + getSessionApiOpConstant(a.mid);
+				String body = JavaBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", " + getSessionApiOpConstant(a.mid);
 				if (!a.payload.isEmpty())
 				{
 					body += ", " + args.stream().collect(Collectors.joining(", "));
@@ -85,7 +85,7 @@ public class SendSocketBuilder extends ScribSocketBuilder
 
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module  // FIXME: factor out?
 				mb.addParameters(msd.extName + " " + MESSAGE_PARAM);
-				mb.addBodyLine(Builder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", " + MESSAGE_PARAM + ");");
+				mb.addBodyLine(JavaBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", " + MESSAGE_PARAM + ");");
 			}
 
 			addReturnNextSocket(mb, succ);

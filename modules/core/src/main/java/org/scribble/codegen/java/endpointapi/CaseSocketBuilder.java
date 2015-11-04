@@ -4,7 +4,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.util.Builder;
+import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
@@ -53,8 +53,8 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 
 		MethodBuilder ctor = super.addConstructor();
 		ctor.addParameters(enumClassName + " " + CASE_OP_PARAM, StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + CASE_MESSAGE_PARAM);
-		ctor.addBodyLine(Builder.THIS + "." + CASE_OP_FIELD + " = " + CASE_OP_PARAM + ";");
-		ctor.addBodyLine(Builder.THIS + "." + CASE_MESSAGE_FIELD + " = " + CASE_MESSAGE_PARAM + ";");
+		ctor.addBodyLine(JavaBuilder.THIS + "." + CASE_OP_FIELD + " = " + CASE_OP_PARAM + ";");
+		ctor.addBodyLine(JavaBuilder.THIS + "." + CASE_MESSAGE_FIELD + " = " + CASE_MESSAGE_PARAM + ";");
 		return ctor;
 	}
 
@@ -67,11 +67,11 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		//String className = newClassName();  // Name of branch-receive class
 
 		FieldBuilder fb1 = cb.newField(CASE_OP_FIELD);  // The op enum, for convenient switch/if/etc by user (correctly derived by code generation from the received ScribMessage)
-		fb1.addModifiers(Builder.PUBLIC, Builder.FINAL);
+		fb1.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.FINAL);
 		fb1.setType(enumClassName);
 		
 		FieldBuilder fb2 = cb.newField(CASE_MESSAGE_FIELD);  // The received ScribMessage (branch-check checks the user-selected receive op against the ScribMessage op)
-		fb2.addModifiers(Builder.PRIVATE, Builder.FINAL);
+		fb2.addModifiers(JavaBuilder.PRIVATE, JavaBuilder.FINAL);
 		fb2.setType(StateChannelApiGenerator.SCRIBMESSAGE_CLASS);
 
 		for (IOAction a : curr.getAcceptable())
@@ -93,7 +93,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		String opClass = SessionApiGenerator.getOpClassName(a.mid);
 
 		MethodBuilder mb = cb.newMethod("receive");
-		mb.addModifiers(Builder.PUBLIC);
+		mb.addModifiers(JavaBuilder.PUBLIC);
 		setNextSocketReturnType(mb, succ);
 		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
@@ -108,7 +108,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		if (a.mid.isOp())
 		{
 			ReceiveSocketBuilder.addReceiveOpParams(mb, main, a);
-			mb.addBodyLine(Builder.SUPER + ".use();");
+			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
 			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
 			ReceiveSocketBuilder.addPayloadBuffSetters(main, a, mb);
 		}
@@ -116,7 +116,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			ReceiveSocketBuilder.addReceiveMessageSigNameParams(mb, a, msd);
-			mb.addBodyLine(Builder.SUPER + ".use();");
+			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
 			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
 			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + CASE_MESSAGE_FIELD + ";");
 		}
@@ -129,7 +129,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 
 		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
 		mb.addAnnotations("@SuppressWarnings(\"unchecked\")");
-		String ln = Builder.RETURN + " ";
+		String ln = JavaBuilder.RETURN + " ";
 		ln += "receive(" + CASE_OP_PARAM + ", ";
 		if (a.mid.isOp())
 		{
@@ -146,9 +146,9 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 
 	private static void addBranchCheck(String opClassName, MethodBuilder mb, String messageField)
 	{
-		String op = Builder.THIS + "." + messageField + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD;
+		String op = JavaBuilder.THIS + "." + messageField + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD;
 		mb.addBodyLine("if (!" + op + ".equals(" + opClassName + ")) {");
-		mb.addBodyLine(1, "throw " + Builder.NEW + " " + StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");
+		mb.addBodyLine(1, "throw " + JavaBuilder.NEW + " " + StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");
 		mb.addBodyLine("}");
 	}
 }

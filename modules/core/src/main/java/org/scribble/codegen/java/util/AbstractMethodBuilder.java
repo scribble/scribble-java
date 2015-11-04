@@ -4,7 +4,7 @@ public class AbstractMethodBuilder extends MethodBuilder
 {
 	protected AbstractMethodBuilder()
 	{
-		addModifiers(Builder.ABSTRACT);  // Redundant for interfaces, but OK
+		addModifiers(JavaBuilder.ABSTRACT);  // Redundant for interfaces, but OK
 	}
 
 	@Override

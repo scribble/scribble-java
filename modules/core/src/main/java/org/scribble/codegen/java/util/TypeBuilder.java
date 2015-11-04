@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // An abstract type declaration builder
-public abstract class TypeBuilder extends Builder
+public abstract class TypeBuilder extends JavaBuilder
 {
 	protected String packname;  // null for non- top-level type declaration
 	protected final LinkedHashSet<String> imports = new LinkedHashSet<>();

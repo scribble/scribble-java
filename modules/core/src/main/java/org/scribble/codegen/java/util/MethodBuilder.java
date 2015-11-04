@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MethodBuilder extends Builder
+public class MethodBuilder extends JavaBuilder
 {
 	private final List<String> annots = new LinkedList<>();
 	private final List<String> mods = new LinkedList<>();

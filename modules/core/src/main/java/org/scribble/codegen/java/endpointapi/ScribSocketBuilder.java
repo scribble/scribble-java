@@ -1,15 +1,15 @@
 package org.scribble.codegen.java.endpointapi;
 
-import org.scribble.codegen.java.util.Builder;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
 // Parameterize on output class type
-public abstract class ScribSocketBuilder
+public abstract class ScribSocketBuilder extends ApiTypeBuilder
 {
 	protected static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
 	protected static final String BUFF_CLASS = "org.scribble.net.Buf";
@@ -22,7 +22,7 @@ public abstract class ScribSocketBuilder
 	protected static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
 	
 	protected static final String BUFF_VAL_FIELD = "val";
-	protected static final String SCRIBSOCKET_SE_FIELD = Builder.THIS + ".se";
+	protected static final String SCRIBSOCKET_SE_FIELD = JavaBuilder.THIS + ".se";
 	protected static final String SCRIBMESSAGE_PAYLOAD_FIELD = "payload";
 
 	protected static final String RECEIVE_MESSAGE_PARAM = "m";
@@ -34,7 +34,6 @@ public abstract class ScribSocketBuilder
 	protected static final String CASE_MESSAGE_PARAM = CASE_MESSAGE_FIELD;
 	protected static final String CASE_ARG_PREFIX = "arg";
 	
-	protected final StateChannelApiGenerator apigen;
 	protected final EndpointState curr;
 	protected final String className;
 
@@ -42,7 +41,7 @@ public abstract class ScribSocketBuilder
 	
 	public ScribSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
 	{
-		this.apigen = apigen;
+		super(apigen);
 		this.curr = curr;
 		this.className = getClassName();
 	}
@@ -52,6 +51,7 @@ public abstract class ScribSocketBuilder
 		return this.apigen.getSocketClassName(this.curr);
 	}
 
+	@Override
 	public ClassBuilder build()
 	{
 		constructClass();  // So className can be "overridden" in subclass constructor (CaseSocket)
@@ -69,7 +69,7 @@ public abstract class ScribSocketBuilder
 		this.cb.setName(this.className);
 		//this.cb.setPackage(getSessionPackageName());
 		this.cb.setPackage(getStateChannelPackageName());
-		this.cb.addModifiers(Builder.PUBLIC, Builder.FINAL);
+		this.cb.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.FINAL);
 		//cb.setSuperClass(superc + "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">");
 		this.cb.setSuperClass(getSuperClassType());
 		addImports();
@@ -93,8 +93,8 @@ public abstract class ScribSocketBuilder
 		String role = getSelfClassName();
 
 		ConstructorBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM, "boolean dummy");
-		ctor.addModifiers(Builder.PROTECTED);
-		ctor.addBodyLine(Builder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		ctor.addModifiers(JavaBuilder.PROTECTED);
+		ctor.addBodyLine(JavaBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		
 		if (this.curr.equals(this.apigen.getInitialState()))
 		{
@@ -118,8 +118,8 @@ public abstract class ScribSocketBuilder
 		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
 		ConstructorBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
 		ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
-		ctor2.addModifiers(Builder.PUBLIC);
-		ctor2.addBodyLine(Builder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		ctor2.addModifiers(JavaBuilder.PUBLIC);
+		ctor2.addBodyLine(JavaBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 	}
 	
@@ -151,7 +151,7 @@ public abstract class ScribSocketBuilder
 		{
 			nextClass = this.apigen.getSocketClassName(s);
 		}
-		mb.addBodyLine(Builder.RETURN + " " + Builder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ", true);");
+		mb.addBodyLine(JavaBuilder.RETURN + " " + JavaBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ", true);");
 	}
 
 	protected String getGarbageBuf(String futureClass)

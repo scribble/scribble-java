@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.codegen.java.util.Builder;
+import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
@@ -90,22 +90,22 @@ public class SessionApiGenerator
 		//this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
 		this.cb.addImports("org.scribble.sesstype.name.Role");
 		this.cb.addImports(getRolesPackageName(this.gpn) + ".*", getOpsPackageName(this.gpn) + ".*");
-		this.cb.addModifiers(Builder.PUBLIC, Builder.FINAL);
+		this.cb.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.FINAL);
 		this.cb.setSuperClass(SessionApiGenerator.SESSION_CLASS);
 		
 		FieldBuilder fb1 = this.cb.newField(SessionApiGenerator.IMPATH_FIELD);
 		fb1.setType("List<String>");
-		fb1.addModifiers(Builder.PUBLIC, Builder.STATIC, Builder.FINAL);
+		fb1.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.STATIC, JavaBuilder.FINAL);
 		fb1.setExpression("new LinkedList<>()");
 
 		FieldBuilder fb2 = this.cb.newField(SessionApiGenerator.SOURCE_FIELD);
 		fb2.setType("String");
-		fb2.addModifiers(Builder.PUBLIC, Builder.STATIC, Builder.FINAL);
+		fb2.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.STATIC, JavaBuilder.FINAL);
 		fb2.setExpression("\"getSource\"");
 
 		FieldBuilder fb3 = this.cb.newField(SessionApiGenerator.PROTO_FIELD);
 		fb3.setType(SessionApiGenerator.GPROTOCOLNAME_CLASS);
-		fb3.addModifiers(Builder.PUBLIC, Builder.STATIC, Builder.FINAL);
+		fb3.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.STATIC, JavaBuilder.FINAL);
 		fb3.setExpression(SessionApiGenerator.SESSIONTYPEFACTORY_CLASS
 				+ ".parseGlobalProtocolName(\"" + gpn + "\")");
 
@@ -113,16 +113,16 @@ public class SessionApiGenerator
 		this.mids.stream().forEach((mid) -> addOpField(this.cb, mid));
 
 		ConstructorBuilder ctor = this.cb.newConstructor();
-		ctor.addModifiers(Builder.PUBLIC);
+		ctor.addModifiers(JavaBuilder.PUBLIC);
 		//ctor.setName(simpname);  // ?
-		ctor.addBodyLine(Builder.SUPER + "("
+		ctor.addBodyLine(JavaBuilder.SUPER + "("
 				+ simpname + "." + SessionApiGenerator.IMPATH_FIELD + ", "
 				+ simpname + "." + SessionApiGenerator.SOURCE_FIELD + ", "
 				+ simpname + "." + SessionApiGenerator.PROTO_FIELD + ");");
 		
 		FieldBuilder fb4 = this.cb.newField("ROLES");
 		fb4.setType("List<Role>");
-		fb4.addModifiers(Builder.PUBLIC, Builder.STATIC, Builder.FINAL);
+		fb4.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.STATIC, JavaBuilder.FINAL);
 		String roles = "Collections.unmodifiableList(Arrays.asList(new Role[] {";
 		roles += this.roles.stream().map((r) -> r.toString()).collect(Collectors.joining(", "));
 		roles += "}))";
@@ -141,10 +141,10 @@ public class SessionApiGenerator
 
 		MethodBuilder mb = this.cb.newMethod("getRoles");
 		mb.addAnnotations("@Override");
-		mb.addModifiers(Builder.PUBLIC);
+		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.setReturn("List<Role>");
 		mb.addParameters();
-		mb.addBodyLine(Builder.RETURN + " " + simpname + ".ROLES;");
+		mb.addBodyLine(JavaBuilder.RETURN + " " + simpname + ".ROLES;");
 	}
 
 	private void addRoleField(ClassBuilder cb, Role role)
@@ -161,7 +161,7 @@ public class SessionApiGenerator
 	{
 		FieldBuilder fb = cb.newField(type);
 		fb.setType(type);
-		fb.addModifiers(Builder.PUBLIC, Builder.STATIC, Builder.FINAL);
+		fb.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.STATIC, JavaBuilder.FINAL);
 		//fb.setExpression(ClassBuilder.NEW + " " + type + "()");
 		fb.setExpression(getEndpointApiRootPackageName(this.gpn) + "." + subpack + "." + type + "." + type);  // Currently requires source Scribble to be in a package that is not the root -- can fix by generating to a subpackage based on Module and/or protocol
 	}
@@ -209,23 +209,23 @@ public class SessionApiGenerator
 	private ClassBuilder constructSingletonClass(ClassBuilder cb, String pack, String superc, String type)
 	{
 		cb.setName(type);
-		cb.addModifiers(Builder.PUBLIC);
+		cb.addModifiers(JavaBuilder.PUBLIC);
 		cb.setPackage(pack);
 		cb.setSuperClass(superc);
 
 		FieldBuilder fb = cb.newField("serialVersionUID");
-		fb.addModifiers(Builder.PRIVATE, Builder.STATIC, Builder.FINAL);
+		fb.addModifiers(JavaBuilder.PRIVATE, JavaBuilder.STATIC, JavaBuilder.FINAL);
 		fb.setType("long");
 		fb.setExpression("1L");
 		
 		FieldBuilder fb2 = cb.newField(type);
-		fb2.addModifiers(Builder.PUBLIC, Builder.STATIC, Builder.FINAL);
+		fb2.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.STATIC, JavaBuilder.FINAL);
 		fb2.setType(type);
-		fb2.setExpression(Builder.NEW + " " + type + "()");
+		fb2.setExpression(JavaBuilder.NEW + " " + type + "()");
 		
 		ConstructorBuilder mb = cb.newConstructor();
-		mb.addModifiers(Builder.PRIVATE);
-		mb.addBodyLine(Builder.SUPER + "(\"" + type + "\");");
+		mb.addModifiers(JavaBuilder.PRIVATE);
+		mb.addBodyLine(JavaBuilder.SUPER + "(\"" + type + "\");");
 
 		this.classes.put(pack.replace('.', '/') + "/" + type + ".java", cb);
 		return cb;
