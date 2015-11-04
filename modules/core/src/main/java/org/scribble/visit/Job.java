@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.StateChannelApiGenerator;
-import org.scribble.codegen.java.SessionApiGenerator;
+import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
+import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;

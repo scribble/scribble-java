@@ -1,9 +1,13 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.endpointapi;
 
 import java.util.stream.Collectors;
 
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
+import org.scribble.codegen.java.util.Builder;
+import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.FieldBuilder;
+import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
@@ -40,6 +44,19 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 	{
 		return;
 	}
+	
+	@Override
+	protected MethodBuilder addConstructor()
+	{
+		String branchName = this.apigen.getSocketClassName(curr);  // Name of "parent" branch class (curr state is the branch state)
+		String enumClassName = branchName + "." + BranchSocketBuilder.getBranchEnumClassName(this.apigen, this.curr);
+
+		MethodBuilder ctor = super.addConstructor();
+		ctor.addParameters(enumClassName + " " + CASE_OP_PARAM, StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + CASE_MESSAGE_PARAM);
+		ctor.addBodyLine(Builder.THIS + "." + CASE_OP_FIELD + " = " + CASE_OP_PARAM + ";");
+		ctor.addBodyLine(Builder.THIS + "." + CASE_MESSAGE_FIELD + " = " + CASE_MESSAGE_PARAM + ";");
+		return ctor;
+	}
 
 	//private String constructCaseClass(EndpointState curr, Module main)
 	@Override
@@ -49,17 +66,12 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		String enumClassName = branchName + "." + BranchSocketBuilder.getBranchEnumClassName(this.apigen, this.curr);
 		//String className = newClassName();  // Name of branch-receive class
 
-		MethodBuilder ctor = cb.getConstructors().iterator().next();
-		ctor.addParameters(enumClassName + " " + CASE_OP_PARAM, StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + CASE_MESSAGE_PARAM);
-		ctor.addBodyLine(ClassBuilder.THIS + "." + CASE_OP_FIELD + " = " + CASE_OP_PARAM + ";");
-		ctor.addBodyLine(ClassBuilder.THIS + "." + CASE_MESSAGE_FIELD + " = " + CASE_MESSAGE_PARAM + ";");
-
 		FieldBuilder fb1 = cb.newField(CASE_OP_FIELD);  // The op enum, for convenient switch/if/etc by user (correctly derived by code generation from the received ScribMessage)
-		fb1.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
+		fb1.addModifiers(Builder.PUBLIC, Builder.FINAL);
 		fb1.setType(enumClassName);
 		
 		FieldBuilder fb2 = cb.newField(CASE_MESSAGE_FIELD);  // The received ScribMessage (branch-check checks the user-selected receive op against the ScribMessage op)
-		fb2.addModifiers(ClassBuilder.PRIVATE, ClassBuilder.FINAL);
+		fb2.addModifiers(Builder.PRIVATE, Builder.FINAL);
 		fb2.setType(StateChannelApiGenerator.SCRIBMESSAGE_CLASS);
 
 		for (IOAction a : curr.getAcceptable())
@@ -81,7 +93,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		String opClass = SessionApiGenerator.getOpClassName(a.mid);
 
 		MethodBuilder mb = cb.newMethod("receive");
-		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.addModifiers(Builder.PUBLIC);
 		setNextSocketReturnType(mb, succ);
 		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
@@ -96,7 +108,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		if (a.mid.isOp())
 		{
 			ReceiveSocketBuilder.addReceiveOpParams(mb, main, a);
-			mb.addBodyLine(ClassBuilder.SUPER + ".use();");
+			mb.addBodyLine(Builder.SUPER + ".use();");
 			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
 			ReceiveSocketBuilder.addPayloadBuffSetters(main, a, mb);
 		}
@@ -104,7 +116,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			ReceiveSocketBuilder.addReceiveMessageSigNameParams(mb, a, msd);
-			mb.addBodyLine(ClassBuilder.SUPER + ".use();");
+			mb.addBodyLine(Builder.SUPER + ".use();");
 			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
 			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + CASE_MESSAGE_FIELD + ";");
 		}
@@ -117,7 +129,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 
 		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
 		mb.addAnnotations("@SuppressWarnings(\"unchecked\")");
-		String ln = ClassBuilder.RETURN + " ";
+		String ln = Builder.RETURN + " ";
 		ln += "receive(" + CASE_OP_PARAM + ", ";
 		if (a.mid.isOp())
 		{
@@ -134,9 +146,9 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 
 	private static void addBranchCheck(String opClassName, MethodBuilder mb, String messageField)
 	{
-		String op = ClassBuilder.THIS + "." + messageField + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD;
+		String op = Builder.THIS + "." + messageField + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD;
 		mb.addBodyLine("if (!" + op + ".equals(" + opClassName + ")) {");
-		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " " + StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");
+		mb.addBodyLine(1, "throw " + Builder.NEW + " " + StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS + "(\"Wrong branch, received: \" + " + op + ");");
 		mb.addBodyLine("}");
 	}
 }

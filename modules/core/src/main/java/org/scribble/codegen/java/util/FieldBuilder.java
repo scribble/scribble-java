@@ -1,4 +1,4 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.util;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -33,7 +33,7 @@ public class FieldBuilder
 		this.type = type;
 	}
 	
-	protected void setExpression(String val)
+	public void setExpression(String val)
 	{
 		this.expr = val;
 	}

@@ -1,10 +1,12 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.endpointapi;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.Module;
+import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
@@ -63,12 +65,12 @@ public class StateChannelApiGenerator
 		for (String s : this.classes.keySet())
 		{
 			String path = prefix + s + ".java";
-			map.put(path, this.classes.get(s).generate());
+			map.put(path, this.classes.get(s).build());
 		}
 		for (String s : this.ifaces.keySet())  // FIXME: integrate
 		{
 			String path = prefix + s + ".java";
-			map.put(path, this.ifaces.get(s).generate());
+			map.put(path, this.ifaces.get(s).build());
 		}
 		return map;
 	}

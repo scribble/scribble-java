@@ -1,7 +1,11 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.endpointapi;
 
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
+import org.scribble.codegen.java.util.AbstractMethodBuilder;
+import org.scribble.codegen.java.util.Builder;
+import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
@@ -40,8 +44,8 @@ public class BranchInterfaceBuilder
 			String nextClass = this.apigen.getSocketClassName(succ);
 			String opClass = SessionApiGenerator.getOpClassName(a.mid);
 
-			MethodBuilder mb3 = ib.newMethod("receive");
-			mb3.addModifiers(ClassBuilder.PUBLIC);
+			AbstractMethodBuilder mb3 = ib.newAbstractMethod("receive");
+			mb3.addModifiers(Builder.PUBLIC);
 			mb3.setReturn(InterfaceBuilder.VOID);
 			mb3.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
 			//if (!nextClass.equals(ClassBuilder.VOID))

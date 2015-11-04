@@ -1,8 +1,12 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.endpointapi;
 
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
+import org.scribble.codegen.java.util.Builder;
+import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.EnumBuilder;
+import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
@@ -44,12 +48,12 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		MethodBuilder mb = cb.newMethod("branch");
 		mb.setReturn(next);
 		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getAcceptable().iterator().next().peer) + " " + ROLE_PARAM);
-		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.addModifiers(Builder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		
 		Role peer = curr.getAcceptable().iterator().next().peer;
 		mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
-				+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
+				+ Builder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		mb.addBodyLine(enumClass + " " + OPENUM_VAR + ";");
 		boolean first = true;
 		for (IOAction a : curr.getAcceptable())
@@ -61,13 +65,13 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 			first = false;
 		}
 		mb.addBodyLine("else {");
-		mb.addBodyLine(1, "throw " + ClassBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
+		mb.addBodyLine(1, "throw " + Builder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb.addBodyLine("}");
-		mb.addBodyLine(ClassBuilder.RETURN + " "
-				+ ClassBuilder.NEW + " " + next + "(" + SCRIBSOCKET_SE_FIELD + ", true, " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");  // FIXME: dummy boolean not needed
+		mb.addBodyLine(Builder.RETURN + " "
+				+ Builder.NEW + " " + next + "(" + SCRIBSOCKET_SE_FIELD + ", true, " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");  // FIXME: dummy boolean not needed
 		
-		EnumBuilder eb = cb.newEnum(enumClass);
-		eb.addModifiers(ClassBuilder.PUBLIC);
+		EnumBuilder eb = cb.newMemberEnum(enumClass);
+		eb.addModifiers(Builder.PUBLIC);
 		eb.addInterfaces(OPENUM_INTERFACE);
 		curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
 		
@@ -78,11 +82,11 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		mb2.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
 		mb2.addParameters(ifname + " branch");
-		mb2.setReturn(ClassBuilder.VOID);
-		mb2.addModifiers(ClassBuilder.PUBLIC);
+		mb2.setReturn(Builder.VOID);
+		mb2.addModifiers(Builder.PUBLIC);
 		mb2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		mb2.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
-				+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
+				+ Builder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
 		for (IOAction a : curr.getAcceptable())
 		{
@@ -103,7 +107,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 			String ln = "branch.receive(";
 			//if (!succ.isTerminal())
 			{
-				 ln += ClassBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketBuilder.ENDSOCKET_CLASS + "<>" : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
+				 ln += Builder.NEW + " " + (succ.isTerminal() ? ScribSocketBuilder.ENDSOCKET_CLASS + "<>" : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
 			}
 			ln += getSessionApiOpConstant(a.mid);
 					
@@ -112,7 +116,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 			{
 				if (!a.payload.isEmpty())
 				{
-					String buffSuper = ClassBuilder.NEW + " " + BUFF_CLASS + "<>(";
+					String buffSuper = Builder.NEW + " " + BUFF_CLASS + "<>(";
 					int i = 0;
 					for (PayloadType<?> pt : a.payload.elems)
 					{
@@ -124,7 +128,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 			else
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				ln += ", " + ClassBuilder.NEW + " " + BUFF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
+				ln += ", " + Builder.NEW + " " + BUFF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
 			}
 				
 			ln += ");";
@@ -132,7 +136,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 			mb2.addBodyLine("}");
 		}
 		mb2.addBodyLine("else {");
-		mb2.addBodyLine(1, "throw " + ClassBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
+		mb2.addBodyLine(1, "throw " + Builder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb2.addBodyLine("}");
 		
 		this.apigen.addInterface(new BranchInterfaceBuilder(this.apigen, this.cb, this.curr).build());

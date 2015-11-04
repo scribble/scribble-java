@@ -1,29 +1,27 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.util;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MethodBuilder
+public class MethodBuilder extends Builder
 {
-	private String name;
-
-	private List<String> annots = new LinkedList<>();
-	private List<String> mods = new LinkedList<>();
+	private final List<String> annots = new LinkedList<>();
+	private final List<String> mods = new LinkedList<>();
 	private String ret;  // null for constructor -- void must be set explicitly
-	private List<String> pars = new LinkedList<>();
-	private List<String> exceptions = new LinkedList<>();
-	private List<String> body = new LinkedList<>();
+	private final List<String> pars = new LinkedList<>();
+	private final List<String> exceptions = new LinkedList<>();
+	private final List<String> body = new LinkedList<>();
 
 	protected MethodBuilder()
 	{
 		
 	}
-	
-	protected void setName(String name)
+
+	protected MethodBuilder(String name)
 	{
-		this.name = name;
+		super(name);
 	}
 	
 	public void addAnnotations(String... mods)
@@ -38,6 +36,7 @@ public class MethodBuilder
 	
 	public void setReturn(String ret)
 	{
+		setterCheck(this.ret);
 		this.ret = ret;
 	}
 	
@@ -57,18 +56,26 @@ public class MethodBuilder
 		this.body.add(ln);
 	}
 
-	public void addBodyLine(int i, String ln)
+	public final void addBodyLine(int i, String ln)
 	{
 		for (int j = 0; j < i; j++)
 		{
 			ln = "\t" + ln;
 		}
-		this.body.add(ln);
+		addBodyLine(ln);
 	}
 	
-	public String generate()
+	@Override
+	public String build()
 	{
 		String meth = "";
+		meth = buildSignature(meth);
+		meth = buildBody(meth);
+		return meth;
+	}
+	
+	protected String buildSignature(String meth)
+	{
 		if (!this.annots.isEmpty())
 		{
 			meth += "\t";
@@ -91,6 +98,11 @@ public class MethodBuilder
 		{
 			meth += " throws " + this.exceptions.stream().collect(Collectors.joining(", "));
 		}
+		return meth;
+	}
+
+	protected String buildBody(String meth)
+	{
 		meth += " {\n";
 		if (!this.body.isEmpty())
 		{

@@ -1,5 +1,9 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.endpointapi;
 
+import org.scribble.codegen.java.util.Builder;
+import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.ConstructorBuilder;
+import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -18,7 +22,7 @@ public abstract class ScribSocketBuilder
 	protected static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
 	
 	protected static final String BUFF_VAL_FIELD = "val";
-	protected static final String SCRIBSOCKET_SE_FIELD = ClassBuilder.THIS + ".se";
+	protected static final String SCRIBSOCKET_SE_FIELD = Builder.THIS + ".se";
 	protected static final String SCRIBMESSAGE_PAYLOAD_FIELD = "payload";
 
 	protected static final String RECEIVE_MESSAGE_PARAM = "m";
@@ -65,7 +69,7 @@ public abstract class ScribSocketBuilder
 		this.cb.setName(this.className);
 		//this.cb.setPackage(getSessionPackageName());
 		this.cb.setPackage(getStateChannelPackageName());
-		this.cb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
+		this.cb.addModifiers(Builder.PUBLIC, Builder.FINAL);
 		//cb.setSuperClass(superc + "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">");
 		this.cb.setSuperClass(getSuperClassType());
 		addImports();
@@ -88,9 +92,9 @@ public abstract class ScribSocketBuilder
 		String sess = getSessionClassName();
 		String role = getSelfClassName();
 
-		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM, "boolean dummy");
-		ctor.addModifiers(ClassBuilder.PROTECTED);
-		ctor.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		ConstructorBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM, "boolean dummy");
+		ctor.addModifiers(Builder.PROTECTED);
+		ctor.addBodyLine(Builder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		
 		if (this.curr.equals(this.apigen.getInitialState()))
 		{
@@ -112,10 +116,10 @@ public abstract class ScribSocketBuilder
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
-		MethodBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
+		ConstructorBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
 		ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
-		ctor2.addModifiers(ClassBuilder.PUBLIC);
-		ctor2.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		ctor2.addModifiers(Builder.PUBLIC);
+		ctor2.addBodyLine(Builder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 	}
 	
@@ -147,7 +151,7 @@ public abstract class ScribSocketBuilder
 		{
 			nextClass = this.apigen.getSocketClassName(s);
 		}
-		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ", true);");
+		mb.addBodyLine(Builder.RETURN + " " + Builder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ", true);");
 	}
 
 	protected String getGarbageBuf(String futureClass)

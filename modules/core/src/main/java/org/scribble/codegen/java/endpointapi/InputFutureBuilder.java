@@ -1,9 +1,15 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.endpointapi;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble.ast.Module;
+import org.scribble.codegen.java.util.Builder;
+import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.ConstructorBuilder;
+import org.scribble.codegen.java.util.FieldBuilder;
+import org.scribble.codegen.java.util.InterfaceBuilder;
+import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.GProtocolName;
@@ -63,7 +69,7 @@ public class InputFutureBuilder
 					types.add(type);
 					FieldBuilder f = future.newField("pay" + i++);
 					f.setType(type);
-					f.addModifiers(ClassBuilder.PUBLIC);
+					f.addModifiers(Builder.PUBLIC);
 				}
 			}
 		}
@@ -73,20 +79,20 @@ public class InputFutureBuilder
 			types.add(type);
 			FieldBuilder f = future.newField("msg");
 			f.setType(type);
-			f.addModifiers(ClassBuilder.PUBLIC);
+			f.addModifiers(Builder.PUBLIC);
 		}
 
-		MethodBuilder cons = future.newConstructor("CompletableFuture<" + StateChannelApiGenerator.SCRIBMESSAGE_CLASS + "> " + FUTURE_PARAM);
-		cons.addModifiers(ClassBuilder.PROTECTED);
-		cons.addBodyLine(ClassBuilder.SUPER + "(" + FUTURE_PARAM + ");");
+		ConstructorBuilder cons = future.newConstructor("CompletableFuture<" + StateChannelApiGenerator.SCRIBMESSAGE_CLASS + "> " + FUTURE_PARAM);
+		cons.addModifiers(Builder.PROTECTED);
+		cons.addBodyLine(Builder.SUPER + "(" + FUTURE_PARAM + ");");
 
 		MethodBuilder sync = future.newMethod("sync");
-		sync.addModifiers(ClassBuilder.PUBLIC);
+		sync.addModifiers(Builder.PUBLIC);
 		sync.setReturn(futureClass);
 		//sync.addExceptions("ExecutionException", "InterruptedException");
 		sync.addExceptions("IOException");
 		String ln = (a.mid.isOp() && a.payload.isEmpty()) ? "" : StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " m = ";
-		ln += ClassBuilder.SUPER + ".get();";
+		ln += Builder.SUPER + ".get();";
 		sync.addBodyLine(ln);
 		if (a.mid.isOp())
 		{
@@ -95,16 +101,16 @@ public class InputFutureBuilder
 				int i = 1;
 				for (String type : types)
 				{
-					sync.addBodyLine(ClassBuilder.THIS + "." + "pay" + i + " = (" + type + ") m.payload[" + (i - 1) + "];");
+					sync.addBodyLine(Builder.THIS + "." + "pay" + i + " = (" + type + ") m.payload[" + (i - 1) + "];");
 					i++;
 				}
 			}
 		}
 		else
 		{
-			sync.addBodyLine(ClassBuilder.THIS + "." + "msg" + " = (" + types.get(0) + ") m;");
+			sync.addBodyLine(Builder.THIS + "." + "msg" + " = (" + types.get(0) + ") m;");
 		}
-		sync.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.THIS + ";");
+		sync.addBodyLine(Builder.RETURN + " " + Builder.THIS + ";");
 
 		return future;
 	}
