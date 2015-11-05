@@ -99,7 +99,7 @@ public class Job
 	{
 		debugPrintPass("Running " + SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this, fullname);
-		Map<String, String> map = sg.generateSessionClass();  // filepath -> class source
+		Map<String, String> map = sg.generate();  // filepath -> class source
 		return map;
 	}
 	
@@ -110,7 +110,7 @@ public class Job
 			buildGraph(fullname, role);
 		}
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + role);
-		return new StateChannelApiGenerator(this, fullname, role).generateClasses(); // filepath -> class source  // Store results?
+		return new StateChannelApiGenerator(this, fullname, role).generate(); // filepath -> class source  // Store results?
 	}
 	
 	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException

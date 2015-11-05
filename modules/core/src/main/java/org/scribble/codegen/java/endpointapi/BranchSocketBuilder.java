@@ -139,7 +139,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		mb2.addBodyLine(1, "throw " + JavaBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb2.addBodyLine("}");
 		
-		this.apigen.addInterface(new BranchInterfaceBuilder(this.apigen, this.cb, this.curr).build());
+		this.apigen.addTypeDecl(new BranchInterfaceBuilder(this.apigen, this.cb, this.curr).build());
 	}
 
 	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EndpointState curr)

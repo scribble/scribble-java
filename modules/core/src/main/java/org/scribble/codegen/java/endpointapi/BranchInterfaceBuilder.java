@@ -68,7 +68,7 @@ public class BranchInterfaceBuilder extends AuxApiClassBuilder
 			else //if (a.mid.isMessageSigName())
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				ReceiveSocketBuilder.addReceiveMessageSigNameParams(mb3, a, msd);
+				ReceiveSocketBuilder.addReceiveMessageSigNameParams(mb3, msd);
 			}
 		}
 		//this.ifaces.put(ifname, ib);

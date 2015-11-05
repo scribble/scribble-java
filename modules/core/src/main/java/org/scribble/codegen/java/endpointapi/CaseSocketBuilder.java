@@ -84,7 +84,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 			}
 		}
 
-		this.apigen.addClass(cb);  // CaseSocketBuilder used by BranchSocketBuilder, not EndpointApiGenerator
+		this.apigen.addTypeDecl(cb);  // CaseSocketBuilder used by BranchSocketBuilder, not EndpointApiGenerator
 	}
 
 	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, IOAction a, EndpointState succ)
@@ -115,7 +115,7 @@ public class CaseSocketBuilder extends ScribSocketBuilder
 		else //if (a.mid.isMessageSigName())
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-			ReceiveSocketBuilder.addReceiveMessageSigNameParams(mb, a, msd);
+			ReceiveSocketBuilder.addReceiveMessageSigNameParams(mb, msd);
 			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
 			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
 			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + CASE_MESSAGE_FIELD + ";");

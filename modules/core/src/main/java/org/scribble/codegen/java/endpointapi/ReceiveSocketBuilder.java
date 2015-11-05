@@ -44,7 +44,7 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		EndpointState succ = curr.accept(a);
 		ClassBuilder futureClass = new InputFutureBuilder(this.apigen, this.cb, a).build();  // Wraps all payload elements as fields (set by future completion)
 		// FIXME: problem if package and protocol have the same name -- still?
-		this.apigen.addClass(futureClass);
+		this.apigen.addTypeDecl(futureClass);
 
 		makeReceiveMethod(a, succ);  // [nextClass] receive([opClass] op, Buff<? super T> arg, ...)
 		makeAsyncMethod(a, succ, futureClass.getName());  // [nextClass] async([opClass] op, Buff<futureClass> arg)
@@ -152,7 +152,7 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		else //if (a.mid.isMessageSigName())
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-			addReceiveMessageSigNameParams(mb, a, msd);
+			addReceiveMessageSigNameParams(mb, msd);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		}
 	}
 
-	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, IOAction a, MessageSigNameDecl msd)
+	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd)
 	{
 		mb.addParameters(BUF_CLASS + "<? " + JavaBuilder.SUPER + " " + msd.extName + "> " + RECEIVE_ARG_PREFIX);
 	}

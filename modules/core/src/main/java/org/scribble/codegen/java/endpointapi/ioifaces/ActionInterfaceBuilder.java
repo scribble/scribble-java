@@ -2,53 +2,43 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import org.scribble.codegen.java.endpointapi.ApiTypeBuilder;
 import org.scribble.codegen.java.endpointapi.ReceiveSocketBuilder;
-import org.scribble.codegen.java.endpointapi.ScribSocketBuilder;
+import org.scribble.codegen.java.endpointapi.SendSocketBuilder;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.sesstype.name.PayloadType;
 
 public class ActionInterfaceBuilder extends ApiTypeBuilder
 {
-	private IOAction a;
-	private InterfaceBuilder ib = new InterfaceBuilder();
+	private final IOAction a;
+	private final InterfaceBuilder ib = new InterfaceBuilder();
 
 	public ActionInterfaceBuilder(StateChannelApiGenerator apigen, IOAction a)
 	{
 		super(apigen);
+		this.a = a;
 	}
 
 	@Override
 	public InterfaceBuilder build()
 	{
-		ib.setName(getActionInterfaceName(this.a));
-		ib.addParameters("_Succ");  // TODO
+		this.ib.setName(getActionInterfaceName(this.a));
+		this.ib.addModifiers(JavaBuilder.PUBLIC);
+		this.ib.addParameters("__Succ");  // TODO
+		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
 		if (this.a instanceof Receive)
 		{
-			buildReceiveMethod();
+			ReceiveSocketBuilder.setReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
 		}
-		else
+		else //if (this.a instanceof Send)
 		{
-			buildSendMethod();
+			SendSocketBuilder.setSendHeaderWithoutReturnType(this.apigen, this.a, mb);
 		}
+		mb.setReturn("__Succ");
 		return ib;
-	}
-	
-	private AbstractMethodBuilder buildReceiveMethod()
-	{
-		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
-		ReceiveSocketBuilder.setReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
-		mb.setReturn("_Succ");  // TODO
-		return mb;
-	}
-	
-	private AbstractMethodBuilder buildSendMethod()
-	{
-		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with SendSocketBuilder
-		...TODO
-		return mb;
 	}
 	
 	public static String getActionInterfaceName(IOAction a)

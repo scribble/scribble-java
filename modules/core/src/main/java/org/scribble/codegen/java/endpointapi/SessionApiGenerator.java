@@ -21,7 +21,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Job;
 import org.scribble.visit.MessageIdCollector;
 
-public class SessionApiGenerator
+public class SessionApiGenerator extends ApiGenerator
 {
 	public static final String GPROTOCOLNAME_CLASS = "org.scribble.sesstype.name.GProtocolName";
 	public static final String OP_CLASS = "org.scribble.sesstype.name.Op";
@@ -33,27 +33,22 @@ public class SessionApiGenerator
 	private static final String SOURCE_FIELD = "SOURCE";
 	private static final String PROTO_FIELD = "PROTO";
 
-	private final Job job;
-	private final GProtocolName gpn;  // full name
-
-	private final ClassBuilder cb = new ClassBuilder();
 	private final Set<Role> roles = new HashSet<>();
 	private final Set<MessageId<?>> mids = new HashSet<>();
 	
+	private final ClassBuilder cb = new ClassBuilder();
 	private final Map<String, ClassBuilder> classes = new HashMap<>();  // All classes in same package, for protected constructor access
 	
 	public SessionApiGenerator(Job job, GProtocolName fullname) throws ScribbleException
 	{
-		this.job = job;
-		this.gpn = fullname;
-
+		super(job, fullname);
 		constructRoleClasses();
 		constructOpClasses();
 		constructSessionClass();  // Depends on the above two being done first
 	}
 	
-	// relative path -> output text
-	public Map<String, String> generateSessionClass()
+	@Override
+	public Map<String, String> generate()
 	{
 		String simpname = getSessionClassName(this.gpn);
 		//String path = getPackageName(this.gpn).replace('.', '/') + "/" + simpname + ".java";

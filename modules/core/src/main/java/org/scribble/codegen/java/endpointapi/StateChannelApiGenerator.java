@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
-import org.scribble.codegen.java.util.InterfaceBuilder;
+import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
@@ -22,32 +22,26 @@ import org.scribble.visit.Projector;
 
 // FIXME: selector(?) hanging on runtimeexception (from message formatter)
 // FIXME: consume futures before wrap/reconnect
-public class StateChannelApiGenerator
+public class StateChannelApiGenerator extends ApiGenerator
 {
 	protected static final String SCRIBMESSAGE_CLASS = "org.scribble.net.ScribMessage";
 	protected static final String SCRIBBLERUNTIMEEXCEPTION_CLASS = "org.scribble.main.ScribbleRuntimeException";
-
-	private final Job job;
-	private final GProtocolName gpn;  // full name
-	private final Role self;
-	private final LProtocolName lpn;
-
-	private int counter = 1;
-
-	private final EndpointState init;
-	//private final String root;
-
-	private Map<EndpointState, String> classNames = new HashMap<>();  // Doesn't include terminal states
-
-	private Map<String, ClassBuilder> classes = new HashMap<>();  // class name key
-	private Map<String, InterfaceBuilder> ifaces = new HashMap<>();  // FIXME: integrate with classs
 	protected static final String RECEIVE_OP_PARAM = "op";
 	protected static final String SCRIBMESSAGE_OP_FIELD = "op";
 
+	private final Role self;
+	private final LProtocolName lpn;
+	private final EndpointState init;
+	//private final String root;
+
+	private int counter = 1;
+	private Map<EndpointState, String> classNames = new HashMap<>();  // Doesn't include terminal states
+
+	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
+
 	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self)
 	{
-		this.job = job;
-		this.gpn = fullname;
+		super(job, fullname);
 		this.self = self;
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
 		this.init = job.getContext().getEndpointGraph(fullname, self).init;
@@ -57,20 +51,16 @@ public class StateChannelApiGenerator
 	}
 	
 	// Return: key (package and Java class file path) -> val (Java class source) 
-	public Map<String, String> generateClasses()
+	@Override
+	public Map<String, String> generate()
 	{
 		Map<String, String> map = new HashMap<String, String>();
 			// FIXME: factor out with ScribSocketBuilder.getPackageName
 		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.gpn).replace('.', '/') + "/channels/" + this.self + "/" ;
-		for (String s : this.classes.keySet())
+		for (String s : this.types.keySet())
 		{
 			String path = prefix + s + ".java";
-			map.put(path, this.classes.get(s).build());
-		}
-		for (String s : this.ifaces.keySet())  // FIXME: integrate
-		{
-			String path = prefix + s + ".java";
-			map.put(path, this.ifaces.get(s).build());
+			map.put(path, this.types.get(s).build());
 		}
 		return map;
 	}
@@ -105,11 +95,11 @@ public class StateChannelApiGenerator
 			return;  // Generic EndSocket for terminal states
 		}
 		String className = this.classNames.get(curr);
-		if (this.classes.containsKey(className))
+		if (this.types.containsKey(className))
 		{
 			return;
 		}
-		this.classes.put(className, constructClass(curr));
+		this.types.put(className, constructClass(curr));
 		for (EndpointState succ : curr.getSuccessors())
 		{
 			constructClasses(succ);
@@ -166,14 +156,8 @@ public class StateChannelApiGenerator
 		return this.job.getContext().getMainModule();
 	}
 	
-	// FIXME HACK
-	protected void addClass(ClassBuilder cb)
+	protected void addTypeDecl(TypeBuilder tb)
 	{
-		this.classes.put(cb.getName(), cb);
-	}
-
-	protected void addInterface(InterfaceBuilder ib)
-	{
-		this.ifaces.put(ib.getName(), ib);
+		this.types.put(tb.getName(), tb);
 	}
 }
