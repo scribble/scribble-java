@@ -48,7 +48,7 @@ public class SessionApiGenerator extends ApiGenerator
 	}
 	
 	@Override
-	public Map<String, String> generate()
+	public Map<String, String> generateApi()
 	{
 		String simpname = getSessionClassName(this.gpn);
 		//String path = getPackageName(this.gpn).replace('.', '/') + "/" + simpname + ".java";
@@ -241,12 +241,12 @@ public class SessionApiGenerator extends ApiGenerator
 		return gpn.toString();
 	}
 
-	protected static String getRolesPackageName(GProtocolName gpn)
+	public static String getRolesPackageName(GProtocolName gpn)
 	{
 		return getEndpointApiRootPackageName(gpn) + ".roles";
 	}
 
-	protected static String getOpsPackageName(GProtocolName gpn)
+	public static String getOpsPackageName(GProtocolName gpn)
 	{
 		return getEndpointApiRootPackageName(gpn) + ".ops";
 	}

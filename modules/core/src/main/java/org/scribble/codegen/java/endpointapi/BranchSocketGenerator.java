@@ -14,9 +14,9 @@ import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.sesstype.name.Role;
 
-public class BranchSocketBuilder extends ScribSocketBuilder
+public class BranchSocketGenerator extends ScribSocketGenerator
 {
-	public BranchSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
+	public BranchSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen, curr);
 	}
@@ -39,7 +39,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		Module main = this.apigen.getMainModule();
 
 		//String next = constructCaseClass(curr, main);
-		ClassBuilder caseclass = new CaseSocketBuilder(apigen, curr).build();
+		ClassBuilder caseclass = new CaseSocketGenerator(apigen, curr).generateType();
 		String next = caseclass.getName();
 		String enumClass = getBranchEnumClassName(this.apigen, this.curr);
 
@@ -77,7 +77,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		
 
 		// Handler branch method
-		String ifname = BranchInterfaceBuilder.getBranchInterfaceName(cb);
+		String ifname = BranchInterfaceGenerator.getBranchInterfaceName(cb);
 		MethodBuilder mb2 = cb.newMethod("branch");
 		mb2.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
@@ -107,7 +107,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 			String ln = "branch.receive(";
 			//if (!succ.isTerminal())
 			{
-				 ln += JavaBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketBuilder.ENDSOCKET_CLASS + "<>" : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
+				 ln += JavaBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketGenerator.ENDSOCKET_CLASS + "<>" : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
 			}
 			ln += getSessionApiOpConstant(a.mid);
 					
@@ -139,7 +139,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 		mb2.addBodyLine(1, "throw " + JavaBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb2.addBodyLine("}");
 		
-		this.apigen.addTypeDecl(new BranchInterfaceBuilder(this.apigen, this.cb, this.curr).build());
+		this.apigen.addTypeDecl(new BranchInterfaceGenerator(this.apigen, this.cb, this.curr).generateType());
 	}
 
 	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EndpointState curr)

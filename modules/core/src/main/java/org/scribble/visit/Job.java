@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
+import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
@@ -99,18 +100,25 @@ public class Job
 	{
 		debugPrintPass("Running " + SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this, fullname);
-		Map<String, String> map = sg.generate();  // filepath -> class source
+		Map<String, String> map = sg.generateApi();  // filepath -> class source
 		return map;
 	}
 	
-	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role role) throws ScribbleException
+	// FIXME: refactor an EndpointApiGenerator
+	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self) throws ScribbleException
 	{
-		if (this.jcontext.getEndpointGraph(fullname, role) == null)
+		if (this.jcontext.getEndpointGraph(fullname, self) == null)
 		{
-			buildGraph(fullname, role);
+			buildGraph(fullname, self);
 		}
-		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + role);
-		return new StateChannelApiGenerator(this, fullname, role).generate(); // filepath -> class source  // Store results?
+		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
+		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
+		Map<String, String> api = apigen.generateApi(); // filepath -> class source  // Store results?
+		
+		IOInterfacesGenerator iogen = new IOInterfacesGenerator(this, fullname, self, apigen);
+		api.putAll(iogen.generateApi());
+		
+		return api;
 	}
 	
 	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException

@@ -12,9 +12,9 @@ import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 
-public class ReceiveSocketBuilder extends ScribSocketBuilder
+public class ReceiveSocketGenerator extends ScribSocketGenerator
 {
-	public ReceiveSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
+	public ReceiveSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen, curr);
 	}
@@ -42,7 +42,7 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		IOAction a = curr.getAcceptable().iterator().next();
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
 		EndpointState succ = curr.accept(a);
-		ClassBuilder futureClass = new InputFutureBuilder(this.apigen, this.cb, a).build();  // Wraps all payload elements as fields (set by future completion)
+		ClassBuilder futureClass = new InputFutureGenerator(this.apigen, this.cb, a).generateType();  // Wraps all payload elements as fields (set by future completion)
 		// FIXME: problem if package and protocol have the same name -- still?
 		this.apigen.addTypeDecl(futureClass);
 

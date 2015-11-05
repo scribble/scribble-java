@@ -52,10 +52,10 @@ public class StateChannelApiGenerator extends ApiGenerator
 	
 	// Return: key (package and Java class file path) -> val (Java class source) 
 	@Override
-	public Map<String, String> generate()
+	public Map<String, String> generateApi()
 	{
 		Map<String, String> map = new HashMap<String, String>();
-			// FIXME: factor out with ScribSocketBuilder.getPackageName
+		// FIXME: factor out with ScribSocketBuilder.getPackageName
 		String prefix = SessionApiGenerator.getEndpointApiRootPackageName(this.gpn).replace('.', '/') + "/channels/" + this.self + "/" ;
 		for (String s : this.types.keySet())
 		{
@@ -117,13 +117,13 @@ public class StateChannelApiGenerator extends ApiGenerator
 		IOAction a = as.iterator().next();
 		if (a instanceof Send)
 		{
-			return new SendSocketBuilder(this, curr).build();
+			return new SendSocketGenerator(this, curr).generateType();
 		}
 		else if (a instanceof Receive)
 		{
 			return (as.size() > 1)
-					? new BranchSocketBuilder(this, curr).build()
-					: new ReceiveSocketBuilder(this, curr).build();
+					? new BranchSocketGenerator(this, curr).generateType()
+					: new ReceiveSocketGenerator(this, curr).generateType();
 		}
 		else
 		{
@@ -131,12 +131,12 @@ public class StateChannelApiGenerator extends ApiGenerator
 		}
 	}
 	
-	protected GProtocolName getGProtocolName()
+	public GProtocolName getGProtocolName()
 	{
 		return this.gpn;
 	}
 	
-	protected Role getSelf()
+	public Role getSelf()
 	{
 		return this.self;
 	}

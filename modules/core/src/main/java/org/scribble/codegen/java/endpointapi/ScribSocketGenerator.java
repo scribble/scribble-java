@@ -9,7 +9,7 @@ import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
 // Parameterize on output class type
-public abstract class ScribSocketBuilder extends ApiTypeBuilder
+public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 {
 	public static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
 	public static final String BUF_CLASS = "org.scribble.net.Buf";
@@ -39,7 +39,7 @@ public abstract class ScribSocketBuilder extends ApiTypeBuilder
 
 	protected final ClassBuilder cb = new ClassBuilder();
 	
-	public ScribSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
+	public ScribSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen);
 		this.curr = curr;
@@ -52,7 +52,7 @@ public abstract class ScribSocketBuilder extends ApiTypeBuilder
 	}
 
 	@Override
-	public ClassBuilder build()
+	public ClassBuilder generateType()
 	{
 		constructClass();  // So className can be "overridden" in subclass constructor (CaseSocket)
 		return this.cb;

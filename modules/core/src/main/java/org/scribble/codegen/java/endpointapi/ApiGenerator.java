@@ -17,5 +17,6 @@ public abstract class ApiGenerator
 	}
 	
 	// Return: key (package and Java class file path) -> val (Java class source) 
-	public abstract Map<String, String> generate();
+	// FIXME: Path instead of String key?
+	public abstract Map<String, String> generateApi();
 }

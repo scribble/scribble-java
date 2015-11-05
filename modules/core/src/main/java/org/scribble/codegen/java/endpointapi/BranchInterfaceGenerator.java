@@ -13,19 +13,19 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 
 // Factor out
-public class BranchInterfaceBuilder extends AuxApiClassBuilder
+public class BranchInterfaceGenerator extends AuxApiTypeGenerator
 {
 	private final EndpointState curr;
 
 	// Pre: cb is the BrranchSocketBuilder
-	public BranchInterfaceBuilder(StateChannelApiGenerator apigen, ClassBuilder parent, EndpointState curr)
+	public BranchInterfaceGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, EndpointState curr)
 	{
 		super(apigen, parent);
 		this.curr = curr;
 	}
 
 	@Override
-	public InterfaceBuilder build()
+	public InterfaceBuilder generateType()
 	{
 		Module main = this.apigen.getMainModule();
 		GProtocolName gpn = this.apigen.getGProtocolName();
@@ -53,7 +53,7 @@ public class BranchInterfaceBuilder extends AuxApiClassBuilder
 				// FIXME: repeated
 				ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
 				ib.addImports(SessionApiGenerator.getRolesPackageName(this.apigen.getGProtocolName()) + ".*");
-				mb3.addParameters(ScribSocketBuilder.ENDSOCKET_CLASS + "<" + SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + ", " + this.apigen.getSelf() + ">" + " schan");  // FIXME: factor out
+				mb3.addParameters(ScribSocketGenerator.ENDSOCKET_CLASS + "<" + SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + ", " + this.apigen.getSelf() + ">" + " schan");  // FIXME: factor out
 			}
 			else
 			{
@@ -63,12 +63,12 @@ public class BranchInterfaceBuilder extends AuxApiClassBuilder
 
 			if (a.mid.isOp())
 			{	
-				ReceiveSocketBuilder.addReceiveOpParams(mb3, this.apigen.getMainModule(), a);
+				ReceiveSocketGenerator.addReceiveOpParams(mb3, this.apigen.getMainModule(), a);
 			}
 			else //if (a.mid.isMessageSigName())
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				ReceiveSocketBuilder.addReceiveMessageSigNameParams(mb3, msd);
+				ReceiveSocketGenerator.addReceiveMessageSigNameParams(mb3, msd);
 			}
 		}
 		//this.ifaces.put(ifname, ib);

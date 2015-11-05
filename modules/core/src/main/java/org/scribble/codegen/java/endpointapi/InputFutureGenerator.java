@@ -16,21 +16,21 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 
-public class InputFutureBuilder extends AuxApiClassBuilder
+public class InputFutureGenerator extends AuxApiTypeGenerator
 {
 	protected static final String SCRIBFUTURE_CLASS = "org.scribble.net.ScribFuture";
 
 	private final IOAction a;
 
 	// Pre: cb is ReceiveSocketBuilder
-	public InputFutureBuilder(StateChannelApiGenerator apigen, ClassBuilder parent, IOAction a)
+	public InputFutureGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, IOAction a)
 	{
 		super(apigen, parent);
 		this.a = a;
 	}
 
 	@Override
-	public ClassBuilder build()
+	public ClassBuilder generateType()
 	{
 		final String FUTURE_PARAM = "fut";
 		Module main = this.apigen.getMainModule();

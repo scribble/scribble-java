@@ -8,9 +8,6 @@ import java.util.stream.IntStream;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.endpointapi.ioifaces.ActionInterfaceBuilder;
-import org.scribble.codegen.java.util.ClassBuilder;
-import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
@@ -19,9 +16,9 @@ import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 
-public class SendSocketBuilder extends ScribSocketBuilder
+public class SendSocketGenerator extends ScribSocketGenerator
 {
-	public SendSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
+	public SendSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen, curr);
 	}
@@ -76,9 +73,6 @@ public class SendSocketBuilder extends ScribSocketBuilder
 			}
 
 			addReturnNextSocket(mb, succ);
-
-			InterfaceBuilder ib = new ActionInterfaceBuilder(this.apigen, a).build();
-			System.out.println("\n" + ib.build());
 		}
 	}
 
