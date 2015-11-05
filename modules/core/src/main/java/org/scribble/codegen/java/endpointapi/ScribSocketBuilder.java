@@ -11,28 +11,28 @@ import org.scribble.sesstype.name.Role;
 // Parameterize on output class type
 public abstract class ScribSocketBuilder extends ApiTypeBuilder
 {
-	protected static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
-	protected static final String BUFF_CLASS = "org.scribble.net.Buf";
-	protected static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
+	public static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
+	public static final String BUF_CLASS = "org.scribble.net.Buf";
+	public static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
 
-	protected static final String SENDSOCKET_CLASS = "org.scribble.net.scribsock.SendSocket";
-	protected static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
-	protected static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
-	protected static final String CASESOCKET_CLASS = "org.scribble.net.scribsock.CaseSocket";
-	protected static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
+	public static final String SENDSOCKET_CLASS = "org.scribble.net.scribsock.SendSocket";
+	public static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
+	public static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
+	public static final String CASESOCKET_CLASS = "org.scribble.net.scribsock.CaseSocket";
+	public static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
 	
-	protected static final String BUFF_VAL_FIELD = "val";
-	protected static final String SCRIBSOCKET_SE_FIELD = JavaBuilder.THIS + ".se";
-	protected static final String SCRIBMESSAGE_PAYLOAD_FIELD = "payload";
+	public static final String BUFF_VAL_FIELD = "val";
+	public static final String SCRIBSOCKET_SE_FIELD = JavaBuilder.THIS + ".se";
+	public static final String SCRIBMESSAGE_PAYLOAD_FIELD = "payload";
 
-	protected static final String RECEIVE_MESSAGE_PARAM = "m";
-	protected static final String RECEIVE_ARG_PREFIX = "arg";
+	public static final String RECEIVE_MESSAGE_PARAM = "m";
+	public static final String RECEIVE_ARG_PREFIX = "arg";
 
-	protected static final String CASE_OP_FIELD = "op";
-	protected static final String CASE_OP_PARAM = CASE_OP_FIELD;
-	protected static final String CASE_MESSAGE_FIELD = "m";
-	protected static final String CASE_MESSAGE_PARAM = CASE_MESSAGE_FIELD;
-	protected static final String CASE_ARG_PREFIX = "arg";
+	public static final String CASE_OP_FIELD = "op";
+	public static final String CASE_OP_PARAM = CASE_OP_FIELD;
+	public static final String CASE_MESSAGE_FIELD = "m";
+	public static final String CASE_MESSAGE_PARAM = CASE_MESSAGE_FIELD;
+	public static final String CASE_ARG_PREFIX = "arg";
 	
 	protected final EndpointState curr;
 	protected final String className;
@@ -125,16 +125,10 @@ public abstract class ScribSocketBuilder extends ApiTypeBuilder
 	
 	protected abstract void addMethods();
 	
+	@Deprecated
 	protected void setNextSocketReturnType(MethodBuilder mb, EndpointState succ)
 	{
-		if (succ.isTerminal())
-		{
-			mb.setReturn(ENDSOCKET_CLASS + "<" + getSessionClassName() + ", " + getSelfClassName() + ">");
-		}
-		else
-		{
-			mb.setReturn(this.apigen.getSocketClassName(succ));
-		}
+		setNextSocketReturnType(this.apigen, mb, succ);
 	}
 	
 	//protected void addReturnNextSocket(MethodBuilder mb, String nextClass)
@@ -157,7 +151,7 @@ public abstract class ScribSocketBuilder extends ApiTypeBuilder
 	protected String getGarbageBuf(String futureClass)
 	{
 		//return ClassBuilder.NEW + " " + BUFF_CLASS + "<>()";  // Makes a trash Buff every time, but clean -- would be more efficient to generate the code to spawn the future without buff-ing it (partly duplicate of the normal receive generated code) 
-		return "(" + BUFF_CLASS + "<" + futureClass + ">) " + SCRIBSOCKET_SE_FIELD + ".gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
+		return "(" + BUF_CLASS + "<" + futureClass + ">) " + SCRIBSOCKET_SE_FIELD + ".gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
 	}
 	
 	// Not fully qualified, just Session API class prefix
@@ -206,6 +200,20 @@ public abstract class ScribSocketBuilder extends ApiTypeBuilder
 	{
 		//return getSessionPackageName() + ".channels." + this.apigen.getSelf();
 		return SessionApiGenerator.getStateChannelPackageName(this.apigen.getGProtocolName(), this.apigen.getSelf());
+	}
+
+	public static void setNextSocketReturnType(StateChannelApiGenerator apigen, MethodBuilder mb, EndpointState succ)
+	{
+		String ret;
+		if (succ.isTerminal())
+		{
+			ret = ENDSOCKET_CLASS + "<" + SessionApiGenerator.getSessionClassName(apigen.getGProtocolName()) + ", " + SessionApiGenerator.getRoleClassName(apigen.getSelf()) + ">";
+		}
+		else
+		{
+			ret = apigen.getSocketClassName(succ);
+		}
+		mb.setReturn(ret);
 	}
 	
 	/*private static boolean isTerminalClassName(String n)

@@ -67,11 +67,17 @@ public abstract class TypeBuilder extends JavaBuilder
 		return fb;
 	}
 	
-	public AbstractMethodBuilder newAbstractMethod(String name)
+	public AbstractMethodBuilder newAbstractMethod()
 	{
 		AbstractMethodBuilder mb = new AbstractMethodBuilder();
-		mb.setName(name);
 		this.methods.add(mb);
+		return mb;
+	}
+
+	public final AbstractMethodBuilder newAbstractMethod(String name)
+	{
+		AbstractMethodBuilder mb = newAbstractMethod();
+		mb.setName(name);
 		return mb;
 	}
 	

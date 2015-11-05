@@ -116,7 +116,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 			{
 				if (!a.payload.isEmpty())
 				{
-					String buffSuper = JavaBuilder.NEW + " " + BUFF_CLASS + "<>(";
+					String buffSuper = JavaBuilder.NEW + " " + BUF_CLASS + "<>(";
 					int i = 0;
 					for (PayloadType<?> pt : a.payload.elems)
 					{
@@ -128,7 +128,7 @@ public class BranchSocketBuilder extends ScribSocketBuilder
 			else
 			{
 				MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-				ln += ", " + JavaBuilder.NEW + " " + BUFF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
+				ln += ", " + JavaBuilder.NEW + " " + BUF_CLASS + "<>((" + msd.extName + ") " +  RECEIVE_MESSAGE_PARAM + "." + SCRIBMESSAGE_PAYLOAD_FIELD + "[0])";
 			}
 				
 			ln += ");";

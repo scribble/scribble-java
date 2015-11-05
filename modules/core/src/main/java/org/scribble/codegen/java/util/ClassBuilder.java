@@ -36,11 +36,17 @@ public class ClassBuilder extends TypeBuilder
 		return mb;
 	}
 
-	public MethodBuilder newMethod(String name)
+	public MethodBuilder newMethod()
 	{
 		MethodBuilder mb = new MethodBuilder();
-		mb.setName(name);
 		this.methods.add(mb);
+		return mb;
+	}
+
+	public final MethodBuilder newMethod(String name)
+	{
+		MethodBuilder mb = newMethod();
+		mb.setName(name);
 		return mb;
 	}
 	

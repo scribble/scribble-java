@@ -75,7 +75,7 @@ public class EnumBuilder extends TypeBuilder
 	}
 	
 	@Override
-	public AbstractMethodBuilder newAbstractMethod(String name)
+	public AbstractMethodBuilder newAbstractMethod()
 	{
 		throw new RuntimeScribbleException("Invalid for enums");
 	}
