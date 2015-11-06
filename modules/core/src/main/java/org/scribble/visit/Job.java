@@ -113,10 +113,11 @@ public class Job
 		}
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
 		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
-		Map<String, String> api = apigen.generateApi(); // filepath -> class source  // Store results?
 		
 		IOInterfacesGenerator iogen = new IOInterfacesGenerator(this, fullname, self, apigen);
-		api.putAll(iogen.generateApi());
+
+		Map<String, String> api = iogen.generateApi();
+		api.putAll(apigen.generateApi()); // filepath -> class source  // Store results?
 		
 		return api;
 	}

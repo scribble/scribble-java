@@ -11,9 +11,23 @@ public class InterfaceBuilder extends TypeBuilder
 
 	public InterfaceBuilder(String name)
 	{
-		
+		super(name);
 	}
 	
+	public MethodBuilder newDefaultMethod()
+	{
+		MethodBuilder mb = new MethodBuilder();
+		mb.addModifiers(JavaBuilder.DEFAULT);
+		this.methods.add(mb);
+		return mb;
+	}
+
+	public final MethodBuilder newDefaultMethod(String name)
+	{
+		MethodBuilder mb = newDefaultMethod();
+		mb.setName(name);
+		return mb;
+	}
 	
 	@Override
 	protected String buildSignature(String clazz)

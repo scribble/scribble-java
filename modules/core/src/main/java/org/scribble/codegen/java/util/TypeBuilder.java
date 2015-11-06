@@ -59,6 +59,11 @@ public abstract class TypeBuilder extends JavaBuilder
 		this.params.addAll(Arrays.asList(params));
 	}
 	
+	public List<String> getParameters()
+	{
+		return this.params;
+	}
+	
 	public FieldBuilder newField(String name)
 	{
 		FieldBuilder fb = new FieldBuilder();

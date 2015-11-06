@@ -1,6 +1,7 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import org.scribble.codegen.java.endpointapi.ReceiveSocketGenerator;
+import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SendSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
@@ -8,6 +9,7 @@ import org.scribble.codegen.java.endpointapi.StateChannelTypeGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.sesstype.name.GProtocolName;
@@ -15,12 +17,14 @@ import org.scribble.sesstype.name.PayloadType;
 
 public class ActionInterfaceGenerator extends StateChannelTypeGenerator
 {
+	private final EndpointState curr;
 	private final IOAction a;
 	private final InterfaceBuilder ib = new InterfaceBuilder();
 
-	public ActionInterfaceGenerator(StateChannelApiGenerator apigen, IOAction a)
+	public ActionInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, IOAction a)
 	{
 		super(apigen);
+		this.curr = curr;
 		this.a = a;
 	}
 
@@ -46,7 +50,15 @@ public class ActionInterfaceGenerator extends StateChannelTypeGenerator
 		{
 			SendSocketGenerator.setSendHeaderWithoutReturnType(this.apigen, this.a, mb);
 		}
-		mb.setReturn("__Succ");
+		EndpointState succ = this.curr.accept(this.a);
+		if (succ.isTerminal())
+		{
+			ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);
+		}
+		else
+		{
+			mb.setReturn("__Succ");
+		}
 		return ib;
 	}
 	

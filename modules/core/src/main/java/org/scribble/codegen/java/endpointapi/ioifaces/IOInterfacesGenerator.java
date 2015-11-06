@@ -5,14 +5,19 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.scribble.codegen.java.endpointapi.ApiGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
+import org.scribble.model.local.Receive;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Job;
@@ -25,6 +30,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 	private final Map<IOAction, InterfaceBuilder> actions = new HashMap<>();
 	private final Map<IOAction, InterfaceBuilder> succs = new HashMap<>();
 	private final Map<EndpointState, TypeBuilder> iostates = new HashMap<>();
+	
+	private final Map<EndpointState, InterfaceBuilder> cases = new HashMap<>();  // HACK
 	
 	private final Map<EndpointState, Set<IOAction>> pre = new HashMap<>();  // Pre set
 	
@@ -59,8 +66,47 @@ public class IOInterfacesGenerator extends ApiGenerator
 			ifaces.put(path, ib.build());
 			//System.out.println("2: " + ib.getName() + ":\n" + ib.build());
 		}
+		for (TypeBuilder tb : this.iostates.values())
+		{
+			String path = prefix + tb.getName() + ".java";
+			ifaces.put(path, tb.build());
+		}
+		for (InterfaceBuilder ib : this.cases.values())
+		{
+			String path = prefix + ib.getName() + ".java";
+			ifaces.put(path, ib.build());
+		}
+		
+		traverse(new HashSet<>(), this.init);
+		
 		return ifaces;
 	}
+	
+	private void traverse(Set<EndpointState> visited, EndpointState s)
+	{
+		if (visited.contains(s) || s.isTerminal())
+		{
+			return;
+		}
+		String scname = this.apigen.getSocketClassName(s);
+		String ioname = IOStateInterfaceGenerator.getIOStateInterfaceName(this.self, s);
+		TypeBuilder tb = this.apigen.getType(scname);
+		String tmp = ioname;
+		// TODO: add concrete successor parameters to ioname
+		// TODO: generate protocol-specific end with succ ifaces
+		// TODO: branch IO i/face needs branch method
+		tb.addImports(getPackageName(this.gpn, this.self) + ".*");
+		tb.addInterfaces(tmp);
+
+		System.out.println("a: " + tb.build());
+		
+		visited.add(s);
+		for (IOAction a : s.getAcceptable())
+		{
+			traverse(visited, s.accept(a));
+		}
+	}
+
 	
 	// Factor out FSM visitor?
 	private void firstPass(Set<EndpointState> visited, EndpointState s)
@@ -75,11 +121,13 @@ public class IOInterfacesGenerator extends ApiGenerator
 			{
 				visited.add(s);
 
-				InterfaceBuilder actionif = new ActionInterfaceGenerator(this.apigen, a).generateType();
+				InterfaceBuilder actionif = new ActionInterfaceGenerator(this.apigen, s, a).generateType();
 				this.actions.put(a, actionif);
 				
+				//System.out.println("\nz:" + actionif.build());
+
 				InterfaceBuilder succif = new SuccessorInterfaceGenerator(this.apigen, a).generateType();
-				this.succs.put(a,  succif);
+				this.succs.put(a, succif);
 				
 				EndpointState succ = s.accept(a);
 				putPre(succ, a);
@@ -99,6 +147,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		tmp.add(a);
 	}
 	
+	// Successor interfaces
 	private Map<EndpointState, Set<InterfaceBuilder>> getPreds()
 	{
 		Map<EndpointState, Set<InterfaceBuilder>> preds = new HashMap<>();
@@ -121,15 +170,42 @@ public class IOInterfacesGenerator extends ApiGenerator
 			return;
 		}
 		
-		InterfaceBuilder ib = new IOStateInterfaceGenerator(apigen, s, this.actions, preds.get(s)).generateType();
-		
-		System.out.println("\n" + ib.build());
+		Set<InterfaceBuilder> tmp = preds.get(s);  // Successor interfaces
+		IOStateInterfaceGenerator iogen = new IOStateInterfaceGenerator(this.apigen, s, this.actions, tmp);
+		InterfaceBuilder iostate = iogen.generateType();
+		if (tmp != null)
+		{
+			for (InterfaceBuilder ib : tmp)
+			{
+				addSuccessorInterfaceToMethod(ib, iostate);
+				//System.out.println("\na:" + ib.build());
+			}
+		}
+		this.iostates.put(s, iostate);
+
+		//System.out.println("\nb:" + iostate.build());
+		IOAction first = s.getAcceptable().iterator().next();
+		if (first instanceof Receive && s.getAcceptable().size() > 1)
+		{
+			//System.out.println("\nc:" + iogen.getCasesInterface().build());
+			this.cases.put(s, iogen.getCasesInterface());
+		}
 		
 		visited.add(s);
 		for (IOAction a : s.getAcceptable())
 		{
 			secondPass(preds, visited, s.accept(a));
 		}
+	}
+	
+	// Pre: ib is a successor interface for the cast class
+	private static void addSuccessorInterfaceToMethod(InterfaceBuilder ib, InterfaceBuilder cast)
+	{
+		String tmp = cast.getName() + "<" + IntStream.range(0, cast.getParameters().size()).mapToObj((i) -> "?").collect(Collectors.joining(", ")) + ">";
+		MethodBuilder mb = ib.newDefaultMethod("to");
+		mb.setReturn(tmp);
+		mb.addParameters(tmp + " cast");
+		mb.addBodyLine(JavaBuilder.RETURN + " (" + tmp + ") this;");
 	}
 
 	protected static String getPackageName(GProtocolName gpn, Role self)

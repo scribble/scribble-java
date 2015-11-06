@@ -3,6 +3,7 @@ package org.scribble.codegen.java.util;
 public abstract class JavaBuilder
 {
 	public static final String ABSTRACT = "abstract";
+	public static final String DEFAULT = "default";
 	public static final String VOID = "void";
 	public static final String THIS = "this";
 	public static final String SYNCHRONIZED = "synchronized";

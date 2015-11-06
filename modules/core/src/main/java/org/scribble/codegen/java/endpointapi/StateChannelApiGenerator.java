@@ -140,11 +140,6 @@ public class StateChannelApiGenerator extends ApiGenerator
 	{
 		return this.self;
 	}
-
-	protected String getSocketClassName(EndpointState s)
-	{
-		return this.classNames.get(s);
-	}
 	
 	protected EndpointState getInitialState()
 	{
@@ -159,5 +154,15 @@ public class StateChannelApiGenerator extends ApiGenerator
 	protected void addTypeDecl(TypeBuilder tb)
 	{
 		this.types.put(tb.getName(), tb);
+	}
+
+	public String getSocketClassName(EndpointState s)
+	{
+		return this.classNames.get(s);
+	}
+	
+	public TypeBuilder getType(String key)
+	{
+		return this.types.get(key);
 	}
 }
