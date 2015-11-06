@@ -1,6 +1,7 @@
 package org.scribble.codegen.java.endpointapi;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +49,13 @@ public class StateChannelApiGenerator extends ApiGenerator
 		generateClassNames(this.init);
 		//this.root = this.classNames.get(this.init);
 		constructClasses(this.init);
+
+		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
+		if (term != null)
+		{
+			ClassBuilder cb = new EndSocketGenerator(this, term).generateType();
+			this.types.put(cb.getName(), cb);
+		}
 	}
 	
 	// Return: key (package and Java class file path) -> val (Java class source) 

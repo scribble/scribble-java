@@ -27,6 +27,13 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		return BRANCHSOCKET_CLASS + "<" + getSessionClassName() + ", " + getSelfClassName() + ">";
 	}
 
+	@Override
+	protected void addImports()
+	{
+		this.cb.addImports("java.io.IOException");
+		super.addImports();
+	}
+
 	//private void addBranchMethod(ClassBuilder cb, EndpointState curr)
 	@Override
 	protected void addMethods()
@@ -107,7 +114,8 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			String ln = "branch.receive(";
 			//if (!succ.isTerminal())
 			{
-				 ln += JavaBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketGenerator.ENDSOCKET_CLASS + "<>" : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
+				//FIXME: factor out with addReturn?
+				 ln += JavaBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketGenerator.GEN_ENDSOCKET_CLASS : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
 			}
 			ln += getSessionApiOpConstant(a.mid);
 					

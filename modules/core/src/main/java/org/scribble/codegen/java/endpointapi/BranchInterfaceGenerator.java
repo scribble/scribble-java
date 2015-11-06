@@ -53,7 +53,9 @@ public class BranchInterfaceGenerator extends AuxApiTypeGenerator
 				// FIXME: repeated
 				ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
 				ib.addImports(SessionApiGenerator.getRolesPackageName(this.apigen.getGProtocolName()) + ".*");
-				mb3.addParameters(ScribSocketGenerator.ENDSOCKET_CLASS + "<" + SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + ", " + this.apigen.getSelf() + ">" + " schan");  // FIXME: factor out
+				mb3.addParameters(ScribSocketGenerator.GEN_ENDSOCKET_CLASS
+						//+ "<" + SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + ", " + this.apigen.getSelf() + ">"
+						+ " schan");  // FIXME: factor out
 			}
 			else
 			{

@@ -28,6 +28,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected void addImports()
 	{
+		this.cb.addImports("java.io.IOException");
 		super.addImports();
 		this.cb.addImports(getOpsPackageName() + ".*");
 	}

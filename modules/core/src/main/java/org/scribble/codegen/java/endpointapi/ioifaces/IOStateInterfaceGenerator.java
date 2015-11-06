@@ -40,24 +40,24 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 		if (first instanceof Receive && this.curr.getAcceptable().size() > 1)
 		{
 			String name = ib.getName();
-			InterfaceBuilder cases = new InterfaceBuilder("Cases_" + name.substring("Branch_".length(), name.length()));
+			InterfaceBuilder cases = new InterfaceBuilder(getCasesInterfaceName(name));
 			cases.setPackage(packname);
 			cases.addModifiers(JavaBuilder.PUBLIC);
 			this.cases = cases;
 		}
 		int i = 1;
-		for (IOAction a : this.curr.getAcceptable())
+		for (IOAction a : this.curr.getAcceptable())  // FIXME: ordering
 		{
-			String succ = this.actions.get(a).getName();
+			String actif = this.actions.get(a).getName();
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
 			if (first instanceof Receive && this.curr.getAcceptable().size() > 1)
 			{
 				this.cases.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
-				this.cases.addInterfaces(succ + "<__Succ" + i + ">");
+				this.cases.addInterfaces(actif + "<__Succ" + i + ">");
 			}
 			else
 			{
-				this.ib.addInterfaces(succ + "<__Succ" + i + ">");
+				this.ib.addInterfaces(actif + "<__Succ" + i + ">");
 			}
 			i++;
 		}
@@ -65,7 +65,7 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 		{
 			for (InterfaceBuilder pred : this.preds)
 			{
-				this.ib.addInterfaces(pred.getName());
+				this.ib.addInterfaces(pred.getName());  // Adds Successor Interfaces to this I/O State Interface
 			}
 		}
 		return ib;
@@ -103,4 +103,10 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 	{
 		return this.cases;
 	}
+	
+	protected static String getCasesInterfaceName(String braif)
+	{
+		return "Cases_" + braif.substring("Branch_".length(), braif.length());
+	}
 }
+

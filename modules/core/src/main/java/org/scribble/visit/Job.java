@@ -116,7 +116,7 @@ public class Job
 		
 		IOInterfacesGenerator iogen = new IOInterfacesGenerator(this, fullname, self, apigen);
 
-		Map<String, String> api = iogen.generateApi();
+		Map<String, String> api = iogen.generateApi();  // Have to do before state chan generation (before the state chans are "build") 
 		api.putAll(apigen.generateApi()); // filepath -> class source  // Store results?
 		
 		return api;

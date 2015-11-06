@@ -32,6 +32,7 @@ public class SendSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected void addImports()
 	{
+		this.cb.addImports("java.io.IOException");
 		super.addImports();
 	}
 

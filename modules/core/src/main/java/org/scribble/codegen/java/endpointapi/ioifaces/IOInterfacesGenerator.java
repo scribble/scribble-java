@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.scribble.codegen.java.endpointapi.ApiGenerator;
+import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
@@ -77,7 +78,21 @@ public class IOInterfacesGenerator extends ApiGenerator
 			ifaces.put(path, ib.build());
 		}
 		
-		traverse(new HashSet<>(), this.init);
+		traverse(new HashSet<>(), this.init);  // FIXME: move into constructor
+
+		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
+		if (term != null)
+		{
+			//System.out.println("ZZZ: " + this.pre.get(EndpointState.findTerminalState(new HashSet<>(), this.init)));
+			TypeBuilder tb = this.apigen.getType(ScribSocketGenerator.GEN_ENDSOCKET_CLASS);
+			//for (InterfaceBuilder ib : this.pre.get(EndpointState.findTerminalState(new HashSet<>(), this.init)))
+			tb.addImports(getPackageName(this.gpn, this.self) + ".*");
+			for (InterfaceBuilder ib : getPreds().get(term))
+			{
+				String succ = ib.getName();
+				tb.addInterfaces(succ);
+			}
+		}
 		
 		return ifaces;
 	}
@@ -91,14 +106,25 @@ public class IOInterfacesGenerator extends ApiGenerator
 		String scname = this.apigen.getSocketClassName(s);
 		String ioname = IOStateInterfaceGenerator.getIOStateInterfaceName(this.self, s);
 		TypeBuilder tb = this.apigen.getType(scname);
-		String tmp = ioname;
+		
 		// TODO: add concrete successor parameters to ioname
-		// TODO: generate protocol-specific end with succ ifaces
-		// TODO: branch IO i/face needs branch method
+		//TODO: branch IO i/face needs branch method
+		// TODO: branch/select name scheme needs ordering
+		
+		String tmp = ioname + getConcreteSuccessorParameters(s);
+
 		tb.addImports(getPackageName(this.gpn, this.self) + ".*");
 		tb.addInterfaces(tmp);
 
 		System.out.println("a: " + tb.build());
+		
+		Set<IOAction> as = s.getAcceptable();
+		if (as.iterator().next() instanceof Receive && as.size() > 1)
+		{
+			TypeBuilder ib = this.apigen.getType(this.apigen.getSocketClassName(s) + "_Cases");  // FIXME: factor
+			ib.addInterfaces(IOStateInterfaceGenerator.getCasesInterfaceName(tmp));
+			ib.addImports(getPackageName(this.gpn, this.self) + ".*");
+		}
 		
 		visited.add(s);
 		for (IOAction a : s.getAcceptable())
@@ -107,6 +133,35 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 	}
 
+	private String getConcreteSuccessorParameters(EndpointState s)
+	{
+		String tmp = "<";
+		
+		boolean first = true;
+		for (IOAction a : s.getAcceptable())
+		{
+			if (first)
+			{
+				first = false;
+			}
+			else
+			{
+				tmp += ", ";
+			}
+			// FIXME: ordering
+			EndpointState succ = s.accept(a);
+			if (succ.isTerminal())
+			{
+				tmp += ScribSocketGenerator.GEN_ENDSOCKET_CLASS;
+			}
+			else
+			{
+				tmp += this.apigen.getSocketClassName(succ);
+			}
+		}
+		tmp += ">";
+		return tmp;
+	}
 	
 	// Factor out FSM visitor?
 	private void firstPass(Set<EndpointState> visited, EndpointState s)
