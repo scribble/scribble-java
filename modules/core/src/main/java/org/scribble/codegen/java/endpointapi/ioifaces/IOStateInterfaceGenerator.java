@@ -106,11 +106,12 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 				name = "Branch";
 			}
 		}
-		name += "_" + self + "$";
-		for (IOAction a : s.getAcceptable())
+		name += "_" + self + "_";
+		/*for (IOAction a : s.getAcceptable())
 		{
 			name += ActionInterfaceGenerator.getActionString(a);
-		}
+		}*/
+		name += s.getAcceptable().stream().map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("$_"));
 		return name;
 	}
 	

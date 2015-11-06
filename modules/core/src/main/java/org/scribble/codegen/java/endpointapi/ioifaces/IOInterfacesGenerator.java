@@ -113,8 +113,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 		tb.addImports(getPackageName(this.gpn, this.self) + ".*");
 		tb.addInterfaces(tmp);
 
-		System.out.println("a: " + tb.build());
-		
 		Set<IOAction> as = s.getAcceptable();
 		if (as.iterator().next() instanceof Receive && as.size() > 1)
 		{

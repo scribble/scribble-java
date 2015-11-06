@@ -89,11 +89,12 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		this.apigen.addTypeDecl(cb);  // CaseSocketBuilder used by BranchSocketBuilder, not EndpointApiGenerator
 	}
 
+	// Same as in ReceiveSocketGenerator
 	private MethodBuilder makeReceiveHeader(ClassBuilder cb, IOAction a, EndpointState succ)
 	{
 		MethodBuilder mb = cb.newMethod();
 		ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
-		setNextSocketReturnType(apigen, mb, succ);
+		setNextSocketReturnType(this.apigen, mb, succ);
 		return mb;
 	}
 
@@ -122,7 +123,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	{
 		MethodBuilder mb = cb.newMethod();
 		setCaseReceiveHeaderWithoutReturnType(this.apigen, a, mb);
-		setNextSocketReturnType(apigen, mb, succ);
+		setNextSocketReturnType(this.apigen, mb, succ);
 		return mb;
 	}
 
@@ -130,15 +131,44 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	{
 		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
 		String ln = JavaBuilder.RETURN + " " + "receive(" + getSessionApiRoleConstant(a.peer) + ", ";
-		ln += mb.getParameters().stream().map((p) -> p.substring(p.indexOf(" ") + 1, p.length())).collect(Collectors.joining(", ")) + ");";
-		mb.addBodyLine(ln);
+		//ln += mb.getParameters().stream().map((p) -> p.substring(p.indexOf(" ") + 1, p.length())).collect(Collectors.joining(", ")) + ");";
+		boolean first = true;
+		for (String param : mb.getParameters())
+		{
+			if (first)
+			{
+				first = false;
+			}
+			else
+			{
+				ln += ", "; 
+			}
+			if (param.contains("<"))
+			{
+				param = param.substring(param.lastIndexOf('>') + 1, param.length());
+			}
+			ln += param.substring(param.indexOf(" ") + 1, param.length());
+		}
+		mb.addBodyLine(ln + ");");
 	}
 
 	private void addCaseReceiveDiscardMethod(ClassBuilder cb, IOAction a, EndpointState succ)
 	{
 		Module main = this.apigen.getMainModule();
 
-		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
+		//MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
+		MethodBuilder mb = cb.newMethod();
+		//final String ROLE_PARAM = "role";
+
+		// Duplicated from makeCaseReceiveHeader, without parameters
+		String opClass = SessionApiGenerator.getOpClassName(a.mid);
+		mb.setName("receive");
+		mb.addModifiers(JavaBuilder.PUBLIC);
+		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+
+		setNextSocketReturnType(this.apigen, mb, succ);
+		
 		mb.addAnnotations("@SuppressWarnings(\"unchecked\")");
 		String ln = JavaBuilder.RETURN + " ";
 		ln += "receive(" + CASE_OP_PARAM + ", ";
