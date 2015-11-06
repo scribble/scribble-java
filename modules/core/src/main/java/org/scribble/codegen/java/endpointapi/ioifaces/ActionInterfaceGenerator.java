@@ -1,5 +1,6 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
+import org.scribble.codegen.java.endpointapi.CaseSocketGenerator;
 import org.scribble.codegen.java.endpointapi.ReceiveSocketGenerator;
 import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SendSocketGenerator;
@@ -33,18 +34,25 @@ public class ActionInterfaceGenerator extends StateChannelTypeGenerator
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 
-		this.ib.setName(getActionInterfaceName(this.a));
+		this.ib.setName(getActionInterfaceName(this.curr, this.a));
 		this.ib.setPackage(IOInterfacesGenerator.getPackageName(this.apigen.getGProtocolName(), this.apigen.getSelf()));
 		this.ib.addImports("java.io.IOException");
 		this.ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketGenerator
 		this.ib.addImports(SessionApiGenerator.getRolesPackageName(gpn) + ".*");
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 		this.ib.addModifiers(JavaBuilder.PUBLIC);
-		this.ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.a));
+		this.ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, this.a));
 		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
 		if (this.a instanceof Receive)
 		{
-			ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
+			if (this.curr.getAcceptable().size() > 1)
+			{
+				CaseSocketGenerator.setCaseReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
+			}
+			else
+			{
+				ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
+			}
 		}
 		else //if (this.a instanceof Send)
 		{
@@ -62,11 +70,27 @@ public class ActionInterfaceGenerator extends StateChannelTypeGenerator
 		return ib;
 	}
 	
-	public static String getActionInterfaceName(IOAction a)
+	public static String getActionInterfaceName(EndpointState curr, IOAction a)
 	{
-		String name = (a instanceof Receive)
+		/*String name = (a instanceof Receive)
 				? "In"
-				: "Out";
+				: "Out";*/
+		String name;
+		if (curr.getAcceptable().iterator().next() instanceof Receive)
+		{
+			if (curr.getAcceptable().size() > 1)
+			{
+				name = "Case";  // FIXME: make subtype of In?
+			}
+			else
+			{
+				name = "In";
+			}
+		}
+		else
+		{
+			name = "Out";
+		}
 		name += "_" + getActionString(a);
 		return name;
 	}

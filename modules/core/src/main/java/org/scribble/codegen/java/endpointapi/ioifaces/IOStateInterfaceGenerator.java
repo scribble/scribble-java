@@ -49,10 +49,10 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 		for (IOAction a : this.curr.getAcceptable())  // FIXME: ordering
 		{
 			String actif = this.actions.get(a).getName();
-			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
+			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, a));
 			if (first instanceof Receive && this.curr.getAcceptable().size() > 1)
 			{
-				this.cases.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
+				this.cases.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, a));
 				this.cases.addInterfaces(actif + "<__Succ" + i + ">");
 			}
 			else
@@ -106,7 +106,6 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 	
 	protected static String getCasesInterfaceName(String braif)
 	{
-		return "Cases_" + braif.substring("Branch_".length(), braif.length());
+		return "Case_" + braif.substring("Branch_".length(), braif.length());
 	}
 }
-

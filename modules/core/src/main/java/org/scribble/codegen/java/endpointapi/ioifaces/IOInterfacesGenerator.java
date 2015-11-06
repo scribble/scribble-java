@@ -181,7 +181,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				
 				//System.out.println("\nz:" + actionif.build());
 
-				InterfaceBuilder succif = new SuccessorInterfaceGenerator(this.apigen, a).generateType();
+				InterfaceBuilder succif = new SuccessorInterfaceGenerator(this.apigen, s, a).generateType();
 				this.succs.put(a, succif);
 				
 				EndpointState succ = s.accept(a);
