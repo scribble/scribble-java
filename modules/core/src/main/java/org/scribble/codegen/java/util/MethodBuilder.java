@@ -39,6 +39,11 @@ public class MethodBuilder extends JavaBuilder
 		setterCheck(this.ret);
 		this.ret = ret;
 	}
+
+	public String getReturn()
+	{
+		return this.ret;
+	}
 	
 	// Each par is the String: type + " " + name
 	public void addParameters(String... par)

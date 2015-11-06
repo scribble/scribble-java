@@ -48,7 +48,7 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 		IOAction first = as.iterator().next();
 		if (first instanceof Receive && as.size() > 1)
 		{
-			String name = ib.getName();
+			String name = this.ib.getName();
 			InterfaceBuilder cases = new InterfaceBuilder(getCasesInterfaceName(name));
 			cases.setPackage(packname);
 			cases.addModifiers(JavaBuilder.PUBLIC);

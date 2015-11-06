@@ -80,12 +80,12 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		EnumBuilder eb = cb.newMemberEnum(enumClass);
 		eb.addModifiers(JavaBuilder.PUBLIC);
 		eb.addInterfaces(OPENUM_INTERFACE);
-		curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+		this.curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
 		
 
 		// Handler branch method
-		String ifname = BranchInterfaceGenerator.getBranchInterfaceName(cb);
-		MethodBuilder mb2 = cb.newMethod("branch");
+		String ifname = BranchInterfaceGenerator.getBranchInterfaceName(this.cb);
+		MethodBuilder mb2 = this.cb.newMethod("branch");
 		mb2.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
 		mb2.addParameters(ifname + " branch");
@@ -95,9 +95,9 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb2.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
-		for (IOAction a : curr.getAcceptable())
+		for (IOAction a : this.curr.getAcceptable())
 		{
-			EndpointState succ = curr.accept(a);
+			EndpointState succ = this.curr.accept(a);
 			if (first)
 			{
 				first = false;

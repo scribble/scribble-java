@@ -70,6 +70,7 @@ public class ActionInterfaceGenerator extends StateChannelTypeGenerator
 		return ib;
 	}
 	
+	// FIXME: curr unnecessary
 	public static String getActionInterfaceName(EndpointState curr, IOAction a)
 	{
 		/*String name = (a instanceof Receive)

@@ -30,7 +30,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 
 	private final Map<IOAction, InterfaceBuilder> actions = new HashMap<>();
 	private final Map<IOAction, InterfaceBuilder> succs = new HashMap<>();
-	private final Map<EndpointState, TypeBuilder> iostates = new HashMap<>();
+	//private final Map<EndpointState, TypeBuilder> iostates = new HashMap<>();
+	private final Map<String, InterfaceBuilder> iostates = new HashMap<>();
 	
 	private final Map<EndpointState, InterfaceBuilder> cases = new HashMap<>();  // HACK
 	
@@ -121,10 +122,12 @@ public class IOInterfacesGenerator extends ApiGenerator
 			ib.addImports(getPackageName(this.gpn, this.self) + ".*");
 		}
 		
-		visited.add(s);
+		//visited.add(s);
 		for (IOAction a : s.getAcceptable())
 		{
-			traverse(visited, s.accept(a));
+			Set<EndpointState> next = new HashSet<>(visited);
+			next.add(s);
+			traverse(next, s.accept(a));
 		}
 	}
 
@@ -169,20 +172,20 @@ public class IOInterfacesGenerator extends ApiGenerator
 		{
 			if (!this.actions.containsKey(a))
 			{
-				visited.add(s);
-
 				InterfaceBuilder actionif = new ActionInterfaceGenerator(this.apigen, s, a).generateType();
 				this.actions.put(a, actionif);
-				
 				//System.out.println("\nz:" + actionif.build());
-
+				
 				InterfaceBuilder succif = new SuccessorInterfaceGenerator(this.apigen, s, a).generateType();
 				this.succs.put(a, succif);
-				
-				EndpointState succ = s.accept(a);
-				putPre(succ, a);
-				firstPass(visited, succ);
 			}
+			
+			EndpointState succ = s.accept(a);
+			putPre(succ, a);
+
+			Set<EndpointState> tmp = new HashSet<>(visited);
+			tmp.add(s);
+			firstPass(tmp, succ);
 		}
 	}
 	
@@ -221,30 +224,83 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		Set<InterfaceBuilder> tmp = preds.get(s);  // Successor interfaces
-		IOStateInterfaceGenerator iogen = new IOStateInterfaceGenerator(this.apigen, s, this.actions, tmp);
-		InterfaceBuilder iostate = iogen.generateType();
+		String key = IOStateInterfaceGenerator.getIOStateInterfaceName(this.self, s);
+		IOStateInterfaceGenerator iogen = null;
+		InterfaceBuilder iostate;
+		if (this.iostates.containsKey(key))
+		{
+			iostate = this.iostates.get(key);
+			for (InterfaceBuilder pred : tmp)  // FIXME: factor out with IOStateInterfaceGenerator
+			{
+				iostate.addInterfaces(pred.getName());  // Adds Successor Interfaces to this I/O State Interface
+			}
+		}
+		else
+		{
+			iogen = new IOStateInterfaceGenerator(this.apigen, s, this.actions, tmp);
+			iostate = iogen.generateType();
+		}
 		if (tmp != null)
 		{
+			//Map<String, List<MethodBuilder>> casts = new HashMap<>();  // Record default to methods (check for duplicates later and override as necessary)
 			for (InterfaceBuilder ib : tmp)
 			{
 				addSuccessorInterfaceToMethod(ib, iostate);
 				//System.out.println("\na:" + ib.build());
+
+				/*for (MethodBuilder def : ib.getDefaultMethods())
+				{
+					List<MethodBuilder> tmp2 = casts.get(def.getReturn());
+					if (tmp2 == null)
+					{
+						tmp2 = new LinkedList<>();
+						casts.put(def.getReturn(), tmp2);
+					}
+					tmp2.add(def);
+				}*/
+
+				MethodBuilder mb = ib.getDefaultMethods().get(0);
+				if (iostate.getDefaultMethods().stream().map((def) -> def.getReturn()).filter((ret) -> ret.equals(mb.getReturn())).count() == 0)
+				{
+					// Overriding every Successor I/f to methods in the I/O State I/f, even if unnecessary
+					MethodBuilder copy = iostate.newDefaultMethod(mb.getName());
+					copy.setReturn(mb.getReturn());
+					mb.getParameters().stream().forEach((p) -> copy.addParameters(p));
+					copy.addBodyLine(JavaBuilder.RETURN + " (" + mb.getReturn() + ") this; ");  // FIXME: factor out
+					copy.addAnnotations("@Override");
+				}
+			}
+			/*for (List<MethodBuilder> tmp2 : casts.values())
+			{
+				if (tmp2.size() > 1)  // Check for duplicates and override
+				{
+					MethodBuilder mb = tmp2.get(0);
+					MethodBuilder copy = iostate.newDefaultMethod(mb.getName());
+					copy.setReturn(mb.getReturn());
+					mb.getParameters().stream().forEach((p) -> copy.addParameters(p));
+					copy.addBodyLine(JavaBuilder.RETURN + " (" + mb.getReturn() + ") this; ");  // FIXME: factor out
+				}
+			}*/
+		}
+		this.iostates.put(key, iostate);
+
+		if (iogen != null)
+		{
+			//System.out.println("\nb:" + iostate.build());
+			IOAction first = s.getAcceptable().iterator().next();
+			if (first instanceof Receive && s.getAcceptable().size() > 1)
+			{
+				//System.out.println("\nc:" + iogen.getCasesInterface().build());
+				this.cases.put(s, iogen.getCasesInterface());
 			}
 		}
-		this.iostates.put(s, iostate);
-
-		//System.out.println("\nb:" + iostate.build());
-		IOAction first = s.getAcceptable().iterator().next();
-		if (first instanceof Receive && s.getAcceptable().size() > 1)
-		{
-			//System.out.println("\nc:" + iogen.getCasesInterface().build());
-			this.cases.put(s, iogen.getCasesInterface());
-		}
 		
-		visited.add(s);
+		//visited.add(s);
 		for (IOAction a : s.getAcceptable())
 		{
-			secondPass(preds, visited, s.accept(a));
+			Set<EndpointState> next = new HashSet<>(visited);
+			next.add(s);
+			secondPass(preds, next, s.accept(a));
 		}
 	}
 	
@@ -252,6 +308,13 @@ public class IOInterfacesGenerator extends ApiGenerator
 	private static void addSuccessorInterfaceToMethod(InterfaceBuilder ib, InterfaceBuilder cast)
 	{
 		String tmp = cast.getName() + "<" + IntStream.range(0, cast.getParameters().size()).mapToObj((i) -> "?").collect(Collectors.joining(", ")) + ">";
+		for (MethodBuilder def : ib.getDefaultMethods())
+		{
+			if (def.getReturn().equals(tmp))
+			{
+				return;
+			}
+		}
 		MethodBuilder mb = ib.newDefaultMethod("to");
 		mb.setReturn(tmp);
 		mb.addParameters(tmp + " cast");
