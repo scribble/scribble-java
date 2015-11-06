@@ -78,6 +78,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		for (IOAction a : curr.getAcceptable())
 		{
 			EndpointState succ = curr.accept(a);
+			addReceiveMethod(cb, a, succ);
 			addCaseReceiveMethod(cb, a, succ);
 			if (!a.payload.isEmpty() || a.mid.isMessageSigName())
 			{
@@ -86,6 +87,35 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		}
 
 		this.apigen.addTypeDecl(cb);  // CaseSocketBuilder used by BranchSocketBuilder, not EndpointApiGenerator
+	}
+
+	private MethodBuilder makeReceiveHeader(ClassBuilder cb, IOAction a, EndpointState succ)
+	{
+		MethodBuilder mb = cb.newMethod();
+		ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
+		setNextSocketReturnType(apigen, mb, succ);
+		return mb;
+	}
+
+	private void addReceiveMethod(ClassBuilder cb, IOAction a, EndpointState succ)
+	{
+		Module main = this.apigen.getMainModule();
+
+		MethodBuilder mb = makeReceiveHeader(cb, a, succ);
+		if (a.mid.isOp())
+		{
+			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
+			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
+			ReceiveSocketGenerator.addPayloadBuffSetters(main, a, mb);
+		}
+		else //if (a.mid.isMessageSigName())
+		{
+			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
+			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
+			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + CASE_MESSAGE_FIELD + ";");
+		}
+		addReturnNextSocket(mb, succ);
 	}
 
 	private MethodBuilder makeCaseReceiveHeader(ClassBuilder cb, IOAction a, EndpointState succ)
@@ -98,25 +128,10 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 
 	private void addCaseReceiveMethod(ClassBuilder cb, IOAction a, EndpointState succ)
 	{
-		Module main = this.apigen.getMainModule();
-
 		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
-		if (a.mid.isOp())
-		{
-			ReceiveSocketGenerator.addReceiveOpParams(mb, main, a);
-			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
-			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
-			ReceiveSocketGenerator.addPayloadBuffSetters(main, a, mb);
-		}
-		else //if (a.mid.isMessageSigName())
-		{
-			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-			ReceiveSocketGenerator.addReceiveMessageSigNameParams(mb, msd);
-			mb.addBodyLine(JavaBuilder.SUPER + ".use();");
-			addBranchCheck(getSessionApiOpConstant(a.mid), mb, CASE_MESSAGE_FIELD);
-			mb.addBodyLine(CASE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + CASE_MESSAGE_FIELD + ";");
-		}
-		addReturnNextSocket(mb, succ);
+		String ln = JavaBuilder.RETURN + " " + "receive(" + getSessionApiRoleConstant(a.peer) + ", ";
+		ln += mb.getParameters().stream().map((p) -> p.substring(p.indexOf(" ") + 1, p.length())).collect(Collectors.joining(", ")) + ");";
+		mb.addBodyLine(ln);
 	}
 
 	private void addCaseReceiveDiscardMethod(ClassBuilder cb, IOAction a, EndpointState succ)

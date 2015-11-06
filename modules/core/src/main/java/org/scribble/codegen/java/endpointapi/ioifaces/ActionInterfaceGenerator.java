@@ -45,11 +45,11 @@ public class ActionInterfaceGenerator extends StateChannelTypeGenerator
 		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
 		if (this.a instanceof Receive)
 		{
-			if (this.curr.getAcceptable().size() > 1)
+			/*if (this.curr.getAcceptable().size() > 1)
 			{
 				CaseSocketGenerator.setCaseReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
 			}
-			else
+			else*/
 			{
 				ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
 			}
@@ -78,11 +78,11 @@ public class ActionInterfaceGenerator extends StateChannelTypeGenerator
 		String name;
 		if (curr.getAcceptable().iterator().next() instanceof Receive)
 		{
-			if (curr.getAcceptable().size() > 1)
+			/*if (curr.getAcceptable().size() > 1)
 			{
 				name = "Case";  // FIXME: make subtype of In?
 			}
-			else
+			else*/
 			{
 				name = "In";
 			}

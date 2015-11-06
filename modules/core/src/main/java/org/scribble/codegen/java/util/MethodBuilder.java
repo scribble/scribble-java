@@ -45,6 +45,11 @@ public class MethodBuilder extends JavaBuilder
 	{
 		this.pars.addAll(Arrays.asList(par));
 	}
+	
+	public List<String> getParameters()
+	{
+		return this.pars;
+	}
 
 	public void addExceptions(String... exceptions)
 	{
