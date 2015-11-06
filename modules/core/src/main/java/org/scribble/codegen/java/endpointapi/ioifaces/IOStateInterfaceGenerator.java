@@ -2,15 +2,20 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelTypeGenerator;
+import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
+import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
@@ -32,21 +37,31 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 	@Override
 	public InterfaceBuilder generateType()
 	{
-		String packname = IOInterfacesGenerator.getPackageName(this.apigen.getGProtocolName(), this.apigen.getSelf());
+		GProtocolName gpn = this.apigen.getGProtocolName();
+
+		String packname = IOInterfacesGenerator.getPackageName(gpn, this.apigen.getSelf());
 		this.ib.setName(getIOStateInterfaceName(this.apigen.getSelf(), this.curr));
 		this.ib.setPackage(packname);
+		this.ib.addImports(SessionApiGenerator.getRolesPackageName(gpn) + ".*");
 		this.ib.addModifiers(JavaBuilder.PUBLIC);
-		IOAction first = this.curr.getAcceptable().iterator().next();
-		if (first instanceof Receive && this.curr.getAcceptable().size() > 1)
+		Set<IOAction> as = this.curr.getAcceptable();
+		IOAction first = as.iterator().next();
+		if (first instanceof Receive && as.size() > 1)
 		{
 			String name = ib.getName();
 			InterfaceBuilder cases = new InterfaceBuilder(getCasesInterfaceName(name));
 			cases.setPackage(packname);
 			cases.addModifiers(JavaBuilder.PUBLIC);
 			this.cases = cases;
+			
+			AbstractMethodBuilder bra = this.ib.newAbstractMethod("branch");
+			String ret = cases.getName() + "<" + IntStream.range(1, as.size()+1).mapToObj((i) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";
+			bra.setReturn(ret);
+			bra.addParameters(SessionApiGenerator.getRoleClassName(first.peer) + " role");
+			bra.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
 		}
 		int i = 1;
-		for (IOAction a : this.curr.getAcceptable())  // FIXME: ordering
+		for (IOAction a : this.curr.getAcceptable())  // FIXME: ordering (cf. IOInterfacesGenerator.getConcreteSuccessorParameters)
 		{
 			String actif = this.actions.get(a).getName();
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, a));

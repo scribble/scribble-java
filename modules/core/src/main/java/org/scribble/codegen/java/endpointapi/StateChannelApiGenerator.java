@@ -25,10 +25,10 @@ import org.scribble.visit.Projector;
 // FIXME: consume futures before wrap/reconnect
 public class StateChannelApiGenerator extends ApiGenerator
 {
-	protected static final String SCRIBMESSAGE_CLASS = "org.scribble.net.ScribMessage";
-	protected static final String SCRIBBLERUNTIMEEXCEPTION_CLASS = "org.scribble.main.ScribbleRuntimeException";
-	protected static final String RECEIVE_OP_PARAM = "op";
-	protected static final String SCRIBMESSAGE_OP_FIELD = "op";
+	public static final String SCRIBMESSAGE_CLASS = "org.scribble.net.ScribMessage";
+	public static final String SCRIBBLERUNTIMEEXCEPTION_CLASS = "org.scribble.main.ScribbleRuntimeException";
+	public static final String RECEIVE_OP_PARAM = "op";
+	public static final String SCRIBMESSAGE_OP_FIELD = "op";
 
 	private final Role self;
 	private final LProtocolName lpn;

@@ -107,10 +107,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		String ioname = IOStateInterfaceGenerator.getIOStateInterfaceName(this.self, s);
 		TypeBuilder tb = this.apigen.getType(scname);
 		
-		// TODO: add concrete successor parameters to ioname
-		//TODO: branch IO i/face needs branch method
-		// TODO: branch/select name scheme needs ordering
-		
+		// TODO: branch/select name scheme needs ordering (cf. IOStateInterfaceGenerator get name)
 		String tmp = ioname + getConcreteSuccessorParameters(s);
 
 		tb.addImports(getPackageName(this.gpn, this.self) + ".*");
