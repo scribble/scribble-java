@@ -116,11 +116,14 @@ public class IOInterfacesGenerator extends ApiGenerator
 		tb.addInterfaces(tmp);
 		
 		InterfaceBuilder iostate = this.iostates.get(ioname);
-		iostate.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, this.self) + ".*");
-		MethodBuilder to = iostate.newDefaultMethod("to");
-		to.addParameters(scname + " cast");
-		to.setReturn(scname);
-		to.addBodyLine(JavaBuilder.RETURN + " (" + scname + ") this;");
+		if (iostate.getDefaultMethods().stream().filter((def) -> def.getReturn().equals(scname)).count() == 0)  // Merge states entered from multiple paths, don't want to add cast multiple times
+		{
+			iostate.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, this.self) + ".*");
+			MethodBuilder to = iostate.newDefaultMethod("to");
+			to.addParameters(scname + " cast");
+			to.setReturn(scname);
+			to.addBodyLine(JavaBuilder.RETURN + " (" + scname + ") this;");
+		}
 
 		Set<IOAction> as = s.getAcceptable();
 		if (as.iterator().next() instanceof Receive && as.size() > 1)
@@ -133,7 +136,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		//visited.add(s);
 		for (IOAction a : s.getAcceptable())
 		{
-			Set<EndpointState> next = new HashSet<>(visited);
+			Set<EndpointState> next = new HashSet<>(visited);  // FIXME: merged paths visited multiple times
 			next.add(s);
 			traverse(next, s.accept(a));
 		}
