@@ -1,5 +1,6 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
+import org.scribble.codegen.java.endpointapi.CaseSocketGenerator;
 import org.scribble.codegen.java.endpointapi.InputFutureGenerator;
 import org.scribble.codegen.java.endpointapi.ReceiveSocketGenerator;
 import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
@@ -12,6 +13,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
+import org.scribble.net.scribsock.CaseSocket;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.PayloadType;
 
@@ -40,7 +42,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		this.ib.addModifiers(JavaBuilder.PUBLIC);
 		this.ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, this.a));
 		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
-		AbstractMethodBuilder mb2 = null;
+		//AbstractMethodBuilder mb2 = null;
 		if (this.a instanceof Receive)
 		{
 			/*if (this.curr.getAcceptable().size() > 1)
@@ -50,12 +52,16 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 			else*/
 			{
 				ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
-				if (this.curr.getAcceptable().size() == 1)
+				/*if (this.curr.getAcceptable().size() == 1)  // FIXME: action interface should not depend on curr state -- should generate this method in the IO State I/f, not here
 				{
 					mb2 = this.ib.newAbstractMethod();
 					ReceiveSocketGenerator.setAsyncDiscardHeaderWithoutReturnType(this.apigen, this.a, mb2, 
 							InputFutureGenerator.getInputFutureName(this.apigen.getSocketClassName(this.curr)));
 				}
+				/*else
+				{
+					CaseSocketGenerator.setCaseReceiveDiscardHeaderWithoutReturnType(this.apigen, this.a, mb2);
+				}*/
 			}
 		}
 		else //if (this.a instanceof Send)
@@ -66,18 +72,19 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		if (succ.isTerminal())
 		{
 			ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);
-			if (this.a instanceof Receive)
+			/*if (this.a instanceof Receive)
 			{
 				ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb2, succ);
-			}
+			}*/
 		}
 		else
 		{
 			mb.setReturn("__Succ");
-			if (this.a instanceof Receive && this.curr.getAcceptable().size() == 1)
+			//if (this.a instanceof Receive)
+			/*if (this.a instanceof Receive && this.curr.getAcceptable().size() == 1)
 			{
 				mb2.setReturn("__Succ");
-			}
+			}*/
 		}
 		return ib;
 	}

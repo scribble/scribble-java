@@ -37,7 +37,6 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected void addImports()
 	{
-		this.cb.addImports("java.io.IOException");
 		super.addImports();
 		this.cb.addImports(getOpsPackageName() + ".*");
 	}
@@ -165,17 +164,8 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	{
 		Module main = this.apigen.getMainModule();
 
-		//MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
 		MethodBuilder mb = cb.newMethod();
-		//final String ROLE_PARAM = "role";
-
-		// Duplicated from makeCaseReceiveHeader, without parameters
-		String opClass = SessionApiGenerator.getOpClassName(a.mid);
-		mb.setName("receive");
-		mb.addModifiers(JavaBuilder.PUBLIC);
-		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
-		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
-
+		setCaseReceiveDiscardHeaderWithoutReturnType(this.apigen, a, mb);
 		setNextSocketReturnType(this.apigen, mb, succ);
 		
 		mb.addAnnotations("@SuppressWarnings(\"unchecked\")");
@@ -212,7 +202,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		mb.setName("receive");
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
-		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		if (a.mid.isOp())
 		{
 			ReceiveSocketGenerator.addReceiveOpParams(mb, main, a);
@@ -222,5 +212,16 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			ReceiveSocketGenerator.addReceiveMessageSigNameParams(mb, msd);
 		}
+	}
+
+	public static void setCaseReceiveDiscardHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	{
+		// Duplicated from makeCaseReceiveHeader, without parameters
+		final String opClass = SessionApiGenerator.getOpClassName(a.mid);
+
+		mb.setName("receive");
+		mb.addModifiers(JavaBuilder.PUBLIC);
+		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 	}
 }

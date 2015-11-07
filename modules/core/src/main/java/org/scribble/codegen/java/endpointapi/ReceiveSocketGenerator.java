@@ -28,7 +28,6 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected void addImports()
 	{
-		this.cb.addImports("java.io.IOException");
 		super.addImports();
 		this.cb.addImports(getOpsPackageName() + ".*");
 	}
@@ -144,7 +143,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 			
 		mb.setName("receive");
 		mb.addModifiers(JavaBuilder.PUBLIC);
-		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
 		//, "ExecutionException", "InterruptedException");
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);
 		if (a.mid.isOp())
