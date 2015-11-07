@@ -106,6 +106,9 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 		
 		this.sel.pause();
 		// FIXME: consume all pending messages/futures first? or ok to leave data in existing bb -- or only permit in states where bb is empty?
+		
+		
+		
 		// Underlying selectable channel is the same, so no need to cancel key and re-reg -- OK to assume in general?
 		w.wrapChannel(getChannelEndpoint(peer));
 		w.clientHandshake();

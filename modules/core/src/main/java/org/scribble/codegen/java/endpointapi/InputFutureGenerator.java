@@ -36,7 +36,7 @@ public class InputFutureGenerator extends AuxStateChannelTypeGenerator
 		Module main = this.apigen.getMainModule();
 		GProtocolName gpn = this.apigen.getGProtocolName();
 
-		String futureClass = this.parent.getName() + "_Future";  // Fresh enough? need only one future class per receive (unary receive)
+		String futureClass = getInputFutureName(this.parent.getName());  // Fresh enough? need only one future class per receive (unary receive)
 
 		//cb.addImports("java.util.concurrent.CompletableFuture");  // "parent" cb, not the future class
 		//cb.addImports("java.util.concurrent.ExecutionException");
@@ -107,5 +107,10 @@ public class InputFutureGenerator extends AuxStateChannelTypeGenerator
 		sync.addBodyLine(JavaBuilder.RETURN + " " + JavaBuilder.THIS + ";");
 
 		return future;
+	}
+
+	public static String getInputFutureName(String parent)
+	{
+		return parent + "_Future";  // Fresh enough? need only one future class per receive (unary receive)
 	}
 }

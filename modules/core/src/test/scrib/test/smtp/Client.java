@@ -52,11 +52,12 @@ public class Client
 
 			doInitiation(
 					LinearSocket.wrapClient(
-							doInitiation(s1.receive(Smtp.S, Smtp._220, new Buf<>()))
+							doInitiation(s1.async(Smtp.S, Smtp._220))
 									.to(Select_C_S$StartTls.cast)  // Run-time cast
 									.send(Smtp.S, new StartTls())
 									.to(Receive_C_S$220.cast)
-									.receive(Smtp.S, Smtp._220, new Buf<>())
+									//.receive(Smtp.S, Smtp._220, new Buf<>())
+									.async(Smtp.S, Smtp._220)
 									.to(Select_C_S$Ehlo.cast)  // Safe cast
 					, Smtp.S, SSLSocketChannelWrapper::new)
 			)

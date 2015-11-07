@@ -159,7 +159,7 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	// The constant singleton value of this type in the Session API (which is the same "name" as the class)
 	protected String getSessionApiRoleConstant(Role role)
 	{
-		return SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + "." + role.toString();
+		return SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + "." + role;
 	}
 	
 	// Not fully qualified, just Session API class prefix
