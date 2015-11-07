@@ -8,7 +8,6 @@ import java.util.stream.IntStream;
 import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
-import org.scribble.codegen.java.endpointapi.StateChannelTypeGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.EnumBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
@@ -22,9 +21,9 @@ import org.scribble.model.local.Send;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
+// Cf. ScribSocketGenerator
+public class IOStateInterfaceGenerator extends IOInterfaceGenerator
 {
-	private final EndpointState curr;
 	private final Map<IOAction, InterfaceBuilder> actions;
 	private final Set<InterfaceBuilder> preds;  // can be null (instead of empty)
 	private final InterfaceBuilder ib = new InterfaceBuilder();
@@ -32,8 +31,7 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 
 	public IOStateInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, Map<IOAction, InterfaceBuilder> actions, Set<InterfaceBuilder> preds)
 	{
-		super(apigen);
-		this.curr = curr;
+		super(apigen, curr);
 		this.actions = actions;
 		this.preds = preds;
 	}

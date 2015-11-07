@@ -53,14 +53,14 @@ public class Client
 			doInitiation(
 					LinearSocket.wrapClient(
 							doInitiation(s1.receive(Smtp.S, Smtp._220, new Buf<>()))
-									.to(Select_C_S$StartTls.cast)
+									.to(Select_C_S$StartTls.cast)  // Run-time cast
 									.send(Smtp.S, new StartTls())
 									.to(Receive_C_S$220.cast)
 									.receive(Smtp.S, Smtp._220, new Buf<>())
-									.to(Select_C_S$Ehlo.cast)
+									.to(Select_C_S$Ehlo.cast)  // Safe cast
 					, Smtp.S, SSLSocketChannelWrapper::new)
 			)
-			.to(Select_C_S$Quit.cast)
+			.to(Select_C_S$Quit.cast)  // Run-time cast
 			.send(Smtp.S, new Quit());
 		}
 	}
@@ -73,7 +73,7 @@ public class Client
 		Branch_C_S$250d$_S$250<?, ?> b =
 				//s.receive(Smtp.S, Smtp._220, new Buf<>()).to(Select_C_S$Ehlo.cast)
 				s.send(Smtp.S, new Ehlo("test"))
-				 .to(Branch_C_S$250d$_S$250.cast);
+				 .to(Branch_C_S$250d$_S$250.cast);  // Safe cast
 		Buf<_250> b1 = new Buf<>();
 		Buf<_250_> b2 = new Buf<>();
 		while (true)

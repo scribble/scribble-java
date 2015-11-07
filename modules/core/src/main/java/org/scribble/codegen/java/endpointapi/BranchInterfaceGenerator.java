@@ -13,7 +13,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 
 // Factor out
-public class BranchInterfaceGenerator extends AuxApiTypeGenerator
+public class BranchInterfaceGenerator extends AuxStateChannelTypeGenerator
 {
 	private final EndpointState curr;
 

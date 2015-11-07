@@ -23,6 +23,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Job;
 
+// Cf. StateChannelApiGenerator
 public class IOInterfacesGenerator extends ApiGenerator
 {
 	private final Role self;
@@ -243,9 +244,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		if (tmp != null)
 		{
 			//Map<String, List<MethodBuilder>> casts = new HashMap<>();  // Record default to methods (check for duplicates later and override as necessary)
-			for (InterfaceBuilder ib : tmp)
+			for (InterfaceBuilder pred : tmp)
 			{
-				addSuccessorInterfaceToMethod(ib, iostate);
+				addSuccessorInterfaceToMethod(pred, iostate);
 				//System.out.println("\na:" + ib.build());
 
 				/*for (MethodBuilder def : ib.getDefaultMethods())
@@ -259,14 +260,23 @@ public class IOInterfacesGenerator extends ApiGenerator
 					tmp2.add(def);
 				}*/
 
-				MethodBuilder mb = ib.getDefaultMethods().get(0);
-				if (iostate.getDefaultMethods().stream().map((def) -> def.getReturn()).filter((ret) -> ret.equals(mb.getReturn())).count() == 0)
+				//MethodBuilder mb = ib.getDefaultMethods().get(0);
+				//if (iostate.getDefaultMethods().stream().map((def) -> def.getReturn()).filter((ret) -> ret.equals(mb.getReturn())).count() == 0)
+				X: for (MethodBuilder cast : pred.getDefaultMethods())
 				{
 					// Overriding every Successor I/f to methods in the I/O State I/f, even if unnecessary
-					MethodBuilder copy = iostate.newDefaultMethod(mb.getName());
-					copy.setReturn(mb.getReturn());
-					mb.getParameters().stream().forEach((p) -> copy.addParameters(p));
-					copy.addBodyLine(JavaBuilder.RETURN + " (" + mb.getReturn() + ") this; ");  // FIXME: factor out
+					// FIXME: should be done in third pass: not all to methods in the cast may be built yet (e.g. Select_C_S$StartTls missing Quit cast)
+					for (MethodBuilder mb2 : iostate.getDefaultMethods())  // FIXME: factor out with addSuccessorInterfaceToMethod
+					{
+						if (mb2.getReturn().equals(cast.getReturn()))
+						{
+							continue X;
+						}
+					}
+					MethodBuilder copy = iostate.newDefaultMethod(cast.getName());
+					copy.setReturn(cast.getReturn());
+					cast.getParameters().stream().forEach((p) -> copy.addParameters(p));
+					copy.addBodyLine(JavaBuilder.RETURN + " (" + cast.getReturn() + ") this; ");  // FIXME: factor out
 					copy.addAnnotations("@Override");
 				}
 			}
@@ -304,7 +314,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 	}
 	
-	// Pre: ib is a successor interface for the cast class
+	// Pre: ib is a Successor I/f for the cast IO State I/f class
 	private static void addSuccessorInterfaceToMethod(InterfaceBuilder ib, InterfaceBuilder cast)
 	{
 		String tmp = cast.getName() + "<" + IntStream.range(0, cast.getParameters().size()).mapToObj((i) -> "?").collect(Collectors.joining(", ")) + ">";

@@ -1,22 +1,19 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
-import org.scribble.codegen.java.endpointapi.StateChannelTypeGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 
-public class SuccessorInterfaceGenerator extends StateChannelTypeGenerator
+public class SuccessorInterfaceGenerator extends IOInterfaceGenerator
 {
-	private final EndpointState curr;
 	private final IOAction a;
 	private final InterfaceBuilder ib = new InterfaceBuilder();
 
 	public SuccessorInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, IOAction a)
 	{
-		super(apigen);
-		this.curr = curr;
+		super(apigen, curr);
 		this.a = a;
 	}
 
@@ -32,6 +29,6 @@ public class SuccessorInterfaceGenerator extends StateChannelTypeGenerator
 	
 	public static String getSuccessorInterfaceName(EndpointState curr, IOAction a)
 	{
-		return "Succ_" + ActionInterfaceGenerator.getActionInterfaceName(curr, a);
+		return "Succ_" + ActionInterfaceGenerator.getActionInterfaceName(a);
 	}
 }

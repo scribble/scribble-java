@@ -16,7 +16,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 
-public class InputFutureGenerator extends AuxApiTypeGenerator
+public class InputFutureGenerator extends AuxStateChannelTypeGenerator
 {
 	protected static final String SCRIBFUTURE_CLASS = "org.scribble.net.ScribFuture";
 
