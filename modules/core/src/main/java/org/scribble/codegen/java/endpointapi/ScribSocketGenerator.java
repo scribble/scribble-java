@@ -2,6 +2,7 @@ package org.scribble.codegen.java.endpointapi;
 
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
+import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
@@ -77,6 +78,11 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 		this.cb.setSuperClass(getSuperClassType());
 		addImports();
 		addConstructor();
+		
+		FieldBuilder cast = this.cb.newField("cast");
+		cast.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.STATIC, JavaBuilder.FINAL);
+		cast.setType(this.className);
+		cast.setExpression("null");
 	}
 	
 	protected abstract String getSuperClassType();

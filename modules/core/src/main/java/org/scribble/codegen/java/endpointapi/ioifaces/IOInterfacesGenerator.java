@@ -55,6 +55,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 		Map<EndpointState, Set<InterfaceBuilder>> preds = getPreds();
 		secondPass(preds, new HashSet<>(), this.init);
 		
+		traverse(new HashSet<>(), this.init);  // FIXME: move into constructor
+
 		String prefix = getPackageName(this.gpn, this.self).replace('.', '/') + "/";
 		Map<String, String> ifaces = new HashMap<>();
 		for (InterfaceBuilder ib : this.actions.values())
@@ -79,8 +81,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 			String path = prefix + ib.getName() + ".java";
 			ifaces.put(path, ib.build());
 		}
-		
-		traverse(new HashSet<>(), this.init);  // FIXME: move into constructor
 
 		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
 		if (term != null)
@@ -114,13 +114,20 @@ public class IOInterfacesGenerator extends ApiGenerator
 
 		tb.addImports(getPackageName(this.gpn, this.self) + ".*");
 		tb.addInterfaces(tmp);
+		
+		InterfaceBuilder iostate = this.iostates.get(ioname);
+		iostate.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, this.self) + ".*");
+		MethodBuilder to = iostate.newDefaultMethod("to");
+		to.addParameters(scname + " cast");
+		to.setReturn(scname);
+		to.addBodyLine(JavaBuilder.RETURN + " (" + scname + ") this;");
 
 		Set<IOAction> as = s.getAcceptable();
 		if (as.iterator().next() instanceof Receive && as.size() > 1)
 		{
-			TypeBuilder ib = this.apigen.getType(this.apigen.getSocketClassName(s) + "_Cases");  // FIXME: factor
-			ib.addInterfaces(IOStateInterfaceGenerator.getCasesInterfaceName(tmp));
-			ib.addImports(getPackageName(this.gpn, this.self) + ".*");
+			TypeBuilder cases = this.apigen.getType(this.apigen.getSocketClassName(s) + "_Cases");  // FIXME: factor
+			cases.addInterfaces(IOStateInterfaceGenerator.getCasesInterfaceName(tmp));
+			cases.addImports(getPackageName(this.gpn, this.self) + ".*");
 		}
 		
 		//visited.add(s);

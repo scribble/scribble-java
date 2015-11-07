@@ -25,7 +25,7 @@ import org.scribble.model.local.Send;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-// Cf. ScribSocketGenerator
+// Cf. ScribSocketGenerator -- FIXME: refactor to separate generators for each interface kind
 public class IOStateInterfaceGenerator extends IOInterfaceGenerator
 {
 	private final Map<IOAction, InterfaceBuilder> actions;
