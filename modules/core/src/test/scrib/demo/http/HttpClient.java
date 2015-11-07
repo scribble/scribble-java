@@ -50,7 +50,7 @@ public class HttpClient
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;
 		
-			se.connect(SocketChannelEndpoint::new, Http.S, host, port);
+			se.connect(Http.S, SocketChannelEndpoint::new, host, port);
 			
 			Http_C_1 s1 = new Http_C_1(se);
 

@@ -21,7 +21,7 @@ public class MyC
 		Proto1 adder = new Proto1();
 		try (SessionEndpoint<Proto1, C> se = new SessionEndpoint<>(adder, Proto1.C, new ObjectStreamFormatter()))
 		{
-			se.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
+			se.connect(Proto1.S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			Proto1_C_2 s2 = new Proto1_C_1(se).send(Proto1.S, Proto1._1);
 			for (int i = 0; i < 3; i++)

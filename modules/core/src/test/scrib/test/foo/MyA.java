@@ -21,8 +21,8 @@ public class MyA
 		Foo foo = new Foo();
 		try (SessionEndpoint<Foo, A> se = new SessionEndpoint<>(foo, Foo.A, new ObjectStreamFormatter()))
 		{
-			se.connect(SocketChannelEndpoint::new, Foo.B, "localhost", 8888);
-			se.connect(SocketChannelEndpoint::new, Foo.C, "localhost", 9999);
+			se.connect(Foo.B, SocketChannelEndpoint::new, "localhost", 8888);
+			se.connect(Foo.C, SocketChannelEndpoint::new, "localhost", 9999);
 
 			Foo_A_1 s1 = new Foo_A_1(se);
 			s1

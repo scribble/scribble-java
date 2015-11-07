@@ -169,7 +169,7 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 	}
 	
 
-	public void connect(Callable<? extends BinaryChannelEndpoint> cons, Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	public void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		// Can connect unlimited, as long as not already used via init
 		if (this.init)

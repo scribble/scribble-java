@@ -28,8 +28,8 @@ public class Client
 		Booking booking = new Booking();
 		try (SessionEndpoint<Booking, C> se = new SessionEndpoint<>(booking, Booking.C, new ObjectStreamFormatter()))
 		{
-			se.connect(SocketChannelEndpoint::new, Booking.A, "localhost", 7777);
-			se.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 8888);
+			se.connect(Booking.A, SocketChannelEndpoint::new, "localhost", 7777);
+			se.connect(Booking.S, SocketChannelEndpoint::new, "localhost", 8888);
 			Booking_C_1 s1 = new Booking_C_1(se);
 
 			Buf<Integer> quote = new Buf<>();

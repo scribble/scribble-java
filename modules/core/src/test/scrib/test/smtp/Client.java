@@ -46,7 +46,7 @@ public class Client
 		Smtp smtp = new Smtp();
 		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
 		{
-			se.connect(SocketChannelEndpoint::new, Smtp.S, host, port);
+			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 

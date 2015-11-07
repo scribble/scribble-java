@@ -19,7 +19,7 @@ public class MyC
 		Adder adder = new Adder();
 		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
 		{
-			se.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
+			se.connect(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			Adder_C_1 s1 = new Adder_C_1(se);
 			
