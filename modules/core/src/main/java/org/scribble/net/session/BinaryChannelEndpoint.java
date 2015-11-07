@@ -27,7 +27,7 @@ public abstract class BinaryChannelEndpoint
 	private int count = 0;  // How many ScribMessages read so far  // volatile?
 	private int ticket = 0;  // Index of the next expected ScribMessage
 	
-	//private final List<CompletableFuture<ScribMessage>> pending = new LinkedList<>();
+	private final List<CompletableFuture<ScribMessage>> pending = new LinkedList<>();
 
 	// Server side
 	protected BinaryChannelEndpoint(SessionEndpoint<?, ?> se, AbstractSelectableChannel c) throws IOException
@@ -82,7 +82,7 @@ public abstract class BinaryChannelEndpoint
 	{
 		// FIXME: better exception handling (integrate with Future interface?)
 		final int ticket = getTicket();
-		return CompletableFuture.supplyAsync(() ->
+		CompletableFuture<ScribMessage> fut = CompletableFuture.supplyAsync(() ->
 				{
 					try
 					{
@@ -97,7 +97,13 @@ public abstract class BinaryChannelEndpoint
 					{
 						throw new RuntimeScribbleException(e);
 					}
+					finally
+					{
+						this.pending.remove(this);
+					}
 				});
+		this.pending.add(fut);
+		return fut;
 	}
 	
 	private synchronized ScribMessage read(int ticket) throws IOException
