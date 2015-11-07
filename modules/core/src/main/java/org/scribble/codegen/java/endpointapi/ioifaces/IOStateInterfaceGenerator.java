@@ -5,12 +5,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelTypeGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
+import org.scribble.codegen.java.util.EnumBuilder;
+import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
@@ -38,24 +42,41 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 	public InterfaceBuilder generateType()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
+		Role self = this.apigen.getSelf();
 
-		String packname = IOInterfacesGenerator.getPackageName(gpn, this.apigen.getSelf());
-		this.ib.setName(getIOStateInterfaceName(this.apigen.getSelf(), this.curr));
+		String packname = IOInterfacesGenerator.getPackageName(gpn, self);
+		String ifname = getIOStateInterfaceName(this.apigen.getSelf(), this.curr);
+		Set<IOAction> as = this.curr.getAcceptable();
+
+		this.ib.setName(ifname);
 		this.ib.setPackage(packname);
 		this.ib.addImports(SessionApiGenerator.getRolesPackageName(gpn) + ".*");
 		this.ib.addModifiers(JavaBuilder.PUBLIC);
-		Set<IOAction> as = this.curr.getAcceptable();
+		
+		FieldBuilder cast = this.ib.newField("cast");
+		cast.addModifiers(TypeBuilder.PUBLIC, TypeBuilder.STATIC, TypeBuilder.FINAL);
+		cast.setType(ifname + "<" + IntStream.range(1, as.size()+1).mapToObj((i) -> "?").collect(Collectors.joining(", ")) + ">");  // FIXME: factor out
+		cast.setExpression("null");
+		
 		IOAction first = as.iterator().next();
-		if (first instanceof Receive && as.size() > 1)
+		if (first instanceof Receive && as.size() > 1)  // Branch and Case I/O interfaces
 		{
 			String name = this.ib.getName();
+
 			InterfaceBuilder cases = new InterfaceBuilder(getCasesInterfaceName(name));
 			cases.setPackage(packname);
 			cases.addModifiers(JavaBuilder.PUBLIC);
+			// Duplicated from BranchSocketGenerator
+			EnumBuilder eb = this.ib.newMemberEnum(getBranchInterfaceEnumName(self, this.curr));
+			eb.addModifiers(JavaBuilder.PUBLIC);
+			eb.addInterfaces(ScribSocketGenerator.OPENUM_INTERFACE);
+			this.curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+			AbstractMethodBuilder op = cases.newAbstractMethod("getOp");
+			op.setReturn(name + "." + getBranchInterfaceEnumName(self, this.curr));
 			this.cases = cases;
 			
 			AbstractMethodBuilder bra = this.ib.newAbstractMethod("branch");
-			String ret = cases.getName() + "<" + IntStream.range(1, as.size()+1).mapToObj((i) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";
+			String ret = cases.getName() + "<" + IntStream.range(1, as.size()+1).mapToObj((i) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";  // FIXME: factor out
 			bra.setReturn(ret);
 			bra.addParameters(SessionApiGenerator.getRoleClassName(first.peer) + " role");
 			bra.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
@@ -123,5 +144,10 @@ public class IOStateInterfaceGenerator extends StateChannelTypeGenerator
 	protected static String getCasesInterfaceName(String braif)
 	{
 		return "Case_" + braif.substring("Branch_".length(), braif.length());
+	}
+
+	public static String getBranchInterfaceEnumName(Role self, EndpointState curr)
+	{
+		return getIOStateInterfaceName(self, curr) + "_Enum";
 	}
 }

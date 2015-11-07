@@ -149,7 +149,7 @@ public abstract class TypeBuilder extends JavaBuilder
 		if (!this.fields.isEmpty())
 		{
 			clazz += "\n";
-			clazz += this.fields.stream().map((fb) -> fb.generate()).collect(Collectors.joining("\n"));
+			clazz += this.fields.stream().map((fb) -> fb.build()).collect(Collectors.joining("\n"));
 		}
 		return clazz;
 	}

@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
+import org.scribble.codegen.java.endpointapi.ioifaces.IOStateInterfaceGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
@@ -12,6 +13,7 @@ import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
+import org.scribble.sesstype.name.Role;
 
 public class CaseSocketGenerator extends ScribSocketGenerator
 {
@@ -67,26 +69,33 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		String enumClassName = branchName + "." + BranchSocketGenerator.getBranchEnumClassName(this.apigen, this.curr);
 		//String className = newClassName();  // Name of branch-receive class
 
-		FieldBuilder fb1 = cb.newField(CASE_OP_FIELD);  // The op enum, for convenient switch/if/etc by user (correctly derived by code generation from the received ScribMessage)
+		FieldBuilder fb1 = this.cb.newField(CASE_OP_FIELD);  // The op enum, for convenient switch/if/etc by user (correctly derived by code generation from the received ScribMessage)
 		fb1.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.FINAL);
 		fb1.setType(enumClassName);
 		
-		FieldBuilder fb2 = cb.newField(CASE_MESSAGE_FIELD);  // The received ScribMessage (branch-check checks the user-selected receive op against the ScribMessage op)
+		FieldBuilder fb2 = this.cb.newField(CASE_MESSAGE_FIELD);  // The received ScribMessage (branch-check checks the user-selected receive op against the ScribMessage op)
 		fb2.addModifiers(JavaBuilder.PRIVATE, JavaBuilder.FINAL);
 		fb2.setType(StateChannelApiGenerator.SCRIBMESSAGE_CLASS);
 
-		for (IOAction a : curr.getAcceptable())
+		for (IOAction a : this.curr.getAcceptable())
 		{
-			EndpointState succ = curr.accept(a);
-			addReceiveMethod(cb, a, succ);
-			addCaseReceiveMethod(cb, a, succ);
+			EndpointState succ = this.curr.accept(a);
+			addReceiveMethod(this.cb, a, succ);
+			addCaseReceiveMethod(this.cb, a, succ);
 			if (!a.payload.isEmpty() || a.mid.isMessageSigName())
 			{
-				addCaseReceiveDiscardMethod(cb, a, succ);
+				addCaseReceiveDiscardMethod(this.cb, a, succ);
 			}
 		}
+		
+		Role self = this.apigen.getSelf();
+		MethodBuilder mb = this.cb.newMethod("getOp");
+		mb.addAnnotations("@Override");
+		mb.addModifiers(JavaBuilder.PUBLIC);
+		mb.setReturn(IOStateInterfaceGenerator.getIOStateInterfaceName(self, this.curr) + "." + IOStateInterfaceGenerator.getBranchInterfaceEnumName(self, this.curr));
+		mb.addBodyLine(JavaBuilder.RETURN + " " + JavaBuilder.THIS + "." + CASE_OP_FIELD + ";");
 
-		this.apigen.addTypeDecl(cb);  // CaseSocketBuilder used by BranchSocketBuilder, not EndpointApiGenerator
+		this.apigen.addTypeDecl(this.cb);  // CaseSocketBuilder used by BranchSocketBuilder, not EndpointApiGenerator
 	}
 
 	// Same as in ReceiveSocketGenerator

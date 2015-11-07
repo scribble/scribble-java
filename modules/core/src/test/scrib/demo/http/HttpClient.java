@@ -10,10 +10,10 @@ import org.scribble.util.Caller;
 
 import demo.http.Http.Http.Http;
 import demo.http.Http.Http.channels.C.Http_C_1;
-import demo.http.Http.Http.channels.C.Http_C_4.Http_C_4_Enum;
 import demo.http.Http.Http.channels.C.Http_C_4_Cases;
 import demo.http.Http.Http.channels.C.Http_C_5;
 import demo.http.Http.Http.channels.C.Http_C_5_Cases;
+import demo.http.Http.Http.channels.C.ioifaces.Branch_C_S$200$_S$404.Branch_C_S$200$_S$404_Enum;
 import demo.http.Http.Http.roles.C;
 import demo.http.message.Body;
 import demo.http.message.HttpMessageFormatter;
@@ -61,8 +61,8 @@ public class HttpClient
 					  .receive(Http.S, Http.HTTPV, b_vers)
 					  .branch(Http.S);
 			Http_C_5 s5 = 
-					  (s4.op == Http_C_4_Enum._200) ? s4.receive(Http._200)
-					: (s4.op == Http_C_4_Enum._404) ? s4.receive(Http._404)
+					  (s4.op == Branch_C_S$200$_S$404_Enum._200) ? s4.receive(Http._200)
+					: (s4.op == Branch_C_S$200$_S$404_Enum._404) ? s4.receive(Http._404)
 					: new Caller().call(() -> { throw new RuntimeException("Unknown status code: " + s4.op); });
 
 			Y: while (true)

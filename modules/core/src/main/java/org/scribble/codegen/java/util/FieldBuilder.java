@@ -5,22 +5,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FieldBuilder
+public class FieldBuilder extends JavaBuilder
 {
-	private String name;
-
 	private List<String> mods = new LinkedList<>();
 	private String type;
 	private String expr;  // null if none
 
-	protected FieldBuilder()
+	public FieldBuilder()
 	{
 		
 	}
 	
-	protected void setName(String name)
+	public FieldBuilder(String name)
 	{
-		this.name = name;
+		super(name);
 	}
 	
 	public void addModifiers(String... mods)
@@ -30,15 +28,18 @@ public class FieldBuilder
 	
 	public void setType(String type)
 	{
+		setterCheck(this.type);
 		this.type = type;
 	}
 	
 	public void setExpression(String val)
 	{
+		setterCheck(this.expr);
 		this.expr = val;
 	}
 
-	public String generate()
+	@Override
+	public String build()
 	{
 		String field = "";
 		field += "\t";

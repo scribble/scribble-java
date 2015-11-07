@@ -56,6 +56,14 @@ public abstract class LinearSocket<S extends Session, R extends Role> extends Sc
 		}
 	}
 
+	// FIXME: refactor
+	// FIXME: State supertype of T
+	public static <T> T wrapClient(T s, Role peer, Callable<? extends BinaryChannelWrapper> cons) throws IOException, ScribbleRuntimeException 
+	{
+		((LinearSocket<?, ?>) s).wrapClient(cons, peer);
+		return s;
+	}
+
 	protected void wrapServer() 
 	{
 		throw new RuntimeException("TODO");

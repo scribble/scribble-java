@@ -3,9 +3,9 @@ package org.scribble.codegen.java.endpointapi;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.codegen.java.endpointapi.ioifaces.IOStateInterfaceGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
-import org.scribble.codegen.java.util.EnumBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
@@ -77,10 +77,11 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb.addBodyLine(JavaBuilder.RETURN + " "
 				+ JavaBuilder.NEW + " " + next + "(" + SCRIBSOCKET_SE_FIELD + ", true, " + OPENUM_VAR + ", " + MESSAGE_VAR + ");");  // FIXME: dummy boolean not needed
 		
+		/* // Now using Branch IO State I/f enum
 		EnumBuilder eb = cb.newMemberEnum(enumClass);
 		eb.addModifiers(JavaBuilder.PUBLIC);
 		eb.addInterfaces(OPENUM_INTERFACE);
-		this.curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));
+		this.curr.getAcceptable().stream().forEach((a) -> eb.addValues(SessionApiGenerator.getOpClassName(a.mid)));*/
 		
 
 		// Handler branch method
@@ -152,6 +153,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 
 	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EndpointState curr)
 	{
-		return apigen.getSocketClassName(curr) + "_Enum";
+		//return apigen.getSocketClassName(curr) + "_Enum";
+		return IOStateInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
 	}
 }
