@@ -1,0 +1,53 @@
+//http://sandbox.kidstrythisathome.com/erdos/
+//$ bin/scribblec.sh modules/core/src/test/scrib/test/smtp/Smtp.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -api Smtp C
+
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' test.smtp.Client
+
+
+
+module test.smtp.Smtp;
+
+sig <java> "test.smtp.message.server._220"
+		from "test/smtp/message/server/_220.java" as 220;
+sig <java> "test.smtp.message.server._250"
+		from "test/smtp/message/server/_250.java" as 250;
+sig <java> "test.smtp.message.server._250_"
+		from "test/smtp/message/server/_250_.java" as 250d;
+
+sig <java> "test.smtp.message.client.Ehlo"
+		from "test/smtp/message/client/Ehlo.java" as Ehlo;
+sig <java> "test.smtp.message.client.StartTls"
+		from "test/smtp/message/client/StartTls.java" as StartTls;
+sig <java> "test.smtp.message.client.Quit"
+		from "test/smtp/message/client/Quit.java" as Quit;
+
+global protocol Smtp(role C, role S)
+{
+	do Initiation(C, S);
+	do StartTls(C, S);
+	do Initiation(C, S);
+	Quit from C to S;
+}
+
+global protocol Initiation(role C, role S)
+{
+	220 from S to C;
+	Ehlo from C to S;
+	rec X
+	{
+		choice at S
+		{
+			250d from S to C;
+			continue X;
+		}
+		or
+		{
+			250 from S to C;
+		}
+	}
+}
+
+global protocol StartTls(role C, role S)
+{
+	StartTls from C to S;
+}

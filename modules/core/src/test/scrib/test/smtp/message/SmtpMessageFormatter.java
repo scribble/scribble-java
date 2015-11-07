@@ -1,4 +1,4 @@
-package demo.smtp.message;
+package test.smtp.message;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,13 +9,9 @@ import java.nio.charset.Charset;
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
 
-import demo.smtp.message.server._220;
-import demo.smtp.message.server._235;
-import demo.smtp.message.server._250;
-import demo.smtp.message.server._250_;
-import demo.smtp.message.server._354;
-import demo.smtp.message.server._501;
-import demo.smtp.message.server._535;
+import test.smtp.message.server._220;
+import test.smtp.message.server._250;
+import test.smtp.message.server._250_;
 
 // Currently supports only client-side reading, not server-side
 public class SmtpMessageFormatter implements ScribMessageFormatter
@@ -83,10 +79,10 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 					}
 					return new _250(body);
 				}
-				case 235: return new _235(body);
+				/*case 235: return new _235(body);
 				case 535: return new _535(body);
 				case 501: return new _501(body);
-				case 354: return new _354(body);
+				case 354: return new _354(body);*/
 				default:  throw new RuntimeException("Unknown status code " + code + ": " + body);
 			}
 		}
@@ -295,10 +291,10 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 					}
 					return new _250(body);
 				}
-				case 235: return new _235(body);
+				/*case 235: return new _235(body);
 				case 535: return new _535(body);
 				case 501: return new _501(body);
-				case 354: return new _354(body);
+				case 354: return new _354(body);*/
 				default:  throw new RuntimeException("Unknown status code: " + code);
 			}
 		}

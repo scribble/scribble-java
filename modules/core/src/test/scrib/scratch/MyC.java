@@ -1,17 +1,17 @@
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr -session Foo -d modules/validation/src/main/java
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr -api Foo A -d modules/validation/src/main/java
 
-package test.scratch;
+package scratch;
 
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import test.scratch.Scratch1.Proto1.Proto1;
-import test.scratch.Scratch1.Proto1.channels.C.Proto1_C_1;
-import test.scratch.Scratch1.Proto1.channels.C.Proto1_C_2;
-import test.scratch.Scratch1.Proto1.roles.C;
+import scratch.Scratch1.Proto1.Proto1;
+import scratch.Scratch1.Proto1.channels.C.Proto1_C_1;
+import scratch.Scratch1.Proto1.channels.C.Proto1_C_2;
+import scratch.Scratch1.Proto1.roles.C;
 
 
 public class MyC
@@ -21,7 +21,7 @@ public class MyC
 		Proto1 adder = new Proto1();
 		try (SessionEndpoint<Proto1, C> se = new SessionEndpoint<>(adder, Proto1.C, new ObjectStreamFormatter()))
 		{
-			se.connect(SocketChannelEndpoint::new, Proto1.S, "localhost", 8888);
+			se.connect(Proto1.S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			Proto1_C_2 s2 = new Proto1_C_1(se).send(Proto1.S, Proto1._1);
 			for (int i = 0; i < 3; i++)

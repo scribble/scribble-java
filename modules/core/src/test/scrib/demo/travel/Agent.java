@@ -32,7 +32,7 @@ public class Agent
 					
 					//Thread.sleep(1000);  // FIXME: ensure S is ready
 					
-					se.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 9999);
+					se.connect(Booking.S, SocketChannelEndpoint::new, "localhost", 9999);
 
 					Booking_A_1 s1 = new Booking_A_1(se);
 					Booking_A_1_Cases s1cases;

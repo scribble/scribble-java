@@ -5,12 +5,12 @@ import java.io.IOException;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.scribsock.EndSocket;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
 import test.test1.Test1.Proto1.Proto1;
+import test.test1.Test1.Proto1.channels.S.EndSocket;
 import test.test1.Test1.Proto1.channels.S.Proto1_S_1;
 import test.test1.Test1.Proto1.channels.S.Proto1_S_2_Handler;
 import test.test1.Test1.Proto1.channels.S.Proto1_S_3;
@@ -24,8 +24,8 @@ public class MyS
 	{
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
-			Buf<Integer> i1 = new Buf<>();
-			Buf<Integer> i2 = new Buf<>();
+			//Buf<Integer> i1 = new Buf<>();
+			//Buf<Integer> i2 = new Buf<>();
 
 			while (true)
 			{
@@ -49,7 +49,7 @@ public class MyS
 class Handler implements Proto1_S_2_Handler
 {
 	@Override
-	public void receive(EndSocket<Proto1, S> schan, _4 op) throws ScribbleRuntimeException, IOException
+	public void receive(EndSocket schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
 		System.out.println("Done");
 		schan.end();

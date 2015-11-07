@@ -1,44 +1,51 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.endpointapi;
 
+import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.ConstructorBuilder;
+import org.scribble.codegen.java.util.FieldBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
+import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
 // Parameterize on output class type
-public abstract class ScribSocketBuilder
+public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 {
-	protected static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
-	protected static final String BUFF_CLASS = "org.scribble.net.Buf";
-	protected static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
+	public static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
+	public static final String BUF_CLASS = "org.scribble.net.Buf";
+	public static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
 
-	protected static final String SENDSOCKET_CLASS = "org.scribble.net.scribsock.SendSocket";
-	protected static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
-	protected static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
-	protected static final String CASESOCKET_CLASS = "org.scribble.net.scribsock.CaseSocket";
-	protected static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
+	public static final String SENDSOCKET_CLASS = "org.scribble.net.scribsock.SendSocket";
+	public static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
+	public static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
+	public static final String CASESOCKET_CLASS = "org.scribble.net.scribsock.CaseSocket";
+	public static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
+
+	public static final String GEN_ENDSOCKET_CLASS = "EndSocket";
 	
-	protected static final String BUFF_VAL_FIELD = "val";
-	protected static final String SCRIBSOCKET_SE_FIELD = ClassBuilder.THIS + ".se";
-	protected static final String SCRIBMESSAGE_PAYLOAD_FIELD = "payload";
+	public static final String BUFF_VAL_FIELD = "val";
+	public static final String SCRIBSOCKET_SE_FIELD = JavaBuilder.THIS + ".se";
+	public static final String SCRIBMESSAGE_PAYLOAD_FIELD = "payload";
 
-	protected static final String RECEIVE_MESSAGE_PARAM = "m";
-	protected static final String RECEIVE_ARG_PREFIX = "arg";
+	public static final String RECEIVE_MESSAGE_PARAM = "m";
+	public static final String RECEIVE_ARG_PREFIX = "arg";
 
-	protected static final String CASE_OP_FIELD = "op";
-	protected static final String CASE_OP_PARAM = CASE_OP_FIELD;
-	protected static final String CASE_MESSAGE_FIELD = "m";
-	protected static final String CASE_MESSAGE_PARAM = CASE_MESSAGE_FIELD;
-	protected static final String CASE_ARG_PREFIX = "arg";
+	public static final String CASE_OP_FIELD = "op";
+	public static final String CASE_OP_PARAM = CASE_OP_FIELD;
+	public static final String CASE_MESSAGE_FIELD = "m";
+	public static final String CASE_MESSAGE_PARAM = CASE_MESSAGE_FIELD;
+	public static final String CASE_ARG_PREFIX = "arg";
 	
-	protected final StateChannelApiGenerator apigen;
 	protected final EndpointState curr;
 	protected final String className;
 
 	protected final ClassBuilder cb = new ClassBuilder();
 	
-	public ScribSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
+	public ScribSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
 	{
-		this.apigen = apigen;
+		super(apigen);
 		this.curr = curr;
 		this.className = getClassName();
 	}
@@ -48,7 +55,8 @@ public abstract class ScribSocketBuilder
 		return this.apigen.getSocketClassName(this.curr);
 	}
 
-	public ClassBuilder build()
+	@Override
+	public ClassBuilder generateType()
 	{
 		constructClass();  // So className can be "overridden" in subclass constructor (CaseSocket)
 		return this.cb;
@@ -65,18 +73,23 @@ public abstract class ScribSocketBuilder
 		this.cb.setName(this.className);
 		//this.cb.setPackage(getSessionPackageName());
 		this.cb.setPackage(getStateChannelPackageName());
-		this.cb.addModifiers(ClassBuilder.PUBLIC, ClassBuilder.FINAL);
+		this.cb.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.FINAL);
 		//cb.setSuperClass(superc + "<" + SessionApiGenerator.getSessionClassName(this.gpn) + ", " + SessionApiGenerator.getRoleClassName(this.self) + ">");
 		this.cb.setSuperClass(getSuperClassType());
 		addImports();
 		addConstructor();
+		
+		FieldBuilder cast = this.cb.newField("cast");
+		cast.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.STATIC, JavaBuilder.FINAL);
+		cast.setType(this.className);
+		cast.setExpression("null");
 	}
 	
 	protected abstract String getSuperClassType();
 
 	protected void addImports()
 	{
-		this.cb.addImports("java.io.IOException");
+		//this.cb.addImports("java.io.IOException");
 		//this.cb.addImports(getSessionPackageName() + "." + getSessionClassName());
 		this.cb.addImports(getEndpointApiRootPackageName() + ".*");
 		this.cb.addImports(getRolesPackageName() + ".*");
@@ -85,18 +98,16 @@ public abstract class ScribSocketBuilder
 	protected MethodBuilder addConstructor()
 	{
 		final String SESSIONENDPOINT_PARAM = "se";
-		String sess = getSessionClassName();
-		String role = getSelfClassName();
+		final String sess = getSessionClassName();
+		final String role = getSelfClassName();
 
-		MethodBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM, "boolean dummy");
-		ctor.addModifiers(ClassBuilder.PROTECTED);
-		ctor.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
-		
+		ConstructorBuilder ctor = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM, "boolean dummy");
+		ctor.addModifiers(JavaBuilder.PROTECTED);
+		ctor.addBodyLine(JavaBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		if (this.curr.equals(this.apigen.getInitialState()))
 		{
 			addInitialStateConstructor();
 		}
-		
 		return ctor;
 	}
 
@@ -112,25 +123,19 @@ public abstract class ScribSocketBuilder
 		mb.addExceptions(SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + this.root + "(" + SESSIONENDPOINT_PARAM + ");");*/
-		MethodBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
+		ConstructorBuilder ctor2 = cb.newConstructor(SESSIONENDPOINT_CLASS + "<" + sess + ", " + role + "> " + SESSIONENDPOINT_PARAM);
 		ctor2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
-		ctor2.addModifiers(ClassBuilder.PUBLIC);
-		ctor2.addBodyLine(ClassBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
+		ctor2.addModifiers(JavaBuilder.PUBLIC);
+		ctor2.addBodyLine(JavaBuilder.SUPER + "(" + SESSIONENDPOINT_PARAM + ");");
 		ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 	}
 	
 	protected abstract void addMethods();
 	
+	@Deprecated
 	protected void setNextSocketReturnType(MethodBuilder mb, EndpointState succ)
 	{
-		if (succ.isTerminal())
-		{
-			mb.setReturn(ENDSOCKET_CLASS + "<" + getSessionClassName() + ", " + getSelfClassName() + ">");
-		}
-		else
-		{
-			mb.setReturn(this.apigen.getSocketClassName(succ));
-		}
+		setNextSocketReturnType(this.apigen, mb, succ);
 	}
 	
 	//protected void addReturnNextSocket(MethodBuilder mb, String nextClass)
@@ -141,26 +146,26 @@ public abstract class ScribSocketBuilder
 		if (s.isTerminal())
 		{
 			mb.addBodyLine(SCRIBSOCKET_SE_FIELD + ".setCompleted();");  // Do before the IO action? in case of exception?
-			nextClass = ENDSOCKET_CLASS + "<>";
+			nextClass = GEN_ENDSOCKET_CLASS;// + "<>";
 		}
 		else
 		{
 			nextClass = this.apigen.getSocketClassName(s);
 		}
-		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ", true);");
+		mb.addBodyLine(JavaBuilder.RETURN + " " + JavaBuilder.NEW + " " + nextClass + "(" + SCRIBSOCKET_SE_FIELD + ", true);");
 	}
 
 	protected String getGarbageBuf(String futureClass)
 	{
 		//return ClassBuilder.NEW + " " + BUFF_CLASS + "<>()";  // Makes a trash Buff every time, but clean -- would be more efficient to generate the code to spawn the future without buff-ing it (partly duplicate of the normal receive generated code) 
-		return "(" + BUFF_CLASS + "<" + futureClass + ">) " + SCRIBSOCKET_SE_FIELD + ".gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
+		return "(" + BUF_CLASS + "<" + futureClass + ">) " + SCRIBSOCKET_SE_FIELD + ".gc";  // FIXME: generic cast warning (this.ep.gc is Buff<?>) -- also retains unnecessary reference to the last created garbage future (but allows no-arg receive/async to be generated as simple wrapper call)
 	}
 	
 	// Not fully qualified, just Session API class prefix
 	// The constant singleton value of this type in the Session API (which is the same "name" as the class)
 	protected String getSessionApiRoleConstant(Role role)
 	{
-		return SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + "." + role.toString();
+		return SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + "." + role;
 	}
 	
 	// Not fully qualified, just Session API class prefix
@@ -202,6 +207,23 @@ public abstract class ScribSocketBuilder
 	{
 		//return getSessionPackageName() + ".channels." + this.apigen.getSelf();
 		return SessionApiGenerator.getStateChannelPackageName(this.apigen.getGProtocolName(), this.apigen.getSelf());
+	}
+
+	public static void setNextSocketReturnType(StateChannelApiGenerator apigen, MethodBuilder mb, EndpointState succ)
+	{
+		String ret;
+		if (succ.isTerminal())
+		{
+			GProtocolName gpn = apigen.getGProtocolName();
+			Role self = apigen.getSelf();
+			ret = SessionApiGenerator.getStateChannelPackageName(gpn, self) + "." + GEN_ENDSOCKET_CLASS;
+					//+ "<" + SessionApiGenerator.getSessionClassName(gpn) + ", " + SessionApiGenerator.getRoleClassName(self) + ">";
+		}
+		else
+		{
+			ret = apigen.getSocketClassName(succ);
+		}
+		mb.setReturn(ret);
 	}
 	
 	/*private static boolean isTerminalClassName(String n)

@@ -167,4 +167,25 @@ public class EndpointState
 	{
 		return "label=\"" + msg + "\"";
 	}
+
+	public static EndpointState findTerminalState(Set<EndpointState> visited, EndpointState curr)
+	{
+		if (!visited.contains(curr))
+		{
+			if (curr.isTerminal())
+			{
+				return curr;
+			}
+			visited.add(curr);
+			for (EndpointState succ : curr.getSuccessors())
+			{
+				EndpointState res = findTerminalState(visited, succ);
+				if (res != null)
+				{
+					return res;
+				}
+			}
+		}
+		return null;
+	}
 }

@@ -1,17 +1,20 @@
-package org.scribble.codegen.java;
+package org.scribble.codegen.java.endpointapi;
 
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
+import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 
-public class ReceiveSocketBuilder extends ScribSocketBuilder
+public class ReceiveSocketGenerator extends ScribSocketGenerator
 {
-	public ReceiveSocketBuilder(StateChannelApiGenerator apigen, EndpointState curr)
+	public ReceiveSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen, curr);
 	}
@@ -36,16 +39,14 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 	@Override
 	protected void addMethods()
 	{
-		Module main = this.apigen.getMainModule();  // FIXME: main not necessarily the right module?
-
 		IOAction a = curr.getAcceptable().iterator().next();
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
 		EndpointState succ = curr.accept(a);
-		ClassBuilder futureClass = new InputFutureBuilder(this.apigen, this.cb, a).build();  // Wraps all payload elements as fields (set by future completion)
+		ClassBuilder futureClass = new InputFutureGenerator(this.apigen, this.cb, a).generateType();  // Wraps all payload elements as fields (set by future completion)
 		// FIXME: problem if package and protocol have the same name -- still?
-		this.apigen.addClass(futureClass);
+		this.apigen.addTypeDecl(futureClass);
 
-		makeReceiveMethod(main, a, succ);  // [nextClass] receive([opClass] op, Buff<? super T> arg, ...)
+		makeReceiveMethod(a, succ);  // [nextClass] receive([opClass] op, Buff<? super T> arg, ...)
 		makeAsyncMethod(a, succ, futureClass.getName());  // [nextClass] async([opClass] op, Buff<futureClass> arg)
 		makeIsDoneMethod(a);  // boolean isDone()
 		makeAsyncDiscardMethod(a, succ, futureClass.getName());  // [nextClass] async([opClass] op)
@@ -53,39 +54,36 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 
   // [nextClass] receive([opClass] op, Buf<? super T> arg, ...)
 	//private void makeReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
-	private void makeReceiveMethod(Module main, IOAction a, EndpointState succ)
+	private void makeReceiveMethod(IOAction a, EndpointState succ)
 	{
+		Module main = this.apigen.getMainModule();  // FIXME: main not necessarily the right module?
+
 		MethodBuilder mb = makeReceiveHeader(a, succ);
 		if (a.mid.isOp())
 		{
-			addReceiveOpParams(mb, main, a);
+			//addReceiveOpParams(mb, main, a);
 			String ln = a.payload.isEmpty() ? "" : StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = ";
-			ln += ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.peer) + ");";
+			ln += JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.peer) + ");";
 			mb.addBodyLine(ln);
 			addPayloadBuffSetters(main, a, mb);
 		}
 		else //if (a.mid.isMessageSigName())
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-			addReceiveMessageSigNameParams(mb, a, msd);
+			//addReceiveMessageSigNameParams(mb, a, msd);*/
 			mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + RECEIVE_MESSAGE_PARAM + " = "
-						+ ClassBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.peer) + ");");
+						+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(a.peer) + ");");
 			mb.addBodyLine(RECEIVE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = (" + msd.extName + ") " + RECEIVE_MESSAGE_PARAM + ";");
 		}
 		addReturnNextSocket(mb, succ);
 	}
 
+	// Payload parameters added later
 	private MethodBuilder makeReceiveHeader(IOAction a, EndpointState succ)
 	{
-		final String ROLE_PARAM = "role";
-		String opClass = SessionApiGenerator.getOpClassName(a.mid);
-
-		MethodBuilder mb = cb.newMethod("receive");
-		mb.addModifiers(ClassBuilder.PUBLIC);
-		setNextSocketReturnType(mb, succ);
-		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
-		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");
-		//, "ExecutionException", "InterruptedException");
+		MethodBuilder mb = this.cb.newMethod();
+		setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
+		setNextSocketReturnType(this.apigen, mb, succ);
 		return mb;
 	}
 
@@ -97,41 +95,66 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		
 		MethodBuilder mb = this.cb.newMethod("async"); 
 		// Blurb stuff similar to makeReceiveHeader
-		mb.addModifiers(ClassBuilder.PUBLIC);//, ClassBuilder.SYNCHRONIZED);
+		mb.addModifiers(JavaBuilder.PUBLIC);//, ClassBuilder.SYNCHRONIZED);
 		setNextSocketReturnType(mb, succ);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM);
 		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);
-		mb.addParameters(BUFF_CLASS + "<" + futureClass + "> " + RECEIVE_ARG_PREFIX);  // Method for future-buf even if no payload, for sync action
+		mb.addParameters(BUF_CLASS + "<" + futureClass + "> " + RECEIVE_ARG_PREFIX);  // Method for future-buf even if no payload, for sync action
 		//mb.addBodyLine(ClassBuilder.SUPER + ".use();");
 		//mb2.addBodyLine(ARG_PREFIX + ".val = " + " " + ClassBuilder.SUPER + ".getFuture(" + getPrefixedRoleClassName(a.peer) + ");");
 		mb.addBodyLine(RECEIVE_ARG_PREFIX + "." + BUFF_VAL_FIELD + " = "
-					+ ClassBuilder.NEW + " " + futureClass + "(" + ClassBuilder.SUPER + ".getFuture(" + getSessionApiRoleConstant(a.peer) + "));");
+					+ JavaBuilder.NEW + " " + futureClass + "(" + JavaBuilder.SUPER + ".getFuture(" + getSessionApiRoleConstant(a.peer) + "));");
 		addReturnNextSocket(mb, succ);
 	}
 
   // [nextClass] async([opClass] op) -- wrapper for makeAsyncMethod
 	private void makeAsyncDiscardMethod(IOAction a, EndpointState succ, String futureClass)
 	{
-		final String ROLE_PARAM = "role";
-		String opClass = SessionApiGenerator.getOpClassName(a.mid);
-		
-		MethodBuilder mb = this.cb.newMethod("async"); 
+		MethodBuilder mb = makeAsyncDiscardHeader(a, succ, futureClass);
+		mb.addBodyLine(JavaBuilder.RETURN + " async(" + SessionApiGenerator.getSessionClassName(apigen.getGProtocolName()) + "." + a.peer + ", " + StateChannelApiGenerator.RECEIVE_OP_PARAM + ", " + getGarbageBuf(futureClass) + ");");
 		mb.addAnnotations("@SuppressWarnings(\"unchecked\")");  // To cast the generic garbage buf
-		mb.addModifiers(ClassBuilder.PUBLIC);
-		setNextSocketReturnType(mb, succ);
-		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);
-		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
-		mb.addBodyLine(ClassBuilder.RETURN + " async(" + getSessionApiRoleConstant(a.peer) + ", " + StateChannelApiGenerator.RECEIVE_OP_PARAM + ", " + getGarbageBuf(futureClass) + ");");
+	}
+
+	private MethodBuilder makeAsyncDiscardHeader(IOAction a, EndpointState succ, String futureClass)
+	{
+		MethodBuilder mb = this.cb.newMethod();
+		setAsyncDiscardHeaderWithoutReturnType(this.apigen, a, mb, futureClass);
+		setNextSocketReturnType(this.apigen, mb, succ);
+		return mb;
 	}
 
   // boolean isDone()
 	private void makeIsDoneMethod(IOAction a)
 	{
 		MethodBuilder mb = cb.newMethod("isDone");
-		mb.addModifiers(ClassBuilder.PUBLIC);
+		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.setReturn("boolean");
-		mb.addBodyLine(ClassBuilder.RETURN + " " + ClassBuilder.SUPER + ".isDone(" + getSessionApiRoleConstant(a.peer) + ");");
+		mb.addBodyLine(JavaBuilder.RETURN + " " + JavaBuilder.SUPER + ".isDone(" + getSessionApiRoleConstant(a.peer) + ");");
+	}
+
+	// Doesn't include return type
+	//public static void makeReceiveHeader(StateChannelApiGenerator apigen, IOAction a, EndpointState succ, MethodBuilder mb)
+	public static void setReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	{
+		final String ROLE_PARAM = "role";
+		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
+		String opClass = SessionApiGenerator.getOpClassName(a.mid);
+			
+		mb.setName("receive");
+		mb.addModifiers(JavaBuilder.PUBLIC);
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
+		//, "ExecutionException", "InterruptedException");
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);
+		if (a.mid.isOp())
+		{
+			addReceiveOpParams(mb, main, a);
+		}
+		else //if (a.mid.isMessageSigName())
+		{
+			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
+			addReceiveMessageSigNameParams(mb, msd);
+		}
 	}
 
 	// FIXME: main may not be the right module
@@ -139,7 +162,7 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 	{
 		if (!a.payload.isEmpty())
 		{
-			String buffSuper = BUFF_CLASS + "<? " + ClassBuilder.SUPER + " ";
+			String buffSuper = BUF_CLASS + "<? " + JavaBuilder.SUPER + " ";
 			int i = 1;
 			for (PayloadType<?> pt : a.payload.elems)
 			{
@@ -163,8 +186,20 @@ public class ReceiveSocketBuilder extends ScribSocketBuilder
 		}
 	}
 
-	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, IOAction a, MessageSigNameDecl msd)
+	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd)
 	{
-		mb.addParameters(BUFF_CLASS + "<? " + ClassBuilder.SUPER + " " + msd.extName + "> " + RECEIVE_ARG_PREFIX);
+		mb.addParameters(BUF_CLASS + "<? " + JavaBuilder.SUPER + " " + msd.extName + "> " + RECEIVE_ARG_PREFIX);
+	}
+
+	// Similar to setReceiveHeader
+	public static void setAsyncDiscardHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb, String futureClass)
+	{
+		final String ROLE_PARAM = "role";
+		final String opClass = SessionApiGenerator.getOpClassName(a.mid);
+
+		mb.setName("async"); 
+		mb.addModifiers(JavaBuilder.PUBLIC);
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS);
 	}
 }

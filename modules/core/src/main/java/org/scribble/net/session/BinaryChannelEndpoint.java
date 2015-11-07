@@ -6,6 +6,7 @@ import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.net.ScribInterrupt;
@@ -27,7 +28,7 @@ public abstract class BinaryChannelEndpoint
 	private int count = 0;  // How many ScribMessages read so far  // volatile?
 	private int ticket = 0;  // Index of the next expected ScribMessage
 	
-	//private final List<CompletableFuture<ScribMessage>> pending = new LinkedList<>();
+	private final List<CompletableFuture<ScribMessage>> pending = new LinkedList<>();
 
 	// Server side
 	protected BinaryChannelEndpoint(SessionEndpoint<?, ?> se, AbstractSelectableChannel c) throws IOException
@@ -51,8 +52,9 @@ public abstract class BinaryChannelEndpoint
 		this.c.configureBlocking(false);
 	}
 
+	// Pre: selector is paused
 	//protected BinaryChannelEndpoint(BinaryChannelEndpoint c)
-	public void wrapChannel(BinaryChannelEndpoint c)
+	public void wrapChannel(BinaryChannelEndpoint c) throws IOException
 	{
 		this.se = c.se;
 		//this.msgs.addAll(c.msgs);  // Guaranteed to be empty/0 for reconnect?
@@ -65,6 +67,7 @@ public abstract class BinaryChannelEndpoint
 		//FIXME: complete all pending futures on parent chan -- no: not enough by itself, that is just reading the already-deserialized cache
 		//FIXME: pull all pending data out of parent chan (due to selector not handling it yet -- in send states, we just need to clear all expected messages up to this point)
 		//  -- so that wrapper handshake is starting clean
+		// --- futures must be completed before here, since selector is paused
 	}
 	
 	public AbstractSelectableChannel getSelectableChannel()  // For asynchrony (via nio Selector) -- maybe implement/extend instead
@@ -82,7 +85,7 @@ public abstract class BinaryChannelEndpoint
 	{
 		// FIXME: better exception handling (integrate with Future interface?)
 		final int ticket = getTicket();
-		return CompletableFuture.supplyAsync(() ->
+		CompletableFuture<ScribMessage> fut = CompletableFuture.supplyAsync(() ->
 				{
 					try
 					{
@@ -97,7 +100,34 @@ public abstract class BinaryChannelEndpoint
 					{
 						throw new RuntimeScribbleException(e);
 					}
+					finally
+					{
+						this.pending.remove(0);  // Safe?
+					}
 				});
+		synchronized (this.pending)
+		{
+			this.pending.add(fut);
+		}
+		return fut;
+	}
+	
+	protected void sync() throws IOException  // Hacky
+	{
+		try
+		{
+			synchronized (this.pending)
+			{
+				if (!this.pending.isEmpty())
+				{
+					this.pending.get(this.pending.size() - 1).get();
+				}
+			}
+		}
+		catch (InterruptedException | ExecutionException e)
+		{
+			throw new IOException(e);
+		}
 	}
 	
 	private synchronized ScribMessage read(int ticket) throws IOException

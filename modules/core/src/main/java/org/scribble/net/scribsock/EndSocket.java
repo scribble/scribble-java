@@ -5,9 +5,10 @@ import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
-public class EndSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
+public abstract class EndSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
 {
-	public EndSocket(SessionEndpoint<S, R> se, boolean dummy)
+	//public EndSocket(SessionEndpoint<S, R> se, boolean dummy)
+	protected EndSocket(SessionEndpoint<S, R> se)
 	{
 		super(se);
 	}

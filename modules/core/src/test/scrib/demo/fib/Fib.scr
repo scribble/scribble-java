@@ -28,3 +28,44 @@ global protocol Adder(role C, role S)
 		}
 	}
 }
+
+global protocol Adder2(role C, role S)
+{
+	rec X
+	{
+		choice at C
+		{
+			ADD(Integer, Integer) from C to S;
+			RES(Integer) from S to C;
+			continue X;
+		}
+		or
+		{
+			BYE() from C to S;
+		}
+	}
+}
+
+// Demo: subtyping -- TODO: need to generate subtype hierarchy for select/branch i/faces
+global protocol Adder3(role C, role S)
+{
+	rec X
+	{
+		choice at C
+		{
+			ADD(Integer, Integer) from C to S;
+			RES(Integer) from S to C;
+			continue X;
+		}
+		or
+		{
+			BYE() from C to S;
+			BYE() from S to C;
+		}
+		or
+		{
+			FOO() from C to S;
+			FOO() from S to C;
+		}
+	}
+}
