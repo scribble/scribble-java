@@ -218,7 +218,8 @@ LINE_COMMENT:
  * Section 2.3 Identifiers
  */
 IDENTIFIER:
-	(LETTER | DIGIT | UNDERSCORE)*
+//	(LETTER | DIGIT | UNDERSCORE)*
+	(LETTER | DIGIT)*
 ;
 
 fragment SYMBOL:

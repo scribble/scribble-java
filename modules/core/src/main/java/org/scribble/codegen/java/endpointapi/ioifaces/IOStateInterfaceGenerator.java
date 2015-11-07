@@ -171,7 +171,8 @@ public class IOStateInterfaceGenerator extends IOInterfaceGenerator
 		{
 			name += ActionInterfaceGenerator.getActionString(a);
 		}*/
-		name += s.getAcceptable().stream().map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("$_"));
+		//name += s.getAcceptable().stream().map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("$_"));
+		name += s.getAcceptable().stream().map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
 		return name;
 	}
 	
