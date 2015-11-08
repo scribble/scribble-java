@@ -4,16 +4,16 @@ import test.smtp.Smtp.Smtp.Smtp;
 import test.smtp.message.SmtpMessage;
 import test.smtp.message.SmtpMessageFormatter;
 
-public class _250_ extends SmtpMessage
+public class _250d extends SmtpMessage
 {
 	private static final long serialVersionUID = 1L;
 
-	public _250_()
+	public _250d()
 	{
 		super(Smtp._250d);
 	}
 
-	public _250_(String body)
+	public _250d(String body)
 	{
 		super(Smtp._250d, body);
 	}

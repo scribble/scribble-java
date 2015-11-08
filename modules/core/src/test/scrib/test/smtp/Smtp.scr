@@ -11,8 +11,8 @@ sig <java> "test.smtp.message.server._220"
 		from "test/smtp/message/server/_220.java" as 220;
 sig <java> "test.smtp.message.server._250"
 		from "test/smtp/message/server/_250.java" as 250;
-sig <java> "test.smtp.message.server._250_"
-		from "test/smtp/message/server/_250_.java" as 250d;
+sig <java> "test.smtp.message.server._250d"
+		from "test/smtp/message/server/_250d.java" as 250d;
 
 sig <java> "test.smtp.message.client.Ehlo"
 		from "test/smtp/message/client/Ehlo.java" as Ehlo;
@@ -23,6 +23,7 @@ sig <java> "test.smtp.message.client.Quit"
 
 global protocol Smtp(role C, role S)
 {
+	220 from S to C;
 	do Initiation(C, S);
 	do StartTls(C, S);
 	do Initiation(C, S);
@@ -31,7 +32,6 @@ global protocol Smtp(role C, role S)
 
 global protocol Initiation(role C, role S)
 {
-	220 from S to C;
 	Ehlo from C to S;
 	rec X
 	{
@@ -50,4 +50,5 @@ global protocol Initiation(role C, role S)
 global protocol StartTls(role C, role S)
 {
 	StartTls from C to S;
+	220 from S to C;
 }

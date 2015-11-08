@@ -11,7 +11,7 @@ import org.scribble.net.ScribMessageFormatter;
 
 import test.smtp.message.server._220;
 import test.smtp.message.server._250;
-import test.smtp.message.server._250_;
+import test.smtp.message.server._250d;
 
 // Currently supports only client-side reading, not server-side
 public class SmtpMessageFormatter implements ScribMessageFormatter
@@ -75,7 +75,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 				{
 					if (front.charAt(3) == '-')
 					{
-						return new _250_(body);
+						return new _250d(body);
 					}
 					return new _250(body);
 				}
@@ -287,7 +287,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 				{
 					if (front.charAt(3) == '-')
 					{
-						return new _250_(body);
+						return new _250d(body);
 					}
 					return new _250(body);
 				}
