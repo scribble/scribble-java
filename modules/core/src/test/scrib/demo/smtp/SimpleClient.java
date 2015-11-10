@@ -3,6 +3,16 @@
 
 package demo.smtp;
 
+import static demo.smtp.Smtp.Smtp.Smtp.C;
+import static demo.smtp.Smtp.Smtp.Smtp.S;
+import static demo.smtp.Smtp.Smtp.Smtp._220;
+import static demo.smtp.Smtp.Smtp.Smtp._235;
+import static demo.smtp.Smtp.Smtp.Smtp._250;
+import static demo.smtp.Smtp.Smtp.Smtp._250d;
+import static demo.smtp.Smtp.Smtp.Smtp._354;
+import static demo.smtp.Smtp.Smtp.Smtp._501;
+import static demo.smtp.Smtp.Smtp.Smtp._535;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,15 +30,17 @@ import demo.smtp.Smtp.Smtp.Smtp;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_10;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_11_Cases;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_2;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Cases;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_6;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_7;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_7_Cases;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_8;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_9_Cases;
+import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250d__S_250;
+import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250d__S_250;
+import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Auth__S_Quit;
+import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo__S_Quit;
+import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_StartTls__S_Quit;
+import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
+import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_Out_S_Ehlo;
 import demo.smtp.Smtp.Smtp.roles.C;
 import demo.smtp.message.SmtpMessageFormatter;
 import demo.smtp.message.client.Auth;
@@ -41,8 +53,6 @@ import demo.smtp.message.client.Quit;
 import demo.smtp.message.client.Rcpt;
 import demo.smtp.message.client.StartTls;
 import demo.smtp.message.client.Subject;
-
-import static demo.smtp.Smtp.Smtp.Smtp.*;
 
 public class SimpleClient
 {
@@ -69,10 +79,11 @@ public class SimpleClient
 
 			Smtp_C_11_Cases cases =
 					doAuth(
-							doEhlo(
-									doStartTls(
-											doEhlo(new Smtp_C_1(se).async(S, _220), ehlo))
-							, ehlo))
+						doEhlo(
+							doStartTls(
+								doEhlo(new Smtp_C_1(se).async(S, _220), ehlo).to(Select_C_S_StartTls__S_Quit.cast).to(Smtp_C_4.cast)
+							)
+						, ehlo).to(Select_C_S_Auth__S_Quit.cast).to(Smtp_C_8.cast))
 					.send(S, new Mail(mail))
 					.branch(S);
 			switch (cases.getOp())
@@ -87,8 +98,8 @@ public class SimpleClient
 						.send(S, new Subject(subj))
 						.send(S, new DataLine(body))
 						.send(S, new EndOfData())
+						.receive(S, _250, new Buf<>())
 						//.async(S, _250)
-						.receive(S, _250, new Buf<>())  // Final sync needed for session to be successful?
 						.send(S, new Quit());
 					break;
 				}
@@ -108,13 +119,13 @@ public class SimpleClient
 		}
 	}
 
-	private Smtp_C_4 doEhlo(Smtp_C_2 s2, String ehlo) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	private Succ_In_S_250 doEhlo(Select_C_S_Ehlo__S_Quit<?, ?> s, String ehlo) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Smtp_C_3 s3 = s2.send(S, new Ehlo(ehlo));
+		Branch_C_S_250d__S_250<?, ?> bra = s.send(S, new Ehlo(ehlo)).to(Branch_C_S_250d__S_250.cast);
 		while (true)
 		{	
-			Smtp_C_3_Cases cases = s3.branch(S);
-			switch (cases.op)
+			Case_C_S_250d__S_250<?, ?> cases = bra.branch(S);
+			switch (cases.getOp())
 			{
 				case _250:
 				{
@@ -122,7 +133,7 @@ public class SimpleClient
 				}
 				case _250d:
 				{
-					s3 = cases.receive(_250d);
+					bra = cases.receive(_250d).to(Branch_C_S_250d__S_250.cast);
 					break;
 				}
 			}
@@ -130,33 +141,13 @@ public class SimpleClient
 	}
 
 	private Smtp_C_6 doStartTls(Smtp_C_4 s4) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	//private Select_C_S_Ehlo__S_Quit<?, ?> doStartTls(Out_S_StartTls<?> s4) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		return LinearSocket.wrapClient(
-						s4.send(S, new StartTls())
+		return
+				LinearSocket.wrapClient(
+						s4.send(S, new StartTls())//.to(Receive_C_S_220.cast)
 							.async(S, _220)
-				, S, SSLSocketChannelWrapper::new);
-	}
-
-	//... FIXME: factor out with other doEhlo ...
-	private Smtp_C_8 doEhlo(Smtp_C_6 s6, String ehlo) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
-	{
-		Smtp_C_7 s7 = s6.send(S, new Ehlo(ehlo));
-		while (true)
-		{	
-			Smtp_C_7_Cases s7cases = s7.branch(S);
-			switch(s7cases.op)
-			{
-				case _250d:
-				{
-					s7 = s7cases.receive(_250d);
-					break;
-				}
-				case _250:
-				{
-					return s7cases.receive(_250);
-				}
-			}
-		}
+				, S, SSLSocketChannelWrapper::new);//.to(Select_C_S_Ehlo__S_Quit.cast);
 	}
 
 	private Smtp_C_10 doAuth(Smtp_C_8 s8) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
@@ -180,7 +171,12 @@ public class SimpleClient
 		}
 	}
 
-	protected static String getAuthPlain() throws IOException
+	private String getAuthPlain() throws IOException
+	{
+		return myGetAuthPlain();
+	}
+
+	private static String myGetAuthPlain() throws IOException
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
