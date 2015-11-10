@@ -29,12 +29,6 @@ import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_7;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_7_Cases;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_8;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_9_Cases;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_501__S_250;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_250;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_354;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_DataLine__S_Subject__S_EndOfDate;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Mail__S_Quit;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Rcpt__S_Data;
 import demo.smtp.Smtp.Smtp.roles.C;
 import demo.smtp.message.SmtpMessageFormatter;
 import demo.smtp.message.client.Auth;
@@ -47,6 +41,8 @@ import demo.smtp.message.client.Quit;
 import demo.smtp.message.client.Rcpt;
 import demo.smtp.message.client.StartTls;
 import demo.smtp.message.client.Subject;
+
+import static demo.smtp.Smtp.Smtp.Smtp.*;
 
 public class SimpleClient
 {
@@ -67,38 +63,38 @@ public class SimpleClient
 		String body = "body";
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, C, new SmtpMessageFormatter()))
 		{
-			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
+			se.connect(S, SocketChannelEndpoint::new, host, port);
 
 			Smtp_C_11_Cases cases =
 					doAuth(
 							doEhlo(
 									doStartTls(
-											doEhlo(new Smtp_C_1(se).async(Smtp.S, Smtp._220), ehlo))
+											doEhlo(new Smtp_C_1(se).async(S, _220), ehlo))
 							, ehlo))
-					.send(Smtp.S, new Mail(mail))
-					.branch(Smtp.S);
+					.send(S, new Mail(mail))
+					.branch(S);
 			switch (cases.getOp())
 			{
 				case _250:
 				{
-					cases.receive(Smtp._250)
-						.send(Smtp.S, new Rcpt(rcpt))
-						.async(Smtp.S, Smtp._250)
-						.send(Smtp.S, new Data())
-						.async(Smtp.S, Smtp._354)
-						.send(Smtp.S, new Subject(subj))
-						.send(Smtp.S, new DataLine(body))
-						.send(Smtp.S, new EndOfData())
-						//.async(Smtp.S, Smtp._250)
-						.receive(Smtp.S, Smtp._250, new Buf<>())  // Final sync needed for session to be successful?
-						.send(Smtp.S, new Quit());
+					cases.receive(_250)
+						.send(S, new Rcpt(rcpt))
+						.async(S, _250)
+						.send(S, new Data())
+						.async(S, _354)
+						.send(S, new Subject(subj))
+						.send(S, new DataLine(body))
+						.send(S, new EndOfData())
+						//.async(S, _250)
+						.receive(S, _250, new Buf<>())  // Final sync needed for session to be successful?
+						.send(S, new Quit());
 					break;
 				}
 				case _501:
 				{
-					cases.receive(Smtp._501).send(Smtp.S, new Quit());
+					cases.receive(_501).send(S, new Quit());
 				}
 			}
 		}
@@ -114,19 +110,19 @@ public class SimpleClient
 
 	private Smtp_C_4 doEhlo(Smtp_C_2 s2, String ehlo) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Smtp_C_3 s3 = s2.send(Smtp.S, new Ehlo(ehlo));
+		Smtp_C_3 s3 = s2.send(S, new Ehlo(ehlo));
 		while (true)
 		{	
-			Smtp_C_3_Cases cases = s3.branch(Smtp.S);
+			Smtp_C_3_Cases cases = s3.branch(S);
 			switch (cases.op)
 			{
 				case _250:
 				{
-					return cases.receive(Smtp._250);
+					return cases.receive(_250);
 				}
 				case _250d:
 				{
-					s3 = cases.receive(Smtp._250d);
+					s3 = cases.receive(_250d);
 					break;
 				}
 			}
@@ -136,28 +132,28 @@ public class SimpleClient
 	private Smtp_C_6 doStartTls(Smtp_C_4 s4) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		return LinearSocket.wrapClient(
-						s4.send(Smtp.S, new StartTls())
-							.async(Smtp.S, Smtp._220)
-				, Smtp.S, SSLSocketChannelWrapper::new);
+						s4.send(S, new StartTls())
+							.async(S, _220)
+				, S, SSLSocketChannelWrapper::new);
 	}
 
 	//... FIXME: factor out with other doEhlo ...
 	private Smtp_C_8 doEhlo(Smtp_C_6 s6, String ehlo) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Smtp_C_7 s7 = s6.send(Smtp.S, new Ehlo(ehlo));
+		Smtp_C_7 s7 = s6.send(S, new Ehlo(ehlo));
 		while (true)
 		{	
-			Smtp_C_7_Cases s7cases = s7.branch(Smtp.S);
+			Smtp_C_7_Cases s7cases = s7.branch(S);
 			switch(s7cases.op)
 			{
 				case _250d:
 				{
-					s7 = s7cases.receive(Smtp._250d);
+					s7 = s7cases.receive(_250d);
 					break;
 				}
 				case _250:
 				{
-					return s7cases.receive(Smtp._250);
+					return s7cases.receive(_250);
 				}
 			}
 		}
@@ -165,16 +161,16 @@ public class SimpleClient
 
 	private Smtp_C_10 doAuth(Smtp_C_8 s8) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Smtp_C_9_Cases s9cases = s8.send(Smtp.S, new Auth(getAuthPlain())).branch(Smtp.S);
+		Smtp_C_9_Cases s9cases = s8.send(S, new Auth(getAuthPlain())).branch(S);
 		switch (s9cases.op)
 		{
 			case _235:
 			{
-				return s9cases.receive(Smtp._235);
+				return s9cases.receive(_235);
 			}
 			case _535:
 			{
-				s9cases.receive(Smtp._535).send(Smtp.S, new Quit());
+				s9cases.receive(_535).send(S, new Quit());
 				System.exit(0);
 			}
 			default:  // To satisfy Java typing for return
