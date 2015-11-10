@@ -4,6 +4,7 @@
 package demo.smtp;
 
 import static demo.smtp.Smtp.Smtp.Smtp.C;
+
 import static demo.smtp.Smtp.Smtp.Smtp.S;
 import static demo.smtp.Smtp.Smtp.Smtp._220;
 import static demo.smtp.Smtp.Smtp.Smtp._235;
@@ -40,7 +41,6 @@ import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Auth__S_Quit;
 import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo__S_Quit;
 import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_StartTls__S_Quit;
 import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_Out_S_Ehlo;
 import demo.smtp.Smtp.Smtp.roles.C;
 import demo.smtp.message.SmtpMessageFormatter;
 import demo.smtp.message.client.Auth;
@@ -56,12 +56,12 @@ import demo.smtp.message.client.Subject;
 
 public class SimpleClient
 {
-	public SimpleClient() throws ScribbleRuntimeException, IOException
+	public SimpleClient() throws Exception
 	{
 		run();
 	}
 
-	public void run() throws ScribbleRuntimeException, IOException
+	public void run() throws Exception
 	{
 		String host = "smtp.cc.ic.ac.uk";
 		int port = 25;
@@ -109,17 +109,9 @@ public class SimpleClient
 				}
 			}
 		}
-		catch (Exception e)  // FIXME
-		{
-			if (e instanceof ScribbleRuntimeException)
-			{
-				throw (ScribbleRuntimeException) e;
-			}
-			throw new ScribbleRuntimeException(e);
-		}
 	}
 
-	private Succ_In_S_250 doEhlo(Select_C_S_Ehlo__S_Quit<?, ?> s, String ehlo) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	private Succ_In_S_250 doEhlo(Select_C_S_Ehlo__S_Quit<?, ?> s, String ehlo) throws Exception
 	{
 		Branch_C_S_250d__S_250<?, ?> bra = s.send(S, new Ehlo(ehlo)).to(Branch_C_S_250d__S_250.cast);
 		while (true)
@@ -140,17 +132,16 @@ public class SimpleClient
 		}
 	}
 
-	private Smtp_C_6 doStartTls(Smtp_C_4 s4) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
-	//private Select_C_S_Ehlo__S_Quit<?, ?> doStartTls(Out_S_StartTls<?> s4) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	private Smtp_C_6 doStartTls(Smtp_C_4 s4) throws Exception
 	{
 		return
 				LinearSocket.wrapClient(
-						s4.send(S, new StartTls())//.to(Receive_C_S_220.cast)
+						s4.send(S, new StartTls())
 							.async(S, _220)
-				, S, SSLSocketChannelWrapper::new);//.to(Select_C_S_Ehlo__S_Quit.cast);
+				, S, SSLSocketChannelWrapper::new);
 	}
 
-	private Smtp_C_10 doAuth(Smtp_C_8 s8) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	private Smtp_C_10 doAuth(Smtp_C_8 s8) throws Exception
 	{
 		Smtp_C_9_Cases s9cases = s8.send(S, new Auth(getAuthPlain())).branch(S);
 		switch (s9cases.op)

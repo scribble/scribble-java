@@ -12,6 +12,7 @@ import org.scribble.net.session.SocketChannelEndpoint;
 import test.smtp.Smtp.Smtp.Smtp;
 import test.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
 import test.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
+import test.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Cases;
 import test.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250d__S_250;
 import test.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250d__S_250;
 import test.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_220;
@@ -76,7 +77,6 @@ public class Client
 	private Succ_In_S_250 doEhloAnd250(Select_C_S_Ehlo<?> s) throws ClassNotFoundException, ScribbleRuntimeException, IOException
 	{
 		Branch_C_S_250d__S_250<?, ?> b =
-				//s.receive(Smtp.S, Smtp._220, new Buf<>()).to(Select_C_S$Ehlo.cast)
 				s.send(Smtp.S, new Ehlo("test"))
 				 .to(Branch_C_S_250d__S_250.cast);  // Safe cast
 		Buf<_250> b1 = new Buf<>();
