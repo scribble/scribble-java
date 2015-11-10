@@ -1,21 +1,21 @@
 package demo.smtp.message.server;
 
-import demo.smtp.Smtp.SMTP.SMTP;
+import demo.smtp.Smtp.Smtp.Smtp;
 import demo.smtp.message.SmtpMessage;
 import demo.smtp.message.SmtpMessageFormatter;
 
-public class _250_ extends SmtpMessage
+public class _250d extends SmtpMessage
 {
 	private static final long serialVersionUID = 1L;
 
-	public _250_()
+	public _250d()
 	{
-		super(SMTP._250_);
+		super(Smtp._250d);
 	}
 
-	public _250_(String body)
+	public _250d(String body)
 	{
-		super(SMTP._250_, body);
+		super(Smtp._250d, body);
 	}
 
 	@Override

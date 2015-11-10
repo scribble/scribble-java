@@ -12,7 +12,7 @@ import org.scribble.net.ScribMessageFormatter;
 import demo.smtp.message.server._220;
 import demo.smtp.message.server._235;
 import demo.smtp.message.server._250;
-import demo.smtp.message.server._250_;
+import demo.smtp.message.server._250d;
 import demo.smtp.message.server._354;
 import demo.smtp.message.server._501;
 import demo.smtp.message.server._535;
@@ -79,7 +79,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 				{
 					if (front.charAt(3) == '-')
 					{
-						return new _250_(body);
+						return new _250d(body);
 					}
 					return new _250(body);
 				}
@@ -291,7 +291,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 				{
 					if (front.charAt(3) == '-')
 					{
-						return new _250_(body);
+						return new _250d(body);
 					}
 					return new _250(body);
 				}

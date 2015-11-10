@@ -1,6 +1,6 @@
 package demo.smtp.message.client;
 
-import demo.smtp.Smtp.SMTP.SMTP;
+import demo.smtp.Smtp.Smtp.Smtp;
 import demo.smtp.message.SmtpMessage;
 
 public class Data extends SmtpMessage
@@ -9,6 +9,6 @@ public class Data extends SmtpMessage
 
 	public Data()
 	{
-		super(SMTP.DATA);
+		super(Smtp.Data);
 	}
 }

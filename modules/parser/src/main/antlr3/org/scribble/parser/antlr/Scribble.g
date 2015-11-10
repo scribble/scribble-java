@@ -218,7 +218,7 @@ LINE_COMMENT:
  * Section 2.3 Identifiers
  */
 IDENTIFIER:
-//	(LETTER | DIGIT | UNDERSCORE)*
+//	(LETTER | DIGIT | UNDERSCORE)*  // Maybe only disallow consecutive underscores
 	(LETTER | DIGIT)*
 ;
 
