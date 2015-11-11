@@ -218,8 +218,12 @@ LINE_COMMENT:
  * Section 2.3 Identifiers
  */
 IDENTIFIER:
-//	(LETTER | DIGIT | UNDERSCORE)*  // Maybe only disallow consecutive underscores
-	(LETTER | DIGIT)*
+	(LETTER | DIGIT | UNDERSCORE)*  
+			/* Underscore currently can cause ambiguities in the API generation naming scheme
+			 * But maybe only consecutive underscores are the problem
+			 * -- cannot completely disallow underscores as needed for projection naming scheme
+			 */
+//	(LETTER | DIGIT)*
 ;
 
 fragment SYMBOL:

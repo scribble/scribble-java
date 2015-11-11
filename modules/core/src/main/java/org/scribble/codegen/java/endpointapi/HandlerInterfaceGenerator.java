@@ -13,12 +13,12 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 
 // Factor out
-public class BranchInterfaceGenerator extends AuxStateChannelTypeGenerator
+public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 {
 	private final EndpointState curr;
 
 	// Pre: cb is the BrranchSocketBuilder
-	public BranchInterfaceGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, EndpointState curr)
+	public HandlerInterfaceGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, EndpointState curr)
 	{
 		super(apigen, parent);
 		this.curr = curr;

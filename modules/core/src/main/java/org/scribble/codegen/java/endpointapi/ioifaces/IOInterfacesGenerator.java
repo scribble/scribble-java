@@ -1,10 +1,12 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,7 +20,6 @@ import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Receive;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Job;
@@ -34,53 +35,26 @@ public class IOInterfacesGenerator extends ApiGenerator
 	//private final Map<EndpointState, TypeBuilder> iostates = new HashMap<>();
 	private final Map<String, InterfaceBuilder> iostates = new HashMap<>();
 	
-	private final Map<EndpointState, InterfaceBuilder> cases = new HashMap<>();  // HACK
+	//private final Map<EndpointState, InterfaceBuilder> cases = new HashMap<>();  // HACK
 	
 	private final Map<EndpointState, Set<IOAction>> pre = new HashMap<>();  // Pre set
 	
 	private final StateChannelApiGenerator apigen;  // FIXME: refactor
 	
+	//private Map<String, InterfaceBuilder> ifaces = new HashMap<>();
+
 	public IOInterfacesGenerator(Job job, GProtocolName fullname, Role self, StateChannelApiGenerator apigen)
 	{
 		super(job, fullname);
 		this.self = self;
 		this.init = job.getContext().getEndpointGraph(fullname, self).init;
 		this.apigen = apigen;
-	}
 
-	@Override
-	public Map<String, String> generateApi()
-	{
 		firstPass(new HashSet<>(), this.init);
 		Map<EndpointState, Set<InterfaceBuilder>> preds = getPreds();
 		secondPass(preds, new HashSet<>(), this.init);
 		
 		traverse(new HashSet<>(), this.init);  // FIXME: move into constructor
-
-		String prefix = getPackageName(this.gpn, this.self).replace('.', '/') + "/";
-		Map<String, String> ifaces = new HashMap<>();
-		for (InterfaceBuilder ib : this.actions.values())
-		{
-			String path = prefix + ib.getName() + ".java";
-			ifaces.put(path, ib.build());
-			//System.out.println("1: " + path + ":\n" + ib.build());
-		}
-		for (InterfaceBuilder ib : this.succs.values())
-		{
-			String path = prefix + ib.getName() + ".java";
-			ifaces.put(path, ib.build());
-			//System.out.println("2: " + ib.getName() + ":\n" + ib.build());
-		}
-		for (TypeBuilder tb : this.iostates.values())
-		{
-			String path = prefix + tb.getName() + ".java";
-			ifaces.put(path, tb.build());
-		}
-		for (InterfaceBuilder ib : this.cases.values())
-		{
-			String path = prefix + ib.getName() + ".java";
-			ifaces.put(path, ib.build());
-		}
 
 		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
 		if (term != null)
@@ -95,8 +69,31 @@ public class IOInterfacesGenerator extends ApiGenerator
 				tb.addInterfaces(succ);
 			}
 		}
-		
-		return ifaces;
+	}
+
+	@Override
+	public Map<String, String> generateApi()
+	{
+		Map<String, String> output = new HashMap<>();
+		String prefix = getPackageName(this.gpn, this.self).replace('.', '/') + "/";
+		for (InterfaceBuilder ib : this.actions.values())
+		{
+			String path = prefix + ib.getName() + ".java";
+			output.put(path, ib.build());
+			//System.out.println("1: " + path + ":\n" + ib.build());
+		}
+		for (InterfaceBuilder ib : this.succs.values())
+		{
+			String path = prefix + ib.getName() + ".java";
+			output.put(path, ib.build());
+			//System.out.println("2: " + ib.getName() + ":\n" + ib.build());
+		}
+		for (TypeBuilder tb : this.iostates.values())
+		{
+			String path = prefix + tb.getName() + ".java";
+			output.put(path, tb.build());
+		}
+		return output;
 	}
 	
 	private void traverse(Set<EndpointState> visited, EndpointState s)
@@ -125,13 +122,13 @@ public class IOInterfacesGenerator extends ApiGenerator
 			to.addBodyLine(JavaBuilder.RETURN + " (" + scname + ") this;");
 		}
 
-		Set<IOAction> as = s.getAcceptable();
+		/*Set<IOAction> as = s.getAcceptable();
 		if (as.iterator().next() instanceof Receive && as.size() > 1)
 		{
 			TypeBuilder cases = this.apigen.getType(this.apigen.getSocketClassName(s) + "_Cases");  // FIXME: factor
 			cases.addInterfaces(IOStateInterfaceGenerator.getCasesInterfaceName(tmp));
 			cases.addImports(getPackageName(this.gpn, this.self) + ".*");
-		}
+		}*/
 		
 		//visited.add(s);
 		for (IOAction a : s.getAcceptable())
@@ -146,8 +143,15 @@ public class IOInterfacesGenerator extends ApiGenerator
 	{
 		String tmp = "<";
 		
-		boolean first = true;
-		for (IOAction a : s.getAcceptable())
+		//boolean first = true;
+			
+		Function<EndpointState, String> getSuccName = (succ) -> (succ.isTerminal()) ? ScribSocketGenerator.GEN_ENDSOCKET_CLASS : this.apigen.getSocketClassName(succ);
+		
+		//tmp += s.getAcceptable().stream().map((a) -> this.actions.get(a).getName()).sorted((s1, s2) -> s1.compareTo(s2)).collect(Collectors.joining(", "));
+		
+		tmp += s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).map((a) -> getSuccName.apply(s.accept(a))).collect(Collectors.joining(", "));
+		
+		/*for (IOAction a : s.getAcceptable())
 		{
 			if (first)
 			{
@@ -167,7 +171,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			{
 				tmp += this.apigen.getSocketClassName(succ);
 			}
-		}
+		}*/
 		tmp += ">";
 		return tmp;
 	}
@@ -248,7 +252,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		else
 		{
-			iogen = new IOStateInterfaceGenerator(this.apigen, s, this.actions, tmp);
+			//iogen = new IOStateInterfaceGenerator(this.apigen, s, this.actions, tmp);
+			iogen = new SelectInterfaceGenerator(this.apigen, s, this.actions, tmp);
 			iostate = iogen.generateType();
 		}
 		if (tmp != null)
@@ -304,16 +309,17 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		this.iostates.put(key, iostate);
 
-		if (iogen != null)
+		/*if (iogen != null)
 		{
 			//System.out.println("\nb:" + iostate.build());
 			IOAction first = s.getAcceptable().iterator().next();
 			if (first instanceof Receive && s.getAcceptable().size() > 1)
 			{
 				//System.out.println("\nc:" + iogen.getCasesInterface().build());
-				this.cases.put(s, iogen.getCasesInterface());
+				//this.cases.put(s, iogen.getCasesInterface());
+				addIOStateInterface(iogen.getCasesInterface());
 			}
-		}
+		}*/
 		
 		//visited.add(s);
 		for (IOAction a : s.getAcceptable())
@@ -345,5 +351,12 @@ public class IOInterfacesGenerator extends ApiGenerator
 	{
 		//return SessionApiGenerator.getEndpointApiRootPackageName(gpn).replace('.', '/') + "/channels/" + self + "/ioifaces/" ;  // FIXME: factor out (e.g. StateChannelApiGenerator)
 		return SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".channels." + self + ".ioifaces" ;  // FIXME: factor out (e.g. StateChannelApiGenerator)
+	}
+	
+	protected void addIOStateInterface(InterfaceBuilder ib)
+	{
+		//String prefix = getPackageName(this.gpn, this.self).replace('.', '/') + "/";
+		String name = ib.getName() + ".java";
+		this.iostates.put(name, ib);
 	}
 }
