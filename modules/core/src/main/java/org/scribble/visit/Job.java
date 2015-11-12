@@ -114,7 +114,7 @@ public class Job
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
 		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
 		
-		IOInterfacesGenerator iogen = new IOInterfacesGenerator(this, fullname, self, apigen);
+		IOInterfacesGenerator iogen = new IOInterfacesGenerator(apigen);
 
 		Map<String, String> api = iogen.generateApi();  // Have to do before state chan generation (before the state chans are "build") -- unnecessary if traverse refactored
 		api.putAll(apigen.generateApi()); // filepath -> class source  // Store results?

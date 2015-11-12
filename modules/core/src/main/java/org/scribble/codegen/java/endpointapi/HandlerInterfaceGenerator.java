@@ -53,7 +53,7 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 				// FIXME: repeated
 				ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
 				ib.addImports(SessionApiGenerator.getRolesPackageName(this.apigen.getGProtocolName()) + ".*");
-				mb3.addParameters(ScribSocketGenerator.GEN_ENDSOCKET_CLASS
+				mb3.addParameters(ScribSocketGenerator.GENERATED_ENDSOCKET_NAME
 						//+ "<" + SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + ", " + this.apigen.getSelf() + ">"
 						+ " schan");  // FIXME: factor out
 			}

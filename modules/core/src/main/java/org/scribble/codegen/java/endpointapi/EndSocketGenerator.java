@@ -12,7 +12,7 @@ public class EndSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected String getClassName()
 	{
-		return GEN_ENDSOCKET_CLASS;
+		return GENERATED_ENDSOCKET_NAME;
 	}
 
 	@Override

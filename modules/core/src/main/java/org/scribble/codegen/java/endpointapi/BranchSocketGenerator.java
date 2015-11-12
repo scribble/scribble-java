@@ -116,7 +116,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			//if (!succ.isTerminal())
 			{
 				//FIXME: factor out with addReturn?
-				 ln += JavaBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketGenerator.GEN_ENDSOCKET_CLASS : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
+				 ln += JavaBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketGenerator.GENERATED_ENDSOCKET_NAME : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
 			}
 			ln += getSessionApiOpConstant(a.mid);
 					

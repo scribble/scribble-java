@@ -23,7 +23,7 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	public static final String CASESOCKET_CLASS = "org.scribble.net.scribsock.CaseSocket";
 	public static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
 
-	public static final String GEN_ENDSOCKET_CLASS = "EndSocket";
+	public static final String GENERATED_ENDSOCKET_NAME = "EndSocket";
 	
 	public static final String BUFF_VAL_FIELD = "val";
 	public static final String SCRIBSOCKET_SE_FIELD = JavaBuilder.THIS + ".se";
@@ -146,7 +146,7 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 		if (s.isTerminal())
 		{
 			mb.addBodyLine(SCRIBSOCKET_SE_FIELD + ".setCompleted();");  // Do before the IO action? in case of exception?
-			nextClass = GEN_ENDSOCKET_CLASS;// + "<>";
+			nextClass = GENERATED_ENDSOCKET_NAME;// + "<>";
 		}
 		else
 		{
@@ -216,7 +216,7 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 		{
 			GProtocolName gpn = apigen.getGProtocolName();
 			Role self = apigen.getSelf();
-			ret = SessionApiGenerator.getStateChannelPackageName(gpn, self) + "." + GEN_ENDSOCKET_CLASS;
+			ret = SessionApiGenerator.getStateChannelPackageName(gpn, self) + "." + GENERATED_ENDSOCKET_NAME;
 					//+ "<" + SessionApiGenerator.getSessionClassName(gpn) + ", " + SessionApiGenerator.getRoleClassName(self) + ">";
 		}
 		else
