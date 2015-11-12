@@ -92,7 +92,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			}
 			
 			EndpointState succ = s.accept(a);
-			putPre(succ, a);
+			putPreAction(succ, a);
 
 			generateActionAndSuccessorInterfacesAndCollectPreActions(visited, succ);
 			/*Set<EndpointState> tmp = new HashSet<>(visited);
@@ -110,7 +110,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		String key = IOStateInterfaceGenerator.getIOStateInterfaceName(getSelf(), s);
-		if (!this.iostates.containsKey(key))
+		if (!this.iostates.containsKey(key))  // Don't generate if one already exists (up to this pass, repeats will all be the same, i.e. name, Action Interfaces, and action-succ parameters)
 		{
 			// Make the partial I/O State Interface (Successor Interfaces and cast methods added later -- different states may share same State I/f)
 			IOStateInterfaceGenerator iogen = null;
@@ -202,6 +202,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		TypeBuilder tb = this.apigen.getType(scname);
 		
 		// Add I/O State Interface to each ScribSocket (except CaseSocket)
+		// Do here (not inside I/O State Interface generators) because multiple states can share the same I/O State Interface
 		tb.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
 		tb.addInterfaces(ioname + getConcreteSuccessorParameters(s));
 		
@@ -214,7 +215,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 
 		if (s.getStateKind() == Kind.POLY_INPUT)
 		{
-			// Add CaseInterface to each CaseSocket -- have to do here (not in CaseInterfaceGenerator) because multiple states can share the same CaseInterface
+			// Add CaseInterface to each CaseSocket
 			TypeBuilder cases = this.apigen.getType(CaseSocketGenerator.getCaseSocketName(this.apigen.getSocketClassName(s)));
 			cases.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
 			cases.addInterfaces(CaseInterfaceGenerator.getCasesInterfaceName(self, s) + getConcreteSuccessorParameters(s));
@@ -260,7 +261,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				+ ">";
 	}
 	
-	private void putPre(EndpointState s, IOAction a)
+	private void putPreAction(EndpointState s, IOAction a)
 	{
 		Set<IOAction> tmp = this.preActions.get(s);
 		if (tmp == null)
