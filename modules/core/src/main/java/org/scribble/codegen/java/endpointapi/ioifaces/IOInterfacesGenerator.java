@@ -27,7 +27,7 @@ import org.scribble.sesstype.name.Role;
 // Cf. StateChannelApiGenerator
 public class IOInterfacesGenerator extends ApiGenerator
 {
-	private final StateChannelApiGenerator apigen;
+	protected final StateChannelApiGenerator apigen;
 
 	private final Map<IOAction, InterfaceBuilder> actions = new HashMap<>();
 	private final Map<IOAction, InterfaceBuilder> succs = new HashMap<>();
@@ -49,6 +49,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		collectPreds();
 		generateIOStateInterfacesFirstPass(new HashSet<>(), init);
 		generateIOStateInterfacesSecondPass(new HashSet<>(), init);
+		generateHandleInterfaces(new HashSet<>(), init);
 		addIOStateInterfacesToStateChannels(new HashSet<>(), init);  // Except EndSocket
 
 		// Successor I/f's for EndSocket
@@ -96,7 +97,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 
 			generateActionAndSuccessorInterfacesAndCollectPreActions(visited, succ);
 			/*Set<EndpointState> tmp = new HashSet<>(visited);
-			tmp.add(s);  // FIXME? merge paths visited multiple times
+			tmp.add(s);  // merge paths visited multiple times
 			generateActionAndSuccessorInterfacesAndCollectPredecessors(tmp, succ);*/
 		}
 	}
@@ -140,9 +141,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 		for (IOAction a : s.getAcceptable())
 		{
 			generateIOStateInterfacesFirstPass(visited, s.accept(a));
-			/*Set<EndpointState> next = new HashSet<>(visited);
-			next.add(s);
-			secondPass(next, s.accept(a));*/
 		}
 	}
 
@@ -182,9 +180,22 @@ public class IOInterfacesGenerator extends ApiGenerator
 		for (IOAction a : s.getAcceptable())
 		{
 			generateIOStateInterfacesSecondPass(visited, s.accept(a));
-			/*Set<EndpointState> next = new HashSet<>(visited);
-			next.add(s);
-			thirdPass(next, s.accept(a));*/
+		}
+	}
+
+	private void generateHandleInterfaces(Set<EndpointState> visited, EndpointState s)
+	{
+		if (visited.contains(s) || s.isTerminal())
+		{
+			return;
+		}
+		
+		// TODO
+		
+		visited.add(s);
+		for (IOAction a : s.getAcceptable())
+		{
+			addIOStateInterfacesToStateChannels(visited, s.accept(a));
 		}
 	}
 	
@@ -225,9 +236,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 		for (IOAction a : s.getAcceptable())
 		{
 			addIOStateInterfacesToStateChannels(visited, s.accept(a));
-			/*Set<EndpointState> next = new HashSet<>(visited);
-			next.add(s);
-			traverse(next, s.accept(a));*/
 		}
 	}
 	
@@ -294,5 +302,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 	protected static String getIOInterfacePackageName(GProtocolName gpn, Role self)
 	{
 		return SessionApiGenerator.getStateChannelPackageName(gpn, self) + ".ioifaces";
+	}
+	
+	protected InterfaceBuilder getIOStateInterface(String name)
+	{
+		return this.iostates.get(name);
 	}
 }

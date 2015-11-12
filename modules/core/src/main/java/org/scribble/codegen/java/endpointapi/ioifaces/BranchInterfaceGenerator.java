@@ -36,6 +36,7 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 		Role self = this.apigen.getSelf();
 		Set<IOAction> as = this.curr.getAcceptable();
 
+		// FIXME: factor out with BranchSocketGenerator
 		AbstractMethodBuilder bra = this.ib.newAbstractMethod("branch");
 		String ret = CaseInterfaceGenerator.getCasesInterfaceName(self, this.curr)
 				+ "<" + IntStream.range(1, as.size()+1).mapToObj((i) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";  // FIXME: factor out

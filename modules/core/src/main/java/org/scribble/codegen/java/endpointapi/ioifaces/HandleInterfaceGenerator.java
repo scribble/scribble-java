@@ -4,11 +4,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.scribble.codegen.java.endpointapi.CaseSocketGenerator;
+import org.scribble.codegen.java.endpointapi.HandlerInterfaceGenerator;
 import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
-import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
-import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
@@ -17,19 +15,22 @@ import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
+// Cf. HandlerInterfaceGenerator
+public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public CaseInterfaceGenerator(StateChannelApiGenerator apigen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
+	private final IOInterfacesGenerator iogen;
+
+	public HandleInterfaceGenerator(IOInterfacesGenerator iogen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
 	{
-		super(apigen, actions, curr);
+		super(iogen.apigen, actions, curr);
+		this.iogen = iogen;
 	}
 
 	@Override
 	protected void constructInterface()
 	{
 		super.constructInterface();
-		addBranchEnumField();
-		addCaseReceiveDiscardMethods();
+		addHandleMethods();
 	}
 
 	@Override
@@ -44,53 +45,51 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 		this.ib.setPackage(packname);
 		this.ib.addModifiers(JavaBuilder.PUBLIC);
 	}
-
-	/*@Override
-	protected void addSuccessorInterfaces()
-	{
-
-	}*/
-	
-	protected void addBranchEnumField()
-	{
-		Role self = this.apigen.getSelf();
-		String name = super.getIOStateInterfaceName(self, this.curr);
-
-		AbstractMethodBuilder op = this.ib.newAbstractMethod("getOp");
-		op.setReturn(name + "." + BranchInterfaceGenerator.getBranchInterfaceEnumName(self, this.curr));
-	}
 				
-	protected void addCaseReceiveDiscardMethods()
+	protected void addHandleMethods()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
+		Role self = this.apigen.getSelf();
 		Set<IOAction> as = this.curr.getAcceptable();
 
-		int i = 1;
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 		for (IOAction a : as.stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
-			MethodBuilder mb = this.ib.newAbstractMethod();
-			CaseSocketGenerator.setCaseReceiveDiscardHeaderWithoutReturnType(this.apigen, a, mb); 
 			EndpointState succ = this.curr.accept(a);
+			//String nextClass = this.apigen.getSocketClassName(succ);
+
+			MethodBuilder mb = this.ib.newAbstractMethod();
+			HandlerInterfaceGenerator.setHandleMethodHeaderWithoutParamTypes(this.apigen, mb);
 			if (succ.isTerminal())
 			{
-				ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);
+				mb.addParameters(ScribSocketGenerator.GENERATED_ENDSOCKET_NAME + " schan");  // FIXME: factor out
 			}
 			else
 			{
-				mb.setReturn("__Succ" + i);  // Hacky?  // FIXME: factor out Succ
+				InterfaceBuilder next = this.iogen.getIOStateInterface(IOStateInterfaceGenerator.getIOStateInterfaceName(self, succ));  // Select/Receive/Branch
+				mb.addParameters(next + " schan");
 			}
+			HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, mb);
+		}
+	}
+
+	// Don't add Action Interfaces
+	@Override
+	protected void addSuccessorParamsAndActionInterfaces()
+	{
+		int i = 1;
+		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
+		{
+			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, a));
 			i++;
 		}
 	}
-	
-	//protected static String getCasesInterfaceName(String braif)
+
 	// Pre: s is a branch state
-	// Cf. IOStateInterfaceGenerator.getIOStateInterfaceName
 	protected static String getCasesInterfaceName(Role self, EndpointState s)
 	{
-		//return "Case_" + braif.substring("Branch_".length(), braif.length());
-		return "Case_" + self + "_" + s.getAcceptable().stream().sorted(IOACTION_COMPARATOR)
+		// FIXME: factor out (CaseInterfaceGenerator, IOStateInterfaceGenerator.getIOStateInterfaceName)
+		return "Handle_" + self + "_" + s.getAcceptable().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
 	}
 }
