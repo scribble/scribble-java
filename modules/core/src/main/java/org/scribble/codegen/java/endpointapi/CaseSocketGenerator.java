@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
+import org.scribble.codegen.java.endpointapi.ioifaces.BranchInterfaceGenerator;
 import org.scribble.codegen.java.endpointapi.ioifaces.IOStateInterfaceGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
@@ -91,7 +92,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		MethodBuilder mb = this.cb.newMethod("getOp");
 		mb.addAnnotations("@Override");
 		mb.addModifiers(JavaBuilder.PUBLIC);
-		mb.setReturn(IOStateInterfaceGenerator.getIOStateInterfaceName(self, this.curr) + "." + IOStateInterfaceGenerator.getBranchInterfaceEnumName(self, this.curr));
+		mb.setReturn(IOStateInterfaceGenerator.getIOStateInterfaceName(self, this.curr) + "." + BranchInterfaceGenerator.getBranchInterfaceEnumName(self, this.curr));
 		mb.addBodyLine(JavaBuilder.RETURN + " " + JavaBuilder.THIS + "." + CASE_OP_FIELD + ";");
 
 		this.apigen.addTypeDecl(this.cb);  // CaseSocketBuilder used by BranchSocketBuilder, not EndpointApiGenerator

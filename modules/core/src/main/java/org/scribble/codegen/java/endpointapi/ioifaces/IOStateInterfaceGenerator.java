@@ -13,15 +13,24 @@ import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Send;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 // Cf. ScribSocketGenerator
 public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 {
+	protected static final Comparator<IOAction> IOACTION_COMPARATOR = new Comparator<IOAction>()
+			{
+				@Override
+				public int compare(IOAction a1, IOAction a2)
+				{
+					return ActionInterfaceGenerator.getActionInterfaceName(a1).compareTo(ActionInterfaceGenerator.getActionInterfaceName(a2));
+				}
+			};
+
 	protected final Map<IOAction, InterfaceBuilder> actions;
 	protected final Set<InterfaceBuilder> preds;
 	//private InterfaceBuilder cases;  // HACK
@@ -78,15 +87,13 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	protected void addSuccessorParamsAndActionInterfaces()
 	{
 		int i = 1;
-		//for (IOAction a : this.curr.getAcceptable())  // FIXME: ordering (cf. IOInterfacesGenerator.getConcreteSuccessorParameters)
-		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))  // FIXME: ordering (cf. IOInterfacesGenerator.getConcreteSuccessorParameters)
+		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			String actif = this.actions.get(a).getName();
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, a));
 			this.ib.addInterfaces(actif + "<__Succ" + i + ">");
 			i++;
 		}
-		
 	}
 
 	protected void addSuccessorInterfaces()
@@ -103,40 +110,15 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	// Pre: s non-terminal
 	public static String getIOStateInterfaceName(Role self, EndpointState s)
 	{
-		String name;
-		IOAction first = s.getAcceptable().iterator().next();
-		if (first instanceof Send)
+		String name = null;
+		switch (s.getStateKind())
 		{
-			name = "Select";
+			case OUTPUT:      name = "Select";  break;
+			case UNARY_INPUT: name = "Receive"; break;
+			case POLY_INPUT:  name = "Branch";  break;
+			case TERMINAL:    throw new RuntimeScribbleException("Shouldn't get in here: " + s);
 		}
-		else
-		{
-			if (s.getAcceptable().size() == 1)
-			{
-				name = "Receive";
-			}
-			else
-			{
-				name = "Branch";
-			}
-		}
-		
-		
-		
-		name += "_" + self + "_";
-		//name += s.getAcceptable().stream().map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("$_"));
-		//name += s.getAcceptable().stream().map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
-		name += s.getAcceptable().stream().sorted(IOACTION_COMPARATOR).map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
-		return name;
+		return name + "_" + self + "_" + s.getAcceptable().stream().sorted(IOACTION_COMPARATOR)
+				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
 	}
-		
-	protected static final
-		Comparator<IOAction> IOACTION_COMPARATOR = new Comparator<IOAction>()  // FIXME: factor out
-			{
-				@Override
-				public int compare(IOAction a1, IOAction a2)
-				{
-					return ActionInterfaceGenerator.getActionInterfaceName(a1).compareTo(ActionInterfaceGenerator.getActionInterfaceName(a2));
-				}
-			};
 }

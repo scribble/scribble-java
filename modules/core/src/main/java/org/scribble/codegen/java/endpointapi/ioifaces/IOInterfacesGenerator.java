@@ -1,6 +1,5 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -19,6 +18,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -129,6 +129,12 @@ public class IOInterfacesGenerator extends ApiGenerator
 			cases.addInterfaces(IOStateInterfaceGenerator.getCasesInterfaceName(tmp));
 			cases.addImports(getPackageName(this.gpn, this.self) + ".*");
 		}*/
+		if (s.getStateKind() == Kind.POLY_INPUT)
+		{
+			TypeBuilder cases = this.apigen.getType(this.apigen.getSocketClassName(s) + "_Cases");  // FIXME: factor out
+			cases.addInterfaces(CaseInterfaceGenerator.getCasesInterfaceName(self, s) + getConcreteSuccessorParameters(s));
+			cases.addImports(getPackageName(this.gpn, this.self) + ".*");
+		}
 		
 		//visited.add(s);
 		for (IOAction a : s.getAcceptable())
@@ -253,7 +259,24 @@ public class IOInterfacesGenerator extends ApiGenerator
 		else
 		{
 			//iogen = new IOStateInterfaceGenerator(this.apigen, s, this.actions, tmp);
-			iogen = new SelectInterfaceGenerator(this.apigen, s, this.actions, tmp);
+			switch (s.getStateKind())
+			{
+				case OUTPUT:
+					iogen = new SelectInterfaceGenerator(this.apigen, s, this.actions, tmp);
+					break;
+				case UNARY_INPUT:
+					iogen = new ReceiveInterfaceGenerator(this.apigen, s, this.actions, tmp);
+					break;
+				case POLY_INPUT:
+					InterfaceBuilder cases = new CaseInterfaceGenerator(this.apigen, s, this.actions, tmp).generateType();
+					addIOStateInterface(cases);
+					
+					iogen = new BranchInterfaceGenerator(this.apigen, s, this.actions, tmp);
+					break;
+				case TERMINAL:
+				default:
+					throw new RuntimeException("TODO:");
+			}
 			iostate = iogen.generateType();
 		}
 		if (tmp != null)

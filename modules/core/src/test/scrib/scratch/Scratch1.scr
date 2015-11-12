@@ -28,6 +28,7 @@ global protocol Proto1(role C, role S)
 global protocol Proto2(role C, role S)
 {
 	1() from C to S;
+	//2() from C to S;
 	choice at C 
 	{
 		3() from C to S;

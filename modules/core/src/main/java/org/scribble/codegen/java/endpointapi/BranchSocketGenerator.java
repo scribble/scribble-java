@@ -3,7 +3,7 @@ package org.scribble.codegen.java.endpointapi;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.endpointapi.ioifaces.IOStateInterfaceGenerator;
+import org.scribble.codegen.java.endpointapi.ioifaces.BranchInterfaceGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
@@ -154,6 +154,6 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		//return apigen.getSocketClassName(curr) + "_Enum";
-		return IOStateInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
+		return BranchInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
 	}
 }

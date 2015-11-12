@@ -13,6 +13,8 @@ import org.scribble.sesstype.name.RecVar;
 // http://sandbox.kidstrythisathome.com/erdos/
 public class EndpointState
 {
+	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL }
+	
 	private static int count = 0;
 	
 	public final int id;
@@ -187,5 +189,15 @@ public class EndpointState
 			}
 		}
 		return null;
+	}
+	
+	public Kind getStateKind()
+	{
+		Set<IOAction> as = this.getAcceptable();
+		return (as.size() == 0)
+				? Kind.TERMINAL
+				: (as.iterator().next() instanceof Send)
+						? Kind.OUTPUT
+						: (as.size() > 1) ? Kind.POLY_INPUT : Kind.UNARY_INPUT;
 	}
 }
