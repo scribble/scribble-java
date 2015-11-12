@@ -233,15 +233,15 @@ public class IOInterfacesGenerator extends ApiGenerator
 	
 	// Pre: ib is a Successor I/f for the cast IO State I/f
 	// Returns MethodBuilder, or null if none built
-	private static MethodBuilder addToCastMethod(InterfaceBuilder succif, String ret)
+	private static MethodBuilder addToCastMethod(InterfaceBuilder ib, String ret)
 	{
-		if (succif.getDefaultMethods().stream().filter((def) -> def.getReturn().equals(ret)).count() > 0)
+		if (ib.getDefaultMethods().stream().filter((def) -> def.getReturn().equals(ret)).count() > 0)
 		{
 			// Merge states entered from multiple paths, don't want to add cast multiple times -- still true for this case?
 			// But duplicate cast check cast still needed anyway?
 			return null;
 		}
-		MethodBuilder mb = succif.newDefaultMethod("to");
+		MethodBuilder mb = ib.newDefaultMethod("to");
 		mb.setReturn(ret);
 		mb.addParameters(ret + " cast");
 		mb.addBodyLine(JavaBuilder.RETURN + " (" + ret + ") this;");
@@ -272,11 +272,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		tmp.add(a);
 	}
 	
-	// Successor interfaces
-	//private Map<EndpointState, Set<InterfaceBuilder>> getPreds()
+	// Successor I/f's to be implemented by each I/O State I/f
 	private void collectPreds()
 	{
-		//Map<EndpointState, Set<InterfaceBuilder>> preds = new HashMap<>();
 		for (EndpointState s : this.preActions.keySet())
 		{
 			Set<InterfaceBuilder> tmp = new HashSet<>();
@@ -286,7 +284,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 			}
 			this.preds.put(s, tmp);
 		}
-		//return preds;
 	}
 	
 	protected Role getSelf()
