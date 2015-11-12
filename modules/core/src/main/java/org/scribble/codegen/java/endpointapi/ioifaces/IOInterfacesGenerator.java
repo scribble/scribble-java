@@ -3,7 +3,6 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -286,12 +285,18 @@ public class IOInterfacesGenerator extends ApiGenerator
 					//ret += "<" + next.getParameters().stream().map((p) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";  // FIXME: fragile?
 					for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))  // FIXME: factor out with getHandleInterfaceIOActionParams
 					{
-						ret += this.apigen.getSocketClassName(succ.accept(b));
+						EndpointState foo = succ.accept(b);
+						if (foo.isTerminal())
+						{
+							ret += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
+						}
+						else
+						{
+							ret += this.apigen.getSocketClassName(foo);
+						}
 					}
 					ret += ">";
 					override.addParameters(ret + " schan");
-					
-					// FIXME: duplicates possible?
 				}
 				HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, override);
 				// FIXME: factor out

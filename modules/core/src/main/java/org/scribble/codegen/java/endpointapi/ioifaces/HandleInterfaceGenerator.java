@@ -82,7 +82,10 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 			}*/
 			for (IOAction b : succ.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
-				as.add(b);
+				//if (!as.contains(b))
+				{
+					as.add(b);
+				}
 			}
 		}
 		return as;
@@ -102,26 +105,41 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 
 			MethodBuilder mb = this.ib.newAbstractMethod();
 			HandlerInterfaceGenerator.setHandleMethodHeaderWithoutParamTypes(this.apigen, mb);
-			setHandleMethodSuccessorParam(this.iogen, self, succ, mb, i);
+			i = setHandleMethodSuccessorParam(this.iogen, self, succ, mb, i);
 			HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, mb);
 		}
 	}
 
-	private static void setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EndpointState succ, MethodBuilder mb, int i)
+	private static int setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EndpointState succ, MethodBuilder mb, int i)
 	{
-			if (succ.isTerminal())
+		if (succ.isTerminal())
+		{
+			mb.addParameters(ScribSocketGenerator.ENDSOCKET_CLASS + "<?, ?> end");
+		}
+		else
+		{
+			InterfaceBuilder next = iogen.getIOStateInterface(IOStateInterfaceGenerator.getIOStateInterfaceName(self, succ));  // Select/Receive/Branch
+			String ret = next.getName() + "<";
+			//ret += "<" + next.getParameters().stream().map((p) -> "__Succ" + i++).collect(Collectors.joining(", ")) + ">";  // FIXME: fragile?
+			boolean first = true;
+			for (String p : next.getParameters())
 			{
-				mb.addParameters(ScribSocketGenerator.ENDSOCKET_CLASS + "<?, ?> end");
+				if (first)
+				{
+					first = false;
+				}
+				else
+				{
+					ret += ", ";
+				}
+				ret += "__Succ" + i++;
 			}
-			else
-			{
-				InterfaceBuilder next = iogen.getIOStateInterface(IOStateInterfaceGenerator.getIOStateInterfaceName(self, succ));  // Select/Receive/Branch
-				String ret = next.getName();
-				ret += "<" + next.getParameters().stream().map((p) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";  // FIXME: fragile?
-				mb.addParameters(ret + " schan");
-				
-				// FIXME: duplicates possible?
-			}
+			ret += ">";
+			mb.addParameters(ret + " schan");
+			
+			// duplicates possible?  -- can have repeat continuations, but the branch operation ops themselves will be distinct
+		}
+		return i;
 	}
 
 	// Pre: s is a branch state
