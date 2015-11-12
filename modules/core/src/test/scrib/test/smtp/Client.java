@@ -1,3 +1,6 @@
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' test.smtp.Client
+
+
 package test.smtp;
 
 import java.io.IOException;
@@ -12,9 +15,8 @@ import org.scribble.net.session.SocketChannelEndpoint;
 import test.smtp.Smtp.Smtp.Smtp;
 import test.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
 import test.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
-import test.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Cases;
-import test.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250d__S_250;
-import test.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250d__S_250;
+import test.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
+import test.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
 import test.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_220;
 import test.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
 import test.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Quit;
@@ -76,19 +78,19 @@ public class Client
 
 	private Succ_In_S_250 doEhloAnd250(Select_C_S_Ehlo<?> s) throws ClassNotFoundException, ScribbleRuntimeException, IOException
 	{
-		Branch_C_S_250d__S_250<?, ?> b =
+		Branch_C_S_250__S_250d<?, ?> b =
 				s.send(Smtp.S, new Ehlo("test"))
-				 .to(Branch_C_S_250d__S_250.cast);  // Safe cast
+				 .to(Branch_C_S_250__S_250d.cast);  // Safe cast
 		Buf<_250> b1 = new Buf<>();
 		Buf<_250d> b2 = new Buf<>();
 		while (true)
 		{
-			Case_C_S_250d__S_250<?, ?> c = b.branch(Smtp.S);
+			Case_C_S_250__S_250d<?, ?> c = b.branch(Smtp.S);
 			switch (c.getOp())
 			{
 				case _250d:
 				{
-					b = c.receive(Smtp.S, Smtp._250d, b2).to(Branch_C_S_250d__S_250.cast);
+					b = c.receive(Smtp.S, Smtp._250d, b2).to(Branch_C_S_250__S_250d.cast);
 					System.out.print(b2.val);
 					break;
 				}

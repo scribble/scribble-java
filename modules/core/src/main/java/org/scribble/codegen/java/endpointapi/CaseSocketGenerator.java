@@ -26,7 +26,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected String getClassName()
 	{
-		return super.getClassName() + "_Cases";
+		return getCaseSocketName(super.getClassName());
 	}
 
 	@Override
@@ -224,5 +224,10 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+	}
+	
+	public static String getCaseSocketName(String branchSocketName)
+	{
+		return branchSocketName + "_Cases";
 	}
 }

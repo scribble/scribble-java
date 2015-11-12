@@ -222,6 +222,7 @@ IDENTIFIER:
 			/* Underscore currently can cause ambiguities in the API generation naming scheme
 			 * But maybe only consecutive underscores are the problem
 			 * -- cannot completely disallow underscores as needed for projection naming scheme
+			 * Or disallow underscores only for role/op/messagesig names
 			 */
 //	(LETTER | DIGIT)*
 ;
