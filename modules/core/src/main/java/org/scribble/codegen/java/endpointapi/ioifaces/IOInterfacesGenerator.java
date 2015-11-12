@@ -283,8 +283,17 @@ public class IOInterfacesGenerator extends ApiGenerator
 					InterfaceBuilder next = getIOStateInterface(IOStateInterfaceGenerator.getIOStateInterfaceName(self, succ));  // Select/Receive/Branch
 					String ret = next.getName() + "<";
 					//ret += "<" + next.getParameters().stream().map((p) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";  // FIXME: fragile?
+					boolean bar = true;
 					for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))  // FIXME: factor out with getHandleInterfaceIOActionParams
 					{
+						if (bar)
+						{
+							bar = false;
+						}
+						else
+						{
+							ret += ", ";
+						}
 						EndpointState foo = succ.accept(b);
 						if (foo.isTerminal())
 						{
@@ -300,19 +309,31 @@ public class IOInterfacesGenerator extends ApiGenerator
 				}
 				HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, override);
 				// FIXME: factor out
-				String args = IntStream.rangeClosed(1, a.payload.elems.size()).mapToObj((i) -> "arg" + i).collect(Collectors.joining(", "));
-				if (!args.equals(""))
+				String ln = "receive((";
+				if (succ.isTerminal())  // factor out
 				{
-					args = ", " + args;
-				}
-				if (succ.isTerminal())
-				{
-					override.addBodyLine("receive((EndSocket) end, op" + args + ");");  // factor out
+					ln += "EndSocket) end";
 				}
 				else
 				{
-					override.addBodyLine("receive((" + nextClass + ") schan, op" + args + ");");  // factor out
+					ln += nextClass + ") schan";
 				}
+				ln += ", op";
+				String args;
+				if (a.mid.isOp())  // factor out
+				{
+					args = IntStream.rangeClosed(1, a.payload.elems.size()).mapToObj((i) -> "arg" + i).collect(Collectors.joining(", "));
+					if (!args.equals(""))
+					{
+						args = ", " + args;
+					}
+				}
+				else
+				{
+					args = ", arg";
+				}
+				ln += args + ");";
+				override.addBodyLine(ln);
 				override.addAnnotations("@Override");
 			}
 		}
