@@ -15,10 +15,10 @@ import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.fib.Fib.Adder.Adder;
 import demo.fib.Fib.Adder.channels.C.Adder_C_1;
-import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S$BYE;
-import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S$RES$Integer;
-import demo.fib.Fib.Adder.channels.C.ioifaces.Select_C_S$ADD$Integer$Integer$_S$BYE;
-import demo.fib.Fib.Adder.channels.C.ioifaces.Succ_Out_S$BYE;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_BYE;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_RES_Integer;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Select_C_S_ADD_Integer_Integer__S_BYE;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Succ_Out_S_BYE;
 import demo.fib.Fib.Adder.roles.C;
 
 
@@ -52,22 +52,22 @@ public class AdderClient
 
 			//fib(i1, i2, s1).end();
 			
-			foo(s1, i1).to(Receive_C_S$BYE.cast).receive(Adder.S, Adder.BYE);
+			foo(s1, i1).to(Receive_C_S_BYE.cast).receive(Adder.S, Adder.BYE);
 			//foo(s1, i1);
 			
 			System.out.println("Client: " + i1.val);
 		}
 	}
 	
-	private static Succ_Out_S$BYE foo(Select_C_S$ADD$Integer$Integer$_S$BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
-	//private static EndSocket foo(Select_C_S$ADD$Integer$Integer$_S$BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	private static Succ_Out_S_BYE foo(Select_C_S_ADD_Integer_Integer__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	//private static EndSocket foo(Select_C_S_ADD_Integer_Integer__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
 	{
 		return (i.val < 100)
 				? foo(
 						s.send(Adder.S, Adder.ADD, i.val, i.val)
-						 .to(Receive_C_S$RES$Integer.cast)
+						 .to(Receive_C_S_RES_Integer.cast)
 						 .receive(Adder.S, Adder.RES, i)
-						 .to(Select_C_S$ADD$Integer$Integer$_S$BYE.cast)
+						 .to(Select_C_S_ADD_Integer_Integer__S_BYE.cast)
 					, i)
 				: s.send(Adder.S, Adder.BYE);
 	}

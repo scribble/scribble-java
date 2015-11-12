@@ -204,7 +204,7 @@ public class SessionApiGenerator extends ApiGenerator
 	private ClassBuilder constructSingletonClass(ClassBuilder cb, String pack, String superc, String type)
 	{
 		cb.setName(type);
-		cb.addModifiers(JavaBuilder.PUBLIC);
+		cb.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.FINAL);
 		cb.setPackage(pack);
 		cb.setSuperClass(superc);
 

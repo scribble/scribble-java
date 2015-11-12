@@ -3,7 +3,6 @@
 
 package scratch;
 
-import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
@@ -16,6 +15,10 @@ import scratch.Scratch1.Proto1.roles.C;
 
 public class MyC
 {
+	// refactor separate io iface generators
+	// fix action string canonical ordering
+	// subtype hierarchy / io iface for handler iface
+	
 	public static void main(String[] args) throws Exception
 	{
 		Proto1 adder = new Proto1();
@@ -28,7 +31,7 @@ public class MyC
 			{
 				s2 = 
 					s2.send(Proto1.S, Proto1._2, 123)
-					  .receive(Proto1.S, Proto1._3, new Buf<>())
+					  .async(Proto1.S, Proto1._3)
 					  .send(Proto1.S, Proto1._1);
 			}
 			s2.send(Proto1.S, Proto1._4).end();

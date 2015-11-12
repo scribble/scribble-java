@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
+import org.scribble.codegen.java.endpointapi.ioifaces.BranchInterfaceGenerator;
 import org.scribble.codegen.java.endpointapi.ioifaces.IOStateInterfaceGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
@@ -25,7 +26,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected String getClassName()
 	{
-		return super.getClassName() + "_Cases";
+		return getCaseSocketName(super.getClassName());
 	}
 
 	@Override
@@ -91,7 +92,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		MethodBuilder mb = this.cb.newMethod("getOp");
 		mb.addAnnotations("@Override");
 		mb.addModifiers(JavaBuilder.PUBLIC);
-		mb.setReturn(IOStateInterfaceGenerator.getIOStateInterfaceName(self, this.curr) + "." + IOStateInterfaceGenerator.getBranchInterfaceEnumName(self, this.curr));
+		mb.setReturn(IOStateInterfaceGenerator.getIOStateInterfaceName(self, this.curr) + "." + BranchInterfaceGenerator.getBranchInterfaceEnumName(self, this.curr));
 		mb.addBodyLine(JavaBuilder.RETURN + " " + JavaBuilder.THIS + "." + CASE_OP_FIELD + ";");
 
 		this.apigen.addTypeDecl(this.cb);  // CaseSocketBuilder used by BranchSocketBuilder, not EndpointApiGenerator
@@ -223,5 +224,10 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addParameters(opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);  // More params may be added later (payload-arg/future Buffs)
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+	}
+	
+	public static String getCaseSocketName(String branchSocketName)
+	{
+		return branchSocketName + "_Cases";
 	}
 }

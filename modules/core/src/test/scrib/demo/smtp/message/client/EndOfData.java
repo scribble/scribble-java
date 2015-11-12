@@ -1,6 +1,6 @@
 package demo.smtp.message.client;
 
-import demo.smtp.Smtp.SMTP.SMTP;
+import demo.smtp.Smtp.Smtp.Smtp;
 import demo.smtp.message.SmtpMessage;
 import demo.smtp.message.SmtpMessageFormatter;
 
@@ -10,7 +10,7 @@ public class EndOfData extends SmtpMessage
 
 	public EndOfData()
 	{
-		super(SMTP.ATAD, SmtpMessage.CRLF + "." + SmtpMessage.CRLF);
+		super(Smtp.EndOfDate, SmtpMessage.CRLF + "." + SmtpMessage.CRLF);
 	}
 
 	// Drop operator used for Scribble

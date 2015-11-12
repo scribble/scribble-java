@@ -3,7 +3,7 @@ package org.scribble.codegen.java.endpointapi;
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.endpointapi.ioifaces.IOStateInterfaceGenerator;
+import org.scribble.codegen.java.endpointapi.ioifaces.BranchInterfaceGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
@@ -85,7 +85,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		
 
 		// Handler branch method
-		String ifname = BranchInterfaceGenerator.getBranchInterfaceName(this.cb);
+		String ifname = HandlerInterfaceGenerator.getBranchInterfaceName(this.cb);
 		MethodBuilder mb2 = this.cb.newMethod("branch");
 		mb2.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
@@ -116,7 +116,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			//if (!succ.isTerminal())
 			{
 				//FIXME: factor out with addReturn?
-				 ln += JavaBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketGenerator.GEN_ENDSOCKET_CLASS : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
+				 ln += JavaBuilder.NEW + " " + (succ.isTerminal() ? ScribSocketGenerator.GENERATED_ENDSOCKET_NAME : this.apigen.getSocketClassName(succ)) + "(" + SCRIBSOCKET_SE_FIELD + ", true), ";
 			}
 			ln += getSessionApiOpConstant(a.mid);
 					
@@ -148,12 +148,12 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb2.addBodyLine(1, "throw " + JavaBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
 		mb2.addBodyLine("}");
 		
-		this.apigen.addTypeDecl(new BranchInterfaceGenerator(this.apigen, this.cb, this.curr).generateType());
+		this.apigen.addTypeDecl(new HandlerInterfaceGenerator(this.apigen, this.cb, this.curr).generateType());
 	}
 
 	protected static String getBranchEnumClassName(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		//return apigen.getSocketClassName(curr) + "_Enum";
-		return IOStateInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
+		return BranchInterfaceGenerator.getBranchInterfaceEnumName(apigen.getSelf(), curr);
 	}
 }

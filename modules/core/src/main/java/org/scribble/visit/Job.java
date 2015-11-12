@@ -2,6 +2,7 @@ package org.scribble.visit;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -113,12 +114,11 @@ public class Job
 		}
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
 		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
-		
-		IOInterfacesGenerator iogen = new IOInterfacesGenerator(this, fullname, self, apigen);
-
-		Map<String, String> api = iogen.generateApi();  // Have to do before state chan generation (before the state chans are "build") -- unnecessary if traverse refactored
-		api.putAll(apigen.generateApi()); // filepath -> class source  // Store results?
-		
+		IOInterfacesGenerator iogen = new IOInterfacesGenerator(apigen);
+		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
+		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?
+		api.putAll(apigen.generateApi());
+		api.putAll(iogen.generateApi());
 		return api;
 	}
 	

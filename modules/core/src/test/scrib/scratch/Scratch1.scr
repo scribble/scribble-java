@@ -5,7 +5,7 @@
 
 module scratch.Scratch1;
 
-type <java> "java.lang.Integer" from "rt.jar" as Integer;
+type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 global protocol Proto1(role C, role S)
 {
@@ -14,8 +14,8 @@ global protocol Proto1(role C, role S)
 		1() from C to S;
 		choice at C
 		{
-			2(Integer) from C to S;
-			3(Integer) from S to C;
+			2(Int) from C to S;
+			3(Int) from S to C;
 			continue X;
 		}
 		or
@@ -27,12 +27,16 @@ global protocol Proto1(role C, role S)
 
 global protocol Proto2(role C, role S)
 {
+	1() from C to S;
+	//2() from C to S;
 	choice at C 
 	{
-		1() from C to S;
+		3() from C to S;
+		do Proto2(C, S);
 	}
 	or
 	{
 		2() from C to S;
 	}
 }
+

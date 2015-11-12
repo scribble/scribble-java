@@ -1,6 +1,6 @@
 package demo.smtp.message.client;
 
-import demo.smtp.Smtp.SMTP.SMTP;
+import demo.smtp.Smtp.Smtp.Smtp;
 import demo.smtp.message.SmtpMessage;
 import demo.smtp.message.SmtpMessageFormatter;
 
@@ -9,14 +9,9 @@ public class DataLine extends SmtpMessage
 {
 	private static final long serialVersionUID = 1L;
 
-	public DataLine()
-	{
-		super(SMTP.DATALINE);
-	}
-
 	public DataLine(String body)
 	{
-		super(SMTP.DATALINE, body);
+		super(Smtp.DataLine, body);
 		if (body.equals("."))
 		{
 			throw new RuntimeException("Illegal body: " + body);

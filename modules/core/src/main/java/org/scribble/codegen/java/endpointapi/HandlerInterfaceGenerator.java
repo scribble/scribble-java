@@ -13,12 +13,12 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageSigName;
 
 // Factor out
-public class BranchInterfaceGenerator extends AuxStateChannelTypeGenerator
+public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 {
 	private final EndpointState curr;
 
 	// Pre: cb is the BrranchSocketBuilder
-	public BranchInterfaceGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, EndpointState curr)
+	public HandlerInterfaceGenerator(StateChannelApiGenerator apigen, ClassBuilder parent, EndpointState curr)
 	{
 		super(apigen, parent);
 		this.curr = curr;
@@ -53,7 +53,7 @@ public class BranchInterfaceGenerator extends AuxStateChannelTypeGenerator
 				// FIXME: repeated
 				ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
 				ib.addImports(SessionApiGenerator.getRolesPackageName(this.apigen.getGProtocolName()) + ".*");
-				mb3.addParameters(ScribSocketGenerator.GEN_ENDSOCKET_CLASS
+				mb3.addParameters(ScribSocketGenerator.GENERATED_ENDSOCKET_NAME
 						//+ "<" + SessionApiGenerator.getSessionClassName(this.apigen.getGProtocolName()) + ", " + this.apigen.getSelf() + ">"
 						+ " schan");  // FIXME: factor out
 			}

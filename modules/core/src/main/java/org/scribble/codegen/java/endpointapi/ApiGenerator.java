@@ -5,6 +5,7 @@ import java.util.Map;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.visit.Job;
 
+// Basic pattern: use TypeGenerators to create all necessary TypeBuilders and cache them, and generateApi should call build on all as a final step
 public abstract class ApiGenerator
 {
 	protected final Job job;
@@ -19,4 +20,9 @@ public abstract class ApiGenerator
 	// Return: key (package and Java class file path) -> val (Java class source) 
 	// FIXME: Path instead of String key?
 	public abstract Map<String, String> generateApi();
+	
+	public Job getJob()
+	{
+		return this.job;
+	}
 }

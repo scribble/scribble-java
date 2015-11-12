@@ -1,7 +1,5 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
-import org.scribble.codegen.java.endpointapi.CaseSocketGenerator;
-import org.scribble.codegen.java.endpointapi.InputFutureGenerator;
 import org.scribble.codegen.java.endpointapi.ReceiveSocketGenerator;
 import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SendSocketGenerator;
@@ -13,7 +11,6 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
-import org.scribble.net.scribsock.CaseSocket;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.PayloadType;
 
@@ -34,7 +31,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		GProtocolName gpn = this.apigen.getGProtocolName();
 
 		this.ib.setName(getActionInterfaceName(this.a));
-		this.ib.setPackage(IOInterfacesGenerator.getPackageName(this.apigen.getGProtocolName(), this.apigen.getSelf()));
+		this.ib.setPackage(IOInterfacesGenerator.getIOInterfacePackageName(this.apigen.getGProtocolName(), this.apigen.getSelf()));
 		this.ib.addImports("java.io.IOException");
 		this.ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketGenerator
 		this.ib.addImports(SessionApiGenerator.getRolesPackageName(gpn) + ".*");
@@ -116,12 +113,14 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		return name;
 	}
 
-	public static String getActionString(IOAction a)
+	public static String getActionString(IOAction a)  // FIXME: peer not needed for inputs
 	{
-		String name = a.peer + "$" + a.mid;
+		//String name = a.peer + "$" + a.mid;
+		String name = a.peer + "_" + a.mid;
 		for (PayloadType<?> pay : a.payload.elems)
 		{
-			name += "$" + pay;
+			//name += "$" + pay;
+			name += "_" + pay;
 		}
 		return name;
 	}
