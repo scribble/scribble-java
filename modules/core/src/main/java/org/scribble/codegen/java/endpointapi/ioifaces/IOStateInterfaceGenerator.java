@@ -88,7 +88,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			String actif = this.actions.get(a).getName();
-			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, a));
+			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
 			this.ib.addInterfaces(actif + "<__Succ" + i + ">");
 			i++;
 		}

@@ -37,7 +37,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		this.ib.addImports(SessionApiGenerator.getRolesPackageName(gpn) + ".*");
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 		this.ib.addModifiers(JavaBuilder.PUBLIC);
-		this.ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, this.a));
+		this.ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.a));
 		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
 		//AbstractMethodBuilder mb2 = null;
 		if (this.a instanceof Receive)

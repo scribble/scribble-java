@@ -85,7 +85,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		
 
 		// Handler branch method
-		String ifname = HandlerInterfaceGenerator.getHandlerInterfaceName(this.cb);
+		String ifname = HandlerInterfaceGenerator.getHandlerInterfaceName(this.cb.getName());
 		MethodBuilder mb2 = this.cb.newMethod("branch");
 		mb2.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");

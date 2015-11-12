@@ -7,7 +7,6 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
-import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
@@ -33,9 +32,9 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 		// Handler interface
 		InterfaceBuilder ib = new InterfaceBuilder();
 		ib.setPackage(SessionApiGenerator.getStateChannelPackageName(gpn, this.apigen.getSelf()));  // FIXME: factor out with ScribSocketBuilder
-		ib.addImports("java.io.IOException");
 		ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder
-		ib.setName(getHandlerInterfaceName(parent));
+		//ib.setName(getHandlerInterfaceName(parent));
+		ib.setName(getHandlerInterfaceName(this.parent.getName()));
 		ib.addModifiers(InterfaceBuilder.PUBLIC);
 
 		for (IOAction a : this.curr.getAcceptable())
@@ -72,7 +71,7 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 		mb.setName("receive");
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.setReturn(InterfaceBuilder.VOID);
-		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException");
 	}
 	
 	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
@@ -94,8 +93,9 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 	}
 
 	// Pre: cb is the BranchSocketBuilder
-	protected static String getHandlerInterfaceName(TypeBuilder cb)
+	//public static String getHandlerInterfaceName(TypeBuilder cb)
+	public static String getHandlerInterfaceName(String branchName)
 	{
-		return cb.getName() + "_Handler";
+		return branchName + "_Handler";
 	}
 }
