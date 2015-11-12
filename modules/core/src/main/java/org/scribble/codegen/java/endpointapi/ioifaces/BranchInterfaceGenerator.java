@@ -18,9 +18,9 @@ import org.scribble.sesstype.name.Role;
 
 public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public BranchInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, Map<IOAction, InterfaceBuilder> actions, Set<InterfaceBuilder> preds)
+	public BranchInterfaceGenerator(StateChannelApiGenerator apigen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
 	{
-		super(apigen, curr, actions, preds);
+		super(apigen, actions, curr);
 	}
 
 	@Override

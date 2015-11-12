@@ -1,7 +1,6 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
@@ -10,8 +9,8 @@ import org.scribble.model.local.IOAction;
 
 public class SelectInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public SelectInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, Map<IOAction, InterfaceBuilder> actions, Set<InterfaceBuilder> preds)
+	public SelectInterfaceGenerator(StateChannelApiGenerator apigen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
 	{
-		super(apigen, curr, actions, preds);
+		super(apigen, actions, curr);
 	}
 }

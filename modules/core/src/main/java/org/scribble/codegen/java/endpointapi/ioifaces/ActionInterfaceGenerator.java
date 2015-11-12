@@ -31,7 +31,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		GProtocolName gpn = this.apigen.getGProtocolName();
 
 		this.ib.setName(getActionInterfaceName(this.a));
-		this.ib.setPackage(IOInterfacesGenerator.getPackageName(this.apigen.getGProtocolName(), this.apigen.getSelf()));
+		this.ib.setPackage(IOInterfacesGenerator.getIOInterfacePackageName(this.apigen.getGProtocolName(), this.apigen.getSelf()));
 		this.ib.addImports("java.io.IOException");
 		this.ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketGenerator
 		this.ib.addImports(SessionApiGenerator.getRolesPackageName(gpn) + ".*");

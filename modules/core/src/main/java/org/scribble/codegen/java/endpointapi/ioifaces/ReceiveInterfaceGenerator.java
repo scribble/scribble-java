@@ -1,7 +1,6 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.scribble.codegen.java.endpointapi.InputFutureGenerator;
 import org.scribble.codegen.java.endpointapi.ReceiveSocketGenerator;
@@ -16,9 +15,9 @@ import org.scribble.sesstype.name.GProtocolName;
 
 public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public ReceiveInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, Map<IOAction, InterfaceBuilder> actions, Set<InterfaceBuilder> preds)
+	public ReceiveInterfaceGenerator(StateChannelApiGenerator apigen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
 	{
-		super(apigen, curr, actions, preds);
+		super(apigen, actions, curr);
 	}
 
 	@Override

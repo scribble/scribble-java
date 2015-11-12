@@ -20,6 +20,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 // Cf. ScribSocketGenerator
+// Partial I/O State I/f generator -- Successor Interfaces and cast methods added later
 public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 {
 	protected static final Comparator<IOAction> IOACTION_COMPARATOR = new Comparator<IOAction>()
@@ -32,17 +33,14 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 			};
 
 	protected final Map<IOAction, InterfaceBuilder> actions;
-	protected final Set<InterfaceBuilder> preds;
-	//private InterfaceBuilder cases;  // HACK
 	
 	protected final InterfaceBuilder ib = new InterfaceBuilder();
 
 	// Preds can be null
-	public IOStateInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, Map<IOAction, InterfaceBuilder> actions, Set<InterfaceBuilder> preds)
+	public IOStateInterfaceGenerator(StateChannelApiGenerator apigen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
 	{
 		super(apigen, curr);
 		this.actions = Collections.unmodifiableMap(actions);
-		this.preds = (preds == null) ? Collections.unmodifiableSet(Collections.emptySet()) : Collections.unmodifiableSet(preds);
 	}
 	
 	@Override
@@ -56,7 +54,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	{
 		addHeader();
 		addSuccessorParamsAndActionInterfaces();
-		addSuccessorInterfaces();
+		//addSuccessorInterfaces();  // Do later (different states may share the same IO State I/f, don't know all successors for this I/f yet (only this state)
 		addCastField();
 	}
 
@@ -64,7 +62,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 		Role self = this.apigen.getSelf();
-		String packname = IOInterfacesGenerator.getPackageName(gpn, self);
+		String packname = IOInterfacesGenerator.getIOInterfacePackageName(gpn, self);
 		String ifname = getIOStateInterfaceName(self, this.curr);
 
 		this.ib.setName(ifname);
@@ -96,16 +94,18 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 		}
 	}
 
-	protected void addSuccessorInterfaces()
+	/*protected void addSuccessorInterfaces()
 	{
 		if (this.preds != null)
 		{
+			System.out.println("AA: " + this.ib.getName() + ", " + this.preds.stream().map((p) -> p.getName()).collect(Collectors.toList()));
+			
 			for (InterfaceBuilder pred : this.preds)
 			{
 				this.ib.addInterfaces(pred.getName());  // Adds Successor Interfaces to this I/O State Interface
 			}
 		}
-	}
+	}*/
 
 	// Pre: s non-terminal
 	public static String getIOStateInterfaceName(Role self, EndpointState s)

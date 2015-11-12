@@ -19,9 +19,9 @@ import org.scribble.sesstype.name.Role;
 
 public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	public CaseInterfaceGenerator(StateChannelApiGenerator apigen, EndpointState curr, Map<IOAction, InterfaceBuilder> actions, Set<InterfaceBuilder> preds)
+	public CaseInterfaceGenerator(StateChannelApiGenerator apigen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr)
 	{
-		super(apigen, curr, actions, preds);
+		super(apigen, actions, curr);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 		Role self = this.apigen.getSelf();
-		String packname = IOInterfacesGenerator.getPackageName(gpn, self);
+		String packname = IOInterfacesGenerator.getIOInterfacePackageName(gpn, self);
 		String ifname = getCasesInterfaceName(self, this.curr);
 
 		this.ib.setName(ifname);
@@ -45,6 +45,12 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 		this.ib.addModifiers(JavaBuilder.PUBLIC);
 	}
 
+	/*@Override
+	protected void addSuccessorInterfaces()
+	{
+
+	}*/
+	
 	protected void addBranchEnumField()
 	{
 		Role self = this.apigen.getSelf();

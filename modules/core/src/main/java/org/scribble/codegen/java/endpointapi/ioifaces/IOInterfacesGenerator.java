@@ -33,6 +33,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 	private final Map<String, InterfaceBuilder> iostates = new HashMap<>();  // Key is interface simple name
 	
 	private final Map<EndpointState, Set<IOAction>> pre = new HashMap<>();  // Pre set: the actions that lead to each state
+	private final Map<EndpointState, Set<InterfaceBuilder>> preds = new HashMap<>();
 
 	public IOInterfacesGenerator(StateChannelApiGenerator apigen)
 	{
@@ -43,9 +44,11 @@ public class IOInterfacesGenerator extends ApiGenerator
 		Role self = getSelf();
 		EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
 
-		firstPass(new HashSet<>(), init);
-		Map<EndpointState, Set<InterfaceBuilder>> preds = getPreds();
-		secondPass(preds, new HashSet<>(), init);
+		generateActionAndSuccessorInterfacesAndCollectPredecessors(new HashSet<>(), init);
+		//Map<EndpointState, Set<InterfaceBuilder>> preds = getPreds();
+		setPreds();
+		generateIOStateInterfacesFirstPass(new HashSet<>(), init);
+		generateIOStateInterfacesSecondPass(new HashSet<>(), init);
 		
 		traverse(new HashSet<>(), init);
 
@@ -53,8 +56,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		if (term != null)
 		{
 			TypeBuilder tb = this.apigen.getType(ScribSocketGenerator.GENERATED_ENDSOCKET_NAME);
-			tb.addImports(getPackageName(this.gpn, self) + ".*");
-			for (InterfaceBuilder ib : getPreds().get(term))
+			tb.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
+			//for (InterfaceBuilder ib : getPreds().get(term))
+			for (InterfaceBuilder ib : this.preds.get(term))
 			{
 				String succ = ib.getName();
 				tb.addInterfaces(succ);
@@ -66,11 +70,121 @@ public class IOInterfacesGenerator extends ApiGenerator
 	public Map<String, String> generateApi()
 	{
 		Map<String, String> output = new HashMap<>();
-		String prefix = getPackageName(this.gpn, getSelf()).replace('.', '/') + "/";
+		String prefix = getIOInterfacePackageName(this.gpn, getSelf()).replace('.', '/') + "/";
 		this.actions.values().stream().forEach((ib) -> output.put(prefix + ib.getName() + ".java", ib.build()));
 		this.succs.values().stream().forEach((ib) -> output.put(prefix + ib.getName() + ".java", ib.build()));
 		this.iostates.values().stream().forEach((tb) -> output.put(prefix + tb.getName() + ".java", tb.build()));
 		return output;
+	}
+	
+	// Factor out FSM visitor?
+	private void generateActionAndSuccessorInterfacesAndCollectPredecessors(Set<EndpointState> visited, EndpointState s)
+	{
+		if (visited.contains(s) || s.isTerminal())
+		{
+			return;
+		}
+		visited.add(s);
+		for (IOAction a : s.getAcceptable())
+		{
+			if (!this.actions.containsKey(a))
+			{
+				this.actions.put(a, new ActionInterfaceGenerator(this.apigen, s, a).generateType());
+				this.succs.put(a, new SuccessorInterfaceGenerator(this.apigen, s, a).generateType());
+			}
+			
+			EndpointState succ = s.accept(a);
+			putPre(succ, a);
+
+			generateActionAndSuccessorInterfacesAndCollectPredecessors(visited, succ);
+			/*Set<EndpointState> tmp = new HashSet<>(visited);
+			tmp.add(s);  // FIXME? merge paths visited multiple times
+			generateActionAndSuccessorInterfacesAndCollectPredecessors(tmp, succ);*/
+		}
+	}
+
+	// Generates partial IO State Interfaces
+	private void generateIOStateInterfacesFirstPass(Set<EndpointState> visited, EndpointState s)
+	{
+		if (visited.contains(s) || s.isTerminal())
+		{
+			return;
+		}
+		
+		String key = IOStateInterfaceGenerator.getIOStateInterfaceName(getSelf(), s);
+		if (!this.iostates.containsKey(key))
+		{
+			// Make the partial I/O State Interface (Successor Interfaces and cast methods added later -- different states may share same State I/f)
+			IOStateInterfaceGenerator iogen = null;
+			InterfaceBuilder iostate;
+			switch (s.getStateKind())
+			{
+				case OUTPUT:
+					iogen = new SelectInterfaceGenerator(this.apigen, this.actions, s);
+					break;
+				case UNARY_INPUT:
+					iogen = new ReceiveInterfaceGenerator(this.apigen, this.actions, s);
+					break;
+				case POLY_INPUT:
+					InterfaceBuilder cases = new CaseInterfaceGenerator(this.apigen, this.actions, s).generateType();
+					this.iostates.put(cases.getName(), cases);
+					iogen = new BranchInterfaceGenerator(this.apigen, this.actions, s);
+					break;
+				case TERMINAL:
+				default:
+					throw new RuntimeException("TODO:");
+			}
+			iostate = iogen.generateType();
+			this.iostates.put(key, iostate);
+		}
+		
+		visited.add(s);
+		for (IOAction a : s.getAcceptable())
+		{
+			generateIOStateInterfacesFirstPass(visited, s.accept(a));
+			/*Set<EndpointState> next = new HashSet<>(visited);
+			next.add(s);
+			secondPass(next, s.accept(a));*/
+		}
+	}
+
+	// Adds Sucessor Interfaces and to-cast methods to IO State Interfaces
+	private void generateIOStateInterfacesSecondPass(Set<EndpointState> visited, EndpointState s)
+	{
+		if (visited.contains(s) || s.isTerminal())
+		{
+			return;
+		}
+
+		Set<InterfaceBuilder> succifs = this.preds.get(s);  // Successor interfaces to be implemented by IO State Interface of s
+		if (succifs != null)
+		{
+			InterfaceBuilder iostate = this.iostates.get(IOStateInterfaceGenerator.getIOStateInterfaceName(getSelf(), s));
+			for (InterfaceBuilder pred : succifs)  // pred is a Successor Interface for the state s 
+			{
+				// May already have "visited" this State I/f for a different state -- Interfaces recorded as a Set, to support repeated adds
+				iostate.addInterfaces(pred.getName());  // Adds Successor Interfaces to this I/O State Interface
+				String ret = iostate.getName() + "<"
+						+ IntStream.range(0, iostate.getParameters().size()).mapToObj((i) -> "?").collect(Collectors.joining(", ")) + ">";
+				addToCastMethod(pred, ret);
+				
+				for (MethodBuilder cast : pred.getDefaultMethods())  // cast is a default method (a to cast -- hacky) in pred
+				{
+					// Overriding every Successor I/f to methods in the I/O State I/f, even if unnecessary
+					addToCastMethod(iostate, cast.getReturn());
+					// TODO: add @Override
+				}
+			}
+		}
+		
+		visited.add(s);
+		for (IOAction a : s.getAcceptable())
+		{
+			generateIOStateInterfacesSecondPass(visited, s.accept(a));
+			/*Set<EndpointState> next = new HashSet<>(visited);
+			next.add(s);
+			thirdPass(next, s.accept(a));*/
+		}
 	}
 	
 	private void traverse(Set<EndpointState> visited, EndpointState s)
@@ -87,7 +201,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		
 		String tmp = ioname + getConcreteSuccessorParameters(s);
 
-		tb.addImports(getPackageName(this.gpn, self) + ".*");
+		tb.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
 		tb.addInterfaces(tmp);
 		
 		InterfaceBuilder iostate = this.iostates.get(ioname);
@@ -105,136 +219,30 @@ public class IOInterfacesGenerator extends ApiGenerator
 		{
 			TypeBuilder cases = this.apigen.getType(this.apigen.getSocketClassName(s) + "_Cases");  // FIXME: factor out
 			cases.addInterfaces(CaseInterfaceGenerator.getCasesInterfaceName(self, s) + getConcreteSuccessorParameters(s));
-			cases.addImports(getPackageName(this.gpn, self) + ".*");
+			cases.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
 		}
 		
-		//visited.add(s);
+		visited.add(s);
 		for (IOAction a : s.getAcceptable())
 		{
-			Set<EndpointState> next = new HashSet<>(visited);  // FIXME: merged paths visited multiple times
+			traverse(visited, s.accept(a));
+			/*Set<EndpointState> next = new HashSet<>(visited);
 			next.add(s);
-			traverse(next, s.accept(a));
+			traverse(next, s.accept(a));*/
 		}
 	}
 	
-	// Factor out FSM visitor?
-	private void firstPass(Set<EndpointState> visited, EndpointState s)
+	// Pre: ib is a Successor I/f for the cast IO State I/f
+	private static void addToCastMethod(InterfaceBuilder succif, String ret)
 	{
-		if (visited.contains(s) || s.isTerminal())
+		if (succif.getDefaultMethods().stream().filter((def) -> def.getReturn().equals(ret)).count() > 0)
 		{
 			return;
 		}
-		for (IOAction a : s.getAcceptable())
-		{
-			if (!this.actions.containsKey(a))
-			{
-				InterfaceBuilder actionif = new ActionInterfaceGenerator(this.apigen, s, a).generateType();
-				this.actions.put(a, actionif);
-				
-				InterfaceBuilder succif = new SuccessorInterfaceGenerator(this.apigen, s, a).generateType();
-				this.succs.put(a, succif);
-			}
-			
-			EndpointState succ = s.accept(a);
-			putPre(succ, a);
-
-			Set<EndpointState> tmp = new HashSet<>(visited);
-			tmp.add(s);
-			firstPass(tmp, succ);
-		}
-	}
-
-	private void secondPass(Map<EndpointState, Set<InterfaceBuilder>> preds, Set<EndpointState> visited, EndpointState s)
-	{
-		if (visited.contains(s) || s.isTerminal())
-		{
-			return;
-		}
-		
-		Set<InterfaceBuilder> tmp = preds.get(s);  // Successor interfaces
-		String key = IOStateInterfaceGenerator.getIOStateInterfaceName(getSelf(), s);
-		IOStateInterfaceGenerator iogen = null;
-		InterfaceBuilder iostate;
-		if (this.iostates.containsKey(key))
-		{
-			iostate = this.iostates.get(key);
-			for (InterfaceBuilder pred : tmp)  // FIXME: factor out with IOStateInterfaceGenerator
-			{
-				iostate.addInterfaces(pred.getName());  // Adds Successor Interfaces to this I/O State Interface
-			}
-		}
-		else
-		{
-			switch (s.getStateKind())
-			{
-				case OUTPUT:
-					iogen = new SelectInterfaceGenerator(this.apigen, s, this.actions, tmp);
-					break;
-				case UNARY_INPUT:
-					iogen = new ReceiveInterfaceGenerator(this.apigen, s, this.actions, tmp);
-					break;
-				case POLY_INPUT:
-					InterfaceBuilder cases = new CaseInterfaceGenerator(this.apigen, s, this.actions, tmp).generateType();
-					addIOStateInterface(cases);
-					
-					iogen = new BranchInterfaceGenerator(this.apigen, s, this.actions, tmp);
-					break;
-				case TERMINAL:
-				default:
-					throw new RuntimeException("TODO:");
-			}
-			iostate = iogen.generateType();
-		}
-		if (tmp != null)
-		{
-			for (InterfaceBuilder pred : tmp)
-			{
-				addSuccessorInterfaceToMethod(pred, iostate);
-
-				X: for (MethodBuilder cast : pred.getDefaultMethods())
-				{
-					// Overriding every Successor I/f to methods in the I/O State I/f, even if unnecessary
-					// FIXME: should be done in third pass: not all to methods in the cast may be built yet due to merge flows (e.g. Select_C_S$StartTls missing Quit cast)
-					for (MethodBuilder mb2 : iostate.getDefaultMethods())  // FIXME: factor out with addSuccessorInterfaceToMethod
-					{
-						if (mb2.getReturn().equals(cast.getReturn()))
-						{
-							continue X;
-						}
-					}
-					MethodBuilder copy = iostate.newDefaultMethod(cast.getName());
-					copy.setReturn(cast.getReturn());
-					cast.getParameters().stream().forEach((p) -> copy.addParameters(p));
-					copy.addBodyLine(JavaBuilder.RETURN + " (" + cast.getReturn() + ") this; ");  // FIXME: factor out
-					copy.addAnnotations("@Override");
-				}
-			}
-		}
-		this.iostates.put(key, iostate);
-		
-		for (IOAction a : s.getAcceptable())
-		{
-			Set<EndpointState> next = new HashSet<>(visited);
-			next.add(s);
-			secondPass(preds, next, s.accept(a));
-		}
-	}
-	
-	// Pre: ib is a Successor I/f for the cast IO State I/f class
-	private static void addSuccessorInterfaceToMethod(InterfaceBuilder ib, InterfaceBuilder cast)
-	{
-		String tmp = cast.getName() + "<" + IntStream.range(0, cast.getParameters().size()).mapToObj((i) -> "?").collect(Collectors.joining(", ")) + ">";
-		for (MethodBuilder def : ib.getDefaultMethods())
-		{
-			if (def.getReturn().equals(tmp))
-			{
-				return;
-			}
-		}
-		MethodBuilder mb = ib.newDefaultMethod("to");
-		mb.setReturn(tmp);
-		mb.addParameters(tmp + " cast");
-		mb.addBodyLine(JavaBuilder.RETURN + " (" + tmp + ") this;");
+		MethodBuilder mb = succif.newDefaultMethod("to");
+		mb.setReturn(ret);
+		mb.addParameters(ret + " cast");
+		mb.addBodyLine(JavaBuilder.RETURN + " (" + ret + ") this;");
 	}
 
 	private String getConcreteSuccessorParameters(EndpointState s)
@@ -262,9 +270,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 	}
 	
 	// Successor interfaces
-	private Map<EndpointState, Set<InterfaceBuilder>> getPreds()
+	//private Map<EndpointState, Set<InterfaceBuilder>> getPreds()
+	private void setPreds()
 	{
-		Map<EndpointState, Set<InterfaceBuilder>> preds = new HashMap<>();
+		//Map<EndpointState, Set<InterfaceBuilder>> preds = new HashMap<>();
 		for (EndpointState s : this.pre.keySet())
 		{
 			Set<InterfaceBuilder> tmp = new HashSet<>();
@@ -272,16 +281,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 			{
 				tmp.add(this.succs.get(a));
 			}
-			preds.put(s, tmp);
+			this.preds.put(s, tmp);
 		}
-		return preds;
-	}
-	
-	protected void addIOStateInterface(InterfaceBuilder ib)
-	{
-		//String prefix = getPackageName(this.gpn, this.self).replace('.', '/') + "/";
-		String name = ib.getName() + ".java";
-		this.iostates.put(name, ib);
+		//return preds;
 	}
 	
 	protected Role getSelf()
@@ -289,9 +291,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 		return this.apigen.getSelf();
 	}
 
-	protected static String getPackageName(GProtocolName gpn, Role self)
+	protected static String getIOInterfacePackageName(GProtocolName gpn, Role self)
 	{
-		//return SessionApiGenerator.getEndpointApiRootPackageName(gpn).replace('.', '/') + "/channels/" + self + "/ioifaces/" ;  // FIXME: factor out (e.g. StateChannelApiGenerator)
-		return SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".channels." + self + ".ioifaces" ;  // FIXME: factor out (e.g. StateChannelApiGenerator)
+		return SessionApiGenerator.getStateChannelPackageName(gpn, self) + ".ioifaces";
 	}
 }
