@@ -22,12 +22,12 @@ public class Server
 		EVoting vp = new EVoting();
 		try (SessionEndpoint<EVoting, S> se = new SessionEndpoint<>(vp, EVoting.S, new ObjectStreamFormatter()))
 		{
-			se.connect(vp.S, SocketChannelEndpoint::new, "localhost", 8888);
+			se.connect(EVoting.S, SocketChannelEndpoint::new, "localhost", 8888);
 			EVoting_S_1 s1 = new EVoting_S_1(se);
 			Buf<String> name = new Buf<>(); 
 			
 			EVoting_S_3_Cases cases = s1.receive(EVoting.V, EVoting.Authenticate, name)
-							 			 .send(EVoting.V, EVoting.Ok, name.val).branch(vp.V);
+							 			 .send(EVoting.V, EVoting.Ok, name.val).branch(EVoting.V);
 			
 			Buf<String> vote = new Buf<>(); 
 			
