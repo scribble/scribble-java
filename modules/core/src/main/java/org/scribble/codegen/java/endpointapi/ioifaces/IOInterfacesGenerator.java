@@ -246,7 +246,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				//InterfaceBuilder handleif = this.iostates.get(HandleInterfaceGenerator.getHandleInterfaceName(self, s));
 				InterfaceBuilder handleif = this.iostates.get(key);
 				
-				System.out.println("AAA: " + handleif.getName() + ", " + handleif.getParameters().isEmpty());
+				//System.out.println("AAA: " + handleif.getName() + ", " + handleif.getParameters().isEmpty());
 				
 				/*if (handleif.getParameters().isEmpty())  // Hacky?
 				{
@@ -578,7 +578,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				{
 					long n = curr1.stream().filter((x) -> x.equals(a)).count();
 					long m = tmp.stream().filter((x) -> x.equals(a)).count();
-					System.out.println("EEE: " + curr1 + ",,, " + tmp);
+					//System.out.println("EEE: " + curr1 + ",,, " + tmp);
 					if (n > m)
 					{
 						for (int i = 0; i < n-m; i++)
