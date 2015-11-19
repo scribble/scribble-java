@@ -40,3 +40,20 @@ global protocol Proto2(role C, role S)
 	}
 }
 
+global protocol Proto3(role C, role S)
+{
+	rec X
+	{
+		1() from C to S;
+		choice at C
+		{
+			2(Int) from C to S;
+			3(Int) from S to C;
+			continue X;
+		}
+		or
+		{
+			4() from C to S;
+		}
+	}
+}
