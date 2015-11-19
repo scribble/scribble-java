@@ -3,6 +3,8 @@ package org.scribble.codegen.java.endpointapi.ioifaces;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -36,6 +38,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 	
 	private final Map<EndpointState, Set<IOAction>> preActions = new HashMap<>();  // Pre set: the actions that lead to each state
 	private final Map<EndpointState, Set<InterfaceBuilder>> preds = new HashMap<>();
+	
+	private final Map<EndpointState, Set<IOAction>> branchPostActions = new HashMap<>();
+	//private final Map<EndpointState, Set<InterfaceBuilder>> branchSuccs = new HashMap<>();
+	private final Map<String, List<IOAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
 
 	public IOInterfacesGenerator(StateChannelApiGenerator apigen)
 	{
@@ -47,10 +53,12 @@ public class IOInterfacesGenerator extends ApiGenerator
 		EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
 
 		generateActionAndSuccessorInterfacesAndCollectPreActions(new HashSet<>(), init);
-		collectPreds();
 		generateIOStateInterfacesFirstPass(new HashSet<>(), init);
+		collectPreds();
 		generateIOStateInterfacesSecondPass(new HashSet<>(), init);
+		collectBranchSuccs();
 		generateHandleInterfaces(new HashSet<>(), init);
+		generateHandleInterfacesSecondPass(new HashSet<>(), init);
 		addIOStateInterfacesToStateChannels(new HashSet<>(), init);  // Except EndSocket
 
 		// Successor I/f's for EndSocket
@@ -85,7 +93,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 			return;
 		}
 		visited.add(s);
-		for (IOAction a : s.getAcceptable())
+
+		for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (!this.actions.containsKey(a))
 			{
@@ -95,6 +104,15 @@ public class IOInterfacesGenerator extends ApiGenerator
 			
 			EndpointState succ = s.accept(a);
 			putPreAction(succ, a);
+
+			if (s.getStateKind() == Kind.POLY_INPUT)
+			{
+				/*for (IOAction b : s.accept(a).getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+				{
+					putBranchPostAction(s, b);
+				}*/
+				putBranchPostAction(s, a);
+			}
 
 			generateActionAndSuccessorInterfacesAndCollectPreActions(visited, succ);
 			/*Set<EndpointState> tmp = new HashSet<>(visited);
@@ -191,11 +209,12 @@ public class IOInterfacesGenerator extends ApiGenerator
 
 		if (s.getStateKind() == Kind.POLY_INPUT)
 		{
+			Set<InterfaceBuilder> succifs = this.preds.get(s);
 			String key = HandleInterfaceGenerator.getHandleInterfaceName(getSelf(), s);
 			if (!this.iostates.containsKey(key))  // Don't generate if one already exists (up to this pass, repeats will all be the same, i.e. name, Action Interfaces, and action-succ parameters)
 			{
 				// Make the partial I/O State Interface (Successor Interfaces and cast methods added later -- different states may share same State I/f)
-				IOStateInterfaceGenerator ifgen = new HandleInterfaceGenerator(this, this.actions, s);
+				IOStateInterfaceGenerator ifgen = new HandleInterfaceGenerator(this, this.actions, s, succifs);
 				this.iostates.put(key, ifgen.generateType());
 			}
 		}
@@ -204,6 +223,82 @@ public class IOInterfacesGenerator extends ApiGenerator
 		for (IOAction a : s.getAcceptable())
 		{
 			generateHandleInterfaces(visited, s.accept(a));
+		}
+	}
+
+	private void generateHandleInterfacesSecondPass(Set<EndpointState> visited, EndpointState s)
+	{
+		if (visited.contains(s) || s.isTerminal())
+		{
+			return;
+		}
+
+		if (s.getStateKind() == Kind.POLY_INPUT)
+		{
+			GProtocolName gpn = this.apigen.getGProtocolName();
+			Role self = this.apigen.getSelf();
+
+			//String foo = HandlerInterfaceGenerator.getHandlerInterfaceName(IOStateInterfaceGenerator.getIOStateInterfaceName(self, s)); 
+			String key = HandleInterfaceGenerator.getHandleInterfaceName(self, s);
+			List<IOAction> succifs = this.branchSuccs.get(key);
+			if (succifs != null)
+			{
+				//InterfaceBuilder handleif = this.iostates.get(HandleInterfaceGenerator.getHandleInterfaceName(self, s));
+				InterfaceBuilder handleif = this.iostates.get(key);
+				
+				System.out.println("AAA: " + handleif.getName() + ", " + handleif.getParameters().isEmpty());
+				
+				if (handleif.getParameters().isEmpty())  // Hacky?
+				{
+					int i = 1;
+					for (IOAction b : succifs)  // Already sorted
+					{
+						handleif.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(b));//this.succs.get(b).getName());
+						i++;
+					}
+
+					handleif.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
+					//int j = 1; 
+					/*Iterator<IOAction> foo = s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).iterator();
+					EndpointState succ = s.accept(foo.next());*/
+				}
+
+				//Map<IOAction, Integer> count = new HashMap<>();
+				List<IOAction> tmp = this.branchSuccs.get(key);
+				//tmp.stream().forEach((a) -> count.put(a, (int) tmp.stream().filter((b) -> b.equals(a)).count()));
+				Map<IOAction, Integer> count = new HashMap<>();
+				for (IOAction a : this.branchPostActions.get(s).stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+				{
+				/*for (IOAction b : succifs)
+				{
+					if (!succ.isAcceptable(b))
+					{
+						succ = s.accept(foo.next());
+					}*/
+					EndpointState succ = s.accept(a);
+					MethodBuilder mb = handleif.newAbstractMethod();
+					HandlerInterfaceGenerator.setHandleMethodHeaderWithoutParamTypes(this.apigen, mb);
+					//j = HandleInterfaceGenerator.setHandleMethodSuccessorParam(this, self, succ, mb, j);
+					HandleInterfaceGenerator.setHandleMethodSuccessorParam(this, self, succ, mb, tmp, count);
+					/*for (IOAction b : count.keySet())
+					{
+						for (int j = 0; j < count.get(b); j++)
+						{
+							tmp.remove(b);
+						}
+					}*/
+					HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, mb);
+					
+					handleif.checkDuplicateMethods(mb);  // Hacky
+				//}
+				}
+			}
+		}
+				
+		visited.add(s);
+		for (IOAction a : s.getAcceptable())
+		{
+			generateHandleInterfacesSecondPass(visited, s.accept(a));
 		}
 	}
 	
@@ -245,7 +340,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			// FIXME: factor out with HandleInterfaceGenerator and getConcreteSuccessorParameters
 			String tmp = "";
 			boolean first = true;
-			for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			/*for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				EndpointState succ = s.accept(a);
 				for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
@@ -260,8 +355,44 @@ public class IOInterfacesGenerator extends ApiGenerator
 					}
 					tmp += this.getSuccName.apply(succ.accept(b));
 				}
+			}*/
+			String handle = HandleInterfaceGenerator.getHandleInterfaceName(self, s);
+			List<IOAction> foo1 = new LinkedList<>();
+			List<EndpointState> bar1 = new LinkedList<>();
+			for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			{
+				EndpointState succ = s.accept(a);
+				for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+				{
+					foo1.add(b);
+					bar1.add(succ);
+				}
 			}
-			handler.addInterfaces(HandleInterfaceGenerator.getHandleInterfaceName(self, s) + "<" + tmp + ">");
+			System.out.println("BBB: " + handle);
+			for (IOAction a : this.branchSuccs.get(handle))
+			{
+				if (first)
+				{
+					first = false;
+				}
+				else
+				{
+					tmp += ", ";
+				}
+				if (foo1.contains(a))
+				{
+					EndpointState succ = bar1.get(foo1.indexOf(a));
+					tmp += this.getSuccName.apply(succ.accept(a));
+					foo1.remove(a);
+					bar1.remove(succ);
+				}
+				else
+				{
+					tmp += SuccessorInterfaceGenerator.getSuccessorInterfaceName(a);
+				}
+			}	
+			
+			handler.addInterfaces(handle + "<" + tmp + ">");
 			
 			// Override abstract handle methods with default cast implementation
 			for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
@@ -378,13 +509,23 @@ public class IOInterfacesGenerator extends ApiGenerator
 	
 	private void putPreAction(EndpointState s, IOAction a)
 	{
-		Set<IOAction> tmp = this.preActions.get(s);
+		putMapSet(this.preActions, s, a);
+	}
+
+	private void putBranchPostAction(EndpointState s, IOAction a)
+	{
+		putMapSet(this.branchPostActions, s, a);
+	}
+
+	private static <K, V> void putMapSet(Map<K, Set<V>> map, K k, V v)
+	{
+		Set<V> tmp = map.get(k);
 		if (tmp == null)
 		{
 			tmp = new LinkedHashSet<>();
-			this.preActions.put(s, tmp);
+			map.put(k, tmp);
 		}
-		tmp.add(a);
+		tmp.add(v);
 	}
 	
 	// Successor I/f's to be implemented by each I/O State I/f
@@ -393,11 +534,71 @@ public class IOInterfacesGenerator extends ApiGenerator
 		for (EndpointState s : this.preActions.keySet())
 		{
 			Set<InterfaceBuilder> tmp = new HashSet<>();
-			for (IOAction a : this.preActions.get(s))
+			for (IOAction a : this.preActions.get(s))  // sort?
 			{
 				tmp.add(this.succs.get(a));
 			}
 			this.preds.put(s, tmp);
+		}
+	}
+	
+	private void collectBranchSuccs()
+	{
+		Role self = getSelf();
+		for (EndpointState s : this.branchPostActions.keySet())
+		{
+			//String key = HandlerInterfaceGenerator.getHandlerInterfaceName(IOStateInterfaceGenerator.getIOStateInterfaceName(self, s));
+			String key = HandleInterfaceGenerator.getHandleInterfaceName(self, s);  // HandleInterface name
+
+			List<IOAction> curr1 = new LinkedList<>();
+			this.branchPostActions.get(s).forEach((a) -> curr1.addAll(s.accept(a).getAcceptable()));  // TODO: flatmap
+			//List<IOAction> curr2 = curr1.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList());
+			
+			List<IOAction> tmp = this.branchSuccs.get(key);
+			if (tmp == null)
+			{
+				tmp = new LinkedList<>();
+				//this.branchSuccs.put(key, tmp);
+				tmp.addAll(curr1);
+			}
+			else
+			{
+				for (IOAction a : curr1)
+				{
+					long n = curr1.stream().filter((x) -> x.equals(a)).count();
+					long m = tmp.stream().filter((x) -> x.equals(a)).count();
+					System.out.println("EEE: " + curr1 + ",,, " + tmp);
+					if (n > m)
+					{
+						for (int i = 0; i < n-m; i++)
+						{
+							tmp.add(a);
+						}
+					}
+				}
+			}
+				
+			this.branchSuccs.put(key, tmp.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()));
+			//System.out.println("AAA: " + this.branchSuccs.get(key));
+
+			/*List<IOAction> tmp = this.branchSuccs.get(key);
+			if (tmp == null)
+			{
+				tmp = new LinkedList<>();
+				this.branchSuccs.put(key, tmp);
+			}
+			//this.branchPostActions.get(s).stream()//.sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
+					//.forEach((a) -> { tmp.add(this.succs.get(a)); });
+			for (IOAction a : this.branchPostActions.get(s))  // Already sorted -- guaranteed pairwise distinct (branch actions)  //.sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
+			{
+				// Not necessarily distinct (actions of the branch successor state)
+				for (IOAction b : s.accept(a).getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+				{
+					//tmp.add(this.succs.get(b));
+					tmp.add(b);
+				}
+			}
+			tmp = tmp.stream().so*/
 		}
 	}
 	

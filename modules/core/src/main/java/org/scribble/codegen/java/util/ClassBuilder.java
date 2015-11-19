@@ -1,5 +1,6 @@
 package org.scribble.codegen.java.util;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,6 +49,18 @@ public class ClassBuilder extends TypeBuilder
 		MethodBuilder mb = newMethod();
 		mb.setName(name);
 		return mb;
+	}
+	
+	public final boolean hasMethodSignature(String ret, String... params)
+	{
+		for (MethodBuilder mb : this.methods)
+		{
+			if (mb.getReturn().equals(ret) && mb.getParameters().equals(Arrays.asList(params)))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override

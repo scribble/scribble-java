@@ -66,15 +66,15 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 			SendSocketGenerator.setSendHeaderWithoutReturnType(this.apigen, this.a, mb);
 		}
 		EndpointState succ = this.curr.accept(this.a);
-		if (succ.isTerminal())
+		/*if (succ.isTerminal())
 		{
 			ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);
 			/*if (this.a instanceof Receive)
 			{
 				ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb2, succ);
-			}*/
+			}* /
 		}
-		else
+		else*/
 		{
 			mb.setReturn("__Succ");
 			//if (this.a instanceof Receive)

@@ -1,6 +1,7 @@
 package org.scribble.codegen.java.util;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,6 +85,60 @@ public abstract class TypeBuilder extends JavaBuilder
 		AbstractMethodBuilder mb = newAbstractMethod();
 		mb.setName(name);
 		return mb;
+	}
+	
+	// HACK: up to generic erasure
+	public final void checkDuplicateMethods(MethodBuilder mb)
+	{
+		List<MethodBuilder> toRemove = new LinkedList<>();
+		X: for (MethodBuilder tmp : this.methods)
+		{
+			if (!tmp.equals(mb) && tmp.getReturn().equals(mb.getReturn()))
+			{
+				if (tmp.getParameters().size() == 0)
+				{
+					if (mb.getParameters().size() == 0)
+					{
+						continue X;
+					}
+				}
+				else
+				{
+					Iterator<String> mbparams = mb.getParameters().iterator();
+					for (String tmpparam : tmp.getParameters())
+					{
+						if (!mbparams.hasNext())
+						{
+							continue X;
+						}
+						String mbparam = mbparams.next();
+					
+						if (mbparam.contains("<"))
+						{
+							mbparam = mbparam.substring(0, mbparam.indexOf("<"));
+						}
+						else
+						{
+							mbparam = mbparam.substring(0, mbparam.indexOf(" "));
+						}
+						if (tmpparam.contains("<"))
+						{
+							tmpparam = tmpparam.substring(0, tmpparam.indexOf("<"));
+						}
+						else
+						{
+							tmpparam = tmpparam.substring(0, tmpparam.indexOf(" "));
+						}
+						if (!tmpparam.equals(mbparam))
+						{
+							continue X;
+						}
+					}
+				}
+				toRemove.add(mb);
+			}
+		}
+		this.methods.removeAll(toRemove);
 	}
 	
 	public EnumBuilder newMemberEnum(String name)
