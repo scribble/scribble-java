@@ -42,8 +42,8 @@ public class MyS
 					se.accept(ss, Proto1.C);
 
 					new Proto1_S_1(se).async(Proto1.C, Proto1._1)
-						//.branch(Proto1.C, new Handler());
-						.handle(Proto1.C, new Handler2());
+						.branch(Proto1.C, new Handler());
+						//.handle(Proto1.C, new Handler2());
 						//.branch(Proto1.C, new Handler3<Proto1_S_3, EndSocket>());
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
@@ -55,7 +55,9 @@ public class MyS
 	}
 }
 
-class Handler implements Proto1_S_2_Handler
+class Handler implements
+	//Proto1_S_2_Handler
+	Proto1_S_2_Handler
 {
 	@Override
 	public void receive(EndSocket schan, _4 op) throws ScribbleRuntimeException, IOException

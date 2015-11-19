@@ -72,7 +72,7 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 		mb.setName("receive");
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.setReturn(InterfaceBuilder.VOID);
-		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException");
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
 	}
 	
 	public static void addHandleMethodOpAndPayloadParams(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
