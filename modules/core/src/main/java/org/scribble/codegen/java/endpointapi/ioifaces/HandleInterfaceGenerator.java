@@ -1,12 +1,13 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.codegen.java.endpointapi.HandlerInterfaceGenerator;
 import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
+import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
@@ -34,7 +35,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void constructInterface()
 	{
 		super.constructInterface();
-		//addHandleMethods();
+		addHandleMethods();
 	}
 
 	@Override
@@ -62,13 +63,15 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	{
 		//Role self = this.apigen.getSelf();
 
-		/*int i = 1;
-		/*for (IOAction a : getHandleInterfaceIOActionParams(this.curr))  // Branch successor state successors, not the "direct" successors
+		int i = 1;
+		//for (IOAction a : getHandleInterfaceIOActionParams(this.curr))  // Branch successor state successors, not the "direct" successors
+		// Duplicated from BranchInterfaceGenerator
+		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
 			i++;
-		}* /
-		for (InterfaceBuilder ib : this.succifs)  // Already sorted
+		}
+		/*for (InterfaceBuilder ib : this.succifs)  // Already sorted
 		{
 			this.ib.addParameters("__Succ" + i + " extends " + ib.getName());
 			i++;
@@ -98,24 +101,29 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 		return as;
 	}*/
 
-	/*protected void addHandleMethods()
+	protected void addHandleMethods()
 	{
-		/*GProtocolName gpn = this.apigen.getGProtocolName();
-		Role self = this.apigen.getSelf();
+		GProtocolName gpn = this.apigen.getGProtocolName();
+		//Role self = this.apigen.getSelf();
 		Set<IOAction> as = this.curr.getAcceptable();
 
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 		int i = 1; 
 		for (IOAction a : as.stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
-			EndpointState succ = this.curr.accept(a);
-
+			/*EndpointState succ = this.curr.accept(a);
 			MethodBuilder mb = this.ib.newAbstractMethod();
 			HandlerInterfaceGenerator.setHandleMethodHeaderWithoutParamTypes(this.apigen, mb);
 			i = setHandleMethodSuccessorParam(this.iogen, self, succ, mb, i);
+			HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, mb);*/
+
+			MethodBuilder mb = this.ib.newAbstractMethod();
+			HandlerInterfaceGenerator.setHandleMethodHeaderWithoutParamTypes(this.apigen, mb);
+			//setHandleMethodSuccessorParam(this.iogen, self, succ, mb);
+			mb.addParameters("__Succ" + i++ + " schan");
 			HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, mb);
 		}
-	}*/
+	}
 
 	//protected static int setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EndpointState succ, MethodBuilder mb, int i)
 	protected static void setHandleMethodSuccessorParam(IOInterfacesGenerator iogen, Role self, EndpointState succ, MethodBuilder mb, List<IOAction> as, Map<IOAction, Integer> count)
@@ -181,7 +189,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	// Pre: s is a branch state
-	protected static String getHandleInterfaceName(Role self, EndpointState s)
+	public static String getHandleInterfaceName(Role self, EndpointState s)
 	{
 		// FIXME: factor out (CaseInterfaceGenerator, IOStateInterfaceGenerator.getIOStateInterfaceName)
 		return "Handle_" + self + "_" + s.getAcceptable().stream().sorted(IOACTION_COMPARATOR)

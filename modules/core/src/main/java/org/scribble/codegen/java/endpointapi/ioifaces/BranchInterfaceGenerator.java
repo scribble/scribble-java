@@ -28,10 +28,10 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 	{
 		super.constructInterface();
 		addBranchEnum();
-		addBranchMethod();
+		addBranchMethods();
 	}
 				
-	protected void addBranchMethod()
+	protected void addBranchMethods()
 	{
 		Role self = this.apigen.getSelf();
 		Set<IOAction> as = this.curr.getAcceptable();
@@ -43,6 +43,22 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 		bra.setReturn(ret);
 		bra.addParameters(SessionApiGenerator.getRoleClassName(as.iterator().next().peer) + " role");
 		bra.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
+		
+		AbstractMethodBuilder bra2 = this.ib.newAbstractMethod("branch");
+		bra2.setReturn(JavaBuilder.VOID);
+		bra2.addParameters(SessionApiGenerator.getRoleClassName(as.iterator().next().peer) + " role");
+		String next = HandleInterfaceGenerator.getHandleInterfaceName(self, this.curr) + "<" + IntStream.range(1, as.size() + 1).mapToObj((i) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";
+		bra2.addParameters(next + " handler");
+		bra2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
+		
+		AbstractMethodBuilder bra3 = this.ib.newAbstractMethod("handle");
+		bra3.setReturn(JavaBuilder.VOID);
+		bra3.addParameters(SessionApiGenerator.getRoleClassName(as.iterator().next().peer) + " role");
+		String handle = HandleInterfaceGenerator.getHandleInterfaceName(self, this.curr) + "<" +
+				as.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
+					.map((a) -> SuccessorInterfaceGenerator.getSuccessorInterfaceName(a)).collect(Collectors.joining(", ")) + ">";
+		bra3.addParameters(handle + " handler");
+		bra3.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
 	}
 
 	protected void addBranchEnum()

@@ -37,12 +37,13 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 		ib.setName(getHandlerInterfaceName(this.parent.getName()));
 		ib.addModifiers(InterfaceBuilder.PUBLIC);
 
-		for (IOAction a : this.curr.getAcceptable())
+		for (IOAction a : this.curr.getAcceptable())  // Doesn't need to be sorted
 		{
 			EndpointState succ = this.curr.accept(a);
 			String nextClass = this.apigen.getSocketClassName(succ);
 
 			AbstractMethodBuilder mb3 = ib.newAbstractMethod();
+			mb3.addAnnotations("@Override");
 			setHandleMethodHeaderWithoutParamTypes(this.apigen, mb3);
 			if (succ.isTerminal())
 			{

@@ -248,7 +248,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				
 				System.out.println("AAA: " + handleif.getName() + ", " + handleif.getParameters().isEmpty());
 				
-				if (handleif.getParameters().isEmpty())  // Hacky?
+				/*if (handleif.getParameters().isEmpty())  // Hacky?
 				{
 					int i = 1;
 					for (IOAction b : succifs)  // Already sorted
@@ -260,21 +260,21 @@ public class IOInterfacesGenerator extends ApiGenerator
 					handleif.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 					//int j = 1; 
 					/*Iterator<IOAction> foo = s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).iterator();
-					EndpointState succ = s.accept(foo.next());*/
-				}
+					EndpointState succ = s.accept(foo.next());* /
+				}*/
 
 				//Map<IOAction, Integer> count = new HashMap<>();
 				List<IOAction> tmp = this.branchSuccs.get(key);
 				//tmp.stream().forEach((a) -> count.put(a, (int) tmp.stream().filter((b) -> b.equals(a)).count()));
 				Map<IOAction, Integer> count = new HashMap<>();
-				for (IOAction a : this.branchPostActions.get(s).stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+				/*for (IOAction a : this.branchPostActions.get(s).stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 				{
 				/*for (IOAction b : succifs)
 				{
 					if (!succ.isAcceptable(b))
 					{
 						succ = s.accept(foo.next());
-					}*/
+					}* /
 					EndpointState succ = s.accept(a);
 					MethodBuilder mb = handleif.newAbstractMethod();
 					HandlerInterfaceGenerator.setHandleMethodHeaderWithoutParamTypes(this.apigen, mb);
@@ -286,12 +286,12 @@ public class IOInterfacesGenerator extends ApiGenerator
 						{
 							tmp.remove(b);
 						}
-					}*/
+					}* /
 					HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, mb);
 					
 					handleif.checkDuplicateMethods(mb);  // Hacky
 				//}
-				}
+				}*/
 			}
 		}
 				
@@ -357,7 +357,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				}
 			}*/
 			String handle = HandleInterfaceGenerator.getHandleInterfaceName(self, s);
-			List<IOAction> foo1 = new LinkedList<>();
+			/*List<IOAction> foo1 = new LinkedList<>();
 			List<EndpointState> bar1 = new LinkedList<>();
 			for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
@@ -368,8 +368,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 					bar1.add(succ);
 				}
 			}
-			System.out.println("BBB: " + handle);
-			for (IOAction a : this.branchSuccs.get(handle))
+			System.out.println("BBB: " + handle);*/
+			//for (IOAction a : this.branchSuccs.get(handle))
+			// FIXME: move back into HandlerInterfaceGenerator
+			for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				if (first)
 				{
@@ -379,7 +381,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				{
 					tmp += ", ";
 				}
-				if (foo1.contains(a))
+				/*if (foo1.contains(a))
 				{
 					EndpointState succ = bar1.get(foo1.indexOf(a));
 					tmp += this.getSuccName.apply(succ.accept(a));
@@ -389,12 +391,21 @@ public class IOInterfacesGenerator extends ApiGenerator
 				else
 				{
 					tmp += SuccessorInterfaceGenerator.getSuccessorInterfaceName(a);
+				}*/
+				EndpointState succ = s.accept(a);
+				if (succ.isTerminal())
+				{
+					tmp += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
+				}
+				else
+				{
+					tmp += this.apigen.getSocketClassName(succ);
 				}
 			}	
 			
 			handler.addInterfaces(handle + "<" + tmp + ">");
 			
-			// Override abstract handle methods with default cast implementation
+			/*// Override abstract handle methods with default cast implementation
 			for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				EndpointState succ = s.accept(a);
@@ -466,7 +477,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				ln += args + ");";
 				override.addBodyLine(ln);
 				override.addAnnotations("@Override");
-			}
+			}*/
 		}
 		
 		visited.add(s);

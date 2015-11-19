@@ -1,9 +1,13 @@
 package org.scribble.codegen.java.endpointapi;
 
+import java.util.stream.Collectors;
+
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.endpointapi.ioifaces.BranchInterfaceGenerator;
+import org.scribble.codegen.java.endpointapi.ioifaces.HandleInterfaceGenerator;
+import org.scribble.codegen.java.endpointapi.ioifaces.IOStateInterfaceGenerator;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
@@ -57,6 +61,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getAcceptable().iterator().next().peer) + " " + ROLE_PARAM);
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+		mb.addAnnotations("@Override");
 		
 		Role peer = curr.getAcceptable().iterator().next().peer;
 		mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
@@ -85,15 +90,48 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		
 
 		// Handler branch method
-		String ifname = HandlerInterfaceGenerator.getHandlerInterfaceName(this.cb.getName());
+		String handlerif = HandlerInterfaceGenerator.getHandlerInterfaceName(this.cb.getName());
+		String handleif = HandleInterfaceGenerator.getHandleInterfaceName(this.apigen.getSelf(), this.curr);
 		MethodBuilder mb2 = this.cb.newMethod("branch");
 		mb2.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
-		mb2.addParameters(ifname + " branch");
+		mb2.addParameters(handlerif + " handler");
 		mb2.setReturn(JavaBuilder.VOID);
 		mb2.addModifiers(JavaBuilder.PUBLIC);
 		mb2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
-		mb2.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
+		first = true;
+		handleif += "<";
+		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+		{
+			if (first)
+			{
+				first = false;
+			}
+			else
+			{
+				handleif += ", ";
+			}
+			EndpointState succ = this.curr.accept(a);
+			if (succ.isTerminal())
+			{
+				handleif += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
+			}
+			else
+			{
+				handleif += this.apigen.getSocketClassName(succ);
+			}
+		}
+		handleif += ">";
+		mb2.addBodyLine("branch(role, (" + handleif + ") handler);");
+
+		MethodBuilder mb3 = this.cb.newMethod("branch");
+		mb3.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
+		//mb2.addParameters("java.util.concurrent.Callable<" + ifname + "> branch");
+		mb3.addParameters(handleif + " handler");
+		mb3.setReturn(JavaBuilder.VOID);
+		mb3.addModifiers(JavaBuilder.PUBLIC);
+		mb3.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
+		mb3.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
 		for (IOAction a : this.curr.getAcceptable())
@@ -105,14 +143,14 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			}
 			else
 			{
-				mb2.addBodyLine("else");
+				mb3.addBodyLine("else");
 			}
-			mb2.addBodyLine("if (" + MESSAGE_VAR + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
+			mb3.addBodyLine("if (" + MESSAGE_VAR + "." + StateChannelApiGenerator.SCRIBMESSAGE_OP_FIELD + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
 			if (succ.isTerminal())
 			{
-				mb2.addBodyLine(1, SCRIBSOCKET_SE_FIELD + ".setCompleted();");
+				mb3.addBodyLine(1, SCRIBSOCKET_SE_FIELD + ".setCompleted();");
 			}
-			String ln = "branch.receive(";
+			String ln = "handler.receive(";
 			//if (!succ.isTerminal())
 			{
 				//FIXME: factor out with addReturn?
@@ -141,12 +179,12 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			}
 				
 			ln += ");";
-			mb2.addBodyLine(1, ln);
-			mb2.addBodyLine("}");
+			mb3.addBodyLine(1, ln);
+			mb3.addBodyLine("}");
 		}
-		mb2.addBodyLine("else {");
-		mb2.addBodyLine(1, "throw " + JavaBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
-		mb2.addBodyLine("}");
+		mb3.addBodyLine("else {");
+		mb3.addBodyLine(1, "throw " + JavaBuilder.NEW + " RuntimeException(\"Won't get here: \" + " + OP + ");");
+		mb3.addBodyLine("}");
 		
 		this.apigen.addTypeDecl(new HandlerInterfaceGenerator(this.apigen, this.cb, this.curr).generateType());
 	}
