@@ -55,6 +55,11 @@ public abstract class TypeBuilder extends JavaBuilder
 		this.ifaces.addAll(Arrays.asList(ifaces));
 	}
 	
+	public List<String> getInterfaces()
+	{
+		return new LinkedList<>(this.ifaces);
+	}
+	
 	public void addParameters(String... params)
 	{
 		this.params.addAll(Arrays.asList(params));

@@ -22,6 +22,10 @@ global protocol Proto1(role C, role S)
 		{
 			4() from C to S;
 		}
+		or
+		{
+			5() from C to S;
+		}
 	}
 }
 
