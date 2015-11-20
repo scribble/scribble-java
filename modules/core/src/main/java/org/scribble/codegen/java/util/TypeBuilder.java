@@ -97,7 +97,7 @@ public abstract class TypeBuilder extends JavaBuilder
 			{
 				if (tmp.getParameters().size() == 0)
 				{
-					if (mb.getParameters().size() == 0)
+					if (mb.getParameters().size() != 0)
 					{
 						continue X;
 					}

@@ -1,6 +1,7 @@
 package org.scribble.codegen.java.util;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,12 +56,59 @@ public class ClassBuilder extends TypeBuilder
 	{
 		for (MethodBuilder mb : this.methods)
 		{
-			if (mb.getReturn().equals(ret) && mb.getParameters().equals(Arrays.asList(params)))
+			if (mb.getReturn().equals(ret) && equalParamSigs(Arrays.asList(params), mb.getParameters()))
 			{
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	// FIXME: factor out with TypeBuilder
+	//private static boolean equalParamSigs(MethodBuilder mb1, MethodBuilder mb2)
+	private static boolean equalParamSigs(List<String> mb1, List<String> mb2)
+	{
+		if (mb1.size() == 0)
+		{
+			if (mb2.size() != 0)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			Iterator<String> params2 = mb2.iterator();
+			for (String param1 : mb1)
+			{
+				if (!params2.hasNext())
+				{
+					return false;
+				}
+				String param2 = params2.next();
+			
+				if (param2.contains("<"))
+				{
+					param2 = param2.substring(0, param2.indexOf("<"));
+				}
+				else
+				{
+					param2 = param2.substring(0, param2.indexOf(" "));
+				}
+				if (param1.contains("<"))
+				{
+					param1 = param1.substring(0, param1.indexOf("<"));
+				}
+				else
+				{
+					param1 = param1.substring(0, param1.indexOf(" "));
+				}
+				if (!param1.equals(param2))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	@Override

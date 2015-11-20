@@ -17,6 +17,7 @@ import org.scribble.codegen.java.endpointapi.HandlerInterfaceGenerator;
 import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
+import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
@@ -55,6 +56,26 @@ public class IOInterfacesGenerator extends ApiGenerator
 		generateActionAndSuccessorInterfacesAndCollectPreActions(new HashSet<>(), init);
 		generateIOStateInterfacesFirstPass(new HashSet<>(), init);
 		collectPreds();
+		
+		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), init);
+		ClassBuilder endsock = null;
+		if (term != null)
+		{
+			endsock = (ClassBuilder) this.apigen.getType(ScribSocketGenerator.GENERATED_ENDSOCKET_NAME);
+			endsock.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
+				
+			for (InterfaceBuilder ib : this.preds.get(term))
+			{
+				endsock.addInterfaces(ib.getName());
+
+				MethodBuilder mb2 = addToCastMethod(ib, "EndSocket");
+				if (mb2 != null)
+				{
+					ib.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, self) + ".EndSocket");
+				}
+			}
+		}
+		
 		generateIOStateInterfacesSecondPass(new HashSet<>(), init);
 		collectBranchSuccs();
 		generateHandleInterfaces(new HashSet<>(), init);
@@ -62,14 +83,43 @@ public class IOInterfacesGenerator extends ApiGenerator
 		addIOStateInterfacesToStateChannels(new HashSet<>(), init);  // Except EndSocket
 
 		// Successor I/f's for EndSocket
-		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), init);
+		// FIXME: refactor EndSocket into main collection of generated types (this.apigen.getType)
+		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), init);
 		if (term != null)
 		{
-			TypeBuilder tb = this.apigen.getType(ScribSocketGenerator.GENERATED_ENDSOCKET_NAME);
-			tb.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
+			//endsock = (ClassBuilder) this.apigen.getType(ScribSocketGenerator.GENERATED_ENDSOCKET_NAME);
+			//endsock.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
 			for (InterfaceBuilder ib : this.preds.get(term))
 			{
-				tb.addInterfaces(ib.getName());
+				//endsock.addInterfaces(ib.getName());
+
+				// Duplicated from generateIOStateInterfacesSecondPass
+				for (MethodBuilder cast : ib.getDefaultMethods())  // cast is a default method (a to cast -- hacky) in pred
+				{
+					// Overriding every Successor I/f to methods in the I/O State I/f, even if unnecessary
+					if (!cast.getReturn().equals("EndSocket"))
+					{
+						MethodBuilder mb = addEndSocketToCastMethod(endsock, cast.getReturn(), "throw new RuntimeScribbleException(\"Invalid cast of EndSocket: \" + cast);");
+						if (mb != null)
+						{
+							mb.addModifiers(JavaBuilder.PUBLIC);
+							mb.addAnnotations("@Override");
+							endsock.addImports("org.scribble.main.RuntimeScribbleException");
+						}
+					}
+				}
+			}
+
+			/*MethodBuilder mb2 = addToCastMethod(ib, "EndSocket");
+			if (mb2 != null)
+			{
+				ib.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, self) + ".EndSocket");
+			}*/
+			MethodBuilder mb3 = addEndSocketToCastMethod(endsock, "EndSocket", "return (EndSocket) this;");
+			if (mb3 != null)
+			{
+				mb3.addModifiers(JavaBuilder.PUBLIC);
+				mb3.addAnnotations("@Override");
 			}
 		}
 	}
@@ -183,7 +233,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				
 				for (MethodBuilder cast : pred.getDefaultMethods())  // cast is a default method (a to cast -- hacky) in pred
 				{
-					// Overriding every Successor I/f to methods in the I/O State I/f, even if unnecessary
+					// Overriding every Successor I/f "to" method in the I/O State I/f, even if unnecessary
 					MethodBuilder mb = addToCastMethod(iostate, cast.getReturn());
 					if (mb != null)
 					{
@@ -500,7 +550,32 @@ public class IOInterfacesGenerator extends ApiGenerator
 		MethodBuilder mb = ib.newDefaultMethod("to");
 		mb.setReturn(ret);
 		mb.addParameters(ret + " cast");
-		mb.addBodyLine(JavaBuilder.RETURN + " (" + ret + ") this;");
+		if (!ret.equals("EndSocket"))  // HACK
+		{
+			mb.addBodyLine(JavaBuilder.RETURN + " (" + ret + ") this;");
+		}
+		else
+		{
+			ib.addImports("org.scribble.main.RuntimeScribbleException");
+			mb.addBodyLine("throw new RuntimeScribbleException(\"Invalid cast to EndSocket: \" + cast);");
+		}
+		return mb;
+	}
+
+	private static MethodBuilder addEndSocketToCastMethod(ClassBuilder cb, String ret, String body)
+	{
+		//if (ib.getMethods().stream().filter((def) -> def.getReturn().equals(ret)).count() > 0)
+		if (cb.hasMethodSignature(ret, ret + " "))  // Hacky
+		{
+			// Merge states entered from multiple paths, don't want to add cast multiple times -- still true for this case?
+			// But duplicate cast check cast still needed anyway?
+			return null;
+		}
+		MethodBuilder mb = cb.newMethod("to");
+		mb.setReturn(ret);
+		mb.addParameters(ret + " cast");
+		//mb.addBodyLine("throw new RuntimeScribbleException(\"Invalid cast of EndSocket: \" + cast);");
+		mb.addBodyLine(body);
 		return mb;
 	}
 
