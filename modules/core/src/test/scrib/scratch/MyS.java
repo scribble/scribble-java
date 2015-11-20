@@ -42,9 +42,9 @@ public class MyS
 					se.accept(ss, Proto1.C);
 
 					new Proto1_S_1(se).async(Proto1.C, Proto1._1)
-						.branch(Proto1.C, new Handler());
-						//.handle(Proto1.C, new Handler2());
-						//.branch(Proto1.C, new Handler3<Proto1_S_3, EndSocket>());
+						//.branch(Proto1.C, new Handler());
+						.handle(Proto1.C, new Handler2());
+						//.branch(Proto1.C, new Handler3<>());
 				}
 				catch (Exception e)//ScribbleRuntimeException | IOException | ExecutionException | InterruptedException | ClassNotFoundException e)
 				{
@@ -55,14 +55,12 @@ public class MyS
 	}
 }
 
-class Handler implements
-	//Proto1_S_2_Handler
-	Proto1_S_2_Handler
+class Handler implements Proto1_S_2_Handler
 {
 	@Override
 	public void receive(EndSocket schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
-		System.out.println("Done");
+		System.out.println("Done1");
 		schan.end();
 	}
 
@@ -98,7 +96,8 @@ class Handler2 implements Handle_S_C_2_Int__C_4<Succ_In_C_2_Int, Succ_In_C_4>
 	@Override
 	public void receive(Succ_In_C_4 schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
-		System.out.println("Done");
+		schan.to(EndSocket.cast).end();
+		System.out.println("Done2");
 	}
 }
 
@@ -115,6 +114,7 @@ class Handler3<Succ1 extends Succ_In_C_2_Int, Succ2 extends Succ_In_C_4> impleme
 	@Override
 	public void receive(Succ2 schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
-		System.out.println("Done");
+		schan.to(EndSocket.cast).end();
+		System.out.println("Done3");
 	}
 }
