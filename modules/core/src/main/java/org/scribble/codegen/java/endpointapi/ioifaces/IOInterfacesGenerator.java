@@ -32,6 +32,8 @@ import org.scribble.sesstype.name.Role;
 // Cf. StateChannelApiGenerator
 public class IOInterfacesGenerator extends ApiGenerator
 {
+	private final boolean SUBTYPES;
+	
 	protected final StateChannelApiGenerator apigen;
 
 	private final Map<IOAction, InterfaceBuilder> actions = new HashMap<>();
@@ -47,10 +49,11 @@ public class IOInterfacesGenerator extends ApiGenerator
 	//private final Map<EndpointState, Set<InterfaceBuilder>> branchSuccs = new HashMap<>();
 	private final Map<String, List<IOAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
 
-	public IOInterfacesGenerator(StateChannelApiGenerator apigen)
+	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes)
 	{
 		super(apigen.getJob(), apigen.getGProtocolName());
 		this.apigen = apigen;
+		this.SUBTYPES = subtypes;
 
 		GProtocolName fullname = apigen.getGProtocolName();
 		Role self = getSelf();
@@ -126,7 +129,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 			}
 		}
 		
-		addSupertypeInterfaces();
+		if (this.SUBTYPES)
+		{
+			addSupertypeInterfaces();
+		}
 	}
 
 	@Override
@@ -577,12 +583,13 @@ public class IOInterfacesGenerator extends ApiGenerator
 				{
 					subtypeifs.put(name, ib);
 
-					List<InterfaceBuilder> res = new LinkedList<>();
+					Map<String, InterfaceBuilder> res = new HashMap<>();
 					if (name.startsWith("Select"))
 					{
 						List<String> ifs = ib.getInterfaces();  // Could also use params to integrate with Handle
 						List<String> outs = ifs.stream().filter((i) -> i.startsWith("Out"))
 								.map((o) -> (o = o.substring(0, o.indexOf("<"))).substring(o.indexOf("_") + 1, o.length()))
+								.sorted((s1, s2) -> s1.compareTo(s2))
 								.collect(Collectors.toList());
 						buildSuperSelectInterfaces(res, outs);
 					}
@@ -590,10 +597,11 @@ public class IOInterfacesGenerator extends ApiGenerator
 					{
 						List<String> params = ib.getParameters();
 						List<String> ins = params.stream().map((i) -> i.substring(i.indexOf("Succ_In_") + "Succ_In_".length()))
+								.sorted((s1, s2) -> s1.compareTo(s2))
 								.collect(Collectors.toList());
 						buildSuperHandleInterfaces(res, ins);
 					}
-					res.forEach((r) -> subtypeifs.put(r.getName(), r));
+					res.values().forEach((r) -> subtypeifs.put(r.getName(), r));
 				}
 			}
 		}
@@ -607,6 +615,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				List<String> ifs = ib.getInterfaces();
 				List<String> outs = ifs.stream().filter((i) -> i.startsWith("Out"))
 						.map((o) -> (o = o.substring(0, o.indexOf("<"))).substring(o.indexOf("_") + 1, o.length()))
+						.sorted((s1, s2) -> s1.compareTo(s2))
 						.collect(Collectors.toList());
 				addSuperSelectInterfaces(ib, outs);
 			}
@@ -614,6 +623,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			{
 				List<String> params = ib.getParameters();
 				List<String> ins = params.stream().map((i) -> i.substring(i.indexOf("Succ_In_") + "Succ_In_".length()))
+						.sorted((s1, s2) -> s1.compareTo(s2))
 						.collect(Collectors.toList());
 				addSuperHandleInterfaces(ib, ins);
 			}
@@ -621,9 +631,12 @@ public class IOInterfacesGenerator extends ApiGenerator
 	}
 	
 	// out = e.g. C_1_Int
-	private void buildSuperSelectInterfaces(List<InterfaceBuilder> res, List<String> outs)
+	private void buildSuperSelectInterfaces(Map<String, InterfaceBuilder> res, List<String> outs)
 	{
-		outs.sort((s1, s2) -> s1.compareTo(s2));  // FIXME: sort before initial call
+		//.. Super I/f cast fields
+		//.. Succ I/f supertype to cast methods
+		
+		int j = 0;
 		for (String exclude : outs)
 		{
 			List<String> foo = outs.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
@@ -631,7 +644,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			{
 				String tmp = foo.stream().collect(Collectors.joining("__"));
 				String select = "Select_" + getSelf() + "_" + tmp;
-				if (!this.iostates.containsKey(select) && !res.contains(select))
+				if (!this.iostates.containsKey(select) && !res.containsKey(select))
 				{
 					InterfaceBuilder ib = new InterfaceBuilder(select);
 					ib.setPackage(getIOInterfacePackageName(this.gpn, getSelf()));
@@ -643,17 +656,16 @@ public class IOInterfacesGenerator extends ApiGenerator
 						ib.addInterfaces("Out_" + out + "<__Succ" + i + ">");
 						i++;
 					}
-					res.add(ib);
-					buildSuperSelectInterfaces(res, foo.stream().collect(Collectors.toList()));
+					res.put(select, ib);
+					buildSuperSelectInterfaces(res, foo);
 				}
 			}
 		}
 	}
 	
 	// in = e.g. C_1_Int
-	private void buildSuperHandleInterfaces(List<InterfaceBuilder> res, List<String> ins)
+	private void buildSuperHandleInterfaces(Map<String, InterfaceBuilder> res, List<String> ins)
 	{
-		ins.sort((s1, s2) -> s1.compareTo(s2));
 		for (String exclude : ins)
 		{
 			List<String> foo = ins.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
@@ -661,7 +673,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			{
 				String tmp = foo.stream().collect(Collectors.joining("__"));
 				String handle = "Handle_" + getSelf() + "_" + tmp;
-				if (!this.iostates.containsKey(handle) && !res.contains(handle))
+				if (!this.iostates.containsKey(handle) && !res.containsKey(handle))
 				{
 					InterfaceBuilder ib = new InterfaceBuilder(handle);
 					ib.setPackage(getIOInterfacePackageName(this.gpn, getSelf()));
@@ -673,7 +685,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 						ib.addInterfaces("Callback_" + in + "<__Succ" + i + ">");
 						i++;
 					}
-					res.add(ib);
+					res.put(handle, ib);
 					buildSuperHandleInterfaces(res, foo.stream().collect(Collectors.toList()));
 				}
 			}
@@ -683,7 +695,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 	// out = e.g. C_1_Int
 	private void addSuperSelectInterfaces(InterfaceBuilder ib, List<String> outs)
 	{
-		outs.sort((s1, s2) -> s1.compareTo(s2));
 		for (String exclude : outs)
 		{
 			List<String> foo = outs.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
@@ -714,7 +725,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 	// out = e.g. C_1_Int
 	private void addSuperHandleInterfaces(InterfaceBuilder ib, List<String> ins)
 	{
-		ins.sort((s1, s2) -> s1.compareTo(s2));
 		for (String exclude : ins)
 		{
 			List<String> foo = ins.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
