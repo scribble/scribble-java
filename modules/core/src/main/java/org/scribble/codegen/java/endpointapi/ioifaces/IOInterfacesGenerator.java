@@ -591,7 +591,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 								.map((o) -> (o = o.substring(0, o.indexOf("<"))).substring(o.indexOf("_") + 1, o.length()))
 								.sorted((s1, s2) -> s1.compareTo(s2))
 								.collect(Collectors.toList());
-						buildSuperSelectInterfaces(res, outs);
+						buildIOStateSuperInterfaces(res, outs, "Select", "Out", "Out");
 					}
 					else //if (base.startsWith("Handle"))
 					{
@@ -599,7 +599,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 						List<String> ins = params.stream().map((i) -> i.substring(i.indexOf("Succ_In_") + "Succ_In_".length()))
 								.sorted((s1, s2) -> s1.compareTo(s2))
 								.collect(Collectors.toList());
-						buildSuperHandleInterfaces(res, ins);
+						//buildSuperHandleInterfaces(res, ins);
+						buildIOStateSuperInterfaces(res, ins, "Handle", "Callback", "In");
 					}
 					res.values().forEach((r) -> subtypeifs.put(r.getName(), r));
 				}
@@ -617,7 +618,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 						.map((o) -> (o = o.substring(0, o.indexOf("<"))).substring(o.indexOf("_") + 1, o.length()))
 						.sorted((s1, s2) -> s1.compareTo(s2))
 						.collect(Collectors.toList());
-				addSuperSelectInterfaces(ib, outs);
+				addIOStateSuperInterfaces(ib, outs, "Select", "Out");
 			}
 			else if (base.startsWith("Handle"))
 			{
@@ -625,88 +626,61 @@ public class IOInterfacesGenerator extends ApiGenerator
 				List<String> ins = params.stream().map((i) -> i.substring(i.indexOf("Succ_In_") + "Succ_In_".length()))
 						.sorted((s1, s2) -> s1.compareTo(s2))
 						.collect(Collectors.toList());
-				addSuperHandleInterfaces(ib, ins);
+				addIOStateSuperInterfaces(ib, ins, "Handle", "In");
 			}
 		}
-	}
-	
-	// out = e.g. C_1_Int
-	private void buildSuperSelectInterfaces(Map<String, InterfaceBuilder> res, List<String> outs)
-	{
+
 		//.. Super I/f cast fields
 		//.. Succ I/f supertype to cast methods
 		
-		int j = 0;
-		for (String exclude : outs)
+	}
+	
+	// a = e.g. C_1_Int
+	// Pre: as sorted
+	private void buildIOStateSuperInterfaces(Map<String, InterfaceBuilder> res, List<String> as, String superPref, String actPref, String succPref)
+	{
+		for (String exclude : as)
 		{
-			List<String> foo = outs.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
+			List<String> foo = as.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
 			if (foo.size() > 0)
 			{
 				String tmp = foo.stream().collect(Collectors.joining("__"));
-				String select = "Select_" + getSelf() + "_" + tmp;
+				String select = superPref + "_" + getSelf() + "_" + tmp;
 				if (!this.iostates.containsKey(select) && !res.containsKey(select))
 				{
 					InterfaceBuilder ib = new InterfaceBuilder(select);
 					ib.setPackage(getIOInterfacePackageName(this.gpn, getSelf()));
 					ib.addModifiers(JavaBuilder.PUBLIC);
 					int i = 1;
-					for (String out : foo)
+					for (String a : foo)
 					{
-						ib.addParameters("__Succ" + i + " extends Succ_Out_" + out);
-						ib.addInterfaces("Out_" + out + "<__Succ" + i + ">");
+						ib.addParameters("__Succ" + i + " extends Succ_" + succPref + "_" + a);
+						ib.addInterfaces(actPref + "_" + a + "<__Succ" + i + ">");
 						i++;
 					}
 					res.put(select, ib);
-					buildSuperSelectInterfaces(res, foo);
+					buildIOStateSuperInterfaces(res, foo, superPref, actPref, succPref);
 				}
 			}
 		}
 	}
 	
-	// in = e.g. C_1_Int
-	private void buildSuperHandleInterfaces(Map<String, InterfaceBuilder> res, List<String> ins)
+	// a = e.g. C_1_Int
+	// Pre: as sorted
+	private void addIOStateSuperInterfaces(InterfaceBuilder ib, List<String> as, String superPref, String succPref)
 	{
-		for (String exclude : ins)
+		for (String exclude : as)
 		{
-			List<String> foo = ins.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
-			if (foo.size() > 0)
-			{
-				String tmp = foo.stream().collect(Collectors.joining("__"));
-				String handle = "Handle_" + getSelf() + "_" + tmp;
-				if (!this.iostates.containsKey(handle) && !res.containsKey(handle))
-				{
-					InterfaceBuilder ib = new InterfaceBuilder(handle);
-					ib.setPackage(getIOInterfacePackageName(this.gpn, getSelf()));
-					ib.addModifiers(JavaBuilder.PUBLIC);
-					int i = 1;
-					for (String in : foo)
-					{
-						ib.addParameters("__Succ" + i + " extends Succ_In_" + in);
-						ib.addInterfaces("Callback_" + in + "<__Succ" + i + ">");
-						i++;
-					}
-					res.put(handle, ib);
-					buildSuperHandleInterfaces(res, foo.stream().collect(Collectors.toList()));
-				}
-			}
-		}
-	}
-	
-	// out = e.g. C_1_Int
-	private void addSuperSelectInterfaces(InterfaceBuilder ib, List<String> outs)
-	{
-		for (String exclude : outs)
-		{
-			List<String> foo = outs.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
+			List<String> foo = as.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
 			if (foo.size() > 0)
 			{
 				List<String> params = new LinkedList<>();
-				for (String out : foo)
+				for (String a : foo)
 				{
 					int i = 1;
 					for (String param : ib.getParameters())
 					{
-						if (param.endsWith("Succ_Out_" + out))
+						if (param.endsWith("Succ_" + succPref + "_" + a))
 						{
 							break;
 						}
@@ -716,38 +690,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 				}
 				
 				String tmp = foo.stream().collect(Collectors.joining("__"));
-				String select = "Select_" + getSelf() + "_" + tmp + "<" + params.stream().collect(Collectors.joining(", ")) + ">";
+				String select = superPref + "_" + getSelf() + "_" + tmp + "<" + params.stream().collect(Collectors.joining(", ")) + ">";
 				ib.addInterfaces(select);
-			}
-		}
-	}
-
-	// out = e.g. C_1_Int
-	private void addSuperHandleInterfaces(InterfaceBuilder ib, List<String> ins)
-	{
-		for (String exclude : ins)
-		{
-			List<String> foo = ins.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
-			if (foo.size() > 0)
-			{
-				List<String> params = new LinkedList<>();
-				for (String in : foo)
-				{
-					int i = 1;
-					for (String param : ib.getParameters())
-					{
-						if (param.endsWith("Succ_In_" + in))
-						{
-							break;
-						}
-						i++;
-					}
-					params.add("__Succ" + i);
-				}
-				
-				String tmp = foo.stream().collect(Collectors.joining("__"));
-				String handle = "Handle_" + getSelf() + "_" + tmp + "<" + params.stream().collect(Collectors.joining(", ")) + ">";
-				ib.addInterfaces(handle);
 			}
 		}
 	}
