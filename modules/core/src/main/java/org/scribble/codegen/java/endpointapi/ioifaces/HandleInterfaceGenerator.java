@@ -21,14 +21,14 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 {
 	private final IOInterfacesGenerator iogen;
 	
-	private final Set<InterfaceBuilder> succifs;
+	private final Map<IOAction, InterfaceBuilder> caseActions;
 
-	public HandleInterfaceGenerator(IOInterfacesGenerator iogen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr, Set<InterfaceBuilder> succifs)
+	public HandleInterfaceGenerator(IOInterfacesGenerator iogen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr, Map<IOAction, InterfaceBuilder> caseActions)
 	{
 		super(iogen.apigen, actions, curr);
 		this.iogen = iogen;
 
-		this.succifs = succifs;
+		this.caseActions = caseActions;
 	}
 
 	@Override
@@ -57,7 +57,6 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 
 	}
 
-	// Don't add Action Interfaces
 	@Override
 	protected void addSuccessorParamsAndActionInterfaces()
 	{
@@ -69,6 +68,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
+			this.ib.addInterfaces(this.caseActions.get(a).getName() + "<__Succ" + i + ">");
 			i++;
 		}
 		/*for (InterfaceBuilder ib : this.succifs)  // Already sorted

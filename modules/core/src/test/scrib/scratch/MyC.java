@@ -59,7 +59,7 @@ public class MyC
 		}
 	}
 
-	static Succ_Out_S_4 foo(Select_C_S_2_Int__S_4<? extends Succ_Out_S_2_Int, ?> s, int i) throws ScribbleRuntimeException, IOException
+	static Succ_Out_S_4 foo(Select_C_S_2_Int__S_4<?, ?> s, int i) throws ScribbleRuntimeException, IOException
 	{
 		return (i < 3)
 				? foo(

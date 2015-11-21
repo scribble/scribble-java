@@ -1,7 +1,6 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import org.scribble.codegen.java.endpointapi.ReceiveSocketGenerator;
-import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SendSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
@@ -44,9 +43,9 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		{
 			/*if (this.curr.getAcceptable().size() > 1)
 			{
-				CaseSocketGenerator.setCaseReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
+				//CaseSocketGenerator.setCaseReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
 			}
-			else*/
+			//else*/
 			{
 				ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
 				/*if (this.curr.getAcceptable().size() == 1)  // FIXME: action interface should not depend on curr state -- should generate this method in the IO State I/f, not here
@@ -65,8 +64,8 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		{
 			SendSocketGenerator.setSendHeaderWithoutReturnType(this.apigen, this.a, mb);
 		}
-		EndpointState succ = this.curr.accept(this.a);
-		/*if (succ.isTerminal())
+		/*EndpointState succ = this.curr.accept(this.a);
+		if (succ.isTerminal())
 		{
 			ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);
 			/*if (this.a instanceof Receive)
@@ -100,7 +99,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 			{
 				name = "Case";  // FIXME: make subtype of In?
 			}
-			else*/
+			//else*/
 			{
 				name = "In";
 			}

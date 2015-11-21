@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.scribble.codegen.java.endpointapi.ApiGenerator;
 import org.scribble.codegen.java.endpointapi.CaseSocketGenerator;
@@ -18,6 +17,7 @@ import org.scribble.codegen.java.endpointapi.HandlerInterfaceGenerator;
 import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
+import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
@@ -37,6 +37,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 	private final Map<IOAction, InterfaceBuilder> actions = new HashMap<>();
 	private final Map<IOAction, InterfaceBuilder> succs = new HashMap<>();
 	private final Map<String, InterfaceBuilder> iostates = new HashMap<>();  // Key is interface simple name
+	
+	private final Map<IOAction, InterfaceBuilder> caseActions = new HashMap<>();
 	
 	private final Map<EndpointState, Set<IOAction>> preActions = new HashMap<>();  // Pre set: the actions that lead to each state
 	private final Map<EndpointState, Set<InterfaceBuilder>> preds = new HashMap<>();
@@ -135,6 +137,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		this.actions.values().stream().forEach((ib) -> output.put(prefix + ib.getName() + ".java", ib.build()));
 		this.succs.values().stream().forEach((ib) -> output.put(prefix + ib.getName() + ".java", ib.build()));
 		this.iostates.values().stream().forEach((tb) -> output.put(prefix + tb.getName() + ".java", tb.build()));
+
+		this.caseActions.values().stream().forEach((ib) -> output.put(prefix + ib.getName() + ".java", ib.build()));
+
 		return output;
 	}
 	
@@ -147,12 +152,33 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		visited.add(s);
 
-		for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+		Set<IOAction> as = s.getAcceptable();
+		for (IOAction a : as.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (!this.actions.containsKey(a))
 			{
 				this.actions.put(a, new ActionInterfaceGenerator(this.apigen, s, a).generateType());
 				this.succs.put(a, new SuccessorInterfaceGenerator(this.apigen, s, a).generateType());
+
+				if (s.getStateKind() == Kind.POLY_INPUT)
+				{
+					// Duplicated from ActionInterfaceGenerator
+					InterfaceBuilder ib = new InterfaceBuilder();
+					ib.setName("Callback_" + ActionInterfaceGenerator.getActionString(a));
+					ib.setPackage(IOInterfacesGenerator.getIOInterfacePackageName(this.apigen.getGProtocolName(), this.apigen.getSelf()));
+					ib.addImports("java.io.IOException");
+					ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(this.gpn) + ".*");
+					ib.addImports(SessionApiGenerator.getRolesPackageName(this.gpn) + ".*");
+					ib.addImports(SessionApiGenerator.getOpsPackageName(this.gpn) + ".*");
+					ib.addModifiers(JavaBuilder.PUBLIC);
+					ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
+					AbstractMethodBuilder mb = ib.newAbstractMethod();
+					// Duplicated from HandleInterfaceGenerator
+					HandlerInterfaceGenerator.setHandleMethodHeaderWithoutParamTypes(this.apigen, mb);
+					mb.addParameters("__Succ schan");
+					HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, mb);
+					this.caseActions.put(a, ib);
+				}
 			}
 			
 			EndpointState succ = s.accept(a);
@@ -266,7 +292,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			String key = HandleInterfaceGenerator.getHandleInterfaceName(getSelf(), s);
 			if (!this.iostates.containsKey(key))
 			{
-				IOStateInterfaceGenerator ifgen = new HandleInterfaceGenerator(this, this.actions, s, succifs);
+				IOStateInterfaceGenerator ifgen = new HandleInterfaceGenerator(this, this.actions, s, this.caseActions);
 				this.iostates.put(key, ifgen.generateType());
 			}
 		}
@@ -544,27 +570,32 @@ public class IOInterfacesGenerator extends ApiGenerator
 		Map<String, InterfaceBuilder> subtypeifs = new HashMap<>();
 		for (InterfaceBuilder ib : this.iostates.values())
 		{
-			String base = ib.getName();
-			if (base.startsWith("Select") && !subtypeifs.containsKey(base))
+			String name = ib.getName();
+			if (!subtypeifs.containsKey(name))
 			{
-				subtypeifs.put(base, ib);
-				
-				List<String> ifs = ib.getInterfaces();
-				List<String> outs = ifs.stream().filter((i) -> i.startsWith("Out"))
-						.map((o) -> (o = o.substring(0, o.indexOf("<"))).substring(o.indexOf("_") + 1, o.length()))
-						.collect(Collectors.toList());
+				if (name.startsWith("Select") || name.startsWith("Handle"))
+				{
+					subtypeifs.put(name, ib);
 
-				System.out.println("AAA: " + outs);
-
-				List<InterfaceBuilder> res = new LinkedList<>();
-				foo(res, outs);
-				System.out.println(res);
-
-				res.forEach((r) -> subtypeifs.put(r.getName(), r));
-			}
-			else if (base.startsWith("Handle"))
-			{
-				
+					List<InterfaceBuilder> res = new LinkedList<>();
+					if (name.startsWith("Select"))
+					{
+						List<String> ifs = ib.getInterfaces();  // Could also use params to integrate with Handle
+						List<String> outs = ifs.stream().filter((i) -> i.startsWith("Out"))
+								.map((o) -> (o = o.substring(0, o.indexOf("<"))).substring(o.indexOf("_") + 1, o.length()))
+								.collect(Collectors.toList());
+						buildSuperSelectInterfaces(res, outs);
+					}
+					else //if (base.startsWith("Handle"))
+					{
+						List<String> params = ib.getParameters();
+						List<String> ins = params.stream().map((i) -> i.substring(i.indexOf("Succ_") + "Succ_".length()))
+								.collect(Collectors.toList());
+						//buildSuperHandleInterfaces(res, ins);
+						
+					}
+					res.forEach((r) -> subtypeifs.put(r.getName(), r));
+				}
 			}
 		}
 		subtypeifs.values().forEach((r) -> this.iostates.put(r.getName(), r));
@@ -578,24 +609,82 @@ public class IOInterfacesGenerator extends ApiGenerator
 				List<String> outs = ifs.stream().filter((i) -> i.startsWith("Out"))
 						.map((o) -> (o = o.substring(0, o.indexOf("<"))).substring(o.indexOf("_") + 1, o.length()))
 						.collect(Collectors.toList());
-
-				bar(ib, outs);
+				addSuperSelectInterfaces(ib, outs);
 			}
 		}
 	}
 	
-	private void bar(InterfaceBuilder ib, List<String> outs)
+	// out = e.g. C_1_Int
+	private void buildSuperSelectInterfaces(List<InterfaceBuilder> res, List<String> outs)
 	{
 		outs.sort((s1, s2) -> s1.compareTo(s2));
-		for (String w : outs)
+		for (String exclude : outs)
 		{
-			List<String> bar = outs.stream().filter((s) -> !s.equals(w)).collect(Collectors.toList());
-			if (bar.size() > 0)
+			List<String> foo = outs.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
+			if (foo.size() > 0)
 			{
-				String tmp = bar.stream().collect(Collectors.joining("__"));
-				
+				String tmp = foo.stream().collect(Collectors.joining("__"));
+				String select = "Select_" + getSelf() + "_" + tmp;
+				if (!this.iostates.containsKey(select) && !res.contains(select))
+				{
+					InterfaceBuilder ib = new InterfaceBuilder(select);
+					ib.setPackage(getIOInterfacePackageName(this.gpn, getSelf()));
+					ib.addModifiers(JavaBuilder.PUBLIC);
+					int i = 1;
+					for (String out : foo)
+					{
+						ib.addParameters("__Succ" + i + " extends Succ_Out_" + out);
+						ib.addInterfaces("Out_" + out + "<__Succ" + i + ">");
+						i++;
+					}
+					res.add(ib);
+					buildSuperSelectInterfaces(res, foo.stream().collect(Collectors.toList()));
+				}
+			}
+		}
+	}
+	
+	// in = e.g. C_1_Int
+	private void buildSuperHandleInterfaces(List<InterfaceBuilder> res, List<String> ins)
+	{
+		ins.sort((s1, s2) -> s1.compareTo(s2));
+		for (String exclude : ins)
+		{
+			List<String> foo = ins.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
+			if (foo.size() > 0)
+			{
+				String tmp = foo.stream().collect(Collectors.joining("__"));
+				String handle = "Handle_" + getSelf() + "_" + tmp;
+				if (!this.iostates.containsKey(handle) && !res.contains(handle))
+				{
+					InterfaceBuilder ib = new InterfaceBuilder(handle);
+					ib.setPackage(getIOInterfacePackageName(this.gpn, getSelf()));
+					ib.addModifiers(JavaBuilder.PUBLIC);
+					int i = 1;
+					for (String out : foo)
+					{
+						ib.addParameters("__Succ" + i + " extends Succ_Out_" + out);
+						ib.addInterfaces("Out_" + out + "<__Succ" + i + ">");
+						i++;
+					}
+					res.add(ib);
+					buildSuperSelectInterfaces(res, foo.stream().collect(Collectors.toList()));
+				}
+			}
+		}
+	}
+	
+	// out = e.g. C_1_Int
+	private void addSuperSelectInterfaces(InterfaceBuilder ib, List<String> outs)
+	{
+		outs.sort((s1, s2) -> s1.compareTo(s2));
+		for (String exclude : outs)
+		{
+			List<String> foo = outs.stream().filter((s) -> !s.equals(exclude)).collect(Collectors.toList());
+			if (foo.size() > 0)
+			{
 				List<String> params = new LinkedList<>();
-				for (String out : bar)
+				for (String out : foo)
 				{
 					int i = 1;
 					for (String param : ib.getParameters())
@@ -609,39 +698,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 					params.add("__Succ" + i);
 				}
 				
+				String tmp = foo.stream().collect(Collectors.joining("__"));
 				String select = "Select_" + getSelf() + "_" + tmp + "<" + params.stream().collect(Collectors.joining(", ")) + ">";
 				ib.addInterfaces(select);
-			}
-		}
-	}
-	
-	private void foo(List<InterfaceBuilder> res, List<String> work)
-	{
-		work.sort((s1, s2) -> s1.compareTo(s2));
-		for (String w : work)
-		{
-			List<String> bar = work.stream().filter((s) -> !s.equals(w)).collect(Collectors.toList());
-			if (bar.size() > 0)
-			{
-				String tmp = bar.stream().collect(Collectors.joining("__"));
-				String select = "Select_" + getSelf() + "_" + tmp;
-				if (!this.iostates.containsKey(select) && !res.contains(select))
-				{
-					InterfaceBuilder ib = new InterfaceBuilder(select);
-					ib.setPackage(getIOInterfacePackageName(this.gpn, getSelf()));
-					ib.addModifiers(JavaBuilder.PUBLIC);
-					//bar.stream().forEach((b) ->
-					int i = 1;
-					for (String b : bar)
-						{
-							ib.addParameters("__Succ" + i + " extends Succ_Out_" + b);
-							ib.addInterfaces("Out_" + b + "<__Succ" + i + ">");
-							i++;
-						}//);
-					res.add(ib);
-
-					foo(res, bar.stream().collect(Collectors.toList()));
-				}
 			}
 		}
 	}
