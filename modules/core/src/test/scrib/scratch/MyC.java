@@ -37,14 +37,14 @@ public class MyC
 			se.connect(Proto1.S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			Proto1_C_2 s2 = new Proto1_C_1(se).send(Proto1.S, Proto1._1);
-			for (int i = 0; i < 3; i++)
+			/*for (int i = 0; i < 3; i++)
 			{
 				s2 = 
 					s2.send(Proto1.S, Proto1._2, 123)
 					  .async(Proto1.S, Proto1._3)
 					  .send(Proto1.S, Proto1._1);
 			}
-			s2.send(Proto1.S, Proto1._4).end();
+			s2.send(Proto1.S, Proto1._4).end();*/
 			
 			/*for (int i = 0; i < 3; i++)
 			{

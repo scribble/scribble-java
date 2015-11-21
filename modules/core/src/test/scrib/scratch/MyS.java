@@ -14,15 +14,19 @@ import scratch.Scratch1.Proto1.channels.S.EndSocket;
 import scratch.Scratch1.Proto1.channels.S.Proto1_S_1;
 import scratch.Scratch1.Proto1.channels.S.Proto1_S_2_Handler;
 import scratch.Scratch1.Proto1.channels.S.Proto1_S_3;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Branch_S_C_2_Int__C_4;
+import scratch.Scratch1.Proto1.channels.S.ioifaces.Branch_S_C_2_Int__C_4__C_5;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4;
+import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4__C_5;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Receive_S_C_1;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Select_S_C_3_Int;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_2_Int;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_4;
+import scratch.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_5;
 import scratch.Scratch1.Proto1.ops._2;
 import scratch.Scratch1.Proto1.ops._4;
+import scratch.Scratch1.Proto1.ops._5;
 import scratch.Scratch1.Proto1.roles.S;
+import scratch.Scratch1.Proto3.channels.S.ioifaces.Branch_S_C_2_Int__C_4;
 
 public class MyS
 {
@@ -60,7 +64,7 @@ class Handler implements Proto1_S_2_Handler
 	@Override
 	public void receive(EndSocket schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
-		System.out.println("Done1");
+		System.out.println("Done1-4");
 		schan.end();
 	}
 
@@ -79,10 +83,16 @@ class Handler implements Proto1_S_2_Handler
 			throw new IOException(e);
 		}
 	}
+
+	@Override
+	public void receive(EndSocket schan, _5 op) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	{
+		System.out.println("Done1-5");
+	}
 }
 
 //class Handler2<Succ extends Succ_In_C_2_Int> implements Handle_S_C_2_Int__C_4<Succ>
-class Handler2 implements Handle_S_C_2_Int__C_4<Succ_In_C_2_Int, Succ_In_C_4>
+class Handler2 implements Handle_S_C_2_Int__C_4__C_5<Succ_In_C_2_Int, Succ_In_C_4, Succ_In_C_5>
 {
 	@Override
 	//public void receive(Proto1_S_3 schan, _2 op, Buf<? super Integer> b) throws ScribbleRuntimeException, IOException, ClassNotFoundException
@@ -90,24 +100,30 @@ class Handler2 implements Handle_S_C_2_Int__C_4<Succ_In_C_2_Int, Succ_In_C_4>
 	public void receive(Succ_In_C_2_Int schan, _2 op, Buf<? super Integer> b) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		System.out.println("Redo: " + b.val);
-		schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1).to(Branch_S_C_2_Int__C_4.cast).handle(Proto1.C, this);
+		schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1).to(Branch_S_C_2_Int__C_4__C_5.cast).handle(Proto1.C, this);
 	}
 
 	@Override
 	public void receive(Succ_In_C_4 schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
 		schan.to(EndSocket.cast).end();
-		System.out.println("Done2");
+		System.out.println("Done2-4");
+	}
+
+	@Override
+	public void receive(Succ_In_C_5 schan, _5 op) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	{
+		System.out.println("Done2-5");
 	}
 }
 
-class Handler3<Succ1 extends Succ_In_C_2_Int, Succ2 extends Succ_In_C_4> implements Handle_S_C_2_Int__C_4<Succ1, Succ2>
+class Handler3<Succ1 extends Succ_In_C_2_Int, Succ2 extends Succ_In_C_4, Succ3 extends Succ_In_C_5> implements Handle_S_C_2_Int__C_4__C_5<Succ1, Succ2, Succ3>
 {
 	@Override
 	public void receive(Succ1 schan, _2 op, Buf<? super Integer> b) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		System.out.println("Redo: " + b.val);
-		((Branch_S_C_2_Int__C_4<Succ1, Succ2>) schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1)).branch(Proto1.C, this);
+		((Branch_S_C_2_Int__C_4__C_5<Succ1, Succ2, Succ3>) schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1)).branch(Proto1.C, this);
 		//schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1).to(Branch_S_C_2_Int__C_4.cast).branch(Proto1.C, this);
 	}
 
@@ -115,6 +131,12 @@ class Handler3<Succ1 extends Succ_In_C_2_Int, Succ2 extends Succ_In_C_4> impleme
 	public void receive(Succ2 schan, _4 op) throws ScribbleRuntimeException, IOException
 	{
 		schan.to(EndSocket.cast).end();
-		System.out.println("Done3");
+		System.out.println("Done3-4");
+	}
+
+	@Override
+	public void receive(Succ3 schan, _5 op) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	{
+		System.out.println("Done3-5");
 	}
 }
