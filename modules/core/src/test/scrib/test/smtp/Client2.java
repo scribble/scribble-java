@@ -49,11 +49,11 @@ public class Client2
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 			Buf<Smtp_C_1_Future> b = new Buf<>();
 			doEhloAnd250(
-					LinearSocket.wrapClient(
-							doEhloAnd250(s1.async(Smtp.S, Smtp._220, b))
-									.send(Smtp.S, new StartTls())
-									.async(Smtp.S, Smtp._220)
-					, Smtp.S, SSLSocketChannelWrapper::new)
+				LinearSocket.wrapClient(
+					doEhloAnd250(s1.async(Smtp.S, Smtp._220, b))
+						.send(Smtp.S, new StartTls())
+						.async(Smtp.S, Smtp._220)
+				, Smtp.S, SSLSocketChannelWrapper::new)
 			)
 			.send(Smtp.S, new Quit());
 			

@@ -58,15 +58,15 @@ public class Client
 			//Buf<Smtp_C_5_Future> b2 = new Buf<>();  -- only supported by concrete state chans
 			
 			doEhloAnd250(
-					LinearSocket.wrapClient(
-							doEhloAnd250(s1.async(Smtp.S, Smtp._220, b1))
-									.to(Select_C_S_StartTls.cast)  // Run-time cast
-									.send(Smtp.S, new StartTls())
-									.to(Receive_C_S_220.cast)
-									//.receive(Smtp.S, Smtp._220, new Buf<>())
-									.async(Smtp.S, Smtp._220)
-									.to(Select_C_S_Ehlo.cast)  // Safe cast
-					, Smtp.S, SSLSocketChannelWrapper::new)
+				LinearSocket.wrapClient(
+					doEhloAnd250(s1.async(Smtp.S, Smtp._220, b1))
+						.to(Select_C_S_StartTls.cast)  // Run-time cast
+						.send(Smtp.S, new StartTls())
+						.to(Receive_C_S_220.cast)
+						//.receive(Smtp.S, Smtp._220, new Buf<>())
+						.async(Smtp.S, Smtp._220)
+						.to(Select_C_S_Ehlo.cast)  // Safe cast
+				, Smtp.S, SSLSocketChannelWrapper::new)
 			)
 			.to(Select_C_S_Quit.cast)  // Run-time cast
 			.send(Smtp.S, new Quit());
