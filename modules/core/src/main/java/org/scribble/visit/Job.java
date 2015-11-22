@@ -106,7 +106,7 @@ public class Job
 	}
 	
 	// FIXME: refactor an EndpointApiGenerator
-	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self) throws ScribbleException
+	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
 	{
 		if (this.jcontext.getEndpointGraph(fullname, self) == null)
 		{
@@ -114,7 +114,7 @@ public class Job
 		}
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
 		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
-		IOInterfacesGenerator iogen = new IOInterfacesGenerator(apigen);
+		IOInterfacesGenerator iogen = new IOInterfacesGenerator(apigen, subtypes);
 		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
 		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?
 		api.putAll(apigen.generateApi());

@@ -20,14 +20,14 @@ public class SuccessorInterfaceGenerator extends IOInterfaceGenerator
 	@Override
 	public InterfaceBuilder generateType()
 	{
-		this.ib.setName(getSuccessorInterfaceName(this.curr, this.a));
+		this.ib.setName(getSuccessorInterfaceName(this.a));
 		this.ib.setPackage(IOInterfacesGenerator.getIOInterfacePackageName(this.apigen.getGProtocolName(), this.apigen.getSelf()));
 		this.ib.addModifiers(JavaBuilder.PUBLIC);
 		//this.ib.addInterfaces(ifaces);(...State...);
 		return ib;
 	}
 	
-	public static String getSuccessorInterfaceName(EndpointState curr, IOAction a)
+	public static String getSuccessorInterfaceName(IOAction a)
 	{
 		return "Succ_" + ActionInterfaceGenerator.getActionInterfaceName(a);
 	}

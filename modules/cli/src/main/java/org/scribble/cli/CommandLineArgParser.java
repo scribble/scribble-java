@@ -18,12 +18,14 @@ public class CommandLineArgParser
 	public static final String STATECHAN_FLAG = "-statechan";
 	public static final String API_FLAG = "-api";
 	public static final String OUTPUT_FLAG = "-d";
+	public static final String STATECHANSUBTYPES_FLAG = "-subtypes";
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.VERBOSE_FLAG, CommandLine.ArgFlag.VERBOSE);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.ArgFlag.PATH);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.ArgFlag.OUTPUT);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.STATECHANSUBTYPES_FLAG, CommandLine.ArgFlag.SCHAN_API_SUBTYPES);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -116,6 +118,11 @@ public class CommandLineArgParser
 			case CommandLineArgParser.OUTPUT_FLAG:
 			{
 				return parseOutput(i);
+			}
+			case CommandLineArgParser.STATECHANSUBTYPES_FLAG:
+			{
+				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.STATECHANSUBTYPES_FLAG), new String[0]);
+				return ++i;
 			}
 			default:
 			{

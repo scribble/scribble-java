@@ -23,7 +23,7 @@ import org.scribble.sesstype.name.Role;
 // Partial I/O State I/f generator -- Successor Interfaces and cast methods added later
 public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 {
-	protected static final Comparator<IOAction> IOACTION_COMPARATOR = new Comparator<IOAction>()
+	public static final Comparator<IOAction> IOACTION_COMPARATOR = new Comparator<IOAction>()
 			{
 				@Override
 				public int compare(IOAction a1, IOAction a2)
@@ -88,7 +88,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			String actif = this.actions.get(a).getName();
-			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, a));
+			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
 			this.ib.addInterfaces(actif + "<__Succ" + i + ">");
 			i++;
 		}

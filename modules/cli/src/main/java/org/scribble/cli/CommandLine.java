@@ -30,7 +30,7 @@ import org.scribble.visit.JobContext;
 // Maybe no point to be a Runnable
 public class CommandLine implements Runnable
 {
-	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, SCHAN_API, EP_API, OUTPUT }
+	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, SCHAN_API, EP_API, OUTPUT, SCHAN_API_SUBTYPES }
 	
 	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 	
@@ -129,7 +129,7 @@ public class CommandLine implements Runnable
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			Map<String, String> classes = job.generateStateChannelApi(fullname, role);
+			Map<String, String> classes = job.generateStateChannelApi(fullname, role, this.args.containsKey(ArgFlag.SCHAN_API_SUBTYPES));
 			outputClasses(classes);
 		}
 	}
@@ -144,7 +144,7 @@ public class CommandLine implements Runnable
 			Map<String, String> sessClasses = job.generateSessionApi(fullname);
 			outputClasses(sessClasses);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			Map<String, String> scClasses = job.generateStateChannelApi(fullname, role);
+			Map<String, String> scClasses = job.generateStateChannelApi(fullname, role, this.args.containsKey(ArgFlag.SCHAN_API_SUBTYPES));
 			outputClasses(scClasses);
 		}
 	}

@@ -17,10 +17,11 @@ public abstract class EndSocket<S extends Session, R extends Role> extends Scrib
 	{
 		/*super.use();
 		this.se.setCompleted();*/
-		if (!this.se.isCompleted())
+		/*if (!this.se.isCompleted())  // Disabled for user implementations of the Handle interface -- No: unnecessary -- and if EndSocket has been returned, then session must be complete anyway...
 		{
 			throw new ScribbleRuntimeException("Session not completed: " + this.se);
-		}
+		}*/
+		this.se.setCompleted();
 		this.se.close();
 		//this.closed = true;
 	}

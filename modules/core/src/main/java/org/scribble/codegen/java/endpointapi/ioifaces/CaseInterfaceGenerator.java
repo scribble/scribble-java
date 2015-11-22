@@ -29,7 +29,7 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 	{
 		super.constructInterface();
 		addBranchEnumField();
-		addCaseReceiveDiscardMethod();
+		addCaseReceiveDiscardMethods();
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 		op.setReturn(name + "." + BranchInterfaceGenerator.getBranchInterfaceEnumName(self, this.curr));
 	}
 				
-	protected void addCaseReceiveDiscardMethod()
+	protected void addCaseReceiveDiscardMethods()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 		Set<IOAction> as = this.curr.getAcceptable();

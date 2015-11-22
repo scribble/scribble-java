@@ -42,11 +42,12 @@ global protocol Adder2(role C, role S)
 		or
 		{
 			BYE() from C to S;
+			//BYE() from S to C;
 		}
 	}
 }
 
-// Demo: subtyping -- TODO: need to generate subtype hierarchy for select/branch i/faces
+// Demo: subtyping -- generate subtype hierarchy for select/handle i/faces
 global protocol Adder3(role C, role S)
 {
 	rec X

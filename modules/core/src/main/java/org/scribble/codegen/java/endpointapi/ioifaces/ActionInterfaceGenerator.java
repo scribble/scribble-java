@@ -1,7 +1,6 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import org.scribble.codegen.java.endpointapi.ReceiveSocketGenerator;
-import org.scribble.codegen.java.endpointapi.ScribSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SendSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
@@ -37,16 +36,16 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		this.ib.addImports(SessionApiGenerator.getRolesPackageName(gpn) + ".*");
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
 		this.ib.addModifiers(JavaBuilder.PUBLIC);
-		this.ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.curr, this.a));
+		this.ib.addParameters("__Succ extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(this.a));
 		AbstractMethodBuilder mb = this.ib.newAbstractMethod();  // FIXME: factor out with ReceiveSocketBuilder
 		//AbstractMethodBuilder mb2 = null;
 		if (this.a instanceof Receive)
 		{
 			/*if (this.curr.getAcceptable().size() > 1)
 			{
-				CaseSocketGenerator.setCaseReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
+				//CaseSocketGenerator.setCaseReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
 			}
-			else*/
+			//else*/
 			{
 				ReceiveSocketGenerator.setReceiveHeaderWithoutReturnType(this.apigen, this.a, mb);
 				/*if (this.curr.getAcceptable().size() == 1)  // FIXME: action interface should not depend on curr state -- should generate this method in the IO State I/f, not here
@@ -65,16 +64,16 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		{
 			SendSocketGenerator.setSendHeaderWithoutReturnType(this.apigen, this.a, mb);
 		}
-		EndpointState succ = this.curr.accept(this.a);
+		/*EndpointState succ = this.curr.accept(this.a);
 		if (succ.isTerminal())
 		{
 			ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);
 			/*if (this.a instanceof Receive)
 			{
 				ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb2, succ);
-			}*/
+			}* /
 		}
-		else
+		else*/
 		{
 			mb.setReturn("__Succ");
 			//if (this.a instanceof Receive)
@@ -100,7 +99,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 			{
 				name = "Case";  // FIXME: make subtype of In?
 			}
-			else*/
+			//else*/
 			{
 				name = "In";
 			}
