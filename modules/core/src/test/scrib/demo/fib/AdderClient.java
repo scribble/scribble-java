@@ -13,13 +13,14 @@ import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import demo.fib.Fib.Adder2.Adder2;
-import demo.fib.Fib.Adder2.channels.C.Adder2_C_1;
-//import demo.fib.Fib.Adder2.channels.C.ioifaces.Receive_C_S_BYE;
-import demo.fib.Fib.Adder2.channels.C.ioifaces.Receive_C_S_RES_Integer;
-import demo.fib.Fib.Adder2.channels.C.ioifaces.Select_C_S_ADD_Integer_Integer__S_BYE;
-import demo.fib.Fib.Adder2.channels.C.ioifaces.Succ_Out_S_BYE;
-import demo.fib.Fib.Adder2.roles.C;
+import demo.fib.Fib.Adder.Adder;
+import demo.fib.Fib.Adder.channels.C.Adder_C_1;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_BYE;
+//import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_BYE;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_RES_Integer;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Select_C_S_ADD_Integer_Integer__S_BYE;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Succ_Out_S_BYE;
+import demo.fib.Fib.Adder.roles.C;
 
 
 public class AdderClient
@@ -29,31 +30,31 @@ public class AdderClient
 		Buf<Integer> i1 = new Buf<>(1);
 		//Buf<Integer> i2 = new Buf<>(2);
 
-		Adder2 adder = new Adder2();
-		try (SessionEndpoint<Adder2, C> se = new SessionEndpoint<>(adder, Adder2.C, new ObjectStreamFormatter()))
+		Adder adder = new Adder();
+		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
 		{	
-			se.connect(Adder2.S, SocketChannelEndpoint::new, "localhost", 8888);
+			se.connect(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
 
-			Adder2_C_1 s1 = new Adder2_C_1(se);
+			Adder_C_1 s1 = new Adder_C_1(se);
 
-			/*s1.send(Adder2.S, Adder2.ADD, i1.val, i1.val)
-				.receive(Adder2.S, Adder2.RES, i1)
-				.send(Adder2.S, Adder2.ADD, i1.val, i1.val)
-				.receive(Adder2.S, Adder2.RES, i1)
-				.send(Adder2.S, Adder2.BYE)
-				.receive(Adder2.S, Adder2.BYE);*/
+			/*s1.send(Adder.S, Adder.ADD, i1.val, i1.val)
+				.receive(Adder.S, Adder.RES, i1)
+				.send(Adder.S, Adder.ADD, i1.val, i1.val)
+				.receive(Adder.S, Adder.RES, i1)
+				.send(Adder.S, Adder.BYE)
+				.receive(Adder.S, Adder.BYE);*/
 			
 			/*while (i1.val < 100)
 			{
-				s1 = s1.send(Adder2.S, Adder2.ADD, i1.val, i1.val).receive(Adder2.S, Adder2.RES, i1);
+				s1 = s1.send(Adder.S, Adder.ADD, i1.val, i1.val).receive(Adder.S, Adder.RES, i1);
 			}
-			s1.send(Adder2.S, Adder2.BYE).receive(Adder2.S, Adder2.BYE)
+			s1.send(Adder.S, Adder.BYE).receive(Adder.S, Adder.BYE)
 				.end();*/
 
 			//fib(i1, i2, s1).end();
 			
-			//foo(s1, i1).to(Receive_C_S_BYE.cast).receive(Adder2.S, Adder2.BYE);
-			foo(s1, i1);
+			foo(s1, i1).to(Receive_C_S_BYE.cast).receive(Adder.S, Adder.BYE);
+			//foo(s1, i1);
 			
 			System.out.println("Client: " + i1.val);
 		}
@@ -64,24 +65,24 @@ public class AdderClient
 	{
 		return (i.val < 100)
 				? foo(
-						s.send(Adder2.S, Adder2.ADD, i.val, i.val)
+						s.send(Adder.S, Adder.ADD, i.val, i.val)
 						 .to(Receive_C_S_RES_Integer.cast)
-						 .receive(Adder2.S, Adder2.RES, i)
+						 .receive(Adder.S, Adder.RES, i)
 						 .to(Select_C_S_ADD_Integer_Integer__S_BYE.cast)
 					, i)
-				: s.send(Adder2.S, Adder2.BYE);
+				: s.send(Adder.S, Adder.BYE);
 	}
 
-	/*private static EndSocket<Adder2, C> fib(Buf<Integer> i1, Buf<Integer> i2, Adder2_C_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	/*private static EndSocket<Adder, C> fib(Buf<Integer> i1, Buf<Integer> i2, Adder_C_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		return (i1.val < 100)
 				? fib(i1, i2,
-							side(i1, i2, s1.send(Adder2.S, Adder2.ADD, i1.val, i2.val)).receive(Adder2.S, Adder2.RES, i2)
+							side(i1, i2, s1.send(Adder.S, Adder.ADD, i1.val, i2.val)).receive(Adder.S, Adder.RES, i2)
 					   )
-				: s1.send(Adder2.S, Adder2.BYE).receive(Adder2.S, Adder2.BYE);
+				: s1.send(Adder.S, Adder.BYE).receive(Adder.S, Adder.BYE);
 	}
 	
-	private static Adder2_C_2 side(Buf<Integer> i1, Buf<Integer> i2, Adder2_C_2 s2)
+	private static Adder_C_2 side(Buf<Integer> i1, Buf<Integer> i2, Adder_C_2 s2)
 	{
 		i1.val = i2.val;
 		System.out.print(i1.val + " ");

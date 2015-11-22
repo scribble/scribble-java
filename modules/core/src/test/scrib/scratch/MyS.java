@@ -15,6 +15,7 @@ import scratch.Scratch1.Proto1.channels.S.Proto1_S_1;
 import scratch.Scratch1.Proto1.channels.S.Proto1_S_2_Handler;
 import scratch.Scratch1.Proto1.channels.S.Proto1_S_3;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Branch_S_C_2_Int__C_4__C_5;
+import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4__C_5;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Receive_S_C_1;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Select_S_C_3_Int;
