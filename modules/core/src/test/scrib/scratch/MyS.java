@@ -15,7 +15,6 @@ import scratch.Scratch1.Proto1.channels.S.Proto1_S_1;
 import scratch.Scratch1.Proto1.channels.S.Proto1_S_2_Handler;
 import scratch.Scratch1.Proto1.channels.S.Proto1_S_3;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Branch_S_C_2_Int__C_4__C_5;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4__C_5;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Receive_S_C_1;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Select_S_C_3_Int;
@@ -26,7 +25,6 @@ import scratch.Scratch1.Proto1.ops._2;
 import scratch.Scratch1.Proto1.ops._4;
 import scratch.Scratch1.Proto1.ops._5;
 import scratch.Scratch1.Proto1.roles.S;
-import scratch.Scratch1.Proto3.channels.S.ioifaces.Branch_S_C_2_Int__C_4;
 
 public class MyS
 {
@@ -84,7 +82,7 @@ class Handler implements Proto1_S_2_Handler
 		}
 	}
 
-	@Override
+	//@Override  // Re-generated State I/O handler won't have the deprecated callback
 	public void receive(EndSocket schan, _5 op) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		System.out.println("Done1-5");
@@ -124,6 +122,8 @@ class Handler3<Succ1 extends Succ_In_C_2_Int, Succ2 extends Succ_In_C_4, Succ3 e
 	{
 		System.out.println("Redo: " + b.val);
 		((Branch_S_C_2_Int__C_4__C_5<Succ1, Succ2, Succ3>) schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1)).branch(Proto1.C, this);
+		//schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1).to(Branch_S_C_2_Int__C_4.cast).branch(Proto1.C, this);
+		//((Branch_S_C_2_Int__C_4<Succ1, Succ2>) schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1)).branch(Proto1.C, this);
 		//schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1).to(Branch_S_C_2_Int__C_4.cast).branch(Proto1.C, this);
 	}
 

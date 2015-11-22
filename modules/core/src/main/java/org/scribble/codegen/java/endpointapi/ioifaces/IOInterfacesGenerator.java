@@ -19,6 +19,7 @@ import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.ClassBuilder;
+import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
@@ -87,6 +88,11 @@ public class IOInterfacesGenerator extends ApiGenerator
 		generateHandleInterfaces(new HashSet<>(), init);
 		generateHandleInterfacesSecondPass(new HashSet<>(), init);
 		addIOStateInterfacesToStateChannels(new HashSet<>(), init);  // Except EndSocket
+		
+		if (this.SUBTYPES)
+		{
+			addSupertypeInterfaces();
+		}
 
 		// Successor I/f's for EndSocket
 		// FIXME: refactor EndSocket into main collection of generated types (this.apigen.getType)
@@ -127,11 +133,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 				mb3.addModifiers(JavaBuilder.PUBLIC);
 				mb3.addAnnotations("@Override");
 			}
-		}
-		
-		if (this.SUBTYPES)
-		{
-			addSupertypeInterfaces();
 		}
 	}
 
@@ -258,6 +259,22 @@ public class IOInterfacesGenerator extends ApiGenerator
 		if (succifs != null)
 		{
 			InterfaceBuilder iostate = this.iostates.get(IOStateInterfaceGenerator.getIOStateInterfaceName(getSelf(), s));
+
+			if (this.SUBTYPES) // HACK moved here from addSupertypeInterfaces to ensure duplicate inherited to's get overridden
+			{
+				// Generate Succ I/f supertype "to" cast methods for supertype to's
+				String name = iostate.getName();
+				if (name.startsWith("Select"))
+				{
+					List<String> ifs = this.iostates.get(name).getInterfaces();
+					List<String> outs = ifs.stream().filter((i) -> i.startsWith("Out"))
+							.map((o) -> (o = o.substring(0, o.indexOf("<"))).substring(o.indexOf("_") + 1, o.length()))
+							.sorted((s1, s2) -> s1.compareTo(s2))
+							.collect(Collectors.toList());
+					addSupertypeInterfaceToMethods(s, outs, "Select", "Out");
+				}
+			}
+
 			for (InterfaceBuilder pred : succifs)  // pred is a Successor Interface for the state s 
 			{
 				// May already have "visited" this State I/f for a different state -- Interfaces recorded as a Set, to support repeated adds
@@ -277,7 +294,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				}
 			}
 		}
-		
+
 		visited.add(s);
 		for (IOAction a : s.getAcceptable())
 		{
@@ -601,6 +618,14 @@ public class IOInterfacesGenerator extends ApiGenerator
 								.collect(Collectors.toList());
 						//buildSuperHandleInterfaces(res, ins);
 						buildIOStateSuperInterfaces(res, ins, "Handle", "Callback", "In");
+						//buildIOStateSuperInterfaces(res, ins, "Branch", "", "In");  // No: subtyping for branch interfaces unsafe -- that's the point of handle interfaces
+						/*Map<String, InterfaceBuilder> tmp = new HashMap<>();
+						buildIOStateSuperInterfaces(tmp, ins, "Branch", "", "In");
+						for (InterfaceBuilder bra : tmp.values())
+						{
+							addBranchSupertypeInterfaceMethods(ib, bra, ins, getSelf());
+						}
+						res.putAll(tmp);*/
 					}
 					res.values().forEach((r) -> subtypeifs.put(r.getName(), r));
 				}
@@ -610,8 +635,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 		
 		for (InterfaceBuilder ib : this.iostates.values())
 		{
-			String base = ib.getName();
-			if (base.startsWith("Select"))
+			String name = ib.getName();
+			if (name.startsWith("Select"))
 			{
 				List<String> ifs = ib.getInterfaces();
 				List<String> outs = ifs.stream().filter((i) -> i.startsWith("Out"))
@@ -620,7 +645,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 						.collect(Collectors.toList());
 				addIOStateSuperInterfaces(ib, outs, "Select", "Out");
 			}
-			else if (base.startsWith("Handle"))
+			else if (name.startsWith("Handle"))
 			{
 				List<String> params = ib.getParameters();
 				List<String> ins = params.stream().map((i) -> i.substring(i.indexOf("Succ_In_") + "Succ_In_".length()))
@@ -628,13 +653,48 @@ public class IOInterfacesGenerator extends ApiGenerator
 						.collect(Collectors.toList());
 				addIOStateSuperInterfaces(ib, ins, "Handle", "In");
 			}
+			/*else if (name.startsWith("Branch"))  // No: subtyping for branch interfaces unsafe -- that's the point of handle interfaces
+			{
+				List<String> params = ib.getParameters();
+				List<String> ins = params.stream().map((i) -> i.substring(i.indexOf("Succ_In_") + "Succ_In_".length()))
+						.sorted((s1, s2) -> s1.compareTo(s2))
+						.collect(Collectors.toList());
+				addIOStateSuperInterfaces(ib, ins, "Branch", "In");
+			}*/
 		}
 
-		//.. Super I/f cast fields
-		//.. Succ I/f supertype to cast methods
-		
+		/*// Generate Succ I/f supertype "to" cast methods -- moved earlier, to be supported by to-overriding pass (i.e. when a direct I/O State I/f inherits duplicate to's from Succs)
+		Role self = getSelf();
+		for (EndpointState s : this.preds.keySet())
+		{
+			if (s.isTerminal())
+			{
+				continue;
+			}
+			String name = IOStateInterfaceGenerator.getIOStateInterfaceName(self, s);
+			if (name.startsWith("Select"))
+			{
+				
+				System.out.println("AAA: " + name);
+				
+				List<String> ifs = this.iostates.get(name).getInterfaces();
+				List<String> outs = ifs.stream().filter((i) -> i.startsWith("Out"))
+						.map((o) -> (o = o.substring(0, o.indexOf("<"))).substring(o.indexOf("_") + 1, o.length()))
+						.sorted((s1, s2) -> s1.compareTo(s2))
+						.collect(Collectors.toList());
+				addSupertypeInterfaceToMethods(s, outs, "Select", "Out");
+			}
+			/*else if (name.startsWith("Branch"))
+			{
+				List<String> params = this.iostates.get(name).getParameters();
+				List<String> ins = params.stream().map((i) -> i.substring(i.indexOf("Succ_In_") + "Succ_In_".length()))
+						.sorted((s1, s2) -> s1.compareTo(s2))
+						.collect(Collectors.toList());
+				addSupertypeInterfaceToMethods(s, ins, "Branch", "In");
+			}* /
+		}*/
 	}
-	
+
 	// a = e.g. C_1_Int
 	// Pre: as sorted
 	private void buildIOStateSuperInterfaces(Map<String, InterfaceBuilder> res, List<String> as, String superPref, String actPref, String succPref)
@@ -645,25 +705,74 @@ public class IOInterfacesGenerator extends ApiGenerator
 			if (foo.size() > 0)
 			{
 				String tmp = foo.stream().collect(Collectors.joining("__"));
-				String select = superPref + "_" + getSelf() + "_" + tmp;
-				if (!this.iostates.containsKey(select) && !res.containsKey(select))
+				String superName = superPref + "_" + getSelf() + "_" + tmp;
+				
+				if (!this.iostates.containsKey(superName) && !res.containsKey(superName))
 				{
-					InterfaceBuilder ib = new InterfaceBuilder(select);
+					InterfaceBuilder ib = new InterfaceBuilder(superName);
 					ib.setPackage(getIOInterfacePackageName(this.gpn, getSelf()));
 					ib.addModifiers(JavaBuilder.PUBLIC);
 					int i = 1;
 					for (String a : foo)
 					{
-						ib.addParameters("__Succ" + i + " extends Succ_" + succPref + "_" + a);
-						ib.addInterfaces(actPref + "_" + a + "<__Succ" + i + ">");
+						ib.addParameters("__Succ" + i + " extends " + "Succ_" + succPref + "_" + a);
+						if (!superPref.equals("Branch"))  // Hacky
+						{
+							ib.addInterfaces(actPref + "_" + a + "<__Succ" + i + ">");
+						}
 						i++;
 					}
-					res.put(select, ib);
+					FieldBuilder cast = ib.newField("cast");  // FIXME: factor out
+					cast.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.STATIC, JavaBuilder.FINAL);
+					cast.setType(superName + "<" + IntStream.range(0, foo.size()).mapToObj((x) -> "?").collect(Collectors.joining(", ")) + ">");
+					cast.setExpression("null");
+					res.put(superName, ib);
 					buildIOStateSuperInterfaces(res, foo, superPref, actPref, succPref);
 				}
 			}
 		}
 	}
+	
+	/*//private void addBranchSupertypeInterfaceMethods(EndpointState s, InterfaceBuilder ib, Role self)
+	private void addBranchSupertypeInterfaceMethods(InterfaceBuilder root, InterfaceBuilder ib, List<String> foo, Role self)
+	{
+		//Duplicated from BranchInterfaceGenerator
+		/*AbstractMethodBuilder bra = ib.newAbstractMethod("branch");
+		String ret = CaseInterfaceGenerator.getCasesInterfaceName(self, s)
+				+ "<" + IntStream.range(1, as.size()+1).mapToObj((x) -> "__Succ" + x).collect(Collectors.joining(", ")) + ">";  // FIXME: factor out
+		bra.setReturn(ret);
+		bra.addParameters(SessionApiGenerator.getRoleClassName(as.iterator().next().peer) + " role");
+		bra.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");* /
+
+						List<String> params = ib.getParameters();
+						List<String> ins = params.stream().map((i) -> i.substring(i.indexOf("Succ_In_") + "Succ_In_".length()))
+								.sorted((s1, s2) -> s1.compareTo(s2))
+								.collect(Collectors.toList());
+		
+		String handleName = "Handle" + ib.getName().substring("Branch".length(), ib.getName().length());
+		System.out.println("AAA: " + ib.getName() + ", " + handleName);
+		//String peer = ib.getName().substring(ib.getName().indexOf("_") + 1, ib.getName().indexOf("_", ib.getName().indexOf("_") + 1));
+		String peer = ins.get(0).substring(0, ins.get(0).indexOf("_"));
+
+		AbstractMethodBuilder bra2 = ib.newAbstractMethod("branch");
+		bra2.setReturn(JavaBuilder.VOID);
+		bra2.addParameters(peer + " role");
+		String next = handleName + "<" + IntStream.range(1, ins.size() + 1).mapToObj((i) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";
+		bra2.addParameters(next + " handler");
+		bra2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
+		//bra2.addBodyLine("branch(role, (" + root.getName() + ") handler);");
+		
+		AbstractMethodBuilder bra3 = ib.newAbstractMethod("handle");
+		bra3.setReturn(JavaBuilder.VOID);
+		bra3.addParameters(peer + " role");
+		String handle = handleName + "<" + ins.stream().map((in) -> "Succ_In_" + in).collect(Collectors.joining(", ")) + ">";
+		bra3.addParameters(handle + " handler");
+		bra3.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");
+		//bra3.addBodyLine("branch(role, (" + root.getName() + ") handler);");
+		
+		ib.addImports(SessionApiGenerator.getRolesPackageName(this.gpn) + ".*");
+		// No: generating "super" branch/handle methods for supertypes is not safe
+	}*/
 	
 	// a = e.g. C_1_Int
 	// Pre: as sorted
@@ -696,6 +805,29 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 	}
 	
+	// Pre: s has "preds", i.e. s implements a Successor I/f
+	private void addSupertypeInterfaceToMethods(EndpointState s, List<String> as, String superPref, String succPref)
+	{
+		for (String exclude : as)
+		{
+			List<String> foo = as.stream().filter((x) -> !x.equals(exclude)).collect(Collectors.toList());
+			if (foo.size() > 0)
+			{
+				String tmp = foo.stream().collect(Collectors.joining("__"));
+				String superName = superPref + "_" + getSelf() + "_" + tmp;
+				for (InterfaceBuilder succif : this.preds.get(s))
+				{
+					addToCastMethod(succif, superName + "<" + IntStream.range(0, foo.size()).mapToObj((f) -> "?").collect(Collectors.joining(", ")) +">");
+				}
+				
+				if (!this.iostates.containsKey(superName))
+				{
+					addSupertypeInterfaceToMethods(s, foo, superPref, succPref);
+				}
+			}
+		}
+	}
+	
 	// Pre: ib is a Successor I/f for the cast IO State I/f
 	// Returns MethodBuilder, or null if none built
 	private static MethodBuilder addToCastMethod(InterfaceBuilder ib, String ret)
@@ -709,7 +841,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		MethodBuilder mb = ib.newDefaultMethod("to");
 		mb.setReturn(ret);
 		mb.addParameters(ret + " cast");
-		if (!ret.equals("EndSocket"))  // HACK
+		if (!ret.equals("EndSocket") || ib.getName().startsWith("Succ"))  // HACK
 		{
 			mb.addBodyLine(JavaBuilder.RETURN + " (" + ret + ") this;");
 		}
