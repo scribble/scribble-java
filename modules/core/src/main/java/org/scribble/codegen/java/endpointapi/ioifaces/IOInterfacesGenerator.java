@@ -31,6 +31,9 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 // Cf. StateChannelApiGenerator
+// TODO: concrete state channel "to" casts for supertype i/f's (the info is there in the Java type hierachy though)
+// Maybe record subtype hierarchy explicitly
+// TODO: check if generated subtypes scalability issue is just Eclipse or also javac
 public class IOInterfacesGenerator extends ApiGenerator
 {
 	private final boolean SUBTYPES;
