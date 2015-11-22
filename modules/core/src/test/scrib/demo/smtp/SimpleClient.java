@@ -34,9 +34,7 @@ import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_8;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_9_Cases;
 import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
 import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Auth__S_Quit;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo__S_Quit;
-import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Quit__S_StartTls;
+import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
 import demo.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import demo.smtp.Smtp.Smtp.roles.C;
 import demo.smtp.message.SmtpMessageFormatter;
@@ -78,9 +76,11 @@ public class SimpleClient
 					doAuth(
 						doEhlo(
 							doStartTls(
-								doEhlo(new Smtp_C_1(se).async(S, _220), ehlo).to(Select_C_S_Quit__S_StartTls.cast).to(Smtp_C_4.cast)
+								//doEhlo(new Smtp_C_1(se).async(S, _220), ehlo).to(Select_C_S_Quit__S_StartTls.cast).to(Smtp_C_4.cast)
+								doEhlo(new Smtp_C_1(se).async(S, _220), ehlo)
 							)
-						, ehlo).to(Select_C_S_Auth__S_Quit.cast).to(Smtp_C_8.cast))
+						//, ehlo).to(Select_C_S_Auth__S_Quit.cast).to(Smtp_C_8.cast))
+						, ehlo))
 					.send(S, new Mail(mail))
 					.branch(S);
 			switch (cases.getOp())
@@ -108,12 +108,21 @@ public class SimpleClient
 		}
 	}
 
-	private Succ_In_S_250 doEhlo(Select_C_S_Ehlo__S_Quit<?, ?> s, String ehlo) throws Exception
+	//private Succ_In_S_250 doEhlo(Select_C_S_Ehlo__S_Quit<?, ?> s, String ehlo) throws Exception
+	//private <S extends Succ_In_S_250> S doEhlo(Select_C_S_Ehlo__S_Quit<? extends Branch_C_S_250__S_250d<S, ?>, ?> s, String ehlo) throws Exception
+	private <S1 extends Succ_In_S_250, S2 extends Branch_C_S_250__S_250d<S1, S2>>
+			//S1 doEhlo(Select_C_S_Ehlo__S_Quit<? extends Branch_C_S_250__S_250d<S1, S2>, ?> s, String ehlo) throws Exception
+			//S1 doEhlo(Select_C_S_Ehlo__S_Quit<S2, ?> s, String ehlo) throws Exception
+			S1 doEhlo(Select_C_S_Ehlo<S2> s, String ehlo) throws Exception
 	{
-		Branch_C_S_250__S_250d<?, ?> bra = s.send(S, new Ehlo(ehlo)).to(Branch_C_S_250__S_250d.cast);
+		//Branch_C_S_250__S_250d<?, ?> bra = s.send(S, new Ehlo(ehlo)).to(Branch_C_S_250__S_250d.cast);
+		//Branch_C_S_250__S_250d<S1, ?> bra = s.send(S, new Ehlo(ehlo));
+		Branch_C_S_250__S_250d<S1, S2> bra = s.send(S, new Ehlo(ehlo));
 		while (true)
 		{	
-			Case_C_S_250__S_250d<?, ?> cases = bra.branch(S);
+			//Case_C_S_250__S_250d<?, ?> cases = bra.branch(S);
+			//Case_C_S_250__S_250d<S1, ?> cases = bra.branch(S);
+			Case_C_S_250__S_250d<S1, S2> cases = bra.branch(S);
 			switch (cases.getOp())
 			{
 				case _250:
@@ -122,7 +131,9 @@ public class SimpleClient
 				}
 				case _250d:
 				{
-					bra = cases.receive(_250d).to(Branch_C_S_250__S_250d.cast);
+					//bra = cases.receive(_250d).to(Branch_C_S_250__S_250d.cast);
+					//bra = (Branch_C_S_250__S_250d<S1, ?>) cases.receive(_250d);
+					bra = cases.receive(_250d);
 					break;
 				}
 			}
