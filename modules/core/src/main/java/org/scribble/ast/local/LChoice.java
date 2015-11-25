@@ -1,6 +1,8 @@
 package org.scribble.ast.local;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
@@ -9,6 +11,8 @@ import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
+import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
@@ -66,5 +70,36 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 	private static List<LProtocolBlock> castBlocks(List<? extends ProtocolBlock<Local>> blocks)
 	{
 		return blocks.stream().map((b) -> (LProtocolBlock) b).collect(Collectors.toList());
+	}
+	
+	@Override
+	public LChoice merge(LInteractionNode ln) throws ScribbleException
+	{
+		if (!(ln instanceof LChoice) || !this.canMerge(ln))
+		{
+			throw new ScribbleException("Cannot merge " + this.getClass() + " and " + ln.getClass() + ": " + this + ", " + ln);
+		}
+		LChoice them = ((LChoice) ln);
+		if (!this.subj.equals(them.subj))
+		{
+			throw new ScribbleException("Cannot merge choices for " + this.subj + " and " + them.subj + ": " + this + ", " + ln);
+		}
+		List<LProtocolBlock> blocks = new LinkedList<>();
+		// For now assume all labels distinct by WF -- for more general merge need to use getEnabling and check if overlapping labels have the same cases (need an equals for ScribNodes)
+		getBlocks().forEach((b) -> blocks.add(b.clone()));
+		them.getBlocks().forEach((b) -> blocks.add(b.clone()));
+		return AstFactoryImpl.FACTORY.LChoice(this.subj, blocks);  // Not reconstruct: leave context building to post-projection passes 
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return ln instanceof LChoice;
+	}
+	
+	@Override
+	public Set<Message> getEnabling()
+	{
+		return getBlocks().stream().flatMap((b) -> b.getEnabling().stream()).collect(Collectors.toSet());
 	}
 }

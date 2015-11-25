@@ -14,12 +14,14 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.PathCollector;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.env.PathEnv;
 import org.scribble.visit.env.ProjectionEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
 {
@@ -60,5 +62,14 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
+	}
+
+	@Override
+	public ScribNode leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
+	{
+		GRecursion rec = (GRecursion) visited;
+		PathEnv merged = coll.popEnv().mergeContext((PathEnv) rec.block.del().env());
+		coll.pushEnv(merged);
+		return (GRecursion) super.leaveInlinedPathCollection(parent, child, coll, rec);
 	}
 }

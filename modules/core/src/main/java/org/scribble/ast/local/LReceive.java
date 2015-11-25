@@ -1,6 +1,8 @@
 package org.scribble.ast.local;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Constants;
@@ -9,6 +11,9 @@ import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
+import org.scribble.main.RuntimeScribbleException;
+import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
@@ -62,5 +67,25 @@ public class LReceive extends MessageTransfer<Local> implements LSimpleInteracti
 	public String toString()
 	{
 		return this.msg + " " + Constants.FROM_KW + " " + this.src + ";";
+	}
+
+	@Override
+	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	{
+		throw new RuntimeScribbleException("Invalid merge on LReceive: " + this);
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return false;
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		Set<Message> enab = new HashSet<>();
+		enab.add(this.msg.toMessage());
+		return enab;
 	}
 }

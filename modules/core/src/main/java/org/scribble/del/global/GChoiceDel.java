@@ -15,12 +15,17 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.global.Communication;
+import org.scribble.model.global.Path;
+import org.scribble.model.global.PathElement;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.PathCollector;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
+import org.scribble.visit.env.PathEnv;
 import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
@@ -129,5 +134,46 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
+		
+		
+		..TODO: use merge (and disable balanced roles choice check for non-exit choice cases)
+	}
+
+	@Override
+	public ScribNode leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
+	{
+		GChoice cho = (GChoice) visited;
+		List<PathEnv> all = cho.getBlocks().stream().map((b) -> (PathEnv) b.del().env()).collect(Collectors.toList());
+		
+		Set<Role> roles = all.stream().flatMap((env) -> env.getRoles().stream()).collect(Collectors.toSet());
+		roles.remove(cho.subj.toName());
+		for (PathEnv env : all) 
+		{
+			for (Path p : env.getPaths())
+			{
+				if (p.isExit())
+				{
+					for (Role r : roles)
+					{
+						for (PathElement pe : p.getElements())
+						{
+							Communication c = (Communication) pe;
+							if (c.peer.equals(r))
+							{
+								break;
+							}
+							else if (c.src.equals(r))
+							{
+								throw new ScribbleException("Role not enabled: " + r);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		PathEnv merged = coll.popEnv().mergeContexts(all); 
+		coll.pushEnv(merged);
+		return (GChoice) super.leaveInlinedPathCollection(parent, child, coll, visited);
 	}
 }

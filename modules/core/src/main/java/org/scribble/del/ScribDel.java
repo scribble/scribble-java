@@ -8,6 +8,7 @@ import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModuleContextBuilder;
 import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.PathCollector;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProjectedRoleDeclFixer;
 import org.scribble.visit.Projector;
@@ -162,6 +163,16 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+	
+	default void enterInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

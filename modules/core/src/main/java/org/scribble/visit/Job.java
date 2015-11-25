@@ -50,6 +50,7 @@ public class Job
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
 		//runNodeVisitorPass(GlobalModelBuilder.class);  // Incomplete
+		runVisitorPassOnAllModules(PathCollector.class);
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module

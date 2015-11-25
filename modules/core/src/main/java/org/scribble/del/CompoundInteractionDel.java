@@ -3,6 +3,7 @@ package org.scribble.del;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
+import org.scribble.visit.PathCollector;
 import org.scribble.visit.WFChoiceChecker;
 
 // For CompoundInteractionNode and ProtocolBlock
@@ -35,5 +36,17 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 	public ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
+	}
+
+	@Override
+	public void enterInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll) throws ScribbleException
+	{
+		ScribDelBase.pushVisitorEnv(this, coll);
+	}
+
+	@Override
+	public ScribNode leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
+	{
+		return ScribDelBase.popAndSetVisitorEnv(this, coll, visited);
 	}
 }

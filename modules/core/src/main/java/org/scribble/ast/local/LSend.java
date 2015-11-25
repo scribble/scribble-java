@@ -1,6 +1,8 @@
 package org.scribble.ast.local;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
@@ -10,6 +12,9 @@ import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
+import org.scribble.main.RuntimeScribbleException;
+import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
@@ -64,5 +69,23 @@ public class LSend extends MessageTransfer<Local> implements LSimpleInteractionN
 	{
 		return this.msg + " " + Constants.TO_KW + " "
 					+ getDestinations().stream().map((dest) -> dest.toString()).collect(Collectors.joining(", ")) + ";";
+	}
+
+	@Override
+	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	{
+		throw new RuntimeScribbleException("Invalid merge on LSend: " + this);
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return false;
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		return Collections.emptySet();
 	}
 }
