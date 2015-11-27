@@ -80,10 +80,10 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 			throw new ScribbleException("Cannot merge " + this.getClass() + " and " + ln.getClass() + ": " + this + ", " + ln);
 		}
 		LChoice them = ((LChoice) ln);
-		if (!this.subj.equals(them.subj))
+		/*if (!this.subj.toName().equals(them.subj.toName()))  // NO: pointless, always DummyProjectionRoleNode at this point -- maybe unnecessary?
 		{
 			throw new ScribbleException("Cannot merge choices for " + this.subj + " and " + them.subj + ": " + this + ", " + ln);
-		}
+		}*/
 		List<LProtocolBlock> blocks = new LinkedList<>();
 		// For now assume all labels distinct by WF -- for more general merge need to use getEnabling and check if overlapping labels have the same cases (need an equals for ScribNodes)
 		getBlocks().forEach((b) -> blocks.add(b.clone()));

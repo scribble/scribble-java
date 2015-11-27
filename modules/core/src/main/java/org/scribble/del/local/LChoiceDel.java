@@ -53,4 +53,3 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		return (LChoice) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
 }
-

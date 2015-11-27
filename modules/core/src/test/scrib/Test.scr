@@ -12,6 +12,28 @@
 module Test;
 
 
+///*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		//4() from B to C;
+		continue X;
+	}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	1() from A to B;
@@ -78,9 +100,26 @@ global protocol Proto1(role A, role B, role C)
 			4() from A to B;
 			continue Y;
 		}	
-	}*/
+	}* /
 }
+//*/
 
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;  // FIXME: same continuation for C, can fix by mergability (other than just factoring out)
+	}
+}
+//*/
 
 
 /*
@@ -167,7 +206,7 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 				
 				/*choice at Alice {
 					continue foreachMissingPost;
-				}*/
+				}* /
 			}
 		}
 		or {
@@ -311,24 +350,6 @@ global protocol NewDeviceLogin(role Alice, role Bob) {
 	}
 	or {
 		Decline(String) from Alice to Bob;
-	}
-}
-//*/
-
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		1() from A to B;
-		3() from B to C;
-	}
-	or
-	{
-		2() from A to B;
-		3() from B to C;  // FIXME: can fix by mergability (other than just factoring out)
 	}
 }
 //*/
