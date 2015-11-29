@@ -44,14 +44,12 @@ class MyB extends Thread implements Fibonacci_B_1_Handler
 	@Override
 	public void run()
 	{
-		try (ScribServerSocket ss = new SocketChannelServer(8888))
+		try (
+			ScribServerSocket ss = new SocketChannelServer(8888);
+			SessionEndpoint<Fibonacci, B> se = new SessionEndpoint<>(this.fib, Fibonacci.B, new ObjectStreamFormatter()))
 		{
-			try (SessionEndpoint<Fibonacci, B> se = new SessionEndpoint<>(this.fib, Fibonacci.B, new ObjectStreamFormatter()))
-			{
-				se.accept(ss, Fibonacci.A);
-
-				new Fibonacci_B_1(se).branch(Fibonacci.A, this);
-			}
+			se.accept(ss, Fibonacci.A);
+			new Fibonacci_B_1(se).branch(Fibonacci.A, this);
 		}
 		catch (Exception x)
 		{
@@ -88,7 +86,6 @@ class MyA extends Thread
 		try (SessionEndpoint<Fibonacci, A> se = new SessionEndpoint<>(this.fib, Fibonacci.A, new ObjectStreamFormatter()))
 		{
 			se.connect(Fibonacci.B, SocketChannelEndpoint::new, "localhost", 8888);
-
 			run(new Fibonacci_A_1(se), 19);  // 4184
 			System.out.println("A done: " + this.b.val);
 		}
