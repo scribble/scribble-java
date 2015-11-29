@@ -1,6 +1,7 @@
 package org.scribble.del.global;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +73,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		{
 			try
 			{
-				/*WFChoiceEnv benv0 = all.get(0);
+				WFChoiceEnv benv0 = all.get(0);
 				List<WFChoiceEnv> benvs = all.subList(1, all.size());
 
 				Set<Role> dests = benv0.getEnabled().getDestinations();
@@ -108,7 +109,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 								}
 								mids.addAll(ms);
 							});
-				}*/
+				}
 			}
 			catch (RuntimeScribbleException rse)
 			{

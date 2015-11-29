@@ -84,12 +84,12 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 
 		if (a.mid.isOp())
 		{	
-			ReceiveSocketGenerator.addReceiveOpParams(mb, apigen.getMainModule(), a);
+			ReceiveSocketGenerator.addReceiveOpParams(mb, apigen.getMainModule(), a, false);
 		}
 		else //if (a.mid.isMessageSigName())
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-			ReceiveSocketGenerator.addReceiveMessageSigNameParams(mb, msd);
+			ReceiveSocketGenerator.addReceiveMessageSigNameParams(mb, msd, false);
 		}
 	}
 
