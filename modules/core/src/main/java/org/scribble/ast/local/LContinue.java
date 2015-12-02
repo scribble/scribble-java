@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Continue;
+import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
@@ -45,7 +46,8 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		throw new RuntimeException("Shouldn't get in here: " + this);
+		//throw new RuntimeException("Shouldn't get in here: " + this);
+		return new DummyProjectionRoleNode().toName();  // For e.g. rec X { 1() from A to B; choice at A { continue X; } or { 2() from A to B; } }
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

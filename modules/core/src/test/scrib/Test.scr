@@ -14,10 +14,16 @@ module Test;
 
 global protocol Proto1(role C, role S)
 {
+
+}
+
+/*
+global protocol Proto1(role C, role S)
+{
 	choice at C
 	{
-		2() from C to S;
-		choice at S
+		//0() from C to S;
+		choice at S  // Fixed peekParentEnv index bug for enabled choice subjs
 		{
 			1() from S to C;
 		}	
@@ -29,7 +35,7 @@ global protocol Proto1(role C, role S)
 				1() from S to C;
 			}
 		}
-	//}*/
+	//}* /
 
 	/*choice at C
 	{
@@ -38,122 +44,6 @@ global protocol Proto1(role C, role S)
 		//do Request(C, S);
 		do Response(C, S);
 	}*/
-}
-
-/*global protocol Request(role C, role S)
-{
-		0() from C to S;
-		/*rec X
-		{
-			choice at C
-			{
-				1() from C to S;
-				continue X;
-			}
-			or
-			{
-				2() from C to S;
-				continue X;
-			}
-			or
-			{
-				3() from C to S;
-				continue X;
-			}
-			or
-			{
-				4() from C to S;
-				continue X;
-			}
-			or
-			{
-				5() from C to S;
-				continue X;
-			}
-			or
-			{
-				6() from C to S;
-				continue X;
-			}
-			or
-			{
-				7() from C to S;
-				continue X;
-			}
-			or
-			{
-				8() from C to S;
-			}
-		}* /
-}
-//*/
-	
-/*
-global protocol Response(role C, role S)
-{
-	1() from S to C;  // HTTP/1.1
-	choice at S
-	{
-		1a() from S to C;  // 200 OK
-	}
-	or
-	{
-		1b() from S to C;
-	}
-
-	/*rec Y
-	{
-		choice at S
-		{
-			2a() from S to C;  // Date: Sun, 24 May 2015 21:04:36 GMT
-			continue Y;
-		}
-		/*or
-		{
-			2() from S to C;  // Server: Apache
-			continue Y;
-		}
-		or
-		{
-			3() from S to C;  // Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
-			continue Y;
-		}
-		or
-		{
-			4() from S to C;  // ETag: "ac6fa008-559-4a8b95908aec0"
-			continue Y;
-		}
-		or
-		{
-			5() from S to C;  // Accept-Ranges: bytes
-			continue Y;
-		}
-		or
-		{
-			6() from S to C;  // Content-Length: 1369
-			continue Y;
-		}
-		or
-		{
-			7() from S to C;  // Vary: Accept-Encoding
-			continue Y;
-		}
-		or
-		{
-			8() from S to C;  // Content-Type: text/html
-			continue Y;
-		}
-		or
-		{
-			9() from S to C;  // Via: 1.1 www.doc.ic.ac.uk	
-			continue Y;
-		}* /
-		or
-		{
-			2b() from S to C;
-		}*
-	}
-	* /
 }
 //*/
 
@@ -180,18 +70,17 @@ global protocol Proto1(role A, role B)
 	choice at A
 	{
 		1() from A to B;
-		//2() from B to A;
-		choice at A  // Nested choice, check for distinct enabling messages in path collection
+		2() from B to A;
+		choice at A  // Nested choice: check for distinct enabling messages in path collection is not broken for the two paths in this choice induced by nested choice
 		{
-			//3a() from A to B;
-			1() from A to B;
+			3a() from A to B;
 		}
 		or
 		{
 			3b() from A to B;
 		}
 	}
-	/*4() from B to A;
+	4() from B to A;
 	choice at A
 	{
 		5a() from A to B;
@@ -199,7 +88,7 @@ global protocol Proto1(role A, role B)
 	or
 	{
 		5b() from A to B;
-	}*/
+	}
 	// Check path collection
 }
 //*/
