@@ -143,7 +143,7 @@ global protocol Request(role C, role S)
 				ACCEPTE from C to S;  // Accept-Encoding: gzip, deflate
 				continue X;
 			}
-			/*or
+			or
 			{
 				DNT from C to S;  // DNT: 1
 				continue X;
@@ -152,7 +152,7 @@ global protocol Request(role C, role S)
 			{
 				CONNECTION from C to S;  // Connection: keep-alive
 				continue X;
-			}*/
+			}
 			or
 			{
 				//CRLF from C to S;  

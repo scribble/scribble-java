@@ -9,6 +9,8 @@ package org.scribble.main;
 .. individual test ignores (cf. whole directory) -- good for package testing
 */
 
+	// FIXME: refactor EnvVisitors merge/compose routines -- check enter/leave merging isn't duplicating parent info (e.g. path visiting, recursion has to clear Env so child paths don't start with parent prefixes)
+
 	// default G/LNode getKind methods won't work properly until Eclipse updated with fix, cf. G/LInteractionSeq
 
 	// FIXME: protocoldecl header to check used roles (so projection roledecl filtering doesn't give empty roledecllist -- relax to check only that at least 1 or 2 roles are used?) -- should be checked wrt. role occurrences obtained from subprotocol visiting

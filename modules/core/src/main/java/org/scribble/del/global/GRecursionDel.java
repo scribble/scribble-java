@@ -64,13 +64,13 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
 	}
 
-	/*@Override
+	@Override
 	public void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
 	{
 		WFChoicePathEnv env = coll.peekEnv().enterContext();
-		env = env.clear();
+		env = env.clear();  // Because merge will append the child paths to the parent paths -- without clearing, the child paths already have the parent suffixes
 		coll.pushEnv(env);
-	}*/
+	}
 
 	@Override
 	public GRecursion leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
