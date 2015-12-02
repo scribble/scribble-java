@@ -7,7 +7,6 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.Communication;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.PathCollector;
@@ -32,7 +31,7 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 		RecVar rv = gc.recvar.toName();
 		coll.pushEnv(coll.popEnv().append(rv));
 		
-		System.out.println("AAA: " + coll.peekEnv().getPaths());
+		//System.out.println("AAA3: " + coll.peekEnv().getPaths());
 		
 		return visited;
 	}

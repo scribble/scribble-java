@@ -19,15 +19,24 @@ public abstract class Env<E extends Env<?>>
 	// Mostly for merging a compound interaction node context into the parent block context
 	// Usually used in the base compound interaction node del when leaving and restoring the parent env in the visitor env stack (e.g. CompoundInteractionNodeDel for WF-choice)
   // By default: merge just discards the argument(s) -- not all EnvVisitors need to merge (e.g. projection)
+	// FIXME: maybe not "expressive" enough -- e.g. has to be "overloaded" for "horizontal composition" and "vertical parent-child" merging of contexts (e.g. path collection)
 	protected Env<E> mergeContext(E env)
 	{
 		//return mergeContexts(Arrays.asList(env));
 		return this;
 	}
 
+	// Can't use vargs with parameterized types
 	// Mostly for merging child blocks contexts into the parent compound interaction node context
 	// Usually used in the parent compound interaction node del to update the parent context after visting each child block before leaving (e.g. GChoiceDel for WF-choice)
+	// FIXME: deprecate (should use "compose" first on children, then "merge" to parent) -- or make a utility composeAndMerge method
 	protected Env<E> mergeContexts(List<E> envs)
+	{
+		return this;
+	}
+	
+	// FIXME: refactor older Envs to use "merge" for parent-child merging, and "compose" for horizontal merging
+	protected Env<E> composeContext(E env)
 	{
 		return this;
 	}

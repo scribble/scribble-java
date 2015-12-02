@@ -1,6 +1,7 @@
 package org.scribble.del.local;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
@@ -11,6 +12,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RoleKind;
+import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
@@ -20,12 +22,20 @@ import org.scribble.visit.env.ReachabilityEnv;
 public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 {
 	@Override
-	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
+	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited) throws ScribbleException
 	{
 		LChoice lc = (LChoice) visited;
 		List<LProtocolBlock> blocks = lc.getBlocks();
+		
+		Set<Role> subjs = blocks.stream().map((b) -> b.getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer)).collect(Collectors.toSet());
+		/*if (subjs.size() > 1)  // Unecessary: checked in GChoiceDel.leaveInlinedPathCollection
+		{
+			throw new ScribbleException("Inconsistent projected choice subject: " + subjs);
+		}*/
+		
 		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND,
-				blocks.get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer).toString());
+				//blocks.get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer).toString());  // OK to take first InteractionSeq action*/
+				subjs.iterator().next().toString());
 		LChoice projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 		return projection;
 	}

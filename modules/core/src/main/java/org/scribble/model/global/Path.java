@@ -1,5 +1,6 @@
 package org.scribble.model.global;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -26,14 +27,26 @@ public class Path
 					private static final long serialVersionUID = 1L;
 					{ add(pe); }
 				}
-		);*/
+		);* /
 		this(path.elements);
-		this.elements.add(pe);
+		this.elements.add(pe);*/
+		this(path, new Path(Arrays.asList(pe)));  // FIXME: maybe use varargs constructor instead
+	}
+
+	protected Path(Path p1, Path p2)
+	{
+		this(p1.elements);
+		this.elements.addAll(p2.elements);
 	}
 	
 	public Path append(PathElement pe)
 	{
 		return new Path(this, pe);
+	}
+
+	public Path concat(Path p)
+	{
+		return new Path(this, p);
 	}
 	
 	public boolean isExit()

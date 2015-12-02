@@ -22,7 +22,7 @@ public class PathEnv extends Env<PathEnv>
 	
 	protected PathEnv(Set<Path> paths)
 	{
-		this.paths = new HashSet<>(paths);
+		this.paths = new HashSet<>(paths);  // FIXME: LinkedHashSet?  or just Deque?
 	}
 
 	@Override
@@ -31,12 +31,12 @@ public class PathEnv extends Env<PathEnv>
 		return new PathEnv(this.paths);
 	}
 	
-	/*public PathEnv clear()
+	public PathEnv clear()
 	{
 		PathEnv copy = copy();
 		copy.paths.clear();
 		return copy;
-	}*/
+	}
 
 	@Override
 	public PathEnv enterContext()
@@ -63,16 +63,34 @@ public class PathEnv extends Env<PathEnv>
 
 	private static void merge(PathEnv parent, Set<Path> foo, Set<Path> child)
 	{
-		/*for (Role dest : child.getDestinations())
+		if (foo.isEmpty())
 		{
-			for (Role src : child.getSources(dest))
+			foo.addAll(child);
+		}
+		else
+		{
+			Set<Path> tmp = new HashSet<>(foo);
+			foo.clear();
+			for (Path p1 : tmp)
 			{
-				/*if (!parent.isEnabled(dest))
+				for (Path p2 : child)
 				{
-					foo.putMessages(dest, src, child.getMessages(dest, src));
+					foo.add(p1.concat(p2));
 				}
 			}
-		}*/
+		}
+	}
+	
+	@Override
+	public PathEnv composeContext(PathEnv child)
+	{
+		PathEnv copy = copy();
+		compose(copy.paths, child.paths);
+		return copy;
+	}
+
+	private static void compose(Set<Path> foo, Set<Path> child)
+	{
 		foo.addAll(child);
 	}
 	

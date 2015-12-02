@@ -73,7 +73,7 @@ class MyB extends Thread implements Fibonacci_B_1_Handler
 class MyA extends Thread
 {
 	private final Fibonacci fib;
-	private Buf<Long> b = new Buf<>((long) 0);
+	private Buf<Long> b = new Buf<>(0L);
 	
 	public MyA(Fibonacci fib)
 	{

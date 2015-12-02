@@ -36,7 +36,7 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
-		//runVisitorPassOnAllModules(WFChoiceChecker.class);
+		runVisitorPassOnAllModules(WFChoiceChecker.class);  // Only being used for disjoint enabled message check
 		runVisitorPassOnAllModules(PathCollector.class);
 		runProjectionPasses();
 		runVisitorPassOnAllModules(ReachabilityChecker.class);

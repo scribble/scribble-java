@@ -61,10 +61,10 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		
 		Role src = gmt.src.toName();
-		if (!checker.peekEnv().isEnabled(src))
+		/*if (!checker.peekEnv().isEnabled(src))
 		{
 			throw new ScribbleException("Role not enabled: " + src);
-		}
+		}*/
 		Message msg = gmt.msg.toMessage();
 		WFChoiceEnv env = checker.popEnv();
 		for (Role dest : gmt.getDestinationRoles())
@@ -151,9 +151,10 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		Role dest = gmt.getDestinations().get(0).toName();
 		MessageId<?> mid = gmt.msg.toMessage().getId();
 		Payload payload = (gmt.msg.isMessageSigNode()) ? ((MessageSigNode) gmt.msg).payloads.toPayload() : Payload.EMPTY_PAYLOAD;
+
+		//System.out.println("AAA1: " + coll.peekEnv().getPaths());
 		coll.pushEnv(coll.popEnv().append(new Communication(src, dest, mid, payload)));
-		
-		System.out.println("AAA: " + coll.peekEnv().getPaths());
+		//System.out.println("AAA2: " + coll.peekEnv().getPaths());
 		
 		return visited;
 	}

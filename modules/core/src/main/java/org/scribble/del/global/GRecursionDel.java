@@ -65,7 +65,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 	}
 
 	@Override
-	public ScribNode leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
+	public GRecursion leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
 	{
 		GRecursion rec = (GRecursion) visited;
 		PathEnv merged = coll.popEnv().mergeContext((PathEnv) rec.block.del().env());

@@ -4,10 +4,12 @@ import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.PathCollector;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.env.PathEnv;
 import org.scribble.visit.env.UnfoldingEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
 public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel implements InteractionNodeDel
 {
@@ -46,6 +48,17 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		WFChoiceEnv visited_env = checker.popEnv();  // popAndSet current
 		setEnv(visited_env);
 		WFChoiceEnv parent_env = checker.popEnv();  // pop-merge-push parent
+		parent_env = parent_env.mergeContext(visited_env);
+		checker.pushEnv(parent_env);
+		return (CompoundInteractionNode<?>) visited;
+	}
+
+	@Override
+	public CompoundInteractionNode<?> leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector checker, ScribNode visited) throws ScribbleException
+	{
+		PathEnv visited_env = checker.popEnv();  // popAndSet current
+		setEnv(visited_env);
+		PathEnv parent_env = checker.popEnv();  // pop-merge-push parent
 		parent_env = parent_env.mergeContext(visited_env);
 		checker.pushEnv(parent_env);
 		return (CompoundInteractionNode<?>) visited;

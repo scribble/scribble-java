@@ -12,22 +12,68 @@
 module Test;
 
 
-///*
 global protocol Proto1(role A, role B, role C)
 {
-	rec X
-	{
 	choice at A
 	{
 		1() from A to B;
-		1() from B to C;
+		1() from A to C;
 	}
 	or
 	{
 		2() from A to B;
-		//4() from B to C;
-		continue X;
+		2() from B to C;
+	}	
+}	
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		//2() from B to A;
+		choice at A  // Nested choice, check for distinct enabling messages in path collection
+		{
+			//3a() from A to B;
+			1() from A to B;
+		}
+		or
+		{
+			3b() from A to B;
+		}
 	}
+	/*4() from B to A;
+	choice at A
+	{
+		5a() from A to B;
+	}
+	or
+	{
+		5b() from A to B;
+	}*/
+	// Check path collection
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+			//4() from B to C;
+			continue X;
+		}
 	}
 }
 //*/

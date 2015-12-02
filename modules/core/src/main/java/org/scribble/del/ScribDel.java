@@ -176,4 +176,14 @@ public interface ScribDel
 	{
 		return visited;
 	}
+
+	/*default void enterEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll)
+	{
+		
+	}
+
+	default ScribNode leaveEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll, ScribNode visited)
+	{
+		return visited;
+	}*/
 }

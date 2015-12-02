@@ -77,19 +77,19 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 				List<WFChoiceEnv> benvs = all.subList(1, all.size());
 
 				Set<Role> dests = benv0.getEnabled().getDestinations();
-				// Same roles enabled in every block
+				/*// Same roles enabled in every block
 				benvs.stream().map((e) -> e.getEnabled().getDestinations()).forEach((rs) ->
 						{
 							if (!dests.equals(rs))
 							{
 								throw new RuntimeScribbleException("Mismatched enabled roles: " + dests + ", " + rs);
 							}
-						});
+						});*/
 				
-				// Same enabler(s) for each enabled role
 				dests.remove(subj);
 				for (Role dest : dests)
 				{
+					/*// Same enabler(s) for each enabled role
 					Set<Role> srcs = benv0.getEnabled().getSources(dest);  // Always singleton?
 					benvs.stream().map((e) -> e.getEnabled().getSources(dest)).forEach((rs) ->
 							{
@@ -97,7 +97,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 								{
 									throw new RuntimeScribbleException("Mismatched enabler roles for " + dest + ": " + srcs + ", " + rs);
 								}
-							});
+							});*/
 				
 					// Distinct enabling messages
 					Set<MessageId<?>> mids = benv0.getEnabled().getMessages(dest);
@@ -111,9 +111,9 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 							});
 				}
 			}
-			catch (RuntimeScribbleException rse)
+			catch (RuntimeScribbleException rse)  // Lambda hack
 			{
-				throw new ScribbleException(rse);
+				throw new ScribbleException(rse.getMessage(), rse.getCause());
 			}
 		}
 		
@@ -121,7 +121,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		// In principle, for the envLeave we should only be doing the latter (as countpart to enterEnv), but it is much more convenient for the compound-node (choice) to collect all the child block envs and merge here, rather than each individual block env trying to (partially) merge into the parent-choice as they are visited
 		WFChoiceEnv merged = checker.popEnv().mergeContexts(all); 
 		checker.pushEnv(merged);  // Merges the child block envs into the current choice env; super call below merges this choice env into the parent env of the choice
-		return (GChoice) super.leaveInlinedWFChoiceCheck(parent, child, checker, visited);
+		return (GChoice) super.leaveInlinedWFChoiceCheck(parent, child, checker, visited);  // Replaces base popAndSet to do pop, merge and set
 	}
 	
 	@Override
@@ -152,12 +152,22 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
 		
-		..TODO: use merge (and disable balanced roles choice check for non-exit choice cases)
+		//..TODO: use merge (and disable balanced roles choice check for non-exit choice cases)
 
 	}
 
+
 	@Override
-	public ScribNode leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
+	public void enterInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll) throws ScribbleException
+	{
+		PathEnv env = coll.peekEnv().enterContext();
+		//env = env.enableChoiceSubject(((GChoice) child).subj.toName()); // FIXME: record subject for enabled subject check
+		env = env.clear();
+		coll.pushEnv(env);
+	}
+
+	@Override
+	public GChoice leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
 	{
 		GChoice cho = (GChoice) visited;
 		List<PathEnv> all = cho.getBlocks().stream().map((b) -> (PathEnv) b.del().env()).collect(Collectors.toList());
@@ -168,23 +178,23 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		Map<Role, Role> enablers = new HashMap<>();
 		for (PathEnv env : all) 
 		{
-			System.out.println("BBB: " + env.getPaths());
+			//System.out.println("BBB: " + env.getPaths());
 			
 			for (Path p : env.getPaths())
 			{
-				System.out.println("CCC p: " + p);
+				//System.out.println("CCC p: " + p);
 
 				if (p.isExit())
 				{
 					R: for (Role r : roles)
 					{
-						System.out.println("DDD r: " + r);
+						//System.out.println("DDD r: " + r);
 
 						for (PathElement pe : p.getElements())
 						{
 							Communication c = (Communication) pe;
 
-							System.out.println("EEE c: " + c + ", " + c.peer.equals(r) + ", " + c.src.equals(r));
+							//System.out.println("EEE c: " + c + ", " + c.peer.equals(r) + ", " + c.src.equals(r));
 
 							if (c.peer.equals(r))
 							{
@@ -196,11 +206,11 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 								}
 								else
 								{
-									// Distinct enabling messages
+									/*// Distinct enabling messages -- no: fails for nested choice paths (e.g. choice at A { 1() from A to B; choice at A { 2() from A to B; } or { 3() from A to B; }}), check in projection instead
 									if (tmp.contains(c.mid))
 									{
 										throw new RuntimeScribbleException("Non disjoint enabling messages for " + r + ": " + tmp + ", " + c.mid);
-									}
+									}*/
 								}
 								tmp.add(c.mid);
 								if (!enablers.containsKey(r))
@@ -210,7 +220,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 								else
 								{
 									Role tmp2 = enablers.get(r);
-									// Same enabler(s) for each enabled role
+									// Same enabler(s) for each enabled role -- leave to projection/local choice subject inference?
 									if (!tmp2.equals(c.src))
 									{
 										throw new RuntimeScribbleException("Mismatched enabler roles for " + r + ": " + tmp2 + ", " + c.src);
@@ -221,7 +231,8 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 							}
 							else if (c.src.equals(r))  // Currently also done in GMessageTransfer leaveInlinedWFChoiceCheck (centralise here?)
 							{
-								throw new ScribbleException("Role not enabled: " + r);
+								// FIXME: path-collection wf choice needs choice subjects as extra data
+								//throw new ScribbleException("Role not enabled: " + r);
 							}
 						}
 						// Same roles enabled in every block
@@ -231,8 +242,14 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 			}
 		}
 		
-		PathEnv merged = coll.popEnv().mergeContexts(all); 
+		//PathEnv merged = coll.popEnv().mergeContexts(all); 
+		PathEnv composed = all.get(0);
+		for (PathEnv next : all.subList(1, all.size()))  // FIXME: factor out utility?
+		{
+			composed = composed.composeContext(next);
+		}
+		PathEnv merged = coll.popEnv().mergeContext(composed); 
 		coll.pushEnv(merged);
-		return (GChoice) super.leaveInlinedPathCollection(parent, child, coll, visited);
+		return (GChoice) super.leaveInlinedPathCollection(parent, child, coll, visited);  // Replaces base popAndSet to do pop, merge and set
 	}
 }
