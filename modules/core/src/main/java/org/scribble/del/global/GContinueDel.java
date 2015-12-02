@@ -32,9 +32,6 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 		GContinue gc = (GContinue) visited;
 		RecVar rv = gc.recvar.toName();
 		coll.pushEnv(coll.popEnv().append(rv));
-		
-		//System.out.println("AAA3: " + coll.peekEnv().getPaths());
-		
 		return visited;
 	}
 }

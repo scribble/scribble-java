@@ -55,7 +55,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		if (!block.isEmpty())
 		{
 			List<? extends InteractionNode<Local>> lis = block.seq.getInteractions();
-			if (!(lis.size() == 1 && lis.get(0) instanceof Continue))
+			if (!(lis.size() == 1 && lis.get(0) instanceof Continue))  // FIXME: generalise
 			{
 				projection = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
 			}

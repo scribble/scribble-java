@@ -12,10 +12,44 @@
 module Test;
 
 
-global protocol Proto1(role C, role S)
-{
+// check why projection of continue-only block works -- should be broken for subj inference?
+// generalise recursion projection filtering
+// check projection/merge of role-subset recursion paths, and projection of non-relevant choice blocks
 
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			//2() from A to B;
+			continue X;  // FIXME: infer subj (retain original subj, then do as fixer -- do via unrolling)
+		}	
+		/*or
+		{
+			continue X;
+		}*/
+	}	
+}	
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	2() from A to C;
+	rec X
+	{
+		choice at A  // FIXME: filter projection for C
+		{
+			3() from A to B;
+			continue X;
+		}
+	}
 }
+//*/
+
 
 /*
 global protocol Proto1(role C, role S)

@@ -138,6 +138,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 				RoleNode subj = AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
 				projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 			}
+			// FIXME: what if empty? projection is null?
 		}
 		else //if (blocks.size() > 1)
 		{
