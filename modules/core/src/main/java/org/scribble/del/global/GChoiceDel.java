@@ -54,7 +54,6 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		env = env.clear();
 		env = env.enableChoiceSubject(((GChoice) child).subj.toName());
 		checker.pushEnv(env);
-		System.out.println("AAA1: " + env);
 	}
 
 	@Override
@@ -62,9 +61,6 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	{
 		GChoice cho = (GChoice) visited;
 		Role subj = cho.subj.toName();
-		
-		System.out.println("AAA2: " + subj + ", " + checker.peekEnv() + ", " + checker.peekParentEnv());
-		
 		if (!checker.peekParentEnv().isEnabled(subj))
 		{
 			throw new ScribbleException("Subject not enabled: " + subj);

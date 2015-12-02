@@ -16,6 +16,7 @@ global protocol Proto1(role C, role S)
 {
 	choice at C
 	{
+		2() from C to S;
 		choice at S
 		{
 			1() from S to C;
