@@ -28,7 +28,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		List<LProtocolBlock> blocks = lc.getBlocks();
 		
 		Set<Role> subjs = blocks.stream().map((b) -> b.getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer)).collect(Collectors.toSet());
-		/*if (subjs.size() > 1)  // Unecessary: checked in GChoiceDel.leaveInlinedPathCollection
+		/*if (subjs.size() > 1)  // Unecessary: checked in GChoiceDel.leaveInlinedPathCollection -- would be better as a check on locals than in projection anyway
 		{
 			throw new ScribbleException("Inconsistent projected choice subject: " + subjs);
 		}*/

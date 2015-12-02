@@ -4,10 +4,10 @@ import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.PathCollector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.env.PathEnv;
+import org.scribble.visit.WFChoicePathChecker;
+import org.scribble.visit.env.WFChoicePathEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
@@ -53,14 +53,28 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		return (CompoundInteractionNode<?>) visited;
 	}
 
-	@Override
-	public CompoundInteractionNode<?> leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector checker, ScribNode visited) throws ScribbleException
+	/*@Override
+	public void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
 	{
-		PathEnv visited_env = checker.popEnv();  // popAndSet current
+		WFChoicePathEnv env = coll.peekEnv().enterContext();
+		env = env.clear();
+		coll.pushEnv(env);
+	}*/
+
+	@Override
+	public CompoundInteractionNode<?> leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
+	//public CompoundInteractionNode<?> leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
+	{
+		WFChoicePathEnv visited_env = coll.popEnv();  // popAndSet current
 		setEnv(visited_env);
-		PathEnv parent_env = checker.popEnv();  // pop-merge-push parent
+		WFChoicePathEnv parent_env = coll.popEnv();  // pop-merge-push parent
 		parent_env = parent_env.mergeContext(visited_env);
-		checker.pushEnv(parent_env);
+		coll.pushEnv(parent_env);
+		
+		/*System.out.println("3: " + parent_env.getPaths().size());
+		System.out.println("4: " + parent_env.getPaths() + "");
+		System.out.println("4: " + visited + "\n");*/
+		
 		return (CompoundInteractionNode<?>) visited;
 	}
 }

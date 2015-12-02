@@ -85,7 +85,7 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 			throw new ScribbleException("Cannot merge choices for " + this.subj + " and " + them.subj + ": " + this + ", " + ln);
 		}*/
 		List<LProtocolBlock> blocks = new LinkedList<>();
-		// For now assume all labels distinct by WF -- for more general merge need to use getEnabling and check if overlapping labels have the same cases (need an equals for ScribNodes)
+		// For now assume all labels distinct by WFChoiceCheck -- for more general merge need to use getEnabling and check if overlapping labels have the same cases (need an equals for ScribNodes)
 		getBlocks().forEach((b) -> blocks.add(b.clone()));
 		them.getBlocks().forEach((b) -> blocks.add(b.clone()));
 		return AstFactoryImpl.FACTORY.LChoice(this.subj, blocks);  // Not reconstruct: leave context building to post-projection passes 

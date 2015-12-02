@@ -11,57 +11,57 @@ import org.scribble.model.global.Path;
 import org.scribble.model.global.PathElement;
 import org.scribble.sesstype.name.Role;
 
-public class PathEnv extends Env<PathEnv>
+public class WFChoicePathEnv extends Env<WFChoicePathEnv>
 {
-	private final Set<Path> paths;
+	private final Set<Path> paths;  // FIXME: LinkedHashSet?  or just Deque?
 	
-	public PathEnv()
+	public WFChoicePathEnv()
 	{
 		this(Collections.emptySet());
 	}
 	
-	protected PathEnv(Set<Path> paths)
+	protected WFChoicePathEnv(Set<Path> paths)
 	{
-		this.paths = new HashSet<>(paths);  // FIXME: LinkedHashSet?  or just Deque?
+		this.paths = new HashSet<>(paths);
 	}
 
 	@Override
-	protected PathEnv copy()
+	protected WFChoicePathEnv copy()
 	{
-		return new PathEnv(this.paths);
+		return new WFChoicePathEnv(this.paths);
 	}
 	
-	public PathEnv clear()
+	public WFChoicePathEnv clear()
 	{
-		PathEnv copy = copy();
+		WFChoicePathEnv copy = copy();
 		copy.paths.clear();
 		return copy;
 	}
 
 	@Override
-	public PathEnv enterContext()
+	public WFChoicePathEnv enterContext()
 	{
-		return new PathEnv(this.paths);
+		return new WFChoicePathEnv(this.paths);
 	}
 	
 	@Override
-	public PathEnv mergeContext(PathEnv child)
+	public WFChoicePathEnv mergeContext(WFChoicePathEnv child)
 	{
 		return mergeContexts(Arrays.asList(child));
 	}
 
 	@Override
-	public PathEnv mergeContexts(List<PathEnv> children)
+	public WFChoicePathEnv mergeContexts(List<WFChoicePathEnv> children)
 	{
-		PathEnv copy = copy();
-		for (PathEnv child : children)
+		WFChoicePathEnv copy = copy();
+		for (WFChoicePathEnv child : children)
 		{
-			merge(this, copy.paths, child.paths);
+			merge(copy.paths, child.paths);
 		}
 		return copy;
 	}
 
-	private static void merge(PathEnv parent, Set<Path> foo, Set<Path> child)
+	private static void merge(Set<Path> foo, Set<Path> child)
 	{
 		if (foo.isEmpty())
 		{
@@ -82,9 +82,9 @@ public class PathEnv extends Env<PathEnv>
 	}
 	
 	@Override
-	public PathEnv composeContext(PathEnv child)
+	public WFChoicePathEnv composeContext(WFChoicePathEnv child)
 	{
-		PathEnv copy = copy();
+		WFChoicePathEnv copy = copy();
 		compose(copy.paths, child.paths);
 		return copy;
 	}
@@ -94,18 +94,19 @@ public class PathEnv extends Env<PathEnv>
 		foo.addAll(child);
 	}
 	
-	public PathEnv append(PathElement pe)
+	public WFChoicePathEnv append(PathElement pe)
 	{
 		if (this.paths.isEmpty())
 		{
-			Path p = new Path(Arrays.asList(pe));
+			//Path p = new Path(Arrays.asList(pe));
+			Path p = new Path(pe);
 			Set<Path> ps = new HashSet<>();
 			ps.add(p);
-			return new PathEnv(ps);
+			return new WFChoicePathEnv(ps);
 		}
 		else
 		{
-			return new PathEnv(this.paths.stream().map((p) -> p.append(pe)).collect(Collectors.toSet()));
+			return new WFChoicePathEnv(this.paths.stream().map((p) -> p.append(pe)).collect(Collectors.toSet()));
 		}
 	}
 

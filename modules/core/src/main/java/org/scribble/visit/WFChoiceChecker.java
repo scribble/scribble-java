@@ -24,6 +24,12 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 	}
 
 	@Override
+	protected WFChoiceEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	{
+		return new WFChoiceEnv();
+	}
+
+	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		if (child instanceof Choice<?>)
@@ -58,12 +64,6 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 		{
 			return super.visit(parent, child);
 		}
-	}
-
-	@Override
-	protected WFChoiceEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
-	{
-		return new WFChoiceEnv();
 	}
 	
 	@Override

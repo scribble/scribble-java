@@ -14,14 +14,14 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.visit.PathCollector;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.WFChoicePathChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.PathEnv;
 import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.env.WFChoicePathEnv;
 
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
 {
@@ -64,12 +64,22 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
 	}
 
+	/*@Override
+	public void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
+	{
+		WFChoicePathEnv env = coll.peekEnv().enterContext();
+		env = env.clear();
+		coll.pushEnv(env);
+	}*/
+
 	@Override
-	public GRecursion leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
+	public GRecursion leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
+	//public GRecursion leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
 	{
 		GRecursion rec = (GRecursion) visited;
-		PathEnv merged = coll.popEnv().mergeContext((PathEnv) rec.block.del().env());
+		WFChoicePathEnv merged = coll.popEnv().mergeContext((WFChoicePathEnv) rec.block.del().env());  // Corresponding push is in CompoundInteractionDel
 		coll.pushEnv(merged);
-		return (GRecursion) super.leaveInlinedPathCollection(parent, child, coll, rec);
+		return (GRecursion) super.leaveWFChoicePathCheck(parent, child, coll, rec);
+		//return (GRecursion) super.leavePathCollection(parent, child, coll, rec);
 	}
 }

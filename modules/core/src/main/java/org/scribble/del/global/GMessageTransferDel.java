@@ -29,9 +29,9 @@ import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
-import org.scribble.visit.PathCollector;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.WFChoicePathChecker;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
@@ -61,10 +61,10 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		
 		Role src = gmt.src.toName();
-		/*if (!checker.peekEnv().isEnabled(src))
+		if (!checker.peekEnv().isEnabled(src))
 		{
 			throw new ScribbleException("Role not enabled: " + src);
-		}*/
+		}
 		Message msg = gmt.msg.toMessage();
 		WFChoiceEnv env = checker.popEnv();
 		for (Role dest : gmt.getDestinationRoles())
@@ -144,7 +144,8 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	}
 	
 	@Override
-	public ScribNode leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
+	public ScribNode leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
+	//public ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		Role src = gmt.src.toName();

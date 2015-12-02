@@ -24,12 +24,12 @@ import org.scribble.model.global.Path;
 import org.scribble.model.global.PathElement;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.PathCollector;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.WFChoicePathChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.PathEnv;
+import org.scribble.visit.env.WFChoicePathEnv;
 import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
@@ -54,6 +54,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		env = env.clear();
 		env = env.enableChoiceSubject(((GChoice) child).subj.toName());
 		checker.pushEnv(env);
+		System.out.println("AAA1: " + env);
 	}
 
 	@Override
@@ -61,6 +62,9 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	{
 		GChoice cho = (GChoice) visited;
 		Role subj = cho.subj.toName();
+		
+		System.out.println("AAA2: " + subj + ", " + checker.peekEnv() + ", " + checker.peekParentEnv());
+		
 		if (!checker.peekParentEnv().isEnabled(subj))
 		{
 			throw new ScribbleException("Subject not enabled: " + subj);
@@ -158,47 +162,61 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 
 
 	@Override
-	public void enterInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll) throws ScribbleException
+	public void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
 	{
-		PathEnv env = coll.peekEnv().enterContext();
+		WFChoicePathEnv env = coll.peekEnv().enterContext();
 		//env = env.enableChoiceSubject(((GChoice) child).subj.toName()); // FIXME: record subject for enabled subject check
 		env = env.clear();
 		coll.pushEnv(env);
 	}
 
-	@Override
-	public GChoice leaveInlinedPathCollection(ScribNode parent, ScribNode child, PathCollector coll, ScribNode visited) throws ScribbleException
+	/*@Override
+	public GChoice leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
 	{
 		GChoice cho = (GChoice) visited;
 		List<PathEnv> all = cho.getBlocks().stream().map((b) -> (PathEnv) b.del().env()).collect(Collectors.toList());
+		
+		//PathEnv merged = coll.popEnv().mergeContexts(all); 
+		PathEnv composed = all.get(0);
+		for (PathEnv next : all.subList(1, all.size()))  // FIXME: factor out utility?
+		{
+			composed = composed.composeContext(next);
+		}
+		PathEnv merged = coll.popEnv().mergeContext(composed); 
+
+		coll.pushEnv(merged);
+		return (GChoice) super.leavePathCollection(parent, child, coll, visited);  // Replaces base popAndSet to do pop, merge and set
+	}*/
+
+	@Override
+	public GChoice leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
+	{
+		GChoice cho = (GChoice) visited;
+		List<WFChoicePathEnv> all = cho.getBlocks().stream().map((b) -> (WFChoicePathEnv) b.del().env()).collect(Collectors.toList());
 		
 		Set<Role> roles = all.stream().flatMap((env) -> env.getRoles().stream()).collect(Collectors.toSet());
 		roles.remove(cho.subj.toName());
 		Map<Role, Set<MessageId<?>>> enabling = new HashMap<>();
 		Map<Role, Role> enablers = new HashMap<>();
-		for (PathEnv env : all) 
+		for (WFChoicePathEnv env : all) 
 		{
-			//System.out.println("BBB: " + env.getPaths());
+			//System.out.println("1a: " + env.getPaths().size());
 			
 			for (Path p : env.getPaths())
 			{
-				//System.out.println("CCC p: " + p);
-
 				if (p.isExit())
 				{
 					R: for (Role r : roles)
 					{
-						//System.out.println("DDD r: " + r);
+						//System.out.println("1b: " + p.getElements().size());
 
 						for (PathElement pe : p.getElements())
 						{
 							Communication c = (Communication) pe;
-
-							//System.out.println("EEE c: " + c + ", " + c.peer.equals(r) + ", " + c.src.equals(r));
-
 							if (c.peer.equals(r))
 							{
 								Set<MessageId<?>> tmp = enabling.get(r);
+
 								if (tmp == null)
 								{
 									tmp = new HashSet<>();
@@ -206,7 +224,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 								}
 								else
 								{
-									/*// Distinct enabling messages -- no: fails for nested choice paths (e.g. choice at A { 1() from A to B; choice at A { 2() from A to B; } or { 3() from A to B; }}), check in projection instead
+									/* // Distinct enabling messages -- no: fails for nested choice paths (e.g. choice at A { 1() from A to B; choice at A { 2() from A to B; } or { 3() from A to B; }}), check in projection instead
 									if (tmp.contains(c.mid))
 									{
 										throw new RuntimeScribbleException("Non disjoint enabling messages for " + r + ": " + tmp + ", " + c.mid);
@@ -236,20 +254,20 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 							}
 						}
 						// Same roles enabled in every block
-						throw new ScribbleException("Role not enabled: " + r);
+						//throw new ScribbleException("Role not enabled: " + r);
 					}
 				}
 			}
 		}
 		
 		//PathEnv merged = coll.popEnv().mergeContexts(all); 
-		PathEnv composed = all.get(0);
-		for (PathEnv next : all.subList(1, all.size()))  // FIXME: factor out utility?
+		WFChoicePathEnv composed = all.get(0);
+		for (WFChoicePathEnv next : all.subList(1, all.size()))  // FIXME: factor out utility?
 		{
 			composed = composed.composeContext(next);
 		}
-		PathEnv merged = coll.popEnv().mergeContext(composed); 
+		WFChoicePathEnv merged = coll.popEnv().mergeContext(composed); 
 		coll.pushEnv(merged);
-		return (GChoice) super.leaveInlinedPathCollection(parent, child, coll, visited);  // Replaces base popAndSet to do pop, merge and set
+		return (GChoice) super.leaveWFChoicePathCheck(parent, child, coll, visited);  // Replaces base popAndSet to do pop, merge and set
 	}
 }
