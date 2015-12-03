@@ -154,4 +154,52 @@ public class Projector extends EnvVisitor<ProjectionEnv>
 		return (ModuleNameNode)
 				AstFactoryImpl.FACTORY.QualifiedNameNode(ModuleKind.KIND, projectModuleName(fullname, localname).getElements());
 	}
+	
+	// Returns true if should ignore for projection
+	/*public static boolean prune(LProtocolBlock block)
+	{
+		if (block.isEmpty())
+		{
+			return true;
+		}
+		List<? extends LInteractionNode> lis = block.getInteractionSeq().getInteractions();
+		if (lis.size() > 1)
+		{
+			return false;
+		}
+		else //if (lis.size() == 1)
+		{
+			LInteractionNode lin = lis.get(0);
+			if (lin instanceof LContinue)
+			{
+				return true;
+			}
+			else if (lin instanceof MessageTransfer<?>)
+			{
+				return false;
+			}
+			else
+			{
+				if (lin instanceof LChoice)
+				{
+					for (LProtocolBlock b : ((LChoice) lin).getBlocks())
+					{
+						if (!prune(b))
+						{
+							return false;
+						}
+					}
+					return true;
+				}
+				else if (lin instanceof LRecursion)
+				{
+					return prune(((LRecursion) lin).getBlock());
+				}
+				else
+				{
+					throw new RuntimeException("TODO: " + lin);
+				}
+			}
+		}
+	}*/
 }

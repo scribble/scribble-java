@@ -93,6 +93,11 @@ package org.scribble.main;
 // - use Path API (though path separators not taken from nio api)
 // - import path should be a CL parameter, not MainContext
 
+// ? - fix projected choice subj fixing for (single?) continue-only block
+// ? - generalise recursion projection filtering
+// ? - check projection/merge of role-subset recursion paths, and projection of non-relevant choice blocks
+
+
 // Not done
 //.. maybe make an UnkindedName superclass of Name, use for e.g. parameters or ambiguous -- parameters and ambiguous have their own kinds
 // - perhaps refactor to have choice/recursion/etc as packages with global/local/del/etc in each -- no: going with kind generic parameter factoring instead

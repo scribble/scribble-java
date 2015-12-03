@@ -12,9 +12,37 @@
 module Test;
 
 
-// fix projected choice subj fixing for (single?) continue-only block
-// generalise recursion projection filtering
-// check projection/merge of role-subset recursion paths, and projection of non-relevant choice blocks
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec Y
+	{
+		rec Z
+		{
+			0() from A to C;
+			rec X
+			{
+				choice at A
+				{
+					1() from A to B;
+					continue X;
+				}	
+				or
+				{
+					2() from A to B;
+					continue Y;  // Testing "pruning" of irrelevant continue cases in nested recs
+				}	
+				or
+				{
+					3a() from A to B;
+					3b() from A to C;
+				}	
+			}	
+		}
+	}
+	4() from B to C;
+}	
+//*/
 
 
 /*
@@ -71,7 +99,7 @@ global protocol Proto1(role A, role B, role C)
 			/*or  // Uncomment is bad (non-disjoint labels)
 			{
 				continue X;
-			}* /
+			}*/
 		}	
 	}
 }	
