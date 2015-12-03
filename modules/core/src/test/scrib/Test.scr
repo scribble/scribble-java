@@ -48,7 +48,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-///*
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	3() from A to C;
@@ -62,7 +62,7 @@ global protocol Proto1(role A, role B, role C)
 			choice at A
 			{
 				//2() from A to B;
-				continue X;
+				continue X;  // Testing project choice subject "inference", and testing continue-only choice block
 			}	
 			or
 			{
@@ -71,7 +71,7 @@ global protocol Proto1(role A, role B, role C)
 			/*or  // Uncomment is bad (non-disjoint labels)
 			{
 				continue X;
-			}*/
+			}* /
 		}	
 	}
 }	

@@ -42,10 +42,13 @@ public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 	{
 		for (Deque<Role> rs : this.recs.values())
 		{
-			if (rs.peek() == null)
+			if (!rs.isEmpty())  // E.g. rec X { ... } rec Y { ... } -- after X, X is still in map but is empty
 			{
-				rs.pop();
-				rs.push(subj);
+				if (rs.peek() == null)
+				{
+					rs.pop();
+					rs.push(subj);
+				}
 			}
 		}
 	}
