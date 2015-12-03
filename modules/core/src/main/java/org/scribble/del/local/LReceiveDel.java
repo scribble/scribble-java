@@ -9,6 +9,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
@@ -23,5 +24,11 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 				: Payload.EMPTY_PAYLOAD;
 		graph.builder.addEdge(graph.builder.getEntry(), new Receive(peer, mid, payload), graph.builder.getExit());
 		return (LReceive) super.leaveGraphBuilding(parent, child, graph, lr);
+	}
+
+	@Override
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	{
+		fixer.setChoiceSubject(((LReceive) child).src.toName());
 	}
 }

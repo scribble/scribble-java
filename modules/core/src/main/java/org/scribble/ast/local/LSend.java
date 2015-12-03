@@ -50,7 +50,8 @@ public class LSend extends MessageTransfer<Local> implements LSimpleInteractionN
 		ls = (LSend) ls.del(del);
 		return ls;
 	}
-	
+
+	// Could make a LMessageTransfer to factor this out with LReceive
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{

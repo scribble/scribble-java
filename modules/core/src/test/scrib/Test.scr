@@ -48,27 +48,37 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-/*
-global protocol Proto1(role A, role B)
+///*
+global protocol Proto1(role A, role B, role C)
 {
-	rec X
+	3() from A to C;
+	rec Y
 	{
-		1() from A to B;
-		choice at A
+		2() from A to B;  // Uncomment is bad (non-enabled B / non-disjoint labels)
+		2a() from B to A;
+		rec X
 		{
-			//2() from A to B;
-			continue X;  // FIXME: infer subj (retain original subj, then do as fixer -- do via unrolling)
+			1() from A to B;
+			choice at A
+			{
+				//2() from A to B;
+				continue X;
+			}	
+			or
+			{
+				continue Y;
+			}
+			/*or  // Uncomment is bad (non-disjoint labels)
+			{
+				continue X;
+			}*/
 		}	
-		/*or
-		{
-			continue X;
-		}* /
-	}	
+	}
 }	
 //*/
 
 
-///*
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	1() from A to B;
@@ -78,7 +88,7 @@ global protocol Proto1(role A, role B, role C)
 		/*choice at A
 		{
 			3() from A to B;
-		}*/
+		}* /
 		choice at A
 		{
 			rec Y

@@ -68,6 +68,7 @@ public class Job
 	{
 		runVisitorPassOnProjectedModules(ModuleContextBuilder.class);
 		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes to fix DUMMY role occurrences
+		//runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer2.class);  // Must come before other passes to fix DUMMY role occurrences
 		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);
 		runVisitorPassOnProjectedModules(RoleCollector.class);  // NOTE: doesn't collect from choice subjects (may be invalid until projected choice subjs fixed)
 		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version

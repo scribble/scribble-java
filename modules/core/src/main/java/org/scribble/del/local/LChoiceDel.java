@@ -8,12 +8,11 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
-import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RoleKind;
+import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProtocolDefInliner;
@@ -31,20 +30,29 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		
 		Set<Role> subjs = blocks.stream()
 				.map((b) -> b.getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer))
-				.filter((r) -> !r.toString().equals(DummyProjectionRoleNode.DUMMY_PROJECTION_ROLE))
+				//.filter((r) -> !r.toString().equals(DummyProjectionRoleNode.DUMMY_PROJECTION_ROLE))
 				.collect(Collectors.toSet());
 		if (subjs.size() == 0)
 		{
-			throw new RuntimeScribbleException("TODO: unable to infer projection subject: " + parent);
+			//throw new RuntimeScribbleException("TODO: unable to infer projection subject: " + parent);
+			throw new RuntimeException("Shouldn't get in here: " + subjs);
 		}
-		/*if (subjs.size() > 1)  // Unecessary: checked in GChoiceDel.leaveInlinedPathCollection -- would be better as a check on locals than in projection anyway
+		else
 		{
-			throw new ScribbleException("Inconsistent projected choice subject: " + subjs);
-		}*/
+			subjs = subjs.stream()
+					.map((r) -> fixer.isRecVarRole(r) ? fixer.getChoiceSubject(new RecVar(r.toString())) : r)
+					.collect(Collectors.toSet());
+		}
 		
+		if (subjs.size() > 1)  // Unnecessary: due to WF check in GChoiceDel.leaveInlinedPathCollection -- would be better as a check on locals than in projection anyway
+		{
+			//throw new ScribbleException("Inconsistent projected choice subject: " + subjs);
+			throw new RuntimeException("Shouldn't get in here: " + subjs);
+		}
 		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND,
 				//blocks.get(0).getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer).toString());
-				subjs.iterator().next().toString());  // FIXME: why is it working for continue as only statement in block?
+				subjs.iterator().next().toString());
+		fixer.setChoiceSubject(subj.toName());
 		LChoice projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 		return projection;
 	}

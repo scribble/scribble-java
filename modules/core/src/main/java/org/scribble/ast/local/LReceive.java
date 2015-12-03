@@ -53,6 +53,7 @@ public class LReceive extends MessageTransfer<Local> implements LSimpleInteracti
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
+		fixer.setChoiceSubject(this.src.toName());
 		return this.src.toName();
 	}
 

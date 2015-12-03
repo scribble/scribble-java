@@ -1,10 +1,19 @@
 package org.scribble.visit;
 
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.name.RecVar;
+import org.scribble.sesstype.name.Role;
 
 public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 {
+	private Map<RecVar, Deque<Role>> recs = new HashMap<RecVar, Deque<Role>>();
+	
 	public ProjectedChoiceSubjectFixer(Job job)
 	{
 		super(job);
@@ -22,5 +31,58 @@ public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 	{
 		visited = visited.del().leaveProjectedChoiceSubjectFixing(parent, child, this, visited);
 		return super.leave(parent, child, visited);
+	}
+	
+	public Role getChoiceSubject(RecVar rv)
+	{
+		return this.recs.get(rv).peek();
+	}
+	
+	public void setChoiceSubject(Role subj)
+	{
+		for (Deque<Role> rs : this.recs.values())
+		{
+			if (rs.peek() == null)
+			{
+				rs.pop();
+				rs.push(subj);
+			}
+		}
+	}
+	
+	public void pushRec(RecVar rv)
+	{
+		Deque<Role> tmp = this.recs.get(rv);
+		if (tmp == null)
+		{
+			tmp = new LinkedList<>();
+			this.recs.put(rv, tmp);
+		}
+		tmp.push(null);
+	}
+	
+	public void popRec(RecVar rv)
+	{
+		this.recs.get(rv).pop();
+	}
+	
+	public RecVarRole createRecVarRole(RecVar rv)
+	{
+		return new RecVarRole(rv.toString());
+	}
+	
+	public boolean isRecVarRole(Role r)
+	{
+		return (r instanceof RecVarRole);
+	}
+}
+
+class RecVarRole extends Role // Hack
+{
+	private static final long serialVersionUID = 1L;
+	
+	public RecVarRole(String text)
+	{
+		super(text);
 	}
 }
