@@ -48,7 +48,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-///*
+/*
 global protocol Proto1(role A, role B)
 {
 	rec X
@@ -68,7 +68,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-/*
+///*
 global protocol Proto1(role A, role B, role C)
 {
 	1() from A to B;
@@ -78,13 +78,25 @@ global protocol Proto1(role A, role B, role C)
 		/*choice at A
 		{
 			3() from A to B;
-		}* /
+		}*/
 		choice at A
 		{
-			choice at A
+			rec Y
 			{
-				3() from A to B;
-				continue X;
+				choice at A
+				{
+					3() from A to B;
+					continue X;
+				}
+				or
+				{
+					4() from A to B;
+					continue Y;
+				}
+				or
+				{
+					5() from A to B;
+				}
 			}
 		}
 	}

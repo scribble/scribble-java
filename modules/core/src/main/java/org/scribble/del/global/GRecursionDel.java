@@ -3,7 +3,6 @@ package org.scribble.del.global;
 import java.util.List;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.Continue;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolBlock;
@@ -11,7 +10,6 @@ import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LInteractionNode;
-import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
@@ -90,12 +88,14 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 			{
 				if (lin instanceof LChoice)
 				{
-					List<LProtocolBlock> blocks = ((LChoice) lin).getBlocks();
-					if (blocks.size() > 1)
+					for (LProtocolBlock b : ((LChoice) lin).getBlocks())
 					{
-						return false;
+						if (!ignore(b))
+						{
+							return false;
+						}
 					}
-					return ignore(blocks.get(0));
+					return true;
 				}
 				else if (lin instanceof LRecursion)
 				{
