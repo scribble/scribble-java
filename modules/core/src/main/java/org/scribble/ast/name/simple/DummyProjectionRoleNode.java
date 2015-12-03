@@ -6,7 +6,7 @@ import org.scribble.visit.Substitutor;
 // For local choice subjects
 public class DummyProjectionRoleNode extends RoleNode
 {
-	private static final String DUMMY_PROJECTION_ROLE = "__DUMMY_ROLE";
+	public static final String DUMMY_PROJECTION_ROLE = "__DUMMY_ROLE";
 
 	public DummyProjectionRoleNode()
 	{

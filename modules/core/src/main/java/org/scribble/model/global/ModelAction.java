@@ -8,7 +8,7 @@ import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.Role;
 
 // Mutable
-// FIXME: should be Send/Receive, cf. IOAction
+// FIXME: should be Communication, cf. IOAction (superclass?)
 public class ModelAction
 {
 	private static int counter = 1;

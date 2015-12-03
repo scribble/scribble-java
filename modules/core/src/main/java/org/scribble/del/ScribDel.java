@@ -16,6 +16,7 @@ import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.RoleCollector;
 import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.WFChoicePathChecker;
 import org.scribble.visit.env.Env;
 
 // Immutable except for pass-specific Envs (by visitors) only -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
@@ -165,4 +166,36 @@ public interface ScribDel
 	{
 		return visited;
 	}
+	
+	/*//default void enterPathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor<? extends PathEnv> coll) throws ScribbleException
+	default void enterPathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll) throws ScribbleException
+	{
+		
+	}
+
+	//default ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor<? extends PathEnv> coll, ScribNode visited) throws ScribbleException
+	default ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}*/
+	
+	default void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	/*default void enterEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll)
+	{
+		
+	}
+
+	default ScribNode leaveEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll, ScribNode visited)
+	{
+		return visited;
+	}*/
 }

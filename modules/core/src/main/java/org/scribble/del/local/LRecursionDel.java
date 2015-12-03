@@ -9,6 +9,7 @@ import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.EndpointGraphBuilder;
+import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -55,5 +56,18 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		RecVar rv = lr.recvar.toName();
 		graph.builder.removeRecursionEntry(rv);
 		return (LRecursion) super.leaveGraphBuilding(parent, child, graph, lr);
+	}
+
+	@Override
+	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
+	{
+		fixer.pushRec(((LRecursion) child).recvar.toName());
+	}
+	
+	@Override
+	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited)
+	{
+		fixer.popRec(((LRecursion) child).recvar.toName());
+		return visited;
 	}
 }

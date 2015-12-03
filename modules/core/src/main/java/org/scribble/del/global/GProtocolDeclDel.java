@@ -169,3 +169,4 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return (GProtocolDeclContext) super.getProtocolDeclContext();
 	}
 }
+

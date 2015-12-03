@@ -110,6 +110,7 @@ public class SimpleClient
 
 	//private Succ_In_S_250 doEhlo(Select_C_S_Ehlo__S_Quit<?, ?> s, String ehlo) throws Exception
 	//private <S extends Succ_In_S_250> S doEhlo(Select_C_S_Ehlo__S_Quit<? extends Branch_C_S_250__S_250d<S, ?>, ?> s, String ehlo) throws Exception
+	// NOTE: needs the -subtypes option
 	private <S1 extends Succ_In_S_250, S2 extends Branch_C_S_250__S_250d<S1, S2>>
 			//S1 doEhlo(Select_C_S_Ehlo__S_Quit<? extends Branch_C_S_250__S_250d<S1, S2>, ?> s, String ehlo) throws Exception
 			//S1 doEhlo(Select_C_S_Ehlo__S_Quit<S2, ?> s, String ehlo) throws Exception

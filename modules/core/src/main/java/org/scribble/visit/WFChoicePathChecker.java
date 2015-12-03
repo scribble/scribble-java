@@ -9,24 +9,26 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.env.WFChoicePathEnv;
 
-public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
+// Duplicated from WFChoiceChecker
+// Maybe refactor as PathVisitor (extended by WF checker)
+public class WFChoicePathChecker extends UnfoldingVisitor<WFChoicePathEnv> //PathCollectionVisitor
 {
 	// N.B. using pointer equality for checking if choice previously visited
 	// So UnfoldingVisitor cannot visit a clone
 	// equals method identity not suitable unless Ast nodes record additional info like syntactic position
 	private Set<Choice<?>> visited = new HashSet<>();	
 	
-	public WFChoiceChecker(Job job)
+	public WFChoicePathChecker(Job job)
 	{
 		super(job);
 	}
 
 	@Override
-	protected WFChoiceEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	protected WFChoicePathEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
 	{
-		return new WFChoiceEnv();
+		return new WFChoicePathEnv();
 	}
 
 	@Override
@@ -68,15 +70,22 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 	
 	@Override
 	protected void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	//protected void pathCollectionEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.unfoldingEnter(parent, child);
-		child.del().enterInlinedWFChoiceCheck(parent, child, this);
+		//super.pathCollectionEnter(parent, child);
+		child.del().enterWFChoicePathCheck(parent, child, this);
 	}
 	
 	@Override
 	protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	//protected ScribNode pathCollectionLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveInlinedWFChoiceCheck(parent, child, this, visited);
+		visited = visited.del().leaveWFChoicePathCheck(parent, child, this, visited);
 		return super.unfoldingLeave(parent, child, visited);
+		//return super.pathCollectionLeave(parent, child, visited);
+		/*// NOTE: deviates from standard Visitor pattern: calls super first to collect paths -- maybe refactor more "standard way" by collecting paths in a prior pass and save them in context
+		visited = super.pathCollectionLeave(parent, child, visited);
+		return visited.del().leaveWFChoicePathCheck(parent, child, this, visited);*/
 	}
 }

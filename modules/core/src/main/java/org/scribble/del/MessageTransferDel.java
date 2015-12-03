@@ -57,4 +57,12 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 		}
 		return visited;
 	}
+
+	/*@Override
+	public ScribNode leaveEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll, ScribNode visited)
+	{
+		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
+		coll.addEnabling(mt.src.toName(), mt.getDestinations().get(0).toName(), mt.msg.toMessage().getId());  // FIXME: multicast
+		return visited;
+	}*/
 }

@@ -206,12 +206,12 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		if (a.mid.isOp())
 		{
-			ReceiveSocketGenerator.addReceiveOpParams(mb, main, a);
+			ReceiveSocketGenerator.addReceiveOpParams(mb, main, a, true);
 		}
 		else //if (a.mid.isMessageSigName())
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-			ReceiveSocketGenerator.addReceiveMessageSigNameParams(mb, msd);
+			ReceiveSocketGenerator.addReceiveMessageSigNameParams(mb, msd, true);
 		}
 	}
 

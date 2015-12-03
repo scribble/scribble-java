@@ -148,21 +148,21 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM, opClass + " " + StateChannelApiGenerator.RECEIVE_OP_PARAM);
 		if (a.mid.isOp())
 		{
-			addReceiveOpParams(mb, main, a);
+			addReceiveOpParams(mb, main, a, true);
 		}
 		else //if (a.mid.isMessageSigName())
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
-			addReceiveMessageSigNameParams(mb, msd);
+			addReceiveMessageSigNameParams(mb, msd, true);
 		}
 	}
 
 	// FIXME: main may not be the right module
-	protected static void addReceiveOpParams(MethodBuilder mb, Module main, IOAction a)
+	protected static void addReceiveOpParams(MethodBuilder mb, Module main, IOAction a, boolean superr)
 	{
 		if (!a.payload.isEmpty())
 		{
-			String buffSuper = BUF_CLASS + "<? " + JavaBuilder.SUPER + " ";
+			String buffSuper = BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "");
 			int i = 1;
 			for (PayloadType<?> pt : a.payload.elems)
 			{
@@ -186,9 +186,9 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 		}
 	}
 
-	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd)
+	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd, boolean superr)
 	{
-		mb.addParameters(BUF_CLASS + "<? " + JavaBuilder.SUPER + " " + msd.extName + "> " + RECEIVE_ARG_PREFIX);
+		mb.addParameters(BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "") + msd.extName + "> " + RECEIVE_ARG_PREFIX);
 	}
 
 	// Similar to setReceiveHeader

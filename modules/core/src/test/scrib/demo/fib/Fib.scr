@@ -9,6 +9,7 @@ module demo.fib.Fib;
 
 
 type <java> "java.lang.Integer" from "rt.jar" as Integer;
+type <java> "java.lang.Long" from "rt.jar" as Long;
 
 
 global protocol Adder(role C, role S)
@@ -67,6 +68,23 @@ global protocol Adder3(role C, role S)
 		{
 			FOO() from C to S;
 			FOO() from S to C;
+		}
+	}
+}
+
+global protocol Fibonacci(role A, role B)
+{
+	rec Fib
+	{
+		choice at A
+		{
+			fibonacci(Long) from A to B;
+			fibonacci(Long) from B to A;
+			continue Fib;
+		}
+		or
+		{
+			end() from A to B;
 		}
 	}
 }

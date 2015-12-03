@@ -6,9 +6,330 @@
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/Test.scr
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr
 
+//$ bin/scribblec.sh modules/core/src/test/scrib/Test.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/
+ 
 
 module Test;
 
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec Y
+	{
+		rec Z
+		{
+			0() from A to C;
+			rec X
+			{
+				choice at A
+				{
+					1() from A to B;
+					continue X;
+				}	
+				or
+				{
+					2() from A to B;
+					continue Y;  // Testing "pruning" of irrelevant continue cases in nested recs
+				}	
+				or
+				{
+					3a() from A to B;
+					3b() from A to C;
+				}	
+			}	
+		}
+	}
+	4() from B to C;
+}	
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;  // Comment is bad
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			rec Y
+			{
+				2() from A to B;
+				choice at A
+				{
+					//continue Y;  // Uncomment is bad
+					continue X;
+				}
+				or
+				{
+					2() from A to B;  // OK to be 2 as well because the above X goes to 1() first
+				}	
+			}
+		}	
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	3() from A to C;
+	rec Y
+	{
+		2() from A to B;  // Uncomment is bad (non-enabled B / non-disjoint labels)
+		2a() from B to A;
+		rec X
+		{
+			1() from A to B;
+			choice at A
+			{
+				//2() from A to B;
+				continue X;  // Testing project choice subject "inference", and testing continue-only choice block
+			}	
+			or
+			{
+				continue Y;
+			}
+			/*or  // Uncomment is bad (non-disjoint labels)
+			{
+				continue X;
+			}*/
+		}	
+	}
+}	
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	2() from A to C;
+	rec X
+	{
+		/*choice at A
+		{
+			3() from A to B;
+		}* /
+		choice at A
+		{
+			rec Y
+			{
+				choice at A
+				{
+					3() from A to B;
+					continue X;
+				}
+				or
+				{
+					4() from A to B;
+					continue Y;
+				}
+				or
+				{
+					5() from A to B;
+				}
+			}
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role C, role S)
+{
+	choice at C
+	{
+		//0() from C to S;
+		choice at S  // Fixed peekParentEnv index bug for enabled choice subjs
+		{
+			1() from S to C;
+		}	
+	}	
+	/*rec X {
+		choice at C {
+			0() from C to S;
+			rec Y {
+				1() from S to C;
+			}
+		}
+	//}* /
+
+	/*choice at C
+	{
+		0() from C to S;
+		//1() from S to C;
+		//do Request(C, S);
+		do Response(C, S);
+	}*/
+}
+//*/
+
+
+/*//global protocol Proto1(role A, role B, role C)
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		//1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+		//2() from B to C;
+	}	
+}*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to A;
+		choice at A  // Nested choice: check for distinct enabling messages in path collection is not broken for the two paths in this choice induced by nested choice
+		{
+			3a() from A to B;
+		}
+		or
+		{
+			3b() from A to B;
+		}
+	}
+	4() from B to A;
+	choice at A
+	{
+		5a() from A to B;
+	}
+	or
+	{
+		5b() from A to B;
+	}
+	// Check path collection
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+			//4() from B to C;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	1() from A to C;
+	choice at A
+	{
+		do Proto1(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		2() from A to C;
+	}	
+
+	/*choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+		2() from A to C;
+	}*/
+	/*rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from A to C;
+		}	
+	}*/
+	/*rec Y
+	{
+		choice at A
+		{
+			rec X
+			{
+				choice at A
+				{
+					1() from A to B;
+					continue X;
+				}
+				or
+				{
+					2() from A to C;
+					continue Y;
+				}	
+				or
+				{
+					3() from A to B;
+					3() from B to C;
+				}	
+			}	
+		}
+		or
+		{
+			4() from A to B;
+			continue Y;
+		}	
+	}* /
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;  // FIXME: same continuation for C, can fix by mergability (other than just factoring out)
+	}
+}
+//*/
+
+
+/*
 type <java> "java.lang.String" from "rt.jar" as String;  
 
 global protocol ExchangeKeyPairs(role Alice, role Bob) {  
@@ -51,7 +372,7 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 			SendIndexData(String) from Friend to Alice;
 		} with {
 			Timeout(String) by Alice;
-		}*/ 
+		}* / 
 	
 		rec foreachFriendOfAliceAtFriendsFriend {
 			RequestFriendsIndexData(String) from Alice to FriendsFriend;
@@ -63,7 +384,7 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 				Decline(String) from FriendsFriend to Alice; 
 				/*choice at Alice {
 					continue foreachFriendOfAlice;
-				}*/
+				}* /
 			}
 		}
 		//GetIndexList inline end
@@ -86,13 +407,13 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 						
 						/*choice at Alice {
 							continue foreachFriendOfAlice;
-						}*/
+						}* /
 					}	
 				}
 				
 				/*choice at Alice {
 					continue foreachMissingPost;
-				}*/
+				}* /
 			}
 		}
 		or {
@@ -102,8 +423,7 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 	
 		/*choice at Alice {
 			continue foreachFriendOfAlice;
-		}*/
-	
+		}* /
 	}
 }
 
@@ -237,26 +557,6 @@ global protocol NewDeviceLogin(role Alice, role Bob) {
 	}
 	or {
 		Decline(String) from Alice to Bob;
-	}
-}*/
-
-
-
-
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		1() from A to B;
-		3() from B to C;
-	}
-	or
-	{
-		2() from A to B;
-		3() from B to C;  // FIXME: can fix by mergability (other than just factoring out)
 	}
 }
 //*/

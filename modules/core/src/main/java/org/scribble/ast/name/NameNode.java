@@ -61,7 +61,7 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 			return false;
 		}
 		NameNode<?> nn = (NameNode<?>) o;
-		return nn.canEqual(this) && this.elems.equals(nn.elems);
+		return nn.canEqual(this) && Arrays.equals(this.elems, nn.elems);
 	}
 	
 	public abstract boolean canEqual(Object o);

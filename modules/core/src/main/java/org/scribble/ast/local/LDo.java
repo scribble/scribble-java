@@ -1,6 +1,8 @@
 package org.scribble.ast.local;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Do;
@@ -10,6 +12,9 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
+import org.scribble.main.RuntimeScribbleException;
+import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -90,5 +95,23 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	public Local getKind()
 	{
 		return LSimpleInteractionNode.super.getKind();
+	}
+
+	@Override
+	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	{
+		throw new RuntimeScribbleException("Invalid merge on LDo: " + this);
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return false;
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		return Collections.emptySet();
 	}
 }
