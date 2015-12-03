@@ -157,7 +157,6 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 
 	}
 
-
 	@Override
 	public void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
 	{
@@ -197,16 +196,12 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		Map<Role, Role> enablers = new HashMap<>();
 		for (WFChoicePathEnv env : all) 
 		{
-			//System.out.println("1a: " + env.getPaths().size());
-			
 			for (Path p : env.getPaths())
 			{
 				if (p.isExit())
 				{
 					R: for (Role r : roles)
 					{
-						//System.out.println("1b: " + p.getElements().size());
-
 						for (PathElement pe : p.getElements())
 						{
 							Communication c = (Communication) pe;
@@ -244,13 +239,13 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 
 								continue R;
 							}
-							else if (c.src.equals(r))  // Currently also done in GMessageTransfer leaveInlinedWFChoiceCheck (centralise here?)
+							else if (c.src.equals(r))  // Currently checked in GMessageTransfer.leaveInlinedWFChoiceCheck (centralise here?)
 							{
-								// FIXME: path-collection wf choice needs choice subjects as extra data
+								// FIXME: path-collection wf choice needs choice subjects as extra data -- no: currently done in WFChoiceChecker
 								//throw new ScribbleException("Role not enabled: " + r);
 							}
 						}
-						// Same roles enabled in every block
+						// Same roles enabled in every block -- no: generalised by filtering out "recvar-paths"
 						//throw new ScribbleException("Role not enabled: " + r);
 					}
 				}

@@ -11,6 +11,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.WFChoiceEnv;
 
+// FIXME: refactor as distinct enabling messages checker (cf. GChoiceDel, WFChoicePathChecker)
 public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 {
 	// N.B. using pointer equality for checking if choice previously visited

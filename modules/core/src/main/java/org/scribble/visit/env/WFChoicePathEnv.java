@@ -73,9 +73,12 @@ public class WFChoicePathEnv extends Env<WFChoicePathEnv>
 			foo.clear();
 			for (Path p1 : tmp)
 			{
-				for (Path p2 : child)
+				if (p1.isExit())  // Sound?
 				{
-					foo.add(p1.concat(p2));
+					for (Path p2 : child)
+					{
+						foo.add(p1.concat(p2));
+					}
 				}
 			}
 		}

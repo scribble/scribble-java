@@ -76,7 +76,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-/*
+///*
 global protocol Proto1(role A, role B, role C)
 {
 	3() from A to C;
@@ -99,7 +99,11 @@ global protocol Proto1(role A, role B, role C)
 			/*or  // Uncomment is bad (non-disjoint labels)
 			{
 				continue X;
-			}* /
+			}*/
+			or
+			{
+				4() from A to B;
+			}	
 		}	
 	}
 }	
