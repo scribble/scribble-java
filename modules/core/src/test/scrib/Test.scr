@@ -12,11 +12,43 @@
 module Test;
 
 
-// check why projection of continue-only block works -- should be broken for subj inference?
+// fix projected choice subj fixing for (single?) continue-only block
 // generalise recursion projection filtering
 // check projection/merge of role-subset recursion paths, and projection of non-relevant choice blocks
 
 
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;  // Comment is bad
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			rec Y
+			{
+				2() from A to B;
+				choice at A
+				{
+					//continue Y;  // Uncomment is bad
+					continue X;
+				}
+				or
+				{
+					2() from A to B;  // OK to be 2 as well because the above X goes to 1() first
+				}	
+			}
+		}	
+	}
+}
+//*/
+
+
+///*
 global protocol Proto1(role A, role B)
 {
 	rec X
@@ -30,9 +62,11 @@ global protocol Proto1(role A, role B)
 		/*or
 		{
 			continue X;
-		}*/
+		}* /
 	}	
 }	
+//*/
+
 
 /*
 global protocol Proto1(role A, role B, role C)
@@ -41,10 +75,17 @@ global protocol Proto1(role A, role B, role C)
 	2() from A to C;
 	rec X
 	{
-		choice at A  // FIXME: filter projection for C
+		/*choice at A
 		{
 			3() from A to B;
-			continue X;
+		}* /
+		choice at A
+		{
+			choice at A
+			{
+				3() from A to B;
+				continue X;
+			}
 		}
 	}
 }

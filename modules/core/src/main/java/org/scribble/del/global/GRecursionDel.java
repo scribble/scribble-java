@@ -4,16 +4,19 @@ import java.util.List;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Continue;
-import org.scribble.ast.InteractionNode;
+import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.Local;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
@@ -52,16 +55,58 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		RecVarNode recvar = gr.recvar.clone();
 		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection();	
 		LRecursion projection = null;
-		if (!block.isEmpty())
+		if (!ignore(block))
 		{
-			List<? extends InteractionNode<Local>> lis = block.seq.getInteractions();
-			if (!(lis.size() == 1 && lis.get(0) instanceof Continue))  // FIXME: generalise
-			{
-				projection = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
-			}
+			projection = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
+	}
+	
+	// Returns true if should ignore for projection
+	private boolean ignore(LProtocolBlock block)
+	{
+		if (block.isEmpty())
+		{
+			return true;
+		}
+		List<? extends LInteractionNode> lis = block.getInteractionSeq().getInteractions();
+		if (lis.size() > 1)
+		{
+			return false;
+		}
+		else //if (lis.size() == 1)
+		{
+			LInteractionNode lin = lis.get(0);
+			if (lin instanceof LContinue)
+			{
+				return true;
+			}
+			else if (lin instanceof MessageTransfer<?>)
+			{
+				return false;
+			}
+			else
+			{
+				if (lin instanceof LChoice)
+				{
+					List<LProtocolBlock> blocks = ((LChoice) lin).getBlocks();
+					if (blocks.size() > 1)
+					{
+						return false;
+					}
+					return ignore(blocks.get(0));
+				}
+				else if (lin instanceof LRecursion)
+				{
+					return ignore(((LRecursion) lin).getBlock());
+				}
+				else
+				{
+					throw new RuntimeException("TODO: " + lin);
+				}
+			}
+		}
 	}
 
 	@Override
