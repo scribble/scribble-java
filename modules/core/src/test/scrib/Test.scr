@@ -12,6 +12,37 @@
 module Test;
 
 
+// Try an unfolding visitor that cuts off on nested unfolding of a rec as a continue -- no still won't solve mixed continue-onlys
+// Need to record the "next action and state" after a recursion entry, and for continue only use that action to go to that state
+// Or maybe try a "forwards" algorithm again (two passes may be easier)
+
+///*
+global protocol Proto1(role A, role B)
+{
+	rec Y
+	{
+		0() from A to B;
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			continue X;  // Check FSM building
+		}
+		or
+		{
+			2() from A to B;
+		}	
+		or
+		{
+			continue Y;
+		}
+	}	
+	}
+}	
+//*/
+
+
 /*// TODO: add to test suite
 global protocol Proto1(role A, role B, role C)
 {
@@ -76,7 +107,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-///*
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	3() from A to C;
@@ -94,12 +125,12 @@ global protocol Proto1(role A, role B, role C)
 			}	
 			or
 			{
-				continue Y;
+				continue Y;  // Different continue-onlys, tests FSM building
 			}
 			/*or  // Uncomment is bad (non-disjoint labels)
 			{
 				continue X;
-			}*/
+			}* /
 			or
 			{
 				4() from A to B;

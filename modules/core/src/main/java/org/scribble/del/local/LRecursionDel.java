@@ -46,7 +46,7 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		RecVar rv = lr.recvar.toName();
 		// Update existing state, not replace it -- cf. LDoDel
 		//conv.builder.addEntryLabel(rv);
-		graph.builder.setRecursionEntry(rv);
+		graph.builder.pushRecursionEntry(rv);
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	{
 		LRecursion lr = (LRecursion) visited;
 		RecVar rv = lr.recvar.toName();
-		graph.builder.removeRecursionEntry(rv);
+		graph.builder.popRecursionEntry(rv);
 		return (LRecursion) super.leaveGraphBuilding(parent, child, graph, lr);
 	}
 
