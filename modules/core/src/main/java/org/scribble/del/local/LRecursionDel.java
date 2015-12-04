@@ -48,12 +48,12 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		////conv.builder.addEntryLabel(rv);
 		//graph.builder.pushRecursionEntry(rv, null);
 		
-		if (graph.builder.isUnguardedInChoice())
+		/*if (graph.builder.isUnguardedInChoice())  // Actually, not needed since unfoldings are enough to make graph building work (and this makes combined unguarded choice-rec and continue protocols work)
 		{
 			// Using "previous" entry for this rec lab works because unguarded recs already unfolded (including nested recvar shadowing -- if unguarded choice-rec, it will be unfolded and rec entry recorded for guarded unfolding)
 			graph.builder.pushRecursionEntry(rv, graph.builder.getRecursionEntry(rv));
 		}
-		else
+		else*/
 		{
 			graph.builder.addEntryLabel(rv);
 			graph.builder.pushRecursionEntry(rv, graph.builder.getEntry());

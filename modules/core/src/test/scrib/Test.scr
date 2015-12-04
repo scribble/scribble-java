@@ -17,6 +17,11 @@ module Test;
 // Or maybe try a "forwards" algorithm again (two passes may be easier)
 
 
+global protocol Proto1(role A, role B)
+{
+}	
+
+
 /*
 global protocol Proto1(role A, role B)
 {
@@ -158,21 +163,21 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-//*
+/*
 global protocol Proto1(role A, role B)
 {
 	choice at A
 	{
-		//0() from A to B;
-		rec X  // Testing unguarded choice-rec at root
+		rec X
 		{
-			1() from A to B;
 			choice at A
 			{
-				2() from A to B;
+				1() from A to B;
+				continue X;
 			}
 			or
 			{
+				2() from A to B;
 				continue X;
 			}
 		}
@@ -187,6 +192,53 @@ global protocol Proto1(role A, role B)
 	rec X
 	{
 		1() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			continue X;
+		}
+	}
+}	
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		//0() from A to B;
+		rec X  // Testing unguarded choice-rec at root...
+		{
+			1() from A to B;
+			choice at A
+			{
+				2() from A to B;
+			}
+			or
+			{
+				continue X;  // ..in conjunction with unguarded choice-continue at the same time (just one at a time is fine) // FIXME (maybe just rule out by WF)
+			}
+		}
+	}
+	or
+	{
+		3() from A to B;
+	}
+}	
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;  // Test different comment combinations with 1 and 3 and continue X
 		choice at A
 		{
 			//3() from A to B;

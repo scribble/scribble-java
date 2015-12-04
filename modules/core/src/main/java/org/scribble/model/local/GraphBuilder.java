@@ -142,8 +142,6 @@ public class GraphBuilder
 
 	public EndpointState getRecursionEntry(RecVar recvar)
 	{
-		System.out.println("AAA: " + recvar + ", " + this.recvars);
-		
 		return this.recvars.get(recvar).peek();
 	}	
 	

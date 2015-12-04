@@ -1,3 +1,5 @@
+//$ bin/scribblec.sh modules/core/src/test/scrib/demo/nego/Nego1.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -fsm Negotiate C
+
 module demo.nego.Nego1;
 
 type <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;

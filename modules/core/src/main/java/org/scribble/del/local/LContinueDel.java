@@ -34,9 +34,6 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		if (graph.builder.isUnguardedInChoice())
 		{
 			IOAction a = graph.builder.getEnacting(rv);
-			
-			System.out.println("DDD: " + rv + ", " + graph.builder.getRecursionEntry(rv));
-			
 			graph.builder.addEdge(graph.builder.getEntry(), a, graph.builder.getRecursionEntry(rv).accept(a));
 		}
 		else
