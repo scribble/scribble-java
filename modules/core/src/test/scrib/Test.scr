@@ -22,23 +22,24 @@ global protocol Proto1(role A, role B, role C)
 	choice at A
 	{
 		1() from A to B;
-		choice at A
+		choice at A  // TODO: add to test suite (testing projection)
 		{
 			2() from A to C;
-			//2() from A to B;
 		}
 		or
 		{
 			rec X
 			{
 				3() from A to C;
-				//3() from A to B;
 			}
 		}
 	}
 	or
 	{
-		2() from A to B;
+		rec Y
+		{
+			2() from A to B;
+		}
 		4() from A to C;
 	}	
 }	
