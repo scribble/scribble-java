@@ -1,6 +1,7 @@
 package org.scribble.del;
 
 import org.scribble.ast.Continue;
+import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
@@ -30,6 +31,11 @@ public abstract class ContinueDel extends SimpleInteractionNodeDel
 		RecVar rv = cont.recvar.toName();
 		if (unf.isContinueUnguarded(rv))  // Without this, graph building becomes sensitive to the order of choice blocks (specifically, the relative position were the side effect (re-set entry to rec state) of an unguarded continue is performed)
 		{
+			Recursion<?> tmp = unf.getRecVar(rv);
+			if (tmp == null)  // Hacky?  for recursive unfolding of cached blocks
+			{
+				return cont;
+			}
 			return unf.getRecVar(rv).clone();
 		}
 		else if (unf.shouldUnfoldForUnguardedRec(rv))

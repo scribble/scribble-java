@@ -1,8 +1,10 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
+import org.scribble.del.local.LChoiceDel;
 import org.scribble.del.local.LInteractionSeqDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.GraphBuilder;
@@ -26,6 +28,10 @@ public class EndpointGraphBuilder extends NoEnvInlinedProtocolVisitor
 		{
 			return visitOverrideForLInteractionSeq((LProtocolBlock) parent, (LInteractionSeq) child);
 		}
+		else if (child instanceof LChoice)
+		{
+			return visitOverrideForLChoice((LInteractionSeq) parent, (LChoice) child);
+		}
 		else
 		{
 			return super.visitInlinedProtocol(parent, child);
@@ -35,6 +41,11 @@ public class EndpointGraphBuilder extends NoEnvInlinedProtocolVisitor
 	protected LInteractionSeq visitOverrideForLInteractionSeq(LProtocolBlock parent, LInteractionSeq child)
 	{
 		return ((LInteractionSeqDel) child.del()).visitForFsmConversion(this, child);
+	}
+
+	protected LChoice visitOverrideForLChoice(LInteractionSeq parent, LChoice child)
+	{
+		return ((LChoiceDel) child.del()).visitForFsmConversion(this, child);
 	}
 
 	@Override

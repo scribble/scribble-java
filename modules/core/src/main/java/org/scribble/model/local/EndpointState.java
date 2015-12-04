@@ -34,6 +34,7 @@ public class EndpointState
 		this.labs.add(lab);
 	}
 	
+	// Mutable (can also overwrite edges)
 	protected void addEdge(IOAction a, EndpointState s)
 	{
 		this.edges.put(a, s);

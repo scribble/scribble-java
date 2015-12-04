@@ -66,7 +66,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		EndpointState exit = conv.builder.getExit();
 		try
 		{
-			for (int i = child.getInteractions().size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
+			/*for (int i = child.getInteractions().size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
 			{
 				if (i > 0)
 				{
@@ -80,13 +80,29 @@ public class LInteractionSeqDel extends InteractionSeqDel
 					conv.builder.setEntry(entry);
 					child.getInteractions().get(i).accept(conv);
 				}
+			}*/
+			for (int i = 0; i < child.getInteractions().size(); i++)
+			{
+				if (i == child.getInteractions().size() - 1)
+				{
+					conv.builder.setExit(exit);
+					child.getInteractions().get(i).accept(conv);
+				}
+				else
+				{
+					EndpointState tmp = conv.builder.newState(Collections.emptySet());
+					conv.builder.setExit(tmp);
+					child.getInteractions().get(i).accept(conv);
+					conv.builder.setEntry(conv.builder.getExit());  // exit may not be tmp, entry/exit can be modified, e.g. continue
+				}
 			}
 		}
 		catch (ScribbleException e)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + e);
 		}
-		conv.builder.setExit(exit);
+		//conv.builder.setExit(exit);
+		conv.builder.setEntry(entry);
 		return child;	
 	}
 }

@@ -7,6 +7,8 @@ package org.scribble.main;
 .. test mvn install
 .. fix script
 .. individual test ignores (cf. whole directory) -- good for package testing
+
+.. unguarded choice-rec in conjunction with unguarded continue needs to be ruled out in WF or fixed in FSM generation
 */
 
 	// FIXME: refactor EnvVisitors merge/compose routines -- check enter/leave merging isn't duplicating parent info (e.g. path visiting, recursion has to clear Env so child paths don't start with parent prefixes)
