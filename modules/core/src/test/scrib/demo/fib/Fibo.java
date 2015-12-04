@@ -1,3 +1,5 @@
+//$ bin/scribblec.sh modules/core/src/test/scrib/demo/fib/Fib.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -api Fibonacci A -api Fibonacci B
+
 package demo.fib;
 
 import java.io.IOException;
