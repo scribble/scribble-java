@@ -1,5 +1,6 @@
 package org.scribble.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class MessageIdMap
 	
 	public Set<Role> getSources(Role dest)
 	{
-		return this.map.get(dest).keySet();
+		return this.map.containsKey(dest) ? this.map.get(dest).keySet() : Collections.emptySet();
 	}
 	
 	public Set<Role> getAllSources()

@@ -43,6 +43,13 @@ public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisito
 			throw new RuntimeException("InlineProtocolVisitor error: " + pd);
 		}
 		
+		
+		if (this instanceof EndpointGraphBuilder)
+		{
+			System.out.println("\n111: " + inlined + "\n");
+		}
+		
+		
 		ProtocolDef<?> visited = (ProtocolDef<?>) inlined.visitChildren(this);
 		ProtocolDefDel del = (ProtocolDefDel) pd.del();
 		return pd.del(del.setInlinedProtocolDef(visited));

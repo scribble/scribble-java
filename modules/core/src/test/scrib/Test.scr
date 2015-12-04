@@ -17,6 +17,7 @@ module Test;
 // Or maybe try a "forwards" algorithm again (two passes may be easier)
 
 
+/*
 global protocol Proto1(role A, role B)
 {
 	rec X
@@ -36,6 +37,8 @@ global protocol Proto1(role A, role B)
 		}	
 	}
 }	
+//*/
+
 
 /*
 global protocol Proto1(role A, role B)
@@ -65,22 +68,22 @@ global protocol Proto1(role A, role B)
 	rec Y
 	{
 		0() from A to B;
-	rec X
-	{
-		1() from A to B;
-		choice at A
+		rec X
 		{
-			continue X;  // Check FSM building
-		}
-		or
-		{
-			2() from A to B;
+			1() from A to B;
+			choice at A
+			{
+				continue X;  // Check FSM building
+			}
+			or
+			{
+				2() from A to B;
+			}	
+			or
+			{
+				continue Y;
+			}
 		}	
-		or
-		{
-			continue Y;
-		}
-	}	
 	}
 }	
 //*/
@@ -143,10 +146,63 @@ global protocol Proto1(role A, role B)
 				{
 					2() from A to B;  // OK to be 2 as well because the above X goes to 1() first
 				}	
+				/*or
+				{
+					3() from A to B;
+					continue Y;
+				}* /
 			}
 		}	
 	}
 }
+//*/
+
+
+//*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		//0() from A to B;
+		rec X  // Testing unguarded choice-rec at root
+		{
+			1() from A to B;
+			choice at A
+			{
+				2() from A to B;
+			}
+			or
+			{
+				continue X;
+			}
+		}
+	}
+}	
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			//3() from A to B;
+			continue X;
+		}	
+		or
+		{
+			rec Y  // Testing nested InlinedProtocolUnfolding case
+			{
+				2() from A to B;
+				//continue X;
+				continue Y;
+			}
+		}
+	}	
+}	
 //*/
 
 

@@ -81,7 +81,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 					child.getInteractions().get(i).accept(conv);
 				}
 			}*/
-			for (int i = 0; i < child.getInteractions().size(); i++)  // Backwards for "tau-less" continue
+			for (int i = 0; i < child.getInteractions().size(); i++)
 			{
 				if (i == child.getInteractions().size() - 1)
 				{

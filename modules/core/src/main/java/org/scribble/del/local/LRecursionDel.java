@@ -45,8 +45,19 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		LRecursion lr = (LRecursion) child;
 		RecVar rv = lr.recvar.toName();
 		// Update existing state, not replace it -- cf. LDoDel
-		//conv.builder.addEntryLabel(rv);
-		graph.builder.pushRecursionEntry(rv);
+		////conv.builder.addEntryLabel(rv);
+		//graph.builder.pushRecursionEntry(rv, null);
+		
+		if (graph.builder.isUnguardedInChoice())
+		{
+			// Using "previous" entry for this rec lab works because unguarded recs already unfolded (including nested recvar shadowing -- if unguarded choice-rec, it will be unfolded and rec entry recorded for guarded unfolding)
+			graph.builder.pushRecursionEntry(rv, graph.builder.getRecursionEntry(rv));
+		}
+		else
+		{
+			graph.builder.addEntryLabel(rv);
+			graph.builder.pushRecursionEntry(rv, graph.builder.getEntry());
+		}
 	}
 
 	@Override

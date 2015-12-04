@@ -80,12 +80,6 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		checker.pushEnv(merged);
 		return (LChoice) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
-	
-	/*@Override
-	public void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
-	{
-		super.enterGraphBuilding(parent, child, graph);
-	}*/
 
 	public LChoice visitForFsmConversion(EndpointGraphBuilder graph, LChoice child)
 	{
@@ -93,9 +87,9 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		{
 			for (LProtocolBlock block : child.getBlocks())
 			{
-				graph.builder.pushChoice();
+				graph.builder.pushChoiceBlock();
 				block.accept(graph);
-				graph.builder.popChoice();
+				graph.builder.popChoiceBlock();
 			}
 		}
 		catch (ScribbleException e)
@@ -104,12 +98,4 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		}
 		return child;
 	}
-
-	/*@Override
-	public ScribNode leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
-	{
-		graph.builder.pushChoice();
-		graph.builder.popChoice();
-		return visited;
-	}*/
 }
