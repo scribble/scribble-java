@@ -57,15 +57,12 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 	{
 		GRecursion gr = (GRecursion) visited;
 		RecVarNode recvar = gr.recvar.clone();
-		LProtocolBlock block = (LProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection();	
 		LRecursion projection = null;
-		//if (!Projector.prune(block))
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(recvar.toName());
-		LProtocolBlock pruned = prune(block, rvs);
+		LProtocolBlock pruned = prune((LProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection(), rvs);
 		if (!pruned.isEmpty())
 		{
-			//projection = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
 			projection = AstFactoryImpl.FACTORY.LRecursion(recvar, pruned);
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));

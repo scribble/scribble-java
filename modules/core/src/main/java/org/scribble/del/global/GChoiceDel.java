@@ -131,16 +131,16 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		List<LProtocolBlock> blocks = 
 				gc.getBlocks().stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());	
 		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
-		if (blocks.size() == 1)
+		/*if (blocks.size() == 1)
 		{
 			if (!blocks.get(0).isEmpty())  // WF allows empty (blocks/seq are never null)
 			{
 				RoleNode subj = AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
 				projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
 			}
-			// FIXME: what if empty? projection is null?
 		}
-		else //if (blocks.size() > 1)
+		else //if (blocks.size() > 1)*/
+		if (blocks.stream().filter((b) -> !b.isEmpty()).count() > 0)
 		{
 			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(AstFactoryImpl.FACTORY.DummyProjectionRoleNode(), Arrays.asList(b))).collect(Collectors.toList());
 			LChoice merged = cs.get(0);

@@ -17,8 +17,30 @@ module Test;
 // Or maybe try a "forwards" algorithm again (two passes may be easier)
 
 
-global protocol Proto1(role A, role B)
+global protocol Proto1(role A, role B, role C)
 {
+	choice at A
+	{
+		1() from A to B;
+		choice at A
+		{
+			2() from A to C;
+			//2() from A to B;
+		}
+		or
+		{
+			rec X
+			{
+				3() from A to C;
+				//3() from A to B;
+			}
+		}
+	}
+	or
+	{
+		2() from A to B;
+		4() from A to C;
+	}	
 }	
 
 

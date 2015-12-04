@@ -72,7 +72,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			{
 				lis.addAll(((LInteractionSeq) ln).getInteractions());
 			}
-			else if (ln != null)
+			else if (ln != null) // null is used for empty projection
 			{
 				lis.add((LInteractionNode) ln);
 			}
