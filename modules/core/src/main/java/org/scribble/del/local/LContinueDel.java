@@ -4,6 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ReachabilityChecker;
@@ -28,7 +29,16 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.recvar.toName();
-		graph.builder.setEntry(graph.builder.getRecursionEntry(rv));
+		//graph.builder.setEntry(graph.builder.getRecursionEntry(rv));
+		if (graph.builder.getPredecessor() == null)  // unguarded choice case  // FIXME: move inside GraphBuilder
+		{
+			IOAction a = graph.builder.getEnacting(rv);
+			graph.builder.addEdge(graph.builder.getEntry(), a, graph.builder.getRecursionEntry(rv).accept(a));
+		}
+		else
+		{
+			graph.builder.addEdge(graph.builder.getPredecessor(), graph.builder.getPreviousAction(), graph.builder.getRecursionEntry(rv));
+		}
 		return (LContinue) super.leaveGraphBuilding(parent, child, graph, lr);
 	}
 }

@@ -14,6 +14,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
@@ -79,4 +80,36 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		checker.pushEnv(merged);
 		return (LChoice) LCompoundInteractionNodeDel.super.leaveReachabilityCheck(parent, child, checker, visited);  // records the current checker Env to the current del; also pops and merges that env into the parent env
 	}
+	
+	/*@Override
+	public void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
+	{
+		super.enterGraphBuilding(parent, child, graph);
+	}*/
+
+	public LChoice visitForFsmConversion(EndpointGraphBuilder graph, LChoice child)
+	{
+		try
+		{
+			for (LProtocolBlock block : child.getBlocks())
+			{
+				graph.builder.pushChoice();
+				block.accept(graph);
+				graph.builder.popChoice();
+			}
+		}
+		catch (ScribbleException e)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + e);
+		}
+		return child;
+	}
+
+	/*@Override
+	public ScribNode leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	{
+		graph.builder.pushChoice();
+		graph.builder.popChoice();
+		return visited;
+	}*/
 }

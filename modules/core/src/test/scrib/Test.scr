@@ -16,7 +16,50 @@ module Test;
 // Need to record the "next action and state" after a recursion entry, and for continue only use that action to go to that state
 // Or maybe try a "forwards" algorithm again (two passes may be easier)
 
-///*
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		0() from A to B;
+		choice at A
+		{
+			rec X  // Checking FSM generation -- unfolding of unguarded shadowed choice-rec
+			{
+				1() from A to B;
+				continue X;
+			}	
+		}	
+		or
+		{
+			2() from A to B;
+		}	
+	}
+}	
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		0() from A to B;
+		choice at A
+		{
+			//1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			//continue X;
+		}
+	}
+	3() from A to B;
+}	
+//*/
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	rec Y

@@ -16,7 +16,9 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.Env;
 
 // "Lazily unfolds" each recursion once (by reentering the original rec ast) on reaching a continue
+// FIXME: would be better to only unfold "as needed" (unguarded choice-recs)
 // N.B. so subclass should manually keep track of when to cut off visiting, as visiting the "unfolding" will eventually reach the same continue (e.g. an unguarded choice-continue) -- currently using pointer equality in e.g. InlinedWFChoice to cut off traversal on reaching the "same" choice again
+// ?? -- Cf. InlinedProtocolUnfolder, this one is more about unguarded choice-recs, whereas the other is more about unguarded continues
 public abstract class UnfoldingVisitor<E extends Env<?>> extends InlinedProtocolVisitor<E>
 {
 	private Map<RecVar, Deque<ProtocolBlock<?>>> recs = new HashMap<>();  

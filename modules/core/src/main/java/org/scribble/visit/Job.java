@@ -94,8 +94,8 @@ public class Job
 		debugPrintPass("Running " + EndpointGraphBuilder.class + " for " + fullname + "@" + role);
 		// Visit Module for context (not just the protodecl) -- builds FSMs for all locals in the module
 		
-		System.out.println("AAA: " + this.jcontext.getProjection(fullname, role));
-		
+		//System.out.println("AAA: " + this.jcontext.getProjection(fullname, role));
+
 		this.jcontext.getProjection(fullname, role).accept(new EndpointGraphBuilder(this)); 
 			// Builds FSMs for all local protocols in this module as root (though each projected module contains a single local protocol)
 			// Subprotocols "inlined" by FsmBuilder (scoped subprotocols not supported)
