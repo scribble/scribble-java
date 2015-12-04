@@ -21,6 +21,50 @@ global protocol Proto1(role A, role B, role C)
 {
 	choice at A
 	{
+		rec X
+		{
+			1() from A to B;
+			//1() from A to C;
+			continue X;
+		}	
+	}	
+	or
+	{
+		2() from A to B;
+		2() from A to C;  // FIXME: add deadlock freedom check
+	}	
+}
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		//1() from B to C;  // bad
+		//2() from A to C;  // bad
+		//1() from A to C;  // ok
+		choice at A
+		{
+			1() from A to C;
+			continue X;
+		}	
+		or
+		{
+			2() from A to B;
+			2() from A to C;
+		}	
+	}
+}	
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
 		1() from A to B;
 		choice at A  // TODO: add to test suite (testing projection)
 		{
@@ -43,6 +87,7 @@ global protocol Proto1(role A, role B, role C)
 		4() from A to C;
 	}	
 }	
+//*/
 
 
 /*

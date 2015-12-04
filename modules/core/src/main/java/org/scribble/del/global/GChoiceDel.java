@@ -140,7 +140,8 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 			}
 		}
 		else //if (blocks.size() > 1)*/
-		if (blocks.stream().filter((b) -> !b.isEmpty()).count() > 0)
+		blocks = blocks.stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
+		if (!blocks.isEmpty())
 		{
 			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(AstFactoryImpl.FACTORY.DummyProjectionRoleNode(), Arrays.asList(b))).collect(Collectors.toList());
 			LChoice merged = cs.get(0);
