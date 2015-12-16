@@ -37,7 +37,7 @@ public class Job
 	{
 		runContextBuildingPasses();
 		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
-		runVisitorPassOnAllModules(WFChoicePathChecker.class);
+		//runVisitorPassOnAllModules(WFChoicePathChecker.class);
 		runProjectionPasses();
 		runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}

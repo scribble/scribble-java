@@ -77,19 +77,19 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 				List<WFChoiceEnv> benvs = all.subList(1, all.size());
 
 				Set<Role> dests = benv0.getEnabled().getDestinations();
-				/*// Same roles enabled in every block
+				// Same roles enabled in every block
 				benvs.stream().map((e) -> e.getEnabled().getDestinations()).forEach((rs) ->
 						{
 							if (!dests.equals(rs))
 							{
 								throw new RuntimeScribbleException("Mismatched enabled roles: " + dests + ", " + rs);
 							}
-						});*/
+						});
 				
 				dests.remove(subj);
 				for (Role dest : dests)
 				{
-					/*// Same enabler(s) for each enabled role
+					// Same enabler(s) for each enabled role
 					Set<Role> srcs = benv0.getEnabled().getSources(dest);  // Always singleton?
 					benvs.stream().map((e) -> e.getEnabled().getSources(dest)).forEach((rs) ->
 							{
@@ -97,7 +97,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 								{
 									throw new RuntimeScribbleException("Mismatched enabler roles for " + dest + ": " + srcs + ", " + rs);
 								}
-							});*/
+							});
 				
 					// Distinct enabling messages
 					Set<MessageId<?>> mids = benv0.getEnabled().getMessages(dest);

@@ -19,6 +19,24 @@ module Test;
 
 global protocol Proto1(role A, role B, role C)
 {
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;  // FIXME: no reception error, but deadlocked
+			continue X;
+		}		
+		or
+		{
+			2() from A to C;
+		}
+	}
+}	
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
 	choice at A
 	{
 		rec X
@@ -31,9 +49,10 @@ global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		2() from A to C;  // FIXME: add deadlock freedom check
-	}	
+		2() from A to C;  // FIXME: add deadlock freedom check -- actually "role liveness"?, could do on a global model (but maybe just syntactically by paths)
+	 }	
 }
+//*/
 
 
 /*
