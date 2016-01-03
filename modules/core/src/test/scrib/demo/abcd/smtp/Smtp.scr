@@ -25,13 +25,13 @@ sig <java> "demo.abcd.smtp.message.client.Quit"
 global protocol Smtp(role C, role S)
 {
 	220 from S to C;
-	do Initiation(C, S);
+	do Init(C, S);
 	do StartTls(C, S);
-	do Initiation(C, S);
+	do Init(C, S);
 	Quit from C to S;
 }
 
-global protocol Initiation(role C, role S)
+global protocol Init(role C, role S)
 {
 	Ehlo from C to S;
 	rec X

@@ -49,9 +49,9 @@ public class Client2
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 			Buf<Smtp_C_1_Future> b = new Buf<>();
-			doEhloAnd250(
+			doInit(
 				LinearSocket.wrapClient(
-					doEhloAnd250(s1.async(Smtp.S, Smtp._220, b))
+					doInit(s1.async(Smtp.S, Smtp._220, b))
 						.send(Smtp.S, new StartTls())
 						.async(Smtp.S, Smtp._220)
 				, Smtp.S, SSLSocketChannelWrapper::new)
@@ -63,7 +63,7 @@ public class Client2
 	}
 
 	private <S1 extends Branch_C_S_250__S_250d<S2, S1>, S2 extends Succ_In_S_250>
-			S2 doEhloAnd250(Select_C_S_Ehlo<S1> s) throws Exception
+			S2 doInit(Select_C_S_Ehlo<S1> s) throws Exception
 	{
 		Branch_C_S_250__S_250d<S2, S1> b = s.send(Smtp.S, new Ehlo("test"));
 		Buf<_250> b1 = new Buf<>();
