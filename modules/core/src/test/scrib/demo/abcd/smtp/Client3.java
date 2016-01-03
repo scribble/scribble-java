@@ -25,16 +25,16 @@ import demo.abcd.smtp.message.server._250;
 import demo.abcd.smtp.message.server._250d;
 
 // No "cast" version -- via generic inference
-public class Client2
+public class Client3
 {
-	public Client2() throws Exception
+	public Client3() throws Exception
 	{
 		run();
 	}
 
 	public static void main(String[] args) throws Exception
 	{
-		new Client2();
+		new Client3();
 	}
 
 	public void run() throws Exception
@@ -75,15 +75,12 @@ public class Client2
 			{
 				case _250d:
 				{
-					b = c.receive(Smtp.S, Smtp._250d, b2);
-					System.out.print(b2.val);
+					b = Client1.printBuf(c.receive(Smtp.S, Smtp._250d, b2), b2);
 					break;
 				}
 				case _250:
 				{
-					S2 succ = c.receive(Smtp.S, Smtp._250, b1);
-					System.out.println(b1.val);
-					return succ;
+					return Client1.printlnBuf(c.receive(Smtp.S, Smtp._250, b1), b1);
 				}
 			}
 		}
