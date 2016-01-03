@@ -14,7 +14,6 @@ import demo.abcd.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
-import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Out_S_Ehlo;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_220;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Quit;
@@ -72,8 +71,8 @@ public class Client2
 		}
 	}
 
-	private <S extends Out_S_Ehlo<?>> Succ_In_S_250 doInit(S s) throws Exception
-	//private Succ_In_S_250 doInit(Select_C_S_Ehlo<?> s) throws Exception
+	//private <S extends Out_S_Ehlo<?>> Succ_In_S_250 doInit(S s) throws Exception
+	private Succ_In_S_250 doInit(Select_C_S_Ehlo<?> s) throws Exception
 	{
 		/*
 		...
