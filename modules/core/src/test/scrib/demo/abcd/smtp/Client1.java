@@ -54,7 +54,6 @@ public class Client1
 			se.connect(S, SocketChannelEndpoint::new, host, port);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
-
 			doInit(
 				doStartTls(
 					doInit(s1.receive(S, _220, new Buf<>()))
@@ -75,14 +74,10 @@ public class Client1
 			switch (c.op)
 			{
 				case _250:
-				{
 					return printlnBuf(c.receive(S, Smtp._250, b1), b1);
-				}
 				case _250d:
-				{
 					s3 = printBuf(c.receive(S, Smtp._250d, b2), b2);
 					break;
-				}
 			}
 		}
 	}
@@ -98,14 +93,10 @@ public class Client1
 			switch (c.op)
 			{
 				case _250:
-				{
 					return printlnBuf(c.receive(S, Smtp._250, b1), b1);
-				}
 				case _250d:
-				{
 					s7 = printBuf(c.receive(S, Smtp._250d, b2), b2);
 					break;
-				}
 			}
 		}
 	}

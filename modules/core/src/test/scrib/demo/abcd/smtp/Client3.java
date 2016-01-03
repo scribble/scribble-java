@@ -74,14 +74,10 @@ public class Client3
 			switch (c.getOp())
 			{
 				case _250d:
-				{
 					b = Client1.printBuf(c.receive(Smtp.S, Smtp._250d, b2), b2);
 					break;
-				}
 				case _250:
-				{
 					return Client1.printlnBuf(c.receive(Smtp.S, Smtp._250, b1), b1);
-				}
 			}
 		}
 	}
