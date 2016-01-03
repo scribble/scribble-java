@@ -3,6 +3,12 @@
 
 package demo.abcd.smtp;
 
+import static demo.abcd.smtp.Smtp.Smtp.Smtp.C;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp.S;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp._220;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp._250;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp._250d;
+
 import org.scribble.net.Buf;
 import org.scribble.net.scribsock.LinearSocket;
 import org.scribble.net.session.SSLSocketChannelWrapper;
@@ -43,41 +49,42 @@ public class Client3
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, C, new SmtpMessageFormatter()))
 		{
-			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
+			se.connect(S, SocketChannelEndpoint::new, host, port);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 			Buf<Smtp_C_1_Future> b = new Buf<>();
 			doInit(
 				LinearSocket.wrapClient(
-					doInit(s1.async(Smtp.S, Smtp._220, b))
-						.send(Smtp.S, new StartTls())
-						.async(Smtp.S, Smtp._220)
-				, Smtp.S, SSLSocketChannelWrapper::new)
+					doInit(s1.async(S, _220, b))
+						.send(S, new StartTls())
+						.async(S, _220)
+				, S, SSLSocketChannelWrapper::new)
 			)
-			.send(Smtp.S, new Quit());
+			.send(S, new Quit());
 			
 			//System.out.println("b1: " + b.val.sync().msg);
 		}
 	}
 
+			//S2 doInit(Select_C_S_Ehlo__S_Quit<S1, EndSocket> s) throws Exception
 	private <S1 extends Branch_C_S_250__S_250d<S2, S1>, S2 extends Succ_In_S_250>
 			S2 doInit(Select_C_S_Ehlo<S1> s) throws Exception
 	{
-		Branch_C_S_250__S_250d<S2, S1> b = s.send(Smtp.S, new Ehlo("test"));
+		Branch_C_S_250__S_250d<S2, S1> b = s.send(S, new Ehlo("test"));
 		Buf<_250> b1 = new Buf<>();
 		Buf<_250d> b2 = new Buf<>();
 		while (true)
 		{
-			Case_C_S_250__S_250d<S2, S1> c = b.branch(Smtp.S);
+			Case_C_S_250__S_250d<S2, S1> c = b.branch(S);
 			switch (c.getOp())
 			{
 				case _250d:
-					b = Client1.printBuf(c.receive(Smtp.S, Smtp._250d, b2), b2);
+					b = Client1.printBuf(c.receive(S, _250d, b2), b2);
 					break;
 				case _250:
-					return Client1.printlnBuf(c.receive(Smtp.S, Smtp._250, b1), b1);
+					return Client1.printlnBuf(c.receive(S, _250, b1), b1);
 			}
 		}
 	}

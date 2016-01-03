@@ -36,12 +36,13 @@ public class Client
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, C, new SmtpMessageFormatter()))
 		{
-			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
+			se.connect(S, SocketChannelEndpoint::new, host, port);
 
+			//Buf<Smtp_C_1_Future> b1 = new Buf<>();
 			Smtp_C_1 s1 = new Smtp_C_1(se);
-			doInit(s1.receive(S, Smtp._220, new Buf<>()));
+			doInit(s1.receive(S, _220, new Buf<>()));
 		}
 	}
 

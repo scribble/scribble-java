@@ -3,6 +3,11 @@
 
 package demo.abcd.smtp;
 
+import static demo.abcd.smtp.Smtp.Smtp.Smtp.S;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp._220;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp._250;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp._250d;
+
 import org.scribble.net.Buf;
 import org.scribble.net.scribsock.LinearSocket;
 import org.scribble.net.session.SSLSocketChannelWrapper;
@@ -49,29 +54,31 @@ public class Client2
 		{
 			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
 
-			Smtp_C_1 s1 = new Smtp_C_1(se);
 			Buf<Smtp_C_1_Future> b1 = new Buf<>();
+			Smtp_C_1 s1 = new Smtp_C_1(se);
 			//Buf<Smtp_C_5_Future> b2 = new Buf<>();  // only supported by concrete state chans
 			doInit(
 				LinearSocket.wrapClient(
-					doInit(s1.async(Smtp.S, Smtp._220, b1))
+					doInit(s1.async(S, _220, b1))
 						.to(Select_C_S_StartTls.cast)  // Run-time cast
-						.send(Smtp.S, new StartTls())
+						.send(S, new StartTls())
 						.to(Receive_C_S_220.cast)
-						//.receive(Smtp.S, Smtp._220, new Buf<>())
-						.async(Smtp.S, Smtp._220)
+						//.receive(S, _220, new Buf<>())
+						.async(S, _220)
 						.to(Select_C_S_Ehlo.cast)  // Safe cast
-				, Smtp.S, SSLSocketChannelWrapper::new)
+				, S, SSLSocketChannelWrapper::new)
 			)
 			.to(Select_C_S_Quit.cast)  // Run-time cast
-			.send(Smtp.S, new Quit());
-			
+			.send(S, new Quit());
+
+			//b1.val.sync();
 			//System.out.println("b1: " + b1.val.sync().msg);
 			//System.out.println("b2: " + b2.val.sync().msg);
 		}
 	}
 
 	//private <S extends Out_S_Ehlo<?>> Succ_In_S_250 doInit(S s) throws Exception
+	//private Succ_In_S_250 doInit(Select_C_S_Ehlo__S_Quit<?, ?> s) throws Exception
 	private Succ_In_S_250 doInit(Select_C_S_Ehlo<?> s) throws Exception
 	{
 		/*
@@ -79,20 +86,20 @@ public class Client2
 	}
 	/*/
 		Branch_C_S_250__S_250d<?, ?> b =
-				s.send(Smtp.S, new Ehlo("test"))
+				s.send(S, new Ehlo("test"))
 				 .to(Branch_C_S_250__S_250d.cast);  // Safe cast
 		Buf<_250> b1 = new Buf<>();
 		Buf<_250d> b2 = new Buf<>();
 		while (true)
 		{
-			Case_C_S_250__S_250d<?, ?> c = b.branch(Smtp.S);
+			Case_C_S_250__S_250d<?, ?> c = b.branch(S);
 			switch (c.getOp())
 			{
 				case _250:
-					return Client1.printlnBuf(c.receive(Smtp.S, Smtp._250, b1), b1);
+					return Client1.printlnBuf(c.receive(S, _250, b1), b1);
 				case _250d:
 					b = Client1.printBuf(
-								c.receive(Smtp.S, Smtp._250d, b2)
+								c.receive(S, _250d, b2)
 								 .to(Branch_C_S_250__S_250d.cast)  // Safe cast
 							, b2);
 					break;
@@ -108,25 +115,25 @@ public class Client2
 	/*private Succ_In_S_250 doInitiation(Receive_C_S_220<?> s) throws Exception
 	{
 		Branch_C_S_250d__S_250<?, ?> b =
-				s.receive(Smtp.S, Smtp._220, new Buf<>()).to(Select_C_S_Ehlo.cast)
-				 .send(Smtp.S, new Ehlo("test"))
+				s.receive(S, _220, new Buf<>()).to(Select_C_S_Ehlo.cast)
+				 .send(S, new Ehlo("test"))
 				 .to(Branch_C_S_250d__S_250.cast);  // Safe cast
 		Buf<_250> b1 = new Buf<>();
 		Buf<_250_> b2 = new Buf<>();
 		while (true)
 		{
-			Case_C_S_250d__S_250<?, ?> c = b.branch(Smtp.S);
+			Case_C_S_250d__S_250<?, ?> c = b.branch(S);
 			switch (c.getOp())
 			{
 				case _250d:
 				{
-					b = c.receive(Smtp.S, Smtp._250d, b2).to(Branch_C_S_250d__S_250.cast);
+					b = c.receive(S, _250d, b2).to(Branch_C_S_250d__S_250.cast);
 					System.out.print(b2.val);
 					break;
 				}
 				case _250:
 				{
-					Succ_In_S_250 succ = c.receive(Smtp.S, Smtp._250, b1);
+					Succ_In_S_250 succ = c.receive(S, _250, b1);
 					System.out.println(b1.val);
 					return succ;
 				}

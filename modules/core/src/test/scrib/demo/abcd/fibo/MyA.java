@@ -34,12 +34,13 @@ public class MyA extends Thread
 	@Override
 	public void run()
 	{
+		int n = 19;
 		try (SessionEndpoint<Fibonacci, A> se = new SessionEndpoint<>(this.fib, A, new ObjectStreamFormatter()))
 		{
 			se.connect(B, SocketChannelEndpoint::new, "localhost", 8888);
-			run(new Fibonacci_A_1(se), 19);  // 4184
-			//run1(new Fibonacci_A_1(se), 19);
-			System.out.println("A done: " + this.b.val);
+			run(new Fibonacci_A_1(se), n);  // 4184
+			//run1(new Fibonacci_A_1(se), n);
+			System.out.println("A #" + n + ": " + this.b.val);
 		}
 		catch (Exception x)
 		{

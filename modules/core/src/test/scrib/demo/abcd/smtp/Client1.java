@@ -31,6 +31,8 @@ import demo.abcd.smtp.message.client.StartTls;
 import demo.abcd.smtp.message.server._250;
 import demo.abcd.smtp.message.server._250d;
 
+import static demo.abcd.smtp.Smtp.Smtp.Smtp.*;
+
 public class Client1
 {
 	public Client1() throws Exception
@@ -65,7 +67,7 @@ public class Client1
 
 	private Smtp_C_4 doInit(Smtp_C_2 s2) throws Exception
 	{
-		Smtp_C_3 s3 = s2.send(Smtp.S, new Ehlo("test"));
+		Smtp_C_3 s3 = s2.send(S, new Ehlo("test"));
 		Buf<_250> b1 = new Buf<>();
 		Buf<_250d> b2 = new Buf<>();
 		while (true)
@@ -74,9 +76,9 @@ public class Client1
 			switch (c.op)
 			{
 				case _250:
-					return printlnBuf(c.receive(S, Smtp._250, b1), b1);
+					return printlnBuf(c.receive(S, _250, b1), b1);
 				case _250d:
-					s3 = printBuf(c.receive(S, Smtp._250d, b2), b2);
+					s3 = printBuf(c.receive(S, _250d, b2), b2);
 					break;
 			}
 		}
@@ -84,7 +86,7 @@ public class Client1
 
 	private Smtp_C_8 doInit(Smtp_C_6 s6) throws Exception
 	{
-		Smtp_C_7 s7 = s6.send(Smtp.S, new Ehlo("test"));
+		Smtp_C_7 s7 = s6.send(S, new Ehlo("test"));
 		Buf<_250> b1 = new Buf<>();
 		Buf<_250d> b2 = new Buf<>();
 		while (true)
@@ -93,9 +95,9 @@ public class Client1
 			switch (c.op)
 			{
 				case _250:
-					return printlnBuf(c.receive(S, Smtp._250, b1), b1);
+					return printlnBuf(c.receive(S, _250, b1), b1);
 				case _250d:
-					s7 = printBuf(c.receive(S, Smtp._250d, b2), b2);
+					s7 = printBuf(c.receive(S, _250d, b2), b2);
 					break;
 			}
 		}
@@ -104,7 +106,7 @@ public class Client1
 	private Smtp_C_6 doStartTls(Smtp_C_4 s4) throws Exception
 	{
 		return LinearSocket.wrapClient(
-				s4.send(S, new StartTls()).receive(S, Smtp._220, new Buf<>()), S, SSLSocketChannelWrapper::new
+				s4.send(S, new StartTls()).receive(S, _220, new Buf<>()), S, SSLSocketChannelWrapper::new
 		);
 	}
 	

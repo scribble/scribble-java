@@ -24,12 +24,26 @@ sig <java> "demo.abcd.smtp.message.client.Quit"
 
 global protocol Smtp(role C, role S)
 {
-	220 from S to C;
+	220 from S to C; //*
 	do Init(C, S);
 	do StartTls(C, S);
 	do Init(C, S);
 	Quit from C to S;
 }
+/*/
+	choice at C
+	{
+		do Init(C, S);
+		do StartTls(C, S);
+		do Init(C, S);
+		Quit from C to S;
+	}
+	or
+	{
+		Quit from C to S;
+	}
+}
+//*/
 
 global protocol Init(role C, role S)
 {
@@ -46,6 +60,7 @@ global protocol Init(role C, role S)
 			250 from S to C;
 		}
 	}
+	// or Quit from C to S;  // FIXME:
 }
 
 global protocol StartTls(role C, role S)
