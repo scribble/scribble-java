@@ -13,9 +13,10 @@ modules/core/src/test/scrib/demo/http/Http
 modules/core/src/test/scrib/demo/smtp/SMTP
 modules/core/src/test/scrib/demo/fib/Fib
 modules/core/src/test/scrib/demo/travel/Travel
+modules/core/src/test/scrib/demo/abcd/fib/Fib
+modules/core/src/test/scrib/demo/abcd/smtp/Smtp
 modules/core/src/test/scrib/test/foo/Foo
 modules/core/src/test/scrib/test/test1/Test1
 modules/core/src/test/scrib/scratch/Scratch1
-modules/core/src/test/scrib/test/smtp/Smtp
 bin/scribblec.sh
 
