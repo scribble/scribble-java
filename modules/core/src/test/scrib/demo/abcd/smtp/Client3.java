@@ -24,7 +24,7 @@ import demo.abcd.smtp.message.client.StartTls;
 import demo.abcd.smtp.message.server._250;
 import demo.abcd.smtp.message.server._250d;
 
-// No "cast" version -- via generic inference
+// "No casts" version -- via generic inference
 public class Client3
 {
 	public Client3() throws Exception
