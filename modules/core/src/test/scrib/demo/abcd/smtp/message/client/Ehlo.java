@@ -1,7 +1,7 @@
-package test.smtp.message.client;
+package demo.abcd.smtp.message.client;
 
-import test.smtp.Smtp.Smtp.Smtp;
-import test.smtp.message.SmtpMessage;
+import demo.abcd.smtp.Smtp.Smtp.Smtp;
+import demo.abcd.smtp.message.SmtpMessage;
 
 public class Ehlo extends SmtpMessage
 {

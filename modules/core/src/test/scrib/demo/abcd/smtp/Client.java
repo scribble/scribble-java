@@ -1,7 +1,7 @@
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' test.smtp.Client
+//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' demo.abcd.smtp.Client
 
 
-package test.smtp;
+package demo.abcd.smtp;
 
 import java.io.IOException;
 
@@ -12,23 +12,23 @@ import org.scribble.net.session.SSLSocketChannelWrapper;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import test.smtp.Smtp.Smtp.Smtp;
-import test.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import test.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
-import test.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
-import test.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
-import test.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_220;
-import test.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
-import test.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Quit;
-import test.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_StartTls;
-import test.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
-import test.smtp.Smtp.Smtp.roles.C;
-import test.smtp.message.SmtpMessageFormatter;
-import test.smtp.message.client.Ehlo;
-import test.smtp.message.client.Quit;
-import test.smtp.message.client.StartTls;
-import test.smtp.message.server._250;
-import test.smtp.message.server._250d;
+import demo.abcd.smtp.Smtp.Smtp.Smtp;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_220;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Quit;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_StartTls;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
+import demo.abcd.smtp.Smtp.Smtp.roles.C;
+import demo.abcd.smtp.message.SmtpMessageFormatter;
+import demo.abcd.smtp.message.client.Ehlo;
+import demo.abcd.smtp.message.client.Quit;
+import demo.abcd.smtp.message.client.StartTls;
+import demo.abcd.smtp.message.server._250;
+import demo.abcd.smtp.message.server._250d;
 
 public class Client
 {
@@ -71,7 +71,7 @@ public class Client
 			.to(Select_C_S_Quit.cast)  // Run-time cast
 			.send(Smtp.S, new Quit());
 			
-			System.out.println("b1: " + b1.val.sync().msg);
+			//System.out.println("b1: " + b1.val.sync().msg);
 			//System.out.println("b2: " + b2.val.sync().msg);
 		}
 	}

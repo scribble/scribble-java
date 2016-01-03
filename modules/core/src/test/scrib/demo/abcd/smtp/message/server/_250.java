@@ -1,7 +1,7 @@
-package test.smtp.message.server;
+package demo.abcd.smtp.message.server;
 
-import test.smtp.Smtp.Smtp.Smtp;
-import test.smtp.message.SmtpMessage;
+import demo.abcd.smtp.Smtp.Smtp.Smtp;
+import demo.abcd.smtp.message.SmtpMessage;
 
 public class _250 extends SmtpMessage
 {
