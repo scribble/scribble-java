@@ -38,7 +38,6 @@ public class MyA extends Thread
 		{
 			se.connect(B, SocketChannelEndpoint::new, "localhost", 8888);
 			run(new Fibonacci_A_1(se), n);  // 4184
-			//run1(new Fibonacci_A_1(se), n);
 			System.out.println("A #" + n + ": " + this.b.val);
 		}
 		catch (Exception x)
