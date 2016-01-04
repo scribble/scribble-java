@@ -18,7 +18,6 @@ import demo.abcd.fibo.Fibo.Fibonacci.channels.A.ioifaces.Out_B_fibonacci_Long;
 import demo.abcd.fibo.Fibo.Fibonacci.channels.A.ioifaces.Out_B_stop;
 import demo.abcd.fibo.Fibo.Fibonacci.channels.A.ioifaces.Succ_In_B_fibonacci_Long;
 import demo.abcd.fibo.Fibo.Fibonacci.channels.A.ioifaces.Succ_Out_B_fibonacci_Long;
-import demo.abcd.fibo.Fibo.Fibonacci.channels.A.ioifaces.Succ_Out_B_stop;
 import demo.abcd.fibo.Fibo.Fibonacci.roles.A;
 
 public class MyA extends Thread
@@ -50,34 +49,24 @@ public class MyA extends Thread
 
 	private EndSocket run(Fibonacci_A_1 s, int todo) throws Exception
 	{
-		return (todo > 0)
-				? run(
-						next(this.b.val,
-							s.send(B, fibonacci, this.b.val)
-							 .receive(B, fibonacci, this.b), todo), 
-						todo - 2)
-				: s.send(Fibonacci.B, stop);
+		return run1(s, todo);
 	}
 	
-	//*/
 	private
 	<
+	//*/
 		S1 extends
-				Out_B_fibonacci_Long<S2> & Out_B_stop<EndSocket>
-			& Succ_In_B_fibonacci_Long,
+				Out_B_fibonacci_Long<S2> & Out_B_stop<EndSocket>  // Action I/f's
+			& Succ_In_B_fibonacci_Long,                         // Successor I/f's
 		S2 extends
 				In_B_fibonacci_Long<S1>
-			& Succ_Out_B_fibonacci_Long//, E extends Succ_Out_B_stop
-	>
-	EndSocket run1(S1 s, int todo) throws Exception
+			& Succ_Out_B_fibonacci_Long                         //, E extends Succ_Out_B_stop
 	/*/
-	private
-	<
 		S1 extends Select_A_B_fibonacci_Long__B_stop<S2, EndSocket>,
 		S2 extends Receive_A_B_fibonacci_Long<S1>
+	//*/
 	>
 	EndSocket run1(S1 s, int todo) throws Exception
-	//*/
 	{
 		return (todo > 0)
 				? run1(

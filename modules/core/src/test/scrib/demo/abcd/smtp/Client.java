@@ -3,20 +3,27 @@
 
 package demo.abcd.smtp;
 
+import static demo.abcd.smtp.Smtp.Smtp.Smtp.C;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp.S;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp._220;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp._250;
+import static demo.abcd.smtp.Smtp.Smtp.Smtp._250d;
+
 import org.scribble.net.Buf;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.abcd.smtp.Smtp.Smtp.Smtp;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Out_S_Ehlo;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import demo.abcd.smtp.Smtp.Smtp.roles.C;
 import demo.abcd.smtp.message.SmtpMessageFormatter;
+import demo.abcd.smtp.message.client.Ehlo;
 import demo.abcd.smtp.message.server._250;
 import demo.abcd.smtp.message.server._250d;
-
-import static demo.abcd.smtp.Smtp.Smtp.Smtp.*;
 
 public class Client
 {
@@ -40,17 +47,39 @@ public class Client
 		{
 			se.connect(S, SocketChannelEndpoint::new, host, port);
 
-			//Buf<Smtp_C_1_Future> b1 = new Buf<>();
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 			doInit(s1.receive(S, _220, new Buf<>()));
 		}
 	}
 
-	//private Succ_In_S_250 doInit(Select_C_S_Ehlo<?> s) throws Exception
-	private <S extends Out_S_Ehlo<?>> Succ_In_S_250 doInit(S s) throws Exception
+	/*
+	private Succ_In_S_250 doInit(Out_S_Ehlo<?> s) throws Exception
 	{
+		...
+	}
+	/*/
+	private Succ_In_S_250 doInit(Select_C_S_Ehlo<?> s) throws Exception
+	{
+		Branch_C_S_250__S_250d<?, ?> b =
+				s.send(S, new Ehlo("test"))
+				 .to(Branch_C_S_250__S_250d.cast);  // Safe cast
 		Buf<_250> b1 = new Buf<>();
 		Buf<_250d> b2 = new Buf<>();
-		return null;
+		while (true)
+		{
+			Case_C_S_250__S_250d<?, ?> c = b.branch(S);
+			switch (c.getOp())
+			{
+				case _250:
+					return Client1.printlnBuf(c.receive(S, _250, b1), b1);
+				case _250d:
+					b = Client1.printBuf(
+								c.receive(S, _250d, b2)
+								 .to(Branch_C_S_250__S_250d.cast)  // Safe cast
+							, b2);
+					break;
+			}
+		}
 	}
+	//*/
 }
