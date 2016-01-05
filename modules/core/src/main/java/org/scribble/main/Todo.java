@@ -7,7 +7,11 @@ package org.scribble.main;
 .. test mvn install
 .. fix script
 .. individual test ignores (cf. whole directory) -- good for package testing
+
+.. unguarded choice-rec in conjunction with unguarded continue needs to be ruled out in WF or fixed in FSM generation
 */
+
+	// FIXME: refactor EnvVisitors merge/compose routines -- check enter/leave merging isn't duplicating parent info (e.g. path visiting, recursion has to clear Env so child paths don't start with parent prefixes)
 
 	// default G/LNode getKind methods won't work properly until Eclipse updated with fix, cf. G/LInteractionSeq
 
@@ -31,6 +35,8 @@ package org.scribble.main;
 	// multicast (enforce sending same value -- can "compile" to assertions for separate ops)
 	// TODO: deadlock analysis: for parallel, and even just choice if one process will play multiple roles (e.g. choice at A { A->B; A->C } or { A->C; A->B }) -- separate par from unordered
 	// FIXME: api generation for parallel/interruptible -- branch needs to report on op and role (depending on input queue semantics)
+	// api gen: explicit end for implicit skipping tail inputs but without failing the sender due to closing the transport -- actually, disable async for term-leading states? -- or perhaps implicit in using-close
+	//.. FIXME: singleton constants in subpackages, constant references from session class -- work out scrib package/module correspondence with java package/classes
 
 	//.. fix projection env to take projection output type as Parameter
 	// dels should be kinded as well? -- maybe by node type? or too restrictive
@@ -88,6 +94,11 @@ package org.scribble.main;
 // - enter doesn't need to return visitor, not using visitor immutability? (or visitor replacement flexibility)
 // - use Path API (though path separators not taken from nio api)
 // - import path should be a CL parameter, not MainContext
+
+// ? - fix projected choice subj fixing for (single?) continue-only block
+// ? - generalise recursion projection filtering
+// ? - check projection/merge of role-subset recursion paths, and projection of non-relevant choice blocks
+
 
 // Not done
 //.. maybe make an UnkindedName superclass of Name, use for e.g. parameters or ambiguous -- parameters and ambiguous have their own kinds

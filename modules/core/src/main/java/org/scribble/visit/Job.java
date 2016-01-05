@@ -2,13 +2,15 @@ package org.scribble.visit;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.codegen.EndpointApiGenerator;
-import org.scribble.codegen.SessionApiGenerator;
+import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
+import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
+import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
 import org.scribble.del.local.LProtocolDeclDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
@@ -34,7 +36,8 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
-		runVisitorPassOnAllModules(WFChoiceChecker.class);
+		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
+		//runVisitorPassOnAllModules(WFChoicePathChecker.class);
 		runProjectionPasses();
 		runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}
@@ -66,7 +69,7 @@ public class Job
 		runVisitorPassOnProjectedModules(ModuleContextBuilder.class);
 		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes to fix DUMMY role occurrences
 		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);
-		runVisitorPassOnProjectedModules(RoleCollector.class);
+		runVisitorPassOnProjectedModules(RoleCollector.class);  // NOTE: doesn't collect from choice subjects (may be invalid until projected choice subjs fixed)
 		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version
 		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);
@@ -90,6 +93,9 @@ public class Job
 	{
 		debugPrintPass("Running " + EndpointGraphBuilder.class + " for " + fullname + "@" + role);
 		// Visit Module for context (not just the protodecl) -- builds FSMs for all locals in the module
+		
+		//System.out.println("AAA: " + this.jcontext.getProjection(fullname, role));
+
 		this.jcontext.getProjection(fullname, role).accept(new EndpointGraphBuilder(this)); 
 			// Builds FSMs for all local protocols in this module as root (though each projected module contains a single local protocol)
 			// Subprotocols "inlined" by FsmBuilder (scoped subprotocols not supported)
@@ -99,20 +105,27 @@ public class Job
 	{
 		debugPrintPass("Running " + SessionApiGenerator.class + " for " + fullname);
 		SessionApiGenerator sg = new SessionApiGenerator(this, fullname);
-		Map<String, String> map = sg.generateSessionClass();  // filepath -> class source
+		Map<String, String> map = sg.generateApi();  // filepath -> class source
 		return map;
 	}
 	
-	public Map<String, String> generateEndpointApi(GProtocolName fullname, Role role) throws ScribbleException
+	// FIXME: refactor an EndpointApiGenerator
+	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
 	{
-		if (this.jcontext.getEndpointGraph(fullname, role) == null)
+		if (this.jcontext.getEndpointGraph(fullname, self) == null)
 		{
-			buildGraph(fullname, role);
+			buildGraph(fullname, self);
 		}
-		debugPrintPass("Running " + EndpointApiGenerator.class + " for " + fullname + "@" + role);
-		return new EndpointApiGenerator(this, fullname, role).generateClasses(); // filepath -> class source  // Store results?
+		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
+		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
+		IOInterfacesGenerator iogen = new IOInterfacesGenerator(apigen, subtypes);
+		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
+		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?
+		api.putAll(apigen.generateApi());
+		api.putAll(iogen.generateApi());
+		return api;
 	}
-
+	
 	private void runVisitorPassOnAllModules(Class<? extends AstVisitor> c) throws ScribbleException
 	{
 		debugPrintPass("Running " + c + " on all modules:");

@@ -1,9 +1,12 @@
 package org.scribble.ast.local;
 
+import java.util.Set;
+
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.del.ScribDel;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 
 public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
@@ -46,5 +49,15 @@ public class LProtocolBlock extends ProtocolBlock<Local> implements LNode
 	public Local getKind()
 	{
 		return LNode.super.getKind();
+	}
+	
+	public LProtocolBlock merge(LProtocolBlock lpb)
+	{
+		throw new RuntimeException("TODO: " + this + ", " + lpb);
+	}
+	
+	public Set<Message> getEnabling()
+	{
+		return getInteractionSeq().getEnabling();
 	}
 }

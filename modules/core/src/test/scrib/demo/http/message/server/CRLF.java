@@ -1,6 +1,5 @@
 package demo.http.message.server;
 
-import demo.http.Http;
 import demo.http.message.HttpMessage;
 
 @Deprecated

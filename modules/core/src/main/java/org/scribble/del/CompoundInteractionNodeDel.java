@@ -4,10 +4,12 @@ import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.WFChoicePathChecker;
+import org.scribble.visit.env.WFChoicePathEnv;
 import org.scribble.visit.env.UnfoldingEnv;
+import org.scribble.visit.env.WFChoiceEnv;
 
 public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel implements InteractionNodeDel
 {
@@ -48,6 +50,31 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		WFChoiceEnv parent_env = checker.popEnv();  // pop-merge-push parent
 		parent_env = parent_env.mergeContext(visited_env);
 		checker.pushEnv(parent_env);
+		return (CompoundInteractionNode<?>) visited;
+	}
+
+	/*@Override
+	public void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
+	{
+		WFChoicePathEnv env = coll.peekEnv().enterContext();
+		env = env.clear();
+		coll.pushEnv(env);
+	}*/
+
+	@Override
+	public CompoundInteractionNode<?> leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
+	//public CompoundInteractionNode<?> leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
+	{
+		WFChoicePathEnv visited_env = coll.popEnv();  // popAndSet current
+		setEnv(visited_env);
+		WFChoicePathEnv parent_env = coll.popEnv();  // pop-merge-push parent
+		parent_env = parent_env.mergeContext(visited_env);
+		coll.pushEnv(parent_env);
+		
+		/*System.out.println("3: " + parent_env.getPaths().size());
+		System.out.println("4: " + parent_env.getPaths() + "");
+		System.out.println("4: " + visited + "\n");*/
+		
 		return (CompoundInteractionNode<?>) visited;
 	}
 }

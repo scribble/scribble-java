@@ -8,7 +8,9 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.RecVarKind;
+import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.Projector;
+import org.scribble.visit.WFChoicePathChecker;
 
 public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeDel
 {
@@ -20,5 +22,16 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 		LContinue projection = AstFactoryImpl.FACTORY.LContinue(recvar);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GContinue) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
+	}
+	
+	@Override
+	public ScribNode leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
+	//public ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor<? extends PathEnv> coll, ScribNode visited) throws ScribbleException
+	//public ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
+	{
+		GContinue gc = (GContinue) visited;
+		RecVar rv = gc.recvar.toName();
+		coll.pushEnv(coll.popEnv().append(rv));
+		return visited;
 	}
 }

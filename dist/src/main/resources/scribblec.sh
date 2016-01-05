@@ -14,11 +14,14 @@ DIR=`dirname "$0"`
 usage() {
   echo scribblec:
   cat <<EOF
-  -h  --help                                     display this information
-  --verbose                                      echo the python command
+  -h  --help                                     Display this information
+  --verbose                                      Echo the java command
   -ip [path]                                     Scribble import path
-  -project [simple global protocol name] [role]  project protocol
-  -fsm [simple global protocol name] [role]      generate FSM
+  -project [simple global protocol name] [role]  Project protocol
+  -fsm [simple global protocol name] [role]      Generate FSM
+  -dot [simple global protocol name] [role] [output file]
+          Generate FSM as png
+          (Do not use in conjunction with other flags that output to stdout)
 EOF
 }
 
@@ -54,11 +57,28 @@ CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 
 usage=0
 verbose=0
+dot=0
 
 while true; do
     case "$1" in
         "")
             break
+            ;;
+        -dot)
+        # Should not be used in conjunction with other flags..
+        # ..that output to stdout
+            ARGS="$ARGS '-fsm'"
+            shift
+            ARGS="$ARGS '$1'"
+            shift
+            ARGS="$ARGS '$1'"
+            shift
+            dot=$1
+            if [ "$dot" == '' ]; then
+              echo '-dot missing output file name argument'
+              exit 1
+            fi
+            shift
             ;;
         -h)
             usage=1
@@ -78,6 +98,14 @@ while true; do
             ;;
     esac
 done
+
+if [ "$dot" != 0 ]; then
+  ARGS="$ARGS |"
+  ARGS="$ARGS dot"
+  ARGS="$ARGS '-Tpng'"
+  ARGS="$ARGS '-o'"
+  ARGS="$ARGS '$dot'"
+fi
 
 if [ "$usage" = 1 ]; then
   usage

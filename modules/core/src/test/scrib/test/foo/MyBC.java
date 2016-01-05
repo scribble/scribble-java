@@ -4,48 +4,52 @@ import java.io.IOException;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.ScribServerSocket;
+import org.scribble.net.scribsock.ScribServerSocket;
+import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
+
+import test.foo.Foo.Foo.Foo;
+import test.foo.Foo.Foo.channels.B.Foo_B_1;
+import test.foo.Foo.Foo.channels.B.Foo_B_1_Cases;
+import test.foo.Foo.Foo.channels.C.Foo_C_1;
+import test.foo.Foo.Foo.channels.C.Foo_C_1_Cases;
+import test.foo.Foo.Foo.roles.B;
+import test.foo.Foo.Foo.roles.C;
 
 public class MyBC
 {
-	public static void main(String[] args) throws IOException, ScribbleRuntimeException
+	public static void main(String[] args) throws IOException, ScribbleRuntimeException, InterruptedException
 	{
-		try (ScribServerSocket ss_B = new ScribServerSocket(8888);
-				 ScribServerSocket ss_C = new ScribServerSocket(9999))
+		try (ScribServerSocket ss_B = new SocketChannelServer(8888);
+				 ScribServerSocket ss_C = new SocketChannelServer(9999))
 		{
 			//Buff<String> s = new Buff<>();
 
 			while (true)
 			{
 				Foo foo = new Foo();
-				SessionEndpoint se_B = foo.project(Foo.B, new ObjectStreamFormatter());
-				SessionEndpoint se_C = foo.project(Foo.C, new ObjectStreamFormatter());
-				Foo_B_0 init_B = new Foo_B_0(se_B);
-				Foo_C_0 init_C = new Foo_C_0(se_C);
-				init_B.accept(ss_B, Foo.A);
-				init_C.accept(ss_C, Foo.A);
 				
-				new Thread()
+				Thread B = new Thread()
 				{
 					public void run()
 					{
-						try (Foo_B_0 s0_B = init_B)
+						try (SessionEndpoint<Foo, B> se_B = new SessionEndpoint<>(foo, Foo.B, new ObjectStreamFormatter()))
 						{
-							Foo_B_1 s1_B = s0_B.init();
+							se_B.accept(ss_B, Foo.A);
+							Foo_B_1 s1_B = new Foo_B_1(se_B);
 
-							Foo_B_3 s3_B = s1_B.branch();
-							switch (s3_B.op)
+							Foo_B_1_Cases s1cases_B = s1_B.branch(Foo.A);
+							switch (s1cases_B.op)
 							{
 								case _1:
 								{
-									s3_B.receive(Foo._1).end();;
+									s1cases_B.receive(Foo._1);
 									System.out.println("B first!");
 									break;
 								}
 								case _2:
 								{
-									s3_B.receive(Foo._2).end();;
+									s1cases_B.receive(Foo._2);
 									break;
 								}
 							}
@@ -55,28 +59,29 @@ public class MyBC
 							e.printStackTrace();
 						}
 					}
-				}.start();
+				};
 
-				new Thread()
+				Thread C = new Thread()
 				{
 					public void run()
 					{
-						try (Foo_C_0 s0_C = init_C)
+						try (SessionEndpoint<Foo, C> se_C = new SessionEndpoint<>(foo, Foo.C, new ObjectStreamFormatter()))
 						{
-							Foo_C_1 s1_C = s0_C.init();
+							se_C.accept(ss_C, Foo.A);
 
-							Foo_C_3 s3_C = s1_C.branch();
-							switch (s3_C.op)
+							Foo_C_1 s1_C = new Foo_C_1(se_C);
+							Foo_C_1_Cases s1cases_C = s1_C.branch(Foo.A);
+							switch (s1cases_C.op)
 							{
 								case _1:
 								{
-									s3_C.receive(Foo._1).end();;
+									s1cases_C.receive(Foo._1);
 									System.out.println("C first!");
 									break;
 								}
 								case _2:
 								{
-									s3_C.receive(Foo._2).end();;
+									s1cases_C.receive(Foo._2);
 									break;
 								}
 							}
@@ -86,7 +91,12 @@ public class MyBC
 							e.printStackTrace();
 						}
 					}
-				}.start();
+				};
+				
+				B.start();
+				C.start();
+				B.join();
+				C.join();
 			}
 		}
 	}

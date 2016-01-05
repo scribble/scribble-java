@@ -3,43 +3,43 @@
 
 package test.test1;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.SocketChannelEndpoint;
 
+import test.test1.Test1.Proto1.Proto1;
+import test.test1.Test1.Proto1.channels.C.Proto1_C_1;
+import test.test1.Test1.Proto1.channels.C.Proto1_C_2;
+import test.test1.Test1.Proto1.roles.C;
 
 public class MyC
 {
-	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException
+	public static void main(String[] args) throws Exception
 	{
-		Buff<Integer> i1 = new Buff<>(1);
-		Buff<Integer> i2 = new Buff<>(1);
-		
 		Proto1 adder = new Proto1();
-		SessionEndpoint se = adder.project(Proto1.C, new ObjectStreamFormatter());
-		
-		try (Proto1_C_0 s0 = new Proto1_C_0(se))
+		try (SessionEndpoint<Proto1, C> se = new SessionEndpoint<>(adder, Proto1.C, new ObjectStreamFormatter()))
 		{
-			s0.connect(Proto1.S, "localhost", 8888);
-			Proto1_C_1 s1 = s0.init();
-			
-			s1.send(Proto1.S, Proto1.ADD, i1.val, i2.val)
-			  .receive(Proto1.RES, i1)
-			  .send(Proto1.S, Proto1.BYE)
-			  .end();
-			
-			System.out.println("Client: " + i1.val);
+			se.connect(Proto1.S, SocketChannelEndpoint::new, "localhost", 8888);
+
+			Proto1_C_2 s2 = new Proto1_C_1(se).send(Proto1.S, Proto1._1);
+			for (int i = 0; i < 3; i++)
+			{
+				s2 = 
+					s2.send(Proto1.S, Proto1._2, 123)
+					  .receive(Proto1.S, Proto1._3, new Buf<>())
+					  .send(Proto1.S, Proto1._1);
+			}
+			s2.send(Proto1.S, Proto1._4).end();
+
+			/*for (int i = 0; i < 3; i++)
+			{
+				s1 =
+					s1.send(Proto1.S, Proto1._1)
+					  .send(Proto1.S, Proto1._2, 123)
+					  .receive(Proto1.S, Proto1._3, new Buff<>());
+			}
+			s1.send(Proto1.S, Proto1._1).send(Proto1.S, Proto1._4).end();*/
 		}
 	}
-
-	/*private static Proto1_C_3 side(Buff<Integer> i1, Buff<Integer> i2, Proto1_C_3 s3)
-	{
-		System.out.print(i1.val + " ");
-		i1.val = i2.val;
-		return s3;
-	}*/
 }

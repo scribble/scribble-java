@@ -11,6 +11,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.WFChoiceEnv;
 
+// FIXME: refactor as distinct enabling messages checker (cf. GChoiceDel, WFChoicePathChecker)
 public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 {
 	// N.B. using pointer equality for checking if choice previously visited
@@ -21,6 +22,12 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 	public WFChoiceChecker(Job job)
 	{
 		super(job);
+	}
+
+	@Override
+	protected WFChoiceEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	{
+		return new WFChoiceEnv();
 	}
 
 	@Override
@@ -58,12 +65,6 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 		{
 			return super.visit(parent, child);
 		}
-	}
-
-	@Override
-	protected WFChoiceEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
-	{
-		return new WFChoiceEnv();
 	}
 	
 	@Override

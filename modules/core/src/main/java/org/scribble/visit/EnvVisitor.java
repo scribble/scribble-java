@@ -71,7 +71,8 @@ public abstract class EnvVisitor<T extends Env<?>> extends ModuleContextVisitor
 
 	public T peekParentEnv()
 	{
-		return this.envs.get(this.envs.size() - 2);
+		//return this.envs.get(this.envs.size() - 2);
+		return this.envs.get(1);
 	}
 	
 	public void pushEnv(T env)

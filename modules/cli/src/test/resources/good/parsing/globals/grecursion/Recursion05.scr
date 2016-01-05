@@ -15,4 +15,3 @@ global protocol Recursion5(role A, role B)
 		continue Y;  // A bad "continue X" here tested in Recursion11
 	}
 }
-
