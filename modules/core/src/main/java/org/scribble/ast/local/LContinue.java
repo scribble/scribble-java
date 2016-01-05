@@ -1,9 +1,14 @@
 package org.scribble.ast.local;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Continue;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
+import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
@@ -40,7 +45,9 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		throw new RuntimeException("Shouldn't get in here: " + this);
+		//throw new RuntimeException("Shouldn't get in here: " + this);
+		//return new DummyProjectionRoleNode().toName();  // For e.g. rec X { 1() from A to B; choice at A { continue X; } or { 2() from A to B; } }
+		return fixer.createRecVarRole(this.recvar.toName());
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
@@ -48,5 +55,32 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	public Local getKind()
 	{
 		return LSimpleInteractionNode.super.getKind();
+	}
+
+	@Override
+	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	{
+		if (!(ln instanceof LContinue) || !this.canMerge(ln))
+		{
+			throw new ScribbleException("Cannot merge " + this.getClass() + " and " + ln.getClass() + ": " + this + ", " + ln);
+		}
+		LContinue them = ((LContinue) ln);
+		if (!this.recvar.equals(them.recvar))
+		{
+			throw new ScribbleException("Cannot merge choices for " + this.recvar + " and " + them.recvar + ": " + this + ", " + ln);
+		}
+		return clone();
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		return ln instanceof LContinue;
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		return Collections.emptySet();
 	}
 }

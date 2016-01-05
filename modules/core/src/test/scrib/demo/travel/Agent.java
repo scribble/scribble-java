@@ -10,50 +10,52 @@ import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
+import demo.travel.Travel.Booking.Booking;
+import demo.travel.Travel.Booking.channels.A.Booking_A_1;
+import demo.travel.Travel.Booking.channels.A.Booking_A_1_Cases;
+import demo.travel.Travel.Booking.roles.A;
+
 public class Agent
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException, ExecutionException, InterruptedException
 	{
-		try (ScribServerSocket ss = new SocketChannelServer(8888))
+		try (ScribServerSocket ss_C = new SocketChannelServer(7777))
 		{
 			while (true)
 			{
 				int quote = 1000;
 
 				Booking booking = new Booking();
-				SessionEndpoint A = booking.project(Booking.A, ss, new ObjectStreamFormatter());
-				
-				Booking_A_0 init = new Booking_A_0(A);
-				init.accept(Booking.C);
-				//init.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 8889);
-				
-				Thread.sleep(1000);  // FIXME:
-				
-				init.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 9999);
-				try (Booking_A_0 s0 = init)
+				try (SessionEndpoint<Booking, A> se = new SessionEndpoint<>(booking, Booking.A, new ObjectStreamFormatter()))
 				{
-					Booking_A_1 s1 = s0.init();
-					Booking_A_7 s7;
+					se.accept(ss_C, Booking.C);
+					
+					//Thread.sleep(1000);  // FIXME: ensure S is ready
+					
+					se.connect(Booking.S, SocketChannelEndpoint::new, "localhost", 9999);
+
+					Booking_A_1 s1 = new Booking_A_1(se);
+					Booking_A_1_Cases s1cases;
 					X: while (true)
 					{
-						s7 = s1.branch();
-						switch (s7.op)
+						s1cases = s1.branch(Booking.C);
+						switch (s1cases.op)
 						{
 							case Query:
-								s1 = s7.receive(Booking.Query)
+								s1 = s1cases.receive(Booking.Query)
 								       .send(Booking.C, Booking.Quote, quote -= 100)
 								       .send(Booking.S, Booking._);
 								break;
 							case No:
-								s7.receive(Booking.No)
+								s1cases.receive(Booking.No)
 								  .send(Booking.S, Booking.No)
-								  .receive(Booking.Bye);
+								  .receive(Booking.C, Booking.Bye);
 								break X;
 							case Yes:
 								System.out.println("Yes: ");
-								s7.receive(Booking.Yes)
+								s1cases.receive(Booking.Yes)
 								  .send(Booking.S, Booking.Yes)
-								  .receive(Booking.Bye);
+								  .receive(Booking.C, Booking.Bye);
 								break X;
 						}
 					}

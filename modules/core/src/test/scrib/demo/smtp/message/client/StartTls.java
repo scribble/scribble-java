@@ -1,6 +1,6 @@
 package demo.smtp.message.client;
 
-import demo.smtp.SMTP;
+import demo.smtp.Smtp.Smtp.Smtp;
 import demo.smtp.message.SmtpMessage;
 
 public class StartTls extends SmtpMessage
@@ -9,6 +9,6 @@ public class StartTls extends SmtpMessage
 
 	public StartTls()
 	{
-		super(SMTP.STARTTLS);
+		super(Smtp.StartTls);
 	}
 }

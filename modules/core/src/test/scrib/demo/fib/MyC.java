@@ -3,17 +3,13 @@
 
 package demo.fib;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.concurrent.ExecutionException;
-
-import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
-import static demo.fib.Adder.*;
+import demo.fib.Fib.Adder.Adder;
+import demo.fib.Fib.Adder.channels.C.Adder_C_1;
+import demo.fib.Fib.Adder.roles.C;
 
 
 public class MyC
@@ -21,12 +17,11 @@ public class MyC
 	public static void main(String[] args) throws Exception
 	{
 		Adder adder = new Adder();
-		SessionEndpoint se = adder.project(Adder.C, new ObjectStreamFormatter());
-		
-		try (Adder_C_0 s0 = new Adder_C_0(se))
+		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
 		{
-			s0.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
-			Adder_C_1 s1 = s0.init();
+			se.connect(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
+
+			Adder_C_1 s1 = new Adder_C_1(se);
 			
 			//Buff<Integer> buf = new Buff<>(1);
 			

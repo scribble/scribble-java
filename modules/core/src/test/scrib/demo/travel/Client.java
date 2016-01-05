@@ -4,14 +4,18 @@
 package demo.travel;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
+
+import demo.travel.Travel.Booking.Booking;
+import demo.travel.Travel.Booking.channels.C.Booking_C_1;
+import demo.travel.Travel.Booking.channels.C.Booking_C_5;
+import demo.travel.Travel.Booking.roles.C;
 
 
 public class Client
@@ -22,17 +26,14 @@ public class Client
 	public static void main(String[] args) throws Exception
 	{
 		Booking booking = new Booking();
-		SessionEndpoint C = booking.project(Booking.C, new ObjectStreamFormatter());
-
-		Booking_C_3 s3;
-		try (Booking_C_0 s0 = new Booking_C_0(C))
+		try (SessionEndpoint<Booking, C> se = new SessionEndpoint<>(booking, Booking.C, new ObjectStreamFormatter()))
 		{
-			s0.connect(SocketChannelEndpoint::new, Booking.A, "localhost", 8888);
-			s0.connect(SocketChannelEndpoint::new, Booking.S, "localhost", 9999);
-			Booking_C_1 s1 = s0.init();
+			se.connect(Booking.A, SocketChannelEndpoint::new, "localhost", 7777);
+			se.connect(Booking.S, SocketChannelEndpoint::new, "localhost", 8888);
+			Booking_C_1 s1 = new Booking_C_1(se);
 
-			Buff<Integer> quote = new Buff<>();
-
+			Buf<Integer> quote = new Buf<>();
+			Booking_C_5 s3;
 			for (int i = 0; ; i++)
 			{
 				if (i >= QUERIES.size())
@@ -42,14 +43,14 @@ public class Client
 				}
 				System.out.println("Querying: " + QUERIES.get(i));
 				s1 = s1.send(Booking.A, Booking.Query, QUERIES.get(i))
-							 .receive(Booking.Quote, quote);
+							 .receive(Booking.A, Booking.Quote, quote);
 				System.out.println("Quoted: " + quote.val);
 				if (quote.val <= MAX)
 				{
 					System.out.println("Yes: ");
 					s3 = s1.send(Booking.A, Booking.Yes)
 						     .send(Booking.S, Booking.Payment, "...")
-						     .receive(Booking.Ack);
+						     .receive(Booking.S, Booking.Ack);
 					break;
 				}
 			}
@@ -62,51 +63,51 @@ public class Client
 		}
 	}
 
-	private static void foo(Booking_C_1 s1, Buff<Integer> buf) throws Exception
+	/*private static void foo(Booking_C_1 s1, Buf<Integer> buf) throws Exception
 	{
 		for (int i = 0; i < QUERIES.size(); i++)  // Stream.forEach not suitable due to Exceptions
 		{
 			System.out.println("Querying: " + QUERIES.get(i));
 			s1 = s1.send(Booking.A, Booking.Query, QUERIES.get(i))
-			       .receive(Booking.Quote, buf);
+			       .receive(Booking.A, Booking.Quote, buf);
 			System.out.println("Quoted: " + buf.val);
 			if (buf.val <= MAX)
 			{
 				System.out.println("Yes: ");
 				s1.send(Booking.A, Booking.Yes)
 					.send(Booking.S, Booking.Payment, "...")
-					.receive(Booking.Ack)
+					.receive(Booking.S, Booking.Ack)
 					.send(Booking.A, Booking.Bye);
 				return;
 			}
 		}
 		s1.send(Booking.A, Booking.No).send(Booking.A, Booking.Bye);
-	}
+	}*/
 	
-	private static Booking_C_3 doQuery(Booking_C_1 s1, int i, Buff<Integer> buf) throws Exception
+	private static Booking_C_5 doQuery(Booking_C_1 s1, int i, Buf<Integer> buf) throws Exception
 	{
 		return (i >= QUERIES.size())
 				? s1.send(Booking.A, Booking.No) 
 				//: foo3(s1.send(Booking.A, Booking.Query, println(QUERIES.get(i), QUERIES.get(i))).receive(Booking.Quote, QUOTE), i, println(QUOTE.val, Integer.toString(QUOTE.val)));
 				: checkMax(s1.send(Booking.A, Booking.Query, QUERIES.get(i))
-						         .receive(Booking.Quote, buf)
+						         .receive(Booking.A, Booking.Quote, buf)
 					        , i, buf);
 	}
 
-	private static Booking_C_3 checkMax(Booking_C_1 s1, int i, Buff<Integer> buf) throws Exception
+	private static Booking_C_5 checkMax(Booking_C_1 s1, int i, Buf<Integer> buf) throws Exception
 	{
 		return (buf.val <= MAX)
 				? s1.send(Booking.A, Booking.Yes)
 						.send(Booking.S, Booking.Payment, "...")
-						.receive(Booking.Ack)
+						.receive(Booking.S, Booking.Ack)
 				: doQuery(s1, i + 1, buf);
 	}
 
-	private static <T> T println(T t, String m)
+	/*private static <T> T println(T t, String m)
 	{
 		System.out.println(m);
 		return t;
-	}
+	}*/
 
 	/*static Optional<Integer> opt;
 	private static Booking_C_1 foo2(Booking_C_1 s1, int i) throws Exception

@@ -4,7 +4,7 @@
 
 //$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib modules/core/src/test/scrib/test/foo/Foo*.java -d test/javadoc/test
 
-//$ bin/scribblec modules/core/src/test/scrib/test/foo/Foo.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -session Foo -api Foo A -V
+//$ bin/scribblec.sh modules/core/src/test/scrib/test/foo/Foo.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -session Foo -api Foo A -V
 
 module test.foo.Foo;
 

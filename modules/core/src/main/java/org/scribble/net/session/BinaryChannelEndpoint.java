@@ -6,6 +6,7 @@ import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.net.ScribInterrupt;
@@ -13,7 +14,7 @@ import org.scribble.net.ScribMessage;
 
 public abstract class BinaryChannelEndpoint
 {
-	protected SessionEndpoint se;
+	protected SessionEndpoint<?, ?> se;
 	
 	//protected BinaryChannelEndpoint parent;
 	private AbstractSelectableChannel c;
@@ -24,11 +25,13 @@ public abstract class BinaryChannelEndpoint
 	
 	private boolean isClosed = false;
 
-	private int count = 0;  // How many ScribMessages read so far
+	private int count = 0;  // How many ScribMessages read so far  // volatile?
 	private int ticket = 0;  // Index of the next expected ScribMessage
+	
+	private final List<CompletableFuture<ScribMessage>> pending = new LinkedList<>();
 
 	// Server side
-	protected BinaryChannelEndpoint(SessionEndpoint se, AbstractSelectableChannel c) throws IOException
+	protected BinaryChannelEndpoint(SessionEndpoint<?, ?> se, AbstractSelectableChannel c) throws IOException
 	{
 		this.bb = ByteBuffer.allocate(16921);  // FIXME: size  // Use put mode as default
 		init(se, c);
@@ -40,17 +43,18 @@ public abstract class BinaryChannelEndpoint
 		this.bb = ByteBuffer.allocate(16921);  // FIXME: size  // Use put mode as default
 	}
 	
-	public abstract void initClient(SessionEndpoint se, String host, int port) throws IOException;
+	public abstract void initClient(SessionEndpoint<?, ?> se, String host, int port) throws IOException;
 	
-	protected void init(SessionEndpoint se, AbstractSelectableChannel c) throws IOException
+	protected void init(SessionEndpoint<?, ?> se, AbstractSelectableChannel c) throws IOException
 	{
 		this.se = se;
 		this.c = c;
 		this.c.configureBlocking(false);
 	}
 
+	// Pre: selector is paused
 	//protected BinaryChannelEndpoint(BinaryChannelEndpoint c)
-	public void wrapChannel(BinaryChannelEndpoint c)
+	public void wrapChannel(BinaryChannelEndpoint c) throws IOException
 	{
 		this.se = c.se;
 		//this.msgs.addAll(c.msgs);  // Guaranteed to be empty/0 for reconnect?
@@ -63,6 +67,7 @@ public abstract class BinaryChannelEndpoint
 		//FIXME: complete all pending futures on parent chan -- no: not enough by itself, that is just reading the already-deserialized cache
 		//FIXME: pull all pending data out of parent chan (due to selector not handling it yet -- in send states, we just need to clear all expected messages up to this point)
 		//  -- so that wrapper handshake is starting clean
+		// --- futures must be completed before here, since selector is paused
 	}
 	
 	public AbstractSelectableChannel getSelectableChannel()  // For asynchrony (via nio Selector) -- maybe implement/extend instead
@@ -79,11 +84,12 @@ public abstract class BinaryChannelEndpoint
 	public synchronized CompletableFuture<ScribMessage> getFuture()
 	{
 		// FIXME: better exception handling (integrate with Future interface?)
-		return CompletableFuture.supplyAsync(() ->
+		final int ticket = getTicket();
+		CompletableFuture<ScribMessage> fut = CompletableFuture.supplyAsync(() ->
 				{
 					try
 					{
-						ScribMessage m = read(getTicket());
+						ScribMessage m = read(ticket);
 						if (m instanceof ScribInterrupt)  // FIXME: hacked in
 						{
 							throw new RuntimeScribbleException((Throwable) ((ScribInterrupt) m).payload[0]);
@@ -94,14 +100,41 @@ public abstract class BinaryChannelEndpoint
 					{
 						throw new RuntimeScribbleException(e);
 					}
+					finally
+					{
+						this.pending.remove(0);  // Safe?
+					}
 				});
+		synchronized (this.pending)
+		{
+			this.pending.add(fut);
+		}
+		return fut;
+	}
+	
+	protected void sync() throws IOException  // Hacky
+	{
+		try
+		{
+			synchronized (this.pending)
+			{
+				if (!this.pending.isEmpty())
+				{
+					this.pending.get(this.pending.size() - 1).get();
+				}
+			}
+		}
+		catch (InterruptedException | ExecutionException e)
+		{
+			throw new IOException(e);
+		}
 	}
 	
 	private synchronized ScribMessage read(int ticket) throws IOException
 	{
 		try
 		{
-			while (this.count < ticket && !this.isClosed)
+			while (this.count < ticket && !this.isClosed)  // "Chain" futures directly? i.e. each future syncs on predecessor?
 			{
 				wait();
 			}
@@ -114,7 +147,9 @@ public abstract class BinaryChannelEndpoint
 				throw new IOException("Channel closed");
 			}
 			this.count++;
-			return this.msgs.remove(0);
+			ScribMessage m = this.msgs.remove(0);
+			notifyAll();  // A later future might have gone first and blocked, so wake up (with the message already enqueued, so no notify coming from there)  // finally?
+			return m;
 		}
 		catch (InterruptedException e)
 		{
@@ -125,8 +160,8 @@ public abstract class BinaryChannelEndpoint
 	protected synchronized void enqueue(ScribMessage m)
 	{
 		this.msgs.add(m);
-		this.count++;
-		notify();
+		//this.count++;
+		notifyAll();
 	}
 
 	public abstract void writeBytes(byte[] bs) throws IOException;
@@ -145,12 +180,13 @@ public abstract class BinaryChannelEndpoint
 	public synchronized void close() throws IOException
 	{
 		this.isClosed = true;
-		notify();
+		notifyAll();
 	}
 	
 	public synchronized int getTicket()
 	{
-		return ++this.ticket;
+		//return ++this.ticket;
+		return this.ticket++;
 	}
 	
 	// post: bb:put

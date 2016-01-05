@@ -1,15 +1,15 @@
 package org.scribble.net;
 
-public class Buff<T>
+public class Buf<T>
 {
 	public T val;
 
-	public Buff()
+	public Buf()
 	{
 		
 	}
 
-	public Buff(T val)
+	public Buf(T val)
 	{
 		this.val = val;
 	}

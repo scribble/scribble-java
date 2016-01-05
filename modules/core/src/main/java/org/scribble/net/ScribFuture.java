@@ -1,5 +1,6 @@
 package org.scribble.net;
 
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -20,20 +21,27 @@ public abstract class ScribFuture //implements Future<P>
 		return this.m != null;
 	}
 
-	protected synchronized ScribMessage get() throws InterruptedException, ExecutionException
+	protected synchronized ScribMessage get() throws IOException
 	{
-		if (isDone())
+		try
 		{
+			if (isDone())
+			{
+				return this.m;
+			}
+			this.m = this.future.get();
+
+			//System.out.println("Got: " + m);
+			
 			return this.m;
 		}
-		this.m = this.future.get();
-
-		//System.out.println("Got: " + m);
-		
-		return this.m;
+		catch (InterruptedException | ExecutionException e)
+		{
+			throw new IOException(e);
+		}
 	}
 	
-	public abstract ScribFuture sync() throws ExecutionException, InterruptedException;
+	public abstract ScribFuture sync() throws IOException; //ExecutionException, InterruptedException;  // sync returns the Future (cf. get returns the val)
 
 	/*@Override
 	public P get(long timeout, TimeUnit unit)

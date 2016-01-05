@@ -1,31 +1,38 @@
 package org.scribble.net.session;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.channels.SelectionKey;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ScribMessageFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.sesstype.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
-public class SessionEndpoint
+//.. initiator and joiner endpoints
+public class SessionEndpoint<S extends Session, R extends Role> implements AutoCloseable
 {
-	public final Buff<?> gc = new Buff<>();
+	public final Buf<?> gc = new Buf<>();
 
 	public final Session sess;
 	public final Role self;
 	public final ScribMessageFormatter smf;
 
+	private boolean init = false;
+	//private boolean bound = false;
 	private boolean complete = false;
+	private boolean closed = false;
 	
-	protected final Map<Role, ScribServerSocket> servs = new HashMap<>();
+	protected final Map<Role, ScribServerSocket> servs = new HashMap<>();  // For multi-role endpoints?  // Or currently only self is used as a key, but should be peer roles instead? 
+	// Generally, think was in the middle of refactoring for explicit connections
 	protected final Map<Role, BinaryChannelEndpoint> chans = new HashMap<>();
 	
 	private final ScribInputSelector sel;
@@ -35,37 +42,43 @@ public class SessionEndpoint
 		return this.sel;
 	}
 	
-	public SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf) throws IOException
+	public SessionEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribbleRuntimeException
 	{
 		this.sess = sess;
 		this.self = self;
 		this.smf = smf;
 		
+		sess.project(this);
+		
 		this.sel = new ScribInputSelector(this);
 		this.sel.start();
 	}
 
-	// FIXME: generalise roles and server socks for endpoints playing multiple roles
-	public SessionEndpoint(Session sess, Role self, ScribServerSocket ss, ScribMessageFormatter smf) throws IOException, ScribbleRuntimeException
+	/*// FIXME: generalise roles and server socks for endpoints playing multiple roles
+	public SessionEndpoint(Session sess, Role self, ScribMessageFormatter smf, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
 	{
 		this(sess, self, smf);
-		register(self, ss);
+		//register(self, ss);
+		this.sel.pause();
+		this.servs.put(self, ss);
+		this.sel.unpause();
 	}
 	
 	// FIXME: allowing multiple serversocks to be registered, but it just overrides the self entry (already set by constructor) -- server socks not identified with peer (or protocol state)
 	// -- and InitSocket accept always uses the self server sock
 	//public synchronized void register(Role self, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
+	// TODO: was refactoring for explicit connections
 	protected synchronized void register(Role self, ScribServerSocket ss) throws IOException, ScribbleRuntimeException
 	{
 		this.sel.pause();
 		this.servs.put(self, ss);
 		this.sel.unpause();
-	}
+	}*/
 
-	public synchronized void register(Role peer, String host, int port) throws IOException
+	/*public synchronized void register(Role peer, String host, int port) throws IOException
 	{
 		throw new RuntimeException("TODO: " + host + ", " + port);
-	}
+	}*/
 	
 	public synchronized void register(Role peer, BinaryChannelEndpoint c) throws IOException
 	{
@@ -90,11 +103,14 @@ public class SessionEndpoint
 		key.attach(peer);
 		this.chans.put(peer, c);
 		this.sel.unpause();*/
+
+		BinaryChannelEndpoint c = getChannelEndpoint(peer);
+		c.sync();
 		
 		this.sel.pause();
 		// FIXME: consume all pending messages/futures first? or ok to leave data in existing bb -- or only permit in states where bb is empty?
 		// Underlying selectable channel is the same, so no need to cancel key and re-reg -- OK to assume in general?
-		w.wrapChannel(getChannelEndpoint(peer));
+		w.wrapChannel(c);
 		w.clientHandshake();
 		this.chans.put(peer, w);
 		this.sel.unpause();
@@ -119,10 +135,25 @@ public class SessionEndpoint
 		return this.complete;
 	}
 	
-	public void close()
+	@Override
+	public synchronized void close() throws ScribbleRuntimeException
 	{
-		this.sel.close();
-		this.servs.values().stream().forEach((ss) -> ss.unbind());
+		if (!this.closed)
+		{
+			try
+			{
+				this.closed = true;
+				this.sel.close();
+				this.servs.values().stream().forEach((ss) -> ss.unbind());
+			}
+			finally
+			{
+				if (!isCompleted())  // Subsumes use -- must be used for sess to be completed
+				{
+					throw new ScribbleRuntimeException("Session not completed: " + this.self);
+				}
+			}
+		}
 	}
 
 	public ScribServerSocket getSelfServerSocket()
@@ -139,7 +170,75 @@ public class SessionEndpoint
 	{
 		return this.chans.keySet();
 	}
+	
+
+	public void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	{
+		// Can connect unlimited, as long as not already used via init
+		if (this.init)
+		{
+			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
+		}
+		if (this.chans.containsKey(role))
+		{
+			throw new ScribbleRuntimeException("Already connected to: " + role);
+		}
+		try
+		{
+			BinaryChannelEndpoint c = cons.call();
+			c.initClient(this, host, port);
+			register(role, c);
+		}
+		catch (Exception e)
+		{
+			if (e instanceof IOException)
+			{
+				throw (IOException) e;
+			}
+			throw new IOException(e);
+		}
+	}
+
+	public void accept(ScribServerSocket ss, Role role) throws IOException, ScribbleRuntimeException
+	{
+		if (this.init)
+		{
+			throw new ScribbleRuntimeException("Socket already initialised: " + this.getClass());
+		}
+		if (this.chans.containsKey(role))
+		{
+			throw new ScribbleRuntimeException("Already connected to: " + role);
+		}
+		register(role, ss.accept(this));  // FIXME: serv map in SessionEndpoint not currently used
+	}
+	
+	/*public void init()
+	{
+		this.initialised = true;
+	}*/
+	
+	/*protected boolean isInitialised()
+	{
+		return this.initialised;
+	}*/
+	
+	//public void bind() throws ScribbleRuntimeException
+	public void init() throws ScribbleRuntimeException
+	{
+		/*if (this.bound)
+		{
+			throw new ScribbleRuntimeException("Session endpoint already bound.");
+		}*/
+		//if (!this.initialised)
+		if (this.init)
+		{
+			throw new ScribbleRuntimeException("Session endpoint already initialised.");
+		}
+		//this.bound = true;
+		this.init = true;
+	}
 	 
+
 	/*public final Session sess;
 	//public final Principal self;
 	public final Role self;

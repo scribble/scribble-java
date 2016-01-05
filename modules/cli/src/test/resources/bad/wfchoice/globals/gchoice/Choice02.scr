@@ -8,4 +8,3 @@ global protocol Choice2(role A, role B)
 		l1() from A to B;
 	}
 }
-

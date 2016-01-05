@@ -1,6 +1,6 @@
 package demo.smtp.message.client;
 
-import demo.smtp.SMTP;
+import demo.smtp.Smtp.Smtp.Smtp;
 import demo.smtp.message.SmtpMessage;
 
 public class Auth extends SmtpMessage
@@ -9,13 +9,13 @@ public class Auth extends SmtpMessage
 
 	public Auth()
 	{
-		super(SMTP.AUTH);
+		super(Smtp.Auth);
 	}
 
 	// Move base 64 encode into here? (Or override toBytes)
 	public Auth(String body)
 	{
-		super(SMTP.AUTH, body);
+		super(Smtp.Auth, body);
 	}
 	
 	@Override

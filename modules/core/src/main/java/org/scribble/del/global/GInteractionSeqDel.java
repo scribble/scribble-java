@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.Continue;
 import org.scribble.ast.InteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionNode;
@@ -73,18 +72,18 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			{
 				lis.addAll(((LInteractionSeq) ln).getInteractions());
 			}
-			else if (ln != null)
+			else if (ln != null) // null is used for empty projection
 			{
 				lis.add((LInteractionNode) ln);
 			}
 		}
-		if (lis.size() == 1)
+		/*if (lis.size() == 1)  // NO: needed for e.g. rec X { 1() from A to B; choice at A { continue X; } or { 2() from A to B; } } -- do instead in GRecursion
 		{
 			if (lis.get(0) instanceof Continue)
 			{
 				lis.clear();
 			}
-		}
+		}*/
 		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(lis);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);

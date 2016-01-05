@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
@@ -13,7 +12,7 @@ import org.scribble.net.ScribMessageFormatter;
 import demo.smtp.message.server._220;
 import demo.smtp.message.server._235;
 import demo.smtp.message.server._250;
-import demo.smtp.message.server._250_;
+import demo.smtp.message.server._250d;
 import demo.smtp.message.server._354;
 import demo.smtp.message.server._501;
 import demo.smtp.message.server._535;
@@ -43,7 +42,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 	public ScribMessage fromBytes(ByteBuffer bb) throws IOException, ClassNotFoundException
 	{
 		bb.flip();
-		byte[] bs = new byte[2];
+		//byte[] bs = new byte[2];
 		int rem = bb.remaining();
 		if (rem < 2)
 		{
@@ -80,7 +79,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 				{
 					if (front.charAt(3) == '-')
 					{
-						return new _250_(body);
+						return new _250d(body);
 					}
 					return new _250(body);
 				}
@@ -99,10 +98,10 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 			// TODO: server-side (MAIL FROM:, RCPT TO:, etc)
 			String line = front + readLine(bb, pos + 4);
 			bb.compact();
-			if (line == null)
+			/*if (line == null)  // deadcode
 			{
 				return null;
-			}
+			}*/
 			throw new RuntimeException("Cannot parse message: " + line);
 		}
 	}
@@ -292,7 +291,7 @@ public class SmtpMessageFormatter implements ScribMessageFormatter
 				{
 					if (front.charAt(3) == '-')
 					{
-						return new _250_(body);
+						return new _250d(body);
 					}
 					return new _250(body);
 				}

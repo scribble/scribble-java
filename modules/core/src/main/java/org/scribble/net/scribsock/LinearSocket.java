@@ -5,15 +5,16 @@ import java.util.concurrent.Callable;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.BinaryChannelWrapper;
+import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
 // Not AutoClosable -- leave that to InitSocket
-public abstract class LinearSocket extends ScribSocket
+public abstract class LinearSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
 {
 	private boolean used = false;
 	
-	protected LinearSocket(SessionEndpoint ep)
+	protected LinearSocket(SessionEndpoint<S, R> ep)
 	{
 		super(ep);
 	}
@@ -53,6 +54,14 @@ public abstract class LinearSocket extends ScribSocket
 			}
 			throw new IOException(e);
 		}
+	}
+
+	// FIXME: refactor
+	// FIXME: State supertype of T
+	public static <T> T wrapClient(T s, Role peer, Callable<? extends BinaryChannelWrapper> cons) throws IOException, ScribbleRuntimeException 
+	{
+		((LinearSocket<?, ?>) s).wrapClient(cons, peer);
+		return s;
 	}
 
 	protected void wrapServer() 

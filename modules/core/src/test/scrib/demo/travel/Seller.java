@@ -4,48 +4,52 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
+import demo.travel.Travel.Booking.Booking;
+import demo.travel.Travel.Booking.channels.S.Booking_S_1;
+import demo.travel.Travel.Booking.channels.S.Booking_S_1_Cases;
+import demo.travel.Travel.Booking.roles.S;
+
 public class Seller
 {
 	public static void main(String[] args) throws IOException, ScribbleRuntimeException, ExecutionException, InterruptedException
 	{
-		try (ScribServerSocket ss_C = new SocketChannelServer(9999))
-				 //ScribServerSocket ss_A = new SocketChannelServer(8889);)
+		try (ScribServerSocket ss_C = new SocketChannelServer(8888);
+				 ScribServerSocket ss_A = new SocketChannelServer(9999))
 		{
 			while (true)
 			{
 				Booking booking = new Booking();
-				SessionEndpoint S = booking.project(Booking.C, ss_C, new ObjectStreamFormatter());
-				//S.register(Booking.A, ss_A);
-				
-				Booking_S_0 init = new Booking_S_0(S);
-				init.accept(Booking.C);
-				init.accept(Booking.A);
-				Buff<String> payment = new Buff<>();
-				try (Booking_S_0 s0 = init)
+				try (SessionEndpoint<Booking, S> se = new SessionEndpoint<>(booking, Booking.S, new ObjectStreamFormatter()))
 				{
-					Booking_S_1 s1 = s0.init();
-					Booking_S_4 s4;
+					//S.register(Booking.A, ss_A);
+				
+					se.accept(ss_C, Booking.C);
+					se.accept(ss_A, Booking.A);
+					Buf<String> payment = new Buf<>();
+
+					Booking_S_1 s1 = new Booking_S_1(se);
+					Booking_S_1_Cases s1cases;
 					X: while (true)
 					{
-						s4 = s1.branch();
-						switch (s4.op)
+						s1cases = s1.branch(Booking.A);
+						switch (s1cases.op)
 						{
 							case _:
-								s1 = s4.receive(Booking._);
+								s1 = s1cases.receive(Booking._);
 								break;
 							case No:
-								s4.receive(Booking.No);
+								s1cases.receive(Booking.No);
 								break X;
 							case Yes:
 								System.out.println("Yes: ");
-								s4.receive(Booking.Yes)
-								  .receive(Booking.Payment, payment)
+								s1cases.receive(Booking.Yes)
+								  .receive(Booking.C, Booking.Payment, payment)
 								  .send(Booking.C, Booking.Ack);
 								break X;
 						}

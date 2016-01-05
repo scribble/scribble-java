@@ -1,6 +1,6 @@
 package demo.smtp.message.server;
 
-import demo.smtp.SMTP;
+import demo.smtp.Smtp.Smtp.Smtp;
 import demo.smtp.message.SmtpMessage;
 
 public class _535 extends SmtpMessage
@@ -9,12 +9,12 @@ public class _535 extends SmtpMessage
 
 	public _535()
 	{
-		super(SMTP._535);
+		super(Smtp._535);
 	}
 
 	public _535(String body)
 	{
-		super(SMTP._535, body);
+		super(Smtp._535, body);
 	}
 
 	/*@Override

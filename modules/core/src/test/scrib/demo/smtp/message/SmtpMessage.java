@@ -1,12 +1,10 @@
 package demo.smtp.message;
 
-import java.nio.charset.Charset;
-
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 import org.scribble.util.Caller;
 
-import demo.smtp.SMTP;
+import demo.smtp.Smtp.Smtp.Smtp;
 
 public abstract class SmtpMessage extends ScribMessage
 {
@@ -64,23 +62,23 @@ public abstract class SmtpMessage extends ScribMessage
 	protected static String getOpString(Op op)
 	{
 		return
-					(op.equals(SMTP._220)) ? SmtpMessage._220
-				: (op.equals(SMTP._250)) ? SmtpMessage._250
-				: (op.equals(SMTP._250_)) ? SmtpMessage._250_
-				: (op.equals(SMTP._235)) ? SmtpMessage._235
-				: (op.equals(SMTP._535)) ? SmtpMessage._535
-				: (op.equals(SMTP._501)) ? SmtpMessage._501
-				: (op.equals(SMTP._354)) ? SmtpMessage._354
-				: (op.equals(SMTP.EHLO)) ? SmtpMessage.EHLO
-				: (op.equals(SMTP.STARTTLS)) ? SmtpMessage.STARTTLS
-				: (op.equals(SMTP.AUTH)) ? SmtpMessage.AUTH
-				: (op.equals(SMTP.MAIL)) ? SmtpMessage.MAIL
-				: (op.equals(SMTP.RCPT)) ? SmtpMessage.RCPT
-				: (op.equals(SMTP.SUBJECT)) ? SmtpMessage.SUBJECT
-				: (op.equals(SMTP.DATA)) ? SmtpMessage.DATA
-				: (op.equals(SMTP.QUIT)) ? SmtpMessage.QUIT
-				: (op.equals(SMTP.DATALINE)) ? SmtpMessage.DATA_LINE
-				: (op.equals(SMTP.ATAD)) ? SmtpMessage.END_OF_DATA
+					(op.equals(Smtp._220)) ? SmtpMessage._220
+				: (op.equals(Smtp._250)) ? SmtpMessage._250
+				: (op.equals(Smtp._250d)) ? SmtpMessage._250_
+				: (op.equals(Smtp._235)) ? SmtpMessage._235
+				: (op.equals(Smtp._535)) ? SmtpMessage._535
+				: (op.equals(Smtp._501)) ? SmtpMessage._501
+				: (op.equals(Smtp._354)) ? SmtpMessage._354
+				: (op.equals(Smtp.Ehlo)) ? SmtpMessage.EHLO
+				: (op.equals(Smtp.StartTls)) ? SmtpMessage.STARTTLS
+				: (op.equals(Smtp.Auth)) ? SmtpMessage.AUTH
+				: (op.equals(Smtp.Mail)) ? SmtpMessage.MAIL
+				: (op.equals(Smtp.Rcpt)) ? SmtpMessage.RCPT
+				: (op.equals(Smtp.Subject)) ? SmtpMessage.SUBJECT
+				: (op.equals(Smtp.Data)) ? SmtpMessage.DATA
+				: (op.equals(Smtp.Quit)) ? SmtpMessage.QUIT
+				: (op.equals(Smtp.DataLine)) ? SmtpMessage.DATA_LINE
+				: (op.equals(Smtp.EndOfDate)) ? SmtpMessage.END_OF_DATA
 				: new Caller().call(() -> { throw new RuntimeException("TODO: " + op); });
 	}
 }

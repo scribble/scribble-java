@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageNode;
+import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.local.LInteractionNode;
@@ -17,6 +18,7 @@ import org.scribble.ast.local.LReceive;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.global.Communication;
 import org.scribble.model.global.ModelAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
@@ -29,6 +31,7 @@ import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.WFChoicePathChecker;
 import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
@@ -138,5 +141,22 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		env = env.setActions(actions, leaves);
 		builder.pushEnv(env);
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveModelBuilding(parent, child, builder, visited);
+	}
+	
+	@Override
+	public ScribNode leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
+	//public ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
+	{
+		GMessageTransfer gmt = (GMessageTransfer) visited;
+		Role src = gmt.src.toName();
+		Role dest = gmt.getDestinations().get(0).toName();
+		MessageId<?> mid = gmt.msg.toMessage().getId();
+		Payload payload = (gmt.msg.isMessageSigNode()) ? ((MessageSigNode) gmt.msg).payloads.toPayload() : Payload.EMPTY_PAYLOAD;
+
+		//System.out.println("AAA1: " + coll.peekEnv().getPaths());
+		coll.pushEnv(coll.popEnv().append(new Communication(src, dest, mid, payload)));
+		//System.out.println("AAA2: " + coll.peekEnv().getPaths());
+		
+		return visited;
 	}
 }

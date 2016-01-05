@@ -50,7 +50,7 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(Object o)  // FIXME: should NameNodes ever be used in an equality checking context? (cf. other AST nodes) -- this work should be done using sesstype.Name instead?
 	{
 		if (this == o)
 		{
@@ -61,7 +61,7 @@ public abstract class NameNode<K extends Kind> extends ScribNodeBase implements 
 			return false;
 		}
 		NameNode<?> nn = (NameNode<?>) o;
-		return nn.canEqual(this) && this.elems.equals(nn.elems);
+		return nn.canEqual(this) && Arrays.equals(this.elems, nn.elems);
 	}
 	
 	public abstract boolean canEqual(Object o);

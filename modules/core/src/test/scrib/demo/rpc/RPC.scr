@@ -1,5 +1,6 @@
 //$ java -cp bin';'lib/antlr-3.5.2-complete.jar';'parser scribble.main.Tool test/src/betty/sub/Sub.scr -dot betty.sub.Sub.Proto S1 | dot -Tpng > test.png
 
+//$ bin/scribblec.sh modules/core/src/test/scrib/demo/rpc/RPC.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -fsm RPCComp2 S1
 
 module demo.rpc.RPC;
 

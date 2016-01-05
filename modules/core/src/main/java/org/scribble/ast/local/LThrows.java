@@ -1,17 +1,38 @@
 package org.scribble.ast.local;
 
 import java.util.List;
+import java.util.Set;
 
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.Message;
 
 public class LThrows extends LInterrupt
 {
 	protected LThrows(RoleNode src, List<MessageNode> msgs)
 	{
 		super(src, msgs);
-		// TODO Auto-generated constructor stub
 	}
+
+	@Override
+	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+	
 	/*public LocalThrows(CommonTree ct, RoleNode src, List<MessageNode> msgs, List<RoleNode> dests)
 	{
 		this(ct, src, msgs, dests, null, null);

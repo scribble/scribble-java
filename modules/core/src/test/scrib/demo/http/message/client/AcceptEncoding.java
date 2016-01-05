@@ -1,6 +1,6 @@
 package demo.http.message.client;
 
-import demo.http.Http;
+import demo.http.Http.Http.Http;
 import demo.http.message.HeaderField;
 
 public class AcceptEncoding extends HeaderField

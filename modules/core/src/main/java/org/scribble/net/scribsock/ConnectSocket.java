@@ -1,16 +1,13 @@
 package org.scribble.net.scribsock;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
-import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
-public abstract class ConnectSocket extends ScribSocket
+@Deprecated  // For now
+public abstract class ConnectSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
 {
-	protected ConnectSocket(SessionEndpoint ep)
+	protected ConnectSocket(SessionEndpoint<S, R> ep)
 	{
 		super(ep);
 	}

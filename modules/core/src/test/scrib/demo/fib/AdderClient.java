@@ -8,57 +8,81 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
+
+import demo.fib.Fib.Adder.Adder;
+import demo.fib.Fib.Adder.channels.C.Adder_C_1;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_BYE;
+//import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_BYE;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Receive_C_S_RES_Integer;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Select_C_S_ADD_Integer_Integer__S_BYE;
+import demo.fib.Fib.Adder.channels.C.ioifaces.Succ_Out_S_BYE;
+import demo.fib.Fib.Adder.roles.C;
 
 
 public class AdderClient
 {
 	public static void main(String[] args) throws UnknownHostException, ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
-		Buff<Integer> i1 = new Buff<>(1);
-		Buff<Integer> i2 = new Buff<>(2);
-		
-		Adder adder = new Adder();
-		SessionEndpoint se = adder.project(Adder.C, new ObjectStreamFormatter());
-		
-		try (Adder_C_0 s0 = new Adder_C_0(se))
-		{
-			s0.connect(SocketChannelEndpoint::new, Adder.S, "localhost", 8888);
-			Adder_C_1 s1 = s0.init();
+		Buf<Integer> i1 = new Buf<>(1);
+		//Buf<Integer> i2 = new Buf<>(2);
 
-			s1.send(Adder.S, Adder.ADD, i1.val, i1.val)
-			  .receive(Adder.RES, i1)
+		Adder adder = new Adder();
+		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, Adder.C, new ObjectStreamFormatter()))
+		{	
+			se.connect(Adder.S, SocketChannelEndpoint::new, "localhost", 8888);
+
+			Adder_C_1 s1 = new Adder_C_1(se);
+
+			/*s1.send(Adder.S, Adder.ADD, i1.val, i1.val)
+				.receive(Adder.S, Adder.RES, i1)
 				.send(Adder.S, Adder.ADD, i1.val, i1.val)
-			  .receive(Adder.RES, i1)
-			  .send(Adder.S, Adder.BYE)
-			  .receive(Adder.BYE);
+				.receive(Adder.S, Adder.RES, i1)
+				.send(Adder.S, Adder.BYE)
+				.receive(Adder.S, Adder.BYE);*/
 			
 			/*while (i1.val < 100)
 			{
-				s1 = s1.send(Adder.S, Adder.ADD, i1.val, i1.val).receive(Adder.RES, i1);
+				s1 = s1.send(Adder.S, Adder.ADD, i1.val, i1.val).receive(Adder.S, Adder.RES, i1);
 			}
-			s1.send(Adder.S, Adder.BYE)
+			s1.send(Adder.S, Adder.BYE).receive(Adder.S, Adder.BYE)
 				.end();*/
 
 			//fib(i1, i2, s1).end();
 			
+			foo(s1, i1).to(Receive_C_S_BYE.cast).receive(Adder.S, Adder.BYE);
+			//foo(s1, i1);
+			
 			System.out.println("Client: " + i1.val);
 		}
 	}
+	
+	private static Succ_Out_S_BYE foo(Select_C_S_ADD_Integer_Integer__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	//private static EndSocket foo(Select_C_S_ADD_Integer_Integer__S_BYE<?, ?> s, Buf<Integer> i) throws ClassNotFoundException, ScribbleRuntimeException, IOException
+	{
+		return (i.val < 100)
+				? foo(
+						s.send(Adder.S, Adder.ADD, i.val, i.val)
+						 .to(Receive_C_S_RES_Integer.cast)
+						 .receive(Adder.S, Adder.RES, i)
+						 .to(Select_C_S_ADD_Integer_Integer__S_BYE.cast)
+					, i)
+				: s.send(Adder.S, Adder.BYE);
+	}
 
-	/*private static Adder_C_3 fib(Buff<Integer> i1, Buff<Integer> i2, Adder_C_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	/*private static EndSocket<Adder, C> fib(Buf<Integer> i1, Buf<Integer> i2, Adder_C_1 s1) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		return (i1.val < 100)
 				? fib(i1, i2,
-											side(i1, i2, s1.send(Adder.S, Adder.ADD, i1.val, i2.val)).receive(Adder.RES, i2)
-							)
-				: s1.send(Adder.S, Adder.BYE);
+							side(i1, i2, s1.send(Adder.S, Adder.ADD, i1.val, i2.val)).receive(Adder.S, Adder.RES, i2)
+					   )
+				: s1.send(Adder.S, Adder.BYE).receive(Adder.S, Adder.BYE);
 	}
 	
-	private static Adder_C_2 side(Buff<Integer> i1, Buff<Integer> i2, Adder_C_2 s2)
+	private static Adder_C_2 side(Buf<Integer> i1, Buf<Integer> i2, Adder_C_2 s2)
 	{
 		i1.val = i2.val;
 		System.out.print(i1.val + " ");

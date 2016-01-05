@@ -7,6 +7,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
 
 // Second pass for ProtocolDeclContext building
+// Maybe generalise to integrate enabled message collection?
+// NOTE: doesn't collect from choice subjects
 public class RoleCollector extends NameCollector<Role>
 {
 	public RoleCollector(Job job)

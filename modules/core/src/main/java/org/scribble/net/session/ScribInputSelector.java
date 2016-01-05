@@ -11,13 +11,13 @@ import org.scribble.sesstype.name.Role;
 
 public class ScribInputSelector extends Thread
 {
-	private SessionEndpoint se;
+	private SessionEndpoint<?, ?> se;  // FIXME
 	private final Selector sel;
 
 	private volatile boolean paused = false;
 	private volatile boolean closed = false;
 
-	public ScribInputSelector(SessionEndpoint se) throws IOException
+	public ScribInputSelector(SessionEndpoint<?, ?> se) throws IOException
 	{
 		this.se = se;
 		this.sel = Selector.open();
@@ -65,7 +65,7 @@ public class ScribInputSelector extends Thread
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();  // FIXME? java.nio.channels.CancelledKeyException 
 		}
 		finally
 		{

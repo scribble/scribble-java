@@ -1,12 +1,15 @@
 package org.scribble.ast.local;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Parallel;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.del.ScribDel;
+import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
@@ -62,5 +65,23 @@ public class LParallel extends Parallel<Local> implements LCompoundInteractionNo
 	private static List<LProtocolBlock> castBlocks(List<? extends ProtocolBlock<Local>> blocks)
 	{
 		return blocks.stream().map((b) -> (LProtocolBlock) b).collect(Collectors.toList());
+	}
+
+	@Override
+	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		throw new RuntimeException("TODO: " + this);
 	}
 }

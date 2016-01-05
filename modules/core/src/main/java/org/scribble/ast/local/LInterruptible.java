@@ -1,11 +1,14 @@
 package org.scribble.ast.local;
 
 import java.util.List;
+import java.util.Set;
 
 import org.scribble.ast.Interruptible;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.ScopeNode;
+import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ScopeKind;
 import org.scribble.sesstype.name.Name;
@@ -56,6 +59,24 @@ public class LInterruptible extends Interruptible<Local> implements LCompoundInt
 	public Local getKind()
 	{
 		return LCompoundInteractionNode.super.getKind();
+	}
+
+	@Override
+	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public boolean canMerge(LInteractionNode ln)
+	{
+		throw new RuntimeException("TODO: " + this);
+	}
+
+	@Override
+	public Set<Message> getEnabling()
+	{
+		throw new RuntimeException("TODO: " + this);
 	}
 
 	/*public LocalInterruptible(CommonTree ct, ScopeNode scope, LocalProtocolBlock block, LocalThrows thro, List<LocalCatches> cats)

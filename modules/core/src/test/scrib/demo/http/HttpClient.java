@@ -1,15 +1,20 @@
 package demo.http;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.scribble.main.ScribbleRuntimeException;
-import org.scribble.net.Buff;
+import org.scribble.net.Buf;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 import org.scribble.util.Caller;
 
-import demo.http.Http_C_4.Http_C_4Enum;
+import demo.http.Http.Http.Http;
+import demo.http.Http.Http.channels.C.Http_C_1;
+import demo.http.Http.Http.channels.C.Http_C_4_Cases;
+import demo.http.Http.Http.channels.C.Http_C_5;
+import demo.http.Http.Http.channels.C.Http_C_5_Cases;
+import demo.http.Http.Http.channels.C.ioifaces.Branch_C_S_200__S_404.Branch_C_S_200__S_404_Enum;
+import demo.http.Http.Http.roles.C;
 import demo.http.message.Body;
 import demo.http.message.HttpMessageFormatter;
 import demo.http.message.client.Host;
@@ -21,109 +26,105 @@ import demo.http.message.server.Server;
 
 public class HttpClient
 {
-	public HttpClient() throws ScribbleRuntimeException
+	public HttpClient() throws ScribbleRuntimeException, IOException
 	{
 		run();
 	}
 
-	public static void main(String[] args) throws ScribbleRuntimeException
+	public static void main(String[] args) throws Exception
 	{
 		new HttpClient();
 	}
 
-	public void run() throws ScribbleRuntimeException
+	public void run() throws ScribbleRuntimeException, IOException
 	{
-		Buff<HttpVersion> b_vers = new Buff<>();
-		Buff<ContentLength> b_clen = new Buff<>();
-		Buff<ContentType> b_ctype = new Buff<>();
-		Buff<Body> b_body = new Buff<>();
-		Buff<Server> b_serv = new Buff<>();
+		Buf<HttpVersion> b_vers = new Buf<>();
+		Buf<ContentLength> b_clen = new Buf<>();
+		Buf<ContentType> b_ctype = new Buf<>();
+		Buf<Body> b_body = new Buf<>();
+		Buf<Server> b_serv = new Buf<>();
 		
 		Http http = new Http();
-		SessionEndpoint se = http.project(Http.C, new HttpMessageFormatter());
-		
-		String host = "www.doc.ic.ac.uk";
-		int port = 80;
-		//String host = "localhost";
-		//int port = 8080;
-		
-		try (Http_C_0 init = new Http_C_0(se))
+		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, Http.C, new HttpMessageFormatter()))
 		{
-			init.connect(SocketChannelEndpoint::new, Http.S, host, port);
+			String host = "www.doc.ic.ac.uk"; int port = 80;
+			//String host = "localhost"; int port = 8080;
+		
+			se.connect(Http.S, SocketChannelEndpoint::new, host, port);
 			
-			Http_C_1 s1 = init.init();
+			Http_C_1 s1 = new Http_C_1(se);
 
-			Http_C_6 s6 =
+			Http_C_4_Cases s4 =
 					s1.send(Http.S, new RequestLine("/~rhu/", "1.1"))
 					  .send(Http.S, new Host(host))
 					  .send(Http.S, new Body(""))
-					  .receive(Http.HTTPV, b_vers)
-					  .branch();
+					  .receive(Http.S, Http.HTTPV, b_vers)
+					  .branch(Http.S);
 			Http_C_5 s5 = 
-					  (s6.op == Http_C_4Enum._200) ? s6.receive(Http._200)
-					: (s6.op == Http_C_4Enum._404) ? s6.receive(Http._404)
-					: new Caller().call(() -> { throw new RuntimeException("Unknown status code: " + s6.op); });
+					  (s4.op == Branch_C_S_200__S_404_Enum._200) ? s4.receive(Http._200)
+					: (s4.op == Branch_C_S_200__S_404_Enum._404) ? s4.receive(Http._404)
+					: new Caller().call(() -> { throw new RuntimeException("Unknown status code: " + s4.op); });
 
 			Y: while (true)
 			{
-				Http_C_7 s7 = s5.branch();
-				switch (s7.op)
+				Http_C_5_Cases cases = s5.branch(Http.S);
+				switch (cases.op)
 				{
 					case ACCEPTR:
 					{
-						s5 = s7.receive(Http.ACCEPTR);
+						s5 = cases.receive(Http.ACCEPTR);
 						break;
 					}
 					case BODY:
 					{
-						s7.receive(Http.BODY, b_body);
+						cases.receive(Http.BODY, b_body);
 						System.out.println(b_body.val.getBody());
 						break Y;
 					}
 					case CONTENTL:
 					{
-						s5 = s7.receive(Http.CONTENTL, b_clen);
+						s5 = cases.receive(Http.CONTENTL, b_clen);
 						break;
 					}
 					case CONTENTT:
 					{
-						s5 = s7.receive(Http.CONTENTT, b_ctype);
+						s5 = cases.receive(Http.CONTENTT, b_ctype);
 						break;
 					}
 					case DATE:
 					{
-						s5 = s7.receive(Http.DATE);
+						s5 = cases.receive(Http.DATE);
 						break;
 					}
 					case ETAG:
 					{
-						s5 = s7.receive(Http.ETAG);
+						s5 = cases.receive(Http.ETAG);
 						break;
 					}
 					case LASTM:
 					{
-						s5 = s7.receive(Http.LASTM);
+						s5 = cases.receive(Http.LASTM);
 						break;
 					}
 					case SERVER:
 					{
-						s5 = s7.receive(Http.SERVER, b_serv);
+						s5 = cases.receive(Http.SERVER, b_serv);
 						break;
 					}
 					case VARY:
 					{
-						s5 = s7.receive(Http.VARY);
+						s5 = cases.receive(Http.VARY);
 						break;
 					}
 					case VIA:
 					{
-						s5  = s7.receive(Http.VIA);
+						s5  = cases.receive(Http.VIA);
 						break;
 					}
 				}
 			}
 		}
-		catch (IOException | ClassNotFoundException | ScribbleRuntimeException | ExecutionException | InterruptedException e)
+		catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
 		{
 			e.printStackTrace();
 		}

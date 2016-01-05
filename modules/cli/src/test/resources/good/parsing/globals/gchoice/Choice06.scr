@@ -22,5 +22,6 @@ global protocol Choice6(role A, role B)
 	{
 		() from A to B;
 	}
+	2() from A to B;
 }
 
