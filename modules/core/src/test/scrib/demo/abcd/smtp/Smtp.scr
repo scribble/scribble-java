@@ -24,7 +24,7 @@ sig <java> "demo.abcd.smtp.message.client.Quit"
 
 global protocol Smtp(role C, role S)
 {
-	220 from S to C; /*
+	220 from S to C; //*
 	do Init(C, S);
 	do StartTls(C, S);
 	do Init(C, S);

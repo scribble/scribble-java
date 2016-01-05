@@ -6,24 +6,25 @@ package demo.abcd.smtp;
 import static demo.abcd.smtp.Smtp.Smtp.Smtp.C;
 import static demo.abcd.smtp.Smtp.Smtp.Smtp.S;
 import static demo.abcd.smtp.Smtp.Smtp.Smtp._220;
-import static demo.abcd.smtp.Smtp.Smtp.Smtp._250;
-import static demo.abcd.smtp.Smtp.Smtp.Smtp._250d;
 
 import org.scribble.net.Buf;
+import org.scribble.net.scribsock.LinearSocket;
+import org.scribble.net.session.SSLSocketChannelWrapper;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.abcd.smtp.Smtp.Smtp.Smtp;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
-import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Out_S_Ehlo;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_220;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Quit;
+import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_StartTls;
 import demo.abcd.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import demo.abcd.smtp.Smtp.Smtp.roles.C;
 import demo.abcd.smtp.message.SmtpMessageFormatter;
-import demo.abcd.smtp.message.client.Ehlo;
-import demo.abcd.smtp.message.server._250;
-import demo.abcd.smtp.message.server._250d;
+import demo.abcd.smtp.message.client.Quit;
+import demo.abcd.smtp.message.client.StartTls;
 
 public class Client
 {
@@ -48,14 +49,26 @@ public class Client
 			se.connect(S, SocketChannelEndpoint::new, host, port);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
-			doInit(s1.receive(S, _220, new Buf<>()));
+			doInit(
+				LinearSocket.wrapClient(
+					doInit(s1.receive(S, _220, new Buf<>()))
+						.to(Select_C_S_StartTls.cast)  // Run-time cast
+						.send(S, new StartTls())
+						.to(Receive_C_S_220.cast)
+						.receive(S, _220, new Buf<>())
+						.to(Select_C_S_Ehlo.cast)  // Safe cast
+				, S, SSLSocketChannelWrapper::new)
+			)
+			.to(Select_C_S_Quit.cast)  // Run-time cast
+			.send(S, new Quit());
 		}
 	}
 
-	/*
+	//*
 	private Succ_In_S_250 doInit(Out_S_Ehlo<?> s) throws Exception
 	{
-		...
+		// TODO: ...
+		return null;
 	}
 	/*/
 	private Succ_In_S_250 doInit(Select_C_S_Ehlo<?> s) throws Exception

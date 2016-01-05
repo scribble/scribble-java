@@ -45,7 +45,7 @@ public class MyB extends Thread
 	
 	private EndSocket run(Fibonacci_B_1 s) throws Exception
 	{
-		/*
+		//*
 		... s.branch(A);
 		switch (...)  // Value-switch
 		{
