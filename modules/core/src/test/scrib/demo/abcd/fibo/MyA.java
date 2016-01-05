@@ -54,18 +54,18 @@ public class MyA extends Thread
 	private
 	<
 	//*/
-		S1 extends
-				Out_B_fibonacci_Long<S2> & Out_B_stop<EndSocket>  // Action I/f's
+		T1 extends
+				Out_B_fibonacci_Long<T2> & Out_B_stop<EndSocket>  // Action I/f's
 			& Succ_In_B_fibonacci_Long,                         // Successor I/f's
-		S2 extends
-				In_B_fibonacci_Long<S1>
+		T2 extends
+				In_B_fibonacci_Long<T1>
 			& Succ_Out_B_fibonacci_Long                         //, E extends Succ_Out_B_stop
 	/*/
-		S1 extends Select_A_B_fibonacci_Long__B_stop<S2, EndSocket>,
-		S2 extends Receive_A_B_fibonacci_Long<S1>
+		T1 extends Select_A_B_fibonacci_Long__B_stop<T2, EndSocket>,
+		T2 extends Receive_A_B_fibonacci_Long<T1>
 	//*/
 	>
-	EndSocket run1(S1 s, int todo) throws Exception
+	EndSocket run1(T1 s, int todo) throws Exception
 	{
 		return (todo > 0)
 				? run1(

@@ -51,13 +51,13 @@ public class MyBHandler extends Thread implements Fibonacci_B_1_Handler
 }
 /*/
 	@Override
-	public void receive(Fibonacci_B_2 s, fibonacci op, Buf<Long> arg1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	public void receive(Fibonacci_B_2 s2, fibonacci op, Buf<Long> arg1) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
-		s.send(A, fibonacci, (this.x += arg1.val)).branch(A, this);
+		s2.send(A, fibonacci, (this.x += arg1.val)).branch(A, this);
 	}
 
 	@Override
-	public void receive(EndSocket schan, stop op) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	public void receive(EndSocket end, stop op) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		//System.out.println("B done: " + this.x);
 	}

@@ -68,16 +68,16 @@ public class Client3
 		}
 	}
 
-			//S2 doInit(Select_C_S_Ehlo__S_Quit<S1, EndSocket> s) throws Exception
-	private <S1 extends Branch_C_S_250__S_250d<S2, S1>, S2 extends Succ_In_S_250>
-			S2 doInit(Select_C_S_Ehlo<S1> s) throws Exception
+	private <T1 extends Branch_C_S_250__S_250d<T2, T1>, T2 extends Succ_In_S_250>
+			//T2 doInit(Select_C_S_Ehlo__S_Quit<T1, EndSocket> s) throws Exception
+			T2 doInit(Select_C_S_Ehlo<T1> s) throws Exception
 	{
-		Branch_C_S_250__S_250d<S2, S1> b = s.send(S, new Ehlo("test"));
+		Branch_C_S_250__S_250d<T2, T1> b = s.send(S, new Ehlo("test"));
 		Buf<_250> b1 = new Buf<>();
 		Buf<_250d> b2 = new Buf<>();
 		while (true)
 		{
-			Case_C_S_250__S_250d<S2, S1> c = b.branch(S);
+			Case_C_S_250__S_250d<T2, T1> c = b.branch(S);
 			switch (c.getOp())
 			{
 				case _250d:

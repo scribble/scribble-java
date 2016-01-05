@@ -60,16 +60,14 @@ public class Client2
 			doInit(
 				LinearSocket.wrapClient(
 					doInit(s1.async(S, _220, b1))
-						.to(Select_C_S_StartTls.cast)  // Run-time cast
-						.send(S, new StartTls())
-						.to(Receive_C_S_220.cast)
+						.to(Select_C_S_StartTls.cast).send(S, new StartTls())  // Run-time cast
+						.to(Receive_C_S_220.cast)  // Safe cast
 						//.receive(S, _220, new Buf<>())
 						.async(S, _220)
 						.to(Select_C_S_Ehlo.cast)  // Safe cast
 				, S, SSLSocketChannelWrapper::new)
 			)
-			.to(Select_C_S_Quit.cast)  // Run-time cast
-			.send(S, new Quit());
+			.to(Select_C_S_Quit.cast).send(S, new Quit());  // Run-time cast
 
 			//b1.val.sync();
 			//System.out.println("b1: " + b1.val.sync().msg);

@@ -54,7 +54,7 @@ public class Client
 					doInit(s1.receive(S, _220, new Buf<>()))
 						.to(Select_C_S_StartTls.cast)  // Run-time cast
 						.send(S, new StartTls())
-						.to(Receive_C_S_220.cast)
+						.to(Receive_C_S_220.cast)  // Safe cast
 						.receive(S, _220, new Buf<>())
 						.to(Select_C_S_Ehlo.cast)  // Safe cast
 				, S, SSLSocketChannelWrapper::new)
