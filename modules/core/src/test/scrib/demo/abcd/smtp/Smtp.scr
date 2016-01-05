@@ -60,7 +60,7 @@ global protocol Init(role C, role S)
 			250 from S to C;
 		}
 	}
-	// or Quit from C to S;  // FIXME:
+	// or { Quit from C to S; }  // FIXME: apigen
 }
 
 global protocol StartTls(role C, role S)

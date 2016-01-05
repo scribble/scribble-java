@@ -62,7 +62,8 @@ public class MyB extends Thread
 				return run(c.receive(fibonacci, this.b).send(A, fibonacci, this.b.val += prev));
 			case stop:
 				return c.receive(stop);
-			default: throw new RuntimeException();
+			default:
+				throw new RuntimeException("Will never get here");
 		}
 	}
 }
