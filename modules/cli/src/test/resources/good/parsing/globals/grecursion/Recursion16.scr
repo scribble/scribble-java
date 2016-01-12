@@ -1,0 +1,19 @@
+module parsing.globals.grecursion.Recursion16;
+
+
+global protocol Recursion16(role A, role B)
+{
+	choice at A
+	{
+		m1() from A to B;
+	}
+	or
+	{
+		rec X
+		{
+			m2() from A to B;
+			//continue X;  // Uncomment (currently) bad
+		}
+	}
+	m3() from A to B;
+}

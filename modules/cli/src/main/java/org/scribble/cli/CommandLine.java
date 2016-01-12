@@ -1,453 +1,251 @@
-/*
- * Copyright 2009-11 www.scribble.org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 package org.scribble.cli;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.scribble.context.DefaultModuleContext;
-import org.scribble.context.ModuleContext;
-import org.scribble.logging.ConsoleIssueLogger;
-import org.scribble.logging.IssueLogger;
-import org.scribble.model.Module;
-import org.scribble.parser.ProtocolModuleLoader;
-import org.scribble.parser.ProtocolParser;
-import org.scribble.projection.ProtocolProjector;
-import org.scribble.resources.DirectoryResourceLocator;
-import org.scribble.resources.Resource;
-import org.scribble.trace.model.Step;
-import org.scribble.trace.model.Trace;
-import org.scribble.trace.simulation.DefaultSimulatorContext;
-import org.scribble.trace.simulation.SimulationListener;
-import org.scribble.trace.simulation.Simulator;
-import org.scribble.trace.simulation.SimulatorContext;
-import org.scribble.validation.ProtocolValidator;
+import org.scribble.ast.Module;
+import org.scribble.ast.ProtocolDecl;
+import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.main.MainContext;
+import org.scribble.main.RuntimeScribbleException;
+import org.scribble.main.ScribbleException;
+import org.scribble.main.resource.DirectoryResourceLocator;
+import org.scribble.main.resource.ResourceLocator;
+import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.LProtocolName;
+import org.scribble.sesstype.name.Role;
+import org.scribble.util.ScribUtil;
+import org.scribble.visit.Job;
+import org.scribble.visit.JobContext;
 
-/**
- * This class provides the command line interface for the
- * scribble parser.
- *
- */
-public class CommandLine {
+// Maybe no point to be a Runnable
+public class CommandLine implements Runnable
+{
+	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, SCHAN_API, EP_API, OUTPUT, SCHAN_API_SUBTYPES }
 	
-	private static final String MODULE_PATH = "MODULE_PATH";
+	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 	
-	private static final ProtocolParser PARSER=new ProtocolParser();
-	private static final ProtocolValidator VALIDATOR=new ProtocolValidator();
-	private static final ProtocolProjector PROJECTOR=new ProtocolProjector();	
-	private static final IssueLogger LOGGER=new ConsoleIssueLogger();
+	public CommandLine(String... args)
+	{
+		this.args = new CommandLineArgParser(args).getArgs();
+		if (!this.args.containsKey(ArgFlag.MAIN))
+		{
+			throw new RuntimeException("No main module has been specified\r\n");
+		}
+	}
 
-	private static final ObjectMapper MAPPER=new ObjectMapper();
+	public static void main(String[] args)
+	{
+		new CommandLine(args).run();
+	}
 
-	private DirectoryResourceLocator _locator;
-	private ProtocolModuleLoader _loader;
-	
-	/**
-	 * This is the main method for the Scribble CLI.
-	 * 
-	 * @param args The arguments
-	 */
-	public static void main(String[] args) {
-		CommandLine cli=new CommandLine();
-		
-		if (!cli.execute(args)) {
-			System.exit(1);
+	@Override
+	public void run()
+	{
+		Job job = newJob(newMainContext());
+		try
+		{
+			job.checkWellFormedness();
+			if (this.args.containsKey(ArgFlag.PROJECT))
+			{
+				outputProjections(job);
+			}
+			if (this.args.containsKey(ArgFlag.FSM))
+			{
+				outputGraph(job);
+			}
+			if (this.args.containsKey(ArgFlag.SESS_API))
+			{
+				outputSessionApi(job);
+			}
+			if (this.args.containsKey(ArgFlag.SCHAN_API))
+			{
+				outputStateChannelApi(job);
+			}
+			if (this.args.containsKey(ArgFlag.EP_API))
+			{
+				outputEndpointApi(job);
+			}
+		}
+		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
+		{
+			throw new RuntimeScribbleException(e);
 		}
 	}
 	
-	/**
-	 * This method executes the supplied arguments.
-	 * 
-	 * @param args The arguments
-	 * @param Whether execution was successful
-	 */
-	public boolean execute(String[] args) {
-		boolean f_usageError=false;
-		boolean f_error=false;
-		
-		if (args.length > 0) {
-			// Find the path
-			for (int i=0; !f_usageError && i < args.length-1; i++) {
-				if (args[i].equals("-path")) {
-					
-					if (i >= args.length-2) {
-						System.err.println("ERROR: No path value has been defined\r\n");
-						f_usageError = true;
-					} else {
-						i++;
-						
-						f_usageError = !validatePaths(args[i]);
-						
-						if (!f_usageError) {
-							initLoader(args[i]);
-						} else {
-							System.err.println("ERROR: Module path '"+args[i]+"' is not valid\r\n");
-							f_usageError = true;
-						}
-					}
-					break;
-				}
-			}
-			
-			// Check whether a locator has been defined
-			if (!f_usageError && _locator == null) {
-				if (!System.getenv().containsKey(MODULE_PATH)) {
-					System.err.println("ERROR: MODULE_PATH has not been defined\r\n");
-					f_usageError = true;
-				} else if (!validatePaths(System.getenv().get(MODULE_PATH))) {
-					System.err.println("ERROR: Module path '"+System.getenv().get(MODULE_PATH)+"' is not valid\r\n");
-					f_usageError = true;
-				} else {
-					initLoader(System.getenv().get(MODULE_PATH));
-				}
-			}
-			
-			// Parse all non-path parameters
-			for (int i=0; !f_usageError && i < args.length-1; i++) {
-				if (args[i].equals("-path")) {					
-					i++;
-				} else if (args[i].equals("-project")) {
-					
-					if (i+1 >= args.length) {
-						System.err.println("ERROR: No global module has been defined\r\n");
-						f_usageError = true;
-					} else {
-						i++;
-						
-						if (!validateModuleName(args[i])) {
-							System.err.println("ERROR: Module name '"+args[i]+"' is not valid\r\n");
-							f_usageError = true;
-						} else {
-							
-							Resource resource=getResource(args[i]);
-							
-							if (resource != null) {
-								Module module=loadModule(resource);
-								
-								if (module != null) {
-									project(module, resource);
+	// FIXME: option to write to file, like classes
+	private void outputProjections(Job job)
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.PROJECT);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<LProtocolName, Module> projections = job.getProjections(fullname, role);
+			System.out.println("\n" + projections.values().stream().map((p) -> p.toString()).collect(Collectors.joining("\n\n")));
+		}
+	}
+
+	private void outputGraph(Job job) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.FSM);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			buildEndointGraph(job, fullname, role);
+			System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
+		}
+	}
+	
+	private void outputSessionApi(Job job) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.SESS_API);
+		for (String fullname : args)
+		{
+			GProtocolName gpn = checkGlobalProtocolArg(jcontext, fullname);
+			Map<String, String> classes = job.generateSessionApi(gpn);
+			outputClasses(classes);
+		}
+	}
+	
+	private void outputStateChannelApi(Job job) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.SCHAN_API);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<String, String> classes = job.generateStateChannelApi(fullname, role, this.args.containsKey(ArgFlag.SCHAN_API_SUBTYPES));
+			outputClasses(classes);
+		}
+	}
+
+	private void outputEndpointApi(Job job) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.EP_API);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Map<String, String> sessClasses = job.generateSessionApi(fullname);
+			outputClasses(sessClasses);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			Map<String, String> scClasses = job.generateStateChannelApi(fullname, role, this.args.containsKey(ArgFlag.SCHAN_API_SUBTYPES));
+			outputClasses(scClasses);
+		}
+	}
+
+	// filepath -> class source
+	private void outputClasses(Map<String, String> classes) throws ScribbleException
+	{
+		Consumer<String> f;
+		if (this.args.containsKey(ArgFlag.OUTPUT))
+		{
+			String dir = this.args.get(ArgFlag.OUTPUT)[0];
+			f = (path) -> { ScribUtil.handleLambdaScribbleException(() ->
+							{
+								String tmp = dir + "/" + path;
+								if (this.args.containsKey(ArgFlag.VERBOSE))
+								{
+									System.out.println("\n[DEBUG] Writing to: " + tmp);
 								}
-							} else {
-								System.err.println("ERROR: Module name '"+args[i]
-										+"' could not be located\r\n");
-							}
-						}
-					}
-					
-				} else if (args[i].equals("-validate")) {
-					
-					if (i+1 >= args.length) {
-						System.err.println("ERROR: No module has been defined\r\n");
-						f_usageError = true;
-					} else {
-						i++;
-						
-						if (!validateModuleName(args[i])) {
-							System.err.println("ERROR: Module name '"+args[i]+"' is not valid\r\n");
-							f_usageError = true;
-						} else {
-							
-							Resource resource=getResource(args[i]);
-							
-							if (resource != null) {
-								loadModule(resource);
-							} else {
-								System.err.println("ERROR: Module name '"+args[i]
-										+"' could not be located\r\n");
-							}
-						}
-					}
-					
-				} else if (args[i].equals("-simulate")) {
-					
-					if (i+1 >= args.length) {
-						System.err.println("ERROR: No trace file has been defined\r\n");
-						f_usageError = true;
-					} else {
-						i++;
-						
-						java.io.File location=new java.io.File(args[i]);
-						
-						if (!validateTraceLocation(location)) {
-							System.err.println("ERROR: No trace files could be found at location '"+args[i]+"'\r\n");
-							f_usageError = true;
-						} else {
-							if (!simulate(location)) {
-								System.err.println("\r\nERROR: Simulation failed\r\n");
-								f_error = true;
-							}
-						}	
-					}
-
-				} else {
-					System.err.println("ERROR: Unknown option '"+args[i]+"'\r\n");
-					f_usageError = true;
-				}
-			}
-
-		} else {
-			f_usageError = true;
+								writeToFile(tmp, classes.get(path)); return null; 
+							}); };
 		}
-		
-		if (f_usageError) {
-			System.err.println("Usage: scribble [-path <module-path>] [ -project <module> ] [ -simulate <trace file/dir> ]");
-			System.err.println("Options:");
-			System.err.println("\t-path\t\tList of root directories separated by ':'");
-			System.err.println("\t-project\tProject global protocols to local");
-			System.err.println("\t-simulate\tSimulate the supplied trace file or files within a directory");
+		else
+		{
+			f = (path) -> { System.out.println(path + ":\n" + classes.get(path)); };
 		}
-		
-		return (!f_usageError && !f_error);
-	}
-	
-	/**
-	 * This method initializes the loader.
-	 * 
-	 * @param paths The paths
-	 */
-	protected void initLoader(String paths) {
-		_locator = new DirectoryResourceLocator(paths);
-		_loader = new ProtocolModuleLoader(PARSER, _locator, LOGGER);
-	}
-	
-	/**
-	 * This method returns the resource associated with the supplied
-	 * module name.
-	 * 
-	 * @param moduleName The module name
-	 * @return The resource, or null if not found
-	 */
-	protected Resource getResource(String moduleName) {	
-		String relativePath=moduleName.replace('.', java.io.File.separatorChar)+".scr";
-		
-		return (_locator.getResource(relativePath));
-	}
-	
-	/**
-	 * This method determines whether the module associated with the
-	 * supplied resource is valid.
-	 * 
-	 * @param resource The resource
-	 * @return The module name, if valid, otherwise null
-	 */
-	protected Module loadModule(Resource resource) {	
-		Module module=null;
-		
-		try {
-			module = PARSER.parse(resource, _loader, LOGGER);
-			
-			if (module != null) {
-				
-				ModuleContext context=new DefaultModuleContext(resource, module, _loader);
-				
-				VALIDATOR.validate(context, module, LOGGER);
-			}
-			
-		} catch (IOException e) {
-			System.err.println("ERROR: Failed to parse '"+resource+"': "+e+"\r\n");
-		}
-		
-		return (module);
-	}
-	
-	/**
-	 * This method validates the module name.
-	 * 
-	 * @param module The module name
-	 * @return Whether the module name is valid
-	 */
-	protected static boolean validateModuleName(String module) {
-			
-		for (String part : module.split(".")) {
-			
-			for (int i=0; i < part.length();i++) {
-				if (!Character.isLetterOrDigit(part.charAt(i))) {
-					if (part.charAt(i) != '_') {
-						return (false);
-					}
-				}
-			}
-		}
-		
-		return (true);
-	}
-	
-	/**
-	 * This method validates the scribble path.
-	 * 
-	 * @param paths The scribble path
-	 * @return Whether the path is valid
-	 */
-	protected static boolean validatePaths(String paths) {
-		for (String path : paths.split(":")) {
-
-			java.io.File f=new java.io.File(path);
-			
-			if (!f.isDirectory()) {
-				return (false);
-			}
-		}
-		
-		return (true);
-	}
-	
-	/**
-	 * This method projects the supplied module.
-	 * 
-	 * @param module The module
-	 * @param resource The resource
-	 */
-	protected void project(Module module, Resource resource) {
-		String resourceRoot=_locator.getResourceRoot(resource);
-		
-		if (resourceRoot == null) {
-			System.err.println("Unable to find root location for resource");
-			return;
-		}
-		
-		ModuleContext context=new DefaultModuleContext(resource, module, _loader);
-		
-		java.util.Set<Module> modules=PROJECTOR.project(context, module, LOGGER);
-		
-		for (Module m : modules) {
-			String name=m.getName().replace('.', java.io.File.separatorChar);
-			
-			String path=resourceRoot+java.io.File.separatorChar
-						+name+".scr";
-			
-			try {
-				java.io.FileOutputStream fos=new java.io.FileOutputStream(path);
-				
-				fos.write(m.toString().getBytes());
-				
-				fos.flush();
-				fos.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		classes.keySet().stream().forEach(f);
 	}
 
-	/**
-	 * This method validates the trace location. The location
-	 * can either be a single trace file, or a folder containing
-	 * one or more trace files.
-	 * 
-	 * @param location The location
-	 * @return Whether the location is valid
-	 */
-	protected static boolean validateTraceLocation(java.io.File location) {
-		boolean ret=false;
-		
-		if (location.exists()) {
-			if (location.isFile()) {
-				ret = location.getName().endsWith(".trace");
-				
-			} else if (location.isDirectory()) {
-				for (java.io.File child : location.listFiles()) {
-					if (validateTraceLocation(child)) {
-						ret = true;
-						break;
-					}
-				}
-			}
+  // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
+	private void buildEndointGraph(Job job, GProtocolName fullname, Role role) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
+		if (gpd == null || !gpd.header.roledecls.getRoles().contains(role))
+		{
+			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
 		}
-		
-		return (ret);
+		job.buildGraph(fullname, role);
 	}
 	
-	/**
-	 * This method recursively scans the supplied location to determine
-	 * if a trace file is present, and if found, simulates it.
-	 * 
-	 * @param location The location
-	 * @return Whether simulation was successful
-	 */
-	protected boolean simulate(java.io.File location) {
-		boolean ret=true;
-		
-		if (location.exists()) {
-			if (location.isFile()) {
-				
-				if (location.getName().endsWith(".trace")) {
-					System.out.println("\r\nSimulate: "+location.getPath());
+	private Job newJob(MainContext mc)
+	{
+		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
+		return new Job(mc.debug, mc.getParsedModules(), mc.main);
+	}
 
-					try {
-						java.io.InputStream is=new java.io.FileInputStream(location);
+	private MainContext newMainContext()
+	{
+		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);
+		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN)[0]);
+		List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
+				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
+				: Collections.emptyList();
+		ResourceLocator locator = new DirectoryResourceLocator(impaths);
+		return new MainContext(debug, locator, mainpath);
+	}
 	
-						Trace trace=MAPPER.readValue(is, Trace.class);
+	private static Path parseMainPath(String path)
+	{
+		return Paths.get(path);
+	}
 	
-						is.close();
+	private static List<Path> parseImportPaths(String paths)
+	{
+		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
+	}
 	
-						SimulatorContext context=new DefaultSimulatorContext(_locator);
-	
-						Simulator simulator=new Simulator();
-						
-						final java.util.List<Step> failed=new java.util.ArrayList<Step>();
-						
-						SimulationListener l=new SimulationListener() {
-
-							public void start(Trace trace) {
-							}
-
-							public void start(Trace trace, Step step) {
-							}
-
-							public void successful(Trace trace, Step step) {
-								System.out.println("\tSUCCESSFUL: "+step);
-							}
-
-							public void failed(Trace trace, Step step) {
-								System.out.println("\tFAILED: "+step);
-								failed.add(step);
-							}
-
-							public void stop(Trace trace) {
-							}
-							
-						};
-						
-						simulator.addSimulationListener(l);
-
-						simulator.simulate(context, trace);
-						
-						simulator.removeSimulationListener(l);
-						
-						if (failed.size() > 0) {
-							ret = false;
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						ret = false;
-						
-					}
-				}
-				
-			} else if (location.isDirectory()) {
-				for (java.io.File child : location.listFiles()) {
-					ret = simulate(child);
-					
-					if (!ret) {
-						break;
-					}
-				}
-			}
+	private static void writeToFile(String path, String text) throws ScribbleException
+	{
+		File file = new File(path);
+		file.getParentFile().mkdirs();
+		//try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8")))  // Doesn't create missing directories
+		try (FileWriter writer = new FileWriter(file))
+		{
+			writer.write(text);
 		}
-		
-		return (ret);
+		catch (IOException e)
+		{
+			throw new ScribbleException(e);
+		}
+	}
+	
+	private static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname)
+	{
+		GProtocolName simpgpn = new GProtocolName(simpname);
+		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(simpgpn);
+		if (pd == null || !pd.isGlobal())
+		{
+			throw new RuntimeException("Global protocol not found: " + simpname);
+		}
+		return new GProtocolName(jcontext.main, simpgpn);
+	}
+	
+	private static Role checkRoleArg(JobContext jcontext, GProtocolName fullname, String rolename)
+	{
+		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
+		Role role = new Role(rolename);
+		if (!pd.header.roledecls.getRoles().contains(role))
+		{
+			throw new RuntimeException("Role not declared for " + fullname + ": " + role);
+		}
+		return role;
 	}
 }

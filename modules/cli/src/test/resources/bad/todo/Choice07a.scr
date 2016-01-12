@@ -1,0 +1,25 @@
+module bad.wfchoice.globals.gchoice.Choice07a;
+
+
+global protocol Choice7a(role A, role B)
+{
+	choice at A
+	{
+		/*// TODO
+		par
+		{
+			l1() from A to B;
+		}
+		and
+		{
+			l2() from B to A;  // Uncomment is bad
+			l2() from A to B;
+		}*/
+	}
+	or
+	{
+		//l2() from A to B;  // Uncomment is bad
+		l3() from A to B;
+	}
+}
+

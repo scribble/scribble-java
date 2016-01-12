@@ -1,0 +1,33 @@
+module good.parsing.globals.gdo.Do16;
+
+
+global protocol Do16(role A, role B)
+{
+	/*// TODO
+	par
+	{
+		l1() from A to B;
+		do Do16a(A, B);
+		//do Do16(A, B);  // Uncomment is bad, inlcuding if above line is commented
+	}
+	and
+	{
+		l2() from A to B;
+	}*/
+}
+
+global protocol Do16a(role A, role B)
+{
+	choice at A
+	{
+		l3() from A to B;
+		do Do16a(A, B);
+		//do Do16(A, B);  // Uncomment is bad, including if above line is commented
+	}
+	or
+	{
+		l4() from A to B;
+		//l2() from A to B;  // Uncomment is bad
+	}
+}
+

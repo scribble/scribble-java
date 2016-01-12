@@ -1,1 +1,0 @@
-{"nodes":[{"type":"Send","next":1,"operator":"buy","parameters":[{"type":"{http://scribble.org/example}OrderRequest"}],"toRole":"Seller"},{"type":"Receive","fromRole":"Seller","operator":"buy","parameters":[{"type":"{http://scribble.org/example}OrderResponse"}]}]}

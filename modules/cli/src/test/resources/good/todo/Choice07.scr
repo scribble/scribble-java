@@ -1,0 +1,25 @@
+module good.parsing.globals.gchoice.Choice07;
+
+
+global protocol Choice7(role A, role B)
+{
+	/*// TODO
+	choice at A
+	{
+		par
+		{
+			l1() from A to B;
+		}
+		and
+		{
+			//l2() from B to A;  // Uncomment is bad
+			l2() from A to B;
+		}
+	}
+	or
+	{
+		//l2() from A to B;  // Uncomment is bad
+		l3() from A to B;
+	}*/
+}
+
