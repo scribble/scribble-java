@@ -3,20 +3,13 @@
 
 package demo.fib;
 
-import static demo.fib.Fib.Adder.Adder.ADD;
-import static demo.fib.Fib.Adder.Adder.S;
-
-import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.fib.Fib.Adder.Adder;
 import demo.fib.Fib.Adder.channels.C.Adder_C_1;
-import demo.fib.Fib.Adder.channels.C.Adder_C_2;
 import demo.fib.Fib.Adder.roles.C;
-
-import static demo.fib.Fib.Adder.Adder.*;
 
 public class MyC
 {
