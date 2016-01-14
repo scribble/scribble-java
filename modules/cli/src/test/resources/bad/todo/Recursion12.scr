@@ -1,0 +1,21 @@
+module base.recursion.Recursion12;
+
+
+global protocol Recursion12(role A, role B)
+{
+	/*// TODO
+	par
+	{
+		rec X
+		{
+			l1() from A to B;
+			continue X;
+		}
+	}
+	and
+	{
+		l2() from B to A;
+	}*/
+	l3() from B to A;  // Uncommented bad
+}
+

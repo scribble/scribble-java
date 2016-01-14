@@ -1,8 +1,0 @@
-trace ChoiceBuyer1 by Gary Brown shows This is a test;
-
-role Buyer simulating scribble.examples.Choice protocol First as Buyer;
-role Seller;
-
-op1("{http://scribble.org/example}M1"="value1") from Buyer to Seller;
-op2("{http://scribble.org/example}M2"="value2","{http://scribble.org/example}M3"="value3") from Seller to Buyer;
-op4("{http://scribble.org/example}M4"="value4") from Buyer to Seller;

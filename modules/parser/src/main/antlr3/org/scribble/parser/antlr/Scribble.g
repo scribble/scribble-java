@@ -1,20 +1,21 @@
 /*
- * Raymond@HZHL2 ~/code/python/scribble-tools
- * $ java -cp lib/antlr-3.1.3.jar org.antlr.Tool -o bin src/scribble/Scribble.g
-*/
-
-// Use language actions to directly create lists etc.? but ties the grammar source to that language?
-
-// Garbage at the end of input file seems to just get ignored, no error raised. but also for e.g. two package declarations -- check if this is still the case?
+ * > scribble-java
+ * $ java -cp modules/parser/lib/antlr-3.5.2-complete.jar org.antlr.Tool -o modules/parser/target/generated-sources/antlr3 modules/parser/src/main/antlr3/org/scribble/parser/antlr/Scribble.g
+ */
 
 
 grammar Scribble;
 
+
 options
 {
-	output=AST;
-	backtrack=true;
+	language = Java;
+	output = AST;
+	ASTLabelType = CommonTree;
+	backtrack = true;  // backtracking disabled by default? Is it bad to require this option?
+	//memoize = true;
 }
+
 
 tokens
 {
@@ -28,6 +29,7 @@ tokens
 	GLOBALKW = 'global';
 	LOCALKW = 'local';
 	ROLEKW = 'role';
+	SELFKW = 'self';
 	SIGKW = 'sig';
 	INSTANTIATESKW = 'instantiates';
 	ASKW = 'as';
@@ -52,14 +54,37 @@ tokens
 	DOKW = 'do';
 	//SPAWNKW = 'spawn';
 
+	EMPTY_ALIAS = '__empty_alias';
+	EMPTY_SCOPENAME = '__empty_scopename';
+	NO_SCOPE = '__no_scope';
+	//EMPTY_PACKAGENAME = '__empty_packagebame';
+	EMPTY_OPERATOR = '__empty_operator';
 
+	//EMPTY_PARAMETERDECLLIST = '__empty_parameterdecllist';
+	//EMPTY_ARGUMENTINSTANTIATIONLIST = '__empty_argumentinstantiationlist';
+	EMPTY_LOCALTHROW = '__empty_localthrow';
+	//EMPTY_LOCAL_CATCHES = '__empty_local_catch';
+
+	KIND_MESSAGESIGNATURE = 'KIND_MESSAGESIGNATURE';
+	KIND_PAYLOADTYPE = 'KIND_PAYLOADTYPE';
+	
+	
 	/*
-	 * Parser output node types (corresponding to the various syntactic
+	 * Parser output "node types" (corresponding to the various syntactic
 	 * categories) i.e. the labels used to distinguish resulting AST nodes.
 	 * The value of these token variables doesn't matter, only the token
 	 * (i.e. variable) names themselves are used (for AST node root text
 	 * field)
-     */
+	 */
+	//NAME = 'name';
+	AMBIGUOUSNAME = 'ambiguous-name';
+	QUALIFIEDNAME = 'qualified-name';
+	//PACKAGENAME = 'package-name';
+	//FULLMODULENAME = 'full-module-name';
+	//SIMPLEMEMBERNAME = 'simple-member-name';
+	//QUALIFIEDMEMBERNAME = 'qualified-member-name';
+	
+	
 	//MODULE = 'module';
 	MODULE = 'modul';
 	//PACKAGEDECL = 'package-decl';
@@ -69,22 +94,22 @@ tokens
 	IMPORTMODULE = 'import-module';
 	IMPORTMEMBER = 'import-member';
 	PAYLOADTYPEDECL = 'payload-type-decl';
+	MESSAGESIGNATUREDECL = 'message-signature-decl';
 	PARAMETERDECLLIST = 'parameter-decl-list';
 	PARAMETERDECL = 'parameter-decl';
 	MESSAGESIGNATURE = 'message-signature';
 	ROLEDECLLIST = 'role-decl-list';
 	ROLEDECL = 'role-decl';
-	ARGUMENTLIST = 'argument-list';
-	ARGUMENT = 'argument';
+	ARGUMENTINSTANTIATIONLIST = 'argument-instantiation-list';
+	//ARGUMENTINSTANTIATION = 'argument-instantiation';
 	PAYLOAD = 'payload';
-	PAYLOADELEMENT = 'payloadelement';
+	//PAYLOADELEMENT = 'payloadelement';
 	ROLEINSTANTIATIONLIST = 'role-instantiation-list';
-	ROLEINSTANTIATION = 'role-instantiation';
+	ROLEINSTANTIATION = 'role-instantiation';  // FIXME: not consistent with arginstas/payloadeles
 
 	GLOBALPROTOCOLDECL = 'global-protocol-decl';
+	GLOBALPROTOCOLHEADER = 'global-protocol-header';
 	GLOBALPROTOCOLDEF = 'global-protocol-def';
-	GLOBALPROTOCOLINSTANCE = 'global-protocol-instance';
-	//GLOBALPROTOCOLBODY = 'global-protocol-body';
 	GLOBALPROTOCOLBLOCK = 'global-protocol-block';
 	GLOBALINTERACTIONSEQUENCE = 'global-interaction-sequence';
 	GLOBALMESSAGETRANSFER = 'global-message-transfer';
@@ -95,9 +120,11 @@ tokens
 	GLOBALINTERRUPTIBLE = 'global-interruptible';
 	GLOBALINTERRUPT = 'global-interrupt';
 	GLOBALDO = 'global-do';
-	//GLOBALSPAWN = 'global-spawn';
 
-	LOCALPROTOCOLDECL = 'local-protocol-decl';
+	/*LOCALPROTOCOLDECL = 'local-protocol-decl';
+	LOCALROLEDECLLIST = 'local-role-decl-list';
+	LOCALROLEDECL = 'local-role-decl';
+	SELFDECL = 'self-decl';
 	LOCALPROTOCOLDEF = 'local-protocol-def';
 	LOCALPROTOCOLINSTANCE = 'local-protocol-instance';
 	LOCALPROTOCOLBLOCK = 'local-protocol-block';
@@ -110,63 +137,43 @@ tokens
 	LOCALINTERRUPTIBLE = 'local-interruptible';
 	LOCALINTERRUPT = 'local-interrupt';
 	LOCALDO = 'local-do';
-	LOCALTHROW = 'local-throw';
-	LOCALCATCH = 'local-catch';
+	LOCALTHROWS = 'local-throws';
+	LOCALCATCHES = 'local-catches';
 	LOCALSEND = 'local-send';
-	LOCALRECEIVE = 'local-receive';
-
-
-	/*
-	 * Some utility constants; AST token values are the variable names (not
-	 * the variable values).
-	 * (N.B. Some grammar rules use dummy placeholder values, but others do not)
-	 */
-	EMPTY_MESSAGE_OP = '__empty_message_op';
-	EMPTY_ANNOTATION = '__empty_annotation';
-	EMPTY_PARAMETER_DECL_LIST = '__empty_parameter_decl_list';
-	EMPTY_ARGUMENT_LIST = '__empty_argument_list';
-	EMPTY_MODULE_NAME = '__empty_module_name';
-	EMPTY_SCOPE_NAME = '__empty_scope_name';
-	EMPTY_LOCAL_THROW = '__empty_local_throw';
-	EMPTY_LOCAL_CATCHES = '__empty_local_catch';
-
-	KIND_MESSAGE_SIGNATURE = 'KIND_MESSAGE_SIGNATURE';
-	KIND_PAYLOAD_TYPE = 'KIND_PAYLOAD_TYPE';
+	LOCALRECEIVE = 'local-receive';*/
 }
 
 
-/*------------------------------------------------------------------
- * JAVA SPECIFIC DEFINITIONS
- *------------------------------------------------------------------*/
- 
-@header {
-package org.scribble.parser.antlr;
+@header
+{
+	package org.scribble.parser.antlr;
 }
-   
-@lexer::header {
-package org.scribble.parser.antlr;
+
+@lexer::header
+{
+	package org.scribble.parser.antlr;
 }
-   
+
 @members {
-	private org.scribble.logging.IssueLogger _logger=null;
+	//private org.scribble.logging.IssueLogger _logger=null;
 	private String _document=null;
 	private boolean _errorOccurred=false;
 	
-    public void setLogger(org.scribble.logging.IssueLogger logger) {
+    /*public void setLogger(org.scribble.logging.IssueLogger logger) {
     	_logger = logger;
-    }
+    }*/
     
     public void setDocument(String doc) {
     	_document = doc;
     }
     
     public void emitErrorMessage(String mesg) {
-    	if (_logger == null) {
+    	/*if (_logger == null) {
     		super.emitErrorMessage(mesg);
     	} else {
     		_logger.error(org.scribble.parser.antlr.ANTLRMessageUtil.getMessageText(mesg),
     					org.scribble.parser.antlr.ANTLRMessageUtil.getProperties(mesg, _document));
-    	}
+    	}*/
     	_errorOccurred = true;
     }
     
@@ -176,10 +183,8 @@ package org.scribble.parser.antlr;
 }
 
 
-
-
 /****************************************************************************
- * Chapter 2 Lexical Strucure (Lexer rules)
+ * Chapter 2 Lexical Structure (Lexer rules)
  ***************************************************************************/
 
 /*
@@ -213,7 +218,13 @@ LINE_COMMENT:
  * Section 2.3 Identifiers
  */
 IDENTIFIER:
-	(LETTER | UNDERSCORE) (LETTER | DIGIT | UNDERSCORE)*
+	(LETTER | DIGIT | UNDERSCORE)*  
+			/* Underscore currently can cause ambiguities in the API generation naming scheme
+			 * But maybe only consecutive underscores are the problem
+			 * -- cannot completely disallow underscores as needed for projection naming scheme
+			 * Or disallow underscores only for role/op/messagesig names
+			 */
+//	(LETTER | DIGIT)*
 ;
 
 fragment SYMBOL:
@@ -222,11 +233,12 @@ fragment SYMBOL:
 	'&' | '?' | '!'	| UNDERSCORE
 ;
 
-// Comes after SYMBOL due to an ANTLR syntax highlighting issue
-// involving quotes
+// Comes after SYMBOL due to an ANTLR syntax highlighting issue involving
+// quotes.
+// Parser doesn't work without quotes here (e.g. if inlined into parser rules)
 EXTIDENTIFIER:
-	'"' ( ~('\\'|'"') )* '"'
-	//'\"' (LETTER | UNDERSCORE) (LETTER | DIGIT | SYMBOL)* '\"'
+  '\"' (LETTER | DIGIT | SYMBOL)* '\"'
+	//(LETTER | DIGIT | SYMBOL)*
 ;
 
 fragment LETTER:
@@ -249,56 +261,58 @@ fragment UNDERSCORE:
 /*
  * Section 3.1 Primitive Names
  */
-rolename: IDENTIFIER;
-payloadtypename: IDENTIFIER;
-protocolname: IDENTIFIER;
-parametername: IDENTIFIER;
-annotationname: IDENTIFIER;
-recursionlabelname: IDENTIFIER;
-scopename: IDENTIFIER;
+
+simplename:
+	IDENTIFIER
+/*->
+	^(SIMPLENAME IDENTIFIER)*/
+;
+
+//annotationname:   simplename;
+parametername:    simplename;
+recursionvarname: simplename;
+rolename:         simplename;
+scopename:        simplename;
+
+ambiguousname:
+	simplename
+->
+	^(AMBIGUOUSNAME simplename)
+;
 
 
 /**
  * Section 3.2.1 Package, Module and Module Member Names
  */
-/*packagename:
+
+simplemodulename:           simplename;
+simplepayloadtypename:      simplename;
+simplemessagesignaturename: simplename;
+simpleprotocolname:         simplename;
+simplemembername:           simplename;  // Only for member declarations
+
+qualifiedname:
 	IDENTIFIER ('.' IDENTIFIER)*
-;*/
-
-
-modulename:
-	//packagename '.' IDENTIFIER  // Not working
-	IDENTIFIER ('.' IDENTIFIER)* '.' IDENTIFIER
-|
-	IDENTIFIER
+	->
+	^(QUALIFIEDNAME IDENTIFIER+)
 ;
 
-membername:
-	simplemembername
-|
-	fullmembername
-;
+packagename:          qualifiedname;
+modulename:           qualifiedname;
+membername:           qualifiedname;
 
-simplemembername:
-	payloadtypename
-|
-	protocolname  /* Generates an ANTLR warning since both are IDENTIFIER
-	                 if no backtrack (makes ANTLR think this alternative
-	                 is reachable, but actually it isn't) */
-;
-
-fullmembername:
-	modulename '.' simplemembername  /* Needs backtrack=true
-	                                    since the simplemembername can/will
-										be eagerly consumed by modulename */
-;
+protocolname:         membername;
+payloadtypename:      membername;
+messagesignaturename: membername;
 
 
 /**
  * Section 3.2.2 Top-level Module Structure
  */
 module:
-	moduledecl (importdecl)* (payloadtypedecl)* (protocoldecl)*
+	moduledecl importdecl* datatypedecl* protocoldecl*
+->
+	^(MODULE moduledecl importdecl* datatypedecl* protocoldecl*)
 ;
 
 
@@ -307,6 +321,8 @@ module:
  */
 moduledecl:
 	MODULEKW modulename ';'
+->
+	^(MODULEDECL modulename)
 ;
 
 
@@ -321,52 +337,86 @@ importdecl:
 
 importmodule:
 	IMPORTKW modulename ';'
+	->
+	^(IMPORTMODULE modulename EMPTY_ALIAS)
 |
-	IMPORTKW modulename ASKW IDENTIFIER ';'
+	IMPORTKW modulename ASKW simplemodulename ';'
+->
+	^(IMPORTMODULE modulename simplemodulename)
 ;
 
 importmember:
 	FROMKW modulename IMPORTKW simplemembername ';'
+	->
+	^(IMPORTMEMBER modulename simplemembername EMPTY_ALIAS)
 |
-	FROMKW modulename IMPORTKW simplemembername ASKW IDENTIFIER ';'
+	FROMKW modulename IMPORTKW simplemembername ASKW simplemembername ';'
+	->
+	^(IMPORTMEMBER modulename simplemembername simplemembername)
 ;
 
 
 /**
- * Section 3.4 Payload Type Declarations
+ * //Section 3.4 Payload Type Declarations
+ * Data Declarations
  */
+datatypedecl:
+	payloadtypedecl
+|
+	messagesignaturedecl
+;
+
 payloadtypedecl:
-	TYPEKW '<' IDENTIFIER '>' EXTIDENTIFIER FROMKW EXTIDENTIFIER ASKW payloadtypename ';'
+	TYPEKW '<' IDENTIFIER '>' EXTIDENTIFIER FROMKW EXTIDENTIFIER ASKW simplepayloadtypename ';'
+	->
+	^(PAYLOADTYPEDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplepayloadtypename)
+;
+
+messagesignaturedecl:
+	SIGKW '<' IDENTIFIER '>' EXTIDENTIFIER FROMKW EXTIDENTIFIER ASKW simplemessagesignaturename ';'
+	->
+	^(MESSAGESIGNATUREDECL IDENTIFIER EXTIDENTIFIER EXTIDENTIFIER simplemessagesignaturename)
 ;
 
 
 /**
  * Section 3.5 Message Signatures
  */
-messageoperator:
-	(LETTER | DIGIT | UNDERSCORE)+
-;
+/*messageoperator:
+	IDENTIFIER
+;*/
 
 messagesignature:
 	'(' payload ')'
+	->
+	^(MESSAGESIGNATURE EMPTY_OPERATOR payload)
 |
 	//messageoperator '(' payload ')'  // Doesn't work (conflict with IDENTIFIER?)
-	IDENTIFIER '(' payload? ')'
+	IDENTIFIER '(' payload ')'
+	->
+	^(MESSAGESIGNATURE IDENTIFIER payload)
+|
+	'(' ')'
+	->
+	^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD))
+|
+	IDENTIFIER '(' ')'
+	->
+	^(MESSAGESIGNATURE IDENTIFIER ^(PAYLOAD))
 ;
 
 payload:
 	payloadelement (',' payloadelement)*
+->
+	^(PAYLOAD payloadelement+)
 ;
 
+// Payload type names need disambiguation pass (also do args)
 payloadelement:
-	payloadtypename
-|
-	parametername  /* An IDENTIFIER, like payloadtypename, so generates warnings
-	                  (unless backtrack=true) */
-|
-	annotationname ':' payloadtypename
-|
-	annotationname ':' parametername
+/*	ambiguousname  // Parser doesn't distinguish simple from qualified properly, even with backtrack
+|*/
+	qualifiedname  // This case subsumes simple names  // FIXME: ambiguousqualifiedname (or ambiguousname should just be qualified)
+//|
 ;
 
 
@@ -375,8 +425,8 @@ payloadelement:
  */
 protocoldecl:
 	globalprotocoldecl
-|
-	localprotocoldecl
+/*|
+	localprotocoldecl*/
 ;
 
 
@@ -385,38 +435,46 @@ protocoldecl:
  */
 globalprotocoldecl:
 	 globalprotocolheader globalprotocoldefinition
-|
-	globalprotocolheader globalprotocolinstance
+	->
+	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition)
 ;
 
-globalprotocolheader:  // Currently, header is not an explicit category
-	GLOBALKW PROTOCOLKW protocolname roledecllist
+globalprotocolheader:
+	GLOBALKW PROTOCOLKW simpleprotocolname roledecllist
+	->
+	^(GLOBALPROTOCOLHEADER simpleprotocolname ^(PARAMETERDECLLIST) roledecllist)
 |
-	GLOBALKW PROTOCOLKW protocolname parameterdecllist roledecllist
+	GLOBALKW PROTOCOLKW simpleprotocolname parameterdecllist roledecllist
+	->
+	^(GLOBALPROTOCOLHEADER simpleprotocolname parameterdecllist roledecllist)
 ;
 
 roledecllist:
 	'(' roledecl (',' roledecl)* ')'
+	->
+	^(ROLEDECLLIST roledecl+)
 ;
 
 roledecl:
 	ROLEKW rolename
-|
-	ROLEKW rolename ASKW rolename
+	->
+	^(ROLEDECL rolename)
 ;
 
 parameterdecllist:
 	'<' parameterdecl (',' parameterdecl)* '>'
+	->
+	^(PARAMETERDECLLIST parameterdecl+)
 ;
 
 parameterdecl:
 	 TYPEKW parametername
-|
-	 TYPEKW parametername ASKW parametername
+	->
+	^(PARAMETERDECL KIND_PAYLOADTYPE parametername)
 |
 	 SIGKW parametername
-|
-	 SIGKW parametername ASKW parametername
+	->
+	^(PARAMETERDECL KIND_MESSAGESIGNATURE parametername)
 ;
 
 
@@ -425,44 +483,8 @@ parameterdecl:
  */
 globalprotocoldefinition:
 	globalprotocolblock
-;
-
-
-/**
- * Section 3.7.2 Global Protocol Instantiation
- */
-globalprotocolinstance:
-	INSTANTIATESKW membername roleinstantiationlist ';'
-|
-	INSTANTIATESKW membername argumentlist roleinstantiationlist ';'
-;
-
-roleinstantiationlist:
-	'(' roleinstantiation (',' roleinstantiation)* ')'
-;
-
-roleinstantiation:
-	rolename
-|
-	rolename ASKW rolename
-;
-
-argumentlist:
-	'<' argument (',' argument)* '>'
-;
-
-argument:
-	messagesignature
-|
-	messagesignature ASKW parametername
-|
-	payloadtypename
-|
-	payloadtypename ASKW parametername
-|
-	parametername  // generates warnings unless backtrack=true
-|
-	parametername ASKW parametername
+->
+	^(GLOBALPROTOCOLDEF globalprotocolblock)
 ;
 
 
@@ -471,10 +493,14 @@ argument:
  */
 globalprotocolblock:
 	'{' globalinteractionsequence '}'
+	->
+	^(GLOBALPROTOCOLBLOCK globalinteractionsequence)
 ;
 
 globalinteractionsequence:
-	(globalinteraction)*
+	globalinteraction*
+	->
+	^(GLOBALINTERACTIONSEQUENCE globalinteraction*)
 ;
 
 globalinteraction:
@@ -491,8 +517,6 @@ globalinteraction:
 	globalinterruptible
 |
 	globaldo
-/*|
-	globalspawn*/
 ;
 
 
@@ -501,12 +525,18 @@ globalinteraction:
  */
 globalmessagetransfer:
 	message FROMKW rolename TOKW rolename (',' rolename )* ';'
+	->
+	^(GLOBALMESSAGETRANSFER message rolename rolename+)
 ;
 
 message:
 	messagesignature
 |
-	parametername
+	ambiguousname  // FIXME: qualified name
+/*|
+	messagesignaturename  // qualified messagesignaturename subsumes parametername case
+|
+	parametername*/
 ;
 
 
@@ -515,6 +545,8 @@ message:
  */
 globalchoice:
 	CHOICEKW ATKW rolename globalprotocolblock (ORKW globalprotocolblock)*
+	->
+	^(GLOBALCHOICE rolename globalprotocolblock+)
 ;
 
 
@@ -522,11 +554,15 @@ globalchoice:
  * Section 3.7.6 Global Recursion
  */
 globalrecursion:
-	RECKW recursionlabelname globalprotocolblock
+	RECKW recursionvarname globalprotocolblock
+	->
+	^(GLOBALRECURSION recursionvarname globalprotocolblock)
 ;
 
 globalcontinue:
-	CONTINUEKW recursionlabelname ';'
+	CONTINUEKW recursionvarname ';'
+	->
+	^(GLOBALCONTINUE recursionvarname)
 ;
 
 
@@ -535,6 +571,8 @@ globalcontinue:
  */
 globalparallel:
 	PARKW globalprotocolblock (ANDKW globalprotocolblock)*
+	->
+	^(GLOBALPARALLEL globalprotocolblock+)
 ;
 
 
@@ -542,13 +580,19 @@ globalparallel:
  * Section 3.7.8 Global Interruptible
  */
 globalinterruptible:
-	INTERRUPTIBLEKW globalprotocolblock WITHKW '{' (globalinterrupt)* '}'
+	INTERRUPTIBLEKW globalprotocolblock WITHKW '{' globalinterrupt* '}'
+	->
+	^(GLOBALINTERRUPTIBLE EMPTY_SCOPENAME globalprotocolblock globalinterrupt*)
 |
-	INTERRUPTIBLEKW scopename ':' globalprotocolblock WITHKW '{' (globalinterrupt)* '}'
+	INTERRUPTIBLEKW scopename globalprotocolblock WITHKW '{' (globalinterrupt)* '}'
+	->
+	^(GLOBALINTERRUPTIBLE scopename globalprotocolblock globalinterrupt*)
 ;
 
 globalinterrupt:
 	message (',' message)* BYKW rolename ';'
+	->
+	^(GLOBALINTERRUPT rolename message+)
 ;
 
 
@@ -556,69 +600,103 @@ globalinterrupt:
  * Section 3.7.9 Global Do
  */
 globaldo:
-	DOKW membername roleinstantiationlist ';'
+	DOKW protocolname roleinstantiationlist ';'
+	->
+	^(GLOBALDO protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
-	DOKW membername argumentlist roleinstantiationlist ';'
-|
-	DOKW scopename ':' membername roleinstantiationlist ';'
-|
-	DOKW scopename ':' membername argumentlist roleinstantiationlist ';'
+	DOKW protocolname argumentinstantiationlist roleinstantiationlist ';'
+	->
+	^(GLOBALDO protocolname argumentinstantiationlist roleinstantiationlist)
 ;
 
+roleinstantiationlist:
+	'(' roleinstantiation (',' roleinstantiation)* ')'
+	->
+	^(ROLEINSTANTIATIONLIST roleinstantiation+)
+;
 
-/**
- * TODO: Global Spawn
- */
-/*globalspawn:
-	SPAWNKW membername '(' roleinstantiationlist ')' ';'
+roleinstantiation:
+	rolename
+	->
+	^(ROLEINSTANTIATION rolename)  // FIXME: not consistent with arginstas/payloadeles
+;
+
+argumentinstantiationlist:
+	'<' argumentinstantiation (',' argumentinstantiation)* '>'
+	->
+	^(ARGUMENTINSTANTIATIONLIST argumentinstantiation+)
+;
+
+// Like PayloadElement, simple names need disambiguation
+argumentinstantiation:
+	//message
+  // Grammatically same as message, but argument case can also be a payload type
+	messagesignature
+/*|
+	ambiguousname  // As for payloadelement: parser doesn't distinguish simple from qualified properly, even with backtrack*/
 |
-	SPAWNKW membername '<' argumentlist '>' '(' roleinstantiationlist ')' ';'
-;*/
+	qualifiedname
+;
 
 
 /*
  * Section 3.8 Local Protocol Declarations
- */
+ * /
 localprotocoldecl:
 	localprotocolheader localprotocoldefinition
-|
-	localprotocolheader localprotocolinstance
+	->
+	^(LOCALPROTOCOLDECL localprotocolheader localprotocoldefinition)
 ;
 
 localprotocolheader:
-	LOCALKW PROTOCOLKW protocolname ATKW rolename roledecllist
+	LOCALKW PROTOCOLKW simpleprotocolname localroledecllist
+	->
+	//simpleprotocolname EMPTY_PARAMETERDECLLIST localroledecllist
+	simpleprotocolname ^(PARAMETERDECLLIST) localroledecllist
 |
-	LOCALKW PROTOCOLKW protocolname ATKW rolename parameterdecllist roledecllist
+	LOCALKW PROTOCOLKW simpleprotocolname parameterdecllist localroledecllist
+	->
+	simpleprotocolname parameterdecllist localroledecllist
+;
+
+localroledecllist:
+	'(' localroledecl (',' localroledecl)* ')'
+	->
+	^(LOCALROLEDECLLIST localroledecl+)
+;
+
+localroledecl:
+	roledecl
+|
+	SELFKW rolename
+	->
+	^(SELFDECL rolename)
 ;
 
 
 /**
  * Section 3.8.1 Local Protocol Definitions
- */
+ * /
 localprotocoldefinition:
 	localprotocolblock
-;
-
-
-/**
- * Section 3.8.2 Local Protocol Instantiation
- */
-localprotocolinstance:
-	INSTANTIATESKW membername roleinstantiationlist ';'
-|
-	INSTANTIATESKW membername argumentlist roleinstantiationlist ';'
+	->
+	^(LOCALPROTOCOLDEF localprotocolblock)
 ;
 
 
 /**
  * Section 3.8.3 Local Interaction Blocks and Sequences
- */
+ * /
 localprotocolblock:
 	'{' localinteractionsequence '}'
+	->
+	^(LOCALPROTOCOLBLOCK localinteractionsequence)
 ;
 
 localinteractionsequence:
 	(localinteraction)*
+	->
+	^(LOCALINTERACTIONSEQUENCE localinteraction*)
 ;
 
 localinteraction:
@@ -637,87 +715,113 @@ localinteraction:
 	localinterruptible
 |
 	localdo
-/*|
-	localspawn*/
 ;
 
 
 /**
  * Section 3.8.4 Local Send and Receive
- */
+ * /
 localsend:
 	message TOKW rolename (',' rolename)* ';'
+	->
+	^(LOCALSEND message rolename+)
 ;
 
 localreceive:
 	message FROMKW IDENTIFIER ';'
+	->
+	^(LOCALRECEIVE message IDENTIFIER)
 ;
 
 
 /**
  * Section 3.8.5 Local Choice
- */
+ * /
 localchoice:
 	CHOICEKW ATKW rolename localprotocolblock (ORKW localprotocolblock)*
+	->
+	^(LOCALCHOICE rolename localprotocolblock+)
 ;
 
 
 /**
  * Section 3.8.6 Local Recursion
- */
+ * /
 localrecursion:
-	RECKW recursionlabelname localprotocolblock
+	RECKW recursionvarname localprotocolblock
+	->
+	^(LOCALRECURSION recursionvarname localprotocolblock)
 ;
 
 localcontinue:
-	CONTINUEKW recursionlabelname ';'
+	CONTINUEKW recursionvarname ';'
+	->
+	^(LOCALCONTINUE recursionvarname)
 ;
 
 
 /**
  * Section 3.8.7 Local Parallel
- */
+ * /
 localparallel:
 	PARKW localprotocolblock (ANDKW localprotocolblock)*
+	->
+	^(LOCALPARALLEL localprotocolblock+)
 ;
 
 
 /**
  * Section 3.8.8 Local Interruptible
- */
+ * /
 localinterruptible:
-	/*INTERRUPTIBLEKW scopename ':' localprotocolblock WITHKW '{' localthrowandorcatch '}'
-|*/
-	INTERRUPTIBLEKW scopename ':' localprotocolblock WITHKW '{' (localcatch)* '}'
+	INTERRUPTIBLEKW scopename localprotocolblock WITHKW '{' localcatches* '}'
+	->
+	^(LOCALINTERRUPTIBLE scopename localprotocolblock EMPTY_LOCALTHROW localcatches*)
 |
-	INTERRUPTIBLEKW scopename ':' localprotocolblock WITHKW '{' localthrow (localcatch)* '}'
+	INTERRUPTIBLEKW scopename localprotocolblock WITHKW '{' localthrows localcatches* '}'
+	->
+	^(LOCALINTERRUPTIBLE scopename localprotocolblock localthrows localcatches*)
 ;
 
 /*localthrowandorcatch:
 	localthrow (localcatch)*
 |
 	(localcatch)+
-;*/
+;* /
 
-localthrow:
+localthrows:
 	THROWSKW message (',' message)* TOKW rolename (',' rolename)* ';'
+	->
+	^(LOCALTHROWS rolename+ TOKW message+)
 ;
 
-localcatch:
+localcatches:
 	CATCHESKW message (',' message)* FROMKW rolename ';'
+	->
+	^(LOCALCATCHES rolename message+)
 ;
 
 
 /**
  * Section 3.8.9 Local Do
- */
+ * /
 localdo:
-	DOKW membername roleinstantiationlist ';'
+	DOKW protocolname roleinstantiationlist ';'
+	->
+	//^(LOCALDO NO_SCOPE protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
+	^(LOCALDO NO_SCOPE protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
-	DOKW membername argumentlist roleinstantiationlist ';'
+	DOKW protocolname argumentinstantiationlist roleinstantiationlist ';'
+	->
+	^(LOCALDO NO_SCOPE protocolname argumentinstantiationlist roleinstantiationlist)
 |
-	DOKW scopename ':' membername roleinstantiationlist ';'
+	DOKW scopename ':' protocolname roleinstantiationlist ';'
+	->
+	//^(LOCALDO scopename protocolname EMPTY_ARGUMENTINSTANTIATIONLIST roleinstantiationlist)
+	^(LOCALDO scopename protocolname ^(ARGUMENTINSTANTIATIONLIST) roleinstantiationlist)
 |
-	DOKW scopename ':' membername argumentlist roleinstantiationlist ';'
+	DOKW scopename ':' protocolname argumentinstantiationlist roleinstantiationlist ';'
+	->
+	^(LOCALDO scopename protocolname argumentinstantiationlist roleinstantiationlist)
 ;
-
+*/
