@@ -38,7 +38,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 {
 	private final boolean SUBTYPES;
 	
-	protected final StateChannelApiGenerator apigen;
+	protected StateChannelApiGenerator apigen;
 
 	private final Map<IOAction, InterfaceBuilder> actions = new HashMap<>();
 	private final Map<IOAction, InterfaceBuilder> succs = new HashMap<>();
