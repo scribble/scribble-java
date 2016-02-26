@@ -1,6 +1,6 @@
 package ast.global;
 
-public abstract class GlobalType
+public interface GlobalType
 {
-
+	
 }
