@@ -6,4 +6,14 @@
     <version>0.3.2-SNAPSHOT</version>
   </parent>
   <artifactId>linmp-scala</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.scribble</groupId>
+  		<artifactId>scribble-core</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.scribble</groupId>
+  		<artifactId>scribble-parser</artifactId>
+  	</dependency>
+  </dependencies>
 </project>

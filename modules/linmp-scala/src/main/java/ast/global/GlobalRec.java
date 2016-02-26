@@ -12,4 +12,10 @@ public class GlobalRec implements GlobalType
 		this.recvar = recvar;
 		this.body = body;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "mu " + this.recvar + "." + this.body;
+	}
 }

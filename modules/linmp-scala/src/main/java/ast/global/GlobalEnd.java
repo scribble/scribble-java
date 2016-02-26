@@ -7,4 +7,10 @@ public class GlobalEnd implements GlobalType
 	{
 
 	}
+	
+	@Override 
+	public String toString()
+	{
+		return "end";
+	}
 }

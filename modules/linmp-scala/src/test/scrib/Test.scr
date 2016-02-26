@@ -1,0 +1,6 @@
+module Test;
+
+global protocol Proto(role A, role B)
+{
+	1() from A to B;
+}
