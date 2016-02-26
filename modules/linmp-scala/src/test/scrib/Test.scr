@@ -1,6 +1,16 @@
 module Test;
 
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
 global protocol Proto(role A, role B)
 {
-	1() from A to B;
+	choice at A
+	{
+		1(Int) from A to B;
+		3(Int) from B to A;
+	}
+	or
+	{
+		2(Int) from A to B;
+	}
 }

@@ -18,27 +18,34 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ModuleName;
 import org.scribble.visit.Job;
 
-import ast.global.GlobalTypeParser;
+import ast.global.GlobalTypeTranslator;
 
 public class Main
 {
 	public static void main(String[] args) throws ScribbleException
 	{
+		String mod = args[0];
+		String proto = "Proto";
+		Module main = parseMainScribModule(mod);
+		
+		ProtocolDecl<Global> pd = main.getProtocolDecl(new GProtocolName(proto));
+		GProtocolDef inlined = ((GProtocolDefDel) pd.def.del()).getInlinedProtocolDef();
+		
+		System.out.println("AA: " + new GlobalTypeTranslator().translate(inlined));
+	}
+
+	private static Module parseMainScribModule(String mod) throws ScribbleException
+	{
 		AntlrParser antlrParser = new AntlrParser();
 		ScribParser scribParser = new ScribParser();
 		//ResourceLocator locator = new DirectoryResourceLocator(Collections.emptyList()); 
 		//this.loader = new ScribModuleLoader(this.locator, this.antlrParser, this.scribParser);
-		Resource res = DirectoryResourceLocator.getResourceByFullPath(Paths.get(args[0]));
+		Resource res = DirectoryResourceLocator.getResourceByFullPath(Paths.get(mod));
 		Module main = (Module) scribParser.parse(antlrParser.parseAntlrTree(res));
 		Map<ModuleName, Module> parsed = new HashMap<>();
 		parsed.put(main.getFullModuleName(), main);
 		Job job = new Job(false, parsed, main.getFullModuleName());
 		job.checkWellFormedness();
-		
-		ProtocolDecl<Global> pd = job.getContext().getMainModule().getProtocolDecl(new GProtocolName("Proto"));
-		GProtocolDef inlined = ((GProtocolDefDel) pd.def.del()).getInlinedProtocolDef();
-		
-		GlobalTypeParser p = new GlobalTypeParser();
-		System.out.println("AA: " + p.parse(inlined));
+		return job.getContext().getMainModule();
 	}
 }

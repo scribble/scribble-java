@@ -18,16 +18,15 @@ import ast.name.MessageLab;
 import ast.name.RecVar;
 import ast.name.Role;
 
-public class GlobalTypeParser
+public class GlobalTypeTranslator
 {
 	private final AstFactory factory = new AstFactory();
 	
-	public GlobalType parse(GProtocolDef gpd)
+	public GlobalType translate(GProtocolDef gpd)
 	{
 		return parseSeq(gpd.getBlock().getInteractionSeq().getInteractions());
 	}
 	
-	//private GlobalType parseBlock(GProtocolBlock block)
 	private GlobalType parseSeq(List<GInteractionNode> is)
 	{
 		//List<GInteractionNode> is = block.getInteractionSeq().getInteractions();
