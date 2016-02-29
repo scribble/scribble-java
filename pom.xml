@@ -61,6 +61,8 @@
 		<module>modules/parser</module>
 		<module>modules/cli</module>
 		<module>dist</module>
+		
+		<module>modules/linmp-scala</module>
 	</modules>
   
 	<dependencyManagement>

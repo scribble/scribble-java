@@ -118,7 +118,9 @@ public class AntlrConstants
 		LOCALINTERRUPTIBLE,
 		LOCALTHROWS,
 		LOCALCATCHES,
-		LOCALDO
+		LOCALDO,
+		
+		PAYLOADHACK
 	}
 
 	// Duplicated from Scribble2.g -- what's the best way to share it?

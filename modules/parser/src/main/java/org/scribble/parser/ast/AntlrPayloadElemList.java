@@ -55,6 +55,11 @@ public class AntlrPayloadElemList
 				return AstFactoryImpl.FACTORY.PayloadElem(an);
 			}
 		}
+		else if (type == AntlrNodeType.PAYLOADHACK)  // FIXME HACK
+		{
+			AmbigNameNode an = AntlrAmbigName.toAmbigNameNode(ct);
+			return AstFactoryImpl.FACTORY.PayloadElem(an);
+		}
 		else
 		{
 			throw new RuntimeException("Shouldn't get in here: " + ct);
