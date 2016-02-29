@@ -6,6 +6,7 @@ import java.util.Map;
 import ast.AstFactory;
 import ast.PayloadType;
 import ast.name.MessageLab;
+import ast.name.RecVar;
 import ast.name.Role;
 
 public class LocalTypeParser
@@ -14,12 +15,12 @@ public class LocalTypeParser
 	
 	public LocalType parse(String lt)
 	{
-		System.out.println("AAA: " + lt + ", " + lt.equals("end"));
-		
 		lt = lt.trim();
 		if (lt.startsWith("mu "))
 		{
-			return this.factory.RecVar(lt.substring(3, lt.length()));
+			RecVar rv = this.factory.RecVar(lt.substring(3, lt.indexOf(".")).trim());
+			LocalType body = parse(lt.substring(lt.indexOf(".") + 1, lt.length()));
+			return this.factory.LocalRec(rv, body);
 		}
 		else if (lt.startsWith("#"))
 		{
@@ -31,8 +32,6 @@ public class LocalTypeParser
 		}
 		else if (lt.contains("!") || lt.contains("?"))
 		{
-			System.out.println("BBB: " + lt + ", " + lt.indexOf("{") + ", " + lt.lastIndexOf("}"));
-			
 			Map<MessageLab, LocalCase> cases = parseLocalCases(lt.substring(lt.indexOf("{") + 1, lt.lastIndexOf("}")));
 			int o = lt.indexOf("!");
 			int i = lt.indexOf("?");
