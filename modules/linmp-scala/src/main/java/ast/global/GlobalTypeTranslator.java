@@ -14,6 +14,8 @@ import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GRecursion;
 
 import ast.AstFactory;
+import ast.PayloadType;
+import ast.local.LocalTypeParser;
 import ast.name.MessageLab;
 import ast.name.RecVar;
 import ast.name.Role;
@@ -21,6 +23,7 @@ import ast.name.Role;
 public class GlobalTypeTranslator
 {
 	private final AstFactory factory = new AstFactory();
+	private final LocalTypeParser ltp = new LocalTypeParser();
 	
 	public GlobalType translate(GProtocolDef gpd)
 	{
@@ -52,18 +55,31 @@ public class GlobalTypeTranslator
 				}
 				MessageSigNode msn = ((MessageSigNode) gmt.msg);
 				MessageLab lab = this.factory.MessageLab(msn.op.toString());
-				String data = null;
+				PayloadType pay = null;
 				if (msn.payloads.getElements().size() > 1)
 				{
 					throw new RuntimeException("TODO: " + gmt);
 				}
 				else if (!msn.payloads.getElements().isEmpty())
 				{
-					data = msn.payloads.getElements().get(0).toString();
+					String tmp = msn.payloads.getElements().get(0).toString().trim();
+					if (tmp.length() > 1 && tmp.startsWith("\"") && tmp.endsWith("\""))
+					{
+						tmp = tmp.substring(1, tmp.length() - 1);
+						pay = this.ltp.parse(tmp);
+						if (pay == null)
+						{
+							throw new RuntimeException("Shouldn't get in here: " + tmp);
+						}
+					}
+					else
+					{
+						pay = this.factory.BaseType(tmp);
+					}
 				}
 				GlobalType cont = parseSeq(is.subList(1, is.size()));
 				Map<MessageLab, GlobalSendCase> cases = new HashMap<>();
-				cases.put(lab, this.factory.GlobalSendCase(data, cont));
+				cases.put(lab, this.factory.GlobalSendCase(pay, cont));
 				return this.factory.GlobalSend(src, dest, cases);
 			}
 			else if (first instanceof GChoice)

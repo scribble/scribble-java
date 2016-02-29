@@ -73,6 +73,9 @@ public class ScribParserUtil
 			case AntlrConstants.LOCALTHROWS_NODE_TYPE: return AntlrNodeType.LOCALTHROWS;
 			case AntlrConstants.LOCALCATCHES_NODE_TYPE: return AntlrNodeType.LOCALCATCHES;
 			case AntlrConstants.LOCALDO_NODE_TYPE: return AntlrNodeType.LOCALDO;
+			
+			case "PAYLOADHACK": return AntlrNodeType.PAYLOADHACK;
+
 			default:
 			{
 				// Nodes without a "node type", e.g. parameter names, fall in here

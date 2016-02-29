@@ -141,6 +141,8 @@ tokens
 	LOCALCATCHES = 'local-catches';
 	LOCALSEND = 'local-send';
 	LOCALRECEIVE = 'local-receive';*/
+	
+	PAYLOADHACK = 'payload-hack';  // FIXME
 }
 
 
@@ -230,7 +232,7 @@ IDENTIFIER:
 fragment SYMBOL:
 	'{' | '}' | '(' | ')' | '[' | ']' | ':' | '/' | '\\' | '.' | '\#'
 |
-	'&' | '?' | '!'	| UNDERSCORE
+	'&' | '?' | '!'	| UNDERSCORE | ',' | ' '
 ;
 
 // Comes after SYMBOL due to an ANTLR syntax highlighting issue involving
@@ -416,7 +418,10 @@ payloadelement:
 /*	ambiguousname  // Parser doesn't distinguish simple from qualified properly, even with backtrack
 |*/
 	qualifiedname  // This case subsumes simple names  // FIXME: ambiguousqualifiedname (or ambiguousname should just be qualified)
-//|
+|
+	EXTIDENTIFIER
+	->
+	^(PAYLOADHACK EXTIDENTIFIER)
 ;
 
 

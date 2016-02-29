@@ -1,14 +1,14 @@
-package ast.global;
+package ast.local;
 
 import ast.PayloadType;
 
 
-public class GlobalSendCase
+public class LocalCase
 {
 	public final PayloadType pay;
-	public final GlobalType body;
+	public final LocalType body;
 	
-	public GlobalSendCase(PayloadType pay, GlobalType body)
+	public LocalCase(PayloadType pay, LocalType body)
 	{
 		this.pay = pay;
 		this.body = body;
