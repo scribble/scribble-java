@@ -33,11 +33,6 @@ public class Job
 		this.jcontext = new JobContext(parsed, main);
 	}
 
-	public void checkLinearMPScalaWellFormedness() throws ScribbleException
-	{
-		checkWellFormedness();  // TODO: do the required checks
-	}
-
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();

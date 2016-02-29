@@ -36,11 +36,6 @@ public class AmbigNameNodeDel extends ScribDelBase
 		{
 			return AstFactoryImpl.FACTORY.NonRoleParamNode(disamb.getParameterKind(name), name.toString());
 		}
-		//throw new ScribbleException("Cannot disambiguate name: " + name);
-		else // FIXME HACK
-		{
-			//return AstFactoryImpl.FACTORY.QualifiedNameNode(Local.KIND, name.getElements());
-			return AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND , name.getElements());
-		}
+		throw new ScribbleException("Cannot disambiguate name: " + name);
 	}
 }
