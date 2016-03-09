@@ -8,6 +8,9 @@ import static demo.fase.smtp.Smtp.Smtp.Smtp._220;
 import static demo.fase.smtp.Smtp.Smtp.Smtp._250;
 import static demo.fase.smtp.Smtp.Smtp.Smtp._250d;
 
+import java.io.IOException;
+
+import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.scribsock.LinearSocket;
 import org.scribble.net.session.SSLSocketChannelWrapper;
@@ -17,6 +20,9 @@ import org.scribble.net.session.SocketChannelEndpoint;
 import demo.fase.smtp.Smtp.Smtp.Smtp;
 import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
 import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
+import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
+import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Handler;
+import demo.fase.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
 import demo.fase.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
 import demo.fase.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
 import demo.fase.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
@@ -120,7 +126,6 @@ public class FaseClient
 			}
 		}
 	}
-	
 	public static <S, B extends Buf<?>> S printBuf(S s, B b)
 	{
 		System.out.print(b.val);
@@ -132,4 +137,37 @@ public class FaseClient
 		System.out.println(b.val);
 		return s;
 	}
+	
+	class MySmtpC3Handler implements Smtp_C_3_Handler
+	{
+		@Override
+		public void receive(Smtp_C_3 s3, demo.fase.smtp.Smtp.Smtp.ops._250d op, Buf<_250d> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+		{
+			s3.branch(S, this);
+		}
+
+		@Override
+		public void receive(Smtp_C_4 s4, demo.fase.smtp.Smtp.Smtp.ops._250 op, Buf<_250> arg) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+		{
+			try
+			{
+				doInit1(
+					LinearSocket.wrapClient(
+						s4.send(S, new StartTls())
+							.async(S, _220)
+					, S, SSLSocketChannelWrapper::new)
+				)
+				.send(S, new Quit());
+			}
+			catch (ScribbleRuntimeException | IOException | ClassNotFoundException x)
+			{
+				throw x;
+			}
+			catch (Exception x)
+			{
+				throw new ScribbleRuntimeException(x);
+			}
+		}
+	}
 }
+

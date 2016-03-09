@@ -1,4 +1,4 @@
-//$ bin/scribblec.sh modules/core/src/test/scrib/demo/smtp/Smtp.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -api Smtp C -V
+//$ bin/scribblec.sh modules/core/src/test/scrib/demo/smtp/Smtp.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -api Smtp C -subtypes -V
 
 
 module demo.smtp.Smtp;
@@ -35,7 +35,7 @@ sig <java> "demo.smtp.message.client.DataLine"
 sig <java> "demo.smtp.message.client.Data"
 		from "demo/smtp/message/client/Data.java" as Data;
 sig <java> "demo.smtp.message.client.EndOfData"
-		from "demo/smtp/message/client/EndOfData.java" as EndOfDate;
+		from "demo/smtp/message/client/EndOfData.java" as EndOfData;
 sig <java> "demo.smtp.message.client.Quit"
 		from "demo/smtp/message/client/Quit.java" as Quit;
 
@@ -183,7 +183,7 @@ global protocol Mail(role S, role C)
 							}
 							or
 							{
-								EndOfDate from C to S; // CRLF.CRLF
+								EndOfData from C to S; // CRLF.CRLF
 								250 from S to C;
 								continue Z1;
 							}

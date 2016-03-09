@@ -10,7 +10,7 @@ public class EndOfData extends SmtpMessage
 
 	public EndOfData()
 	{
-		super(Smtp.EndOfDate, SmtpMessage.CRLF + "." + SmtpMessage.CRLF);
+		super(Smtp.EndOfData, SmtpMessage.CRLF + "." + SmtpMessage.CRLF);
 	}
 
 	// Drop operator used for Scribble

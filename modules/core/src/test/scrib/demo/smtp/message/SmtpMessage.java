@@ -78,7 +78,7 @@ public abstract class SmtpMessage extends ScribMessage
 				: (op.equals(Smtp.Data)) ? SmtpMessage.DATA
 				: (op.equals(Smtp.Quit)) ? SmtpMessage.QUIT
 				: (op.equals(Smtp.DataLine)) ? SmtpMessage.DATA_LINE
-				: (op.equals(Smtp.EndOfDate)) ? SmtpMessage.END_OF_DATA
+				: (op.equals(Smtp.EndOfData)) ? SmtpMessage.END_OF_DATA
 				: new Caller().call(() -> { throw new RuntimeException("TODO: " + op); });
 	}
 }

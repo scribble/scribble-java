@@ -1,6 +1,6 @@
 //http://sandbox.kidstrythisathome.com/erdos/
 
-//$ bin/scribblec.sh modules/core/src/test/scrib/demo/fase/smtp/Smtp.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -api Smtp C
+//$ bin/scribblec.sh modules/core/src/test/scrib/demo/fase/smtp/Smtp.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ -api Smtp C -subtypes
 //$ javadoc -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar;'modules/core/src/test/scrib -subpackages demo.fase.smtp.Smtp.Smtp -d test/doc/fase/smtp
 
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' demo.fase.smtp.Client

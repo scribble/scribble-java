@@ -16,8 +16,39 @@ module Test;
 // Need to record the "next action and state" after a recursion entry, and for continue only use that action to go to that state
 // Or maybe try a "forwards" algorithm again (two passes may be easier)
 
+type <java> "java.lang.int" from "rt.jar" as int;
 
-global protocol Proto1(role A, role B, role C)
+
+//global protocol Proto1(role A, role B, role C, role D)
+global protocol Proto1(role p, role q, role r)
+{
+	
+	choice at p {
+		l1() from p to q;
+		/*l3() from q to r;
+		l5() from r to p;*/
+	} or {
+		l2() from p to q;
+		/*l4() from q to r;
+		l6() from r to p;*/
+	}	
+	l3() from q to r;
+	
+	/*rec X {
+		choice at A {
+			m1(int) from A to B;
+			continue X;
+			//m4(int) from A to B;
+		} or {
+			m2(int) from A to B;
+			//m3(int) from A to B;
+		}
+		//1() from C to D;  // FIXME?*/
+	}
+}
+
+
+/*global protocol Proto1(role A, role B, role C)
 {
 	rec X
 	{
@@ -31,7 +62,7 @@ global protocol Proto1(role A, role B, role C)
 			2() from A to C;
 		}
 	}
-}	
+}*/
 
 
 /*
