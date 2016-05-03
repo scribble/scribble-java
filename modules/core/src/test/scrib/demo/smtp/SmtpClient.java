@@ -20,7 +20,6 @@ import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_10;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_11_Cases;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_12;
-import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_1_Future;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_2;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
 import demo.smtp.Smtp.Smtp.channels.C.Smtp_C_3_Cases;
@@ -61,22 +60,24 @@ public class SmtpClient
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (SessionEndpoint<Smtp, C> se =
+				new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
 		{
 			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
 
 			Smtp_C_1 s1 = new Smtp_C_1(se);
-			
-			Buf<Smtp_C_1_Future> b220 = new Buf<>();
-			Smtp_C_2 s2 = s1.async(Smtp.S, Smtp._220, b220);
-			System.out.print("Greeting: " + b220.val.sync().msg);
+			Smtp_C_2 s2 = s1.receive(Smtp.S, Smtp._220, new Buf<>());
 
-			Smtp_C_4 s4 = doEhlo(s2);
-			Smtp_C_6 s6 = doStartTls(s4);
-			Smtp_C_8 s8 = doEhlo(s6);
-			Smtp_C_10 s10 = doAuth(s8);
+			Smtp_C_10 s10 =
+					doAuth(
+						doSecureEhlo(
+								doStartTls(
+										doEhlo(s2)
+					)));
 
-			Smtp_C_11_Cases s11cases = s10.send(Smtp.S, new Mail("rhu@doc.ic.ac.uk")).branch(Smtp.S);
+			Smtp_C_11_Cases s11cases =
+					s10.send(Smtp.S, new Mail("rhu@doc.ic.ac.uk"))
+					   .branch(Smtp.S);
 			Smtp_C_12 s12 = null;
 			switch (s11cases.op)
 			{
@@ -85,53 +86,21 @@ public class SmtpClient
 					s12 = s11cases.receive(Smtp._250);
 					break;
 				}
-				case _501:  // FIXME: "functional interface" for quit states
+				case _501:
 				{
 					s11cases.receive(Smtp._501).send(Smtp.S, new Quit());
 					System.exit(0);
 				}
 			}
-			s12.send(Smtp.S, new Rcpt("raymond.hu05@imperial.ac.uk"))
+			s12.send(Smtp.S, new Rcpt("rhu@doc.ic.ac.uk"))
 			   .async(Smtp.S, Smtp._250)
 			   .send(Smtp.S, new Data()) 
 			   .async(Smtp.S, Smtp._354)
-			   .send(Smtp.S, new Subject("test"))
-			   .send(Smtp.S, new DataLine("body"))
+			   .send(Smtp.S, new Subject("hello Manchester"))
+			   .send(Smtp.S, new DataLine("message body"))
 			   .send(Smtp.S, new EndOfData())
-			   .receive(Smtp.S, Smtp._250, new Buf<>())  // Final sync needed for session to be successful?
+			   .receive(Smtp.S, Smtp._250, new Buf<>()) 
 			   .send(Smtp.S, new Quit());
-
-			/*Case_C_S_501__S_250<?, ?> mailResponse =
-					doAuth(
-							doEhlo(
-									doStartTls(
-											doEhlo(new Smtp_C_1(se).async(Smtp.S, Smtp._220), ehlo))
-							, ehlo))
-					.send(Smtp.S, new Mail(mail))
-					.branch(Smtp.S);
-			switch (mailResponse.getOp())
-			{
-				case _250:
-				{
-					mailResponse.receive(Smtp._250)
-						.to(Select_C_S_Rcpt__S_Data.cast).send(Smtp.S, new Rcpt(rcpt))
-						.to(Receive_C_S_250.cast).async(Smtp.S, Smtp._250)
-						.to(Select_C_S_Rcpt__S_Data.cast).send(Smtp.S, new Data())
-						.to(Receive_C_S_354.cast).async(Smtp.S, Smtp._354)
-						.to(Select_C_S_DataLine__S_Subject__S_EndOfDate.cast).send(Smtp.S, new Subject(subj))
-						.to(Select_C_S_DataLine__S_Subject__S_EndOfDate.cast).send(Smtp.S, new DataLine(body))
-						.to(Select_C_S_DataLine__S_Subject__S_EndOfDate.cast).send(Smtp.S, new EndOfData())
-						.to(Receive_C_S_250.cast)
-							//.async(Smtp.S, Smtp._250)
-							.receive(Smtp.S, Smtp._250, new Buf<>())  // Final sync needed for session to be successful?
-						.to(Select_C_S_Mail__S_Quit.cast).send(Smtp.S, new Quit());
-					break;
-				}
-				case _501:
-				{
-					mailResponse.receive(Smtp._501).to(Select_C_S_Mail__S_Quit.cast).send(Smtp.S, new Quit());
-				}
-			}*/
 		}
 		catch (Exception e)
 		{
@@ -177,8 +146,7 @@ public class SmtpClient
 		return s6;
 	}
 
-	// FIXME: factor out with other doEhlo
-	private Smtp_C_8 doEhlo(Smtp_C_6 s6) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
+	private Smtp_C_8 doSecureEhlo(Smtp_C_6 s6) throws ScribbleRuntimeException, IOException, ClassNotFoundException, ExecutionException, InterruptedException
 	{
 		Smtp_C_7 s7 = s6.send(Smtp.S, new Ehlo("testing2"));
 		Buf<Object> b = new Buf<>();
@@ -227,6 +195,94 @@ public class SmtpClient
 			}
 		}
 	}
+
+	/*public void run() throws ScribbleRuntimeException, IOException
+	{
+		String host = "smtp.cc.ic.ac.uk";
+		int port = 25;
+
+		Smtp smtp = new Smtp();
+		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		{
+			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
+
+			Smtp_C_1 s1 = new Smtp_C_1(se);
+			
+			Buf<Smtp_C_1_Future> f220 = new Buf<>();
+			Smtp_C_2 s2 = s1.async(Smtp.S, Smtp._220, f220);
+			System.out.print("Greeting: " + f220.val.sync().msg);
+
+			Smtp_C_4 s4 = doEhlo(s2);
+			Smtp_C_6 s6 = doStartTls(s4);
+			Smtp_C_8 s8 = doEhlo(s6);
+			Smtp_C_10 s10 = doAuth(s8);
+
+			Smtp_C_11_Cases s11cases = s10.send(Smtp.S, new Mail("rhu@doc.ic.ac.uk")).branch(Smtp.S);
+			Smtp_C_12 s12 = null;
+			switch (s11cases.op)
+			{
+				case _250:
+				{
+					s12 = s11cases.receive(Smtp._250);
+					break;
+				}
+				case _501:  // FIXME: "functional interface" for quit states
+				{
+					s11cases.receive(Smtp._501).send(Smtp.S, new Quit());
+					System.exit(0);
+				}
+			}
+			s12.send(Smtp.S, new Rcpt("rhu@doc.ic.ac.uk"))
+			   .async(Smtp.S, Smtp._250)
+			   .send(Smtp.S, new Data()) 
+			   .async(Smtp.S, Smtp._354)
+			   .send(Smtp.S, new Subject("hello ARVI"))
+			   .send(Smtp.S, new DataLine("body"))
+			   .send(Smtp.S, new EndOfData())
+			   .receive(Smtp.S, Smtp._250, new Buf<>())  // Final sync needed for session to be successful?
+			   .send(Smtp.S, new Quit());
+
+			/*Case_C_S_501__S_250<?, ?> mailResponse =
+					doAuth(
+							doEhlo(
+									doStartTls(
+											doEhlo(new Smtp_C_1(se).async(Smtp.S, Smtp._220), ehlo))
+							, ehlo))
+					.send(Smtp.S, new Mail(mail))
+					.branch(Smtp.S);
+			switch (mailResponse.getOp())
+			{
+				case _250:
+				{
+					mailResponse.receive(Smtp._250)
+						.to(Select_C_S_Rcpt__S_Data.cast).send(Smtp.S, new Rcpt(rcpt))
+						.to(Receive_C_S_250.cast).async(Smtp.S, Smtp._250)
+						.to(Select_C_S_Rcpt__S_Data.cast).send(Smtp.S, new Data())
+						.to(Receive_C_S_354.cast).async(Smtp.S, Smtp._354)
+						.to(Select_C_S_DataLine__S_Subject__S_EndOfDate.cast).send(Smtp.S, new Subject(subj))
+						.to(Select_C_S_DataLine__S_Subject__S_EndOfDate.cast).send(Smtp.S, new DataLine(body))
+						.to(Select_C_S_DataLine__S_Subject__S_EndOfDate.cast).send(Smtp.S, new EndOfData())
+						.to(Receive_C_S_250.cast)
+							//.async(Smtp.S, Smtp._250)
+							.receive(Smtp.S, Smtp._250, new Buf<>())  // Final sync needed for session to be successful?
+						.to(Select_C_S_Mail__S_Quit.cast).send(Smtp.S, new Quit());
+					break;
+				}
+				case _501:
+				{
+					mailResponse.receive(Smtp._501).to(Select_C_S_Mail__S_Quit.cast).send(Smtp.S, new Quit());
+				}
+			}* /
+		}
+		catch (Exception e)
+		{
+			if (e instanceof ScribbleRuntimeException)
+			{
+				throw (ScribbleRuntimeException) e;
+			}
+			throw new ScribbleRuntimeException(e);
+		}
+	}*/
 
 	protected static String getAuthPlain() throws IOException
 	{

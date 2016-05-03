@@ -57,7 +57,7 @@ public class FaseClient
 		{
 			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
 
-			Buf<Smtp_C_1_Future> b1 = new Buf<>();
+			Buf<Smtp_C_1_Future> f1 = new Buf<>();
 			Smtp_C_1 s1 = new Smtp_C_1(se);
 
 			/*
@@ -71,9 +71,9 @@ public class FaseClient
 			)
 			.to(Select_C_S_Quit.cast).send(S, new Quit());
 			/*/
-			doInit1(
+			doInit(
 				LinearSocket.wrapClient(
-					doInit1(s1.async(S, _220, b1))
+					doInit(s1.async(S, _220, f1))
 						.send(S, new StartTls())
 						.async(S, _220)
 				, S, SSLSocketChannelWrapper::new)
@@ -81,11 +81,11 @@ public class FaseClient
 			.send(S, new Quit());
 			//*/
 
-			System.out.println("b1: " + b1.val.sync().msg);
+			System.out.println("f1: " + f1.val.sync().msg);
 		}
 	}
 
-	private Succ_In_S_250 doInit(Select_C_S_Ehlo<?> s) throws Exception
+	private Succ_In_S_250 doInitWithCasts(Select_C_S_Ehlo<?> s) throws Exception
 	{
 		Branch_C_S_250__S_250d<?, ?> b =
 				s.send(S, new Ehlo("test")).to(Branch_C_S_250__S_250d.cast);
@@ -109,7 +109,7 @@ public class FaseClient
 		S1 extends Branch_C_S_250__S_250d<S2, S1>,
 		S2 extends Succ_In_S_250
 	>
-	S2 doInit1(Select_C_S_Ehlo<S1> s) throws Exception
+	S2 doInit(Select_C_S_Ehlo<S1> s) throws Exception
 	{
 		Branch_C_S_250__S_250d<S2, S1> b = s.send(S, new Ehlo("test"));
 		Buf<_250> b1 = new Buf<>();
@@ -126,6 +126,7 @@ public class FaseClient
 			}
 		}
 	}
+
 	public static <S, B extends Buf<?>> S printBuf(S s, B b)
 	{
 		System.out.print(b.val);
@@ -151,7 +152,7 @@ public class FaseClient
 		{
 			try
 			{
-				doInit1(
+				doInit(
 					LinearSocket.wrapClient(
 						s4.send(S, new StartTls())
 							.async(S, _220)

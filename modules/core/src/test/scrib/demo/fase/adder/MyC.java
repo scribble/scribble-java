@@ -22,7 +22,7 @@ public class MyC
 
 	public static void main(String[] args) throws Exception
 	{
-		adder();
+		//adder();
 		fib();
 	}
 	
