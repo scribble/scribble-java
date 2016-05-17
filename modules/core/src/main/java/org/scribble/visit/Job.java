@@ -89,11 +89,6 @@ public class Job
 				Collectors.toMap((lpn) -> lpn, (lpn) -> this.jcontext.getModule(lpn.getPrefix())));
 	}
 	
-	public void getGlobalModel(GProtocolName gullname)
-	{
-		//this.jcontext.getGlobalModel(fullname);
-	}
-	
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
 	public void buildGraph(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context
 	{
