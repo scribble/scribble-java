@@ -1,10 +1,8 @@
 package org.scribble.del.global;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
@@ -114,11 +112,21 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	}
 
 	@Override
+	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph)
+	{
+		graph.builder.reset();
+	}
+
+	@Override
 	public GProtocolDecl leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
-		System.out.println("1a: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
-		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());
+		/*System.out.println("1a: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
+		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());*/
+		/*EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+		JobContext jc = graph.getJobContext();
+		jc.addEndpointGraph(lpd.getFullMemberName((Module) parent), fsm);*/
+		System.out.println(builder.builder.getEntry().toDot());
 		return gpd;
 	}
 	
@@ -133,9 +141,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		throw new RuntimeException("TODO: ");
 	}
 
-	private static void parseModel(Set<GModelAction> rest, GModelState curr, Set<GModelAction> eligible)
+	/*private static void parseModel(Set<GModelAction> rest, GModelState curr, Set<GModelAction> eligible)
 	{
-		/*for (GModelAction e : eligible)
+		for (GModelAction e : eligible)
 		{
 			GModelState next = new GModelState();
 			curr.addEdge(e, next);
@@ -155,9 +163,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				}
 			}
 			parseModel(rtmp, next, etmp);
-		}*/
+		}* /
 		throw new RuntimeException("TODO: ");
-	}
+	}*/
 
 	public Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
 	{

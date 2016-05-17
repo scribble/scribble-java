@@ -1,8 +1,5 @@
 package org.scribble.del.global;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionSeq;
@@ -12,13 +9,10 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.ProtocolBlockDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModelAction;
-import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
 public class GProtocolBlockDel extends ProtocolBlockDel
@@ -55,7 +49,7 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		ScribDelBase.pushVisitorEnv(this, builder);
 	}
 
-	@Override
+	/*@Override
 	public GProtocolBlock leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolBlock gpb = (GProtocolBlock) visited;
@@ -63,5 +57,5 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		Map<Role, GModelAction> leaves = ((ModelEnv) gpb.seq.del().env()).getLeaves();
 		builder.pushEnv(builder.popEnv().setActions(as, leaves));
 		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, builder, gpb);
-	}
+	}*/
 }

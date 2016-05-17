@@ -1,13 +1,8 @@
 package org.scribble.del.global;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionNode;
@@ -20,14 +15,12 @@ import org.scribble.ast.local.LNode;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModelAction;
+import org.scribble.model.global.GModelState;
 import org.scribble.sesstype.kind.Global;
-import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
 public class GInteractionSeqDel extends InteractionSeqDel
@@ -89,7 +82,38 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
 	}
 	
-	@Override
+	public GInteractionSeq visitForFsmConversion(GlobalModelBuilder conv, GInteractionSeq child)
+	{
+		GModelState entry = conv.builder.getEntry();
+		GModelState exit = conv.builder.getExit();
+		try
+		{
+			for (int i = 0; i < child.getInteractions().size(); i++)
+			{
+				if (i == child.getInteractions().size() - 1)
+				{
+					conv.builder.setExit(exit);
+					child.getInteractions().get(i).accept(conv);
+				}
+				else
+				{
+					GModelState tmp = conv.builder.newState(Collections.emptySet());
+					conv.builder.setExit(tmp);
+					child.getInteractions().get(i).accept(conv);
+					conv.builder.setEntry(conv.builder.getExit());  // exit may not be tmp, entry/exit can be modified, e.g. continue
+				}
+			}
+		}
+		catch (ScribbleException e)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + e);
+		}
+		//conv.builder.setExit(exit);
+		conv.builder.setEntry(entry);
+		return child;	
+	}
+
+	/*@Override
 	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
 	{
 		ScribDelBase.pushVisitorEnv(this, builder);
@@ -122,7 +146,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		env = env.setActions(all, leaves);
 		builder.pushEnv(env);
 		GInteractionSeq tmp = (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, builder, visited);
-		return tmp;*/
+		return tmp;* /
 		throw new RuntimeException("TODO: " + visited);
 	}
 	
@@ -134,7 +158,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			{
 				a.addDependency(leaves.get(a.src));
 			}
-		}*/
+		}* /
 		throw new RuntimeException("TODO: ");
 	}
 	
@@ -144,5 +168,5 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		{
 			leaves.put(a.src, a);
 		}
-	}
+	}*/
 }

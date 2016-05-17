@@ -1,10 +1,7 @@
 package org.scribble.del.global;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
@@ -20,8 +17,6 @@ import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.Communication;
 import org.scribble.model.global.GModelAction;
-import org.scribble.model.local.Receive;
-import org.scribble.model.local.Send;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.RoleKind;
@@ -32,7 +27,6 @@ import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.WFChoicePathChecker;
-import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 public class GMessageTransferDel extends MessageTransferDel implements GSimpleInteractionNodeDel
@@ -141,7 +135,20 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		env = env.setActions(actions, leaves);
 		builder.pushEnv(env);
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveModelBuilding(parent, child, builder, visited);*/
-		throw new RuntimeException("TODO: " + visited);
+
+		GMessageTransfer ls = (GMessageTransfer) visited;
+		List<RoleNode> dests = ls.getDestinations();
+		if (dests.size() > 1)
+		{
+			throw new RuntimeException("TODO: " + ls);
+		}
+		Role peer = dests.get(0).toName();
+		MessageId<?> mid = ls.msg.toMessage().getId();
+		Payload payload = ls.msg.isMessageSigNode()  // Hacky?
+					? ((MessageSigNode) ls.msg).payloads.toPayload()
+					: Payload.EMPTY_PAYLOAD;
+		builder.builder.addEdge(builder.builder.getEntry(), new GModelAction(ls.src.toName(), peer, mid, payload), builder.builder.getExit());
+		return (GMessageTransfer) super.leaveModelBuilding(parent, child, builder, ls);
 	}
 	
 	@Override

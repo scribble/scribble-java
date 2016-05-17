@@ -21,6 +21,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
+import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
@@ -167,5 +168,24 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		coll.pushEnv(merged);
 		return (GRecursion) super.leaveWFChoicePathCheck(parent, child, coll, rec);
 		//return (GRecursion) super.leavePathCollection(parent, child, coll, rec);
+	}
+	
+	@Override
+	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph) throws ScribbleException
+	{
+		super.enterModelBuilding(parent, child, graph);
+		GRecursion gr = (GRecursion) child;
+		RecVar rv = gr.recvar.toName();
+		graph.builder.addEntryLabel(rv);
+		graph.builder.pushRecursionEntry(rv, graph.builder.getEntry());
+	}
+
+	@Override
+	public GRecursion leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph, ScribNode visited) throws ScribbleException
+	{
+		GRecursion gr = (GRecursion) visited;
+		RecVar rv = gr.recvar.toName();
+		graph.builder.popRecursionEntry(rv);
+		return (GRecursion) super.leaveModelBuilding(parent, child, graph, gr);
 	}
 }

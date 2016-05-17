@@ -17,7 +17,7 @@ import org.scribble.visit.ProjectedChoiceSubjectFixer;
 public class LSendDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LSend leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public LSend leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder builder, ScribNode visited)
 	{
 		LSend ls = (LSend) visited;
 		List<RoleNode> dests = ls.getDestinations();
@@ -30,8 +30,8 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 		Payload payload = ls.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		graph.builder.addEdge(graph.builder.getEntry(), new Send(peer, mid, payload), graph.builder.getExit());
-		return (LSend) super.leaveEndpointGraphBuilding(parent, child, graph, ls);
+		builder.builder.addEdge(builder.builder.getEntry(), new Send(peer, mid, payload), builder.builder.getExit());
+		return (LSend) super.leaveEndpointGraphBuilding(parent, child, builder, ls);
 	}
 
 	// Could make a LMessageTransferDel to factor this out with LReceiveDel

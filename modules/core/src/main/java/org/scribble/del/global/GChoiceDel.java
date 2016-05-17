@@ -24,14 +24,15 @@ import org.scribble.model.global.Path;
 import org.scribble.model.global.PathElement;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.WFChoicePathChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.WFChoicePathEnv;
 import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WFChoiceEnv;
+import org.scribble.visit.env.WFChoicePathEnv;
 
 public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 {
@@ -262,5 +263,23 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		WFChoicePathEnv merged = coll.popEnv().mergeContext(composed); 
 		coll.pushEnv(merged);
 		return (GChoice) super.leaveWFChoicePathCheck(parent, child, coll, visited);  // Replaces base popAndSet to do pop, merge and set
+	}
+
+	public GChoice visitForFsmConversion(GlobalModelBuilder graph, GChoice child)
+	{
+		try
+		{
+			for (GProtocolBlock block : child.getBlocks())
+			{
+				graph.builder.pushChoiceBlock();
+				block.accept(graph);
+				graph.builder.popChoiceBlock();
+			}
+		}
+		catch (ScribbleException e)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + e);
+		}
+		return child;
 	}
 }
