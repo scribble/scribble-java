@@ -25,11 +25,9 @@ import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.WFChoicePathChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WFChoiceEnv;
-import org.scribble.visit.env.WFChoicePathEnv;
 
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
 {
@@ -151,7 +149,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		}
 	}
 
-	@Override
+	/*@Override
 	public void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
 	{
 		WFChoicePathEnv env = coll.peekEnv().enterContext();
@@ -168,7 +166,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		coll.pushEnv(merged);
 		return (GRecursion) super.leaveWFChoicePathCheck(parent, child, coll, rec);
 		//return (GRecursion) super.leavePathCollection(parent, child, coll, rec);
-	}
+	}*/
 	
 	@Override
 	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph) throws ScribbleException

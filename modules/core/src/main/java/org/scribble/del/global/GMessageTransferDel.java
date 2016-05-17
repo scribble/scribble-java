@@ -15,7 +15,6 @@ import org.scribble.ast.local.LReceive;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.Communication;
 import org.scribble.model.global.GModelAction;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.Payload;
@@ -26,7 +25,6 @@ import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.WFChoicePathChecker;
 import org.scribble.visit.env.WFChoiceEnv;
 
 public class GMessageTransferDel extends MessageTransferDel implements GSimpleInteractionNodeDel
@@ -152,7 +150,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		return (GMessageTransfer) super.leaveModelBuilding(parent, child, builder, ls);
 	}
 	
-	@Override
+	/*@Override
 	public ScribNode leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
 	//public ScribNode leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
 	{
@@ -167,5 +165,5 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		//System.out.println("AAA2: " + coll.peekEnv().getPaths());
 		
 		return visited;
-	}
+	}*/
 }

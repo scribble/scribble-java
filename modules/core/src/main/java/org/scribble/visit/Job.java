@@ -38,8 +38,16 @@ public class Job
 		runContextBuildingPasses();
 		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
 
-		//runVisitorPassOnAllModules(WFChoicePathChecker.class);
+		runVisitorPassOnAllModules(WFChoicePathChecker.class);
 		// Checking WF on global model -- not directly an AST pass any more
+			/*this.jcontext.getFullModuleNames()
+
+			for (ModuleName modname : modnames)
+			{
+				AstVisitor nv = cons.newInstance(this);
+				Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
+				this.jcontext.replaceModule(visited);
+			}*/
 
 		runProjectionPasses();
 		runVisitorPassOnAllModules(ReachabilityChecker.class);
