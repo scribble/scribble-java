@@ -1,4 +1,4 @@
-package org.scribble.model.local;
+package org.scribble.model;
 
 import java.util.Collections;
 import java.util.Deque;
@@ -7,22 +7,23 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
-// Helper class for EndpointGraphBuilder -- can access the protected setters of EndpointState
-public class GraphBuilder
+// Helper class for EndpointGraphBuilder -- can access the protected setters of S
+public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 {
-	private EndpointState root;
+	private S root;
 	
-	private final Map<RecVar, Deque<EndpointState>> recvars = new HashMap<>();  // Should be a stack of EndpointState?
-	//private final Map<SubprotocolSig, EndpointState> subprotos = new HashMap<>();  // Not scoped sigs
-	private final Map<RecVar, Deque<IOAction>> enacting = new HashMap<>();
+	private final Map<RecVar, Deque<S>> recvars = new HashMap<>();  // Should be a stack of S?
+	//private final Map<SubprotocolSig, S> subprotos = new HashMap<>();  // Not scoped sigs
+	private final Map<RecVar, Deque<A>> enacting = new HashMap<>();
 
-	private Deque<EndpointState> pred = new LinkedList<>();
-	private Deque<IOAction> prev = new LinkedList<>();
+	private Deque<S> pred = new LinkedList<>();
+	private Deque<A> prev = new LinkedList<>();
 	
-	private EndpointState entry;
-	private EndpointState exit;  // Good for merges (otherwise have to generate dummy merge nodes)
+	private S entry;
+	private S exit;  // Good for merges (otherwise have to generate dummy merge nodes)
 	
 	public GraphBuilder()
 	{
@@ -37,10 +38,10 @@ public class GraphBuilder
 		this.exit = newState(Collections.emptySet());
 	}
 	
-	public EndpointState newState(Set<RecVar> labs)
-	{
-		return new EndpointState(labs);
-	}
+	public abstract S newState(Set<RecVar> labs);
+	/*{
+		return new S(labs);
+	}*/
 	
 	public void addEntryLabel(RecVar lab)
 	{
@@ -48,7 +49,7 @@ public class GraphBuilder
 	}
 
 	// Records 's' as predecessor state, and 'a' as previous action and the "enacting action" for "fresh" recursion scopes
-	public void addEdge(EndpointState s, IOAction a, EndpointState succ)
+	public void addEdge(S s, A a, S succ)
 	{
 		s.addEdge(a, succ);
 		if (!this.pred.isEmpty())
@@ -59,7 +60,7 @@ public class GraphBuilder
 		this.pred.push(s);
 		this.prev.push(a);
 		
-		for (Deque<IOAction> ens : this.enacting.values())
+		for (Deque<A> ens : this.enacting.values())
 		{
 			if (!ens.isEmpty())
 			{
@@ -92,14 +93,14 @@ public class GraphBuilder
 				!this.pred.isEmpty() && this.pred.peek() == null;
 	}
 	
-	public void pushRecursionEntry(RecVar recvar, EndpointState entry)
+	public void pushRecursionEntry(RecVar recvar, S entry)
 	{
 		/*if (!isUnguardedInChoice())  // Don't record rec entry if it is an unguarded choice-rec
 		{
 			this.entry.addLabel(recvar);
 		}*/
 		//this.recvars.put(recvar, this.entry);
-		Deque<EndpointState> tmp = this.recvars.get(recvar);
+		Deque<S> tmp = this.recvars.get(recvar);
 		if (tmp == null)
 		{
 			tmp = new LinkedList<>();
@@ -115,7 +116,7 @@ public class GraphBuilder
 		}*/
 		tmp.push(entry);
 		
-		Deque<IOAction> tmp2 = this.enacting.get(recvar);
+		Deque<A> tmp2 = this.enacting.get(recvar);
 		if (tmp2 == null)
 		{
 			tmp2 = new LinkedList<>();
@@ -130,27 +131,27 @@ public class GraphBuilder
 		this.enacting.get(recvar).pop();
 	}	
 	
-	public EndpointState getPredecessor()
+	public S getPredecessor()
 	{
 		return this.pred.peek();
 	}
 	
-	public IOAction getPreviousAction()
+	public A getPreviousAction()
 	{
 		return this.prev.peek();
 	}
 
-	public EndpointState getRecursionEntry(RecVar recvar)
+	public S getRecursionEntry(RecVar recvar)
 	{
 		return this.recvars.get(recvar).peek();
 	}	
 	
-	public IOAction getEnacting(RecVar rv)
+	public A getEnacting(RecVar rv)
 	{
 		return this.enacting.get(rv).peek();
 	}
 	
-	/*public EndpointState getSubprotocolEntry(SubprotocolSig subsig)
+	/*public S getSubprotocolEntry(SubprotocolSig subsig)
 	{
 		return this.subprotos.get(subsig);
 	}
@@ -165,22 +166,22 @@ public class GraphBuilder
 		this.subprotos.remove(subsig);
 	}*/
 	
-	public EndpointState getEntry()
+	public S getEntry()
 	{
 		return this.entry;
 	}
 
-	public void setEntry(EndpointState entry)
+	public void setEntry(S entry)
 	{
 		this.entry = entry;
 	}
 
-	public EndpointState getExit()
+	public S getExit()
 	{
 		return this.exit;
 	}
 
-	public void setExit(EndpointState exit)
+	public void setExit(S exit)
 	{
 		this.exit = exit;
 	}

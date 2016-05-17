@@ -1,13 +1,14 @@
 package org.scribble.model.global;
 
-import org.scribble.model.local.IOAction;
+import org.scribble.model.ModelAction;
 import org.scribble.sesstype.Payload;
+import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
 // Mutable
 // FIXME: should be Communication, cf. IOAction (superclass?)
-public class GModelAction extends IOAction //implements PathElement
+public class GModelAction extends ModelAction<Global> //implements PathElement
 {
 	//private static int counter = 1;
 

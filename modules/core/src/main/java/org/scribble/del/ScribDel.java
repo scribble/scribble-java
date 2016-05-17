@@ -137,12 +137,12 @@ public interface ScribDel
 		return visited;
 	}
 
-	default void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
+	default void enterEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
 	{
 		
 	}
 
-	default ScribNode leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	default ScribNode leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		return visited;
 	}

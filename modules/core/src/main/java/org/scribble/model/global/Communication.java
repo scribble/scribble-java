@@ -5,6 +5,7 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
+@Deprecated
 public class Communication extends IOAction implements PathElement
 {
 	//private static int counter = 1;

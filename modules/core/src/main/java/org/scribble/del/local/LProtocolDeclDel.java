@@ -50,13 +50,13 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	}
 
 	@Override
-	public void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
+	public void enterEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
 	{
 		graph.builder.reset();
 	}
 
 	@Override
-	public ScribNode leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public ScribNode leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
 		EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());

@@ -39,9 +39,9 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	}
 	
 	@Override
-	public void enterGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
+	public void enterEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph)
 	{
-		super.enterGraphBuilding(parent, child, graph);
+		super.enterEndpointGraphBuilding(parent, child, graph);
 		LRecursion lr = (LRecursion) child;
 		RecVar rv = lr.recvar.toName();
 		// Update existing state, not replace it -- cf. LDoDel
@@ -61,12 +61,12 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	}
 
 	@Override
-	public LRecursion leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public LRecursion leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		LRecursion lr = (LRecursion) visited;
 		RecVar rv = lr.recvar.toName();
 		graph.builder.popRecursionEntry(rv);
-		return (LRecursion) super.leaveGraphBuilding(parent, child, graph, lr);
+		return (LRecursion) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
 	}
 
 	@Override

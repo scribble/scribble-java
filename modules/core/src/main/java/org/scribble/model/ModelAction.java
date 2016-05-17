@@ -1,26 +1,24 @@
-package org.scribble.model.local;
+package org.scribble.model;
 
-import org.scribble.model.ModelAction;
 import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.kind.Local;
+import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
-public abstract class IOAction extends ModelAction<Local>
+public abstract class ModelAction<K extends ProtocolKind>
 {
-	/*public final Role peer;
+	public final Role peer;
 	public final MessageId<?> mid;
-	public final Payload payload;  // Empty for MessageSigNames*/
+	public final Payload payload;  // Empty for MessageSigNames
 	
-	public IOAction(Role peer, MessageId<?> mid, Payload payload)
+	public ModelAction(Role peer, MessageId<?> mid, Payload payload)
 	{
-		/*this.peer = peer;
+		this.peer = peer;
 		this.mid = mid;
-		this.payload = payload;*/
-		super(peer, mid, payload);
+		this.payload = payload;
 	}
 	
-	/*@Override
+	@Override
 	public String toString()
 	{
 		return this.peer + getCommSymbol() + this.mid + this.payload;
@@ -39,20 +37,20 @@ public abstract class IOAction extends ModelAction<Local>
 	}
 
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(Object o)  // FIXME: kind
 	{
 		if (this == o)
 		{
 			return true;
 		}
-		if (!(o instanceof IOAction))
+		if (!(o instanceof ModelAction))
 		{
 			return false;
 		}
-		IOAction a = (IOAction) o;
+		ModelAction<?> a = (ModelAction<?>) o;
 		return a.canEqual(this) && 
 				this.peer.equals(a.peer) && this.mid.equals(a.mid) && this.payload.equals(a.payload);
 	}
 	
-	public abstract boolean canEqual(Object o);*/
+	public abstract boolean canEqual(Object o);
 }

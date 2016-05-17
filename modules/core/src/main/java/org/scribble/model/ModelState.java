@@ -1,38 +1,43 @@
-package org.scribble.model.global;
+package org.scribble.model;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 import java.util.Set;
 
-import org.scribble.model.ModelState;
-import org.scribble.sesstype.kind.Global;
+import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
-public class GModelState extends ModelState<GModelAction, GModelState, Global>
+//public class ModelState<K extends ProtocolKind>
+public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 {
-	/*private static int count = 0;
+	private static int count = 0;
 	
 	public final int id;
 
-	private final Set<RecVar> labs;
+	protected final Set<RecVar> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
 	//private final Set<String> labs;  // Something better to cover both RecVar and SubprotocolSigs?
-	private final LinkedHashMap<GModelAction, GModelState> edges;*/
+	protected final LinkedHashMap<A, S> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)*/
 	
-	public GModelState(Set<RecVar> labs)  // Immutable singleton node
+	public ModelState(Set<RecVar> labs)  // Immutable singleton node
 	//public GModelState(Set<String> labs)  // Immutable singleton node
 	//public GModelState()  // Immutable singleton node
 	{
-		/*this.id = GModelState.count++;
+		this.id = ModelState.count++;
 		this.labs = new HashSet<>(labs);
-		this.edges = new LinkedHashMap<>();*/
-		super(labs);
+		this.edges = new LinkedHashMap<>();
 	}
 	
-	/*protected void addLabel(RecVar lab)
+	protected void addLabel(RecVar lab)
 	{
 		this.labs.add(lab);
 	}
 	
 	// Mutable (can also overwrite edges)
-	protected void addEdge(GModelAction a, GModelState s)
+	protected void addEdge(A a, S s)
 	{
 		this.edges.put(a, s);
 	}
@@ -42,22 +47,22 @@ public class GModelState extends ModelState<GModelAction, GModelState, Global>
 		return Collections.unmodifiableSet(this.labs);
 	}
 	
-	public Set<GModelAction> getAcceptable()
+	public Set<A> getAcceptable()
 	{
 		return Collections.unmodifiableSet(this.edges.keySet());
 	}
 	
-	public boolean isAcceptable(GModelAction a)
+	public boolean isAcceptable(A a)
 	{
 		return this.edges.containsKey(a);
 	}
 
-	public GModelState accept(GModelAction a)
+	public S accept(A a)
 	{
 		return this.edges.get(a);
 	}
 	
-	public Collection<GModelState> getSuccessors()
+	public Collection<S> getSuccessors()
 	{
 		return Collections.unmodifiableCollection(this.edges.values());
 	}
@@ -82,11 +87,11 @@ public class GModelState extends ModelState<GModelAction, GModelState, Global>
 		{
 			return true;
 		}
-		if (!(o instanceof GModelState))
+		if (!(o instanceof ModelState))
 		{
 			return false;
 		}
-		return this.id == ((GModelState) o).id;
+		return this.id == ((ModelState<?, ?, ?>) o).id;
 	}
 	
 	@Override
@@ -95,12 +100,12 @@ public class GModelState extends ModelState<GModelAction, GModelState, Global>
 		String s = "\"" + this.id + "\":[";
 		if (!this.edges.isEmpty())
 		{
-			Iterator<Entry<GModelAction, GModelState>> es = this.edges.entrySet().iterator();
-			Entry<GModelAction, GModelState> first = es.next();
+			Iterator<Entry<A, S>> es = this.edges.entrySet().iterator();
+			Entry<A, S> first = es.next();
 			s += first.getKey() + "=\"" + first.getValue().id + "\"";
 			while (es.hasNext())
 			{
-				Entry<GModelAction, GModelState> e = es.next();
+				Entry<A, S> e = es.next();
 				s += ", " + e.getKey() + "=\"" + e.getValue().id + "\"";
 			}
 		}
@@ -115,14 +120,15 @@ public class GModelState extends ModelState<GModelAction, GModelState, Global>
 		return s + "\n}";
 	}
 
-	protected final String toDot(Set<GModelState> seen)
+	//protected final String toDot(Set<S> seen)
+	protected final String toDot(Set<ModelState<A, S, K>> seen)
 	{
 		seen.add(this);
 		String s = toNodeDot();
-		for (Entry<GModelAction, GModelState> e : this.edges.entrySet())
+		for (Entry<A, S> e : this.edges.entrySet())
 		{
-			GModelAction msg = e.getKey();
-			GModelState p = e.getValue();
+			A msg = e.getKey();
+			S p = e.getValue();
 			s += "\n" + toEdgeDot(msg, p);
 			if (!seen.contains(p))
 			{
@@ -156,19 +162,20 @@ public class GModelState extends ModelState<GModelAction, GModelState, Global>
 	}
 
 	// Override to change edge drawing from "this" as src
-	protected String toEdgeDot(GModelAction msg, GModelState next)
+	protected String toEdgeDot(A msg, S next)
 	{
 		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));
 	}
 	
 	// "this" is the dest node of the edge
 	// Override to change edge drawing to "this" as dest
-	protected String getEdgeLabel(GModelAction msg)
+	protected String getEdgeLabel(A msg)
 	{
 		return "label=\"" + msg + "\"";
 	}
 
-	public static GModelState findTerminalState(Set<GModelState> visited, GModelState curr)
+	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+			S findTerminalState(Set<S> visited, S curr)
 	{
 		if (!visited.contains(curr))
 		{
@@ -177,9 +184,9 @@ public class GModelState extends ModelState<GModelAction, GModelState, Global>
 				return curr;
 			}
 			visited.add(curr);
-			for (GModelState succ : curr.getSuccessors())
+			for (S succ : curr.getSuccessors())
 			{
-				GModelState res = findTerminalState(visited, succ);
+				S res = findTerminalState(visited, succ);
 				if (res != null)
 				{
 					return res;
