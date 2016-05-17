@@ -37,7 +37,10 @@ public class Job
 	{
 		runContextBuildingPasses();
 		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
+
 		//runVisitorPassOnAllModules(WFChoicePathChecker.class);
+		// Checking WF on global model -- not directly an AST pass any more
+
 		runProjectionPasses();
 		runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}

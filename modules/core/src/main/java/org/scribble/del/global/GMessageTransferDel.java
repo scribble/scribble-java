@@ -111,6 +111,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gmt);
 	}
 	
+	// Cf. LSend/Receive enter/leaveEndpointGraphBuilding
 	@Override
 	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{

@@ -109,6 +109,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return projected;
 	}
 
+	// Cf. LProtocolDeclDel enter/leaveEndpointGraphBuilding
 	@Override
 	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph)
 	{

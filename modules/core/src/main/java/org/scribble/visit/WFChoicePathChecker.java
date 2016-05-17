@@ -14,6 +14,7 @@ import org.scribble.visit.env.WFChoicePathEnv;
 // Duplicated from WFChoiceChecker
 // Maybe refactor as PathVisitor (extended by WF checker)
 public class WFChoicePathChecker extends UnfoldingVisitor<WFChoicePathEnv> //PathCollectionVisitor
+//public class WFChoicePathChecker extends InlinedProtocolVisitor<Env<?>>  // FIXME: should be unfolding visitor? GlobalModelBuilder should be too (need a correspondence between syntax nodes and model nodes)
 {
 	// N.B. using pointer equality for checking if choice previously visited
 	// So UnfoldingVisitor cannot visit a clone

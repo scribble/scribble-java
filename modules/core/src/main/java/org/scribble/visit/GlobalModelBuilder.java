@@ -11,7 +11,7 @@ import org.scribble.model.global.GGraphBuilder;
 
 // Duplicated from EndpointGraphBuilder
 //public class GlobalModelBuilder extends OffsetSubprotocolVisitor<ModelEnv>
-public class GlobalModelBuilder extends NoEnvInlinedProtocolVisitor
+public class GlobalModelBuilder extends NoEnvInlinedProtocolVisitor  // FIXME: should be unfolded?
 {
 	public final GGraphBuilder builder = new GGraphBuilder();
 
