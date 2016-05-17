@@ -19,7 +19,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.Communication;
-import org.scribble.model.global.ModelAction;
+import org.scribble.model.global.GModelAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
 import org.scribble.sesstype.Message;
@@ -120,10 +120,10 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	@Override
 	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
-		GMessageTransfer gmt = (GMessageTransfer) visited;
+		/*GMessageTransfer gmt = (GMessageTransfer) visited;
 		ModelEnv env = builder.popEnv();
-		Set<ModelAction> actions = env.getActions();
-		Map<Role, ModelAction> leaves = new HashMap<>();
+		Set<GModelAction> actions = env.getActions();
+		Map<Role, GModelAction> leaves = new HashMap<>();
 		if (gmt.getDestinations().size() > 1)
 		{
 			throw new RuntimeException("TODO: " + gmt);
@@ -131,8 +131,8 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		Role src = gmt.src.toName();
 		Role dest = gmt.getDestinations().get(0).toName();
 		MessageId<?> mid = gmt.msg.toMessage().getId();
-		ModelAction send = new ModelAction(src, new Send(dest, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
-		ModelAction receive = new ModelAction(dest, new Receive(src, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
+		GModelAction send = new GModelAction(src, new Send(dest, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
+		GModelAction receive = new GModelAction(dest, new Receive(src, mid, Payload.EMPTY_PAYLOAD));  // FIXME: payload hack
 		receive.addDependency(send);
 		actions.add(send);
 		actions.add(receive);
@@ -140,7 +140,8 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		leaves.put(dest, receive);
 		env = env.setActions(actions, leaves);
 		builder.pushEnv(env);
-		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveModelBuilding(parent, child, builder, visited);
+		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveModelBuilding(parent, child, builder, visited);*/
+		throw new RuntimeException("TODO: " + visited);
 	}
 	
 	@Override

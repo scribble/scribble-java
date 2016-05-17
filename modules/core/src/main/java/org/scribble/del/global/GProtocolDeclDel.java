@@ -21,8 +21,8 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.ModelAction;
-import org.scribble.model.global.ModelState;
+import org.scribble.model.global.GModelAction;
+import org.scribble.model.global.GModelState;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
@@ -122,29 +122,30 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return gpd;
 	}
 	
-	private static ModelState parseModel(Set<ModelAction> as)
+	private static GModelState parseModel(Set<GModelAction> as)
 	{
-		ModelState root = new ModelState();
-		Set<ModelAction> eligible = as.stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
-		Set<ModelAction> rest = new HashSet<>(as);
+		/*GModelState root = new GModelState();
+		Set<GModelAction> eligible = as.stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
+		Set<GModelAction> rest = new HashSet<>(as);
 		rest.removeAll(eligible);
 		parseModel(rest, root, eligible);
-		return root;
+		return root;*/
+		throw new RuntimeException("TODO: ");
 	}
 
-	private static void parseModel(Set<ModelAction> rest, ModelState curr, Set<ModelAction> eligible)
+	private static void parseModel(Set<GModelAction> rest, GModelState curr, Set<GModelAction> eligible)
 	{
-		for (ModelAction e : eligible)
+		/*for (GModelAction e : eligible)
 		{
-			ModelState next = new ModelState();
+			GModelState next = new GModelState();
 			curr.addEdge(e, next);
-			Set<ModelAction> etmp = new HashSet<>(eligible);
+			Set<GModelAction> etmp = new HashSet<>(eligible);
 			etmp.remove(e);
-			Set<ModelAction> rtmp = new HashSet<>(rest);
-			for (ModelAction r : rest)
+			Set<GModelAction> rtmp = new HashSet<>(rest);
+			for (GModelAction r : rest)
 			{
 				//if (eligible.containsAll(r.getDependencies()))
-				Set<ModelAction> tmp =  new HashSet<>(etmp);
+				Set<GModelAction> tmp =  new HashSet<>(etmp);
 				tmp.addAll(rtmp);
 				tmp.retainAll(r.getDependencies());
 				if (tmp.isEmpty())
@@ -154,7 +155,8 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				}
 			}
 			parseModel(rtmp, next, etmp);
-		}
+		}*/
+		throw new RuntimeException("TODO: ");
 	}
 
 	public Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
