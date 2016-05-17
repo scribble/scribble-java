@@ -19,8 +19,7 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModelAction;
-import org.scribble.model.global.GModelState;
+import org.scribble.model.global.GModel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
@@ -30,7 +29,6 @@ import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.RoleCollector;
-import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
 public class GProtocolDeclDel extends ProtocolDeclDel<Global>
@@ -123,23 +121,23 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		/*System.out.println("1a: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
 		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());*/
-		/*EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
-		JobContext jc = graph.getJobContext();
-		jc.addEndpointGraph(lpd.getFullMemberName((Module) parent), fsm);*/
-		System.out.println(builder.builder.getEntry().toDot());
+		GModel model = new GModel(builder.builder.getEntry(), builder.builder.getExit());
+		JobContext jc = builder.getJobContext();
+		jc.addGlobalModel(gpd.getFullMemberName((Module) parent), model);
+		//builder.getJob().debugPrintln("\n[DEBUG] Global model " + gpd.getFullMemberName((Module) parent) + ":\n" + model);
 		return gpd;
 	}
 	
-	private static GModelState parseModel(Set<GModelAction> as)
+	/*private static GModelState parseModel(Set<GModelAction> as)
 	{
 		/*GModelState root = new GModelState();
 		Set<GModelAction> eligible = as.stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
 		Set<GModelAction> rest = new HashSet<>(as);
 		rest.removeAll(eligible);
 		parseModel(rest, root, eligible);
-		return root;*/
+		return root;* /
 		throw new RuntimeException("TODO: ");
-	}
+	}*/
 
 	/*private static void parseModel(Set<GModelAction> rest, GModelState curr, Set<GModelAction> eligible)
 	{

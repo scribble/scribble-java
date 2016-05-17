@@ -50,6 +50,7 @@ public class Job
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
+
 		runVisitorPassOnAllModules(GlobalModelBuilder.class);
 	}
 
@@ -86,6 +87,11 @@ public class Job
 		// Can ignore Set<Role> for projections (is singleton), as each projected proto is a dependency only for self (implicit in the protocoldecl)
 		return dependencies.keySet().stream().collect(
 				Collectors.toMap((lpn) -> lpn, (lpn) -> this.jcontext.getModule(lpn.getPrefix())));
+	}
+	
+	public void getGlobalModel(GProtocolName gullname)
+	{
+		//this.jcontext.getGlobalModel(fullname);
 	}
 	
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
