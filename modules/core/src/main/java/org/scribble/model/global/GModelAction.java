@@ -7,7 +7,6 @@ import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
 // Mutable
-// FIXME: should be Communication, cf. IOAction (superclass?)
 public class GModelAction extends ModelAction<Global> //implements PathElement
 {
 	//private static int counter = 1;
@@ -44,14 +43,14 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 		return this.deps.contains(ma);
 	}*/
 	
-	@Override
+	/*@Override
 	public int hashCode()
 	{
 		//return 827 * this.id;
 		return 827 * this.src.hashCode() + super.hashCode();
-	}
+	}*/
 	
-	@Override
+	/*@Override
 	public boolean equals(Object o)
 	{
 		if (this == o)
@@ -65,7 +64,7 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 		GModelAction tmp = (GModelAction) o;
 		//return this.id == ((GModelAction) o).id;
 		return tmp.canEqual(this) && tmp.src.equals(this.src) && super.equals(o);
-	}
+	}*/
 
 	@Override
 	public String toString()

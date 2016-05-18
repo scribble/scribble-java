@@ -20,12 +20,12 @@ public class Communication extends IOAction implements PathElement
 		this.src = src;
 	}
 	
-	@Override
+	/*@Override
 	public int hashCode()
 	{
 		//return 827 * this.id;
 		return 827 * this.src.hashCode() + super.hashCode();
-	}
+	}*/
 	
 	@Override
 	public boolean equals(Object o)

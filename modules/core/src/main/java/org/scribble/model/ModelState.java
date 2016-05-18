@@ -3,7 +3,6 @@ package org.scribble.model;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -14,7 +13,7 @@ import org.scribble.sesstype.name.RecVar;
 //public class ModelState<K extends ProtocolKind>
 public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 {
-	private static int count = 0;
+	private static int count = 0;  // FIXME: factor out with ModelAction
 	
 	public final int id;
 
@@ -73,7 +72,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	}
 
 	@Override
-	public int hashCode()
+	public final int hashCode()
 	{
 		int hash = 73;
 		hash = 31 * hash + this.id;
@@ -97,7 +96,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	@Override
 	public String toString()
 	{
-		String s = "\"" + this.id + "\":[";
+		/*String s = "\"" + this.id + "\":[";
 		if (!this.edges.isEmpty())
 		{
 			Iterator<Entry<A, S>> es = this.edges.entrySet().iterator();
@@ -109,7 +108,8 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 				s += ", " + e.getKey() + "=\"" + e.getValue().id + "\"";
 			}
 		}
-		return s + "]";
+		return s + "]";*/
+		return Integer.toString(this.id);  // FIXME
 	}
 	
 	public final String toDot()
@@ -153,7 +153,8 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	protected String getNodeLabel()
 	{
 		String labs = this.labs.toString();
-		return "label=\"" + labs.substring(1, labs.length() - 1) + "\"";
+		//return "label=\"" + labs.substring(1, labs.length() - 1) + "\"";
+		return "label=\"" + this.id + ": " + labs.substring(1, labs.length() - 1) + "\"";  // FIXME
 	}
 	
 	protected String getDotNodeId()

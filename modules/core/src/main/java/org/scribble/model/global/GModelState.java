@@ -16,6 +16,8 @@ public class GModelState extends ModelState<GModelAction, GModelState, Global>
 	//private final Set<String> labs;  // Something better to cover both RecVar and SubprotocolSigs?
 	private final LinkedHashMap<GModelAction, GModelState> edges;*/
 	
+	private GModelState exit;  // Hack for now
+	
 	public GModelState(Set<RecVar> labs)  // Immutable singleton node
 	//public GModelState(Set<String> labs)  // Immutable singleton node
 	//public GModelState()  // Immutable singleton node
@@ -24,6 +26,21 @@ public class GModelState extends ModelState<GModelAction, GModelState, Global>
 		this.labs = new HashSet<>(labs);
 		this.edges = new LinkedHashMap<>();*/
 		super(labs);
+	}
+	
+	public boolean isChoice()
+	{
+		return this.exit != null;
+	}
+
+	public GModelState getChoiceExit()
+	{
+		return this.exit;
+	}
+
+	public void setChoiceExit(GModelState exit)  // Hack for now
+	{
+		this.exit = exit;
 	}
 	
 	/*protected void addLabel(RecVar lab)

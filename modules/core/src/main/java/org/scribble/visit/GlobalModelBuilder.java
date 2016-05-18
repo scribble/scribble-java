@@ -40,12 +40,12 @@ public class GlobalModelBuilder extends NoEnvInlinedProtocolVisitor  // FIXME: s
 
 	protected GInteractionSeq visitOverrideForGInteractionSeq(GProtocolBlock parent, GInteractionSeq child)
 	{
-		return ((GInteractionSeqDel) child.del()).visitForFsmConversion(this, child);
+		return ((GInteractionSeqDel) child.del()).visitForGlobalModelBuilding(this, child);
 	}
 
 	protected GChoice visitOverrideForGChoice(GInteractionSeq parent, GChoice child)
 	{
-		return ((GChoiceDel) child.del()).visitForFsmConversion(this, child);
+		return ((GChoiceDel) child.del()).visitForGlobalModelBuilding(this, child);
 	}
 
 	@Override

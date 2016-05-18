@@ -9,6 +9,7 @@ import java.util.Set;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
+@Deprecated
 public class Path
 {
 	//private final List<PathElement> elements;

@@ -257,7 +257,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		return (GChoice) super.leaveWFChoicePathCheck(parent, child, coll, visited);  // Replaces base popAndSet to do pop, merge and set
 	}*/
 
-	public GChoice visitForFsmConversion(GlobalModelBuilder graph, GChoice child)
+	public GChoice visitForGlobalModelBuilding(GlobalModelBuilder graph, GChoice child)
 	{
 		try
 		{
@@ -267,6 +267,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 				block.accept(graph);
 				graph.builder.popChoiceBlock();
 			}
+			graph.builder.getEntry().setChoiceExit(graph.builder.getExit());
 		}
 		catch (ScribbleException e)
 		{

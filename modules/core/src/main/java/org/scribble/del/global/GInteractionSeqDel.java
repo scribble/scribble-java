@@ -82,7 +82,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
 	}
 	
-	public GInteractionSeq visitForFsmConversion(GlobalModelBuilder conv, GInteractionSeq child)
+	public GInteractionSeq visitForGlobalModelBuilding(GlobalModelBuilder conv, GInteractionSeq child)
 	{
 		GModelState entry = conv.builder.getEntry();
 		GModelState exit = conv.builder.getExit();
