@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.InteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
@@ -16,12 +15,11 @@ import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GModelState;
-import org.scribble.sesstype.kind.Global;
+import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ProjectionEnv;
 
 public class GInteractionSeqDel extends InteractionSeqDel
 {
@@ -53,14 +51,13 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		ScribDelBase.pushVisitorEnv(this, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 	}
 	
-	@Override
-	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public LInteractionSeq project(GInteractionSeq gis, Role self)
 	{
-		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<LInteractionNode> lis = new LinkedList<>();
-		for (InteractionNode<Global> gi : gis.getInteractions())
+		for (GInteractionNode gi : gis.getInteractions())
 		{
-			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
+			//LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
+			LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
 				lis.addAll(((LInteractionSeq) ln).getInteractions());
@@ -78,6 +75,14 @@ public class GInteractionSeqDel extends InteractionSeqDel
 			}
 		}*/
 		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(lis);
+		return projection;
+	}
+	
+	@Override
+	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	{
+		GInteractionSeq gis = (GInteractionSeq) visited;
+		LInteractionSeq projection = project(gis, proj.peekSelf());
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
 	}

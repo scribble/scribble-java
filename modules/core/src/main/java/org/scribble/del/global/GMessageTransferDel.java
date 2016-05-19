@@ -9,6 +9,7 @@ import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
+import org.scribble.ast.global.GNode;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LNode;
 import org.scribble.ast.local.LReceive;
@@ -70,12 +71,10 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	}
 
 	@Override
-	//public GMessageTransfer leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
-	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
+	public LNode project(GNode n, Role self)
 	{
-		GMessageTransfer gmt = (GMessageTransfer) visited;
+		GMessageTransfer gmt = (GMessageTransfer) n;
 
-		Role self = proj.peekSelf();
 		Role srcrole = gmt.src.toName();
 		List<Role> destroles = gmt.getDestinationRoles();
 		LNode projection = null;
@@ -104,7 +103,16 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 				}
 			}
 		}
+		return projection;
+	}
 
+	@Override
+	//public GMessageTransfer leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
+	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
+	{
+		GMessageTransfer gmt = (GMessageTransfer) visited;
+		Role self = proj.peekSelf();
+		LNode projection = project(gmt, self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gmt);
 	}

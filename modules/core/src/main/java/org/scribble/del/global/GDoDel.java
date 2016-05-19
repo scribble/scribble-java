@@ -8,9 +8,11 @@ import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
+import org.scribble.ast.global.GNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LDo;
+import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
@@ -99,5 +101,11 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDo) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
+	}
+
+	@Override
+	public LInteractionNode project(GNode n, Role self)
+	{
+		throw new RuntimeException("TODO: " + n);
 	}
 }

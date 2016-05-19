@@ -19,6 +19,7 @@ module Test;
 type <java> "java.lang.int" from "rt.jar" as int;
 
 
+//*
 global protocol Proto1(role A, role B)
 {
 	choice at A
@@ -30,6 +31,7 @@ global protocol Proto1(role A, role B)
 		2() from A to B;
 	}
 }
+//*/
 
 
 /*
@@ -37,26 +39,27 @@ global protocol Proto1(role A, role B, role C)
 {
 	rec X
 	{
-	choice at A
-	{
-		1() from A to B;
 		choice at A
 		{
-			1() from A to C;
-			continue X;  // FIXME: badly formed (for B)  // FIXME: add test case
+			1() from A to B;
+			choice at A
+			{
+				1() from A to C;
+				continue X;  // FIXME: badly formed (for B)  // FIXME: add test case
+			}
+			or
+			{
+				3() from A to C;
+			}
 		}
 		or
 		{
-			3() from A to C;
+			2() from A to C;
+			2() from A to B;
 		}
 	}
-	or
-	{
-		2() from A to C;
-		2() from A to B;
-	}
-	}
 }
+//*/
 
 
 /*global protocol Proto1(role A, role B)

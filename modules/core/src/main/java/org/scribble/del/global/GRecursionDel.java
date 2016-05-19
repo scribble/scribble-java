@@ -10,6 +10,7 @@ import java.util.Set;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.global.GNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LChoice;
@@ -21,6 +22,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
+import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
@@ -50,11 +52,11 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		checker.pushEnv(merged);
 		return (GRecursion) super.leaveInlinedWFChoiceCheck(parent, child, checker, rec);
 	}
-
+	
 	@Override
-	public GRecursion leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	public LRecursion project(GNode n, Role self)
 	{
-		GRecursion gr = (GRecursion) visited;
+		GRecursion gr = (GRecursion) n;
 		RecVarNode recvar = gr.recvar.clone();
 		LRecursion projection = null;
 		Set<RecVar> rvs = new HashSet<>();
@@ -64,11 +66,19 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		{
 			projection = AstFactoryImpl.FACTORY.LRecursion(recvar, pruned);
 		}
+		return projection;
+	}
+
+	@Override
+	public GRecursion leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
+	{
+		GRecursion gr = (GRecursion) visited;
+		LRecursion projection = project(gr, proj.peekSelf());
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GRecursion) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gr);
 	}
 	
-	// Set unnecessary -- nested irrelevants continues should already have been pruned
+	// Set unnecessary -- nested irrelevant continues should already have been pruned
 	private static LProtocolBlock prune(LProtocolBlock block, Set<RecVar> rvs)
 	{
 		if (block.isEmpty())
