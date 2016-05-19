@@ -33,6 +33,7 @@ public class GModel
 		return new EndpointGraph(graph.getEntry(), graph.getExit());
 	}
 
+	// FIXME: incomplete, currently incorrect
 	private static void project(Set<GModelState> seen, Map<GModelState, EndpointState> map, GModelState gcurr, Role self, LGraphBuilder builder)
 	{
 		if (seen.contains(gcurr))
