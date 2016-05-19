@@ -20,6 +20,7 @@ public class CommandLineArgParser
 	public static final String OUTPUT_FLAG = "-d";
 	public static final String STATECHANSUBTYPES_FLAG = "-subtypes";
 	public static final String GLOBAL_MODEL_FLAG = "-model";
+	public static final String PROJECTED_MODEL_FLAG = "-pmodel";
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -37,6 +38,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.STATECHAN_FLAG, CommandLine.ArgFlag.SCHAN_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.PROJECTED_MODEL_FLAG, CommandLine.ArgFlag.PROJECTED_MODEL);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> FLAGS = new HashMap<>();
@@ -129,6 +131,10 @@ public class CommandLineArgParser
 			case CommandLineArgParser.GLOBAL_MODEL_FLAG:
 			{
 				return parseGlobalModel(i);
+			}
+			case CommandLineArgParser.PROJECTED_MODEL_FLAG:
+			{
+				return parseProjectedModel(i);
 			}
 			default:
 			{
@@ -235,6 +241,19 @@ public class CommandLineArgParser
 		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.GLOBAL_MODEL_FLAG), proto);
 		return i;
 	}
+
+	private int parseProjectedModel(int i)
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new RuntimeException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PROJECTED_MODEL_FLAG), proto, role);
+		return i;
+	}
+	
 
 	private int parseOutput(int i)  // Almost same as parseProject
 	{
