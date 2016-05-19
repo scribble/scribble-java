@@ -14,7 +14,7 @@ import org.scribble.visit.ProjectedChoiceSubjectFixer;
 public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LReceive leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public LReceive leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder builder, ScribNode visited)
 	{
 		LReceive lr = (LReceive) visited;
 		Role peer = lr.src.toName();
@@ -22,8 +22,8 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 		Payload payload = (lr.msg.isMessageSigNode())  // Hacky?
 				? ((MessageSigNode) lr.msg).payloads.toPayload()
 				: Payload.EMPTY_PAYLOAD;
-		graph.builder.addEdge(graph.builder.getEntry(), new Receive(peer, mid, payload), graph.builder.getExit());
-		return (LReceive) super.leaveGraphBuilding(parent, child, graph, lr);
+		builder.builder.addEdge(builder.builder.getEntry(), new Receive(peer, mid, payload), builder.builder.getExit());
+		return (LReceive) super.leaveEndpointGraphBuilding(parent, child, builder, lr);
 	}
 
 	@Override

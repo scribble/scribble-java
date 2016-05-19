@@ -139,7 +139,7 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 	private void addCaseReceiveMethod(ClassBuilder cb, IOAction a, EndpointState succ)
 	{
 		MethodBuilder mb = makeCaseReceiveHeader(cb, a, succ);
-		String ln = JavaBuilder.RETURN + " " + "receive(" + getSessionApiRoleConstant(a.peer) + ", ";
+		String ln = JavaBuilder.RETURN + " " + "receive(" + getSessionApiRoleConstant(a.obj) + ", ";
 		//ln += mb.getParameters().stream().map((p) -> p.substring(p.indexOf(" ") + 1, p.length())).collect(Collectors.joining(", ")) + ");";
 		boolean first = true;
 		for (String param : mb.getParameters())

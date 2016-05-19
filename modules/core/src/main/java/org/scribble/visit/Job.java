@@ -38,6 +38,7 @@ public class Job
 		runContextBuildingPasses();
 		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
 		//runVisitorPassOnAllModules(WFChoicePathChecker.class);
+
 		runProjectionPasses();
 		runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}
@@ -50,7 +51,8 @@ public class Job
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
-		//runNodeVisitorPass(GlobalModelBuilder.class);  // Incomplete
+
+		runVisitorPassOnAllModules(GlobalModelBuilder.class);
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module

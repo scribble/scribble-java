@@ -30,7 +30,7 @@ import org.scribble.visit.JobContext;
 // Maybe no point to be a Runnable
 public class CommandLine implements Runnable
 {
-	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, SCHAN_API, EP_API, OUTPUT, SCHAN_API_SUBTYPES }
+	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, SCHAN_API, EP_API, OUTPUT, SCHAN_API_SUBTYPES, GLOBAL_MODEL, PROJECTED_MODEL }
 	
 	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 	
@@ -75,6 +75,14 @@ public class CommandLine implements Runnable
 			{
 				outputEndpointApi(job);
 			}
+			if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
+			{
+				outputGlobalModel(job);
+			}
+			if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
+			{
+				outputProjectedModel(job);
+			}
 		}
 		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 		{
@@ -109,6 +117,29 @@ public class CommandLine implements Runnable
 		}
 	}
 	
+	private void outputGlobalModel(Job job) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			System.out.println("\n" + jcontext.getGlobalModel(fullname));
+		}
+	}
+	
+	private void outputProjectedModel(Job job) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.PROJECTED_MODEL);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			System.out.println("\n" + jcontext.getGlobalModel(fullname).project(role));
+		}
+	}
+
 	private void outputSessionApi(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();

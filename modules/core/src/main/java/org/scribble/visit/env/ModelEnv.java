@@ -7,13 +7,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.model.global.ModelAction;
+import org.scribble.model.global.GModelAction;
 import org.scribble.sesstype.name.Role;
 
 public class ModelEnv extends Env<ModelEnv>
 {
-	private Set<ModelAction> actions;
-	private Map<Role, ModelAction> leaves;
+	private Set<GModelAction> actions;
+	private Map<Role, GModelAction> leaves;
 	
 	public ModelEnv()
 	{
@@ -21,7 +21,7 @@ public class ModelEnv extends Env<ModelEnv>
 		this.leaves = new HashMap<>();
 	}
 
-	protected ModelEnv(Collection<ModelAction> actions, Map<Role, ModelAction> leaves)
+	protected ModelEnv(Collection<GModelAction> actions, Map<Role, GModelAction> leaves)
 	{
 		this.actions = new HashSet<>(actions);
 		this.leaves = new HashMap<>(leaves);
@@ -39,12 +39,12 @@ public class ModelEnv extends Env<ModelEnv>
 		return copy();
 	}
 	
-	public Set<ModelAction> getActions()
+	public Set<GModelAction> getActions()
 	{
 		return Collections.unmodifiableSet(this.actions);
 	}
 	
-	public ModelEnv setActions(Collection<ModelAction> actions, Map<Role, ModelAction> leaves)
+	public ModelEnv setActions(Collection<GModelAction> actions, Map<Role, GModelAction> leaves)
 	{
 		ModelEnv copy = new ModelEnv();
 		copy.actions = new HashSet<>(actions);
@@ -52,7 +52,7 @@ public class ModelEnv extends Env<ModelEnv>
 		return copy;
 	}
 
-	public Map<Role, ModelAction> getLeaves()
+	public Map<Role, GModelAction> getLeaves()
 	{
 		return Collections.unmodifiableMap(this.leaves);
 	}

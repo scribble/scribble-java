@@ -11,13 +11,13 @@ public class Receive extends IOAction
 		super(peer, mid, payload);
 	}
 	
-	@Override
+	/*@Override
 	public int hashCode()
 	{
 		int hash = 937;
 		hash = 31 * hash + super.hashCode();
 		return hash;
-	}
+	}*/
 
 	@Override
 	public boolean equals(Object o)

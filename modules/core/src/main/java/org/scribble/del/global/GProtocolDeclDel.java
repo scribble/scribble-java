@@ -1,10 +1,8 @@
 package org.scribble.del.global;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Module;
@@ -21,8 +19,7 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.ModelAction;
-import org.scribble.model.global.ModelState;
+import org.scribble.model.global.GModel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
@@ -32,7 +29,6 @@ import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.RoleCollector;
-import org.scribble.visit.env.ModelEnv;
 import org.scribble.visit.env.ProjectionEnv;
 
 public class GProtocolDeclDel extends ProtocolDeclDel<Global>
@@ -113,38 +109,50 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return projected;
 	}
 
+	// Cf. LProtocolDeclDel enter/leaveEndpointGraphBuilding
+	@Override
+	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph)
+	{
+		graph.builder.reset();
+	}
+
 	@Override
 	public GProtocolDecl leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
-		System.out.println("1a: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
-		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());
+		/*System.out.println("1a: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
+		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());*/
+		GModel model = new GModel(builder.builder.getEntry(), builder.builder.getExit());
+		JobContext jc = builder.getJobContext();
+		jc.addGlobalModel(gpd.getFullMemberName((Module) parent), model);
+		//builder.getJob().debugPrintln("\n[DEBUG] Global model " + gpd.getFullMemberName((Module) parent) + ":\n" + model);
 		return gpd;
 	}
 	
-	private static ModelState parseModel(Set<ModelAction> as)
+	/*private static GModelState parseModel(Set<GModelAction> as)
 	{
-		ModelState root = new ModelState();
-		Set<ModelAction> eligible = as.stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
-		Set<ModelAction> rest = new HashSet<>(as);
+		/*GModelState root = new GModelState();
+		Set<GModelAction> eligible = as.stream().filter((a) -> a.getDependencies().isEmpty()).collect(Collectors.toSet());
+		Set<GModelAction> rest = new HashSet<>(as);
 		rest.removeAll(eligible);
 		parseModel(rest, root, eligible);
-		return root;
-	}
+		return root;* /
+		throw new RuntimeException("TODO: ");
+	}*/
 
-	private static void parseModel(Set<ModelAction> rest, ModelState curr, Set<ModelAction> eligible)
+	/*private static void parseModel(Set<GModelAction> rest, GModelState curr, Set<GModelAction> eligible)
 	{
-		for (ModelAction e : eligible)
+		for (GModelAction e : eligible)
 		{
-			ModelState next = new ModelState();
+			GModelState next = new GModelState();
 			curr.addEdge(e, next);
-			Set<ModelAction> etmp = new HashSet<>(eligible);
+			Set<GModelAction> etmp = new HashSet<>(eligible);
 			etmp.remove(e);
-			Set<ModelAction> rtmp = new HashSet<>(rest);
-			for (ModelAction r : rest)
+			Set<GModelAction> rtmp = new HashSet<>(rest);
+			for (GModelAction r : rest)
 			{
 				//if (eligible.containsAll(r.getDependencies()))
-				Set<ModelAction> tmp =  new HashSet<>(etmp);
+				Set<GModelAction> tmp =  new HashSet<>(etmp);
 				tmp.addAll(rtmp);
 				tmp.retainAll(r.getDependencies());
 				if (tmp.isEmpty())
@@ -154,8 +162,9 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 				}
 			}
 			parseModel(rtmp, next, etmp);
-		}
-	}
+		}* /
+		throw new RuntimeException("TODO: ");
+	}*/
 
 	public Map<GProtocolName, Set<Role>> getGlobalProtocolDependencies(Role self)
 	{

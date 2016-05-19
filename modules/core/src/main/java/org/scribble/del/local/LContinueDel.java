@@ -25,7 +25,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 	}
 
 	@Override
-	public LContinue leaveGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public LContinue leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.recvar.toName();
@@ -40,6 +40,6 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		{
 			graph.builder.addEdge(graph.builder.getPredecessor(), graph.builder.getPreviousAction(), graph.builder.getRecursionEntry(rv));
 		}
-		return (LContinue) super.leaveGraphBuilding(parent, child, graph, lr);
+		return (LContinue) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
 	}
 }

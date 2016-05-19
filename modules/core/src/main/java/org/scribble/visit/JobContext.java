@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
+import org.scribble.model.global.GModel;
 import org.scribble.model.local.EndpointGraph;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -25,6 +26,7 @@ public class JobContext
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
 
+	private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
 	private final Map<LProtocolName, EndpointGraph> graphs = new HashMap<>();
 	
 	public JobContext(Map<ModuleName, Module> parsed, ModuleName main)
@@ -143,6 +145,16 @@ public class JobContext
 	public Module getProjection(GProtocolName fullname, Role role)
 	{
 		return this.projected.get(Projector.projectFullProtocolName(fullname, role));
+	}
+	
+	public void addGlobalModel(GProtocolName fullname, GModel model)
+	{
+		this.gmodels.put(fullname, model);
+	}
+	
+	public GModel getGlobalModel(GProtocolName fullname)
+	{
+		return this.gmodels.get(fullname);
 	}
 	
 	public void addEndpointGraph(LProtocolName lpn, EndpointGraph graph)

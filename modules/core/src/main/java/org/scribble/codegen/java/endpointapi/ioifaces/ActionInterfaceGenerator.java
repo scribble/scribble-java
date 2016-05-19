@@ -115,7 +115,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 	public static String getActionString(IOAction a)  // FIXME: peer not needed for inputs
 	{
 		//String name = a.peer + "$" + a.mid;
-		String name = a.peer + "_" + a.mid;
+		String name = a.obj + "_" + a.mid;
 		for (PayloadType<?> pay : a.payload.elems)
 		{
 			//name += "$" + pay;

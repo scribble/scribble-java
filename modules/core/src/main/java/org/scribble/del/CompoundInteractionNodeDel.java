@@ -6,8 +6,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.WFChoicePathChecker;
-import org.scribble.visit.env.WFChoicePathEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
@@ -61,7 +59,7 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		coll.pushEnv(env);
 	}*/
 
-	@Override
+	/*@Override
 	public CompoundInteractionNode<?> leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
 	//public CompoundInteractionNode<?> leavePathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll, ScribNode visited) throws ScribbleException
 	{
@@ -73,8 +71,8 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		
 		/*System.out.println("3: " + parent_env.getPaths().size());
 		System.out.println("4: " + parent_env.getPaths() + "");
-		System.out.println("4: " + visited + "\n");*/
+		System.out.println("4: " + visited + "\n");* /
 		
 		return (CompoundInteractionNode<?>) visited;
-	}
+	}*/
 }

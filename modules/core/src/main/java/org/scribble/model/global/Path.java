@@ -9,6 +9,7 @@ import java.util.Set;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
+@Deprecated
 public class Path
 {
 	//private final List<PathElement> elements;
@@ -81,7 +82,7 @@ public class Path
 			{
 				Communication comm = (Communication) pe;
 				roles.add(comm.src);
-				roles.add(comm.peer);
+				roles.add(comm.obj);
 			}
 			/*else  //if (pe instanceof RecVar)
 			{
