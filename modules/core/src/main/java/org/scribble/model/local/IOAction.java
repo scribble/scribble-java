@@ -8,16 +8,16 @@ import org.scribble.sesstype.name.Role;
 
 public abstract class IOAction extends ModelAction<Local>
 {
-	/*public final Role peer;
-	public final MessageId<?> mid;
+	public final Role peer;
+	/*public final MessageId<?> mid;
 	public final Payload payload;  // Empty for MessageSigNames*/
 	
 	public IOAction(Role peer, MessageId<?> mid, Payload payload)
 	{
-		/*this.peer = peer;
-		this.mid = mid;
+		/*this.mid = mid;
 		this.payload = payload;*/
 		super(peer, mid, payload);
+		this.peer = peer;
 	}
 	
 	/*@Override

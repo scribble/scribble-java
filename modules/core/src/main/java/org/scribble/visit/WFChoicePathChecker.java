@@ -3,8 +3,11 @@ package org.scribble.visit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
@@ -15,11 +18,16 @@ import org.scribble.model.global.GModel;
 import org.scribble.model.global.GModelAction;
 import org.scribble.model.global.GModelPath;
 import org.scribble.model.global.GModelState;
+import org.scribble.model.local.IOTrace;
+import org.scribble.sesstype.name.Role;
 
 // Duplicated from WFChoiceChecker
 // Maybe refactor as PathVisitor (extended by WF checker)
 //public class WFChoicePathChecker extends UnfoldingVisitor<WFChoicePathEnv> //PathCollectionVisitor
 ////public class WFChoicePathChecker extends InlinedProtocolVisitor<Env<?>>  // FIXME: should be unfolding visitor? GlobalModelBuilder should be too (need a correspondence between syntax nodes and model nodes)
+
+// ** The issue of path/trace based checking is the usual trace-equivalence vs bisimulation issue (set of traces conflates nested choice structures)
+// Possibly could address (in an ad hoc way) by inductively checking for e.g. trace set equivalence after each step
 public class WFChoicePathChecker extends ModuleContextVisitor
 {
 	// N.B. using pointer equality for checking if choice previously visited
@@ -103,12 +111,28 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 		}
 		Collection<GModelState> succs = curr.getSuccessors();
 
-		if (curr.isChoice())
+		if (curr.isChoice())  // ** Identifying choice states and their exits is determined by syntax, not model structure 
 		{
-			Set<GModelPath> paths = new HashSet<>();
+			List<GModelPath> paths = new LinkedList<>();
 			getPaths(paths, new GModelPath(), curr, curr.getChoiceExit(), reach);
 
-			System.out.println("ccc: " + paths);
+			System.out.println("ccc: " + curr + ", " + curr.getChoiceExit() + "\n" + paths);
+			
+			//...for each role, project each path (can be empty projection)
+			//...check consistent enablers -- maybe not needed if enough recursion paths checked?
+			//...except subject, check non-uniform continuation implies distinct (input) enabling -- this should also support non-subject output
+			
+			Set<Role> roles = paths.stream().flatMap((p) -> p.getRoles().stream()).collect(Collectors.toSet());
+
+			System.out.println("ddd: " + roles);
+			
+			for (Role r : roles)
+			{
+				List<IOTrace> projs = paths.stream().map((p) -> p.project(r)).collect(Collectors.toList());
+
+				System.out.println("eee: " + r);
+				System.out.println(projs);
+			}
 		}
 
 		seen.add(curr);
@@ -119,7 +143,7 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 	}
 
 	// Pre: curr is state at end of path
-	private static void getPaths(Set<GModelPath> paths, GModelPath path, GModelState curr, GModelState dest, Map<GModelState, Set<GModelState>> reach)
+	private static void getPaths(List<GModelPath> paths, GModelPath path, GModelState curr, GModelState dest, Map<GModelState, Set<GModelState>> reach)
 	{
 		for (GModelAction a : curr.getAcceptable())
 		{

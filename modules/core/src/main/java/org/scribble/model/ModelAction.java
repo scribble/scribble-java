@@ -11,7 +11,7 @@ public abstract class ModelAction<K extends ProtocolKind>
 	
 	public final int id;
 	
-	public final Role peer;
+	public final Role obj;
 	public final MessageId<?> mid;
 	public final Payload payload;  // Empty for MessageSigNames
 	
@@ -19,7 +19,7 @@ public abstract class ModelAction<K extends ProtocolKind>
 	{
 		this.id = ModelAction.count++;
 
-		this.peer = peer;
+		this.obj = peer;
 		this.mid = mid;
 		this.payload = payload;
 	}
@@ -27,7 +27,7 @@ public abstract class ModelAction<K extends ProtocolKind>
 	@Override
 	public String toString()
 	{
-		return this.peer + getCommSymbol() + this.mid + this.payload;
+		return this.obj + getCommSymbol() + this.mid + this.payload;
 	}
 	
 	protected abstract String getCommSymbol();

@@ -82,7 +82,7 @@ public class Path
 			{
 				Communication comm = (Communication) pe;
 				roles.add(comm.src);
-				roles.add(comm.peer);
+				roles.add(comm.obj);
 			}
 			/*else  //if (pe instanceof RecVar)
 			{

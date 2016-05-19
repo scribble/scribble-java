@@ -36,18 +36,8 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
-		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
-
-		runVisitorPassOnAllModules(WFChoicePathChecker.class);
-		// Checking WF on global model -- not directly an AST pass any more
-			/*this.jcontext.getFullModuleNames()
-
-			for (ModuleName modname : modnames)
-			{
-				AstVisitor nv = cons.newInstance(this);
-				Module visited = (Module) this.jcontext.getModule(modname).accept(nv);
-				this.jcontext.replaceModule(visited);
-			}*/
+		//runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
+		//runVisitorPassOnAllModules(WFChoicePathChecker.class);
 
 		runProjectionPasses();
 		runVisitorPassOnAllModules(ReachabilityChecker.class);

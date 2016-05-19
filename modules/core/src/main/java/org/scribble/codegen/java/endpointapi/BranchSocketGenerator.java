@@ -60,12 +60,12 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		
 		MethodBuilder mb = cb.newMethod("branch");
 		mb.setReturn(next);
-		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getAcceptable().iterator().next().peer) + " " + ROLE_PARAM);
+		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getAcceptable().iterator().next().obj) + " " + ROLE_PARAM);
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		mb.addAnnotations("@Override");
 		
-		Role peer = curr.getAcceptable().iterator().next().peer;
+		Role peer = curr.getAcceptable().iterator().next().obj;
 		mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		mb.addBodyLine(enumClass + " " + OPENUM_VAR + ";");

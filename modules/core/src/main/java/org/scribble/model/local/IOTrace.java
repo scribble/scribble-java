@@ -1,64 +1,44 @@
-package org.scribble.model.global;
+package org.scribble.model.local;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.scribble.model.local.IOAction;
-import org.scribble.model.local.IOTrace;
-import org.scribble.sesstype.name.Role;
-
-public class GModelPath
+// FIXME: factor with GModelPath
+public class IOTrace
 {
-	private final GModelAction[] elements;
+	private final IOAction[] elements;
 
-	public GModelPath(GModelAction... elements)
+	public IOTrace(IOAction... elements)
 	{
 		this.elements = elements;
 	}
 	
-	protected GModelPath(GModelAction[] p1, GModelAction... p2)
+	protected IOTrace(IOAction[] p1, IOAction... p2)
 	{
 		this(foo(p1, p2));
 	}
 	
-	private static GModelAction[] foo(GModelAction[] p1, GModelAction[] p2)
+	private static IOAction[] foo(IOAction[] p1, IOAction[] p2)
 	{
-		GModelAction[] copy = Arrays.copyOf(p1, p1.length + p2.length);
+		IOAction[] copy = Arrays.copyOf(p1, p1.length + p2.length);
 		System.arraycopy(p2, 0, copy, p1.length, p2.length);
 		return copy;
 	}
 	
-	public Set<Role> getRoles()
-	{
-		return Arrays.stream(this.elements).flatMap((a) -> a.getRoles().stream()).collect(Collectors.toSet());
-	}
-	
-	public IOTrace project(Role self)
-	{
-		return new IOTrace(
-				Arrays.stream(this.elements)
-					.filter((a) -> a.containsRole(self))
-					.map((a) -> a.project(self))
-					.collect(Collectors.toList())
-					.toArray(new IOAction[0]));
-	}
-	
-	public boolean containsEdge(GModelAction a)
+	public boolean containsEdge(IOAction a)
 	{
 		return Arrays.stream(this.elements).anyMatch(x -> x.equals(a));
 	}
 	
-	public GModelPath append(GModelAction pe)
+	public IOTrace append(IOAction pe)
 	{
-		return new GModelPath(this.elements, pe);
+		return new IOTrace(this.elements, pe);
 	}
 
-	public GModelPath concat(GModelPath p)
+	public IOTrace concat(IOTrace p)
 	{
-		return new GModelPath(this.elements, p.elements);
+		return new IOTrace(this.elements, p.elements);
 	}
 	
 	/*public boolean isExit()
@@ -66,12 +46,12 @@ public class GModelPath
 		return this.elements.length == 0 || !(this.elements[this.elements.length - 1] instanceof RecVar);
 	}*/
 	
-	public List<GModelAction> getElements()
+	public List<IOAction> getElements()
 	{
 		return Collections.unmodifiableList(Arrays.asList(this.elements));
 	}
 	
-	public GModelAction getLastElement()
+	public IOAction getLastElement()
 	{
 		return this.elements[this.elements.length - 1];
 	}
@@ -115,11 +95,11 @@ public class GModelPath
 		{
 			return true;
 		}
-		if (!(o instanceof GModelPath))
+		if (!(o instanceof IOTrace))
 		{
 			return false;
 		}
 		//return ((Path) o).elements.equals(this.elements);
-		return Arrays.equals(((GModelPath) o).elements, this.elements);
+		return Arrays.equals(((IOTrace) o).elements, this.elements);
 	}
 }

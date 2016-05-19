@@ -1,6 +1,13 @@
 package org.scribble.model.global;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.scribble.model.ModelAction;
+import org.scribble.model.local.IOAction;
+import org.scribble.model.local.Receive;
+import org.scribble.model.local.Send;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.MessageId;
@@ -13,6 +20,7 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 
 	//public final int id;
 	public final Role src;
+	public final Role dest;
 	//public final IOAction action;
 
 	//private Set<GModelAction> deps = new HashSet<>();
@@ -25,7 +33,45 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 		this.src = src;
 		this.action = action;*/
 		super(dest, mid, payload);
+		this.dest = dest;
 		this.src = src;
+	}
+	
+	public Set<Role> getRoles()
+	{
+		//return Arrays.stream(new Role[] {this.src, this.dest}).collect(Collectors.toSet());
+		return new HashSet<>(Arrays.asList(this.src, this.dest));
+	}
+	
+	public boolean containsRole(Role role)
+	{
+		return this.src.equals(role) || this.dest.equals(role);
+	}
+	
+	public IOAction project(Role self)
+	{
+		if (this.src.equals(self))
+		{
+			if (this.dest.equals(self))
+			{
+				throw new RuntimeException("TODO: " + this);
+			}
+			else
+			{
+				return new Send(this.dest, this.mid, this.payload);
+			}
+		}
+		else
+		{
+			if (this.dest.equals(self))
+			{
+				return new Receive(this.src, this.mid, this.payload);
+			}
+			else
+			{
+				return null;  // FIXME?
+			}
+		}
 	}
 	
 	/*public void addDependency(GModelAction ma)

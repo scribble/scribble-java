@@ -92,7 +92,7 @@ public class SendSocketGenerator extends ScribSocketGenerator
 		mb.setName("send");
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
-		mb.addParameters(SessionApiGenerator.getRoleClassName(a.peer) + " " + ROLE_PARAM);  // More params added below
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM);  // More params added below
 		if (a.mid.isOp())
 		{
 			addSendOpParams(apigen, mb, main, a);

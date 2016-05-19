@@ -19,7 +19,37 @@ module Test;
 type <java> "java.lang.int" from "rt.jar" as int;
 
 
-global protocol Proto1(role A, role B)
+/*global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		choice at B
+		{
+			2() from B to A;
+		}
+		or
+		{
+			3() from B to A;
+		}
+	}
+}
+
+global protocol Proto2(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to A;
+	}
+}*/
+
+/*global protocol Proto1(role A, role B)
 {
 	rec X {
 	choice at A
@@ -52,7 +82,8 @@ global protocol Proto1(role A, role B)
 	3b() from A to B;
 	}
 }
-	
+//*
+
 
 /*
 global protocol Proto1(role p, role q, role r)
