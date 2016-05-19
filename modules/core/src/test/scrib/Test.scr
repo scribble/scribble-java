@@ -19,6 +19,20 @@ module Test;
 type <java> "java.lang.int" from "rt.jar" as int;
 
 
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
@@ -62,7 +76,8 @@ global protocol Proto1(role A, role B, role C)
 }
 
 // Standard problem of basic path/trace based WF choice checking:
-// different nested choice structures get conflated
+// different nested choice structures get conflated, when looking downstream (not just enabling message)
+// checking enabling only via global model is easy, difficulty is merge
 global protocol Proto2(role A, role B)
 {
 	choice at A

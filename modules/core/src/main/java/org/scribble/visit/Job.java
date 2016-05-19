@@ -36,6 +36,7 @@ public class Job
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
+
 		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
 		//runVisitorPassOnAllModules(WFChoicePathChecker.class);
 
@@ -51,8 +52,7 @@ public class Job
 		runVisitorPassOnAllModules(RoleCollector.class);  // Actually, this is the second part of protocoldecl context building
 		runVisitorPassOnAllModules(ProtocolDefInliner.class);
 		runVisitorPassOnAllModules(InlinedProtocolUnfolder.class);
-
-		runVisitorPassOnAllModules(GlobalModelBuilder.class);
+		//runVisitorPassOnAllModules(GlobalModelBuilder.class);
 	}
 
 	// Due to Projector not being a subprotocol visitor, so "external" subprotocols may not be visible in ModuleContext building for the projections of the current root Module
