@@ -25,7 +25,42 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. check role-based starvation/liveness
 //.. CL ouput even if ScribbleException
 
-//*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec X
+		{
+			1() from A to B;
+			choice at B
+			{
+				2() from B to C;
+				choice at C
+				{
+					2() from C to A;
+					continue X;
+				}
+				or
+				{
+					() from C to A;
+					() from C to D;  // FIXME: minimise test
+					// FIXME: remove last edge
+					continue X;
+				}
+			}
+		}
+	}
+	or
+	{
+		0() from A to B;
+		0() from B to C;
+		0() from C to D;
+	}
+}
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	/*choice at A

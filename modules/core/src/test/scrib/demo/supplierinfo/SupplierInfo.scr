@@ -36,9 +36,9 @@ global protocol PartnershipSupplier(
 
 		//loginsuccess() from loginssv to authorisersvc;  // FIXME: mixed-role local choice
 		// FIXME: unguarded choice-rec for authorisersvc -- fixed by unfolding?
-		loginsuccess() from requestor to authorisersvc;
+		/*loginsuccess() from requestor to authorisersvc;
 		loginsuccess() from authorisersvc to suppliersvc;
-		loginsuccess() from authorisersvc to filtersvc;
+		loginsuccess() from authorisersvc to filtersvc;*/
 
 		rec mainBlock
 		{
@@ -51,8 +51,8 @@ global protocol PartnershipSupplier(
 				{
 					// DENIED
 					deny() from authorisersvc to requestor;
-					1() from authorisersvc to suppliersvc;  // FIXME: investigate commenting -- should be OK by recursion?
-					1() from authorisersvc to filtersvc;
+					1() from authorisersvc to suppliersvc;  // FIXME: investigate commenting -- should be OK by recursion? -- or a projection problem?
+					1() from authorisersvc to filtersvc;  // FIXME: investigate commenting -- seems to be remove last edge problem (maybe in conjunction with unguarded choice-rec)
 					continue mainBlock;
 				}
 				or
@@ -66,6 +66,7 @@ global protocol PartnershipSupplier(
 					suppliers() from authorisersvc to requestor;
 					continue mainBlock;
 				}
+				//continue mainBlock;
 			}
 			or
 			{
@@ -99,6 +100,7 @@ global protocol PartnershipSupplier(
 
 					continue mainBlock;
 				}
+				//continue mainBlock;
 			}
 			//continue mainBlock;  // FIXME: remove last edge -- last pred edge removal...
 		}
