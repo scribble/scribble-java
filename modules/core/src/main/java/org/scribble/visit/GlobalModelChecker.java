@@ -161,7 +161,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		if (!errors.isEmpty())
 		{
 			// FIXME TODO: give error trace
-			throw new ScribbleException("Global model safety violations:\n" + errors.stream().map((e) -> e.toString()).collect(Collectors.joining("\n")));
+			throw new ScribbleException("\n" + init.toDot() + "\n\nGlobal model safety violations:\n" + errors.stream().map((e) -> e.toString()).collect(Collectors.joining("\n")));
 		}
 
 		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);

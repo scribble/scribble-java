@@ -1,0 +1,107 @@
+module src.SupplierInfo;
+
+type <xsd> "UserName" from "AUTH.xsd" as username;
+type <xsd> "Password" from "AUTH.xsd" as password;
+type <xsd> "UUID" from "AUTH.xsd" as uuid;
+type <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
+type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
+
+type <xsd> "..." from "...xsd" as usercontext;
+type <xsd> "..." from "...xsd" as filters;
+
+type <java> "java.lang.Integer" from "rt.jar" as int;
+
+
+global protocol PartnershipSupplier(
+		role loginsvc,
+		role requestor,
+		role authorisersvc,
+		//role usersvc,
+		role filtersvc,
+		role suppliersvc,
+		role contractsvc)
+{
+	login(username, password) from requestor to loginsvc;
+	choice at loginsvc
+	{
+		loginfailure() from loginsvc to requestor;
+		0() from requestor to authorisersvc;
+		0() from authorisersvc to filtersvc;
+		0() from authorisersvc to suppliersvc;
+		0() from authorisersvc to contractsvc;
+	}
+	or
+	{
+		loginsuccess() from loginsvc to requestor;
+
+		//loginsuccess() from loginssv to authorisersvc;  // FIXME: mixed-role local choice
+		// FIXME: unguarded choice-rec for authorisersvc -- fixed by unfolding?
+		loginsuccess() from requestor to authorisersvc;
+		loginsuccess() from authorisersvc to suppliersvc;
+		loginsuccess() from authorisersvc to filtersvc;
+
+		rec mainBlock
+		{
+			choice at requestor
+			{
+				// GET SUPPLIER INFO
+				getsuppliers(uuid) from requestor to authorisersvc;
+				//1() from authorisersvc to contractsvc;
+				choice at authorisersvc
+				{
+					// DENIED
+					deny() from authorisersvc to requestor;
+					1() from authorisersvc to suppliersvc;  // FIXME: investigate commenting -- should be OK by recursion?
+					1() from authorisersvc to filtersvc;
+					continue mainBlock;
+				}
+				or
+				{
+					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+					getsuppliers() from authorisersvc to suppliersvc;
+					suppliers() from suppliersvc to authorisersvc;
+
+					filter1(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
+					filtered1() from filtersvc to authorisersvc;
+					suppliers() from authorisersvc to requestor;
+					continue mainBlock;
+				}
+			}
+			or
+			{
+				// GET CONTRACT INFO
+				getcontracts() from requestor to authorisersvc;
+				//choice at authoriser
+				2() from authorisersvc to suppliersvc;
+				/*2() from authorisersvc to contractsvc;
+				2() from authorisersvc to filtersvc;*/
+				choice at authorisersvc
+				{
+					// DENIED
+					deny() from authorisersvc to requestor;
+					2() from authorisersvc to contractsvc;
+					2() from authorisersvc to filtersvc;
+
+					3() from authorisersvc to suppliersvc;  // FIXME: investigate commenting
+					continue mainBlock;
+				}
+				or
+				{
+					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+					getcontracts() from authorisersvc to contractsvc;
+					suppliers() from contractsvc to authorisersvc;
+
+					filter2(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
+					filtered2() from filtersvc to authorisersvc;
+					contracts() from authorisersvc to requestor;
+
+					3() from authorisersvc to suppliersvc;  // FIXME:
+
+					continue mainBlock;
+				}
+			}
+			//continue mainBlock;  // FIXME: remove last edge
+		}
+	}
+}
+

@@ -161,7 +161,7 @@ public class WFState
 	protected String getNodeLabel()
 	{
 		String labs = this.config.toString();
-		return "label=\"" + labs.substring(1, labs.length() - 1) + "\"";
+		return "label=\"" + this.id + ": " + labs.substring(1, labs.length() - 1) + "\"";
 	}
 	
 	protected String getDotNodeId()

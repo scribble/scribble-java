@@ -23,11 +23,12 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. check junit harness and unit tests, add new tests
 //.. do subprotocols
 //.. check role-based starvation/liveness
+//.. CL ouput even if ScribbleException
 
 //*
 global protocol Proto1(role A, role B, role C)
 {
-	choice at A
+	/*choice at A
 	{
 		1() from A to B;
 		1() from B to C;
@@ -37,7 +38,22 @@ global protocol Proto1(role A, role B, role C)
 		2() from A to B;
 		1() from B to C;  // Comment is bad
 	}
-	2() from C to B;
+	2() from C to B;*/
+	rec X  // FIXME: Good test
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			continue X;
+		}
+		//continue X; // FIXME: remove last edge
+	}
 }
 //*/
 
