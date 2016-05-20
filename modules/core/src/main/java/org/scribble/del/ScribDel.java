@@ -2,7 +2,7 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.CompatChecker;
+import org.scribble.visit.GlobalModelChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.InlinedProtocolUnfolder;
@@ -200,12 +200,12 @@ public interface ScribDel
 		return visited;
 	}*/
 	
-	default void enterCompatCheck(ScribNode parent, ScribNode child, CompatChecker coll) throws ScribbleException
+	default void enterCompatCheck(ScribNode parent, ScribNode child, GlobalModelChecker coll) throws ScribbleException
 	{
 		
 	}
 
-	default ScribNode leaveCompatCheck(ScribNode parent, ScribNode child, CompatChecker coll, ScribNode visited) throws ScribbleException
+	default ScribNode leaveCompatCheck(ScribNode parent, ScribNode child, GlobalModelChecker coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

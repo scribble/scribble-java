@@ -1,17 +1,13 @@
 package org.scribble.visit;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
@@ -21,23 +17,17 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.global.GProtocolBlockDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModel;
-import org.scribble.model.global.GModelAction;
-import org.scribble.model.global.GModelPath;
-import org.scribble.model.global.GModelState;
 import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
-import org.scribble.model.local.IOTrace;
-import org.scribble.model.local.Send;
 import org.scribble.model.wf.WFBuffers;
 import org.scribble.model.wf.WFConfig;
 import org.scribble.model.wf.WFState;
 import org.scribble.sesstype.name.Role;
 
-public class CompatChecker extends ModuleContextVisitor
+public class GlobalModelChecker extends ModuleContextVisitor
 {
-	public CompatChecker(Job job)
+	public GlobalModelChecker(Job job)
 	{
 		super(job);
 	}
@@ -86,6 +76,7 @@ public class CompatChecker extends ModuleContextVisitor
 		}
 	}
 
+	// Refactor to GProtocolDeclDel
 	private GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) child;
@@ -97,14 +88,14 @@ public class CompatChecker extends ModuleContextVisitor
 			GProtocolBlock gpb = gpd.getDef().getBlock();
 			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);
 			
-			System.out.println("aaa: " + proj);
+			//System.out.println("aaa: " + proj);
 			
 			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
 			graph.builder.reset();
 			proj.accept(graph);  // Don't do on root decl, side effects job context
 			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 
-			System.out.println("bbb: " + fsm);
+			//System.out.println("bbb: " + fsm);
 			
 			fsms.put(self, fsm.init);
 		}
@@ -125,56 +116,55 @@ public class CompatChecker extends ModuleContextVisitor
 			i.remove();
 			seen.add(curr);
 			
-			Map<Role, Set<IOAction>> acceptable = curr.getAcceptable();
+			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
 
-			System.out.println("ccc: " + acceptable);
+			//System.out.println("ccc: " + acceptable);
 
 			for (Role r : acceptable.keySet())
 			{
 				for (IOAction a : acceptable.get(r))
 				{
-					WFConfig next = curr.accept(r, a);
-					WFState succ = new WFState(next);
-					if (seen.contains(succ))  // FIXME: make a WFModel builder
+					for (WFConfig next : curr.accept(r, a))
 					{
-						for (WFState tmp : seen)
+						WFState succ = new WFState(next);
+						if (seen.contains(succ))  // FIXME: make a WFModel builder
+						{
+							for (WFState tmp : seen)
+							{
+								if (tmp.equals(succ))
+								{
+									succ = tmp;
+								}
+							}
+						}
+						for (WFState tmp : todo)
 						{
 							if (tmp.equals(succ))
 							{
 								succ = tmp;
 							}
 						}
-					}
-					for (WFState tmp : todo)
-					{
-						if (tmp.equals(succ))
+						curr.addEdge(a.toGlobal(r), succ);
+						if (!seen.contains(succ) && !todo.contains(succ))
 						{
-							succ = tmp;
+							todo.add(succ);
 						}
-					}
-					curr.addEdge(a.toGlobal(r), succ);
-					
-					if (succ.getAcceptable().isEmpty())
-					{
-						System.out.println("foo: " + succ);
-					}
-					
-					if (!seen.contains(succ) && !todo.contains(succ))
-					{
-						todo.add(succ);
 					}
 				}
 			}
 		}
 
-		System.out.println("ddd:\n" + init.toDot());
+		//System.out.println("ddd:\n" + init.toDot());
 
-		Set<WFState> errors = init.findTerminalStates().stream().filter((s) -> s.isError()).collect(Collectors.toSet());
-
+		Set<WFState> terms = init.findTerminalStates();
+		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
 		if (!errors.isEmpty())
 		{
-			System.out.println("Errors: " + errors);
+			// FIXME TODO: give error trace
+			throw new ScribbleException("Global model safety violations:\n" + errors.stream().map((e) -> e.toString()).collect(Collectors.joining("\n")));
 		}
+
+		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 		
 		return child;
 	}

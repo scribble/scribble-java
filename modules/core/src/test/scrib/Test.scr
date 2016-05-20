@@ -19,28 +19,277 @@ module Test;
 type <java> "java.lang.int" from "rt.jar" as int;
 
 
+//.. check choice subj WF
+//.. check junit harness and unit tests, add new tests
+//.. do subprotocols
+
 //*
-//global protocol Proto1(role A, role B, role C)
-global protocol Proto1(role A, role B)
+global protocol Proto1(role A, role B, role C)
 {
-	//rec X {
 	choice at A
 	{
 		1() from A to B;
-		5() from B to A;
-		//3() from A to C;
-		//continue X;
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		1() from B to C;  // Comment is bad
+	}
+	2() from C to B;
+}
+//*/
+
+
+//*** TODO FIXME add test cases
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		1() from B to C;  // Comment is bad
+	}
+	2() from C to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		1() from C to B;
+	}
+	or
+	{
+		//1() from A to B;  // Uncomment is bad
+		2() from A to B;
+		2() from A to C;
+		2() from C to B;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// Good
+	choice at A
+	{
+		1() from A to B;
+		1() from B to C;
 	}
 	or
 	{
 		1() from A to B;
-		//2() from A to B;
-		6() from B to A;
-		//4() from A to C;
+		2() from B to C;
 	}
-	//}
 }
 //*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	0() from B to C;
+	// Uncomments are bad
+	choice at A
+	{
+		//0() from B to C;
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		//0() from B to C;
+		2() from A to B;
+		2() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at B
+			{
+				1() from B to C;
+				continue X;
+			}
+			or
+			{
+				//1() from B to C;  // Uncomment is OK
+				3() from B to C;
+				continue X;  // Comment is bad
+			}
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// Good
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		4() from A to B;
+	}
+	or
+	{
+		3() from A to B;
+		2() from B to C;
+		5() from A to B;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// Bad
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		4() from A to C;
+	}
+	or
+	{
+		3() from A to B;
+		2() from B to C;
+		5() from A to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		2() from B to C;
+		//3() from B to C;  // Uncomment bad
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			3() from A to C;
+			//continue X;  // Uncomment bad
+		}
+		or
+		{
+			1() from A to B;
+			4() from A to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X {
+		choice at A
+		{
+			1() from A to B;
+			continue X;  // Comment bad
+		}
+		or
+		{
+			2() from A to B;
+			4() from A to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X {
+		choice at A
+		{
+			1() from A to B;
+			3() from A to C;
+			continue X;
+		}
+		or
+		{
+			//1() from A to B;  // Uncomment bad
+			2() from A to B;
+			4() from A to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X {
+		choice at A
+		{
+			1() from A to B;
+			3() from B to C;
+			// FIXME TODO: safe, but not supported by local syntax
+			//continue X;  // Uncomment bad
+		}
+		or
+		{
+			2() from A to B;
+			4() from A to C;
+		}
+	}
+}
+//*/
+
+//***
 
 
 /*

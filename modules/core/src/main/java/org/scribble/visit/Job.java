@@ -37,8 +37,7 @@ public class Job
 	{
 		runContextBuildingPasses();
 
-		runVisitorPassOnAllModules(CompatChecker.class);
-		
+		runVisitorPassOnAllModules(GlobalModelChecker.class);
 		//runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
 		//runVisitorPassOnAllModules(WFChoicePathChecker.class);
 		

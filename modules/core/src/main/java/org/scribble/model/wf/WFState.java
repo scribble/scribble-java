@@ -1,11 +1,11 @@
 package org.scribble.model.wf;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.scribble.model.global.GModelAction;
@@ -19,23 +19,39 @@ public class WFState
 	public final int id;
 
 	public final WFConfig config;
-	protected final LinkedHashMap<GModelAction, WFState> edges;
+	//protected final LinkedHashMap<GModelAction, WFState> edges;
+	protected final List<GModelAction> actions;
+	protected final List<WFState> succs;
 	
 	public WFState(WFConfig config)
 	{
 		this.id = WFState.count++;
 		this.config = config;
-		this.edges = new LinkedHashMap<>();
+		//this.edges = new LinkedHashMap<>();
+		this.actions = new LinkedList<>();
+		this.succs = new LinkedList<>();
 	}
 	
-	// Mutable (can also overwrite edges)
 	public void addEdge(GModelAction a, WFState s)
 	{
-		this.edges.put(a, s);
+		//this.edges.put(a, s);
+		Iterator<GModelAction> as = this.actions.iterator();
+		Iterator<WFState> ss = this.succs.iterator();
+		while (as.hasNext())
+		{
+			GModelAction tmpa = as.next();
+			WFState tmps = ss.next();
+			if (tmpa.equals(a) && tmps.equals(s))
+			{
+				return;
+			}
+		}
+		this.actions.add(a);
+		this.succs.add(s);
 	}
 	
 	//public Set<GModelAction> getAcceptable()
-	public Map<Role, Set<IOAction>> getAcceptable()
+	public Map<Role, List<IOAction>> getAcceptable()
 	{
 		//return Collections.unmodifiableSet(this.edges.keySet());
 		return this.config.getAcceptable();
@@ -47,14 +63,15 @@ public class WFState
 	}*/
 
 	//public WFState accept(GModelAction a)
-	public WFConfig accept(Role r, IOAction a)
+	public List<WFConfig> accept(Role r, IOAction a)
 	{
 		return this.config.accept(r, a);
 	}
 	
-	public Collection<WFState> getSuccessors()
+	public List<WFState> getSuccessors()
 	{
-		return Collections.unmodifiableCollection(this.edges.values());
+		//return Collections.unmodifiableCollection(this.edges.values());
+		return Collections.unmodifiableList(this.succs);
 	}
 	
 	public boolean isError()
@@ -64,7 +81,8 @@ public class WFState
 	
 	public boolean isTerminal()
 	{
-		return this.edges.isEmpty();
+		//return this.edges.isEmpty();
+		return this.actions.isEmpty();
 	}
 
 	@Override
@@ -108,10 +126,13 @@ public class WFState
 	{
 		seen.add(this);
 		String s = toNodeDot();
-		for (Entry<GModelAction, WFState> e : this.edges.entrySet())
+		//for (Entry<GModelAction, WFState> e : this.edges.entrySet())
+		for (int i = 0; i < this.actions.size(); i++)
 		{
-			GModelAction msg = e.getKey();
-			WFState p = e.getValue();
+			/*GModelAction msg = e.getKey();
+			WFState p = e.getValue();*/
+			GModelAction msg = this.actions.get(i);
+			WFState p = this.succs.get(i);
 			s += "\n" + toEdgeDot(msg, p);
 			if (!seen.contains(p))
 			{

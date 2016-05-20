@@ -2,11 +2,9 @@ package org.scribble.model.wf;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.BinaryOperator;
-import java.util.Set;
 
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
@@ -32,43 +30,50 @@ public class WFConfig
 	// Means successful termination
 	public boolean isEnd()
 	{
-		return this.states.values().stream().allMatch((s) -> s.isTerminal()) && buffs.isEmpty();
+		return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.buffs.isEmpty();
 	}
 	
-	public WFConfig accept(Role r, IOAction a)
+	public List<WFConfig> accept(Role r, IOAction a)
 	{
-		Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
-		//Map<Role, Map<Role, Send>> tmp2 = new HashMap<>(this.buffs);
+		List<WFConfig> res = new LinkedList<>();
 		
-		EndpointState succ = tmp1.get(r).accept(a);
-		tmp1.put(r, succ);
+		List<EndpointState> succs = this.states.get(r).acceptAll(a);
+		for (EndpointState succ : succs)
+		{
+			Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
+			//Map<Role, Map<Role, Send>> tmp2 = new HashMap<>(this.buffs);
+		
+			tmp1.put(r, succ);
 
-		/*Map<Role, Send> tmp3 = new HashMap<>(tmp2.get(a.peer));
-		tmp2.put(a.peer, tmp3);* /
-		Map<Role, Send> tmp3 = tmp2.get(a.peer);
-		if (a.isSend())
-		{
-			tmp3.put(r, (Send) a);
+			/*Map<Role, Send> tmp3 = new HashMap<>(tmp2.get(a.peer));
+			tmp2.put(a.peer, tmp3);* /
+			Map<Role, Send> tmp3 = tmp2.get(a.peer);
+			if (a.isSend())
+			{
+				tmp3.put(r, (Send) a);
+			}
+			else
+			{
+				tmp3.put(r, null);
+			}*/
+			WFBuffers tmp2;
+			if (a.isSend())
+			{
+				tmp2 = this.buffs.send(r, (Send) a);
+			}
+			else
+			{
+				tmp2 = this.buffs.receive(r, (Receive) a);
+			}
+			res.add(new WFConfig(tmp1, tmp2));
 		}
-		else
-		{
-			tmp3.put(r, null);
-		}*/
-		WFBuffers tmp2;
-		if (a.isSend())
-		{
-			tmp2 = this.buffs.send(r, (Send) a);
-		}
-		else
-		{
-			tmp2 = this.buffs.receive(r, (Receive) a);
-		}
-		return new WFConfig(tmp1, tmp2);
+
+		return res;
 	}
 	
-	public Map<Role, Set<IOAction>> getAcceptable()
+	public Map<Role, List<IOAction>> getAcceptable()
 	{
-		Map<Role, Set<IOAction>> res = new HashMap<>();
+		Map<Role, List<IOAction>> res = new HashMap<>();
 		for (Role r : this.states.keySet())
 		{
 			EndpointState s = this.states.get(r);
@@ -76,15 +81,15 @@ public class WFConfig
 			{
 				case OUTPUT:
 				{
-					Set<IOAction> as = s.getAcceptable();
+					List<IOAction> as = s.getAllAcceptable();
 					for (IOAction a : as)
 					{
 						if (this.buffs.canSend(r, (Send) a))
 						{
-							Set<IOAction> tmp = res.get(r);
+							List<IOAction> tmp = res.get(r);
 							if (tmp == null)
 							{
-								tmp = new HashSet<>();
+								tmp = new LinkedList<>();
 								res.put(r, tmp);
 							}
 							tmp.add(a);
@@ -99,10 +104,10 @@ public class WFConfig
 					{
 						if (s.isAcceptable(e))
 						{
-							Set<IOAction> tmp = res.get(r);
+							List<IOAction> tmp = res.get(r);
 							if (tmp == null)
 							{
-								tmp = new HashSet<>();
+								tmp = new LinkedList<>();
 								res.put(r, tmp);
 							}
 							tmp.add(e);

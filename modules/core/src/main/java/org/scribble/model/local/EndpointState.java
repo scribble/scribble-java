@@ -1,5 +1,6 @@
 package org.scribble.model.local;
 
+import java.util.List;
 import java.util.Set;
 
 import org.scribble.model.ModelState;
@@ -28,7 +29,7 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 	
 	public Kind getStateKind()
 	{
-		Set<IOAction> as = this.getAcceptable();
+		List<IOAction> as = this.getAllAcceptable();
 		return (as.size() == 0)
 				? Kind.TERMINAL
 				: (as.iterator().next() instanceof Send)

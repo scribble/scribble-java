@@ -87,7 +87,7 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 	private GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) child;
-		GModel model = getJobContext().getGlobalModel(gpd.getFullMemberName(parent));
+		GModel model = null;// getJobContext().getGlobalModel(gpd.getFullMemberName(parent));
 
 		//System.out.println("aaa: " + model);
 

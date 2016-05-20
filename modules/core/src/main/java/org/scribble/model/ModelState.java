@@ -1,11 +1,13 @@
 package org.scribble.model;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
@@ -19,7 +21,10 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 
 	protected final Set<RecVar> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
 	//private final Set<String> labs;  // Something better to cover both RecVar and SubprotocolSigs?
-	protected final LinkedHashMap<A, S> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)*/
+
+	//protected final LinkedHashMap<A, S> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)*/
+	protected final List<A> actions;
+	protected final List<S> succs;
 	
 	public ModelState(Set<RecVar> labs)  // Immutable singleton node
 	//public GModelState(Set<String> labs)  // Immutable singleton node
@@ -27,7 +32,9 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	{
 		this.id = ModelState.count++;
 		this.labs = new HashSet<>(labs);
-		this.edges = new LinkedHashMap<>();
+		//this.edges = new LinkedHashMap<>();
+		this.actions = new LinkedList<>();
+		this.succs = new LinkedList<>();
 	}
 	
 	protected void addLabel(RecVar lab)
@@ -35,10 +42,29 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		this.labs.add(lab);
 	}
 	
+	protected void removeLastEdge()
+	{
+		this.actions.remove(this.actions.size() - 1);
+		this.succs.remove(this.succs.size() - 1);
+	}
+	
 	// Mutable (can also overwrite edges)
 	protected void addEdge(A a, S s)
 	{
-		this.edges.put(a, s);
+		//this.edges.put(a, s);
+		Iterator<A> as = this.actions.iterator();  // Needed?..
+		Iterator<S> ss = this.succs.iterator();
+		while (as.hasNext())
+		{
+			A tmpa = as.next();
+			S tmps = ss.next();
+			if (tmpa.equals(a) && tmps.equals(s))
+			{
+				return;
+			}
+		}  // ..needed?
+		this.actions.add(a);
+		this.succs.add(s);
 	}
 	
 	public Set<RecVar> getLabels()
@@ -48,27 +74,55 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	
 	public Set<A> getAcceptable()
 	{
-		return Collections.unmodifiableSet(this.edges.keySet());
+		Set<A> as = new HashSet<>(this.actions);
+		if (as.size() != this.actions.size())
+		{
+			throw new RuntimeException("FIXME: " + this.actions);
+		}
+		return as;
+	}
+
+	public List<A> getAllAcceptable()
+	{
+		//return Collections.unmodifiableSet(this.edges.keySet());
+		return Collections.unmodifiableList(this.actions);
 	}
 	
 	public boolean isAcceptable(A a)
 	{
-		return this.edges.containsKey(a);
+		//return this.edges.containsKey(a);
+		return this.actions.contains(a);
 	}
 
 	public S accept(A a)
 	{
-		return this.edges.get(a);
+		Set<A> as = new HashSet<>(this.actions);
+		if (as.size() != this.actions.size())
+		{
+			throw new RuntimeException("FIXME: " + this.actions);
+		}
+		return acceptAll(a).get(0);
+	}
+
+	public List<S> acceptAll(A a)
+	{
+		//return this.edges.get(a);
+		return IntStream.range(0, this.actions.size())
+			.filter((i) -> this.actions.get(i).equals(a))
+			.mapToObj((i) -> this.succs.get(i))
+			.collect(Collectors.toList());
 	}
 	
-	public Collection<S> getSuccessors()
+	public List<S> getSuccessors()
 	{
-		return Collections.unmodifiableCollection(this.edges.values());
+		//return Collections.unmodifiableCollection(this.edges.values());
+		return Collections.unmodifiableList(this.succs);
 	}
 	
 	public boolean isTerminal()
 	{
-		return this.edges.isEmpty();
+		//return this.edges.isEmpty();
+		return this.actions.isEmpty();
 	}
 
 	@Override
@@ -125,10 +179,13 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	{
 		seen.add(this);
 		String s = toNodeDot();
-		for (Entry<A, S> e : this.edges.entrySet())
+		//for (Entry<A, S> e : this.edges.entrySet())
+		for (int i = 0; i < this.actions.size(); i ++)
 		{
-			A msg = e.getKey();
-			S p = e.getValue();
+			/*A msg = e.getKey();
+			S p = e.getValue();*/
+			A msg = this.actions.get(i);
+			S p = this.succs.get(i);
 			s += "\n" + toEdgeDot(msg, p);
 			if (!seen.contains(p))
 			{

@@ -31,6 +31,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		RecVar rv = lr.recvar.toName();
 		//graph.builder.setEntry(graph.builder.getRecursionEntry(rv));
 		//if (graph.builder.getPredecessor() == null)  // unguarded choice case
+		// ** Overwrites previous edge built by send/receive
 		if (graph.builder.isUnguardedInChoice())
 		{
 			IOAction a = graph.builder.getEnacting(rv);
@@ -38,7 +39,9 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		}
 		else
 		{
+			graph.builder.removeLastEdge(graph.builder.getPredecessor());  // Hacky? -- cannot implicitly overwrite given non-det machines
 			graph.builder.addEdge(graph.builder.getPredecessor(), graph.builder.getPreviousAction(), graph.builder.getRecursionEntry(rv));
+
 		}
 		return (LContinue) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
 	}

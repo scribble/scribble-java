@@ -48,6 +48,11 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		this.entry.addLabel(lab);
 	}
 
+	public void removeLastEdge(S s)
+	{
+		s.removeLastEdge();
+	}
+	
 	// Records 's' as predecessor state, and 'a' as previous action and the "enacting action" for "fresh" recursion scopes
 	public void addEdge(S s, A a, S succ)
 	{

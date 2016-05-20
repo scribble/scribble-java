@@ -16,7 +16,7 @@ import org.scribble.sesstype.name.Role;
 // Mutable
 public class GModelAction extends ModelAction<Global> //implements PathElement
 {
-	protected static final Set<GModelAction> ACTIONS = new HashSet<>();
+	/*protected static final Set<GModelAction> ACTIONS = new HashSet<>();
 	
 	public static GModelAction get(Role src, Role dest, MessageId<?> mid, Payload payload)
 	{
@@ -30,7 +30,7 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 		}
 		GModelAction.ACTIONS.add(action);
 		return action;
-	}
+	}*/
 	
 	//private static int counter = 1;
 
@@ -41,12 +41,12 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 
 	//private Set<GModelAction> deps = new HashSet<>();
 	
-	public GModelAction(Role src, Role dest, MessageId<?> mid, Payload payload, boolean hack)
+	/*public GModelAction(Role src, Role dest, MessageId<?> mid, Payload payload, boolean hack)
 	{
 		super(dest, mid, payload);
 		this.dest = dest;
 		this.src = src;
-	}
+	}*/
 
 	//public GModelAction(Role src, IOAction action)
 	public GModelAction(Role src, Role dest, MessageId<?> mid, Payload payload)
@@ -58,7 +58,7 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 		super(dest, mid, payload);
 		this.dest = dest;
 		this.src = src;
-		GModelAction.ACTIONS.add(this);
+		//GModelAction.ACTIONS.add(this);
 	}
 	
 	public Set<Role> getRoles()
@@ -82,16 +82,16 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 			}
 			else
 			{
-				//return new Send(this.dest, this.mid, this.payload);
-				return Send.get(this.dest, this.mid, this.payload);
+				return new Send(this.dest, this.mid, this.payload);
+				//return Send.get(this.dest, this.mid, this.payload);
 			}
 		}
 		else
 		{
 			if (this.dest.equals(self))
 			{
-				//return new Receive(this.src, this.mid, this.payload);
-				return Receive.get(this.src, this.mid, this.payload);
+				return new Receive(this.src, this.mid, this.payload);
+				//return Receive.get(this.src, this.mid, this.payload);
 			}
 			else
 			{
@@ -100,7 +100,7 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 		}
 	}
 	
-	@Override
+	/*@Override
 	public boolean equiv(Object o)
 	{
 		if (!(o instanceof GModelAction))
@@ -108,7 +108,7 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 			return false;
 		}
 		return super.equiv(o) && this.src.equals(((GModelAction) o).src);
-	}
+	}*/
 
 	/*public void addDependency(GModelAction ma)
 	{
