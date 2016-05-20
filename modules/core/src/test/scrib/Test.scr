@@ -34,6 +34,7 @@ global protocol Proto1(role A, role B)
 	or
 	{
 		1() from A to B;
+		//2() from A to B;
 		6() from B to A;
 		//4() from A to C;
 	}

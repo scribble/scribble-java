@@ -155,6 +155,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.builder.addEdge(builder.builder.getEntry(), new GModelAction(ls.src.toName(), peer, mid, payload), builder.builder.getExit());
+		//builder.builder.addEdge(builder.builder.getEntry(), GModelAction.get(ls.src.toName(), peer, mid, payload), builder.builder.getExit());
 		return (GMessageTransfer) super.leaveModelBuilding(parent, child, builder, ls);
 	}
 	

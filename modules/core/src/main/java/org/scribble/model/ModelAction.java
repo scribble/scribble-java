@@ -7,10 +7,9 @@ import org.scribble.sesstype.name.Role;
 
 public abstract class ModelAction<K extends ProtocolKind>
 {
-	/*private static int count = 0;
+	private static int count = 0;
 	
-	public final int id;  // Was using for trace enumeration, but breaks isAcceptable
-	*/
+	public final int id;  // Was using for trace enumeration, but breaks isAcceptable -- but need for non-det models*/
 	
 	public final Role obj;
 	public final MessageId<?> mid;
@@ -18,7 +17,7 @@ public abstract class ModelAction<K extends ProtocolKind>
 	
 	public ModelAction(Role peer, MessageId<?> mid, Payload payload)
 	{
-		//this.id = ModelAction.count++;
+		this.id = ModelAction.count++;
 
 		this.obj = peer;
 		this.mid = mid;
@@ -33,7 +32,7 @@ public abstract class ModelAction<K extends ProtocolKind>
 	
 	protected abstract String getCommSymbol();
 	
-	@Override
+	/*@Override
 	public int hashCode()
 	{
 		int hash = 919;
@@ -41,18 +40,17 @@ public abstract class ModelAction<K extends ProtocolKind>
 		hash = 31 * hash + this.mid.hashCode();
 		hash = 31 * hash + this.payload.hashCode();
 		return hash;
-	}
+	}*/
 
-	/*@Override
+	@Override
 	public final int hashCode()
 	{
 		int hash = 79;
 		hash = 31 * hash + this.id;
 		return hash;
-	}*/
-
-	@Override
-	public boolean equals(Object o)  // FIXME: kind
+	}
+	
+	public boolean equiv(Object o)
 	{
 		if (this == o)
 		{
@@ -65,7 +63,23 @@ public abstract class ModelAction<K extends ProtocolKind>
 		ModelAction<?> a = (ModelAction<?>) o;  // Refactor as "compatible"
 		return a.canEqual(this) && 
 				this.obj.equals(a.obj) && this.mid.equals(a.mid) && this.payload.equals(a.payload);
-		//return this.id == ((ModelAction<?>) o).id;
+	}
+
+	@Override
+	public boolean equals(Object o)  // FIXME: kind
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof ModelAction))
+		{
+			return false;
+		}
+		/*ModelAction<?> a = (ModelAction<?>) o;  // Refactor as "compatible"
+		return a.canEqual(this) && 
+				this.obj.equals(a.obj) && this.mid.equals(a.mid) && this.payload.equals(a.payload);*/
+		return this.id == ((ModelAction<?>) o).id;
 	}
 	
 	public abstract boolean canEqual(Object o);

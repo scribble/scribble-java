@@ -23,6 +23,7 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 				? ((MessageSigNode) lr.msg).payloads.toPayload()
 				: Payload.EMPTY_PAYLOAD;
 		builder.builder.addEdge(builder.builder.getEntry(), new Receive(peer, mid, payload), builder.builder.getExit());
+		//builder.builder.addEdge(builder.builder.getEntry(), Receive.get(peer, mid, payload), builder.builder.getExit());
 		return (LReceive) super.leaveEndpointGraphBuilding(parent, child, builder, lr);
 	}
 

@@ -1,5 +1,8 @@
 package org.scribble.model.local;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.scribble.model.global.GModelAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
@@ -7,20 +10,44 @@ import org.scribble.sesstype.name.Role;
 
 public class Send extends IOAction
 {
+	protected static final Set<Send> SENDS = new HashSet<>();
+	
+	public static Send get(Role peer, MessageId<?> mid, Payload payload)
+	{
+		Send send = new Send(peer, mid, payload, true);
+		for (Send s : Send.SENDS)  // FIXME: hashmap
+		{
+			if (s.equiv(send))
+			{
+				return s;
+			}
+		}
+		Send.SENDS.add(send);
+		return send;
+	}
+	
+	public Send(Role peer, MessageId<?> mid, Payload payload, boolean hack)
+	{
+		super(peer, mid, payload);
+	}
+
 	public Send(Role peer, MessageId<?> mid, Payload payload)
 	{
 		super(peer, mid, payload);
+		Send.SENDS.add(this);
 	}
 	
 	public Receive toDual(Role self)
 	{
-		return new Receive(self, this.mid, this.payload);
+		//return new Receive(self, this.mid, this.payload);
+		return Receive.get(self, this.mid, this.payload);
 	}
 
 	@Override
 	public GModelAction toGlobal(Role self)
 	{
-		return new GModelAction(self, this.peer, this.mid, this.payload);
+		//return new GModelAction(self, this.peer, this.mid, this.payload);
+		return GModelAction.get(self, this.peer, this.mid, this.payload);
 	}
 	
 	/*@Override

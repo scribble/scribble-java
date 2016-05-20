@@ -31,6 +31,7 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 					? ((MessageSigNode) ls.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
 		builder.builder.addEdge(builder.builder.getEntry(), new Send(peer, mid, payload), builder.builder.getExit());
+		//builder.builder.addEdge(builder.builder.getEntry(), Send.get(peer, mid, payload), builder.builder.getExit());
 		return (LSend) super.leaveEndpointGraphBuilding(parent, child, builder, ls);
 	}
 
