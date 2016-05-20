@@ -57,7 +57,8 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		for (GInteractionNode gi : gis.getInteractions())
 		{
 			//LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
-			LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);
+			LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
+			// FIXME: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
 				lis.addAll(((LInteractionSeq) ln).getInteractions());

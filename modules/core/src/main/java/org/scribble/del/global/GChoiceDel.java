@@ -138,6 +138,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		blocks = blocks.stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
 		if (!blocks.isEmpty())
 		{
+			// FIXME: initially keep global subject, and later overwrite as necessary in projections
 			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(AstFactoryImpl.FACTORY.DummyProjectionRoleNode(), Arrays.asList(b))).collect(Collectors.toList());
 			LChoice merged = cs.get(0);
 			try

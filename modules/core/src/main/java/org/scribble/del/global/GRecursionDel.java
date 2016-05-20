@@ -28,7 +28,6 @@ import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 public class GRecursionDel extends RecursionDel implements GCompoundInteractionNodeDel
@@ -61,7 +60,8 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		LRecursion projection = null;
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(recvar.toName());
-		LProtocolBlock pruned = prune((LProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection(), rvs);
+		//LProtocolBlock pruned = prune((LProtocolBlock) ((ProjectionEnv) gr.block.del().env()).getProjection(), rvs);
+		LProtocolBlock pruned = prune(((GProtocolBlockDel) gr.block.del()).project(gr.getBlock(), self), rvs);
 		if (!pruned.isEmpty())
 		{
 			projection = AstFactoryImpl.FACTORY.LRecursion(recvar, pruned);
