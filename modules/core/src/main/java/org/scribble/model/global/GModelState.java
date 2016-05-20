@@ -6,6 +6,7 @@ import org.scribble.model.ModelState;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.RecVar;
 
+@Deprecated
 public class GModelState extends ModelState<GModelAction, GModelState, Global>
 {
 	/*private static int count = 0;

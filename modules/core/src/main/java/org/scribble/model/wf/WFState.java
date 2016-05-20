@@ -12,6 +12,10 @@ import org.scribble.model.global.GModelAction;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.Role;
 
+
+// FIXME: make a WFModel front end class (cf. EndpointGraph)
+// FIXME: refactor to use ModelState?
+// FIXME: refactor to model.global package
 public class WFState
 {
 	private static int count = 0;  // FIXME: factor out with ModelAction

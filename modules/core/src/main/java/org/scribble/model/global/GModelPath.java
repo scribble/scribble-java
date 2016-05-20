@@ -10,6 +10,7 @@ import org.scribble.model.local.IOAction;
 import org.scribble.model.local.IOTrace;
 import org.scribble.sesstype.name.Role;
 
+@Deprecated
 public class GModelPath
 {
 	private final GModelAction[] elements;

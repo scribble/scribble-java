@@ -22,6 +22,7 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. check choice subj WF
 //.. check junit harness and unit tests, add new tests
 //.. do subprotocols
+//.. check role-based starvation/liveness
 
 //*
 global protocol Proto1(role A, role B, role C)
