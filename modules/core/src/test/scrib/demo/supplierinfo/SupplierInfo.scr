@@ -100,7 +100,7 @@ global protocol PartnershipSupplier(
 					continue mainBlock;
 				}
 			}
-			//continue mainBlock;  // FIXME: remove last edge
+			//continue mainBlock;  // FIXME: remove last edge -- last pred edge removal...
 		}
 	}
 }
