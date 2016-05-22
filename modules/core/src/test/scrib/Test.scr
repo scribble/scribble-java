@@ -5,7 +5,7 @@
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr
 
 //$ bin/scribblec.sh modules/core/src/test/scrib/Test.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/
- 
+
 //http://sandbox.kidstrythisathome.com/erdos/
 
 
@@ -19,12 +19,86 @@ module Test;
 type <java> "java.lang.int" from "rt.jar" as int;
 
 
-//.. check choice subj WF
+//.. do subprotocols -- via inlined unfolding (and restore original projection)
+//.. generalised merge-continue graph edge building
+//.. restore (optional) choice subject checking
+//.. add term branches for infinite loops (term hack) -- test mixed finite and inifinite role behaviours
+//.. check role-based starvation/liveness (loop hack)
+//.. "introduces" should just work (dynamic buffer structure)
+//.. error state traces
 //.. check junit harness and unit tests, add new tests
-//.. do subprotocols
-//.. check role-based starvation/liveness
 //.. CL ouput even if ScribbleException
 
+//.. analyse inlined unfolded for max buffer size
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			//1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+}
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from A to B;
+			2() from A to B;
+			//continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to A;
+		2() from A to B;  // Potential deadlock
+		2() from A to B;
+		3() from B to A;
+		3() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
+		3() from B to A;  // Potential deadlock
+		3() from B to A;
+		2() from A to B;
+		2() from A to B;
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	choice at A
@@ -58,6 +132,7 @@ global protocol Proto1(role A, role B, role C, role D)
 		0() from C to D;
 	}
 }
+//*/
 
 
 /*
@@ -73,7 +148,7 @@ global protocol Proto1(role A, role B, role C)
 		2() from A to B;
 		1() from B to C;  // Comment is bad
 	}
-	2() from C to B;*/
+	2() from C to B;* /
 	rec X  // FIXME: Good test
 	{
 		choice at A

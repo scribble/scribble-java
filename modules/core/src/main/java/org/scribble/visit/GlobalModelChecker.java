@@ -95,7 +95,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			proj.accept(graph);  // Don't do on root decl, side effects job context
 			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 
-			//System.out.println("bbb: " + fsm);
+			System.out.println("bbb: " + fsm);
 			
 			fsms.put(self, fsm.init);
 		}
