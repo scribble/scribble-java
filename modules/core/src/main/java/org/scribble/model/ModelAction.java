@@ -15,11 +15,11 @@ public abstract class ModelAction<K extends ProtocolKind>
 	public final MessageId<?> mid;
 	public final Payload payload;  // Empty for MessageSigNames
 	
-	public ModelAction(Role peer, MessageId<?> mid, Payload payload)
+	public ModelAction(Role obj, MessageId<?> mid, Payload payload)
 	{
 		//this.id = ModelAction.count++;
 
-		this.obj = peer;
+		this.obj = obj;
 		this.mid = mid;
 		this.payload = payload;
 	}

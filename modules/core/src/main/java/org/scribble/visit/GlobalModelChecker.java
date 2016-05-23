@@ -18,7 +18,7 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.local.LProtocolDefDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModelAction;
+import org.scribble.model.global.GIOAction;
 import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
@@ -172,7 +172,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			String e = "";
 			for (WFState error : errors)
 			{
-				List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
+				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
+				List<GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
 				e += "\n" + error.toString() + "\n" + trace;
 			}
 			throw new ScribbleException("\n" + init.toDot() + "\n\nGlobal model safety violations:" + e);
@@ -183,14 +184,17 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		return child;
 	}
 	
-	private static List<GModelAction> dfs(List<GModelAction> trace, List<WFState> seen, WFState term)
+	//private static List<GModelAction> dfs(List<GModelAction> trace, List<WFState> seen, WFState term)
+	private static List<GIOAction> dfs(List<GIOAction> trace, List<WFState> seen, WFState term)
 	{
 		WFState curr = seen.get(seen.size() - 1);
-		Iterator<GModelAction> as = curr.getActions().iterator();
+		//Iterator<GModelAction> as = curr.getActions().iterator();
+		Iterator<GIOAction> as = curr.getActions().iterator();
 		Iterator<WFState> ss = curr.getSuccessors().iterator();
 		while (as.hasNext())
 		{
-			GModelAction a = as.next();
+			//GModelAction a = as.next();
+			GIOAction a = as.next();
 			WFState s = ss.next();
 			if (s.equals(term))
 			{
@@ -199,11 +203,11 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			if (!seen.contains(s))
 			{
-				List<GModelAction> tmp1 = new LinkedList<>(trace);
+				List<GIOAction> tmp1 = new LinkedList<>(trace);
 				tmp1.add(a);
 				List<WFState> tmp2 = new LinkedList<>(seen);
 				tmp2.add(s);
-				List<GModelAction> res = dfs(tmp1, tmp2, term);
+				List<GIOAction> res = dfs(tmp1, tmp2, term);
 				if (res != null)
 				{
 					return res;

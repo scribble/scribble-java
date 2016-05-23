@@ -14,6 +14,7 @@ import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
 // Mutable
+@Deprecated
 public class GModelAction extends ModelAction<Global> //implements PathElement
 {
 	/*protected static final Set<GModelAction> ACTIONS = new HashSet<>();
@@ -35,8 +36,8 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 	//private static int counter = 1;
 
 	//public final int id;
-	public final Role src;
-	public final Role dest;
+	public final Role src;  // subj
+	public final Role dest;  // parent.obj
 	//public final IOAction action;
 
 	//private Set<GModelAction> deps = new HashSet<>();

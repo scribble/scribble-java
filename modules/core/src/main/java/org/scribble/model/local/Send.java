@@ -1,6 +1,6 @@
 package org.scribble.model.local;
 
-import org.scribble.model.global.GModelAction;
+import org.scribble.model.global.GSend;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
@@ -41,10 +41,12 @@ public class Send extends IOAction
 	}
 
 	@Override
-	public GModelAction toGlobal(Role self)
+	//public GModelAction toGlobal(Role self)
+	public GSend toGlobal(Role self)
 	{
-		return new GModelAction(self, this.peer, this.mid, this.payload);
-		//return GModelAction.get(self, this.peer, this.mid, this.payload);
+		//return new GModelAction(self, this.peer, this.mid, this.payload);
+		////return GModelAction.get(self, this.peer, this.mid, this.payload);
+		return new GSend(self, this.peer, this.mid, this.payload);
 	}
 	
 	/*@Override

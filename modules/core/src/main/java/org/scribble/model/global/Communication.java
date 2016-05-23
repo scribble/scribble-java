@@ -63,9 +63,10 @@ public class Communication extends IOAction implements PathElement
 	}
 
 	@Override
-	public GModelAction toGlobal(Role self)
+	//public GModelAction toGlobal(Role self)
+	public GIOAction toGlobal(Role self)
 	{
 		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("TODO: " + this + ", " + self);
 	}
 }

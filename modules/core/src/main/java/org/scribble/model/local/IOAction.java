@@ -1,7 +1,7 @@
 package org.scribble.model.local;
 
 import org.scribble.model.ModelAction;
-import org.scribble.model.global.GModelAction;
+import org.scribble.model.global.GIOAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.MessageId;
@@ -21,7 +21,8 @@ public abstract class IOAction extends ModelAction<Local>
 		this.peer = peer;
 	}
 	
-	public abstract GModelAction toGlobal(Role self);
+	//public abstract GModelAction toGlobal(Role self);
+	public abstract GIOAction toGlobal(Role self);
 
 	public boolean isSend()
 	{

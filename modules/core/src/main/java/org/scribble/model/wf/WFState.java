@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.model.global.GModelAction;
+import org.scribble.model.global.GIOAction;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.Role;
 
@@ -24,7 +24,8 @@ public class WFState
 
 	public final WFConfig config;
 	//protected final LinkedHashMap<GModelAction, WFState> edges;
-	protected final List<GModelAction> actions;
+	//protected final List<GModelAction> actions;
+	protected final List<GIOAction> actions;
 	protected final List<WFState> succs;
 	
 	public WFState(WFConfig config)
@@ -36,14 +37,15 @@ public class WFState
 		this.succs = new LinkedList<>();
 	}
 	
-	public void addEdge(GModelAction a, WFState s)
+	//public void addEdge(GModelAction a, WFState s)
+	public void addEdge(GIOAction a, WFState s)
 	{
 		//this.edges.put(a, s);
-		Iterator<GModelAction> as = this.actions.iterator();
+		Iterator<GIOAction> as = this.actions.iterator();
 		Iterator<WFState> ss = this.succs.iterator();
 		while (as.hasNext())
 		{
-			GModelAction tmpa = as.next();
+			GIOAction tmpa = as.next();
 			WFState tmps = ss.next();
 			if (tmpa.equals(a) && tmps.equals(s))
 			{
@@ -54,7 +56,7 @@ public class WFState
 		this.succs.add(s);
 	}
 	
-	public List<GModelAction> getActions()
+	public List<GIOAction> getActions()
 	{
 		return Collections.unmodifiableList(this.actions);
 	}
@@ -140,7 +142,7 @@ public class WFState
 		{
 			/*GModelAction msg = e.getKey();
 			WFState p = e.getValue();*/
-			GModelAction msg = this.actions.get(i);
+			GIOAction msg = this.actions.get(i);
 			WFState p = this.succs.get(i);
 			s += "\n" + toEdgeDot(msg, p);
 			if (!seen.contains(p))
@@ -175,14 +177,16 @@ public class WFState
 	}
 
 	// Override to change edge drawing from "this" as src
-	protected String toEdgeDot(GModelAction msg, WFState next)
+	//protected String toEdgeDot(GModelAction msg, WFState next)
+	protected String toEdgeDot(GIOAction msg, WFState next)
 	{
 		return toEdgeDot(getDotNodeId(), next.getDotNodeId(), next.getEdgeLabel(msg));
 	}
 	
 	// "this" is the dest node of the edge
 	// Override to change edge drawing to "this" as dest
-	protected String getEdgeLabel(GModelAction msg)
+	//protected String getEdgeLabel(GModelAction msg)
+	protected String getEdgeLabel(GIOAction msg)
 	{
 		return "label=\"" + msg + "\"";
 	}
