@@ -89,10 +89,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		{
 			/*GProtocolBlock gpb = gpd.getDef().getBlock();
 			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);*/
-			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(gpd.getFullMemberName(parent), self).getLocalProtocolDecls().get(0).def.del())
-					.getInlinedProtocolDef().getBlock();
-			
-			//System.out.println("aaa: " + proj);
+			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(gpd.getFullMemberName(parent), self).getLocalProtocolDecls().get(0).def.del()) .getInlinedProtocolDef().getBlock();
 			
 			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
 			graph.builder.reset();
