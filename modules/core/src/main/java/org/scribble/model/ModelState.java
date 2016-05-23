@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
@@ -47,7 +48,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		this.actions.remove(this.actions.size() - 1);
 		this.succs.remove(this.succs.size() - 1);
 	}*/
-	protected void removeEdge(A a, S s)
+	protected void removeEdge(A a, S s) throws ScribbleException
 	{
 		Iterator<A> ia = this.actions.iterator();
 		Iterator<S> is = this.succs.iterator();
@@ -62,7 +63,8 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 				return;
 			}
 		}
-		throw new RuntimeException("No such transition to remove: " + a + "->" + s);
+		//throw new RuntimeException("No such transition to remove: " + a + "->" + s);
+		throw new ScribbleException("No such transition to remove: " + a + "->" + s);  // Hack? EFSM building on bad-reachability protocols now done before actual reachability check
 	}
 	
 	// Mutable (can also overwrite edges)

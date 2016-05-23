@@ -16,7 +16,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineArgParser;
-import org.scribble.main.RuntimeScribbleException;
+import org.scribble.main.ScribbleException;
 
 /**
  * Runs all tests under good and bad root directories in Scribble.
@@ -72,13 +72,15 @@ public class AllTest
 			{
 				dir = dir.substring(1).replace("/", "\\");
 			}
-
+			
 			new CommandLine(this.example, CommandLineArgParser.PATH_FLAG, dir).run();
 			Assert.assertFalse("Expecting exception", this.isBadTest);
 		}
-		catch (RuntimeScribbleException e)  // Runtime because CommandLine is currently a Runnable (maybe shouldn't be; throw regular ScribbleException)
+		//catch (RuntimeScribbleException e)  // Runtime because CommandLine is currently a Runnable (maybe shouldn't be; throw regular ScribbleException)
+		catch (ScribbleException e)
 		{
-			Assert.assertTrue("Unexpected exception '" + e.getCause().getMessage() + "'", this.isBadTest);
+			//Assert.assertTrue("Unexpected exception '" + e.getCause().getMessage() + "'", this.isBadTest);
+			Assert.assertTrue("Unexpected exception '" + e.getMessage() + "'", this.isBadTest);
 		}
 	}
 }

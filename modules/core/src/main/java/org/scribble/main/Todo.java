@@ -12,6 +12,8 @@ package org.scribble.main;
 //.. error state traces (and error process system)
 //.. check junit harness and unit tests, add new tests
 //.. CL ouput even if ScribbleException
+//
+//.. integrate reachability check and graph building? or move reachability earlier? EFSM building now done before reachability pass
 
 
 /*

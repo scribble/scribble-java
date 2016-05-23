@@ -7,6 +7,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.MessageTransferDel;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.Send;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
@@ -17,7 +18,7 @@ import org.scribble.visit.ProjectedChoiceSubjectFixer;
 public class LSendDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
 	@Override
-	public LSend leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public LSend leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		LSend ls = (LSend) visited;
 		List<RoleNode> dests = ls.getDestinations();

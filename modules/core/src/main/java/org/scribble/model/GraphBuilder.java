@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
@@ -57,7 +58,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	{
 		s.removeLastEdge();
 	}*/
-	public void removeEdge(S s, A a, S succ)
+	public void removeEdge(S s, A a, S succ) throws ScribbleException
 	{
 		s.removeEdge(a, succ);
 	}
