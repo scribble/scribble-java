@@ -24,7 +24,7 @@ global protocol PartnershipSupplier(
 	login(username, password) from requestor to loginsvc;
 	choice at loginsvc
 	{
-		//loginsuccess() from loginsvc to requestor;  // FIXME: error not detected: because of liveness of other parties? (error is detected if mainBlock is not looped)
+		//loginsuccess() from loginsvc to requestor;  // FIXME: error not detected: because of liveness of other parties? (error is detected if mainBlock is not looped) -- now: detected after simplifications to other parts of protocol...
 		loginfailure() from loginsvc to requestor;
 		//getsuppliers(uuid) from requestor to authorisersvc;  // Error
 		0() from requestor to authorisersvc;
@@ -56,8 +56,8 @@ global protocol PartnershipSupplier(
 					getsuppliers() from authorisersvc to suppliersvc;
 					suppliers() from suppliersvc to authorisersvc;
 
-					filter1(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
-					filtered1() from filtersvc to authorisersvc;
+					filter(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
+					filtered() from filtersvc to authorisersvc;
 					suppliers() from authorisersvc to requestor;
 				}
 			}
@@ -80,8 +80,8 @@ global protocol PartnershipSupplier(
 					getcontracts() from authorisersvc to contractsvc;
 					suppliers() from contractsvc to authorisersvc;
 
-					filter2(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
-					filtered2() from filtersvc to authorisersvc;
+					filter(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
+					filtered() from filtersvc to authorisersvc;
 					contracts() from authorisersvc to requestor;
 				}
 			}
