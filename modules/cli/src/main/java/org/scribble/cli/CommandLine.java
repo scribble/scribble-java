@@ -29,8 +29,21 @@ import org.scribble.visit.JobContext;
 // Maybe no point to be a Runnable
 public class CommandLine //implements Runnable
 {
-	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, SCHAN_API, EP_API, OUTPUT, SCHAN_API_SUBTYPES, GLOBAL_MODEL }
-		//, PROJECTED_MODEL }
+	protected enum ArgFlag {
+		MAIN,
+		PATH,
+		PROJECT,
+		VERBOSE,
+		FSM,
+		SESS_API,
+		SCHAN_API,
+		EP_API,
+		OUTPUT,
+		SCHAN_API_SUBTYPES,
+		GLOBAL_MODEL,
+		OLD_WF,
+		//PROJECTED_MODEL
+	}
 	
 	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 	
@@ -220,18 +233,19 @@ public class CommandLine //implements Runnable
 	private Job newJob(MainContext mc)
 	{
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
-		return new Job(mc.debug, mc.getParsedModules(), mc.main);
+		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF);
 	}
 
 	private MainContext newMainContext()
 	{
 		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);
+		boolean useOldWF = this.args.containsKey(ArgFlag.OLD_WF);
 		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN)[0]);
 		List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
 				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
-		return new MainContext(debug, locator, mainpath);
+		return new MainContext(debug, locator, mainpath, useOldWF);
 	}
 	
 	private static Path parseMainPath(String path)

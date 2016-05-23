@@ -21,6 +21,7 @@ public class CommandLineArgParser
 	public static final String STATECHANSUBTYPES_FLAG = "-subtypes";
 	public static final String GLOBAL_MODEL_FLAG = "-model";
 	//public static final String PROJECTED_MODEL_FLAG = "-pmodel";
+	public static final String OLD_WF_FLAG = "-oldwf";
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -28,6 +29,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.ArgFlag.PATH);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.ArgFlag.OUTPUT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.STATECHANSUBTYPES_FLAG, CommandLine.ArgFlag.SCHAN_API_SUBTYPES);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OLD_WF_FLAG, CommandLine.ArgFlag.OLD_WF);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -126,7 +128,7 @@ public class CommandLineArgParser
 			case CommandLineArgParser.STATECHANSUBTYPES_FLAG:
 			{
 				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.STATECHANSUBTYPES_FLAG), new String[0]);
-				return ++i;
+				return i;
 			}
 			case CommandLineArgParser.GLOBAL_MODEL_FLAG:
 			{
@@ -136,6 +138,11 @@ public class CommandLineArgParser
 			{
 				return parseProjectedModel(i);
 			}*/
+			case CommandLineArgParser.OLD_WF_FLAG:
+			{
+				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.OLD_WF_FLAG), new String[0]);
+				return i;
+			}
 			default:
 			{
 				throw new RuntimeException(flag);
