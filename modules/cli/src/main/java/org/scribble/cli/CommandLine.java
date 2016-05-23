@@ -90,6 +90,10 @@ public class CommandLine //implements Runnable
 			}
 			if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
 			{
+				if (job.useOldWf)
+				{
+					throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
+				}
 				outputGlobalModel(job);
 			}
 			/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
