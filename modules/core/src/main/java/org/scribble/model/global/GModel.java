@@ -11,6 +11,7 @@ import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.LGraphBuilder;
 import org.scribble.sesstype.name.Role;
 
+@Deprecated
 public class GModel
 {
 	public final GModelState init;

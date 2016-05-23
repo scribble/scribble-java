@@ -5,44 +5,740 @@
 //$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr
 
 //$ bin/scribblec.sh modules/core/src/test/scrib/Test.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/
- 
+
 //http://sandbox.kidstrythisathome.com/erdos/
 
 
 module Test;
 
 
-// Try an unfolding visitor that cuts off on nested unfolding of a rec as a continue -- no still won't solve mixed continue-onlys
-// Need to record the "next action and state" after a recursion entry, and for continue only use that action to go to that state
-// Or maybe try a "forwards" algorithm again (two passes may be easier)
-
 type <java> "java.lang.int" from "rt.jar" as int;
 
 
+//*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
 	{
-	choice at A
-	{
-		1() from A to B;
+		0() from A to B;
+		0() from B to C;
 		choice at A
 		{
-			1() from A to C;
-			continue X;  // FIXME: badly formed (for B)  // FIXME: add test case
+			1() from A to B;
+			1() from B to C;
 		}
 		or
 		{
-			3() from A to C;
+			2() from A to B;
+			2() from B to C;
+		}
+		continue X;  // Graph building
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		0() from A to B;
+		0() from B to C;
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+		continue X;  // Graph building
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;  // FIXME: local choice subjects (syntax)
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X
+	{
+		1() from A to B;
+		continue X;
+	}
+	choice at C  // FIXME: need termination hack (**TERM)
+	{
+		2() from C to D;
+		3() from D to C;
+	}
+	or
+	{
+		2() from C to D;
+		4() from D to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X
+	{
+		1() from A to B;
+		continue X;
+	}
+	2() from C to D;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
 		}
 	}
 	or
 	{
-		2() from A to C;
 		2() from A to B;
 	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
 	}
 }
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+		}
+		or
+		{
+			2() from A to B;
+		}
+		continue X;  // Graph building
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at B
+			{
+				1() from B to A;
+				1() from A to C;
+			}
+		}
+		or
+		{
+			2() from A to B;
+			choice at B
+			{
+				2() from B to A;
+				2() from A to C;
+			}
+		}
+		continue X;  // Graph building
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from A to B;
+			2() from A to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to A;
+		2() from A to B;  // Potential deadlock
+		2() from A to B;
+		3() from B to A;
+		3() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
+		3() from B to A;  // Potential deadlock
+		3() from B to A;
+		2() from A to B;
+		2() from A to B;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		2() from B to C;
+		choice at C
+		{
+			3() from C to A;
+			continue X;  // FIXME: recursive non-det choice for B: is this OK?
+			// Collapse 2x continue X to a single case?  no: no-det different than det -- also consider continue Y instead of X, but still "A->B:1"
+		}
+		or
+		{
+			4() from C to A;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		choice at B
+		{
+			2() from B to C;  // Graph building (popping choice block into a null parent choice block context)
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		1() from B to C;
+		choice at B
+		{
+			2() from B to A;
+			continue X;
+		}
+		or
+		{
+			3() from B to A;
+			1() from B to C;
+			3() from B to C;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec X
+		{
+			1() from A to B;
+			choice at B
+			{
+				2() from B to C;
+				2() from C to D;
+				choice at C
+				{
+					2() from C to A;
+					continue X;
+				}
+				or
+				{
+					() from C to A;
+					2() from C to D;  // FIXME: model checking either stuck or slow (should be an error, see above)
+					() from C to D;
+					continue X;
+				}
+			}
+		}
+	}
+	or
+	{
+		0() from A to B;
+		0() from B to C;
+		0() from C to D;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec X
+		{
+			1() from A to B;
+			choice at B
+			{
+				2() from B to C;
+				choice at C
+				{
+					2() from C to A;
+					continue X;
+				}
+				or
+				{
+					() from C to A;
+					() from C to D;  // FIXME: minimise this test case
+					// FIXME: remove last edge
+					continue X;
+				}
+			}
+		}
+	}
+	or
+	{
+		0() from A to B;
+		0() from B to C;
+		0() from C to D;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	/*choice at A
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		1() from B to C;  // Comment is bad
+	}
+	2() from C to B;* /
+	rec X  // FIXME: Good test
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			continue X;
+		}
+		//continue X; // FIXME: remove last edge
+	}
+}
+//*/
+
+
+//*** TODO FIXME add test cases
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		1() from B to C;  // Comment is bad
+	}
+	2() from C to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		1() from C to B;
+	}
+	or
+	{
+		//1() from A to B;  // Uncomment is bad
+		2() from A to B;
+		2() from A to C;
+		2() from C to B;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// Good
+	choice at A
+	{
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		2() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	0() from B to C;
+	// Uncomments are bad
+	choice at A
+	{
+		//0() from B to C;
+		1() from A to B;
+		1() from B to C;
+	}
+	or
+	{
+		//0() from B to C;
+		2() from A to B;
+		2() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at B
+			{
+				1() from B to C;
+				continue X;
+			}
+			or
+			{
+				//1() from B to C;  // Uncomment is OK
+				3() from B to C;
+				continue X;  // Comment is bad
+			}
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// Good
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		4() from A to B;
+	}
+	or
+	{
+		3() from A to B;
+		2() from B to C;
+		5() from A to B;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// Bad
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		4() from A to C;
+	}
+	or
+	{
+		3() from A to B;
+		2() from B to C;
+		5() from A to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		2() from B to C;
+		//3() from B to C;  // Uncomment bad
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			3() from A to C;
+			//continue X;  // Uncomment bad
+		}
+		or
+		{
+			1() from A to B;
+			4() from A to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X {
+		choice at A
+		{
+			1() from A to B;
+			continue X;  // Comment bad
+		}
+		or
+		{
+			2() from A to B;
+			4() from A to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X {
+		choice at A
+		{
+			1() from A to B;
+			3() from A to C;
+			continue X;
+		}
+		or
+		{
+			//1() from A to B;  // Uncomment bad
+			2() from A to B;
+			4() from A to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// FIXME TODO: safe, but not supported by local syntax
+	rec X {
+		choice at A
+		{
+			1() from A to B;
+			3() from B to C;
+			//continue X;  // Uncomment bad
+		}
+		or
+		{
+			2() from A to B;
+			4() from A to C;
+			//continue X;  // Uncomment bad
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X {
+		choice at A
+		{
+			1() from A to B;
+			3() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+			4() from A to C;
+		}
+		continue X;  // OK (apart from local choice subject syntax)
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;  // Still bad without..
+			2() from B to C;
+			3() from C to B;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;  // ..local choice subject inference
+			4() from C to B;
+		}
+		continue X;
+	}
+}
+//*/
+
+//***
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at A
+			{
+				1() from A to C;
+				continue X;  // FIXME: badly formed (for B)  // FIXME: add test case
+			}
+			or
+			{
+				3() from A to C;
+			}
+		}
+		or
+		{
+			2() from A to C;
+			2() from A to B;
+		}
+	}
+}
+//*/
 
 
 /*global protocol Proto1(role A, role B)
@@ -62,7 +758,8 @@ global protocol Proto1(role A, role B, role C)
 }
 
 // Standard problem of basic path/trace based WF choice checking:
-// different nested choice structures get conflated
+// different nested choice structures get conflated, when looking downstream (not just enabling message)
+// checking enabling only via global model is easy, difficulty is merge
 global protocol Proto2(role A, role B)
 {
 	choice at A

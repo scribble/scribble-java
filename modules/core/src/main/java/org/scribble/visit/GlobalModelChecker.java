@@ -1,8 +1,10 @@
 package org.scribble.visit;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,30 +15,22 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
+import org.scribble.ast.local.LProtocolBlock;
+import org.scribble.del.local.LProtocolDefDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModel;
-import org.scribble.model.global.GModelAction;
-import org.scribble.model.global.GModelPath;
-import org.scribble.model.global.GModelState;
-import org.scribble.model.local.IOTrace;
+import org.scribble.model.global.GIOAction;
+import org.scribble.model.local.EndpointGraph;
+import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.IOAction;
+import org.scribble.model.wf.WFBuffers;
+import org.scribble.model.wf.WFConfig;
+import org.scribble.model.wf.WFState;
+import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
-// Duplicated from WFChoiceChecker
-// Maybe refactor as PathVisitor (extended by WF checker)
-//public class WFChoicePathChecker extends UnfoldingVisitor<WFChoicePathEnv> //PathCollectionVisitor
-////public class WFChoicePathChecker extends InlinedProtocolVisitor<Env<?>>  // FIXME: should be unfolding visitor? GlobalModelBuilder should be too (need a correspondence between syntax nodes and model nodes)
-
-// ** The issue of path/trace based checking is the usual trace-equivalence vs bisimulation issue (set of traces conflates nested choice structures)
-// Possibly could address (in an ad hoc way) by inductively checking for e.g. trace set equivalence after each step
-@Deprecated
-public class WFChoicePathChecker extends ModuleContextVisitor
+public class GlobalModelChecker extends ModuleContextVisitor
 {
-	// N.B. using pointer equality for checking if choice previously visited
-	// So UnfoldingVisitor cannot visit a clone
-	// equals method identity not suitable unless Ast nodes record additional info like syntactic position
-	//private Set<Choice<?>> visited = new HashSet<>();	
-	
-	public WFChoicePathChecker(Job job)
+	public GlobalModelChecker(Job job)
 	{
 		super(job);
 	}
@@ -45,13 +39,13 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.enter(parent, child);
-		child.del().enterWFChoicePathCheck(parent, child, this);
+		child.del().enterCompatCheck(parent, child, this);
 	}
 	
 	@Override
 	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveWFChoicePathCheck(parent, child, this, visited);
+		visited = visited.del().leaveCompatCheck(parent, child, this, visited);
 		return super.leave(parent, child, visited);
 	}
 
@@ -85,26 +79,145 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 		}
 	}
 
+	// Refactor to GProtocolDeclDel
 	private GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) child;
-		GModel model = null;// getJobContext().getGlobalModel(gpd.getFullMemberName(parent));
-
-		//System.out.println("aaa: " + model);
-
-		HashMap<GModelState, Set<GModelState>> reach = new HashMap<>();
-		HashMap<GModelState, Set<GModelState>> invreach = new HashMap<>();
-		getReachability(new HashSet<>(), model.init, reach, invreach);
+		GProtocolName fullname = gpd.getFullMemberName(parent);
 		
-		//System.out.println("bbb1: " + reach);
-		//System.out.println("bbb2: " + invreach);
+		Map<Role, EndpointState> fsms = new HashMap<>();
 		
-		checkWF(new HashSet<>(), model.init, model, reach);
+		for (Role self : gpd.header.roledecls.getRoles())
+		{
+			/*GProtocolBlock gpb = gpd.getDef().getBlock();
+			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);*/
+			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0).def.del()) .getInlinedProtocolDef().getBlock();
+			
+			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
+			graph.builder.reset();
+			proj.accept(graph);  // Don't do on root decl, side effects job context
+			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+
+			//System.out.println("bbb: " + fsm);
+			
+			fsms.put(self, fsm.init);
+		}
+			
+		WFConfig c0 = new WFConfig(fsms, new WFBuffers(fsms.keySet()));
+		WFState init = new WFState(c0);
+		
+		HashSet<WFState> seen = new HashSet<>();
+		LinkedHashSet<WFState> todo = new LinkedHashSet<>();
+		todo.add(init);
+		
+		int count = 0;
+		while (!todo.isEmpty())
+		{
+			Iterator<WFState> i = todo.iterator();
+			WFState curr = i.next();
+			i.remove();
+			seen.add(curr);
+
+			count ++;
+			if (count % 50 == 0)
+			{
+				getJob().debugPrintln("(" + fullname + ") Checking global states: " + count);
+			}
+			
+			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
+
+			//System.out.println("ccc: " + acceptable);
+
+			for (Role r : acceptable.keySet())
+			{
+				for (IOAction a : acceptable.get(r))
+				{
+					for (WFConfig next : curr.accept(r, a))
+					{
+						WFState succ = new WFState(next);
+						if (seen.contains(succ))  // FIXME: make a WFModel builder
+						{
+							for (WFState tmp : seen)
+							{
+								if (tmp.equals(succ))
+								{
+									succ = tmp;
+								}
+							}
+						}
+						for (WFState tmp : todo)
+						{
+							if (tmp.equals(succ))
+							{
+								succ = tmp;
+							}
+						}
+						curr.addEdge(a.toGlobal(r), succ);
+						if (!seen.contains(succ) && !todo.contains(succ))
+						{
+							todo.add(succ);
+						}
+					}
+				}
+			}
+		}
+		getJob().debugPrintln("(" + fullname + ") Checked global states: " + count);
+
+		//System.out.println("ddd:\n" + init.toDot());
+
+		Set<WFState> terms = init.findTerminalStates();
+		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
+		if (!errors.isEmpty())
+		{
+			String e = "";
+			for (WFState error : errors)
+			{
+				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
+				List<GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
+				e += "\n" + error.toString() + "\n" + trace;
+			}
+			throw new ScribbleException("\n" + init.toDot() + "\nGlobal model safety violations:" + e);
+		}
+
+		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 		
 		return child;
 	}
 	
-	private static void checkWF(Set<GModelState> seen, GModelState curr, GModel model, Map<GModelState, Set<GModelState>> reach)
+	//private static List<GModelAction> dfs(List<GModelAction> trace, List<WFState> seen, WFState term)
+	private static List<GIOAction> dfs(List<GIOAction> trace, List<WFState> seen, WFState term)
+	{
+		WFState curr = seen.get(seen.size() - 1);
+		//Iterator<GModelAction> as = curr.getActions().iterator();
+		Iterator<GIOAction> as = curr.getActions().iterator();
+		Iterator<WFState> ss = curr.getSuccessors().iterator();
+		while (as.hasNext())
+		{
+			//GModelAction a = as.next();
+			GIOAction a = as.next();
+			WFState s = ss.next();
+			if (s.equals(term))
+			{
+				trace.add(a);
+				return trace;
+			}
+			if (!seen.contains(s))
+			{
+				List<GIOAction> tmp1 = new LinkedList<>(trace);
+				tmp1.add(a);
+				List<WFState> tmp2 = new LinkedList<>(seen);
+				tmp2.add(s);
+				List<GIOAction> res = dfs(tmp1, tmp2, term);
+				if (res != null)
+				{
+					return res;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/*private static void checkWF(Set<GModelState> seen, GModelState curr, GModel model, Map<GModelState, Set<GModelState>> reach)
 	{
 		if (seen.contains(curr))
 		{

@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
-import org.scribble.model.global.GModel;
 import org.scribble.model.local.EndpointGraph;
+import org.scribble.model.wf.WFState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ModuleName;
@@ -26,7 +26,8 @@ public class JobContext
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
 
-	private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
+	//private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
+	private final Map<GProtocolName, WFState> gmodels = new HashMap<>();
 	private final Map<LProtocolName, EndpointGraph> graphs = new HashMap<>();
 	
 	public JobContext(Map<ModuleName, Module> parsed, ModuleName main)
@@ -147,12 +148,14 @@ public class JobContext
 		return this.projected.get(Projector.projectFullProtocolName(fullname, role));
 	}
 	
-	public void addGlobalModel(GProtocolName fullname, GModel model)
+	//public void addGlobalModel(GProtocolName fullname, GModel model)
+	public void addGlobalModel(GProtocolName fullname, WFState model)
 	{
 		this.gmodels.put(fullname, model);
 	}
 	
-	public GModel getGlobalModel(GProtocolName fullname)
+	//public GModel getGlobalModel(GProtocolName fullname)
+	public WFState getGlobalModel(GProtocolName fullname)
 	{
 		return this.gmodels.get(fullname);
 	}

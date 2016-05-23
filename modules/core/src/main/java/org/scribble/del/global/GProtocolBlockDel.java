@@ -32,15 +32,17 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
 		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, inl, gpd);
 	}
-
+	
 	@Override
 	public GProtocolBlock leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
-		GProtocolBlock gpd = (GProtocolBlock) visited;
-		LInteractionSeq seq = (LInteractionSeq) ((ProjectionEnv) gpd.seq.del().env()).getProjection();	
-		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(seq);
+		GProtocolBlock gpb = (GProtocolBlock) visited;
+		LInteractionSeq seq =
+				(LInteractionSeq) ((ProjectionEnv) gpb.seq.del().env()).getProjection();	
+				//((GInteractionSeqDel) gpb.seq.del()).project(gpb.getInteractionSeq(), self);	
+		LProtocolBlock projection = gpb.project(proj.peekSelf(), seq);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, proj, gpd);
+		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, proj, gpb);
 	}
 	
 	@Override

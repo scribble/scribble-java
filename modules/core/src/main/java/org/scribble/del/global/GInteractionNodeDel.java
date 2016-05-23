@@ -9,6 +9,8 @@ import org.scribble.visit.Projector;
 
 public interface GInteractionNodeDel extends InteractionNodeDel
 {
+	//public abstract LNode project(GNode n, Role self);  // Generalised return, e.g. returning a seq
+	
 	@Override
 	default void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException
 	{

@@ -1,9 +1,13 @@
 package org.scribble.del.local;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.EndpointGraphBuilder;
@@ -25,7 +29,7 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 	}
 
 	@Override
-	public LContinue leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
+	public LContinue leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		LContinue lr = (LContinue) visited;
 		RecVar rv = lr.recvar.toName();
@@ -34,11 +38,28 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		if (graph.builder.isUnguardedInChoice())
 		{
 			IOAction a = graph.builder.getEnacting(rv);
-			graph.builder.addEdge(graph.builder.getEntry(), a, graph.builder.getRecursionEntry(rv).accept(a));
+			List<EndpointState> ss = graph.builder.getRecursionEntry(rv).acceptAll(a);
+			for (EndpointState s : ss)  // FIXME: produces non-det edges to different rec entries -- but equiv, do just pick 1?
+			{
+				graph.builder.addEdge(graph.builder.getEntry(), a, s);
+			}
+			//graph.builder.addEdge(graph.builder.getEntry(), a, ss.get(0));  // FIXME: OK to just pick 1? -- maybe: but the original non-det choice before enacting the recursion is still there anyway
 		}
 		else
 		{
-			graph.builder.addEdge(graph.builder.getPredecessor(), graph.builder.getPreviousAction(), graph.builder.getRecursionEntry(rv));
+			// ** "Overwrites" previous edge built by send/receive(s) leading to this continue
+			/*graph.builder.removeLastEdge(graph.builder.getPredecessors());  // Hacky? -- cannot implicitly overwrite (addEdge) given non-det machines
+			graph.builder.addEdge(graph.builder.getPredecessors(), graph.builder.getPreviousActions(), graph.builder.getRecursionEntry(rv));*/
+			Iterator<EndpointState> preds = graph.builder.getPredecessors().iterator();
+			Iterator<IOAction> prevs = graph.builder.getPreviousActions().iterator();
+			EndpointState entry = graph.builder.getEntry();
+			while (preds.hasNext())
+			{
+				EndpointState pred = preds.next();
+				IOAction prev = prevs.next();
+				graph.builder.removeEdge(pred, prev, entry);
+				graph.builder.addEdge(pred, prev, graph.builder.getRecursionEntry(rv));
+			}
 		}
 		return (LContinue) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
 	}

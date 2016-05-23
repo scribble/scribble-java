@@ -72,7 +72,7 @@ public class TestWellFormedness {
 	public void tests() throws Exception {
 		try {
 			MainContext mc = newMainContext();
-			Job job = new Job(mc.debug, mc.getParsedModules(), mc.main);
+			Job job = new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF);
 
 			job.checkWellFormedness();
 			if (hasErrors) fail("Should throw an error.");
@@ -87,6 +87,7 @@ public class TestWellFormedness {
 	private MainContext newMainContext()
 	{
 		boolean debug = false;
+		boolean useOldWF = false;
 		Path mainpath = Paths.get(filename);
 		List<Path> impaths = new ArrayList<Path>();
 		
@@ -95,6 +96,6 @@ public class TestWellFormedness {
 		impaths.add(Paths.get(dir));
 		
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
-		return new MainContext(debug, locator, mainpath);
+		return new MainContext(debug, locator, mainpath, useOldWF);
 	}
 }

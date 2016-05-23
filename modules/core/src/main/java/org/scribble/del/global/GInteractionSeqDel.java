@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.InteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
@@ -16,7 +15,6 @@ import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GModelState;
-import org.scribble.sesstype.kind.Global;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
@@ -58,9 +56,11 @@ public class GInteractionSeqDel extends InteractionSeqDel
 	{
 		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<LInteractionNode> lis = new LinkedList<>();
-		for (InteractionNode<Global> gi : gis.getInteractions())
+		for (GInteractionNode gi : gis.getInteractions())
 		{
 			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
+			//LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
+			// FIXME: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
 				lis.addAll(((LInteractionSeq) ln).getInteractions());
@@ -77,7 +77,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				lis.clear();
 			}
 		}*/
-		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(lis);
+		LInteractionSeq projection = gis.project(proj.peekSelf(), lis);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
 	}

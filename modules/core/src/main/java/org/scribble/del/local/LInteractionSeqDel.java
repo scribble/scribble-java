@@ -60,11 +60,11 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		return child;
 	}
 
-	public LInteractionSeq visitForFsmConversion(EndpointGraphBuilder conv, LInteractionSeq child)
+	public LInteractionSeq visitForFsmConversion(EndpointGraphBuilder conv, LInteractionSeq child) throws ScribbleException
 	{
 		EndpointState entry = conv.builder.getEntry();
 		EndpointState exit = conv.builder.getExit();
-		try
+		//try
 		{
 			/*for (int i = child.getInteractions().size() - 1; i >= 0; i--)  // Backwards for "tau-less" continue
 			{
@@ -97,10 +97,10 @@ public class LInteractionSeqDel extends InteractionSeqDel
 				}
 			}
 		}
-		catch (ScribbleException e)
+		/*catch (ScribbleException e)  // Hack: EFSM building now done before reachability check, removeEdge can fail
 		{
 			throw new RuntimeException("Shouldn't get in here: " + e);
-		}
+		}*/
 		//conv.builder.setExit(exit);
 		conv.builder.setEntry(entry);
 		return child;	

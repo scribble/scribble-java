@@ -36,7 +36,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		if (subjs.size() == 0)
 		{
 			//throw new RuntimeScribbleException("TODO: unable to infer projection subject: " + parent);
-			throw new RuntimeException("Shouldn't get in here: " + subjs);
+			throw new RuntimeException("Shouldn't get in here: " + subjs);  // FIXME: should be OK now by model-based WF
 		}
 		else
 		{
@@ -44,6 +44,9 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 					.map((r) -> fixer.isRecVarRole(r) ? fixer.getChoiceSubject(new RecVar(r.toString())) : r)
 					.collect(Collectors.toSet());
 		}
+		
+		// HACK?  (for non- role-balanced choice cases)
+		subjs = subjs.stream().filter((s) -> s != null).collect(Collectors.toSet());
 		
 		if (subjs.size() > 1)  // Unnecessary: due to WF check in GChoiceDel.leaveInlinedPathCollection -- would be better as a check on locals than in projection anyway
 		{
@@ -85,12 +88,16 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 	{
 		try
 		{
+			graph.builder.enterChoice();  // FIXME: refactor enter/leave properly
+
 			for (LProtocolBlock block : child.getBlocks())
 			{
 				graph.builder.pushChoiceBlock();
 				block.accept(graph);
 				graph.builder.popChoiceBlock();
 			}
+			
+			graph.builder.leaveChoice();
 		}
 		catch (ScribbleException e)
 		{

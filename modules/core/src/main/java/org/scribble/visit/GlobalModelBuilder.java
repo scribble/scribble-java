@@ -9,8 +9,10 @@ import org.scribble.del.global.GInteractionSeqDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GGraphBuilder;
 
+// Builds the "synchronous" global model
 // Duplicated from EndpointGraphBuilder
 //public class GlobalModelBuilder extends OffsetSubprotocolVisitor<ModelEnv>
+@Deprecated
 public class GlobalModelBuilder extends NoEnvInlinedProtocolVisitor  // FIXME: should be unfolded?
 {
 	public final GGraphBuilder builder = new GGraphBuilder();

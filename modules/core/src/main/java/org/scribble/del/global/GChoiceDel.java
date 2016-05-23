@@ -1,6 +1,5 @@
 package org.scribble.del.global;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -62,51 +61,54 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		// Enabled senders checked in GMessageTransferDel
 		List<WFChoiceEnv> all =
 				cho.getBlocks().stream().map((b) -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
-		if (all.size() > 1)
+		if (checker.getJob().useOldWf)
 		{
-			try
+			if (all.size() > 1)
 			{
-				WFChoiceEnv benv0 = all.get(0);
-				List<WFChoiceEnv> benvs = all.subList(1, all.size());
-
-				Set<Role> dests = benv0.getEnabled().getDestinations();
-				// Same roles enabled in every block
-				benvs.stream().map((e) -> e.getEnabled().getDestinations()).forEach((rs) ->
-						{
-							if (!dests.equals(rs))
-							{
-								throw new RuntimeScribbleException("Mismatched enabled roles: " + dests + ", " + rs);
-							}
-						});
-				
-				dests.remove(subj);
-				for (Role dest : dests)
+				try
 				{
-					// Same enabler(s) for each enabled role
-					Set<Role> srcs = benv0.getEnabled().getSources(dest);  // Always singleton?
-					benvs.stream().map((e) -> e.getEnabled().getSources(dest)).forEach((rs) ->
+					WFChoiceEnv benv0 = all.get(0);
+					List<WFChoiceEnv> benvs = all.subList(1, all.size());
+
+					Set<Role> dests = benv0.getEnabled().getDestinations();
+					// Same roles enabled in every block
+					benvs.stream().map((e) -> e.getEnabled().getDestinations()).forEach((rs) ->
 							{
-								if (!srcs.equals(rs))
+								if (!dests.equals(rs))
 								{
-									throw new RuntimeScribbleException("Mismatched enabler roles for " + dest + ": " + srcs + ", " + rs);
+									throw new RuntimeScribbleException("Mismatched enabled roles: " + dests + ", " + rs);
 								}
 							});
-				
-					// Distinct enabling messages
-					Set<MessageId<?>> mids = benv0.getEnabled().getMessages(dest);
-					benvs.stream().map((e) -> e.getEnabled().getMessages(dest)).forEach((ms) ->
-							{
-								if (!Collections.disjoint(mids, ms))
+					
+					dests.remove(subj);
+					for (Role dest : dests)
+					{
+						// Same enabler(s) for each enabled role
+						Set<Role> srcs = benv0.getEnabled().getSources(dest);  // Always singleton?
+						benvs.stream().map((e) -> e.getEnabled().getSources(dest)).forEach((rs) ->
 								{
-									throw new RuntimeScribbleException("Non disjoint enabling messages for " + dest + ": " + mids + ", " + ms);
-								}
-								mids.addAll(ms);
-							});
+									if (!srcs.equals(rs))
+									{
+										throw new RuntimeScribbleException("Mismatched enabler roles for " + dest + ": " + srcs + ", " + rs);
+									}
+								});
+					
+						// Distinct enabling messages
+						Set<MessageId<?>> mids = benv0.getEnabled().getMessages(dest);
+						benvs.stream().map((e) -> e.getEnabled().getMessages(dest)).forEach((ms) ->
+								{
+									if (!Collections.disjoint(mids, ms))
+									{
+										throw new RuntimeScribbleException("Non disjoint enabling messages for " + dest + ": " + mids + ", " + ms);
+									}
+									mids.addAll(ms);
+								});
+					}
 				}
-			}
-			catch (RuntimeScribbleException rse)  // Lambda hack
-			{
-				throw new ScribbleException(rse.getMessage(), rse.getCause());
+				catch (RuntimeScribbleException rse)  // Lambda hack
+				{
+					throw new ScribbleException(rse.getMessage(), rse.getCause());
+				}
 			}
 		}
 		
@@ -121,34 +123,12 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	public GChoice leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
-		List<LProtocolBlock> blocks = 
-				gc.getBlocks().stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());	
-		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
-		/*if (blocks.size() == 1)
-		{
-			if (!blocks.get(0).isEmpty())  // WF allows empty (blocks/seq are never null)
-			{
-				RoleNode subj = AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
-				projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
-			}
-		}
-		else //if (blocks.size() > 1)*/
-		blocks = blocks.stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
-		if (!blocks.isEmpty())
-		{
-			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(AstFactoryImpl.FACTORY.DummyProjectionRoleNode(), Arrays.asList(b))).collect(Collectors.toList());
-			LChoice merged = cs.get(0);
-			for (int i = 1; i < cs.size(); i++)
-			{
-				merged = merged.merge(cs.get(i));
-			}
-			projection = merged;
-		}
+		List<LProtocolBlock> blocks =
+				gc.getBlocks().stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());
+				//gc.getBlocks().stream().map((b) -> ((GProtocolBlockDel) b.del()).project(b, self)).collect(Collectors.toList());
+		LChoice projection = gc.project(proj.peekSelf(), blocks);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
-		
-		//..TODO: use merge (and disable balanced roles choice check for non-exit choice cases)
-
 	}
 
 	/*@Override

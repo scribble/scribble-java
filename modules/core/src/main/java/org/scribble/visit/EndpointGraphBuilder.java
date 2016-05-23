@@ -38,7 +38,7 @@ public class EndpointGraphBuilder extends NoEnvInlinedProtocolVisitor
 		}
 	}
 
-	protected LInteractionSeq visitOverrideForLInteractionSeq(LProtocolBlock parent, LInteractionSeq child)
+	protected LInteractionSeq visitOverrideForLInteractionSeq(LProtocolBlock parent, LInteractionSeq child) throws ScribbleException
 	{
 		return ((LInteractionSeqDel) child.del()).visitForFsmConversion(this, child);
 	}

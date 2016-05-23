@@ -1,6 +1,21 @@
 package org.scribble.main;
 
 
+//.. Global model WF
+//
+//.. analyse inlined unfolded for max buffer size -- no: one-slot buffer seems sufficient, given located choice
+//.. add term branches for infinite loops (termination hack), for checking mixed finite and infinite role behaviours (see Test.scr **TERM)
+//.. check role-based starvation/liveness (loop hack)
+//.. "introduces" should just work (dynamic buffer structure)
+//
+//.. global model actions
+//.. error state traces (and error process system)
+//.. check junit harness and unit tests, add new tests
+//.. CL ouput even if ScribbleException
+//
+//.. integrate reachability check and graph building? or move reachability earlier? EFSM building now done before reachability pass
+
+
 /*
 .. disallow self comm
 .. check role decl used

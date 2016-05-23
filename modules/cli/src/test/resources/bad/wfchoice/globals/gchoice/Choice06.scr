@@ -17,10 +17,12 @@ global protocol Choice6(role A, role B)
 	{
 		//l1() from A to B;  // Comment is bad
 		() from A to B;
+		2() from A to B;
 	}
 	or
 	{
 		() from A to B;
+		3() from B to A;
 	}
 }
 

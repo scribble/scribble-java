@@ -86,6 +86,8 @@ public class LChoice extends Choice<Local> implements LCompoundInteractionNode
 		}*/
 		List<LProtocolBlock> blocks = new LinkedList<>();
 		// For now assume all labels distinct by WFChoiceCheck -- for more general merge need to use getEnabling and check if overlapping labels have the same cases (need an equals for ScribNodes)
+		// FIXME: bad merges involving recvars, e.g. for B, rec X . choice at A { A->B:1 . choice at A { A->C:2.X } or { A->C:3 } } or { A->B,C:4 }
+		// ^ maybe by preventing merge of unguarded recvar with non-recvar cases (or empty cases)
 		getBlocks().forEach((b) -> blocks.add(b.clone()));
 		them.getBlocks().forEach((b) -> blocks.add(b.clone()));
 		return AstFactoryImpl.FACTORY.LChoice(this.subj, blocks);  // Not reconstruct: leave context building to post-projection passes 

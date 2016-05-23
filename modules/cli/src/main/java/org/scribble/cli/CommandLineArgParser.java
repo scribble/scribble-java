@@ -20,7 +20,8 @@ public class CommandLineArgParser
 	public static final String OUTPUT_FLAG = "-d";
 	public static final String STATECHANSUBTYPES_FLAG = "-subtypes";
 	public static final String GLOBAL_MODEL_FLAG = "-model";
-	public static final String PROJECTED_MODEL_FLAG = "-pmodel";
+	//public static final String PROJECTED_MODEL_FLAG = "-pmodel";
+	public static final String OLD_WF_FLAG = "-oldwf";
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -28,6 +29,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.ArgFlag.PATH);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.ArgFlag.OUTPUT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.STATECHANSUBTYPES_FLAG, CommandLine.ArgFlag.SCHAN_API_SUBTYPES);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OLD_WF_FLAG, CommandLine.ArgFlag.OLD_WF);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -38,7 +40,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.STATECHAN_FLAG, CommandLine.ArgFlag.SCHAN_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL);
-		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.PROJECTED_MODEL_FLAG, CommandLine.ArgFlag.PROJECTED_MODEL);
+		//CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.PROJECTED_MODEL_FLAG, CommandLine.ArgFlag.PROJECTED_MODEL);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> FLAGS = new HashMap<>();
@@ -126,15 +128,20 @@ public class CommandLineArgParser
 			case CommandLineArgParser.STATECHANSUBTYPES_FLAG:
 			{
 				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.STATECHANSUBTYPES_FLAG), new String[0]);
-				return ++i;
+				return i;
 			}
 			case CommandLineArgParser.GLOBAL_MODEL_FLAG:
 			{
 				return parseGlobalModel(i);
 			}
-			case CommandLineArgParser.PROJECTED_MODEL_FLAG:
+			/*case CommandLineArgParser.PROJECTED_MODEL_FLAG:
 			{
 				return parseProjectedModel(i);
+			}*/
+			case CommandLineArgParser.OLD_WF_FLAG:
+			{
+				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.OLD_WF_FLAG), new String[0]);
+				return i;
 			}
 			default:
 			{
@@ -242,7 +249,7 @@ public class CommandLineArgParser
 		return i;
 	}
 
-	private int parseProjectedModel(int i)
+	/*private int parseProjectedModel(int i)
 	{
 		if ((i + 2) >= this.args.length)
 		{
@@ -252,7 +259,7 @@ public class CommandLineArgParser
 		String role = this.args[++i];
 		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PROJECTED_MODEL_FLAG), proto, role);
 		return i;
-	}
+	}*/
 	
 
 	private int parseOutput(int i)  // Almost same as parseProject

@@ -7,6 +7,7 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.RecVar;
 
 // Helper class for EndpointGraphBuilder -- can access the protected setters of EndpointState
+@Deprecated
 public class GGraphBuilder extends GraphBuilder<GModelAction, GModelState, Global>
 {
 	/*private EndpointState root;

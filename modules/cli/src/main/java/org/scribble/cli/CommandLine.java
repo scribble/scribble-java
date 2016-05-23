@@ -16,7 +16,6 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.MainContext;
-import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
@@ -28,9 +27,23 @@ import org.scribble.visit.Job;
 import org.scribble.visit.JobContext;
 
 // Maybe no point to be a Runnable
-public class CommandLine implements Runnable
+public class CommandLine //implements Runnable
 {
-	protected enum ArgFlag { MAIN, PATH, PROJECT, VERBOSE, FSM, SESS_API, SCHAN_API, EP_API, OUTPUT, SCHAN_API_SUBTYPES, GLOBAL_MODEL, PROJECTED_MODEL }
+	protected enum ArgFlag {
+		MAIN,
+		PATH,
+		PROJECT,
+		VERBOSE,
+		FSM,
+		SESS_API,
+		SCHAN_API,
+		EP_API,
+		OUTPUT,
+		SCHAN_API_SUBTYPES,
+		GLOBAL_MODEL,
+		OLD_WF,
+		//PROJECTED_MODEL
+	}
 	
 	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 	
@@ -43,13 +56,13 @@ public class CommandLine implements Runnable
 		}
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws ScribbleException
 	{
 		new CommandLine(args).run();
 	}
 
-	@Override
-	public void run()
+	//@Override
+	public void run() throws ScribbleException
 	{
 		Job job = newJob(newMainContext());
 		try
@@ -77,16 +90,21 @@ public class CommandLine implements Runnable
 			}
 			if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
 			{
+				if (job.useOldWf)
+				{
+					throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
+				}
 				outputGlobalModel(job);
 			}
-			if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
+			/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
 			{
 				outputProjectedModel(job);
-			}
+			}*/
 		}
 		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 		{
-			throw new RuntimeScribbleException(e);
+			//throw new RuntimeScribbleException(e);
+			throw e;
 		}
 	}
 	
@@ -124,11 +142,11 @@ public class CommandLine implements Runnable
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			System.out.println("\n" + jcontext.getGlobalModel(fullname));
+			System.out.println("\n" + jcontext.getGlobalModel(fullname).toDot());  // FIXME: make a global equiv to EndpointGraph
 		}
 	}
 	
-	private void outputProjectedModel(Job job) throws ScribbleException
+	/*private void outputProjectedModel(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.PROJECTED_MODEL);
@@ -138,7 +156,7 @@ public class CommandLine implements Runnable
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
 			System.out.println("\n" + jcontext.getGlobalModel(fullname).project(role));
 		}
-	}
+	}*/
 
 	private void outputSessionApi(Job job) throws ScribbleException
 	{
@@ -219,18 +237,19 @@ public class CommandLine implements Runnable
 	private Job newJob(MainContext mc)
 	{
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
-		return new Job(mc.debug, mc.getParsedModules(), mc.main);
+		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF);
 	}
 
 	private MainContext newMainContext()
 	{
 		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);
+		boolean useOldWF = this.args.containsKey(ArgFlag.OLD_WF);
 		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN)[0]);
 		List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
 				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
-		return new MainContext(debug, locator, mainpath);
+		return new MainContext(debug, locator, mainpath, useOldWF);
 	}
 	
 	private static Path parseMainPath(String path)

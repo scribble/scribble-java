@@ -124,7 +124,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());*/
 		GModel model = new GModel(builder.builder.getEntry(), builder.builder.getExit());
 		JobContext jc = builder.getJobContext();
-		jc.addGlobalModel(gpd.getFullMemberName((Module) parent), model);
+		jc.addGlobalModel(gpd.getFullMemberName((Module) parent), null);// model);
 		//builder.getJob().debugPrintln("\n[DEBUG] Global model " + gpd.getFullMemberName((Module) parent) + ":\n" + model);
 		return gpd;
 	}

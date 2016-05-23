@@ -55,6 +55,7 @@ global protocol Ehlo(role S, role C)
 		{
 			choice at S
 			{
+				//250 from S to C;
 				250d from S to C;
 				continue X;
 			}
