@@ -118,7 +118,7 @@ global protocol Proto1(role A, role B, role C, role D)
 				or
 				{
 					() from C to A;
-					() from C to D;  // FIXME: minimise test
+					() from C to D;  // FIXME: minimise this test case
 					// FIXME: remove last edge
 					continue X;
 				}

@@ -39,9 +39,8 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		}
 		else
 		{
-			graph.builder.removeLastEdge(graph.builder.getPredecessor());  // Hacky? -- cannot implicitly overwrite given non-det machines
+			graph.builder.removeLastEdge(graph.builder.getPredecessor());  // Hacky? -- cannot implicitly overwrite (addEdge) given non-det machines
 			graph.builder.addEdge(graph.builder.getPredecessor(), graph.builder.getPreviousAction(), graph.builder.getRecursionEntry(rv));
-
 		}
 		return (LContinue) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
 	}
