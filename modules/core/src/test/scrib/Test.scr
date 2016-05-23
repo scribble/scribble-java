@@ -27,6 +27,24 @@ type <java> "java.lang.int" from "rt.jar" as int;
 
 
 
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to A;
+			continue X;
+		}
+		or
+		{
+			1() from A to B;
+			2() from B to A;
+		}
+	}
+}
+
 /*
 global protocol Proto1(role A, role B, role C)
 {
@@ -163,7 +181,6 @@ global protocol Proto1(role A, role B, role C)
 	}
 }
 //*/
-
 
 
 /*

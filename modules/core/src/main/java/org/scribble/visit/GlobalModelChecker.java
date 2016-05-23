@@ -176,7 +176,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				List<GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
 				e += "\n" + error.toString() + "\n" + trace;
 			}
-			throw new ScribbleException("\n" + init.toDot() + "\n\nGlobal model safety violations:" + e);
+			throw new ScribbleException("\n" + init.toDot() + "\nGlobal model safety violations:" + e);
 		}
 
 		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
