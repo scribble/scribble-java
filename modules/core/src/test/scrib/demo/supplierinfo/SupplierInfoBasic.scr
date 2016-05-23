@@ -1,4 +1,4 @@
-module src.SupplierInfoPrev;
+module src.SupplierInfoBasic;
 
 type <xsd> "UserName" from "AUTH.xsd" as username;
 type <xsd> "Password" from "AUTH.xsd" as password;

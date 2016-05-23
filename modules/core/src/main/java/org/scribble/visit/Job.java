@@ -41,7 +41,7 @@ public class Job
 		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
 		////runVisitorPassOnAllModules(WFChoicePathChecker.class);
 		runProjectionPasses();
-		if (this.useOldWf)
+		if (!this.useOldWf)
 		{
 			runVisitorPassOnAllModules(GlobalModelChecker.class);
 		}
