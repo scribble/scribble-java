@@ -54,8 +54,13 @@ public class WFState
 		this.succs.add(s);
 	}
 	
+	public List<GModelAction> getActions()
+	{
+		return Collections.unmodifiableList(this.actions);
+	}
+
 	//public Set<GModelAction> getAcceptable()
-	public Map<Role, List<IOAction>> getAcceptable()
+	public Map<Role, List<IOAction>> getAcceptable()  // NB: config semantics, not graph edges (cf, ModelState) -- getActions for that
 	{
 		//return Collections.unmodifiableSet(this.edges.keySet());
 		return this.config.getAcceptable();
@@ -72,7 +77,7 @@ public class WFState
 		return this.config.accept(r, a);
 	}
 	
-	public List<WFState> getSuccessors()
+	public List<WFState> getSuccessors()  // NB graph edges, not config semantics (cf, getAcceptable)
 	{
 		//return Collections.unmodifiableCollection(this.edges.values());
 		return Collections.unmodifiableList(this.succs);

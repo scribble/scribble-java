@@ -1,9 +1,11 @@
 package org.scribble.visit;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,11 +14,11 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.del.global.GProtocolBlockDel;
+import org.scribble.del.local.LProtocolDefDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.global.GModelAction;
 import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
@@ -85,8 +87,10 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		
 		for (Role self : gpd.header.roledecls.getRoles())
 		{
-			GProtocolBlock gpb = gpd.getDef().getBlock();
-			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);
+			/*GProtocolBlock gpb = gpd.getDef().getBlock();
+			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);*/
+			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(gpd.getFullMemberName(parent), self).getLocalProtocolDecls().get(0).def.del())
+					.getInlinedProtocolDef().getBlock();
 			
 			//System.out.println("aaa: " + proj);
 			
@@ -95,13 +99,11 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			proj.accept(graph);  // Don't do on root decl, side effects job context
 			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 
-			System.out.println("bbb: " + fsm);
+			//System.out.println("bbb: " + fsm);
 			
 			fsms.put(self, fsm.init);
 		}
 			
-		//..build one-buf global model and check for bad terminals
-
 		WFConfig c0 = new WFConfig(fsms, new WFBuffers(fsms.keySet()));
 		WFState init = new WFState(c0);
 		
@@ -160,13 +162,48 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
 		if (!errors.isEmpty())
 		{
-			// FIXME TODO: give error trace
-			throw new ScribbleException("\n" + init.toDot() + "\n\nGlobal model safety violations:\n" + errors.stream().map((e) -> e.toString()).collect(Collectors.joining("\n")));
+			String e = "";
+			for (WFState error : errors)
+			{
+				List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
+				e += "\n" + error.toString() + "\n" + trace;
+			}
+			throw new ScribbleException("\n" + init.toDot() + "\n\nGlobal model safety violations:" + e);
 		}
 
 		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 		
 		return child;
+	}
+	
+	private static List<GModelAction> dfs(List<GModelAction> trace, List<WFState> seen, WFState term)
+	{
+		WFState curr = seen.get(seen.size() - 1);
+		Iterator<GModelAction> as = curr.getActions().iterator();
+		Iterator<WFState> ss = curr.getSuccessors().iterator();
+		while (as.hasNext())
+		{
+			GModelAction a = as.next();
+			WFState s = ss.next();
+			if (s.equals(term))
+			{
+				trace.add(a);
+				return trace;
+			}
+			if (!seen.contains(s))
+			{
+				List<GModelAction> tmp1 = new LinkedList<>(trace);
+				tmp1.add(a);
+				List<WFState> tmp2 = new LinkedList<>(seen);
+				tmp2.add(s);
+				List<GModelAction> res = dfs(tmp1, tmp2, term);
+				if (res != null)
+				{
+					return res;
+				}
+			}
+		}
+		return null;
 	}
 	
 	/*private static void checkWF(Set<GModelState> seen, GModelState curr, GModel model, Map<GModelState, Set<GModelState>> reach)

@@ -15,7 +15,7 @@ import org.scribble.sesstype.name.RecVar;
 // Helper class for EndpointGraphBuilder -- can access the protected setters of S
 public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 {
-	private S root;
+	//private S root;
 	
 	private final Map<RecVar, Deque<S>> recvars = new HashMap<>();  // Should be a stack of S?
 	//private final Map<SubprotocolSig, S> subprotos = new HashMap<>();  // Not scoped sigs
@@ -36,7 +36,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	{
 		this.recvars.clear();
 		this.entry = newState(Collections.emptySet());
-		this.root = this.entry;
+		//this.root = this.entry;
 		this.exit = newState(Collections.emptySet());
 		
 		this.pred.push(new LinkedList<>());

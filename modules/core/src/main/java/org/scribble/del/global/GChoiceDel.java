@@ -1,9 +1,7 @@
 package org.scribble.del.global;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
@@ -17,7 +15,6 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ChoiceDel;
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
@@ -66,11 +63,11 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		{
 			try
 			{
-				WFChoiceEnv benv0 = all.get(0);
+				/*WFChoiceEnv benv0 = all.get(0);
 				List<WFChoiceEnv> benvs = all.subList(1, all.size());
 
 				Set<Role> dests = benv0.getEnabled().getDestinations();
-				// Same roles enabled in every block
+				/ Same roles enabled in every block
 				benvs.stream().map((e) -> e.getEnabled().getDestinations()).forEach((rs) ->
 						{
 							if (!dests.equals(rs))
@@ -102,7 +99,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 								}
 								mids.addAll(ms);
 							});
-				}
+				}*/
 			}
 			catch (RuntimeScribbleException rse)  // Lambda hack
 			{
