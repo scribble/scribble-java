@@ -66,7 +66,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	public void addEdge(S s, A a, S succ)
 	{
 		s.addEdge(a, succ);
-		if (!this.pred.isEmpty())
+		//if (!this.pred.isEmpty())
 		{
 			this.pred.pop();
 			this.prev.pop();
@@ -87,6 +87,12 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		}
 	}
 	
+	public void enterChoice()  // FIXME: refactor
+	{
+		this.pred.push(new LinkedList<>());
+		this.prev.push(new LinkedList<>());
+	}
+
 	public void pushChoiceBlock()
 	{
 		this.pred.push(null);  // Signifies following statement is "unguarded" in this choice block
@@ -113,6 +119,19 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 			this.prev.push(peek2);
 		}
 		peek2.addAll(prev);
+	}
+
+	public void leaveChoice()
+	{
+		List<S> pred = this.pred.pop();
+		List<A> prev = this.prev.pop();
+		if (!pred.isEmpty())
+		{
+			this.pred.pop();
+			this.prev.pop();
+			this.pred.push(pred);
+			this.prev.push(prev);
+		}
 	}
 	
 	public boolean isUnguardedInChoice()

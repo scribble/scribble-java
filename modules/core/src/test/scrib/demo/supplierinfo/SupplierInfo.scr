@@ -24,7 +24,9 @@ global protocol PartnershipSupplier(
 	login(username, password) from requestor to loginsvc;
 	choice at loginsvc
 	{
+		//loginsuccess() from loginsvc to requestor;  // FIXME: error not detected: because of liveness of other parties? (error is detected if mainBlock is not looped)
 		loginfailure() from loginsvc to requestor;
+		//getsuppliers(uuid) from requestor to authorisersvc;  // Error
 		0() from requestor to authorisersvc;
 		0() from authorisersvc to filtersvc;
 		0() from authorisersvc to suppliersvc;
@@ -47,8 +49,6 @@ global protocol PartnershipSupplier(
 
 					1() from authorisersvc to suppliersvc;  // FIXME: investigate commenting (should be OK by recursion?) -- projection problem: local choice subjects (inference against empty cases)
 					1() from authorisersvc to filtersvc;  // FIXME: projection problem when commented: local choice subject for filtersvc -- if resolved, then a graph building problem
-
-					continue mainBlock;
 				}
 				or
 				{
@@ -59,10 +59,7 @@ global protocol PartnershipSupplier(
 					filter1(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
 					filtered1() from filtersvc to authorisersvc;
 					suppliers() from authorisersvc to requestor;
-
-					continue mainBlock;
 				}
-				//continue mainBlock;  // FIXME: graph building
 			}
 			or
 			{
@@ -76,8 +73,6 @@ global protocol PartnershipSupplier(
 
 					2() from authorisersvc to contractsvc;
 					2() from authorisersvc to filtersvc;
-
-					continue mainBlock;
 				}
 				or
 				{
@@ -88,12 +83,9 @@ global protocol PartnershipSupplier(
 					filter2(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
 					filtered2() from filtersvc to authorisersvc;
 					contracts() from authorisersvc to requestor;
-
-					continue mainBlock;
 				}
-				//continue mainBlock;
 			}
-			//continue mainBlock;  // FIXME: graph building
+			continue mainBlock;
 		}
 	}
 }
