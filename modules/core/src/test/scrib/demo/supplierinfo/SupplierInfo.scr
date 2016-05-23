@@ -47,8 +47,8 @@ global protocol PartnershipSupplier(
 					// DENIED
 					deny() from authorisersvc to requestor;
 
-					1() from authorisersvc to suppliersvc;  // FIXME: investigate commenting (should be OK by recursion?) -- projection problem: local choice subjects (inference against empty cases)
-					1() from authorisersvc to filtersvc;  // FIXME: projection problem when commented: local choice subject for filtersvc -- if resolved, then a graph building problem
+					//1() from authorisersvc to suppliersvc;  // FIXME: investigate commenting (should be OK by recursion?) -- projection problem: local choice subjects (inference against empty cases)
+					//1() from authorisersvc to filtersvc;  // FIXME: projection problem when commented: local choice subject for filtersvc -- if resolved, then a graph building problem
 				}
 				or
 				{
@@ -71,8 +71,8 @@ global protocol PartnershipSupplier(
 					// DENIED
 					deny() from authorisersvc to requestor;
 
-					2() from authorisersvc to contractsvc;
-					2() from authorisersvc to filtersvc;
+					//2() from authorisersvc to contractsvc;
+					//2() from authorisersvc to filtersvc;
 				}
 				or
 				{

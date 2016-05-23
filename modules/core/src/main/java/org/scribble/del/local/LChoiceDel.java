@@ -45,8 +45,8 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 					.collect(Collectors.toSet());
 		}
 		
-		// HACK?
-		//subjs = subjs.stream().filter((s) -> s != null).collect(Collectors.toSet());
+		// HACK?  (for non- role-balanced choice cases)
+		subjs = subjs.stream().filter((s) -> s != null).collect(Collectors.toSet());
 		
 		if (subjs.size() > 1)  // Unnecessary: due to WF check in GChoiceDel.leaveInlinedPathCollection -- would be better as a check on locals than in projection anyway
 		{
