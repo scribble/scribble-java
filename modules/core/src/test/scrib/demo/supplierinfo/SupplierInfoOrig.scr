@@ -39,16 +39,12 @@ global protocol PartnershipSupplier(
 			{
 				// GET SUPPLIER INFO
 				getsuppliers(uuid) from requestor to authorisersvc;
-				//1() from authorisersvc to contractsvc;  // FIXME: massive state explosion
 				choice at authorisersvc
 				{
 					// DENIED
 					deny() from authorisersvc to requestor;
-
-					1() from authorisersvc to suppliersvc;  // FIXME: investigate commenting (should be OK by recursion?) -- projection problem: local choice subjects (inference against empty cases)
-					1() from authorisersvc to filtersvc;  // FIXME: projection problem when commented: local choice subject for filtersvc -- if resolved, then a graph building problem
-
-					continue mainBlock;
+					1() from authorisersvc to suppliersvc;
+					1() from authorisersvc to filtersvc;
 				}
 				or
 				{
@@ -59,25 +55,20 @@ global protocol PartnershipSupplier(
 					filter1(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
 					filtered1() from filtersvc to authorisersvc;
 					suppliers() from authorisersvc to requestor;
-
-					continue mainBlock;
 				}
-				//continue mainBlock;  // FIXME: graph building
+				1() from authorisersvc to contractsvc;
 			}
 			or
 			{
 				// GET CONTRACT INFO
 				getcontracts() from requestor to authorisersvc;
-				//2() from authorisersvc to suppliersvc;
+				//choice at authoriser
 				choice at authorisersvc
 				{
 					// DENIED
 					deny() from authorisersvc to requestor;
-
 					2() from authorisersvc to contractsvc;
 					2() from authorisersvc to filtersvc;
-
-					continue mainBlock;
 				}
 				or
 				{
@@ -88,12 +79,10 @@ global protocol PartnershipSupplier(
 					filter2(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
 					filtered2() from filtersvc to authorisersvc;
 					contracts() from authorisersvc to requestor;
-
-					continue mainBlock;
 				}
-				//continue mainBlock;
+				2() from authorisersvc to suppliersvc;
 			}
-			//continue mainBlock;  // FIXME: graph building
+			continue mainBlock;
 		}
 	}
 }

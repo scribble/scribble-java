@@ -1,6 +1,7 @@
 package org.scribble.del.local;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
@@ -34,14 +35,19 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		RecVar rv = lr.recvar.toName();
 		//graph.builder.setEntry(graph.builder.getRecursionEntry(rv));
 		//if (graph.builder.getPredecessor() == null)  // unguarded choice case
-		// ** Overwrites previous edge built by send/receive
 		if (graph.builder.isUnguardedInChoice())
 		{
 			IOAction a = graph.builder.getEnacting(rv);
-			graph.builder.addEdge(graph.builder.getEntry(), a, graph.builder.getRecursionEntry(rv).accept(a));
+			List<EndpointState> ss = graph.builder.getRecursionEntry(rv).acceptAll(a);
+			for (EndpointState s : ss)  // FIXME: produces non-det edges to different rec entries -- but equiv, do just pick 1?
+			{
+				graph.builder.addEdge(graph.builder.getEntry(), a, s);
+			}
+			//graph.builder.addEdge(graph.builder.getEntry(), a, ss.get(0));  // FIXME: OK to just pick 1? -- maybe: but the original non-det choice before enacting the recursion is still there anyway
 		}
 		else
 		{
+			// ** "Overwrites" previous edge built by send/receive(s) leading to this continue
 			/*graph.builder.removeLastEdge(graph.builder.getPredecessors());  // Hacky? -- cannot implicitly overwrite (addEdge) given non-det machines
 			graph.builder.addEdge(graph.builder.getPredecessors(), graph.builder.getPreviousActions(), graph.builder.getRecursionEntry(rv));*/
 			Iterator<EndpointState> preds = graph.builder.getPredecessors().iterator();

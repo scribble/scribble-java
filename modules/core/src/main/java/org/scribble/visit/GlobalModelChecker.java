@@ -111,12 +111,19 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		LinkedHashSet<WFState> todo = new LinkedHashSet<>();
 		todo.add(init);
 		
+		int count = 0;
 		while (!todo.isEmpty())
 		{
 			Iterator<WFState> i = todo.iterator();
 			WFState curr = i.next();
 			i.remove();
 			seen.add(curr);
+
+			count ++;
+			if (count % 50 == 0)
+			{
+				getJob().debugPrintln("Checking global states: " + count);
+			}
 			
 			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
 

@@ -97,8 +97,22 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	{
 		List<S> pred = this.pred.pop();
 		List<A> prev = this.prev.pop();
-		this.pred.peek().addAll(pred);
-		this.prev.peek().addAll(prev);
+		List<S> peek1 = this.pred.peek();
+		if (peek1 == null)
+		{
+			this.pred.pop();
+			peek1 = new LinkedList<>();
+			this.pred.push(peek1);
+		}
+		peek1.addAll(pred);
+		List<A> peek2 = this.prev.peek();
+		if (peek2 == null)
+		{
+			this.prev.pop();
+			peek2 = new LinkedList<>();
+			this.prev.push(peek2);
+		}
+		peek2.addAll(prev);
 	}
 	
 	public boolean isUnguardedInChoice()
