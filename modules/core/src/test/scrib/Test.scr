@@ -32,6 +32,45 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. analyse inlined unfolded for max buffer size
 
 
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;  // FIXME: test again after inlined unfolded proj fixing?
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+//*/
+
+
+/*/
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+		}
+		or
+		{
+			2() from A to B;
+		}
+		continue X;  // Graph building
+	}
+}
+//*/
+
+
+//*
 global protocol Proto1(role A, role B)
 {
 	rec X
@@ -39,7 +78,7 @@ global protocol Proto1(role A, role B)
 		1() from A to B;
 		choice at A
 		{
-			//1() from A to B;
+			//1() from A to B;  // FIXME: unfolding isn't working
 			continue X;
 		}
 		or
@@ -48,6 +87,7 @@ global protocol Proto1(role A, role B)
 		}
 	}
 }
+//*/
 
 
 /*

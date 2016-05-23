@@ -42,10 +42,27 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		this.labs.add(lab);
 	}
 	
-	protected void removeLastEdge()
+	/*protected void removeLastEdge()
 	{
 		this.actions.remove(this.actions.size() - 1);
 		this.succs.remove(this.succs.size() - 1);
+	}*/
+	protected void removeEdge(A a, S s)
+	{
+		Iterator<A> ia = this.actions.iterator();
+		Iterator<S> is = this.succs.iterator();
+		while (ia.hasNext())
+		{
+			A tmpa = ia.next();
+			S tmps = is.next();
+			if (tmpa.equals(a) && tmps.equals(s))
+			{
+				ia.remove();
+				is.remove();
+				return;
+			}
+		}
+		throw new RuntimeException("No such transition to remove: " + a + "->" + s);
 	}
 	
 	// Mutable (can also overwrite edges)

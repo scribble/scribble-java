@@ -1,9 +1,11 @@
 package org.scribble.model;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,8 +21,8 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	//private final Map<SubprotocolSig, S> subprotos = new HashMap<>();  // Not scoped sigs
 	private final Map<RecVar, Deque<A>> enacting = new HashMap<>();
 
-	private Deque<S> pred = new LinkedList<>();
-	private Deque<A> prev = new LinkedList<>();
+	private Deque<List<S>> pred = new LinkedList<>();
+	private Deque<List<A>> prev = new LinkedList<>();
 	
 	private S entry;
 	private S exit;  // Good for merges (otherwise have to generate dummy merge nodes)
@@ -36,6 +38,9 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		this.entry = newState(Collections.emptySet());
 		this.root = this.entry;
 		this.exit = newState(Collections.emptySet());
+		
+		this.pred.push(new LinkedList<>());
+		this.prev.push(new LinkedList<>());
 	}
 	
 	public abstract S newState(Set<RecVar> labs);
@@ -48,9 +53,13 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		this.entry.addLabel(lab);
 	}
 
-	public void removeLastEdge(S s)
+	/*public void removeLastEdge(S s)
 	{
 		s.removeLastEdge();
+	}*/
+	public void removeEdge(S s, A a, S succ)
+	{
+		s.removeEdge(a, succ);
 	}
 	
 	// Records 's' as predecessor state, and 'a' as previous action and the "enacting action" for "fresh" recursion scopes
@@ -62,8 +71,8 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 			this.pred.pop();
 			this.prev.pop();
 		}
-		this.pred.push(s);
-		this.prev.push(a);
+		this.pred.push(new LinkedList<>(Arrays.asList(s)));
+		this.prev.push(new LinkedList<>(Arrays.asList(a)));
 		
 		for (Deque<A> ens : this.enacting.values())
 		{
@@ -86,16 +95,19 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 
 	public void popChoiceBlock()
 	{
-		this.pred.pop();
-		this.prev.pop();
+		List<S> pred = this.pred.pop();
+		List<A> prev = this.prev.pop();
+		this.pred.peek().addAll(pred);
+		this.prev.peek().addAll(prev);
 	}
 	
 	public boolean isUnguardedInChoice()
 	//public boolean isUnguardedInChoice(RecVar rv)
 	{
 		return
-				!this.entry.equals(this.root) && // Hacky? for protocols that start with unguarded choice-rec, e.g. choice at A { rec X { ... at root
-				!this.pred.isEmpty() && this.pred.peek() == null;
+				////!this.entry.equals(this.root) && // Hacky? for protocols that start with unguarded choice-rec, e.g. choice at A { rec X { ... at root
+				//!this.pred.isEmpty() &&  // This and above fixed by initialising non-null pred/prev?
+				this.pred.peek() == null;
 	}
 	
 	public void pushRecursionEntry(RecVar recvar, S entry)
@@ -136,12 +148,12 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		this.enacting.get(recvar).pop();
 	}	
 	
-	public S getPredecessor()
+	public List<S> getPredecessors()
 	{
 		return this.pred.peek();
 	}
 	
-	public A getPreviousAction()
+	public List<A> getPreviousActions()
 	{
 		return this.prev.peek();
 	}

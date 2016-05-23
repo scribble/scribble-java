@@ -1,9 +1,12 @@
 package org.scribble.del.local;
 
+import java.util.Iterator;
+
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.EndpointGraphBuilder;
@@ -39,8 +42,18 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		}
 		else
 		{
-			graph.builder.removeLastEdge(graph.builder.getPredecessor());  // Hacky? -- cannot implicitly overwrite (addEdge) given non-det machines
-			graph.builder.addEdge(graph.builder.getPredecessor(), graph.builder.getPreviousAction(), graph.builder.getRecursionEntry(rv));
+			/*graph.builder.removeLastEdge(graph.builder.getPredecessors());  // Hacky? -- cannot implicitly overwrite (addEdge) given non-det machines
+			graph.builder.addEdge(graph.builder.getPredecessors(), graph.builder.getPreviousActions(), graph.builder.getRecursionEntry(rv));*/
+			Iterator<EndpointState> preds = graph.builder.getPredecessors().iterator();
+			Iterator<IOAction> prevs = graph.builder.getPreviousActions().iterator();
+			EndpointState entry = graph.builder.getEntry();
+			while (preds.hasNext())
+			{
+				EndpointState pred = preds.next();
+				IOAction prev = prevs.next();
+				graph.builder.removeEdge(pred, prev, entry);
+				graph.builder.addEdge(pred, prev, graph.builder.getRecursionEntry(rv));
+			}
 		}
 		return (LContinue) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
 	}
