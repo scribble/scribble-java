@@ -77,7 +77,7 @@ public class WFConfig
 		for (Role r : this.states.keySet())
 		{
 			EndpointState s = this.states.get(r);
-			switch (s.getStateKind())
+			switch (s.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
 				case OUTPUT:
 				{

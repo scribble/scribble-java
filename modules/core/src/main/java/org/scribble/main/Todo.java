@@ -6,7 +6,7 @@ package org.scribble.main;
 //.. analyse inlined unfolded for max buffer size -- no: one-slot buffer seems sufficient, given located choice
 //.. add term branches for infinite loops (termination hack), for checking mixed finite and infinite role behaviours (see Test.scr **TERM)
 //.. check role-based starvation/liveness (loop hack)
-//.. "introduces" should just work (dynamic buffer structure)
+//.. "introduces" should just work (dynamically add/remove buffer structures)
 //
 //.. global model actions
 //.. error state traces (and error process system)
