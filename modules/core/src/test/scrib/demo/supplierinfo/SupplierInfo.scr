@@ -41,7 +41,7 @@ global protocol PartnershipSupplier(
 			{
 				// GET SUPPLIER INFO
 				getsuppliers(uuid) from requestor to authorisersvc;
-				//1() from authorisersvc to contractsvc;  // FIXME: massive state explosion
+				//1() from authorisersvc to contractsvc;  // FIXME: big state explosion?
 				choice at authorisersvc
 				{
 					// DENIED
