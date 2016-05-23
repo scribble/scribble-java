@@ -1,13 +1,11 @@
 package org.scribble.del.global;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GChoice;
-import org.scribble.ast.global.GNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
@@ -21,6 +19,7 @@ import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
+import org.scribble.visit.env.ProjectionEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
 public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
@@ -115,53 +114,13 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 	}
 	
 	@Override
-	public LChoice project(GNode n, Role self)
-	{
-		GChoice gc = (GChoice) n;
-		/*List<LProtocolBlock> blocks = 
-				gc.getBlocks().stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());*/
-		List<LProtocolBlock> blocks = 
-				gc.getBlocks().stream().map((b) -> ((GProtocolBlockDel) b.del()).project(b, self)).collect(Collectors.toList());
-		LChoice projection = null;  // Individual GlobalInteractionNodes become null if not projected -- projected seqs and blocks are never null though
-		/*if (blocks.size() == 1)
-		{
-			if (!blocks.get(0).isEmpty())  // WF allows empty (blocks/seq are never null)
-			{
-				RoleNode subj = AstFactoryImpl.FACTORY.DummyProjectionRoleNode();
-				projection = AstFactoryImpl.FACTORY.LChoice(subj, blocks);
-			}
-		}
-		else //if (blocks.size() > 1)*/
-		blocks = blocks.stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
-		if (!blocks.isEmpty())
-		{
-			// FIXME: initially keep global subject, and later overwrite as necessary in projections
-			List<LChoice> cs = blocks.stream().map((b) -> AstFactoryImpl.FACTORY.LChoice(AstFactoryImpl.FACTORY.DummyProjectionRoleNode(), Arrays.asList(b))).collect(Collectors.toList());
-			LChoice merged = cs.get(0);
-			try
-			{
-				for (int i = 1; i < cs.size(); i++)
-				{
-					merged = merged.merge(cs.get(i));
-				}
-			}
-			catch (ScribbleException e)  // HACK
-			{
-				throw new RuntimeScribbleException(e);
-			}
-			projection = merged;
-		}
-		
-		//..TODO: use merge (and disable balanced roles choice check for non-exit choice cases)
-
-		return projection;
-	}
-
-	@Override
 	public GChoice leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
 		GChoice gc = (GChoice) visited;
-		LChoice projection = project(gc, proj.peekSelf());
+		List<LProtocolBlock> blocks =
+				gc.getBlocks().stream().map((b) -> (LProtocolBlock) ((ProjectionEnv) b.del().env()).getProjection()).collect(Collectors.toList());
+				//gc.getBlocks().stream().map((b) -> ((GProtocolBlockDel) b.del()).project(b, self)).collect(Collectors.toList());
+		LChoice projection = gc.project(proj.peekSelf(), blocks);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GChoice) GCompoundInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
 	}

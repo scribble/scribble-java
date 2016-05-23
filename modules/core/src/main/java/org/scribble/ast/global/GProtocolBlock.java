@@ -3,14 +3,23 @@ package org.scribble.ast.global;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
+import org.scribble.ast.local.LInteractionSeq;
+import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
+import org.scribble.sesstype.name.Role;
 
 public class GProtocolBlock extends ProtocolBlock<Global> implements GNode
 {
 	public GProtocolBlock(GInteractionSeq seq)
 	{
 		super(seq);
+	}
+
+	public LProtocolBlock project(Role self, LInteractionSeq seq)
+	{
+		LProtocolBlock projection = AstFactoryImpl.FACTORY.LProtocolBlock(seq);
+		return projection;
 	}
 
 	@Override

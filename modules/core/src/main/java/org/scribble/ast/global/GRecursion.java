@@ -1,11 +1,26 @@
 package org.scribble.ast.global;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
+import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LInteractionNode;
+import org.scribble.ast.local.LProtocolBlock;
+import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
+import org.scribble.sesstype.name.RecVar;
+import org.scribble.sesstype.name.Role;
 
 
 public class GRecursion extends Recursion<Global> implements GCompoundInteractionNode
@@ -13,6 +28,101 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	public GRecursion(RecVarNode recvar, GProtocolBlock block)
 	{
 		super(recvar, block);
+	}
+
+	public LRecursion project(Role self, LProtocolBlock block)
+	{
+		RecVarNode recvar = this.recvar.clone();
+		LRecursion projection = null;
+		Set<RecVar> rvs = new HashSet<>();
+		rvs.add(recvar.toName());
+		LProtocolBlock pruned = prune(block, rvs);
+		if (!pruned.isEmpty())
+		{
+			projection = AstFactoryImpl.FACTORY.LRecursion(recvar, pruned);
+		}
+		return projection;
+	}
+
+	// Set unnecessary -- nested irrelevant continues should already have been pruned
+	private static LProtocolBlock prune(LProtocolBlock block, Set<RecVar> rvs)
+	{
+		if (block.isEmpty())
+		{
+			return block;
+		}
+		List<? extends LInteractionNode> lis = block.getInteractionSeq().getInteractions();
+		if (lis.size() > 1)
+		{
+			return block;
+		}
+		else //if (lis.size() == 1)
+		{
+			LInteractionNode lin = lis.get(0);
+			if (lin instanceof LContinue)
+			{
+				if (rvs.contains(((LContinue) lin).recvar.toName()))
+				{
+					return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Collections.emptyList()));
+				}
+				else
+				{
+					return block;
+				}
+			}
+			else if (lin instanceof MessageTransfer<?>)
+			{
+				return block;
+			}
+			else
+			{
+				if (lin instanceof LChoice)
+				{
+					List<LProtocolBlock> pruned = new LinkedList<LProtocolBlock>();
+					for (LProtocolBlock b : ((LChoice) lin).getBlocks())
+					{
+						if (!prune(b, rvs).isEmpty())
+						{
+							pruned.add(b);
+						}
+					}
+					if (pruned.isEmpty())
+					{
+						return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Collections.emptyList()));
+					}	
+					else
+					{
+						return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Arrays.asList(AstFactoryImpl.FACTORY.LChoice(((LChoice) lin).subj, pruned))));
+					}	
+				}
+				else if (lin instanceof LRecursion)
+				{
+					rvs = new HashSet<>(rvs);
+					//rvs.add(((LRecursion) lin).recvar.toName());  // Set unnecessary
+					LProtocolBlock prune = prune(((LRecursion) lin).getBlock(), rvs);  // Need to check if the current rec has any cases to prune in the nested rec (already pruned, but for the nested recvars only)
+					if (prune.isEmpty())
+					{
+						return prune;
+					}
+					else
+					{
+						return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Arrays.asList(AstFactoryImpl.FACTORY.LRecursion(((LRecursion) lin).recvar, prune))));
+					}
+					/*if (((LRecursion) lin).block.isEmpty())
+					{
+						return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Arrays.asList(AstFactoryImpl.FACTORY.LRecursion(((LRecursion) lin).recvar, ((LRecursion) lin).getBlock()))));
+					}
+					else
+					{
+						return ((LRecursion) lin).getBlock();
+					}*/
+				}
+				else
+				{
+					throw new RuntimeException("TODO: " + lin);
+				}
+			}
+		}
 	}
 
 	@Override

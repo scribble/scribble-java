@@ -159,6 +159,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				}
 			}
 		}
+		getJob().debugPrintln("Checked global states: " + count);
 
 		//System.out.println("ddd:\n" + init.toDot());
 

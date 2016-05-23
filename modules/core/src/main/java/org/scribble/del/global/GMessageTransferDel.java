@@ -1,25 +1,17 @@
 package org.scribble.del.global;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.MessageNode;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
-import org.scribble.ast.global.GNode;
-import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LNode;
-import org.scribble.ast.local.LReceive;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GModelAction;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
@@ -71,48 +63,12 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 	}
 
 	@Override
-	public LNode project(GNode n, Role self)
-	{
-		GMessageTransfer gmt = (GMessageTransfer) n;
-
-		Role srcrole = gmt.src.toName();
-		List<Role> destroles = gmt.getDestinationRoles();
-		LNode projection = null;
-		if (srcrole.equals(self) || destroles.contains(self))
-		{
-			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, gmt.src.toName().toString());
-			MessageNode msg = (MessageNode) gmt.msg;  // FIXME: need namespace prefix update?
-			List<RoleNode> dests =
-					destroles.stream().map((d) ->
-							(RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, d.toString())).collect(Collectors.toList());
-			if (srcrole.equals(self))
-			{
-				projection = AstFactoryImpl.FACTORY.LSend(src, msg, dests);
-			}
-			if (destroles.contains(self))
-			{
-				if (projection == null)
-				{
-					projection = AstFactoryImpl.FACTORY.LReceive(src, msg, dests);
-				}
-				else
-				{
-					LReceive lr = AstFactoryImpl.FACTORY.LReceive(src, msg, dests);
-					List<LInteractionNode> lis = Arrays.asList(new LInteractionNode[]{(LInteractionNode) projection, lr});
-					projection = AstFactoryImpl.FACTORY.LInteractionSeq(lis);
-				}
-			}
-		}
-		return projection;
-	}
-
-	@Override
 	//public GMessageTransfer leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
 	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
 	{
 		GMessageTransfer gmt = (GMessageTransfer) visited;
 		Role self = proj.peekSelf();
-		LNode projection = project(gmt, self);
+		LNode projection = gmt.project(self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gmt);
 	}

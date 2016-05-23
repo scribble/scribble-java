@@ -15,11 +15,11 @@ import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GModelState;
-import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
+import org.scribble.visit.env.ProjectionEnv;
 
 public class GInteractionSeqDel extends InteractionSeqDel
 {
@@ -51,13 +51,15 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		ScribDelBase.pushVisitorEnv(this, proj);  // Unlike WF-choice and Reachability, Projection uses an Env for InteractionSequences
 	}
 	
-	public LInteractionSeq project(GInteractionSeq gis, Role self)
+	@Override
+	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
 	{
+		GInteractionSeq gis = (GInteractionSeq) visited;
 		List<LInteractionNode> lis = new LinkedList<>();
 		for (GInteractionNode gi : gis.getInteractions())
 		{
-			//LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
-			LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
+			LNode ln = (LNode) ((ProjectionEnv) gi.del().env()).getProjection();
+			//LNode ln = ((GInteractionNodeDel) gi.del()).project(gi, self);  // FIXME: won't work for do
 			// FIXME: move node-specific projects to G nodes (not dels) and take child projections as params, bit like reconstruct
 			if (ln instanceof LInteractionSeq)  // Self comm sequence
 			{
@@ -75,15 +77,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 				lis.clear();
 			}
 		}*/
-		LInteractionSeq projection = AstFactoryImpl.FACTORY.LInteractionSeq(lis);
-		return projection;
-	}
-	
-	@Override
-	public GInteractionSeq leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException
-	{
-		GInteractionSeq gis = (GInteractionSeq) visited;
-		LInteractionSeq projection = project(gis, proj.peekSelf());
+		LInteractionSeq projection = gis.project(proj.peekSelf(), lis);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
 	}

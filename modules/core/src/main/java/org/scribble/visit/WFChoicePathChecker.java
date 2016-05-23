@@ -28,6 +28,7 @@ import org.scribble.sesstype.name.Role;
 
 // ** The issue of path/trace based checking is the usual trace-equivalence vs bisimulation issue (set of traces conflates nested choice structures)
 // Possibly could address (in an ad hoc way) by inductively checking for e.g. trace set equivalence after each step
+@Deprecated
 public class WFChoicePathChecker extends ModuleContextVisitor
 {
 	// N.B. using pointer equality for checking if choice previously visited

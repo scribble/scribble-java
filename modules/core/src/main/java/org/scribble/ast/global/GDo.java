@@ -6,11 +6,14 @@ import org.scribble.ast.NonRoleArgList;
 import org.scribble.ast.RoleArgList;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.local.LDo;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.qualified.ProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.Role;
 import org.scribble.visit.JobContext;
 
 public class GDo extends Do<Global> implements GSimpleInteractionNode
@@ -18,6 +21,14 @@ public class GDo extends Do<Global> implements GSimpleInteractionNode
 	public GDo(RoleArgList roles, NonRoleArgList args, GProtocolNameNode proto)
 	{
 		super(roles, args, proto);
+	}
+
+	public LDo project(Role self, LProtocolNameNode fullname)
+	{
+		RoleArgList roleinstans = this.roles.project(self);
+		NonRoleArgList arginstans = this.args.project(self);
+		LDo projection = AstFactoryImpl.FACTORY.LDo(roleinstans, arginstans, fullname);
+		return projection;
 	}
 
 	@Override

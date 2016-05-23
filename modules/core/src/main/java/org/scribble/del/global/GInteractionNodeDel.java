@@ -1,18 +1,15 @@
 package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GNode;
-import org.scribble.ast.local.LNode;
 import org.scribble.del.InteractionNodeDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 
 public interface GInteractionNodeDel extends InteractionNodeDel
 {
-	public abstract LNode project(GNode n, Role self);  // Generalised return, e.g. returning a seq
+	//public abstract LNode project(GNode n, Role self);  // Generalised return, e.g. returning a seq
 	
 	@Override
 	default void enterProjection(ScribNode parent, ScribNode child, Projector proj) throws ScribbleException

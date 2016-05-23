@@ -21,7 +21,7 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. "introduces" should just work (dynamic buffer structure)
 
 //.. global model actions
-//.. error state traces
+//.. error state traces (and error process system)
 //.. check junit harness and unit tests, add new tests
 //.. CL ouput even if ScribbleException
 
@@ -34,17 +34,42 @@ global protocol Proto1(role A, role B, role C)
 {
 	rec X
 	{
+		0() from A to B;
+		0() from B to C;
 		choice at A
 		{
 			1() from A to B;
-			1() from A to C;
+			1() from B to C;
 		}
 		or
 		{
 			2() from A to B;
 			2() from B to C;
 		}
-		continue X;
+		continue X;  // Graph building
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		0() from A to B;
+		0() from B to C;
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+		continue X;  // Graph building
 	}
 }
 //*/

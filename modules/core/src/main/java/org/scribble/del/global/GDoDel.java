@@ -1,18 +1,14 @@
 package org.scribble.del.global;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.NonRoleArgList;
-import org.scribble.ast.RoleArgList;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GNode;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
@@ -92,20 +88,12 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 		if (gd.roles.getRoles().contains(self))
 		{
 			ModuleContext mc = proj.getModuleContext();
-			RoleArgList roleinstans = gd.roles.project(self);
-			NonRoleArgList arginstans = gd.args.project(self);
 			LProtocolNameNode target = Projector.makeProjectedFullNameNode(gd.getTargetProtocolDeclFullName(mc), popped);
-			projection = AstFactoryImpl.FACTORY.LDo(roleinstans, arginstans, target);
+			projection = gd.project(self, target);
 			
 			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking?
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDo) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
-	}
-
-	@Override
-	public LInteractionNode project(GNode n, Role self)
-	{
-		throw new RuntimeException("TODO: " + n);
 	}
 }
