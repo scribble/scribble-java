@@ -25,6 +25,7 @@ import org.scribble.model.local.IOAction;
 import org.scribble.model.wf.WFBuffers;
 import org.scribble.model.wf.WFConfig;
 import org.scribble.model.wf.WFState;
+import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
 public class GlobalModelChecker extends ModuleContextVisitor
@@ -82,6 +83,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	private GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
 		GProtocolDecl gpd = (GProtocolDecl) child;
+		GProtocolName fullname = gpd.getFullMemberName(parent);
 		
 		Map<Role, EndpointState> fsms = new HashMap<>();
 		
@@ -89,7 +91,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		{
 			/*GProtocolBlock gpb = gpd.getDef().getBlock();
 			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);*/
-			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(gpd.getFullMemberName(parent), self).getLocalProtocolDecls().get(0).def.del()) .getInlinedProtocolDef().getBlock();
+			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0).def.del()) .getInlinedProtocolDef().getBlock();
 			
 			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
 			graph.builder.reset();
@@ -119,7 +121,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			count ++;
 			if (count % 50 == 0)
 			{
-				getJob().debugPrintln("Checking global states: " + count);
+				getJob().debugPrintln("(" + fullname + ") Checking global states: " + count);
 			}
 			
 			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
@@ -159,7 +161,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				}
 			}
 		}
-		getJob().debugPrintln("Checked global states: " + count);
+		getJob().debugPrintln("(" + fullname + ") Checked global states: " + count);
 
 		//System.out.println("ddd:\n" + init.toDot());
 
