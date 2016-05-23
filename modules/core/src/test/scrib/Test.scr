@@ -12,24 +12,39 @@
 module Test;
 
 
-// Try an unfolding visitor that cuts off on nested unfolding of a rec as a continue -- no still won't solve mixed continue-onlys
-// Need to record the "next action and state" after a recursion entry, and for continue only use that action to go to that state
-// Or maybe try a "forwards" algorithm again (two passes may be easier)
-
 type <java> "java.lang.int" from "rt.jar" as int;
 
 
-//.. do subprotocols -- via inlined unfolding (and restore original projection)
-//.. generalised merge-continue graph edge building
-//.. restore (optional) choice subject checking
-//.. add term branches for infinite loops (term hack) -- test mixed finite and inifinite role behaviours
+//.. analyse inlined unfolded for max buffer size -- no: one-slot buffer seems sufficient, given located choice
+//.. add term branches for infinite loops (termination hack), for checking mixed finite and inifinite role behaviours (see **TERM)
 //.. check role-based starvation/liveness (loop hack)
 //.. "introduces" should just work (dynamic buffer structure)
+
 //.. error state traces
 //.. check junit harness and unit tests, add new tests
 //.. CL ouput even if ScribbleException
 
-//.. analyse inlined unfolded for max buffer size
+
+//*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X
+	{
+		1() from A to B;
+		continue X;
+	}
+	choice at C  // FIXME: need termination hack (**TERM)
+	{
+		2() from C to D;
+		3() from D to C;
+	}
+	or
+	{
+		2() from C to D;
+		4() from D to C;
+	}
+}
+//*/
 
 
 /*
