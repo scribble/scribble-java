@@ -1,5 +1,6 @@
 package org.scribble.model.wf;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,6 +29,11 @@ public class WFBuffers
 				}
 			});
 		});
+	}
+	
+	public Map<Role, Send> get(Role r)
+	{
+		return Collections.unmodifiableMap(this.buffs.get(r));
 	}
 	
 	public boolean isEmpty()

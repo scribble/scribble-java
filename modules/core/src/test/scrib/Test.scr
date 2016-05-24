@@ -33,7 +33,49 @@ global protocol Proto1(role A, role B, role C, role D)
 //*/
 
 
-//*
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		rec X
+		{
+			3() from A to C;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to A;
+	}
+	rec X
+	{
+		4() from C to D;
+		continue X;
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	choice at A
@@ -46,7 +88,7 @@ global protocol Proto1(role A, role B, role C, role D)
 		2() from A to B;
 		3() from B to A;
 	}
-	rec X
+	rec X  // Terminal set building
 	{
 		4() from C to D;
 		continue X;

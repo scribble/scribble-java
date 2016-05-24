@@ -98,7 +98,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			proj.accept(graph);  // Don't do on root decl, side effects job context
 			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 
-			//System.out.println("bbb: " + fsm);
+			//System.out.println("EFSM:\n" + fsm);
 			
 			fsms.put(self, fsm.init);
 		}
@@ -125,9 +125,6 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			
 			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
-
-			//System.out.println("ccc: " + acceptable);
-
 			for (Role r : acceptable.keySet())
 			{
 				for (IOAction a : acceptable.get(r))
@@ -163,20 +160,22 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		}
 		getJob().debugPrintln("(" + fullname + ") Checked global states: " + count);
 
-		//System.out.println("ddd:\n" + init.toDot());
+		//System.out.println("Global model:\n" + init.toDot());
+
+		String e = "";
 
 		Set<WFState> terms = init.findTerminalStates();
 		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
 		if (!errors.isEmpty())
 		{
-			String e = "";
 			for (WFState error : errors)
 			{
 				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
 				List<GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
 				e += "\n" + error.toString() + "\n" + trace;
 			}
-			throw new ScribbleException("\n" + init.toDot() + "\nGlobal model safety violations:" + e);
+			//throw new ScribbleException(init.toDot() + "\nSafety violations:" + e);
+			e = "\nSafety violations:" + e;
 		}
 		
 		Set<WFState> all = new HashSet<>();
@@ -184,16 +183,89 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		Set<Set<WFState>> termsets = new HashSet<>();
 		getAllNodes(init, all);
 		getReachability(all, reach);
-		fooTerminalSets(reach, termsets);
+		findTerminalSets(reach, termsets);
 
-		System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
+		//System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
+		
+		for (Set<WFState> termset : termsets)
+		{
+			Set<Role> safety = new HashSet<>();
+			Set<Role> liveness = new HashSet<>();
+			checkTerminalSet(init, termset, safety, liveness);
+			if (!safety.isEmpty())
+			{
+				e += "\nSafety violation for " + safety + "\n in terminal set:" + termset;
+			}
+			if (!liveness.isEmpty())
+			{
+				e += "\nLiveness violation for " + liveness + "\n in terminal set:" + termset;
+			}
+		}
+		
+		if (!e.equals(""))
+		{
+			throw new ScribbleException("\n" + init.toDot() + e);
+		}
 
 		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 		
 		return child;
 	}
+
+	 // ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but maybe not good)
+	private static void checkTerminalSet(WFState init, Set<WFState> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
+	{
+		Iterator<WFState> i = termset.iterator();
+		WFState s = i.next();
+		Map<Role, EndpointState> ss = new HashMap<>(s.config.states);
+		while (i.hasNext())
+		{
+			WFState next = i.next();
+			Map<Role, EndpointState> tmp = next.config.states;
+			for (Role r : tmp.keySet())
+			{
+				if (ss.get(r) != null)
+				{
+					/*if (!ss.get(r).equals(tmp.get(r)))
+					{	
+						ss.put(r, null);
+					}
+					else*/
+					{
+						for (GIOAction a : next.getActions())
+						{
+							if (a.containsRole(r))
+							{
+								ss.put(r, null);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		for (Role r : ss.keySet())
+		{
+			EndpointState tmp = ss.get(r);
+			if (tmp != null)
+			{
+				if (!tmp.isTerminal())
+				{
+					//throw new ScribbleException(init.toDot() + "\nLiveness violation for " + r + " in terminal set: " + termset);
+					if (s.config.buffs.get(r).values().stream().allMatch((v) -> v == null))
+					{
+						liveness.add(r);
+					}
+					else
+					{
+						safety.add(r);
+					}
+				}
+			}
+		}
+	}
 	
-	private static void fooTerminalSets(Map<WFState, Set<WFState>> reach, Set<Set<WFState>> termsets)
+	private static void findTerminalSets(Map<WFState, Set<WFState>> reach, Set<Set<WFState>> termsets)
 	{
 		Set<Set<WFState>> checked = new HashSet<>();
 		for (WFState s : reach.keySet())
@@ -202,7 +274,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			if (!checked.contains(rs) && rs.contains(s))
 			{
 				checked.add(rs);
-				if (checkAux(reach, s))
+				if (isTerminalSetMember(reach, s))
 				{
 					termsets.add(rs);
 				}
@@ -210,7 +282,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		}
 	}
 
-	private static boolean checkAux(Map<WFState, Set<WFState>> reach, WFState s)
+	private static boolean isTerminalSetMember(Map<WFState, Set<WFState>> reach, WFState s)
 	{
 		Set<WFState> rs = reach.get(s);
 		Set<WFState> tmp = new HashSet<>(rs);
