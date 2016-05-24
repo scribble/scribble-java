@@ -1,4 +1,4 @@
-module src.SupplierInfoSubpro;
+module src.SupplierInfoSubprot;
 
 type <xsd> "UserName" from "AUTH.xsd" as username;
 type <xsd> "Password" from "AUTH.xsd" as password;
@@ -23,7 +23,7 @@ global protocol PartnershipSupplier(
 	{
 		//loginsuccess() from loginsvc to requestor;  // Only an error if the following line remains uncommented
 		loginfailure() from loginsvc to requestor;
-		getsuppliers(uuid) from requestor to authorisersvc;
+		//getsuppliers(uuid) from requestor to authorisersvc;
 		0() from requestor to authorisersvc;
 		0() from authorisersvc to filtersvc;
 		0() from authorisersvc to suppliersvc;
