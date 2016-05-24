@@ -530,9 +530,9 @@ globalinteraction:
 ;
 	
 globalconnect:
-	CONNECTKW rolename TOKW rolename
+	message CONNECTKW rolename TOKW rolename
 	->
-	^(GLOBALCONNECT rolename rolename)
+	^(GLOBALCONNECT message rolename rolename)
 ;
 /*	'(' connectdecl (',' connectdecl)* ')'
 	->

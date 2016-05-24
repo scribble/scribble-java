@@ -6,10 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.scribble.model.local.Connect;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
+import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.sesstype.name.Role;
 
 public class WFConfig
@@ -84,15 +86,37 @@ public class WFConfig
 					List<IOAction> as = s.getAllAcceptable();
 					for (IOAction a : as)
 					{
-						if (this.buffs.canSend(r, (Send) a))
+						if (a.isSend())
 						{
-							List<IOAction> tmp = res.get(r);
-							if (tmp == null)
+							if (this.buffs.canSend(r, (Send) a))
 							{
-								tmp = new LinkedList<>();
-								res.put(r, tmp);
+								List<IOAction> tmp = res.get(r);
+								if (tmp == null)
+								{
+									tmp = new LinkedList<>();
+									res.put(r, tmp);
+								}
+								tmp.add(a);
 							}
-							tmp.add(a);
+						}
+						else //if (a.isConnect())
+						{
+							Connect c = (Connect) a;
+							EndpointState speer = this.states.get(c.peer);
+							if (speer.getStateKind() == Kind.UNARY_INPUT)
+							{
+								IOAction apeer = speer.getAcceptable().iterator().next();
+								if (apeer.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
+								{
+									List<IOAction> tmp = res.get(r);
+									if (tmp == null)
+									{
+										tmp = new LinkedList<>();
+										res.put(r, tmp);
+									}
+									tmp.add(a);
+								}
+							}
 						}
 					}
 					break;

@@ -7,12 +7,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.scribble.model.local.Accept;
+import org.scribble.model.local.Connect;
+import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
 import org.scribble.sesstype.name.Role;
 
 public class WFBuffers
 {
+	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();
 	private final Map<Role, Map<Role, Send>> buffs = new HashMap<>();  // dest -> src -> msg
 
 	public WFBuffers(Set<Role> roles)
@@ -50,6 +54,43 @@ public class WFBuffers
 		});
 	}
 
+	public boolean isConnected(Role self, Role peer)
+	{
+		Map<Role, Boolean> tmp = this.connected.get(peer);
+		return tmp != null && tmp.get(peer);
+	}
+
+	public boolean canAccept(Role self, Send a)
+	{
+		return !isConnected(self, a.peer);
+	}
+
+	public boolean canConnect(Role self, Connect c)
+	{
+		return !isConnected(self, c.peer);
+	}
+	
+	public WFBuffers connect(Role src, Connect c, Role dest)
+	{
+		WFBuffers copy = new WFBuffers(this);
+		Map<Role, Boolean> tmp1 = copy.connected.get(src);
+		if (tmp1 == null)
+		{
+			tmp1 = new HashMap<>();
+			copy.connected.put(src, tmp1);
+		}
+		Map<Role, Boolean> tmp2 = copy.connected.get(dest);
+		if (tmp2 == null)
+		{
+			tmp2 = new HashMap<>();
+			copy.connected.put(src, tmp2);
+		}
+		tmp1.put(dest, true);
+		tmp2.put(src, true);
+		copy.buffs.get(c.peer).put(src, new Send(c.peer, c.mid, c.payload));
+		return copy;
+	}
+
 	public boolean canSend(Role self, Send a)
 	{
 		return this.buffs.get(a.peer).get(self) == null;
@@ -62,23 +103,31 @@ public class WFBuffers
 		return copy;
 	}
 
-	public boolean canReceive(Role self, Receive a)
+	/*public boolean canReceive(Role self, Receive a)
 	{
 		Send send = this.buffs.get(self).get(a.peer);
 		return send != null && send.toDual(a.peer).equals(a);
-	}
+	}*/
 
-	public Set<Receive> receivable(Role r) 
+	//public Set<Receive> receivable(Role r) 
+	public Set<IOAction> inputable(Role r) 
 	{
-		return this.buffs.get(r).entrySet().stream()
+		Set<IOAction> res = this.buffs.get(r).entrySet().stream()
 				.filter((e) -> e.getValue() != null)
 				.map((e) -> e.getValue().toDual(e.getKey()))
 				.collect(Collectors.toSet());
+		res.addAll(this.connected.get(r).entrySet().stream()
+				.filter((e) -> !e.getValue())
+				.map((e) -> new Accept(e.getKey(), mid, payload))
+				.collect(Collectors.toSet()));
+		return res;
 	}
 	
-	public Map<Role, Receive> receivable() 
+	/*//public Map<Role, Receive> receivable() 
+	public Map<Role, IOAction> inputable() 
 	{
-		Map<Role, Receive> tmp = new HashMap<>();
+		//Map<Role, Receive> tmp = new HashMap<>();
+		Map<Role, IOAction> tmp = new HashMap<>();
 		for (Role r : this.buffs.keySet())
 		{
 			Map<Role, Send> tmp2 = this.buffs.get(r);
@@ -88,7 +137,7 @@ public class WFBuffers
 			}
 		}
 		return tmp;
-	}
+	}*/
 
 	public WFBuffers receive(Role self, Receive a)
 	{

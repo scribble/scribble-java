@@ -6,6 +6,7 @@ import java.util.Set;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.Connect;
 import org.scribble.ast.Constants;
+import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNodeBase;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
@@ -18,30 +19,31 @@ import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
 public class LAccept extends Connect<Local> implements LSimpleInteractionNode
 {
-	public LAccept(RoleNode src, RoleNode dest)
+	public LAccept(RoleNode src, MessageNode msg, RoleNode dest)
 	{
-		super(src, dest);
+		super(src, msg, dest);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		return new LAccept(this.src, this.dest);
+		return new LAccept(this.src, this.msg, this.dest);
 	}
 	
 	@Override
 	public LAccept clone()
 	{
 		RoleNode src = this.src.clone();
+		MessageNode msg = this.msg.clone();
 		RoleNode dest = this.dest.clone();
-		return AstFactoryImpl.FACTORY.LAccept(src, dest);
+		return AstFactoryImpl.FACTORY.LAccept(src, msg, dest);
 	}
 
 	@Override
-	public LAccept reconstruct(RoleNode src, RoleNode dest)
+	public LAccept reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
 	{
 		ScribDel del = del();
-		LAccept lr = new LAccept(src, dest);
+		LAccept lr = new LAccept(src, msg, dest);
 		lr = (LAccept) lr.del(del);
 		return lr;
 	}
@@ -81,9 +83,8 @@ public class LAccept extends Connect<Local> implements LSimpleInteractionNode
 	@Override
 	public Set<Message> getEnabling()
 	{
-		/*Set<Message> enab = new HashSet<>();
+		Set<Message> enab = new HashSet<>();
 		enab.add(this.msg.toMessage());
-		return enab;*/
-		throw new RuntimeException("TODO: " + this);
+		return enab;
 	}
 }

@@ -99,7 +99,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			proj.accept(graph);  // Don't do on root decl, side effects job context
 			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 
-			//System.out.println("EFSM:\n" + fsm);
+			System.out.println("EFSM:\n" + fsm);
 			
 			fsms.put(self, fsm.init);
 		}
@@ -130,6 +130,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			
 			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
+
+			System.out.println("ccc: " + acceptable);
+					
 			for (Role r : acceptable.keySet())
 			{
 				for (IOAction a : acceptable.get(r))

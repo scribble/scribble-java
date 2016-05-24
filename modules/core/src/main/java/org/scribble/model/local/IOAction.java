@@ -33,6 +33,16 @@ public abstract class IOAction extends ModelAction<Local>
 	{
 		return false;
 	}
+
+	public boolean isConnect()
+	{
+		return false;
+	}
+
+	public boolean isAccept()
+	{
+		return false;
+	}
 	
 	/*@Override
 	public String toString()

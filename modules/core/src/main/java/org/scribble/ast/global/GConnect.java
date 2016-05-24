@@ -20,9 +20,9 @@ import org.scribble.util.ScribUtil;
 
 public class GConnect extends Connect<Global> implements GSimpleInteractionNode
 {
-	public GConnect(RoleNode src, RoleNode dest)
+	public GConnect(RoleNode src, MessageNode msg, RoleNode dest)
 	{
-		super(src, dest);
+		super(src, msg, dest);
 	}
 
 	public LNode project(Role self)
@@ -33,14 +33,15 @@ public class GConnect extends Connect<Global> implements GSimpleInteractionNode
 		if (srcrole.equals(self) || destrole.equals(self))
 		{
 			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.src.toName().toString());
+			MessageNode msg = (MessageNode) this.msg;  // FIXME: need namespace prefix update?
 			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.dest.toName().toString());
 			if (srcrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LConnect(src, dest);
+				projection = AstFactoryImpl.FACTORY.LConnect(src, msg, dest);
 			}
 			if (destrole.equals(self))
 			{
-				projection = AstFactoryImpl.FACTORY.LAccept(src, dest);
+				projection = AstFactoryImpl.FACTORY.LAccept(src, msg, dest);
 			}
 		}
 		return projection;
@@ -50,24 +51,25 @@ public class GConnect extends Connect<Global> implements GSimpleInteractionNode
 	@Override
 	protected GConnect copy()
 	{
-		return new GConnect(this.src, this.dest);
+		return new GConnect(this.src, this.msg, this.dest);
 	}
 	
 	@Override
 	public GConnect clone()
 	{
 		RoleNode src = this.src.clone();
+		MessageNode msg = this.msg.clone();
 		RoleNode dest = this.dest.clone();
-		return AstFactoryImpl.FACTORY.GConnect(src, dest);
+		return AstFactoryImpl.FACTORY.GConnect(src, msg, dest);
 	}
 
 	@Override
-	public GConnect reconstruct(RoleNode src, RoleNode dest)
+	public GConnect reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
 	{
 		ScribDel del = del();
-		GConnect gmt = new GConnect(src, dest);
-		gmt = (GConnect) gmt.del(del);
-		return gmt;
+		GConnect gc = new GConnect(src, msg, dest);
+		gc = (GConnect) gc.del(del);
+		return gc;
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
@@ -80,6 +82,6 @@ public class GConnect extends Connect<Global> implements GSimpleInteractionNode
 	@Override
 	public String toString()
 	{
-		return Constants.CONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
+		return this.msg + " " + Constants.CONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
 	}
 }

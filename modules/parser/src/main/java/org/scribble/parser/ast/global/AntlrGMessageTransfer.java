@@ -46,14 +46,14 @@ public class AntlrGMessageTransfer
 		}
 	}
 
-	public static CommonTree getSourceChild(CommonTree ct)
-	{
-		return (CommonTree) ct.getChild(SOURCE_CHILD_INDEX);
-	}
-
 	public static CommonTree getMessageChild(CommonTree ct)
 	{
 		return (CommonTree) ct.getChild(MESSAGE_CHILD_INDEX);
+	}
+
+	public static CommonTree getSourceChild(CommonTree ct)
+	{
+		return (CommonTree) ct.getChild(SOURCE_CHILD_INDEX);
 	}
 
 	public static List<CommonTree> getDestChildren(CommonTree ct)
