@@ -1,6 +1,7 @@
 package org.scribble.visit;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -82,6 +83,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	// Refactor to GProtocolDeclDel
 	private GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
+		Job job = getJob();
+		
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		GProtocolName fullname = gpd.getFullMemberName(parent);
 		
@@ -106,10 +109,11 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		WFConfig c0 = new WFConfig(fsms, new WFBuffers(fsms.keySet()));
 		WFState init = new WFState(c0);
 		
-		HashSet<WFState> seen = new HashSet<>();
+		Set<WFState> seen = new HashSet<>();
 		LinkedHashSet<WFState> todo = new LinkedHashSet<>();
 		todo.add(init);
-		
+
+		// FIXME: factor out model building and integrate with getAllNodes (seen == all)
 		int count = 0;
 		while (!todo.isEmpty())
 		{
@@ -118,10 +122,13 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			i.remove();
 			seen.add(curr);
 
-			count ++;
-			if (count % 50 == 0)
+			if (job.debug)
 			{
-				getJob().debugPrintln("(" + fullname + ") Checking global states: " + count);
+				count++;
+				if (count % 50 == 0)
+				{
+					job.debugPrintln("(" + fullname + ") Building global states: " + count);
+				}
 			}
 			
 			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
@@ -158,47 +165,52 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				}
 			}
 		}
-		getJob().debugPrintln("(" + fullname + ") Checked global states: " + count);
+		getJob().debugPrintln("(" + fullname + ") Built global states: " + count);
 
 		//System.out.println("Global model:\n" + init.toDot());
 
+		/*Set<WFState> all = new HashSet<>();
+		getAllNodes(init, all);*/
+		Set<WFState> all = seen;
 		String e = "";
 
-		Set<WFState> terms = init.findTerminalStates();
-		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
+		/*Set<WFState> terms = init.findTerminalStates();
+		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());*/
+		Set<WFState> errors = all.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
 		if (!errors.isEmpty())
 		{
 			for (WFState error : errors)
 			{
 				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
 				List<GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
-				e += "\n" + error.toString() + "\n" + trace;
+				e += "\nSafety violation at " + error.toString() + ":\ntrace=" + trace;
 			}
 			//throw new ScribbleException(init.toDot() + "\nSafety violations:" + e);
-			e = "\nSafety violations:" + e;
+			//e = "\nSafety violations:" + e;
 		}
 		
-		Set<WFState> all = new HashSet<>();
-		Map<WFState, Set<WFState>> reach = new HashMap<>();
-		Set<Set<WFState>> termsets = new HashSet<>();
-		getAllNodes(init, all);
-		getReachability(all, reach);
-		findTerminalSets(reach, termsets);
-
-		//System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
-		
-		for (Set<WFState> termset : termsets)
+		if (!job.noLiveness)
 		{
-			Set<Role> safety = new HashSet<>();
-			Set<Role> liveness = new HashSet<>();
-			checkTerminalSet(init, termset, safety, liveness);
-			if (!safety.isEmpty())
+			Map<WFState, Set<WFState>> reach = new HashMap<>();
+			Set<Set<WFState>> termsets = new HashSet<>();
+			getReachability(getJob(), all, reach);
+			findTerminalSets(reach, termsets);
+
+			//System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
+			
+			for (Set<WFState> termset : termsets)
 			{
-				e += "\nSafety violation for " + safety + "\n in terminal set:" + termset;
-			}
-			if (!liveness.isEmpty())
-			{
-				e += "\nLiveness violation for " + liveness + "\n in terminal set:" + termset;
+				Set<Role> safety = new HashSet<>();
+				Set<Role> liveness = new HashSet<>();
+				checkTerminalSet(init, termset, safety, liveness);
+				if (!safety.isEmpty())
+				{
+					e += "\nSafety violation for " + safety + " in terminal set:\n" + termset;
+				}
+				if (!liveness.isEmpty())
+				{
+					e += "\nLiveness violation for " + liveness + " in terminal set:\n" + termset;
+				}
 			}
 		}
 		
@@ -297,19 +309,22 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		return true;
 	}
 
-	// FIXME: optimise
-	private static void getReachability(Set<WFState> all, Map<WFState, Set<WFState>> reach)
+	private static void getReachability(Job job, Set<WFState> all, Map<WFState, Set<WFState>> reach)
 	{
-		//int i = all.size();
+		//long t1 = System.currentTimeMillis();
+		int count = 0, step = 1;
 		for (WFState s1 : all)
 		{
-			/*if (i % 10 == 0)
+			if (job.debug && count >= (0.1*step) * all.size())
 			{
-				System.out.println("foo: " + s1.id + ", " + i);
-			}*/
+				job.debugPrintln("Computing reachability: " + (10*step) + "%");
+				for (; count >= (0.1*(step)) * all.size(); step++);
+			}
 			for (WFState s2 : all)
 			{
-				if (dfs(new LinkedList<>(), Arrays.asList(s1), s2) != null)
+				//if (dfs(new LinkedList<>(), Arrays.asList(s1), s2) != null)
+				//if (dfs(new LinkedList<>(), Arrays.asList(s1), s2, reach) != null)
+				if (bfs(s1, s2, reach))
 				{
 					Set<WFState> tmp = reach.get(s1);
 					if (tmp == null)
@@ -320,13 +335,47 @@ public class GlobalModelChecker extends ModuleContextVisitor
 					tmp.add(s2);
 				}
 			}
-			//i--;
+			count++;
 		}
+		//System.out.println("Reachability computed in : " + (System.currentTimeMillis() - t1) + "ms");
 	}
 	
+	private static boolean bfs(WFState start, WFState end, Map<WFState, Set<WFState>> reach)
+	{
+		List<WFState> seen = new LinkedList<>();
+		LinkedHashSet<WFState> todo = new LinkedHashSet<>();
+		todo.addAll(start.getSuccessors());  // Not just "start", check for explicit reflexive edge
+		while (!todo.isEmpty())
+		{
+			Iterator<WFState> i = todo.iterator();
+			WFState next = i.next();
+			i.remove();
+			if (next.equals(end))
+			{
+				return true;
+			}
+			if (!seen.contains(next))
+			{
+				Set<WFState> tmp = reach.get(next);
+				if (tmp != null && tmp.contains(end))
+				{
+					return true;
+				}
+				seen.add(next);
+				todo.addAll(next.getSuccessors());
+			}
+		}
+		return false;
+	}
+
 	// trace = actions on path, seen = nodes on path, term = dest
 	//private static List<GModelAction> dfs(List<GModelAction> trace, List<WFState> seen, WFState term)
 	private static List<GIOAction> dfs(List<GIOAction> trace, List<WFState> seen, WFState term)
+	{
+		return dfs(trace, seen, term, Collections.emptyMap());
+	}
+	
+	private static List<GIOAction> dfs(List<GIOAction> trace, List<WFState> seen, WFState end, Map<WFState, Set<WFState>> reach)
 	{
 		WFState curr = seen.get(seen.size() - 1);
 		//Iterator<GModelAction> as = curr.getActions().iterator();
@@ -337,18 +386,24 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			//GModelAction a = as.next();
 			GIOAction a = as.next();
 			WFState s = ss.next();
-			if (s.equals(term))
+			if (s.equals(end))
 			{
 				trace.add(a);
 				return trace;
 			}
 			if (!seen.contains(s))
 			{
+				Set<WFState> foo = reach.get(s);
+				if (foo != null && foo.contains(end))
+				{
+					return Collections.emptyList();  // no trace returned on this shortcut
+				}
+
 				List<GIOAction> tmp1 = new LinkedList<>(trace);
 				tmp1.add(a);
 				List<WFState> tmp2 = new LinkedList<>(seen);
 				tmp2.add(s);
-				List<GIOAction> res = dfs(tmp1, tmp2, term);
+				List<GIOAction> res = dfs(tmp1, tmp2, end);
 				if (res != null)
 				{
 					return res;

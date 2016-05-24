@@ -42,6 +42,7 @@ public class CommandLine //implements Runnable
 		SCHAN_API_SUBTYPES,
 		GLOBAL_MODEL,
 		OLD_WF,
+		NO_LIVENESS,
 		//PROJECTED_MODEL
 	}
 	
@@ -105,6 +106,7 @@ public class CommandLine //implements Runnable
 		{
 			//throw new RuntimeScribbleException(e);
 			throw e;
+			//System.err.println(e.getMessage());  // JUnit harness looks for an exception
 		}
 	}
 	
@@ -237,19 +239,20 @@ public class CommandLine //implements Runnable
 	private Job newJob(MainContext mc)
 	{
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
-		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF);
+		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
 	}
 
 	private MainContext newMainContext()
 	{
 		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);
 		boolean useOldWF = this.args.containsKey(ArgFlag.OLD_WF);
+		boolean noLiveness = this.args.containsKey(ArgFlag.NO_LIVENESS);
 		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN)[0]);
 		List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
 				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
-		return new MainContext(debug, locator, mainpath, useOldWF);
+		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness);
 	}
 	
 	private static Path parseMainPath(String path)

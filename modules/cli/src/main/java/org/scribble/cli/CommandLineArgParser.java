@@ -22,6 +22,7 @@ public class CommandLineArgParser
 	public static final String GLOBAL_MODEL_FLAG = "-model";
 	//public static final String PROJECTED_MODEL_FLAG = "-pmodel";
 	public static final String OLD_WF_FLAG = "-oldwf";
+	public static final String NO_LIVENESS = "-nolive";
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -40,6 +41,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.STATECHAN_FLAG, CommandLine.ArgFlag.SCHAN_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.NO_LIVENESS, CommandLine.ArgFlag.NO_LIVENESS);
 		//CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.PROJECTED_MODEL_FLAG, CommandLine.ArgFlag.PROJECTED_MODEL);
 	}
 
@@ -141,6 +143,11 @@ public class CommandLineArgParser
 			case CommandLineArgParser.OLD_WF_FLAG:
 			{
 				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.OLD_WF_FLAG), new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.NO_LIVENESS:
+			{
+				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.NO_LIVENESS), new String[0]);
 				return i;
 			}
 			default:
