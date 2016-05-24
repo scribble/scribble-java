@@ -79,6 +79,21 @@ public class WFState
 		return this.config.accept(r, a);
 	}
 	
+	/*// No good for non-det models
+	public WFState getSuccessor(GIOAction a)  // NB graph edges, not config semantics (cf, getAcceptable)
+	{
+		Iterator<GIOAction> as = this.actions.iterator();
+		Iterator<WFState> ss = this.succs.iterator();
+		while (as.hasNext())
+		{
+			if (as.next().equals(a))
+			{
+				return ss.next();
+			}
+		}
+		return null;
+	}*/
+
 	public List<WFState> getSuccessors()  // NB graph edges, not config semantics (cf, getAcceptable)
 	{
 		//return Collections.unmodifiableCollection(this.edges.values());

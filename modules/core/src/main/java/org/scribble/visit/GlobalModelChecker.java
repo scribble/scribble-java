@@ -1,7 +1,7 @@
 package org.scribble.visit;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -172,7 +172,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		/*Set<WFState> all = new HashSet<>();
 		getAllNodes(init, all);*/
 		Set<WFState> all = seen;
-		String e = "";
+		String errorMsg = "";
+
+		Map<WFState, Set<WFState>> reach = getReachability(job, all);
 
 		/*Set<WFState> terms = init.findTerminalStates();
 		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());*/
@@ -182,8 +184,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			for (WFState error : errors)
 			{
 				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
-				List<GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
-				e += "\nSafety violation at " + error.toString() + ":\ntrace=" + trace;
+				//List<GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
+				List<GIOAction> trace = getTrace(init, error, reach);
+				errorMsg += "\nSafety violation at " + error.toString() + ":\ntrace=" + trace;
 			}
 			//throw new ScribbleException(init.toDot() + "\nSafety violations:" + e);
 			//e = "\nSafety violations:" + e;
@@ -191,9 +194,10 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		
 		if (!job.noLiveness)
 		{
-			Map<WFState, Set<WFState>> reach = new HashMap<>();
+			/*Map<WFState, Set<WFState>> reach = new HashMap<>();
+			//getReachability(getJob(), all, reach);
+			reach = getReachability(job, all);*/
 			Set<Set<WFState>> termsets = new HashSet<>();
-			getReachability(getJob(), all, reach);
 			findTerminalSets(reach, termsets);
 
 			//System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
@@ -205,18 +209,18 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				checkTerminalSet(init, termset, safety, liveness);
 				if (!safety.isEmpty())
 				{
-					e += "\nSafety violation for " + safety + " in terminal set:\n" + termset;
+					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n" + termset;
 				}
 				if (!liveness.isEmpty())
 				{
-					e += "\nLiveness violation for " + liveness + " in terminal set:\n" + termset;
+					errorMsg += "\nLiveness violation for " + liveness + " in terminal set:\n" + termset;
 				}
 			}
 		}
 		
-		if (!e.equals(""))
+		if (!errorMsg.equals(""))
 		{
-			throw new ScribbleException("\n" + init.toDot() + e);
+			throw new ScribbleException("\n" + init.toDot() + errorMsg);
 		}
 
 		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
@@ -309,7 +313,110 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		return true;
 	}
 
-	private static void getReachability(Job job, Set<WFState> all, Map<WFState, Set<WFState>> reach)
+	// Pre: reach.get(start).contains(end)
+	private static List<GIOAction> getTrace(WFState start, WFState end, Map<WFState, Set<WFState>> reach)
+	{
+		List<WFState> seen = new LinkedList<WFState>();
+		seen.add(start);
+		return getTraceAux(new LinkedList<>(), seen, end, reach);
+	}
+
+	private static List<GIOAction> getTraceAux(List<GIOAction> trace, List<WFState> seen, WFState end, Map<WFState, Set<WFState>> reach)
+	{
+		WFState curr = seen.get(seen.size() - 1);
+		if (seen.equals(end))
+		{
+			return trace;
+		}
+		Iterator<GIOAction> as = curr.getActions().iterator();
+		Iterator<WFState> ss = curr.getSuccessors().iterator();
+		while (as.hasNext())
+		{
+			GIOAction a = as.next();
+			WFState s = ss.next();
+			if (!seen.contains(s) && reach.containsKey(s) && reach.get(s).contains(end))
+			{
+				List<WFState> tmp1 = new LinkedList<WFState>(seen);
+				tmp1.add(s);
+				List<GIOAction> tmp2 = new LinkedList<>(trace);
+				tmp2.add(a);
+				List<GIOAction> res = getTraceAux(tmp2, tmp1, end, reach);
+				if (res != null)  // Recursive calling allows implicit backtracking, in case went into a loop (and can't get back out due to "seen")
+				{
+					return res;
+				}
+			}
+		}
+		return null;
+	}
+	
+	private static Map<WFState, Set<WFState>> getReachability(Job job, Set<WFState> all)
+	{
+		Map<WFState, Integer> all1 = new HashMap<>();
+		Map<Integer, WFState> all2 = new HashMap<>();
+		int i = 0;
+		for (WFState s : all)
+		{
+			all1.put(s, i);
+			all2.put(i, s);
+			i++;
+		}
+		return getReachabilityAux(job, all1, all2);
+	}
+
+	private static Map<WFState, Set<WFState>> getReachabilityAux(Job job, Map<WFState, Integer> all1, Map<Integer, WFState> all2)
+	{
+		int size = all1.keySet().size();
+		boolean[][] reach = new boolean[size][size];
+		for (WFState s1 : all1.keySet())
+		{
+			for (WFState s2 : s1.getSuccessors())
+			{
+				reach[all1.get(s1)][all1.get(s2)] = true;
+			}
+		}
+		for (boolean again = true; again; )
+		{
+			again = false;
+			for (int i = 0; i < size; i++)
+			{
+				for (int j = 0; j < size; j++)
+				{
+					if (reach[i][j])
+					{
+						for (int k = 0; k < size; k++)
+						{
+							if (reach[j][k] && !reach[i][k])
+							{
+								reach[i][k] = true;
+								again = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		Map<WFState, Set<WFState>> res = new HashMap<>();
+		for (int i = 0; i < size; i++)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				if (reach[i][j])
+				{
+					Set<WFState> tmp = res.get(all2.get(i));
+					if (tmp == null)
+					{
+						tmp = new HashSet<>();
+						res.put(all2.get(i), tmp);
+					}
+					tmp.add(all2.get(j));
+				}
+			}
+		}
+		return res;
+	}
+
+	/*private static void getReachability(Job job, Set<WFState> all, Map<WFState, Set<WFState>> reach)
 	{
 		//long t1 = System.currentTimeMillis();
 		int count = 0, step = 1;
@@ -366,9 +473,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 		}
 		return false;
-	}
+	}*/
 
-	// trace = actions on path, seen = nodes on path, term = dest
+	/*// trace = actions on path, seen = nodes on path, term = dest
 	//private static List<GModelAction> dfs(List<GModelAction> trace, List<WFState> seen, WFState term)
 	private static List<GIOAction> dfs(List<GIOAction> trace, List<WFState> seen, WFState term)
 	{
@@ -411,9 +518,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 		}
 		return null;
-	}
+	}*/
 	
-	private static void getAllNodes(WFState curr, Set<WFState> all)
+	/*private static void getAllNodes(WFState curr, Set<WFState> all)
 	{
 		if (all.contains(curr))
 		{
@@ -424,7 +531,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		{
 			getAllNodes(s, all);
 		}
-	}
+	}*/
 	
 	/*private static void findTerminalSets(Set<WFState> all, Map<WFState, Set<WFState>> reach, Set<Set<WFState>> termsets)
 	{
