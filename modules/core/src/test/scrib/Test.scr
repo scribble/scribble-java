@@ -19,6 +19,22 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. choice subject enabling needed for non-mixed states
 
 
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from A to B;  // Uncomment is bad
+		2() from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to C;
+	}
+}
+
+
 /*
 global protocol Proto1(role A, role B, role C, role D)
 {

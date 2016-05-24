@@ -1,7 +1,5 @@
 package org.scribble.visit;
 
-import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -184,7 +182,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			for (WFState error : errors)
 			{
 				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
-				//List<GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
+				//List <GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
 				List<GIOAction> trace = getTrace(init, error, reach);
 				errorMsg += "\nSafety violation at " + error.toString() + ":\ntrace=" + trace;
 			}
@@ -324,24 +322,26 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	private static List<GIOAction> getTraceAux(List<GIOAction> trace, List<WFState> seen, WFState end, Map<WFState, Set<WFState>> reach)
 	{
 		WFState curr = seen.get(seen.size() - 1);
-		if (seen.equals(end))
-		{
-			return trace;
-		}
 		Iterator<GIOAction> as = curr.getActions().iterator();
 		Iterator<WFState> ss = curr.getSuccessors().iterator();
 		while (as.hasNext())
 		{
 			GIOAction a = as.next();
 			WFState s = ss.next();
+			if (s.equals(end))
+			{
+				trace.add(a);
+				return trace;
+			}
 			if (!seen.contains(s) && reach.containsKey(s) && reach.get(s).contains(end))
 			{
 				List<WFState> tmp1 = new LinkedList<WFState>(seen);
 				tmp1.add(s);
 				List<GIOAction> tmp2 = new LinkedList<>(trace);
 				tmp2.add(a);
+				// Recursive calling allows implicit backtracking, in case went into a loop (and can't get back out due to "seen")
 				List<GIOAction> res = getTraceAux(tmp2, tmp1, end, reach);
-				if (res != null)  // Recursive calling allows implicit backtracking, in case went into a loop (and can't get back out due to "seen")
+				if (res != null)
 				{
 					return res;
 				}
@@ -518,7 +518,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 		}
 		return null;
-	}*/
+	}
+	//*/
 	
 	/*private static void getAllNodes(WFState curr, Set<WFState> all)
 	{

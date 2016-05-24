@@ -21,9 +21,9 @@ global protocol PartnershipSupplier(
 	login(username, password) from requestor to loginsvc;
 	choice at loginsvc
 	{
-		//loginsuccess() from loginsvc to requestor;
+		//loginsuccess() from loginsvc to requestor;  // Only an error if the following line remains uncommented
 		loginfailure() from loginsvc to requestor;
-		//getsuppliers(uuid) from requestor to authorisersvc;
+		getsuppliers(uuid) from requestor to authorisersvc;
 		0() from requestor to authorisersvc;
 		0() from authorisersvc to filtersvc;
 		0() from authorisersvc to suppliersvc;
