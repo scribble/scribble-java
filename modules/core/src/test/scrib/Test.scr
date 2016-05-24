@@ -15,24 +15,26 @@ module Test;
 type <java> "java.lang.int" from "rt.jar" as int;
 
 
-//..don't need termination hack, just need to cut off state building on bad states -- no: need it, or a terminal set analysis
+//..don't need termination hack, just need to cut off state building on bad states -- no: it's needed (buffered message may be blocked now but valid later), or a terminal set analysis
 //.. choice subject enabling needed for non-mixed states
 
 
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A
 	{
-		1() from A to B;
-		2() from A to B;  // Uncomment is bad
-		2() from B to C;
+		2() from A to B;
+		//1() from A to B;  // Uncomment is bad (cf. SupplierInfo)
+		1() from B to C;
 	}
 	or
 	{
-		1() from A to B;
+		2() from A to B;
 		3() from B to C;
 	}
 }
+//*//
 
 
 /*
