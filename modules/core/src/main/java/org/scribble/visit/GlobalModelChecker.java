@@ -178,12 +178,81 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			throw new ScribbleException("\n" + init.toDot() + "\nGlobal model safety violations:" + e);
 		}
+		
+		Set<WFState> all = new HashSet<>();
+		Map<WFState, Set<WFState>> reach = new HashMap<>();
+		Set<Set<WFState>> termsets = new HashSet<>();
+		getAllNodes(init, all);
+		getReachability(all, reach);
+		fooTerminalSets(reach, termsets);
+
+		System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
 
 		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 		
 		return child;
 	}
 	
+	private static void fooTerminalSets(Map<WFState, Set<WFState>> reach, Set<Set<WFState>> termsets)
+	{
+		Set<Set<WFState>> checked = new HashSet<>();
+		for (WFState s : reach.keySet())
+		{
+			Set<WFState> rs = reach.get(s);
+			if (!checked.contains(rs) && rs.contains(s))
+			{
+				checked.add(rs);
+				if (checkAux(reach, s))
+				{
+					termsets.add(rs);
+				}
+			}
+		}
+	}
+
+	private static boolean checkAux(Map<WFState, Set<WFState>> reach, WFState s)
+	{
+		Set<WFState> rs = reach.get(s);
+		Set<WFState> tmp = new HashSet<>(rs);
+		tmp.remove(s);
+		for (WFState r : tmp)
+		{
+			if (!reach.containsKey(r) || !reach.get(r).equals(rs))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// FIXME: optimise
+	private static void getReachability(Set<WFState> all, Map<WFState, Set<WFState>> reach)
+	{
+		//int i = all.size();
+		for (WFState s1 : all)
+		{
+			/*if (i % 10 == 0)
+			{
+				System.out.println("foo: " + s1.id + ", " + i);
+			}*/
+			for (WFState s2 : all)
+			{
+				if (dfs(new LinkedList<>(), Arrays.asList(s1), s2) != null)
+				{
+					Set<WFState> tmp = reach.get(s1);
+					if (tmp == null)
+					{
+						tmp = new HashSet<>();
+						reach.put(s1, tmp);
+					}
+					tmp.add(s2);
+				}
+			}
+			//i--;
+		}
+	}
+	
+	// trace = actions on path, seen = nodes on path, term = dest
 	//private static List<GModelAction> dfs(List<GModelAction> trace, List<WFState> seen, WFState term)
 	private static List<GIOAction> dfs(List<GIOAction> trace, List<WFState> seen, WFState term)
 	{
@@ -216,6 +285,91 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		}
 		return null;
 	}
+	
+	private static void getAllNodes(WFState curr, Set<WFState> all)
+	{
+		if (all.contains(curr))
+		{
+			return;
+		}
+		all.add(curr);
+		for (WFState s : curr.getSuccessors())
+		{
+			getAllNodes(s, all);
+		}
+	}
+	
+	/*private static void findTerminalSets(Set<WFState> all, Map<WFState, Set<WFState>> reach, Set<Set<WFState>> termsets)
+	{
+		Map<Set<WFState>, Set<Set<WFState>>> sss = new HashMap<>();
+		getSubsets(all, sss);
+		for (Set<Set<WFState>> ss : sss.values())
+		{
+			for (Set<WFState> s : ss)
+			{
+				if (isTerminalSet(all, reach, s))
+				{
+					termsets.add(s);
+				}
+			}
+		}
+	}
+
+	private static void getSubsets(Set<WFState> rem, Map<Set<WFState>, Set<Set<WFState>>> ss)
+	{
+		System.out.println("ccc: " + rem);
+		Set<Set<WFState>> tmp = ss.get(rem);
+		if (tmp == null)
+		{
+			tmp = new HashSet<>();
+			ss.put(rem, tmp);
+		}
+		tmp.add(rem);
+		if (rem.size() == 1)
+		{
+			return;
+		}
+		for (WFState s : rem)
+		{
+			Set<WFState> tmp2 = new HashSet<>(rem);
+			tmp2.remove(s);
+			if (!ss.containsKey(tmp2))
+			{
+				getSubsets(tmp2, ss);
+			}
+			/*Set<Set<WFState>> cached = ss.get(tmp2);
+			for (Set<WFState> c : cached)
+			{
+				Set<WFState> tmp3 = new HashSet<>(c);
+				tmp3.add(s);
+				tmp.add(tmp3);
+			}* /
+		}
+	}
+
+	private static boolean isTerminalSet(Set<WFState> all, Map<WFState, Set<WFState>> reach, Set<WFState> curr)
+	{
+		for (WFState s1 : curr)
+		{
+			for (WFState s2 : curr)
+			{
+				Set<WFState> tmp = reach.get(s1);
+				if (tmp == null || !tmp.contains(s2))
+				{
+					return false;
+				}
+			}
+		}
+		for (WFState r : all)
+		{
+			Set<WFState> tmp = reach.get(curr);
+			if (!curr.contains(r) && tmp != null && tmp.contains(r))
+			{
+				return false;
+			}
+		}
+		return true;
+	}*/
 	
 	/*private static void checkWF(Set<GModelState> seen, GModelState curr, GModel model, Map<GModelState, Set<GModelState>> reach)
 	{

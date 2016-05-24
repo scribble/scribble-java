@@ -122,6 +122,8 @@ public class WFState
 	public String toString()
 	{
 		return this.id + ": " + this.config.toString();
+		//return Integer.toString(this.id) + ": " + this.actions;  // FIXME
+		//return Integer.toString(this.id);  // FIXME
 	}
 	
 	public final String toDot()
@@ -169,6 +171,7 @@ public class WFState
 	{
 		String labs = this.config.toString();
 		return "label=\"" + this.id + ": " + labs.substring(1, labs.length() - 1) + "\"";
+		//return "label=\"" + this.id + "\"";  // FIXME
 	}
 	
 	protected String getDotNodeId()

@@ -2,6 +2,7 @@ package org.scribble.model.wf;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -116,6 +117,14 @@ public class WFBuffers
 	@Override
 	public String toString()
 	{
-		return this.buffs.toString();
+		//return this.buffs.toString();
+		return this.buffs.entrySet().stream()
+				.filter((e) -> e.getValue().values().stream().anyMatch((v) -> v != null))
+				.collect(Collectors.toMap((e) -> e.getKey(),
+						(e) -> (e.getValue().entrySet().stream()
+								.filter((f) -> f.getValue() != null)
+								//.collect(Collectors.toMap((f) -> f.getKey(), (f) -> f.getValue())))  // Inference not working?
+								.collect(Collectors.toMap((Entry<Role, Send> f) -> f.getKey(), (f) -> f.getValue())))
+					)).toString();
 	}
 }
