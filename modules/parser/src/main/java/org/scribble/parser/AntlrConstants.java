@@ -37,6 +37,7 @@ public class AntlrConstants
 	public static final String GLOBALPROTOCOLBLOCK_NODE_TYPE = "GLOBALPROTOCOLBLOCK";
 	public static final String GLOBALINTERACTIONSEQUENCE_NODE_TYPE = "GLOBALINTERACTIONSEQUENCE";
 	public static final String GLOBALMESSAGETRANSFER_NODE_TYPE = "GLOBALMESSAGETRANSFER";
+	public static final String GLOBALCONNECT_NODE_TYPE = "GLOBALCONNECT";
 	public static final String GLOBALCHOICE_NODE_TYPE = "GLOBALCHOICE";
 	public static final String GLOBALRECURSION_NODE_TYPE = "GLOBALRECURSION";
 	public static final String GLOBALCONTINUE_NODE_TYPE = "GLOBALCONTINUE";
@@ -64,6 +65,7 @@ public class AntlrConstants
 	public static final String LOCALCATCHES_NODE_TYPE = "LOCALCATCHES";
 	public static final String LOCALDO_NODE_TYPE = "LOCALDO";
 
+	// Cf. Scribble.g
 	public enum AntlrNodeType 
 	{
 		//EMPTY_PARAMETERDECLLST,
@@ -78,6 +80,7 @@ public class AntlrConstants
 		MESSAGESIGNATUREDECL,
 		ROLEDECLLIST,
 		ROLEDECL,
+		CONNECTDECL,
 		PARAMETERDECLLIST,
 		PARAMETERDECL,
 		ROLEINSTANTIATIONLIST,
@@ -94,6 +97,7 @@ public class AntlrConstants
 		GLOBALPROTOCOLBLOCK,
 		GLOBALINTERACTIONSEQUENCE,
 		GLOBALMESSAGETRANSFER,
+		GLOBALCONNECT,
 		GLOBALCHOICE,
 		GLOBALRECURSION,
 		GLOBALCONTINUE,
@@ -130,6 +134,7 @@ public class AntlrConstants
 	public static final String GLOBAL_KW = "global";
 	public static final String LOCAL_KW = "local";
 	public static final String ROLE_KW = "role";
+	public static final String CONNECT_KW = "connect";
 	public static final String SELF_KW = "self";
 	public static final String SIG_KW = "sig";
 	public static final String INSTANTIATES_KW = "instantiates";

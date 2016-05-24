@@ -14,6 +14,8 @@ public class Constants
 	public static final String GLOBAL_KW = "global";
 	public static final String LOCAL_KW = "local";
 	public static final String ROLE_KW = "role";
+	public static final String CONNECT_KW = "connect";
+	public static final String ACCEPT_KW = "accept";
 	public static final String SELF_KW = "self";
 	public static final String SIG_KW = "sig";
 	public static final String INSTANTIATES_KW = "instantiates";

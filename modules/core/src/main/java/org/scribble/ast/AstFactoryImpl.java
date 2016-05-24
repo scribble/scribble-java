@@ -3,6 +3,7 @@ package org.scribble.ast;
 import java.util.List;
 
 import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionNode;
@@ -13,7 +14,9 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LConnect;
 import org.scribble.ast.local.LContinue;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionNode;
@@ -40,6 +43,7 @@ import org.scribble.ast.name.simple.NonRoleParamNode;
 import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
+import org.scribble.del.ConnectDeclDel;
 import org.scribble.del.DefaultDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
@@ -51,6 +55,7 @@ import org.scribble.del.RoleDeclDel;
 import org.scribble.del.RoleDeclListDel;
 import org.scribble.del.ScribDel;
 import org.scribble.del.global.GChoiceDel;
+import org.scribble.del.global.GConnectDel;
 import org.scribble.del.global.GContinueDel;
 import org.scribble.del.global.GDoDel;
 import org.scribble.del.global.GInteractionSeqDel;
@@ -59,7 +64,9 @@ import org.scribble.del.global.GProtocolBlockDel;
 import org.scribble.del.global.GProtocolDeclDel;
 import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.del.global.GRecursionDel;
+import org.scribble.del.local.LAcceptDel;
 import org.scribble.del.local.LChoiceDel;
+import org.scribble.del.local.LConnectDel;
 import org.scribble.del.local.LContinueDel;
 import org.scribble.del.local.LDoDel;
 import org.scribble.del.local.LInteractionSeqDel;
@@ -191,6 +198,14 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
+	public ConnectDecl ConnectDecl(RoleNode src, RoleNode role)
+	{
+		ConnectDecl cd = new ConnectDecl(src, role);
+		cd = del(cd, new ConnectDeclDel());
+		return cd;
+	}
+
+	@Override
 	public NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> pds)
 	{
 		NonRoleParamDeclList pdl = new NonRoleParamDeclList(pds);
@@ -236,6 +251,14 @@ public class AstFactoryImpl implements AstFactory
 		GMessageTransfer gmt = new GMessageTransfer(src, msg, dests);
 		gmt = del(gmt, new GMessageTransferDel());
 		return gmt;
+	}
+
+	@Override
+	public GConnect GConnect(RoleNode src, RoleNode dest)
+	{
+		GConnect gc = new GConnect(src, dest);
+		gc = del(gc, new GConnectDel());
+		return gc;
 	}
 
 	@Override
@@ -467,6 +490,22 @@ public class AstFactoryImpl implements AstFactory
 		LReceive ls = new LReceive(src, msg, dests);
 		ls = del(ls, new LReceiveDel());
 		return ls;
+	}
+	
+	@Override
+	public LConnect LConnect(RoleNode src, RoleNode dest)
+	{
+		LConnect lc = new LConnect(src, dest);
+		lc = del(lc, new LConnectDel());
+		return lc;
+	}
+
+	@Override
+	public LAccept LAccept(RoleNode src, RoleNode dest)
+	{
+		LAccept la = new LAccept(src, dest);
+		la = del(la, new LAcceptDel());
+		return la;
 	}
 
 	@Override

@@ -19,6 +19,12 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. choice subject enabling needed for non-mixed states
 
 
+global protocol Proto1(role A, role B)
+{
+	connect A to B;
+}
+
+
 /*
 global protocol Proto1(role A, role B, role C)
 {

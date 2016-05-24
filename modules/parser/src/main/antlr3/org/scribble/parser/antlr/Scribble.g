@@ -12,7 +12,7 @@ options
 	language = Java;
 	output = AST;
 	ASTLabelType = CommonTree;
-	backtrack = true;  // backtracking disabled by default? Is it bad to require this option?
+	//backtrack = true;  // backtracking disabled by default? Is it bad to require this option?
 	//memoize = true;
 }
 
@@ -29,6 +29,8 @@ tokens
 	GLOBALKW = 'global';
 	LOCALKW = 'local';
 	ROLEKW = 'role';
+	CONNECTKW = 'connect';
+	ACCEPTKW = 'accept';
 	SELFKW = 'self';
 	SIGKW = 'sig';
 	INSTANTIATESKW = 'instantiates';
@@ -100,6 +102,7 @@ tokens
 	MESSAGESIGNATURE = 'message-signature';
 	ROLEDECLLIST = 'role-decl-list';
 	ROLEDECL = 'role-decl';
+	CONNECTDECL = 'connect-decl';
 	ARGUMENTINSTANTIATIONLIST = 'argument-instantiation-list';
 	//ARGUMENTINSTANTIATION = 'argument-instantiation';
 	PAYLOAD = 'payload';
@@ -113,6 +116,7 @@ tokens
 	GLOBALPROTOCOLBLOCK = 'global-protocol-block';
 	GLOBALINTERACTIONSEQUENCE = 'global-interaction-sequence';
 	GLOBALMESSAGETRANSFER = 'global-message-transfer';
+	GLOBALCONNECT = 'global-connect';
 	GLOBALCHOICE = 'global-choice';
 	GLOBALRECURSION = 'global-recursion';
 	GLOBALCONTINUE = 'global-continue';
@@ -495,6 +499,10 @@ globalprotocolblock:
 	'{' globalinteractionsequence '}'
 	->
 	^(GLOBALPROTOCOLBLOCK globalinteractionsequence)
+/*|
+	'(' connectdecl ')' '{' globalinteractionsequence '}'
+	->
+	^(GLOBALPROTOCOLBLOCK globalinteractionsequence connectdecl)*/
 ;
 
 globalinteractionsequence:
@@ -517,7 +525,27 @@ globalinteraction:
 	globalinterruptible
 |
 	globaldo
+|
+	globalconnect
 ;
+	
+globalconnect:
+	CONNECTKW rolename TOKW rolename
+	->
+	^(GLOBALCONNECT rolename rolename)
+;
+/*	'(' connectdecl (',' connectdecl)* ')'
+	->
+	^(CONNECTDECLLIST connectdecl+)
+;* /
+	'(' connectdecl ')' 
+*/	
+
+/*connectdecl:
+	CONNECTKW rolename '->>' rolename
+	->
+	^(CONNECTDECL rolename rolename)
+;*/
 
 
 /**
