@@ -3,9 +3,7 @@ package org.scribble.del;
 import org.scribble.ast.Connect;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.MessageId;
 import org.scribble.visit.InlinedProtocolUnfolder;
-import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.RoleCollector;
 import org.scribble.visit.env.UnfoldingEnv;
@@ -44,7 +42,7 @@ public abstract class ConnectDel extends SimpleInteractionNodeDel
 		return visited;
 	}
 
-	@Override
+	/*@Override
 	public ScribNode leaveMessageIdCollection(ScribNode parent, ScribNode child, MessageIdCollector coll, ScribNode visited)
 	{
 		Connect<?> c = (Connect<?>) visited;
@@ -57,7 +55,7 @@ public abstract class ConnectDel extends SimpleInteractionNodeDel
 			throw new RuntimeException("Shouldn't get in here: " + c.msg);
 		}
 		return visited;
-	}
+	}*/
 
 	/*@Override
 	public ScribNode leaveEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll, ScribNode visited)

@@ -16,19 +16,20 @@ import org.scribble.parser.util.ScribParserUtil;
 // Factor with AntlrGMessageTransfer?
 public class AntlrGConnect
 {
-	public static final int MESSAGE_CHILD_INDEX = 0;
-	public static final int SOURCE_CHILD_INDEX = 1;
-	public static final int DESTINATION_CHILD_INDEX = 2;
+	//public static final int MESSAGE_CHILD_INDEX = 0;
+	public static final int SOURCE_CHILD_INDEX = 0;
+	public static final int DESTINATION_CHILD_INDEX = 1;
 
 	public static GConnect parseGConnect(ScribParser parser, CommonTree ct)
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
-		MessageNode msg = parseMessage(parser, getMessageChild(ct));
+		//MessageNode msg = parseMessage(parser, getMessageChild(ct));
 		RoleNode dest = AntlrSimpleName.toRoleNode(getDestinationChild(ct));
-		return AstFactoryImpl.FACTORY.GConnect(src, msg, dest);
+		//return AstFactoryImpl.FACTORY.GConnect(src, msg, dest);
+		return AstFactoryImpl.FACTORY.GConnect(src, dest);
 	}
 
-	protected static MessageNode parseMessage(ScribParser parser, CommonTree ct)
+	/*protected static MessageNode parseMessage(ScribParser parser, CommonTree ct)
 	{
 		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)
@@ -46,7 +47,7 @@ public class AntlrGConnect
 	public static CommonTree getMessageChild(CommonTree ct)
 	{
 		return (CommonTree) ct.getChild(MESSAGE_CHILD_INDEX);
-	}
+	}*/
 
 	public static CommonTree getSourceChild(CommonTree ct)
 	{

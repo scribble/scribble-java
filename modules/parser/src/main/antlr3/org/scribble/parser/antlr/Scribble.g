@@ -528,24 +528,6 @@ globalinteraction:
 |
 	globalconnect
 ;
-	
-globalconnect:
-	message CONNECTKW rolename TOKW rolename
-	->
-	^(GLOBALCONNECT message rolename rolename)
-;
-/*	'(' connectdecl (',' connectdecl)* ')'
-	->
-	^(CONNECTDECLLIST connectdecl+)
-;* /
-	'(' connectdecl ')' 
-*/	
-
-/*connectdecl:
-	CONNECTKW rolename '->>' rolename
-	->
-	^(CONNECTDECL rolename rolename)
-;*/
 
 
 /**
@@ -565,7 +547,26 @@ message:
 	messagesignaturename  // qualified messagesignaturename subsumes parametername case
 |
 	parametername*/
+;	
+
+globalconnect:
+	//message CONNECTKW rolename TOKW rolename
+	CONNECTKW rolename TOKW rolename ';'
+	->
+	^(GLOBALCONNECT rolename rolename)
 ;
+/*	'(' connectdecl (',' connectdecl)* ')'
+	->
+	^(CONNECTDECLLIST connectdecl+)
+;* /
+	'(' connectdecl ')' 
+*/	
+
+/*connectdecl:
+	CONNECTKW rolename '->>' rolename
+	->
+	^(CONNECTDECL rolename rolename)
+;*/
 
 
 /**

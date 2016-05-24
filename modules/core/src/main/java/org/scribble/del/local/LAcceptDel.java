@@ -19,11 +19,12 @@ public class LAcceptDel extends ConnectDel implements LSimpleInteractionNodeDel
 	{
 		LAccept la = (LAccept) visited;
 		Role peer = la.src.toName();
-		MessageId<?> mid = la.msg.toMessage().getId();
+		/*MessageId<?> mid = la.msg.toMessage().getId();
 		Payload payload = la.msg.isMessageSigNode()  // Hacky?
 					? ((MessageSigNode) la.msg).payloads.toPayload()
 					: Payload.EMPTY_PAYLOAD;
-		builder.builder.addEdge(builder.builder.getEntry(), new Accept(peer, mid, payload), builder.builder.getExit());
+		builder.builder.addEdge(builder.builder.getEntry(), new Accept(peer, mid, payload), builder.builder.getExit());*/
+		builder.builder.addEdge(builder.builder.getEntry(), new Accept(peer), builder.builder.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), Receive.get(peer, mid, payload), builder.builder.getExit());
 		return (LAccept) super.leaveEndpointGraphBuilding(parent, child, builder, la);
 		//throw new RuntimeException("TODO: " + visited);

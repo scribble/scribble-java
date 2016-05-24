@@ -21,6 +21,8 @@ public abstract class IOAction extends ModelAction<Local>
 		this.peer = peer;
 	}
 	
+	public abstract IOAction toDual(Role self);
+
 	//public abstract GModelAction toGlobal(Role self);
 	public abstract GIOAction toGlobal(Role self);
 

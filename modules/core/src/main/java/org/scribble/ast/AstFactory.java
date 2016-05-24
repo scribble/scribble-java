@@ -77,7 +77,8 @@ public interface AstFactory
 	GInteractionSeq GInteractionSeq(List<GInteractionNode> gis);
 
 	GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dest);
+	//GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dest);
+	GConnect GConnect(RoleNode src, RoleNode dest);
 	GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks);
 	GRecursion GRecursion(RecVarNode recvar, GProtocolBlock block);
 	GContinue GContinue(RecVarNode recvar);
@@ -104,8 +105,10 @@ public interface AstFactory
 
 	LSend LSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LReceive LReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	LConnect LConnect(RoleNode src, MessageNode msg, RoleNode dest);
-	LAccept LAccept(RoleNode src, MessageNode msg, RoleNode dest);
+	/*LConnect LConnect(RoleNode src, MessageNode msg, RoleNode dest);
+	LAccept LAccept(RoleNode src, MessageNode msg, RoleNode dest);*/
+	LConnect LConnect(RoleNode src, RoleNode dest);
+	LAccept LAccept(RoleNode src, RoleNode dest);
 	LChoice LChoice(RoleNode subj, List<LProtocolBlock> blocks);
 	LRecursion LRecursion(RecVarNode recvar, LProtocolBlock block);
 	LContinue LContinue(RecVarNode recvar);

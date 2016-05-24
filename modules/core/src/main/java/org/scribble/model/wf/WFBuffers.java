@@ -60,7 +60,7 @@ public class WFBuffers
 		return tmp != null && tmp.get(peer);
 	}
 
-	public boolean canAccept(Role self, Send a)
+	public boolean canAccept(Role self, Accept a)
 	{
 		return !isConnected(self, a.peer);
 	}
@@ -70,7 +70,8 @@ public class WFBuffers
 		return !isConnected(self, c.peer);
 	}
 	
-	public WFBuffers connect(Role src, Connect c, Role dest)
+	//public WFBuffers connect(Role src, Connect c, Role dest)
+	public WFBuffers connect(Role src, Role dest)
 	{
 		WFBuffers copy = new WFBuffers(this);
 		Map<Role, Boolean> tmp1 = copy.connected.get(src);
@@ -87,13 +88,13 @@ public class WFBuffers
 		}
 		tmp1.put(dest, true);
 		tmp2.put(src, true);
-		copy.buffs.get(c.peer).put(src, new Send(c.peer, c.mid, c.payload));
+		//copy.buffs.get(c.peer).put(src, new Send(c.peer, c.mid, c.payload));
 		return copy;
 	}
 
 	public boolean canSend(Role self, Send a)
 	{
-		return this.buffs.get(a.peer).get(self) == null;
+		return isConnected(self, a.peer) && (this.buffs.get(a.peer).get(self) == null);
 	}
 
 	public WFBuffers send(Role self, Send a)
@@ -110,16 +111,23 @@ public class WFBuffers
 	}*/
 
 	//public Set<Receive> receivable(Role r) 
-	public Set<IOAction> inputable(Role r) 
+	public Set<IOAction> inputable(Role r)   // FIXME: IAction  // FIXME: OAction version?
 	{
 		Set<IOAction> res = this.buffs.get(r).entrySet().stream()
 				.filter((e) -> e.getValue() != null)
 				.map((e) -> e.getValue().toDual(e.getKey()))
 				.collect(Collectors.toSet());
-		res.addAll(this.connected.get(r).entrySet().stream()
-				.filter((e) -> !e.getValue())
-				.map((e) -> new Accept(e.getKey(), mid, payload))
-				.collect(Collectors.toSet()));
+		Map<Role, Boolean> tmp = this.connected.get(r);
+		if (tmp == null)
+		{
+			this.buffs.get(r).keySet().forEach((x) -> res.add(new Accept(x)));
+		}
+		else
+		{
+			tmp.entrySet().stream()
+					.filter((e) -> !e.getValue())
+					.forEach((e) -> res.add(new Accept(e.getKey())));
+		}
 		return res;
 	}
 	

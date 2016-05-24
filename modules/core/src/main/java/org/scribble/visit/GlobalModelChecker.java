@@ -99,7 +99,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			proj.accept(graph);  // Don't do on root decl, side effects job context
 			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 
-			System.out.println("EFSM:\n" + fsm);
+			//System.out.println("EFSM:\n" + fsm);
 			
 			fsms.put(self, fsm.init);
 		}
@@ -130,37 +130,23 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			
 			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
-
-			System.out.println("ccc: " + acceptable);
-					
 			for (Role r : acceptable.keySet())
 			{
 				for (IOAction a : acceptable.get(r))
 				{
-					for (WFConfig next : curr.accept(r, a))
+					if (a.isSend() || a.isReceive())
 					{
-						WFState succ = new WFState(next);
-						if (seen.contains(succ))  // FIXME: make a WFModel builder
+						foo(seen, todo, curr, a.toGlobal(r), curr.accept(r, a));
+					}
+					else //if (a.isAccept() || a.isConnect())
+					{	
+						List<IOAction> as = acceptable.get(a.peer);
+						IOAction d = a.toDual(r);
+						if (as != null && as.contains(d))
 						{
-							for (WFState tmp : seen)
-							{
-								if (tmp.equals(succ))
-								{
-									succ = tmp;
-								}
-							}
-						}
-						for (WFState tmp : todo)
-						{
-							if (tmp.equals(succ))
-							{
-								succ = tmp;
-							}
-						}
-						curr.addEdge(a.toGlobal(r), succ);
-						if (!seen.contains(succ) && !todo.contains(succ))
-						{
-							todo.add(succ);
+							as.remove(d);  // Removes one occurrence
+							//foo(seen, todo, curr.sync(r, a, a.peer, d));
+							foo(seen, todo, curr, a.toGlobal(r), curr.sync(r, a, a.peer, d));
 						}
 					}
 				}
@@ -227,6 +213,38 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 		
 		return child;
+	}
+
+	//private void foo(Set<WFState> seen, LinkedHashSet<WFState> todo, WFState curr, Role r, IOAction a)
+	private void foo(Set<WFState> seen, LinkedHashSet<WFState> todo, WFState curr, GIOAction a, List<WFConfig> nexts)
+	{
+		for (WFConfig next : nexts)
+		{
+			WFState succ = new WFState(next);
+			if (seen.contains(succ))  // FIXME: make a WFModel builder
+			{
+				for (WFState tmp : seen)
+				{
+					if (tmp.equals(succ))
+					{
+						succ = tmp;
+					}
+				}
+			}
+			for (WFState tmp : todo)
+			{
+				if (tmp.equals(succ))
+				{
+					succ = tmp;
+				}
+			}
+			//curr.addEdge(a.toGlobal(r), succ);
+			curr.addEdge(a, succ);
+			if (!seen.contains(succ) && !todo.contains(succ))
+			{
+				todo.add(succ);
+			}
+		}
 	}
 
 	 // ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but maybe not good)
@@ -314,7 +332,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		return true;
 	}
 
-	// Pre: reach.get(start).contains(end)
+	// Pre: reach.get(start).contains(end)  // FIXME: will return null if initial state is error
 	private static List<GIOAction> getTrace(WFState start, WFState end, Map<WFState, Set<WFState>> reach)
 	{
 		List<WFState> seen = new LinkedList<WFState>();

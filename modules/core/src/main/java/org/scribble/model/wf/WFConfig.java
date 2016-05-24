@@ -6,12 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.scribble.model.local.Accept;
 import org.scribble.model.local.Connect;
 import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
-import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.sesstype.name.Role;
 
 public class WFConfig
@@ -63,11 +64,44 @@ public class WFConfig
 			{
 				tmp2 = this.buffs.send(r, (Send) a);
 			}
-			else
+			else if (a.isReceive())
 			{
 				tmp2 = this.buffs.receive(r, (Receive) a);
 			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
+			}
 			res.add(new WFConfig(tmp1, tmp2));
+		}
+
+		return res;
+	}
+
+	public List<WFConfig> sync(Role r1, IOAction a1, Role r2, IOAction a2)
+	{
+		List<WFConfig> res = new LinkedList<>();
+		
+		List<EndpointState> succs1 = this.states.get(r1).acceptAll(a1);
+		List<EndpointState> succs2 = this.states.get(r2).acceptAll(a2);
+		for (EndpointState succ1 : succs1)
+		{
+			for (EndpointState succ2 : succs2)
+			{
+				Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
+				tmp1.put(r1, succ1);
+				tmp1.put(r2, succ2);
+				WFBuffers tmp2;
+				if ((a1.isConnect() && a2.isAccept()) || (a1.isAccept() && a2.isConnect()))
+				{
+					tmp2 = this.buffs.connect(r1, r2);
+				}
+				else
+				{
+					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
+				}
+				res.add(new WFConfig(tmp1, tmp2));
+			}
 		}
 
 		return res;
@@ -90,7 +124,7 @@ public class WFConfig
 						{
 							if (this.buffs.canSend(r, (Send) a))
 							{
-								List<IOAction> tmp = res.get(r);
+								List<IOAction> tmp = res.get(r);  // FIXME: factor out
 								if (tmp == null)
 								{
 									tmp = new LinkedList<>();
@@ -101,20 +135,24 @@ public class WFConfig
 						}
 						else //if (a.isConnect())
 						{
+							// FIXME: factor out
 							Connect c = (Connect) a;
 							EndpointState speer = this.states.get(c.peer);
-							if (speer.getStateKind() == Kind.UNARY_INPUT)
+							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
-								IOAction apeer = speer.getAcceptable().iterator().next();
-								if (apeer.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
+								List<IOAction> peeras = speer.getAllAcceptable();
+								for (IOAction peera : peeras)
 								{
-									List<IOAction> tmp = res.get(r);
-									if (tmp == null)
+									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
 									{
-										tmp = new LinkedList<>();
-										res.put(r, tmp);
+										List<IOAction> tmp = res.get(r);
+										if (tmp == null)
+										{
+											tmp = new LinkedList<>();
+											res.put(r, tmp);
+										}
+										tmp.add(a);
 									}
-									tmp.add(a);
 								}
 							}
 						}
@@ -124,17 +162,44 @@ public class WFConfig
 				case UNARY_INPUT:
 				case POLY_INPUT:
 				{
-					for (Receive e : this.buffs.receivable(r))
+					for (IOAction a : this.buffs.inputable(r))
 					{
-						if (s.isAcceptable(e))
+						if (a.isReceive())
 						{
-							List<IOAction> tmp = res.get(r);
-							if (tmp == null)
+							if (s.isAcceptable(a))
 							{
-								tmp = new LinkedList<>();
-								res.put(r, tmp);
+								List<IOAction> tmp = res.get(r);
+								if (tmp == null)
+								{
+									tmp = new LinkedList<>();
+									res.put(r, tmp);
+								}
+								tmp.add(a);
 							}
-							tmp.add(e);
+						}
+						else //if (a.isAccept())
+						{
+							// FIXME: factor out
+							Accept c = (Accept) a;
+							EndpointState speer = this.states.get(c.peer);
+							//if (speer.getStateKind() == Kind.OUTPUT)
+							{
+								List<IOAction> peeras = speer.getAllAcceptable();
+								for (IOAction peera : peeras)
+								{
+									if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
+									{
+										List<IOAction> tmp = res.get(r);
+										if (tmp == null)
+										{
+											tmp = new LinkedList<>();
+											res.put(r, tmp);
+										}
+										tmp.add(a);
+										//break;  // Add all of them
+									}
+								}
+							}
 						}
 					}
 					break;

@@ -30,11 +30,16 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 	public Kind getStateKind()
 	{
 		List<IOAction> as = this.getAllAcceptable();
-		IOAction a = as.iterator().next();
-		return (as.size() == 0)
-				? Kind.TERMINAL
-				: (a instanceof Send || a instanceof Connect)
+		if (as.size() == 0)
+		{
+			return Kind.TERMINAL;
+		}
+		else
+		{
+			IOAction a = as.iterator().next();
+			return (a.isSend() || a.isConnect())
 						? Kind.OUTPUT
 						: (as.size() > 1) ? Kind.POLY_INPUT : Kind.UNARY_INPUT;
+		}
 	}
 }

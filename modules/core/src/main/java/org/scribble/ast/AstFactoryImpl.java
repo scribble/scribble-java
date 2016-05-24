@@ -254,9 +254,11 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dest)
+	//public GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dest)
+	public GConnect GConnect(RoleNode src, RoleNode dest)
 	{
-		GConnect gc = new GConnect(src, msg, dest);
+		//GConnect gc = new GConnect(src, msg, dest);
+		GConnect gc = new GConnect(src, dest);
 		gc = del(gc, new GConnectDel());
 		return gc;
 	}
@@ -493,17 +495,21 @@ public class AstFactoryImpl implements AstFactory
 	}
 	
 	@Override
-	public LConnect LConnect(RoleNode src, MessageNode msg, RoleNode dest)
+	//public LConnect LConnect(RoleNode src, MessageNode msg, RoleNode dest)
+	public LConnect LConnect(RoleNode src, RoleNode dest)
 	{
-		LConnect lc = new LConnect(src, msg, dest);
+		//LConnect lc = new LConnect(src, msg, dest);
+		LConnect lc = new LConnect(src, dest);
 		lc = del(lc, new LConnectDel());
 		return lc;
 	}
 
 	@Override
-	public LAccept LAccept(RoleNode src, MessageNode msg, RoleNode dest)
+	//public LAccept LAccept(RoleNode src, MessageNode msg, RoleNode dest)
+	public LAccept LAccept(RoleNode src, RoleNode dest)
 	{
-		LAccept la = new LAccept(src, msg, dest);
+		//LAccept la = new LAccept(src, msg, dest);
+		LAccept la = new LAccept(src, dest);
 		la = del(la, new LAcceptDel());
 		return la;
 	}

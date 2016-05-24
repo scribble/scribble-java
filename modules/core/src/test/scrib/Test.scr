@@ -20,9 +20,20 @@ type <java> "java.lang.int" from "rt.jar" as int;
 
 
 //*
-global protocol Proto1(role A, role B)
+global protocol Proto1(role A, role B)//, role C)
 {
-	() connect A to B;
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		//connect B to C;
+		//1() from B to C;
+	}
+	or
+	{
+		//connect A to B;
+		2() from A to B;
+	}
 }
 //*/
 

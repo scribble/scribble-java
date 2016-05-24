@@ -34,6 +34,7 @@ public class Send extends IOAction
 		//Send.SENDS.add(this);
 	}
 	
+	@Override
 	public Receive toDual(Role self)
 	{
 		return new Receive(self, this.mid, this.payload);
