@@ -79,6 +79,21 @@ public class WFState
 		return this.config.accept(r, a);
 	}
 	
+	/*// No good for non-det models
+	public WFState getSuccessor(GIOAction a)  // NB graph edges, not config semantics (cf, getAcceptable)
+	{
+		Iterator<GIOAction> as = this.actions.iterator();
+		Iterator<WFState> ss = this.succs.iterator();
+		while (as.hasNext())
+		{
+			if (as.next().equals(a))
+			{
+				return ss.next();
+			}
+		}
+		return null;
+	}*/
+
 	public List<WFState> getSuccessors()  // NB graph edges, not config semantics (cf, getAcceptable)
 	{
 		//return Collections.unmodifiableCollection(this.edges.values());
@@ -121,7 +136,9 @@ public class WFState
 	@Override
 	public String toString()
 	{
-		return this.id + ": " + this.config.toString();
+		return this.id + ":" + this.config.toString();
+		//return Integer.toString(this.id) + ": " + this.actions;  // FIXME
+		//return Integer.toString(this.id);  // FIXME
 	}
 	
 	public final String toDot()
@@ -168,7 +185,8 @@ public class WFState
 	protected String getNodeLabel()
 	{
 		String labs = this.config.toString();
-		return "label=\"" + this.id + ": " + labs.substring(1, labs.length() - 1) + "\"";
+		return "label=\"" + this.id + ":" + labs.substring(1, labs.length() - 1) + "\"";
+		//return "label=\"" + this.id + "\"";  // FIXME
 	}
 	
 	protected String getDotNodeId()
@@ -191,7 +209,7 @@ public class WFState
 		return "label=\"" + msg + "\"";
 	}
 
-	public Set<WFState> findTerminalStates()
+	/*public Set<WFState> findTerminalStates()
 	{
 		Set<WFState> res = new HashSet<WFState>();
 		findTerminalStates(new HashSet<>(), this, res);
@@ -212,5 +230,5 @@ public class WFState
 				findTerminalStates(visited, succ, term);
 			}
 		}
-	}
+	}*/
 }

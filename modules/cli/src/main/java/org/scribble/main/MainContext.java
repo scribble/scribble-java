@@ -27,6 +27,7 @@ public class MainContext
 {
 	public final boolean debug;
 	public final boolean useOldWF;
+	public final boolean noLiveness;
 	
 	public final ModuleName main;
 
@@ -42,10 +43,11 @@ public class MainContext
 	private final Map<ModuleName, Pair<Resource, Module>> parsed = new HashMap<>();
 	
 	// FIXME: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
-	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF)
+	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness)
 	{
 		this.debug = debug;
 		this.useOldWF = useOldWF;
+		this.noLiveness = noLiveness;
 		this.antlrParser = new AntlrParser();
 		this.scribParser = new ScribParser();
 		this.locator = locator; 

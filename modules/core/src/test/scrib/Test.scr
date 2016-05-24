@@ -15,11 +15,59 @@ module Test;
 type <java> "java.lang.int" from "rt.jar" as int;
 
 
-//..don't need termination hack, just need to cut off state building on bad states -- no: need it, or a terminal set analysis
+//..don't need termination hack, just need to cut off state building on bad states -- no: it's needed (buffered message may be blocked now but valid later), or a terminal set analysis
 //.. choice subject enabling needed for non-mixed states
 
 
-//*
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		2() from A to B;
+		//1() from A to B;  // Uncomment is bad (cf. SupplierInfo)
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	1() from A to B;
+	2() from C to D;
+	do Proto1(A, B, C, D);
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		rec X
+		{
+			3() from A to C;  // B not live
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	choice at A
@@ -30,9 +78,45 @@ global protocol Proto1(role A, role B, role C, role D)
 	or
 	{
 		1() from A to B;
-		3() from B to A;
+		3() from B to A;  // A not safe
 	}
 	rec X
+	{
+		4() from C to D;
+		continue X;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X  // Terminal set building
+	{
+		1() from A to B;
+		2() from B to A;
+		continue X;
+	}
+	3() from C to D;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to A;
+	}
+	rec X  // Terminal set building
 	{
 		4() from C to D;
 		continue X;

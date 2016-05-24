@@ -24,14 +24,16 @@ public class Job
 	// FIXME: verbose/debug printing parameter: should be in MainContext, but currently cannot access that class directly from here
 	public final boolean debug;
 	public final boolean useOldWf;
+	public final boolean noLiveness;
 	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
-	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF)
+	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	{
 		this.debug = debug;
 		this.useOldWf = useOldWF;
+		this.noLiveness = noLiveness;
 		this.jcontext = new JobContext(parsed, main);
 	}
 
@@ -73,7 +75,7 @@ public class Job
 	private void runProjectionContextBuildingPasses() throws ScribbleException
 	{
 		runVisitorPassOnProjectedModules(ModuleContextBuilder.class);
-		// Disable local choice subject inference by ProjectedChoiceSubjectFixer for more general global WF
+		// Disable ProjectedChoiceSubjectFixer (local choice subject inference) for more general global WF
 		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes to fix DUMMY role occurrences
 		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);
 		runVisitorPassOnProjectedModules(RoleCollector.class);  // NOTE: doesn't collect from choice subjects (may be invalid until projected choice subjs fixed)
