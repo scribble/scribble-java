@@ -15,6 +15,8 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.Env;
 
+// FIXME: unfolding/unrolling algorithm would be easier if we would use an "affine rec var" normal form: a single rec can have multiple labels, each label used at most once in a continue
+
 // "Lazily unfolds" each recursion once (by reentering the original rec ast) on reaching a continue
 // FIXME: would be better to only unfold "as needed" (unguarded choice-recs)
 // N.B. so subclass should manually keep track of when to cut off visiting, as visiting the "unfolding" will eventually reach the same continue (e.g. an unguarded choice-continue) -- currently using pointer equality in e.g. InlinedWFChoice to cut off traversal on reaching the "same" choice again
