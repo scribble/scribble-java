@@ -22,7 +22,7 @@ type <java> "java.lang.int" from "rt.jar" as int;
 	//..FIXME: need disconnect
 	//..FIXME: update model error to check if (dis)connected -- reset EFSM on disconnect
 
-	// FIXME: consider implicit error actions (e.g. unconncted message passing) to model building (in addition to good acceptable actions), to make error states explicit
+	// FIXME: consider implicit error actions (e.g. unconnected/non-enabled message passing) to model building (in addition to good acceptable actions), to make error states explicit
 
 
 //*
