@@ -29,6 +29,69 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// Note: mixed explicit and non-explicit subprotocols
 
 
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2(Int1) from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		2(Int2) from B to C;  // Bad
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+
+global protocol Proto1(role A, role B, role C)
+	// Good, cf. above
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to C;
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		//1() from A to B;  // Uncomment still bad
+		1(Int1) from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1(Int2) from A to B; // Cf, -oldwf
+		3() from B to A;
+	}
+}
+//*/
+
+
+/*
 type <java> "java.lang.Integer" from "rt.jar" as Int1;
 type <java> "java.lang.Integer" from "rt.jar" as Int2;
 
@@ -41,11 +104,31 @@ global protocol Proto1(role A, role B)
 	}
 	or
 	{
-		1(Int2) from A to B;  // FIXME: payload shouldn't count for message ID
-													// Cf, -oldwf
-		3() from B to A;
+		1(Int2) from A to B;  // B doesn't know to treat as Int1 or Int2
+		2() from B to A;
 	}
 }
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2(Int1) from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		2(Int2) from B to A;
+	}
+}
+//*/
 
 
 /*
@@ -75,7 +158,7 @@ aux global protocol Proto1Aux1(role A, role B, role C)
 
 aux global protocol Proto1Aux2<type T>(role A, role C)
 {
-	// Bad
+	// Bad: non-det connect followed by distinct payloads
 	connect A to C;
 	3(T) from A to C;
 	4() from C to A;
@@ -101,12 +184,12 @@ aux global protocol Proto1Aux1(role A, role B, role C)
 	choice at B
 	{
 		1() from B to A;
-		do Proto1Aux2<Int1>(A, C);  // FIXME: ..should be bad, only message ids important
+		do Proto1Aux2<Int1>(A, C);
 	}
 	or
 	{
 		2() from B to A;
-		do Proto1Aux2<Int2>(A, C);
+		do Proto1Aux2<Int2>(A, C);  // Bad: payload
 	}
 	do Proto1Aux1(A, B, C);
 }
@@ -120,7 +203,7 @@ aux global protocol Proto1Aux2<type T>(role A, role C)
 
 
 /*
-// Good
+// Good: same payload
 type <java> "java.lang.Integer" from "rt.jar" as Int1;
 
 explicit global protocol Proto1(role A, role B, role C)

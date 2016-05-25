@@ -20,6 +20,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GIOAction;
 import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.wf.WFBuffers;
 import org.scribble.model.wf.WFConfig;
@@ -137,7 +138,35 @@ public class GlobalModelChecker extends ModuleContextVisitor
 
 			for (Role r : acceptable.keySet())
 			{
-				for (IOAction a : acceptable.get(r))
+				List<IOAction> acceptable_r = acceptable.get(r);
+				
+				// Hacky?
+				EndpointState currstate = curr.config.states.get(r);
+				Kind k = currstate.getStateKind();
+				if (k == Kind.OUTPUT)
+				{
+					for (IOAction a : acceptable_r)
+					{
+						if (acceptable_r.stream().anyMatch((x) ->
+								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
+						{
+							throw new ScribbleException("Bad non-deterministic action payloads: " + acceptable_r);
+						}
+					}
+				}
+				else if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
+				{
+					for (IOAction a : acceptable_r)
+					{
+						if (currstate.getAllAcceptable().stream().anyMatch((x) ->
+								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
+						{
+							throw new ScribbleException("Bad non-deterministic action payloads: " + currstate.getAllAcceptable());
+						}
+					}
+				}
+
+				for (IOAction a : acceptable_r)
 				{
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
