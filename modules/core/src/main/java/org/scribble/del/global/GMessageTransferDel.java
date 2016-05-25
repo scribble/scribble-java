@@ -54,6 +54,11 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		WFChoiceEnv env = checker.popEnv();
 		for (Role dest : gmt.getDestinationRoles())
 		{
+			if (!env.isConnected(src, dest))
+			{
+				throw new ScribbleException("Roles not connected: " + src + ", " + dest);
+			}
+
 			env = env.addMessage(src, dest, msg);
 			
 			//System.out.println("a: " + src + ", " + dest + ", " + msg);

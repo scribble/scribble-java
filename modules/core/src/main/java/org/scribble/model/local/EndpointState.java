@@ -11,6 +11,7 @@ import org.scribble.sesstype.name.RecVar;
 public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 {
 	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL }
+			// FIXME: distinguish connection and message transfer
 	
 	/*private static int count = 0;
 	
@@ -30,10 +31,16 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 	public Kind getStateKind()
 	{
 		List<IOAction> as = this.getAllAcceptable();
-		return (as.size() == 0)
-				? Kind.TERMINAL
-				: (as.iterator().next() instanceof Send)
+		if (as.size() == 0)
+		{
+			return Kind.TERMINAL;
+		}
+		else
+		{
+			IOAction a = as.iterator().next();
+			return (a.isSend() || a.isConnect() || a.isDisconnect())
 						? Kind.OUTPUT
 						: (as.size() > 1) ? Kind.POLY_INPUT : Kind.UNARY_INPUT;
+		}
 	}
 }

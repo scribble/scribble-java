@@ -20,6 +20,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GIOAction;
 import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.wf.WFBuffers;
 import org.scribble.model.wf.WFConfig;
@@ -65,7 +66,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		{
 			if (child instanceof GProtocolDecl)
 			{
-				return visitOverrideForGProtocolDecl((Module) parent, (GProtocolDecl) child);
+				GProtocolDecl gpd = (GProtocolDecl) child;
+				return (gpd.isAuxModifier()) ? gpd : visitOverrideForGProtocolDecl((Module) parent, gpd);
 			}
 			else
 			{
@@ -99,12 +101,13 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			proj.accept(graph);  // Don't do on root decl, side effects job context
 			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 
-			//System.out.println("EFSM:\n" + fsm);
+			//job.debugPrintln("EFSM for " + self + ":\n" + fsm);
 			
 			fsms.put(self, fsm.init);
 		}
 			
-		WFConfig c0 = new WFConfig(fsms, new WFBuffers(fsms.keySet()));
+		WFBuffers b0 = new WFBuffers(fsms.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
+		WFConfig c0 = new WFConfig(fsms, b0);
 		WFState init = new WFState(c0);
 		
 		Set<WFState> seen = new HashSet<>();
@@ -130,35 +133,60 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			
 			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
+
+			//job.debugPrintln("Acceptable at (" + curr.id + "): " + acceptable);
+
 			for (Role r : acceptable.keySet())
 			{
-				for (IOAction a : acceptable.get(r))
+				List<IOAction> acceptable_r = acceptable.get(r);
+				
+				// Hacky?
+				EndpointState currstate = curr.config.states.get(r);
+				Kind k = currstate.getStateKind();
+				if (k == Kind.OUTPUT)
 				{
-					for (WFConfig next : curr.accept(r, a))
+					for (IOAction a : acceptable_r)
 					{
-						WFState succ = new WFState(next);
-						if (seen.contains(succ))  // FIXME: make a WFModel builder
+						if (acceptable_r.stream().anyMatch((x) ->
+								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
-							for (WFState tmp : seen)
-							{
-								if (tmp.equals(succ))
-								{
-									succ = tmp;
-								}
-							}
+							throw new ScribbleException("Bad non-deterministic action payloads: " + acceptable_r);
 						}
-						for (WFState tmp : todo)
+					}
+				}
+				else if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
+				{
+					for (IOAction a : acceptable_r)
+					{
+						if (currstate.getAllAcceptable().stream().anyMatch((x) ->
+								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
-							if (tmp.equals(succ))
-							{
-								succ = tmp;
-							}
+							throw new ScribbleException("Bad non-deterministic action payloads: " + currstate.getAllAcceptable());
 						}
-						curr.addEdge(a.toGlobal(r), succ);
-						if (!seen.contains(succ) && !todo.contains(succ))
+					}
+				}
+
+				for (IOAction a : acceptable_r)
+				{
+					if (a.isSend() || a.isReceive() || a.isDisconnect())
+					{
+						getNextStates(todo, seen, curr, a.toGlobal(r), curr.accept(r, a));
+					}
+					else if (a.isAccept() || a.isConnect())
+					{	
+						List<IOAction> as = acceptable.get(a.peer);
+						IOAction d = a.toDual(r);
+						if (as != null && as.contains(d))
 						{
-							todo.add(succ);
+							as.remove(d);  // Removes one occurrence
+							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
+							GIOAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);
+							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, d));
 						}
+					}
+					else
+					{
+						throw new RuntimeException("Shouldn't get in here: " + a);
 					}
 				}
 			}
@@ -224,6 +252,38 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 		
 		return child;
+	}
+
+	//private void foo(Set<WFState> seen, LinkedHashSet<WFState> todo, WFState curr, Role r, IOAction a)
+	private void getNextStates(LinkedHashSet<WFState> todo, Set<WFState> seen, WFState curr, GIOAction a, List<WFConfig> nexts)
+	{
+		for (WFConfig next : nexts)
+		{
+			WFState succ = new WFState(next);
+			if (seen.contains(succ))  // FIXME: make a WFModel builder
+			{
+				for (WFState tmp : seen)
+				{
+					if (tmp.equals(succ))
+					{
+						succ = tmp;
+					}
+				}
+			}
+			for (WFState tmp : todo)
+			{
+				if (tmp.equals(succ))
+				{
+					succ = tmp;
+				}
+			}
+			//curr.addEdge(a.toGlobal(r), succ);
+			curr.addEdge(a, succ);
+			if (!seen.contains(succ) && !todo.contains(succ))
+			{
+				todo.add(succ);
+			}
+		}
 	}
 
 	 // ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but maybe not good)
@@ -311,7 +371,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		return true;
 	}
 
-	// Pre: reach.get(start).contains(end)
+	// Pre: reach.get(start).contains(end)  // FIXME: will return null if initial state is error
 	private static List<GIOAction> getTrace(WFState start, WFState end, Map<WFState, Set<WFState>> reach)
 	{
 		List<WFState> seen = new LinkedList<WFState>();

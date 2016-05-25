@@ -13,7 +13,7 @@ public abstract class ModelAction<K extends ProtocolKind>
 	
 	public final Role obj;
 	public final MessageId<?> mid;
-	public final Payload payload;  // Empty for MessageSigNames
+	public final Payload payload;  // EMPTY_PAYLOAD for MessageSigNames
 	
 	public ModelAction(Role obj, MessageId<?> mid, Payload payload)
 	{

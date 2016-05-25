@@ -3,7 +3,9 @@ package org.scribble.ast;
 import java.util.List;
 
 import org.scribble.ast.global.GChoice;
+import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
@@ -13,8 +15,11 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.ast.global.GRecursion;
+import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
+import org.scribble.ast.local.LConnect;
 import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
@@ -51,7 +56,9 @@ import org.scribble.del.RoleDeclDel;
 import org.scribble.del.RoleDeclListDel;
 import org.scribble.del.ScribDel;
 import org.scribble.del.global.GChoiceDel;
+import org.scribble.del.global.GConnectDel;
 import org.scribble.del.global.GContinueDel;
+import org.scribble.del.global.GDisconnectDel;
 import org.scribble.del.global.GDoDel;
 import org.scribble.del.global.GInteractionSeqDel;
 import org.scribble.del.global.GMessageTransferDel;
@@ -59,8 +66,11 @@ import org.scribble.del.global.GProtocolBlockDel;
 import org.scribble.del.global.GProtocolDeclDel;
 import org.scribble.del.global.GProtocolDefDel;
 import org.scribble.del.global.GRecursionDel;
+import org.scribble.del.local.LAcceptDel;
 import org.scribble.del.local.LChoiceDel;
+import org.scribble.del.local.LConnectDel;
 import org.scribble.del.local.LContinueDel;
+import org.scribble.del.local.LDisconnectDel;
 import org.scribble.del.local.LDoDel;
 import org.scribble.del.local.LInteractionSeqDel;
 import org.scribble.del.local.LProjectionDeclDel;
@@ -159,9 +169,9 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GProtocolDecl GProtocolDecl(GProtocolHeader header, GProtocolDef def)
+	public GProtocolDecl GProtocolDecl(List<GProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
 	{
-		GProtocolDecl gpd = new GProtocolDecl(header, def);
+		GProtocolDecl gpd = new GProtocolDecl(modifiers, header, def);
 		gpd = del(gpd, new GProtocolDeclDel());
 		return gpd;
 	}
@@ -189,6 +199,14 @@ public class AstFactoryImpl implements AstFactory
 		rd = del(rd, new RoleDeclDel());
 		return rd;
 	}
+
+	/*@Override
+	public ConnectDecl ConnectDecl(RoleNode src, RoleNode role)
+	{
+		ConnectDecl cd = new ConnectDecl(src, role);
+		cd = del(cd, new ConnectDeclDel());
+		return cd;
+	}*/
 
 	@Override
 	public NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> pds)
@@ -236,6 +254,24 @@ public class AstFactoryImpl implements AstFactory
 		GMessageTransfer gmt = new GMessageTransfer(src, msg, dests);
 		gmt = del(gmt, new GMessageTransferDel());
 		return gmt;
+	}
+
+	@Override
+	//public GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dest)
+	public GConnect GConnect(RoleNode src, RoleNode dest)
+	{
+		//GConnect gc = new GConnect(src, msg, dest);
+		GConnect gc = new GConnect(src, dest);
+		gc = del(gc, new GConnectDel());
+		return gc;
+	}
+
+	@Override
+	public GDisconnect GDisconnect(RoleNode src, RoleNode dest)
+	{
+		GDisconnect gc = new GDisconnect(src, dest);
+		gc = del(gc, new GDisconnectDel());
+		return gc;
 	}
 
 	@Override
@@ -467,6 +503,34 @@ public class AstFactoryImpl implements AstFactory
 		LReceive ls = new LReceive(src, msg, dests);
 		ls = del(ls, new LReceiveDel());
 		return ls;
+	}
+	
+	@Override
+	//public LConnect LConnect(RoleNode src, MessageNode msg, RoleNode dest)
+	public LConnect LConnect(RoleNode src, RoleNode dest)
+	{
+		//LConnect lc = new LConnect(src, msg, dest);
+		LConnect lc = new LConnect(src, dest);
+		lc = del(lc, new LConnectDel());
+		return lc;
+	}
+
+	@Override
+	public LDisconnect LDisconnect(RoleNode self, RoleNode peer)
+	{
+		LDisconnect lc = new LDisconnect(self, peer);
+		lc = del(lc, new LDisconnectDel());
+		return lc;
+	}
+
+	@Override
+	//public LAccept LAccept(RoleNode src, MessageNode msg, RoleNode dest)
+	public LAccept LAccept(RoleNode src, RoleNode dest)
+	{
+		//LAccept la = new LAccept(src, msg, dest);
+		LAccept la = new LAccept(src, dest);
+		la = del(la, new LAcceptDel());
+		return la;
 	}
 
 	@Override

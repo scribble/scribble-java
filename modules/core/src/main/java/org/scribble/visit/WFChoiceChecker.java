@@ -7,6 +7,7 @@ import org.scribble.ast.Choice;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.visit.env.WFChoiceEnv;
@@ -28,12 +29,22 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 	@Override
 	protected WFChoiceEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
 	{
-		return new WFChoiceEnv();
+		return new WFChoiceEnv(new HashSet<>(pd.header.roledecls.getRoles()),
+				!(pd.isGlobal() && ((GProtocolDecl) pd).modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT)));  // FIXME: consider locals; also, explicit modifier should be carried over to local projections
 	}
 
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
 	{
+		if (child instanceof GProtocolDecl)
+		{
+			GProtocolDecl gpd = (GProtocolDecl) child;
+			if (gpd.isAuxModifier())
+			{
+				return child;  // bypass aux protocols  // FIXME: integrate bypass functionality into made enter/visit/leave pattern
+			}
+		}
+
 		if (child instanceof Choice<?>)
 		{
 			return visitOverrideForChoice((InteractionSeq<?>) parent, (Choice<?>) child);

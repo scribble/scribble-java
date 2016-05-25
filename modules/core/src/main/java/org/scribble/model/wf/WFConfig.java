@@ -6,7 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.scribble.model.local.Accept;
+import org.scribble.model.local.Connect;
+import org.scribble.model.local.Disconnect;
 import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
@@ -26,11 +30,25 @@ public class WFConfig
 		//this.buffs = Collections.unmodifiableMap(buff);
 		this.buffs = buffs;
 	}
-	
+
 	// Means successful termination
+	// FIXME: rename: not just termination, could be unconnected/uninitiated
 	public boolean isEnd()
 	{
-		return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.buffs.isEmpty();
+		//return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.buffs.isEmpty();
+		for (Role r : this.states.keySet())
+		{
+			EndpointState s = this.states.get(r);
+			if ((!s.isTerminal() &&
+							(!(s.getStateKind().equals(Kind.UNARY_INPUT) && s.getAcceptable().iterator().next().isAccept()) ||
+							this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
+							// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
+					|| (s.isTerminal() && !this.buffs.isEmpty(r)))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public List<WFConfig> accept(Role r, IOAction a)
@@ -56,16 +74,46 @@ public class WFConfig
 			{
 				tmp3.put(r, null);
 			}*/
-			WFBuffers tmp2;
-			if (a.isSend())
+			WFBuffers tmp2 = 
+					a.isSend()       ? this.buffs.send(r, (Send) a)
+				: a.isReceive()    ? this.buffs.receive(r, (Receive) a)
+				: a.isDisconnect() ? this.buffs.disconnect(r, (Disconnect) a)
+				: null;
+			if (tmp2 == null)
 			{
-				tmp2 = this.buffs.send(r, (Send) a);
-			}
-			else
-			{
-				tmp2 = this.buffs.receive(r, (Receive) a);
+				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
 			res.add(new WFConfig(tmp1, tmp2));
+		}
+
+		return res;
+	}
+
+	public List<WFConfig> sync(Role r1, IOAction a1, Role r2, IOAction a2)
+	{
+		List<WFConfig> res = new LinkedList<>();
+		
+		List<EndpointState> succs1 = this.states.get(r1).acceptAll(a1);
+		List<EndpointState> succs2 = this.states.get(r2).acceptAll(a2);
+		for (EndpointState succ1 : succs1)
+		{
+			for (EndpointState succ2 : succs2)
+			{
+				Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
+				tmp1.put(r1, succ1);
+				tmp1.put(r2, succ2);
+				WFBuffers tmp2;
+				if (((a1.isConnect() && a2.isAccept()) || (a1.isAccept() && a2.isConnect())))
+						//&& this.buffs.canConnect(r1, r2))
+				{
+					tmp2 = this.buffs.connect(r1, r2);
+				}
+				else
+				{
+					throw new RuntimeException("Shouldn't get in here: " + a1 + ", " + a2);
+				}
+				res.add(new WFConfig(tmp1, tmp2));
+			}
 		}
 
 		return res;
@@ -84,15 +132,59 @@ public class WFConfig
 					List<IOAction> as = s.getAllAcceptable();
 					for (IOAction a : as)
 					{
-						if (this.buffs.canSend(r, (Send) a))
+						if (a.isSend())
 						{
-							List<IOAction> tmp = res.get(r);
-							if (tmp == null)
+							if (this.buffs.canSend(r, (Send) a))
 							{
-								tmp = new LinkedList<>();
-								res.put(r, tmp);
+								List<IOAction> tmp = res.get(r);  // FIXME: factor out
+								if (tmp == null)
+								{
+									tmp = new LinkedList<>();
+									res.put(r, tmp);
+								}
+								tmp.add(a);
 							}
-							tmp.add(a);
+						}
+						else if (a.isConnect())
+						{
+							// FIXME: factor out
+							Connect c = (Connect) a;
+							EndpointState speer = this.states.get(c.peer);
+							//if (speer.getStateKind() == Kind.UNARY_INPUT)
+							{
+								List<IOAction> peeras = speer.getAllAcceptable();
+								for (IOAction peera : peeras)
+								{
+									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
+									{
+										List<IOAction> tmp = res.get(r);
+										if (tmp == null)
+										{
+											tmp = new LinkedList<>();
+											res.put(r, tmp);
+										}
+										tmp.add(a);
+									}
+								}
+							}
+						}
+						else if (a.isDisconnect())
+						{
+							// Duplicated from Send
+							if (this.buffs.canDisconnect(r, (Disconnect) a))
+							{
+								List<IOAction> tmp = res.get(r);  // FIXME: factor out
+								if (tmp == null)
+								{
+									tmp = new LinkedList<>();
+									res.put(r, tmp);
+								}
+								tmp.add(a);
+							}
+						}
+						else
+						{
+							throw new RuntimeException("Shouldn't get in here: " + a);
 						}
 					}
 					break;
@@ -100,17 +192,48 @@ public class WFConfig
 				case UNARY_INPUT:
 				case POLY_INPUT:
 				{
-					for (Receive e : this.buffs.receivable(r))
+					for (IOAction a : this.buffs.inputable(r))
 					{
-						if (s.isAcceptable(e))
+						if (a.isReceive())
 						{
-							List<IOAction> tmp = res.get(r);
-							if (tmp == null)
+							if (s.isAcceptable(a))
 							{
-								tmp = new LinkedList<>();
-								res.put(r, tmp);
+								List<IOAction> tmp = res.get(r);
+								if (tmp == null)
+								{
+									tmp = new LinkedList<>();
+									res.put(r, tmp);
+								}
+								tmp.add(a);
 							}
-							tmp.add(e);
+						}
+						else if (a.isAccept())
+						{
+							// FIXME: factor out
+							Accept c = (Accept) a;
+							EndpointState speer = this.states.get(c.peer);
+							//if (speer.getStateKind() == Kind.OUTPUT)
+							{
+								List<IOAction> peeras = speer.getAllAcceptable();
+								for (IOAction peera : peeras)
+								{
+									if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
+									{
+										List<IOAction> tmp = res.get(r);
+										if (tmp == null)
+										{
+											tmp = new LinkedList<>();
+											res.put(r, tmp);
+										}
+										tmp.add(a);
+										//break;  // Add all of them
+									}
+								}
+							}
+						}
+						else
+						{
+							throw new RuntimeException("Shouldn't get in here: " + a);
 						}
 					}
 					break;
@@ -118,6 +241,10 @@ public class WFConfig
 				case TERMINAL:
 				{
 					break;
+				}
+				default:
+				{
+					throw new RuntimeException("Shouldn't get in here: " + s);
 				}
 			}
 		}

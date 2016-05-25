@@ -78,6 +78,11 @@ public class WFState
 	{
 		return this.config.accept(r, a);
 	}
+
+	public List<WFConfig> sync(Role r1, IOAction a1, Role r2, IOAction a2)
+	{
+		return this.config.sync(r1, a1, r2, a2);
+	}
 	
 	/*// No good for non-det models
 	public WFState getSuccessor(GIOAction a)  // NB graph edges, not config semantics (cf, getAcceptable)

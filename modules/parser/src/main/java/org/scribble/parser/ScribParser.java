@@ -22,7 +22,9 @@ import org.scribble.parser.ast.AntlrRoleArgList;
 import org.scribble.parser.ast.AntlrRoleDecl;
 import org.scribble.parser.ast.AntlrRoleDeclList;
 import org.scribble.parser.ast.global.AntlrGChoice;
+import org.scribble.parser.ast.global.AntlrGConnect;
 import org.scribble.parser.ast.global.AntlrGContinue;
+import org.scribble.parser.ast.global.AntlrGDisconnect;
 import org.scribble.parser.ast.global.AntlrGDo;
 import org.scribble.parser.ast.global.AntlrGInteractionSequence;
 import org.scribble.parser.ast.global.AntlrGInterrupt;
@@ -78,6 +80,8 @@ public class ScribParser
 				return AntlrRoleDeclList.parseRoleDeclList(this, ct);
 			case ROLEDECL:
 				return AntlrRoleDecl.parseRoleDecl(this, ct);
+			/*case CONNECTDECL:
+				return AntlrConnectDecl.parseConnectDecl(this, ct);*/
 			case PARAMETERDECLLIST:
 			//case EMPTY_PARAMETERDECLLST:
 				return AntlrNonRoleParamDeclList.parseNonRoleParamDeclList(this, ct);
@@ -95,6 +99,10 @@ public class ScribParser
 				return AntlrMessageSig.parseMessageSig(this, ct);
 			case PAYLOAD:
 				return AntlrPayloadElemList.parsePayloadElemList(this, ct);
+			case GLOBALCONNECT:
+				return AntlrGConnect.parseGConnect(this, ct);
+			case GLOBALDISCONNECT:
+				return AntlrGDisconnect.parseGDisconnect(this, ct);
 			case GLOBALMESSAGETRANSFER:
 				return AntlrGMessageTransfer.parseGMessageTransfer(this, ct);
 			case GLOBALCHOICE:

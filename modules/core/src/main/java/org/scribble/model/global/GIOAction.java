@@ -20,6 +20,21 @@ public abstract class GIOAction extends ModelAction<Global>
 		this.subj = subj; 
 	}
 
+	public boolean isConnect()
+	{
+		return false;
+	}
+
+	public boolean isDisconnect()
+	{
+		return false;
+	}
+
+	public boolean isAccept()
+	{
+		return false;
+	}
+
 	public boolean isSend()
 	{
 		return false;
@@ -67,7 +82,6 @@ public abstract class GIOAction extends ModelAction<Global>
 		}
 	}*/
 	
-
 	@Override
 	public String toString()
 	{

@@ -137,7 +137,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		//return Collections.unmodifiableCollection(this.edges.values());
 		return Collections.unmodifiableList(this.succs);
 	}
-	
+
 	public boolean isTerminal()
 	{
 		//return this.edges.isEmpty();
