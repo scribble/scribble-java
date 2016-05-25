@@ -114,7 +114,7 @@ tokens
 	ROLEINSTANTIATION = 'role-instantiation';  // FIXME: not consistent with arginstas/payloadeles
 
 	GLOBALPROTOCOLDECL = 'global-protocol-decl';
-	GLOBALPROTOCOLDECLMODS = 'global-protocol-decl-mods'
+	GLOBALPROTOCOLDECLMODS = 'global-protocol-decl-mods';
 	GLOBALPROTOCOLHEADER = 'global-protocol-header';
 	GLOBALPROTOCOLDEF = 'global-protocol-def';
 	GLOBALPROTOCOLBLOCK = 'global-protocol-block';
