@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.scribble.model.local.Accept;
 import org.scribble.model.local.Connect;
+import org.scribble.model.local.Disconnect;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
@@ -111,6 +112,11 @@ public class WFBuffers
 		return !isConnected(self, c.peer);
 		//return !isConnected(r1, r2);
 	}
+
+	public boolean canDisconnect(Role self, Disconnect d)
+	{
+		return isConnected(self, d.peer);
+	}
 	
 	//public WFBuffers connect(Role src, Connect c, Role dest)
 	public WFBuffers connect(Role src, Role dest)
@@ -131,6 +137,13 @@ public class WFBuffers
 		}
 		tmp2.put(src, true);
 		//copy.buffs.get(c.peer).put(src, new Send(c.peer, c.mid, c.payload));
+		return copy;
+	}
+
+	public WFBuffers disconnect(Role self, Disconnect d)
+	{
+		WFBuffers copy = new WFBuffers(this);
+		copy.connected.get(self).put(d.peer, false);
 		return copy;
 	}
 
@@ -166,9 +179,9 @@ public class WFBuffers
 		}
 		else
 		{
-			tmp.entrySet().stream()
-					.filter((e) -> !e.getValue())
-					.forEach((e) -> res.add(new Accept(e.getKey())));
+			this.connected.keySet().stream()
+				.filter((k) -> !tmp.containsKey(k) || !tmp.get(k))
+				.forEach((k) -> res.add(new Accept(k)));
 		}
 		return res;
 	}

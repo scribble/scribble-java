@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.scribble.model.local.Accept;
 import org.scribble.model.local.Connect;
+import org.scribble.model.local.Disconnect;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
@@ -73,16 +74,12 @@ public class WFConfig
 			{
 				tmp3.put(r, null);
 			}*/
-			WFBuffers tmp2;
-			if (a.isSend())
-			{
-				tmp2 = this.buffs.send(r, (Send) a);
-			}
-			else if (a.isReceive())
-			{
-				tmp2 = this.buffs.receive(r, (Receive) a);
-			}
-			else
+			WFBuffers tmp2 = 
+					a.isSend()       ? this.buffs.send(r, (Send) a)
+				: a.isReceive()    ? this.buffs.receive(r, (Receive) a)
+				: a.isDisconnect() ? this.buffs.disconnect(r, (Disconnect) a)
+				: null;
+			if (tmp2 == null)
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
@@ -148,7 +145,7 @@ public class WFConfig
 								tmp.add(a);
 							}
 						}
-						else //if (a.isConnect())
+						else if (a.isConnect())
 						{
 							// FIXME: factor out
 							Connect c = (Connect) a;
@@ -171,6 +168,24 @@ public class WFConfig
 								}
 							}
 						}
+						else if (a.isDisconnect())
+						{
+							// Duplicated from Send
+							if (this.buffs.canDisconnect(r, (Disconnect) a))
+							{
+								List<IOAction> tmp = res.get(r);  // FIXME: factor out
+								if (tmp == null)
+								{
+									tmp = new LinkedList<>();
+									res.put(r, tmp);
+								}
+								tmp.add(a);
+							}
+						}
+						else
+						{
+							throw new RuntimeException("Shouldn't get in here: " + a);
+						}
 					}
 					break;
 				}
@@ -192,7 +207,7 @@ public class WFConfig
 								tmp.add(a);
 							}
 						}
-						else //if (a.isAccept())
+						else if (a.isAccept())
 						{
 							// FIXME: factor out
 							Accept c = (Accept) a;
@@ -216,12 +231,20 @@ public class WFConfig
 								}
 							}
 						}
+						else
+						{
+							throw new RuntimeException("Shouldn't get in here: " + a);
+						}
 					}
 					break;
 				}
 				case TERMINAL:
 				{
 					break;
+				}
+				default:
+				{
+					throw new RuntimeException("Shouldn't get in here: " + s);
 				}
 			}
 		}

@@ -10,12 +10,10 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
 
-public class GConnect extends ConnectionAction<Global> implements GSimpleInteractionNode
+public class GDisconnect extends ConnectionAction<Global> implements GSimpleInteractionNode
 {
-	//public GConnect(RoleNode src, MessageNode msg, RoleNode dest)
-	public GConnect(RoleNode src, RoleNode dest)
+	public GDisconnect(RoleNode src, RoleNode dest)
 	{
-		//super(src, msg, dest);
 		super(src, dest);
 	}
 
@@ -27,17 +25,14 @@ public class GConnect extends ConnectionAction<Global> implements GSimpleInterac
 		if (srcrole.equals(self) || destrole.equals(self))
 		{
 			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.src.toName().toString());
-			//MessageNode msg = (MessageNode) this.msg;  // FIXME: need namespace prefix update?
 			RoleNode dest = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.dest.toName().toString());
 			if (srcrole.equals(self))
 			{
-				//projection = AstFactoryImpl.FACTORY.LConnect(src, msg, dest);
-				projection = AstFactoryImpl.FACTORY.LConnect(src, dest);  // src and dest (not self and peer)
+				projection = AstFactoryImpl.FACTORY.LDisconnect(src, dest);
 			}
 			if (destrole.equals(self))
 			{
-				//projection = AstFactoryImpl.FACTORY.LAccept(src, msg, dest);
-				projection = AstFactoryImpl.FACTORY.LAccept(src, dest);
+				projection = AstFactoryImpl.FACTORY.LDisconnect(dest, src);
 			}
 		}
 		return projection;
@@ -45,30 +40,25 @@ public class GConnect extends ConnectionAction<Global> implements GSimpleInterac
 
 
 	@Override
-	protected GConnect copy()
+	protected GDisconnect copy()
 	{
-		//return new GConnect(this.src, this.msg, this.dest);
-		return new GConnect(this.src, this.dest);
+		return new GDisconnect(this.src, this.dest);
 	}
 	
 	@Override
-	public GConnect clone()
+	public GDisconnect clone()
 	{
 		RoleNode src = this.src.clone();
-		//MessageNode msg = this.msg.clone();
 		RoleNode dest = this.dest.clone();
-		//return AstFactoryImpl.FACTORY.GConnect(src, msg, dest);
-		return AstFactoryImpl.FACTORY.GConnect(src, dest);
+		return AstFactoryImpl.FACTORY.GDisconnect(src, dest);
 	}
 
 	@Override
-	//public GConnect reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
-	public GConnect reconstruct(RoleNode src, RoleNode dest)
+	public GDisconnect reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		//GConnect gc = new GConnect(src, msg, dest);
-		GConnect gc = new GConnect(src, dest);
-		gc = (GConnect) gc.del(del);
+		GDisconnect gc = new GDisconnect(src, dest);
+		gc = (GDisconnect) gc.del(del);
 		return gc;
 	}
 
@@ -82,7 +72,6 @@ public class GConnect extends ConnectionAction<Global> implements GSimpleInterac
 	@Override
 	public String toString()
 	{
-		//return this.msg + " " + Constants.CONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
-		return Constants.CONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
+		return Constants.DISCONNECT_KW + " " + this.src + " " + Constants.TO_KW + " " + this.dest + ";";
 	}
 }

@@ -41,6 +41,11 @@ public abstract class IOAction extends ModelAction<Local>
 		return false;
 	}
 
+	public boolean isDisconnect()
+	{
+		return false;
+	}
+
 	public boolean isAccept()
 	{
 		return false;
@@ -52,19 +57,18 @@ public abstract class IOAction extends ModelAction<Local>
 		return this.peer + getCommSymbol() + this.mid + this.payload;
 	}
 	
-	protected abstract String getCommSymbol();
+	protected abstract String getCommSymbol();*/
 	
-	@Override
+	/*@Override
 	public int hashCode()
 	{
 		int hash = 919;
-		hash = 31 * hash + this.peer.hashCode();
-		hash = 31 * hash + this.mid.hashCode();
-		hash = 31 * hash + this.payload.hashCode();
+		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + this.peer.hashCode();  // No: peer is this.obj
 		return hash;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public boolean equals(Object o)
 	{
 		if (this == o)

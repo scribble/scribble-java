@@ -5,6 +5,7 @@ import java.util.List;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionNode;
 import org.scribble.ast.global.GInteractionSeq;
@@ -18,6 +19,7 @@ import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LConnect;
 import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionNode;
 import org.scribble.ast.local.LInteractionSeq;
@@ -68,7 +70,7 @@ public interface AstFactory
 
 	RoleDeclList RoleDeclList(List<RoleDecl> rds);
 	RoleDecl RoleDecl(RoleNode role);
-	ConnectDecl ConnectDecl(RoleNode src, RoleNode role);
+	//ConnectDecl ConnectDecl(RoleNode src, RoleNode role);
 	NonRoleParamDeclList NonRoleParamDeclList(List<NonRoleParamDecl<NonRoleParamKind>> pds);
 	<K extends NonRoleParamKind> NonRoleParamDecl<K> NonRoleParamDecl(K kind, NonRoleParamNode<K> name);
 	
@@ -79,6 +81,7 @@ public interface AstFactory
 	GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	//GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dest);
 	GConnect GConnect(RoleNode src, RoleNode dest);
+	GDisconnect GDisconnect(RoleNode src, RoleNode dest);
 	GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks);
 	GRecursion GRecursion(RecVarNode recvar, GProtocolBlock block);
 	GContinue GContinue(RecVarNode recvar);
@@ -109,6 +112,7 @@ public interface AstFactory
 	LAccept LAccept(RoleNode src, MessageNode msg, RoleNode dest);*/
 	LConnect LConnect(RoleNode src, RoleNode dest);
 	LAccept LAccept(RoleNode src, RoleNode dest);
+	LDisconnect LDisconnect(RoleNode self, RoleNode peer);
 	LChoice LChoice(RoleNode subj, List<LProtocolBlock> blocks);
 	LRecursion LRecursion(RecVarNode recvar, LProtocolBlock block);
 	LContinue LContinue(RecVarNode recvar);

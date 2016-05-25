@@ -99,7 +99,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			proj.accept(graph);  // Don't do on root decl, side effects job context
 			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 
-			//System.out.println("EFSM:\n" + fsm);
+			//job.debugPrintln("EFSM for " + self + ":\n" + fsm);
 			
 			fsms.put(self, fsm.init);
 		}
@@ -132,26 +132,31 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			
 			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
 
-			//System.out.println("Acceptable at (" + curr.id + "): " + acceptable);
+			//job.debugPrintln("Acceptable at (" + curr.id + "): " + acceptable);
 
 			for (Role r : acceptable.keySet())
 			{
 				for (IOAction a : acceptable.get(r))
 				{
-					if (a.isSend() || a.isReceive())
+					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
-						foo(seen, todo, curr, a.toGlobal(r), curr.accept(r, a));
+						getNextStates(todo, seen, curr, a.toGlobal(r), curr.accept(r, a));
 					}
-					else //if (a.isAccept() || a.isConnect())
+					else if (a.isAccept() || a.isConnect())
 					{	
 						List<IOAction> as = acceptable.get(a.peer);
 						IOAction d = a.toDual(r);
 						if (as != null && as.contains(d))
 						{
 							as.remove(d);  // Removes one occurrence
-							//foo(seen, todo, curr.sync(r, a, a.peer, d));
-							foo(seen, todo, curr, a.toGlobal(r), curr.sync(r, a, a.peer, d));
+							//getNextStates(seen, todo, curr.sync(r, a, a.peer, d));
+							GIOAction g = (a.isConnect()) ? a.toGlobal(r) : d.toGlobal(a.peer);
+							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, d));
 						}
+					}
+					else
+					{
+						throw new RuntimeException("Shouldn't get in here: " + a);
 					}
 				}
 			}
@@ -220,7 +225,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	}
 
 	//private void foo(Set<WFState> seen, LinkedHashSet<WFState> todo, WFState curr, Role r, IOAction a)
-	private void foo(Set<WFState> seen, LinkedHashSet<WFState> todo, WFState curr, GIOAction a, List<WFConfig> nexts)
+	private void getNextStates(LinkedHashSet<WFState> todo, Set<WFState> seen, WFState curr, GIOAction a, List<WFConfig> nexts)
 	{
 		for (WFConfig next : nexts)
 		{

@@ -3,7 +3,7 @@ package org.scribble.del.local;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LAccept;
-import org.scribble.del.ConnectDel;
+import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.Accept;
 import org.scribble.sesstype.Payload;
@@ -12,7 +12,7 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-public class LAcceptDel extends ConnectDel implements LSimpleInteractionNodeDel
+public class LAcceptDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
 {
 	@Override
 	public LAccept leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder builder, ScribNode visited) throws ScribbleException

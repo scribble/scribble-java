@@ -17,6 +17,7 @@ import org.scribble.sesstype.name.ModuleName;
 public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 {
 	public static enum Modifiers { EXPLICIT }  // FIXME: factor out?  Header?
+	// AUX? (no WF checking as root)
 
 	// FIXME: project modifiers to locals
 	// FIXME: lookup routines, e.g. isExplicit

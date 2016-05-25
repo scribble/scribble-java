@@ -19,13 +19,95 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. choice subject enabling needed for non-mixed states
 
 
-	//..FIXME: need disconnect
-	//..FIXME: update model error to check if (dis)connected -- reset EFSM on disconnect
-
 	// FIXME: consider implicit error actions (e.g. unconnected/non-enabled message passing) to model building (in addition to good acceptable actions), to make error states explicit
+	// FIXME: (re)connect/wrap, e.g. SMTP
+
+	// FIXME: "introduces" well-formedness?
+	// "A from B to C;"
+	// "a from A to B; A[a] from B to C;"
 
 
 //*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			connect B to C
+			2() from B to C;
+			connect C to A;
+			3() from C to A;
+			//3() from A to B;  // Uncomment OK
+			disconnect B and C;
+			disconnect C and A; // Comment bad
+			continue X;
+		}
+		or
+		{
+			4() from A to B;
+		}
+	}
+	//disconnect A and C;  // Uncomment bad
+	disconnect A and B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		choice at B
+		{
+			// Good, even though A not involved here
+			connect B to C
+			2() from B to C;
+			3() from C to B;
+			disconnect B and C;
+			continue X;
+		}
+		or
+		{
+			4() from B to A;
+		}
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		connect A to B
+		1() from A to B;
+		2() from B to A;
+		disconnect A and B;
+		connect B to A
+		3() from A to B;
+		4() from B to A;
+		disconnect B and A;
+		continue X;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	disconnect A and B;
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B)
 {
 	rec X

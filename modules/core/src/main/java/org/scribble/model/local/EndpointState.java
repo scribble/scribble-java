@@ -38,7 +38,7 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 		else
 		{
 			IOAction a = as.iterator().next();
-			return (a.isSend() || a.isConnect())
+			return (a.isSend() || a.isConnect() || a.isDisconnect())
 						? Kind.OUTPUT
 						: (as.size() > 1) ? Kind.POLY_INPUT : Kind.UNARY_INPUT;
 		}

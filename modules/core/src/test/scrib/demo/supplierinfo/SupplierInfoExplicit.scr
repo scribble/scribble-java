@@ -1,0 +1,124 @@
+module src.SupplierInfoExplicit;
+
+type <xsd> "UserName" from "AUTH.xsd" as username;
+type <xsd> "Password" from "AUTH.xsd" as password;
+type <xsd> "UUID" from "AUTH.xsd" as uuid;
+type <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
+type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
+
+type <xsd> "..." from "...xsd" as usercontext;
+type <xsd> "..." from "...xsd" as filters;
+
+
+explicit global protocol PartnershipSupplier(
+		role loginsvc,
+		role requestor,
+		role authorisersvc,
+		role filtersvc,
+		role suppliersvc,
+		role contractsvc)
+{
+	connect requestor to loginsvc;
+	login(username, password) from requestor to loginsvc;
+	choice at loginsvc
+	{
+		//loginsuccess() from loginsvc to requestor;  // Only an error if the following line remains uncommented
+		loginfailure() from loginsvc to requestor;
+		//getsuppliers(uuid) from requestor to authorisersvc;
+	}
+	or
+	{
+		loginsuccess() from loginsvc to requestor;
+		connect requestor to authorisersvc;
+		connect authorisersvc to filtersvc;
+		connect authorisersvc to suppliersvc;
+		connect authorisersvc to contractsvc;
+		do Main(requestor, authorisersvc, filtersvc, suppliersvc, contractsvc);
+	}
+}
+
+global protocol Main(
+		role requestor,
+		role authorisersvc,
+		role filtersvc,
+		role suppliersvc,
+		role contractsvc)
+{
+	choice at requestor
+	{
+		// GET SUPPLIER INFO
+		getsuppliers(uuid) from requestor to authorisersvc;
+		//1() from authorisersvc to contractsvc;  // FIXME: big state explosion?
+		//do SuppInfo(requestor, authorisersvc, filtersvc, suppliersvc);  // FIXME: non-WF subprotocol
+		choice at authorisersvc
+		{
+			// DENIED
+			deny() from authorisersvc to requestor;
+		}
+		or
+		{
+			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+			getsuppliers() from authorisersvc to suppliersvc;
+			do FilterInfo<supplierdetails>(authorisersvc, filtersvc);
+			suppliers() from suppliersvc to authorisersvc;
+			suppliers() from authorisersvc to requestor;
+		}
+	}
+	or
+	{
+		// GET CONTRACT INFO
+		getcontracts() from requestor to authorisersvc;
+		//2() from authorisersvc to suppliersvc;
+		choice at authorisersvc
+		{
+			// DENIED
+			deny() from authorisersvc to requestor;
+		}
+		or
+		{
+			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+			getcontracts() from authorisersvc to contractsvc;
+			suppliers() from contractsvc to authorisersvc;
+			do FilterInfo<contractdetails>(authorisersvc, filtersvc);
+			contracts() from authorisersvc to requestor;
+		}
+	}
+
+	do Main(requestor, authorisersvc, filtersvc, suppliersvc, contractsvc);
+}
+
+global protocol FilterInfo<type details>(
+		role authorisersvc,
+		role filtersvc)
+{
+			filter(usercontext, filters, details) from authorisersvc to filtersvc;
+			filtered() from filtersvc to authorisersvc;
+}
+
+
+// FIXME: don't want WF validation on this (sub)protocol by itself
+/*
+global protocol SuppInfo(
+		role requestor,
+		role authorisersvc,
+		role filtersvc,
+		role suppliersvc)
+{
+		choice at authorisersvc
+		{
+			// DENIED
+			deny() from authorisersvc to requestor;
+		}
+		or
+		{
+			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+			getsuppliers() from authorisersvc to suppliersvc;
+			suppliers() from suppliersvc to authorisersvc;
+
+			filter(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
+			filtered() from filtersvc to authorisersvc;
+			suppliers() from authorisersvc to requestor;
+		}
+}
+//*/
+

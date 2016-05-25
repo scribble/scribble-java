@@ -25,6 +25,11 @@ public abstract class GIOAction extends ModelAction<Global>
 		return false;
 	}
 
+	public boolean isDisconnect()
+	{
+		return false;
+	}
+
 	public boolean isAccept()
 	{
 		return false;

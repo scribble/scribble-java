@@ -51,13 +51,13 @@ public class Receive extends IOAction
 
 	}
 	
-	/*@Override
+	@Override
 	public int hashCode()
 	{
-		int hash = 937;
+		int hash = 947;
 		hash = 31 * hash + super.hashCode();
 		return hash;
-	}*/
+	}
 	
 	@Override
 	public boolean isReceive()

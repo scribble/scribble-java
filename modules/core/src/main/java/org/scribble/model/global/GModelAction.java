@@ -126,12 +126,15 @@ public class GModelAction extends ModelAction<Global> //implements PathElement
 		return this.deps.contains(ma);
 	}*/
 	
-	/*@Override
+	@Override
 	public int hashCode()
 	{
 		//return 827 * this.id;
-		return 827 * this.src.hashCode() + super.hashCode();
-	}*/
+		int hash = 827;
+		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + this.src.hashCode();
+		return hash;
+	}
 	
 	/*@Override
 	public boolean equals(Object o)

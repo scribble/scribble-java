@@ -50,13 +50,13 @@ public class Send extends IOAction
 		return new GSend(self, this.peer, this.mid, this.payload);
 	}
 	
-	/*@Override
+	@Override
 	public int hashCode()
 	{
-		int hash = 929;
+		int hash = 953;
 		hash = 31 * hash + super.hashCode();
 		return hash;
-	}*/
+	}
 	
 	@Override
 	public boolean isSend()

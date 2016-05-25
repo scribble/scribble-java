@@ -26,13 +26,13 @@ public class Connect extends IOAction
 		return new GConnect(self, this.peer);//, this.mid, this.payload);
 	}
 	
-	/*@Override
+	@Override
 	public int hashCode()
 	{
 		int hash = 929;
 		hash = 31 * hash + super.hashCode();
 		return hash;
-	}*/
+	}
 	
 	@Override
 	public boolean isConnect()

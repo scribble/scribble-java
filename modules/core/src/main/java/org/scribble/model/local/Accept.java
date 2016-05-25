@@ -27,13 +27,13 @@ public class Accept extends IOAction
 		return new GAccept(self, this.peer);
 	}
 	
-	/*@Override
+	@Override
 	public int hashCode()
 	{
 		int hash = 937;
 		hash = 31 * hash + super.hashCode();
 		return hash;
-	}*/
+	}
 	
 	@Override
 	public boolean isAccept()

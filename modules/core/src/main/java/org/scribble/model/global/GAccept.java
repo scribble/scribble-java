@@ -20,6 +20,14 @@ public class GAccept extends GIOAction
 	}
 
 	@Override
+	public int hashCode()
+	{
+		int hash = 967;
+		hash = 31 * hash + super.hashCode();
+		return hash;
+	}
+
+	@Override
 	public boolean equals(Object o)
 	{
 		if (this == o)

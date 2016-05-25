@@ -30,13 +30,14 @@ tokens
 	LOCALKW = 'local';
 	EXPLICITKW = 'explicit';
 	ROLEKW = 'role';
-	CONNECTKW = 'connect';
 	ACCEPTKW = 'accept';
 	SELFKW = 'self';
 	SIGKW = 'sig';
 	INSTANTIATESKW = 'instantiates';
 	ASKW = 'as';
 
+	CONNECTKW = 'connect';
+	DISCONNECTKW = 'disconnect';
 	FROMKW = 'from';
 	TOKW = 'to';
 	CHOICEKW = 'choice';
@@ -103,7 +104,7 @@ tokens
 	MESSAGESIGNATURE = 'message-signature';
 	ROLEDECLLIST = 'role-decl-list';
 	ROLEDECL = 'role-decl';
-	CONNECTDECL = 'connect-decl';
+	//CONNECTDECL = 'connect-decl';
 	ARGUMENTINSTANTIATIONLIST = 'argument-instantiation-list';
 	//ARGUMENTINSTANTIATION = 'argument-instantiation';
 	PAYLOAD = 'payload';
@@ -118,6 +119,7 @@ tokens
 	GLOBALINTERACTIONSEQUENCE = 'global-interaction-sequence';
 	GLOBALMESSAGETRANSFER = 'global-message-transfer';
 	GLOBALCONNECT = 'global-connect';
+	GLOBALDISCONNECT = 'global-disconnect';
 	GLOBALCHOICE = 'global-choice';
 	GLOBALRECURSION = 'global-recursion';
 	GLOBALCONTINUE = 'global-continue';
@@ -532,6 +534,8 @@ globalinteraction:
 	globaldo
 |
 	globalconnect
+|
+	globaldisconnect
 ;
 
 
@@ -572,6 +576,12 @@ globalconnect:
 	->
 	^(CONNECTDECL rolename rolename)
 ;*/
+
+globaldisconnect:
+	DISCONNECTKW rolename ANDKW rolename ';'
+	->
+	^(GLOBALDISCONNECT rolename rolename)
+;
 
 
 /**

@@ -16,48 +16,46 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-public class LAccept extends ConnectionAction<Local> implements LSimpleInteractionNode
+public class LDisconnect extends ConnectionAction<Local> implements LSimpleInteractionNode
 {
-	//public LAccept(RoleNode src, MessageNode msg, RoleNode dest)
-	public LAccept(RoleNode src, RoleNode dest)
+	public final RoleNode self;  // super.src
+	public final RoleNode peer;  // super.dest
+	
+	public LDisconnect(RoleNode self, RoleNode peer)
 	{
-		//super(src, msg, dest);
-		super(src, dest);
+		super(self, peer);
+		this.self = self;
+		this.peer = peer;
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		//return new LAccept(this.src, this.msg, this.dest);
-		return new LAccept(this.src, this.dest);
+		return new LDisconnect(this.self, this.peer);
 	}
 	
 	@Override
-	public LAccept clone()
+	public LDisconnect clone()
 	{
-		RoleNode src = this.src.clone();
-		//MessageNode msg = this.msg.clone();
-		RoleNode dest = this.dest.clone();
-		//return AstFactoryImpl.FACTORY.LAccept(src, msg, dest);
-		return AstFactoryImpl.FACTORY.LAccept(src, dest);
+		RoleNode self = this.self.clone();
+		RoleNode peer = this.peer.clone();
+		return AstFactoryImpl.FACTORY.LDisconnect(self, peer);
 	}
 
 	@Override
-	//public LAccept reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
-	public LAccept reconstruct(RoleNode src, RoleNode dest)
+	public LDisconnect reconstruct(RoleNode self, RoleNode peer)
 	{
 		ScribDel del = del();
-		//LAccept lr = new LAccept(src, msg, dest);
-		LAccept lr = new LAccept(src, dest);
-		lr = (LAccept) lr.del(del);
+		LDisconnect lr = new LDisconnect(self, peer);
+		lr = (LDisconnect) lr.del(del);
 		return lr;
 	}
 
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(this.src.toName());
-		return this.src.toName();
+		fixer.setChoiceSubject(this.self.toName());
+		return this.self.toName();
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
@@ -70,13 +68,13 @@ public class LAccept extends ConnectionAction<Local> implements LSimpleInteracti
 	@Override
 	public String toString()
 	{
-		return Constants.ACCEPT_KW + " " + this.src + ";";
+		return Constants.DISCONNECT_KW + " " + this.peer + ";";
 	}
 
 	@Override
 	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
 	{
-		throw new RuntimeScribbleException("Invalid merge on LAccept: " + this);
+		throw new RuntimeScribbleException("Invalid merge on LDisconnect: " + this);
 	}
 
 	@Override
