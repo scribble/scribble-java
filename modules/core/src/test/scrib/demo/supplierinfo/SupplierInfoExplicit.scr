@@ -61,8 +61,8 @@ aux global protocol Main(
 			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 			getsuppliers() from authorisersvc to suppliersvc;
 			do FilterInfo
-				<filterSupplier(usercontext, filters, supplierdetails)>
-				(authorisersvc, filtersvc);
+					<filterSupplier(usercontext, filters, supplierdetails)>
+					(authorisersvc, filtersvc);
 			suppliers() from suppliersvc to authorisersvc;
 			suppliers() from authorisersvc to requestor;
 		}
@@ -83,8 +83,8 @@ aux global protocol Main(
 			getcontracts() from authorisersvc to contractsvc;
 			suppliers() from contractsvc to authorisersvc;
 			do FilterInfo
-				<filterContract(usercontext, filters, contractdetails)>
-				(authorisersvc, filtersvc);
+					<filterContract(usercontext, filters, contractdetails)>
+					(authorisersvc, filtersvc);
 			contracts() from authorisersvc to requestor;
 		}
 	}
