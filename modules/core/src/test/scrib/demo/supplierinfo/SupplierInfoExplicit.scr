@@ -25,6 +25,7 @@ explicit global protocol PartnershipSupplier(
 		//loginsuccess() from loginsvc to requestor;  // Only an error if the following line remains uncommented
 		loginfailure() from loginsvc to requestor;
 		//getsuppliers(uuid) from requestor to authorisersvc;
+		disconnect requestor and loginsvc;
 	}
 	or
 	{
