@@ -1,5 +1,6 @@
 module src.SupplierInfoExplicit;
 
+
 type <xsd> "UserName" from "AUTH.xsd" as username;
 type <xsd> "Password" from "AUTH.xsd" as password;
 type <xsd> "UUID" from "AUTH.xsd" as uuid;
@@ -10,13 +11,15 @@ type <xsd> "..." from "...xsd" as usercontext;
 type <xsd> "..." from "...xsd" as filters;
 
 
-explicit global protocol PartnershipSupplier(
-		role loginsvc,
-		role requestor,
-		role authorisersvc,
-		role filtersvc,
-		role suppliersvc,
-		role contractsvc)
+explicit global protocol PartnershipSupplier
+(
+	role loginsvc,
+	role requestor,
+	role authorisersvc,
+	role filtersvc,
+	role suppliersvc,
+	role contractsvc
+)
 {
 	connect requestor to loginsvc;
 	login(username, password) from requestor to loginsvc;
@@ -39,12 +42,14 @@ explicit global protocol PartnershipSupplier(
 }
 
 
-aux global protocol Main(
-		role requestor,
-		role authorisersvc,
-		role filtersvc,
-		role suppliersvc,
-		role contractsvc)
+aux global protocol Main
+(
+	role requestor,
+	role authorisersvc,
+	role filtersvc,
+	role suppliersvc,
+	role contractsvc
+)
 {
 	choice at requestor
 	{
@@ -65,7 +70,13 @@ aux global protocol Main(
 }
 
 
-aux global protocol SuppInfo(requestor, authorisersvc, filtersvc, suppliersvc)
+aux global protocol SuppInfo
+(
+	role requestor,
+	role authorisersvc,
+	role filtersvc,
+	role suppliersvc
+)
 {
 	choice at authorisersvc
 	{
@@ -85,7 +96,13 @@ aux global protocol SuppInfo(requestor, authorisersvc, filtersvc, suppliersvc)
 }
 
 
-aux global protocol ContractInfo(requestor, authorisersvc, filtersvc, contractsvc)
+aux global protocol ContractInfo
+(
+	role requestor,
+	role authorisersvc,
+	role filtersvc,
+	role contractsvc
+)
 {
 	choice at authorisersvc
 	{
@@ -99,6 +116,8 @@ aux global protocol ContractInfo(requestor, authorisersvc, filtersvc, contractsv
 		suppliers() from contractsvc to authorisersvc;
 		do FilterInfo
 				<filterContract(usercontext, filters, contractdetails)>
+				//<filterSupplier(usercontext, filters, supplierdetails)>  // OK (merge)
+				//<filterSupplier(usercontext, filters, contractdetails)>  // Error
 				(authorisersvc, filtersvc);
 		contracts() from authorisersvc to requestor;
 	}
@@ -106,39 +125,17 @@ aux global protocol ContractInfo(requestor, authorisersvc, filtersvc, contractsv
 
 
 //aux global protocol FilterInfo<type details>(  // Bad non-det. payload
-aux global protocol FilterInfo<sig Query>(
-		role authorisersvc,
-		role filtersvc)
+aux global protocol FilterInfo
+<
+	sig Query
+>
+(
+	role authorisersvc,
+	role filtersvc
+)
 {
 	//filter(usercontext, filters, details) from authorisersvc to filtersvc;
 	Query from authorisersvc to filtersvc;
 	filtered() from filtersvc to authorisersvc;
 }
-
-
-// FIXME: don't want WF validation on this (sub)protocol by itself
-/*
-global protocol SuppInfo(
-		role requestor,
-		role authorisersvc,
-		role filtersvc,
-		role suppliersvc)
-{
-		choice at authorisersvc
-		{
-			// DENIED
-			deny() from authorisersvc to requestor;
-		}
-		or
-		{
-			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
-			getsuppliers() from authorisersvc to suppliersvc;
-			suppliers() from suppliersvc to authorisersvc;
-
-			filter(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
-			filtered() from filtersvc to authorisersvc;
-			suppliers() from authorisersvc to requestor;
-		}
-}
-//*/
 

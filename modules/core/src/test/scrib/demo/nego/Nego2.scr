@@ -15,7 +15,7 @@ global protocol NegotiateAux(role A, role B)
 {
 	choice at A
 	{
-		accept() from A to B;
+		accpt() from A to B;
 		confirm() from B to A;
 	}
 	or

@@ -8,7 +8,7 @@ global protocol Negotiate(role C, role P)
 	propose(SAP) from C to P;
 	choice at P 
 	{
-		accept() from P to C;
+		accpt() from P to C;
 		confirm() from C to P;
 	}
 	or
