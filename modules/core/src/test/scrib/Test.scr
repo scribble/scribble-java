@@ -52,7 +52,7 @@ explicit global protocol Proto1(role A, role B, role C)
 /*
 explicit global protocol Proto1(role A, role B)
 {
-	1() from A to B;  // FIXME: should be immediately bad -- either incorporate into enabling or by explicit model check error
+	1() from A to B;
 }
 //*/
 
@@ -62,12 +62,13 @@ explicit global protocol Proto1(role A, role B, role C, role D)
 {
 	connect A to B;
 	1() from A to B;
-	1() from C to D;  // FIXME: should be immediately bad
+	//connect D to C;  // Uncomment OK
+	1() from C to D;
 }
 //*/
 
 
-/*
+//*
 explicit global protocol Proto1(role A, role B)
 {
 	choice at A

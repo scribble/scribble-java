@@ -21,6 +21,7 @@ public class RoleDeclDel extends ScribDelBase
 	{
 		RoleDecl rd = (RoleDecl) visited;
 		Role role = rd.getDeclName();
+		// enabled even for explicit connection protocols: otherwise no way to bootstrap initial connection(s)
 		checker.pushEnv(checker.popEnv().enableRoleForRootProtocolDecl(role));
 		return (RoleDecl) super.leaveInlinedWFChoiceCheck(parent, child, checker, rd);
 	}

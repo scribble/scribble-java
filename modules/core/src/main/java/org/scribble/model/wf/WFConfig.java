@@ -9,6 +9,7 @@ import java.util.Map;
 import org.scribble.model.local.Accept;
 import org.scribble.model.local.Connect;
 import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
@@ -30,13 +31,16 @@ public class WFConfig
 	}
 
 	// Means successful termination
+	// FIXME: rename: not just termination, could be unconnected/uninitiated
 	public boolean isEnd()
 	{
 		//return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.buffs.isEmpty();
 		for (Role r : this.states.keySet())
 		{
 			EndpointState s = this.states.get(r);
-			if ((!s.isTerminal() && this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr)))
+			if ((!s.isTerminal() &&
+							(!(s.getStateKind().equals(Kind.UNARY_INPUT) && s.getAcceptable().iterator().next().isAccept()) ||
+							this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
 							// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
 					|| (s.isTerminal() && !this.buffs.isEmpty(r)))
 			{
