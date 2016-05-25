@@ -20,5 +20,6 @@ modules/core/src/test/scrib/test/test1/Test1
 modules/core/src/test/scrib/scratch/Scratch1
 modules/core/src/test/scrib/demo/fase/adder/Adder
 modules/core/src/test/scrib/demo/fase/smtp/Smtp
+modules/core/src/test/scrib/demo/cognizant/loan
 bin/scribblec.sh
 

@@ -29,6 +29,27 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// Note: mixed explicit and non-explicit subprotocols
 
 
+explicit global protocol Proto1(role A, role B, role C)
+{
+}
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		connect A to B;
+		//connect B to C;  // Uncomment bad
+	}
+	or
+	{
+		connect A to C;
+	}
+}
+//*/
+
+
 /*
 type <java> "java.lang.Integer" from "rt.jar" as Int1;
 type <java> "java.lang.Integer" from "rt.jar" as Int2;
