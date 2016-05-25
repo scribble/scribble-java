@@ -130,6 +130,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			
 			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
+
+			//System.out.println("Acceptable at (" + curr.id + "): " + acceptable);
+
 			for (Role r : acceptable.keySet())
 			{
 				for (IOAction a : acceptable.get(r))

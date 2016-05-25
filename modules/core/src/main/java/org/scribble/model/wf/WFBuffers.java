@@ -21,6 +21,7 @@ public class WFBuffers
 
 	public WFBuffers(Set<Role> roles)
 	{
+		// FIXME: do the same for connected
 		roles.forEach((k) -> 
 		{
 			HashMap<Role, Send> tmp = new HashMap<>();
@@ -34,40 +35,61 @@ public class WFBuffers
 			});
 		});
 	}
+
+	public WFBuffers(WFBuffers buffs)
+	{
+		Set<Role> roles = buffs.buffs.keySet();
+		roles.forEach((k) ->
+		{
+			Map<Role, Boolean> tmp = buffs.connected.get(k);
+			if (tmp != null)
+			{
+				this.connected.put(k, new HashMap<>(tmp));
+			}
+		});
+		roles.forEach((k) -> 
+		{
+			this.buffs.put(k, new HashMap<>(buffs.buffs.get(k)));
+		});
+	}
 	
 	public Map<Role, Send> get(Role r)
 	{
 		return Collections.unmodifiableMap(this.buffs.get(r));
 	}
 	
-	public boolean isEmpty()
+	/*public boolean isEmpty()
 	{
-		return buffs.values().stream().flatMap((m) -> m.values().stream()).allMatch((v) -> v == null);
-	}
-
-	public WFBuffers(WFBuffers buffs)
+		return this.buffs.values().stream().flatMap((m) -> m.values().stream()).allMatch((v) -> v == null);
+	}*/
+	public boolean isEmpty(Role r)
 	{
-		Set<Role> roles = buffs.buffs.keySet();
-		roles.forEach((k) -> 
-		{
-			this.buffs.put(k, new HashMap<>(buffs.buffs.get(k)));
-		});
+		return this.buffs.get(r).values().stream().allMatch((v) -> v == null);
 	}
 
 	public boolean isConnected(Role self, Role peer)
 	{
-		Map<Role, Boolean> tmp = this.connected.get(peer);
-		return tmp != null && tmp.get(peer);
+		Map<Role, Boolean> tmp = this.connected.get(self);
+		if (tmp == null)
+		{
+			return false;
+		}
+		Boolean b = tmp.get(peer);
+		return b != null && b;
 	}
 
 	public boolean canAccept(Role self, Accept a)
+	//public boolean canAccept(Role r1, Role r2)
 	{
 		return !isConnected(self, a.peer);
+		//return canConnect(r2, r1);
 	}
 
 	public boolean canConnect(Role self, Connect c)
+	//public boolean canConnect(Role r1, Role r2)
 	{
 		return !isConnected(self, c.peer);
+		//return !isConnected(r1, r2);
 	}
 	
 	//public WFBuffers connect(Role src, Connect c, Role dest)
@@ -80,13 +102,13 @@ public class WFBuffers
 			tmp1 = new HashMap<>();
 			copy.connected.put(src, tmp1);
 		}
+		tmp1.put(dest, true);
 		Map<Role, Boolean> tmp2 = copy.connected.get(dest);
 		if (tmp2 == null)
 		{
 			tmp2 = new HashMap<>();
-			copy.connected.put(src, tmp2);
+			copy.connected.put(dest, tmp2);
 		}
-		tmp1.put(dest, true);
 		tmp2.put(src, true);
 		//copy.buffs.get(c.peer).put(src, new Send(c.peer, c.mid, c.payload));
 		return copy;
