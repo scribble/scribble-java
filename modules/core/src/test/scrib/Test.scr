@@ -19,40 +19,49 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. choice subject enabling needed for non-mixed states
 
 
-/*
-explicit global protocol Proto1(role A, role B, role C)
-//global protocol Proto1(role A, role B, role C)
-//global protocol Proto1(role A, role B)
-{
-	connect A to B;
-	/*1() from A to B;
-	2() from B to A;* /
-	choice at A
-	{
-		connect A to B;
-		1() from A to B;
-		rec X {
-		connect B to C;
-		1() from B to C;
-		//continue X;
-		}
-	}
-	or
-	{
-		connect A to B;
-		2() from A to B;
+	//..FIXME: need disconnect
+	//..FIXME: update model error to check if (dis)connected -- reset EFSM on disconnect
 
-		//..FIXME: need disconnect
-		//..FIXME: update model error to check if (dis)connected -- reset EFSM on disconnect
+	// FIXME: consider implicit error actions (e.g. unconncted message passing) to model building (in addition to good acceptable actions), to make error states explicit
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		connect A to B;
+		choice at A
+		{
+			1() from A to B;
+			//continue X;  // Uncomment bad
+		}
+		or
+		{
+			2() from A to B;
+		}
 	}
 }
 //*/
 
 
 /*
-explicit global protocol Proto1(role A, role B)
+explicit global protocol Proto1(role A, role B, role C)
 {
-	1() from A to B;
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		rec X
+		{
+			connect B to C;
+			1() from B to C;
+			//continue X;  // Uncomment bad
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
 }
 //*/
 
@@ -68,7 +77,16 @@ explicit global protocol Proto1(role A, role B, role C, role D)
 //*/
 
 
-//*
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;  // Comment bad
+	1() from A to B;
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B)
 {
 	choice at A
@@ -78,7 +96,8 @@ explicit global protocol Proto1(role A, role B)
 	}
 	or
 	{
-		2() from A to B;  // FIXME: should be bad
+		2() from A to B;  // Bad: caught syntactically -- this blocked choice case won't manifest as an error state in the presence of a non-blocked co-case
+		// FIXME: could add implicit error actions (e.g. unconncted message passing) to model building, to make error states explicit
 	}
 }
 //*/
@@ -191,7 +210,7 @@ explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
 	1() from A to B;
-	//connect A to C;  // Comment bad
+	//connect A to C;  // Uncomment OK
 	2() from A to C;
 }
 //*/

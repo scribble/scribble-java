@@ -11,6 +11,7 @@ import org.scribble.sesstype.name.RecVar;
 public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 {
 	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL }
+			// FIXME: distinguish connection and message transfer
 	
 	/*private static int count = 0;
 	

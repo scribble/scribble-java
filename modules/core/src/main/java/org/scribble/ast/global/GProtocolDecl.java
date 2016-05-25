@@ -18,6 +18,8 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 {
 	public static enum Modifiers { EXPLICIT }  // FIXME: factor out?  Header?
 
+	// FIXME: project modifiers to locals
+	// FIXME: lookup routines, e.g. isExplicit
 	public final List<Modifiers> modifiers;
 	
 	public GProtocolDecl(List<Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)

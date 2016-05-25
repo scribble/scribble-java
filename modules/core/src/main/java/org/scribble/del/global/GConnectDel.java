@@ -45,7 +45,13 @@ public class GConnectDel extends ConnectDel implements GSimpleInteractionNodeDel
 		//for (Role dest : gc.getDestinationRoles())
 		Role dest = gc.dest.toName();
 		{
-			env = env.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));
+			if (env.isConnected(src, dest))
+			{
+				throw new ScribbleException("Roles already connected: " + src + ", " + dest);
+			}
+			env = env
+					.connect(src, dest)
+					.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));
 		}
 		checker.pushEnv(env);
 		return gc;

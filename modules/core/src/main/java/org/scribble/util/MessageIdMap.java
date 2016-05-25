@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
@@ -32,7 +31,7 @@ public class MessageIdMap
 		}
 	}
 	
-	public void merge(MessageIdMap map)
+	/*public void merge(MessageIdMap map)
 	{
 		for (Role dest : map.getDestinations())
 		{
@@ -41,7 +40,7 @@ public class MessageIdMap
 				putMessages(dest, src, map.getMessages(dest, src));
 			}
 		}
-	}
+	}*/
 
 	public void putMessage(Role dest, Role src, MessageId<?> msg)
 	{
@@ -75,12 +74,12 @@ public class MessageIdMap
 		return this.map.containsKey(dest) ? this.map.get(dest).keySet() : Collections.emptySet();
 	}
 	
-	public Set<Role> getAllSources()
+	/*public Set<Role> getAllSources()
 	{
 		Set<Role> srcs = new HashSet<>();
 		this.map.keySet().forEach((dest) -> srcs.addAll(this.map.get(dest).keySet()));
 		return srcs;
-	}
+	}*/
 	
 	public Set<MessageId<?>> getMessages(Role dest, Role src)
 	{
@@ -99,10 +98,10 @@ public class MessageIdMap
 		return this.map.keySet().contains(dest) && this.map.get(dest).containsKey(src);
 	}
 
-	public boolean containsMessageSignature(Role dest, Role src, Message msg)
+	/*public boolean containsMessageSignature(Role dest, Role src, Message msg)
 	{
 		return containsRolePair(dest, src) && getMessages(dest, src).contains(msg);
-	}
+	}*/
 	
 	public void clear()
 	{
