@@ -166,9 +166,9 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GProtocolDecl GProtocolDecl(GProtocolHeader header, GProtocolDef def)
+	public GProtocolDecl GProtocolDecl(List<GProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def)
 	{
-		GProtocolDecl gpd = new GProtocolDecl(header, def);
+		GProtocolDecl gpd = new GProtocolDecl(modifiers, header, def);
 		gpd = del(gpd, new GProtocolDeclDel());
 		return gpd;
 	}

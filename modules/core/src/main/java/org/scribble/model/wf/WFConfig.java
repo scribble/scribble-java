@@ -28,7 +28,7 @@ public class WFConfig
 		//this.buffs = Collections.unmodifiableMap(buff);
 		this.buffs = buffs;
 	}
-	
+
 	// Means successful termination
 	public boolean isEnd()
 	{

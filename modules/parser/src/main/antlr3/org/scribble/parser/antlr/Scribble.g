@@ -28,6 +28,7 @@ tokens
 	PROTOCOLKW = 'protocol';
 	GLOBALKW = 'global';
 	LOCALKW = 'local';
+	EXPLICITKW = 'explicit';
 	ROLEKW = 'role';
 	CONNECTKW = 'connect';
 	ACCEPTKW = 'accept';
@@ -441,6 +442,10 @@ globalprotocoldecl:
 	 globalprotocolheader globalprotocoldefinition
 	->
 	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition)
+|
+	 EXPLICITKW globalprotocolheader globalprotocoldefinition  // HACK (implicit MP connection backwards compat)
+	 ->
+	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition EXPLICITKW)
 ;
 
 globalprotocolheader:

@@ -63,7 +63,7 @@ public interface AstFactory
 	MessageSigNameDecl MessageSigNameDecl(String schema, String extName, String source, MessageSigNameNode name);
 	DataTypeDecl DataTypeDecl(String schema, String extName, String source, DataTypeNode name);
 
-	GProtocolDecl GProtocolDecl(GProtocolHeader header, GProtocolDef def);
+	GProtocolDecl GProtocolDecl(List<GProtocolDecl.Modifiers> modifiers, GProtocolHeader header, GProtocolDef def);
 	GProtocolHeader GProtocolHeader(GProtocolNameNode name, RoleDeclList roledecls, NonRoleParamDeclList paramdecls);
 
 	RoleDeclList RoleDeclList(List<RoleDecl> rds);

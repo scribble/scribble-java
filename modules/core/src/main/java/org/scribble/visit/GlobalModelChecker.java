@@ -104,7 +104,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			fsms.put(self, fsm.init);
 		}
 			
-		WFConfig c0 = new WFConfig(fsms, new WFBuffers(fsms.keySet()));
+		WFBuffers b0 = new WFBuffers(fsms.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
+		WFConfig c0 = new WFConfig(fsms, b0);
 		WFState init = new WFState(c0);
 		
 		Set<WFState> seen = new HashSet<>();

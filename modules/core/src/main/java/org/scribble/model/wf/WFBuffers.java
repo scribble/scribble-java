@@ -19,6 +19,26 @@ public class WFBuffers
 	private final Map<Role, Map<Role, Boolean>> connected = new HashMap<>();
 	private final Map<Role, Map<Role, Send>> buffs = new HashMap<>();  // dest -> src -> msg
 
+	public WFBuffers(Set<Role> roles, boolean implicit)
+	{
+		this(roles);
+		if (implicit)
+		{
+			roles.forEach((k) -> 
+			{
+				HashMap<Role, Boolean> tmp = new HashMap<>();
+				this.connected.put(k, tmp);
+				roles.forEach((k2) -> 
+				{
+					if (!k.equals(k2))
+					{
+						tmp.put(k2, true);
+					}
+				});
+			});
+		}
+	}
+
 	public WFBuffers(Set<Role> roles)
 	{
 		// FIXME: do the same for connected

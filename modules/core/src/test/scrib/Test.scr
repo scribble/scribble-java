@@ -20,7 +20,8 @@ type <java> "java.lang.int" from "rt.jar" as int;
 
 
 //*
-global protocol Proto1(role A, role B, role C)
+explicit global protocol Proto1(role A, role B, role C)
+//global protocol Proto1(role A, role B, role C)
 //global protocol Proto1(role A, role B)
 {
 	connect A to B;
