@@ -24,7 +24,8 @@ type <java> "java.lang.int" from "rt.jar" as int;
 
 	// FIXME: consider implicit error actions (e.g. unconncted message passing) to model building (in addition to good acceptable actions), to make error states explicit
 
-/*
+
+//*
 explicit global protocol Proto1(role A, role B)
 {
 	rec X

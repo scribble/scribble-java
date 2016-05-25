@@ -201,6 +201,7 @@ public class WFBuffers
 	{
 		int hash = 131;
 		hash = 31 * hash + this.buffs.hashCode();
+		hash = 31 * hash + this.connected.hashCode();
 		return hash;
 	}
 
@@ -216,7 +217,7 @@ public class WFBuffers
 			return false;
 		}
 		WFBuffers b = (WFBuffers) o;
-		return this.buffs.equals(b.buffs);
+		return this.buffs.equals(b.buffs) && this.connected.equals(b.connected);
 	}
 	
 	@Override
