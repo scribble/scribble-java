@@ -19,16 +19,17 @@ type <java> "java.lang.int" from "rt.jar" as int;
 //.. choice subject enabling needed for non-mixed states
 
 
-//*
+/*
 explicit global protocol Proto1(role A, role B, role C)
 //global protocol Proto1(role A, role B, role C)
 //global protocol Proto1(role A, role B)
 {
 	connect A to B;
 	/*1() from A to B;
-	2() from B to A;*/
+	2() from B to A;* /
 	choice at A
 	{
+		connect A to B;
 		1() from A to B;
 		rec X {
 		connect B to C;
@@ -38,12 +39,159 @@ explicit global protocol Proto1(role A, role B, role C)
 	}
 	or
 	{
-		//connect A to B;
+		connect A to B;
 		2() from A to B;
 
 		//..FIXME: need disconnect
 		//..FIXME: update model error to check if (dis)connected -- reset EFSM on disconnect
 	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	1() from A to B;  // FIXME: should be immediately bad -- either incorporate into enabling or by explicit model check error
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C, role D)
+{
+	connect A to B;
+	1() from A to B;
+	1() from C to D;  // FIXME: should be immediately bad
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		connect A to B;
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;  // FIXME: should be bad
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		connect A to B;
+		1() from A to B;
+	}
+	or
+	{
+		connect A to B;
+		2() from A to B;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	// Good
+	connect A to B;
+	choice at B
+	{
+		1() from B to A;
+	}
+	or
+	{
+		2() from B to A;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at B
+	{
+		connect A to B;  // Bad
+		1() from B to A;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		connect A to B;
+		1() from B to A;  // Good
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	choice at B  // Good
+	{
+		1() from B to A;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		rec X
+		{
+			connect B to C;
+			1() from B to C;
+			//continue X;  // Uncomment bad
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	//connect A to B;  // Uncomment bad
+	//connect B to A;  // Uncomment bad
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	1() from A to B;
+	//connect A to C;  // Comment bad
+	2() from A to C;
 }
 //*/
 

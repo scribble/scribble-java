@@ -5,11 +5,15 @@ import org.scribble.ast.global.GConnect;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.ConnectDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.sesstype.MessageSig;
+import org.scribble.sesstype.Payload;
+import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.env.WFChoiceEnv;
 
 public class GConnectDel extends ConnectDel implements GSimpleInteractionNodeDel
 {
@@ -37,12 +41,13 @@ public class GConnectDel extends ConnectDel implements GSimpleInteractionNodeDel
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
-		/*WFChoiceEnv env = checker.popEnv();
-		for (Role dest : gc.getDestinationRoles())
+		WFChoiceEnv env = checker.popEnv();
+		//for (Role dest : gc.getDestinationRoles())
+		Role dest = gc.dest.toName();
 		{
-			env = env.addMessage(src, dest, msg);
+			env = env.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));
 		}
-		checker.pushEnv(env);*/
+		checker.pushEnv(env);
 		return gc;
 	}
 
