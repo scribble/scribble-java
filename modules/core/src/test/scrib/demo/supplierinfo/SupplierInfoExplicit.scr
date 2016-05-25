@@ -38,6 +38,7 @@ explicit global protocol PartnershipSupplier(
 	}
 }
 
+
 aux global protocol Main(
 		role requestor,
 		role authorisersvc,
@@ -50,47 +51,59 @@ aux global protocol Main(
 		// GET SUPPLIER INFO
 		getsuppliers(uuid) from requestor to authorisersvc;
 		//1() from authorisersvc to contractsvc;  // FIXME: big state explosion?
-		//do SuppInfo(requestor, authorisersvc, filtersvc, suppliersvc);  // FIXME: non-WF subprotocol
-		choice at authorisersvc
-		{
-			// DENIED
-			deny() from authorisersvc to requestor;
-		}
-		or
-		{
-			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
-			getsuppliers() from authorisersvc to suppliersvc;
-			do FilterInfo
-					<filterSupplier(usercontext, filters, supplierdetails)>
-					(authorisersvc, filtersvc);
-			suppliers() from suppliersvc to authorisersvc;
-			suppliers() from authorisersvc to requestor;
-		}
+		do SuppInfo(requestor, authorisersvc, filtersvc, suppliersvc);
 	}
 	or
 	{
 		// GET CONTRACT INFO
 		getcontracts() from requestor to authorisersvc;
 		//2() from authorisersvc to suppliersvc;
-		choice at authorisersvc
-		{
-			// DENIED
-			deny() from authorisersvc to requestor;
-		}
-		or
-		{
-			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
-			getcontracts() from authorisersvc to contractsvc;
-			suppliers() from contractsvc to authorisersvc;
-			do FilterInfo
-					<filterContract(usercontext, filters, contractdetails)>
-					(authorisersvc, filtersvc);
-			contracts() from authorisersvc to requestor;
-		}
+		do ContractInfo(requestor, authorisersvc, filtersvc, contractsvc);
+		//do ContractInfo(requestor, authorisersvc, filtersvc, suppliersvc);  // Error
 	}
-
 	do Main(requestor, authorisersvc, filtersvc, suppliersvc, contractsvc);
 }
+
+
+aux global protocol SuppInfo(requestor, authorisersvc, filtersvc, suppliersvc)
+{
+	choice at authorisersvc
+	{
+		// DENIED
+		deny() from authorisersvc to requestor;
+	}
+	or
+	{
+		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+		getsuppliers() from authorisersvc to suppliersvc;
+		do FilterInfo
+				<filterSupplier(usercontext, filters, supplierdetails)>
+				(authorisersvc, filtersvc);
+		suppliers() from suppliersvc to authorisersvc;
+		suppliers() from authorisersvc to requestor;
+	}
+}
+
+
+aux global protocol ContractInfo(requestor, authorisersvc, filtersvc, contractsvc)
+{
+	choice at authorisersvc
+	{
+		// DENIED
+		deny() from authorisersvc to requestor;
+	}
+	or
+	{
+		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
+		getcontracts() from authorisersvc to contractsvc;
+		suppliers() from contractsvc to authorisersvc;
+		do FilterInfo
+				<filterContract(usercontext, filters, contractdetails)>
+				(authorisersvc, filtersvc);
+		contracts() from authorisersvc to requestor;
+	}
+}
+
 
 //aux global protocol FilterInfo<type details>(  // Bad non-det. payload
 aux global protocol FilterInfo<sig Query>(
