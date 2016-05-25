@@ -82,7 +82,6 @@ public abstract class GIOAction extends ModelAction<Global>
 		}
 	}*/
 	
-
 	@Override
 	public String toString()
 	{

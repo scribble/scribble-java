@@ -38,7 +38,7 @@ explicit global protocol PartnershipSupplier(
 	}
 }
 
-global protocol Main(
+aux global protocol Main(
 		role requestor,
 		role authorisersvc,
 		role filtersvc,
@@ -60,6 +60,7 @@ global protocol Main(
 		{
 			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 			getsuppliers() from authorisersvc to suppliersvc;
+			1() from authorisersvc to contractsvc;
 			do FilterInfo<supplierdetails>(authorisersvc, filtersvc);
 			suppliers() from suppliersvc to authorisersvc;
 			suppliers() from authorisersvc to requestor;
@@ -70,30 +71,34 @@ global protocol Main(
 		// GET CONTRACT INFO
 		getcontracts() from requestor to authorisersvc;
 		//2() from authorisersvc to suppliersvc;
-		choice at authorisersvc
+		/*choice at authorisersvc
 		{
 			// DENIED
 			deny() from authorisersvc to requestor;
 		}
 		or
-		{
+		{*/
 			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 			getcontracts() from authorisersvc to contractsvc;
 			suppliers() from contractsvc to authorisersvc;
 			do FilterInfo<contractdetails>(authorisersvc, filtersvc);
 			contracts() from authorisersvc to requestor;
-		}
+		//}
 	}
 
 	do Main(requestor, authorisersvc, filtersvc, suppliersvc, contractsvc);
 }
 
-global protocol FilterInfo<type details>(
+aux global protocol FilterInfo<type details>(
 		role authorisersvc,
 		role filtersvc)
 {
-			filter(usercontext, filters, details) from authorisersvc to filtersvc;
-			filtered() from filtersvc to authorisersvc;
+	//connect authorisersvc to filtersvc;  // "Choice by payload" issue
+	// FIXME: should be bad: filtersvc doesn't know which payload to receive
+	// Solutions: parameterise on sig, or conflate payload types
+	filter(usercontext, filters, details) from authorisersvc to filtersvc;
+	filtered() from filtersvc to authorisersvc;
+	//disconnect authorisersvc and filtersvc;
 }
 
 

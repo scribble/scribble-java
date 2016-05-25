@@ -29,6 +29,7 @@ tokens
 	GLOBALKW = 'global';
 	LOCALKW = 'local';
 	EXPLICITKW = 'explicit';
+	AUXKW = 'aux';
 	ROLEKW = 'role';
 	ACCEPTKW = 'accept';
 	SELFKW = 'self';
@@ -113,6 +114,7 @@ tokens
 	ROLEINSTANTIATION = 'role-instantiation';  // FIXME: not consistent with arginstas/payloadeles
 
 	GLOBALPROTOCOLDECL = 'global-protocol-decl';
+	GLOBALPROTOCOLDECLMODS = 'global-protocol-decl-mods'
 	GLOBALPROTOCOLHEADER = 'global-protocol-header';
 	GLOBALPROTOCOLDEF = 'global-protocol-def';
 	GLOBALPROTOCOLBLOCK = 'global-protocol-block';
@@ -441,13 +443,27 @@ protocoldecl:
  * Section 3.7 Global Protocol Declarations
  */
 globalprotocoldecl:
-	 globalprotocolheader globalprotocoldefinition
+	  globalprotocolheader globalprotocoldefinition
 	->
-	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition)
+	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition )
 |
-	 EXPLICITKW globalprotocolheader globalprotocoldefinition  // HACK (implicit MP connection backwards compat)
+	 globalprotocoldeclmodifiers globalprotocolheader globalprotocoldefinition  // HACK (implicit MP connection backwards compat)
 	 ->
-	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition EXPLICITKW)
+	^(GLOBALPROTOCOLDECL globalprotocolheader globalprotocoldefinition globalprotocoldeclmodifiers )
+;
+	
+globalprotocoldeclmodifiers:
+	AUXKW EXPLICITKW 
+	->
+	^( GLOBALPROTOCOLDECLMODS AUXKW EXPLICITKW )
+|
+	EXPLICITKW
+	->
+	^( GLOBALPROTOCOLDECLMODS EXPLICITKW )
+|
+	AUXKW
+	->
+	^( GLOBALPROTOCOLDECLMODS AUXKW )
 ;
 
 globalprotocolheader:

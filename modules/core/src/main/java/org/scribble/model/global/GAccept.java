@@ -49,6 +49,7 @@ public class GAccept extends GIOAction
 	@Override
 	protected String getCommSymbol()
 	{
-		return "??";
+		//return "??";
+		return "<<-";
 	}
 }

@@ -16,8 +16,7 @@ import org.scribble.sesstype.name.ModuleName;
 // FIXME: visitChildren for modifiers
 public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 {
-	public static enum Modifiers { EXPLICIT }  // FIXME: factor out?  Header?
-	// AUX? (no WF checking as root)
+	public static enum Modifiers { EXPLICIT, AUX }  // FIXME: factor out?  Header?
 
 	// FIXME: project modifiers to locals
 	// FIXME: lookup routines, e.g. isExplicit
@@ -84,5 +83,15 @@ public class GProtocolDecl extends ProtocolDecl<Global> implements GNode
 	public Global getKind()
 	{
 		return GNode.super.getKind();
+	}
+	
+	public boolean isExplicitModifier()
+	{
+		return this.modifiers.contains(Modifiers.EXPLICIT);
+	}
+
+	public boolean isAuxModifier()
+	{
+		return this.modifiers.contains(Modifiers.AUX);
 	}
 }

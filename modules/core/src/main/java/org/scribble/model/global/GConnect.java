@@ -50,6 +50,7 @@ public class GConnect extends GIOAction
 	@Override
 	protected String getCommSymbol()
 	{
-		return "!!";
+		//return "!!";
+		return "->>";
 	}
 }

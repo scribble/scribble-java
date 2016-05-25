@@ -12,7 +12,7 @@
 module Test;
 
 
-type <java> "java.lang.int" from "rt.jar" as int;
+type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 //..don't need termination hack, just need to cut off state building on bad states -- no: it's needed (buffered message may be blocked now but valid later), or a terminal set analysis
@@ -26,8 +26,150 @@ type <java> "java.lang.int" from "rt.jar" as int;
 	// "A from B to C;"
 	// "a from A to B; A[a] from B to C;"
 
+	// Note: mixed explicit and non-explicit subprotocols
 
-//*
+
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1(Int1) from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1(Int2) from A to B;  // FIXME: payload shouldn't count for message ID
+													// Cf, -oldwf
+		3() from B to A;
+	}
+}
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at B
+	{
+		1() from B to A;
+		do Proto1Aux2<Int1>(A, C);
+	}
+	or
+	{
+		2() from B to A;
+		do Proto1Aux2<Int2>(A, C);
+	}
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux2<type T>(role A, role C)
+{
+	// Bad
+	connect A to C;
+	3(T) from A to C;
+	4() from C to A;
+	disconnect A and C;
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+explicit global protocol Proto1(role A, role B, role C)
+{
+	// Good by basic model checking, but..
+	connect A to B;
+	connect A to C;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at B
+	{
+		1() from B to A;
+		do Proto1Aux2<Int1>(A, C);  // FIXME: ..should be bad, only message ids important
+	}
+	or
+	{
+		2() from B to A;
+		do Proto1Aux2<Int2>(A, C);
+	}
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux2<type T>(role A, role C)
+{
+	3(T) from A to C;
+	4() from C to A;
+}
+//*/
+
+
+/*
+// Good
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+
+explicit global protocol Proto1(role A, role B, role C)
+{
+	// Good
+	connect A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at B
+	{
+		1() from B to A;
+		do Proto1Aux2<Int1>(A, C);
+	}
+	or
+	{
+		2() from B to A;
+		do Proto1Aux2<Int1>(A, C);
+	}
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux2<type T>(role A, role C)
+{
+	connect A to C;
+	3(T) from A to C;
+	4() from C to A;
+	disconnect A and C;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect from A to B;
+	do Proto1Aux(A, B);
+}
+
+aux explicit global protocol Proto1Aux(role A, role B)
+{
+	1() from A to B;
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;

@@ -65,7 +65,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		{
 			if (child instanceof GProtocolDecl)
 			{
-				return visitOverrideForGProtocolDecl((Module) parent, (GProtocolDecl) child);
+				GProtocolDecl gpd = (GProtocolDecl) child;
+				return (gpd.isAuxModifier()) ? gpd : visitOverrideForGProtocolDecl((Module) parent, gpd);
 			}
 			else
 			{
