@@ -10,6 +10,7 @@ import java.util.Set;
 import org.scribble.model.global.GModelAction;
 import org.scribble.sesstype.name.Role;
 
+@Deprecated
 public class ModelEnv extends Env<ModelEnv>
 {
 	private Set<GModelAction> actions;

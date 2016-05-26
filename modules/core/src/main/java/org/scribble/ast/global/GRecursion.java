@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.Do;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ProtocolBlock;
 import org.scribble.ast.Recursion;
@@ -47,6 +48,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 	}
 
 	// Set should be unnecessary (singleton OK) -- *nested* irrelevant continues should already have been pruned
+	// FIXME: refactor and separate into dels?
 	private static LProtocolBlock prune(LProtocolBlock block, Set<RecVar> rvs)
 	{
 		if (block.isEmpty())
@@ -74,7 +76,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 					return block;
 				}
 			}
-			else if (lin instanceof MessageTransfer<?>)
+			else if (lin instanceof MessageTransfer<?> || lin instanceof Do<?>)
 			{
 				return block;
 			}

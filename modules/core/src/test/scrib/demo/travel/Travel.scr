@@ -43,14 +43,14 @@ explicit global protocol BookingExp(role C, role A, role S)
 
 aux global protocol BookingExpAux(role C, role A, role S)
 {
-	rec X
+	rec X  // Ignore
 	{
 		choice at C
 		{
 			Query(String) from C to A;
 			Quote(Int) from A to C;
-			continue X;
-			//do BookingExpAux(C, A, S);  // FIXME: should be OK, but not supported by local choice subject inference
+			//continue X;
+			do BookingExpAux(C, A, S);  // FIXME: should be OK, but not supported by local choice subject inference
 		}
 		or
 		{

@@ -47,7 +47,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		super(job);
 	}
 	
-	// Pushes a subprotocol signature
+	// Pushes a subprotocol signature (i.e. on root entry)
 	protected void enterRootProtocolDecl(ProtocolDecl<?> pd)
 	{
 		Map<Role, RoleNode> rolemap = makeRootRoleSubsMap(pd.header.roledecls);
@@ -87,7 +87,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	}
 	
 	// The Do node itself is no longer visited -- FIXME: projection needs to visit it -- no: that's in enter/leave, visited means "visit children"
-	private Do<?> visitOverrideForDo(ScribNode parent, Do<?> doo) throws ScribbleException
+	protected Do<?> visitOverrideForDo(ScribNode parent, Do<?> doo) throws ScribbleException
 	{
 		if (!isCycle())
 		{

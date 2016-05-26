@@ -2,15 +2,16 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.GlobalModelChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.GlobalModelBuilder;
+import org.scribble.visit.GlobalModelChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.MessageIdCollector;
 import org.scribble.visit.ModuleContextBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProjectedRoleDeclFixer;
+import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
@@ -206,6 +207,16 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveCompatCheck(ScribNode parent, ScribNode child, GlobalModelChecker coll, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+	
+	default void enterProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

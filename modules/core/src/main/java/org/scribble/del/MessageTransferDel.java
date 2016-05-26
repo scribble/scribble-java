@@ -30,7 +30,7 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.popEnv();
-		env = env.noUnfold();
+		env = env.disableUnfold();
 		unf.pushEnv(env);
 	}
 

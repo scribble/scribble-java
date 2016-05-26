@@ -3,6 +3,7 @@ package org.scribble.del.local;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionNode;
@@ -15,6 +16,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.visit.EndpointGraphBuilder;
+import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -104,5 +106,13 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		//conv.builder.setExit(exit);
 		conv.builder.setEntry(entry);
 		return child;	
+	}
+
+	@Override
+	public ScribNode leaveProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner, ScribNode visited) throws ScribbleException
+	{
+		LInteractionSeq lc = (LInteractionSeq) visited;
+		List<LInteractionNode> actions = lc.getInteractions().stream().filter((li) -> li != null).collect(Collectors.toList());
+		return lc.reconstruct(actions);
 	}
 }

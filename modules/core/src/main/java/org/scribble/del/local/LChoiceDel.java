@@ -16,6 +16,7 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -104,5 +105,17 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 			throw new RuntimeException("Shouldn't get in here: " + e);
 		}
 		return child;
+	}
+
+	@Override
+	public ScribNode leaveProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner, ScribNode visited) throws ScribbleException
+	{
+		LChoice lc = (LChoice) visited;
+		List<LProtocolBlock> blocks = lc.getBlocks().stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
+		if (blocks.isEmpty())
+		{
+			return null;
+		}
+		return lc.reconstruct(lc.subj, blocks);
 	}
 }

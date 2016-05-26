@@ -28,6 +28,7 @@ import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ProjectedRoleDeclFixer;
+import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -91,5 +92,18 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		List<RoleArg> ras = ld.roles.getDoArgs().stream().filter((ra) -> occs.contains(ra.val.toName())).collect(Collectors.toList());
 		RoleArgList roles = ld.roles.reconstruct(ras);
 		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, ld.reconstruct(roles, ld.args, ld.getProtocolNameNode()));
+	}
+	
+	@Override
+	public ScribNode leaveProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner, ScribNode visited) throws ScribbleException
+	{
+		if (pruner.isCycle())
+		{
+			//System.out.println("foo: " + pruner.peekEnv().shouldPrune());
+			
+			// FIXME: no good: we will side effect (only) the current root decl (due to SubprotocolVisitor discarding nested visited ASTs), and then the cycle doesn't exist any more when visiting the other decls in the the cycle
+			return null;
+		}
+		return visited;
 	}
 }

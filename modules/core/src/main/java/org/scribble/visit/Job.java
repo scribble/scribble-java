@@ -75,6 +75,7 @@ public class Job
 	private void runProjectionContextBuildingPasses() throws ScribbleException
 	{
 		runVisitorPassOnProjectedModules(ModuleContextBuilder.class);
+		runVisitorPassOnProjectedModules(ProjectedSubprotocolPruner.class);
 		// Disable ProjectedChoiceSubjectFixer (local choice subject inference) for more general global WF
 		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes to fix DUMMY role occurrences
 		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);

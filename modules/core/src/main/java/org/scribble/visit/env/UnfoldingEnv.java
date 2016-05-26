@@ -56,7 +56,7 @@ public class UnfoldingEnv extends Env<UnfoldingEnv>
 		return copy;
 	}
 	
-	public UnfoldingEnv noUnfold()
+	public UnfoldingEnv disableUnfold()
 	{	
 		UnfoldingEnv copy = copy();
 		copy.shouldUnfold = false;
