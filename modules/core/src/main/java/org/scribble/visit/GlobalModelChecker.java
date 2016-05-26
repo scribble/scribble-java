@@ -22,9 +22,12 @@ import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
+import org.scribble.model.local.Receive;
+import org.scribble.model.local.Send;
 import org.scribble.model.wf.WFBuffers;
 import org.scribble.model.wf.WFConfig;
 import org.scribble.model.wf.WFState;
+import org.scribble.model.wf.WFStateErrors;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
@@ -101,7 +104,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			proj.accept(graph);  // Don't do on root decl, side effects job context
 			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 
-			//job.debugPrintln("EFSM for " + self + ":\n" + fsm);
+			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + fsm);
 			
 			fsms.put(self, fsm.init);
 		}
@@ -204,6 +207,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 
 		/*Set<WFState> terms = init.findTerminalStates();
 		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());*/
+		/*
 		Set<WFState> errors = all.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
 		if (!errors.isEmpty())
 		{
@@ -212,11 +216,34 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
 				//List <GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
 				List<GIOAction> trace = getTrace(init, error, reach);
-				errorMsg += "\nSafety violation at " + error.toString() + ":\ntrace=" + trace;
+				errorMsg += "\nSafety violation at " + error.toString() + ":\n  trace=" + trace;
 			}
-			//throw new ScribbleException(init.toDot() + "\nSafety violations:" + e);
-			//e = "\nSafety violations:" + e;
+		//throw new ScribbleException(init.toDot() + "\nSafety violations:" + e);
+		//e = "\nSafety violations:" + e;
 		}
+		/*/
+		for (WFState s : all)
+		{
+			WFStateErrors errors = s.getErrors();
+			if (!errors.isEmpty())
+			{
+				List<GIOAction> trace = getTrace(init, s, reach);
+				errorMsg += "\nSafety violation at " + s.toString() + ":\n  Trace=" + trace;
+			}
+			if (!errors.stuck.isEmpty())
+			{
+				errorMsg += "\n  Reception errors: " + errors.stuck;
+			}
+			if (!errors.deadlocks.isEmpty())
+			{
+				errorMsg += "\n  Deadlocks: " + errors.deadlocks;
+			}
+			if (!errors.orphans.isEmpty())
+			{
+				errorMsg += "\n  Orphan messages: " + errors.orphans;
+			}
+		}
+		//*/
 		
 		if (!job.noLiveness)
 		{
@@ -235,11 +262,11 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				checkTerminalSet(init, termset, safety, liveness);
 				if (!safety.isEmpty())
 				{
-					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n" + termset;
+					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n  " + termset;
 				}
 				if (!liveness.isEmpty())
 				{
-					errorMsg += "\nLiveness violation for " + liveness + " in terminal set:\n" + termset;
+					errorMsg += "\nLiveness violation for " + liveness + " in terminal set:\n  " + termset;
 				}
 			}
 		}

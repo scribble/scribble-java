@@ -29,9 +29,74 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// Note: mixed explicit and non-explicit subprotocols
 
 
+//*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;  // Bad: testing deadlock detection (input blocked -> terminated)
+		2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		rec X
+		{
+			// NB: not a liveness problem: A is already done by here
+			4() from B to C;
+			5() from C to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		//2() from A to B;  // Uncomment bad
+	}
+	or
+	{
+		1() from A to B;
+		rec X
+		{
+			connect B to C;
+			4() from B to C;
+			5() from C to B;
+			disconnect B and C;
+			continue X;
+		}
+	}
 }
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C, role D)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		1() from B to A;
+		connect B to C;
+		connect C to D;
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
+		connect B to D;
+		connect D to C;
+	}
+}
+//*/
 
 
 /*
