@@ -50,7 +50,7 @@ aux global protocol BookingExpAux(role C, role A, role S)
 			Query(String) from C to A;
 			Quote(Int) from A to C;
 			//continue X;
-			do BookingExpAux(C, A, S);  // FIXME: should be OK, but not supported by local choice subject inference
+			do BookingExpAux(C, A, S);
 		}
 		or
 		{

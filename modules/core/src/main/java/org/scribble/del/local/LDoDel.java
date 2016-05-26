@@ -98,18 +98,26 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	@Override
 	public ScribNode leaveProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner, ScribNode visited) throws ScribbleException
 	{
-		ProjectedSubprotocolPruningEnv env = pruner.popEnv();
-		if (env.shouldPrune() && !pruner.isCycle())
+		/*if (pruner.peekEnv().shouldPrune() && pruner.isCycle())
 		{
+			ProjectedSubprotocolPruningEnv env = pruner.popEnv();
 			env = env.disablePrune();
-		}
-		pruner.pushEnv(env);
-			
-		// FIXME: no good: we will side effect (only) the current root decl (due to SubprotocolVisitor discarding nested visited ASTs), and then the cycle doesn't exist any more when visiting the other decls in the the cycle
-		if (env.shouldPrune())
-		{
+
+			System.out.println("bbb: " + child);
+
+			pruner.pushEnv(env);
+			// FIXME: no good: we will side effect (only) the current root decl (due to SubprotocolVisitor discarding visited subprotocol ASTs)
+			// So for mutual protocol decl cycles, none will retain the pruning AST change (and then the cycle won't exist any more when visiting the other decls in the the cycle)
 			return null;
-		}
+		}*/
+		
+		
+		// for each do: check shouldPrune condition by following the control flow: if terminates or cycles with no actions then prune
+		// Let the main pruning visitor be a regular visitor, and use the subprotocol visitor to follow the calls for pruning analysis
+		
+		/*LDo child = (LDo) child;
+		getTargetProtocolDecl(jc, mc).getDef().getBlock();*/
+		
 		return visited;
 	}
 }

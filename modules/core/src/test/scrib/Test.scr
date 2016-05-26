@@ -27,8 +27,69 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	1() from A to B;
+	do Proto1Aux1(A, B, C);
+}
 
-//*
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	do Proto1Aux2(A, B, C);
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		2() from A to B;
+		do Proto1Aux1(A, B, C);
+	}
+	or
+	{
+		3() from A to B;
+		connect B to C;
+		4() from B to C;
+	}
+}
+//*/
+
+
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	1() from A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	() from A to B;
+	//() from B to C;
+	do Proto1Aux2(A, B, C);
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		2() from A to B;
+		do Proto1Aux1(A, B, C);  // FIXME: bug due to no C on this path
+		//do Proto1Aux2(A, B, C);
+	}
+	or
+	{
+		3() from A to B;
+		//connect B to C;
+		4() from B to C;
+	}
+}
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -40,7 +101,7 @@ aux global protocol Proto1Aux(role A, role B, role C)
 	choice at A
 	{
 		1() from A to B;
-		do Proto1Aux(A, B, C);  // FIXME: should be OK, but broken by local choice subject inference
+		do Proto1Aux(A, B, C);  // ProjectedSubprotocolPruner
 	}
 	or
 	{
