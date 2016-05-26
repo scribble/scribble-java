@@ -32,6 +32,7 @@ import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
+import org.scribble.visit.env.ProjectedSubprotocolPruningEnv;
 
 public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 {
@@ -97,11 +98,16 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	@Override
 	public ScribNode leaveProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner, ScribNode visited) throws ScribbleException
 	{
-		if (pruner.isCycle())
+		ProjectedSubprotocolPruningEnv env = pruner.popEnv();
+		if (env.shouldPrune() && !pruner.isCycle())
 		{
-			//System.out.println("foo: " + pruner.peekEnv().shouldPrune());
+			env = env.disablePrune();
+		}
+		pruner.pushEnv(env);
 			
-			// FIXME: no good: we will side effect (only) the current root decl (due to SubprotocolVisitor discarding nested visited ASTs), and then the cycle doesn't exist any more when visiting the other decls in the the cycle
+		// FIXME: no good: we will side effect (only) the current root decl (due to SubprotocolVisitor discarding nested visited ASTs), and then the cycle doesn't exist any more when visiting the other decls in the the cycle
+		if (env.shouldPrune())
+		{
 			return null;
 		}
 		return visited;
