@@ -16,7 +16,7 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 //..don't need termination hack, just need to cut off state building on bad states -- no: it's needed (buffered message may be blocked now but valid later), or a terminal set analysis
-//.. choice subject enabling needed for non-mixed states
+//.. choice subject enabling needed for non-mixed states -- although for one-slot asynchrony to work, it's just the A->B constructor: there's always syntactically at least one receiver, and any potential deadlock between parallel senders due to bounded buffer will be caught as the counterpart paralel receiver deadlock
 
 
 	// FIXME: consider implicit error actions (e.g. unconnected/non-enabled message passing) to model building (in addition to good acceptable actions), to make error states explicit

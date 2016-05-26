@@ -5,8 +5,10 @@ package org.scribble.main;
 //
 //.. analyse inlined unfolded for max buffer size -- no: one-slot buffer seems sufficient, given located choice
 //.. add term branches for infinite loops (termination hack), for checking mixed finite and infinite role behaviours (see Test.scr **TERM)
-//.. check role-based starvation/liveness (loop hack)
-//.. "introduces" should just work (dynamically add/remove buffer structures)
+//.. check role-based starvation/liveness (loop hack) -- no: terminal set analysis
+//.. "introduces" should just work (dynamically add/remove buffer structures) -- no: 
+//.. multicast: generalise model actions -- but how about asynchrony? introduce output buffers? -- output/input buffer intuition for "single-step" asynchrony
+//.. model checked assertion annotations -- and API gen
 //
 //.. global model actions
 //.. error state traces (and error process system)
@@ -15,6 +17,7 @@ package org.scribble.main;
 //.. option to return all errors or just the first
 //
 //.. integrate reachability check and graph building? or move reachability earlier? EFSM building now done before reachability pass
+
 
 
 /*
