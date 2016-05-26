@@ -19,6 +19,9 @@ package org.scribble.main;
 //.. integrate reachability check and graph building? or move reachability earlier? EFSM building now done before reachability pass
 
 
+//.. "semantic" test suite: e.g. looking for duplicate tests by global model
+//.. subcategorise tests by number of roles
+
 
 /*
 .. disallow self comm

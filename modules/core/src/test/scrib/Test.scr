@@ -16,20 +16,114 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 //..don't need termination hack, just need to cut off state building on bad states -- no: it's needed (buffered message may be blocked now but valid later), or a terminal set analysis
-//.. choice subject enabling needed for non-mixed states -- although for one-slot asynchrony to work, it's just the A->B constructor: there's always syntactically at least one receiver, and any potential deadlock between parallel senders due to bounded buffer will be caught as the counterpart paralel receiver deadlock
+//.. choice subject enabling needed for non-mixed states (inherently relevant to deadlock) -- although for one-slot asynchrony to work, it's just the A->B constructor: there's always syntactically at least one receiver, and any potential deadlock between parallel senders due to bounded buffer will be caught as the counterpart paralel receiver deadlock
 
 
-	// FIXME: consider implicit error actions (e.g. unconnected/non-enabled message passing) to model building (in addition to good acceptable actions), to make error states explicit
-	// FIXME: (re)connect/wrap, e.g. SMTP
+	// TODO: (re)connect/wrap, e.g. SMTP
 
-	// FIXME: "introduces" well-formedness?
-	// "A from B to C;"
-	// "a from A to B; A[a] from B to C;"
-
-	// Note: mixed explicit and non-explicit subprotocols
+	// TODO: "introduces" well-formedness?
+	// e.g. "A from B to C;"
+	// e.g. "a from A to B; A[a] from B to C;"
+	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
-//*
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X {
+		choice at A {
+			m1(Int) from A to B;
+			continue X;
+			//m4(int) from A to B;
+		} or {
+			m2(Int) from A to B;
+			//m3(int) from A to B;
+		}
+		1() from C to D;  // FIXME: wrong enabled check result
+	}
+	//*/
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			m2() from A to B;
+		}
+		m() from A to B;  // FIXME: graph building exception
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Proto1(A, B, C);  // FIXME: should be OK, but broken by local choice subject inference
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		m1() from A to B;
+		choice at A
+		{
+			continue X;  // Not pruned because not first statement in rec body
+			// Will be pruned if m1() is commented
+		}
+		or
+		{
+			m2() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;  // Liveness violation for C
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A
@@ -707,7 +801,7 @@ global protocol Proto1(role A, role B, role C, role D)
 	or
 	{
 		1() from A to B;
-		3() from B to A;  // A not safe
+		3() from B to A;  // A not safe (but not a terminal state)
 	}
 	rec X
 	{
@@ -788,7 +882,7 @@ global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		2() from B to C;  // FIXME: local choice subjects (syntax)
+		2() from B to C;  // FIXME: local choice subjects (syntax restriction)
 	}
 }
 //*/
@@ -1524,54 +1618,46 @@ global protocol Proto1(role A, role B)
 		3b() from A to B;
 	}
 }
-//*
+//*/
 
 
 /*
 global protocol Proto1(role p, role q, role r)
 {
-	
+	/*
 	choice at p {
 		l1() from p to q;
 		/*l3() from q to r;
-		l5() from r to p;* /
+		l5() from r to p;
+		//* /
 	} or {
 		l2() from p to q;
 		/*l4() from q to r;
-		l6() from r to p;* /
-	}	
-	l3() from q to r;
-	
-	/*rec X {
-		choice at A {
-			m1(int) from A to B;
-			continue X;
-			//m4(int) from A to B;
-		} or {
-			m2(int) from A to B;
-			//m3(int) from A to B;
-		}
-		//1() from C to D;  // FIXME?* /
+		l6() from r to p;
+		//* /
 	}
+	l3() from q to r;
 }
 //*/
 
 
-/*global protocol Proto1(role A, role B, role C)
+/*
+global protocol Proto1(role A, role B, role C)
 {
 	rec X
 	{
 		choice at A
 		{
-			1() from A to B;  // FIXME: no reception error, but deadlocked
+			1() from A to B;  // No reception error, but deadlocked
 			continue X;
-		}		
+		}
 		or
 		{
 			2() from A to C;
 		}
 	}
-}*/
+}
+//*/
 
 
 /*
@@ -1584,13 +1670,13 @@ global protocol Proto1(role A, role B, role C)
 			1() from A to B;
 			//1() from A to C;
 			continue X;
-		}	
-	}	
+		}
+	}
 	or
 	{
 		2() from A to B;
 		2() from A to C;  // FIXME: add deadlock freedom check -- actually "role liveness"?, could do on a global model (but maybe just syntactically by paths)
-	 }	
+	 }
 }
 //*/
 
@@ -1608,14 +1694,14 @@ global protocol Proto1(role A, role B, role C)
 		{
 			1() from A to C;
 			continue X;
-		}	
+		}
 		or
 		{
 			2() from A to B;
 			2() from A to C;
-		}	
+		}
 	}
-}	
+}
 //*/
 
 

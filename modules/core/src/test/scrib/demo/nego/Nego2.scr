@@ -11,7 +11,7 @@ global protocol Negotiate(role C, role P)
 	do NegotiateAux(P, C);
 }
 
-global protocol NegotiateAux(role A, role B)
+aux global protocol NegotiateAux(role A, role B)
 {
 	choice at A
 	{

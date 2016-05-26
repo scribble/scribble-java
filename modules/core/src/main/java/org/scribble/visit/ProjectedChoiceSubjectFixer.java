@@ -80,7 +80,7 @@ public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 	}
 }
 
-class RecVarRole extends Role // Hack
+class RecVarRole extends Role // HACK for unguarded continues -- but not actually needed?
 {
 	private static final long serialVersionUID = 1L;
 	

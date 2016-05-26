@@ -41,7 +41,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		else
 		{
 			subjs = subjs.stream()
-					.map((r) -> fixer.isRecVarRole(r) ? fixer.getChoiceSubject(new RecVar(r.toString())) : r)
+					.map((r) -> fixer.isRecVarRole(r) ? fixer.getChoiceSubject(new RecVar(r.toString())) : r)  // Never needed?
 					.collect(Collectors.toSet());
 		}
 		

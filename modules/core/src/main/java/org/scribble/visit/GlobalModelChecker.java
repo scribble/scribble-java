@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
@@ -22,8 +21,6 @@ import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Receive;
-import org.scribble.model.local.Send;
 import org.scribble.model.wf.WFBuffers;
 import org.scribble.model.wf.WFConfig;
 import org.scribble.model.wf.WFState;
@@ -357,10 +354,12 @@ public class GlobalModelChecker extends ModuleContextVisitor
 					{
 						liveness.add(r);
 					}
+					/*
+					// Should be obsolete given explicit reception error etc checking
 					else
 					{
 						safety.add(r);
-					}
+					}*/
 				}
 			}
 		}

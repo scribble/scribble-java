@@ -45,9 +45,9 @@ public class LContinue extends Continue<Local> implements LSimpleInteractionNode
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		//throw new RuntimeException("Shouldn't get in here: " + this);
 		//return new DummyProjectionRoleNode().toName();  // For e.g. rec X { 1() from A to B; choice at A { continue X; } or { 2() from A to B; } }
-		return fixer.createRecVarRole(this.recvar.toName());
+		return fixer.createRecVarRole(this.recvar.toName());  // Never used?
+		//return null;
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

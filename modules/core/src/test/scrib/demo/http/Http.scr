@@ -111,7 +111,7 @@ global protocol Http(role C, role S)
 	do Response(C, S);
 }
 
-global protocol Request(role C, role S)
+aux global protocol Request(role C, role S)
 {
 	choice at C
 	{
@@ -179,7 +179,7 @@ with  // finally?
 	BODY by C;
 }*/
 	
-global protocol Response(role C, role S)
+aux global protocol Response(role C, role S)
 {
 	HTTPV from S to C;  // HTTP/1.1
 	choice at S

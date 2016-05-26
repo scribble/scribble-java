@@ -46,7 +46,7 @@ global protocol Smtp(role S, role C)
 	do Ehlo(S, C);
 }
 
-global protocol Ehlo(role S, role C)
+aux global protocol Ehlo(role S, role C)
 {
 	choice at C
 	{
@@ -72,7 +72,7 @@ global protocol Ehlo(role S, role C)
 	}
 }
 
-global protocol StartTls(role S, role C)
+aux global protocol StartTls(role S, role C)
 {
 	choice at C
 	{
@@ -87,7 +87,7 @@ global protocol StartTls(role S, role C)
 	}
 }
 
-global protocol SecureEhlo(role S, role C)
+aux global protocol SecureEhlo(role S, role C)
 {
 	choice at C
 	{
@@ -112,7 +112,7 @@ global protocol SecureEhlo(role S, role C)
 	}
 }
 
-global protocol Auth(role S, role C)
+aux global protocol Auth(role S, role C)
 {
 	rec Y
 	{
@@ -138,7 +138,7 @@ global protocol Auth(role S, role C)
 	}
 }
 
-global protocol Mail(role S, role C)
+aux global protocol Mail(role S, role C)
 {
 	rec Z1
 	{

@@ -36,7 +36,9 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 		LRecursion projection = null;
 		Set<RecVar> rvs = new HashSet<>();
 		rvs.add(recvar.toName());
+		//System.out.println("\n111: " + block);
 		LProtocolBlock pruned = prune(block, rvs);
+		//System.out.println("\n222: " + pruned);
 		if (!pruned.isEmpty())
 		{
 			projection = AstFactoryImpl.FACTORY.LRecursion(recvar, pruned);
@@ -44,7 +46,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 		return projection;
 	}
 
-	// Set unnecessary -- nested irrelevant continues should already have been pruned
+	// Set should be unnecessary (singleton OK) -- *nested* irrelevant continues should already have been pruned
 	private static LProtocolBlock prune(LProtocolBlock block, Set<RecVar> rvs)
 	{
 		if (block.isEmpty())
@@ -58,11 +60,13 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 		}
 		else //if (lis.size() == 1)
 		{
+			// Only pruning if single statement body: if more than 1, must be some (non-empty?) statement before a continue -- cannot (shouldn't?) be a continue followed by some other statement due to reachability
 			LInteractionNode lin = lis.get(0);
 			if (lin instanceof LContinue)
 			{
 				if (rvs.contains(((LContinue) lin).recvar.toName()))
 				{
+					// FIXME: need equivalent for projection-irrelevant recursive-do in a protocoldecl
 					return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Collections.emptyList()));
 				}
 				else
