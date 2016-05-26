@@ -27,44 +27,6 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
-/*
-global protocol Proto1(role A, role B, role C, role D)
-{
-	rec X {
-		choice at A {
-			m1(Int) from A to B;
-			continue X;
-			//m4(int) from A to B;
-		} or {
-			m2(Int) from A to B;
-			//m3(int) from A to B;
-		}
-		1() from C to D;  // FIXME: wrong enabled check result
-	}
-	//*/
-}
-//*/
-
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			continue X;
-		}
-		or
-		{
-			m2() from A to B;
-		}
-		m() from A to B;  // FIXME: graph building exception
-	}
-}
-//*/
-
 
 /*
 global protocol Proto1(role A, role B, role C)
@@ -97,6 +59,25 @@ global protocol Proto1(role A, role B)
 		or
 		{
 			m2() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+		 	1() from A to B;  // Bad: orphans
 		}
 	}
 }
@@ -1120,6 +1101,31 @@ global protocol Proto1(role A, role B, role C)
 
 
 /*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		2() from B to C;
+		3() from B to C;
+		choice at A
+		{
+			4() from A to B;
+			continue X;
+		}
+		or
+		{
+			5() from A to B;
+			2() from B to C;  // Generates a non-det 2() to differen states, but OK?
+			3() from B to C;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	choice at A
@@ -1140,7 +1146,7 @@ global protocol Proto1(role A, role B, role C, role D)
 				or
 				{
 					() from C to A;
-					2() from C to D;  // FIXME: model checking either stuck or slow (should be an error, see above)
+					2() from C to D;  // Reception error (but OK if following is commented)
 					() from C to D;
 					continue X;
 				}
@@ -1152,6 +1158,32 @@ global protocol Proto1(role A, role B, role C, role D)
 		0() from A to B;
 		0() from B to C;
 		0() from C to D;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec X
+		{
+			2() from B to C;
+			choice at C
+			{
+				2() from C to A;
+				continue X;  // B not enabled -- FIXME: minimise test case
+			}
+			or
+			{
+				() from C to A;
+				() from C to D;
+				continue X;
+			}
+		}
 	}
 }
 //*/
@@ -1207,8 +1239,8 @@ global protocol Proto1(role A, role B, role C)
 		2() from A to B;
 		1() from B to C;  // Comment is bad
 	}
-	2() from C to B;* /
-	rec X  // FIXME: Good test
+	2() from C to B;*/
+	rec X
 	{
 		choice at A
 		{
@@ -1221,7 +1253,7 @@ global protocol Proto1(role A, role B, role C)
 			2() from A to B;
 			continue X;
 		}
-		//continue X; // FIXME: remove last edge
+		//continue X;
 	}
 }
 //*/
@@ -1730,8 +1762,8 @@ global protocol Proto1(role A, role B, role C)
 			2() from A to B;
 		}
 		4() from A to C;
-	}	
-}	
+	}
+}
 //*/
 
 
@@ -1747,14 +1779,14 @@ global protocol Proto1(role A, role B)
 			{
 				1() from A to B;
 				continue X;
-			}	
-		}	
+			}
+		}
 		or
 		{
 			2() from A to B;
-		}	
+		}
 	}
-}	
+}
 //*/
 
 
@@ -1776,7 +1808,7 @@ global protocol Proto1(role A, role B)
 		}
 	}
 	3() from A to B;
-}	
+}
 //*/
 
 
@@ -1796,14 +1828,14 @@ global protocol Proto1(role A, role B)
 			or
 			{
 				2() from A to B;
-			}	
+			}
 			or
 			{
 				continue Y;
 			}
-		}	
+		}
 	}
-}	
+}
 //*/
 
 
@@ -2229,9 +2261,9 @@ global protocol Proto1(role A, role B, role C)
 
 
 /*
-type <java> "java.lang.String" from "rt.jar" as String;  
+type <java> "java.lang.String" from "rt.jar" as String;
 
-global protocol ExchangeKeyPairs(role Alice, role Bob) {  
+global protocol ExchangeKeyPairs(role Alice, role Bob) {
 	FriendRequest_FirstHalf_APublicKey(String) from Alice to Bob;
 	FirstHalf_BPublicKey(String) from Bob to Alice;
 	SecondHalf_APublicKey(String) from Alice to Bob;

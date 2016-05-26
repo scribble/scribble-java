@@ -1,10 +1,4 @@
-//Raymond@HZHL3 ~/code/scribble-java/scribble-java
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/validation/src/test/scrib/src/ -validate Test
-
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/Test.scr
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr
-
-//$ bin/scribblec.sh modules/core/src/test/scrib/Test.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/
+//$ bin/scribblec.sh modules/core/src/test/scrib/Fixme.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/
 
 //http://sandbox.kidstrythisathome.com/erdos/
 
@@ -13,6 +7,28 @@ module Fixme;
 
 
 type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			//1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+		continue X;  // (FIXME: reachability error coming out as a graph building error)
+	}
+}
+//*/
+
 
 /*
 global protocol Proto1(role A, role B, role C, role D)
@@ -54,18 +70,28 @@ global protocol Proto1(role A, role B)
 
 
 /*
-global protocol Proto1(role A, role B, role C)
+global protocol Proto1(role B, role C, role D)
 {
-	choice at A
+	rec X
 	{
-		1() from A to B;
-		do Proto1(A, B, C);  // FIXME: should be OK, but broken by local choice subject inference
-	}
-	or
-	{
-		2() from A to B;
-		3() from B to C;
+		choice at B
+		{
+			1() from B to C;
+			choice at C
+			{
+				2() from C to B;
+				//4() from C to D;  // FIXME: graph building exception when commented
+				continue X;
+			}
+			or
+			{
+				3() from C to B;
+				4() from C to D;
+				continue X;
+			}
+		}
 	}
 }
 //*/
+
 
