@@ -1,45 +1,46 @@
 package org.scribble.visit;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.InteractionSeq;
 import org.scribble.ast.ProtocolBlock;
+import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GProtocolBlock;
 import org.scribble.ast.global.GRecursion;
 import org.scribble.ast.local.LChoice;
-import org.scribble.ast.local.LDo;
-import org.scribble.ast.local.LInteractionNode;
-import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
-import org.scribble.del.ModuleDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
+import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 
-// Cf. InlinedProtocolUnfolder
-//public class ProjectedSubprotocolPruner extends SubprotocolVisitor<ProjectedSubprotocolPruningEnv>
-public class ProjectedSubprotocolPruner extends ModuleContextVisitor
+// FIXME: naming: not just recursive subprotocols, but in generally unused roles in subprotocols
+public class ChoiceUnguardedSubprotocolChecker extends SubprotocolVisitor<ChoiceUnguardedSubprotocolEnv>
+//public class ChoiceUnguardedSubprotocolChecker extends NoEnvSubprotocolVisitor
 {
 	public static final String DUMMY_REC_LABEL = "__";
 	
 	private Map<RecVar, Recursion<?>> recs = new HashMap<>();  // Could parameterise recvars to be global/local
 	private Set<RecVar> recsToUnfold = new HashSet<>();
 	
-	public ProjectedSubprotocolPruner(Job job)
+	private final LChoice cho;
+	
+	public boolean SHOULD_PRUNE = false;
+
+	public ChoiceUnguardedSubprotocolChecker(Job job, ModuleContext mcontext, LChoice cho)
 	{
 		super(job);
+		setModuleContext(mcontext);
+		this.cho = cho;
 	}
 	
 	public boolean shouldUnfoldForUnguardedRec(RecVar rv)
@@ -47,7 +48,7 @@ public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 		return this.recsToUnfold.contains(rv);
 	}
 	
-	/*// Unguarded continues directly under choices need to be unfolded to make current graph building work (continue side effects GraphBuilder state to re-set entry to rec state -- which makes output dependent on choice block order, and can attach subsequent choice paths onto the rec state instead of the original choice state)
+	// Unguarded continues directly under choices need to be unfolded to make current graph building work (continue side effects GraphBuilder state to re-set entry to rec state -- which makes output dependent on choice block order, and can attach subsequent choice paths onto the rec state instead of the original choice state)
 	// Maybe fix this problem inside graph building rather than unfolding here (this unfolding is conservative -- not always needed for every unguarded continue) -- depends if it helps any other inlined passes?
 	public boolean isContinueUnguarded(RecVar rv)
 	{
@@ -55,40 +56,44 @@ public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 	}
 	
 	@Override
-	protected ProjectedSubprotocolPruningEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	protected ChoiceUnguardedSubprotocolEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
 	{
-		return new ProjectedSubprotocolPruningEnv();
-	}*/
+		return new ChoiceUnguardedSubprotocolEnv();
+	}
 
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		if (child instanceof LProtocolBlock && parent instanceof LChoice)
+		/*if (child instanceof LChoice)
 		{
-			LChoice lc = (LChoice) parent;
-			LProtocolBlock lb = (LProtocolBlock) child;
-			LInteractionSeq lis = lb.getInteractionSeq();
-			List<LInteractionNode> ins = lis.getInteractions();
-			if (ins.get(0) instanceof LDo)  // Unlike GRecursion.prune, to-prune "do" could be followed by a continuation?
+			
+			System.out.println("222a:\n" + child);
+			System.out.println("222b:\n" + this.cho);
+			System.out.println("222c:\n" + (child == this.cho));
+			
+			if (child == this.cho)
 			{
-		LDo ld = (LDo) ins.get(0);
-		LProtocolDecl lpd = ld.getTargetProtocolDecl(getJobContext(), getModuleContext());
-		
-		//System.out.println("111: " + ld);
-		
-		ChoiceUnguardedSubprotocolChecker checker = new ChoiceUnguardedSubprotocolChecker(getJob(),
-				//pruner.getModuleContext());
-				((ModuleDel)getJobContext().getModule(ld.proto.toName().getPrefix()).del()).getModuleContext(), lc);
-
-		lpd.accept(checker);
-				if (checker.SHOULD_PRUNE)
+				System.out.println("ABC: " + peekEnv().shouldPrune());
+				if (peekEnv().shouldPrune())
 				{
-					return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Collections.emptyList()));
+					this.SHOULD_PRUNE = true;
 				}
+				return child;
 			}
 		}
-		return super.visit(parent, child);
-		/*}
+		/*if (child instanceof Recursion)
+		{
+			if (peekEnv().shouldUnfold())
+			{
+				enter(parent, child);
+				ScribNode visited = unfold((Recursion<?>) child);
+				return leave(parent, child, visited);
+			}
+			else
+			{*/
+				return super.visit(parent, child);
+			/*}
+		}
 		else
 		{
 			ScribNode visited = super.visit(parent, child);
@@ -121,21 +126,17 @@ public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 	}
 	
 	@Override
-	//protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
-	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		//super.subprotocolEnter(parent, child);
-		super.enter(parent, child);
-		child.del().enterProjectedSubprotocolPruning(parent, child, this);
+		super.subprotocolEnter(parent, child);
+		child.del().enterChoiceUnguardedSubprotocolCheck(parent, child, this);
 	}
 	
 	@Override
-	//protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
-	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveProjectedSubprotocolPruning(parent, child, this, visited);
-		//return super.subprotocolLeave(parent, child, visited);
-		return super.leave(parent, child, visited);
+		visited = visited.del().leaveChoiceUnguardedSubprotocolCheck(parent, child, this, visited);
+		return super.subprotocolLeave(parent, child, visited);
 	}
 	
 	public Recursion<?> getRecVar(RecVar recvar)

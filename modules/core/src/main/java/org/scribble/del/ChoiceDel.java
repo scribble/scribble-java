@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
+import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 
 public abstract class ChoiceDel extends CompoundInteractionNodeDel
@@ -14,6 +16,17 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 	public ChoiceDel()
 	{
 
+	}
+
+	@Override
+	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
+	{
+		Choice<?> cho = (Choice<?>) visited;
+		List<ChoiceUnguardedSubprotocolEnv> benvs =
+				cho.getBlocks().stream().map((b) -> (ChoiceUnguardedSubprotocolEnv) b.del().env()).collect(Collectors.toList());
+		ChoiceUnguardedSubprotocolEnv merged = checker.popEnv().mergeContexts(benvs); 
+		checker.pushEnv(merged);
+		return (Choice<?>) super.leaveChoiceUnguardedSubprotocolCheck(parent, child, checker, cho);
 	}
 
 	@Override

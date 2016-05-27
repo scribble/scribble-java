@@ -15,7 +15,7 @@ import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.ProtocolDeclContextBuilder;
-import org.scribble.visit.env.ProjectedSubprotocolPruningEnv;
+import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 {
@@ -76,8 +76,8 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	@Override
 	public void enterProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner) throws ScribbleException
 	{
-		ProjectedSubprotocolPruningEnv env = pruner.peekEnv().enterContext();
+		/*ProjectedSubprotocolPruningEnv env = pruner.peekEnv().enterContext();
 		env = env.pushLProtocolDeclParent();
-		pruner.pushEnv(env);
+		pruner.pushEnv(env);*/
 	}
 }

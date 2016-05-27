@@ -19,6 +19,7 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
+import org.scribble.del.ModuleDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
@@ -26,13 +27,13 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ProjectedRoleDeclFixer;
 import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
-import org.scribble.visit.env.ProjectedSubprotocolPruningEnv;
 
 public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 {
@@ -79,7 +80,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		LProtocolDecl lpd = ld.getTargetProtocolDecl(fixer.getJobContext(), fixer.getModuleContext());
 		
 		// do role args are currently as inherited from the global type -- so need to derive role map against the global protocol header
-		// Doing it off the global roldecls allows this to be done in one pass, but would probably be easier to split into two (e.g. 1st cache the proposed changes, 2nd write all changes -- the problem with a single pass is e.g. looking up the localdecl info while localdecls are being rewritten during the pass)
+		// Doing it off the global roledecls allows this to be done in one pass, but would probably be easier to split into two (e.g. 1st cache the proposed changes, 2nd write all changes -- the problem with a single pass is e.g. looking up the localdecl info while localdecls are being rewritten during the pass)
 		// Could possibly factor out rolemap making with SubprotocolVisitor a bit, but there it maps to RoleNode and works off a root map
 		JobContext jcontext = fixer.getJobContext();
 		GProtocolName source = ((LProjectionDeclDel) lpd.del()).getSourceProtocol();
@@ -95,6 +96,20 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		return super.leaveProjectedRoleDeclFixing(parent, child, fixer, ld.reconstruct(roles, ld.args, ld.getProtocolNameNode()));
 	}
 	
+	@Override
+	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
+	{
+		if (checker.isCycle())
+		{
+			//System.out.println("ABC: " + checker.peekEnv().shouldPrune());
+			if (checker.peekEnv().shouldPrune())
+			{
+				checker.SHOULD_PRUNE = true;
+			}
+		}
+			return child;
+	}
+
 	@Override
 	public ScribNode leaveProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner, ScribNode visited) throws ScribbleException
 	{
@@ -114,6 +129,32 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		
 		// for each do: check shouldPrune condition by following the control flow: if terminates or cycles with no actions then prune
 		// Let the main pruning visitor be a regular visitor, and use the subprotocol visitor to follow the calls for pruning analysis
+		
+		//FIXME: maybe similar to project roledecl fixing?  use role occurrences saved in protocoldecl?
+		//		role occurrences collected by RoleCollector which is indeed subprotocol visitor
+		//		problem is RoleCollector currently comes after subject fixing... but maybe it doesn't need to collect subject roles in the end?  due to WF enabling checks?
+		
+		//..not role collection, that's a "may" usage of roles
+		//..should be: start from a candidate unguarded-do inside a choice: want to know if this choice case should be removed
+		//......follow protocol flow through do until either end or return to this choice, looking for actions
+		//		... but look only on direct path or across all branches?
+						
+		//...or else it should be: start from the target protocoldecl and go through to the candidate do (cf grecursion.prune)
+		
+		/*LDo ld = (LDo) visited;
+		LProtocolDecl lpd = ld.getTargetProtocolDecl(pruner.getJobContext(), pruner.getModuleContext());
+		
+		//Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences();
+		
+		System.out.println("111: " + ld);
+		
+		ChoiceUnguardedSubprotocolChecker checker = new ChoiceUnguardedSubprotocolChecker(pruner.getJob(),
+				//pruner.getModuleContext());
+				((ModuleDel)pruner.getJobContext().getModule(ld.proto.toName().getPrefix()).del()).getModuleContext());
+
+		lpd.accept(checker);*/
+		
+		//.stream().map( (r) -> rolemap.get(r)).collect(Collectors.toSet());
 		
 		/*LDo child = (LDo) child;
 		getTargetProtocolDecl(jc, mc).getDef().getBlock();*/

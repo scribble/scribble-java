@@ -2,6 +2,7 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.GlobalModelChecker;
@@ -11,6 +12,7 @@ import org.scribble.visit.ModuleContextBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProjectedRoleDeclFixer;
+import org.scribble.visit.ProjectedSubprotocolCleaner;
 import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDeclContextBuilder;
@@ -217,6 +219,26 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner coll, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+	
+	default void enterProjectedSubprotocolCleaning(ScribNode parent, ScribNode child, ProjectedSubprotocolCleaner cleaner) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveProjectedSubprotocolCleaning(ScribNode parent, ScribNode child, ProjectedSubprotocolCleaner cleaner, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+	
+	default void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

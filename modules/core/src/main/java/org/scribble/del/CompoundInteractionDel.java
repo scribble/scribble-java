@@ -2,6 +2,7 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.WFChoiceChecker;
 
@@ -11,6 +12,19 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 	public CompoundInteractionDel()
 	{
 
+	}
+
+	// Only wanted for locals, but doesn't hurt here
+	@Override
+	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	{
+		ScribDelBase.pushVisitorEnv(this, checker);
+	}
+
+	@Override
+	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
+	{
+		return ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
 	}
 
 	@Override

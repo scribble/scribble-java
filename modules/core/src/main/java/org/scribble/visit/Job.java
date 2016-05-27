@@ -75,11 +75,11 @@ public class Job
 	private void runProjectionContextBuildingPasses() throws ScribbleException
 	{
 		runVisitorPassOnProjectedModules(ModuleContextBuilder.class);
-		runVisitorPassOnProjectedModules(ProjectedSubprotocolPruner.class);
-		// Disable ProjectedChoiceSubjectFixer (local choice subject inference) for more general global WF
-		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes to fix DUMMY role occurrences
 		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);
 		runVisitorPassOnProjectedModules(RoleCollector.class);  // NOTE: doesn't collect from choice subjects (may be invalid until projected choice subjs fixed)
+		runVisitorPassOnProjectedModules(ProjectedSubprotocolPruner.class);
+		// Disable ProjectedChoiceSubjectFixer (local choice subject inference) for more general global WF
+		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes that need DUMMY role occurrences to be fixed
 		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version
 		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);

@@ -90,6 +90,12 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		LProtocolDecl lpd = project(proj, gpd);
 		Map<GProtocolName, Set<Role>> deps = ((GProtocolDeclDel) gpd.del()).getGlobalProtocolDependencies(self);
 		Module projected = ((ModuleDel) root.del()).createModuleForProjection(proj, root, lpd, deps);
+		
+		/*if (lpd.getHeader().name.toString().endsWith("_C"))
+		{
+			System.out.println("ZZZ:\n" + projected);
+		}*/
+		
 		proj.addProjection(gpd.getFullMemberName(root), self, projected);
 		return gpd;
 	}

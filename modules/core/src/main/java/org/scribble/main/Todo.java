@@ -1,6 +1,9 @@
 package org.scribble.main;
 
 
+// Generally: need framework to correlate source AST nodes to canonical/inlined/unfolded representations, so that analyses can do done on representations and corresponding transformations applied on the AST
+
+
 //.. Global model WF
 //
 //.. analyse inlined unfolded for max buffer size -- no: one-slot buffer seems sufficient, given located choice
