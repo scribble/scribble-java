@@ -67,6 +67,9 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 		}
 		else*/
 		{
+			
+			System.out.println("ddd: " + child);
+			
 			graph.builder.addEntryLabel(rv);
 			graph.builder.pushRecursionEntry(rv, graph.builder.getEntry());
 		}

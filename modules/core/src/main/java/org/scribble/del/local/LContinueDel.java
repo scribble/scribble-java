@@ -39,8 +39,12 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		{
 			IOAction a = graph.builder.getEnacting(rv);
 			List<EndpointState> ss = graph.builder.getRecursionEntry(rv).acceptAll(a);
+			//EndpointState s = graph.builder.getRecursionEntry(rv);
 			for (EndpointState s : ss)  // FIXME: produces non-det edges to different rec entries -- but equiv, do just pick 1?
 			{
+				
+				System.out.println("BBB: " + graph.builder.getEntry() + ", " + a + ", " + s);
+				
 				graph.builder.addEdge(graph.builder.getEntry(), a, s);
 			}
 			//graph.builder.addEdge(graph.builder.getEntry(), a, ss.get(0));  // FIXME: OK to just pick 1? -- maybe: but the original non-det choice before enacting the recursion is still there anyway

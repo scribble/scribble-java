@@ -51,6 +51,8 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	
 	public void addEntryLabel(RecVar lab)
 	{
+		System.out.println("CCC: " + this.entry + ", " + lab);
+		
 		this.entry.addLabel(lab);
 	}
 

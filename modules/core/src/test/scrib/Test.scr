@@ -27,6 +27,53 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
+global protocol Proto1(role B, role C)
+{
+	rec X
+	{
+		choice at B  // FIXME: multiple "enactings" for rec
+		{
+			3() from B to C;
+			choice at B
+			{
+				continue X;
+			}
+			or
+			{
+				6() from B to C;
+			}
+		}
+		or
+		{
+			4() from B to C;
+		}
+	}
+}
+
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	rec X
+	{
+		2() from A to B;
+		3() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			4() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	1() from A to B;
@@ -44,6 +91,7 @@ aux global protocol Proto1Aux1(role A, role B)
 		2() from A to B;
 	}
 }
+//*/
 
 
 /*
@@ -91,15 +139,14 @@ explicit global protocol Proto1(role A, role B, role C)
 
 aux global protocol Proto1Aux1(role A, role B, role C)
 {
+	// Should be BAD: complicated trace: B?3 C?3 B?5 B?3 C?3 B?5 B?4 C#4
 	choice at A
 	{
 		3() from A to B;
 		3() from B to C;
 		do Proto1Aux2(A, B, C);
 	}
-	or  // FIXME: pruning broken, but maybe should be? (subject inference infinite loop: detect and raise WF error?) -- also at some point got a safety violation, check if correct (maybe with these 4's)
-			// ** No: FIXME: graph building is wrong (projection/inlining look correct) -- an issue: different recs with the same subsig-recvar can have different available transitions (i.e. be non-compatible states)...
-			// FIXME: make a minimal example for this issue -- without role balancing for WF, protocol name + role config is not enough to identify a "unique" state any more -- need to verify this: aren't recursive subprotcols same as regular rec-continue, and why? (a problem of unguarded recs?)
+	or
 	{
 		4() from A to B;
 		4() from B to C;
@@ -112,7 +159,8 @@ aux global protocol Proto1Aux2(role A, role B, role C)
 	choice at A
 	{
 		5() from A to B;
-		do Proto1Aux1(A, B, C);
+		do Proto1Aux1(A, B, C);  // FIXME: graph building error:
+												// problem seems to be that the recorded enacting action for the recursion entry is part of a choice and enacting it implicitly commits to that choice (here: 3 is enacted, 4 is lost) -- is it an inlining/unfolding bug?
 		//do Proto1Aux2(A, B, C);
 	}
 	or
