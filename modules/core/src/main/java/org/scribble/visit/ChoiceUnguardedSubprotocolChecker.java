@@ -23,7 +23,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 
-// FIXME: naming: not just recursive subprotocols, but in generally unused roles in subprotocols
+// FIXME: refactor as a choice subject candidate collector (i.e. NameCollector -- thought that is an OffsetSubprotocolCollector, does that make a difference?)
 public class ChoiceUnguardedSubprotocolChecker extends SubprotocolVisitor<ChoiceUnguardedSubprotocolEnv>
 //public class ChoiceUnguardedSubprotocolChecker extends NoEnvSubprotocolVisitor
 {
@@ -32,7 +32,7 @@ public class ChoiceUnguardedSubprotocolChecker extends SubprotocolVisitor<Choice
 	private Map<RecVar, Recursion<?>> recs = new HashMap<>();  // Could parameterise recvars to be global/local
 	private Set<RecVar> recsToUnfold = new HashSet<>();
 	
-	private final LChoice cho;
+	//private final LChoice cho;  // Useless: subprotocovisitor visits a role-substituted clone
 	
 	public boolean SHOULD_PRUNE = false;
 	
@@ -42,7 +42,7 @@ public class ChoiceUnguardedSubprotocolChecker extends SubprotocolVisitor<Choice
 	{
 		super(job);
 		setModuleContext(mcontext);
-		this.cho = cho;
+		//this.cho = cho;
 	}
 	
 	public boolean shouldUnfoldForUnguardedRec(RecVar rv)

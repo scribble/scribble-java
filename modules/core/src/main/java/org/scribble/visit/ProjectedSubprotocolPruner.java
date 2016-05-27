@@ -1,6 +1,5 @@
 package org.scribble.visit;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +29,9 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 
-// Cf. InlinedProtocolUnfolder
-//public class ProjectedSubprotocolPruner extends SubprotocolVisitor<ProjectedSubprotocolPruningEnv>
+// Basically infers all local choice subject candidates: if *none* are found for a given "choice-unguarded" do-call then the call is pruned (along with parent block and choice as necessary)
+// i.e. prune if no choice subject candidates, because that means (passive) role is never enabled and thus not involved
+// FIXME: ambiguous choice subject (i.e. > 1 candidate) is checked subsequently by ProjectedChoiceSubjectFixer -- should be better integrated (e.g. reuse ChoiceUnguardedSubprotocolChecker, rather than adhoc LInteractionNode.inferLocalChoiceSubject) -- NOTE: but cannot do all pruning and fixing in one pass, as fixing the subject roles here will interfere with the pruning algorithm (currently it looks for dummy role choices)
 public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 {
 	public static final String DUMMY_REC_LABEL = "__";
@@ -86,11 +86,25 @@ public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 		
 			ChoiceUnguardedSubprotocolEnv env = (ChoiceUnguardedSubprotocolEnv) lpd.def.block.del().env();
 		
+			/*if (lpd.header.getDeclName().toString().endsWith("_suppliersvc"))
+			{
+				System.out.println("GGG: " + ld + ", " + env.subjs);
+			}*/
+				//System.out.println("GGG: " + ld + ", " + env.subjs + ", " + checker.SHOULD_PRUNE);
+
 				//if (checker.SHOULD_PRUNE)
-				if ((lc.subj instanceof DummyProjectionRoleNode) &&  env.subjs.isEmpty())
+				//if ((lc.subj instanceof DummyProjectionRoleNode) && env.subjs.isEmpty())
+				if ((lc.subj instanceof DummyProjectionRoleNode) && checker.SHOULD_PRUNE)
 				{
 					//System.out.println("GGG: " + ld + ", " + env.subjs);
-					return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Collections.emptyList()));
+					//if (ins.size() > 1)
+					{
+					return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(ins.subList(1, ins.size())));  // Supports singleton case
+					}
+					/*else
+					{
+						return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Collections.emptyList()));
+					}*/
 				}
 			}
 		}

@@ -75,9 +75,6 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 	{
 		ModuleContext mc = fixer.getModuleContext();
 		JobContext jc = fixer.getJobContext();
-		
-		//System.out.println("YYY:\n" + getTargetProtocolDecl(jc, mc));
-		
 		Role subj = getTargetProtocolDecl(jc, mc).getDef().getBlock()
 				.getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);
 		// FIXME: need equivalent of (e.g) rec X { continue X; } pruning (cf GRecursion.prune) for irrelevant recursive-do (e.g. proto(A, B, C) { choice at A {A->B.do Proto(A,B,C)} or {A->B.B->C} }))

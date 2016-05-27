@@ -13,7 +13,7 @@ public class ChoiceUnguardedSubprotocolEnv extends Env<ChoiceUnguardedSubprotoco
 {
 	private boolean shouldPrune;
 	
-	public Set<Role> subjs;
+	public Set<Role> subjs;  // If well-formed (including wrt. local choice syntax) should be a singleton: but this is currently checked in subsequent choice subject inference pass, not here
 	
 	public ChoiceUnguardedSubprotocolEnv()
 	{
@@ -52,7 +52,10 @@ public class ChoiceUnguardedSubprotocolEnv extends Env<ChoiceUnguardedSubprotoco
 		boolean merge = (envs.stream().filter((e) -> !e.shouldPrune).count() > 0);  // Look for false, cf. UnfoldingEnv
 		copy.shouldPrune = merge;
 		
-		copy.subjs = envs.stream().flatMap((e) -> e.subjs.stream()).collect(Collectors.toSet());
+		//copy.subjs = envs.stream().flatMap((e) -> e.subjs.stream()).collect(Collectors.toSet());
+		copy.subjs.addAll(envs.stream().flatMap((e) -> e.subjs.stream()).collect(Collectors.toSet()));
+		System.out.println("ddd1: " + envs);
+		System.out.println("ddd2: " + copy.subjs);
 		
 		return copy;
 	}
@@ -90,6 +93,6 @@ public class ChoiceUnguardedSubprotocolEnv extends Env<ChoiceUnguardedSubprotoco
 	@Override
 	public String toString()
 	{
-		return super.toString() + ": " + this.shouldPrune;
+		return super.toString() + ": " + this.subjs;
 	}
 }

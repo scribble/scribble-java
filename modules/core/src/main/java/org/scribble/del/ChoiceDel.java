@@ -18,6 +18,14 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 
 	}
 
+	/* // Not needed: just enters and pushes, done by base routine (only overwite if do extra stuff, like pushChoiceParent)
+	@Override
+	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	{
+		ChoiceUnguardedSubprotocolEnv env = checker.peekEnv().enterContext();
+		checker.pushEnv(env);
+	}*/
+
 	@Override
 	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
 	{
@@ -26,14 +34,14 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 				cho.getBlocks().stream().map((b) -> (ChoiceUnguardedSubprotocolEnv) b.del().env()).collect(Collectors.toList());
 		ChoiceUnguardedSubprotocolEnv merged = checker.popEnv().mergeContexts(benvs); 
 		checker.pushEnv(merged);
-		return (Choice<?>) super.leaveChoiceUnguardedSubprotocolCheck(parent, child, checker, cho);
+		return (Choice<?>) super.leaveChoiceUnguardedSubprotocolCheck(parent, child, checker, cho);  // done merge of children here, super does merge into parent
 	}
 
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.peekEnv().enterContext();
-		env = env.pushChoiceParent();
+		env = env.pushChoiceParent();  // Above is already a copy, but fine
 		unf.pushEnv(env);
 	}
 
@@ -45,6 +53,6 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 				cho.getBlocks().stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
 		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
 		unf.pushEnv(merged);
-		return (Choice<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);
+		return (Choice<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);  // done merge of children here, super does merge into parent	
 	}
 }

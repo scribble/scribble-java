@@ -33,6 +33,7 @@ import org.scribble.visit.ProjectedRoleDeclFixer;
 import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
+import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 import org.scribble.visit.env.InlineProtocolEnv;
 
 public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
@@ -99,11 +100,22 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	@Override
 	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
 	{
-		if (checker.isCycle())
+		//if (checker.isCycle())
+		if (checker.isRootedCycle())  // ChoiceUnguardedSubprotocolChecker is a (regular) SubprotocolVisitor which pushes a subprotosig on root decl entry (ProjectedSubprotocolPruner.visit)
+			                            // Check for "rooted" cycle to ensure it's specifically the cycle from the root proto decl (back) to the target do
+																	// FIXME: but cycle to specific "target do" is not ensured: could be another instance of a do with the same subprotosig... an inherent issue of the current subprotocolvisitor framework
+			
+			// FIXME: this algorithm works for some use cases for is still wrong (prunes some that it shouldn't -- e.g. mutually pruneable choice-unguarded do's)
+			// what we really need is to check for 0 inferred choice subjects up to recursion back (if any) to to the parent choice -- problem is current framework doesn't make identifying (e.g. ==) the original choice easy
+			// the issue is arising since WF was relaxed to allow unbalanced choice case roles: with balanced, subject inference is always fine as long as roles are used?
 		{
-			//System.out.println("ABC: " + checker.peekEnv().shouldPrune());
-			if (checker.peekEnv().shouldPrune())
+			//System.out.println("ABC: " + checker.peekEnv().subjs + ", " + checker.SHOULD_PRUNE);
+			
+			//if (checker.peekEnv().shouldPrune())
+			if (checker.peekEnv().subjs.isEmpty())
 			{
+				/*ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
+				checker.pushEnv(env.disablePrune());*/
 				checker.SHOULD_PRUNE = true;
 			}
 		}

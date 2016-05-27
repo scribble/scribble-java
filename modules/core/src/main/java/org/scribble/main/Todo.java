@@ -2,6 +2,7 @@ package org.scribble.main;
 
 
 // Generally: need framework to correlate source AST nodes to canonical/inlined/unfolded representations, so that analyses can do done on representations and corresponding transformations applied on the AST
+// e.g. keep a point to the corresponding original AST node in the cloned AST being visited  
 
 
 //.. Global model WF
@@ -22,6 +23,7 @@ package org.scribble.main;
 //.. integrate reachability check and graph building? or move reachability earlier? EFSM building now done before reachability pass
 
 
+// FIXME: ambiguous choice subject (i.e. > 1 candidate) is checked subsequently by ProjectedChoiceSubjectFixer -- should be better integrated (e.g. reuse ChoiceUnguardedSubprotocolChecker, rather than adhoc LInteractionNode.inferLocalChoiceSubject) -- NOTE: but cannot do all pruning and fixing in one pass, as fixing the subject roles here will interfere with the pruning algorithm (currently it looks for dummy role choices)
 //.. "semantic" test suite: e.g. looking for duplicate tests by global model
 //.. subcategorise tests by number of roles
 

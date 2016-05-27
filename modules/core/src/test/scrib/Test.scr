@@ -27,6 +27,87 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	do Proto1Aux(A, B, C);
+}
+
+aux global protocol Proto1Aux(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		connect B to C;
+		1() from B to C;
+		disconnect B and C;
+		do Proto1Aux(A, B, C);  // FIXME: guarded do has same subprotsig has an unguarded one (and ProjectedSubprotPruner is using subprotsigs...) -- but current problem is actually ambiguous connect enabling of C by B -- anyway to have explicit protocol with multiple instances of the same do-subprotsig with and without choice-guards?
+			// TODO: this doesn't just break subprot pruning, but affects whole subprot visiting framework because using current subprot "cycles" may not provide coverage of all "full recursive loops" (cf unfolding/unrolling all rec/continues) -- current framework gives coverage only if recursive subprots are only called from a single "location" -- maybe be fixable by generalising subprotsigs record more than just the immediate proto+args context -- luckily some analyses like enabling check are OK despite this
+			// basically: current subprotocolsigs do identify a common "state" entry, but cannot be used to identify "specific" cycle paths or "maximal recursion paths"
+	}
+	or
+	{
+		11() from A to B;
+		do Proto1Aux(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		connect B to C;
+		3() from B to C;
+	}
+}
+//*/
+
+
+//*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	1() from A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at A
+	{
+		3() from A to B;
+		//3() from B to C;
+		do Proto1Aux2(A, B, C);  // Testing mutually choice-unguarded "prunable" do's
+			// FIXME: pruning/inference broken again (whole protocoldecl incorrectly pruned for C)
+			// FIXME: check if safety violation is correct
+	}
+	//or
+	//{
+//		4() from A to B;
+//		4() from B to C;
+		//do Proto1Aux2(A, B, C);
+//	}
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		5() from A to B;
+		do Proto1Aux1(A, B, C);
+		//do Proto1Aux2(A, B, C);
+	}
+	or
+	{
+		6() from A to B;
+		//connect B to C;
+		6() from B to C;
+	}
+}
+//*/
+
+
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
@@ -57,45 +138,18 @@ aux global protocol Proto1Aux2(role A, role B, role C)
 //*/
 
 
-//*
-explicit global protocol Proto1(role A, role B, role C)
-{
-	connect A to B;
-	connect B to C;
-	1() from A to B;
-	do Proto1Aux1(A, B, C);
-}
-
-aux global protocol Proto1Aux1(role A, role B, role C)
+/*
+global protocol Proto1(role A, role B, role C)
 {
 	choice at A
 	{
-		3() from A to B;
-		//3() from B to C;
-		do Proto1Aux2(A, B, C);  // FIXME: Testing mutually unguarded "prunable" choice-do
-			// FIXME: check if safety violation is correct
-	}
-	/*or
-	{
-		4() from A to B;
-		4() from B to C;
-		//do Proto1Aux2(A, B, C);
-	}*/
-}
-
-aux global protocol Proto1Aux2(role A, role B, role C)
-{
-	choice at A
-	{
-		5() from A to B;
-		do Proto1Aux1(A, B, C);
-		//do Proto1Aux2(A, B, C);
+		1() from A to B;
+		1() from A to C;
 	}
 	or
 	{
-		6() from A to B;
-		//connect B to C;
-		6() from B to C;
+		2() from A to B;
+		2() from B to C;  // Pruning / choice subj inference
 	}
 }
 //*/
@@ -231,12 +285,12 @@ global protocol Proto1(role A, role B)
 	{
 		choice at A
 		{
-			1() from A to B;
+			1() from A to B;  // (..and deadlocks)
 			continue X;
 		}
 		or
 		{
-		 	1() from A to B;  // Bad: orphans
+			1() from A to B;  // Bad: orphans
 		}
 	}
 }

@@ -24,8 +24,9 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 	@Override
 	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
 	{
+		// Overridden in CompoundInteractionNodeDel to do merging of child context into parent context
 		//System.out.println("CCC1:\n" + child);
-		//System.out.println("CCC: " + checker.peekEnv() + ", " + checker.peekEnv().subjs);
+		//System.out.println("CCC: " + parent.getClass() + ", " + checker.peekEnv() + ", " + checker.peekEnv().subjs);
 		return ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
 	}
 
@@ -38,6 +39,7 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 	@Override
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
+		// Overridden in CompoundInteractionNodeDel to do merging of child context into parent context
 		return ScribDelBase.popAndSetVisitorEnv(this, unf, visited);
 	}
 
