@@ -2,9 +2,12 @@ package org.scribble.model.wf;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.model.local.Accept;
 import org.scribble.model.local.Connect;
@@ -31,19 +34,23 @@ public class WFConfig
 		this.buffs = buffs;
 	}
 
-	// Means successful termination
 	// FIXME: rename: not just termination, could be unconnected/uninitiated
-	public boolean isEnd()
+	//public boolean isEnd()
+	public boolean isSafeTermination()
 	{
 		//return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.buffs.isEmpty();
 		for (Role r : this.states.keySet())
 		{
 			EndpointState s = this.states.get(r);
-			if ((!s.isTerminal() &&
-							(!(s.getStateKind().equals(Kind.UNARY_INPUT) && s.getAcceptable().iterator().next().isAccept()) ||
-							this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
-							// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
-					|| (s.isTerminal() && !this.buffs.isEmpty(r)))
+			if ((s.isTerminal() && !this.buffs.isEmpty(r))
+					||
+					(!s.isTerminal() &&
+						(!(s.getStateKind().equals(Kind.UNARY_INPUT) && s.getAcceptable().iterator().next().isAccept())
+									// FIXME: could be blocked on unary accept part way through the protocol -- but can't happen?
+						|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr)))
+									// FIXME: isConnected is not symmetric, and could disconnect all part way through protocol -- but can't happen?
+					// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
+			))
 			{
 				return false;
 			}
@@ -118,7 +125,144 @@ public class WFConfig
 
 		return res;
 	}
+
+	//public Map<Role, IOError> getReceptionErrors()
+	public Map<Role, Receive> getReceptionErrors()
+	{
+		Map<Role, Receive> res = new HashMap<>();
+		for (Role r : this.states.keySet())
+		{
+			EndpointState s = this.states.get(r);
+			Kind k = s.getStateKind();
+			if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
+			{
+				/*Set<IOAction> duals = this.buffs.get(r).entrySet().stream()
+						.filter((e) -> e.getValue() != null)
+						.map((e) -> e.getValue().toDual(e.getKey()))
+						.collect(Collectors.toSet());
+				if (duals.stream().anyMatch((a) -> s.isAcceptable(a)))
+				{
+					break;
+				}*/
+				Role peer = s.getAllAcceptable().iterator().next().peer;
+				Send send = this.buffs.get(r).get(peer);
+				if (send != null)
+				{
+					Receive recv = send.toDual(peer);
+					if (!s.isAcceptable(recv))
+					//res.put(r, new IOError(peer));
+					res.put(r, recv);
+				}
+			}
+		}
+		return res;
+	}
 	
+	
+	// Doesn't include locally terminated (i.e. only "bad" deadlocks)
+	public Set<Set<Role>> getDeadlocks()
+	{
+		Set<Set<Role>> res = new HashSet<>();
+		List<Role> todo = new LinkedList<>(this.states.keySet());
+		while (!todo.isEmpty())
+		{
+			Role r = todo.get(0);
+			todo.remove(r);
+			Set<Role> seen = new HashSet<>();
+			while (true)
+			{
+				if (seen.contains(r))
+				{
+					res.add(seen);
+					break;
+				}
+				seen.add(r);
+				Role rr = isInputBlocked(r);
+				if (rr == null)
+				{
+					break;
+				}
+				todo.remove(rr);
+				if (this.states.get(rr).isTerminal())
+				{
+					seen.add(rr);
+					res.add(seen);
+					break;
+				}
+				r = rr;
+			}
+		}
+		return res;
+	}
+	
+	private Role isInputBlocked(Role r)
+	{
+		EndpointState s = this.states.get(r);
+		Kind k = s.getStateKind();
+		if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
+		{
+			IOAction a = s.getAllAcceptable().iterator().next();
+			/*if (a.isAccept())  // Sound?
+			{
+				return null;
+			}*/
+			Role peer = a.peer;
+			if (a.isReceive() && this.buffs.get(r).get(peer) == null)
+			{
+				return peer;
+			}
+		}
+		return null;
+	}
+
+	public Map<Role, Set<Send>> getOrphanMessages()
+	{
+		Map<Role, Set<Send>> res = new HashMap<>();
+		for (Role r : this.states.keySet())
+		{
+			EndpointState s = this.states.get(r);
+			if (s.isTerminal())
+			{
+				Set<Send> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
+				if (!orphs.isEmpty())
+				{
+					Set<Send> tmp = res.get(r);
+					if (tmp == null)
+					{
+						tmp = new HashSet<>();
+						res.put(r, tmp);
+					}
+					tmp.addAll(orphs);
+				}
+			}
+			else
+			{
+				this.states.keySet().forEach((rr) ->
+				{
+					if (!rr.equals(r))
+					{
+						// Connection direction doesn't matter? -- wrong: matters because of async. disconnect
+						if (!this.buffs.isConnected(r, rr))
+						{
+							Send send = this.buffs.get(r).get(rr);
+							if (send != null)
+							{
+								Set<Send> tmp = res.get(r);
+								if (tmp == null)
+								{
+									tmp = new HashSet<>();
+									res.put(r, tmp);
+								}
+								tmp.add(send);
+							}
+						}
+					}
+				}); 
+			}
+		}
+		return res;
+	}
+
 	public Map<Role, List<IOAction>> getAcceptable()
 	{
 		Map<Role, List<IOAction>> res = new HashMap<>();

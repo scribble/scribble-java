@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.scribble.model.global.GIOAction;
 import org.scribble.model.local.IOAction;
+import org.scribble.model.local.Receive;
+import org.scribble.model.local.Send;
 import org.scribble.sesstype.name.Role;
 
 
@@ -107,7 +109,18 @@ public class WFState
 	
 	public boolean isError()
 	{
-		return isTerminal() && !this.config.isEnd();
+		/*return this.config.getReceptionErrors().isEmpty()
+				&& this.config.getDeadlocks().isEmpty()
+				&& this.config.getOrphanMessages().isEmpty();*/
+		return isTerminal() && !this.config.isSafeTermination();  // FIXME: is this characterisation more "complete"?
+	}
+	
+	public WFStateErrors getErrors()
+	{
+		Map<Role, Receive> recperrs = this.config.getReceptionErrors();
+		Set<Set<Role>> dlocks = this.config.getDeadlocks();
+		Map<Role, Set<Send>> orphs = this.config.getOrphanMessages();
+		return new WFStateErrors(recperrs, dlocks, orphs);
 	}
 	
 	public boolean isTerminal()

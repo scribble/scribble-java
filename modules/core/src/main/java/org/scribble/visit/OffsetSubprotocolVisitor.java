@@ -22,7 +22,7 @@ public abstract class OffsetSubprotocolVisitor<T extends Env<?>> extends Subprot
 		super(job);
 	}
 	
-	// Doesn't push a subprotocol signature; only records the roles/args -- why? because sigs are based on vals (from the first do), not the root proto params? -- but it would be fine to use the params?
+	// Doesn't push a subprotocol signature (i.e. on root entry); only records the roles/args -- why? because sigs are based on vals (from the first do), not the root proto params? -- but it would be fine to use the params?
 	@Override
 	protected void enterRootProtocolDecl(ProtocolDecl<? extends ProtocolKind> pd)
 	{

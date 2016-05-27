@@ -47,7 +47,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		super(job);
 	}
 	
-	// Pushes a subprotocol signature
+	// Pushes a subprotocol signature (i.e. on root entry)
 	protected void enterRootProtocolDecl(ProtocolDecl<?> pd)
 	{
 		Map<Role, RoleNode> rolemap = makeRootRoleSubsMap(pd.header.roledecls);
@@ -87,7 +87,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 	}
 	
 	// The Do node itself is no longer visited -- FIXME: projection needs to visit it -- no: that's in enter/leave, visited means "visit children"
-	private Do<?> visitOverrideForDo(ScribNode parent, Do<?> doo) throws ScribbleException
+	protected Do<?> visitOverrideForDo(ScribNode parent, Do<?> doo) throws ScribbleException
 	{
 		if (!isCycle())
 		{
@@ -96,6 +96,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 			ProtocolDecl<? extends ProtocolKind> pd = doo.getTargetProtocolDecl(jc, mc);
 			// Target is cloned: fresh dels and envs, which will be discarded
 			ScribNode seq = applySubstitutions(pd.def.block.seq.clone());  // Visit the seq? -- or visit the interactions in the seq directly?
+					// Visit seq/interactions under current environment
 			seq.accept(this);  // Result from visiting subprotocol body is discarded
 		}
 		return doo;
@@ -211,6 +212,11 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 		this.argmaps.push(makeNonRoleSubsMap(this.argmaps.get(0), doo.args, pd.header.paramdecls));
 	}
 	
+	public boolean isRootedCycle()
+	{
+		return this.stack.size() > 1 && this.stack.get(0).equals(this.stack.get(this.stack.size() - 1));
+	}
+
 	public boolean isCycle()
 	{
 		return getCycleEntryIndex() != -1;
@@ -224,7 +230,7 @@ public abstract class SubprotocolVisitor<T extends Env<?>> extends EnvVisitor<T>
 			SubprotocolSig last = this.stack.get(size - 1);
 			for (int i = size - 2; i >= 0; i--)
 			{
-				if (this.stack.get(i).equals(last))  // FIXME: doesn't support recursive scoped subprotocols
+				if (this.stack.get(i).equals(last))  // FIXME: doesn't support recursive scoped subprotocols, i.e. cycle detection not general enough?
 				{
 					return i;
 				}

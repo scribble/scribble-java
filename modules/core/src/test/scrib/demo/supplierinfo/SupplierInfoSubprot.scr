@@ -36,7 +36,7 @@ global protocol PartnershipSupplier(
 	}
 }
 
-global protocol Main(
+aux global protocol Main(
 		role requestor,
 		role authorisersvc,
 		role filtersvc,
@@ -58,7 +58,9 @@ global protocol Main(
 		{
 			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 			getsuppliers() from authorisersvc to suppliersvc;
-			do FilterInfo<supplierdetails>(authorisersvc, filtersvc);
+			do FilterInfo
+					<filterSupplier(usercontext, filters, supplierdetails)>
+					(authorisersvc, filtersvc);
 			suppliers() from suppliersvc to authorisersvc;
 			suppliers() from authorisersvc to requestor;
 		}
@@ -78,7 +80,11 @@ global protocol Main(
 			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 			getcontracts() from authorisersvc to contractsvc;
 			suppliers() from contractsvc to authorisersvc;
-			do FilterInfo<contractdetails>(authorisersvc, filtersvc);
+			do FilterInfo
+					<filterContract(usercontext, filters, contractdetails)>
+					//<filterSupplier(usercontext, filters, supplierdetails)>  // OK (merge)
+					//<filterSupplier(usercontext, filters, contractdetails)>  // Error
+					(authorisersvc, filtersvc);
 			contracts() from authorisersvc to requestor;
 		}
 	}
@@ -86,12 +92,20 @@ global protocol Main(
 	do Main(requestor, authorisersvc, filtersvc, suppliersvc, contractsvc);
 }
 
-global protocol FilterInfo<type details>(
-		role authorisersvc,
-		role filtersvc)
+
+//aux global protocol FilterInfo<type details>(  // Bad non-det. payload
+aux global protocol FilterInfo
+<
+	sig Query
+>
+(
+	role authorisersvc,
+	role filtersvc
+)
 {
-			filter(usercontext, filters, details) from authorisersvc to filtersvc;
-			filtered() from filtersvc to authorisersvc;
+	//filter(usercontext, filters, details) from authorisersvc to filtersvc;
+	Query from authorisersvc to filtersvc;
+	filtered() from filtersvc to authorisersvc;
 }
 
 

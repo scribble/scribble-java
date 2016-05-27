@@ -16,22 +16,484 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 //..don't need termination hack, just need to cut off state building on bad states -- no: it's needed (buffered message may be blocked now but valid later), or a terminal set analysis
-//.. choice subject enabling needed for non-mixed states -- although for one-slot asynchrony to work, it's just the A->B constructor: there's always syntactically at least one receiver, and any potential deadlock between parallel senders due to bounded buffer will be caught as the counterpart paralel receiver deadlock
+//.. choice subject enabling needed for non-mixed states (inherently relevant to deadlock) -- although for one-slot asynchrony to work, it's just the A->B constructor: there's always syntactically at least one receiver, and any potential deadlock between parallel senders due to bounded buffer will be caught as the counterpart paralel receiver deadlock
 
 
-	// FIXME: consider implicit error actions (e.g. unconnected/non-enabled message passing) to model building (in addition to good acceptable actions), to make error states explicit
-	// FIXME: (re)connect/wrap, e.g. SMTP
+	// TODO: (re)connect/wrap, e.g. SMTP
 
-	// FIXME: "introduces" well-formedness?
-	// "A from B to C;"
-	// "a from A to B; A[a] from B to C;"
-
-	// Note: mixed explicit and non-explicit subprotocols
+	// TODO: "introduces" well-formedness?
+	// e.g. "A from B to C;"
+	// e.g. "a from A to B; A[a] from B to C;"
+	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	do Proto1Aux1(A, B);
+}
+
+aux global protocol Proto1Aux1(role A, role B)
+{
+	choice at A
+	{
+		do Proto1(A, B);
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
+	connect A to B;
+	do Proto1Aux(A, B, C);
 }
+
+aux global protocol Proto1Aux(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		connect B to C;
+		1() from B to C;
+		disconnect B and C;
+		do Proto1Aux(A, B, C);  // FIXME: guarded do has same subprotsig has an unguarded one (and ProjectedSubprotPruner is using subprotsigs...) -- but current problem is actually ambiguous connect enabling of C by B -- anyway to have explicit protocol with multiple instances of the same do-subprotsig with and without choice-guards?
+			// TODO: this doesn't just break subprot pruning, but affects whole subprot visiting framework because using current subprot "cycles" may not provide coverage of all "full recursive loops" (cf unfolding/unrolling all rec/continues) -- current framework gives coverage only if recursive subprots are only called from a single "location" -- maybe be fixable by generalising subprotsigs record more than just the immediate proto+args context -- luckily some analyses like enabling check are OK despite this
+			// basically: current subprotocolsigs do identify a common "state" entry, but cannot be used to identify "specific" cycle paths or "maximal recursion paths"
+	}
+	or
+	{
+		11() from A to B;
+		do Proto1Aux(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		connect B to C;
+		3() from B to C;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	1() from A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at A
+	{
+		3() from A to B;
+		3() from B to C;
+		do Proto1Aux2(A, B, C);
+	}
+	or  // FIXME: pruning broken, but maybe should be? (subject inference infinite loop: detect and raise WF error?) -- also at some point got a safety violation, check if correct (maybe with these 4's)
+			// ** No: FIXME: graph building is wrong (projection/inlining look correct) -- an issue: different recs with the same subsig-recvar can have different available transitions (i.e. be non-compatible states)...
+			// FIXME: make a minimal example for this issue -- without role balancing for WF, protocol name + role config is not enough to identify a "unique" state any more -- need to verify this: aren't recursive subprotcols same as regular rec-continue, and why? (a problem of unguarded recs?)
+	{
+		4() from A to B;
+		4() from B to C;
+		//do Proto1Aux2(A, B, C);
+	}
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		5() from A to B;
+		do Proto1Aux1(A, B, C);
+		//do Proto1Aux2(A, B, C);
+	}
+	or
+	{
+		6() from A to B;
+		//connect B to C;
+		6() from B to C;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	1() from A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at A
+	{
+		3() from A to B;
+		//3() from B to C;
+		do Proto1Aux2(A, B, C);  // Testing mutually choice-unguarded "prunable" do's
+	}
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		5() from A to B;
+		do Proto1Aux1(A, B, C);
+		//do Proto1Aux2(A, B, C);
+	}
+	or
+	{
+		6() from A to B;
+		//connect B to C;
+		6() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		do Proto1Aux1(A, B, C);
+	}
+	or
+	{
+		do Proto1Aux2(A, B, C);
+	}
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at A
+	{
+		3() from A to B;
+		3() from A to C;
+		do Proto1Aux1(A, B, C);
+	}
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		2() from A to B;
+		do Proto1Aux1(A, B, C);
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	1() from A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	do Proto1Aux2(A, B, C);
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		2() from A to B;
+		do Proto1Aux1(A, B, C);
+	}
+	or
+	{
+		3() from A to B;
+		connect B to C;
+		4() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;  // Pruning / choice subj inference
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	1() from A to B;
+	//1() from B to C;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	() from A to B;
+	//() from B to C;
+	do Proto1Aux2(A, B, C);
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		2() from A to B;
+		do Proto1Aux1(A, B, C);
+		//do Proto1Aux2(A, B, C);
+	}
+	or
+	{
+		3() from A to B;
+		//connect B to C;
+		4() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		do Proto1Aux1(A, B);
+	}
+}
+
+aux global protocol Proto1Aux1(role A, role B)
+{
+	1() from A to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Proto1Aux1(A, B, C);
+	}
+	or
+	{
+		do Proto1Aux2(A, B, C);
+	}
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	do Proto1(A, B, C);
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	2() from A to B;
+	3() from B to C;
+	do Proto1(A, B, C);
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	do Proto1Aux(A, B, C);
+}
+
+aux global protocol Proto1Aux(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Proto1Aux(A, B, C);  // ProjectedSubprotocolPruner
+	}
+	or
+	{
+		2() from A to B;
+		connect B to C;
+		3() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		m1() from A to B;
+		choice at A
+		{
+			continue X;  // Not pruned because not first statement in rec body
+			// Will be pruned if m1() is commented
+		}
+		or
+		{
+			m2() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;  // (..and deadlocks)
+			continue X;
+		}
+		or
+		{
+			1() from A to B;  // Bad: orphans
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			1() from A to B;
+			1() from A to B;  // Potential orphans?..
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;  // Liveness violation for C
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;  // Bad: testing deadlock detection (input blocked -> terminated)
+		2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		rec X
+		{
+			// NB: not a liveness problem: A is already done by here
+			4() from B to C;
+			5() from C to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		//2() from A to B;  // Uncomment bad
+	}
+	or
+	{
+		1() from A to B;
+		rec X
+		{
+			connect B to C;
+			4() from B to C;
+			5() from C to B;
+			disconnect B and C;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C, role D)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		1() from B to A;
+		connect B to C;
+		connect C to D;
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
+		connect B to D;
+		connect D to C;
+	}
+}
+//*/
 
 
 /*
@@ -642,7 +1104,7 @@ global protocol Proto1(role A, role B, role C, role D)
 	or
 	{
 		1() from A to B;
-		3() from B to A;  // A not safe
+		3() from B to A;  // A not safe (but not a terminal state)
 	}
 	rec X
 	{
@@ -723,7 +1185,7 @@ global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		2() from B to C;  // FIXME: local choice subjects (syntax)
+		2() from B to C;  // FIXME: local choice subjects (syntax restriction)
 	}
 }
 //*/
@@ -961,6 +1423,31 @@ global protocol Proto1(role A, role B, role C)
 
 
 /*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		2() from B to C;
+		3() from B to C;
+		choice at A
+		{
+			4() from A to B;
+			continue X;
+		}
+		or
+		{
+			5() from A to B;
+			2() from B to C;  // Generates a non-det 2() to differen states, but OK?
+			3() from B to C;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	choice at A
@@ -981,7 +1468,7 @@ global protocol Proto1(role A, role B, role C, role D)
 				or
 				{
 					() from C to A;
-					2() from C to D;  // FIXME: model checking either stuck or slow (should be an error, see above)
+					2() from C to D;  // Reception error (but OK if following is commented)
 					() from C to D;
 					continue X;
 				}
@@ -993,6 +1480,32 @@ global protocol Proto1(role A, role B, role C, role D)
 		0() from A to B;
 		0() from B to C;
 		0() from C to D;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec X
+		{
+			2() from B to C;
+			choice at C
+			{
+				2() from C to A;
+				continue X;  // B not enabled -- FIXME: minimise test case
+			}
+			or
+			{
+				() from C to A;
+				() from C to D;
+				continue X;
+			}
+		}
 	}
 }
 //*/
@@ -1049,7 +1562,7 @@ global protocol Proto1(role A, role B, role C)
 		1() from B to C;  // Comment is bad
 	}
 	2() from C to B;* /
-	rec X  // FIXME: Good test
+	rec X
 	{
 		choice at A
 		{
@@ -1062,7 +1575,7 @@ global protocol Proto1(role A, role B, role C)
 			2() from A to B;
 			continue X;
 		}
-		//continue X; // FIXME: remove last edge
+		//continue X;
 	}
 }
 //*/
@@ -1459,54 +1972,46 @@ global protocol Proto1(role A, role B)
 		3b() from A to B;
 	}
 }
-//*
+//*/
 
 
 /*
 global protocol Proto1(role p, role q, role r)
 {
-	
+	/*
 	choice at p {
 		l1() from p to q;
 		/*l3() from q to r;
-		l5() from r to p;* /
+		l5() from r to p;
+		//* /
 	} or {
 		l2() from p to q;
 		/*l4() from q to r;
-		l6() from r to p;* /
-	}	
-	l3() from q to r;
-	
-	/*rec X {
-		choice at A {
-			m1(int) from A to B;
-			continue X;
-			//m4(int) from A to B;
-		} or {
-			m2(int) from A to B;
-			//m3(int) from A to B;
-		}
-		//1() from C to D;  // FIXME?* /
+		l6() from r to p;
+		//* /
 	}
+	l3() from q to r;
 }
 //*/
 
 
-/*global protocol Proto1(role A, role B, role C)
+/*
+global protocol Proto1(role A, role B, role C)
 {
 	rec X
 	{
 		choice at A
 		{
-			1() from A to B;  // FIXME: no reception error, but deadlocked
+			1() from A to B;  // No reception error, but deadlocked
 			continue X;
-		}		
+		}
 		or
 		{
 			2() from A to C;
 		}
 	}
-}*/
+}
+//*/
 
 
 /*
@@ -1519,13 +2024,13 @@ global protocol Proto1(role A, role B, role C)
 			1() from A to B;
 			//1() from A to C;
 			continue X;
-		}	
-	}	
+		}
+	}
 	or
 	{
 		2() from A to B;
 		2() from A to C;  // FIXME: add deadlock freedom check -- actually "role liveness"?, could do on a global model (but maybe just syntactically by paths)
-	 }	
+	 }
 }
 //*/
 
@@ -1543,14 +2048,14 @@ global protocol Proto1(role A, role B, role C)
 		{
 			1() from A to C;
 			continue X;
-		}	
+		}
 		or
 		{
 			2() from A to B;
 			2() from A to C;
-		}	
+		}
 	}
-}	
+}
 //*/
 
 
@@ -1579,8 +2084,8 @@ global protocol Proto1(role A, role B, role C)
 			2() from A to B;
 		}
 		4() from A to C;
-	}	
-}	
+	}
+}
 //*/
 
 
@@ -1596,14 +2101,14 @@ global protocol Proto1(role A, role B)
 			{
 				1() from A to B;
 				continue X;
-			}	
-		}	
+			}
+		}
 		or
 		{
 			2() from A to B;
-		}	
+		}
 	}
-}	
+}
 //*/
 
 
@@ -1625,7 +2130,7 @@ global protocol Proto1(role A, role B)
 		}
 	}
 	3() from A to B;
-}	
+}
 //*/
 
 
@@ -1645,14 +2150,14 @@ global protocol Proto1(role A, role B)
 			or
 			{
 				2() from A to B;
-			}	
+			}
 			or
 			{
 				continue Y;
 			}
-		}	
+		}
 	}
-}	
+}
 //*/
 
 
@@ -1670,22 +2175,22 @@ global protocol Proto1(role A, role B, role C)
 				{
 					1() from A to B;
 					continue X;
-				}	
+				}
 				or
 				{
 					2() from A to B;
 					continue Y;  // Testing "pruning" of irrelevant continue cases in nested recs
-				}	
+				}
 				or
 				{
 					3a() from A to B;
 					3b() from A to C;
-				}	
-			}	
+				}
+			}
 		}
 	}
 	4() from B to C;
-}	
+}
 //*/
 
 
@@ -1712,14 +2217,14 @@ global protocol Proto1(role A, role B)
 				or
 				{
 					2() from A to B;  // OK to be 2 as well because the above X goes to 1() first
-				}	
+				}
 				/*or
 				{
 					3() from A to B;
 					continue Y;
 				}* /
 			}
-		}	
+		}
 	}
 }
 //*/
@@ -1744,7 +2249,7 @@ global protocol Proto1(role A, role B)
 			}
 		}
 	}
-}	
+}
 //*/
 
 
@@ -1764,7 +2269,7 @@ global protocol Proto1(role A, role B)
 			continue X;
 		}
 	}
-}	
+}
 //*/
 
 
@@ -1776,7 +2281,7 @@ global protocol Proto1(role A, role B)
 		//0() from A to B;
 		rec X  // Testing unguarded choice-rec at root...
 		{
-			1() from A to B;
+			1() from A to B;  // continue pruned if this is commented
 			choice at A
 			{
 				2() from A to B;
@@ -1791,7 +2296,7 @@ global protocol Proto1(role A, role B)
 	{
 		3() from A to B;
 	}
-}	
+}
 //*/
 
 
@@ -1805,7 +2310,7 @@ global protocol Proto1(role A, role B)
 		{
 			//3() from A to B;
 			continue X;
-		}	
+		}
 		or
 		{
 			rec Y  // Testing nested InlinedProtocolUnfolding case
@@ -1815,8 +2320,8 @@ global protocol Proto1(role A, role B)
 				continue Y;
 			}
 		}
-	}	
-}	
+	}
+}
 //*/
 
 
@@ -1835,7 +2340,7 @@ global protocol Proto1(role A, role B, role C)
 			{
 				//2() from A to B;
 				continue X;  // Testing project choice subject "inference", and testing continue-only choice block
-			}	
+			}
 			or
 			{
 				continue Y;  // Different continue-onlys, tests FSM building
@@ -1847,10 +2352,10 @@ global protocol Proto1(role A, role B, role C)
 			or
 			{
 				4() from A to B;
-			}	
-		}	
+			}
+		}
 	}
-}	
+}
 //*/
 
 
@@ -1899,8 +2404,8 @@ global protocol Proto1(role C, role S)
 		choice at S  // Fixed peekParentEnv index bug for enabled choice subjs
 		{
 			1() from S to C;
-		}	
-	}	
+		}
+	}
 	/*rec X {
 		choice at C {
 			0() from C to S;
@@ -1933,7 +2438,7 @@ global protocol Proto1(role A, role B)
 	{
 		2() from A to B;
 		//2() from B to C;
-	}	
+	}
 }*/
 
 
@@ -2001,7 +2506,7 @@ global protocol Proto1(role A, role B, role C)
 	{
 		2() from A to B;
 		2() from A to C;
-	}	
+	}
 
 	/*choice at A
 	{
@@ -2025,7 +2530,7 @@ global protocol Proto1(role A, role B, role C)
 		{
 			2() from A to B;
 			2() from A to C;
-		}	
+		}
 	}*/
 	/*rec Y
 	{
@@ -2042,19 +2547,19 @@ global protocol Proto1(role A, role B, role C)
 				{
 					2() from A to C;
 					continue Y;
-				}	
+				}
 				or
 				{
 					3() from A to B;
 					3() from B to C;
-				}	
-			}	
+				}
+			}
 		}
 		or
 		{
 			4() from A to B;
 			continue Y;
-		}	
+		}
 	}* /
 }
 //*/
@@ -2078,9 +2583,9 @@ global protocol Proto1(role A, role B, role C)
 
 
 /*
-type <java> "java.lang.String" from "rt.jar" as String;  
+type <java> "java.lang.String" from "rt.jar" as String;
 
-global protocol ExchangeKeyPairs(role Alice, role Bob) {  
+global protocol ExchangeKeyPairs(role Alice, role Bob) {
 	FriendRequest_FirstHalf_APublicKey(String) from Alice to Bob;
 	FirstHalf_BPublicKey(String) from Bob to Alice;
 	SecondHalf_APublicKey(String) from Alice to Bob;
@@ -2098,21 +2603,21 @@ global protocol SignPublicKeys(role Alice, role Bob) {
 global protocol FriendRequestCommon(role Alice, role Bob, role Charlie) {
 	FriendRequest(String) from Alice to Bob;
 	FriendRequest(String) from Bob to Charlie;
-	
+
 	choice at Charlie {
 		Accept(String) from Charlie to Bob;
 		Accept(String) from Bob to Alice;
 		do ExchangeKeyPairs(Alice, Charlie);
-	} 
+	}
 	or {
 		Reject(String) from Charlie to Bob;
 		Reject(String) from Bob to Alice;
-	} 
+	}
 }
 
 
 global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
-	
+
 	rec foreachFriendOfAlice {
 		//GetIndexList inline start
 		RequestIndexData(String) from Alice to Friend;
@@ -2120,8 +2625,8 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 			SendIndexData(String) from Friend to Alice;
 		} with {
 			Timeout(String) by Alice;
-		}* / 
-	
+		}* /
+
 		rec foreachFriendOfAliceAtFriendsFriend {
 			RequestFriendsIndexData(String) from Alice to FriendsFriend;
 			choice at FriendsFriend {
@@ -2129,20 +2634,20 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 			}
 			or {
 				//FriendsFriend doesn't have Friends index data
-				Decline(String) from FriendsFriend to Alice; 
+				Decline(String) from FriendsFriend to Alice;
 				/*choice at Alice {
 					continue foreachFriendOfAlice;
 				}* /
 			}
 		}
 		//GetIndexList inline end
-		
+
 		choice at Alice { // If Alice is missing post from Friend
 			rec foreachMissingPost {
 
 				RequestMissingData(String) from Alice to Friend;
-				interruptible{MissingData(String) from Friend to Alice;} with {Timeout(String) by Alice;}	
-			
+				interruptible{MissingData(String) from Friend to Alice;} with {Timeout(String) by Alice;}
+
 				choice at Alice { // if Bob doesn't respond
 					rec foreachFriendOfAlice2 {
 						RequestBobData(String) from Alice to FriendsFriend;
@@ -2152,13 +2657,13 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 						or {
 							Decline(String) from FriendsFriend to Alice;
 						}
-						
+
 						/*choice at Alice {
 							continue foreachFriendOfAlice;
 						}* /
-					}	
+					}
 				}
-				
+
 				/*choice at Alice {
 					continue foreachMissingPost;
 				}* /
@@ -2168,7 +2673,7 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 			Accept(String) from Alice to Friend;
 			1() from Alice to FriendsFriend;
 		}
-	
+
 		/*choice at Alice {
 			continue foreachFriendOfAlice;
 		}* /
@@ -2176,9 +2681,9 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 }
 
 /*global protocol GetIndexList(role Alice, role Bob, role Friend) {
-	
+
 	RequestIndexData(String) from Alice to Bob;
-	//interruptible{SendIndexData(String) from Bob to Alice;} with {Timeout(String) by Alice;}	 
+	//interruptible{SendIndexData(String) from Bob to Alice;} with {Timeout(String) by Alice;}
 
 	rec foreachFriendOfAlice {
 		RequestBobsIndexData(String) from Alice to Friend;
@@ -2195,7 +2700,7 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 }
 
 global protocol SendIP(role Alice, role Friend) {
-	
+
 	rec foreachFriendOfAlice {
 		AliceIP(String) from Alice to Friend;
 		choice at Alice {
@@ -2206,11 +2711,11 @@ global protocol SendIP(role Alice, role Friend) {
 
 
 global protocol GetIP(role Alice, role ForeignIP, role FriendWithKnownIP) {
-	
+
 	rec foreachFriendOfAlice {
 		rec foreachIPAddressInFriendsIPCache {
 			RequestResponse(String) from Alice to ForeignIP;
-			//interruptible{Response(String) from ForeignIP to Alice;} with {Timeout(String) by Alice;}	
+			//interruptible{Response(String) from ForeignIP to Alice;} with {Timeout(String) by Alice;}
 			FriendsIdAndAliceId(String) from Alice to ForeignIP; //sent ID's to friend to let him confirm they are already friends
 			choice at ForeignIP { //if Foreign IP verifies the ID's
 				confirm(String) from ForeignIP to Alice;
@@ -2220,19 +2725,19 @@ global protocol GetIP(role Alice, role ForeignIP, role FriendWithKnownIP) {
 			}
 			choice at Alice {
 				continue foreachIPAddressInFriendsIPCache;
-			}	
+			}
 		}
 		choice at Alice {
 			continue foreachFriendOfAlice;
 		}
 	}
-	
+
 	rec foreachFriendOfAliceWithUnknownIP {
 		rec foreachFriendOfAliceWithKnownIP {
 			RequestIPAddressOfFriendWithUnknownIP(String) from Alice to FriendWithKnownIP;
 			choice at FriendWithKnownIP { // if FriendWithKnownIP knows the requested friend and the timestamp is newer
 				ForeignIP(String) from FriendWithKnownIP to Alice;
-				RequestResponse(String) from Alice to ForeignIP; 
+				RequestResponse(String) from Alice to ForeignIP;
 				//interruptible{Response(String) from ForeignIP to Alice;} with {Timeout(String) by Alice;}
 				FriendsIdAndAliceId(String) from Alice to ForeignIP;
 				choice at ForeignIP { // if ForeignIP verifies the ID's
@@ -2247,7 +2752,7 @@ global protocol GetIP(role Alice, role ForeignIP, role FriendWithKnownIP) {
 			}
 			choice at Alice {
 				continue foreachFriendOfAliceWithKnownIP;
-			}	
+			}
 		}
 		choice at Alice {
 			continue foreachFriendOfAliceWithUnknownIP;
@@ -2258,29 +2763,29 @@ global protocol GetIP(role Alice, role ForeignIP, role FriendWithKnownIP) {
 
 //global protocol FriendSearch(role Alice, role Bob, role Friend, role FriendsFriend) {
 global protocol FriendSearch(role Alice, role Friend, role FriendsFriend) {
-	
+
 	rec foreachFriendOfAlice {
 		RequestBob(String) from Alice to Friend;
 		choice at Alice {
 			continue foreachFriendOfAlice;
 		}
 	}
-	
+
 	/*interruptible{
 		SendBob(String) from Friend to Alice;
 	} with {
 		Timeout(String) by Alice;
 	} // ER DET HER OK?* /
-	
+
 	choice at Alice { // if Alice still hasn't found Bob
-	
+
 		rec foreachFriendOfAlice2 {
 			FindBob() from Alice to Friend;
-			rec foreachFriendsFriendOfFriend {	
+			rec foreachFriendsFriendOfFriend {
 				RequestFriend(String) from Friend to FriendsFriend;
 				choice at FriendsFriend { // if FriendsFriend is friends with Bob
 					SendBob(String) from FriendsFriend to Friend;
-					SendBob(String) from Friend to Alice;	
+					SendBob(String) from Friend to Alice;
 				}
 				choice at Alice {
 					continue foreachFriendsFriendOfFriend;
@@ -2289,15 +2794,15 @@ global protocol FriendSearch(role Alice, role Friend, role FriendsFriend) {
 			/*choice at Alice {
 				continue foreachFriendOfAlice2;
 			}* /
-		}	
+		}
 	}
 }
 
 
 global protocol NewDeviceLogin(role Alice, role Bob) {
-	
+
 	LoginInformation(String) from Bob to Alice;
-	
+
 	choice at Alice { // if Alice validates login information
 		Accept(String) from Alice to Bob;
 		do ExchangeKeyPairs(Bob, Alice);
@@ -2586,8 +3091,8 @@ module Test;
 
 import Test;
 //
- 
- 
+
+
 module Test;
 
 import Test as Test;
@@ -2793,7 +3298,7 @@ global protocol Bar(role A, role B)
 	{
 		1() from A to B;
 	}
-	
+
 	rec X
 	{
 		choice at A
@@ -3217,3 +3722,4 @@ global protocol MyProto(role A, role B, role C, role D)
 	4() from C to D;
 }
 //*/
+

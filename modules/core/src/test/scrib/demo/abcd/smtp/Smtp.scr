@@ -45,7 +45,7 @@ global protocol Smtp(role C, role S)
 }
 //*/
 
-global protocol Init(role C, role S)
+aux global protocol Init(role C, role S)
 {
 	Ehlo from C to S;
 	rec X
@@ -63,7 +63,7 @@ global protocol Init(role C, role S)
 	// or { Quit from C to S; }  // FIXME: apigen
 }
 
-global protocol StartTls(role C, role S)
+aux global protocol StartTls(role C, role S)
 {
 	StartTls from C to S;
 	220 from S to C;

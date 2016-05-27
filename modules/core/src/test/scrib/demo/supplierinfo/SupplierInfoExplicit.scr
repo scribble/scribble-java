@@ -27,7 +27,8 @@ explicit global protocol PartnershipSupplier
 	{
 		//loginsuccess() from loginsvc to requestor;  // Only an error if the following line remains uncommented
 		loginfailure() from loginsvc to requestor;
-		//getsuppliers(uuid) from requestor to authorisersvc;
+		/*connect requestor to authorisersvc;
+		getsuppliers(uuid) from requestor to authorisersvc;  // Error*/
 		disconnect requestor and loginsvc;
 	}
 	or
@@ -55,7 +56,7 @@ aux global protocol Main
 	{
 		// GET SUPPLIER INFO
 		getsuppliers(uuid) from requestor to authorisersvc;
-		//1() from authorisersvc to contractsvc;  // FIXME: big state explosion?
+		//1() from authorisersvc to contractsvc;  // FIXME: state explosion?
 		do SuppInfo(requestor, authorisersvc, filtersvc, suppliersvc);
 	}
 	or

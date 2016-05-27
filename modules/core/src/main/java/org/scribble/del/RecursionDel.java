@@ -56,4 +56,10 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 		unf.pushEnv(merged);
 		return (Recursion<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, rec);
 	}
+
+	/*@Override
+	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	{
+		ScribDelBase.pushVisitorEnv(this, checker);
+	}*/
 }

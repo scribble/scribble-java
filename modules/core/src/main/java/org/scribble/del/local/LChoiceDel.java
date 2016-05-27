@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.Choice;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LProtocolBlock;
@@ -16,13 +17,47 @@ import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.ProjectedChoiceDoPruner;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
+import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 {
+	/* // Not needed: just enters and pushes, done by base routine (only overwite if do extra stuff, like pushChoiceParent)
+	@Override
+	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	{
+		ChoiceUnguardedSubprotocolEnv env = checker.peekEnv().enterContext();
+		checker.pushEnv(env);
+	}*/
+
+	@Override
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
+	{
+		Choice<?> cho = (Choice<?>) visited;
+		List<UnguardedChoiceDoEnv> benvs =
+				cho.getBlocks().stream().map((b) -> (UnguardedChoiceDoEnv) b.del().env()).collect(Collectors.toList());
+		UnguardedChoiceDoEnv merged = checker.popEnv().mergeContexts(benvs); 
+		checker.pushEnv(merged);
+		return (Choice<?>) super.leaveUnguardedChoiceDoProjectionCheck(parent, child, checker, cho);  // Done merge of children here, super does merge into parent
+	}
+
+	@Override
+	public ScribNode leaveProjectedChoiceDoPruning(ScribNode parent, ScribNode child, ProjectedChoiceDoPruner pruner, ScribNode visited) throws ScribbleException
+	{
+		LChoice lc = (LChoice) visited;
+		List<LProtocolBlock> blocks = lc.getBlocks().stream().filter((b) -> !b.isEmpty()).collect(Collectors.toList());
+		if (blocks.isEmpty())
+		{
+			return null;
+		}
+		return lc.reconstruct(lc.subj, blocks);
+	}
+	
 	@Override
 	public ScribNode leaveProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer, ScribNode visited) throws ScribbleException
 	{
@@ -41,7 +76,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		else
 		{
 			subjs = subjs.stream()
-					.map((r) -> fixer.isRecVarRole(r) ? fixer.getChoiceSubject(new RecVar(r.toString())) : r)
+					.map((r) -> fixer.isRecVarRole(r) ? fixer.getChoiceSubject(new RecVar(r.toString())) : r)  // Never needed?
 					.collect(Collectors.toSet());
 		}
 		

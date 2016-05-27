@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
@@ -24,6 +25,11 @@ public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 	{
 		super.enter(parent, child);
 		child.del().enterProjectedChoiceSubjectFixing(parent, child, this);
+		
+		/*if (child instanceof LProtocolDecl)
+		{
+			System.out.println("aaa:\n" + ((LProtocolDecl) child));
+		}*/
 	}
 	
 	@Override
@@ -80,7 +86,7 @@ public class ProjectedChoiceSubjectFixer extends ModuleContextVisitor
 	}
 }
 
-class RecVarRole extends Role // Hack
+class RecVarRole extends Role // HACK for unguarded continues -- but not actually needed?
 {
 	private static final long serialVersionUID = 1L;
 	

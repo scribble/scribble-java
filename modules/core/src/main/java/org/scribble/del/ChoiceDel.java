@@ -20,7 +20,7 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.peekEnv().enterContext();
-		env = env.pushChoiceParent();
+		env = env.pushChoiceParent();  // Above is already a copy, but fine
 		unf.pushEnv(env);
 	}
 
@@ -32,6 +32,6 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 				cho.getBlocks().stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
 		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
 		unf.pushEnv(merged);
-		return (Choice<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);
+		return (Choice<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);  // Done merge of children here, super does merge into parent	
 	}
 }

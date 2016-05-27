@@ -1,0 +1,97 @@
+//$ bin/scribblec.sh modules/core/src/test/scrib/Fixme.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/
+
+//http://sandbox.kidstrythisathome.com/erdos/
+
+
+module Fixme;
+
+
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			//1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+		continue X;  // (FIXME: reachability error coming out as a graph building error)
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	rec X {
+		choice at A {
+			m1(Int) from A to B;
+			continue X;
+			//m4(int) from A to B;
+		} or {
+			m2(Int) from A to B;
+			//m3(int) from A to B;
+		}
+		1() from C to D;  // FIXME: wrong enabled check result
+	}
+	//*/
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			m2() from A to B;
+		}
+		m() from A to B;  // FIXME: graph building exception
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role B, role C, role D)
+{
+	rec X
+	{
+		choice at B
+		{
+			1() from B to C;
+			choice at C
+			{
+				2() from C to B;
+				//4() from C to D;  // FIXME: graph building exception when commented
+				continue X;
+			}
+			or
+			{
+				3() from C to B;
+				4() from C to D;
+				continue X;
+			}
+		}
+	}
+}
+//*/
+
+

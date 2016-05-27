@@ -13,7 +13,9 @@ import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.JobContext;
+import org.scribble.visit.ProjectedChoiceDoPruner;
 import org.scribble.visit.ProtocolDeclContextBuilder;
+import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 {

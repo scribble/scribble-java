@@ -26,11 +26,19 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 		return (MessageTransfer<?>) super.leaveProtocolInlining(parent, child, inl, lr);
 	}
 
+	/*@Override
+	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	{
+		ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
+		env = env.disablePrune();
+		checker.pushEnv(env);
+	}*/
+
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException
 	{
 		UnfoldingEnv env = unf.popEnv();
-		env = env.noUnfold();
+		env = env.disableUnfold();
 		unf.pushEnv(env);
 	}
 

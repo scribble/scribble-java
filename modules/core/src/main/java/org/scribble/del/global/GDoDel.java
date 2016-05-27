@@ -91,7 +91,7 @@ public class GDoDel extends DoDel implements GSimpleInteractionNodeDel
 			LProtocolNameNode target = Projector.makeProjectedFullNameNode(gd.getTargetProtocolDeclFullName(mc), popped);
 			projection = gd.project(self, target);
 			
-			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking?
+			// FIXME: do guarded recursive subprotocol checking (i.e. role is used during chain) in reachability checking? -- required role-usage makes local choice subject inference easier, but is restrictive (e.g. proto(A, B, C) { choice at A {A->B.do Proto(A,B,C)} or {A->B.B->C} }))
 		}
 		proj.pushEnv(proj.popEnv().setProjection(projection));
 		return (GDo) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);

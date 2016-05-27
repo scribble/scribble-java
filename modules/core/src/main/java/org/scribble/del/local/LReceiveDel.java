@@ -9,8 +9,10 @@ import org.scribble.model.local.Receive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
@@ -32,5 +34,15 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
 		fixer.setChoiceSubject(((LReceive) child).src.toName());
+	}
+	
+	@Override
+	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker) throws ScribbleException
+	{
+		super.enterUnguardedChoiceDoProjectionCheck(parent, child, checker);
+		LReceive lr = (LReceive) child;
+		UnguardedChoiceDoEnv env = checker.popEnv();
+		env = env.setChoiceSubject(lr.src.toName());
+		checker.pushEnv(env);
 	}
 }
