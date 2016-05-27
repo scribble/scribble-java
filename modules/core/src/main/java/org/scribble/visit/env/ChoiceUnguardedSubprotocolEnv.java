@@ -54,8 +54,8 @@ public class ChoiceUnguardedSubprotocolEnv extends Env<ChoiceUnguardedSubprotoco
 		
 		//copy.subjs = envs.stream().flatMap((e) -> e.subjs.stream()).collect(Collectors.toSet());
 		copy.subjs.addAll(envs.stream().flatMap((e) -> e.subjs.stream()).collect(Collectors.toSet()));
-		System.out.println("ddd1: " + envs);
-		System.out.println("ddd2: " + copy.subjs);
+		//System.out.println("ddd1: " + envs);
+		//System.out.println("ddd2: " + copy.subjs);
 		
 		return copy;
 	}
