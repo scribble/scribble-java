@@ -13,6 +13,7 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 
 // Basically infers all local choice subject candidates: if *none* are found for a given "choice-unguarded" do-call then the call is pruned (along with parent block and choice as necessary)
 // i.e. prune if no choice subject candidates, because that means (passive) role is never enabled and thus not involved
@@ -46,32 +47,19 @@ public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 				LDo ld = (LDo) ins.get(0);
 				LProtocolDecl lpd = ld.getTargetProtocolDecl(jc, getModuleContext());
 				
-				//System.out.println("111: " + ld);
-				
-				ChoiceUnguardedSubprotocolChecker checker = new ChoiceUnguardedSubprotocolChecker(getJob(),
-						((ModuleDel) jc.getModule(ld.proto.toName().getPrefix()).del()).getModuleContext(), lc);
+				ChoiceUnguardedSubprotocolChecker checker = new ChoiceUnguardedSubprotocolChecker(
+						getJob(),
+						((ModuleDel) jc.getModule(ld.proto.toName().getPrefix()).del()).getModuleContext(), 
+						lc);
 				lpd.accept(checker);
 				
-				//ChoiceUnguardedSubprotocolEnv env = (ChoiceUnguardedSubprotocolEnv) lpd.def.block.del().env();
-			
-				/*if (lpd.header.getDeclName().toString().endsWith("_suppliersvc"))
+				if ((lc.subj instanceof DummyProjectionRoleNode) && checker.shouldCheckPrune())
 				{
-					System.out.println("GGG: " + ld + ", " + env.subjs);
-				}*/
-				//System.out.println("GGG: " + ld + ", " + env.subjs + ", " + checker.SHOULD_PRUNE);
-
-				//if ((lc.subj instanceof DummyProjectionRoleNode) && env.subjs.isEmpty())
-				if ((lc.subj instanceof DummyProjectionRoleNode) && checker.shouldPrune())
-				{
-					//System.out.println("GGG: " + ld + ", " + env.subjs);
-					//if (ins.size() > 1)
+					ChoiceUnguardedSubprotocolEnv env = (ChoiceUnguardedSubprotocolEnv) lpd.def.block.del().env();  // Although AST is cloned, del is the same (HACKY?)
+					if (env.subjs.isEmpty())  // Prune check
 					{
-					return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(ins.subList(1, ins.size())));  // Supports singleton case
+						return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(ins.subList(1, ins.size())));  // Supports singleton case
 					}
-					/*else
-					{
-						return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Collections.emptyList()));
-					}*/
 				}
 			}
 		}

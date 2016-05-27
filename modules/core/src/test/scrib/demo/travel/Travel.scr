@@ -43,8 +43,8 @@ explicit global protocol BookingExp(role C, role A, role S)
 
 aux global protocol BookingExpAux(role C, role A, role S)
 {
-	rec X  // Ignore
-	{
+	/*rec X
+	{*/
 		choice at C
 		{
 			Query(String) from C to A;
@@ -71,5 +71,5 @@ aux global protocol BookingExpAux(role C, role A, role S)
 			}
 			Bye() from C to A;
 		}
-	}
+	//}
 }

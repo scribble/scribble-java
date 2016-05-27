@@ -14,7 +14,7 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 
 	}
 
-	// Only wanted for locals, but doesn't hurt here
+	// Should only do for locals, but OK here (visitor only run on projections)
 	@Override
 	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
 	{
@@ -25,8 +25,6 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
 	{
 		// Overridden in CompoundInteractionNodeDel to do merging of child context into parent context
-		//System.out.println("CCC1:\n" + child);
-		//System.out.println("CCC: " + parent.getClass() + ", " + checker.peekEnv() + ", " + checker.peekEnv().subjs);
 		return ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
 	}
 

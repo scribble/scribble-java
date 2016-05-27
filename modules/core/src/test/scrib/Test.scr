@@ -63,7 +63,41 @@ aux global protocol Proto1Aux(role A, role B, role C)
 //*/
 
 
-//*
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		do Proto1Aux1(A, B, C);
+	}
+	or
+	{
+		do Proto1Aux2(A, B, C);
+	}
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at A
+	{
+		3() from A to B;
+		3() from A to C;
+		do Proto1Aux1(A, B, C);
+	}
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		2() from A to B;
+		do Proto1Aux1(A, B, C);
+	}
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -80,14 +114,14 @@ aux global protocol Proto1Aux1(role A, role B, role C)
 		//3() from B to C;
 		do Proto1Aux2(A, B, C);  // Testing mutually choice-unguarded "prunable" do's
 			// FIXME: pruning/inference broken again (whole protocoldecl incorrectly pruned for C)
-			// FIXME: check if safety violation is correct
+			// FIXME: at some point got a safety violation, check if correct (maybe with the 4's)
 	}
-	//or
+	//or  // FIXME: pruning broken, but maybe should be
 	//{
-//		4() from A to B;
-//		4() from B to C;
-		//do Proto1Aux2(A, B, C);
-//	}
+	//	4() from A to B;
+	//	4() from B to C;
+	//	do Proto1Aux2(A, B, C);
+	//}
 }
 
 aux global protocol Proto1Aux2(role A, role B, role C)

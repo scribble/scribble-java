@@ -97,7 +97,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	@Override
 	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
 	{
-		//if (checker.isCycle())
+		/*//if (checker.isCycle())
 		if (checker.isRootedCycle())  // ChoiceUnguardedSubprotocolChecker is a (regular) SubprotocolVisitor which pushes a subprotosig on root decl entry (ProjectedSubprotocolPruner.visit)
 			                            // Check for "rooted" cycle to ensure it's specifically the cycle from the root proto decl (back) to the target do
 																	// FIXME: but cycle to specific "target do" is not ensured: could be another instance of a do with the same subprotosig... an inherent issue of the current subprotocolvisitor framework
@@ -112,11 +112,11 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 			if (checker.peekEnv().subjs.isEmpty())
 			{
 				/*ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
-				checker.pushEnv(env.disablePrune());*/
-				checker.enablePrune();
+				checker.pushEnv(env.disablePrune());* /
+				//checker.enablePrune();
 			}
-		}
-		return child;
+		}*/
+		return super.leaveChoiceUnguardedSubprotocolCheck(parent, child, checker, visited);
 
 
 		// for each do: check shouldPrune condition by following the control flow: if terminates or cycles with no actions then prune
