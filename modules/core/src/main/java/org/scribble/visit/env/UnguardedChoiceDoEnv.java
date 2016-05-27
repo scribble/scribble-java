@@ -9,47 +9,47 @@ import java.util.stream.Collectors;
 import org.scribble.sesstype.name.Role;
 
 // Cf. UnfoldingEnv
-public class ChoiceUnguardedSubprotocolEnv extends Env<ChoiceUnguardedSubprotocolEnv>
+public class UnguardedChoiceDoEnv extends Env<UnguardedChoiceDoEnv>
 {
 	//private boolean shouldPrune;
 	public Set<Role> subjs;  // If well-formed (including wrt. local choice syntax) should be a singleton: but this is currently checked in subsequent choice subject inference pass, not here
 	
-	public ChoiceUnguardedSubprotocolEnv()
+	public UnguardedChoiceDoEnv()
 	{
 		//this.shouldPrune = true;
 		this.subjs = new HashSet<>();
 	}
 
 	//protected ChoiceUnguardedSubprotocolEnv(boolean shouldPrune, Set<Role> subjs)
-	protected ChoiceUnguardedSubprotocolEnv(Set<Role> subjs)
+	protected UnguardedChoiceDoEnv(Set<Role> subjs)
 	{
 		//this.shouldPrune = shouldUnfold;
 		this.subjs = new HashSet<>(subjs);
 	}
 
 	@Override
-	protected ChoiceUnguardedSubprotocolEnv copy()
+	protected UnguardedChoiceDoEnv copy()
 	{
 		//return new ChoiceUnguardedSubprotocolEnv(this.shouldPrune, this.subjs);
-		return new ChoiceUnguardedSubprotocolEnv(this.subjs);
+		return new UnguardedChoiceDoEnv(this.subjs);
 	}
 
 	@Override
-	public ChoiceUnguardedSubprotocolEnv enterContext()
+	public UnguardedChoiceDoEnv enterContext()
 	{
 		return copy();
 	}
 
 	@Override
-	public ChoiceUnguardedSubprotocolEnv mergeContext(ChoiceUnguardedSubprotocolEnv env)
+	public UnguardedChoiceDoEnv mergeContext(UnguardedChoiceDoEnv env)
 	{
 		return mergeContexts(Arrays.asList(env));
 	}
 
 	@Override
-	public ChoiceUnguardedSubprotocolEnv mergeContexts(List<ChoiceUnguardedSubprotocolEnv> envs)
+	public UnguardedChoiceDoEnv mergeContexts(List<UnguardedChoiceDoEnv> envs)
 	{
-		ChoiceUnguardedSubprotocolEnv copy = copy();
+		UnguardedChoiceDoEnv copy = copy();
 		//copy.shouldPrune = (envs.stream().filter((e) -> !e.shouldPrune).count() > 0);  // Look for false, cf. UnfoldingEnv
 		//copy.subjs = envs.stream().flatMap((e) -> e.subjs.stream()).collect(Collectors.toSet());
 		copy.subjs.addAll(envs.stream().flatMap((e) -> e.subjs.stream()).collect(Collectors.toSet()));
@@ -60,9 +60,9 @@ public class ChoiceUnguardedSubprotocolEnv extends Env<ChoiceUnguardedSubprotoco
 		return copy;
 	}
 	
-	public ChoiceUnguardedSubprotocolEnv setChoiceSubject(Role r)
+	public UnguardedChoiceDoEnv setChoiceSubject(Role r)
 	{
-		ChoiceUnguardedSubprotocolEnv copy = copy();
+		UnguardedChoiceDoEnv copy = copy();
 		if (copy.subjs.isEmpty())
 		{
 			//System.out.println("BBB: " + r);

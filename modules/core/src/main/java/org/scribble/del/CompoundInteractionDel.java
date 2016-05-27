@@ -2,7 +2,7 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
+import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.WFChoiceChecker;
 
@@ -14,15 +14,16 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 
 	}
 
-	// Should only do for locals, but OK here (visitor only run on projections)
+	// Should only do for projections, but OK here (visitor only run on projections)
 	@Override
-	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker) throws ScribbleException
 	{
 		ScribDelBase.pushVisitorEnv(this, checker);
 	}
 
+	// Should only do for projections, but OK here (visitor only run on projections)
 	@Override
-	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
 	{
 		// Overridden in CompoundInteractionNodeDel to do merging of child context into parent context
 		return ScribDelBase.popAndSetVisitorEnv(this, checker, visited);

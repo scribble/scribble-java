@@ -13,14 +13,14 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
+import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 // Basically infers all local choice subject candidates: if *none* are found for a given "choice-unguarded" do-call then the call is pruned (along with parent block and choice as necessary)
 // i.e. prune if no choice subject candidates, because that means (passive) role is never enabled and thus not involved
 // FIXME: ambiguous choice subject (i.e. > 1 candidate) is checked subsequently by ProjectedChoiceSubjectFixer -- should be better integrated (e.g. reuse ChoiceUnguardedSubprotocolChecker, rather than adhoc LInteractionNode.inferLocalChoiceSubject) -- NOTE: but cannot do all pruning and fixing in one pass, as fixing the subject roles here will interfere with the pruning algorithm (currently it looks for dummy role choices)
-public class ProjectedSubprotocolPruner extends ModuleContextVisitor
+public class ProjectedChoiceDoPruner extends ModuleContextVisitor
 {
-	public ProjectedSubprotocolPruner(Job job)
+	public ProjectedChoiceDoPruner(Job job)
 	{
 		super(job);
 	}
@@ -47,7 +47,7 @@ public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 				LDo ld = (LDo) ins.get(0);
 				LProtocolDecl lpd = ld.getTargetProtocolDecl(jc, getModuleContext());
 				
-				ChoiceUnguardedSubprotocolChecker checker = new ChoiceUnguardedSubprotocolChecker(
+				UnguardedChoiceDoProjectionChecker checker = new UnguardedChoiceDoProjectionChecker(
 						getJob(),
 						((ModuleDel) jc.getModule(ld.proto.toName().getPrefix()).del()).getModuleContext(), 
 						lc);
@@ -55,7 +55,7 @@ public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 				
 				if ((lc.subj instanceof DummyProjectionRoleNode) && checker.shouldCheckPrune())
 				{
-					ChoiceUnguardedSubprotocolEnv env = (ChoiceUnguardedSubprotocolEnv) lpd.def.block.del().env();  // Although AST is cloned, del is the same (HACKY?)
+					UnguardedChoiceDoEnv env = (UnguardedChoiceDoEnv) lpd.def.block.del().env();  // Although AST is cloned, del is the same (HACKY?)
 					if (env.subjs.isEmpty())  // Prune check
 					{
 						return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(ins.subList(1, ins.size())));  // Supports singleton case
@@ -72,14 +72,14 @@ public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 	{
 		//super.subprotocolEnter(parent, child);
 		super.enter(parent, child);
-		child.del().enterProjectedSubprotocolPruning(parent, child, this);
+		child.del().enterProjectedChoiceDoPruning(parent, child, this);
 	}
 	
 	@Override
 	//protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveProjectedSubprotocolPruning(parent, child, this, visited);
+		visited = visited.del().leaveProjectedChoiceDoPruning(parent, child, this, visited);
 		//return super.subprotocolLeave(parent, child, visited);
 		return super.leave(parent, child, visited);
 	}

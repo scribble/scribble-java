@@ -26,7 +26,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
+import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ProjectedRoleDeclFixer;
 import org.scribble.visit.ProtocolDeclContextBuilder;
@@ -95,7 +95,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	}
 	
 	@Override
-	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
 	{
 		/*//if (checker.isCycle())
 		if (checker.isRootedCycle())  // ChoiceUnguardedSubprotocolChecker is a (regular) SubprotocolVisitor which pushes a subprotosig on root decl entry (ProjectedSubprotocolPruner.visit)
@@ -116,7 +116,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 				//checker.enablePrune();
 			}
 		}*/
-		return super.leaveChoiceUnguardedSubprotocolCheck(parent, child, checker, visited);
+		return super.leaveUnguardedChoiceDoProjectionCheck(parent, child, checker, visited);
 
 
 		// for each do: check shouldPrune condition by following the control flow: if terminates or cycles with no actions then prune

@@ -6,6 +6,12 @@ package org.scribble.main;
 // via del may be good -- ASTs are always cloned, but same del can be inherited
 
 
+//.. consider a "less expressive" version of subprotocol declaration that does not allow same rec labels for "non-compatible" states after inlining/unfolding (not sure how to compute though)
+//      -- i.e. limit subprotocols to corresponds to standard rec-continue structure
+//			-- this is a limitation of relying on protocol name + role arg config as ("unique") state identifiers
+//      -- No? recursive subprotocols should inherently be same as standard rec-continue? -- maybe non-unfiorm rec naming scheme is fine (use inner most?), and just graph building is wrong?
+
+
 //.. Global model WF
 //
 //.. analyse inlined unfolded for max buffer size -- no: one-slot buffer seems sufficient, given located choice

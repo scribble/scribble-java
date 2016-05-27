@@ -9,10 +9,10 @@ import org.scribble.model.local.Receive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
+import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
+import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
 {
@@ -37,14 +37,12 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 	}
 	
 	@Override
-	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	public void enterUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker) throws ScribbleException
 	{
-		super.enterChoiceUnguardedSubprotocolCheck(parent, child, checker);
-		
+		super.enterUnguardedChoiceDoProjectionCheck(parent, child, checker);
 		LReceive lr = (LReceive) child;
-		ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
+		UnguardedChoiceDoEnv env = checker.popEnv();
 		env = env.setChoiceSubject(lr.src.toName());
 		checker.pushEnv(env);
-		//System.out.println("DDD: " + env);
 	}
 }

@@ -3,11 +3,11 @@ package org.scribble.del;
 import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
+import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
+import org.scribble.visit.env.UnguardedChoiceDoEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
 
@@ -30,13 +30,14 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		return ScribDelBase.popAndSetVisitorEnv(this, inl, visited);
 	}
 
+	// Should only do for projections, but OK here (visitor only run on projections)
 	@Override
-	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
 	{
 		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
-		ChoiceUnguardedSubprotocolEnv visited_env = checker.popEnv();  // popAndSet current
+		UnguardedChoiceDoEnv visited_env = checker.popEnv();  // popAndSet current
 		setEnv(visited_env);
-		ChoiceUnguardedSubprotocolEnv parent_env = checker.popEnv();  // pop-merge-push parent
+		UnguardedChoiceDoEnv parent_env = checker.popEnv();  // pop-merge-push parent
 		parent_env = parent_env.mergeContext(visited_env);
 		checker.pushEnv(parent_env);
 		return (CompoundInteractionNode<?>) visited;

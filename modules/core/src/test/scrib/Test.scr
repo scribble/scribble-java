@@ -27,6 +27,9 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
+global protocol Proto1(role A, role B, role C)
+{
+}
 
 
 /*
@@ -64,6 +67,88 @@ aux global protocol Proto1Aux(role A, role B, role C)
 
 
 /*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	1() from A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at A
+	{
+		3() from A to B;
+		3() from B to C;
+		do Proto1Aux2(A, B, C);
+	}
+	or  // FIXME: pruning broken, but maybe should be? (subject inference infinite loop: detect and raise WF error?) -- also at some point got a safety violation, check if correct (maybe with these 4's)
+			// ** No: FIXME: graph building is wrong (projection/inlining look correct) -- an issue: different recs with the same subsig-recvar can have different available transitions (i.e. be non-compatible states)...
+			// FIXME: make a minimal example for this issue -- without role balancing for WF, protocol name + role config is not enough to identify a "unique" state any more -- need to verify this: aren't recursive subprotcols same as regular rec-continue, and why? (a problem of unguarded recs?)
+	{
+		4() from A to B;
+		4() from B to C;
+		//do Proto1Aux2(A, B, C);
+	}
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		5() from A to B;
+		do Proto1Aux1(A, B, C);
+		//do Proto1Aux2(A, B, C);
+	}
+	or
+	{
+		6() from A to B;
+		//connect B to C;
+		6() from B to C;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	1() from A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at A
+	{
+		3() from A to B;
+		//3() from B to C;
+		do Proto1Aux2(A, B, C);  // Testing mutually choice-unguarded "prunable" do's
+	}
+}
+
+aux global protocol Proto1Aux2(role A, role B, role C)
+{
+	choice at A
+	{
+		5() from A to B;
+		do Proto1Aux1(A, B, C);
+		//do Proto1Aux2(A, B, C);
+	}
+	or
+	{
+		6() from A to B;
+		//connect B to C;
+		6() from B to C;
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A
@@ -92,51 +177,6 @@ aux global protocol Proto1Aux2(role A, role B, role C)
 	{
 		2() from A to B;
 		do Proto1Aux1(A, B, C);
-	}
-}
-//*/
-
-
-/*
-explicit global protocol Proto1(role A, role B, role C)
-{
-	connect A to B;
-	connect B to C;
-	1() from A to B;
-	do Proto1Aux1(A, B, C);
-}
-
-aux global protocol Proto1Aux1(role A, role B, role C)
-{
-	choice at A
-	{
-		3() from A to B;
-		//3() from B to C;
-		do Proto1Aux2(A, B, C);  // Testing mutually choice-unguarded "prunable" do's
-			// FIXME: pruning/inference broken again (whole protocoldecl incorrectly pruned for C)
-			// FIXME: at some point got a safety violation, check if correct (maybe with the 4's)
-	}
-	//or  // FIXME: pruning broken, but maybe should be
-	//{
-	//	4() from A to B;
-	//	4() from B to C;
-	//	do Proto1Aux2(A, B, C);
-	//}
-}
-
-aux global protocol Proto1Aux2(role A, role B, role C)
-{
-	choice at A
-	{
-		5() from A to B;
-		do Proto1Aux1(A, B, C);
-		//do Proto1Aux2(A, B, C);
-	}
-	or
-	{
-		6() from A to B;
-		//connect B to C;
-		6() from B to C;
 	}
 }
 //*/

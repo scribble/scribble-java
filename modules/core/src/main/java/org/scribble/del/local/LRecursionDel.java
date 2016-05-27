@@ -1,6 +1,7 @@
 package org.scribble.del.local;
 
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LRecursion;
@@ -12,11 +13,22 @@ import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
+import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.InlineProtocolEnv;
 import org.scribble.visit.env.ReachabilityEnv;
+import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 public class LRecursionDel extends RecursionDel implements LCompoundInteractionNodeDel
 {
+	@Override
+	public ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
+	{
+		Recursion<?> rec = (Recursion<?>) visited;
+		UnguardedChoiceDoEnv merged = checker.popEnv().mergeContext((UnguardedChoiceDoEnv) rec.block.del().env());
+		checker.pushEnv(merged);
+		return (Recursion<?>) super.leaveUnguardedChoiceDoProjectionCheck(parent, child, checker, rec);
+	}
+
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{

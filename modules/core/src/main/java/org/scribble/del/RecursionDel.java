@@ -4,10 +4,8 @@ import org.scribble.ast.Recursion;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.NameDisambiguator;
-import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 
 public abstract class RecursionDel extends CompoundInteractionNodeDel
@@ -64,13 +62,4 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 	{
 		ScribDelBase.pushVisitorEnv(this, checker);
 	}*/
-
-	@Override
-	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
-	{
-		Recursion<?> rec = (Recursion<?>) visited;
-		ChoiceUnguardedSubprotocolEnv merged = checker.popEnv().mergeContext((ChoiceUnguardedSubprotocolEnv) rec.block.del().env());
-		checker.pushEnv(merged);
-		return (Recursion<?>) super.leaveChoiceUnguardedSubprotocolCheck(parent, child, checker, rec);
-	}
 }

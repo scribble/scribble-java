@@ -11,17 +11,17 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.ProtocolName;
-import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
+import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 // FIXME: refactor as a choice subject candidate collector (i.e. NameCollector -- thought that is an OffsetSubprotocolCollector, does that make a difference?)
-public class ChoiceUnguardedSubprotocolChecker extends SubprotocolVisitor<ChoiceUnguardedSubprotocolEnv>
+public class UnguardedChoiceDoProjectionChecker extends SubprotocolVisitor<UnguardedChoiceDoEnv>
 //public class ChoiceUnguardedSubprotocolChecker extends NoEnvSubprotocolVisitor
 {
 	//private final LChoice cho;  // Useless: subprotocovisitor visits a role-substituted clone
 	
 	private boolean shouldPrune = false;  // OK here, or reinstant in env?
 
-	public ChoiceUnguardedSubprotocolChecker(Job job, ModuleContext mcontext, LChoice cho)
+	public UnguardedChoiceDoProjectionChecker(Job job, ModuleContext mcontext, LChoice cho)
 	{
 		super(job);
 		setModuleContext(mcontext);
@@ -38,9 +38,9 @@ public class ChoiceUnguardedSubprotocolChecker extends SubprotocolVisitor<Choice
 	}
 	
 	@Override
-	protected ChoiceUnguardedSubprotocolEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
+	protected UnguardedChoiceDoEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
 	{
-		return new ChoiceUnguardedSubprotocolEnv();
+		return new UnguardedChoiceDoEnv();
 	}
 
 	@Override
@@ -89,13 +89,13 @@ public class ChoiceUnguardedSubprotocolChecker extends SubprotocolVisitor<Choice
 	protected void subprotocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.subprotocolEnter(parent, child);
-		child.del().enterChoiceUnguardedSubprotocolCheck(parent, child, this);
+		child.del().enterUnguardedChoiceDoProjectionCheck(parent, child, this);
 	}
 	
 	@Override
 	protected ScribNode subprotocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveChoiceUnguardedSubprotocolCheck(parent, child, this, visited);
+		visited = visited.del().leaveUnguardedChoiceDoProjectionCheck(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);
 	}
 }
