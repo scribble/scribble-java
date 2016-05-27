@@ -6,6 +6,7 @@ import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.Accept;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.ProjectedSubprotocolPruner;
@@ -41,5 +42,16 @@ public class LAcceptDel extends ConnectionActionDel implements LSimpleInteractio
 		/*ProjectedSubprotocolPruningEnv env = pruner.popEnv();
 		env = env.disablePrune();
 		pruner.pushEnv(env);*/
+	}
+
+	@Override
+	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	{
+		super.enterChoiceUnguardedSubprotocolCheck(parent, child, checker);
+		
+		LAccept la = (LAccept) child;
+		ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
+		env = env.setChoiceSubject(la.src.toName());
+		checker.pushEnv(env);
 	}
 }

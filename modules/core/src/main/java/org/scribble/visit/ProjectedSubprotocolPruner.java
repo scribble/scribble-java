@@ -21,12 +21,14 @@ import org.scribble.ast.local.LInteractionSeq;
 import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LRecursion;
+import org.scribble.ast.name.simple.DummyProjectionRoleNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
+import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 
 // Cf. InlinedProtocolUnfolder
 //public class ProjectedSubprotocolPruner extends SubprotocolVisitor<ProjectedSubprotocolPruningEnv>
@@ -81,8 +83,13 @@ public class ProjectedSubprotocolPruner extends ModuleContextVisitor
 				((ModuleDel)getJobContext().getModule(ld.proto.toName().getPrefix()).del()).getModuleContext(), lc);
 
 		lpd.accept(checker);
-				if (checker.SHOULD_PRUNE)
+		
+			ChoiceUnguardedSubprotocolEnv env = (ChoiceUnguardedSubprotocolEnv) lpd.def.block.del().env();
+		
+				//if (checker.SHOULD_PRUNE)
+				if ((lc.subj instanceof DummyProjectionRoleNode) &&  env.subjs.isEmpty())
 				{
+					//System.out.println("GGG: " + ld + ", " + env.subjs);
 					return AstFactoryImpl.FACTORY.LProtocolBlock(AstFactoryImpl.FACTORY.LInteractionSeq(Collections.emptyList()));
 				}
 			}

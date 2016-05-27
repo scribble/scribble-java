@@ -35,6 +35,8 @@ public class ChoiceUnguardedSubprotocolChecker extends SubprotocolVisitor<Choice
 	private final LChoice cho;
 	
 	public boolean SHOULD_PRUNE = false;
+	
+	//public Set<Role>
 
 	public ChoiceUnguardedSubprotocolChecker(Job job, ModuleContext mcontext, LChoice cho)
 	{

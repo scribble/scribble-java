@@ -45,11 +45,11 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 		fixer.setChoiceSubject(((LSend) child).src.toName());
 	}
 	
-	@Override
+	/*@Override
 	public void enterProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner) throws ScribbleException
 	{
 		/*ProjectedSubprotocolPruningEnv env = pruner.popEnv();
 		env = env.disablePrune();
-		pruner.pushEnv(env);*/
-	}
+		pruner.pushEnv(env);* /
+	}*/
 }

@@ -72,7 +72,8 @@ aux global protocol Proto1Aux1(role A, role B, role C)
 	{
 		3() from A to B;
 		//3() from B to C;
-		do Proto1Aux2(A, B, C);  // Testing mutually unguarded "prunable" choice-do
+		do Proto1Aux2(A, B, C);  // FIXME: Testing mutually unguarded "prunable" choice-do
+			// FIXME: check if safety violation is correct
 	}
 	/*or
 	{
@@ -131,6 +132,22 @@ aux global protocol Proto1Aux2(role A, role B, role C)
 		//connect B to C;
 		4() from B to C;
 	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		do Proto1Aux1(A, B);
+	}
+}
+
+aux global protocol Proto1Aux1(role A, role B)
+{
+	1() from A to B;
 }
 //*/
 

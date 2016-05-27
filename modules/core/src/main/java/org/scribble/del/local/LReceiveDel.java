@@ -9,9 +9,9 @@ import org.scribble.model.local.Receive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 
 public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
@@ -36,11 +36,23 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 		fixer.setChoiceSubject(((LReceive) child).src.toName());
 	}
 	
-	@Override
+	/*@Override
 	public void enterProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner) throws ScribbleException
 	{
 		/*ProjectedSubprotocolPruningEnv env = pruner.popEnv();
 		env = env.disablePrune();
-		pruner.pushEnv(env);*/
+		pruner.pushEnv(env);
+	}*/
+
+	@Override
+	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
+	{
+		super.enterChoiceUnguardedSubprotocolCheck(parent, child, checker);
+		
+		LReceive lr = (LReceive) child;
+		ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
+		env = env.setChoiceSubject(lr.src.toName());
+		checker.pushEnv(env);
+		//System.out.println("DDD: " + env);
 	}
 }

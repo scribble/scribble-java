@@ -76,8 +76,7 @@ public class LDo extends Do<Local> implements LSimpleInteractionNode
 		ModuleContext mc = fixer.getModuleContext();
 		JobContext jc = fixer.getJobContext();
 		
-		System.out.println("YYY:\n" + getTargetProtocolDecl(jc, mc));
-		
+		//System.out.println("YYY:\n" + getTargetProtocolDecl(jc, mc));
 		
 		Role subj = getTargetProtocolDecl(jc, mc).getDef().getBlock()
 				.getInteractionSeq().getInteractions().get(0).inferLocalChoiceSubject(fixer);

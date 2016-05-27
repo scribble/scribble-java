@@ -24,6 +24,8 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 	@Override
 	public ScribNode leaveChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker, ScribNode visited) throws ScribbleException
 	{
+		//System.out.println("CCC1:\n" + child);
+		//System.out.println("CCC: " + checker.peekEnv() + ", " + checker.peekEnv().subjs);
 		return ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
 	}
 
