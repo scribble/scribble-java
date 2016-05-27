@@ -19,7 +19,6 @@ import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.DoDel;
-import org.scribble.del.ModuleDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.SubprotocolSig;
 import org.scribble.sesstype.kind.RecVarKind;
@@ -30,10 +29,8 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.ProjectedRoleDeclFixer;
-import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
-import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 import org.scribble.visit.env.InlineProtocolEnv;
 
 public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
@@ -106,8 +103,8 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 																	// FIXME: but cycle to specific "target do" is not ensured: could be another instance of a do with the same subprotosig... an inherent issue of the current subprotocolvisitor framework
 			
 			// FIXME: this algorithm works for some use cases for is still wrong (prunes some that it shouldn't -- e.g. mutually pruneable choice-unguarded do's)
-			// what we really need is to check for 0 inferred choice subjects up to recursion back (if any) to to the parent choice -- problem is current framework doesn't make identifying (e.g. ==) the original choice easy
-			// the issue is arising since WF was relaxed to allow unbalanced choice case roles: with balanced, subject inference is always fine as long as roles are used?
+			// *** what we really need is to check for 0 inferred choice subjects up to recursion back (if any) to to the parent choice -- problem is current framework doesn't make identifying (e.g. ==) the original choice easy ***
+			// the issue is arising since WF was relaxed to allow unbalanced choice case roles: with balanced, subject inference is always fine as long as roles are used? (and prev assumed no choice-unguarded do's?)
 		{
 			//System.out.println("ABC: " + checker.peekEnv().subjs + ", " + checker.SHOULD_PRUNE);
 			
@@ -116,29 +113,12 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 			{
 				/*ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
 				checker.pushEnv(env.disablePrune());*/
-				checker.SHOULD_PRUNE = true;
+				checker.enablePrune();
 			}
 		}
-			return child;
-	}
+		return child;
 
-	@Override
-	public ScribNode leaveProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner, ScribNode visited) throws ScribbleException
-	{
-		/*if (pruner.peekEnv().shouldPrune() && pruner.isCycle())
-		{
-			ProjectedSubprotocolPruningEnv env = pruner.popEnv();
-			env = env.disablePrune();
 
-			System.out.println("bbb: " + child);
-
-			pruner.pushEnv(env);
-			// FIXME: no good: we will side effect (only) the current root decl (due to SubprotocolVisitor discarding visited subprotocol ASTs)
-			// So for mutual protocol decl cycles, none will retain the pruning AST change (and then the cycle won't exist any more when visiting the other decls in the the cycle)
-			return null;
-		}*/
-		
-		
 		// for each do: check shouldPrune condition by following the control flow: if terminates or cycles with no actions then prune
 		// Let the main pruning visitor be a regular visitor, and use the subprotocol visitor to follow the calls for pruning analysis
 		
@@ -152,25 +132,5 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		//		... but look only on direct path or across all branches?
 						
 		//...or else it should be: start from the target protocoldecl and go through to the candidate do (cf grecursion.prune)
-		
-		/*LDo ld = (LDo) visited;
-		LProtocolDecl lpd = ld.getTargetProtocolDecl(pruner.getJobContext(), pruner.getModuleContext());
-		
-		//Set<Role> occs = ((LProtocolDeclDel) lpd.del()).getProtocolDeclContext().getRoleOccurrences();
-		
-		System.out.println("111: " + ld);
-		
-		ChoiceUnguardedSubprotocolChecker checker = new ChoiceUnguardedSubprotocolChecker(pruner.getJob(),
-				//pruner.getModuleContext());
-				((ModuleDel)pruner.getJobContext().getModule(ld.proto.toName().getPrefix()).del()).getModuleContext());
-
-		lpd.accept(checker);*/
-		
-		//.stream().map( (r) -> rolemap.get(r)).collect(Collectors.toSet());
-		
-		/*LDo child = (LDo) child;
-		getTargetProtocolDecl(jc, mc).getDef().getBlock();*/
-		
-		return visited;
 	}
 }

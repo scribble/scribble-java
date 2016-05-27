@@ -34,7 +34,7 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 				cho.getBlocks().stream().map((b) -> (ChoiceUnguardedSubprotocolEnv) b.del().env()).collect(Collectors.toList());
 		ChoiceUnguardedSubprotocolEnv merged = checker.popEnv().mergeContexts(benvs); 
 		checker.pushEnv(merged);
-		return (Choice<?>) super.leaveChoiceUnguardedSubprotocolCheck(parent, child, checker, cho);  // done merge of children here, super does merge into parent
+		return (Choice<?>) super.leaveChoiceUnguardedSubprotocolCheck(parent, child, checker, cho);  // Done merge of children here, super does merge into parent
 	}
 
 	@Override
@@ -53,6 +53,6 @@ public abstract class ChoiceDel extends CompoundInteractionNodeDel
 				cho.getBlocks().stream().map((b) -> (UnfoldingEnv) b.del().env()).collect(Collectors.toList());
 		UnfoldingEnv merged = unf.popEnv().mergeContexts(benvs); 
 		unf.pushEnv(merged);
-		return (Choice<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);  // done merge of children here, super does merge into parent	
+		return (Choice<?>) super.leaveInlinedProtocolUnfolding(parent, child, unf, visited);  // Done merge of children here, super does merge into parent	
 	}
 }

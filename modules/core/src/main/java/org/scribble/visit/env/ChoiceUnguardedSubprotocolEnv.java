@@ -11,26 +11,27 @@ import org.scribble.sesstype.name.Role;
 // Cf. UnfoldingEnv
 public class ChoiceUnguardedSubprotocolEnv extends Env<ChoiceUnguardedSubprotocolEnv>
 {
-	private boolean shouldPrune;
-	
+	//private boolean shouldPrune;
 	public Set<Role> subjs;  // If well-formed (including wrt. local choice syntax) should be a singleton: but this is currently checked in subsequent choice subject inference pass, not here
 	
 	public ChoiceUnguardedSubprotocolEnv()
 	{
-		this.shouldPrune = true;
+		//this.shouldPrune = true;
 		this.subjs = new HashSet<>();
 	}
 
-	protected ChoiceUnguardedSubprotocolEnv(boolean shouldUnfold, Set<Role> subjs)
+	//protected ChoiceUnguardedSubprotocolEnv(boolean shouldPrune, Set<Role> subjs)
+	protected ChoiceUnguardedSubprotocolEnv(Set<Role> subjs)
 	{
-		this.shouldPrune = shouldUnfold;
+		//this.shouldPrune = shouldUnfold;
 		this.subjs = new HashSet<>(subjs);
 	}
 
 	@Override
 	protected ChoiceUnguardedSubprotocolEnv copy()
 	{
-		return new ChoiceUnguardedSubprotocolEnv(this.shouldPrune, this.subjs);
+		//return new ChoiceUnguardedSubprotocolEnv(this.shouldPrune, this.subjs);
+		return new ChoiceUnguardedSubprotocolEnv(this.subjs);
 	}
 
 	@Override
@@ -49,11 +50,10 @@ public class ChoiceUnguardedSubprotocolEnv extends Env<ChoiceUnguardedSubprotoco
 	public ChoiceUnguardedSubprotocolEnv mergeContexts(List<ChoiceUnguardedSubprotocolEnv> envs)
 	{
 		ChoiceUnguardedSubprotocolEnv copy = copy();
-		boolean merge = (envs.stream().filter((e) -> !e.shouldPrune).count() > 0);  // Look for false, cf. UnfoldingEnv
-		copy.shouldPrune = merge;
-		
+		//copy.shouldPrune = (envs.stream().filter((e) -> !e.shouldPrune).count() > 0);  // Look for false, cf. UnfoldingEnv
 		//copy.subjs = envs.stream().flatMap((e) -> e.subjs.stream()).collect(Collectors.toSet());
 		copy.subjs.addAll(envs.stream().flatMap((e) -> e.subjs.stream()).collect(Collectors.toSet()));
+
 		//System.out.println("ddd1: " + envs);
 		//System.out.println("ddd2: " + copy.subjs);
 		
@@ -71,24 +71,17 @@ public class ChoiceUnguardedSubprotocolEnv extends Env<ChoiceUnguardedSubprotoco
 		return copy;
 	}
 
-	public boolean shouldPrune()
+	/*public boolean shouldPrune()
 	{
 		return this.shouldPrune;
 	}
 
-	/*public ChoiceUnguardedSubprotocolEnv pushLProtocolDeclParent()
-	{
-		ChoiceUnguardedSubprotocolEnv copy = copy();
-		copy.shouldPrune = true;
-		return copy;
-	}*/
-	
 	public ChoiceUnguardedSubprotocolEnv disablePrune()
 	{	
 		ChoiceUnguardedSubprotocolEnv copy = copy();
 		copy.shouldPrune = false;
 		return copy;
-	}
+	}*/
 	
 	@Override
 	public String toString()

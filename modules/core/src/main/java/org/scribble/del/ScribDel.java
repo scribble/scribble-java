@@ -222,16 +222,6 @@ public interface ScribDel
 		return visited;
 	}
 	
-	/*default void enterProjectedSubprotocolCleaning(ScribNode parent, ScribNode child, ProjectedSubprotocolCleaner cleaner) throws ScribbleException
-	{
-		
-	}
-
-	default ScribNode leaveProjectedSubprotocolCleaning(ScribNode parent, ScribNode child, ProjectedSubprotocolCleaner cleaner, ScribNode visited) throws ScribbleException
-	{
-		return visited;
-	}*/
-	
 	default void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
 	{
 		

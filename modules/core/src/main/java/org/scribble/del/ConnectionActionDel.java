@@ -3,11 +3,9 @@ package org.scribble.del;
 import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.RoleCollector;
-import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 
 // FIXME: factor with MessageTransferDel
@@ -27,13 +25,13 @@ public abstract class ConnectionActionDel extends SimpleInteractionNodeDel
 		return (ConnectionAction<?>) super.leaveProtocolInlining(parent, child, inl, c);
 	}
 
-	@Override
+	/*@Override
 	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
 	{
 		ChoiceUnguardedSubprotocolEnv env = checker.popEnv();
 		env = env.disablePrune();
 		checker.pushEnv(env);
-	}
+	}*/
 
 	@Override
 	public void enterInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf) throws ScribbleException

@@ -36,14 +36,6 @@ public class LReceiveDel extends MessageTransferDel implements LSimpleInteractio
 		fixer.setChoiceSubject(((LReceive) child).src.toName());
 	}
 	
-	/*@Override
-	public void enterProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner) throws ScribbleException
-	{
-		/*ProjectedSubprotocolPruningEnv env = pruner.popEnv();
-		env = env.disablePrune();
-		pruner.pushEnv(env);
-	}*/
-
 	@Override
 	public void enterChoiceUnguardedSubprotocolCheck(ScribNode parent, ScribNode child, ChoiceUnguardedSubprotocolChecker checker) throws ScribbleException
 	{

@@ -9,7 +9,6 @@ import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ChoiceUnguardedSubprotocolChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
-import org.scribble.visit.ProjectedSubprotocolPruner;
 import org.scribble.visit.env.ChoiceUnguardedSubprotocolEnv;
 
 public class LAcceptDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
@@ -34,14 +33,6 @@ public class LAcceptDel extends ConnectionActionDel implements LSimpleInteractio
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
 		fixer.setChoiceSubject(((LAccept) child).src.toName());
-	}
-	
-	@Override
-	public void enterProjectedSubprotocolPruning(ScribNode parent, ScribNode child, ProjectedSubprotocolPruner pruner) throws ScribbleException
-	{
-		/*ProjectedSubprotocolPruningEnv env = pruner.popEnv();
-		env = env.disablePrune();
-		pruner.pushEnv(env);*/
 	}
 
 	@Override
