@@ -194,6 +194,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 		}
 		getJob().debugPrintln("(" + fullname + ") Built global states: " + count);
+		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 
 		//System.out.println("Global model:\n" + init.toDot());
 
@@ -272,10 +273,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		
 		if (!errorMsg.equals(""))
 		{
-			throw new ScribbleException("\n" + init.toDot() + errorMsg);
+			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
+			throw new ScribbleException(errorMsg);
 		}
-
-		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 		
 		return child;
 	}

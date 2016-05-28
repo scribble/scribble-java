@@ -76,39 +76,61 @@ public class CommandLine //implements Runnable
 	public void run() throws ScribbleException
 	{
 		Job job = newJob(newMainContext());
-		job.checkWellFormedness();
-		if (this.args.containsKey(ArgFlag.PROJECT))
+		ScribbleException fail = null;
+		try
 		{
-			outputProjections(job);
+			job.checkWellFormedness();
 		}
-		if (this.args.containsKey(ArgFlag.FSM))
+		catch (ScribbleException x)
 		{
-			outputGraph(job);
+			fail = x;
 		}
-		if (this.args.containsKey(ArgFlag.SESS_API))
+		try
 		{
-			outputSessionApi(job);
-		}
-		if (this.args.containsKey(ArgFlag.SCHAN_API))
-		{
-			outputStateChannelApi(job);
-		}
-		if (this.args.containsKey(ArgFlag.EP_API))
-		{
-			outputEndpointApi(job);
-		}
-		if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
-		{
-			if (job.useOldWf)
+			if (this.args.containsKey(ArgFlag.PROJECT))
 			{
-				throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
+				outputProjections(job);
 			}
-			outputGlobalModel(job);
+			if (this.args.containsKey(ArgFlag.FSM))
+			{
+				outputGraph(job);
+			}
+			if (this.args.containsKey(ArgFlag.SESS_API))
+			{
+				outputSessionApi(job);
+			}
+			if (this.args.containsKey(ArgFlag.SCHAN_API))
+			{
+				outputStateChannelApi(job);
+			}
+			if (this.args.containsKey(ArgFlag.EP_API))
+			{
+				outputEndpointApi(job);
+			}
+			if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
+			{
+				if (job.useOldWf)
+				{
+					throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
+				}
+				outputGlobalModel(job);
+			}
+			/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
+			{
+				outputProjectedModel(job);
+			}*/
 		}
-		/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
+		catch (ScribbleException x)
 		{
-			outputProjectedModel(job);
-		}*/
+			if (fail == null)
+			{
+				fail = x;
+			}
+		}
+		if (fail != null)
+		{
+			throw fail;
+		}
 	}
 	
 	// FIXME: option to write to file, like classes
