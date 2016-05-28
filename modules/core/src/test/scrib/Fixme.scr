@@ -33,18 +33,22 @@ global protocol Proto1(role A, role B)
 /*
 global protocol Proto1(role A, role B, role C, role D)
 {
-	rec X {
-		choice at A {
+	rec X
+	{
+		choice at A
+		{
 			m1(Int) from A to B;
 			continue X;
 			//m4(int) from A to B;
-		} or {
+		}
+		or
+		{
 			m2(Int) from A to B;
 			//m3(int) from A to B;
 		}
 		1() from C to D;  // FIXME: wrong enabled check result
 	}
-	//*/
+	//* /
 }
 //*/
 
@@ -63,35 +67,8 @@ global protocol Proto1(role A, role B)
 		{
 			m2() from A to B;
 		}
-		m() from A to B;  // FIXME: graph building exception
+		m1() from A to B;  // FIXME: reachability error not detected
 	}
 }
 //*/
-
-
-/*
-global protocol Proto1(role B, role C, role D)
-{
-	rec X
-	{
-		choice at B
-		{
-			1() from B to C;
-			choice at C
-			{
-				2() from C to B;
-				//4() from C to D;  // FIXME: graph building exception when commented
-				continue X;
-			}
-			or
-			{
-				3() from C to B;
-				4() from C to D;
-				continue X;
-			}
-		}
-	}
-}
-//*/
-
 

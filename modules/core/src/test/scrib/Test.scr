@@ -28,6 +28,32 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 /*
+global protocol Proto1(role B, role C, role D)
+{
+	rec X
+	{
+		choice at B
+		{
+			1() from B to C;
+			choice at C
+			{
+				2() from C to B;
+				//4() from C to D;  //  Graph building fixed
+				continue X;
+			}
+			or
+			{
+				3() from C to B;
+				4() from C to D;
+				continue X;
+			}
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	choice at A
