@@ -229,10 +229,10 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		Deque<Set<A>> tmp2 = this.enacting.get(recvar);
 		if (tmp2 == null)
 		{
-			tmp2 = new LinkedList<>();
+			tmp2 = new LinkedList<>();  // New Stack for this recvar
 			this.enacting.put(recvar, tmp2);
 		}
-		tmp2.push(new HashSet<>());
+		tmp2.push(new HashSet<>());  // Push new Set element onto stack
 	}	
 
 	protected final Map<S, Set<A>> enactingMap = new HashMap<>();
@@ -241,6 +241,10 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	{
 		this.recvars.get(recvar).pop();
 		Set<A> pop = this.enacting.get(recvar).pop();
+		if (this.enacting.get(recvar).isEmpty())  // All Sets popped from the stack of this recvar
+		{
+			this.enacting.remove(recvar);
+		}
 		
 		this.enactingMap.put(getEntry(), pop);
 	}	

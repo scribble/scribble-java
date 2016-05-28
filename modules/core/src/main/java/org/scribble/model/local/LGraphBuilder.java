@@ -76,19 +76,19 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 			{
 				for (IOAction e : this.enactingMap.get(succ))
 				{
-					//System.out.println("AAA: " + res + ", " + e + ", " + next);
+					for (EndpointState n : succ.acceptAll(e))
+					{
+						next = getNext(map, n);
+						addEdgeAux(res, e, next);
 
-					next = getNext(map, curr.accept(a).accept(e));
-					addEdgeAux(res, e, next);
-
-					foo(seen, map, succ, next);
+						foo(seen, map, succ, next);
+					}
 				}
 			}
 		}
 	}
 
-	private EndpointState getNext(Map<EndpointState, EndpointState> map,
-			EndpointState succ)
+	private EndpointState getNext(Map<EndpointState, EndpointState> map, EndpointState succ)
 	{
 		EndpointState next;
 		if (map.containsKey(succ))
