@@ -114,7 +114,8 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		for (RecVar rv : this.enacting.keySet())
 		{
 			Deque<Set<A>> tmp = this.enacting.get(rv);
-			tmp.push(new HashSet<>(tmp.peek()));
+			//tmp.push(new HashSet<>(tmp.peek()));
+			tmp.push(new HashSet<>());
 		}
 	}
 
@@ -149,7 +150,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		for (RecVar rv : this.enacting.keySet())
 		{
 			Deque<Set<A>> tmp = this.enacting.get(rv);
-			tmp.push(new HashSet<>(tmp.peek()));
+			tmp.push(new HashSet<>());
 		}
 	}
 
@@ -186,7 +187,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		{
 			Set<A> pop = this.enacting.get(rv).pop();
 			Set<A> peek = this.enacting.get(rv).peek();
-			if (peek.isEmpty())
+			//if (peek.isEmpty())
 			{
 				peek.addAll(pop);
 			}

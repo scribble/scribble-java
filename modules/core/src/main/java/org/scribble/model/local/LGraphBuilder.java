@@ -76,7 +76,7 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 			{
 				for (IOAction e : this.enactingMap.get(succ))
 				{
-					System.out.println("AAA: " + res + ", " + e + ", " + next);
+					//System.out.println("AAA: " + res + ", " + e + ", " + next);
 
 					next = getNext(map, curr.accept(a).accept(e));
 					addEdgeAux(res, e, next);
