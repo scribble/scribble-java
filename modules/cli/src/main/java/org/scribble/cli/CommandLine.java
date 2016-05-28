@@ -59,55 +59,56 @@ public class CommandLine //implements Runnable
 
 	public static void main(String[] args) throws ScribbleException
 	{
-		new CommandLine(args).run();
+		try
+		{
+			new CommandLine(args).run();
+		}
+		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
+		{
+			//throw new RuntimeScribbleException(e);
+			//throw e;
+			System.err.println(e.getMessage());  // JUnit harness looks for an exception
+			System.exit(1);
+		}
 	}
 
 	//@Override
 	public void run() throws ScribbleException
 	{
 		Job job = newJob(newMainContext());
-		try
+		job.checkWellFormedness();
+		if (this.args.containsKey(ArgFlag.PROJECT))
 		{
-			job.checkWellFormedness();
-			if (this.args.containsKey(ArgFlag.PROJECT))
-			{
-				outputProjections(job);
-			}
-			if (this.args.containsKey(ArgFlag.FSM))
-			{
-				outputGraph(job);
-			}
-			if (this.args.containsKey(ArgFlag.SESS_API))
-			{
-				outputSessionApi(job);
-			}
-			if (this.args.containsKey(ArgFlag.SCHAN_API))
-			{
-				outputStateChannelApi(job);
-			}
-			if (this.args.containsKey(ArgFlag.EP_API))
-			{
-				outputEndpointApi(job);
-			}
-			if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
-			{
-				if (job.useOldWf)
-				{
-					throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
-				}
-				outputGlobalModel(job);
-			}
-			/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
-			{
-				outputProjectedModel(job);
-			}*/
+			outputProjections(job);
 		}
-		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
+		if (this.args.containsKey(ArgFlag.FSM))
 		{
-			//throw new RuntimeScribbleException(e);
-			throw e;
-			//System.err.println(e.getMessage());  // JUnit harness looks for an exception
+			outputGraph(job);
 		}
+		if (this.args.containsKey(ArgFlag.SESS_API))
+		{
+			outputSessionApi(job);
+		}
+		if (this.args.containsKey(ArgFlag.SCHAN_API))
+		{
+			outputStateChannelApi(job);
+		}
+		if (this.args.containsKey(ArgFlag.EP_API))
+		{
+			outputEndpointApi(job);
+		}
+		if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
+		{
+			if (job.useOldWf)
+			{
+				throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
+			}
+			outputGlobalModel(job);
+		}
+		/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
+		{
+			outputProjectedModel(job);
+		}*/
 	}
 	
 	// FIXME: option to write to file, like classes

@@ -70,7 +70,7 @@ public class TestWellFormedness {
 
 	@Test
 	public void tests() throws Exception {
-		try {
+		/*try {
 			MainContext mc = newMainContext();
 			Job job = new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
 
@@ -80,6 +80,17 @@ public class TestWellFormedness {
 			if (!hasErrors) {
 				throw e;
 			}
+		}*/
+		MainContext mc = newMainContext();
+		Job job = new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
+		ScribbleException x = job.testWellFormednessCheck();
+		if (!hasErrors && x != null)
+		{
+			throw x;
+		}
+		else if (hasErrors && x == null)
+		{
+			fail("Should throw an error.");
 		}
 	}
 

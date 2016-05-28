@@ -9,7 +9,7 @@ module Fixme;
 type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
-//*
+/*
 global protocol Proto1(role A, role B)
 {
 	rec X

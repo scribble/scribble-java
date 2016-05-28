@@ -37,6 +37,19 @@ public class Job
 		this.jcontext = new JobContext(parsed, main);
 	}
 
+	public ScribbleException testWellFormednessCheck() throws ScribbleException
+	{
+		try
+		{
+			checkWellFormedness();
+		}
+		catch (ScribbleException x)
+		{
+			return x;
+		}
+		return null;
+	}
+
 	public void checkWellFormedness() throws ScribbleException
 	{
 		runContextBuildingPasses();
