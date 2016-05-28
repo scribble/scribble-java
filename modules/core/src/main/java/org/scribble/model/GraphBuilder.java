@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -16,17 +17,17 @@ import org.scribble.sesstype.name.RecVar;
 // Helper class for EndpointGraphBuilder -- can access the protected setters of S
 public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 {
-	//private S root;
-	
 	private final Map<RecVar, Deque<S>> recvars = new HashMap<>();  // Should be a stack of S?
-	//private final Map<SubprotocolSig, S> subprotos = new HashMap<>();  // Not scoped sigs
-	private final Map<RecVar, Deque<A>> enacting = new HashMap<>();
+	private final Map<RecVar, Deque<Set<A>>> enacting = new HashMap<>();  // first action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
 
-	private Deque<List<S>> pred = new LinkedList<>();
-	private Deque<List<A>> prev = new LinkedList<>();
+	//private final Map<SubprotocolSig, S> subprotos = new HashMap<>();  // Not scoped sigs
+
+	private final Deque<List<S>> pred = new LinkedList<>();
+	private final Deque<List<A>> prev = new LinkedList<>();
 	
-	private S entry;
-	private S exit;  // Good for merges (otherwise have to generate dummy merge nodes)
+	//protected S root;
+	protected S entry;
+	protected S exit;  // Good for merges (otherwise have to generate dummy merge nodes)
 	
 	public GraphBuilder()
 	{
@@ -36,12 +37,20 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	public void reset()
 	{
 		this.recvars.clear();
+		this.enacting.clear();
+		
+		this.pred.clear();
+		this.prev.clear();
+		this.pred.push(new LinkedList<>());
+		this.prev.push(new LinkedList<>());
+		
 		this.entry = newState(Collections.emptySet());
 		//this.root = this.entry;
 		this.exit = newState(Collections.emptySet());
 		
-		this.pred.push(new LinkedList<>());
-		this.prev.push(new LinkedList<>());
+		/*this.contStates.clear();
+		this.contRecVars.clear();*/
+		this.enactingMap.clear();
 	}
 	
 	public abstract S newState(Set<RecVar> labs);
@@ -51,18 +60,13 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	
 	public void addEntryLabel(RecVar lab)
 	{
-		System.out.println("CCC: " + this.entry + ", " + lab);
-		
 		this.entry.addLabel(lab);
 	}
-
-	/*public void removeLastEdge(S s)
+	
+	// visibility HACK
+	protected void addEdgeAux(S s, A a, S succ)
 	{
-		s.removeLastEdge();
-	}*/
-	public void removeEdge(S s, A a, S succ) throws ScribbleException
-	{
-		s.removeEdge(a, succ);
+		s.addEdge(a, succ);
 	}
 	
 	// Records 's' as predecessor state, and 'a' as previous action and the "enacting action" for "fresh" recursion scopes
@@ -77,51 +81,41 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		this.pred.push(new LinkedList<>(Arrays.asList(s)));
 		this.prev.push(new LinkedList<>(Arrays.asList(a)));
 		
-		for (Deque<A> ens : this.enacting.values())
+		for (Deque<Set<A>> ens : this.enacting.values())
 		{
-			if (!ens.isEmpty())
+			if (!ens.isEmpty())  // Unnecessary?
 			{
-				if (ens.peek() == null)
+				Set<A> tmp = ens.peek();
+				if (tmp.isEmpty())
 				{
-					ens.pop();
-					ens.push(a);
+					tmp.add(a);
 				}
 			}
 		}
 	}
 	
-	public void enterChoice()  // FIXME: refactor
+	/*private final List<S> contStates = new LinkedList<>();
+	private final List<RecVar> contRecVars = new LinkedList<>();*/
+
+	/*public void removeLastEdge(S s)
+	{
+		s.removeLastEdge();
+	}*/
+	public void removeEdge(S s, A a, S succ) throws ScribbleException
+	{
+		s.removeEdge(a, succ);
+	}
+	
+	public void enterChoice()  // FIXME: refactor (LChoiceDel.visitForFsmConversion)
 	{
 		this.pred.push(new LinkedList<>());
 		this.prev.push(new LinkedList<>());
-	}
-
-	public void pushChoiceBlock()
-	{
-		this.pred.push(null);  // Signifies following statement is "unguarded" in this choice block
-		this.prev.push(null);
-	}
-
-	public void popChoiceBlock()
-	{
-		List<S> pred = this.pred.pop();
-		List<A> prev = this.prev.pop();
-		List<S> peek1 = this.pred.peek();
-		if (peek1 == null)
+		
+		for (RecVar rv : this.enacting.keySet())
 		{
-			this.pred.pop();
-			peek1 = new LinkedList<>();
-			this.pred.push(peek1);
+			Deque<Set<A>> tmp = this.enacting.get(rv);
+			tmp.push(new HashSet<>(tmp.peek()));
 		}
-		peek1.addAll(pred);
-		List<A> peek2 = this.prev.peek();
-		if (peek2 == null)
-		{
-			this.prev.pop();
-			peek2 = new LinkedList<>();
-			this.prev.push(peek2);
-		}
-		peek2.addAll(prev);
 	}
 
 	public void leaveChoice()
@@ -134,6 +128,68 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 			this.prev.pop();
 			this.pred.push(pred);
 			this.prev.push(prev);
+		}
+		
+		for (RecVar rv : this.enacting.keySet())
+		{
+			Set<A> pop = this.enacting.get(rv).pop();
+			Set<A> peek = this.enacting.get(rv).peek();
+			if (peek.isEmpty())  // Cf. addEdge
+			{
+				peek.addAll(pop);
+			}
+		}
+	}
+
+	public void pushChoiceBlock()
+	{
+		this.pred.push(null);  // Signifies following statement is "unguarded" in this choice block
+		this.prev.push(null);
+		
+		for (RecVar rv : this.enacting.keySet())
+		{
+			Deque<Set<A>> tmp = this.enacting.get(rv);
+			tmp.push(new HashSet<>(tmp.peek()));
+		}
+	}
+
+	public void popChoiceBlock()
+	{
+		List<S> pred = this.pred.pop();
+		List<A> prev = this.prev.pop();
+
+		if (pred != null)  // Unguarded choice-continue?
+		{
+			List<S> peek1 = this.pred.peek();
+			if (peek1 == null)
+			{
+				this.pred.pop();
+				peek1 = new LinkedList<>();
+				this.pred.push(peek1);
+			}
+			peek1.addAll(pred);
+		}
+
+		if (prev != null)
+		{
+			List<A> peek2 = this.prev.peek();
+			if (peek2 == null)
+			{
+				this.prev.pop();
+				peek2 = new LinkedList<>();
+				this.prev.push(peek2);
+			}
+			peek2.addAll(prev);
+		}
+
+		for (RecVar rv : this.enacting.keySet())
+		{
+			Set<A> pop = this.enacting.get(rv).pop();
+			Set<A> peek = this.enacting.get(rv).peek();
+			if (peek.isEmpty())
+			{
+				peek.addAll(pop);
+			}
 		}
 	}
 	
@@ -169,19 +225,23 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		}*/
 		tmp.push(entry);
 		
-		Deque<A> tmp2 = this.enacting.get(recvar);
+		Deque<Set<A>> tmp2 = this.enacting.get(recvar);
 		if (tmp2 == null)
 		{
 			tmp2 = new LinkedList<>();
 			this.enacting.put(recvar, tmp2);
 		}
-		tmp2.push(null);
+		tmp2.push(new HashSet<>());
 	}	
 
+	protected final Map<S, Set<A>> enactingMap = new HashMap<>();
+	
 	public void popRecursionEntry(RecVar recvar)
 	{
 		this.recvars.get(recvar).pop();
-		this.enacting.get(recvar).pop();
+		Set<A> pop = this.enacting.get(recvar).pop();
+		
+		this.enactingMap.put(getEntry(), pop);
 	}	
 	
 	public List<S> getPredecessors()
@@ -199,10 +259,11 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		return this.recvars.get(recvar).peek();
 	}	
 	
-	public A getEnacting(RecVar rv)
+	/*public Set<A> getEnacting(RecVar rv)
 	{
+		// FIXME: is stack-ing enactings, need to return by searching from bottom upwards
 		return this.enacting.get(rv).peek();
-	}
+	}*/
 	
 	/*public S getSubprotocolEntry(SubprotocolSig subsig)
 	{

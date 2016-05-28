@@ -27,6 +27,46 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+	}
+}
+//*/
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at A
+			{
+				continue X;
+			}
+			or
+			{
+				3() from A to B;
+			}
+		}
+		or
+		{
+			2() from A to B;  // FIXME: not picked up as enacting
+		}
+	}
+}
+
+
+/*
 global protocol Proto1(role B, role C)
 {
 	rec X
@@ -36,7 +76,18 @@ global protocol Proto1(role B, role C)
 			3() from B to C;
 			choice at B
 			{
+				//1() from B to C;  // Guarding the X precludes the problem
 				continue X;
+				/*choice at B
+				{
+					1() from B to C;
+					continue X;
+				}
+				or
+				{
+					2() from B to C;
+					continue X;
+				}*/
 			}
 			or
 			{
@@ -49,7 +100,7 @@ global protocol Proto1(role B, role C)
 		}
 	}
 }
-
+//*/
 
 
 /*

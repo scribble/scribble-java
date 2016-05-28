@@ -1,5 +1,9 @@
 package org.scribble.model.local;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.scribble.model.GraphBuilder;
@@ -24,6 +28,79 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 	public LGraphBuilder()
 	{
 
+	}
+	
+	public void addContinueEdge(EndpointState s, RecVar rv)
+	{
+		/*this.contStates.add(s);
+		this.contRecVars.add(rv);*/
+		EndpointState entry = getRecursionEntry(rv);
+		addEdgeAux(s, new IntermediateContinueEdge(), entry);
+	}
+	
+	public EndpointGraph finalise()
+	{
+		EndpointState res = new EndpointState(this.entry.getLabels());
+		EndpointState resTerm = new EndpointState(this.exit.getLabels());
+		Map<EndpointState, EndpointState> map = new HashMap<>();
+		map.put(this.entry, res);
+		map.put(this.exit, resTerm);
+		foo(new HashSet<>(), map, this.entry, res);
+		return new EndpointGraph(res, resTerm);
+	}
+	
+	private void foo(Set<EndpointState> seen, Map<EndpointState, EndpointState> map,
+			EndpointState curr, EndpointState res)
+	{
+		if (seen.contains(curr))
+		{
+			return;
+		}
+		seen.add(curr);
+		Iterator<IOAction> as = curr.getAllAcceptable().iterator();
+		Iterator<EndpointState> ss = curr.getSuccessors().iterator();
+		while (as.hasNext())
+		{
+			IOAction a = as.next();
+			EndpointState succ = ss.next();
+			EndpointState next;
+			next = getNext(map, succ);
+			
+			if (!(a instanceof IntermediateContinueEdge))
+			{
+				addEdgeAux(res, a, next);
+			
+				foo(seen, map, succ, next);
+			}
+			else
+			{
+				for (IOAction e : this.enactingMap.get(succ))
+				{
+					System.out.println("AAA: " + res + ", " + e + ", " + next);
+
+					next = getNext(map, curr.accept(a).accept(e));
+					addEdgeAux(res, e, next);
+
+					foo(seen, map, succ, next);
+				}
+			}
+		}
+	}
+
+	private EndpointState getNext(Map<EndpointState, EndpointState> map,
+			EndpointState succ)
+	{
+		EndpointState next;
+		if (map.containsKey(succ))
+		{
+			 next = map.get(succ);
+		}
+		else
+		{
+			next = new EndpointState(succ.getLabels());
+			map.put(succ, next);
+		}
+		return next;
 	}
 	
 	/*public void reset()
