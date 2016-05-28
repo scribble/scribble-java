@@ -193,7 +193,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				}
 			}
 		}
-		getJob().debugPrintln("(" + fullname + ") Built global states: " + count);
+
+		job.debugPrintln("(" + fullname + ") Built global model (" + count + " states): \n" + init.toDot());
 		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 
 		//System.out.println("Global model:\n" + init.toDot());
