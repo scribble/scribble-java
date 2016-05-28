@@ -46,7 +46,7 @@ global protocol Proto1(role A, role B, role C, role D)
 			m2(Int) from A to B;
 			//m3(int) from A to B;
 		}
-		1() from C to D;  // FIXME: wrong enabled check result
+		1() from C to D;  // FIXME: wrong enabled check result -- maybe not? under unfolding it is captured inside the choice
 	}
 	//* /
 }
