@@ -8,7 +8,8 @@ ANTLR=
 	# e.g. '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar'
 
 PRG=`basename "$0"`
-DIR=`dirname "$0"`
+DIR=`dirname "$0"`   # Non Cygwin..
+#DIR=`dirname "$0"`/.. # Cygwin
 #BASEDIR=$(dirname $0)
 
 usage() {
@@ -16,12 +17,23 @@ usage() {
   cat <<EOF
   -h  --help                                     Display this information
   --verbose                                      Echo the java command
+
+  -V                                             Scribble debug info
   -ip [path]                                     Scribble import path
+
   -project [simple global protocol name] [role]  Project protocol
-  -fsm [simple global protocol name] [role]      Generate FSM
+  -fsm [simple global protocol name] [role]      Generate Endpoint FSM
   -dot [simple global protocol name] [role] [output file]
-          Generate FSM as png
+          Draw Endpoint FSM as png
           (Do not use in conjunction with other flags that output to stdout)
+
+  -model [simple global protocol name]           Generate global model
+
+  -api [simple global protocol name] [role]      Generate Endpoint API
+  -d [path]                                      API output path
+  -session [simple global protocol name]         Generate Session API only
+  -schan [simple global protocol name] [role]    Generate State Channel API only
+  -subtypes                                      Enable subtype API generation
 EOF
 }
 
@@ -58,6 +70,7 @@ CLASSPATH="'"`fixpath "$CLASSPATH"`"'"
 usage=0
 verbose=0
 dot=0
+nondot=0
 
 while true; do
     case "$1" in
@@ -65,8 +78,8 @@ while true; do
             break
             ;;
         -dot)
-        # Should not be used in conjunction with other flags..
-        # ..that output to stdout
+        		# Should not be used in conjunction with other flags..
+        		# ..that output to stdout
             ARGS="$ARGS '-fsm'"
             shift
             ARGS="$ARGS '$1'"
@@ -92,6 +105,23 @@ while true; do
             verbose=1
             shift
             ;;
+        -ip)
+            ARGS="$ARGS '$1'"
+            shift
+            ;;
+        -d)
+            ARGS="$ARGS '$1'"
+            shift
+            ;;
+        -subtypes)
+            ARGS="$ARGS '$1'"
+            shift
+            ;;
+        -*)
+            nondot=1
+            ARGS="$ARGS '$1'"
+            shift
+            ;;
         *)
             ARGS="$ARGS '$1'"
             shift
@@ -100,6 +130,10 @@ while true; do
 done
 
 if [ "$dot" != 0 ]; then
+  if [ $nondot == 1 ]; then
+    echo '-dot cannot be used in conjunction with other flags that output to stdout: ' $ARGS
+    exit 1
+  fi
   ARGS="$ARGS |"
   ARGS="$ARGS dot"
   ARGS="$ARGS '-Tpng'"

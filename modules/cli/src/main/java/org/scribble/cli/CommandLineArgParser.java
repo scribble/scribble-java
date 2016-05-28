@@ -15,7 +15,7 @@ public class CommandLineArgParser
 	public static final String PROJECT_FLAG = "-project";
 	public static final String FSM_FLAG = "-fsm";
 	public static final String SESSION_FLAG = "-session";
-	public static final String STATECHAN_FLAG = "-statechan";
+	public static final String STATECHAN_FLAG = "-schan";
 	public static final String API_FLAG = "-api";
 	public static final String OUTPUT_FLAG = "-d";
 	public static final String STATECHANSUBTYPES_FLAG = "-subtypes";
