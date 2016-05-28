@@ -27,6 +27,155 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec X  // Test: "enabling" stack push/pop for rec inside choice
+		{
+			2() from B to A;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	choice at B
+	{
+		do Proto1Aux1(A, B);
+	}
+	or
+	{
+		do Proto1Aux2(A, B);
+	}
+	or
+	{
+		4() from B to A;
+	}
+}
+
+global protocol Proto1Aux1(role A, role B)
+{
+	2() from B to A;
+	do Proto1(A, B);
+}
+
+aux global protocol Proto1Aux2(role A, role B)
+{
+	3() from B to A;
+	//do Proto1(A, B);
+	do Proto1Aux2(A, B);
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at A
+			{
+				continue X;
+			}
+			or
+			{
+				3() from A to B;
+			}
+		}
+		or
+		{
+			2() from A to B;  // graph building: multiple "enacting"
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role B, role C)
+{
+	rec X
+	{
+		choice at B  // Test: multiple "enactings" for rec
+		{
+			3() from B to C;
+			choice at B
+			{
+				//1() from B to C;  // Guarding the X precludes the problem
+				continue X;
+				//choice at B
+				//{
+				//	1() from B to C;
+				//	continue X;
+				//}
+				//or
+				//{
+				//	2() from B to C;
+				//	continue X;
+				//}
+			}
+			or
+			{
+				6() from B to C;
+			}
+		}
+		or
+		{
+			4() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	rec X
+	{
+		2() from A to B;
+		3() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			4() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	1() from A to B;
@@ -44,6 +193,7 @@ aux global protocol Proto1Aux1(role A, role B)
 		2() from A to B;
 	}
 }
+//*/
 
 
 /*
@@ -91,15 +241,14 @@ explicit global protocol Proto1(role A, role B, role C)
 
 aux global protocol Proto1Aux1(role A, role B, role C)
 {
+	// Should be BAD: complicated trace: B?3 C?3 B?5 B?3 C?3 B?5 B?4 C#4
 	choice at A
 	{
 		3() from A to B;
 		3() from B to C;
 		do Proto1Aux2(A, B, C);
 	}
-	or  // FIXME: pruning broken, but maybe should be? (subject inference infinite loop: detect and raise WF error?) -- also at some point got a safety violation, check if correct (maybe with these 4's)
-			// ** No: FIXME: graph building is wrong (projection/inlining look correct) -- an issue: different recs with the same subsig-recvar can have different available transitions (i.e. be non-compatible states)...
-			// FIXME: make a minimal example for this issue -- without role balancing for WF, protocol name + role config is not enough to identify a "unique" state any more -- need to verify this: aren't recursive subprotcols same as regular rec-continue, and why? (a problem of unguarded recs?)
+	or
 	{
 		4() from A to B;
 		4() from B to C;
@@ -112,7 +261,7 @@ aux global protocol Proto1Aux2(role A, role B, role C)
 	choice at A
 	{
 		5() from A to B;
-		do Proto1Aux1(A, B, C);
+		do Proto1Aux1(A, B, C);  // Testing graph building (C vs. A/B)
 		//do Proto1Aux2(A, B, C);
 	}
 	or
@@ -1438,7 +1587,7 @@ global protocol Proto1(role A, role B, role C)
 		or
 		{
 			5() from A to B;
-			2() from B to C;  // Generates a non-det 2() to differen states, but OK?
+			2() from B to C;  // Generates a non-det B?2() for C to different states, but OK?
 			3() from B to C;
 			continue X;
 		}
@@ -1514,6 +1663,7 @@ global protocol Proto1(role A, role B, role C, role D)
 /*
 global protocol Proto1(role A, role B, role C, role D)
 {
+	// Good
 	choice at A
 	{
 		1() from A to B;
@@ -1532,7 +1682,6 @@ global protocol Proto1(role A, role B, role C, role D)
 				{
 					() from C to A;
 					() from C to D;  // FIXME: minimise this test case
-					// FIXME: remove last edge
 					continue X;
 				}
 			}
@@ -1791,7 +1940,8 @@ global protocol Proto1(role A, role B, role C)
 /*
 global protocol Proto1(role A, role B, role C)
 {
-	rec X {
+	rec X
+	{
 		choice at A
 		{
 			1() from A to B;
@@ -1888,7 +2038,7 @@ global protocol Proto1(role A, role B, role C)
 			choice at A
 			{
 				1() from A to C;
-				continue X;  // FIXME: badly formed (for B)  // FIXME: add test case
+				continue X;  // ** FIXME: badly formed (for B) -- empty block is pruned leaving only the continue case, which leads to deadlock in global model, is this OK as WF algorithm? (any way to be unsound?)  or need to directly detect inconsistent choice block projections?  // FIXME: add test case
 			}
 			or
 			{
@@ -1905,7 +2055,8 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
-/*global protocol Proto1(role A, role B)
+/*
+global protocol Proto1(role A, role B)
 {
 	choice at A
 	{
@@ -1920,11 +2071,12 @@ global protocol Proto1(role A, role B, role C)
 		}
 	}
 }
-
+/*/
 // Standard problem of basic path/trace based WF choice checking:
 // different nested choice structures get conflated, when looking downstream (not just enabling message)
 // checking enabling only via global model is easy, difficulty is merge
-global protocol Proto2(role A, role B)
+/*
+global protocol Proto1(role A, role B)
 {
 	choice at A
 	{
@@ -1936,7 +2088,9 @@ global protocol Proto2(role A, role B)
 		1() from A to B;
 		3() from B to A;
 	}
-}*/
+}
+//*/
+
 
 /*
 global protocol Proto1(role A, role B)
@@ -2029,7 +2183,7 @@ global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		2() from A to C;  // FIXME: add deadlock freedom check -- actually "role liveness"?, could do on a global model (but maybe just syntactically by paths)
+		2() from A to C;  // "role liveness"?
 	 }
 }
 //*/
@@ -2161,7 +2315,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-/*// TODO: add to test suite
+/* TODO: add to test suite
 global protocol Proto1(role A, role B, role C)
 {
 	rec Y

@@ -13,9 +13,7 @@ import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.JobContext;
-import org.scribble.visit.ProjectedChoiceDoPruner;
 import org.scribble.visit.ProtocolDeclContextBuilder;
-import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 {
@@ -61,7 +59,10 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	public ScribNode leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
-		EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+
+		//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+		EndpointGraph fsm = graph.builder.finalise();
+		
 		JobContext jc = graph.getJobContext();
 		jc.addEndpointGraph(lpd.getFullMemberName((Module) parent), fsm);
 		return visited;

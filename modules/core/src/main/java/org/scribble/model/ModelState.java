@@ -23,6 +23,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	protected final Set<RecVar> labs;  // Was RecVar and SubprotocolSigs, now using inlined protocol for FSM building so just RecVar
 	//private final Set<String> labs;  // Something better to cover both RecVar and SubprotocolSigs?
 
+	// **: clients should use the pair of getAllAcceptable/getSuccessors for correctness -- getAcceptable/accept don't support non-det
 	//protected final LinkedHashMap<A, S> edges;  // Want predictable ordering of entries for e.g. API generation (state enumeration)*/
 	protected final List<A> actions;
 	protected final List<S> succs;

@@ -1,7 +1,6 @@
 package org.scribble.del.local;
 
 import java.util.Iterator;
-import java.util.List;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
@@ -37,13 +36,18 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 		//if (graph.builder.getPredecessor() == null)  // unguarded choice case
 		if (graph.builder.isUnguardedInChoice())
 		{
-			IOAction a = graph.builder.getEnacting(rv);
+			/*//IOAction a = graph.builder.getEnacting(rv);
+			for (IOAction a : graph.builder.getEnacting(rv))
+			{
 			List<EndpointState> ss = graph.builder.getRecursionEntry(rv).acceptAll(a);
+			//EndpointState s = graph.builder.getRecursionEntry(rv);
 			for (EndpointState s : ss)  // FIXME: produces non-det edges to different rec entries -- but equiv, do just pick 1?
 			{
 				graph.builder.addEdge(graph.builder.getEntry(), a, s);
 			}
 			//graph.builder.addEdge(graph.builder.getEntry(), a, ss.get(0));  // FIXME: OK to just pick 1? -- maybe: but the original non-det choice before enacting the recursion is still there anyway
+			*/
+			graph.builder.addContinueEdge(graph.builder.getEntry(), rv);
 		}
 		else
 		{

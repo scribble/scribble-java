@@ -99,7 +99,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
 			graph.builder.reset();
 			proj.accept(graph);  // Don't do on root decl, side effects job context
-			EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+			
+			//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+			EndpointGraph fsm = graph.builder.finalise();
 
 			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + fsm);
 			

@@ -7,33 +7,6 @@ module demo.travel.Travel;
 type <java> "java.lang.Integer" from "rt.jar" as Int;
 type <java> "java.lang.String" from "rt.jar" as String;
 
-global protocol Booking(role C, role A, role S)
-{
-	choice at C
-	{
-		Query(String) from C to A;
-		Quote(Int) from A to C;
-		() from A to S;   // Dummy
-		do Booking(C, A, S);
-	}
-	or
-	{
-		choice at C
-		{
-			Yes() from C to A;
-			Yes() from A to S;
-			Payment(String) from C to S;
-			Ack() from S to C;
-		}
-		or
-		{
-			No() from C to A;
-			No() from A to S;
-		}
-		Bye() from C to A;
-	}
-}
-
 
 explicit global protocol BookingExp(role C, role A, role S)
 {
@@ -72,4 +45,32 @@ aux global protocol BookingExpAux(role C, role A, role S)
 			Bye() from C to A;
 		}
 	//}
+}
+
+
+global protocol Booking(role C, role A, role S)
+{
+	choice at C
+	{
+		Query(String) from C to A;
+		Quote(Int) from A to C;
+		() from A to S;   // Dummy
+		do Booking(C, A, S);
+	}
+	or
+	{
+		choice at C
+		{
+			Yes() from C to A;
+			Yes() from A to S;
+			Payment(String) from C to S;
+			Ack() from S to C;
+		}
+		or
+		{
+			No() from C to A;
+			No() from A to S;
+		}
+		Bye() from C to A;
+	}
 }
