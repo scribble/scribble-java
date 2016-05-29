@@ -117,13 +117,13 @@ public class CommandLine //implements Runnable
 					{
 						throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
 					}
+					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
+					{
+						outputGlobalModel(job);
+					}
 					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT))
 					{
 						drawGlobalModel(job);
-					}
-					else
-					{
-						outputGlobalModel(job);
 					}
 				}
 				/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))

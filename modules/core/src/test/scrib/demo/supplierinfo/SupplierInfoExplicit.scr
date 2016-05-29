@@ -34,7 +34,7 @@ explicit global protocol PartnershipSupplier
 	or
 	{
 		loginsuccess() from loginsvc to requestor;
-		disconnect requestor and loginsvc;
+		//disconnect requestor and loginsvc;
 		connect requestor to authorisersvc;
 		connect authorisersvc to filtersvc;
 		connect authorisersvc to suppliersvc;
