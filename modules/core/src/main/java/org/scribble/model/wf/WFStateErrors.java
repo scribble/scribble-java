@@ -11,18 +11,18 @@ import org.scribble.sesstype.name.Role;
 public class WFStateErrors
 {
 	public final Map<Role, Receive> stuck;
-	public final Set<Set<Role>> deadlocks;
+	public final Set<Set<Role>> cycles;
 	public final Map<Role, Set<Send>> orphans;  // Don't think these can arise, due to MPST "pair-oriented" constructors (even with connect/disconnect)
 
 	public WFStateErrors(Map<Role, Receive> receptionErrors, Set<Set<Role>> deadlocks, Map<Role, Set<Send>> orphans)
 	{
 		this.stuck = Collections.unmodifiableMap(receptionErrors);
-		this.deadlocks = Collections.unmodifiableSet(deadlocks);
+		this.cycles = Collections.unmodifiableSet(deadlocks);
 		this.orphans = Collections.unmodifiableMap(orphans);
 	}
 	
 	public boolean isEmpty()
 	{
-		return this.stuck.isEmpty() && this.deadlocks.isEmpty() && this.orphans.isEmpty();
+		return this.stuck.isEmpty() && this.cycles.isEmpty() && this.orphans.isEmpty();
 	}
 }

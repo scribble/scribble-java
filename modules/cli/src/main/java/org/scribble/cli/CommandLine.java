@@ -1,8 +1,11 @@
 package org.scribble.cli;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -19,6 +22,8 @@ import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
+import org.scribble.model.local.EndpointGraph;
+import org.scribble.model.wf.WFState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -36,12 +41,14 @@ public class CommandLine //implements Runnable
 		JUNIT,
 		VERBOSE,
 		FSM,
+		FSM_DOT,
 		SESS_API,
 		SCHAN_API,
 		EP_API,
-		OUTPUT,
+		API_OUTPUT,
 		SCHAN_API_SUBTYPES,
 		GLOBAL_MODEL,
+		GLOBAL_MODEL_DOT,
 		OLD_WF,
 		NO_LIVENESS,
 		//PROJECTED_MODEL
@@ -88,6 +95,10 @@ public class CommandLine //implements Runnable
 				{
 					outputGraph(job);
 				}
+				if (this.args.containsKey(ArgFlag.FSM_DOT))
+				{
+					drawGraph(job);
+				}
 				if (this.args.containsKey(ArgFlag.SESS_API))
 				{
 					outputSessionApi(job);
@@ -100,13 +111,20 @@ public class CommandLine //implements Runnable
 				{
 					outputEndpointApi(job);
 				}
-				if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
+				if (this.args.containsKey(ArgFlag.GLOBAL_MODEL) || this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT))
 				{
 					if (job.useOldWf)
 					{
 						throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
 					}
-					outputGlobalModel(job);
+					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT))
+					{
+						drawGlobalModel(job);
+					}
+					else
+					{
+						outputGlobalModel(job);
+					}
 				}
 				/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
 				{
@@ -168,15 +186,43 @@ public class CommandLine //implements Runnable
 			System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
 		}
 	}
-	
+
+	private void drawGraph(Job job) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.FSM_DOT);
+		for (int i = 0; i < args.length; i += 3)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
+			String png = args[i+2];
+			buildEndointGraph(job, fullname, role);
+			EndpointGraph fsm = jcontext.getEndpointGraph(fullname, role);
+			runDot(fsm.init.toDot(), png);
+		}
+	}
+
 	private void outputGlobalModel(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL);
-		for (int i = 0; i < args.length; i += 2)
+		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			System.out.println("\n" + jcontext.getGlobalModel(fullname).toDot());  // FIXME: make a global equiv to EndpointGraph
+		}
+	}
+
+	private void drawGlobalModel(Job job) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL_DOT);
+		for (int i = 0; i < args.length; i += 2)
+		{
+			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
+			String png = args[i+1];
+			WFState model = jcontext.getGlobalModel(fullname);
+			runDot(model.toDot(), png);
 		}
 	}
 	
@@ -236,9 +282,9 @@ public class CommandLine //implements Runnable
 	private void outputClasses(Map<String, String> classes) throws ScribbleException
 	{
 		Consumer<String> f;
-		if (this.args.containsKey(ArgFlag.OUTPUT))
+		if (this.args.containsKey(ArgFlag.API_OUTPUT))
 		{
-			String dir = this.args.get(ArgFlag.OUTPUT)[0];
+			String dir = this.args.get(ArgFlag.API_OUTPUT)[0];
 			f = (path) -> { ScribUtil.handleLambdaScribbleException(() ->
 							{
 								String tmp = dir + "/" + path;
@@ -254,6 +300,45 @@ public class CommandLine //implements Runnable
 			f = (path) -> { System.out.println(path + ":\n" + classes.get(path)); };
 		}
 		classes.keySet().stream().forEach(f);
+	}
+	
+	private static void runDot(String dot, String png) throws ScribbleException
+	{
+		String tmpName = png + ".tmp";
+		File tmp = new File(tmpName);
+		if (tmp.exists())
+		{
+			throw new RuntimeException("Cannot overwrite: " + tmpName);
+		}
+		try
+		{
+			writeToFile(tmpName, dot);
+			
+			ProcessBuilder pb = new ProcessBuilder("dot", "-Tpng", "-o" + png, tmpName);
+			Process p = pb.start();
+			p.waitFor();
+
+			InputStream is = p.getInputStream(), eis = p.getErrorStream();
+			InputStreamReader isr = new InputStreamReader(is), eisr = new InputStreamReader(eis);
+			BufferedReader br = new BufferedReader(isr), ebr = new BufferedReader(eisr);
+			String line;
+			while ((line = br.readLine()) != null)
+			{
+				System.out.println(line);
+			}
+			while ((line = ebr.readLine()) != null)
+			{
+				System.out.println(line);
+			}
+		}
+		catch (IOException | InterruptedException x)
+		{
+			throw new ScribbleException(x);
+		}
+		finally
+		{
+			tmp.delete();
+		}
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
@@ -303,7 +388,11 @@ public class CommandLine //implements Runnable
 	private static void writeToFile(String path, String text) throws ScribbleException
 	{
 		File file = new File(path);
-		file.getParentFile().mkdirs();
+		File parent = file.getParentFile();
+		if (parent != null)
+		{
+			parent.mkdirs();
+		}
 		//try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8")))  // Doesn't create missing directories
 		try (FileWriter writer = new FileWriter(file))
 		{

@@ -15,12 +15,14 @@ public class CommandLineArgParser
 	public static final String PATH_FLAG = "-ip";
 	public static final String PROJECT_FLAG = "-project";
 	public static final String FSM_FLAG = "-fsm";
+	public static final String FSM_DOT_FLAG = "-fsmdot";
 	public static final String SESSION_FLAG = "-session";
 	public static final String STATECHAN_FLAG = "-schan";
 	public static final String API_FLAG = "-api";
-	public static final String OUTPUT_FLAG = "-d";
+	public static final String API_OUTPUT_FLAG = "-d";
 	public static final String STATECHANSUBTYPES_FLAG = "-subtypes";
 	public static final String GLOBAL_MODEL_FLAG = "-model";
+	public static final String GLOBAL_MODEL_DOT_FLAG = "-modeldot";
 	//public static final String PROJECTED_MODEL_FLAG = "-pmodel";
 	public static final String OLD_WF_FLAG = "-oldwf";
 	public static final String NO_LIVENESS = "-nolive";
@@ -30,7 +32,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.JUNIT_FLAG, CommandLine.ArgFlag.JUNIT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.VERBOSE_FLAG, CommandLine.ArgFlag.VERBOSE);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.ArgFlag.PATH);
-		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.ArgFlag.OUTPUT);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.API_OUTPUT_FLAG, CommandLine.ArgFlag.API_OUTPUT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.STATECHANSUBTYPES_FLAG, CommandLine.ArgFlag.SCHAN_API_SUBTYPES);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OLD_WF_FLAG, CommandLine.ArgFlag.OLD_WF);
 	}
@@ -39,10 +41,12 @@ public class CommandLineArgParser
 	{
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.ArgFlag.PROJECT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.FSM_FLAG, CommandLine.ArgFlag.FSM);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.FSM_DOT_FLAG, CommandLine.ArgFlag.FSM_DOT);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.ArgFlag.SESS_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.STATECHAN_FLAG, CommandLine.ArgFlag.SCHAN_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL_DOT);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.NO_LIVENESS, CommandLine.ArgFlag.NO_LIVENESS);
 		//CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.PROJECTED_MODEL_FLAG, CommandLine.ArgFlag.PROJECTED_MODEL);
 	}
@@ -118,6 +122,10 @@ public class CommandLineArgParser
 			{
 				return parseFsm(i);
 			}
+			case CommandLineArgParser.FSM_DOT_FLAG:
+			{
+				return parseFsmDot(i);
+			}
 			case CommandLineArgParser.SESSION_FLAG:
 			{
 				return parseSession(i);
@@ -130,7 +138,7 @@ public class CommandLineArgParser
 			{
 				return parseApi(i);
 			}
-			case CommandLineArgParser.OUTPUT_FLAG:
+			case CommandLineArgParser.API_OUTPUT_FLAG:
 			{
 				return parseOutput(i);
 			}
@@ -142,6 +150,10 @@ public class CommandLineArgParser
 			case CommandLineArgParser.GLOBAL_MODEL_FLAG:
 			{
 				return parseGlobalModel(i);
+			}
+			case CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG:
+			{
+				return parseGlobalModelDot(i);
 			}
 			/*case CommandLineArgParser.PROJECTED_MODEL_FLAG:
 			{
@@ -217,6 +229,19 @@ public class CommandLineArgParser
 		return i;
 	}
 
+	private int parseFsmDot(int i)
+	{
+		if ((i + 3) >= this.args.length)
+		{
+			throw new RuntimeException("Missing protocol/role/file arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		String png = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.FSM_DOT_FLAG), proto, role, png);
+		return i;
+	}
+
 	private int parseSession(int i)  // Almost same as parseProject
 	{
 		if ((i + 1) >= this.args.length)
@@ -263,6 +288,18 @@ public class CommandLineArgParser
 		return i;
 	}
 
+	private int parseGlobalModelDot(int i)
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new RuntimeException("Missing protocol/role/file arguments");
+		}
+		String proto = this.args[++i];
+		String png = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG), proto, png);
+		return i;
+	}
+
 	/*private int parseProjectedModel(int i)
 	{
 		if ((i + 2) >= this.args.length)
@@ -283,7 +320,7 @@ public class CommandLineArgParser
 			throw new RuntimeException("Missing directory argument");
 		}
 		String dir = this.args[++i];
-		this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.OUTPUT_FLAG), new String[] { dir } );
+		this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.API_OUTPUT_FLAG), new String[] { dir } );
 		return i;
 	}
 	

@@ -233,11 +233,11 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			if (!errors.stuck.isEmpty())
 			{
-				errorMsg += "\n  Reception errors: " + errors.stuck;
+				errorMsg += "\n  Stuck messages: " + errors.stuck;  // Deadlock from reception error
 			}
-			if (!errors.deadlocks.isEmpty())
+			if (!errors.cycles.isEmpty())
 			{
-				errorMsg += "\n  Deadlocks: " + errors.deadlocks;
+				errorMsg += "\n  Input cycles: " + errors.cycles;  // Deadlock from WF-cycle
 			}
 			if (!errors.orphans.isEmpty())
 			{

@@ -21,21 +21,28 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. "A from B to C;"
 	// e.g. "a from A to B; A[a] from B to C;"
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
+	//.. expliconn+introduces vs. delegation -- MPST with explicit (shared/sess) channels
 
 
-//*
 global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+}
+/*
+global protocol Proto1(role A, role B, role C)
 {
 	choice at A
 	{
 		1() from A to B;
-		2() from B to A;
+		2() from B to C;
+		//2() from B to A;
+		4() from B to A;
 	}
 	or
 	{
 		1() from A to B;
-		2() from B to A;
-		//3() from B to A;
+		2() from B to C;
+		3() from B to A;
 	}
 }
 //*/

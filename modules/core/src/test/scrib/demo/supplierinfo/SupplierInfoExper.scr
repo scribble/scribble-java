@@ -32,7 +32,7 @@ global protocol Main(
 		role loginsvc,
 		role requestor)
 {
-	loginsvc connects(
+	loginsvc connects(      // connect/disconnect now done as explicit statements
 			role authorisersvc,
 			role filtersvc,
 			role suppliersvc,

@@ -126,8 +126,8 @@ public class WFConfig
 		return res;
 	}
 
-	//public Map<Role, IOError> getReceptionErrors()
-	public Map<Role, Receive> getReceptionErrors()
+	// Deadlock from unhandled messages (reception errors)
+	public Map<Role, Receive> getStuckMessages()
 	{
 		Map<Role, Receive> res = new HashMap<>();
 		for (Role r : this.states.keySet())
@@ -159,8 +159,8 @@ public class WFConfig
 	}
 	
 	
-	// Doesn't include locally terminated (i.e. only "bad" deadlocks)
-	public Set<Set<Role>> getDeadlocks()
+	// Doesn't include locally terminated (single term state does not induce a deadlock cycle) -- i.e. only "bad" deadlocks
+	public Set<Set<Role>> getInputCycles()
 	{
 		Set<Set<Role>> res = new HashSet<>();
 		List<Role> todo = new LinkedList<>(this.states.keySet());

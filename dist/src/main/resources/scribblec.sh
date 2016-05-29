@@ -5,7 +5,7 @@ LIB=lib
 
 # antlr 3.2 location (if no lib jar)
 ANTLR=
-	# e.g. '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar'
+  # e.g. '/cygdrive/c/Users/[User]/.m2/repository/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar'
 
 PRG=`basename "$0"`
 DIR=`dirname "$0"`   # Non Cygwin..
@@ -15,25 +15,28 @@ DIR=`dirname "$0"`   # Non Cygwin..
 usage() {
   echo scribblec:
   cat <<EOF
-  -h  --help                                     Display this information
+  -h  --help                                     Show this info and exit
   --verbose                                      Echo the java command
-
   -V                                             Scribble debug info
+
   -ip [path]                                     Scribble import path
 
   -project [simple global protocol name] [role]  Project protocol
+
   -fsm [simple global protocol name] [role]      Generate Endpoint FSM
-  -dot [simple global protocol name] [role] [output file]
-          Draw Endpoint FSM as png
-          (Do not use in conjunction with other flags that output to stdout)
+  -fsmdot [simple global protocol name] [role] [output file]
+          Draw Endpoint FSM as png (requires dot)
 
   -model [simple global protocol name]           Generate global model
+  -modeldot [simple global protocol name] [role] [output file]
+          Draw global model as png (requires dot)
 
   -api [simple global protocol name] [role]      Generate Endpoint API
   -d [path]                                      API output path
   -session [simple global protocol name]         Generate Session API only
   -schan [simple global protocol name] [role]    Generate State Channel API only
   -subtypes                                      Enable subtype API generation
+
 EOF
 }
 
@@ -77,22 +80,22 @@ while true; do
         "")
             break
             ;;
-        -dot)
-        		# Should not be used in conjunction with other flags..
-        		# ..that output to stdout
-            ARGS="$ARGS '-fsm'"
-            shift
-            ARGS="$ARGS '$1'"
-            shift
-            ARGS="$ARGS '$1'"
-            shift
-            dot=$1
-            if [ "$dot" == '' ]; then
-              echo '-dot missing output file name argument'
-              exit 1
-            fi
-            shift
-            ;;
+        #-dot)
+        #    # Should not be used in conjunction with other flags..
+        #    # ..that output to stdout
+        #    ARGS="$ARGS '-fsm'"
+        #    shift
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    dot=$1
+        #    if [ "$dot" == '' ]; then
+        #      echo '-dot missing output file name argument'
+        #      exit 1
+        #    fi
+        #    shift
+        #    ;;
         -h)
             usage=1
             break
@@ -105,23 +108,23 @@ while true; do
             verbose=1
             shift
             ;;
-        -ip)
-            ARGS="$ARGS '$1'"
-            shift
-            ;;
-        -d)
-            ARGS="$ARGS '$1'"
-            shift
-            ;;
-        -subtypes)
-            ARGS="$ARGS '$1'"
-            shift
-            ;;
-        -*)
-            nondot=1
-            ARGS="$ARGS '$1'"
-            shift
-            ;;
+        #-ip)
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ;;
+        #-d)
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ;;
+        #-subtypes)
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ;;
+        #-*)
+        #    nondot=1
+        #    ARGS="$ARGS '$1'"
+        #    shift
+        #    ;;
         *)
             ARGS="$ARGS '$1'"
             shift
@@ -129,17 +132,17 @@ while true; do
     esac
 done
 
-if [ "$dot" != 0 ]; then
-  if [ $nondot == 1 ]; then
-    echo '-dot cannot be used in conjunction with other flags that output to stdout: ' $ARGS
-    exit 1
-  fi
-  ARGS="$ARGS |"
-  ARGS="$ARGS dot"
-  ARGS="$ARGS '-Tpng'"
-  ARGS="$ARGS '-o'"
-  ARGS="$ARGS '$dot'"
-fi
+#if [ "$dot" != 0 ]; then
+#  if [ $nondot == 1 ]; then
+#    echo '-dot cannot be used in conjunction with other flags that output to stdout: ' $ARGS
+#    exit 1
+#  fi
+#  ARGS="$ARGS |"
+#  ARGS="$ARGS dot"
+#  ARGS="$ARGS '-Tpng'"
+#  ARGS="$ARGS '-o'"
+#  ARGS="$ARGS '$dot'"
+#fi
 
 if [ "$usage" = 1 ]; then
   usage
