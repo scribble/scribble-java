@@ -27,6 +27,19 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	do Bar(A, B);
+}
+
+global protocol Bar(role C, role D, role E)
+{
+	1() from C to D;
+	2() from D to E;
+}
+
+/*
 global protocol Proto1(role A, role B)
 {
 	choice at A
@@ -38,8 +51,10 @@ global protocol Proto1(role A, role B)
 	{
 		1() from A to B;
 		2() from B to A;
+		//3() from B to A;
 	}
 }
+//*/
 
 
 /*

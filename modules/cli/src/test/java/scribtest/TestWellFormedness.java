@@ -34,6 +34,7 @@ import org.scribble.visit.Job;
  * Runs good and bad tests in Scribble.
  * 
  */
+@Deprecated  // Not currently used (via AllTest instead)
 @RunWith(value = Parameterized.class)
 public class TestWellFormedness {
 	private String filename;

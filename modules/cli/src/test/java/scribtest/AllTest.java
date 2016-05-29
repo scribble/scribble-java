@@ -73,7 +73,8 @@ public class AllTest
 				dir = dir.substring(1).replace("/", "\\");
 			}
 			
-			new CommandLine(this.example, CommandLineArgParser.PATH_FLAG, dir).run();
+			new CommandLine(this.example, CommandLineArgParser.JUNIT_FLAG, CommandLineArgParser.PATH_FLAG, dir).run();
+					// Added JUNIT flag -- but for some reason only bad DoArgList01.scr was breaking without it...
 			Assert.assertFalse("Expecting exception", this.isBadTest);
 		}
 		//catch (RuntimeScribbleException e)  // Runtime because CommandLine is currently a Runnable (maybe shouldn't be; throw regular ScribbleException)

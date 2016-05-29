@@ -10,6 +10,7 @@ import org.scribble.cli.CommandLine.ArgFlag;
 // String[] -> Map<CommandLine.Arg, String[]> -- Map array values are the arguments associated to each CommandLine.Arg
 public class CommandLineArgParser
 {
+	public static final String JUNIT_FLAG = "-junit";
 	public static final String VERBOSE_FLAG = "-V";
 	public static final String PATH_FLAG = "-ip";
 	public static final String PROJECT_FLAG = "-project";
@@ -26,6 +27,7 @@ public class CommandLineArgParser
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.JUNIT_FLAG, CommandLine.ArgFlag.JUNIT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.VERBOSE_FLAG, CommandLine.ArgFlag.VERBOSE);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PATH_FLAG, CommandLine.ArgFlag.PATH);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OUTPUT_FLAG, CommandLine.ArgFlag.OUTPUT);
@@ -94,6 +96,11 @@ public class CommandLineArgParser
 		String flag = this.args[i];
 		switch (flag)
 		{
+			case CommandLineArgParser.JUNIT_FLAG:
+			{
+				this.parsed.put(CommandLine.ArgFlag.JUNIT, new String[0]);
+				return i;
+			}
 			case CommandLineArgParser.VERBOSE_FLAG:
 			{
 				this.parsed.put(CommandLine.ArgFlag.VERBOSE, new String[0]);

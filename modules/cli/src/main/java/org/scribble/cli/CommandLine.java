@@ -33,6 +33,7 @@ public class CommandLine //implements Runnable
 		MAIN,
 		PATH,
 		PROJECT,
+		JUNIT,
 		VERBOSE,
 		FSM,
 		SESS_API,
@@ -59,77 +60,85 @@ public class CommandLine //implements Runnable
 
 	public static void main(String[] args) throws ScribbleException
 	{
-		try
-		{
-			new CommandLine(args).run();
-		}
-		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
-		{
-			//throw new RuntimeScribbleException(e);
-			//throw e;
-			System.err.println(e.getMessage());  // JUnit harness looks for an exception
-			System.exit(1);
-		}
+		new CommandLine(args).run();
 	}
 
 	//@Override
 	public void run() throws ScribbleException
 	{
-		Job job = newJob(newMainContext());
-		ScribbleException fail = null;
 		try
 		{
-			job.checkWellFormedness();
-		}
-		catch (ScribbleException x)
-		{
-			fail = x;
-		}
-		try
-		{
-			if (this.args.containsKey(ArgFlag.PROJECT))
+			Job job = newJob(newMainContext());
+			ScribbleException fail = null;
+			try
 			{
-				outputProjections(job);
+				job.checkWellFormedness();
 			}
-			if (this.args.containsKey(ArgFlag.FSM))
-			{
-				outputGraph(job);
-			}
-			if (this.args.containsKey(ArgFlag.SESS_API))
-			{
-				outputSessionApi(job);
-			}
-			if (this.args.containsKey(ArgFlag.SCHAN_API))
-			{
-				outputStateChannelApi(job);
-			}
-			if (this.args.containsKey(ArgFlag.EP_API))
-			{
-				outputEndpointApi(job);
-			}
-			if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
-			{
-				if (job.useOldWf)
-				{
-					throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
-				}
-				outputGlobalModel(job);
-			}
-			/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
-			{
-				outputProjectedModel(job);
-			}*/
-		}
-		catch (ScribbleException x)
-		{
-			if (fail == null)
+			catch (ScribbleException x)
 			{
 				fail = x;
 			}
+			try
+			{
+				if (this.args.containsKey(ArgFlag.PROJECT))
+				{
+					outputProjections(job);
+				}
+				if (this.args.containsKey(ArgFlag.FSM))
+				{
+					outputGraph(job);
+				}
+				if (this.args.containsKey(ArgFlag.SESS_API))
+				{
+					outputSessionApi(job);
+				}
+				if (this.args.containsKey(ArgFlag.SCHAN_API))
+				{
+					outputStateChannelApi(job);
+				}
+				if (this.args.containsKey(ArgFlag.EP_API))
+				{
+					outputEndpointApi(job);
+				}
+				if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
+				{
+					if (job.useOldWf)
+					{
+						throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
+					}
+					outputGlobalModel(job);
+				}
+				/*if (this.args.containsKey(ArgFlag.PROJECTED_MODEL))
+				{
+					outputProjectedModel(job);
+				}*/
+			}
+			catch (ScribbleException x)
+			{
+				if (fail == null)
+				{
+					fail = x;
+				}
+			}
+			if (fail != null)
+			{
+				throw fail;
+			}
 		}
-		if (fail != null)
+		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
 		{
-			throw fail;
+			if (this.args.containsKey(ArgFlag.JUNIT) || this.args.containsKey(ArgFlag.VERBOSE))
+			{
+				/*RuntimeScribbleException ee = new RuntimeScribbleException(e.getMessage());
+				ee.setStackTrace(e.getStackTrace());
+				throw ee;*/
+				throw e;
+			}
+			else
+			{
+				System.err.println(e.getMessage());  // JUnit harness looks for an exception
+				System.exit(1);
+			}
 		}
 	}
 	
@@ -262,11 +271,13 @@ public class CommandLine //implements Runnable
 	private Job newJob(MainContext mc)
 	{
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
+		//return new Job(mc.jUnit, mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
 		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
 	}
 
 	private MainContext newMainContext()
 	{
+		//boolean jUnit = this.args.containsKey(ArgFlag.JUNIT);
 		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);
 		boolean useOldWF = this.args.containsKey(ArgFlag.OLD_WF);
 		boolean noLiveness = this.args.containsKey(ArgFlag.NO_LIVENESS);
@@ -275,6 +286,7 @@ public class CommandLine //implements Runnable
 				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
+		//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
 		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness);
 	}
 	

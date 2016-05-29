@@ -22,6 +22,7 @@ import org.scribble.sesstype.name.Role;
 public class Job
 {
 	// FIXME: verbose/debug printing parameter: should be in MainContext, but currently cannot access that class directly from here
+	//public final boolean jUnit;
 	public final boolean debug;
 	public final boolean useOldWf;
 	public final boolean noLiveness;
@@ -29,15 +30,17 @@ public class Job
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
+	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
 	{
+		//this.jUnit = jUnit;
 		this.debug = debug;
 		this.useOldWf = useOldWF;
 		this.noLiveness = noLiveness;
 		this.jcontext = new JobContext(parsed, main);
 	}
 
-	public ScribbleException testWellFormednessCheck() throws ScribbleException
+	public ScribbleException testWellFormednessCheck()
 	{
 		try
 		{
