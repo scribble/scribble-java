@@ -56,7 +56,6 @@ public class ConnectedMap
 		Map<Role, Map<Role, ConnectedStatus>> ours = this.map;
 		Map<Role, Map<Role, ConnectedStatus>> theirs = them.map;
 		ConnectedMap res = new ConnectedMap(Collections.emptySet(), false);
-		
 		Set<Role> rs = new HashSet<>(ours.keySet());  // keySet should be sufficient
 		rs.addAll(theirs.keySet());
 		for (Role r1 : rs)
@@ -84,9 +83,28 @@ public class ConnectedMap
 				}
 			}
 		}
+		/*/
+		ConnectedMap res = new ConnectedMap(this);
+		for (Role r1 : them.getDestinations())
+		{
+			for (Role r2 : them.getSources(r1))
+			{
+				ConnectedStatus c2 = them.map.get(r1).get(r2);
+				if (this.containsRolePair(r1, r2))
+				{
+					ConnectedStatus c1 = res.map.get(r1).get(r2);
+					ConnectedStatus c = (c1 == c2) ? c1 : ConnectedStatus.AMBIG;
+					res.setConnected(r1, r2, c);
+				}
+				else
+				{
+					res.setConnected(r1, r2, c2);
+				}
+			}
+		}
+		//*/
 		return res;
 	}
-	
 	
 	public void connect(Role dest, Role src)
 	{
