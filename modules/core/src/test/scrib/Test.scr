@@ -25,9 +25,45 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 //*
-global protocol Proto1(role A, role B)
+global protocol Proto1(role A, role B, role C)
 {
-	1() from A to B;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			//1() from B to A;
+			1() from A to C;
+			//continue X;
+		}
+		or
+		{
+			2() from A to B;
+			3() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to A;
+			continue X;
+		}
+		or
+		{
+			// Bad: case pruned, so reachability fails
+		}
+	}
+	2() from A to B;
+	3() from B to C;
 }
 //*/
 

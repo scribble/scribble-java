@@ -182,8 +182,9 @@ public class CommandLine //implements Runnable
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			buildEndointGraph(job, fullname, role);
-			System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
+			EndpointGraph fsm = getEndointGraph(job, fullname, role);
+			//System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
+			System.out.println("\n" + fsm);  // Endpoint graphs are "inlined" (a single graph is built)
 		}
 	}
 
@@ -197,8 +198,8 @@ public class CommandLine //implements Runnable
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
 			String png = args[i+2];
-			buildEndointGraph(job, fullname, role);
-			EndpointGraph fsm = jcontext.getEndpointGraph(fullname, role);
+			EndpointGraph fsm = getEndointGraph(job, fullname, role);
+			//jcontext.getEndpointGraph(fullname, role);
 			runDot(fsm.init.toDot(), png);
 		}
 	}
@@ -355,7 +356,7 @@ public class CommandLine //implements Runnable
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
-	private void buildEndointGraph(Job job, GProtocolName fullname, Role role) throws ScribbleException
+	private EndpointGraph getEndointGraph(Job job, GProtocolName fullname, Role role) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
@@ -363,7 +364,13 @@ public class CommandLine //implements Runnable
 		{
 			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
 		}
-		//job.buildGraph(fullname, role);  // Already built as part of global model checking
+		//job.buildGraph(fullname, role);  // Already built (if valid) as part of global model checking
+		EndpointGraph fsm = jcontext.getEndpointGraph(fullname, role);
+		if (fsm == null)
+		{
+			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+		}
+		return fsm;
 	}
 	
 	private Job newJob(MainContext mc)

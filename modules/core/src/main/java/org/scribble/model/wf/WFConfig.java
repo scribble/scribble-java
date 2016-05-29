@@ -201,7 +201,7 @@ public class WFConfig
 		Kind k = s.getStateKind();
 		if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
 		{
-			IOAction a = s.getAllAcceptable().iterator().next();
+			IOAction a = s.getAllAcceptable().iterator().next();  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
 			/*if (a.isAccept())  // Sound?
 			{
 				return null;
