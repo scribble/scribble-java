@@ -10,6 +10,7 @@ import org.scribble.sesstype.name.Role;
 
 public class WFStateErrors
 {
+	// FIXME: could also check for roles stuck on unconnected sends here (probably better, than current syntax check)
 	public final Map<Role, Receive> stuck;
 	public final Set<Set<Role>> cycles;
 	public final Map<Role, Set<Send>> orphans;  // Don't think these can arise, due to MPST "pair-oriented" constructors (even with connect/disconnect)

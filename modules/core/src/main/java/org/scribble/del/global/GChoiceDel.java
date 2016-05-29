@@ -61,7 +61,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		// Enabled senders checked in GMessageTransferDel
 		List<WFChoiceEnv> all =
 				cho.getBlocks().stream().map((b) -> (WFChoiceEnv) b.del().env()).collect(Collectors.toList());
-		if (checker.getJob().useOldWf)
+		if (checker.getJob().useOldWf)  // ****
 		{
 			if (all.size() > 1)
 			{
@@ -111,6 +111,19 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 				}
 			}
 		}
+		
+		/*// No: do via Env merge, with "trinary state semantics"
+		ConnectedMap c0 = all.get(0).getConnected();
+		//if (all.subList(1, all.size() - 1).stream().anyMatch((e) -> !c0.equals(e.getConnected())))
+		for (WFChoiceEnv e : all.subList(1, all.size()))
+		{
+			ConnectedMap c = e.getConnected();
+			if (!c0.equals(c))
+			{
+				// FIXME: check on model?
+				throw new ScribbleException("Inconsistent connection configurations:\n  " + c0 + "\n  " + c);
+			}
+		}*/
 		
 		// On leaving global choice, we're doing both the merging of block envs into the choice env, and the merging of the choice env to the parent-of-choice env
 		// In principle, for the envLeave we should only be doing the latter (as countpart to enterEnv), but it is much more convenient for the compound-node (choice) to collect all the child block envs and merge here, rather than each individual block env trying to (partially) merge into the parent-choice as they are visited

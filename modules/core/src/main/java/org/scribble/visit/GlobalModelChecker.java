@@ -229,7 +229,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			if (!errors.isEmpty())
 			{
 				List<GIOAction> trace = getTrace(init, s, reach);
-				errorMsg += "\nSafety violation at " + s.toString() + ":\n  Trace=" + trace;
+				errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n  Trace=" + trace;
 			}
 			if (!errors.stuck.isEmpty())
 			{
@@ -237,7 +237,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			if (!errors.cycles.isEmpty())
 			{
-				errorMsg += "\n  Input cycles: " + errors.cycles;  // Deadlock from WF-cycle
+				errorMsg += "\n  Input/termination cycles: " + errors.cycles;  // Deadlock from WF-cycle
 			}
 			if (!errors.orphans.isEmpty())
 			{
@@ -263,6 +263,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				checkTerminalSet(init, termset, safety, liveness);
 				if (!safety.isEmpty())
 				{
+					// Redundant
 					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n  " + termset;
 				}
 				if (!liveness.isEmpty())
@@ -358,7 +359,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 						liveness.add(r);
 					}
 					/*
-					// Should be obsolete given explicit reception error etc checking
+					// Should be redundant given explicit reception error etc checking
 					else
 					{
 						safety.add(r);

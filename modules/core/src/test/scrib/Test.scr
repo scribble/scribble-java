@@ -24,26 +24,110 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	//.. expliconn+introduces vs. delegation -- MPST with explicit (shared/sess) channels
 
 
+/*
 global protocol Proto1(role A, role B)
 {
-	1() from A to B;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+	3() from B to A;
 }
+//*/
+
+
 /*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A
 	{
 		1() from A to B;
-		2() from B to C;
-		//2() from B to A;
-		4() from B to A;
+		1() from B to C;
+		disconnect B and C;
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
 	}
 	or
 	{
-		1() from A to B;
+		2() from A to B;
 		2() from B to C;
-		3() from B to A;
 	}
+	3() from A to B;
+	//3() from B to C;  // Uncomment is bad
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	// Good
+	connect A to B;
+	connect A to C;
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+		2() from A to C;
+		connect B to C;
+		disconnect B and C;
+	}
+	connect B to C;
+	2() from B to C;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	1() from A to B;
+	choice at A
+	{
+		1() from A to B;
+		disconnect A and B;
+	}
+	or
+	{
+		2() from A to B;
+		disconnect A and B;
+	}
+	3() from A to B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	1() from A to B;
+	choice at A
+	{
+		1() from A to B;
+		disconnect A and B;
+	}
+	or
+	{
+		2() from A to B;
+	}
+	3() from A to B;
 }
 //*/
 
@@ -321,6 +405,7 @@ aux global protocol Proto1Aux(role A, role B, role C)
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
+	// Good
 	connect A to B;
 	connect B to C;
 	1() from A to B;
@@ -329,7 +414,6 @@ explicit global protocol Proto1(role A, role B, role C)
 
 aux global protocol Proto1Aux1(role A, role B, role C)
 {
-	// Should be BAD: complicated trace: B?3 C?3 B?5 B?3 C?3 B?5 B?4 C#4
 	choice at A
 	{
 		3() from A to B;

@@ -187,6 +187,7 @@ public class CommandLine //implements Runnable
 		}
 	}
 
+	// FIXME: draw graphs once and cache, redrawing gives different state numbers
 	private void drawGraph(Job job) throws ScribbleException
 	{
 		JobContext jcontext = job.getContext();
@@ -209,7 +210,12 @@ public class CommandLine //implements Runnable
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			System.out.println("\n" + jcontext.getGlobalModel(fullname).toDot());  // FIXME: make a global equiv to EndpointGraph
+			WFState model = jcontext.getGlobalModel(fullname);
+			if (model == null)
+			{
+				throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+			}
+			System.out.println("\n" + model.toDot());  // FIXME: make a global equiv to EndpointGraph
 		}
 	}
 
@@ -222,6 +228,10 @@ public class CommandLine //implements Runnable
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			String png = args[i+1];
 			WFState model = jcontext.getGlobalModel(fullname);
+			if (model == null)
+			{
+				throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+			}
 			runDot(model.toDot(), png);
 		}
 	}

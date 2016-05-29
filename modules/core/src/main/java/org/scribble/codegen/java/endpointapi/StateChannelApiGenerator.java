@@ -123,6 +123,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 	{
 		Set<IOAction> as = curr.getAcceptable();
 		IOAction a = as.iterator().next();
+		// FIXME: use curr.getStateKind()
 		if (a instanceof Send)
 		{
 			return new SendSocketGenerator(this, curr).generateType();

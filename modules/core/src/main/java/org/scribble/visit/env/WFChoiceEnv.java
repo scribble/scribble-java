@@ -79,9 +79,16 @@ public class WFChoiceEnv extends Env<WFChoiceEnv>
 		for (WFChoiceEnv child : children)
 		{
 			merge(this, copy.initial, child.initial);
-			//merge(this, copy.initialInterrupts, child.initialInterrupts);
-			merge(this, copy.connected, child.connected);
+			////merge(this, copy.initialInterrupts, child.initialInterrupts);
+			//merge(this, copy.connected, child.connected);
 		}
+		// FIXME: refactor
+		ConnectedMap cm = children.get(0).getConnected();
+		for (WFChoiceEnv e : children.subList(1, children.size()))
+		{
+			cm = cm.merge(e.getConnected());
+		}
+		copy.connected = cm;
 		return copy;
 	}
 
@@ -101,21 +108,21 @@ public class WFChoiceEnv extends Env<WFChoiceEnv>
 		}
 	}
 
-	// FIXME: factor out with MessageIdMap
+	/*// FIXME: factor out with MessageIdMap
 	private static void merge(WFChoiceEnv parent, ConnectedMap foo, ConnectedMap child)
 	{
 		for (Role dest : child.getDestinations())
 		{
 			for (Role src : child.getSources(dest))
 			{
-				if (!parent.isConnected(src, dest))
+				//if (!parent.isConnected(src, dest))
 				{
-					// If not previously connected, update connected according to latest state
+					// If not previously connected, update connected according to latest state -- No: also need to write disconnected (if parent is connected)
 					foo.setConnected(dest, src, child.isConnected(dest, src));
 				}
 			}
 		}
-	}
+	}*/
 	
 	public WFChoiceEnv enableRoleForRootProtocolDecl(Role role)
 	{
@@ -188,6 +195,19 @@ public class WFChoiceEnv extends Env<WFChoiceEnv>
 		//tmp.merge(this.initialInterrupts);
 		return tmp;
 	}
+
+	public ConnectedMap getConnected()
+	{
+		ConnectedMap tmp = new ConnectedMap(this.connected);
+		return tmp;
+	}
+
+	/*public WFChoiceEnv setConnected(ConnectedMap cm)
+	{
+		WFChoiceEnv copy = copy();
+		copy.connected = cm;
+		return copy;
+	}*/
 	
 	public boolean isConnected(Role r1, Role r2)
 	{

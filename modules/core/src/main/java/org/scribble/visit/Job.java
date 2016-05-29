@@ -123,7 +123,12 @@ public class Job
 		
 		//System.out.println("AAA: " + this.jcontext.getProjection(fullname, role));
 
-		this.jcontext.getProjection(fullname, role).accept(new EndpointGraphBuilder(this)); 
+		Module proj = this.jcontext.getProjection(fullname, role);
+		if (proj == null)
+		{
+			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+		}
+		proj.accept(new EndpointGraphBuilder(this)); 
 			// Builds FSMs for all local protocols in this module as root (though each projected module contains a single local protocol)
 			// Subprotocols "inlined" by FsmBuilder (scoped subprotocols not supported)
 	}

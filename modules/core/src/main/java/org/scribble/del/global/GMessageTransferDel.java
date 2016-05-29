@@ -54,9 +54,10 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		WFChoiceEnv env = checker.popEnv();
 		for (Role dest : gmt.getDestinationRoles())
 		{
+			// FIXME: better to check as global model error (role stuck on uncomnected send)
 			if (!env.isConnected(src, dest))
 			{
-				throw new ScribbleException("Roles not connected: " + src + ", " + dest);
+				throw new ScribbleException("Roles not (necessarily) connected: " + src + ", " + dest);
 			}
 
 			env = env.addMessage(src, dest, msg);

@@ -2,6 +2,7 @@ package org.scribble.util;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,20 +13,27 @@ import org.scribble.sesstype.name.Role;
 // Mutable
 public class ConnectedMap
 {
+	public static enum ConnectedStatus { TRUE, FALSE, AMBIG, }
+	
 	// dest -> (src -> isConnected)
-	private Map<Role, Map<Role, Boolean>> map = new HashMap<>();
+	private Map<Role, Map<Role, ConnectedStatus>> map = new HashMap<>();
+	
+	private static ConnectedStatus convertStatus(boolean b)
+	{
+		return b ? ConnectedStatus.TRUE : ConnectedStatus.FALSE;
+	}
 	
 	public ConnectedMap(Set<Role> roles, boolean implicit)
 	{
 		roles.forEach((k) -> 
 		{
-			HashMap<Role, Boolean> tmp = new HashMap<>();
+			HashMap<Role, ConnectedStatus> tmp = new HashMap<>();
 			this.map.put(k, tmp);
 			roles.forEach((k2) -> 
 			{
 				if (!k.equals(k2))
 				{
-					tmp.put(k2, implicit);
+					tmp.put(k2, convertStatus(implicit));
 				}
 			});
 		});
@@ -42,6 +50,44 @@ public class ConnectedMap
 		}
 	}
 	
+	// FIXME: refactor
+	public ConnectedMap merge(ConnectedMap them)
+	{
+		Map<Role, Map<Role, ConnectedStatus>> ours = this.map;
+		Map<Role, Map<Role, ConnectedStatus>> theirs = them.map;
+		ConnectedMap res = new ConnectedMap(Collections.emptySet(), false);
+		
+		Set<Role> rs = new HashSet<>(ours.keySet());  // keySet should be sufficient
+		rs.addAll(theirs.keySet());
+		for (Role r1 : rs)
+		{
+			for (Role r2 : rs)
+			{
+				if (this.containsRolePair(r1, r2))
+				{
+					ConnectedStatus c1 = ours.get(r1).get(r2);
+					if (them.containsRolePair(r1, r2))
+					{
+						ConnectedStatus c2 = theirs.get(r1).get(r2);
+						ConnectedStatus c = (c1 == c2) ? c1 : ConnectedStatus.AMBIG;
+						res.setConnected(r1, r2, c);
+					}
+					else
+					{
+						res.setConnected(r1, r2, c1);
+					}
+				}
+				else if (them.containsRolePair(r1, r2))
+				{
+					ConnectedStatus c2 = theirs.get(r1).get(r2);
+					res.setConnected(r1, r2, c2);
+				}
+			}
+		}
+		return res;
+	}
+	
+	
 	public void connect(Role dest, Role src)
 	{
 		setConnected(dest, src, true);
@@ -52,12 +98,19 @@ public class ConnectedMap
 		setConnected(dest, src, false);
 	}
 
-	public void setConnected(Role dest, Role src, boolean isConnected)
+	protected void setConnected(Role dest, Role src, ConnectedStatus status)
 	{
 		addRolePair(dest, src);
-		this.map.get(dest).put(src, isConnected);
+		//this.map.get(dest).put(src, isConnected);
+		ConnectedStatus b = status;
+		this.map.get(dest).put(src, b);
 		addRolePair(src, dest);
-		this.map.get(src).put(dest, isConnected);
+		this.map.get(src).put(dest, b);
+	}
+
+	public void setConnected(Role dest, Role src, boolean isConnected)
+	{
+		setConnected(dest, src, convertStatus(isConnected));
 	}
 	
 	public Set<Role> getDestinations()
@@ -78,11 +131,14 @@ public class ConnectedMap
 	// FIXME: null guards not needed any more
 	public boolean isConnected(Role dest, Role src)
 	{
-		Map<Role, Boolean> tmp = this.map.get(dest);
+		//Map<Role, Boolean> tmp = this.map.get(dest);
+		Map<Role, ConnectedStatus> tmp = this.map.get(dest);
 		if (tmp != null)
 		{
-			Boolean b = tmp.get(src);
-			return b != null && b;
+			/*Boolean b = tmp.get(src);
+			return b != null && b;*/
+			 ConnectedStatus b = tmp.get(src);
+			 return b == ConnectedStatus.TRUE;
 		}
 		return false;
 	}
@@ -101,13 +157,17 @@ public class ConnectedMap
 	{
 		if (!this.map.containsKey(dest))
 		{
-			Map<Role, Boolean> map = new HashMap<>();
+			//Map<Role, Boolean> map = new HashMap<>();
+			Map<Role, ConnectedStatus> map = new HashMap<>();
 			this.map.put(dest, map);
-			map.put(src, false);
+			//map.put(src, false);
+			map.put(src, ConnectedStatus.FALSE);
 		}
 		else if (!this.map.get(dest).containsKey(src))
 		{
-			this.map.get(dest).put(src, false);
+			//this.map.get(dest).put(src, false);
+			//this.map.get(dest).put(src, false);
+			this.map.get(dest).put(src, ConnectedStatus.FALSE);
 		}
 	}
 	
@@ -115,5 +175,27 @@ public class ConnectedMap
 	public String toString()
 	{
 		return this.map.toString();
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hash = 1033;
+		hash = 31 * hash + super.hashCode();
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null)
+		{
+			return false;
+		}
+		if (!(o instanceof ConnectedMap))
+		{
+			return false;
+		}
+		return this.map.equals(((ConnectedMap) o).map);
 	}
 }
