@@ -59,11 +59,12 @@ public class Job
 		runVisitorPassOnAllModules(WFChoiceChecker.class);  // For enabled roles and disjoint enabling messages
 		////runVisitorPassOnAllModules(WFChoicePathChecker.class);
 		runProjectionPasses();
+		runVisitorPassOnAllModules(ReachabilityChecker.class);  // Moved before GlobalModelChecker.class, OK?
 		if (!this.useOldWf)
 		{
 			runVisitorPassOnAllModules(GlobalModelChecker.class);
 		}
-		runVisitorPassOnAllModules(ReachabilityChecker.class);
+		//runVisitorPassOnAllModules(ReachabilityChecker.class);
 	}
 	
 	private void runContextBuildingPasses() throws ScribbleException

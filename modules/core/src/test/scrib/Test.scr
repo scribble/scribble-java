@@ -15,10 +15,6 @@ module Test;
 type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
-//..don't need termination hack, just need to cut off state building on bad states -- no: it's needed (buffered message may be blocked now but valid later), or a terminal set analysis
-//.. choice subject enabling needed for non-mixed states (inherently relevant to deadlock) -- although for one-slot asynchrony to work, it's just the A->B constructor: there's always syntactically at least one receiver, and any potential deadlock between parallel senders due to bounded buffer will be caught as the counterpart paralel receiver deadlock
-
-
 	// TODO: (re)connect/wrap, e.g. SMTP
 
 	// TODO: "introduces" well-formedness?
@@ -27,19 +23,7 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 
 
-global protocol Foo(role A, role B)
-{
-	1() from A to B;
-	do Bar(A, B);
-}
-
-global protocol Bar(role C, role D, role E)
-{
-	1() from C to D;
-	2() from D to E;
-}
-
-/*
+//*
 global protocol Proto1(role A, role B)
 {
 	choice at A
@@ -55,6 +39,47 @@ global protocol Proto1(role A, role B)
 	}
 }
 //*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			//1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+		continue X;  // (Eeachability error comes out as a graph building error if not checked first)
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			m2() from A to B;
+		}
+		m1() from A to B;  // Reachability error -- comes out as a global model error if that pass is done first (tail recursion needed as syntactic check prior to model checking)
+	}
+}
+//*/
+
 
 
 /*

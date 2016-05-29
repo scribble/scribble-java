@@ -10,27 +10,6 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 /*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			//1() from A to B;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-		}
-		continue X;  // (FIXME: reachability error coming out as a graph building error)
-	}
-}
-//*/
-
-
-/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	rec X
@@ -49,25 +28,6 @@ global protocol Proto1(role A, role B, role C, role D)
 		1() from C to D;  // FIXME: wrong enabled check result -- maybe not? under unfolding it is captured inside the choice
 	}
 	//* /
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			continue X;
-		}
-		or
-		{
-			m2() from A to B;
-		}
-		m1() from A to B;  // FIXME: reachability error, but coming out as a global model error before reaching that pass (tail recursion should really be a syntactic check prior to model checking)
-	}
 }
 //*/
 
