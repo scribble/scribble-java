@@ -160,16 +160,23 @@ public class JobContext
 		return this.gmodels.get(fullname);
 	}
 	
-	public void addEndpointGraph(LProtocolName lpn, EndpointGraph graph)
+	public void addEndpointGraph(LProtocolName fullname, EndpointGraph graph)
 	{
-		this.graphs.put(lpn, graph);
+		this.graphs.put(fullname, graph);
 	}
 	
 	public EndpointGraph getEndpointGraph(GProtocolName fullname, Role role)
 	{
-		return this.graphs.get(Projector.projectFullProtocolName(fullname, role));
+		//return this.graphs.get(Projector.projectFullProtocolName(fullname, role));
+		return getEndpointGraph(Projector.projectFullProtocolName(fullname, role));
 	}
-	
+
+  // Full projected name
+	public EndpointGraph getEndpointGraph(LProtocolName fullname)
+	{
+		return this.graphs.get(fullname);
+	}
+
 	public Module getMainModule()
 	{
 		return getModule(this.main);

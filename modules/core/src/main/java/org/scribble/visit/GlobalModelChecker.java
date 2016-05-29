@@ -13,8 +13,6 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
-import org.scribble.ast.local.LProtocolBlock;
-import org.scribble.del.local.LProtocolDefDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GIOAction;
 import org.scribble.model.local.EndpointGraph;
@@ -92,16 +90,26 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		
 		for (Role self : gpd.header.roledecls.getRoles())
 		{
-			/*GProtocolBlock gpb = gpd.getDef().getBlock();
-			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);*/
+			/*/*GProtocolBlock gpb = gpd.getDef().getBlock();
+			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);* /
 			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0).def.del()) .getInlinedProtocolDef().getBlock();
 			
 			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
 			graph.builder.reset();
 			proj.accept(graph);  // Don't do on root decl, side effects job context
-			
 			//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
 			EndpointGraph fsm = graph.builder.finalise();
+			//*/
+
+			EndpointGraph fsm = job.getContext().getEndpointGraph(fullname, self);
+			if (fsm == null)
+			{
+				//LProtocolDecl lpd = this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0);
+				Module proj = this.getJobContext().getProjection(fullname, self);  // Projected module contains a single protocol
+				EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
+				proj.accept(graph);  // Side effects job context (caches graph)
+				fsm = job.getContext().getEndpointGraph(fullname, self);
+			}
 
 			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + fsm);
 			

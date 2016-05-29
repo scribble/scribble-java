@@ -59,12 +59,17 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	public ScribNode leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
 		LProtocolDecl lpd = (LProtocolDecl) visited;
-
-		//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
-		EndpointGraph fsm = graph.builder.finalise();
 		
 		JobContext jc = graph.getJobContext();
-		jc.addEndpointGraph(lpd.getFullMemberName((Module) parent), fsm);
+		// FIXME: should just bypass builder visit if already built
+		LProtocolName lpn = lpd.getFullMemberName((Module) parent);
+		if (jc.getEndpointGraph(lpn) == null)  // FIXME: what is the routine to obtain gpn from lpn?
+		{
+			//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+			EndpointGraph fsm = graph.builder.finalise();
+
+			jc.addEndpointGraph(lpn, fsm);
+		}
 		return visited;
 	}
 	

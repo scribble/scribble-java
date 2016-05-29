@@ -210,11 +210,7 @@ public class CommandLine //implements Runnable
 		for (int i = 0; i < args.length; i += 1)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
-			WFState model = jcontext.getGlobalModel(fullname);
-			if (model == null)
-			{
-				throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
-			}
+			WFState model = getGlobalModel(job, fullname);
 			System.out.println("\n" + model.toDot());  // FIXME: make a global equiv to EndpointGraph
 		}
 	}
@@ -227,13 +223,20 @@ public class CommandLine //implements Runnable
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			String png = args[i+1];
-			WFState model = jcontext.getGlobalModel(fullname);
-			if (model == null)
-			{
-				throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
-			}
+			WFState model = getGlobalModel(job, fullname);
 			runDot(model.toDot(), png);
 		}
+	}
+	
+	private static WFState getGlobalModel(Job job, GProtocolName fullname) throws ScribbleException
+	{
+		JobContext jcontext = job.getContext();
+		WFState model = jcontext.getGlobalModel(fullname);
+		if (model == null)
+		{
+			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
+		}
+		return model;
 	}
 	
 	/*private void outputProjectedModel(Job job) throws ScribbleException
@@ -360,7 +363,7 @@ public class CommandLine //implements Runnable
 		{
 			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
 		}
-		job.buildGraph(fullname, role);
+		//job.buildGraph(fullname, role);  // Already built as part of global model checking
 	}
 	
 	private Job newJob(MainContext mc)

@@ -115,7 +115,7 @@ public class Job
 				Collectors.toMap((lpn) -> lpn, (lpn) -> this.jcontext.getModule(lpn.getPrefix())));
 	}
 	
-  // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
+  /*// Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
 	public void buildGraph(GProtocolName fullname, Role role) throws ScribbleException  // Need to visit from Module for visitor context
 	{
 		debugPrintPass("Running " + EndpointGraphBuilder.class + " for " + fullname + "@" + role);
@@ -131,7 +131,7 @@ public class Job
 		proj.accept(new EndpointGraphBuilder(this)); 
 			// Builds FSMs for all local protocols in this module as root (though each projected module contains a single local protocol)
 			// Subprotocols "inlined" by FsmBuilder (scoped subprotocols not supported)
-	}
+	}*/
 
 	public Map<String, String> generateSessionApi(GProtocolName fullname) throws ScribbleException
 	{
@@ -144,10 +144,10 @@ public class Job
 	// FIXME: refactor an EndpointApiGenerator
 	public Map<String, String> generateStateChannelApi(GProtocolName fullname, Role self, boolean subtypes) throws ScribbleException
 	{
-		if (this.jcontext.getEndpointGraph(fullname, self) == null)
+		/*if (this.jcontext.getEndpointGraph(fullname, self) == null)
 		{
 			buildGraph(fullname, self);
-		}
+		}*/
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
 		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
 		IOInterfacesGenerator iogen = new IOInterfacesGenerator(apigen, subtypes);
