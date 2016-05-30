@@ -24,7 +24,26 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	//.. expliconn+introduces vs. delegation -- MPST with explicit (shared/sess) channels
 
 
-//*
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to A;
+		2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
+		//2() from A to B;
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
@@ -32,14 +51,63 @@ global protocol Proto1(role A, role B, role C)
 		choice at A
 		{
 			1() from A to B;
-			//1() from B to A;
 			1() from A to C;
-			//continue X;
+			4() from C to A;  // Good
+			continue X;
 		}
 		or
 		{
 			2() from A to B;
 			3() from B to C;
+			5() from C to A;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			4() from C to B;
+			// Good -- without continues (cf. below)
+		}
+		or
+		{
+			2() from A to B;
+			3() from B to C;
+			5() from C to B;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			4() from C to B;  // Bad..
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			3() from B to C;
+			5() from C to B;
+			//continue X;  // ..but OK when commented -- is that correct?
 		}
 	}
 }
@@ -726,6 +794,24 @@ global protocol Proto1(role A, role B)
 		{
 			m2() from A to B;
 		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from B to A;
+		2() from A to B;  // Orphan (and deadlock)
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
 	}
 }
 //*/
@@ -2178,19 +2264,19 @@ global protocol Proto1(role A, role B, role C)
 /*
 global protocol Proto1(role A, role B, role C)
 {
-	// FIXME TODO: safe, but not supported by local syntax
+	// safe, but not supported by local choice syntax
 	rec X {
 		choice at A
 		{
 			1() from A to B;
 			3() from B to C;
-			//continue X;  // Uncomment bad
+			continue X;  // Uncomment bad -- no: mergeable
 		}
 		or
 		{
 			2() from A to B;
 			4() from A to C;
-			//continue X;  // Uncomment bad
+			continue X;  // Uncomment bad -- no: mergeable
 		}
 	}
 }
@@ -2225,20 +2311,43 @@ global protocol Proto1(role A, role B, role C)
 		choice at A
 		{
 			1() from A to B;
-			1() from A to C;  // Still bad without..
+			1() from A to C;  // Bad -- and still bad even..
 			2() from B to C;
 			3() from C to B;
 		}
 		or
 		{
 			2() from A to B;
-			2() from B to C;  // ..local choice subject inference
+			2() from B to C;  // ..without local choice subject inference
 			4() from C to B;
 		}
-		continue X;
+		//continue X;  // Still bad if uncommented
 	}
 }
 //*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			2() from B to C;
+			3() from C to B;
+		}
+		or
+		{
+			4() from A to C;
+			5() from C to B;
+		}
+		continue X;  // OK if commented (and local choice subject inference disabled)
+	}
+}
+//*/
+
 
 //***
 

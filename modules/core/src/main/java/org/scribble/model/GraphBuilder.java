@@ -115,7 +115,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		{
 			Deque<Set<A>> tmp = this.enacting.get(rv);
 			//tmp.push(new HashSet<>(tmp.peek()));
-			tmp.push(new HashSet<>());
+			tmp.push(new HashSet<>());  // Initially empty to record nested enablings in choice blocks
 		}
 	}
 
@@ -150,7 +150,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		for (RecVar rv : this.enacting.keySet())
 		{
 			Deque<Set<A>> tmp = this.enacting.get(rv);
-			tmp.push(new HashSet<>());
+			tmp.push(new HashSet<>());  // Must be empty for addEdge to record (nested) enabling
 		}
 	}
 

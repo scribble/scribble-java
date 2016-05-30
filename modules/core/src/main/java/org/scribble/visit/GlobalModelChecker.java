@@ -243,9 +243,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			{
 				errorMsg += "\n  Stuck messages: " + errors.stuck;  // Deadlock from reception error
 			}
-			if (!errors.cycles.isEmpty())
+			if (!errors.waitFor.isEmpty())
 			{
-				errorMsg += "\n  Input/termination cycles: " + errors.cycles;  // Deadlock from WF-cycle
+				errorMsg += "\n  Wait-for errors: " + errors.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
 			}
 			if (!errors.orphans.isEmpty())
 			{

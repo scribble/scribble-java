@@ -1,5 +1,6 @@
 package org.scribble.model.wf;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -164,7 +165,7 @@ public class WFConfig
 	{
 		Set<Set<Role>> res = new HashSet<>();
 		List<Role> todo = new LinkedList<>(this.states.keySet());
-		while (!todo.isEmpty())
+		/*while (!todo.isEmpty())
 		{
 			Role r = todo.get(0);
 			todo.remove(r);
@@ -191,28 +192,111 @@ public class WFConfig
 				}
 				r = rr;
 			}
+		}*/
+		while (!todo.isEmpty())  // FIXME: maybe better to do directly on states, rather than via roles
+		{
+			Role r = todo.remove(0);
+			//Set<Role> cycle = isCycle(new HashSet<>(), new HashSet<>(Arrays.asList(r)));
+			if (!this.states.get(r).isTerminal())
+			{
+				Set<Role> cycle = isWaitForCycle(r);
+				//if (!cycle.isEmpty())
+				if (cycle != null)
+				{
+					todo.removeAll(cycle);
+					res.add(cycle);
+				}
+			}
 		}
 		return res;
 	}
 	
-	private Role isInputBlocked(Role r)
+	// Includes dependencies from input-blocking and termination
+	// FIXME: should also include connect?
+	// NB: if this.states.get(orig).isTerminal() then orig is returned as "singleton deadlock"
+	//public Set<Role> isCycle(Set<Role> candidate, Set<Role> todo)
+	public Set<Role> isWaitForCycle(Role orig)
+	{
+		/*if (todo.isEmpty())
+		{
+			return candidate;
+		}*/
+		/*Set<Role> tmp = new HashSet<Role>(todo);
+		Role r = tmp.iterator().next();
+		tmp.remove(r);
+		candidate.add(r);*/
+		Set<Role> candidate = new HashSet<>();
+		Set<Role> todo = new HashSet<>(Arrays.asList(orig));
+		while (!todo.isEmpty())
+		{
+			Role r = todo.iterator().next();
+			todo.remove(r);
+			candidate.add(r);
+			
+			EndpointState s = this.states.get(r);
+			if (s.getStateKind() == Kind.OUTPUT)  // FIXME: includes connect, could still be deadlock?
+			{
+				return null;
+			}
+			if (s.isTerminal())
+			{
+				if (todo.isEmpty())
+				{
+					return candidate;
+				}
+				continue;
+			}
+			Set<Role> blocked = isInputBlocked(r);
+			//if (blocked.isEmpty())
+			if (blocked == null)
+			{
+				return null;
+			}
+			if (todo.isEmpty() && candidate.containsAll(blocked))
+			{
+				return candidate;
+			}
+			blocked.forEach((x) ->
+			{
+				if (!candidate.contains(x))
+				{
+					//candidate.add(x);
+					todo.add(x);
+				}
+			});
+		}
+		return null;
+	}
+	
+	//private Role isInputBlocked(Role r)
+	private Set<Role> isInputBlocked(Role r)
 	{
 		EndpointState s = this.states.get(r);
 		Kind k = s.getStateKind();
 		if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
 		{
-			IOAction a = s.getAllAcceptable().iterator().next();  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
+			List<IOAction> all = s.getAllAcceptable();
+			IOAction a = all.get(0);  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
 			/*if (a.isAccept())  // Sound?
 			{
 				return null;
 			}*/
-			Role peer = a.peer;
+			/*Role peer = a.peer;
 			if (a.isReceive() && this.buffs.get(r).get(peer) == null)
 			{
-				return peer;
+				//return peer;
+			}*/
+			if (a.isReceive())
+			{
+				Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
+				if (peers.stream().noneMatch((p) -> this.buffs.get(r).get(p) != null))
+				{
+					return peers;
+				}
 			}
 		}
 		return null;
+		//return Collections.emptySet();
 	}
 
 	public Map<Role, Set<Send>> getOrphanMessages()
