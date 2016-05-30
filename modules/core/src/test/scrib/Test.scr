@@ -25,19 +25,51 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 /*
-global protocol Proto1(role A, role B)
+global protocol Proto1(role A, role B, role C)
 {
-	choice at A
+	// Testing one-slot asynchrony
+	rec X
 	{
-		1() from A to B;
-		1() from B to A;
-		2() from A to B;
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			1() from C to B;  // Bad... but the point is one-slot asynchrony prevents exploring the global state where A!B:1 done twice without B?A:1 at least once, i.e. A cannot loop round first block twice without B also following into the first block... can something like this make WF unsound? -- is recursive mixed-role poly-inputs the only context for this problem?
+		}
+		or
+		{
+			2() from A to C;
+			2() from C to B;
+		}
+		continue X;
 	}
-	or
+}
+//*/
+
+
+//*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
 	{
-		1() from A to B;
-		1() from B to A;
-		//2() from A to B;
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			1() from A to B;
+			1() from A to C;
+			2() from C to B;  // FIXME: getTrace seems broken for stuck messages errors
+			continue X;
+		}
+		or
+		{
+			3() from A to C;
+			3() from C to B;
+			continue X;
+		}
 	}
 }
 //*/

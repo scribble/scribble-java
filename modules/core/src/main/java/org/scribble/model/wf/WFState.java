@@ -118,9 +118,9 @@ public class WFState
 	public WFStateErrors getErrors()
 	{
 		Map<Role, Receive> stuck = this.config.getStuckMessages();
-		Set<Set<Role>> cycles = this.config.getInputCycles();
+		Set<Set<Role>> waitfor = this.config.getInputCycles();
 		Map<Role, Set<Send>> orphs = this.config.getOrphanMessages();
-		return new WFStateErrors(stuck, cycles, orphs);
+		return new WFStateErrors(stuck, waitfor, orphs);
 	}
 	
 	public boolean isTerminal()

@@ -231,8 +231,17 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		//e = "\nSafety violations:" + e;
 		}
 		/*/
+		count = 0;
 		for (WFState s : all)
 		{
+			if (job.debug)
+			{
+				count++;
+				if (count % 50 == 0)
+				{
+					job.debugPrintln("(" + fullname + ") Checking global states: " + count);
+				}
+			}
 			WFStateErrors errors = s.getErrors();
 			if (!errors.isEmpty())
 			{
