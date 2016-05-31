@@ -36,13 +36,18 @@ public abstract class DoArgListDel extends ScribDelBase
 	}
 
 	// Not using Do#getTargetProtocolDecl, because that currently relies on namedisamb pass to convert targets to fullnames (because it just gets the full name dependency, it doesn't do visible name resolution)
-	protected ProtocolDecl<?> getTargetProtocolDecl(Do<?> parent, NameDisambiguator disamb)
+	protected ProtocolDecl<?> getTargetProtocolDecl(Do<?> parent, NameDisambiguator disamb) throws ScribbleException
 	{
 		ModuleContext mc = disamb.getModuleContext();
 		JobContext jc = disamb.getJobContext();
 		Do<?> doo = (Do<?>) parent;
-		ProtocolName<?> fullname = mc.getVisibleProtocolDeclFullName(doo.proto.toName());  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
-		return jc.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
+		ProtocolName<?> simpname = doo.proto.toName();
+		/*if (!mc.isVisibleProtocolDeclName(simpname))  // FIXME: should be checked somewhere else?  earlier (do-entry?) -- done
+		{
+			throw new ScribbleException("Protocol decl not visible: " + simpname);
+		}*/
+		ProtocolName<?> fullname = mc.getVisibleProtocolDeclFullName(simpname);  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
+		return jc.getModule(fullname.getPrefix()).getProtocolDecl(simpname);
 	}
 	
 	protected abstract HeaderParamDeclList<?> getParamDeclList(ProtocolDecl<?> pd);

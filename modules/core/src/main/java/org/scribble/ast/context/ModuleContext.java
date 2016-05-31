@@ -213,6 +213,11 @@ public class ModuleContext
 	{
 		return getProtocolDeclFullName(this.visible, visname);
 	}
+	
+	public <K extends ProtocolKind> boolean isVisibleProtocolDeclName(ProtocolName<K> visname)
+	{
+		return this.visible.isVisibleProtocolDeclName(visname);
+	}
 
 	public static <K extends ProtocolKind> ProtocolName<K> getProtocolDeclFullName(ScribNames names, ProtocolName<K> proto)
 	{
@@ -255,5 +260,10 @@ class ScribNames
 	{
 		return "(modules=" + this.modules + ", types=" + this.data + ", sigs=" + this.sigs
 				+ ", globals=" + this.globals + ", locals=" + this.locals + ")";
+	}
+	
+	public <K extends ProtocolKind> boolean isVisibleProtocolDeclName(ProtocolName<K> visname)
+	{
+		return this.globals.containsKey(visname) || this.locals.containsKey(visname);
 	}
 }	
