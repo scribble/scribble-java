@@ -264,6 +264,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				errorMsg += "\n  Orphan messages: " + errors.orphans;
 			}
 		}
+		job.debugPrintln("(" + fullname + ") Checked all states: " + count);
 		//*/
 		
 		if (!job.noLiveness)
