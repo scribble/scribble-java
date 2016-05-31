@@ -301,6 +301,11 @@ public class WFConfig
 				}
 			}
 		}
+		else if (k == Kind.CONNECTION)
+		{
+			List<IOAction> all = s.getAllAcceptable();
+			return all.stream().map((x) -> x.peer).collect(Collectors.toSet());
+		}
 		return null;
 		//return Collections.emptySet();
 	}
@@ -379,7 +384,7 @@ public class WFConfig
 								tmp.add(a);
 							}
 						}
-						else if (a.isConnect())
+						/*else if (a.isConnect())
 						{
 							// FIXME: factor out
 							Connect c = (Connect) a;
@@ -401,7 +406,7 @@ public class WFConfig
 									}
 								}
 							}
-						}
+						}*/
 						else if (a.isDisconnect())
 						{
 							// Duplicated from Send
@@ -441,7 +446,7 @@ public class WFConfig
 								tmp.add(a);
 							}
 						}
-						else if (a.isAccept())
+						/*else if (a.isAccept())
 						{
 							// FIXME: factor out
 							Accept c = (Accept) a;
@@ -464,7 +469,7 @@ public class WFConfig
 									}
 								}
 							}
-						}
+						}*/
 						else
 						{
 							throw new RuntimeException("Shouldn't get in here: " + a);
@@ -475,6 +480,40 @@ public class WFConfig
 				case TERMINAL:
 				{
 					break;
+				}
+				case CONNECTION:
+				{
+					List<IOAction> as = s.getAllAcceptable();
+					for (IOAction a : as)
+					{
+						if (a.isConnect())
+						{
+							// FIXME: factor out
+							Connect c = (Connect) a;
+							EndpointState speer = this.states.get(c.peer);
+							//if (speer.getStateKind() == Kind.UNARY_INPUT)
+							{
+								List<IOAction> peeras = speer.getAllAcceptable();
+								for (IOAction peera : peeras)
+								{
+									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
+									{
+										List<IOAction> tmp = res.get(r);
+										if (tmp == null)
+										{
+											tmp = new LinkedList<>();
+											res.put(r, tmp);
+										}
+										tmp.add(a);
+									}
+								}
+							}
+						}
+						else
+						{
+							throw new RuntimeException("Shouldn't get in here: " + a);
+						}
+					}
 				}
 				default:
 				{

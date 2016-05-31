@@ -10,7 +10,7 @@ import org.scribble.sesstype.name.RecVar;
 // http://sandbox.kidstrythisathome.com/erdos/
 public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 {
-	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL }
+	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL, CONNECTION }  // CONNECTION should just be sync?
 			// FIXME: distinguish connection and message transfer
 	
 	/*private static int count = 0;
@@ -38,8 +38,8 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 		else
 		{
 			IOAction a = as.iterator().next();
-			return (a.isSend() || a.isConnect() || a.isDisconnect())
-						? Kind.OUTPUT
+			return (a.isSend() || a.isDisconnect()) ? Kind.OUTPUT
+						: (a.isConnect() || a.isAccept()) ? Kind.CONNECTION
 						: (as.size() > 1) ? Kind.POLY_INPUT : Kind.UNARY_INPUT;
 		}
 	}

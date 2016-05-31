@@ -28,8 +28,64 @@ module Test;
 	// - non-det EFSMs -- minimise?
 
 
-global protocol Proto1(role A, role B, role C)
+//*
+explicit global protocol Proto1(role A, role B, role C)
 {
+	connect A to B;
+	connect A to C;
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		connect B to C;  // FIXME: deadlock not detected for connect states (not currently counted as input)
+		2() from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to C;
+		connect C to B;
+		3() from B to C;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C, role D)
+{
+	connect A to B;
+	connect A to C;
+	connect A to D;
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		1() from A to D;
+		connect B to C;
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to C;
+		1() from A to D;
+		connect C to D;
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to C;
+		1() from A to D;
+		connect D to C;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect from A to B;
 	choice at A
 	{
 		rec X
@@ -41,19 +97,43 @@ global protocol Proto1(role A, role B, role C)
 			}
 			or
 			{
-				//3() from A to B;
+				//3() from A to B;  // Uncomment is fix
 			}
 		}
 	}
 	or
 	{
 		2() from A to B;
-		//3() from B to C;
-		//3() from C to B;
 	}
-	//3() from B to C;
+	connect from C to B;  // Bad: connect is a sync action
 	3() from C to B;
 }
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect from A to B;
+	choice at A
+	{
+		rec X
+		{
+			choice at A
+			{
+				1() from A to B;
+				continue X;
+			}
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
+	connect from B to C;  // Good: connect is a sync action, but "asymmetric"
+	3() from C to B;
+}
+//*/
 
 
 /*
