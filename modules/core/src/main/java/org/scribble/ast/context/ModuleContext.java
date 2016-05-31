@@ -228,6 +228,7 @@ public class ModuleContext
 	{
 		if (!map.containsKey(visname))
 		{
+			// FIXME: runtime exception bad -- make a guard method
 			throw new RuntimeException("Unknown name: " + visname);
 		}
 		return map.get(visname);

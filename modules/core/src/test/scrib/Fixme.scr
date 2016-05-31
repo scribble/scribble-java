@@ -17,13 +17,38 @@ global protocol Proto1(role A, role B, role C)
 		choice at A
 		{
 			1() from A to B;
+			1() from A to B;
+			1() from A to C;
+			3() from B to C;
+			continue X;
+		}
+		or
+		{
+			1() from A to B;
+			2() from B to C;  // FIXME: getTrace seems broken for stuck messages errors (needs local choice subjects disabled)
+			3() from C to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
 			continue X;
 		}
 		or
 		{
 			1() from A to B;
 			1() from A to C;
-			2() from C to B;  // FIXME: getTrace seems broken for stuck messages errors
+			2() from C to B;  // FIXME: getTrace seems broken for stuck messages errors (needs local choice subjects disabled)
 			continue X;
 		}
 		or

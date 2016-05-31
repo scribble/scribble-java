@@ -247,6 +247,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			WFStateErrors errors = s.getErrors();
 			if (!errors.isEmpty())
 			{
+				// FIXME: getTrace can get stuck when local choice subjects are disabled
 				List<GIOAction> trace = getTrace(init, s, reach);
 				errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n  Trace=" + trace;
 			}

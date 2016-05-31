@@ -23,6 +23,13 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 	//.. expliconn+introduces vs. delegation -- MPST with explicit (shared/sess) channels
 
+
+global protocol Proto1(role A, role B)
+{
+
+}
+
+
 /*
 global protocol Proto1(role A, role B)
 {
@@ -39,6 +46,7 @@ global protocol Proto1(role A, role B)
 	}
 }
 //*/
+
 
 /*
 global protocol Proto1(role A, role B, role C)
@@ -966,7 +974,7 @@ explicit global protocol Proto1(role A, role B, role C)
 //*/
 
 
-//*
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A
