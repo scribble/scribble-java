@@ -24,10 +24,24 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	//.. expliconn+introduces vs. delegation -- MPST with explicit (shared/sess) channels
 
 
-global protocol Proto1(role A, role B)
+//*
+global protocol Proto1(role A, role B, role C)
 {
-
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+		}
+		or
+		{
+			1() from B to C;
+		}
 }
+//*/
 
 
 /*
