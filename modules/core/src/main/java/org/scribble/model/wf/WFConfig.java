@@ -42,21 +42,27 @@ public class WFConfig
 		//return this.states.values().stream().allMatch((s) -> s.isTerminal()) && this.buffs.isEmpty();
 		for (Role r : this.states.keySet())
 		{
-			EndpointState s = this.states.get(r);
-			if ((s.isTerminal() && !this.buffs.isEmpty(r))
-					||
-					(!s.isTerminal() &&
-						(!(s.getStateKind().equals(Kind.UNARY_INPUT) && s.getAcceptable().iterator().next().isAccept())
-									// FIXME: could be blocked on unary accept part way through the protocol -- but can't happen?
-						|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr)))
-									// FIXME: isConnected is not symmetric, and could disconnect all part way through protocol -- but can't happen?
-					// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
-			))
+			if (!canSafelyTerminate(r))
 			{
 				return false;
 			}
 		}
 		return true;
+	}
+
+	public boolean canSafelyTerminate(Role r)
+	{
+		EndpointState s = this.states.get(r);
+		return
+				!((s.isTerminal() && !this.buffs.isEmpty(r))
+					||
+					(!s.isTerminal() &&
+						(!(s.getStateKind().equals(Kind.UNARY_INPUT) && s.getAcceptable().iterator().next().isAccept())
+									// FIXME: could be blocked on unary accept part way through the protocol -- but can't happen?
+						|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
+									// FIXME: isConnected is not symmetric, and could disconnect all part way through protocol -- but can't happen?
+					// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
+				);
 	}
 	
 	public List<WFConfig> accept(Role r, IOAction a)

@@ -289,7 +289,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				{
 					errorMsg += "\nRole liveness violation for " + roleLiveness + " in terminal set:\n  " + termset;
 				}
-				Set<Send> msgLiveness = checkMessageLiveness(init, termset);
+				Map<Role, Set<Send>> msgLiveness = checkMessageLiveness(init, termset);
 				if (!msgLiveness.isEmpty())
 				{
 					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n  " + termset;
@@ -344,7 +344,9 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	{
 		Iterator<WFState> i = termset.iterator();
 		WFState s = i.next();
-		Map<Role, EndpointState> ss = new HashMap<>(s.config.states);
+		//Map<Role, EndpointState> ss = new HashMap<>(s.config.states);
+		Map<Role, WFState> ss = new HashMap<>();
+		s.config.states.keySet().forEach((r) -> ss.put(r, s));
 		while (i.hasNext())
 		{
 			WFState next = i.next();
@@ -373,58 +375,80 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		}
 		for (Role r : ss.keySet())
 		{
-			EndpointState tmp = ss.get(r);
-			if (tmp != null)
+			WFState foo = ss.get(r);
+			if (foo != null)
 			{
-				if (!tmp.isTerminal())
+				EndpointState tmp = foo.config.states.get(r);
+				if (tmp != null)
 				{
-					//throw new ScribbleException(init.toDot() + "\nLiveness violation for " + r + " in terminal set: " + termset);
-					if (s.config.buffs.get(r).values().stream().allMatch((v) -> v == null))
+					//if (!tmp.isTerminal())
+					if (!foo.config.canSafelyTerminate(r))
 					{
-						liveness.add(r);
+						//throw new ScribbleException(init.toDot() + "\nLiveness violation for " + r + " in terminal set: " + termset);
+						if (s.config.buffs.get(r).values().stream().allMatch((v) -> v == null))
+						{
+							liveness.add(r);
+						}
+						/*
+						// Should be redundant given explicit reception error etc checking
+						else
+						{
+							safety.add(r);
+						}*/
 					}
-					/*
-					// Should be redundant given explicit reception error etc checking
-					else
-					{
-						safety.add(r);
-					}*/
 				}
 			}
 		}
 	}
 
 	// "message liveness"
-	//private static Map<Role, Send> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
-	private static Set<Send> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
+	//private static Set<Send> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
+	private static Map<Role, Set<Send>> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
 	{
-		//Map<Role, Send> res = new HashSet<>();  // FIXME: record message src?
-		Set<Send> res = new HashSet<>();
+		//Set<Send> res = new HashSet<>();
 		Set<Role> roles = termset.iterator().next().config.states.keySet();
 
 		Iterator<WFState> i = termset.iterator();
-		Set<Send> seen = new HashSet<>();
+		Map<Role, Map<Role, Send>> b0 = i.next().config.buffs.getBuffers();
 		while (i.hasNext())
 		{
 			WFState s = i.next();
-			Set<Send> ms = roles.stream().flatMap((r) -> s.config.buffs.get(r).values().stream().filter((v) -> v != null)).collect(Collectors.toSet());
-			for (Send m : ms)
+			WFBuffers b = s.config.buffs;
+			for (Role r1 : roles)
 			{
-				if (!seen.contains(m)) //&& !res.contains(m);
+				for (Role r2 : roles)
 				{
-					res.add(m);
-				}
-			}
-			for (Send m : new HashSet<>(res))
-			{
-				if (!ms.contains(m)) //&& !seen.contains(m);
-				{
-					seen.add(m);
-					res.remove(m);
+					Send s0 = b0.get(r1).get(r2);
+					if (s0 != null)
+					{
+						Send tmp = b.get(r1).get(r2);
+						if (tmp == null)
+						{
+							b0.get(r1).put(r2, null);
+						}
+					}
 				}
 			}
 		}
-		
+	
+		Map<Role, Set<Send>> res = new HashMap<>();
+		for (Role r1 : roles)
+		{
+			for (Role r2 : roles)
+			{
+				Send m = b0.get(r1).get(r2);
+				if (m != null)
+				{
+					Set<Send> tmp = res.get(r2);
+					if (tmp == null)
+					{
+						tmp = new HashSet<>();
+						res.put(r2, tmp);
+					}
+					tmp.add(m);
+				}
+			}
+		}
 		return res;
 	}
 	

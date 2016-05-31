@@ -74,6 +74,12 @@ public class WFBuffers
 		});
 	}
 	
+	// FIXME refactor
+	public Map<Role, Map<Role, Send>> getBuffers()
+	{
+		return this.buffs;
+	}
+
 	public Map<Role, Send> get(Role r)
 	{
 		return Collections.unmodifiableMap(this.buffs.get(r));

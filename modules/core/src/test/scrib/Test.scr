@@ -23,29 +23,6 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 	//.. expliconn+introduces vs. delegation -- MPST with explicit (shared/sess) channels
 
-
-//*
-global protocol Proto1(role A, role B, role C)
-{
-	1() from A to B;
-	choice at B
-	{
-		rec X
-		{
-			2() from B to C;
-			continue X;
-		}
-	}
-	or
-	{
-		3() from B to C;
-	}
-	//4() from C to A;  // Uncomment is role liveness
-	4() from A to C;   // Message liveness
-}
-//*/
-
-
 /*
 global protocol Proto1(role A, role B)
 {
@@ -914,8 +891,9 @@ global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		2() from B to C;  // Liveness violation for C
+		2() from B to C;  // Role liveness violation for C
 	}
+	2() from C to B;  // Message liveness (if role-liveness is commented)
 }
 //*/
 
@@ -923,17 +901,85 @@ global protocol Proto1(role A, role B, role C)
 /*
 global protocol Proto1(role A, role B, role C)
 {
+	1() from A to B;
+	choice at B
+	{
+		rec X
+		{
+			2() from B to C;
+			continue X;
+		}
+	}
+	or
+	{
+		3() from B to C;
+	}
+	//4() from C to A;  // Uncomment is role liveness
+	4() from A to C;   // Message liveness
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		rec X
+		{
+			2() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		3() from A to B;
+	}
+	connect A to C;  // Good
+	4() from A to C;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	1() from A to B;
+	choice at B
+	{
+		rec X
+		{
+			2() from B to C;
+			continue X;
+		}
+	}
+	or
+	{
+		3() from B to C;
+	}
+	connect A to C;  // Bad: role liveness
+	4() from A to C;
+}
+//*/
+
+
+//*
+global protocol Proto1(role A, role B, role C)
+{
 	choice at A
 	{
 		1() from A to B;  // Bad: testing deadlock detection (input blocked -> terminated)
-		2() from A to B;
+		2() from A to B;  // Message liveness
 	}
 	or
 	{
 		1() from A to B;
 		rec X
 		{
-			// NB: not a liveness problem: A is already done by here
+			// NB: not a role liveness problem: A is already done by here
 			4() from B to C;
 			5() from C to B;
 			continue X;
