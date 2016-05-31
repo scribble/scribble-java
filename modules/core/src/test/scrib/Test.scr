@@ -28,6 +28,33 @@ module Test;
 	// - non-det EFSMs -- minimise?
 
 
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		rec X
+		{
+			choice at A
+			{
+				1() from A to B;
+				continue X;
+			}
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
+	2() from C to B;
+	2() from C to B;  // FIXME: investigate: WF_1 won't get past here
+	// ...
+
+	// FIXME: investigate reachability of local states in global model
+}
+//*/
+
+
 //*
 explicit global protocol Proto1(role A, role B, role C)
 {
