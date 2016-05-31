@@ -1,6 +1,8 @@
 package org.scribble.del;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -61,18 +63,36 @@ public class ModuleDel extends ScribDelBase
 		List<NonProtocolDecl<?>> npds = mod.getNonProtocolDecls();
 		List<String> npdnames = npds.stream().map((npd) -> npd.getDeclName().toString()).collect(Collectors.toList()); 
 				// Have to use Strings, as can be different kinds (datatype, sig)
-		if (npds.size() != npdnames.stream().distinct().count())
+		Set<String> dups = getDuplicates(npdnames);
+		//if (npds.size() != npdnames.stream().distinct().count())
+		if (!dups.isEmpty())
 		{
-			throw new ScribbleException("Duplicate non-protocol decls: " + npdnames);
+			throw new ScribbleException("Duplicate non-protocol decls: " + dups);
 		}
 		List<ProtocolDecl<?>> pds = mod.getProtocolDecls();
 		List<String> pdnames = pds.stream().map((pd) -> pd.header.getDeclName().toString()).collect(Collectors.toList());
 				// Have to use Strings, as can be different kinds (global, local)
+		dups = getDuplicates(pdnames);
 		if (pds.size() != pdnames.stream().distinct().count())
+		if (!dups.isEmpty())
 		{
-			throw new ScribbleException("Duplicate protocol decls: " + pdnames);  // Global and locals also required to be distinct
+			throw new ScribbleException("Duplicate protocol decls: " + dups);  // Global and locals also required to be distinct
 		}
 		return mod;
+	}
+	
+	private static Set<String> getDuplicates(Collection<String> ss)
+	{
+		Set<String> uniques = new HashSet<>();
+		Set<String> dups = new HashSet<>();
+		for (String npd : ss)
+		{
+			if (!uniques.add(npd))
+			{
+				dups.add(npd);
+			}
+		}
+		return dups;
 	}
 
 	@Override

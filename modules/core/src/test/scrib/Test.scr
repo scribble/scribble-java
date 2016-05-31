@@ -12,9 +12,6 @@
 module Test;
 
 
-type <java> "java.lang.Integer" from "rt.jar" as Int;
-
-
 	// TODO: (re)connect/wrap, e.g. SMTP
 
 	// TODO: "introduces" well-formedness?
@@ -23,19 +20,41 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
 	//.. expliconn+introduces vs. delegation -- MPST with explicit (shared/sess) channels
 
+	// TODO: API gen
+	// - connect/disconnect -- need to make backwards compatible with non-explicit
+	//   -- non-explicit just has implicit initial connects -- need to make sure no deadlock
+	//   -- consider accept for callbacks?
+	// - factor out language-specific transport wrappers, take as parameter for "wrap"
+	// - non-det EFSMs -- minimise?
+
 
 //*
 global protocol Proto1(role A, role B, role C)
 {
+
+}
+//*/
+
+
+/*
+type <java> "java.lang.String" from "rt.jar" as String;
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.Boolean" from "rt.jar" as Bool;
+type <java> "java.lang.Float" from "rt.jar" as Float;
+
+global protocol Proto(role A, role B, role C)
+{
 	choice at A
 	{
-		1() from A to B;
-		1() from A to C;
+		Msg1a(String) from A to B;
+		Msg2(Int) from B to C;
+		Msg3(Bool) from C to A;
 	}
 	or
 	{
-		2() from A to B;
-		2() from A to C;
+		Msg1b(Float) from A to B;
+		Msg2(Int) from B to C;
+		Msg3(Bool) from C to A;
 	}
 }
 //*/
@@ -962,8 +981,17 @@ global protocol Proto1(role A, role B, role C)
 	{
 		rec X
 		{
-			1() from A to B;
-			continue X;
+			choice at A
+			{
+				1() from A to B;
+				continue X;
+			}
+			/*or
+			{
+				() from A to B;  // Uncomment is good for message liveness problem
+				                 // ** But uncomment still bad for role liveness
+												 //     -- tests projected choice case pruning (for C)
+			}* /
 		}
 	}
 	or
@@ -971,7 +999,7 @@ global protocol Proto1(role A, role B, role C)
 		2() from A to B;
 		2() from B to C;  // Role liveness violation for C
 	}
-	2() from C to B;  // Message liveness (if role-liveness is commented)
+	//2() from C to B;  // Message liveness (if role-liveness is commented)
 }
 //*/
 
