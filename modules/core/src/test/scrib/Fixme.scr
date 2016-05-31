@@ -10,6 +10,34 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 /*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			1() from A to B;
+			1() from A to C;
+			2() from C to B;  // FIXME: getTrace seems broken for stuck messages errors
+			continue X;
+		}
+		or
+		{
+			3() from A to C;
+			3() from C to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C, role D)
 {
 	rec X

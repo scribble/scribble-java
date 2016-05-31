@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
@@ -19,6 +20,7 @@ import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
+import org.scribble.model.local.Send;
 import org.scribble.model.wf.WFBuffers;
 import org.scribble.model.wf.WFConfig;
 import org.scribble.model.wf.WFState;
@@ -276,16 +278,21 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			for (Set<WFState> termset : termsets)
 			{
 				Set<Role> safety = new HashSet<>();
-				Set<Role> liveness = new HashSet<>();
-				checkTerminalSet(init, termset, safety, liveness);
+				Set<Role> roleLiveness = new HashSet<>();
+				checkTerminalSet(init, termset, safety, roleLiveness);
 				if (!safety.isEmpty())
 				{
 					// Redundant
 					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n  " + termset;
 				}
-				if (!liveness.isEmpty())
+				if (!roleLiveness.isEmpty())
 				{
-					errorMsg += "\nLiveness violation for " + liveness + " in terminal set:\n  " + termset;
+					errorMsg += "\nRole liveness violation for " + roleLiveness + " in terminal set:\n  " + termset;
+				}
+				Set<Send> msgLiveness = checkMessageLiveness(init, termset);
+				if (!msgLiveness.isEmpty())
+				{
+					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n  " + termset;
 				}
 			}
 		}
@@ -331,7 +338,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		}
 	}
 
-	 // ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but maybe not good)
+	// FIXME: this is now just "role liveness"
+	// ** Could subsume terminal state check, if terminal sets included size 1 with reflexive reachability (but probably not good)
 	private static void checkTerminalSet(WFState init, Set<WFState> termset, Set<Role> safety, Set<Role> liveness) throws ScribbleException
 	{
 		Iterator<WFState> i = termset.iterator();
@@ -384,6 +392,40 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				}
 			}
 		}
+	}
+
+	// "message liveness"
+	//private static Map<Role, Send> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
+	private static Set<Send> checkMessageLiveness(WFState init, Set<WFState> termset) throws ScribbleException
+	{
+		//Map<Role, Send> res = new HashSet<>();  // FIXME: record message src?
+		Set<Send> res = new HashSet<>();
+		Set<Role> roles = termset.iterator().next().config.states.keySet();
+
+		Iterator<WFState> i = termset.iterator();
+		Set<Send> seen = new HashSet<>();
+		while (i.hasNext())
+		{
+			WFState s = i.next();
+			Set<Send> ms = roles.stream().flatMap((r) -> s.config.buffs.get(r).values().stream().filter((v) -> v != null)).collect(Collectors.toSet());
+			for (Send m : ms)
+			{
+				if (!seen.contains(m)) //&& !res.contains(m);
+				{
+					res.add(m);
+				}
+			}
+			for (Send m : new HashSet<>(res))
+			{
+				if (!ms.contains(m)) //&& !seen.contains(m);
+				{
+					seen.add(m);
+					res.remove(m);
+				}
+			}
+		}
+		
+		return res;
 	}
 	
 	private static void findTerminalSets(Map<WFState, Set<WFState>> reach, Set<Set<WFState>> termsets)
