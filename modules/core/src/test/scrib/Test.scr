@@ -34,10 +34,46 @@ module Test;
 //.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
 
 
-/*
-global protocol Proto1(role A, role B)
+//*
+explicit global protocol Proto1(role A, role B, role C)
 {
-	1() from A to B;
+	connect A to B;
+	connect A to C;
+	0() from A to C;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+	}
+	connect B to C;  // Test safe termination check for non-initial accept states
+	3() from B to C;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect A to C;
+	0() from A to C;
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
+	connect B to C;  // Tests role liveness check for non-terminal (accept) states
+	3() from B to C;
 }
 //*/
 

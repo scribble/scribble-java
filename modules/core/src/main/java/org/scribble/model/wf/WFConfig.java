@@ -58,8 +58,9 @@ public class WFConfig
 					||
 					(!s.isTerminal() &&
 						//(!(s.getStateKind().equals(Kind.UNARYINPUT) && s.getTakeable().iterator().next().isAccept())  // Accept state now distinguished
-						(!s.getStateKind().equals(Kind.ACCEPT)  // FIXME: needs initial state check -- although if there is an accept, there should a connect, and waitfor-errors checked via connects)
-									// FIXME: could be blocked on unary accept part way through the protocol -- but can't happen?
+						(!s.getStateKind().equals(Kind.ACCEPT)  
+								// FIXME: needs initial state check -- although if there is an accept, there should a connect, and waitfor-errors checked via connects) -- this should be OK because connect/accept are sync -- but not fully sufficient by itself, see next
+								// So could be blocked on unary accept part way through the protocol -- but if 
 						|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
 									// FIXME: isConnected is not symmetric, and could disconnect all part way through protocol -- but can't happen?
 					// Above assumes initial is not terminal (holds for EFSMs), and doesn't check buffer is empty (i.e. for orphan messages)
@@ -165,7 +166,6 @@ public class WFConfig
 		}
 		return res;
 	}
-	
 	
 	// Doesn't include locally terminated (single term state does not induce a deadlock cycle) -- i.e. only "bad" deadlocks
 	public Set<Set<Role>> getInputCycles()
