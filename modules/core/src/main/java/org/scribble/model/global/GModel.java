@@ -25,13 +25,14 @@ public class GModel
 	
 	public EndpointGraph project(Role self)
 	{
-		LGraphBuilder graph = new LGraphBuilder();
-		graph.reset();
+		LGraphBuilder builder = new LGraphBuilder();
+		builder.reset();
 		Map<GModelState, EndpointState> map = new HashMap<>();
-		map.put(this.init, graph.getEntry());
-		map.put(this.term, graph.getExit());
-		project(new HashSet<>(), map, this.init, self, graph);
-		return new EndpointGraph(graph.getEntry(), graph.getExit());
+		map.put(this.init, builder.getEntry());
+		map.put(this.term, builder.getExit());
+		project(new HashSet<>(), map, this.init, self, builder);
+		builder.finalise();
+		return new EndpointGraph(builder.getEntry(), builder.getExit());
 	}
 
 	// FIXME: incomplete, currently incorrect

@@ -34,7 +34,19 @@ module Test;
 //.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
 
 
-//*
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		continue X;  // Test graph building: EndpointGraph null exit
+	}
+}
+*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -48,7 +60,7 @@ explicit global protocol Proto1(role A, role B, role C)
 	{
 		2() from A to B;
 	}
-	connect B to C;  // Test safe termination check for non-initial accept states
+	connect B to C;  // FIXME: Test safe termination check for non-initial accept states
 	3() from B to C;
 }
 //*/

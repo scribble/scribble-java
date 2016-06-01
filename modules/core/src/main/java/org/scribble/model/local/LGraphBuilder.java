@@ -45,12 +45,16 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 		Map<EndpointState, EndpointState> map = new HashMap<>();
 		map.put(this.entry, res);
 		map.put(this.exit, resTerm);
-		foo(new HashSet<>(), map, this.entry, res);
+		Set<EndpointState> seen = new HashSet<>();
+		fixContinueEdges(seen, map, this.entry, res);
+		if (!seen.contains(this.exit))
+		{
+			resTerm = null;
+		}
 		return new EndpointGraph(res, resTerm);
 	}
 	
-	private void foo(Set<EndpointState> seen, Map<EndpointState, EndpointState> map,
-			EndpointState curr, EndpointState res)
+	private void fixContinueEdges(Set<EndpointState> seen, Map<EndpointState, EndpointState> map, EndpointState curr, EndpointState res)
 	{
 		if (seen.contains(curr))
 		{
@@ -70,7 +74,7 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 			{
 				addEdgeAux(res, a, next);
 			
-				foo(seen, map, succ, next);
+				fixContinueEdges(seen, map, succ, next);
 			}
 			else
 			{
@@ -81,7 +85,7 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 						next = getNext(map, n);
 						addEdgeAux(res, e, next);
 
-						foo(seen, map, succ, next);
+						fixContinueEdges(seen, map, succ, next);
 					}
 				}
 			}
