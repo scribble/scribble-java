@@ -28,27 +28,39 @@ module Test;
 	// - non-det EFSMs -- minimise?
 
 
+.. output and connect can be mixed in a state... check where getStateKind used for any problems
+    -- getTakeable in WFConfig for model building (but maybe ends up OK, just treat connect/accept the same way?)
+		-- main approach should be generally consier mixed send/connect states, but differentiate connect for input blocking detection
+.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
 
 //*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
+	// Needs local choice subject disabled, though the point is it's still bad
 	choice at A
 	{
 		a() from A to B;
-		d() from C to B;
-
+		//d() from C to B;  // Moved down to make C enabled
 		cprime() from A to C;
+		d() from C to B;
 		b() from B to A;
-		y() from A to B;
+		y() from A to B;  // Orphan
 	}
 	or
 	{
 		c() from A to C;
-		d() from C to B;
-
+		d() from C to B;  // ..point is B could get in this case, while A (and C) are in the other
 		b() from B to A;
-		a() from A to B;
-		x() from B to A;
+		a() from A to B;  // (..not stuck msg error because the a() from above is consumed here)
+		x() from B to A;  // Orphan
 	}
 }
 //*/
@@ -1664,6 +1676,19 @@ aux explicit global protocol Proto1Aux(role A, role B)
 
 
 /*
+explicit global protocol Proto1(role A, role B)
+{
+	// Basic connectedness tests
+	connect A to B;
+	//connect B to A;
+	disconnect A and B;
+	//1() from A to B;
+	//disconnect A and B;
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -1678,7 +1703,7 @@ explicit global protocol Proto1(role A, role B, role C)
 			3() from C to A;
 			//3() from A to B;  // Uncomment OK
 			disconnect B and C;
-			disconnect C and A; // Comment bad
+			disconnect C and A; // Comment bad -- FIXME: should be bad
 			continue X;
 		}
 		or

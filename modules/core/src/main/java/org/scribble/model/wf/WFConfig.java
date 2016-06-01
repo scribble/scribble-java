@@ -134,7 +134,7 @@ public class WFConfig
 		return res;
 	}
 
-	// Deadlock from unhandled messages (reception errors)
+	// Deadlock from non handleable messages (reception errors)
 	public Map<Role, Receive> getStuckMessages()
 	{
 		Map<Role, Receive> res = new HashMap<>();
@@ -218,7 +218,7 @@ public class WFConfig
 		return res;
 	}
 	
-	// Includes dependencies from input-blocking and termination
+	// Includes dependencies from input-blocking, termination and connect-blocking
 	// FIXME: should also include connect?
 	// NB: if this.states.get(orig).isTerminal() then orig is returned as "singleton deadlock"
 	//public Set<Role> isCycle(Set<Role> candidate, Set<Role> todo)
@@ -241,7 +241,7 @@ public class WFConfig
 			candidate.add(r);
 			
 			EndpointState s = this.states.get(r);
-			if (s.getStateKind() == Kind.OUTPUT)  // FIXME: includes connect, could still be deadlock?
+			if (s.getStateKind() == Kind.OUTPUT)  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				return null;
 			}
@@ -275,6 +275,7 @@ public class WFConfig
 		return null;
 	}
 	
+	// Generalised to include connect-blocked roles
 	//private Role isInputBlocked(Role r)
 	private Set<Role> isInputBlocked(Role r)
 	{
@@ -303,7 +304,7 @@ public class WFConfig
 			}
 		}
 		//else if (k == Kind.CONNECTION)
-		else if (k == Kind.CONNECT //|| k == Kind.ACCEPT
+		else if (k == Kind.CONNECT //|| k == Kind.ACCEPT  // FIXME: filter out connects if no available sends
 				)
 		{
 			// FIXME: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
@@ -316,6 +317,7 @@ public class WFConfig
 		//return Collections.emptySet();
 	}
 
+	// Generalised to include "unconnected" messages
 	public Map<Role, Set<Send>> getOrphanMessages()
 	{
 		Map<Role, Set<Send>> res = new HashMap<>();
@@ -377,7 +379,7 @@ public class WFConfig
 					List<IOAction> as = s.getAllTakeable();
 					for (IOAction a : as)
 					{
-						if (a.isSend())
+						if (a.isSend())  // FIXME: could be connect actions
 						{
 							if (this.buffs.canSend(r, (Send) a))
 							{
@@ -492,7 +494,7 @@ public class WFConfig
 					List<IOAction> as = s.getAllTakeable();
 					for (IOAction a : as)
 					{
-						if (a.isConnect())
+						if (a.isConnect())  // FIXME: could be send actions
 						{
 							// FIXME: factor out
 							Connect c = (Connect) a;
