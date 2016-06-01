@@ -82,28 +82,26 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	// Refactor to GProtocolDeclDel
 	private GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
-		Job job = getJob();
-		
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		GProtocolName fullname = gpd.getFullMemberName(parent);
 		
-		Map<Role, EndpointState> egraphs = getEndpointGraphs(job, fullname, gpd);
+		Map<Role, EndpointState> egraphs = getEndpointGraphs(fullname, gpd);
 			
 		//Set<WFState> seen = buildGlobalModel(job, fullname, init);  // Returns set of all states
 		Set<WFState> seen = new HashSet<>();
-		WFState init = buildGlobalModel(job, fullname, gpd, egraphs, seen);  // Post: seen contains all states
-
+		WFState init = buildGlobalModel(fullname, gpd, egraphs, seen);  // Post: seen contains all states
 		this.getJobContext().addGlobalModel(fullname, init);
 
 		/*Set<WFState> all = new HashSet<>();
 		getAllNodes(init, all);*/
-		checkGlobalModel(job, fullname, init, seen);
+		checkGlobalModel(fullname, init, seen);
 		
 		return child;
 	}
 
-	private void checkGlobalModel(Job job, GProtocolName fullname, WFState init, Set<WFState> all) throws ScribbleException
+	private void checkGlobalModel(GProtocolName fullname, WFState init, Set<WFState> all) throws ScribbleException
 	{
+		Job job = getJob();
 		String errorMsg = "";
 
 		Map<WFState, Set<WFState>> reach = getReachability(job, all);
@@ -199,8 +197,10 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	}
 
 	//private Set<WFState> buildGlobalModel(Job job, GProtocolName fullname, WFState init) throws ScribbleException
-	private WFState buildGlobalModel(Job job, GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointState> egraphs, Set<WFState> seen) throws ScribbleException
+	private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointState> egraphs, Set<WFState> seen) throws ScribbleException
 	{
+		Job job = getJob();
+
 		WFBuffers b0 = new WFBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
 		WFConfig c0 = new WFConfig(egraphs, b0);
 		WFState init = new WFState(c0);
@@ -293,8 +293,10 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		return init;
 	}
 
-	private Map<Role, EndpointState> getEndpointGraphs(Job job, GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
+	private Map<Role, EndpointState> getEndpointGraphs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
 	{
+		Job job = getJob();
+
 		Map<Role, EndpointState> egraphs = new HashMap<>();
 		
 		for (Role self : gpd.header.roledecls.getRoles())
