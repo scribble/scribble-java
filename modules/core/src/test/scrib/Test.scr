@@ -34,6 +34,11 @@ module Test;
 //.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
 
 
+/*global protocol Proto1(role A, role B, role C)
+{
+}*/
+
+
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
@@ -78,7 +83,7 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
-/*
+//*
 global protocol Proto1(role A, role B, role C)
 {
 	// Needs local choice subject disabled, though the point is it's still bad
