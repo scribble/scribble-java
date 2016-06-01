@@ -25,7 +25,7 @@ module Test;
 	//   -- non-explicit just has implicit initial connects -- just need to make sure no deadlock
 	//   -- consider accept for callbacks?
 	// - factor out Scribble abstract transport wrappers with language-specific plugins; take as parameter for "wrap" action
-	// - non-det EFSMs -- minimise?
+	// - non-det EFSMs -- minimisation will remove all mergeable non-det actions, but non-mergeable non-det actions can exist due to explicit connect
 
 
 //.. output and connect can be mixed in a state... check where getStateKind used for any problems
@@ -34,24 +34,10 @@ module Test;
 //.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
 
 
-/*global protocol Proto1(role A, role B, role C)
+//*
+global protocol Proto1(role A, role B, role C)
 {
-}*/
 
-
-/*
-explicit global protocol Proto1(role A, role B, role C)
-{
-	connect A to B;
-	choice at A
-	{
-		1() from A to B;
-	}
-	or
-	{
-		1() from A to B  // Good non-det EFSM for A (including minimalisation)
-		connect A to C;
-	}
 }
 //*/
 
@@ -74,16 +60,139 @@ global protocol Proto1(role A, role B, role C)
 	{
 		2() from A to B;
 	}
-	2() from C to B;
-	2() from C to B;  // FIXME: investigate: WF_1 won't get past here
-	// ...
 
-	// FIXME: investigate reachability of local states in global model
+	2() from C to B;  // TODO: investigate: WF_1 won't get past here, is it OK?
+	2() from C to B;  // ..becomes "fake" role liveness problem because of WF1
+	// ..dragons
+
+	// TODO: investigate reachability of local states in global model
 }
 //*/
 
 
-//*
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at B
+	{
+		0() from B to C;
+		0() from B to A;
+		2() from C to B;
+		choice at A
+		{
+			rec X
+			{
+				choice at A
+				{
+					1() from A to B;
+					continue X;
+				}
+			}
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+	or
+	{
+		0() from B to C;
+		1() from B to A;
+		2() from C to B;  // Good
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at B
+	{
+		0() from B to C;
+		0() from B to A;
+
+		//2() from C to B;
+		//2() from C to B;
+
+		choice at A
+		{
+			rec X
+			{
+				choice at A
+				{
+					1() from A to B;
+					//2() from C to B;
+					continue X;
+				}
+			}
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+	or
+	{
+		0() from B to C;
+		1() from B to A;
+	}
+
+	2() from C to B;  // TODO: investigate: WF_1 won't get past here, is it OK?
+	2() from C to B;  // ..becomes "fake" role liveness problem because of WF1
+	// ...
+
+	// TODO: investigate reachability of local states in global model
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// Trying to construct a counterexample for WF1 soundness..
+	// ..need to find an error state that is unreachable by WF1 but reachable by e.g. WF2
+	// Try to find a choice where B is falsely committed to a branch due to WF1 (so state space of model is unsoundly restricted)
+	choice at A
+	{
+		1() from A to B;
+		1() from A to B;
+		2() from A to C;  // A cannot do this in WF1 unless B receives a 1() first
+	}
+	or
+	{
+		3() from A to C;
+		//2() from A to B;
+				// Local choice subjects require B to also receive from A in this block
+				// Two cases: same or different label
+				// If different label, then no possibility of false branch commitment
+				// If same label, then non-det always allows B to enter this block, even under WF1
+				// Therefore: false choice commitment not possible
+		1() from A to B;
+		1() from A to B;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		1() from A to B  // Good non-det EFSM for A (including minimalisation)
+		connect A to C;
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	// Needs local choice subject disabled, though the point is it's still bad
