@@ -241,7 +241,7 @@ public class WFConfig
 			candidate.add(r);
 			
 			EndpointState s = this.states.get(r);
-			if (s.getStateKind() == Kind.OUTPUT)  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
+			if (s.getStateKind() == Kind.OUTPUT && !s.isConnectOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				return null;
 			}
@@ -303,15 +303,23 @@ public class WFConfig
 				}
 			}
 		}
-		//else if (k == Kind.CONNECTION)
-		else if (k == Kind.CONNECT //|| k == Kind.ACCEPT  // FIXME: filter out connects if no available sends
-				)
+		/*else if (k == Kind.ACCEPT)
 		{
-			// FIXME: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
-			
-			//List<IOAction> all = s.getAllAcceptable();
+			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
+			 
 			List<IOAction> all = s.getAllTakeable();
 			return all.stream().map((x) -> x.peer).collect(Collectors.toSet());
+		}*/
+		//else if (k == Kind.CONNECTION)
+		else if (k == Kind.OUTPUT //|| k == Kind.ACCEPT  ..// FIXME: filter out connects if no available sends
+				)
+		{
+			//List<IOAction> all = s.getAllAcceptable();
+			if (s.isConnectOnly())
+			{
+				List<IOAction> all = s.getAllTakeable();
+				return all.stream().map((x) -> x.peer).collect(Collectors.toSet());
+			}
 		}
 		return null;
 		//return Collections.emptySet();
@@ -379,7 +387,7 @@ public class WFConfig
 					List<IOAction> as = s.getAllTakeable();
 					for (IOAction a : as)
 					{
-						if (a.isSend())  // FIXME: could be connect actions
+						if (a.isSend())
 						{
 							if (this.buffs.canSend(r, (Send) a))
 							{
@@ -392,14 +400,14 @@ public class WFConfig
 								tmp.add(a);
 							}
 						}
-						/*else if (a.isConnect())
+						else if (a.isConnect())
 						{
 							// FIXME: factor out
 							Connect c = (Connect) a;
 							EndpointState speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
-								List<IOAction> peeras = speer.getAllAcceptable();
+								List<IOAction> peeras = speer.getAllTakeable();
 								for (IOAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
@@ -414,7 +422,7 @@ public class WFConfig
 									}
 								}
 							}
-						}*/
+						}
 						else if (a.isDisconnect())
 						{
 							// Duplicated from Send
@@ -489,12 +497,12 @@ public class WFConfig
 				{
 					break;
 				}
-				case CONNECT:
+				/*case CONNECT:
 				{
 					List<IOAction> as = s.getAllTakeable();
 					for (IOAction a : as)
 					{
-						if (a.isConnect())  // FIXME: could be send actions
+						if (a.isConnect())  ..// FIXME: could be send actions
 						{
 							// FIXME: factor out
 							Connect c = (Connect) a;
@@ -523,7 +531,7 @@ public class WFConfig
 						}	
 					}
 					break;
-				}
+				}*/
 				case ACCEPT:
 				{
 					for (IOAction a : this.buffs.acceptable(r))

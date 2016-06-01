@@ -28,12 +28,13 @@ module Test;
 	// - non-det EFSMs -- minimise?
 
 
-.. output and connect can be mixed in a state... check where getStateKind used for any problems
-    -- getTakeable in WFConfig for model building (but maybe ends up OK, just treat connect/accept the same way?)
-		-- main approach should be generally consier mixed send/connect states, but differentiate connect for input blocking detection
-.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
+//.. output and connect can be mixed in a state... check where getStateKind used for any problems
+//    -- getTakeable in WFConfig for model building (but maybe ends up OK, just treat connect/accept the same way?)
+//		-- main approach should be generally consier mixed send/connect states, but differentiate connect for input blocking detection
+//.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
 
-//*
+
+/*
 global protocol Proto1(role A, role B)
 {
 	1() from A to B;
@@ -61,6 +62,32 @@ global protocol Proto1(role A, role B, role C)
 		b() from B to A;
 		a() from A to B;  // (..not stuck msg error because the a() from above is consumed here)
 		x() from B to A;  // Orphan
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// Counterexample for WF1 if local choice subject disabled
+	choice at A
+	{
+		a() from A to B;
+		a() from A to B;  // WF1 unnaturally resolves the non-det choice at B by forcing B to commit to this branch before C is enabled
+		cprime() from A to C;
+		d() from C to B;
+		b() from B to A;
+		y() from A to B;  // Potential orphan
+	}
+	or
+	{
+		c() from A to C;
+		d() from C to B;
+		b() from B to A;
+		a() from A to B;
+		a() from A to B;
+		x() from B to A;  // Potential orphan
 	}
 }
 //*/
@@ -1283,7 +1310,7 @@ global protocol Proto1(role A, role B, role C)
 			/*or
 			{
 				() from A to B;  // Uncomment is good for message liveness problem
-				                 // ** But uncomment still bad for role liveness
+				                 // ** But uncomment still bad for role liveness (becomes wait-for error at C)
 												 //     -- tests projected choice case pruning (for C)
 			}* /
 		}
@@ -1314,7 +1341,7 @@ global protocol Proto1(role A, role B, role C)
 	{
 		3() from B to C;
 	}
-	//4() from C to A;  // Uncomment is role liveness
+	4() from C to A;  // Uncomment is role liveness
 	4() from A to C;   // Message liveness
 }
 //*/
