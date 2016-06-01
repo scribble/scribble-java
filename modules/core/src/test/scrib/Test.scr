@@ -34,58 +34,30 @@ module Test;
 //.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
 
 
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		1() from A to B;
-		continue X;  // Test graph building: EndpointGraph null exit
-	}
-}
-*/
-
-
-//*
-explicit global protocol Proto1(role A, role B, role C)
-{
-	connect A to B;
-	connect A to C;
-	0() from A to C;
-	choice at A
-	{
-		1() from A to B;
-	}
-	or
-	{
-		2() from A to B;
-	}
-	connect B to C;  // FIXME: Test safe termination check for non-initial accept states
-	3() from B to C;
-}
-//*/
-
 
 /*
-explicit global protocol Proto1(role A, role B, role C)
+global protocol Proto1(role A, role B, role C)
 {
-	connect A to B;
-	connect A to C;
-	0() from A to C;
 	choice at A
 	{
 		rec X
 		{
-			1() from A to B;
-			continue X;
+			choice at A
+			{
+				1() from A to B;
+				continue X;
+			}
 		}
 	}
 	or
 	{
 		2() from A to B;
 	}
-	connect B to C;  // Tests role liveness check for non-terminal (accept) states
-	3() from B to C;
+	2() from C to B;
+	2() from C to B;  // FIXME: investigate: WF_1 won't get past here
+	// ...
+
+	// FIXME: investigate reachability of local states in global model
 }
 //*/
 
@@ -142,28 +114,110 @@ global protocol Proto1(role A, role B, role C)
 
 
 /*
-global protocol Proto1(role A, role B, role C)
+global protocol Proto1(role A, role B)
 {
+	rec X
+	{
+		1() from A to B;
+		continue X;  // Test graph building: EndpointGraph null exit
+	}
+}
+*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		connect from B to C;
+		1() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		connect from B to C;
+		2() from B to C;  // Not mergeable (connect/accept is unit message)
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	// Good
+	connect A to B;
+	connect A to C;
+	connect B to C;  // Test wait-for error detection: C is non-initial accept, but B is a corresponding connect
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	// Bad
+	connect A to B;
+	connect A to C;
+	0() from A to C;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+		connect B to C;  // Test safe termination check for non-initial accept states
+		3() from B to C;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	// Good
+	connect A to B;
+	connect A to C;
+	0() from A to C;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+	}
+	connect B to C;
+	3() from B to C;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect A to C;
+	0() from A to C;
 	choice at A
 	{
 		rec X
 		{
-			choice at A
-			{
-				1() from A to B;
-				continue X;
-			}
+			1() from A to B;
+			continue X;
 		}
 	}
 	or
 	{
 		2() from A to B;
 	}
-	2() from C to B;
-	2() from C to B;  // FIXME: investigate: WF_1 won't get past here
-	// ...
-
-	// FIXME: investigate reachability of local states in global model
+	connect B to C;  // Tests role liveness check for non-terminal (accept) states
+	3() from B to C;
 }
 //*/
 
@@ -177,6 +231,7 @@ explicit global protocol Proto1(role A, role B)
 //*/
 
 
+
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
@@ -188,7 +243,7 @@ explicit global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		connect B to C;
+		connect B to C;  // Good because C is initial
 		2() from B to C;
 	}
 }
@@ -306,6 +361,24 @@ explicit global protocol Proto1(role A, role B, role C, role D)
 	}
 }
 //*/
+
+
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		connect A to C;
+		3() from A to C;
+	}
+	or
+	{
+		connect A to C;  // Mixed send/connect state at A
+		2() from A to B;
+		3() from A to C;
+	}
+}
 
 
 /*

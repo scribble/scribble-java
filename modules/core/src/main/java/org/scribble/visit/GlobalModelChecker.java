@@ -15,6 +15,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GIOAction;
+import org.scribble.model.local.EndpointFSM;
 import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
@@ -85,7 +86,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		GProtocolName fullname = gpd.getFullMemberName(parent);
 		
-		Map<Role, EndpointState> egraphs = getEndpointGraphs(fullname, gpd);
+		//Map<Role, EndpointState> egraphs = getEndpointGraphs(fullname, gpd);
+		Map<Role, EndpointFSM> egraphs = getEndpointFSMs(fullname, gpd);
 			
 		//Set<WFState> seen = buildGlobalModel(job, fullname, init);  // Returns set of all states
 		Set<WFState> seen = new HashSet<>();
@@ -197,11 +199,13 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	}
 
 	//private Set<WFState> buildGlobalModel(Job job, GProtocolName fullname, WFState init) throws ScribbleException
-	private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointState> egraphs, Set<WFState> seen) throws ScribbleException
+	//private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointState> egraphs, Set<WFState> seen) throws ScribbleException
+	private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Set<WFState> seen) throws ScribbleException
 	{
 		Job job = getJob();
 
 		WFBuffers b0 = new WFBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
+		//WFConfig c0 = new WFConfig(egraphs, b0);
 		WFConfig c0 = new WFConfig(egraphs, b0);
 		WFState init = new WFState(c0);
 
@@ -236,7 +240,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				List<IOAction> acceptable_r = takeable.get(r);
 				
 				// Hacky?
-				EndpointState currstate = curr.config.states.get(r);
+				//EndpointState currstate = curr.config.states.get(r);
+				EndpointFSM currstate = curr.config.states.get(r);
 				Kind k = currstate.getStateKind();
 				if (k == Kind.OUTPUT)
 				{
@@ -293,11 +298,13 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		return init;
 	}
 
-	private Map<Role, EndpointState> getEndpointGraphs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
+	//private Map<Role, EndpointState> getEndpointGraphs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
+	private Map<Role, EndpointFSM> getEndpointFSMs(GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
 	{
 		Job job = getJob();
 
-		Map<Role, EndpointState> egraphs = new HashMap<>();
+		//Map<Role, EndpointState> egraphs = new HashMap<>();
+		Map<Role, EndpointFSM> egraphs = new HashMap<>();
 		
 		for (Role self : gpd.header.roledecls.getRoles())
 		{
@@ -324,7 +331,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 
 			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + fsm);
 			
-			egraphs.put(self, fsm.init);
+			//egraphs.put(self, fsm.init);
+			egraphs.put(self, new EndpointFSM(fsm));
 		}
 		return egraphs;
 	}
@@ -373,7 +381,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		while (i.hasNext())
 		{
 			WFState next = i.next();
-			Map<Role, EndpointState> tmp = next.config.states;
+			//Map<Role, EndpointState> tmp = next.config.states;
+			Map<Role, EndpointFSM> tmp = next.config.states;
 			for (Role r : tmp.keySet())
 			{
 				if (ss.get(r) != null)
@@ -401,7 +410,8 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			WFState foo = ss.get(r);
 			if (foo != null)
 			{
-				EndpointState tmp = foo.config.states.get(r);
+				//EndpointState tmp = foo.config.states.get(r);
+				EndpointFSM tmp = foo.config.states.get(r);
 				if (tmp != null)
 				{
 					//if (!tmp.isTerminal())

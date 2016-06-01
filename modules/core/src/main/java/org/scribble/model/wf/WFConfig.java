@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.scribble.model.local.Accept;
 import org.scribble.model.local.Connect;
 import org.scribble.model.local.Disconnect;
-import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.EndpointFSM;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
@@ -22,12 +22,13 @@ import org.scribble.sesstype.name.Role;
 
 public class WFConfig
 {
-	public final Map<Role, EndpointState> states;
-	//public final Map<Role, Map<Role, Send>> buffs;  // dest -> src -> msg
+	//public final Map<Role, EndpointState> states;
+	public final Map<Role, EndpointFSM> states;
 	public final WFBuffers buffs;
 	
 	//public WFConfig(Map<Role, EndpointState> state, Map<Role, Map<Role, Send>> buff)
-	public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
+	//public WFConfig(Map<Role, EndpointState> state, WFBuffers buffs)
+	public WFConfig(Map<Role, EndpointFSM> state, WFBuffers buffs)
 	{
 		this.states = Collections.unmodifiableMap(state);
 		//this.buffs = Collections.unmodifiableMap(buff.keySet().stream() .collect(Collectors.toMap((k) -> k, (k) -> Collections.unmodifiableMap(buff.get(k)))));
@@ -52,13 +53,14 @@ public class WFConfig
 
 	public boolean canSafelyTerminate(Role r)
 	{
-		EndpointState s = this.states.get(r);
+		//EndpointState s = this.states.get(r);
+		EndpointFSM s = this.states.get(r);
 		return
 				!((s.isTerminal() && !this.buffs.isEmpty(r))
 					||
 					(!s.isTerminal() &&
 						//(!(s.getStateKind().equals(Kind.UNARYINPUT) && s.getTakeable().iterator().next().isAccept())  // Accept state now distinguished
-						(!s.getStateKind().equals(Kind.ACCEPT)  
+						(!(s.getStateKind().equals(Kind.ACCEPT) && s.isInitial())
 								// FIXME: needs initial state check -- although if there is an accept, there should a connect, and waitfor-errors checked via connects) -- this should be OK because connect/accept are sync -- but not fully sufficient by itself, see next
 								// So could be blocked on unary accept part way through the protocol -- but if 
 						|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
@@ -71,10 +73,13 @@ public class WFConfig
 	{
 		List<WFConfig> res = new LinkedList<>();
 		
-		List<EndpointState> succs = this.states.get(r).takeAll(a);
-		for (EndpointState succ : succs)
+		//List<EndpointState> succs = this.states.get(r).takeAll(a);
+		List<EndpointFSM> succs = this.states.get(r).takeAll(a);
+		//for (EndpointState succ : succs)
+		for (EndpointFSM succ : succs)
 		{
-			Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
+			//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
+			Map<Role, EndpointFSM> tmp1 = new HashMap<>(this.states);
 			//Map<Role, Map<Role, Send>> tmp2 = new HashMap<>(this.buffs);
 		
 			tmp1.put(r, succ);
@@ -109,13 +114,18 @@ public class WFConfig
 	{
 		List<WFConfig> res = new LinkedList<>();
 		
-		List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
+		/*List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
 		List<EndpointState> succs2 = this.states.get(r2).takeAll(a2);
-		for (EndpointState succ1 : succs1)
+		for (EndpointState succ1 : succs1)*/
+		List<EndpointFSM> succs1 = this.states.get(r1).takeAll(a1);
+		List<EndpointFSM> succs2 = this.states.get(r2).takeAll(a2);
+		for (EndpointFSM succ1 : succs1)
 		{
-			for (EndpointState succ2 : succs2)
+			//for (EndpointState succ2 : succs2)
+			for (EndpointFSM succ2 : succs2)
 			{
-				Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
+				//Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
+				Map<Role, EndpointFSM> tmp1 = new HashMap<>(this.states);
 				tmp1.put(r1, succ1);
 				tmp1.put(r2, succ2);
 				WFBuffers tmp2;
@@ -141,7 +151,8 @@ public class WFConfig
 		Map<Role, Receive> res = new HashMap<>();
 		for (Role r : this.states.keySet())
 		{
-			EndpointState s = this.states.get(r);
+			//EndpointState s = this.states.get(r);
+			EndpointFSM s = this.states.get(r);
 			Kind k = s.getStateKind();
 			if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
 			{
@@ -168,7 +179,7 @@ public class WFConfig
 	}
 	
 	// Doesn't include locally terminated (single term state does not induce a deadlock cycle) -- i.e. only "bad" deadlocks
-	public Set<Set<Role>> getInputCycles()
+	public Set<Set<Role>> getWaitForErrors()
 	{
 		Set<Set<Role>> res = new HashSet<>();
 		List<Role> todo = new LinkedList<>(this.states.keySet());
@@ -206,7 +217,7 @@ public class WFConfig
 			//Set<Role> cycle = isCycle(new HashSet<>(), new HashSet<>(Arrays.asList(r)));
 			if (!this.states.get(r).isTerminal())
 			{
-				Set<Role> cycle = isWaitForCycle(r);
+				Set<Role> cycle = isWaitForChain(r);
 				//if (!cycle.isEmpty())
 				if (cycle != null)
 				{
@@ -222,7 +233,7 @@ public class WFConfig
 	// FIXME: should also include connect?
 	// NB: if this.states.get(orig).isTerminal() then orig is returned as "singleton deadlock"
 	//public Set<Role> isCycle(Set<Role> candidate, Set<Role> todo)
-	public Set<Role> isWaitForCycle(Role orig)
+	public Set<Role> isWaitForChain(Role orig)
 	{
 		/*if (todo.isEmpty())
 		{
@@ -240,9 +251,11 @@ public class WFConfig
 			todo.remove(r);
 			candidate.add(r);
 			
-			EndpointState s = this.states.get(r);
+			//EndpointState s = this.states.get(r);
+			EndpointFSM s = this.states.get(r);
 			if (s.getStateKind() == Kind.OUTPUT && !s.isConnectOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
+				// FIXME: move into isWaitingFor
 				return null;
 			}
 			if (s.isTerminal())
@@ -279,7 +292,8 @@ public class WFConfig
 	//private Role isInputBlocked(Role r)
 	private Set<Role> isWaitingFor(Role r)
 	{
-		EndpointState s = this.states.get(r);
+		//EndpointState s = this.states.get(r);
+		EndpointFSM s = this.states.get(r);
 		Kind k = s.getStateKind();
 		if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
 		{
@@ -303,22 +317,33 @@ public class WFConfig
 				}
 			}
 		}
-		/*else if (k == Kind.ACCEPT)
+		else if (k == Kind.ACCEPT)
 		{
 			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
-			 
-			List<IOAction> all = s.getAllTakeable();
-			return all.stream().map((x) -> x.peer).collect(Collectors.toSet());
-		}*/
+			if (!s.isInitial())
+			{
+				List<IOAction> all = s.getAllTakeable();
+				Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());  // Should be singleton
+				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Connect(r))))  // cf. getTakeable
+									//if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
+				{
+					return rs;
+				}
+			}
+		}
 		//else if (k == Kind.CONNECTION)
-		else if (k == Kind.OUTPUT //|| k == Kind.ACCEPT  ..// FIXME: filter out connects if no available sends
+		else if (k == Kind.OUTPUT //|| k == Kind.ACCEPT  ..// FIXME: check connects if no available sends
 				)
 		{
 			//List<IOAction> all = s.getAllAcceptable();
 			if (s.isConnectOnly())
 			{
 				List<IOAction> all = s.getAllTakeable();
-				return all.stream().map((x) -> x.peer).collect(Collectors.toSet());
+				Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
+				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Accept(r))))  // cf. getTakeable
+				{
+					return rs;
+				}
 			}
 		}
 		return null;
@@ -331,7 +356,8 @@ public class WFConfig
 		Map<Role, Set<Send>> res = new HashMap<>();
 		for (Role r : this.states.keySet())
 		{
-			EndpointState s = this.states.get(r);
+			//EndpointState s = this.states.get(r);
+			EndpointFSM s = this.states.get(r);
 			if (s.isTerminal())
 			{
 				Set<Send> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
@@ -379,7 +405,8 @@ public class WFConfig
 		Map<Role, List<IOAction>> res = new HashMap<>();
 		for (Role r : this.states.keySet())
 		{
-			EndpointState s = this.states.get(r);
+			//EndpointState s = this.states.get(r);
+			EndpointFSM s = this.states.get(r);
 			switch (s.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
 				case OUTPUT:
@@ -404,13 +431,14 @@ public class WFConfig
 						{
 							// FIXME: factor out
 							Connect c = (Connect) a;
-							EndpointState speer = this.states.get(c.peer);
+							//EndpointState speer = this.states.get(c.peer);
+							EndpointFSM speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
 								List<IOAction> peeras = speer.getAllTakeable();
 								for (IOAction peera : peeras)
 								{
-									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
+									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))  // Cf. isWaitingFor
 									{
 										List<IOAction> tmp = res.get(r);
 										if (tmp == null)
@@ -540,7 +568,8 @@ public class WFConfig
 						{
 							// FIXME: factor out
 							Accept c = (Accept) a;
-							EndpointState speer = this.states.get(c.peer);
+							//EndpointState speer = this.states.get(c.peer);
+							EndpointFSM speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.OUTPUT)
 							{
 								List<IOAction> peeras = speer.getAllTakeable();

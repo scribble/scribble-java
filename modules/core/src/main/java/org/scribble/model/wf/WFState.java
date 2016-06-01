@@ -118,7 +118,7 @@ public class WFState
 	public WFStateErrors getErrors()
 	{
 		Map<Role, Receive> stuck = this.config.getStuckMessages();
-		Set<Set<Role>> waitfor = this.config.getInputCycles();
+		Set<Set<Role>> waitfor = this.config.getWaitForErrors();
 		//Set<Set<Role>> waitfor = Collections.emptySet();
 		Map<Role, Set<Send>> orphs = this.config.getOrphanMessages();
 		return new WFStateErrors(stuck, waitfor, orphs);
