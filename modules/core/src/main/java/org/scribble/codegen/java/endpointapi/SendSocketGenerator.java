@@ -43,9 +43,9 @@ public class SendSocketGenerator extends ScribSocketGenerator
 	{
 		final String ROLE_PARAM = "role";
 
-		for (IOAction a : curr.getAcceptable())  // Scribble ensures all a are input or all are output
+		for (IOAction a : curr.getTakeable())  // Scribble ensures all a are input or all are output
 		{
-			EndpointState succ = curr.accept(a);
+			EndpointState succ = curr.take(a);
 			
 			MethodBuilder mb = this.cb.newMethod();
 			setSendHeaderWithoutReturnType(apigen, a, mb);

@@ -121,7 +121,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 	// Pre: curr is not terminal state
 	private ClassBuilder constructClass(EndpointState curr)
 	{
-		Set<IOAction> as = curr.getAcceptable();
+		Set<IOAction> as = curr.getTakeable();
 		IOAction a = as.iterator().next();
 		// FIXME: use curr.getStateKind()
 		if (a instanceof Send)

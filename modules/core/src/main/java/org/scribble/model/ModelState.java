@@ -92,7 +92,8 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		return Collections.unmodifiableSet(this.labs);
 	}
 	
-	public Set<A> getAcceptable()
+	// Renamed from "getAcceptable" to distinguish from accept actions
+	public Set<A> getTakeable()
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
@@ -102,29 +103,29 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		return as;
 	}
 
-	public List<A> getAllAcceptable()
+	public List<A> getAllTakeable()
 	{
 		//return Collections.unmodifiableSet(this.edges.keySet());
 		return Collections.unmodifiableList(this.actions);
 	}
 	
-	public boolean isAcceptable(A a)
+	public boolean isTakeable(A a)
 	{
 		//return this.edges.containsKey(a);
 		return this.actions.contains(a);
 	}
 
-	public S accept(A a)
+	public S take(A a)
 	{
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
 			throw new RuntimeException("FIXME: " + this.actions);
 		}
-		return acceptAll(a).get(0);
+		return takeAll(a).get(0);
 	}
 
-	public List<S> acceptAll(A a)
+	public List<S> takeAll(A a)
 	{
 		//return this.edges.get(a);
 		return IntStream.range(0, this.actions.size())

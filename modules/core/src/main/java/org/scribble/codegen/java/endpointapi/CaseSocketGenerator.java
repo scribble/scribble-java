@@ -77,9 +77,9 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 		fb2.addModifiers(JavaBuilder.PRIVATE, JavaBuilder.FINAL);
 		fb2.setType(StateChannelApiGenerator.SCRIBMESSAGE_CLASS);
 
-		for (IOAction a : this.curr.getAcceptable())
+		for (IOAction a : this.curr.getTakeable())
 		{
-			EndpointState succ = this.curr.accept(a);
+			EndpointState succ = this.curr.take(a);
 			addReceiveMethod(this.cb, a, succ);
 			addCaseReceiveMethod(this.cb, a, succ);
 			if (!a.payload.isEmpty() || a.mid.isMessageSigName())

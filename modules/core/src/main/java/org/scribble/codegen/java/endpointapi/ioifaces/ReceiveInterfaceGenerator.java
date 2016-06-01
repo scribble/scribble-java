@@ -30,12 +30,12 @@ public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addAsyncDiscardMethod()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
-		IOAction first = this.curr.getAcceptable().iterator().next();
+		IOAction first = this.curr.getTakeable().iterator().next();
 
 		MethodBuilder mb = this.ib.newAbstractMethod();
 		ReceiveSocketGenerator.setAsyncDiscardHeaderWithoutReturnType(this.apigen, first, mb, InputFutureGenerator.getInputFutureName(this.apigen.getSocketClassName(this.curr)));
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
-		EndpointState succ = this.curr.accept(first);
+		EndpointState succ = this.curr.take(first);
 		if (succ.isTerminal())
 		{
 			ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);

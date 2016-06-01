@@ -63,7 +63,7 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 	protected void addCaseReceiveDiscardMethods()
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
-		Set<IOAction> as = this.curr.getAcceptable();
+		Set<IOAction> as = this.curr.getTakeable();
 
 		int i = 1;
 		this.ib.addImports(SessionApiGenerator.getOpsPackageName(gpn) + ".*");
@@ -71,7 +71,7 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 		{
 			MethodBuilder mb = this.ib.newAbstractMethod();
 			CaseSocketGenerator.setCaseReceiveDiscardHeaderWithoutReturnType(this.apigen, a, mb); 
-			EndpointState succ = this.curr.accept(a);
+			EndpointState succ = this.curr.take(a);
 			if (succ.isTerminal())
 			{
 				ScribSocketGenerator.setNextSocketReturnType(this.apigen, mb, succ);
@@ -90,7 +90,7 @@ public class CaseInterfaceGenerator extends IOStateInterfaceGenerator
 	protected static String getCasesInterfaceName(Role self, EndpointState s)
 	{
 		//return "Case_" + braif.substring("Branch_".length(), braif.length());
-		return "Case_" + self + "_" + s.getAcceptable().stream().sorted(IOACTION_COMPARATOR)
+		return "Case_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
 	}
 }

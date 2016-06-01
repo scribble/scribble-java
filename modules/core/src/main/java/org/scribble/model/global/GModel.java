@@ -42,9 +42,9 @@ public class GModel
 			return;
 		}
 		seen.add(gcurr);
-		for (GModelAction a : gcurr.getAcceptable())
+		for (GModelAction a : gcurr.getTakeable())
 		{
-			GModelState gsucc = gcurr.accept(a);
+			GModelState gsucc = gcurr.take(a);
 			if (a.containsRole(self))
 			{
 				EndpointState lsucc = map.get(gsucc);

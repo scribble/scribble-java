@@ -146,9 +146,9 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 	// Pre: curr is state at end of path
 	private static void getPaths(List<GModelPath> paths, GModelPath path, GModelState curr, GModelState dest, Map<GModelState, Set<GModelState>> reach)
 	{
-		for (GModelAction a : curr.getAcceptable())
+		for (GModelAction a : curr.getTakeable())
 		{
-			GModelState succ = curr.accept(a);
+			GModelState succ = curr.take(a);
 			if (succ.equals(dest))
 			{
 				paths.add(path.append(a));

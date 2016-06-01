@@ -143,13 +143,13 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				}
 			}
 			
-			Map<Role, List<IOAction>> acceptable = curr.getAcceptable();
+			Map<Role, List<IOAction>> takeable = curr.getTakeable();
 
 			//job.debugPrintln("Acceptable at (" + curr.id + "): " + acceptable);
 
-			for (Role r : acceptable.keySet())
+			for (Role r : takeable.keySet())
 			{
-				List<IOAction> acceptable_r = acceptable.get(r);
+				List<IOAction> acceptable_r = takeable.get(r);
 				
 				// Hacky?
 				EndpointState currstate = curr.config.states.get(r);
@@ -169,10 +169,10 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				{
 					for (IOAction a : acceptable_r)
 					{
-						if (currstate.getAllAcceptable().stream().anyMatch((x) ->
+						if (currstate.getAllTakeable().stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
-							throw new ScribbleException("Bad non-deterministic action payloads: " + currstate.getAllAcceptable());
+							throw new ScribbleException("Bad non-deterministic action payloads: " + currstate.getAllTakeable());
 						}
 					}
 				}
@@ -185,7 +185,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 					}
 					else if (a.isAccept() || a.isConnect())
 					{	
-						List<IOAction> as = acceptable.get(a.peer);
+						List<IOAction> as = takeable.get(a.peer);
 						IOAction d = a.toDual(r);
 						if (as != null && as.contains(d))
 						{

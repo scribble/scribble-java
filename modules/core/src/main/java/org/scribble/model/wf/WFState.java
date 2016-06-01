@@ -64,10 +64,10 @@ public class WFState
 	}
 
 	//public Set<GModelAction> getAcceptable()
-	public Map<Role, List<IOAction>> getAcceptable()  // NB: config semantics, not graph edges (cf, ModelState) -- getActions for that
+	public Map<Role, List<IOAction>> getTakeable()  // NB: config semantics, not graph edges (cf, ModelState) -- getActions for that
 	{
 		//return Collections.unmodifiableSet(this.edges.keySet());
-		return this.config.getAcceptable();
+		return this.config.getTakeable();
 	}
 	
 	/*public boolean isAcceptable(GModelAction a)
@@ -119,6 +119,7 @@ public class WFState
 	{
 		Map<Role, Receive> stuck = this.config.getStuckMessages();
 		Set<Set<Role>> waitfor = this.config.getInputCycles();
+		//Set<Set<Role>> waitfor = Collections.emptySet();
 		Map<Role, Set<Send>> orphs = this.config.getOrphanMessages();
 		return new WFStateErrors(stuck, waitfor, orphs);
 	}

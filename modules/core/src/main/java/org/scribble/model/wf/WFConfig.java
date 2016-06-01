@@ -57,7 +57,8 @@ public class WFConfig
 				!((s.isTerminal() && !this.buffs.isEmpty(r))
 					||
 					(!s.isTerminal() &&
-						(!(s.getStateKind().equals(Kind.UNARY_INPUT) && s.getAcceptable().iterator().next().isAccept())
+						//(!(s.getStateKind().equals(Kind.UNARYINPUT) && s.getTakeable().iterator().next().isAccept())  // Accept state now distinguished
+						(!s.getStateKind().equals(Kind.ACCEPT)
 									// FIXME: could be blocked on unary accept part way through the protocol -- but can't happen?
 						|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
 									// FIXME: isConnected is not symmetric, and could disconnect all part way through protocol -- but can't happen?
@@ -69,7 +70,7 @@ public class WFConfig
 	{
 		List<WFConfig> res = new LinkedList<>();
 		
-		List<EndpointState> succs = this.states.get(r).acceptAll(a);
+		List<EndpointState> succs = this.states.get(r).takeAll(a);
 		for (EndpointState succ : succs)
 		{
 			Map<Role, EndpointState> tmp1 = new HashMap<>(this.states);
@@ -107,8 +108,8 @@ public class WFConfig
 	{
 		List<WFConfig> res = new LinkedList<>();
 		
-		List<EndpointState> succs1 = this.states.get(r1).acceptAll(a1);
-		List<EndpointState> succs2 = this.states.get(r2).acceptAll(a2);
+		List<EndpointState> succs1 = this.states.get(r1).takeAll(a1);
+		List<EndpointState> succs2 = this.states.get(r2).takeAll(a2);
 		for (EndpointState succ1 : succs1)
 		{
 			for (EndpointState succ2 : succs2)
@@ -151,12 +152,12 @@ public class WFConfig
 				{
 					break;
 				}*/
-				Role peer = s.getAllAcceptable().iterator().next().peer;
+				Role peer = s.getAllTakeable().iterator().next().peer;
 				Send send = this.buffs.get(r).get(peer);
 				if (send != null)
 				{
 					Receive recv = send.toDual(peer);
-					if (!s.isAcceptable(recv))
+					if (!s.isTakeable(recv))
 					//res.put(r, new IOError(peer));
 					res.put(r, recv);
 				}
@@ -281,7 +282,7 @@ public class WFConfig
 		Kind k = s.getStateKind();
 		if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
 		{
-			List<IOAction> all = s.getAllAcceptable();
+			List<IOAction> all = s.getAllTakeable();
 			IOAction a = all.get(0);  // FIXME: assumes single choice subject (OK for current syntax, but should generalise)
 			/*if (a.isAccept())  // Sound?
 			{
@@ -301,9 +302,14 @@ public class WFConfig
 				}
 			}
 		}
-		else if (k == Kind.CONNECTION)
+		//else if (k == Kind.CONNECTION)
+		else if (k == Kind.CONNECT //|| k == Kind.ACCEPT
+				)
 		{
-			List<IOAction> all = s.getAllAcceptable();
+			// FIXME: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
+			
+			//List<IOAction> all = s.getAllAcceptable();
+			List<IOAction> all = s.getAllTakeable();
 			return all.stream().map((x) -> x.peer).collect(Collectors.toSet());
 		}
 		return null;
@@ -358,7 +364,7 @@ public class WFConfig
 		return res;
 	}
 
-	public Map<Role, List<IOAction>> getAcceptable()
+	public Map<Role, List<IOAction>> getTakeable()
 	{
 		Map<Role, List<IOAction>> res = new HashMap<>();
 		for (Role r : this.states.keySet())
@@ -368,7 +374,7 @@ public class WFConfig
 			{
 				case OUTPUT:
 				{
-					List<IOAction> as = s.getAllAcceptable();
+					List<IOAction> as = s.getAllTakeable();
 					for (IOAction a : as)
 					{
 						if (a.isSend())
@@ -435,7 +441,7 @@ public class WFConfig
 					{
 						if (a.isReceive())
 						{
-							if (s.isAcceptable(a))
+							if (s.isTakeable(a))
 							{
 								List<IOAction> tmp = res.get(r);
 								if (tmp == null)
@@ -481,9 +487,9 @@ public class WFConfig
 				{
 					break;
 				}
-				case CONNECTION:
+				case CONNECT:
 				{
-					List<IOAction> as = s.getAllAcceptable();
+					List<IOAction> as = s.getAllTakeable();
 					for (IOAction a : as)
 					{
 						if (a.isConnect())
@@ -493,7 +499,7 @@ public class WFConfig
 							EndpointState speer = this.states.get(c.peer);
 							//if (speer.getStateKind() == Kind.UNARY_INPUT)
 							{
-								List<IOAction> peeras = speer.getAllAcceptable();
+								List<IOAction> peeras = speer.getAllTakeable();
 								for (IOAction peera : peeras)
 								{
 									if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
@@ -511,9 +517,45 @@ public class WFConfig
 						}
 						else
 						{
+							throw new RuntimeException("Shouldn't get in here: " + s);
+						}	
+					}
+					break;
+				}
+				case ACCEPT:
+				{
+					for (IOAction a : this.buffs.acceptable(r))
+					{
+						if (a.isAccept())
+						{
+							// FIXME: factor out
+							Accept c = (Accept) a;
+							EndpointState speer = this.states.get(c.peer);
+							//if (speer.getStateKind() == Kind.OUTPUT)
+							{
+								List<IOAction> peeras = speer.getAllTakeable();
+								for (IOAction peera : peeras)
+								{
+									if (peera.equals(c.toDual(r)) && this.buffs.canAccept(r, c))
+									{
+										List<IOAction> tmp = res.get(r);
+										if (tmp == null)
+										{
+											tmp = new LinkedList<>();
+											res.put(r, tmp);
+										}
+										tmp.add(a);
+										//break;  // Add all of them
+									}
+								}
+							}
+						}
+						else
+						{
 							throw new RuntimeException("Shouldn't get in here: " + a);
 						}
 					}
+					break;
 				}
 				default:
 				{

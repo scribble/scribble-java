@@ -28,6 +28,32 @@ module Test;
 	// - non-det EFSMs -- minimise?
 
 
+
+//*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		a() from A to B;
+		d() from C to B;
+
+		cprime() from A to C;
+		b() from B to A;
+		y() from A to B;
+	}
+	or
+	{
+		c() from A to C;
+		d() from C to B;
+
+		b() from B to A;
+		a() from A to B;
+		x() from B to A;
+	}
+}
+//*/
+
+
 /*
 global protocol Proto1(role A, role B, role C)
 {
@@ -55,7 +81,34 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
-//*
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;  // Basic test for connection deadlock detection
+	1() from A to B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+		connect B to C;
+		2() from B to C;
+	}
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -64,15 +117,36 @@ explicit global protocol Proto1(role A, role B, role C)
 	{
 		1() from A to B;
 		1() from A to C;
-		connect B to C;  // FIXME: deadlock not detected for connect states (not currently counted as input)
+		connect B to C;
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to C;
+		connect C to B;  // Deadlock
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect A to C;
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		connect B to C;
 		2() from B to C;
 	}
 	or
 	{
 		1() from A to B;
 		1() from A to C;
-		connect C to B;
-		3() from B to C;
+		connect B to C;  // Good
+		2() from B to C;
 	}
 }
 //*/
@@ -103,7 +177,45 @@ explicit global protocol Proto1(role A, role B, role C, role D)
 		1() from A to B;
 		1() from A to C;
 		1() from A to D;
-		connect D to C;
+		connect D to B;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C, role D)
+{
+	connect A to B;
+	connect A to C;
+	connect A to D;
+	// Good
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		1() from A to D;
+		connect B to C;
+		connect C to D;
+		connect D to B;
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to C;
+		1() from A to D;
+		connect B to C;
+		connect C to D;
+		connect D to B;
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to C;
+		1() from A to D;
+		connect B to C;
+		connect C to D;
+		connect D to B;
 	}
 }
 //*/
@@ -132,7 +244,7 @@ explicit global protocol Proto1(role A, role B, role C)
 	{
 		2() from A to B;
 	}
-	connect from C to B;  // Bad: connect is a sync action
+	connect from C to B;  // Not role live: connect is a sync action
 	3() from C to B;
 }
 //*/
@@ -1079,6 +1191,26 @@ global protocol Proto1(role A, role B)
 	{
 		1() from A to B;
 		1() from B to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// Wait-for + orphan error counterparts (arise together)
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		2() from B to C;
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to C;
+		2() from C to B;
 	}
 }
 //*/

@@ -37,9 +37,9 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 		ib.setName(getHandlerInterfaceName(this.parent.getName()));
 		ib.addModifiers(InterfaceBuilder.PUBLIC);
 
-		for (IOAction a : this.curr.getAcceptable())  // Doesn't need to be sorted
+		for (IOAction a : this.curr.getTakeable())  // Doesn't need to be sorted
 		{
-			EndpointState succ = this.curr.accept(a);
+			EndpointState succ = this.curr.take(a);
 			String nextClass = this.apigen.getSocketClassName(succ);
 
 			AbstractMethodBuilder mb3 = ib.newAbstractMethod();
@@ -55,7 +55,7 @@ public class HandlerInterfaceGenerator extends AuxStateChannelTypeGenerator
 			}
 			addHandleMethodOpAndPayloadParams(this.apigen, a, mb3);
 			
-			if (this.curr.accept(a).isTerminal())
+			if (this.curr.take(a).isTerminal())
 			{
 				// FIXME: potentially repeated (but OK)
 				ib.addImports(SessionApiGenerator.getEndpointApiRootPackageName(gpn) + ".*");  // FIXME: factor out with ScribSocketBuilder

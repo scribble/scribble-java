@@ -2,6 +2,7 @@ package org.scribble.model.wf;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -174,10 +175,33 @@ public class WFBuffers
 	//public Set<Receive> receivable(Role r) 
 	public Set<IOAction> inputable(Role r)   // FIXME: IAction  // FIXME: OAction version?
 	{
+		/*Map<Role, Boolean> tmp = this.connected.get(r); 
+		if (tmp == null)
+		{
+			return Collections.emptySet();  // Not needed, guarded by state kind
+		}*/
 		Set<IOAction> res = this.buffs.get(r).entrySet().stream()
 				.filter((e) -> e.getValue() != null)
 				.map((e) -> e.getValue().toDual(e.getKey()))
 				.collect(Collectors.toSet());
+		/*Map<Role, Boolean> tmp = this.connected.get(r);
+		if (tmp == null)
+		{
+			this.buffs.get(r).keySet().forEach((x) -> res.add(new Accept(x)));
+		}
+		else
+		{
+			this.connected.keySet().stream()
+				.filter((k) -> !tmp.containsKey(k) || !tmp.get(k))
+				.forEach((k) -> res.add(new Accept(k)));
+		}*/
+		return res;
+	}
+	
+	// FIXME: rename model "acceptable" actions to "consumable"
+	public Set<IOAction> acceptable(Role r)  // Means connection accept actions
+	{
+		Set<IOAction> res = new HashSet<>();
 		Map<Role, Boolean> tmp = this.connected.get(r);
 		if (tmp == null)
 		{

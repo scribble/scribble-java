@@ -57,7 +57,7 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 			return;
 		}
 		seen.add(curr);
-		Iterator<IOAction> as = curr.getAllAcceptable().iterator();
+		Iterator<IOAction> as = curr.getAllTakeable().iterator();
 		Iterator<EndpointState> ss = curr.getSuccessors().iterator();
 		while (as.hasNext())
 		{
@@ -76,7 +76,7 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 			{
 				for (IOAction e : this.enactingMap.get(succ))
 				{
-					for (EndpointState n : succ.acceptAll(e))
+					for (EndpointState n : succ.takeAll(e))
 					{
 						next = getNext(map, n);
 						addEdgeAux(res, e, next);

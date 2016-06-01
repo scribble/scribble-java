@@ -162,7 +162,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		visited.add(s);
 
-		Set<IOAction> as = s.getAcceptable();
+		Set<IOAction> as = s.getTakeable();
 		for (IOAction a : as.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (!this.actions.containsKey(a))
@@ -191,7 +191,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				}
 			}
 			
-			EndpointState succ = s.accept(a);
+			EndpointState succ = s.take(a);
 			putPreAction(succ, a);
 
 			if (s.getStateKind() == Kind.POLY_INPUT)
@@ -244,9 +244,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		visited.add(s);
-		for (IOAction a : s.getAcceptable())
+		for (IOAction a : s.getTakeable())
 		{
-			generateIOStateInterfacesFirstPass(visited, s.accept(a));
+			generateIOStateInterfacesFirstPass(visited, s.take(a));
 		}
 	}
 
@@ -299,9 +299,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 
 		visited.add(s);
-		for (IOAction a : s.getAcceptable())
+		for (IOAction a : s.getTakeable())
 		{
-			generateIOStateInterfacesSecondPass(visited, s.accept(a));
+			generateIOStateInterfacesSecondPass(visited, s.take(a));
 		}
 	}
 
@@ -324,9 +324,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		visited.add(s);
-		for (IOAction a : s.getAcceptable())
+		for (IOAction a : s.getTakeable())
 		{
-			generateHandleInterfaces(visited, s.accept(a));
+			generateHandleInterfaces(visited, s.take(a));
 		}
 	}
 
@@ -400,9 +400,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 				
 		visited.add(s);
-		for (IOAction a : s.getAcceptable())
+		for (IOAction a : s.getTakeable())
 		{
-			generateHandleInterfacesSecondPass(visited, s.accept(a));
+			generateHandleInterfacesSecondPass(visited, s.take(a));
 		}
 	}
 	
@@ -475,7 +475,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			System.out.println("BBB: " + handle);*/
 			//for (IOAction a : this.branchSuccs.get(handle))
 			// FIXME: move back into HandlerInterfaceGenerator
-			for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			for (IOAction a : s.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 			{
 				if (first)
 				{
@@ -496,7 +496,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 				{
 					tmp += SuccessorInterfaceGenerator.getSuccessorInterfaceName(a);
 				}*/
-				EndpointState succ = s.accept(a);
+				EndpointState succ = s.take(a);
 				if (succ.isTerminal())
 				{
 					tmp += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
@@ -585,9 +585,9 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 		
 		visited.add(s);
-		for (IOAction a : s.getAcceptable())
+		for (IOAction a : s.getTakeable())
 		{
-			addIOStateInterfacesToStateChannels(visited, s.accept(a));
+			addIOStateInterfacesToStateChannels(visited, s.take(a));
 		}
 	}
 	
@@ -882,8 +882,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 	private String getConcreteSuccessorParameters(EndpointState s)
 	{
 		return "<" +
-				s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
-						.map((a) -> this.getSuccName.apply(s.accept(a))).collect(Collectors.joining(", "))
+				s.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
+						.map((a) -> this.getSuccName.apply(s.take(a))).collect(Collectors.joining(", "))
 				+ ">";
 	}
 	
@@ -931,7 +931,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			String key = HandleInterfaceGenerator.getHandleInterfaceName(self, s);  // HandleInterface name
 
 			List<IOAction> curr1 = new LinkedList<>();
-			this.branchPostActions.get(s).forEach((a) -> curr1.addAll(s.accept(a).getAcceptable()));  // TODO: flatmap
+			this.branchPostActions.get(s).forEach((a) -> curr1.addAll(s.take(a).getTakeable()));  // TODO: flatmap
 			//List<IOAction> curr2 = curr1.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList());
 			
 			List<IOAction> tmp = this.branchSuccs.get(key);

@@ -10,7 +10,7 @@ import org.scribble.sesstype.name.RecVar;
 // http://sandbox.kidstrythisathome.com/erdos/
 public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 {
-	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL, CONNECTION }  // CONNECTION should just be sync?
+	public static enum Kind { OUTPUT, UNARY_INPUT, POLY_INPUT, TERMINAL, CONNECT, ACCEPT }  // CONNECTION should just be sync?
 			// FIXME: distinguish connection and message transfer
 	
 	/*private static int count = 0;
@@ -30,7 +30,7 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 	
 	public Kind getStateKind()
 	{
-		List<IOAction> as = this.getAllAcceptable();
+		List<IOAction> as = this.getAllTakeable();
 		if (as.size() == 0)
 		{
 			return Kind.TERMINAL;
@@ -39,7 +39,9 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 		{
 			IOAction a = as.iterator().next();
 			return (a.isSend() || a.isDisconnect()) ? Kind.OUTPUT
-						: (a.isConnect() || a.isAccept()) ? Kind.CONNECTION
+						//: (a.isConnect() || a.isAccept()) ? Kind.CONNECTION  // FIXME: states can have mixed connects and sends
+						: (a.isConnect()) ? Kind.CONNECT
+						: (a.isAccept()) ? Kind.ACCEPT  // Accept is always unary, guaranteed by treating as a unit message id (wrt. branching)
 						: (as.size() > 1) ? Kind.POLY_INPUT : Kind.UNARY_INPUT;
 		}
 	}

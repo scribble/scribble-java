@@ -60,17 +60,17 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		
 		MethodBuilder mb = cb.newMethod("branch");
 		mb.setReturn(next);
-		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getAcceptable().iterator().next().obj) + " " + ROLE_PARAM);
+		mb.addParameters(SessionApiGenerator.getRoleClassName(curr.getTakeable().iterator().next().obj) + " " + ROLE_PARAM);
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		mb.addAnnotations("@Override");
 		
-		Role peer = curr.getAcceptable().iterator().next().obj;
+		Role peer = curr.getTakeable().iterator().next().obj;
 		mb.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		mb.addBodyLine(enumClass + " " + OPENUM_VAR + ";");
 		boolean first = true;
-		for (IOAction a : curr.getAcceptable())
+		for (IOAction a : curr.getTakeable())
 		{
 			mb.addBodyLine(((first) ? "" : "else ") + "if (" + OP + ".equals(" + getSessionApiOpConstant(a.mid) + ")) {");
 			mb.addBodyLine(1, OPENUM_VAR + " = "
@@ -103,7 +103,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb2.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException", "ClassNotFoundException");//, "ExecutionException", "InterruptedException");
 		first = true;
 		handleif += "<";
-		for (IOAction a : this.curr.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+		for (IOAction a : this.curr.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
 			if (first)
 			{
@@ -113,7 +113,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 			{
 				handleif += ", ";
 			}
-			EndpointState succ = this.curr.accept(a);
+			EndpointState succ = this.curr.take(a);
 			if (succ.isTerminal())
 			{
 				handleif += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
@@ -137,9 +137,9 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb3.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
-		for (IOAction a : this.curr.getAcceptable())
+		for (IOAction a : this.curr.getTakeable())
 		{
-			EndpointState succ = this.curr.accept(a);
+			EndpointState succ = this.curr.take(a);
 			if (first)
 			{
 				first = false;
@@ -193,7 +193,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		MethodBuilder mb4 = this.cb.newMethod("handle");
 		mb4.addParameters(SessionApiGenerator.getRoleClassName(peer) + " " + ROLE_PARAM);
 		String tmp = HandleInterfaceGenerator.getHandleInterfaceName(this.apigen.getSelf(), this.curr) + "<";
-		tmp += this.curr.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
+		tmp += this.curr.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR)
 				.map((a) -> SuccessorInterfaceGenerator.getSuccessorInterfaceName(a)).collect(Collectors.joining(", ")) + ">";
 		mb4.addParameters(tmp + " handler");
 		mb4.setReturn(JavaBuilder.VOID);
@@ -203,9 +203,9 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 		mb4.addBodyLine(StateChannelApiGenerator.SCRIBMESSAGE_CLASS + " " + MESSAGE_VAR + " = "
 				+ JavaBuilder.SUPER + ".readScribMessage(" + getSessionApiRoleConstant(peer) + ");");
 		first = true;
-		for (IOAction a : this.curr.getAcceptable())
+		for (IOAction a : this.curr.getTakeable())
 		{
-			EndpointState succ = this.curr.accept(a);
+			EndpointState succ = this.curr.take(a);
 			if (first)
 			{
 				first = false;
