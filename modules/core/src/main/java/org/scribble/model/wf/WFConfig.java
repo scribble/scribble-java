@@ -322,8 +322,8 @@ public class WFConfig
 			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
 			if (!s.isInitial())
 			{
-				List<IOAction> all = s.getAllTakeable();
-				Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());  // Should be singleton
+				List<IOAction> all = s.getAllTakeable();  // Should be singleton
+				Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
 				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Connect(r))))  // cf. getTakeable
 									//if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
 				{

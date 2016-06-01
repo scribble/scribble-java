@@ -41,13 +41,13 @@ public abstract class DoArgListDel extends ScribDelBase
 		ModuleContext mc = disamb.getModuleContext();
 		JobContext jc = disamb.getJobContext();
 		Do<?> doo = (Do<?>) parent;
-		ProtocolName<?> simpname = doo.proto.toName();
+		ProtocolName<?> pn = doo.proto.toName();
 		/*if (!mc.isVisibleProtocolDeclName(simpname))  // FIXME: should be checked somewhere else?  earlier (do-entry?) -- done
 		{
 			throw new ScribbleException("Protocol decl not visible: " + simpname);
 		}*/
-		ProtocolName<?> fullname = mc.getVisibleProtocolDeclFullName(simpname);  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
-		return jc.getModule(fullname.getPrefix()).getProtocolDecl(simpname);
+		ProtocolName<?> fullname = mc.getVisibleProtocolDeclFullName(pn);  // Lookup in visible names -- not deps, because do target name not disambiguated yet (will be done later this pass)
+		return jc.getModule(fullname.getPrefix()).getProtocolDecl(pn.getSimpleName());
 	}
 	
 	protected abstract HeaderParamDeclList<?> getParamDeclList(ProtocolDecl<?> pd);

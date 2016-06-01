@@ -34,6 +34,22 @@ module Test;
 //.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
 
 
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		1() from A to B  // Good non-det EFSM for A (including minimalisation)
+		connect A to C;
+	}
+}
+//*/
+
 
 /*
 global protocol Proto1(role A, role B, role C)
@@ -363,6 +379,7 @@ explicit global protocol Proto1(role A, role B, role C, role D)
 //*/
 
 
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -379,6 +396,7 @@ explicit global protocol Proto1(role A, role B, role C)
 		3() from A to C;
 	}
 }
+//*/
 
 
 /*
