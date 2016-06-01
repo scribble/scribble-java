@@ -58,7 +58,7 @@ public class WFConfig
 					||
 					(!s.isTerminal() &&
 						//(!(s.getStateKind().equals(Kind.UNARYINPUT) && s.getTakeable().iterator().next().isAccept())  // Accept state now distinguished
-						(!s.getStateKind().equals(Kind.ACCEPT)
+						(!s.getStateKind().equals(Kind.ACCEPT)  // FIXME: needs initial state check -- although if there is an accept, there should a connect, and waitfor-errors checked via connects)
 									// FIXME: could be blocked on unary accept part way through the protocol -- but can't happen?
 						|| this.states.keySet().stream().anyMatch((rr) -> !r.equals(rr) && this.buffs.isConnected(r, rr))))
 									// FIXME: isConnected is not symmetric, and could disconnect all part way through protocol -- but can't happen?
@@ -253,7 +253,7 @@ public class WFConfig
 				}
 				continue;
 			}
-			Set<Role> blocked = isInputBlocked(r);
+			Set<Role> blocked = isWaitingFor(r);
 			//if (blocked.isEmpty())
 			if (blocked == null)
 			{
@@ -277,7 +277,7 @@ public class WFConfig
 	
 	// Generalised to include connect-blocked roles
 	//private Role isInputBlocked(Role r)
-	private Set<Role> isInputBlocked(Role r)
+	private Set<Role> isWaitingFor(Role r)
 	{
 		EndpointState s = this.states.get(r);
 		Kind k = s.getStateKind();

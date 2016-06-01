@@ -156,7 +156,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				Kind k = currstate.getStateKind();
 				if (k == Kind.OUTPUT)
 				{
-					for (IOAction a : acceptable_r)
+					for (IOAction a : acceptable_r)  // Connect implicitly has no payload (also accept, so skip)
 					{
 						if (acceptable_r.stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
