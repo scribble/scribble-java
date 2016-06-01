@@ -87,41 +87,125 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		GProtocolDecl gpd = (GProtocolDecl) child;
 		GProtocolName fullname = gpd.getFullMemberName(parent);
 		
-		Map<Role, EndpointState> fsms = new HashMap<>();
-		
-		for (Role self : gpd.header.roledecls.getRoles())
-		{
-			/*/*GProtocolBlock gpb = gpd.getDef().getBlock();
-			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);* /
-			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0).def.del()) .getInlinedProtocolDef().getBlock();
+		Map<Role, EndpointState> egraphs = getEndpointGraphs(job, fullname, gpd);
 			
-			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
-			graph.builder.reset();
-			proj.accept(graph);  // Don't do on root decl, side effects job context
-			//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
-			EndpointGraph fsm = graph.builder.finalise();
-			//*/
-
-			EndpointGraph fsm = job.getContext().getEndpointGraph(fullname, self);
-			if (fsm == null)
-			{
-				//LProtocolDecl lpd = this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0);
-				Module proj = this.getJobContext().getProjection(fullname, self);  // Projected module contains a single protocol
-				EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
-				proj.accept(graph);  // Side effects job context (caches graph)
-				fsm = job.getContext().getEndpointGraph(fullname, self);
-			}
-
-			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + fsm);
-			
-			fsms.put(self, fsm.init);
-		}
-			
-		WFBuffers b0 = new WFBuffers(fsms.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
-		WFConfig c0 = new WFConfig(fsms, b0);
-		WFState init = new WFState(c0);
-		
+		//Set<WFState> seen = buildGlobalModel(job, fullname, init);  // Returns set of all states
 		Set<WFState> seen = new HashSet<>();
+		WFState init = buildGlobalModel(job, fullname, gpd, egraphs, seen);  // Post: seen contains all states
+
+		this.getJobContext().addGlobalModel(fullname, init);
+
+		/*Set<WFState> all = new HashSet<>();
+		getAllNodes(init, all);*/
+		checkGlobalModel(job, fullname, init, seen);
+		
+		return child;
+	}
+
+	private void checkGlobalModel(Job job, GProtocolName fullname, WFState init, Set<WFState> all) throws ScribbleException
+	{
+		String errorMsg = "";
+
+		Map<WFState, Set<WFState>> reach = getReachability(job, all);
+
+		/*Set<WFState> terms = init.findTerminalStates();
+		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());*/
+		/*
+		Set<WFState> errors = all.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
+		if (!errors.isEmpty())
+		{
+			for (WFState error : errors)
+			{
+				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
+				//List <GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
+				List<GIOAction> trace = getTrace(init, error, reach);
+				errorMsg += "\nSafety violation at " + error.toString() + ":\n  trace=" + trace;
+			}
+		//throw new ScribbleException(init.toDot() + "\nSafety violations:" + e);
+		//e = "\nSafety violations:" + e;
+		}
+		/*/
+		int count = 0;
+		for (WFState s : all)
+		{
+			if (job.debug)
+			{
+				count++;
+				if (count % 50 == 0)
+				{
+					job.debugPrintln("(" + fullname + ") Checking global states: " + count);
+				}
+			}
+			WFStateErrors errors = s.getErrors();
+			if (!errors.isEmpty())
+			{
+				// FIXME: getTrace can get stuck when local choice subjects are disabled
+				List<GIOAction> trace = getTrace(init, s, reach);
+				errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n  Trace=" + trace;
+			}
+			if (!errors.stuck.isEmpty())
+			{
+				errorMsg += "\n  Stuck messages: " + errors.stuck;  // Deadlock from reception error
+			}
+			if (!errors.waitFor.isEmpty())
+			{
+				errorMsg += "\n  Wait-for errors: " + errors.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
+			}
+			if (!errors.orphans.isEmpty())
+			{
+				errorMsg += "\n  Orphan messages: " + errors.orphans;
+			}
+		}
+		job.debugPrintln("(" + fullname + ") Checked all states: " + count);
+		//*/
+		
+		if (!job.noLiveness)
+		{
+			/*Map<WFState, Set<WFState>> reach = new HashMap<>();
+			//getReachability(getJob(), all, reach);
+			reach = getReachability(job, all);*/
+			Set<Set<WFState>> termsets = new HashSet<>();
+			findTerminalSets(reach, termsets);
+
+			//System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
+			
+			for (Set<WFState> termset : termsets)
+			{
+				Set<Role> safety = new HashSet<>();
+				Set<Role> roleLiveness = new HashSet<>();
+				checkTerminalSet(init, termset, safety, roleLiveness);
+				if (!safety.isEmpty())
+				{
+					// Redundant
+					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n  " + termset;
+				}
+				if (!roleLiveness.isEmpty())
+				{
+					errorMsg += "\nRole liveness violation for " + roleLiveness + " in terminal set:\n  " + termset;
+				}
+				Map<Role, Set<Send>> msgLiveness = checkMessageLiveness(init, termset);
+				if (!msgLiveness.isEmpty())
+				{
+					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n  " + termset;
+				}
+			}
+		}
+		
+		if (!errorMsg.equals(""))
+		{
+			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
+			throw new ScribbleException(errorMsg);
+		}
+	}
+
+	//private Set<WFState> buildGlobalModel(Job job, GProtocolName fullname, WFState init) throws ScribbleException
+	private WFState buildGlobalModel(Job job, GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointState> egraphs, Set<WFState> seen) throws ScribbleException
+	{
+		WFBuffers b0 = new WFBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
+		WFConfig c0 = new WFConfig(egraphs, b0);
+		WFState init = new WFState(c0);
+
+		//Set<WFState> seen = new HashSet<>();
 		LinkedHashSet<WFState> todo = new LinkedHashSet<>();
 		todo.add(init);
 
@@ -204,107 +288,43 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		}
 
 		job.debugPrintln("(" + fullname + ") Built global model (" + count + " states): \n" + init.toDot());
-		this.getJobContext().addGlobalModel(gpd.getFullMemberName((Module) parent), init);
 
-		//System.out.println("Global model:\n" + init.toDot());
+		//return seen;
+		return init;
+	}
 
-		/*Set<WFState> all = new HashSet<>();
-		getAllNodes(init, all);*/
-		Set<WFState> all = seen;
-		String errorMsg = "";
-
-		Map<WFState, Set<WFState>> reach = getReachability(job, all);
-
-		/*Set<WFState> terms = init.findTerminalStates();
-		Set<WFState> errors = terms.stream().filter((s) -> s.isError()).collect(Collectors.toSet());*/
-		/*
-		Set<WFState> errors = all.stream().filter((s) -> s.isError()).collect(Collectors.toSet());
-		if (!errors.isEmpty())
-		{
-			for (WFState error : errors)
-			{
-				//List<GModelAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
-				//List <GIOAction> trace = dfs(new LinkedList<>(), Arrays.asList(init), error);
-				List<GIOAction> trace = getTrace(init, error, reach);
-				errorMsg += "\nSafety violation at " + error.toString() + ":\n  trace=" + trace;
-			}
-		//throw new ScribbleException(init.toDot() + "\nSafety violations:" + e);
-		//e = "\nSafety violations:" + e;
-		}
-		/*/
-		count = 0;
-		for (WFState s : all)
-		{
-			if (job.debug)
-			{
-				count++;
-				if (count % 50 == 0)
-				{
-					job.debugPrintln("(" + fullname + ") Checking global states: " + count);
-				}
-			}
-			WFStateErrors errors = s.getErrors();
-			if (!errors.isEmpty())
-			{
-				// FIXME: getTrace can get stuck when local choice subjects are disabled
-				List<GIOAction> trace = getTrace(init, s, reach);
-				errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n  Trace=" + trace;
-			}
-			if (!errors.stuck.isEmpty())
-			{
-				errorMsg += "\n  Stuck messages: " + errors.stuck;  // Deadlock from reception error
-			}
-			if (!errors.waitFor.isEmpty())
-			{
-				errorMsg += "\n  Wait-for errors: " + errors.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
-			}
-			if (!errors.orphans.isEmpty())
-			{
-				errorMsg += "\n  Orphan messages: " + errors.orphans;
-			}
-		}
-		job.debugPrintln("(" + fullname + ") Checked all states: " + count);
-		//*/
+	private Map<Role, EndpointState> getEndpointGraphs(Job job, GProtocolName fullname, GProtocolDecl gpd) throws ScribbleException
+	{
+		Map<Role, EndpointState> egraphs = new HashMap<>();
 		
-		if (!job.noLiveness)
+		for (Role self : gpd.header.roledecls.getRoles())
 		{
-			/*Map<WFState, Set<WFState>> reach = new HashMap<>();
-			//getReachability(getJob(), all, reach);
-			reach = getReachability(job, all);*/
-			Set<Set<WFState>> termsets = new HashSet<>();
-			findTerminalSets(reach, termsets);
-
-			//System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
+			/*/*GProtocolBlock gpb = gpd.getDef().getBlock();
+			LProtocolBlock proj = ((GProtocolBlockDel) gpb.del()).project(gpb, self);* /
+			LProtocolBlock proj = ((LProtocolDefDel) this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0).def.del()) .getInlinedProtocolDef().getBlock();
 			
-			for (Set<WFState> termset : termsets)
+			EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
+			graph.builder.reset();
+			proj.accept(graph);  // Don't do on root decl, side effects job context
+			//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
+			EndpointGraph fsm = graph.builder.finalise();
+			//*/
+
+			EndpointGraph fsm = job.getContext().getEndpointGraph(fullname, self);
+			if (fsm == null)
 			{
-				Set<Role> safety = new HashSet<>();
-				Set<Role> roleLiveness = new HashSet<>();
-				checkTerminalSet(init, termset, safety, roleLiveness);
-				if (!safety.isEmpty())
-				{
-					// Redundant
-					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n  " + termset;
-				}
-				if (!roleLiveness.isEmpty())
-				{
-					errorMsg += "\nRole liveness violation for " + roleLiveness + " in terminal set:\n  " + termset;
-				}
-				Map<Role, Set<Send>> msgLiveness = checkMessageLiveness(init, termset);
-				if (!msgLiveness.isEmpty())
-				{
-					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n  " + termset;
-				}
+				//LProtocolDecl lpd = this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0);
+				Module proj = this.getJobContext().getProjection(fullname, self);  // Projected module contains a single protocol
+				EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
+				proj.accept(graph);  // Side effects job context (caches graph)
+				fsm = job.getContext().getEndpointGraph(fullname, self);
 			}
+
+			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + fsm);
+			
+			egraphs.put(self, fsm.init);
 		}
-		
-		if (!errorMsg.equals(""))
-		{
-			//throw new ScribbleException("\n" + init.toDot() + errorMsg);
-			throw new ScribbleException(errorMsg);
-		}
-		
-		return child;
+		return egraphs;
 	}
 
 	//private void foo(Set<WFState> seen, LinkedHashSet<WFState> todo, WFState curr, Role r, IOAction a)
