@@ -44,7 +44,7 @@ global protocol Proto(role A, role B, role C)
 			2() from A to B;
 			2() from B to C;
 		}
-	//}
+	}
 }
 //*/
 
@@ -77,7 +77,7 @@ explicit global protocol Proto(role A, role B, role C)
 			1() from A to B;
 			connect A to C;
 			1() from A to C;
-			continue X;
+			//continue X;
 		}
 		or
 		{
@@ -131,15 +131,22 @@ global protocol Proto(role A, role B)
  */
 
 /*
-global protocol Proto1(role A, role B, role C)
+global protocol Proto(role A, role B, role C)
 {
 	1() from A to B;
 	choice at B
 	{
 		rec X
 		{
-			2() from B to C;
-			continue X;
+			choice at B
+			{
+				2() from B to C;
+				continue X;
+			}
+			or
+			{
+				5() from B to C;
+			}
 		}
 	}
 	or
@@ -156,7 +163,7 @@ global protocol Proto1(role A, role B, role C)
  */
 
 /*
-global protocol Proto1(role A, role B, role C)
+global protocol Proto(role A, role B, role C)
 {
 	1() from A to B;
 	choice at B
@@ -174,6 +181,48 @@ global protocol Proto1(role A, role B, role C)
 	4() from A to C;
 	//4() from A to C;
 	//...  // Dragons
+}
+//*/
+
+
+/**
+ *
+ */
+
+/*
+global protocol Proto(role A, role B, role C)
+{
+	1() from A to B;
+	do ProtoAux1(A, B, C);
+}
+
+aux global protocol ProtoAux1(role A, role B, role C)
+{
+	choice at A
+	{
+		2() from A to B;
+		2() from B to C;
+		do ProtoAux2(A, B, C);
+	}
+	or
+	{
+		3() from A to B;
+		3() from B to C;
+	}
+}
+
+aux global protocol ProtoAux2(role A, role B, role C)
+{
+	choice at A
+	{
+		4() from A to B;
+		do ProtoAux1(A, B, C);
+	}
+	or
+	{
+		5() from A to B;
+		5() from B to C;
+	}
 }
 //*/
 

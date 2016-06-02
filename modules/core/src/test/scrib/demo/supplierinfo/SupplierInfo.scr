@@ -14,6 +14,7 @@ explicit global protocol Partners(
 		role LOGINsvc,
 		role REQuestor,
 		role AUTHsvc,
+		//role usersvc,
 		role FILTERsvc,
 		role SUPPLIERsvc,
 		role CONTRACTsvc)
@@ -23,7 +24,8 @@ explicit global protocol Partners(
 	login(username, password) from REQuestor to LOGINsvc;
 	choice at LOGINsvc
 	{
-		loginfailure() from LOGINsvc to REQuestor;
+		loginsuccess() from LOGINsvc to REQuestor;
+		//loginfailure() from LOGINsvc to REQuestor;
 	} or {
 		loginsuccess() from LOGINsvc to REQuestor;
 
@@ -32,18 +34,8 @@ explicit global protocol Partners(
 		connect AUTHsvc to CONTRACTsvc;
 		connect AUTHsvc to FILTERsvc;
 
-		do PartnersAux( REQuestor, AUTHsvc, FILTERsvc, SUPPLIERsvc, CONTRACTsvc);
-	}
-}
-
-
-aux global protocol PartnersAux(
-		role REQuestor,
-		role AUTHsvc,
-		role FILTERsvc,
-		role SUPPLIERsvc,
-		role CONTRACTsvc)
-{
+		rec MAIN
+		{
 			choice at REQuestor
 			{
 				// GET SUPPLIER INFO
@@ -56,11 +48,11 @@ aux global protocol PartnersAux(
 					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
 					getsuppliers() from AUTHsvc to SUPPLIERsvc;
 					suppliers() from SUPPLIERsvc to AUTHsvc;
-					do FilterAux
-						<filter1(usercontext, filters, supplierdetails)>
-						(AUTHsvc, FILTERsvc);
+					filterSuppliers(usercontext, filters, supplierdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
 					suppliers() from AUTHsvc to REQuestor;
 				}
+				continue MAIN;
 			} or {
 				// GET CONTRACT INFO
 				getcontracts() from REQuestor to AUTHsvc;
@@ -72,21 +64,13 @@ aux global protocol PartnersAux(
 					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
 					getcontracts() from AUTHsvc to CONTRACTsvc;
 					contracts() from CONTRACTsvc to AUTHsvc;
-					do FilterAux
-						<filter2(usercontext, filters, contractdetails)>
-						(AUTHsvc, FILTERsvc);
+					filterContracts(usercontext, filters, contractdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
 					contracts() from AUTHsvc to REQuestor;
 				}
+				continue MAIN;
 			}
-			do PartnersAux( REQuestor, AUTHsvc, FILTERsvc, SUPPLIERsvc, CONTRACTsvc);
-}
-
-
-aux global protocol FilterAux<sig details>(
-		role AUTHsvc,
-		role FILTERsvc)
-{
-	details from AUTHsvc to FILTERsvc;
-	filtered() from FILTERsvc to AUTHsvc;
+		}
+	}
 }
 

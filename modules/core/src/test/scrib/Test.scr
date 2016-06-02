@@ -38,10 +38,12 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-global protocol Proto1(role A, role B)
+//*
+global protocol Proto(role A, role B)
 {
 
 }
+//*/
 
 
 /*
