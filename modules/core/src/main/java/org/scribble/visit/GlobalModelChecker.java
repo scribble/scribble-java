@@ -17,7 +17,6 @@ import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GIOAction;
 import org.scribble.model.local.EndpointFSM;
 import org.scribble.model.local.EndpointGraph;
-import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Send;
@@ -140,7 +139,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			if (!errors.isEmpty())
 			{
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
-				List<GIOAction> trace = getTrace(init, s, reach);
+				List<GIOAction> trace = getTrace(init, s, reach);  // FIXME: getTrace broken on non-det self loops?
 				errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n  Trace=" + trace;
 			}
 			if (!errors.stuck.isEmpty())
@@ -292,7 +291,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 		}
 
-		job.debugPrintln("(" + fullname + ") Built global model (" + count + " states): \n" + init.toDot());
+		job.debugPrintln(init.toDot() + "\n(" + fullname + ") Built global model (" + count + " states)");
 
 		//return seen;
 		return init;

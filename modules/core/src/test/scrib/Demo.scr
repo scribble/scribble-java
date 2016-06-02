@@ -1,0 +1,179 @@
+//$ bin/scribblec.sh modules/core/src/test/scrib/Test.scr -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/
+
+
+module Demo;
+
+
+/**
+ * Stuck message
+ */
+
+/*
+global protocol Proto(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to A;
+		//2() from B to A;
+	}
+}
+//*/
+
+
+/**
+ * Wait-for
+ */
+
+/*
+global protocol Proto(role A, role B, role C)
+{
+	//rec X {
+		choice at A
+		{
+			1() from A to B;
+			//continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+	//}
+}
+//*/
+
+/*
+explicit global protocol Proto(role A, role B, role C)
+{
+	connect A to B;
+	//connect B to C;
+	choice at A
+	{
+		1() from A to B;
+		//connect A to C;  // Sync-blocked (cf. input-blocked, terminated)
+		1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+//*/
+
+/*
+explicit global protocol Proto(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			connect A to C;
+			1() from A to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+}
+//*/
+
+/*
+global protocol Proto(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from A to B;
+		3() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to A;
+		2() from A to B;
+	}
+}
+//*/
+
+
+/**
+ * Orphans
+ */
+
+/*
+global protocol Proto(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		2() from A to B;
+	}
+}
+//*/
+
+
+/**
+ * "Role liveness"
+ */
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	choice at B
+	{
+		rec X
+		{
+			2() from B to C;
+			continue X;
+		}
+	}
+	or
+	{
+		3() from B to C;
+	}
+	4() from C to A;
+}
+//*/
+
+
+/**
+ * "Message liveness"
+ */
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	choice at B
+	{
+		rec X
+		{
+			2() from B to C;
+			continue X;
+		}
+	}
+	or
+	{
+		3() from B to C;
+	}
+	4() from A to C;
+	//4() from A to C;
+	//...  // Dragons
+}
+//*/
+

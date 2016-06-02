@@ -6,87 +6,87 @@ type <xsd> "UUID" from "AUTH.xsd" as uuid;
 type <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
 type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
 
-type <xsd> "..." from "...xsd" as usercontext;
-type <xsd> "..." from "...xsd" as filters;
-
-type <java> "java.lang.Integer" from "rt.jar" as int;
+type <xsd> "UserContext" from "AUTH.xsd" as usercontext;
+type <xsd> "FilterSet" from "AUTH.xsd" as filters;
 
 
-global protocol PartnershipSupplier(
-		role loginsvc,
-		role requestor,
-		role authorisersvc,
-		//role usersvc,
-		role filtersvc,
-		role suppliersvc,
-		role contractsvc)
+explicit global protocol Partners(
+		role LOGINsvc,
+		role REQuestor,
+		role AUTHsvc,
+		role FILTERsvc,
+		role SUPPLIERsvc,
+		role CONTRACTsvc)
 {
-	login(username, password) from requestor to loginsvc;
-	choice at loginsvc
+	connect REQuestor to LOGINsvc;
+
+	login(username, password) from REQuestor to LOGINsvc;
+	choice at LOGINsvc
 	{
-		//loginsuccess() from loginsvc to requestor;  // FIXME: error not detected: because of liveness of other parties? (error is detected if mainBlock is not looped) -- now: detected after simplifications to other parts of protocol...
-		loginfailure() from loginsvc to requestor;
-		//getsuppliers(uuid) from requestor to authorisersvc;  // Error
-		0() from requestor to authorisersvc;
-		0() from authorisersvc to filtersvc;
-		0() from authorisersvc to suppliersvc;
-		0() from authorisersvc to contractsvc;
+		loginfailure() from LOGINsvc to REQuestor;
+	} or {
+		loginsuccess() from LOGINsvc to REQuestor;
+
+		connect REQuestor to AUTHsvc;
+		connect AUTHsvc to SUPPLIERsvc;
+		connect AUTHsvc to CONTRACTsvc;
+		connect AUTHsvc to FILTERsvc;
+
+		do PartnersAux( REQuestor, AUTHsvc, FILTERsvc, SUPPLIERsvc, CONTRACTsvc);
 	}
-	or
-	{
-		loginsuccess() from loginsvc to requestor;
-		rec mainBlock
-		{
-			choice at requestor
+}
+
+
+aux global protocol PartnersAux(
+		role REQuestor,
+		role AUTHsvc,
+		role FILTERsvc,
+		role SUPPLIERsvc,
+		role CONTRACTsvc)
+{
+			choice at REQuestor
 			{
 				// GET SUPPLIER INFO
-				getsuppliers(uuid) from requestor to authorisersvc;
-				//1() from authorisersvc to contractsvc;  // FIXME: big state explosion?
-				choice at authorisersvc
+				getsuppliers(uuid) from REQuestor to AUTHsvc;
+				choice at AUTHsvc
 				{
 					// DENIED
-					deny() from authorisersvc to requestor;
-
-					//1() from authorisersvc to suppliersvc;  // FIXME: investigate commenting (should be OK by recursion?) -- projection problem: local choice subjects (inference against empty cases)
-					//1() from authorisersvc to filtersvc;  // FIXME: projection problem when commented: local choice subject for filtersvc -- if resolved, then a graph building problem
+					deny() from AUTHsvc to REQuestor;
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
+					getsuppliers() from AUTHsvc to SUPPLIERsvc;
+					suppliers() from SUPPLIERsvc to AUTHsvc;
+					do FilterAux
+						<filter1(usercontext, filters, supplierdetails)>
+						(AUTHsvc, FILTERsvc);
+					suppliers() from AUTHsvc to REQuestor;
 				}
-				or
-				{
-					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
-					getsuppliers() from authorisersvc to suppliersvc;
-					suppliers() from suppliersvc to authorisersvc;
-
-					filter(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
-					filtered() from filtersvc to authorisersvc;
-					suppliers() from authorisersvc to requestor;
-				}
-			}
-			or
-			{
+			} or {
 				// GET CONTRACT INFO
-				getcontracts() from requestor to authorisersvc;
-				//2() from authorisersvc to suppliersvc;
-				choice at authorisersvc
+				getcontracts() from REQuestor to AUTHsvc;
+				choice at AUTHsvc
 				{
 					// DENIED
-					deny() from authorisersvc to requestor;
-
-					//2() from authorisersvc to contractsvc;
-					//2() from authorisersvc to filtersvc;
-				}
-				or
-				{
-					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
-					getcontracts() from authorisersvc to contractsvc;
-					suppliers() from contractsvc to authorisersvc;
-
-					filter(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
-					filtered() from filtersvc to authorisersvc;
-					contracts() from authorisersvc to requestor;
+					deny() from AUTHsvc to REQuestor;
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
+					getcontracts() from AUTHsvc to CONTRACTsvc;
+					contracts() from CONTRACTsvc to AUTHsvc;
+					do FilterAux
+						<filter2(usercontext, filters, contractdetails)>
+						(AUTHsvc, FILTERsvc);
+					contracts() from AUTHsvc to REQuestor;
 				}
 			}
-			continue mainBlock;
-		}
-	}
+			do PartnersAux( REQuestor, AUTHsvc, FILTERsvc, SUPPLIERsvc, CONTRACTsvc);
+}
+
+
+aux global protocol FilterAux<sig details>(
+		role AUTHsvc,
+		role FILTERsvc)
+{
+	details from AUTHsvc to FILTERsvc;
+	filtered() from FILTERsvc to AUTHsvc;
 }
 

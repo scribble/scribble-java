@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -174,6 +175,10 @@ public class WFConfig
 					res.put(r, recv);
 				}
 			}
+			/*else if (k == Kind.ACCEPT)  // FIXME: ..and connect
+			{
+				
+			}*/
 		}
 		return res;
 	}
@@ -243,8 +248,8 @@ public class WFConfig
 		Role r = tmp.iterator().next();
 		tmp.remove(r);
 		candidate.add(r);*/
-		Set<Role> candidate = new HashSet<>();
-		Set<Role> todo = new HashSet<>(Arrays.asList(orig));
+		Set<Role> candidate = new LinkedHashSet<>();
+		Set<Role> todo = new LinkedHashSet<>(Arrays.asList(orig));
 		while (!todo.isEmpty())
 		{
 			Role r = todo.iterator().next();
@@ -350,7 +355,7 @@ public class WFConfig
 		//return Collections.emptySet();
 	}
 
-	// Generalised to include "unconnected" messages
+	// Generalised to include "unconnected" messages -- should unconnected messages be stuck instead?
 	public Map<Role, Set<Send>> getOrphanMessages()
 	{
 		Map<Role, Set<Send>> res = new HashMap<>();

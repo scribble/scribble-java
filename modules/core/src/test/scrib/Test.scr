@@ -34,10 +34,78 @@ module Test;
 //.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
 
 
-//*
-global protocol Proto1(role A, role B, role C)
+// - scrib assertions for model checker -- check state visited?
+// - parameterise subprotos on protos?
+
+
+global protocol Proto1(role A, role B)
 {
 
+}
+
+
+/*
+global protocol Proto(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		disconnect A and B;
+	}
+	or
+	{
+		1() from A to B;
+		2() from B to A;  // B can still send even if A disconnects (async) -- so not wait-for from that situation
+	}
+}
+//*/
+
+
+/*/
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+
+		1() from A to C;
+		1() from A to C;
+
+		3() from C to B;
+	}
+	or
+	{
+		1() from A to B;
+
+		() from B to C;  // Trying to get A into above block while C is in here, such that WF1 forces C also into the above -- so that WF1 becomes unsound
+		2() from A to C;
+
+		4() from C to B;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at C
+	{
+		1() from C to B;
+		1() from C to A;
+	}
+	or
+	{
+		1() from C to B;
+		2() from C to A;
+
+		2() from A to B;
+		2() from A to B;
+
+		2() from A to C;
+
+		2() from C to B;
+	}
 }
 //*/
 

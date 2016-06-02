@@ -10,6 +10,184 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 /*
+explicit global protocol Proto(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			connect B to C;  // FIXME: should be reconnect error
+			1() from B to C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto(role A, role B, role C)
+{
+	connect A to B;
+	connect A to C;
+	choice at A
+	{
+		1() from A to B;
+		() from A to C;
+		connect B to C;
+		2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		() from A to C;
+		connect C to B;  // If A and C are in above, 2() can be stuck at B's accept here (similarly if B is connect)
+		// FIXME: connect/accept not currently checked in stuck, is it handled in orphan?
+		3() from A to B;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Partners(
+		role LOGINsvc,
+		role REQuestor,
+		role AUTHsvc,
+		role FILTERsvc,
+		role SUPPLIERsvc,
+		role CONTRACTsvc)
+{
+	connect REQuestor to LOGINsvc;
+
+	login(username, password) from REQuestor to LOGINsvc;
+	choice at LOGINsvc
+	{
+		loginfailure() from LOGINsvc to REQuestor;
+	} or {
+		loginsuccess() from LOGINsvc to REQuestor;
+
+		connect REQuestor to AUTHsvc;
+		connect AUTHsvc to SUPPLIERsvc;
+		connect AUTHsvc to CONTRACTsvc;
+		connect AUTHsvc to FILTERsvc;
+
+		rec MAIN
+		{
+			choice at REQuestor
+			{
+				// GET SUPPLIER INFO
+				getsuppliers(uuid) from REQuestor to AUTHsvc;
+				choice at AUTHsvc
+				{
+					// DENIED
+					//deny() from AUTHsvc to REQuestor;
+					suppliers() from AUTHsvc to REQuestor;  // FIXME: graph building error
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
+					getsuppliers() from AUTHsvc to SUPPLIERsvc;
+					suppliers() from SUPPLIERsvc to AUTHsvc;
+					filterSuppliers(usercontext, filters, supplierdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
+					suppliers() from AUTHsvc to REQuestor;
+				}
+				continue MAIN;
+			} or {
+				// GET CONTRACT INFO
+				getcontracts() from REQuestor to AUTHsvc;
+				choice at AUTHsvc
+				{
+					// DENIED
+					deny() from AUTHsvc to REQuestor;
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
+					getcontracts() from AUTHsvc to CONTRACTsvc;
+					contracts() from CONTRACTsvc to AUTHsvc;
+					filterContracts(usercontext, filters, contractdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
+					contracts() from AUTHsvc to REQuestor;
+				}
+				continue MAIN;
+			}
+		}
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Partners(
+		role LOGINsvc,
+		role REQuestor,
+		role AUTHsvc,
+		role FILTERsvc,
+		role SUPPLIERsvc,
+		role CONTRACTsvc)
+{
+	connect REQuestor to LOGINsvc;
+
+	login(username, password) from REQuestor to LOGINsvc;
+	choice at LOGINsvc
+	{
+		loginfailure() from LOGINsvc to REQuestor;
+	} or {
+		loginsuccess() from LOGINsvc to REQuestor;
+
+		connect REQuestor to AUTHsvc;
+		connect AUTHsvc to SUPPLIERsvc;
+		connect AUTHsvc to CONTRACTsvc;
+		connect AUTHsvc to FILTERsvc;
+
+		rec MAIN
+		{
+			choice at REQuestor
+			{
+				// GET SUPPLIER INFO
+				getsuppliers(uuid) from REQuestor to AUTHsvc;
+				choice at AUTHsvc
+				{
+					// DENIED
+					getsuppliers() from AUTHsvc to SUPPLIERsvc;  // FIXME: model checker stuck
+					deny() from AUTHsvc to REQuestor;
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
+					getsuppliers() from AUTHsvc to SUPPLIERsvc;
+					suppliers() from SUPPLIERsvc to AUTHsvc;
+					filterSuppliers(usercontext, filters, supplierdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
+					suppliers() from AUTHsvc to REQuestor;
+				}
+				continue MAIN;
+			} or {
+				// GET CONTRACT INFO
+				getcontracts() from REQuestor to AUTHsvc;
+				choice at AUTHsvc
+				{
+					// DENIED
+					deny() from AUTHsvc to REQuestor;
+				} or {
+					// PREPARE FILTERED SUPPLIER INFO FOR REQuestor
+					getcontracts() from AUTHsvc to CONTRACTsvc;
+					contracts() from CONTRACTsvc to AUTHsvc;
+					filterContracts(usercontext, filters, contractdetails) from AUTHsvc to FILTERsvc;
+					filtered() from FILTERsvc to AUTHsvc;
+					contracts() from AUTHsvc to REQuestor;
+				}
+				continue MAIN;
+			}
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X

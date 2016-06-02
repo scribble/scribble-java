@@ -3,24 +3,22 @@ module src.SupplierInfoOrig;
 type <xsd> "UserName" from "AUTH.xsd" as username;
 type <xsd> "Password" from "AUTH.xsd" as password;
 type <xsd> "UUID" from "AUTH.xsd" as uuid;
-type <xsd> "UserContext" from "AUTH.xsd" as usercontext;
-type <xsd> "FilterSet" from "AUTH.xsd" as filters;
 type <xsd> "/retailhub/supplierdetails" from "Retailer.xsd" as supplierdetails;
 type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
 
 type <java> "java.lang.Integer" from "rt.jar" as int;
- 
+
 
 global protocol PartnershipSupplier(	role loginsvc,
 										role requestor,
 										role authorisersvc,
-										role usersvc, 
-										role filtersvc, 
+										role usersvc,
+										role filtersvc,
 										role suppliersvc,
-										role contractsvc) 
+										role contractsvc)
 {
 	login(username, password) from requestor to loginsvc;
-	choice at loginsvc 
+	choice at loginsvc
 	{
 		loginfailure() from loginsvc to requestor;
 	} or {
@@ -34,7 +32,7 @@ global protocol PartnershipSupplier(	role loginsvc,
 				{				// DENIED
 					deny() from authorisersvc to requestor;
 				} or {			// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
-					getsuppliers() from authorisersvc to suppliersvc;	
+					getsuppliers() from authorisersvc to suppliersvc;
 					suppliers() from suppliersvc to authorisersvc;
 					filter(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
 					filtered() from filtersvc to authorisersvc;
@@ -43,18 +41,19 @@ global protocol PartnershipSupplier(	role loginsvc,
 				continue mainBlock;
 			} or {				// GET CONTRACT INFO
 				getcontracts() from requestor to authorisersvc;
-				choice at authorisersvc
+				choice at authoriser
 				{				// DENIED
 					deny() from authorisersvc to requestor;
 				} or {// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
-					getcontracts() from authorisersvc to contractsvc;	
+					getcontracts() from authorisersvc to contractsvc;
 					suppliers() from contractsvc to authorisersvc;
 					filter(usercontext, filters, contractdetails) from authorisersvc to filtersvc;
 					filtered() from filtersvc to authorisersvc;
 					contracts() from authorisersvc to requestor;
 				}
 				continue mainBlock;
-			}	
+			}
 		}
 	}
 }
+

@@ -9,14 +9,11 @@ type <xsd> "/retailhub/contractdetails" from "Retailer.xsd" as contractdetails;
 type <xsd> "..." from "...xsd" as usercontext;
 type <xsd> "..." from "...xsd" as filters;
 
-type <java> "java.lang.Integer" from "rt.jar" as int;
-
 
 global protocol PartnershipSupplier(
 		role loginsvc,
 		role requestor,
 		role authorisersvc,
-		//role usersvc,
 		role filtersvc,
 		role suppliersvc,
 		role contractsvc)
@@ -24,7 +21,11 @@ global protocol PartnershipSupplier(
 	login(username, password) from requestor to loginsvc;
 	choice at loginsvc
 	{
+		//loginsuccess() from loginsvc to requestor  // Error if below is commented
 		loginfailure() from loginsvc to requestor;
+
+		//getsuppliers(uuid) from requestor to authorisersvc;  // Error
+
 		0() from requestor to authorisersvc;
 		0() from authorisersvc to filtersvc;
 		0() from authorisersvc to suppliersvc;
@@ -39,10 +40,14 @@ global protocol PartnershipSupplier(
 			{
 				// GET SUPPLIER INFO
 				getsuppliers(uuid) from requestor to authorisersvc;
+
+				1() from authorisersvc to contractsvc;  // Cheaper here than below
+
 				choice at authorisersvc
 				{
 					// DENIED
 					deny() from authorisersvc to requestor;
+
 					1() from authorisersvc to suppliersvc;
 					1() from authorisersvc to filtersvc;
 				}
@@ -52,21 +57,26 @@ global protocol PartnershipSupplier(
 					getsuppliers() from authorisersvc to suppliersvc;
 					suppliers() from suppliersvc to authorisersvc;
 
-					filter1(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
-					filtered1() from filtersvc to authorisersvc;
+					filterSuppliers(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
+					filtered() from filtersvc to authorisersvc;
 					suppliers() from authorisersvc to requestor;
 				}
-				1() from authorisersvc to contractsvc;
+
+				//1() from authorisersvc to contractsvc;
+				continue mainBlock;
 			}
 			or
 			{
 				// GET CONTRACT INFO
 				getcontracts() from requestor to authorisersvc;
-				//choice at authoriser
+
+				2() from authorisersvc to suppliersvc;
+
 				choice at authorisersvc
 				{
 					// DENIED
 					deny() from authorisersvc to requestor;
+
 					2() from authorisersvc to contractsvc;
 					2() from authorisersvc to filtersvc;
 				}
@@ -76,13 +86,14 @@ global protocol PartnershipSupplier(
 					getcontracts() from authorisersvc to contractsvc;
 					suppliers() from contractsvc to authorisersvc;
 
-					filter2(usercontext, filters, supplierdetails) from authorisersvc to filtersvc;
-					filtered2() from filtersvc to authorisersvc;
+					filterContracts(usercontext, filters, contractdetails) from authorisersvc to filtersvc;
+					filtered() from filtersvc to authorisersvc;
 					contracts() from authorisersvc to requestor;
 				}
-				2() from authorisersvc to suppliersvc;
+
+				//2() from authorisersvc to suppliersvc;
+				continue mainBlock;
 			}
-			continue mainBlock;
 		}
 	}
 }
