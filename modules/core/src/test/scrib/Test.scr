@@ -38,12 +38,9 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-//*
 global protocol Proto1(role A, role B)
 {
-	1() from A to B;
 }
-//*/
 
 
 /*
@@ -144,6 +141,25 @@ global protocol Proto1(role A, role B, role C)
 			3() from C to B;
 			continue X;
 		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;  // Testing graph building
+		}
+		or
+		{
+			1() from A to B;
+		}
+		continue X;
 	}
 }
 //*/

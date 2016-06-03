@@ -1,6 +1,10 @@
 package org.scribble.del.local;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LContinue;
@@ -57,11 +61,18 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 			Iterator<EndpointState> preds = graph.builder.getPredecessors().iterator();
 			Iterator<IOAction> prevs = graph.builder.getPreviousActions().iterator();
 			EndpointState entry = graph.builder.getEntry();
+
+			Set<List<Object>> removed = new HashSet<>();  // HACK: for identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  // FIXME: do here, or refactor into GraphBuilder?
 			while (preds.hasNext())
 			{
 				EndpointState pred = preds.next();
 				IOAction prev = prevs.next();
-				graph.builder.removeEdge(pred, prev, entry);
+				List<Object> tmp = Arrays.asList(pred, prev, entry);
+				if (!removed.contains(tmp))
+				{
+					removed.add(tmp);
+					graph.builder.removeEdge(pred, prev, entry);
+				}
 				graph.builder.addEdge(pred, prev, graph.builder.getRecursionEntry(rv));
 			}
 		}
