@@ -20,8 +20,13 @@ package org.scribble.main;
 //..       don't need termination hack, just need to cut off state building on bad states -- no: it's needed (buffered message may be blocked now but valid later), or a terminal set analysis
 //..       choice subject enabling needed for non-mixed states (inherently relevant to deadlock) -- although for one-slot asynchrony to work, it's just the A->B constructor: there's always syntactically at least one receiver, and any potential deadlock between parallel senders due to bounded buffer will be caught as the counterpart paralel receiver deadlock
 //.. check role-based starvation/liveness (loop hack) -- no: terminal set analysis
-//.. "introduces" should just work (dynamically add/remove buffer structures) -- no: 
+//.. refactor orphans as generalised message liveness?  though orphans are more natural as a termination/deadlock property?
+//.. reconsider liveness loop hack (subsumes safety?)
+//..
+//.. "introduces" should just work (dynamically add/remove buffer structures) -- no: that's connectedness, introduces on top? (should still be a finite state space extension)
+//..
 //.. multicast: generalise model actions -- but how about asynchrony? introduce output buffers? -- output/input buffer intuition for "single-step" asynchrony
+//..
 //.. model checked assertion annotations -- and API gen
 //
 //.. global model actions
@@ -31,9 +36,8 @@ package org.scribble.main;
 //.. option to return all errors or just the first
 //
 //.. integrate reachability check and graph building? or move reachability earlier? EFSM building now done before reachability pass
-
-
-
+//
+//.. move connectedness checks into model checking, rather than syntactic
 
 
 // FIXME: ambiguous choice subject (i.e. > 1 candidate) is checked subsequently by ProjectedChoiceSubjectFixer -- should be better integrated (e.g. reuse ChoiceUnguardedSubprotocolChecker, rather than adhoc LInteractionNode.inferLocalChoiceSubject) -- NOTE: but cannot do all pruning and fixing in one pass, as fixing the subject roles here will interfere with the pruning algorithm (currently it looks for dummy role choices)

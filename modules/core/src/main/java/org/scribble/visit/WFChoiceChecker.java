@@ -45,14 +45,14 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 			}
 		}
 
-		if (child instanceof Choice<?>)
+		if (getJob().useOldWf)
 		{
-			return visitOverrideForChoice((InteractionSeq<?>) parent, (Choice<?>) child);
+			if (child instanceof Choice<?>)  // Only needed for old WF (for distinct enabling message checking)  // FIXME: maybe move connectedness checking to a separate pass, i.e. vanilla UnfoldingVisitor (if retained as syntactic check)
+			{
+				return visitOverrideForChoice((InteractionSeq<?>) parent, (Choice<?>) child);
+			}
 		}
-		else
-		{
-			return super.visit(parent, child);
-		}
+		return super.visit(parent, child);
 	}
 
 	private ScribNode visitOverrideForChoice(InteractionSeq<?> parent, Choice<?> child) throws ScribbleException
@@ -60,7 +60,7 @@ public class WFChoiceChecker extends UnfoldingVisitor<WFChoiceEnv>
 		if (child instanceof Choice<?>)
 		{
 			Choice<?> cho = (Choice<?>) child;
-			if (!this.visited.contains(cho))
+			if (!this.visited.contains(cho))  // ** Old WF breaks connectedness checking, e.g. rec X { choice at A { connect A to B; continue X; } } because of choice visit pruning
 			{
 				this.visited.add(cho);
 				//ScribNode n = cho.visitChildren(this);

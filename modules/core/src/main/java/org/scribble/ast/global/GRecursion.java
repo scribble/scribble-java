@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Do;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ProtocolBlock;
@@ -76,7 +77,7 @@ public class GRecursion extends Recursion<Global> implements GCompoundInteractio
 					return block;
 				}
 			}
-			else if (lin instanceof MessageTransfer<?> || lin instanceof Do<?>)
+			else if (lin instanceof MessageTransfer<?> || lin instanceof Do<?> || lin instanceof ConnectionAction<?>)
 			{
 				return block;
 			}

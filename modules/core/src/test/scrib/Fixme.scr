@@ -9,27 +9,6 @@ module Fixme;
 type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
-/*
-explicit global protocol Proto(role A, role B, role C)
-{
-	connect A to B;
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			connect B to C;  // FIXME: should be reconnect error
-			1() from B to C;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-		}
-	}
-}
-//*/
-
 
 /*
 explicit global protocol Proto(role A, role B, role C)
@@ -48,7 +27,7 @@ explicit global protocol Proto(role A, role B, role C)
 		1() from A to B;
 		() from A to C;
 		connect C to B;  // If A and C are in above, 2() can be stuck at B's accept here (similarly if B is connect)
-		// FIXME: connect/accept not currently checked in stuck, is it handled in orphan?
+		// CHECKME: connect/accept not currently considered in stuck error checking, is it treated via orphans?
 		3() from A to B;
 	}
 }
