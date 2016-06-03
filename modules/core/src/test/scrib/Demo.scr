@@ -133,27 +133,20 @@ global protocol Proto(role A, role B)
 /*
 global protocol Proto(role A, role B, role C)
 {
-	1() from A to B;
 	choice at B
 	{
 		rec X
 		{
-			choice at B
-			{
-				2() from B to C;
-				continue X;
-			}
-			or
-			{
-				5() from B to C;
-			}
+			1() from B to C;
+			continue X;
 		}
 	}
 	or
 	{
-		3() from B to C;
+		2() from B to C;
+		//3() from C to A;
 	}
-	4() from C to A;
+	3() from C to A;
 }
 //*/
 
@@ -165,21 +158,20 @@ global protocol Proto(role A, role B, role C)
 /*
 global protocol Proto(role A, role B, role C)
 {
-	1() from A to B;
 	choice at B
 	{
 		rec X
 		{
-			2() from B to C;
+			1() from B to C;
 			continue X;
 		}
 	}
 	or
 	{
-		3() from B to C;
+		2() from B to C;
 	}
-	4() from A to C;
-	//4() from A to C;
+	3() from A to C;
+	//3() from A to C;
 	//...  // Dragons
 }
 //*/

@@ -149,7 +149,7 @@ public class WFState
 		{
 			return false;
 		}
-		return this.config.equals(((WFState) o).config);
+		return this.config.equals(((WFState) o).config);  // Not using id, cf. ModelState -- FIXME: use a factory pattern that associates unique states and ids?
 	}
 	
 	@Override
