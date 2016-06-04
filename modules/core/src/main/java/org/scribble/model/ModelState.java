@@ -74,7 +74,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		//this.edges.put(a, s);
 		Iterator<A> as = this.actions.iterator();  // Needed?..
 		Iterator<S> ss = this.succs.iterator();
-		while (as.hasNext())
+		while (as.hasNext())  // Duplicate edges preemptively pruned here, but could leave to later minimisation
 		{
 			A tmpa = as.next();
 			S tmps = ss.next();
@@ -165,7 +165,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		{
 			return false;
 		}
-		return this.id == ((ModelState<?, ?, ?>) o).id;
+		return this.id == ((ModelState<?, ?, ?>) o).id;  // Good to use id, due to edge mutability
 	}
 	
 	@Override

@@ -149,7 +149,9 @@ public class WFState
 		{
 			return false;
 		}
-		return this.config.equals(((WFState) o).config);  // Not using id, cf. ModelState -- FIXME: use a factory pattern that associates unique states and ids?
+		return this.config.equals(((WFState) o).config);  
+				// Not using id, cf. ModelState -- FIXME: use a factory pattern that associates unique states and ids? -- use id for hash, and make a separate "semantic equals"
+				// Care is needed if hashing, since mutable (currently better to manually use ids, c.f. ModelState)
 	}
 	
 	@Override
