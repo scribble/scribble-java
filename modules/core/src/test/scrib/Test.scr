@@ -38,30 +38,104 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-
-/*
-explicit global protocol Proto(role A, role B, role C, role D)
+explicit global protocol Proto(role A, role B, role C)
 {
 	connect A to B;
-	connect C to D;
-	//... A, B  // FIXME: investigate
-	//... C, D
+	connect A to C;  // Bad
+	disconnect A and C;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		connect B to C;
+	}
 }
-//*/
 
 
 /*
-explicit global protocol Proto(role A, role B, role C, role D)
+explicit global protocol Proto(role A, role B, role C)
 {
 	connect A to B;
 	connect A to C;
-	connect A to D;
-	connect C to D;
-	disconnect A and C;  // FIXME: investigate
-	disconnect A and D;
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		connect B to C;
+		2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to C;
+		connect B to C;  // Good: mergeable
+		2() from A to B;
+	}
 }
 //*/
 
+
+/*
+explicit global protocol Proto(role A, role B, role C)
+{
+	connect A to B;
+	connect A to C;
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+		connect B to C;
+		2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to C;
+		connect C to B;  // If A and C are in above, 2() can be stuck at B's connect/accept here -- but stuck error not directly detected, error manifests as B/C deadlock
+		2() from A to B;  // Mergeable if B/C connection not deadlocked
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		connect B to C;
+	}
+	or
+	{
+		1() from A to B;
+	}
+	2() from B to C;  // Trying to make an unconnected orphan from B to C, but currently will always get a connectedness error first -- model building semantics shouldn't/won't allow explicit unnconnected orphans, message cannot be sent if not connected
+}
+//*/
+
+
+/*
+explicit global protocol Proto(role A, role B, role C)
+{
+	connect A to C;
+	connect C to B;
+	choice at A
+	{
+		1() from A to C;
+		connect A to B;
+	}
+	or
+	{
+		2() from A to C;
+		2() from C to B;  // Bad: connect and msg from different choice subjects
+	}
+}
+//*/
 
 
 /*

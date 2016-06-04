@@ -177,7 +177,9 @@ public class WFConfig
 			}
 			/*else if (k == Kind.ACCEPT)  // FIXME: ..and connect
 			{
-				
+				// FIXME: issue is, unlike regular input states, blocked connect/accept may become unblocked later, so queued messages may not be stuck
+				// (if message is queued on the actual blocked connection, it should be orphan message)
+				// so, message is stuck only if connect/accept is genuinely deadlocked, which will be detected as that
 			}*/
 		}
 		return res;

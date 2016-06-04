@@ -11,25 +11,25 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 
 /*
-explicit global protocol Proto(role A, role B, role C)
+explicit global protocol Proto(role A, role B, role C, role D)
+{
+	connect A to B;
+	connect C to D;
+	//... A, B  // FIXME: investigate
+	//... C, D
+}
+//*/
+
+
+/*
+explicit global protocol Proto(role A, role B, role C, role D)
 {
 	connect A to B;
 	connect A to C;
-	choice at A
-	{
-		1() from A to B;
-		() from A to C;
-		connect B to C;
-		2() from A to B;
-	}
-	or
-	{
-		1() from A to B;
-		() from A to C;
-		connect C to B;  // If A and C are in above, 2() can be stuck at B's accept here (similarly if B is connect)
-		// CHECKME: connect/accept not currently considered in stuck error checking, is it treated via orphans?
-		3() from A to B;
-	}
+	connect A to D;
+	connect C to D;
+	disconnect A and C;  // FIXME: investigate
+	disconnect A and D;
 }
 //*/
 
