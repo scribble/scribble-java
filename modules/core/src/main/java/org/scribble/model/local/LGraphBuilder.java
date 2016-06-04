@@ -51,6 +51,11 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 		{
 			resTerm = null;
 		}
+		
+		/*Map<Integer, EndpointState> all = getAllStates(res);
+		EndpointState dfa = determinise(all, res, resTerm);
+		System.out.println("111: " + dfa.toDot());*/
+		
 		return new EndpointGraph(res, resTerm);
 	}
 	
@@ -119,6 +124,111 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 	{
 		return new EndpointState(labs);
 	}
+	
+	/*private Map<Integer, EndpointState> getAllStates(EndpointState init)
+	{
+		Map<Integer, EndpointState> all = new HashMap<>();
+		List<EndpointState> todo = new LinkedList<>();
+		todo.add(init);
+		while (!todo.isEmpty())
+		{
+			EndpointState next = todo.remove(0);
+			all.put(next.id, next);
+			for (EndpointState s : next.getSuccessors())
+			{
+				if (!all.keySet().contains(s.id) && !todo.contains(s))
+				{
+					todo.add(s);
+				}
+			}
+		}
+		return all;
+	}
+	
+	// Basic determinisation does not preserve bisimilarity, e.g. ( choice at A { 1() from A to B; 2() from A to B; } or { 1() from A to B; 2() from A to B; } ) becomes ( 1() from A to B; choice at A { 2() from A to B; } or { 2() from A to B; } )
+	private EndpointState determinise(Map<Integer, EndpointState> all, EndpointState init, EndpointState term)
+	{
+		Map<Set<Integer>, EndpointState> done = new HashMap<>();
+		Map<Set<Integer>, EndpointState> todo = new LinkedHashMap<>();
+		Set<Integer> tmp0 = IntStream.of(init.id).mapToObj((i) -> i).collect(Collectors.toSet());
+		EndpointState dinit = newState(tmp0.stream().map((i) -> new RecVar(Integer.toString(i))).collect(Collectors.toSet()));
+		todo.put(tmp0, dinit);
+
+		while (!todo.isEmpty())
+		{
+			Set<Integer> k = todo.keySet().iterator().next();
+			EndpointState next = todo.remove(k);
+			done.put(k, next);
+			
+			for (RecVar rv1 : next.getLabels())
+			{
+				EndpointState s1 = all.get(Integer.parseInt(rv1.toString()));
+				for (IOAction a : s1.getAllTakeable())
+				{
+					Set<Integer> foo = new HashSet<>();
+					for (RecVar rv2 : next.getLabels())
+					{
+						EndpointState s2 = all.get(Integer.parseInt(rv2.toString()));
+						if (s2.isTakeable(a))
+						{
+							foo.addAll(s2.takeAll(a).stream().map((x) -> x.id).collect(Collectors.toSet()));
+						}
+					}
+					EndpointState succ = null;
+					if (done.containsKey(foo))
+					{
+						succ = done.get(foo);
+					}
+					else if (todo.containsKey(foo))
+					{
+						succ = todo.get(foo);
+					}
+					else
+					{
+						succ = newState(foo.stream().map((i) -> new RecVar(Integer.toString(i))).collect(Collectors.toSet()));
+						todo.put(foo, succ);
+					}
+					addEdge(next, a, succ);
+				}
+			}
+		}
+		return dinit;
+	}*/
+
+	// OK for model checking to minimalise first before checking? determinise first -- no: need nfa minimisation up to bimisilarity (bisimilar quotients)
+	// Individual duplicate edges already 
+	// Post: initial state is the same instance, terminal state if any is the same instance (equality is instance id anyway)
+	/*private static void minimalise(EndpointState init)
+	{
+		Map<EndpointState, Map<EndpointState, Map<GIOAction, EndpointState[]>>> candidates = getInitialCandidates(init);
+	}
+	
+	private static Map<EndpointState, Map<EndpointState, Map<GIOAction, EndpointState[]>>> getInitialCandidates(EndpointState init)
+	{
+		Map<EndpointState, Map<EndpointState, Map<GIOAction, EndpointState[]>>> candidates = new HashMap<>();
+		List<EndpointState> todo = new LinkedList<>();
+		todo.add(init);
+		while (!todo.isEmpty())
+		{
+			EndpointState curr = todo.remove(0);
+			Map<EndpointState, Map<GIOAction, EndpointState[]>> tmp = new HashMap<>();
+			for (EndpointState s : candidates.keySet())
+			{
+				tmp.put(s, new HashMap<>());
+			}
+			candidates.put(curr, tmp);
+		}
+		for (EndpointState s1 : candidates.keySet())
+		{
+			Map<EndpointState, Map<GIOAction, EndpointState[]>> tmp = candidates.get(s1);
+			for (EndpointState s2 : tmp.keySet())
+			{
+				if (!s1.get...)
+					...
+			}
+		}
+		return candidates;
+	}*/
 	
 	/*public void addEntryLabel(RecVar lab)
 	{

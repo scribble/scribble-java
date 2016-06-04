@@ -62,7 +62,9 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 			Iterator<IOAction> prevs = graph.builder.getPreviousActions().iterator();
 			EndpointState entry = graph.builder.getEntry();
 
-			Set<List<Object>> removed = new HashSet<>();  // HACK: for identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  // FIXME: do here, or refactor into GraphBuilder?
+			Set<List<Object>> removed = new HashSet<>();  
+					// HACK: for identical edges, i.e. same pred/prev/succ (e.g. rec X { choice at A { A->B:1 } or { A->B:1 } continue X; })  // FIXME: do here, or refactor into GraphBuilder?
+					// Because duplicate edges preemptively pruned by ModelState.addEdge, but corresponding predecessors not pruned  // FIXME: make uniform
 			while (preds.hasNext())
 			{
 				EndpointState pred = preds.next();

@@ -38,6 +38,35 @@ module Test;
 // - parameterise subprotos on protos?
 
 
+global protocol Proto(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		3() from A to B;
+	}
+	/*2() from A to B;
+	rec X
+	{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+		continue X;
+	}
+	//continue X;
+	//*/
+}
+
+/*
 explicit global protocol Proto(role A, role B, role C)
 {
 	connect A to B;
@@ -53,6 +82,7 @@ explicit global protocol Proto(role A, role B, role C)
 		connect B to C;
 	}
 }
+//*/
 
 
 /*
