@@ -1,7 +1,6 @@
 package org.scribble.codegen.java.endpointapi;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +15,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Job;
+import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
@@ -45,12 +45,16 @@ public class StateChannelApiGenerator extends ApiGenerator
 		super(job, fullname);
 		this.self = self;
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
-		this.init = job.getContext().getEndpointGraph(fullname, self).init;
+		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
+		JobContext jc = job.getContext();
+		this.init = job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
+			
 		generateClassNames(this.init);
 		//this.root = this.classNames.get(this.init);
 		constructClasses(this.init);
 
-		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
+		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
+		EndpointState term = EndpointState.getTerminal(this.init);
 		if (term != null)
 		{
 			ClassBuilder cb = new EndSocketGenerator(this, term).generateType();

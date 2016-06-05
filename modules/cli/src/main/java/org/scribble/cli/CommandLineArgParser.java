@@ -26,6 +26,7 @@ public class CommandLineArgParser
 	//public static final String PROJECTED_MODEL_FLAG = "-pmodel";
 	public static final String OLD_WF_FLAG = "-oldwf";
 	public static final String NO_LIVENESS = "-nolive";
+	public static final String MIN_EFSM = "-minfsm";
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -35,6 +36,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.API_OUTPUT_FLAG, CommandLine.ArgFlag.API_OUTPUT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.STATECHANSUBTYPES_FLAG, CommandLine.ArgFlag.SCHAN_API_SUBTYPES);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OLD_WF_FLAG, CommandLine.ArgFlag.OLD_WF);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.MIN_EFSM, CommandLine.ArgFlag.MIN_EFSM);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -167,6 +169,11 @@ public class CommandLineArgParser
 			case CommandLineArgParser.NO_LIVENESS:
 			{
 				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.NO_LIVENESS), new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.MIN_EFSM:
+			{
+				this.parsed.put(CommandLine.ArgFlag.MIN_EFSM, new String[0]);
 				return i;
 			}
 			default:

@@ -29,6 +29,7 @@ import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.JobContext;
 
 // Cf. StateChannelApiGenerator
 // TODO: concrete state channel "to" casts for supertype i/f's (the info is there in the Java type hierachy though)
@@ -61,13 +62,16 @@ public class IOInterfacesGenerator extends ApiGenerator
 
 		GProtocolName fullname = apigen.getGProtocolName();
 		Role self = getSelf();
-		EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
+		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
+		JobContext jc = this.job.getContext();
+		EndpointState init = job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
 
 		generateActionAndSuccessorInterfacesAndCollectPreActions(new HashSet<>(), init);
 		generateIOStateInterfacesFirstPass(new HashSet<>(), init);
 		collectPreds();
 		
-		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), init);
+		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), init);
+		EndpointState term = EndpointState.getTerminal(init);
 		ClassBuilder endsock = null;
 		if (term != null)
 		{

@@ -26,17 +26,20 @@ public class Job
 	public final boolean debug;
 	public final boolean useOldWf;
 	public final boolean noLiveness;
+	public final boolean minEfsm;  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
+	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness, boolean minEfsm)
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
 		this.useOldWf = useOldWF;
 		this.noLiveness = noLiveness;
+		this.minEfsm = minEfsm;
+
 		this.jcontext = new JobContext(parsed, main);
 	}
 

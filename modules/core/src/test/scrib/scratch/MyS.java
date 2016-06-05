@@ -12,19 +12,15 @@ import org.scribble.net.session.SessionEndpoint;
 import scratch.Scratch1.Proto1.Proto1;
 import scratch.Scratch1.Proto1.channels.S.EndSocket;
 import scratch.Scratch1.Proto1.channels.S.Proto1_S_1;
-import scratch.Scratch1.Proto1.channels.S.Proto1_S_2_Handler;
-import scratch.Scratch1.Proto1.channels.S.Proto1_S_3;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Branch_S_C_2_Int__C_4__C_5;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4__C_5;
+import scratch.Scratch1.Proto1.channels.S.ioifaces.Branch_S_C_2_Int__C_4a;
+import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4a;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Receive_S_C_1;
+import scratch.Scratch1.Proto1.channels.S.ioifaces.Receive_S_C_4b;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Select_S_C_3_Int;
 import scratch.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_2_Int;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_4;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_5;
+import scratch.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_4a;
 import scratch.Scratch1.Proto1.ops._2;
-import scratch.Scratch1.Proto1.ops._4;
-import scratch.Scratch1.Proto1.ops._5;
+import scratch.Scratch1.Proto1.ops._4a;
 import scratch.Scratch1.Proto1.roles.S;
 
 public class MyS
@@ -58,7 +54,7 @@ public class MyS
 	}
 }
 
-class Handler implements Proto1_S_2_Handler
+/*class Handler implements Proto1_S_2_Handler
 {
 	@Override
 	public void receive(EndSocket schan, _4 op) throws ScribbleRuntimeException, IOException
@@ -89,34 +85,36 @@ class Handler implements Proto1_S_2_Handler
 		System.out.println("Done1-5");
 	}
 }
+//*/
 
 //class Handler2<Succ extends Succ_In_C_2_Int> implements Handle_S_C_2_Int__C_4<Succ>
-class Handler2 implements Handle_S_C_2_Int__C_4__C_5<Succ_In_C_2_Int, Succ_In_C_4, Succ_In_C_5>
+class Handler2 implements Handle_S_C_2_Int__C_4a<Succ_In_C_2_Int, Succ_In_C_4a>
 {
 	@Override
 	//public void receive(Proto1_S_3 schan, _2 op, Buf<? super Integer> b) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	//public void receive(Select_S_C_3_Int<Succ> schan, _2 op, Buf<? super Integer> b) throws ScribbleRuntimeException, IOException, ClassNotFoundException
-	public void receive(Succ_In_C_2_Int schan, _2 op, Buf<? super Integer> b) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	//public void receive(Succ_In_C_2_Int schan, _2 op, Buf<? super Integer> b) throws ScribbleRuntimeException, IOException, ClassNotFoundException
+	public void receive(Succ_In_C_2_Int schan, _2 op, Buf<Integer> b) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		System.out.println("Redo: " + b.val);
-		schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1).to(Branch_S_C_2_Int__C_4__C_5.cast).handle(Proto1.C, this);
+		schan.to(Select_S_C_3_Int.cast).send(Proto1.C, Proto1._3, 356).to(Receive_S_C_1.cast).async(Proto1.C, Proto1._1).to(Branch_S_C_2_Int__C_4a.cast).handle(Proto1.C, this);
 	}
 
 	@Override
-	public void receive(Succ_In_C_4 schan, _4 op) throws ScribbleRuntimeException, IOException
+	public void receive(Succ_In_C_4a schan, _4a op) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
-		schan.to(EndSocket.cast).end();
+		schan.to(Receive_S_C_4b.cast).receive(Proto1.C, Proto1._4b).to(EndSocket.cast).end();
 		System.out.println("Done2-4");
 	}
 
-	@Override
+	/*@Override
 	public void receive(Succ_In_C_5 schan, _5 op) throws ScribbleRuntimeException, IOException, ClassNotFoundException
 	{
 		System.out.println("Done2-5");
-	}
+	}*/
 }
 
-class Handler3<Succ1 extends Succ_In_C_2_Int, Succ2 extends Succ_In_C_4, Succ3 extends Succ_In_C_5> implements Handle_S_C_2_Int__C_4__C_5<Succ1, Succ2, Succ3>
+/*class Handler3<Succ1 extends Succ_In_C_2_Int, Succ2 extends Succ_In_C_4, Succ3 extends Succ_In_C_5> implements Handle_S_C_2_Int__C_4__C_5<Succ1, Succ2, Succ3>
 {
 	@Override
 	public void receive(Succ1 schan, _2 op, Buf<? super Integer> b) throws ScribbleRuntimeException, IOException, ClassNotFoundException
@@ -141,3 +139,4 @@ class Handler3<Succ1 extends Succ_In_C_2_Int, Succ2 extends Succ_In_C_4, Succ3 e
 		System.out.println("Done3-5");
 	}
 }
+//*/
