@@ -83,7 +83,7 @@ public class TestWellFormedness {
 			}
 		}*/
 		MainContext mc = newMainContext();
-		Job job = new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
+		Job job = new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm);
 		ScribbleException x = job.testWellFormednessCheck();
 		if (!hasErrors && x != null)
 		{
@@ -101,6 +101,8 @@ public class TestWellFormedness {
 		boolean debug = false;
 		boolean useOldWF = false;
 		boolean noLiveness = false;
+		boolean minEfsm = false;
+
 		Path mainpath = Paths.get(filename);
 		List<Path> impaths = new ArrayList<Path>();
 		
@@ -109,6 +111,6 @@ public class TestWellFormedness {
 		impaths.add(Paths.get(dir));
 		
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
-		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness);
+		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm);
 	}
 }

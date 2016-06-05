@@ -29,6 +29,12 @@ public abstract class ModelAction<K extends ProtocolKind>
 	{
 		return this.obj + getCommSymbol() + this.mid + this.payload;
 	}
+
+	public String toStringWithMessageIdHack()
+	{
+		String m = this.mid.isMessageSigName() ? "^" + this.mid : this.mid.toString();  // HACK
+		return this.obj + getCommSymbol() + m + this.payload;
+	}
 	
 	protected abstract String getCommSymbol();
 	

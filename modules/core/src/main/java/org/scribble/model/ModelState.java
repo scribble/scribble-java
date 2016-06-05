@@ -334,7 +334,8 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 			{
 				A a = as.next();
 				S succ = ss.next();
-				aut += "\n(" + s.id + ",\"" + a + "\"," + succ.id + ")";
+				String msg = a.toStringWithMessageIdHack();  // HACK
+				aut += "\n(" + s.id + ",\"" + msg + "\"," + succ.id + ")";
 			}
 		}
 		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut + "\n";

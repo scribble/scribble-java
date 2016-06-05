@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.DataType;
+import org.scribble.sesstype.name.MessageId;
+import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
@@ -114,7 +116,7 @@ public class AutParser
 	{
 		String peer;
 		String action;
-		String op;
+		String msg;  // Could be an Op or a MessageSigName (affects API generation)
 		String[] pay = null;
 		
 		int i = a.indexOf("!");
@@ -128,7 +130,7 @@ public class AutParser
 		action = a.substring(i, j);
 		peer = a.substring(0, i);
 		int k = a.indexOf("(");
-		op = a.substring(j, k);
+		msg = a.substring(j, k);
 		String p = a.substring(k+1, a.length()-1);
 		if (!p.isEmpty())
 		{
@@ -140,12 +142,12 @@ public class AutParser
 			case "!":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new Send(new Role(peer), new Op(op), payload);  // FIXME: how about MessageSiGnames? -- currently OK, treated as empty payload (cf. ModelAction)
+				return new Send(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSiGnames? -- currently OK, treated as empty payload (cf. ModelAction)
 			}
 			case "?":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new Receive(new Role(peer), new Op(op), payload);  // FIXME: how about messagesignames?)
+				return new Receive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about messagesignames?)
 			}
 			case "!!":
 			{
@@ -157,8 +159,14 @@ public class AutParser
 			}
 			default:
 			{
-				throw new RuntimeException("Shouldn't get in here: " + op);
+				throw new RuntimeException("Shouldn't get in here: " + msg);
 			}
 		}
+	}
+	
+	// Cf. ModelState.toAut, ModelAction.toStringWithMessageIdHack
+	private static MessageId<?> getMessageIdHack(String msg)
+	{
+		return (msg.startsWith("^")) ? new MessageSigName(msg.substring(1)) : new Op(msg);
 	}
 }

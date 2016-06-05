@@ -38,36 +38,84 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-global protocol Proto(role A, role B)
+//*
+explicit global protocol Proto1(role A, role B, role C)
 {
+	connect A to B;
 	choice at A
 	{
 		1() from A to B;
-		2() from A to B;
 	}
 	or
 	{
 		1() from A to B;
-		2() from A to B;
+		connect A to C;  // FIXME: minfsm bug
 	}
-	/*2() from A to B;
+}
+//*/
+
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A  // Testing minfsm
+	{
+		1() from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		2() from B to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	2() from A to B;
 	rec X
 	{
 	choice at A
 	{
 		1() from A to B;
+		1() from A to B;
 	}
 	or
 	{
-		2() from A to B;
-		continue X;
+		1() from A to B;  // Testing minfsm
+		1() from A to B;
 	}
-	//continue X;
-	//*/
+	continue X;
 }
+//*/
+
 
 /*
-explicit global protocol Proto(role A, role B, role C)
+global protocol Proto1(role A, role B)
+{
+	2() from A to B;
+	rec X
+	{
+	choice at A
+	{
+		1() from A to B;  // Testing minfsm
+	}
+	or
+	{
+		1() from A to B;
+		1() from A to B;
+	}
+	continue X;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
 	connect A to C;  // Bad
@@ -86,7 +134,7 @@ explicit global protocol Proto(role A, role B, role C)
 
 
 /*
-explicit global protocol Proto(role A, role B, role C)
+explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
 	connect A to C;
@@ -109,7 +157,7 @@ explicit global protocol Proto(role A, role B, role C)
 
 
 /*
-explicit global protocol Proto(role A, role B, role C)
+explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
 	connect A to C;
@@ -132,7 +180,7 @@ explicit global protocol Proto(role A, role B, role C)
 
 
 /*
-explicit global protocol Proto(role A, role B, role C)
+explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
 	choice at A
@@ -150,7 +198,7 @@ explicit global protocol Proto(role A, role B, role C)
 
 
 /*
-explicit global protocol Proto(role A, role B, role C)
+explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to C;
 	connect C to B;
