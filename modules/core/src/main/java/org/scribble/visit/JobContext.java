@@ -26,9 +26,9 @@ public class JobContext
 	// LProtocolName is the full local protocol name (module name is the prefix)
 	private final Map<LProtocolName, Module> projected = new HashMap<>();
 
+	private final Map<LProtocolName, EndpointGraph> graphs = new HashMap<>();
 	//private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
 	private final Map<GProtocolName, WFState> gmodels = new HashMap<>();
-	private final Map<LProtocolName, EndpointGraph> graphs = new HashMap<>();
 	
 	public JobContext(Map<ModuleName, Module> parsed, ModuleName main)
 	{
