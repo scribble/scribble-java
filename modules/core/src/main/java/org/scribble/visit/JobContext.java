@@ -201,18 +201,8 @@ public class JobContext
 		{
 			try
 			{
-				EndpointGraph tmp = getEndpointGraph(fullname);
-				//System.out.println("000:\n" + tmp);
-
-				String aut = tmp.init.toAut();
-				//System.out.println("111:\n" + aut);
-
-				aut = runAut(aut, fullname + ".aut");
-				//System.out.println("222:\n" + aut);
-
+				String aut = runAut(getEndpointGraph(fullname).init.toAut(), fullname + ".aut");
 				minimised = new AutParser().parse(aut);
-				//System.out.println("333:\n" + minimised);
-				
 				addMinimisedEndpointGraph(fullname, minimised);
 			}
 			catch (ScribbleException e)

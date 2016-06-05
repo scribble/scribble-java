@@ -6,6 +6,9 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +29,9 @@ public class AutParser
 	
 	public EndpointGraph parse(String aut)
 	{
-		Map<Integer, Map<String, Integer>> edges = new HashMap<>();
+		//Map<Integer, Map<String, Integer>> edges = new HashMap<>();
+		Map<Integer, List<String>> as = new HashMap<>();
+		Map<Integer, List<Integer>> succs = new HashMap<>();
 		int init = -1;
 		try
 		{
@@ -54,22 +59,32 @@ public class AutParser
 				int s = Integer.parseInt(read[0]);
 				String a = read[1].substring(1, read[1].length()-1);
 				int succ = Integer.parseInt(read[2]);
-				Map<String, Integer> tmp = edges.get(s);
-				if (tmp == null)
+				//Map<String, Integer> tmp = edges.get(s);
+				List<String> tmp1 = as.get(s);
+				List<Integer> tmp2 = succs.get(s);
+				if (tmp1 == null)
 				{
-					tmp = new HashMap<>();
-					edges.put(s, tmp);
+					//tmp = new HashMap<>();
+					//edges.put(s, tmp);
+					tmp1 = new LinkedList<>();
+					as.put(s, tmp1);
+					tmp2 = new LinkedList<>();
+					succs.put(s, tmp2);
 				}
-				tmp.put(a, succ);
+				//tmp.put(a, succ);
+				tmp1.add(a);
+				tmp2.add(succ);
 			}
 		}
 		catch (IOException e)
 		{
 			throw new RuntimeException(e);
 		}
-		Set<Integer> succs = edges.values().stream().flatMap((j) -> j.values().stream()).collect(Collectors.toSet());
+		//Set<Integer> allSuccs = edges.values().stream().flatMap((j) -> j.values().stream()).collect(Collectors.toSet());
+		Set<Integer> allSuccs = succs.values().stream().flatMap((j) -> j.stream()).collect(Collectors.toSet());
 		int term = -1;
-		Set<Integer> terms = succs.stream().filter((j) -> !edges.containsKey(j)).collect(Collectors.toSet());
+		//Set<Integer> terms = allSuccs.stream().filter((j) -> !edges.containsKey(j)).collect(Collectors.toSet());
+		Set<Integer> terms = allSuccs.stream().filter((j) -> !succs.containsKey(j)).collect(Collectors.toSet());
 		if (terms.size() > 0)
 		{
 			term = terms.iterator().next();
@@ -83,33 +98,44 @@ public class AutParser
 			map.put(term, builder.getExit());
 		}
 		map.put(init, builder.getEntry());
-		for (int i : edges.keySet())
+		//for (int i : edges.keySet())
+		for (int i : as.keySet())
 		{
 			if (i != init && i != term)
 			{
 				map.put(i, builder.newState(Collections.emptySet()));
 			}
 		}
-		for (int i : succs)
+		//for (int i : succs)
+		for (int i : succs.keySet())
 		{
 			if (!map.containsKey(i) && i != init && i != term)
 			{
 				map.put(i, builder.newState(Collections.emptySet()));
 			}
 		}
-		for (int i : edges.keySet())
+		//for (int i : edges.keySet())
+		for (int i : as.keySet())
 		{
 			EndpointState s = map.get(i);
-			Map<String, Integer> tmp = edges.get(i);
-			if (tmp != null)
+			//Map<String, Integer> tmp = edges.get(i);
+			List<String> tmp1 = as.get(i);
+			List<Integer> tmp2 = succs.get(i);
+			//if (tmp != null)
+			if (tmp1 != null)
 			{
-				for (String a : tmp.keySet())
+				//for (String a : tmp.keySet())
+				Iterator<Integer> is = tmp2.iterator();
+				for (String a : tmp1)
 				{
-					builder.addEdge(s, parseIOAction(a), map.get(tmp.get(a)));
+					int succ = is.next();
+					//builder.addEdge(s, parseIOAction(a), map.get(tmp.get(a)));
+					builder.addEdge(s, parseIOAction(a), map.get(succ));
 				}
 			}
 		}
-		return builder.finalise();
+		//return builder.finalise();
+		return new EndpointGraph(builder.getEntry(), builder.getExit());
 	}
 	
 	private static IOAction parseIOAction(String a)
@@ -128,6 +154,7 @@ public class AutParser
 			j++;
 		}
 		action = a.substring(i, j);
+	
 		peer = a.substring(0, i);
 		int k = a.indexOf("(");
 		msg = a.substring(j, k);
@@ -136,7 +163,6 @@ public class AutParser
 		{
 			pay = p.split(",");
 		}
-
 		switch (action)
 		{
 			case "!":

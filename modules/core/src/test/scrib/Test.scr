@@ -38,7 +38,7 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-//*
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -49,11 +49,10 @@ explicit global protocol Proto1(role A, role B, role C)
 	or
 	{
 		1() from A to B;
-		connect A to C;  // FIXME: minfsm bug
+		connect A to C;
 	}
 }
 //*/
-
 
 
 /*
@@ -94,7 +93,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-/*
+//*
 global protocol Proto1(role A, role B)
 {
 	2() from A to B;

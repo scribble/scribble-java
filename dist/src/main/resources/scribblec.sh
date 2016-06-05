@@ -13,8 +13,9 @@ DIR=`dirname "$0"`   # Non Cygwin..
 #BASEDIR=$(dirname $0)
 
 usage() {
-  echo scribblec:
+  echo Usage:  scribblec.sh [option]... [SCRFILE]
   cat <<EOF
+  
   -h  --help                                     Show this info and exit
   --verbose                                      Echo the java command
   -V                                             Scribble debug info
@@ -26,6 +27,9 @@ usage() {
   -fsm [simple global protocol name] [role]      Generate Endpoint FSM
   -fsmdot [simple global protocol name] [role] [output file]
           Draw Endpoint FSM as png (requires dot)
+  -minfsm                                        
+          Minimise EFSMs for dot and API generation (not global model checking)
+          (Requires ltsconvert)
 
   -model [simple global protocol name]           Generate global model
   -modeldot [simple global protocol name] [role] [output file]
