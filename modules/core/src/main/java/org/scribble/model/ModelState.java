@@ -1,10 +1,13 @@
 package org.scribble.model;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -199,21 +202,21 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	protected final String toDot(Set<ModelState<A, S, K>> seen)
 	{
 		seen.add(this);
-		String s = toNodeDot();
+		String dot = toNodeDot();
 		//for (Entry<A, S> e : this.edges.entrySet())
 		for (int i = 0; i < this.actions.size(); i ++)
 		{
 			/*A msg = e.getKey();
 			S p = e.getValue();*/
-			A msg = this.actions.get(i);
-			S p = this.succs.get(i);
-			s += "\n" + toEdgeDot(msg, p);
-			if (!seen.contains(p))
+			A a = this.actions.get(i);
+			S s = this.succs.get(i);
+			dot += "\n" + toEdgeDot(a, s);
+			if (!seen.contains(s))
 			{
-				s += "\n" + p.toDot(seen);
+				dot += "\n" + s.toDot(seen);
 			}
 		}
-		return s;
+		return dot;
 	}
 
 	protected final String toEdgeDot(String src, String dest, String lab)
@@ -254,7 +257,16 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	}
 
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
-			S findTerminalState(Set<S> visited, S curr)
+			S getTerminal(S start)
+	{
+		Set<S> terms = getAllReachable(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
+		if (terms.size() > 1)
+		{
+			throw new RuntimeException("Shouldn't get in here: " + terms);
+		}
+		return (terms.isEmpty()) ? null : terms.iterator().next();  // FIXME: return empty Set instead of null?
+	}
+			/*S findTerminalState(Set<S> visited, S curr)
 	{
 		if (!visited.contains(curr))
 		{
@@ -273,8 +285,58 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 			}
 		}
 		return null;
+	}*/
+
+	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+			Set<S> getAllReachable(S start)
+	{
+		Map<Integer, S> all = new HashMap<>();
+		Map<Integer, S> todo = new LinkedHashMap<>();
+		todo.put(start.id, start);
+		while (!todo.isEmpty())
+		{
+			Iterator<S> i = todo.values().iterator();
+			S next = i.next();
+			todo.remove(next.id);
+			for (S s : next.getSuccessors())
+			{
+				if (!all.containsKey(s.id))
+				{
+					all.put(s.id, s);
+					if (!todo.containsKey(s.id))
+					{
+						todo.put(s.id, s);
+					}
+				}
+			}
+		}
+		return new HashSet<>(all.values());
 	}
 	
+	public String toAut()
+	{
+		Set<S> all = getAllReachable((S) this);
+		String aut = "";
+		int edges = 0;
+		Set<Integer> seen = new HashSet<>();
+		for (S s : all)
+		{
+			if (seen.contains(s.id))
+			{
+				continue;
+			}
+			seen.add(s.id);
+			Iterator<A> as = s.getAllTakeable().iterator();
+			Iterator<S> ss = s.getSuccessors().iterator();
+			for (; as.hasNext(); edges++)
+			{
+				A a = as.next();
+				S succ = ss.next();
+				aut += "\n(" + s.id + ",\"" + a + "\"," + succ.id + ")";
+			}
+		}
+		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut + "\n";
+	}
 	
 	/*protected Map<ModelAction, ModelState> getEdges()
 	{

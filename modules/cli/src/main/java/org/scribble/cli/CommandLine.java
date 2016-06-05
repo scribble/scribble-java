@@ -1,11 +1,6 @@
 package org.scribble.cli;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -306,7 +301,7 @@ public class CommandLine //implements Runnable
 								{
 									System.out.println("\n[DEBUG] Writing to: " + tmp);
 								}
-								writeToFile(tmp, classes.get(path)); return null; 
+								ScribUtil.writeToFile(tmp, classes.get(path)); return null; 
 							}); };
 		}
 		else
@@ -326,28 +321,9 @@ public class CommandLine //implements Runnable
 		}
 		try
 		{
-			writeToFile(tmpName, dot);
-			
-			ProcessBuilder pb = new ProcessBuilder("dot", "-Tpng", "-o" + png, tmpName);
-			Process p = pb.start();
-			p.waitFor();
-
-			InputStream is = p.getInputStream(), eis = p.getErrorStream();
-			InputStreamReader isr = new InputStreamReader(is), eisr = new InputStreamReader(eis);
-			BufferedReader br = new BufferedReader(isr), ebr = new BufferedReader(eisr);
-			String line;
-			while ((line = br.readLine()) != null)
-			{
-				System.out.println(line);
-			}
-			while ((line = ebr.readLine()) != null)
-			{
-				System.out.println(line);
-			}
-		}
-		catch (IOException | InterruptedException x)
-		{
-			throw new ScribbleException(x);
+			ScribUtil.writeToFile(tmpName, dot);
+			String[] res = ScribUtil.runProcess("dot", "-Tpng", "-o" + png, tmpName);
+			System.out.print(!res[1].isEmpty() ? res[1] : res[0]);  // already "\n" terminated
 		}
 		finally
 		{
@@ -403,25 +379,6 @@ public class CommandLine //implements Runnable
 	private static List<Path> parseImportPaths(String paths)
 	{
 		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
-	}
-	
-	private static void writeToFile(String path, String text) throws ScribbleException
-	{
-		File file = new File(path);
-		File parent = file.getParentFile();
-		if (parent != null)
-		{
-			parent.mkdirs();
-		}
-		//try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8")))  // Doesn't create missing directories
-		try (FileWriter writer = new FileWriter(file))
-		{
-			writer.write(text);
-		}
-		catch (IOException e)
-		{
-			throw new ScribbleException(e);
-		}
 	}
 	
 	private static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname)

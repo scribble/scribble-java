@@ -1,13 +1,14 @@
 package org.scribble.codegen.java.endpointapi;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
+import org.scribble.main.ScribbleException;
+import org.scribble.model.local.AutParser;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
@@ -45,12 +46,29 @@ public class StateChannelApiGenerator extends ApiGenerator
 		super(job, fullname);
 		this.self = self;
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
-		this.init = job.getContext().getEndpointGraph(fullname, self).init;
+		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
+		EndpointState init = job.getContext().getEndpointGraph(fullname, self).init;
+		
+		System.out.println("111: " + lpn + "\n" + init.toAut());
+		try
+		{
+			String minimised = runAut(init.toAut(), lpn + ".aut");
+			System.out.println("222:\n" + minimised);
+
+			this.init = new AutParser().parse(minimised).init;
+			System.out.println("333:\n" + this.init.toDot());
+		}
+		catch (ScribbleException e)
+		{
+			throw new RuntimeException(e);
+		}
+		
 		generateClassNames(this.init);
 		//this.root = this.classNames.get(this.init);
 		constructClasses(this.init);
 
-		EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
+		//EndpointState term = EndpointState.findTerminalState(new HashSet<>(), this.init);
+		EndpointState term = EndpointState.getTerminal(this.init);
 		if (term != null)
 		{
 			ClassBuilder cb = new EndSocketGenerator(this, term).generateType();
