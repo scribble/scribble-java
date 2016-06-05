@@ -29,6 +29,7 @@ public class MainContext
 	public final boolean debug;
 	public final boolean useOldWF;
 	public final boolean noLiveness;
+	public final boolean minEfsm;
 	
 	public final ModuleName main;
 
@@ -45,12 +46,14 @@ public class MainContext
 	
 	// FIXME: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
 	//public MainContext(boolean jUnit, boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness)
-	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness)
+	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm)
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
 		this.useOldWF = useOldWF;
 		this.noLiveness = noLiveness;
+		this.minEfsm = minEfsm;
+
 		this.antlrParser = new AntlrParser();
 		this.scribParser = new ScribParser();
 		this.locator = locator; 

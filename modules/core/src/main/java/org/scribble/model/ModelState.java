@@ -101,7 +101,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeException("TODO non-deterministic state: " + this.actions);  // This getter checks for determinism -- affects e.g. API generation  
+			throw new RuntimeException("[TODO] Non-deterministic state: " + this.actions);  // This getter checks for determinism -- affects e.g. API generation  
 		}
 		return as;
 	}
@@ -315,7 +315,9 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	
 	public String toAut()
 	{
-		Set<S> all = getAllReachable((S) this);
+		Set<S> all = new HashSet<>();
+		all.add((S) this);  // FIXME
+		all.addAll(getAllReachable((S) this));
 		String aut = "";
 		int edges = 0;
 		Set<Integer> seen = new HashSet<>();

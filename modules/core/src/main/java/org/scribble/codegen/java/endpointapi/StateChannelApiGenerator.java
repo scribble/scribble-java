@@ -7,9 +7,6 @@ import java.util.Set;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.local.AutParser;
-import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
@@ -49,27 +46,8 @@ public class StateChannelApiGenerator extends ApiGenerator
 		this.self = self;
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
-
 		JobContext jc = job.getContext();
-		EndpointGraph minimised = jc.getMinimisedEndpointGraph(fullname, self);
-		if (minimised == null)
-		{
-			try
-			{
-				String aut = runAut(jc.getEndpointGraph(fullname, self).init.toAut(), lpn + ".aut");
-				//System.out.println("222:\n" + aut);
-
-				minimised = new AutParser().parse(aut);
-				//System.out.println("333:\n" + minimised);
-				
-				jc.addMinimisedEndpointGraph(lpn, minimised);
-			}
-			catch (ScribbleException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-		this.init = minimised.init;
+		this.init = job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
 			
 		generateClassNames(this.init);
 		//this.root = this.classNames.get(this.init);

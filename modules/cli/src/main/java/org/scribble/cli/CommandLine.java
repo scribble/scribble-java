@@ -46,7 +46,7 @@ public class CommandLine //implements Runnable
 		GLOBAL_MODEL_DOT,
 		OLD_WF,
 		NO_LIVENESS,
-		MIN_FSM,
+		MIN_EFSM,  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 		//PROJECTED_MODEL
 	}
 	
@@ -342,7 +342,8 @@ public class CommandLine //implements Runnable
 			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
 		}
 		//job.buildGraph(fullname, role);  // Already built (if valid) as part of global model checking
-		EndpointGraph fsm = jcontext.getEndpointGraph(fullname, role);
+		EndpointGraph fsm = this.args.containsKey(ArgFlag.MIN_EFSM)
+				? jcontext.getMinimisedEndpointGraph(fullname, role) : jcontext.getEndpointGraph(fullname, role);
 		if (fsm == null)
 		{
 			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
@@ -354,7 +355,7 @@ public class CommandLine //implements Runnable
 	{
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
 		//return new Job(mc.jUnit, mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
-		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
+		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm);
 	}
 
 	private MainContext newMainContext()
@@ -363,13 +364,15 @@ public class CommandLine //implements Runnable
 		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);
 		boolean useOldWF = this.args.containsKey(ArgFlag.OLD_WF);
 		boolean noLiveness = this.args.containsKey(ArgFlag.NO_LIVENESS);
+		boolean minEfsm = this.args.containsKey(ArgFlag.MIN_EFSM);
+
 		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN)[0]);
 		List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
 				? CommandLine.parseImportPaths(this.args.get(ArgFlag.PATH)[0])
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
-		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness);
+		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm);
 	}
 	
 	private static Path parseMainPath(String path)

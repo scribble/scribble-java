@@ -48,7 +48,7 @@ global protocol Proto(role A, role B)
 	or
 	{
 		1() from A to B;
-		3() from A to B;
+		2() from A to B;
 	}
 	/*2() from A to B;
 	rec X
