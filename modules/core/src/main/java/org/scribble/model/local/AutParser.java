@@ -140,7 +140,7 @@ public class AutParser
 			case "!":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new Send(new Role(peer), new Op(op), payload);  // FIXME: how about messagesignames?)
+				return new Send(new Role(peer), new Op(op), payload);  // FIXME: how about MessageSiGnames? -- currently OK, treated as empty payload (cf. ModelAction)
 			}
 			case "?":
 			{

@@ -46,6 +46,7 @@ public class CommandLine //implements Runnable
 		GLOBAL_MODEL_DOT,
 		OLD_WF,
 		NO_LIVENESS,
+		MIN_FSM,
 		//PROJECTED_MODEL
 	}
 	

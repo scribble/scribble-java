@@ -101,7 +101,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeException("FIXME: " + this.actions);
+			throw new RuntimeException("TODO non-deterministic state: " + this.actions);  // This getter checks for determinism -- affects e.g. API generation  
 		}
 		return as;
 	}
