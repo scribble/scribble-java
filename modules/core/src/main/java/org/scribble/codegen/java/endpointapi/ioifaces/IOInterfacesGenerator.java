@@ -24,14 +24,11 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
-import org.scribble.main.ScribbleException;
-import org.scribble.model.local.AutParser;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.Projector;
 
 // Cf. StateChannelApiGenerator
 // TODO: concrete state channel "to" casts for supertype i/f's (the info is there in the Java type hierachy though)
@@ -64,18 +61,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 
 		GProtocolName fullname = apigen.getGProtocolName();
 		Role self = getSelf();
-		EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
-
-		// FIXME: factor out with StateChannelApiGenerator
-		try
-		{
-			String minimised = runAut(init.toAut(), Projector.projectFullProtocolName(fullname, self) + ".aut");
-			init = new AutParser().parse(minimised).init;
-		}
-		catch (ScribbleException e)
-		{
-			throw new RuntimeException(e);
-		}
+		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
+		EndpointState init = this.job.getContext().getMinimisedEndpointGraph(fullname, self).init;  // StateChannelApiGenerator always run first
 
 		generateActionAndSuccessorInterfacesAndCollectPreActions(new HashSet<>(), init);
 		generateIOStateInterfacesFirstPass(new HashSet<>(), init);

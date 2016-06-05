@@ -30,6 +30,8 @@ public class JobContext
 	//private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
 	private final Map<GProtocolName, WFState> gmodels = new HashMap<>();
 	
+	private final Map<LProtocolName, EndpointGraph> minimised = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
+	
 	public JobContext(Map<ModuleName, Module> parsed, ModuleName main)
 	{
 		this.parsed = new HashMap<ModuleName, Module>(parsed);
@@ -175,6 +177,22 @@ public class JobContext
 	public EndpointGraph getEndpointGraph(LProtocolName fullname)
 	{
 		return this.graphs.get(fullname);
+	}
+	
+	public void addMinimisedEndpointGraph(LProtocolName fullname, EndpointGraph graph)
+	{
+		this.minimised.put(fullname, graph);
+	}
+	
+	public EndpointGraph getMinimisedEndpointGraph(GProtocolName fullname, Role role)
+	{
+		return getMinimisedEndpointGraph(Projector.projectFullProtocolName(fullname, role));
+	}
+
+  // Full projected name
+	public EndpointGraph getMinimisedEndpointGraph(LProtocolName fullname)
+	{
+		return this.minimised.get(fullname);
 	}
 
 	public Module getMainModule()

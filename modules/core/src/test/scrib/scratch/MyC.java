@@ -11,15 +11,13 @@ import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import scratch.Scratch1.Proto1.Proto1;
-import scratch.Scratch1.Proto1.channels.C.EndSocket;
 import scratch.Scratch1.Proto1.channels.C.Proto1_C_1;
 import scratch.Scratch1.Proto1.channels.C.Proto1_C_2;
 import scratch.Scratch1.Proto1.channels.C.ioifaces.Receive_C_S_3_Int;
 import scratch.Scratch1.Proto1.channels.C.ioifaces.Select_C_S_1;
-import scratch.Scratch1.Proto1.channels.C.ioifaces.Select_C_S_2_Int__S_4;
-import scratch.Scratch1.Proto1.channels.C.ioifaces.Select_C_S_2_Int__S_4__S_5;
-import scratch.Scratch1.Proto1.channels.C.ioifaces.Succ_Out_S_2_Int;
-import scratch.Scratch1.Proto1.channels.C.ioifaces.Succ_Out_S_4;
+import scratch.Scratch1.Proto1.channels.C.ioifaces.Select_C_S_2_Int__S_4a;
+import scratch.Scratch1.Proto1.channels.C.ioifaces.Select_C_S_4b;
+import scratch.Scratch1.Proto1.channels.C.ioifaces.Succ_Out_S_4a;
 import scratch.Scratch1.Proto1.roles.C;
 
 
@@ -55,17 +53,17 @@ public class MyC
 			}
 			s1.send(Proto1.S, Proto1._1).send(Proto1.S, Proto1._4).end();*/
 
-			foo(s2, 0).to(EndSocket.cast);
+			foo(s2, 0).to(Select_C_S_4b.cast).send(Proto1.S, Proto1._4b);
 		}
 	}
 
-	static Succ_Out_S_4 foo(Select_C_S_2_Int__S_4<?, ?> s, int i) throws ScribbleRuntimeException, IOException
+	static Succ_Out_S_4a foo(Select_C_S_2_Int__S_4a<?, ?> s, int i) throws ScribbleRuntimeException, IOException
 	{
 		return (i < 3)
 				? foo(
 						s.send(Proto1.S, Proto1._2, 123)
 							.to(Receive_C_S_3_Int.cast).async(Proto1.S, Proto1._3)
-							.to(Select_C_S_1.cast).send(Proto1.S, Proto1._1).to(Select_C_S_2_Int__S_4__S_5.cast), i + 1)  //Select_C_S_2_Int__S_4.cast
-				: s.send(Proto1.S, Proto1._4);
+							.to(Select_C_S_1.cast).send(Proto1.S, Proto1._1).to(Select_C_S_2_Int__S_4a.cast), i + 1)  //Select_C_S_2_Int__S_4.cast
+				: s.send(Proto1.S, Proto1._4a);
 	}
 }

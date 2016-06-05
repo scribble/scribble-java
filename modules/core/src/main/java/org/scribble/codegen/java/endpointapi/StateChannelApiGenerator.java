@@ -9,6 +9,7 @@ import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.AutParser;
+import org.scribble.model.local.EndpointGraph;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
@@ -17,6 +18,7 @@ import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.Job;
+import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 
 // TODO: "wildcard" unary async: op doesn't matter -- for branch-receive op "still needed" to cast to correct branch state
@@ -47,22 +49,28 @@ public class StateChannelApiGenerator extends ApiGenerator
 		this.self = self;
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
-		EndpointState init = job.getContext().getEndpointGraph(fullname, self).init;
-		
-		System.out.println("111: " + lpn + "\n" + init.toAut());
-		try
-		{
-			String minimised = runAut(init.toAut(), lpn + ".aut");
-			System.out.println("222:\n" + minimised);
 
-			this.init = new AutParser().parse(minimised).init;
-			System.out.println("333:\n" + this.init.toDot());
-		}
-		catch (ScribbleException e)
+		JobContext jc = job.getContext();
+		EndpointGraph minimised = jc.getMinimisedEndpointGraph(fullname, self);
+		if (minimised == null)
 		{
-			throw new RuntimeException(e);
+			try
+			{
+				String aut = runAut(jc.getEndpointGraph(fullname, self).init.toAut(), lpn + ".aut");
+				//System.out.println("222:\n" + aut);
+
+				minimised = new AutParser().parse(aut);
+				//System.out.println("333:\n" + minimised);
+				
+				jc.addMinimisedEndpointGraph(lpn, minimised);
+			}
+			catch (ScribbleException e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
-		
+		this.init = minimised.init;
+			
 		generateClassNames(this.init);
 		//this.root = this.classNames.get(this.init);
 		constructClasses(this.init);
