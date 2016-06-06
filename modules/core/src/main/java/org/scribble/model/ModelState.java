@@ -307,6 +307,18 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		}
 		return new HashSet<>(all.values());
 	}
+
+	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+			Set<A> getAllReachableActions(S start)
+	{
+		Set<S> all = getAllReachable(start);
+		Set<A> as = new HashSet<>();
+		for (S s : all)
+		{
+			as.addAll(s.getAllTakeable());
+		}
+		return as;
+	}
 	
 	public String toAut()
 	{
