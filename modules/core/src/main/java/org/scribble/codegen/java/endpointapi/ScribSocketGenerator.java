@@ -25,6 +25,8 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	public static final String CASESOCKET_CLASS = "org.scribble.net.scribsock.CaseSocket";
 	public static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
 
+	public static final String SCRIBSERVERSOCKET_CLASS = "org.scribble.net.scribsock.ScribServerSocket";
+
 	public static final String GENERATED_ENDSOCKET_NAME = "EndSocket";
 	
 	public static final String BUFF_VAL_FIELD = "val";

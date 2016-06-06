@@ -2,13 +2,11 @@ package org.scribble.codegen.java.endpointapi;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -136,7 +134,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 			}
 			case ACCEPT:
 			{
-				throw new RuntimeException("TODO: " + curr.toLongString());
+				return new AcceptSocketGenerator(this, curr).generateType();
 			}
 			case UNARY_INPUT:
 			{

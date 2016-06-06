@@ -161,7 +161,7 @@ public class Job
 		}
 		catch (RuntimeScribbleException e)
 		{
-			System.err.println("[Warning] Skipping IO Interface generation for protocol featuring explicit connect/disconnect: " + fullname);
+			System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring explicit connect/disconnect: " + fullname);
 		}
 		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
 		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?

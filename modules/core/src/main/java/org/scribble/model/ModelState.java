@@ -282,6 +282,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		return null;
 	}*/
 
+	// Includes start
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<S> getAllReachable(S start)
 	{
@@ -293,15 +294,16 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 			Iterator<S> i = todo.values().iterator();
 			S next = i.next();
 			todo.remove(next.id);
+			if (all.containsKey(next.id))
+			{
+				continue;
+			}
+			all.put(next.id, next);
 			for (S s : next.getSuccessors())
 			{
-				if (!all.containsKey(s.id))
+				if (!all.containsKey(s.id) && !todo.containsKey(s.id))
 				{
-					all.put(s.id, s);
-					if (!todo.containsKey(s.id))
-					{
-						todo.put(s.id, s);
-					}
+					todo.put(s.id, s);
 				}
 			}
 		}
