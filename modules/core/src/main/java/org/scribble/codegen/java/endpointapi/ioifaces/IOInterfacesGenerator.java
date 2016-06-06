@@ -24,6 +24,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
@@ -54,7 +55,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 	//private final Map<EndpointState, Set<InterfaceBuilder>> branchSuccs = new HashMap<>();
 	private final Map<String, List<IOAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
 
-	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes)
+	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes) throws RuntimeScribbleException
 	{
 		super(apigen.getJob(), apigen.getGProtocolName());
 		this.apigen = apigen;
@@ -65,6 +66,11 @@ public class IOInterfacesGenerator extends ApiGenerator
 		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
 		JobContext jc = this.job.getContext();
 		EndpointState init = job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
+		
+		if (EndpointState.getAllReachableActions(init).stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
+		{
+			throw new RuntimeScribbleException("[TODO] I/O Interface generation not supported for connect/disconnect.");
+		}
 
 		generateActionAndSuccessorInterfacesAndCollectPreActions(new HashSet<>(), init);
 		generateIOStateInterfacesFirstPass(new HashSet<>(), init);
@@ -76,8 +82,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 		if (term != null)
 		{
 			endsock = (ClassBuilder) this.apigen.getType(ScribSocketGenerator.GENERATED_ENDSOCKET_NAME);
-			endsock.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
-				
 			for (InterfaceBuilder ib : this.preds.get(term))
 			{
 				endsock.addInterfaces(ib.getName());
@@ -88,6 +92,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 					ib.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, self) + ".EndSocket");
 				}
 			}
+			endsock.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
 		}
 		
 		generateIOStateInterfacesSecondPass(new HashSet<>(), init);
@@ -120,6 +125,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 					{
 						MethodBuilder mb = addEndSocketToCastMethod(endsock, cast.getReturn(), "throw new RuntimeScribbleException(\"Invalid cast of EndSocket: \" + cast);");
 						if (mb != null)
+
 						{
 							mb.addModifiers(JavaBuilder.PUBLIC);
 							mb.addAnnotations("@Override");
@@ -169,6 +175,11 @@ public class IOInterfacesGenerator extends ApiGenerator
 		Set<IOAction> as = s.getTakeable();
 		for (IOAction a : as.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
+			if (!a.isSend() && !a.isReceive())  // TODO (connect/disconnect)
+			{
+				throw new RuntimeException("TODO: " + a);
+			}
+
 			if (!this.actions.containsKey(a))
 			{
 				this.actions.put(a, new ActionInterfaceGenerator(this.apigen, s, a).generateType());
@@ -229,7 +240,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			IOStateInterfaceGenerator ifgen = null;
 			switch (s.getStateKind())
 			{
-				case OUTPUT:
+				case OUTPUT:  // Send, connect, disconnect
 					ifgen = new SelectInterfaceGenerator(this.apigen, this.actions, s);
 					break;
 				case UNARY_INPUT:
@@ -266,7 +277,6 @@ public class IOInterfacesGenerator extends ApiGenerator
 		if (succifs != null)
 		{
 			InterfaceBuilder iostate = this.iostates.get(IOStateInterfaceGenerator.getIOStateInterfaceName(getSelf(), s));
-
 			if (this.SUBTYPES) // HACK moved here from addSupertypeInterfaces to ensure duplicate inherited to's get overridden
 			{
 				// Generate Succ I/f supertype "to" cast methods for supertype to's
@@ -421,13 +431,14 @@ public class IOInterfacesGenerator extends ApiGenerator
 		Role self = getSelf();
 		String scname = this.apigen.getSocketClassName(s);
 		String ioname = IOStateInterfaceGenerator.getIOStateInterfaceName(self, s);
-		TypeBuilder tb = this.apigen.getType(scname);
 		
+		TypeBuilder tb = this.apigen.getType(scname);
+
 		// Add I/O State Interface to each ScribSocket (except CaseSocket)
 		// Do here (not inside I/O State Interface generators) because multiple states can share the same I/O State Interface
 		tb.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
 		tb.addInterfaces(ioname + getConcreteSuccessorParameters(s));
-		
+	
 		InterfaceBuilder iostate = this.iostates.get(ioname);
 		MethodBuilder mb = addToCastMethod(iostate, scname);
 		if (mb != null)
@@ -920,6 +931,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 			Set<InterfaceBuilder> tmp = new HashSet<>();
 			for (IOAction a : this.preActions.get(s))  // sort?
 			{
+				if (!a.isSend() && !a.isReceive())  // TODO (connect/disconnect)
+				{
+					throw new RuntimeException("TODO: " + a);
+				}
 				tmp.add(this.succs.get(a));
 			}
 			this.preds.put(s, tmp);

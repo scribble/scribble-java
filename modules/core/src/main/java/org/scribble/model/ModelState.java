@@ -101,7 +101,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeException("[TODO] Non-deterministic state: " + this.actions);  // This getter checks for determinism -- affects e.g. API generation  
+			throw new RuntimeException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minfsm)");  // This getter checks for determinism -- affects e.g. API generation  
 		}
 		return as;
 	}
@@ -171,22 +171,17 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		return this.id == ((ModelState<?, ?, ?>) o).id;  // Good to use id, due to edge mutability
 	}
 	
+	public String toLongString()
+	{
+		String s = "\"" + this.id + "\":[";
+		Iterator<S> ss = this.succs.iterator();
+		s += this.actions.stream().map((a) -> a + "=\"" + ss.next().id + "\"").collect(Collectors.joining(", "));
+		return s + "]";
+	}
+
 	@Override
 	public String toString()
 	{
-		/*String s = "\"" + this.id + "\":[";
-		if (!this.edges.isEmpty())
-		{
-			Iterator<Entry<A, S>> es = this.edges.entrySet().iterator();
-			Entry<A, S> first = es.next();
-			s += first.getKey() + "=\"" + first.getValue().id + "\"";
-			while (es.hasNext())
-			{
-				Entry<A, S> e = es.next();
-				s += ", " + e.getKey() + "=\"" + e.getValue().id + "\"";
-			}
-		}
-		return s + "]";*/
 		return Integer.toString(this.id);  // FIXME
 	}
 	
@@ -287,6 +282,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		return null;
 	}*/
 
+	// Includes start
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<S> getAllReachable(S start)
 	{
@@ -298,19 +294,32 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 			Iterator<S> i = todo.values().iterator();
 			S next = i.next();
 			todo.remove(next.id);
+			if (all.containsKey(next.id))
+			{
+				continue;
+			}
+			all.put(next.id, next);
 			for (S s : next.getSuccessors())
 			{
-				if (!all.containsKey(s.id))
+				if (!all.containsKey(s.id) && !todo.containsKey(s.id))
 				{
-					all.put(s.id, s);
-					if (!todo.containsKey(s.id))
-					{
-						todo.put(s.id, s);
-					}
+					todo.put(s.id, s);
 				}
 			}
 		}
 		return new HashSet<>(all.values());
+	}
+
+	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+			Set<A> getAllReachableActions(S start)
+	{
+		Set<S> all = getAllReachable(start);
+		Set<A> as = new HashSet<>();
+		for (S s : all)
+		{
+			as.addAll(s.getAllTakeable());
+		}
+		return as;
 	}
 	
 	public String toAut()

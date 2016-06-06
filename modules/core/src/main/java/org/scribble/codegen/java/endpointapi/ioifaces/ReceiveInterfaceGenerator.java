@@ -21,6 +21,17 @@ public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	@Override
+	public InterfaceBuilder generateType()
+	{
+		if (this.curr.getAllTakeable().stream().anyMatch((a) -> !a.isReceive())) // TODO (connect/disconnect)
+		{
+			//return null;
+			throw new RuntimeException("TODO: " + this.curr);
+		}
+		return super.generateType();
+	}
+
+	@Override
 	protected void constructInterface()
 	{
 		super.constructInterface();

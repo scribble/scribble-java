@@ -87,10 +87,13 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 		int i = 1;
 		for (IOAction a : this.curr.getTakeable().stream().sorted(IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
-			String actif = this.actions.get(a).getName();
-			this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
-			this.ib.addInterfaces(actif + "<__Succ" + i + ">");
-			i++;
+			if (a.isSend() || a.isReceive())  // HACK FIXME
+			{
+				String actif = this.actions.get(a).getName();
+				this.ib.addParameters("__Succ" + i + " extends " + SuccessorInterfaceGenerator.getSuccessorInterfaceName(a));
+				this.ib.addInterfaces(actif + "<__Succ" + i + ">");
+				i++;
+			}
 		}
 	}
 

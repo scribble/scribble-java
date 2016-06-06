@@ -17,11 +17,15 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	public static final String BUF_CLASS = "org.scribble.net.Buf";
 	public static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
 
-	public static final String SENDSOCKET_CLASS = "org.scribble.net.scribsock.SendSocket";
+	//public static final String CONNECTSOCKET_CLASS = "org.scribble.net.scribsock.ConnectSocket";
+	public static final String ACCEPTSOCKET_CLASS = "org.scribble.net.scribsock.AcceptSocket";
+	public static final String OUTPUTSOCKET_CLASS = "org.scribble.net.scribsock.OutputSocket";
 	public static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
 	public static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";
 	public static final String CASESOCKET_CLASS = "org.scribble.net.scribsock.CaseSocket";
 	public static final String ENDSOCKET_CLASS = "org.scribble.net.scribsock.EndSocket";
+
+	public static final String SCRIBSERVERSOCKET_CLASS = "org.scribble.net.scribsock.ScribServerSocket";
 
 	public static final String GENERATED_ENDSOCKET_NAME = "EndSocket";
 	

@@ -1,11 +1,17 @@
 package org.scribble.net.scribsock;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
+
+import org.scribble.main.ScribbleRuntimeException;
+import org.scribble.net.session.BinaryChannelEndpoint;
 import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Role;
 
-@Deprecated  // For now
-public abstract class ConnectSocket<S extends Session, R extends Role> extends ScribSocket<S, R>
+@Deprecated
+public abstract class ConnectSocket<S extends Session, R extends Role> extends LinearSocket<S, R>
 {
 	protected ConnectSocket(SessionEndpoint<S, R> ep)
 	{
@@ -18,4 +24,10 @@ public abstract class ConnectSocket<S extends Session, R extends Role> extends S
 		Socket s = new Socket(host, port);
 		this.ep.register(role, new SocketWrapper(s));
 	}*/
+
+	protected void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	{
+		use();
+		this.se.connect(role, cons, host, port);
+	}
 }

@@ -12,6 +12,7 @@ import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.endpointapi.ioifaces.IOInterfacesGenerator;
 import org.scribble.del.local.LProtocolDeclDel;
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -153,11 +154,22 @@ public class Job
 		}*/
 		debugPrintPass("Running " + StateChannelApiGenerator.class + " for " + fullname + "@" + self);
 		StateChannelApiGenerator apigen = new StateChannelApiGenerator(this, fullname, self);
-		IOInterfacesGenerator iogen = new IOInterfacesGenerator(apigen, subtypes);
+		IOInterfacesGenerator iogen = null;
+		try
+		{
+			iogen = new IOInterfacesGenerator(apigen, subtypes);
+		}
+		catch (RuntimeScribbleException e)
+		{
+			System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring explicit connect/disconnect: " + fullname);
+		}
 		// Construct the Generators first, to build all the types -- then call generate to "compile" all Builders to text (further building changes will not be output)
 		Map<String, String> api = new HashMap<>(); // filepath -> class source  // Store results?
 		api.putAll(apigen.generateApi());
-		api.putAll(iogen.generateApi());
+		if (iogen != null)
+		{
+			api.putAll(iogen.generateApi());
+		}
 		return api;
 	}
 	

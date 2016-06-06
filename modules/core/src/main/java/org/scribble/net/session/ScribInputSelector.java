@@ -92,6 +92,11 @@ public class ScribInputSelector extends Thread
 		return c.register(this.sel, SelectionKey.OP_READ);
 	}
 	
+	protected void deregister(SelectionKey key)  // FIXME: refactor to internalise key inside here?
+	{
+		key.cancel();
+	}
+	
 	// process all keys and keep doing until all pending futures have completed -- i.e. all reads done up to this send state (currently wrap assumed to in send state only)
 	protected synchronized void clear()
 	{

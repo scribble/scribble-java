@@ -1,4 +1,4 @@
-package scratch;
+package scratch.scratch1;
 
 import java.io.IOException;
 
@@ -9,19 +9,19 @@ import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
-import scratch.Scratch1.Proto1.Proto1;
-import scratch.Scratch1.Proto1.channels.S.EndSocket;
-import scratch.Scratch1.Proto1.channels.S.Proto1_S_1;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Branch_S_C_2_Int__C_4a;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4a;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Receive_S_C_1;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Receive_S_C_4b;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Select_S_C_3_Int;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_2_Int;
-import scratch.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_4a;
-import scratch.Scratch1.Proto1.ops._2;
-import scratch.Scratch1.Proto1.ops._4a;
-import scratch.Scratch1.Proto1.roles.S;
+import scratch.scratch1.Scratch1.Proto1.Proto1;
+import scratch.scratch1.Scratch1.Proto1.channels.S.EndSocket;
+import scratch.scratch1.Scratch1.Proto1.channels.S.Proto1_S_1;
+import scratch.scratch1.Scratch1.Proto1.channels.S.ioifaces.Branch_S_C_2_Int__C_4a;
+import scratch.scratch1.Scratch1.Proto1.channels.S.ioifaces.Handle_S_C_2_Int__C_4a;
+import scratch.scratch1.Scratch1.Proto1.channels.S.ioifaces.Receive_S_C_1;
+import scratch.scratch1.Scratch1.Proto1.channels.S.ioifaces.Receive_S_C_4b;
+import scratch.scratch1.Scratch1.Proto1.channels.S.ioifaces.Select_S_C_3_Int;
+import scratch.scratch1.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_2_Int;
+import scratch.scratch1.Scratch1.Proto1.channels.S.ioifaces.Succ_In_C_4a;
+import scratch.scratch1.Scratch1.Proto1.ops._2;
+import scratch.scratch1.Scratch1.Proto1.ops._4a;
+import scratch.scratch1.Scratch1.Proto1.roles.S;
 
 public class MyS
 {

@@ -84,7 +84,11 @@ public class SessionApiGenerator extends ApiGenerator
 		this.cb.addImports(/*"java.io.IOException", */"java.util.Arrays", "java.util.Collections", "java.util.LinkedList", "java.util.List");
 		//this.cb.addImports("org.scribble.main.ScribbleRuntimeException", "org.scribble.net.session.SessionEndpoint", "org.scribble.net.ScribMessageFormatter");
 		this.cb.addImports("org.scribble.sesstype.name.Role");
-		this.cb.addImports(getRolesPackageName(this.gpn) + ".*", getOpsPackageName(this.gpn) + ".*");
+		this.cb.addImports(getRolesPackageName(this.gpn) + ".*");
+		if (!this.mids.isEmpty())
+		{
+			this.cb.addImports(getOpsPackageName(this.gpn) + ".*");
+		}
 		this.cb.addModifiers(JavaBuilder.PUBLIC, JavaBuilder.FINAL);
 		this.cb.setSuperClass(SessionApiGenerator.SESSION_CLASS);
 		

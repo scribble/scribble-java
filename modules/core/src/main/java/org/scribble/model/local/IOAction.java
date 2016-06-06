@@ -26,11 +26,6 @@ public abstract class IOAction extends ModelAction<Local>
 	//public abstract GModelAction toGlobal(Role self);
 	public abstract GIOAction toGlobal(Role self);
 
-	public boolean isError()
-	{
-		return true;
-	}
-
 	public boolean isSend()
 	{
 		return false;

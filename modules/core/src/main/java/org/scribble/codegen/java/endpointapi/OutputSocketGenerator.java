@@ -16,9 +16,9 @@ import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.MessageSigName;
 import org.scribble.sesstype.name.PayloadType;
 
-public class SendSocketGenerator extends ScribSocketGenerator
+public class OutputSocketGenerator extends ScribSocketGenerator
 {
-	public SendSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
+	public OutputSocketGenerator(StateChannelApiGenerator apigen, EndpointState curr)
 	{
 		super(apigen, curr);
 	}
@@ -26,7 +26,7 @@ public class SendSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected String getSuperClassType()
 	{
-		return SENDSOCKET_CLASS + "<" + getSessionClassName() + ", " + getSelfClassName() + ">";
+		return OUTPUTSOCKET_CLASS + "<" + getSessionClassName() + ", " + getSelfClassName() + ">";
 	}
 
 	@Override
@@ -43,37 +43,70 @@ public class SendSocketGenerator extends ScribSocketGenerator
 	{
 		final String ROLE_PARAM = "role";
 
-		for (IOAction a : curr.getTakeable())  // Scribble ensures all a are input or all are output
+		// Mixed sends and connects
+		boolean hasConnect = false;
+		for (IOAction a : curr.getTakeable())  // (Scribble ensures all "a" are input or all are output)
 		{
 			EndpointState succ = curr.take(a);
 			
 			MethodBuilder mb = this.cb.newMethod();
-			setSendHeaderWithoutReturnType(apigen, a, mb);
+			if (a.isSend())
+			{
+				setSendHeaderWithoutReturnType(apigen, a, mb);
+			}
+			else if (a.isConnect())
+			{
+				hasConnect = true;
+				setConnectHeaderWithoutReturnType(apigen, a, mb);
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
+			}
+
 			setNextSocketReturnType(this.apigen, mb, succ);
 			if (a.mid.isOp())
 			{
 				this.cb.addImports(getOpsPackageName() + ".*");  // FIXME: repeated
 			}
 
-			if (a.mid.isOp())
-			{	
-				List<String> args = getSendPayloadArgs(a);
-				String body = JavaBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", " + getSessionApiOpConstant(a.mid);
-				if (!a.payload.isEmpty())
-				{
-					body += ", " + args.stream().collect(Collectors.joining(", "));
+			if (a.isSend())
+			{
+				if (a.mid.isOp())
+				{	
+					List<String> args = getSendPayloadArgs(a);
+					String body = JavaBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", " + getSessionApiOpConstant(a.mid);
+					if (!a.payload.isEmpty())
+					{
+						body += ", " + args.stream().collect(Collectors.joining(", "));
+					}
+					body += ");\n";
+					mb.addBodyLine(body);
 				}
-				body += ");\n";
-				mb.addBodyLine(body);
-			}
-			else //if (a.mid.isMessageSigName())
-			{	
-				final String MESSAGE_PARAM = "m";  // FIXME: factor out
+				else //if (a.mid.isMessageSigName())
+				{	
+					final String MESSAGE_PARAM = "m";  // FIXME: factor out
 
-				mb.addBodyLine(JavaBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", " + MESSAGE_PARAM + ");");
+					mb.addBodyLine(JavaBuilder.SUPER + ".writeScribMessage(" + ROLE_PARAM + ", " + MESSAGE_PARAM + ");");
+				}
+			}
+			else if (a.isConnect())
+			{
+				//throw new RuntimeException("Shouldn't get in here: " + a);
+				mb.addBodyLine(JavaBuilder.SUPER + ".connect(" + ROLE_PARAM + ", cons, host, port);\n");
+			}
+			else
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
 			}
 
 			addReturnNextSocket(mb, succ);
+		}
+
+		if (hasConnect)
+		{
+			this.cb.addImports("java.util.concurrent.Callable");
+			this.cb.addImports("org.scribble.net.session.BinaryChannelEndpoint");
 		}
 	}
 
@@ -102,6 +135,19 @@ public class SendSocketGenerator extends ScribSocketGenerator
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());  // FIXME: might not belong to main module
 			addSendMessageSigNameParams(mb, msd);
 		}
+	}
+
+	public static void setConnectHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	{
+		final String ROLE_PARAM = "role";
+
+		mb.setName("connect");
+		mb.addModifiers(JavaBuilder.PUBLIC);
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM);  // More params added below
+		mb.addParameters("Callable<? extends BinaryChannelEndpoint> cons");
+		mb.addParameters("String host");
+		mb.addParameters("int port");
 	}
 
 	protected static void addSendOpParams(StateChannelApiGenerator apigen, MethodBuilder mb, Module main, IOAction a)

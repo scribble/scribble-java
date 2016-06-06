@@ -13,4 +13,15 @@ public class SelectInterfaceGenerator extends IOStateInterfaceGenerator
 	{
 		super(apigen, actions, curr);
 	}
+	
+	@Override
+	public InterfaceBuilder generateType()
+	{
+		if (this.curr.getAllTakeable().stream().anyMatch((a) -> !a.isSend())) // TODO (connect/disconnect)
+		{
+			//return null;
+			throw new RuntimeException("TODO: " + this.curr);
+		}
+		return super.generateType();
+	}
 }

@@ -81,8 +81,9 @@ public class CommandLine //implements Runnable
 			{
 				fail = x;
 			}
-			try
+			try 
 			{
+				// Following must be ordered appropriately
 				if (this.args.containsKey(ArgFlag.PROJECT))
 				{
 					outputProjections(job);
@@ -94,18 +95,6 @@ public class CommandLine //implements Runnable
 				if (this.args.containsKey(ArgFlag.FSM_DOT))
 				{
 					drawGraph(job);
-				}
-				if (this.args.containsKey(ArgFlag.SESS_API))
-				{
-					outputSessionApi(job);
-				}
-				if (this.args.containsKey(ArgFlag.SCHAN_API))
-				{
-					outputStateChannelApi(job);
-				}
-				if (this.args.containsKey(ArgFlag.EP_API))
-				{
-					outputEndpointApi(job);
 				}
 				if (this.args.containsKey(ArgFlag.GLOBAL_MODEL) || this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT))
 				{
@@ -137,6 +126,19 @@ public class CommandLine //implements Runnable
 			if (fail != null)
 			{
 				throw fail;
+			}
+
+			if (this.args.containsKey(ArgFlag.SESS_API))
+			{
+				outputSessionApi(job);
+			}
+			if (this.args.containsKey(ArgFlag.SCHAN_API))
+			{
+				outputStateChannelApi(job);
+			}
+			if (this.args.containsKey(ArgFlag.EP_API))
+			{
+				outputEndpointApi(job);
 			}
 		}
 		catch (ScribbleException e)  // Wouldn't need to do this if not Runnable (so maybe change)
