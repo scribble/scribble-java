@@ -37,6 +37,12 @@ public abstract class OutputSocket<S extends Session, R extends Role> extends Li
 		use();
 		this.se.connect(role, cons, host, port);
 	}
+
+	protected void disconnect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	{
+		use();
+		this.se.disconnect(role);
+	}
 	
 	//public void wrap(Callable<? extends BinaryChannelEndpoint> cons, Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 

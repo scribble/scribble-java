@@ -127,8 +127,8 @@ public class StateChannelApiGenerator extends ApiGenerator
 		{
 			case OUTPUT:
 			{
-				Set<IOAction> as = curr.getTakeable();
-				//if (as.stream().allMatch((a) -> a.isSend()))
+				/*Set<IOAction> as = curr.getTakeable();
+				if (as.stream().allMatch((a) -> a.isSend()))*/
 				{
 					return new OutputSocketGenerator(this, curr).generateType();
 				}

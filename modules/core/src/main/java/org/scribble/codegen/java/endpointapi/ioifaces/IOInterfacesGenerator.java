@@ -76,7 +76,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 		if (term != null)
 		{
 			endsock = (ClassBuilder) this.apigen.getType(ScribSocketGenerator.GENERATED_ENDSOCKET_NAME);
-			endsock.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
+			if (endsock.getInterfaces().stream().anyMatch((foo) -> foo.startsWith("Succ_")))  // HACK (I/O i/f's, including successor i/f's, not currently generated for connect/disconnect)
+			{
+				endsock.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
+			}
 				
 			for (InterfaceBuilder ib : this.preds.get(term))
 			{
@@ -120,6 +123,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 					{
 						MethodBuilder mb = addEndSocketToCastMethod(endsock, cast.getReturn(), "throw new RuntimeScribbleException(\"Invalid cast of EndSocket: \" + cast);");
 						if (mb != null)
+
 						{
 							mb.addModifiers(JavaBuilder.PUBLIC);
 							mb.addAnnotations("@Override");
@@ -134,11 +138,14 @@ public class IOInterfacesGenerator extends ApiGenerator
 			{
 				ib.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, self) + ".EndSocket");
 			}*/
-			MethodBuilder mb3 = addEndSocketToCastMethod(endsock, "EndSocket", "return (EndSocket) this;");
-			if (mb3 != null)
+			if (endsock.getInterfaces().stream().anyMatch((foo) -> foo.startsWith("Succ_")))  // HACK (I/O i/f's, including successor i/f's, not currently generated for connect/disconnect)
 			{
-				mb3.addModifiers(JavaBuilder.PUBLIC);
-				mb3.addAnnotations("@Override");
+				MethodBuilder mb3 = addEndSocketToCastMethod(endsock, "EndSocket", "return (EndSocket) this;");
+				if (mb3 != null)
+				{
+					mb3.addModifiers(JavaBuilder.PUBLIC);
+					mb3.addAnnotations("@Override");
+				}
 			}
 		}
 	}
@@ -169,7 +176,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		Set<IOAction> as = s.getTakeable();
 		for (IOAction a : as.stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 		{
-			if (!this.actions.containsKey(a))
+			if (!this.actions.containsKey(a) && (a.isSend() || a.isReceive()))  // HACK (connect/disconnect)
 			{
 				this.actions.put(a, new ActionInterfaceGenerator(this.apigen, s, a).generateType());
 				this.succs.put(a, new SuccessorInterfaceGenerator(this.apigen, s, a).generateType());
@@ -229,7 +236,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 			IOStateInterfaceGenerator ifgen = null;
 			switch (s.getStateKind())
 			{
-				case OUTPUT:
+				case OUTPUT:  // Send, connect, disconnect
 					ifgen = new SelectInterfaceGenerator(this.apigen, this.actions, s);
 					break;
 				case UNARY_INPUT:
@@ -244,7 +251,11 @@ public class IOInterfacesGenerator extends ApiGenerator
 				default:
 					throw new RuntimeException("TODO:");
 			}
-			this.iostates.put(key, ifgen.generateType());
+			InterfaceBuilder generated = ifgen.generateType();
+			if (generated != null)  // HACK FIXME  (connect/disconnect)
+			{
+				this.iostates.put(key, generated);
+			}
 		}
 		
 		visited.add(s);
@@ -421,37 +432,68 @@ public class IOInterfacesGenerator extends ApiGenerator
 		Role self = getSelf();
 		String scname = this.apigen.getSocketClassName(s);
 		String ioname = IOStateInterfaceGenerator.getIOStateInterfaceName(self, s);
-		TypeBuilder tb = this.apigen.getType(scname);
 		
-		// Add I/O State Interface to each ScribSocket (except CaseSocket)
-		// Do here (not inside I/O State Interface generators) because multiple states can share the same I/O State Interface
-		tb.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
-		tb.addInterfaces(ioname + getConcreteSuccessorParameters(s));
-		
-		InterfaceBuilder iostate = this.iostates.get(ioname);
-		MethodBuilder mb = addToCastMethod(iostate, scname);
-		if (mb != null)
+		if (this.iostates.containsKey(ioname))  // HACK (connect/disconnect)
 		{
-			iostate.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, self) + ".*");
-		}
+			TypeBuilder tb = this.apigen.getType(scname);
 
-		if (s.getStateKind() == Kind.POLY_INPUT)
-		{
-			// Add CaseInterface to each CaseSocket
-			TypeBuilder cases = this.apigen.getType(CaseSocketGenerator.getCaseSocketName(this.apigen.getSocketClassName(s)));
-			cases.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
-			cases.addInterfaces(CaseInterfaceGenerator.getCasesInterfaceName(self, s) + getConcreteSuccessorParameters(s));
-			
-			// Add HandleInterface to each HandlerInterface
-			InterfaceBuilder handler = (InterfaceBuilder) this.apigen.getType(HandlerInterfaceGenerator.getHandlerInterfaceName(this.apigen.getSocketClassName(s)));
-			handler.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
-			// FIXME: factor out with HandleInterfaceGenerator and getConcreteSuccessorParameters
-			String tmp = "";
-			boolean first = true;
-			/*for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+			// Add I/O State Interface to each ScribSocket (except CaseSocket)
+			// Do here (not inside I/O State Interface generators) because multiple states can share the same I/O State Interface
+			tb.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
+			tb.addInterfaces(ioname + getConcreteSuccessorParameters(s));
+		
+			InterfaceBuilder iostate = this.iostates.get(ioname);
+			MethodBuilder mb = addToCastMethod(iostate, scname);
+			if (mb != null)
 			{
-				EndpointState succ = s.accept(a);
-				for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+				iostate.addImports(SessionApiGenerator.getStateChannelPackageName(this.gpn, self) + ".*");
+			}
+
+			if (s.getStateKind() == Kind.POLY_INPUT)
+			{
+				// Add CaseInterface to each CaseSocket
+				TypeBuilder cases = this.apigen.getType(CaseSocketGenerator.getCaseSocketName(this.apigen.getSocketClassName(s)));
+				cases.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
+				cases.addInterfaces(CaseInterfaceGenerator.getCasesInterfaceName(self, s) + getConcreteSuccessorParameters(s));
+				
+				// Add HandleInterface to each HandlerInterface
+				InterfaceBuilder handler = (InterfaceBuilder) this.apigen.getType(HandlerInterfaceGenerator.getHandlerInterfaceName(this.apigen.getSocketClassName(s)));
+				handler.addImports(getIOInterfacePackageName(this.gpn, self) + ".*");
+				// FIXME: factor out with HandleInterfaceGenerator and getConcreteSuccessorParameters
+				String tmp = "";
+				boolean first = true;
+				/*for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+				{
+					EndpointState succ = s.accept(a);
+					for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+					{
+						if (first)
+						{
+							first = false;
+						}
+						else
+						{
+							tmp += ", ";
+						}
+						tmp += this.getSuccName.apply(succ.accept(b));
+					}
+				}*/
+				String handle = HandleInterfaceGenerator.getHandleInterfaceName(self, s);
+				/*List<IOAction> foo1 = new LinkedList<>();
+				List<EndpointState> bar1 = new LinkedList<>();
+				for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+				{
+					EndpointState succ = s.accept(a);
+					for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+					{
+						foo1.add(b);
+						bar1.add(succ);
+					}
+				}
+				System.out.println("BBB: " + handle);*/
+				//for (IOAction a : this.branchSuccs.get(handle))
+				// FIXME: move back into HandlerInterfaceGenerator
+				for (IOAction a : s.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 				{
 					if (first)
 					{
@@ -461,131 +503,104 @@ public class IOInterfacesGenerator extends ApiGenerator
 					{
 						tmp += ", ";
 					}
-					tmp += this.getSuccName.apply(succ.accept(b));
-				}
-			}*/
-			String handle = HandleInterfaceGenerator.getHandleInterfaceName(self, s);
-			/*List<IOAction> foo1 = new LinkedList<>();
-			List<EndpointState> bar1 = new LinkedList<>();
-			for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
-			{
-				EndpointState succ = s.accept(a);
-				for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
+					/*if (foo1.contains(a))
+					{
+						EndpointState succ = bar1.get(foo1.indexOf(a));
+						tmp += this.getSuccName.apply(succ.accept(a));
+						foo1.remove(a);
+						bar1.remove(succ);
+					}
+					else
+					{
+						tmp += SuccessorInterfaceGenerator.getSuccessorInterfaceName(a);
+					}*/
+					EndpointState succ = s.take(a);
+					if (succ.isTerminal())
+					{
+						tmp += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
+					}
+					else
+					{
+						tmp += this.apigen.getSocketClassName(succ);
+					}
+				}	
+				
+				handler.addInterfaces(handle + "<" + tmp + ">");
+				
+				/*// Override abstract handle methods with default cast implementation
+				for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 				{
-					foo1.add(b);
-					bar1.add(succ);
-				}
-			}
-			System.out.println("BBB: " + handle);*/
-			//for (IOAction a : this.branchSuccs.get(handle))
-			// FIXME: move back into HandlerInterfaceGenerator
-			for (IOAction a : s.getTakeable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
-			{
-				if (first)
-				{
-					first = false;
-				}
-				else
-				{
-					tmp += ", ";
-				}
-				/*if (foo1.contains(a))
-				{
-					EndpointState succ = bar1.get(foo1.indexOf(a));
-					tmp += this.getSuccName.apply(succ.accept(a));
-					foo1.remove(a);
-					bar1.remove(succ);
-				}
-				else
-				{
-					tmp += SuccessorInterfaceGenerator.getSuccessorInterfaceName(a);
+					EndpointState succ = s.accept(a);
+					this.iostates.get(HandleInterfaceGenerator.getHandleInterfaceName(self, succ));
+					MethodBuilder override = handler.newDefaultMethod();
+					//override.addModifiers(JavaBuilder.FINAL);  // Default methods cannot be final
+					HandlerInterfaceGenerator.setHandleMethodHeaderWithoutParamTypes(this.apigen, override);
+					//HandleInterfaceGenerator.setHandleMethodSuccessorParam(this, self, succ, override);
+					// FIXME: factor out with HandleInterfaceGenerator.setHandleMethodSuccessorParam
+					String nextClass = this.apigen.getSocketClassName(succ);
+					if (succ.isTerminal())
+					{
+						override.addParameters(ScribSocketGenerator.ENDSOCKET_CLASS + "<?, ?> end");
+					}
+					else
+					{
+						InterfaceBuilder next = getIOStateInterface(IOStateInterfaceGenerator.getIOStateInterfaceName(self, succ));  // Select/Receive/Branch
+						String ret = next.getName() + "<";
+						//ret += "<" + next.getParameters().stream().map((p) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";  // FIXME: fragile?
+						boolean bar = true;
+						for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))  // FIXME: factor out with getHandleInterfaceIOActionParams
+						{
+							if (bar)
+							{
+								bar = false;
+							}
+							else
+							{
+								ret += ", ";
+							}
+							EndpointState foo = succ.accept(b);
+							if (foo.isTerminal())
+							{
+								ret += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
+							}
+							else
+							{
+								ret += this.apigen.getSocketClassName(foo);
+							}
+						}
+						ret += ">";
+						override.addParameters(ret + " schan");
+					}
+					HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, override);
+					// FIXME: factor out
+					String ln = "receive((";
+					if (succ.isTerminal())  // factor out
+					{
+						ln += "EndSocket) end";
+					}
+					else
+					{
+						ln += nextClass + ") schan";
+					}
+					ln += ", op";
+					String args;
+					if (a.mid.isOp())  // factor out
+					{
+						args = IntStream.rangeClosed(1, a.payload.elems.size()).mapToObj((i) -> "arg" + i).collect(Collectors.joining(", "));
+						if (!args.equals(""))
+						{
+							args = ", " + args;
+						}
+					}
+					else
+					{
+						args = ", arg";
+					}
+					ln += args + ");";
+					override.addBodyLine(ln);
+					override.addAnnotations("@Override");
 				}*/
-				EndpointState succ = s.take(a);
-				if (succ.isTerminal())
-				{
-					tmp += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
-				}
-				else
-				{
-					tmp += this.apigen.getSocketClassName(succ);
-				}
-			}	
-			
-			handler.addInterfaces(handle + "<" + tmp + ">");
-			
-			/*// Override abstract handle methods with default cast implementation
-			for (IOAction a : s.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
-			{
-				EndpointState succ = s.accept(a);
-				this.iostates.get(HandleInterfaceGenerator.getHandleInterfaceName(self, succ));
-				MethodBuilder override = handler.newDefaultMethod();
-				//override.addModifiers(JavaBuilder.FINAL);  // Default methods cannot be final
-				HandlerInterfaceGenerator.setHandleMethodHeaderWithoutParamTypes(this.apigen, override);
-				//HandleInterfaceGenerator.setHandleMethodSuccessorParam(this, self, succ, override);
-				// FIXME: factor out with HandleInterfaceGenerator.setHandleMethodSuccessorParam
-				String nextClass = this.apigen.getSocketClassName(succ);
-				if (succ.isTerminal())
-				{
-					override.addParameters(ScribSocketGenerator.ENDSOCKET_CLASS + "<?, ?> end");
-				}
-				else
-				{
-					InterfaceBuilder next = getIOStateInterface(IOStateInterfaceGenerator.getIOStateInterfaceName(self, succ));  // Select/Receive/Branch
-					String ret = next.getName() + "<";
-					//ret += "<" + next.getParameters().stream().map((p) -> "__Succ" + i).collect(Collectors.joining(", ")) + ">";  // FIXME: fragile?
-					boolean bar = true;
-					for (IOAction b : succ.getAcceptable().stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))  // FIXME: factor out with getHandleInterfaceIOActionParams
-					{
-						if (bar)
-						{
-							bar = false;
-						}
-						else
-						{
-							ret += ", ";
-						}
-						EndpointState foo = succ.accept(b);
-						if (foo.isTerminal())
-						{
-							ret += ScribSocketGenerator.GENERATED_ENDSOCKET_NAME;
-						}
-						else
-						{
-							ret += this.apigen.getSocketClassName(foo);
-						}
-					}
-					ret += ">";
-					override.addParameters(ret + " schan");
-				}
-				HandlerInterfaceGenerator.addHandleMethodOpAndPayloadParams(this.apigen, a, override);
-				// FIXME: factor out
-				String ln = "receive((";
-				if (succ.isTerminal())  // factor out
-				{
-					ln += "EndSocket) end";
-				}
-				else
-				{
-					ln += nextClass + ") schan";
-				}
-				ln += ", op";
-				String args;
-				if (a.mid.isOp())  // factor out
-				{
-					args = IntStream.rangeClosed(1, a.payload.elems.size()).mapToObj((i) -> "arg" + i).collect(Collectors.joining(", "));
-					if (!args.equals(""))
-					{
-						args = ", " + args;
-					}
-				}
-				else
-				{
-					args = ", arg";
-				}
-				ln += args + ");";
-				override.addBodyLine(ln);
-				override.addAnnotations("@Override");
-			}*/
+			}
 		}
 		
 		visited.add(s);
@@ -920,7 +935,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 			Set<InterfaceBuilder> tmp = new HashSet<>();
 			for (IOAction a : this.preActions.get(s))  // sort?
 			{
-				tmp.add(this.succs.get(a));
+				if (a.isSend() || a.isReceive())  // FIXME HACK (connect/disconnect)
+				{
+					tmp.add(this.succs.get(a));
+				}
 			}
 			this.preds.put(s, tmp);
 		}

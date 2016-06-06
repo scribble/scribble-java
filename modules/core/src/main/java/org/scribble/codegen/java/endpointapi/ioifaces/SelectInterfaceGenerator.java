@@ -13,4 +13,14 @@ public class SelectInterfaceGenerator extends IOStateInterfaceGenerator
 	{
 		super(apigen, actions, curr);
 	}
+	
+	@Override
+	public InterfaceBuilder generateType()
+	{
+		if (this.curr.getAllTakeable().stream().anyMatch((a) -> !a.isSend())) // HACK (connect/disconnect)
+		{
+			return null;
+		}
+		return super.generateType();
+	}
 }

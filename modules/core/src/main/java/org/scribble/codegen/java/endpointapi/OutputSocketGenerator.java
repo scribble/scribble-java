@@ -44,6 +44,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		final String ROLE_PARAM = "role";
 
 		// Mixed sends and connects
+		boolean hasConnect = false;
 		for (IOAction a : curr.getTakeable())  // (Scribble ensures all "a" are input or all are output)
 		{
 			EndpointState succ = curr.take(a);
@@ -55,7 +56,8 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 			}
 			else if (a.isConnect())
 			{
-				throw new RuntimeException("Shouldn't get in here: " + a);
+				hasConnect = true;
+				setConnectHeaderWithoutReturnType(apigen, a, mb);
 			}
 			else
 			{
@@ -90,7 +92,8 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 			}
 			else if (a.isConnect())
 			{
-				throw new RuntimeException("Shouldn't get in here: " + a);
+				//throw new RuntimeException("Shouldn't get in here: " + a);
+				mb.addBodyLine(JavaBuilder.SUPER + ".connect(" + ROLE_PARAM + ", cons, host, port);\n");
 			}
 			else
 			{
@@ -98,6 +101,12 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 			}
 
 			addReturnNextSocket(mb, succ);
+		}
+
+		if (hasConnect)
+		{
+			this.cb.addImports("java.util.concurrent.Callable");
+			this.cb.addImports("org.scribble.net.session.BinaryChannelEndpoint");
 		}
 	}
 
@@ -131,13 +140,14 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 	public static void setConnectHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
 	{
 		final String ROLE_PARAM = "role";
-		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
 
-		mb.setName("send");
+		mb.setName("connect");
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
 		mb.addParameters(SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM);  // More params added below
-		mb.addParameters(...);  // Callable<? extends BinaryChannelEndpoint> cons, String host, int port
+		mb.addParameters("Callable<? extends BinaryChannelEndpoint> cons");
+		mb.addParameters("String host");
+		mb.addParameters("int port");
 	}
 
 	protected static void addSendOpParams(StateChannelApiGenerator apigen, MethodBuilder mb, Module main, IOAction a)

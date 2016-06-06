@@ -21,6 +21,16 @@ public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	@Override
+	public InterfaceBuilder generateType()
+	{
+		if (this.curr.getAllTakeable().stream().anyMatch((a) -> !a.isReceive())) // HACK (connect/disconnect)
+		{
+			return null;
+		}
+		return super.generateType();
+	}
+
+	@Override
 	protected void constructInterface()
 	{
 		super.constructInterface();
