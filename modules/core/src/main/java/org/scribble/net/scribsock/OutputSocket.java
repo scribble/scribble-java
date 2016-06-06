@@ -1,17 +1,20 @@
 package org.scribble.net.scribsock;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
 
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ScribMessage;
+import org.scribble.net.session.BinaryChannelEndpoint;
 import org.scribble.net.session.Session;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
-public abstract class SendSocket<S extends Session, R extends Role> extends LinearSocket<S, R>
+public abstract class OutputSocket<S extends Session, R extends Role> extends LinearSocket<S, R>
 {
-	protected SendSocket(SessionEndpoint<S, R> ep)
+	protected OutputSocket(SessionEndpoint<S, R> ep)
 	{
 		super(ep);
 	}
@@ -27,6 +30,12 @@ public abstract class SendSocket<S extends Session, R extends Role> extends Line
 		/*SocketEndpoint se = this.ep.getSocketEndpoint(peer);
 		se.writeMessageAndFlush(msg);*/
 		this.se.getChannelEndpoint(peer).write(msg);
+	}
+
+	protected void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	{
+		use();
+		this.se.connect(role, cons, host, port);
 	}
 	
 	//public void wrap(Callable<? extends BinaryChannelEndpoint> cons, Role role, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException

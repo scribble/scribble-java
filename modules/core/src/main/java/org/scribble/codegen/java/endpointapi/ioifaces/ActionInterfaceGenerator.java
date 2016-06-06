@@ -1,7 +1,7 @@
 package org.scribble.codegen.java.endpointapi.ioifaces;
 
 import org.scribble.codegen.java.endpointapi.ReceiveSocketGenerator;
-import org.scribble.codegen.java.endpointapi.SendSocketGenerator;
+import org.scribble.codegen.java.endpointapi.OutputSocketGenerator;
 import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
@@ -62,7 +62,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 		}
 		else //if (this.a instanceof Send)
 		{
-			SendSocketGenerator.setSendHeaderWithoutReturnType(this.apigen, this.a, mb);
+			OutputSocketGenerator.setSendHeaderWithoutReturnType(this.apigen, this.a, mb);
 		}
 		/*EndpointState succ = this.curr.accept(this.a);
 		if (succ.isTerminal())

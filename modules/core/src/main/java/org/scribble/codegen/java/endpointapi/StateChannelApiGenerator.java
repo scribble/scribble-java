@@ -8,7 +8,6 @@ import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
-import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -129,11 +128,11 @@ public class StateChannelApiGenerator extends ApiGenerator
 			case OUTPUT:
 			{
 				Set<IOAction> as = curr.getTakeable();
-				if (as.stream().allMatch((a) -> a.isSend()))
+				//if (as.stream().allMatch((a) -> a.isSend()))
 				{
-					return new SendSocketGenerator(this, curr).generateType();
+					return new OutputSocketGenerator(this, curr).generateType();
 				}
-				throw new RuntimeException("TODO: " + curr.toLongString());
+				//throw new RuntimeException("TODO: " + curr.toLongString());
 			}
 			case ACCEPT:
 			{
@@ -145,7 +144,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 			}
 			case POLY_INPUT:
 			{
-				// No accepts
+				// Receive only
 				return new BranchSocketGenerator(this, curr).generateType();
 			}
 			default:
