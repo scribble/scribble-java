@@ -38,6 +38,23 @@ module Test;
 // - parameterise subprotos on protos?
 
 
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;  // CHECKME: empty case for C discarded by projection, but do we need tau for correctness?  this example works because it ends up as stuck error -- a point is generating tau and then bisim-minimising doesn't remove the tau, whereas the current projection does remove the tau (so current projection is not equiv to bisim-minimisation intuition)
+	}
+	or
+	{
+		2() from A to B;
+		2() from A to C;
+	}
+	3() from A to C;
+}
+//*/
+
+
 //*
 global protocol Proto1(role A, role B, role C)
 {
@@ -53,7 +70,7 @@ global protocol Proto1(role A, role B, role C)
 			2() from A to B;
 		}
 	}
-	3() from A to C;  // Not "strongly" live for C -- by subtyping, an implementation of A may never terminate
+	3() from A to C;  // Not "strongly" live for C -- by subtyping, an implementation of A may never terminate -- strongly live probably means all roles have to be involved in every choice path
 }
 //*/
 
