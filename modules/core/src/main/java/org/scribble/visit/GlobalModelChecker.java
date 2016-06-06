@@ -212,6 +212,11 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Map<Integer, WFState> seen) throws ScribbleException
 	{
 		Job job = getJob();
+		
+		if (false)
+		{
+			// ...
+		}
 
 		WFBuffers b0 = new WFBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
 		//WFConfig c0 = new WFConfig(egraphs, b0);
