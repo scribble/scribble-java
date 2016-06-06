@@ -8,9 +8,8 @@ import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
-import org.scribble.model.local.Receive;
-import org.scribble.model.local.Send;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -125,22 +124,34 @@ public class StateChannelApiGenerator extends ApiGenerator
 	// Pre: curr is not terminal state
 	private ClassBuilder constructClass(EndpointState curr)
 	{
-		Set<IOAction> as = curr.getTakeable();
-		IOAction a = as.iterator().next();
-		// FIXME: use curr.getStateKind()
-		if (a instanceof Send)
+		switch (curr.getStateKind())
 		{
-			return new SendSocketGenerator(this, curr).generateType();
-		}
-		else if (a instanceof Receive)
-		{
-			return (as.size() > 1)
-					? new BranchSocketGenerator(this, curr).generateType()
-					: new ReceiveSocketGenerator(this, curr).generateType();
-		}
-		else
-		{
-			throw new RuntimeException("TODO: " + curr);
+			case OUTPUT:
+			{
+				Set<IOAction> as = curr.getTakeable();
+				if (as.stream().allMatch((a) -> a.isSend()))
+				{
+					return new SendSocketGenerator(this, curr).generateType();
+				}
+				throw new RuntimeException("TODO: " + curr.toLongString());
+			}
+			case ACCEPT:
+			{
+				throw new RuntimeException("TODO: " + curr.toLongString());
+			}
+			case UNARY_INPUT:
+			{
+				return new ReceiveSocketGenerator(this, curr).generateType();
+			}
+			case POLY_INPUT:
+			{
+				// No accepts
+				return new BranchSocketGenerator(this, curr).generateType();
+			}
+			default:
+			{
+				throw new RuntimeException("TODO: " + curr.toLongString());
+			}
 		}
 	}
 	

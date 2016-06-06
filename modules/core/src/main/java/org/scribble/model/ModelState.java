@@ -101,7 +101,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeException("[TODO] Non-deterministic state: " + this.actions);  // This getter checks for determinism -- affects e.g. API generation  
+			throw new RuntimeException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minfsm)");  // This getter checks for determinism -- affects e.g. API generation  
 		}
 		return as;
 	}
@@ -171,22 +171,17 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		return this.id == ((ModelState<?, ?, ?>) o).id;  // Good to use id, due to edge mutability
 	}
 	
+	public String toLongString()
+	{
+		String s = "\"" + this.id + "\":[";
+		Iterator<S> ss = this.succs.iterator();
+		s += this.actions.stream().map((a) -> a + "=\"" + ss.next().id + "\"").collect(Collectors.joining(", "));
+		return s + "]";
+	}
+
 	@Override
 	public String toString()
 	{
-		/*String s = "\"" + this.id + "\":[";
-		if (!this.edges.isEmpty())
-		{
-			Iterator<Entry<A, S>> es = this.edges.entrySet().iterator();
-			Entry<A, S> first = es.next();
-			s += first.getKey() + "=\"" + first.getValue().id + "\"";
-			while (es.hasNext())
-			{
-				Entry<A, S> e = es.next();
-				s += ", " + e.getKey() + "=\"" + e.getValue().id + "\"";
-			}
-		}
-		return s + "]";*/
 		return Integer.toString(this.id);  // FIXME
 	}
 	
