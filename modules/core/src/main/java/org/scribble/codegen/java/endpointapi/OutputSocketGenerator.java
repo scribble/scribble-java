@@ -45,6 +45,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 
 		// Mixed sends and connects
 		boolean hasConnect = false;
+		boolean hasWrap = false;
 		for (IOAction a : curr.getTakeable())  // (Scribble ensures all "a" are input or all are output)
 		{
 			EndpointState succ = curr.take(a);
@@ -59,9 +60,18 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 				hasConnect = true;
 				setConnectHeaderWithoutReturnType(apigen, a, mb);
 			}
+			else if (a.isDisconnect())
+			{
+				setDisconnectHeaderWithoutReturnType(apigen, a, mb);
+			}
+			else if (a.isWrapClient())
+			{
+				hasWrap = true;
+				setWrapClientHeaderWithoutReturnType(apigen, a, mb);
+			}
 			else
 			{
-				throw new RuntimeException("Shouldn't get in here: " + a);
+				throw new RuntimeException("[TODO] OutputSocket API generation for: " + a);
 			}
 
 			setNextSocketReturnType(this.apigen, mb, succ);
@@ -95,6 +105,14 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 				//throw new RuntimeException("Shouldn't get in here: " + a);
 				mb.addBodyLine(JavaBuilder.SUPER + ".connect(" + ROLE_PARAM + ", cons, host, port);\n");
 			}
+			else if (a.isDisconnect())
+			{
+				mb.addBodyLine(JavaBuilder.SUPER + ".disconnect(" + ROLE_PARAM + ");\n");
+			}
+			else if (a.isWrapClient())
+			{
+				mb.addBodyLine(JavaBuilder.SUPER + ".wrapClient(" + ROLE_PARAM + ", wrapper);\n");
+			}
 			else
 			{
 				throw new RuntimeException("Shouldn't get in here: " + a);
@@ -107,6 +125,11 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		{
 			this.cb.addImports("java.util.concurrent.Callable");
 			this.cb.addImports("org.scribble.net.session.BinaryChannelEndpoint");
+		}
+		if (hasWrap)
+		{
+			this.cb.addImports("java.util.concurrent.Callable");
+			this.cb.addImports("org.scribble.net.session.BinaryChannelWrapper");
 		}
 	}
 
@@ -148,6 +171,27 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		mb.addParameters("Callable<? extends BinaryChannelEndpoint> cons");
 		mb.addParameters("String host");
 		mb.addParameters("int port");
+	}
+
+	public static void setDisconnectHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	{
+		final String ROLE_PARAM = "role";
+
+		mb.setName("disconnect");
+		mb.addModifiers(JavaBuilder.PUBLIC);
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM);
+	}
+
+	public static void setWrapClientHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	{
+		final String ROLE_PARAM = "role";
+
+		mb.setName("wrapClient");
+		mb.addModifiers(JavaBuilder.PUBLIC);
+		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "IOException");
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM);
+		mb.addParameters("Callable<? extends BinaryChannelWrapper> wrapper");
 	}
 
 	protected static void addSendOpParams(StateChannelApiGenerator apigen, MethodBuilder mb, Module main, IOAction a)

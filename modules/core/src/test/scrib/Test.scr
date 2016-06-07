@@ -38,7 +38,38 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-//*
+// TODO: test API gen for SupplierInfo
+// TODO: test API gen wrap for SMTP
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+	}
+	rec X  // Testing non-fair EFSM generation
+	{
+		choice at B
+		{
+			3() from B to A;
+			continue X;
+		}
+		or
+		{
+			4() from B to A;
+		}
+	}
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B)
 {
 	connect A to B;

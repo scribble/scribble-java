@@ -67,9 +67,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 		JobContext jc = this.job.getContext();
 		EndpointState init = job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
 		
-		if (EndpointState.getAllReachableActions(init).stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
+		Set<IOAction> as = EndpointState.getAllReachableActions(init);
+		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
 		{
-			throw new RuntimeScribbleException("[TODO] I/O Interface generation not supported for connect/disconnect.");
+			throw new RuntimeScribbleException("[TODO] I/O Interface generation not supported for: " + as.stream().filter((a) -> !a.isSend() && !a.isReceive()).collect(Collectors.toList()));
 		}
 
 		generateActionAndSuccessorInterfacesAndCollectPreActions(new HashSet<>(), init);
