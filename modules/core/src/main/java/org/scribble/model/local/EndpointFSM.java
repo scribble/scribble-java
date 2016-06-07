@@ -10,7 +10,7 @@ public class EndpointFSM extends EndpointGraph
 	public final EndpointState curr;
 	
 	//public EndpointFSM(EndpointState init, EndpointState term)
-	public EndpointFSM(EndpointGraph graph)
+	protected EndpointFSM(EndpointGraph graph)
 	{
 		this(graph.init, graph.term, graph.init);
 	}

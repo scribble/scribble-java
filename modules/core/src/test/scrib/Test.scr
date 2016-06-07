@@ -38,7 +38,25 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-global protocol Proto1(role A, role B)
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+		disconnect A and B;  // Testing unfairClone terminal state reconcilliation -- FIXME: this example doesn't actually test this, cf. SupplierInfoExplicit for requestor
+	}
+}
+//*/
+
+
+//*
+global protocol Proto1(role A, role B, role C)
 {
 	rec X
 	{
@@ -52,8 +70,10 @@ global protocol Proto1(role A, role B)
 			2() from A to B;
 		}
 	}
-	3() from A to B;
+	3() from A to C;
 }
+//*/
+
 
 /*
 global protocol Proto1(role A, role B, role C)

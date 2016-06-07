@@ -25,8 +25,9 @@ public class CommandLineArgParser
 	public static final String GLOBAL_MODEL_DOT_FLAG = "-modeldot";
 	//public static final String PROJECTED_MODEL_FLAG = "-pmodel";
 	public static final String OLD_WF_FLAG = "-oldwf";
-	public static final String NO_LIVENESS = "-nolive";
-	public static final String MIN_EFSM = "-minfsm";
+	public static final String NO_LIVENESS_FLAG = "-nolive";
+	public static final String MIN_EFSM_FLAG = "-minfsm";
+	public static final String FAIR_FLAG = "-fair";
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -36,7 +37,8 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.API_OUTPUT_FLAG, CommandLine.ArgFlag.API_OUTPUT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.STATECHANSUBTYPES_FLAG, CommandLine.ArgFlag.SCHAN_API_SUBTYPES);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OLD_WF_FLAG, CommandLine.ArgFlag.OLD_WF);
-		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.MIN_EFSM, CommandLine.ArgFlag.MIN_EFSM);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.MIN_EFSM_FLAG, CommandLine.ArgFlag.MIN_EFSM);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.FAIR_FLAG, CommandLine.ArgFlag.FAIR);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -49,7 +51,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.GLOBAL_MODEL_DOT_FLAG, CommandLine.ArgFlag.GLOBAL_MODEL_DOT);
-		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.NO_LIVENESS, CommandLine.ArgFlag.NO_LIVENESS);
+		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.NO_LIVENESS_FLAG, CommandLine.ArgFlag.NO_LIVENESS);
 		//CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.PROJECTED_MODEL_FLAG, CommandLine.ArgFlag.PROJECTED_MODEL);
 	}
 
@@ -166,14 +168,19 @@ public class CommandLineArgParser
 				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.OLD_WF_FLAG), new String[0]);
 				return i;
 			}
-			case CommandLineArgParser.NO_LIVENESS:
+			case CommandLineArgParser.NO_LIVENESS_FLAG:
 			{
-				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.NO_LIVENESS), new String[0]);
+				this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.NO_LIVENESS_FLAG), new String[0]);
 				return i;
 			}
-			case CommandLineArgParser.MIN_EFSM:
+			case CommandLineArgParser.MIN_EFSM_FLAG:
 			{
 				this.parsed.put(CommandLine.ArgFlag.MIN_EFSM, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.FAIR_FLAG:
+			{
+				this.parsed.put(CommandLine.ArgFlag.FAIR, new String[0]);
 				return i;
 			}
 			default:

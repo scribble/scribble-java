@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.EndpointState;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
@@ -306,14 +305,12 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 				continue;
 			}
 			all.put(next.id, next);*/
-			System.out.println("222a: " + next.getAllTakeable() + ", " + next.getSuccessors());
 			for (S s : next.getSuccessors())
 			{
 				/*if (!all.containsKey(s.id) && !todo.containsKey(s.id))
 				{
 					todo.put(s.id, s);
 				}*/
-				System.out.println("222b: " + all + ", " + s);
 				if (!all.containsKey(s.id))
 				{	
 					all.put(s.id, s);
