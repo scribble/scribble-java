@@ -2,6 +2,7 @@ package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GConnect;
+import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
@@ -25,28 +26,28 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
-		GConnect gc = (GConnect) visited;
-		Role src = gc.src.toName();
-		Role dest = gc.dest.toName();
-		return gc;
+		GWrap gw = (GWrap) visited;
+		Role src = gw.src.toName();
+		Role dest = gw.dest.toName();
+		return gw;
 	}
 
 	@Override
-	public GConnect leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
+	public GWrap leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
-		GConnect gc = (GConnect) visited;
+		GWrap gw = (GWrap) visited;
 		
-		Role src = gc.src.toName();
+		Role src = gw.src.toName();
 		if (!checker.peekEnv().isEnabled(src))
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
 		WFChoiceEnv env = checker.popEnv();
-		Role dest = gc.dest.toName();
+		Role dest = gw.dest.toName();
 		{
 			if (src.equals(dest))
 			{
-				throw new RuntimeException("TODO: " + gc);
+				throw new RuntimeException("TODO: " + gw);
 			}
 			if (env.isConnected(src, dest))
 			{
@@ -57,21 +58,21 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 					.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));
 		}
 		checker.pushEnv(env);
-		return gc;
+		return gw;
 	}
 
 	@Override
 	public ScribNode leaveProjection(ScribNode parent, ScribNode child, Projector proj, ScribNode visited) throws ScribbleException //throws ScribbleException
 	{
-		GConnect gc = (GConnect) visited;
+		GWrap gw = (GWrap) visited;
 		Role self = proj.peekSelf();
-		LNode projection = gc.project(self);
+		LNode projection = gw.project(self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GConnect) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
+		return (GConnect) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gw);
 	}
 	
 	@Override
-	public GConnect leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
+	public GWrap leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		//return (GConnect) super.leaveModelBuilding(parent, child, builder, ls);
 		throw new RuntimeException("Shouldn't get in here: " + visited);
