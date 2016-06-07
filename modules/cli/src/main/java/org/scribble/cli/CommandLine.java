@@ -350,6 +350,9 @@ public class CommandLine //implements Runnable
 		{
 			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
 		}
+		
+		System.out.println("111: " + fsm.init.unfairClone().toDot());
+		
 		return fsm;
 	}
 	
