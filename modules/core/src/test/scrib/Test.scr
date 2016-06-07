@@ -39,6 +39,14 @@ module Test;
 
 
 /*
+global protocol Proto1(role A, role B)
+{
+
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B)
 {
 	connect A to B;
@@ -55,7 +63,7 @@ explicit global protocol Proto1(role A, role B)
 //*/
 
 
-//*
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
@@ -70,7 +78,8 @@ global protocol Proto1(role A, role B, role C)
 			2() from A to B;
 		}
 	}
-	3() from A to C;
+	//3() from A to C;  // Testing fair/unfair liveness for C
+	3() from C to A;  // Message liveness also subject to fair/unfair
 }
 //*/
 
@@ -640,7 +649,7 @@ global protocol Proto1(role A, role B, role C)
 	}
 
 	2() from C to B;  // TODO: investigate: WF_1 won't get past here, is it OK?
-	2() from C to B;  // ..becomes "fake" role liveness problem because of WF1
+	2() from C to B;  // ..becomes "fake" role liveness problem because of WF1 -- not live even assuming fairness
 	// ..dragons
 
 	// TODO: investigate reachability of local states in global model
