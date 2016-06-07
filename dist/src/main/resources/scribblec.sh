@@ -28,19 +28,19 @@ usage() {
   -fsmdot [simple global protocol name] [role] [output file]
           Draw Endpoint FSM as png (requires dot)
   -minfsm                                        
-          Minimise EFSMs for dot and API generation (not global model checking)
+          Minimise EFSMs for dot and API generation (but not global modelling)
           (Requires ltsconvert)
 
   -model [simple global protocol name]           Generate global model
   -modeldot [simple global protocol name] [role] [output file]
           Draw global model as png (requires dot)
+  -fair                                          Assume fairness for selects
 
   -api [simple global protocol name] [role]      Generate Endpoint API
   -d [path]                                      API output path
   -session [simple global protocol name]         Generate Session API only
   -schan [simple global protocol name] [role]    Generate State Channel API only
   -subtypes                                      Enable subtype API generation
-
 EOF
 }
 
