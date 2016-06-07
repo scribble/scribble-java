@@ -45,7 +45,7 @@ module Test;
 //*
 global protocol Proto1(role A, role B)
 {
-
+	wrap B to A;
 }
 //*/
 
