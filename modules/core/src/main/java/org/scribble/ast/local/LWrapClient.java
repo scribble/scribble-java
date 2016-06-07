@@ -16,48 +16,42 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-public class LAccept extends ConnectionAction<Local> implements LSimpleInteractionNode
+public class LWrapClient extends ConnectionAction<Local> implements LSimpleInteractionNode
 {
-	//public LAccept(RoleNode src, MessageNode msg, RoleNode dest)
-	public LAccept(RoleNode src, RoleNode dest)
+	public LWrapClient(RoleNode src, RoleNode dest)
 	{
-		//super(src, msg, dest);
 		super(src, dest);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		//return new LAccept(this.src, this.msg, this.dest);
-		return new LAccept(this.src, this.dest);
+		return new LWrapClient(this.src, this.dest);
 	}
 	
 	@Override
-	public LAccept clone()
+	public LWrapClient clone()
 	{
 		RoleNode src = this.src.clone();
-		//MessageNode msg = this.msg.clone();
 		RoleNode dest = this.dest.clone();
-		//return AstFactoryImpl.FACTORY.LAccept(src, msg, dest);
-		return AstFactoryImpl.FACTORY.LAccept(src, dest);
+		return AstFactoryImpl.FACTORY.LWrapClient(src, dest);
 	}
 
 	@Override
-	//public LAccept reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
-	public LAccept reconstruct(RoleNode src, RoleNode dest)
+	public LWrapClient reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		//LAccept lr = new LAccept(src, msg, dest);
-		LAccept lr = new LAccept(src, dest);
-		lr = (LAccept) lr.del(del);
-		return lr;
+		LWrapClient ls = new LWrapClient(src, dest);
+		ls = (LWrapClient) ls.del(del);
+		return ls;
 	}
 
+	// Could make a LMessageTransfer to factor this out with LReceive
 	@Override
 	public Role inferLocalChoiceSubject(ProjectedChoiceSubjectFixer fixer)
 	{
-		fixer.setChoiceSubject(this.src.toName());
 		return this.src.toName();
+		//throw new RuntimeException("TODO: " + this);
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350
@@ -70,13 +64,13 @@ public class LAccept extends ConnectionAction<Local> implements LSimpleInteracti
 	@Override
 	public String toString()
 	{
-		return Constants.ACCEPT_KW + " " + this.src + ";";
+		return Constants.WRAP_KW + " " + Constants.TO_KW + " " + this.dest.toString() + ";";
 	}
 
 	@Override
 	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
 	{
-		throw new RuntimeScribbleException("Invalid merge on LAccept: " + this);
+		throw new RuntimeScribbleException("Invalid merge on LWrapClient: " + this);
 	}
 
 	@Override
