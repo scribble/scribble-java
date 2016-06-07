@@ -42,6 +42,14 @@ module Test;
 // TODO: test API gen wrap for SMTP
 
 
+//*
+global protocol Proto1(role A, role B)
+{
+
+}
+//*/
+
+
 /*
 global protocol Proto1(role A, role B)
 {
