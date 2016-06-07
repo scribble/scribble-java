@@ -50,6 +50,16 @@ public abstract class IOAction extends ModelAction<Local>
 	{
 		return false;
 	}
+
+	public boolean isWrapClient()
+	{
+		return false;
+	}
+
+	public boolean isWrapServer()
+	{
+		return false;
+	}
 	
 	/*@Override
 	public String toString()

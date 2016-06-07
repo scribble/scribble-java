@@ -1,6 +1,7 @@
 package org.scribble.ast.local;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
@@ -16,40 +17,33 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-public class LAccept extends ConnectionAction<Local> implements LSimpleInteractionNode
+public class LWrapServer extends ConnectionAction<Local> implements LSimpleInteractionNode
 {
-	//public LAccept(RoleNode src, MessageNode msg, RoleNode dest)
-	public LAccept(RoleNode src, RoleNode dest)
+	public LWrapServer(RoleNode src, RoleNode dest)
 	{
-		//super(src, msg, dest);
 		super(src, dest);
 	}
 
 	@Override
 	protected ScribNodeBase copy()
 	{
-		//return new LAccept(this.src, this.msg, this.dest);
-		return new LAccept(this.src, this.dest);
+		return new LWrapServer(this.src, this.dest);
 	}
 	
 	@Override
-	public LAccept clone()
+	public LWrapServer clone()
 	{
 		RoleNode src = this.src.clone();
-		//MessageNode msg = this.msg.clone();
 		RoleNode dest = this.dest.clone();
-		//return AstFactoryImpl.FACTORY.LAccept(src, msg, dest);
-		return AstFactoryImpl.FACTORY.LAccept(src, dest);
+		return AstFactoryImpl.FACTORY.LWrapServer(src, dest);
 	}
 
 	@Override
-	//public LAccept reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
-	public LAccept reconstruct(RoleNode src, RoleNode dest)
+	public LWrapServer reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		//LAccept lr = new LAccept(src, msg, dest);
-		LAccept lr = new LAccept(src, dest);
-		lr = (LAccept) lr.del(del);
+		LWrapServer lr = new LWrapServer(src, dest);
+		lr = (LWrapServer) lr.del(del);
 		return lr;
 	}
 
@@ -70,13 +64,13 @@ public class LAccept extends ConnectionAction<Local> implements LSimpleInteracti
 	@Override
 	public String toString()
 	{
-		return Constants.ACCEPT_KW + " " + this.src + ";";
+		return Constants.WRAP_KW + " " + Constants.FROM_KW + " " + this.src + ";";
 	}
 
 	@Override
 	public LInteractionNode merge(LInteractionNode ln) throws ScribbleException
 	{
-		throw new RuntimeScribbleException("Invalid merge on LAccept: " + this);
+		throw new RuntimeScribbleException("Invalid merge on LWrapServer: " + this);
 	}
 
 	@Override

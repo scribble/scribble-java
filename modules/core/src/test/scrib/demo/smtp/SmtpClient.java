@@ -124,7 +124,7 @@ public class SmtpClient
 		Buf<Object> b = new Buf<>();
 		Smtp_C_6 s6 = s4.send(S, new StartTls()).receive(S, _220, b);
 		System.out.print("StartTLS: " + b.val);
-		s6.wrapClient(SSLSocketChannelWrapper::new, S);
+		s6.wrapClient(S, SSLSocketChannelWrapper::new);
 		return s6;
 	}
 

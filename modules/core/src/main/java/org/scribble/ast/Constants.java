@@ -21,6 +21,7 @@ public class Constants
 
 	public static final String CONNECT_KW = "connect";
 	public static final String DISCONNECT_KW = "disconnect";
+	public static final String WRAP_KW = "wrap";
 	public static final String FROM_KW = "from";
 	public static final String TO_KW = "to";
 	public static final String CHOICE_KW = "choice";

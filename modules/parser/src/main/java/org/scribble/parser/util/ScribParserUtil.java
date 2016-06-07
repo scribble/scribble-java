@@ -49,6 +49,7 @@ public class ScribParserUtil
 			case AntlrConstants.GLOBALINTERACTIONSEQUENCE_NODE_TYPE: return AntlrNodeType.GLOBALINTERACTIONSEQUENCE;
 			case AntlrConstants.GLOBALMESSAGETRANSFER_NODE_TYPE: return AntlrNodeType.GLOBALMESSAGETRANSFER;
 			case AntlrConstants.GLOBALCONNECT_NODE_TYPE: return AntlrNodeType.GLOBALCONNECT;
+			case AntlrConstants.GLOBALWRAP_NODE_TYPE: return AntlrNodeType.GLOBALWRAP;
 			case AntlrConstants.GLOBALDISCONNECT_NODE_TYPE: return AntlrNodeType.GLOBALDISCONNECT;
 			case AntlrConstants.GLOBALCHOICE_NODE_TYPE: return AntlrNodeType.GLOBALCHOICE;
 			case AntlrConstants.GLOBALRECURSION_NODE_TYPE: return AntlrNodeType.GLOBALRECURSION;

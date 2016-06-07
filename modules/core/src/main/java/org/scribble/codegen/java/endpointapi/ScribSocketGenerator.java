@@ -19,6 +19,7 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 
 	//public static final String CONNECTSOCKET_CLASS = "org.scribble.net.scribsock.ConnectSocket";
 	public static final String ACCEPTSOCKET_CLASS = "org.scribble.net.scribsock.AcceptSocket";
+	//public static final String DISCONNECTSOCKET_CLASS = "org.scribble.net.scribsock.DisconnectSocket";
 	public static final String OUTPUTSOCKET_CLASS = "org.scribble.net.scribsock.OutputSocket";
 	public static final String RECEIVESOCKET_CLASS = "org.scribble.net.scribsock.ReceiveSocket";
 	public static final String BRANCHSOCKET_CLASS = "org.scribble.net.scribsock.BranchSocket";

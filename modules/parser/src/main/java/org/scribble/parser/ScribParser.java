@@ -36,6 +36,7 @@ import org.scribble.parser.ast.global.AntlrGProtocolDecl;
 import org.scribble.parser.ast.global.AntlrGProtocolDefinition;
 import org.scribble.parser.ast.global.AntlrGProtocolHeader;
 import org.scribble.parser.ast.global.AntlrGRecursion;
+import org.scribble.parser.ast.global.AntlrGWrap;
 import org.scribble.parser.util.ScribParserUtil;
 
 // ANTLR CommonTree -> ScribNode
@@ -119,6 +120,8 @@ public class ScribParser
 				return AntlrGInterrupt.parseGInterrupt(this, ct);
 			case GLOBALDO:
 				return AntlrGDo.parseGDo(this, ct);
+			case GLOBALWRAP:
+				return AntlrGWrap.parseGWrap(this, ct);
 			case ROLEINSTANTIATIONLIST:
 				return AntlrRoleArgList.parseRoleArgList(this, ct);
 			case ROLEINSTANTIATION:

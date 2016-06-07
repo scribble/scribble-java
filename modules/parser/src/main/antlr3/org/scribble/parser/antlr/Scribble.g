@@ -40,6 +40,7 @@ tokens
 
 	CONNECTKW = 'connect';
 	DISCONNECTKW = 'disconnect';
+	WRAPKW = 'wrap';
 	FROMKW = 'from';
 	TOKW = 'to';
 	CHOICEKW = 'choice';
@@ -123,6 +124,7 @@ tokens
 	GLOBALMESSAGETRANSFER = 'global-message-transfer';
 	GLOBALCONNECT = 'global-connect';
 	GLOBALDISCONNECT = 'global-disconnect';
+	GLOBALWRAP = 'global-wrap';
 	GLOBALCHOICE = 'global-choice';
 	GLOBALRECURSION = 'global-recursion';
 	GLOBALCONTINUE = 'global-continue';
@@ -553,6 +555,8 @@ globalinteraction:
 	globalconnect
 |
 	globaldisconnect
+|
+	globalwrap
 ;
 
 
@@ -598,6 +602,13 @@ globaldisconnect:
 	DISCONNECTKW rolename ANDKW rolename ';'
 	->
 	^(GLOBALDISCONNECT rolename rolename)
+;
+
+globalwrap:
+	//message CONNECTKW rolename TOKW rolename
+	WRAPKW rolename TOKW rolename ';'
+	->
+	^(GLOBALWRAP rolename rolename)
 ;
 
 
