@@ -31,26 +31,40 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	
 	public GraphBuilder()
 	{
-
+		clear();
 	}
-	
-	public void reset()
+
+	/*public GraphBuilder(S entry, S exit)
+	{
+		clear();
+
+		this.entry = entry;
+		this.exit = exit;
+	}*/
+
+	protected void clear()
 	{
 		this.recvars.clear();
 		this.enacting.clear();
-		
 		this.pred.clear();
 		this.prev.clear();
+
 		this.pred.push(new LinkedList<>());
 		this.prev.push(new LinkedList<>());
-		
-		this.entry = newState(Collections.emptySet());
-		//this.root = this.entry;
-		this.exit = newState(Collections.emptySet());
 		
 		/*this.contStates.clear();
 		this.contRecVars.clear();*/
 		this.enactingMap.clear();
+	}
+	
+	// Separated from constructor in order to use newState
+	public void reset()
+	{
+		clear();
+		
+		this.entry = newState(Collections.emptySet());
+		//this.root = this.entry;
+		this.exit = newState(Collections.emptySet());
 	}
 	
 	public abstract S newState(Set<RecVar> labs);

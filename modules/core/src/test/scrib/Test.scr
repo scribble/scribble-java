@@ -38,8 +38,7 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-//*
-//explicit global protocol Proto1(role A, role B, role C)
+/*
 explicit global protocol Proto1(role A, role B)
 {
 	connect A to B;
@@ -49,8 +48,103 @@ explicit global protocol Proto1(role A, role B)
 	}
 	or
 	{
+		2() from A to B;
+		disconnect A and B;  // Testing unfairClone terminal state reconcilliation -- FIXME: this example doesn't actually test this, cf. SupplierInfoExplicit for requestor
+	}
+}
+//*/
+
+
+//*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+	3() from A to C;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
 		1() from A to B;
-		//connect A to C;
+		() from B to C;
+		3() from B to A;
+	}
+	or
+	{
+		2() from A to B;
+		() from B to C;  // choice + sequencing not the same as just syntactic sugar for factoring out a common branch continuation, i.e. cannot factor out "() from B" as a continuation without either losing causality for output to A or changing output order at B -- arguable that changing order at B is equivalent (for some equivalence), but not equivalent under basic bisimilarity
+		4() from B to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;  // CHECKME: empty case for C discarded by projection, but do we need tau for correctness?  this example works because it ends up as stuck error -- a point is generating tau and then bisim-minimising doesn't remove the tau, whereas the current projection does remove the tau (so current projection is not equiv to bisim-minimisation intuition)
+				// should be OK: intiution: an input-state endpoint cannot choose to not receive a message, i.e. input states should never have tau -- so whole system must satisfy properties when modelling "partial" local branches as a "complete" branch for just the involved choice cases (i.e. ignore any non-involved cases)
+	}
+	or
+	{
+		2() from A to B;
+		2() from A to C;
+	}
+	3() from A to C;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+	3() from A to C;  // Not "strongly" live for C -- by subtyping, an implementation of A may never terminate -- strongly live probably means all roles have to be involved in every choice path -- not quite: it all depends on definition of subtyping, could make a "live" notion of subtyping that doesn't allow a non-live subset of choices -- this also depends on the select primitives and typing rules (it could come down to decidability of if-conditions...) -- problem is, even without subtyping, select primitive is always about selecting just one case, can't really make a "live" typing on top of that... -- could be positioned as basic session typing needs strong liveness, while weak liveness can be aimed at assuming a more general program verification -- or maybe a more powerful "imperative style" typing system could work, e.g. while (...) { ..non-live choice on s..} ..live choice on s.., i.e. it is ok to select a non-live case if the while will terminate to eventually lead us to a live case.. -- this fairness/liveness issue is another "bondary" issue between modelling/types/practice, bit like linearity
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+//explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		1() from A to B;
+		connect A to C;  // Testing API gen (without I/O i/f gen)
 	}
 }
 //*/

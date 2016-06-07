@@ -43,6 +43,13 @@ public class GModelState extends ModelState<GModelAction, GModelState, Global>
 	{
 		this.exit = exit;
 	}
+
+	@Override
+	protected GModelState newState(Set<RecVar> labs)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	/*protected void addLabel(RecVar lab)
 	{

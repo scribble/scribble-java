@@ -17,7 +17,7 @@ import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
 
 //public class ModelState<K extends ProtocolKind>
-public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 {
 	private static int count = 0;  // FIXME: factor out with ModelAction
 	
@@ -41,6 +41,8 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		this.actions = new LinkedList<>();
 		this.succs = new LinkedList<>();
 	}
+	
+	protected abstract S newState(Set<RecVar> labs);
 	
 	protected void addLabel(RecVar lab)
 	{
@@ -254,6 +256,10 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			S getTerminal(S start)
 	{
+		if (start.isTerminal())
+		{
+			return start;
+		}
 		Set<S> terms = getAllReachable(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
 		if (terms.size() > 1)
 		{
@@ -282,7 +288,7 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 		return null;
 	}*/
 
-	// Includes start
+	// Note: doesn't include start, unless start is reachable from start
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<S> getAllReachable(S start)
 	{
@@ -294,16 +300,24 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 			Iterator<S> i = todo.values().iterator();
 			S next = i.next();
 			todo.remove(next.id);
-			if (all.containsKey(next.id))
+			/*if (all.containsKey(next.id))
 			{
 				continue;
 			}
-			all.put(next.id, next);
+			all.put(next.id, next);*/
 			for (S s : next.getSuccessors())
 			{
-				if (!all.containsKey(s.id) && !todo.containsKey(s.id))
+				/*if (!all.containsKey(s.id) && !todo.containsKey(s.id))
 				{
 					todo.put(s.id, s);
+				}*/
+				if (!all.containsKey(s.id))
+				{	
+					all.put(s.id, s);
+					//if (!todo.containsKey(s.id))  // Redundant
+					{
+						todo.put(s.id, s);
+					}
 				}
 			}
 		}
@@ -313,7 +327,9 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<A> getAllReachableActions(S start)
 	{
-		Set<S> all = getAllReachable(start);
+		Set<S> all = new HashSet<>();
+		all.add(start);
+		all.addAll(getAllReachable(start));
 		Set<A> as = new HashSet<>();
 		for (S s : all)
 		{
@@ -348,6 +364,31 @@ public class ModelState<A extends ModelAction<K>, S extends ModelState<A, S, K>,
 			}
 		}
 		return "des (" + this.id + "," + edges + "," + all.size() + ")" + aut + "\n";
+	}
+	
+	public S clone()
+	{
+		Set<S> all = new HashSet<>();
+		all.add((S) this);
+		all.addAll(ModelState.getAllReachable((S) this));
+		Map<Integer, S> map = new HashMap<>();  // original s.id -> clones
+		for (S s : all)
+		{
+			map.put(s.id, newState(s.labs));
+		}
+		for (S s : all)
+		{
+			Iterator<A> as = s.getAllTakeable().iterator();
+			Iterator<S> ss = s.getSuccessors().iterator();
+			S clone = map.get(s.id);
+			while (as.hasNext())
+			{
+				A a = as.next();
+				S succ = ss.next();
+				clone.addEdge(a, map.get(succ.id));
+			}
+		}
+		return map.get(this.id);
 	}
 	
 	/*protected Map<ModelAction, ModelState> getEdges()

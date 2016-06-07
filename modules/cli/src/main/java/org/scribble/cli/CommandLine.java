@@ -47,6 +47,7 @@ public class CommandLine //implements Runnable
 		OLD_WF,
 		NO_LIVENESS,
 		MIN_EFSM,  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
+		FAIR,
 		//PROJECTED_MODEL
 	}
 	
@@ -357,7 +358,7 @@ public class CommandLine //implements Runnable
 	{
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
 		//return new Job(mc.jUnit, mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
-		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm);
+		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm, mc.fair);
 	}
 
 	private MainContext newMainContext()
@@ -367,6 +368,7 @@ public class CommandLine //implements Runnable
 		boolean useOldWF = this.args.containsKey(ArgFlag.OLD_WF);
 		boolean noLiveness = this.args.containsKey(ArgFlag.NO_LIVENESS);
 		boolean minEfsm = this.args.containsKey(ArgFlag.MIN_EFSM);
+		boolean fair = this.args.containsKey(ArgFlag.FAIR);
 
 		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN)[0]);
 		List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
@@ -374,7 +376,7 @@ public class CommandLine //implements Runnable
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
-		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm);
+		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair);
 	}
 	
 	private static Path parseMainPath(String path)

@@ -7,9 +7,11 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
@@ -185,16 +187,16 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				if (!safety.isEmpty())
 				{
 					// Redundant
-					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n  " + termset;
+					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n  " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
 				}
 				if (!roleLiveness.isEmpty())
 				{
-					errorMsg += "\nRole liveness violation for " + roleLiveness + " in terminal set:\n  " + termset;
+					errorMsg += "\nRole liveness violation for " + roleLiveness + " in terminal set:\n  " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
 				}
 				Map<Role, Set<Send>> msgLiveness = checkMessageLiveness(all, init, termset);
 				if (!msgLiveness.isEmpty())
 				{
-					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n  " + termset;
+					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n  " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
 				}
 			}
 		}
@@ -212,6 +214,19 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Map<Integer, WFState> seen) throws ScribbleException
 	{
 		Job job = getJob();
+		
+		//if (false)
+		if (!getJob().fair)
+		{
+			for (Entry<Role, EndpointFSM> e : egraphs.entrySet())
+			{
+				Role r = e.getKey();
+				EndpointFSM nonfair = e.getValue().init.unfairClone().toGraph().toFsm();
+				egraphs.put(r, nonfair);
+
+				job.debugPrintln("(" + fullname + ") Non-fair EFSM for " + r + ":\n" + nonfair.init.toDot());
+			}
+		}
 
 		WFBuffers b0 = new WFBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
 		//WFConfig c0 = new WFConfig(egraphs, b0);
@@ -329,20 +344,20 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			EndpointGraph fsm = graph.builder.finalise();
 			//*/
 
-			EndpointGraph fsm = job.getContext().getEndpointGraph(fullname, self);
-			if (fsm == null)
+			EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
+			if (graph == null)
 			{
 				//LProtocolDecl lpd = this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0);
 				Module proj = this.getJobContext().getProjection(fullname, self);  // Projected module contains a single protocol
-				EndpointGraphBuilder graph = new EndpointGraphBuilder(getJob());
-				proj.accept(graph);  // Side effects job context (caches graph)
-				fsm = job.getContext().getEndpointGraph(fullname, self);
+				EndpointGraphBuilder builder = new EndpointGraphBuilder(getJob());
+				proj.accept(builder);  // Side effects job context (caches graph)
+				graph = job.getContext().getEndpointGraph(fullname, self);
 			}
 
-			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + fsm);
+			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + graph);
 			
 			//egraphs.put(self, fsm.init);
-			egraphs.put(self, new EndpointFSM(fsm));
+			egraphs.put(self, graph.toFsm());
 		}
 		return egraphs;
 	}
