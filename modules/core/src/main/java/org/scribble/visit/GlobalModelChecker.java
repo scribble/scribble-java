@@ -309,6 +309,17 @@ public class GlobalModelChecker extends ModuleContextVisitor
 							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, d));
 						}
 					}
+					else if (a.isWrapClient() || a.isWrapServer())
+					{
+						List<IOAction> as = takeable.get(a.peer);
+						IOAction w = a.toDual(r);
+						if (as != null && as.contains(w))
+						{
+							as.remove(w);  // Removes one occurrence
+							GIOAction g = (a.isConnect()) ? a.toGlobal(r) : w.toGlobal(a.peer);
+							getNextStates(todo, seen, curr, g, curr.sync(r, a, a.peer, w));
+						}
+					}
 					else
 					{
 						throw new RuntimeException("Shouldn't get in here: " + a);

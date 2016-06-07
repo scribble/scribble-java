@@ -19,6 +19,8 @@ import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
+import org.scribble.model.local.WrapClient;
+import org.scribble.model.local.WrapServer;
 import org.scribble.sesstype.name.Role;
 
 public class WFConfig
@@ -134,6 +136,10 @@ public class WFConfig
 						//&& this.buffs.canConnect(r1, r2))
 				{
 					tmp2 = this.buffs.connect(r1, r2);
+				}
+				else if (((a1.isWrapClient() && a2.isWrapServer()) || (a1.isWrapServer() && a2.isWrapClient())))
+				{
+					tmp2 = this.buffs;  // OK, immutable?
 				}
 				else
 				{
@@ -472,6 +478,26 @@ public class WFConfig
 								tmp.add(a);
 							}
 						}
+						else if (a.isWrapClient())
+						{
+							// FIXME: factor out
+							WrapClient wc = (WrapClient) a;
+							EndpointFSM speer = this.states.get(wc.peer);
+							List<IOAction> peeras = speer.getAllTakeable();
+							for (IOAction peera : peeras)
+							{
+								if (peera.equals(wc.toDual(r)) && this.buffs.canWrapClient(r, wc))  // Cf. isWaitingFor
+								{
+									List<IOAction> tmp = res.get(r);
+									if (tmp == null)
+									{
+										tmp = new LinkedList<>();
+										res.put(r, tmp);
+									}
+									tmp.add(a);
+								}
+							}
+						}
 						else
 						{
 							throw new RuntimeException("Shouldn't get in here: " + a);
@@ -592,6 +618,38 @@ public class WFConfig
 										}
 										tmp.add(a);
 										//break;  // Add all of them
+									}
+								}
+							}
+						}
+						else
+						{
+							throw new RuntimeException("Shouldn't get in here: " + a);
+						}
+					}
+					break;
+				}
+				case WRAP_SERVER:
+				{
+					for (IOAction a : this.buffs.wrapable(r))
+					{
+						if (a.isWrapServer())
+						{
+							WrapServer ws = (WrapServer) a;
+							EndpointFSM speer = this.states.get(ws.peer);
+							{
+								List<IOAction> peeras = speer.getAllTakeable();
+								for (IOAction peera : peeras)
+								{
+									if (peera.equals(ws.toDual(r)) && this.buffs.canWrapServer(r, ws))
+									{
+										List<IOAction> tmp = res.get(r);
+										if (tmp == null)
+										{
+											tmp = new LinkedList<>();
+											res.put(r, tmp);
+										}
+										tmp.add(a);
 									}
 								}
 							}

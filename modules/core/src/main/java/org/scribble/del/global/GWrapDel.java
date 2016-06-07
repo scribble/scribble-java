@@ -42,21 +42,19 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
-		WFChoiceEnv env = checker.popEnv();
 		Role dest = gw.dest.toName();
+		if (src.equals(dest))
 		{
-			if (src.equals(dest))
-			{
-				throw new RuntimeException("TODO: " + gw);
-			}
-			if (env.isConnected(src, dest))
-			{
-				throw new ScribbleException("Roles already connected: " + src + ", " + dest);
-			}
-			env = env
-					.connect(src, dest)
-					.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));
+			throw new RuntimeException("TODO: " + gw);
 		}
+		WFChoiceEnv env = checker.popEnv();
+		if (!env.isConnected(src, dest))
+		{
+			throw new ScribbleException("Roles not connected: " + src + ", " + dest);
+		}
+		env = env
+				.connect(src, dest)
+				.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));
 		checker.pushEnv(env);
 		return gw;
 	}
@@ -68,7 +66,7 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 		Role self = proj.peekSelf();
 		LNode projection = gw.project(self);
 		proj.pushEnv(proj.popEnv().setProjection(projection));
-		return (GConnect) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gw);
+		return (GWrap) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gw);
 	}
 	
 	@Override

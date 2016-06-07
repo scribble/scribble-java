@@ -38,10 +38,19 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-/*
-global protocol Proto1(role A, role B)
+//*
+explicit global protocol Proto1(role A, role B)
 {
-
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		wrap B to A;
+	}
+	or
+	{
+		wrap A to B;
+	}
 }
 //*/
 

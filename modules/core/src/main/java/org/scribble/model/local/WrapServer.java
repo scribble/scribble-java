@@ -13,9 +13,9 @@ public class WrapServer extends IOAction
 	}
 	
 	@Override
-	public Connect toDual(Role self)
+	public WrapClient toDual(Role self)
 	{
-		return new Connect(self);
+		return new WrapClient(self);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class WrapServer extends IOAction
 	}
 	
 	@Override
-	public boolean isAccept()
+	public boolean isWrapServer()
 	{
 		return true;
 	}

@@ -14,6 +14,8 @@ import org.scribble.model.local.Disconnect;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
+import org.scribble.model.local.WrapClient;
+import org.scribble.model.local.WrapServer;
 import org.scribble.sesstype.name.Role;
 
 public class WFBuffers
@@ -124,6 +126,16 @@ public class WFBuffers
 	{
 		return isConnected(self, d.peer);
 	}
+
+	public boolean canWrapClient(Role self, WrapClient wc)
+	{
+		return isConnected(self, wc.peer);
+	}
+
+	public boolean canWrapServer(Role self, WrapServer ws)
+	{
+		return isConnected(self, ws.peer);
+	}
 	
 	//public WFBuffers connect(Role src, Connect c, Role dest)
 	public WFBuffers connect(Role src, Role dest)
@@ -198,7 +210,7 @@ public class WFBuffers
 		return res;
 	}
 	
-	// FIXME: rename model "acceptable" actions to "consumable"
+	// FIXME: rename model "acceptable" actions to "consumable" (here is really "acceptable")
 	public Set<IOAction> acceptable(Role r)  // Means connection accept actions
 	{
 		Set<IOAction> res = new HashSet<>();
@@ -212,6 +224,19 @@ public class WFBuffers
 			this.connected.keySet().stream()
 				.filter((k) -> !tmp.containsKey(k) || !tmp.get(k))
 				.forEach((k) -> res.add(new Accept(k)));
+		}
+		return res;
+	}
+
+	public Set<IOAction> wrapable(Role r)
+	{
+		Set<IOAction> res = new HashSet<>();
+		Map<Role, Boolean> tmp = this.connected.get(r);
+		if (tmp != null)
+		{
+			this.connected.keySet().stream()
+				.filter((k) -> tmp.containsKey(k) && tmp.get(k))
+				.forEach((k) -> res.add(new WrapServer(k)));
 		}
 		return res;
 	}
