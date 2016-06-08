@@ -10,6 +10,7 @@ import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.ast.global.GProtocolDef;
 import org.scribble.ast.global.GProtocolHeader;
 import org.scribble.parser.ScribParser;
+import org.scribble.util.ScribParserException;
 
 public class AntlrGProtocolDecl
 {
@@ -18,7 +19,7 @@ public class AntlrGProtocolDecl
 	//public static final int EXPLICIT_CONNECTIONS_FLAG_INDEX = 2;
 	public static final int MODIFIERS_CHILD_INDEX = 2;
 
-	public static GProtocolDecl parseGPrototocolDecl(ScribParser parser, CommonTree ct)
+	public static GProtocolDecl parseGPrototocolDecl(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		GProtocolHeader header = (GProtocolHeader) parser.parse(getHeaderChild(ct));
 		GProtocolDef def = (GProtocolDef) parser.parse(getBodyChild(ct));

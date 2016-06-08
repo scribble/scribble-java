@@ -15,12 +15,13 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.parser.AntlrConstants.AntlrNodeType;
 import org.scribble.parser.ScribParser;
 import org.scribble.parser.util.ScribParserUtil;
+import org.scribble.util.ScribParserException;
 
 public class AntlrModule
 {
 	public static final int MODULEDECL_CHILD_INDEX = 0;
 
-	public static Module parseModule(ScribParser parser, CommonTree ct)
+	public static Module parseModule(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		ModuleDecl md = (ModuleDecl) parser.parse(getModuleDeclChild(ct));
 		List<ImportDecl<?>> ids = new LinkedList<>();

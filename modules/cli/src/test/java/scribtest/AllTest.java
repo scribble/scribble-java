@@ -18,6 +18,7 @@ import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineArgParser;
 import org.scribble.cli.CommandLineException;
 import org.scribble.main.ScribbleException;
+import org.scribble.util.ScribParserException;
 
 /**
  * Runs all tests under good and bad root directories in Scribble.
@@ -84,7 +85,7 @@ public class AllTest
 			//Assert.assertTrue("Unexpected exception '" + e.getCause().getMessage() + "'", this.isBadTest);
 			Assert.assertTrue("Unexpected exception '" + e.getMessage() + "'", this.isBadTest);
 		}
-		catch (CommandLineException e)
+		catch (ScribParserException | CommandLineException e)
 		{
 			throw new RuntimeException(e);
 		}

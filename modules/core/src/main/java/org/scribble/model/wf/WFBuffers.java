@@ -3,6 +3,7 @@ package org.scribble.model.wf;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import org.scribble.model.local.Accept;
 import org.scribble.model.local.Connect;
 import org.scribble.model.local.Disconnect;
+import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
 import org.scribble.model.local.Send;
@@ -211,11 +213,13 @@ public class WFBuffers
 	}
 	
 	// FIXME: rename model "acceptable" actions to "consumable" (here is really "acceptable")
-	public Set<IOAction> acceptable(Role r)  // Means connection accept actions
+	//public Set<IOAction> acceptable(Role r)  // Means connection accept actions
+	// Pre: curr is Accept state, r is accept peer
+	public Set<IOAction> acceptable(Role r, EndpointState curr)  // Means connection accept actions
 	{
 		Set<IOAction> res = new HashSet<>();
 		Map<Role, Boolean> tmp = this.connected.get(r);
-		if (tmp == null)
+		/*if (tmp == null)
 		{
 			this.buffs.get(r).keySet().forEach((x) -> res.add(new Accept(x)));
 		}
@@ -224,6 +228,19 @@ public class WFBuffers
 			this.connected.keySet().stream()
 				.filter((k) -> !tmp.containsKey(k) || !tmp.get(k))
 				.forEach((k) -> res.add(new Accept(k)));
+		}*/
+		if (tmp != null)
+		{
+			Boolean b = tmp.get(r);
+			if (b != null && b)
+			{
+				return res;
+			}
+		}
+		List<IOAction> as = curr.getAllTakeable();
+		for (IOAction a : as)
+		{
+			res.add((Accept) a);
 		}
 		return res;
 	}

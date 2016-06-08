@@ -48,11 +48,19 @@ public class MessageIdMap
 		this.map.get(dest).get(src).add(msg);
 	}
 
-	public void removeMessage(Role dest, Role src, MessageId<?> msg)
+	/*public void removeMessage(Role dest, Role src, MessageId<?> msg)
 	{
 		addRolePair(dest, src);
 		this.map.get(dest).get(src).remove(msg);
-	}
+	}*/
+	/*public void removeMessages(Role dest)
+	{
+		Map<Role, Set<MessageId<?>>> tmp = this.map.get(dest);
+		for (Role r : tmp.keySet())
+		{
+			tmp.remove(r);
+		}
+	}*/
 
 	public void putMessages(Role dest, Role src, Set<MessageId<?>> msgs)
 	{

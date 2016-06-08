@@ -2,28 +2,30 @@ package org.scribble.model.local;
 
 import org.scribble.model.global.GConnect;
 import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.Op;
+import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
 public class Connect extends IOAction
 {
-	//public Connect(Role peer, MessageId<?> mid, Payload payload)
-	public Connect(Role peer)
+	public Connect(Role peer, MessageId<?> mid, Payload payload)
+	//public Connect(Role peer)
 	{
-		//super(peer, mid, payload);
-		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(peer, mid, payload);
+		//super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
 	public Accept toDual(Role self)
 	{
-		return new Accept(self);//, this.mid, this.payload);
+		//return new Accept(self);
+		return new Accept(self, this.mid, this.payload);
 	}
 
 	@Override
 	public GConnect toGlobal(Role self)
 	{
-		return new GConnect(self, this.peer);//, this.mid, this.payload);
+		//return new GConnect(self, this.peer);
+		return new GConnect(self, this.peer, this.mid, this.payload);
 	}
 	
 	@Override

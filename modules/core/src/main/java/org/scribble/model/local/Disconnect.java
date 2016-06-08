@@ -9,13 +9,13 @@ public class Disconnect extends IOAction
 {
 	public Disconnect(Role peer)
 	{
-		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GDisconnect.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override
-	public Accept toDual(Role self)
+	public Disconnect toDual(Role self)
 	{
-		return new Accept(self);
+		return new Disconnect(self);  // return this?
 	}
 
 	@Override

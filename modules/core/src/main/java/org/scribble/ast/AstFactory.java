@@ -82,8 +82,8 @@ public interface AstFactory
 	GInteractionSeq GInteractionSeq(List<GInteractionNode> gis);
 
 	GMessageTransfer GMessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	//GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dest);
-	GConnect GConnect(RoleNode src, RoleNode dest);
+	GConnect GConnect(RoleNode src, MessageNode msg, RoleNode dest);
+	//GConnect GConnect(RoleNode src, RoleNode dest);
 	GDisconnect GDisconnect(RoleNode src, RoleNode dest);
 	GWrap GWrap(RoleNode src, RoleNode dest);
 	GChoice GChoice(RoleNode subj, List<GProtocolBlock> blocks);
@@ -112,10 +112,10 @@ public interface AstFactory
 
 	LSend LSend(RoleNode src, MessageNode msg, List<RoleNode> dests);
 	LReceive LReceive(RoleNode src, MessageNode msg, List<RoleNode> dests);
-	/*LConnect LConnect(RoleNode src, MessageNode msg, RoleNode dest);
-	LAccept LAccept(RoleNode src, MessageNode msg, RoleNode dest);*/
-	LConnect LConnect(RoleNode src, RoleNode dest);
-	LAccept LAccept(RoleNode src, RoleNode dest);
+	LConnect LConnect(RoleNode src, MessageNode msg, RoleNode dest);
+	LAccept LAccept(RoleNode src, MessageNode msg, RoleNode dest);
+	/*LConnect LConnect(RoleNode src, RoleNode dest);
+	LAccept LAccept(RoleNode src, RoleNode dest);*/
 	LDisconnect LDisconnect(RoleNode self, RoleNode peer);
 	LWrapClient LWrapClient(RoleNode self, RoleNode peer);
 	LWrapServer LWrapServer(RoleNode self, RoleNode peer);

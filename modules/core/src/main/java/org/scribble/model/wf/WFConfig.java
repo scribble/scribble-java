@@ -266,7 +266,7 @@ public class WFConfig
 			
 			//EndpointState s = this.states.get(r);
 			EndpointFSM s = this.states.get(r);
-			if (s.getStateKind() == Kind.OUTPUT && !s.isConnectOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
+			if (s.getStateKind() == Kind.OUTPUT && !s.isConnectOrWrapClientOnly())  // FIXME: includes connect, could still be deadlock? -- no: doesn't include connect any more
 			{
 				// FIXME: move into isWaitingFor
 				return null;
@@ -335,12 +335,25 @@ public class WFConfig
 			// FIXME TODO: if analysing ACCEPTs, check if s is initial (not "deadlock blocked" if initial) -- no: instead, analysing connects
 			if (!s.isInitial())
 			{
-				List<IOAction> all = s.getAllTakeable();  // Should be singleton
-				Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
+				List<IOAction> all = s.getAllTakeable();  // Should be singleton -- no: not any more
+				/*Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
 				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Connect(r))))  // cf. getTakeable
 									//if (peera.equals(c.toDual(r)) && this.buffs.canConnect(r, c))
 				{
 					return rs;
+				}*/
+				Set<Role> res = new HashSet<Role>();
+				for (IOAction a : all)  // Accept  // FIXME: WrapServer
+				{
+					if (this.states.get(a.peer).getAllTakeable().contains(a.toDual(r)))
+					{
+						return null;
+					}
+					res.add(a.peer);
+				}
+				if (!res.isEmpty())
+				{
+					return res;
 				}
 			}
 		}
@@ -349,13 +362,26 @@ public class WFConfig
 				)
 		{
 			//List<IOAction> all = s.getAllAcceptable();
-			if (s.isConnectOnly())
+			if (s.isConnectOrWrapClientOnly())
 			{
 				List<IOAction> all = s.getAllTakeable();
-				Set<Role> rs = all.stream().map((x) -> x.peer).collect(Collectors.toSet());
-				if (rs.stream().noneMatch((x) -> this.states.get(x).getAllTakeable().contains(new Accept(r))))  // cf. getTakeable
+				/*Set<Role> peers = all.stream().map((x) -> x.peer).collect(Collectors.toSet());  // Should be singleton by enabling conditions
+				if (peers.stream().noneMatch((p) -> this.states.get(p).getAllTakeable().contains(new Accept(r))))  // cf. getTakeable
 				{
-					return rs;
+					return peers;
+				}*/
+				Set<Role> res = new HashSet<Role>();
+				for (IOAction a : all)  // Connect or WrapClient
+				{
+					if (this.states.get(a.peer).getAllTakeable().contains(a.toDual(r)))
+					{
+						return null;
+					}
+					res.add(a.peer);
+				}
+				if (!res.isEmpty())
+				{
+					return res;
 				}
 			}
 		}
@@ -419,12 +445,12 @@ public class WFConfig
 		for (Role r : this.states.keySet())
 		{
 			//EndpointState s = this.states.get(r);
-			EndpointFSM s = this.states.get(r);
-			switch (s.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
+			EndpointFSM fsm = this.states.get(r);
+			switch (fsm.getStateKind())  // Choice subject enabling needed for non-mixed states (mixed states would be needed for async. permutations though)
 			{
 				case OUTPUT:
 				{
-					List<IOAction> as = s.getAllTakeable();
+					List<IOAction> as = fsm.getAllTakeable();
 					for (IOAction a : as)
 					{
 						if (a.isSend())
@@ -512,7 +538,7 @@ public class WFConfig
 					{
 						if (a.isReceive())
 						{
-							if (s.isTakeable(a))
+							if (fsm.isTakeable(a))
 							{
 								List<IOAction> tmp = res.get(r);
 								if (tmp == null)
@@ -595,7 +621,7 @@ public class WFConfig
 				}*/
 				case ACCEPT:
 				{
-					for (IOAction a : this.buffs.acceptable(r))
+					for (IOAction a : this.buffs.acceptable(r, fsm.curr))
 					{
 						if (a.isAccept())
 						{
@@ -663,7 +689,7 @@ public class WFConfig
 				}
 				default:
 				{
-					throw new RuntimeException("Shouldn't get in here: " + s);
+					throw new RuntimeException("Shouldn't get in here: " + fsm);
 				}
 			}
 		}

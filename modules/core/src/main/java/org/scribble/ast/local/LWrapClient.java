@@ -6,7 +6,9 @@ import java.util.Set;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Constants;
+import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNodeBase;
+import org.scribble.ast.global.GWrap;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
@@ -20,7 +22,7 @@ public class LWrapClient extends ConnectionAction<Local> implements LSimpleInter
 {
 	public LWrapClient(RoleNode src, RoleNode dest)
 	{
-		super(src, dest);
+		super(src, GWrap.UNIT_MESSAGE_SIG_NODE, dest);
 	}
 
 	@Override
@@ -38,7 +40,8 @@ public class LWrapClient extends ConnectionAction<Local> implements LSimpleInter
 	}
 
 	@Override
-	public LWrapClient reconstruct(RoleNode src, RoleNode dest)
+	public LWrapClient reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
+	//public LWrapClient reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
 		LWrapClient ls = new LWrapClient(src, dest);

@@ -1,20 +1,32 @@
 package org.scribble.ast.global;
 
+import java.util.Collections;
+
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Constants;
+import org.scribble.ast.MessageNode;
+import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.local.LNode;
+import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.sesstype.kind.Global;
+import org.scribble.sesstype.kind.OpKind;
 import org.scribble.sesstype.kind.RoleKind;
+import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
 public class GDisconnect extends ConnectionAction<Global> implements GSimpleInteractionNode
 {
+	public static final MessageSigNode UNIT_MESSAGE_SIG_NODE =  // Hacky?
+			AstFactoryImpl.FACTORY.MessageSigNode(
+				(OpNode) AstFactoryImpl.FACTORY.SimpleNameNode(OpKind.KIND, Op.EMPTY_OPERATOR.toString()),
+				AstFactoryImpl.FACTORY.PayloadElemList(Collections.emptyList()));
+
 	public GDisconnect(RoleNode src, RoleNode dest)
 	{
-		super(src, dest);
+		super(src, UNIT_MESSAGE_SIG_NODE, dest);
 	}
 
 	public LNode project(Role self)
@@ -54,12 +66,13 @@ public class GDisconnect extends ConnectionAction<Global> implements GSimpleInte
 	}
 
 	@Override
-	public GDisconnect reconstruct(RoleNode src, RoleNode dest)
+	public GDisconnect reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
+	//public GDisconnect reconstruct(RoleNode src, RoleNode dest)
 	{
 		ScribDel del = del();
-		GDisconnect gc = new GDisconnect(src, dest);
-		gc = (GDisconnect) gc.del(del);
-		return gc;
+		GDisconnect gd = new GDisconnect(src, dest);
+		gd = (GDisconnect) gd.del(del);
+		return gd;
 	}
 
 	// FIXME: shouldn't be needed, but here due to Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=436350

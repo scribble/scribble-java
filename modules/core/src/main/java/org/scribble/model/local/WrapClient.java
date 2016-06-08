@@ -5,11 +5,12 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
 import org.scribble.sesstype.name.Role;
 
+// Duplicated from Disconnect
 public class WrapClient extends IOAction
 {
 	public WrapClient(Role peer)
 	{
-		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);  // Must correspond with GWrap.UNIT_MESSAGE_SIG_NODE
 	}
 	
 	@Override

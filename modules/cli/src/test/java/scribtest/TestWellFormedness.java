@@ -19,6 +19,8 @@ import java.util.List;
 
 
 
+
+
 //import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +30,7 @@ import org.scribble.main.MainContext;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
+import org.scribble.util.ScribParserException;
 import org.scribble.visit.Job;
 
 /**
@@ -112,6 +115,13 @@ public class TestWellFormedness {
 		impaths.add(Paths.get(dir));
 		
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
-		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair);
+		try
+		{
+			return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair);
+		}
+		catch (ScribParserException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

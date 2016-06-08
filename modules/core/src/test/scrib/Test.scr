@@ -45,7 +45,66 @@ module Test;
 // ..is branching on accept+message more expressive than accept followed by branch?  i.e. can connect always be "factored up" before the choice? -- maybe depends on interplay with select fairness (want to use connect to nest role scope inside choice case to avoid assuming fairness, but this can conflict with non-det accept?)
 
 
+global protocol Proto1(role A, role B)
+{
+
+}
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		connect B to C;
+		connect A to C;
+		1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+		connect A to C;  // Inconsistent choice connect subjects
+	}
+}
 //*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		disconnect A and B;  // CHECKME: disconnect shouldn't have asymmetric src/dest -- check enabling conditions wrt. choices, projection, etc
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1(Int) connect A to B;  // Testing non-det payloads for message-connects
+	}
+	or
+	{
+		1() connect A to B;
+	}
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -58,14 +117,14 @@ explicit global protocol Proto1(role A, role B, role C)
 		or
 		{
 			2() from A to B;
-			connect B to C;
+			2() connect B to C;
 			2() from B to C;
 			disconnect B and C;
 		}
 		or
 		{
 			3() from A to B;
-			connect B to C;  // Cf. PartnershipSupplier filter subproto
+			3() connect B to C;  // Cf. PartnershipSupplier filter subproto
 			3() from B to C;
 			disconnect B and C;
 		}

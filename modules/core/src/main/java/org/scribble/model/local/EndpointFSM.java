@@ -67,9 +67,9 @@ public class EndpointFSM extends EndpointGraph
 		return this.curr.isTakeable(a);
 	}
 	
-	public boolean isConnectOnly()
+	public boolean isConnectOrWrapClientOnly()
 	{
-		return this.curr.isConnectOnly();
+		return this.curr.isConnectOrWrapClientOnly();
 	}
 
 	@Override

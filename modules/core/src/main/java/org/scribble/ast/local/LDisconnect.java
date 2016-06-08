@@ -6,7 +6,9 @@ import java.util.Set;
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Constants;
+import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNodeBase;
+import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.RuntimeScribbleException;
@@ -23,7 +25,7 @@ public class LDisconnect extends ConnectionAction<Local> implements LSimpleInter
 	
 	public LDisconnect(RoleNode self, RoleNode peer)
 	{
-		super(self, peer);
+		super(self, GDisconnect.UNIT_MESSAGE_SIG_NODE, peer);
 		this.self = self;
 		this.peer = peer;
 	}
@@ -43,7 +45,8 @@ public class LDisconnect extends ConnectionAction<Local> implements LSimpleInter
 	}
 
 	@Override
-	public LDisconnect reconstruct(RoleNode self, RoleNode peer)
+	public LDisconnect reconstruct(RoleNode src, MessageNode msg, RoleNode dest)
+	//public LDisconnect reconstruct(RoleNode self, RoleNode peer)
 	{
 		ScribDel del = del();
 		LDisconnect lr = new LDisconnect(self, peer);

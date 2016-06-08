@@ -5,9 +5,7 @@ import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.MessageSig;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.Op;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
@@ -41,21 +39,28 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
+		Message msg = gd.msg.toMessage();  //  Unit message 
 		WFChoiceEnv env = checker.popEnv();
 		//for (Role dest : gc.getDestinationRoles())
 		Role dest = gd.dest.toName();
+		if (!env.isEnabled(dest))
+		{
+			throw new ScribbleException("Role not enabled: " + dest);
+		}
 		{
 			if (src.equals(dest))
 			{
-				throw new RuntimeException("TODO: " + gd);
+				throw new ScribbleException("(TODO) Self connections not supported: " + gd);
 			}
 			if (!env.isConnected(src, dest))
 			{
 				throw new ScribbleException("Roles not connected: " + src + ", " + dest);
 			}
-			env = env
+
+			env = env.disconnect(src, dest);//.removeMessage(src, dest, ...);  // Is remove really needed?
+			/*env = env
 					.disconnect(src, dest)
-					.removeMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));  // FIXME: factor out dummy connection message with GConnect etc.
+					.removeMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));  // FIXME: factor out dummy connection message with GConnect etc.*/
 		}
 		checker.pushEnv(env);
 		return gd;
