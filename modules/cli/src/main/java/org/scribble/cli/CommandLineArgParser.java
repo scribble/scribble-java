@@ -325,7 +325,6 @@ public class CommandLineArgParser
 		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PROJECTED_MODEL_FLAG), proto, role);
 		return i;
 	}*/
-	
 
 	private int parseOutput(int i) throws CommandLineException  // Almost same as parseProject
 	{

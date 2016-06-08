@@ -260,7 +260,7 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 		{
 			return start;
 		}
-		Set<S> terms = getAllReachable(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
+		Set<S> terms = ModelState.getAllReachable(start).stream().filter((s) -> s.isTerminal()).collect(Collectors.toSet());
 		if (terms.size() > 1)
 		{
 			throw new RuntimeException("Shouldn't get in here: " + terms);
@@ -288,13 +288,15 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 		return null;
 	}*/
 
-	// Note: doesn't include start, unless start is reachable from start
+	// Note: doesn't implicitly include start (only if start is explicitly reachable from start, of course)
+	/*public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
+			Set<S> getAllReachable(S start)*/
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
-			Set<S> getAllReachable(S start)
+			Set<S> getAllReachable(ModelState<A, S, K> start)
 	{
 		Map<Integer, S> all = new HashMap<>();
 		Map<Integer, S> todo = new LinkedHashMap<>();
-		todo.put(start.id, start);
+		todo.put(start.id, (S) start);  // Assumes ModelState subclass correctly instantiates S parameter
 		while (!todo.isEmpty())
 		{
 			Iterator<S> i = todo.values().iterator();
@@ -325,11 +327,12 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	}
 
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
-			Set<A> getAllReachableActions(S start)
+			//Set<A> getAllReachableActions(S start)
+			Set<A> getAllReachableActions(ModelState<A, S, K> start)
 	{
 		Set<S> all = new HashSet<>();
-		all.add(start);
-		all.addAll(getAllReachable(start));
+		all.add((S) start);  // Assumes ModelState subclass correctly instantiates S parameter
+		all.addAll(ModelState.getAllReachable(start));
 		Set<A> as = new HashSet<>();
 		for (S s : all)
 		{
@@ -340,13 +343,13 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	
 	public String toAut()
 	{
-		Set<S> all = new HashSet<>();
-		all.add((S) this);  // FIXME
-		all.addAll(getAllReachable((S) this));
+		Set<ModelState<A, S, K>> all = new HashSet<>();
+		all.add(this);  // FIXME
+		all.addAll(getAllReachable(this));
 		String aut = "";
 		int edges = 0;
 		Set<Integer> seen = new HashSet<>();
-		for (S s : all)
+		for (ModelState<A, S, K> s : all)
 		{
 			if (seen.contains(s.id))
 			{
@@ -368,15 +371,15 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	
 	public S clone()
 	{
-		Set<S> all = new HashSet<>();
-		all.add((S) this);
-		all.addAll(ModelState.getAllReachable((S) this));
+		Set<ModelState<A, S, K>> all = new HashSet<>();
+		all.add(this);
+		all.addAll(ModelState.getAllReachable(this));
 		Map<Integer, S> map = new HashMap<>();  // original s.id -> clones
-		for (S s : all)
+		for (ModelState<A, S, K> s : all)
 		{
 			map.put(s.id, newState(s.labs));
 		}
-		for (S s : all)
+		for (ModelState<A, S, K> s : all)
 		{
 			Iterator<A> as = s.getAllTakeable().iterator();
 			Iterator<S> ss = s.getSuccessors().iterator();
@@ -389,6 +392,11 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 			}
 		}
 		return map.get(this.id);
+	}
+	
+	public boolean canReach(ModelState<A, S, K> s)
+	{
+		return ModelState.getAllReachable(this).contains(s);
 	}
 	
 	/*protected Map<ModelAction, ModelState> getEdges()

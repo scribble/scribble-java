@@ -82,25 +82,39 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 					while (as.hasNext())
 					{
 						IOAction a = as.next();
-						EndpointState clone = curr.unfairClone(a, ss.next(), term);
-						//try { s.removeEdge(a, tmps); } catch (ScribbleException e) { throw new RuntimeException(e); }
-						clones.put(a, clone);
-					}
-					as = new LinkedList<>(curr.getAllTakeable()).iterator();
-					//Iterator<EndpointState>
-					ss = new LinkedList<>(curr.getSuccessors()).iterator();
-					while (as.hasNext())
-					{
-						IOAction a = as.next();
 						EndpointState s = ss.next();
-						try { curr.removeEdge(a, s); } catch (ScribbleException e) { throw new RuntimeException(e); }
+						if (!s.canReach(curr))
+						{
+							todo.add(s);
+						}
+						else
+						{
+							EndpointState clone = curr.unfairClone(a, s, term);
+							//try { s.removeEdge(a, tmps); } catch (ScribbleException e) { throw new RuntimeException(e); }
+							clones.put(a, clone);
+						}
 					}
-					for (Entry<IOAction, EndpointState> e : clones.entrySet())
+					if (!clones.isEmpty())  // Redundant, but more clear
 					{
-						curr.addEdge(e.getKey(), e.getValue());
-						todo.add(e.getValue());
+						as = new LinkedList<>(curr.getAllTakeable()).iterator();
+						//Iterator<EndpointState>
+						ss = new LinkedList<>(curr.getSuccessors()).iterator();
+						while (as.hasNext())
+						{
+							IOAction a = as.next();
+							EndpointState s = ss.next();
+							if (clones.containsKey(a))  // Still OK for non-det edges?
+							{
+								try { curr.removeEdge(a, s); } catch (ScribbleException e) { throw new RuntimeException(e); }
+							}
+						}
+						for (Entry<IOAction, EndpointState> e : clones.entrySet())
+						{
+							curr.addEdge(e.getKey(), e.getValue());
+							todo.add(e.getValue());
+						}
+						//continue;
 					}
-					//continue;
 				}
 			}
 			else
