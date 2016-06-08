@@ -254,7 +254,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 					break;
 				case TERMINAL:
 				default:
-					throw new RuntimeException("TODO:");
+					throw new RuntimeException("(TODO) I/O interface generation: " + s.getStateKind());
 			}
 			this.iostates.put(key, ifgen.generateType());
 		}

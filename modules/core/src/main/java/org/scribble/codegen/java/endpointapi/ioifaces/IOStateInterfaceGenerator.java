@@ -120,6 +120,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 			case UNARY_INPUT: name = "Receive"; break;
 			case POLY_INPUT:  name = "Branch";  break;
 			case TERMINAL:    throw new RuntimeScribbleException("Shouldn't get in here: " + s);
+			default:          throw new RuntimeException("(TODO) I/O interface generation: " + s.getStateKind());
 		}
 		return name + "_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));

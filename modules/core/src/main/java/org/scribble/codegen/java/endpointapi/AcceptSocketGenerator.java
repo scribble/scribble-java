@@ -1,5 +1,7 @@
 package org.scribble.codegen.java.endpointapi;
 
+import java.util.Set;
+
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.model.local.EndpointState;
@@ -28,7 +30,12 @@ public class AcceptSocketGenerator extends ScribSocketGenerator
 	@Override
 	protected void addMethods()
 	{
-		IOAction a = curr.getTakeable().iterator().next();
+		Set<IOAction> as = curr.getTakeable();
+		if (as.size() > 1)
+		{
+			throw new RuntimeException("AcceptSocket generation not yet supported for accept-branches: " + as);
+		}
+		IOAction a = as.iterator().next();
 		EndpointState succ = curr.take(a);
 		makeAcceptMethod(a, succ);
 	}

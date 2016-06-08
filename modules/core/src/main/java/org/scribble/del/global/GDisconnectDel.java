@@ -43,17 +43,21 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		WFChoiceEnv env = checker.popEnv();
 		//for (Role dest : gc.getDestinationRoles())
 		Role dest = gd.dest.toName();
+		if (!checker.peekEnv().isEnabled(dest))
+		{
+			throw new ScribbleException("Role not enabled: " + dest);
+		}
 		{
 			if (src.equals(dest))
 			{
-				throw new RuntimeException("TODO: " + gd);
+				throw new ScribbleException("(TODO) Self connections not supported: " + gd);
 			}
 			if (!env.isConnected(src, dest))
 			{
 				throw new ScribbleException("Roles not connected: " + src + ", " + dest);
 			}
 
-			env = env.addMessage(src, dest, msg);
+			env = env.disconnect(src, dest);//.removeMessage(src, dest, ...);  // Is remove really needed?
 			/*env = env
 					.disconnect(src, dest)
 					.removeMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));  // FIXME: factor out dummy connection message with GConnect etc.*/

@@ -16,9 +16,9 @@ import org.scribble.parser.util.ScribParserUtil;
 // Factor with AntlrGMessageTransfer?
 public class AntlrGConnect
 {
-	public static final int MESSAGE_CHILD_INDEX = 0;
-	public static final int SOURCE_CHILD_INDEX = 1;
-	public static final int DESTINATION_CHILD_INDEX = 2;
+	public static final int MESSAGE_CHILD_INDEX = 2;
+	public static final int SOURCE_CHILD_INDEX = 0;
+	public static final int DESTINATION_CHILD_INDEX = 1;
 
 	public static GConnect parseGConnect(ScribParser parser, CommonTree ct)
 	{

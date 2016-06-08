@@ -46,14 +46,14 @@ public class GConnectDel extends ConnectionActionDel implements GSimpleInteracti
 		{
 			if (src.equals(dest))
 			{
-				throw new RuntimeException("TODO: " + gc);
+				throw new ScribbleException("(TODO) Self connections not supported: " + gc);
 			}
 			if (env.isConnected(src, dest))
 			{
 				throw new ScribbleException("Roles already connected: " + src + ", " + dest);
 			}
 
-			env = env.addMessage(src, dest, msg);
+			env = env.connect(src, dest).addMessage(src, dest, msg);
 			/*env = env
 					.connect(src, dest)
 					.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));*/

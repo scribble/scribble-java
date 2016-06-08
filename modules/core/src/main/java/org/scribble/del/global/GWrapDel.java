@@ -43,7 +43,7 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 		Role dest = gw.dest.toName();
 		if (src.equals(dest))
 		{
-			throw new RuntimeException("TODO: " + gw);
+			throw new ScribbleException("(TODO) Self connections not supported: " + gw);
 		}
 		WFChoiceEnv env = checker.popEnv();
 		if (!env.isConnected(src, dest))
@@ -51,7 +51,7 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 			throw new ScribbleException("Roles not connected: " + src + ", " + dest);
 		}
 
-		env = env.addMessage(src, dest, msg);
+		//env = env.addMessage(src, dest, msg);
 		/*env = env
 				.connect(src, dest)
 				.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));*/

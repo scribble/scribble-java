@@ -170,9 +170,10 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 		return new EndpointState(labs);
 	}
 	
-	public boolean isConnectOnly()
+	// FIXME: refactor as "isSyncOnly" -- and make an isSync in IOAction
+	public boolean isConnectOrWrapClientOnly()
 	{
-		return getStateKind() == Kind.OUTPUT && getAllTakeable().stream().allMatch((a) -> a.isConnect());
+		return getStateKind() == Kind.OUTPUT && getAllTakeable().stream().allMatch((a) -> a.isConnect() || a.isWrapClient());
 	}
 	
 	public Kind getStateKind()
@@ -188,7 +189,7 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 			return (a.isSend() || a.isConnect() || a.isDisconnect() || a.isWrapClient() ) ? Kind.OUTPUT
 						//: (a.isConnect() || a.isAccept()) ? Kind.CONNECTION  // FIXME: states can have mixed connects and sends
 						//: (a.isConnect()) ? Kind.CONNECT
-						: (a.isAccept()) ? Kind.ACCEPT  // Accept is always unary, guaranteed by treating as a unit message id (wrt. branching)
+						: (a.isAccept()) ? Kind.ACCEPT  // Accept is always unary, guaranteed by treating as a unit message id (wrt. branching)  // No: not any more
 						: (a.isWrapServer()) ? Kind.WRAP_SERVER   // WrapServer is always unary, guaranteed by treating as a unit message id (wrt. branching)
 						: (as.size() > 1) ? Kind.POLY_INPUT : Kind.UNARY_INPUT;
 		}

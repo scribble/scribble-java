@@ -157,12 +157,22 @@ public class WFChoiceEnv extends Env<WFChoiceEnv>
 		return copy;
 	}
 
-	public WFChoiceEnv removeMessage(Role src, Role dest, Message msg)
+	/*public WFChoiceEnv removeMessage(Role src, Role dest, Message msg)
 	{
 		WFChoiceEnv copy = copy();
 		copy.initial.removeMessage(dest, src, msg.getId());
 		return copy;
 	}
+
+	public WFChoiceEnv disableRole(Role r)
+	{
+		WFChoiceEnv copy = copy();
+		for (...)
+		{
+			copy.initial.removeMessage(dest, src, ...);
+		}
+		return copy;
+	}*/
 
 	// FIXME: List/Set argument
 	// Means: record message as initial enabling message if dest not already enabled
