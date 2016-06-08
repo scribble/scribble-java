@@ -38,6 +38,7 @@ import org.scribble.parser.ast.global.AntlrGProtocolHeader;
 import org.scribble.parser.ast.global.AntlrGRecursion;
 import org.scribble.parser.ast.global.AntlrGWrap;
 import org.scribble.parser.util.ScribParserUtil;
+import org.scribble.util.ScribParserException;
 
 // ANTLR CommonTree -> ScribNode
 // Parses ANTLR nodes into ScribNodes using the parser.ast.Antlr[...] helper classes
@@ -48,7 +49,7 @@ public class ScribParser
 
 	}
 
-	public ScribNode parse(CommonTree ct)
+	public ScribNode parse(CommonTree ct) throws ScribParserException
 	{
 		if (ct.getChildCount() > 0)  // getChildren returns null instead of empty list 
 		{
@@ -58,7 +59,7 @@ public class ScribParser
 					.collect(Collectors.toList());
 			if (errors.size() > 0)
 			{
-				throw new RuntimeException("Parsing error: " + errors);
+				throw new ScribParserException("Parsing error: " + errors);
 			}
 		}
 		

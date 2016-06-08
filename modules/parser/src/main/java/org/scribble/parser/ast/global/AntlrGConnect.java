@@ -12,6 +12,7 @@ import org.scribble.parser.ast.name.AntlrAmbigName;
 import org.scribble.parser.ast.name.AntlrQualifiedName;
 import org.scribble.parser.ast.name.AntlrSimpleName;
 import org.scribble.parser.util.ScribParserUtil;
+import org.scribble.util.ScribParserException;
 
 // Factor with AntlrGMessageTransfer?
 public class AntlrGConnect
@@ -20,7 +21,7 @@ public class AntlrGConnect
 	public static final int SOURCE_CHILD_INDEX = 0;
 	public static final int DESTINATION_CHILD_INDEX = 1;
 
-	public static GConnect parseGConnect(ScribParser parser, CommonTree ct)
+	public static GConnect parseGConnect(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		RoleNode src = AntlrSimpleName.toRoleNode(getSourceChild(ct));
 		MessageNode msg = parseMessage(parser, getMessageChild(ct));
@@ -29,7 +30,7 @@ public class AntlrGConnect
 		//return AstFactoryImpl.FACTORY.GConnect(src, dest);
 	}
 
-	protected static MessageNode parseMessage(ScribParser parser, CommonTree ct)
+	protected static MessageNode parseMessage(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		if (type == AntlrNodeType.MESSAGESIGNATURE)

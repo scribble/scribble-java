@@ -1,4 +1,4 @@
-module src.SupplierInfoNoFair;
+module src.SupplierInfoNoFairBeta;
 
 
 type <xsd> "UserName" from "AUTH.xsd" as username;
@@ -32,6 +32,7 @@ explicit global protocol PartnershipSupplier
 	{
 		loginsuccess() from loginsvc to requestor;
 		connect requestor to authorisersvc;
+		connect authorisersvc to filtersvc;
 		do Main(requestor, authorisersvc, filtersvc, suppliersvc, contractsvc);
 	}
 }
@@ -74,6 +75,8 @@ aux global protocol SuppInfo
 	{
 		// DENIED
 		deny() from authorisersvc to requestor;
+
+		0() from authorisersvc to filtersvc;  // FIXME: need accept+message branching, to factor out non-fair filter subproto
 	}
 	or
 	{
@@ -82,8 +85,7 @@ aux global protocol SuppInfo
 		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 		getsuppliers() from authorisersvc to suppliersvc;
 		do FilterInfo
-				//<filterSuppliers(usercontext, filters, supplierdetails)>
-				<filterContracts(usercontext, filters, supplierdetails)>
+				<filterSupplier(usercontext, filters, supplierdetails)>
 				(authorisersvc, filtersvc);
 		suppliers() from suppliersvc to authorisersvc;
 
@@ -106,6 +108,8 @@ aux global protocol ContractInfo
 	{
 		// DENIED
 		deny() from authorisersvc to requestor;
+
+		0() from authorisersvc to filtersvc;
 	}
 	or
 	{
@@ -115,7 +119,7 @@ aux global protocol ContractInfo
 		getcontracts() from authorisersvc to contractsvc;
 		suppliers() from contractsvc to authorisersvc;
 		do FilterInfo
-				<filterContracts(usercontext, filters, contractdetails)>
+				<filterContract(usercontext, filters, contractdetails)>
 				(authorisersvc, filtersvc);
 		contracts() from authorisersvc to requestor;
 
@@ -134,8 +138,8 @@ aux global protocol FilterInfo
 	role filtersvc
 )
 {
-	Query connect authorisersvc to filtersvc;
+	//filter(usercontext, filters, details) from authorisersvc to filtersvc;
+	Query from authorisersvc to filtersvc;
 	filtered() from filtersvc to authorisersvc;
-	disconnect authorisersvc and filtersvc;
 }
 

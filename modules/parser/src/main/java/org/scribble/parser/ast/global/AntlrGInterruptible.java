@@ -1,7 +1,7 @@
 package org.scribble.parser.ast.global;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.scribble.ast.global.GInterrupt;
@@ -11,6 +11,7 @@ import org.scribble.ast.name.simple.ScopeNode;
 import org.scribble.parser.ScribParser;
 import org.scribble.parser.ast.name.AntlrSimpleName;
 import org.scribble.parser.util.ScribParserUtil;
+import org.scribble.util.ScribParserException;
 
 public class AntlrGInterruptible
 {
@@ -18,11 +19,16 @@ public class AntlrGInterruptible
 	public static final int BLOCK_CHILD_INDEX = 1;
 	public static final int INTERRUPT_CHILDREN_START_INDEX = 2;
 
-	public static GInterruptible parseGInterruptible(ScribParser parser, CommonTree ct)
+	public static GInterruptible parseGInterruptible(ScribParser parser, CommonTree ct) throws ScribParserException
 	{
 		GProtocolBlock block = (GProtocolBlock) parser.parse(getBlockChild(ct));
-		List<GInterrupt> interrs = 
-			getInterruptChildren(ct).stream().map((interr) -> (GInterrupt) parser.parse(interr)).collect(Collectors.toList());
+		/*List<GInterrupt> interrs = 
+			getInterruptChildren(ct).stream().map((interr) -> (GInterrupt) parser.parse(interr)).collect(Collectors.toList());*/
+		List<GInterrupt> interrs = new LinkedList<>();
+		for (CommonTree interr : getInterruptChildren(ct))
+		{
+			interrs.add((GInterrupt) parser.parse(interr));
+		}
 		if (isScopeImplicit(ct))
 		{
 			return new GInterruptible(block, interrs);

@@ -65,6 +65,7 @@ explicit global protocol Proto1(role A, role B, role C)
 //*/
 
 
+/*
 explicit global protocol Proto1(role A, role B)
 {
 	connect A to B;
@@ -77,6 +78,7 @@ explicit global protocol Proto1(role A, role B)
 		disconnect A and B;  // CHECKME: disconnect shouldn't have asymmetric src/dest -- check enabling conditions wrt. choices, projection, etc
 	}
 }
+//*/
 
 
 /*

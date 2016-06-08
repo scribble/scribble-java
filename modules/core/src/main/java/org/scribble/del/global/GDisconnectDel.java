@@ -43,7 +43,7 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		WFChoiceEnv env = checker.popEnv();
 		//for (Role dest : gc.getDestinationRoles())
 		Role dest = gd.dest.toName();
-		if (!checker.peekEnv().isEnabled(dest))
+		if (!env.isEnabled(dest))
 		{
 			throw new ScribbleException("Role not enabled: " + dest);
 		}

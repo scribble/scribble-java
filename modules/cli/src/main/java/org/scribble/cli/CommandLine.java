@@ -22,6 +22,7 @@ import org.scribble.model.wf.WFState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.util.ScribParserException;
 import org.scribble.util.ScribUtil;
 import org.scribble.visit.Job;
 import org.scribble.visit.JobContext;
@@ -68,7 +69,7 @@ public class CommandLine //implements Runnable
 		{
 			new CommandLine(args).run();
 		}
-		catch (CommandLineException e)
+		catch (ScribParserException | CommandLineException e)
 		{
 			System.err.println(e.getMessage());  // No need to give full stack trace, even for debug, for command line errors
 			System.exit(1);
@@ -76,7 +77,7 @@ public class CommandLine //implements Runnable
 	}
 
 	//@Override
-	public void run() throws ScribbleException, CommandLineException
+	public void run() throws ScribbleException, CommandLineException, ScribParserException
 	{
 		try
 		{
@@ -369,7 +370,7 @@ public class CommandLine //implements Runnable
 		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm, mc.fair);
 	}
 
-	private MainContext newMainContext()
+	private MainContext newMainContext() throws ScribParserException
 	{
 		//boolean jUnit = this.args.containsKey(ArgFlag.JUNIT);
 		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);
