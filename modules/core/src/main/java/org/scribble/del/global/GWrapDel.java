@@ -1,14 +1,11 @@
 package org.scribble.del.global;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.MessageSig;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.Op;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
@@ -42,6 +39,7 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
+		Message msg = gw.msg.toMessage();  //  Unit message 
 		Role dest = gw.dest.toName();
 		if (src.equals(dest))
 		{
@@ -52,9 +50,11 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 		{
 			throw new ScribbleException("Roles not connected: " + src + ", " + dest);
 		}
-		env = env
+
+		env = env.addMessage(src, dest, msg);
+		/*env = env
 				.connect(src, dest)
-				.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));
+				.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));*/
 		checker.pushEnv(env);
 		return gw;
 	}

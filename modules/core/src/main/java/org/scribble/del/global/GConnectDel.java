@@ -5,9 +5,7 @@ import org.scribble.ast.global.GConnect;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.MessageSig;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.Op;
+import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
@@ -41,6 +39,7 @@ public class GConnectDel extends ConnectionActionDel implements GSimpleInteracti
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
+		Message msg = gc.msg.toMessage();
 		WFChoiceEnv env = checker.popEnv();
 		//for (Role dest : gc.getDestinationRoles())
 		Role dest = gc.dest.toName();
@@ -53,9 +52,11 @@ public class GConnectDel extends ConnectionActionDel implements GSimpleInteracti
 			{
 				throw new ScribbleException("Roles already connected: " + src + ", " + dest);
 			}
-			env = env
+
+			env = env.addMessage(src, dest, msg);
+			/*env = env
 					.connect(src, dest)
-					.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));
+					.addMessage(src, dest, new MessageSig(Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD));*/
 		}
 		checker.pushEnv(env);
 		return gc;

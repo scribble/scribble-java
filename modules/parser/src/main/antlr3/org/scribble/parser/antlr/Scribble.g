@@ -583,7 +583,11 @@ globalconnect:
 	//message CONNECTKW rolename TOKW rolename
 	CONNECTKW rolename TOKW rolename ';'
 	->
-	^(GLOBALCONNECT rolename rolename)
+	^(GLOBALCONNECT rolename rolename ^(MESSAGESIGNATURE EMPTY_OPERATOR ^(PAYLOAD)))  // Empty message sig duplicated from messagesignature
+|
+	message CONNECTKW rolename TOKW rolename ';'
+	->
+	^(GLOBALCONNECT rolename rolename message)
 ;
 /*	'(' connectdecl (',' connectdecl)* ')'
 	->
@@ -601,7 +605,7 @@ globalconnect:
 globaldisconnect:
 	DISCONNECTKW rolename ANDKW rolename ';'
 	->
-	^(GLOBALDISCONNECT rolename rolename)
+	^(GLOBALDISCONNECT rolename rolename )
 ;
 
 globalwrap:
