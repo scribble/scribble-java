@@ -45,7 +45,13 @@ module Test;
 // ..is branching on accept+message more expressive than accept followed by branch?  i.e. can connect always be "factored up" before the choice? -- maybe depends on interplay with select fairness (want to use connect to nest role scope inside choice case to avoid assuming fairness, but this can conflict with non-det accept?)
 
 
-/*/
+global protocol Proto1(role A, role B)
+{
+
+}
+
+
+/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -76,6 +82,23 @@ explicit global protocol Proto1(role A, role B)
 	or
 	{
 		disconnect A and B;  // CHECKME: disconnect shouldn't have asymmetric src/dest -- check enabling conditions wrt. choices, projection, etc
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1(Int) connect A to B;  // Testing non-det payloads for message-connects
+	}
+	or
+	{
+		1() connect A to B;
 	}
 }
 //*/

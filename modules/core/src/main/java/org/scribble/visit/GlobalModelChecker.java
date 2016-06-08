@@ -264,10 +264,10 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			{
 				List<IOAction> acceptable_r = takeable.get(r);
 				
-				// Hacky?
+				// Hacky?  // FIXME: factor out and make more robust (e.g. for new state kinds) -- e.g. "hasPayload" in IOAction
 				//EndpointState currstate = curr.config.states.get(r);
-				EndpointFSM currstate = curr.config.states.get(r);
-				Kind k = currstate.getStateKind();
+				EndpointFSM currfsm = curr.config.states.get(r);
+				Kind k = currfsm.getStateKind();
 				if (k == Kind.OUTPUT)
 				{
 					for (IOAction a : acceptable_r)  // Connect implicitly has no payload (also accept, so skip)
@@ -279,18 +279,23 @@ public class GlobalModelChecker extends ModuleContextVisitor
 						}
 					}
 				}
-				else if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT)
+				else if (k == Kind.UNARY_INPUT || k == Kind.POLY_INPUT || k == Kind.ACCEPT)
 				{
 					for (IOAction a : acceptable_r)
 					{
-						if (currstate.getAllTakeable().stream().anyMatch((x) ->
+						if (currfsm.getAllTakeable().stream().anyMatch((x) ->
 								!a.equals(x) && a.peer.equals(x.peer) && a.mid.equals(x.mid) && !a.payload.equals(x.payload)))
 						{
-							throw new ScribbleException("Bad non-deterministic action payloads: " + currstate.getAllTakeable());
+							throw new ScribbleException("Bad non-deterministic action payloads: " + currfsm.getAllTakeable());
 						}
 					}
 				}
+			}  // Need to do all action payload checking before next building step, because doing sync actions will also remove peer's actions from takeable set
 
+			for (Role r : takeable.keySet())
+			{
+				List<IOAction> acceptable_r = takeable.get(r);
+				
 				for (IOAction a : acceptable_r)
 				{
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
