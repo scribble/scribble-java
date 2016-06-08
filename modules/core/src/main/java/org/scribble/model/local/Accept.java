@@ -2,29 +2,30 @@ package org.scribble.model.local;
 
 import org.scribble.model.global.GAccept;
 import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.Op;
+import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 
 public class Accept extends IOAction
 {
-	//public Accept(Role peer, MessageId<?> mid, Payload payload)
-	public Accept(Role peer)
+	public Accept(Role peer, MessageId<?> mid, Payload payload)
+	//public Accept(Role peer)
 	{
-		//super(peer, mid, payload);
-		super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+		super(peer, mid, payload);
+		//super(peer, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
 	}
 	
 	@Override
 	public Connect toDual(Role self)
 	{
-		return new Connect(self);//, this.mid, this.payload);
+		//return new Connect(self);
+		return new Connect(self, this.mid, this.payload);
 	}
 
 	@Override
 	public GAccept toGlobal(Role self)
 	{
-		//return new GAccept(self, this.peer, this.mid, this.payload);
-		return new GAccept(self, this.peer);
+		return new GAccept(self, this.peer, this.mid, this.payload);
+		//return new GAccept(self, this.peer);
 	}
 	
 	@Override

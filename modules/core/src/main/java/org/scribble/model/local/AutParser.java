@@ -177,15 +177,19 @@ public class AutParser
 			}
 			case "!!":
 			{
-				return new Connect(new Role(peer));
+				//return new Connect(new Role(peer));
+				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
+				return new Connect(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			case "??":
 			{
-				return new Accept(new Role(peer));
+				//return new Accept(new Role(peer));
+				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
+				return new Accept(new Role(peer), getMessageIdHack(msg), payload);
 			}
 			default:
 			{
-				throw new RuntimeException("Shouldn't get in here: " + msg);
+				throw new RuntimeException("[TODO] aut parsing not yet supported for: " + msg);
 			}
 		}
 	}
