@@ -64,7 +64,7 @@ public class CommandLineArgParser
 	private final String[] args;
 	private final Map<CommandLine.ArgFlag, String[]> parsed = new HashMap<>();
 	
-	public CommandLineArgParser(String[] args)
+	public CommandLineArgParser(String[] args) throws CommandLineException
 	{
 		this.args = args;
 		parseArgs();
@@ -75,7 +75,7 @@ public class CommandLineArgParser
 		return this.parsed;
 	}
 	
-	private void parseArgs()
+	private void parseArgs() throws CommandLineException
 	{
 		for (int i = 0; i < this.args.length; i++)
 		{
@@ -89,7 +89,7 @@ public class CommandLineArgParser
 				if (this.parsed.containsKey(CommandLine.ArgFlag.MAIN))
 				{
 					// Could be the second bad argument -- we didn't validating the value of the main arg
-					throw new RuntimeException("Duplicate main module arg: " + arg);
+					throw new CommandLineException("Duplicate main module arg: " + arg);
 				}
 				parseMain(i);
 			}
@@ -99,7 +99,7 @@ public class CommandLineArgParser
 	// Pre: i is the index of the current flag to parse
 	// Post: i is the index of the last argument parsed -- parseArgs does the index increment to the next current flag
 	// Currently allows repeat flag decls: next overrides previous
-	private int parseFlag(int i)
+	private int parseFlag(int i) throws CommandLineException
 	{
 		String flag = this.args[i];
 		switch (flag)
@@ -185,41 +185,41 @@ public class CommandLineArgParser
 			}
 			default:
 			{
-				throw new RuntimeException(flag);
+				throw new RuntimeException("[TODO] Unknown flag: " + flag);
 			}
 		}
 	}
 
-	private void parseMain(int i)
+	private void parseMain(int i) throws CommandLineException
 	{
 		String main = args[i];
-		if (!CommandLineArgParser.validateModuleName(main))
+		if (!CommandLineArgParser.validateModuleArg(main))
 		{
-			throw new RuntimeException("Bad: " + main);
+			throw new CommandLineException("Bad module arg: " + main);
 		}
 		this.parsed.put(CommandLine.ArgFlag.MAIN, new String[] { main } );
 	}
 
-	private int parsePath(int i)
+	private int parsePath(int i) throws CommandLineException
 	{
 		if ((i + 1) >= this.args.length)
 		{
-			throw new RuntimeException("Missing path argument");
+			throw new CommandLineException("Missing path argument");
 		}
 		String path = this.args[++i];
 		if (!validatePaths(path))
 		{
-			throw new RuntimeException("Module path '"+ path +"' is not valid\r\n");
+			throw new CommandLineException("Module path '"+ path +"' is not valid\r\n");
 		}
 		this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.PATH_FLAG), new String[] { path });
 		return i;
 	}
 	
-	private int parseProject(int i)
+	private int parseProject(int i) throws CommandLineException
 	{
 		if ((i + 2) >= this.args.length)
 		{
-			throw new RuntimeException("Missing protocol/role arguments");
+			throw new CommandLineException("Missing protocol/role arguments");
 		}
 		String proto = this.args[++i];
 		String role = this.args[++i];
@@ -231,11 +231,11 @@ public class CommandLineArgParser
 		return i;
 	}
 	
-	private int parseFsm(int i)  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
+	private int parseFsm(int i) throws CommandLineException  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
 	{
 		if ((i + 2) >= this.args.length)
 		{
-			throw new RuntimeException("Missing protocol/role arguments");
+			throw new CommandLineException("Missing protocol/role arguments");
 		}
 		String proto = this.args[++i];
 		String role = this.args[++i];
@@ -243,11 +243,11 @@ public class CommandLineArgParser
 		return i;
 	}
 
-	private int parseFsmDot(int i)
+	private int parseFsmDot(int i) throws CommandLineException
 	{
 		if ((i + 3) >= this.args.length)
 		{
-			throw new RuntimeException("Missing protocol/role/file arguments");
+			throw new CommandLineException("Missing protocol/role/file arguments");
 		}
 		String proto = this.args[++i];
 		String role = this.args[++i];
@@ -256,22 +256,22 @@ public class CommandLineArgParser
 		return i;
 	}
 
-	private int parseSession(int i)  // Almost same as parseProject
+	private int parseSession(int i) throws CommandLineException  // Almost same as parseProject
 	{
 		if ((i + 1) >= this.args.length)
 		{
-			throw new RuntimeException("Missing protocol argument");
+			throw new CommandLineException("Missing protocol argument");
 		}
 		String proto = this.args[++i];
 		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.SESSION_FLAG), proto);
 		return i;
 	}
 
-	private int parseStateChannels(int i)  // Almost same as parseProject
+	private int parseStateChannels(int i) throws CommandLineException  // Almost same as parseProject
 	{
 		if ((i + 2) >= this.args.length)
 		{
-			throw new RuntimeException("Missing protocol/role arguments");
+			throw new CommandLineException("Missing protocol/role arguments");
 		}
 		String proto = this.args[++i];
 		String role = this.args[++i];
@@ -279,11 +279,11 @@ public class CommandLineArgParser
 		return i;
 	}
 
-	private int parseApi(int i)  // Almost same as parseProject
+	private int parseApi(int i) throws CommandLineException  // Almost same as parseProject
 	{
 		if ((i + 2) >= this.args.length)
 		{
-			throw new RuntimeException("Missing protocol/role arguments");
+			throw new CommandLineException("Missing protocol/role arguments");
 		}
 		String proto = this.args[++i];
 		String role = this.args[++i];
@@ -291,22 +291,22 @@ public class CommandLineArgParser
 		return i;
 	}
 	
-	private int parseGlobalModel(int i)  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
+	private int parseGlobalModel(int i) throws CommandLineException  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
 	{
 		if ((i + 1) >= this.args.length)
 		{
-			throw new RuntimeException("Missing protocol/role arguments");
+			throw new CommandLineException("Missing protocol/role arguments");
 		}
 		String proto = this.args[++i];
 		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.GLOBAL_MODEL_FLAG), proto);
 		return i;
 	}
 
-	private int parseGlobalModelDot(int i)
+	private int parseGlobalModelDot(int i) throws CommandLineException
 	{
 		if ((i + 2) >= this.args.length)
 		{
-			throw new RuntimeException("Missing protocol/role/file arguments");
+			throw new CommandLineException("Missing protocol/role/file arguments");
 		}
 		String proto = this.args[++i];
 		String png = this.args[++i];
@@ -327,11 +327,11 @@ public class CommandLineArgParser
 	}*/
 	
 
-	private int parseOutput(int i)  // Almost same as parseProject
+	private int parseOutput(int i) throws CommandLineException  // Almost same as parseProject
 	{
 		if ((i + 1) >= this.args.length)
 		{
-			throw new RuntimeException("Missing directory argument");
+			throw new CommandLineException("Missing directory argument");
 		}
 		String dir = this.args[++i];
 		this.parsed.put(CommandLineArgParser.FLAGS.get(CommandLineArgParser.API_OUTPUT_FLAG), new String[] { dir } );
@@ -355,22 +355,12 @@ public class CommandLineArgParser
 		this.parsed.put(flag, args);
 	}
 
-	private static boolean validateModuleName(String module)
+	// Used to guard subsequent file open attempt?
+	private static boolean validateModuleArg(String arg)
 	{
-		for (String part : module.split("."))
-		{
-			for (int i = 0; i < part.length(); i++)
-			{
-				if (!Character.isLetterOrDigit(part.charAt(i)))
-				{
-					if (part.charAt(i) != '_')
-					{
-						return false;
-					}
-				}
-			}
-		}
-		return true;
+		return arg.chars().noneMatch((i) ->
+				!Character.isLetterOrDigit(i) && i != '.' && i != File.separatorChar && i != ':' && i != '-' && i != '_'
+						&& i != '/');  // Hack? (cygwin)
 	}
 
 	private static boolean validatePaths(String paths)

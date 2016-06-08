@@ -16,6 +16,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.scribble.cli.CommandLine;
 import org.scribble.cli.CommandLineArgParser;
+import org.scribble.cli.CommandLineException;
 import org.scribble.main.ScribbleException;
 
 /**
@@ -82,6 +83,10 @@ public class AllTest
 		{
 			//Assert.assertTrue("Unexpected exception '" + e.getCause().getMessage() + "'", this.isBadTest);
 			Assert.assertTrue("Unexpected exception '" + e.getMessage() + "'", this.isBadTest);
+		}
+		catch (CommandLineException e)
+		{
+			throw new RuntimeException(e);
 		}
 	}
 }

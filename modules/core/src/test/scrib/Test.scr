@@ -38,8 +38,8 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-// TODO: test API gen for SupplierInfo
-// TODO: test API gen wrap for SMTP
+// TODO: test API gen for (fair) SupplierInfo
+// TODO: test wrap API gen for SMTP
 
 
 global protocol Proto1(role A, role B, role C)

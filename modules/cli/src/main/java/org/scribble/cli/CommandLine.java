@@ -53,22 +53,30 @@ public class CommandLine //implements Runnable
 	
 	private final Map<ArgFlag, String[]> args;  // Maps each flag to list of associated argument values
 	
-	public CommandLine(String... args)
+	public CommandLine(String... args) throws CommandLineException
 	{
 		this.args = new CommandLineArgParser(args).getArgs();
 		if (!this.args.containsKey(ArgFlag.MAIN))
 		{
-			throw new RuntimeException("No main module has been specified\r\n");
+			throw new CommandLineException("No main module has been specified\r\n");
 		}
 	}
 
-	public static void main(String[] args) throws ScribbleException
+	public static void main(String[] args) throws CommandLineException, ScribbleException
 	{
-		new CommandLine(args).run();
+		try
+		{
+			new CommandLine(args).run();
+		}
+		catch (CommandLineException e)
+		{
+			System.err.println(e.getMessage());  // No need to give full stack trace, even for debug, for command line errors
+			System.exit(1);
+		}
 	}
 
 	//@Override
-	public void run() throws ScribbleException
+	public void run() throws ScribbleException, CommandLineException
 	{
 		try
 		{
@@ -101,7 +109,7 @@ public class CommandLine //implements Runnable
 				{
 					if (job.useOldWf)
 					{
-						throw new RuntimeException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
+						throw new CommandLineException("Incompatible flags: " + CommandLineArgParser.GLOBAL_MODEL_FLAG + " and " + CommandLineArgParser.OLD_WF_FLAG);
 					}
 					if (this.args.containsKey(ArgFlag.GLOBAL_MODEL))
 					{
@@ -160,7 +168,7 @@ public class CommandLine //implements Runnable
 	}
 	
 	// FIXME: option to write to file, like classes
-	private void outputProjections(Job job)
+	private void outputProjections(Job job) throws CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.PROJECT);
@@ -173,7 +181,7 @@ public class CommandLine //implements Runnable
 		}
 	}
 
-	private void outputGraph(Job job) throws ScribbleException
+	private void outputGraph(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.FSM);
@@ -188,7 +196,7 @@ public class CommandLine //implements Runnable
 	}
 
 	// FIXME: draw graphs once and cache, redrawing gives different state numbers
-	private void drawGraph(Job job) throws ScribbleException
+	private void drawGraph(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.FSM_DOT);
@@ -203,7 +211,7 @@ public class CommandLine //implements Runnable
 		}
 	}
 
-	private void outputGlobalModel(Job job) throws ScribbleException
+	private void outputGlobalModel(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL);
@@ -215,7 +223,7 @@ public class CommandLine //implements Runnable
 		}
 	}
 
-	private void drawGlobalModel(Job job) throws ScribbleException
+	private void drawGlobalModel(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.GLOBAL_MODEL_DOT);
@@ -251,7 +259,7 @@ public class CommandLine //implements Runnable
 		}
 	}*/
 
-	private void outputSessionApi(Job job) throws ScribbleException
+	private void outputSessionApi(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.SESS_API);
@@ -263,7 +271,7 @@ public class CommandLine //implements Runnable
 		}
 	}
 	
-	private void outputStateChannelApi(Job job) throws ScribbleException
+	private void outputStateChannelApi(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.SCHAN_API);
@@ -276,7 +284,7 @@ public class CommandLine //implements Runnable
 		}
 	}
 
-	private void outputEndpointApi(Job job) throws ScribbleException
+	private void outputEndpointApi(Job job) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.EP_API);
@@ -315,13 +323,13 @@ public class CommandLine //implements Runnable
 		classes.keySet().stream().forEach(f);
 	}
 	
-	private static void runDot(String dot, String png) throws ScribbleException
+	private static void runDot(String dot, String png) throws ScribbleException, CommandLineException
 	{
 		String tmpName = png + ".tmp";
 		File tmp = new File(tmpName);
 		if (tmp.exists())
 		{
-			throw new RuntimeException("Cannot overwrite: " + tmpName);
+			throw new CommandLineException("Cannot overwrite: " + tmpName);
 		}
 		try
 		{
@@ -336,13 +344,13 @@ public class CommandLine //implements Runnable
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
-	private EndpointGraph getEndointGraph(Job job, GProtocolName fullname, Role role) throws ScribbleException
+	private EndpointGraph getEndointGraph(Job job, GProtocolName fullname, Role role) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
 		if (gpd == null || !gpd.header.roledecls.getRoles().contains(role))
 		{
-			throw new RuntimeException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
+			throw new CommandLineException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
 		}
 		//job.buildGraph(fullname, role);  // Already built (if valid) as part of global model checking
 		EndpointGraph fsm = this.args.containsKey(ArgFlag.MIN_EFSM)
@@ -389,24 +397,24 @@ public class CommandLine //implements Runnable
 		return Arrays.stream(paths.split(File.pathSeparator)).map((s) -> Paths.get(s)).collect(Collectors.toList());
 	}
 	
-	private static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname)
+	private static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname) throws CommandLineException
 	{
 		GProtocolName simpgpn = new GProtocolName(simpname);
 		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(simpgpn);
 		if (pd == null || !pd.isGlobal())
 		{
-			throw new RuntimeException("Global protocol not found: " + simpname);
+			throw new CommandLineException("Global protocol not found: " + simpname);
 		}
 		return new GProtocolName(jcontext.main, simpgpn);
 	}
 	
-	private static Role checkRoleArg(JobContext jcontext, GProtocolName fullname, String rolename)
+	private static Role checkRoleArg(JobContext jcontext, GProtocolName fullname, String rolename) throws CommandLineException
 	{
 		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
 		Role role = new Role(rolename);
 		if (!pd.header.roledecls.getRoles().contains(role))
 		{
-			throw new RuntimeException("Role not declared for " + fullname + ": " + role);
+			throw new CommandLineException("Role not declared for " + fullname + ": " + role);
 		}
 		return role;
 	}
