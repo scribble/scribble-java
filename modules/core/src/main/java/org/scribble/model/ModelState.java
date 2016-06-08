@@ -291,12 +291,13 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	// Note: doesn't implicitly include start (only if start is explicitly reachable from start, of course)
 	/*public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<S> getAllReachable(S start)*/
+	@SuppressWarnings("unchecked")
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			Set<S> getAllReachable(ModelState<A, S, K> start)
 	{
 		Map<Integer, S> all = new HashMap<>();
 		Map<Integer, S> todo = new LinkedHashMap<>();
-		todo.put(start.id, (S) start);  // Assumes ModelState subclass correctly instantiates S parameter
+		todo.put(start.id, (S) start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
 		while (!todo.isEmpty())
 		{
 			Iterator<S> i = todo.values().iterator();
@@ -326,12 +327,13 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 		return new HashSet<>(all.values());
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <A extends ModelAction<K>, S extends ModelState<A, S, K>, K extends ProtocolKind>
 			//Set<A> getAllReachableActions(S start)
 			Set<A> getAllReachableActions(ModelState<A, S, K> start)
 	{
 		Set<S> all = new HashSet<>();
-		all.add((S) start);  // Assumes ModelState subclass correctly instantiates S parameter
+		all.add((S) start);  // Suppressed: assumes ModelState subclass correctly instantiates S parameter
 		all.addAll(ModelState.getAllReachable(start));
 		Set<A> as = new HashSet<>();
 		for (S s : all)
@@ -344,7 +346,7 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 	public String toAut()
 	{
 		Set<ModelState<A, S, K>> all = new HashSet<>();
-		all.add(this);  // FIXME
+		all.add(this);
 		all.addAll(getAllReachable(this));
 		String aut = "";
 		int edges = 0;

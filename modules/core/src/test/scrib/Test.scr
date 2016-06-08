@@ -42,6 +42,39 @@ module Test;
 // TODO: test connect/wrap API gen for SMTP
 
 
+// ..is branching on accept+message more expressive than accept followed by branch?  i.e. can connect always be "factored up" before the choice? -- maybe depends on interplay with select fairness (want to use connect to nest role scope inside choice case to avoid assuming fairness, but this can conflict with non-det accept?)
+
+
+//*/
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+		}
+		or
+		{
+			2() from A to B;
+			connect B to C;
+			2() from B to C;
+			disconnect B and C;
+		}
+		or
+		{
+			3() from A to B;
+			connect B to C;  // Cf. PartnershipSupplier filter subproto
+			3() from B to C;
+			disconnect B and C;
+		}
+		continue X;
+	}
+}
+//*/
+
+
 /*
 global protocol Proto1(role A, role B, role C)
 {
@@ -51,7 +84,82 @@ global protocol Proto1(role A, role B, role C)
 		{
 			1() from A to B;
 			1() from B to C;
-			continue X;
+			rec Y
+			{
+				choice at B
+				{
+					3() from B to A;
+					continue X;
+				}
+				or
+				{
+					4() from B to A;
+					continue Y;  // Needs fairness
+				}
+			}
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+			choice at B  // C not involved, but still live (without fairness)
+			{
+				3() from B to A;
+				continue X;
+			}
+			or
+			{
+				4() from B to A;
+				continue X;
+			}
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to C;
+			choice at B
+			{
+				3() from B to A;
+				continue X;
+			}
+			or
+			{
+				rec Y  // Bad (fair or not)
+				{
+					4() from B to A;
+					continue Y;
+				}
+			}
 		}
 		or
 		{

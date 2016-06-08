@@ -148,19 +148,19 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				// FIXME: getTrace can get stuck when local choice subjects are disabled
 				//List<GIOAction> trace = getTrace(init, s, reach);  // FIXME: getTrace broken on non-det self loops?
 				List<GIOAction> trace = getTrace(all, init, s, reach);  // FIXME: getTrace broken on non-det self loops?
-				errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n  Trace=" + trace;
+				errorMsg += "\nSafety violation(s) at " + s.toString() + ":\n    Trace=" + trace;
 			}
 			if (!errors.stuck.isEmpty())
 			{
-				errorMsg += "\n  Stuck messages: " + errors.stuck;  // Deadlock from reception error
+				errorMsg += "\n    Stuck messages: " + errors.stuck;  // Deadlock from reception error
 			}
 			if (!errors.waitFor.isEmpty())
 			{
-				errorMsg += "\n  Wait-for errors: " + errors.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
+				errorMsg += "\n    Wait-for errors: " + errors.waitFor;  // Deadlock from input-blocked cycles, terminated dependencies, etc
 			}
 			if (!errors.orphans.isEmpty())
 			{
-				errorMsg += "\n  Orphan messages: " + errors.orphans;
+				errorMsg += "\n    Orphan messages: " + errors.orphans;
 			}
 		}
 		job.debugPrintln("(" + fullname + ") Checked all states: " + count);
@@ -187,16 +187,16 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				if (!safety.isEmpty())
 				{
 					// Redundant
-					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n  " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
+					errorMsg += "\nSafety violation for " + safety + " in terminal set:\n    " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
 				}
 				if (!roleLiveness.isEmpty())
 				{
-					errorMsg += "\nRole liveness violation for " + roleLiveness + " in terminal set:\n  " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
+					errorMsg += "\nRole liveness violation for " + roleLiveness + " in terminal set:\n    " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
 				}
 				Map<Role, Set<Send>> msgLiveness = checkMessageLiveness(all, init, termset);
 				if (!msgLiveness.isEmpty())
 				{
-					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n  " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
+					errorMsg += "\nMessage liveness violation for " + msgLiveness + " in terminal set:\n    " + termset.stream().map((i) -> all.get(i).toString()).collect(Collectors.joining(","));
 				}
 			}
 		}
