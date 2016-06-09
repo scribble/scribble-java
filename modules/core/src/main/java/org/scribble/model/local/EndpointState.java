@@ -78,7 +78,9 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 				{
 					Iterator<IOAction> as = curr.getAllTakeable().iterator();
 					Iterator<EndpointState> ss = curr.getSuccessors().iterator();
-					Map<IOAction, EndpointState> clones = new HashMap<>();
+					//Map<IOAction, EndpointState> clones = new HashMap<>();
+					List<IOAction> cloneas = new LinkedList<>();
+					List<EndpointState> cloness = new LinkedList<>();
 					while (as.hasNext())
 					{
 						IOAction a = as.next();
@@ -89,12 +91,15 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 						}
 						else
 						{
-							EndpointState clone = curr.unfairClone(a, s, term);
+							EndpointState clone = curr.unfairClone(term, a, s);
 							//try { s.removeEdge(a, tmps); } catch (ScribbleException e) { throw new RuntimeException(e); }
-							clones.put(a, clone);
+							//clones.put(a, clone);
+							cloneas.add(a);
+							cloness.add(clone);
 						}
 					}
-					if (!clones.isEmpty())  // Redundant, but more clear
+					//if (!clones.isEmpty())  // Redundant, but more clear
+					if (!cloneas.isEmpty())  // Redundant, but more clear
 					{
 						as = new LinkedList<>(curr.getAllTakeable()).iterator();
 						//Iterator<EndpointState>
@@ -103,15 +108,26 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 						{
 							IOAction a = as.next();
 							EndpointState s = ss.next();
-							if (clones.containsKey(a))  // Still OK for non-det edges?
+							//if (clones.containsKey(a))  // Still OK for non-det edges?
+							if (cloneas.contains(a))  // Still OK for non-det edges?
 							{
 								try { curr.removeEdge(a, s); } catch (ScribbleException e) { throw new RuntimeException(e); }
 							}
 						}
-						for (Entry<IOAction, EndpointState> e : clones.entrySet())
+						//for (Entry<IOAction, EndpointState> e : clones.entrySet())
+						Iterator<IOAction> icloneas = cloneas.iterator();
+						Iterator<EndpointState> icloness = cloness.iterator();
+						while (icloneas.hasNext())
 						{
-							curr.addEdge(e.getKey(), e.getValue());
+							IOAction a = icloneas.next();
+							EndpointState s = icloness.next();
+							/*curr.addEdge(e.getKey(), e.getValue());
 							todo.add(e.getValue());
+							seen.add(e.getValue());*/
+							curr.addEdge(a, s);
+							todo.add(s);  // Doesn't work if non-det preserved by unfairClone aux (recursively edges>1)
+							/*seen.add(s);  // Idea is to bypass succ clone (for non-det, edges>1) but in general this will be cloned again before returning to it, so bypass doesn't work -- to solve this more generally probably need to keep a record of all clones to bypass future clones
+							todo.addAll(s.getSuccessors());*/
 						}
 						//continue;
 					}
@@ -126,8 +142,9 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 		return init;
 	}
 	
-	// Returns the clone of the subgraph rooted at this.take(a), with all non-a pruned from the clone of this
-	protected EndpointState unfairClone(IOAction a, EndpointState succ, EndpointState term) // Need succ param for non-det
+	// Returns the clone of the subgraph rooted at succ, with all non-a pruned from the clone of this
+	// Pre: this -a-> succ (maybe non-det)
+	protected EndpointState unfairClone(EndpointState term, IOAction a, EndpointState succ) // Need succ param for non-det
 	{
 		//EndpointState succ = take(a);
 		Set<EndpointState> all = new HashSet<>();
@@ -155,7 +172,9 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 			{
 				IOAction tmpa = as.next();
 				EndpointState tmps = ss.next();
-				if (s.id != this.id || tmpa.equals(a))  // Preserves non-det
+				if (s.id != this.id
+						|| (tmpa.equals(a) && tmps.equals(succ)))  // Non-det also pruned from clone of this -- but OK? non-det still preserved on original state, so any safety violations due to non-det will still come out?
+					                                             // ^ Currently this like non-fairness is extended to even defeat non-determinism
 				{
 					clone.addEdge(tmpa, map.get(tmps.id));
 				}

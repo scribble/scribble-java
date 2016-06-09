@@ -50,6 +50,24 @@ module Test;
 
 
 //*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		//connect A to C;
+	}
+	or
+	{
+		1() from A to B;
+		connect A to C;
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
@@ -57,6 +75,39 @@ global protocol Proto1(role A, role B, role C)
 		choice at A
 		{
 			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			1() from A to B;  // Testing non-det unfairClone -- uninteresting test because non-det single-action-edge choice-merges get implicitly minimised (by graph building)
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			3() from B to A;
+			continue X;
+		}
+		or
+		{
+			1() from A to B;  // Testing non-det unfairClone
+			3() from B to A;
+			//4() from B to A;
 			continue X;
 		}
 		or
@@ -1139,12 +1190,13 @@ explicit global protocol Proto1(role A, role B, role C)
 	connect A to B;
 	choice at A
 	{
-		1() from A to B;
+		1() from A to B  // Good non-det EFSM for A (including minimisation)
+		connect A to C;
 	}
 	or
 	{
-		1() from A to B  // Good non-det EFSM for A (including minimalisation)
-		connect A to C;
+		1() from A to B;
+		//connect A to C;  // Tests -minfsm
 	}
 }
 //*/
