@@ -84,7 +84,7 @@ global protocol PartnershipSupplier(
 				{
 					// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 					getcontracts() from authorisersvc to contractsvc;
-					suppliers() from contractsvc to authorisersvc;
+					contracts() from contractsvc to authorisersvc;
 
 					filterContracts(usercontext, filters, contractdetails) from authorisersvc to filtersvc;
 					filtered() from filtersvc to authorisersvc;

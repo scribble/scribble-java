@@ -34,7 +34,7 @@ usage() {
   -model [simple global protocol name]           Generate global model
   -modeldot [simple global protocol name] [role] [output file]
           Draw global model as png (requires dot)
-  -fair                                          Assume fairness for selects
+  -fair                                          Assume fair output choices
 
   -api [simple global protocol name] [role]      Generate Endpoint API
   -d [path]                                      API output path

@@ -89,10 +89,10 @@ aux global protocol SuppInfo
 	{
 		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 		getsuppliers() from authorisersvc to suppliersvc;
+		suppliers() from suppliersvc to authorisersvc;
 		do FilterInfo
 				<filterSupplier(usercontext, filters, supplierdetails)>
 				(authorisersvc, filtersvc);
-		suppliers() from suppliersvc to authorisersvc;
 		suppliers() from authorisersvc to requestor;
 	}
 }
@@ -115,7 +115,7 @@ aux global protocol ContractInfo
 	{
 		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 		getcontracts() from authorisersvc to contractsvc;
-		suppliers() from contractsvc to authorisersvc;
+		contracts() from contractsvc to authorisersvc;
 		do FilterInfo
 				<filterContract(usercontext, filters, contractdetails)>
 				//<filterSupplier(usercontext, filters, supplierdetails)>  // OK (merge)

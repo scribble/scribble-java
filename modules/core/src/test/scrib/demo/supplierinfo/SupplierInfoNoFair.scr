@@ -80,11 +80,11 @@ aux global protocol SuppInfo
 		connect authorisersvc to suppliersvc;
 		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 		getsuppliers() from authorisersvc to suppliersvc;
+		suppliers() from suppliersvc to authorisersvc;
 		do FilterInfo
 				<filterSuppliers(usercontext, filters, supplierdetails)>
 				//<filterContracts(usercontext, filters, supplierdetails)>
 				(authorisersvc, filtersvc);
-		suppliers() from suppliersvc to authorisersvc;
 		disconnect authorisersvc and suppliersvc;
 		suppliers() from authorisersvc to requestor;
 	}
@@ -109,7 +109,7 @@ aux global protocol ContractInfo
 		connect authorisersvc to contractsvc;
 		// PREPARE FILTERED SUPPLIER INFO FOR REQUESTOR
 		getcontracts() from authorisersvc to contractsvc;
-		suppliers() from contractsvc to authorisersvc;
+		contracts() from contractsvc to authorisersvc;
 		do FilterInfo
 				<filterContracts(usercontext, filters, contractdetails)>
 				(authorisersvc, filtersvc);
@@ -119,7 +119,6 @@ aux global protocol ContractInfo
 }
 
 
-//aux global protocol FilterInfo<type details>(  // Bad non-det. payload
 aux global protocol FilterInfo
 <
 	sig Query

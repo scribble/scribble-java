@@ -62,6 +62,6 @@ public class WrapClient extends IOAction
 	@Override
 	protected String getCommSymbol()
 	{
-		return "!!wrap";
+		return "(!!)";
 	}
 }

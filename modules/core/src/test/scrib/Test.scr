@@ -45,10 +45,91 @@ module Test;
 // ..is branching on accept+message more expressive than accept followed by branch?  i.e. can connect always be "factored up" before the choice? -- maybe depends on interplay with select fairness (want to use connect to nest role scope inside choice case to avoid assuming fairness, but this can conflict with non-det accept?)
 
 
-global protocol Proto1(role A, role B)
+global protocol Proto1(role A, role B, role C)
 {
 
 }
+
+
+//*** TODO introduces -- or explicit shared channel/port creation and passing ("open")
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	connect A to C;  // How does C "correlate" A/B connections to sessions -- introduces? -- need to study real examples
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		1() from A to B;
+		connect B to C;  // C doesn't care whether each connection is new or old session?
+		2() from B to C;
+		disconnect B and C;
+		continue X;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	disconnect A and B;
+	connect A to B;  // What does it mean for B to leave the session and rejoin?  Need some condition like if fully leave, then rejoining should be same as new session? (i.e. this case bad) -- Consider implementability
+	disconnect A and B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() connect A to C;
+			disconnect A and C;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() connect A to C;
+			disconnect A and C;
+			continue X
+		}
+	}
+	connect A to C;  // Good until here, now bad because C already fully left?
+	3() from A to C;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		connect A to B;  // What does this mean in terms of a "session"? (should consider the implementation, session id, ...) -- distinction between initial accept and in-session accepts?
+		//1() from A to B;
+		//1() from B to A;
+		disconnect A and B;  // Shouldn't allow continuation after a certain point?  no session structure left?
+		continue X;
+	}
+}
+//*/
 
 
 /*
@@ -69,6 +150,9 @@ explicit global protocol Proto1(role A, role B, role C)
 	}
 }
 //*/
+
+//***
+
 
 
 /*

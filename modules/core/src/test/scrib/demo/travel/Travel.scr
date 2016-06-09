@@ -32,11 +32,11 @@ aux global protocol BookingExpAux(role C, role A, role S)
 				Yes() from C to A;
 				connect A to S;
 				Yes() from A to S;
-				disconnect A and S;
-				connect S to C;
+				//disconnect A and S;  // Disconnects not needed in non-recursive flows
+				connect S to C;  // Needs session id to correlate connections -- ideally fresh "shared channels"
 				Payment(String) from C to S;
 				Ack() from S to C;
-				disconnect S and C;
+				//disconnect S and C;
 			}
 			or
 			{

@@ -55,7 +55,12 @@ public class AutParser
 				{
 					throw new RuntimeException("Unexpected line: " + line);
 				}
-				String[] read = line.substring(1, line.length()-1).split(",");
+				//String[] read = line.substring(1, line.length()-1).split(",");
+				String[] read = new String[] {
+						line.substring(1, line.indexOf(',')),
+						line.substring(line.indexOf(',')+1, line.lastIndexOf(',')),
+						line.substring(line.lastIndexOf(',')+1, line.length()-1)
+				};
 				int s = Integer.parseInt(read[0]);
 				String a = read[1].substring(1, read[1].length()-1);
 				int succ = Integer.parseInt(read[2]);
@@ -138,6 +143,8 @@ public class AutParser
 		return new EndpointGraph(builder.getEntry(), builder.getExit());
 	}
 	
+	// Cf. getCommSymbol of IOActions
+	// FIXME: simply do a match for getCommSymbol?
 	private static IOAction parseIOAction(String a)
 	{
 		String peer;
@@ -145,13 +152,62 @@ public class AutParser
 		String msg;  // Could be an Op or a MessageSigName (affects API generation)
 		String[] pay = null;
 		
-		int i = a.indexOf("!");
+		/*int i = a.indexOf("!");
 		i = (i == -1) ? a.indexOf("?") : i;
 		int j = i+1;
 		String tmp = a.substring(j, j+1);
 		if (tmp.equals("!") || tmp.equals("?"))
 		{
 			j++;
+		}
+		action = a.substring(i, j);*/
+		int i, j;
+		if ((i = a.indexOf("!")) != -1)
+		{
+			j = i+1;
+			if (a.charAt(j) == '!')
+			{
+				j++;
+				if (a.charAt(i-1) == '(')
+				{
+					if (a.charAt(j+1) != ')')
+					{
+						throw new RuntimeException("Shouldn't get in here: " + a);
+					}
+					i--;
+					j++;
+				}
+			}
+		}
+		else if ((i = a.indexOf("?")) != -1)
+		{
+			j = i+1;
+			if (a.charAt(j) == '?')
+			{
+				j++;
+				if (a.charAt(i-1) == '(')
+				{
+					if (a.charAt(j+1) != ')')
+					{
+						throw new RuntimeException("Shouldn't get in here: " + a);
+					}
+					i--;
+					j++;
+				}
+			}
+		}
+		else if ((i = a.indexOf('/')) != -1)
+		{
+			if (a.charAt(i-1) != '-' || a.charAt(i+1) != '-')
+			{
+				throw new RuntimeException("Shouldn't get in here: " + a);
+			}
+			j = i+2;
+			i--;
+		}
+		else
+		{
+			throw new RuntimeException("[TODO] aut parsing not supported for: " + a);
 		}
 		action = a.substring(i, j);
 	
@@ -168,12 +224,12 @@ public class AutParser
 			case "!":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new Send(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSiGnames? -- currently OK, treated as empty payload (cf. ModelAction)
+				return new Send(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames? -- currently OK, treated as empty payload (cf. ModelAction)
 			}
 			case "?":
 			{
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
-				return new Receive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about messagesignames?)
+				return new Receive(new Role(peer), getMessageIdHack(msg), payload);  // FIXME: how about MessageSigNames?)
 			}
 			case "!!":
 			{
@@ -187,9 +243,21 @@ public class AutParser
 				Payload payload = (pay != null) ? new Payload(Arrays.asList(pay).stream().map((pe) -> new DataType(pe)).collect(Collectors.toList())) : Payload.EMPTY_PAYLOAD;
 				return new Accept(new Role(peer), getMessageIdHack(msg), payload);
 			}
+			case "(!!)":
+			{				
+				return new WrapClient(new Role(peer));
+			}
+			case "(??)":
+			{				
+				return new WrapServer(new Role(peer));
+			}
+			case "-/-":
+			{				
+				return new Disconnect(new Role(peer));
+			}
 			default:
 			{
-				throw new RuntimeException("[TODO] aut parsing not yet supported for: " + msg);
+				throw new RuntimeException("[TODO] aut parsing not supported for: " + msg);
 			}
 		}
 	}
