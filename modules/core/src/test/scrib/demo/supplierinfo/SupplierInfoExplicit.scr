@@ -57,7 +57,7 @@ aux global protocol Main
 	{
 		// GET SUPPLIER INFO
 		getsuppliers(uuid) from requestor to authorisersvc;
-		//1() from authorisersvc to contractsvc;  // FIXME: state explosion?
+		//1() from authorisersvc to contractsvc;
 		do SuppInfo(requestor, authorisersvc, filtersvc, suppliersvc);
 	}
 	or
