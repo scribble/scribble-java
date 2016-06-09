@@ -1,4 +1,4 @@
-module demo.twobuyer.twobuyer;
+module demo.twobuyer.TwoBuyer;
 
 
 type <java> "java.lang.Integer" from "rt.jar" as int;
@@ -10,7 +10,7 @@ type <java> "test.twobuyer.Date" from "test/twobuyer/Date.java" as Date;
 global protocol TwoBuyer(role A, role B, role S)
 {
 	title(String) from A to S;
-	//quote(int) from S to A, B;
+	//quote(int) from S to A, B;  // EFSM building for multicast not currently supported
 	quote(int) from S to A;
 	quote(int) from S to B;
 	quoteByTwo(int) from A to B;

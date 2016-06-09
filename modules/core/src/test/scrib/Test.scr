@@ -41,17 +41,25 @@ module Test;
 // TODO: test API gen for (fair) SupplierInfo
 // TODO: test connect/wrap API gen for SMTP
 
+// FIXME: .. refactor interfaces for model building/checking/minimising/etc into state classes (make subclasses of Model/EndpointState -- cf. ast/del)
+
 
 // ..is branching on accept+message more expressive than accept followed by branch?  i.e. can connect always be "factored up" before the choice? -- maybe depends on interplay with select fairness (want to use connect to nest role scope inside choice case to avoid assuming fairness, but this can conflict with non-det accept?)
 
+//*** TODO introduces -- or explicit shared channel/port creation and passing ("open")
 
+
+//*
 global protocol Proto1(role A, role B, role C)
 {
-
+	1() from A to B;
+	choice at A
+	{
+		2() from A 
+	}
 }
+//*/
 
-
-//*** TODO introduces -- or explicit shared channel/port creation and passing ("open")
 
 /*
 explicit global protocol Proto1(role A, role B, role C)

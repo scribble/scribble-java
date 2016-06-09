@@ -24,7 +24,7 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 		List<RoleNode> dests = ls.getDestinations();
 		if (dests.size() > 1)
 		{
-			throw new RuntimeException("TODO: " + ls);
+			throw new ScribbleException("[TODO] EFSM building for multicast not supported: " + ls);
 		}
 		Role peer = dests.get(0).toName();
 		MessageId<?> mid = ls.msg.toMessage().getId();
