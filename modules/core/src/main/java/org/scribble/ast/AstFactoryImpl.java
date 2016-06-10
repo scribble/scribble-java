@@ -49,6 +49,7 @@ import org.scribble.ast.name.simple.OpNode;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.DefaultDel;
+import org.scribble.del.DelegationElemDel;
 import org.scribble.del.ImportModuleDel;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.NonRoleArgListDel;
@@ -148,7 +149,8 @@ public class AstFactoryImpl implements AstFactory
 	public DelegationElem DelegationElem(GProtocolNameNode proto, RoleNode role)
 	{
 		DelegationElem de = new DelegationElem(proto, role);
-		de = del(de, createDefaultDelegate());
+		//de = del(de, createDefaultDelegate());
+		de = del(de, new DelegationElemDel());
 		return de;
 	}
 	

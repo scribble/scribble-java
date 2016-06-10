@@ -52,7 +52,6 @@ public class AntlrPayloadElemList
 			RoleNode rn = AntlrSimpleName.toRoleNode((CommonTree) ct.getChild(0));
 			//GProtocolNameNode gpnn = AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1));  // FIXME:
 			GProtocolNameNode gpnn = AntlrQualifiedName.toGProtocolNameNode((CommonTree) ct.getChild(1));
-			System.out.println("111: " + rn + ", " + gpnn);
 			return AstFactoryImpl.FACTORY.DelegationElem(gpnn, rn);
 			//throw new RuntimeException("Shouldn't get in here: " + ct);
 		}

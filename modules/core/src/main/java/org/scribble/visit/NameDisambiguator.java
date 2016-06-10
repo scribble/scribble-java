@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.ast.DelegationElem;
 import org.scribble.ast.ScribNode;
+import org.scribble.del.DelegationElemDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
@@ -32,6 +34,28 @@ public class NameDisambiguator extends ModuleContextVisitor
 	{
 		return new ScopeNode(null, Scope.IMPLICIT_SCOPE_PREFIX + "." + counter++);
 	}*/
+
+	// Most subclasses will override visitForSubprotocols (e.g. ReachabilityChecker, FsmConstructor), but sometimes still want to change whole visit pattern (e.g. Projector)
+	@Override
+	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	{
+		enter(parent, child);
+		ScribNode visited = visitForDisamb(parent, child);
+		return leave(parent, child, visited);
+	}
+
+	protected ScribNode visitForDisamb(ScribNode parent, ScribNode child) throws ScribbleException
+	{
+		if (child instanceof DelegationElem)
+		{
+			//return visitOverrideForDelegationElem(parent, (Do<?>) child);
+			return ((DelegationElemDel) child.del()).visitForNameDisambiguation(this, (DelegationElem) child);
+		}
+		else
+		{
+			return child.visitChildren(this); 
+		}
+	}
 
 	@Override
 	//public NameDisambiguator enter(ModelNode parent, ModelNode child) throws ScribbleException

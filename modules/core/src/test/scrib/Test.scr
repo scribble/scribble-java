@@ -56,9 +56,15 @@ type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 global protocol Proto1(role A, role B)
 {
-	(Proto3@A) from A to B;
+	//do Proto2(A, B);
+	(Proto2@C) from A to B;
 	//(Test.Int) from A to B;
 	//(Test.Inta) from A to B;  // FIXME: runtime exception
+}
+
+aux global protocol Proto2(role C, role D)
+{
+	1() from C to D;
 }
 //*/
 
