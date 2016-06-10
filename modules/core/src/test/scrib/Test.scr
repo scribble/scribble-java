@@ -49,6 +49,7 @@ module Test;
 //*** TODO introduces -- or explicit shared channel/port creation and passing ("open")
 
 
+//*
 global protocol Proto1(role A, role B)
 {
 	rec X
