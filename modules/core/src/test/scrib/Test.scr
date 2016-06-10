@@ -49,22 +49,16 @@ module Test;
 //*** TODO introduces -- or explicit shared channel/port creation and passing ("open")
 
 
+// TODO: check for (not yet supported) deleg actions in API gen
+
 //*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
 global protocol Proto1(role A, role B)
 {
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from A to B;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-		}
-	}
+	(Proto3@A) from A to B;
+	//(Test.Int) from A to B;
+	//(Test.Inta) from A to B;  // FIXME: runtime exception
 }
 //*/
 

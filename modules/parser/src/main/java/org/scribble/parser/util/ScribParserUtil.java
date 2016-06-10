@@ -25,7 +25,8 @@ public class ScribParserUtil
 
 			case AntlrConstants.MESSAGESIGNATURE_NODE_TYPE: return AntlrNodeType.MESSAGESIGNATURE;
 			case AntlrConstants.PAYLOAD_NODE_TYPE: return AntlrNodeType.PAYLOAD;
-			case AntlrConstants.PAYLOADELEMENT_NODE_TYPE: return AntlrNodeType.PAYLOADELEMENT;
+			//case AntlrConstants.PAYLOADELEMENT_NODE_TYPE: return AntlrNodeType.PAYLOADELEMENT;
+			case AntlrConstants.DELEGATION_NODE_TYPE: return AntlrNodeType.DELEGATION;
 
 			case AntlrConstants.MODULE_NODE_TYPE: return AntlrNodeType.MODULE;
 			case AntlrConstants.MODULEDECL_NODE_TYPE: return AntlrNodeType.MODULEDECL;

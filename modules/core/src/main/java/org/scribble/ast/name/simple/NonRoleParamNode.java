@@ -17,6 +17,7 @@ import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.Substitutor;
 
 // An unambiguous kinded parameter (ambiguous parameters handled by disambiguation)
+//public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode<PayloadTypeKind>
 public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode
 {
 	public final K kind;
@@ -113,14 +114,21 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 		return (Message) toName();
 	}
 
+	// Won't normally get into these methods, these name nodes should usually already be disambiguated
 	@Override
-	public PayloadType<? extends Kind> toPayloadType()
+	//public PayloadType<? extends PayloadTypeKind> toPayloadType()
+	//public PayloadType<PayloadTypeKind> toPayloadType()
+	public PayloadType<DataTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
 	{
-		if (!this.kind.equals(DataTypeKind.KIND)) // FIXME: payload kind hardcorded to data type kinds
+		if (this.kind.equals(DataTypeKind.KIND))
 		{
-			throw new RuntimeException("Not a payload kind parameter: " + this);
+			return (DataType) toName();
 		}
-		return (DataType) toName();
+		/*else if (this.kind.equals(Local.KIND))
+		{
+			return (Local) toName();
+		}*/
+		throw new RuntimeException("Not a payload kind parameter: " + this);
 	}
 
 	@Override

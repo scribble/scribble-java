@@ -119,6 +119,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
+	//public PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems)
 	public PayloadElemList PayloadElemList(List<PayloadElem> payloadelems)
 	{
 		PayloadElemList p = new PayloadElemList(payloadelems);
@@ -126,12 +127,29 @@ public class AstFactoryImpl implements AstFactory
 		return p;
 	}
 
-	@Override
+	/*@Override
 	public PayloadElem PayloadElem(PayloadElemNameNode name)
 	{
 		PayloadElem pe = new PayloadElem(name);
 		pe = del(pe, createDefaultDelegate());
 		return pe;
+	}*/
+
+	@Override
+	//public UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name)
+	public UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode name)
+	{
+		UnaryPayloadElem de= new UnaryPayloadElem(name);
+		de = del(de, createDefaultDelegate());
+		return de;
+	}
+
+	@Override
+	public DelegationElem DelegationElem(GProtocolNameNode proto, RoleNode role)
+	{
+		DelegationElem de = new DelegationElem(proto, role);
+		de = del(de, createDefaultDelegate());
+		return de;
 	}
 	
 	@Override

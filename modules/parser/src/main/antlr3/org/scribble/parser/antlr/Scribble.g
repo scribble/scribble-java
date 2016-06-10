@@ -112,6 +112,7 @@ tokens
 	//ARGUMENTINSTANTIATION = 'argument-instantiation';
 	PAYLOAD = 'payload';
 	//PAYLOADELEMENT = 'payloadelement';
+	DELEGATION = 'delegation';
 	ROLEINSTANTIATIONLIST = 'role-instantiation-list';
 	ROLEINSTANTIATION = 'role-instantiation';  // FIXME: not consistent with arginstas/payloadeles
 
@@ -428,7 +429,10 @@ payloadelement:
 /*	ambiguousname  // Parser doesn't distinguish simple from qualified properly, even with backtrack
 |*/
 	qualifiedname  // This case subsumes simple names  // FIXME: ambiguousqualifiedname (or ambiguousname should just be qualified)
-//|
+|
+	protocolname '@' rolename
+->
+	^(DELEGATION rolename protocolname)
 ;
 
 
