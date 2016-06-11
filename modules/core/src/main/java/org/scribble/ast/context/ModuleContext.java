@@ -204,6 +204,11 @@ public class ModuleContext
 		return getFullName(this.visible.data, visname);
 	}
 	
+	public boolean isVisibleDataType(DataType visname)
+	{
+		return this.visible.isVisibleDataType(visname);
+	}
+	
 	public MessageSigName getVisibleMessageSigNameFullName(MessageSigName visname)
 	{
 		return getFullName(this.visible.sigs, visname);
@@ -265,5 +270,10 @@ class ScribNames
 	public <K extends ProtocolKind> boolean isVisibleProtocolDeclName(ProtocolName<K> visname)
 	{
 		return this.globals.containsKey(visname) || this.locals.containsKey(visname);
+	}
+	
+	public boolean isVisibleDataType(DataType visname)
+	{
+		return this.data.containsKey(visname);
 	}
 }	

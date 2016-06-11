@@ -167,11 +167,12 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 			int i = 1;
 			for (PayloadType<?> pt : a.payload.elems)
 			{
-				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
-				if (!dtd.schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
+				if (!pt.isDataType())
 				{
-					throw new ScribbleException("Unexpected data type schema: " + dtd.schema);
+					throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
+				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
+				ScribSocketGenerator.checkJavaDataTypeDecl(dtd);
 				mb.addParameters(buffSuper + dtd.extName + "> " + RECEIVE_ARG_PREFIX + i++);
 			}
 		}
@@ -193,10 +194,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 
 	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd, boolean superr) throws ScribbleException
 	{
-		if (!msd.schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
-		{
-			throw new ScribbleException("Unexpected message sig name schema: " + msd.schema);
-		}
+		ScribSocketGenerator.checkMessageSigNameDecl(msd);
 		mb.addParameters(BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "") + msd.extName + "> " + RECEIVE_ARG_PREFIX);
 	}
 

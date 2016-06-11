@@ -62,11 +62,12 @@ public class InputFutureGenerator extends AuxStateChannelTypeGenerator
 				int i = 1;
 				for (PayloadType<?> pt : a.payload.elems)
 				{
-					DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);
-					if (!dtd.schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
+					if (!pt.isDataType())
 					{
-						throw new ScribbleException("Unexpected data type schema: " + dtd.schema);
+						throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
 					}
+					DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);
+					ScribSocketGenerator.checkJavaDataTypeDecl(dtd);
 					String type = dtd.extName;
 					types.add(type);
 					FieldBuilder f = future.newField("pay" + i++);
@@ -78,10 +79,7 @@ public class InputFutureGenerator extends AuxStateChannelTypeGenerator
 		else
 		{
 			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());
-			if (!msd.schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
-			{
-				throw new ScribbleException("Unexpected message sig name schema: " + msd.schema);
-			}
+			ScribSocketGenerator.checkMessageSigNameDecl(msd);
 			String type = msd.extName;
 			types.add(type);
 			FieldBuilder f = future.newField("msg");

@@ -17,6 +17,12 @@ public class DelegationType implements PayloadType<Local>, Serializable
 		this.proto = proto;
 		this.role = role;
 	}
+
+	@Override
+	public boolean isDelegationType()
+	{
+		return true;
+	}
 	
 	public GProtocolName getGlobalProtocol()
 	{

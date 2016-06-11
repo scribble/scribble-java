@@ -18,6 +18,11 @@ public class DataType extends MemberName<DataTypeKind> implements PayloadType<Da
 		super(DataTypeKind.KIND, simplename);
 	}
 
+	public boolean isDataType()
+	{
+		return true;
+	}
+
 	@Override
 	public DataTypeKind getKind()
 	{

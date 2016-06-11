@@ -56,6 +56,7 @@ module Test;
 //*
 type <java> "java.lang.Integer" from "rt.jar" as Int;
 
+
 global protocol Proto1(role A, role B)
 {
 	//do Proto2(A, B);
@@ -67,6 +68,14 @@ global protocol Proto1(role A, role B)
 aux global protocol Proto2(role C, role D)
 {
 	1() from C to D;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	(Test.Foo) from A to B;  // Testing DataType disamb
 }
 //*/
 

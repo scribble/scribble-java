@@ -1,5 +1,7 @@
 package org.scribble.codegen.java.endpointapi;
 
+import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
@@ -232,6 +234,24 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 			ret = apigen.getSocketClassName(succ);
 		}
 		mb.setReturn(ret);
+	}
+	
+	protected static void checkJavaDataTypeDecl(DataTypeDecl dtd) throws ScribbleException
+	{
+		checkJavaSchema(dtd.schema);
+	}
+
+	protected static void checkMessageSigNameDecl(MessageSigNameDecl msd) throws ScribbleException
+	{
+		checkJavaSchema(msd.schema);
+	}
+	
+	protected static void checkJavaSchema(String schema) throws ScribbleException
+	{
+		if (!schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
+		{
+			throw new ScribbleException("Unexpected data type schema: " + schema);
+		}
 	}
 	
 	/*private static boolean isTerminalClassName(String n)

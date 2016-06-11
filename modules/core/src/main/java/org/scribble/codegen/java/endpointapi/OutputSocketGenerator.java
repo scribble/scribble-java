@@ -204,11 +204,12 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 			Iterator<String> as = args.iterator();
 			for (PayloadType<?> pt : a.payload.elems)
 			{
-				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // FIXME: might not belong to main module  // TODO: if not DataType
-				if (!dtd.schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
+				if (!pt.isDataType())
 				{
-					throw new ScribbleException("Unexpected data type schema: " + dtd.schema);
+					throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
 				}
+				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // FIXME: might not belong to main module  // TODO: if not DataType
+				ScribSocketGenerator.checkJavaDataTypeDecl(dtd);
 				mb.addParameters(dtd.extName + " " + as.next());
 			}
 		}
@@ -218,10 +219,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 	{
 		final String MESSAGE_PARAM = "m";
 
-		if (!msd.schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
-		{
-			throw new ScribbleException("Unexpected message sig name schema: " + msd.schema);
-		}
+		ScribSocketGenerator.checkMessageSigNameDecl(msd);
 		mb.addParameters(msd.extName + " " + MESSAGE_PARAM);
 	}
 }

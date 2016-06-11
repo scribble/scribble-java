@@ -7,11 +7,17 @@ module Fixme;
 
 
 /*
-type <java> "java.lang.Integer" from "rt.jar" as Int;
-
-global protocol Proto1(role A, role B)
+explicit global protocol Proto1(role A, role B)
 {
-	(Test.Inta) from A to B;  // FIXME: runtime exception
+	connect A to B;
+	choice at A  // FIXME: disabling I/O i/f gen breaks branch API
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+	}
 }
 //*/
 
