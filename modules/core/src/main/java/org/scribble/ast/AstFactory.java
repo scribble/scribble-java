@@ -59,8 +59,12 @@ public interface AstFactory
 	Module Module(ModuleDecl moddecl, List<ImportDecl<?>> imports, List<NonProtocolDecl<?>> data, List<ProtocolDecl<?>> protos);
 	
 	MessageSigNode MessageSigNode(OpNode op, PayloadElemList payload);
+	//PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems);
 	PayloadElemList PayloadElemList(List<PayloadElem> payloadelems);
-	PayloadElem PayloadElem(PayloadElemNameNode name);
+	//PayloadElem PayloadElem(PayloadElemNameNode name);
+	//UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
+	UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode name);
+	DelegationElem DelegationElem(GProtocolNameNode name, RoleNode role);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
 	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);

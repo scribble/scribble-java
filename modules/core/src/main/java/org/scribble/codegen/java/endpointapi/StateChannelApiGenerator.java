@@ -6,6 +6,7 @@ import java.util.Map;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
@@ -36,7 +37,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 
 	private Map<String, TypeBuilder> types = new HashMap<>();  // class/iface name key
 
-	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self)
+	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self) throws ScribbleException  // FIXME: APIGenerationException?
 	{
 		super(job, fullname);
 		this.self = self;
@@ -96,7 +97,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 		return this.lpn.getSimpleName().toString() +  "_" + this.counter++;
 	}
 
-	private void constructClasses(EndpointState curr)
+	private void constructClasses(EndpointState curr) throws ScribbleException
 	{
 		if (curr.isTerminal())
 		{
@@ -119,7 +120,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 	}
 	
 	// Pre: curr is not terminal state
-	private ClassBuilder constructClass(EndpointState curr)
+	private ClassBuilder constructClass(EndpointState curr) throws ScribbleException  // FIXME: APIGenerationException?
 	{
 		switch (curr.getStateKind())
 		{
@@ -147,7 +148,7 @@ public class StateChannelApiGenerator extends ApiGenerator
 			}
 			default:
 			{
-				throw new RuntimeException("[TODO] State Channel API generation not supported for: " + curr.toLongString());
+				throw new RuntimeException("[TODO] State Channel API generation not supported for: " + curr.getStateKind() + ", " + curr.toLongString());
 			}
 		}
 	}

@@ -3,13 +3,16 @@ package org.scribble.codegen.java.endpointapi;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.scribble.ast.DataTypeDecl;
+import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
-import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
+import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
 import org.scribble.sesstype.name.GProtocolName;
@@ -30,7 +33,7 @@ public class InputFutureGenerator extends AuxStateChannelTypeGenerator
 	}
 
 	@Override
-	public ClassBuilder generateType()
+	public ClassBuilder generateType() throws ScribbleException
 	{
 		final String FUTURE_PARAM = "fut";
 		Module main = this.apigen.getMainModule();
@@ -59,7 +62,13 @@ public class InputFutureGenerator extends AuxStateChannelTypeGenerator
 				int i = 1;
 				for (PayloadType<?> pt : a.payload.elems)
 				{
-					String type = main.getDataTypeDecl((DataType) pt).extName;
+					if (!pt.isDataType())
+					{
+						throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
+					}
+					DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);
+					ScribSocketGenerator.checkJavaDataTypeDecl(dtd);
+					String type = dtd.extName;
 					types.add(type);
 					FieldBuilder f = future.newField("pay" + i++);
 					f.setType(type);
@@ -69,7 +78,9 @@ public class InputFutureGenerator extends AuxStateChannelTypeGenerator
 		}
 		else
 		{
-			String type = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName()).extName;
+			MessageSigNameDecl msd = main.getMessageSigDecl(((MessageSigName) a.mid).getSimpleName());
+			ScribSocketGenerator.checkMessageSigNameDecl(msd);
+			String type = msd.extName;
 			types.add(type);
 			FieldBuilder f = future.newField("msg");
 			f.setType(type);

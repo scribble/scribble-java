@@ -6,7 +6,33 @@
 module Fixme;
 
 
-type <java> "java.lang.Integer" from "rt.jar" as Int;
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	choice at A  // FIXME: disabling I/O i/f gen breaks branch API
+	{
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	(Proto2@C) from A to B;   // FIXME: should not be aux? (or if aux should check WF as root?)
+}
+
+aux global protocol Proto2(role C, role D)
+{
+	1() from C to D;
+}
+//*/
 
 
 /*

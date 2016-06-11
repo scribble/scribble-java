@@ -1,7 +1,6 @@
 package org.scribble.codegen.java.endpointapi;
 
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.scribble.ast.DataTypeDecl;
 import org.scribble.ast.MessageSigNameDecl;
@@ -13,6 +12,7 @@ import org.scribble.codegen.java.endpointapi.ioifaces.SuccessorInterfaceGenerato
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
@@ -42,7 +42,7 @@ public class BranchSocketGenerator extends ScribSocketGenerator
 
 	//private void addBranchMethod(ClassBuilder cb, EndpointState curr)
 	@Override
-	protected void addMethods()
+	protected void addMethods() throws ScribbleException
 	{
 		final String ROLE_PARAM = "role";
 		final String MESSAGE_VAR = "m";

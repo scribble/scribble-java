@@ -12,6 +12,7 @@ import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.EnumBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.Role;
@@ -24,7 +25,7 @@ public class BranchInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	@Override
-	protected void constructInterface()
+	protected void constructInterface() throws ScribbleException
 	{
 		super.constructInterface();
 		addBranchEnum();

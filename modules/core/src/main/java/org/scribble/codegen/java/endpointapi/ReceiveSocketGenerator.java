@@ -6,6 +6,7 @@ import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
@@ -37,7 +38,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	// FIXME: most general async would also allow whole input-only compound statements (choice, recursion) to be bypassed
 	//private void addReceiveMethods(ClassBuilder cb, EndpointState curr)
 	@Override
-	protected void addMethods()
+	protected void addMethods() throws ScribbleException
 	{
 		IOAction a = curr.getTakeable().iterator().next();
 		//String nextClass = this.apigen.getSocketClassName(curr.accept(a));
@@ -54,7 +55,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 
   // [nextClass] receive([opClass] op, Buf<? super T> arg, ...)
 	//private void makeReceiveMethod(ClassBuilder cb, Module main, IOAction a, String nextClass, String opClass)
-	private void makeReceiveMethod(IOAction a, EndpointState succ)
+	private void makeReceiveMethod(IOAction a, EndpointState succ) throws ScribbleException
 	{
 		Module main = this.apigen.getMainModule();  // FIXME: main not necessarily the right module?
 
@@ -79,7 +80,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	}
 
 	// Payload parameters added later
-	private MethodBuilder makeReceiveHeader(IOAction a, EndpointState succ)
+	private MethodBuilder makeReceiveHeader(IOAction a, EndpointState succ) throws ScribbleException
 	{
 		MethodBuilder mb = this.cb.newMethod();
 		setReceiveHeaderWithoutReturnType(this.apigen, a, mb);
@@ -135,7 +136,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 
 	// Doesn't include return type
 	//public static void makeReceiveHeader(StateChannelApiGenerator apigen, IOAction a, EndpointState succ, MethodBuilder mb)
-	public static void setReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	public static void setReceiveHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb) throws ScribbleException
 	{
 		final String ROLE_PARAM = "role";
 		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
@@ -158,7 +159,7 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 	}
 
 	// FIXME: main may not be the right module
-	protected static void addReceiveOpParams(MethodBuilder mb, Module main, IOAction a, boolean superr)
+	protected static void addReceiveOpParams(MethodBuilder mb, Module main, IOAction a, boolean superr) throws ScribbleException
 	{
 		if (!a.payload.isEmpty())
 		{
@@ -166,7 +167,12 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 			int i = 1;
 			for (PayloadType<?> pt : a.payload.elems)
 			{
+				if (!pt.isDataType())
+				{
+					throw new ScribbleException("[TODO] API generation not supported for non- data type payloads: " + pt);
+				}
 				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // TODO: if not DataType
+				ScribSocketGenerator.checkJavaDataTypeDecl(dtd);
 				mb.addParameters(buffSuper + dtd.extName + "> " + RECEIVE_ARG_PREFIX + i++);
 			}
 		}
@@ -186,8 +192,9 @@ public class ReceiveSocketGenerator extends ScribSocketGenerator
 		}
 	}
 
-	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd, boolean superr)
+	protected static void addReceiveMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd, boolean superr) throws ScribbleException
 	{
+		ScribSocketGenerator.checkMessageSigNameDecl(msd);
 		mb.addParameters(BUF_CLASS + "<" + ((superr) ? "? " + JavaBuilder.SUPER + " " : "") + msd.extName + "> " + RECEIVE_ARG_PREFIX);
 	}
 

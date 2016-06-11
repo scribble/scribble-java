@@ -1,6 +1,7 @@
 package org.scribble.codegen.java.endpointapi;
 
 import org.scribble.codegen.java.util.TypeBuilder;
+import org.scribble.main.ScribbleException;
 
 // Build a (top-level) type declaration for the API generation output
 public abstract class StateChannelTypeGenerator
@@ -12,5 +13,5 @@ public abstract class StateChannelTypeGenerator
 		this.apigen = apigen;
 	}
 	
-	public abstract TypeBuilder generateType();
+	public abstract TypeBuilder generateType() throws ScribbleException;  // FIXME: APIGenerationException?
 }

@@ -9,6 +9,7 @@ import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
@@ -21,7 +22,7 @@ public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	@Override
-	public InterfaceBuilder generateType()
+	public InterfaceBuilder generateType() throws ScribbleException
 	{
 		if (this.curr.getAllTakeable().stream().anyMatch((a) -> !a.isReceive())) // TODO (connect/disconnect)
 		{
@@ -32,7 +33,7 @@ public class ReceiveInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	@Override
-	protected void constructInterface()
+	protected void constructInterface() throws ScribbleException
 	{
 		super.constructInterface();
 		addAsyncDiscardMethod();

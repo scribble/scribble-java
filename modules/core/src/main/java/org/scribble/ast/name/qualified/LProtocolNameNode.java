@@ -4,7 +4,7 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 
-public class LProtocolNameNode extends ProtocolNameNode<Local>
+public class LProtocolNameNode extends ProtocolNameNode<Local> //implements PayloadElemNameNode
 {
 	public LProtocolNameNode(String... ns)
 	{
@@ -59,4 +59,16 @@ public class LProtocolNameNode extends ProtocolNameNode<Local>
 		hash = 31 * hash + this.elems.hashCode();
 		return hash;
 	}
+
+	/*@Override
+	public Arg<Local> toArg()
+	{
+		return toPayloadType();
+	}
+
+	@Override
+	public LProtocolName toPayloadType()
+	{
+		return toName();
+	}*/
 }

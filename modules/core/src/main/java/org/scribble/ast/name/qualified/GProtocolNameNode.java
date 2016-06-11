@@ -59,5 +59,4 @@ public class GProtocolNameNode extends ProtocolNameNode<Global>
 		hash = 31 * hash + this.elems.hashCode();
 		return hash;
 	}
-
 }

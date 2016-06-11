@@ -29,7 +29,12 @@ public class DataTypeNodeDel extends ScribDelBase
 		}
 		ModuleContext mc = disamb.getModuleContext();
 		DataTypeNode dtn = (DataTypeNode) visited;
-		DataType fullname = mc.getVisibleDataTypeFullName(dtn.toName());
+		DataType dt = dtn.toName();
+		if (!mc.isVisibleDataType(dt))
+		{
+			throw new ScribbleException("Protocol decl not visible: " + dt);
+		}
+		DataType fullname = mc.getVisibleDataTypeFullName(dt);
 		return (DataTypeNode)
 				AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, fullname.getElements());  // Didn't keep original del
 	}
