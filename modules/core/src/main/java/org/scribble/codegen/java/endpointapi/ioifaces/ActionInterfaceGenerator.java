@@ -7,6 +7,7 @@ import org.scribble.codegen.java.endpointapi.StateChannelApiGenerator;
 import org.scribble.codegen.java.util.AbstractMethodBuilder;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.model.local.Receive;
@@ -25,7 +26,7 @@ public class ActionInterfaceGenerator extends IOInterfaceGenerator
 	}
 
 	@Override
-	public InterfaceBuilder generateType()
+	public InterfaceBuilder generateType() throws ScribbleException
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 

@@ -51,13 +51,15 @@ module Test;
 
 // TODO: check for (not yet supported) deleg actions in API gen
 
+
+
 //*
 type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 global protocol Proto1(role A, role B)
 {
 	//do Proto2(A, B);
-	(Proto2@C) from A to B;
+	(Proto2@E) from A to B;   // Should not be aux? (or if aux should check WF as root?)
 	//(Test.Int) from A to B;
 	//(Test.Inta) from A to B;  // FIXME: runtime exception
 }
@@ -65,6 +67,26 @@ global protocol Proto1(role A, role B)
 aux global protocol Proto2(role C, role D)
 {
 	1() from C to D;
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol Proto1(role A, role B)
+{
+	Int from A to B;  // Testing disamb (and AST visitChild)
+}
+//*/
+
+
+/*
+sig <java> "..." from "..." as M;
+
+global protocol Proto1(role A, role B)
+{
+	(M) from A to B;  // Testing disamb (and AST visitChild)
 }
 //*/
 

@@ -25,6 +25,7 @@ import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.main.RuntimeScribbleException;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.EndpointState.Kind;
 import org.scribble.model.local.IOAction;
@@ -55,7 +56,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 	//private final Map<EndpointState, Set<InterfaceBuilder>> branchSuccs = new HashMap<>();
 	private final Map<String, List<IOAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
 
-	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes) throws RuntimeScribbleException
+	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes) throws RuntimeScribbleException, ScribbleException
 	{
 		super(apigen.getJob(), apigen.getGProtocolName());
 		this.apigen = apigen;
@@ -165,7 +166,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 	}
 	
 	// Factor out FSM visitor?
-	private void generateActionAndSuccessorInterfacesAndCollectPreActions(Set<EndpointState> visited, EndpointState s)
+	private void generateActionAndSuccessorInterfacesAndCollectPreActions(Set<EndpointState> visited, EndpointState s) throws ScribbleException
 	{
 		if (visited.contains(s) || s.isTerminal())
 		{
@@ -227,7 +228,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 	}
 
 	// Generates partial IO State Interfaces
-	private void generateIOStateInterfacesFirstPass(Set<EndpointState> visited, EndpointState s)
+	private void generateIOStateInterfacesFirstPass(Set<EndpointState> visited, EndpointState s) throws ScribbleException
 	{
 		if (visited.contains(s) || s.isTerminal())
 		{
@@ -320,7 +321,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		}
 	}
 
-	private void generateHandleInterfaces(Set<EndpointState> visited, EndpointState s)
+	private void generateHandleInterfaces(Set<EndpointState> visited, EndpointState s) throws ScribbleException
 	{
 		if (visited.contains(s) || s.isTerminal())
 		{

@@ -1,6 +1,8 @@
 package org.scribble.del.name;
 
 import org.scribble.ast.AstFactoryImpl;
+import org.scribble.ast.MessageTransfer;
+import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.simple.AmbigNameNode;
@@ -24,12 +26,21 @@ public class AmbigNameNodeDel extends ScribDelBase
 		ModuleContext mcontext = disamb.getModuleContext();
 		AmbigName name = ((AmbigNameNode) visited).toName();
 		// By well-formedness (checked later), payload type and parameter names are distinct
+		// FIXME: are conflicts checked elsewhere?
 		if (mcontext.isDataTypeVisible(name.toDataType()))
 		{
+			if (parent instanceof MessageTransfer<?>)  // FIXME HACK: MessageTransfer assumes MessageNode (cast in visitChildren), so this needs to be caught here  // FIXME: other similar cases?
+			{
+				throw new ScribbleException("Invalid occurrence of data type: " + parent);
+			}
 			return AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, name.getElements());
 		}
 		else if (mcontext.isMessageSigNameVisible(name.toMessageSigName()))
 		{
+			if (parent instanceof PayloadElem)  // FIXME HACK
+			{
+				throw new ScribbleException("Invalid occurrence of message signature name: " + parent);
+			}
 			return AstFactoryImpl.FACTORY.QualifiedNameNode(SigKind.KIND, name.getElements());
 		}
 		else if (disamb.isBoundParameter(name))

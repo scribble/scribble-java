@@ -5,6 +5,7 @@ import org.scribble.codegen.java.util.ConstructorBuilder;
 import org.scribble.codegen.java.util.FieldBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.MessageId;
@@ -13,6 +14,8 @@ import org.scribble.sesstype.name.Role;
 // Parameterize on output class type
 public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 {
+	public static final String JAVA_SCHEMA = "java";  // FIXME: factor out
+	
 	public static final String SESSIONENDPOINT_CLASS = "org.scribble.net.session.SessionEndpoint";
 	public static final String BUF_CLASS = "org.scribble.net.Buf";
 	public static final String OPENUM_INTERFACE = "org.scribble.net.session.OpEnum";
@@ -61,13 +64,13 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 	}
 
 	@Override
-	public ClassBuilder generateType()
+	public ClassBuilder generateType() throws ScribbleException
 	{
 		constructClass();  // So className can be "overridden" in subclass constructor (CaseSocket)
 		return this.cb;
 	}
 
-	protected void constructClass()
+	protected void constructClass() throws ScribbleException
 	{
 		constructClassExceptMethods();
 		addMethods();
@@ -135,7 +138,7 @@ public abstract class ScribSocketGenerator extends StateChannelTypeGenerator
 		ctor2.addBodyLine(SESSIONENDPOINT_PARAM + ".init();");
 	}
 	
-	protected abstract void addMethods();
+	protected abstract void addMethods() throws ScribbleException;
 	
 	@Deprecated
 	protected void setNextSocketReturnType(MethodBuilder mb, EndpointState succ)

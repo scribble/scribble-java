@@ -11,6 +11,7 @@ import org.scribble.codegen.java.endpointapi.SessionApiGenerator;
 import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
@@ -32,7 +33,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	}
 
 	@Override
-	protected void constructInterface()
+	protected void constructInterface() throws ScribbleException
 	{
 		super.constructInterface();
 		addHandleMethods();
@@ -101,7 +102,7 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 		return as;
 	}*/
 
-	protected void addHandleMethods()
+	protected void addHandleMethods() throws ScribbleException
 	{
 		GProtocolName gpn = this.apigen.getGProtocolName();
 		//Role self = this.apigen.getSelf();

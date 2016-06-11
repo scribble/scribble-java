@@ -14,7 +14,7 @@ import org.scribble.visit.AstVisitor;
 public abstract class MessageTransfer<K extends ProtocolKind> extends SimpleInteractionNode<K>
 {
 	public final RoleNode src;
-	public final MessageNode msg;
+	public final MessageNode msg;  // FIXME: ambig may get resolved to an unexpected kind, e.g. DataTypeNode (cf. DoArg, PayloadElem wrappers)
 	private final List<RoleNode> dests;
 
 	protected MessageTransfer(RoleNode src, MessageNode msg, List<RoleNode> dests)

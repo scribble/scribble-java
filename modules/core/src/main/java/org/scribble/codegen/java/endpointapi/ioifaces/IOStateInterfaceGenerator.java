@@ -14,6 +14,7 @@ import org.scribble.codegen.java.util.InterfaceBuilder;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.main.RuntimeScribbleException;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
@@ -44,13 +45,13 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	}
 	
 	@Override
-	public InterfaceBuilder generateType()
+	public InterfaceBuilder generateType() throws ScribbleException
 	{
 		constructInterface();
 		return this.ib;
 	}
 
-	protected void constructInterface()
+	protected void constructInterface() throws ScribbleException
 	{
 		addHeader();
 		addSuccessorParamsAndActionInterfaces();

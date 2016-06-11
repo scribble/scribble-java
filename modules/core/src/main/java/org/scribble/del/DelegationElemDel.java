@@ -45,16 +45,10 @@ public class DelegationElemDel extends ScribDelBase
 		ProtocolDecl<Global> gpd = disamb.getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
 		if (!gpd.header.roledecls.getRoles().contains(rn))
 		{
-			System.out.println(gpd.header.roledecls.getRoles() + ", " + rn);
 			throw new ScribbleException("Invalid delegation role: " + de);
 		}
-		//if (!fullname
-		//return this.proto.toName();  // Pre: use after name disambiguation (maybe drop FullName suffix)
-		//ProtocolName<K> fullname = getTargetProtocolDeclFullName(mcontext);
-		//return jcontext.getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());*/
 
-		GProtocolNameNode pnn = (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(fullname.getKind(), fullname.getElements()); 
-						// Didn't keep original namenode del
+		GProtocolNameNode pnn = (GProtocolNameNode) AstFactoryImpl.FACTORY.QualifiedNameNode(fullname.getKind(), fullname.getElements());  // Not keeping original namenode del
 		return de.reconstruct(pnn, de.role);
 	}
 

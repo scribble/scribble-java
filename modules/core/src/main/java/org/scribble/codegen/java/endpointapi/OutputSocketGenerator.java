@@ -10,6 +10,7 @@ import org.scribble.ast.MessageSigNameDecl;
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.JavaBuilder;
 import org.scribble.codegen.java.util.MethodBuilder;
+import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
 import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.DataType;
@@ -39,7 +40,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 	// A method for each successor state
 	//private void addSendMethods(ClassBuilder cb, EndpointState curr)
 	@Override
-	protected void addMethods()
+	protected void addMethods() throws ScribbleException
 	{
 		final String ROLE_PARAM = "role";
 
@@ -140,7 +141,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		return IntStream.range(0, a.payload.elems.size()).mapToObj((i) -> ARG_PREFIX + i++).collect(Collectors.toList());  // FIXME: factor out with params
 	}
 
-	public static void setSendHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb)
+	public static void setSendHeaderWithoutReturnType(StateChannelApiGenerator apigen, IOAction a, MethodBuilder mb) throws ScribbleException
 	{
 		final String ROLE_PARAM = "role";
 		Module main = apigen.getMainModule();  // FIXME: main not necessarily the right module?
@@ -194,7 +195,7 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 		mb.addParameters("Callable<? extends BinaryChannelWrapper> wrapper");
 	}
 
-	protected static void addSendOpParams(StateChannelApiGenerator apigen, MethodBuilder mb, Module main, IOAction a)
+	protected static void addSendOpParams(StateChannelApiGenerator apigen, MethodBuilder mb, Module main, IOAction a) throws ScribbleException
 	{
 		List<String> args = getSendPayloadArgs(a);
 		mb.addParameters(SessionApiGenerator.getOpClassName(a.mid) + " op");  // opClass -- op param not actually used in body
@@ -204,15 +205,23 @@ public class OutputSocketGenerator extends ScribSocketGenerator
 			for (PayloadType<?> pt : a.payload.elems)
 			{
 				DataTypeDecl dtd = main.getDataTypeDecl((DataType) pt);  // FIXME: might not belong to main module  // TODO: if not DataType
+				if (!dtd.schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
+				{
+					throw new ScribbleException("Unexpected data type schema: " + dtd.schema);
+				}
 				mb.addParameters(dtd.extName + " " + as.next());
 			}
 		}
 	}
 
-	protected static void addSendMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd)
+	protected static void addSendMessageSigNameParams(MethodBuilder mb, MessageSigNameDecl msd) throws ScribbleException
 	{
 		final String MESSAGE_PARAM = "m";
 
+		if (!msd.schema.equals(ScribSocketGenerator.JAVA_SCHEMA))  // FIXME: factor out
+		{
+			throw new ScribbleException("Unexpected message sig name schema: " + msd.schema);
+		}
 		mb.addParameters(msd.extName + " " + MESSAGE_PARAM);
 	}
 }
