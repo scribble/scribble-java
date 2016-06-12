@@ -58,15 +58,15 @@ module Test;
 // FIXME: delegation type payload projection
 
 
-//*
+/*
 global protocol Proto1(role A, role B)
 {
-	(Proto1@A) from A to B;  // FIXME: test recursive protocoldecls
+	(Proto1@A) from A to B;  // Testing recursive protocoldecls
 }
 //*/
 
 
-/*
+//*
 global protocol Proto1(role A, role B)
 {
 	(Proto2@A) from A to B;  // FIXME: test recursive protocoldecls

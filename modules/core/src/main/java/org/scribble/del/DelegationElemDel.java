@@ -42,6 +42,10 @@ public class DelegationElemDel extends ScribDelBase
 		//DelegationElem de = (DelegationElem) visited;
 		ModuleContext mc = disamb.getModuleContext();
 		GProtocolName fullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(de.proto.toName());
+		if (fullname.equals(mc.getVisibleProtocolDeclFullName(disamb.getProtocolDeclOnEntry().header.getDeclName())))  // Here because ProtocolDeclContextBuilder dependencies explicitly include self protocoldecl dependencies (cf. GProtocolDeclDel.addSelfDependency)
+		{
+			throw new ScribbleException("Recursive protocol dependencies not supported for delegation types: " + de);
+		}
 
 		Role rn = de.role.toName();
 		ProtocolDecl<Global> gpd = disamb.getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());

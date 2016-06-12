@@ -1,11 +1,14 @@
 package org.scribble.visit;
 
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import org.scribble.ast.DelegationElem;
+import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.del.DelegationElemDel;
 import org.scribble.main.ScribbleException;
@@ -25,6 +28,9 @@ public class NameDisambiguator extends ModuleContextVisitor
 	private Map<String, NonRoleParamKind> params = new HashMap<>();
 	private Set<RecVar> recvars = new HashSet<RecVar>();
 
+	private Deque<ProtocolDecl<?>> pds = new LinkedList<>();  // Stack should be unnecessary
+			// HACK: for DelegationElem recursive protocoldecl dependency checking  // FIXME: should factor out more generally 
+	
 	public NameDisambiguator(Job job)
 	{
 		super(job);
@@ -62,6 +68,10 @@ public class NameDisambiguator extends ModuleContextVisitor
 	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.enter(parent, child);
+		if (child instanceof ProtocolDecl<?>)
+		{
+			this.pds.push((ProtocolDecl<?>) child);
+		}
 		child.del().enterDisambiguation(parent, child, this);
 	}
 	
@@ -69,7 +79,16 @@ public class NameDisambiguator extends ModuleContextVisitor
 	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveDisambiguation(parent, child, this, visited);
+		if (visited instanceof ProtocolDecl<?>)
+		{
+			this.pds.pop();
+		}
 		return super.leave(parent, child, visited);
+	}
+	
+	public ProtocolDecl<?> getProtocolDeclOnEntry()  // Result of visiting will be a different instance
+	{
+		return this.pds.peek();
 	}
 	
 	public void clear()
@@ -78,6 +97,8 @@ public class NameDisambiguator extends ModuleContextVisitor
 		this.roles.clear();
 		this.params.clear();
 		this.recvars.clear();  // Should be unnecessary
+		
+		//this.pds.clear();  // No: called by ProtocolDecl leaveDisambiguation (i.e. before the above leave override) -- should be unnecessary anyway
 	}
 	
 	public void addRole(Role role)
