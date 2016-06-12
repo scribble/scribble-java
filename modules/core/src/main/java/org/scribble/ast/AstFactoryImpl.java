@@ -20,6 +20,7 @@ import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LConnect;
 import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionNode;
@@ -150,7 +151,15 @@ public class AstFactoryImpl implements AstFactory
 	{
 		DelegationElem de = new DelegationElem(proto, role);
 		//de = del(de, createDefaultDelegate());
-		de = del(de, new DelegationElemDel());
+		de = del(de, new DelegationElemDel());  // FIXME: GDelegationElemDel
+		return de;
+	}
+
+	@Override
+	public LDelegationElem LDelegationElem(LProtocolNameNode proto)
+	{
+		LDelegationElem de = new LDelegationElem(proto);
+		de = del(de, createDefaultDelegate());
 		return de;
 	}
 	

@@ -33,7 +33,8 @@ public class GMessageTransfer extends MessageTransfer<Global> implements GSimple
 		if (srcrole.equals(self) || destroles.contains(self))
 		{
 			RoleNode src = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, this.src.toName().toString());
-			MessageNode msg = (MessageNode) this.msg;  // FIXME: need namespace prefix update?
+			//MessageNode msg = (MessageNode) this.msg;  // FIXME: need namespace prefix update?
+			MessageNode msg = (MessageNode) this.msg.project();  // FIXME: need namespace prefix update?
 			List<RoleNode> dests =
 					destroles.stream().map((d) ->
 							(RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND, d.toString())).collect(Collectors.toList());

@@ -11,6 +11,12 @@ public class MessageSigNameNode extends MemberNameNode<SigKind> implements Messa
 	{
 		super(elems);
 	}
+	
+	@Override
+	public MessageNode project()
+	{
+		return this;
+	}
 
 	@Override
 	protected MessageSigNameNode copy()

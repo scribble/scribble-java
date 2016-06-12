@@ -27,6 +27,12 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 		super(identifier);
 		this.kind = kind;
 	}
+	
+	@Override
+	public MessageNode project()  // MessageSigName params
+	{
+		return this;
+	}
 
 	@Override
 	protected NonRoleParamNode<K> copy()

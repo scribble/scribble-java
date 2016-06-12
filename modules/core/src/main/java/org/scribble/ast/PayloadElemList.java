@@ -24,6 +24,11 @@ public class PayloadElemList extends ScribNodeBase
 		this.elems = new LinkedList<>(elems);
 	}
 	
+	protected PayloadElemList project()
+	{
+		return AstFactoryImpl.FACTORY.PayloadElemList(this.elems.stream().map((pe) -> pe.project()).collect(Collectors.toList()));
+	}
+	
 	@Override
 	protected PayloadElemList copy()
 	{

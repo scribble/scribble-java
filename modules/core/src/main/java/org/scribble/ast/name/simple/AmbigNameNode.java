@@ -20,6 +20,12 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageN
 	{
 		super(identifier);
 	}
+	
+	@Override
+	public MessageNode project()
+	{
+		throw new RuntimeException("Shouldn't get in here: " + this);
+	}
 
 	@Override
 	protected AmbigNameNode copy()

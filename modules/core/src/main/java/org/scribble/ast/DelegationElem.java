@@ -1,5 +1,6 @@
 package org.scribble.ast;
 
+import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
@@ -8,6 +9,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.DelegationType;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.AstVisitor;
+import org.scribble.visit.Projector;
 
 // A "binary name pair" payload elem (current AST hierarchy induces this pattern), cf. UnaryPayloadElem (also differs in no parsing ambig against parameters)
 // The this.name will be global kind, but overall this node is local kind
@@ -15,7 +17,7 @@ import org.scribble.visit.AstVisitor;
 public class DelegationElem extends ScribNodeBase implements PayloadElem
 {
   // Currently no potential for ambiguity, cf. UnaryPayloadElem (DataTypeNameNode or ParameterNode)
-	public final GProtocolNameNode proto;
+	public final GProtocolNameNode proto;  // Becomes full name after disambiguation
 	public final RoleNode role;
 	
 	public DelegationElem(GProtocolNameNode proto, RoleNode role)
@@ -23,6 +25,12 @@ public class DelegationElem extends ScribNodeBase implements PayloadElem
 		//super(proto);
 		this.proto = proto;
 		this.role = role;
+	}
+	
+	@Override
+	public LDelegationElem project()
+	{
+		return AstFactoryImpl.FACTORY.LDelegationElem(Projector.makeProjectedFullNameNode(this.proto.toName(), this.role.toName()));
 	}
 
 	@Override
@@ -40,7 +48,7 @@ public class DelegationElem extends ScribNodeBase implements PayloadElem
 	@Override
 	public DelegationElem clone()
 	{
-		GProtocolNameNode name = (GProtocolNameNode) proto.clone();
+		GProtocolNameNode name = (GProtocolNameNode) this.proto.clone();
 		RoleNode role = (RoleNode) this.role.clone();
 		return AstFactoryImpl.FACTORY.DelegationElem(name, role);
 	}

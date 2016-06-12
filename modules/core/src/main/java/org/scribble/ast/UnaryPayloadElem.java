@@ -3,7 +3,7 @@ package org.scribble.ast;
 import org.scribble.ast.name.PayloadElemNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.DataTypeKind;
+import org.scribble.sesstype.kind.PayloadTypeKind;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.AstVisitor;
 
@@ -23,6 +23,12 @@ public class UnaryPayloadElem extends ScribNodeBase implements PayloadElem//exte
 		//super(name);
 		//this.data = data;
 		this.name = name;
+	}
+	
+	@Override
+	public UnaryPayloadElem project()
+	{
+		return this;
 	}
 
 	@Override
@@ -67,7 +73,8 @@ public class UnaryPayloadElem extends ScribNodeBase implements PayloadElem//exte
 	}
 
 	@Override
-	public PayloadType<DataTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
+	//public PayloadType<DataTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
+	public PayloadType<? extends PayloadTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
 	{
 		//return this.data.toPayloadType();
 		return this.name.toPayloadType();

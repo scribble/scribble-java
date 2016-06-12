@@ -9,7 +9,14 @@ import org.scribble.sesstype.name.PayloadType;
 //public abstract class PayloadElem extends ScribNodeBase
 public interface PayloadElem extends ScribNode
 {
+	PayloadElem project();  // Currently outside of visitor/env pattern (cf. MessageNode)
+	
 	default boolean isDelegationElem()
+	{
+		return false;
+	}
+
+	default boolean isLocalDelegationElem()
 	{
 		return false;
 	}
@@ -50,7 +57,7 @@ public interface PayloadElem extends ScribNode
 	}*/
 	
 	//public abstract PayloadType<?> toPayloadType();
-	public PayloadType<? extends PayloadTypeKind> toPayloadType();
+	public PayloadType<? extends PayloadTypeKind> toPayloadType();  // Mainly a wrapper method for the wrapped NameNode
 	
 	/*public abstract Name<K> toName();  // Not deriving from Named/NameNode, delegation doesn't fit -- would need to make a special (Global@Role) name of Local kind
 	

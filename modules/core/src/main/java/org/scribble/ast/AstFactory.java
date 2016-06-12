@@ -20,6 +20,7 @@ import org.scribble.ast.local.LAccept;
 import org.scribble.ast.local.LChoice;
 import org.scribble.ast.local.LConnect;
 import org.scribble.ast.local.LContinue;
+import org.scribble.ast.local.LDelegationElem;
 import org.scribble.ast.local.LDisconnect;
 import org.scribble.ast.local.LDo;
 import org.scribble.ast.local.LInteractionNode;
@@ -65,6 +66,7 @@ public interface AstFactory
 	//UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
 	UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode name);
 	DelegationElem DelegationElem(GProtocolNameNode name, RoleNode role);
+	LDelegationElem LDelegationElem(LProtocolNameNode name);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
 	ImportModule ImportModule(ModuleNameNode modname, ModuleNameNode alias);
