@@ -26,6 +26,12 @@ public class DelegationElem extends ScribNodeBase implements PayloadElem
 	}
 
 	@Override
+	public boolean isDelegationElem()
+	{
+		return false;
+	}
+
+	@Override
 	protected DelegationElem copy()
 	{
 		return new DelegationElem(this.proto, this.role);

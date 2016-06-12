@@ -1,11 +1,15 @@
 package org.scribble.del;
 
+import org.scribble.ast.DelegationElem;
+import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.MessageTransfer;
+import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.MessageIdCollector;
+import org.scribble.visit.ProtocolDeclContextBuilder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.RoleCollector;
 import org.scribble.visit.env.UnfoldingEnv;
@@ -64,6 +68,23 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 			throw new RuntimeException("Shouldn't get in here: " + mt.msg);
 		}
 		return visited;
+	}
+
+	@Override
+	public MessageTransfer<?> leaveProtocolDeclContextBuilding(ScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException
+	{
+		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
+		if (mt.msg.isMessageSigNode())
+		{
+			for (PayloadElem pe : ((MessageSigNode) mt.msg).payloads.getElements())
+			{
+				if (pe.isDelegationElem())
+				{
+					((DelegationElemDel) pe.del()).leaveMessageTransferInProtocolDeclContextBuilding(mt, (DelegationElem) pe, builder);
+				}
+			}
+		}
+		return mt;
 	}
 
 	/*@Override

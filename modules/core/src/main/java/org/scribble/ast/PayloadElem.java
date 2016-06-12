@@ -9,6 +9,11 @@ import org.scribble.sesstype.name.PayloadType;
 //public abstract class PayloadElem extends ScribNodeBase
 public interface PayloadElem extends ScribNode
 {
+	default boolean isDelegationElem()
+	{
+		return false;
+	}
+
 	/*public final PayloadElemNameNode<K> name;  // Doesn't work for DelegationElem (Global@Role), name is global but payloadelem is local -- similar reason why not a NameNode, delegation doesn't fit -- would work for direct LProtocolNameNode elems though
 
 	public PayloadElem(PayloadElemNameNode<K> name)

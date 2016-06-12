@@ -51,6 +51,9 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 			throw new ScribbleException("Role not enabled: " + src);
 		}
 		Message msg = gmt.msg.toMessage();
+
+		//... FIXME: project message/payload, i.e. delegation types
+
 		WFChoiceEnv env = checker.popEnv();
 		for (Role dest : gmt.getDestinationRoles())
 		{

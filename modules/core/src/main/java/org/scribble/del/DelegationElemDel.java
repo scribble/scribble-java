@@ -2,6 +2,7 @@ package org.scribble.del;
 
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.DelegationElem;
+import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
@@ -11,6 +12,7 @@ import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.ProtocolDeclContextBuilder;
 
 public class DelegationElemDel extends ScribDelBase
 {
@@ -63,4 +65,14 @@ public class DelegationElemDel extends ScribDelBase
 		return (DataTypeNode)
 				AstFactoryImpl.FACTORY.QualifiedNameNode(DataTypeKind.KIND, fullname.getElements());  // Didn't keep original del
 	}*/
+
+	//@Override
+	//public DelegationElem leaveProtocolDeclContextBuilding(ScribNodeScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException  // FIXME: cannot access MessageTransfer roles from here
+	// FIXME: apply this pattern to all other existing instances
+	protected void leaveMessageTransferInProtocolDeclContextBuilding(MessageTransfer<?> mt, DelegationElem de, ProtocolDeclContextBuilder builder) throws ScribbleException
+	{
+		GProtocolName gpn = de.proto.toName();  // leaveDisambiguation has fully qualified the target name
+		builder.addGlobalProtocolDependency(mt.src.toName(), gpn, de.role.toName());  // FIXME: does it make sense to use projection role as dependency target role? (seems to be used for Job.getProjections)
+		mt.getDestinationRoles().forEach((r) -> builder.addGlobalProtocolDependency(r, gpn, de.role.toName()));
+	}
 }

@@ -51,23 +51,74 @@ module Test;
 
 // TODO: check for (not yet supported) deleg actions in API gen
 
+// FIXME: delete noLive or add to fair check
+// FIXME: '.' in Name constructor args -- no: rename constructor arg to simpname (cf SessionTypeFactory)
+// MainContext.newJob -- move MainContext to core?
+// FIXME: Module.getGlobal/LocalProtocolDecl
+// FIXME: delegation type payload projection
 
 
 //*
-type <java> "java.lang.Integer" from "rt.jar" as Int;
-
-
 global protocol Proto1(role A, role B)
 {
-	//do Proto2(A, B);
-	(Proto2@E) from A to B;   // Should not be aux? (or if aux should check WF as root?)
-	//(Test.Int) from A to B;
-	//(Test.Inta) from A to B;  // FIXME: runtime exception
+	(Proto1@A) from A to B;  // FIXME: test recursive protocoldecls
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	(Proto2@A) from A to B;  // FIXME: test recursive protocoldecls
 }
 
-aux global protocol Proto2(role C, role D)
+aux global protocol Proto2(role A, role B)
 {
-	1() from C to D;
+	(Proto1@A) from A to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Game(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		2() from B to C;
+	}
+}
+
+aux global protocol Game(role A, role B, role C)
+{
+	() from A to B;
+	() from B to C;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		rec X
+		{
+			2() from A to B;
+			//do Proto1Aux(A, B);
+		}
+	}
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	continue X;  // Still checked for aux
 }
 //*/
 
