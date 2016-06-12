@@ -16,6 +16,12 @@ public class LProtocolName extends ProtocolName<Local> implements PayloadType<Lo
 	{
 		super(Local.KIND, membname);
 	}
+	
+	/*@Override
+	public boolean isLDelegationType()
+	{
+		return true;
+	}*/
 
 	@Override
 	public LProtocolName getSimpleName()

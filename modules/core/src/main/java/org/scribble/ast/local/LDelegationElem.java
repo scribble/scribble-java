@@ -5,12 +5,12 @@ import org.scribble.ast.UnaryPayloadElem;
 import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.kind.PayloadTypeKind;
+import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.AstVisitor;
 
 // N.B. extends UnaryPayloadElem, not DelegationElem
-public class LDelegationElem extends UnaryPayloadElem
+public class LDelegationElem extends UnaryPayloadElem<Local>
 {
   // Currently no potential for ambiguity because only generated, not parsed
 	public LDelegationElem(LProtocolNameNode proto)
@@ -59,8 +59,8 @@ public class LDelegationElem extends UnaryPayloadElem
 	}*/
 
 	@Override
-	//public PayloadType<Local> toPayloadType()
-	public PayloadType<? extends PayloadTypeKind> toPayloadType()
+	//public PayloadType<? extends PayloadTypeKind> toPayloadType()
+	public PayloadType<Local> toPayloadType()
 	{
 		return this.name.toPayloadType();
 	}

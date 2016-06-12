@@ -5,20 +5,23 @@ import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.PayloadTypeKind;
 import org.scribble.sesstype.name.PayloadType;
+import org.scribble.util.ScribUtil;
 import org.scribble.visit.AstVisitor;
 
-// Cf. DoArg, wrapper for a (unary) name node of potentially unknown kind (needs disamb) -- but no need for generic name node parameter, as currently only DataTypeKind expected
+// Cf. DoArg, wrapper for a (unary) name node of potentially unknown kind (needs disamb)
+// PayloadTypeKind is DataType or Local, but Local has its own special subclass (and protocol params not allowed), so this should implicitly be for DataType only
 // AST hierarchy requires unary and delegation (binary pair) payloads to be structurally distinguished
 //public class DataTypeElem extends PayloadElem<DataTypeKind>
-public class UnaryPayloadElem extends ScribNodeBase implements PayloadElem//extends PayloadElem
+public class UnaryPayloadElem<K extends PayloadTypeKind> extends ScribNodeBase implements PayloadElem<K>//extends PayloadElem
 {
 	//public final PayloadElemNameNode<DataTypeKind> name;
 	//public final DataTypeNode data; 
-	public final PayloadElemNameNode name;   // (Ambig.) DataTypeNode or parameter
+	public final PayloadElemNameNode<K> name;   // (Ambig.) DataTypeNode or parameter
 
 	//public DataTypeElem(PayloadElemNameNode<DataTypeKind> name)
 	//public UnaryPayloadlem(DataTypeNode data)
-	public UnaryPayloadElem(PayloadElemNameNode name)
+	//public UnaryPayloadElem(PayloadElemNameNode name)
+	public UnaryPayloadElem(PayloadElemNameNode<K> name)
 	{
 		//super(name);
 		//this.data = data;
@@ -26,42 +29,44 @@ public class UnaryPayloadElem extends ScribNodeBase implements PayloadElem//exte
 	}
 	
 	@Override
-	public UnaryPayloadElem project()
+	public UnaryPayloadElem<K> project()
 	{
 		return this;
 	}
 
 	@Override
-	protected UnaryPayloadElem copy()
+	protected UnaryPayloadElem<K> copy()
 	{
 		//return new UnaryPayloadElem(this.data);
-		return new UnaryPayloadElem(this.name);
+		return new UnaryPayloadElem<>(this.name);
 	}
 	
 	@Override
-	public UnaryPayloadElem clone()
+	public UnaryPayloadElem<K> clone()
 	{
 		//PayloadElemNameNode<DataTypeKind> name = (PayloadElemNameNode<DataTypeKind>) this.data.clone();  // FIXME: make a DataTypeNameNode
-		PayloadElemNameNode name = (PayloadElemNameNode) this.name.clone();  // FIXME: make a DataTypeNameNode
+		//PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) this.name.clone();
+		PayloadElemNameNode<K> name = ScribUtil.checkNodeClassEquality(this.name, this.name.clone());
 		return AstFactoryImpl.FACTORY.UnaryPayloadElem(name);
 	}
 
 	//public DataTypeElem reconstruct(PayloadElemNameNode<DataTypeKind> name)
 	//public UnaryPayloadElem reconstruct(DataTypeNode name)
-	public UnaryPayloadElem reconstruct(PayloadElemNameNode name)
+	public UnaryPayloadElem<K> reconstruct(PayloadElemNameNode<K> name)
 	{
 		ScribDel del = del();
-		UnaryPayloadElem elem = new UnaryPayloadElem(name);
-		elem = (UnaryPayloadElem) elem.del(del);
+		UnaryPayloadElem<K> elem = new UnaryPayloadElem<>(name);
+		elem = ScribNodeBase.del(elem, del);
 		return elem;
 	}
 
 	@Override
-	public UnaryPayloadElem visitChildren(AstVisitor nv) throws ScribbleException
+	public UnaryPayloadElem<K> visitChildren(AstVisitor nv) throws ScribbleException
 	{
 		//PayloadElemNameNode<DataTypeKind> name = (PayloadElemNameNode<DataTypeKind>) visitChild(this.data, nv);
 		//DataTypeNode name = (PayloadElemNameNode<DataTypeKind>) visitChild(this.data, nv);
-		PayloadElemNameNode name = (PayloadElemNameNode) visitChild(this.name, nv);
+		PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChild(this.name, nv);  // FIXME
+		//PayloadElemNameNode<K> name = (PayloadElemNameNode<K>) visitChildWithClassEqualityCheck(this, this.name, nv);  // No: can be initially Ambig
 		return reconstruct(name);
 	}
 	
@@ -74,7 +79,8 @@ public class UnaryPayloadElem extends ScribNodeBase implements PayloadElem//exte
 
 	@Override
 	//public PayloadType<DataTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
-	public PayloadType<? extends PayloadTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
+	//public PayloadType<? extends PayloadTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
+	public PayloadType<K> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
 	{
 		//return this.data.toPayloadType();
 		return this.name.toPayloadType();

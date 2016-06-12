@@ -7,7 +7,6 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.ProtocolBlockDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.env.InlineProtocolEnv;

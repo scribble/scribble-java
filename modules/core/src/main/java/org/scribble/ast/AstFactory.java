@@ -52,6 +52,7 @@ import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.sesstype.kind.Kind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
+import org.scribble.sesstype.kind.PayloadTypeKind;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
 
@@ -62,10 +63,11 @@ public interface AstFactory
 	
 	MessageSigNode MessageSigNode(OpNode op, PayloadElemList payload);
 	//PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems);
-	PayloadElemList PayloadElemList(List<PayloadElem> payloadelems);
+	PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems);
 	//PayloadElem PayloadElem(PayloadElemNameNode name);
 	//UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
-	UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode name);
+	//UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name);
+	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(PayloadElemNameNode<K> name);
 	GDelegationElem DelegationElem(GProtocolNameNode name, RoleNode role);
 	LDelegationElem LDelegationElem(LProtocolNameNode name);
 

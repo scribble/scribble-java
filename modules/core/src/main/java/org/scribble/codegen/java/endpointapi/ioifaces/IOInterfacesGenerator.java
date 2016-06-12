@@ -355,7 +355,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 
 		if (s.getStateKind() == Kind.POLY_INPUT)
 		{
-			GProtocolName gpn = this.apigen.getGProtocolName();
+			//GProtocolName gpn = this.apigen.getGProtocolName();
 			Role self = this.apigen.getSelf();
 
 			//String foo = HandlerInterfaceGenerator.getHandlerInterfaceName(IOStateInterfaceGenerator.getIOStateInterfaceName(self, s)); 
@@ -363,10 +363,8 @@ public class IOInterfacesGenerator extends ApiGenerator
 			List<IOAction> succifs = this.branchSuccs.get(key);
 			if (succifs != null)
 			{
-				//InterfaceBuilder handleif = this.iostates.get(HandleInterfaceGenerator.getHandleInterfaceName(self, s));
-				InterfaceBuilder handleif = this.iostates.get(key);
-				
-				//System.out.println("AAA: " + handleif.getName() + ", " + handleif.getParameters().isEmpty());
+				////InterfaceBuilder handleif = this.iostates.get(HandleInterfaceGenerator.getHandleInterfaceName(self, s));
+				//InterfaceBuilder handleif = this.iostates.get(key);
 				
 				/*if (handleif.getParameters().isEmpty())  // Hacky?
 				{
@@ -383,10 +381,10 @@ public class IOInterfacesGenerator extends ApiGenerator
 					EndpointState succ = s.accept(foo.next());* /
 				}*/
 
+				////Map<IOAction, Integer> count = new HashMap<>();
+				//List<IOAction> tmp = this.branchSuccs.get(key);
+				////tmp.stream().forEach((a) -> count.put(a, (int) tmp.stream().filter((b) -> b.equals(a)).count()));
 				//Map<IOAction, Integer> count = new HashMap<>();
-				List<IOAction> tmp = this.branchSuccs.get(key);
-				//tmp.stream().forEach((a) -> count.put(a, (int) tmp.stream().filter((b) -> b.equals(a)).count()));
-				Map<IOAction, Integer> count = new HashMap<>();
 				/*for (IOAction a : this.branchPostActions.get(s).stream().sorted(IOStateInterfaceGenerator.IOACTION_COMPARATOR).collect(Collectors.toList()))
 				{
 				/*for (IOAction b : succifs)

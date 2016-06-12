@@ -40,8 +40,8 @@ public class Seller
 						s1cases = s1.branch(Booking.A);
 						switch (s1cases.op)
 						{
-							case _:
-								s1 = s1cases.receive(Booking._);
+							case Dummy:
+								s1 = s1cases.receive(Booking.Dummy);
 								break;
 							case No:
 								s1cases.receive(Booking.No);

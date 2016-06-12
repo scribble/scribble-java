@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;

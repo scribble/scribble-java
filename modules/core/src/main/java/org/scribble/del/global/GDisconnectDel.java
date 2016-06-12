@@ -5,9 +5,7 @@ import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WFChoiceChecker;
@@ -24,8 +22,8 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		GDisconnect gc = (GDisconnect) visited;
-		Role src = gc.src.toName();
-		Role dest = gc.dest.toName();
+		/*Role src = gc.src.toName();
+		Role dest = gc.dest.toName();*/
 		return gc;
 	}
 
@@ -39,7 +37,7 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
-		Message msg = gd.msg.toMessage();  //  Unit message 
+		//Message msg = gd.msg.toMessage();  //  Unit message 
 		WFChoiceEnv env = checker.popEnv();
 		//for (Role dest : gc.getDestinationRoles())
 		Role dest = gd.dest.toName();
@@ -76,10 +74,10 @@ public class GDisconnectDel extends ConnectionActionDel implements GSimpleIntera
 		return (GDisconnect) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gd);
 	}
 	
-	@Override
+	/*@Override
 	public GDisconnect leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		//return (GDisconnect) super.leaveModelBuilding(parent, child, builder, ls);
 		throw new RuntimeException("Shouldn't get in here: " + visited);
-	}
+	}*/
 }

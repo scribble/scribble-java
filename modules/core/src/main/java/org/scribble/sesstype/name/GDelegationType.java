@@ -5,21 +5,21 @@ import java.io.Serializable;
 
 import org.scribble.sesstype.kind.Local;
 
-public class DelegationType implements PayloadType<Local>, Serializable
+public class GDelegationType implements PayloadType<Local>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
 	private GProtocolName proto;  // Cannot be final, for Serializable
 	private Role role;
 
-	public DelegationType(GProtocolName proto, Role role)
+	public GDelegationType(GProtocolName proto, Role role)
 	{
 		this.proto = proto;
 		this.role = role;
 	}
 
 	@Override
-	public boolean isDelegationType()
+	public boolean isGDelegationType()
 	{
 		return true;
 	}
@@ -47,17 +47,17 @@ public class DelegationType implements PayloadType<Local>, Serializable
 		{
 			return true;
 		}
-		if (!(o instanceof DelegationType))
+		if (!(o instanceof GDelegationType))
 		{
 			return false;
 		}
-		DelegationType them = (DelegationType) o;
+		GDelegationType them = (GDelegationType) o;
 		return them.canEqual(this) && this.proto.equals(them.proto) && this.role.equals(them.role);
 	}
 	
 	public boolean canEqual(Object o)
 	{
-		return o instanceof DelegationType;
+		return o instanceof GDelegationType;
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import org.scribble.ast.local.LContinue;
 import org.scribble.del.ContinueDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 
 public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeDel
@@ -39,7 +38,7 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 		return visited;
 	}*/
 
-	@Override
+	/*@Override
 	public GContinue leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph, ScribNode visited) throws ScribbleException
 	{
 		/*GContinue gr = (GContinue) visited;
@@ -55,7 +54,6 @@ public class GContinueDel extends ContinueDel implements GSimpleInteractionNodeD
 		{
 			graph.builder.addEdge(graph.builder.getPredecessors(), graph.builder.getPreviousActions(), graph.builder.getRecursionEntry(rv));
 		}
-		return (GContinue) super.leaveModelBuilding(parent, child, graph, gr);*/
-		throw new RuntimeException("TODO: " + visited);
-	}
+		return (GContinue) super.leaveModelBuilding(parent, child, graph, gr);
+	}*/
 }

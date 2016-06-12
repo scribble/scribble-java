@@ -1,11 +1,6 @@
 package org.scribble.visit;
 
 import org.scribble.ast.ScribNode;
-import org.scribble.ast.global.GChoice;
-import org.scribble.ast.global.GInteractionSeq;
-import org.scribble.ast.global.GProtocolBlock;
-import org.scribble.del.global.GChoiceDel;
-import org.scribble.del.global.GInteractionSeqDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.global.GGraphBuilder;
 
@@ -22,7 +17,7 @@ public class GlobalModelBuilder extends NoEnvInlinedProtocolVisitor  // FIXME: s
 		super(job);
 	}
 
-	// Override visitInlinedProtocol, not visit, or else enter/exit is lost
+	/*// Override visitInlinedProtocol, not visit, or else enter/exit is lost
 	@Override
 	public ScribNode visitInlinedProtocol(ScribNode parent, ScribNode child) throws ScribbleException
 	{
@@ -48,24 +43,24 @@ public class GlobalModelBuilder extends NoEnvInlinedProtocolVisitor  // FIXME: s
 	protected GChoice visitOverrideForGChoice(GInteractionSeq parent, GChoice child)
 	{
 		return ((GChoiceDel) child.del()).visitForGlobalModelBuilding(this, child);
-	}
+	}*/
 
 	@Override
 	protected final void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	//protected final void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.inlinedProtocolEnter(parent, child);
-		//super.unfoldingEnter(parent, child);
-		child.del().enterModelBuilding(parent, child, this);
+		////super.unfoldingEnter(parent, child);
+		//child.del().enterModelBuilding(parent, child, this);
 	}
 	
 	@Override
 	protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	//protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveModelBuilding(parent, child, this, visited);
+		//visited = visited.del().leaveModelBuilding(parent, child, this, visited);
 		return super.inlinedProtocolLeave(parent, child, visited);
-		//return super.unfoldingLeave(parent, child, visited);
+		////return super.unfoldingLeave(parent, child, visited);
 	}
 
 

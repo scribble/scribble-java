@@ -1,25 +1,10 @@
 package org.scribble.visit;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModel;
-import org.scribble.model.global.GModelAction;
-import org.scribble.model.global.GModelPath;
-import org.scribble.model.global.GModelState;
-import org.scribble.model.local.IOTrace;
-import org.scribble.sesstype.name.Role;
 
 // Duplicated from WFChoiceChecker
 // Maybe refactor as PathVisitor (extended by WF checker)
@@ -45,13 +30,13 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 	public void enter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.enter(parent, child);
-		child.del().enterWFChoicePathCheck(parent, child, this);
+		//child.del().enterWFChoicePathCheck(parent, child, this);
 	}
 	
 	@Override
 	public ScribNode leave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		visited = visited.del().leaveWFChoicePathCheck(parent, child, this, visited);
+		//visited = visited.del().leaveWFChoicePathCheck(parent, child, this, visited);
 		return super.leave(parent, child, visited);
 	}
 
@@ -87,7 +72,7 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 
 	private GProtocolDecl visitOverrideForGProtocolDecl(Module parent, GProtocolDecl child) throws ScribbleException
 	{
-		GProtocolDecl gpd = (GProtocolDecl) child;
+		/*GProtocolDecl gpd = (GProtocolDecl) child;
 		GModel model = null;// getJobContext().getGlobalModel(gpd.getFullMemberName(parent));
 
 		//System.out.println("aaa: " + model);
@@ -99,12 +84,12 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 		//System.out.println("bbb1: " + reach);
 		//System.out.println("bbb2: " + invreach);
 		
-		checkWF(new HashSet<>(), model.init, model, reach);
+		checkWF(new HashSet<>(), model.init, model, reach);*/
 		
 		return child;
 	}
 	
-	private static void checkWF(Set<GModelState> seen, GModelState curr, GModel model, Map<GModelState, Set<GModelState>> reach)
+	/*private static void checkWF(Set<GModelState> seen, GModelState curr, GModel model, Map<GModelState, Set<GModelState>> reach)
 	{
 		if (seen.contains(curr))
 		{
@@ -165,9 +150,9 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 				}
 			}
 		}
-	}
+	}*/
 	
-	private static void getReachability(Set<GModelState> seen, GModelState curr, Map<GModelState, Set<GModelState>> reach, Map<GModelState, Set<GModelState>> invreach)
+	/*private static void getReachability(Set<GModelState> seen, GModelState curr, Map<GModelState, Set<GModelState>> reach, Map<GModelState, Set<GModelState>> invreach)
 	{
 		if (seen.contains(curr))
 		{
@@ -212,7 +197,7 @@ public class WFChoicePathChecker extends ModuleContextVisitor
 			bar.add(curr);
 			getReachability(bar, succ, reach, invreach);
 		}
-	}
+	}*/
 	
 	/*private ScribNode visitOverrideForChoice(InteractionSeq<?> parent, Choice<?> child) throws ScribbleException
 	{

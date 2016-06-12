@@ -13,8 +13,9 @@ import org.scribble.sesstype.name.PayloadType;
 
 // Primitive payload type, MessageSigName or parameter names only: if name is parsed as a CompoundNameNodes, it must be a payload type (not ambiguous in this case)
 // No counterpart needed for MessageNode because MessageSignature values can be syntactically distinguished from sig parameters
-//public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements  MessageNode, PayloadElemNameNode<PayloadTypeKind>
-public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode
+//public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode
+//public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode<PayloadTypeKind>
+public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageNode, PayloadElemNameNode<DataTypeKind>  // Currently hardcoded to DataTypeKind for payload elems
 {
 	public AmbigNameNode(String identifier)
 	{
@@ -53,8 +54,8 @@ public class AmbigNameNode extends SimpleNameNode<AmbigKind> implements MessageN
 
 	@Override
 	//public PayloadType<AmbigKind> toPayloadType()
+	public PayloadType<DataTypeKind> toPayloadType()  // As a payload elem, currently hardcoded to expect only DataTypeKind (protocol payloads not supported)
 	//public PayloadType<PayloadTypeKind> toPayloadType()
-	public PayloadType<DataTypeKind> toPayloadType()  // Currently hardcoded to expect only DataTypeKind
 	{
 		throw new RuntimeException("Ambiguous name node not disambiguated: " + this);
 	}

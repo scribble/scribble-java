@@ -5,9 +5,7 @@ import org.scribble.ast.global.GWrap;
 import org.scribble.ast.local.LNode;
 import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WFChoiceChecker;
@@ -24,8 +22,8 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		GWrap gw = (GWrap) visited;
-		Role src = gw.src.toName();
-		Role dest = gw.dest.toName();
+		/*Role src = gw.src.toName();
+		Role dest = gw.dest.toName();*/
 		return gw;
 	}
 
@@ -39,7 +37,7 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 		{
 			throw new ScribbleException("Role not enabled: " + src);
 		}
-		Message msg = gw.msg.toMessage();  //  Unit message 
+		//Message msg = gw.msg.toMessage();  //  Unit message 
 		Role dest = gw.dest.toName();
 		if (src.equals(dest))
 		{
@@ -69,10 +67,10 @@ public class GWrapDel extends ConnectionActionDel implements GSimpleInteractionN
 		return (GWrap) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gw);
 	}
 	
-	@Override
+	/*@Override
 	public GWrap leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		//return (GConnect) super.leaveModelBuilding(parent, child, builder, ls);
 		throw new RuntimeException("Shouldn't get in here: " + visited);
-	}
+	}*/
 }

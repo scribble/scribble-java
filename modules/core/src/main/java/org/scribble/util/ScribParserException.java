@@ -3,6 +3,11 @@ package org.scribble.util;
 // FIXME: should be in parser module -- maybe make a ModuleLoadingException wrapper?
 public class ScribParserException extends Exception
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ScribParserException()
 	{
 		// TODO Auto-generated constructor stub

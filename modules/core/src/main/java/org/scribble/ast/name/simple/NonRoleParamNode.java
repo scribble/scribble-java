@@ -16,9 +16,10 @@ import org.scribble.sesstype.name.Name;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.Substitutor;
 
-// An unambiguous kinded parameter (ambiguous parameters handled by disambiguation)
+// An unambiguous kinded parameter (ambiguous parameters handled by disambiguation) that isn't a role -- e.g. DataType/MessageSigName param
+//public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode
 //public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode<PayloadTypeKind>
-public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode
+public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode<K> implements MessageNode, PayloadElemNameNode<DataTypeKind>  // As a payload, can only be a DataType (so hardcode)
 {
 	public final K kind;
 	
@@ -93,7 +94,7 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 	public Arg<K> toArg()
 	{
 		Arg<? extends Kind> arg;
-		if (this.kind.equals(DataTypeKind.KIND))  // FIXME: payload kind hardcorded to data type kinds
+		if (this.kind.equals(DataTypeKind.KIND))  // FIXME: as a payload kind, currently hardcorded to data type kinds (protocol payloads not supported)
 		{
 			arg = toPayloadType();
 		}
@@ -120,17 +121,16 @@ public class NonRoleParamNode<K extends NonRoleParamKind> extends SimpleNameNode
 		return (Message) toName();
 	}
 
-	// Won't normally get into these methods, these name nodes should usually already be disambiguated
 	@Override
 	//public PayloadType<? extends PayloadTypeKind> toPayloadType()
-	//public PayloadType<PayloadTypeKind> toPayloadType()
-	public PayloadType<DataTypeKind> toPayloadType()  // Currently can assume the only possible kind is DataTypeKind
+	public PayloadType<DataTypeKind> toPayloadType()  // Currently can assume the only possible kind for NonRoleParamNode is DataTypeKind
+	//public PayloadType<? extends PayloadTypeKind> toPayloadType()
 	{
-		if (this.kind.equals(DataTypeKind.KIND))
+		if (this.kind.equals(DataTypeKind.KIND))  // As a payload, NonRoleParamNode can only be a DataType
 		{
 			return (DataType) toName();
 		}
-		/*else if (this.kind.equals(Local.KIND))
+		/*else if (this.kind.equals(Local.KIND))  // Protocol params not supported
 		{
 			return (Local) toName();
 		}*/

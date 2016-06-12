@@ -4,7 +4,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.del.InteractionNodeDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 
 public interface GInteractionNodeDel extends InteractionNodeDel
@@ -23,7 +22,7 @@ public interface GInteractionNodeDel extends InteractionNodeDel
 		return ScribDelBase.popAndSetVisitorEnv(this, proj, visited);
 	}
 
-	@Override
+	/*@Override
 	default void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
 	{
 		ScribDelBase.pushVisitorEnv(this, builder);
@@ -33,5 +32,5 @@ public interface GInteractionNodeDel extends InteractionNodeDel
 	default ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		return ScribDelBase.popAndSetVisitorEnv(this, builder, visited);
-	}
+	}*/
 }

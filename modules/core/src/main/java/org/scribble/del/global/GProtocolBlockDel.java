@@ -9,7 +9,6 @@ import org.scribble.ast.local.LProtocolBlock;
 import org.scribble.del.ProtocolBlockDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -45,11 +44,11 @@ public class GProtocolBlockDel extends ProtocolBlockDel
 		return (GProtocolBlock) ScribDelBase.popAndSetVisitorEnv(this, proj, gpb);
 	}
 	
-	@Override
+	/*@Override
 	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
 	{
 		ScribDelBase.pushVisitorEnv(this, builder);
-	}
+	}*/
 
 	/*@Override
 	public GProtocolBlock leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException

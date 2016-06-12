@@ -77,7 +77,7 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 		MessageTransfer<?> mt = (MessageTransfer<?>) visited;
 		if (mt.msg.isMessageSigNode())
 		{
-			for (PayloadElem pe : ((MessageSigNode) mt.msg).payloads.getElements())
+			for (PayloadElem<?> pe : ((MessageSigNode) mt.msg).payloads.getElements())
 			{
 				if (pe.isGlobalDelegationElem())  // FIXME: should always be GMessageTransfer
 				{

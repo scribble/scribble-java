@@ -6,7 +6,7 @@ import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 
-public class LProtocolNameNode extends ProtocolNameNode<Local> implements PayloadElemNameNode
+public class LProtocolNameNode extends ProtocolNameNode<Local> implements PayloadElemNameNode<Local>
 {
 	public LProtocolNameNode(String... ns)
 	{

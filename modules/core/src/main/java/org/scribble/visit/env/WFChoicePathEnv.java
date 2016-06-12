@@ -11,6 +11,7 @@ import org.scribble.model.global.Path;
 import org.scribble.model.global.PathElement;
 import org.scribble.sesstype.name.Role;
 
+@Deprecated
 public class WFChoicePathEnv extends Env<WFChoicePathEnv>
 {
 	private final Set<Path> paths;  // FIXME: LinkedHashSet?  or just Deque?

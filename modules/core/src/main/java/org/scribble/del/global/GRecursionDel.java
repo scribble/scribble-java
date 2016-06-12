@@ -9,8 +9,6 @@ import org.scribble.ast.local.LRecursion;
 import org.scribble.ast.name.simple.RecVarNode;
 import org.scribble.del.RecursionDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.sesstype.name.RecVar;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
@@ -71,7 +69,7 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		//return (GRecursion) super.leavePathCollection(parent, child, coll, rec);
 	}*/
 	
-	@Override
+	/*@Override
 	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph) throws ScribbleException
 	{
 		super.enterModelBuilding(parent, child, graph);
@@ -88,5 +86,5 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 		RecVar rv = gr.recvar.toName();
 		graph.builder.popRecursionEntry(rv);
 		return (GRecursion) super.leaveModelBuilding(parent, child, graph, gr);
-	}
+	}*/
 }

@@ -6,8 +6,8 @@ import org.scribble.sesstype.Arg;
 import org.scribble.sesstype.kind.DataTypeKind;
 import org.scribble.sesstype.name.DataType;
 
-//public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode<DataTypeKind>
-public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
+//public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode
+public class DataTypeNode extends MemberNameNode<DataTypeKind> implements PayloadElemNameNode<DataTypeKind>
 {
 	public DataTypeNode(String... elems)
 	{

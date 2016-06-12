@@ -17,7 +17,6 @@ import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
@@ -250,7 +249,7 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 		return (GChoice) super.leaveWFChoicePathCheck(parent, child, coll, visited);  // Replaces base popAndSet to do pop, merge and set
 	}*/
 
-	public GChoice visitForGlobalModelBuilding(GlobalModelBuilder graph, GChoice child)
+	/*public GChoice visitForGlobalModelBuilding(GlobalModelBuilder graph, GChoice child)
 	{
 		try
 		{
@@ -267,5 +266,5 @@ public class GChoiceDel extends ChoiceDel implements GCompoundInteractionNodeDel
 			throw new RuntimeException("Shouldn't get in here: " + e);
 		}
 		return child;
-	}
+	}*/
 }

@@ -20,14 +20,14 @@ import org.scribble.sesstype.name.Role;
 // Cf. HandlerInterfaceGenerator
 public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 {
-	private final IOInterfacesGenerator iogen;
+	//private final IOInterfacesGenerator iogen;
 	
 	private final Map<IOAction, InterfaceBuilder> caseActions;
 
 	public HandleInterfaceGenerator(IOInterfacesGenerator iogen, Map<IOAction, InterfaceBuilder> actions, EndpointState curr, Map<IOAction, InterfaceBuilder> caseActions)
 	{
 		super(iogen.apigen, actions, curr);
-		this.iogen = iogen;
+		//this.iogen = iogen;
 
 		this.caseActions = caseActions;
 	}

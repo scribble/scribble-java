@@ -25,14 +25,13 @@ public class AntlrPayloadElemList
 	public static PayloadElemList parsePayloadElemList(ScribParser parser, CommonTree ct)
 	{
 		// As in AntlrNonRoleArgList, i.e. payloadelem (NonRoleArg) not directly parsed -- cf. rolearg and nonroleparamdecl, which are directly parsed (not consistent), due to amibgious names
-		//List<PayloadElem<?>> pes = getPayloadElements(ct).stream().map((pe) -> parsePayloadElem(pe)).collect(Collectors.toList());
-		List<PayloadElem> pes = getPayloadElements(ct).stream().map((pe) -> parsePayloadElem(pe)).collect(Collectors.toList());
+		//List<PayloadElem> pes = getPayloadElements(ct).stream().map((pe) -> parsePayloadElem(pe)).collect(Collectors.toList());
+		List<PayloadElem<?>> pes = getPayloadElements(ct).stream().map((pe) -> parsePayloadElem(pe)).collect(Collectors.toList());
 		return AstFactoryImpl.FACTORY.PayloadElemList(pes);
 	}
 
-	// FIXME: make a PayloadKind
-	//private static PayloadElem<?> parsePayloadElem(CommonTree ct)
-	private static PayloadElem parsePayloadElem(CommonTree ct)
+	//private static PayloadElem parsePayloadElem(CommonTree ct)
+	private static PayloadElem<?> parsePayloadElem(CommonTree ct)
 	{
 		AntlrNodeType type = ScribParserUtil.getAntlrNodeType(ct);
 		/*// Parser isn't working to distinguish simple from qualified names (cf. Scribble.g payloadelement)

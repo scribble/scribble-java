@@ -44,7 +44,7 @@ public class Agent
 							case Query:
 								s1 = s1cases.receive(Booking.Query)
 								       .send(Booking.C, Booking.Quote, quote -= 100)
-								       .send(Booking.S, Booking._);
+								       .send(Booking.S, Booking.Dummy);
 								break;
 							case No:
 								s1cases.receive(Booking.No)

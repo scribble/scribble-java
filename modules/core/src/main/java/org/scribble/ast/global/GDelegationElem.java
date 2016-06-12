@@ -9,7 +9,7 @@ import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Local;
-import org.scribble.sesstype.name.DelegationType;
+import org.scribble.sesstype.name.GDelegationType;
 import org.scribble.sesstype.name.PayloadType;
 import org.scribble.visit.AstVisitor;
 import org.scribble.visit.Projector;
@@ -17,7 +17,7 @@ import org.scribble.visit.Projector;
 // A "binary name pair" payload elem (current AST hierarchy induces this pattern), cf. UnaryPayloadElem (also differs in no parsing ambig against parameters)
 // The this.name will be global kind, but overall this node is local kind
 //public class DelegationElem extends PayloadElem<Local>
-public class GDelegationElem extends ScribNodeBase implements PayloadElem
+public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 {
   // Currently no potential for ambiguity, cf. UnaryPayloadElem (DataTypeNameNode or ParameterNode)
 	public final GProtocolNameNode proto;  // Becomes full name after disambiguation
@@ -81,6 +81,6 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem
 	@Override
 	public PayloadType<Local> toPayloadType()
 	{
-		return new DelegationType(this.proto.toName(), this.role.toName());
+		return new GDelegationType(this.proto.toName(), this.role.toName());
 	}
 }

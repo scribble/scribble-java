@@ -2,6 +2,8 @@ package org.scribble.cli;
 
 public class CommandLineException extends Exception
 {
+	private static final long serialVersionUID = 1L;
+
 	public CommandLineException()
 	{
 		// TODO Auto-generated constructor stub

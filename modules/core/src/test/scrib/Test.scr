@@ -58,26 +58,15 @@ module Test;
 // FIXME: delegation type payload projection
 
 
+//*
 global protocol Proto1(role A, role B)
 {
-	1(Proto2@A) from A to B;
+	1(Proto2@A) from A to B;  // Testing delegation payload projection
 }
 
 global protocol Proto2(role A, role B)
 {
 	2() from A to B;
-}
-
-
-/*
-global protocol Proto1<sig M>(role A, role B)
-{
-	do Proto1Aux<M>(A, B);
-}
-
-aux global protocol Proto1Aux<sig M>(role A, role B)
-{
-	M from A to B;
 }
 //*/
 
@@ -177,6 +166,19 @@ global protocol Proto1(role A, role B)
 aux global protocol Proto1Aux(role A, role B)
 {
 	continue X;  // Still checked for aux
+}
+//*/
+
+
+/*
+global protocol Proto1<sig M>(role A, role B)
+{
+	do Proto1Aux<M>(A, B);
+}
+
+aux global protocol Proto1Aux<sig M>(role A, role B)
+{
+	M from A to B;
 }
 //*/
 

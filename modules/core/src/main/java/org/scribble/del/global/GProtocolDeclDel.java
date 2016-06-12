@@ -19,12 +19,10 @@ import org.scribble.ast.name.qualified.LProtocolNameNode;
 import org.scribble.del.ModuleDel;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModel;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.JobContext;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDeclContextBuilder;
@@ -115,7 +113,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return projected;
 	}
 
-	// Cf. LProtocolDeclDel enter/leaveEndpointGraphBuilding
+	/*// Cf. LProtocolDeclDel enter/leaveEndpointGraphBuilding
 	@Override
 	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder graph)
 	{
@@ -127,13 +125,13 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 	{
 		GProtocolDecl gpd = (GProtocolDecl) visited;
 		/*System.out.println("1a: " + ((ModelEnv) gpd.def.block.del().env()).getActions());
-		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());*/
+		System.out.println("1b: " + parseModel(((ModelEnv) gpd.def.block.del().env()).getActions()).toDot());* /
 		GModel model = new GModel(builder.builder.getEntry(), builder.builder.getExit());
 		JobContext jc = builder.getJobContext();
 		jc.addGlobalModel(gpd.getFullMemberName((Module) parent), null);// model);
 		//builder.getJob().debugPrintln("\n[DEBUG] Global model " + gpd.getFullMemberName((Module) parent) + ":\n" + model);
 		return gpd;
-	}
+	}*/
 	
 	/*private static GModelState parseModel(Set<GModelAction> as)
 	{

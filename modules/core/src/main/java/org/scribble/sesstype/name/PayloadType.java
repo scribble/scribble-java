@@ -11,8 +11,13 @@ public interface PayloadType<K extends PayloadTypeKind> extends Arg<K>
 		return false;
 	}
 
-	default boolean isDelegationType()
+	default boolean isGDelegationType()
 	{
 		return false;
 	}
+	
+	/*public boolean isLDelegationType()
+	{
+		return true;
+	}*/
 }

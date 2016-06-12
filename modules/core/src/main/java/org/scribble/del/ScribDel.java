@@ -4,7 +4,6 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.DelegationProtocolRefChecker;
 import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.GlobalModelChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.MessageIdCollector;
@@ -20,7 +19,6 @@ import org.scribble.visit.ReachabilityChecker;
 import org.scribble.visit.RoleCollector;
 import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.WFChoiceChecker;
-import org.scribble.visit.WFChoicePathChecker;
 import org.scribble.visit.env.Env;
 
 // Immutable except for pass-specific Envs (by visitors) only -- Envs considered transient, not treated immutably (i.e. non defensive setter on del)
@@ -171,7 +169,7 @@ public interface ScribDel
 		return visited;
 	}
 
-	default void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
+	/*default void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException
 	{
 		
 	}
@@ -179,7 +177,7 @@ public interface ScribDel
 	default ScribNode leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		return visited;
-	}
+	}*/
 	
 	/*//default void enterPathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor<? extends PathEnv> coll) throws ScribbleException
 	default void enterPathCollection(ScribNode parent, ScribNode child, PathCollectionVisitor coll) throws ScribbleException
@@ -193,7 +191,7 @@ public interface ScribDel
 		return visited;
 	}*/
 	
-	default void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
+	/*default void enterWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll) throws ScribbleException
 	{
 		
 	}
@@ -201,7 +199,7 @@ public interface ScribDel
 	default ScribNode leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException
 	{
 		return visited;
-	}
+	}*/
 
 	/*default void enterEnablingMessageCollection(ScribNode parent, ScribNode child, EnablingMessageCollector coll)
 	{

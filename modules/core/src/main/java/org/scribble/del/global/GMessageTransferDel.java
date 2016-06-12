@@ -2,19 +2,13 @@ package org.scribble.del.global;
 
 import java.util.List;
 
-import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GMessageTransfer;
 import org.scribble.ast.local.LNode;
-import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModelAction;
 import org.scribble.sesstype.Message;
-import org.scribble.sesstype.Payload;
-import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WFChoiceChecker;
@@ -79,7 +73,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gmt);
 	}
 	
-	// Cf. LSend/Receive enter/leaveEndpointGraphBuilding
+	/*// Cf. LSend/Receive enter/leaveEndpointGraphBuilding
 	@Override
 	public GMessageTransfer leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
@@ -103,7 +97,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		leaves.put(dest, receive);
 		env = env.setActions(actions, leaves);
 		builder.pushEnv(env);
-		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveModelBuilding(parent, child, builder, visited);*/
+		return (GMessageTransfer) GSimpleInteractionNodeDel.super.leaveModelBuilding(parent, child, builder, visited);* /
 
 		GMessageTransfer ls = (GMessageTransfer) visited;
 		List<RoleNode> dests = ls.getDestinations();
@@ -119,7 +113,7 @@ public class GMessageTransferDel extends MessageTransferDel implements GSimpleIn
 		builder.builder.addEdge(builder.builder.getEntry(), new GModelAction(ls.src.toName(), peer, mid, payload), builder.builder.getExit());
 		//builder.builder.addEdge(builder.builder.getEntry(), GModelAction.get(ls.src.toName(), peer, mid, payload), builder.builder.getExit());
 		return (GMessageTransfer) super.leaveModelBuilding(parent, child, builder, ls);
-	}
+	}*/
 	
 	/*@Override
 	public ScribNode leaveWFChoicePathCheck(ScribNode parent, ScribNode child, WFChoicePathChecker coll, ScribNode visited) throws ScribbleException

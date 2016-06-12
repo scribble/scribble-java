@@ -4,15 +4,12 @@ import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
-import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.local.LNode;
 import org.scribble.ast.name.simple.RoleNode;
 import org.scribble.del.ScribDel;
-import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.AstVisitor;
 
 public class GConnect extends ConnectionAction<Global> implements GSimpleInteractionNode
 {

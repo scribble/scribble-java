@@ -7,7 +7,6 @@ import org.scribble.del.ConnectionActionDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.Message;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.Projector;
 import org.scribble.visit.WFChoiceChecker;
@@ -24,8 +23,8 @@ public class GConnectDel extends ConnectionActionDel implements GSimpleInteracti
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		GConnect gc = (GConnect) visited;
-		Role src = gc.src.toName();
-		Role dest = gc.dest.toName();
+		/*Role src = gc.src.toName();
+		Role dest = gc.dest.toName();*/
 		return gc;
 	}
 
@@ -72,10 +71,10 @@ public class GConnectDel extends ConnectionActionDel implements GSimpleInteracti
 		return (GConnect) GSimpleInteractionNodeDel.super.leaveProjection(parent, child, proj, gc);
 	}
 	
-	@Override
+	/*@Override
 	public GConnect leaveModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder, ScribNode visited) throws ScribbleException
 	{
 		//return (GConnect) super.leaveModelBuilding(parent, child, builder, ls);
 		throw new RuntimeException("Shouldn't get in here: " + visited);
-	}
+	}*/
 }

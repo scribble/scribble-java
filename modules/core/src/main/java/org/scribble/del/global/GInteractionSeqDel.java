@@ -1,6 +1,5 @@
 package org.scribble.del.global;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,8 +13,6 @@ import org.scribble.ast.local.LNode;
 import org.scribble.del.InteractionSeqDel;
 import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.global.GModelState;
-import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.Projector;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.InlineProtocolEnv;
@@ -82,7 +79,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		return (GInteractionSeq) ScribDelBase.popAndSetVisitorEnv(this, proj, gis);
 	}
 	
-	public GInteractionSeq visitForGlobalModelBuilding(GlobalModelBuilder conv, GInteractionSeq child)
+	/*public GInteractionSeq visitForGlobalModelBuilding(GlobalModelBuilder conv, GInteractionSeq child)
 	{
 		GModelState entry = conv.builder.getEntry();
 		GModelState exit = conv.builder.getExit();
@@ -111,7 +108,7 @@ public class GInteractionSeqDel extends InteractionSeqDel
 		//conv.builder.setExit(exit);
 		conv.builder.setEntry(entry);
 		return child;	
-	}
+	}*/
 
 	/*@Override
 	public void enterModelBuilding(ScribNode parent, ScribNode child, GlobalModelBuilder builder) throws ScribbleException

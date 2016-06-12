@@ -102,6 +102,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.kind.ModuleKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
 import org.scribble.sesstype.kind.OpKind;
+import org.scribble.sesstype.kind.PayloadTypeKind;
 import org.scribble.sesstype.kind.RecVarKind;
 import org.scribble.sesstype.kind.RoleKind;
 import org.scribble.sesstype.kind.SigKind;
@@ -122,8 +123,8 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	//public PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems)
-	public PayloadElemList PayloadElemList(List<PayloadElem> payloadelems)
+	//public PayloadElemList PayloadElemList(List<PayloadElem> payloadelems)
+	public PayloadElemList PayloadElemList(List<PayloadElem<?>> payloadelems)
 	{
 		PayloadElemList p = new PayloadElemList(payloadelems);
 		p = del(p, createDefaultDelegate());
@@ -140,9 +141,10 @@ public class AstFactoryImpl implements AstFactory
 
 	@Override
 	//public UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name)
-	public UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode name)
+	//public UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name)
+	public <K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(PayloadElemNameNode<K> name)
 	{
-		UnaryPayloadElem de= new UnaryPayloadElem(name);
+		UnaryPayloadElem<K> de= new UnaryPayloadElem<>(name);
 		de = del(de, createDefaultDelegate());
 		return de;
 	}

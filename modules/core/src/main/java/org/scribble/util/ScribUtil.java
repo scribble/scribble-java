@@ -17,7 +17,7 @@ import org.scribble.main.ScribbleException;
 public class ScribUtil
 {
 	// Strict class equality, cf. ScribNodeBase#visitChildWithClassCheck
-	// C is expected to be a ground class type
+	// C is expected to be of a ground class type
 	// Maybe pointless (in terms of formal guarantees) to use equality instead of assignable
 	public static <C extends ScribNode> C checkNodeClassEquality(C c, ScribNode n)
 	{
@@ -30,7 +30,7 @@ public class ScribUtil
 		return tmp;
 	}
 
-	// C is expected to be a ground class type
+	// C is expected to be of a ground class type
 	public static <C extends ScribNode> C castNodeByClass(C cast, ScribNode n)
 	{
 		if (!cast.getClass().isAssignableFrom(n.getClass()))
