@@ -11,6 +11,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.Role;
+import org.scribble.visit.DelegationProtocolRefChecker;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 
@@ -42,10 +43,6 @@ public class DelegationElemDel extends ScribDelBase
 		//DelegationElem de = (DelegationElem) visited;
 		ModuleContext mc = disamb.getModuleContext();
 		GProtocolName fullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(de.proto.toName());
-		if (fullname.equals(mc.getVisibleProtocolDeclFullName(disamb.getProtocolDeclOnEntry().header.getDeclName())))  // Here because ProtocolDeclContextBuilder dependencies explicitly include self protocoldecl dependencies (cf. GProtocolDeclDel.addSelfDependency)
-		{
-			throw new ScribbleException("Recursive protocol dependencies not supported for delegation types: " + de);
-		}
 
 		Role rn = de.role.toName();
 		ProtocolDecl<Global> gpd = disamb.getJobContext().getModule(fullname.getPrefix()).getProtocolDecl(fullname.getSimpleName());
@@ -79,4 +76,22 @@ public class DelegationElemDel extends ScribDelBase
 		builder.addGlobalProtocolDependency(mt.src.toName(), gpn, de.role.toName());  // FIXME: does it make sense to use projection role as dependency target role? (seems to be used for Job.getProjections)
 		mt.getDestinationRoles().forEach((r) -> builder.addGlobalProtocolDependency(r, gpn, de.role.toName()));
 	}
+
+	@Override
+	public void enterDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker) throws ScribbleException
+	{
+		DelegationElem de = (DelegationElem) child;
+		ModuleContext mc = checker.getModuleContext();
+		GProtocolName fullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(de.proto.toName());
+		if (fullname.equals(mc.getVisibleProtocolDeclFullName(checker.getProtocolDeclOnEntry().header.getDeclName())))  // Explicit done because ProtocolDeclContextBuilder dependencies explicitly include self protocoldecl dependencies (cf. GProtocolDeclDel.addSelfDependency)
+		{
+			throw new ScribbleException("Recursive protocol dependencies not supported for delegation types: " + de);
+		}
+	}
+
+	/*@Override
+	public ScribNode leaveDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker, ScribNode visited) throws ScribbleException
+	{
+
+	}*/
 }

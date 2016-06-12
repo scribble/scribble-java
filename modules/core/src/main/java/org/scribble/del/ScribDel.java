@@ -2,6 +2,7 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.DelegationProtocolRefChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.GlobalModelBuilder;
 import org.scribble.visit.GlobalModelChecker;
@@ -45,6 +46,16 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker) throws ScribbleException
+	{
+
+	}
+
+	default ScribNode leaveDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}
