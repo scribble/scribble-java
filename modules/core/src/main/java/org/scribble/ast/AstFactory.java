@@ -5,6 +5,7 @@ import java.util.List;
 import org.scribble.ast.global.GChoice;
 import org.scribble.ast.global.GConnect;
 import org.scribble.ast.global.GContinue;
+import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.global.GDisconnect;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.global.GInteractionNode;
@@ -65,7 +66,7 @@ public interface AstFactory
 	//PayloadElem PayloadElem(PayloadElemNameNode name);
 	//UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
 	UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode name);
-	DelegationElem DelegationElem(GProtocolNameNode name, RoleNode role);
+	GDelegationElem DelegationElem(GProtocolNameNode name, RoleNode role);
 	LDelegationElem LDelegationElem(LProtocolNameNode name);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);

@@ -1,10 +1,11 @@
 package org.scribble.del;
 
-import org.scribble.ast.DelegationElem;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.PayloadElem;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.global.GDelegationElem;
+import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.visit.InlinedProtocolUnfolder;
@@ -78,9 +79,9 @@ public abstract class MessageTransferDel extends SimpleInteractionNodeDel
 		{
 			for (PayloadElem pe : ((MessageSigNode) mt.msg).payloads.getElements())
 			{
-				if (pe.isDelegationElem())
+				if (pe.isGlobalDelegationElem())  // FIXME: should always be GMessageTransfer
 				{
-					((DelegationElemDel) pe.del()).leaveMessageTransferInProtocolDeclContextBuilding(mt, (DelegationElem) pe, builder);
+					((GDelegationElemDel) pe.del()).leaveMessageTransferInProtocolDeclContextBuilding(mt, (GDelegationElem) pe, builder);
 				}
 			}
 		}

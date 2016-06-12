@@ -11,7 +11,7 @@ public interface PayloadElem extends ScribNode
 {
 	PayloadElem project();  // Currently outside of visitor/env pattern (cf. MessageNode)
 	
-	default boolean isDelegationElem()
+	default boolean isGlobalDelegationElem()
 	{
 		return false;
 	}

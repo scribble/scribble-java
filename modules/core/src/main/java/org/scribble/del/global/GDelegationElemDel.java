@@ -1,4 +1,4 @@
-package org.scribble.del;
+package org.scribble.del.global;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -7,13 +7,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.DelegationElem;
 import org.scribble.ast.MessageTransfer;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
+import org.scribble.ast.global.GDelegationElem;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
-import org.scribble.del.global.GProtocolDeclDel;
+import org.scribble.del.ScribDelBase;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
@@ -23,9 +23,9 @@ import org.scribble.visit.DelegationProtocolRefChecker;
 import org.scribble.visit.NameDisambiguator;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 
-public class DelegationElemDel extends ScribDelBase
+public class GDelegationElemDel extends ScribDelBase
 {
-	public DelegationElemDel()
+	public GDelegationElemDel()
 	{
 	
 	}
@@ -35,7 +35,7 @@ public class DelegationElemDel extends ScribDelBase
 	public void enterDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb) throws ScribbleException
 	{
 		ModuleContext mc = disamb.getModuleContext();
-		DelegationElem de = (DelegationElem) child;
+		GDelegationElem de = (GDelegationElem) child;
 		GProtocolName gpn = de.proto.toName();
 		if (!mc.isVisibleProtocolDeclName(gpn))
 		{
@@ -46,7 +46,7 @@ public class DelegationElemDel extends ScribDelBase
 	// Duplicated from DoDel
 	//@Override
 	//public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
-	public DelegationElem visitForNameDisambiguation(NameDisambiguator disamb, DelegationElem de) throws ScribbleException
+	public GDelegationElem visitForNameDisambiguation(NameDisambiguator disamb, GDelegationElem de) throws ScribbleException
 	{
 		//DelegationElem de = (DelegationElem) visited;
 		ModuleContext mc = disamb.getModuleContext();
@@ -77,8 +77,9 @@ public class DelegationElemDel extends ScribDelBase
 
 	//@Override
 	//public DelegationElem leaveProtocolDeclContextBuilding(ScribNodeScribNode parent, ScribNode child, ProtocolDeclContextBuilder builder, ScribNode visited) throws ScribbleException  // FIXME: cannot access MessageTransfer roles from here
-	// FIXME: apply this pattern to all other existing instances
-	protected void leaveMessageTransferInProtocolDeclContextBuilding(MessageTransfer<?> mt, DelegationElem de, ProtocolDeclContextBuilder builder) throws ScribbleException
+	// FIXME: apply this pattern (delegate from parent back to child class) to all other existing instances
+  // FIXME: should always be GMessageTransfer
+	public void leaveMessageTransferInProtocolDeclContextBuilding(MessageTransfer<?> mt, GDelegationElem de, ProtocolDeclContextBuilder builder) throws ScribbleException
 	{
 		GProtocolName gpn = de.proto.toName();  // leaveDisambiguation has fully qualified the target name
 		builder.addGlobalProtocolDependency(mt.src.toName(), gpn, de.role.toName());  // FIXME: does it make sense to use projection role as dependency target role? (seems to be used for Job.getProjections)
@@ -88,7 +89,7 @@ public class DelegationElemDel extends ScribDelBase
 	@Override
 	public void enterDelegationProtocolRefCheck(ScribNode parent, ScribNode child, DelegationProtocolRefChecker checker) throws ScribbleException
 	{
-		DelegationElem de = (DelegationElem) child;
+		GDelegationElem de = (GDelegationElem) child;
 		ModuleContext mc = checker.getModuleContext();
 		GProtocolName targetfullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(de.proto.toName());
 		GProtocolName rootfullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(checker.getProtocolDeclOnEntry().header.getDeclName());

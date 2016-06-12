@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.scribble.ast.DelegationElem;
 import org.scribble.ast.ScribNode;
-import org.scribble.del.DelegationElemDel;
+import org.scribble.ast.global.GDelegationElem;
+import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
@@ -46,10 +46,10 @@ public class NameDisambiguator extends ModuleContextVisitor
 
 	protected ScribNode visitForDisamb(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		if (child instanceof DelegationElem)
+		if (child instanceof GDelegationElem)
 		{
 			//return visitOverrideForDelegationElem(parent, (Do<?>) child);
-			return ((DelegationElemDel) child.del()).visitForNameDisambiguation(this, (DelegationElem) child);
+			return ((GDelegationElemDel) child.del()).visitForNameDisambiguation(this, (GDelegationElem) child);
 		}
 		else
 		{
