@@ -69,12 +69,22 @@ global protocol Proto1(role A, role B)
 //*
 global protocol Proto1(role A, role B)
 {
-	(Proto2@A) from A to B;  // FIXME: test recursive protocoldecls
+	(Proto2@A) from A to B;  // Testing recursive protocoldecls
 }
 
-aux global protocol Proto2(role A, role B)
+global protocol Proto2(role A, role B)
 {
-	(Proto1@A) from A to B;
+	//(Proto1@A) from A to B;
+	(Proto3@A) from A to B;
+	//do Proto3(A, B);
+}
+
+global protocol Proto3(role A, role B)
+{
+	1() from A to B;
+	//(Proto1@A) from A to B;
+	//(Proto2@A) from A to B;
+	//do Proto1(A, B);
 }
 //*/
 

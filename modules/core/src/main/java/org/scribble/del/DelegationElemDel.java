@@ -1,5 +1,11 @@
 package org.scribble.del;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.scribble.ast.AstFactoryImpl;
 import org.scribble.ast.DelegationElem;
 import org.scribble.ast.MessageTransfer;
@@ -7,9 +13,11 @@ import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.name.qualified.GProtocolNameNode;
+import org.scribble.del.global.GProtocolDeclDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.Global;
 import org.scribble.sesstype.name.GProtocolName;
+import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.DelegationProtocolRefChecker;
 import org.scribble.visit.NameDisambiguator;
@@ -82,10 +90,41 @@ public class DelegationElemDel extends ScribDelBase
 	{
 		DelegationElem de = (DelegationElem) child;
 		ModuleContext mc = checker.getModuleContext();
-		GProtocolName fullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(de.proto.toName());
-		if (fullname.equals(mc.getVisibleProtocolDeclFullName(checker.getProtocolDeclOnEntry().header.getDeclName())))  // Explicit done because ProtocolDeclContextBuilder dependencies explicitly include self protocoldecl dependencies (cf. GProtocolDeclDel.addSelfDependency)
+		GProtocolName targetfullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(de.proto.toName());
+		GProtocolName rootfullname = (GProtocolName) mc.getVisibleProtocolDeclFullName(checker.getProtocolDeclOnEntry().header.getDeclName());
+		if (targetfullname.equals(rootfullname))  // Explicit check here because ProtocolDeclContextBuilder dependencies explicitly include self protocoldecl dependencies (cf. GProtocolDeclDel.addSelfDependency)
 		{
 			throw new ScribbleException("Recursive protocol dependencies not supported for delegation types: " + de);
+		}
+		
+		Set<GProtocolName> todo = new LinkedHashSet<GProtocolName>();
+		ProtocolDecl<Global> targetgpd = checker.getJobContext().getModule(targetfullname.getPrefix()).getProtocolDecl(targetfullname.getSimpleName());  // target
+		// FIXME: does this already contain transitive do-dependencies?  But doesn't contain transitive delegation-dependencies..?
+		Set<GProtocolName> init = 
+				((GProtocolDeclDel) targetgpd.del()).getProtocolDeclContext().getDependencyMap().getDependencies()
+				.values().stream().flatMap((v) -> v.keySet().stream()).collect(Collectors.toSet());
+		todo.addAll(init);
+
+		Set<GProtocolName> seen = new HashSet<>();
+		while (!todo.isEmpty())
+		{
+			Iterator<GProtocolName> it = todo.iterator();
+			GProtocolName next = it.next();
+			it.remove();
+			seen.add(next);
+
+			ProtocolName<Global> nextfullname = mc.getVisibleProtocolDeclFullName(next);
+			if (rootfullname.equals(nextfullname))
+			{
+				throw new ScribbleException("Recursive protocol dependencies not supported for delegation types: " + de);
+			}
+			ProtocolDecl<Global> nextgpd = checker.getJobContext().getModule(targetfullname.getPrefix()).getProtocolDecl(nextfullname.getSimpleName());
+			Set<GProtocolName> tmp = 
+					((GProtocolDeclDel) nextgpd.del()).getProtocolDeclContext().getDependencyMap().getDependencies()
+					.values().stream().flatMap((v) -> v.keySet().stream())
+					.filter((n) -> !seen.contains(n))
+					.collect(Collectors.toSet());
+			todo.addAll(tmp);
 		}
 	}
 

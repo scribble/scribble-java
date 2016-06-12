@@ -28,7 +28,7 @@ public class DelegationElem extends ScribNodeBase implements PayloadElem
 	@Override
 	public boolean isDelegationElem()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

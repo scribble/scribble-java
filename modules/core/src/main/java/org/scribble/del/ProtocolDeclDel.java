@@ -41,10 +41,10 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 		builder.clearProtocolDependencies();  // collect per protocoldecl all together, do not clear?
 
 		Module main = (Module) parent;
-		ProtocolDecl<?> lpd = (ProtocolDecl<?>) child;
-		MemberName<?> lpn = lpd.getFullMemberName(main);
+		ProtocolDecl<?> pd = (ProtocolDecl<?>) child;
+		MemberName<?> pn = pd.getFullMemberName(main);
 		// Is it really needed to add self protocoldecl dependencies?
-		lpd.header.roledecls.getRoles().stream().forEach((r) -> addSelfDependency(builder, (ProtocolName<?>) lpn, r));
+		pd.header.roledecls.getRoles().stream().forEach((r) -> addSelfDependency(builder, (ProtocolName<?>) pn, r));
 	}
 	
 	protected abstract void addSelfDependency(ProtocolDeclContextBuilder builder, ProtocolName<?> proto, Role role);
