@@ -150,7 +150,7 @@ public class AstFactoryImpl implements AstFactory
 	}
 
 	@Override
-	public GDelegationElem DelegationElem(GProtocolNameNode proto, RoleNode role)
+	public GDelegationElem GDelegationElem(GProtocolNameNode proto, RoleNode role)
 	{
 		GDelegationElem de = new GDelegationElem(proto, role);
 		//de = del(de, createDefaultDelegate());

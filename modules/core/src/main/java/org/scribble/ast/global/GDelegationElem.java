@@ -53,7 +53,7 @@ public class GDelegationElem extends ScribNodeBase implements PayloadElem<Local>
 	{
 		GProtocolNameNode name = (GProtocolNameNode) this.proto.clone();
 		RoleNode role = (RoleNode) this.role.clone();
-		return AstFactoryImpl.FACTORY.DelegationElem(name, role);
+		return AstFactoryImpl.FACTORY.GDelegationElem(name, role);
 	}
 
 	public GDelegationElem reconstruct(GProtocolNameNode proto, RoleNode role)

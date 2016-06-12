@@ -68,7 +68,7 @@ public interface AstFactory
 	//UnaryPayloadElem DataTypeElem(PayloadElemNameNode<DataTypeKind> name);
 	//UnaryPayloadElem UnaryPayloadElem(PayloadElemNameNode<?> name);
 	<K extends PayloadTypeKind> UnaryPayloadElem<K> UnaryPayloadElem(PayloadElemNameNode<K> name);
-	GDelegationElem DelegationElem(GProtocolNameNode name, RoleNode role);
+	GDelegationElem GDelegationElem(GProtocolNameNode name, RoleNode role);
 	LDelegationElem LDelegationElem(LProtocolNameNode name);
 
 	ModuleDecl ModuleDecl(ModuleNameNode fullmodname);
