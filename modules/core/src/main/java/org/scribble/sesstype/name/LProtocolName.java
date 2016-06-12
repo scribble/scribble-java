@@ -12,9 +12,9 @@ public class LProtocolName extends ProtocolName<Local> implements PayloadType<Lo
 		super(Local.KIND, modname, membname);
 	}
 	
-	public LProtocolName(String membname)
+	public LProtocolName(String simpname)
 	{
-		super(Local.KIND, membname);
+		super(Local.KIND, simpname);
 	}
 	
 	/*@Override

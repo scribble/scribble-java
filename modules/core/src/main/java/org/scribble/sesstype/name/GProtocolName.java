@@ -12,9 +12,9 @@ public class GProtocolName extends ProtocolName<Global>
 		super(Global.KIND, modname, membname);
 	}
 	
-	public GProtocolName(String membname)
+	public GProtocolName(String simpname)
 	{
-		super(Global.KIND, membname);
+		super(Global.KIND, simpname);
 	}
 
 	@Override

@@ -50,12 +50,12 @@ module Test;
 
 
 // TODO: check for (not yet supported) deleg actions in API gen
-
-// FIXME: delete noLive or add to fair check
-// FIXME: '.' in Name constructor args -- no: rename constructor arg to simpname (cf SessionTypeFactory)
-// MainContext.newJob -- move MainContext to core?
-// FIXME: Module.getGlobal/LocalProtocolDecl
 // FIXME: delegation type payload projection
+// FIXME: '.' in Name constructor args -- no: rename constructor arg to simpname (cf SessionTypeFactory)
+// FIXME: delete noLive or add to fair check
+// MainContext.newJob -- move MainContext to core?
+
+// FIXME: Module.getGlobal/LocalProtocolDecl
 
 
 //*

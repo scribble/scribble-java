@@ -13,9 +13,9 @@ public abstract class ProtocolName<K extends ProtocolKind> extends MemberName<K>
 		super(kind, modname, membname);
 	}
 	
-	public ProtocolName(K kind, String membname)
+	public ProtocolName(K kind, String simpname)
 	{
-		super(kind, membname);
+		super(kind, simpname);
 	}
 
 	@Override

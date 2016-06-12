@@ -86,7 +86,8 @@ public class TestWellFormedness {
 			}
 		}*/
 		MainContext mc = newMainContext();
-		Job job = new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm, mc.fair);
+		//Job job = new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm, mc.fair);
+		Job job = mc.newJob();
 		ScribbleException x = job.testWellFormednessCheck();
 		if (!hasErrors && x != null)
 		{

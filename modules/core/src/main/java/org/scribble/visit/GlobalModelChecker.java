@@ -216,7 +216,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		Job job = getJob();
 		
 		//if (false)
-		if (!getJob().fair)
+		if (!job.fair && !job.noLiveness)
 		{
 			for (Entry<Role, EndpointFSM> e : egraphs.entrySet())
 			{

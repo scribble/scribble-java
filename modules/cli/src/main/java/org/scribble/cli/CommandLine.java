@@ -367,7 +367,8 @@ public class CommandLine //implements Runnable
 	{
 		//Job job = new Job(cjob);  // Doesn't work due to (recursive) maven dependencies
 		//return new Job(mc.jUnit, mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness);
-		return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm, mc.fair);
+		//return new Job(mc.debug, mc.getParsedModules(), mc.main, mc.useOldWF, mc.noLiveness, mc.minEfsm, mc.fair);
+		return mc.newJob();
 	}
 
 	private MainContext newMainContext() throws ScribParserException
