@@ -58,6 +58,7 @@ module Test;
 // FIXME: Module.getGlobal/LocalProtocolDecl
 
 
+//*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A
@@ -74,9 +75,10 @@ global protocol Proto1(role A, role B, role C)
 		2() from A to B;
 		2() from B to C;
 	}
-	3() from A to B;
+	3() from A to B;  // Sequencing after recursive-choice
 	3() from B to C;
 }
+//*/
 
 
 /*
@@ -228,6 +230,28 @@ sig <java> "..." from "..." as M;
 global protocol Proto1(role A, role B)
 {
 	(M) from A to B;  // Testing disamb (and AST visitChild)
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect A to C;
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;  // Testing "fair"/"unfair" liveness -- issue of global liveness vs. local subtyping) -- generating "unfair output subtyped" global model (can it be done simply by terminal set role check?)
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+	3() from A to C;
 }
 //*/
 

@@ -36,28 +36,6 @@ aux global protocol Proto2(role C, role D)
 
 
 /*
-explicit global protocol Proto(role A, role B, role C)
-{
-	connect A to B;
-	connect A to C;
-	rec X
-	{
-		choice at A  // FIXME: weak vs. strong liveness (global liveness vs local subtyping) -- generate subtyped global model (artificially unfair choice paths -- or simply terminal set role check?)
-		{
-			1() from A to B;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-		}
-	}
-	3() from A to C;
-}
-//*/
-
-
-/*
 explicit global protocol Proto(role A, role B, role C, role D)
 {
 	connect A to B;
