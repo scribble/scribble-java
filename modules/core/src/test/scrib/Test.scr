@@ -58,7 +58,65 @@ module Test;
 // FIXME: Module.getGlobal/LocalProtocolDecl
 
 
-//*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
+	3() from B to C;
+}
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		() from B to C;
+		1() from B to A;
+	}
+	or
+	{
+		2() from A to B;
+		() from B to C;  // Classic mergeability (no "equiv." protocol by sequencing -- unless maybe a generous async. equiv.)
+		2() from B to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		//3() from C to A;
+		3() from C to B;
+	}
+	or
+	{
+		1() from A to B;
+		5() from B to C;
+		//6() from C to A;
+		5() from C to B;  // Mergeable -- A not involved downstream
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A

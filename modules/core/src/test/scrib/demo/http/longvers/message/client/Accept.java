@@ -1,0 +1,14 @@
+package demo.http.longvers.message.client;
+
+import demo.http.longvers.Http.Http.Http;
+import demo.http.longvers.message.HeaderField;
+
+public class Accept extends HeaderField
+{
+	private static final long serialVersionUID = 1L;
+
+	public Accept(String text)
+	{
+		super(Http.ACCEPT, text);
+	}
+}
