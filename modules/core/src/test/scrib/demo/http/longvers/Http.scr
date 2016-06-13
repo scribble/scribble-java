@@ -7,17 +7,6 @@
 
 module demo.http.longvers.Http;
 
-/*HTTP/1.1 200 OK
-Date: Sat, 08 Aug 2015 17:14:53 GMT
-Server: Apache
-Last-Modified: Sat, 23 Jul 2011 09:38:43 GMT
-ETag: "ac6fa008-559-4a8b95908aec0"
-Accept-Ranges: bytes
-Content-Length: 1369
-Vary: Accept-Encoding
-Content-Type: text/html
-Via: 1.1 www.doc.ic.ac.uk*/
-
 /*Connected to www.doc.ic.ac.uk.
 Escape character is '^]'.
 GET /~rhu/ HTTP/1.1
@@ -27,7 +16,7 @@ HTTP/1.1 200 OK
 Date: Mon, 13 Jun 2016 19:42:34 GMT
 Server: Apache
 Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
-Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+Strict-Transport-Security: max-age=31536000; preload; includeSubDomains  // BUG? (Apache configuration)
 Last-Modified: Thu, 14 Apr 2016 12:46:24 GMT
 ETag: "74a-53071482f6e0f"
 Accept-Ranges: bytes
