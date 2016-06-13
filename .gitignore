@@ -9,7 +9,7 @@ tools/eclipse/plugins/org.scribble.*/bin/
 .DS_Store
 *~
 *.swp
-modules/core/src/test/scrib/demo/http/longvers/Http
+modules/core/src/test/scrib/demo/http/longvers/HttpLong
 modules/core/src/test/scrib/demo/smtp/SMTP
 modules/core/src/test/scrib/demo/fib/Fib
 modules/core/src/test/scrib/demo/travel/Travel

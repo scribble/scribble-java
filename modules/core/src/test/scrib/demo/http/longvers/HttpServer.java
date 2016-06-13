@@ -8,11 +8,11 @@ import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
 import org.scribble.net.session.SessionEndpoint;
 
-import demo.http.longvers.Http.Http.Http;
-import demo.http.longvers.Http.Http.channels.S.Http_S_1;
-import demo.http.longvers.Http.Http.channels.S.Http_S_2;
-import demo.http.longvers.Http.Http.channels.S.Http_S_2_Cases;
-import demo.http.longvers.Http.Http.roles.S;
+import demo.http.longvers.HttpLong.Http.Http;
+import demo.http.longvers.HttpLong.Http.channels.S.Http_S_1;
+import demo.http.longvers.HttpLong.Http.channels.S.Http_S_2;
+import demo.http.longvers.HttpLong.Http.channels.S.Http_S_2_Cases;
+import demo.http.longvers.HttpLong.Http.roles.S;
 import demo.http.longvers.message.Body;
 import demo.http.longvers.message.HttpMessageFormatter;
 import demo.http.longvers.message.client.Accept;
