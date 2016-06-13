@@ -402,7 +402,12 @@ public class CommandLine //implements Runnable
 	private static GProtocolName checkGlobalProtocolArg(JobContext jcontext, String simpname) throws CommandLineException
 	{
 		GProtocolName simpgpn = new GProtocolName(simpname);
-		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(simpgpn);
+		Module main = jcontext.getMainModule();
+		if (!main.hasProtocolDecl(simpgpn))
+		{
+			throw new CommandLineException("Global protocol not found: " + simpname);
+		}
+		ProtocolDecl<?> pd = main.getProtocolDecl(simpgpn);
 		if (pd == null || !pd.isGlobal())
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
