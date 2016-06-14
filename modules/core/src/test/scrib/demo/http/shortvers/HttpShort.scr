@@ -32,6 +32,7 @@ sig <java> "demo.http.shortvers.message.server.Response"
 		as RESPONSE;
 
 
+// Could use RequestResponse subproto
 global protocol Http(role C, role S)
 {
 	REQUEST from C to S;
