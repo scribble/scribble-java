@@ -24,7 +24,7 @@ public class Request extends HttpShortMessage
 	}
 	
 	/*GET /~rhu/ HTTP/1.1
-	host: foo.bar.com*/
+	host: www.doc.ic.ac.uk*/
 	public Request(String get, String http, String host)
 	{
 		this(get, http, host, null, null, null, null, null, null);

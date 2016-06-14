@@ -16,6 +16,8 @@ import demo.http.shortvers.message.HttpShortMessageFormatter;
 import demo.http.shortvers.message.client.Request;
 import demo.http.shortvers.message.server.Response;
 
+import static demo.http.shortvers.HttpShort.Http.Http.*;
+
 public class HttpServer
 {
 	public HttpServer()
@@ -23,25 +25,23 @@ public class HttpServer
 
 	}
 
-	public static void main(String[] args) throws ScribbleRuntimeException, IOException
+	public static void main(String[] args) throws IOException
 	{
 		try (ScribServerSocket ss = new SocketChannelServer(8080))
 		{
 			while (true)	
 			{
 				Http http = new Http();
-				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, Http.S, new HttpShortMessageFormatter()))
+				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, S, new HttpShortMessageFormatter()))
 				{
-					se.accept(ss, Http.C);
+					se.accept(ss, C);
 				
-					Http_S_1 s1 = new Http_S_1(se);
-					
 					Buf<Request> buf = new Buf<>();
-					Http_S_2 s2 = s1.receive(Http.C, Http.REQUEST, buf);
+					Http_S_2 s2 = new Http_S_1(se).receive(C, REQUEST, buf);
 
 					System.out.println("Request:\n" + buf.val);
 
-					s2.send(Http.C, new Response("1.1", "<html><body>Hello</body></html>"));
+					s2.send(C, new Response("1.1", "<html><body>Hello</body></html>"));
 				}
 				catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
 				{

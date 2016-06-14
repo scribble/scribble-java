@@ -127,7 +127,7 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 			{
 				String header = msg.substring(0, i);
 				int j = msg.indexOf("\r");
-				switch (header)
+				switch (header)  // FIXME: duplicates not checked
 				{
 					case Request.HOST: host = msg.substring(0, j); break;
 					case Request.USER_AGENT: userA = msg.substring(0, j); break;
@@ -223,6 +223,7 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 		return new Response(httpv, ack, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body);
 	}
 
+	// FIXME: delete
 	@Deprecated @Override
 	public void writeMessage(DataOutputStream dos, ScribMessage m) throws IOException
 	{
