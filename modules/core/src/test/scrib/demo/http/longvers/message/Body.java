@@ -14,6 +14,6 @@ public class Body extends HttpMessage
 	@Override
 	public byte[] toBytes()
 	{
-		return (getOpString(op) + getBody()).getBytes(HttpMessageFormatter.cs);  // opString should be empty
+		return (getOpString(this.op) + getBody()).getBytes(HttpMessageFormatter.cs);  // opString should be empty
 	}
 }

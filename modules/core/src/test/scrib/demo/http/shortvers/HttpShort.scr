@@ -17,7 +17,7 @@ Strict-Transport-Security: max-age=31536000; preload; includeSubDomains  // BUG?
 Last-Modified: Thu, 14 Apr 2016 12:46:24 GMT
 ETag: "74a-53071482f6e0f"
 Accept-Ranges: bytes
-Content-Length: 1866
+Content-Length: 1866  // Not using Transfer-Encoding: Chunked
 Vary: Accept-Encoding
 Content-Type: text/html
 Via: 1.1 www.doc.ic.ac.uk*/

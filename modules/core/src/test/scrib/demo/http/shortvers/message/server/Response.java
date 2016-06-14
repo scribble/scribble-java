@@ -1,10 +1,9 @@
 package demo.http.shortvers.message.server;
 
-import demo.http.longvers.message.HeaderField;
 import demo.http.shortvers.HttpShort.Http.Http;
 import demo.http.shortvers.message.HttpMessage;
 
-public class Response extends HeaderField
+public class Response extends HttpMessage
 {
 	private static final long serialVersionUID = 1L;
 

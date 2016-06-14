@@ -62,7 +62,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 		}
 
 		int pos = bb.position();
-		String front = new String(new byte[] { bb.get(pos), bb.get(pos + 1)  }, HttpMessageFormatter.cs);
+		String front = new String(new byte[] { bb.get(pos), bb.get(pos + 1) }, HttpMessageFormatter.cs);
 		if (front.equals(HttpMessage.CRLF))  // not sound? -- actually, due to sess types it is safe (same reason why interpreting any of these messages without context is sound) -- parsing doesn't have to follow the *full protocol* BNF any more to be sound
 		{
 			if (this.len == -1)

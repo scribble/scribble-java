@@ -20,7 +20,7 @@ Strict-Transport-Security: max-age=31536000; preload; includeSubDomains  // BUG?
 Last-Modified: Thu, 14 Apr 2016 12:46:24 GMT
 ETag: "74a-53071482f6e0f"
 Accept-Ranges: bytes
-Content-Length: 1866
+Content-Length: 1866  // Not using Transfer-Encoding: Chunked
 Vary: Accept-Encoding
 Content-Type: text/html
 Via: 1.1 www.doc.ic.ac.uk*/
@@ -168,7 +168,7 @@ aux global protocol Request(role C, role S)
 			or
 			{
 				//CRLF from C to S;  
-				BODY from C to S;
+				BODY from C to S;  // FIXME: should be empty for client (maybe just ignored by server) without Content-Length (or Transfer-Encoding) headers
 			}
 		}
 	}
@@ -257,7 +257,7 @@ aux global protocol Response(role C, role S)
 		}
 		or
 		{
-			BODY from S to C;
+			BODY from S to C;  // Message length indicated by Content-Length
 		}
 	}
 }

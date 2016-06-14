@@ -76,7 +76,7 @@ public abstract class HttpMessage extends ScribMessage
 		}
 		else if (op.equals(Http.BODY))
 		{
-			return HttpMessage.CRLF;
+			return HttpMessage.CRLF;  // This CRLF "op" actually enacts the empty line for end-of-headers
 		}
 		else if (op.equals(Http.VIA))
 		{
