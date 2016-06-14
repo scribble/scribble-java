@@ -9,7 +9,7 @@ Escape character is '^]'.
 GET /~rhu/ HTTP/1.1
 host: www.doc.ic.ac.uk
 
-HTTP/1.1 200 OK
+HTTP/1.1 200 OK  // 200 is a separate message
 Date: Mon, 13 Jun 2016 19:42:34 GMT
 Server: Apache
 Strict-Transport-Security: max-age=31536000; preload; includeSubDomains

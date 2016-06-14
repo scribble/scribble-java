@@ -32,33 +32,54 @@ public class Response extends HttpMessage
 	Vary: Accept-Encoding
 	Content-Type: text/html
 	Via: 1.1 www.doc.ic.ac.uk*/
-	public Response(String httpv, String date, String server, String strictTS, String lastMod,
+	public Response(String httpv, String ack, String date, String server, String strictTS, String lastMod,
 			String eTag, String acceptR, String contentL, String vary, String contentT, String via, String body)
 	{
 		super(Http.RESPONSE, getHeadersAndBody(
-				httpv, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body));
+				httpv, ack, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body));
 	}
+
+	/*public Response(String httpv, String ack, String contentL, String body)
+	{
+		super(Http.RESPONSE, getHeadersAndBody(httpv, ack, contentL, body));
+	}*/
 
 	public Response(String httpv, String body)
 	{
-		this(httpv, "", "", "", "", "", "", Integer.toString(body.length()), "", "", "", body);
+		this(httpv, Response._200 + " OK", null, null, null, null, null, null, Integer.toString(body.length()), null, null, null, body);
 	}
 
-	protected static String getHeadersAndBody(String httpv, String date, String server, String strictTS, String lastMod,
+	// ack includes "op", e.g. 200, 404, ...
+	protected static String getHeadersAndBody(String httpv, String ack, String date, String server, String strictTS, String lastMod,
 			String eTag, String acceptR, String contentL, String vary, String contentT, String via, String body)
 	{
-		return "/" + httpv + " 200 OK" + HttpMessage.CRLF  // FIXME: 200 OK?
-				+ Response.DATE + ": " + date + HttpMessage.CRLF
-				+ Response.SERVER + ": " + server + HttpMessage.CRLF
-				+ Response.STRICT_TRANSPORT_SECURITY + ": " + strictTS + HttpMessage.CRLF
-				+ Response.LAST_MODIFIED + ": " + lastMod + HttpMessage.CRLF
-				+ Response.ETAG + ": " + eTag + HttpMessage.CRLF
-				+ Response.ACCEPT_RANGES + ": " + acceptR + HttpMessage.CRLF
+		if (!ack.startsWith(Response._200) && !ack.startsWith(Response._404))
+		{
+			throw new RuntimeException("[TODO]: " + ack);
+		}
+		return "/" + httpv + " "
+				+ ack + HttpMessage.CRLF  // Hardcoded
+				+ ((date == null) ? "" : Response.DATE + ": " + date + HttpMessage.CRLF)
+				+ ((server == null) ? "" : Response.SERVER + ": " + server + HttpMessage.CRLF)
+				+ ((strictTS == null) ? "" : Response.STRICT_TRANSPORT_SECURITY + ": " + strictTS + HttpMessage.CRLF)
+				+ ((lastMod == null) ? "" : Response.LAST_MODIFIED + ": " + lastMod + HttpMessage.CRLF)
+				+ ((eTag == null) ? "" : Response.ETAG + ": " + eTag + HttpMessage.CRLF)
+				+ ((acceptR == null) ? "" : Response.ACCEPT_RANGES + ": " + acceptR + HttpMessage.CRLF)
 				+ Response.CONTENT_LENGTH + ": " + contentL + HttpMessage.CRLF
-				+ Response.VARY + ": " + vary + HttpMessage.CRLF
-				+ Response.CONTENT_TYPE + ": " + contentT + HttpMessage.CRLF
-				+ Response.VIA + ": " + via + HttpMessage.CRLF
+				+ ((vary == null) ? "" : Response.VARY + ": " + vary + HttpMessage.CRLF)
+				+ ((contentT == null) ? "" : Response.CONTENT_TYPE + ": " + contentT + HttpMessage.CRLF)
+				+ ((via == null) ? "" : Response.VIA + ": " + via + HttpMessage.CRLF)
 				+ HttpMessage.CRLF  // Empty line for end of headers
 				+ body + HttpMessage.CRLF;
 	}
+
+	/*// 404
+	protected static String getHeadersAndBody(String httpv, String ack, String contentL, String body)
+	{
+		return "/" + httpv + " "
+				+ _404 + ack + HttpMessage.CRLF  // Hardcoded
+				+ Response.CONTENT_LENGTH + ": " + contentL + HttpMessage.CRLF
+				+ HttpMessage.CRLF  // Empty line for end of headers
+				+ body + HttpMessage.CRLF;
+	}*/
 }

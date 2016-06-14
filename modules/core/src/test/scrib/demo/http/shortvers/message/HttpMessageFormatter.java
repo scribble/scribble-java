@@ -88,15 +88,15 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 	// Assumes no body
 	private static HttpMessage parseRequest(String msg)
 	{
-		String get = "";
-		String http = "";
-		String host = "";
-		String userA = "";
-		String accept = "";
-		String acceptL = "";
-		String acceptE = "";
-		String dnt = "";
-		String connection = "";
+		String get = null;
+		String http = null;
+		String host = null;
+		String userA = null;
+		String accept = null;
+		String acceptL = null;
+		String acceptE = null;
+		String dnt = null;
+		String connection = null;
 
 		for (boolean eoh = false; !eoh; )
 		{
@@ -150,18 +150,19 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 	
 	private static HttpMessage parseResponse(String msg)
 	{
-		String httpv = "";
-		String date = "";
-		String server = "";
-		String strictTS = "";
-		String lastMod = "";
-		String eTag = "";
-		String acceptR = "";
-		String contentL = "";
-		String vary = "";
-		String contentT = "";
-		String via = "";
-		String body = "";
+		String httpv = null;
+		String ack = null;
+		String date = null;
+		String server = null;
+		String strictTS = null;
+		String lastMod = null;
+		String eTag = null;
+		String acceptR = null;
+		String contentL = null;
+		String vary = null;
+		String contentT = null;
+		String via = null;
+		String body = null;
 
 		for (boolean eoh = false; !eoh; )
 		{
@@ -182,9 +183,20 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 			}
 			if (msg.startsWith(HttpMessage.HTTP))  // FIXME
 			{
-				int j = msg.indexOf('\r');
+				int j = msg.indexOf(' ');
 				httpv = msg.substring(msg.indexOf('/')+1, j);
-				msg = msg.substring(j+2);
+				
+				int k = msg.indexOf('\r');
+				ack = msg.substring(j+1, k);
+				/*if (!ack.equals("200 OK"))
+				{
+					if (!ack.startsWith("404"))
+					{
+						throw new RuntimeException("[TODO]: " + msg);
+					}
+				}
+				ack = "OK";  // Hardcoded*/
+				msg = msg.substring(k+2);
 			}
 			else
 			{
@@ -208,7 +220,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 			}
 		}
 		body = msg;
-		return new Response(httpv, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body);
+		return new Response(httpv, ack, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body);
 	}
 
 	@Deprecated @Override

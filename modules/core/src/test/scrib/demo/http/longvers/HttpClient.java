@@ -47,8 +47,8 @@ public class HttpClient
 		Http http = new Http();
 		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, Http.C, new HttpMessageFormatter()))
 		{
-			String host = "www.doc.ic.ac.uk"; int port = 80;
-			//String host = "localhost"; int port = 8080;
+			//String host = "www.doc.ic.ac.uk"; int port = 80;
+			String host = "localhost"; int port = 8080;
 		
 			se.connect(Http.S, SocketChannelEndpoint::new, host, port);
 			

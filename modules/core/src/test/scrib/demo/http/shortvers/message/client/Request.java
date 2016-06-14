@@ -27,7 +27,7 @@ public class Request extends HttpMessage
 	host: foo.bar.com*/
 	public Request(String get, String http, String host)
 	{
-		this(get, http, host, "", "", "", "", "", "");
+		this(get, http, host, null, null, null, null, null, null);
 	}
 
 	// Empty body 
@@ -35,12 +35,12 @@ public class Request extends HttpMessage
 		return " "
 				+ get + " " + HttpMessage.HTTP + "/" + http + HttpMessage.CRLF
 				+ Request.HOST + ": " + host + HttpMessage.CRLF
-				+ (userA.isEmpty() ? "" : Request.USER_AGENT + ": " + userA + HttpMessage.CRLF)
-				+ (accept.isEmpty() ? "" : Request.ACCEPT + ": " + accept + HttpMessage.CRLF)
-				+ (acceptL.isEmpty() ? "" : Request.ACCEPT_LANGUAGE + ": " + acceptL + HttpMessage.CRLF)
-				+ (acceptE.isEmpty() ? "" : Request.ACCEPT_ENCODING + ": " + acceptE + HttpMessage.CRLF)
-				+ (dnt.isEmpty() ? "" : Request.DO_NOT_TRACK + ": " + dnt + HttpMessage.CRLF)
-				+ (connection.isEmpty() ? "" : Request.CONNECTION + ": " + connection + HttpMessage.CRLF)
+				+ ((userA == null) ? "" : Request.USER_AGENT + ": " + userA + HttpMessage.CRLF)
+				+ ((accept == null) ? "" : Request.ACCEPT + ": " + accept + HttpMessage.CRLF)
+				+ ((acceptL == null) ? "" : Request.ACCEPT_LANGUAGE + ": " + acceptL + HttpMessage.CRLF)
+				+ ((acceptE == null) ? "" : Request.ACCEPT_ENCODING + ": " + acceptE + HttpMessage.CRLF)
+				+ ((dnt == null) ? "" : Request.DO_NOT_TRACK + ": " + dnt + HttpMessage.CRLF)
+				+ ((connection == null) ? "" : Request.CONNECTION + ": " + connection + HttpMessage.CRLF)
 				+ "" + HttpMessage.CRLF;  // Empty body
 	}
 }
