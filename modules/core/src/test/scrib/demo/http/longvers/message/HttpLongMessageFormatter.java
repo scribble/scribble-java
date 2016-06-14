@@ -255,6 +255,9 @@ public class HttpLongMessageFormatter implements ScribMessageFormatter
 		return Integer.parseInt(code);
 	}
 
+
+
+	// FIXME: delete
 	@Deprecated @Override
 	public void writeMessage(DataOutputStream dos, ScribMessage m) throws IOException
 	{
