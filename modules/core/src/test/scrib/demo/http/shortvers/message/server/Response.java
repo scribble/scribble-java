@@ -52,7 +52,8 @@ public class Response extends HttpMessage
 				+ Response.CONTENT_LENGTH + ": " + contentL + HttpMessage.CRLF
 				+ Response.VARY + ": " + vary + HttpMessage.CRLF
 				+ Response.CONTENT_TYPE + ": " + contentT + HttpMessage.CRLF
-				+ Response.VIA + ": " + via
+				+ Response.VIA + ": " + via + HttpMessage.CRLF
+				+ HttpMessage.CRLF  // Empty line for end of headers
 				+ body + HttpMessage.CRLF;
 	}
 }

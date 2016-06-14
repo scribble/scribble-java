@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
@@ -16,8 +17,6 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 {
 	public static final Charset cs = Charset.forName("UTF8");
 	//private static CharsetDecoder cd = cs.newDecoder();
-	
-	private int len = -1;
 	
 	public HttpMessageFormatter()
 	{
@@ -44,20 +43,21 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 		//int pos = bb.position();
 		//String front = new String(new byte[] { bb.get(pos), bb.get(pos + 1) }, HttpMessageFormatter.cs);
 		String curr = new String(bb.array(), HttpMessageFormatter.cs);
-		
+
 		String endOfHeaders = HttpMessage.CRLF + HttpMessage.CRLF;
 		if (curr.contains(endOfHeaders))
 		{
 			if (curr.contains(Response.CONTENT_LENGTH))
 			{
-				String[] headersAndBody = curr.split(endOfHeaders);
-				if (headersAndBody.length != 2)
+				int eoh = curr.indexOf(endOfHeaders);
+				if (eoh == -1)
 				{
-					throw new RuntimeException("Shouldn't get in here: " + curr);
+					return null;
 				}
-				String[] contentLenSplit = headersAndBody[0].split(Response.CONTENT_LENGTH);
-				int len = Integer.parseInt(contentLenSplit[1].substring(0, contentLenSplit[1].indexOf("\n")).trim());
-				if (headersAndBody[1].length() < len + 2)
+				String contentLenSplit = curr.substring(curr.indexOf(Response.CONTENT_LENGTH));
+				int len = Integer.parseInt(contentLenSplit.substring(Response.CONTENT_LENGTH.length()+2, contentLenSplit.indexOf('\r')).trim());
+				String body = curr.substring(eoh+4);  // FIXME: could be index out of bounds
+				if (body.length() < len + 2)
 				{
 					//bb.compact();
 					return null;
@@ -95,19 +95,26 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 
 		for (boolean eoh = false; !eoh; )
 		{
+			//if (msg.startsWith(HttpMessage.CRLF + HttpMessage.CRLF))
+			if (msg.startsWith(HttpMessage.CRLF))  // First CRLF already trimmed after last header
+			{
+				eoh = true;
+				//msg = msg.substring(4);
+				msg = msg.substring(2);
+				break;
+			}
+
+			msg = msg.trim();
 			int i = msg.indexOf(":"); 	
 			if (i == -1)
 			{
-				if (msg.equals(HttpMessage.CRLF + HttpMessage.CRLF))
-				{
-					eoh = true;
-				}
-				else
-				{
-					int j = msg.indexOf("\r");
-					httpv = msg.substring(msg.indexOf('/')+1, j);
-					msg = msg.substring(j+2);
-				}
+				throw new RuntimeException("Shouldn't get in here: " + msg);
+			}
+			if (msg.startsWith(HttpMessage.HTTP))  // FIXME
+			{
+				int j = msg.indexOf('\r');
+				httpv = msg.substring(msg.indexOf('/')+1, j);
+				msg = msg.substring(j+2);
 			}
 			else
 			{
@@ -117,6 +124,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 				{
 					case Response.DATE: date = msg.substring(0, j); break;
 					case Response.SERVER: server = msg.substring(0, j); break;
+					case Response.STRICT_TRANSPORT_SECURITY: strictTS = msg.substring(0, j); break;
 					case Response.LAST_MODIFIED: lastMod = msg.substring(0, j); break;
 					case Response.ETAG: eTag = msg.substring(0, j); break;
 					case Response.ACCEPT_RANGES: acceptR = msg.substring(0, j); break;
@@ -124,7 +132,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 					case Response.VARY: vary = msg.substring(0, j); break;
 					case Response.CONTENT_TYPE: contentT = msg.substring(0, j); break;
 					case Response.VIA: via = msg.substring(0, j); break;
-					default: throw new RuntimeException("Cannot parse header field: " + msg);
+					default: throw new RuntimeException("Cannot parse header field: " + msg.substring(0, msg.indexOf('\r')));
 				}
 				msg = msg.substring(j+2);
 			}

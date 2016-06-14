@@ -65,7 +65,8 @@ public class ScribInputSelector extends Thread
 		}
 		catch (Exception e)
 		{
-			//e.printStackTrace();  // FIXME? java.nio.channels.CancelledKeyException 
+			// FIXME: throw to user -- e.g. MessageFormatter.fromBytes exception
+			e.printStackTrace();  // FIXME? java.nio.channels.CancelledKeyException 
 		}
 		finally
 		{
