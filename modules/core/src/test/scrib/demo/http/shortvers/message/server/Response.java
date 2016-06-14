@@ -39,6 +39,11 @@ public class Response extends HttpMessage
 				httpv, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body));
 	}
 
+	public Response(String httpv, String body)
+	{
+		this(httpv, "", "", "", "", "", "", Integer.toString(body.length()), "", "", "", body);
+	}
+
 	protected static String getHeadersAndBody(String httpv, String date, String server, String strictTS, String lastMod,
 			String eTag, String acceptR, String contentL, String vary, String contentT, String via, String body)
 	{

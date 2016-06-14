@@ -5,14 +5,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
 
+import demo.http.shortvers.message.client.Request;
 import demo.http.shortvers.message.server.Response;
 
-// Client-side only
 public class HttpMessageFormatter implements ScribMessageFormatter
 {
 	public static final Charset cs = Charset.forName("UTF8");
@@ -62,23 +61,94 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 					//bb.compact();
 					return null;
 				}
+				byte[] bs = new byte[bb.remaining()];  // FIXME: hardcoded Response parsing based on presence of Content-Length
+				bb.get(bs);
+				bb.compact();
+				return parseResponse(new String(bs, HttpMessageFormatter.cs));
 			}
 			else
 			{
-				if (!curr.endsWith(endOfHeaders))
+				//if (!curr.endsWith(endOfHeaders))
+				/*if (!curr.endsWith("\r\n"))  // FIXME: terminal null char?
 				{
+					// FIXME: unsound
+					System.out.println("111:\n" + curr.replace("\r", "\\r").replace("\n", "\\n\r\n").replace(" ", "_"));
+					//System.out.println("111: " + (int)curr.charAt(curr.length()-1));
 					throw new IOException("No Content-Length specified (Transfer-Encoding not supported).");
-				}
+				}*/
+				byte[] bs = new byte[bb.remaining()];
+				bb.get(bs);
+				bb.compact();
+				return parseRequest(new String(bs, HttpMessageFormatter.cs));  // FIXME: assuming empty-body Request if no Content-Length
 			}
-			byte[] bs = new byte[bb.remaining()];
-			bb.get(bs);
-			bb.compact();
-			return parse(new String(bs));
 		}
 		return null;
 	}
+
+	// Assumes no body
+	private static HttpMessage parseRequest(String msg)
+	{
+		String get = "";
+		String http = "";
+		String host = "";
+		String userA = "";
+		String accept = "";
+		String acceptL = "";
+		String acceptE = "";
+		String dnt = "";
+		String connection = "";
+
+		for (boolean eoh = false; !eoh; )
+		{
+			//if (msg.startsWith(HttpMessage.CRLF + HttpMessage.CRLF))
+			if (msg.startsWith(HttpMessage.CRLF))  // First CRLF already trimmed after last header
+			{
+				eoh = true;
+				//msg = msg.substring(4);
+				msg = msg.substring(2);
+				break;
+			}
+
+			msg = msg.replace("\\A\\s+", "");
+			int i = msg.indexOf(":"); 	
+			if (i == -1)
+			{
+				throw new RuntimeException("Shouldn't get in here: " + msg);
+			}
+			if (msg.startsWith(HttpMessage.GET))  // FIXME
+			{
+				int j = msg.indexOf(' ');
+				get = msg.substring(j+1, msg.indexOf(' ', j+1)).trim();
+				j = msg.indexOf('\r');
+				http = msg.substring(msg.indexOf('/')+1, j).trim();
+				msg = msg.substring(j+2);
+			}
+			else
+			{
+				String header = msg.substring(0, i);
+				int j = msg.indexOf("\r");
+				switch (header)
+				{
+					case Request.HOST: host = msg.substring(0, j); break;
+					case Request.USER_AGENT: userA = msg.substring(0, j); break;
+					case Request.ACCEPT: accept = msg.substring(0, j); break;
+					case Request.ACCEPT_LANGUAGE: acceptL = msg.substring(0, j); break;
+					case Request.ACCEPT_ENCODING: acceptE = msg.substring(0, j); break;
+					case Request.DO_NOT_TRACK: dnt = msg.substring(0, j); break;     
+					case Request.CONNECTION: connection = msg.substring(0, j); break;
+					default: throw new RuntimeException("Cannot parse header field: " + msg.substring(0, j));
+				}
+				msg = msg.substring(j+2);
+			}
+		}
+		if (!msg.isEmpty())
+		{
+			throw new RuntimeException("Shouldn't get in here: " + msg);
+		}
+		return new Request(get, http, host, userA, accept, acceptL, acceptE, dnt, connection);
+	}
 	
-	private static HttpMessage parse(String msg)
+	private static HttpMessage parseResponse(String msg)
 	{
 		String httpv = "";
 		String date = "";
@@ -138,7 +208,6 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 			}
 		}
 		body = msg;
-		
 		return new Response(httpv, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body);
 	}
 

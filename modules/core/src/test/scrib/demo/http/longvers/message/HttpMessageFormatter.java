@@ -31,7 +31,6 @@ import demo.http.longvers.message.server.Via;
 import demo.http.longvers.message.server._200;
 import demo.http.longvers.message.server._404;
 
-// Client-side only
 public class HttpMessageFormatter implements ScribMessageFormatter
 {
 	public static final Charset cs = Charset.forName("UTF8");

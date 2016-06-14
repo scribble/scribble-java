@@ -11,19 +11,36 @@ public class Request extends HttpMessage
 	//public static final String HTTP = "HTTP";
 	public static final String HOST = "Host";
 
+	public static final String USER_AGENT = "User-Agent";
+	public static final String ACCEPT = "Accept";
+	public static final String ACCEPT_LANGUAGE = "Accept-Language";
+	public static final String ACCEPT_ENCODING = "Accept-Encoding";
+	public static final String DO_NOT_TRACK = "DNT";     
+	public static final String CONNECTION = "Connection";
+
+	public Request(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection)
+	{
+		super(Http.REQUEST, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection));
+	}
+	
 	/*GET /~rhu/ HTTP/1.1
 	host: foo.bar.com*/
 	public Request(String get, String http, String host)
 	{
-		super(Http.REQUEST, getHeadersAndBody(get, http, host));
+		this(get, http, host, "", "", "", "", "", "");
 	}
-	
+
 	// Empty body 
-	protected static String getHeadersAndBody(String get, String http, String host)
-	{
+	protected static String getHeadersAndBody(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection) {
 		return " "
 				+ get + " " + HttpMessage.HTTP + "/" + http + HttpMessage.CRLF
 				+ Request.HOST + ": " + host + HttpMessage.CRLF
+				+ (userA.isEmpty() ? "" : Request.USER_AGENT + ": " + userA + HttpMessage.CRLF)
+				+ (accept.isEmpty() ? "" : Request.ACCEPT + ": " + accept + HttpMessage.CRLF)
+				+ (acceptL.isEmpty() ? "" : Request.ACCEPT_LANGUAGE + ": " + acceptL + HttpMessage.CRLF)
+				+ (acceptE.isEmpty() ? "" : Request.ACCEPT_ENCODING + ": " + acceptE + HttpMessage.CRLF)
+				+ (dnt.isEmpty() ? "" : Request.DO_NOT_TRACK + ": " + dnt + HttpMessage.CRLF)
+				+ (connection.isEmpty() ? "" : Request.CONNECTION + ": " + connection + HttpMessage.CRLF)
 				+ "" + HttpMessage.CRLF;  // Empty body
 	}
 }
