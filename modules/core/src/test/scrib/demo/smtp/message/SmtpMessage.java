@@ -49,6 +49,7 @@ public abstract class SmtpMessage extends ScribMessage
 
 	public byte[] toBytes()
 	{
+		// FIXME: " " after op should depend on op (OK for client, no "-" ops)
 		byte[] bs = (getOpString(this.op) + " " + getBody() + SmtpMessage.CRLF).getBytes(SmtpMessageFormatter.cs);  // Can give "utf-8" as arg directly
 		return bs;
 	}

@@ -1,19 +1,18 @@
-package demo.http.longvers.message;
+package demo.http.shortvers.message;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 
-import demo.http.longvers.HttpLong.Http.Http;
+import demo.http.shortvers.HttpShort.Http.Http;
 
 // Unlike ScribMessage, HttpMessage is not actually "sent", but we use it as the base class since the socket API takes ScribMessages
 public abstract class HttpMessage extends ScribMessage
 {
 	private static final long serialVersionUID = 1L;
 
-	// " " after ops done by HeaderField
 	public static final String GET = "GET";
 	public static final String HTTP = "HTTP";
-	public static final String HOST = "Host";
+	/*public static final String HOST = "Host";
 
 	public static final String USER_AGENT = "User-Agent";
 	public static final String ACCEPT = "Accept";
@@ -33,28 +32,24 @@ public abstract class HttpMessage extends ScribMessage
 	public static final String STRICT_TRANSPORT_SECURITY = "Strict-Transport-Security";
 	public static final String VIA = "Via";
 	public static final String ETAG = "ETag";
-	public static final String CONTENT_LENGTH = "Content-Length";
+	public static final String CONTENT_LENGTH = "Content-Length";*/
 	
-	protected static final String CRLF = "\r\n";
+	public static final String CRLF = "\r\n";
 
-	public HttpMessage(Op op)
+	public HttpMessage(Op op, String m)
 	{
-		super(op);
-	}
-
-	public HttpMessage(Op op, String body)
-	{
-		super(op, body);
+		super(op, m);
 	}
 	
-	public String getBody()
+	public String getHeadersAndBody()
 	{
 		return (this.payload.length == 0) ? "" : (String) this.payload[0];
 	}
 
 	public byte[] toBytes()
 	{
-		return (getOpString(this.op) + getBody() + HttpMessage.CRLF).getBytes(HttpMessageFormatter.cs);  // Can give "utf-8" as arg directly
+		// FIXME: factor better with Request/Response (e.g. " " after op, terminal CRLF, etc)
+		return (getOpString(this.op) + getHeadersAndBody()).getBytes(HttpMessageFormatter.cs);  // Can give "utf-8" as arg directly
 	}
 	
 	@Override
@@ -63,72 +58,15 @@ public abstract class HttpMessage extends ScribMessage
 		return new String(toBytes());
 	}
 	
-	// " " after ops done by HeaderField
 	protected static String getOpString(Op op)
 	{
-		if (op.equals(Http.CONTENTL))
-		{
-			return HttpMessage.CONTENT_LENGTH;
-		}
-		else if (op.equals(Http.ETAG))
-		{
-			return HttpMessage.ETAG;
-		}
-		else if (op.equals(Http.BODY))
-		{
-			return HttpMessage.CRLF;
-		}
-		else if (op.equals(Http.VIA))
-		{
-			return HttpMessage.VIA;
-		}
-		else if (op.equals(Http.SERVER))
-		{
-			return HttpMessage.SERVER;
-		}
-		else if (op.equals(Http.VARY))
-		{
-			return HttpMessage.VARY;
-		}
-		else if (op.equals(HttpMessage.CRLF))
-		{
-			return "";
-		}
-		else if (op.equals(Http.REQUESTL))  // FIXME: not just GET (POST..)
+		if (op.equals(Http.REQUEST))
 		{
 			return HttpMessage.GET;
 		}
-		else if (op.equals(Http.LASTM))
-		{
-			return HttpMessage.LAST_MODIFIED;
-		}
-		else if (op.equals(Http.ACCEPTR))
-		{
-			return HttpMessage.ACCEPT_RANGES;
-		}
-		else if (op.equals(Http.HOST))
-		{
-			return HttpMessage.HOST;
-		}
-		else if (op.equals(Http.HTTPV))
+		else if (op.equals(Http.RESPONSE))
 		{
 			return HttpMessage.HTTP;
-		}
-		else if (op.equals(Http._200))
-		{
-			return HttpMessage._200;
-		}
-		else if (op.equals(Http._404))
-		{
-			return HttpMessage._404;
-		}
-		else if (op.equals(Http.CONTENTT))
-		{
-			return HttpMessage.CONTENT_TYPE;
-		}
-		else if (op.equals(Http.DATE))
-		{
-			return HttpMessage.DATE;
 		}
 		else
 		{

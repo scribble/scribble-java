@@ -52,8 +52,6 @@ public class HttpClient
 		
 			se.connect(Http.S, SocketChannelEndpoint::new, host, port);
 			
-			System.out.println("111: ");
-			
 			Http_C_1 s1 = new Http_C_1(se);
 
 			Http_C_4_Cases s4 =
@@ -62,9 +60,6 @@ public class HttpClient
 					  .send(Http.S, new Body(""))
 					  .receive(Http.S, Http.HTTPV, b_vers)
 					  .branch(Http.S);
-
-			System.out.println("222: ");
-
 			Http_C_5 s5 = 
 					  (s4.op == Branch_C_S_200__S_404_Enum._200) ? s4.receive(Http._200)
 					: (s4.op == Branch_C_S_200__S_404_Enum._404) ? s4.receive(Http._404)
@@ -72,9 +67,7 @@ public class HttpClient
 
 			Y: while (true)
 			{
-				System.out.println("333a:");
 				Http_C_5_Cases cases = s5.branch(Http.S);
-				System.out.println("333b: " + cases.op);
 				switch (cases.op)
 				{
 					case ACCEPTR:

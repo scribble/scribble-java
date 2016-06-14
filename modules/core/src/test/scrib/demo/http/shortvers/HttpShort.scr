@@ -7,7 +7,7 @@ module demo.http.shortvers.HttpShort;
 /*Connected to www.doc.ic.ac.uk.
 Escape character is '^]'.
 GET /~rhu/ HTTP/1.1
-host: foo.bar.com
+host: www.doc.ic.ac.uk
 
 HTTP/1.1 200 OK
 Date: Mon, 13 Jun 2016 19:42:34 GMT
