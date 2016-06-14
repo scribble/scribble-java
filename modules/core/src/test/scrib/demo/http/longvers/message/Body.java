@@ -2,7 +2,7 @@ package demo.http.longvers.message;
 
 import demo.http.longvers.HttpLong.Http.Http;
 
-public class Body extends HttpMessage
+public class Body extends HttpLongMessage
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -14,6 +14,6 @@ public class Body extends HttpMessage
 	@Override
 	public byte[] toBytes()
 	{
-		return (getOpString(this.op) + getBody()).getBytes(HttpMessageFormatter.cs);  // opString should be empty
+		return (getOpString(this.op) + getBody()).getBytes(HttpLongMessageFormatter.cs);  // opString should be empty
 	}
 }

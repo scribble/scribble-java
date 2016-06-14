@@ -2,9 +2,9 @@ package demo.http.longvers.message.server;
 
 import org.scribble.sesstype.name.Op;
 
-import demo.http.longvers.message.HttpMessage;
+import demo.http.longvers.message.HttpLongMessage;
 
-public abstract class StatusCode extends HttpMessage
+public abstract class StatusCode extends HttpLongMessage
 {
 	private static final long serialVersionUID = 1L;
 

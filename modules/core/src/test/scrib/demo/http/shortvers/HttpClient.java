@@ -10,7 +10,7 @@ import org.scribble.net.session.SocketChannelEndpoint;
 import demo.http.shortvers.HttpShort.Http.Http;
 import demo.http.shortvers.HttpShort.Http.channels.C.Http_C_1;
 import demo.http.shortvers.HttpShort.Http.roles.C;
-import demo.http.shortvers.message.HttpMessageFormatter;
+import demo.http.shortvers.message.HttpShortMessageFormatter;
 import demo.http.shortvers.message.client.Request;
 import demo.http.shortvers.message.server.Response;
 
@@ -29,7 +29,7 @@ public class HttpClient
 	public void run() throws ScribbleRuntimeException, IOException
 	{
 		Http http = new Http();
-		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, Http.C, new HttpMessageFormatter()))
+		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, Http.C, new HttpShortMessageFormatter()))
 		{
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;

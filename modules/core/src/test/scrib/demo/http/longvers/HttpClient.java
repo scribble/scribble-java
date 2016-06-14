@@ -16,7 +16,7 @@ import demo.http.longvers.HttpLong.Http.channels.C.Http_C_5_Cases;
 import demo.http.longvers.HttpLong.Http.channels.C.ioifaces.Branch_C_S_200__S_404.Branch_C_S_200__S_404_Enum;
 import demo.http.longvers.HttpLong.Http.roles.C;
 import demo.http.longvers.message.Body;
-import demo.http.longvers.message.HttpMessageFormatter;
+import demo.http.longvers.message.HttpLongMessageFormatter;
 import demo.http.longvers.message.client.Host;
 import demo.http.longvers.message.client.RequestLine;
 import demo.http.longvers.message.server.ContentLength;
@@ -45,7 +45,7 @@ public class HttpClient
 		Buf<Server> b_serv = new Buf<>();
 		
 		Http http = new Http();
-		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, Http.C, new HttpMessageFormatter()))
+		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, Http.C, new HttpLongMessageFormatter()))
 		{
 			//String host = "www.doc.ic.ac.uk"; int port = 80;
 			String host = "localhost"; int port = 8080;

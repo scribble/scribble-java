@@ -12,7 +12,7 @@ import demo.http.shortvers.HttpShort.Http.Http;
 import demo.http.shortvers.HttpShort.Http.channels.S.Http_S_1;
 import demo.http.shortvers.HttpShort.Http.channels.S.Http_S_2;
 import demo.http.shortvers.HttpShort.Http.roles.S;
-import demo.http.shortvers.message.HttpMessageFormatter;
+import demo.http.shortvers.message.HttpShortMessageFormatter;
 import demo.http.shortvers.message.client.Request;
 import demo.http.shortvers.message.server.Response;
 
@@ -30,7 +30,7 @@ public class HttpServer
 			while (true)	
 			{
 				Http http = new Http();
-				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, Http.S, new HttpMessageFormatter()))
+				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, Http.S, new HttpShortMessageFormatter()))
 				{
 					se.accept(ss, Http.C);
 				

@@ -1,9 +1,9 @@
 package demo.http.shortvers.message.server;
 
 import demo.http.shortvers.HttpShort.Http.Http;
-import demo.http.shortvers.message.HttpMessage;
+import demo.http.shortvers.message.HttpShortMessage;
 
-public class Response extends HttpMessage
+public class Response extends HttpShortMessage
 {
 	private static final long serialVersionUID = 1L;
 
@@ -58,19 +58,19 @@ public class Response extends HttpMessage
 			throw new RuntimeException("[TODO]: " + ack);
 		}
 		return "/" + httpv + " "
-				+ ack + HttpMessage.CRLF  // Hardcoded
-				+ ((date == null) ? "" : Response.DATE + ": " + date + HttpMessage.CRLF)
-				+ ((server == null) ? "" : Response.SERVER + ": " + server + HttpMessage.CRLF)
-				+ ((strictTS == null) ? "" : Response.STRICT_TRANSPORT_SECURITY + ": " + strictTS + HttpMessage.CRLF)
-				+ ((lastMod == null) ? "" : Response.LAST_MODIFIED + ": " + lastMod + HttpMessage.CRLF)
-				+ ((eTag == null) ? "" : Response.ETAG + ": " + eTag + HttpMessage.CRLF)
-				+ ((acceptR == null) ? "" : Response.ACCEPT_RANGES + ": " + acceptR + HttpMessage.CRLF)
-				+ Response.CONTENT_LENGTH + ": " + contentL + HttpMessage.CRLF
-				+ ((vary == null) ? "" : Response.VARY + ": " + vary + HttpMessage.CRLF)
-				+ ((contentT == null) ? "" : Response.CONTENT_TYPE + ": " + contentT + HttpMessage.CRLF)
-				+ ((via == null) ? "" : Response.VIA + ": " + via + HttpMessage.CRLF)
-				+ HttpMessage.CRLF  // Empty line for end of headers
-				+ body + HttpMessage.CRLF;
+				+ ack + HttpShortMessage.CRLF  // Hardcoded
+				+ ((date == null) ? "" : Response.DATE + ": " + date + HttpShortMessage.CRLF)
+				+ ((server == null) ? "" : Response.SERVER + ": " + server + HttpShortMessage.CRLF)
+				+ ((strictTS == null) ? "" : Response.STRICT_TRANSPORT_SECURITY + ": " + strictTS + HttpShortMessage.CRLF)
+				+ ((lastMod == null) ? "" : Response.LAST_MODIFIED + ": " + lastMod + HttpShortMessage.CRLF)
+				+ ((eTag == null) ? "" : Response.ETAG + ": " + eTag + HttpShortMessage.CRLF)
+				+ ((acceptR == null) ? "" : Response.ACCEPT_RANGES + ": " + acceptR + HttpShortMessage.CRLF)
+				+ Response.CONTENT_LENGTH + ": " + contentL + HttpShortMessage.CRLF
+				+ ((vary == null) ? "" : Response.VARY + ": " + vary + HttpShortMessage.CRLF)
+				+ ((contentT == null) ? "" : Response.CONTENT_TYPE + ": " + contentT + HttpShortMessage.CRLF)
+				+ ((via == null) ? "" : Response.VIA + ": " + via + HttpShortMessage.CRLF)
+				+ HttpShortMessage.CRLF  // Empty line for end of headers
+				+ body + HttpShortMessage.CRLF;
 	}
 
 	/*// 404

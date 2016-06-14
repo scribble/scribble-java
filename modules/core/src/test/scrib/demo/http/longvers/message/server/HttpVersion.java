@@ -1,10 +1,10 @@
 package demo.http.longvers.message.server;
 
 import demo.http.longvers.HttpLong.Http.Http;
-import demo.http.longvers.message.HttpMessage;
-import demo.http.longvers.message.HttpMessageFormatter;
+import demo.http.longvers.message.HttpLongMessage;
+import demo.http.longvers.message.HttpLongMessageFormatter;
 
-public class HttpVersion extends HttpMessage
+public class HttpVersion extends HttpLongMessage
 {
 	private static final long serialVersionUID = 1L;
 
@@ -16,6 +16,6 @@ public class HttpVersion extends HttpMessage
 	@Override
 	public byte[] toBytes()
 	{
-		return (getOpString(op) + getBody() + " ").getBytes(HttpMessageFormatter.cs);
+		return (getOpString(op) + getBody() + " ").getBytes(HttpLongMessageFormatter.cs);
 	}
 }

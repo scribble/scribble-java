@@ -12,12 +12,12 @@ import org.scribble.net.ScribMessageFormatter;
 import demo.http.shortvers.message.client.Request;
 import demo.http.shortvers.message.server.Response;
 
-public class HttpMessageFormatter implements ScribMessageFormatter
+public class HttpShortMessageFormatter implements ScribMessageFormatter
 {
 	public static final Charset cs = Charset.forName("UTF8");
 	//private static CharsetDecoder cd = cs.newDecoder();
 	
-	public HttpMessageFormatter()
+	public HttpShortMessageFormatter()
 	{
 
 	}
@@ -25,7 +25,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 	@Override
 	public byte[] toBytes(ScribMessage m) throws IOException
 	{
-		return ((HttpMessage) m).toBytes();
+		return ((HttpShortMessage) m).toBytes();
 	}
 
 	@Override
@@ -41,9 +41,9 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 
 		//int pos = bb.position();
 		//String front = new String(new byte[] { bb.get(pos), bb.get(pos + 1) }, HttpMessageFormatter.cs);
-		String curr = new String(bb.array(), HttpMessageFormatter.cs);
+		String curr = new String(bb.array(), HttpShortMessageFormatter.cs);
 
-		String endOfHeaders = HttpMessage.CRLF + HttpMessage.CRLF;
+		String endOfHeaders = HttpShortMessage.CRLF + HttpShortMessage.CRLF;
 		if (curr.contains(endOfHeaders))
 		{
 			if (curr.contains(Response.CONTENT_LENGTH))
@@ -64,7 +64,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 				byte[] bs = new byte[bb.remaining()];  // FIXME: hardcoded Response parsing based on presence of Content-Length
 				bb.get(bs);
 				bb.compact();
-				return parseResponse(new String(bs, HttpMessageFormatter.cs));
+				return parseResponse(new String(bs, HttpShortMessageFormatter.cs));
 			}
 			else
 			{
@@ -79,14 +79,14 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 				byte[] bs = new byte[bb.remaining()];
 				bb.get(bs);
 				bb.compact();
-				return parseRequest(new String(bs, HttpMessageFormatter.cs));  // FIXME: assuming empty-body Request if no Content-Length
+				return parseRequest(new String(bs, HttpShortMessageFormatter.cs));  // FIXME: assuming empty-body Request if no Content-Length
 			}
 		}
 		return null;
 	}
 
 	// Assumes no body
-	private static HttpMessage parseRequest(String msg)
+	private static HttpShortMessage parseRequest(String msg)
 	{
 		String get = null;
 		String http = null;
@@ -101,7 +101,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 		for (boolean eoh = false; !eoh; )
 		{
 			//if (msg.startsWith(HttpMessage.CRLF + HttpMessage.CRLF))
-			if (msg.startsWith(HttpMessage.CRLF))  // First CRLF already trimmed after last header
+			if (msg.startsWith(HttpShortMessage.CRLF))  // First CRLF already trimmed after last header
 			{
 				eoh = true;
 				//msg = msg.substring(4);
@@ -115,7 +115,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 			{
 				throw new RuntimeException("Shouldn't get in here: " + msg);
 			}
-			if (msg.startsWith(HttpMessage.GET))  // FIXME
+			if (msg.startsWith(HttpShortMessage.GET))  // FIXME
 			{
 				int j = msg.indexOf(' ');
 				get = msg.substring(j+1, msg.indexOf(' ', j+1)).trim();
@@ -148,7 +148,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 		return new Request(get, http, host, userA, accept, acceptL, acceptE, dnt, connection);
 	}
 	
-	private static HttpMessage parseResponse(String msg)
+	private static HttpShortMessage parseResponse(String msg)
 	{
 		String httpv = null;
 		String ack = null;
@@ -167,7 +167,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 		for (boolean eoh = false; !eoh; )
 		{
 			//if (msg.startsWith(HttpMessage.CRLF + HttpMessage.CRLF))
-			if (msg.startsWith(HttpMessage.CRLF))  // First CRLF already trimmed after last header
+			if (msg.startsWith(HttpShortMessage.CRLF))  // First CRLF already trimmed after last header
 			{
 				eoh = true;
 				//msg = msg.substring(4);
@@ -181,7 +181,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 			{
 				throw new RuntimeException("Shouldn't get in here: " + msg);
 			}
-			if (msg.startsWith(HttpMessage.HTTP))  // FIXME
+			if (msg.startsWith(HttpShortMessage.HTTP))  // FIXME
 			{
 				int j = msg.indexOf(' ');
 				httpv = msg.substring(msg.indexOf('/')+1, j);

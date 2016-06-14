@@ -1,9 +1,9 @@
 package demo.http.longvers.message.server;
 
-import demo.http.longvers.message.HttpMessage;
+import demo.http.longvers.message.HttpLongMessage;
 
 @Deprecated
-public class CRLF extends HttpMessage
+public class CRLF extends HttpLongMessage
 {
 	private static final long serialVersionUID = 1L;
 	

@@ -31,14 +31,14 @@ import demo.http.longvers.message.server.Via;
 import demo.http.longvers.message.server._200;
 import demo.http.longvers.message.server._404;
 
-public class HttpMessageFormatter implements ScribMessageFormatter
+public class HttpLongMessageFormatter implements ScribMessageFormatter
 {
 	public static final Charset cs = Charset.forName("UTF8");
 	//private static CharsetDecoder cd = cs.newDecoder();
 	
 	private int len = -1;
 	
-	public HttpMessageFormatter()
+	public HttpLongMessageFormatter()
 	{
 
 	}
@@ -46,7 +46,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 	@Override
 	public byte[] toBytes(ScribMessage m) throws IOException
 	{
-		return ((HttpMessage) m).toBytes();
+		return ((HttpLongMessage) m).toBytes();
 	}
 
 	@Override
@@ -61,8 +61,8 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 		}
 
 		int pos = bb.position();
-		String front = new String(new byte[] { bb.get(pos), bb.get(pos + 1) }, HttpMessageFormatter.cs);
-		if (front.equals(HttpMessage.CRLF))  // not sound? -- actually, due to sess types it is safe (same reason why interpreting any of these messages without context is sound) -- parsing doesn't have to follow the *full protocol* BNF any more to be sound
+		String front = new String(new byte[] { bb.get(pos), bb.get(pos + 1) }, HttpLongMessageFormatter.cs);
+		if (front.equals(HttpLongMessage.CRLF))  // not sound? -- actually, due to sess types it is safe (same reason why interpreting any of these messages without context is sound) -- parsing doesn't have to follow the *full protocol* BNF any more to be sound
 		{
 			if (this.len == -1)
 			{
@@ -92,7 +92,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 		}
 		//byte[] bs = new byte[2];
 		//dis.readFully(bs);
-		front += new String(new byte[] { bb.get(pos + 2), bb.get(pos + 3) }, HttpMessageFormatter.cs);
+		front += new String(new byte[] { bb.get(pos + 2), bb.get(pos + 3) }, HttpLongMessageFormatter.cs);
 		// FIXME: factor out with HttpMessage op strings
 		int code = isStatusCode(front);
 		if (code > -1)
@@ -110,7 +110,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 				default:  throw new RuntimeException("Unknown status code: " + code);
 			}
 		}
-		else if (front.startsWith(HttpMessage.GET))
+		else if (front.startsWith(HttpLongMessage.GET))
 		{
 			String reql = readLine(bb, pos + 4).trim();
 			bb.compact();
@@ -123,7 +123,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 			vers = vers.substring(vers.indexOf('/') + 1);
 			return new RequestLine(target, vers);
 		}
-		else if (front.equals(HttpMessage.HTTP))
+		else if (front.equals(HttpLongMessage.HTTP))
 		{
 			//dis.read();  // '/'
 			if (rem < pos + 5)
@@ -155,28 +155,28 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 				String value = line.substring(colon + 1).trim();  // Whitespace already built into the message classes
 				switch (name)
 				{
-					case HttpMessage.HOST: return new Host("value");
-					case HttpMessage.USER_AGENT: return new UserAgent(value);
-					case HttpMessage.ACCEPT: return new Accept(value);
-					case HttpMessage.ACCEPT_LANGUAGE: return new AcceptLanguage(value);
-					case HttpMessage.ACCEPT_ENCODING: return new AcceptEncoding(value);
-					case HttpMessage.DO_NOT_TRACK: return new DoNotTrack(Integer.parseInt(value));     
-					case HttpMessage.CONNECTION: return new Connection(value);
+					case HttpLongMessage.HOST: return new Host("value");
+					case HttpLongMessage.USER_AGENT: return new UserAgent(value);
+					case HttpLongMessage.ACCEPT: return new Accept(value);
+					case HttpLongMessage.ACCEPT_LANGUAGE: return new AcceptLanguage(value);
+					case HttpLongMessage.ACCEPT_ENCODING: return new AcceptEncoding(value);
+					case HttpLongMessage.DO_NOT_TRACK: return new DoNotTrack(Integer.parseInt(value));     
+					case HttpLongMessage.CONNECTION: return new Connection(value);
 					
-					case HttpMessage.DATE: return new Date(value);
-					case HttpMessage.SERVER: return new Server(value);
-					case HttpMessage.STRICT_TRANSPORT_SECURITY: return new StrictTransportSecurity(value);
-					case HttpMessage.LAST_MODIFIED: return new LastModified(value);
-					case HttpMessage.ETAG: return new ETag(value);
-					case HttpMessage.ACCEPT_RANGES: return new AcceptRanges(value);
-					case HttpMessage.CONTENT_LENGTH:
+					case HttpLongMessage.DATE: return new Date(value);
+					case HttpLongMessage.SERVER: return new Server(value);
+					case HttpLongMessage.STRICT_TRANSPORT_SECURITY: return new StrictTransportSecurity(value);
+					case HttpLongMessage.LAST_MODIFIED: return new LastModified(value);
+					case HttpLongMessage.ETAG: return new ETag(value);
+					case HttpLongMessage.ACCEPT_RANGES: return new AcceptRanges(value);
+					case HttpLongMessage.CONTENT_LENGTH:
 					{
 						len = Integer.parseInt(value.trim());
 						return new ContentLength(len);
 					}
-					case HttpMessage.VARY: return new Vary(value);
-					case HttpMessage.CONTENT_TYPE: return new ContentType(value);
-					case HttpMessage.VIA: return new Via(value);
+					case HttpLongMessage.VARY: return new Vary(value);
+					case HttpLongMessage.CONTENT_TYPE: return new ContentType(value);
+					case HttpLongMessage.VIA: return new Via(value);
 					default: throw new RuntimeException("Cannot parse header field: " + line);
 				}
 			}
@@ -258,7 +258,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 	@Deprecated @Override
 	public void writeMessage(DataOutputStream dos, ScribMessage m) throws IOException
 	{
-		dos.write(((HttpMessage) m).toBytes());
+		dos.write(((HttpLongMessage) m).toBytes());
 		dos.flush();
 	}
 
@@ -267,8 +267,8 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 	{
 		byte[] bs = new byte[2];
 		dis.readFully(bs);
-		String front = new String(bs, HttpMessageFormatter.cs);
-		if (front.equals(HttpMessage.CRLF))  // not sound? -- actually, due to sess types it is safe (same reason why interpreting any of these messages without context is sound) -- parsing doesn't have to follow the *full protocol* BNF any more to be sound
+		String front = new String(bs, HttpLongMessageFormatter.cs);
+		if (front.equals(HttpLongMessage.CRLF))  // not sound? -- actually, due to sess types it is safe (same reason why interpreting any of these messages without context is sound) -- parsing doesn't have to follow the *full protocol* BNF any more to be sound
 		{
 			if (this.len == -1)
 			{
@@ -288,7 +288,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 
 		bs = new byte[2];
 		dis.readFully(bs);
-		front += new String(bs, HttpMessageFormatter.cs);
+		front += new String(bs, HttpLongMessageFormatter.cs);
 		// FIXME: factor out with HttpMessage op strings
 		int code = isStatusCode(front);
 		if (code > -1)
@@ -301,7 +301,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 				default:  throw new RuntimeException("Unknown status code: " + code);
 			}
 		}
-		else if (front.startsWith(HttpMessage.GET))
+		else if (front.startsWith(HttpLongMessage.GET))
 		{
 			String reql = readLine(dis).trim();
 			String target = reql.substring(0, reql.indexOf(' '));
@@ -309,7 +309,7 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 			vers = vers.substring(vers.indexOf('/') + 1);
 			return new RequestLine(target, vers);
 		}
-		else if (front.equals(HttpMessage.HTTP))
+		else if (front.equals(HttpLongMessage.HTTP))
 		{
 			dis.read();  // '/'
 			String word = readWord(dis);
@@ -325,27 +325,27 @@ public class HttpMessageFormatter implements ScribMessageFormatter
 				String value = line.substring(colon + 1).trim();  // Whitespace already built into the message classes
 				switch (name)
 				{
-					case HttpMessage.HOST: return new Host("value");
-					case HttpMessage.USER_AGENT: return new UserAgent(value);
-					case HttpMessage.ACCEPT: return new Accept(value);
-					case HttpMessage.ACCEPT_LANGUAGE: return new AcceptLanguage(value);
-					case HttpMessage.ACCEPT_ENCODING: return new AcceptEncoding(value);
-					case HttpMessage.DO_NOT_TRACK: return new DoNotTrack(Integer.parseInt(value));     
-					case HttpMessage.CONNECTION: return new Connection(value);
+					case HttpLongMessage.HOST: return new Host("value");
+					case HttpLongMessage.USER_AGENT: return new UserAgent(value);
+					case HttpLongMessage.ACCEPT: return new Accept(value);
+					case HttpLongMessage.ACCEPT_LANGUAGE: return new AcceptLanguage(value);
+					case HttpLongMessage.ACCEPT_ENCODING: return new AcceptEncoding(value);
+					case HttpLongMessage.DO_NOT_TRACK: return new DoNotTrack(Integer.parseInt(value));     
+					case HttpLongMessage.CONNECTION: return new Connection(value);
 					
-					case HttpMessage.DATE: return new Date(value);
-					case HttpMessage.SERVER: return new Server(value);
-					case HttpMessage.LAST_MODIFIED: return new LastModified(value);
-					case HttpMessage.ETAG: return new ETag(value);
-					case HttpMessage.ACCEPT_RANGES: return new AcceptRanges(value);
-					case HttpMessage.CONTENT_LENGTH:
+					case HttpLongMessage.DATE: return new Date(value);
+					case HttpLongMessage.SERVER: return new Server(value);
+					case HttpLongMessage.LAST_MODIFIED: return new LastModified(value);
+					case HttpLongMessage.ETAG: return new ETag(value);
+					case HttpLongMessage.ACCEPT_RANGES: return new AcceptRanges(value);
+					case HttpLongMessage.CONTENT_LENGTH:
 					{
 						len = Integer.parseInt(value.trim());
 						return new ContentLength(len);
 					}
-					case HttpMessage.VARY: return new Vary(value);
-					case HttpMessage.CONTENT_TYPE: return new ContentType(value);
-					case HttpMessage.VIA: return new Via(value);
+					case HttpLongMessage.VARY: return new Vary(value);
+					case HttpLongMessage.CONTENT_TYPE: return new ContentType(value);
+					case HttpLongMessage.VIA: return new Via(value);
 					default: throw new RuntimeException("Cannot parse header field: " + line);
 				}
 			}

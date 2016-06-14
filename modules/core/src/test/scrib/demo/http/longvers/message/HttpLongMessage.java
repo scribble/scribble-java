@@ -6,7 +6,7 @@ import org.scribble.sesstype.name.Op;
 import demo.http.longvers.HttpLong.Http.Http;
 
 // Unlike ScribMessage, HttpMessage is not actually "sent", but we use it as the base class since the socket API takes ScribMessages
-public abstract class HttpMessage extends ScribMessage
+public abstract class HttpLongMessage extends ScribMessage
 {
 	private static final long serialVersionUID = 1L;
 
@@ -37,12 +37,12 @@ public abstract class HttpMessage extends ScribMessage
 	
 	protected static final String CRLF = "\r\n";
 
-	public HttpMessage(Op op)
+	public HttpLongMessage(Op op)
 	{
 		super(op);
 	}
 
-	public HttpMessage(Op op, String body)
+	public HttpLongMessage(Op op, String body)
 	{
 		super(op, body);
 	}
@@ -54,7 +54,7 @@ public abstract class HttpMessage extends ScribMessage
 
 	public byte[] toBytes()
 	{
-		return (getOpString(this.op) + getBody() + HttpMessage.CRLF).getBytes(HttpMessageFormatter.cs);  // Can give "utf-8" as arg directly
+		return (getOpString(this.op) + getBody() + HttpLongMessage.CRLF).getBytes(HttpLongMessageFormatter.cs);  // Can give "utf-8" as arg directly
 	}
 	
 	@Override
@@ -68,67 +68,67 @@ public abstract class HttpMessage extends ScribMessage
 	{
 		if (op.equals(Http.CONTENTL))
 		{
-			return HttpMessage.CONTENT_LENGTH;
+			return HttpLongMessage.CONTENT_LENGTH;
 		}
 		else if (op.equals(Http.ETAG))
 		{
-			return HttpMessage.ETAG;
+			return HttpLongMessage.ETAG;
 		}
 		else if (op.equals(Http.BODY))
 		{
-			return HttpMessage.CRLF;  // This CRLF "op" actually enacts the empty line for end-of-headers
+			return HttpLongMessage.CRLF;  // This CRLF "op" actually enacts the empty line for end-of-headers
 		}
 		else if (op.equals(Http.VIA))
 		{
-			return HttpMessage.VIA;
+			return HttpLongMessage.VIA;
 		}
 		else if (op.equals(Http.SERVER))
 		{
-			return HttpMessage.SERVER;
+			return HttpLongMessage.SERVER;
 		}
 		else if (op.equals(Http.VARY))
 		{
-			return HttpMessage.VARY;
+			return HttpLongMessage.VARY;
 		}
-		else if (op.equals(HttpMessage.CRLF))
+		else if (op.equals(HttpLongMessage.CRLF))
 		{
 			return "";
 		}
 		else if (op.equals(Http.REQUESTL))  // FIXME: not just GET (POST..)
 		{
-			return HttpMessage.GET;
+			return HttpLongMessage.GET;
 		}
 		else if (op.equals(Http.LASTM))
 		{
-			return HttpMessage.LAST_MODIFIED;
+			return HttpLongMessage.LAST_MODIFIED;
 		}
 		else if (op.equals(Http.ACCEPTR))
 		{
-			return HttpMessage.ACCEPT_RANGES;
+			return HttpLongMessage.ACCEPT_RANGES;
 		}
 		else if (op.equals(Http.HOST))
 		{
-			return HttpMessage.HOST;
+			return HttpLongMessage.HOST;
 		}
 		else if (op.equals(Http.HTTPV))
 		{
-			return HttpMessage.HTTP;
+			return HttpLongMessage.HTTP;
 		}
 		else if (op.equals(Http._200))
 		{
-			return HttpMessage._200;
+			return HttpLongMessage._200;
 		}
 		else if (op.equals(Http._404))
 		{
-			return HttpMessage._404;
+			return HttpLongMessage._404;
 		}
 		else if (op.equals(Http.CONTENTT))
 		{
-			return HttpMessage.CONTENT_TYPE;
+			return HttpLongMessage.CONTENT_TYPE;
 		}
 		else if (op.equals(Http.DATE))
 		{
-			return HttpMessage.DATE;
+			return HttpLongMessage.DATE;
 		}
 		else
 		{

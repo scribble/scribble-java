@@ -5,7 +5,7 @@ import org.scribble.sesstype.name.Op;
 
 import demo.http.shortvers.HttpShort.Http.Http;
 
-public abstract class HttpMessage extends ScribMessage
+public abstract class HttpShortMessage extends ScribMessage
 {
 	private static final long serialVersionUID = 1L;
 
@@ -14,7 +14,7 @@ public abstract class HttpMessage extends ScribMessage
 
 	public static final String CRLF = "\r\n";
 
-	public HttpMessage(Op op, String m)
+	public HttpShortMessage(Op op, String m)
 	{
 		super(op, m);
 	}
@@ -27,7 +27,7 @@ public abstract class HttpMessage extends ScribMessage
 	public byte[] toBytes()
 	{
 		// FIXME: factor better with Request/Response (e.g. " " after op, terminal CRLF, etc)
-		return (getOpString(this.op) + getHeadersAndBody()).getBytes(HttpMessageFormatter.cs);  // Can give "utf-8" as arg directly
+		return (getOpString(this.op) + getHeadersAndBody()).getBytes(HttpShortMessageFormatter.cs);  // Can give "utf-8" as arg directly
 	}
 	
 	@Override
@@ -40,11 +40,11 @@ public abstract class HttpMessage extends ScribMessage
 	{
 		if (op.equals(Http.REQUEST))
 		{
-			return HttpMessage.GET;
+			return HttpShortMessage.GET;
 		}
 		else if (op.equals(Http.RESPONSE))
 		{
-			return HttpMessage.HTTP;
+			return HttpShortMessage.HTTP;
 		}
 		else
 		{

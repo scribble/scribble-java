@@ -1,9 +1,9 @@
 package demo.http.shortvers.message.client;
 
 import demo.http.shortvers.HttpShort.Http.Http;
-import demo.http.shortvers.message.HttpMessage;
+import demo.http.shortvers.message.HttpShortMessage;
 
-public class Request extends HttpMessage
+public class Request extends HttpShortMessage
 {
 	private static final long serialVersionUID = 1L;
 
@@ -33,14 +33,14 @@ public class Request extends HttpMessage
 	// Empty body 
 	protected static String getHeadersAndBody(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection) {
 		return " "
-				+ get + " " + HttpMessage.HTTP + "/" + http + HttpMessage.CRLF
-				+ Request.HOST + ": " + host + HttpMessage.CRLF
-				+ ((userA == null) ? "" : Request.USER_AGENT + ": " + userA + HttpMessage.CRLF)
-				+ ((accept == null) ? "" : Request.ACCEPT + ": " + accept + HttpMessage.CRLF)
-				+ ((acceptL == null) ? "" : Request.ACCEPT_LANGUAGE + ": " + acceptL + HttpMessage.CRLF)
-				+ ((acceptE == null) ? "" : Request.ACCEPT_ENCODING + ": " + acceptE + HttpMessage.CRLF)
-				+ ((dnt == null) ? "" : Request.DO_NOT_TRACK + ": " + dnt + HttpMessage.CRLF)
-				+ ((connection == null) ? "" : Request.CONNECTION + ": " + connection + HttpMessage.CRLF)
-				+ "" + HttpMessage.CRLF;  // Empty body
+				+ get + " " + HttpShortMessage.HTTP + "/" + http + HttpShortMessage.CRLF
+				+ Request.HOST + ": " + host + HttpShortMessage.CRLF
+				+ ((userA == null) ? "" : Request.USER_AGENT + ": " + userA + HttpShortMessage.CRLF)
+				+ ((accept == null) ? "" : Request.ACCEPT + ": " + accept + HttpShortMessage.CRLF)
+				+ ((acceptL == null) ? "" : Request.ACCEPT_LANGUAGE + ": " + acceptL + HttpShortMessage.CRLF)
+				+ ((acceptE == null) ? "" : Request.ACCEPT_ENCODING + ": " + acceptE + HttpShortMessage.CRLF)
+				+ ((dnt == null) ? "" : Request.DO_NOT_TRACK + ": " + dnt + HttpShortMessage.CRLF)
+				+ ((connection == null) ? "" : Request.CONNECTION + ": " + connection + HttpShortMessage.CRLF)
+				+ "" + HttpShortMessage.CRLF;  // Empty body
 	}
 }
