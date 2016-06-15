@@ -1,8 +1,5 @@
 package demo.http.longvers;
 
-import java.io.IOException;
-
-import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
@@ -34,7 +31,7 @@ public class HttpServer
 
 	}
 
-	public static void main(String[] args) throws ScribbleRuntimeException, IOException
+	public static void main(String[] args) throws Exception
 	{
 		Buf<RequestLine> b_reql = new Buf<>();
 		Buf<Host> b_host = new Buf<>();
@@ -113,10 +110,6 @@ public class HttpServer
 							}
 						}
 					}
-				}
-				catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
-				{
-					e.printStackTrace();
 				}
 			}
 		}

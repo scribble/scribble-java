@@ -1,8 +1,21 @@
 package demo.http.longvers;
 
-import java.io.IOException;
+import static demo.http.longvers.HttpLong.Http.Http.ACCEPTR;
+import static demo.http.longvers.HttpLong.Http.Http.BODY;
+import static demo.http.longvers.HttpLong.Http.Http.CONTENTL;
+import static demo.http.longvers.HttpLong.Http.Http.CONTENTT;
+import static demo.http.longvers.HttpLong.Http.Http.DATE;
+import static demo.http.longvers.HttpLong.Http.Http.ETAG;
+import static demo.http.longvers.HttpLong.Http.Http.HTTPV;
+import static demo.http.longvers.HttpLong.Http.Http.LASTM;
+import static demo.http.longvers.HttpLong.Http.Http.S;
+import static demo.http.longvers.HttpLong.Http.Http.SERVER;
+import static demo.http.longvers.HttpLong.Http.Http.STRICTTS;
+import static demo.http.longvers.HttpLong.Http.Http.VARY;
+import static demo.http.longvers.HttpLong.Http.Http.VIA;
+import static demo.http.longvers.HttpLong.Http.Http._200;
+import static demo.http.longvers.HttpLong.Http.Http._404;
 
-import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
@@ -26,7 +39,7 @@ import demo.http.longvers.message.server.Server;
 
 public class HttpClient
 {
-	public HttpClient() throws ScribbleRuntimeException, IOException
+	public HttpClient() throws Exception
 	{
 		run();
 	}
@@ -36,7 +49,7 @@ public class HttpClient
 		new HttpClient();
 	}
 
-	public void run() throws ScribbleRuntimeException, IOException
+	public void run() throws Exception
 	{
 		Buf<HttpVersion> b_vers = new Buf<>();
 		Buf<ContentLength> b_clen = new Buf<>();
@@ -47,91 +60,87 @@ public class HttpClient
 		Http http = new Http();
 		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, Http.C, new HttpLongMessageFormatter()))
 		{
-			//String host = "www.doc.ic.ac.uk"; int port = 80;
-			String host = "localhost"; int port = 8080;
+			String host = "www.doc.ic.ac.uk"; int port = 80;
+			//String host = "localhost"; int port = 8080;
 		
 			se.connect(Http.S, SocketChannelEndpoint::new, host, port);
 			
 			Http_C_1 s1 = new Http_C_1(se);
 
 			Http_C_4_Cases s4 =
-					s1.send(Http.S, new RequestLine("/~rhu/", "1.1"))
-					  .send(Http.S, new Host(host))
-					  .send(Http.S, new Body(""))
-					  .receive(Http.S, Http.HTTPV, b_vers)
-					  .branch(Http.S);
-			Http_C_5 s5 = 
-					  (s4.op == Branch_C_S_200__S_404_Enum._200) ? s4.receive(Http._200)
-					: (s4.op == Branch_C_S_200__S_404_Enum._404) ? s4.receive(Http._404)
+					s1.send(S, new RequestLine("/~rhu/", "1.1"))
+					  .send(S, new Host(host))
+					  .send(S, new Body(""))
+					  .receive(S, HTTPV, b_vers)
+					  .branch(S);
+			Http_C_5 s5 =  // S?{ 200: ..., 404: ..., ... }
+					  (s4.op == Branch_C_S_200__S_404_Enum._200) ? s4.receive(_200)
+					: (s4.op == Branch_C_S_200__S_404_Enum._404) ? s4.receive(_404)
 					: new Caller().call(() -> { throw new RuntimeException("Unknown status code: " + s4.op); });
 
 			Y: while (true)
 			{
-				Http_C_5_Cases cases = s5.branch(Http.S);
+				Http_C_5_Cases cases = s5.branch(S);
 				switch (cases.op)
 				{
 					case ACCEPTR:
 					{
-						s5 = cases.receive(Http.ACCEPTR);
+						s5 = cases.receive(ACCEPTR);
 						break;
 					}
 					case BODY:
 					{
-						cases.receive(Http.BODY, b_body);
+						cases.receive(BODY, b_body);
 						System.out.println(b_body.val.getBody());
 						break Y;
 					}
 					case CONTENTL:
 					{
-						s5 = cases.receive(Http.CONTENTL, b_clen);
+						s5 = cases.receive(CONTENTL, b_clen);
 						break;
 					}
 					case CONTENTT:
 					{
-						s5 = cases.receive(Http.CONTENTT, b_ctype);
+						s5 = cases.receive(CONTENTT, b_ctype);
 						break;
 					}
 					case DATE:
 					{
-						s5 = cases.receive(Http.DATE);
+						s5 = cases.receive(DATE);
 						break;
 					}
 					case ETAG:
 					{
-						s5 = cases.receive(Http.ETAG);
+						s5 = cases.receive(ETAG);
 						break;
 					}
 					case LASTM:
 					{
-						s5 = cases.receive(Http.LASTM);
+						s5 = cases.receive(LASTM);
 						break;
 					}
 					case SERVER:
 					{
-						s5 = cases.receive(Http.SERVER, b_serv);
+						s5 = cases.receive(SERVER, b_serv);
 						break;
 					}
 					case STRICTTS:
 					{
-						s5 = cases.receive(Http.STRICTTS);
+						s5 = cases.receive(STRICTTS);
 						break;
 					}
 					case VARY:
 					{
-						s5 = cases.receive(Http.VARY);
+						s5 = cases.receive(VARY);
 						break;
 					}
 					case VIA:
 					{
-						s5  = cases.receive(Http.VIA);
+						s5  = cases.receive(VIA);
 						break;
 					}
 				}
 			}
-		}
-		catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
-		{
-			e.printStackTrace();
 		}
 	}
 }
