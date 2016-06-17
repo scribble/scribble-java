@@ -36,9 +36,9 @@ public class CommandLine //implements Runnable
 		PROJECT,
 		JUNIT,
 		VERBOSE,
-		FSM,     // The FSM for API gen (and general tool output)
+		FSM,              // The FSM for API gen (and general tool output to user)
 		FSM_DOT,
-		CHECKED_FSM,  // The FSM used for model checking (fair or unfair)
+		CHECKED_FSM,      // The FSM used (internally) for global model checking (fair/unfair)
 		CHECKED_FSM_DOT,
 		SESS_API,
 		SCHAN_API,
