@@ -13,33 +13,36 @@ DIR=`dirname "$0"`   # Non Cygwin..
 #BASEDIR=$(dirname $0)
 
 usage() {
-  echo Usage:  scribblec.sh [option]... [SCRFILE]
+  echo Usage:  'scribblec.sh [option]... <SCRFILE> [option]...'
   cat <<EOF
   
-  -h  --help                                     Show this info and exit
+ <SCRFILE>     Source Scribble module (.scr file) 
+  
+ Options: 
+  -h, --help                                     Show this info and exit
   --verbose                                      Echo the java command
   -V                                             Scribble debug info
 
-  -ip [path]                                     Scribble import path
+  -ip <path>                                     Scribble import path
 
-  -project [simple global protocol name] [role]  Project protocol
+  -project <simple global protocol name> <role>  Project protocol
 
-  -fsm [simple global protocol name] [role]      Generate Endpoint FSM
-  -fsmdot [simple global protocol name] [role] [output file]
+  -fsm <simple global protocol name> <role>      Generate Endpoint FSM
+  -fsmdot <simple global protocol name> <role> <output file>
           Draw Endpoint FSM as png (requires dot)
   -minfsm                                        
           Minimise EFSMs for dot and API generation (but not global modelling)
           (Requires ltsconvert)
 
-  -model [simple global protocol name]           Generate global model
-  -modeldot [simple global protocol name] [role] [output file]
+  -model <simple global protocol name>           Generate global model
+  -modeldot <simple global protocol name> <role> <output file>
           Draw global model as png (requires dot)
   -fair                                          Assume fair output choices
 
-  -api [simple global protocol name] [role]      Generate Endpoint API
-  -d [path]                                      API output path
-  -session [simple global protocol name]         Generate Session API only
-  -schan [simple global protocol name] [role]    Generate State Channel API only
+  -api <simple global protocol name> <role>      Generate Endpoint API
+  -d <path>                                      API output path
+  -session <simple global protocol name>         Generate Session API only
+  -schan <simple global protocol name> <role>    Generate State Channel API only
   -subtypes                                      Enable subtype API generation
 EOF
 }

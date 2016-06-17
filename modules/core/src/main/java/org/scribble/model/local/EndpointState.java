@@ -51,7 +51,7 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 	.. easier to implement as a direct check on the standard global model, rather than model hacking -- i.e. liveness is not just about terminal sets, but about "branching condition", c.f. julien?
 	.. the issue is connect/accept -- makes direct check a bit more complicated, maybe value in doing it by model hacking to rely on standard liveness checking?
 	..     should be fine, check set of roles on each path is equal, except for accept-guarded initial roles*/
-	public EndpointState unfairClone()
+	public EndpointState unfairTransform()
 	{
 		EndpointState init = this.clone();
 		

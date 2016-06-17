@@ -1,18 +1,15 @@
 package org.scribble.del.local;
 
-import org.scribble.ast.Module;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.local.LProtocolDeclContext;
 import org.scribble.ast.local.LProtocolDecl;
 import org.scribble.del.ProtocolDeclDel;
 import org.scribble.main.ScribbleException;
-import org.scribble.model.local.EndpointGraph;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
-import org.scribble.visit.JobContext;
 import org.scribble.visit.ProtocolDeclContextBuilder;
 
 public class LProtocolDeclDel extends ProtocolDeclDel<Local>
@@ -58,18 +55,18 @@ public class LProtocolDeclDel extends ProtocolDeclDel<Local>
 	@Override
 	public ScribNode leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited)
 	{
-		LProtocolDecl lpd = (LProtocolDecl) visited;
+		/*LProtocolDecl lpd = (LProtocolDecl) visited;  // Refactored into JobContext
 		
-		JobContext jc = graph.getJobContext();
+		JobContext jc = graph.getJobContext();  
 		// FIXME: should just bypass builder visit if already built
 		LProtocolName lpn = lpd.getFullMemberName((Module) parent);
 		if (jc.getEndpointGraph(lpn) == null)  // FIXME: what is the routine to obtain gpn from lpn?
 		{
 			//EndpointGraph fsm = new EndpointGraph(graph.builder.getEntry(), graph.builder.getExit());
-			EndpointGraph fsm = graph.builder.finalise();
+			EndpointGraph graph = graph.builder.finalise();
 
-			jc.addEndpointGraph(lpn, fsm);
-		}
+			jc.addEndpointGraph(lpn, graph);
+		}*/
 		return visited;
 	}
 	

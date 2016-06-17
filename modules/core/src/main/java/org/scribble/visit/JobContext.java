@@ -18,10 +18,12 @@ import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Role;
 import org.scribble.util.ScribUtil;
 
-// Global "static" context information for a Job
-// Mutable: projections are added mutably later -- replaceModule also mutable setter
+// Global "static" context information for a Job -- single instance per Job and should never be shared
+// Mutable: projections, graphs, etc are added mutably later -- replaceModule also mutable setter
 public class JobContext
 {
+	private final Job job;
+
 	public final ModuleName main;
 	
 	// ModuleName keys are full module names -- currently the modules read from file, distinguished from the generated projection modules
@@ -34,10 +36,14 @@ public class JobContext
 	//private final Map<GProtocolName, GModel> gmodels = new HashMap<>();
 	private final Map<GProtocolName, WFState> gmodels = new HashMap<>();
 	
+	private final Map<LProtocolName, EndpointGraph> unfair = new HashMap<>();
 	private final Map<LProtocolName, EndpointGraph> minimised = new HashMap<>();  // Toolchain currently depends on single instance of each graph (state id equality), e.g. cannot re-build or re-minimise, would not be the same graph instance
+			// FIXME: minimised "fair" graph only, need to consider minimisation orthogonally to fairness -- NO: unfair-transform without minimisation is only for WF, minimised original only for API gen
 	
-	public JobContext(Map<ModuleName, Module> parsed, ModuleName main)
+	protected JobContext(Job job, Map<ModuleName, Module> parsed, ModuleName main)
 	{
+		this.job = job;
+
 		this.parsed = new HashMap<ModuleName, Module>(parsed);
 		this.main = main;
 	}
@@ -166,24 +172,42 @@ public class JobContext
 		return this.gmodels.get(fullname);
 	}
 	
-	public void addEndpointGraph(LProtocolName fullname, EndpointGraph graph)
+	protected void addEndpointGraph(LProtocolName fullname, EndpointGraph graph)
 	{
 		this.graphs.put(fullname, graph);
 	}
 	
-	public EndpointGraph getEndpointGraph(GProtocolName fullname, Role role)
+	public EndpointGraph getEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
-		//return this.graphs.get(Projector.projectFullProtocolName(fullname, role));
-		return getEndpointGraph(Projector.projectFullProtocolName(fullname, role));
+		////return this.graphs.get(Projector.projectFullProtocolName(fullname, role));
+		//return getEndpointGraph(Projector.projectFullProtocolName(fullname, role));
+
+		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+		// Moved form LProtocolDecl
+		EndpointGraph graph = this.graphs.get(fulllpn);
+		if (graph == null)
+		{
+			Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
+			EndpointGraphBuilder builder = new EndpointGraphBuilder(this.job);
+			proj.accept(builder);
+			graph = builder.builder.finalise();  // Projected module contains a single protocol
+			addEndpointGraph(fulllpn, graph);
+		}
+		return graph;
 	}
 
   // Full projected name
-	public EndpointGraph getEndpointGraph(LProtocolName fullname)
+	protected EndpointGraph getEndpointGraph(LProtocolName fullname)
 	{
-		return this.graphs.get(fullname);
+		EndpointGraph graph = this.graphs.get(fullname);
+		if (graph == null)
+		{
+			throw new RuntimeException("FIXME: " + fullname);
+		}
+		return graph;
 	}
 	
-	public void addMinimisedEndpointGraph(LProtocolName fullname, EndpointGraph graph)
+	protected void addMinimisedEndpointGraph(LProtocolName fullname, EndpointGraph graph)
 	{
 		this.minimised.put(fullname, graph);
 	}
@@ -194,7 +218,7 @@ public class JobContext
 	}
 
   // Full projected name
-	public EndpointGraph getMinimisedEndpointGraph(LProtocolName fullname)
+	protected EndpointGraph getMinimisedEndpointGraph(LProtocolName fullname)
 	{
 		EndpointGraph minimised = this.minimised.get(fullname);
 		if (minimised == null)
@@ -211,6 +235,28 @@ public class JobContext
 			}
 		}
 		return minimised;
+	}
+	
+	protected void addUnfairEndpointGraph(LProtocolName fullname, EndpointGraph graph)
+	{
+		this.unfair.put(fullname, graph);
+	}
+	
+	public EndpointGraph getUnfairEndpointGraph(GProtocolName fullname, Role role)
+	{
+		return getUnfairEndpointGraph(Projector.projectFullProtocolName(fullname, role));
+	}
+
+  // Full projected name
+	protected EndpointGraph getUnfairEndpointGraph(LProtocolName fullname)
+	{
+		EndpointGraph unfair = this.unfair.get(fullname);
+		if (unfair == null)
+		{
+			unfair = getEndpointGraph(fullname).init.unfairTransform().toGraph();
+			addUnfairEndpointGraph(fullname, unfair);
+		}
+		return unfair;
 	}
 
 	public Module getMainModule()

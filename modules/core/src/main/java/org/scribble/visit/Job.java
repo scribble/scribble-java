@@ -43,7 +43,7 @@ public class Job
 		this.minEfsm = minEfsm;
 		this.fair = fair;
 
-		this.jcontext = new JobContext(parsed, main);
+		this.jcontext = new JobContext(this, parsed, main);  // Single instance per Job and should never be shared
 	}
 
 	public ScribbleException testWellFormednessCheck()

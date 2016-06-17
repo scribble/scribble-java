@@ -16,6 +16,8 @@ public class CommandLineArgParser
 	public static final String PROJECT_FLAG = "-project";
 	public static final String FSM_FLAG = "-fsm";
 	public static final String FSM_DOT_FLAG = "-fsmdot";
+	public static final String CHECKED_FSM_FLAG = "-vfsm";
+	public static final String CHECKED_FSM_DOT_FLAG = "-vfsmdot";
 	public static final String SESSION_FLAG = "-session";
 	public static final String STATECHAN_FLAG = "-schan";
 	public static final String API_FLAG = "-api";
@@ -46,6 +48,8 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.PROJECT_FLAG, CommandLine.ArgFlag.PROJECT);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.FSM_FLAG, CommandLine.ArgFlag.FSM);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.FSM_DOT_FLAG, CommandLine.ArgFlag.FSM_DOT);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.CHECKED_FSM_FLAG, CommandLine.ArgFlag.CHECKED_FSM);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.CHECKED_FSM_DOT_FLAG, CommandLine.ArgFlag.CHECKED_FSM_DOT);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.SESSION_FLAG, CommandLine.ArgFlag.SESS_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.STATECHAN_FLAG, CommandLine.ArgFlag.SCHAN_API);
 		CommandLineArgParser.NON_UNIQUE_FLAGS.put(CommandLineArgParser.API_FLAG, CommandLine.ArgFlag.EP_API);
@@ -129,6 +133,14 @@ public class CommandLineArgParser
 			case CommandLineArgParser.FSM_DOT_FLAG:
 			{
 				return parseFsmDot(i);
+			}
+			case CommandLineArgParser.CHECKED_FSM_FLAG:
+			{
+				return parseWFFsm(i);
+			}
+			case CommandLineArgParser.CHECKED_FSM_DOT_FLAG:
+			{
+				return parseWFFsmDot(i);
 			}
 			case CommandLineArgParser.SESSION_FLAG:
 			{
@@ -253,6 +265,32 @@ public class CommandLineArgParser
 		String role = this.args[++i];
 		String png = this.args[++i];
 		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.FSM_DOT_FLAG), proto, role, png);
+		return i;
+	}
+	
+	private int parseWFFsm(int i) throws CommandLineException  // Almost same as parseProject -- could factor out, but code less clear and more awkward error reporting
+	{
+		if ((i + 2) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.CHECKED_FSM_FLAG), proto, role);
+		return i;
+	}
+
+
+	private int parseWFFsmDot(int i) throws CommandLineException
+	{
+		if ((i + 3) >= this.args.length)
+		{
+			throw new CommandLineException("Missing protocol/role/file arguments");
+		}
+		String proto = this.args[++i];
+		String role = this.args[++i];
+		String png = this.args[++i];
+		concatArgs(CommandLineArgParser.FLAGS.get(CommandLineArgParser.CHECKED_FSM_DOT_FLAG), proto, role, png);
 		return i;
 	}
 

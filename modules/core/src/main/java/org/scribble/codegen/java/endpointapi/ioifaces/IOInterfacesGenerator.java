@@ -66,7 +66,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 		Role self = getSelf();
 		//EndpointState init = this.job.getContext().getEndpointGraph(fullname, self).init;
 		JobContext jc = this.job.getContext();
-		EndpointState init = job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
+		EndpointState init = this.job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
 		
 		Set<IOAction> as = EndpointState.getAllReachableActions(init);
 		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)

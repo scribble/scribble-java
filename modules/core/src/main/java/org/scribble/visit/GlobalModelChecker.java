@@ -7,7 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -214,19 +213,20 @@ public class GlobalModelChecker extends ModuleContextVisitor
 	private WFState buildGlobalModel(GProtocolName fullname, GProtocolDecl gpd, Map<Role, EndpointFSM> egraphs, Map<Integer, WFState> seen) throws ScribbleException
 	{
 		Job job = getJob();
+		//JobContext jc = job.getContext();
 		
-		//if (false)
+		/*//if (false)
 		if (!job.fair && !job.noLiveness)
 		{
 			for (Entry<Role, EndpointFSM> e : egraphs.entrySet())
 			{
 				Role r = e.getKey();
-				EndpointFSM nonfair = e.getValue().init.unfairClone().toGraph().toFsm();
+				EndpointFSM nonfair = e.getValue().init.unfairTransform().toGraph().toFsm();
 				egraphs.put(r, nonfair);
 
 				job.debugPrintln("(" + fullname + ") Non-fair EFSM for " + r + ":\n" + nonfair.init.toDot());
 			}
-		}
+		}*/
 
 		WFBuffers b0 = new WFBuffers(egraphs.keySet(), !gpd.modifiers.contains(GProtocolDecl.Modifiers.EXPLICIT));
 		//WFConfig c0 = new WFConfig(egraphs, b0);
@@ -360,7 +360,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			EndpointGraph fsm = graph.builder.finalise();
 			//*/
 
-			EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
+			/*EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
 			if (graph == null)
 			{
 				//LProtocolDecl lpd = this.getJobContext().getProjection(fullname, self).getLocalProtocolDecls().get(0);
@@ -368,9 +368,18 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				EndpointGraphBuilder builder = new EndpointGraphBuilder(getJob());
 				proj.accept(builder);  // Side effects job context (caches graph)
 				graph = job.getContext().getEndpointGraph(fullname, self);
-			}
+			}*/
+
+			EndpointGraph graph = job.getContext().getEndpointGraph(fullname, self);
 
 			job.debugPrintln("(" + fullname + ") EFSM for " + self + ":\n" + graph);
+
+			if (!job.fair && !job.noLiveness)
+			{
+				graph = job.getContext().getUnfairEndpointGraph(fullname, self);
+
+				job.debugPrintln("(" + fullname + ") Non-fair EFSM for " + self + ":\n" + graph.init.toDot());
+			}
 			
 			//egraphs.put(self, fsm.init);
 			egraphs.put(self, graph.toFsm());

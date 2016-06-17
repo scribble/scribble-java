@@ -36,8 +36,10 @@ public class CommandLine //implements Runnable
 		PROJECT,
 		JUNIT,
 		VERBOSE,
-		FSM,
+		FSM,     // The FSM for API gen (and general tool output)
 		FSM_DOT,
+		CHECKED_FSM,  // The FSM used for model checking (fair or unfair)
+		CHECKED_FSM_DOT,
 		SESS_API,
 		SCHAN_API,
 		EP_API,
@@ -100,11 +102,19 @@ public class CommandLine //implements Runnable
 				}
 				if (this.args.containsKey(ArgFlag.FSM))
 				{
-					outputGraph(job);
+					outputGraph(job, true);
 				}
 				if (this.args.containsKey(ArgFlag.FSM_DOT))
 				{
-					drawGraph(job);
+					drawGraph(job, true);
+				}
+				if (this.args.containsKey(ArgFlag.CHECKED_FSM))
+				{
+					outputGraph(job, false);
+				}
+				if (this.args.containsKey(ArgFlag.CHECKED_FSM_DOT))
+				{
+					drawGraph(job, false);
 				}
 				if (this.args.containsKey(ArgFlag.GLOBAL_MODEL) || this.args.containsKey(ArgFlag.GLOBAL_MODEL_DOT))
 				{
@@ -182,31 +192,31 @@ public class CommandLine //implements Runnable
 		}
 	}
 
-	private void outputGraph(Job job) throws ScribbleException, CommandLineException
+	private void outputGraph(Job job, boolean forUser) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.FSM);
+		String[] args = forUser ? this.args.get(ArgFlag.FSM) : this.args.get(ArgFlag.CHECKED_FSM);
 		for (int i = 0; i < args.length; i += 2)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
-			EndpointGraph fsm = getEndointGraph(job, fullname, role);
+			EndpointGraph fsm = getEndointGraph(forUser, job, fullname, role);
 			//System.out.println("\n" + jcontext.getEndpointGraph(fullname, role));  // Endpoint graphs are "inlined" (a single graph is built)
 			System.out.println("\n" + fsm);  // Endpoint graphs are "inlined" (a single graph is built)
 		}
 	}
 
 	// FIXME: draw graphs once and cache, redrawing gives different state numbers
-	private void drawGraph(Job job) throws ScribbleException, CommandLineException
+	private void drawGraph(Job job, boolean forUser) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
-		String[] args = this.args.get(ArgFlag.FSM_DOT);
+		String[] args = forUser ? this.args.get(ArgFlag.FSM_DOT) : this.args.get(ArgFlag.CHECKED_FSM_DOT);
 		for (int i = 0; i < args.length; i += 3)
 		{
 			GProtocolName fullname = checkGlobalProtocolArg(jcontext, args[i]);
 			Role role = checkRoleArg(jcontext, fullname, args[i+1]);
 			String png = args[i+2];
-			EndpointGraph fsm = getEndointGraph(job, fullname, role);
+			EndpointGraph fsm = getEndointGraph(forUser, job, fullname, role);
 			//jcontext.getEndpointGraph(fullname, role);
 			runDot(fsm.init.toDot(), png);
 		}
@@ -345,7 +355,7 @@ public class CommandLine //implements Runnable
 	}
 
   // Endpoint graphs are "inlined", so only a single graph is built (cf. projection output)
-	private EndpointGraph getEndointGraph(Job job, GProtocolName fullname, Role role) throws ScribbleException, CommandLineException
+	private EndpointGraph getEndointGraph(boolean forUser, Job job, GProtocolName fullname, Role role) throws ScribbleException, CommandLineException
 	{
 		JobContext jcontext = job.getContext();
 		GProtocolDecl gpd = (GProtocolDecl) jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());
@@ -354,13 +364,22 @@ public class CommandLine //implements Runnable
 			throw new CommandLineException("Bad FSM construction args: " + Arrays.toString(this.args.get(ArgFlag.FSM)));
 		}
 		//job.buildGraph(fullname, role);  // Already built (if valid) as part of global model checking
-		EndpointGraph fsm = this.args.containsKey(ArgFlag.MIN_EFSM)
-				? jcontext.getMinimisedEndpointGraph(fullname, role) : jcontext.getEndpointGraph(fullname, role);
-		if (fsm == null)
+		EndpointGraph graph;
+		if (forUser)  // The (possibly minimised) user-output EFSM for API gen
+		{
+			graph = this.args.containsKey(ArgFlag.MIN_EFSM)
+					? jcontext.getMinimisedEndpointGraph(fullname, role) : jcontext.getEndpointGraph(fullname, role);
+		}
+		else  // The (possibly unfair-transformed) internal EFSM for model checking
+		{
+			graph = (!this.args.containsKey(ArgFlag.FAIR) && !this.args.containsKey(ArgFlag.NO_LIVENESS))  // Cf. GlobalModelChecker.getEndpointFSMs
+					? jcontext.getUnfairEndpointGraph(fullname, role) : jcontext.getEndpointGraph(fullname, role);
+		}
+		if (graph == null)
 		{
 			throw new ScribbleException("Shouldn't see this: " + fullname);  // Should be suppressed by an earlier failure
 		}
-		return fsm;
+		return graph;
 	}
 	
 	private Job newJob(MainContext mc)
