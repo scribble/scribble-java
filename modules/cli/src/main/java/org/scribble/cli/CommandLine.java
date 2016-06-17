@@ -30,7 +30,8 @@ import org.scribble.visit.JobContext;
 // Maybe no point to be a Runnable
 public class CommandLine //implements Runnable
 {
-	protected enum ArgFlag {
+	protected enum ArgFlag
+	{
 		MAIN,
 		PATH,
 		PROJECT,

@@ -19,6 +19,7 @@ public class Harness
 	 * @return
 	 */
 	// Currently unused
+	@Deprecated
 	public static JavaProcessBuilder java(String className)
 	{
 		JavaProcessBuilder java = new JavaProcessBuilder(className);
