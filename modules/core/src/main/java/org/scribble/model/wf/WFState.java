@@ -76,9 +76,9 @@ public class WFState
 	}*/
 
 	//public WFState accept(GModelAction a)
-	public List<WFConfig> accept(Role r, IOAction a)
+	public List<WFConfig> take(Role r, IOAction a)
 	{
-		return this.config.accept(r, a);
+		return this.config.take(r, a);
 	}
 
 	public List<WFConfig> sync(Role r1, IOAction a1, Role r2, IOAction a2)

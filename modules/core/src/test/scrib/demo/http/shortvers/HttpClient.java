@@ -38,7 +38,8 @@ public class HttpClient
 			Buf<Response> buf = new Buf<>();
 			new Http_C_1(se)
 				.send(S, new Request("/~rhu/", "1.1", host))
-				//.send(S, new Response("1.1", "..body."))
+				//.send(S, new Response("1.1", "..body.."))
+				//.send(S, new Request("/~rhu/", "1.1", host))
 				.receive(S, RESPONSE, buf);
 			
 			System.out.println("Response:\n" + buf.val);

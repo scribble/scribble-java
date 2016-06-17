@@ -72,7 +72,7 @@ public class WFConfig
 				);
 	}
 	
-	public List<WFConfig> accept(Role r, IOAction a)
+	public List<WFConfig> take(Role r, IOAction a)
 	{
 		List<WFConfig> res = new LinkedList<>();
 		

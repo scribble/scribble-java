@@ -38,9 +38,6 @@ module Test;
 // - parameterise subprotos on protos?
 
 
-// TODO: test API gen for (fair) SupplierInfo
-// TODO: test connect/wrap API gen for SMTP
-
 // FIXME: .. refactor interfaces for model building/checking/minimising/etc into state classes (make subclasses of Model/EndpointState -- cf. ast/del)
 
 
@@ -56,6 +53,12 @@ module Test;
 // MainContext.newJob -- move MainContext to core?
 
 // FIXME: Module.getGlobal/LocalProtocolDecl
+
+
+// TODO: test API gen for (fair) SupplierInfo
+// TODO: test connect/wrap API gen for SMTP
+// FIXME: decouple branch API gen from I/O i/f's -- duplicate enum in concrrete states?
+// FIXME: I/O i/f name max length
 
 
 global protocol Proto1(role A, role B, role C)

@@ -101,7 +101,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 		/*Set<WFState> all = new HashSet<>();
 		getAllNodes(init, all);*/
 		checkGlobalModel(fullname, init, seen);
-		
+
 		return child;
 	}
 
@@ -176,7 +176,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			findTerminalSets(all, reach, termsets);
 
 			//System.out.println("Terminal sets: " + termsets.stream().map((s) -> s.toString()).collect(Collectors.joining("\n")));
-			
+
 			//for (Set<WFState> termset : termsets)
 			for (Set<Integer> termset : termsets)
 			{
@@ -300,7 +300,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 				{
 					if (a.isSend() || a.isReceive() || a.isDisconnect())
 					{
-						getNextStates(todo, seen, curr, a.toGlobal(r), curr.accept(r, a));
+						getNextStates(todo, seen, curr, a.toGlobal(r), curr.take(r, a));
 					}
 					else if (a.isAccept() || a.isConnect())
 					{	
@@ -333,7 +333,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 		}
 
-		job.debugPrintln(init.toDot() + "\n(" + fullname + ") Built global model (" + count + " states)");
+		job.debugPrintln("(" + fullname + ") Building global model..\n" + init.toDot() + "\n(" + fullname + ") Built global model (" + count + " states)");
 
 		//return seen;
 		return init;

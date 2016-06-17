@@ -68,7 +68,7 @@ sig <java> "demo.http.longvers.message.server.HttpVersion"
 		from "demo/http/longvers/message/HttpVersion.java"
 		as HTTPV;  // HTTP/1.1 
 
-sig <java> "demo.http.longvers.message.server._200"
+sig <java> "demo.http.longvers.message.server._200"  // "Status" line (with HTTPV)
 		from "demo/http/longvers/message/_200.java"
 		as 200;  // 200 OK
 
@@ -172,6 +172,10 @@ aux global protocol Request(role C, role S)
 			}
 		}
 	}
+	/*or
+	{
+		...
+	}*/
 }
 
 /*interruptible 

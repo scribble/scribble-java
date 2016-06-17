@@ -79,10 +79,11 @@ public class WFBuffers
 		});
 	}
 	
-	// FIXME refactor
+	// FIXME factor out properly with constructor
 	public Map<Role, Map<Role, Send>> getBuffers()
 	{
-		return this.buffs;
+		//return this.buffs;
+		return new WFBuffers(this).buffs;
 	}
 
 	public Map<Role, Send> get(Role r)
