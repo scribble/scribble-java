@@ -188,6 +188,10 @@ public class JobContext
 		if (graph == null)
 		{
 			Module proj = getProjection(fullname, role);  // Projected module contains a single protocol
+			if (proj == null)
+			{
+				throw new ScribbleException("Projection not found: " + fullname + ", " + role);  // E.g. disamb error before projection passes (e.g. CommandLine -fsm arg)
+			}
 			EndpointGraphBuilder builder = new EndpointGraphBuilder(this.job);
 			proj.accept(builder);
 			graph = builder.builder.finalise();  // Projected module contains a single protocol
@@ -196,16 +200,17 @@ public class JobContext
 		return graph;
 	}
 
-  // Full projected name
-	protected EndpointGraph getEndpointGraph(LProtocolName fullname)
+  /*// Full projected name
+	protected EndpointGraph getEndpointGraph(LProtocolName fullname) throws ScribbleException
 	{
 		EndpointGraph graph = this.graphs.get(fullname);
 		if (graph == null)
 		{
-			throw new RuntimeException("FIXME: " + fullname);
+			//throw new RuntimeException("FIXME: " + fullname);
+			throw new ScribbleException(": " + fullname);  // FIXME checked exception for CommandLine
 		}
 		return graph;
-	}
+	}*/
 	
 	protected void addMinimisedEndpointGraph(LProtocolName fullname, EndpointGraph graph)
 	{
@@ -214,20 +219,24 @@ public class JobContext
 	
 	public EndpointGraph getMinimisedEndpointGraph(GProtocolName fullname, Role role)
 	{
-		return getMinimisedEndpointGraph(Projector.projectFullProtocolName(fullname, role));
+		//return getMinimisedEndpointGraphAux(Projector.projectFullProtocolName(fullname, role));
+		return getMinimisedEndpointGraphAux(fullname, role);
 	}
 
   // Full projected name
-	protected EndpointGraph getMinimisedEndpointGraph(LProtocolName fullname)
+	//protected EndpointGraph getMinimisedEndpointGraphAux(LProtocolName fullname)
+	protected EndpointGraph getMinimisedEndpointGraphAux(GProtocolName fullname, Role role)
 	{
-		EndpointGraph minimised = this.minimised.get(fullname);
+		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+
+		EndpointGraph minimised = this.minimised.get(fulllpn);
 		if (minimised == null)
 		{
 			try
 			{
-				String aut = runAut(getEndpointGraph(fullname).init.toAut(), fullname + ".aut");
+				String aut = runAut(getEndpointGraph(fullname, role).init.toAut(), fulllpn + ".aut");
 				minimised = new AutParser().parse(aut);
-				addMinimisedEndpointGraph(fullname, minimised);
+				addMinimisedEndpointGraph(fulllpn, minimised);
 			}
 			catch (ScribbleException e)
 			{
@@ -242,19 +251,23 @@ public class JobContext
 		this.unfair.put(fullname, graph);
 	}
 	
-	public EndpointGraph getUnfairEndpointGraph(GProtocolName fullname, Role role)
+	public EndpointGraph getUnfairEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
-		return getUnfairEndpointGraph(Projector.projectFullProtocolName(fullname, role));
+		//return getUnfairEndpointGraphAux(Projector.projectFullProtocolName(fullname, role));
+		return getUnfairEndpointGraphAux(fullname, role);
 	}
 
   // Full projected name
-	protected EndpointGraph getUnfairEndpointGraph(LProtocolName fullname)
+	//protected EndpointGraph getUnfairEndpointGraphAux(LProtocolName fullname)
+	protected EndpointGraph getUnfairEndpointGraphAux(GProtocolName fullname, Role role) throws ScribbleException
 	{
-		EndpointGraph unfair = this.unfair.get(fullname);
+		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
+
+		EndpointGraph unfair = this.unfair.get(fulllpn);
 		if (unfair == null)
 		{
-			unfair = getEndpointGraph(fullname).init.unfairTransform().toGraph();
-			addUnfairEndpointGraph(fullname, unfair);
+			unfair = getEndpointGraph(fullname, role).init.unfairTransform().toGraph();
+			addUnfairEndpointGraph(fulllpn, unfair);
 		}
 		return unfair;
 	}

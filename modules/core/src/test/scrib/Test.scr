@@ -61,6 +61,58 @@ module Test;
 // FIXME: I/O i/f name max length
 
 
+//*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from B to A;
+			3() from A to C;  // Trying to find an unfair-transformation problem wrt. not visiting "2" case after "1" transitions
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to A;
+			3() from A to C;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+	2() from B to C;  // Testing CommandLine with, e.g., -fsm(dot) arg (disamb error before projection passes means graph cannot be built)
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
@@ -78,6 +130,7 @@ global protocol Proto1(role A, role B, role C)
 		}
 	}
 }
+//*/
 
 
 /*
