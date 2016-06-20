@@ -61,21 +61,245 @@ module Test;
 // FIXME: I/O i/f name max length
 
 
+
 //*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
 global protocol Proto1(role A, role B)
 {
-	rec X
+	choice at A
 	{
-		choice at A
-		{
-			1() from A to B;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-		}
+		1() from A to B
 	}
+	or
+	{
+		1(Int) from A to B  // FIXME: choice payload
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		3() from C to A;
+	}
+	or
+	{
+		4() 
+		from A to B;
+		5() from B to C;  // "Standard merge" (ICALP13) -- 2/5 cases merged for input choice at C  // but is it actually mergable in ICALP13/WADFEST? because only defined on branch, not select as needed for C here -- it's fine, only merging the top level branches (distinct labels)
+		6() from C to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		3() from C to A;
+	}
+	or
+	{
+		4() from A to B;
+		2() from B to C;
+		3() from C to A;  // Not mergeable by WADFEST, because continuations of C to be merged are not input-branches (but WAFDEST could probably be extended easily -- most simply by just allowing TmergeT for any T, not just branch -- more generally, would have to inductively coerce non-branches into branches, which is what the below example (i.e. WADFEST) is a special case of)
+				// However, mergeable by ICALP13 (just a typo by WADFEST)
+				// (WADFEST merges also only defined on branches, not receives, but receive can be easily converted to singleton branches? -- a point of directed branches is that they have no payloads, and receives have no labels, which Scribble needs to consider)
+	}
+}
+//*/
+
+
+/*
+// Counter example to completeness of safety for current WF -- this notion of completeness is wrt. a global semantics, but not wrt. specific definition of Scribble projection/EFSM? (i.e. if we project/build a subsequent input choice at C from A, not just the initial one from B -- this is essentially mixing a ``non-choice'' (pre-determined flow) at A with an external choice at C -- i.e. ICALP13/WADFEST merge: convert non-det external choice into det non-choice followed by inductively merged (external choice) continuations) -- actually not necessarily, can consider still non-det, but just that the continuation branches are safe (but this view is more like inferring non-directly specified cases for nested branches)
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		//choice at A {  // better for merging?
+			3() from A to C;
+		//}
+	}
+	or
+	{
+		1b() from A to B;
+		2() from B to C;
+		4() from A to C;  // FIXME: "merge/coerce" branches for C -- implement as some king of variant of "determinisation"? i.e. 2.3+2.4 -> 2.(3+4) (issue is it's not bisim preserving -- is local language minimisation a sound general principle? well, not for the minimal non-det branch example (or actually, yes? see below), but somehow only for "nested" external choices? i.e. same-label mergability?)
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to A;  // FIXME: should we just language-equiv minimise endpoints? implicitly take that as the CFSM meaning of this global protocol? depends on global semantics -- but would make general projection/graphbuilding and mergability more uniform? -- uniformity should be the aim, see below -- no: not just independent EFSM minimisation, but should consider the whole CFSM system, see below
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;
+		4() from C to A;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;
+		5() from C to A;  // FIXME: language minimising at C will determinise, but minimising at A has no effect: minimising makes (non-det) external choice at C into internal choice, which is incompatible with original internal choice at A -- so independent language minimising is not sound -- basically syntactic branch-only merging restricts "determinising" to external choices only -- so do independent EFSM language-minimisation applied to inputs only? (but sometimes non-det outputs can be safely minimised -- but just leave them as is for global model checking?)
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+	}
+	or
+	{
+		1() from A to B;  // Simply syntactically not representable with directed choice, but safe under the same intuition as mergability -- in this case, independent endpoint minimisation modifies both A and B consistently
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		//choice at A
+		//{
+		//	4() from A to C;
+		//}
+		//or
+		//{
+		//	3() from A to C;
+		//}
+	do Proto1Aux(A, C); // WADFEST merge -- morally: WADFEST merge "infers" safe branche cases for nested branches -- can factor out by subprotos
+					// NO: WADFEST prevents internal choice 4/5 by A, only allows external choice by C
+	}
+	or
+	{
+		1b() from A to B;
+		2() from B to C;
+		//choice at A
+		//{
+		//	4() from A to C;
+		//}
+		//or
+		//{
+		//	3() from A to C;
+		//}
+		do Proto1Aux(A, C);
+	}
+}
+
+// Makes clear that TmergeT for any T should be OK
+aux global protocol Proto1Aux(role A, role C)
+{
+	choice at A
+	{
+		3() from A to C;
+	}
+	or
+	{
+		4() from A to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		2() from B to C;
+		3() from C to A;
+	}
+	or
+	{
+		4() from A to B;
+		2() from B to C;
+		5() from C to A;  // TODO: most general merge: coerce an external choice for A here -- less morally clear than, e.g., WADFEST restriction to branch-only merge though
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A {
+		buyer1(Int) from A to B;  // Total
+		(Int) from B to A;        // B will pay this much
+		buyer2(Int) from A to C;  // C will pay remainder
+	} or {
+		buyer1(Int) from A to C;  // Total
+		(Int) from C to A;        // C will pay this much
+		buyer2(Int) from A to B;  // B will pay remainder
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	..(syntactic) reachability tests
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to C;
+	}
+	or
+	{
+		2() from A to B;
+	}
+	3() from A to C;  // TODO: "optional": needs empty actions and "empty-removal" transformation
 }
 //*/
 
