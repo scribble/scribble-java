@@ -57,9 +57,12 @@ public class ScribParser
 					.filter((c) -> (c instanceof CommonErrorNode))
 					.map((c) -> (CommonErrorNode) c)
 					.collect(Collectors.toList());
-			if (errors.size() > 0)
+			if (errors.size() > 0)  // Antlr prints errors to System.err by default, but then attempts to carry on
+						// Should never get here now, Antlr displayRecognitionError overridden to force exit: Antlr error recovery means not all errors produce CommonErrorNode
 			{
-				throw new ScribParserException("Parsing error: " + errors);
+				//throw new ScribParserException("Parsing errors: " + errors);  // FIXME: improve feedback message
+				System.err.println("Aborting due to parsing errors.");
+				System.exit(1);
 			}
 		}
 		

@@ -61,19 +61,34 @@ module Test;
 // FIXME: I/O i/f name max length
 
 
-
 //*
+global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	1() from A t B;  // Testing Antlr error display overriding
+}
+//*/
+
+
+/*
 type <java> "java.lang.Integer" from "rt.jar" as Int;
 
 global protocol Proto1(role A, role B)
 {
 	choice at A
 	{
-		1() from A to B
+		1() from A to B;
 	}
 	or
 	{
-		1(Int) from A to B  // FIXME: choice payload
+		1(Int) from A to B;  // Testing bad payloads
 	}
 }
 //*/
