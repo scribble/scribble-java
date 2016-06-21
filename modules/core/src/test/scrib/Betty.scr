@@ -1,0 +1,168 @@
+module Betty;
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.String" from "rt.jar" as String;
+
+global protocol Proto1(role A, role B) {
+	123(Int, String) from A to B;
+}
+//*/
+
+
+//*
+global protocol Proto1(role A, role B, role C) {  // FIXME: exception
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+	} or {
+		3() from A to B;
+		4() from A to C;
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		buyer1(Int) from A to B;  // Total
+		(Int) from B to A;        // B will pay this much
+		buyer2(Int) from A to C;  // C will pay remainder
+	} or {
+		buyer1(Int) from A to C;  // Total
+		(Int) from C to A;        // C will pay this much
+		buyer2(Int) from A to B;  // B will pay remainder
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		1() from B to C;
+	} or {
+		//2() from A to B;
+		2() from B to A;
+		choice at B {
+			3() from B to C;
+		} or {
+			4() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
+// Counter example to completeness of safety for current WF
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		3() from B to C;
+		4() from A to C;
+	} or {
+		2() from A to B;
+		3() from B to C;
+		5() from A to C;  // FIXME: should be mergable as a branch at C?  but requires treating non-det as det (i.e. language equiv. vs. bisim?) -- in general, consider subsequent B and C interactions; but this exact example should be safe
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		3() from B to C;
+		4() from C to A;
+	} or {
+		2() from A to B;
+		3() from B to C;
+		5() from C to A;
+	}
+}
+//*/
+
+
+/*
+// Disable local choice subject
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+		3() from B to C;
+		4() from C to A;
+	} or {
+		2() from A to B;
+		3() from B to C;
+		4() from C to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		rec X {
+			1() from A to B;
+			1() from B to C;
+			continue X;
+		}
+	} or {
+		2() from A to B;
+		2() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		rec X {
+			1() from A to B;
+			continue X;
+		}
+	} or {
+		2() from A to B;
+		2() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		rec X {
+			1() from A to B;
+			continue X;
+		}
+	} or {
+		2() from A to B;
+	}
+	2() from C to B;
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	rec X {
+		choice at A {
+			1() from A to B;
+			continue X;
+		} or {
+			2() from A to B;
+			2() from B to C;
+		}
+	}
+}
+//*/
+

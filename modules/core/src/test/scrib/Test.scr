@@ -3459,6 +3459,8 @@ global protocol Proto1(role A, role B)
 	or
 	{
 		1(Int2) from A to B;  // B doesn't know to treat as Int1 or Int2
+		                      // here, payloads aren't considered as distinguishing
+		                      // (Syntactic MPST repeat labels not allowed)
 		2() from B to A;
 	}
 }
@@ -3479,7 +3481,8 @@ global protocol Proto1(role A, role B)
 	or
 	{
 		1() from A to B;
-		2(Int2) from B to A;
+		2(Int2) from B to A;  // (Syntactic MPST merge not defined)
+		                      // here, payloads are considered as distinguishing
 	}
 }
 //*/
