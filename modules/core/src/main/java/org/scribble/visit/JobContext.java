@@ -217,7 +217,7 @@ public class JobContext
 		this.minimised.put(fullname, graph);
 	}
 	
-	public EndpointGraph getMinimisedEndpointGraph(GProtocolName fullname, Role role)
+	public EndpointGraph getMinimisedEndpointGraph(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		//return getMinimisedEndpointGraphAux(Projector.projectFullProtocolName(fullname, role));
 		return getMinimisedEndpointGraphAux(fullname, role);
@@ -225,23 +225,16 @@ public class JobContext
 
   // Full projected name
 	//protected EndpointGraph getMinimisedEndpointGraphAux(LProtocolName fullname)
-	protected EndpointGraph getMinimisedEndpointGraphAux(GProtocolName fullname, Role role)
+	protected EndpointGraph getMinimisedEndpointGraphAux(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		LProtocolName fulllpn = Projector.projectFullProtocolName(fullname, role);
 
 		EndpointGraph minimised = this.minimised.get(fulllpn);
 		if (minimised == null)
 		{
-			try
-			{
-				String aut = runAut(getEndpointGraph(fullname, role).init.toAut(), fulllpn + ".aut");
-				minimised = new AutParser().parse(aut);
-				addMinimisedEndpointGraph(fulllpn, minimised);
-			}
-			catch (ScribbleException e)
-			{
-				throw new RuntimeException(e);
-			}
+			String aut = runAut(getEndpointGraph(fullname, role).init.toAut(), fulllpn + ".aut");
+			minimised = new AutParser().parse(aut);
+			addMinimisedEndpointGraph(fulllpn, minimised);
 		}
 		return minimised;
 	}

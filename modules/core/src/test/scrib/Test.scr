@@ -62,9 +62,14 @@ module Test;
 
 
 //*
-global protocol Proto1(role A, role B)
-{
-	1() from A to B;
+global protocol Proto1(role A, role B) {
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+	} or {
+		3() from A to B;
+		4() from A to C;
+	}
 }
 //*/
 
@@ -3391,6 +3396,8 @@ global protocol Proto1(role A, role B, role C)
 {
 	choice at A
 	{
+Also there is an arc notation of the form x!y() and x?y() how do these
+>> read?
 		1() from A to B;
 		2(Int1) from B to C;
 	}
