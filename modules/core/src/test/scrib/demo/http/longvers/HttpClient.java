@@ -23,6 +23,7 @@ import org.scribble.util.Caller;
 
 import demo.http.longvers.HttpLong.Http.Http;
 import demo.http.longvers.HttpLong.Http.channels.C.Http_C_1;
+import demo.http.longvers.HttpLong.Http.channels.C.Http_C_3;
 import demo.http.longvers.HttpLong.Http.channels.C.Http_C_4_Cases;
 import demo.http.longvers.HttpLong.Http.channels.C.Http_C_5;
 import demo.http.longvers.HttpLong.Http.channels.C.Http_C_5_Cases;
@@ -51,6 +52,66 @@ public class HttpClient
 
 	public void run() throws Exception
 	{
+		Http http = new Http();
+		try (SessionEndpoint<Http, C> client = new SessionEndpoint<>(http, Http.C, new HttpLongMessageFormatter()))
+		{
+			String host = "www.doc.ic.ac.uk"; int port = 80;
+			//String host = "localhost"; int port = 8080;
+		
+			client.connect(S, SocketChannelEndpoint::new, host, port);
+
+			doResponse(
+					doRequest(new Http_C_1(client), host)
+			);
+		}
+	}
+	
+	private Http_C_3 doRequest(Http_C_1 s1, String host) throws Exception
+	{
+		return s1.send(S, new RequestLine("/~rhu/", "1.1"))
+			.send(S, new Host(host))
+			.send(S, new Body(""));
+	}
+
+	private void doResponse(Http_C_3 s3) throws Exception
+	{
+		Http_C_4_Cases s4cases = s3.async(S, HTTPV).branch(S);
+		switch (s4cases.op)
+		{
+			case _200: doResponseAux(s4cases.receive(_200)); break;
+			case _404: doResponseAux(s4cases.receive(_404)); break;
+			default: throw new RuntimeException("[TODO]: " + s4cases.op);
+		}
+	}
+
+	private void doResponseAux(Http_C_5 s5) throws Exception
+	{
+		Http_C_5_Cases cases = s5.branch(S);
+		switch (cases.op)
+		{
+			case ACCEPTR:  doResponseAux(cases.receive(ACCEPTR));  break;
+			case CONTENTL: doResponseAux(cases.receive(CONTENTL)); break;
+			case CONTENTT: doResponseAux(cases.receive(CONTENTT)); break;
+			case DATE:     doResponseAux(cases.receive(DATE));     break;
+			case ETAG:     doResponseAux(cases.receive(ETAG));     break;
+			case LASTM:    doResponseAux(cases.receive(LASTM));    break;
+			case SERVER:   doResponseAux(cases.receive(SERVER));   break;
+			case STRICTTS: doResponseAux(cases.receive(STRICTTS)); break;
+			case VARY:     doResponseAux(cases.receive(VARY));     break;
+			case VIA:      doResponseAux(cases.receive(VIA));      break;
+			case BODY:
+			{
+				Buf<Body> buf_body = new Buf<>();
+				cases.receive(BODY, buf_body);
+				System.out.println(buf_body.val.getBody());
+				return;
+			}
+			default: throw new RuntimeException("[TODO]: " + cases.op);
+		}
+	}
+
+	public void run1() throws Exception
+	{
 		Buf<HttpVersion> b_vers = new Buf<>();
 		Buf<ContentLength> b_clen = new Buf<>();
 		Buf<ContentType> b_ctype = new Buf<>();
@@ -63,20 +124,20 @@ public class HttpClient
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;
 		
-			se.connect(Http.S, SocketChannelEndpoint::new, host, port);
-			
+			se.connect(S, SocketChannelEndpoint::new, host, port);
+
 			Http_C_1 s1 = new Http_C_1(se);
 
-			Http_C_4_Cases s4 =
+			Http_C_4_Cases s4cases =
 					s1.send(S, new RequestLine("/~rhu/", "1.1"))
 					  .send(S, new Host(host))
 					  .send(S, new Body(""))
 					  .receive(S, HTTPV, b_vers)
 					  .branch(S);
 			Http_C_5 s5 =  // S?{ 200: ..., 404: ..., ... }
-					  (s4.op == Branch_C_S_200__S_404_Enum._200) ? s4.receive(_200)
-					: (s4.op == Branch_C_S_200__S_404_Enum._404) ? s4.receive(_404)
-					: new Caller().call(() -> { throw new RuntimeException("Unknown status code: " + s4.op); });
+					  (s4cases.op == Branch_C_S_200__S_404_Enum._200) ? s4cases.receive(_200)
+					: (s4cases.op == Branch_C_S_200__S_404_Enum._404) ? s4cases.receive(_404)
+					: new Caller().call(() -> { throw new RuntimeException("Unknown status code: " + s4cases.op); });
 
 			Y: while (true)
 			{

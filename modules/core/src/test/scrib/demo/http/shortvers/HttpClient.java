@@ -28,15 +28,15 @@ public class HttpClient
 	public void run() throws Exception
 	{
 		Http http = new Http();
-		try (SessionEndpoint<Http, C> se = new SessionEndpoint<>(http, C, new HttpShortMessageFormatter()))
+		try (SessionEndpoint<Http, C> client = new SessionEndpoint<>(http, C, new HttpShortMessageFormatter()))
 		{
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;
 		
-			se.connect(S, SocketChannelEndpoint::new, host, port);
+			client.connect(S, SocketChannelEndpoint::new, host, port);
 			
 			Buf<Response> buf = new Buf<>();
-			new Http_C_1(se)
+			new Http_C_1(client)
 				.send(S, new Request("/~rhu/", "1.1", host))
 				//.send(S, new Response("1.1", "..body.."))
 				//.send(S, new Request("/~rhu/", "1.1", host))
