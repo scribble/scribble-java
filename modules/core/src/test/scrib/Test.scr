@@ -75,6 +75,22 @@ global protocol Proto1(role A, role B, role C) {
 
 
 /*
+// Counter example to completeness of safety for current WF
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		3() from B to C;
+		4() from A to C;
+	} or {
+		2() from A to B;
+		3() from B to C;
+		5() from A to C;  // FIXME: should be mergable as a branch at C? (yes, by ICALP13) -- but requires treating non-det as det (i.e. language equiv. vs. bisim? -- local language minimisation wrt. inputs only?) -- in general, consider subsequent B and C interactions; but this exact example should be safe
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B)
 {
 	1() from A t B;  // Testing Antlr error display overriding

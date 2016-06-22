@@ -7,6 +7,37 @@ module Fixme;
 
 
 /*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+		3() from B to C;
+		4() from C to A;
+	} or {
+		1b() from A to B;
+		3() from B to C;  // -nolocalchoicecheck to show orphans
+		4() from C to A;
+	}
+}
+// FIXME: wrong orphan detection (an extra state falsely identified)
+//*/
+
+
+/*
+global protocol Proto1(role A, role B) {
+	rec X {
+		choice at A {
+			1() from A to B;
+			continue X;
+		} or {
+			1() from A to B;  // FIXME: bug in unfair transform, this case is lost
+		}
+	}
+}
+//*/
+
+
+/*
 explicit global protocol Proto1(role A, role B)
 {
 	connect A to B;

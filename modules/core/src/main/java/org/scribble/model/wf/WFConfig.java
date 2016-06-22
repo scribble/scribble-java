@@ -389,7 +389,7 @@ public class WFConfig
 		//return Collections.emptySet();
 	}
 
-	// Generalised to include "unconnected" messages -- should unconnected messages be stuck instead?
+	// Generalised to include "unconnected" messages -- should unconnected messages be treated via stuck instead?
 	public Map<Role, Set<Send>> getOrphanMessages()
 	{
 		Map<Role, Set<Send>> res = new HashMap<>();

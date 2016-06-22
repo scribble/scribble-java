@@ -159,7 +159,7 @@ public class GlobalModelChecker extends ModuleContextVisitor
 			}
 			if (!errors.orphans.isEmpty())
 			{
-				errorMsg += "\n    Orphan messages: " + errors.orphans;
+				errorMsg += "\n    Orphan messages: " + errors.orphans;  // FIXME: add sender of orphan to error message 
 			}
 		}
 		job.debugPrintln("(" + fullname + ") Checked all states: " + count);
