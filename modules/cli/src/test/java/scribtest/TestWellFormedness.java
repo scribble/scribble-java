@@ -107,6 +107,7 @@ public class TestWellFormedness {
 		boolean noLiveness = false;
 		boolean minEfsm = false;
 		boolean fair = true;  // FIXME?
+		boolean noLocalChoiceSubjectCheck = false;
 
 		Path mainpath = Paths.get(filename);
 		List<Path> impaths = new ArrayList<Path>();
@@ -118,7 +119,7 @@ public class TestWellFormedness {
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		try
 		{
-			return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair);
+			return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck);
 		}
 		catch (ScribParserException e)
 		{

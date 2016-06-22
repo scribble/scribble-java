@@ -33,6 +33,7 @@ public class MainContext
 	public final boolean noLiveness;
 	public final boolean minEfsm;
 	public final boolean fair;
+	public final boolean noLocalChoiceSubjectCheck;
 	
 	public final ModuleName main;
 
@@ -49,7 +50,7 @@ public class MainContext
 	
 	// FIXME: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
 	//public MainContext(boolean jUnit, boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness)
-	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair) throws ScribParserException
+	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck) throws ScribParserException
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
@@ -57,6 +58,7 @@ public class MainContext
 		this.noLiveness = noLiveness;
 		this.minEfsm = minEfsm;
 		this.fair = fair;
+		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
 
 		this.antlrParser = new AntlrParser();
 		this.scribParser = new ScribParser();
@@ -114,6 +116,6 @@ public class MainContext
 	
 	public Job newJob()
 	{
-		return new Job(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair);
+		return new Job(this.debug, this.getParsedModules(), this.main, this.useOldWF, this.noLiveness, this.minEfsm, this.fair, this.noLocalChoiceSubjectCheck);
 	}
 }

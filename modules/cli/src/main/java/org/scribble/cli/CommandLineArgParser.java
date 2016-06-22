@@ -30,6 +30,7 @@ public class CommandLineArgParser
 	public static final String NO_LIVENESS_FLAG = "-nolive";
 	public static final String MIN_EFSM_FLAG = "-minfsm";
 	public static final String FAIR_FLAG = "-fair";
+	public static final String NO_LOCAL_CHOICE_SUBJECT_CHECK = "-nolocalchoicecheck";
 	
 	private static final Map<String, CommandLine.ArgFlag> UNIQUE_FLAGS = new HashMap<>();
 	{
@@ -41,6 +42,7 @@ public class CommandLineArgParser
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.OLD_WF_FLAG, CommandLine.ArgFlag.OLD_WF);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.MIN_EFSM_FLAG, CommandLine.ArgFlag.MIN_EFSM);
 		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.FAIR_FLAG, CommandLine.ArgFlag.FAIR);
+		CommandLineArgParser.UNIQUE_FLAGS.put(CommandLineArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK, CommandLine.ArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
 	}
 
 	private static final Map<String, CommandLine.ArgFlag> NON_UNIQUE_FLAGS = new HashMap<>();
@@ -193,6 +195,11 @@ public class CommandLineArgParser
 			case CommandLineArgParser.FAIR_FLAG:
 			{
 				this.parsed.put(CommandLine.ArgFlag.FAIR, new String[0]);
+				return i;
+			}
+			case CommandLineArgParser.NO_LOCAL_CHOICE_SUBJECT_CHECK:
+			{
+				this.parsed.put(CommandLine.ArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK, new String[0]);
 				return i;
 			}
 			default:

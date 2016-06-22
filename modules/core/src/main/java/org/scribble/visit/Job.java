@@ -29,12 +29,13 @@ public class Job
 	public final boolean noLiveness;
 	public final boolean minEfsm;  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 	public final boolean fair;
+	public final boolean noLocalChoiceSubjectCheck;
 	
 	private final JobContext jcontext;  // Mutable (Visitor passes replace modules)
 	
 	// Just take MainContext as arg? -- would need to fix Maven dependencies
 	//public Job(boolean jUnit, boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness)
-	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair)
+	public Job(boolean debug, Map<ModuleName, Module> parsed, ModuleName main, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck)
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
@@ -42,6 +43,7 @@ public class Job
 		this.noLiveness = noLiveness;
 		this.minEfsm = minEfsm;
 		this.fair = fair;
+		this.noLocalChoiceSubjectCheck = noLocalChoiceSubjectCheck;
 
 		this.jcontext = new JobContext(this, parsed, main);  // Single instance per Job and should never be shared
 	}
@@ -102,8 +104,11 @@ public class Job
 		runVisitorPassOnProjectedModules(ProtocolDeclContextBuilder.class);
 		runVisitorPassOnProjectedModules(RoleCollector.class);  // NOTE: doesn't collect from choice subjects (may be invalid until projected choice subjs fixed)
 		runVisitorPassOnProjectedModules(ProjectedChoiceDoPruner.class);
-		// Disable ProjectedChoiceSubjectFixer (local choice subject inference) for more general global WF
-		runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes that need DUMMY role occurrences to be fixed
+		if (!this.noLocalChoiceSubjectCheck)
+		{
+			// Disabling ProjectedChoiceSubjectFixer (local choice subject inference) goes towards a general global WF, but is currently unsound
+			runVisitorPassOnProjectedModules(ProjectedChoiceSubjectFixer.class);  // Must come before other passes that need DUMMY role occurrences to be fixed
+		}
 		runVisitorPassOnProjectedModules(ProjectedRoleDeclFixer.class);  // Possibly could do after inlining, and do role collection on the inlined version
 		runVisitorPassOnProjectedModules(ProtocolDefInliner.class);
 		runVisitorPassOnProjectedModules(InlinedProtocolUnfolder.class);

@@ -52,6 +52,7 @@ public class CommandLine //implements Runnable
 		NO_LIVENESS,
 		MIN_EFSM,  // Currently only affects EFSM output (i.e. -fsm, -dot) and API gen -- doesn't affect model checking
 		FAIR,
+		NO_LOCAL_CHOICE_SUBJECT_CHECK,
 		//PROJECTED_MODEL
 	}
 	
@@ -399,6 +400,7 @@ public class CommandLine //implements Runnable
 		boolean noLiveness = this.args.containsKey(ArgFlag.NO_LIVENESS);
 		boolean minEfsm = this.args.containsKey(ArgFlag.MIN_EFSM);
 		boolean fair = this.args.containsKey(ArgFlag.FAIR);
+		boolean noLocalChoiceSubjectCheck = this.args.containsKey(ArgFlag.NO_LOCAL_CHOICE_SUBJECT_CHECK);
 
 		Path mainpath = CommandLine.parseMainPath(this.args.get(ArgFlag.MAIN)[0]);
 		List<Path> impaths = this.args.containsKey(ArgFlag.PATH)
@@ -406,7 +408,7 @@ public class CommandLine //implements Runnable
 				: Collections.emptyList();
 		ResourceLocator locator = new DirectoryResourceLocator(impaths);
 		//return new MainContext(jUnit, debug, locator, mainpath, useOldWF, noLiveness);
-		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair);
+		return new MainContext(debug, locator, mainpath, useOldWF, noLiveness, minEfsm, fair, noLocalChoiceSubjectCheck);
 	}
 	
 	private static Path parseMainPath(String path)
