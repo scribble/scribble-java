@@ -25,12 +25,13 @@ public class FibClient {
 
 			Buf<Integer> i1 = new Buf<>(0);
 			Buf<Integer> i2 = new Buf<>(1);
-			new FibClient().fibo(new Adder_C_1(client), i1, i2, 10);
+			int N = 10;
+			new FibClient().fibo(new Adder_C_1(client), i1, i2, N);
 			System.out.println("C: " + i1.val);
 		}
 	}
 	
-	// Post: i1.val contains the i-th Fibonacci number
+	// Result: i1.val contains the N-th Fibonacci number
 	private EndSocket fibo(Adder_C_1 c1, Buf<Integer> i1, Buf<Integer> i2, int i) throws Exception {
 		//... c1.send(S, Add, i1.val, i1.val=i2.val) ...
 		
