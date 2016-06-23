@@ -59,9 +59,7 @@ public class Client {
 	}
 
 	
-	// subtyping demo?  add quit -- update select ehlo i/f
 
-	
 	private static <S, B extends Buf<?>> S printlnBuf(S s, B b) {
 		System.out.println(b.val);
 		return s;
