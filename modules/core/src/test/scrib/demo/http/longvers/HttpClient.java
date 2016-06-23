@@ -1,5 +1,6 @@
 package demo.http.longvers;
 
+import static demo.http.longvers.HttpLong.Http.Http.C;
 import static demo.http.longvers.HttpLong.Http.Http.ACCEPTR;
 import static demo.http.longvers.HttpLong.Http.Http.BODY;
 import static demo.http.longvers.HttpLong.Http.Http.CONTENTL;
@@ -53,7 +54,7 @@ public class HttpClient
 	public void run() throws Exception
 	{
 		Http http = new Http();
-		try (SessionEndpoint<Http, C> client = new SessionEndpoint<>(http, Http.C, new HttpLongMessageFormatter()))
+		try (SessionEndpoint<Http, C> client = new SessionEndpoint<>(http, C, new HttpLongMessageFormatter()))
 		{
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "localhost"; int port = 8080;
