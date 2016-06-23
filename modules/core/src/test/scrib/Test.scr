@@ -59,6 +59,7 @@ module Test;
 // TODO: test connect/wrap API gen for SMTP
 // FIXME: decouple branch API gen from I/O i/f's -- duplicate enum in concrrete states?
 // FIXME: I/O i/f name max length
+// TODO: MT/EDP servers
 
 
 //*
