@@ -1,0 +1,21 @@
+/**
+ * $ bin/scribblec.sh modules/core/src/test/scrib/demo/betty16/lec1/httpshort/HttpShort.scr -d modules/core/src/test/scrib/ -api Http S
+ */
+
+
+module demo.betty16.lec1.httpshort.HttpShort;
+
+
+sig <java> "demo.betty16.lec1.httpshort.message.client.Request"
+		from "demo/betty16/httpshort/message/Request.java"
+		as REQUEST;
+
+sig <java> "demo.betty16.lec1.httpshort.message.server.Response"
+		from "demo/betty16/shortvers/message/Response.java"
+		as RESPONSE;
+
+
+global protocol Http(role C, role S) {
+	REQUEST from C to S;
+	RESPONSE from S to C;
+}

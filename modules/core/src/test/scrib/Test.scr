@@ -60,6 +60,7 @@ module Test;
 // FIXME: decouple branch API gen from I/O i/f's -- duplicate enum in concrrete states?
 // FIXME: I/O i/f name max length
 // TODO: MT/EDP servers
+// TODO: fix bug in HTTP-short parsing (when not whole message is ready?)
 
 
 //*
