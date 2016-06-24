@@ -16,7 +16,7 @@ sig <java> "demo.betty16.lec1.httplong.message.client.Host"
 
 sig <java> "demo.betty16.lec1.httplong.message.Body"
 		from "demo/betty16/lec1/httplong/message/Body.java"
-		as BODY;
+		as BODY;  // <html> ... </html>
 
 sig <java> "demo.betty16.lec1.httplong.message.client.UserAgent"
 		from "demo/betty16/lec1/httplong/message/UserAgent.java"

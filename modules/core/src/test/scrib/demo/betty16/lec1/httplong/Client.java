@@ -58,8 +58,7 @@ public class Client {
 
 	private void doResponse(Http_C_3 c3) throws Exception {
 		Http_C_4_Cases cases = c3.async(S, HTTPV).branch(S);
-		switch (cases.op)
-		{
+		switch (cases.op) {
 			case _200: doResponseAux(cases.receive(_200)); break;
 			case _404: doResponseAux(cases.receive(_404)); break;
 			default: throw new RuntimeException("[TODO]: " + cases.op);
@@ -69,16 +68,16 @@ public class Client {
 	private void doResponseAux(Http_C_5 c5) throws Exception {
 		Http_C_5_Cases cases = c5.branch(S);
 		switch (cases.op) {
-			case ACCEPTR:  doResponseAux(cases.receive(ACCEPTR));  break;
-			case CONTENTL: doResponseAux(cases.receive(CONTENTL)); break;
-			case CONTENTT: doResponseAux(cases.receive(CONTENTT)); break;
-			case DATE:     doResponseAux(cases.receive(DATE));     break;
-			case ETAG:     doResponseAux(cases.receive(ETAG));     break;
-			case LASTM:    doResponseAux(cases.receive(LASTM));    break;
-			case SERVER:   doResponseAux(cases.receive(SERVER));   break;
-			case STRICTTS: doResponseAux(cases.receive(STRICTTS)); break;
-			case VARY:     doResponseAux(cases.receive(VARY));     break;
-			case VIA:      doResponseAux(cases.receive(VIA));      break;
+			case ACCEPTR:  doResponseAux(cases.receive(ACCEPTR));  return;
+			case CONTENTL: doResponseAux(cases.receive(CONTENTL)); return;
+			case CONTENTT: doResponseAux(cases.receive(CONTENTT)); return;
+			case DATE:     doResponseAux(cases.receive(DATE));     return;
+			case ETAG:     doResponseAux(cases.receive(ETAG));     return;
+			case LASTM:    doResponseAux(cases.receive(LASTM));    return;
+			case SERVER:   doResponseAux(cases.receive(SERVER));   return;
+			case STRICTTS: doResponseAux(cases.receive(STRICTTS)); return;
+			case VARY:     doResponseAux(cases.receive(VARY));     return;
+			case VIA:      doResponseAux(cases.receive(VIA));      return;
 			case BODY: {
 				Buf<Body> buf_body = new Buf<>();
 				cases.receive(BODY, buf_body);
