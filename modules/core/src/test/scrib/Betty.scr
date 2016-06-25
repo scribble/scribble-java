@@ -1,9 +1,11 @@
 module Betty;
 
+// TODO: separate into separate modules/packages
 
+
+/*
 type <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;
 
-// C = Consumer, P = Producer
 global protocol Negotiate(role C, role P) {
 	propose(SAP) from C to P;
 	rec X {
@@ -26,10 +28,7 @@ global protocol Negotiate(role C, role P) {
 		}
 	}
 }
-
-
-
-// TODO: separate into separate modules/packages
+//*/
 
 
 /*
@@ -50,6 +49,19 @@ global protocol Proto1(role A, role B, role C) {
 	} or {
 		3() from A to B;
 		4() from A to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+	} or {
+		4() from A to C;
+		3() from A to B;
 	}
 }
 //*/
