@@ -22,6 +22,7 @@ import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.betty16.lec1.httplong.HttpLong.Http.Http;
+import demo.betty16.lec1.httplong.HttpLong.Http.channels.C.EndSocket;
 import demo.betty16.lec1.httplong.HttpLong.Http.channels.C.Http_C_1;
 import demo.betty16.lec1.httplong.HttpLong.Http.channels.C.Http_C_3;
 import demo.betty16.lec1.httplong.HttpLong.Http.channels.C.Http_C_4_Cases;
@@ -65,24 +66,24 @@ public class Client {
 		}
 	}
 
-	private void doResponseAux(Http_C_5 c5) throws Exception {
+	private EndSocket doResponseAux(Http_C_5 c5) throws Exception {
 		Http_C_5_Cases cases = c5.branch(S);
 		switch (cases.op) {
-			case ACCEPTR:  doResponseAux(cases.receive(ACCEPTR));  return;
-			case CONTENTL: doResponseAux(cases.receive(CONTENTL)); return;
-			case CONTENTT: doResponseAux(cases.receive(CONTENTT)); return;
-			case DATE:     doResponseAux(cases.receive(DATE));     return;
-			case ETAG:     doResponseAux(cases.receive(ETAG));     return;
-			case LASTM:    doResponseAux(cases.receive(LASTM));    return;
-			case SERVER:   doResponseAux(cases.receive(SERVER));   return;
-			case STRICTTS: doResponseAux(cases.receive(STRICTTS)); return;
-			case VARY:     doResponseAux(cases.receive(VARY));     return;
-			case VIA:      doResponseAux(cases.receive(VIA));      return;
+			case ACCEPTR:  return doResponseAux(cases.receive(ACCEPTR)); 
+			case CONTENTL: return doResponseAux(cases.receive(CONTENTL));
+			case CONTENTT: return doResponseAux(cases.receive(CONTENTT));
+			case DATE:     return doResponseAux(cases.receive(DATE));    
+			case ETAG:     return doResponseAux(cases.receive(ETAG));    
+			case LASTM:    return doResponseAux(cases.receive(LASTM));   
+			case SERVER:   return doResponseAux(cases.receive(SERVER));  
+			case STRICTTS: return doResponseAux(cases.receive(STRICTTS));
+			case VARY:     return doResponseAux(cases.receive(VARY));    
+			case VIA:      return doResponseAux(cases.receive(VIA));     
 			case BODY: {
 				Buf<Body> buf_body = new Buf<>();
-				cases.receive(BODY, buf_body);
+				EndSocket end = cases.receive(BODY, buf_body);
 				System.out.println(buf_body.val.getBody());
-				return;
+				return end;
 			}
 			default: throw new RuntimeException("[TODO]: " + cases.op);
 		}

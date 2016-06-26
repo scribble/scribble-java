@@ -212,7 +212,9 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 					case Response.VARY: vary = msg.substring(i+1, j).trim(); break;
 					case Response.CONTENT_TYPE: contentT = msg.substring(i+1, j).trim(); break;
 					case Response.VIA: via = msg.substring(i+1, j).trim(); break;
-					default: throw new RuntimeException("Cannot parse header field: " + msg.substring(0, msg.indexOf('\r')));
+					default:
+						//throw new RuntimeException("Cannot parse header field: " + msg.substring(0, msg.indexOf('\r')));
+						System.err.println("[Warning] Attempting to skip over response field: " + header + "\n" + msg.substring(i+1, j).trim());
 				}
 				msg = msg.substring(j+2);
 			}
@@ -220,6 +222,8 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 		body = msg;
 		return new Response(httpv, ack, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body);
 	}
+
+	
 
 	// FIXME: delete
 	@Deprecated @Override

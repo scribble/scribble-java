@@ -21,6 +21,7 @@ public class Client {
 		Http http = new Http();
 		try (SessionEndpoint<Http, C> client = new SessionEndpoint<>(http, C, new HttpShortMessageFormatter())) {
 			String host = "www.doc.ic.ac.uk"; int port = 80;
+			//String host = "summerschool2016.behavioural-types.eu"; int port = 80;
 			//String host = "localhost"; int port = 8080;
 
 			client.connect(S, SocketChannelEndpoint::new, host, port);
@@ -36,6 +37,24 @@ public class Client {
 		
 		System.out.println("Response:\n" + buf.val);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	
 	
