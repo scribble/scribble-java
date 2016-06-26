@@ -3,7 +3,7 @@ package demo.betty16.lec1.httpshort.message;
 import org.scribble.net.ScribMessage;
 import org.scribble.sesstype.name.Op;
 
-import demo.http.shortvers.HttpShort.Http.Http;
+import demo.betty16.lec1.httpshort.HttpShort.Http.Http;
 
 public abstract class HttpShortMessage extends ScribMessage
 {
@@ -38,11 +38,11 @@ public abstract class HttpShortMessage extends ScribMessage
 	
 	protected static String getOpString(Op op)
 	{
-		if (op.equals(Http.REQUEST))
+		if (op.equals(Http.Request))
 		{
 			return HttpShortMessage.GET;
 		}
-		else if (op.equals(Http.RESPONSE))
+		else if (op.equals(Http.Response))
 		{
 			return HttpShortMessage.HTTP;
 		}

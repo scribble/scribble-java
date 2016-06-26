@@ -16,7 +16,7 @@ public class Request extends HttpShortMessage {
 	public static final String CONNECTION = "Connection";
 
 	public Request(String get, String http, String host, String userA, String accept, String acceptL, String acceptE, String dnt, String connection) {
-		super(Http.REQUEST, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection));
+		super(Http.Request, getHeadersAndBody(get, http, host, userA, accept, acceptL, acceptE, dnt, connection));
 	}
 	
 	public Request(String get, String http, String host) {

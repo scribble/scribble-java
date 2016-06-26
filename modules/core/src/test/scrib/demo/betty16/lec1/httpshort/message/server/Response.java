@@ -35,7 +35,7 @@ public class Response extends HttpShortMessage
 	public Response(String httpv, String ack, String date, String server, String strictTS, String lastMod,
 			String eTag, String acceptR, String contentL, String vary, String contentT, String via, String body)
 	{
-		super(Http.RESPONSE, getHeadersAndBody(
+		super(Http.Response, getHeadersAndBody(
 				httpv, ack, date, server, strictTS, lastMod, eTag, acceptR, contentL, vary, contentT, via, body));
 	}
 

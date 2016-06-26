@@ -1,7 +1,7 @@
 package demo.betty16.lec1.httpshort;
 
 import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.C;
-import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.REQUEST;
+import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.Request;
 import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.S;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class Server
 					se.accept(ss, C);
 				
 					Buf<Request> buf = new Buf<>();
-					Http_S_2 s2 = new Http_S_1(se).receive(C, REQUEST, buf);
+					Http_S_2 s2 = new Http_S_1(se).receive(C, Request, buf);
 
 					System.out.println("Request:\n" + buf.val);
 

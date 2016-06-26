@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import org.scribble.net.ScribMessage;
 import org.scribble.net.ScribMessageFormatter;
@@ -39,50 +40,47 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 			return null;
 		}
 
-		//int pos = bb.position();
-		//String front = new String(new byte[] { bb.get(pos), bb.get(pos + 1) }, HttpMessageFormatter.cs);
-		String curr = new String(bb.array(), HttpShortMessageFormatter.cs);
-
+		String curr = new String(Arrays.copyOf(bb.array(), bb.remaining()), HttpShortMessageFormatter.cs);
 		String endOfHeaders = HttpShortMessage.CRLF + HttpShortMessage.CRLF;
-		if (curr.contains(endOfHeaders))
+		if (!curr.contains(endOfHeaders))
 		{
-			if (curr.contains(Response.CONTENT_LENGTH))
-			{
-				int eoh = curr.indexOf(endOfHeaders);
-				if (eoh == -1)
-				{
-					return null;
-				}
-				String contentLenSplit = curr.substring(curr.indexOf(Response.CONTENT_LENGTH));
-				int len = Integer.parseInt(contentLenSplit.substring(Response.CONTENT_LENGTH.length()+2, contentLenSplit.indexOf('\r')).trim());
-				String body = curr.substring(eoh+4);  // FIXME: could be index out of bounds
-				if (body.length() < len + 2)
-				{
-					//bb.compact();
-					return null;
-				}
-				byte[] bs = new byte[bb.remaining()];  // FIXME: hardcoded Response parsing based on presence of Content-Length
-				bb.get(bs);
-				bb.compact();
-				return parseResponse(new String(bs, HttpShortMessageFormatter.cs));
-			}
-			else
-			{
-				//if (!curr.endsWith(endOfHeaders))
-				/*if (!curr.endsWith("\r\n"))  // FIXME: terminal null char?
-				{
-					// FIXME: unsound
-					System.out.println("111:\n" + curr.replace("\r", "\\r").replace("\n", "\\n\r\n").replace(" ", "_"));
-					//System.out.println("111: " + (int)curr.charAt(curr.length()-1));
-					throw new IOException("No Content-Length specified (Transfer-Encoding not supported).");
-				}*/
-				byte[] bs = new byte[bb.remaining()];
-				bb.get(bs);
-				bb.compact();
-				return parseRequest(new String(bs, HttpShortMessageFormatter.cs));  // FIXME: assuming empty-body Request if no Content-Length
-			}
+			bb.compact();
+			return null;
 		}
-		return null;
+
+		if (curr.contains(Response.CONTENT_LENGTH))
+		{
+			int eoh = curr.indexOf(endOfHeaders);
+			if (eoh == -1)
+			{
+				bb.compact();
+				return null;
+			}
+			String contentLenSplit = curr.substring(curr.indexOf(Response.CONTENT_LENGTH));
+			int len = Integer.parseInt(contentLenSplit.substring(Response.CONTENT_LENGTH.length()+2, contentLenSplit.indexOf('\r')).trim());
+			if (curr.length() < eoh+4)
+			{
+				bb.compact();
+				return null;
+			}
+			String body = curr.substring(eoh+4);
+			if (body.getBytes(HttpShortMessageFormatter.cs).length < len)
+			{
+				bb.compact();
+				return null;
+			}
+			byte[] bs = new byte[bb.remaining()];  // FIXME: hardcoded Response parsing based on presence of Content-Length
+			bb.get(bs);
+			bb.compact();
+			return parseResponse(new String(bs, HttpShortMessageFormatter.cs));
+		}
+		else
+		{
+			byte[] bs = new byte[bb.remaining()];
+			bb.get(bs);
+			bb.compact();
+			return parseRequest(new String(bs, HttpShortMessageFormatter.cs));  // FIXME: assuming empty-body Request if no Content-Length
+		}
 	}
 
 	// Assumes no body
@@ -145,7 +143,6 @@ public class HttpShortMessageFormatter implements ScribMessageFormatter
 		{
 			throw new RuntimeException("Shouldn't get in here: " + msg);
 		}
-		System.out.println("111: " + get + ", " +  http + ", " +  host + ", " +  userA);
 		return new Request(get, http, host, userA, accept, acceptL, acceptE, dnt, connection);
 	}
 	

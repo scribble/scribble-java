@@ -1,7 +1,7 @@
 package demo.betty16.lec1.httpshort;
 
 import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.C;
-import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.RESPONSE;
+import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.Response;
 import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.S;
 
 import org.scribble.net.Buf;
@@ -32,7 +32,7 @@ public class Client {
 		Buf<Response> buf = new Buf<>();
 
 		c.send(S, new Request("/~rhu/", "1.1", host))
-		 .receive(S, RESPONSE, buf);
+		 .receive(S, Response, buf);
 		
 		System.out.println("Response:\n" + buf.val);
 	}

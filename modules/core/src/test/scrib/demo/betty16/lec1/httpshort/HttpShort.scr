@@ -8,14 +8,14 @@ module demo.betty16.lec1.httpshort.HttpShort;
 
 sig <java> "demo.betty16.lec1.httpshort.message.client.Request"
 		from "demo/betty16/httpshort/message/Request.java"
-		as REQUEST;
+		as Request;
 
 sig <java> "demo.betty16.lec1.httpshort.message.server.Response"
 		from "demo/betty16/shortvers/message/Response.java"
-		as RESPONSE;
+		as Response;
 
 
 global protocol Http(role C, role S) {
-	REQUEST from C to S;
-	RESPONSE from S to C;
+	Request from C to S;
+	Response from S to C;
 }
