@@ -1,0 +1,70 @@
+/**
+ * E.g.
+ * 
+ * scribblec.sh modules/core/src/test/scrib/demo/betty16/lec1/nego/Negotiate.scr -fsm Nego1 C 
+ */
+
+
+module demo.betty16.lec1.nego.Negotiate;
+
+
+type <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;
+
+
+// C = Consumer, P = Producer
+global protocol Nego1(role C, role P) {
+	propose(SAP) from C to P;
+	rec X {
+		choice at P {
+			accpt() from P to C;
+			confirm() from C to P;
+		} or {
+			reject() from P to C;
+		} or {
+			propose(SAP) from P to C;
+			choice at C {
+				accpt() from C to P;
+				confirm() from P to C;
+			} or {
+				reject() from C to P;
+			} or {
+				propose(SAP) from C to P;
+				continue X;
+			}
+		}
+	}
+}
+
+
+global protocol Nego2(role C, role P)
+{
+	propose(SAP) from C to P;
+	do Nego2Aux(P, C);
+}
+
+aux global protocol Nego2Aux(role A, role B)
+{
+	choice at A {
+		accpt() from A to B;
+		confirm() from B to A;
+	} or {
+		reject() from A to B;
+	} or {
+		propose(SAP) from A to B;
+		do Nego2Aux(B, A);
+	}
+}
+
+
+global protocol Nego3(role C, role P)
+{
+	propose(SAP) from C to P;
+	choice at P {
+		accpt() from P to C;
+		confirm() from C to P;
+	} or {
+		reject() from P to C;
+	} or {
+		do Nego3(P, C);
+	}
+}
