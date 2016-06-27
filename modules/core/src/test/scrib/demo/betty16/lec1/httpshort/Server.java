@@ -20,30 +20,16 @@ import demo.betty16.lec1.httpshort.message.HttpShortMessageFormatter;
 import demo.betty16.lec1.httpshort.message.client.Request;
 import demo.betty16.lec1.httpshort.message.server.Response;
 
-public class Server
-{
-	public Server()
-	{
+public class Server {
 
-	}
-
-	public static void main(String[] args) throws IOException
-	{
-		try (ScribServerSocket ss = new SocketChannelServer(8080))
-		{
-			while (true)	
-			{
+	public static void main(String[] args) throws IOException {
+		try (ScribServerSocket ss = new SocketChannelServer(8080)) {
+			while (true)	{
 				Http http = new Http();
-				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, S, new HttpShortMessageFormatter()))
-				{
-					se.accept(ss, C);
+				try (SessionEndpoint<Http, S> server = new SessionEndpoint<>(http, S, new HttpShortMessageFormatter())) {
+					server.accept(ss, C);
 				
-					Buf<Request> buf = new Buf<>();
-					Http_S_2 s2 = new Http_S_1(se).receive(C, Request, buf);
-
-					System.out.println("Request:\n" + buf.val);
-
-					s2.send(C, new Response("1.1", "<html><body>Hello</body></html>"));
+					run(new Http_S_1(server));
 				}
 				catch (IOException | ClassNotFoundException | ScribbleRuntimeException e)
 				{
@@ -51,5 +37,13 @@ public class Server
 				}
 			}
 		}
+	}
+	
+	private static void run(Http_S_1 s1) throws ClassNotFoundException, ScribbleRuntimeException, IOException {
+		Buf<Request> buf = new Buf<>();
+
+		Http_S_2 s2 = s1.receive(C, Request, buf);
+		System.out.println("Request:\n" + buf.val);
+		s2.send(C, new Response("1.1", "<html><body>Hello, World!</body></html>"));
 	}
 }
