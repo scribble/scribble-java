@@ -1,0 +1,10 @@
+module demo.betty16.lec1.misc.Recursion2;
+
+
+global protocol Proto1(role A, role B) {
+	rec X {
+		1() from A to B;
+		continue X;
+	}
+	2() from A to B;
+}

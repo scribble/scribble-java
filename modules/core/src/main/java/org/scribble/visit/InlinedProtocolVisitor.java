@@ -40,7 +40,7 @@ public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisito
 		ProtocolDef<?> inlined = ((ProtocolDefDel) pd.del()).getInlinedProtocolDef();
 		if (inlined == null)
 		{
-			throw new RuntimeException("InlineProtocolVisitor error: " + pd);
+			throw new ScribbleException("InlineProtocolVisitor error: " + pd);  // E.g. -fsm when inconsistent choice subjects
 		}
 		
 		/*if (this instanceof EndpointGraphBuilder)

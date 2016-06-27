@@ -40,6 +40,6 @@ public interface ModuleLoader
 	 * @return The module, or null if not found
 	 * @throws ScribParserException 
 	 */
-	public Pair<Resource, Module> loadModule(ModuleName modname) throws ScribParserException;
+	public Pair<Resource, Module> loadModule(ModuleName modname) throws ScribParserException, ScribbleException;
 }
 

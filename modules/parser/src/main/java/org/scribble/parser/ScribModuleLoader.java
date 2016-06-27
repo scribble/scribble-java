@@ -18,6 +18,7 @@ package org.scribble.parser;
 
 import org.scribble.ast.Module;
 import org.scribble.main.DefaultModuleLoader;
+import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.Resource;
 import org.scribble.main.resource.ResourceLocator;
 import org.scribble.sesstype.name.ModuleName;
@@ -41,7 +42,7 @@ public class ScribModuleLoader extends DefaultModuleLoader //implements ModuleLo
 	}
 
 	@Override
-	public Pair<Resource, Module> loadModule(ModuleName modname) throws ScribParserException
+	public Pair<Resource, Module> loadModule(ModuleName modname) throws ScribParserException, ScribbleException
 	{
 		Pair<Resource, Module> cached = super.loadModule(modname);
 		if (cached != null)

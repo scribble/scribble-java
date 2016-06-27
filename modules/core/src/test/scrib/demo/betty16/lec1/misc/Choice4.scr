@@ -1,0 +1,11 @@
+module demo.betty16.lec1.misc.Choice4;
+
+
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+	} or {
+		3() from A to B;
+	}
+}

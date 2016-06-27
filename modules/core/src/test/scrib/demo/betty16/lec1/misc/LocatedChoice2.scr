@@ -1,0 +1,14 @@
+module demo.betty16.lec1.misc.LocatedChoice2;
+
+
+global protocol Proto1(role A, role B, role C) {
+	choice at A {
+		buyer1(Int) from A to B;  // Total
+		(Int) from B to A;        // B will pay this much
+		buyer2(Int) from A to C;  // C will pay remainder
+	} or {
+		buyer1(Int) from A to C;  // Total
+		(Int) from C to A;        // C will pay this much
+		buyer2(Int) from A to B;  // B will pay remainder
+	}
+}

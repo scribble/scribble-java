@@ -392,7 +392,7 @@ public class CommandLine //implements Runnable
 		return mc.newJob();
 	}
 
-	private MainContext newMainContext() throws ScribParserException
+	private MainContext newMainContext() throws ScribParserException, ScribbleException
 	{
 		//boolean jUnit = this.args.containsKey(ArgFlag.JUNIT);
 		boolean debug = this.args.containsKey(ArgFlag.VERBOSE);

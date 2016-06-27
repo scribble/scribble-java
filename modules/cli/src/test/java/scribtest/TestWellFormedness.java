@@ -100,7 +100,7 @@ public class TestWellFormedness {
 	}
 
 	// Duplicated from CommandLine
-	private MainContext newMainContext()
+	private MainContext newMainContext() throws ScribbleException
 	{
 		boolean debug = false;
 		boolean useOldWF = false;

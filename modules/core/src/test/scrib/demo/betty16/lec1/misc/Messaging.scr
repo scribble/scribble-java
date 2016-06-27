@@ -1,0 +1,15 @@
+module demo.betty16.lec1.misc.Messaging;
+
+
+type <java> "java.lang.Integer" from "rt.jar" as Int;
+type <java> "java.lang.String" from "rt.jar" as String;
+
+
+global protocol Proto1(role A, role B) {
+	123(Int, String) from A to B;
+}
+
+
+global protocol Proto2(role A, role B) {
+	() from A to B;
+}

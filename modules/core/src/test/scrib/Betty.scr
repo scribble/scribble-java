@@ -1,7 +1,5 @@
 module Betty;
 
-// TODO: separate into separate modules/packages
-
 
 /*
 type <java> "test.nego.SAP" from "test/nego/SAP.java" as SAP;
@@ -260,7 +258,7 @@ global protocol Proto1(role A, role B, role C, role D) {
 //*/
 
 
-//*
+/*
 global protocol Proto1(role A, role B) {
 	rec X {
 		choice at A {

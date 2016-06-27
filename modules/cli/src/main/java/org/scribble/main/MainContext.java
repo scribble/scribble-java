@@ -50,7 +50,7 @@ public class MainContext
 	
 	// FIXME: make Path abstract as e.g. URI -- locator is abstract but Path is coupled to concrete DirectoryResourceLocator
 	//public MainContext(boolean jUnit, boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness)
-	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck) throws ScribParserException
+	public MainContext(boolean debug, ResourceLocator locator, Path mainpath, boolean useOldWF, boolean noLiveness, boolean minEfsm, boolean fair, boolean noLocalChoiceSubjectCheck) throws ScribParserException, ScribbleException
 	{
 		//this.jUnit = jUnit;
 		this.debug = debug;
@@ -65,7 +65,7 @@ public class MainContext
 		this.locator = locator; 
 		this.loader = new ScribModuleLoader(this.locator, this.antlrParser, this.scribParser);
 
-		Pair<Resource, Module> p = loadMainModule(mainpath);
+		Pair<Resource, Module> p = loadMainModule(mainpath);  // FIXME: rename exceptions
 		this.main = p.right.getFullModuleName();
 		
 		loadAllModules(p);
@@ -77,7 +77,7 @@ public class MainContext
 	}
 	
 	// FIXME: checking main module resource exists at specific location should be factored out to front-end (e.g. CommandLine) -- main module resource is specified at local front end level of abstraction, while MainContext uses abstract resource loading
-	private Pair<Resource, Module> loadMainModule(Path mainpath) throws ScribParserException
+	private Pair<Resource, Module> loadMainModule(Path mainpath) throws ScribParserException, ScribbleException
 	{
 		//Pair<Resource, Module> p = this.loader.loadMainModule(mainpath);
 		Resource res = DirectoryResourceLocator.getResourceByFullPath(mainpath);  // FIXME: hardcoded to DirectoryResourceLocator -- main module loading should be factored out to front end (e.g. CommandLine)
@@ -87,18 +87,18 @@ public class MainContext
 	}
 	
 	// Hacky? But not Scribble tool's job to check nested directory location of module fully corresponds to the fullname of module? Cf. Java classes
-	private void checkMainModuleName(Path mainpath, Module main)
+	private void checkMainModuleName(Path mainpath, Module main) throws ScribbleException
 	{
 		String path = mainpath.toString();  // FIXME: hack
 		// FileSystems.getDefault().getSeparator() ?
 		String tmp = path.substring((path.lastIndexOf(File.separator) == -1) ? 0 : path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.'));
 		if (!tmp.equals(main.getFullModuleName().getSimpleName().toString()))  // ModuleName.toString hack?
 		{
-			throw new RuntimeException("Simple module name at path " + path + " mismatch: " + main.getFullModuleName());
+			throw new ScribbleException("Simple module name at path " + path + " mismatch: " + main.getFullModuleName());
 		}
 	}
 
-	private void loadAllModules(Pair<Resource, Module> module) throws ScribParserException
+	private void loadAllModules(Pair<Resource, Module> module) throws ScribParserException, ScribbleException
 	{
 		this.parsed.put(module.right.getFullModuleName(), module);
 		for (ImportDecl<?> id : module.right.getImportDecls())

@@ -48,7 +48,7 @@ public abstract class DefaultModuleLoader implements ModuleLoader
 	 * {@inheritDoc}
 	 * @throws ScribParserException 
 	 */
-	public Pair<Resource, Module> loadModule(ModuleName modname) throws ScribParserException
+	public Pair<Resource, Module> loadModule(ModuleName modname) throws ScribParserException, ScribbleException
 	{
 		return (_modules.get(modname));
 	}
