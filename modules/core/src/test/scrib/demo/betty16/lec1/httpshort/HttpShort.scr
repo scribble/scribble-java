@@ -1,5 +1,5 @@
 /**
- * $ bin/scribblec.sh modules/core/src/test/scrib/demo/betty16/lec1/httpshort/HttpShort.scr -d modules/core/src/test/scrib/ -api Http S
+ * $ scribblec.sh modules/core/src/test/scrib/demo/betty16/lec1/httpshort/HttpShort.scr -d modules/core/src/test/scrib/ -api Http S
  */
 
 

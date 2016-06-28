@@ -25,16 +25,19 @@ public class Client {
 			//String host = "localhost"; int port = 8080;
 
 			client.connect(S, SocketChannelEndpoint::new, host, port);
-			new Client().run(new Http_C_1(client), host);
+			new Client().run(client, host);
 		}
 	}
 
-	private void run(Http_C_1 c, String host) throws Exception {
+	private void run(SessionEndpoint<Http, C> client, String host) throws Exception {
 		Buf<Response> buf = new Buf<>();
+		Http_C_1 c = new Http_C_1(client);
+
 
 		c.send(S, new Request("/~rhu/", "1.1", host))
 		 .receive(S, Response, buf);
 		
+
 		System.out.println("Response:\n" + buf.val);
 	}
 
