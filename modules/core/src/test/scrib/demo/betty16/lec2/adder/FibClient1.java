@@ -25,8 +25,9 @@ public class FibClient1 {
 
 			Buf<Integer> i1 = new Buf<>(0);
 			Buf<Integer> i2 = new Buf<>(1);
-			new FibClient1().fibo(new Adder_C_1(client), i1, i2, 10);
-			System.out.println("C: " + i1.val);
+			int N = 10;
+			new FibClient1().fibo(new Adder_C_1(client), i1, i2, N);
+			System.out.println(N + ": " + i1.val);
 		}
 	}
 	

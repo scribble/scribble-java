@@ -19,3 +19,15 @@ global protocol Http(role C, role S) {
 	Request from C to S;
 	Response from S to C;
 }
+
+
+
+
+
+
+
+
+
+
+
+

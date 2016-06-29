@@ -34,10 +34,10 @@ public class Client4 {
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (SessionEndpoint<Smtp, C> client = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
 		{
-			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
-			new Client4().run(new Smtp_C_1(se));
+			client.connect(S, SocketChannelEndpoint::new, host, port);
+			new Client4().run(new Smtp_C_1(client));
 		}
 	}
 

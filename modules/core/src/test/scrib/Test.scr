@@ -64,13 +64,31 @@ module Test;
 
 
 //*
-global protocol Proto1(role A, role B, role C) {
-	choice at A {
-		1() from A to B;
-		2() from A to C;
-	} or {
-		3() from A to B;
-		4() from B to C;
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		rec X
+		{
+			1() from A to B;
+			continue X;
+		}
+	}
+	or
+	{
+		2() from A to B;
+	}
+	3()	from C to A;
+	3()	from C to A;  // Role-progress violation for C under WF_1
+	choice at A
+	{
+		4() from A to B;
+		5() from B to A;
+	}
+	or
+	{
+		4() from A to B;
+		6() from B to A;
 	}
 }
 //*/

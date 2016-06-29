@@ -171,8 +171,8 @@ global protocol Proto(role A, role B, role C)
 		2() from B to C;
 	}
 	3() from A to C;
-	//3() from A to C;
-	//...  // Dragons
+	//3() from A to C;  // WF_1 will raise an "incorrect" role-progress violation for A (but safely conservative? i.e. just incompleteness of WF?)
+	//...  // Dragons: won't be visited via 1() ...but will be visited via 2()? is that enough?
 }
 //*/
 

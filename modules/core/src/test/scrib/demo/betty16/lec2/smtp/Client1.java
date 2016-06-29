@@ -1,7 +1,7 @@
 package demo.betty16.lec2.smtp;
 
-import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp.S;
 import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp.C;
+import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp.S;
 import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp._220;
 import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp._250;
 import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp._250d;
@@ -13,6 +13,7 @@ import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.betty16.lec2.smtp.Smtp.Smtp.Smtp;
+import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.EndSocket;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_2;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_3;
@@ -36,17 +37,18 @@ public class Client1
 
 		Smtp smtp = new Smtp();
 		try (SessionEndpoint<Smtp, C> client = new SessionEndpoint<>(smtp, C, new SmtpMessageFormatter())) {
-			client.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
+			client.connect(S, SocketChannelEndpoint::new, host, port);
 			new Client1().run(new Smtp_C_1(client));
 		}
 	}
 
-	private void run(Smtp_C_1 c1) throws Exception {
-		doInit(
-				doStartTls(
-						doInit(c1.async(S, _220)))
-		)
-		.send(S, new Quit());
+	private EndSocket run(Smtp_C_1 c1) throws Exception {
+		return
+			doInit(
+					doStartTls(
+							doInit(c1.async(S, _220)))
+			)
+			.send(S, new Quit());
 	}
 	
 	private Smtp_C_4 doInit(Smtp_C_2 c2) throws Exception {

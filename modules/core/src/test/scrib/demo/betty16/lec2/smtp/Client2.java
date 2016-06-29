@@ -13,6 +13,7 @@ import org.scribble.net.session.SessionEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.betty16.lec2.smtp.Smtp.Smtp.Smtp;
+import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.EndSocket;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
@@ -34,32 +35,34 @@ public class Client2 {
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, C, new SmtpMessageFormatter())) {
-			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
-			new Client2().run(new Smtp_C_1(se));
+		try (SessionEndpoint<Smtp, C> client = new SessionEndpoint<>(smtp, C, new SmtpMessageFormatter())) {
+			client.connect(S, SocketChannelEndpoint::new, host, port);
+			new Client2().run(new Smtp_C_1(client));
 		}
 	}
 
-	private void run(Smtp_C_1 c1) throws Exception {
-		doInit(
-				LinearSocket.wrapClient(
-						doInit(c1.async(S, _220)).to(Select_C_S_StartTls.cast)
-							.send(S, new StartTls()).to(Receive_C_S_220.cast)
-							.async(S, _220).to(Select_C_S_Ehlo.cast)
-				, S, SSLSocketChannelWrapper::new)
-		)
-		.to(Select_C_S_Quit.cast)
-		.send(S, new Quit());
+	private EndSocket run(Smtp_C_1 c1) throws Exception {
+		return
+			doInit(
+					LinearSocket.wrapClient(
+							doInit(c1.async(S, _220)).to(Select_C_S_StartTls.cast)
+								.send(S, new StartTls()).to(Receive_C_S_220.cast)
+								.async(S, _220).to(Select_C_S_Ehlo.cast)
+					, S, SSLSocketChannelWrapper::new)
+			)
+			.to(Select_C_S_Quit.cast)
+			.send(S, new Quit())
+			.to(EndSocket.cast);
 	}
 
-	private Succ_In_S_250 doInit(Select_C_S_Ehlo<?> s) throws Exception {
+	private Succ_In_S_250 doInit(Select_C_S_Ehlo<?> c) throws Exception {
 		Branch_C_S_250__S_250d<?, ?> b =
-				s.send(S, new Ehlo("test")).to(Branch_C_S_250__S_250d.cast);
+				c.send(S, new Ehlo("test")).to(Branch_C_S_250__S_250d.cast);
 		Buf<Object> buf = new Buf<>();
-		for (Case_C_S_250__S_250d<?, ?> c = b.branch(S); true; c = b.branch(S)) {
-			switch (c.getOp()) {
-				case _250:  return printlnBuf(c.receive(S, _250, buf), buf);
-				case _250d: b = c.receive(S, _250d, buf).to(Branch_C_S_250__S_250d.cast); System.out.println(buf.val); break;
+		for (Case_C_S_250__S_250d<?, ?> cases = b.branch(S); true; cases = b.branch(S)) {
+			switch (cases.getOp()) {
+				case _250:  return printlnBuf(cases.receive(S, _250, buf), buf);
+				case _250d: b = cases.receive(S, _250d, buf).to(Branch_C_S_250__S_250d.cast); System.out.println(buf.val); break;
 			}
 		}
 	}
