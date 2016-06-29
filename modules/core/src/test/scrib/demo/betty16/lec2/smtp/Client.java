@@ -35,7 +35,7 @@ public class Client {
 	}
 
 	private EndSocket run(Smtp_C_1 c1) throws Exception {
-		//*
+		/*
 		return
 			doInit(
 					doStartTls(
