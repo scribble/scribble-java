@@ -77,10 +77,11 @@ public class Client3 {
 	S2 doInit(Select_C_S_Ehlo<S1> c) throws Exception {
 		S1 b = c.send(S, new Ehlo("test"));
 		Buf<Object> buf = new Buf<>();
-		for (Case_C_S_250__S_250d<S2, S1> cases = b.branch(S); true; cases = b.branch(S)) {
+		while (true) {
+			Case_C_S_250__S_250d<S2, S1> cases = b.branch(S);
 			switch (cases.getOp()) {
-				case _250:  return printlnBuf(cases.receive(S, _250, buf), buf);
 				case _250d: b = cases.receive(S, _250d, buf); System.out.print(buf.val); break;
+				case _250:  return printlnBuf(cases.receive(S, _250, buf), buf);
 			}
 		}
 	}

@@ -1,8 +1,6 @@
 package demo.betty16.lec2.smtp;
 
-import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp.C;
-import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp.S;
-import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp._220;
+import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp.*;
 
 import org.scribble.net.scribsock.LinearSocket;
 import org.scribble.net.session.SSLSocketChannelWrapper;
@@ -42,18 +40,20 @@ public class Client {
 							doInit(c1.async(S, _220)))
 			)
 			.send(S, new Quit());
-		//*/
+		/*/
 
 		throw new RuntimeException("[TODO]: ");
 
+		//*/
 	}
 
 	private 
 	//  succ(S?250)  <-  S!{ Ehlo: ?? }
 	Succ_In_S_250 doInit(Select_C_S_Ehlo<?> c) throws Exception {
 		
+		
 		throw new RuntimeException("[TODO]: ");
-
+		
 	}
 
 	private Smtp_C_6 doStartTls(Smtp_C_4 c4) throws Exception {
