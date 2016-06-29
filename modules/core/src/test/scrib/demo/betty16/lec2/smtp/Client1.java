@@ -64,10 +64,10 @@ public class Client1
 	}
 
 	private Smtp_C_6 doStartTls(Smtp_C_4 c4) throws Exception {
-		return LinearSocket.wrapClient(c4
-				
-					.send(S, new StartTls())
-					.async(S, _220)
+		return
+				LinearSocket.wrapClient(
+						c4.send(S, new StartTls())
+							.async(S, _220)
 				, S, SSLSocketChannelWrapper::new);
 	}
 

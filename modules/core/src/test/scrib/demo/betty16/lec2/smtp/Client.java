@@ -1,8 +1,9 @@
 package demo.betty16.lec2.smtp;
 
-import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp.*;
+import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp.C;
+import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp.S;
+import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp._220;
 
-import org.scribble.net.Buf;
 import org.scribble.net.scribsock.LinearSocket;
 import org.scribble.net.session.SSLSocketChannelWrapper;
 import org.scribble.net.session.SessionEndpoint;
@@ -11,13 +12,12 @@ import org.scribble.net.session.SocketChannelEndpoint;
 import demo.betty16.lec2.smtp.Smtp.Smtp.Smtp;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.EndSocket;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
-import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
-import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
+import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
+import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_6;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import demo.betty16.lec2.smtp.Smtp.Smtp.roles.C;
 import demo.betty16.lec2.smtp.message.SmtpMessageFormatter;
-import demo.betty16.lec2.smtp.message.client.Ehlo;
 import demo.betty16.lec2.smtp.message.client.Quit;
 import demo.betty16.lec2.smtp.message.client.StartTls;
 
@@ -35,14 +35,11 @@ public class Client {
 	}
 
 	private EndSocket run(Smtp_C_1 c1) throws Exception {
-		/*
+		//*
 		return
 			doInit(
-					LinearSocket.wrapClient(
-							doInit(c1.async(S, _220))
-								.send(S, new StartTls())
-								.async(S, _220)
-					, S, SSLSocketChannelWrapper::new)
+					doStartTls(
+							doInit(c1.async(S, _220)))
 			)
 			.send(S, new Quit());
 		//*/
@@ -57,5 +54,13 @@ public class Client {
 		
 		throw new RuntimeException("[TODO]: ");
 
+	}
+
+	private Smtp_C_6 doStartTls(Smtp_C_4 c4) throws Exception {
+		return
+				LinearSocket.wrapClient(
+						c4.send(S, new StartTls())
+							.async(S, _220)
+				, S, SSLSocketChannelWrapper::new);
 	}
 }

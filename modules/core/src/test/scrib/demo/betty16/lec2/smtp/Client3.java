@@ -15,6 +15,8 @@ import org.scribble.net.session.SocketChannelEndpoint;
 import demo.betty16.lec2.smtp.Smtp.Smtp.Smtp;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.EndSocket;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_1;
+import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_4;
+import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.Smtp_C_6;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Branch_C_S_250__S_250d;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Case_C_S_250__S_250d;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
@@ -41,11 +43,8 @@ public class Client3 {
 	private EndSocket run(Smtp_C_1 c1) throws Exception {
 		return
 			doInit(
-					LinearSocket.wrapClient(
-							doInit(c1.async(S, _220))
-								.send(S, new StartTls())
-								.async(S, _220)
-					, S, SSLSocketChannelWrapper::new)
+					doStartTls(
+							doInit(c1.async(S, _220)))
 			)
 			.send(S, new Quit());
 	}
@@ -86,6 +85,14 @@ public class Client3 {
 		}
 	}
 	//*/
+
+	private Smtp_C_6 doStartTls(Smtp_C_4 c4) throws Exception {
+		return
+				LinearSocket.wrapClient(
+						c4.send(S, new StartTls())
+							.async(S, _220)
+				, S, SSLSocketChannelWrapper::new);
+	}
 
 	private static <S, B extends Buf<?>> S printlnBuf(S s, B b) {
 		System.out.println(b.val);

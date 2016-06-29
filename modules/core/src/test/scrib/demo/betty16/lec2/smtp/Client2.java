@@ -21,6 +21,7 @@ import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Receive_C_S_220;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Ehlo;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_Quit;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Select_C_S_StartTls;
+import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_220;
 import demo.betty16.lec2.smtp.Smtp.Smtp.channels.C.ioifaces.Succ_In_S_250;
 import demo.betty16.lec2.smtp.Smtp.Smtp.roles.C;
 import demo.betty16.lec2.smtp.message.SmtpMessageFormatter;
@@ -44,11 +45,9 @@ public class Client2 {
 	private EndSocket run(Smtp_C_1 c1) throws Exception {
 		return
 			doInit(
-					LinearSocket.wrapClient(
+					doStartTls(
 							doInit(c1.async(S, _220)).to(Select_C_S_StartTls.cast)
-								.send(S, new StartTls()).to(Receive_C_S_220.cast)
-								.async(S, _220).to(Select_C_S_Ehlo.cast)
-					, S, SSLSocketChannelWrapper::new)
+					).to(Select_C_S_Ehlo.cast)
 			)
 			.to(Select_C_S_Quit.cast)
 			.send(S, new Quit())
@@ -62,9 +61,17 @@ public class Client2 {
 		for (Case_C_S_250__S_250d<?, ?> cases = b.branch(S); true; cases = b.branch(S)) {
 			switch (cases.getOp()) {
 				case _250:  return printlnBuf(cases.receive(S, _250, buf), buf);
-				case _250d: b = cases.receive(S, _250d, buf).to(Branch_C_S_250__S_250d.cast); System.out.println(buf.val); break;
+				case _250d: b = cases.receive(S, _250d, buf).to(Branch_C_S_250__S_250d.cast); System.out.print(buf.val); break;
 			}
 		}
+	}
+
+	private Succ_In_S_220 doStartTls(Select_C_S_StartTls<?> c) throws Exception {
+		return
+				LinearSocket.wrapClient(
+						c.send(S, new StartTls()).to(Receive_C_S_220.cast)
+							.async(S, _220)
+				, S, SSLSocketChannelWrapper::new);
 	}
 
 	private static <S, B extends Buf<?>> S printlnBuf(S s, B b) {
