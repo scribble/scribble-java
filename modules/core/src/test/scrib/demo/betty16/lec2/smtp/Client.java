@@ -34,23 +34,22 @@ public class Client {
 
 	private EndSocket run(Smtp_C_1 c1) throws Exception {
 		/*
+
 		return
 			doInit(
 					doStartTls(
 							doInit(c1.async(S, _220)))
 			)
 			.send(S, new Quit());
+
 		/*/
-
 		throw new RuntimeException("[TODO]: ");
-
 		//*/
 	}
 
 	private 
 	//  succ(S?250)  <-  S!{ Ehlo: ?? }
 	Succ_In_S_250 doInit(Select_C_S_Ehlo<?> c) throws Exception {
-		
 		
 		throw new RuntimeException("[TODO]: ");
 		
