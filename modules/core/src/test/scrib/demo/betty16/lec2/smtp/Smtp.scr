@@ -32,14 +32,14 @@ sig <java> "demo.betty16.lec2.smtp.message.client.Quit"
 
 global protocol Smtp(role C, role S) {
 	220 from S to C;
-	choice at C {
+	//choice at C {
 		do Init(C, S);
 		do StartTls(C, S);
 		do Init(C, S);
 		Quit from C to S;
-	} or {
+	/*} or {
 		Quit from C to S;
-	}
+	}*/
 }
 
 aux global protocol Init(role C, role S) {
