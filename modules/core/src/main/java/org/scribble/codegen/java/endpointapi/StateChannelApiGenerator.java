@@ -2,12 +2,14 @@ package org.scribble.codegen.java.endpointapi;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.scribble.ast.Module;
 import org.scribble.codegen.java.util.ClassBuilder;
 import org.scribble.codegen.java.util.TypeBuilder;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.EndpointState;
+import org.scribble.model.local.IOAction;
 import org.scribble.sesstype.name.GProtocolName;
 import org.scribble.sesstype.name.LProtocolName;
 import org.scribble.sesstype.name.Role;
@@ -32,6 +34,8 @@ public class StateChannelApiGenerator extends ApiGenerator
 	private final EndpointState init;
 	//private final String root;
 
+	protected final boolean skipIOInterfacesGeneration;
+
 	private int counter = 1;
 	private Map<EndpointState, String> classNames = new HashMap<>();  // Doesn't include terminal states
 
@@ -40,11 +44,14 @@ public class StateChannelApiGenerator extends ApiGenerator
 	public StateChannelApiGenerator(Job job, GProtocolName fullname, Role self) throws ScribbleException  // FIXME: APIGenerationException?
 	{
 		super(job, fullname);
+
 		this.self = self;
 		this.lpn = Projector.projectFullProtocolName(fullname, self);
 		//this.init = job.getContext().getEndpointGraph(fullname, self).init;
 		JobContext jc = job.getContext();
 		this.init = job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
+		
+		this.skipIOInterfacesGeneration = skipIOInterfacesGeneration(this.init);
 			
 		generateClassNames(this.init);
 		//this.root = this.classNames.get(this.init);
@@ -57,6 +64,17 @@ public class StateChannelApiGenerator extends ApiGenerator
 			ClassBuilder cb = new EndSocketGenerator(this, term).generateType();
 			this.types.put(cb.getName(), cb);
 		}
+	}
+
+	// Cf. IOInterfacesGenerator constructor
+	private static boolean skipIOInterfacesGeneration(EndpointState init)
+	{
+		Set<IOAction> as = EndpointState.getAllReachableActions(init);
+		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	// Return: key (package and Java class file path) -> val (Java class source) 

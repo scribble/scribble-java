@@ -55,7 +55,7 @@ public class IOInterfacesGenerator extends ApiGenerator
 	private final Map<EndpointState, Set<IOAction>> branchPostActions = new HashMap<>();
 	//private final Map<EndpointState, Set<InterfaceBuilder>> branchSuccs = new HashMap<>();
 	private final Map<String, List<IOAction>> branchSuccs = new HashMap<>();  // key: HandleInterface name  // Sorted when collected
-
+	
 	public IOInterfacesGenerator(StateChannelApiGenerator apigen, boolean subtypes) throws RuntimeScribbleException, ScribbleException
 	{
 		super(apigen.getJob(), apigen.getGProtocolName());
@@ -68,10 +68,14 @@ public class IOInterfacesGenerator extends ApiGenerator
 		JobContext jc = this.job.getContext();
 		EndpointState init = this.job.minEfsm ? jc.getMinimisedEndpointGraph(fullname, self).init : jc.getEndpointGraph(fullname, self).init;
 		
-		Set<IOAction> as = EndpointState.getAllReachableActions(init);
-		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
+		//if (IOInterfacesGenerator.skipIOInterfacesGeneration(init))
 		{
-			throw new RuntimeScribbleException("[TODO] I/O Interface generation not supported for: " + as.stream().filter((a) -> !a.isSend() && !a.isReceive()).collect(Collectors.toList()));
+			// FIXME: factor out with skipIOInterfacesGeneration
+			Set<IOAction> as = EndpointState.getAllReachableActions(init);
+			if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
+			{
+				throw new RuntimeScribbleException("[TODO] I/O Interface generation not supported for: " + as.stream().filter((a) -> !a.isSend() && !a.isReceive()).collect(Collectors.toList()));
+			}
 		}
 
 		generateActionAndSuccessorInterfacesAndCollectPreActions(new HashSet<>(), init);
@@ -150,6 +154,16 @@ public class IOInterfacesGenerator extends ApiGenerator
 			}
 		}
 	}
+
+	/*public static boolean skipIOInterfacesGeneration(EndpointState init)
+	{
+		Set<IOAction> as = EndpointState.getAllReachableActions(init);
+		if (as.stream().anyMatch((a) -> !a.isSend() && !a.isReceive()))  // HACK FIXME (connect/disconnect)
+		{
+			return true;
+		}
+		return false;
+	}*/
 
 	@Override
 	public Map<String, String> generateApi()

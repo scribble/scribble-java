@@ -25,7 +25,7 @@ global protocol Proto1(role C, role S)
 		}
 		or
 		{
-			4a() from C to S;
+			4a() from C to S;  // Currently needs -minfsm
 			4b() from C to S;
 		}
 	}

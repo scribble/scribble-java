@@ -103,7 +103,7 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minfsm)");  // This getter checks for determinism -- affects e.g. API generation  
+			throw new RuntimeException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minfsm if available)");  // This getter checks for determinism -- affects e.g. API generation  
 		}
 		return as;
 	}

@@ -167,7 +167,7 @@ public class Job
 		{
 			iogen = new IOInterfacesGenerator(apigen, subtypes);
 		}
-		catch (RuntimeScribbleException e)
+		catch (RuntimeScribbleException e)  // FIXME: use IOInterfacesGenerator.skipIOInterfacesGeneration
 		{
 			//System.err.println("[Warning] Skipping I/O Interface generation for protocol featuring: " + fullname);
 			System.err.println("[Warning] Skipping I/O Interface generation for: " + fullname + "\n  Cause: " + e.getMessage());

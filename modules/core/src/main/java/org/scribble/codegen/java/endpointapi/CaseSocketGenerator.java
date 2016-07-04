@@ -89,12 +89,15 @@ public class CaseSocketGenerator extends ScribSocketGenerator
 			}
 		}
 		
-		Role self = this.apigen.getSelf();
-		MethodBuilder mb = this.cb.newMethod("getOp");
-		mb.addAnnotations("@Override");
-		mb.addModifiers(JavaBuilder.PUBLIC);
-		mb.setReturn(IOStateInterfaceGenerator.getIOStateInterfaceName(self, this.curr) + "." + BranchInterfaceGenerator.getBranchInterfaceEnumName(self, this.curr));
-		mb.addBodyLine(JavaBuilder.RETURN + " " + JavaBuilder.THIS + "." + CASE_OP_FIELD + ";");
+		if (!this.apigen.skipIOInterfacesGeneration)
+		{
+			Role self = this.apigen.getSelf();
+			MethodBuilder mb = this.cb.newMethod("getOp");
+			mb.addAnnotations("@Override");
+			mb.addModifiers(JavaBuilder.PUBLIC);
+			mb.setReturn(IOStateInterfaceGenerator.getIOStateInterfaceName(self, this.curr) + "." + BranchInterfaceGenerator.getBranchInterfaceEnumName(self, this.curr));
+			mb.addBodyLine(JavaBuilder.RETURN + " " + JavaBuilder.THIS + "." + CASE_OP_FIELD + ";");
+		}
 
 		this.apigen.addTypeDecl(this.cb);  // CaseSocketBuilder used by BranchSocketBuilder, not EndpointApiGenerator
 	}
