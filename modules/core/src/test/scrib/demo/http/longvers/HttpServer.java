@@ -80,7 +80,7 @@ public class HttpServer
 							case BODY:
 							{
 								//String body = "";
-								String body = "<html><body>Hello</body></html>";
+								String body = "<html><body>Hello, world!</body></html>";
 								s2cases.receive(Http.BODY, b_body)
 									.send(Http.C, new HttpVersion("1.1"))
 									.send(Http.C, new _200("OK"))

@@ -10,5 +10,6 @@ public class StrictTransportSecurity extends HeaderField
 	public StrictTransportSecurity(String server)
 	{
 		super(Http.STRICTTS, server);
+		//super(Http.STRICT_TRANSPORT_SECURITY, server);
 	}
 }

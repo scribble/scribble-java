@@ -87,6 +87,7 @@ sig <java> "demo.http.longvers.message.server.Server"
 sig <java> "demo.http.longvers.message.server.StrictTransportSecurity"
 		from "demo/http/longvers/message/StrictTransportSecurity.java"
 		as STRICTTS;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+		//as STRICT_TRANSPORT_SECURITY;
 
 sig <java> "demo.http.longvers.message.server.LastModified"
 		from "demo/http/longvers/message/LastModified.java"
@@ -222,6 +223,7 @@ aux global protocol Response(role C, role S)
 		or
 		{
 			STRICTTS from S to C;  // Strict-Transport-Security: max-age=31536000; preload; includeSubDomains
+			//STRICT_TRANSPORT_SECURITY from S to C;
 			continue Y;
 		}
 		or

@@ -14,6 +14,7 @@ import org.scribble.ast.Module;
 import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.global.GProtocolDecl;
 import org.scribble.main.MainContext;
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.main.resource.DirectoryResourceLocator;
 import org.scribble.main.resource.ResourceLocator;
@@ -76,6 +77,11 @@ public class CommandLine //implements Runnable
 		catch (ScribParserException | CommandLineException e)
 		{
 			System.err.println(e.getMessage());  // No need to give full stack trace, even for debug, for command line errors
+			System.exit(1);
+		}
+		catch (RuntimeScribbleException e)
+		{
+			System.err.println(e.getMessage());
 			System.exit(1);
 		}
 	}

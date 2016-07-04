@@ -193,7 +193,9 @@ public class HandleInterfaceGenerator extends IOStateInterfaceGenerator
 	public static String getHandleInterfaceName(Role self, EndpointState s)
 	{
 		// FIXME: factor out (CaseInterfaceGenerator, IOStateInterfaceGenerator.getIOStateInterfaceName)
-		return "Handle_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)
+		String name = "Handle_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
+		IOStateInterfaceGenerator.checkIOStateInterfaceNameLength(name);
+		return name;
 	}
 }

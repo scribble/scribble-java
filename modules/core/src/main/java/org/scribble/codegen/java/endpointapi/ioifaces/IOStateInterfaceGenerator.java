@@ -123,7 +123,18 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 			case TERMINAL:    throw new RuntimeScribbleException("Shouldn't get in here: " + s);
 			default:          throw new RuntimeException("(TODO) I/O interface generation: " + s.getStateKind());
 		}
-		return name + "_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)
+		name = name + "_" + self + "_" + s.getTakeable().stream().sorted(IOACTION_COMPARATOR)
 				.map((a) -> ActionInterfaceGenerator.getActionString(a)).collect(Collectors.joining("__"));
+		checkIOStateInterfaceNameLength(name);
+		return name;
+	}
+	
+	// 255 is Linux, Windows, etc max file name length (Java is 65535)
+	public static void checkIOStateInterfaceNameLength(String name) throws RuntimeScribbleException
+	{
+		if (name.length() > 250)  // .java
+		{
+			throw new RuntimeScribbleException("I/O interface name too long (max 255): " + name);
+		}
 	}
 }

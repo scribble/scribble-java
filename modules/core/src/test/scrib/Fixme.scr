@@ -40,6 +40,8 @@ module Fixme;
 //*** TODO introduces -- or explicit shared channel/port creation and passing ("open")
 
 // DONE: delete noLive or add to fair check
+// DONE: decouple branch API gen from I/O i/f's -- duplicate enum in concrrete states? -- removed dependencies on I/O i/f's for Branch APIs where I/O i/f generation is disabled
+// DONE: I/O i/f name max length -- 255 Linux/Windows/etc max file name length
 
 // CHECKME: check for (not yet supported) deleg actions in API gen
 // CHECKME: delegation type payload projection
@@ -51,25 +53,8 @@ module Fixme;
 
 // TODO: test API gen for (fair) SupplierInfo
 // TODO: test connect/wrap API gen for SMTP
-// FIXME: decouple branch API gen from I/O i/f's -- duplicate enum in concrrete states?
-// FIXME: I/O i/f name max length
 // TODO: MT/EDP server examples
 
-
-/*
-explicit global protocol Proto1(role A, role B)
-{
-	connect A to B;
-	choice at A  // FIXME: disabling I/O i/f gen breaks branch API
-	{
-		1() from A to B;
-	}
-	or
-	{
-		2() from A to B;
-	}
-}
-//*/
 
 
 /*

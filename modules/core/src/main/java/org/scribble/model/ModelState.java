@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.ProtocolKind;
 import org.scribble.sesstype.name.RecVar;
@@ -103,7 +104,7 @@ public abstract class ModelState<A extends ModelAction<K>, S extends ModelState<
 		Set<A> as = new HashSet<>(this.actions);
 		if (as.size() != this.actions.size())
 		{
-			throw new RuntimeException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minfsm if available)");  // This getter checks for determinism -- affects e.g. API generation  
+			throw new RuntimeScribbleException("[TODO] Non-deterministic state: " + this.actions + "  (Try -minfsm if available)");  // This getter checks for determinism -- affects e.g. API generation  
 		}
 		return as;
 	}
