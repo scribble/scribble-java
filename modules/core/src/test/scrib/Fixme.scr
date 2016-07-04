@@ -98,20 +98,6 @@ global protocol Proto1(role A, role B, role C) {
 
 
 /*
-global protocol Proto1(role A, role B) {
-	rec X {
-		choice at A {
-			1() from A to B;
-			continue X;
-		} or {
-			1() from A to B;  // FIXME: bug in unfair transform, this case is lost
-		}
-	}
-}
-//*/
-
-
-/*
 explicit global protocol Proto1(role A, role B)
 {
 	connect A to B;

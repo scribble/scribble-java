@@ -15,6 +15,62 @@ module Test;
 /*
 global protocol Proto1(role A, role B)
 {
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			2() from B to A;
+			continue X;
+		} or {
+			1() from A to B;
+			3() from B to A;  // Testing non-det unfair-transform ("unfairness" has the power to enforce a single case out of non-det options)
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			2() from B to A;
+			continue X;  // Testing non-det unfair-transform
+		} or {
+			1() from A to B;
+			3() from B to A;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			continue X;  // Testing non-det unfair-transform
+		} or {
+			1() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
 	disconnect A and B;
 	do Proto1Aux(A, B);
 }

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,6 +81,8 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 					//Map<IOAction, EndpointState> clones = new HashMap<>();
 					List<IOAction> cloneas = new LinkedList<>();
 					List<EndpointState> cloness = new LinkedList<>();
+					//LinkedHashMap<EndpointState, EndpointState> cloness = new LinkedHashMap<>();  // clone -> original
+					Map<EndpointState, IOAction> toRemove = new HashMap<>();
 					while (as.hasNext())
 					{
 						IOAction a = as.next();
@@ -95,12 +98,14 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 							//clones.put(a, clone);
 							cloneas.add(a);
 							cloness.add(clone);
+							//cloness.put(clone, s);
+							toRemove.put(s, a);
 						}
 					}
 					//if (!clones.isEmpty())  // Redundant, but more clear
 					if (!cloneas.isEmpty())  // Redundant, but more clear
 					{
-						as = new LinkedList<>(curr.getAllTakeable()).iterator();
+						/*as = new LinkedList<>(curr.getAllTakeable()).iterator();
 						//Iterator<EndpointState>
 						ss = new LinkedList<>(curr.getSuccessors()).iterator();
 						while (as.hasNext())
@@ -108,14 +113,20 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 							IOAction a = as.next();
 							EndpointState s = ss.next();
 							//if (clones.containsKey(a))  // Still OK for non-det edges?
-							if (cloneas.contains(a))  // Still OK for non-det edges?
+							//if (cloneas.contains(a))  // Still OK for non-det edges? -- no: removing *all* non-det a's for this a, so non-recursive cases are lost
+							if (cloneas.contains(a) && ...succ == orig...)
 							{
 								try { curr.removeEdge(a, s); } catch (ScribbleException e) { throw new RuntimeException(e); }
 							}
+						}*/
+						for (EndpointState s : toRemove.keySet())
+						{
+							try { curr.removeEdge(toRemove.get(s), s); } catch (ScribbleException e) { throw new RuntimeException(e); }
 						}
 						//for (Entry<IOAction, EndpointState> e : clones.entrySet())
 						Iterator<IOAction> icloneas = cloneas.iterator();
 						Iterator<EndpointState> icloness = cloness.iterator();
+						//Iterator<EndpointState> icloness = cloness.keySet().iterator();
 						while (icloneas.hasNext())
 						{
 							IOAction a = icloneas.next();
