@@ -397,7 +397,7 @@ public class WFConfig
 		{
 			//EndpointState s = this.states.get(r);
 			EndpointFSM s = this.states.get(r);
-			if (s.isTerminal())
+			if (s.isTerminal())  // Local termination of r, i.e. not necessarily "full deadlock"
 			{
 				Set<Send> orphs = this.buffs.get(r).values().stream().filter((v) -> v != null).collect(Collectors.toSet());
 				if (!orphs.isEmpty())

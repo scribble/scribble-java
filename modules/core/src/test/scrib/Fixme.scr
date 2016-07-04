@@ -39,11 +39,11 @@ module Fixme;
 
 //*** TODO introduces -- or explicit shared channel/port creation and passing ("open")
 
+// DONE: delete noLive or add to fair check
 
-// TODO: check for (not yet supported) deleg actions in API gen
-// FIXME: delegation type payload projection
-// FIXME: '.' in Name constructor args -- no: rename constructor arg to simpname (cf SessionTypeFactory)
-// FIXME: delete noLive or add to fair check
+// CHECKME: check for (not yet supported) deleg actions in API gen
+// CHECKME: delegation type payload projection
+// CHECKME: '.' in Name constructor args -- no: rename constructor arg to simpname (cf SessionTypeFactory)
 // MainContext.newJob -- move MainContext to core?
 
 // FIXME: Module.getGlobal/LocalProtocolDecl
@@ -53,25 +53,7 @@ module Fixme;
 // TODO: test connect/wrap API gen for SMTP
 // FIXME: decouple branch API gen from I/O i/f's -- duplicate enum in concrrete states?
 // FIXME: I/O i/f name max length
-// TODO: MT/EDP servers
-// TODO: fix bug in HTTP-short parsing (when not whole message is ready?)
-
-
-/*
-global protocol Proto1(role A, role B, role C) {
-	choice at A {
-		1() from A to B;
-		2() from A to C;
-		3() from B to C;
-		4() from C to A;
-	} or {
-		1b() from A to B;
-		3() from B to C;  // -nolocalchoicecheck to show orphans
-		4() from C to A;
-	}
-}
-// FIXME: wrong orphan detection (an extra state falsely identified)
-//*/
+// TODO: MT/EDP server examples
 
 
 /*

@@ -12,6 +12,7 @@
 module Test;
 
 
+/*
 global protocol Proto1(role A, role B)
 {
 	rec X
@@ -27,6 +28,25 @@ global protocol Proto1(role A, role B)
 		}
 	}
 }
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	// CHECKME: orphans currently detected on local termination, not full system termination (same for stuck and deadlock)
+	choice at A {
+		1() from A to B;
+		2() from A to C;
+		3() from B to C;
+		4() from C to A;
+	} or {
+		1b() from A to B;
+		3() from B to C;  // -nolocalchoicecheck to show orphans
+		4() from C to A;
+	}
+}
+//*/
 
 
 /*
