@@ -12,58 +12,251 @@
 module Test;
 
 
-	// TODO: (re)connect/wrap, e.g. SMTP
+/*
+global protocol Proto1(role A, role B)
+{
+	disconnect A and B;
+	do Proto1Aux(A, B);
+}
 
-	// TODO: "introduces" well-formedness?
-	// e.g. "A from B to C;"
-	// e.g. "a from A to B; A[a] from B to C;"
-	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
-	//.. expliconn+introduces vs. delegation -- MPST with explicit (shared/sess) channels
-
-	// TODO: API gen
-	// - connect/disconnect -- need to make backwards compatible with non-explicit
-	//   -- non-explicit just has implicit initial connects -- just need to make sure no deadlock
-	//   -- consider accept for callbacks?
-	// - factor out Scribble abstract transport wrappers with language-specific plugins; take as parameter for "wrap" action
-	// - non-det EFSMs -- minimisation will remove all mergeable non-det actions, but non-mergeable non-det actions can exist due to explicit connect
-
-
-//.. output and connect can be mixed in a state... check where getStateKind used for any problems
-//    -- getTakeable in WFConfig for model building (but maybe ends up OK, just treat connect/accept the same way?)
-//		-- main approach should be generally consier mixed send/connect states, but differentiate connect for input blocking detection
-//.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
+// Trivial test for "expressiveness" of aux -- but could just make explicit..  // CHECKME example where "aux" is fully needed
+aux global protocol Proto1Aux(role A, role B)
+{
+	connect A to B;
+}
+//*/
 
 
-// - scrib assertions for model checker -- check state visited?
-// - parameterise subprotos on protos?
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			//1() from A to C;
+			continue X;  // Testing fairness
+		}
+		or
+		{
+			2() from A to B;
+			2() from A to C;
+			continue X;
+		}
+	}
+}
+//*/
 
 
-// FIXME: .. refactor interfaces for model building/checking/minimising/etc into state classes (make subclasses of Model/EndpointState -- cf. ast/del)
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;
+		4() from C to B;
+		5() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;  // Syntactic merge means: non-det "squashed" so original choice path now ambiguous, so we need to act conservatively -- conservatively means squashed role needs to accept any incoming messages as a branch (to handle ambiguity) while not being allowed to make any output choices (only unary send allowed, so must be identical in all possibilities)
+				// EFSM transform has to follow this intuition, full continuations after a non-det input choice have to be convservatively squashed (and if not squashable, then check model using unsquashed version) -- or implement as syntactic merge, and use original if not mergeable
+		4() from C to B;
+		6() from B to C;
+	}
+}
+//*/
 
 
-// ..is branching on accept+message more expressive than accept followed by branch?  i.e. can connect always be "factored up" before the choice? -- maybe depends on interplay with select fairness (want to use connect to nest role scope inside choice case to avoid assuming fairness, but this can conflict with non-det accept?)
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;
+		3() from B to D;
+		4() from C to D;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;
+		3() from B to D;
+		5() from C to D;
+	}
+}
+//*/
 
-//*** TODO introduces -- or explicit shared channel/port creation and passing ("open")
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;
+		4() from C to D;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;
+		5() from C to D;  // Not mergeable by ICALP13
+	}
+}
+//*/
 
 
-// TODO: check for (not yet supported) deleg actions in API gen
-// FIXME: delegation type payload projection
-// FIXME: '.' in Name constructor args -- no: rename constructor arg to simpname (cf SessionTypeFactory)
-// FIXME: delete noLive or add to fair check
-// MainContext.newJob -- move MainContext to core?
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;
+		4() from C to B;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;
+		4() from C to B;
+		5() from C to B;  // Tricky to check, e.g., output state sub-EFSMs are the same (cf. syntactic equality) for terminating the merge, maybe need strict isomorphism (without renaming)
+	}
+}
+//*/
 
-// FIXME: Module.getGlobal/LocalProtocolDecl
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		0() from B to C;
+		choice at A
+		{
+			1() from A to B;
+			3() from B to C;
+			4() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+			3() from B to C;
+			5() from B to C;  // Consider EFSM of C for merging -- do non-det input squashing inductively, and only if no recursive edges back to original or preceding state? -- difficult to confirm, e.g., output state sub-EFSMs are the same (cf. syntactic equality) for terminating the merge, maybe need isomorphism
+			continue X;
+		}
+	}
+}
+//*/
 
 
-// TODO: test API gen for (fair) SupplierInfo
-// TODO: test connect/wrap API gen for SMTP
-// FIXME: decouple branch API gen from I/O i/f's -- duplicate enum in concrrete states?
-// FIXME: I/O i/f name max length
-// TODO: MT/EDP servers
-// TODO: fix bug in HTTP-short parsing (when not whole message is ready?)
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;
+		4() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;
+		//5() from B to C;  // Makes merge easier
+		rec X
+		{
+			5() from B to C;  // Consider EFSM of C for merging
+			continue X;
+		}
+	}
+}
+//*/
 
 
-//*
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;
+		3() from B to C;
+		4() from B to C;
+	}
+	or
+	{
+		2() from A to B;
+		3() from B to C;  // Merging (non-det input state "squashing") first messages only not enough (cf. inductive syntactic merge)
+		3() from B to C;
+		5() from B to C;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		//choice at B
+		{
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			//2() from B to A;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		1() from A to B;
+		choice at A
+		{
+			1a() from A to B;
+			1a() from A to C;
+		}
+		or
+		{
+			1b() from A to B;
+			1b() from A to C;
+		}
+	}
+	or
+	{
+		2() from A to B;
+		choice at A
+		{
+			2a() from A to B;
+			2a() from B to C;
+		}
+		or
+		{
+			2b() from A to B;
+			2b() from B to C;
+		}
+	}
+}
+//*/
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A
@@ -3674,13 +3867,13 @@ explicit global protocol Proto1(role A, role B, role C)
 		choice at A
 		{
 			1() from A to B;
-			connect B to C
+			connect B to C;
 			2() from B to C;
 			connect C to A;
 			3() from C to A;
 			//3() from A to B;  // Uncomment OK
 			disconnect B and C;
-			disconnect C and A; // Comment bad -- FIXME: should be bad
+			disconnect C and A; // Comment bad
 			continue X;
 		}
 		or
@@ -4115,7 +4308,7 @@ global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		2() from B to C;  // FIXME: local choice subjects (syntax restriction)
+		2() from B to C;  // Testing local choice subjects (syntax restriction)
 	}
 }
 //*/
@@ -4127,9 +4320,9 @@ global protocol Proto1(role A, role B, role C, role D)
 	rec X
 	{
 		1() from A to B;
-		continue X;
+		continue X;  // Checking safety in non-terminating global model
 	}
-	choice at C  // FIXME: need termination hack (**TERM)
+	choice at C
 	{
 		2() from C to D;
 		3() from D to C;
@@ -4427,7 +4620,7 @@ global protocol Proto1(role A, role B, role C, role D)
 			choice at C
 			{
 				2() from C to A;
-				continue X;  // B not enabled -- FIXME: minimise test case
+				continue X;  // B not enabled -- TODO: minimise test case
 			}
 			or
 			{
@@ -4462,7 +4655,7 @@ global protocol Proto1(role A, role B, role C, role D)
 				or
 				{
 					() from C to A;
-					() from C to D;  // FIXME: minimise this test case
+					() from C to D;  // TODO: minimise this test case
 					continue X;
 				}
 			}
@@ -4842,7 +5035,7 @@ global protocol Proto1(role A, role B, role C)
 			choice at A
 			{
 				1() from A to C;
-				continue X;  // ** FIXME: badly formed (for B) -- empty block is pruned leaving only the continue case, which leads to deadlock in global model, is this OK as WF algorithm? (any way to be unsound?)  or need to directly detect inconsistent choice block projections?  // FIXME: add test case
+				continue X;  // ** CHECKME: badly formed (for B) -- empty block is pruned leaving only the continue case, which leads to deadlock in global model, is this OK as WF algorithm? (any way to be unsound?)  or need to explicitly detect inconsistent choice block projections?  // TODO: add test case
 			}
 			or
 			{
@@ -5246,7 +5439,7 @@ global protocol Proto1(role A, role B)
 			}
 			or
 			{
-				continue X;  // ..in conjunction with unguarded choice-continue at the same time (just one at a time is fine) // FIXME (maybe just rule out by WF)
+				continue X;  // ..in conjunction with unguarded choice-continue at the same time, if 1() is commented (otherwise testing unfolding) // CHECKME seems OK (no need to rule out explicitly?)
 			}
 		}
 	}
@@ -5534,7 +5727,7 @@ global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		3() from B to C;  // FIXME: same continuation for C, can fix by mergability (other than just factoring out)
+		3() from B to C;  // Testing same continuation for C (mergability, rather than just factoring out)
 	}
 }
 //*/
@@ -6134,7 +6327,7 @@ global protocol Foo(role A, role B)
 	2() from A to B;
 }
 
-global protocol Bar(role A, role B)  // FIXME: bad unused role decls (wrt. subprotocol collected role occurrences)
+global protocol Bar(role A, role B)  // Testing bad unused role decls (wrt. subprotocol collected role occurrences)
 {
 	//3() from A to B;
 }

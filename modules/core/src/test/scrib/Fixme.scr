@@ -6,6 +6,80 @@
 module Fixme;
 
 
+	// TODO: (re)connect/wrap, e.g. SMTP
+
+	// TODO: "introduces" well-formedness?
+	// e.g. "A from B to C;"
+	// e.g. "a from A to B; A[a] from B to C;"
+	// e.g. connect A to B; connect B to C; connect C to A;  // connect A to C would be bad
+	//.. expliconn+introduces vs. delegation -- MPST with explicit (shared/sess) channels
+
+	// TODO: API gen
+	// - connect/disconnect -- need to make backwards compatible with non-explicit
+	//   -- non-explicit just has implicit initial connects -- just need to make sure no deadlock
+	//   -- consider accept for callbacks?
+	// - factor out Scribble abstract transport wrappers with language-specific plugins; take as parameter for "wrap" action
+	// - non-det EFSMs -- minimisation will remove all mergeable non-det actions, but non-mergeable non-det actions can exist due to explicit connect
+
+
+//.. output and connect can be mixed in a state... check where getStateKind used for any problems
+//    -- getTakeable in WFConfig for model building (but maybe ends up OK, just treat connect/accept the same way?)
+//		-- main approach should be generally consier mixed send/connect states, but differentiate connect for input blocking detection
+//.. check orphan messages wrt connect/accept states -- maybe OK, orphan check does consider connectedness
+
+
+// - scrib assertions for model checker -- check state visited?
+// - parameterise subprotos on protos?
+
+
+// FIXME: .. refactor interfaces for model building/checking/minimising/etc into state classes (make subclasses of Model/EndpointState -- cf. ast/del)
+
+
+// ..is branching on accept+message more expressive than accept followed by branch?  i.e. can connect always be "factored up" before the choice? -- maybe depends on interplay with select fairness (want to use connect to nest role scope inside choice case to avoid assuming fairness, but this can conflict with non-det accept?)
+
+//*** TODO introduces -- or explicit shared channel/port creation and passing ("open")
+
+
+// TODO: check for (not yet supported) deleg actions in API gen
+// FIXME: delegation type payload projection
+// FIXME: '.' in Name constructor args -- no: rename constructor arg to simpname (cf SessionTypeFactory)
+// FIXME: delete noLive or add to fair check
+// MainContext.newJob -- move MainContext to core?
+
+// FIXME: Module.getGlobal/LocalProtocolDecl
+
+
+// TODO: test API gen for (fair) SupplierInfo
+// TODO: test connect/wrap API gen for SMTP
+// FIXME: decouple branch API gen from I/O i/f's -- duplicate enum in concrrete states?
+// FIXME: I/O i/f name max length
+// TODO: MT/EDP servers
+// TODO: fix bug in HTTP-short parsing (when not whole message is ready?)
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from B to A;
+		rec X
+		{
+			2() from A to B;
+			choice at A
+			{
+				continue X;  // FIXME: not unfolding correctly
+			}
+			or
+			{
+				3() from A to B;
+			}
+		}
+	}
+}
+//*/
+
+
 /*
 global protocol Proto1(role A, role B, role C) {
 	choice at A {

@@ -29,8 +29,16 @@ public class Client {
 		Buf<Integer> i = new Buf<>(1);
 
 		Adder_C_1 c1 = new Adder_C_1(client);
-		//... TODO
 
+		// TODO
+		
 		return i.val;
 	}
 }
+
+
+
+
+
+
+
