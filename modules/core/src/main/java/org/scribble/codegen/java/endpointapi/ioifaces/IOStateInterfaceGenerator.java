@@ -134,7 +134,7 @@ public abstract class IOStateInterfaceGenerator extends IOInterfaceGenerator
 	{
 		if (name.length() > 250)  // .java
 		{
-			throw new RuntimeScribbleException("I/O interface name too long (max 255): " + name);
+			throw new RuntimeScribbleException("I/O Interface name too long (max 255): " + name);
 		}
 	}
 }
