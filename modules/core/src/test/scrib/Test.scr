@@ -12,6 +12,141 @@
 module Test;
 
 
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+		}
+	}
+}
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		do Proto1Aux(A, B);  // Testing recvar name disambiguation
+	}
+}
+
+global protocol Proto1Aux(role A, role B)
+{
+	rec X
+	{
+		2() from A to B;
+		choice at A
+		{
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		rec X
+		{
+			choice at A
+			{
+				2() from A to B;
+				choice at A
+				{
+					continue X;
+				}
+				or
+				{
+					3() from A to B;
+				}
+			}
+			or
+			{
+				4() from A to B;
+				continue X;
+			}
+			or
+			{
+				5() from A to B;
+			}
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		choice at A
+		{
+			rec X
+			{
+				2() from A to B;
+				continue X;
+			}
+		}
+		or
+		{
+			rec X  // Testing shadowed unguarded recs
+			{
+				3() from A to B;
+				continue X;
+			}
+		}
+		or
+		{
+			4() from A to B;
+			continue X;
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		rec X
+		{
+			2() from A to B;
+			choice at A
+			{
+				continue X;  // Testing inlined-unfolding for shadowed recs
+			}
+			or
+			{
+				3() from A to B;
+			}
+		}
+	}
+}
+//*/
+
+
 /*
 global protocol Proto1(role A, role B)
 {

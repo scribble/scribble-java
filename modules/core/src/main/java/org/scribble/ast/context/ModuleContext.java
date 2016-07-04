@@ -28,7 +28,7 @@ import org.scribble.visit.JobContext;
 // Context information specific to each module as a root (wrt. to visitor passes)
 public class ModuleContext
 {
-	public final ModuleName root;
+	public final ModuleName root;  // full name
 
   // All transitive name dependencies of this module: all names fully qualified
 	// The ScribNames maps are basically just used as sets (identity map)

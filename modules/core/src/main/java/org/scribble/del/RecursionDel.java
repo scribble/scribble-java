@@ -25,15 +25,18 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 			throw new ScribbleException("Rec variable shadowing not currently allowed: " + rv); 
 					// Inconsistent to disallow due to subprotocols and that NameDisambiguator is not an inlined or subprotocol visitor
 		}*/
-		disamb.addRecVar(rv);
+		//disamb.addRecVar(rv);
+		disamb.pushRecVar(rv);
 	}
 
 	@Override
 	public ScribNode leaveDisambiguation(ScribNode parent, ScribNode child, NameDisambiguator disamb, ScribNode visited) throws ScribbleException
 	{
 		Recursion<?> rec = (Recursion<?>) visited;
-		RecVar rv = rec.recvar.toName();
-		disamb.removeRecVar(rv);
+		/*RecVar rv = rec.recvar.toName();
+		disamb.popRecVar(rv);*/
+		RecVar rv = ((Recursion<?>) child).recvar.toName();
+		disamb.popRecVar(rv);
 		return rec;
 	}
 

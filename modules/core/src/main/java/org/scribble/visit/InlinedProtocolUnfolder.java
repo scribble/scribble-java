@@ -28,6 +28,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 {
 	public static final String DUMMY_REC_LABEL = "__";
 	
+	// Assumes unique recvars up to this point, i.e. no recvar shadowing -- unfolding of unguardeds will result in "unfolding shadowing"
 	private Map<RecVar, Recursion<?>> recs = new HashMap<>();  // Could parameterise recvars to be global/local
 	private Set<RecVar> recsToUnfold = new HashSet<>();
 	
@@ -122,17 +123,18 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 
 	public void setRecVar(RecVar recvar, Recursion<?> rec) throws ScribbleException
 	{
-		ProtocolBlock<?> b = (ProtocolBlock<?>) rec.getBlock().accept(this);
-		RecVarNode clone = rec.recvar.clone();
+		ProtocolBlock<?> block = (ProtocolBlock<?>) rec.getBlock().accept(this);
+		RecVarNode rv = rec.recvar.clone();
+		Recursion<?> unfolded;
 		if (rec.getKind() == Global.KIND)
 		{
-			rec = ((GRecursion) rec).reconstruct(clone, (GProtocolBlock) b);
+			unfolded = ((GRecursion) rec).reconstruct(rv, (GProtocolBlock) block);
 		}
 		else
 		{
-			rec = ((LRecursion) rec).reconstruct(clone, (LProtocolBlock) b);
+			unfolded = ((LRecursion) rec).reconstruct(rv, (LProtocolBlock) block);
 		}
-		this.recs.put(recvar, rec);
+		this.recs.put(recvar, unfolded);
 	}
 
 	public void removeRecVar(RecVar recvar)

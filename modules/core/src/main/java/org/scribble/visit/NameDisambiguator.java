@@ -5,17 +5,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.ast.ProtocolDecl;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.global.GDelegationElem;
 import org.scribble.del.global.GDelegationElemDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.kind.NonRoleArgKind;
 import org.scribble.sesstype.kind.NonRoleParamKind;
+import org.scribble.sesstype.name.ModuleName;
 import org.scribble.sesstype.name.Name;
+import org.scribble.sesstype.name.ProtocolName;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
 // Disambiguates ambiguous PayloadTypeOrParameter names and inserts implicit Scope names
+// Also canonicalises recvars
 public class NameDisambiguator extends ModuleContextVisitor
 {
   // For implicit scope generation: reset per ProtocolDecl
@@ -23,7 +27,11 @@ public class NameDisambiguator extends ModuleContextVisitor
 
 	private Set<Role> roles = new HashSet<>();
 	private Map<String, NonRoleParamKind> params = new HashMap<>();
-	private Set<RecVar> recvars = new HashSet<RecVar>();
+	//private Set<RecVar> recvars = new HashSet<>();
+	//private Map<RecVar, Deque<RecVar>> recvars = new HashMap<>();
+	private Map<RecVar, Integer> recvars = new HashMap<>();
+	
+	private ProtocolDecl<?> root;  // FIXME: factor out
 	
 	public NameDisambiguator(Job job)
 	{
@@ -39,6 +47,10 @@ public class NameDisambiguator extends ModuleContextVisitor
 	@Override
 	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
 	{
+		if (child instanceof ProtocolDecl<?>)  // FIXME: factor out
+		{
+			this.root = (ProtocolDecl<?>) child;
+		}
 		enter(parent, child);
 		ScribNode visited = visitForDisamb(parent, child);
 		return leave(parent, child, visited);
@@ -108,18 +120,63 @@ public class NameDisambiguator extends ModuleContextVisitor
 		return this.params.get(name.toString());
 	}
 
-	public void addRecVar(RecVar rv)
+	//public void addRecVar(RecVar rv)
+	public void pushRecVar(RecVar rv)
 	{
-		this.recvars.add(rv);
+		//this.recvars.add(rv);
+		/*Deque<RecVar> deque = this.recvars.get(rv);
+		if (deque.isEmpty())
+		{
+			deque = new LinkedList<RecVar>();
+			this.recvars.put(rv, deque);
+		}
+		deque.push(..canonicalised name..);*/
+		if (!this.recvars.containsKey(rv))
+		{
+			this.recvars.put(rv, 0);
+		}
+		else
+		{
+			this.recvars.put(rv, this.recvars.get(rv) + 1);
+		}
 	}
 
 	public boolean isBoundRecVar(RecVar rv)
 	{
-		return this.recvars.contains(rv);
+		//return this.recvars.contains(rv);
+		return this.recvars.containsKey(rv);
 	}
 	
-	public void removeRecVar(RecVar rv)
+	//public void removeRecVar(RecVar rv)
+	public void popRecVar(RecVar rv)
 	{
-		this.recvars.remove(rv);
+		//this.recvars.remove(rv);
+		/*Deque<RecVar> deque = this.recvars.get(rv);
+		deque.pop();
+		if (deque.isEmpty())
+		{
+			this.recvars.remove(rv);
+		}*/
+		Integer i = this.recvars.get(rv);
+		if (i == 0)
+		{
+			this.recvars.remove(rv);  // Cf. isBoundRecVar, uses containsKey
+		}
+		else
+		{
+			this.recvars.put(rv, i - 1);
+		}
+	}
+
+	public String getCanonicalRecVarName(RecVar rv)
+	{
+		return getCanonicalRecVarName(this.getModuleContext().root, this.root.header.getDeclName(), rv.toString() + "_" + this.recvars.get(rv));
+	}
+	
+	// Cf. ProtocolDefInliner.newRecVarId
+	public static String getCanonicalRecVarName(ModuleName fullmodname, ProtocolName<?> simpprotoname, String rv)
+	{
+		//return rv.toString();
+		return ("__" + fullmodname + "_" + simpprotoname + "_" + rv).replace('.', '_');
 	}
 }

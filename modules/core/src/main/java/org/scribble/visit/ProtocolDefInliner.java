@@ -68,7 +68,15 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 		{
 			return visitOverrideForDo((InteractionSeq<?>) parent, (Do<?>) child);
 		}
-		return super.visitForSubprotocols(parent, child);
+		ScribNode visited = super.visitForSubprotocols(parent, child);
+		/*if (visited instanceof ProtocolDecl<?>)
+		{
+			ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
+			getJob().debugPrintln("\n[DEBUG] Inlined protocol "
+						+ pd.getFullMemberName(getJobContext().getModule(getModuleContext().root)) + ":\n"
+						+ ((ProtocolDefDel) pd.def.del()).getInlinedProtocolDef());
+		}*/
+		return visited;
 	}
 
 	protected Do<?> visitOverrideForDo(InteractionSeq<?> parent, Do<?> child) throws ScribbleException

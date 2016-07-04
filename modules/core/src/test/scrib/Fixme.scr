@@ -58,29 +58,6 @@ module Fixme;
 
 
 /*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		1() from B to A;
-		rec X
-		{
-			2() from A to B;
-			choice at A
-			{
-				continue X;  // FIXME: not unfolding correctly
-			}
-			or
-			{
-				3() from A to B;
-			}
-		}
-	}
-}
-//*/
-
-
-/*
 global protocol Proto1(role A, role B, role C) {
 	choice at A {
 		1() from A to B;
