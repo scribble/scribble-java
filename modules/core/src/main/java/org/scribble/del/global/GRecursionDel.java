@@ -22,7 +22,8 @@ public class GRecursionDel extends RecursionDel implements GCompoundInteractionN
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
 		GRecursion gr = (GRecursion) visited;
-		RecVarNode recvar = gr.recvar.clone();
+		//RecVarNode recvar = gr.recvar.clone();
+		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) gr.recvar.del().env()).getTranslation();	
 		GProtocolBlock block = (GProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
 		GRecursion inlined = AstFactoryImpl.FACTORY.GRecursion(recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));

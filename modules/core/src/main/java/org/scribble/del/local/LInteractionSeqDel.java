@@ -32,6 +32,7 @@ public class LInteractionSeqDel extends InteractionSeqDel
 		return lc.reconstruct(actions);
 	}
 
+	// enter in super
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{

@@ -20,29 +20,31 @@ import org.scribble.visit.env.InlineProtocolEnv;
 
 public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 {
-	private Map<SubprotocolSig, RecVar> recvars = new HashMap<>();
+	private Map<SubprotocolSig, RecVar> subprotoRecVars = new HashMap<>();  // RecVars translation for subprotocol inlining
+
+	private Map<RecVar, Integer> recvars = new HashMap<>();  // Original RecVars, nesting count
 	
 	public ProtocolDefInliner(Job job)
 	{
 		super(job);
 	}
 	
-	public RecVar getRecVar(SubprotocolSig subsig)
+	public RecVar getSubprotocolRecVar(SubprotocolSig subsig)
 	{
-		return this.recvars.get(subsig);
+		return this.subprotoRecVars.get(subsig);
 	}
 
-	public void setRecVar(SubprotocolSig subsig)
+	public void setSubprotocolRecVar(SubprotocolSig subsig)
 	{
-		this.recvars.put(subsig, new RecVar(newRecVarId(subsig)));
+		this.subprotoRecVars.put(subsig, new RecVar(newSubprotocoolRecVarId(subsig)));
 	}
 
-	public void removeRecVar(SubprotocolSig subsig)
+	public void removeSubprotocolRecVar(SubprotocolSig subsig)
 	{
-		this.recvars.remove(subsig);
+		this.subprotoRecVars.remove(subsig);
 	}
 	
-	private String newRecVarId(SubprotocolSig sig)
+	private String newSubprotocoolRecVarId(SubprotocolSig sig)
 	{
 		// Hacky
 		return sig.toString()
@@ -59,6 +61,14 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	protected InlineProtocolEnv makeRootProtocolDeclEnv(ProtocolDecl<? extends ProtocolKind> pd)
 	{
 		return new InlineProtocolEnv();
+	}
+
+	@Override
+	public ScribNode visit(ScribNode parent, ScribNode child) throws ScribbleException
+	{
+		enter(parent, child);
+		ScribNode visited = visitForSubprotocols(parent, child);
+		return leave(parent, child, visited);
 	}
 
 	@Override
@@ -112,5 +122,38 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	{
 		visited = visited.del().leaveProtocolInlining(parent, child, this, visited);
 		return super.subprotocolLeave(parent, child, visited);
+	}
+
+	public void pushRecVar(RecVar rv)
+	{
+		if (!this.recvars.containsKey(rv))
+		{
+			this.recvars.put(rv, 0);
+		}
+		else
+		{
+			this.recvars.put(rv, this.recvars.get(rv) + 1);
+		}
+	}
+
+	public void popRecVar(RecVar rv)
+	{
+		Integer i = this.recvars.get(rv);
+		if (i == 0)
+		{
+			this.recvars.remove(rv);
+		}
+		else
+		{
+			this.recvars.put(rv, i - 1);
+		}
+	}
+
+	// Refactored here from NameDisambiguation
+	public String getCanonicalRecVarName(RecVar rv)
+	{
+		//return getCanonicalRecVarName(this.getModuleContext().root, this.root.header.getDeclName(), rv.toString() + "_" + this.recvars.get(rv));
+		Integer i = this.recvars.get(rv);
+		return (i == 0) ? rv.toString() : (rv.toString() + i);
 	}
 }

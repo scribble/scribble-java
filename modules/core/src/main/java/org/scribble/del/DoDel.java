@@ -76,7 +76,7 @@ public abstract class DoDel extends SimpleInteractionNodeDel
 		if (!inl.isCycle())
 		{
 			SubprotocolSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
-			inl.setRecVar(subsig);
+			inl.setSubprotocolRecVar(subsig);
 		}
 	}
 }

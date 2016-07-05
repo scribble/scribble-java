@@ -20,6 +20,7 @@ import org.scribble.visit.env.ProjectionEnv;
 
 public class GInteractionSeqDel extends InteractionSeqDel
 {
+	// enter in super
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{

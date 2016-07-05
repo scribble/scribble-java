@@ -99,8 +99,8 @@ global protocol Proto1(role A, role B)
 			}
 			or
 			{
-				4() from A to B;
-				continue X;
+				//4() from A to B;
+				continue X;  // Testing unguarded shadowed recvars at different nestings
 			}
 			or
 			{

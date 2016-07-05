@@ -53,7 +53,7 @@ public abstract class ProtocolDeclDel<K extends ProtocolKind> extends ScribDelBa
 	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl) throws ScribbleException
 	{
 		SubprotocolSig subsig = inl.peekStack();  // SubprotocolVisitor has already entered subprotocol
-		inl.setRecVar(subsig);
+		inl.setSubprotocolRecVar(subsig);
 	}
 
 	@Override

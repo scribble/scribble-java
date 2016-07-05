@@ -46,7 +46,7 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 	public LDo visitForSubprotocolInlining(ProtocolDefInliner builder, LDo child)
 	{
 		SubprotocolSig subsig = builder.peekStack();
-		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getRecVar(subsig).toString());
+		RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, builder.getSubprotocolRecVar(subsig).toString());
 		LContinue inlined = AstFactoryImpl.FACTORY.LContinue(recvar);
 		builder.pushEnv(builder.popEnv().setTranslation(inlined));
 		return child;
@@ -59,12 +59,12 @@ public class LDoDel extends DoDel implements LSimpleInteractionNodeDel
 		SubprotocolSig subsig = inl.peekStack();
 		if (!inl.isCycle())
 		{
-			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, inl.getRecVar(subsig).toString());
+			RecVarNode recvar = (RecVarNode) AstFactoryImpl.FACTORY.SimpleNameNode(RecVarKind.KIND, inl.getSubprotocolRecVar(subsig).toString());
 			LInteractionSeq gis = (LInteractionSeq) (((InlineProtocolEnv) inl.peekEnv()).getTranslation());
 			LProtocolBlock gb = AstFactoryImpl.FACTORY.LProtocolBlock(gis);
 			LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(recvar, gb);
 			inl.pushEnv(inl.popEnv().setTranslation(inlined));
-			inl.removeRecVar(subsig);
+			inl.removeSubprotocolRecVar(subsig);
 		}	
 		return (LDo) super.leaveProtocolInlining(parent, child, inl, visited);
 	}

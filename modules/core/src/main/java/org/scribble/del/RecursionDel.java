@@ -6,6 +6,7 @@ import org.scribble.main.ScribbleException;
 import org.scribble.sesstype.name.RecVar;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.NameDisambiguator;
+import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.env.UnfoldingEnv;
 
 public abstract class RecursionDel extends CompoundInteractionNodeDel
@@ -35,9 +36,26 @@ public abstract class RecursionDel extends CompoundInteractionNodeDel
 		Recursion<?> rec = (Recursion<?>) visited;
 		/*RecVar rv = rec.recvar.toName();
 		disamb.popRecVar(rv);*/
-		RecVar rv = ((Recursion<?>) child).recvar.toName();
+		RecVar rv = ((Recursion<?>) child).recvar.toName();  // visited may be already name mangled  // Not any more (refactored to inlining)
 		disamb.popRecVar(rv);
 		return rec;
+	}
+
+	@Override
+	public void enterProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inliner) throws ScribbleException
+	{
+		super.enterProtocolInlining(parent, child, inliner);
+		Recursion<?> rec = (Recursion<?>) child;
+		inliner.pushRecVar(rec.recvar.toName());
+	}
+
+	@Override
+	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inliner, ScribNode visited) throws ScribbleException
+	{
+		//Recursion<?> rec = (Recursion<?>) visited;
+		RecVar origRV = ((Recursion<?>) child).recvar.toName();  // visited may be already name mangled
+		inliner.popRecVar(origRV);
+		return super.leaveProtocolInlining(parent, child, inliner, visited);
 	}
 
 	@Override

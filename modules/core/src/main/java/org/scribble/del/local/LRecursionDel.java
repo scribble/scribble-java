@@ -32,12 +32,13 @@ public class LRecursionDel extends RecursionDel implements LCompoundInteractionN
 	@Override
 	public ScribNode leaveProtocolInlining(ScribNode parent, ScribNode child, ProtocolDefInliner inl, ScribNode visited) throws ScribbleException
 	{
-		LRecursion gr = (LRecursion) visited;
-		RecVarNode recvar = gr.recvar.clone();
-		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) gr.block.del().env()).getTranslation();	
+		LRecursion lr = (LRecursion) visited;
+		//RecVarNode recvar = lr.recvar.clone();
+		RecVarNode recvar = (RecVarNode) ((InlineProtocolEnv) lr.recvar.del().env()).getTranslation();	
+		LProtocolBlock block = (LProtocolBlock) ((InlineProtocolEnv) lr.block.del().env()).getTranslation();	
 		LRecursion inlined = AstFactoryImpl.FACTORY.LRecursion(recvar, block);
 		inl.pushEnv(inl.popEnv().setTranslation(inlined));
-		return (LRecursion) super.leaveProtocolInlining(parent, child, inl, gr);
+		return (LRecursion) super.leaveProtocolInlining(parent, child, inl, lr);
 	}
 
 	@Override
