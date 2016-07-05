@@ -28,7 +28,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 {
 	public static final String DUMMY_REC_LABEL = "__";
 	
-	// Assumes unique recvars up to this point, i.e. no recvar shadowing -- unfolding of unguardeds will result in "unfolding shadowing"
+	// NOTE: assumes unique recvars up to this point, i.e. no recvar shadowing (treated internally by protocoldef-inlining) -- unfolding of unguardeds will, however, result in "unfolding shadowing"
 	private Map<RecVar, Recursion<?>> recs = new HashMap<>();  // Could parameterise recvars to be global/local
 	private Set<RecVar> recsToUnfold = new HashSet<>();
 	
