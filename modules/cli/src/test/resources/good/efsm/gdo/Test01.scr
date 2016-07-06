@@ -1,6 +1,6 @@
-//$ bin/scribblec.sh modules/cli/src/test/resources/good/graph/Test01.scr -ip modules/core/src/test/scrib/ -V -fsm Bar1 C
+//$ bin/scribblec.sh -ip modules/core/src/test/scrib/ modules/cli/src/test/resources/good/efsm/gdo/Test01.scr -fsm Bar1 C
 
-module good.graph.Test01;
+module good.efsm.gdo.Test01;
 
 
 // Test inlined protocol unfolding -- unguarded rec and continue under choice

@@ -1,0 +1,30 @@
+module good.efsm.grecursion.Test05;
+
+
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	2() from B to A;
+	choice at B
+	{
+		3() from B to A;
+	}
+	or
+	{
+		4() from B to A;
+	}
+	rec X
+	{
+		choice at A
+		{
+			5() from A to B;
+			6() from B to A;
+			continue X;
+		}
+		or
+		{
+			6() from A to B;
+		}
+	}
+}
+
