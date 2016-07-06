@@ -1,4 +1,4 @@
-module bad.wfchoice.globals.twopart.enabling.Test01c;
+module bad.wfchoice.globals.enabling.twoparty.Test01c;
 
 
 global protocol Proto1(role A, role B, role C, role D)
