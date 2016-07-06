@@ -1,0 +1,22 @@
+module good.efsm.gchoice.Test03;
+
+
+global protocol Foo(role A, role B)
+{
+	choice at A  // unary choice with continuation
+	{
+		1() from A to B;
+	}
+	rec X
+	{
+		choice at A
+		{
+			2() from A to B;
+			continue X;
+		}
+		or
+		{
+			3() from A to B;
+		}
+	}
+}

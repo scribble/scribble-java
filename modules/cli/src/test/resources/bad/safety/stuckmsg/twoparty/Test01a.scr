@@ -1,4 +1,4 @@
-module bad.safety.stuckmsg.twoparty.Test02;
+module bad.safety.stuckmsg.twoparty.Test01a;
 
 
 global protocol Proto1(role A, role B)

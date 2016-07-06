@@ -1,4 +1,4 @@
-module good.efsm.gdo.Test02;
+module good.inlining.gdo.Test01b;
 
 
 global protocol Foo(role A, role B)

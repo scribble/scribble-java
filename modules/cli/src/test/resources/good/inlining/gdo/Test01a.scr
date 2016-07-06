@@ -1,4 +1,4 @@
-module good.inlining.Test01;
+module good.inlining.gdo.Test01a;
 
 
 global protocol Foo(role A, role B)
