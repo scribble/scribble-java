@@ -1,4 +1,4 @@
-module good.efsm.Test02;
+module good.efsm.gchoice.Test02;
 
 
 global protocol Foo(role A, role B)

@@ -10,6 +10,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.ast.context.ModuleContext;
 import org.scribble.ast.global.GDo;
 import org.scribble.ast.local.LDo;
+import org.scribble.del.ProtocolDefDel;
 import org.scribble.del.global.GDoDel;
 import org.scribble.del.local.LDoDel;
 import org.scribble.main.ScribbleException;
@@ -68,6 +69,13 @@ public class ProtocolDefInliner extends SubprotocolVisitor<InlineProtocolEnv>
 	{
 		enter(parent, child);
 		ScribNode visited = visitForSubprotocols(parent, child);
+		if (visited instanceof ProtocolDecl<?>)
+		{
+			ProtocolDecl<?> pd = (ProtocolDecl<?>) visited;
+			getJob().debugPrintln("\n[DEBUG] Inlined root protocol "
+						+ pd.getFullMemberName(getJobContext().getModule(getModuleContext().root)) + ":\n"
+						+ ((ProtocolDefDel) pd.def.del()).getInlinedProtocolDef());
+		}
 		return leave(parent, child, visited);
 	}
 

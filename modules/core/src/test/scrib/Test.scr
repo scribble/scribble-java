@@ -6737,7 +6737,8 @@ global protocol Bar(role A, role B)
 //*/
 
 
-/*global protocol Foo(role A, role B)
+//*
+global protocol Foo(role A, role B)
 {
 	1() from A to B;
 	choice at A
@@ -6759,59 +6760,4 @@ global protocol Bar(role A, role B)
 }
 //*/
 
-
-/*global protocol Foo(role A, role B)
-{
-	//1() from A to B;
-	choice at A
-	{
-		do Bar1(A, B);
-	}
-	or
-	{
-		do Bar2(A, B);
-	}
-	or
-	{
-		5() from A to B;
-	}
-}
-
-global protocol Bar1(role A, role B)
-{
-	2() from A to B;
-	3() from B to A;
-	do Foo(A, B);
-}
-
-global protocol Bar2(role A, role B)
-{
-	4() from A to B;
-	do Bar2(A, B);
-}
-//*/
-
-
-//*
-global protocol Foo(role A, role B)
-{
-	//do Foo1<Test.String2>(A, B);
-	do Foo1<String>(A, B);
-	choice at A
-	{
-		1(String) from A to B;
-		2() from A to B;
-	}
-	or
-	{
-		do Test2.Bar(A, B);
-		//1() from A to B;
-	}
-}
-
-global protocol Foo1<type T>(role A, role B)
-{
-	(T) from A to B;
-}
-//*/
 
