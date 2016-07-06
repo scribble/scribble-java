@@ -12,7 +12,7 @@
 module Test;
 
 
-//*
+/*
 global protocol Proto1(role A, role B)
 {
 	rec X
