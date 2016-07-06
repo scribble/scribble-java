@@ -1,0 +1,21 @@
+module good.reach.globals.grecursion.Recursion08a;
+
+
+global protocol Recursion8a(role A, role B, role C, role D)
+{
+	rec X
+	{
+		choice at A
+		{
+			l1() from A to B;
+			continue X;
+		}
+		or
+		{
+			l2() from A to B;
+			continue X;
+		}
+	}
+	l3() from C to D;
+}
+

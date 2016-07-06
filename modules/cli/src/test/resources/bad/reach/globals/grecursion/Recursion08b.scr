@@ -1,0 +1,21 @@
+module bad.reach.globals.grecursion.Recursion08b;
+
+
+global protocol Recursion8b(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			l1() from A to B;
+			continue X;
+		}
+		or
+		{
+			l2() from A to B;
+			continue X;
+		}
+		l3() from A to B;
+	}
+}
+
