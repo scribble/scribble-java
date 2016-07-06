@@ -187,7 +187,7 @@ public class CommandLine //implements Runnable
 	}
 	
 	// FIXME: option to write to file, like classes
-	private void outputProjections(Job job) throws CommandLineException
+	private void outputProjections(Job job) throws CommandLineException, ScribbleException
 	{
 		JobContext jcontext = job.getContext();
 		String[] args = this.args.get(ArgFlag.PROJECT);

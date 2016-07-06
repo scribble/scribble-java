@@ -116,7 +116,7 @@ public class Job
 
 	// Pre: checkWellFormedness 
 	// Returns: full proto name -> Module
-	public Map<LProtocolName, Module> getProjections(GProtocolName fullname, Role role)
+	public Map<LProtocolName, Module> getProjections(GProtocolName fullname, Role role) throws ScribbleException
 	{
 		Module root = this.jcontext.getProjection(fullname, role);
 		Map<LProtocolName, Set<Role>> dependencies =

@@ -7070,22 +7070,20 @@ global protocol Bar(role C, role D)
 //*
 global protocol MyProto(role A, role B, role C, role D)
 {
-	rec X {
+	rec X
+	{
 		choice at A
 		{
 			1() from A to B;
 			continue X;
-			//1() from A to B;
 		}
 		or
 		{
-			1() from A to B;
 			2() from A to B;
 			continue X;
 		}
+		4() from C to D;
 	}
-	//3() from A to B;
-	4() from C to D;
 }
 //*/
 
