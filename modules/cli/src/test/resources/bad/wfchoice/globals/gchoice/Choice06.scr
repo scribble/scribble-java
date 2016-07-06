@@ -1,4 +1,4 @@
-module bad.oldwfchoice.globals.gchoice.Choice06;
+module bad.wfchoice.globals.gchoice.Choice06;
 
 
 global protocol Choice6(role A, role B)

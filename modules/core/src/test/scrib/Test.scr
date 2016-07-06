@@ -6981,30 +6981,3 @@ global protocol Foo<sig M>(role A, role B)
 //*/
 
 
-/*
-global protocol Foo<sig M2>(role A, role B)
-{
-	choice at A
-	{
-		//1() from A to B;
-		//do Bar<1()>(A, B);
-		//do Bar<2()>(A, B);
-		M2 from A to B;
-		//do Bar<M2>(A, B);
-	}
-	or
-	{
-		//M2 from A to B;
-		//1() from A to B;
-		//do Bar<M2>(A, B);
-		do Bar<1()>(A, B);
-	}
-}
-
-global protocol Bar<sig M3>(role C, role D)
-{
-	M3 from C to D;
-}
-//*/
-
-
