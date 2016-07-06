@@ -6010,7 +6010,7 @@ global protocol UpdateIndexList(role Alice, role Friend, role FriendsFriend) {
 			rec foreachMissingPost {
 
 				RequestMissingData(String) from Alice to Friend;
-				interruptible{MissingData(String) from Friend to Alice;} with {Timeout(String) by Alice;}
+				//interruptible{MissingData(String) from Friend to Alice;} with {Timeout(String) by Alice;}
 
 				choice at Alice { // if Bob doesn't respond
 					rec foreachFriendOfAlice2 {
@@ -6590,7 +6590,7 @@ global protocol Foo(role A, role B)
 //*/
 
 
-/*
+/*  Testing reachability
 global protocol Foo(role A, role B)
 {
 	rec Z
@@ -6621,7 +6621,24 @@ global protocol Foo(role A, role B)
 //*/
 
 
-/*global protocol Foo(role A, role B)  // Project for A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+global protocol Foo(role A, role B)  // Project for A
 {
 	do Bar1<1(), 2()>(A, B);
 	do Bar1<3(), 4()>(A, B);
@@ -6629,7 +6646,7 @@ global protocol Foo(role A, role B)
 
 global protocol Bar1<sig M1, sig M2>(role A, role B)
 {
-	do Bar2<M1, M2>(A, B, A);
+	do Bar2<M1, M2>(A, B, A);  // TODO: duplicate role args
 }
 
 global protocol Bar2<sig M1, sig M2>(role A, role B, role C)
@@ -6638,21 +6655,4 @@ global protocol Bar2<sig M1, sig M2>(role A, role B, role C)
 	M2 from B to C;
 }
 //*/
-
-
-/*global protocol Foo(role A, role B)
-{
-	do Bar(A, B);
-}
-
-global protocol Bar(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		do Bar(B, A);
-	}
-}
-//*/
-
 
