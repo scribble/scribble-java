@@ -121,6 +121,7 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 		return this.recs.get(recvar);
 	}
 
+	// Maybe possible to revise this algorithm to handle shadowed recs, but currently requires unique recvar names
 	public void setRecVar(RecVar recvar, Recursion<?> rec) throws ScribbleException
 	{
 		ProtocolBlock<?> block = (ProtocolBlock<?>) rec.getBlock().accept(this);
