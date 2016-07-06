@@ -5783,12 +5783,13 @@ global protocol Proto1(role C, role S)
 		//1() from S to C;
 		//do Request(C, S);
 		do Response(C, S);
-	}*/
+	}* /
 }
 //*/
 
 
-/*//global protocol Proto1(role A, role B, role C)
+/*
+//global protocol Proto1(role A, role B, role C)
 global protocol Proto1(role A, role B)
 {
 	choice at A
@@ -5801,7 +5802,8 @@ global protocol Proto1(role A, role B)
 		2() from A to B;
 		//2() from B to C;
 	}
-}*/
+}
+//*/
 
 
 /*
@@ -7061,7 +7063,9 @@ global protocol Bar(role C, role D)
 	2() from C to D;
 	do Foo(C, D);
 	//2() from C to D;
-}*/
+}
+//*/
+
 
 /*
 global protocol MyProto(role A, role B, role C, role D)

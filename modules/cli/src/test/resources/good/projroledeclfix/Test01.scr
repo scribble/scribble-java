@@ -1,4 +1,4 @@
-//$ bin/scribblec modules/cli/src/test/resources/good/projroldeclfix/Test01.scr -project Bar F
+//$ bin/scribblec.sh modules/cli/src/test/resources/good/projroledeclfix/Test01.scr -project Bar F
 
 
 module good.projroledeclfix.Test01;
