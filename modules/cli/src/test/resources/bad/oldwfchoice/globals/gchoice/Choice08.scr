@@ -1,4 +1,4 @@
-module bad.wfchoice.globals.gchoice.Choice08;
+module bad.oldwfchoice.globals.gchoice.Choice08;
 
 
 global protocol Choice8(role A, role B, role C)
@@ -7,15 +7,16 @@ global protocol Choice8(role A, role B, role C)
 	{
 		l1() from A to B;
 		l2() from B to C;
-		//l4() from C to A;  // Uncomment makes it OK
+		////l4() from C to A;  // Uncomment makes it OK
 	}
 	or
 	{
 		l2() from A to B;
 		//l1() from B to C;  // Comment is bad
 		l2() from B to C;
-		l4() from C to A;
+		//l4() from C to A;
 	}
-	l4() from A to C;
+	l2() from C to A;
+	//l4() from A to C;
 }
 
