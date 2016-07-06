@@ -6990,6 +6990,7 @@ global protocol Foo<sig M2>(role A, role B)
 		//do Bar<1()>(A, B);
 		//do Bar<2()>(A, B);
 		M2 from A to B;
+		//do Bar<M2>(A, B);
 	}
 	or
 	{
@@ -7006,48 +7007,4 @@ global protocol Bar<sig M3>(role C, role D)
 }
 //*/
 
-/*
-global protocol Foo(role A, role B)
-{
-	1() from A to B;
-	do Test2.Bar(A, B);
-	//3() from A to B;
-}
-//*/
-
-/*
-global protocol Foo(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-	}
-	or
-	{
-		do Test2.Bar(A, B);
-		//do Bar(A, B);
-	}
-}
-
-global protocol Bar(role C, role D)
-{
-	//1() from C to D;
-	2() from C to D;
-}
-//*/
-
-/*
-global protocol Foo(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-	}
-	or
-	{
-		//1() from A to B;
-		2() from A to B;
-	}
-}
-//*/
 
