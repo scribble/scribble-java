@@ -15,7 +15,8 @@ global protocol Foo<sig M2>(role A, role B)
 	}
 }
 
-global protocol Bar<sig M>(role C, role D)
+
+aux global protocol Bar<sig M>(role C, role D)
 {
 	M from C to D;
 }
