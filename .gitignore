@@ -9,6 +9,7 @@ tools/eclipse/plugins/org.scribble.*/bin/
 .DS_Store
 *~
 *.swp
+bin/scribblec.sh
 modules/core/src/test/scrib/demo/http/longvers/HttpLong
 modules/core/src/test/scrib/demo/http/shortvers/HttpShort
 modules/core/src/test/scrib/demo/smtp/SMTP
@@ -22,5 +23,8 @@ modules/core/src/test/scrib/scratch/Scratch1
 modules/core/src/test/scrib/demo/fase/adder/Adder
 modules/core/src/test/scrib/demo/fase/smtp/Smtp
 modules/core/src/test/scrib/demo/cognizant/loan
-bin/scribblec.sh
+modules/core/src/test/scrib/demo/betty16/lec1/httplong/HttpLong/
+modules/core/src/test/scrib/demo/betty16/lec1/httpshort/HttpShort/
+modules/core/src/test/scrib/demo/betty16/lec2/adder/Adder/
+modules/core/src/test/scrib/demo/betty16/lec2/smtp/Smtp/
 
