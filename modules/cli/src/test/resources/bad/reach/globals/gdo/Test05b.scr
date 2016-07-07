@@ -1,0 +1,16 @@
+module bad.reach.globals.gdo.Test05b;
+
+
+global protocol Foo(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		do Foo(A, B);
+	} or {
+		2() from A to B;
+		3() from A to B;
+	}
+	3() from A to B;
+}
+

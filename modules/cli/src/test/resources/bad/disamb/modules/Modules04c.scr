@@ -1,0 +1,11 @@
+module bad.disamb.modules.Modules04c;
+
+
+import bad.disamb.modules.pack1.Foo1 as Modules04c;
+
+
+global protocol Proto(role A, role B)
+{
+	1() from A to B;
+	do Modules04c.Proto(A, B);
+}

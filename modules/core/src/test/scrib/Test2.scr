@@ -7,34 +7,33 @@ module Test2;
 import Test;
 
 
-type <java> "java.lang.String" from "rt.jar" as String2;
+/*global protocol Proto(role C, role D)
+{
+	2() from C to D;
+}*/
 
-/*
-global protocol Test2Proto(role C, role D)
+
+/*type <java> "java.lang.String" from "rt.jar" as String2;
+
+//*
+global protocol Proto2(role C, role D)
 {
 	Test2() from C to D;
 }
 //*/
 
 
-/*
-//import Test;
-import test3.Test3 as Test3;  // FIXME: shouldn't be (directly) visible from Test as Test
-import Test4;
+//*
+import test3.Test3 as Test3;  // The name Test3 is Test3 in Test1
+import Test4;                 // The name Test4 is test3.Test3 in Test1
 import Test4 as T4;
 
-global protocol Test2Proto1(role C, role D)
+global protocol Proto2(role C, role D)
 {
 	2(Test3.TTT) from C to D;
-	2() from C to D;
-	//1() from C to D;
-	//aaa() from C to D;
-	//do Test.Foo(C, D);
-	//do Test.Foo(D, C);
-	//3() from C to D;
-	do Test3.Test3Proto(C, D);
-	do Test4.Test4Proto(C, D);
-	do T4.Test4Proto(C, D);
+	do Test3.Bar3(C, D);
+	do Test4.Proto4(C, D);
+	do T4.Proto4(C, D);
 }
 //*/
 
@@ -63,7 +62,7 @@ global protocol Foo(role A, role B, role C)
 //*/
 
 
-//*
+/*
 global protocol Bar(role C, role D)
 {
 	3() from C to D;
