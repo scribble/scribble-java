@@ -1,8 +1,0 @@
-module bad.disamb.imports.pack1.Import18b;
-
-
-global protocol Proto2(role C, role D)
-{
-	Import18b() from C to D;
-}
-
