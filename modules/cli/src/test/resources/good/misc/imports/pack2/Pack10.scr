@@ -1,0 +1,11 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py test/base/impourt/pack2/Pack10.scr
+
+module good.misc.imports.pack2.Pack10;
+
+global protocol Pack10(role C, role D)
+{
+	l2() from C to D;
+	//l1() from C to D; // Bad if above line is commented
+}
+

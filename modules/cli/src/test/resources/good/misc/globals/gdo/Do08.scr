@@ -1,0 +1,14 @@
+module good.misc.globals.gdo.Do08;
+
+
+global protocol Do8(role A, role B)
+{
+	do Do8Aux<l1()>(A, B);
+	do Do8Aux<l1()>(B, A);
+}
+
+global protocol Do8Aux<sig X>(role C, role D)
+{
+	X from C to D;
+}
+

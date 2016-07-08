@@ -1,0 +1,20 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/pack1/Pack13.scr
+
+module good.misc.imports.pack1.Pack13;
+
+import good.misc.imports.Import13;
+
+
+global protocol Pack13(role C, role D)
+{
+	do good.misc.imports.Import13.Import13Aux<l1()>(C, D);
+	//do Import13Aux<l1()>(C, D);
+	//do ImportAux<l3()>(C, D);  // Uncomment is OK (with below declaration)
+}
+
+/*global protocol ImportAux<sig X>(role A, role B)  // TODO: make separate test for visibility building for do-target
+{
+	X from A to B;
+}*/
+

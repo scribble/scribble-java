@@ -1,0 +1,32 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py -ip test/ test/base/impourt/Import10.scr
+
+module good.misc.imports.Import10;
+
+import good.misc.imports.pack1.Pack10;
+import good.misc.imports.pack2.Pack10;
+
+
+global protocol Import10(role A, role B)
+{
+	choice at A
+	{
+		do good.misc.imports.pack1.Pack10.Pack10(A, B);
+	}
+	or
+	{
+		do good.misc.imports.pack2.Pack10.Pack10(A, B);
+	}
+	or
+	{
+		do Pack10(A, B);
+	}
+}
+
+global protocol Pack10(role C, role D)
+{
+	l3() from C to D;
+	//l1() from C to D; // Bad if above line is commented
+	//l2() from C to D;
+}
+

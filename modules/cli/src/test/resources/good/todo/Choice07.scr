@@ -1,4 +1,4 @@
-module good.parsing.globals.gchoice.Choice07;
+module good.misc.globals.gchoice.Choice07;
 
 
 global protocol Choice7(role A, role B)

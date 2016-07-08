@@ -1,0 +1,17 @@
+//Raymond@HZHL2 ~/code/python/scribble-tools
+//$ PYTHONPATH='lib/:bin/' python src/scribble/Main.py test/base/impourt/pack1/Pack2.scr
+
+module good.misc.imports.pack1.Pack02;
+
+
+global protocol Pack2a(role A, role B)
+{
+	l1() from A to B;
+}
+
+global protocol Pack2b(role A, role B)
+//global protocol Pack2a(role A, role B)
+{
+	l1() from A to B;
+}
+

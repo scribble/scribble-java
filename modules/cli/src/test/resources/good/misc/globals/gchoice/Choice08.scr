@@ -1,0 +1,19 @@
+module good.misc.globals.gchoice.Choice08;
+
+
+global protocol Choice8(role A, role B, role C)
+{
+	choice at A
+	{
+		l1() from A to B;
+		l2() from B to C;
+	}
+	or
+	{
+		l2() from A to B;
+		l1() from B to C;  // Comment is bad
+		l2() from B to C;
+	}
+	l2() from A to C;
+}
+
