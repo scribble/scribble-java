@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,25 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 			}
 		}
 	}
+
+	// Doesn't set predecessor
+	public void addRecursionEdge(S s, A a, S succ)  // Cf. addContinueEdge
+	{
+		s.addEdge(a, succ);
+		
+		// Still needed here?
+		for (Deque<Set<A>> ens : this.enacting.values())
+		{
+			if (!ens.isEmpty())
+			{
+				Set<A> tmp = ens.peek();
+				if (tmp.isEmpty())
+				{
+					tmp.add(a);
+				}
+			}
+		}
+	}
 	
 	/*private final List<S> contStates = new LinkedList<>();
 	private final List<RecVar> contRecVars = new LinkedList<>();*/
@@ -114,10 +134,32 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	/*public void removeLastEdge(S s)
 	{
 		s.removeLastEdge();
-	}*/
+	}* /
 	public void removeEdge(S s, A a, S succ) throws ScribbleException
 	{
 		s.removeEdge(a, succ);
+	}*/
+
+	// succ assumed to be this.getEntry()
+	public void removeEdgeFromPredecessor(S s, A a) throws ScribbleException
+	{
+		//s.removeEdge(a, succ);
+		s.removeEdge(a, this.getEntry());
+		//this.pred.peek().remove(s);  // Need to update both preds and prevs accordingly (consider non-det)
+		Iterator<S> preds = this.pred.peek().iterator();
+		Iterator<A> prevs = this.prev.peek().iterator();
+		while (preds.hasNext())
+		{
+			S nexts = preds.next();
+			A nexta = prevs.next();
+			if (nexts.equals(s) && nexta.equals(a))
+			{
+				preds.remove();
+				prevs.remove();
+				return;
+			}
+		}
+		throw new RuntimeException("Shouldn't get in here: " + s + ", " + a);
 	}
 	
 	public void enterChoice()  // FIXME: refactor (LChoiceDel.visitForFsmConversion)
@@ -265,12 +307,14 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	
 	public List<S> getPredecessors()
 	{
-		return this.pred.peek();
+		//return this.pred.peek();
+		return new LinkedList<>(this.pred.peek());  // Cf. removeEdgeFromPredecessor
 	}
 	
 	public List<A> getPreviousActions()
 	{
-		return this.prev.peek();
+		//return this.prev.peek();
+		return new LinkedList<>(this.prev.peek());
 	}
 
 	public S getRecursionEntry(RecVar recvar)

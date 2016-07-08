@@ -87,9 +87,11 @@ public class LContinueDel extends ContinueDel implements LSimpleInteractionNodeD
 				if (!removed.contains(tmp))
 				{
 					removed.add(tmp);
-					graph.builder.removeEdge(pred, prev, entry);
+					//graph.builder.removeEdge(pred, prev, entry);
+					graph.builder.removeEdgeFromPredecessor(pred, prev);  // Assumes pred is a predecessor, and removes pred from current predecessors..
 				}
-				graph.builder.addEdge(pred, prev, graph.builder.getRecursionEntry(rv));
+				//graph.builder.addEdge(pred, prev, graph.builder.getRecursionEntry(rv));
+				graph.builder.addRecursionEdge(pred, prev, graph.builder.getRecursionEntry(rv));  // May be repeated for non-det, but OK  // Combine with removeEdgeFromPredecessor?
 			}
 		}
 		return (LContinue) super.leaveEndpointGraphBuilding(parent, child, graph, lr);
