@@ -5788,91 +5788,11 @@ global protocol Proto1(role C, role S)
 //*/
 
 
-/*
-//global protocol Proto1(role A, role B, role C)
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		//1() from A to C;
-	}
-	or
-	{
-		2() from A to B;
-		//2() from B to C;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		2() from B to A;
-		choice at A  // Nested choice: check for distinct enabling messages in path collection is not broken for the two paths in this choice induced by nested choice
-		{
-			3a() from A to B;
-		}
-		or
-		{
-			3b() from A to B;
-		}
-	}
-	4() from B to A;
-	choice at A
-	{
-		5a() from A to B;
-	}
-	or
-	{
-		5b() from A to B;
-	}
-	// Check path collection
-}
-//*/
-
-
-/*
+//*
 global protocol Proto1(role A, role B, role C)
+//global protocol Proto1(role A, role B)
 {
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from B to C;
-		}
-		or
-		{
-			2() from A to B;
-			//4() from B to C;
-			continue X;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	1() from A to B;
-	1() from A to C;
 	choice at A
-	{
-		do Proto1(A, B, C);
-	}
-	or
-	{
-		2() from A to B;
-		2() from A to C;
-	}
-
-	/*choice at A
 	{
 		1() from A to B;
 		1() from A to C;
@@ -5880,70 +5800,14 @@ global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		2() from A to C;
-	}*/
-	/*rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from A to C;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-			2() from A to C;
-		}
-	}*/
-	/*rec Y
-	{
-		choice at A
-		{
-			rec X
-			{
-				choice at A
-				{
-					1() from A to B;
-					continue X;
-				}
-				or
-				{
-					2() from A to C;
-					continue Y;
-				}
-				or
-				{
-					3() from A to B;
-					3() from B to C;
-				}
-			}
-		}
-		or
-		{
-			4() from A to B;
-			continue Y;
-		}
-	}* /
+		2() from B to C;
+	}
 }
 //*/
 
 
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		1() from A to B;
-		3() from B to C;
-	}
-	or
-	{
-		2() from A to B;
-		3() from B to C;  // Testing same continuation for C (mergability, rather than just factoring out)
-	}
-}
-//*/
+
+
 
 
 

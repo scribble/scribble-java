@@ -1,0 +1,14 @@
+module bad.syntax.disamb.doarglist.DoArgList02;
+
+
+global protocol Foo(role A, role B)
+{
+	1() from A to B;
+	do Bar(A, B);
+}
+
+global protocol Bar(role C, role D, role E)
+{
+	1() from C to D;
+	2() from D to E;
+}

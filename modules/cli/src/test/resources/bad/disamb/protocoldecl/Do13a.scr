@@ -1,9 +1,0 @@
-module bad.disamb.protocoldecl.Do13a;
-
-
-global protocol Do13a(role A, role B)
-{
-	//l1() from A to B;  // Uncomment is OK
-	do Do13a(A, B);
-	//l1() from A to B;  // Uncomment is bad
-}

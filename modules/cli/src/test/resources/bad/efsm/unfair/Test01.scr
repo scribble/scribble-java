@@ -1,0 +1,37 @@
+module bad.efsm.unfair.Test01;
+
+
+// OK if -fair
+global protocol Proto1(role A, role B, role C)
+{
+	rec Y
+	{
+		choice at A
+		{
+			rec X
+			{
+				choice at A
+				{
+					1() from A to B;
+					continue X;
+				}
+				or
+				{
+					2() from A to C;
+					continue Y;
+				}
+				or
+				{
+					3() from A to B;
+					3() from A to C;
+				}
+			}
+		}
+		or
+		{
+			4() from A to B;
+			continue Y;
+		}
+	}
+}
+

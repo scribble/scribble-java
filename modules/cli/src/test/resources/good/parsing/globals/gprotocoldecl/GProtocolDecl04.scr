@@ -1,4 +1,4 @@
-module good.disamb.globals.protocoldecl.GProtocolDecl04;
+module good.syntax.disamb.globals.protocoldecl.GProtocolDecl04;
 
 
 global protocol GProtocolDecl4a(role D, role E)

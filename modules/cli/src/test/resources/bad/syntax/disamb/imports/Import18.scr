@@ -1,0 +1,12 @@
+module good.syntax.disamb.imports.Import18;
+
+
+import bad.syntax.disamb.imports.pack1.Import18b as Bar;
+
+
+global protocol Foo(role A, role B)
+{
+	do good.syntax.disamb.imports.pack1.Import18b.Proto2(A, B);
+}
+
+

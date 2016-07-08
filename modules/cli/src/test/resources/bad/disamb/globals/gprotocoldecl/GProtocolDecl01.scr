@@ -1,7 +1,0 @@
-module bad.disamb.globals.gprotocoldecl.GProtocolDecl01;
-
-
-global protocol Foo(role A, role B, role C)
-{
-
-}
