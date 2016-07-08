@@ -1,4 +1,4 @@
-module good.syntax.inlining.gdo.pack1.Test4;
+module good.syntax.inlinedunfolding.gdo.pack1.Test4;
 
 
 global protocol Proto4(role C, role D)

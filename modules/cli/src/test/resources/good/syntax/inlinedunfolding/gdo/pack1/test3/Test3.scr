@@ -1,4 +1,4 @@
-module good.syntax.inlining.gdo.pack1.test3.Test3;
+module good.syntax.inlinedunfolding.gdo.pack1.test3.Test3;
 
 
 type <java> "..." from "..." as TTT;

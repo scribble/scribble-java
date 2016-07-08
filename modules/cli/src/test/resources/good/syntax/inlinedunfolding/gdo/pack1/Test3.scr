@@ -1,4 +1,4 @@
-module good.syntax.inlining.gdo.pack1.Test3;
+module good.syntax.inlinedunfolding.gdo.pack1.Test3;
 
 
 global protocol Foo3(role C, role D)

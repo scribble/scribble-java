@@ -1,4 +1,4 @@
-module good.syntax.projchosubjfix.Test01;
+module good.syntax.projchoicesubjfix.Test01;
 
 
 // Test transitive dependency collection and doarg name subs for projected choice subj inference

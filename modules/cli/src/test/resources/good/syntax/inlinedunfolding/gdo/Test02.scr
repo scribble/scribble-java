@@ -1,7 +1,7 @@
-module good.syntax.inlining.gdo.Test02;
+module good.syntax.inlinedunfolding.gdo.Test02;
 
 
-import good.syntax.inlining.gdo.pack1.Test2 as Test2;
+import good.syntax.inlinedunfolding.gdo.pack1.Test2 as Test2;
 
 
 global protocol Foo(role A, role B)
