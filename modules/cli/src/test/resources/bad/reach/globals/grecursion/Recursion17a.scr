@@ -1,4 +1,4 @@
-module good.reach.globals.grecursion.Recursion17a;
+module bad.reach.globals.grecursion.Recursion17a;
 
 
 global protocol Foo(role A, role B)
