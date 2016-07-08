@@ -109,8 +109,8 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		}
 	}
 
-	// Doesn't set predecessor
-	public void addRecursionEdge(S s, A a, S succ)  // Cf. addContinueEdge
+	// Doesn't set predecessor, cf. addEdge
+	protected void addRecursionEdge(S s, A a, S succ)  // Cf. LGraphBuilder.addContinueEdge, for choice-unguarded cases -- addRecursionEdge, for guarded cases, should also be in LGraphBuilder, but here for convenience (private state)
 	{
 		s.addEdge(a, succ);
 		
@@ -141,7 +141,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	}*/
 
 	// succ assumed to be this.getEntry()
-	public void removeEdgeFromPredecessor(S s, A a) throws ScribbleException
+	protected void removeEdgeFromPredecessor(S s, A a) throws ScribbleException  // Removing prev edge, to be replaced by addRecursionEdge  // Should be in LGraphBuilder, but here for convenience
 	{
 		//s.removeEdge(a, succ);
 		s.removeEdge(a, this.getEntry());

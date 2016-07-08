@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.scribble.main.ScribbleException;
 import org.scribble.model.GraphBuilder;
 import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.RecVar;
@@ -29,7 +30,19 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 	{
 
 	}
+
+	public void removeEdgeFromPredecessor(EndpointState s, IOAction a) throws ScribbleException
+	{
+		super.removeEdgeFromPredecessor(s, a);
+	}
 	
+	// Choice-guarded continues (can be done in one pass)
+	public void addRecursionEdge(EndpointState s, IOAction a, EndpointState succ)
+	{
+		super.addRecursionEdge(s, a, succ);
+	}
+	
+	// Choice-unguarded continues -- fixed in finalise pass
 	public void addContinueEdge(EndpointState s, RecVar rv)
 	{
 		/*this.contStates.add(s);
