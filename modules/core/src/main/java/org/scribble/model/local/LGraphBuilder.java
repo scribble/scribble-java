@@ -53,6 +53,9 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 	
 	public EndpointGraph finalise()
 	{
+		
+		System.out.println("AAA:\n" + this.entry.toDot() + "\n");
+		
 		EndpointState res = new EndpointState(this.entry.getLabels());
 		EndpointState resTerm = new EndpointState(this.exit.getLabels());
 		Map<EndpointState, EndpointState> map = new HashMap<>();
@@ -72,6 +75,7 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 		return new EndpointGraph(res, resTerm);
 	}
 	
+	// FIXME: incomplete: won't fully correctly handle situations involving, e.g., transitive continue-edge fixing?
 	private void fixContinueEdges(Set<EndpointState> seen, Map<EndpointState, EndpointState> map, EndpointState curr, EndpointState res)
 	{
 		if (seen.contains(curr))

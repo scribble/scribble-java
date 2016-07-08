@@ -1,20 +1,36 @@
 module good.efsm.grecursion.Test09;
 
 
-global protocol Foo(role A, role B)
+global protocol Proto1(role A, role B, role C)
 {
+	1() from A to B;
+	2() from A to C;
 	rec X
 	{
 		choice at A
 		{
-			1() from A to B;
+			3() from A to B;
 		}
-		or
+		choice at A
 		{
-			1() from A to B;
+			rec Y
+			{
+				choice at A
+				{
+					3() from A to B;
+					continue X;
+				}
+				or
+				{
+					4() from A to B;
+					continue Y;
+				}
+				or
+				{
+					5() from A to B;
+				}
+			}
 		}
-		continue X;  // Testing recursion edge replacement cornercase (length 1 non-det choice paths are merged as a single case)
 	}
 }
-
 

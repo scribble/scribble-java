@@ -1,0 +1,15 @@
+module bad.syntax.consistentchoicesubj.Test02;
+
+
+// Maybe refactor as projection
+global protocol Proto1(role C, role S)
+{
+	choice at C
+	{
+		choice at S  // Fixed peekParentEnv index bug for enabled choice subjs
+		{
+			1() from S to C;
+		}
+	}
+}
+

@@ -21,6 +21,8 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	private final Map<RecVar, Deque<S>> recvars = new HashMap<>();  // Should be a stack of S?
 	private final Map<RecVar, Deque<Set<A>>> enacting = new HashMap<>();  // first action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
 
+	protected final Map<S, Set<A>> enactingMap = new HashMap<>();  // Hack?  // FIXME: needs to identify specific enacting per-recvar, since a state could have multi-recvars
+
 	//private final Map<SubprotocolSig, S> subprotos = new HashMap<>();  // Not scoped sigs
 
 	private final Deque<List<S>> pred = new LinkedList<>();
@@ -109,7 +111,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		}
 	}
 
-	// Doesn't set predecessor, cf. addEdge
+	// Doesn't set predecessor, cf. addEdge (and cf. addEdgeAux)
 	protected void addRecursionEdge(S s, A a, S succ)  // Cf. LGraphBuilder.addContinueEdge, for choice-unguarded cases -- addRecursionEdge, for guarded cases, should also be in LGraphBuilder, but here for convenience (private state)
 	{
 		s.addEdge(a, succ);
@@ -290,18 +292,16 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 		}
 		tmp2.push(new HashSet<>());  // Push new Set element onto stack
 	}	
-
-	protected final Map<S, Set<A>> enactingMap = new HashMap<>();
 	
 	public void popRecursionEntry(RecVar recvar)
 	{
-		this.recvars.get(recvar).pop();
+		this.recvars.get(recvar).pop();  // Pop the entry of this rec
+
 		Set<A> pop = this.enacting.get(recvar).pop();
 		if (this.enacting.get(recvar).isEmpty())  // All Sets popped from the stack of this recvar
 		{
 			this.enacting.remove(recvar);
 		}
-		
 		this.enactingMap.put(getEntry(), pop);
 	}	
 	

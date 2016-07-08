@@ -5687,27 +5687,113 @@ global protocol Proto1(role A, role B)
 //*/
 
 
+/*  // HERE
+global protocol Proto1(role A, role B)
+{
+	rec Y
+	{
+		0() from A to B;
+		rec X
+		{
+			1() from A to B;
+			choice at A
+			{
+				continue X;  // Bug is probably related to not considering transitive continue-edge fixing, see intermediate continue-edge FSM 
+			}
+			or
+			{
+				continue Y;
+			}
+		}
+	}
+}
+//*/
+
+
+/* // Cf. -minfsm
+global protocol Proto1(role A, role B)
+{
+	rec Y
+	{
+		0() from A to B;
+		rec X
+		{
+			1() from A to B;
+			choice at A  // FIXME: inlined/unfolded looks OK (for both cases), should be a graph building bug
+			{
+				continue X;
+			}
+			or
+			{
+				continue Y;
+			}
+			/*or
+			{
+				continue X;
+			}* /
+		}
+	}
+}
+
+
 /*
 global protocol Proto1(role A, role B, role C)
 {
 	3() from A to C;
 	rec Y
 	{
-		2() from A to B;  // Uncomment is bad (non-enabled B / non-disjoint labels)
+		() from A to B;  // Uncomment is bad (non-enabled B / non-disjoint labels)
 		2a() from B to A;
 		rec X
 		{
 			1() from A to B;
 			choice at A
 			{
-				//2() from A to B;
+				2() from A to B;
 				continue X;  // Testing project choice subject "inference", and testing continue-only choice block
 			}
 			or
 			{
 				continue Y;  // Different continue-onlys, tests FSM building
 			}
-			/*or  // Uncomment is bad (non-disjoint labels)
+			or  // Uncomment is bad (non-disjoint labels)
+			{
+				continue X;
+			}
+			or
+			{
+				4() from A to B;
+			}
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	rec Y
+	{
+		1() from A to B;
+		rec X
+		{
+			2() from A to B;
+			//2() from B to A;
+			choice at A
+			{
+				3() from A to B;
+				continue X;
+			}
+			or
+			{
+				continue X;  // FIXME: inconsistent results between here and below comment
+			}
+			or
+			{
+				continue Y;
+			}
+			/*or
 			{
 				continue X;
 			}* /
@@ -5721,144 +5807,90 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
-global protocol Proto1(role A, role B, role C)
+global protocol Proto1(role A, role B)
 {
-	1() from A to B;
-	2() from A to C;
-	rec X
+	rec Y
 	{
-		/*choice at A
+		rec X
 		{
-			3() from A to B;
-		}* /
-		choice at A
-		{
-			rec Y
+			1() from A to B;
+			choice at A
 			{
-				choice at A
-				{
-					3() from A to B;
-					continue X;
-				}
-				or
-				{
-					4() from A to B;
-					continue Y;
-				}
-				or
-				{
-					5() from A to B;
-				}
+				continue X;  // FIXME: non-fair is just slow, or non-terminating?
+			}
+			or
+			{
+				continue X;
+			}
+			or
+			{
+				continue Y;
+			}
+			or
+			{
+				2() from A to B;
 			}
 		}
 	}
 }
 //*/
-
-
-/*
-global protocol Proto1(role C, role S)
-{
-	choice at C
-	{
-		//0() from C to S;
-		choice at S  // Fixed peekParentEnv index bug for enabled choice subjs
-		{
-			1() from S to C;
-		}
-	}
-	/*rec X {
-		choice at C {
-			0() from C to S;
-			rec Y {
-				1() from S to C;
-			}
-		}
-	//}* /
-
-	/*choice at C
-	{
-		0() from C to S;
-		//1() from S to C;
-		//do Request(C, S);
-		do Response(C, S);
-	}* /
-}
-//*/
-
-
-//*
-global protocol Proto1(role A, role B, role C)
-//global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		1() from A to C;
-	}
-	or
-	{
-		2() from A to B;
-		2() from B to C;
-	}
-}
-//*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* // ??

@@ -1,6 +1,7 @@
 module bad.oldwfchoice.globals.gchoice.Choice05b;
 
 
+// Bad only for -oldwf; good by default
 global protocol Choice5b(role A, role B)
 {
 	choice at B
