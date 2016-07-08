@@ -1,4 +1,4 @@
-module good.efsm.grecursion.Test06a;
+module good.efsm.grecursion.choiceunguarded.Test06a;
 
 
 global protocol Foo(role A, role B)
