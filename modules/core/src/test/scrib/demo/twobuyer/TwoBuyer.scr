@@ -24,3 +24,36 @@ global protocol TwoBuyer(role A, role B, role S)
 		quit() from B to S;
 	}
 }
+
+
+global protocol TwoBuyerAlt(role A, role B, role S)
+{
+	title(String) from A to S;
+	choice at S  // Not expressible by "directed" choice
+	{
+		quote1(int) from S to A;
+		(int) from A to S;
+		quote2(int) from S to B;
+		do TwoBuyerAltAux(B, S);
+	}
+	or
+	{
+		quote1(int) from S to B;
+		(int) from B to S;
+		quote2(int) from S to A;
+		do TwoBuyerAltAux(A, S);
+	}
+}
+
+aux global protocol TwoBuyerAltAux(role C, role S)
+{
+	choice at C
+	{
+		ok(Address) from C to S;
+		(Date) from S to C;
+	}
+	or
+	{
+		quit() from C to S;
+	}
+}

@@ -4915,6 +4915,12 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
+
+
+
+
+
+
 //*** TODO FIXME add test cases
 
 /*
@@ -4928,7 +4934,7 @@ global protocol Proto1(role A, role B, role C)
 	or
 	{
 		2() from A to B;
-		1() from B to C;  // Comment is bad
+		//1() from B to C;  // Comment is bad
 	}
 	2() from C to B;
 }
@@ -5233,6 +5239,18 @@ global protocol Proto1(role A, role B, role C)
 
 
 //*** test cases
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
