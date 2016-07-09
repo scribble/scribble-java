@@ -3,13 +3,18 @@ package org.scribble.model.local;
 import org.scribble.model.global.GIOAction;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.Op;
+import org.scribble.sesstype.name.RecVar;
 import org.scribble.sesstype.name.Role;
 
 public class IntermediateContinueEdge extends IOAction
 {
-	public IntermediateContinueEdge()
+	/*public IntermediateContinueEdge()
 	{
 		super(Role.EMPTY_ROLE, Op.EMPTY_OPERATOR, Payload.EMPTY_PAYLOAD);
+	}*/
+	public IntermediateContinueEdge(RecVar rv)
+	{
+		super(Role.EMPTY_ROLE, new Op(rv.toString()), Payload.EMPTY_PAYLOAD);  // Hacky
 	}
 	
 	@Override

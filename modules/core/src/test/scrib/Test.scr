@@ -5690,6 +5690,36 @@ global protocol Proto1(role A, role B)
 /*  // HERE
 global protocol Proto1(role A, role B)
 {
+	rec X
+	{
+		rec Y
+		{
+			choice at A
+			{
+				1() from A to B;
+			}
+			or
+			{
+				2() from A to B;
+			}
+			choice at A  // FIXME: stuck
+			{
+				continue X;
+			}
+			or
+			{
+				//2() from A to B;
+				continue Y;
+			}
+		}
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
 	rec Y
 	{
 		0() from A to B;
@@ -5702,7 +5732,7 @@ global protocol Proto1(role A, role B)
 			}
 			or
 			{
-				continue Y;
+				continue Y;  // TODO: also test Y,X order
 			}
 		}
 	}
@@ -5727,13 +5757,14 @@ global protocol Proto1(role A, role B)
 			{
 				continue Y;
 			}
-			/*or
+			or
 			{
 				continue X;
-			}* /
+			}
 		}
 	}
 }
+//*/
 
 
 /*
@@ -5793,10 +5824,10 @@ global protocol Proto1(role A, role B)
 			{
 				continue Y;
 			}
-			/*or
+			or
 			{
 				continue X;
-			}* /
+			}
 			or
 			{
 				4() from A to B;

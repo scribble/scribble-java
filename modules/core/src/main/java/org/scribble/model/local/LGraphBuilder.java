@@ -48,14 +48,11 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 		/*this.contStates.add(s);
 		this.contRecVars.add(rv);*/
 		EndpointState entry = getRecursionEntry(rv);
-		addEdgeAux(s, new IntermediateContinueEdge(), entry);
+		addEdgeAux(s, new IntermediateContinueEdge(rv), entry);
 	}
 	
 	public EndpointGraph finalise()
 	{
-		
-		System.out.println("AAA:\n" + this.entry.toDot() + "\n");
-		
 		EndpointState res = new EndpointState(this.entry.getLabels());
 		EndpointState resTerm = new EndpointState(this.exit.getLabels());
 		Map<EndpointState, EndpointState> map = new HashMap<>();
@@ -100,7 +97,10 @@ public class LGraphBuilder extends GraphBuilder<IOAction, EndpointState, Local>
 			}
 			else
 			{
-				for (IOAction e : this.enactingMap.get(succ))
+				IntermediateContinueEdge ice = (IntermediateContinueEdge) a;
+				//for (IOAction e : this.enactingMap.get(succ))
+				RecVar rv = new RecVar(ice.mid.toString());
+				for (IOAction e : this.enactingMap.get(succ).get(rv))
 				{
 					for (EndpointState n : succ.takeAll(e))
 					{
