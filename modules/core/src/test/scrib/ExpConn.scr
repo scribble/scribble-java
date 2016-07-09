@@ -1,15 +1,4 @@
-//Raymond@HZHL3 ~/code/scribble-java/scribble-java
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/validation/src/test/scrib/src/ -validate Test
-
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble.cli.CommandLine -path modules/core/src/test/scrib/ modules/core/src/test/scrib/Test.scr
-//$ java -cp modules/cli/target/classes/';'modules/core/target/classes';'modules/trace/target/classes';'modules/parser/target/classes';c:\Users\Raymond\.m2\repository\org\antlr\antlr-runtime\3.2\antlr-runtime-3.2.jar;'modules/validation/target/classes/';'modules/projection/target/classes/';C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-mapper-asl\1.9.9\jackson-mapper-asl-1.9.9.jar;C:\Users\Raymond\.m2\repository\org\codehaus\jackson\jackson-core-asl\1.9.9\jackson-core-asl-1.9.9.jar' org.scribble2.cli.CommandLine -path modules/validation/src/test/scrib/src modules/validation/src/test/scrib/src/Test.scr
-
-//$ bin/scribblec.sh -ip modules/core/src/test/scrib/ -d modules/core/src/test/scrib/ modules/core/src/test/scrib/Test.scr
-
-//http://sandbox.kidstrythisathome.com/erdos/
-
-
-module Test;
+module ExpConn;
 
 
 /*
@@ -3747,137 +3736,342 @@ global protocol Proto1(role A, role B, role C)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
-global protocol Proto1(role A, role B, role C, role D)
+explicit global protocol Proto1(role A, role B, role C)
 {
-	rec X
+	connect A to B;
+	choice at A
 	{
-		1() from A to B;
-		continue X;  // Checking safety in non-terminating global model
-	}
-	choice at C
-	{
-		2() from C to D;
-		3() from D to C;  // Stuck messages also manifest as message liveness violations (CHECKME: subsumed? so unnecessary to check safety except for actual terminations? -- but morally, they are local safety errors for the roles, as opposed to global liveness errors for the system)
+		rec X
+		{
+			2() from A to B;
+			continue X;
+		}
 	}
 	or
 	{
-		2() from C to D;
-		4() from D to C;
+		3() from A to B;
+	}
+	connect A to C;  // Good
+	4() from A to C;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	connect B to C;
+	1() from A to B;
+	choice at B
+	{
+		rec X
+		{
+			2() from B to C;
+			continue X;
+		}
+	}
+	or
+	{
+		3() from B to C;
+	}
+	connect A to C;  // Bad: role liveness
+	4() from A to C;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		//2() from A to B;  // Uncomment bad
+	}
+	or
+	{
+		1() from A to B;
+		rec X
+		{
+			connect B to C;
+			4() from B to C;
+			5() from C to B;
+			disconnect B and C;
+			continue X;
+		}
 	}
 }
 //*/
 
 
 /*
-global protocol Proto1(role A, role B, role C)
+explicit global protocol Proto1(role A, role B, role C, role D)
 {
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
+		1() from B to A;
+		connect B to C;
+		connect C to D;
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
+		connect B to D;
+		connect D to C;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	choice at A
+	{
+		connect A to B;
+		//connect B to C;  // Uncomment bad
+	}
+	or
+	{
+		connect A to C;
+	}
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at B
+	{
+		1() from B to A;
+		do Proto1Aux2<Int1>(A, C);
+	}
+	or
+	{
+		2() from B to A;
+		do Proto1Aux2<Int2>(A, C);
+	}
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux2<type T>(role A, role C)
+{
+	// Bad: non-det connect followed by distinct payloads
+	connect A to C;
+	3(T) from A to C;
+	4() from C to A;
+	disconnect A and C;
+}
+//*/
+
+
+/*
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+type <java> "java.lang.Integer" from "rt.jar" as Int2;
+
+explicit global protocol Proto1(role A, role B, role C)
+{
+	// Good by basic model checking, but..
+	connect A to B;
+	connect A to C;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at B
+	{
+		1() from B to A;
+		do Proto1Aux2<Int1>(A, C);
+	}
+	or
+	{
+		2() from B to A;
+		do Proto1Aux2<Int2>(A, C);  // Bad: payload
+	}
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux2<type T>(role A, role C)
+{
+	3(T) from A to C;
+	4() from C to A;
+}
+//*/
+
+
+/*
+// Good: same payload
+type <java> "java.lang.Integer" from "rt.jar" as Int1;
+
+explicit global protocol Proto1(role A, role B, role C)
+{
+	// Good
+	connect A to B;
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux1(role A, role B, role C)
+{
+	choice at B
+	{
+		1() from B to A;
+		do Proto1Aux2<Int1>(A, C);
+	}
+	or
+	{
+		2() from B to A;
+		do Proto1Aux2<Int1>(A, C);
+	}
+	do Proto1Aux1(A, B, C);
+}
+
+aux global protocol Proto1Aux2<type T>(role A, role C)
+{
+	connect A to C;
+	3(T) from A to C;
+	4() from C to A;
+	disconnect A and C;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect from A to B;
+	do Proto1Aux(A, B);
+}
+
+aux explicit global protocol Proto1Aux(role A, role B)
+{
+	1() from A to B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	// Basic connectedness tests
+	connect A to B;
+	//connect B to A;
+	disconnect A and B;
+	//1() from A to B;
+	//disconnect A and B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
 	rec X
 	{
 		choice at A
 		{
 			1() from A to B;
-			choice at A
-			{
-				1() from A to C;
-				continue X;  // ** CHECKME: badly formed (for B) -- empty block bvelow is pruned leaving only the continue case, which leads to deadlock in global model, is this OK as WF algorithm? (any way to be unsound?)  or should explicitly detect inconsistent choice block projections? 
-			}
-			or
-			{
-				3() from A to C;
-			}
+			connect B to C;
+			2() from B to C;
+			connect C to A;
+			3() from C to A;
+			//3() from A to B;  // Uncomment OK
+			disconnect B and C;
+			disconnect C and A; // Comment bad
+			continue X;
 		}
 		or
 		{
-			2() from A to C;
+			4() from A to B;
+		}
+	}
+	//disconnect A and C;  // Uncomment bad
+	disconnect A and B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	rec X
+	{
+		choice at B
+		{
+			// Good, even though A not involved here
+			connect B to C
+			2() from B to C;
+			3() from C to B;
+			disconnect B and C;
+			continue X;
+		}
+		or
+		{
+			4() from B to A;
+		}
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		connect A to B
+		1() from A to B;
+		2() from B to A;
+		disconnect A and B;
+		connect B to A
+		3() from A to B;
+		4() from B to A;
+		disconnect B and A;
+		continue X;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B)
+{
+	disconnect A and B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		connect A to B;
+		choice at A
+		{
+			1() from A to B;
+			//continue X;  // Uncomment bad
+		}
+		or
+		{
 			2() from A to B;
 		}
 	}
@@ -3885,171 +4079,174 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
-/* // TODO: test "transitive" intermediate continue-edge fixing?
-global protocol Proto1(role A, role B)
+/*
+explicit global protocol Proto1(role A, role B, role C)
 {
-	rec Y
+	connect A to B;
+	choice at A
 	{
-		0() from A to B;
+		1() from A to B;
 		rec X
 		{
-			1() from A to B;
-			choice at A
-			{
-				continue X;
-			}
-			or
-			{
-				continue Y;
-			}
+			connect B to C;
+			1() from B to C;
+			//continue X;  // Uncomment bad
 		}
 	}
-}
-//*/
-
-
-/*  // Cf. -oldwf (non disjoint enabling)
-global protocol Proto1(role A, role B)
-{
-	rec X
+	or
 	{
-		rec Y
-		{
-			choice at A
-			{
-				1() from A to B;
-			}
-			or
-			{
-				2() from A to B;
-			}
-			choice at A  // EFSM state blowup -- FIXME: syntactic unfolding still necessary with global model checking? (for enabling?) or minimise before model checking?
-			{
-				continue X;
-			}
-			or
-			{
-				//2() from A to B;
-				//continue X;
-				continue Y;
-			}
-		}
+		2() from A to B;
 	}
 }
 //*/
 
 
 /*
-global protocol Proto1(role A, role B)
+explicit global protocol Proto1(role A, role B, role C, role D)
 {
-	rec Y
+	connect A to B;
+	1() from A to B;
+	//connect D to C;  // Uncomment OK
+	1() from C to D;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;  // Comment bad
+	1() from A to B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
 	{
+		connect A to B;
+		1() from A to B;
+	}
+	or
+	{
+		2() from A to B;  // Bad: caught syntactically -- this blocked choice case won't manifest as an error state in the presence of a non-blocked co-case
+		// FIXME: could add implicit error actions (e.g. unconncted message passing) to model building, to make error states explicit
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		connect A to B;
+		1() from A to B;
+	}
+	or
+	{
+		connect A to B;
+		2() from A to B;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	// Good
+	connect A to B;
+	choice at B
+	{
+		1() from B to A;
+	}
+	or
+	{
+		2() from B to A;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at B
+	{
+		connect A to B;  // Bad
+		1() from B to A;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		connect A to B;
+		1() from B to A;  // Good
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	choice at B  // Good
+	{
+		1() from B to A;
+	}
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
+	choice at A
+	{
+		1() from A to B;
 		rec X
 		{
-			1() from A to B;
-			choice at A
-			{
-				continue X;  // FIXME: non-fair is just slow, or non-terminating?
-			}
-			or
-			{
-				continue X;
-			}
-			or
-			{
-				continue Y;
-			}
-			or
-			{
-				2() from A to B;
-			}
+			connect B to C;
+			1() from B to C;
+			//continue X;  // Uncomment bad
 		}
+	}
+	or
+	{
+		2() from A to B;
 	}
 }
 //*/
 
 
-/* // ??
-import Test2;
-
-type <java> "java.lang.String" from "rt.jar" as String;
-//*/
-
-
-/* // Simple name coincides with full name
-   // Some corner cases related to simple/full name overlap for default pa
-module Test;
-
-import Test;
-//*/
-
 /*
-module Test;
-
-import Test as Test;
-//*/
-
-/*
-module Test;
-
-import Test2 as Test;  // Good or bad?
-
-global protocol Proto(role A, role B)
+explicit global protocol Proto1(role A, role B)
 {
+	connect A to B;
+	//connect A to B;  // Uncomment bad
+	//connect B to A;  // Uncomment bad
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B, role C)
+{
+	connect A to B;
 	1() from A to B;
-	do Test.Proto(A, B);
+	//connect A to C;  // Uncomment OK
+	2() from A to C;
 }
 //*/
-
-
-/*  // Some corner cases related to simple/full name overlap for default package Modules not tested in test suite (all Modules packaged)
-import Test2;
-import Test3 as Test3;         // The name Test3 is test3.Test3 in Test2
-import test3.Test3 as Test4;   // The name Test4 is actually Test4 in Test2
-//import test3.Test3 as Test3;
-
-global protocol Proto1(role A, role B)
-{
-	1() from A to B;
-	do Test2.Proto2(A, B);
-	do Test3.Foo3(A, B);
-	do Test4.Bar3(A, B);
-}
-//*/
-
-
-/*
-global protocol Foo(role A, role B)
-{
-	1() from A to B;
-	do Bar(A, B);
-	2() from A to B;
-}
-
-aux global protocol Bar(role A, role B)  // Testing bad unused role decls (wrt. subprotocol collected role occurrences) -- allow as aux?
-{
-
-}
-//*/
-
-
-/*
-global protocol Foo(role A, role B)  // Project for A
-{
-	do Bar1<1(), 2()>(A, B);
-	do Bar1<3(), 4()>(A, B);
-}
-
-global protocol Bar1<sig M1, sig M2>(role A, role B)
-{
-	do Bar2<M1, M2>(A, B, A);  // TODO: duplicate role args
-}
-
-global protocol Bar2<sig M1, sig M2>(role A, role B, role C)
-{
-	M1 from A to B;
-	M2 from B to C;
-}
-//*/
-
 
