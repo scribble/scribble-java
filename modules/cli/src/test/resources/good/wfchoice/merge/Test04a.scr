@@ -1,0 +1,27 @@
+module good.wfchoice.merge.Test04a;
+
+
+// Similar to good.safety.stuckmsg.threeparty.Test03
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		1() from A to B;
+		2() from B to C;
+		3() from B to C;
+		choice at A  // Not mergeable by, e.g., ICALP13
+		{
+			4() from A to B;
+			continue X;
+		}
+		or
+		{
+			5() from A to B;
+			2() from B to C;  // An "extra iteration" between B-C (but not A-B), but fine  // Generates non-det B?2's for C to different states, but OK (cf. -minfsm)
+			3() from B to C;
+			continue X;
+		}
+	}
+}
+
+

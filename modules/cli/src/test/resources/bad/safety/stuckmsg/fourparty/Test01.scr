@@ -1,0 +1,38 @@
+module bad.safety.stuckmsg.fourparty.Test01;
+
+
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec X
+		{
+			1() from A to B;
+			choice at B
+			{
+				2() from B to C;
+				2() from C to D;
+				choice at C
+				{
+					2() from C to A;
+				}
+				or
+				{
+					() from C to A;
+					2() from C to D;  // Reception error (but OK if following is commented)
+					() from C to D;
+				}
+				continue X;
+			}
+		}
+	}
+	or
+	{
+		0() from A to B;
+		0() from B to C;
+		0() from C to D;
+	}
+}
+
+
