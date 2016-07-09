@@ -1,7 +1,7 @@
 module bad.safety.stuckmsg.threeparty.Test01;
 
 
-// Cf. good.wfchoice.globals.gchoice.Choice11;
+// Cf. good.wfchoice.gchoice.Choice11;
 global protocol Proto1(role A, role B, role C)
 {
 	rec X

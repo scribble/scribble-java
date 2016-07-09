@@ -1,7 +1,6 @@
-module bad.oldwfchoice.gchoice.Choice05b;
+module bad.wfchoice.gchoice.Choice05b;
 
 
-// Bad only for -oldwf; good by default
 global protocol Choice5b(role A, role B)
 {
 	choice at B
@@ -21,14 +20,14 @@ global protocol Choice5b(role A, role B)
 		choice at B
 		{
 			l2() from B to A;
-			//l3() from B to A;  // Comment is still bad
+			l3() from B to A;  // Comment is still bad
 		}
 		or
 		{
-			////l3() from B to A;
+			//l3() from B to A;
 			l2() from B to A;  // Uncomment OK unless l3() is commented
-			//l4() from B to A;
-			////l1() from B to A;  // Uncomment OK unless l3() is commented
+			l4() from B to A;
+			//l1() from B to A;  // Uncomment OK unless l3() is commented
 		}
 	}
 }

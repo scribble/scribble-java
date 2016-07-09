@@ -1,13 +1,12 @@
-module bad.liveness.roleprog.unfair.Test02;
+module bad.wfchoice.enabling.threeparty.Test02;
 
 
-// OK if -fair
 // Cf. good.wfchoice.gchoice.Choice11;
 global protocol Proto1(role A, role B, role C)
 {
 	rec X
 	{
-		1() from A to C;  // bad liveness
+		1() from B to C;  // bad enabling
 		choice at A
 		{
 			1() from A to C;

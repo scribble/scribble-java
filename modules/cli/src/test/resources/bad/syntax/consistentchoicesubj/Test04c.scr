@@ -1,0 +1,22 @@
+module bad.syntax.consistentchoicesubj.Test04c;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			3() from B to C;
+		}
+		or
+		{
+			2() from A to B;
+			4() from A to C;
+		}
+		continue X;  // Would be OK, even ignoring inconsistent choice subjects, because C just needs to receive 3s or 4s with no further consequences
+	}
+}
+
+

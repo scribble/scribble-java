@@ -1,0 +1,23 @@
+module good.wfchoice.gdo.params.Test01;
+
+
+global protocol Foo<sig M1>(role A, role B)
+{
+	choice at A
+	{
+		M1 from A to B;
+		3() from B to A;
+	}
+	or
+	{
+		do Bar<1()>(A, B);
+		4() from B to A;
+	}
+}
+
+
+aux global protocol Bar<sig M2>(role C, role D)
+{
+	M2 from C to D;
+}
+

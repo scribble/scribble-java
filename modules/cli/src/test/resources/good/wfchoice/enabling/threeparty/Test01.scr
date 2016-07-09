@@ -1,0 +1,17 @@
+module good.wfchoice.enabling.threeparty.Test01;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	1() from A to B;
+	1() from A to C;
+	choice at A
+	{
+		do Proto1(A, B, C);
+	}
+	or
+	{
+		2() from A to B;
+		2() from A to C;
+	}
+}

@@ -1,4 +1,4 @@
-module bad.wfchoice.oldwfchoice.gchoice.Choice10;
+module bad.wfchoice.gchoice.Choice09b;
 
 
 global protocol Proto1(role A, role B, role C)
@@ -6,14 +6,14 @@ global protocol Proto1(role A, role B, role C)
 	3() from A to C;
 	rec Y
 	{
-		() from A to B;
+		2() from A to B;  // Uncomment is bad (non-enabled B / non-disjoint labels)
 		2a() from B to A;
 		rec X
 		{
 			1() from A to B;
 			choice at A
 			{
-				//2() from A to B;
+				2() from A to B;
 				continue X;  // Testing project choice subject "inference", and testing continue-only choice block
 			}
 			or

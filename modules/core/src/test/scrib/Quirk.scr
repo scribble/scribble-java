@@ -25,12 +25,44 @@ global protocol Proto1(role A, role B, role C, role D)
 		1() from A to B;
 		3() from B to C;  // Not standard mergeable -- and cannot factor out syntactically
 		4() from C to D;
+		5() from B to A;
 	}
 	or
 	{
-		1() from A to B;
+		2() from A to B;
 		3() from B to C;
-		5() from C to D;
+		6() from C to D;
+		7() from B to A;
+	}
+}
+//*/
+
+
+/*
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			choice at B
+			{
+				1() from B to C;
+				//continue X;  // Non-enabled A under this choice at B
+			}
+			or
+			{
+				3() from B to C;
+				//continue X;
+			}
+			continue X;  // Scribble needs "sequencing"
+		}
+		or
+		{
+			2() from A to B;
+			2() from B to C;
+		}
 	}
 }
 //*/

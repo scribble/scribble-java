@@ -1,0 +1,25 @@
+module bad.syntax.consistentchoicesubj.Test04a;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	// Safe (without recursion), but (intentionally) not supported by local choice syntax -- so global model checking incomplete in general (i.e. morally, outside of Scribble syntax restrictions)
+	// Cf. -nolocalchoicecheck
+	/*rec X
+	{*/
+		choice at A
+		{
+			1() from A to B;
+			3() from B to C;
+			//continue X;  // With recursion, -nolocalchoicecheck under WF_1 is unsound
+		}
+		or
+		{
+			2() from A to B;
+			4() from A to C;
+			//continue X;
+		}
+	//}
+}
+
+
