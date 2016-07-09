@@ -1,4 +1,4 @@
-module good.wfchoice.globals.gchoice.Choice09c;
+module good.wfchoice.globals.gchoice.Choice09e;
 
 
 global protocol Proto1(role A, role B, role C)
@@ -13,15 +13,15 @@ global protocol Proto1(role A, role B, role C)
 			1() from A to B;
 			choice at A
 			{
+				continue Y;  // Different continue-only-blocks, tests FSM building
+			}
+			or
+			{
 				continue X;  // Testing project choice subject "inference", and testing continue-only choice block
 			}
 			or
 			{
 				continue X;
-			}
-			or
-			{
-				continue Y;  // Different continue-only-blocks, tests FSM building
 			}
 			or
 			{

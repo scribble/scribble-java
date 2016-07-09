@@ -5687,7 +5687,89 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-/*  // HERE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* // TODO: test "transitive" intermediate continue-edge fixing?
+global protocol Proto1(role A, role B)
+{
+	rec Y
+	{
+		0() from A to B;
+		rec X
+		{
+			1() from A to B;
+			choice at A
+			{
+				continue X;
+			}
+			or
+			{
+				continue Y;
+			}
+		}
+	}
+}
+//*/
+
+
+/*  // Cf. -oldwf (non disjoint enabling)
 global protocol Proto1(role A, role B)
 {
 	rec X
@@ -5702,196 +5784,20 @@ global protocol Proto1(role A, role B)
 			{
 				2() from A to B;
 			}
-			choice at A  // FIXME: stuck
+			choice at A  // EFSM state blowup -- FIXME: syntactic unfolding still necessary with global model checking? (for enabling?) or minimise before model checking?
 			{
 				continue X;
 			}
 			or
 			{
 				//2() from A to B;
+				//continue X;
 				continue Y;
 			}
 		}
 	}
 }
 //*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec Y
-	{
-		0() from A to B;
-		rec X
-		{
-			1() from A to B;
-			choice at A
-			{
-				continue X;  // Bug is probably related to not considering transitive continue-edge fixing, see intermediate continue-edge FSM 
-			}
-			or
-			{
-				continue Y;  // TODO: also test Y,X order
-			}
-		}
-	}
-}
-//*/
-
-
-/* // Cf. -minfsm
-global protocol Proto1(role A, role B)
-{
-	rec Y
-	{
-		0() from A to B;
-		rec X
-		{
-			1() from A to B;
-			choice at A  // FIXME: inlined/unfolded looks OK (for both cases), should be a graph building bug
-			{
-				continue X;
-			}
-			or
-			{
-				continue Y;
-			}
-			or
-			{
-				continue X;
-			}
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	3() from A to C;
-	rec Y
-	{
-		() from A to B;  // Uncomment is bad (non-enabled B / non-disjoint labels)
-		2a() from B to A;
-		rec X
-		{
-			1() from A to B;
-			choice at A
-			{
-				2() from A to B;
-				continue X;  // Testing project choice subject "inference", and testing continue-only choice block
-			}
-			or
-			{
-				continue Y;  // Different continue-onlys, tests FSM building
-			}
-			or  // Uncomment is bad (non-disjoint labels)
-			{
-				continue X;
-			}
-			or
-			{
-				4() from A to B;
-			}
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec Y
-	{
-		1() from A to B;
-		rec X
-		{
-			2() from A to B;
-			//2() from B to A;
-			choice at A
-			{
-				3() from A to B;
-				continue X;
-			}
-			or
-			{
-				continue X;  // FIXME: inconsistent results between here and below comment
-			}
-			or
-			{
-				continue Y;
-			}
-			or
-			{
-				continue X;
-			}
-			or
-			{
-				4() from A to B;
-			}
-		}
-	}
-}
-//*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*

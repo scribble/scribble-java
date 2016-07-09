@@ -21,7 +21,7 @@ public abstract class GraphBuilder<A extends ModelAction<K>, S extends ModelStat
 	private final Map<RecVar, Deque<S>> recvars = new HashMap<>();  // Should be a stack of S?
 	private final Map<RecVar, Deque<Set<A>>> enacting = new HashMap<>();  // first action(s) inside a rec scope ("enacting" means how to enact an unguarded choice-continue)
 
-	protected final Map<S, Map<RecVar, Set<A>>> enactingMap = new HashMap<>();  // Hack?  // FIXME: needs to identify specific enacting per-recvar, since a state could have multi-recvars
+	protected final Map<S, Map<RecVar, Set<A>>> enactingMap = new HashMap<>();  // FIXME: refactor: currently here for convenience, but used only by LGraphBuilder  // Record enacting per-recvar, since a state could have multi-recvars
 
 	//private final Map<SubprotocolSig, S> subprotos = new HashMap<>();  // Not scoped sigs
 

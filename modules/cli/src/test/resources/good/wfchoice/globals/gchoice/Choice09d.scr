@@ -1,4 +1,4 @@
-module good.wfchoice.globals.gchoice.Choice09c;
+module good.wfchoice.globals.gchoice.Choice09d;
 
 
 global protocol Proto1(role A, role B, role C)
@@ -17,11 +17,11 @@ global protocol Proto1(role A, role B, role C)
 			}
 			or
 			{
-				continue X;
+				continue Y;  // Different continue-only-blocks, tests FSM building
 			}
 			or
 			{
-				continue Y;  // Different continue-only-blocks, tests FSM building
+				continue X;
 			}
 			or
 			{
