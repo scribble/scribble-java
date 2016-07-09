@@ -3270,6 +3270,74 @@ aux global protocol Proto1Aux2(role A, role B, role C)
 //*/
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
@@ -3352,40 +3420,6 @@ aux global protocol Proto1Aux2(role A, role B, role C)
 
 
 /*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		do Proto1Aux1(A, B, C);
-	}
-	or
-	{
-		do Proto1Aux2(A, B, C);
-	}
-}
-
-aux global protocol Proto1Aux1(role A, role B, role C)
-{
-	choice at A
-	{
-		3() from A to B;
-		3() from A to C;
-		do Proto1Aux1(A, B, C);
-	}
-}
-
-aux global protocol Proto1Aux2(role A, role B, role C)
-{
-	choice at A
-	{
-		2() from A to B;
-		do Proto1Aux1(A, B, C);
-	}
-}
-//*/
-
-
-/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -3410,23 +3444,6 @@ aux global protocol Proto1Aux2(role A, role B, role C)
 		3() from A to B;
 		connect B to C;
 		4() from B to C;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		1() from A to B;
-		1() from A to C;
-	}
-	or
-	{
-		2() from A to B;
-		2() from B to C;  // Pruning / choice subj inference
 	}
 }
 //*/
@@ -3468,50 +3485,6 @@ aux global protocol Proto1Aux2(role A, role B, role C)
 
 
 /*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		do Proto1Aux1(A, B);
-	}
-}
-
-aux global protocol Proto1Aux1(role A, role B)
-{
-	1() from A to B;
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		1() from A to B;
-		do Proto1Aux1(A, B, C);
-	}
-	or
-	{
-		do Proto1Aux2(A, B, C);
-	}
-}
-
-aux global protocol Proto1Aux1(role A, role B, role C)
-{
-	do Proto1(A, B, C);
-}
-
-aux global protocol Proto1Aux2(role A, role B, role C)
-{
-	2() from A to B;
-	3() from B to C;
-	do Proto1(A, B, C);
-}
-//*/
-
-
-/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -3533,207 +3506,6 @@ aux global protocol Proto1Aux(role A, role B, role C)
 	}
 }
 //*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		m1() from A to B;
-		choice at A
-		{
-			continue X;  // Not pruned because not first statement in rec body
-			// Will be pruned if m1() is commented
-		}
-		or
-		{
-			m2() from A to B;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		1() from B to A;
-		2() from A to B;  // Orphan (and deadlock)
-	}
-	or
-	{
-		1() from A to B;
-		1() from B to A;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	// Wait-for + orphan error counterparts (arise together)
-	choice at A
-	{
-		1() from A to B;
-		1() from A to C;
-		2() from B to C;
-	}
-	or
-	{
-		1() from A to B;
-		1() from A to C;
-		2() from C to B;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;  // (..and deadlocks)
-			continue X;
-		}
-		or
-		{
-			1() from A to B;  // Bad: orphans
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			continue X;
-		}
-		or
-		{
-			1() from A to B;
-			1() from A to B;  // Potential orphans?..
-			continue X;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		rec X
-		{
-			choice at A
-			{
-				1() from A to B;
-				continue X;
-			}
-			/*or
-			{
-				() from A to B;  // Uncomment is good for message liveness problem
-				                 // ** But uncomment still bad for role liveness (becomes wait-for error at C)
-												 //     -- tests projected choice case pruning (for C)
-			}* /
-		}
-	}
-	or
-	{
-		2() from A to B;
-		2() from B to C;  // Role liveness violation for C
-	}
-	//2() from C to B;  // Message liveness (if role-liveness is commented)
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	1() from A to B;
-	choice at B
-	{
-		rec X
-		{
-			2() from B to C;
-			continue X;
-		}
-	}
-	or
-	{
-		3() from B to C;
-	}
-	4() from C to A;  // Uncomment is role liveness
-	4() from A to C;   // Message liveness
-}
-//*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
