@@ -1,0 +1,27 @@
+module good.syntax.projection.grecursion.Test02b;
+
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		rec X  // Testing unguarded choice-rec at root..
+		{
+			1() from A to B;
+			choice at A
+			{
+				2() from A to B;
+			}
+			or
+			{
+				continue X;  // ..and unfolding
+			}
+		}
+	}
+	or
+	{
+		3() from A to B;
+	}
+}
+
+

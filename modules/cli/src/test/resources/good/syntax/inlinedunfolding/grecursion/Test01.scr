@@ -1,4 +1,4 @@
-module good.syntax.inlinedunfolding.gdo.Test01;
+module good.syntax.inlinedunfolding.grecursion.Test01;
 
 
 global protocol Foo(role A, role B)

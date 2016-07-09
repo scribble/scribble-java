@@ -5235,6 +5235,87 @@ global protocol Proto1(role A, role B, role C)
 //*** test cases
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 global protocol Proto1(role A, role B, role C)
 {
@@ -5246,7 +5327,7 @@ global protocol Proto1(role A, role B, role C)
 			choice at A
 			{
 				1() from A to C;
-				continue X;  // ** CHECKME: badly formed (for B) -- empty block is pruned leaving only the continue case, which leads to deadlock in global model, is this OK as WF algorithm? (any way to be unsound?)  or need to explicitly detect inconsistent choice block projections?  // TODO: add test case
+				continue X;  // ** CHECKME: badly formed (for B) -- empty block bvelow is pruned leaving only the continue case, which leads to deadlock in global model, is this OK as WF algorithm? (any way to be unsound?)  or should explicitly detect inconsistent choice block projections? 
 			}
 			or
 			{
@@ -5261,489 +5342,6 @@ global protocol Proto1(role A, role B, role C)
 	}
 }
 //*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		choice at B
-		{
-			2() from B to A;
-		}
-		or
-		{
-			3() from B to A;
-		}
-	}
-}
-/*/
-// Standard problem of basic path/trace based WF choice checking:
-// different nested choice structures get conflated, when looking downstream (not just enabling message)
-// checking enabling only via global model is easy, difficulty is merge
-/*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		2() from B to A;
-	}
-	or
-	{
-		1() from A to B;
-		3() from B to A;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X {
-	choice at A
-	{
-		1() from A to B;
-	}
-	or
-	{
-		2() from A to B;
-		choice at B
-		{
-			2() from B to A;
-			continue X;
-		}
-		or
-		{
-			4a() from B to A;
-		}
-		or
-		{
-			4b() from B to A;
-		}
-	}
-	}
-	choice at A
-	{
-		3a() from A to B;
-	}
-	or {
-		3b() from A to B;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role p, role q, role r)
-{
-	/*
-	choice at p {
-		l1() from p to q;
-		/*l3() from q to r;
-		l5() from r to p;
-		//* /
-	} or {
-		l2() from p to q;
-		/*l4() from q to r;
-		l6() from r to p;
-		//* /
-	}
-	l3() from q to r;
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;  // No reception error, but deadlocked
-			continue X;
-		}
-		or
-		{
-			2() from A to C;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		rec X
-		{
-			1() from A to B;
-			//1() from A to C;
-			continue X;
-		}
-	}
-	or
-	{
-		2() from A to B;
-		2() from A to C;  // "role liveness"?
-	 }
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		1() from A to B;
-		//1() from B to C;  // bad
-		//2() from A to C;  // bad
-		//1() from A to C;  // ok
-		choice at A
-		{
-			1() from A to C;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-			2() from A to C;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		1() from A to B;
-		choice at A  // TODO: add to test suite (testing projection)
-		{
-			2() from A to C;
-		}
-		or
-		{
-			rec X
-			{
-				3() from A to C;
-			}
-		}
-	}
-	or
-	{
-		rec Y
-		{
-			2() from A to B;
-		}
-		4() from A to C;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		0() from A to B;
-		choice at A
-		{
-			rec X  // Checking FSM generation -- unfolding of unguarded shadowed choice-rec
-			{
-				1() from A to B;
-				continue X;
-			}
-		}
-		or
-		{
-			2() from A to B;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		0() from A to B;
-		choice at A
-		{
-			//1() from A to B;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-			//continue X;
-		}
-	}
-	3() from A to B;
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec Y
-	{
-		0() from A to B;
-		rec X
-		{
-			1() from A to B;
-			choice at A
-			{
-				continue X;  // Check FSM building
-			}
-			or
-			{
-				2() from A to B;
-			}
-			or
-			{
-				continue Y;
-			}
-		}
-	}
-}
-//*/
-
-
-/* TODO: add to test suite
-global protocol Proto1(role A, role B, role C)
-{
-	rec Y
-	{
-		rec Z
-		{
-			0() from A to C;
-			rec X
-			{
-				choice at A
-				{
-					1() from A to B;
-					continue X;
-				}
-				or
-				{
-					2() from A to B;
-					continue Y;  // Testing "pruning" of irrelevant continue cases in nested recs
-				}
-				or
-				{
-					3a() from A to B;
-					3b() from A to C;
-				}
-			}
-		}
-	}
-	4() from B to C;
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		1() from A to B;  // Comment is bad
-		choice at A
-		{
-			continue X;
-		}
-		or
-		{
-			rec Y
-			{
-				2() from A to B;
-				choice at A
-				{
-					//continue Y;  // Uncomment is bad
-					continue X;
-				}
-				or
-				{
-					2() from A to B;  // OK to be 2 as well because the above X goes to 1() first
-				}
-				/*or
-				{
-					3() from A to B;
-					continue Y;
-				}* /
-			}
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		rec X
-		{
-			choice at A
-			{
-				1() from A to B;
-				continue X;
-			}
-			or
-			{
-				2() from A to B;
-				continue X;
-			}
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		1() from A to B;
-		choice at A
-		{
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-			continue X;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		//0() from A to B;
-		rec X  // Testing unguarded choice-rec at root...
-		{
-			1() from A to B;  // continue pruned if this is commented
-			choice at A
-			{
-				2() from A to B;
-			}
-			or
-			{
-				continue X;  // ..in conjunction with unguarded choice-continue at the same time, if 1() is commented (otherwise testing unfolding) // CHECKME seems OK (no need to rule out explicitly?)
-			}
-		}
-	}
-	or
-	{
-		3() from A to B;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		1() from A to B;  // Test different comment combinations with 1 and 3 and continue X
-		choice at A
-		{
-			//3() from A to B;
-			continue X;
-		}
-		or
-		{
-			rec Y  // Testing nested InlinedProtocolUnfolding case
-			{
-				2() from A to B;
-				//continue X;
-				continue Y;
-			}
-		}
-	}
-}
-//*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* // TODO: test "transitive" intermediate continue-edge fixing?

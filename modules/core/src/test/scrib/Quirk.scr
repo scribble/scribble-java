@@ -16,3 +16,22 @@ global protocol Proto1(role A, role B, role C, role D)
 }
 //*/
 
+
+/*
+global protocol Proto1(role A, role B, role C, role D)
+{
+	choice at A
+	{
+		1() from A to B;
+		3() from B to C;  // Not standard mergeable -- and cannot factor out syntactically
+		4() from C to D;
+	}
+	or
+	{
+		1() from A to B;
+		3() from B to C;
+		5() from C to D;
+	}
+}
+//*/
+

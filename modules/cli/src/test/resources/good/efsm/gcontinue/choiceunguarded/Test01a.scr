@@ -1,4 +1,4 @@
-module good.efsm.gcontinue.choiceunguarded.Test01;
+module good.efsm.gcontinue.choiceunguarded.Test01a;
 
 
 // Cf. -minfsm
