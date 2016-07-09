@@ -1,0 +1,20 @@
+module good.efsm.gchoice.Test12a;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+		}
+		or
+		{
+			2() from A to B;
+		}
+		continue X;  // EFSM building -- multiple predecessors for continue-edge replacement
+	}
+}
+
+

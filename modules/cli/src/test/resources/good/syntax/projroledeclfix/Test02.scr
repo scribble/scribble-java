@@ -1,0 +1,11 @@
+module good.syntax.projroledeclfix.Test02;
+
+
+global protocol Proto1(role A, role B, role C, role D)
+{
+	1() from A to B;
+	2() from C to D;
+	do Proto1(A, B, C, D);  // Testing projections
+}
+
+
