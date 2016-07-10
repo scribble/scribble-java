@@ -1,0 +1,16 @@
+module good.efsm.grecursion.Test10;
+
+
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		rec X  // Testing EFSM building, "enabling" stack push/pop for rec inside choice
+		{
+			2() from B to A;
+			continue X;
+		}
+	}
+}
+

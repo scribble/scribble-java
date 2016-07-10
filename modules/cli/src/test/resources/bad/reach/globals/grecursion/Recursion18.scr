@@ -14,7 +14,7 @@ global protocol Foo(role A, role B)
 			2() from A to B;
 			continue X;
 		}
-		continue X;  // Bad reach
+		continue X;  // Bad reach  // Reachability error comes out as a graph building error if not checked first
 	}
 }
 

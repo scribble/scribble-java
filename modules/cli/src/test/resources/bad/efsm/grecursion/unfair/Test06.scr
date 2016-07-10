@@ -1,4 +1,4 @@
-module bad.efsm.unfair.Test06;
+module bad.efsm.grecursion.unfair.Test06;
 
 
 global protocol Proto1(role A, role B, role C)

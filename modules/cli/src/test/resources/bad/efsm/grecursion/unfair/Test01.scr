@@ -1,4 +1,4 @@
-module bad.efsm.unfair.Test01;
+module bad.efsm.grecursion.unfair.Test01;
 
 
 // OK if -fair

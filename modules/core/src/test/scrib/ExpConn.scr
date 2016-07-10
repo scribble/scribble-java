@@ -2898,6 +2898,77 @@ global protocol Proto1(role A, role B, role C)
 //*/
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
@@ -2962,242 +3033,6 @@ explicit global protocol Proto1(role A, role B)
 
 
 /*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			//1() from A to B;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-		}
-		continue X;  // (Eeachability error comes out as a graph building error if not checked first)
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			continue X;
-		}
-		or
-		{
-			m2() from A to B;
-		}
-		m1() from A to B;  // Reachability error -- comes out as a global model error if that pass is done first (tail recursion needed as syntactic check prior to model checking)
-	}
-}
-//*/
-
-
-
-/*
-global protocol Proto1(role B, role C, role D)
-{
-	rec X
-	{
-		choice at B
-		{
-			1() from B to C;
-			choice at C
-			{
-				2() from C to B;
-				//4() from C to D;  //  Graph building fixed
-				continue X;
-			}
-			or
-			{
-				3() from C to B;
-				4() from C to D;
-				continue X;
-			}
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		rec X  // Test: "enabling" stack push/pop for rec inside choice
-		{
-			2() from B to A;
-			continue X;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	1() from A to B;
-	choice at B
-	{
-		do Proto1Aux1(A, B);
-	}
-	or
-	{
-		do Proto1Aux2(A, B);
-	}
-	or
-	{
-		4() from B to A;
-	}
-}
-
-global protocol Proto1Aux1(role A, role B)
-{
-	2() from B to A;
-	do Proto1(A, B);
-}
-
-aux global protocol Proto1Aux2(role A, role B)
-{
-	3() from B to A;
-	//do Proto1(A, B);
-	do Proto1Aux2(A, B);
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		1() from A to B;
-		choice at A
-		{
-			continue X;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			choice at A
-			{
-				continue X;
-			}
-			or
-			{
-				3() from A to B;
-			}
-		}
-		or
-		{
-			2() from A to B;  // graph building: multiple "enacting"
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role B, role C)
-{
-	rec X
-	{
-		choice at B  // Test: multiple "enactings" for rec
-		{
-			3() from B to C;
-			choice at B
-			{
-				//1() from B to C;  // Guarding the X precludes the problem
-				continue X;
-				//choice at B
-				//{
-				//	1() from B to C;
-				//	continue X;
-				//}
-				//or
-				//{
-				//	2() from B to C;
-				//	continue X;
-				//}
-			}
-			or
-			{
-				6() from B to C;
-			}
-		}
-		or
-		{
-			4() from B to C;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	1() from A to B;
-	rec X
-	{
-		2() from A to B;
-		3() from A to B;
-		choice at A
-		{
-			continue X;
-		}
-		or
-		{
-			4() from A to B;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	1() from A to B;
-	do Proto1Aux1(A, B);
-}
-
-aux global protocol Proto1Aux1(role A, role B)
-{
-	choice at A
-	{
-		do Proto1(A, B);
-	}
-	or
-	{
-		2() from A to B;
-	}
-}
-//*/
-
-
-/*
 explicit global protocol Proto1(role A, role B, role C)
 {
 	connect A to B;
@@ -3209,133 +3044,28 @@ aux global protocol Proto1Aux(role A, role B, role C)
 	choice at A
 	{
 		1() from A to B;
-		connect B to C;
+		//connect B to C;  // Bad if non-det
+		1() connect B to C;
 		1() from B to C;
 		disconnect B and C;
 		do Proto1Aux(A, B, C);  // FIXME: guarded do has same subprotsig has an unguarded one (and ProjectedSubprotPruner is using subprotsigs...) -- but current problem is actually ambiguous connect enabling of C by B -- anyway to have explicit protocol with multiple instances of the same do-subprotsig with and without choice-guards?
-			// TODO: this doesn't just break subprot pruning, but affects whole subprot visiting framework because using current subprot "cycles" may not provide coverage of all "full recursive loops" (cf unfolding/unrolling all rec/continues) -- current framework gives coverage only if recursive subprots are only called from a single "location" -- maybe be fixable by generalising subprotsigs record more than just the immediate proto+args context -- luckily some analyses like enabling check are OK despite this
+			// TODO: this doesn't just break subprot pruning, but affects whole subprot visiting framework because using current subprot "cycles" may not provide coverage of all "full recursive loops" (cf. unfolding/unrolling all rec/continues) -- current framework gives coverage only if recursive subprots are only called from a single "location" -- maybe fixable by generalising subprotsigs record more than just the immediate proto+args context -- luckily some analyses like enabling check are OK despite this
 			// basically: current subprotocolsigs do identify a common "state" entry, but cannot be used to identify "specific" cycle paths or "maximal recursion paths"
 	}
 	or
 	{
-		11() from A to B;
+		4() from A to B;
 		do Proto1Aux(A, B, C);
 	}
 	or
 	{
 		2() from A to B;
-		connect B to C;
-		3() from B to C;
+		//connect B to C;  // Bad if non-det
+		2() connect B to C;
+		2() from B to C;
 	}
 }
 //*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	// Good
-	1() from A to B;
-	do Proto1Aux1(A, B, C);
-}
-
-aux global protocol Proto1Aux1(role A, role B, role C)
-{
-	choice at A
-	{
-		3() from A to B;
-		3() from B to C;
-		do Proto1Aux2(A, B, C);
-	}
-	or
-	{
-		4() from A to B;
-		4() from B to C;
-	}
-}
-
-aux global protocol Proto1Aux2(role A, role B, role C)
-{
-	choice at A
-	{
-		5() from A to B;
-		do Proto1Aux1(A, B, C);  // Testing graph building (C vs. A/B)
-	}
-	or
-	{
-		6() from A to B;
-		6() from B to C;
-	}
-}
-//*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
