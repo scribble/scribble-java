@@ -1,4 +1,4 @@
-module bad.syntax.disamb.protocoldecl.Do13a;
+module bad.syntax.disamb.roledecl.Do13a;
 
 
 global protocol Do13a(role A, role B)

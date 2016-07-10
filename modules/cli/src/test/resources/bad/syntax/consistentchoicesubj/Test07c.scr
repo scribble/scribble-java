@@ -1,0 +1,24 @@
+module bad.syntax.consistentchoicesubj.Test07b;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			4() from C to A;  // OK by -nolocalchoicecheck, and also morally OK because A receives from C (no asynchronous "iteration ambiguity" -- cf. 07a/07b)
+			continue X;
+		}
+		or
+		{
+			2() from A to B;
+			3() from B to C;
+			5() from C to A;
+			continue X;
+		}
+	}
+}
+

@@ -1,0 +1,22 @@
+module bad.syntax.consistentchoicesubj.Test08;
+
+
+global protocol Proto1(role A, role B, role C)
+{
+	rec X
+	{
+		choice at A
+		{
+			1() from A to B;
+			1() from A to C;
+			1() from C to B; 
+		}
+		or
+		{
+			2() from A to C;
+			2() from C to B;  // B enabled by A/C
+		}
+		continue X;
+	}
+}
+

@@ -1,4 +1,4 @@
-module bad.syntax.disamb.protocoldecl.Do23a;
+module bad.syntax.disamb.roledecl.Do23a;
 
 
 type <java> "java.lang.String" from "rt.jar" as String;

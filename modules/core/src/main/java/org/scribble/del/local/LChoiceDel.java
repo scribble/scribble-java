@@ -85,7 +85,7 @@ public class LChoiceDel extends ChoiceDel implements LCompoundInteractionNodeDel
 		
 		if (subjs.size() > 1)  // Unnecessary: due to WF check in GChoiceDel.leaveInlinedPathCollection -- would be better as a check on locals than in projection anyway
 		{
-			throw new ScribbleException("Cannot project for inconsistent local choice subjects: " + subjs);
+			throw new ScribbleException("Cannot project for inconsistent local choice subjects: " + subjs);  // self not recorded -- can derive from LProtocolDecl RoleDeclList
 			//throw new RuntimeException("Shouldn't get in here: " + subjs);
 		}
 		RoleNode subj = (RoleNode) AstFactoryImpl.FACTORY.SimpleNameNode(RoleKind.KIND,

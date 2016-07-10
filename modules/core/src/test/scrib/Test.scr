@@ -2672,7 +2672,7 @@ global protocol Proto1(role A, role B)
 //*/
 
 
-/*
+//*
 global protocol Proto1(role A, role B)
 {
 	1() from A to B;
@@ -2686,28 +2686,212 @@ global protocol Proto1(role A, role B)  // Testing disamb
 //*/
 
 
-/*
-type <java> "java.lang.String" from "rt.jar" as String;
-type <java> "java.lang.Integer" from "rt.jar" as Int;
-type <java> "java.lang.Boolean" from "rt.jar" as Bool;
-type <java> "java.lang.Float" from "rt.jar" as Float;
 
-global protocol Proto(role A, role B, role C)
-{
-	choice at A
-	{
-		Msg1a(String) from A to B;
-		Msg2(Int) from B to C;
-		Msg3(Bool) from C to A;
-	}
-	or
-	{
-		Msg1b(Float) from A to B;
-		Msg2(Int) from B to C;
-		Msg3(Bool) from C to A;
-	}
-}
-//*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
@@ -2720,29 +2904,11 @@ global protocol Proto1(role A, role B, role C)
 	}
 	or
 	{
-		2() from A to B;  // FIXME: link model check errors to source code
+		2() from A to B;  // TODO: link model check errors to source code -- though this protocol is syntactically bad...
 	}
 	or
 	{
 		1() from B to C;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		rec X
-		{
-			choice at A
-			{
-				continue X;
-			}
-		}
 	}
 }
 //*/
@@ -2769,341 +2935,6 @@ global protocol Proto1(role A, role B, role C)
 	}
 }
 //*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from A to C;
-			4() from C to A;  // Good
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-			3() from B to C;
-			5() from C to A;
-			continue X;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from A to C;
-			4() from C to B;
-			// Good -- without continues (cf. below)
-		}
-		or
-		{
-			2() from A to B;
-			3() from B to C;
-			5() from C to B;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from A to C;
-			4() from C to B;  // Bad..
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-			3() from B to C;
-			5() from C to B;
-			//continue X;  // ..but OK when commented -- is that correct?
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from B to A;
-			continue X;
-		}
-		or
-		{
-			// Bad: case pruned, so reachability fails
-		}
-	}
-	2() from A to B;
-	3() from B to C;
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-		}
-	}
-	3() from B to A;  // Good: choice has an exit path
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		1() from A to B;
-		1() from B to C;
-		disconnect B and C;
-		rec X
-		{
-			1() from A to B;
-			continue X;
-		}
-	}
-	or
-	{
-		2() from A to B;
-		2() from B to C;
-	}
-	3() from A to B;
-	//3() from B to C;  // Uncomment is bad
-}
-//*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
