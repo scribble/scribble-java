@@ -1,0 +1,12 @@
+module good.efsm.grecursion.Test12;
+
+
+global protocol Proto1(role A, role B)
+{
+	rec X
+	{
+		1() from A to B;
+		continue X;  // Test graph building: EndpointGraph null exit (no term)
+	}
+}
+

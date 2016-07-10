@@ -2340,6 +2340,78 @@ global protocol Proto1(role A, role B)
 */
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 explicit global protocol Proto1(role A, role B, role C)
 {
@@ -2650,299 +2722,6 @@ explicit global protocol Proto1(role A, role B, role C)
 	3() from C to B;
 }
 //*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	1() from A to B;
-	do Proto2(A, B);  // Testing disamb
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	1() from A to B;
-	do Proto1(A, B);
-}
-
-global protocol Proto1(role A, role B)  // Testing disamb
-{
-	2() from A to B;
-}
-//*/
-
-
-/*
-type <java> "java.lang.String" from "rt.jar" as String;
-type <java> "java.lang.Integer" from "rt.jar" as Int;
-type <java> "java.lang.Boolean" from "rt.jar" as Bool;
-type <java> "java.lang.Float" from "rt.jar" as Float;
-
-global protocol Proto(role A, role B, role C)
-{
-	choice at A
-	{
-		Msg1a(String) from A to B;
-		Msg2(Int) from B to C;
-		Msg3(Bool) from C to A;
-	}
-	or
-	{
-		Msg1b(Float) from A to B;
-		Msg2(Int) from B to C;
-		Msg3(Bool) from C to A;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	choice at A
-	{
-		1() from A to B;
-		1() from B to C;
-	}
-	or
-	{
-		2() from A to B;  // FIXME: link model check errors to source code
-	}
-	or
-	{
-		1() from B to C;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	choice at A
-	{
-		1() from A to B;
-		rec X
-		{
-			choice at A
-			{
-				continue X;
-			}
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	// Testing one-slot asynchrony
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from A to C;
-			1() from C to B;  // Bad... but the point is one-slot asynchrony prevents exploring the global state where A!B:1 done twice without B?A:1 at least once, i.e. A cannot loop round first block twice without B also following into the first block... can something like this make WF unsound? -- is recursive mixed-role poly-inputs the only context for this problem?
-		}
-		or
-		{
-			2() from A to C;
-			2() from C to B;
-		}
-		continue X;
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from A to C;
-			4() from C to A;  // Good
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-			3() from B to C;
-			5() from C to A;
-			continue X;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from A to C;
-			4() from C to B;
-			// Good -- without continues (cf. below)
-		}
-		or
-		{
-			2() from A to B;
-			3() from B to C;
-			5() from C to B;
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from A to C;
-			4() from C to B;  // Bad..
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-			3() from B to C;
-			5() from C to B;
-			//continue X;  // ..but OK when commented -- is that correct?
-		}
-	}
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B, role C)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			1() from B to A;
-			continue X;
-		}
-		or
-		{
-			// Bad: case pruned, so reachability fails
-		}
-	}
-	2() from A to B;
-	3() from B to C;
-}
-//*/
-
-
-/*
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-			continue X;
-		}
-		or
-		{
-			2() from A to B;
-		}
-	}
-	3() from B to A;  // Good: choice has an exit path
-}
-//*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*  // disconnect
