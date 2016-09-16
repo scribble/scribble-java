@@ -1,3 +1,7 @@
+/**
+ * Taken from [MSCS16] Global Progress for Dynamically Interleaved Sessions
+ */
+
 module demo.threebuyer.ThreeBuyer;
 
 
@@ -12,7 +16,8 @@ global protocol TwoBuyer(role A, role B, role S)
 	(String) from A to S;
 	(Int) from S to A;
 	(Int) from S to B;
-	(Int) from A to S;
+	(Int) from A to B;
+	do TwoBuyerChoice(A, B, S);
 }
 
 aux global protocol TwoBuyerChoice(role A, role B, role S)
@@ -32,13 +37,14 @@ aux global protocol TwoBuyerChoice(role A, role B, role S)
 
 
 // 1 = C, 2 = B
-global protocol ThreeBuyer(role C, role B)
+//global protocol ThreeBuyer(role C, role B)
+global protocol Proto(role C, role B)
 {
-	(Int) from B to C;
+	(Int) from B to C;  // Should be the Int on line 19
 	(TwoBuyerChoice@B) from B to C;
 	choice at C
 	{
-		ok() from C to B;
+		ok() from C to B;  // Not enforced: consistency of "ok" choice here and in the delegated session
 	}
 	or
 	{
