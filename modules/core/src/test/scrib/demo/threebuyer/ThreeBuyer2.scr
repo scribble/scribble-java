@@ -1,7 +1,3 @@
-/**
- * Taken from [MSCS16] Global Progress for Dynamically Interleaved Sessions
- */
-
 module demo.threebuyer.ThreeBuyer2;
 
 

@@ -32,6 +32,7 @@ global protocol TwoBuyerAlt(role A, role B, role S)
 	choice at S  // Not expressible by "directed" choice
 	{
 		quote1(int) from S to A;
+		//(int) from A to B;  // Not supported (inconsistent local choice subject)
 		(int) from A to S;
 		quote2(int) from S to B;
 		do TwoBuyerAltAux(B, S);
@@ -39,6 +40,7 @@ global protocol TwoBuyerAlt(role A, role B, role S)
 	or
 	{
 		quote1(int) from S to B;
+		//(int) from B to A;
 		(int) from B to S;
 		quote2(int) from S to A;
 		do TwoBuyerAltAux(A, S);

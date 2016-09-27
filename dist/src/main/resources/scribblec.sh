@@ -30,7 +30,7 @@ usage() {
   -fsm <simple global protocol name> <role>      Generate Endpoint FSM
   -fsmdot <simple global protocol name> <role> <output file>
           Draw Endpoint FSM as png (requires dot)
-  -minfsm                                        
+  -minlts                                        
           Minimise EFSMs for dot and API generation (but not global modelling)
           (Requires ltsconvert)
 

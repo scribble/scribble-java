@@ -28,7 +28,7 @@ public class CommandLineArgParser
 	//public static final String PROJECTED_MODEL_FLAG = "-pmodel";
 	public static final String OLD_WF_FLAG = "-oldwf";
 	public static final String NO_LIVENESS_FLAG = "-nolive";
-	public static final String MIN_EFSM_FLAG = "-minfsm";
+	public static final String MIN_EFSM_FLAG = "-minlts";
 	public static final String FAIR_FLAG = "-fair";
 	public static final String NO_LOCAL_CHOICE_SUBJECT_CHECK = "-nolocalchoicecheck";
 	
