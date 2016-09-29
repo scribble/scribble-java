@@ -81,7 +81,7 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 					List<IOAction> cloneas = new LinkedList<>();
 					List<EndpointState> cloness = new LinkedList<>();
 					//LinkedHashMap<EndpointState, EndpointState> cloness = new LinkedHashMap<>();  // clone -> original
-					Map<EndpointState, IOAction> toRemove = new HashMap<>();
+					Map<EndpointState, List<IOAction>> toRemove = new HashMap<>();  // List needed for multiple edges to remove to the same state: e.g. mu X . (A->B:1 + A->B:2).X
 					while (as.hasNext())
 					{
 						IOAction a = as.next();
@@ -98,7 +98,15 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 							cloneas.add(a);
 							cloness.add(clone);
 							//cloness.put(clone, s);
-							toRemove.put(s, a);
+							
+							//toRemove.put(s, a);
+							List<IOAction> tmp = toRemove.get(s);
+							if (tmp == null)
+							{
+								tmp = new LinkedList<>();
+								toRemove.put(s, tmp);
+							}
+							tmp.add(a);
 						}
 					}
 					//if (!clones.isEmpty())  // Redundant, but more clear
@@ -120,7 +128,15 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 						}*/
 						for (EndpointState s : toRemove.keySet())
 						{
-							try { curr.removeEdge(toRemove.get(s), s); } catch (ScribbleException e) { throw new RuntimeException(e); }
+							try
+							{
+								//curr.removeEdge(toRemove.get(s), s);
+								for (IOAction tmp : toRemove.get(s))
+								{
+									curr.removeEdge(tmp, s);
+								}
+							}
+							catch (ScribbleException e) { throw new RuntimeException(e); }
 						}
 						//for (Entry<IOAction, EndpointState> e : clones.entrySet())
 						Iterator<IOAction> icloneas = cloneas.iterator();
