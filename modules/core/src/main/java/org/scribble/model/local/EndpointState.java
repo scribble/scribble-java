@@ -71,7 +71,7 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 			}
 			seen.add(curr);
 			
-			if (curr.getStateKind() == Kind.OUTPUT && curr.getAllTakeable().size() > 1)
+			if (curr.getStateKind() == Kind.OUTPUT && curr.getAllTakeable().size() > 1)  // >1 is what makes this algorithm terminating
 			{
 				//if (curr.getAllTakeable().size() > 1)
 				{
@@ -199,7 +199,7 @@ public class EndpointState extends ModelState<IOAction, EndpointState, Local>
 				EndpointState tmps = ss.next();
 				if (s.id != this.id
 						|| (tmpa.equals(a) && tmps.equals(succ)))  // Non-det also pruned from clone of this -- but OK? non-det still preserved on original state, so any safety violations due to non-det will still come out?
-					                                             // ^ Currently this like non-fairness is extended to even defeat non-determinism
+					                                             // ^ Currently, this is like non-fairness is extended to even defeat non-determinism
 				{
 					clone.addEdge(tmpa, map.get(tmps.id));
 				}
