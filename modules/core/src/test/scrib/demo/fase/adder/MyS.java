@@ -32,8 +32,8 @@ public class MyS
 
 			while (true)
 			{
-				Adder foo = new Adder();
-				try (SessionEndpoint<Adder, S> se = new SessionEndpoint<>(foo, S, new ObjectStreamFormatter()))
+				Adder adder = new Adder();
+				try (SessionEndpoint<Adder, S> se = new SessionEndpoint<>(adder, S, new ObjectStreamFormatter()))
 				{
 					se.accept(ss, C);
 
