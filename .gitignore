@@ -22,6 +22,7 @@ modules/core/src/test/scrib/test/test1/Test1
 modules/core/src/test/scrib/scratch/Scratch1
 modules/core/src/test/scrib/demo/fase/adder/Adder
 modules/core/src/test/scrib/demo/fase/smtp/Smtp
+modules/core/src/test/scrib/demo/fase17/travel/TravelAgent
 modules/core/src/test/scrib/demo/cognizant/loan
 modules/core/src/test/scrib/demo/betty16/lec1/httplong/HttpLong/
 modules/core/src/test/scrib/demo/betty16/lec1/httpshort/HttpShort/
