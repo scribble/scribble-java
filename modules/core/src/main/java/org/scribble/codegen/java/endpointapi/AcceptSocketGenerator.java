@@ -64,6 +64,6 @@ public class AcceptSocketGenerator extends ScribSocketGenerator
 		mb.setName("accept");
 		mb.addModifiers(JavaBuilder.PUBLIC);
 		mb.addExceptions(StateChannelApiGenerator.SCRIBBLERUNTIMEEXCEPTION_CLASS, "java.io.IOException");
-		mb.addParameters(SCRIBSERVERSOCKET_CLASS + " ss", SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM);
+		mb.addParameters(SessionApiGenerator.getRoleClassName(a.obj) + " " + ROLE_PARAM, SCRIBSERVERSOCKET_CLASS + " ss");
 	}
 }

@@ -31,14 +31,14 @@ public class TravelA
 				TravelAgent sess = new TravelAgent();
 				try (SessionEndpoint<TravelAgent, A> se = new SessionEndpoint<>(sess, A, new ObjectStreamFormatter()))
 				{
-					TravelAgent_A_2_Cases c
+					TravelAgent_A_2_Cases A2
 						= new TravelAgent_A_1(se)
-							.accept(ss, C)
+							.accept(C, ss)
 							.branch(C);
-					switch (c.op)
+					switch (A2.op)
 					{
-						case query: c = c.receive(query, b).send(C, quote, 1234).branch(C); break;
-						case yes:   c.receive(yes, b); System.out.println("(A) payment ref: " + b.val); break;
+						case query: A2 = A2.receive(query, b).send(C, quote, 1234).branch(C); break;
+						case yes:   A2.receive(yes, b); System.out.println("(A) payment ref: " + b.val); break;
 						case no:    break;
 					}
 				}

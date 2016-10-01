@@ -30,7 +30,7 @@ public class TravelS
 				try (SessionEndpoint<TravelAgent, S> se = new SessionEndpoint<>(sess, S, new ObjectStreamFormatter()))
 				{
 					new TravelAgent_S_1(se)
-						.accept(ss, C)  // FIXME: state channel constructor already called init
+						.accept(C, ss)  // FIXME: state channel constructor already called init
 						.receive(C, payment, b)
 						.send(C, confirm, 4567);
 				}
