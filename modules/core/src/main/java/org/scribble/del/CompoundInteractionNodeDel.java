@@ -3,10 +3,12 @@ package org.scribble.del;
 import org.scribble.ast.CompoundInteractionNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.ExplicitCorrelationChecker;
 import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.ProtocolDefInliner;
 import org.scribble.visit.WFChoiceChecker;
+import org.scribble.visit.env.ExplicitCorrelationEnv;
 import org.scribble.visit.env.UnguardedChoiceDoEnv;
 import org.scribble.visit.env.UnfoldingEnv;
 import org.scribble.visit.env.WFChoiceEnv;
@@ -47,6 +49,7 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 	public ScribNode leaveInlinedProtocolUnfolding(ScribNode parent, ScribNode child, InlinedProtocolUnfolder unf, ScribNode visited) throws ScribbleException
 	{
 		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
+		// Need to further override for "multi-compound" nodes, e.g., ChoiceDel
 		UnfoldingEnv visited_env = unf.popEnv();  // popAndSet current
 		setEnv(visited_env);
 		UnfoldingEnv parent_env = unf.popEnv();  // pop-merge-push parent
@@ -61,6 +64,19 @@ public abstract class CompoundInteractionNodeDel extends CompoundInteractionDel 
 		WFChoiceEnv visited_env = checker.popEnv();  // popAndSet current
 		setEnv(visited_env);
 		WFChoiceEnv parent_env = checker.popEnv();  // pop-merge-push parent
+		parent_env = parent_env.mergeContext(visited_env);
+		checker.pushEnv(parent_env);
+		return (CompoundInteractionNode<?>) visited;
+	}
+
+	@Override
+	public ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	{
+		// Override super routine (in CompoundInteractionDel, which just does base popAndSet) to do merging of child context into parent context
+		// Need to further override for "multi-compound" nodes, e.g., ChoiceDel
+		ExplicitCorrelationEnv visited_env = checker.popEnv();  // popAndSet current
+		setEnv(visited_env);
+		ExplicitCorrelationEnv parent_env = checker.popEnv();  // pop-merge-push parent
 		parent_env = parent_env.mergeContext(visited_env);
 		checker.pushEnv(parent_env);
 		return (CompoundInteractionNode<?>) visited;

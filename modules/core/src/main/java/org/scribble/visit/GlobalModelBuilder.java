@@ -46,20 +46,20 @@ public class GlobalModelBuilder extends NoEnvInlinedProtocolVisitor  // FIXME: s
 	}*/
 
 	@Override
-	protected final void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	//protected final void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.inlinedProtocolEnter(parent, child);
+		super.inlinedEnter(parent, child);
 		////super.unfoldingEnter(parent, child);
 		//child.del().enterModelBuilding(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	//protected ScribNode unfoldingLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		//visited = visited.del().leaveModelBuilding(parent, child, this, visited);
-		return super.inlinedProtocolLeave(parent, child, visited);
+		return super.inlinedLeave(parent, child, visited);
 		////return super.unfoldingLeave(parent, child, visited);
 	}
 

@@ -3,18 +3,17 @@ package org.scribble.del.local;
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
 import org.scribble.ast.local.LReceive;
-import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.Receive;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
-import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.EndpointGraphBuilder;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
+import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
-public class LReceiveDel extends MessageTransferDel implements LSimpleInteractionNodeDel
+public class LReceiveDel extends LMessageTransferDel
 {
 	@Override
 	public LReceive leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder builder, ScribNode visited) throws ScribbleException

@@ -12,7 +12,7 @@
 module Test;
 
 
-/*/
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A
@@ -33,45 +33,30 @@ global protocol Proto1(role A, role B, role C)
 
 //--- correlation
 
-global protocol Proto1(role A, role B)
-{
-	rec X
-	{
-		choice at A
-		{
-			1() from A to B;
-		}
-		or
-		{
-			2() from A to B;
-		}
-			continue X;
-	}
-}
-
 /*
 explicit global protocol Proto1(role A, role B)
+//explicit global protocol Proto1(role A, role B, role C)
 {
-//	1() connect A to B;  // OK
-//	disconnect A and B;
-//	1() connect A to B;
-//	disconnect A and B;
-
 //	1() connect A to B;  // Bad
 //	disconnect A and B;
 //	1() connect A to B;
 //	2() from A to B;
 //	disconnect A and B;
 
-	1() connect A to B;  // Bad
-	disconnect A and B;
-	2() connect A to B;  // FIXME: correlation  -- any way to do this via modelling? endpoint transformations? (B should actually be a branch 1 or 2) -- or global model based on two concurent instances of each endpoint? (two enough?) -- mergeability of all accepts
-	disconnect A and B;
+//	1() connect A to B;  // Bad
+//	disconnect A and B;
+//	2() connect A to B;
+//	disconnect A and B;
 	
-//	1() connect A to B;  // OK: this is what it should be intuitively
+//	1() connect A to B;  // OK: this is what theabove should be intuitively
 //	disconnect A and B;
 //	2() connect A to C;
 //	disconnect A and C;
+
+//	1() connect A to B;  // Morally OK -- but conservatively rule out by syntactic condition -- do via modelling? endpoint transformations? (B should actually be a branch 1 or 2) -- or global model based on two concurent instances of each endpoint? (two enough?) -- mergeability of all accepts
+//	disconnect A and B;
+//	1() connect A to B;
+//	disconnect A and B;
 }
 //*/
 
@@ -110,7 +95,48 @@ explicit global protocol Proto1(role A, role B, role C)
 //*/
 
 
-//---
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	1() connect A to B;
+	disconnect A and B;
+	1() connect A to B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() connect A to B;
+		disconnect A and B;
+	}
+	or
+	{
+		2() connect A to B;
+		disconnect A and B;
+	}
+	3() connect A to B;
+}
+//*/
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	do Proto1Aux(A, B);
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	disconnect A and B;
+	//connect A to B;  // Bad
+}
+//*/
+
+//---correlation
 
 
 /*

@@ -2,6 +2,7 @@ package org.scribble.del;
 
 import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
+import org.scribble.visit.ExplicitCorrelationChecker;
 import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.WFChoiceChecker;
@@ -51,6 +52,20 @@ public abstract class CompoundInteractionDel extends ScribDelBase
 	@Override
 	public ScribNode leaveInlinedWFChoiceCheck(ScribNode parent, ScribNode child, WFChoiceChecker checker, ScribNode visited) throws ScribbleException
 	{
+		// Overridden in CompoundInteractionNodeDel to do merging of child context into parent context
+		return ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
+	}
+
+	@Override
+	public void enterExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker) throws ScribbleException
+	{
+		ScribDelBase.pushVisitorEnv(this, checker);
+	}
+	
+	@Override
+	public ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	{
+		// Overridden in CompoundInteractionNodeDel to do merging of child context into parent context
 		return ScribDelBase.popAndSetVisitorEnv(this, checker, visited);
 	}
 

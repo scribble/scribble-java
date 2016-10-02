@@ -64,9 +64,9 @@ public abstract class UnfoldingVisitor<E extends Env<?>> extends InlinedProtocol
 	}
 	
 	@Override
-	protected final void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected final void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.inlinedProtocolEnter(parent, child);
+		super.inlinedEnter(parent, child);
 		if (child instanceof Recursion)
 		{
 			Recursion<?> rec = (Recursion<?>) child;
@@ -82,7 +82,7 @@ public abstract class UnfoldingVisitor<E extends Env<?>> extends InlinedProtocol
 	}
 	
 	@Override
-	protected final ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected final ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		ScribNode n = unfoldingLeave(parent, child, visited);
 		if (child instanceof Recursion)
@@ -96,7 +96,7 @@ public abstract class UnfoldingVisitor<E extends Env<?>> extends InlinedProtocol
 				this.recs.remove(rv);
 			}*/
 		}
-		return super.inlinedProtocolLeave(parent, child, n);
+		return super.inlinedLeave(parent, child, n);
 	}
 
 	protected void unfoldingEnter(ScribNode parent, ScribNode child) throws ScribbleException
