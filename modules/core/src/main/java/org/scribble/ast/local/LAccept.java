@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.scribble.ast.AstFactoryImpl;
-import org.scribble.ast.ConnectionAction;
 import org.scribble.ast.Constants;
 import org.scribble.ast.MessageNode;
 import org.scribble.ast.ScribNodeBase;
@@ -17,7 +16,7 @@ import org.scribble.sesstype.kind.Local;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-public class LAccept extends ConnectionAction<Local> implements LSimpleInteractionNode
+public class LAccept extends LConnectionAction implements LSimpleInteractionNode
 {
 	public LAccept(RoleNode src, MessageNode msg, RoleNode dest)
 	//public LAccept(RoleNode src, RoleNode dest)

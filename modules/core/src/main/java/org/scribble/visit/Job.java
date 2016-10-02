@@ -94,6 +94,7 @@ public class Job
 	{
 		runVisitorPassOnAllModules(Projector.class);
 		runProjectionContextBuildingPasses();
+		runVisitorPassOnParsedModules(ExplicitCorrelationChecker.class);
 	}
 
   // To be done as a barrier pass after projection done on all Modules -- N.B. Module context building, no other validation (so "fixing" can be done in following passes) 
@@ -186,6 +187,12 @@ public class Job
 	{
 		debugPrintPass("Running " + c + " on all modules:");
 		runVisitorPass(this.jcontext.getFullModuleNames(), c);
+	}
+
+	private void runVisitorPassOnParsedModules(Class<? extends AstVisitor> c) throws ScribbleException
+	{
+		debugPrintPass("Running " + c + " on parsed modules:");
+		runVisitorPass(this.jcontext.getParsedFullModuleNames(), c);
 	}
 
 	private void runVisitorPassOnProjectedModules(Class<? extends AstVisitor> c) throws ScribbleException

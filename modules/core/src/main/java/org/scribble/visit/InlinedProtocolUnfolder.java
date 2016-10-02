@@ -103,17 +103,17 @@ public class InlinedProtocolUnfolder extends InlinedProtocolVisitor<UnfoldingEnv
 	}
 	
 	@Override
-	protected void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
-		super.inlinedProtocolEnter(parent, child);
+		super.inlinedEnter(parent, child);
 		child.del().enterInlinedProtocolUnfolding(parent, child, this);
 	}
 	
 	@Override
-	protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		visited = visited.del().leaveInlinedProtocolUnfolding(parent, child, this, visited);
-		return super.inlinedProtocolLeave(parent, child, visited);
+		return super.inlinedLeave(parent, child, visited);
 	}
 	
 	public Recursion<?> getRecVar(RecVar recvar)

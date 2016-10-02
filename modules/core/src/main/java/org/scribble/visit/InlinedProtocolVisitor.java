@@ -57,22 +57,22 @@ public abstract class InlinedProtocolVisitor<T extends Env<?>> extends EnvVisito
 	protected final void envEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 		super.envEnter(parent, child);
-		inlinedProtocolEnter(parent, child);
+		inlinedEnter(parent, child);
 	}
 
 	@Override
 	protected final ScribNode envLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
-		ScribNode n = inlinedProtocolLeave(parent, child, visited);
+		ScribNode n = inlinedLeave(parent, child, visited);
 		return super.envLeave(parent, child, n);
 	}
 
-	protected void inlinedProtocolEnter(ScribNode parent, ScribNode child) throws ScribbleException
+	protected void inlinedEnter(ScribNode parent, ScribNode child) throws ScribbleException
 	{
 
 	}
 
-	protected ScribNode inlinedProtocolLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
+	protected ScribNode inlinedLeave(ScribNode parent, ScribNode child, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

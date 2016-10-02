@@ -4,18 +4,19 @@ import java.util.List;
 
 import org.scribble.ast.MessageSigNode;
 import org.scribble.ast.ScribNode;
+import org.scribble.ast.local.LMessageTransfer;
 import org.scribble.ast.local.LSend;
 import org.scribble.ast.name.simple.RoleNode;
-import org.scribble.del.MessageTransferDel;
 import org.scribble.main.ScribbleException;
 import org.scribble.model.local.Send;
 import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
+import org.scribble.visit.ExplicitCorrelationChecker;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 
-public class LSendDel extends MessageTransferDel implements LSimpleInteractionNodeDel
+public class LSendDel extends LMessageTransferDel
 {
 	@Override
 	public LSend leaveEndpointGraphBuilding(ScribNode parent, ScribNode child, EndpointGraphBuilder graph, ScribNode visited) throws ScribbleException
@@ -41,5 +42,13 @@ public class LSendDel extends MessageTransferDel implements LSimpleInteractionNo
 	public void enterProjectedChoiceSubjectFixing(ScribNode parent, ScribNode child, ProjectedChoiceSubjectFixer fixer)
 	{
 		fixer.setChoiceSubject(((LSend) child).src.toName());
+	}
+	
+	@Override
+	public LMessageTransfer leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	{
+		LMessageTransfer lmt = (LMessageTransfer) visited;
+		checker.pushEnv(checker.popEnv().disableAccept());
+		return lmt;
 	}
 }

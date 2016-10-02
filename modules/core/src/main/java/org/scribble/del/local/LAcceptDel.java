@@ -10,8 +10,10 @@ import org.scribble.sesstype.Payload;
 import org.scribble.sesstype.name.MessageId;
 import org.scribble.sesstype.name.Role;
 import org.scribble.visit.EndpointGraphBuilder;
+import org.scribble.visit.ExplicitCorrelationChecker;
 import org.scribble.visit.ProjectedChoiceSubjectFixer;
 import org.scribble.visit.UnguardedChoiceDoProjectionChecker;
+import org.scribble.visit.env.ExplicitCorrelationEnv;
 import org.scribble.visit.env.UnguardedChoiceDoEnv;
 
 public class LAcceptDel extends ConnectionActionDel implements LSimpleInteractionNodeDel
@@ -45,5 +47,18 @@ public class LAcceptDel extends ConnectionActionDel implements LSimpleInteractio
 		UnguardedChoiceDoEnv env = checker.popEnv();
 		env = env.setChoiceSubject(la.src.toName());
 		checker.pushEnv(env);
+	}
+
+	@Override
+	public LAccept leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
+	{
+		LAccept la = (LAccept) visited;
+		ExplicitCorrelationEnv env = checker.popEnv();
+		if (!env.canAccept())
+		{
+			throw new ScribbleException("Invalid accept action: " + la);
+		}
+		checker.pushEnv(env.disableAccept());
+		return la;
 	}
 }

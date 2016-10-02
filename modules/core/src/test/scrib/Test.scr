@@ -12,7 +12,7 @@
 module Test;
 
 
-/*/
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A
@@ -33,6 +33,7 @@ global protocol Proto1(role A, role B, role C)
 
 //--- correlation
 
+/*
 global protocol Proto1(role A, role B)
 {
 	rec X
@@ -48,6 +49,7 @@ global protocol Proto1(role A, role B)
 			continue X;
 	}
 }
+//*/
 
 /*
 explicit global protocol Proto1(role A, role B)
@@ -110,7 +112,48 @@ explicit global protocol Proto1(role A, role B, role C)
 //*/
 
 
-//---
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	1() connect A to B;
+	disconnect A and B;
+	1() connect A to B;
+}
+//*/
+
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() connect A to B;
+		disconnect A and B;
+	}
+	or
+	{
+		2() connect A to B;
+		disconnect A and B;
+	}
+	3() connect A to B;
+}
+//*/
+
+/*
+explicit global protocol Proto1(role A, role B)
+{
+	connect A to B;
+	do Proto1Aux(A, B);
+}
+
+aux global protocol Proto1Aux(role A, role B)
+{
+	disconnect A and B;
+	//connect A to B;  // Bad
+}
+//*/
+
+//---correlation
 
 
 /*

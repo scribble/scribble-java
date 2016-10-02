@@ -98,6 +98,7 @@ public class GProtocolDeclDel extends ProtocolDeclDel<Global>
 		return gpd;
 	}
 	
+	// FIXME: project modifiers?
 	private LProtocolDecl project(Projector proj, GProtocolDecl gpd) throws ScribbleException
 	{
 		Role self = proj.peekSelf();

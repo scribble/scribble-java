@@ -4,6 +4,7 @@ import org.scribble.ast.ScribNode;
 import org.scribble.main.ScribbleException;
 import org.scribble.visit.DelegationProtocolRefChecker;
 import org.scribble.visit.EndpointGraphBuilder;
+import org.scribble.visit.ExplicitCorrelationChecker;
 import org.scribble.visit.GlobalModelChecker;
 import org.scribble.visit.InlinedProtocolUnfolder;
 import org.scribble.visit.MessageIdCollector;
@@ -237,6 +238,16 @@ public interface ScribDel
 	}
 
 	default ScribNode leaveUnguardedChoiceDoProjectionCheck(ScribNode parent, ScribNode child, UnguardedChoiceDoProjectionChecker checker, ScribNode visited) throws ScribbleException
+	{
+		return visited;
+	}
+
+	default void enterExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker) throws ScribbleException
+	{
+		
+	}
+
+	default ScribNode leaveExplicitCorrelationCheck(ScribNode parent, ScribNode child, ExplicitCorrelationChecker checker, ScribNode visited) throws ScribbleException
 	{
 		return visited;
 	}

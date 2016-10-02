@@ -1,6 +1,9 @@
 package org.scribble.main;
 
 
+// FIXME: project modifiers?
+
+
 // Generally: need framework to correlate source AST nodes to canonical/inlined/unfolded representations, so that analyses can do done on representations and corresponding transformations applied on the AST
 // e.g. keep a point to the corresponding original AST node in the cloned AST being visited  
 // via del may be good -- ASTs are always cloned, but same del can be inherited
