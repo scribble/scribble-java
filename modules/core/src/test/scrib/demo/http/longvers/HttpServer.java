@@ -3,7 +3,7 @@ package demo.http.longvers;
 import org.scribble.net.Buf;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 
 import demo.http.longvers.HttpLong.Http.Http;
 import demo.http.longvers.HttpLong.Http.channels.S.Http_S_1;
@@ -48,7 +48,7 @@ public class HttpServer
 			while (true)	
 			{
 				Http http = new Http();
-				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, Http.S, new HttpLongMessageFormatter()))
+				try (MPSTEndpoint<Http, S> se = new MPSTEndpoint<>(http, Http.S, new HttpLongMessageFormatter()))
 				{
 					se.accept(ss, Http.C);
 				

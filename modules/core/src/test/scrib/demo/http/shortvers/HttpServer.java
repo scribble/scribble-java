@@ -6,7 +6,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 
 import demo.http.shortvers.HttpShort.Http.Http;
 import demo.http.shortvers.HttpShort.Http.channels.S.Http_S_1;
@@ -32,7 +32,7 @@ public class HttpServer
 			while (true)	
 			{
 				Http http = new Http();
-				try (SessionEndpoint<Http, S> se = new SessionEndpoint<>(http, S, new HttpShortMessageFormatter()))
+				try (MPSTEndpoint<Http, S> se = new MPSTEndpoint<>(http, S, new HttpShortMessageFormatter()))
 				{
 					se.accept(ss, C);
 				

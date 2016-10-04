@@ -21,6 +21,7 @@ public abstract class Session
 	public final String modpath;
 	public final GProtocolName proto;
 	
+	//private final Map<Role, MPSTEndpoint<?, ?>> endpoints = new HashMap<>();  // Only for local endpoints
 	private final Map<Role, SessionEndpoint<?, ?>> endpoints = new HashMap<>();  // Only for local endpoints
 
 	public Session(int id, List<String> impath, String modpath, GProtocolName proto)
@@ -58,6 +59,7 @@ public abstract class Session
 		}
 	}*/
 	//protected <P extends Session, R extends Role> SessionEndpoint<P, R> project(R role, ScribMessageFormatter smf) throws ScribbleRuntimeException, IOException
+	//protected void project(MPSTEndpoint<?, ?> se) throws ScribbleRuntimeException, IOException
 	protected void project(SessionEndpoint<?, ?> se) throws ScribbleRuntimeException, IOException
 	{
 		if (!getRoles().contains(se.self))
@@ -105,14 +107,14 @@ public abstract class Session
 	}
 
 	//public SessionEndpoint getEndpoint(Role role) throws ScribbleException
-	public <S extends Session, R extends Role> SessionEndpoint<S, R> getEndpoint(R role) throws ScribbleException
+	public <S extends Session, R extends Role> MPSTEndpoint<S, R> getEndpoint(R role) throws ScribbleException
 	{
 		if (!this.endpoints.containsKey(role))
 		{
 			throw new ScribbleException("No endpoint for: " + role);
 		}
 		@SuppressWarnings("unchecked")
-		SessionEndpoint<S, R> cast = (SessionEndpoint<S, R>) this.endpoints.get(role);  // FIXME:
+		MPSTEndpoint<S, R> cast = (MPSTEndpoint<S, R>) this.endpoints.get(role);  // FIXME:
 		return cast;
 	}
 	

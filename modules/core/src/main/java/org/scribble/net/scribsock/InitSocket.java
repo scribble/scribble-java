@@ -7,14 +7,14 @@ import java.util.concurrent.Callable;
 import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.session.BinaryChannelEndpoint;
 import org.scribble.net.session.Session;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.sesstype.name.Role;
 
 // Establishing transport connections handled in here and wrapped up in SocketWrapper
 @Deprecated
 public abstract class InitSocket<S extends Session, R extends Role> extends LinearSocket<S, R> implements AutoCloseable
 {
-	protected InitSocket(SessionEndpoint<S, R> se)
+	protected InitSocket(MPSTEndpoint<S, R> se)
 	{
 		super(se);
 	}

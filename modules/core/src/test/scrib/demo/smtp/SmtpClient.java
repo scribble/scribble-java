@@ -10,7 +10,7 @@ import java.util.Base64;
 
 import org.scribble.net.Buf;
 import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.smtp.Smtp.Smtp.Smtp;
@@ -60,8 +60,8 @@ public class SmtpClient
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> se =
-				new SessionEndpoint<>(smtp, C, new SmtpMessageFormatter()))
+		try (MPSTEndpoint<Smtp, C> se =
+				new MPSTEndpoint<>(smtp, C, new SmtpMessageFormatter()))
 		{
 			se.connect(S, SocketChannelEndpoint::new, host, port);
 

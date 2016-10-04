@@ -7,7 +7,7 @@ import static demo.abcd.fibo.Fibo.Fibonacci.Fibonacci.stop;
 
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.abcd.fibo.Fibo.Fibonacci.Fibonacci;
@@ -34,7 +34,7 @@ public class MyA extends Thread
 	public void run()
 	{
 		int n = 19;
-		try (SessionEndpoint<Fibonacci, A> se = new SessionEndpoint<>(this.fib, A, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Fibonacci, A> se = new MPSTEndpoint<>(this.fib, A, new ObjectStreamFormatter()))
 		{
 			se.connect(B, SocketChannelEndpoint::new, "localhost", 8888);
 			run(new Fibonacci_A_1(se), n);  // 4184

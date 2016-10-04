@@ -5,7 +5,7 @@ import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.Response;
 import static demo.betty16.lec1.httpshort.HttpShort.Http.Http.S;
 
 import org.scribble.net.Buf;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.betty16.lec1.httpshort.HttpShort.Http.Http;
@@ -19,7 +19,7 @@ public class Client {
 
 	public static void main(String[] args) throws Exception {
 		Http http = new Http();
-		try (SessionEndpoint<Http, C> client = new SessionEndpoint<>(http, C, new HttpShortMessageFormatter())) {
+		try (MPSTEndpoint<Http, C> client = new MPSTEndpoint<>(http, C, new HttpShortMessageFormatter())) {
 			String host = "www.doc.ic.ac.uk"; int port = 80;
 			//String host = "summerschool2016.behavioural-types.eu"; int port = 80;
 			//String host = "localhost"; int port = 8080;
@@ -29,7 +29,7 @@ public class Client {
 		}
 	}
 
-	private void run(SessionEndpoint<Http, C> client, String host) throws Exception {
+	private void run(MPSTEndpoint<Http, C> client, String host) throws Exception {
 		Buf<Response> buf = new Buf<>();
 		Http_C_1 c = new Http_C_1(client);
 

@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.travel.Travel.Booking.Booking;
@@ -26,7 +26,7 @@ public class Client
 	public static void main(String[] args) throws Exception
 	{
 		Booking booking = new Booking();
-		try (SessionEndpoint<Booking, C> se = new SessionEndpoint<>(booking, Booking.C, new ObjectStreamFormatter()))
+		try (MPSTEndpoint<Booking, C> se = new MPSTEndpoint<>(booking, Booking.C, new ObjectStreamFormatter()))
 		{
 			se.connect(Booking.A, SocketChannelEndpoint::new, "localhost", 7777);
 			se.connect(Booking.S, SocketChannelEndpoint::new, "localhost", 8888);

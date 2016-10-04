@@ -14,6 +14,7 @@ import org.scribble.net.ScribMessage;
 
 public abstract class BinaryChannelEndpoint
 {
+	//protected MPSTEndpoint<?, ?> se;
 	protected SessionEndpoint<?, ?> se;
 	
 	//protected BinaryChannelEndpoint parent;
@@ -31,6 +32,7 @@ public abstract class BinaryChannelEndpoint
 	private final List<CompletableFuture<ScribMessage>> pending = new LinkedList<>();
 
 	// Server side
+	//protected BinaryChannelEndpoint(MPSTEndpoint<?, ?> se, AbstractSelectableChannel c) throws IOException
 	protected BinaryChannelEndpoint(SessionEndpoint<?, ?> se, AbstractSelectableChannel c) throws IOException
 	{
 		this.bb = ByteBuffer.allocate(16921);  // FIXME: size  // Use put mode as default
@@ -43,8 +45,10 @@ public abstract class BinaryChannelEndpoint
 		this.bb = ByteBuffer.allocate(16921);  // FIXME: size  // Use put mode as default
 	}
 	
+	//public abstract void initClient(MPSTEndpoint<?, ?> se, String host, int port) throws IOException;
 	public abstract void initClient(SessionEndpoint<?, ?> se, String host, int port) throws IOException;
 	
+	//protected void init(MPSTEndpoint<?, ?> se, AbstractSelectableChannel c) throws IOException
 	protected void init(SessionEndpoint<?, ?> se, AbstractSelectableChannel c) throws IOException
 	{
 		this.se = se;

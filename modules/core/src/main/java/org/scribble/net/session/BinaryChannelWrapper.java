@@ -16,6 +16,7 @@ public abstract class BinaryChannelWrapper extends BinaryChannelEndpoint
 	}
 
 	@Override
+	//public void initClient(MPSTEndpoint<?, ?> se, String host, int port) throws IOException
 	public void initClient(SessionEndpoint<?, ?> se, String host, int port) throws IOException
 	{
 		throw new RuntimeException("Shouldn't get in here: ");

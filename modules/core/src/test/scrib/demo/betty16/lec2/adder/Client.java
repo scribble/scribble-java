@@ -8,7 +8,7 @@ import static demo.betty16.lec2.adder.Adder.Adder.Adder.S;
 
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.betty16.lec2.adder.Adder.Adder.Adder;
@@ -19,13 +19,13 @@ public class Client {
 
 	public static void main(String[] args) throws Exception {
 		Adder adder = new Adder();
-		try (SessionEndpoint<Adder, C> client = new SessionEndpoint<>(adder, C, new ObjectStreamFormatter())) {	
+		try (MPSTEndpoint<Adder, C> client = new MPSTEndpoint<>(adder, C, new ObjectStreamFormatter())) {	
 			client.connect(S, SocketChannelEndpoint::new, "localhost", 8888);
 			System.out.println("C: " + new Client().run(client));
 		}
 	}
 	
-	private int run(SessionEndpoint<Adder, C> client) throws Exception {
+	private int run(MPSTEndpoint<Adder, C> client) throws Exception {
 		Buf<Integer> i = new Buf<>(1);
 
 		Adder_C_1 c1 = new Adder_C_1(client);

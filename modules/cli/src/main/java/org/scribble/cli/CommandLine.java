@@ -440,9 +440,13 @@ public class CommandLine //implements Runnable
 		{
 			throw new CommandLineException("Global protocol not found: " + simpname);
 		}
+		if (pd.isAuxModifier())  // CHECKME: maybe don't check for all, e.g. -project
+		{
+			throw new CommandLineException("Invalid aux protocol specified as root: " + simpname);
+		}
 		return new GProtocolName(jcontext.main, simpgpn);
 	}
-	
+
 	private static Role checkRoleArg(JobContext jcontext, GProtocolName fullname, String rolename) throws CommandLineException
 	{
 		ProtocolDecl<?> pd = jcontext.getMainModule().getProtocolDecl(fullname.getSimpleName());

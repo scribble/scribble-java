@@ -4,7 +4,7 @@ import static demo.fase.adder.Adder.Adder.Adder.*;
 
 import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.fase.adder.Adder.Adder.Adder;
@@ -18,7 +18,7 @@ public class MyCDemo
 	public static void main(String[] args) throws Exception
 	{
 		Adder adder = new Adder();
-		try (SessionEndpoint<Adder, C> se = new SessionEndpoint<>(adder, C, new ObjectStreamFormatter())) {	
+		try (MPSTEndpoint<Adder, C> se = new MPSTEndpoint<>(adder, C, new ObjectStreamFormatter())) {	
 			se.connect(S, SocketChannelEndpoint::new, "localhost", 8888);
 
 			

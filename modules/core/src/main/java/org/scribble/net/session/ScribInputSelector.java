@@ -11,12 +11,14 @@ import org.scribble.sesstype.name.Role;
 
 public class ScribInputSelector extends Thread
 {
+	//private MPSTEndpoint<?, ?> se;  // FIXME
 	private SessionEndpoint<?, ?> se;  // FIXME
 	private final Selector sel;
 
 	private volatile boolean paused = false;
 	private volatile boolean closed = false;
 
+	//public ScribInputSelector(MPSTEndpoint<?, ?> se) throws IOException
 	public ScribInputSelector(SessionEndpoint<?, ?> se) throws IOException
 	{
 		this.se = se;

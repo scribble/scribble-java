@@ -20,6 +20,7 @@ public class SSLSocketChannelServer extends ScribServerSocket
 	}
 
 	@Override
+	//public synchronized SocketChannelEndpoint accept(MPSTEndpoint<?, ?> se) throws IOException
 	public synchronized SocketChannelEndpoint accept(SessionEndpoint<?, ?> se) throws IOException
 	{
 		return new SocketChannelEndpoint(se, ss.accept());

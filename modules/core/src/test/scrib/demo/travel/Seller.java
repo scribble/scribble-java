@@ -8,7 +8,7 @@ import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 
 import demo.travel.Travel.Booking.Booking;
 import demo.travel.Travel.Booking.channels.S.Booking_S_1;
@@ -25,7 +25,7 @@ public class Seller
 			while (true)
 			{
 				Booking booking = new Booking();
-				try (SessionEndpoint<Booking, S> se = new SessionEndpoint<>(booking, Booking.S, new ObjectStreamFormatter()))
+				try (MPSTEndpoint<Booking, S> se = new MPSTEndpoint<>(booking, Booking.S, new ObjectStreamFormatter()))
 				{
 					//S.register(Booking.A, ss_A);
 				

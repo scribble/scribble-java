@@ -7,7 +7,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.travel.Travel.Booking.Booking;
@@ -26,7 +26,7 @@ public class Agent
 				int quote = 1000;
 
 				Booking booking = new Booking();
-				try (SessionEndpoint<Booking, A> se = new SessionEndpoint<>(booking, Booking.A, new ObjectStreamFormatter()))
+				try (MPSTEndpoint<Booking, A> se = new MPSTEndpoint<>(booking, Booking.A, new ObjectStreamFormatter()))
 				{
 					se.accept(ss_C, Booking.C);
 					

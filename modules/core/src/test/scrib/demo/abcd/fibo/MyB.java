@@ -9,7 +9,7 @@ import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 
 import demo.abcd.fibo.Fibo.Fibonacci.Fibonacci;
 import demo.abcd.fibo.Fibo.Fibonacci.channels.B.EndSocket;
@@ -32,7 +32,7 @@ public class MyB extends Thread
 	{
 		try (
 			ScribServerSocket ss = new SocketChannelServer(8888);
-			SessionEndpoint<Fibonacci, B> se = new SessionEndpoint<>(this.fib, B, new ObjectStreamFormatter()))
+			MPSTEndpoint<Fibonacci, B> se = new MPSTEndpoint<>(this.fib, B, new ObjectStreamFormatter()))
 		{
 			se.accept(ss, A);
 			run(new Fibonacci_B_1(se));

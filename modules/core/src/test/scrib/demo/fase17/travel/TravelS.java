@@ -1,6 +1,9 @@
 package demo.fase17.travel;
 
 import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.C;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.S;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.confirm;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.payment;
 
 import java.io.IOException;
 
@@ -9,12 +12,11 @@ import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.ExplicitEndpoint;
 
 import demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent;
 import demo.fase17.travel.TravelAgent.TravelAgent.channels.S.TravelAgent_S_1;
 import demo.fase17.travel.TravelAgent.TravelAgent.roles.S;
-import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.*;
 
 public class TravelS
 {
@@ -24,15 +26,17 @@ public class TravelS
 		{
 			Buf<Object> b = new Buf<>();
 
-			//while (true)
+			while (true)
 			{
 				TravelAgent sess = new TravelAgent();
-				try (SessionEndpoint<TravelAgent, S> se = new SessionEndpoint<>(sess, S, new ObjectStreamFormatter()))
+				try (ExplicitEndpoint<TravelAgent, S> se = new ExplicitEndpoint<>(sess, S, new ObjectStreamFormatter()))
 				{
 					new TravelAgent_S_1(se)
-						.accept(C, ss)  // FIXME: state channel constructor already called init
+						.accept(C, ss)
 						.receive(C, payment, b)
 						.send(C, confirm, 4567);
+					
+					System.out.println("(S) payment: " + b.val);
 				}
 				catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
 				{

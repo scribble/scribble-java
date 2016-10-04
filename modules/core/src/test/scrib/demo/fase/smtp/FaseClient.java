@@ -14,7 +14,7 @@ import org.scribble.main.ScribbleRuntimeException;
 import org.scribble.net.Buf;
 import org.scribble.net.scribsock.LinearSocket;
 import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.fase.smtp.Smtp.Smtp.Smtp;
@@ -53,7 +53,7 @@ public class FaseClient
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> se = new SessionEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
+		try (MPSTEndpoint<Smtp, C> se = new MPSTEndpoint<>(smtp, Smtp.C, new SmtpMessageFormatter()))
 		{
 			se.connect(Smtp.S, SocketChannelEndpoint::new, host, port);
 

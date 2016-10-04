@@ -1,6 +1,11 @@
 package demo.fase17.travel;
 
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.A;
 import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.C;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.query;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.quote;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.yes;
+import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.no;
 
 import java.io.IOException;
 
@@ -9,14 +14,13 @@ import org.scribble.net.Buf;
 import org.scribble.net.ObjectStreamFormatter;
 import org.scribble.net.scribsock.ScribServerSocket;
 import org.scribble.net.scribsock.SocketChannelServer;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.ExplicitEndpoint;
 
 import demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent;
+import demo.fase17.travel.TravelAgent.TravelAgent.channels.A.EndSocket;
 import demo.fase17.travel.TravelAgent.TravelAgent.channels.A.TravelAgent_A_1;
 import demo.fase17.travel.TravelAgent.TravelAgent.channels.A.TravelAgent_A_2_Cases;
 import demo.fase17.travel.TravelAgent.TravelAgent.roles.A;
-
-import static demo.fase17.travel.TravelAgent.TravelAgent.TravelAgent.*;
 
 public class TravelA
 {
@@ -24,23 +28,15 @@ public class TravelA
 	{
 		try (ScribServerSocket ss = new SocketChannelServer(8888))
 		{
-			Buf<Object> b = new Buf<>();
-
 			while (true)
 			{
 				TravelAgent sess = new TravelAgent();
-				try (SessionEndpoint<TravelAgent, A> se = new SessionEndpoint<>(sess, A, new ObjectStreamFormatter()))
+				try (ExplicitEndpoint<TravelAgent, A> se = new ExplicitEndpoint<>(sess, A, new ObjectStreamFormatter()))
 				{
-					TravelAgent_A_2_Cases A2
-						= new TravelAgent_A_1(se)
+					run(
+						new TravelAgent_A_1(se)
 							.accept(C, ss)
-							.branch(C);
-					switch (A2.op)
-					{
-						case query: A2 = A2.receive(query, b).send(C, quote, 1234).branch(C); break;
-						case yes:   A2.receive(yes, b); System.out.println("(A) payment ref: " + b.val); break;
-						case no:    break;
-					}
+							.branch(C));
 				}
 				catch (ScribbleRuntimeException | IOException | ClassNotFoundException e)
 				{
@@ -49,7 +45,19 @@ public class TravelA
 			}
 		}
 	}
-	
+
+	private EndSocket run(TravelAgent_A_2_Cases A2) throws Exception
+	{
+		Buf<Object> b = new Buf<>();
+		switch (A2.op)
+		{
+			case query: A2 = A2.receive(query, b).send(C, quote, 1234).branch(C); System.out.println("(A) query: " + b.val); return run(A2);
+			case yes:   EndSocket end = A2.receive(yes, b); System.out.println("(A) yes: " + b.val); return end;
+			case no:    return A2.receive(no);
+			default:    throw new RuntimeException("Shouldn't get in here: " + A2.op);
+		}
+	}
+
 	public static void main(String[] args) throws Exception
 	{
 		new TravelA().run();

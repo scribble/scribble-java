@@ -9,7 +9,7 @@
  * $ scribblec.sh modules/core/src/test/scrib/demo/betty16/lec2/adder/Adder.scr -d modules/core/src/test/scrib/ -session Adder
  * 
  * (3) Generate Endpoint API ("Session API" and "State Channel API") for C: 
- * $ scribblec.sh modules/core/src/test/scrib/demo/betty16/lec2/adder/Adder.scr -d modules/core/src/test/scrib/ -api Adder
+ * $ scribblec.sh modules/core/src/test/scrib/demo/betty16/lec2/adder/Adder.scr -d modules/core/src/test/scrib/ -api Adder C
  * 
  * (4) [Java] Generate javadoc from Endpoint API(s):
  * $ javadoc -cp modules/cli/target/classes/:modules/core/target/classes:modules/parser/target/classes:modules/core/src/test/scrib -subpackages demo.betty16.lec2.adder.Adder.Adder -d javadoc/demo/betty16/adder

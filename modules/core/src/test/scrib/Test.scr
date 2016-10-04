@@ -13,6 +13,33 @@ module Test;
 
 
 /*
+global protocol Proto1(role A, role B)
+{
+	choice at A
+	{
+		1() from A to B;
+		1() from A to B;  // FIXME unfinished term not reported -- FIXME: still need to check good terms (taking accept-guarded states into account)
+		1() from A to B;
+		2() from B to A;
+	}
+	or
+	{
+		1() from A to B;
+		1() from B to A;
+		1() from B to A;
+		2() from A to B;
+	}
+}
+//*/
+
+
+aux global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+}
+
+
+/*
 global protocol Proto1(role A, role B, role C)
 {
 	choice at A

@@ -9,7 +9,7 @@ import static demo.betty16.lec2.smtp.Smtp.Smtp.Smtp._250d;
 import org.scribble.net.Buf;
 import org.scribble.net.scribsock.LinearSocket;
 import org.scribble.net.session.SSLSocketChannelWrapper;
-import org.scribble.net.session.SessionEndpoint;
+import org.scribble.net.session.MPSTEndpoint;
 import org.scribble.net.session.SocketChannelEndpoint;
 
 import demo.betty16.lec2.smtp.Smtp.Smtp.Smtp;
@@ -36,7 +36,7 @@ public class Client2 {
 		int port = 25;
 
 		Smtp smtp = new Smtp();
-		try (SessionEndpoint<Smtp, C> client = new SessionEndpoint<>(smtp, C, new SmtpMessageFormatter())) {
+		try (MPSTEndpoint<Smtp, C> client = new MPSTEndpoint<>(smtp, C, new SmtpMessageFormatter())) {
 			client.connect(S, SocketChannelEndpoint::new, host, port);
 			new Client2().run(new Smtp_C_1(client));
 		}

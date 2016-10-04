@@ -1,13 +1,11 @@
 package org.scribble.net.session;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.nio.channels.SelectionKey;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import org.scribble.main.RuntimeScribbleException;
 import org.scribble.main.ScribbleRuntimeException;
@@ -18,7 +16,7 @@ import org.scribble.sesstype.name.Role;
 
 // FIXME: factor out between role-endpoint based socket and channel-endpoint sockets
 //.. initiator and joiner endpoints
-public class SessionEndpoint<S extends Session, R extends Role> implements AutoCloseable
+public abstract class SessionEndpoint<S extends Session, R extends Role> implements AutoCloseable
 {
 	public final Buf<?> gc = new Buf<>();
 
@@ -26,7 +24,7 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 	public final Role self;
 	public final ScribMessageFormatter smf;
 
-	private boolean init = false;
+	protected boolean init = false;
 	//private boolean bound = false;
 	private boolean complete = false;
 	private boolean closed = false;
@@ -37,11 +35,6 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 	
 	private final ScribInputSelector sel;
 	private final Map<Role, SelectionKey> keys = new HashMap<>();
-	
-	public ScribInputSelector getSelector()
-	{
-		return this.sel;
-	}
 	
 	public SessionEndpoint(S sess, R self, ScribMessageFormatter smf) throws IOException, ScribbleRuntimeException
 	{
@@ -132,6 +125,11 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 			this.sel.unpause();
 		}
 	}
+	
+	public ScribInputSelector getSelector()
+	{
+		return this.sel;
+	}
 
 	public BinaryChannelEndpoint getChannelEndpoint(Role role)
 	{
@@ -189,7 +187,7 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 	}
 	
 
-	public void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
+	/*public void connect(Role role, Callable<? extends BinaryChannelEndpoint> cons, String host, int port) throws ScribbleRuntimeException, UnknownHostException, IOException
 	{
 		// Can connect unlimited, as long as not already used via init
 		if (this.init)
@@ -236,7 +234,7 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 			throw new ScribbleRuntimeException("Not connected to: " + role);
 		}
 		deregister(role);
-	}
+	}*/
 	
 	/*public void init()
 	{
@@ -265,6 +263,9 @@ public class SessionEndpoint<S extends Session, R extends Role> implements AutoC
 	}
 	 
 
+	
+	
+	
 	/*public final Session sess;
 	//public final Principal self;
 	public final Role self;
