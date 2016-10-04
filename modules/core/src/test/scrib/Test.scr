@@ -12,16 +12,13 @@
 module Test;
 
 
-
-// FIXME: init state channel constructor, endpoint arg should depend on explicit modifier (store mods in session class?)
-
-
+/*
 global protocol Proto1(role A, role B)
 {
 	choice at A
 	{
 		1() from A to B;
-		1() from A to B;  // FIXME unfinished term not reported -- FIXME: still need to check good terms
+		1() from A to B;  // FIXME unfinished term not reported -- FIXME: still need to check good terms (taking accept-guarded states into account)
 		1() from A to B;
 		2() from B to A;
 	}
@@ -33,6 +30,14 @@ global protocol Proto1(role A, role B)
 		2() from A to B;
 	}
 }
+//*/
+
+
+aux global protocol Proto1(role A, role B)
+{
+	1() from A to B;
+}
+
 
 /*
 global protocol Proto1(role A, role B, role C)
